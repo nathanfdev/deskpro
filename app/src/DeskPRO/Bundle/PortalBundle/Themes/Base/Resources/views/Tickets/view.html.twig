@@ -5,90 +5,270 @@
     {% show breadcrumbs %}
   </div>
   <article class="ticket-page" id="ticket_view_page">
-    <header>
-      <h1>
-        {{ ticket.subject }}
-        <a href="#" class="ticket-status">{{ ticket_status(ticket) }}</a>
-      </h1>
-        <span class="ticket-reference">
-            {{ phrase('portal.tickets.ticket-ref') }} <strong>{{ ticket_public_id(ticket) }}</strong>
-        </span>
-      {% if can_edit %}
-        <span class="ticket-reference">
-              <a href="{{ portal_path(ticket, 'edit') }}">
-                {{ phrase('portal.tickets.edit-ticket') }}
-              </a>
-          </span>
-      {% endif %}
-    </header>
     <div class="container">
-      <div class="ticket-agents">
-        <div class="agent">
-          {% if ticket.agent %}
-            <span class="agent-avatar" style="background: url({{ avatar_url(ticket.agent, 36) }}) no-repeat; background-size: cover;"></span>
-          {% else %}
-            <span class="agent-avatar empty"></span>
-          {% endif %}
+      <div class="column-full">
 
-          <div class="agent-info">
-            <span class="agent-meta">{{ phrase('portal.tickets.assigned-agent') }}</span>
-              <span class="agent-name">
-                  {% if ticket.agent %}
-                    {{ ticket.agent.display_name_user }}
-                  {% else %}
-                    {{ phrase('user.tickets.unassigned') }}
-                  {% endif %}
-              </span>
-          </div>
-        </div>
-        <div class="agent">
-          <span class="agent-avatar" style="background: url({{ avatar_url(ticket.person) }}) no-repeat; background-size: cover;"></span>
-          <div class="agent-info">
-            <span class="agent-meta">{{ phrase('portal.tickets.opened-by') }}</span>
-            <span class="agent-name">{{ ticket.person.display_name_user }}</span>
-          </div>
-        </div>
-      </div>
+        <div class="ticket-view">
+          <!-- Sidebar with the agents in this ticket, ref etc -->
+          <div class="ticket-view-sidebar-wrapper">
 
-      {% if ticket.userParticipants|length %}
-        <div class="agent-extras">
-          <span class="grey">{{ phrase('portal.tickets.also-cc') }}</span>
-          {% for person in ticket.userParticipants %}
-            <div class="agent">
-              <span class="agent-meta">{{ person.display_name_user }}</span>
-                <span class="agent-avatar agent-avatar-tiny agent-avatar-blank">
-                  <a href="#" class="remove-agent"></a>
-                </span>
+            <div class="ticket-view-sidebar">
+              {% if can_edit %}
+                <a href="{{ portal_path(ticket, 'resolve') }}" class="ticket-sidebar-close-ticket">Close this ticket</a>
+              {% endif %}
             </div>
-          {% endfor %}
+
+            <div class="ticket-view-sidebar">
+
+              <div class="ticket-sidebar-container ticket-sidebar-info">
+                <h1>Ticket info:</h1>
+                <ul class="major">
+                    <li>
+                      <span class="sidebar-small-title">Assigned agent:</span>
+                      <ul>
+                        <li>
+                          <a href="#" class="sidebar-person">
+                            <span class="agent-avatar agent-avatar-mid" style="background-image: url({{ avatar_url(ticket.agent, 36) }});"><span class="remove-agent"></span></span>
+                          <span class="avatar-meta">
+                            {% if ticket.agent %}
+                            <span class="primary">{{ ticket.agent.display_name }}</span>
+                            <span class="secondary">{{ ticket.agent.primary_email.email }}</span>
+                            {% else %}
+                              <span class="primary">Unassigned</span>
+                            {% endif %}
+                          </span>
+                          </a>
+                        </li>
+                      </ul>
+                    </li>
+
+
+                  <li>
+                    <span class="sidebar-small-title">Ticket opened by:</span>
+                    <ul>
+                      <li>
+                        <a href="#" class="sidebar-person">
+                          <span class="agent-avatar agent-avatar-mid" style="background-image: url({{ avatar_url(ticket.person, 36) }});"></span>
+                          <span class="avatar-meta">
+                            <span class="primary single">{{ ticket.person.primary_email_address }}</span>
+                          </span>
+                        </a>
+                      </li>
+                    </ul>
+                  </li>
+
+                  {#<li>#}
+                    {#<span class="sidebar-small-title">Also on this ticket:</span>#}
+                    {#<ul>#}
+                      {#<li>#}
+                        {#<a href="#" class="sidebar-person">#}
+                          {#<span class="agent-avatar agent-avatar-mid" style="background-image: url(https://randomuser.me/api/portraits/med/men/73.jpg);"><span class="remove-agent"></span></span>#}
+                          {#<span class="avatar-meta">#}
+                            {#<span class="primary">Mitchell Ortiz</span>#}
+                            {#<span class="secondary">mitchell.ortiz91@example.com</span>#}
+                          {#</span>#}
+                        {#</a>#}
+                      {#</li>#}
+
+                      {#<li>#}
+                        {#<a href="#" class="sidebar-person">#}
+                          {#<span class="agent-avatar agent-avatar-mid" style="background-image: url(https://randomuser.me/api/portraits/med/men/94.jpg);"><span class="remove-agent"></span></span>#}
+                          {#<span class="avatar-meta">#}
+                            {#<span class="primary">Kurt Vargas</span>#}
+                            {#<span class="secondary">kurt.vargas75@example.com</span>#}
+                          {#</span>#}
+                        {#</a>#}
+                      {#</li>#}
+
+                      {#<li>#}
+                        {#<a href="#" class="sidebar-person">#}
+                          {#<span class="agent-avatar agent-avatar-mid" style="background-image: url(https://randomuser.me/api/portraits/med/men/61.jpg);"><span class="remove-agent"></span></span>#}
+                          {#<span class="avatar-meta">#}
+                            {#<span class="primary">Clyde Edwards</span>#}
+                            {#<span class="secondary">clyde.edwards42@example.com</span>#}
+                          {#</span>#}
+                        {#</a>#}
+                      {#</li>#}
+
+                      {#<li>#}
+                        {#<a href="#" class="sidebar-person add-person">#}
+                          {#<span class="agent-avatar agent-avatar-mid"><i class="fa fa-plus"></i></span>#}
+                          {#<span class="avatar-meta">#}
+                            {#<span class="primary single">Add a CC'ed user</span>#}
+                          {#</span>#}
+                        {#</a>#}
+
+                        {#<div class="add-cc-user-popover" style="display: none;">#}
+                          {#<form>#}
+
+                            {#<div class="column-full">#}
+                              {#<div>#}
+                                {#<div class="bucket">#}
+                                  {#<label class="title">Your Name: *</label>#}
+                                  {#<input placeholder="Name (required)" type="text">#}
+                                {#</div>#}
+
+                                {#<div class="bucket">#}
+                                  {#<label class="title">Your Email: *</label>#}
+                                  {#<input placeholder="Email:" type="text">#}
+                                {#</div>#}
+
+                                {#<div class="bucket">#}
+                                  {#<input type="submit" value="Lorel Ipsum">#}
+                                {#</div>#}
+                              {#</div>#}
+                            {#</div>#}
+                          {#</form>#}
+                        {#</div>#}
+                      {#</li>#}
+                    {#</ul>#}
+                  {#</li>#}
+
+                  <li>
+                    <span class="sidebar-small-title">{{ phrase('portal.tickets.ticket-ref') }}</span>
+                    <ul>
+                      <li>{{ ticket_public_id(ticket) }}</li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+
+              {% if ticket.attachments|length > 0 %}
+              <div class="ticket-sidebar-container ticket-sidebar-media">
+                <h1>Media on this ticket:</h1>
+                <ul>
+                  {% for attachment in ticket.attachments %}
+                  <li>
+                    <a href="{{ attachment.blob.downloadUrl }}">
+                      <i class="fa fa-file-archive-o"></i>
+                      <span class="file-name">{{ attachment.blob.filename }}</span>
+                      <span class="file-size">{{ attachment.blob.filesize }} {{ phrase('portal.tickets.file_size_bytes') }}</span>
+                    </a>
+                  </li>
+                  {% endfor %}
+                </ul>
+              </div>
+              {% endif %}
+
+              <div class="ticket-sidebar-container ticket-sidebar-meta">
+                {% if can_edit %}
+                  <a href="{{ portal_path(ticket, 'edit') }}" class="sidebar-edit">Edit <i class="fa fa-edit"></i></a>
+                {% endif %}
+                <h1>Additional ticket information:</h1>
+                <ul>
+                  {# see the TicketViewService in AppBundle's data services #}
+                  {% for property in ticket_view.properties %}
+                    {% if property.isVisible %}
+                      <li>
+                        <h3>{{ property.label }}</h3>
+                        <p>{{ property.value }}</p>
+                      </li>
+                    {% endif %}
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ticket title -->
+          <div class="header">
+            <h1>{{ ticket.subject }} <a href="#" class="ticket-status">{{ ticket_status(ticket) }}</a></h1>
+          </div>
+          <!-- All the messages -->
+          <div class="ticket-messages">
+            {% show ticket_timeline %}
+            {% show ticket_reply %}
+          </div>
         </div>
-      {% endif %}
+
+      </div><!-- end .column-half-plus -->
+
     </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      {#<div class="ticket-agents">#}
+        {#<div class="agent">#}
+          {#{% if ticket.agent %}#}
+            {#<span class="agent-avatar" style="background: url({{ avatar_url(ticket.agent, 36) }}) no-repeat; background-size: cover;"></span>#}
+          {#{% else %}#}
+            {#<span class="agent-avatar empty"></span>#}
+          {#{% endif %}#}
+
+          {#<div class="agent-info">#}
+            {#<span class="agent-meta">{{ phrase('portal.tickets.assigned-agent') }}</span>#}
+              {#<span class="agent-name">#}
+                  {#{% if ticket.agent %}#}
+                    {#{{ ticket.agent.display_name_user }}#}
+                  {#{% else %}#}
+                    {#{{ phrase('user.tickets.unassigned') }}#}
+                  {#{% endif %}#}
+              {#</span>#}
+          {#</div>#}
+        {#</div>#}
+        {#<div class="agent">#}
+          {#<span class="agent-avatar" style="background: url({{ avatar_url(ticket.person) }}) no-repeat; background-size: cover;"></span>#}
+          {#<div class="agent-info">#}
+            {#<span class="agent-meta">{{ phrase('portal.tickets.opened-by') }}</span>#}
+            {#<span class="agent-name">{{ ticket.person.display_name_user }}</span>#}
+          {#</div>#}
+        {#</div>#}
+      {#</div>#}
+
+      {#{% if ticket.userParticipants|length %}#}
+        {#<div class="agent-extras">#}
+          {#<span class="grey">{{ phrase('portal.tickets.also-cc') }}</span>#}
+          {#{% for person in ticket.userParticipants %}#}
+            {#<div class="agent">#}
+              {#<span class="agent-meta">{{ person.display_name_user }}</span>#}
+                {#<span class="agent-avatar agent-avatar-tiny agent-avatar-blank">#}
+                  {#<a href="#" class="remove-agent"></a>#}
+                {#</span>#}
+            {#</div>#}
+          {#{% endfor %}#}
+        {#</div>#}
+      {#{% endif %}#}
+    {#</div>#}
     <!-- End Container -->
 
-    <hr>
+    {#<hr>#}
 
-    <div class="container">
-      <table>
-        {# see the TicketViewService in AppBundle's data services #}
-        {% for property in ticket_view.properties %}
-          {% if property.isVisible %}
-            <tr>
-              <td>{{ property.label }}</td>
-              <td>{{ property.value }}</td>
-            </tr>
-          {% endif %}
-        {% endfor %}
-      </table>
-    </div>
+    {#<div class="container">#}
+      {#<table>#}
+        {#&#123;&#35; see the TicketViewService in AppBundle's data services &#35;&#125;#}
+        {#{% for property in ticket_view.properties %}#}
+          {#{% if property.isVisible %}#}
+            {#<tr>#}
+              {#<td>{{ property.label }}</td>#}
+              {#<td>{{ property.value }}</td>#}
+            {#</tr>#}
+          {#{% endif %}#}
+        {#{% endfor %}#}
+      {#</table>#}
+    {#</div>#}
 
-    <hr>
+    {#<hr>#}
 
-    <div class="ticket-timeline">
-      <div class="line"></div>
-      {% show ticket_timeline %}
-      {% show ticket_reply %}
-    </div>
-    <br>
+    {#<div class="ticket-timeline">#}
+      {#<div class="line"></div>#}
+    {#</div>#}
+    {#<br>#}
   </article>
 {% endblock inner_content %}

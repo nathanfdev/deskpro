@@ -1,33 +1,31 @@
-{% if ticket.resolved and has_permission('tickets.reopen_resolved') %}
-    <div class="item reply">
-        <span class="badge" style="background: url({{ avatar_url(app.user, 50) }}) no-repeat; background-size: cover"></span>
+{% if ticket.resolved %}
+    <div class="ticket-reply-closed">
+        <h1>This ticket is now closed</h1>
+        <p>This ticket was closed 3 days ago (12/07/14). Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem.</p>
+        <hr>
+        <p class="footer">You can <a href="{{ path('portal_kb') }}">return to the knowledge base</a> or <a href="{{ path('portal_new_ticket') }}">open a new ticket</a>.</p>
 
+        {% if ticket.resolved and has_permission('tickets.reopen_resolved') %}
         <a href="{{ portal_path(ticket, 'unresolve') }}" class="button">
             {{ phrase('portal.tickets.mark-unresolved') }}
         </a>
+        {% endif %}
     </div>
 {% endif %}
 
 {% if not ticket.resolved %}
-    <div class="item reply">
-      <span class="badge" style="background: url({{ avatar_url(app.user, 50) }}) no-repeat; background-size: cover"></span>
 
-      <a href="#" class="button button-reply">
-          {{ phrase('portal.tickets.add-reply') }}
-      </a>
-
-      <a href="{{ portal_path(ticket, 'resolve') }}" class="button button-resolved">
-          {{ phrase('portal.tickets.mark-resolved') }}
-      </a>
-
-      <div class="reply-form">
+    <div class="ticket-reply">
+        <div class="ticket-reply-header">
+            Add a reply or <a href="{{ portal_path(ticket, 'resolve') }}">close the ticket</a>
+        </div>
         {{ form_errors(form) }}
         {{ form_start(form, { attr: { class: 'form-ticket' } }) }}
         {{ form_widget(form.ticket_message) }}
         {{ form_widget(form.attachments) }}
         {{ form_widget(form.more_attachments) }}
+        {#<input type="submit" value="{{ phrase('portal.tickets.add-reply') }}">#}
         {{ form_rest(form) }}
         {{ form_end(form) }}
-      </div>
     </div>
 {% endif %}
