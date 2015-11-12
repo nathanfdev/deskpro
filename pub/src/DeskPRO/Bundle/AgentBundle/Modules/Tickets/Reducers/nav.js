@@ -1,10 +1,6 @@
 import { createReducer } from 'Ampliflux';
 import { async, setFullPayload, mergeFullPayload, setValue } from 'Ampliflux/reducers/handlers';
-import {
-  initialLoad,
-  startFilterEditing, applyFilterEditing, closeFilterEditing
-} from '../Actions/navActions';
-import Immutable from 'immutable';
+import { startFilterEditing, applyFilterEditing, closeFilterEditing, initialLoad, unload } from '../Actions/navActions';
 
 const initialState = {
   filterSetsCount: {},
@@ -24,14 +20,8 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
-  [startFilterEditing]: setFullPayload('editedFilterId'),
-  [applyFilterEditing]: setFullPayload('editedFilterId'),
-  [closeFilterEditing]: setFullPayload('editedFilterId'),
-  [initialLoad]: async({
-    success: mergeFullPayload(),
-    start: setValue('async.done', false),
-    done: setValue('async.done', true)
-  }),
+
+  // Private -----------------------------------------------------------------------------------------------------------
 
   TICKETS_NAV_MARK_FILTER_AS_LOADING: (state, id) => {
     if (!state.getIn(['async', 'filtersLoading']).includes(id)) {
@@ -50,7 +40,7 @@ export default createReducer(initialState, {
           if (filterSets[i].nested[j].group === newFilterCount.group) {
             filterSets[i].nested[j] = newFilterCount;
 
-            let next = state.set('filterSetsCount', Immutable.fromJS(filterSets));
+            let next = setFullPayload('filterSetsCount')(state, filterSets);
             next = next.setIn(
               ['async', 'filtersLoading'],
               state.getIn(['async', 'filtersLoading'])
@@ -64,5 +54,16 @@ export default createReducer(initialState, {
 
       return state;
     }
+  }),
+
+  // Public ------------------------------------------------------------------------------------------------------------
+
+  [startFilterEditing]: setFullPayload('editedFilterId'),
+  [closeFilterEditing]: setFullPayload('editedFilterId'),
+  [applyFilterEditing]: setFullPayload('editedFilterId'),
+  [initialLoad]: async({
+    success: mergeFullPayload(),
+    start: setValue('async.done', false),
+    done: setValue('async.done', true)
   })
 });

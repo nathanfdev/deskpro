@@ -1,8 +1,7 @@
 import { createReducer } from 'Ampliflux';
 import { setFullPayload, setValue, async } from 'Ampliflux/reducers/handlers';
-import {
-  toggleAll, toggleSelected, toggleTableFieldVisibility, toggleCardFieldVisibility, setViewMode
-} from '../Actions/listActions';
+import { toggleAll, toggleSelected, toggleTableFieldVisibility, toggleCardFieldVisibility, setViewMode, unload }
+  from '../Actions/listActions';
 
 const initialState = {
   viewMode: 'card',
@@ -24,12 +23,28 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
+
+  // Private -----------------------------------------------------------------------------------------------------------
+
   TICKETS_LIST_SET_LIST_PARAMS: setFullPayload('listParams'),
   TICKETS_LIST_LOAD_LIST: async({
     success: setFullPayload('elements'),
     start: setValue('async.done', false),
     done: setValue('async.done', true)
   }),
+
+  // Public ------------------------------------------------------------------------------------------------------------
+
+  [toggleSelected]: (state, id) => {
+    let selected = state.get('selected');
+    selected = selected.includes(id) ? selected.delete(selected.indexOf(id)) : selected.push(id);
+
+    return state.set('selected', selected);
+  },
+  [unload]: setValue('elements', []),
+
+  // Public (control bar) ----------------------------------------------------------------------------------------------
+
   [toggleAll]: (state, select) => {
     let selected = state.get('selected');
     if (select) {
@@ -37,12 +52,6 @@ export default createReducer(initialState, {
     } else {
       selected = selected.clear();
     }
-
-    return state.set('selected', selected);
-  },
-  [toggleSelected]: (state, id) => {
-    let selected = state.get('selected');
-    selected = selected.includes(id) ? selected.delete(selected.indexOf(id)) : selected.push(id);
 
     return state.set('selected', selected);
   },

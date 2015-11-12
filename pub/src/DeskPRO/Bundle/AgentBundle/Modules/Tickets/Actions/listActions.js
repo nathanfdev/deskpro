@@ -3,12 +3,9 @@ import { listParamsSelector } from '../Selectors/list';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 
-// ---------------------------------------------------------------------------------------------------------------------
-// Private
-// ---------------------------------------------------------------------------------------------------------------------
+// Private -------------------------------------------------------------------------------------------------------------
 
 const setListParams = createAction('TICKETS_LIST_SET_LIST_PARAMS');
-
 const loadList = createAction(
   'TICKETS_LIST_LOAD_LIST',
   params => new Promise(resolve => {
@@ -20,25 +17,27 @@ const loadList = createAction(
   })
 );
 
-// ---------------------------------------------------------------------------------------------------------------------
-// Public
-// ---------------------------------------------------------------------------------------------------------------------
+// Public --------------------------------------------------------------------------------------------------------------
 
+export const toggleSelected = createAction('TICKETS_LIST_TOGGLE_SELECTED');
+export const unload = createAction('TICKETS_LIST_UNLOAD');
 export const applyListParams = createAction(
   'TICKETS_LIST_APPLY_LIST_PARAMS',
-  overwrite => (dispatch, getState) => {
+    overwrite => (dispatch, getState) => {
     const current = listParamsSelector(getState()).toJS();
     const params = {...current, ...overwrite};
     dispatch(setListParams(params));
 
+    // reload if filter param is set i.e. navigation menu item is selected
     if (params.filter) {
       dispatch(loadList(params));
     }
   }
 );
 
+// Public (control bar) ------------------------------------------------------------------------------------------------
+
 export const toggleAll = createAction('TICKETS_LIST_TOGGLE_ALL_ACTION');
-export const toggleSelected = createAction('TICKETS_LIST_TOGGLE_SELECTED');
 export const setSort = createAction(
   'TICKETS_LIST_SET_SORT',
   sort => dispatch => dispatch(applyListParams({sort}))
