@@ -19,11 +19,3 @@ export const loadList = createAction(
       .success(response => resolve(response.data));
   })
 );
-
-export const applyListParams = createAction(
-  'TASKS_APPLY_LIST_PARAMS',
-    params => dispatch => {
-      dispatch(setListParamsFilter(params));
-      dispatch(loadList(params));
-    }
-);
