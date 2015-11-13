@@ -31,7 +31,6 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Data\Criteria;
 
-use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -62,46 +61,42 @@ abstract class Criteria implements CriteriaInterface
      *
      * @param array           $params
      * @param OptionsResolver $resolver
+     * @param array           $data
      *
      * @return Criteria
      */
     public static function fromParameters(array $params, OptionsResolver $resolver, array $data = [])
     {
-        $isGroupable = in_array(GroupableCriteriaInterface::class, class_implements(static::class));
-        $isSortable  = in_array(SortableCriteriaInterface::class, class_implements(static::class));
+        $is_groupable = in_array(GroupableCriteriaInterface::class, class_implements(static::class));
+        $is_sortable  = in_array(SortableCriteriaInterface::class, class_implements(static::class));
 
         static::configureResolver($resolver, $data);
-        if ($isGroupable) {
+        if ($is_groupable) {
             static::configureGroupByResolver($resolver);
         }
-        if ($isSortable) {
+        if ($is_sortable) {
             static::configureSortingResolver($resolver);
         }
 
         $params = $resolver->resolve($params);
 
-        if ($isGroupable) {
+        if ($is_groupable) {
             $group_by = static::extractGroupBy($params);
         }
-        if ($isSortable) {
+        if ($is_sortable) {
             list($sort, $order) = static::extractSorting($params);
         }
 
         $instance = new static($params);
 
-        if ($isGroupable) {
+        if ($is_groupable) {
             $instance->setGroupBy($group_by);
         }
-        if ($isSortable) {
+        if ($is_sortable) {
             $instance->setSort($sort);
             $instance->setOrder($order);
         }
 
         return $instance;
     }
-
-    /**
-     * @param QueryBuilder $qb
-     */
-    abstract public function applyFilters(QueryBuilder $qb);
 }

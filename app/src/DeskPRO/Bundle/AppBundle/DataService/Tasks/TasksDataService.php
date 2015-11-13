@@ -31,7 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataService\Tasks;
 
-use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\CriteriaInterface;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
@@ -43,13 +43,13 @@ class TasksDataService extends AbstractTasksDataService
     /**
      * Select filtered list of tasks.
      *
-     * @param Criteria $criteria
-     * @param int      $page
-     * @param int      $count
+     * @param CriteriaInterface $criteria
+     * @param int               $page
+     * @param int               $count
      *
      * @return Pagerfanta
      */
-    public function selectTasks(Criteria $criteria, $page, $count)
+    public function selectTasks(CriteriaInterface $criteria, $page, $count)
     {
         $qb = $this->getBaseQueryBuilder();
         $qb
