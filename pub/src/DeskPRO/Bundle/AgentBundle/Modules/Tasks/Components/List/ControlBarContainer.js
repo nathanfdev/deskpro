@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/ControlBar';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import { applySort, applyOrder } from '../../Actions/listActions';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import {
   currentViewModeSelector,
@@ -55,10 +56,10 @@ export class ControlBarContainer extends Component {
         },
 
         sort: this.props.sort,
-        sortAction: value => updateRoutingState('list', 'sort', value),
+        sortAction: applySort,
 
         order: this.props.order,
-        orderAction: value => updateRoutingState('list', 'order', value)
+        orderAction: applyOrder
       },
       view: {
         options: {

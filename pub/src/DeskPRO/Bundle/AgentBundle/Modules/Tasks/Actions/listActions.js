@@ -2,6 +2,7 @@ import { createAction } from 'Ampliflux';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import * as Tasks from 'DeskPRO/Bundle/AgentBundle/Services/Api/Tasks';
 import { listFilterSelector, currentSortSelector, currentOrderSelector } from '../Selectors/list';
+import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 
 export const setListParamsFilter = createAction('TASKS_SET_LIST_PARAMS_FILTER');
 
@@ -11,7 +12,7 @@ export const toggleKanbanFieldVisibility = createAction('TASKS_TOGGLE_KANBAN_FIE
 export const toggleCalendarFieldVisibility = createAction('TASKS_TOGGLE_CALENDAR_FIELD_VISIBILITY');
 
 export const loadList = createAction(
-  'TASKS_LOAD_TASK_LIST',
+  'TASKS_LIST_LOAD_TASK_LIST',
   () => (dispatch, getState) => new Promise(resolve => {
     const state = getState();
     const listParams = listFilterSelector(state).toJS();
@@ -25,4 +26,20 @@ export const loadList = createAction(
       .sendGet('DP_API/tasks?' + Tasks.compileParams(params))
       .success(response => resolve(response.data));
   })
+);
+
+export const applySort = createAction(
+  'TASKS_LIST_APPLY_SORT',
+  value => dispatch => {
+    dispatch(updateRoutingState('list', 'sort', value));
+    dispatch(loadList());
+  }
+);
+
+export const applyOrder = createAction(
+  'TASKS_LIST_APPLY_ORDER',
+  value => dispatch => {
+    dispatch(updateRoutingState('list', 'order', value));
+    dispatch(loadList());
+  }
 );
