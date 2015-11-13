@@ -63,7 +63,6 @@
                                     data-search-param="term"
                                     data-position-bound=".org-name"
                                     data-super-container=".page-new-content"
-                                    data-allow-new="{{ app.user.hasPerm('agent_org.create') ? 'true' : '' }}"
                                     >
                                 <input type="text" class="org-name fill" id="{{ baseId }}_org_name"
                                        name="newperson[new_organization]"
@@ -84,10 +83,12 @@
                                         <ul class="results-list">
 
                                         </ul>
+                                        {% if app.user.hasPerm('agent_org.create') %}
                                         <footer>
                                             <span class="create-org">{{ phrase('agent.general.create') }}
                                                 : <em></em></span>
                                         </footer>
+                                        {% endif %}
                                     </section>
                                 </div>
 
