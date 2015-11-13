@@ -66,10 +66,7 @@ class AbstractTasksDataService
     protected function getBaseQueryBuilder()
     {
         $qb = $this->em->createQueryBuilder();
-        $qb
-            ->from('App:Task', 't')
-            ->where($qb->expr()->eq('t.is_done', 0))
-        ;
+        $qb->from('App:Task', 't');
 
         return $qb;
     }

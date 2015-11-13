@@ -24,7 +24,7 @@ export class Agents extends React.Component {
           {agents.map((agent, index) =>
             <ListItemContainer key={index}
                                urlHash={`agent-${agent.get('id')}-${agent.get('name')}`}
-                               listOptions={{agents: [agent.get('id')]}}>
+                               listOptions={{assigned_agent: [agent.get('id')]}}>
 
               <ListItem count={countMap[agent.get('id')] || 0}>
                 <div part="label">

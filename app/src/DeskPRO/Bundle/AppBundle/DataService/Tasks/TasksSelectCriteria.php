@@ -54,7 +54,7 @@ class TasksSelectCriteria extends Criteria
                     ;
 
                     break;
-                case 'labels':
+                case 'label':
                     $qb
                         ->andWhere("l.label IN (:$field)")
                         ->setParameter($field, $value)
@@ -68,16 +68,45 @@ class TasksSelectCriteria extends Criteria
                     ;
 
                     break;
-                case 'assigned':
+                case 'creator':
+                    $qb
+                        ->andWhere("t.creator = :$field")
+                        ->setParameter($field, $value)
+                    ;
+
+                    break;
+                case 'no_assignments':
+                    $qb
+                        ->andWhere('ta.person IS NULL')
+                        ->andWhere('ta.team IS NULL')
+                        ->andWhere('ta.department IS NULL')
+                    ;
+
+                    break;
+                case 'assigned_agent':
                     $qb
                         ->andWhere("ta.person IN (:$field)")
                         ->setParameter($field, $value)
                     ;
 
                     break;
+                case 'not_assigned_agent':
+                    $qb
+                        ->andWhere("ta.person NOT IN (:$field)")
+                        ->setParameter($field, $value)
+                    ;
+
+                    break;
                 case 'assigned_team':
                     $qb
-                        ->andWhere("ta.team IN (:$field)")
+                        ->andWhere("ta.team NOT IN (:$field)")
+                        ->setParameter($field, $value)
+                    ;
+
+                    break;
+                case 'not_assigned_team':
+                    $qb
+                        ->andWhere("ta.team NOT IN (:$field)")
                         ->setParameter($field, $value)
                     ;
 
@@ -85,6 +114,13 @@ class TasksSelectCriteria extends Criteria
                 case 'assigned_department':
                     $qb
                         ->andWhere("ta.department IN (:$field)")
+                        ->setParameter($field, $value)
+                    ;
+
+                    break;
+                case 'not_assigned_department':
+                    $qb
+                        ->andWhere('ta.department IS NULL')
                         ->setParameter($field, $value)
                     ;
 
@@ -131,6 +167,13 @@ class TasksSelectCriteria extends Criteria
                     ;
 
                     break;
+                case 'done':
+                    $qb
+                        ->andWhere("t.is_done = :$field")
+                        ->setParameter($field, (int) $value)
+                    ;
+
+                    break;
                 case 'sort':
                     $order = isset($this->filters['order']) ? $this->filters['order'] : 'asc';
 
@@ -164,66 +207,50 @@ class TasksSelectCriteria extends Criteria
      */
     public static function configureResolver(OptionsResolver $resolver, array $data = [])
     {
+        $assign_validator = function ($value) {
+            if (is_null($value)) {
+                return true;
+            }
+
+            $value = (array) $value;
+            foreach ($value as $id) {
+                if (!preg_match('/^(me|\d+)$/', $id)) {
+                    return false;
+                }
+            }
+
+            return true;
+        };
+
         $resolver
             ->setDefined([
                 'ids',
-                'assigned',
+                'no_assignments',
+                'assigned_agent',
+                'not_assigned_agent',
                 'assigned_team',
+                'not_assigned_team',
                 'assigned_department',
+                'not_assigned_department',
                 'creator',
                 'project',
                 'sort',
                 'order',
-                'labels',
+                'label',
                 'created_from',
                 'created_to',
                 'due_from',
                 'due_to',
                 'done_from',
                 'done_to',
+                'done',
             ])
-            ->setAllowedValues('assigned', function ($value) {
-                if (is_null($value)) {
-                    return true;
-                }
-
-                $value = (array) $value;
-                foreach ($value as $id) {
-                    if (!preg_match('/^(me|\d+)$/', $id)) {
-                        return false;
-                    }
-                }
-
-                return true;
-            })
-            ->setAllowedValues('assigned_team', function ($value) {
-                if (is_null($value)) {
-                    return true;
-                }
-
-                $value = (array) $value;
-                foreach ($value as $id) {
-                    if (!preg_match('/^(my|\d+)$/', $id)) {
-                        return false;
-                    }
-                }
-
-                return true;
-            })
-            ->setAllowedValues('assigned_department', function ($value) {
-                if (is_null($value)) {
-                    return true;
-                }
-
-                $value = (array) $value;
-                foreach ($value as $id) {
-                    if (!preg_match('/^(my|\d+)$/', $id)) {
-                        return false;
-                    }
-                }
-
-                return true;
-            })
+            ->setAllowedValues('assigned_agent', $assign_validator)
+            ->setAllowedValues('not_assigned_agent', $assign_validator)
+            ->setAllowedValues('assigned_team', $assign_validator)
+            ->setAllowedValues('not_assigned_team', $assign_validator)
+            ->setAllowedValues('assigned_department', $assign_validator)
+            ->setAllowedValues('not_assigned_department', $assign_validator)
             ->setAllowedValues('sort', [
                 'project',
                 'date_due',
