@@ -57,10 +57,18 @@ class FeedbackTypeController extends BaseController
      */
     public function cgetAction()
     {
-        $feedbackTypes = $this->getDoctrine()->getRepository('DeskPRO:FeedbackCategory')->findAll();
+        $qb = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $qb
+            ->select('type.id', 'type.title', 'COUNT(feedback.id) as counter')
+            ->from('DeskPRO:Feedback', 'feedback')
+            ->innerJoin('feedback.category', 'type')
+            ->groupBy('type.id')
+        ;
+
+        $types = $qb->getQuery()->getArrayResult();
 
         return View::create(
-            $this->dataSerialize($feedbackTypes),
+            $this->createRepresentation($types),
             Response::HTTP_OK
         );
     }

@@ -3,13 +3,15 @@ import { connect } from 'react-redux';
 import * as actions from '../../Actions/FeedbackListActions';
 import { Nav } from './Nav';
 import { loadFeedbackTypes } from '../../RecordStores/Actions/feedbackTypesActions';
+import { feedbackTypesSelector }
+  from '../../Selectors/list';
 
 @connect(state => {
   return ({
     toValidateCount: state.Feedback.nav.get('toValidateCount'),
     commentsToReviewCount: state.Feedback.nav.get('commentsToReviewCount'),
     statuses: state.Feedback.nav.get('statuses'),
-    types: state.Feedback.nav.get('types'),
+    types: feedbackTypesSelector(state),
     labels: state.Feedback.nav.get('labels'),
     customCategories: state.Feedback.nav.get('customCategories'),
     dpWindow: state.Application.dpWindow

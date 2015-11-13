@@ -11,13 +11,13 @@ export class TypeTab extends Component {
     const { types } = this.props;
     return (
       <ul>
-        {types.get('nested').toJS().map((item, index) =>
+        {types.toArray().map((item, index) =>
             <ListItemContainer key={index}
-                               label={item.group}
-                               listOptions={{isComments: false, navItem: {category: item.group}}}>
+                               label={item.get('title')}
+                               listOptions={{isComments: false, navItem: {category: item.get('title')}}}>
 
-              <ListItem count={item.count}
-                        label={item.group} />
+              <ListItem count={item.get('counter')}
+                        label={item.get('title')} />
             </ListItemContainer>
         )}
       </ul>

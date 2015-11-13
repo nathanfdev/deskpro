@@ -25,7 +25,7 @@ export class ControlBarContainer extends Component {
     order: PropTypes.string.isRequired,
     filterParams: PropTypes.object.isRequired,
     filters: PropTypes.array.isRequired,
-    viewMode: PropTypes.string.isRequired,
+    viewMode: PropTypes.string.isRequired
   };
 
   render() {
@@ -38,7 +38,7 @@ export class ControlBarContainer extends Component {
         options: {
           date_created: {label: 'Date', icon: 'calendar'},
           total_rating: {label: 'Rating', icon: 'calendar-o'},
-          num_ratings:  {label: 'Votes', icon: 'calendar'}
+          num_ratings: {label: 'Votes', icon: 'calendar'}
         },
         sort: this.props.sort,
         order: this.props.order,
