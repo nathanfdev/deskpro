@@ -5,8 +5,8 @@ const stateSelector = state => state.Tasks.list;
 
 export const currentNavSelector = hashStateSelectorFactory(['nav', 'active']);
 export const currentViewModeSelector = hashStateSelectorFactory(['list', 'view'], 'card');
+export const currentSortSelector = hashStateSelectorFactory(['list', 'sort'], 'date_created');
 export const currentOrderSelector = hashStateSelectorFactory(['list', 'order'], 'desc');
-export const currentSortSelector = hashStateSelectorFactory(['list', 'sort'], 'desc');
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export const listFilterSelector = createSelector(
