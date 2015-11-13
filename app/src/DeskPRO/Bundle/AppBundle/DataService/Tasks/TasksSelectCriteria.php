@@ -68,6 +68,27 @@ class TasksSelectCriteria extends Criteria
                     ;
 
                     break;
+                case 'assigned':
+                    $qb
+                        ->andWhere("ta.person IN (:$field)")
+                        ->setParameter($field, $value)
+                    ;
+
+                    break;
+                case 'assigned_team':
+                    $qb
+                        ->andWhere("ta.team IN (:$field)")
+                        ->setParameter($field, $value)
+                    ;
+
+                    break;
+                case 'assigned_department':
+                    $qb
+                        ->andWhere("ta.department IN (:$field)")
+                        ->setParameter($field, $value)
+                    ;
+
+                    break;
                 case 'created_from':
                     $qb
                         ->andWhere("t.date_created >= DATE(:$field)")
@@ -162,13 +183,46 @@ class TasksSelectCriteria extends Criteria
                 'done_to',
             ])
             ->setAllowedValues('assigned', function ($value) {
-                return is_null($value) || preg_match('/^(me|\d+)$/', $value);
+                if (is_null($value)) {
+                    return true;
+                }
+
+                $value = (array) $value;
+                foreach ($value as $id) {
+                    if (!preg_match('/^(me|\d+)$/', $id)) {
+                        return false;
+                    }
+                }
+
+                return true;
             })
             ->setAllowedValues('assigned_team', function ($value) {
-                return is_null($value) || preg_match('/^(my|\d+)$/', $value);
+                if (is_null($value)) {
+                    return true;
+                }
+
+                $value = (array) $value;
+                foreach ($value as $id) {
+                    if (!preg_match('/^(my|\d+)$/', $id)) {
+                        return false;
+                    }
+                }
+
+                return true;
             })
             ->setAllowedValues('assigned_department', function ($value) {
-                return is_null($value) || preg_match('/^(my|\d+)$/', $value);
+                if (is_null($value)) {
+                    return true;
+                }
+
+                $value = (array) $value;
+                foreach ($value as $id) {
+                    if (!preg_match('/^(my|\d+)$/', $id)) {
+                        return false;
+                    }
+                }
+
+                return true;
             })
             ->setAllowedValues('sort', [
                 'project',
