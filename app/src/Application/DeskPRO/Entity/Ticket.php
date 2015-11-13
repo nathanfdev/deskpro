@@ -123,6 +123,7 @@ use Orb\Util\WorkHoursSetAll;
  * @PortalLinkCustom(type="edit")
  * @PortalLinkCustom(type="resolve")
  * @PortalLinkCustom(type="unresolve")
+ * @PortalLinkCustom(type="add-cc")
  */
 class Ticket extends DomainObject implements HighlightableModelInterface
 {

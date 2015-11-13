@@ -34,8 +34,10 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\Entity\TicketParticipant;
 use Application\DeskPRO\Entity\TicketTrigger;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
+use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter;
 use DeskPRO\Bundle\PortalBundle\Model\TicketFilter;
 use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTable;
@@ -314,6 +316,100 @@ class TicketsController extends AbstractController
             'breadrcumbs' => $this->getBreadcrumbGenerator()->buildTicketEdit($ticket),
             'page_title'  => $this->createPageTitle()->tickets($ticket),
         ));
+    }
+
+    /**
+     * @Route("/tickets/{ticket_ref}/add-cc", name="portal_tickets_cc_add")
+     * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
+     */
+    public function addCcAction(Request $request, $ticket_ref)
+    {
+        if (!$ticket = $this->getTicketByRefOrId($ticket_ref)) {
+            throw new NotFoundHttpException(sprintf('no ticket with ref or id "%s" found', $ticket_ref));
+        }
+
+        if (!$this->isGranted(TicketsVoter::TICKET_VIEW, $ticket)) {
+            throw new AccessDeniedException();
+        }
+
+        $redirect_response = $this->redirectToRoute('portal_tickets_view', ['ticket_ref' => $ticket_ref]);
+
+        $name  = $request->request->get('name');
+        $email = $request->request->get('email');
+
+        if (!preg_match('/.+\@.+\..+/', $email)) {
+            // return error with email
+            $this->addFlash('error', 'Please enter a valid email for your participant and try again.');
+
+            return $redirect_response;
+        }
+
+        $person_factory = $this->get('person_factory');
+        $context        = new CreatePersonContext('gateway.person');
+        if ($person = $person_factory->getOrCreatePersonByEmail($email, $context)) {
+            // only set the name if this email doesn't have a name (a new person)
+            // otherwise anyone can CC a person and change their name in the system...
+            if ($name && !$person->first_name) {
+                $person->name = $name;
+            }
+
+            if ($ticket->hasParticipantPerson($person)) {
+                $this->addFlash('success', 'The person you tried to add as a participant is already a participant on this ticket.');
+
+                return $redirect_response;
+            }
+
+            $participant = new TicketParticipant();
+            $participant->setPerson($person);
+            $ticket->addParticipant($participant);
+            $this->getEm()->persist($participant);
+            $this->getEm()->flush($ticket);
+
+            // return success
+            $this->addFlash('success', sprintf('We have added %s (%s) as a participant to this ticket.', $person->getDisplayNameUser(), $person->getPrimaryEmailAddress()));
+
+            return $redirect_response;
+        }
+
+        // return general error
+        $this->addFlash('error', 'There was a problem when trying to add your participant. Please try again.');
+
+        return $redirect_response;
+    }
+
+    /**
+     * @Route("/tickets/{ticket_ref}/remove-cc/{cc_id}", name="portal_tickets_cc_remove")
+     * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
+     * @AutoPostOnGetRequest()
+     */
+    public function removeCcAction(Request $request, $ticket_ref, $cc_id)
+    {
+        if (!$ticket = $this->getTicketByRefOrId($ticket_ref)) {
+            throw new NotFoundHttpException(sprintf('no ticket with ref or id "%s" found', $ticket_ref));
+        }
+
+        if (!$this->isGranted(TicketsVoter::TICKET_VIEW, $ticket)) {
+            throw new AccessDeniedException();
+        }
+
+        $redirect_response = $this->redirectToRoute('portal_tickets_view', ['ticket_ref' => $ticket_ref]);
+
+        $participant = $this->getEm()->getRepository('DeskPRO:TicketParticipant')->find($cc_id);
+        $cc_person   = $participant->getPerson();
+
+        // the passed participant must be a participant on the passed ticket ref
+        if ($participant->getTicket() === $ticket) {
+            $ticket->removeParticipantPerson($cc_person);
+            $this->getEm()->flush();
+            $this->addFlash('success', sprintf('We have removed %s (%s) as a participant to this ticket.', $cc_person->getDisplayNameUser(), $cc_person->getPrimaryEmailAddress()));
+
+            return $redirect_response;
+        }
+
+        // return general error, likely the participant id and ticket id are not the same, which would be bad!
+        $this->addFlash('error', 'There was a problem when trying to remove your participant. Please try again.');
+
+        return $redirect_response;
     }
 
     /**

@@ -104,6 +104,14 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
         return $this->person;
     }
 
+    /**
+     * @return Ticket
+     */
+    public function getTicket()
+    {
+        return $this->ticket;
+    }
+
     public function setPersonId($id)
     {
         $person = App::findEntity('DeskPRO:Person', $id);

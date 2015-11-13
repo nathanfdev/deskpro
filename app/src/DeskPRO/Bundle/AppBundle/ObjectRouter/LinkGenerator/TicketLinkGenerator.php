@@ -110,6 +110,12 @@ class TicketLinkGenerator implements LinkGeneratorInterface
                     array_merge(array('ticket_ref' => $ref), $extra_params),
                     $reference_type
                 );
+            case 'add-cc':
+                return $this->url_generator->generate(
+                    'portal_tickets_cc_add',
+                    array_merge(array('ticket_ref' => $ref), $extra_params),
+                    $reference_type
+                );
             default:
                 return $this->url_generator->generate(
                     'portal_tickets_view',

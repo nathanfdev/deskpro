@@ -10,22 +10,32 @@
       <div class="column-full">
 
         {% if ticket.isAwaitingUser() %}
+          {# AWAITING USER #}
         <div class="ticket-view-note-for-user agent-has-replied">
           An agent is waiting for you to reply to a message. <a href="#ticket-reply-form">Click here to scroll down to the form.</a>
         </div>
         {% elseif ticket.isAwaitingAgent() %}
+          {# AWAITING AGENT #}
         <div class="ticket-view-note-for-user">
 
           {% if ticket.date_last_user_reply and ticket.messages|length > 1 %}
-            <span class="note-for-user-blue">Your last message was sent {{ date_ago(ticket.date_last_user_reply) }}.
+            <span class="note-for-user-blue">Your last message was sent {{ date_ago(ticket.date_last_user_reply) }}.</span>
           {% else %}
-            <span class="note-for-user-blue">You created this ticket {{ date_ago(ticket.date_created) }}.
+            <span class="note-for-user-blue">You created this ticket {{ date_ago(ticket.date_created) }}.</span>
           {% endif %}
 
-          </span> We have received your message &amp; will send an email notification as soon as an agent has added a comment.
+           We have received your message &amp; will send an email notification as soon as an agent has added a comment.
         </div>
         {% else %}
-          {# we could add a "this ticket is closed" message here, but we also do it at the bottom #}
+          {# RESOLVED #}
+          <div class="ticket-view-note-for-user">
+
+            {% if ticket.date_resolved %}
+            <span class="note-for-user-blue">This ticket was closed {{ date_ago(ticket.date_resolved) }}.</span>
+              {% endif %}
+
+              You can <a href="{{ path('portal_kb') }}">return to the knowledge base</a> or <a href="{{ path('portal_new_ticket') }}">open a new ticket</a>.
+          </div>
         {% endif %}
 
         <div class="ticket-view">
@@ -34,7 +44,7 @@
 
             <div class="ticket-view-sidebar">
               {% if can_edit %}
-                <a href="{{ portal_path(ticket, 'resolve') }}" class="ticket-sidebar-close-ticket">Close this ticket</a>
+                <a href="{{ portal_path(ticket, 'resolve') }}" class="ticket-sidebar-close-ticket post-link">Close this ticket</a>
               {% endif %}
             </div>
 
@@ -64,72 +74,49 @@
                     </ul>
                   </li>
 
-                  {#<li>#}
-                    {#<span class="sidebar-small-title">Also on this ticket:</span>#}
-                    {#<ul>#}
-                      {#<li>#}
-                        {#<a href="#" class="sidebar-person">#}
-                          {#<span class="agent-avatar agent-avatar-mid" style="background-image: url(https://randomuser.me/api/portraits/med/men/73.jpg);"><span class="remove-agent"></span></span>#}
-                          {#<span class="avatar-meta">#}
-                            {#<span class="primary">Mitchell Ortiz</span>#}
-                            {#<span class="secondary">mitchell.ortiz91@example.com</span>#}
-                          {#</span>#}
-                        {#</a>#}
-                      {#</li>#}
+                  <li>
+                    <span class="sidebar-small-title">Also on this ticket:</span>
+                    <ul>
+                      {% for participant in ticket.participants %}
+                        <li>
+                          <a href="{{ path('portal_tickets_cc_remove', { ticket_ref: ticket_public_id(ticket), cc_id: participant.id }) }}" class="sidebar-person post-link">
+                            {{ macros.person_badge(participant.person) }}
+                          </a>
+                        </li>
+                      {% endfor %}
+                      <li>
+                        <a href="#" class="sidebar-person add-person clickaway-dropdown" data-clickaway-target="add-cc-user-popover">
+                          <span class="agent-avatar agent-avatar-mid"><i class="fa fa-plus"></i></span>
+                          <span class="avatar-meta">
+                            <span class="primary single">Add a CC'ed user</span>
+                          </span>
+                        </a>
 
-                      {#<li>#}
-                        {#<a href="#" class="sidebar-person">#}
-                          {#<span class="agent-avatar agent-avatar-mid" style="background-image: url(https://randomuser.me/api/portraits/med/men/94.jpg);"><span class="remove-agent"></span></span>#}
-                          {#<span class="avatar-meta">#}
-                            {#<span class="primary">Kurt Vargas</span>#}
-                            {#<span class="secondary">kurt.vargas75@example.com</span>#}
-                          {#</span>#}
-                        {#</a>#}
-                      {#</li>#}
+                        <div class="add-cc-user-popover" id="add-cc-user-popover" style="display: none;">
+                          <form action="{{ portal_path(ticket, 'add-cc') }}" method="POST">
 
-                      {#<li>#}
-                        {#<a href="#" class="sidebar-person">#}
-                          {#<span class="agent-avatar agent-avatar-mid" style="background-image: url(https://randomuser.me/api/portraits/med/men/61.jpg);"><span class="remove-agent"></span></span>#}
-                          {#<span class="avatar-meta">#}
-                            {#<span class="primary">Clyde Edwards</span>#}
-                            {#<span class="secondary">clyde.edwards42@example.com</span>#}
-                          {#</span>#}
-                        {#</a>#}
-                      {#</li>#}
+                            <div class="column-full">
+                              <div>
+                                <div class="bucket">
+                                  <label class="title">Your Name: *</label>
+                                  <input placeholder="Name (required)" name="name" type="text" required>
+                                </div>
 
-                      {#<li>#}
-                        {#<a href="#" class="sidebar-person add-person">#}
-                          {#<span class="agent-avatar agent-avatar-mid"><i class="fa fa-plus"></i></span>#}
-                          {#<span class="avatar-meta">#}
-                            {#<span class="primary single">Add a CC'ed user</span>#}
-                          {#</span>#}
-                        {#</a>#}
+                                <div class="bucket">
+                                  <label class="title">Your Email: *</label>
+                                  <input name="email" placeholder="Email:" type="text" required>
+                                </div>
 
-                        {#<div class="add-cc-user-popover" style="display: none;">#}
-                          {#<form>#}
-
-                            {#<div class="column-full">#}
-                              {#<div>#}
-                                {#<div class="bucket">#}
-                                  {#<label class="title">Your Name: *</label>#}
-                                  {#<input placeholder="Name (required)" type="text">#}
-                                {#</div>#}
-
-                                {#<div class="bucket">#}
-                                  {#<label class="title">Your Email: *</label>#}
-                                  {#<input placeholder="Email:" type="text">#}
-                                {#</div>#}
-
-                                {#<div class="bucket">#}
-                                  {#<input type="submit" value="Lorel Ipsum">#}
-                                {#</div>#}
-                              {#</div>#}
-                            {#</div>#}
-                          {#</form>#}
-                        {#</div>#}
-                      {#</li>#}
-                    {#</ul>#}
-                  {#</li>#}
+                                <div class="bucket">
+                                  <input type="submit" value="Add To Ticket">
+                                </div>
+                              </div>
+                            </div>
+                          </form>
+                        </div>
+                      </li>
+                    </ul>
+                  </li>
 
                   <li>
                     <span class="sidebar-small-title">{{ phrase('portal.tickets.ticket-ref') }}</span>
@@ -187,91 +174,5 @@
       </div><!-- end .column-half-plus -->
 
     </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      {#<div class="ticket-agents">#}
-        {#<div class="agent">#}
-          {#{% if ticket.agent %}#}
-            {#<span class="agent-avatar" style="background: url({{ avatar_url(ticket.agent, 36) }}) no-repeat; background-size: cover;"></span>#}
-          {#{% else %}#}
-            {#<span class="agent-avatar empty"></span>#}
-          {#{% endif %}#}
-
-          {#<div class="agent-info">#}
-            {#<span class="agent-meta">{{ phrase('portal.tickets.assigned-agent') }}</span>#}
-              {#<span class="agent-name">#}
-                  {#{% if ticket.agent %}#}
-                    {#{{ ticket.agent.display_name_user }}#}
-                  {#{% else %}#}
-                    {#{{ phrase('user.tickets.unassigned') }}#}
-                  {#{% endif %}#}
-              {#</span>#}
-          {#</div>#}
-        {#</div>#}
-        {#<div class="agent">#}
-          {#<span class="agent-avatar" style="background: url({{ avatar_url(ticket.person) }}) no-repeat; background-size: cover;"></span>#}
-          {#<div class="agent-info">#}
-            {#<span class="agent-meta">{{ phrase('portal.tickets.opened-by') }}</span>#}
-            {#<span class="agent-name">{{ ticket.person.display_name_user }}</span>#}
-          {#</div>#}
-        {#</div>#}
-      {#</div>#}
-
-      {#{% if ticket.userParticipants|length %}#}
-        {#<div class="agent-extras">#}
-          {#<span class="grey">{{ phrase('portal.tickets.also-cc') }}</span>#}
-          {#{% for person in ticket.userParticipants %}#}
-            {#<div class="agent">#}
-              {#<span class="agent-meta">{{ person.display_name_user }}</span>#}
-                {#<span class="agent-avatar agent-avatar-tiny agent-avatar-blank">#}
-                  {#<a href="#" class="remove-agent"></a>#}
-                {#</span>#}
-            {#</div>#}
-          {#{% endfor %}#}
-        {#</div>#}
-      {#{% endif %}#}
-    {#</div>#}
-    <!-- End Container -->
-
-    {#<hr>#}
-
-    {#<div class="container">#}
-      {#<table>#}
-        {#&#123;&#35; see the TicketViewService in AppBundle's data services &#35;&#125;#}
-        {#{% for property in ticket_view.properties %}#}
-          {#{% if property.isVisible %}#}
-            {#<tr>#}
-              {#<td>{{ property.label }}</td>#}
-              {#<td>{{ property.value }}</td>#}
-            {#</tr>#}
-          {#{% endif %}#}
-        {#{% endfor %}#}
-      {#</table>#}
-    {#</div>#}
-
-    {#<hr>#}
-
-    {#<div class="ticket-timeline">#}
-      {#<div class="line"></div>#}
-    {#</div>#}
-    {#<br>#}
   </article>
 {% endblock inner_content %}

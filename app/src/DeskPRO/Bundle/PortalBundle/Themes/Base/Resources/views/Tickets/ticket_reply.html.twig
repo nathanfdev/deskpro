@@ -2,12 +2,14 @@
 {% if ticket.resolved %}
     <div class="ticket-reply-closed">
         <h1>This ticket is now closed</h1>
-        <p>This ticket was closed 3 days ago (12/07/14). Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem.</p>
+        {% if ticket.date_resolved %}
+            <p>This ticket was closed {{ date_ago(ticket.date_resolved) }} ({{ ticket.date_resolved|date('day') }}).</p>
+        {% endif %}
         <hr>
         <p class="footer">You can <a href="{{ path('portal_kb') }}">return to the knowledge base</a> or <a href="{{ path('portal_new_ticket') }}">open a new ticket</a>.</p>
 
         {% if ticket.resolved and has_permission('tickets.reopen_resolved') %}
-        <a href="{{ portal_path(ticket, 'unresolve') }}" class="button">
+        <a href="{{ portal_path(ticket, 'unresolve') }}" class="button post-link">
             {{ phrase('portal.tickets.mark-unresolved') }}
         </a>
         {% endif %}
@@ -18,7 +20,7 @@
 
     <div class="ticket-reply dpx-form" id="ticket-reply-form">
         <div class="ticket-reply-header">
-            Add a reply or <a href="{{ portal_path(ticket, 'resolve') }}">close the ticket</a>
+            Add a reply or <a href="{{ portal_path(ticket, 'resolve') }}" class="post-link">close the ticket</a>
         </div>
         {{ form_errors(form) }}
         {{ form_start(form, { attr: { class: 'form-ticket' } }) }}
