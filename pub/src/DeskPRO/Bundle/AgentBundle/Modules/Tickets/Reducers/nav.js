@@ -68,6 +68,20 @@ export default createReducer(initialState, {
     }
   }),
 
+  TICKET_NAV_REMOVE_FILTER_NESTED_COUNTS: (state, id) => {
+    const filterSets = state.get('filterSetsCount').toJS();
+    for (let i = 0; i < filterSets.length; i++) {
+      for (let j = 0; j < filterSets[i].nested.length; j++) {
+        if (filterSets[i].nested[j].group === id) {
+          filterSets[i].nested[j].nested = [];
+          return setFullPayload('filterSetsCount')(state, filterSets);
+        }
+      }
+    }
+
+    return state;
+  },
+
   // Public ------------------------------------------------------------------------------------------------------------
 
   [startFilterEditing]: setFullPayload('editedFilterId'),

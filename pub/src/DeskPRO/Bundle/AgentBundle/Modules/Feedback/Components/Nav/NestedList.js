@@ -3,9 +3,9 @@ import { NestedList as BaseNestedList, ListItem } from 'DeskPRO/Bundle/AgentBund
 import { ListItemContainer } from './ListItemContainer';
 
 export class NestedList extends BaseNestedList {
-
-  renderListItem({nested, group, count}, depth) {
+  renderListItem(item, depth) {
     this.ensureValidDepth(depth);
+    const { group, count } = item;
     const label = group[0].toUpperCase() + group.slice(1);
 
     // 1st level menu items set 'status' filtering option, all other set 'status_category'
@@ -19,8 +19,7 @@ export class NestedList extends BaseNestedList {
 
         <ListItem label={label}
                   count={count}>
-
-          {this.renderNested(nested, group, depth)}
+          {this.renderNested(item, depth)}
         </ListItem>
       </ListItemContainer>
     );

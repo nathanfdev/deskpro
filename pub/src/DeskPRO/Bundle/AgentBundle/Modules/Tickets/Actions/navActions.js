@@ -32,6 +32,7 @@ const releaseOrganizations = createAction(
 
 const markFilterLoading = createAction('TICKETS_NAV_MARK_FILTER_AS_LOADING');
 const updateFilter = createAction('TICKET_NAV_UPDATE_FILTER');
+const removeFilterNestedCounts = createAction('TICKET_NAV_REMOVE_FILTER_NESTED_COUNTS');
 
 /**
  * Load Person and Organization entities used in filter sets count
@@ -82,11 +83,23 @@ export const applyFilterEditing = createAction(
   'TICKETS_NAV_FILTER_EDITING_APPLY',
   (groupBy) => (dispatch, getState) => {
     const id = editedFilterIdSelector(getState());
-    dispatch(markFilterLoading(id));
     dispatch(closeFilterEditing());
 
-    DpApi.sendPut(`DP_API/ticket_filters/${id}`, {group_by: groupBy})
-         .success(() => dispatch(loadFilterCount(id)) && dispatch(updateFilter({id, group_by: groupBy})));
+    // remove nested counts or mark filter as reloading depending on if grouping is applied
+    if (!groupBy) {
+      dispatch(removeFilterNestedCounts(id));
+    } else {
+      dispatch(markFilterLoading(id));
+    }
+
+    DpApi.sendPut(`DP_API/ticket_filters/${id}`, {group_by: groupBy}).success(() => {
+      dispatch(updateFilter({id, group_by: groupBy}));
+
+      // reload filter counts if grouping is applied
+      if (groupBy) {
+        dispatch(loadFilterCount(id));
+      }
+    });
   }
 );
 export const initialLoad = createAction(

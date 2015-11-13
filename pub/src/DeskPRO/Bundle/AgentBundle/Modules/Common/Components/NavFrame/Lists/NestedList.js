@@ -20,7 +20,8 @@ export class NestedList extends React.Component {
     };
   }
 
-  getListItemParts(nested, group, depth) {
+  getListItemParts(item) {
+    const { nested, group } = item;
     const hasNested = nested && nested.length;
 
     const parts = {};
@@ -29,7 +30,7 @@ export class NestedList extends React.Component {
       const expanded = this.state.expanded.indexOf(group) > -1;
       const caret = this.props.alwaysExpanded ? '' : <i className={'fa fa-caret-' + (expanded ? 'down' : 'right')}></i>;
       parts.label = <span className="icon">{caret} {label}</span>;
-      parts.nested = this.renderNested(nested, group, depth);
+      parts.nested = this.renderNested(item);
     } else {
       parts.label = label;
       parts.nested = '';
@@ -73,7 +74,8 @@ export class NestedList extends React.Component {
     }
   }
 
-  renderNested(nested, group, depth) {
+  renderNested(item) {
+    const { nested, group, depth } = item;
     const hasNested = nested && nested.length;
     const isExpanded = this.props.alwaysExpanded || this.state.expanded.indexOf(group) > -1;
 
@@ -86,9 +88,11 @@ export class NestedList extends React.Component {
     }
   }
 
-  renderListItem({nested, group, count}, depth) {
+  renderListItem(item, depth) {
     this.ensureValidDepth(depth);
-    const parts = this.getListItemParts(nested, group, depth);
+
+    const parts = this.getListItemParts(item);
+    const { group, count } = item;
     const { onItemControlClick } = this.props;
 
     return (
