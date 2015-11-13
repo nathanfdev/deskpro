@@ -93,7 +93,7 @@ class TasksController extends BaseController implements ClassResourceInterface
         $dataService = $this->get('data.tasks');
         $params      = $request->query->all();
         try {
-            $criteria = TasksSelectCriteria::fromParameters($params, new OptionsResolver());
+            $criteria = TasksSelectCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()]);
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }

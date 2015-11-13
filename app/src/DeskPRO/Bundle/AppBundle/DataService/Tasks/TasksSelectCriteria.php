@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\AppBundle\DataService\Tasks;
 
 use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -63,14 +64,14 @@ class TasksSelectCriteria extends Criteria
                     break;
                 case 'project':
                     $qb
-                        ->andWhere("t.project = :$field")
+                        ->andWhere("t.project IN (:$field)")
                         ->setParameter($field, $value)
                     ;
 
                     break;
                 case 'creator':
                     $qb
-                        ->andWhere("t.creator = :$field")
+                        ->andWhere("t.creator IN (:$field)")
                         ->setParameter($field, $value)
                     ;
 
@@ -207,7 +208,10 @@ class TasksSelectCriteria extends Criteria
      */
     public static function configureResolver(OptionsResolver $resolver, array $data = [])
     {
-        $assign_validator = function ($value) {
+        /** @var \Application\DeskPRO\Entity\Person $me */
+        list($me) = $data;
+
+        $person_validator = function ($value) {
             if (is_null($value)) {
                 return true;
             }
@@ -220,6 +224,17 @@ class TasksSelectCriteria extends Criteria
             }
 
             return true;
+        };
+
+        $person_normalizer = function (Options $options, $value) use ($me) {
+            $value = (array) $value;
+            foreach ($value as &$person) {
+                if ($person === 'me') {
+                    $person = $me->getId();
+                }
+            }
+
+            return $value;
         };
 
         $resolver
@@ -245,12 +260,20 @@ class TasksSelectCriteria extends Criteria
                 'done_to',
                 'done',
             ])
-            ->setAllowedValues('assigned_agent', $assign_validator)
-            ->setAllowedValues('not_assigned_agent', $assign_validator)
-            ->setAllowedValues('assigned_team', $assign_validator)
-            ->setAllowedValues('not_assigned_team', $assign_validator)
-            ->setAllowedValues('assigned_department', $assign_validator)
-            ->setAllowedValues('not_assigned_department', $assign_validator)
+            ->setAllowedValues('assigned_agent', $person_validator)
+            ->setNormalizer('assigned_agent', $person_normalizer)
+            ->setAllowedValues('not_assigned_agent', $person_validator)
+            ->setNormalizer('not_assigned_agent', $person_normalizer)
+            ->setAllowedValues('assigned_team', $person_validator)
+            ->setNormalizer('assigned_team', $person_normalizer)
+            ->setAllowedValues('not_assigned_team', $person_validator)
+            ->setNormalizer('not_assigned_team', $person_normalizer)
+            ->setAllowedValues('assigned_department', $person_validator)
+            ->setNormalizer('assigned_department', $person_normalizer)
+            ->setAllowedValues('not_assigned_department', $person_validator)
+            ->setNormalizer('not_assigned_department', $person_normalizer)
+            ->setAllowedValues('creator', $person_validator)
+            ->setNormalizer('creator', $person_normalizer)
             ->setAllowedValues('sort', [
                 'project',
                 'date_due',
