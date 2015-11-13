@@ -15,7 +15,9 @@ describe('Ampliflux actions handlers', () => {
         e: 3
       }
     },
-    collection: ['a', 'b']
+    collection: ['a', 'b'],
+    elements: [{id: 1}, {id: 2}, {id: 3}],
+    selected: [1]
   }));
 
   describe('setValue()', () => {
@@ -121,6 +123,20 @@ describe('Ampliflux actions handlers', () => {
       const next = handlers.togglePayloadInCollection('collection')(state, 'a');
       expect(next.get('collection').size).toEqual(1);
       expect(next.get('collection').includes('b')).toBeTruthy();
+    });
+  });
+
+  describe('handleMassAction()', () => {
+    it('should select target properties (id) of a collection of objects', () => {
+      const next = handlers.handleMassAction('elements', 'selected')(state, true);
+      expect(next.get('selected').size).toEqual(3);
+    });
+
+    it('should empty target when handling deselection', () => {
+      let next = state;
+      next = handlers.handleMassAction('elements', 'selected')(next, true);
+      next = handlers.handleMassAction('elements', 'selected')(next, false);
+      expect(next.get('selected').size).toEqual(0);
     });
   });
 

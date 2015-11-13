@@ -1,5 +1,5 @@
 import { createReducer } from 'Ampliflux';
-import { setFullPayload, setValue, async, togglePayloadInCollection } from 'Ampliflux/reducers/handlers';
+import { setFullPayload, setValue, async, togglePayloadInCollection, handleMassAction } from 'Ampliflux/reducers/handlers';
 import { toggleAll, toggleSelected, toggleTableFieldVisibility, toggleCardFieldVisibility, setViewMode, unload }
   from '../Actions/listActions';
 
@@ -40,16 +40,7 @@ export default createReducer(initialState, {
 
   // Public (control bar) ----------------------------------------------------------------------------------------------
 
-  [toggleAll]: (state, select) => {
-    let selected = state.get('selected');
-    if (select) {
-      state.get('elements').map(el => selected.includes(el.get('id')) || (selected = selected.push(el.get('id'))));
-    } else {
-      selected = selected.clear();
-    }
-
-    return state.set('selected', selected);
-  },
+  [toggleAll]: handleMassAction('elements', 'selected'),
   [toggleTableFieldVisibility]: togglePayloadInCollection('tableVisibleFields'),
   [toggleCardFieldVisibility]: togglePayloadInCollection('cardVisibleFields'),
   [setViewMode]: setFullPayload('viewMode')

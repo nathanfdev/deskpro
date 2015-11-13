@@ -136,7 +136,37 @@ export function togglePayloadInCollection(statePropKey) {
                : collection.push(payload);
 
     return state.setIn(path, collection);
-  }
+  };
+}
+
+/**
+ * Mass action select/deselect handler
+ *
+ * @param {String} statePropKey The property to set on the state.
+ * @returns {Function}
+ */
+export function handleMassAction(selectFrom, selectInto, targetKeyProp = 'id') {
+  return function(state, select, action) {
+    verifyActionError(action);
+    verifyImmutable(state);
+
+    const intoPath = selectInto.split('.');
+    let selected = state.getIn(intoPath);
+    verifyImmutable(selected);
+
+    if (select) {
+      state.getIn(selectFrom.split('.')).map(el => {
+        const val = Immutable.Iterable.isIterable(el) ? el.get(targetKeyProp) : el[targetKeyProp];
+        if (!selected.includes(val)) {
+          selected = selected.push(val);
+        }
+      });
+    } else {
+      selected = selected.clear();
+    }
+
+    return state.setIn(intoPath, selected);
+  };
 }
 
 /**
