@@ -9,9 +9,14 @@ export const currentSortSelector = hashStateSelectorFactory(['list', 'sort'], 'd
 export const currentOrderSelector = hashStateSelectorFactory(['list', 'order'], 'desc');
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
-export const listFilterSelector = createSelector(
+export const listParamsNavSelector = createSelector(
   stateSelector,
-  state => state.getIn(['listParams', 'filter'])
+  state => state.getIn(['listParams', 'nav'])
+);
+
+export const listParamsFiltersSelector = createSelector(
+  stateSelector,
+  state => state.getIn(['listParams', 'filters'])
 );
 
 export const tableVisibleFieldsSelector = createSelector(

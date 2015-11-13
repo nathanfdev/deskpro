@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/ControlBar';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import { applySort, applyOrder } from '../../Actions/listActions';
+import { applySort, applyOrder, applyFilters } from '../../Actions/listActions';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import {
   currentViewModeSelector,
@@ -11,7 +11,8 @@ import {
   cardVisibleFieldsSelector,
   tableVisibleFieldsSelector,
   calendarVisibleFieldsSelector,
-  kanbanVisibleFieldsSelector
+  kanbanVisibleFieldsSelector,
+  listParamsFiltersSelector,
 } from '../../Selectors/list';
 import {
   toggleCardFieldVisibility,
@@ -27,7 +28,8 @@ import {
   cardVisibleFields: cardVisibleFieldsSelector(state),
   tableVisibleFields: tableVisibleFieldsSelector(state),
   kanbanVisibleFields: kanbanVisibleFieldsSelector(state),
-  calendarVisibleFields: calendarVisibleFieldsSelector(state)
+  calendarVisibleFields: calendarVisibleFieldsSelector(state),
+  listFilters: listParamsFiltersSelector(state)
 }))
 export class ControlBarContainer extends Component {
 
@@ -40,7 +42,8 @@ export class ControlBarContainer extends Component {
     cardVisibleFields: PropTypes.object.isRequired,
     tableVisibleFields: PropTypes.object.isRequired,
     kanbanVisibleFields: PropTypes.object.isRequired,
-    calendarVisibleFields: PropTypes.object.isRequired
+    calendarVisibleFields: PropTypes.object.isRequired,
+    listFilters: PropTypes.object.isRequired
   };
 
   render() {
@@ -60,6 +63,17 @@ export class ControlBarContainer extends Component {
 
         order: this.props.order,
         orderAction: applyOrder
+      },
+      filtering: {
+        filters: [
+          {label: 'Date Created', type: 'date', fromParam: 'created_from', toParam: 'created_to'},
+          {label: 'Labels', type: 'labels', param: 'label', modeParam: 'labels_mode', labels: [
+            'Aaa', 'Vvvvvv', 'Bbb', 'Cccc', 'Dd'
+          ]}
+        ],
+
+        state: this.props.listFilters,
+        setParamsAction: applyFilters
       },
       view: {
         options: {

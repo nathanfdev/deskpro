@@ -5,7 +5,8 @@ import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 const initialState = {
   listParams: {
-    filter: null
+    nav: null,
+    filters: {}
   },
   visibleFields: {
     [constants.VIEW_MODE_CARD]: [],
@@ -28,7 +29,8 @@ const toggleVisibleFields = (state, viewMode, field) => {
 };
 
 export default createReducer(initialState, {
-  [ListActions.setListParamsFilter]: setFullPayload('listParams.filter'),
+  [ListActions.setListParamsNav]: setFullPayload('listParams.nav'),
+  [ListActions.setListParamsFilters]: setFullPayload('listParams.filters'),
   [ListActions.toggleCardFieldVisibility]: (state, payload) => {
     return toggleVisibleFields(state, constants.VIEW_MODE_CARD, payload);
   },
