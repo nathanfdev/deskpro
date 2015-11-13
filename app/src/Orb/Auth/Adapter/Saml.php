@@ -239,7 +239,12 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
             );
         }
 
-        $user_info = array();
+        // start user_info as the $attrs from the saml response so that people can filter on them
+        if (is_array($attrs)) {
+            $user_info = $attrs;
+        } else {
+            $user_info = array();
+        }
 
         $user_info['email']      = Arrays::reachForFirstValueInKey($attrs, 'email');
         $user_info['first_name'] = Arrays::reachForFirstValueInKey($attrs, 'first_name');
