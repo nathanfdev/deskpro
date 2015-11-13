@@ -139,7 +139,7 @@
         <a href="#" class="ticket-owner-name">{{ line.person.display_name }}</a>
         <span class="ticket-owner-email">({{ line.person.primary_email_address }})</span>
         <span>opened this ticket</span>
-        <span class="ticket-actual-date">({{ line.datetime|date('m/d/Y') }})</span>
+        <span class="ticket-actual-date">({{ line.datetime|date('day') }})</span>
       </div>
     </div>
     {#<div class="item">#}
@@ -150,7 +150,7 @@
   {% elseif line.type == 'ticket_reopened' %}
     <div class="ticket-message">
       <div class="ticket-owner">
-        <div class="ticket-action-date">{{ line.datetime|date('full') }}</div>
+        <div class="ticket-action-date">{{ date_ago(line.datetime) }}</div>
         <span class="agent-avatar agent-avatar-mid" style="background-image: url({{ avatar_url(line.person, 36) }});"></span>
         <a href="#" class="ticket-owner-name">{{ line.person.display_name }}</a>
         <span class="ticket-owner-email">({{ line.person.primary_email_address }})</span>
@@ -165,7 +165,7 @@
   {% elseif line.type == 'ticket_closed' %}
     <div class="ticket-message">
       <div class="ticket-owner">
-        <div class="ticket-action-date">{{ line.datetime|date('full') }}</div>
+        <div class="ticket-action-date">{{ date_ago(line.datetime) }}</div>
         <span class="agent-avatar agent-avatar-mid" style="background-image: url({{ avatar_url(ticket.person, 36) }});"></span>
         <a href="#" class="ticket-owner-name">{{ line.person.display_name }}</a>
         <span class="ticket-owner-email">({{ line.person.primary_email_address }})</span>

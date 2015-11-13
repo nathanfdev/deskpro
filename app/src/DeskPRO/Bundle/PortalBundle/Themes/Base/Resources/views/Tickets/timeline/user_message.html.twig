@@ -1,7 +1,7 @@
 {% import 'Theme:Tickets:macros.html.twig' as macros %}
 <div class="ticket-message user-message">
   <div class="ticket-owner">
-    <div class="ticket-action-date">{{ msg.date_created|date('full') }}</div>
+    <div class="ticket-action-date">{{ date_ago(msg.date_created) }}</div>
     {{ macros.person_inline(msg.person) }}
     <span>wrote:</span>
   </div>
