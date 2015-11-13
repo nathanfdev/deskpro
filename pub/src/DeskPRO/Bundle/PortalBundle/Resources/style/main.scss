@@ -6857,9 +6857,11 @@ ul.big-button-collection {
       }
 
       &.active a {
-        color: #dcdcdc;
+        color: #615f5f;
+        i { color: #868282; }
+        background: #f2eded;
         border-bottom: 1px solid #e3e3e3;
-        &:hover { color: #3575bd; border-bottom: 1px solid #3575bd; }
+        &:hover { background: #fff; color: #3575bd; border-bottom: 1px solid #3575bd; }
       }
     }
 
