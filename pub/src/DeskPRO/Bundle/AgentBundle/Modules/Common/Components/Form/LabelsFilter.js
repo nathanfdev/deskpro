@@ -8,8 +8,8 @@ export class LabelsFilter extends Component {
     changeMode: PropTypes.func.isRequired,
     selectLabel: PropTypes.func.isRequired,
     deselectLabel: PropTypes.func.isRequired,
-    selectedLabels: PropTypes.object,
-    allLabels: PropTypes.array.isRequired,
+    selectedLabels: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    allLabels: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
     params: PropTypes.object
   };
 
@@ -100,7 +100,7 @@ export class AnyLabelMatchingMode extends Component {
 export class SelectedLabels extends Component {
 
   static propTypes = {
-    selectedLabels: PropTypes.object,
+    selectedLabels: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
     deselectLabel: PropTypes.func.isRequired
   };
 
@@ -135,7 +135,7 @@ export class LabelsCollection extends Component {
 
   static propTypes = {
     selectLabel: PropTypes.func.isRequired,
-    allLabels: PropTypes.array.isRequired
+    allLabels: PropTypes.oneOfType([PropTypes.array, PropTypes.object])
   };
 
   render() {

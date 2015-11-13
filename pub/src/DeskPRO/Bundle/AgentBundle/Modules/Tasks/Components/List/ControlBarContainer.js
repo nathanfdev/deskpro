@@ -57,7 +57,7 @@ export class ControlBarContainer extends Component {
 
   render() {
     const { sort, order, labels = [], listFilters, viewMode } = this.props;
-    const { cardVisibleFields, tableVisibleFields, kanbanVisibleFields, calendarVisibleFields} = this.props;
+    const { cardVisibleFields, tableVisibleFields, kanbanVisibleFields, calendarVisibleFields } = this.props;
 
     const config = {
       sorting: {
