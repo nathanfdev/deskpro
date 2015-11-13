@@ -41,17 +41,17 @@
 
   {#<div class="comment user-reply">#}
     {#{{ render_message(msg) }}#}
-    {% if msg.attachments|length > 0 %}
-      <h3>{{ phrase('portal.tickets.attachments') }}</h3>
-      {% for attachment in msg.attachments %}
-        <a href="{{ attachment.blob.downloadUrl }}" class="attachement">
-          {% if attachment.blob.is_image %}
-            <img src="{{ attachment.blob.thumbnailUrl }}" alt="{{ attachment.blob.filename }}">
-          {% endif %}
-          {{ attachment.blob.filename }}
-          <span class="attachement-size">{{ attachment.blob.filesize }} {{ phrase('portal.tickets.file_size_bytes') }}</span>
-        </a><br>
-      {% endfor %}
-    {% endif %}
+    {#{% if msg.attachments|length > 0 %}#}
+      {#<h3>{{ phrase('portal.tickets.attachments') }}</h3>#}
+      {#{% for attachment in msg.attachments %}#}
+        {#<a href="{{ attachment.blob.downloadUrl }}" class="attachement">#}
+          {#{% if attachment.blob.is_image %}#}
+            {#<img src="{{ attachment.blob.thumbnailUrl }}" alt="{{ attachment.blob.filename }}">#}
+          {#{% endif %}#}
+          {#{{ attachment.blob.filename }}#}
+          {#<span class="attachement-size">{{ attachment.blob.filesize }} {{ phrase('portal.tickets.file_size_bytes') }}</span>#}
+        {#</a><br>#}
+      {#{% endfor %}#}
+    {#{% endif %}#}
   {#</div>#}
 {#</div>#}

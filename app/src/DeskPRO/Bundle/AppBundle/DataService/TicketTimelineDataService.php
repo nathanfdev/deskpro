@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\AppBundle\DataService;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketLog;
 use DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line;
+use DeskPRO\Bundle\AppBundle\Ticket\Timeline\TicketTimeline;
 use DeskPRO\Component\Util\ListUtils;
 use DeskPRO\Component\Util\MapUtils;
 
@@ -71,21 +72,21 @@ class TicketTimelineDataService extends AbstractDataService
             $messages = array();
         }
 
-        $timeline = array();
+        $timeline = new TicketTimeline();
 
         foreach ($logs as $l) {
             switch ($l->action_type) {
                 case 'ticket_created':
-                    $timeline[] = new Line\TicketCreatedLine($l->person, $l->date_created);
+                    $timeline->addLine(new Line\TicketCreatedLine($l->person, $l->date_created));
                     break;
 
                 case 'message_created':
                     if (isset($messages[$l->id_after])) {
                         $m = $messages[$l->id_after];
                         if ($m->person->is_agent && $m->person !== $ticket->person) {
-                            $timeline[] = new Line\AgentMessageLine($m);
+                            $timeline->addLine(new Line\AgentMessageLine($m));
                         } else {
-                            $timeline[] = new Line\UserMessageLine($m);
+                            $timeline->addLine(new Line\UserMessageLine($m));
                         }
                     }
                     break;
@@ -95,9 +96,9 @@ class TicketTimelineDataService extends AbstractDataService
                     $new_type = $this->getStatusType($l->details['new_status']);
                     if ($old_type != $new_type && $old_type != 'hidden') {
                         if ($new_type == 'open') {
-                            $timeline[] = new Line\TicketReOpenedLine($l->person, $l->date_created);
+                            $timeline->addLine(new Line\TicketReOpenedLine($l->person, $l->date_created));
                         } else {
-                            $timeline[] = new Line\TicketClosedLine($l->person, $l->date_created);
+                            $timeline->addLine(new Line\TicketClosedLine($l->person, $l->date_created));
                         }
                     }
                     break;
