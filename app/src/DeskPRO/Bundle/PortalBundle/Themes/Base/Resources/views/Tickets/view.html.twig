@@ -11,30 +11,30 @@
 
         {% if ticket.isAwaitingUser() %}
           {# AWAITING USER #}
-        <div class="ticket-view-note-for-user agent-has-replied">
-          An agent is waiting for you to reply to a message. <a href="#ticket-reply-form">Click here to scroll down to the form.</a>
-        </div>
+          <div class="ticket-view-note-for-user agent-has-replied">
+            An agent is waiting for you to reply to a message. <a href="#ticket-reply-form">Click here to scroll down to the form.</a>
+          </div>
         {% elseif ticket.isAwaitingAgent() %}
           {# AWAITING AGENT #}
-        <div class="ticket-view-note-for-user">
+          <div class="ticket-view-note-for-user">
 
-          {% if ticket.date_last_user_reply and ticket.messages|length > 1 %}
-            <span class="note-for-user-blue">Your last message was sent {{ date_ago(ticket.date_last_user_reply) }}.</span>
-          {% else %}
-            <span class="note-for-user-blue">You created this ticket {{ date_ago(ticket.date_created) }}.</span>
-          {% endif %}
+            {% if ticket.date_last_user_reply and ticket.messages|length > 1 %}
+              <span class="note-for-user-blue">Your last message was recieved {{ date_ago(ticket.date_last_user_reply) }}.</span>
+            {% else %}
+              <span class="note-for-user-blue">You created this ticket {{ date_ago(ticket.date_created) }}.</span>
+            {% endif %}
 
-           We have received your message &amp; will send an email notification as soon as an agent has added a comment.
-        </div>
+            We have received your message &amp; will send an email notification as soon as an agent has added a comment.
+          </div>
         {% else %}
           {# RESOLVED #}
           <div class="ticket-view-note-for-user">
 
             {% if ticket.date_resolved %}
-            <span class="note-for-user-blue">This ticket was closed {{ date_ago(ticket.date_resolved) }}.</span>
-              {% endif %}
+              <span class="note-for-user-blue">This ticket was closed {{ date_ago(ticket.date_resolved) }}.</span>
+            {% endif %}
 
-              You can <a href="{{ path('portal_kb') }}">return to the knowledge base</a> or <a href="{{ path('portal_new_ticket') }}">open a new ticket</a>.
+            You can <a href="{{ path('portal_kb') }}">return to the knowledge base</a> or <a href="{{ path('portal_new_ticket') }}">open a new ticket</a>.
           </div>
         {% endif %}
 
@@ -42,11 +42,11 @@
           <!-- Sidebar with the agents in this ticket, ref etc -->
           <div class="ticket-view-sidebar-wrapper">
 
+            {% if can_edit %}
             <div class="ticket-view-sidebar">
-              {% if can_edit %}
                 <a href="{{ portal_path(ticket, 'resolve') }}" class="ticket-sidebar-close-ticket post-link">Close this ticket</a>
-              {% endif %}
             </div>
+            {% endif %}
 
             <div class="ticket-view-sidebar">
               <div class="ticket-sidebar-container ticket-sidebar-info">
@@ -128,16 +128,16 @@
               </div>
 
               {% if ticket.attachments|length > 0 %}
-              <div class="ticket-sidebar-container ticket-sidebar-media">
-                <h1>Media on this ticket:</h1>
-                <ul>
-                  {% for attachment in ticket.attachments %}
-                  <li>
-                      {{ macros.attachment_inline(attachment) }}
-                  </li>
-                  {% endfor %}
-                </ul>
-              </div>
+                <div class="ticket-sidebar-container ticket-sidebar-media">
+                  <h1>Media on this ticket:</h1>
+                  <ul>
+                    {% for attachment in ticket.attachments %}
+                      <li>
+                        {{ macros.attachment_inline(attachment) }}
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </div>
               {% endif %}
 
               <div class="ticket-sidebar-container ticket-sidebar-meta">
