@@ -179,6 +179,14 @@ class TasksSelectCriteria extends Criteria
                     $order = isset($this->filters['order']) ? $this->filters['order'] : 'asc';
 
                     switch ($value) {
+                        case 'list':
+                            $qb
+                                ->leftJoin('t.list', 'list')
+                                ->orderBy('list.title', $order)
+                                ->addOrderBy('t.display_order', 'ASC')
+                            ;
+
+                            break;
                         case 'project':
                             $qb->orderBy('p.title', $order);
                             break;
@@ -193,8 +201,8 @@ class TasksSelectCriteria extends Criteria
                                 ->leftJoin('ta.team', 'team')
                                 ->leftJoin('ta.department', 'department')
                                 ->orderBy('person.name', $order)
-                                ->orderBy('team.name', $order)
-                                ->orderBy('department.title', $order)
+                                ->addOrderBy('team.name', $order)
+                                ->addOrderBy('department.title', $order)
                             ;
                     }
 
@@ -275,6 +283,7 @@ class TasksSelectCriteria extends Criteria
             ->setAllowedValues('creator', $person_validator)
             ->setNormalizer('creator', $person_normalizer)
             ->setAllowedValues('sort', [
+                'list',
                 'project',
                 'date_due',
                 'date_done',
