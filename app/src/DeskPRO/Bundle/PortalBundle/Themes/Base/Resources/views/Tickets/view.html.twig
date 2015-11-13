@@ -56,9 +56,7 @@
                     <span class="sidebar-small-title">Assigned agent:</span>
                     <ul>
                       <li>
-                        <a href="#" class="sidebar-person">
-                          {{ macros.person_badge(ticket.agent) }}
-                        </a>
+                          {{ macros.person_sidebar(ticket.agent) }}
                       </li>
                     </ul>
                   </li>
@@ -67,9 +65,7 @@
                     <span class="sidebar-small-title">Ticket opened by:</span>
                     <ul>
                       <li>
-                        <a href="#" class="sidebar-person">
-                          {{ macros.person_badge(ticket.person) }}
-                        </a>
+                          {{ macros.person_sidebar(ticket.person) }}
                       </li>
                     </ul>
                   </li>
@@ -79,9 +75,7 @@
                     <ul>
                       {% for participant in ticket.participants %}
                         <li>
-                          <a href="{{ path('portal_tickets_cc_remove', { ticket_ref: ticket_public_id(ticket), cc_id: participant.id }) }}" class="sidebar-person post-link">
-                            {{ macros.person_badge(participant.person) }}
-                          </a>
+                            {{ macros.person_sidebar(participant.person, path('portal_tickets_cc_remove', { ticket_ref: ticket_public_id(ticket), cc_id: participant.id })) }}
                         </li>
                       {% endfor %}
                       <li>

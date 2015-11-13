@@ -1,13 +1,25 @@
-{% macro person_badge(person) %}
-    {% if person %}
-        <span class="agent-avatar agent-avatar-mid"
-              style="background-image: url({{ avatar_url(person, 36) }});">
-            <span class="remove-agent"></span>
+{% macro person_sidebar(person, avatar_link = false) %}
+    <div class="sidebar-person">
+        {% if avatar_link %}
+        <a href="{{ avatar_link }}" class="post-link">
+            {% endif %}
+            {% if person %}
+                <span class="agent-avatar agent-avatar-mid"
+                      style="background-image: url({{ avatar_url(person, 36) }});">
+            {% if avatar_link %}
+                <span class="remove-agent"></span>
+            {% endif %}
         </span>
-    {% else %}
-        <span class="agent-avatar agent-avatar-mid agent-avatar-blank" style=""></span>
-    {% endif %}
-    <span class="avatar-meta">
+            {% else %}
+                <span class="agent-avatar agent-avatar-mid agent-avatar-blank" style=""></span>
+            {% endif %}
+            {% if avatar_link %}
+        </a>
+        {% endif %}
+        {% if person %}
+        <a href="mailto:{{ person.primary_email_address }}">
+            {% endif %}
+            <span class="avatar-meta">
         {% if person %}
             <span class="primary">{{ person.display_name }}</span>
             <span class="secondary">{{ person.primary_email_address }}</span>
@@ -16,6 +28,10 @@
             <span class="secondary">An agent will be assigned</span>
         {% endif %}
     </span>
+            {% if person %}
+        </a>
+        {% endif %}
+    </div>
 {% endmacro %}
 {% macro person_inline(person, include_email = false) %}
     {% if person %}
