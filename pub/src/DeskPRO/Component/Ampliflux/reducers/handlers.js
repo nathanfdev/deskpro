@@ -25,6 +25,13 @@ function verifyActionError(actionObj) {
   throw action.payload;
 }
 
+function verifyScalar(value) {
+  if ((typeof value === 'string') || (value instanceof String) || (parseInt(Number(value)) == value)) {
+    return;
+  }
+  throw new TypeError(`Expected number or string, got ${value}`);
+}
+
 /**
  * Set a value on the state.
  *
@@ -41,7 +48,6 @@ export function setValue(statePropKey, value) {
     return state.setIn(statePropKey.split('.'), immutableValue);
   };
 }
-
 
 /**
  * Set a value on the state.
@@ -108,6 +114,29 @@ export function setPayload(statePropKey, payloadPropKey = '@', defaultValue = nu
     verifyIsMapish(immutableValue);
     return immutableValue;
   };
+}
+
+/**
+ * Toggle presense of scalar payload in a collection.
+ *
+ * @param {String} statePropKey The property to set on the state.
+ * @returns {Function}
+ */
+export function togglePayloadInCollection(statePropKey) {
+  return function(state, payload, action) {
+    verifyActionError(action);
+    verifyImmutable(state);
+    verifyScalar(payload);
+
+    const path = statePropKey.split('.');
+    let collection = state.getIn(path);
+    verifyImmutable(collection);
+    collection = collection.includes(payload)
+               ? collection.delete(collection.indexOf(payload))
+               : collection.push(payload);
+
+    return state.setIn(path, collection);
+  }
 }
 
 /**

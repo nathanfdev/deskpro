@@ -14,7 +14,8 @@ describe('Ampliflux actions handlers', () => {
         d: 2,
         e: 3
       }
-    }
+    },
+    collection: ['a', 'b']
   }));
 
   describe('setValue()', () => {
@@ -106,6 +107,20 @@ describe('Ampliflux actions handlers', () => {
       const valueInState = next.getIn(['b', 'c', 'd']);
       expect(Immutable.Iterable.isIterable(valueInState)).toBeTruthy();
       expect(next.getIn(['b', 'c', 'd', 'f'])).toEqual('test');
+    });
+  });
+
+  describe('togglePayloadInCollection()', () => {
+    it('should add value to collection', () => {
+      const next = handlers.togglePayloadInCollection('collection')(state, 'c');
+      expect(next.get('collection').size).toEqual(3);
+      expect(next.get('collection').includes('c')).toBeTruthy();
+    });
+
+    it('should remove value the collection if collection already contains it', () => {
+      const next = handlers.togglePayloadInCollection('collection')(state, 'a');
+      expect(next.get('collection').size).toEqual(1);
+      expect(next.get('collection').includes('b')).toBeTruthy();
     });
   });
 

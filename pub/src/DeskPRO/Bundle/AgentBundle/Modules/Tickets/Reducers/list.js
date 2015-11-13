@@ -1,5 +1,5 @@
 import { createReducer } from 'Ampliflux';
-import { setFullPayload, setValue, async } from 'Ampliflux/reducers/handlers';
+import { setFullPayload, setValue, async, togglePayloadInCollection } from 'Ampliflux/reducers/handlers';
 import { toggleAll, toggleSelected, toggleTableFieldVisibility, toggleCardFieldVisibility, setViewMode, unload }
   from '../Actions/listActions';
 
@@ -35,12 +35,7 @@ export default createReducer(initialState, {
 
   // Public ------------------------------------------------------------------------------------------------------------
 
-  [toggleSelected]: (state, id) => {
-    let selected = state.get('selected');
-    selected = selected.includes(id) ? selected.delete(selected.indexOf(id)) : selected.push(id);
-
-    return state.set('selected', selected);
-  },
+  [toggleSelected]: togglePayloadInCollection('selected'),
   [unload]: setValue('elements', []),
 
   // Public (control bar) ----------------------------------------------------------------------------------------------
@@ -55,17 +50,7 @@ export default createReducer(initialState, {
 
     return state.set('selected', selected);
   },
-  [toggleTableFieldVisibility]: (state, field) => {
-    let fields = state.get('tableVisibleFields');
-    fields = fields.includes(field) ? fields.delete(fields.indexOf(field)) : fields.push(field);
-
-    return state.set('tableVisibleFields', fields);
-  },
-  [toggleCardFieldVisibility]: (state, field) => {
-    let fields = state.get('cardVisibleFields');
-    fields = fields.includes(field) ? fields.delete(fields.indexOf(field)) : fields.push(field);
-
-    return state.set('cardVisibleFields', fields);
-  },
+  [toggleTableFieldVisibility]: togglePayloadInCollection('tableVisibleFields'),
+  [toggleCardFieldVisibility]: togglePayloadInCollection('cardVisibleFields'),
   [setViewMode]: setFullPayload('viewMode')
 });

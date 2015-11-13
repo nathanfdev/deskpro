@@ -1,5 +1,5 @@
 import { createReducer } from 'Ampliflux';
-import { async, setFullPayload } from 'Ampliflux/reducers/handlers';
+import { async, setFullPayload, togglePayloadInCollection } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/FeedbackListActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
@@ -28,7 +28,6 @@ export default createReducer(initialState, {
   [actions.loadList]: async({
     success: (state, payload) => state.set('elements', payload.data)
   }),
-
   [actions.toggleMassAction]: (state, select) => {
     let selected = state.get('selected');
     if (select) {
@@ -39,20 +38,10 @@ export default createReducer(initialState, {
 
     return state.set('selected', selected);
   },
-
-  [actions.toggleSelectedAction]: (state, payload) => {
-    let selected = state.get('selected');
-    selected = selected.includes(payload)
-      ? selected.delete(selected.indexOf(payload))
-      : selected.push(payload);
-
-    return state.set('selected', selected);
-  },
-
+  [actions.toggleSelectedAction]: togglePayloadInCollection('selected'),
   [actions.getDisplayFieldsFromPersonSetting]: async({
     success: (state, payload) =>
       state.setIn(['viewFields'], payload.data.value)
   }),
-
   [actions.setParams]: setFullPayload('currentListParams')
 });

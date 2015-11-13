@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import { ListItem, ListItemLabelSpinner } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 
 export class UrgencyList extends Component {
   static propTypes = {
