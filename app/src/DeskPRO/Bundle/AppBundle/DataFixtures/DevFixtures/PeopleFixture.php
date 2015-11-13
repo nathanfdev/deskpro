@@ -43,6 +43,7 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
 {
     private $num_people = 500;
     private $num_agents = 10;
+    private $num_orgs   = 75;
     private $num_labels = 100;
 
     /**
@@ -74,6 +75,11 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
      * @var array
      */
     private $people_ids = [];
+
+    /**
+     * @var array
+     */
+    private $org_ids = [];
 
     /**
      * {@inheritdoc}
@@ -108,6 +114,8 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
         $this->db      = $this->container->get('database_connection');
 
         $this->loadLabels();
+        $this->loadOrgs();
+
         $this->loadPeople($this->num_agents, true);
         $this->loadPeople($this->num_people, false);
 
@@ -146,6 +154,7 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
             $lname = $this->faker->lastName;
 
             $batch[] = [
+                'organization_id'    => $this->faker->randomElement($this->org_ids),
                 'is_contact'         => 1,
                 'is_user'            => 1,
                 'is_agent'           => (int) $is_agent,
@@ -192,6 +201,24 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
             SET people.primary_email_id = people_emails.id
             WHERE people.primary_email_id IS NULL
         ');
+    }
+
+    private function loadOrgs()
+    {
+        $batch = [];
+
+        for ($i = 0; $i < $this->num_orgs; $i++) {
+            $batch[] = [
+                'name' => $this->faker->company,
+                'summary' => $this->faker->realText($this->faker->numberBetween(10, 500)),
+                'importance' => 1,
+                'date_created' => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s')
+            ];
+        }
+
+        $this->db->batchInsert('organizations', $batch);
+
+        $this->org_ids = $this->db->fetchAllCol("SELECT id FROM organizations");
     }
 
     private function loadPeopleProps()
