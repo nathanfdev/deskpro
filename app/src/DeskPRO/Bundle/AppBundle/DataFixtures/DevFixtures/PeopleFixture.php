@@ -45,6 +45,7 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
     private $num_agents = 10;
     private $num_orgs   = 75;
     private $num_labels = 100;
+    private $max_notes  = 3;
 
     /**
      * @var \Faker\Generator
@@ -70,6 +71,11 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
      * @var string[]
      */
     private $labels;
+
+    /**
+     * @var array
+     */
+    private $agent_ids = [];
 
     /**
      * @var array
@@ -115,10 +121,12 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
 
         $this->loadLabels();
         $this->loadOrgs();
+        $this->loadOrgProps();
 
         $this->loadPeople($this->num_agents, true);
-        $this->loadPeople($this->num_people, false);
+        $this->agent_ids = $this->db->fetchAllCol("SELECT id FROM people");
 
+        $this->loadPeople($this->num_people, false);
         $this->people_ids = $this->db->fetchAllCol("SELECT id FROM people");
 
         $this->loadPeopleProps();
@@ -221,18 +229,53 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
         $this->org_ids = $this->db->fetchAllCol("SELECT id FROM organizations");
     }
 
+    private function loadOrgProps()
+    {
+        $notes_batch  = [];
+
+        foreach ($this->org_ids as $org_id) {
+            $num = $this->faker->numberBetween(1, $this->max_notes);
+            for ($i = 0; $i < $num; $i++) {
+                $notes_batch[] = [
+                    'organization_id' => $org_id,
+                    'agent_id'        => $this->faker->randomElement($this->agent_ids),
+                    'date_created'    => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                    'note'            => $this->faker->realText($this->faker->numberBetween(10, 500))
+                ];
+            }
+        }
+
+        if ($notes_batch) {
+            $this->db->batchInsert('organization_notes', $notes_batch);
+        }
+    }
+
     private function loadPeopleProps()
     {
         $labels_batch = [];
+        $notes_batch  = [];
 
         foreach ($this->people_ids as $people_id) {
             foreach ($this->faker->randomElements($this->labels, $this->faker->numberBetween(1, 5)) as $l) {
                 $labels_batch[] = array('person_id' => $people_id, 'label' => $l);
             }
+
+            $num = $this->faker->numberBetween(1, $this->max_notes);
+            for ($i = 0; $i < $num; $i++) {
+                $notes_batch[] = [
+                    'person_id'    => $people_id,
+                    'agent_id'     => $this->faker->randomElement($this->agent_ids),
+                    'date_created' => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                    'note'         => $this->faker->realText($this->faker->numberBetween(10, 500))
+                ];
+            }
         }
 
         if ($labels_batch) {
             $this->db->batchInsert('labels_people', $labels_batch, true);
+        }
+        if ($notes_batch) {
+            $this->db->batchInsert('people_notes', $notes_batch);
         }
     }
 }
