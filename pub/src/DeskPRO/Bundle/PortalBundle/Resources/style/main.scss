@@ -1661,6 +1661,10 @@ $search-btn-height: $search-height - 24;
     width: 255px;
     position: relative;
 
+    a {
+      text-decoration: none;
+    }
+
     @media screen and (max-width: 760px) {
       display: block;
       width: 100%;
