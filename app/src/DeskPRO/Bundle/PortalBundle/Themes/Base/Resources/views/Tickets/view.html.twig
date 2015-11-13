@@ -1,4 +1,5 @@
 {% extends 'Theme::layout.html.twig' %}
+{% import 'Theme:Tickets:macros.html.twig' as macros %}
 
 {% block inner_content %}
   <div class="breadcrumbs">
@@ -19,39 +20,26 @@
             </div>
 
             <div class="ticket-view-sidebar">
-
               <div class="ticket-sidebar-container ticket-sidebar-info">
                 <h1>Ticket info:</h1>
                 <ul class="major">
-                    <li>
-                      <span class="sidebar-small-title">Assigned agent:</span>
-                      <ul>
-                        <li>
-                          <a href="#" class="sidebar-person">
-                            <span class="agent-avatar agent-avatar-mid" style="background-image: url({{ avatar_url(ticket.agent, 36) }});"><span class="remove-agent"></span></span>
-                          <span class="avatar-meta">
-                            {% if ticket.agent %}
-                            <span class="primary">{{ ticket.agent.display_name }}</span>
-                            <span class="secondary">{{ ticket.agent.primary_email.email }}</span>
-                            {% else %}
-                              <span class="primary">Unassigned</span>
-                            {% endif %}
-                          </span>
-                          </a>
-                        </li>
-                      </ul>
-                    </li>
-
+                  <li>
+                    <span class="sidebar-small-title">Assigned agent:</span>
+                    <ul>
+                      <li>
+                        <a href="#" class="sidebar-person">
+                          {{ macros.person_badge(ticket.agent) }}
+                        </a>
+                      </li>
+                    </ul>
+                  </li>
 
                   <li>
                     <span class="sidebar-small-title">Ticket opened by:</span>
                     <ul>
                       <li>
                         <a href="#" class="sidebar-person">
-                          <span class="agent-avatar agent-avatar-mid" style="background-image: url({{ avatar_url(ticket.person, 36) }});"></span>
-                          <span class="avatar-meta">
-                            <span class="primary single">{{ ticket.person.primary_email_address }}</span>
-                          </span>
+                          {{ macros.person_badge(ticket.person) }}
                         </a>
                       </li>
                     </ul>
@@ -139,11 +127,7 @@
                 <ul>
                   {% for attachment in ticket.attachments %}
                   <li>
-                    <a href="{{ attachment.blob.downloadUrl }}">
-                      <i class="fa fa-file-archive-o"></i>
-                      <span class="file-name">{{ attachment.blob.filename }}</span>
-                      <span class="file-size">{{ attachment.blob.filesize }} {{ phrase('portal.tickets.file_size_bytes') }}</span>
-                    </a>
+                      {{ macros.attachment_inline(attachment) }}
                   </li>
                   {% endfor %}
                 </ul>

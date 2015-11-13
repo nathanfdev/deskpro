@@ -1,9 +1,8 @@
+{% import 'Theme:Tickets:macros.html.twig' as macros %}
 <div class="ticket-message agent-message">
   <div class="ticket-owner">
     <div class="ticket-action-date">{{ msg.date_created|date('full') }}</div>
-    <span class="agent-avatar agent-avatar-mid" style="background-image: url({{ avatar_url(msg.person, 36) }});"></span>
-    <a href="#" class="ticket-owner-name">{{ msg.person.display_name_user }}</a>
-    <span class="ticket-owner-email">({{ msg.person.primary_email_address }})</span>
+    {{ macros.person_inline(msg.person) }}
     <span>wrote:</span>
   </div>
 
@@ -15,12 +14,7 @@
         <ul>
           {% for attachment in msg.attachments %}
             <li>
-              <a href="{{ attachment.blob.downloadUrl }}">
-                {% if attachment.blob.is_image %}
-                  <img src="{{ attachment.blob.thumbnailUrl }}" alt="{{ attachment.blob.filename }}">
-                {% endif %}
-                <i class="fa fa-file-text-o"></i> {{ attachment.blob.filename }} <span class="attachement-size">{{ attachment.blob.filesize }} {{ phrase('portal.tickets.file_size_bytes') }}</span>
-              </a>
+              {{ macros.attachment_fill(attachment) }}
             </li>
           {% endfor %}
         </ul>

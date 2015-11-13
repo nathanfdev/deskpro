@@ -1,0 +1,48 @@
+{% macro person_badge(person) %}
+    {% if person %}
+        <span class="agent-avatar agent-avatar-mid"
+              style="background-image: url({{ avatar_url(person, 36) }});">
+            <span class="remove-agent"></span>
+        </span>
+    {% else %}
+        <span class="agent-avatar agent-avatar-blank" style=""></span>
+    {% endif %}
+    <span class="avatar-meta">
+        {% if person %}
+            <span class="primary">{{ person.display_name }}</span>
+            <span class="secondary">{{ person.primary_email_address }}</span>
+        {% else %}
+            <span class="primary">Unassigned</span>
+        {% endif %}
+    </span>
+{% endmacro %}
+{% macro person_inline(person) %}
+    {% if person %}
+    <span class="agent-avatar agent-avatar-mid" style="background-image: url({{ avatar_url(person, 36) }});"></span>
+    {% else %}
+        <span class="agent-avatar agent-avatar-blank" style=""></span>
+    {% endif %}
+    <a href="#" class="ticket-owner-name">{{ person.display_name_user }}</a>
+    <span class="ticket-owner-email">({{ person.primary_email_address }})</span>
+{% endmacro %}
+{% macro attachment_inline(ticket_attachment) %}
+    <a href="{{ ticket_attachment.blob.downloadUrl }}">
+        {# not for inline #}
+        {#{% if ticket_attachment.blob.is_image %}#}
+            {#<img src="{{ attachment.blob.thumbnailUrl }}" alt="{{ attachment.blob.filename }}">#}
+        {#{% endif %}#}
+        <i class="fa fa-file-archive-o"></i>
+        <span class="file-name">{{ ticket_attachment.blob.filename }}</span>
+        <span class="file-size">{{ ticket_attachment.blob.filesize }} {{ phrase('portal.tickets.file_size_bytes') }}</span>
+    </a>
+{% endmacro %}
+{% macro attachment_full(ticket_attachment) %}
+    <a href="{{ ticket_attachment.blob.downloadUrl }}">
+        {% if ticket_attachment.blob.is_image %}
+            <img src="{{ attachment.blob.thumbnailUrl }}" alt="{{ attachment.blob.filename }}">
+        {% endif %}
+        <i class="fa fa-file-archive-o"></i>
+        <span class="file-name">{{ ticket_attachment.blob.filename }}</span>
+        <span class="file-size">{{ ticket_attachment.blob.filesize }} {{ phrase('portal.tickets.file_size_bytes') }}</span>
+    </a>
+{% endmacro %}
