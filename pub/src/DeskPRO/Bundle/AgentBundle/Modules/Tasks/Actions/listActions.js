@@ -1,8 +1,8 @@
 import { createAction } from 'Ampliflux';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
-import * as Tasks from 'DeskPRO/Bundle/AgentBundle/Services/Api/Tasks';
 import { listParamsNavSelector, listParamsFiltersSelector, currentSortSelector, currentOrderSelector } from '../Selectors/list';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
+import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 
 export const setListParamsNav = createAction('TASKS_SET_LIST_PARAMS_NAV');
 export const setListParamsFilters = createAction('TASKS_SET_LIST_PARAMS_FILTERS');
@@ -27,7 +27,7 @@ export const loadList = createAction(
     };
 
     return DpApi
-      .sendGet('DP_API/tasks?' + Tasks.compileParams(params))
+      .sendGet('DP_API/tasks?' + compileParams(params))
       .success(response => resolve(response.data));
   })
 );
