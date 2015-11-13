@@ -37,7 +37,6 @@ use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\ApiBundle\Task\DisplayOrder;
 use DeskPRO\Bundle\AppBundle\DataService\Tasks\TasksSelectCriteria;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
-use DeskPRO\Bundle\AppBundle\Task\TaskFilterBuilder;
 use Doctrine\ORM\Query;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -616,22 +615,5 @@ class TasksController extends BaseController implements ClassResourceInterface
         }
 
         return 1;
-    }
-
-    /**
-     * Retrieve tasks from the entity manager according to the request parameters.
-     *
-     * @param Request $request
-     * @param $em
-     *
-     * @return Query
-     */
-    protected function filterTasks(Request $request, $entityManager)
-    {
-        $user = $this->getUser();
-
-        $filter = new TaskFilterBuilder($entityManager, $user);
-
-        return $filter->filterRequest($request->query);
     }
 }
