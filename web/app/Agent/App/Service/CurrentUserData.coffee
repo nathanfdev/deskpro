@@ -42,7 +42,7 @@ define ->
     loadData: ->
       return @httpPromise if @httpPromise
 
-      @httpPromise = @$http.get('DP_URL/agent/me/info.js').success( (data) ->
+      @httpPromise = @$http.get('DP_URL/old-agent/me/info.js').success( (data) ->
         @userInfo  = data.agent
         @userPerms = data.perms
       )

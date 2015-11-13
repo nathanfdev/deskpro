@@ -895,7 +895,7 @@ define([
 					$http({
 						method: 'GET',
 						params: { q: scope.searchQuery || '', sort: scope.elasticOrder },
-						url: 'DP_URL/agent/quick-search.json'
+						url: 'DP_URL/old-agent/quick-search.json'
 					}).success(function(data) {
 						scope.isMainLoading = false;
 
@@ -994,7 +994,7 @@ define([
 					$http({
 						method: 'GET',
 						params: { person_id: person.id },
-						url: 'DP_URL/agent/quick-search/get-person-tickets.json'
+						url: 'DP_URL/old-agent/quick-search/get-person-tickets.json'
 					}).success(function(data) {
 						if (data.results) {
 							person.tickets = data.results;
@@ -1100,7 +1100,7 @@ define([
 
 
 	AgentApp.service('LabelDefinition', ['$http', '$q', function($http, $q){
-		return new DeskPRO_Service_LabelDefinition($q, $http.get('/agent/labels/definitions'));
+		return new DeskPRO_Service_LabelDefinition($q, $http.get('/old-agent/labels/definitions'));
 	}]);
 	AgentApp.service('PersonService', DeskPRO_Service_Person);
 	AgentApp.service('AgentTeamService', DeskPRO_Service_AgentTeam);
