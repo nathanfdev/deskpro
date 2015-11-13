@@ -42,10 +42,7 @@ class TasksCountsDataService extends AbstractTasksDataService
     public function getAllCount()
     {
         $qb = $this->getBaseQueryBuilder();
-        $qb
-            ->select('COUNT(t.id)')
-            ->where($qb->expr()->eq('t.is_done', 0))
-        ;
+        $qb->select('COUNT(t.id)');
 
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
