@@ -26,5 +26,16 @@
             <a href="{{ saved.link }}">Go</a>
         </span>
     {% endfor %}
+
+    {% for ticket in tickets_awaiting_reply %}
+        {% set last_msg = ticket.getLastAgentMessage() %}
+        {# TODO: add a data-click-to-dismiss that links to a URL that will silence this alert for this session #}
+        <span class="alert">
+            <i class="fa fa-times click-to-dismiss"></i>
+            <a href="{{ portal_path(ticket) }}">
+                You have a new reply on your ticket "<span class="ticket-title">{{ ticket.subject }}</span>" by {{ last_msg.person.display_name_user }}: <span class="post-content">{{ last_msg.getMessagePreviewText(100) }}</span>
+            </a>
+        </span>
+    {% endfor %}
     </div>
 {% endif %}

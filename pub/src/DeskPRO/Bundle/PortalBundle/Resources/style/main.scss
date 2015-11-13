@@ -4163,6 +4163,11 @@ ul.kb-checkbox-extra {
     //}
   }
 
+  a {
+    text-decoration: none;
+    color: $text-color-darker;
+  }
+
   .alert-button {
     display: inline-block;
     background: #3f79ba;

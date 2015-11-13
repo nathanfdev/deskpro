@@ -181,14 +181,23 @@ class CommonController extends AbstractController
             }
         }
 
-        $should_display = count($saved_forms) || count($validation_alerts) || $lang_diff;
+        //
+        // TICKETS AWAITING REPLY
+        //
+        $tickets_awaiting_reply = [];
+        if (!$person instanceof PersonGuest) {
+            $tickets_awaiting_reply = $this->getRepo('DeskPRO:Ticket')->getWaitingForReplyForPerson($person, 3);
+        }
+
+        $should_display = count($saved_forms) || count($validation_alerts) || $lang_diff || count($tickets_awaiting_reply);
 
         return $this->renderThemeView('Theme:Common:alerts.html.twig', array(
-            'user'              => $user,
-            'saved_forms'       => $saved_forms,
-            'validation_alerts' => $validation_alerts,
-            'display_alerts'    => $should_display,
-            'lang_diff'         => $lang_diff,
+            'user'                   => $user,
+            'saved_forms'            => $saved_forms,
+            'validation_alerts'      => $validation_alerts,
+            'display_alerts'         => $should_display,
+            'lang_diff'              => $lang_diff,
+            'tickets_awaiting_reply' => $tickets_awaiting_reply,
         ));
     }
 
