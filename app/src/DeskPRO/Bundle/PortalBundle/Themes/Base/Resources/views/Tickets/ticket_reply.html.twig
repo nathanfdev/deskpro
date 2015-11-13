@@ -16,7 +16,7 @@
 
 {% if not ticket.resolved %}
 
-    <div class="ticket-reply">
+    <div class="ticket-reply" id="ticket-reply-form">
         <div class="ticket-reply-header">
             Add a reply or <a href="{{ portal_path(ticket, 'resolve') }}">close the ticket</a>
         </div>

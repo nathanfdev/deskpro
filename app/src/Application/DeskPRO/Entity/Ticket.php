@@ -2754,6 +2754,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         }
     }
 
+    public function isAwaitingUser()
+    {
+        return $this->status === self::STATUS_AWAITING_USER;
+    }
+
+    public function isAwaitingAgent()
+    {
+        return $this->status === self::STATUS_AWAITING_AGENT;
+    }
+
     /**
      * @return bool
      */

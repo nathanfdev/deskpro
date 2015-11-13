@@ -9,6 +9,18 @@
     <div class="container">
       <div class="column-full">
 
+        {% if ticket.isAwaitingUser() %}
+        <div class="ticket-view-note-for-user agent-has-replied">
+          An agent is waiting for you to reply to a message. <a href="#ticket-reply-form">Click here to scroll down to the form.</a>
+        </div>
+        {% elseif ticket.isAwaitingAgent() %}
+        <div class="ticket-view-note-for-user">
+          <span class="note-for-user-blue">You created this ticket {{ date_ago(ticket.date_created) }}.</span> We have received your message &amp; will send an email notification as soon as an agent has added a comment.
+        </div>
+        {% else %}
+          {# we could add a "this ticket is closed" message here, but we also do it at the bottom #}
+        {% endif %}
+
         <div class="ticket-view">
           <!-- Sidebar with the agents in this ticket, ref etc -->
           <div class="ticket-view-sidebar-wrapper">
@@ -156,7 +168,7 @@
 
           <!-- Ticket title -->
           <div class="header">
-            <h1>{{ ticket.subject }} <a href="#" class="ticket-status">{{ ticket_status(ticket) }}</a></h1>
+            <h1>{{ ticket.subject }}</h1>
           </div>
           <!-- All the messages -->
           <div class="ticket-messages">
