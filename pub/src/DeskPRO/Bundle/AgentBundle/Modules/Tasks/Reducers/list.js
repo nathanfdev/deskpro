@@ -1,5 +1,5 @@
 import { createReducer } from 'Ampliflux';
-import { setFullPayload, setValue, async } from 'Ampliflux/reducers/handlers';
+import { setFullPayload, setValue, async, togglePayloadInCollection } from 'Ampliflux/reducers/handlers';
 import * as ListActions from '../Actions/listActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
@@ -21,28 +21,13 @@ const initialState = {
   }
 };
 
-const toggleVisibleFields = (state, viewMode, field) => {
-  let fields = state.getIn(['visibleFields', viewMode]);
-  fields = fields.includes(field) ? fields.delete(fields.indexOf(field)) : fields.push(field);
-
-  return state.setIn(['visibleFields', viewMode], fields);
-};
-
 export default createReducer(initialState, {
   [ListActions.setListParamsNav]: setFullPayload('listParams.nav'),
   [ListActions.setListParamsFilters]: setFullPayload('listParams.filters'),
-  [ListActions.toggleCardFieldVisibility]: (state, payload) => {
-    return toggleVisibleFields(state, constants.VIEW_MODE_CARD, payload);
-  },
-  [ListActions.toggleTableFieldVisibility]: (state, payload) => {
-    return toggleVisibleFields(state, constants.VIEW_MODE_TABLE, payload);
-  },
-  [ListActions.toggleKanbanFieldVisibility]: (state, payload) => {
-    return toggleVisibleFields(state, constants.VIEW_MODE_KANBAN, payload);
-  },
-  [ListActions.toggleCalendarFieldVisibility]: (state, payload) => {
-    return toggleVisibleFields(state, constants.VIEW_MODE_CALENDAR, payload);
-  },
+  [ListActions.toggleCardFieldVisibility]: togglePayloadInCollection(`visibleFields.${constants.VIEW_MODE_CARD}`),
+  [ListActions.toggleTableFieldVisibility]: togglePayloadInCollection(`visibleFields.${constants.VIEW_MODE_TABLE}`),
+  [ListActions.toggleKanbanFieldVisibility]: togglePayloadInCollection(`visibleFields.${constants.VIEW_MODE_KANBAN}`),
+  [ListActions.toggleCalendarFieldVisibility]: togglePayloadInCollection(`visibleFields.${constants.VIEW_MODE_CALENDAR}`),
   [ListActions.loadList]: async({
     success: setFullPayload('elements'),
     start: setValue('async.done', false),
