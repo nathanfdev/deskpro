@@ -440,6 +440,7 @@ class TicketType extends AbstractType
         }
 
         $form_context->getForm()->add($field->getId(), 'deskpro_department', array(
+            'label'  => $this->phrase('portal.forms.label_department'),
             'person' => $form_context->getPerson(),
             'ticket' => $form_context->getTicket(),
         ));
@@ -451,8 +452,13 @@ class TicketType extends AbstractType
             'label'       => $this->phrase('portal.forms.label_subject'),
             'required'    => true,
             'constraints' => array(
-                new NotBlank(array('message' => 'This value is required')),
-                new Length(array('min'       => 5, 'minMessage' => 'The subject must be at least 5 characters in length.')),
+                new NotBlank([
+                    'message' => 'portal.forms.error_ticket_subject_required',
+                ]),
+                new Length([
+                    'min'        => 5,
+                    'minMessage' => 'portal.forms.error_ticket_subject_length',
+                ]),
             ),
         );
 
@@ -565,6 +571,7 @@ class TicketType extends AbstractType
         }
 
         $form_context->getForm()->add($field->getId(), 'deskpro_language', array(
+            'label'         => $this->phrase('portal.forms.label_language'),
             'property_path' => 'person.language',
             'view_context'  => $form_context->getViewContext(),
         ));
@@ -736,7 +743,9 @@ class TicketType extends AbstractType
             }
         }
 
-        $form_context->getForm()->add($field->getId(), 'deskpro_category', array());
+        $form_context->getForm()->add($field->getId(), 'deskpro_category', array(
+            'label' => $this->phrase('portal.forms.label_category'),
+        ));
     }
 
     private function addPriority(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
@@ -756,7 +765,9 @@ class TicketType extends AbstractType
             }
         }
 
-        $form_context->getForm()->add($field->getId(), 'deskpro_priority', array());
+        $form_context->getForm()->add($field->getId(), 'deskpro_priority', array(
+            'label' => $this->phrase('portal.forms.label_priority'),
+        ));
     }
 
     private function addWorkflow(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
@@ -776,7 +787,9 @@ class TicketType extends AbstractType
             }
         }
 
-        $form_context->getForm()->add($field->getId(), 'deskpro_workflow', array());
+        $form_context->getForm()->add($field->getId(), 'deskpro_workflow', array(
+            'label' => $this->phrase('portal.forms.label_workflow'),
+        ));
     }
 
     private function addProduct(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
@@ -829,6 +842,7 @@ class TicketType extends AbstractType
     private function addCc(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
         $form_context->getForm()->add($field->getId(), 'deskpro_cc', array(
+            'label'    => $this->phrase('portal.forms.label_cc'),
             'ticket'   => $form_context->getTicket(),
             'mapped'   => false,
             'required' => false,
@@ -858,7 +872,6 @@ class TicketType extends AbstractType
         } else {
             $label = $this->phrase('portal.forms.label_submit');
         }
-        // TODO: add translation on $label
         $form_context->getForm()->add('submit', 'submit', array(
             'label' => $label,
         ));

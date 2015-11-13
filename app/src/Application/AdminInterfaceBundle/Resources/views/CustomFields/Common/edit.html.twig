@@ -336,7 +336,8 @@
 								</div>
 								<div class="col-lg-9">
 									<div class="inner-group">
-										<label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.date.default_mode" value="0" /> Use date at time of form submission</label>
+										<label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.date.default_mode" value="0" /> No default value</label>
+										<label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.date.default_mode" value="current" /> Use date at time the user sees the form</label>
 										<label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.date.default_mode" value="date" /> Specific date</label>
 										<p ng-show="EditCtrl.form.date.default_mode == 'date'">
 											<input type="text" class="form-control"
@@ -446,7 +447,8 @@
                                 </div>
                                 <div class="col-lg-9">
                                     <div class="inner-group">
-                                        <label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.datetime.default_mode" value="0" /> Use date and time at the point of form submission</label>
+										<label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.datetime.default_mode" value="0" /> No default value</label>
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.datetime.default_mode" value="current" />  Use date at time the user sees the form</label>
                                         <label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.datetime.default_mode" value="date" /> Specific date/time</label>
 	                                    <input type="text" class="form-control" style="width: 50%;"
 	                                           ng-model="EditCtrl.form.datetime.default_value"

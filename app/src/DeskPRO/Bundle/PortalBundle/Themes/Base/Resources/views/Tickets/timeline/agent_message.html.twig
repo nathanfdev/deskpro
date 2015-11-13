@@ -1,21 +1,52 @@
-<div class="item reply">
-  <span class="badge" style="background: url({{ avatar_url(msg.person, 50) }}) no-repeat; background-size: cover"></span>
+<div class="ticket-message agent-message">
+  <div class="ticket-owner">
+    <div class="ticket-action-date">{{ msg.date_created|date('full') }}</div>
+    <span class="agent-avatar agent-avatar-mid" style="background-image: url({{ avatar_url(msg.person, 36) }});"></span>
+    <a href="#" class="ticket-owner-name">{{ msg.person.display_name_user }}</a>
+    <span class="ticket-owner-email">({{ msg.person.primary_email_address }})</span>
+    <span>wrote:</span>
+  </div>
 
-  <h1>{{ msg.person.display_name_user }} <span>wrote:</span></h1>
-
-  <div class="comment agent-reply">
+  <div class="ticket-message-content">
     {{ render_message(msg) }}
     {% if msg.attachments|length > 0 %}
-      <h3>{{ phrase('portal.tickets.attachments') }}</h3>
-      {% for attachment in msg.attachments %}
-        <a href="{{ attachment.blob.downloadUrl }}" class="attachement">
-          {% if attachment.blob.is_image %}
-            <img src="{{ attachment.blob.thumbnailUrl }}" alt="{{ attachment.blob.filename }}">
-          {% endif %}
-          {{ attachment.blob.filename }}
-          <span class="attachement-size">{{ attachment.blob.filesize }} {{ phrase('portal.tickets.file_size_bytes') }}</span>
-        </a><br>
-      {% endfor %}
+      <div class="ticket-message-files">
+        <h1>Attached with this message:</h1>
+        <ul>
+          {% for attachment in msg.attachments %}
+            <li>
+              <a href="{{ attachment.blob.downloadUrl }}">
+                {% if attachment.blob.is_image %}
+                  <img src="{{ attachment.blob.thumbnailUrl }}" alt="{{ attachment.blob.filename }}">
+                {% endif %}
+                <i class="fa fa-file-text-o"></i> {{ attachment.blob.filename }} <span class="attachement-size">{{ attachment.blob.filesize }} {{ phrase('portal.tickets.file_size_bytes') }}</span>
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
     {% endif %}
   </div>
 </div>
+
+{#<div class="item reply">#}
+  {#<span class="badge" style="background: url({{ avatar_url(msg.person, 50) }}) no-repeat; background-size: cover"></span>#}
+
+  {#<h1>{{ msg.person.display_name_user }} <span>wrote:</span></h1>#}
+
+  {#<div class="comment agent-reply">#}
+    {#{{ render_message(msg) }}#}
+    {#{% if msg.attachments|length > 0 %}#}
+      {#<h3>{{ phrase('portal.tickets.attachments') }}</h3>#}
+      {#{% for attachment in msg.attachments %}#}
+        {#<a href="{{ attachment.blob.downloadUrl }}" class="attachement">#}
+          {#{% if attachment.blob.is_image %}#}
+            {#<img src="{{ attachment.blob.thumbnailUrl }}" alt="{{ attachment.blob.filename }}">#}
+          {#{% endif %}#}
+          {#{{ attachment.blob.filename }}#}
+          {#<span class="attachement-size">{{ attachment.blob.filesize }} {{ phrase('portal.tickets.file_size_bytes') }}</span>#}
+        {#</a><br>#}
+      {#{% endfor %}#}
+    {#{% endif %}#}
+  {#</div>#}
+{#</div>#}

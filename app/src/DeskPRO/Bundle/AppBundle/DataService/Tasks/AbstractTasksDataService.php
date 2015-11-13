@@ -29,27 +29,48 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints;
+namespace DeskPRO\Bundle\AppBundle\DataService\Tasks;
 
-use Symfony\Component\Validator\Constraint;
+use Application\DeskPRO\Entity\Person;
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
-class ValidCaptcha extends Constraint
+/**
+ * Class TasksCountsDataService.
+ */
+class AbstractTasksDataService
 {
-    public $message = 'portal.forms.error_captcha';
+    /**
+     * @var EntityManager
+     */
+    protected $em;
 
     /**
-     * {@inheritdoc}
+     * @var Person
      */
-    public function getTargets()
+    protected $user;
+
+    /**
+     * @param EntityManager $em
+     * @param TokenStorage  $tokenStorage
+     */
+    public function __construct(EntityManager $em, TokenStorage $tokenStorage)
     {
-        return Constraint::PROPERTY_CONSTRAINT;
+        $this->em   = $em;
+        $this->user = $tokenStorage->getToken()->getUser();
     }
 
     /**
-     * {@inheritdoc}
+     * @return \Doctrine\ORM\QueryBuilder
      */
-    public function validatedBy()
+    protected function getBaseQueryBuilder()
     {
-        return 'deskpro.captcha';
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->from('App:Task', 't')
+            ->where($qb->expr()->eq('t.is_done', 0))
+        ;
+
+        return $qb;
     }
 }

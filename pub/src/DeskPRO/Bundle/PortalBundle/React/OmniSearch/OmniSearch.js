@@ -1,6 +1,7 @@
 import React from "react";
 import _ from "lodash";
 import $ from "jquery";
+import moment from "moment";
 import PortalHttp from "DeskPRO/Bundle/PortalBundle/Http/PortalHttp";
 import PortalUrlGenerator from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator";
 import OmniSearchResultSection from "DeskPRO/Bundle/PortalBundle/React/OmniSearch/OmniSearchResultSection";
@@ -21,7 +22,9 @@ export default class OmniSearch extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      doSpin: false,
+      doSpin: false, // a search is in progress
+      lastSearch: moment(), // the last time a user executed a search (typed something in)
+      userTyping: false,
       $input: $(props.input),
       $close: $(props.close),
       data: {
@@ -36,6 +39,7 @@ export default class OmniSearch extends React.Component {
     };
   }
   componentDidMount() {
+    // typing listener
     let last_val = null;
     let throttleChanges = _.throttle((e) => {
       // ensure we don't trigger a search if the actual search val hasn't changed
@@ -45,16 +49,44 @@ export default class OmniSearch extends React.Component {
       }
     }, 250);
     this.state.$input.on('keyup change', throttleChanges);
+
+    // close search button
     this.state.$close.click((e) => {
       e.preventDefault();
       this.state.$input.val('');
       this.doSearch({ q: '' }); // reset/close search
     });
+
+    // 1000ms pause before showing "no results"
+    this.interval = setInterval(() => {
+      // update the "userTyping" state when necessary - check every 100ms
+      const newUserTyping = moment().diff(this.state.lastSearch, 'milliseconds') < 1000;
+      if (this.state.userTyping != newUserTyping) {
+        this.setState({
+          userTyping: newUserTyping
+        });
+      }
+    }, 100); // every 100ms check if the user has not typed in a while or not
+
+    // clickaway handler
+    document.addEventListener("click", this.documentClickHandler.bind(this));
+  }
+  componentWillUnmount() {
+    window.clearInterval(this.interval);
+    document.removeEventListener("click", this.documentClickHandler.bind(this));
+  }
+  documentClickHandler(e) {
+    // if we are clicking inside the search results its ok. but otherwise, we want to clear/close the search.
+    if (!$(e.target).closest('.expanded-search-results').length && !$(e.target).closest('input.omnisearch').length) {
+      this.state.$input.val('');
+      this.doSearch({ q: '' }); // reset/close search
+    }
   }
   doSearch(query_modifications) {
     const last_query = this.state.search_query || {};
     const search_query = {...last_query, ...query_modifications};
     this.setState({
+      lastSearch: moment(),
       search_query
     });
 
@@ -80,6 +112,7 @@ export default class OmniSearch extends React.Component {
   }
   doResultsExist() {
     let grandTotal = 0;
+    console.log(this.state.data);
     _.forOwn(this.state.data, (type_results, type) => {
       if ("results" in type_results) {
         grandTotal += _.keys(type_results.results).length;
@@ -88,7 +121,7 @@ export default class OmniSearch extends React.Component {
 
     return grandTotal > 0;
   }
-	render() {
+  render() {
     let data = this.state.data;
 
     if (this.state.search_query.q.length < 3) {
@@ -96,12 +129,15 @@ export default class OmniSearch extends React.Component {
     }
 
     return (
-        <div className="expanded-search-results" style={{
-          display: this.state.search_query.q.length > 0 ? "block" : "none",
-          width: this.state.$input.closest('.search-form').width()
-        }}>
+        <div
+            ref="searchDropdown"
+            className="expanded-search-results"
+            style={{
+              display: this.state.search_query.q.length > 0 ? "block" : "none",
+              width: this.state.$input.closest('.search-form').width()
+            }}>
           {
-            this.state.doSpin ? (
+            this.state.doSpin || (!this.doResultsExist() && this.state.userTyping) ? (
               <div className="search-result-collection-loading"></div>
             ) :
               (this.doResultsExist() ?
@@ -142,7 +178,6 @@ export default class OmniSearch extends React.Component {
                 <div>No Results found :(</div>
               </div>))
           }
-
 
           <div className="search-results-footer">
             <a href={PortalUrlGenerator.path('/new-ticket')}>

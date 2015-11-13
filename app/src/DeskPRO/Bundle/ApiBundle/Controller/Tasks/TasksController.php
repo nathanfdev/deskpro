@@ -35,7 +35,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\ApiBundle\Task\DisplayOrder;
-use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use DeskPRO\Bundle\AppBundle\DataService\Tasks\TasksSelectCriteria;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Task\TaskFilterBuilder;
 use Doctrine\ORM\Query;
@@ -47,12 +47,17 @@ use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Pagerfanta\Adapter\ArrayAdapter;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\OptionsResolver\Exception\InvalidArgumentException;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class TasksController.
+ */
 class TasksController extends BaseController implements ClassResourceInterface
 {
     /**
@@ -86,31 +91,20 @@ class TasksController extends BaseController implements ClassResourceInterface
      */
     public function cgetAction(Request $request)
     {
-        $params        = $request->query->all();
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $datatype = $this->getDatatype($request);
-
-        $tasks = $this->filterTasks($request, $entityManager);
-
+        $dataService = $this->get('data.tasks');
+        $params      = $request->query->all();
+        try {
+            $criteria = TasksSelectCriteria::fromParameters($params, new OptionsResolver());
+        } catch (InvalidArgumentException $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        }
         $page  = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 
-        $pager = new Pagerfanta(new DoctrineORMAdapter($tasks));
-        $pager->setMaxPerPage($count);
-        $pager->setCurrentPage($page);
-
-        if (in_array('count_only', array_keys($params))) {
-            $numResults = $pager->getNbResults();
-
-            return View::create(
-                $this->createRepresentation(Count::fromValue($numResults)),
-                Response::HTTP_OK
-            );
-        }
+        $feedback = $dataService->selectTasks($criteria, $page, $count);
 
         return View::create(
-            $this->dataSerialize($pager, null, $datatype),
+            $this->dataSerialize($feedback),
             Response::HTTP_OK
         );
     }
@@ -128,7 +122,6 @@ class TasksController extends BaseController implements ClassResourceInterface
      * @Put("/tasks/mass", name="api_tasks_mass_put")
      *
      * @param Request $request
-     * @param $id
      *
      * @throws WrappedApiErrorException
      *

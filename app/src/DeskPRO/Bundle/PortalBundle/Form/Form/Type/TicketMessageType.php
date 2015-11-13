@@ -59,8 +59,8 @@ class TicketMessageType extends AbstractType
             $constraints = $options['message_constraints'];
         } else {
             $constraints = array(
-                new NotNull(),
-                new Length(array('min' => 10, 'minMessage' => 'Your message must be at least 10 characters in length.')),
+                new NotNull(array('message' => 'portal.forms.error_ticket_msg_required')),
+                new Length(array('min'      => 10, 'minMessage' => 'portal.forms.error_ticket_msg_length')),
             );
         }
 

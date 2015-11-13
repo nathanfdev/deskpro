@@ -29,27 +29,43 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints;
+namespace DeskPRO\Bundle\AppBundle\DataService\Tasks;
 
-use Symfony\Component\Validator\Constraint;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Pagerfanta;
 
-class ValidCaptcha extends Constraint
+/**
+ * Class TasksDataService.
+ */
+class TasksDataService extends AbstractTasksDataService
 {
-    public $message = 'portal.forms.error_captcha';
-
     /**
-     * {@inheritdoc}
+     * Select filtered list of tasks.
+     *
+     * @param Criteria $criteria
+     * @param int      $page
+     * @param int      $count
+     *
+     * @return Pagerfanta
      */
-    public function getTargets()
+    public function selectTasks(Criteria $criteria, $page, $count)
     {
-        return Constraint::PROPERTY_CONSTRAINT;
-    }
+        $qb = $this->getBaseQueryBuilder();
+        $qb
+            ->select('t')
+            ->leftJoin('t.assigned', 'ta')
+            ->leftJoin('t.project', 'p')
+            ->leftJoin('t.labels', 'l')
+            ->addGroupBy('t.id')
+        ;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function validatedBy()
-    {
-        return 'deskpro.captcha';
+        $criteria->applyFilters($qb);
+
+        $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
+        $pager->setMaxPerPage($count);
+        $pager->setCurrentPage($page);
+
+        return $pager;
     }
 }

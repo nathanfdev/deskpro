@@ -33,11 +33,11 @@ use Symfony\Component\Validator\Constraint;
 class DpDate extends Constraint
 {
     public $days_of_week = [0, 1, 2, 3, 4, 5, 6];
-    public $days_message = 'This is not a valid day of the week';
+    public $days_message = 'portal.forms.error_date_day';
     public $min_date     = null; // \DateTime
-    public $min_message  = 'This date is too far into the past.';
+    public $min_message  = 'portal.forms.error_date_min';
     public $max_date     = null; // \DateTime
-    public $max_message  = 'This date is too far into the future.';
+    public $max_message  = 'portal.forms.error_date_max';
 
     public function validatedBy()
     {

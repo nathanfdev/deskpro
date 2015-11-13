@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import { SectionHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { SectionHeader, Tab } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { NestedList } from './NestedList';
+import { FilterEditPopupContainer } from '../../FilterEditPopupContainer';
 
 export class FiltersTab extends Component {
   static propTypes = {

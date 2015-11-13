@@ -29,27 +29,38 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints;
+namespace DeskPRO\Bundle\AppBundle\DataService\Tasks;
 
-use Symfony\Component\Validator\Constraint;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
+use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ValidCaptcha extends Constraint
+/**
+ * Class TasksSelectCriteria.
+ */
+class TasksSelectCriteria extends Criteria
 {
-    public $message = 'portal.forms.error_captcha';
-
     /**
      * {@inheritdoc}
      */
-    public function getTargets()
+    public function applyFilters(QueryBuilder $qb)
     {
-        return Constraint::PROPERTY_CONSTRAINT;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function validatedBy()
+    public static function configureResolver(OptionsResolver $resolver, array $data = [])
     {
-        return 'deskpro.captcha';
+        $resolver->setDefined([
+            'assigned',
+            'assigned_team',
+            'assigned_department',
+            'creator',
+            'order_by',
+            'project',
+            'sort',
+            'labels',
+        ]);
     }
 }

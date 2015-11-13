@@ -129,13 +129,26 @@ export class PortalMultipleSelectBox extends React.Component {
   }
 
   renderSelect() {
-    const options = this.optionData.hierarchy.map((g) => {
-      return {
+    const map_option = (g) => {
+      const r = {
         id: g.id,
-        title: g.title
+        title: g.title,
+        children: g.children.map(map_option),
+        parent: g.parent,
+        depth: g.path.length
       };
-    });
 
+      if (r.children.length > 0) {
+        return [
+            r,
+            r.children
+        ]
+      } else {
+        return r;
+      }
+    };
+    let options = this.optionData.hierarchy.map(map_option);
+    options = _.flattenDeep(options);
     const values = this.actionStore.getValue().map((selected_id) => {
       return _.find(options, (opt) => {
         return _.parseInt(opt.id) === _.parseInt(selected_id);

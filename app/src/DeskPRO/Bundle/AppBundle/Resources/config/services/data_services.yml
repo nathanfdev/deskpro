@@ -128,7 +128,11 @@ services:
     class: DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketCountsDataService
     arguments: [@doctrine.orm.entity_manager, @term_engine.dbal_ticket_filters.engine, @security.token_storage]
 
-  data.tasks.task_counts:
+  data.tasks:
+    class: DeskPRO\Bundle\AppBundle\DataService\Tasks\TasksDataService
+    arguments: [@doctrine.orm.entity_manager, @security.token_storage]
+
+  data.task_counts:
     class: DeskPRO\Bundle\AppBundle\DataService\Tasks\TasksCountsDataService
     arguments: [@doctrine.orm.entity_manager, @security.token_storage]
 

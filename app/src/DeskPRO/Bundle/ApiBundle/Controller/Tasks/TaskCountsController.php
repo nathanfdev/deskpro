@@ -46,14 +46,14 @@ class TaskCountsController extends BaseController
      */
     public function getGroupCountsAction()
     {
-        $count_service = $this->get('data.tasks.task_counts');
+        $count_service = $this->get('data.task_counts');
         $counts        = [
-            'all'        => $count_service->getAllRemainingCount(),
-            'my'         => $count_service->getMyRemainingCount(),
-            'team'       => $count_service->getTeamRemainingCount(),
-            'department' => $count_service->getDepartmentRemainingCount(),
-            'delegated'  => $count_service->getDelegatedRemainingCount(),
-            'unassigned' => $count_service->getUnassignedRemainingCount(),
+            'all'        => $count_service->getAllCount(),
+            'my'         => $count_service->getMyCount(),
+            'team'       => $count_service->getTeamCount(),
+            'department' => $count_service->getDepartmentCount(),
+            'delegated'  => $count_service->getDelegatedCount(),
+            'unassigned' => $count_service->getUnassignedCount(),
         ];
 
         return View::create($this->createRepresentation($counts), Response::HTTP_OK);
@@ -64,7 +64,7 @@ class TaskCountsController extends BaseController
      */
     public function getAgentCountsAction()
     {
-        $counts = $this->get('data.tasks.task_counts')->getAgentsRemainingCounts();
+        $counts = $this->get('data.task_counts')->getAgentsCounts();
 
         return View::create($this->createRepresentation($counts), Response::HTTP_OK);
     }
@@ -74,7 +74,7 @@ class TaskCountsController extends BaseController
      */
     public function getProjectCountsAction()
     {
-        $counts = $this->get('data.tasks.task_counts')->getProjectsRemainingCounts();
+        $counts = $this->get('data.task_counts')->getProjectsCounts();
 
         return View::create($this->createRepresentation($counts), Response::HTTP_OK);
     }

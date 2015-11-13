@@ -31,44 +31,19 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataService\Tasks;
 
-use Application\DeskPRO\Entity\Person;
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
-
 /**
  * Class TasksCountsDataService.
  */
-class TasksCountsDataService
+class TasksCountsDataService extends AbstractTasksDataService
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
-
-    /**
-     * @var Person
-     */
-    private $user;
-
-    /**
-     * @param EntityManager $em
-     * @param TokenStorage  $tokenStorage
-     */
-    public function __construct(EntityManager $em, TokenStorage $tokenStorage)
-    {
-        $this->em   = $em;
-        $this->user = $tokenStorage->getToken()->getUser();
-    }
-
     /**
      * @return int
      */
-    public function getAllRemainingCount()
+    public function getAllCount()
     {
-        $qb = $this->em->createQueryBuilder();
+        $qb = $this->getBaseQueryBuilder();
         $qb
             ->select('COUNT(t.id)')
-            ->from('App:Task', 't')
             ->where($qb->expr()->eq('t.is_done', 0))
         ;
 
@@ -78,17 +53,13 @@ class TasksCountsDataService
     /**
      * @return int
      */
-    public function getMyRemainingCount()
+    public function getMyCount()
     {
-        $qb = $this->em->createQueryBuilder();
+        $qb = $this->getBaseQueryBuilder();
         $qb
             ->select('COUNT(t.id)')
-            ->from('App:Task', 't')
             ->join('t.assigned', 'ta')
-            ->where(
-                $qb->expr()->eq('ta.person', $this->user->getId()),
-                $qb->expr()->eq('t.is_done', 0)
-            )
+            ->andWhere($qb->expr()->eq('ta.person', $this->user->getId()))
         ;
 
         return (int) $qb->getQuery()->getSingleScalarResult();
@@ -97,7 +68,7 @@ class TasksCountsDataService
     /**
      * @return int
      */
-    public function getTeamRemainingCount()
+    public function getTeamCount()
     {
         $this->user->loadHelper('AgentTeam');
         $team_ids = $this->user->getAgentTeamIds();
@@ -105,15 +76,11 @@ class TasksCountsDataService
             return 0;
         }
 
-        $qb = $this->em->createQueryBuilder();
+        $qb = $this->getBaseQueryBuilder();
         $qb
             ->select('COUNT(t.id)')
-            ->from('App:Task', 't')
             ->join('t.assigned', 'ta')
-            ->where(
-                $qb->expr()->in('ta.team', $team_ids),
-                $qb->expr()->eq('t.is_done', 0)
-            )
+            ->andWhere($qb->expr()->in('ta.team', $team_ids))
         ;
 
         return (int) $qb->getQuery()->getSingleScalarResult();
@@ -122,7 +89,7 @@ class TasksCountsDataService
     /**
      * @return int
      */
-    public function getDepartmentRemainingCount()
+    public function getDepartmentCount()
     {
         $this->user->loadHelper('AgentPermissions');
         $department_ids = $this->user->getAllowedDepartments();
@@ -130,15 +97,11 @@ class TasksCountsDataService
             return 0;
         }
 
-        $qb = $this->em->createQueryBuilder();
+        $qb = $this->getBaseQueryBuilder();
         $qb
             ->select('COUNT(t.id)')
-            ->from('App:Task', 't')
             ->join('t.assigned', 'ta')
-            ->where(
-                $qb->expr()->in('ta.department', $department_ids),
-                $qb->expr()->eq('t.is_done', 0)
-            )
+            ->andWhere($qb->expr()->in('ta.department', $department_ids))
         ;
 
         return (int) $qb->getQuery()->getSingleScalarResult();
@@ -147,17 +110,15 @@ class TasksCountsDataService
     /**
      * @return int
      */
-    public function getDelegatedRemainingCount()
+    public function getDelegatedCount()
     {
-        $qb = $this->em->createQueryBuilder();
+        $qb = $this->getBaseQueryBuilder();
         $qb
             ->select('COUNT(t.id)')
-            ->from('App:Task', 't')
             ->join('t.assigned', 'ta')
-            ->where(
+            ->andWhere(
                 $qb->expr()->neq('ta.person', $this->user->getId()),
-                $qb->expr()->eq('t.creator', $this->user->getId()),
-                $qb->expr()->eq('t.is_done', 0)
+                $qb->expr()->eq('t.creator', $this->user->getId())
             )
         ;
 
@@ -167,18 +128,16 @@ class TasksCountsDataService
     /**
      * @return int
      */
-    public function getUnassignedRemainingCount()
+    public function getUnassignedCount()
     {
-        $qb = $this->em->createQueryBuilder();
+        $qb = $this->getBaseQueryBuilder();
         $qb
             ->select('COUNT(t.id)')
-            ->from('App:Task', 't')
             ->leftJoin('t.assigned', 'ta')
-            ->where(
+            ->andWhere(
                 $qb->expr()->isNull('ta.person'),
                 $qb->expr()->isNull('ta.team'),
-                $qb->expr()->isNull('ta.department'),
-                $qb->expr()->eq('t.is_done', 0)
+                $qb->expr()->isNull('ta.department')
             )
         ;
 
@@ -188,7 +147,7 @@ class TasksCountsDataService
     /**
      * @return array
      */
-    public function getAgentsRemainingCounts()
+    public function getAgentsCounts()
     {
         $qb = $this->em->createQueryBuilder();
         $qb
@@ -206,7 +165,7 @@ class TasksCountsDataService
     /**
      * @return array
      */
-    public function getProjectsRemainingCounts()
+    public function getProjectsCounts()
     {
         $qb = $this->em->createQueryBuilder();
         $qb
