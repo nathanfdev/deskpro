@@ -50,7 +50,7 @@ class TicketFieldManager extends FieldManager
     /**
      * Get a collection of all top-level (parent) fields.
      *
-     * @return array
+     * @return CustomDefAbstract[]
      */
     public function getFields()
     {

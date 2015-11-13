@@ -117,6 +117,34 @@ class DiscoveryController extends BaseController
             ],
         ];
 
+        // TODO is there a repository somewhere this comes from?
+        // See also DeskPRO/Bundle/AgentBundle/Modules/Tickets/Components/Nav/FilterEditPopupContainer.js
+        $group_fields = [
+            ['type' => 'department'],
+            ['type' => 'organization'],
+            ['type' => 'person'],
+            ['type' => 'language'],
+            ['type' => 'urgency'],
+            ['type' => 'agent'],
+            ['type' => 'agent_team'],
+            ['type' => 'waiting_time'],
+            ['type' => 'all_waiting_time'],
+            ['type' => 'open_time'],
+        ];
+
+        $group_fields = array_map(function($v) {
+            Arrays::unshiftAssoc($v, 'id', $v['type']);
+            return $v;
+        }, $group_fields);
+
+        foreach ($field_manager->getFields() as $f) {
+            $group_fields[] = [
+                'id' => 'ticket_field.' . $f->getId(),
+                'type' => 'ticket_field',
+                'field_id' => $f->getId()
+            ];
+        }
+
         $data['tickets'] = [
             'enabled'    => $me->hasPerm('agent_tickets.use'),
             'ref_code'   => $settings->get('core_tickets.use_ref'),
@@ -149,6 +177,8 @@ class DiscoveryController extends BaseController
             'timelog' => [
                 'enabled' => $settings->get('core_tickets.enable_timelog'),
             ],
+            'group_fields' => $group_fields,
+            'order_fields' => $group_fields,
         ];
 
         $data['chat'] = [
