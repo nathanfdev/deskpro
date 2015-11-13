@@ -37,6 +37,9 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
+/**
+ * @deprecated Use \DeskPRO\Bundle\AppBundle\DataService\Task\TaskSelectCriteria instead
+ */
 class TaskFilterBuilder
 {
     /**
