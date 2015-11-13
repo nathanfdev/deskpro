@@ -62,9 +62,6 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 
     var wrapper = $(this.wrapper).find('.upload-vcard-wrap');
 
-    console.log(wrapper);
-    //console.log(this.page);
-
     DeskPRO_Window.util.fileupload(wrapper, {
       page:             this.page,
       uploadTemplate:   $('.template-upload', wrapper),

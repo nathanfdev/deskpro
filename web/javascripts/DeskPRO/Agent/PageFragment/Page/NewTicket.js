@@ -1015,39 +1015,43 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			sb.close();
 			sb.reset();
 		});
-		searchbox.bind('personsearchboxclicknew personsearchenter', function(ev, term, sb) {
-			$.ajax({
-				type: 'GET',
-				url: BASE_URL + 'agent/tickets/new/get-person-row/0',
-				data: { 'email': term },
-				dataType: 'html',
-				context: this,
-				success: function(html) {
-					placeUserRow(html);
 
-					if (term.indexOf('@') !== -1) {
-						$('input.email', userfields).val(term);
-					} else {
-						$('input.name', userfields).val(term);
+		if (searchbox.find('.create-user').length) {
+			searchbox.bind('personsearchboxclicknew personsearchenter', function(ev, term, sb) {
+				$.ajax({
+					type: 'GET',
+					url: BASE_URL + 'agent/tickets/new/get-person-row/0',
+					data: { 'email': term },
+					dataType: 'html',
+					context: this,
+					success: function(html) {
+						console.info(html);
+						placeUserRow(html);
+
+						if (term.indexOf('@') !== -1) {
+							$('input.email', userfields).val(term);
+						} else {
+							$('input.name', userfields).val(term);
+						}
+
+						var personId = self.getEl('user_choice').find('.set_userid').val();
+
+						if (personId) {
+							self.clearErrorCode('person_id');
+							self.clearErrorCode('person_email_address');
+							self.clearErrorCode('person_no_user');
+
+							$('input.person-id', self.getEl('user_searchbox')).val(personId);
+							self.loadSnippetsViewer();
+						}
+
+						self.updateUi();
 					}
-
-					var personId = self.getEl('user_choice').find('.set_userid').val();
-
-					if (personId) {
-						self.clearErrorCode('person_id');
-						self.clearErrorCode('person_email_address');
-						self.clearErrorCode('person_no_user');
-
-						$('input.person-id', self.getEl('user_searchbox')).val(personId);
-						self.loadSnippetsViewer();
-					}
-
-					self.updateUi();
-				}
+				});
+				sb.close();
+				sb.reset();
 			});
-			sb.close();
-			sb.reset();
-		});
+		}
 	},
 
 	setUser: function(person_id, session_id) {
