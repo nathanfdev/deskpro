@@ -32,7 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\DataService\Content\Comment;
 
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\CriteriaInterface;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupableCriteriaInterface;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -90,14 +90,14 @@ class CommentsDataService
     }
 
     /**
-     * @param string   $class
-     * @param Criteria $criteria
-     * @param int      $page
-     * @param int      $count
+     * @param string            $class
+     * @param CriteriaInterface $criteria
+     * @param int               $page
+     * @param int               $count
      *
      * @return Pagerfanta
      */
-    public function selectComments($class, Criteria $criteria, $page, $count)
+    public function selectComments($class, CriteriaInterface $criteria, $page, $count)
     {
         $qb = $this->em->createQueryBuilder();
         $qb
