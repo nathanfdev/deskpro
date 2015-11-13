@@ -41,14 +41,14 @@ export const loadList = createAction(
       filterElements.page = params.page;
     }
     if (params.order_by) {
-      filterElements.order_by = params.order_by;
+      filterElements.sort = params.order_by;
     } else {
-      filterElements.order_by = 'due';
+      filterElements.sort = 'date_due';
     }
     if (params.sort) {
-      filterElements.sort = params.sort;
+      filterElements.order = params.sort;
     } else {
-      filterElements.sort = 'asc';
+      filterElements.order = 'asc';
     }
 
     return DpApi

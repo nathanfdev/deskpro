@@ -45,6 +45,97 @@ class TasksSelectCriteria extends Criteria
      */
     public function applyFilters(QueryBuilder $qb)
     {
+        foreach ($this->filters as $field => $value) {
+            switch ($field) {
+                case 'ids':
+                    $qb
+                        ->andWhere("t.id IN (:$field)")
+                        ->setParameter($field, $value)
+                    ;
+
+                    break;
+                case 'labels':
+                    $qb
+                        ->andWhere("l.label IN (:$field)")
+                        ->setParameter($field, $value)
+                    ;
+
+                    break;
+                case 'project':
+                    $qb
+                        ->andWhere("t.project = :$field")
+                        ->setParameter($field, $value)
+                    ;
+
+                    break;
+                case 'created_from':
+                    $qb
+                        ->andWhere("t.date_created >= DATE(:$field)")
+                        ->setParameter($field, $value)
+                    ;
+
+                    break;
+                case 'created_to':
+                    $qb
+                        ->andWhere("t.date_created <= DATE(:$field)")
+                        ->setParameter($field, $value)
+                    ;
+
+                    break;
+                case 'due_from':
+                    $qb
+                        ->andWhere("t.date_due >= DATE(:$field)")
+                        ->setParameter($field, $value)
+                    ;
+
+                    break;
+                case 'due_to':
+                    $qb
+                        ->andWhere("t.date_due <= DATE(:$field)")
+                        ->setParameter($field, $value)
+                    ;
+
+                    break;
+                case 'done_from':
+                    $qb
+                        ->andWhere("t.date_done >= DATE(:$field)")
+                        ->setParameter($field, $value)
+                    ;
+
+                    break;
+                case 'done_to':
+                    $qb
+                        ->andWhere("t.date_done <= DATE(:$field)")
+                        ->setParameter($field, $value)
+                    ;
+
+                    break;
+                case 'sort':
+                    $order = isset($this->filters['order']) ? $this->filters['order'] : 'asc';
+
+                    switch ($value) {
+                        case 'project':
+                            $qb->orderBy('p.title', $order);
+                            break;
+                        case 'date_due':
+                        case 'date_done':
+                        case 'date_created':
+                            $qb->orderBy("t.$value", $order);
+                            break;
+                        case 'assignee':
+                            $qb
+                                ->leftJoin('ta.person', 'person')
+                                ->leftJoin('ta.team', 'team')
+                                ->leftJoin('ta.department', 'department')
+                                ->orderBy('person.name', $order)
+                                ->orderBy('team.name', $order)
+                                ->orderBy('department.title', $order)
+                            ;
+                    }
+
+                    break;
+            }
+        }
     }
 
     /**
@@ -52,15 +143,44 @@ class TasksSelectCriteria extends Criteria
      */
     public static function configureResolver(OptionsResolver $resolver, array $data = [])
     {
-        $resolver->setDefined([
-            'assigned',
-            'assigned_team',
-            'assigned_department',
-            'creator',
-            'order_by',
-            'project',
-            'sort',
-            'labels',
-        ]);
+        $resolver
+            ->setDefined([
+                'ids',
+                'assigned',
+                'assigned_team',
+                'assigned_department',
+                'creator',
+                'project',
+                'sort',
+                'order',
+                'labels',
+                'created_from',
+                'created_to',
+                'due_from',
+                'due_to',
+                'done_from',
+                'done_to',
+            ])
+            ->setAllowedValues('assigned', function ($value) {
+                return is_null($value) || preg_match('/^(me|\d+)$/', $value);
+            })
+            ->setAllowedValues('assigned_team', function ($value) {
+                return is_null($value) || preg_match('/^(my|\d+)$/', $value);
+            })
+            ->setAllowedValues('assigned_department', function ($value) {
+                return is_null($value) || preg_match('/^(my|\d+)$/', $value);
+            })
+            ->setAllowedValues('sort', [
+                'project',
+                'date_due',
+                'date_done',
+                'date_created',
+                'assignee',
+            ])
+            ->setAllowedValues('order', [
+                'asc',
+                'desc',
+            ])
+        ;
     }
 }
