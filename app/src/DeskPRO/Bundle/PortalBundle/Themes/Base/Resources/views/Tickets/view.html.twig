@@ -15,7 +15,14 @@
         </div>
         {% elseif ticket.isAwaitingAgent() %}
         <div class="ticket-view-note-for-user">
-          <span class="note-for-user-blue">You created this ticket {{ date_ago(ticket.date_created) }}.</span> We have received your message &amp; will send an email notification as soon as an agent has added a comment.
+
+          {% if ticket.date_last_user_reply and ticket.messages|length > 1 %}
+            <span class="note-for-user-blue">Your last message was sent {{ date_ago(ticket.date_last_user_reply) }}.
+          {% else %}
+            <span class="note-for-user-blue">You created this ticket {{ date_ago(ticket.date_created) }}.
+          {% endif %}
+
+          </span> We have received your message &amp; will send an email notification as soon as an agent has added a comment.
         </div>
         {% else %}
           {# we could add a "this ticket is closed" message here, but we also do it at the bottom #}
