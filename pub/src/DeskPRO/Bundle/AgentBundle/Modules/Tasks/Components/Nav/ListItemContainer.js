@@ -2,13 +2,11 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { urlSanitize } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Service/routing';
 import { ListItemRouteContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
-import { currentNavSelector, currentSortSelector, currentOrderSelector } from '../../Selectors/list';
+import { currentNavSelector } from '../../Selectors/list';
 import { setListParamsFilter, loadList } from '../../Actions/listActions';
 
 @connect(state => ({
-  activeItemId: currentNavSelector(state),
-  sort: currentSortSelector(state),
-  order: currentOrderSelector(state)
+  activeItemId: currentNavSelector(state)
 }))
 export class ListItemContainer extends React.Component {
 
@@ -16,9 +14,7 @@ export class ListItemContainer extends React.Component {
     dispatch: PropTypes.func.isRequired,
     activeItemId: PropTypes.string,
     urlHash: PropTypes.string.isRequired,
-    listOptions: PropTypes.object.isRequired,
-    sort: PropTypes.string.isRequired,
-    order: PropTypes.string.isRequired
+    listOptions: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -34,14 +30,10 @@ export class ListItemContainer extends React.Component {
   }
 
   loadList = () => {
-    const { listOptions, sort, order, dispatch } = this.props;
+    const { listOptions, dispatch } = this.props;
 
     dispatch(setListParamsFilter(listOptions));
-    dispatch(loadList({
-      ...listOptions,
-      sort: sort,
-      order: order
-    }));
+    dispatch(loadList());
   };
 
   render() {
