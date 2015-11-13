@@ -120,13 +120,6 @@ class NewPerson
                 $person->organization          = $org;
                 $person->organization_position = $this->organization_position;
             }
-        } elseif ($this->new_organization) {
-            $org       = new Organization();
-            $org->name = $this->new_organization;
-            $this->_em->persist($org);
-
-            $person->organization          = $org;
-            $person->organization_position = $this->organization_position;
         }
 
         foreach ($this->usergroup_ids as $ug_id) {
@@ -148,6 +141,15 @@ class NewPerson
 
         $this->_em->flush();
         $this->_em->commit();
+
+        if ($this->new_organization && $this->_person_context->hasPerm('agent_org.create')) {
+            $org       = new Organization();
+            $org->name = $this->new_organization;
+            $this->_em->persist($org);
+
+            $person->organization          = $org;
+            $person->organization_position = $this->organization_position;
+        }
 
         $this->_person = $person;
     }

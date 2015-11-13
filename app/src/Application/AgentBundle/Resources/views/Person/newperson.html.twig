@@ -53,7 +53,6 @@
                     <div class="section title-section" id="{{ baseId }}_org_section">
                         <div class="content">
                             <h4>{{ phrase('agent.general.organization') }}</h4>
-
                             <div
                                     class="org-input"
                                     id="{{ baseId }}_org_searchbox"
@@ -64,6 +63,7 @@
                                     data-search-param="term"
                                     data-position-bound=".org-name"
                                     data-super-container=".page-new-content"
+                                    data-allow-new="{{ app.user.hasPerm('agent_org.create') ? 'true' : '' }}"
                                     >
                                 <input type="text" class="org-name fill" id="{{ baseId }}_org_name"
                                        name="newperson[new_organization]"
