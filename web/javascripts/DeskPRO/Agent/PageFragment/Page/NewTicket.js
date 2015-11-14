@@ -772,6 +772,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 						DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id);
 					}
 					this.closeSelf();
+					this.draft.reset();
 				}
 			}
 		});
@@ -1713,7 +1714,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		if (this.agentNotifyList) {
 			this.agentNotifyList.remove();
 		}
-    this.draft.reset();
 	},
 
   _initDraft: function() {
@@ -1742,8 +1742,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
         }
       },
       load: function() {
-
-				if (!this._key || !self.wrapper) return;
+				if (!this.key() || !self.wrapper) return;
 
         var $form = self.getEl('newticket')
           , $discard = $('#discard-draft-btn', $form)
