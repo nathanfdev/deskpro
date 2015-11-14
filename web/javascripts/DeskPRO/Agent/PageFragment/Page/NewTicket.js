@@ -145,7 +145,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		var messageEl = this.getEl('message');
 		var subjectEl = this.getEl('subject');
-		var sig = $.trim(self.getEl('signature_value').val());
 
 		messageEl.on('keydown', function() {
 			messageEl.addClass('editted');
@@ -482,12 +481,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
         self.shortcutReplySetAwaitingAgent();
 
       } else {
-
         self.isNote = false;
         $input.prop('checked', emailCheckboxState).parent().show();
         self.setReplyAsOptionName(replyAsState, true);
         self.addSignature();
-
       }
     });
 
@@ -1216,9 +1213,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		if (DeskPRO_Window.canUseAgentReplyRte()) {
 			var sig = this.getEl('signature_value_html').val() || "";
 			sig = sig.replace(/<div class="dp-signature-start">([\w\W]*)<\/div>/, '<p class="dp-signature-start">$1</p>');
-			if (sig && parseInt(this.getEl('parent_ticket_id').val()) === 0) {
-				textarea.val(($.browser.msie ? '<p></p><p></p>' : '<p><br></p><p><br></p>') + '\n\n' + sig);
-			}
 
 			DeskPRO_Window.initRteAgentReply(textarea, {
 				defaultIsHtml: true,
