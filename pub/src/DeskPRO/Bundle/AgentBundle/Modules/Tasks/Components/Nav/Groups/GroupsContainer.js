@@ -8,7 +8,7 @@ const groupsOptions = {
   department: {filter: {assigned_department: ['me']}, label: 'My Department Tasks'},
   delegated: {filter: {not_assigned_agent: ['me'], creator: 'me'}, label: 'My Delegated Tasks'},
   unassigned: {filter: {no_assignments: 1}, label: 'Unassigned Tasks'},
-  all: {filter: {done: 1}, label: 'All Tasks'}
+  all: {filter: {}, label: 'All Tasks'}
 };
 
 @connect(state => ({

@@ -42,10 +42,7 @@ class TasksCountsDataService extends AbstractTasksDataService
     public function getAllCount()
     {
         $qb = $this->getBaseQueryBuilder();
-        $qb
-            ->select('COUNT(t.id)')
-            ->andWhere($qb->expr()->eq('t.is_done', 1))
-        ;
+        $qb->select('COUNT(t.id)');
 
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
@@ -151,7 +148,7 @@ class TasksCountsDataService extends AbstractTasksDataService
     {
         $qb = $this->em->createQueryBuilder();
         $qb
-            ->select('p.id AS agent_id, COALESCE((COUNT(t.id) - SUM(t.is_done)), 0) AS tasks_count')
+            ->select('p.id AS agent_id, COALESCE(COUNT(t.id), 0) AS tasks_count')
             ->from('DeskPRO:Person', 'p')
             ->leftJoin('p.assigned_tasks', 'ta')
             ->leftJoin('ta.task', 't')
@@ -169,7 +166,7 @@ class TasksCountsDataService extends AbstractTasksDataService
     {
         $qb = $this->em->createQueryBuilder();
         $qb
-            ->select('p.id AS project_id, COALESCE((COUNT(t.id) - SUM(t.is_done)), 0) AS tasks_count')
+            ->select('p.id AS project_id, COALESCE(COUNT(t.id), 0) AS tasks_count')
             ->from('App:TaskProject', 'p')
             ->leftJoin('p.tasks', 't')
             ->groupBy('p.id')
