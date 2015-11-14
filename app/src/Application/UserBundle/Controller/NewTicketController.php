@@ -38,7 +38,9 @@ use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\DuplicateTicketException;
 use Application\UserBundle\Form\NewTicketType;
 use Orb\Util\Arrays;
+use Symfony\Bridge\Doctrine\Form\ChoiceList\EntityChoiceList;
 use Symfony\Component\Form\Exception\OutOfBoundsException;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class NewTicketController extends AbstractController
@@ -215,7 +217,20 @@ class NewTicketController extends AbstractController
         $manager                = $this->container->getCustomFieldManager();
         $new_custom_fields_form = $manager->createFormForOwner($ticket, $this->person);
         if ($org = $this->person->organization) {
-            $manager->merge($new_custom_fields_form, $manager->createFormForOwner($ticket, $org));
+            $orgForm = $manager->createFormForOwner($ticket, $org);
+            foreach ($orgForm->all() as $orgField) {
+                /** @var $orgField FormInterface */
+                if (!$orgField->has('value')) {
+                    continue;
+                }
+
+                /** @var EntityChoiceList $list */
+                $list = $orgField->get('value')->getConfig()->getOption('choice_list');
+                if (!$list->getChoices()) {
+                    $orgForm->remove($orgField->getName());
+                }
+            }
+            $manager->merge($new_custom_fields_form, $orgForm);
         }
 
         $captcha_html = '';
