@@ -2137,14 +2137,6 @@ class TicketController extends AbstractController
             }
         }
 
-        $custom_fields        = $field_manager->getDisplayArrayForObject($ticket);
-        $group                = $this->get('form.factory')->createNamedBuilder('custom_person_fields', 'form');
-        $custom_person_fields = $person_field_manager->getDisplayArrayForObject($ticket->person, $group);
-        $group                = $this->get('form.factory')->createNamedBuilder('custom_org_fields', 'form');
-        $custom_org_fields    = $ticket->person->organization
-            ? $org_field_manager->getDisplayArrayForObject($ticket->person->organization, $group)
-            : array();
-
         $new_custom_fields = $new_field_manager->createFormForOwner($ticket, $ticket->person, null, array('allow_edit' => true));
         if ($org = $ticket->person->organization) {
             $new_field_manager->merge($new_custom_fields, $new_field_manager->createFormForOwner($ticket, $org, null, array('allow_edit' => true)));
@@ -2161,34 +2153,7 @@ class TicketController extends AbstractController
         $was_rtl                = ($language && $language->is_rtl);
         $is_rtl                 = ($ticket->language && $ticket->language->is_rtl);
         $data['data']['reload'] = (($was_rtl && !$is_rtl) || (!$was_rtl && $is_rtl));
-
-        $ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
-
-        $open_problems = array();
-        $incidents     = 0;
-        if ($this->person->hasPerm('agent_problems.view')) {
-            $open_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(
-                array('is_open' => true),
-                array('title' => 'asc')
-            );
-
-            if ($problem = $ticket->problems->first()) {
-                $rep            = $this->em->getRepository('DeskPRO:Problem');
-                $problem_counts = $rep->getCountsForAgentInterface(array($problem), $this->person);
-                $incidents      = (int) @$problem_counts[$problem->id];
-            }
-        }
-
-        $data['holders'] = $this->renderView('AgentBundle:Ticket:view-page-display-holders.html.twig', array(
-            'ticket'               => $ticket,
-            'ticket_options'       => $ticket_options,
-            'custom_fields'        => $custom_fields,
-            'custom_person_fields' => $custom_person_fields,
-            'custom_org_fields'    => $custom_org_fields,
-            'new_custom_fields'    => $new_custom_fields->createView(),
-            'open_problems'        => $open_problems,
-            'incidents'            => $incidents,
-        ));
+        $data['holders']        = $this->getDataHolders($ticket);
 
         $client_messages = false;
         if ($this->in->getUint('client_messages_since')) {
@@ -2308,13 +2273,21 @@ class TicketController extends AbstractController
         return $this->createJsonResponse($data);
     }
 
-    public function getDataHoldersAction($ticket_id)
+    protected function getDataHolders(Entity\Ticket $ticket)
     {
-        $ticket = $this->getTicketOr404($ticket_id);
+        $field_manager        = $this->container->getTicketFieldManager();
+        $person_field_manager = $this->container->getPersonFieldManager();
+        $org_field_manager    = $this->container->getOrgFieldManager();
+        $new_field_manager    = $this->container->getCustomFieldManager();
+        $custom_fields        = $field_manager->getDisplayArrayForObject($ticket);
 
-        $field_manager     = $this->container->getTicketFieldManager();
-        $new_field_manager = $this->container->getCustomFieldManager();
-        $custom_fields     = $field_manager->getDisplayArrayForObject($ticket);
+        $group                = $this->get('form.factory')->createNamedBuilder('custom_person_fields', 'form');
+        $custom_person_fields = $person_field_manager->getDisplayArrayForObject($ticket->person, $group);
+        $group                = $this->get('form.factory')->createNamedBuilder('custom_org_fields', 'form');
+        $custom_org_fields    = $ticket->person->organization
+            ? $org_field_manager->getDisplayArrayForObject($ticket->person->organization, $group)
+            : array();
+
         $new_custom_fields = $new_field_manager->createFormForOwner(
             $ticket,
             $ticket->person,
@@ -2329,21 +2302,42 @@ class TicketController extends AbstractController
             );
         }
 
+        $ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
+
+        $open_problems = array();
+        $incidents     = 0;
+        if ($this->person->hasPerm('agent_problems.view')) {
+            $open_problems = $this->em->getRepository('DeskPRO:Problem')->findBy(
+                array('is_open' => true),
+                array('title' => 'asc')
+            );
+
+            if ($problem = $ticket->problems->first()) {
+                $rep            = $this->em->getRepository('DeskPRO:Problem');
+                $problem_counts = $rep->getCountsForAgentInterface(array($problem), $this->person);
+                $incidents      = (int) @$problem_counts[$problem->id];
+            }
+        }
+
+        return $this->renderView('AgentBundle:Ticket:view-page-display-holders.html.twig', array(
+            'ticket'               => $ticket,
+            'ticket_options'       => $ticket_options,
+            'custom_fields'        => $custom_fields,
+            'custom_person_fields' => $custom_person_fields,
+            'custom_org_fields'    => $custom_org_fields,
+            'new_custom_fields'    => $new_custom_fields->createView(),
+            'open_problems'        => $open_problems,
+            'incidents'            => $incidents,
+        ));
+    }
+
+    public function getDataHoldersAction($ticket_id)
+    {
+        $ticket                   = $this->getTicketOr404($ticket_id);
         $data                     = array('data' => array());
         $data['data']['can_view'] = $this->person->PermissionsManager->TicketChecker->canView($ticket);
-
-        $ticket_options  = App::getApi('tickets')->getTicketOptions($this->person);
-        $data['holders'] = $this->renderView(
-            'AgentBundle:Ticket:view-page-display-holders.html.twig',
-            array(
-                'ticket'            => $ticket,
-                'ticket_options'    => $ticket_options,
-                'custom_fields'     => $custom_fields,
-                'new_custom_fields' => $new_custom_fields->createView(),
-            )
-        );
-
-        $data['labels'] = $ticket->getLabelManager()->getLabelsArray();
+        $data['holders']          = $this->getDataHolders($ticket);
+        $data['labels']           = $ticket->getLabelManager()->getLabelsArray();
 
         return $this->createJsonResponse($data);
     }
