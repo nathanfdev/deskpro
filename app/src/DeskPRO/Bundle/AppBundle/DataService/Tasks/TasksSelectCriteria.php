@@ -245,6 +245,30 @@ class TasksSelectCriteria extends Criteria
             return $value;
         };
 
+        $team_normalizer = function (Options $options, $value) use ($me) {
+            $value = (array) $value;
+            foreach ($value as &$team) {
+                if ($team === 'me') {
+                    $me->loadHelper('AgentTeam');
+                    $team = $me->getAgentTeamIds();
+                }
+            }
+
+            return $value;
+        };
+
+        $department_normalizer = function (Options $options, $value) use ($me) {
+            $value = (array) $value;
+            foreach ($value as &$department) {
+                if ($department === 'me') {
+                    $me->loadHelper('AgentPermissions');
+                    $department = $me->getAllowedDepartments();
+                }
+            }
+
+            return $value;
+        };
+
         $resolver
             ->setDefined([
                 'ids',
@@ -268,20 +292,28 @@ class TasksSelectCriteria extends Criteria
                 'done_to',
                 'done',
             ])
+
             ->setAllowedValues('assigned_agent', $person_validator)
             ->setNormalizer('assigned_agent', $person_normalizer)
+
             ->setAllowedValues('not_assigned_agent', $person_validator)
             ->setNormalizer('not_assigned_agent', $person_normalizer)
+
             ->setAllowedValues('assigned_team', $person_validator)
-            ->setNormalizer('assigned_team', $person_normalizer)
+            ->setNormalizer('assigned_team', $team_normalizer)
+
             ->setAllowedValues('not_assigned_team', $person_validator)
-            ->setNormalizer('not_assigned_team', $person_normalizer)
+            ->setNormalizer('not_assigned_team', $team_normalizer)
+
             ->setAllowedValues('assigned_department', $person_validator)
-            ->setNormalizer('assigned_department', $person_normalizer)
+            ->setNormalizer('assigned_department', $department_normalizer)
+
             ->setAllowedValues('not_assigned_department', $person_validator)
-            ->setNormalizer('not_assigned_department', $person_normalizer)
+            ->setNormalizer('not_assigned_department', $department_normalizer)
+
             ->setAllowedValues('creator', $person_validator)
             ->setNormalizer('creator', $person_normalizer)
+
             ->setAllowedValues('sort', [
                 'list',
                 'project',
