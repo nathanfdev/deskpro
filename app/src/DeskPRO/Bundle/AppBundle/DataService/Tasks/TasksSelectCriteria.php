@@ -100,7 +100,7 @@ class TasksSelectCriteria extends Criteria
                     break;
                 case 'assigned_team':
                     $qb
-                        ->andWhere("ta.team NOT IN (:$field)")
+                        ->andWhere("ta.team IN (:$field)")
                         ->setParameter($field, $value)
                     ;
 
@@ -121,7 +121,7 @@ class TasksSelectCriteria extends Criteria
                     break;
                 case 'not_assigned_department':
                     $qb
-                        ->andWhere('ta.department IS NULL')
+                        ->andWhere("ta.department NOT IN (:$field)")
                         ->setParameter($field, $value)
                     ;
 
@@ -250,7 +250,7 @@ class TasksSelectCriteria extends Criteria
             foreach ($value as &$team) {
                 if ($team === 'me') {
                     $me->loadHelper('AgentTeam');
-                    $team = $me->getAgentTeamIds();
+                    $team = $me->getAgentTeamIds() ?: -1;
                 }
             }
 
@@ -262,7 +262,7 @@ class TasksSelectCriteria extends Criteria
             foreach ($value as &$department) {
                 if ($department === 'me') {
                     $me->loadHelper('AgentPermissions');
-                    $department = $me->getAllowedDepartments();
+                    $department = $me->getAllowedDepartments() ?: -1;
                 }
             }
 
