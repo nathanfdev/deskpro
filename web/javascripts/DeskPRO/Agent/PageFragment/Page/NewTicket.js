@@ -706,8 +706,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			return;
 		}
 
-		//this.draft.save();
-
 		this.getEl('action').val(this.getEl('reply_as_type').data('type'));
 		var formData = this.form.serializeArray();
     formData.push({
