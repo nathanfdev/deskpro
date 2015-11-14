@@ -749,8 +749,22 @@ class TicketController extends AbstractController
             ));
         }
 
+        $incidents     = 0;
+        $problem_id    = 0;
+        $problem_title = null;
+        if ($this->person->hasPerm('agent_problems.view')) {
+            if ($problem = $ticket->problems->first()) {
+                $rep            = $this->em->getRepository('DeskPRO:Problem');
+                $problem_counts = $rep->getCountsForAgentInterface(array($problem), $this->person);
+                $incidents      = (int) @$problem_counts[$problem->id];
+                $problem_id     = $problem->id;
+                $problem_title  = $problem->title;
+            }
+        }
+
         $ticket_messages_blockcache = array(
             'status'               => $ticket->getStatusCode(),
+            'language_id'          => $ticket->getLanguageId(),
             'urgency'              => $ticket->urgency,
             'department_id'        => $ticket->getDepartmentId(),
             'category_id'          => $ticket->getCategoryId(),
@@ -763,6 +777,10 @@ class TicketController extends AbstractController
             'is_locked'            => $ticket->hasLock(),
             'locked_by_agent_id'   => $ticket->hasLock() ? $ticket->locked_by_agent->getId() : null,
             'locked_by_agent_name' => $ticket->hasLock() ? $ticket->locked_by_agent->getDisplayName() : null,
+
+            'incidents'     => $incidents,
+            'problem_id'    => $problem_id,
+            'problem_title' => $problem_title,
 
             'ticket_messages_block'      => $ticket_messages_block,
             'ticket_messages'            => $ticket_messages,

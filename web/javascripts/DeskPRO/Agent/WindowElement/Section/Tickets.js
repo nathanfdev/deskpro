@@ -1,39 +1,5 @@
 Orb.createNamespace('DeskPRO.Agent.WindowElement.Section');
 
-// not implemented in jQuery 1.7
-parseHTML = function (data, context, keepScripts) {
-
-  if (typeof data !== "string") {
-    return [];
-  }
-  if (typeof context === "boolean") {
-    keepScripts = context;
-    context = false;
-  }
-  // document.implementation stops scripts or inline event handlers from
-  // being executed immediately
-  context = context || document.implementation.createHTMLDocument
-    ? document.implementation.createHTMLDocument("")
-    : document;
-
-  var parsed  = /^<([\w-]+)\s*\/?>(?:<\/\1>|)$/.exec(data),
-      scripts = !keepScripts && [];
-
-  // Single tag
-  if (parsed) {
-    return [context.createElement(parsed[1])];
-  }
-
-  parsed = jQuery.buildFragment([data], $(context), scripts);
-  parsed = parsed.fragment;
-
-  if (scripts && scripts.length) {
-    jQuery(scripts).remove();
-  }
-
-  return $(jQuery.merge([], parsed.childNodes));
-};
-
 DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 	Extends: DeskPRO.Agent.WindowElement.Section.AbstractSection,
 
@@ -410,7 +376,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
     var self      = this
       , $list     = $('.tickets_outline_problems', self.wrapper)
       , tpl       = $.trim($list.prev('script').text())
-      , $item     = parseHTML(tpl)
+      , $item     = $(tpl)
       , $nodata   = $list.children('.no-data:first')
       , $close    = $list.children('.closed-problems-list:first')
       , $counter  = $item.find('em.counter:first')

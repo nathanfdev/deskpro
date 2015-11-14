@@ -1259,6 +1259,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	doHandleTicketUpdate: function(data) {
+		console.info('do ticket update', data);
 		var self = this;
 		if (data.client_messages) {
 			DeskPRO_Window.getMessageChanneler().handleMessageAjax(data.client_messages);
@@ -1367,7 +1368,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			self.getEl('unlock_ticket').hide();
 		}
 
-		var props = ['status', 'department_id', 'category_id', 'product_id', 'workflow_id', 'priority_id', 'urgency', 'is_hold'];
+		var props = ['status', 'language_id', 'problem_id', 'department_id', 'category_id', 'product_id', 'workflow_id', 'priority_id', 'urgency', 'is_hold'];
 		if (data.via_reply) {
 			if (data.changed_agent) {
 				props.push('agent_id');
@@ -1387,7 +1388,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 
 			var prop = this.changeManager.getPropertyManager(propId);
-			prop.setIncomingValue(val);
+			prop.setIncomingValue(val, data);
 		}, this);
 
 		if (data.dupe_message) {

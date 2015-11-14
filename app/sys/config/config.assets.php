@@ -432,6 +432,7 @@ $CONFIG['agent_misc'] = array(
         'javascripts/DeskPRO/Agent/Ticket/Property/Flag.js',
         'javascripts/DeskPRO/Agent/Ticket/Property/Labels.js',
         'javascripts/DeskPRO/Agent/Ticket/Property/Hold.js',
+        'javascripts/DeskPRO/Agent/Ticket/Property/Problem.js',
 
         'javascripts/DeskPRO/Agent/TicketList/MassActions.js',
         'javascripts/DeskPRO/Agent/TicketList/ListView.js',
