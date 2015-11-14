@@ -4271,6 +4271,7 @@ class TicketController extends AbstractController
 
                         if ($problem && $problem->is_open) {
                             $ticket->associateProblem($problem);
+                            $this->em->flush();
                         }
                     }
                 }
