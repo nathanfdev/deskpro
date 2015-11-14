@@ -146,8 +146,10 @@ class ActionsFactory
                 $options['person_id']  = !empty($value['person_id']) && $value['person_id'] ? $value['person_id'] : null;
                 break;
             case 'reply_snippet':
-                $options['snippet_id'] = $value['snippet_id'];
-                $options['reply_pos']  = !empty($value['reply_pos']) ? $value['reply_pos'] : 'prepend';
+                if (@$value['snippet_id']) {
+                    $options['snippet_id'] = $value['snippet_id'];
+                    $options['reply_pos']  = !empty($value['reply_pos']) ? $value['reply_pos'] : 'prepend';
+                }
                 break;
             case 'add_participants':
                 $options['add_participants'] = !empty($value['add_participants']) && is_array($value['add_participants']) ? $value['add_participants'] : array();
