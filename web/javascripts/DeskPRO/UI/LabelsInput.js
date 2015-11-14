@@ -96,7 +96,7 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 			},
 			formatNoMatches: function() {
 				if (allowNew) {
-					return self.input.data('placeholder-new') || 'Press enter to create a new label.';
+					return options.placeholder || self.input.data('placeholder-new') || 'Press enter to create a new label.';
 				} else {
 					return 'You are not allowed to create new labels. Please use an existing label.'
 				}
