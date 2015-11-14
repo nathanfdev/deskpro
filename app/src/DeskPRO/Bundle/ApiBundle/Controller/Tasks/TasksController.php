@@ -90,20 +90,20 @@ class TasksController extends BaseController implements ClassResourceInterface
      */
     public function cgetAction(Request $request)
     {
-        $dataService = $this->get('data.tasks');
-        $params      = $request->query->all();
         try {
+            $params   = $request->query->all();
             $criteria = TasksSelectCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()]);
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
+
         $page  = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 
-        $feedback = $dataService->selectTasks($criteria, $page, $count);
+        $tasks = $this->get('data.tasks')->selectTasks($criteria, $page, $count);
 
         return View::create(
-            $this->dataSerialize($feedback),
+            $this->dataSerialize($tasks),
             Response::HTTP_OK
         );
     }

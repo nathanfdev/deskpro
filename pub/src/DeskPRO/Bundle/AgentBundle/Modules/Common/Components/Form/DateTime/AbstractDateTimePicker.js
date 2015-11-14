@@ -3,18 +3,18 @@ import ReactDOM from 'react-dom';
 import Picker from 'anytime';
 import Moment from 'moment';
 
-export class HiddenDateTimePicker extends React.Component {
+export class AbstractDateTimePicker extends React.Component {
 
   static propTypes = {
     value: PropTypes.string,
-    onChange: PropTypes.func.isRequired
+    onChange: PropTypes.func
   };
 
   componentDidMount() {
     const { value, onChange } = this.props;
     const initial = value ? Moment(value).format('MMMM D, YYYY, hh:mm') : null;
 
-    const picker = new Picker({
+    this.picker = new Picker({
       input: ReactDOM.findDOMNode(this.refs.input),
       anchor: ReactDOM.findDOMNode(this),
       format: 'MMMM D, YYYY, hh:mm',
@@ -23,23 +23,15 @@ export class HiddenDateTimePicker extends React.Component {
       timeSliders: true
     });
 
-    picker.render();
-    picker.show();
-
-    picker.on('change', (newDate) => {
+    this.picker.render();
+    this.picker.on('change', newDate => {
+      let newValue = null;
       if (Moment(newDate).isValid()) {
-        onChange(Moment(newDate).format('MMMM D, YYYY, hh:mm'));
-      } else {
-        onChange(null);
+        newValue = Moment(newDate).format();
+      }
+      if (onChange) {
+        onChange(newValue);
       }
     });
-  }
-
-  render() {
-    return (
-      <div>
-        <input type="hidden" ref="input" />
-      </div>
-    );
   }
 }

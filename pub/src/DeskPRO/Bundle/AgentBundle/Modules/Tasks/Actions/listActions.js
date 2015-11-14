@@ -5,7 +5,13 @@ import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Applicati
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 
 export const setListParamsNav = createAction('TASKS_SET_LIST_PARAMS_NAV');
-export const setListParamsFilters = createAction('TASKS_SET_LIST_PARAMS_FILTERS');
+export const setListParamsFilters = createAction(
+  'TASKS_SET_LIST_PARAMS_FILTERS',
+  overwrite => (dispatch, getState) => {
+    const current = listParamsFiltersSelector(getState()).toJS();
+    return {...current, ...overwrite};
+  }
+);
 
 export const toggleTableFieldVisibility = createAction('TASKS_TOGGLE_TABLE_FIELD_VISIBILITY');
 export const toggleCardFieldVisibility = createAction('TASKS_TOGGLE_CARD_FIELD_VISIBILITY');
