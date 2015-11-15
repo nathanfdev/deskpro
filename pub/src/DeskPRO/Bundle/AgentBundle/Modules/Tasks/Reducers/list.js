@@ -6,7 +6,9 @@ import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 const initialState = {
   listParams: {
     nav: null,
-    filters: {}
+    filters: {
+      label_mode: 'any'
+    }
   },
   visibleFields: {
     [constants.VIEW_MODE_CARD]: [],

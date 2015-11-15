@@ -190,13 +190,13 @@ export class FilteringMenuContainer extends Component {
     const mode = this.stateValue(modeParam);
     const isActive = Boolean(selected.length);
 
-    const selectLabel = (selectedLabel) => {
+    const selectLabel = selectedLabel => {
       if (selected.indexOf(selectedLabel) === -1) {
         selected.push(selectedLabel);
         dispatch(setParamsAction({[param]: selected}));
       }
     };
-    const deselectLabel = (deselectedLabel) => {
+    const deselectLabel = deselectedLabel => {
       if (selected.indexOf(deselectedLabel) !== -1) {
         selected.splice(selected.indexOf(deselectedLabel), 1);
         dispatch(setParamsAction({[param]: selected}));
@@ -215,7 +215,7 @@ export class FilteringMenuContainer extends Component {
         <Menu>
           <LabelsFilter
             params={{'get': () => mode}}
-            changeMode={(newMode) => dispatch(setParamsAction({[modeParam]: newMode}))}
+            changeMode={newMode => dispatch(setParamsAction({[modeParam]: newMode}))}
             allLabels={labels}
             selectedLabels={selected}
             selectLabel={selectLabel}

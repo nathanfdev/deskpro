@@ -67,7 +67,7 @@ export class AllLabelsMatchingMode extends Component {
 
   render() {
     const { changeMode } = this.props;
-    const classes = classNames('dpwd-radio-button', { 'active': this.props.mode !== 'any' });
+    const classes = classNames('dpwd-radio-button', { 'active': this.props.mode === 'all' });
     return (
       <span className={classes} onClick={changeMode.bind(this, 'all')}>
         <span className="dpwd-radio-button-disc"></span>
