@@ -98,7 +98,7 @@ class TasksController extends BaseController implements ClassResourceInterface
         }
 
         $page  = $request->query->get('page', 1);
-        $count = $request->query->get('count', 10);
+        $count = $request->query->get('count', 50);
 
         $tasks = $this->get('data.tasks')->selectTasks($criteria, $page, $count);
 

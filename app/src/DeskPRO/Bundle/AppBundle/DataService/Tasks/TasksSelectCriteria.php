@@ -298,7 +298,7 @@ class TasksSelectCriteria extends Criteria
                 'done_from',
                 'done_to',
                 'done',
-                'count', // todo
+                'count',
             ])
 
             ->setAllowedValues('assigned_agent', $person_validator)
