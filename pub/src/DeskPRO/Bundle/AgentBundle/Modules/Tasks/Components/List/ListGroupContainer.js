@@ -40,7 +40,7 @@ export class ListGroupContainer extends React.Component {
 
     switch (this.props.sort) {
       case 'project':
-        return task.get('project') || 'None';
+        return task.get('project') ? ['project', task.get('project')] : 'None';
       case 'date_due':
         return dateFilter(task.get('date_due'));
       case 'date_done':
@@ -49,17 +49,17 @@ export class ListGroupContainer extends React.Component {
         return dateFilter(task.get('date_created'));
       case 'assignee':
         if (task.get('agents').size) {
-          return task.get('agents').first();
+          return ['agent', task.get('agents').first()];
         } else if (task.get('teams').size) {
-          return task.get('teams').first();
+          return ['team', task.get('teams').first()];
         } else if (task.get('departments').size) {
-          task.get('departments').first();
+          return ['department', task.get('departments').first()];
         }
 
         return 'None';
       case 'list':
       default:
-        return task.get('list') || 'None';
+        return task.get('list') ? ['list', task.get('list')] : 'None';
     }
   }
 
