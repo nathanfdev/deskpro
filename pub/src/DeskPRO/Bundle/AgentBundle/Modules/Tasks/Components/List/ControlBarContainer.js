@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/ControlBar';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
@@ -34,7 +34,7 @@ import {
   listFilters: listParamsFiltersSelector(state),
   labels: allTaskLabelsSelector(state)
 }))
-export class ControlBarContainer extends Component {
+export class ControlBarContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
