@@ -1,6 +1,7 @@
-import React, {Component, PropTypes} from 'react';
+import React from 'react';
 
-export class QuickFilter extends Component {
+export class QuickFilter extends React.Component {
+
   render() {
     return (
       <div className="dpw-quick-filter">
