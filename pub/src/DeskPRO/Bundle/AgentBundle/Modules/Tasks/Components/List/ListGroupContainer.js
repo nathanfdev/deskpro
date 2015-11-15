@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { currentSortSelector } from '../../Selectors/list';
 import moment from 'moment';
+import Immutable from 'immutable';
 
 const dateGroups = [
   {title: 'This Hour', match: date => moment().isSame(date, 'hour')},
@@ -69,18 +70,18 @@ export class ListGroupContainer extends React.Component {
     const taskGroups = {};
 
     tasks.forEach(task => {
-      const groupKey = this.getGroupKey(task);
-      if (!taskGroups[groupKey]) {
-        taskGroups[groupKey] = [];
+      const groupTitle = this.getGroupKey(task);
+      if (!taskGroups[groupTitle]) {
+        taskGroups[groupTitle] = [];
       }
 
-      taskGroups[groupKey].push(task);
+      taskGroups[groupTitle].push(task);
     });
 
     return React.cloneElement(child, {
       ...childProps,
       tasks: tasks,
-      taskGroups: taskGroups
+      taskGroups: Immutable.fromJS(taskGroups)
     });
   }
 }
