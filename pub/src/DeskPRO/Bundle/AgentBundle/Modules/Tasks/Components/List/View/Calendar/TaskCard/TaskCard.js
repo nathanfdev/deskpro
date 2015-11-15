@@ -61,7 +61,7 @@ export class TaskCard extends BaseTaskCard {
           {this.state.isDone
             ? <ShowDetailsButton expanded={this.state.expanded}
                                  onToggleExpand={this.onToggleExpand}/>
-            : <AssignButton />
+            : <AssignButton task={this.props.task} />
           }
         </CardLine>
 

@@ -39,6 +39,7 @@ export class ProjectForm extends BaseForm {
 
     this.state = {
       ...localState,
+
       title: project.get('title'),
       showOnlySelected: false,
       agents: project.get('agents', emptyObject).toArray(),
