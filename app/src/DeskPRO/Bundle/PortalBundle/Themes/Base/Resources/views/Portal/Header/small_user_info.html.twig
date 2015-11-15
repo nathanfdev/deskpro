@@ -111,7 +111,7 @@
   {% endif %}
 {% else %}
   <li class="welcome">
-    <span class="agent-avatar agent-avatar-mini" style="background: url(https://secure.gravatar.com/avatar/79cfcfdf770db09a40fca15bb845fef1?&amp;s=36) no-repeat; background-size: cover;"></span>
+    <span class="agent-avatar agent-avatar-mini" style="background: url({{ avatar_url(user, 36) }}) no-repeat; background-size: cover;"></span>
     {{ phrase('portal.account.welcome-back') }} {{ app.user.first_name }}
 
     &middot;
@@ -122,7 +122,7 @@
       <a href="{{ path('portal_tickets') }}">{{ phrase('portal.general.nav-tickets') }} ({{ ticket_count }})</a>
     {% endif %}
 
-    {% if user.organization and user.organization_manager %}
+    {% if user.organization and user.organization_manager and ticket_count_org > 0 %}
       &middot;
       <a href="{{ path('portal_tickets', { type: 'organization' }) }}">{{ phrase('portal.general.nav-tickets-org') }} ({{ ticket_count_org }})</a>
     {% endif %}
