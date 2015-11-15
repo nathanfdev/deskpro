@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
 import Moment from 'moment';
-import { BaseTaskCard } from '../../../TaskCard/BaseTaskCard';
 import { Checkbox } from './Checkbox';
+import { BaseTaskCard, ProjectContainer } from '../../../TaskCard/index';
+import { Project } from './Project';
 
 export class TaskCard extends BaseTaskCard {
 
@@ -26,7 +27,11 @@ export class TaskCard extends BaseTaskCard {
           <Checkbox selected={this.state.selected} onToggle={this.onToggleSelect} />
           <a href="#">{task.get('title')}</a>
         </td>
-        <td>{task.get('project')}</td>
+        <td>
+          <ProjectContainer project={task.get('project')}>
+            <Project />
+          </ProjectContainer>
+        </td>
         <td>{task.get('date_due') ? Moment(task.get('date_due')).format('DD/MM/YY') : 'N/A'}</td>
         <td></td>
       </tr>

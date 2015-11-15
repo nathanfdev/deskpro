@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-export class Project extends React.Component {
+export class CardProject extends React.Component {
 
   static propTypes = {
     project: PropTypes.object
