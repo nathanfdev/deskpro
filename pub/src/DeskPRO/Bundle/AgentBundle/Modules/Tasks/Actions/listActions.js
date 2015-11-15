@@ -4,22 +4,23 @@ import { listParamsNavSelector, listParamsFiltersSelector, currentSortSelector, 
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 
-export const setListParamsNav = createAction('TASKS_SET_LIST_PARAMS_NAV');
+export const setListParamsNav = createAction('TASKS_LIST_SET_PARAMS_NAV');
 export const setListParamsFilters = createAction(
-  'TASKS_SET_LIST_PARAMS_FILTERS',
+  'TASKS_LIST_SET_PARAMS_FILTERS',
   overwrite => (dispatch, getState) => {
     const current = listParamsFiltersSelector(getState()).toJS();
     return {...current, ...overwrite};
   }
 );
 
-export const toggleTableFieldVisibility = createAction('TASKS_TOGGLE_TABLE_FIELD_VISIBILITY');
-export const toggleCardFieldVisibility = createAction('TASKS_TOGGLE_CARD_FIELD_VISIBILITY');
-export const toggleKanbanFieldVisibility = createAction('TASKS_TOGGLE_KANBAN_FIELD_VISIBILITY');
-export const toggleCalendarFieldVisibility = createAction('TASKS_TOGGLE_CALENDAR_FIELD_VISIBILITY');
+export const toggleTableFieldVisibility = createAction('TASKS_LIST_TOGGLE_TABLE_FIELD_VISIBILITY');
+export const toggleCardFieldVisibility = createAction('TASKS_LIST_TOGGLE_CARD_FIELD_VISIBILITY');
+export const toggleKanbanFieldVisibility = createAction('TASKS_LIST_TOGGLE_KANBAN_FIELD_VISIBILITY');
+export const toggleCalendarFieldVisibility = createAction('TASKS_LIST_TOGGLE_CALENDAR_FIELD_VISIBILITY');
 
+export const unload = createAction('TASKS_LIST_UNLOAD');
 export const loadList = createAction(
-  'TASKS_LIST_LOAD_TASK_LIST',
+  'TASKS_LIST_LOAD',
   () => (dispatch, getState) => new Promise(resolve => {
     const state = getState();
     const navParams = listParamsNavSelector(state).toJS();

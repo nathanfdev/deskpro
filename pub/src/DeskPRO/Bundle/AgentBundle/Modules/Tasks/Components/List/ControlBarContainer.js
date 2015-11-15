@@ -150,8 +150,6 @@ export class ControlBarContainer extends Component {
       }
     };
 
-    return (
-      <ControlBar {...config} />
-    );
+    return <ControlBar {...config} />;
   }
 }

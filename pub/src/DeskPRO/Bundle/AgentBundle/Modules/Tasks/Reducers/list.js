@@ -1,6 +1,6 @@
 import { createReducer } from 'Ampliflux';
 import { setFullPayload, setValue, async, togglePayloadInCollection } from 'Ampliflux/reducers/handlers';
-import * as ListActions from '../Actions/listActions';
+import * as actions from '../Actions/listActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 const initialState = {
@@ -22,13 +22,14 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
-  [ListActions.setListParamsNav]: setFullPayload('listParams.nav'),
-  [ListActions.setListParamsFilters]: setFullPayload('listParams.filters'),
-  [ListActions.toggleCardFieldVisibility]: togglePayloadInCollection(`visibleFields.${constants.VIEW_MODE_CARD}`),
-  [ListActions.toggleTableFieldVisibility]: togglePayloadInCollection(`visibleFields.${constants.VIEW_MODE_TABLE}`),
-  [ListActions.toggleKanbanFieldVisibility]: togglePayloadInCollection(`visibleFields.${constants.VIEW_MODE_KANBAN}`),
-  [ListActions.toggleCalendarFieldVisibility]: togglePayloadInCollection(`visibleFields.${constants.VIEW_MODE_CALENDAR}`),
-  [ListActions.loadList]: async({
+  [actions.setListParamsNav]: setFullPayload('listParams.nav'),
+  [actions.setListParamsFilters]: setFullPayload('listParams.filters'),
+  [actions.toggleCardFieldVisibility]: togglePayloadInCollection(`visibleFields.${constants.VIEW_MODE_CARD}`),
+  [actions.toggleTableFieldVisibility]: togglePayloadInCollection(`visibleFields.${constants.VIEW_MODE_TABLE}`),
+  [actions.toggleKanbanFieldVisibility]: togglePayloadInCollection(`visibleFields.${constants.VIEW_MODE_KANBAN}`),
+  [actions.toggleCalendarFieldVisibility]: togglePayloadInCollection(`visibleFields.${constants.VIEW_MODE_CALENDAR}`),
+  [actions.unload]: setValue('elements', []),
+  [actions.loadList]: async({
     success: setFullPayload('elements'),
     start: setValue('async.done', false),
     done: setValue('async.done', true)

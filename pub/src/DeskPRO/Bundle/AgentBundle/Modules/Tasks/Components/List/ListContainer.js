@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { List } from './List';
 import { currentViewModeSelector } from '../../Selectors/list';
+import { unload } from '../../Actions/listActions';
 
 @connect(state => ({
   tasks: state.Tasks.list.get('elements'),
@@ -11,9 +12,15 @@ import { currentViewModeSelector } from '../../Selectors/list';
 }))
 export class ListContainer extends React.Component {
 
+  static propTypes = {
+    dispatch: PropTypes.object.isRequired
+  };
+
+  componentWillUnmount() {
+    this.props.dispatch(unload());
+  }
+
   render() {
-    return (
-      <List {...this.props} />
-    );
+    return <List {...this.props} />;
   }
 }
