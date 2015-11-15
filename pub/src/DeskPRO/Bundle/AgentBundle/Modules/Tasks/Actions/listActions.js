@@ -23,7 +23,12 @@ export const loadList = createAction(
   'TASKS_LIST_LOAD',
   () => (dispatch, getState) => new Promise(resolve => {
     const state = getState();
-    const navParams = listParamsNavSelector(state).toJS();
+    const navState = listParamsNavSelector(state);
+    if (!navState) {
+      resolve({});
+    }
+
+    const navParams = navState.toJS();
     const filtersParams = listParamsFiltersSelector(state).toJS();
     const params = {
       ...navParams,
