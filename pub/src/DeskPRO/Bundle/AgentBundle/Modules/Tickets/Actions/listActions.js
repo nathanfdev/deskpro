@@ -23,7 +23,7 @@ export const toggleSelected = createAction('TICKETS_LIST_TOGGLE_SELECTED');
 export const unload = createAction('TICKETS_LIST_UNLOAD');
 export const applyListParams = createAction(
   'TICKETS_LIST_APPLY_LIST_PARAMS',
-    overwrite => (dispatch, getState) => {
+  overwrite => (dispatch, getState) => {
     const current = listParamsSelector(getState()).toJS();
     const params = {...current, ...overwrite};
     dispatch(setListParams(params));
