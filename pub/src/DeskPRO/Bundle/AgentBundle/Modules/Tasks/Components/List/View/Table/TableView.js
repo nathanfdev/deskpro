@@ -6,7 +6,7 @@ import { TaskCard } from './TaskCard/TaskCard';
 export class TableView extends React.Component {
 
   static propTypes = {
-    tasks: PropTypes.object.isRequired
+    taskGroups: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -26,6 +26,8 @@ export class TableView extends React.Component {
   };
 
   render() {
+    const { taskGroups = [] } = this.props;
+
     return (
       <div>
         <table cellSpacing="0" className="condensed-task-list">
@@ -33,9 +35,11 @@ export class TableView extends React.Component {
                   currentDirection={this.state.currentDirection}
                   onChange={this.onSort} />
 
-          <ListGroup title="Overdue">
-            {this.props.tasks.map((task, index) => <TaskCard task={task} key={index} />)}
-          </ListGroup>
+          {taskGroups.map((tasks, groupTitle) =>
+            <ListGroup title={groupTitle}>
+              {tasks.map((task, index) => <TaskCard task={task} key={index} />)}
+            </ListGroup>
+          )}
         </table>
       </div>
     );
