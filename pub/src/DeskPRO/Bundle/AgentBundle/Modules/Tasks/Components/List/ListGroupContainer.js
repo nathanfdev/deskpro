@@ -72,10 +72,13 @@ export class ListGroupContainer extends React.Component {
     tasks.forEach(task => {
       const groupTitle = this.getGroupKey(task);
       if (!taskGroups[groupTitle]) {
-        taskGroups[groupTitle] = [];
+        taskGroups[groupTitle] = {
+          title: groupTitle,
+          elements: []
+        };
       }
 
-      taskGroups[groupTitle].push(task);
+      taskGroups[groupTitle].elements.push(task);
     });
 
     return React.cloneElement(child, {

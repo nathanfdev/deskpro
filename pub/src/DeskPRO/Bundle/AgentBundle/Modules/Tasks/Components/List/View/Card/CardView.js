@@ -13,9 +13,9 @@ export class CardView extends React.Component {
 
     return (
       <div>
-        {taskGroups.map((tasks, groupTitle) =>
-          <ListGroup title={groupTitle}>
-            {tasks.map((task, index) => <TaskCard task={task} key={index} />)}
+        {taskGroups.map(taskGroup =>
+          <ListGroup title={taskGroup.get('title')}>
+            {taskGroup.get('elements').map((task, index) => <TaskCard task={task} key={index} />)}
           </ListGroup>
         )}
       </div>

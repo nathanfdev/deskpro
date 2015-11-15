@@ -1,9 +1,10 @@
 import React, { PropTypes } from 'react';
+import { ListGroupTitleContainer } from '../ListGroupTitleContainer';
 
 export class ListGroup extends React.Component {
 
   static propTypes = {
-    title: PropTypes.string,
+    title: PropTypes.any,
     children: PropTypes.node
   };
 
@@ -12,7 +13,10 @@ export class ListGroup extends React.Component {
 
     return (
       <div className="list">
-        <h1 className="kanban-list-header">{title}</h1>
+        <h1 className="kanban-list-header">
+          <ListGroupTitleContainer title={title} />
+        </h1>
+
         {children}
       </div>
     );
