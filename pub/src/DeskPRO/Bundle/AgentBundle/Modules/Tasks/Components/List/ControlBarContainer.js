@@ -104,7 +104,7 @@ export class ControlBarContainer extends Component {
             label: 'Labels',
             type: 'labels',
             param: 'label',
-            modeParam: 'labels_mode',
+            modeParam: 'label_mode',
             labels: labels.map(label => label.get('label'))
           }
         ],

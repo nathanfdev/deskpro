@@ -61,6 +61,10 @@ class TasksSelectCriteria extends Criteria
                         ->setParameter($field, $value)
                     ;
 
+                    if (isset($this->filters['label_mode']) && $this->filters['label_mode'] === 'all') {
+                        $qb->having(sprintf('COUNT(l.label) >= %d', count($value)));
+                    }
+
                     break;
                 case 'project':
                     $qb
@@ -204,6 +208,8 @@ class TasksSelectCriteria extends Criteria
                                 ->addOrderBy('team.name', $order)
                                 ->addOrderBy('department.title', $order)
                             ;
+
+                            break;
                     }
 
                     break;
@@ -284,6 +290,7 @@ class TasksSelectCriteria extends Criteria
                 'sort',
                 'order',
                 'label',
+                'label_mode',
                 'created_from',
                 'created_to',
                 'due_from',
@@ -314,6 +321,7 @@ class TasksSelectCriteria extends Criteria
             ->setAllowedValues('creator', $person_validator)
             ->setNormalizer('creator', $person_normalizer)
 
+            ->setAllowedValues('label_mode', ['any', 'all'])
             ->setAllowedValues('done', ['done', 'undone'])
             ->setAllowedValues('sort', [
                 'list',
