@@ -30,6 +30,30 @@ if impersonation is OFF "impersonator" is the agent
         </div>
         {% endif %}
 
+        <select id="agent_bar_brand_select" name="brand" style="width: 20%; position: absolute; top: 15px;">
+        {% for brand in brands %}
+        <option value="{{ brand['id'] }}"{% if brand['id'] == active_brand_id %} selected="selected"{% endif %}>{{ brand['name'] }} ({{ brand['theme_id'] }})</option>
+        {% endfor %}
+        </select>
+
+        <script>
+            /**
+             * TODO: remove this when we go for launch. I'm sure we'll change it to something else for admins before then.
+             */
+            var agent_brand_select = document.getElementById('agent_bar_brand_select');
+            agent_brand_select.addEventListener('change', function() {
+                var path = window.location.pathname;
+                var re = /\/brand-\d/;
+                var new_brand = '/brand-' + agent_brand_select.value;
+                if (path.search(re) >= 0) {
+                    path = path.replace(re, new_brand);
+                } else {
+                    path = new_brand + path;
+                }
+                console.log('redirecting to: ' + path);
+                window.location = path;
+            });
+        </script>
 
         <div class="datb-interface-switcher">
             <span>{{ phrase('portal.general.switch_interface') }}:</span>
