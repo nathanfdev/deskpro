@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import * as AppActions from '../../../Application/Actions/AppActions';
+import * as AppActions from '../../../Application/Actions/appActions';
 import { connect } from 'react-redux';
 import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Scrollable';
 

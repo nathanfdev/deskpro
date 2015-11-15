@@ -5,15 +5,19 @@ import { TaskCard } from './TaskCard/TaskCard';
 export class CardView extends React.Component {
 
   static propTypes = {
-    tasks: PropTypes.object.isRequired
+    taskGroups: PropTypes.object
   };
 
   render() {
+    const { taskGroups = [] } = this.props;
+
     return (
       <div>
-        <ListGroup title="Overdue">
-          {this.props.tasks.map((task, index) => <TaskCard task={task} key={index} />)}
-        </ListGroup>
+        {taskGroups.map(taskGroup =>
+          <ListGroup title={taskGroup.get('title')}>
+            {taskGroup.get('elements').map((task, index) => <TaskCard task={task} key={index} />)}
+          </ListGroup>
+        )}
       </div>
     );
   }

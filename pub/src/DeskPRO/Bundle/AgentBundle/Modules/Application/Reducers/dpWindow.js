@@ -1,6 +1,7 @@
-import * as actions from '../Actions/AppActions';
+import * as actions from '../Actions/appActions';
 import { createReducer } from 'Ampliflux';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import { setFullPayload, setValue } from 'Ampliflux/reducers/handlers';
 import jQuery from 'jquery';
 
 const initialState = {
@@ -29,7 +30,10 @@ function triggerDpLayoutResize() {
 
 export default createReducer(initialState, {
   [actions.setActiveApp]: (state, payload) => {
-    return state.merge({activeAppId: payload, expandedSwitcher: false});
+    return state.merge({
+      activeAppId: payload,
+      expandedSwitcher: false
+    });
   },
   [actions.collapseNav]: state => {
     triggerDpLayoutResize();
@@ -39,24 +43,16 @@ export default createReducer(initialState, {
     triggerDpLayoutResize();
     return state.set('collapseNav', false);
   },
-  [actions.expandSwitcher]: state => {
-    return state.set('expandedSwitcher', true);
-  },
-  [actions.collapseSwitcher]: state => {
-    return state.set('expandedSwitcher', false);
-  },
-  [actions.toggleView]: (state, payload) => {
-    return state.set('taskView', payload);
-  },
+  [actions.expandSwitcher]: setValue('expandedSwitcher', true),
+  [actions.collapseSwitcher]: setValue('expandedSwitcher', false),
+  [actions.toggleView]: setFullPayload('taskView'),
   [actions.toggleWorkspace]: state => {
     return state.merge({
       isWorkspaceOpen: !state.get('isWorkspaceOpen'),
       isPreferencesOpen: false
     });
   },
-  [actions.closeWorkspace]: state => {
-    return state.set('isWorkspaceOpen', false);
-  },
+  [actions.closeWorkspace]: setValue('isWorkspaceOpen', false),
   [actions.setColumnMode]: (state, payload) => {
     localStorage.setItem('dpWindow.columnMode', payload);
     return state.set('columnMode', payload);
@@ -71,12 +67,8 @@ export default createReducer(initialState, {
     localStorage.setItem('dpWindow.sidebarMode', payload);
     return state.set('sidebarMode', payload);
   },
-  [actions.showWelcomePage]: state => {
-    return state.set('showWelcomePage', true);
-  },
-  [actions.hideWelcomePage]: state => {
-    return state.set('showWelcomePage', false);
-  },
+  [actions.showWelcomePage]: setValue('showWelcomePage', true),
+  [actions.hideWelcomePage]: setValue('showWelcomePage', false),
   [actions.togglePreferences]: state => {
     const isOpen = !state.get('isPreferencesOpen');
 
@@ -92,7 +84,5 @@ export default createReducer(initialState, {
       coverShown: false
     });
   },
-  [actions.changePreferenceTab]: (state, payload) => {
-    return state.set('preferenceTab', payload);
-  }
+  [actions.changePreferenceTab]: setFullPayload('preferenceTab')
 });

@@ -6,6 +6,7 @@ import { CardView } from './View/Card/CardView';
 import { KanbanView } from './View/Kanban/KanbanView';
 import { TableView } from './View/Table/TableView';
 import { CalendarView } from './View/Calendar/CalendarView';
+import { ListGroupContainer } from './ListGroupContainer';
 import Loader from 'react-loader';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
@@ -19,35 +20,35 @@ export class List extends React.Component {
   };
 
   renderView() {
-    const { tasks, currentView } = this.props;
-
-    switch (currentView) {
+    switch (this.props.currentView) {
       case constants.VIEW_MODE_CALENDAR:
-        return <CalendarView tasks={tasks} />;
+        return <CalendarView />;
       case constants.VIEW_MODE_TABLE:
-        return <TableView tasks={tasks} />;
+        return <TableView />;
       case constants.VIEW_MODE_KANBAN:
-        return <KanbanView tasks={tasks} />;
+        return <KanbanView />;
       case constants.VIEW_MODE_CARD:
       default:
-        return <CardView tasks={tasks} />;
+        return <CardView />;
     }
   }
 
   render() {
-    const { listParams, loaded } = this.props;
+    const { listParams, loaded, tasks } = this.props;
 
     return (
       <ListFrameContainer>
         <ControlBarContainer />
-        {listParams.get('filter') &&
+        {listParams.get('nav') &&
           <Loader loaded={loaded}
                   color="green"
                   opacity={0}
                   width={3}>
 
             <ListFrameContents>
-              {this.renderView()}
+              <ListGroupContainer tasks={tasks}>
+                {this.renderView()}
+              </ListGroupContainer>
             </ListFrameContents>
           </Loader>
         }

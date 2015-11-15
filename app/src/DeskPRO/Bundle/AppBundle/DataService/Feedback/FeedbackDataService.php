@@ -37,7 +37,7 @@ use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\CriteriaInterface;
 use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
@@ -304,13 +304,13 @@ class FeedbackDataService extends AbstractDataService
     /**
      * Select filtered list of feedback.
      *
-     * @param Criteria $criteria
-     * @param int      $page
-     * @param int      $count
+     * @param CriteriaInterface $criteria
+     * @param int               $page
+     * @param int               $count
      *
      * @return array
      */
-    public function selectFeedback(Criteria $criteria, $page, $count)
+    public function selectFeedback(CriteriaInterface $criteria, $page, $count)
     {
         $qb = $this->em->createQueryBuilder();
         $qb

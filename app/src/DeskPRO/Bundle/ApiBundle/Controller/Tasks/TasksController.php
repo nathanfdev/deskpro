@@ -37,7 +37,6 @@ use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\ApiBundle\Task\DisplayOrder;
 use DeskPRO\Bundle\AppBundle\DataService\Tasks\TasksSelectCriteria;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
-use DeskPRO\Bundle\AppBundle\Task\TaskFilterBuilder;
 use Doctrine\ORM\Query;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -91,20 +90,20 @@ class TasksController extends BaseController implements ClassResourceInterface
      */
     public function cgetAction(Request $request)
     {
-        $dataService = $this->get('data.tasks');
-        $params      = $request->query->all();
         try {
-            $criteria = TasksSelectCriteria::fromParameters($params, new OptionsResolver());
+            $params   = $request->query->all();
+            $criteria = TasksSelectCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()]);
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
-        $page  = $request->query->get('page', 1);
-        $count = $request->query->get('count', 10);
 
-        $feedback = $dataService->selectTasks($criteria, $page, $count);
+        $page  = $request->query->get('page', 1);
+        $count = $request->query->get('count', 50);
+
+        $tasks = $this->get('data.tasks')->selectTasks($criteria, $page, $count);
 
         return View::create(
-            $this->dataSerialize($feedback),
+            $this->dataSerialize($tasks),
             Response::HTTP_OK
         );
     }
@@ -616,22 +615,5 @@ class TasksController extends BaseController implements ClassResourceInterface
         }
 
         return 1;
-    }
-
-    /**
-     * Retrieve tasks from the entity manager according to the request parameters.
-     *
-     * @param Request $request
-     * @param $em
-     *
-     * @return Query
-     */
-    protected function filterTasks(Request $request, $entityManager)
-    {
-        $user = $this->getUser();
-
-        $filter = new TaskFilterBuilder($entityManager, $user);
-
-        return $filter->filterRequest($request->query);
     }
 }

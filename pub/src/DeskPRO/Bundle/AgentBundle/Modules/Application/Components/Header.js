@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { HeaderWidget } from '../../IM/Components/HeaderWidget';
 import { WorkspaceContainer } from './Workspace/WorkspaceContainer';
 import { PersonAvatar } from '../../Common/Components/Avatar/index';
-import * as AppActions from '../Actions/AppActions';
+import * as AppActions from '../Actions/appActions';
 
 export class Header extends React.Component {
 

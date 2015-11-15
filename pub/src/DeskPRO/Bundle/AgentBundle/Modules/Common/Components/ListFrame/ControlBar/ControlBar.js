@@ -6,6 +6,7 @@ import { ViewMenuContainer } from './View/ViewMenuContainer';
 import { ListFrameMenu } from '../../ListFrameMenu';
 
 export class ControlBar extends Component {
+
   static propTypes = {
     checkbox: PropTypes.shape({
       count: PropTypes.number.isRequired,
@@ -64,18 +65,20 @@ export class ControlBar extends Component {
   };
 
   render() {
+    const { checkbox, sorting, filtering, view } = this.props;
+
     return (
       <ListFrameMenu>
-        <CheckboxContainer {...this.props.checkbox} />
-        <SortingMenu {...this.props.sorting} />
+        <CheckboxContainer {...checkbox} />
+        <SortingMenu {...sorting} />
         <li>
           <hr/>
         </li>
-        <FilteringMenuContainer {...this.props.filtering} />
+        <FilteringMenuContainer {...filtering} />
         <li>
           <hr/>
         </li>
-        <ViewMenuContainer {...this.props.view} />
+        <ViewMenuContainer {...view} />
       </ListFrameMenu>
     );
   }

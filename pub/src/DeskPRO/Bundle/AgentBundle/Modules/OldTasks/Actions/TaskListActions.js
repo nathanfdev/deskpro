@@ -256,15 +256,15 @@ export const loadFilter = createAction(
     }
 
     if (filter.order_by) {
-      filterElements.order_by = filter.order_by;
+      filterElements.sort = filter.order_by;
     } else {
-      filterElements.order_by = 'due';
+      filterElements.sort = 'date_due';
     }
 
     if (filter.sort) {
-      filterElements.sort = filter.sort;
+      filterElements.order = filter.sort;
     } else {
-      filterElements.sort = constants.ORDER_ASC;
+      filterElements.order = constants.ORDER_ASC;
     }
 
     const compiled = 'tasks?' + Tasks.compileParams(filterElements);

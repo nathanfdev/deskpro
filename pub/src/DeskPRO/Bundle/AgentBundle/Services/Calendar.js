@@ -1,5 +1,9 @@
 import Moment from "moment";
 
+/**
+ * @deprecated
+ * @see Tasks/List/View/Calendar
+ */
 export default class Calendar {
   constructor(options) {
     options = options || {};

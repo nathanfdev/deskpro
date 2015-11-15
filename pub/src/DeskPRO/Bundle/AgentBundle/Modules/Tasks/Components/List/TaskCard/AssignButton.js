@@ -52,7 +52,7 @@ export class AssignButton extends React.Component {
           <ClickOut onClickOut={this.onCloseForm}
                     additionalNodes={[this.refs.button, 'assign-form']}>
 
-            <AssignFormContainer />
+            <AssignFormContainer {...this.props} />
           </ClickOut>
         </Detached>
       </div>

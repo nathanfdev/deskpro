@@ -56,6 +56,11 @@ class TIcketLogLine implements LineInterface
         return $this->log;
     }
 
+    public function getPerson()
+    {
+        return;
+    }
+
     /**
      * @return int
      */

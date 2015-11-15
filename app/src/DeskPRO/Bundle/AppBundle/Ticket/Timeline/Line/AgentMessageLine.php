@@ -56,6 +56,11 @@ class AgentMessageLine implements LineInterface
         return $this->message;
     }
 
+    public function getPerson()
+    {
+        return $this->message->getPerson();
+    }
+
     /**
      * @return string
      */

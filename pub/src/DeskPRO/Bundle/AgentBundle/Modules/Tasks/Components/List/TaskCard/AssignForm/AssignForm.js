@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import Loader from 'react-loader';
+import Immutable from 'immutable';
 import {
   BaseForm,
   Header,
@@ -20,10 +21,24 @@ export class AssignForm extends BaseForm {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    agents: PropTypes.object.isRequired,
-    agentTeams: PropTypes.object.isRequired,
-    departments: PropTypes.object.isRequired
+    task: PropTypes.object.isRequired
   };
+
+  constructor(props) {
+    super(props);
+
+    const localState = this.state;
+    const emptyObject = Immutable.fromJS({});
+    const task = props.task || emptyObject;
+
+    this.state = {
+      ...localState,
+
+      agents: task.get('agents', emptyObject).toArray(),
+      agentTeams: task.get('teams', emptyObject).toArray(),
+      departments: task.get('departments', emptyObject).toArray()
+    };
+  }
 
   onSubmit = event => {
     event.preventDefault();

@@ -31,7 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect;
 
-use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\CriteriaInterface;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
@@ -55,14 +55,14 @@ class ContentDataService
     }
 
     /**
-     * @param string   $class    Concrete content entity class
-     * @param Criteria $criteria
-     * @param int      $page
-     * @param int      $count
+     * @param string            $class    Concrete content entity class
+     * @param CriteriaInterface $criteria
+     * @param int               $page
+     * @param int               $count
      *
      * @return Pagerfanta
      */
-    public function selectContent($class, Criteria $criteria, $page, $count)
+    public function selectContent($class, CriteriaInterface $criteria, $page, $count)
     {
         $qb = $this->em->createQueryBuilder();
 

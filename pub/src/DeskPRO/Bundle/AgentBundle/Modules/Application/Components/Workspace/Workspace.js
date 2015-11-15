@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { ColumnMode } from './ColumnMode';
 import { SidebarMode } from './SidebarMode';
-import * as AppActions from '../../Actions/AppActions';
+import * as AppActions from '../../Actions/appActions';
 
 export class Workspace extends React.Component {
 

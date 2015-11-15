@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\Entity\Person;
+use Carbon\Carbon;
 use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeView;
 use League\Url\Url;
@@ -106,6 +107,7 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('lang_code', array($this, 'langCode')),
             new \Twig_SimpleFunction('enabled_languages', array($this, 'enabledLanguages')),
             new \Twig_SimpleFunction('date', array($this, 'date')),
+            new \Twig_SimpleFunction('date_ago', array($this, 'dateAgo'), ['is_safe' => ['html']]),
         );
 
         return $funcs;
@@ -380,6 +382,32 @@ class PortalSupportExtension extends \Twig_Extension
         return $x;
     }
 
+    public function dateAgo($date, $timezone = null, $include_html_wrapper = true)
+    {
+        $date = $this->ensureDateTime($date);
+
+        if (!$date instanceof \DateTime) {
+            $date_str = (string) $date;
+
+            return "invalid_date($date_str)";
+        }
+
+        $carbon     = Carbon::createFromTimestamp($date->getTimestamp(), $timezone);
+        $ago_string = $carbon->diffForHumans();
+
+        if ($include_html_wrapper) {
+            // a standard <time> element, set $include_html_wrapper to false to get the raw ago string
+            return sprintf(
+                '<time class="date-ago" datetime="%s" title="%s">%s</time>',
+                $carbon->toIso8601String(),
+                $this->date($date, 'fulltime'),
+                $ago_string
+            );
+        }
+
+        return $ago_string;
+    }
+
     /**
      * @param string|\DateTime $date
      * @param string           $format
@@ -417,19 +445,7 @@ class PortalSupportExtension extends \Twig_Extension
                 break;
         }
 
-        if ($date instanceof \DateTime) {
-            $date = clone $date;
-        } else {
-            if (ctype_digit((string) $date)) {
-                $date = new \DateTime('@'.$date);
-            } else {
-                try {
-                    $date_str = $date;
-                    $date     = new \DateTime($date_str);
-                } catch (\Exception $e) {
-                }
-            }
-        }
+        $date = $this->ensureDateTime($date);
 
         if (!($date instanceof \DateTime)) {
             $date_str = (string) $date;
@@ -462,6 +478,25 @@ class PortalSupportExtension extends \Twig_Extension
         $date->setTimezone($timezone);
 
         return $date->format($format);
+    }
+
+    public function ensureDateTime($date)
+    {
+        if ($date instanceof \DateTime) {
+            $date = clone $date;
+        } else {
+            if (ctype_digit((string) $date)) {
+                $date = new \DateTime('@'.$date);
+            } else {
+                try {
+                    $date_str = $date;
+                    $date     = new \DateTime($date_str);
+                } catch (\Exception $e) {
+                }
+            }
+        }
+
+        return $date instanceof \DateTime ? $date : null;
     }
 
     /**

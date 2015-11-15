@@ -6,20 +6,23 @@ export class ChoiceMenu extends Component {
 
   static propTypes = {
     title: PropTypes.string.isRequired,
+    quickFilter: PropTypes.bool,
     children: PropTypes.any.isRequired
   };
 
   render() {
+    const { title, quickFilter, children } = this.props;
+
     return (
       <div className="dpw-navigation-dropdown-panel dpw-navigation-dropdown-panel-corner-left">
         <div className="dpw-navigation-dropdown-panel-content">
           <div className="dpw-navigation-dropdown-panel-content-line">
             <div className="dpw-navigation-dropdown-panel-content-full">
-              <ChoiceMenuHeader title={this.props.title}/>
+              <ChoiceMenuHeader title={title}/>
               <div className="dpw-departments-long-list">
-                <QuickFilter/>
+                {quickFilter && <QuickFilter/>}
                 <div className="dpw--popup-item-collection">
-                  {this.props.children}
+                  {children}
                 </div>
               </div>
             </div>

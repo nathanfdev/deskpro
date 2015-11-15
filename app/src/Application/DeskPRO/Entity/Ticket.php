@@ -74,7 +74,7 @@ use Orb\Util\WorkHoursSetAll;
  * @property ChatConversation $linked_chat
  * @property TicketAttachment[] $attachments
  * @property TicketAccessCode[] $access_codes
- * @property TicketMessage[] $messages
+ * @property TicketMessage[]|ArrayCollection $messages
  * @property TicketSms[] $sms_messages
  * @property CustomDataTicket[] $custom_data
  * @property LabelTicket[] $labels
@@ -123,6 +123,7 @@ use Orb\Util\WorkHoursSetAll;
  * @PortalLinkCustom(type="edit")
  * @PortalLinkCustom(type="resolve")
  * @PortalLinkCustom(type="unresolve")
+ * @PortalLinkCustom(type="add-cc")
  */
 class Ticket extends DomainObject implements HighlightableModelInterface
 {
@@ -2559,6 +2560,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         return $use_date;
     }
 
+    public function getLastAgentMessage()
+    {
+        $non_agent_note_agent_messages = $this->messages->filter(function (TicketMessage $message) {
+            // agents and not agent notes
+            return !$message->is_agent_note && $message->getPerson() && $message->getPerson()->is_agent;
+        });
+
+        return $non_agent_note_agent_messages->last();
+    }
+
     /**
      * @param string $status
      *
@@ -2752,6 +2763,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         } else {
             return $this->status;
         }
+    }
+
+    public function isAwaitingUser()
+    {
+        return $this->status === self::STATUS_AWAITING_USER;
+    }
+
+    public function isAwaitingAgent()
+    {
+        return $this->status === self::STATUS_AWAITING_AGENT;
     }
 
     /**

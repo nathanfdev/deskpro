@@ -5,13 +5,16 @@ export class ListItemLabelSpinner extends React.Component {
 
   render() {
     return (
-      <Loader loaded={false}
-              scale={0.35}
-              left="50%"
-              top="50%"
-              color="green"
-              width={3}
-              component="span" />
+      <span>
+        &nbsp;
+        <Loader loaded={false}
+                scale={0.35}
+                left="22px"
+                top="12px"
+                color="green"
+                width={3}
+                component="span" />
+      </span>
     );
   }
 }

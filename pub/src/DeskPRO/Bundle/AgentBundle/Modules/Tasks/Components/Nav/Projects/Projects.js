@@ -62,7 +62,7 @@ export class Projects extends React.Component {
           {projects.map((project, index) =>
             <ListItemContainer key={index}
                                urlHash={`project-${project.get('id')}-${project.get('title')}`}
-                               listOptions={{projects: [project.get('id')]}}>
+                               listOptions={{project: [project.get('id')]}}>
 
               <ListItem count={countMap[project.get('id')] || 0}
                         onEdit={this.onEdit.bind(this, project)}>

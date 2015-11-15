@@ -71,7 +71,8 @@
     "willdurand/negotiation": "^1.4",
     "fabpot/php-cs-fixer": "^1.10",
     "defuse/php-encryption": "^1.2",
-    "react/promise": "^2.2"
+    "react/promise": "^2.2",
+    "nesbot/carbon": "^1.21"
   },
   "preferred-install": "dist"
 }

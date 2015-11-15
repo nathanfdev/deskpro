@@ -1,5 +1,5 @@
 import { createReducer } from 'Ampliflux';
-import * as NavActions from '../Actions/navActions';
+import * as actions from '../Actions/navActions';
 import { async, mergeFullPayload, setValue } from 'Ampliflux/reducers/handlers';
 
 const initialState = {
@@ -13,7 +13,7 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
-  [NavActions.initialLoad]: async({
+  [actions.initialLoad]: async({
     success: mergeFullPayload(),
     start: setValue('async.done', false),
     done: setValue('async.done', true)

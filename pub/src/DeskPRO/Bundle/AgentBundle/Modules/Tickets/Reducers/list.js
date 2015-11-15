@@ -1,8 +1,7 @@
 import { createReducer } from 'Ampliflux';
-import { setFullPayload, setValue, async } from 'Ampliflux/reducers/handlers';
-import {
-  toggleAll, toggleSelected, toggleTableFieldVisibility, toggleCardFieldVisibility, setViewMode
-} from '../Actions/listActions';
+import { setFullPayload, setValue, async, togglePayloadInCollection, handleMassAction } from 'Ampliflux/reducers/handlers';
+import { toggleAll, toggleSelected, toggleTableFieldVisibility, toggleCardFieldVisibility, setViewMode, unload }
+  from '../Actions/listActions';
 
 const initialState = {
   viewMode: 'card',
@@ -24,39 +23,25 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
+
+  // Private -----------------------------------------------------------------------------------------------------------
+
   TICKETS_LIST_SET_LIST_PARAMS: setFullPayload('listParams'),
   TICKETS_LIST_LOAD_LIST: async({
     success: setFullPayload('elements'),
     start: setValue('async.done', false),
     done: setValue('async.done', true)
   }),
-  [toggleAll]: (state, select) => {
-    let selected = state.get('selected');
-    if (select) {
-      state.get('elements').map(el => selected.includes(el.get('id')) || (selected = selected.push(el.get('id'))));
-    } else {
-      selected = selected.clear();
-    }
 
-    return state.set('selected', selected);
-  },
-  [toggleSelected]: (state, id) => {
-    let selected = state.get('selected');
-    selected = selected.includes(id) ? selected.delete(selected.indexOf(id)) : selected.push(id);
+  // Public ------------------------------------------------------------------------------------------------------------
 
-    return state.set('selected', selected);
-  },
-  [toggleTableFieldVisibility]: (state, field) => {
-    let fields = state.get('tableVisibleFields');
-    fields = fields.includes(field) ? fields.delete(fields.indexOf(field)) : fields.push(field);
+  [toggleSelected]: togglePayloadInCollection('selected'),
+  [unload]: setValue('elements', []),
 
-    return state.set('tableVisibleFields', fields);
-  },
-  [toggleCardFieldVisibility]: (state, field) => {
-    let fields = state.get('cardVisibleFields');
-    fields = fields.includes(field) ? fields.delete(fields.indexOf(field)) : fields.push(field);
+  // Public (control bar) ----------------------------------------------------------------------------------------------
 
-    return state.set('cardVisibleFields', fields);
-  },
+  [toggleAll]: handleMassAction('elements', 'selected'),
+  [toggleTableFieldVisibility]: togglePayloadInCollection('tableVisibleFields'),
+  [toggleCardFieldVisibility]: togglePayloadInCollection('cardVisibleFields'),
   [setViewMode]: setFullPayload('viewMode')
 });

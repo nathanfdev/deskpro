@@ -616,6 +616,28 @@ class Ticket extends AbstractEntityRepository
     }
 
     /**
+     * Get the latest tickets awaiting user from a particular user.
+     *
+     * @param \Application\DeskPRO\Entity\Person $person
+     * @param int                                $max    The max number of results
+     *
+     * @return array
+     */
+    public function getWaitingForReplyForPerson(Entity\Person $person, $max = 5)
+    {
+        $status = TicketEntity::STATUS_AWAITING_USER;
+
+        $tickets = $this->getEntityManager()->createQuery('
+            SELECT t
+            FROM DeskPRO:Ticket t
+            WHERE t.person = ?1 AND t.status IN(?2)
+            ORDER BY t.date_last_agent_reply DESC
+        ')->setMaxResults($max)->execute(array(1 => $person, 2 => $status));
+
+        return $tickets;
+    }
+
+    /**
      * Executes a query to re-fill the ticket_search_active table.
      */
     public function fillSearchTable()

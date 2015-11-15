@@ -1,17 +1,19 @@
 import React, { PropTypes } from 'react';
 
-export class Project extends React.Component {
+export class CardProject extends React.Component {
 
   static propTypes = {
-    project: PropTypes.string
+    project: PropTypes.object
   };
 
   render() {
+    const { project } = this.props;
+
     return (
       <span>
         <span className="dpw--card-disc"/>
         <span className="dpwd--card-line-item">
-          <i className="fa fa-book"/> {this.props.project}
+          <i className="fa fa-book"/> {project && project.get('title')}
         </span>
       </span>
     );

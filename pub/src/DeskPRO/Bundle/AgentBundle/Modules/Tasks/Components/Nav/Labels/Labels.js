@@ -6,22 +6,30 @@ import { LabelItem } from './LabelItem';
 export class Labels extends React.Component {
 
   static propTypes = {
-    labels: PropTypes.object.isRequired
+    labelGroups: PropTypes.object.isRequired
   };
 
   render() {
+    const { labelGroups } = this.props;
+
     return (
       <Section>
         <SectionHeader>Labels</SectionHeader>
         <div className="sidebar-label-list sidebar-list">
           <ul>
-            {this.props.labels.map((label, index) =>
-              <ListItemContainer key={index}
-                                 urlHash={`label-${label.get('label')}`}
-                                 listOptions={{labels: [label.get('label')]}}>
+            {labelGroups.map((labels, char) =>
+              <li key={char}>
+                <span className="labelCharacter">{char}</span>
 
-                <LabelItem label={label} />
-              </ListItemContainer>
+                {labels.map((label, index) =>
+                  <ListItemContainer key={index}
+                                     urlHash={`label-${label.get('label')}`}
+                                     listOptions={{label: [label.get('label')]}}>
+
+                    <LabelItem label={label} />
+                  </ListItemContainer>
+                )}
+              </li>
             )}
           </ul>
         </div>

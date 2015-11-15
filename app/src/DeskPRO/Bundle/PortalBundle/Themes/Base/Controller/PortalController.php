@@ -117,8 +117,8 @@ class PortalController extends AbstractController
         $page_vars = array(
             'display_registration_link' => $this->get('dp_authentication_manager.user')->isRegistrationFormVisible(
             ),
-            'ticket_count'                  => $user ? $this->getTicketsDataService()->getTicketCount($user, 'open') : 0,
-            'ticket_count_org'              => $user ? $this->getTicketsDataService()->getOrganizationTicketCount($user, 'open') : 0,
+            'ticket_count'                  => $user ? $this->getTicketsDataService()->getTicketCount($user, 'all') : 0,
+            'ticket_count_org'              => $user ? $this->getTicketsDataService()->getOrganizationTicketCount($user, 'all') : 0,
             'user'                          => $user,
             'login_text_button_usersources' => $auth_manager->getLoginTextButtonUsersources(),
             'login_icon_usersources'        => $auth_manager->getLoginIconUsersources(),

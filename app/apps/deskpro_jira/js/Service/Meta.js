@@ -133,7 +133,7 @@ define(['cutstring'], function (cutstring) {
 
         var query = meta.projects.length > 3 ? ('?project_id=' + projectId) : '';
 
-        $http.get(window.DP_BASE_URL + 'agent/jira/createmeta' + query)
+        $http.get(window.DP_BASE_URL + 'old-agent/jira/createmeta' + query)
           .success(function (data, status, headers, config) {
               if (!data.projects) return d.resolve(null);
               data.projects.each(function(project){
@@ -149,7 +149,7 @@ define(['cutstring'], function (cutstring) {
       }
     };
 
-    $http.get(window.DP_BASE_URL + 'agent/jira/meta')
+    $http.get(window.DP_BASE_URL + 'old-agent/jira/meta')
       .success(function (data, status, headers, config) {
 
         if (!data) {

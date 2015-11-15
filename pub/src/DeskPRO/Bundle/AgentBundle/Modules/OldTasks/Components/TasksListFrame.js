@@ -9,7 +9,7 @@ import KanbanView from '../Components/Views/Kanban/KanbanView';
 import CondensedView from '../Components/Views/Condensed/CondensedView';
 import CalendarView from '../Components/Views/Calendar/CalendarView';
 import Moment from 'moment';
-import * as AppActions from '../../Application/Actions/AppActions';
+import * as AppActions from '../../Application/Actions/appActions';
 import * as constants from '../../../Constants/Constants';
 import ReactPaginate from '../../Common/Components/Pagination/deskpro-react-paginate';
 import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';

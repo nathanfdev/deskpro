@@ -48,7 +48,7 @@ export default class TasksNavGroups extends React.Component {
                   <div className="list-counter-bucket">
                     <a href="#" className="list-counter">{taskList.get('taskCount', 0)}</a>
                   </div>
-                  <a href="#" className="item" onClick={this.props.filterTasks.bind(this, {done: 'all'})}>All Tasks</a>
+                  <a href="#" className="item" onClick={this.props.filterTasks.bind(this, {})}>All Tasks</a>
                 </li>
               </ul>
             </section>);

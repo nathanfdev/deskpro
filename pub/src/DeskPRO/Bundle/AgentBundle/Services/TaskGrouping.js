@@ -1,5 +1,9 @@
 import Moment from 'moment';
 
+/**
+ * @deprecated
+ * @see Task/List/ListGroupContainer
+ */
 export default class TaskGrouping {
   constructor(projects = [], departments = [], teams = [], agents = [], lists = [], tickets = []) {
     this.projects = projects;

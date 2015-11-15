@@ -1,8 +1,11 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/ControlBar';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import { applySort, applyOrder, applyFilters } from '../../Actions/listActions';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
+import { allTaskLabelsSelector } from '../../RecordStores/Selectors/taskLabelSelectors';
+import { loadAllTaskLabels } from '../../RecordStores/Actions/taskLabelActions';
 import {
   currentViewModeSelector,
   currentSortSelector,
@@ -10,7 +13,8 @@ import {
   cardVisibleFieldsSelector,
   tableVisibleFieldsSelector,
   calendarVisibleFieldsSelector,
-  kanbanVisibleFieldsSelector
+  kanbanVisibleFieldsSelector,
+  listParamsFiltersSelector,
 } from '../../Selectors/list';
 import {
   toggleCardFieldVisibility,
@@ -26,9 +30,11 @@ import {
   cardVisibleFields: cardVisibleFieldsSelector(state),
   tableVisibleFields: tableVisibleFieldsSelector(state),
   kanbanVisibleFields: kanbanVisibleFieldsSelector(state),
-  calendarVisibleFields: calendarVisibleFieldsSelector(state)
+  calendarVisibleFields: calendarVisibleFieldsSelector(state),
+  listFilters: listParamsFiltersSelector(state),
+  labels: allTaskLabelsSelector(state)
 }))
-export class ControlBarContainer extends Component {
+export class ControlBarContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -39,10 +45,20 @@ export class ControlBarContainer extends Component {
     cardVisibleFields: PropTypes.object.isRequired,
     tableVisibleFields: PropTypes.object.isRequired,
     kanbanVisibleFields: PropTypes.object.isRequired,
-    calendarVisibleFields: PropTypes.object.isRequired
+    calendarVisibleFields: PropTypes.object.isRequired,
+    listFilters: PropTypes.object.isRequired,
+    labels: PropTypes.object.isRequired
   };
 
+  constructor(props) {
+    super(props);
+    props.dispatch(loadAllTaskLabels());
+  }
+
   render() {
+    const { sort, order, labels = [], listFilters, viewMode } = this.props;
+    const { cardVisibleFields, tableVisibleFields, kanbanVisibleFields, calendarVisibleFields } = this.props;
+
     const config = {
       sorting: {
         options: {
@@ -54,11 +70,47 @@ export class ControlBarContainer extends Component {
           assignee: {label: 'Assignee', icon: 'user'}
         },
 
-        sort: this.props.sort,
-        sortAction: value => updateRoutingState('list', 'sort', value),
+        sort: sort,
+        sortAction: applySort,
 
-        order: this.props.order,
-        orderAction: value => updateRoutingState('list', 'order', value)
+        order: order,
+        orderAction: applyOrder
+      },
+      filtering: {
+        filters: [
+          {
+            label: 'Date Created',
+            type: 'date',
+            fromParam: 'created_from',
+            toParam: 'created_to'
+          },
+          {
+            label: 'Date Due',
+            type: 'date',
+            fromParam: 'due_from',
+            toParam: 'due_to'
+          },
+          {
+            label: 'Date Done',
+            type: 'date',
+            fromParam: 'done_from',
+            toParam: 'done_to'
+          },
+          {label: 'Status', type: 'select', param: 'done', multiple: false, options: [
+            {value: 'done', label: 'Done'},
+            {value: 'undone', label: 'Not Done'}
+          ]},
+          {
+            label: 'Labels',
+            type: 'labels',
+            param: 'label',
+            modeParam: 'label_mode',
+            labels: labels.map(label => label.get('label'))
+          }
+        ],
+
+        state: listFilters,
+        setParamsAction: applyFilters
       },
       view: {
         options: {
@@ -72,7 +124,7 @@ export class ControlBarContainer extends Component {
               date_created: 'Date created',
               labels: 'Labels'
             },
-            visibleFields: this.props.cardVisibleFields,
+            visibleFields: cardVisibleFields,
             toggleFieldVisibility: toggleCardFieldVisibility
           },
           [constants.VIEW_MODE_TABLE]: {
@@ -84,7 +136,7 @@ export class ControlBarContainer extends Component {
               date_created: 'Date created',
               labels: 'Labels'
             },
-            visibleFields: this.props.tableVisibleFields,
+            visibleFields: tableVisibleFields,
             toggleFieldVisibility: toggleTableFieldVisibility
           },
           [constants.VIEW_MODE_KANBAN]: {
@@ -94,7 +146,7 @@ export class ControlBarContainer extends Component {
               subject: 'Subject',
               status: 'Status'
             },
-            visibleFields: this.props.kanbanVisibleFields,
+            visibleFields: kanbanVisibleFields,
             toggleFieldVisibility: toggleKanbanFieldVisibility
           },
           [constants.VIEW_MODE_CALENDAR]: {
@@ -104,18 +156,16 @@ export class ControlBarContainer extends Component {
               subject: 'Subject',
               status: 'Status'
             },
-            visibleFields: this.props.calendarVisibleFields,
+            visibleFields: calendarVisibleFields,
             toggleFieldVisibility: toggleCalendarFieldVisibility
           }
         },
 
-        viewMode: this.props.viewMode,
+        viewMode: viewMode,
         viewModeAction: value => updateRoutingState('list', 'view', value)
       }
     };
 
-    return (
-      <ControlBar {...config} />
-    );
+    return <ControlBar {...config} />;
   }
 }

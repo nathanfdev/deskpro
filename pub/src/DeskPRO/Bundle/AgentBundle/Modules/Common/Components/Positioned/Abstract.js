@@ -17,7 +17,7 @@ export default class Abstract extends React.Component {
     positionMy: PropTypes.string,
     positionTarget: PropTypes.any,
     zIndex: PropTypes.number,
-    collision: PropTypes.object,
+    collision: PropTypes.string,
     onOpen: PropTypes.func,
     onClose: PropTypes.func,
     children: PropTypes.any,

@@ -8,8 +8,8 @@ export class LabelsFilter extends Component {
     changeMode: PropTypes.func.isRequired,
     selectLabel: PropTypes.func.isRequired,
     deselectLabel: PropTypes.func.isRequired,
-    selectedLabels: PropTypes.object,
-    allLabels: PropTypes.object.isRequired,
+    selectedLabels: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    allLabels: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
     params: PropTypes.object
   };
 
@@ -67,7 +67,7 @@ export class AllLabelsMatchingMode extends Component {
 
   render() {
     const { changeMode } = this.props;
-    const classes = classNames('dpwd-radio-button', { 'active': this.props.mode !== 'any' });
+    const classes = classNames('dpwd-radio-button', { 'active': this.props.mode === 'all' });
     return (
       <span className={classes} onClick={changeMode.bind(this, 'all')}>
         <span className="dpwd-radio-button-disc"></span>
@@ -100,7 +100,7 @@ export class AnyLabelMatchingMode extends Component {
 export class SelectedLabels extends Component {
 
   static propTypes = {
-    selectedLabels: PropTypes.object,
+    selectedLabels: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
     deselectLabel: PropTypes.func.isRequired
   };
 
@@ -135,7 +135,7 @@ export class LabelsCollection extends Component {
 
   static propTypes = {
     selectLabel: PropTypes.func.isRequired,
-    allLabels: PropTypes.object.isRequired
+    allLabels: PropTypes.oneOfType([PropTypes.array, PropTypes.object])
   };
 
   render() {

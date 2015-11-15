@@ -4,10 +4,9 @@ import { Button } from '../Button';
 import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
-import Formsy from 'formsy-react';
 import Moment from 'moment';
 import { FilterItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/FilterItem';
-import { DateTimePicker } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/DateTimePicker';
+import { DateTimePicker } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/DateTime/DateTimePicker';
 import { LabelsFilter } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/LabelsFilter';
 import { ChoiceMenu, ChoiceMenuOption } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/ChoiceMenu';
 import Immutable from 'immutable';
@@ -127,6 +126,7 @@ export class FilteringMenuContainer extends Component {
   }
 
   renderDateFilter({ label, icon, fromParam, toParam }, index) {
+    const { dispatch, setParamsAction } = this.props;
     const from = this.stateValue(fromParam);
     const to = this.stateValue(toParam);
     const isActive = Boolean(from || to);
@@ -137,36 +137,26 @@ export class FilteringMenuContainer extends Component {
         icon={icon || 'calendar-o'}
         label={label}
         isActive={isActive}
-        resetFilter={() => this.unsetParams([fromParam, toParam])}
-      >
+        resetFilter={() => this.unsetParams([fromParam, toParam])}>
+
         {this.renderDateCreatedItemContent(from, to)}
         <Menu>
-          <div
-            className="dpw-navigation-dropdown-panel dpw-navigation-date-picker-panel dpw-navigation-dropdown-panel-corner-left">
-
-            <span className="dpw-navigation-dropdown-panel-close"><i className="fa fa-times"></i></span>
-
+          <div className="dpw-navigation-dropdown-panel dpw-navigation-date-picker-panel dpw-navigation-dropdown-panel-corner-left">
             <div className="dpw-date-picker">
 
               <div className="dpw-date-picker-panel-container">
-                <Formsy.Form onValidSubmit={(model) => console.log('onValidSubmit', model)}>
+                <form>
                   <DateTimePicker
                     label="From"
-                    name={fromParam}
                     className="dpw-date-picker-left"
-                    initialValue={from}
-                    />
+                    value={from}
+                    onChange={value => dispatch(setParamsAction({[fromParam]: value}))} />
                   <DateTimePicker
                     label="To"
-                    name={toParam}
                     className="dpw-date-picker-right"
-                    initialValue={to}
-                    />
-
-                  <div className=" dpw-date-picker-footer">
-                    <button type="submit" className="dpw--panel-button">Apply Date Range Filter</button>
-                  </div>
-                </Formsy.Form>
+                    value={to}
+                    onChange={value => dispatch(setParamsAction({[toParam]: value}))} />
+                </form>
               </div>
             </div>
           </div>
@@ -200,13 +190,13 @@ export class FilteringMenuContainer extends Component {
     const mode = this.stateValue(modeParam);
     const isActive = Boolean(selected.length);
 
-    const selectLabel = (selectedLabel) => {
+    const selectLabel = selectedLabel => {
       if (selected.indexOf(selectedLabel) === -1) {
         selected.push(selectedLabel);
         dispatch(setParamsAction({[param]: selected}));
       }
     };
-    const deselectLabel = (deselectedLabel) => {
+    const deselectLabel = deselectedLabel => {
       if (selected.indexOf(deselectedLabel) !== -1) {
         selected.splice(selected.indexOf(deselectedLabel), 1);
         dispatch(setParamsAction({[param]: selected}));
@@ -225,7 +215,7 @@ export class FilteringMenuContainer extends Component {
         <Menu>
           <LabelsFilter
             params={{'get': () => mode}}
-            changeMode={(newMode) => dispatch(setParamsAction({[modeParam]: newMode}))}
+            changeMode={newMode => dispatch(setParamsAction({[modeParam]: newMode}))}
             allLabels={labels}
             selectedLabels={selected}
             selectLabel={selectLabel}

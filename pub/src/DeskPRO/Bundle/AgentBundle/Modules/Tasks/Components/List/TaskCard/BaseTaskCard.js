@@ -10,7 +10,7 @@ export class BaseTaskCard extends React.Component {
       selected: false,
       title: props.task.get('title'),
       dateDue: props.task.get('date_due'),
-      project: 'Some Project',
+      project: props.task.get('project'),
       ticketLink: 'Some Ticket',
       comments: 1,
       subTasks: {
