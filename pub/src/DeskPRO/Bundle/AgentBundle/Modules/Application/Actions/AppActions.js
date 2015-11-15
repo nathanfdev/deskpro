@@ -1,6 +1,13 @@
 import { createAction } from 'Ampliflux';
+import { hashChanged } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 
-export const setActiveApp = createAction('APP_SET_ACTIVE_APP');
+export const setActiveApp = createAction(
+  'APP_SET_ACTIVE_APP',
+  appId => dispatch => {
+    dispatch(hashChanged());
+    return appId;
+  }
+);
 export const expandSwitcher = createAction('APP_EXPAND_SWITCHER');
 export const collapseSwitcher = createAction('APP_COLLAPSE_SWITCHER');
 export const toggleView = createAction('APP_TOGGLE_VIEW');
