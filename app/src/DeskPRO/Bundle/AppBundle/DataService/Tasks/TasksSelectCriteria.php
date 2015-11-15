@@ -171,7 +171,7 @@ class TasksSelectCriteria extends Criteria
                 case 'done':
                     $qb
                         ->andWhere("t.is_done = :$field")
-                        ->setParameter($field, (int) $value)
+                        ->setParameter($field, (int) ($value === 'done'))
                     ;
 
                     break;
@@ -314,6 +314,7 @@ class TasksSelectCriteria extends Criteria
             ->setAllowedValues('creator', $person_validator)
             ->setNormalizer('creator', $person_normalizer)
 
+            ->setAllowedValues('done', ['done', 'undone'])
             ->setAllowedValues('sort', [
                 'list',
                 'project',

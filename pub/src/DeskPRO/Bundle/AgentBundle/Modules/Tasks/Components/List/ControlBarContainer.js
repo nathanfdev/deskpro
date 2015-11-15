@@ -85,6 +85,22 @@ export class ControlBarContainer extends Component {
             toParam: 'created_to'
           },
           {
+            label: 'Date Due',
+            type: 'date',
+            fromParam: 'due_from',
+            toParam: 'due_to'
+          },
+          {
+            label: 'Date Done',
+            type: 'date',
+            fromParam: 'done_from',
+            toParam: 'done_to'
+          },
+          {label: 'Status', type: 'select', param: 'done', multiple: false, options: [
+            {value: 'done', label: 'Done'},
+            {value: 'undone', label: 'Not Done'}
+          ]},
+          {
             label: 'Labels',
             type: 'labels',
             param: 'label',
