@@ -59,7 +59,7 @@ export class ListGroupContainer extends React.Component {
         return 'None';
       case 'list':
       default:
-        return task.get('list') ? ['list', task.get('list')] : 'None';
+        return task.get('list') ? ['list', task.get('list')] : 'Tasks not in any list';
     }
   }
 
