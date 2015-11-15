@@ -26,7 +26,7 @@ function verifyActionError(actionObj) {
 }
 
 function verifyScalar(value) {
-  if ((typeof value === 'string') || (value instanceof String) || (parseInt(Number(value)) == value)) {
+  if (typeof value === 'string' || value instanceof String || parseInt(value, 10) === value) {
     return;
   }
   throw new TypeError(`Expected number or string, got ${value}`);
@@ -123,7 +123,7 @@ export function setPayload(statePropKey, payloadPropKey = '@', defaultValue = nu
  * @returns {Function}
  */
 export function togglePayloadInCollection(statePropKey) {
-  return function(state, payload, action) {
+  return (state, payload, action) => {
     verifyActionError(action);
     verifyImmutable(state);
     verifyScalar(payload);
@@ -146,7 +146,7 @@ export function togglePayloadInCollection(statePropKey) {
  * @returns {Function}
  */
 export function handleMassAction(selectFrom, selectInto, targetKeyProp = 'id') {
-  return function(state, select, action) {
+  return (state, select, action) => {
     verifyActionError(action);
     verifyImmutable(state);
 
