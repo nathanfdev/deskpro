@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Menu } from './Menu';
 import { Content } from './Content';
-import * as AppActions from '../../Actions/AppActions';
+import * as AppActions from '../../Actions/appActions';
 
 export class Preferences extends React.Component {
 

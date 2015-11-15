@@ -1,4 +1,4 @@
-import * as actions from '../Actions/AppActions';
+import * as actions from '../Actions/appActions';
 import { createReducer } from 'Ampliflux';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { setFullPayload, setValue } from 'Ampliflux/reducers/handlers';

@@ -4,7 +4,7 @@ import { Menu as SignatureMenu } from './Tabs/Signature/Menu';
 import { Menu as SettingsMenu } from './Tabs/Settings/Menu';
 import { Menu as NotificationsMenu } from './Tabs/Notifications/Menu';
 import { Menu as DevicesMenu } from './Tabs/Devices/Menu';
-import * as AppActions from '../../Actions/AppActions';
+import * as AppActions from '../../Actions/appActions';
 import classNames from 'classnames';
 
 export class Menu extends React.Component {

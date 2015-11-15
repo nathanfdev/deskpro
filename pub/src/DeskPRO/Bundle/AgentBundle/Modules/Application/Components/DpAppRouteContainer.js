@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import * as AppActions from '../../Application/Actions/AppActions';
+import * as AppActions from '../../Application/Actions/appActions';
 import { DpApp } from './DpApp';
 import { DpAppLoading } from './DpAppLoading';
 import { WelcomeBack } from '../../Welcome/Components/WelcomeBack';
