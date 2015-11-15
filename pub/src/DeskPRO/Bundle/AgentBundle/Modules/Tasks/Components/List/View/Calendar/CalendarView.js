@@ -7,7 +7,7 @@ import moment from 'moment';
 export class CalendarView extends React.Component {
 
   static propTypes = {
-    tasks: PropTypes.object.isRequired
+    tasks: PropTypes.object
   };
 
   constructor(props) {
