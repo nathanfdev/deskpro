@@ -5,15 +5,19 @@
     <img src="{{ avatar_url(app.user) }}" alt="{{ app.user }}"/>
 
     <ul class="user-info" style="margin-bottom: 40px;">
+        <li>
+            <a href="{{ path('portal_user_profile') }}">{{ phrase('portal.account.section-title-your-account') }}</a>
+        </li>
+
         {% if ticket_count > 0 %}
             <li>
                 <a href="{{ path('portal_tickets') }}">{{ phrase('portal.general.nav-tickets') }} ({{ ticket_count }})</a>
             </li>
         {% endif %}
 
-        <li>
-            <a href="{{ path('portal_user_profile') }}">{{ phrase('portal.general.nav-profile') }}</a>
-        </li>
+        {% if user.organization and user.organization_manager and ticket_count_org > 0 %}
+            <a href="{{ path('portal_tickets', { type: 'organization' }) }}">{{ phrase('portal.general.nav-tickets-org') }} ({{ ticket_count_org }})</a>
+        {% endif %}
 
         {% if is_agent() %}
             <li>
