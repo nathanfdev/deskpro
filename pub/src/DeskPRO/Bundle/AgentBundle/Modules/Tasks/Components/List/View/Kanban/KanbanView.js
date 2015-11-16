@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { ListGroup } from './ListGroup';
-import { TaskCard } from './TaskCard/TaskCard';
+import { TaskCard } from './TaskCard';
+import { TaskCardContainer } from '../TaskCardContainer';
 
 export class KanbanView extends React.Component {
 
@@ -15,7 +16,11 @@ export class KanbanView extends React.Component {
       <div className="kanban kanban-columns">
         {taskGroups.map(taskGroup =>
           <ListGroup title={taskGroup.get('title')}>
-            {taskGroup.get('elements').map((task, index) => <TaskCard task={task} key={index} />)}
+            {taskGroup.get('elements').map((task, index) =>
+              <TaskCardContainer task={task} key={index}>
+                <TaskCard />
+              </TaskCardContainer>
+            )}
           </ListGroup>
         )}
       </div>
