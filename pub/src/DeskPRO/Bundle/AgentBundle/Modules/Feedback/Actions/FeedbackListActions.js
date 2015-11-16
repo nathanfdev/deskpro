@@ -26,6 +26,11 @@ export const initialLoad = createAction(
       const batch = 'DP_API/batch'
           + '?get[customCategories]=DP_API/feedback/counts?group_by%3Dcustom_category'
           + '&get[types]=DP_API/feedback_types'
+          + '&get[toValidateCount]=DP_API/feedback/counts?awaiting_validation%3D1'
+          + '&get[new]=DP_API/feedback/counts?status%3Dnew%26group_by%3Dstatus_category'
+          + '&get[active]=DP_API/feedback/counts?status%3Dactive%26group_by%3Dstatus_category'
+          + '&get[closed]=DP_API/feedback/counts?status%3Dclosed%26group_by%3Dstatus_category'
+          + '&get[commentsToReviewCount]=DP_API/feedback_comments/counts?awaiting_validation%3D1'
         ;
       DpApi.sendGet(batch).success(({responses}) => {
         const payload = flattenBatchResponses(responses);
@@ -115,8 +120,7 @@ export const loadList = createAction(
             ids.push(feedback.data[index].id);
           }
         }
-        dispatch(setPeopleRequest());
-        //dispatch(getAuthors(feedback));
+        dispatch(setPeopleRequest('feedback', feedback.linked.person));
         dispatch(getCommentsCounter(ids));
         dispatch(getStatuses(ids));
         dispatch(getCategories(ids));

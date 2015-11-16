@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { List } from './List';
-import { peopleSelector, emailsSelector, feedbackTypesSelector, feedbackLabelsSelector, feedbackCommentsSelector,
+import { feedbackTypesSelector, feedbackLabelsSelector, feedbackCommentsSelector,
          feedbackStatusesSelector, feedbackSelector, isCommentsSelector, currentViewModeSelector }
   from '../../Selectors/list';
 import { toggleSelectedAction } from '../../Actions/FeedbackListActions';
@@ -12,8 +12,6 @@ import { connect } from 'react-redux';
     isComments: isCommentsSelector(state),
     selected: state.Feedback.list.get('selected'),
     currentViewMode: currentViewModeSelector(state),
-    people: peopleSelector(state),
-    emails: emailsSelector(state),
     feedbackTypes: feedbackTypesSelector(state),
     feedbackLabels: feedbackLabelsSelector(state),
     feedbackComments: feedbackCommentsSelector(state),

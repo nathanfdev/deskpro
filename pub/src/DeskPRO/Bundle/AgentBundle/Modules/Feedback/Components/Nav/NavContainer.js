@@ -21,8 +21,8 @@ export class NavContainer extends Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    toValidateCount: PropTypes.number.isRequired,
-    commentsToReviewCount: PropTypes.number.isRequired,
+    toValidateCount: PropTypes.object.isRequired,
+    commentsToReviewCount: PropTypes.object.isRequired,
     statuses: PropTypes.object.isRequired,
     labels: PropTypes.object.isRequired,
     types: PropTypes.object.isRequired,
@@ -33,20 +33,20 @@ export class NavContainer extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch(actions.initialLoad());
-   /* // dispatch(loadFeedbackTypes());
-    dispatch(actions.loadLabels());
-    dispatch(actions.feedbackToValidate());
-    dispatch(actions.commentsToReview());
-    // dispatch(actions.feedbackCustomCategories());
-    dispatch(actions.feedbackNew());
-    dispatch(actions.feedbackActiveStatus());
-    dispatch(actions.feedbackClosedStatus());
-    dispatch(actions.feedbackHiddenStatus());*/
+    /* // dispatch(loadFeedbackTypes());
+     dispatch(actions.loadLabels());
+     dispatch(actions.feedbackToValidate());
+     dispatch(actions.commentsToReview());
+     // dispatch(actions.feedbackCustomCategories());
+     dispatch(actions.feedbackNew());
+     dispatch(actions.feedbackActiveStatus());
+     dispatch(actions.feedbackClosedStatus());
+     dispatch(actions.feedbackHiddenStatus());*/
   }
 
   render() {
     const {statuses, toValidateCount, commentsToReviewCount, dispatch, labels, types, customCategories, dpWindow} = this.props;
-    console.log('Types in Nav', types);
+
     return (
       <Nav
         toValidateCount={toValidateCount}
