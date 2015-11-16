@@ -32,8 +32,8 @@ export class TableView extends React.Component {
 
     return (
       <Table>
-          <Header currentOrder={this.state.currentOrder}
-                  currentDirection={this.state.currentDirection}
+          <Header currentSort={this.state.currentOrder}
+                  currentOrder={this.state.currentDirection}
                   onChange={this.onSort} />
 
           {taskGroups

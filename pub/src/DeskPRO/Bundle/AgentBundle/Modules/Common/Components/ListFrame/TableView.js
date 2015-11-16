@@ -37,46 +37,46 @@ export class TableHeader extends Component {
 export class Th extends Component {
 
   static propTypes = {
-    visible: PropTypes.bool,
-    label: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
-    order: PropTypes.string,
-    className: PropTypes.string,
-    isShown: PropTypes.any,
-    sortTable: PropTypes.func
+    title: PropTypes.string.isRequired,
+    sort: PropTypes.string,
+    currentSort: PropTypes.string,
+    currentOrder: PropTypes.string,
+    onChange: PropTypes.func.isRequired,
+    hidden: PropTypes.bool
   };
 
-  handleClick(param, event) {
-    event.preventDefault();
-    event.stopPropagation();
-    const { sortTable, order } = this.props;
-    if (sortTable) {
-      const newOrder = order === constants.ORDER_ASC ? constants.ORDER_DESC : constants.ORDER_ASC;
-      sortTable(param, newOrder);
+  onChange = () => {
+    const { sort, currentSort, currentOrder, onChange } = this.props;
+    if (!onChange) {
+      return;
     }
-  }
 
-  renderCaret() {
-    const { order } = this.props;
-    if (order) {
-      var classes = classNames('fa', {
-        'fa-caret-down': order === constants.ORDER_DESC,
-        'fa-caret-up': order === constants.ORDER_ASC
-      });
-      return (
-        <span className="sort-direction"><i className={classes}></i></span>
-      );
-    }
-  }
+    const newOrder = sort === currentSort && currentOrder === constants.ORDER_DESC
+      ? constants.ORDER_ASC
+      : constants.ORDER_DESC;
+
+    onChange(sort, newOrder);
+  };
 
   render() {
-    const { value, label, className } = this.props;
-    const style = this.props.visible === false ? {display: 'none'} : {};
+    const { sort, currentSort, currentOrder, title, hidden, onChange } = this.props;
 
     return (
-      <th style={style} className={className} onClick={this.handleClick.bind(this, value)}>
-        {label}
-        { this.renderCaret() }
+      <th onClick={this.onChange}
+          className={classNames(
+            {'hidden': hidden},
+            {'sortable': !!onChange}
+          )}>
+
+        {title}
+        {sort && currentSort === sort &&
+          <span>
+            <i className={classNames('fa', {
+              'fa-caret-down': currentOrder === constants.ORDER_DESC,
+              'fa-caret-up': currentOrder === constants.ORDER_ASC
+            })}/>
+          </span>
+        }
       </th>
     );
   }

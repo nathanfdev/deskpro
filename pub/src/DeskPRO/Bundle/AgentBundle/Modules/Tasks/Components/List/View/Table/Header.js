@@ -8,10 +8,10 @@ export class Header extends React.Component {
       <thead>
         <tr>
           <Th />
-          <Th label="Title" value="title" {...this.props} />
-          <Th label="Project" value="project" {...this.props} />
-          <Th label="Due" value="due" {...this.props} />
-          <Th label="Assignee" value="assignee" {...this.props} />
+          <Th title="Title" sort="title" {...this.props} />
+          <Th title="Project" sort="project" {...this.props} />
+          <Th title="Due" sort="due" {...this.props} />
+          <Th title="Assignee" sort="assignee" {...this.props} />
         </tr>
       </thead>
     );
