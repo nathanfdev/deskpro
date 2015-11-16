@@ -36,7 +36,10 @@ export class TableView extends React.Component {
                   currentDirection={this.state.currentDirection}
                   onChange={this.onSort} />
 
-          {taskGroups.map(taskGroup =>
+          {taskGroups
+            .filter(taskGroup => taskGroup.elements.length)
+            .map(taskGroup =>
+
             <ListGroup title={taskGroup.title}>
               {taskGroup.elements.map((task, index) =>
                 <TaskCardContainer task={task} key={index}>
