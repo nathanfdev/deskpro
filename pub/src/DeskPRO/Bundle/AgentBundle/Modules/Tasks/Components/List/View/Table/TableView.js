@@ -38,12 +38,12 @@ export class TableView extends React.Component {
 
           {taskGroups
             .filter(taskGroup => taskGroup.elements.length)
-            .map(taskGroup =>
+            .map((taskGroup, index) =>
 
-            <ListGroup title={taskGroup.title}>
-              {taskGroup.elements.map((task, index) =>
-                <TaskCardContainer task={task} key={index}>
-                  <TaskCard task={task} key={index} />
+            <ListGroup title={taskGroup.title} key={index}>
+              {taskGroup.elements.map(task =>
+                <TaskCardContainer task={task} key={task.get('id')}>
+                  <TaskCard />
                 </TaskCardContainer>
               )}
             </ListGroup>

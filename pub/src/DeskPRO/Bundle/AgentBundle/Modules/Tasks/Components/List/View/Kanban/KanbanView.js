@@ -14,10 +14,10 @@ export class KanbanView extends React.Component {
 
     return (
       <div className="kanban kanban-columns">
-        {taskGroups.map(taskGroup =>
-          <ListGroup title={taskGroup.title}>
-            {taskGroup.elements.map((task, index) =>
-              <TaskCardContainer task={task} key={index}>
+        {taskGroups.map((taskGroup, index) =>
+          <ListGroup title={taskGroup.title} key={index}>
+            {taskGroup.elements.map(task =>
+              <TaskCardContainer task={task} key={task.get('id')}>
                 <TaskCard />
               </TaskCardContainer>
             )}

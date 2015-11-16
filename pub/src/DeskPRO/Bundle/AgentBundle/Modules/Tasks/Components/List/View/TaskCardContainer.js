@@ -9,7 +9,7 @@ import { toggleSelected } from '../../../Actions/listActions';
 export class TaskCardContainer extends React.Component {
 
   static propTypes = {
-    selectedTasks: PropTypes.array.isRequired,
+    selectedTasks: PropTypes.object.isRequired,
     task: PropTypes.object.isRequired,
     children: PropTypes.node.isRequired
   };
