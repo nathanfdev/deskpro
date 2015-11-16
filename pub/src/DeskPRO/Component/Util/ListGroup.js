@@ -19,13 +19,37 @@ const dateGroups = {
   other: {title: 'Other', match: date => moment().isAfter(date, 'year')}
 };
 
+const futureDates = [
+  'hour',
+  'today',
+  'tomorrow',
+  'thisWeek',
+  'nextWeek',
+  'thisMonth',
+  'nextMonth',
+  'thisYear',
+  'other'
+];
+
+const pastDates = [
+  'hour',
+  'today',
+  'yesterday',
+  'thisWeek',
+  'lastWeek',
+  'thisMonth',
+  'lastMonth',
+  'thisYear',
+  'older'
+];
+
 const addGroup = (groups, title, matchFn) => groups.push({
   title: title,
   match: matchFn,
   elements: []
 });
 
-export const dateGroupsBuilder = (groups, dateField, groupKeys) => {
+const dateGroupsBuilder = (groups, dateField, groupKeys) => {
   groupKeys.forEach(groupKey => {
     const dateGroup = dateGroups[groupKey];
     addGroup(
@@ -38,24 +62,63 @@ export const dateGroupsBuilder = (groups, dateField, groupKeys) => {
   addGroup(groups, 'Other', () => true);
 };
 
-export const recordGroupsBuilder = (groups, records, titleField, taskField, emptyTitle = null) => {
+const recordGroupsBuilder = (groups, records, titleField, refField) => {
   records.forEach(record => addGroup(
     groups,
     record.get(titleField),
-    task => task.get(taskField) === record.get('id'))
-  );
+    item => {
+      const id = record.get('id');
+      const value = item.get(refField);
 
-  if (emptyTitle) {
-    addGroup(groups, emptyTitle, () => true);
+      return value && typeof value === 'object' ? value.includes(id) : value === id;
+    }
+  ));
+};
+
+const addDateGroups = (groups, groupConfig) => {
+  let dateGroupKeys = groupConfig.dateGroupKeys;
+  if (dateGroupKeys === 'future') {
+    dateGroupKeys = futureDates;
+  } else if (dateGroupKeys === 'past') {
+    dateGroupKeys = pastDates;
+  }
+
+  dateGroupsBuilder(groups, groupConfig.refField, dateGroupKeys);
+};
+
+const addRecordGroups = (groups, groupConfig) => {
+  if (Array.isArray(groupConfig.records)) {
+    groupConfig.records.forEach(childGroupConfig => addRecordGroups(groups, childGroupConfig));
+  } else {
+    recordGroupsBuilder(groups, groupConfig.records, groupConfig.titleField, groupConfig.refField);
+  }
+  if (groupConfig.emptyGroup) {
+    addGroup(groups, groupConfig.emptyGroup, () => true);
   }
 };
 
-export const groupCollection = (groups, collection) => {
+const getGroups = ({groupKey, options = []}) => {
+  const groupConfig = options[groupKey];
+  const type = groupConfig.type;
+  const groups = [];
+
+  if (type === 'record') {
+    addRecordGroups(groups, groupConfig);
+  } else if (type === 'date') {
+    addDateGroups(groups, groupConfig);
+  }
+
+  return groups;
+};
+
+export const groupCollection = (groupConfig, collection) => {
   let filtered = collection;
+  const groups = getGroups(groupConfig);
+
   groups.forEach(group =>
-    filtered.forEach((task, index) => {
-      if (group.match(task)) {
-        group.elements.push(task);
+    filtered.forEach((item, index) => {
+      if (group.match(item)) {
+        group.elements.push(item);
         filtered = filtered.delete(index);
       }
     })

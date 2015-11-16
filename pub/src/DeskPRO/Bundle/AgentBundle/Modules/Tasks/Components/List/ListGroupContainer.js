@@ -6,7 +6,7 @@ import { allTaskListsSelector } from '../../RecordStores/Selectors/taskListSelec
 import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { agentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
 import { allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
-import { dateGroupsBuilder, recordGroupsBuilder, groupCollection } from 'Util/ListGroup';
+import { groupCollection } from 'Util/ListGroup';
 
 @connect(state => ({
   sort: currentSortSelector(state),
@@ -23,63 +23,72 @@ export class ListGroupContainer extends React.Component {
     children: PropTypes.node.isRequired
   };
 
-  getGroups() {
-    const { sort, lists, projects, agents, agentTeams, departments } = this.props;
-    const groups = [];
-
-    switch (sort) {
-      case 'project':
-        recordGroupsBuilder(groups, projects, 'title', sort, 'None');
-        break;
-      case 'date_due':
-        dateGroupsBuilder(groups, sort, [
-          'hour',
-          'today',
-          'tomorrow',
-          'thisWeek',
-          'nextWeek',
-          'thisMonth',
-          'nextMonth',
-          'thisYear',
-          'other'
-        ]);
-        break;
-      case 'date_done':
-      case 'date_created':
-        dateGroupsBuilder(groups, sort, [
-          'hour',
-          'today',
-          'yesterday',
-          'thisWeek',
-          'lastWeek',
-          'thisMonth',
-          'lastMonth',
-          'thisYear',
-          'older'
-        ]);
-        break;
-      case 'assignee':
-        recordGroupsBuilder(groups, departments, 'title', 'department');
-        recordGroupsBuilder(groups, agentTeams, 'name', 'team');
-        recordGroupsBuilder(groups, agents, 'name', 'agent', 'None');
-        break;
-      default:
-      case 'list':
-        recordGroupsBuilder(groups, lists, 'title', 'list', 'Tasks not in any list');
-        break;
-    }
-
-    return groups;
-  }
-
   render() {
+    const { sort, lists, projects, agents, agentTeams, departments } = this.props;
     const { tasks, children } = this.props;
     const childProps = children.props;
 
+    const groupConfig = {
+      groupKey: sort,
+      options: {
+        project: {
+          type: 'record',
+          records: projects,
+          titleField: 'title',
+          refField: 'project',
+          emptyGroup: 'None'
+        },
+        date_due: {
+          type: 'date',
+          refField: 'date_due',
+          dateGroupKeys: 'future'
+        },
+        date_done: {
+          type: 'date',
+          refField: 'date_done',
+          dateGroupKeys: 'past'
+        },
+        date_created: {
+          type: 'date',
+          refField: 'date_done',
+          dateGroupKeys: 'past'
+        },
+        assignee: {
+          type: 'record',
+          emptyGroup: 'None',
+          records: [
+            {
+              records: departments,
+              titleField: 'title',
+              refField: 'departments'
+            },
+            {
+              records: agentTeams,
+              titleField: 'name',
+              refField: 'teams'
+            },
+            {
+              records: agents,
+              titleField: 'name',
+              refField: 'agents'
+            }
+          ]
+        },
+        list: {
+          type: 'record',
+          records: lists,
+          titleField: 'title',
+          refField: 'list',
+          emptyGroup: 'Tasks not in any list'
+        }
+      }
+    };
+
     return React.cloneElement(children, {
       ...childProps,
+
       tasks: tasks,
-      taskGroups: groupCollection(this.getGroups(), tasks)
+      taskGroups: groupCollection(groupConfig, tasks)
     });
   }
 }
