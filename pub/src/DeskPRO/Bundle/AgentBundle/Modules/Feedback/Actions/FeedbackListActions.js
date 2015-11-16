@@ -29,9 +29,8 @@ export const initialLoad = createAction(
         ;
       DpApi.sendGet(batch).success(({responses}) => {
         const payload = flattenBatchResponses(responses);
-        console.log(payload.customCategories);
         payload.customCategories = payload.customCategories.nested;
-         dispatch(setFeedbackTypesRequest('feedback', payload['types']));
+        dispatch(setFeedbackTypesRequest('feedback', payload.types));
         resolve(payload);
       });
     }

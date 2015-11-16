@@ -44,7 +44,7 @@ export const emailsSelector = createSelector(
 );
 
 export const feedbackTypesSelector = createSelector(
-  createFeedbackTypesRequestSelectors('all').recordsSel,
+  createFeedbackTypesRequestSelectors('feedback').recordsSel,
     types => types
 );
 

@@ -9,6 +9,7 @@ export class TypeTab extends Component {
 
   render() {
     const { types } = this.props;
+    console.log('Types ', types);
     return (
       <ul>
         {types.toArray().map((item, index) =>

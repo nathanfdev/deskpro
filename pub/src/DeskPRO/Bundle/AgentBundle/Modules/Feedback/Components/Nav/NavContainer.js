@@ -46,6 +46,7 @@ export class NavContainer extends Component {
 
   render() {
     const {statuses, toValidateCount, commentsToReviewCount, dispatch, labels, types, customCategories, dpWindow} = this.props;
+    console.log('Types in Nav', types);
     return (
       <Nav
         toValidateCount={toValidateCount}
