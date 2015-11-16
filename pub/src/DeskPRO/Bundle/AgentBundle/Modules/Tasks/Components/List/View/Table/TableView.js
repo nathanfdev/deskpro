@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Header } from './Header/Header';
+import { Header } from './Header';
 import { ListGroup } from './ListGroup';
 import { TaskCardContainer } from '../TaskCardContainer';
 import { TaskCard } from './TaskCard/TaskCard';

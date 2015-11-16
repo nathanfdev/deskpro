@@ -1,5 +1,5 @@
 import React from 'react';
-import { HeaderColumn } from './HeaderColumn';
+import { HeaderColumn } from './Header/HeaderColumn';
 
 export class Header extends React.Component {
 
