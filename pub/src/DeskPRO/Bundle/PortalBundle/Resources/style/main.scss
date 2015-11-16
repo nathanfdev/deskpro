@@ -7310,6 +7310,7 @@ body.with-agent-bar {
       opacity: 0.5;
       margin-right: 5px;
     }
+
     li + li {
       border-top: 1px solid #4a4c4e;
     }
@@ -7321,6 +7322,10 @@ body.with-agent-bar {
     color: inherit;
     font-size: 12px;
     text-decoration: none;
+    height: auto !important;
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
 
