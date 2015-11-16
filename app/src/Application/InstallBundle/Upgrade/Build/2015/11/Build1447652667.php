@@ -26,4 +26,21 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1447652667);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1447652667 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('Upgrade Billing Comment');
+
+        $res = $this->container->getDb()->fetchAll('SELECT * FROM custom_def_billing WHERE title = "Comment";');
+        foreach ($res as $row) {
+            if (false !== $options = unserialize($row['options'])) {
+                $options['attr']['style'] = 'min-width: 99%;';
+                $q                        = 'UPDATE custom_def_billing SET options = "'.addslashes(serialize($options)).'" WHERE id = '.$row['id'];
+                $this->execMutateSql($q);
+            }
+        }
+    }
+}
