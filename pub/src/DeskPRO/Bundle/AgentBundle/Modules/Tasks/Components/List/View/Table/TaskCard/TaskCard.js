@@ -1,14 +1,16 @@
 import React, { PropTypes } from 'react';
 import Moment from 'moment';
-import { Checkbox } from './Checkbox';
 import { BaseTaskCard, ProjectContainer } from '../../../TaskCard/index';
 import { Project } from './Project';
 import { AssigneeContainer } from './AssigneeContainer';
+import { TableCheckbox } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 
 export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
-    task: PropTypes.object.isRequired
+    selected: PropTypes.bool,
+    onToggleSelected: PropTypes.func,
+    task: PropTypes.object
   };
 
   constructor(props) {
@@ -20,12 +22,14 @@ export class TaskCard extends BaseTaskCard {
   }
 
   render() {
-    const { task } = this.props;
+    const { task, selected, onToggleSelected } = this.props;
 
     return (
       <tr key={task.get('id')}>
         <td>
-          <Checkbox selected={this.state.selected} onToggle={this.onToggleSelect} />
+          <TableCheckbox selected={selected} onClick={onToggleSelected} />
+        </td>
+        <td>
           <a href="#">{task.get('title')}</a>
         </td>
         <td>

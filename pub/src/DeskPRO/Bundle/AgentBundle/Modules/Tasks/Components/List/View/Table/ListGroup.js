@@ -14,7 +14,7 @@ export class ListGroup extends React.Component {
     return (
       <tbody>
         <tr className="divider">
-          <td colSpan="4">
+          <td colSpan="5">
             <hr/>
             <ListGroupTitleContainer title={title} />
           </td>

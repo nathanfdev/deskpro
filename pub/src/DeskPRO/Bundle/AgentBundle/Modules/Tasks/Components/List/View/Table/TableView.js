@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Header } from './Header/Header';
 import { ListGroup } from './ListGroup';
+import { TaskCardContainer } from '../TaskCardContainer';
 import { TaskCard } from './TaskCard/TaskCard';
 
 export class TableView extends React.Component {
@@ -37,7 +38,11 @@ export class TableView extends React.Component {
 
           {taskGroups.map(taskGroup =>
             <ListGroup title={taskGroup.get('title')}>
-              {taskGroup.get('elements').map((task, index) => <TaskCard task={task} key={index} />)}
+              {taskGroup.get('elements').map((task, index) =>
+                <TaskCardContainer task={task} key={index}>
+                  <TaskCard task={task} key={index} />
+                </TaskCardContainer>
+              )}
             </ListGroup>
           )}
         </table>

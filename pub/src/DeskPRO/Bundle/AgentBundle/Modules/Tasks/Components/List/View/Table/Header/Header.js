@@ -7,6 +7,7 @@ export class Header extends React.Component {
     return (
       <thead>
         <tr>
+          <HeaderColumn />
           <HeaderColumn title="Title" order="title" {...this.props} />
           <HeaderColumn title="Project" order="project" {...this.props} />
           <HeaderColumn title="Due" order="due" {...this.props} />

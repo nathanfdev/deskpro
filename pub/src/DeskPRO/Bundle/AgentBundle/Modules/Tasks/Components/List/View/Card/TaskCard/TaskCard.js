@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Card, CardCheckbox } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
 import { MarkDoneButton } from './MarkDoneButton';
-import { toggleSelected } from '../../../../../Actions/listActions';
 import {
   BaseTaskCard,
   CardLine,
@@ -19,9 +18,9 @@ import {
 export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
-    selected: PropTypes.bool.isRequired,
-    dispatch: PropTypes.func.isRequired,
-    task: PropTypes.object.isRequired
+    selected: PropTypes.bool,
+    onToggleSelected: PropTypes.func,
+    task: PropTypes.object
   };
 
   onToggleDone = () => {
@@ -57,14 +56,14 @@ export class TaskCard extends BaseTaskCard {
   }
 
   render() {
-    const { task, selected, dispatch } = this.props;
+    const { selected, onToggleSelected } = this.props;
 
     return (
       <Card minimized={this.isMinimized()} type="task">
         <MarkDoneButton isDone={this.state.isDone}
                         onToggle={this.onToggleDone} />
 
-        <CardCheckbox selected={selected} onClick={() => dispatch(toggleSelected(task.get('id')))}/>
+        <CardCheckbox selected={selected} onClick={onToggleSelected} />
         <CardLine>
           <Title value={this.state.title}
                  isDone={this.state.isDone}
