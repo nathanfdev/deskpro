@@ -1276,10 +1276,10 @@ define [
           return {
             getViewValue: (value = {}, data) ->
               options = value?.options || {}
-
               return {
                 op: value.op || 'is',
                 template: options.template || null,
+                custom_email_tpls: me.options_data?.custom_email_tpls
                 with_template: if options.template then true else false
               }
             getValue: (model = {}, data) ->
