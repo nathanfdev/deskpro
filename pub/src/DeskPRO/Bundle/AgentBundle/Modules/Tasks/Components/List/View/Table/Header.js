@@ -1,5 +1,5 @@
 import React from 'react';
-import { HeaderColumn } from './Header/HeaderColumn';
+import { Th } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 
 export class Header extends React.Component {
 
@@ -7,11 +7,11 @@ export class Header extends React.Component {
     return (
       <thead>
         <tr>
-          <HeaderColumn />
-          <HeaderColumn title="Title" order="title" {...this.props} />
-          <HeaderColumn title="Project" order="project" {...this.props} />
-          <HeaderColumn title="Due" order="due" {...this.props} />
-          <HeaderColumn title="Assignee" order="assignee" {...this.props} />
+          <Th />
+          <Th label="Title" value="title" {...this.props} />
+          <Th label="Project" value="project" {...this.props} />
+          <Th label="Due" value="due" {...this.props} />
+          <Th label="Assignee" value="assignee" {...this.props} />
         </tr>
       </thead>
     );
