@@ -46,6 +46,7 @@ class NewOrganization extends AbstractType
             'allow_add'    => true,
             'allow_delete' => true,
         ));
+
         $builder->add('usergroup_ids', 'collection', array(
             'type'         => 'text',
             'required'     => false,

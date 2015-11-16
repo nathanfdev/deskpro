@@ -92,7 +92,6 @@ class NewPerson
         $this->_em->beginTransaction();
 
         $person = new Person();
-        $person->getLabelManager()->setLabelsArray($this->labels);
 
         if ($this->name) {
             $person->name = $this->name;
@@ -141,6 +140,9 @@ class NewPerson
 
         $this->_em->flush();
         $this->_em->commit();
+
+        $person->getLabelManager()->setLabelsArray($this->labels);
+        $this->_em->flush();
 
         if ($this->new_organization && $this->_person_context->hasPerm('agent_org.create')) {
             $org       = new Organization();

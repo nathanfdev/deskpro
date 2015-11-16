@@ -51,6 +51,13 @@ DeskPRO.Agent.PageFragment.Page.NewOrganization = new Orb.Class({
 		var self = this;
 		var formData = this.form.serializeArray();
 
+		this.labelsInput && (this.labelsInput.getLabels() || []).forEach(function(label){
+			formData.push({
+				name: 'neworg[labels][]',
+				value: label.replace(/\r?\n/g, "\r\n")
+			});
+		});
+
 		$.ajax({
 			url: BASE_URL + 'agent/organizations/new/save',
 			type: 'POST',
