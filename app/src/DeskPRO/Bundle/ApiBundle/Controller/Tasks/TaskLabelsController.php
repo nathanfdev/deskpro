@@ -48,6 +48,9 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class TaskLabelsController.
+ */
 class TaskLabelsController extends BaseController implements ClassResourceInterface
 {
     /**
@@ -227,10 +230,7 @@ class TaskLabelsController extends BaseController implements ClassResourceInterf
         $this->getDoctrine()->getManager()->remove($label);
         $this->getDoctrine()->getManager()->flush();
 
-        return View::create(
-            array(),
-            Response::HTTP_OK
-        );
+        return View::create([], Response::HTTP_OK);
     }
 
     /**
@@ -275,14 +275,14 @@ class TaskLabelsController extends BaseController implements ClassResourceInterf
             $this->getDoctrine()->getManager()->persist($label);
             $this->getDoctrine()->getManager()->flush();
 
-            $location = $this->generateUrl('api_task_labels_get', array('id' => $label->getId()));
+            $location = $this->generateUrl('api_task_labels_get', ['id' => $label->getId()]);
 
             return View::create(
                 $this->dataSerialize($label),
                 $status,
-                array(
+                [
                     'Location' => $location,
-                )
+                ]
             );
         }
 
