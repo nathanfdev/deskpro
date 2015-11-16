@@ -76,10 +76,10 @@ class TicketMessageType extends AbstractType
             'mapped'      => false,
         ));
 
-        $builder->add('message_html', 'textarea', array(
-            'attr'        => ['data-rte-field' => 'html', 'style' => 'display:none'], // style is hidden by default, we show with JS
-            'label'       => false,
-            'mapped'      => false,
+        $builder->add('message_html', 'html_textarea', array(
+            'attr'         => ['data-rte-field' => 'html', 'style' => 'display:none'], // style is hidden by default, we show with JS
+            'label'        => false,
+            'mapped'       => false,
         ));
 
         $builder->add('message_format', 'hidden', array(
