@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { ListGroupTitleContainer } from '../ListGroupTitleContainer';
 
 export class ListGroup extends React.Component {
 

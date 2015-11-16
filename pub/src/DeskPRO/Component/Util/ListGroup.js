@@ -41,7 +41,7 @@ const pastDates = [
   'older'
 ];
 
-const addGroup = (groups, title, matchFn) => groups.push({
+const createGroup = (title, matchFn) => ({
   title: title,
   match: matchFn,
   elements: []
@@ -50,19 +50,17 @@ const addGroup = (groups, title, matchFn) => groups.push({
 const dateGroupsBuilder = (groups, dateField, groupKeys) => {
   groupKeys.forEach(groupKey => {
     const dateGroup = dateGroups[groupKey];
-    addGroup(
-      groups,
+    groups.push(createGroup(
       dateGroup.title,
       task => dateGroup.match(task.get(dateField))
-    );
+    ));
   });
 
-  addGroup(groups, 'Other', () => true);
+  groups.push(createGroup('Other', () => true));
 };
 
 const recordGroupsBuilder = (groups, records, titleField, refField) => {
-  records.forEach(record => addGroup(
-    groups,
+  records.forEach(record => groups.push(createGroup(
     record.get(titleField),
     item => {
       const id = record.get('id');
@@ -70,7 +68,7 @@ const recordGroupsBuilder = (groups, records, titleField, refField) => {
 
       return value && typeof value === 'object' ? value.includes(id) : value === id;
     }
-  ));
+  )));
 };
 
 const addDateGroups = (groups, groupConfig) => {
@@ -93,7 +91,7 @@ const addRecordGroups = (groups, groupConfig) => {
     recordGroupsBuilder(groups, groupConfig.records, groupConfig.titleField, groupConfig.refField);
   }
   if (groupConfig.emptyGroup) {
-    addGroup(groups, groupConfig.emptyGroup, () => true);
+    groups.push(createGroup(groupConfig.emptyGroup, () => true));
   }
 };
 
