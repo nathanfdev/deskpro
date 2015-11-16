@@ -1,5 +1,5 @@
 import { createReducer } from 'Ampliflux';
-import { setFullPayload, setValue, async, togglePayloadInCollection } from 'Ampliflux/reducers/handlers';
+import { setFullPayload, setValue, async, togglePayloadInCollection, handleMassAction } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/listActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
@@ -17,6 +17,7 @@ const initialState = {
     [constants.VIEW_MODE_CALENDAR]: []
   },
   elements: {},
+  selected: [],
   view: 'card',
   async: {
     done: null
@@ -30,6 +31,8 @@ export default createReducer(initialState, {
   [actions.toggleTableFieldVisibility]: togglePayloadInCollection(`visibleFields.${constants.VIEW_MODE_TABLE}`),
   [actions.toggleKanbanFieldVisibility]: togglePayloadInCollection(`visibleFields.${constants.VIEW_MODE_KANBAN}`),
   [actions.toggleCalendarFieldVisibility]: togglePayloadInCollection(`visibleFields.${constants.VIEW_MODE_CALENDAR}`),
+  [actions.toggleSelected]: togglePayloadInCollection('selected'),
+  [actions.toggleAll]: handleMassAction('elements', 'selected'),
   [actions.unload]: setValue('elements', []),
   [actions.loadList]: async({
     success: setFullPayload('elements'),

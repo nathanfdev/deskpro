@@ -18,6 +18,9 @@ export const toggleCardFieldVisibility = createAction('TASKS_LIST_TOGGLE_CARD_FI
 export const toggleKanbanFieldVisibility = createAction('TASKS_LIST_TOGGLE_KANBAN_FIELD_VISIBILITY');
 export const toggleCalendarFieldVisibility = createAction('TASKS_LIST_TOGGLE_CALENDAR_FIELD_VISIBILITY');
 
+export const toggleSelected = createAction('TASKS_LIST_TOGGLE_SELECTED');
+export const toggleAll = createAction('TASKS_LIST_TOGGLE_ALL_ACTION');
+
 export const unload = createAction('TASKS_LIST_UNLOAD');
 export const loadList = createAction(
   'TASKS_LIST_LOAD',
