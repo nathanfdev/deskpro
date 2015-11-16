@@ -48,10 +48,10 @@ $em->getConnection()->executeUpdate(
 $em->getConnection()->executeUpdate(
     "
 INSERT INTO `labels_feedback` (`feedback_id`, `label`) VALUES
-(1, 'label1'),
-(1, 'label2'),
-(2, 'label1'),
-(3, 'another');
+(1, 'First feedback label'),
+(1, 'Second feedback label'),
+(2, 'First feedback label'),
+(3, 'Third feedback label');
 "
 );
 

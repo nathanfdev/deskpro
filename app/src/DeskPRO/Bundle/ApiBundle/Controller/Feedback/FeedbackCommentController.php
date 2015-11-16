@@ -74,16 +74,20 @@ class FeedbackCommentController extends BaseController
             ->from('DeskPRO:FeedbackComment', 'c')
             ->innerJoin('c.feedback', 'feedback');
         $awaitingValidation = $request->get('awaiting_validation');
-        $sort               = $request->get('sort');
-        $order              = $request->get('order');
-        $category           = $request->get('category');
-        $custom_category    = $request->get('custom_category');
-        $status             = $request->get('status');
-        $status_category    = $request->get('status_category');
+        $sort = $request->get('sort');
+        $order = $request->get('order');
+        $category = $request->get('category');
+        $custom_category = $request->get('custom_category');
+        $status = $request->get('status');
+        $status_category = $request->get('status_category');
+        $labels = $request->get('labels');
         if ($awaitingValidation) {
             $qb
                 ->andWhere('c.status IN (:validating)')
-                ->setParameter('validating', [FeedbackComment::STATUS_VALIDATING, FeedbackComment::STATUS_USER_VALIDATING])
+                ->setParameter(
+                    'validating',
+                    [FeedbackComment::STATUS_VALIDATING, FeedbackComment::STATUS_USER_VALIDATING]
+                )
                 ->orWhere('c.is_reviewed = 0');
         }
         if ($sort && $order) {
@@ -111,6 +115,12 @@ class FeedbackCommentController extends BaseController
                 ->innerJoin('feedback.status_category', 'statusCategory')
                 ->andWhere('statusCategory.title IN (:title)')
                 ->setParameter('title', $status_category);
+        }
+        if ($labels) {
+            $qb
+                ->innerJoin('feedback.labels', 'labels')
+                ->andWhere('labels.label IN (:labels)')
+                ->setParameter('labels', $labels);
         }
         $comments = $qb->getQuery()->getResult();
 
@@ -302,7 +312,7 @@ class FeedbackCommentController extends BaseController
     /**
      * Will be abstracted for use by other controllers.
      *
-     * @param Request         $request
+     * @param Request $request
      * @param FeedbackComment $comment
      *
      * @throws AlreadySubmittedException
