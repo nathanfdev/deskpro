@@ -1,9 +1,14 @@
 import React, { PropTypes } from 'react';
-import { Card, CardCheckbox } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
 import { MarkDoneButton } from './MarkDoneButton';
 import {
-  BaseTaskCard,
+  Card,
+  CardCheckbox,
   CardLine,
+  CardLineLeft,
+  CardLineRight
+} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
+import {
+  BaseTaskCard,
   Title,
   DateDue,
   SubTasks,
@@ -32,25 +37,24 @@ export class TaskCard extends BaseTaskCard {
   renderDetails() {
     return (
       <CardLine>
-        <div>
-            <DateDue value={this.state.dateDue}
-                     onChange={this.onChangeDate} />
+        <CardLineLeft>
+          <DateDue value={this.state.dateDue}
+                   onChange={this.onChangeDate} />
 
-            {this.state.project &&
-              <ProjectContainer project={this.state.project}>
-                <CardProject />
-              </ProjectContainer>
-            }
-            {this.state.ticketLink && <TicketLinkContainer ticket={this.state.ticketLink} />}
-        </div>
-
-        <div>
-            <Comments count={this.state.comments} />
-            {this.state.subTasks.total > 0 &&
-              <SubTasks current={this.state.subTasks.current}
-                        total={this.state.subTasks.total} />
-            }
-        </div>
+          {this.state.project &&
+            <ProjectContainer project={this.state.project}>
+              <CardProject />
+            </ProjectContainer>
+          }
+          {this.state.ticketLink && <TicketLinkContainer ticket={this.state.ticketLink} />}
+        </CardLineLeft>
+        <CardLineRight>
+          <Comments count={this.state.comments} />
+          {this.state.subTasks.total > 0 &&
+            <SubTasks current={this.state.subTasks.current}
+                      total={this.state.subTasks.total} />
+          }
+        </CardLineRight>
       </CardLine>
     );
   }
@@ -65,15 +69,18 @@ export class TaskCard extends BaseTaskCard {
 
         <CardCheckbox selected={selected} onClick={onToggleSelected} />
         <CardLine>
-          <Title value={this.state.title}
-                 isDone={this.state.isDone}
-                 onChange={this.onTitleChange} />
-
-          {this.state.isDone
-            ? <ShowDetailsButton expanded={this.state.expanded}
-                                 onToggleExpand={this.onToggleExpand}/>
-            : <AssignButton task={this.props.task} />
-          }
+          <CardLineLeft>
+            <Title value={this.state.title}
+                   isDone={this.state.isDone}
+                   onChange={this.onTitleChange} />
+          </CardLineLeft>
+          <CardLineRight>
+            {this.state.isDone
+              ? <ShowDetailsButton expanded={this.state.expanded}
+                                   onToggleExpand={this.onToggleExpand}/>
+              : <AssignButton task={this.props.task} />
+            }
+          </CardLineRight>
         </CardLine>
 
         {!this.isMinimized() && this.renderDetails()}
