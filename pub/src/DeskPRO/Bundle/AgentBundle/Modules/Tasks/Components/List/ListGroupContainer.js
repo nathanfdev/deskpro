@@ -41,7 +41,7 @@ export class ListGroupContainer extends React.Component {
         date_due: {
           type: 'date',
           refField: 'date_due',
-          dateGroupKeys: 'future'
+          dateGroupKeys: 'all'
         },
         date_done: {
           type: 'date',

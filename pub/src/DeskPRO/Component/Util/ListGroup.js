@@ -15,8 +15,7 @@ const dateGroups = {
   nextMonth: {title: 'Next Month', match: date => moment().add(1, 'month').isSame(date, 'month')},
 
   older: {title: 'Older', match: date => moment().isBefore(date, 'year')},
-  thisYear: {title: 'This Year', match: date => moment().isSame(date, 'year')},
-  other: {title: 'Other', match: date => moment().isAfter(date, 'year')}
+  thisYear: {title: 'This Year', match: date => moment().isSame(date, 'year')}
 };
 
 const futureDates = [
@@ -27,8 +26,7 @@ const futureDates = [
   'nextWeek',
   'thisMonth',
   'nextMonth',
-  'thisYear',
-  'other'
+  'thisYear'
 ];
 
 const pastDates = [
@@ -81,6 +79,8 @@ const addDateGroups = (groups, groupConfig) => {
     dateGroupKeys = futureDates;
   } else if (dateGroupKeys === 'past') {
     dateGroupKeys = pastDates;
+  } else if (dateGroupKeys === 'all') {
+    dateGroupKeys = Object.keys(dateGroups);
   }
 
   dateGroupsBuilder(groups, groupConfig.refField, dateGroupKeys);
