@@ -3,6 +3,7 @@ import { Header } from './Header/Header';
 import { ListGroup } from './ListGroup';
 import { TaskCardContainer } from '../TaskCardContainer';
 import { TaskCard } from './TaskCard/TaskCard';
+import { Table } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 
 export class TableView extends React.Component {
 
@@ -30,8 +31,7 @@ export class TableView extends React.Component {
     const { taskGroups = [] } = this.props;
 
     return (
-      <div>
-        <table cellSpacing="0" className="condensed-task-list">
+      <Table>
           <Header currentOrder={this.state.currentOrder}
                   currentDirection={this.state.currentDirection}
                   onChange={this.onSort} />
@@ -48,8 +48,7 @@ export class TableView extends React.Component {
               )}
             </ListGroup>
           )}
-        </table>
-      </div>
+      </Table>
     );
   }
 }

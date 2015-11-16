@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
-import { TableView, TableHeader, Th, TableBody, Row, Td, IdContainer, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { Table, TableHeader, Th, TableBody, Row, Td, IdContainer, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { feedbackSelector } from '../../../../Selectors/list';
 import { feedbackTypesSelector, feedbackCommentsSelector, feedbackCategoriesSelector, peopleSelector, emailsSelector } from '../../../../Selectors/list';
 import { defaultTableFields } from '../../../List/ControlBar/FeedbackViewOptions';
@@ -94,7 +94,7 @@ export class FeedbackCommentTableContainer extends Component {
     tableFields = { ...ownViewFields, ...tableFields };
 
     return (
-      <TableView>
+      <Table>
         <TableHeader>
           <tr>
             {tableFields.comment_id.isShown ?
@@ -194,7 +194,7 @@ export class FeedbackCommentTableContainer extends Component {
             }
           )}
         </TableBody>
-      </TableView>
+      </Table>
     );
   }
 }
