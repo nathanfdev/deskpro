@@ -7,7 +7,7 @@ import { TaskCard } from './TaskCard/TaskCard';
 export class TableView extends React.Component {
 
   static propTypes = {
-    taskGroups: PropTypes.object
+    taskGroups: PropTypes.array
   };
 
   constructor(props) {
@@ -37,8 +37,8 @@ export class TableView extends React.Component {
                   onChange={this.onSort} />
 
           {taskGroups.map(taskGroup =>
-            <ListGroup title={taskGroup.get('title')}>
-              {taskGroup.get('elements').map((task, index) =>
+            <ListGroup title={taskGroup.title}>
+              {taskGroup.elements.map((task, index) =>
                 <TaskCardContainer task={task} key={index}>
                   <TaskCard task={task} key={index} />
                 </TaskCardContainer>

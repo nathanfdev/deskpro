@@ -6,7 +6,7 @@ import { TaskCard } from './TaskCard/TaskCard';
 export class CardView extends React.Component {
 
   static propTypes = {
-    taskGroups: PropTypes.object
+    taskGroups: PropTypes.array
   };
 
   render() {
@@ -15,8 +15,8 @@ export class CardView extends React.Component {
     return (
       <div>
         {taskGroups.map(taskGroup =>
-          <ListGroup title={taskGroup.get('title')}>
-            {taskGroup.get('elements').map((task, index) =>
+          <ListGroup title={taskGroup.title}>
+            {taskGroup.elements.map((task, index) =>
               <TaskCardContainer task={task} key={index}>
                 <TaskCard />
               </TaskCardContainer>

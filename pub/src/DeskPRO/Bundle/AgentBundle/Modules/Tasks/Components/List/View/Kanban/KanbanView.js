@@ -6,7 +6,7 @@ import { TaskCardContainer } from '../TaskCardContainer';
 export class KanbanView extends React.Component {
 
   static propTypes = {
-    taskGroups: PropTypes.object
+    taskGroups: PropTypes.array
   };
 
   render() {
@@ -15,8 +15,8 @@ export class KanbanView extends React.Component {
     return (
       <div className="kanban kanban-columns">
         {taskGroups.map(taskGroup =>
-          <ListGroup title={taskGroup.get('title')}>
-            {taskGroup.get('elements').map((task, index) =>
+          <ListGroup title={taskGroup.title}>
+            {taskGroup.elements.map((task, index) =>
               <TaskCardContainer task={task} key={index}>
                 <TaskCard />
               </TaskCardContainer>

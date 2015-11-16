@@ -1,90 +1,85 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { currentSortSelector } from '../../Selectors/list';
-import moment from 'moment';
-import Immutable from 'immutable';
-
-const dateGroups = [
-  {title: 'This Hour', match: date => moment().isSame(date, 'hour')},
-  {title: 'Yesterday', match: date => moment().subtract(1, 'day').isSame(date, 'day')},
-  {title: 'Today', match: date => moment().isSame(date, 'day')},
-  {title: 'Tomorrow', match: date => moment().add(1, 'day').isSame(date, 'day')},
-
-  {title: 'Last Week', match: date => moment().subtract(1, 'week').isSame(date, 'week')},
-  {title: 'This Week', match: date => moment().isSame(date, 'week')},
-  {title: 'Next Week', match: date => moment().add('week').isSame(date, 'week')},
-
-  {title: 'Last Month', match: date => moment().subtract(1, 'month').isSame(date, 'month')},
-  {title: 'This Month', match: date => moment().isSame(date, 'month')},
-  {title: 'Next Month', match: date => moment().add(1, 'month').isSame(date, 'month')},
-
-  {title: 'Older', match: date => moment().isBefore(date, 'year')},
-  {title: 'This Year', match: date => moment().isSame(date, 'year')},
-  {title: 'Other', match: date => moment().isAfter(date, 'year')}
-];
+import { allProjectsSelector } from '../../RecordStores/Selectors/projectSelectors';
+import { allTaskListsSelector } from '../../RecordStores/Selectors/taskListSelectors';
+import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
+import { agentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
+import { allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
+import { dateGroupsBuilder, recordGroupsBuilder, groupCollection } from 'Util/ListGroup';
 
 @connect(state => ({
-  sort: currentSortSelector(state)
+  sort: currentSortSelector(state),
+  lists: allTaskListsSelector(state),
+  projects: allProjectsSelector(state),
+  agents: agentsSelector(state),
+  agentTeams: agentTeamsSelector(state),
+  departments: allDepartmentsSelector(state)
 }))
 export class ListGroupContainer extends React.Component {
 
   static propTypes = {
-    tasks: PropTypes.object
+    tasks: PropTypes.object,
+    children: PropTypes.node.isRequired
   };
 
-  getGroupKey(task) {
-    const dateFilter = date => {
-      const matched = dateGroups.filter(group => group.match(date)).shift();
-      return matched ? matched.title : 'Other';
-    };
+  getGroups() {
+    const { sort, lists, projects, agents, agentTeams, departments } = this.props;
+    const groups = [];
 
-    switch (this.props.sort) {
+    switch (sort) {
       case 'project':
-        return task.get('project') ? ['project', task.get('project')] : 'None';
+        recordGroupsBuilder(groups, projects, 'title', sort, 'None');
+        break;
       case 'date_due':
-        return dateFilter(task.get('date_due'));
+        dateGroupsBuilder(groups, sort, [
+          'hour',
+          'today',
+          'tomorrow',
+          'thisWeek',
+          'nextWeek',
+          'thisMonth',
+          'nextMonth',
+          'thisYear',
+          'other'
+        ]);
+        break;
       case 'date_done':
-        return dateFilter(task.get('date_done'));
       case 'date_created':
-        return dateFilter(task.get('date_created'));
+        dateGroupsBuilder(groups, sort, [
+          'hour',
+          'today',
+          'yesterday',
+          'thisWeek',
+          'lastWeek',
+          'thisMonth',
+          'lastMonth',
+          'thisYear',
+          'older'
+        ]);
+        break;
       case 'assignee':
-        if (task.get('agents').size) {
-          return ['agent', task.get('agents').first()];
-        } else if (task.get('teams').size) {
-          return ['team', task.get('teams').first()];
-        } else if (task.get('departments').size) {
-          return ['department', task.get('departments').first()];
-        }
-
-        return 'None';
-      case 'list':
+        recordGroupsBuilder(groups, departments, 'title', 'department');
+        recordGroupsBuilder(groups, agentTeams, 'name', 'team');
+        recordGroupsBuilder(groups, agents, 'name', 'agent', 'None');
+        break;
       default:
-        return task.get('list') ? ['list', task.get('list')] : 'Tasks not in any list';
+      case 'list':
+        recordGroupsBuilder(groups, lists, 'title', 'list', 'Tasks not in any list');
+        break;
     }
+
+    return groups;
   }
 
   render() {
-    const { tasks } = this.props;
-    const child = this.props.children;
-    const childProps = child.props;
-    const taskGroups = {};
+    const { tasks, children } = this.props;
+    const childProps = children.props;
 
-    tasks.forEach(task => {
-      const groupTitle = this.getGroupKey(task);
-      if (!taskGroups[groupTitle]) {
-        taskGroups[groupTitle] = {
-          title: groupTitle,
-          elements: []
-        };
-      }
-
-      taskGroups[groupTitle].elements.push(task);
-    });
-
-    return React.cloneElement(child, {
+    return React.cloneElement(children, {
       ...childProps,
       tasks: tasks,
-      taskGroups: Immutable.fromJS(taskGroups)
+      taskGroups: groupCollection(this.getGroups(), tasks)
     });
   }
 }
