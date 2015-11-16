@@ -1,7 +1,7 @@
 import { createAction } from 'Ampliflux';
 import * as Feedback from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
 import * as PersonSetting from 'DeskPRO/Bundle/AgentBundle/Services/Api/PersonSetting';
-import { loadPeople } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
+import { loadPeople, setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 import { loadEmails } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/emailsActions';
 import { loadFeedbackCommentsCounter } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCommentsActions';
 import { loadFeedbackStatuses } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackStatusesActions';
@@ -10,12 +10,33 @@ import { currentListParamsSelector } from '../Selectors/list';
 import { getFeedbackForComments } from './FeedbackCommentsActions';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import { reduceMapToProperty } from 'DeskPRO/Component/Util/Map';
+import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
+import { setFeedbackTypesRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackTypesActions';
 
 /**
  * Used to identify requests within record stores
  * @type {string}
  */
 const recordStoresId = 'feedback';
+
+export const initialLoad = createAction(
+  'FEEDBACK_NAV_INITIAL_LOAD',
+  () => (dispatch) => new Promise(
+    (resolve) => {
+      const batch = 'DP_API/batch'
+          + '?get[customCategories]=DP_API/feedback/counts?group_by%3Dcustom_category'
+          + '&get[types]=DP_API/feedback_types'
+        ;
+      DpApi.sendGet(batch).success(({responses}) => {
+        const payload = flattenBatchResponses(responses);
+        console.log(payload.customCategories);
+        payload.customCategories = payload.customCategories.nested;
+         dispatch(setFeedbackTypesRequest('feedback', payload['types']));
+        resolve(payload);
+      });
+    }
+  )
+);
 
 export const getAuthors = createAction(
   'FEEDBACK_GET_AUTHORS',
@@ -60,7 +81,7 @@ export const setParams = createAction('FEEDBACK_LIST_SET_CURRENT_PARAMS');
 
 export const loadList = createAction(
   'FEEDBACK_LIST',
-  listParams => dispatch=> {
+  (listParams) => dispatch => {
     let params = listParams;
 
     const { navItem } = params;
@@ -95,7 +116,8 @@ export const loadList = createAction(
             ids.push(feedback.data[index].id);
           }
         }
-        dispatch(getAuthors(feedback));
+        dispatch(setPeopleRequest());
+        //dispatch(getAuthors(feedback));
         dispatch(getCommentsCounter(ids));
         dispatch(getStatuses(ids));
         dispatch(getCategories(ids));
@@ -174,7 +196,7 @@ export const applyParams = createAction(
   'FEEDBACK_APPLY_LIST_PARAMS',
   (overwrite = {}) => (dispatch, getState) => {
     const current = currentListParamsSelector(getState()).toJS();
-    const params = {...current, ...overwrite};
+    const params = { ...current, ...overwrite };
     dispatch(setParams(params));
     if (params.navItem) {
       dispatch(loadList(params));
@@ -183,9 +205,9 @@ export const applyParams = createAction(
 );
 export const setSort = createAction(
   'FEEDBACK_LIST_SET_SORT',
-  sort => dispatch => dispatch(applyParams({sort}))
+    sort => dispatch => dispatch(applyParams({ sort }))
 );
 export const setOrder = createAction(
   'FEEDBACK_LIST_SET_ORDER',
-  order => dispatch => dispatch(applyParams({order}))
+    order => dispatch => dispatch(applyParams({ order }))
 );

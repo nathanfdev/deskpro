@@ -1,5 +1,5 @@
 import { createReducer } from 'Ampliflux';
-import { async, setFullPayload } from 'Ampliflux/reducers/handlers';
+import { async, setFullPayload, mergeFullPayload, setValue } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/FeedbackListActions';
 import Immutable from 'immutable';
 
@@ -67,5 +67,11 @@ export default createReducer(initialState, {
       state
         .setIn(['statuses', 'hidden'], payload.data)
   }),
-  [actions.loadLabels]: async({success: setFullPayload('labels')})
+  [actions.loadLabels]: async({success: setFullPayload('labels')}),
+
+  [actions.initialLoad]: async({
+    success: mergeFullPayload(),
+    start: setValue('async.done', false),
+    done: setValue('async.done', true)
+  })
 });

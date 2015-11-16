@@ -10,17 +10,20 @@ export class CategoryTab extends Component {
 
   render() {
     const { customCategories } = this.props;
+    console.log(customCategories.toArray());
 
     return (
       <ul>
-        {customCategories.toJS().map((item, index) =>
-            <ListItemContainer key={index}
-                               label={item.group}
-                               listOptions={{isComments: false, navItem: {custom_category: item.group}}}>
+        {customCategories.toArray().map((item, index) => {
+            console.log('Item', item);
+           return ( <ListItemContainer key={index}
+                               label={item.get('group')}
+                               listOptions={{isComments: false, navItem: {custom_category: item.get('group')}}}>
 
-              <ListItem count={item.count}
-                        label={item.group} />
-            </ListItemContainer>
+              <ListItem count={item.get('count')}
+                        label={item.get('group')} />
+            </ListItemContainer> )
+          }
         )}
       </ul>
     );

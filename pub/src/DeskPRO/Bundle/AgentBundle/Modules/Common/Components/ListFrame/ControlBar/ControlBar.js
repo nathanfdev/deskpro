@@ -66,7 +66,6 @@ export class ControlBar extends Component {
 
   render() {
     const { checkbox, sorting, filtering, view } = this.props;
-    console.log(filtering);
 
     return (
       <ListFrameMenu>

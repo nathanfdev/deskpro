@@ -32,16 +32,16 @@ export class NavContainer extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
-
-    dispatch(loadFeedbackTypes());
+    dispatch(actions.initialLoad());
+   /* // dispatch(loadFeedbackTypes());
     dispatch(actions.loadLabels());
     dispatch(actions.feedbackToValidate());
     dispatch(actions.commentsToReview());
-    dispatch(actions.feedbackCustomCategories());
+    // dispatch(actions.feedbackCustomCategories());
     dispatch(actions.feedbackNew());
     dispatch(actions.feedbackActiveStatus());
     dispatch(actions.feedbackClosedStatus());
-    dispatch(actions.feedbackHiddenStatus());
+    dispatch(actions.feedbackHiddenStatus());*/
   }
 
   render() {

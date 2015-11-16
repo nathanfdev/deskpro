@@ -137,6 +137,8 @@ class FeedbackSelectCriteria extends Criteria
     {
         $resolver->setDefined(
             [
+                'include',
+                'include_headers',
                 'awaiting_validation',
                 'status',
                 'hidden_status',

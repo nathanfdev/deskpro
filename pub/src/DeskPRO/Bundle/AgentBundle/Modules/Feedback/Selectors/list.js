@@ -82,7 +82,6 @@ export const listFiltersSelector = createSelector(
       { label: 'Date', type: 'date', fromParam: 'created_from', toParam: 'created_to' },
       { label: 'Labels', type: 'labels', param: 'labels', modeParam: 'labels_mode', labels: labels }
     ];
-    console.log('Current list params', currentListParams);
     if (!currentListParams.get('navItem') || !currentListParams.get('navItem').get('category')) {
       // Type options
       const typeOptions = types.toArray().map(type => ({ value: type.get('id'), label: type.get('title') }));
