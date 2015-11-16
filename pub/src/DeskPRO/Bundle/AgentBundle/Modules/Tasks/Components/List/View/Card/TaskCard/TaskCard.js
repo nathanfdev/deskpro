@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
-import { Card } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
-import { Checkbox } from './Checkbox';
+import { Card, CardCheckbox } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
 import { MarkDoneButton } from './MarkDoneButton';
+import { toggleSelected } from '../../../../../Actions/listActions';
 import {
   BaseTaskCard,
   CardLine,
@@ -19,6 +19,8 @@ import {
 export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
+    selected: PropTypes.bool.isRequired,
+    dispatch: PropTypes.func.isRequired,
     task: PropTypes.object.isRequired
   };
 
@@ -55,14 +57,14 @@ export class TaskCard extends BaseTaskCard {
   }
 
   render() {
+    const { task, selected, dispatch } = this.props;
+
     return (
       <Card minimized={this.isMinimized()} type="task">
         <MarkDoneButton isDone={this.state.isDone}
                         onToggle={this.onToggleDone} />
 
-
-        <Checkbox selected={this.state.selected}
-                  onToggle={this.onToggleSelect} />
+        <CardCheckbox selected={selected} onClick={() => dispatch(toggleSelected(task.get('id')))}/>
         <CardLine>
           <Title value={this.state.title}
                  isDone={this.state.isDone}
