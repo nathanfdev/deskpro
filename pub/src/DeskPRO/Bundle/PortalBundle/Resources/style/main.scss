@@ -6838,6 +6838,95 @@ ul.categories-article-list {
   padding-bottom: 60px;
 }
 
+
+// Welcome block placement
+// Keeping the styles clean - these make sure the overlapping double borders on the
+// welcome block work.
+.welcome-block-wrapper { padding-right: 5px; }
+
+.welcome-block-second-border {
+  border: 1px solid $welcome-block-border-color;
+  position: relative;
+  right: -6px;
+  bottom: -5px;
+}
+
+.welcome-block {
+  position: relative;
+  left: -6px;
+  top: -5px;
+}
+
+.welcome-block {
+  border: 1px solid $welcome-block-border-color;
+  border-radius: 2px;
+  padding: 30px;
+  text-align: center;
+  width: 100%;
+  background: #fff;
+
+  h1 {
+    font-weight: 300;
+    font-size: 20px;
+    color: $welcome-block-title-color;
+    margin-bottom: 10px;
+  }
+
+  h3 {
+    font-size: 15px;
+    font-weight: 300;
+    color: $welcome-block-title-color;
+    opacity: 0.7;
+    margin-top: 20px;
+  }
+
+  p {
+    font-size: 12.5px;
+    display: inline-block;
+    max-width: 700px;
+    color: $welcome-block-text-color;
+  }
+
+  .welcome-block-social-media {
+
+    h3 {
+      position: relative;
+      display: inline-block;
+
+      &:before, &:after {
+        content: "";
+        position: absolute;
+        display: block;
+        width: 90px;
+        height: 1px;
+        background: $welcome-block-border-color;
+        top: 13px;
+      }
+      &:before { left: -100px; }
+      &:after { right: -100px; }
+    }
+    a {
+      font-size: 24px;
+      color: $welcome-block-text-color;
+      opacity: 0.6;
+      margin: 10px 15px;
+      &:hover {
+        opacity: 1;
+        color: $welcome-block-badger-blue;
+      }
+    }
+  }
+
+  ul {
+    display: block;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    margin-top: 15px;
+    li { display: inline-block; }
+  }
+}
+
 ul.big-button-collection {
   margin: 0;
   padding: 0;
