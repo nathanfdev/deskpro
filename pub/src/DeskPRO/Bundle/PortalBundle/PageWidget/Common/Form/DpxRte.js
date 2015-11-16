@@ -9,27 +9,23 @@ import PageWidget from "DeskPRO/Component/PageWidget/PageWidget";
  *  html     -- a hidden form element containing HTML code
  *  format   -- a hidden form element containing the edit mode we're in (text/html)
  *
- *  If this browser is able to use the RTE, then we copy the HTML
- *  from the html field into the textarea, then add the RTE on that
- *  textarea, then switch the format to 'html'.
- *
- *  On the back-end, we know how to treat the textarea based on the 'format'.
- *  The value of the html field is now ignored, because the textarea will always
- *  be the content we need to process.
+ *  If this browser is able to use the RTE, then we hide the txt field,
+ *  show the html field, and set the format to html
  */
 export default class DpxRte extends PageWidget {
   renderWidget() {
-    const $txt     = this.$element.find('textarea[data-rte-field="text"]');
-    const $html    = this.$element.find('input[data-rte-field="html"]');
-    const $format  = this.$element.find('input[data-rte-field="format"]');
+    const $textTextarea = this.$element.find('textarea[data-rte-field="text"]');
+    const $htmlTextarea = this.$element.find('textarea[data-rte-field="html"]');
+    const $format       = this.$element.find('input[data-rte-field="format"]');
 
-    $txt.val($html.val());
-    $txt.wrap('<div class="dp-medium-rte-wrapper as-dpui" />');
+    $htmlTextarea.wrap('<div class="dp-medium-rte-wrapper as-dpui" />');
+    const $wrap = $htmlTextarea.parent();
 
-    const $wrap = $txt.parent();
+    $htmlTextarea.addClass('dp-medium-rte');
+    $htmlTextarea.show();
+    $textTextarea.hide();
 
-    $txt.addClass('dp-medium-rte');
-    const editor = new MediumEditor($txt.get(0), {
+    const editor = new MediumEditor($htmlTextarea.get(0), {
       toolbar: {
         buttons: ['bold', 'italic', 'underline', 'anchor', 'unorderedlist', 'orderedlist', 'quote', 'pre', 'removeFormat'],
         static: true,
