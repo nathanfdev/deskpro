@@ -102,8 +102,8 @@ class FeedbackSelectCriteria extends Criteria
                     break;
                 case 'hidden_status':
                     $qb
-                        ->andWhere("$alias.hidden_status = :status")
-                        ->setParameter('status', $value);
+                        ->andWhere("$alias.hidden_status = :hidden_status")
+                        ->setParameter('hidden_status', $value);
                     break;
                 case 'created_from':
                     $qb
