@@ -232,7 +232,7 @@ class EmailAccount extends DomainObject
     {
         $address = strtolower($address);
 
-        if ($this->address == $address) {
+        if ($this->getUseEmailAddress() == $address) {
             return $address;
         }
 
