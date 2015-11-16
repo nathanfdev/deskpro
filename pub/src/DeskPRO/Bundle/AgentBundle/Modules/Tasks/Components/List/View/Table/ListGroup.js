@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { ListGroupTitleContainer } from '../ListGroupTitleContainer';
 
 export class ListGroup extends React.Component {
 
@@ -16,7 +15,7 @@ export class ListGroup extends React.Component {
         <tr className="divider">
           <td colSpan="5">
             <hr/>
-            <ListGroupTitleContainer title={title} />
+            {title}
           </td>
         </tr>
 
