@@ -1,17 +1,19 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Th } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
-import { currentSortSelector, currentOrderSelector } from '../../../../Selectors/list';
+import { currentSortSelector, currentOrderSelector, tableVisibleFieldsSelector } from '../../../../Selectors/list';
 import { applySort, applyOrder } from '../../../../Actions/listActions';
 
 @connect(state => ({
   currentSort: currentSortSelector(state),
-  currentOrder: currentOrderSelector(state)
+  currentOrder: currentOrderSelector(state),
+  visibleFields: tableVisibleFieldsSelector(state)
 }))
 export class HeaderContainer extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
+    visibleFields: PropTypes.object.isRequired
   };
 
   onChange = (sort, order) => {
@@ -26,14 +28,16 @@ export class HeaderContainer extends React.Component {
       onChange: this.onChange
     };
 
+    const isHidden = type => !props.visibleFields.includes(type);
+
     return (
       <thead>
         <tr>
           <Th />
-          <Th title="Title" />
-          <Th title="Project" sort="project" {...columnProps} />
-          <Th title="Due" sort="date_due" {...columnProps} />
-          <Th title="Assignee" sort="assignee" {...columnProps} />
+          <Th title="Title" hidden={isHidden('title')} />
+          <Th title="Project" sort="project" hidden={isHidden('project')} {...columnProps} />
+          <Th title="Due" sort="date_due" hidden={isHidden('date_due')} {...columnProps} />
+          <Th title="Assignee" sort="assignee" hidden={isHidden('assignee')} {...columnProps} />
         </tr>
       </thead>
     );
