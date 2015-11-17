@@ -39,7 +39,9 @@ export class TaskCard extends BaseTaskCard {
             <Project />
           </ProjectContainer>
         </Td>
-        <Td visible={isVisible('date_due')}>{task.get('date_due') ? Moment(task.get('date_due')).format('DD/MM/YY') : 'N/A'}</Td>
+        <Td visible={isVisible('date_due')}>
+          {task.get('date_due') ? Moment(task.get('date_due')).format('DD/MM/YY') : 'N/A'}
+        </Td>
         <Td visible={isVisible('assignee')}>
           <AssigneeContainer task={task} />
         </Td>
