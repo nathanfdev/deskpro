@@ -41,7 +41,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * @SWG\Resource(
- * 	resourcePath="/organization",
+ * 	resourcePath="/organizations",
  * 	description="Operations about Organization",
  * 	basePath="/api"
  * )
@@ -50,7 +50,7 @@ class OrganizationController extends AbstractController
 {
     /**
      * @SWG\Api(
-     * 	path="/organization",
+     * 	path="/organizations",
      * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Search for organizations matching criteria",
@@ -191,7 +191,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization",
+     * 	path="/organizations",
      * 	@SWG\Operation(
      * 		method="POST",
      * 		summary="Creates a new organization.",
@@ -342,7 +342,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}",
+     * 	path="/organizations/{organization_id}",
      * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Gets a organization by organization ID.",
@@ -370,7 +370,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}",
+     * 	path="/organizations/{organization_id}",
      * 	@SWG\Operation(
      * 		method="POST",
      * 		summary="Updates a organization.",
@@ -449,7 +449,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}",
+     * 	path="/organizations/{organization_id}",
      * 	@SWG\Operation(
      * 		method="DELETE",
      * 		summary="DELETEs a organization.",
@@ -478,7 +478,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}/picture",
+     * 	path="/organizations/{organization_id}/picture",
      * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Gets a link to an organization's picture.",
@@ -520,7 +520,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}/picture",
+     * 	path="/organizations/{organization_id}/picture",
      * 	@SWG\Operation(
      * 		method="POST",
      * 		summary="Updates an organization's picture.",
@@ -590,7 +590,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}/picture",
+     * 	path="/organizations/{organization_id}/picture",
      * 	@SWG\Operation(
      * 		method="DELETE",
      * 		summary="DELETEs an organization's picture.",
@@ -620,7 +620,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}/activity-stream",
+     * 	path="/organizations/{organization_id}/activity-stream",
      * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Gets activity stream for an organization.",
@@ -669,7 +669,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}/members",
+     * 	path="/organizations/{organization_id}/members",
      * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Gets members of an organization.",
@@ -755,7 +755,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}/tickets",
+     * 	path="/organizations/{organization_id}/tickets",
      * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Gets tickets by an organization.",
@@ -841,7 +841,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}/chats",
+     * 	path="/organizations/{organization_id}/chats",
      * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Gets chats by a organization.",
@@ -923,7 +923,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}/notes",
+     * 	path="/organizations/{organization_id}/notes",
      * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Gets a list of Organization Notes for an organization.",
@@ -951,7 +951,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}/notes",
+     * 	path="/organizations/{organization_id}/notes",
      * 	@SWG\Operation(
      * 		method="POST",
      * 		summary="Adds a new Organization Notes to an organization.",
@@ -1000,7 +1000,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}/notes/{note_id}",
+     * 	path="/organizations/{organization_id}/notes/{note_id}",
      * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Gets an Organization Note for an organization by Organization ID and Note ID.",
@@ -1038,7 +1038,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}/billing-charges",
+     * 	path="/organizations/{organization_id}/billing-charges",
      * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Gets billing charges for an organization.",
@@ -1090,7 +1090,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}/email-domains",
+     * 	path="/organizations/{organization_id}/email-domains",
      * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Gets associated email domains for an organization.",
@@ -1132,7 +1132,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}/email-domains",
+     * 	path="/organizations/{organization_id}/email-domains",
      * 	@SWG\Operation(
      * 		method="POST",
      * 		summary="Adds an email domain for an organization.",
@@ -1181,7 +1181,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}/email-domains/{domain}",
+     * 	path="/organizations/{organization_id}/email-domains/{domain}",
      * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Determines if a domain is associated with an organization.",
@@ -1222,7 +1222,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}/email-domains/{domain}/move-users",
+     * 	path="/organizations/{organization_id}/email-domains/{domain}/move-users",
      * 	@SWG\Operation(
      * 		method="POST",
      * 		summary="Moves users to an organization (if they have no organization).",
@@ -1261,7 +1261,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}/email-domains/{domain}/move-taken-users",
+     * 	path="/organizations/{organization_id}/email-domains/{domain}/move-taken-users",
      * 	@SWG\Operation(
      * 		method="POST",
      * 		summary="Moves users to an organization (if they have another organization).",
@@ -1300,7 +1300,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}/email-domains/{domain}",
+     * 	path="/organizations/{organization_id}/email-domains/{domain}",
      * 	@SWG\Operation(
      * 		method="DELETE",
      * 		summary="Deletes a domain association for an organization",
@@ -1339,7 +1339,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}/contact-details",
+     * 	path="/organizations/{organization_id}/contact-details",
      * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Gets contact details for an organization.",
@@ -1365,7 +1365,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}/contact-details",
+     * 	path="/organizations/{organization_id}/contact-details",
      * 	@SWG\Operation(
      * 		method="POST",
      * 		summary="Creates a contact detail for an organization.",
@@ -1453,7 +1453,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}/contact-details/{contact_id}",
+     * 	path="/organizations/{organization_id}/contact-details/{contact_id}",
      * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Determines if contact ID exists for organization.",
@@ -1492,7 +1492,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}/contact-details/{contact_id}",
+     * 	path="/organizations/{organization_id}/contact-details/{contact_id}",
      * 	@SWG\Operation(
      * 		method="DELETE",
      * 		summary="Deletes a contact for an organization.",
@@ -1534,7 +1534,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}/groups",
+     * 	path="/organizations/{organization_id}/groups",
      * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Gets the groups for an organization.",
@@ -1560,7 +1560,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}/groups",
+     * 	path="/organizations/{organization_id}/groups",
      * 	@SWG\Operation(
      * 		method="POST",
      * 		summary="Adds an organization to a group.",
@@ -1623,7 +1623,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}/groups/{usergroup_id}",
+     * 	path="/organizations/{organization_id}/groups/{usergroup_id}",
      * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Determines if an organization is a member of a group.",
@@ -1662,7 +1662,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}/groups/{usergroup_id}",
+     * 	path="/organizations/{organization_id}/groups/{usergroup_id}",
      * 	@SWG\Operation(
      * 		method="DELETE",
      * 		summary="Removes an organization from a group.",
@@ -1707,7 +1707,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}/labels",
+     * 	path="/organizations/{organization_id}/labels",
      * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Gets the labels for an organization.",
@@ -1733,7 +1733,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}/labels",
+     * 	path="/organizations/{organization_id}/labels",
      * 	@SWG\Operation(
      * 		method="POST",
      * 		summary="Add a label for an organization.",
@@ -1778,7 +1778,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}/labels/{label}",
+     * 	path="/organizations/{organization_id}/labels/{label}",
      * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Determines if an organization has a label.",
@@ -1815,7 +1815,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/{organization_id}/labels/{label}",
+     * 	path="/organizations/{organization_id}/labels/{label}",
      * 	@SWG\Operation(
      * 		method="DELETE",
      * 		summary="Determines if an organization has a label.",
@@ -1852,7 +1852,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/fields",
+     * 	path="/organizations/fields",
      * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Gets available custom organization fields."
@@ -1869,7 +1869,7 @@ class OrganizationController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/organization/fields",
+     * 	path="/organizations/fields",
      * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Gets available usergroups."

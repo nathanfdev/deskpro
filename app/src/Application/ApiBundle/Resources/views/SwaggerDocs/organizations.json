@@ -1,10 +1,10 @@
 {
     "basePath": "/api",
     "swaggerVersion": "1.2",
-    "resourcePath": "/organization",
+    "resourcePath": "/organizations",
     "apis": [
         {
-            "path": "/organization",
+            "path": "/organizations",
             "operations": [
                 {
                     "method": "GET",
@@ -130,7 +130,7 @@
             ]
         },
         {
-            "path": "/organization/fields",
+            "path": "/organizations/fields",
             "operations": [
                 {
                     "method": "GET",
@@ -145,7 +145,7 @@
             ]
         },
         {
-            "path": "/organization/{organization_id}",
+            "path": "/organizations/{organization_id}",
             "operations": [
                 {
                     "method": "GET",
@@ -233,7 +233,7 @@
             ]
         },
         {
-            "path": "/organization/{organization_id}/activity-stream",
+            "path": "/organizations/{organization_id}/activity-stream",
             "operations": [
                 {
                     "method": "GET",
@@ -265,7 +265,7 @@
             ]
         },
         {
-            "path": "/organization/{organization_id}/billing-charges",
+            "path": "/organizations/{organization_id}/billing-charges",
             "operations": [
                 {
                     "method": "GET",
@@ -297,7 +297,7 @@
             ]
         },
         {
-            "path": "/organization/{organization_id}/chats",
+            "path": "/organizations/{organization_id}/chats",
             "operations": [
                 {
                     "method": "GET",
@@ -336,7 +336,7 @@
             ]
         },
         {
-            "path": "/organization/{organization_id}/contact-details",
+            "path": "/organizations/{organization_id}/contact-details",
             "operations": [
                 {
                     "method": "GET",
@@ -402,7 +402,7 @@
             ]
         },
         {
-            "path": "/organization/{organization_id}/contact-details/{contact_id}",
+            "path": "/organizations/{organization_id}/contact-details/{contact_id}",
             "operations": [
                 {
                     "method": "GET",
@@ -461,7 +461,7 @@
             ]
         },
         {
-            "path": "/organization/{organization_id}/email-domains",
+            "path": "/organizations/{organization_id}/email-domains",
             "operations": [
                 {
                     "method": "GET",
@@ -513,7 +513,7 @@
             ]
         },
         {
-            "path": "/organization/{organization_id}/email-domains/{domain}",
+            "path": "/organizations/{organization_id}/email-domains/{domain}",
             "operations": [
                 {
                     "method": "GET",
@@ -572,7 +572,7 @@
             ]
         },
         {
-            "path": "/organization/{organization_id}/email-domains/{domain}/move-taken-users",
+            "path": "/organizations/{organization_id}/email-domains/{domain}/move-taken-users",
             "operations": [
                 {
                     "method": "POST",
@@ -604,7 +604,7 @@
             ]
         },
         {
-            "path": "/organization/{organization_id}/email-domains/{domain}/move-users",
+            "path": "/organizations/{organization_id}/email-domains/{domain}/move-users",
             "operations": [
                 {
                     "method": "POST",
@@ -636,7 +636,7 @@
             ]
         },
         {
-            "path": "/organization/{organization_id}/groups",
+            "path": "/organizations/{organization_id}/groups",
             "operations": [
                 {
                     "method": "GET",
@@ -688,7 +688,7 @@
             ]
         },
         {
-            "path": "/organization/{organization_id}/groups/{usergroup_id}",
+            "path": "/organizations/{organization_id}/groups/{usergroup_id}",
             "operations": [
                 {
                     "method": "GET",
@@ -747,7 +747,7 @@
             ]
         },
         {
-            "path": "/organization/{organization_id}/labels",
+            "path": "/organizations/{organization_id}/labels",
             "operations": [
                 {
                     "method": "GET",
@@ -799,7 +799,7 @@
             ]
         },
         {
-            "path": "/organization/{organization_id}/labels/{label}",
+            "path": "/organizations/{organization_id}/labels/{label}",
             "operations": [
                 {
                     "method": "GET",
@@ -858,7 +858,7 @@
             ]
         },
         {
-            "path": "/organization/{organization_id}/members",
+            "path": "/organizations/{organization_id}/members",
             "operations": [
                 {
                     "method": "GET",
@@ -904,7 +904,7 @@
             ]
         },
         {
-            "path": "/organization/{organization_id}/notes",
+            "path": "/organizations/{organization_id}/notes",
             "operations": [
                 {
                     "method": "GET",
@@ -956,7 +956,7 @@
             ]
         },
         {
-            "path": "/organization/{organization_id}/notes/{note_id}",
+            "path": "/organizations/{organization_id}/notes/{note_id}",
             "operations": [
                 {
                     "method": "GET",
@@ -988,7 +988,7 @@
             ]
         },
         {
-            "path": "/organization/{organization_id}/picture",
+            "path": "/organizations/{organization_id}/picture",
             "operations": [
                 {
                     "method": "GET",
@@ -1074,7 +1074,7 @@
             ]
         },
         {
-            "path": "/organization/{organization_id}/tickets",
+            "path": "/organizations/{organization_id}/tickets",
             "operations": [
                 {
                     "method": "GET",
