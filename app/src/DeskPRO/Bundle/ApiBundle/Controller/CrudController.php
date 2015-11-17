@@ -70,8 +70,10 @@ class CrudController extends BaseController
      */
     public static $sortOptions = null;
 
-    public static $listSort  = 'id';
-    public static $listOrder = 'desc';
+    public static $listSort       = 'id';
+    public static $listOrder      = 'desc';
+    public static $listPerPage    = 10;
+    public static $listMaxResults = 200;
 
     /**
      * @ApiDoc(
@@ -102,6 +104,10 @@ class CrudController extends BaseController
     }
 
     /**
+     * Entities list.
+     *
+     * Selects entities based on the provided "ids" parameter or returns paginated list of no IDs provided
+     *
      * @Get("")
      */
     public function listAction(Request $request)
@@ -114,18 +120,38 @@ class CrudController extends BaseController
             ->select('e')
             ->from(static::$entity, 'e');
 
-        $this->applyListFilters($qb, 'e', $request);
-        $this->applySorting($qb, 'e', $request);
+        if ($ids = $request->get('ids')) {
+            $ids = explode(',', $ids);
+            $ids = array_map(function ($id) { return (int) $id; }, $ids);
+            if (count($ids) > static::$listMaxResults) {
+                throw $this->createBadRequestException(
+                    'You can select maximum '.static::$listMaxResults.' entities');
+            }
+            $qb
+                ->where('e.id IN (:ids)')
+                ->setParameters(compact('ids'));
 
-        $page  = $request->query->get('page', 1);
-        $count = $request->query->get('count', 10);
+            $result = $qb->getQuery()->getResult();
+        } else {
+            $this->applyListFilters($qb, 'e', $request);
+            $this->applySorting($qb, 'e', $request);
 
-        $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
-        $pager->setMaxPerPage($count);
-        $pager->setCurrentPage($page);
+            $page  = $request->query->get('page', 1);
+            $count = $request->query->get('count', static::$listPerPage);
+            if ($count > static::$listMaxResults) {
+                throw $this->createBadRequestException(
+                    'You can select maximum '.static::$listMaxResults.' entities');
+            }
+
+            $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
+            $pager->setMaxPerPage($count);
+            $pager->setCurrentPage($page);
+
+            $result = $pager;
+        }
 
         return View::create(
-            $this->dataSerialize($pager),
+            $this->dataSerialize($result),
             Response::HTTP_OK
         );
     }
@@ -242,7 +268,10 @@ class CrudController extends BaseController
         $status = $model->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
         /** @var \Symfony\Component\Form\Form $form */
-        $form = $this->createForm(new static::$type(), $model);
+        $form = $this->createForm(
+            class_exists(static::$type) ? new static::$type() : static::$type,
+            $model
+        );
 
         $decoded = json_decode(
             $request->getContent(),
@@ -251,7 +280,7 @@ class CrudController extends BaseController
 
         $form->submit(
             $decoded,
-            true // clear missing
+            false // clear missing = false to perform partial updates
         );
 
         if ($form->isValid()) {
