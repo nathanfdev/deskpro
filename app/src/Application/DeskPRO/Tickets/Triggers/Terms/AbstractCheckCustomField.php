@@ -209,7 +209,7 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
             }
 
             try {
-                $value = TermValue::createWithValue(new \DateTime('@'.$field_data));
+                $value = new \DateTime('@'.$field_data);
             } catch (\Exception $e) {
                 $value = null;
             }
@@ -223,16 +223,16 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
                         return false;
                     }
 
-                    $d = Util::coalesce($date1, $date2);
+                    $d = TermValue::createWithValue(Util::coalesce($date1, $date2));
 
-                    return $this->isDateMatch($ticket, $context, $value, $d);
+                    return $this->isDateMatch($ticket, $context, $d, $value);
 
                 case 'between':
                     if (!$date1 || !$date2) {
                         return false;
                     }
 
-                    return $this->isDateRangeMatch($ticket, $context, $value, $date1, $date2);
+                    return $this->isDateRangeMatch($ticket, $context, TermValue::createWithValue($value), $date1, $date2);
 
                 default:
                     return false;
