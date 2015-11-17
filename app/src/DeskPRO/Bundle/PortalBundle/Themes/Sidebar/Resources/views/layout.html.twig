@@ -11,32 +11,34 @@
             </div>
         </section>
 
-        <section>
-            <div class="column-full">
-              {% show section page_search_box %}
-            </div>
-        </section>
-
-        <section>
-            {% show section flashes %}
+        <section class="column-full">
             <div class="column-half-plus">
-                {% block page_content %}
-                    {% block content_header %}
-                        <section class="welcome-news">
-                            {% show section nav_buttons %}
-                        </section>
-                    {% endblock content_header %}
-                    <section>
-                        <div class="column-full">
-                            {% block inner_content %}
-                            {% endblock inner_content %}
-                        </div>
-                    </section>
-                {% endblock page_content %}
+              {% show section search_bar %}
+                <div class="column-full">
+
+                <section>
+                    {% show section flashes %}
+                    <div class="column-full">
+                        {% block page_content %}
+                            {% block content_header %}
+                                <section class="welcome-news">
+                                    {% show section nav_buttons %}
+                                </section>
+                            {% endblock content_header %}
+                            <section>
+                                <div class="column-full">
+                                    {% block inner_content %}
+                                    {% endblock inner_content %}
+                                </div>
+                            </section>
+                        {% endblock page_content %}
+                    </div>
+                </section>
+                    </div>
             </div>
 
             <aside class="sidebar">
-              {% show section sidebar %}
+                {% show section sidebar %}
             </aside>
         </section>
 

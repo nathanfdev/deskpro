@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
 use DeskPRO\Bundle\PortalBundle\Annotation\Tag;
+use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
 use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\TagHttpCache;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
@@ -83,6 +84,24 @@ class PortalController extends AbstractController
     {
         return $this->renderThemeView(
             'Theme:Portal:sidebar.html.twig'
+        );
+    }
+
+    /**
+     * @Tag(name="search_and_contact_bar", default_options={"include_contact_us":true})
+     * @Tag(name="search_bar", default_options={"include_contact_us":false})
+     *
+     * @TagOptions(
+     *      defaults={
+     *          "include_contact_us": true
+     *      }
+     * )
+     */
+    public function searchBoxAction(TagRequest $tag_request, array $options)
+    {
+        return $this->renderThemeView(
+            'Theme:Portal:Header/page_search_box.html.twig',
+            $options
         );
     }
 
