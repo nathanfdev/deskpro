@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
-import { DragSource } from 'react-dnd';
-import { cardSpec, cardCollect } from '../../TaskCardContainer';
+import { DragSource, DropTarget } from 'react-dnd';
+import { cardSourceSpec, cardSourceCollect, cardTargetSpec, targetCollect } from '../../TaskCardContainer';
 import classNames from 'classnames';
 import { MarkDoneButton } from './MarkDoneButton';
 import {
@@ -23,14 +23,17 @@ import {
   CardProject
 } from '../../../TaskCard/index';
 
-@DragSource('TASK', cardSpec, cardCollect)
+@DragSource('TASK', cardSourceSpec, cardSourceCollect)
+@DropTarget('TASK', cardTargetSpec, targetCollect)
 export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
     selected: PropTypes.bool,
     onToggleSelected: PropTypes.func,
     task: PropTypes.object,
-    connectDragSource: PropTypes.func
+    currentSort: PropTypes.string,
+    connectDragSource: PropTypes.func.isRequired,
+    connectDropTarget: PropTypes.func.isRequired
   };
 
   onToggleDone = () => {
@@ -65,9 +68,10 @@ export class TaskCard extends BaseTaskCard {
   }
 
   render() {
-    const { selected, onToggleSelected, connectDragSource, isOver } = this.props;
+    const { selected, onToggleSelected, currentSort, isOver } = this.props;
+    const { connectDragSource, connectDropTarget } = this.props;
 
-    return connectDragSource(
+    let result = connectDragSource(
       <div>
         <Card minimized={this.isMinimized()} type="task">
           <MarkDoneButton isDone={this.state.isDone}
@@ -94,5 +98,11 @@ export class TaskCard extends BaseTaskCard {
         <div className={classNames('placeholder', {'is-over': isOver})} />
       </div>
     );
+
+    if (currentSort === 'list') {
+      result = connectDropTarget(result);
+    }
+
+    return result;
   }
 }

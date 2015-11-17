@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
-import { DragSource } from 'react-dnd';
-import { cardSpec, cardCollect } from '../../TaskCardContainer';
+import { DragSource, DropTarget } from 'react-dnd';
+import { cardSourceSpec, cardSourceCollect, cardTargetSpec, targetCollect } from '../../TaskCardContainer';
 import { Td, TdId, TdTitle } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { BaseTaskCard, ProjectContainer } from '../../../TaskCard/index';
 import { Project } from './Project';
@@ -8,7 +8,8 @@ import { AssigneeContainer } from './AssigneeContainer';
 import { TableCheckbox } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import Moment from 'moment';
 
-@DragSource('TASK', cardSpec, cardCollect)
+@DragSource('TASK', cardSourceSpec, cardSourceCollect)
+@DropTarget('TASK', cardTargetSpec, targetCollect)
 export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
@@ -16,7 +17,9 @@ export class TaskCard extends BaseTaskCard {
     onToggleSelected: PropTypes.func,
     task: PropTypes.object,
     tableVisibleFields: PropTypes.object,
-    connectDragSource: PropTypes.func
+    currentSort: PropTypes.string,
+    connectDragSource: PropTypes.func.isRequired,
+    connectDropTarget: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -28,10 +31,12 @@ export class TaskCard extends BaseTaskCard {
   }
 
   render() {
-    const { task, selected, onToggleSelected, tableVisibleFields, connectDragSource } = this.props;
+    const { task, selected, currentSort, onToggleSelected, tableVisibleFields } = this.props;
+    const { connectDragSource, connectDropTarget } = this.props;
+
     const isVisible = type => tableVisibleFields.includes(type);
 
-    return connectDragSource(
+    let result = connectDragSource(
       <tr>
         <Td>
           <TableCheckbox selected={selected} onClick={onToggleSelected} />
@@ -51,5 +56,11 @@ export class TaskCard extends BaseTaskCard {
         </Td>
       </tr>
     );
+
+    if (currentSort === 'list') {
+      result = connectDropTarget(result);
+    }
+
+    return result;
   }
 }

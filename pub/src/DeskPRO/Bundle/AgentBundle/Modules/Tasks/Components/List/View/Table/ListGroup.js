@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
 import { TableGroupDivider } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { DropTarget } from 'react-dnd';
-import { groupSpec, groupCollect } from '../TaskCardContainer';
+import { groupTargetSpec, targetCollect } from '../TaskCardContainer';
 import classNames from 'classnames';
 
-@DropTarget('TASK', groupSpec, groupCollect)
+@DropTarget('TASK', groupTargetSpec, targetCollect)
 export class ListGroup extends React.Component {
 
   static propTypes = {

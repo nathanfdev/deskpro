@@ -6,7 +6,8 @@ import {
   cardVisibleFieldsSelector,
   tableVisibleFieldsSelector,
   kanbanVisibleFieldsSelector,
-  calendarVisibleFieldsSelector
+  calendarVisibleFieldsSelector,
+  currentSortSelector
 } from '../../../Selectors/list';
 
 @connect(state => ({
@@ -14,7 +15,8 @@ import {
   cardVisibleFields: cardVisibleFieldsSelector(state),
   tableVisibleFields: tableVisibleFieldsSelector(state),
   kanbanVisibleFields: kanbanVisibleFieldsSelector(state),
-  calendarVisibleFields: calendarVisibleFieldsSelector(state)
+  calendarVisibleFields: calendarVisibleFieldsSelector(state),
+  currentSort: currentSortSelector(state)
 }))
 export class TaskCardContainer extends React.Component {
 
@@ -45,25 +47,32 @@ export class TaskCardContainer extends React.Component {
   }
 }
 
-export const cardSpec = {
+export const cardSourceSpec = {
   beginDrag(props) {
     return {id: props.task.get('id')};
   }
 };
 
-export const cardCollect = (dragConnect, monitor) => ({
+export const cardSourceCollect = (dragConnect, monitor) => ({
   connectDragSource: dragConnect.dragSource(),
   isDragging: monitor.isDragging()
 });
 
-export const groupSpec = {
+export const cardTargetSpec = {
+  drop({ task }, monitor) {
+    const item = monitor.getItem();
+    console.log('edit task', task, item.id);
+  }
+};
+
+export const groupTargetSpec = {
   drop({ param, value }, monitor) {
     const item = monitor.getItem();
     console.log('edit task', param, value, item.id);
   }
 };
 
-export const groupCollect = (dragConnect, monitor) => ({
+export const targetCollect = (dragConnect, monitor) => ({
   connectDropTarget: dragConnect.dropTarget(),
   isOver: monitor.isOver()
 });
