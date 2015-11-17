@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Table, TableHeader, Th, TableBody, Row, Td, IdContainer, PersonInTable, TableCheckbox }
+import { Table, Th, Row, Td, IdContainer, PersonInTable, TableCheckbox }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { connect } from 'react-redux';
 import { elementsSelector, selectedSelector, tableVisibleFieldsSelector } from '../../../../Selectors/list';
@@ -29,12 +29,12 @@ export class ListTableViewContainer extends Component {
   render() {
     return (
       <Table>
-        <TableHeader>
+        <thead>
           {this.renderHeader()}
-        </TableHeader>
-        <TableBody>
+        </thead>
+        <tbody>
           {this.props.elements.map(ticket => this.renderRow(ticket))}
-        </TableBody>
+        </tbody>
       </Table>
     );
   }

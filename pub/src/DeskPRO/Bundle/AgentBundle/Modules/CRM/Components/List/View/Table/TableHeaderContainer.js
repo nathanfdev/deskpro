@@ -11,10 +11,8 @@ import { connect } from 'react-redux';
 export class TableHeaderContainer extends React.Component {
 
   render() {
-    const { tableViewFields } = this.props;
-
     return (
-      <TableHeader tableViewFields={tableViewFields}/>
+      <thead />
     );
   }
 

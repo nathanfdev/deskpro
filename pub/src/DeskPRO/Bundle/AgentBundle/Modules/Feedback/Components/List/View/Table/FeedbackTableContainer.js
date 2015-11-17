@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 import { peopleSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackStatusesSelector, feedbackCategoriesSelector }
   from '../../../../Selectors/list';
-import { Table, TableHeader, Th, TableBody, Row, Td, IdContainer, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { Table, Th, Row, Td, IdContainer, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { defaultTableFields } from '../../../List/ControlBar/FeedbackViewOptions';
 import { applyParams } from '../../../../Actions/FeedbackListActions';
 import { connect } from 'react-redux';
@@ -81,7 +81,7 @@ export class FeedbackTableContainer extends Component {
 
     return (
       <Table>
-        <TableHeader>
+        <thead>
           <tr>
             {tableFields.id.isShown ?
               <Th value="id" label="ID" className="id-col sortable"
@@ -112,8 +112,8 @@ export class FeedbackTableContainer extends Component {
                   order={this.state.sort === 'date_created' ? this.state.order : false}
                   sortTable={this.sortTable.bind(this)}/> : null }
           </tr>
-        </TableHeader>
-        <TableBody>
+        </thead>
+        <tbody>
           {feedback.map((element, index) =>
               <Row key={index}>
                 {tableFields.id.isShown ?
@@ -145,7 +145,7 @@ export class FeedbackTableContainer extends Component {
                   </Td> : null }
               </Row>
           )}
-        </TableBody>
+        </tbody>
       </Table>
     );
   }

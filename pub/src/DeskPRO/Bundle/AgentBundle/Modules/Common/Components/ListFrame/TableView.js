@@ -18,22 +18,6 @@ export class Table extends Component {
   }
 }
 
-
-export class TableHeader extends Component {
-  static propTypes = {
-    children: PropTypes.any.isRequired
-  };
-
-  render() {
-    return (
-      <thead>
-      {this.props.children}
-      </thead>
-    );
-  }
-
-}
-
 export class Th extends Component {
 
   static propTypes = {
@@ -78,21 +62,6 @@ export class Th extends Component {
           </span>
         }
       </th>
-    );
-  }
-}
-
-export class TableBody extends Component {
-
-  static propTypes = {
-    children: PropTypes.array.isRequired
-  };
-
-  render() {
-    return (
-      <tbody>
-      {this.props.children}
-      </tbody>
     );
   }
 }

@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
-import { Table, TableHeader, Th, TableBody, Row, Td, IdContainer, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { Table, Th, Row, Td, IdContainer, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { feedbackSelector } from '../../../../Selectors/list';
 import { feedbackTypesSelector, feedbackCommentsSelector, feedbackCategoriesSelector, peopleSelector } from '../../../../Selectors/list';
 import { defaultTableFields } from '../../../List/ControlBar/FeedbackViewOptions';
@@ -93,7 +93,7 @@ export class FeedbackCommentTableContainer extends Component {
 
     return (
       <Table>
-        <TableHeader>
+        <thead>
           <tr>
             {tableFields.comment_id.isShown ?
               <Th value="id" label="ID" className="id-col sortable"
@@ -136,8 +136,8 @@ export class FeedbackCommentTableContainer extends Component {
                   order={this.state.sort === 'date_created' ? this.state.order : false}
                   sortTable={this.sortTable.bind(this)}/> : null }
           </tr>
-        </TableHeader>
-        <TableBody>
+        </thead>
+        <tbody>
           {comments.map(
             (element, index) => {
               const feedback = feedbackFromStore.get(element.feedback_id).toJS();
@@ -185,7 +185,7 @@ export class FeedbackCommentTableContainer extends Component {
               );
             }
           )}
-        </TableBody>
+        </tbody>
       </Table>
     );
   }
