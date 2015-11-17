@@ -88,8 +88,16 @@ export class Td extends Component {
 
 export class TdId extends Td {
 
+  static propTypes = {
+    children: PropTypes.any
+  };
+
   render() {
-    return <Td className="id-col" {...this.props} />;
+    return (
+      <Td className="id-col" {...this.props}>
+        <span className="dpw--item-id">#{this.props.children}</span>
+      </Td>
+    );
   }
 }
 
@@ -114,20 +122,6 @@ export class PersonInTable extends Component {
         <span className="dpw--avatar-face" style={{backgroundImage: 'url(../img/avatars/avatar1.png)'}}></span>
         <span className="agent-name">{person.get('name')} {person.get('primary_email')}</span>
       </div>
-    );
-  }
-}
-
-export class IdContainer extends Component {
-
-  static propTypes = {
-    id: PropTypes.number.isRequired
-  };
-
-  render() {
-    const { id } = this.props;
-    return (
-      <span className="dpw--item-id">#{id}</span>
     );
   }
 }

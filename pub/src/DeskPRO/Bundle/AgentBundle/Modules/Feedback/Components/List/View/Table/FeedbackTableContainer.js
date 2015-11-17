@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 import { peopleSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackStatusesSelector, feedbackCategoriesSelector }
   from '../../../../Selectors/list';
-import { Table, Th, Td, IdContainer, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { Table, Th, Td, TdId, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { defaultTableFields } from '../../../List/ControlBar/FeedbackViewOptions';
 import { applyParams } from '../../../../Actions/FeedbackListActions';
 import { connect } from 'react-redux';
@@ -117,7 +117,7 @@ export class FeedbackTableContainer extends Component {
           {feedback.map((element, index) =>
               <tr key={index}>
                 {tableFields.id.isShown ?
-                  <Td className="id-col"><IdContainer id={element.id}/></Td> : null }
+                  <TdId>{element.id}</TdId> : null }
                 {tableFields.title.isShown ?
                   <Td className="item-title">{this.renderLongString(element.title)}</Td> : null }
                 {tableFields.content.isShown ?

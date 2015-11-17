@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
-import { Table, Th, Td, IdContainer, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { Table, Th, Td, TdId, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { feedbackSelector } from '../../../../Selectors/list';
 import { feedbackTypesSelector, feedbackCommentsSelector, feedbackCategoriesSelector, peopleSelector } from '../../../../Selectors/list';
 import { defaultTableFields } from '../../../List/ControlBar/FeedbackViewOptions';
@@ -145,7 +145,7 @@ export class FeedbackCommentTableContainer extends Component {
               return (
                 <tr key={index}>
                   {tableFields.comment_id.isShown ?
-                    <Td className="id-col"><IdContainer id={element.id}/></Td> : null }
+                    <TdId>{element.id}</TdId> : null }
                   {tableFields.comment_author.isShown ?
                     <Td>
                       <PersonInTable person={people.get(feedback.person)}/>
@@ -155,7 +155,7 @@ export class FeedbackCommentTableContainer extends Component {
                     <Td className="item-title">{this.renderLongString(element.content)}</Td>
                     : null }
                   {tableFields.id.isShown ?
-                    <Td className="id-col"><IdContainer id={feedback.id}/></Td> : null }
+                    <TdId>{feedback.id}</TdId> : null }
                   {tableFields.title.isShown ?
                     <Td className="item-title">{this.renderLongString(feedback.title)}</Td> : null }
                   {tableFields.content.isShown ?

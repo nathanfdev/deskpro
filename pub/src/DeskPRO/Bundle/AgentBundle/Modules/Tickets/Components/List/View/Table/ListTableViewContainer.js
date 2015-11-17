@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Table, Th, Td, TdId, TdTitle, IdContainer, TableCheckbox }
+import { Table, Th, Td, TdId, TdTitle, TableCheckbox }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { connect } from 'react-redux';
 import { elementsSelector, selectedSelector, tableVisibleFieldsSelector } from '../../../../Selectors/list';
@@ -49,7 +49,7 @@ export class ListTableViewContainer extends Component {
     return (
       <tr key={id}>
         <Td><TableCheckbox selected={selected} onClick={onClick(id)} /></Td>
-        <TdId visible={this.isVisible('id')}><IdContainer id={id}/></TdId>
+        <TdId visible={this.isVisible('id')}>{id}</TdId>
         <Td visible={this.isVisible('urgency')}>{ticket.get('urgency')}</Td>
         <Td visible={this.isVisible('person')}>John Doe</Td>
         <Td visible={this.isVisible('person_email')}>{ticket.get('person_email')}</Td>

@@ -1,11 +1,11 @@
 import { ListFrameContainer } from './frame';
 import ListFrameContents from '../ListFrameContents';
 import { ControlBar } from './ControlBar/ControlBar';
-import { Table, Th, Td, TdId, TdTitle, IdContainer, PersonInTable, TableCheckbox } from './TableView';
+import { Table, Th, Td, TdId, TdTitle, PersonInTable, TableCheckbox } from './TableView';
 import { FilterBy } from './FilterBy';
 
 export default {
-  Table, Th, Td, TdId, TdTitle, IdContainer, PersonInTable, TableCheckbox,
+  Table, Th, Td, TdId, TdTitle, PersonInTable, TableCheckbox,
   ListFrameContainer,
   ListFrameContents,
   ControlBar,
