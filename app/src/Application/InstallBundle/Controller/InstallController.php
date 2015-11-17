@@ -32,7 +32,6 @@
 namespace Application\InstallBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\JobQueue\Processor\Reset\SettingsProcessor;
 use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
 use Application\InstallBundle\Data\DefaultDataProcessor;
 use Doctrine\DBAL\DBALException;
@@ -907,8 +906,6 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
         @unlink($this->container->getLogDir().'/install_token.dat');
         setcookie('dp_install_token', null, strtotime('-4 weeks'));
-
-        SettingsProcessor::saveBaseSettings($this->container->getDb());
 
         return $this->redirect($base_url.'/admin/');
     }

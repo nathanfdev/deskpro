@@ -55,7 +55,6 @@ class ResetDemoController extends AbstractController implements ProtectedControl
         'feedback',
         'labels',
         'snippets',
-        'settings',
         'apps',
     );
 

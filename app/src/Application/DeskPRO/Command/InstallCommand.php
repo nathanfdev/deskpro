@@ -35,7 +35,6 @@ namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\JobQueue\Processor\Reset\SettingsProcessor;
 use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
 use Application\InstallBundle\Data\DefaultDataProcessor;
 use Doctrine\DBAL\DBALException;
@@ -292,8 +291,6 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             'name'  => 'core.install_via_cmd',
             'value' => 1,
         ));
-
-        SettingsProcessor::saveBaseSettings($this->getContainer()->getDb());
     }
 
     private function createDatabase()
