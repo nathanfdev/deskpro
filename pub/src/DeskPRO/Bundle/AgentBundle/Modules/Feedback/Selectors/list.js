@@ -72,8 +72,7 @@ export const listFiltersSelector = createSelector(
   [navStateSelector, currentListParamsSelector, feedbackCategoriesSelector, feedbackLabelsSelector, feedbackTypesSelector],
   (navState, currentListParams, categories, labels, types) => {
     const filterSelector = [
-      { label: 'Date', type: 'date', fromParam: 'created_from', toParam: 'created_to' },
-      { label: 'Labels', type: 'labels', param: 'labels', modeParam: 'labels_mode', labels: labels }
+      { label: 'Date', type: 'date', fromParam: 'created_from', toParam: 'created_to' }
     ];
     if (!currentListParams.get('navItem') || !currentListParams.get('navItem').get('category')) {
       // Type options
@@ -99,6 +98,16 @@ export const listFiltersSelector = createSelector(
         value: cat.group
       }));
       filterSelector.push({ label: 'Category', type: 'select', param: 'custom_category', options: categoryOptions });
+    }
+    if (!currentListParams.get('navItem') || !currentListParams.get('navItem').get('label')) {
+      // Labels options
+      filterSelector.push({
+        label: 'Labels',
+        type: 'labels',
+        param: 'label',
+        modeParam: 'labels_mode',
+        labels: labels
+      });
     }
     return filterSelector;
   }

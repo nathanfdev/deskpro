@@ -75,7 +75,7 @@ class FeedbackSelectCriteria extends Criteria
                     }
                     $qb->setParameter('title', $value);
                     break;
-                case 'labels':
+                case 'label':
                     $qb
                         ->andWhere('labels.label IN (:labels)')
                         ->setParameter('labels', $value);
@@ -146,7 +146,7 @@ class FeedbackSelectCriteria extends Criteria
                 'category',
                 'custom_category',
                 'labels_mode',
-                'labels',
+                'label',
                 'no_labels',
                 'sort',
                 'order',
