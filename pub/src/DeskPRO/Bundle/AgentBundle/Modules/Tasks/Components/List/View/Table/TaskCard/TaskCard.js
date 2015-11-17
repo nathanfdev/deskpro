@@ -11,7 +11,8 @@ export class TaskCard extends BaseTaskCard {
   static propTypes = {
     selected: PropTypes.bool,
     onToggleSelected: PropTypes.func,
-    task: PropTypes.object
+    task: PropTypes.object,
+    tableVisibleFields: PropTypes.object
   };
 
   constructor(props) {
@@ -23,22 +24,23 @@ export class TaskCard extends BaseTaskCard {
   }
 
   render() {
-    const { task, selected, onToggleSelected } = this.props;
+    const { task, selected, onToggleSelected, tableVisibleFields } = this.props;
+    const isVisible = type => tableVisibleFields.includes(type);
 
     return (
       <tr>
         <Td>
           <TableCheckbox selected={selected} onClick={onToggleSelected} />
         </Td>
-        <TdId>{task.get('id')}</TdId>
-        <TdTitle>{task.get('title')}</TdTitle>
-        <Td>
+        <TdId visible={isVisible('id')}>{task.get('id')}</TdId>
+        <TdTitle visible={isVisible('title')}>{task.get('title')}</TdTitle>
+        <Td visible={isVisible('project')}>
           <ProjectContainer project={task.get('project')}>
             <Project />
           </ProjectContainer>
         </Td>
-        <Td>{task.get('date_due') ? Moment(task.get('date_due')).format('DD/MM/YY') : 'N/A'}</Td>
-        <Td>
+        <Td visible={isVisible('date_due')}>{task.get('date_due') ? Moment(task.get('date_due')).format('DD/MM/YY') : 'N/A'}</Td>
+        <Td visible={isVisible('assignee')}>
           <AssigneeContainer task={task} />
         </Td>
       </tr>
