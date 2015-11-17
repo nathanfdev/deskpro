@@ -118,10 +118,10 @@ export const groupCollection = (groupConfig, collection) => {
   const groups = getGroups(groupConfig);
 
   groups.forEach(group =>
-    filtered.forEach((item, index) => {
+    filtered.forEach(item => {
       if (group.match(item)) {
         group.elements.push(item);
-        filtered = filtered.delete(index);
+        filtered = filtered.delete(filtered.indexOf(item));
       }
     })
   );
