@@ -138,7 +138,6 @@ export class ControlBarContainer extends React.Component {
             icon: 'table',
             configurableFields: {
               id: 'ID',
-              title: 'Title',
               project: 'Project',
               date_due: 'Due Date',
               assignee: 'Assignee'

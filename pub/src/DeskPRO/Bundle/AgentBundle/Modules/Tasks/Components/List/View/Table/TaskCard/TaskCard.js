@@ -33,7 +33,7 @@ export class TaskCard extends BaseTaskCard {
           <TableCheckbox selected={selected} onClick={onToggleSelected} />
         </Td>
         <TdId visible={isVisible('id')}>{task.get('id')}</TdId>
-        <TdTitle visible={isVisible('title')}>{task.get('title')}</TdTitle>
+        <TdTitle>{task.get('title')}</TdTitle>
         <Td visible={isVisible('project')}>
           <ProjectContainer project={task.get('project')}>
             <Project />
