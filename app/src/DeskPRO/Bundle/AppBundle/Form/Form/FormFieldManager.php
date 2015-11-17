@@ -37,8 +37,10 @@ use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
+use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\DpDate;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\ValidRegex;
+use DeskPRO\Bundle\PortalBundle\Form\FormFields;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
 use Symfony\Component\Validator\Constraints\Length;
@@ -145,6 +147,26 @@ class FormFieldManager
         }
 
         return $fields;
+    }
+
+    /**
+     * @param LayoutField $layout_field
+     *
+     * @return CustomDefAbstract|null
+     */
+    public function getCustomDefForLayoutField(LayoutField $layout_field)
+    {
+        $field_id = $layout_field->getFieldId();
+        switch ($layout_field->getFieldType()) {
+            case FormFields::TICKET_FIELD:
+                return $this->getCustomTicketFieldById($field_id);
+            case FormFields::USER_FIELD:
+                return $this->getCustomTicketFieldById($field_id);
+            case FormFields::ORG_FIELD:
+                return $this->getCustomTicketFieldById($field_id);
+            default:
+                return;
+        }
     }
 
     /**

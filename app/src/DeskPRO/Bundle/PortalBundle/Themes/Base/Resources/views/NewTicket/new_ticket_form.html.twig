@@ -22,7 +22,8 @@
 
     <!-- BEGIN NEW TICKET FORM -->
     <div class="dp_ticket_form dpx-form">
-        {{ form_start(form, { attr: { class: 'form-ticket' } }) }}
+        {# avoid putting an absolute action the GET query is significant for defaults #}
+        <form method="POST" class="form-ticket" novalidate name="ticket">
         <div class="dynamic-fields-container">
             {% for widget in form.children if not widget.rendered and widget.vars.name not in ['_token', '_dp_csrf_token'] %}
                 <div class="column-full deskpro-form-widget field_{{ widget.vars.name }}" data-field="{{ widget.vars.name }}">

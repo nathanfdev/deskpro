@@ -58,6 +58,7 @@ export default class NewTicketForm extends PageWidget {
     let allFormFields = $([]).add($formEl.find('select')).add($tplEl.find('select'));
     let updateHitter;
     let updateLastDepId;
+    let setDisplayedFields;
 
     updateLastDepId = () => {
       let dep_id = ticketReader.getDepartmentId();
@@ -74,10 +75,19 @@ export default class NewTicketForm extends PageWidget {
       }
     };
 
+    setDisplayedFields = (e) => {
+      const displayed_fields = e.inst.currentFields.filter((field) => {
+          return field != 'displayed_fields'; // don't include this special field in the list
+      }).join(',');
+      let $df = $formEl.find("[data-field='displayed_fields']").find('input[type="hidden"]');
+      console.log('[NewTicketForm] [setDisplayedFields] setting displayed_fields to: ', displayed_fields);
+      $df.val(displayed_fields)
+    };
+
     this.dynForm = new DynamicForm({
       formEl: $formEl,
       tplEl:  $tplEl,
-      alwaysFields: ['department', 'user_email', 'subject', 'message', 'submit', 'last_department_id'],
+      alwaysFields: ['department', 'user_name_and_email', 'user_email', 'subject', 'message', 'submit', 'last_department_id', 'displayed_fields'],
       onInit: () => {
         updateLastDepId();
 
@@ -103,8 +113,9 @@ export default class NewTicketForm extends PageWidget {
 
         return _.flatten(newFields);
       },
-      onFieldsUpdated: () => {
+      onFieldsUpdated: (fields) => {
         updateLastDepId();
+        setDisplayedFields(fields);
       },
       onPostUpdate: () => {
         PortalApp.getPortalPage().refresh($formEl);

@@ -98,6 +98,12 @@ class TicketFormContext
     private $captcha_exists_on_form;
 
     /**
+     * @var array passed as a hidden form field, it tells us what fields were visible to a user on submit
+     *            this helps us decide if we need to re-render or not
+     */
+    private $previously_displayed_fields;
+
+    /**
      * @param FormInterface $form
      * @param Person        $person
      * @param Ticket        $ticket
@@ -106,17 +112,18 @@ class TicketFormContext
      * @param string        $visibility     the view, such as "new", "edit", "view" (contants of this class)
      * @param TicketMessage $ticket_message
      */
-    public function __construct(FormInterface $form, Ticket $ticket, TicketMessage $ticket_message = null, Person $person, TicketLayout $layout, $view_context, $visibility)
+    public function __construct(FormInterface $form, Ticket $ticket, TicketMessage $ticket_message = null, Person $person, TicketLayout $layout, $view_context, $visibility, array $previously_displayed_fields)
     {
-        $this->form                   = $form;
-        $this->ticket                 = $ticket;
-        $this->person                 = $person;
-        $this->layout                 = $layout;
-        $this->previous_layout        = $layout;
-        $this->view_context           = $view_context;
-        $this->visibility             = $visibility;
-        $this->ticket_message         = $ticket_message;
-        $this->captcha_exists_on_form = false;
+        $this->form                        = $form;
+        $this->ticket                      = $ticket;
+        $this->person                      = $person;
+        $this->layout                      = $layout;
+        $this->previous_layout             = $layout;
+        $this->view_context                = $view_context;
+        $this->visibility                  = $visibility;
+        $this->ticket_message              = $ticket_message;
+        $this->captcha_exists_on_form      = false;
+        $this->previously_displayed_fields = $previously_displayed_fields;
     }
 
     /**
@@ -262,5 +269,13 @@ class TicketFormContext
     public function setCaptchaExistsOnForm($bool)
     {
         $this->captcha_exists_on_form = (bool) $bool;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPreviouslyDisplayedFields()
+    {
+        return $this->previously_displayed_fields;
     }
 }

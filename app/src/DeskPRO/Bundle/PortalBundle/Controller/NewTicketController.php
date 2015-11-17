@@ -63,7 +63,9 @@ class NewTicketController extends AbstractController
         $ticket_message->setPerson($person);
         $ticket->addMessage($ticket_message);
 
-        if ('GET' === $request->getMethod()) {
+        // we cannot only do this step during the initial GET request, because that GET info needs to
+        // be used in the real POST as well
+        //if ('GET' === $request->getMethod()) {
             // do a one through with the GET request to update our model before starting the "real" form
             $form = $this->createForm('ticket', $ticket, array(
                 'person'            => $person,
@@ -73,8 +75,8 @@ class NewTicketController extends AbstractController
                 'settings'          => $this->getBrandContainer()->getSettings(),
                 'action'            => $this->generateUrl('portal_new_ticket'),
             ));
-            $form->submit($request->get('ticket', array()), false);
-        }
+        $form->submit($request->query->get('ticket', array()), false);
+        //}
 
         $form = $this->createForm('ticket', $ticket, array(
             'person'         => $person,

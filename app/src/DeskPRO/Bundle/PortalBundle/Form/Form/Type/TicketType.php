@@ -137,7 +137,7 @@ class TicketType extends AbstractType
         $layout         = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->department ?: null);
 
         if ($form->getConfig()->getOption('full_version')) {
-            $layout = $this->ticket_layout_factory->getFullLayoutForTicketForm($ticket->department ?: null);
+            $layout = $this->ticket_layout_factory->getFullLayoutForTicketForm();
         }
 
         $context = $this->createTicketFormContext($ticket, $ticket_message, $form, $layout);
@@ -147,7 +147,15 @@ class TicketType extends AbstractType
         $hierarchy          = $this->hierarchy_generator->generateTicketDepartmentsHierarchy($person);
         $ticket->department = $hierarchy->getFirstSelectable();
 
-        $this->manipulateForm(new Layout(), $context->getActiveLayout(), $context);
+        $displaying_fields = $this->manipulateForm(new Layout(), $context->getActiveLayout(), $context);
+
+        if ($context->getForm()->has('displayed_fields')) {
+            $context->getForm()->remove('displayed_fields');
+        }
+        $context->getForm()->add('displayed_fields', 'hidden', [
+            'mapped' => false,
+            'data'   => implode(',', $displaying_fields),
+        ]);
     }
 
     /**
@@ -158,14 +166,18 @@ class TicketType extends AbstractType
     public function onPreSubmit(FormEvent $event)
     {
         /** @var \Application\DeskPRO\Entity\Ticket $ticket */
-        $ticket          = $event->getForm()->getData();
-        $form            = $event->getForm();
-        $ticket_message  = $form->getConfig()->getOption('ticket_message');
-        $pre_submit_data = $event->getData();
+        $ticket                   = $event->getForm()->getData();
+        $form                     = $event->getForm();
+        $ticket_message           = $form->getConfig()->getOption('ticket_message');
+        $pre_submit_data          = $event->getData();
+        $already_displayed_fields = [];
+        if (array_key_exists('displayed_fields', $pre_submit_data)) {
+            $already_displayed_fields = explode(',', $pre_submit_data['displayed_fields']);
+        }
 
         // calculate the initial layout of the form (before any form submissions took place)
         $layout         = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->department ?: null);
-        $context        = $this->createTicketFormContext($ticket, $ticket_message, $form, $layout);
+        $context        = $this->createTicketFormContext($ticket, $ticket_message, $form, $layout, $already_displayed_fields);
         $initial_layout = $context->getActiveLayout();
 
         // by default, we treat a submit as a "potentially_rerender", but it wont actually rerender unless
@@ -196,15 +208,15 @@ class TicketType extends AbstractType
             // the first time a department is changed.
             // Errors must still render on subsequent requests!
             // set potentially_rerender = false if we shouldnt treat this as a rerender
-            if (array_key_exists('last_department_id', $pre_submit_data)) {
-                $last_department_id = $pre_submit_data['last_department_id'];
+            //if (array_key_exists('last_department_id', $pre_submit_data)) {
+            //    $last_department_id = $pre_submit_data['last_department_id'];
 
                 // there wasn't actually a change in department between requests. treat validation as if we didnt just
                 // rerender the form
-                if ($new_department_id == $last_department_id) {
-                    $potentially_rerender_form = false;
-                }
-            }
+                //if ($new_department_id == $last_department_id) {
+                //    $potentially_rerender_form = false;
+                //}
+            //}
             if ($context->getForm()->has('last_department_id')) {
                 $context->getForm()->remove('last_department_id');
             }
@@ -219,7 +231,43 @@ class TicketType extends AbstractType
             $context->setNewLayout($destination_layout);
         }
 
-        $this->manipulateForm($initial_layout, $context->getActiveLayout(), $context, $pre_submit_data, $potentially_rerender_form);
+        $displaying_fields = $this->manipulateForm($initial_layout, $context->getActiveLayout(), $context, $pre_submit_data, $potentially_rerender_form);
+
+        $extra_data_to_submit = ['displayed_fields' => implode(',', $displaying_fields)];
+
+        // $new_fields is an array of field names that are NEW after this submit (and there will be a re-render with them)
+        //$new_fields = array_diff($displaying_fields, $already_displayed_fields);
+        //foreach ($context->getActiveLayout()->all() as $field) {
+        //    // we need to insert the default value for $field here for non JS users
+        //    if (in_array($field->getId(), $new_fields)) {
+        //        $default = null;
+        //        if ($custom_def = $this->field_manager->getCustomDefForLayoutField($field)) {
+        //            $default = explode(',',$custom_def->getDefaultValue());
+        //        } elseif (FormFields::CUSTOM_FIELD === $field->getFieldType()) {
+        //            if ($custom_def = $this->field_manager->getCustomPerFieldById($field->getId())){
+        //                $default = $custom_def->getDefaultValue();
+        //            }
+        //        }
+        //        if ($default) {
+        //            // the problem here is that $default is the object definition default value
+        //            // but the $submitted_data here on this event expects what symfony would
+        //            // hand the differnt form types after a submit. For example, choice fields would
+        //            // be an array, date fields would be array of ['day','month','year'] or:
+        //            // ['date' => ['day','month','year'], 'time' => ['hour','second']]
+        //            // bools different, but text can go without any pre-processing
+        //            // this is a huge duplication, is prone to error, and overall feels really out of place
+        //            // we could put this logic in the forms themselves, but then we have to leak down the form
+        //            // the information that this particular field should have a default injected but not any others
+        //            // and we still have to setup this formatting because the normal data transformers that would
+        //            // happen pre-data for these form types wont happen on pre-submit
+        //            // add on top form can't be used without JS anyway and all of this is for nothing, unless
+        //            // we change the way we do CSRF (which atm requires a javascript to run to set a cookie).
+        //            $extra_data_to_submit[$field->getId()] = $default;
+        //        }
+        //    }
+        //}
+
+        $event->setData(array_merge($event->getData(), $extra_data_to_submit));
     }
 
     /**
@@ -228,6 +276,8 @@ class TicketType extends AbstractType
      * @param TicketFormContext $context
      * @param array             $submitted_data
      * @param bool              $potentially_rerender_form
+     *
+     * @return array of field names that are now displayed on the form
      */
     protected function manipulateForm(Layout $initial_layout, Layout $new_layout, TicketFormContext $context, $submitted_data = array(), $potentially_rerender_form = false)
     {
@@ -236,9 +286,41 @@ class TicketType extends AbstractType
 
         $extracted_data = $this->getTicketDataIds($submitted_data, $context);
 
+        //$pre_existing_displayed_fields = [];
+        //if ($context->getForm()->has('displayed_fields')) {
+            $pre_existing_displayed_fields = $context->getPreviouslyDisplayedFields();
+        //}
+
+        // DEPENDENT FIELDS
+        // find fields that should be rendered, but weren't before, via criteria with recently submitted data
+        $fields_requiring_rerender = [];
+        foreach ($new_layout->all() as $field) {
+            if (in_array($field->getId(), $context->getPreviouslyDisplayedFields())) {
+                // this field was displayed before. should it still be?
+                if ($field->getCriteria() && !$field->getCriteria()->isSubmittedDataMatch($extracted_data)) {
+                    $fields_to_remove[] = $field;
+                } elseif ($field->getCriteria() && $field->getCriteria()->isSubmittedDataMatch($extracted_data)) {
+                    // add this one directly, as it was already displayed and won't count as a "new" field that can trigger
+                    // a form re-render. this field was displayed before + is still supposed to be on the form after the submit.
+                    if (!$context->hasValidVisibility($field)) {
+                        continue;
+                    }
+
+                    $this->addField($context, $field);
+                }
+            } else {
+                // this field was not displayed before, but should it be added and the form re-rendered?
+                if ($field->getCriteria() && $field->getCriteria()->isSubmittedDataMatch($extracted_data)) {
+                    $additional_fields[]         = $field;
+                    $fields_requiring_rerender[] = $field;
+                }
+            }
+        }
+
         $form = $context->getForm();
 
-        $added_something = false;
+        $added_something       = false;
+        $new_fields_to_display = [];
         foreach ($additional_fields as $field) {
             if (!$context->hasValidVisibility($field)) {
                 continue;
@@ -260,25 +342,31 @@ class TicketType extends AbstractType
             }
 
             // we signal to the controller that we want to rerender (and NOT submit or process) by adding a hidden field
-            if ($potentially_rerender_form && count($submitted_data) > 0 && !$context->getForm()->has('rerender_form')) {
+            if (count($fields_requiring_rerender) > 0 && count($submitted_data) > 0 && !$context->getForm()->has('rerender_form')) {
                 $context->getForm()->add('rerender_form', 'hidden', array('mapped' => false, 'label' => false));
             }
 
             $added_something = true;
 
+            $new_fields_to_display[] = $field->getId();
             $this->addField($context, $field, $potentially_rerender_form);
         }
 
         foreach ($fields_to_remove as $field) {
             $this->removeField($context, $field);
+            if (($key = array_search($field->getId(), $pre_existing_displayed_fields)) !== false) {
+                unset($pre_existing_displayed_fields[$key]);
+            }
         }
 
         if (!$added_something && $context->getForm()->has('rerender_form')) {
-            // we didn't add anything new, so remove the signal a re-render
+            // we didn't add anything new, so remove the signal to re-render
             $context->getForm()->remove('rerender_form');
         }
 
         $this->addSubmit($context);
+
+        return array_merge($pre_existing_displayed_fields, $new_fields_to_display);
     }
 
     /**
@@ -300,7 +388,7 @@ class TicketType extends AbstractType
         $keys = array(FormFields::DEPARTMENT, FormFields::PRODUCT, FormFields::CATEGORY, FormFields::WORKFLOW, FormFields::PRIORITY);
 
         foreach ($keys as $key) {
-            if (array_key_exists($key, $submitted_data)) {
+            if (array_key_exists($key, $submitted_data) && $form->has($key)) {
                 $submitted_value = $submitted_data[$key];
                 $choice          = current($form->get($key)->getConfig()->getOption('choice_list')->getChoicesForValues(array($submitted_value)));
 
@@ -579,7 +667,7 @@ class TicketType extends AbstractType
 
     private function addCustomTicketField(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
-        $field_def = $this->field_manager->getCustomTicketFieldById($field->getFieldId(), $form_context);
+        $field_def = $this->field_manager->getCustomTicketFieldById($field->getFieldId());
 
         if (!$field_def) {
             return false;
@@ -885,7 +973,7 @@ class TicketType extends AbstractType
      *
      * @return TicketFormContext
      */
-    private function createTicketFormContext(Ticket $ticket, TicketMessage $ticket_message = null, FormInterface $form, TicketLayout $initial_layout)
+    private function createTicketFormContext(Ticket $ticket, TicketMessage $ticket_message = null, FormInterface $form, TicketLayout $initial_layout, $already_displayed_fields = [])
     {
         $config = $form->getConfig();
 
@@ -896,7 +984,8 @@ class TicketType extends AbstractType
             $config->getOption('person'),
             $initial_layout,
             $config->getOption('ticket_view_context'),
-            $config->getOption('ticket_visibility')
+            $config->getOption('ticket_visibility'),
+            $already_displayed_fields
         );
     }
 
