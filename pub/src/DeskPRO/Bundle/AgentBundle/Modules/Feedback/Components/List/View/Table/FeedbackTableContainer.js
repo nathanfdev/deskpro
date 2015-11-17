@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 import { peopleSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackStatusesSelector, feedbackCategoriesSelector }
   from '../../../../Selectors/list';
-import { Table, Th, Row, Td, IdContainer, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { Table, Th, Td, IdContainer, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { defaultTableFields } from '../../../List/ControlBar/FeedbackViewOptions';
 import { applyParams } from '../../../../Actions/FeedbackListActions';
 import { connect } from 'react-redux';
@@ -115,7 +115,7 @@ export class FeedbackTableContainer extends Component {
         </thead>
         <tbody>
           {feedback.map((element, index) =>
-              <Row key={index}>
+              <tr key={index}>
                 {tableFields.id.isShown ?
                   <Td className="id-col"><IdContainer id={element.id}/></Td> : null }
                 {tableFields.title.isShown ?
@@ -143,7 +143,7 @@ export class FeedbackTableContainer extends Component {
                   <Td>
                     <div className="dpw--timer"><FormattedRelative value={element.date_created}/></div>
                   </Td> : null }
-              </Row>
+              </tr>
           )}
         </tbody>
       </Table>

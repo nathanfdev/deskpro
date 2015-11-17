@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
-import { Table, Th, Row, Td, IdContainer, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { Table, Th, Td, IdContainer, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { feedbackSelector } from '../../../../Selectors/list';
 import { feedbackTypesSelector, feedbackCommentsSelector, feedbackCategoriesSelector, peopleSelector } from '../../../../Selectors/list';
 import { defaultTableFields } from '../../../List/ControlBar/FeedbackViewOptions';
@@ -143,7 +143,7 @@ export class FeedbackCommentTableContainer extends Component {
               const feedback = feedbackFromStore.get(element.feedback_id).toJS();
 
               return (
-                <Row key={index}>
+                <tr key={index}>
                   {tableFields.comment_id.isShown ?
                     <Td className="id-col"><IdContainer id={element.id}/></Td> : null }
                   {tableFields.comment_author.isShown ?
@@ -181,7 +181,7 @@ export class FeedbackCommentTableContainer extends Component {
                     <Td>
                       <div className="dpw--timer"><FormattedRelative value={feedback.date_created}/></div>
                     </Td> : null }
-                </Row>
+                </tr>
               );
             }
           )}

@@ -67,20 +67,6 @@ export class Th extends Component {
   }
 }
 
-export class Row extends Component {
-
-  static propTypes = {
-    children: PropTypes.array.isRequired
-  };
-
-  render() {
-    return (
-      <tr className="single-row">
-        {this.props.children}
-      </tr>);
-  }
-}
-
 export class Td extends Component {
 
   static propTypes = {
@@ -135,6 +121,7 @@ export class IdContainer extends Component {
 }
 
 export class TableCheckbox extends Component {
+
   static propTypes = {
     onClick: PropTypes.func,
     selected: PropTypes.bool

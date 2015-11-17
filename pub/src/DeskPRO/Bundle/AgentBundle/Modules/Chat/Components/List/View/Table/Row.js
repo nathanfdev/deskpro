@@ -6,7 +6,7 @@ export class Row extends React.Component {
     const {element} = this.props;
 
     return (
-      <tr key={element.id} className="single-row">
+      <tr>
         <td className="id-col"><span className="dpw--item-id">#{element.id}</span></td>
         <td></td>
         <td className="agent-col">

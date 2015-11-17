@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Table, Th, Row, Td, IdContainer, PersonInTable, TableCheckbox }
+import { Table, Th, Td, IdContainer, PersonInTable, TableCheckbox }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { connect } from 'react-redux';
 import { elementsSelector, selectedSelector, tableVisibleFieldsSelector } from '../../../../Selectors/list';
@@ -47,7 +47,7 @@ export class ListTableViewContainer extends Component {
     };
 
     return (
-      <Row key={id}>
+      <tr key={id}>
         <Td><TableCheckbox selected={selected} onClick={onClick(id)} /></Td>
         <Td visible={this.isVisible('id')} className="id-col"><IdContainer id={id}/></Td>
         <Td visible={this.isVisible('urgency')}>{ticket.get('urgency')}</Td>
@@ -58,7 +58,7 @@ export class ListTableViewContainer extends Component {
         <Td visible={this.isVisible('status')} className="item-title">{ticket.get('status')}</Td>
         <Td visible={this.isVisible('date_created')} className="item-title">{ticket.get('date_created')}</Td>
         <Td visible={this.isVisible('labels')} className="item-title">{ticket.get('labels')}</Td>
-      </Row>
+      </tr>
     );
   }
 
