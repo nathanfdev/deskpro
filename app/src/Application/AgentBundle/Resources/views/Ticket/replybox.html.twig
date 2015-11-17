@@ -194,7 +194,7 @@
 								</li>
 							{% endif %}
 						{% endif %}
-						{% if app.getSetting('core_tickets.enable_billing') and app.getSetting('core_tickets.billing_on_reply') %}
+						{% if app.getSetting('core_tickets.enable_timelog') and app.getSetting('core_tickets.billing_on_reply') %}
 							<li id="{{replyBaseId}}_billing_reply">
 								<label>{{ phrase('agent.tickets.charge') }}:</label>
 								<div>
