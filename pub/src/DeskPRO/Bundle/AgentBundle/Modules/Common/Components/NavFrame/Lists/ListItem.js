@@ -52,7 +52,7 @@ export class ListItem extends React.Component {
     const { count = 0 } = this.props;
 
     return (
-      <a className="list-counter active" href="#">{Number.isInteger(count) ? count : 0}</a>
+      <a className="list-counter active" href="#">{count ? count : 0}</a>
     );
   }
 

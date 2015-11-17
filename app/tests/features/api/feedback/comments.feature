@@ -9,12 +9,31 @@ Feature: /feedback_comments/counts endpoint
     And my request is authenticated
 
   @reinstall
+  Scenario: I GET feedback comments list with hidden_status set to validating and side-loaded author info
+    When I send a GET request to "/api/v2/feedback_comments_list?include=person&awaiting_validation=1"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And print last JSON response
+    And the JSON node "data" should exist
+    And the JSON node "data" should have 4 elements
+    And the JSON node "linked" should exist
+    And the JSON node "linked.person" should exist
+    And the JSON node "linked.person" should have 1 element
+
   Scenario: I GET count of feedback comment with hidden_status set to validating
     When I send a GET request to "/api/v2/feedback_comments/counts?awaiting_validation=1"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist
-    And the JSON node "data.count" should be equal to 5
+    And the JSON node "data.count" should be equal to 4
+    And the JSON node "data.nested" should have 0 elements
+
+  Scenario: I GET count of feedback comment with hidden_status set to validating
+    When I send a GET request to "/api/v2/feedback_comments/counts?awaiting_validation=1"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data" should exist
+    And the JSON node "data.count" should be equal to 4
     And the JSON node "data.nested" should have 0 elements
 
   Scenario: I DELETE feedback comment with id=1

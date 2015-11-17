@@ -5,6 +5,7 @@ import { createEmptyRecordStoreState, buildRecordStoreHandlers } from 'Ampliflux
 export default createReducer(
   createEmptyRecordStoreState(),
   buildRecordStoreHandlers({
-    requestRecordsAction: actions.loadFeedbackTypes
+    requestRecordsAction: actions.loadFeedbackTypes,
+    setRequestRecordAction: actions.setFeedbackTypesRequest
   })
 );

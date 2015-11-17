@@ -140,11 +140,11 @@ export class PersonInTable extends Component {
   };
 
   render() {
-    const { person, email } = this.props;
+    const { person } = this.props;
     return (
       <div className="user">
         <span className="dpw--avatar-face" style={{backgroundImage: 'url(../img/avatars/avatar1.png)'}}></span>
-        <span className="agent-name">{person.get('name')} {email}</span>
+        <span className="agent-name">{person.get('name')} {person.get('primary_email')}</span>
       </div>
     );
   }

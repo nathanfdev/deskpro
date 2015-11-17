@@ -46,6 +46,7 @@ class FeedbackTransformer extends AbstractDataSerializerTransformer
         return [
             'id',
             'status',
+            'person',
             'hidden_status',
             'title',
             'slug',
@@ -58,7 +59,6 @@ class FeedbackTransformer extends AbstractDataSerializerTransformer
             'validating',
             'popularity',
             'content',
-            'person_id',
             'category_id',
         ];
     }

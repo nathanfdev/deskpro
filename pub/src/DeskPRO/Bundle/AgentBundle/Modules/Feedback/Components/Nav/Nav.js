@@ -17,8 +17,8 @@ export class Nav extends Component {
     labels: PropTypes.object.isRequired,
     types: PropTypes.object.isRequired,
     customCategories: PropTypes.object.isRequired,
-    toValidateCount: PropTypes.number.isRequired,
-    commentsToReviewCount: PropTypes.number.isRequired
+    toValidateCount: PropTypes.object.isRequired,
+    commentsToReviewCount: PropTypes.object.isRequired
   };
 
   render() {

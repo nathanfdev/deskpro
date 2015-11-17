@@ -275,9 +275,9 @@ export class FilteringMenuContainer extends Component {
 
       return (
         <ul>
-          {nested.map((option, i) =>
+          {nested.map((option, index1) =>
               <ChoiceMenuOption
-                key={i}
+                key={index1}
                 value={option.value}
                 values={filterValue}
                 label={option.label}
@@ -300,9 +300,9 @@ export class FilteringMenuContainer extends Component {
         <Menu>
           <ChoiceMenu title={label}>
             <ul>
-              {options.map((option, i) =>
+              {options.map((option, index2) =>
                 <ChoiceMenuOption
-                  key={i}
+                  key={index2}
                   value={option.value}
                   values={filterValue}
                   label={option.label}

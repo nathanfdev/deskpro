@@ -103,13 +103,13 @@ class ApiDb extends AbstractDbSet
 
         // this will be refactored into a better "entity creator" once the api data set needs more elaborate data
         // we need some deps, and some other entities
-        $dep1              = new Department();
-        $dep1->title       = 'sales';
-        $dep2              = new Department();
-        $dep2->title       = 'support';
-        $team              = new AgentTeam();
-        $team->name        = 'test team';
-        $ticket_def        = new CustomDefTicket();
+        $dep1 = new Department();
+        $dep1->title = 'sales';
+        $dep2 = new Department();
+        $dep2->title = 'support';
+        $team = new AgentTeam();
+        $team->name = 'test team';
+        $ticket_def = new CustomDefTicket();
         $ticket_def->title = 'def';
 
         // Create a basic task
@@ -123,15 +123,15 @@ class ApiDb extends AbstractDbSet
         $unassignedTask->setTitle('An unassigned task');
 
         // Create a new knowledge base article
-        $article               = new Article();
-        $article->slug         = 'test';
-        $article->title        = 'A test article';
-        $article->content      = 'This is a test article';
-        $article->view_count   = 0;
+        $article = new Article();
+        $article->slug = 'test';
+        $article->title = 'A test article';
+        $article->content = 'This is a test article';
+        $article->view_count = 0;
         $article->total_rating = 0;
         $article->num_comments = 0;
-        $article->num_ratings  = 0;
-        $article->status       = 'published';
+        $article->num_ratings = 0;
+        $article->status = 'published';
         $article->date_created = new \DateTime();
 
         // Persist them in the entity manager
@@ -149,13 +149,13 @@ class ApiDb extends AbstractDbSet
 
         $types = array('user', 'agent');
         foreach ($types as $type) {
-            $deskProUsers                = new Usersource();
-            $deskProUsers->type          = $type;
-            $deskProUsers->source_type   = 'Application\\DeskPRO\\Usersource\\Adapter\\DeskPRO';
-            $deskProUsers->is_enabled    = true;
+            $deskProUsers = new Usersource();
+            $deskProUsers->type = $type;
+            $deskProUsers->source_type = 'Application\\DeskPRO\\Usersource\\Adapter\\DeskPRO';
+            $deskProUsers->is_enabled = true;
             $deskProUsers->display_order = -10; // ensure #1 order (initially!)
-            $deskProUsers->title         = 'DeskPRO';
-            $deskProUsers->options       = array();
+            $deskProUsers->title = 'DeskPRO';
+            $deskProUsers->options = array();
             $this->getEm()->persist($deskProUsers);
         }
 
@@ -199,8 +199,8 @@ class ApiDb extends AbstractDbSet
                 1,
                 1,
                 0,
-                '".date('Y-m-d H:i:s')."',
-                '".date('Y-m-d H:i:s')."',
+                '" . date('Y-m-d H:i:s') . "',
+                '" . date('Y-m-d H:i:s') . "',
                 0,
                 0,
                 0,
@@ -219,26 +219,26 @@ class ApiDb extends AbstractDbSet
                 ('core.cron_logreport.cli-phperr.log', '1380716762'),
                 ('core.default_from_email', 'noreply@example.com'),
                 ('core.default_timezone', 'UTC'),
-                ('core.deskpro_build', '".time()."'),
+                ('core.deskpro_build', '" . time() . "'),
                 ('core.deskpro_build_num', '0'),
                 ('core.deskpro_url', 'http://localhost:8888/'),
                 ('core.deskpro_version', '20131002122551'),
                 ('core.done_data_initializer', '1'),
-                ('core.done_rewrite_urls_check', '".time()."'),
-                ('core.install_build', '".time()."'),
+                ('core.done_rewrite_urls_check', '" . time() . "'),
+                ('core.install_build', '" . time() . "'),
                 ('core.install_key', '6S7X77ZAR2CYSDT4GJCJ'),
-                ('core.install_timestamp', '".time()."'),
+                ('core.install_timestamp', '" . time() . "'),
                 ('core.install_token', 'PUGYIA9E82Z8JCPKO0NKGC957HITHNZRFHY4CQ3V1380214398'),
-                ('core.last_cron_run', '".time()."'),
-                ('core.last_cron_start', '".time()."'),
+                ('core.last_cron_run', '" . time() . "'),
+                ('core.last_cron_start', '" . time() . "'),
                 ('core.license', 'TlZNVi0wMTEyLUZVVVNFVEJHVFJNRU9KQlNHVlJNUVNTUgERC3\r\nlkZGRncEQKPwB2IyU+LiJjOgZ9FhE8ARdRIQ4OCR8seUR0ZRUZ\r\nJi9+cQB4eTF5ZjQ3P2J5TXYxdREHWzB/a1xiVQ0KeQdqMS5Qf1\r\nYtWXwZagd5DX9OCxASXzAzNGJmGTE7HhAKEBBnODZiGyYGAXVt\r\nLh8TKxcMQyFbKiAhP08aEFoECSM4TQkmMS8mEXJ1UQQINRcsAG\r\noHPBBxZxcFP1l7Uw8TJwseDn1IXAI5WwxLfVQoASkUClloBy93\r\nUEF2XFMQCwYFSC9aewFYHwJVeV0RAAonCEkhIzkjHn8WWSkRPn\r\ncpVyxrMQw6fARnIk8TDQcQCGcZRSombUhedVMENwhxUmpTLUIV\r\nZHRUflZ5UAhnAVs0CyhTZgspTkUIfQVdNWA'),
                 ('core.rewrite_urls', '1'),
                 ('core.setup_initial', '1'),
-                ('core.task_completed_add_ticketfield', '".time()."'),
-                ('core.twitter_last_cleanup', '".time()."'),
+                ('core.task_completed_add_ticketfield', '" . time() . "'),
+                ('core.twitter_last_cleanup', '" . time() . "'),
                 ('core.use_agent_team', '1'),
                 ('core_tickets.enable_like_search_auto', '1'),
-                ('user.kb_subscriptions_last', '".time()."');
+                ('user.kb_subscriptions_last', '" . time() . "');
         "
         );
 
@@ -301,19 +301,12 @@ class ApiDb extends AbstractDbSet
 
         $this->getDb()->exec(
             "
-            INSERT INTO `feedback_categories`
-                (`title`,`slug`)
-
-            VALUES
-
-                ('Test feedback category 1', '1'),
-                ('Test feedback category 2', '2'),
-                ('Test feedback category 3', '3'),
-                ('Test feedback category 4', '4'),
-                ('Test feedback category 5', '5'),
-                ('Test feedback category 6', '6')
-            ;
-        "
+            INSERT INTO `feedback_categories` (`id`, `parent_id`, `title`, `slug`, `display_order`, `depth`, `root`)
+              VALUES
+              (1, NULL, 'Suggestion', 'suggestion', 0, 0, NULL),
+              (2, NULL, 'Feature Request', 'feature-request', 0, 0, NULL),
+              (3, NULL, 'Bug Report', 'bug-report', 0, 0, NULL);
+            "
         );
 
         $this->getDb()->exec(
@@ -358,16 +351,12 @@ class ApiDb extends AbstractDbSet
 
         $this->getDb()->exec(
             "
-            INSERT INTO `feedback_comments`
-                (`feedback_id`,`content`, `status`, `is_reviewed`)
-
-            VALUES
-                (1, 'Feedback 1 comment 1', 'validating', 0),
-                (2, 'Feedback 2 comment 2', 'validating', 0),
-                (3, 'Feedback 3 comment 3', 'validating', 0),
-                (1, 'Feedback 1 comment 4', 'visible', 0),
-                (2, 'Feedback 2 comment 5', 'visible', 1),
-                (6, 'Feedback 6 comment 6', 'visible', 0)
+              INSERT INTO `feedback_comments` (`id`, `feedback_id`, `person_id`, `ip_address`, `visitor_id`, `email`, `name`, `website`, `content`, `status`, `validating`, `is_reviewed`, `date_created`)
+              VALUES
+                (1, 1, 1, '', '', NULL, NULL, NULL, 'Some comment for the first feedback. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ultrices sem ac risus efficitur, vitae.', 'validating', NULL, 0, '2015-08-17 00:00:00'),
+                (2, 1, 1, '', '', NULL, NULL, NULL, 'One more comment for the first feedback', 'validating', '0', 0, '2015-09-08 00:00:00'),
+                (3, 2, 1, '', '', NULL, NULL, NULL, 'Some comment for the second feedback. Quisque id malesuada urna. Aliquam erat volutpat. Duis risus odio, faucibus ac lacus nec, dapibus.', 'validating', NULL, 0, '2015-09-23 00:00:00'),
+                (4, 3, 1, '', '', NULL, NULL, NULL, 'Some comment for the third feedback. Proin enim mauris, faucibus sit amet pretium non, sagittis ut eros. Praesent non sem ut.', 'user_validating', '0', 0, '2015-10-01 00:00:00');
             ;
         "
         );

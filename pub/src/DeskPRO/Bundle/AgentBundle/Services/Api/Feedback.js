@@ -131,8 +131,8 @@ export function getHidden() {
  * @return {object} Promise
  */
 export function getList(params) {
-  console.log('DP_API/feedback/?' + compileParams(params));
-  return DpApi.sendGet('DP_API/feedback/?' + compileParams(params));
+  console.log('DP_API/feedback/?include=person&' + compileParams(params));
+  return DpApi.sendGet('DP_API/feedback/?include=person&' + compileParams(params));
 }
 
 /**
@@ -140,15 +140,6 @@ export function getList(params) {
  * @return Promise
  */
 export function commentsToReviewList(params) {
-  console.log('DP_API/feedback_comments_list?' + compileParams(params));
-  return DpApi.sendGet('DP_API/feedback_comments_list?' + compileParams(params));
-}
-
-/* @ToDo remove this method and endpoint */
-/**
- * Get values for chosen filter
- * @return {object} Promise
- */
-export function getFilterValues(filterName) {
-  return DpApi.sendGet('DP_API/feedback/filter?name=' + filterName);
+  console.log('DP_API/feedback_comments_list?include=person&' + compileParams(params));
+  return DpApi.sendGet('DP_API/feedback_comments_list?include=person&' + compileParams(params));
 }

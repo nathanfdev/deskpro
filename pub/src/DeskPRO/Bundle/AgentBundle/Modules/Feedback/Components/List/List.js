@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { ControlBarContainer } from './ControlBar/ControlBarContainer';
 import { FeedbackCardsContainer } from './View/List/FeedbackCardsContainer';
-import { FeedbackCommentList } from './View/List/FeedbackCommentList';
+import { FeedbackCommentsCardsContainer } from './View/List/FeedbackCommentsCardsContainer';
 import { FeedbackTableContainer } from './View/Table/FeedbackTableContainer';
 import { FeedbackCommentTableContainer } from './View/Table/FeedbackCommentTableContainer';
 import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
@@ -52,7 +52,7 @@ export class List extends Component {
     const {dispatch, elements, feedbackFromStore, currentViewMode, selected, toggleSelected, massAction, people, emails, feedbackStatuses} = this.props;
     if (currentViewMode === constants.VIEW_MODE_CARD) {
       return (
-        <FeedbackCommentList
+        <FeedbackCommentsCardsContainer
           dispatch={dispatch}
           comments={elements}
           selected={selected}

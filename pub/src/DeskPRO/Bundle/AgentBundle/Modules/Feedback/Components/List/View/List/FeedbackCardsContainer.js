@@ -48,7 +48,7 @@ export class FeedbackCardsContainer extends Component {
                           selected={selected.includes(element.id)}
                           toggleSelected={toggleSelected}
                           massAction={massAction}
-                          author={people.get(element.person_id)}
+                          author={people.get(element.person)}
                           feedbackStatus={feedbackStatuses.get(element.id)}
                           feedbackCategory={feedbackCategories.get(element.id)}
                           feedbackComments={feedbackComments.get(element.id)}

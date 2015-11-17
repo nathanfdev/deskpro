@@ -46,7 +46,7 @@ class FeedbackCommentTransformer extends AbstractDataSerializerTransformer
         return [
             'id',
             'feedback_id',
-            'person_id',
+            'person',
             'ip_address',
             'email',
             'name',

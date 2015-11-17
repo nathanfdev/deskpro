@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
-import { peopleSelector, emailsSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackStatusesSelector, feedbackCategoriesSelector }
+import { peopleSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackStatusesSelector, feedbackCategoriesSelector }
   from '../../../../Selectors/list';
 import { Table, TableHeader, Th, TableBody, Row, Td, IdContainer, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { defaultTableFields } from '../../../List/ControlBar/FeedbackViewOptions';
@@ -14,8 +14,7 @@ import { connect } from 'react-redux';
   feedbackComments: feedbackCommentsSelector(state),
   feedbackStatuses: feedbackStatusesSelector(state),
   feedbackCategories: feedbackCategoriesSelector(state),
-  people: peopleSelector(state),
-  emails: emailsSelector(state)
+  people: peopleSelector(state)
 }))
 @injectIntl
 export class FeedbackTableContainer extends Component {
@@ -23,7 +22,6 @@ export class FeedbackTableContainer extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     people: PropTypes.object.isRequired,
-    emails: PropTypes.object.isRequired,
     feedback: PropTypes.array.isRequired,
     feedbackStatuses: PropTypes.object.isRequired,
     feedbackComments: PropTypes.object.isRequired,
@@ -42,7 +40,7 @@ export class FeedbackTableContainer extends Component {
   }
 
   sortTable(param, order) {
-    this.props.dispatch(applyParams({sort: param, order}));
+    this.props.dispatch(applyParams({ sort: param, order }));
   }
 
   renderLongString(string) {
@@ -78,7 +76,7 @@ export class FeedbackTableContainer extends Component {
   }
 
   render() {
-    const { feedback, viewFields, people, emails, feedbackTypes } = this.props;
+    const { feedback, viewFields, people, feedbackTypes } = this.props;
     let tableFields = (viewFields && viewFields.table) ? viewFields.table : defaultTableFields;
 
     return (
@@ -130,10 +128,7 @@ export class FeedbackTableContainer extends Component {
                   <Td>{element.hidden_status}</Td> : null }
                 {tableFields.author_name.isShown ?
                   <Td>
-                    <PersonInTable
-                      person={people.get(element.person_id)}
-                      email={emails.get(element.person_id) ? emails.get(element.person_id).get('email') : null}
-                      />
+                    <PersonInTable person={people.get(element.person)}/>
                   </Td>
                   : null }
                 {tableFields.type.isShown ?

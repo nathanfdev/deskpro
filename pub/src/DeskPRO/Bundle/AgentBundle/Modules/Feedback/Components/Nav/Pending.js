@@ -5,8 +5,8 @@ import { ListItemContainer } from './ListItemContainer';
 export class Pending extends Component {
 
   static propTypes = {
-    toValidateCount: PropTypes.number.isRequired,
-    commentsToReviewCount: PropTypes.number.isRequired
+    toValidateCount: PropTypes.object.isRequired,
+    commentsToReviewCount: PropTypes.object.isRequired
   };
 
   render() {

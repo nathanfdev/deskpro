@@ -15,10 +15,7 @@ Feature: /feedback_types endpoint
     And the response status code should be 200
     And the JSON node "meta" should exist
     And the JSON node "data" should exist
-    And the JSON node "data" should have 6 elements
-    And the JSON node "data[0].title" should be equal to "Test feedback category 1"
-    And the JSON node "data[1].title" should be equal to "Test feedback category 2"
-    And the JSON node "data[2].title" should be equal to "Test feedback category 3"
-    And the JSON node "data[3].title" should be equal to "Test feedback category 4"
-    And the JSON node "data[4].title" should be equal to "Test feedback category 5"
-    And the JSON node "data[5].title" should be equal to "Test feedback category 6"
+    And the JSON node "data" should have 3 elements
+    And the JSON node "data[0].title" should be equal to "Suggestion"
+    And the JSON node "data[1].title" should be equal to "Feature Request"
+    And the JSON node "data[2].title" should be equal to "Bug Report"
