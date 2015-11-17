@@ -25,6 +25,7 @@ export const initialLoad = createAction(
       const batch = 'DP_API/batch'
           + '?get[customCategories]=DP_API/feedback/counts?group_by%3Dcustom_category'
           + '&get[types]=DP_API/feedback_types'
+          + '&get[labels]=DP_API/feedback_labels'
           + '&get[toValidateCount]=DP_API/feedback/counts?awaiting_validation%3D1'
           + '&get[new]=DP_API/feedback/counts?status%3Dnew%26group_by%3Dstatus_category'
           + '&get[active]=DP_API/feedback/counts?status%3Dactive%26group_by%3Dstatus_category'

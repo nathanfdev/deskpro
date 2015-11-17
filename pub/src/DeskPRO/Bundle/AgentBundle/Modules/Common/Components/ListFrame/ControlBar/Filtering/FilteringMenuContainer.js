@@ -169,7 +169,7 @@ export class FilteringMenuContainer extends Component {
 
   renderLabelsFilterInfo(labels) {
     if (labels.length) {
-      const result = [<span className="dpw-navigation-dropdown-item-inline-info">{labels[0]}</span>];
+      const result = [<span className="dpw-navigation-dropdown-item-inline-info">{labels}</span>];
       if (labels.length > 1) {
         result.push(
           <span className="dpw-navigation-dropdown-item-inline-info dpw-navigation-dropdown-item-inline-info-extra">

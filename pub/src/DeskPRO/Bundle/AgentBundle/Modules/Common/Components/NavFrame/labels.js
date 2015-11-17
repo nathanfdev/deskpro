@@ -5,7 +5,7 @@ export class LabelsDictionary extends Component {
 
   static propTypes = {
     onClick: PropTypes.func.isRequired,
-    labels: PropTypes.array.isRequired
+    labels: PropTypes.object.isRequired
   };
 
   groupByFirstLetter(labels) {
@@ -13,10 +13,10 @@ export class LabelsDictionary extends Component {
     let count;
 
     // count BC both for Immutable and JS objects
-    count = labels.count ? labels.count() : labels.length;
-    for (let i = 0, label, letter; i < count; i++) {
-      label  = Immutable.Iterable.isIterable(labels) ? labels.get(i) : labels[i];
-      letter = label[0].toUpperCase();
+    count = labels.count() ? labels.count() : labels.length;
+    for (let index = 0, label, letter; index < count; index++) {
+      label = Immutable.Iterable.isIterable(labels) ? labels.get(index) : labels[index];
+      letter = label.get('label')[0].toUpperCase();
       if (!dictionary.hasOwnProperty(letter)) {
         dictionary[letter] = [];
       }
@@ -29,8 +29,8 @@ export class LabelsDictionary extends Component {
 
     // count BC both for Immutable and JS objects
     count = letters.count ? letters.count() : letters.length;
-    for (let i = 0; i < count; i++) {
-      grouped.push({letter: letters[i], labels: dictionary[letters[i]]});
+    for (let index = 0; index < count; index++) {
+      grouped.push({ letter: letters[index], labels: dictionary[letters[index]] });
     }
 
     return grouped;
@@ -55,9 +55,9 @@ export class LabelsDictionary extends Component {
               <div key={index}>
                 <span className="labelCharacter">{group.letter}</span>
                 <ul>
-                  {group.labels.map((label, index) =>
-                    <li key={index} onClick={onClick.bind(this, {name: 'label', value: label})}>
-                      <a href="#" className="item-label">{label}</a>
+                  {group.labels.map((label, key) =>
+                    <li key={key} onClick={onClick.bind(this, {name: 'label', value: label.get('label')})}>
+                      <a href="#" className="item-label">{label.get('label')}</a>
                     </li>)}
                 </ul>
               </div>

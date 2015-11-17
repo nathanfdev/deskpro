@@ -6,6 +6,7 @@ import { StatusTab } from './StatusTab';
 import { TypeTab } from './TypeTab';
 import { CategoryTab } from './CategoryTab';
 import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
+import { applyParams } from '../../Actions/FeedbackListActions';
 
 @injectIntl
 export class Nav extends Component {
@@ -20,6 +21,11 @@ export class Nav extends Component {
     customCategories: PropTypes.object.isRequired,
     toValidateCount: PropTypes.object.isRequired,
     commentsToReviewCount: PropTypes.object.isRequired
+  };
+
+  onLabelClick = (params) => {
+    const { dispatch } = this.props;
+    dispatch(applyParams({ navItem: { [params.name]: params.value } }));
   };
 
   render() {
@@ -43,7 +49,7 @@ export class Nav extends Component {
               </Tab>
 
               <Tab title="Labels">
-                <LabelsDictionary labels={labels}/>
+                <LabelsDictionary labels={labels} onClick={this.onLabelClick}/>
               </Tab>
               <Tab title="Type">
                 <TypeTab types={types}/>
