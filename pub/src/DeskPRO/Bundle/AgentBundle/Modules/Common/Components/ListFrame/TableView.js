@@ -27,7 +27,7 @@ export class Th extends Component {
     currentSort: PropTypes.string,
     currentOrder: PropTypes.string,
     onChange: PropTypes.func,
-    hidden: PropTypes.bool
+    visible: PropTypes.bool
   };
 
   onChange = () => {
@@ -44,12 +44,12 @@ export class Th extends Component {
   };
 
   render() {
-    const { sort, currentSort, currentOrder, title, hidden, onChange } = this.props;
+    const { sort, currentSort, currentOrder, title, visible = true, onChange } = this.props;
 
     return (
       <th onClick={this.onChange}
           className={classNames(
-            {'hidden': hidden},
+            {'hidden': !visible},
             {'sortable': !!onChange}
           )}>
 
@@ -70,16 +70,16 @@ export class Th extends Component {
 export class Td extends Component {
 
   static propTypes = {
-    hidden: PropTypes.bool,
+    visible: PropTypes.bool,
     className: PropTypes.string,
     children: PropTypes.any
   };
 
   render() {
-    const { hidden, children, className } = this.props;
+    const { visible = true, children, className } = this.props;
 
     return (
-      <td className={classNames({'hidden': hidden}, className)}>
+      <td className={classNames({'hidden': !visible}, className)}>
         {children}
       </td>
     );

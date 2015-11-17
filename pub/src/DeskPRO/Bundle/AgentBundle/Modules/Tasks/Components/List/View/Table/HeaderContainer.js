@@ -28,17 +28,17 @@ export class HeaderContainer extends React.Component {
       onChange: this.onChange
     };
 
-    const isHidden = type => !props.visibleFields.includes(type);
+    const isVisible = type => props.visibleFields.includes(type);
 
     return (
       <thead>
         <tr>
           <Th />
-          <Th title="Id" hidden={isHidden('id')} />
-          <Th title="Title" hidden={isHidden('title')} />
-          <Th title="Project" sort="project" hidden={isHidden('project')} {...columnProps} />
-          <Th title="Due" sort="date_due" hidden={isHidden('date_due')} {...columnProps} />
-          <Th title="Assignee" sort="assignee" hidden={isHidden('assignee')} {...columnProps} />
+          <Th title="Id" visible={isVisible('id')} />
+          <Th title="Title" visible={isVisible('title')} />
+          <Th title="Project" sort="project" visible={isVisible('project')} {...columnProps} />
+          <Th title="Due" sort="date_due" visible={isVisible('date_due')} {...columnProps} />
+          <Th title="Assignee" sort="assignee" visible={isVisible('assignee')} {...columnProps} />
         </tr>
       </thead>
     );
