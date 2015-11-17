@@ -81,6 +81,7 @@ class NewTicketController extends AbstractController
             'ticket_message' => $ticket_message,
             'settings'       => $this->getBrandContainer()->getSettings(),
             'action'         => $this->generateUrl('portal_new_ticket'),
+            'attr'           => ['data-save-draft' => 'new_ticket']
         ));
         $form->handleRequest($request);
 

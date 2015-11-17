@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import classNames from 'classnames';
 
-export class TableView extends Component {
+export class Table extends Component {
   static propTypes = {
     children: PropTypes.any.isRequired
   };

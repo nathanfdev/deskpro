@@ -15,15 +15,18 @@ import {
   calendarVisibleFieldsSelector,
   kanbanVisibleFieldsSelector,
   listParamsFiltersSelector,
+  selectedCountSelector,
 } from '../../Selectors/list';
 import {
   toggleCardFieldVisibility,
   toggleTableFieldVisibility,
   toggleKanbanFieldVisibility,
-  toggleCalendarFieldVisibility
+  toggleCalendarFieldVisibility,
+  toggleAll
 } from '../../Actions/listActions';
 
 @connect(state => ({
+  selectedCount: selectedCountSelector(state),
   viewMode: currentViewModeSelector(state),
   sort: currentSortSelector(state),
   order: currentOrderSelector(state),
@@ -56,10 +59,14 @@ export class ControlBarContainer extends React.Component {
   }
 
   render() {
-    const { sort, order, labels = [], listFilters, viewMode } = this.props;
+    const { sort, order, labels = [], listFilters, viewMode, selectedCount } = this.props;
     const { cardVisibleFields, tableVisibleFields, kanbanVisibleFields, calendarVisibleFields } = this.props;
 
     const config = {
+      checkbox: {
+        count: selectedCount,
+        action: toggleAll
+      },
       sorting: {
         options: {
           list: {label: 'List', icon: 'list'},

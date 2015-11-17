@@ -1,5 +1,4 @@
 import { BaseTaskCard } from './BaseTaskCard';
-import { CardLine } from './CardLine';
 import { Title } from './Title';
 import { Comments } from './Comments';
 import { DateDue } from './DateDue';
@@ -12,7 +11,6 @@ import { ProjectContainer } from './ProjectContainer';
 
 export default {
   BaseTaskCard,
-  CardLine,
   Title,
   Comments,
   DateDue,

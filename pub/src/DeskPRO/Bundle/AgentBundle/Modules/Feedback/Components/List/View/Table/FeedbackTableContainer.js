@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 import { peopleSelector, emailsSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackStatusesSelector, feedbackCategoriesSelector }
   from '../../../../Selectors/list';
-import { TableView, TableHeader, Th, TableBody, Row, Td, IdContainer, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { Table, TableHeader, Th, TableBody, Row, Td, IdContainer, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { defaultTableFields } from '../../../List/ControlBar/FeedbackViewOptions';
 import { applyParams } from '../../../../Actions/FeedbackListActions';
 import { connect } from 'react-redux';
@@ -82,7 +82,7 @@ export class FeedbackTableContainer extends Component {
     let tableFields = (viewFields && viewFields.table) ? viewFields.table : defaultTableFields;
 
     return (
-      <TableView>
+      <Table>
         <TableHeader>
           <tr>
             {tableFields.id.isShown ?
@@ -151,7 +151,7 @@ export class FeedbackTableContainer extends Component {
               </Row>
           )}
         </TableBody>
-      </TableView>
+      </Table>
     );
   }
 

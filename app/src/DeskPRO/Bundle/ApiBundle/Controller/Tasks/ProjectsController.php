@@ -50,6 +50,9 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class ProjectsController.
+ */
 class ProjectsController extends BaseController implements ClassResourceInterface
 {
     /**
@@ -71,13 +74,9 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
 
         $projectIds = !empty($query['ids']) ? explode(',', $query['ids']) : [];
         $projects   = $this->selectProjects($projectIds);
+        $projects   = $projects->getResult();
 
-        $projects = $projects->getResult();
-
-        return View::create(
-            $this->dataSerialize($projects),
-            Response::HTTP_OK
-        );
+        return View::create($this->dataSerialize($projects), Response::HTTP_OK);
     }
 
     /**
@@ -106,15 +105,11 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
     public function getAction($id)
     {
         $project = $this->getProject($id);
-
         if (empty($project)) {
             throw $this->createNotFoundException();
         }
 
-        return View::create(
-            $this->dataSerialize($project),
-            Response::HTTP_OK
-        );
+        return View::create($this->dataSerialize($project), Response::HTTP_OK);
     }
 
     /**
@@ -210,10 +205,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
         $this->getDoctrine()->getManager()->remove($project);
         $this->getDoctrine()->getManager()->flush();
 
-        return View::create(
-            array(),
-            Response::HTTP_OK
-        );
+        return View::create([], Response::HTTP_OK);
     }
 
     /**
@@ -257,7 +249,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
     public function getTasksAction(Request $request, $id)
     {
         $id    = (int) $id;
-        $tasks = $this->getDoctrine()->getManager()->getRepository('App:Task')->findBy(array('project' => $id));
+        $tasks = $this->getDoctrine()->getManager()->getRepository('App:Task')->findBy(['project' => $id]);
         $page  = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 
@@ -265,10 +257,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
         $pager->setMaxPerPage($count);
         $pager->setCurrentPage($page);
 
-        return View::create(
-            $this->dataSerialize($pager),
-            Response::HTTP_OK
-        );
+        return View::create($this->dataSerialize($pager), Response::HTTP_OK);
     }
 
     /**
@@ -294,14 +283,9 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      */
     public function getDepartmentsAction($id)
     {
-        $id = (int) $id;
+        $query = $this->getProjectMemberQuery((int) $id, 'DeskPRO:Department');
 
-        $query = $this->getProjectMemberQuery($id, 'DeskPRO:Department');
-
-        return View::create(
-            $this->dataSerialize($query->getArrayResult()),
-            Response::HTTP_OK
-        );
+        return View::create($this->dataSerialize($query->getArrayResult()), Response::HTTP_OK);
     }
 
     /**
@@ -327,14 +311,9 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      */
     public function getTeamsAction($id)
     {
-        $id = (int) $id;
+        $query = $this->getProjectMemberQuery((int) $id, 'DeskPRO:AgentTeam');
 
-        $query = $this->getProjectMemberQuery($id, 'DeskPRO:AgentTeam');
-
-        return View::create(
-            $this->dataSerialize($query->getArrayResult()),
-            Response::HTTP_OK
-        );
+        return View::create($this->dataSerialize($query->getArrayResult()), Response::HTTP_OK);
     }
 
     /**
@@ -360,14 +339,9 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      */
     public function getAgentsAction($id)
     {
-        $id = (int) $id;
+        $query = $this->getProjectMemberQuery((int) $id, 'DeskPRO:Person');
 
-        $query = $this->getProjectMemberQuery($id, 'DeskPRO:Person');
-
-        return View::create(
-            $this->dataSerialize($query->getArrayResult()),
-            Response::HTTP_OK
-        );
+        return View::create($this->dataSerialize($query->getArrayResult()), Response::HTTP_OK);
     }
 
     /**
@@ -577,17 +551,13 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
     public function getListsAction($projectId)
     {
         $project = $this->getProject($projectId);
-
         if (empty($project)) {
             throw $this->createNotFoundException();
         }
 
         $lists = $project->getLists();
 
-        return View::create(
-            $this->dataSerialize($lists),
-            Response::HTTP_OK
-        );
+        return View::create($this->dataSerialize($lists), Response::HTTP_OK);
     }
 
     /**
@@ -640,14 +610,14 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
             $this->getDoctrine()->getManager()->persist($member);
             $this->getDoctrine()->getManager()->flush();
 
-            $location = $this->generateUrl('api_project_members_get', array('id' => $member->getId()));
+            $location = $this->generateUrl('api_project_members_get', ['id' => $member->getId()]);
 
             return View::create(
                 $this->dataSerialize($object),
                 Response::HTTP_CREATED,
-                array(
+                [
                     'Location' => $location,
-                )
+                ]
             );
         }
 
@@ -670,10 +640,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
         $this->getDoctrine()->getManager()->remove($member);
         $this->getDoctrine()->getManager()->flush();
 
-        return View::create(
-            array(),
-            Response::HTTP_OK
-        );
+        return View::create([], Response::HTTP_OK);
     }
 
     /**
@@ -685,9 +652,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
      */
     protected function getProject($id)
     {
-        $id      = (int) $id;
-        $project = $this->getDoctrine()->getManager()->getRepository('App:TaskProject')->find($id);
-
+        $project = $this->getDoctrine()->getManager()->getRepository('App:TaskProject')->find((int) $id);
         if (!$project) {
             throw $this->createNotFoundException();
         }
@@ -725,14 +690,14 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
             $this->getDoctrine()->getManager()->persist($project);
             $this->getDoctrine()->getManager()->flush();
 
-            $location = $this->generateUrl('api_projects_get', array('id' => $project->getId()));
+            $location = $this->generateUrl('api_projects_get', ['id' => $project->getId()]);
 
             return View::create(
                 $this->dataSerialize($project),
                 $status,
-                array(
+                [
                     'Location' => $location,
-                )
+                ]
             );
         }
 

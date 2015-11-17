@@ -1,5 +1,11 @@
 services:
 
+  form.html_textarea:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType
+    arguments: [@deskpro.core.input_cleaner]
+    tags:
+        - { name: form.type, alias: html_textarea }
+
   form_field_manager:
     class: DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager
     arguments: [@doctrine.orm.default_entity_manager]

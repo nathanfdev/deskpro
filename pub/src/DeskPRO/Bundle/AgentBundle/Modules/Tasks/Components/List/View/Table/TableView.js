@@ -1,12 +1,14 @@
 import React, { PropTypes } from 'react';
-import { Header } from './Header/Header';
+import { Header } from './Header';
 import { ListGroup } from './ListGroup';
+import { TaskCardContainer } from '../TaskCardContainer';
 import { TaskCard } from './TaskCard/TaskCard';
+import { Table } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 
 export class TableView extends React.Component {
 
   static propTypes = {
-    taskGroups: PropTypes.object
+    taskGroups: PropTypes.array
   };
 
   constructor(props) {
@@ -29,19 +31,24 @@ export class TableView extends React.Component {
     const { taskGroups = [] } = this.props;
 
     return (
-      <div>
-        <table cellSpacing="0" className="condensed-task-list">
+      <Table>
           <Header currentOrder={this.state.currentOrder}
                   currentDirection={this.state.currentDirection}
                   onChange={this.onSort} />
 
-          {taskGroups.map(taskGroup =>
-            <ListGroup title={taskGroup.get('title')}>
-              {taskGroup.get('elements').map((task, index) => <TaskCard task={task} key={index} />)}
+          {taskGroups
+            .filter(taskGroup => taskGroup.elements.length)
+            .map((taskGroup, index) =>
+
+            <ListGroup title={taskGroup.title} key={index}>
+              {taskGroup.elements.map(task =>
+                <TaskCardContainer task={task} key={task.get('id')}>
+                  <TaskCard />
+                </TaskCardContainer>
+              )}
             </ListGroup>
           )}
-        </table>
-      </div>
+      </Table>
     );
   }
 }

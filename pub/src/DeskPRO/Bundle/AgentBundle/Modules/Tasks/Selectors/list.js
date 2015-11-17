@@ -38,3 +38,13 @@ export const calendarVisibleFieldsSelector = createSelector(
   stateSelector,
   state => state.getIn(['visibleFields', constants.VIEW_MODE_CALENDAR])
 );
+
+export const selectedSelector = createSelector(
+  stateSelector,
+    state => state.get('selected')
+);
+
+export const selectedCountSelector = createSelector(
+  selectedSelector,
+    selected => selected.size
+);

@@ -102,10 +102,7 @@ class TasksController extends BaseController implements ClassResourceInterface
 
         $tasks = $this->get('data.tasks')->selectTasks($criteria, $page, $count);
 
-        return View::create(
-            $this->dataSerialize($tasks),
-            Response::HTTP_OK
-        );
+        return View::create($this->dataSerialize($tasks), Response::HTTP_OK);
     }
 
     /**
@@ -187,23 +184,18 @@ class TasksController extends BaseController implements ClassResourceInterface
      * )
      * @Get("/tasks/{taskId}", name="api_tasks_get")
      *
-     * @param Request $request
-     * @param int     $taskId
+     * @param int $taskId
      *
      * @return View
      */
-    public function getAction(Request $request, $taskId)
+    public function getAction($taskId)
     {
         $task = $this->getTask($taskId);
-
         if (empty($task)) {
             throw $this->createNotFoundException();
         }
 
-        return View::create(
-            $this->dataSerialize($task),
-            Response::HTTP_OK
-        );
+        return View::create($this->dataSerialize($task), Response::HTTP_OK);
     }
 
     /**
@@ -294,10 +286,7 @@ class TasksController extends BaseController implements ClassResourceInterface
         $this->getDoctrine()->getManager()->remove($task);
         $this->getDoctrine()->getManager()->flush();
 
-        return View::create(
-            array(),
-            Response::HTTP_OK
-        );
+        return View::create([], Response::HTTP_OK);
     }
 
     /**
@@ -326,17 +315,13 @@ class TasksController extends BaseController implements ClassResourceInterface
     public function getSubtasksAction(Request $request, $id)
     {
         $task = $this->getTask($id);
-
         if (empty($task)) {
             throw $this->createNotFoundException();
         }
 
-        $subtasks = $task->getSubtasks();
+        $sub_tasks = $task->getSubtasks();
 
-        return View::create(
-            $this->dataSerialize($subtasks),
-            Response::HTTP_OK
-        );
+        return View::create($this->dataSerialize($sub_tasks), Response::HTTP_OK);
     }
 
     /**
@@ -395,10 +380,7 @@ class TasksController extends BaseController implements ClassResourceInterface
         $pager->setMaxPerPage($count);
         $pager->setCurrentPage($page);
 
-        return View::create(
-            $this->dataSerialize($pager),
-            Response::HTTP_OK
-        );
+        return View::create($this->dataSerialize($pager), Response::HTTP_OK);
     }
 
     /**
@@ -457,10 +439,7 @@ class TasksController extends BaseController implements ClassResourceInterface
         $pager->setMaxPerPage($count);
         $pager->setCurrentPage($page);
 
-        return View::create(
-            $this->dataSerialize($pager),
-            Response::HTTP_OK
-        );
+        return View::create($this->dataSerialize($pager), Response::HTTP_OK);
     }
 
     /**
@@ -557,14 +536,14 @@ class TasksController extends BaseController implements ClassResourceInterface
         $this->getDoctrine()->getManager()->persist($task);
         $this->getDoctrine()->getManager()->flush();
 
-        $location = $this->generateUrl('api_tasks_get', array('taskId' => $task->getId()));
+        $location = $this->generateUrl('api_tasks_get', ['taskId' => $task->getId()]);
 
         return View::create(
             $this->dataSerialize($task),
             $status,
-            array(
+            [
                 'Location' => $location,
-            )
+            ]
         );
     }
 
@@ -597,23 +576,5 @@ class TasksController extends BaseController implements ClassResourceInterface
         }
 
         throw new InvalidFormException($form);
-    }
-
-    /**
-     * Get the datatype to use for creating the Fractal Representation.
-     *
-     * @param Request $request
-     *
-     * @return int
-     */
-    protected function getDatatype(Request $request)
-    {
-        $params = $request->query->all();
-
-        if (in_array('count_only', array_keys($params))) {
-            return 3;
-        }
-
-        return 1;
     }
 }

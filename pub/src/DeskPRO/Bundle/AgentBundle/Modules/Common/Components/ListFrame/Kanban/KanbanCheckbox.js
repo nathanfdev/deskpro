@@ -1,17 +1,17 @@
 import React, { PropTypes } from 'react';
 
-export class Checkbox extends React.Component {
+export class KanbanCheckbox extends React.Component {
 
   static propTypes = {
-    selected: PropTypes.bool,
-    onToggle: PropTypes.func.isRequired
+    onClick: PropTypes.func,
+    selected: PropTypes.bool
   };
 
   render() {
-    const { selected, onToggle } = this.props;
+    const { selected, onClick } = this.props;
 
     return (
-      <div className="card-checkbox" onClick={onToggle}>
+      <div className="card-checkbox" onClick={onClick}>
         <span className="checkbox">
           {selected && <i className="fa fa-check" />}
         </span>

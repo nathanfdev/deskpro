@@ -41,19 +41,19 @@ const TaskOrderHover = React.createClass({
             checked={order === 'project'}
             label="Project"
             icon="briefcase"/>
-      <Item onClick={this.setOrder.bind(this, {order: 'due'})}
-            isActive={order === 'due'}
-            checked={order === 'due'}
+      <Item onClick={this.setOrder.bind(this, {order: 'date_due'})}
+            isActive={order === 'date_due'}
+            checked={order === 'date_due'}
             label="Due Date"
             icon="calendar"/>
-      <Item onClick={this.setOrder.bind(this, {order: 'done'})}
-            isActive={order === 'done'}
-            checked={order === 'done'}
+      <Item onClick={this.setOrder.bind(this, {order: 'date_done'})}
+            isActive={order === 'date_done'}
+            checked={order === 'date_done'}
             label="Done Date"
             icon="calendar"/>
-      <Item onClick={this.setOrder.bind(this, {order: 'created'})}
-            isActive={order === 'created'}
-            checked={order === 'created'}
+      <Item onClick={this.setOrder.bind(this, {order: 'date_created'})}
+            isActive={order === 'date_created'}
+            checked={order === 'date_created'}
             label="Created Date"
             icon="calendar"/>
       <Item onClick={this.setOrder.bind(this, {order: 'assignee'})}

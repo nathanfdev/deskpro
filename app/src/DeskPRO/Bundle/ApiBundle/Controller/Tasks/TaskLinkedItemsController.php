@@ -47,6 +47,9 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class TaskLinkedItemsController.
+ */
 class TaskLinkedItemsController extends BaseController implements ClassResourceInterface
 {
     /**
@@ -68,16 +71,12 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
 
         if (!empty($query['ids'])) {
             $taskLinks = $this->selectLinks(explode(',', $query['ids']));
-
             $taskLinks = $taskLinks->getResult();
         } else {
             $taskLinks = $this->getDoctrine()->getManager()->getRepository('App:TaskLinkedItem')->findAll();
         }
 
-        return View::create(
-            $this->dataSerialize($taskLinks),
-            Response::HTTP_OK
-        );
+        return View::create($this->dataSerialize($taskLinks), Response::HTTP_OK);
     }
 
     /**
@@ -106,15 +105,11 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
     public function getAction($id)
     {
         $link = $this->getLink($id);
-
         if (empty($link)) {
             throw $this->createNotFoundException();
         }
 
-        return View::create(
-            $this->dataSerialize($link),
-            Response::HTTP_OK
-        );
+        return View::create($this->dataSerialize($link), Response::HTTP_OK);
     }
 
     /**
@@ -205,10 +200,7 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
         $this->getDoctrine()->getManager()->remove($link);
         $this->getDoctrine()->getManager()->flush();
 
-        return View::create(
-            array(),
-            Response::HTTP_OK
-        );
+        return View::create([], Response::HTTP_OK);
     }
 
     /**
@@ -259,14 +251,14 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
                 throw new InvalidFormException($form);
             }
 
-            $location = $this->generateUrl('api_task_links_get', array('id' => $link->getId()));
+            $location = $this->generateUrl('api_task_links_get', ['id' => $link->getId()]);
 
             return View::create(
                 $this->dataSerialize($link),
                 $status,
-                array(
+                [
                     'Location' => $location,
-                )
+                ]
             );
         }
 
@@ -282,7 +274,7 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
      */
     private function cleanLinkTypes(array $submitted)
     {
-        $types   = array('article', 'ticket', 'chat');
+        $types   = ['article', 'ticket', 'chat'];
         $cleaned = false;
 
         foreach ($types as $type) {

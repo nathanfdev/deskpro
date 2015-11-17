@@ -1,28 +1,31 @@
 import React, { PropTypes } from 'react';
-import { Checkbox } from './Checkbox';
+import { KanbanCheckbox } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Kanban/index';
 import {
   BaseTaskCard,
   Title,
   DateDue,
   SubTasks,
   Comments
-} from '../../../TaskCard/index';
+} from '../../TaskCard/index';
 
 export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
-    task: PropTypes.object.isRequired
+    selected: PropTypes.bool,
+    onToggleSelected: PropTypes.func,
+    task: PropTypes.object
   };
 
   render() {
+    const { selected, onToggleSelected } = this.props;
+
     return (
       <div>
         <div className="card task-card">
           <div className="card-status-bar status-bar-left" />
           <div className="card-status-bar status-bar-right" />
 
-          <Checkbox selected={this.state.selected}
-                    onToggle={this.onToggleSelect} />
+          <KanbanCheckbox selected={selected} onClick={onToggleSelected} />
 
           <div className="content">
             <Title value={this.state.title}
