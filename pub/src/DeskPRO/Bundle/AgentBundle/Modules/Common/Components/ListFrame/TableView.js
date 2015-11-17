@@ -19,6 +19,30 @@ export class Table extends Component {
   }
 }
 
+export class TableGroup extends Component {
+
+  static propTypes = {
+    title: PropTypes.any,
+    children: PropTypes.node,
+  };
+
+  render() {
+    const { title, children } = this.props;
+
+    return (
+      <tbody>
+      <tr className="divider">
+        <td colSpan="1000">
+          {title}
+        </td>
+      </tr>
+
+      {children}
+      </tbody>
+    );
+  }
+}
+
 export class Th extends Component {
 
   static propTypes = {

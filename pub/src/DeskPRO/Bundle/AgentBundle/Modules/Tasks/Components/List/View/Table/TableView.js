@@ -1,9 +1,8 @@
 import React, { PropTypes } from 'react';
 import { HeaderContainer } from './HeaderContainer';
-import { ListGroup } from './ListGroup';
 import { TaskCardContainer } from '../TaskCardContainer';
 import { TaskCard } from './TaskCard/TaskCard';
-import { Table } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { Table, TableGroup } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 
 export class TableView extends React.Component {
 
@@ -22,13 +21,13 @@ export class TableView extends React.Component {
             .filter(taskGroup => taskGroup.elements.length)
             .map((taskGroup, index) =>
 
-            <ListGroup title={taskGroup.title} key={index}>
+            <TableGroup title={taskGroup.title} key={index}>
               {taskGroup.elements.map(task =>
                 <TaskCardContainer task={task} key={task.get('id')}>
                   <TaskCard />
                 </TaskCardContainer>
               )}
-            </ListGroup>
+            </TableGroup>
           )}
       </Table>
     );
