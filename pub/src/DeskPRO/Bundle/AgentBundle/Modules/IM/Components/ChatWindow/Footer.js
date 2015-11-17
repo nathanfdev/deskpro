@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
+import Editor from 'react-medium-editor';
 
 export class Footer extends React.Component {
 
@@ -23,10 +24,10 @@ export class Footer extends React.Component {
     this.setState(newState);
   };
 
-  handleChange(event) {
+  handleChange(text, medium) {
     const oldState = this.state;
     const newState = {...oldState};
-    newState.message = event.target.value;
+    newState.message = text;
     this.setState(newState);
   }
 
@@ -93,17 +94,27 @@ export class Footer extends React.Component {
   };
 
   render() {
+    const options = {
+      elementsContainer: document.getElementById('toolbar'),
+      toolbar: {
+        buttons: ['bold', 'italic', 'underline'],
+        relativeContainer: this.refs.toolbar,
+        'static': true,
+        updateOnEmptySelection: true
+      }
+    };
     return (
       <footer>
+
         <form onSubmit={this.handleSubmit}>
-          <TextareaAutosize
-            onChange={this.handleChange.bind(this)}
-            onKeyDown={this.handleTyping}
-            placeholder="Send a message"
-            rows={1}
-            style={{maxHeight: 300}}
-            value={this.state.message}
-            />
+          <div id="toolbar"></div>
+          <div className="textarea" ref="textarea"></div>
+          <Editor
+          tag="div"
+          text={this.state.message}
+          onChange={this.handleChange.bind(this)}
+          options={options}
+          />
           <a href="#" ref="emojiButton" onClick={this.toggleEmoji} className="insert-emoticon"><span className="emoticon sprite sprite-emoticon-1"></span></a>
           <input onClick={this.handleSubmit} type="button" value="&#xf101;"/>
           { this.renderEmojiTable() }
