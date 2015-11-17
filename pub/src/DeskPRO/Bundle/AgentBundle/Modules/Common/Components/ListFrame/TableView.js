@@ -70,22 +70,34 @@ export class Th extends Component {
 export class Td extends Component {
 
   static propTypes = {
-    visible: PropTypes.bool,
+    hidden: PropTypes.bool,
     className: PropTypes.string,
     children: PropTypes.any
   };
 
   render() {
-    const { className } = this.props;
-    const style = this.props.visible === false ? {display: 'none'} : {};
+    const { hidden, children, className } = this.props;
 
     return (
-      <td style={style} className={className}>
-        {this.props.children}
+      <td className={classNames({'hidden': hidden}, className)}>
+        {children}
       </td>
     );
   }
+}
 
+export class TdId extends Td {
+
+  render() {
+    return <Td className="id-col" {...this.props} />;
+  }
+}
+
+export class TdTitle extends Td {
+
+  render() {
+    return <Td className="item-title" {...this.props} />;
+  }
 }
 
 export class PersonInTable extends Component {
