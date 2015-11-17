@@ -30,6 +30,7 @@ export class ListGroupContainer extends React.Component {
 
     const groupConfig = {
       groupKey: sort,
+      defaultGroupKey: 'list',
       options: {
         project: {
           type: 'record',

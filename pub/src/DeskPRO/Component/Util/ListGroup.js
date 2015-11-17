@@ -99,8 +99,8 @@ const addRecordGroups = (groups, groupConfig) => {
   }
 };
 
-const getGroups = ({groupKey, options = []}) => {
-  const groupConfig = options[groupKey];
+const getGroups = ({groupKey, defaultGroupKey, options = []}) => {
+  const groupConfig = options[groupKey] || options[defaultGroupKey];
   const type = groupConfig.type;
   const groups = [];
 

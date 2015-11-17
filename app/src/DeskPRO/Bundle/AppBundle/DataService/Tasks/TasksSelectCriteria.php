@@ -183,6 +183,12 @@ class TasksSelectCriteria extends Criteria
                     $order = isset($this->filters['order']) ? $this->filters['order'] : 'asc';
 
                     switch ($value) {
+                        case 'id':
+                            $qb->orderBy('t.id', $order);
+                            break;
+                        case 'title':
+                            $qb->orderBy('t.title', $order);
+                            break;
                         case 'list':
                             $qb
                                 ->leftJoin('t.list', 'list')
@@ -325,6 +331,8 @@ class TasksSelectCriteria extends Criteria
             ->setAllowedValues('label_mode', ['any', 'all'])
             ->setAllowedValues('done', ['done', 'undone'])
             ->setAllowedValues('sort', [
+                'id',
+                'title',
                 'list',
                 'project',
                 'date_due',

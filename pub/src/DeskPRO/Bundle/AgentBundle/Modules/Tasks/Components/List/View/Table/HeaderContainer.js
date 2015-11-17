@@ -34,8 +34,8 @@ export class HeaderContainer extends React.Component {
       <thead>
         <tr>
           <Th />
-          <Th title="Id" visible={isVisible('id')} />
-          <Th title="Title" visible={isVisible('title')} />
+          <Th title="Id" sort="id" visible={isVisible('id')} {...columnProps} />
+          <Th title="Title" sort="title" visible={isVisible('title')} {...columnProps}  />
           <Th title="Project" sort="project" visible={isVisible('project')} {...columnProps} />
           <Th title="Due" sort="date_due" visible={isVisible('date_due')} {...columnProps} />
           <Th title="Assignee" sort="assignee" visible={isVisible('assignee')} {...columnProps} />
