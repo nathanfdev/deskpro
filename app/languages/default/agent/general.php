@@ -283,6 +283,7 @@ return array(
     'agent.general.enter_a_message'                         => 'Enter a message',
     'agent.general.enter_a_title'                           => 'Enter a title',
     'agent.general.enter_organization_name'                 => 'Enter an organization name...',
+    'agent.general.find_org'                                => 'Find an organization',
     'agent.general.find_or_create_org'                      => 'Find or create an organization',
     'agent.general.enter_search_terms'                      => 'Enter search terms',
     'agent.general.error'                                   => 'Error',
