@@ -34,6 +34,7 @@ export class HeaderContainer extends React.Component {
       <thead>
         <tr>
           <Th />
+          <Th title="Id" hidden={isHidden('id')} />
           <Th title="Title" hidden={isHidden('title')} />
           <Th title="Project" sort="project" hidden={isHidden('project')} {...columnProps} />
           <Th title="Due" sort="date_due" hidden={isHidden('date_due')} {...columnProps} />

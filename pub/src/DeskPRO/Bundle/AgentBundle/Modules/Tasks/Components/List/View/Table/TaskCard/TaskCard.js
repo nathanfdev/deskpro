@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import Moment from 'moment';
+import { Td, TdId, TdTitle } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { BaseTaskCard, ProjectContainer } from '../../../TaskCard/index';
 import { Project } from './Project';
 import { AssigneeContainer } from './AssigneeContainer';
@@ -25,22 +26,21 @@ export class TaskCard extends BaseTaskCard {
     const { task, selected, onToggleSelected } = this.props;
 
     return (
-      <tr key={task.get('id')}>
-        <td>
+      <tr>
+        <Td>
           <TableCheckbox selected={selected} onClick={onToggleSelected} />
-        </td>
-        <td>
-          {task.get('title')}
-        </td>
-        <td>
+        </Td>
+        <TdId>{task.get('id')}</TdId>
+        <TdTitle>{task.get('title')}</TdTitle>
+        <Td>
           <ProjectContainer project={task.get('project')}>
             <Project />
           </ProjectContainer>
-        </td>
-        <td>{task.get('date_due') ? Moment(task.get('date_due')).format('DD/MM/YY') : 'N/A'}</td>
-        <td>
+        </Td>
+        <Td>{task.get('date_due') ? Moment(task.get('date_due')).format('DD/MM/YY') : 'N/A'}</Td>
+        <Td>
           <AssigneeContainer task={task} />
-        </td>
+        </Td>
       </tr>
     );
   }

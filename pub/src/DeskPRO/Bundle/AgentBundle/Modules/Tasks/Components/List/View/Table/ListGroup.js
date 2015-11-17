@@ -13,7 +13,7 @@ export class ListGroup extends React.Component {
     return (
       <tbody>
         <tr className="divider">
-          <td colSpan="5">
+          <td colSpan="6">
             <hr/>
             {title}
           </td>
