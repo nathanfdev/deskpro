@@ -1,21 +1,70 @@
 import moment from 'moment';
 
 const dateGroups = {
-  hour: {title: 'This Hour', match: date => moment().isSame(date, 'hour')},
-  yesterday: {title: 'Yesterday', match: date => moment().subtract(1, 'day').isSame(date, 'day')},
-  today: {title: 'Today', match: date => moment().isSame(date, 'day')},
-  tomorrow: {title: 'Tomorrow', match: date => moment().add(1, 'day').isSame(date, 'day')},
+  hour: {
+    title: 'This Hour',
+    compareDate: moment().startOf('hour'),
+    match: (date, compareDate) => compareDate.isSame(date, 'hour')
+  },
 
-  lastWeek: {title: 'Last Week', match: date => moment().subtract(1, 'week').isSame(date, 'week')},
-  thisWeek: {title: 'This Week', match: date => moment().isSame(date, 'week')},
-  nextWeek: {title: 'Next Week', match: date => moment().add('week').isSame(date, 'week')},
+  yesterday: {
+    title: 'Yesterday',
+    compareDate: moment().subtract(1, 'day').startOf('day'),
+    match: (date, compareDate) => compareDate.isSame(date, 'day')
+  },
+  today: {
+    title: 'Today',
+    compareDate: moment().startOf('day'),
+    match: (date, compareDate) => compareDate.isSame(date, 'day')
+  },
+  tomorrow: {
+    title: 'Tomorrow',
+    compareDate: moment().add(1, 'day').startOf('day'),
+    match: (date, compareDate) => compareDate.isSame(date, 'day')
+  },
 
-  lastMonth: {title: 'Last Month', match: date => moment().subtract(1, 'month').isSame(date, 'month')},
-  thisMonth: {title: 'This Month', match: date => moment().isSame(date, 'month')},
-  nextMonth: {title: 'Next Month', match: date => moment().add(1, 'month').isSame(date, 'month')},
+  lastWeek: {
+    title: 'Last Week',
+    compareDate: moment().subtract(1, 'week').startOf('week'),
+    match: (date, compareDate) => compareDate.isSame(date, 'week')
+  },
+  thisWeek: {
+    title: 'This Week',
+    compareDate: moment().startOf('week'),
+    match: (date, compareDate) => compareDate.isSame(date, 'week')
+  },
+  nextWeek: {
+    title: 'Next Week',
+    compareDate: moment().add('week').startOf('week'),
+    match: (date, compareDate) => compareDate.isSame(date, 'week')
+  },
 
-  older: {title: 'Older', match: date => moment().isBefore(date, 'year')},
-  thisYear: {title: 'This Year', match: date => moment().isSame(date, 'year')}
+  lastMonth: {
+    title: 'Last Month',
+    compareDate: moment().subtract(1, 'month').startOf('month'),
+    match: (date, compareDate) => compareDate.isSame(date, 'month')
+  },
+  thisMonth: {
+    title: 'This Month',
+    compareDate: moment().startOf('month'),
+    match: (date, compareDate) => compareDate.isSame(date, 'month')
+  },
+  nextMonth: {
+    title: 'Next Month',
+    compareDate: moment().add(1, 'month').startOf('month'),
+    match: (date, compareDate) => compareDate.isSame(date, 'month')
+  },
+
+  older: {
+    title: 'Older',
+    compareDate: moment().subtract(1, 'year').startOf('year'),
+    match: (date, compareDate) => compareDate.isSame(date, 'year')
+  },
+  thisYear: {
+    title: 'This Year',
+    compareDate: moment().startOf('year'),
+    match: (date, compareDate) => compareDate.isSame(date, 'year')
+  }
 };
 
 const futureDates = [
@@ -41,34 +90,48 @@ const pastDates = [
   'older'
 ];
 
-const createGroup = (title, matchFn) => ({
+const createGroup = (title, param, value, matchFn) => ({
   title: title,
   match: matchFn,
+  param: param,
+  value: value,
   elements: []
 });
 
 const dateGroupsBuilder = (groups, { refField, dateGroupKeys }) => {
   dateGroupKeys.forEach(groupKey => {
-    const dateGroup = dateGroups[groupKey];
+    const { title, compareDate, match } = dateGroups[groupKey];
+
     groups.push(createGroup(
-      dateGroup.title,
-      task => dateGroup.match(task.get(refField))
+      title,
+      refField,
+      compareDate,
+      task => match(task.get(refField), compareDate)
     ));
   });
 
-  groups.push(createGroup('Other', () => true));
+  groups.push(createGroup(
+    'Other',
+    refField,
+    null,
+    () => true
+  ));
 };
 
 const recordGroupsBuilder = (groups, { records, titleField, refField }) => {
-  records.forEach(record => groups.push(createGroup(
-    record.get(titleField),
-    item => {
-      const id = record.get('id');
-      const value = item.get(refField);
+  records.forEach(record => {
+    const id = record.get('id');
 
-      return value && typeof value === 'object' ? value.includes(id) : value === id;
-    }
-  )));
+    groups.push(createGroup(
+      record.get(titleField),
+      refField,
+      id,
+      item => {
+        const value = item.get(refField);
+        return value && typeof value === 'object' ? value.includes(id) : value === id;
+      }
+    ));
+  });
 };
 
 const addDateGroups = (groups, groupConfig) => {
@@ -86,7 +149,7 @@ const addDateGroups = (groups, groupConfig) => {
 };
 
 const addRecordGroups = (groups, groupConfig) => {
-  const { records, emptyGroup } = groupConfig;
+  const { records, refField, emptyGroup } = groupConfig;
 
   if (Array.isArray(records)) {
     records.forEach(childGroupConfig => addRecordGroups(groups, childGroupConfig));
@@ -95,7 +158,12 @@ const addRecordGroups = (groups, groupConfig) => {
   }
 
   if (emptyGroup) {
-    groups.push(createGroup(emptyGroup, () => true));
+    groups.push(createGroup(
+      emptyGroup,
+      refField,
+      null,
+      () => true
+    ));
   }
 };
 

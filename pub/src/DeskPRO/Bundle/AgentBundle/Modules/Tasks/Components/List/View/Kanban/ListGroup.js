@@ -10,7 +10,7 @@ export class ListGroup extends React.Component {
     title: PropTypes.any,
     children: PropTypes.node,
     isOver: PropTypes.bool,
-    connectDropTarget: PropTypes.bool.isRequired
+    connectDropTarget: PropTypes.func.isRequired
   };
 
   render() {
