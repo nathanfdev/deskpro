@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Table, Th, Td, IdContainer, PersonInTable, TableCheckbox }
+import { Table, Th, Td, TdId, TdTitle, IdContainer, TableCheckbox }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { connect } from 'react-redux';
 import { elementsSelector, selectedSelector, tableVisibleFieldsSelector } from '../../../../Selectors/list';
@@ -49,15 +49,15 @@ export class ListTableViewContainer extends Component {
     return (
       <tr key={id}>
         <Td><TableCheckbox selected={selected} onClick={onClick(id)} /></Td>
-        <Td visible={this.isVisible('id')} className="id-col"><IdContainer id={id}/></Td>
+        <TdId visible={this.isVisible('id')}><IdContainer id={id}/></TdId>
         <Td visible={this.isVisible('urgency')}>{ticket.get('urgency')}</Td>
         <Td visible={this.isVisible('person')}>John Doe</Td>
         <Td visible={this.isVisible('person_email')}>{ticket.get('person_email')}</Td>
         <Td visible={this.isVisible('agent')}>Admin Admin</Td>
-        <Td visible={this.isVisible('subject')} className="item-title">{ticket.get('subject')}</Td>
-        <Td visible={this.isVisible('status')} className="item-title">{ticket.get('status')}</Td>
-        <Td visible={this.isVisible('date_created')} className="item-title">{ticket.get('date_created')}</Td>
-        <Td visible={this.isVisible('labels')} className="item-title">{ticket.get('labels')}</Td>
+        <TdTitle visible={this.isVisible('subject')}>{ticket.get('subject')}</TdTitle>
+        <TdTitle visible={this.isVisible('status')}>{ticket.get('status')}</TdTitle>
+        <TdTitle visible={this.isVisible('date_created')}>{ticket.get('date_created')}</TdTitle>
+        <TdTitle visible={this.isVisible('labels')}>{ticket.get('labels')}</TdTitle>
       </tr>
     );
   }
@@ -66,50 +66,50 @@ export class ListTableViewContainer extends Component {
     return (
       <tr>
         <Th />
-        <Th value="id" label="ID" className="sortable"
+        <Th sort="id" title="ID" className="sortable"
             visible={this.isVisible('id')}
             order={false}
-            sortTable={this.sortTable.bind(this)}
+            onChange={this.sortTable.bind(this)}
         />
-        <Th value="urgency" label="Urgency" className="sortable"
+        <Th sort="urgency" title="Urgency" className="sortable"
             visible={this.isVisible('urgency')}
             order={false}
-            sortTable={this.sortTable.bind(this)}
+            onChange={this.sortTable.bind(this)}
         />
-        <Th value="person" label="Person"
+        <Th sort="person" title="Person"
             visible={this.isVisible('person')}
             order={false}
-            sortTable={this.sortTable.bind(this)}
+            onChange={this.sortTable.bind(this)}
           />
-        <Th value="person_email" label="Person email"
+        <Th sort="person_email" title="Person email"
             visible={this.isVisible('person_email')}
             order={false}
-            sortTable={this.sortTable.bind(this)}
+            onChange={this.sortTable.bind(this)}
           />
-        <Th value="agent" label="Agent"
+        <Th sort="agent" title="Agent"
             visible={this.isVisible('agent')}
             order={false}
-            sortTable={this.sortTable.bind(this)}
+            onChange={this.sortTable.bind(this)}
         />
-        <Th value="subject" label="Subject"
+        <Th sort="subject" title="Subject"
             visible={this.isVisible('subject')}
             order={false}
-            sortTable={this.sortTable.bind(this)}
+            onChange={this.sortTable.bind(this)}
         />
-        <Th value="status" label="Status"
+        <Th sort="status" title="Status"
             visible={this.isVisible('status')}
             order={false}
-            sortTable={this.sortTable.bind(this)}
+            onChange={this.sortTable.bind(this)}
         />
-        <Th value="date_created" label="Created"
+        <Th sort="date_created" title="Created"
             visible={this.isVisible('date_created')}
             order={false}
-            sortTable={this.sortTable.bind(this)}
+            onChange={this.sortTable.bind(this)}
         />
-        <Th value="labels" label="Labels"
+        <Th sort="labels" title="Labels"
             visible={this.isVisible('labels')}
             order={false}
-            sortTable={this.sortTable.bind(this)}
+            onChange={this.sortTable.bind(this)}
         />
       </tr>
     );
