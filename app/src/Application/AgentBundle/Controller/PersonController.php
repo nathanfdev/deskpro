@@ -303,7 +303,7 @@ class PersonController extends AbstractController
 
         $changelog = $this->em->getRepository('DeskPRO:LogEvent')->findBy(
             array('subject' => 'Person', 'subject_id' => $person['id'], 'parent' => null),
-            array('id'      => 'DESC')
+            array('id' => 'DESC')
         );
 
         return $this->render('AgentBundle:Person:view.html.twig', array(
@@ -786,8 +786,8 @@ class PersonController extends AbstractController
         $custom_fields = $field_manager->getDisplayArrayForObject($person);
 
         return $this->createJsonResponse(array(
-            'success'                       => true,
-            'tpl'                           => $this->renderView('AgentBundle:Person:view-customfields-rendered-rows.html.twig', array(
+            'success' => true,
+            'tpl'     => $this->renderView('AgentBundle:Person:view-customfields-rendered-rows.html.twig', array(
                 'timezone_options'          => $timezone_options,
                 'person'                    => $person,
                 'custom_fields'             => $custom_fields,
@@ -1323,14 +1323,16 @@ class PersonController extends AbstractController
 
         $this->em->beginTransaction();
         try {
-            $personDeleted = new Entity\PersonDeleted();
-
-            $personDeleted['person_id'] = $person_id;
-            $personDeleted['by_person'] = $this->getPerson();
-            $personDeleted['reason']    = $this->in->getString('reason');
-
-            $this->em->persist($personDeleted);
-            $this->em->flush();
+            $this->em->getConnection()->executeQuery(
+                    'REPLACE INTO persons_deleted (person_id, by_person_id, reason, date_created)
+                     VALUES (:person, :by_person, :reason, :date)
+                ', array(
+                    'person'    => $person_id,
+                    'by_person' => $this->person->id,
+                    'reason'    => $this->in->getString('reason'),
+                    'date'      => date('Y-m-d H:i:s'),
+                )
+            );
 
             if ($this->in->getBool('ban')) {
                 foreach ($person->emails as $email) {
