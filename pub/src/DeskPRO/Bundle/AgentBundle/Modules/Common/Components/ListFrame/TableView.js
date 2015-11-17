@@ -11,7 +11,7 @@ export class Table extends Component {
   render() {
     return (
       <div className="dpmw--items-table-list">
-        <table>
+        <table className="condensed-task-list">
           {this.props.children}
         </table>
       </div>
@@ -33,6 +33,7 @@ export class TableGroup extends Component {
       <tbody>
         <tr className="divider">
           <td colSpan="1000">
+            <hr />
             {title}
           </td>
         </tr>
