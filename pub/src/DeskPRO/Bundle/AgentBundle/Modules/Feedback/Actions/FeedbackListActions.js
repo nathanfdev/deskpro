@@ -1,15 +1,13 @@
 import { createAction } from 'Ampliflux';
 import * as Feedback from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
 import * as PersonSetting from 'DeskPRO/Bundle/AgentBundle/Services/Api/PersonSetting';
-import { loadPeople, setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
-import { loadEmails } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/emailsActions';
+import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 import { loadFeedbackCommentsCounter } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCommentsActions';
 import { loadFeedbackStatuses } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackStatusesActions';
 import { loadFeedbackCategories } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCategoriesActions';
 import { currentListParamsSelector } from '../Selectors/list';
 import { getFeedbackForComments } from './FeedbackCommentsActions';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
-import { reduceMapToProperty } from 'DeskPRO/Component/Util/Map';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import { setFeedbackTypesRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackTypesActions';
 
@@ -40,24 +38,6 @@ export const initialLoad = createAction(
       });
     }
   )
-);
-
-export const getAuthors = createAction(
-  'FEEDBACK_GET_AUTHORS',
-  (feedback) => (dispatch) => {
-    const ids = [];
-    const unique = {};
-    for (var index in feedback.data) {
-      if (feedback.data.hasOwnProperty(index)) {
-        if (typeof(unique[feedback.data[index].person_id]) === 'undefined') {
-          ids.push(feedback.data[index].person_id);
-        }
-        unique[feedback.data[index].person_id] = 0;
-      }
-    }
-    dispatch(loadEmails(recordStoresId, ids));
-    return dispatch(loadPeople(recordStoresId, ids));
-  }
 );
 
 export const loadLabels = createAction(
@@ -108,7 +88,13 @@ export const loadList = createAction(
           }
         }
         dispatch(getFeedbackForComments(ids));
-        dispatch(getAuthors(comments));
+        const people = [];
+        for (const key in comments.linked.person) {
+          if (comments.linked.person.hasOwnProperty(key)) {
+            people.push(comments.linked.person[key]);
+          }
+        }
+        dispatch(setPeopleRequest('feedback', people));
         return comments;
       });
     } else {
@@ -120,7 +106,13 @@ export const loadList = createAction(
             ids.push(feedback.data[index].id);
           }
         }
-        dispatch(setPeopleRequest('feedback', feedback.linked.person));
+        const people = [];
+        for (const key in feedback.linked.person) {
+          if (feedback.linked.person.hasOwnProperty(key)) {
+            people.push(feedback.linked.person[key]);
+          }
+        }
+        dispatch(setPeopleRequest('feedback', people));
         dispatch(getCommentsCounter(ids));
         dispatch(getStatuses(ids));
         dispatch(getCategories(ids));

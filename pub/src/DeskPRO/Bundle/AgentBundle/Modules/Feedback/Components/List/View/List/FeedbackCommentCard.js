@@ -14,7 +14,6 @@ export class FeedbackCommentCard extends Component {
     feedback: PropTypes.object.isRequired,
     toggleSelected: PropTypes.func.isRequired,
     author: PropTypes.object.isRequired,
-    email: PropTypes.string.isRequired,
     selected: PropTypes.array.isRequired
   };
 

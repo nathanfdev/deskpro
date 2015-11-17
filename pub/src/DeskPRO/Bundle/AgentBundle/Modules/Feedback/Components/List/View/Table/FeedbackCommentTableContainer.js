@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 import { Table, TableHeader, Th, TableBody, Row, Td, IdContainer, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { feedbackSelector } from '../../../../Selectors/list';
-import { feedbackTypesSelector, feedbackCommentsSelector, feedbackCategoriesSelector, peopleSelector, emailsSelector } from '../../../../Selectors/list';
+import { feedbackTypesSelector, feedbackCommentsSelector, feedbackCategoriesSelector, peopleSelector } from '../../../../Selectors/list';
 import { defaultTableFields } from '../../../List/ControlBar/FeedbackViewOptions';
 import { applyParams } from '../../../../Actions/FeedbackListActions';
 
@@ -15,7 +15,6 @@ import { connect } from 'react-redux';
   feedbackCategories: feedbackCategoriesSelector(state),
   feedbackTypes: feedbackTypesSelector(state),
   people: peopleSelector(state),
-  emails: emailsSelector(state),
   commentsTableViewFields: state.Feedback.list.get('commentsTableViewFields')
 }))
 
@@ -28,7 +27,6 @@ export class FeedbackCommentTableContainer extends Component {
     viewFields: PropTypes.object,
     commentsTableViewFields: PropTypes.array.isRequired,
     people: PropTypes.object.isRequired,
-    emails: PropTypes.object.isRequired,
     feedbackCategories: PropTypes.object.isRequired,
     feedbackTypes: PropTypes.object.isRequired,
     feedbackComments: PropTypes.object.isRequired,
@@ -51,7 +49,7 @@ export class FeedbackCommentTableContainer extends Component {
   }
 
   sortTable(param, order) {
-    this.props.dispatch(applyParams({sort: param, order}));
+    this.props.dispatch(applyParams({ sort: param, order }));
   }
 
   renderStatus(id) {
@@ -88,7 +86,7 @@ export class FeedbackCommentTableContainer extends Component {
 
 
   render() {
-    const { comments, viewFields, people, emails, feedbackFromStore, feedbackTypes } = this.props;
+    const { comments, viewFields, people, feedbackFromStore, feedbackTypes } = this.props;
     let tableFields = (viewFields && viewFields.get('table')) ? viewFields.get('table').toJS() : defaultTableFields;
     const {ownViewFields} = this.state;
     tableFields = { ...ownViewFields, ...tableFields };
@@ -150,10 +148,7 @@ export class FeedbackCommentTableContainer extends Component {
                     <Td className="id-col"><IdContainer id={element.id}/></Td> : null }
                   {tableFields.comment_author.isShown ?
                     <Td>
-                      <PersonInTable
-                        person={people.get(feedback.person_id)}
-                        email={emails.get(feedback.person_id) ? emails.get(feedback.person_id).get('email') : null}
-                        />
+                      <PersonInTable person={people.get(feedback.person)}/>
                     </Td>
                     : null }
                   {tableFields.comment_content.isShown ?
@@ -171,10 +166,7 @@ export class FeedbackCommentTableContainer extends Component {
                     <Td>{feedback.hidden_status}</Td> : null }
                   {tableFields.author_name.isShown ?
                     <Td>
-                      <PersonInTable
-                        person={people.get(feedback.person_id)}
-                        email={emails.get(feedback.person_id) ? emails.get(feedback.person_id).get('email') : null}
-                        />
+                      <PersonInTable person={people.get(feedback.person)}/>
                     </Td>
                     : null }
                   {tableFields.type.isShown ?

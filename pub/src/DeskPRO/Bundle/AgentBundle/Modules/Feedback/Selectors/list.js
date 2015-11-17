@@ -1,8 +1,6 @@
 import { createSelector } from 'reselect';
 import { createPeopleRequestSelectors }
   from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Selectors/peopleSelectors';
-import { createEmailsRequestSelectors }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Selectors/emailsSelectors';
 import { createFeedbackTypesRequestSelectors } from '../RecordStores/Selectors/feedbackTypesSelectors';
 import { createFeedbackCommentsRequestSelectors } from '../RecordStores/Selectors/feedbackCommentsSelectors';
 import { createFeedbackStatusesRequestSelectors } from '../RecordStores/Selectors/feedbackStatusesSelectors';
@@ -36,11 +34,6 @@ export const isCommentsSelector = createSelector(
 export const peopleSelector = createSelector(
   createPeopleRequestSelectors('feedback').recordsSel,
     people => people
-);
-
-export const emailsSelector = createSelector(
-  createEmailsRequestSelectors('feedback').recordsSel,
-    email => email
 );
 
 export const feedbackTypesSelector = createSelector(
@@ -84,8 +77,8 @@ export const listFiltersSelector = createSelector(
     ];
     if (!currentListParams.get('navItem') || !currentListParams.get('navItem').get('category')) {
       // Type options
-      const typeOptions = types.toArray().map(type => ({ value: type.get('id'), label: type.get('title') }));
-      filterSelector.push({ label: 'Type', type: 'select', param: 'type', options: typeOptions });
+      const typeOptions = types.toArray().map(type => ({ value: type.get('title'), label: type.get('title') }));
+      filterSelector.push({ label: 'Type', type: 'select', param: 'category', options: typeOptions });
     }
     if (!currentListParams.get('navItem') || (!currentListParams.get('navItem').get('status') && !currentListParams.get('navItem').get('status_category'))) {
       // Status options
@@ -105,7 +98,7 @@ export const listFiltersSelector = createSelector(
         label: cat.group,
         value: cat.group
       }));
-      filterSelector.push({ label: 'Category', type: 'select', param: 'category', options: categoryOptions });
+      filterSelector.push({ label: 'Category', type: 'select', param: 'custom_category', options: categoryOptions });
     }
     return filterSelector;
   }
