@@ -33,35 +33,34 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonType;
-use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations\Route;
-use Symfony\Component\HttpFoundation\Request;
+use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class PeopleController.
- *
- * @Route("/people")
+ * Class AgentsController.
  */
-class PeopleController extends CrudController
+class AgentsController extends CrudController
 {
-    public static $entity = Person::class;
-    public static $type   = PersonType::class;
-
     /**
-     * {@inheritdoc}
+     * @ApiDoc(
+     *      description="get a list of all agents w/o pagination",
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     * @Get("/agents", name="api_agents")
+     *
+     * @return View
      */
-    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
+    public function getAllAgentsAction()
     {
-        if ($is_agent = $request->get('is_agent')) {
-            $qb->andWhere("$alias.is_agent = :is_agent");
-            $qb->setParameter('is_agent', (int) $is_agent);
-        }
+        $agents = $this->getRepository(Person::class)->findBy(['is_agent' => true]);
 
-        if ($request->get('not_me')) {
-            $user = $this->getUser();
-            $qb->andWhere("$alias.id != :id");
-            $qb->setParameter('id', $user->getId());
-        }
+        return View::create(
+            $this->dataSerialize($agents),
+            Response::HTTP_OK
+        );
     }
 }

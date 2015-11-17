@@ -29,39 +29,29 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\Controller\People;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\People;
 
-use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonType;
-use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations\Route;
-use Symfony\Component\HttpFoundation\Request;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
+use Symfony\Component\Form\FormBuilderInterface;
 
 /**
- * Class PeopleController.
- *
- * @Route("/people")
+ * Class PersonType.
  */
-class PeopleController extends CrudController
+class PersonType extends ApiType
 {
-    public static $entity = Person::class;
-    public static $type   = PersonType::class;
-
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface $builder
+     * @param array                $options
      */
-    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if ($is_agent = $request->get('is_agent')) {
-            $qb->andWhere("$alias.is_agent = :is_agent");
-            $qb->setParameter('is_agent', (int) $is_agent);
-        }
-
-        if ($request->get('not_me')) {
-            $user = $this->getUser();
-            $qb->andWhere("$alias.id != :id");
-            $qb->setParameter('id', $user->getId());
-        }
+        $builder
+            ->add('name', 'text')
+            ->add('first_name', 'text')
+            ->add('last_name', 'text')
+            ->add('summary', 'text')
+            ->add('organization', 'entity', ['class' => 'DeskPRO:Organization'])
+            ->add('language', 'entity', ['class' => 'DeskPRO:Language'])
+        ;
     }
 }
