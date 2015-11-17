@@ -800,9 +800,7 @@ $em->getConnection()->executeUpdate(
 INSERT INTO `brands` (`id`, `logo_blob_id`, `name`, `theme_id`)
 VALUES
 	(1, NULL, 'Standard Theme', 'standard'),
-	(2, NULL, 'Sidebar Theme', 'sidebar'),
-	(3, NULL, 'Simple Theme', 'simple'),
-	(4, NULL, 'Tab Bar Theme', 'tabbar');
+	(2, NULL, 'Sidebar Theme', 'sidebar')
 "
 );
 

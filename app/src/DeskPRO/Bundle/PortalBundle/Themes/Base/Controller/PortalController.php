@@ -81,28 +81,8 @@ class PortalController extends AbstractController
      */
     public function userSidebarAction(TagRequest $tag_request)
     {
-        if (!$user = $this->getUser()) {
-            $auth_manager = $this->get('dp_authentication_manager.user');
-
-            $page_vars = array(
-                'login_text_button_usersources' => $auth_manager->getLoginTextButtonUsersources(),
-                'login_icon_usersources'        => $auth_manager->getLoginIconUsersources(),
-                'show_forgot_password'          => $auth_manager->isForgotPasswordVisible(),
-                'show_remember_me'              => $auth_manager->isRememberMeEnabled(),
-                'show_login_form'               => $auth_manager->isLoginFormVisible(),
-                'show_auth'                     => $auth_manager->isAuthVisible(),
-            );
-        } else {
-            $page_vars = array(
-                'user'             => $user,
-                'ticket_count'     => $user ? $this->getTicketsDataService()->getTicketCount($user, 'all') : 0,
-                'ticket_count_org' => $user ? $this->getTicketsDataService()->getOrganizationTicketCount($user, 'all') : 0,
-            );
-        }
-
         return $this->renderThemeView(
-            'Theme:Portal:sidebar.html.twig',
-            $page_vars
+            'Theme:Portal:sidebar.html.twig'
         );
     }
 
