@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
-import { DragSource, DropTarget } from 'react-dnd';
-import { cardSourceSpec, cardSourceCollect, cardTargetSpec, cardTargetCollect } from '../TaskCardContainer';
+import { DragSource } from 'react-dnd';
+import { cardSpec, cardCollect } from '../TaskCardContainer';
 import { KanbanCheckbox } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Kanban/index';
 import {
   BaseTaskCard,
@@ -10,8 +10,7 @@ import {
   Comments
 } from '../../TaskCard/index';
 
-@DragSource('TASK', cardSourceSpec, cardSourceCollect)
-@DropTarget('TASK', cardTargetSpec, cardTargetCollect)
+@DragSource('TASK', cardSpec, cardCollect)
 export class TaskCard extends BaseTaskCard {
 
   static propTypes = {

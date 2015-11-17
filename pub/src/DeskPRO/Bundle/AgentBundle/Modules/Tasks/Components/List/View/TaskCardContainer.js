@@ -45,26 +45,33 @@ export class TaskCardContainer extends React.Component {
   }
 }
 
-export const cardSourceSpec = {
+export const cardSpec = {
   beginDrag(props) {
+    console.log('beginDrag', props.task.get('id'));
     return {id: props.task.get('id')};
+  },
+
+  isDragging(props, monitor) {
+    console.log('isDragging');
+  },
+
+  endDrag(props, monitor, component) {
+    console.log('endDrag', props.task.get('id'));
   }
 };
 
-export const cardSourceCollect = dragConnect => ({
-  connectDragSource: dragConnect.dragSource()
+export const cardCollect = (connect, monitor) => ({
+  connectDragSource: connect.dragSource(),
+  isDragging: monitor.isDragging()
 });
 
-export const cardTargetSpec = {
+export const groupSpec = {
   drop(props, monitor) {
-    const item = monitor.getItem();
-    if (item.details.get('id') !== props.task.get('id')) {
-      console.log('drop');
-    }
+    console.log('edit task');
   }
 };
 
-export const cardTargetCollect = (connector, monitor) => ({
-  connectDropTarget: connector.dropTarget(),
+export const groupCollect = (connect, monitor) => ({
+  connectDropTarget: connect.dropTarget(),
   isOver: monitor.isOver()
 });
