@@ -11,10 +11,10 @@ const initialState = {
     }
   },
   visibleFields: {
-    [constants.VIEW_MODE_CARD]: [],
-    [constants.VIEW_MODE_TABLE]: [],
-    [constants.VIEW_MODE_KANBAN]: [],
-    [constants.VIEW_MODE_CALENDAR]: []
+    [constants.VIEW_MODE_CARD]: ['title', 'project', 'date_due', 'assignee'],
+    [constants.VIEW_MODE_TABLE]: ['title', 'project', 'date_due', 'assignee'],
+    [constants.VIEW_MODE_KANBAN]: ['title', 'project', 'date_due', 'assignee'],
+    [constants.VIEW_MODE_CALENDAR]: ['title', 'project', 'date_due', 'assignee']
   },
   elements: {},
   selected: [],

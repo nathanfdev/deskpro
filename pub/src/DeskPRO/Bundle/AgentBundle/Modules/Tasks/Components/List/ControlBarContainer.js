@@ -125,11 +125,10 @@ export class ControlBarContainer extends React.Component {
             label: 'Card View',
             icon: 'list',
             configurableFields: {
-              id: 'ID',
-              urgency: 'Urgency',
-              person: 'Person',
-              date_created: 'Date created',
-              labels: 'Labels'
+              title: 'Title',
+              project: 'Project',
+              date_due: 'Due Date',
+              assignee: 'Assignee'
             },
             visibleFields: cardVisibleFields,
             toggleFieldVisibility: toggleCardFieldVisibility
@@ -138,10 +137,10 @@ export class ControlBarContainer extends React.Component {
             label: 'Table View',
             icon: 'table',
             configurableFields: {
-              subject: 'Subject',
-              status: 'Status',
-              date_created: 'Date created',
-              labels: 'Labels'
+              title: 'Title',
+              project: 'Project',
+              date_due: 'Due Date',
+              assignee: 'Assignee'
             },
             visibleFields: tableVisibleFields,
             toggleFieldVisibility: toggleTableFieldVisibility
@@ -150,8 +149,10 @@ export class ControlBarContainer extends React.Component {
             label: 'Kanban View',
             icon: 'sticky-note-o',
             configurableFields: {
-              subject: 'Subject',
-              status: 'Status'
+              title: 'Title',
+              project: 'Project',
+              date_due: 'Due Date',
+              assignee: 'Assignee'
             },
             visibleFields: kanbanVisibleFields,
             toggleFieldVisibility: toggleKanbanFieldVisibility
@@ -160,8 +161,10 @@ export class ControlBarContainer extends React.Component {
             label: 'Calendar View',
             icon: 'calendar',
             configurableFields: {
-              subject: 'Subject',
-              status: 'Status'
+              title: 'Title',
+              project: 'Project',
+              date_due: 'Due Date',
+              assignee: 'Assignee'
             },
             visibleFields: calendarVisibleFields,
             toggleFieldVisibility: toggleCalendarFieldVisibility
