@@ -57,9 +57,9 @@ export const cardCollect = (dragConnect, monitor) => ({
 });
 
 export const groupSpec = {
-  drop(props, monitor) {
+  drop({ param, value }, monitor) {
     const item = monitor.getItem();
-    console.log('edit task', item);
+    console.log('edit task', param, value, item.id);
   }
 };
 

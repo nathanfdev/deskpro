@@ -22,7 +22,11 @@ export class TableView extends React.Component {
             .filter(taskGroup => taskGroup.elements.length)
             .map((taskGroup, index) =>
 
-            <ListGroup title={taskGroup.title} key={index}>
+            <ListGroup title={taskGroup.title}
+                       key={index}
+                       param={taskGroup.param}
+                       value={taskGroup.value}>
+
               {taskGroup.elements.map(task =>
                 <TaskCardContainer task={task} key={task.get('id')}>
                   <TaskCard />
