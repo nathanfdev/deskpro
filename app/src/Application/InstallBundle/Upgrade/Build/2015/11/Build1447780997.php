@@ -26,4 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1447780997);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1447780997 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('Remove some old sys scripts');
+        @unlink(DP_ROOT.'/sys/scripts/apcclear.php');
+        @unlink(DP_ROOT.'/sys/scripts/check.php');
+        @unlink(DP_ROOT.'/sys/scripts/dev_run_migrations.php');
+        @unlink(DP_ROOT.'/sys/scripts/failed_sendmail_job.php');
+        @unlink(DP_ROOT.'/sys/scripts/savemail.php');
+        @unlink(DP_ROOT.'/sys/scripts/smtp_event.php');
+        @unlink(DP_ROOT.'/sys/scripts/testfile.php');
+        @unlink(DP_ROOT.'/sys/scripts/testmode.php');
+    }
+}
