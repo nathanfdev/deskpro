@@ -1368,29 +1368,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			self.getEl('unlock_ticket').hide();
 		}
 
-		var props = ['status', 'language_id', 'problem_id', 'department_id', 'category_id', 'product_id', 'workflow_id', 'priority_id', 'urgency', 'is_hold'];
-		if (data.via_reply) {
-			if (data.changed_agent) {
-				props.push('agent_id');
-			}
-			if (data.changed_team) {
-				props.push('agent_team_id');
-			}
-		} else {
-			props.push('agent_id');
-			props.push('agent_team_id');
-		}
-
-		Array.each(props, function(propId) {
-			var val = '0';
-			if (data[propId]) {
-				val = data[propId];
-			}
-
-			var prop = this.changeManager.getPropertyManager(propId);
-			prop.setIncomingValue(val, data);
-		}, this);
-
 		if (data.dupe_message) {
 			// If its a dupe then it'd already be added ot the message list,
 			// we can just clear out the message box
@@ -1408,7 +1385,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		this.getEl('messagebox_tabs').find('.logs').addClass('dirty');
 		this.refreshLogTypes();
-    this.replaceLinks();
+		this.replaceLinks();
+		this.changeManager.updateDataholders();
 	},
 
 	updateUi: function(toReplyHeight) {
