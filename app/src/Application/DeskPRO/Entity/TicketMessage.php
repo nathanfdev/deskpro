@@ -47,7 +47,7 @@ use Orb\Util\Strings;
  * @property Ticket $ticket
  * @property Person $person
  * @property EmailSource $email_source
- * @property TicketAttachment[] $attachments
+ * @property TicketAttachment[]|\Doctrine\Common\Collections\ArrayCollection $attachments
  * @property \DateTime $date_created
  * @property bool $is_agent_note
  * @property string $creation_system
@@ -568,6 +568,11 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     public function getAttachments()
     {
         return $this->attachments;
+    }
+
+    public function removeAttachment(TicketAttachment $attachment)
+    {
+        $this->attachments->removeElement($attachment);
     }
 
     /**

@@ -63,27 +63,29 @@ class NewTicketController extends AbstractController
         $ticket_message->setPerson($person);
         $ticket->addMessage($ticket_message);
 
-        // we cannot only do this step during the initial GET request, because that GET info needs to
-        // be used in the real POST as well
-        //if ('GET' === $request->getMethod()) {
-            // do a one through with the GET request to update our model before starting the "real" form
-            $form = $this->createForm('ticket', $ticket, array(
-                'person'            => $person,
-                'ticket_message'    => $ticket_message,
-                'method'            => 'GET',
-                'validation_groups' => false,
-                'settings'          => $this->getBrandContainer()->getSettings(),
-                'action'            => $this->generateUrl('portal_new_ticket'),
-            ));
+        // do a one through with the GET request to update our model before starting the "real" form
+        $form = $this->createForm('ticket', $ticket, array(
+            'person'            => $person,
+            'ticket_message'    => $ticket_message,
+            'method'            => 'GET',
+            'validation_groups' => false,
+            'settings'          => $this->getBrandContainer()->getSettings(),
+            'action'            => $this->generateUrl('portal_new_ticket'),
+        ));
         $form->submit($request->query->get('ticket', array()), false);
-        //}
+
+        foreach ($ticket_message->getAttachments() as $attachment) {
+            if (!$attachment->getBlob()) {
+                $ticket_message->removeAttachment($attachment);
+            }
+        }
 
         $form = $this->createForm('ticket', $ticket, array(
             'person'         => $person,
             'ticket_message' => $ticket_message,
             'settings'       => $this->getBrandContainer()->getSettings(),
             'action'         => $this->generateUrl('portal_new_ticket'),
-            'attr'           => ['data-save-draft' => 'new_ticket']
+            'attr'           => ['data-save-draft' => 'new_ticket'],
         ));
         $form->handleRequest($request);
 
