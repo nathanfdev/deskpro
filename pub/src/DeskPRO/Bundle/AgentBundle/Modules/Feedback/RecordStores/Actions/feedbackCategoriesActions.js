@@ -1,6 +1,8 @@
 import { createAction } from 'Ampliflux';
-import { requestRecords } from 'Ampliflux/common/record-store/actions';
+import { requestRecords, setRequestRecords } from 'Ampliflux/common/record-store/actions';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+
+export const setFeedbackCategoriesRequest = createAction('SET_FEEDBACK_CATEGORIES_REQUEST', setRequestRecords());
 
 export const loadFeedbackCategories = createAction(
   'LOAD_FEEDBACK_CATEGORIES',

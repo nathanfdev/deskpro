@@ -4,6 +4,9 @@ import * as actions from '../Actions/FeedbackListActions';
 import Immutable from 'immutable';
 
 const initialState = {
+  async: {
+    done: true
+  },
   toValidateCount: 0,
   commentsToReviewCount: 0,
   labels: [/* string */],

@@ -1,5 +1,5 @@
 import { createReducer } from 'Ampliflux';
-import { async, setFullPayload, togglePayloadInCollection, handleMassAction } from 'Ampliflux/reducers/handlers';
+import { async, setValue, setFullPayload, togglePayloadInCollection, handleMassAction } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/FeedbackListActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
@@ -14,7 +14,9 @@ const initialState = {
     order: constants.ORDER_DESC,
     labels_mode: 'any'
   },
-
+  async: {
+    done: true
+  },
   commentsTableViewFields: [ // temporary, must be removed later
     { name: 'id', label: 'ID', className: 'id-col', status: constants.FIELD_SHOWN, priority: 1 },
     { name: 'status', label: 'Status', status: constants.FIELD_SHOWN, priority: 2 },
@@ -26,7 +28,9 @@ const initialState = {
 
 export default createReducer(initialState, {
   [actions.loadList]: async({
-    success: (state, payload) => state.set('elements', payload.data)
+    success: (state, payload) => state.set('elements', payload.data),
+    start: setValue('async.done', false),
+    done: setValue('async.done', true)
   }),
   [actions.toggleMassAction]: handleMassAction('elements', 'selected'),
   [actions.toggleSelectedAction]: togglePayloadInCollection('selected'),

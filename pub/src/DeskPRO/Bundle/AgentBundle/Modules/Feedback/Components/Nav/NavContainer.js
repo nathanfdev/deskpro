@@ -2,12 +2,12 @@ import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../Actions/FeedbackListActions';
 import { Nav } from './Nav';
-import { loadFeedbackTypes } from '../../RecordStores/Actions/feedbackTypesActions';
 import { feedbackTypesSelector }
   from '../../Selectors/list';
 
 @connect(state => {
   return ({
+    loaded: state.Feedback.nav.getIn(['async', 'done']),
     toValidateCount: state.Feedback.nav.get('toValidateCount'),
     commentsToReviewCount: state.Feedback.nav.get('commentsToReviewCount'),
     statuses: state.Feedback.nav.get('statuses'),
@@ -20,6 +20,7 @@ import { feedbackTypesSelector }
 export class NavContainer extends Component {
 
   static propTypes = {
+    loaded: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired,
     toValidateCount: PropTypes.object.isRequired,
     commentsToReviewCount: PropTypes.object.isRequired,
@@ -33,22 +34,14 @@ export class NavContainer extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch(actions.initialLoad());
-    /* // dispatch(loadFeedbackTypes());
-     dispatch(actions.loadLabels());
-     dispatch(actions.feedbackToValidate());
-     dispatch(actions.commentsToReview());
-     // dispatch(actions.feedbackCustomCategories());
-     dispatch(actions.feedbackNew());
-     dispatch(actions.feedbackActiveStatus());
-     dispatch(actions.feedbackClosedStatus());
-     dispatch(actions.feedbackHiddenStatus());*/
   }
 
   render() {
-    const {statuses, toValidateCount, commentsToReviewCount, dispatch, labels, types, customCategories, dpWindow} = this.props;
+    const {statuses, toValidateCount, commentsToReviewCount, dispatch, labels, types, customCategories, dpWindow, loaded} = this.props;
 
     return (
       <Nav
+        loaded={loaded}
         toValidateCount={toValidateCount}
         commentsToReviewCount={commentsToReviewCount}
         dispatch={dispatch}

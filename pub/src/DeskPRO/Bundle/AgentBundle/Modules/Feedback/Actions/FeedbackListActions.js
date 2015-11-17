@@ -10,6 +10,7 @@ import { getFeedbackForComments } from './FeedbackCommentsActions';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import { setFeedbackTypesRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackTypesActions';
+import { setFeedbackCategoriesRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCategoriesActions';
 
 /**
  * Used to identify requests within record stores
@@ -33,7 +34,8 @@ export const initialLoad = createAction(
       DpApi.sendGet(batch).success(({responses}) => {
         const payload = flattenBatchResponses(responses);
         payload.customCategories = payload.customCategories.nested;
-        dispatch(setFeedbackTypesRequest('feedback', payload.types));
+        dispatch(setFeedbackCategoriesRequest(recordStoresId, payload.customCategories));
+        dispatch(setFeedbackTypesRequest(recordStoresId, payload.types));
         resolve(payload);
       });
     }
@@ -94,7 +96,7 @@ export const loadList = createAction(
             people.push(comments.linked.person[key]);
           }
         }
-        dispatch(setPeopleRequest('feedback', people));
+        dispatch(setPeopleRequest(recordStoresId, people));
         return comments;
       });
     } else {
@@ -112,7 +114,7 @@ export const loadList = createAction(
             people.push(feedback.linked.person[key]);
           }
         }
-        dispatch(setPeopleRequest('feedback', people));
+        dispatch(setPeopleRequest(recordStoresId, people));
         dispatch(getCommentsCounter(ids));
         dispatch(getStatuses(ids));
         dispatch(getCategories(ids));
