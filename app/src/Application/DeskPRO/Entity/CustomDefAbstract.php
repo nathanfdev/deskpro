@@ -763,6 +763,27 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
+     * Gets the widget type. This is the same as the type, except if this is a choice
+     * we return the real type of field (e.g., checkbox or radio) based on display options.
+     *
+     * @return string
+     */
+    public function getWidgetType()
+    {
+        $name = $this->getTypeName();
+
+        if ($name === 'choice') {
+            if ($this->getOption('expanded')) {
+                $name = $this->getOption('multiple') ? 'checkbox' : 'radio';
+            } elseif ($this->getOption('multiple')) {
+                $name = 'multichoice';
+            }
+        }
+
+        return $name;
+    }
+
+    /**
      * Fetch the search capabiltiies supported by the field.
      *
      * @return array

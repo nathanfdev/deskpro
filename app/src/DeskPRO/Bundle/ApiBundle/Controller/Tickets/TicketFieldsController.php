@@ -31,17 +31,39 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
-use Application\DeskPRO\Entity\CustomDefTicket;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use FOS\RestBundle\Controller\Annotations\Route;
+use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class TicketFieldsController.
- *
- * @Route("/ticket_fields")
  */
-class TicketFieldsController extends CrudController
+class TicketFieldsController extends BaseController
 {
-    public static $exposeOnly = ['list'];
-    public static $entity     = CustomDefTicket::class;
+    /**
+     * @ApiDoc(
+     *      description="get a collection of ticket fields",
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     * @Get("/ticket_fields", name="api_ticket_fields")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function cgetAction(Request $request)
+    {
+        /** @var \Application\DeskPRO\CustomFields\TicketFieldManager $fm */
+        $fm = $this->container->getTicketFieldManager();
+
+        return View::create(
+            $this->dataSerialize($fm->getFields()),
+            Response::HTTP_OK
+        );
+    }
 }
