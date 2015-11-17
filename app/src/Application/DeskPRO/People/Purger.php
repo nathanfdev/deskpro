@@ -75,6 +75,7 @@ class Purger implements PersonContextInterface
             $this->purgeTickets();
 
             $this->db->delete('people', array('id' => $this->person->getId()));
+            $this->db->delete('persons_deleted', array('person_id' => $this->person->getId()));
             $this->db->commit();
         } catch (\Exception $e) {
             $this->db->rollback();
