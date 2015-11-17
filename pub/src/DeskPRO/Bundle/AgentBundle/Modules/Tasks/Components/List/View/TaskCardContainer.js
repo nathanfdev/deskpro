@@ -44,3 +44,27 @@ export class TaskCardContainer extends React.Component {
     });
   }
 }
+
+export const cardSourceSpec = {
+  beginDrag(props) {
+    return {id: props.task.get('id')};
+  }
+};
+
+export const cardSourceCollect = dragConnect => ({
+  connectDragSource: dragConnect.dragSource()
+});
+
+export const cardTargetSpec = {
+  drop(props, monitor) {
+    const item = monitor.getItem();
+    if (item.details.get('id') !== props.task.get('id')) {
+      console.log('drop');
+    }
+  }
+};
+
+export const cardTargetCollect = (connector, monitor) => ({
+  connectDropTarget: connector.dropTarget(),
+  isOver: monitor.isOver()
+});

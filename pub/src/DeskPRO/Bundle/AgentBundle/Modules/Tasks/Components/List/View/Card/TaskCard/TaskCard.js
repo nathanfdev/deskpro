@@ -1,4 +1,7 @@
 import React, { PropTypes } from 'react';
+import { DragSource, DropTarget } from 'react-dnd';
+import { cardSourceSpec, cardSourceCollect, cardTargetSpec, cardTargetCollect } from '../../TaskCardContainer';
+import classNames from 'classnames';
 import { MarkDoneButton } from './MarkDoneButton';
 import {
   Card,
@@ -20,12 +23,15 @@ import {
   CardProject
 } from '../../../TaskCard/index';
 
+@DragSource('TASK', cardSourceSpec, cardSourceCollect)
+@DropTarget('TASK', cardTargetSpec, cardTargetCollect)
 export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
     selected: PropTypes.bool,
     onToggleSelected: PropTypes.func,
-    task: PropTypes.object
+    task: PropTypes.object,
+    connectDragSource: PropTypes.func
   };
 
   onToggleDone = () => {
@@ -60,31 +66,34 @@ export class TaskCard extends BaseTaskCard {
   }
 
   render() {
-    const { selected, onToggleSelected } = this.props;
+    const { selected, onToggleSelected, connectDragSource, isOver } = this.props;
 
-    return (
-      <Card minimized={this.isMinimized()} type="task">
-        <MarkDoneButton isDone={this.state.isDone}
-                        onToggle={this.onToggleDone} />
+    return connectDragSource(
+      <div>
+        <Card minimized={this.isMinimized()} type="task">
+          <MarkDoneButton isDone={this.state.isDone}
+                          onToggle={this.onToggleDone} />
 
-        <CardCheckbox selected={selected} onClick={onToggleSelected} />
-        <CardLine>
-          <CardLineLeft>
-            <Title value={this.state.title}
-                   isDone={this.state.isDone}
-                   onChange={this.onTitleChange} />
-          </CardLineLeft>
-          <CardLineRight>
-            {this.state.isDone
-              ? <ShowDetailsButton expanded={this.state.expanded}
-                                   onToggleExpand={this.onToggleExpand}/>
-              : <AssignButton task={this.props.task} />
-            }
-          </CardLineRight>
-        </CardLine>
+          <CardCheckbox selected={selected} onClick={onToggleSelected} />
+          <CardLine>
+            <CardLineLeft>
+              <Title value={this.state.title}
+                     isDone={this.state.isDone}
+                     onChange={this.onTitleChange} />
+            </CardLineLeft>
+            <CardLineRight>
+              {this.state.isDone
+                ? <ShowDetailsButton expanded={this.state.expanded}
+                                     onToggleExpand={this.onToggleExpand}/>
+                : <AssignButton task={this.props.task} />
+              }
+            </CardLineRight>
+          </CardLine>
 
-        {!this.isMinimized() && this.renderDetails()}
-      </Card>
+          {!this.isMinimized() && this.renderDetails()}
+        </Card>
+        <div className={classNames('placeholder', {'is-over': isOver})} />
+      </div>
     );
   }
 }

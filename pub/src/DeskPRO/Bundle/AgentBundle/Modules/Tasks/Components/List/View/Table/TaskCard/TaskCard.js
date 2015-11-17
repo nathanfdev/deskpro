@@ -1,18 +1,23 @@
 import React, { PropTypes } from 'react';
-import Moment from 'moment';
+import { DragSource, DropTarget } from 'react-dnd';
+import { cardSourceSpec, cardSourceCollect, cardTargetSpec, cardTargetCollect } from '../../TaskCardContainer';
 import { Td, TdId, TdTitle } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { BaseTaskCard, ProjectContainer } from '../../../TaskCard/index';
 import { Project } from './Project';
 import { AssigneeContainer } from './AssigneeContainer';
 import { TableCheckbox } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import Moment from 'moment';
 
+@DragSource('TASK', cardSourceSpec, cardSourceCollect)
+@DropTarget('TASK', cardTargetSpec, cardTargetCollect)
 export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
     selected: PropTypes.bool,
     onToggleSelected: PropTypes.func,
     task: PropTypes.object,
-    tableVisibleFields: PropTypes.object
+    tableVisibleFields: PropTypes.object,
+    connectDragSource: PropTypes.func
   };
 
   constructor(props) {
@@ -24,10 +29,10 @@ export class TaskCard extends BaseTaskCard {
   }
 
   render() {
-    const { task, selected, onToggleSelected, tableVisibleFields } = this.props;
+    const { task, selected, onToggleSelected, tableVisibleFields, connectDragSource } = this.props;
     const isVisible = type => tableVisibleFields.includes(type);
 
-    return (
+    return connectDragSource(
       <tr>
         <Td>
           <TableCheckbox selected={selected} onClick={onToggleSelected} />
