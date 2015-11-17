@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { NavFrame, NavFrameHeader, NavFrameBody, TabsPaneStatefulContainer, Tab, LabelsDictionary }
+import { NavFrame, NavFrameHeader, NavFrameBody, TabsPaneStatefulContainer, Tab, LabelsDictionary, TabSpinner }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { Pending } from './Pending';
 import { StatusTab } from './StatusTab';
@@ -11,6 +11,7 @@ import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
 export class Nav extends Component {
 
   static propTypes = {
+    loaded: PropTypes.bool.isRequired,
     intl: intlShape.isRequired,
     dispatch: PropTypes.func.isRequired,
     statuses: PropTypes.object.isRequired,
@@ -22,7 +23,7 @@ export class Nav extends Component {
   };
 
   render() {
-    const { labels, types, toValidateCount, commentsToReviewCount, statuses, customCategories, dispatch, dpWindow } = this.props;
+    const { labels, loaded, types, toValidateCount, commentsToReviewCount, statuses, customCategories, dispatch, dpWindow } = this.props;
 
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
@@ -30,26 +31,28 @@ export class Nav extends Component {
           <FormattedMessage id="feedback.nav.title"/>
         </NavFrameHeader>
         <NavFrameBody>
-          <Pending
-            toValidateCount={toValidateCount}
-            commentsToReviewCount={commentsToReviewCount}
-          />
+          <TabSpinner loaded={loaded}>
+            <Pending
+              toValidateCount={toValidateCount}
+              commentsToReviewCount={commentsToReviewCount}
+              />
 
-          <TabsPaneStatefulContainer id="tab">
-            <Tab title={this.props.intl.formatMessage({id: 'feedback.nav.tabs.status'})}>
-              <StatusTab statuses={statuses} />
-            </Tab>
+            <TabsPaneStatefulContainer id="tab">
+              <Tab title={this.props.intl.formatMessage({id: 'feedback.nav.tabs.status'})}>
+                <StatusTab statuses={statuses}/>
+              </Tab>
 
-            <Tab title="Labels">
-              <LabelsDictionary labels={labels} />
-            </Tab>
-            <Tab title="Type">
-              <TypeTab types={types} />
-            </Tab>
-            <Tab title="Category">
-              <CategoryTab customCategories={customCategories} />
-            </Tab>
-          </TabsPaneStatefulContainer>
+              <Tab title="Labels">
+                <LabelsDictionary labels={labels}/>
+              </Tab>
+              <Tab title="Type">
+                <TypeTab types={types}/>
+              </Tab>
+              <Tab title="Category">
+                <CategoryTab customCategories={customCategories}/>
+              </Tab>
+            </TabsPaneStatefulContainer>
+          </TabSpinner>
         </NavFrameBody>
       </NavFrame>
     );

@@ -1,8 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { List } from './List';
-import { feedbackTypesSelector, feedbackLabelsSelector, feedbackCommentsSelector,
-         feedbackStatusesSelector, feedbackSelector, isCommentsSelector, currentViewModeSelector }
-  from '../../Selectors/list';
+import { isCommentsSelector, currentViewModeSelector } from '../../Selectors/list';
 import { toggleSelectedAction } from '../../Actions/FeedbackListActions';
 import { connect } from 'react-redux';
 
@@ -10,6 +8,7 @@ import { connect } from 'react-redux';
   return ({
     isComments: isCommentsSelector(state),
     selected: state.Feedback.list.get('selected'),
+    loaded: state.Feedback.list.getIn(['async', 'done']),
     currentViewMode: currentViewModeSelector(state)
   });
 })
@@ -19,6 +18,7 @@ export class ListContainer extends Component {
     elements: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
     isComments: PropTypes.bool,
+    loaded: PropTypes.bool.isRequired,
     currentViewMode: PropTypes.string.isRequired
   };
 
@@ -26,7 +26,7 @@ export class ListContainer extends Component {
     const toggleSelected = (id) => () => this.props.dispatch(toggleSelectedAction(id));
 
     return (
-      <List {...this.props} toggleSelected={toggleSelected} />
+      <List {...this.props} toggleSelected={toggleSelected}/>
     );
   }
 }

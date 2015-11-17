@@ -28,14 +28,6 @@ Feature: /feedback_comments/counts endpoint
     And the JSON node "data.count" should be equal to 4
     And the JSON node "data.nested" should have 0 elements
 
-  Scenario: I GET count of feedback comment with hidden_status set to validating
-    When I send a GET request to "/api/v2/feedback_comments/counts?awaiting_validation=1"
-    Then the response should be in JSON
-    And the response status code should be 200
-    And the JSON node "data" should exist
-    And the JSON node "data.count" should be equal to 4
-    And the JSON node "data.nested" should have 0 elements
-
   Scenario: I DELETE feedback comment with id=1
     When I send a DELETE request to "/api/v2/feedback_comments/1"
     Then the response should be in JSON

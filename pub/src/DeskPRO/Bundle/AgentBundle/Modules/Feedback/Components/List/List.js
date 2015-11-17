@@ -6,13 +6,14 @@ import { FeedbackCommentsCardsContainer } from './View/List/FeedbackCommentsCard
 import { FeedbackTableContainer } from './View/Table/FeedbackTableContainer';
 import { FeedbackCommentTableContainer } from './View/Table/FeedbackCommentTableContainer';
 import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
-
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import Loader from 'react-loader';
 
 export class List extends Component {
 
   static propTypes = {
     elements: PropTypes.object.isRequired,
+    loaded: PropTypes.bool.isRequired,
     isComments: PropTypes.bool,
     people: PropTypes.object.isRequired,
     emails: PropTypes.object.isRequired,
@@ -73,12 +74,19 @@ export class List extends Component {
   }
 
   render() {
+    const { loaded } = this.props;
+
     return (
       <ListFrameContainer>
         <ControlBarContainer />
-        <ListFrameContents>
-          {this.contentChoice()}
-        </ListFrameContents>
+        <Loader loaded={loaded}
+                color="green"
+                opacity={0}
+                width={3}>
+          <ListFrameContents>
+            {this.contentChoice()}
+          </ListFrameContents>
+        </Loader>
       </ListFrameContainer>
     );
   }
