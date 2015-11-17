@@ -122,8 +122,9 @@ class TicketController extends AbstractController
         # Custom fields
         #------------------------------
 
-        $layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($ticket->getDepartmentId());
-        $layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::EDIT_TICKET, $ticket);
+        $layout      = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($ticket->getDepartmentId());
+        $layout      = LayoutDisplay::createFromLayout($layout, LayoutDisplay::EDIT_TICKET, $ticket);
+        $view_layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::VIEW_TICKET, $ticket);
 
         $field_manager        = $this->container->getTicketFieldManager();
         $person_field_manager = $this->container->getPersonFieldManager();
@@ -443,7 +444,8 @@ class TicketController extends AbstractController
         }
 
         if ($is_pdf) {
-            $content_html = $this->renderView('DeskPRO:pdf_agent:view_ticket.html.twig', $vars);
+            $vars['layout'] = $view_layout;
+            $content_html   = $this->renderView('DeskPRO:pdf_agent:view_ticket.html.twig', $vars);
 
             $mpdf = new \mPDF_mPDF(
                 'utf-8', // Language/Character set
@@ -479,7 +481,8 @@ class TicketController extends AbstractController
         }
 
         if ($is_print) {
-            $vars['print'] = true;
+            $vars['print']  = true;
+            $vars['layout'] = $view_layout;
 
             return $this->render('DeskPRO:pdf_agent:view_ticket.html.twig', $vars);
         }
