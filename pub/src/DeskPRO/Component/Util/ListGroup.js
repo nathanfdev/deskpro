@@ -47,19 +47,19 @@ const createGroup = (title, matchFn) => ({
   elements: []
 });
 
-const dateGroupsBuilder = (groups, dateField, groupKeys) => {
-  groupKeys.forEach(groupKey => {
+const dateGroupsBuilder = (groups, { refField, dateGroupKeys }) => {
+  dateGroupKeys.forEach(groupKey => {
     const dateGroup = dateGroups[groupKey];
     groups.push(createGroup(
       dateGroup.title,
-      task => dateGroup.match(task.get(dateField))
+      task => dateGroup.match(task.get(refField))
     ));
   });
 
   groups.push(createGroup('Other', () => true));
 };
 
-const recordGroupsBuilder = (groups, records, titleField, refField) => {
+const recordGroupsBuilder = (groups, { records, titleField, refField }) => {
   records.forEach(record => groups.push(createGroup(
     record.get(titleField),
     item => {
@@ -72,7 +72,8 @@ const recordGroupsBuilder = (groups, records, titleField, refField) => {
 };
 
 const addDateGroups = (groups, groupConfig) => {
-  let dateGroupKeys = groupConfig.dateGroupKeys;
+  let { dateGroupKeys } = groupConfig;
+
   if (dateGroupKeys === 'future') {
     dateGroupKeys = futureDates;
   } else if (dateGroupKeys === 'past') {
@@ -81,17 +82,20 @@ const addDateGroups = (groups, groupConfig) => {
     dateGroupKeys = Object.keys(dateGroups);
   }
 
-  dateGroupsBuilder(groups, groupConfig.refField, dateGroupKeys);
+  dateGroupsBuilder(groups, {...groupConfig, dateGroupKeys});
 };
 
 const addRecordGroups = (groups, groupConfig) => {
-  if (Array.isArray(groupConfig.records)) {
-    groupConfig.records.forEach(childGroupConfig => addRecordGroups(groups, childGroupConfig));
+  const { records, emptyGroup } = groupConfig;
+
+  if (Array.isArray(records)) {
+    records.forEach(childGroupConfig => addRecordGroups(groups, childGroupConfig));
   } else {
-    recordGroupsBuilder(groups, groupConfig.records, groupConfig.titleField, groupConfig.refField);
+    recordGroupsBuilder(groups, groupConfig);
   }
-  if (groupConfig.emptyGroup) {
-    groups.push(createGroup(groupConfig.emptyGroup, () => true));
+
+  if (emptyGroup) {
+    groups.push(createGroup(emptyGroup, () => true));
   }
 };
 
