@@ -1259,7 +1259,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	doHandleTicketUpdate: function(data) {
-		console.info('do ticket update', data);
 		var self = this;
 		if (data.client_messages) {
 			DeskPRO_Window.getMessageChanneler().handleMessageAjax(data.client_messages);
