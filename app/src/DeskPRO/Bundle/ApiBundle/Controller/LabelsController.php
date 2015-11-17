@@ -54,7 +54,7 @@ class LabelsController extends BaseController
      *     "/{type}_labels",
      *     name="api_person_labels_list",
      *     requirements={
-     *         "type"="ticket|person|organization|feedback"
+     *         "type"="ticket|person|organization|feedback|news|chat|article|download"
      *     }
      * )
      *
@@ -67,13 +67,42 @@ class LabelsController extends BaseController
      */
     public function getLabelsAction(Request $request, $type)
     {
+        switch ($type) {
+            case 'ticket':
+                $label_type = LabelDef::TYPE_TICKETS;
+                break;
+            case 'person':
+                $label_type = LabelDef::TYPE_PEOPLE;
+                break;
+            case 'organization':
+                $label_type = LabelDef::TYPE_ORGS;
+                break;
+            case 'feedback':
+                $label_type = LabelDef::TYPE_FEEDBACK;
+                break;
+            case 'news':
+                $label_type = LabelDef::TYPE_NEWS;
+                break;
+            case 'chat':
+                $label_type = LabelDef::TYPE_CHATS;
+                break;
+            case 'article':
+                $label_type = LabelDef::TYPE_ARTICLES;
+                break;
+            case 'download':
+                $label_type = LabelDef::TYPE_DOWNLOADS;
+                break;
+            default:
+                throw new \InvalidArgumentException;
+        }
+
         /* @ToDo move below functionality into LabelDef repository after removing old code */
         $qb = $this->getDoctrine()->getManager()->createQueryBuilder();
         $qb
             ->select('l')
             ->from('DeskPRO:LabelDef', 'l')
             ->where('l.label_type = :type')
-            ->setParameter('type', $type)
+            ->setParameter('type', $label_type)
             ->orderBy('l.label', 'asc');
         $term = $request->get('term');
         if (null !== $term) {

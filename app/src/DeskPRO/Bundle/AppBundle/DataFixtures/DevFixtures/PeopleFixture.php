@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Entity\LabelDef;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -134,6 +135,7 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
 
     private function loadLabels()
     {
+        $label_type = LabelDef::TYPE_PEOPLE;
         $this->faker->unique(true);
 
         $batch = [];
@@ -142,13 +144,13 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
             $l = $this->faker->unique()->company;
             if ($l) {
                 $l = strtolower($l);
-                $batch[] = array('label_type' => 'people', 'label' => $l, 'color' => $this->faker->hexColor, 'total' => 0);
+                $batch[] = array('label_type' => $label_type, 'label' => $l, 'color' => $this->faker->hexColor, 'total' => 0);
             }
         }
 
         $this->db->batchInsert('label_defs', $batch, true);
 
-        $this->labels = $this->db->fetchAllCol("SELECT label FROM label_defs WHERE label_type = 'people'");
+        $this->labels = $this->db->fetchAllCol("SELECT label FROM label_defs WHERE label_type = ?", array($label_type));
     }
 
     private function loadPeople($num, $is_agent)
