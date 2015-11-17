@@ -18,9 +18,12 @@
           {# AWAITING AGENT #}
           <div class="ticket-view-note-for-user">
 
-            {% if ticket.date_last_user_reply and ticket.messages|length > 1 %}
+            {# only shows this if its been more than 10 minutes since the last message was posted #}
+            {# to avoid "your last message was 1 second ago" after every reply #}
+            {% if ticket.date_last_user_reply and ticket.messages|length > 1 and last_user_reply_in_seconds > 600 %}
               <span class="note-for-user-blue">Your last message was recieved {{ date_ago(ticket.date_last_user_reply) }}.</span>
-            {% else %}
+            {# similarly, only show the "created ago" message if it has been more than 10 mins #}
+            {% elseif created_in_seconds > 600 %}
               <span class="note-for-user-blue">You created this ticket {{ date_ago(ticket.date_created) }}.</span>
             {% endif %}
 

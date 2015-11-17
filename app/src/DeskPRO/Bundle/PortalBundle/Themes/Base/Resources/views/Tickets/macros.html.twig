@@ -45,13 +45,16 @@
     {% endif %}
 {% endmacro %}
 {% macro attachment_inline(ticket_attachment) %}
+    {% if ticket_attachment.blob %}
     <a href="{{ ticket_attachment.blob.downloadUrl }}">
         <i class="fa fa-file-archive-o"></i>
         <span class="file-name">{{ ticket_attachment.blob.filename }}</span>
         <span class="file-size">{{ ticket_attachment.blob.filesize }} {{ phrase('portal.tickets.file_size_bytes') }}</span>
     </a>
+    {% endif %}
 {% endmacro %}
 {% macro attachment_full(ticket_attachment) %}
+    {% if ticket_attachment.blob %}
     <a href="{{ ticket_attachment.blob.downloadUrl }}">
         {% if ticket_attachment.blob.is_image %}
             <img src="{{ ticket_attachment.blob.thumbnailUrl }}" alt="{{ ticket_attachment.blob.filename }}">
@@ -61,4 +64,5 @@
         <span class="file-name">{{ ticket_attachment.blob.filename }}</span>
         <span class="file-size">{{ ticket_attachment.blob.filesize }} {{ phrase('portal.tickets.file_size_bytes') }}</span>
     </a>
+    {% endif %}
 {% endmacro %}

@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketParticipant;
 use Application\DeskPRO\Entity\TicketTrigger;
+use Carbon\Carbon;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter;
@@ -171,16 +172,27 @@ class TicketsController extends AbstractController
         // BREADCRUMBS
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);
 
+        $last_user_reply_in_seconds = null;
+        if ($last_reply = $ticket->date_last_user_reply) {
+            $last_reply                 = Carbon::createFromTimestamp($last_reply->getTimestamp());
+            $last_user_reply_in_seconds = $last_reply->diffInSeconds();
+        }
+
+        $created            = Carbon::createFromTimestamp($ticket->date_created->getTimestamp());
+        $created_in_seconds = $created->diffInSeconds();
+
         return $this->renderThemeView(
             'Theme:Tickets:view.html.twig',
             array(
-                'ticket'      => $ticket,
-                'ticket_view' => $ticket_view,
-                'timeline'    => $timeline,
-                'can_edit'    => $this->isGranted('TICKET_EDIT', $ticket),
-                'form'        => $form->createView(),
-                'breadcrumbs' => $breadcrumbs,
-                'page_title'  => $this->createPageTitle()->tickets($ticket),
+                'ticket'                     => $ticket,
+                'ticket_view'                => $ticket_view,
+                'timeline'                   => $timeline,
+                'can_edit'                   => $this->isGranted('TICKET_EDIT', $ticket),
+                'form'                       => $form->createView(),
+                'breadcrumbs'                => $breadcrumbs,
+                'page_title'                 => $this->createPageTitle()->tickets($ticket),
+                'last_user_reply_in_seconds' => $last_user_reply_in_seconds,
+                'created_in_seconds'         => $created_in_seconds,
             )
         );
     }
