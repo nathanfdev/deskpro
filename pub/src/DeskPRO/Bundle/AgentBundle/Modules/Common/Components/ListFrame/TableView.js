@@ -23,7 +23,7 @@ export class TableGroup extends Component {
 
   static propTypes = {
     title: PropTypes.any,
-    children: PropTypes.node,
+    children: PropTypes.node
   };
 
   render() {
@@ -31,13 +31,13 @@ export class TableGroup extends Component {
 
     return (
       <tbody>
-      <tr className="divider">
-        <td colSpan="1000">
-          {title}
-        </td>
-      </tr>
+        <tr className="divider">
+          <td colSpan="1000">
+            {title}
+          </td>
+        </tr>
 
-      {children}
+        {children}
       </tbody>
     );
   }
@@ -110,7 +110,7 @@ export class Td extends Component {
   }
 }
 
-export class TdId extends Td {
+export class TdId extends Component {
 
   static propTypes = {
     children: PropTypes.any
@@ -125,7 +125,7 @@ export class TdId extends Td {
   }
 }
 
-export class TdTitle extends Td {
+export class TdTitle extends Component {
 
   render() {
     return <Td className="item-title" {...this.props} />;
