@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Header } from './Header';
+import { HeaderContainer } from './HeaderContainer';
 import { ListGroup } from './ListGroup';
 import { TaskCardContainer } from '../TaskCardContainer';
 import { TaskCard } from './TaskCard/TaskCard';
@@ -11,30 +11,12 @@ export class TableView extends React.Component {
     taskGroups: PropTypes.array
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      currentOrder: 'project',
-      currentDirection: 'desc'
-    };
-  }
-
-  onSort = (order, direction) => {
-    this.setState({
-      currentOrder: order,
-      currentDirection: direction
-    });
-  };
-
   render() {
     const { taskGroups = [] } = this.props;
 
     return (
       <Table>
-          <Header currentSort={this.state.currentOrder}
-                  currentOrder={this.state.currentDirection}
-                  onChange={this.onSort} />
+          <HeaderContainer />
 
           {taskGroups
             .filter(taskGroup => taskGroup.elements.length)

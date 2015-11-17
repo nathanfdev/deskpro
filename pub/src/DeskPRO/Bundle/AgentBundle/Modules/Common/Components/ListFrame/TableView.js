@@ -37,11 +37,11 @@ export class TableHeader extends Component {
 export class Th extends Component {
 
   static propTypes = {
-    title: PropTypes.string.isRequired,
+    title: PropTypes.string,
     sort: PropTypes.string,
     currentSort: PropTypes.string,
     currentOrder: PropTypes.string,
-    onChange: PropTypes.func.isRequired,
+    onChange: PropTypes.func,
     hidden: PropTypes.bool
   };
 
