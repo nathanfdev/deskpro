@@ -143,12 +143,3 @@ export function commentsToReviewList(params) {
   console.log('DP_API/feedback_comments_list?include=person&' + compileParams(params));
   return DpApi.sendGet('DP_API/feedback_comments_list?include=person&' + compileParams(params));
 }
-
-/* @ToDo remove this method and endpoint */
-/**
- * Get values for chosen filter
- * @return {object} Promise
- */
-export function getFilterValues(filterName) {
-  return DpApi.sendGet('DP_API/feedback/filter?name=' + filterName);
-}

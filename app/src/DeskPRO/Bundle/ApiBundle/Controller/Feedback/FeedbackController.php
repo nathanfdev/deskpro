@@ -98,13 +98,13 @@ class FeedbackController extends BaseController
     public function cgetAction(Request $request)
     {
         $dataService = $this->get('data.feedback');
-        $params      = $request->query->all();
+        $params = $request->query->all();
         try {
             $criteria = FeedbackSelectCriteria::fromParameters($params, new OptionsResolver());
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
-        $page  = $request->query->get('page', 1);
+        $page = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 
         $feedback = $dataService->selectFeedback($criteria, $page, $count);
@@ -139,7 +139,7 @@ class FeedbackController extends BaseController
     public function getCountsAction(Request $request)
     {
         $dataService = $this->get('data.feedback');
-        $params      = $request->query->all();
+        $params = $request->query->all();
         try {
             $criteria = FeedbackCountCriteria::fromParameters($params, new OptionsResolver());
         } catch (InvalidArgumentException $e) {
@@ -149,70 +149,6 @@ class FeedbackController extends BaseController
 
         return View::create(
             $this->createRepresentation($count),
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * @ApiDoc(
-     *      description="Get values for chosen filter",
-     *      parameters={
-     *          {
-     *              "name"="name",
-     *              "requirement"="\w+",
-     *              "description"="name of chosen filter (e.g. 'type', 'status', 'category')",
-     *              "dataType"="string",
-     *              "required"=true
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success",
-     *          400="Bad Request",
-     *          404="Not Found"
-     *      },
-     * )
-     * @Get("/feedback/filter", name="api_feedback_filter_values")
-     *
-     * @param Request $request
-     *
-     * @throws \LogicException
-     *
-     * @return View
-     */
-    public function getFilterValues(Request $request)
-    {
-        $filterName = $request->query->get('name');
-        /** @var \Doctrine\ORM\QueryBuilder $qb */
-        $qb = $this->getDoctrine()->getManager()->createQueryBuilder();
-        switch ($filterName) {
-            case 'status':
-                $qb
-                    ->select('s.title')
-                    ->from('DeskPRO:FeedbackStatusCategory', 's');
-                break;
-            case 'category':
-                $qb
-                    ->select('c.title')
-                    ->from('DeskPRO:FeedbackCategory', 'c')
-                    ->orderBy('c.title');
-                break;
-            case 'custom_category':
-                $qb
-                    ->select('c.input as title')
-                    ->distinct()
-                    ->from('DeskPRO:CustomDataFeedback', 'c')
-                    ->orderBy('c.input');
-                break;
-            default:
-                // @TODO: Create code for what happens when "type" is set as the filter name
-                $qb
-                    ->select('s.title')
-                    ->from('DeskPRO:FeedbackStatusCategory', 's');
-        }
-        $result = $qb->getQuery()->getScalarResult();
-
-        return View::create(
-            $this->createRepresentation($result),
             Response::HTTP_OK
         );
     }

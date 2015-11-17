@@ -19,6 +19,19 @@ Feature: /feedback/ endpoint
     And the JSON node "meta.pagination" should exist
     And the JSON node "meta.pagination.count" should be equal to 4
 
+  Scenario: I GET list of feedback with hidden_status set to validating and side-loaded author info
+    When I send a GET request to "/api/v2/feedback/?include=person&awaiting_validation=1"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data" should exist
+    And the JSON node "data" should have 4 elements
+    And the JSON node "meta" should exist
+    And the JSON node "linked" should exist
+    And the JSON node "linked.person" should exist
+    And the JSON node "linked.person" should have 1 element
+    And the JSON node "meta.pagination" should exist
+    And the JSON node "meta.pagination.count" should be equal to 4
+
   Scenario: I GET list of feedback with hidden_status set to validating and pagination set to 2 results per page
     When I send a GET request to "/api/v2/feedback/?awaiting_validation=1&count=2"
     Then the response should be in JSON
@@ -54,7 +67,7 @@ Feature: /feedback/ endpoint
     And the JSON node "meta.pagination.count" should be equal to 2
 
   Scenario: I GET list of feedback from one category
-    When I send a GET request to "/api/v2/feedback/?category=Test+feedback+category+1"
+    When I send a GET request to "/api/v2/feedback/?category=Suggestion"
     Then the response should be in JSON
 #    And print last JSON response
     And the response status code should be 200
