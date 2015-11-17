@@ -2157,6 +2157,7 @@ class TicketController extends AbstractController
         $is_rtl                 = ($ticket->language && $ticket->language->is_rtl);
         $data['data']['reload'] = (($was_rtl && !$is_rtl) || (!$was_rtl && $is_rtl));
         $data['holders']        = $this->getDataHolders($ticket);
+        $data['labels']         = $ticket->getLabelManager()->getLabelsArray();
 
         $client_messages = false;
         if ($this->in->getUint('client_messages_since')) {
