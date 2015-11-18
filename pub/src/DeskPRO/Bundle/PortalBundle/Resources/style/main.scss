@@ -2282,8 +2282,8 @@ header {
 .news-header {
   line-height: 1.2em;
   border-bottom: 1px solid $divider-color;
-  padding-bottom: 12px;
-  margin-bottom: 12px;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
   padding-left: 10px;
 
   .news-header-info {
@@ -4455,6 +4455,8 @@ h1.fancy-header {
     }
   }
 
+  h1 a { text-decoration: none; }
+
   ul {
     margin: 0;
     padding: 0;
@@ -4464,9 +4466,7 @@ h1.fancy-header {
       @include clearfix;
 
       position: relative;
-      margin-bottom: 10px;
-      padding: 7px;
-      padding-right: 70px;
+      padding: 0px 7px;
       border-radius: 4px;
       line-height: 1.4em;
 
