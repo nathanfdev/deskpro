@@ -530,6 +530,12 @@ button, .button, input[type="submit"] {
         }
       }
     }
+
+    &.no-padding {
+      > li {
+        padding: 0;
+      }
+    }
   }
 
   &.as-news {

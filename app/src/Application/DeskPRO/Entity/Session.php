@@ -41,6 +41,8 @@ use Orb\Util\Util;
 
 /**
  * Active user sessions.
+ *
+ * @deprecated - avoid using this as much as possible
  */
 class Session extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -227,6 +229,11 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
             $this->setModelField('is_person', false);
             $this->setModelField('person', null);
         }
+    }
+
+    public function getPerson()
+    {
+        return $this->person;
     }
 
     public function getPersonId()

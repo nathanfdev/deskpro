@@ -975,6 +975,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         }
     }
 
+    public function getFeedbackRating()
+    {
+        return $this->feedback_rating;
+    }
+
     /**
      * Reset the participants collection.
      * todo add onPropertyChanged() if change tracking is needed.
