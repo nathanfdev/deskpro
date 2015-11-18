@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { FeedbackCard } from './FeedbackCard';
 import { connect } from 'react-redux';
-import { peopleSelector, feedbackTypesSelector, feedbackLabelsSelector, feedbackCommentsSelector, feedbackStatusesSelector, feedbackCategoriesSelector }
+import { peopleSelector, feedbackTypesSelector, feedbackLabelsSelector, feedbackCommentsSelector, feedbackCategoriesSelector, feedbackStatusCategoriesSelector }
   from '../../../../Selectors/list';
 
 @connect(state => {
@@ -15,14 +15,14 @@ import { peopleSelector, feedbackTypesSelector, feedbackLabelsSelector, feedback
     feedbackLabels: feedbackLabelsSelector(state),
     feedbackComments: feedbackCommentsSelector(state),
     feedbackCategories: feedbackCategoriesSelector(state),
-    feedbackStatuses: feedbackStatusesSelector(state)
+    feedbackStatusCategories: feedbackStatusCategoriesSelector(state)
   });
 })
 
 export class FeedbackCardsContainer extends Component {
 
   static propTypes = {
-    feedback: PropTypes.object.isRequired,
+    feedback: PropTypes.array.isRequired,
     viewFields: PropTypes.object,
     selected: PropTypes.object.isRequired,
     people: PropTypes.object.isRequired,
@@ -30,14 +30,14 @@ export class FeedbackCardsContainer extends Component {
     massAction: PropTypes.bool.isRequired,
     feedbackLabels: PropTypes.object.isRequired,
     feedbackComments: PropTypes.object.isRequired,
-    feedbackStatuses: PropTypes.object.isRequired,
     feedbackCategories: PropTypes.object.isRequired,
+    feedbackStatusCategories: PropTypes.object,
     toggleSelected: PropTypes.func.isRequired
   };
 
   render() {
     const { feedback, viewFields, selected, toggleSelected, people, feedbackTypes, massAction, feedbackLabels, feedbackComments,
-      feedbackStatuses, feedbackCategories } = this.props;
+      feedbackCategories, feedbackStatusCategories } = this.props;
 
     return (
       <div>
@@ -49,7 +49,7 @@ export class FeedbackCardsContainer extends Component {
                           toggleSelected={toggleSelected}
                           massAction={massAction}
                           author={people.get(element.person)}
-                          feedbackStatus={feedbackStatuses.get(element.id)}
+                          feedbackStatusCategory={feedbackStatusCategories.get(element.status_category)}
                           feedbackCategory={feedbackCategories.get(element.id)}
                           feedbackComments={feedbackComments.get(element.id)}
                           feedbackLabels={element.labels}

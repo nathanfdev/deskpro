@@ -34,34 +34,16 @@ namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 
 /**
- * Class FeedbackTransformer.
+ * Class FeedbackStatusCategoryTransformer.
  */
-class FeedbackTransformer extends AbstractDataSerializerTransformer
+class FeedbackStatusCategoryTransformer extends AbstractDataSerializerTransformer
 {
     /**
      * {@inheritdoc}
      */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        return [
-            'id',
-            'status',
-            'status_category',
-            'person',
-            'hidden_status',
-            'title',
-            'slug',
-            'date_created',
-            'date_published',
-            'view_count',
-            'total_rating',
-            'num_ratings',
-            'num_comments',
-            'validating',
-            'popularity',
-            'content',
-            'category_id',
-        ];
+        return ['id', 'status_type', 'title'];
     }
 
     /**
@@ -69,11 +51,6 @@ class FeedbackTransformer extends AbstractDataSerializerTransformer
      */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        /** @var \Application\DeskPRO\Entity\Feedback $feedback */
-        $feedback = $transformation_request->getDataToBeTransformed();
-
-        return [
-            'labels' => $feedback->getStringLabels(),
-        ];
+        return [];
     }
 }

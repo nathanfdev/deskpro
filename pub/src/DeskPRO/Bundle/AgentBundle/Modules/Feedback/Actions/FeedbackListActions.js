@@ -3,7 +3,6 @@ import * as Feedback from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
 import * as PersonSetting from 'DeskPRO/Bundle/AgentBundle/Services/Api/PersonSetting';
 import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 import { loadFeedbackCommentsCounter } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCommentsActions';
-import { loadFeedbackStatuses } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackStatusesActions';
 import { loadFeedbackCategories } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCategoriesActions';
 import { currentListParamsSelector } from '../Selectors/list';
 import { getFeedbackForComments } from './FeedbackCommentsActions';
@@ -11,6 +10,7 @@ import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import { setFeedbackTypesRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackTypesActions';
 import { setFeedbackCategoriesRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCategoriesActions';
+import { setFeedbackStatusCategoriesRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackStatusCategoriesActions';
 
 /**
  * Used to identify requests within record stores
@@ -54,11 +54,6 @@ export const loadLabels = createAction(
 export const getCommentsCounter = createAction(
   'FEEDBACK_GET_COMMENTS_COUNTER',
     ids => dispatch => dispatch(loadFeedbackCommentsCounter(recordStoresId, ids))
-);
-
-export const getStatuses = createAction(
-  'FEEDBACK_GET_STATUSES',
-    ids => dispatch => dispatch(loadFeedbackStatuses(recordStoresId, ids))
 );
 
 export const getCategories = createAction(
@@ -117,9 +112,16 @@ export const loadList = createAction(
             people.push(feedback.linked.person[key]);
           }
         }
+
+        const statusCategories = [];
+        for (const key in feedback.linked.feedback_status_category) {
+          if (feedback.linked.feedback_status_category.hasOwnProperty(key)) {
+            statusCategories.push(feedback.linked.feedback_status_category[key]);
+          }
+        }
         dispatch(setPeopleRequest(recordStoresId, people));
+        dispatch(setFeedbackStatusCategoriesRequest(recordStoresId, statusCategories));
         dispatch(getCommentsCounter(ids));
-        dispatch(getStatuses(ids));
         dispatch(getCategories(ids));
 
         return feedback;

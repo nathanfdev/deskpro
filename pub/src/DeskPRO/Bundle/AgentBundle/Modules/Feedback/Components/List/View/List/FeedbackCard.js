@@ -18,8 +18,8 @@ export class FeedbackCard extends Component {
     author: PropTypes.object.isRequired,
     type: PropTypes.object.isRequired,
     feedbackLabels: PropTypes.object,
-    feedbackStatus: PropTypes.object.isRequired,
     feedbackCategory: PropTypes.object,
+    feedbackStatusCategory: PropTypes.object,
     feedbackComments: PropTypes.object
   };
 
@@ -35,14 +35,16 @@ export class FeedbackCard extends Component {
     }
   }
 
-  renderStatus(status = Immutable.fromJS({})) {
+  renderStatus() {
+    const { feedback, feedbackStatusCategory } = this.props;
+    console.log(feedbackStatusCategory);
     var realStatus = '';
-    if (status.get('title')) {
-      realStatus = status.get('title');
-    } else if (status.get('status') === 'new') {
+    if (feedback.status === 'new') {
       realStatus = 'New';
-    } else {
-      realStatus = status.get('hidden_status');
+    } else if (feedback.status === 'hidden') {
+      realStatus = feedback.hidden_status;
+    } else if (feedbackStatusCategory) {
+      realStatus = feedbackStatusCategory.get('title');
     }
     return (
       <CardLineItem>{realStatus}</CardLineItem>
@@ -93,7 +95,7 @@ export class FeedbackCard extends Component {
   }
 
   render() {
-    const { feedback, author, selected, toggleSelected, feedbackLabels, feedbackComments, feedbackStatus } = this.props;
+    const { feedback, author, selected, toggleSelected, feedbackLabels, feedbackComments } = this.props;
     const type = this.props.type || Immutable.fromJS({});
     const labels = feedbackLabels ? feedbackLabels : [];
     const comments = feedbackComments ? feedbackComments.get('counter') : 0;
@@ -116,7 +118,7 @@ export class FeedbackCard extends Component {
           </CardLineLeft>
 
           <CardLineRight>
-            {this.renderStatus(feedbackStatus)}
+            {this.renderStatus()}
           </CardLineRight>
         </CardLine>
 

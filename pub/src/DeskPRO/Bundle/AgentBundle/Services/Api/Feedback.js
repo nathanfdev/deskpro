@@ -131,8 +131,8 @@ export function getHidden() {
  * @return {object} Promise
  */
 export function getList(params) {
-  console.log('DP_API/feedback/?include=person&' + compileParams(params));
-  return DpApi.sendGet('DP_API/feedback/?include=person&' + compileParams(params));
+  console.log('DP_API/feedback/?include=person,feedback_status_category&' + compileParams(params));
+  return DpApi.sendGet('DP_API/feedback/?include=person,feedback_status_category&' + compileParams(params));
 }
 
 /**
