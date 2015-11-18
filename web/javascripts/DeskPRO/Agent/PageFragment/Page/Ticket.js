@@ -1367,6 +1367,29 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			self.getEl('unlock_ticket').hide();
 		}
 
+		var props = ['status', 'urgency', 'is_hold'];
+		if (data.via_reply) {
+			if (data.changed_agent) {
+				props.push('agent_id');
+			}
+			if (data.changed_team) {
+				props.push('agent_team_id');
+			}
+		} else {
+			props.push('agent_id');
+			props.push('agent_team_id');
+		}
+
+		Array.each(props, function(propId) {
+			var val = '0';
+			if (data[propId]) {
+				val = data[propId];
+			}
+
+			var prop = this.changeManager.getPropertyManager(propId);
+			prop.setIncomingValue(val, data);
+		}, this);
+
 		if (data.dupe_message) {
 			// If its a dupe then it'd already be added ot the message list,
 			// we can just clear out the message box
