@@ -66,7 +66,7 @@
         },
         {
             "path": "/ticket_statuses/deleted/purge",
-            "description": "Purge deleted tickets manually",
+            "description": "Purge deleted tickets manually.",
             "operations": [
                 {
                     "method": "DELETE",
@@ -110,7 +110,7 @@
         },
         {
             "path": "/ticket_statuses/spam/purge",
-            "description": "Purge spam tickets manually",
+            "description": "Purge spam tickets manually.",
             "operations": [
                 {
                     "method": "DELETE",

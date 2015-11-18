@@ -486,6 +486,20 @@ class TicketController extends AbstractController implements ProtectedController
      *				paramType="path",
      *				required=true,
      *				type="integer"
+     *			),
+     *			@SWG\Parameter(
+     *				name="with_messages",
+     *				description="True to fetch message data with the ticket",
+     *				paramType="query",
+     *				required=false,
+     *				type="boolean"
+     *			),
+     *			@SWG\Parameter(
+     *				name="with_loaded_linked_tickets",
+     *				description="True to load linked ticket data (otherwise, just the IDs are returned)",
+     *				paramType="query",
+     *				required=false,
+     *				type="boolean"
      *			)
      *		),
      *		@SWG\ResponseMessage(code=404, message="Ticket not found")
@@ -530,6 +544,63 @@ class TicketController extends AbstractController implements ProtectedController
             }
         }
 
+        #------------------------------
+        # Linked tickets
+        #------------------------------
+
+        $linked_tickets = array(
+            'parent'   => null,
+            'siblings' => array(),
+            'children' => array(),
+            'count'    => 0,
+        );
+
+        if ($ticket->parent_ticket && $ticket->parent_ticket->status != 'hidden' && $this->checkPerm($ticket->parent_ticket, 'view')) {
+            $linked_tickets['parent'] = $ticket->parent_ticket;
+
+            // Find siblings
+            $linked_tickets['siblings'] = $this->permCheckArray(
+                $this->em->getRepository('DeskPRO:Ticket')->getLinkedTickets($ticket->parent_ticket),
+                'view'
+            );
+            $linked_tickets['siblings'] = array_filter($linked_tickets['siblings'], function ($t) use ($ticket) {
+                if ($t->id == $ticket->id) {
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+        }
+
+        $linked_tickets['children'] = $this->permCheckArray(
+            $this->em->getRepository('DeskPRO:Ticket')->getLinkedTickets($ticket),
+            'view'
+        );
+
+        $linked_tickets['count'] = array_sum(array(
+            $linked_tickets['parent'] ? 1 : 0,
+            count($linked_tickets['siblings']),
+            count($linked_tickets['children']),
+        ));
+
+        if ($this->in->getBool('with_loaded_linked_tickets')) {
+            if ($linked_tickets['parent']) {
+                $linked_tickets['parent'] = $linked_tickets['parent']->toApiData(false, true);
+            }
+            foreach (array('siblings', 'children') as $k) {
+                $linked_tickets[$k] = array_map(function ($t) { return $t->toApiData(false, true); }, $linked_tickets[$k]);
+            }
+        } else {
+            if ($linked_tickets['parent']) {
+                $linked_tickets['parent'] = $linked_tickets['parent']->getId();
+            }
+            foreach (array('siblings', 'children') as $k) {
+                $linked_tickets[$k] = array_map(function ($t) { return $t->getId(); }, $linked_tickets[$k]);
+            }
+        }
+
+        $data['linked_tickets'] = $linked_tickets;
+
         // Full data so we can re-construct an edit-type form
         if ($this->in->getBool('with_display_options')) {
             $display_options = array();
@@ -568,6 +639,44 @@ class TicketController extends AbstractController implements ProtectedController
         }
 
         return $this->createApiResponse($data);
+    }
+
+    public function permCheckArray($tickets, $check_perm)
+    {
+        if ($tickets instanceof ArrayCollection) {
+            $tickets = $tickets->toArray();
+        }
+
+        $self = $this;
+
+        return array_filter($tickets, function ($t) use ($self, $check_perm) {
+            return $self->checkPerm($t, $check_perm);
+        });
+    }
+
+    public function checkPerm($ticket, $check_perm)
+    {
+        $fail = false;
+        if (strpos($check_perm, 'modify_') === 0) {
+            $check_perm = str_replace('modify_', '', $check_perm);
+            if (!$this->person->PermissionsManager->TicketChecker->canModify($ticket, $check_perm)) {
+                $fail = true;
+            }
+        } elseif ($check_perm == 'delete') {
+            if (!$this->person->PermissionsManager->TicketChecker->canDelete($ticket)) {
+                $fail = true;
+            }
+        } elseif ($check_perm == 'reply') {
+            if (!$this->person->PermissionsManager->TicketChecker->canReply($ticket)) {
+                $fail = true;
+            }
+        }
+
+        if ($fail) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

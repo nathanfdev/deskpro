@@ -125,7 +125,7 @@
         },
         {
             "path": "/agents/deleted",
-            "description": "Return list of deleted agents",
+            "description": "Return list of deleted agents.",
             "operations": [
                 {
                     "method": "GET",

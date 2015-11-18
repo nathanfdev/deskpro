@@ -2469,6 +2469,41 @@ class PersonController extends AbstractController
         return $this->createApiResponse($ret);
     }
 
+    /**
+     * @SWG\Api(
+     *  path="/people/auth-login",
+     *  @SWG\Operation(
+     *     method="POST",
+     *     summary="Given some user credentials, test to see if they are correct and return the person record if so.",
+     *     @SWG\Parameters(
+     *         @SWG\Parameter(
+     *           name="email",
+     *           description="The email address of the user to authenticate. Alternatively, specify the username instead.",
+     *           paramType="query",
+     *           required=false,
+     *           type="string"
+     *         ),
+     *        @SWG\Parameter(
+     *           name="username",
+     *           description="The username of the user to authenticate. Alternatively, specify the email instead.",
+     *           paramType="query",
+     *           required=false,
+     *           type="string"
+     *         ),
+     *         @SWG\Parameter(
+     *           name="password",
+     *           description="The user password",
+     *           paramType="query",
+     *           required=true,
+     *           type="string"
+     *         )
+     *     ),
+     *     @SWG\ResponseMessage(code=401, message="The credentials are invalid")
+     *  )
+     * )
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function authLoginAction()
     {
         $username = $this->in->getString('email') ?: $this->in->getString('username');

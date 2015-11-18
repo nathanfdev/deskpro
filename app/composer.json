@@ -31,7 +31,7 @@
     "erusev/parsedown": "1.0.0-rc.2",
     "deskpro/deskpro-api-php": "dev-master",
     "tedivm/fetch": "v0.5.3",
-    "zircote/swagger-php": "dev-master@dev",
+    "zircote/swagger-php": "1.0.0",
     "eluceo/ical": "0.1.0",
     "friendsofsymfony/elastica-bundle": "3.0.*@dev",
     "fzaninotto/faker": "1.4.*@dev",

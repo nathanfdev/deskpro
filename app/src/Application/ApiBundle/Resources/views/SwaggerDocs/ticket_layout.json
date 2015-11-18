@@ -47,7 +47,7 @@
         },
         {
             "path": "/ticket_layouts/fields/{field_id}",
-            "description": "Get field use statistic",
+            "description": "Get field use statistic.",
             "operations": [
                 {
                     "method": "GET",
