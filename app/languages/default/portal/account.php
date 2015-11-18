@@ -89,4 +89,7 @@ return array(
     'portal.account.validation_agent_alert'            => 'Your account is waiting to be validated by our agents. Tickets and other content you submit will be held in a validation queue until an agent validates your account.',
     'portal.account.registration-set-password'         => 'We have detected that an account for your email already exists but does not yet have login capabilities. We have sent you an email that will allow you to set your password and login. Please check your email.',
     'portal.account.registration-email-already-exists' => 'An account with this email already exists. Please login normally. If you forgot your password, use the forgot password feature.',
+    'portal.account.section-desc-register'             => 'Register an account so you can easily manage your communications.',
+    'portal.account.section-desc-login'                => 'Already have an account? Login below.',
+    'portal.account.section-desc-login-external'       => 'Use the links below if you have an account with another provider.',
 );

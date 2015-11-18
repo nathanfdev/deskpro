@@ -9,7 +9,7 @@
             <p>{{ phrase('portal.tickets.new-intro') }}</p>
         </header>
 
-        <div class="padded">
+        <section class="padded">
             {% if rerendering %}
                 <strong>{{ phrase('portal.tickets.form-changed-notice') }}</strong>
             {% endif %}
@@ -19,7 +19,7 @@
             {% endif %}
 
             {% show new_ticket_form %}
-        </div>
+        </section>
     </div>
 {% endblock inner_content %}
 {% block doc_end %}
