@@ -32,7 +32,10 @@ export class TaskCard extends BaseTaskCard {
     const { connectDragSource, connectDropTarget } = this.props;
 
     let result = connectDragSource(
-      <div className={classNames({'hidden': isDragging})}>
+      <div className={classNames({
+        'dragging-item': isDragging
+      })}>
+
         <div className="card task-card">
           <div className="card-status-bar status-bar-left" />
           <div className="card-status-bar status-bar-right" />

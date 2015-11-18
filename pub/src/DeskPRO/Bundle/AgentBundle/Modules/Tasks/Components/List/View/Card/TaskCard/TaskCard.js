@@ -75,7 +75,10 @@ export class TaskCard extends BaseTaskCard {
     const { connectDragSource, connectDropTarget } = this.props;
 
     let result = connectDragSource(
-      <div className={classNames({'hidden': isDragging})}>
+      <div className={classNames({
+        'dragging-item': isDragging
+      })}>
+
         <Card minimized={this.isMinimized()} type="task">
           <MarkDoneButton isDone={this.state.isDone}
                           onToggle={this.onToggleDone} />
