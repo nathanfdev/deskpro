@@ -35,6 +35,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Entity\Labels\LabelsOwner;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
@@ -125,7 +126,7 @@ use Orb\Util\WorkHoursSetAll;
  * @PortalLinkCustom(type="unresolve")
  * @PortalLinkCustom(type="add-cc")
  */
-class Ticket extends DomainObject implements HighlightableModelInterface
+class Ticket extends DomainObject implements HighlightableModelInterface, LabelsOwner
 {
     const TAC_AUTHCODE_LEN     = 15;
     const TAC_AUTHCODE_LEN_MAX = 30;
@@ -1773,13 +1774,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Add a label.
-     *
-     * @param LabelTicket $label
-     *
-     * @return LabelTicket
+     * {@inheritdoc}
      */
-    public function addLabel(LabelTicket $label)
+    public function addLabel(LabelAssocAbstract $label)
     {
         if ($ret = $this->findLabelByString($label->label)) {
             return $ret;
@@ -1793,23 +1790,30 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * @param array $labels
+     * {@inheritdoc}
      */
-    public function setLabels(array $labels)
+    public function removeLabel(LabelAssocAbstract $label)
     {
-        // delete labels missing from the passed array
-        foreach ($this->labels as $i => $label) {
-            in_array($label, $labels) || $this->labels->remove($i);
+        if ($this->labels->contains($label)) {
+            $this->labels->removeElement($label);
+            $this->_onPropertyChanged('labels', null, $this->labels);
         }
+    }
 
-        // add new labels from the passed array
-        foreach ($labels as $label) {
-            if (!$this->labels->contains($label)) {
-                $label->setTicket($this);
-                $this->labels->add($label);
-            }
-        }
+    /**
+     * {@inheritdoc}
+     */
+    public function getLabels()
+    {
+        return $this->labels->toArray();
+    }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function clearLabels()
+    {
+        $this->labels->clear();
         $this->_onPropertyChanged('labels', null, $this->labels);
     }
 

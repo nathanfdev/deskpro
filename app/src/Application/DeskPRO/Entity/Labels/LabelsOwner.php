@@ -28,24 +28,39 @@
 
 /**
  * DeskPRO.
+ *
+ * @category Entities
  */
-namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
+namespace Application\DeskPRO\Entity\Labels;
 
-use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Bundle\ApiBundle\Controller\Labels\LabelsHelper;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
-use FOS\RestBundle\Controller\Annotations\Route;
+use Application\DeskPRO\Entity\LabelAssocAbstract as Label;
 
 /**
- * Class TicketsController.
- *
- * @Route("/tickets")
+ * Interface LabelsOwner.
  */
-class TicketsController extends CrudController
+interface LabelsOwner
 {
-    use LabelsHelper;
+    /**
+     * @return int
+     */
+    public function getId();
 
-    public static $entity = Ticket::class;
-    public static $type   = TicketType::class;
+    /**
+     * @param Label $label
+     */
+    public function addLabel(Label $label);
+
+    /**
+     * @param Label $label
+     */
+    public function removeLabel(Label $label);
+
+    /**
+     * @return Label[]
+     */
+    public function getLabels();
+
+    /**
+     */
+    public function clearLabels();
 }

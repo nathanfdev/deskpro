@@ -29,23 +29,31 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
-
-use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Bundle\ApiBundle\Controller\Labels\LabelsHelper;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
-use FOS\RestBundle\Controller\Annotations\Route;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Labels;
 
 /**
- * Class TicketsController.
- *
- * @Route("/tickets")
+ * Class LabelsHelper.
  */
-class TicketsController extends CrudController
+trait LabelsHelper
 {
-    use LabelsHelper;
+    /**
+     * {@inheritdoc}
+     */
+    protected function persistModel($model)
+    {
+        /** @var $model \Application\DeskPRO\Entity\Labels\LabelsOwner */
 
-    public static $entity = Ticket::class;
-    public static $type   = TicketType::class;
+        // Overwrite base method to make sure ticket is persisted and has ID before persisting labels. Label uses
+        // ticket id as part of its' composite primary key and requires it to be available when persisting a new label.
+        if (!$model->getId()) {
+            $labels = $model->getLabels();
+            $model->clearLabels();
+            parent::persistModel($model);
+            foreach ($labels as $label) {
+                $model->addLabel($label);
+            }
+        }
+
+        return parent::persistModel($model);
+    }
 }

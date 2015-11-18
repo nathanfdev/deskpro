@@ -29,9 +29,10 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\Controller;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Labels;
 
 use Application\DeskPRO\Entity\LabelDef;
+use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -93,7 +94,7 @@ class LabelsController extends BaseController
                 $label_type = LabelDef::TYPE_DOWNLOADS;
                 break;
             default:
-                throw new \InvalidArgumentException;
+                throw new \InvalidArgumentException();
         }
 
         /* @ToDo move below functionality into LabelDef repository after removing old code */
