@@ -1,75 +1,76 @@
 {% for item in pager %}
-    <div class="feedback-item">
-        <div class="feedback-item-controls">
-            <a href="{{ portal_path(item, 'vote_up') }}" class="i-agree post-link {% if user_up_voted(item) %} agreed{% endif %}">
-                <i class="fa fa-thumbs-up"></i>
-                <div>{{ phrase('portal.feedback.btn-vote') }}</div>
-                <span class="counter">{{ item.total_rating }}</span>
-            </a>
-            {# fav/stars feature not supported yet #}
-            {#<a href="#" class="star">#}
-                {#<i class="fa fa-star-o"></i>#}
-                {#<div>2</div>#}
-            {#</a>#}
-        </div>
-
-        <div class="feedback-item-content">
-             <span class="feedback-status">
-            {% if item.status_category %}
-                <a href="{{ portal_path(item.status_category) }}" data-id="{{ item.status_category.id }}">
-                    <i class="fa fa-eye"></i> {{ item.status_category }}
-                </a>
-            {% else %}
-                {{ item.status }}
-            {% endif %}
-             </span>
-
-            <h1>
-              <span class="text-tag">
-                  <a href="{{ portal_path(item.category) }}" class="feedback-category" data-id="{{ item.category.id }}">{{ item.category }}</a>
-              </span>
-              <a href="{{ portal_path(item) }}">{{ item.title }}</a>
-            </h1>
-
-            <div class="comment">
-                <p>{{ item.content_html|raw|slice(0,350) ~ '...' }}</p>
-            </div>
-
-            <div class="article-meta"><!-- TODO this is just copied html for now, need to move stuff from feedback-item-meta below (we don't need .feedback-item-meta any more) -->
-              By <a href="#"><span style="background: url(https://secure.gravatar.com/avatar/79cfcfdf770db09a40fca15bb845fef1?&amp;s=80) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>Corporate Content</a>
-              in 2015-10-27
-              <hr>
-              <span class="comments"><i class="fa fa-comments-o"></i> <a href="#comments">0 Comments</a></span>
-              <hr>
-              In <a href="/news/general">General</a>
-            </div>
-
-
-
-
-            <div class="feedback-item-meta">
-                <ul>
-                    <li><i class="fa fa-user"></i> {{ item.person.display_name }}</li>
-                    {% if item.num_comments > 0 %}
-                    <li><a href="{{ portal_path(item) }}#comments"><i class="fa fa-comment"></i> {{ phrase('portal.general.comments-count', {count: item.num_comments}) }}</a></li>
-                    {% endif %}
-                    {% if item.getCustomDataSelection() %}
-                        <li><i class="fa fa-inbox"></i> {{ item.getCustomDataSelection().title }}</li>
-                    {% endif %}
-                    {% if item.labels|length %}
-                        <li>
-                            <i class="fa fa-tags"></i>
-                            {% for l in item.labels %}
-                                <a href="{{ path('portal_search_labels', { label: l }) }}">{{ l }}</a>{% if not loop.last %}, {% endif %}
-                            {% endfor %}
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-        <!-- End feedback-item-content -->
+<div class="feedback-item feedback-list-item">
+  <div class="feedback-item-controls">
+    <a href="{{ portal_path(item, 'vote_up') }}" class="i-agree post-link {% if user_up_voted(item) %} agreed{% endif %}">
+      <i class="fa fa-thumbs-up"></i>
+      <div>{{ phrase('portal.feedback.btn-vote') }}</div>
+      <span class="counter">{{ item.total_rating }}</span>
+    </a>
+    {# fav/stars feature not supported yet #}
+    {#<a href="#" class="star">#}
+      {#<i class="fa fa-star-o"></i>#}
+      {#<div>2</div>#}
+      {#</a>#}
     </div>
-    <!-- End feedback-item -->
-{% else %}
-    <strong>{{ phrase('portal.feedback.none') }}</strong>
-{% endfor %}
+
+    <div class="feedback-item-content">
+      <span class="feedback-status">
+        {% if item.status_category %}
+        <a href="{{ portal_path(item.status_category) }}" data-id="{{ item.status_category.id }}">
+          <i class="fa fa-eye"></i> {{ item.status_category }}
+        </a>
+        {% else %}
+        {{ item.status }}
+        {% endif %}
+      </span>
+
+      <span class="feedback-item-type">
+        <a href="{{ portal_path(item.category) }}" class="feedback-category" data-id="{{ item.category.id }}">{{ item.category }}</a>
+      </span>
+
+      <h1>
+        <a href="{{ portal_path(item) }}">{{ item.title }}</a>
+      </h1>
+
+      <div class="comment">
+        <p>{{ item.content_html|raw|slice(0,350) ~ '...' }}</p>
+      </div>
+
+      <div class="article-meta"><!-- TODO this is just copied html for now, need to move stuff from feedback-item-meta below (we don't need .feedback-item-meta any more) -->
+        By <a href="#"><span style="background: url(https://secure.gravatar.com/avatar/79cfcfdf770db09a40fca15bb845fef1?&amp;s=80) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>Corporate Content</a>
+        in 2015-10-27
+        <hr>
+        <span class="comments"><i class="fa fa-comments-o"></i> <a href="#comments">0 Comments</a></span>
+        <hr>
+        In <a href="/news/general">General</a>
+      </div>
+
+
+
+
+      <div class="feedback-item-meta">
+        <ul>
+          <li><i class="fa fa-user"></i> {{ item.person.display_name }}</li>
+          {% if item.num_comments > 0 %}
+          <li><a href="{{ portal_path(item) }}#comments"><i class="fa fa-comment"></i> {{ phrase('portal.general.comments-count', {count: item.num_comments}) }}</a></li>
+          {% endif %}
+          {% if item.getCustomDataSelection() %}
+          <li><i class="fa fa-inbox"></i> {{ item.getCustomDataSelection().title }}</li>
+          {% endif %}
+          {% if item.labels|length %}
+          <li>
+            <i class="fa fa-tags"></i>
+            {% for l in item.labels %}
+            <a href="{{ path('portal_search_labels', { label: l }) }}">{{ l }}</a>{% if not loop.last %}, {% endif %}
+            {% endfor %}
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+    <!-- End feedback-item-content -->
+  </div>
+  <!-- End feedback-item -->
+  {% else %}
+  <strong>{{ phrase('portal.feedback.none') }}</strong>
+  {% endfor %}

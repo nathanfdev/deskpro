@@ -1303,8 +1303,8 @@ $search-btn-height: $search-height - 24;
       position: absolute;
       top: 12px;
       left: 12px;
-      right: 150px;
-      bottom: 12px;
+      width: 100%;
+      padding-right: 200px;
 
       [type="text"] {
         width: 100%;
@@ -1313,12 +1313,10 @@ $search-btn-height: $search-height - 24;
 
       .search-clear {
         position: absolute;
-        top: 17px;
-        right: 60px;
+        top: 18px;
+        right: 220px;
         color: #cecece;
-        &:hover {
-          color: #333;
-        }
+        &:hover { color: #333; }
       }
     }
 
@@ -1330,14 +1328,6 @@ $search-btn-height: $search-height - 24;
       width: 150px;
       cursor: pointer;
 
-        @media screen and (max-width: 760px) {
-          margin-top: 10px;
-          position: relative;
-          top: 0;
-          right: 0;
-          bottom: 0;
-          width: 100%;
-        }
     }
 
     .fa-search {
@@ -1668,14 +1658,13 @@ $search-btn-height: $search-height - 24;
     width: 255px;
     position: relative;
 
-    a {
-      text-decoration: none;
-    }
+    a { text-decoration: none; }
 
     @media screen and (max-width: 760px) {
-      display: block;
-      width: 100%;
-      padding-bottom: 0;
+      // display: block;
+      // width: 100%;
+      // padding-bottom: 0;
+      display: none;
     }
 
     .dropdown-content {
@@ -2476,6 +2465,8 @@ header {
 .header-buttons {
   float: right;
   font-size: 0.9em;
+  margin-left: 10px;
+  margin-right: 5px;
 
   a {
     display: inline-block;
@@ -4870,6 +4861,7 @@ h1.fancy-header {
 }
 
 .main-feedback {
+  margin-top: 10px;
   .table-meta {
     top: -10px;
   }
@@ -4878,13 +4870,32 @@ h1.fancy-header {
   .feedback-item {
     @include clearfix;
 
-    margin-bottom: 20px;
-    padding-bottom: 20px;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
     border-bottom: 1px solid $divider-color;
 
     &:last-child {
       padding-bottom: 0;
       border-bottom: 0;
+    }
+
+    &.feedback-list-item {
+
+      .feedback-item-content {
+        @media screen and (max-width: 760px) {
+          .comment {
+            display: none;
+          }
+
+          .article-meta {
+            display: none;
+          }
+
+          .feedback-item-meta {
+            display: none;
+          }
+        }
+      }
     }
   }
 
@@ -4896,6 +4907,10 @@ h1.fancy-header {
     display: block;
     padding-top: 0;
     padding-bottom: 10px;
+
+    @media screen and (max-width: 760px) {
+      padding-bottom: 0;
+    }
   }
 
   p {
@@ -4903,7 +4918,8 @@ h1.fancy-header {
     font-size: 0.95em;
   }
 
-  .feedback-status {
+
+  .feedback-status, .feedback-item-type {// Tags for feedback items
     display: inline-block;
     float: right;
     padding: 1px 10px;
@@ -4921,6 +4937,17 @@ h1.fancy-header {
     i {
       margin-right: 4px;
     }
+  }
+
+  .feedback-item-type {
+    background: #e3e0e0;
+    float: left;
+    margin-right: 10px;
+    a { color: #707070; }
+  }
+
+  @media screen and (max-width: 760px) {
+    .feedback-status, .feedback-item-type { float: none; }
   }
 
   .feedback-item-controls {
@@ -6961,24 +6988,39 @@ ul.big-button-collection {
   padding: 0;
   list-style: none;
   margin: 50px 0;
+
   &.left {
     text-align: left;
   }
 
   &.thin {
-    margin-top: 10px;
+    margin-top: 5px;
     margin-bottom: 10px;
   }
+
+  .big-button-collection-contract-mobile {
+    display: block;// initial
+    text-align: left;
+    margin-bottom: 10px;
+    display: none;
+    i { font-size: 20px; }
+
+    @media screen and (max-width: 760px) {
+      display: block;
+    }
+  }
+
 
   li {
     display: inline-block;
     margin: 0 10px;
+    vertical-align: top;
     &:first-child {
       margin-left: 0;
     }
   }
 
-  a {
+  li a {
     display: block;
     width: 170px;
     height: 130px;
@@ -6990,9 +7032,12 @@ ul.big-button-collection {
     text-decoration: none;
     line-height: 1em;
     padding-top: 22px;
+
+    margin-top: 5px;
+    margin-bottom: 5px;
   }
 
-  a:hover {
+  li a:hover {
     border: 1px solid #3575bd;
     color: #3575bd;
     border-bottom: 2px solid #3575bd;
@@ -7020,9 +7065,24 @@ ul.big-button-collection {
     font-weight: 300;
   }
 
+  &.fixed {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    background: #fff;
+    width: 70%;
+    max-width: 320px;
+    height: 100%;
+    z-index: 1199;
+    padding: 0px;
+    margin: 0px;
+    padding: 10px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+  }
+
   &.small {
     // Same list for internal pages
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 
     li {
       margin-right: 0;
@@ -7047,7 +7107,7 @@ ul.big-button-collection {
       }
     }
 
-    a {
+    li a {
       padding: 10px 15px;
       width: auto;
       height: auto;
@@ -7078,6 +7138,7 @@ ul.big-button-collection {
   ul.big-button-collection {
     margin-top: 0;
     margin-bottom: 0;
+
     li {
       display: block;
       padding: 0;
@@ -7087,7 +7148,8 @@ ul.big-button-collection {
       margin: 5px 0;
       font-weight: 400;
     }
-    a, &.small a {
+
+    li a, &.small li a {
       display: block;
       width: 100%;
       height: auto;
@@ -7117,6 +7179,35 @@ ul.big-button-collection {
     }
   }
 }
+
+
+.big-button-collection-expand-mobile {
+  float: left;
+  display: inline-block;
+  text-align: center;
+  color: #cecece;
+  width: 40px;
+  height: 40px;
+
+  a {
+    color: inherit;
+    font-size: 18px;
+    position: relative;
+    top: 3px;
+  }
+
+  a:hover {
+    color: #3575bd;
+  }
+}
+
+
+
+
+
+
+
+
 
 .breadcrumbs ul.big-button-collection {
   margin: 10px 0;
@@ -9765,5 +9856,13 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
     padding: 7px 15px;
     margin-left: 10px;
     min-width: initial;
+  }
+}
+
+// For stuff we only want to see on mobiles
+.mobile-view {
+  display: none;
+  @media screen and (max-width: 760px) {
+    display: initial;
   }
 }
