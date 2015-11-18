@@ -32,7 +32,6 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations\Get;
 use Symfony\Component\HttpFoundation\Request;
 
 /**

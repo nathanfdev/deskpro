@@ -39,11 +39,13 @@ use FOS\RestBundle\Controller\Annotations\Route;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class TicketParticipantsController.
+ * Class TicketFollowersController.
  *
- * @Route("/tickets/{parentId}/participants")
+ * Followers are agent participants
+ *
+ * @Route("/tickets/{parentId}/followers")
  */
-class TicketParticipantsController extends CrudSubController
+class TicketFollowersController extends CrudSubController
 {
     public static $entity         = TicketParticipant::class;
     public static $type           = TicketParticipantType::class;
@@ -55,10 +57,8 @@ class TicketParticipantsController extends CrudSubController
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
         parent::applyListFilters($qb, $alias, $request);
-
-        // filter out agents, agent participants are followers and have separate API endpoint
         $qb
             ->join("$alias.person", 'person')
-            ->andWhere('person.is_agent != 1');
+            ->andWhere('person.is_agent = 1');
     }
 }
