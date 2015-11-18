@@ -47,7 +47,7 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         $this->addOption('post', null, InputOption::VALUE_NONE, 'Send a POST request (default when data is sent)');
         $this->addOption('put', null, InputOption::VALUE_NONE, 'Send a PUT request');
         $this->addOption('delete', null, InputOption::VALUE_NONE, 'Send a DELETE request');
-        $this->addOption('api-key', null, InputOption::VALUE_REQUIRED, 'Use this API key. When this option is not used, the command will create a key for the first admin in the database.');
+        $this->addOption('api-key', null, InputOption::VALUE_REQUIRED, 'Use this API key. When this option is not used, the command will create a key for the first admin in the database. Use the special string "NONE" to not send any key (e.g., to test open/public APIs).');
         $this->addOption('raw', null, InputOption::VALUE_NONE, 'Output the API result directly without any other info or JSON decoding');
         $this->addOption('printr', null, InputOption::VALUE_NONE, 'Output as PHP array');
         $this->addArgument('path', InputArgument::REQUIRED, 'The API endpoint to request');
@@ -145,9 +145,11 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         $http_client = new \Guzzle\Http\Client($base_url, array(
             'ssl.certificate_authority' => false,
         ));
-        $http_client->setDefaultHeaders(array(
-            'X-DeskPRO-API-Key' => $api_key,
-        ));
+        if ($api_key !== 'NONE') {
+            $http_client->setDefaultHeaders(array(
+                'X-DeskPRO-API-Key' => $api_key,
+            ));
+        }
 
         switch ($req_type) {
             case 'GET':
