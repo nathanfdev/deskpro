@@ -21,6 +21,7 @@ import {
 export class TaskCardContainer extends React.Component {
 
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
     selectedTasks: PropTypes.object.isRequired,
     task: PropTypes.object.isRequired,
     children: PropTypes.node.isRequired

@@ -27,6 +27,7 @@ export class CustomCardDragLayer extends React.Component {
     }
 
     const transform = `translate(${currentOffset.x}px, ${currentOffset.y}px)`;
+
     return {
       transform: transform,
       WebkitTransform: transform
@@ -34,8 +35,7 @@ export class CustomCardDragLayer extends React.Component {
   }
 
   render() {
-    const props = this.props;
-    const { isDragging, children } = this.props;
+    const { isDragging, item, children } = this.props;
     const childProps = children.props;
 
     if (!isDragging) {
@@ -54,7 +54,7 @@ export class CustomCardDragLayer extends React.Component {
       }}>
 
         <div style={this.getItemStyles()}>
-          {React.cloneElement(children, {...childProps, ...props})}
+          {React.cloneElement(children, {...childProps, item: item})}
         </div>
       </div>
     );

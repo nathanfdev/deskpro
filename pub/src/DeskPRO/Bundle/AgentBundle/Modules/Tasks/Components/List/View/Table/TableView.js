@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { HeaderContainer } from './HeaderContainer';
 import { TaskCardContainer } from '../TaskCardContainer';
 import { TaskCard } from './TaskCard/TaskCard';
+import { TaskCardPreviewContainer } from '../TaskCardPreviewContainer';
 import { TaskCardPreview } from './TaskCard/TaskCardPreview';
 import { ListGroup } from './ListGroup';
 import { Table, CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
@@ -37,8 +38,11 @@ export class TableView extends React.Component {
               </ListGroup>
             )}
         </Table>
+
         <CustomCardDragLayer>
-          <TaskCardPreview />
+          <TaskCardPreviewContainer>
+            <TaskCardPreview />
+          </TaskCardPreviewContainer>
         </CustomCardDragLayer>
       </div>
     );

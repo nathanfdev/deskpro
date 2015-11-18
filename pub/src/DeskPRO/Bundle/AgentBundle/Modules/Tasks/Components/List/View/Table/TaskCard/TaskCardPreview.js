@@ -3,14 +3,16 @@ import React, { PropTypes } from 'react';
 export class TaskCardPreview extends React.Component {
 
   static propTypes = {
-    item: PropTypes.object
+    task: PropTypes.object
   };
 
   render() {
-    const { item } = this.props;
+    const { task } = this.props;
 
     return (
-      <div style={{backgroundColor: 'green', width: 100, height: 100}}>Dragging {item.id}...</div>
+      <div style={{backgroundColor: 'green', width: 100, height: 100}}>
+        Dragging {task.get('title')}...
+      </div>
     );
   }
 }
