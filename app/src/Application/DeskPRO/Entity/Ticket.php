@@ -1793,6 +1793,27 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
+     * @param array $labels
+     */
+    public function setLabels(array $labels)
+    {
+        // delete labels missing from the passed array
+        foreach ($this->labels as $i => $label) {
+            in_array($label, $labels) || $this->labels->remove($i);
+        }
+
+        // add new labels from the passed array
+        foreach ($labels as $label) {
+            if (!$this->labels->contains($label)) {
+                $label->setTicket($this);
+                $this->labels->add($label);
+            }
+        }
+
+        $this->_onPropertyChanged('labels', null, $this->labels);
+    }
+
+    /**
      * @param string $l
      *
      * @return LabelTicket

@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
+use Doctrine\Common\Collections\ArrayCollection;
 use FOS\RestBundle\Controller\Annotations\Route;
 
 /**
@@ -45,4 +46,26 @@ class TicketsController extends CrudController
 {
     public static $entity = Ticket::class;
     public static $type   = TicketType::class;
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function persistModel($model)
+    {
+        // Overwrite base method to make sure ticket is persisted and has ID before persisting labels. Label uses
+        // ticket id as part of its' composite primary key and requires it to be available when persisting a new label.
+        if (!$model->getId()) {
+
+            // use reflection instead of getter method because in different entities methods behave
+            // differently (can return ArrayCollection, array of label object or array of strings)
+            $reflection = new \ReflectionProperty(static::$entity, 'labels');
+            $reflection->setAccessible(true);
+            $labels = $reflection->getValue($model);
+            $reflection->setValue($model, new ArrayCollection([]));
+            parent::persistModel($model);
+            $model->setLabels($labels->toArray());
+        }
+
+        return parent::persistModel($model);
+    }
 }
