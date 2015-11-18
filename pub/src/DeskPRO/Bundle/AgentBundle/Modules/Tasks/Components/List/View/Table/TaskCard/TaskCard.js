@@ -8,7 +8,7 @@ import { Project } from './Project';
 import { AssigneeContainer } from './AssigneeContainer';
 import { TableCheckbox } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import classNames from 'classnames';
-import Moment from 'moment';
+import moment from 'moment';
 
 @DragSource(constants.TYPE_TASK, cardSourceSpec, cardSourceCollect)
 @DropTarget(constants.TYPE_TASK, cardTargetSpec, targetCollect)
@@ -57,7 +57,7 @@ export class TaskCard extends BaseTaskCard {
           </ProjectContainer>
         </Td>
         <Td visible={isVisible('date_due')}>
-          {task.get('date_due') ? Moment(task.get('date_due')).format('DD/MM/YY') : 'N/A'}
+          {task.get('date_due') ? moment(task.get('date_due')).format('DD/MM/YY') : 'N/A'}
         </Td>
         <Td visible={isVisible('assignee')}>
           <AssigneeContainer task={task} />
