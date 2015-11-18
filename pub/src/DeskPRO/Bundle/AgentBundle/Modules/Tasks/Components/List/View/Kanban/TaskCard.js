@@ -22,15 +22,16 @@ export class TaskCard extends BaseTaskCard {
     currentSort: PropTypes.string,
     connectDragSource: PropTypes.func.isRequired,
     connectDropTarget: PropTypes.func.isRequired,
-    isOver: PropTypes.bool
+    isOver: PropTypes.bool,
+    isDragging: PropTypes.bool
   };
 
   render() {
-    const { selected, onToggleSelected, currentSort, isOver } = this.props;
+    const { selected, onToggleSelected, currentSort, isOver, isDragging } = this.props;
     const { connectDragSource, connectDropTarget } = this.props;
 
     let result = connectDragSource(
-      <div>
+      <div className={classNames({'hidden': isDragging})}>
         <div className="card task-card">
           <div className="card-status-bar status-bar-left" />
           <div className="card-status-bar status-bar-right" />

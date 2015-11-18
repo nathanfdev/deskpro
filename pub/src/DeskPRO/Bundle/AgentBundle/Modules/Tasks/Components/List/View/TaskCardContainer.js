@@ -55,6 +55,7 @@ export const cardSourceSpec = {
 
 export const cardSourceCollect = (dragConnect, monitor) => ({
   connectDragSource: dragConnect.dragSource(),
+  connectDragPreview: dragConnect.dragPreview(),
   isDragging: monitor.isDragging()
 });
 

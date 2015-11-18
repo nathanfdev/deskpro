@@ -34,7 +34,8 @@ export class TaskCard extends BaseTaskCard {
     currentSort: PropTypes.string,
     connectDragSource: PropTypes.func.isRequired,
     connectDropTarget: PropTypes.func.isRequired,
-    isOver: PropTypes.bool
+    isOver: PropTypes.bool,
+    isDragging: PropTypes.bool
   };
 
   onToggleDone = () => {
@@ -69,11 +70,11 @@ export class TaskCard extends BaseTaskCard {
   }
 
   render() {
-    const { selected, onToggleSelected, currentSort, isOver } = this.props;
+    const { selected, onToggleSelected, currentSort, isOver, isDragging } = this.props;
     const { connectDragSource, connectDropTarget } = this.props;
 
     let result = connectDragSource(
-      <div>
+      <div className={classNames({'hidden': isDragging})}>
         <Card minimized={this.isMinimized()} type="task">
           <MarkDoneButton isDone={this.state.isDone}
                           onToggle={this.onToggleDone} />

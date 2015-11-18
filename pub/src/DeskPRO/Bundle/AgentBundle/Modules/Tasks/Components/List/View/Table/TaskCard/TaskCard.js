@@ -20,12 +20,20 @@ export class TaskCard extends BaseTaskCard {
     tableVisibleFields: PropTypes.object,
     currentSort: PropTypes.string,
     connectDragSource: PropTypes.func.isRequired,
+    connectDragPreview: PropTypes.func.isRequired,
     connectDropTarget: PropTypes.func.isRequired,
-    isOver: PropTypes.bool
+    isOver: PropTypes.bool,
+    isDragging: PropTypes.bool
   };
 
+  componentDidMount() {
+    this.props.connectDragPreview(
+      <div style={{backgroundColor: 'green', width: 100, height: 100}}>Dragging...</div>
+    );
+  }
+
   render() {
-    const { task, selected, currentSort, onToggleSelected, tableVisibleFields, isOver } = this.props;
+    const { task, selected, currentSort, onToggleSelected, tableVisibleFields, isOver, isDragging } = this.props;
     const { connectDragSource, connectDropTarget } = this.props;
 
     const isVisible = type => tableVisibleFields.includes(type);
@@ -33,7 +41,8 @@ export class TaskCard extends BaseTaskCard {
     let result = connectDragSource(
       <tr className={classNames({
         'is-over': isOver,
-        'done': task.get('is_done')
+        'done': task.get('is_done'),
+        'hidden': isDragging
       })}>
 
         <Td>
