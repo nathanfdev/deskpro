@@ -121,7 +121,7 @@ strong {
 h1, h2, h3, h4, h5 {
   margin: 0;
   padding: 0;
-  color: $text-color-darker;
+  color: $text-color;
 }
 
 h2 {
@@ -1306,6 +1306,8 @@ $search-btn-height: $search-height - 24;
       width: 100%;
       padding-right: 200px;
 
+      @media screen and (max-width: 760px) { padding-right: 160px; }
+
       [type="text"] {
         width: 100%;
         padding-right: 60px;
@@ -1317,6 +1319,9 @@ $search-btn-height: $search-height - 24;
         right: 220px;
         color: #cecece;
         &:hover { color: #333; }
+        @media screen and (max-width: 760px) {
+          right: 200px;
+        }
       }
     }
 
@@ -2270,9 +2275,9 @@ header {
 
 .news-header {
   line-height: 1.2em;
-  border-bottom: 1px solid $divider-color;
-  padding-bottom: 20px;
-  margin-bottom: 20px;
+
+  padding-bottom: 10px;
+  margin-bottom: 10px;
   padding-left: 10px;
 
   .news-header-info {
@@ -4250,7 +4255,10 @@ ul.kb-checkbox-extra {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 .kb-article-news {
-  margin-bottom: 50px;
+  padding-bottom: 25px;
+  margin-bottom: 25px;
+  border-bottom: 1px solid $divider-color;
+
 }
 
 .expand {
@@ -5699,6 +5707,7 @@ ul.categories-article-list {
 }
 
 .kb-article {
+  padding-top: 20px;
   header, footer {
     @include clearfix;
 
@@ -5718,9 +5727,7 @@ ul.categories-article-list {
   }
 
   header {
-    border-bottom: 1px solid #e6e6e6;
-    padding-bottom: 20px;
-    margin-bottom: 20px;
+    padding-bottom: 10px;
   }
 
   p {
