@@ -1,7 +1,10 @@
 import React, { PropTypes } from 'react';
 import { ListGroup } from './ListGroup';
-import { TaskCard } from './TaskCard';
+import { TaskDragCard } from './TaskDragCard';
 import { TaskCardContainer } from '../TaskCardContainer';
+import { TaskCardPreviewContainer } from '../TaskCardPreviewContainer';
+import { TaskCardPreview } from './TaskCardPreview';
+import { CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 
 export class KanbanView extends React.Component {
 
@@ -22,11 +25,17 @@ export class KanbanView extends React.Component {
 
             {taskGroup.elements.map(task =>
               <TaskCardContainer task={task} key={task.get('id')}>
-                <TaskCard />
+                <TaskDragCard />
               </TaskCardContainer>
             )}
           </ListGroup>
         )}
+
+        <CustomCardDragLayer>
+          <TaskCardPreviewContainer>
+            <TaskCardPreview />
+          </TaskCardPreviewContainer>
+        </CustomCardDragLayer>
       </div>
     );
   }

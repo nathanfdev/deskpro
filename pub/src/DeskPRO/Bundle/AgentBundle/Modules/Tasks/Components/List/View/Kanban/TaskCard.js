@@ -1,7 +1,4 @@
 import React, { PropTypes } from 'react';
-import { DragSource, DropTarget } from 'react-dnd';
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import { cardSourceSpec, cardSourceCollect, cardTargetSpec, targetCollect } from '../TaskCardContainer';
 import { KanbanCheckbox } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Kanban/index';
 import {
   BaseTaskCard,
@@ -12,31 +9,25 @@ import {
 } from '../../TaskCard/index';
 import classNames from 'classnames';
 
-@DragSource(constants.TYPE_TASK, cardSourceSpec, cardSourceCollect)
-@DropTarget(constants.TYPE_TASK, cardTargetSpec, targetCollect)
 export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
     selected: PropTypes.bool,
     onToggleSelected: PropTypes.func,
     task: PropTypes.object,
-    currentSort: PropTypes.string,
-    connectDragSource: PropTypes.func.isRequired,
-    connectDropTarget: PropTypes.func.isRequired,
-    isOver: PropTypes.bool,
-    isDragging: PropTypes.bool
+    moving: PropTypes.bool
   };
 
   render() {
-    const { selected, onToggleSelected, currentSort, isOver, isDragging } = this.props;
-    const { connectDragSource, connectDropTarget } = this.props;
+    const { selected, onToggleSelected, moving } = this.props;
 
-    let result = connectDragSource(
-      <div className={classNames({
-        'dragging-item': isDragging
-      })}>
+    return (
+        <div className={classNames(
+          'card',
+          'task-card',
+          {'moving': moving}
+        )}>
 
-        <div className="card task-card">
           <div className="card-status-bar status-bar-left" />
           <div className="card-status-bar status-bar-right" />
 
@@ -68,14 +59,6 @@ export class TaskCard extends BaseTaskCard {
             </div>
           </div>
         </div>
-        <div className={classNames('placeholder', {'is-over': isOver})} />
-      </div>
     );
-
-    if (currentSort === 'list') {
-      result = connectDropTarget(result);
-    }
-
-    return result;
   }
 }
