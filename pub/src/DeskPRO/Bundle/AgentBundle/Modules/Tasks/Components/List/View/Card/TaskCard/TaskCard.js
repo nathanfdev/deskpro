@@ -46,14 +46,16 @@ export class TaskCard extends BaseTaskCard {
   };
 
   renderDetails() {
+    const { task } = this.props;
+
     return (
       <CardLine>
         <CardLineLeft>
-          <DateDue value={this.state.dateDue}
+          <DateDue value={task.get('date_due')}
                    onChange={this.onChangeDate} />
 
-          {this.state.project &&
-            <ProjectContainer project={this.state.project}>
+          {task.get('project') &&
+            <ProjectContainer project={task.get('project')}>
               <CardProject />
             </ProjectContainer>
           }
@@ -61,9 +63,9 @@ export class TaskCard extends BaseTaskCard {
         </CardLineLeft>
         <CardLineRight>
           <Comments count={this.state.comments} />
-          {this.state.subTasks.total > 0 &&
-            <SubTasks current={this.state.subTasks.current}
-                      total={this.state.subTasks.total} />
+          {task.get('subtasks_total') > 0 &&
+            <SubTasks current={task.get('subtasks_done')}
+                      total={task.get('subtasks_total')} />
           }
         </CardLineRight>
       </CardLine>
@@ -71,7 +73,7 @@ export class TaskCard extends BaseTaskCard {
   }
 
   render() {
-    const { selected, onToggleSelected, currentSort, isOver, isDragging } = this.props;
+    const { task, selected, onToggleSelected, currentSort, isOver, isDragging } = this.props;
     const { connectDragSource, connectDropTarget } = this.props;
 
     let result = connectDragSource(
@@ -80,21 +82,21 @@ export class TaskCard extends BaseTaskCard {
       })}>
 
         <Card minimized={this.isMinimized()} type="task">
-          <MarkDoneButton isDone={this.state.isDone}
+          <MarkDoneButton isDone={task.get('is_done')}
                           onToggle={this.onToggleDone} />
 
           <CardCheckbox selected={selected} onClick={onToggleSelected} />
           <CardLine>
             <CardLineLeft>
-              <Title value={this.state.title}
-                     isDone={this.state.isDone}
+              <Title value={task.get('title')}
+                     isDone={task.get('is_done')}
                      onChange={this.onTitleChange} />
             </CardLineLeft>
             <CardLineRight>
-              {this.state.isDone
+              {task.get('is_done')
                 ? <ShowDetailsButton expanded={this.state.expanded}
                                      onToggleExpand={this.onToggleExpand}/>
-                : <AssignButton task={this.props.task} />
+                : <AssignButton task={task} />
               }
             </CardLineRight>
           </CardLine>

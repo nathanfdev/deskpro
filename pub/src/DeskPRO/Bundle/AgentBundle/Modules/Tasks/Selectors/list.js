@@ -41,10 +41,10 @@ export const calendarVisibleFieldsSelector = createSelector(
 
 export const selectedSelector = createSelector(
   stateSelector,
-    state => state.get('selected')
+  state => state.get('selected')
 );
 
 export const selectedCountSelector = createSelector(
   selectedSelector,
-    selected => selected.size
+  selected => selected.size
 );

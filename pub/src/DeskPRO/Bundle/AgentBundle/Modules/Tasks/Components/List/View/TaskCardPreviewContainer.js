@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
 
 @connect(state => ({
   tasks: state.Tasks.list.get('elements')
@@ -19,7 +20,7 @@ export class TaskCardPreviewContainer extends React.Component {
 
     return React.cloneElement(children, {
       ...childProps,
-      task: tasks.get(item.id)
+      task: mapKeyedFromArray(tasks, 'id').get(item.id)
     });
   }
 }

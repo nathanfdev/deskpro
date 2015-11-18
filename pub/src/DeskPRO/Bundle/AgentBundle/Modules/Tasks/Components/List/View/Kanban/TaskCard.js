@@ -19,7 +19,7 @@ export class TaskCard extends BaseTaskCard {
   };
 
   render() {
-    const { selected, onToggleSelected, moving } = this.props;
+    const { task, selected, onToggleSelected, moving } = this.props;
 
     return (
         <div className={classNames(
@@ -34,8 +34,8 @@ export class TaskCard extends BaseTaskCard {
           <KanbanCheckbox selected={selected} onClick={onToggleSelected} />
 
           <div className="content">
-            <Title value={this.state.title}
-                   isDone={this.state.isDone}
+            <Title value={task.get('title')}
+                   isDone={task.get('is_done')}
                    onChange={this.onTitleChange} />
 
             <div className="card-line task-details">
@@ -45,16 +45,16 @@ export class TaskCard extends BaseTaskCard {
                   </span>
               </div>
               <div>
-                <DateDue value={this.state.dateDue}
+                <DateDue value={task.get('date_due')}
                          onChange={this.onChangeDate} />
               </div>
             </div>
             <hr/>
             <div className="card-line task-properties">
               <Comments count={this.state.comments} />
-              {this.state.subTasks.total > 0 &&
-                <SubTasks current={this.state.subTasks.current}
-                          total={this.state.subTasks.total} />
+              {task.get('subtasks_total') > 0 &&
+                <SubTasks current={task.get('subtasks_done')}
+                          total={task.get('subtasks_total')} />
               }
             </div>
           </div>
