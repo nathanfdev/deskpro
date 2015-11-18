@@ -1,5 +1,5 @@
 import PageWidget from "DeskPRO/Component/PageWidget/PageWidget";
-import NewTicketForm from "DeskPRO/Bundle/PortalBundle/PageWidget/NewTicketForm";
+import TicketForm from "DeskPRO/Bundle/PortalBundle/PageWidget/TicketForm";
 import PortalFormWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/PortalFormWidget";
 import TicketView from "DeskPRO/Bundle/PortalBundle/PageWidget/TicketView";
 import TicketList from "DeskPRO/Bundle/PortalBundle/PageWidget/TicketList";
@@ -19,7 +19,8 @@ export default class PortalPage extends PageWidget {
     this.addWidgetDef(OmniSearchWidget, "#omnisearch");
     this.addWidgetDef(LoginDropdownWidget, "#top-login-btn");
     this.addWidgetDef(LanguageChangerWidget, "#language-changer");
-    this.addWidgetDef(NewTicketForm, "#new_ticket_page");
+    this.addWidgetDef(TicketForm, "#new_ticket_page");
+    this.addWidgetDef(TicketForm, "#edit_ticket_form");
     this.addWidgetDef(TicketView, "#ticket_view_page");
     this.addWidgetDef(TicketList, "#ticket_list_page");
     this.addWidgetDef(FeedbackPage, "#feedback_page");

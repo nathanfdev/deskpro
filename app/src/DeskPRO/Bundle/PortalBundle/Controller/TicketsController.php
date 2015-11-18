@@ -172,14 +172,7 @@ class TicketsController extends AbstractController
         // BREADCRUMBS
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);
 
-        $last_user_reply_in_seconds = null;
-        if ($last_reply = $ticket->date_last_user_reply) {
-            $last_reply                 = Carbon::createFromTimestamp($last_reply->getTimestamp());
-            $last_user_reply_in_seconds = $last_reply->diffInSeconds();
-        }
-
-        $created            = Carbon::createFromTimestamp($ticket->date_created->getTimestamp());
-        $created_in_seconds = $created->diffInSeconds();
+        list($last_user_reply_in_seconds, $created_in_seconds) = $this->getRecentTimes($ticket);
 
         return $this->renderThemeView(
             'Theme:Tickets:view.html.twig',
@@ -193,6 +186,7 @@ class TicketsController extends AbstractController
                 'page_title'                 => $this->createPageTitle()->tickets($ticket),
                 'last_user_reply_in_seconds' => $last_user_reply_in_seconds,
                 'created_in_seconds'         => $created_in_seconds,
+                'edit_page'                  => false,
             )
         );
     }
@@ -279,15 +273,36 @@ class TicketsController extends AbstractController
 
         // BREADCRUMBS
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketEdit($ticket);
+        $ticket_view = $this->getTicketsViewService()->getUserTicketView($ticket);
+
+        list($last_user_reply_in_seconds, $created_in_seconds) = $this->getRecentTimes($ticket);
+
+        $form_full = $this->createForm('ticket', $ticket, array(
+            'person'            => $person,
+            'ticket_message'    => null,
+            'settings'          => $this->getBrandContainer()->getSettings(),
+            'full_version'      => true,
+            'ticket_visibility' => 'edit',
+            'action'            => $this->generateUrl('portal_new_ticket'),
+        ));
+        $layouts           = $this->getContainer()->getTicketLayoutManager()->getUserLayouts(true);
+        $ticket_display_js = 'window.DESKPRO_TICKET_DISPLAY = '.$layouts->compileJsObj().';';
 
         return $this->renderThemeView(
             'Theme:Tickets:edit.html.twig',
             array(
-                'ticket'      => $ticket,
-                'form'        => $form->createView(),
-                'rerendering' => $rerendering,
-                'breadcrumbs' => $breadcrumbs,
-                'page_title'  => $this->createPageTitle()->tickets($ticket),
+                'ticket'                     => $ticket,
+                'form'                       => $form->createView(),
+                'rerendering'                => $rerendering,
+                'breadcrumbs'                => $breadcrumbs,
+                'page_title'                 => $this->createPageTitle()->tickets($ticket),
+                'last_user_reply_in_seconds' => $last_user_reply_in_seconds,
+                'created_in_seconds'         => $created_in_seconds,
+                'edit_page'                  => true,
+                'can_edit'                   => $this->isGranted('TICKET_EDIT', $ticket),
+                'ticket_view'                => $ticket_view,
+                'ticket_display_js'          => $ticket_display_js,
+                'form_full'                  => $form_full->createView(),
             )
         );
     }
@@ -547,5 +562,24 @@ class TicketsController extends AbstractController
         }
 
         return $ticket;
+    }
+
+    /**
+     * @param $ticket
+     *
+     * @return array
+     */
+    protected function getRecentTimes($ticket)
+    {
+        $last_user_reply_in_seconds = null;
+        if ($last_reply = $ticket->date_last_user_reply) {
+            $last_reply                 = Carbon::createFromTimestamp($last_reply->getTimestamp());
+            $last_user_reply_in_seconds = $last_reply->diffInSeconds();
+        }
+
+        $created            = Carbon::createFromTimestamp($ticket->date_created->getTimestamp());
+        $created_in_seconds = $created->diffInSeconds();
+
+        return array($last_user_reply_in_seconds, $created_in_seconds);
     }
 }

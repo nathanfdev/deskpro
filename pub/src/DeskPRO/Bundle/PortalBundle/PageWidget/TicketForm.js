@@ -49,7 +49,7 @@ class TicketValueReader {
 //# Page widget
 //######################################################################################################################
 
-export default class NewTicketForm extends PageWidget {
+export default class TicketForm extends PageWidget {
   renderWidget() {
     let $formEl       = this.$element.find('.dp_ticket_form');
     let formName     = $formEl.find('form').attr('name');
@@ -80,7 +80,7 @@ export default class NewTicketForm extends PageWidget {
           return field != 'displayed_fields'; // don't include this special field in the list
       }).join(',');
       let $df = $formEl.find("[data-field='displayed_fields']").find('input[type="hidden"]');
-      console.log('[NewTicketForm] [setDisplayedFields] setting displayed_fields to: ', displayed_fields);
+      console.log('[TicketForm] [setDisplayedFields] setting displayed_fields to: ', displayed_fields);
       $df.val(displayed_fields)
     };
 

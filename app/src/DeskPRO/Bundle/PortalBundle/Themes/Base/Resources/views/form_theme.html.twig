@@ -86,16 +86,22 @@
     {% endif %}
 {%- endblock form_row_help_col -%}
 
-{%- block deskpro_combined_type_row -%}
-    <div class="column-half">
-        <div class="bucket">
-            {{ form_row(form.children|first) }}
-        </div>
-    </div>
+{%- block submit_widget -%}
+    {%- set type = type|default('submit') -%}
+    <div class="column-full"><div class="bucket">{{ block('button_widget') }}</div></div>
+{%- endblock submit_widget -%}
 
-    <div class="column-half omega">
-        <div class="bucket">
-            {{ form_row(form.children|last) }}
+{%- block deskpro_combined_type_row -%}
+    <div class="column-full">
+        <div class="column-half">
+            <div class="bucket">
+                {{ form_row(form.children|first) }}
+            </div>
+        </div>
+        <div class="column-half omega">
+            <div class="bucket">
+                {{ form_row(form.children|last) }}
+            </div>
         </div>
     </div>
 {%- endblock -%}
