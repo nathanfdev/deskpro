@@ -1,23 +1,18 @@
-{#
-Uncomment this section to show buttons to other sections of the helpdesk
-{% show section nav_buttons %}
-#}
-
 <ul>
   {% if breadcrumbs is defined %}
     {% for item in breadcrumbs %}
       <li>
-        <a href="{{ item.url }}"{% if loop.last %} class="active-page"{% endif %}><!-- TODO remove whitespace from the generated text (else we get blank space underlines) -->
-          {% if loop.first %}<i class="fa fa-home"></i>{% endif %}
-          {% if item.phrase %}
+        <a href="{{ item.url }}"{% if loop.last %} class="active-page"{% endif %}>
+          {%- if loop.first -%}<i class="fa fa-home"></i>{%- endif -%}
+          {%- if item.phrase -%}
             {{ phrase(item.phrase) }}
-          {% elseif item.var.title is defined %}
+          {%- elseif item.var.title is defined -%}
             {{ item.var.title }}
-          {% elseif item.var.name is defined %}
+          {%- elseif item.var.name is defined -%}
             {{ item.var.name }}
-          {% else %}
+          {%- else -%}
             {{ item.url }}
-          {% endif %}
+          {%- endif -%}
         </a>
         {% if not loop.last %}<i class="fa fa-angle-right"></i>{% endif %}
       </li>
