@@ -3,23 +3,24 @@
     <div class="breadcrumbs">
         {% show breadcrumbs %}
     </div>
-    <section>
-        <header class="section-header">
+    <div>
+        <header class="large-title">
             <h1>{{ phrase('portal.tickets.new-section-title') }}</h1>
             <p>{{ phrase('portal.tickets.new-intro') }}</p>
         </header>
-        <hr class="divider">
 
-        {% if rerendering %}
-            <strong>{{ phrase('portal.tickets.form-changed-notice') }}</strong>
-        {% endif %}
+        <div class="padded">
+            {% if rerendering %}
+                <strong>{{ phrase('portal.tickets.form-changed-notice') }}</strong>
+            {% endif %}
 
-        {% if rerendering_saved %}
-            <strong>{{ phrase('portal.general.rerender-form') }}</strong>
-        {% endif %}
+            {% if rerendering_saved %}
+                <strong>{{ phrase('portal.general.rerender-form') }}</strong>
+            {% endif %}
 
-        {% show new_ticket_form %}
-    </section>
+            {% show new_ticket_form %}
+        </div>
+    </div>
 {% endblock inner_content %}
 {% block doc_end %}
     <!-- DESKPRO_TICKET_DISPLAY -->
