@@ -4,8 +4,7 @@ import { TaskCardContainer } from '../TaskCardContainer';
 import { TaskCard } from './TaskCard/TaskCard';
 import { TaskCardPreview } from './TaskCard/TaskCardPreview';
 import { ListGroup } from './ListGroup';
-import { Table } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
-import { TaskCardDragLayer } from '../TaskCardDragLayer';
+import { Table, CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 
 export class TableView extends React.Component {
 
@@ -38,9 +37,9 @@ export class TableView extends React.Component {
               </ListGroup>
             )}
         </Table>
-        <TaskCardDragLayer>
+        <CustomCardDragLayer>
           <TaskCardPreview />
-        </TaskCardDragLayer>
+        </CustomCardDragLayer>
       </div>
     );
   }

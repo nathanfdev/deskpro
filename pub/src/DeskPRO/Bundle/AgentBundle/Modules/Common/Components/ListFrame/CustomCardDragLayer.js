@@ -32,7 +32,7 @@ function getItemStyles(props) {
   currentOffset: monitor.getSourceClientOffset(),
   isDragging: monitor.isDragging()
 }))
-export class TaskCardDragLayer extends React.Component {
+export class CustomCardDragLayer extends React.Component {
 
   static propTypes = {
     item: PropTypes.object,
