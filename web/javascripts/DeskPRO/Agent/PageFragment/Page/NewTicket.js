@@ -988,7 +988,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		var placeUserRow = function(html) {
 			self.placeUserRow(html);
-      self.draft.save();
 		};
 
 		searchbox.bind('personsearchboxclick', function(ev, personId, name, email, sb) {
@@ -1004,6 +1003,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 					$('input.person-id', searchbox).val(personId);
 					placeUserRow(html);
+					self.draft.save();
 					self.loadSnippetsViewer();
 					self.updateUi();
 				}
@@ -1021,26 +1021,25 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					dataType: 'html',
 					context: this,
 					success: function(html) {
-						console.info(html);
 						placeUserRow(html);
 
-						if (term.indexOf('@') !== -1) {
-							$('input.email', userfields).val(term);
+						if ($(html).has('[name="newticket[person][language_id]"]').length) {
+							// new user
+							if (term.indexOf('@') !== -1) {
+								$('input.email', userfields).val(term);
+							} else {
+								$('input.name', userfields).val(term);
+							}
+							self.getEl('person_id').val('');
 						} else {
-							$('input.name', userfields).val(term);
-						}
-
-						var personId = self.getEl('user_choice').find('.set_userid').val();
-
-						if (personId) {
+							// exist
 							self.clearErrorCode('person_id');
 							self.clearErrorCode('person_email_address');
 							self.clearErrorCode('person_no_user');
-
-							$('input.person-id', self.getEl('user_searchbox')).val(personId);
 							self.loadSnippetsViewer();
 						}
 
+						self.draft.save();
 						self.updateUi();
 					}
 				});
@@ -1050,18 +1049,34 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		}
 	},
 
-	setUser: function(person_id, session_id) {
+	setUser: function(person_id, session_id, dontSaveDraft) {
 		var self = this;
+		var data = person_id
+			? {'person_id': person_id, 'session_id': session_id}
+			: {email: session_id};
+
+		var deferred = DeskPRO_Window.$q.defer();
 		$.ajax({
 			type: 'GET',
 			url: BASE_URL + 'agent/tickets/new/get-person-row/0',
-			data: { 'person_id': person_id, 'session_id': session_id },
+			data: data,
 			dataType: 'html',
-			context: this,
 			success: function(html) {
-				this.placeUserRow(html);
+				self.placeUserRow(html);
+				self.updateUi();
+				if (!person_id) {
+					self.getEl('person_id').val('');
+				}
+				if (!dontSaveDraft) {
+					self.draft.save();
+				}
+				deferred.resolve();
+			},
+			error: function() {
+				deferred.reject();
 			}
 		});
+		return deferred.promise;
 	},
 
 	getCustomFields: function() {
@@ -1717,7 +1732,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			_key: null,
       key: function () {
         if (this._key) return this._key;
-        return this._key = 'drafts.new-ticket-' + self.meta.baseId + (new Date()).getTime();
+        return this._key = 'drafts.new-ticket';
       },
       get: function () {
         var str = window.localStorage.getItem(this.key());
@@ -1741,9 +1756,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
           , redactor = self.textarea.data('redactor')
 					, item = d.get()
 					, $attachRow = self.getEl('attach_row')
+					, person = 0
         ;
 
-        $('input, select, textarea', $form).on('keyup change', function(e, byDraft){
+        $($form).on('keyup change', 'input, select, textarea', function(e, byDraft){
           !byDraft && d.save();
         });
 
@@ -1751,16 +1767,18 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
           d.reset();
         });
 
+				var map = {};
         item.form.forEach(function(el, i){
-
+					map[el.name] = el.value;
           (function(el){
 
-            if ('newticket[person][id]' === el.name && el.value) {
-              return self.setUser(el.value);
-            }
+            if (['newticket[person][id]', 'newticket[person][email]', 'newticket[person][name]'].indexOf(el.name) !== -1) {
+							return;
+						}
 
             if ('newticket[message]' === el.name) {
               redactor && self.textarea.setCode(el.value);
+							return;
             }
 
             $('[name="' + el.name + '"]', $form).each(function() {
@@ -1778,6 +1796,16 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
           })(el);
 
         });
+
+				if (map['newticket[person][id]']) {
+					var person = parseInt(map['newticket[person][id]']);
+					return self.setUser(person, null, true);
+				} else if (map['newticket[person][name]'] || map['newticket[person][email_address]']) {
+					return self.setUser(0, map['newticket[person][email_address]'], true).then(function() {
+						$('input[name="newticket[person][name]"]', $form).val(map['newticket[person][name]']);
+						$('input[name="newticket[person][email_address]"]', $form).val(map['newticket[person][email_address]']);
+					});
+				}
 
 				var html = window.tmpl($('.template-download', self.wrapper).attr('id'))({files: item.attachments});
 				$attachRow.find('ul.files:first').append(html);
