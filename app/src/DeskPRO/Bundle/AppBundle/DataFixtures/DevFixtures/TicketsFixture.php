@@ -205,7 +205,7 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
 
         $this->db->batchInsert('label_defs', $batch, true);
 
-        $this->labels = $this->db->fetchAllCol("SELECT label FROM label_defs WHERE label_type = ?", array($label_type));
+        $this->labels = $this->db->fetchAllCol('SELECT label FROM label_defs WHERE label_type = ?', array($label_type));
     }
 
     private function loadTickets()
@@ -219,6 +219,17 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
                 $status = $this->faker->randomElement(array('awaiting_user', 'resolved'));
             }
 
+            $ticket_rating = null;
+            if ($status == 'resolved') {
+                if ($this->faker->boolean(60)) {
+                    $ticket_rating = 1;
+                } elseif ($this->faker->boolean(50)) {
+                    $ticket_rating = -1;
+                } else {
+                    $ticket_rating = null;
+                }
+            }
+
             $subj    = $this->faker->realText($this->faker->numberBetween(10, 20));
             $batch[] = array(
                 'department_id'           => $this->faker->randomElement($this->department_ids),
@@ -230,6 +241,7 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
                 'urgency'                 => $this->faker->numberBetween(1, 10),
                 'subject'                 => $subj,
                 'original_subject'        => $subj,
+                'feedback_rating'         => $ticket_rating,
                 'date_created'            => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
                 'date_resolved'           => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
                 'date_archived'           => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
