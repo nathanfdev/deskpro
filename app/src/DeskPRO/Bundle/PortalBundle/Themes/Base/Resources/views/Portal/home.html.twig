@@ -66,6 +66,8 @@
 
 
         <article class="news front-page-news">
+
+          <!-- This is the old news head (only for list of news posts, not a news item on its own page) -->
             <div class="large-title">
                 <h1>
                     <a href="{{ path('portal_news') }}">
@@ -76,8 +78,8 @@
             </div>
             {% show section news_list_excerpts with { count: 2, show_category_link: true } %}
 
-
-
+            <!-- This is the new news head (double line, calendar and title on one line, excerpt) -->
+            <!-- TODO add actual content -->
             <ul>
               <li>
                 <div class="news-header main-list">
@@ -105,9 +107,6 @@
                 </div>
               </li>
 
-
-
-
               <li>
                 <div class="news-header main-list">
                   <div class="deskpro-calendar-decoration-flat">
@@ -133,20 +132,6 @@
                   </div>
                 </div>
               </li>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
             </ul>
 
