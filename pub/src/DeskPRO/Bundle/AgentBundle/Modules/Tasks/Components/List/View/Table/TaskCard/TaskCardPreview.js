@@ -1,17 +1,12 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import { TaskCard } from '../../Card/TaskCard/TaskCard';
 
 export class TaskCardPreview extends React.Component {
 
-  static propTypes = {
-    task: PropTypes.object
-  };
-
   render() {
-    const { task } = this.props;
-
     return (
-      <div style={{backgroundColor: 'green', width: 100, height: 100}}>
-        Dragging {task.get('title')}...
+      <div style={{width: 500}}>
+        <TaskCard {...this.props} />
       </div>
     );
   }
