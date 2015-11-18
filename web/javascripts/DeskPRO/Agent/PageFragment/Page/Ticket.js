@@ -1367,7 +1367,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			self.getEl('unlock_ticket').hide();
 		}
 
-		var props = ['status', 'urgency', 'is_hold'];
+		var props = ['status', 'urgency', 'is_hold', 'department_id'];
 		if (data.via_reply) {
 			if (data.changed_agent) {
 				props.push('agent_id');
