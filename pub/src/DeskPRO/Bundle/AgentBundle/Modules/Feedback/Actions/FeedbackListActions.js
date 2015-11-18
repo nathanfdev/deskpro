@@ -3,14 +3,14 @@ import * as Feedback from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
 import * as PersonSetting from 'DeskPRO/Bundle/AgentBundle/Services/Api/PersonSetting';
 import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 import { loadFeedbackCommentsCounter } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCommentsActions';
-import { loadFeedbackStatuses } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackStatusesActions';
 import { loadFeedbackCategories } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCategoriesActions';
 import { currentListParamsSelector } from '../Selectors/list';
-import { getFeedbackForComments } from './FeedbackCommentsActions';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
+import { setFeedbackRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackActions';
 import { setFeedbackTypesRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackTypesActions';
 import { setFeedbackCategoriesRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCategoriesActions';
+import { setFeedbackStatusCategoriesRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackStatusCategoriesActions';
 
 /**
  * Used to identify requests within record stores
@@ -27,14 +27,16 @@ export const initialLoad = createAction(
           + '&get[types]=DP_API/feedback_types'
           + '&get[labels]=DP_API/feedback_labels'
           + '&get[toValidateCount]=DP_API/feedback/counts?awaiting_validation%3D1'
-          + '&get[new]=DP_API/feedback/counts?status%3Dnew%26group_by%3Dstatus_category'
+          + '&get[new]=DP_API/feedback/counts?status%3Dnew'
           + '&get[active]=DP_API/feedback/counts?status%3Dactive%26group_by%3Dstatus_category'
           + '&get[closed]=DP_API/feedback/counts?status%3Dclosed%26group_by%3Dstatus_category'
+          + '&get[hidden]=DP_API/feedback/counts?status%3Dhidden%26group_by%3Dhidden_status'
           + '&get[commentsToReviewCount]=DP_API/feedback_comments/counts?awaiting_validation%3D1'
         ;
       DpApi.sendGet(batch).success(({responses}) => {
         const payload = flattenBatchResponses(responses);
         payload.customCategories = payload.customCategories.nested;
+        payload.statuses = { new: payload.new, active: payload.active, closed: payload.closed, hidden: payload.hidden };
         dispatch(setFeedbackCategoriesRequest(recordStoresId, payload.customCategories));
         dispatch(setFeedbackTypesRequest(recordStoresId, payload.types));
         resolve(payload);
@@ -54,17 +56,66 @@ export const getCommentsCounter = createAction(
     ids => dispatch => dispatch(loadFeedbackCommentsCounter(recordStoresId, ids))
 );
 
-export const getStatuses = createAction(
-  'FEEDBACK_GET_STATUSES',
-    ids => dispatch => dispatch(loadFeedbackStatuses(recordStoresId, ids))
-);
-
 export const getCategories = createAction(
   'FEEDBACK_GET_CATEGORIES',
     ids => dispatch => dispatch(loadFeedbackCategories(recordStoresId, ids))
 );
 
 export const setParams = createAction('FEEDBACK_LIST_SET_CURRENT_PARAMS');
+
+export const loadFeedbackList = createAction(
+  'FEEDBACK_LIST_OF_FEEDBACK',
+    params => (dispatch) => Feedback.getList(params).then(promise => {
+      const feedback = promise.getData();
+      const ids = [];
+      for (var index in feedback.data) {
+        if (feedback.data.hasOwnProperty(index)) {
+          ids.push(feedback.data[index].id);
+        }
+      }
+
+      const people = [];
+      for (const key in feedback.linked.person) {
+        if (feedback.linked.person.hasOwnProperty(key)) {
+          people.push(feedback.linked.person[key]);
+        }
+      }
+
+      const statusCategories = [];
+      for (const key in feedback.linked.feedback_status_category) {
+        if (feedback.linked.feedback_status_category.hasOwnProperty(key)) {
+          statusCategories.push(feedback.linked.feedback_status_category[key]);
+        }
+      }
+      dispatch(setPeopleRequest(recordStoresId, people));
+      dispatch(setFeedbackStatusCategoriesRequest(recordStoresId, statusCategories));
+      dispatch(getCommentsCounter(ids));
+      dispatch(getCategories(ids));
+
+      return feedback;
+    }
+  ));
+export const loadFeedbackCommentsList = createAction(
+  'FEEDBACK_LIST_OF_COMMENTS',
+    params => (dispatch) => Feedback.commentsToReviewList(params).then(promise => {
+      const comments = promise.getData();
+      const feedback = [];
+      for (var index in comments.linked.feedback) {
+        if (comments.linked.feedback.hasOwnProperty(index)) {
+          feedback.push(comments.linked.feedback[index]);
+        }
+      }
+      const people = [];
+      for (const key in comments.linked.person) {
+        if (comments.linked.person.hasOwnProperty(key)) {
+          people.push(comments.linked.person[key]);
+        }
+      }
+      dispatch(setFeedbackRequest(recordStoresId, feedback));
+      dispatch(setPeopleRequest(recordStoresId, people));
+      return comments;
+    }
+  ));
 
 export const loadList = createAction(
   'FEEDBACK_LIST',
@@ -80,51 +131,13 @@ export const loadList = createAction(
     const isComments = params.isComments;
     delete params.isComments;
 
-    let result;
     if (isComments) {
-      result = Feedback.commentsToReviewList(params).then(promise => {
-        const comments = promise.getData();
-        const ids = [];
-        for (var index in comments.data) {
-          if (comments.data.hasOwnProperty(index)) {
-            ids.push(comments.data[index].feedback_id);
-          }
-        }
-        dispatch(getFeedbackForComments(ids));
-        const people = [];
-        for (const key in comments.linked.person) {
-          if (comments.linked.person.hasOwnProperty(key)) {
-            people.push(comments.linked.person[key]);
-          }
-        }
-        dispatch(setPeopleRequest(recordStoresId, people));
-        return comments;
-      });
+      dispatch(loadFeedbackCommentsList(params));
     } else {
-      result = Feedback.getList(params).then(promise => {
-        const feedback = promise.getData();
-        const ids = [];
-        for (var index in feedback.data) {
-          if (feedback.data.hasOwnProperty(index)) {
-            ids.push(feedback.data[index].id);
-          }
-        }
-        const people = [];
-        for (const key in feedback.linked.person) {
-          if (feedback.linked.person.hasOwnProperty(key)) {
-            people.push(feedback.linked.person[key]);
-          }
-        }
-        dispatch(setPeopleRequest(recordStoresId, people));
-        dispatch(getCommentsCounter(ids));
-        dispatch(getStatuses(ids));
-        dispatch(getCategories(ids));
-
-        return feedback;
-      });
+      dispatch(loadFeedbackList(params));
     }
 
-    return result;
+    return params;
   }
 );
 
@@ -140,23 +153,6 @@ export const feedbackCustomCategories = createAction(
   'FEEDBACK_CUSTOM_CATEGORIES',
   () => Feedback.getCustomCategories().then(promise => promise.getData())
 );
-
-export const feedbackNew = createAction(
-  'FEEDBACK_NEW_STATUS',
-  () => Feedback.getNew().then(promise => promise.getData()));
-
-
-export const feedbackActiveStatus = createAction(
-  'FEEDBACK_ACTIVE_STATUS',
-  () => Feedback.getActive().then(promise => promise.getData()));
-
-export const feedbackClosedStatus = createAction(
-  'FEEDBACK_CLOSED_STATUS',
-  () => Feedback.getClosed().then(promise => promise.getData()));
-
-export const feedbackHiddenStatus = createAction(
-  'FEEDBACK_HIDDEN_STATUS',
-  () => Feedback.getHidden().then(promise => promise.getData()));
 
 export const toggleViewMode = createAction(
   'FEEDBACK_TOGGLE_VIEW_MODE'

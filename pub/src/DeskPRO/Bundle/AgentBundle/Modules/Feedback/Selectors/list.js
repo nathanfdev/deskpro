@@ -3,8 +3,8 @@ import { createPeopleRequestSelectors }
   from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Selectors/peopleSelectors';
 import { createFeedbackTypesRequestSelectors } from '../RecordStores/Selectors/feedbackTypesSelectors';
 import { createFeedbackCommentsRequestSelectors } from '../RecordStores/Selectors/feedbackCommentsSelectors';
-import { createFeedbackStatusesRequestSelectors } from '../RecordStores/Selectors/feedbackStatusesSelectors';
 import { createFeedbackCategoriesRequestSelectors } from '../RecordStores/Selectors/feedbackCategoriesSelectors';
+import { createFeedbackStatusCategoriesRequestSelectors } from '../RecordStores/Selectors/feedbackStatusCategoriesSelectors';
 import { createFeedbackRequestSelectors } from '../RecordStores/Selectors/feedbackSelectors';
 import { hashStateSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
 
@@ -51,13 +51,13 @@ export const feedbackCommentsSelector = createSelector(
     comments => comments
 );
 
-export const feedbackStatusesSelector = createSelector(
-  createFeedbackStatusesRequestSelectors('feedback').recordsSel,
-    statuses => statuses
-);
-
 export const feedbackCategoriesSelector = createSelector(
   createFeedbackCategoriesRequestSelectors('feedback').recordsSel,
+    categories => categories
+);
+
+export const feedbackStatusCategoriesSelector = createSelector(
+  createFeedbackStatusCategoriesRequestSelectors('feedback').recordsSel,
     categories => categories
 );
 

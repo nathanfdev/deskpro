@@ -11,7 +11,9 @@ export class StatusTab extends Component {
 
   render() {
     const { statuses } = this.props;
-    const { active, closed, hidden } = statuses.toJS();
+    const active = statuses.get('active').toJS();
+    const closed = statuses.get('closed').toJS();
+    const hidden = statuses.get('hidden').toJS();
 
     // @todo Turn it in form of NestedList in the reducer
     // @todo Rename 'new' within statuses
@@ -27,10 +29,10 @@ export class StatusTab extends Component {
                            listOptions={{navItem: {status: 'new'}}}>
 
           <ListItem label="New"
-                    count={statuses.toJS().new} />
+                    count={statuses.get('new').get('count')}/>
         </ListItemContainer>
 
-        <NestedList items={items} alwaysExpanded />
+        <NestedList items={items} alwaysExpanded/>
       </ul>
     );
   }
