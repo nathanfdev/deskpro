@@ -33,7 +33,7 @@
 
     {% show kb_subscription_info %}
 
-    <div class="article-content padded">
+    <div class="article-content padded dpx-kb-article-content">
       {{ article.realContent|raw }}
     </div>
 
@@ -62,3 +62,7 @@
     </div>
   {% endif %}
 {% endblock inner_content %}
+
+{% block doc_end %}
+      {{ insert_glossary_js(article) }}
+{% endblock %}

@@ -2064,6 +2064,8 @@ hr.divider {
   border-bottom: 1px dotted $text-color;
   color: $text-color;
   text-decoration: none;
+  position: relative;
+  cursor: pointer;
 }
 
 header {
@@ -4105,6 +4107,8 @@ ul.kb-checkbox-extra {
 
 .glossary-tooltip {
   position: absolute;
+  bottom: 20px;
+  left: 0;
   display: block;
   padding: 10px;
   width: 380px;
