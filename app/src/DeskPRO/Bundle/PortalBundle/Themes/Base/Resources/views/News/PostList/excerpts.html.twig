@@ -18,7 +18,7 @@
           <div class="article-meta">
             {% if item.person %}{{ phrase('portal.general.by') }} <a href="#"><span style="background: url({{ avatar_url(item.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span> {{ item.person.name }}</a> {% endif %}
             <hr><!-- TODO add comment count and avatar on person -->
-            <span class="comments"><i class="fa fa-comments-o"></i> <a href="#comments">10 Comments</a></span>
+            <span class="comments"><i class="fa fa-comments"></i> <a href="{{ portal_path(item) }}#comments">{{ phrase('portal.general.comments-count', {count: item.num_comments}) }}</a></span>
             <hr>
             {{ phrase('portal.general.in') }} <a href="{{ portal_path(item.category) }}">{{ item.category.title }}</a>
           </div>
