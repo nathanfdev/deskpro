@@ -11,12 +11,15 @@ export default class OmniSearchWidget extends PageWidget {
       input: this.$element.find('input'),
       close: this.$element.find('.search-clear')
     }), this.$rElement.get(0));
-    const $input = this.$element.find('input');
+    const $input = this.$element.find('input.omnisearch');
     const $x = this.$element.find('.search-clear');
-    $('.omnisearch-link').each(function(){
+    $('.dpx-omnisearch-link').each(function(){
         $(this).click(function(e){
-            e.preventDefault();
-            $input.val($(this).text()).change().focus();
+          e.preventDefault();
+          const term = $(this).text();
+          $input.val('').change(); // clear exiting results, if any
+          $input.val(term);
+          $input.change().focus();
         });
     });
     setInterval(() => {
