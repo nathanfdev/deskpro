@@ -1,5 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import HTML5Backend from 'react-dnd-html5-backend';
+import { DragDropContext } from 'react-dnd';
 import { Header } from './Header';
 import { AppSwitcher } from './AppSwitcher';
 import { TabFrame } from './TabFrame';
@@ -11,6 +13,7 @@ import { meSelector } from '../RecordStores/Selectors/meSelectors';
   user: meSelector(state),
   dpWindow: state.Application.dpWindow
 }))
+@DragDropContext(HTML5Backend)
 export class DpApp extends React.Component {
 
   static propTypes = {
