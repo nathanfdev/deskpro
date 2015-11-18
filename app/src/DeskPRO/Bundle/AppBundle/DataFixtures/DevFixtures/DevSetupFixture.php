@@ -1,0 +1,113 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+/**
+ * DeskPRO.
+ */
+namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
+
+use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Entity\LabelDef;
+use Doctrine\Common\DataFixtures\AbstractFixture;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
+use Doctrine\Common\Persistence\ObjectManager;
+use Orb\Util\Strings;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
+/**
+ * This inserts some default settings so you dont have to waste time going through the welcome wizard
+ */
+class DevSetupFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
+{
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOrder()
+    {
+        return 10;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function load(ObjectManager $manager)
+    {
+        /** @var \Application\DeskPRO\DBAL\Connection $db */
+        $db = $this->container->get('database_connection');
+
+        $db->deleteIn('settings', ['core.done_data_initializer', 'core.deskpro_url', 'core.deskpro_name', 'core.default_timezone', 'core.license', 'core.setup_initial', 'admin_has_loaded'], 'name');
+
+        $ins = [
+            ['name' => 'core.done_data_initializer', 'value' => 1],
+            ['name' => 'core.setup_initial',         'value' => 1],
+            ['name' => 'admin_has_loaded',           'value' => 1],
+            ['name' => 'core.default_timezone',      'value' => 'UTC'],
+            ['name' => 'core.deskpro_name',          'value' => 'Helpesk'],
+            ['name' => 'core.deskpro_url',           'value' => 'http://deskpro-dev/'],
+            ['name' => 'core.license',               'value' => file_get_contents(DP_WEB_ROOT.'/dev/dev-lic-key.txt')],
+        ];
+
+        if (!empty($GLOBALS['DP_CONFIG']['SETTINGS'])) {
+            foreach ($ins as $k => $v) {
+                if (isset($GLOBALS['DP_CONFIG']['SETTINGS'][$k])) {
+                    $ins[$k] = $GLOBALS['DP_CONFIG']['SETTINGS'][$k];
+                }
+            }
+        }
+
+        $db->batchInsert('settings', $ins);
+
+        $db->insert('email_accounts', [
+            'account_type'       => 'outgoing',
+            'incoming_account'   => null,
+            'outgoing_account'   => json_encode(['@CLASS' => 'Application\\DeskPRO\\Email\\EmailAccount\\OutgoingAccount\\PhpMailConfig', '@DATA' => ['PhpMail' => true]]),
+            'is_enabled'         => 1,
+            'address'            => 'deskpro@example.com',
+            'other_addresses'    => null,
+            'options'            => null,
+            'date_created'       => date('Y-m-d H:i:s'),
+            'date_read_start'    => date('Y-m-d H:i:s'),
+            'date_last_incoming' => null,
+            'is_read_active'     => 0,
+        ]);
+    }
+}
