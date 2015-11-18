@@ -2,8 +2,10 @@ import React, { PropTypes } from 'react';
 import { HeaderContainer } from './HeaderContainer';
 import { TaskCardContainer } from '../TaskCardContainer';
 import { TaskCard } from './TaskCard/TaskCard';
+import { TaskCardPreview } from './TaskCard/TaskCardPreview';
 import { ListGroup } from './ListGroup';
 import { Table } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { TaskCardDragLayer } from '../TaskCardDragLayer';
 
 export class TableView extends React.Component {
 
@@ -15,26 +17,31 @@ export class TableView extends React.Component {
     const { taskGroups = [] } = this.props;
 
     return (
-      <Table>
-          <HeaderContainer />
+      <div>
+        <Table>
+            <HeaderContainer />
 
-          {taskGroups
-            .filter(taskGroup => taskGroup.elements.length)
-            .map((taskGroup, index) =>
+            {taskGroups
+              .filter(taskGroup => taskGroup.elements.length)
+              .map((taskGroup, index) =>
 
-            <ListGroup title={taskGroup.title}
-                       key={index}
-                       param={taskGroup.param}
-                       value={taskGroup.value}>
+              <ListGroup title={taskGroup.title}
+                         key={index}
+                         param={taskGroup.param}
+                         value={taskGroup.value}>
 
-              {taskGroup.elements.map(task =>
-                <TaskCardContainer task={task} key={task.get('id')}>
-                  <TaskCard />
-                </TaskCardContainer>
-              )}
-            </ListGroup>
-          )}
-      </Table>
+                {taskGroup.elements.map(task =>
+                  <TaskCardContainer task={task} key={task.get('id')}>
+                    <TaskCard />
+                  </TaskCardContainer>
+                )}
+              </ListGroup>
+            )}
+        </Table>
+        <TaskCardDragLayer>
+          <TaskCardPreview />
+        </TaskCardDragLayer>
+      </div>
     );
   }
 }

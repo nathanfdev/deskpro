@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { DragSource, DropTarget } from 'react-dnd';
+import { getEmptyImage } from 'react-dnd-html5-backend';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { cardSourceSpec, cardSourceCollect, cardTargetSpec, targetCollect } from '../../TaskCardContainer';
 import { Td, TdId, TdTitle } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
@@ -21,16 +22,15 @@ export class TaskCard extends BaseTaskCard {
     tableVisibleFields: PropTypes.object,
     currentSort: PropTypes.string,
     connectDragSource: PropTypes.func.isRequired,
-    connectDragPreview: PropTypes.func.isRequired,
     connectDropTarget: PropTypes.func.isRequired,
     isOver: PropTypes.bool,
     isDragging: PropTypes.bool
   };
 
   componentDidMount() {
-    this.props.connectDragPreview(
-      <div style={{backgroundColor: 'green', width: 100, height: 100}}>Dragging...</div>
-    );
+    this.props.connectDragPreview(getEmptyImage(), {
+      captureDraggingState: true
+    });
   }
 
   render() {
@@ -43,7 +43,7 @@ export class TaskCard extends BaseTaskCard {
       <tr className={classNames({
         'is-over': isOver,
         'done': task.get('is_done'),
-        'hidden': isDragging
+        'dragging-item': isDragging
       })}>
 
         <Td>
