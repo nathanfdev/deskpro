@@ -27,14 +27,16 @@ export const initialLoad = createAction(
           + '&get[types]=DP_API/feedback_types'
           + '&get[labels]=DP_API/feedback_labels'
           + '&get[toValidateCount]=DP_API/feedback/counts?awaiting_validation%3D1'
-          + '&get[new]=DP_API/feedback/counts?status%3Dnew%26group_by%3Dstatus_category'
+          + '&get[new]=DP_API/feedback/counts?status%3Dnew'
           + '&get[active]=DP_API/feedback/counts?status%3Dactive%26group_by%3Dstatus_category'
           + '&get[closed]=DP_API/feedback/counts?status%3Dclosed%26group_by%3Dstatus_category'
+          + '&get[hidden]=DP_API/feedback/counts?status%3Dhidden%26group_by%3Dhidden_status'
           + '&get[commentsToReviewCount]=DP_API/feedback_comments/counts?awaiting_validation%3D1'
         ;
       DpApi.sendGet(batch).success(({responses}) => {
         const payload = flattenBatchResponses(responses);
         payload.customCategories = payload.customCategories.nested;
+        payload.statuses = { new: payload.new, active: payload.active, closed: payload.closed, hidden: payload.hidden };
         dispatch(setFeedbackCategoriesRequest(recordStoresId, payload.customCategories));
         dispatch(setFeedbackTypesRequest(recordStoresId, payload.types));
         resolve(payload);

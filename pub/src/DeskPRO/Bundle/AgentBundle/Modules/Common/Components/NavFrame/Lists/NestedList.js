@@ -82,7 +82,7 @@ export class NestedList extends React.Component {
     if (hasNested && isExpanded) {
       return (
         <ul className={'with-connectors depth-' + depth}>
-          {nested.map(item => this.renderListItem({...item, parent: group}, depth + 1))}
+          {nested.map(child => this.renderListItem({...child, parent: group}, depth + 1))}
         </ul>
       );
     }
