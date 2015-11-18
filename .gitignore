@@ -72,6 +72,7 @@ data/encryption-key.bin.*
 /data/manuals
 /data/emailstore
 /data/import/csv/export/*
+/data/importer.pid
 
 /web/build
 /web/app/build/*/build.js
