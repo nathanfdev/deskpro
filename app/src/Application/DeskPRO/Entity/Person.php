@@ -36,6 +36,8 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\LabelAssocAbstract as Label;
+use Application\DeskPRO\Entity\Labels\LabelsOwner;
 use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
@@ -115,7 +117,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @property string $browser
  * @Serializer\ExclusionPolicy("ALL")
  */
-class Person extends DomainObject implements HighlightableModelInterface, UserInterface, \Serializable, EquatableInterface, Chatable
+class Person extends DomainObject implements HighlightableModelInterface, UserInterface, \Serializable,
+    EquatableInterface, Chatable, LabelsOwner
 {
     const CREATED_WEB_PERSON     = 'web.person';
     const CREATED_WEB_AGENT      = 'web.agent';
@@ -2448,19 +2451,43 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
-     * Add a label.
-     *
-     * @param \Application\DeskPRO\Entity\LabelPerson $label
-     *
-     * @return $this
+     * {@inheritdoc}
      */
-    public function addLabel(LabelPerson $label)
+    public function addLabel(Label $label)
     {
         $label['person'] = $this;
         $this->labels->add($label);
         $this->_onPropertyChanged('labels', $this->labels, $this->labels);
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function removeLabel(Label $label)
+    {
+        if ($this->labels->contains($label)) {
+            $this->labels->removeElement($label);
+            $this->_onPropertyChanged('labels', $this->labels, $this->labels);
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getLabels()
+    {
+        return $this->labels->toArray();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function clearLabels()
+    {
+        $this->labels->clear();
+        $this->_onPropertyChanged('labels', $this->labels, $this->labels);
     }
 
     public function removeLabelByString($l)
