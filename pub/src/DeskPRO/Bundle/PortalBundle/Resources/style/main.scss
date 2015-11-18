@@ -8594,7 +8594,8 @@ form {
   }
 
   .field_user_name_and_email {
-    width: 60%;
+    // width: 60%;
+    max-width: 620px;
   }
 }
 
