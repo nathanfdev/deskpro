@@ -89,6 +89,6 @@ export function getList(params) {
  * @return Promise
  */
 export function commentsToReviewList(params) {
-  console.log('DP_API/feedback_comments_list?include=person&' + compileParams(params));
-  return DpApi.sendGet('DP_API/feedback_comments_list?include=person&' + compileParams(params));
+  console.log('DP_API/feedback_comments_list?include=person,feedback&' + compileParams(params));
+  return DpApi.sendGet('DP_API/feedback_comments_list?include=person,feedback&' + compileParams(params));
 }

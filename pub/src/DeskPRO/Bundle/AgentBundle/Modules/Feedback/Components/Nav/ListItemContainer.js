@@ -13,7 +13,6 @@ export class ListItemContainer extends Component {
     dispatch: PropTypes.func.isRequired,
     activeItemId: PropTypes.string,
     label: PropTypes.string.isRequired,
-    count: PropTypes.number.isRequired,
     children: PropTypes.node,
     listOptions: PropTypes.object.isRequired
   };
@@ -41,7 +40,6 @@ export class ListItemContainer extends Component {
       onClick: this.loadList,
       itemId: this.itemId,
       label: this.props.label,
-      count: this.props.count,
       children: this.props.children
     };
 

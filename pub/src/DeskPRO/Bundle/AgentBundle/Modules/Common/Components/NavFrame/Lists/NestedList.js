@@ -7,7 +7,7 @@ export class NestedList extends React.Component {
     onClick: PropTypes.func,
     onItemControlClick: PropTypes.func,
     groups: PropTypes.object,
-    items: PropTypes.object,
+    items: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
     depth: PropTypes.number,
     alwaysExpanded: PropTypes.bool
   };

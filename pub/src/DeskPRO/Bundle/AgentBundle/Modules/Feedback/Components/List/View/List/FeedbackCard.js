@@ -17,7 +17,7 @@ export class FeedbackCard extends Component {
     toggleSelected: PropTypes.func.isRequired,
     author: PropTypes.object.isRequired,
     type: PropTypes.object.isRequired,
-    feedbackLabels: PropTypes.object,
+    feedbackLabels: PropTypes.array,
     feedbackCategory: PropTypes.object,
     feedbackStatusCategory: PropTypes.object,
     feedbackComments: PropTypes.object
@@ -37,7 +37,6 @@ export class FeedbackCard extends Component {
 
   renderStatus() {
     const { feedback, feedbackStatusCategory } = this.props;
-    console.log(feedbackStatusCategory);
     var realStatus = '';
     if (feedback.status === 'new') {
       realStatus = 'New';
@@ -98,7 +97,7 @@ export class FeedbackCard extends Component {
     const { feedback, author, selected, toggleSelected, feedbackLabels, feedbackComments } = this.props;
     const type = this.props.type || Immutable.fromJS({});
     const labels = feedbackLabels ? feedbackLabels : [];
-    const comments = feedbackComments ? feedbackComments.get('counter') : 0;
+    const comments = feedbackComments ? parseInt(feedbackComments.get('counter')) : 0;
     const containerWidth = jQuery('.dp-list-frame-contents').innerWidth();
     const feedbackMarkWidth = jQuery('.dpw--feedback-card-mark').innerWidth();
     const cardWidth = containerWidth - feedbackMarkWidth - 20;

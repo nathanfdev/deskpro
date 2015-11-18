@@ -15,7 +15,6 @@ import { connect } from 'react-redux';
 export class ListContainer extends Component {
 
   static propTypes = {
-    elements: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
     isComments: PropTypes.bool,
     loaded: PropTypes.bool.isRequired,

@@ -29,7 +29,12 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
-  [actions.loadList]: async({
+  [actions.loadFeedbackList]: async({
+    success: (state, payload) => state.set('elements', payload.data),
+    start: setValue('async.done', false),
+    done: setValue('async.done', true)
+  }),
+  [actions.loadFeedbackCommentsList]: async({
     success: (state, payload) => state.set('elements', payload.data),
     start: setValue('async.done', false),
     done: setValue('async.done', true)

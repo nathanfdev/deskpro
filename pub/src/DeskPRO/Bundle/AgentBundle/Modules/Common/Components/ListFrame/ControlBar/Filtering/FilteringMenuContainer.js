@@ -23,7 +23,7 @@ import Immutable from 'immutable';
 export class FilteringMenuContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    filters: PropTypes.object.isRequired,
+    filters: PropTypes.array.isRequired,
     setParamsAction: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired
   };

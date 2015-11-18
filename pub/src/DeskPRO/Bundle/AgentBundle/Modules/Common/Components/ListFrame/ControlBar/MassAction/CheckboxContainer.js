@@ -7,7 +7,7 @@ export class CheckboxContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     action: PropTypes.func.isRequired,
-    count: PropTypes.string
+    count: PropTypes.number
   };
 
   constructor(props) {

@@ -35,7 +35,7 @@ export class ControlBar extends Component {
           label: PropTypes.string.isRequired,
           param: PropTypes.string.isRequired,
           modeParam: PropTypes.string.isRequired,
-          labels: PropTypes.array.isRequired
+          labels: PropTypes.object.isRequired
         }),
         PropTypes.shape({
           type: PropTypes.oneOf(['select']).isRequired,

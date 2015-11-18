@@ -5,9 +5,9 @@ import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordS
 import { loadFeedbackCommentsCounter } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCommentsActions';
 import { loadFeedbackCategories } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCategoriesActions';
 import { currentListParamsSelector } from '../Selectors/list';
-import { getFeedbackForComments } from './FeedbackCommentsActions';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
+import { setFeedbackRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackActions';
 import { setFeedbackTypesRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackTypesActions';
 import { setFeedbackCategoriesRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCategoriesActions';
 import { setFeedbackStatusCategoriesRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackStatusCategoriesActions';
@@ -63,6 +63,60 @@ export const getCategories = createAction(
 
 export const setParams = createAction('FEEDBACK_LIST_SET_CURRENT_PARAMS');
 
+export const loadFeedbackList = createAction(
+  'FEEDBACK_LIST_OF_FEEDBACK',
+    params => (dispatch) => Feedback.getList(params).then(promise => {
+      const feedback = promise.getData();
+      const ids = [];
+      for (var index in feedback.data) {
+        if (feedback.data.hasOwnProperty(index)) {
+          ids.push(feedback.data[index].id);
+        }
+      }
+
+      const people = [];
+      for (const key in feedback.linked.person) {
+        if (feedback.linked.person.hasOwnProperty(key)) {
+          people.push(feedback.linked.person[key]);
+        }
+      }
+
+      const statusCategories = [];
+      for (const key in feedback.linked.feedback_status_category) {
+        if (feedback.linked.feedback_status_category.hasOwnProperty(key)) {
+          statusCategories.push(feedback.linked.feedback_status_category[key]);
+        }
+      }
+      dispatch(setPeopleRequest(recordStoresId, people));
+      dispatch(setFeedbackStatusCategoriesRequest(recordStoresId, statusCategories));
+      dispatch(getCommentsCounter(ids));
+      dispatch(getCategories(ids));
+
+      return feedback;
+    }
+  ));
+export const loadFeedbackCommentsList = createAction(
+  'FEEDBACK_LIST_OF_COMMENTS',
+    params => (dispatch) => Feedback.commentsToReviewList(params).then(promise => {
+      const comments = promise.getData();
+      const feedback = [];
+      for (var index in comments.linked.feedback) {
+        if (comments.linked.feedback.hasOwnProperty(index)) {
+          feedback.push(comments.linked.feedback[index]);
+        }
+      }
+      const people = [];
+      for (const key in comments.linked.person) {
+        if (comments.linked.person.hasOwnProperty(key)) {
+          people.push(comments.linked.person[key]);
+        }
+      }
+      dispatch(setFeedbackRequest(recordStoresId, feedback));
+      dispatch(setPeopleRequest(recordStoresId, people));
+      return comments;
+    }
+  ));
+
 export const loadList = createAction(
   'FEEDBACK_LIST',
   (listParams) => dispatch => {
@@ -77,58 +131,13 @@ export const loadList = createAction(
     const isComments = params.isComments;
     delete params.isComments;
 
-    let result;
     if (isComments) {
-      result = Feedback.commentsToReviewList(params).then(promise => {
-        const comments = promise.getData();
-        const ids = [];
-        for (var index in comments.data) {
-          if (comments.data.hasOwnProperty(index)) {
-            ids.push(comments.data[index].feedback_id);
-          }
-        }
-        dispatch(getFeedbackForComments(ids));
-        const people = [];
-        for (const key in comments.linked.person) {
-          if (comments.linked.person.hasOwnProperty(key)) {
-            people.push(comments.linked.person[key]);
-          }
-        }
-        dispatch(setPeopleRequest(recordStoresId, people));
-        return comments;
-      });
+      dispatch(loadFeedbackCommentsList(params));
     } else {
-      result = Feedback.getList(params).then(promise => {
-        const feedback = promise.getData();
-        const ids = [];
-        for (var index in feedback.data) {
-          if (feedback.data.hasOwnProperty(index)) {
-            ids.push(feedback.data[index].id);
-          }
-        }
-        const people = [];
-        for (const key in feedback.linked.person) {
-          if (feedback.linked.person.hasOwnProperty(key)) {
-            people.push(feedback.linked.person[key]);
-          }
-        }
-
-        const statusCategories = [];
-        for (const key in feedback.linked.feedback_status_category) {
-          if (feedback.linked.feedback_status_category.hasOwnProperty(key)) {
-            statusCategories.push(feedback.linked.feedback_status_category[key]);
-          }
-        }
-        dispatch(setPeopleRequest(recordStoresId, people));
-        dispatch(setFeedbackStatusCategoriesRequest(recordStoresId, statusCategories));
-        dispatch(getCommentsCounter(ids));
-        dispatch(getCategories(ids));
-
-        return feedback;
-      });
+      dispatch(loadFeedbackList(params));
     }
 
-    return result;
+    return params;
   }
 );
 

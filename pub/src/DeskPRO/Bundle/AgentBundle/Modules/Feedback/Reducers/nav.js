@@ -7,8 +7,8 @@ const initialState = {
   async: {
     done: true
   },
-  toValidateCount: 0,
-  commentsToReviewCount: 0,
+  toValidateCount: { count: 0 },
+  commentsToReviewCount: { count: 0 },
   labels: [/* string */],
   types: [/* {title, value} */],
   customCategories: [/* {title, value} */],
@@ -53,7 +53,7 @@ export default createReducer(initialState, {
       state.setIn(['customCategories'], Immutable.fromJS(payload.data.nested))
   }),
 
-  [actions.loadLabels]: async({success: setFullPayload('labels')}),
+  [actions.loadLabels]: async({ success: setFullPayload('labels') }),
 
   [actions.initialLoad]: async({
     success: mergeFullPayload(),

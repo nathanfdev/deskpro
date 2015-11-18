@@ -11,7 +11,6 @@ import { peopleSelector, feedbackTypesSelector, feedbackLabelsSelector, feedback
     selected: state.Feedback.list.get('selected'),
     people: peopleSelector(state),
     feedbackTypes: feedbackTypesSelector(state),
-    massAction: state.Feedback.list.get('massAction'),
     feedbackLabels: feedbackLabelsSelector(state),
     feedbackComments: feedbackCommentsSelector(state),
     feedbackCategories: feedbackCategoriesSelector(state),
@@ -22,12 +21,11 @@ import { peopleSelector, feedbackTypesSelector, feedbackLabelsSelector, feedback
 export class FeedbackCardsContainer extends Component {
 
   static propTypes = {
-    feedback: PropTypes.array.isRequired,
+    feedback: PropTypes.object.isRequired,
     viewFields: PropTypes.object,
     selected: PropTypes.object.isRequired,
     people: PropTypes.object.isRequired,
     feedbackTypes: PropTypes.object.isRequired,
-    massAction: PropTypes.bool.isRequired,
     feedbackLabels: PropTypes.object.isRequired,
     feedbackComments: PropTypes.object.isRequired,
     feedbackCategories: PropTypes.object.isRequired,
@@ -36,7 +34,7 @@ export class FeedbackCardsContainer extends Component {
   };
 
   render() {
-    const { feedback, viewFields, selected, toggleSelected, people, feedbackTypes, massAction, feedbackLabels, feedbackComments,
+    const { feedback, viewFields, selected, toggleSelected, people, feedbackTypes, feedbackLabels, feedbackComments,
       feedbackCategories, feedbackStatusCategories } = this.props;
 
     return (
@@ -47,7 +45,6 @@ export class FeedbackCardsContainer extends Component {
                           feedback={element}
                           selected={selected.includes(element.id)}
                           toggleSelected={toggleSelected}
-                          massAction={massAction}
                           author={people.get(element.person)}
                           feedbackStatusCategory={feedbackStatusCategories.get(element.status_category)}
                           feedbackCategory={feedbackCategories.get(element.id)}
