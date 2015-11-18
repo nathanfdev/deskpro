@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { DragSource, DropTarget } from 'react-dnd';
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { cardSourceSpec, cardSourceCollect, cardTargetSpec, targetCollect } from '../../TaskCardContainer';
 import { Td, TdId, TdTitle } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { BaseTaskCard, ProjectContainer } from '../../../TaskCard/index';
@@ -9,8 +10,8 @@ import { TableCheckbox } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Compone
 import classNames from 'classnames';
 import Moment from 'moment';
 
-@DragSource('TASK', cardSourceSpec, cardSourceCollect)
-@DropTarget('TASK', cardTargetSpec, targetCollect)
+@DragSource(constants.TYPE_TASK, cardSourceSpec, cardSourceCollect)
+@DropTarget(constants.TYPE_TASK, cardTargetSpec, targetCollect)
 export class TaskCard extends BaseTaskCard {
 
   static propTypes = {

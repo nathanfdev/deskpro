@@ -15,5 +15,6 @@ export default {
   STATUS_NEW: 'new',
   STATUS_VISIBLE: 'visible',
   STATUS_ACTIVE: 'active',
-  STATUS_CLOSED: 'closed'
+  STATUS_CLOSED: 'closed',
+  TYPE_TASK: 'task'
 };

@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { DragSource, DropTarget } from 'react-dnd';
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { cardSourceSpec, cardSourceCollect, cardTargetSpec, targetCollect } from '../../TaskCardContainer';
 import { MarkDoneButton } from './MarkDoneButton';
 import {
@@ -23,8 +24,8 @@ import {
 } from '../../../TaskCard/index';
 import classNames from 'classnames';
 
-@DragSource('TASK', cardSourceSpec, cardSourceCollect)
-@DropTarget('TASK', cardTargetSpec, targetCollect)
+@DragSource(constants.TYPE_TASK, cardSourceSpec, cardSourceCollect)
+@DropTarget(constants.TYPE_TASK, cardTargetSpec, targetCollect)
 export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
