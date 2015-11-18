@@ -3,7 +3,6 @@ $list-view-border-color: #e1e1e1;
 
 .dpmw--items-table-list {
   table {
-    font-size: 1em;
     width: 100%;
     background: #fbfbfb;
   }
@@ -50,55 +49,58 @@ $list-view-border-color: #e1e1e1;
     tr {
       border-bottom: 1px solid $list-view-border-color;
       position: relative;
-      cursor: pointer;
       transition: all 0.25s ease;
       background: none;
       padding: 5px 0 5px 5px;
 
-      &:hover, &.ticket-active { background: #eceef0; }
+      &:not(.divider) {
+        cursor: pointer;
 
-      &.locked {
-        .item-title, .agent { opacity: 0.5; }
-        .item-title { color: #333; }
-      }
+        &:hover, &.ticket-active { background: #eceef0; }
 
-      .item-title {
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        color: #3c6e98;
-
-        a {
-          color: inherit;
-          text-decoration: none;
+        &.locked {
+          .item-title, .agent { opacity: 0.5; }
+          .item-title { color: #333; }
         }
 
-        a:hover {
-          color: darken(#3c6e98, 15%);
-          text-decoration: underline;
+        .item-title {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          color: #3c6e98;
+
+          a {
+            color: inherit;
+            text-decoration: none;
+          }
+
+          a:hover {
+            color: darken(#3c6e98, 15%);
+            text-decoration: underline;
+          }
         }
-      }
 
-      .agent-org { font-weight: bold; }
-      .org-avatar { margin-left: 5px; }
+        .agent-org { font-weight: bold; }
+        .org-avatar { margin-left: 5px; }
 
-      .agent-email {
-        color: #b6b6b6;
-        margin-left: 5px;
-      }
-
-      .agent, .user {
-        font-size: 0.9em;
-        color: $text-color-secondary;
-        padding-top: 0px;
-        span { vertical-align: middle; }
-        .agent-name {
-          margin-left: 3px;
+        .agent-email {
+          color: #b6b6b6;
+          margin-left: 5px;
         }
-      }
 
-      .agent:hover, .user:hover {
-        .agent-name { text-decoration: underline; }
+        .agent, .user {
+          font-size: 0.9em;
+          color: $text-color-secondary;
+          padding-top: 0px;
+          span { vertical-align: middle; }
+          .agent-name {
+            margin-left: 3px;
+          }
+        }
+
+        .agent:hover, .user:hover {
+          .agent-name { text-decoration: underline; }
+        }
       }
     }
   }

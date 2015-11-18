@@ -1,4 +1,6 @@
 import React, { PropTypes } from 'react';
+import { DragSource, DropTarget } from 'react-dnd';
+import { cardSourceSpec, cardSourceCollect, cardTargetSpec, targetCollect } from '../TaskCardContainer';
 import { KanbanCheckbox } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Kanban/index';
 import {
   BaseTaskCard,
@@ -8,18 +10,24 @@ import {
   Comments
 } from '../../TaskCard/index';
 
+@DragSource('TASK', cardSourceSpec, cardSourceCollect)
+@DropTarget('TASK', cardTargetSpec, targetCollect)
 export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
     selected: PropTypes.bool,
     onToggleSelected: PropTypes.func,
-    task: PropTypes.object
+    task: PropTypes.object,
+    currentSort: PropTypes.string,
+    connectDragSource: PropTypes.func.isRequired,
+    connectDropTarget: PropTypes.func.isRequired
   };
 
   render() {
-    const { selected, onToggleSelected } = this.props;
+    const { selected, onToggleSelected, currentSort } = this.props;
+    const { connectDragSource, connectDropTarget } = this.props;
 
-    return (
+    let result = connectDragSource(
       <div>
         <div className="card task-card">
           <div className="card-status-bar status-bar-left" />
@@ -55,5 +63,11 @@ export class TaskCard extends BaseTaskCard {
         </div>
       </div>
     );
+
+    if (currentSort === 'list') {
+      result = connectDropTarget(result);
+    }
+
+    return result;
   }
 }

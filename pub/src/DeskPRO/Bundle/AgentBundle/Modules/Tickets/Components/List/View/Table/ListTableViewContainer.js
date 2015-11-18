@@ -66,12 +66,12 @@ export class ListTableViewContainer extends Component {
     return (
       <tr>
         <Th />
-        <Th sort="id" title="ID" className="sortable"
+        <Th sort="id" title="ID"
             visible={this.isVisible('id')}
             order={false}
             onChange={this.sortTable.bind(this)}
         />
-        <Th sort="urgency" title="Urgency" className="sortable"
+        <Th sort="urgency" title="Urgency"
             visible={this.isVisible('urgency')}
             order={false}
             onChange={this.sortTable.bind(this)}

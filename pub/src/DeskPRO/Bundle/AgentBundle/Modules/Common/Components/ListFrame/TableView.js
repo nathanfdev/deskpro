@@ -11,7 +11,7 @@ export class Table extends Component {
   render() {
     return (
       <div className="dpmw--items-table-list">
-        <table>
+        <table className="condensed-task-list">
           {this.props.children}
         </table>
       </div>
@@ -19,26 +19,22 @@ export class Table extends Component {
   }
 }
 
-export class TableGroup extends Component {
+export class TableGroupDivider extends Component {
 
   static propTypes = {
-    title: PropTypes.any,
-    children: PropTypes.node
+    title: PropTypes.any
   };
 
   render() {
-    const { title, children } = this.props;
+    const { title } = this.props;
 
     return (
-      <tbody>
-        <tr className="divider">
-          <td colSpan="1000">
-            {title}
-          </td>
-        </tr>
-
-        {children}
-      </tbody>
+      <tr className="divider">
+        <td colSpan="1000">
+          <hr />
+          {title}
+        </td>
+      </tr>
     );
   }
 }

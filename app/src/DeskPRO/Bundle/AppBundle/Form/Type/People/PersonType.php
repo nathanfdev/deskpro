@@ -29,20 +29,29 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\People;
 
-use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
-use FOS\RestBundle\Controller\Annotations\Route;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
+use Symfony\Component\Form\FormBuilderInterface;
 
 /**
- * Class TicketsController.
- *
- * @Route("/tickets")
+ * Class PersonType.
  */
-class TicketsController extends CrudController
+class PersonType extends ApiType
 {
-    public static $entity = Ticket::class;
-    public static $type   = TicketType::class;
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array                $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('name', 'text')
+            ->add('first_name', 'text')
+            ->add('last_name', 'text')
+            ->add('summary', 'text')
+            ->add('organization', 'entity', ['class' => 'DeskPRO:Organization'])
+            ->add('language', 'entity', ['class' => 'DeskPRO:Language'])
+        ;
+    }
 }

@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { TableGroupDivider } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { DropTarget } from 'react-dnd';
 import { groupTargetSpec, targetCollect } from '../TaskCardContainer';
 import classNames from 'classnames';
@@ -7,8 +8,8 @@ import classNames from 'classnames';
 export class ListGroup extends React.Component {
 
   static propTypes = {
-    title: PropTypes.any,
-    children: PropTypes.node,
+    title: PropTypes.string,
+    children: PropTypes.any,
     isOver: PropTypes.bool,
     connectDropTarget: PropTypes.func.isRequired
   };
@@ -17,14 +18,10 @@ export class ListGroup extends React.Component {
     const { title, children, isOver, connectDropTarget } = this.props;
 
     return connectDropTarget(
-      <div className={classNames({'list-group-hover': isOver})}>
-        <div className="divider">
-          <hr/>
-          <h1>{title}</h1>
-        </div>
-
+      <tbody className={classNames({'list-group-hover': isOver})}>
+        {title && <TableGroupDivider title={title} />}
         {children}
-      </div>
+      </tbody>
     );
   }
 }

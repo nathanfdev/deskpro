@@ -31,7 +31,6 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
-use Application\DeskPRO\Entity\CustomDefTicket;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 
 /**
@@ -44,11 +43,14 @@ class CustomDefTicketTransformer extends AbstractDataSerializerTransformer
      */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
+        // note we expose widget_type here NOT the class name
+        // the API users dont need to know implementation details, specifically
+        // around choice fields with the weirdness with expanded/multiple options
+        // its easier to just call them what people expect (choice, multichoice, radio, checkbox).
+
         return [
-            'app',
-            'js_class',
-            'has_form_template',
-            'has_display_template',
+            'id',
+            'widget_type',
             'title',
             'description',
             'options',
@@ -57,8 +59,6 @@ class CustomDefTicketTransformer extends AbstractDataSerializerTransformer
             'display_order',
             'default_value',
             'is_agent_field',
-            'parent',
-            'children',
         ];
     }
 
@@ -67,14 +67,51 @@ class CustomDefTicketTransformer extends AbstractDataSerializerTransformer
      */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        /** @var CustomDefTicket $data */
-        $data = $transformation_request->getDataToBeTransformed();
+        /** @var \Application\DeskPRO\Entity\CustomDefTicket $f */
+        $f = $transformation_request->getDataToBeTransformed();
 
-        $fields = [
-            'field_type' => 'ticket_field',
-        ];
-        $fields = array_merge($fields, $data->toApiData());
+        if ($f->getTypeName() !== 'choice') {
+            return [];
+        }
 
-        return $fields;
+        // Format choices into hierarchy
+
+        $map      = [];
+        $children = $f->getChildren();
+        foreach ($children as $c) {
+            $pid = (int) $c->getOption('parent_id', 0);
+            if (!isset($map[$pid])) {
+                $map[$pid] = [];
+            }
+            $map[$pid][$c->getId()] = $c;
+        }
+
+        $iter = function ($parent_id, $depth = 0) use ($map, &$iter) {
+            if (empty($map[$parent_id])) {
+                return [];
+            }
+
+            $level_choices = [];
+            foreach ($map[$parent_id] as $c) {
+                $subs = $iter($c->getId(), $depth + 1);
+                $row  = [
+                    'id'            => $c->getId(),
+                    'title'         => $c->getTitle(),
+                    'is_selectable' => empty($subs),
+                ];
+
+                if ($subs) {
+                    $row['children'] = $subs;
+                }
+
+                $level_choices[] = $row;
+            }
+
+            return $level_choices;
+        };
+
+        $choices = $iter(0);
+
+        return ['choices' => $choices];
     }
 }

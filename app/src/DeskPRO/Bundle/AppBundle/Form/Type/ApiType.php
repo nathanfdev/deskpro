@@ -29,20 +29,22 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
+namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
-use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
-use FOS\RestBundle\Controller\Annotations\Route;
+use Symfony\Component\Form\AbstractType;
 
 /**
- * Class TicketsController.
+ * Class ApiType.
  *
- * @Route("/tickets")
+ * Base class for API types
  */
-class TicketsController extends CrudController
+class ApiType extends AbstractType
 {
-    public static $entity = Ticket::class;
-    public static $type   = TicketType::class;
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return;
+    }
 }

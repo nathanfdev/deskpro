@@ -29,20 +29,38 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
+namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
-use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
-use FOS\RestBundle\Controller\Annotations\Route;
+use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class TicketsController.
- *
- * @Route("/tickets")
+ * Class AgentsController.
  */
-class TicketsController extends CrudController
+class AgentsController extends CrudController
 {
-    public static $entity = Ticket::class;
-    public static $type   = TicketType::class;
+    /**
+     * @ApiDoc(
+     *      description="get a list of all agents w/o pagination",
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     * @Get("/agents", name="api_agents")
+     *
+     * @return View
+     */
+    public function getAllAgentsAction()
+    {
+        $agents = $this->getRepository(Person::class)->findBy(['is_agent' => true]);
+
+        return View::create(
+            $this->dataSerialize($agents),
+            Response::HTTP_OK
+        );
+    }
 }

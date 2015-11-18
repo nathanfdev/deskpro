@@ -84,33 +84,37 @@ export class FeedbackTableContainer extends Component {
         <thead>
           <tr>
             {tableFields.id.isShown ?
-              <Th value="id" label="ID" className="id-col sortable"
+              <Th sort="id"
+                  title="ID"
                   order={this.state.sort === 'id' ? this.state.order : false}
-                  sortTable={this.sortTable.bind(this)}/> : null }
+                  onChange={this.sortTable.bind(this)}/> : null }
             {tableFields.title.isShown ?
-              <Th value="title" label="Title" order={this.state.sort === 'title' ? this.state.order : false}
-                  className="sortable" sortTable={this.sortTable.bind(this)}/> : null }
-            {tableFields.content.isShown ? <Th value="content" label="Content"/> : null }
+              <Th sort="title"
+                  title="Title"
+                  order={this.state.sort === 'title' ? this.state.order : false}
+                  onChange={this.sortTable.bind(this)}/> : null }
+            {tableFields.content.isShown ? <Th sort="content" title="Content"/> : null }
             {tableFields.status_category.isShown ?
-              <Th value="status_category" label="Status"/> : null }
+              <Th sort="status_category" title="Status"/> : null }
             {tableFields.hidden_status.isShown ?
-              <Th value="hidden_status" label="Hidden"/> : null }
+              <Th sort="hidden_status" title="Hidden"/> : null }
             {tableFields.author_name.isShown ?
-              <Th value="author_name" label="Author"/> : null }
+              <Th sort="author_name" title="Author"/> : null }
             {tableFields.type.isShown ?
-              <Th value="type" label="Type"/> : null }
+              <Th sort="type" title="Type"/> : null }
             {tableFields.custom_category.isShown ?
-              <Th value="custom_category" label="Category"/> : null }
+              <Th sort="custom_category" title="Category"/> : null }
             {tableFields.num_ratings.isShown ?
-              <Th value="num_ratings" label="Votes" className="sortable"
+              <Th sort="num_ratings"
+                  title="Votes"
                   order={this.state.sort === 'num_ratings' ? this.state.order : false}
-                  sortTable={this.sortTable.bind(this)}/> : null }
+                  onChange={this.sortTable.bind(this)}/> : null }
             {tableFields.num_comments.isShown ?
-              <Th value="num_comments" label="Comments"/> : null }
+              <Th sort="num_comments" title="Comments"/> : null }
             {tableFields.date_created.isShown ?
-              <Th value="date_created" label="Created" className="sortable"
+              <Th sort="date_created" title="Created"
                   order={this.state.sort === 'date_created' ? this.state.order : false}
-                  sortTable={this.sortTable.bind(this)}/> : null }
+                  onChange={this.sortTable.bind(this)}/> : null }
           </tr>
         </thead>
         <tbody>

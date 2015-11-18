@@ -115,7 +115,8 @@ class ApiTokensController extends BaseController
         return View::create(
             $this->createRepresentation(
                 [
-                    'token' => $api_token->id.':'.$api_token->token,
+                    'person_id' => $person->id,
+                    'token'     => $api_token->id.':'.$api_token->token,
                 ]
             ),
             Response::HTTP_CREATED
