@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { DragLayer } from 'react-dnd';
 
 @DragLayer(monitor => ({
+  item: monitor.getItem(),
   currentOffset: monitor.getSourceClientOffset(),
   isDragging: monitor.isDragging()
 }))
@@ -9,17 +10,12 @@ export class CustomCardDragLayer extends React.Component {
 
   static propTypes = {
     item: PropTypes.object,
-    itemType: PropTypes.string,
-    initialOffset: PropTypes.shape({
-      x: PropTypes.number.isRequired,
-      y: PropTypes.number.isRequired
-    }),
     currentOffset: PropTypes.shape({
       x: PropTypes.number.isRequired,
       y: PropTypes.number.isRequired
     }),
     isDragging: PropTypes.bool.isRequired,
-    children: PropTypes.any
+    children: PropTypes.node.isRequired
   };
 
   getItemStyles() {
@@ -38,7 +34,10 @@ export class CustomCardDragLayer extends React.Component {
   }
 
   render() {
+    const props = this.props;
     const { isDragging, children } = this.props;
+    const childProps = children.props;
+
     if (!isDragging) {
       return null;
     }
@@ -55,7 +54,7 @@ export class CustomCardDragLayer extends React.Component {
       }}>
 
         <div style={this.getItemStyles()}>
-          {children}
+          {React.cloneElement(children, {...childProps, ...props})}
         </div>
       </div>
     );
