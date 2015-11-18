@@ -33,8 +33,6 @@
  */
 namespace Application\DeskPRO\Entity\Labels;
 
-use Application\DeskPRO\Entity\LabelAssocAbstract as Label;
-
 /**
  * Interface LabelsOwner.
  */

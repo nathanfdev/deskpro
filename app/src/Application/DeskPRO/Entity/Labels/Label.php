@@ -31,48 +31,15 @@
  *
  * @category Entities
  */
-namespace Application\DeskPRO\Entity;
-
-use Application\DeskPRO\Entity\Labels\Label;
+namespace Application\DeskPRO\Entity\Labels;
 
 /**
- * Base labels associations class.
+ * Interface Label.
  */
-abstract class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObject implements Label
+interface Label
 {
     /**
-     * The 'type' of label this is for, as it could be found in the
-     * LabelDef.
-     */
-    const LABEL_TYPENAME = 'OVERRIDE';
-
-    /**
-     * @var string
-     */
-    protected $label;
-
-    /**
-     * @param string $label
-     */
-    public function setLabel($label)
-    {
-        $label       = trim($label);
-        $label       = str_replace(',', '', $label);
-        $this->label = $label;
-    }
-
-    /**
-     * Returns label name.
-     *
      * @return string
      */
-    public function getLabel()
-    {
-        return $this->label;
-    }
-
-    public function __toString()
-    {
-        return $this->label;
-    }
+    public function getLabel();
 }

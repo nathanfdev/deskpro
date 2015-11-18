@@ -106,7 +106,7 @@ class LabelsCollectionTransformer implements DataTransformerInterface
     /**
      * @param array $labels
      *
-     * @return LabelAssocAbstract[]
+     * @return Label[]
      */
     public function reverseTransform($labels)
     {

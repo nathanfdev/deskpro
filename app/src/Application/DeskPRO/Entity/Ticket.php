@@ -35,6 +35,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Entity\Labels\Label;
 use Application\DeskPRO\Entity\Labels\LabelsOwner;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
@@ -1776,7 +1777,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * {@inheritdoc}
      */
-    public function addLabel(LabelAssocAbstract $label)
+    public function addLabel(Label $label)
     {
         if ($ret = $this->findLabelByString($label->label)) {
             return $ret;
@@ -1792,7 +1793,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * {@inheritdoc}
      */
-    public function removeLabel(LabelAssocAbstract $label)
+    public function removeLabel(Label $label)
     {
         if ($this->labels->contains($label)) {
             $this->labels->removeElement($label);
