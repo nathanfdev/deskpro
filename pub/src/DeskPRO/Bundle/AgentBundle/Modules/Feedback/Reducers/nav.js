@@ -52,24 +52,7 @@ export default createReducer(initialState, {
     success: (state, payload) =>
       state.setIn(['customCategories'], Immutable.fromJS(payload.data.nested))
   }),
-  [actions.feedbackNew]: async({
-    success: (state, payload) =>
-      state.setIn(['statuses', 'new'], payload.data.count)
-  }),
-  [actions.feedbackActiveStatus]: async({
-    success: (state, payload) =>
-      state.setIn(['statuses', 'active'], payload.data)
-  }),
-  [actions.feedbackClosedStatus]: async({
-    success: (state, payload) =>
-      state
-        .setIn(['statuses', 'closed'], payload.data)
-  }),
-  [actions.feedbackHiddenStatus]: async({
-    success: (state, payload) =>
-      state
-        .setIn(['statuses', 'hidden'], payload.data)
-  }),
+
   [actions.loadLabels]: async({success: setFullPayload('labels')}),
 
   [actions.initialLoad]: async({

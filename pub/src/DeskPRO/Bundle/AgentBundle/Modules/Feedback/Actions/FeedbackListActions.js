@@ -145,23 +145,6 @@ export const feedbackCustomCategories = createAction(
   () => Feedback.getCustomCategories().then(promise => promise.getData())
 );
 
-export const feedbackNew = createAction(
-  'FEEDBACK_NEW_STATUS',
-  () => Feedback.getNew().then(promise => promise.getData()));
-
-
-export const feedbackActiveStatus = createAction(
-  'FEEDBACK_ACTIVE_STATUS',
-  () => Feedback.getActive().then(promise => promise.getData()));
-
-export const feedbackClosedStatus = createAction(
-  'FEEDBACK_CLOSED_STATUS',
-  () => Feedback.getClosed().then(promise => promise.getData()));
-
-export const feedbackHiddenStatus = createAction(
-  'FEEDBACK_HIDDEN_STATUS',
-  () => Feedback.getHidden().then(promise => promise.getData()));
-
 export const toggleViewMode = createAction(
   'FEEDBACK_TOGGLE_VIEW_MODE'
 );
