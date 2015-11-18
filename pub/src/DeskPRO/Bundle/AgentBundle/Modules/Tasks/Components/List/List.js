@@ -37,7 +37,7 @@ export class List extends React.Component {
     const { listParams, loaded, tasks } = this.props;
 
     return (
-      <ListFrameContainer>
+      <ListFrameContainer className="task-list-frame">
         <ControlBarContainer />
         {listParams.get('nav') &&
           <Loader loaded={loaded}

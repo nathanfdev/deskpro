@@ -6,6 +6,7 @@ import { BaseTaskCard, ProjectContainer } from '../../../TaskCard/index';
 import { Project } from './Project';
 import { AssigneeContainer } from './AssigneeContainer';
 import { TableCheckbox } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import classNames from 'classnames';
 import Moment from 'moment';
 
 @DragSource('TASK', cardSourceSpec, cardSourceCollect)
@@ -19,25 +20,22 @@ export class TaskCard extends BaseTaskCard {
     tableVisibleFields: PropTypes.object,
     currentSort: PropTypes.string,
     connectDragSource: PropTypes.func.isRequired,
-    connectDropTarget: PropTypes.func.isRequired
+    connectDropTarget: PropTypes.func.isRequired,
+    isOver: PropTypes.bool
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      selected: false
-    };
-  }
-
   render() {
-    const { task, selected, currentSort, onToggleSelected, tableVisibleFields } = this.props;
+    const { task, selected, currentSort, onToggleSelected, tableVisibleFields, isOver } = this.props;
     const { connectDragSource, connectDropTarget } = this.props;
 
     const isVisible = type => tableVisibleFields.includes(type);
 
     let result = connectDragSource(
-      <tr>
+      <tr className={classNames({
+        'is-over': isOver,
+        'done': task.get('is_done')
+      })}>
+
         <Td>
           <TableCheckbox selected={selected} onClick={onToggleSelected} />
         </Td>

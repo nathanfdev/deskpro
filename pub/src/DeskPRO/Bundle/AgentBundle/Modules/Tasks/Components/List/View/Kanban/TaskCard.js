@@ -9,6 +9,7 @@ import {
   SubTasks,
   Comments
 } from '../../TaskCard/index';
+import classNames from 'classnames';
 
 @DragSource('TASK', cardSourceSpec, cardSourceCollect)
 @DropTarget('TASK', cardTargetSpec, targetCollect)
@@ -20,11 +21,12 @@ export class TaskCard extends BaseTaskCard {
     task: PropTypes.object,
     currentSort: PropTypes.string,
     connectDragSource: PropTypes.func.isRequired,
-    connectDropTarget: PropTypes.func.isRequired
+    connectDropTarget: PropTypes.func.isRequired,
+    isOver: PropTypes.bool
   };
 
   render() {
-    const { selected, onToggleSelected, currentSort } = this.props;
+    const { selected, onToggleSelected, currentSort, isOver } = this.props;
     const { connectDragSource, connectDropTarget } = this.props;
 
     let result = connectDragSource(
@@ -61,6 +63,7 @@ export class TaskCard extends BaseTaskCard {
             </div>
           </div>
         </div>
+        <div className={classNames('placeholder', {'is-over': isOver})} />
       </div>
     );
 

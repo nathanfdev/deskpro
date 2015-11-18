@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import { DragSource, DropTarget } from 'react-dnd';
 import { cardSourceSpec, cardSourceCollect, cardTargetSpec, targetCollect } from '../../TaskCardContainer';
-import classNames from 'classnames';
 import { MarkDoneButton } from './MarkDoneButton';
 import {
   Card,
@@ -22,6 +21,7 @@ import {
   ProjectContainer,
   CardProject
 } from '../../../TaskCard/index';
+import classNames from 'classnames';
 
 @DragSource('TASK', cardSourceSpec, cardSourceCollect)
 @DropTarget('TASK', cardTargetSpec, targetCollect)
@@ -33,7 +33,8 @@ export class TaskCard extends BaseTaskCard {
     task: PropTypes.object,
     currentSort: PropTypes.string,
     connectDragSource: PropTypes.func.isRequired,
-    connectDropTarget: PropTypes.func.isRequired
+    connectDropTarget: PropTypes.func.isRequired,
+    isOver: PropTypes.bool
   };
 
   onToggleDone = () => {
