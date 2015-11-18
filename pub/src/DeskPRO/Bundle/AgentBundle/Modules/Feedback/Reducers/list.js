@@ -17,6 +17,8 @@ const initialState = {
   async: {
     done: true
   },
+  tableVisibleFields: ['id', 'urgency', 'person', 'agent', 'subject', 'status'],
+  cardVisibleFields: ['id', 'urgency', 'person', 'agent', 'subject', 'status', 'date_created', 'labels'],
   commentsTableViewFields: [ // temporary, must be removed later
     { name: 'id', label: 'ID', className: 'id-col', status: constants.FIELD_SHOWN, priority: 1 },
     { name: 'status', label: 'Status', status: constants.FIELD_SHOWN, priority: 2 },
@@ -34,6 +36,8 @@ export default createReducer(initialState, {
   }),
   [actions.toggleMassAction]: handleMassAction('elements', 'selected'),
   [actions.toggleSelectedAction]: togglePayloadInCollection('selected'),
+  [actions.toggleTableFieldVisibility]: togglePayloadInCollection('tableVisibleFields'),
+  [actions.toggleCardFieldVisibility]: togglePayloadInCollection('cardVisibleFields'),
   [actions.getDisplayFieldsFromPersonSetting]: async({
     success: (state, payload) =>
       state.setIn(['viewFields'], payload.data.value)
