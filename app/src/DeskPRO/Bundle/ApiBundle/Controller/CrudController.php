@@ -256,6 +256,24 @@ class CrudController extends BaseController
     }
 
     /**
+     * Persist model.
+     *
+     * This method is called on a valid entity to persist it. May be overwritten in child controllers.
+     *
+     * @param object $model
+     *
+     * @return object The passed model
+     */
+    protected function persistModel($model)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($model);
+        $em->flush();
+
+        return $model;
+    }
+
+    /**
      * @param object  $model
      * @param Request $request
      *
@@ -284,11 +302,7 @@ class CrudController extends BaseController
         );
 
         if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($model);
-            $em->flush();
-
-            return View::create($this->dataSerialize($model), $status);
+            return View::create($this->dataSerialize($this->persistModel($model)), $status);
         }
 
         throw new InvalidFormException($form);
