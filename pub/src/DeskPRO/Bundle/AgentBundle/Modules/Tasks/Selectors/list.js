@@ -59,3 +59,8 @@ export const elementsMapSelector = createSelector(
   elementsSelector,
   elements => mapKeyedFromArray(elements, 'id')
 );
+
+export const isDoneSelector = createSelector(
+  stateSelector,
+  state => state.getIn(['async', 'done'])
+);
