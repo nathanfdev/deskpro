@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { TaskCard } from '../../../../../../Tasks/Components/List/View/Calendar/TaskCard/TaskCard';
+import { TaskCard } from '../../../../../../Tasks/Components/List/View/Calendar/TaskCard';
 import Detached from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import classNames from 'classnames';
