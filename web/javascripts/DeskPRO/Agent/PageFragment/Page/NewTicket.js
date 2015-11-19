@@ -1759,7 +1759,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					, person = 0
         ;
 
-        $($form).on('keyup change', 'input, select, textarea', function(e, byDraft){
+        $form.on('keyup change', 'input, select, textarea', function(e, byDraft){
           !byDraft && d.save();
         });
 
