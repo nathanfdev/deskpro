@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Card, CardLine, CardLineLeft, CardLineRight, CardLineFull, CardContentText, CardLineItem, CardCheckbox,
          CardDisc, CardTitle, CardUser, CardLabel, CardComments, CardStatusBar }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
 import { connect } from 'react-redux';
 import { toggleSelected } from '../../../../Actions/listActions';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';

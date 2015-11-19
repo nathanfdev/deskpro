@@ -13,7 +13,7 @@ import { AgentTeamAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Compo
 import { DepartmentAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/DepartmentAvatar';
 import Immutable from 'immutable';
 
-import { Card } from '../../Common/Components/ListFrame/Card';
+import { Card } from '../../Common/Components/ListFrame/View/Card';
 
 const cardTarget = {
   drop(props, monitor) {

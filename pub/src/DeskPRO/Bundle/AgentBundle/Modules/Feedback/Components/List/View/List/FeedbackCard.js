@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 import { Card, CardLine, CardLineLeft, CardLineRight, CardLineFull, CardContentText, CardLineItem, CardCheckbox, CardDisc, CardTitle, CardUser, CardLabel, CardComments, CardStatusBar }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
 import jQuery from 'jquery';
 import Immutable from 'immutable';
 import { defaultCardFields} from '../../../List/ControlBar/FeedbackViewOptions';

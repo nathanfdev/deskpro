@@ -20,7 +20,7 @@ export class TaskDragCard extends React.Component {
 
     return connectDragSource(
       <span>
-        <a href="#" ref="button" onClick={onOpenTaskCard}>
+        <a href="#" onClick={onOpenTaskCard}>
           {task.get('title')}
         </a>
       </span>

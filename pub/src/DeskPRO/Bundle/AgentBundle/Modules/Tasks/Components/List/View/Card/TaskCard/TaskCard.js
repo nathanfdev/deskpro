@@ -6,7 +6,7 @@ import {
   CardLine,
   CardLineLeft,
   CardLineRight
-} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
+} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
 import {
   BaseTaskCard,
   Title,

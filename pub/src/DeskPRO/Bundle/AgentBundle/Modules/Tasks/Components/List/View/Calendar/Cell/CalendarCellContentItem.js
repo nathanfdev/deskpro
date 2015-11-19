@@ -48,7 +48,7 @@ export class CalendarCellContentItem extends React.Component {
         {'urgent': moment(task.get('date_due')).isBefore(moment(), 'day')}
       )}>
 
-        <TaskDragCard task={task} onOpenTaskCard={this.onOpenTaskCard} />
+        <TaskDragCard ref="button" task={task} onOpenTaskCard={this.onOpenTaskCard} />
 
         <Detached isOpen={this.state.taskCardOpened}
                   positionTarget={this.refs.button}

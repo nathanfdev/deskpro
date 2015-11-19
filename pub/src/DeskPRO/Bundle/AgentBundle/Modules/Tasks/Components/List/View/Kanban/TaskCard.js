@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { KanbanCheckbox } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Kanban/index';
+import { KanbanCheckbox } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Kanban/index';
 import {
   BaseTaskCard,
   Title,
