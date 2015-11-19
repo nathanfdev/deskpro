@@ -40,7 +40,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Base REST CRUD controller for nested resources such as /people/1/labels. All children must declare parent
  * entity id URL param as {parentId}
  */
-class CrudSubController extends CrudController
+abstract class CrudSubController extends CrudController
 {
     public static $parentProperty;
 
