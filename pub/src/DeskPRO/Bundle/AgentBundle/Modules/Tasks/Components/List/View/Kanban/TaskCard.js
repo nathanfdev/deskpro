@@ -22,43 +22,43 @@ export class TaskCard extends BaseTaskCard {
     const { task, selected, onToggleSelected, className } = this.props;
 
     return (
-        <div className={classNames(
-          'card',
-          'task-card',
-          className
-        )}>
+      <div className={classNames(
+        'card',
+        'task-card',
+        className
+      )}>
 
-          <div className="card-status-bar status-bar-left" />
-          <div className="card-status-bar status-bar-right" />
+        <div className="card-status-bar status-bar-left" />
+        <div className="card-status-bar status-bar-right" />
 
-          <KanbanCheckbox selected={selected} onClick={onToggleSelected} />
+        <KanbanCheckbox selected={selected} onClick={onToggleSelected} />
 
-          <div className="content">
-            <Title value={task.get('title')}
-                   isDone={task.get('is_done')}
-                   onChange={this.onTitleChange} />
+        <div className="content">
+          <Title value={task.get('title')}
+                 isDone={task.get('is_done')}
+                 onChange={this.onTitleChange} />
 
-            <div className="card-line task-details">
-              <div className="top-right-box">
-                  <span className="assignment">
-                    assigneeName
-                  </span>
-              </div>
-              <div>
-                <DateDue value={task.get('date_due')}
-                         onChange={this.onChangeDate} />
-              </div>
+          <div className="card-line task-details">
+            <div className="top-right-box">
+                <span className="assignment">
+                  assigneeName
+                </span>
             </div>
-            <hr/>
-            <div className="card-line task-properties">
-              <Comments count={this.state.comments} />
-              {task.get('subtasks_total') > 0 &&
-                <SubTasks current={task.get('subtasks_done')}
-                          total={task.get('subtasks_total')} />
-              }
+            <div>
+              <DateDue value={task.get('date_due')}
+                       onChange={this.onChangeDate} />
             </div>
           </div>
+          <hr/>
+          <div className="card-line task-properties">
+            <Comments count={this.state.comments} />
+            {task.get('subtasks_total') > 0 &&
+              <SubTasks current={task.get('subtasks_done')}
+                        total={task.get('subtasks_total')} />
+            }
+          </div>
         </div>
+      </div>
     );
   }
 }

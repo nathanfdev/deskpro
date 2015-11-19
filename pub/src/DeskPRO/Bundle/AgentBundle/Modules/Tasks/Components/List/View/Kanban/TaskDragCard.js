@@ -33,13 +33,13 @@ export class TaskDragCard extends React.Component {
     const { connectDragSource, connectDropTarget } = this.props;
 
     let result = connectDragSource(
-      <div className={classNames({
-        'dragging-item': isDragging
-      })}>
-
+      <div>
         <TaskCard selected={selected}
                   onToggleSelected={onToggleSelected}
-                  task={task} />
+                  task={task}
+                  className={classNames({
+                    'dragging-item': isDragging
+                  })} />
 
         <div className={classNames('placeholder', {'is-over': isOver})} />
       </div>
