@@ -109,6 +109,11 @@ export default class DpxDateWidget extends PageWidget {
     $textBox.datetimepicker(options);
 
     $textBox.addClass('dpx-date-input');
+    $textBox.on('keyup', () => {
+      $textBox.datetimepicker('hide');
+    }).on('blur', () => {
+      $textBox.datetimepicker('validate');
+    });
 
     this.$element.hide();
     $textBox.insertAfter(this.$element);
