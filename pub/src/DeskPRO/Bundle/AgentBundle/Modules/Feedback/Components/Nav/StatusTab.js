@@ -26,7 +26,7 @@ export class StatusTab extends Component {
     return (
       <ul>
         <ListItemContainer label="New"
-                           listOptions={{navItem: {status: 'new'}}}>
+                           listOptions={{isComments: false, navItem: {status: 'new'}}}>
 
           <ListItem label="New"
                     count={statuses.get('new').get('count')}/>

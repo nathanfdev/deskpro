@@ -1,11 +1,11 @@
 import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
-import { toggleMassAction } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 import {
   currentListSortSelector, currentListOrderSelector, currentListParamsSelector, currentViewModeSelector,
   listFiltersSelector
 } from '../../../Selectors/list';
-import { setSort, setOrder, applyParams, toggleTableFieldVisibility, toggleCardFieldVisibility } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
+import { toggleMassAction, setSort, setOrder, applyParams, toggleTableFieldVisibility, toggleCardFieldVisibility }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/ControlBar';
@@ -30,6 +30,7 @@ export class ControlBarContainer extends Component {
 
   render() {
     const config = {
+      onMenuUnmount: applyParams,
       checkbox: {
         count: this.props.count,
         action: toggleMassAction

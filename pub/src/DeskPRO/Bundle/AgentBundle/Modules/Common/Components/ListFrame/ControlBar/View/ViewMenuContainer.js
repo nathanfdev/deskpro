@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { Button } from '../Button';
 import Detached from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
@@ -28,63 +29,42 @@ export class ViewMenuContainer extends Component {
     };
   }
 
-  expandMenu = () => this.setState({expanded: true});
-  expandOptions = () => this.setState({optionsExpanded: true});
-  collapse = () => this.setState({expanded: false, optionsExpanded: false});
+  expandMenu = () => this.setState({ expanded: true });
+  expandOptions = () => this.setState({ optionsExpanded: true });
+  collapse = () => this.setState({ expanded: false, optionsExpanded: false });
 
   render() {
-    const { dispatch, options, viewMode = '', viewModeAction } = this.props;
+    const { viewMode = '' } = this.props;
 
     return (
-      <li ref="menuItem">
-          <Button
-            onClick={this.expandMenu}
-            ref="button"
-            title="View:"
-            icon={null}
-            label={viewMode.charAt(0).toUpperCase() + viewMode.slice(1)}
+      <li>
+        <Button
+          onClick={this.expandMenu}
+          ref="button"
+          title="View:"
+          icon={null}
+          label={viewMode.charAt(0).toUpperCase() + viewMode.slice(1)}
           />
 
-          <Detached isOpen={this.state.expanded}
-                    positionAt="left bottom"
-                    positionTarget={this.refs.button}>
+        <Detached isOpen={this.state.expanded}
+                  positionAt="left bottom"
+                  positionTarget={this.refs.button}>
 
-            <ClickOut onClickOut={this.collapse}
-                      ignoreNodes={[this.refs.menuItem]}
-                      additionalNodes={[this.refs.optionsButton]}>
+          <ClickOut onClickOut={this.collapse}
+                    additionalNodes={[this.refs.viewModeMenu]}>
 
-              {this.state.optionsExpanded
-                ? <ViewOptionsContainer {...this.props} />
-                : <Menu>
-                    {jQuery.map(options, (option, type) =>
-                        <Item key={type}
-                              label={option.label}
-                              isActive={viewMode === type}
-                              checked={viewMode === type}
-                              onClick={() => dispatch(viewModeAction(type))}
-                              icon={option.icon}/>
-                    )}
-                    <MenuFooter>
-                      <div className="dpw-navigation-dropdown-options-link">
-                        <a href="#"
-                           ref="optionsButton"
-                           onClick={this.expandOptions}>
-
-                          View Options <i className="fa fa-cog"></i>
-                        </a>
-                      </div>
-                    </MenuFooter>
-                  </Menu>
-              }
-            </ClickOut>
-          </Detached>
+            {this.state.optionsExpanded
+              ? <ViewOptionsContainer {...this.props} />
+              : <div ref="viewModeMenu"><ViewModeMenu {...this.props} expandOptions={this.expandOptions}/></div>
+            }
+          </ClickOut>
+        </Detached>
       </li>
     );
   }
 }
 
-@connect()
-class ViewOptionsContainer extends Component {
+@connect() class ViewOptionsContainer extends Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -122,12 +102,50 @@ class ViewOptionsContainer extends Component {
                       value={name}
                       label={label}
                       isShown={(option.visibleFields || []).indexOf(name) > -1}
-                      changeState={onClick} />
+                      changeState={onClick}/>
                 )}
               </ItemList>
             </Item>
           );
         })}
+      </Menu>
+    );
+  }
+}
+
+class ViewModeMenu extends Component {
+
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    expandOptions: PropTypes.func.isRequired,
+    viewModeAction: PropTypes.func.isRequired,
+    viewMode: PropTypes.string.isRequired,
+    options: PropTypes.object.isRequired
+  };
+
+  render() {
+    const { viewMode, options, dispatch, viewModeAction, expandOptions } = this.props;
+
+    return (
+      <Menu>
+        {jQuery.map(options, (option, type) =>
+            <Item key={type}
+                  label={option.label}
+                  isActive={viewMode === type}
+                  checked={viewMode === type}
+                  onClick={() => dispatch(viewModeAction(type))}
+                  icon={option.icon}/>
+        )}
+        <MenuFooter>
+          <div className="dpw-navigation-dropdown-options-link">
+            <a href="#"
+               ref="optionsButton"
+               onClick={expandOptions}>
+
+              View Options <i className="fa fa-cog"></i>
+            </a>
+          </div>
+        </MenuFooter>
       </Menu>
     );
   }

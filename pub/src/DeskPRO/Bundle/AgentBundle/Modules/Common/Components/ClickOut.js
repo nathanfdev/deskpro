@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import jQuery from 'jquery';
 
 export class ClickOut extends React.Component {
@@ -58,7 +59,6 @@ export class ClickOut extends React.Component {
 
     const nodes = [...additionalNodes];
     nodes.push(this.refs.container);
-
     let outside = true;
     nodes.forEach(node => {
       const $container = jQuery(node);
