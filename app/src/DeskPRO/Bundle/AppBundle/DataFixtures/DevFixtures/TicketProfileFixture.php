@@ -509,7 +509,7 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
                 ];
                 switch ($f->getTypeName()) {
                     case 'text':
-                        $row_data['input'] = $this->faker->realText($this->faker->numberBetween(5, 80));
+                        $row_data['input'] = $this->faker->realText($this->faker->numberBetween(10, 80));
                         break;
                     case 'textarea':
                         $row_data['input'] = $this->faker->realText($this->faker->numberBetween(20, 500));
