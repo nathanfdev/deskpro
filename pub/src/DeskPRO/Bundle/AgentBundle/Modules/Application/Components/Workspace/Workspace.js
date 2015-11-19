@@ -33,7 +33,8 @@ export class Workspace extends React.Component {
     this.props.dispatch(AppActions.setSidebarMode(mode));
   };
 
-  resetAll = () => {
+  resetAll = event => {
+    event.preventDefault();
     const { dispatch } = this.props;
 
     dispatch(AppActions.setColumnMode(this.state.columnMode));
@@ -41,7 +42,8 @@ export class Workspace extends React.Component {
     dispatch(AppActions.setSidebarMode(this.state.sidebarMode));
   };
 
-  saveWorkspace = () => {
+  saveWorkspace = event => {
+    event.preventDefault();
     const { dispatch, dpWindow } = this.props;
 
     this.setState({
@@ -56,7 +58,7 @@ export class Workspace extends React.Component {
   close = event => {
     event.preventDefault();
 
-    this.resetAll();
+    this.resetAll(event);
     this.props.dispatch(AppActions.closeWorkspace());
   };
 
