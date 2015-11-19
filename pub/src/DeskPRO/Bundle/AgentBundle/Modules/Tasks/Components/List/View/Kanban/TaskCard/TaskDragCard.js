@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { DragSource, DropTarget } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import { cardSourceSpec, cardSourceCollect, cardTargetSpec, targetCollect } from '../TaskCardContainer';
+import { cardSourceSpec, cardSourceCollect, cardTargetSpec, targetCollect } from '../../TaskCardContainer';
 import { TaskCard } from './TaskCard';
 import classNames from 'classnames';
 

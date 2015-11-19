@@ -6,7 +6,7 @@ import {
   DateDue,
   SubTasks,
   Comments
-} from '../../TaskCard/index';
+} from '../../../TaskCard/index';
 import classNames from 'classnames';
 
 export class TaskCard extends BaseTaskCard {

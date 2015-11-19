@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import { ListGroup } from './ListGroup';
-import { TaskDragCard } from './TaskDragCard';
+import { TaskDragCard } from './TaskCard/TaskDragCard';
 import { TaskCardContainer } from '../TaskCardContainer';
 import { TaskCardPreviewContainer } from '../TaskCardPreviewContainer';
-import { TaskCardPreview } from './TaskCardPreview';
+import { TaskCardPreview } from './TaskCard/TaskCardPreview';
 import { CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 
 export class KanbanView extends React.Component {
