@@ -37,9 +37,7 @@ export class TaskDragCard extends React.Component {
         <TaskCard selected={selected}
                   onToggleSelected={onToggleSelected}
                   task={task}
-                  className={classNames({
-                    'dragging-item': isDragging
-                  })} />
+                  dragging={isDragging} />
 
         <div className={classNames('placeholder', {'is-over': isOver})} />
       </div>

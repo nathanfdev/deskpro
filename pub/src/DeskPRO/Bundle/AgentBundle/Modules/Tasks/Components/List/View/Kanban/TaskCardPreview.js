@@ -10,7 +10,7 @@ export class TaskCardPreview extends React.Component {
   render() {
     return (
       <div style={{width: this.props.width}}>
-        <TaskCard className="moving" {...this.props} />
+        <TaskCard moving {...this.props} />
       </div>
     );
   }
