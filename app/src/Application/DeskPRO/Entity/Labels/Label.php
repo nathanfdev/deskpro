@@ -42,4 +42,9 @@ interface Label
      * @return string
      */
     public function getLabel();
+
+    /**
+     * @return string Return label type (e.g. person, feedback etc)
+     */
+    public function getType();
 }

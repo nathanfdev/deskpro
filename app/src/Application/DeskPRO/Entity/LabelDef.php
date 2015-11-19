@@ -47,6 +47,8 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class LabelDef extends DomainObject
 {
+    const DEFAULT_COLOR = '#cccccc';
+
     const TYPE_TICKETS   = 'tickets';
     const TYPE_PEOPLE    = 'people';
     const TYPE_ORGS      = 'organizations';
@@ -140,6 +142,32 @@ class LabelDef extends DomainObject
                 $this->setModelField('color', $c);
             }
         }
+    }
+
+    /**
+     * Increase LabelDef total by 1.
+     */
+    public function increment()
+    {
+        ++$this->total;
+        $this->_onPropertyChanged('total', null, $this->total);
+    }
+
+    /**
+     * Decrease LabelDef total by 1.
+     */
+    public function decrement()
+    {
+        --$this->total;
+        $this->_onPropertyChanged('total', null, $this->total);
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotal()
+    {
+        return $this->total;
     }
 
     ############################################################################

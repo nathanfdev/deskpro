@@ -71,6 +71,14 @@ abstract class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObje
         return $this->label;
     }
 
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return static::LABEL_TYPENAME;
+    }
+
     public function __toString()
     {
         return $this->label;
