@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -42,7 +43,12 @@ use Symfony\Component\HttpFoundation\Response;
 class TicketLabelsController extends BaseController
 {
     /**
-     * Retrieve the tickets with the given label.
+     * @ApiDoc(
+     *      description="Get tickets with the given label",
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
      *
      * @Get("/ticket_labels/{name}/tickets", name="api_ticket_labels_tickets")
      */

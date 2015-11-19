@@ -53,7 +53,7 @@ class TicketFiltersController extends BaseController
 
     /**
      * @ApiDoc(
-     *      description="get a list of filters",
+     *      description="Get a list of filters",
      *      parameters={
      *          {
      *              "name"="page",
@@ -89,7 +89,7 @@ class TicketFiltersController extends BaseController
      * @Get("/ticket_filters/{id}", name="get_ticket_filters")
      *
      * @ApiDoc(
-     *      description="get a filter",
+     *      description="Get a filter",
      *      requirements={
      *          {
      *              "name"="id",
@@ -186,7 +186,7 @@ class TicketFiltersController extends BaseController
      * @Put("/ticket_filters/{id}", name="put_ticket_filters")
      *
      * @ApiDoc(
-     *      description="modify filter grouping",
+     *      description="Modify filter grouping",
      *      requirements={
      *          {
      *              "name"="id",
@@ -267,7 +267,7 @@ class TicketFiltersController extends BaseController
 
     /**
      * @ApiDoc(
-     *      description="get a list of filters",
+     *      description="Get filter's tickets",
      *      parameters={
      *          {
      *              "name"="page",
@@ -330,7 +330,7 @@ class TicketFiltersController extends BaseController
      * @Delete("/ticket_filters/{id}")
      *
      * @ApiDoc(
-     *      description="delete a filter",
+     *      description="Delete a filter",
      *      requirements={
      *          {
      *              "name"="id",

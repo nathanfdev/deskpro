@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -42,7 +43,12 @@ use Symfony\Component\HttpFoundation\Response;
 class TicketCustomFieldsController extends BaseController
 {
     /**
-     * Retrieve the list of custom fields available for tickets.
+     * @ApiDoc(
+     *      description="Get list of custom fields available for tickets",
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
      *
      * @Get("/custom_fields", name="api_ticket_custom_fields")
      */
@@ -57,7 +63,12 @@ class TicketCustomFieldsController extends BaseController
     }
 
     /**
-     * Retrieve the custom fields of a single ticket.
+     * @ApiDoc(
+     *      description="Get custom fields of a single ticket",
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
      *
      * @Get("/tickets/{ticket_id}/custom_fields", name="api_ticket_custom_fields_for_ticket")
      */
@@ -71,7 +82,12 @@ class TicketCustomFieldsController extends BaseController
     }
 
     /**
-     * Retrieve the custom fields of a single ticket.
+     * @ApiDoc(
+     *      description="Get a custom field of a ticket",
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
      *
      * @Get("/tickets/{ticket_id}/custom_fields/{field_id}", name="api_ticket_custom_fields_field_for_ticket")
      */

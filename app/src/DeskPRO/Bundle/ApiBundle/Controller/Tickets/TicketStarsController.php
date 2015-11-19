@@ -54,7 +54,7 @@ class TicketStarsController extends BaseController
 
     /**
      * @ApiDoc(
-     *      description="get a list of ticket flags",
+     *      description="Get a list of ticket flags",
      *      statusCodes={
      *          200="Success"
      *      }
@@ -97,6 +97,13 @@ class TicketStarsController extends BaseController
     }
 
     /**
+     * @ApiDoc(
+     *      description="Update ticket star name",
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     *
      * @Put("/ticket_stars/{id}", requirements={"id"="\d+"})
      */
     public function putAction($id, Request $request)
@@ -125,7 +132,7 @@ class TicketStarsController extends BaseController
 
     /**
      * @ApiDoc(
-     *      description="get the counts of tickets marked with each star",
+     *      description="Get the counts of tickets marked with each star",
      *      statusCodes={
      *          200="Success"
      *      }
@@ -150,7 +157,7 @@ class TicketStarsController extends BaseController
 
     /**
      * @ApiDoc(
-     *      description="get the count of tickets marked with each flag",
+     *      description="Get the count of tickets marked with each flag",
      *      statusCodes={
      *          200="Success"
      *      }
@@ -167,7 +174,7 @@ class TicketStarsController extends BaseController
 
     /**
      * @ApiDoc(
-     *      description="get the tickets for a star",
+     *      description="Get the tickets for a star",
      *      statusCodes={
      *          200="Success"
      *      }
