@@ -43,7 +43,7 @@ export class CalendarBody extends React.Component {
             {week.map(day =>
               <CalendarCell key={day.day()}
                             dayDate={day}
-                            date={date}>
+                            date={date} {...this.props}>
 
                 <CalendarCellContent dayDate={day} {...this.props} />
               </CalendarCell>

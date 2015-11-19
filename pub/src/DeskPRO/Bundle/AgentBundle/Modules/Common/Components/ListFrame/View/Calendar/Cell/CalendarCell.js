@@ -7,15 +7,28 @@ export class CalendarCell extends React.Component {
   static propTypes = {
     dayDate: PropTypes.object.isRequired,
     date: PropTypes.object.isRequired,
-    children: PropTypes.node
+    children: PropTypes.node,
+    draggable: PropTypes.shape({
+      target: PropTypes.node.isRequired
+    })
   };
 
   render() {
-    const { dayDate, date, children } = this.props;
+    const { dayDate, date, children, draggable } = this.props;
+    const targetProps = draggable.target.props;
 
     const today = moment();
     const firstDayOfMonth = moment(date).startOf('month');
     const lastDayOfMonth = moment(date).endOf('month');
+
+    const draggableChildren = (
+      <div className={classNames('dpwd-calendar-day', {'dpwd-calendar-day-today': today.isSame(dayDate, 'day')})}>
+        <span className="dpwd-calendar-day-mark">{dayDate.date()}</span>
+        <div className="dpwd-calendar-tasks">
+          {children}
+        </div>
+      </div>
+    );
 
     return (
       <td className={classNames(
@@ -23,12 +36,10 @@ export class CalendarCell extends React.Component {
         {'dpwd-calendar-past-day': dayDate.isBefore(today, 'day')},
         {'weekend': [6, 7].indexOf(dayDate.isoWeekday()) !== -1}
       )}>
-        <div className={classNames('dpwd-calendar-day', {'dpwd-calendar-day-today': today.isSame(dayDate, 'day')})}>
-          <span className="dpwd-calendar-day-mark">{dayDate.date()}</span>
-          <div className="dpwd-calendar-tasks">
-            {children}
-          </div>
-        </div>
+        {React.cloneElement(draggable.target, {
+          ...targetProps,
+          children: draggableChildren
+        })}
       </td>
     );
   }
