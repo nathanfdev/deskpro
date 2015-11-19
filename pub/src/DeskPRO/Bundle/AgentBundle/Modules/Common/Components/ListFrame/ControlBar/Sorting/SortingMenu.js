@@ -61,28 +61,31 @@ export class SortingMenu extends Component {
     options: PropTypes.object.isRequired,
     sort: PropTypes.string.isRequired,
     order: PropTypes.string.isRequired,
-    onMenuUnmount: PropTypes.func.isRequired,
+    onMenuUnmount: PropTypes.func,
     sortAction: PropTypes.func.isRequired,
     orderAction: PropTypes.func.isRequired
   };
 
   componentWillUnmount() {
     const {dispatch, onMenuUnmount} = this.props;
-    dispatch(onMenuUnmount());
+
+    if (onMenuUnmount) {
+      dispatch(onMenuUnmount());
+    }
   }
 
   renderOptions() {
     const { dispatch, sort, sortAction, options } = this.props;
     return (
       jQuery.map(options, (option, type) =>
-          <Item
-            key={type}
-            label={option.label}
-            isActive={sort === type}
-            checked={sort === type}
-            onClick={() => dispatch(sortAction(type))}
-            icon={option.icon}
-            />
+        <Item
+          key={type}
+          label={option.label}
+          isActive={sort === type}
+          checked={sort === type}
+          onClick={() => dispatch(sortAction(type))}
+          icon={option.icon}
+        />
       )
     );
   }
