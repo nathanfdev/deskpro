@@ -13,7 +13,7 @@ import { unload } from '../../Actions/listActions';
 export class ListContainer extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.object.isRequired
+    dispatch: PropTypes.func.isRequired
   };
 
   componentWillUnmount() {

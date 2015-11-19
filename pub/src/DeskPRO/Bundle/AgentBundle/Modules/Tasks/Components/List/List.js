@@ -14,9 +14,9 @@ export class List extends React.Component {
 
   static propTypes = {
     currentView: PropTypes.string.isRequired,
-    currentNav: PropTypes.object.isRequired,
+    currentNav: PropTypes.object,
     tasks: PropTypes.object.isRequired,
-    loaded: PropTypes.bool.isRequired
+    loaded: PropTypes.bool
   };
 
   renderView() {
