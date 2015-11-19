@@ -110,7 +110,10 @@ export class FilteringMenu extends Component {
 
   componentWillUnmount() {
     const {dispatch, onMenuUnmount} = this.props;
-    dispatch(onMenuUnmount());
+
+    if (onMenuUnmount) {
+      dispatch(onMenuUnmount());
+    }
   }
 
   // Generic <Filter /> component --------------------------------------------------------------------------------------
