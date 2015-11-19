@@ -51,9 +51,9 @@ export class TaskCardContainer extends React.Component {
 }
 
 export const cardSourceSpec = {
-  beginDrag(props, monitor, component) {
+  beginDrag({ task }, monitor, component) {
     return {
-      id: props.task.get('id'),
+      id: task.get('id'),
       width: jQuery(ReactDOM.findDOMNode(component)).width()
     };
   }

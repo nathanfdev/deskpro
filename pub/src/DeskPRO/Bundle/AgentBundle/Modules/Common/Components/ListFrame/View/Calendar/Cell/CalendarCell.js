@@ -7,6 +7,7 @@ export class CalendarCell extends React.Component {
   static propTypes = {
     dayDate: PropTypes.object.isRequired,
     date: PropTypes.object.isRequired,
+    dateField: PropTypes.string.isRequired,
     children: PropTypes.node,
     draggable: PropTypes.shape({
       target: PropTypes.node.isRequired
@@ -14,7 +15,7 @@ export class CalendarCell extends React.Component {
   };
 
   render() {
-    const { dayDate, date, children, draggable } = this.props;
+    const { dayDate, date, dateField, children, draggable } = this.props;
     const targetProps = draggable.target.props;
 
     const today = moment();
@@ -38,6 +39,9 @@ export class CalendarCell extends React.Component {
       )}>
         {React.cloneElement(draggable.target, {
           ...targetProps,
+
+          param: dateField,
+          value: dayDate,
           children: draggableChildren
         })}
       </td>
