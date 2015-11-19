@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { toggleSelected } from '../../../Actions/listActions';
 import {
@@ -9,6 +10,7 @@ import {
   calendarVisibleFieldsSelector,
   currentSortSelector
 } from '../../../Selectors/list';
+import jQuery from 'jquery';
 
 @connect(state => ({
   selectedTasks: selectedSelector(state),
@@ -49,8 +51,11 @@ export class TaskCardContainer extends React.Component {
 }
 
 export const cardSourceSpec = {
-  beginDrag(props) {
-    return {id: props.task.get('id')};
+  beginDrag(props, monitor, component) {
+    return {
+      id: props.task.get('id'),
+      width: jQuery(ReactDOM.findDOMNode(component)).width()
+    };
   }
 };
 

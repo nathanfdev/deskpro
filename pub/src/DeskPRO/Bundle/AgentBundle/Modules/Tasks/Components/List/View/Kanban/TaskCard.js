@@ -15,17 +15,17 @@ export class TaskCard extends BaseTaskCard {
     selected: PropTypes.bool,
     onToggleSelected: PropTypes.func,
     task: PropTypes.object,
-    moving: PropTypes.bool
+    className: PropTypes.string
   };
 
   render() {
-    const { task, selected, onToggleSelected, moving } = this.props;
+    const { task, selected, onToggleSelected, className } = this.props;
 
     return (
         <div className={classNames(
           'card',
           'task-card',
-          {'moving': moving}
+          className
         )}>
 
           <div className="card-status-bar status-bar-left" />

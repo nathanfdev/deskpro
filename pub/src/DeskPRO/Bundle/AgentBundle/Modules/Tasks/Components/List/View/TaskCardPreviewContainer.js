@@ -8,7 +8,10 @@ import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
 export class TaskCardPreviewContainer extends React.Component {
 
   static propTypes = {
-    item: PropTypes.object,
+    item: PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      width: PropTypes.number
+    }),
     tasks: PropTypes.object.isRequired,
     children: PropTypes.node.isRequired
   };
@@ -20,7 +23,9 @@ export class TaskCardPreviewContainer extends React.Component {
 
     return React.cloneElement(children, {
       ...childProps,
-      task: mapKeyedFromArray(tasks, 'id').get(item.id)
+
+      task: mapKeyedFromArray(tasks, 'id').get(item.id),
+      width: item.width
     });
   }
 }

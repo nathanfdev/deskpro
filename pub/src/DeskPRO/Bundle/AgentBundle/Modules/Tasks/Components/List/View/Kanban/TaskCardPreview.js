@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { TaskCard } from './TaskCard';
 
 export class TaskCardPreview extends React.Component {
 
-  render() {
-    const moving = true;
+  static propTypes = {
+    width: PropTypes.number
+  };
 
+  render() {
     return (
-      <div style={{width: 400}}>
-        <TaskCard moving={moving} {...this.props} />
+      <div style={{width: this.props.width}}>
+        <TaskCard className="moving" {...this.props} />
       </div>
     );
   }
