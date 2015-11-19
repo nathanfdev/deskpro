@@ -10,11 +10,12 @@ import { Table, CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/C
 export class TableView extends React.Component {
 
   static propTypes = {
-    taskGroups: PropTypes.array
+    taskGroups: PropTypes.array,
+    onChangeGroup: PropTypes.func
   };
 
   render() {
-    const { taskGroups = [] } = this.props;
+    const { taskGroups = [], onChangeGroup } = this.props;
 
     return (
       <div>
@@ -28,7 +29,8 @@ export class TableView extends React.Component {
               <ListGroup title={taskGroup.title}
                          key={index}
                          param={taskGroup.param}
-                         value={taskGroup.value}>
+                         value={taskGroup.value}
+                         onChangeGroup={onChangeGroup}>
 
                 {taskGroup.elements.map(task =>
                   <TaskCardContainer task={task} key={task.get('id')}>

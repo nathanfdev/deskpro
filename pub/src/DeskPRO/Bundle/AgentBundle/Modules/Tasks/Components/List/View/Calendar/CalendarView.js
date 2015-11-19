@@ -10,19 +10,21 @@ import { CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/C
 export class CalendarView extends React.Component {
 
   static propTypes = {
-    tasks: PropTypes.object
+    tasks: PropTypes.object,
+    onChangeGroup: PropTypes.func
   };
 
   render() {
+    const { tasks, onChangeGroup } = this.props;
     const config = {
-      elements: this.props.tasks,
+      elements: tasks,
       elementName: 'task',
       dateField: 'date_due',
       additionalPrefix: 'Tasks for',
       card: <TaskCard />,
       draggable: {
         source: <TaskDragCard />,
-        target: <TaskCardDragTarget />
+        target: <TaskCardDragTarget onChangeGroup={onChangeGroup} />
       }
     };
 

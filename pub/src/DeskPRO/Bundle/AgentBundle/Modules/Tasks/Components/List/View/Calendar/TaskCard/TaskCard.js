@@ -21,7 +21,7 @@ import {
 export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
-    task: PropTypes.object.isRequired,
+    task: PropTypes.object,
     moving: PropTypes.bool
   };
 

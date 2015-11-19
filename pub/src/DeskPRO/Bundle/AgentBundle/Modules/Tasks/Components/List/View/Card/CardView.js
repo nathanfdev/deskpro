@@ -6,11 +6,12 @@ import { TaskDragCard } from './TaskCard/TaskDragCard';
 export class CardView extends React.Component {
 
   static propTypes = {
-    taskGroups: PropTypes.array
+    taskGroups: PropTypes.array,
+    onChangeGroup: PropTypes.func
   };
 
   render() {
-    const { taskGroups = [] } = this.props;
+    const { taskGroups = [], onChangeGroup } = this.props;
 
     return (
       <div>
@@ -21,7 +22,8 @@ export class CardView extends React.Component {
           <ListGroup title={taskGroup.title}
                      key={index}
                      param={taskGroup.param}
-                     value={taskGroup.value}>
+                     value={taskGroup.value}
+                     onChangeGroup={onChangeGroup}>
 
             {taskGroup.elements.map(task =>
               <TaskCardContainer task={task} key={task.get('id')}>

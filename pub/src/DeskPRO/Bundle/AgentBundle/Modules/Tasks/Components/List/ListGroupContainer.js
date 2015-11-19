@@ -29,6 +29,10 @@ export class ListGroupContainer extends React.Component {
     children: PropTypes.node.isRequired
   };
 
+  onChangeGroup = (taskId, param, value) => {
+    console.log('edit task', taskId, param, value);
+  }
+
   render() {
     const { sort, lists, projects, agents, agentTeams, departments } = this.props;
     const { tasks, children } = this.props;
@@ -95,7 +99,8 @@ export class ListGroupContainer extends React.Component {
       ...childProps,
 
       tasks: tasks,
-      taskGroups: groupCollection(groupConfig, tasks)
+      taskGroups: groupCollection(groupConfig, tasks),
+      onChangeGroup: this.onChangeGroup
     });
   }
 }

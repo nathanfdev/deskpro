@@ -66,16 +66,18 @@ export const cardSourceCollect = (dragConnect, monitor) => ({
 });
 
 export const cardTargetSpec = {
-  drop({ task }, monitor) {
+  drop({ task, onEdit }, monitor) {
     const item = monitor.getItem();
-    console.log('edit task', task, item.id);
+    onEdit(item.id, task.get('display_order'));
+
+    console.log('edit task list order', task.get('id'), item.id);
   }
 };
 
 export const groupTargetSpec = {
-  drop({ param, value }, monitor) {
+  drop({ param, value, onChangeGroup }, monitor) {
     const item = monitor.getItem();
-    console.log('edit task', param, value, item.id);
+    onChangeGroup(item.id, param, value);
   }
 };
 
