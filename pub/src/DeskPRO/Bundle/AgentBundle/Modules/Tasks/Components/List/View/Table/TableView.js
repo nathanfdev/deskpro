@@ -3,7 +3,7 @@ import { HeaderContainer } from './HeaderContainer';
 import { TaskCardContainer } from '../TaskCardContainer';
 import { TaskCard } from './TaskCard/TaskCard';
 import { TaskCardPreviewContainer } from '../TaskCardPreviewContainer';
-import { TaskCardPreview } from './TaskCard/TaskCardPreview';
+import { TaskCardPreview } from '../Card/TaskCard/TaskCardPreview';
 import { ListGroup } from './ListGroup';
 import { Table, CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 
