@@ -135,7 +135,7 @@ class TicketType extends AbstractType
         $ticket         = $event->getData();
         $form           = $event->getForm();
         $ticket_message = $form->getConfig()->getOption('ticket_message');
-        $layout         = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->department ?: null);
+        $layout         = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->getDepartment() ?: null);
 
         if ($form->getConfig()->getOption('full_version')) {
             $layout = $this->ticket_layout_factory->getFullLayoutForTicketForm();
@@ -146,9 +146,10 @@ class TicketType extends AbstractType
         // if there is only one department we want to make sure to set it now...
         $person    = $context->getForm()->getConfig()->getOption('person');
         $hierarchy = $this->hierarchy_generator->generateTicketDepartmentsHierarchy($person);
-        if ($hierarchy->countSelectable() == 1) {
-            // if there is only one dep, just set it on the ticket (we won't be showing the widget)
-            $ticket->department = $hierarchy->getFirstSelectable();
+
+        // if there is only one dep, and ticket has no dep, just set it on the ticket (we won't be showing the widget)
+        if (!$ticket->getDepartment() && $hierarchy->countSelectable() == 1) {
+            $ticket->setDepartment($hierarchy->getFirstSelectable());
         }
 
         $displaying_fields = $this->manipulateForm(new Layout(), $context->getActiveLayout(), $context);
@@ -180,7 +181,7 @@ class TicketType extends AbstractType
         }
 
         // calculate the initial layout of the form (before any form submissions took place)
-        $layout         = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->department ?: null);
+        $layout         = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->getDepartment() ?: null);
         $context        = $this->createTicketFormContext($ticket, $ticket_message, $form, $layout, $already_displayed_fields);
         $initial_layout = $context->getActiveLayout();
 
