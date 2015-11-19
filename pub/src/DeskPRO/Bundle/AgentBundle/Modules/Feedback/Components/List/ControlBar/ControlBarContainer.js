@@ -1,11 +1,11 @@
 import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
-import { toggleMassAction } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 import {
   currentListSortSelector, currentListOrderSelector, currentListParamsSelector, currentViewModeSelector,
   listFiltersSelector
 } from '../../../Selectors/list';
-import { setSort, setOrder, applyParams } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
+import { toggleMassAction, setSort, setOrder, applyParams, toggleTableFieldVisibility, toggleCardFieldVisibility }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/ControlBar';
@@ -30,15 +30,16 @@ export class ControlBarContainer extends Component {
 
   render() {
     const config = {
+      onMenuUnmount: applyParams,
       checkbox: {
         count: this.props.count,
         action: toggleMassAction
       },
       sorting: {
         options: {
-          date_created: {label: 'Date', icon: 'calendar'},
-          total_rating: {label: 'Rating', icon: 'calendar-o'},
-          num_ratings: {label: 'Votes', icon: 'calendar'}
+          date_created: { label: 'Date', icon: 'calendar' },
+          total_rating: { label: 'Rating', icon: 'calendar-o' },
+          num_ratings: { label: 'Votes', icon: 'calendar' }
         },
         sort: this.props.sort,
         order: this.props.order,
@@ -65,7 +66,7 @@ export class ControlBarContainer extends Component {
             },
 
             visibleFields: ['id', 'urgency', 'person'],
-            toggleFieldVisibility: () => ({})
+            toggleFieldVisibility: toggleCardFieldVisibility
           },
           [constants.VIEW_MODE_TABLE]: {
             label: 'Table View',
@@ -84,7 +85,7 @@ export class ControlBarContainer extends Component {
             },
 
             visibleFields: ['id', 'urgency', 'person'],
-            toggleFieldVisibility: () => ({})
+            toggleFieldVisibility: toggleTableFieldVisibility
           }
         },
 
@@ -92,7 +93,6 @@ export class ControlBarContainer extends Component {
         viewModeAction: (mode) => updateRoutingState('list', 'view', mode)
       }
     };
-
     return (
       <ControlBar {...config} />
     );

@@ -53,7 +53,7 @@ class TicketFilterViewsController extends BaseController
 {
     /**
      * @ApiDoc(
-     *      description="get a list of public filters views",
+     *      description="Get a list of public filters views",
      *      statusCodes={
      *          200="Success"
      *      }
@@ -76,7 +76,7 @@ class TicketFilterViewsController extends BaseController
      * @Get("/ticket_filter_views/{id}", name="get_ticket_filter_views")
      *
      * @ApiDoc(
-     *      description="get a filter",
+     *      description="Get a filter",
      *      requirements={
      *          {
      *              "name"="id",
@@ -109,6 +109,15 @@ class TicketFilterViewsController extends BaseController
     }
 
     /**
+     * @ApiDoc(
+     *      description="Get ticket filter view counts",
+     *      input={"class"="filter","name"=""},
+     *      statusCodes={
+     *          200="Success"
+     *      },
+     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
+     * )
+     *
      * @Get("/ticket_filter_views/{id}/count")
      */
     public function getTicketsCountAction(Request $request, $id)
@@ -151,10 +160,8 @@ class TicketFilterViewsController extends BaseController
     }
 
     /**
-     * @Post("/ticket_filter_views", name="post_ticket_filter_views")
-     *
      * @ApiDoc(
-     *      description="create a filter",
+     *      description="Create a filter",
      *      input={"class"="filter","name"=""},
      *      statusCodes={
      *          201="Created",
@@ -212,8 +219,6 @@ class TicketFilterViewsController extends BaseController
     }
 
     /**
-     * @Put("/ticket_filter_views/{id}", name="put_ticket_filter_views")
-     *
      * @ApiDoc(
      *      description="modify a filter",
      *      requirements={
@@ -247,8 +252,6 @@ class TicketFilterViewsController extends BaseController
     }
 
     /**
-     * @Delete("/ticket_filter_views/{id}")
-     *
      * @ApiDoc(
      *      description="delete a filter",
      *      requirements={

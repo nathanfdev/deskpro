@@ -4,70 +4,66 @@
     <div class="breadcrumbs">
         {% show breadcrumbs %}
     </div>
-    <div class="column-full">
-        <div class="column-full">
-            <div>
-                <header class="section-header">
-                    <h1>{{ phrase('portal.account.section-title-your-account') }}</h1>
-                </header>
-            </div>
-        </div>
-        <div class="column-full">
-            <div>
-                <nav class="tabs secondary-tabs">
-                    <ul>
-                        <li class="tab-active active">
-                            <a href="{{ path('portal_user_profile') }}">
-                                <div>
-                                    <span class="title">
-                                        {{ phrase('portal.account.section-title-profile') }}
-                                    </span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="tab-inactive">
-                            <a href="{{ path('portal_user_profile_emails') }}">
-                                <div>
-                                    <span class="title">
-                                        {{ phrase('portal.account.section-title-emails') }}
-                                    </span>
-                                </div>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
+
+    <header class="large-title">
+        <h1>{{ phrase('portal.account.section-title-your-account') }}</h1>
+    </header>
+
+    <section class="padded">
+        <nav class="tabs secondary-tabs">
+            <ul>
+                <li class="tab-active active">
+                    <a href="{{ path('portal_user_profile') }}">
+                        <div>
+                            <span class="title">
+                                {{ phrase('portal.account.section-title-profile') }}
+                            </span>
+                        </div>
+                    </a>
+                </li>
+                <li class="tab-inactive">
+                    <a href="{{ path('portal_user_profile_emails') }}">
+                        <div>
+                            <span class="title">
+                                {{ phrase('portal.account.section-title-emails') }}
+                            </span>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
         <div class="column-half">
-                {{ form_start(profile_form, { attr: { class: 'form-ticket' } }) }}
-                {{ form_errors(profile_form) }}
-                {{ form_row(profile_form.first_name) }}
-                {{ form_row(profile_form.last_name) }}
-                {% if profile_form.language_id is defined %}
-                    {{ form_row(profile_form.language_id) }}
-                {% endif %}
-                {% if profile_form.delete_picture is defined %}
-                    <img src="{{ person.picture_url }}"
-                         alt="{{ person }}"/> {{ form_row(profile_form.delete_picture, { label: phrase('portal.account.profile-delete-picture') }) }}
-                {% else %}
-                    {{ form_row(profile_form.upload_picture) }}
-                {% endif %}
-                {{ form_row(profile_form.timezone) }}
-                {{ form_row(profile_form.first_name) }}
-                {{ form_rest(profile_form) }}
-                <button type="submit">{{ phrase('portal.account.profile-btn-save') }}</button>
-                {{ form_end(profile_form) }}
+            {{ form_start(profile_form, { attr: { class: 'form-ticket' } }) }}
+            {{ form_errors(profile_form) }}
+            {{ form_row(profile_form.first_name) }}
+            {{ form_row(profile_form.last_name) }}
+            {% if profile_form.language_id is defined %}
+                {{ form_row(profile_form.language_id) }}
+            {% endif %}
+            {% if profile_form.delete_picture is defined %}
+                <img src="{{ person.picture_url }}"
+                     alt="{{ person }}"/> {{ form_row(profile_form.delete_picture, { label: phrase('portal.account.profile-delete-picture') }) }}
+            {% else %}
+                {{ form_row(profile_form.upload_picture) }}
+            {% endif %}
+            {{ form_row(profile_form.timezone) }}
+            {{ form_row(profile_form.first_name) }}
+            {{ form_rest(profile_form) }}
+            <button type="submit">{{ phrase('portal.account.profile-btn-save') }}</button>
+            {{ form_end(profile_form) }}
         </div>
 
         <div class="column-half divide-left omega">
-                {{ form_start(password_form, { attr: { class: 'form-ticket' } }) }}
-                {{ form_errors(password_form) }}
-                {{ form_widget(password_form) }}
-                <button type="submit">{{ phrase('portal.account.change-password-btn') }}</button>
-                {{ form_rest(password_form) }}
-                {{ form_end(password_form) }}
+            {{ form_start(password_form, { attr: { class: 'form-ticket' } }) }}
+            {{ form_errors(password_form) }}
+            {{ form_row(password_form.current_password) }}
+            {{ form_row(password_form.new_password) }}
+            <button type="submit">{{ phrase('portal.account.change-password-btn') }}</button>
+            {{ form_rest(password_form) }}
+            {{ form_end(password_form) }}
             </div>
-        </div>
+        </section>
 
     </div>
 {% endblock inner_content %}

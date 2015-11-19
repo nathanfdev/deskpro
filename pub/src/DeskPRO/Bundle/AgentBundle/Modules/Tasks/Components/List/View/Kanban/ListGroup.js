@@ -1,9 +1,10 @@
 import React, { PropTypes } from 'react';
 import { DropTarget } from 'react-dnd';
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { groupTargetSpec, targetCollect } from '../TaskCardContainer';
 import classNames from 'classnames';
 
-@DropTarget('TASK', groupTargetSpec, targetCollect)
+@DropTarget(constants.TYPE_TASK, groupTargetSpec, targetCollect)
 export class ListGroup extends React.Component {
 
   static propTypes = {

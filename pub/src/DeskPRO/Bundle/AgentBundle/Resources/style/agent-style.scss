@@ -200,6 +200,10 @@ $kanban-frame-width: 800px;
     &.kanban {
       width: $kanban-frame-width;
     }
+
+    .dragging-item {
+      opacity: 0;
+    }
   }
 
   .dp-list-frame-contents {

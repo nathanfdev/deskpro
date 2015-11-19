@@ -36,9 +36,7 @@ use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
 use DeskPRO\Bundle\PortalBundle\Themes\Base\BaseTheme;
 use DeskPRO\Bundle\PortalBundle\Themes\DevTest\DevTestTheme;
 use DeskPRO\Bundle\PortalBundle\Themes\Sidebar\SidebarTheme;
-use DeskPRO\Bundle\PortalBundle\Themes\Simple\SimpleTheme;
 use DeskPRO\Bundle\PortalBundle\Themes\Standard\StandardTheme;
-use DeskPRO\Bundle\PortalBundle\Themes\TabBar\TabBarTheme;
 use Doctrine\Common\Annotations\FileCacheReader;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Config\ConfigCache;
@@ -124,9 +122,7 @@ class ThemeRepository
         $themes = array(
             new BaseTheme(),
             new StandardTheme(),
-            new SimpleTheme(),
             new SidebarTheme(),
-            new TabBarTheme(),
             new DevTestTheme(),
         );
 

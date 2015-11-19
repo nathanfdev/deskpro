@@ -53,7 +53,7 @@ class TicketDepartmentsController extends BaseController implements ClassResourc
 {
     /**
      * @ApiDoc(
-     *      description="get a list of departments",
+     *      description="Get departments list",
      *      parameters={
      *          {
      *              "name"="page",
@@ -115,7 +115,7 @@ class TicketDepartmentsController extends BaseController implements ClassResourc
 
     /**
      * @ApiDoc(
-     *      description="get a department",
+     *      description="Get a department",
      *      requirements={
      *          {
      *              "name"="id",
@@ -152,7 +152,7 @@ class TicketDepartmentsController extends BaseController implements ClassResourc
 
     /**
      * @ApiDoc(
-     *      description="get agents belongs to department",
+     *      description="Get agents belongs to department",
      *      requirements={
      *          {
      *              "name"="id",
@@ -187,7 +187,7 @@ class TicketDepartmentsController extends BaseController implements ClassResourc
 
     /**
      * @ApiDoc(
-     *      description="create a new department",
+     *      description="Create a new department",
      *      input={"class"="department", "name"=""},
      *      statusCodes={
      *          201="Created",
@@ -213,7 +213,7 @@ class TicketDepartmentsController extends BaseController implements ClassResourc
 
     /**
      * @APIDoc(
-     *      description="update a department",
+     *      description="Update a department",
      *      requirements={
      *          {
      *              "name"="id",
@@ -247,7 +247,7 @@ class TicketDepartmentsController extends BaseController implements ClassResourc
 
     /**
      * @APIDoc(
-     *      description="delete a department",
+     *      description="Delete a department",
      *      requirements={
      *          {
      *              "name"="id",

@@ -1,7 +1,4 @@
 import React, { PropTypes } from 'react';
-import { DragSource, DropTarget } from 'react-dnd';
-import { cardSourceSpec, cardSourceCollect, cardTargetSpec, targetCollect } from '../../TaskCardContainer';
-import classNames from 'classnames';
 import { MarkDoneButton } from './MarkDoneButton';
 import {
   Card,
@@ -9,7 +6,7 @@ import {
   CardLine,
   CardLineLeft,
   CardLineRight
-} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
+} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
 import {
   BaseTaskCard,
   Title,
@@ -23,17 +20,13 @@ import {
   CardProject
 } from '../../../TaskCard/index';
 
-@DragSource('TASK', cardSourceSpec, cardSourceCollect)
-@DropTarget('TASK', cardTargetSpec, targetCollect)
 export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
     selected: PropTypes.bool,
     onToggleSelected: PropTypes.func,
     task: PropTypes.object,
-    currentSort: PropTypes.string,
-    connectDragSource: PropTypes.func.isRequired,
-    connectDropTarget: PropTypes.func.isRequired
+    moving: PropTypes.bool
   };
 
   onToggleDone = () => {
@@ -43,14 +36,16 @@ export class TaskCard extends BaseTaskCard {
   };
 
   renderDetails() {
+    const { task } = this.props;
+
     return (
       <CardLine>
         <CardLineLeft>
-          <DateDue value={this.state.dateDue}
+          <DateDue value={task.get('date_due')}
                    onChange={this.onChangeDate} />
 
-          {this.state.project &&
-            <ProjectContainer project={this.state.project}>
+          {task.get('project') &&
+            <ProjectContainer project={task.get('project')}>
               <CardProject />
             </ProjectContainer>
           }
@@ -58,9 +53,9 @@ export class TaskCard extends BaseTaskCard {
         </CardLineLeft>
         <CardLineRight>
           <Comments count={this.state.comments} />
-          {this.state.subTasks.total > 0 &&
-            <SubTasks current={this.state.subTasks.current}
-                      total={this.state.subTasks.total} />
+          {task.get('subtasks_total') > 0 &&
+            <SubTasks current={task.get('subtasks_done')}
+                      total={task.get('subtasks_total')} />
           }
         </CardLineRight>
       </CardLine>
@@ -68,41 +63,31 @@ export class TaskCard extends BaseTaskCard {
   }
 
   render() {
-    const { selected, onToggleSelected, currentSort, isOver } = this.props;
-    const { connectDragSource, connectDropTarget } = this.props;
+    const { task, moving, selected, onToggleSelected } = this.props;
 
-    let result = connectDragSource(
-      <div>
-        <Card minimized={this.isMinimized()} type="task">
-          <MarkDoneButton isDone={this.state.isDone}
-                          onToggle={this.onToggleDone} />
+    return (
+      <Card moving={moving} minimized={this.isMinimized()} type="task">
+        <MarkDoneButton isDone={task.get('is_done')}
+                        onToggle={this.onToggleDone} />
 
-          <CardCheckbox selected={selected} onClick={onToggleSelected} />
-          <CardLine>
-            <CardLineLeft>
-              <Title value={this.state.title}
-                     isDone={this.state.isDone}
-                     onChange={this.onTitleChange} />
-            </CardLineLeft>
-            <CardLineRight>
-              {this.state.isDone
-                ? <ShowDetailsButton expanded={this.state.expanded}
-                                     onToggleExpand={this.onToggleExpand}/>
-                : <AssignButton task={this.props.task} />
-              }
-            </CardLineRight>
-          </CardLine>
+        <CardCheckbox selected={selected} onClick={onToggleSelected} />
+        <CardLine>
+          <CardLineLeft>
+            <Title value={task.get('title')}
+                   isDone={task.get('is_done')}
+                   onChange={this.onTitleChange} />
+          </CardLineLeft>
+          <CardLineRight>
+            {task.get('is_done')
+              ? <ShowDetailsButton expanded={this.state.expanded}
+                                   onToggleExpand={this.onToggleExpand}/>
+              : <AssignButton task={task} />
+            }
+          </CardLineRight>
+        </CardLine>
 
-          {!this.isMinimized() && this.renderDetails()}
-        </Card>
-        <div className={classNames('placeholder', {'is-over': isOver})} />
-      </div>
+        {!this.isMinimized() && this.renderDetails()}
+      </Card>
     );
-
-    if (currentSort === 'list') {
-      result = connectDropTarget(result);
-    }
-
-    return result;
   }
 }

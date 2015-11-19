@@ -3,12 +3,11 @@ import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
 import jQuery from 'jquery';
 import { debounce } from 'lodash';
+import classNames from 'classnames';
 
-@connect((state) => {
-  return {
-    dpWindow: state.Application.dpWindow
-  };
-})
+@connect((state) => ({
+  dpWindow: state.Application.dpWindow
+}))
 export class ListFrameContainer extends React.Component {
 
   static propTypes = {
@@ -40,11 +39,12 @@ export class ListFrameContainer extends React.Component {
   };
 
   render() {
-    const className = this.props.className || 'dp-list-frame';
+    const { className, children } = this.props;
+
     return (
-      <section className={className}>
+      <section className={classNames(className, 'dp-list-frame')}>
         <div className="feedback-list">
-          {this.props.children}
+          {children}
         </div>
       </section>
     );

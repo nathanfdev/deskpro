@@ -1,35 +1,6 @@
 {% if pager|length %}
   {% for item in pager %}
     <article class="news kb-article kb-article-news">
-      <!-- TODO split these two, top one for the main article list, second one for the article view (couldnt figure out what matched where in the twigs) -->
-
-
-      <div class="news-header main-list">
-        <div class="deskpro-calendar-decoration-flat">
-          <div class="dcdf-month">{{ item.date_published | date('M') }}</div>
-          <div class="dcdf-day">{{ item.date_published | date('j') }}</div>
-        </div>
-
-        <div class="news-header-info">
-          <h1><a href="{{ portal_path(item) }}">{{ item.title }}</a></h1>
-        </div>
-
-        <div class="article-meta"><!-- TODO translations and actual links and comment count might be wrong -->
-          {% if item.person %}
-            By <a href="#"><span style="background: url({{ avatar_url(item.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>{{ item.person.name }}</a>
-          {% endif %}
-          in {{ item.date_published | date('Y-m-d') }}
-          <hr>
-          <span class="comments"><i class="fa fa-comments-o"></i> <a href="#comments">{{ phrase('portal.general.comments-count', {count: item.num_comments}) }}</a></span>
-          <hr>
-          In <a href="{{ portal_path(item.category) }}">{{ item.category.getRealTitle() }}</a>
-          {% if item.num_comments > 0 %}
-          <span class="comments"><i class="fa fa-comments"></i> <a href="{{ portal_path(item) }}#comments">{{ phrase('portal.general.comments-count', {count: item.num_comments}) }}</a></span>
-          {% endif %}
-        </div>
-      </div>
-
-
 
       <div class="news-header">
         <div class="deskpro-calendar-decoration-flat">
@@ -39,14 +10,13 @@
 
         <div class="news-header-info">
           <h1><a href="{{ portal_path(item) }}">{{ item.title }}</a></h1>
-          <div class="article-meta"><!-- TODO translations? -->
-            {% if item.person %}
-              Posted by <a href="#"><span style="background: url({{ avatar_url(item.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>{{ item.person.name }}</a>
-            {% endif %}
-             in <a href="{{ portal_path(item.category) }}">{{ item.category.getRealTitle() }}</a>
-            {% if item.num_comments > 0 %}
+
+          <div class="article-meta">
+            {% if item.person %}{{ phrase('portal.general.by') }} <a href="#"><span style="background: url({{ avatar_url(item.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span> {{ item.person.name }}</a> {% endif %}
+            <hr>
             <span class="comments"><i class="fa fa-comments"></i> <a href="{{ portal_path(item) }}#comments">{{ phrase('portal.general.comments-count', {count: item.num_comments}) }}</a></span>
-            {% endif %}
+            <hr>
+            {{ phrase('portal.general.in') }} <a href="{{ portal_path(item.category) }}">{{ item.category.title }}</a>
           </div>
         </div>
       </div>

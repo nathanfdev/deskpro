@@ -46,7 +46,8 @@ export class List extends React.Component {
     departments: PropTypes.object.isRequired,
     recentChats: PropTypes.object.isRequired,
     current: PropTypes.object.isRequired,
-    counts: PropTypes.array.isRequired,
+    counts: PropTypes.object.isRequired,
+    loadingCounts: PropTypes.object,
     countsLoading: PropTypes.bool.isRequired,
     teamsStatus: PropTypes.object.isRequired,
     agentsStatus: PropTypes.object.isRequired,
@@ -71,8 +72,6 @@ export class List extends React.Component {
   startChat = (id, type) => {
     this.props.dispatch(actions.startChat(id, type));
   };
-
-
 
   render() {
     const { recentChatsStatus, agentsStatus, teamsStatus, departmentsStatus, meStatus } = this.props;

@@ -128,7 +128,32 @@ class PortalExtension extends \Twig_Extension
             new \Twig_SimpleFunction('file_css_class', array($this, 'getFileCssClass')),
             new \Twig_SimpleFunction('ticket_view', array($this, 'getTicketView')),
             new \Twig_SimpleFunction('phrase_form_error', array($this, 'makeFormError')),
+            new \Twig_SimpleFunction('insert_glossary_js', array($this, 'makeGlossaryJs'), array('is_safe' => array('html', 'javascript'))
+            ),
         );
+    }
+
+    public function makeGlossaryJs($article)
+    {
+        $glossary       = new \Application\DeskPRO\Publish\GlossaryHandler($this->container->get('doctrine.orm.default_entity_manager'));
+        $glossary_words = $glossary->findWords($article->content);
+        $word_defs      = $glossary->getWordDefs($glossary_words);
+
+        $dp_glossary_words = [];
+        foreach ($glossary_words as $word) {
+            $dp_glossary_words[$word] = $word_defs[$word];
+        }
+
+        $data = [
+            'words' => $glossary_words,
+            'defs'  => $dp_glossary_words,
+        ];
+
+        $data_encoded = json_encode($data);
+
+        $script = '<script type="text/javascript">window.DP_ARTICLE_GLOSSARY = '.$data_encoded.';</script>';
+
+        return $script;
     }
 
     public function makeFormError(FormError $form_error)

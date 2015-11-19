@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { Card, CardLine, CardLineLeft, CardLineFull, CardLineItem, CardCheckbox, CardDisc, CardContentText, CardDate, CardUser, CardStatusBar }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
 import jQuery from 'jquery';
 import { deleteComment, editComment } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackCommentsActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';

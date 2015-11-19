@@ -26,8 +26,7 @@
         {{ form_start(form, { attr: { class: 'form-ticket' } }) }}
         {{ form_widget(form.ticket_message) }}
         {{ form_widget(form.attachments) }}
-        {{ form_widget(form.more_attachments) }}
-        {#<input type="submit" value="{{ phrase('portal.tickets.add-reply') }}">#}
+        <div class="as-no-dpui">{{ form_widget(form.more_attachments) }}</div>
         {{ form_rest(form) }}
         {{ form_end(form) }}
     </div>

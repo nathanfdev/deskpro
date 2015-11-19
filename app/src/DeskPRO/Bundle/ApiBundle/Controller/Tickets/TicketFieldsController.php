@@ -45,7 +45,7 @@ class TicketFieldsController extends BaseController
 {
     /**
      * @ApiDoc(
-     *      description="get a collection of ticket fields",
+     *      description="Get a collection of ticket fields",
      *      statusCodes={
      *          200="Success"
      *      }

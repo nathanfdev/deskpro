@@ -31,7 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
-use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use Application\DeskPRO\Entity\LabelTicket;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -60,8 +60,13 @@ class TicketType extends ApiType
             ->add('organization', 'entity', ['class' => 'DeskPRO:Organization'])
             ->add('status', 'text')
             ->add('hidden_status', 'text')
-            ->add('is_hold', new ApiBooleanType())
+            ->add('is_hold', 'api_boolean')
             ->add('urgency', 'number')
+            ->add('labels', 'api_labels_collection', [
+                'labels_class'   => LabelTicket::class,
+                'labels_owner'   => $builder->getData(),
+                'owner_property' => 'ticket',
+            ])
         ;
     }
 }

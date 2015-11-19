@@ -1,0 +1,50 @@
+import React, { PropTypes } from 'react';
+import moment from 'moment';
+import classNames from 'classnames';
+
+export class CalendarCell extends React.Component {
+
+  static propTypes = {
+    dayDate: PropTypes.object.isRequired,
+    date: PropTypes.object.isRequired,
+    dateField: PropTypes.string.isRequired,
+    children: PropTypes.node,
+    draggable: PropTypes.shape({
+      target: PropTypes.node.isRequired
+    })
+  };
+
+  render() {
+    const { dayDate, date, dateField, children, draggable } = this.props;
+    const targetProps = draggable.target.props;
+
+    const today = moment();
+    const firstDayOfMonth = moment(date).startOf('month');
+    const lastDayOfMonth = moment(date).endOf('month');
+
+    const draggableChildren = (
+      <div className={classNames('dpwd-calendar-day', {'dpwd-calendar-day-today': today.isSame(dayDate, 'day')})}>
+        <span className="dpwd-calendar-day-mark">{dayDate.date()}</span>
+        <div className="dpwd-calendar-tasks">
+          {children}
+        </div>
+      </div>
+    );
+
+    return (
+      <td className={classNames(
+        {'dpwd-calendar-past-month': dayDate.isBefore(firstDayOfMonth) || dayDate.isAfter(lastDayOfMonth)},
+        {'dpwd-calendar-past-day': dayDate.isBefore(today, 'day')},
+        {'weekend': [6, 7].indexOf(dayDate.isoWeekday()) !== -1}
+      )}>
+        {React.cloneElement(draggable.target, {
+          ...targetProps,
+
+          param: dateField,
+          value: dayDate,
+          children: draggableChildren
+        })}
+      </td>
+    );
+  }
+}

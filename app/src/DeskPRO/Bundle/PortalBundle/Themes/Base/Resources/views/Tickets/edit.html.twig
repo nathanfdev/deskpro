@@ -1,70 +1,6 @@
-{% extends 'Theme::layout.html.twig' %}
+{% extends 'Theme:Tickets:base_view.html.twig' %}
 
-{% block inner_content %}
-    <div class="breadcrumbs">
-        {% show breadcrumbs %}
-    </div>
-
-<article class="ticket-page" id="ticket_view_page">
-    <header>
-        <h1>
-            {{ ticket.subject }}
-            <a href="#" class="ticket-status">{{ ticket_status(ticket) }}</a>
-        </h1>
-        <span class="ticket-reference">
-            {{ phrase('portal.tickets.ticket-ref') }} <strong>{{ ticket_public_id(ticket) }}</strong>
-        </span>
-    </header>
-    <div class="container">
-        <div class="ticket-agents">
-            <div class="agent">
-                {% if ticket.agent %}
-                    <span class="agent-avatar"
-                          style="background: url({{ avatar_url(ticket.agent, 36) }}) no-repeat; background-size: cover;"></span>
-                {% else %}
-                    <span class="agent-avatar empty"></span>
-                {% endif %}
-
-                <div class="agent-info">
-                    <span class="agent-meta">{{ phrase('portal.tickets.assigned-agent') }}</span>
-              <span class="agent-name">
-                  {% if ticket.agent %}
-                      {{ ticket.agent.display_name_user }}
-                  {% else %}
-                      {{ phrase('user.tickets.unassigned') }}
-                  {% endif %}
-              </span>
-                </div>
-            </div>
-            <div class="agent">
-                <span class="agent-avatar"
-                      style="background: url({{ avatar_url(ticket.person) }}) no-repeat; background-size: cover;"></span>
-
-                <div class="agent-info">
-                    <span class="agent-meta">{{ phrase('portal.tickets.opened-by') }}</span>
-                    <span class="agent-name">{{ ticket.person.display_name_user }}</span>
-                </div>
-            </div>
-        </div>
-
-        {% if ticket.userParticipants|length %}
-            <div class="agent-extras">
-                <span class="grey">{{ phrase('portal.tickets.also-cc') }}</span>
-                {% for person in ticket.userParticipants %}
-                    <div class="agent">
-                        <span class="agent-meta">{{ person.display_name_user }}</span>
-                <span class="agent-avatar agent-avatar-tiny agent-avatar-blank">
-                  <a href="#" class="remove-agent"></a>
-                </span>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-    </div>
-    <!-- End Container -->
-
-    <hr>
-
+{% block page_specific_content %}
     {% if rerendering %}
         <strong>{{ phrase('portal.tickets.switched-department-rerender') }}</strong>
     {% endif %}
@@ -73,7 +9,16 @@
         {% show ticket_form %}
     </div>
 
-    <a href="{{ portal_path(ticket) }}">{{ phrase('portal.tickets.cancel-ticket-edit') }}</a>
+    <div class="column-full">
+        <div class="bucket">
+            <a href="{{ portal_path(ticket) }}">{{ phrase('portal.tickets.cancel-ticket-edit') }}</a>
+        </div>
+    </div>
+{% endblock page_specific_content %}
 
-</article>
-{% endblock inner_content %}
+{% block doc_end %}
+    <!-- DESKPRO_TICKET_DISPLAY -->
+    <script type="text/javascript">
+        {{ ticket_display_js|raw }}
+    </script>
+{% endblock doc_end %}

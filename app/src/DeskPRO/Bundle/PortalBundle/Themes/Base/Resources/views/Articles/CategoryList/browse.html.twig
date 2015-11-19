@@ -5,8 +5,8 @@
             <article class="article-categories">
                 <header>
                     <h1>
+                        <i class="fa fa-star"></i>
                         <a href="{{ portal_path(category) }}">
-                            <i class="fa fa-star"></i>
                             {{ category.title }}
                             <span class="count">({{ category_children_pagers[category.id]|length }})</span>
                         </a>

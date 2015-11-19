@@ -125,6 +125,47 @@ class ArticlesDataService extends AbstractDataService
         );
     }
 
+    public function getTopArticlesPager($page, $max_per_page, Person $person)
+    {
+        $em                  = $this->em;
+        $permissions_manager = $this->permissions_manager;
+
+        return $this->generateAndCache(
+            array(
+                'getTopArticlesPager',
+                $page,
+                $max_per_page,
+                $person,
+            ),
+            function () use ($em, $permissions_manager, $max_per_page, $page, $person) {
+                $qb = $em->createQueryBuilder();
+
+                $qb->select('a')
+                    ->from('DeskPRO:Article', 'a')
+                    ->where('a.status = :status')->setParameter('status', Article::STATUS_PUBLISHED)
+                    ->orderBy('a.total_rating', 'DESC');
+
+                $allowed_ids = $permissions_manager->getPermissionsBagForPerson($person)->getAllowedArticleCategories();
+                $using_ids = $allowed_ids;
+
+                if (empty($using_ids)) {
+                    // nocategories are allowed, so no articles are either, returning a blank array pager
+                    $pager = new Pagerfanta(new ArrayAdapter(array()));
+                } else {
+                    $qb->leftJoin('a.categories', 'c')
+                        ->andWhere('c.id IN (:cat_ids)')->setParameter('cat_ids', $using_ids);
+
+                    $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
+                }
+
+                $pager->setMaxPerPage($max_per_page);
+                $pager->setCurrentPage($page);
+
+                return $pager;
+            }
+        );
+    }
+
     /**
      * Takes null, a category ID, or a ArticleCategory and returns an iterable collection of ArticleCategories.
      *

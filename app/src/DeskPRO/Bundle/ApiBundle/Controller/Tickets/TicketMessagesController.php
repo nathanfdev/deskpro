@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\TicketMessage;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Get;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -50,6 +51,13 @@ class TicketMessagesController extends CrudController
     public static $listOrder   = 'asc';
 
     /**
+     * @ApiDoc(
+     *      description="Get a ticket message",
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     *
      * @Get("/ticket_messages/{id}", requirements={"id"="\d+"})
      */
     public function getAction($id)
@@ -58,6 +66,13 @@ class TicketMessagesController extends CrudController
     }
 
     /**
+     * @ApiDoc(
+     *      description="Get list of ticket's messages",
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     *
      * @Get("/tickets/{id}/messages")
      */
     public function listAction(Request $request)

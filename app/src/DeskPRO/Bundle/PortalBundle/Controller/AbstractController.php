@@ -433,4 +433,12 @@ class AbstractController extends BaseController
 
         return $response;
     }
+
+    /**
+     * @return \Doctrine\DBAL\Connection
+     */
+    protected function getConn()
+    {
+        return $this->getEm()->getConnection();
+    }
 }

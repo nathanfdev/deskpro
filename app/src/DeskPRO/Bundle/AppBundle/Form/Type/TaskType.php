@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use DeskPRO\Bundle\AppBundle\Entity\LabelTask;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Form\EventListener\ReplaceNotSubmittedValuesWithDefaultsListener;
 use Symfony\Component\Form\AbstractType;
@@ -163,18 +164,11 @@ class TaskType extends AbstractType
             )
             ->add(
                 'labels',
-                'collection',
+                'api_labels_collection',
                 array(
-                    'type'         => 'label_task',
-                    'allow_add'    => true,
-                    'allow_delete' => true,
-                    'delete_empty' => true,
-                    'by_reference' => false,
-                    'options'      => array(
-                        'task'        => $options['task'],
-                        'required'    => false,
-                        'description' => 'the task labels',
-                    ),
+                    'labels_class'   => LabelTask::class,
+                    'labels_owner'   => $builder->getData(),
+                    'owner_property' => 'task',
                 )
             )
             ->add(

@@ -33,10 +33,12 @@
  */
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Entity\Labels\Label;
+
 /**
  * Base labels associations class.
  */
-abstract class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObject
+abstract class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObject implements Label
 {
     /**
      * The 'type' of label this is for, as it could be found in the
@@ -67,6 +69,14 @@ abstract class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObje
     public function getLabel()
     {
         return $this->label;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return static::LABEL_TYPENAME;
     }
 
     public function __toString()

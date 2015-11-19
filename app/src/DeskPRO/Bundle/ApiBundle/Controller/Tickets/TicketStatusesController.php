@@ -45,7 +45,7 @@ class TicketStatusesController extends BaseController
 {
     /**
      * @ApiDoc(
-     *      description="get all available labels for tickets, sorted alphabetically",
+     *      description="Get all available statuses for tickets, sorted alphabetically",
      *      statusCodes={
      *          200="Success"
      *      }
@@ -64,7 +64,12 @@ class TicketStatusesController extends BaseController
     }
 
     /**
-     * Retrieve the tickets with the given label.
+     * @ApiDoc(
+     *      description="Get tickets with the given status",
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
      *
      * @Get("/ticket_statuses/{status}/tickets", name="api_ticket_statuses_tickets")
      */

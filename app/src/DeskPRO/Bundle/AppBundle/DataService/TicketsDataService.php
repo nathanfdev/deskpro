@@ -270,6 +270,39 @@ class TicketsDataService extends AbstractDataService
     }
 
     /**
+     * Returns the $count number of most recent resolved tickets.
+     *
+     * @param int $count
+     *
+     * @return Ticket[]
+     */
+    public function getLatestResolvedTickets($count = 20)
+    {
+        $em = $this->em;
+
+        return $this->generateAndCache(
+            array(
+                'getLatestResolvedTickets',
+                $count,
+            ),
+            function () use ($em, $count) {
+                $qb = $em->createQueryBuilder();
+
+                $status_list = [Ticket::STATUS_RESOLVED];
+
+                $qb->select('t')
+                    ->from('DeskPRO:Ticket', 't')
+                    ->andWhere('t.status IN (:status_list)')->setParameter('status_list', $status_list);
+
+                $qb->setMaxResults($count);
+                $qb->orderBy('t.date_resolved', 'DESC');
+
+                return $qb->getQuery()->getResult();
+            }
+        );
+    }
+
+    /**
      * @return \Application\DeskPRO\EntityRepository\Ticket
      */
     protected function getTicketRepo()

@@ -25,6 +25,21 @@
     {% endif %}
 {%- endblock form_row -%}
 
+{%- block repeated_row -%}
+    {% for child in form %}
+        {# containers #}
+        {% set root_and_not_hidden = has_root_parent and not fully_hidden %}
+        {% if root_and_not_hidden %}<div class="column-full"><div class="bucket{% if not valid %} error{% endif %}">{% endif %}
+
+        {{- form_label(child, null, {'label_attr': {'class': 'title'}}) -}}
+        {{- form_widget(child) -}}
+        {{- form_errors(child) -}}
+
+        {# /containers #}
+        {% if root_and_not_hidden %}</div></div>{% endif %}
+    {% endfor %}
+{%- endblock repeated_row -%}
+
 
 {%- block form_row_nohelp -%}
     {% set root_and_not_hidden = has_root_parent and not fully_hidden %}
@@ -86,16 +101,22 @@
     {% endif %}
 {%- endblock form_row_help_col -%}
 
-{%- block deskpro_combined_type_row -%}
-    <div class="column-half">
-        <div class="bucket">
-            {{ form_row(form.children|first) }}
-        </div>
-    </div>
+{%- block submit_widget -%}
+    {%- set type = type|default('submit') -%}
+    <div class="column-full"><div class="bucket">{{ block('button_widget') }}</div></div>
+{%- endblock submit_widget -%}
 
-    <div class="column-half omega">
-        <div class="bucket">
-            {{ form_row(form.children|last) }}
+{%- block deskpro_combined_type_row -%}
+    <div class="column-full">
+        <div class="column-half">
+            <div class="bucket">
+                {{ form_row(form.children|first) }}
+            </div>
+        </div>
+        <div class="column-half omega">
+            <div class="bucket">
+                {{ form_row(form.children|last) }}
+            </div>
         </div>
     </div>
 {%- endblock -%}

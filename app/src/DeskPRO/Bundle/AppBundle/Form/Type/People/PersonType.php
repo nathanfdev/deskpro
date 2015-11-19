@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type\People;
 
+use Application\DeskPRO\Entity\LabelPerson;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -52,6 +53,11 @@ class PersonType extends ApiType
             ->add('summary', 'text')
             ->add('organization', 'entity', ['class' => 'DeskPRO:Organization'])
             ->add('language', 'entity', ['class' => 'DeskPRO:Language'])
+            ->add('labels', 'api_labels_collection', [
+                'labels_class'   => LabelPerson::class,
+                'labels_owner'   => $builder->getData(),
+                'owner_property' => 'person',
+            ])
         ;
     }
 }

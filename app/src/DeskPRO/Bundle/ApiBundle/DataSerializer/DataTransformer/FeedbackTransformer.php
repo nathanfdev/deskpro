@@ -46,6 +46,7 @@ class FeedbackTransformer extends AbstractDataSerializerTransformer
         return [
             'id',
             'status',
+            'status_category',
             'person',
             'hidden_status',
             'title',
@@ -60,6 +61,7 @@ class FeedbackTransformer extends AbstractDataSerializerTransformer
             'popularity',
             'content',
             'category_id',
+            'custom_data'
         ];
     }
 
@@ -72,7 +74,7 @@ class FeedbackTransformer extends AbstractDataSerializerTransformer
         $feedback = $transformation_request->getDataToBeTransformed();
 
         return [
-            'labels' => $feedback->getStringLabels(),
+            'labels' => $feedback->getStringLabels()
         ];
     }
 }

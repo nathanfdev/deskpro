@@ -14,9 +14,9 @@ export class List extends React.Component {
 
   static propTypes = {
     currentView: PropTypes.string.isRequired,
+    currentNav: PropTypes.object,
     tasks: PropTypes.object.isRequired,
-    loaded: PropTypes.bool.isRequired,
-    listParams: PropTypes.object.isRequired
+    loaded: PropTypes.bool
   };
 
   renderView() {
@@ -34,12 +34,12 @@ export class List extends React.Component {
   }
 
   render() {
-    const { listParams, loaded, tasks } = this.props;
+    const { currentNav, loaded, tasks } = this.props;
 
     return (
-      <ListFrameContainer>
+      <ListFrameContainer className="task-list-frame">
         <ControlBarContainer />
-        {listParams.get('nav') &&
+        {currentNav &&
           <Loader loaded={loaded}
                   color="green"
                   opacity={0}

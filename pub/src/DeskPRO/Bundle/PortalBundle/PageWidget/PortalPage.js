@@ -1,5 +1,5 @@
 import PageWidget from "DeskPRO/Component/PageWidget/PageWidget";
-import NewTicketForm from "DeskPRO/Bundle/PortalBundle/PageWidget/NewTicketForm";
+import TicketForm from "DeskPRO/Bundle/PortalBundle/PageWidget/TicketForm";
 import PortalFormWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/PortalFormWidget";
 import TicketView from "DeskPRO/Bundle/PortalBundle/PageWidget/TicketView";
 import TicketList from "DeskPRO/Bundle/PortalBundle/PageWidget/TicketList";
@@ -11,6 +11,7 @@ import OmniSearchWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/OmniSearchW
 import LanguageChangerWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/LanguageChangerWidget";
 import AgentBarWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/AgentBarWidget";
 import LoginDropdownWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/LoginDropdownWidget";
+import ArticleHighlighter from "DeskPRO/Bundle/PortalBundle/PageWidget/ArticleHighlighter";
 import CustomPerFieldEdit from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/CustomPerFieldEdit";
 import $ from "jquery";
 
@@ -19,7 +20,8 @@ export default class PortalPage extends PageWidget {
     this.addWidgetDef(OmniSearchWidget, "#omnisearch");
     this.addWidgetDef(LoginDropdownWidget, "#top-login-btn");
     this.addWidgetDef(LanguageChangerWidget, "#language-changer");
-    this.addWidgetDef(NewTicketForm, "#new_ticket_page");
+    this.addWidgetDef(TicketForm, "#new_ticket_page");
+    this.addWidgetDef(TicketForm, "#edit_ticket_form");
     this.addWidgetDef(TicketView, "#ticket_view_page");
     this.addWidgetDef(TicketList, "#ticket_list_page");
     this.addWidgetDef(FeedbackPage, "#feedback_page");
@@ -29,6 +31,7 @@ export default class PortalPage extends PageWidget {
     this.addWidgetDef(ClickToDismissWidget, ".click-to-dismiss");
     this.addWidgetDef(AgentBarWidget, "#agent-bar");
     this.addWidgetDef(PortalFormWidget, ".dpx-form");
+    this.addWidgetDef(ArticleHighlighter, ".dpx-kb-article-content");
     return new Promise((resolve) => {
       $(document).ready(resolve);
       if (window.DP_LOAD_FN && window.DP_LOAD_FN.length) {

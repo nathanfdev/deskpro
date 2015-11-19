@@ -21,11 +21,11 @@ export class SortingMenu extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {expanded: false};
+    this.state = { expanded: false };
   }
 
-  toggleExpanded = () => this.setState({expanded: !this.state.expanded});
-  collapse = () => this.setState({expanded: false});
+  toggleExpanded = () => this.setState({ expanded: !this.state.expanded });
+  collapse = () => this.setState({ expanded: false });
 
   render() {
     const { sort, order, options } = this.props;
@@ -39,7 +39,7 @@ export class SortingMenu extends Component {
           title="Order by:"
           icon={current ? current.icon : null}
           label={current ? `${current.label} (${order})` : '(no order)'}
-        />
+          />
 
         <Detached isOpen={this.state.expanded}
                   positionAt="left bottom"
@@ -54,30 +54,38 @@ export class SortingMenu extends Component {
   }
 }
 
-@connect()
-class OrderByDropdownContainer extends Component {
+@connect() class OrderByDropdownContainer extends Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     options: PropTypes.object.isRequired,
     sort: PropTypes.string.isRequired,
     order: PropTypes.string.isRequired,
+    onMenuUnmount: PropTypes.func,
     sortAction: PropTypes.func.isRequired,
     orderAction: PropTypes.func.isRequired
   };
+
+  componentWillUnmount() {
+    const {dispatch, onMenuUnmount} = this.props;
+
+    if (onMenuUnmount) {
+      dispatch(onMenuUnmount());
+    }
+  }
 
   renderOptions() {
     const { dispatch, sort, sortAction, options } = this.props;
     return (
       jQuery.map(options, (option, type) =>
-          <Item
-            key={type}
-            label={option.label}
-            isActive={sort === type}
-            checked={sort === type}
-            onClick={() => dispatch(sortAction(type))}
-            icon={option.icon}
-          />
+        <Item
+          key={type}
+          label={option.label}
+          isActive={sort === type}
+          checked={sort === type}
+          onClick={() => dispatch(sortAction(type))}
+          icon={option.icon}
+        />
       )
     );
   }
@@ -85,8 +93,8 @@ class OrderByDropdownContainer extends Component {
   render() {
     const { dispatch, order, orderAction } = this.props;
     const options = [
-      {id: 'asc', onClick: () => dispatch(orderAction('asc')), label: 'Asc'},
-      {id: 'desc', onClick: () => dispatch(orderAction('desc')), label: 'Desc'}
+      { id: 'asc', onClick: () => dispatch(orderAction('asc')), label: 'Asc' },
+      { id: 'desc', onClick: () => dispatch(orderAction('desc')), label: 'Desc' }
     ];
 
     return (

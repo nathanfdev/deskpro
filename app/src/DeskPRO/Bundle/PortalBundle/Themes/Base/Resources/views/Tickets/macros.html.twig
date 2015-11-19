@@ -1,4 +1,4 @@
-{% macro person_sidebar(person, avatar_link = false) %}
+{% macro person_sidebar(person, avatar_link = false, as_agent = false) %}
     <div class="sidebar-person">
         {% if avatar_link %}
         <a href="{{ avatar_link }}" class="post-link">
@@ -16,19 +16,19 @@
             {% if avatar_link %}
         </a>
         {% endif %}
-        {% if person %}
+        {% if person and not as_agent %}
         <a href="mailto:{{ person.primary_email_address }}">
             {% endif %}
             <span class="avatar-meta">
         {% if person %}
-            <span class="primary">{{ person.display_name }}</span>
-            <span class="secondary">{{ person.primary_email_address }}</span>
+            <span class="primary {% if as_agent %}single{% endif %}">{{ person.display_name }}</span>
+            {% if not as_agent %}<span class="secondary">{{ person.primary_email_address }}</span>{% endif %}
         {% else %}
             <span class="primary">Unassigned</span>
             <span class="secondary">An agent will be assigned</span>
         {% endif %}
     </span>
-            {% if person %}
+            {% if person and not as_agent %}
         </a>
         {% endif %}
     </div>

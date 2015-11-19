@@ -49,7 +49,7 @@ return array(
     'portal.tickets.edit-ticket'                  => 'EDIT TICKET',
     'portal.tickets.ticket-ref'                   => 'Ticket reference',
     'portal.tickets.cancel-ticket-edit'           => 'Cancel edit, show me the ticket again',
-    'portal.tickets.add-reply'                    => 'Add a Reply',
+    'portal.tickets.add-reply'                    => 'Reply',
     'portal.tickets.mark-resolved'                => 'Mark as Resolved',
     'portal.tickets.mark-unresolved'              => 'Re-open Ticket',
     'portal.tickets.assigned-agent'               => 'Assigned agent',

@@ -8,6 +8,7 @@ import { ListFrameMenu } from '../../ListFrameMenu';
 export class ControlBar extends Component {
 
   static propTypes = {
+    onMenuUnmount: PropTypes.shape({ onMenuUnmount: PropTypes.func }),
     checkbox: PropTypes.shape({
       count: PropTypes.number.isRequired,
       action: PropTypes.func.isRequired
@@ -35,7 +36,7 @@ export class ControlBar extends Component {
           label: PropTypes.string.isRequired,
           param: PropTypes.string.isRequired,
           modeParam: PropTypes.string.isRequired,
-          labels: PropTypes.array.isRequired
+          labels: PropTypes.object.isRequired
         }),
         PropTypes.shape({
           type: PropTypes.oneOf(['select']).isRequired,
@@ -65,16 +66,16 @@ export class ControlBar extends Component {
   };
 
   render() {
-    const { checkbox, sorting, filtering, view } = this.props;
+    const { checkbox, sorting, filtering, view, onMenuUnmount } = this.props;
 
     return (
       <ListFrameMenu>
         <CheckboxContainer {...checkbox} />
-        <SortingMenu {...sorting} />
+        <SortingMenu {...sorting} onMenuUnmount={onMenuUnmount} />
         <li>
           <hr/>
         </li>
-        <FilteringMenuContainer {...filtering} />
+        <FilteringMenuContainer {...filtering}  onMenuUnmount={onMenuUnmount} />
         <li>
           <hr/>
         </li>

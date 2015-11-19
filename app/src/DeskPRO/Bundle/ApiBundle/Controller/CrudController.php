@@ -49,13 +49,10 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * Base REST CRUD controller
  *
- * @todo After fixing Nelmio API doc generator, check how it handles @ApiDoc annotations in parent classes
- * @todo Write general actions docs
  * @todo Location header
  * @todo More user friendly validation errors output
- * @todo Allow partial updates as patches (?)
  */
-class CrudController extends BaseController
+abstract class CrudController extends BaseController
 {
     public static $entity;
     public static $type;
@@ -77,17 +74,18 @@ class CrudController extends BaseController
 
     /**
      * @ApiDoc(
-     *      description="Get an entity",
+     *      description="Get a resource",
      *      requirements={
      *          {
      *              "name"="id",
      *              "requirement"="\d+",
-     *              "description"="The id of the entity",
+     *              "description"="The id of the resource",
      *              "dataType"="integer"
      *          }
      *      },
      *      statusCodes={
      *          200="Success",
+     *          403="Denied",
      *          404="Not Found"
      *      }
      * )
@@ -108,6 +106,22 @@ class CrudController extends BaseController
      *
      * Selects entities based on the provided "ids" parameter or returns paginated list of no IDs provided
      *
+     * @ApiDoc(
+     *      description="Get collection of resources",
+     *      requirements={
+     *          {
+     *              "name"="ids",
+     *              "requirement"="[\d,]+",
+     *              "description"="(Optional) Comma separated list of IDs",
+     *              "dataType"="string"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success",
+     *          403="Denied",
+     *          404="Not Found"
+     *      }
+     * )
      * @Get("")
      */
     public function listAction(Request $request)
@@ -157,6 +171,14 @@ class CrudController extends BaseController
     }
 
     /**
+     * @ApiDoc(
+     *      description="Create a new resource",
+     *      statusCodes={
+     *          200="Success",
+     *          400="Bad Request",
+     *          403="Denied"
+     *      }
+     * )
      * @Post("")
      */
     public function postAction(Request $request)
@@ -167,6 +189,22 @@ class CrudController extends BaseController
     }
 
     /**
+     * @ApiDoc(
+     *      description="Update an existing resource",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="The id of the resource",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success",
+     *          400="Bad Request",
+     *          403="Denied"
+     *      }
+     * )
      * @Put("/{id}", requirements={"id"="\d+"})
      */
     public function putAction($id, Request $request)
@@ -177,6 +215,22 @@ class CrudController extends BaseController
     }
 
     /**
+     * @ApiDoc(
+     *      description="Delete a resource",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="The id of the resource",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success",
+     *          400="Bad Request",
+     *          403="Denied"
+     *      }
+     * )
      * @Delete("/{id}", requirements={"id"="\d+"})
      */
     public function deleteAction($id, Request $request)
@@ -256,6 +310,24 @@ class CrudController extends BaseController
     }
 
     /**
+     * Persist model.
+     *
+     * This method is called on a valid entity to persist it. May be overwritten in child controllers.
+     *
+     * @param object $model
+     *
+     * @return object The passed model
+     */
+    protected function persistModel($model)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($model);
+        $em->flush();
+
+        return $model;
+    }
+
+    /**
      * @param object  $model
      * @param Request $request
      *
@@ -284,11 +356,7 @@ class CrudController extends BaseController
         );
 
         if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($model);
-            $em->flush();
-
-            return View::create($this->dataSerialize($model), $status);
+            return View::create($this->dataSerialize($this->persistModel($model)), $status);
         }
 
         throw new InvalidFormException($form);

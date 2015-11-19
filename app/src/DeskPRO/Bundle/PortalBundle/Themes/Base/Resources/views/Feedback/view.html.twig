@@ -19,14 +19,6 @@
                 {#</a>#}
             </div>
 
-            <div class="header-button-container">
-                <div class="header-buttons">
-                    {% show feedback_subscription_link %}
-                    {#<a href="#">{{ phrase('portal.general.btn-email') }} <i class="fa fa-envelope"></i></a>#}
-                    {#<a href="#">{{ phrase('portal.general.btn-print') }} <i class="fa fa-print"></i></a>#}
-                    {#<a href="#">{{ phrase('portal.general.btn-download-pdf') }} <i class="fa fa-file-pdf-o"></i></a>#}
-                </div>
-            </div>
 
             <div class="feedback-item-content">
                 <span class="feedback-status">
@@ -41,11 +33,18 @@
                     {% endif %}
                 </span>
 
+                <span class="feedback-item-type"><a href="{{ portal_path(item.category) }}">{{ item.category }}</a></span>
+
+                <div class="header-buttons">
+                    {% show feedback_subscription_link %}
+                    {#<a href="#">{{ phrase('portal.general.btn-email') }} <i class="fa fa-envelope"></i></a>#}
+                    {#<a href="#">{{ phrase('portal.general.btn-print') }} <i class="fa fa-print"></i></a>#}
+                    {#<a href="#">{{ phrase('portal.general.btn-download-pdf') }} <i class="fa fa-file-pdf-o"></i></a>#}
+                </div>
+
                 <h1>
-                    <span class="text-tag"><a href="{{ portal_path(item.category) }}">{{ item.category }}</a></span>
                     <a href="{{ portal_path(item) }}">{{ item.title }}</a>
                 </h1>
-
 
                 <div class="comment">
                     <p>{{ item.content_html|raw }}</p>

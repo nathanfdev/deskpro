@@ -2,39 +2,51 @@ import React, { PropTypes } from 'react';
 import { HeaderContainer } from './HeaderContainer';
 import { TaskCardContainer } from '../TaskCardContainer';
 import { TaskCard } from './TaskCard/TaskCard';
+import { TaskCardPreviewContainer } from '../TaskCardPreviewContainer';
+import { TaskCardPreview } from '../Card/TaskCard/TaskCardPreview';
 import { ListGroup } from './ListGroup';
-import { Table } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { Table, CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 
 export class TableView extends React.Component {
 
   static propTypes = {
-    taskGroups: PropTypes.array
+    taskGroups: PropTypes.array,
+    onChangeGroup: PropTypes.func
   };
 
   render() {
-    const { taskGroups = [] } = this.props;
+    const { taskGroups = [], onChangeGroup } = this.props;
 
     return (
-      <Table>
-          <HeaderContainer />
+      <div>
+        <Table>
+            <HeaderContainer />
 
-          {taskGroups
-            .filter(taskGroup => taskGroup.elements.length)
-            .map((taskGroup, index) =>
+            {taskGroups
+              .filter(taskGroup => taskGroup.elements.length)
+              .map((taskGroup, index) =>
 
-            <ListGroup title={taskGroup.title}
-                       key={index}
-                       param={taskGroup.param}
-                       value={taskGroup.value}>
+              <ListGroup title={taskGroup.title}
+                         key={index}
+                         param={taskGroup.param}
+                         value={taskGroup.value}
+                         onChangeGroup={onChangeGroup}>
 
-              {taskGroup.elements.map(task =>
-                <TaskCardContainer task={task} key={task.get('id')}>
-                  <TaskCard />
-                </TaskCardContainer>
-              )}
-            </ListGroup>
-          )}
-      </Table>
+                {taskGroup.elements.map(task =>
+                  <TaskCardContainer task={task} key={task.get('id')}>
+                    <TaskCard />
+                  </TaskCardContainer>
+                )}
+              </ListGroup>
+            )}
+        </Table>
+
+        <CustomCardDragLayer>
+          <TaskCardPreviewContainer>
+            <TaskCardPreview />
+          </TaskCardPreviewContainer>
+        </CustomCardDragLayer>
+      </div>
     );
   }
 }

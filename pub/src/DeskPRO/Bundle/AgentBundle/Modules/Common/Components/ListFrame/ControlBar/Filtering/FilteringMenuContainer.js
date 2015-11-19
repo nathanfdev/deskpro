@@ -11,30 +11,23 @@ import { LabelsFilter } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Componen
 import { ChoiceMenu, ChoiceMenuOption } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/ChoiceMenu';
 import Immutable from 'immutable';
 
-/**
- * This file is too big and contains several Filter* components, the reason why it's here and not
- * under Filtering/Filters folder in DateFilter/LabelsFilter/etc is that Menu and Item components are rendered
- * properly only if Menu is a first level child of Item and this condition gets broken when adding additional
- * DateFilter/LabelFilter/etc components.
- *
- * @todo Fix Menu component and split this into DateFilter/LabelFilter/SelectFilter
- */
 @connect()
 export class FilteringMenuContainer extends Component {
   static propTypes = {
+    onMenuUnmount: PropTypes.func,
     dispatch: PropTypes.func.isRequired,
-    filters: PropTypes.object.isRequired,
+    filters: PropTypes.array.isRequired,
     setParamsAction: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired
   };
 
   constructor(props) {
     super(props);
-    this.state = {expanded: false};
+    this.state = { expanded: false };
   }
 
-  toggleExpanded = () => this.setState({expanded: !this.state.expanded});
-  collapse = () => this.setState({expanded: false});
+  toggleExpanded = () => this.setState({ expanded: !this.state.expanded });
+  collapse = () => this.setState({ expanded: false });
 
   stateValue(param) {
     let value = this.props.state.get(param);
@@ -66,7 +59,7 @@ export class FilteringMenuContainer extends Component {
   }
 
   render() {
-    const { filters = [] } = this.props;
+    const { dispatch, state, setParamsAction, onMenuUnmount, filters = [] } = this.props;
 
     return (
       <li ref="menuItem">
@@ -76,36 +69,55 @@ export class FilteringMenuContainer extends Component {
           icon={null}
           label={this.getButtonLabel()}
           onClick={this.toggleExpanded}
-        />
+          />
         <Positioned isOpen={this.state.expanded}
                     positionAt="left bottom"
                     positionTarget={this.refs.button}>
           <ClickOut
             onClickOut={this.collapse}
             ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list']}>
-            <Menu>
-              {filters.map((filter, index) => this.renderFilter(filter, index))}
-            </Menu>
+            <FilteringMenu
+              dispatch={dispatch}
+              filters={filters}
+              state={state}
+              stateValue={this.stateValue.bind(this)}
+              onMenuUnmount={onMenuUnmount}
+              setParamsAction={setParamsAction}
+              />
           </ClickOut>
         </Positioned>
       </li>
     );
   }
+}
+
+/**
+ * This class is too big and contains several Filter* components, the reason why it's here and not
+ * under Filtering/Filters folder in DateFilter/LabelsFilter/etc is that Menu and Item components are rendered
+ * properly only if Menu is a first level child of Item and this condition gets broken when adding additional
+ * DateFilter/LabelFilter/etc components.
+ *
+ * @todo Fix Menu component and split this into DateFilter/LabelFilter/SelectFilter
+ */
+export class FilteringMenu extends Component {
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    onMenuUnmount: PropTypes.func,
+    filters: PropTypes.array.isRequired,
+    setParamsAction: PropTypes.func.isRequired,
+    state: PropTypes.object.isRequired
+  };
+
+  componentWillUnmount() {
+    const {dispatch, onMenuUnmount} = this.props;
+
+    if (onMenuUnmount) {
+      dispatch(onMenuUnmount());
+    }
+  }
 
   // Generic <Filter /> component --------------------------------------------------------------------------------------
 
-  renderFilter(filter, index) {
-    switch (filter.type) {
-      case 'date':
-        return this.renderDateFilter(filter, index);
-      case 'labels':
-        return this.renderLabelsFilter(filter, index);
-      case 'select':
-        return this.renderSelectFilter(filter, index);
-      default:
-        throw new Error(`Unknown filter type - ${filter.type}`);
-    }
-  }
 
   unsetParams(params) {
     const unset = {};
@@ -126,9 +138,9 @@ export class FilteringMenuContainer extends Component {
   }
 
   renderDateFilter({ label, icon, fromParam, toParam }, index) {
-    const { dispatch, setParamsAction } = this.props;
-    const from = this.stateValue(fromParam);
-    const to = this.stateValue(toParam);
+    const { dispatch, setParamsAction, stateValue } = this.props;
+    const from = stateValue(fromParam);
+    const to = stateValue(toParam);
     const isActive = Boolean(from || to);
 
     return (
@@ -141,7 +153,8 @@ export class FilteringMenuContainer extends Component {
 
         {this.renderDateCreatedItemContent(from, to)}
         <Menu>
-          <div className="dpw-navigation-dropdown-panel dpw-navigation-date-picker-panel dpw-navigation-dropdown-panel-corner-left">
+          <div
+            className="dpw-navigation-dropdown-panel dpw-navigation-date-picker-panel dpw-navigation-dropdown-panel-corner-left">
             <div className="dpw-date-picker">
 
               <div className="dpw-date-picker-panel-container">
@@ -150,12 +163,12 @@ export class FilteringMenuContainer extends Component {
                     label="From"
                     className="dpw-date-picker-left"
                     value={from}
-                    onChange={value => dispatch(setParamsAction({[fromParam]: value}))} />
+                    onChange={value => dispatch(setParamsAction({[fromParam]: value, delayReload: true}))}/>
                   <DateTimePicker
                     label="To"
                     className="dpw-date-picker-right"
                     value={to}
-                    onChange={value => dispatch(setParamsAction({[toParam]: value}))} />
+                    onChange={value => dispatch(setParamsAction({[toParam]: value, delayReload: true}))}/>
                 </form>
               </div>
             </div>
@@ -164,6 +177,7 @@ export class FilteringMenuContainer extends Component {
       </FilterItem>
     );
   }
+
 
   // Labels filter -----------------------------------------------------------------------------------------------------
 
@@ -185,21 +199,21 @@ export class FilteringMenuContainer extends Component {
   }
 
   renderLabelsFilter({ label, icon, labels, param, modeParam }, index) {
-    const { dispatch, setParamsAction } = this.props;
-    const selected = this.stateValue(param) || [];
-    const mode = this.stateValue(modeParam);
+    const { dispatch, setParamsAction, stateValue } = this.props;
+    const selected = stateValue(param) || [];
+    const mode = stateValue(modeParam);
     const isActive = Boolean(selected.length);
 
     const selectLabel = selectedLabel => {
       if (selected.indexOf(selectedLabel) === -1) {
         selected.push(selectedLabel);
-        dispatch(setParamsAction({[param]: selected}));
+        dispatch(setParamsAction({ [param]: selected, delayReload: true }));
       }
     };
     const deselectLabel = deselectedLabel => {
       if (selected.indexOf(deselectedLabel) !== -1) {
         selected.splice(selected.indexOf(deselectedLabel), 1);
-        dispatch(setParamsAction({[param]: selected}));
+        dispatch(setParamsAction({ [param]: selected, delayReload: true }));
       }
     };
 
@@ -210,12 +224,12 @@ export class FilteringMenuContainer extends Component {
         label={label}
         isActive={isActive}
         resetFilter={() => this.unsetParams(param)}
-      >
+        >
         {this.renderLabelsFilterInfo(selected)}
         <Menu>
           <LabelsFilter
             params={{'get': () => mode}}
-            changeMode={newMode => dispatch(setParamsAction({[modeParam]: newMode}))}
+            changeMode={newMode => dispatch(setParamsAction({[modeParam]: newMode, delayReload: true}))}
             allLabels={labels}
             selectedLabels={selected}
             selectLabel={selectLabel}
@@ -249,22 +263,22 @@ export class FilteringMenuContainer extends Component {
   }
 
   renderSelectFilter({ label, icon, param, multiple, options }, index) {
-    const { dispatch, setParamsAction } = this.props;
-    const filterValue = this.stateValue(param) || [];
+    const { dispatch, setParamsAction, stateValue } = this.props;
+    const filterValue = stateValue(param) || [];
     const isActive = Boolean(filterValue.length);
 
     // onClick depending on if filter selects multiple values or a single value
     let onClick;
     if (multiple === false) {
-      onClick = (value) => () => dispatch(setParamsAction({[param]: value}));
+      onClick = (value) => () => dispatch(setParamsAction({ [param]: value, delayReload: true }));
     } else {
-      onClick = (value) => () => {
+      onClick = (value, newParam = null) => () => {
         if (filterValue.indexOf(value) === -1) {
           filterValue.push(value);
         } else {
           filterValue.splice(filterValue.indexOf(value), 1);
         }
-        dispatch(setParamsAction({[param]: filterValue}));
+        dispatch(setParamsAction({ [newParam ? newParam : param]: filterValue, delayReload: true }));
       };
     }
 
@@ -281,8 +295,8 @@ export class FilteringMenuContainer extends Component {
                 value={option.value}
                 values={filterValue}
                 label={option.label}
-                onClick={onClick(option.value)}
-              />
+                onClick={onClick(option.value, option.param)}
+                />
           )}
         </ul>
       );
@@ -295,26 +309,49 @@ export class FilteringMenuContainer extends Component {
         label={label}
         isActive={isActive}
         resetFilter={() => this.unsetParams(param)}
-      >
+        >
         {this.renderSelectFilterInfo(options, filterValue)}
         <Menu>
           <ChoiceMenu title={label}>
             <ul>
               {options.map((option, index2) =>
-                <ChoiceMenuOption
-                  key={index2}
-                  value={option.value}
-                  values={filterValue}
-                  label={option.label}
-                  onClick={onClick(option.value)}
-                >
-                  {renderNested(option.nested)}
-                </ChoiceMenuOption>
+                  <ChoiceMenuOption
+                    key={index2}
+                    value={option.value}
+                    values={filterValue}
+                    label={option.label}
+                    onClick={onClick(option.value)}
+                    >
+                    {renderNested(option.nested)}
+                  </ChoiceMenuOption>
               )}
             </ul>
           </ChoiceMenu>
         </Menu>
       </FilterItem>
+    );
+  }
+
+  renderFilter(filter, index) {
+    switch (filter.type) {
+      case 'date':
+        return this.renderDateFilter(filter, index);
+      case 'labels':
+        return this.renderLabelsFilter(filter, index);
+      case 'select':
+        return this.renderSelectFilter(filter, index);
+      default:
+        throw new Error(`Unknown filter type - ${filter.type}`);
+    }
+  }
+
+  render() {
+    const { filters = [] } = this.props;
+
+    return (
+      <Menu>
+        {filters.map((filter, index) => this.renderFilter(filter, index))}
+      </Menu>
     );
   }
 }

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { DragLayer } from 'react-dnd';
 import Moment from 'moment';
 import { FormattedDate } from 'react-intl';
-import { Card } from '../../Common/Components/ListFrame/Card';
+import { Card } from '../../Common/Components/ListFrame/View/Card';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
 import { AgentTeamAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/AgentTeamAvatar';
 import { DepartmentAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/DepartmentAvatar';

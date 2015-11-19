@@ -34,7 +34,7 @@ export class FeedbackCommentsCardsContainer extends Component {
         {comments.map((element, index) =>
           <FeedbackCommentCard
             dispatch={dispatch}
-            feedback={feedbackFromStore.get(element.feedback_id)}
+            feedback={feedbackFromStore.get(element.feedback)}
             selected={selected.includes(element.id)}
             toggleSelected={toggleSelected}
             massAction={massAction}

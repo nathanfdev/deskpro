@@ -408,6 +408,11 @@ class DpKernel extends AbstractKernel
         $deskpro_url       = App::getSetting('core.deskpro_url');
         $enable_correction = App::getSetting('core.deskpro_url_autocorrect');
 
+        // used by dev installer to set default domain
+        if ($deskpro_url === 'http://deskpro-dev/') {
+            return;
+        }
+
         if ($deskpro_url && '/news.rss' !== $path) {
             if (false === $correct_scheme = $request->isCorrectScheme($deskpro_url)) {
                 $interface = false !== strpos($request->getReturnParam(), 'admin') ? 'admin' : $this->interface;

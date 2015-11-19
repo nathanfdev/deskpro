@@ -75,7 +75,7 @@ class TicketReplyType extends AbstractType
         ));
 
         $builder->add('submit', 'submit', array(
-            'label' => $this->language_manager->phrase('portal.forms.label_submit'),
+            'label' => $this->language_manager->phrase('portal.tickets.add-reply'),
         ));
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, array($this, 'onPostSubmit'));

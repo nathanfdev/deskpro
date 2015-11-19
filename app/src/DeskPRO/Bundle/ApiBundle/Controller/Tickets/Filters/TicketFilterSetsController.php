@@ -73,7 +73,7 @@ class TicketFilterSetsController extends BaseController
 
     /**
      * @ApiDoc(
-     *      description="get a filter set",
+     *      description="Get a filter set",
      *      requirements={
      *          {
      *              "name"="id",
@@ -217,7 +217,7 @@ class TicketFilterSetsController extends BaseController
 
     /**
      * @ApiDoc(
-     *      description="get the filters within a filter set",
+     *      description="Get the filters within a filter set",
      *      requirements={
      *          {
      *              "name"="id",

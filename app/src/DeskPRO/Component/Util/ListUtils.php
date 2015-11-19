@@ -73,7 +73,7 @@ class ListUtils
     {
         $new = array();
 
-        if (!is_array($values)) {
+        if (!is_array($values) && !($array instanceof \Traversable)) {
             $values = array($values);
         }
 

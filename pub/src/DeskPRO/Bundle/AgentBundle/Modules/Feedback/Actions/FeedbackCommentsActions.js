@@ -10,11 +10,6 @@ import { applyParams } from './FeedbackListActions';
  */
 const recordStoresId = 'feedback';
 
-export const getFeedbackForComments = createAction(
-  'FEEDBACK_COMMENTS_GET_FEEDBACK',
-    ids => dispatch => dispatch(loadFeedback(recordStoresId, ids))
-);
-
 export const deleteComment = createAction(
   'FEEDBACK_COMMENTS_DELETE',
   (id) => dispatch => {

@@ -1,39 +1,42 @@
 import React, { PropTypes } from 'react';
-import { Controls } from './ControlBar/Controls';
-import { CalendarHeader } from './CalendarHeader';
-import { CalendarBody } from './CalendarBody';
-import moment from 'moment';
+import { Calendar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Calendar/index';
+import { TaskCard } from './TaskCard/TaskCard';
+import { TaskDragCard } from './TaskCard/TaskDragCard';
+import { TaskCardDragTarget } from './TaskCard/TaskCardDragTarget';
+import { TaskCardPreviewContainer } from '../TaskCardPreviewContainer';
+import { TaskCardPreview } from './TaskCard/TaskCardPreview';
+import { CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 
 export class CalendarView extends React.Component {
 
   static propTypes = {
-    tasks: PropTypes.object
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      date: moment()
-    };
-  }
-
-  onChangeDate = date => {
-    this.setState({
-      date: date
-    });
+    tasks: PropTypes.object,
+    onChangeGroup: PropTypes.func
   };
 
   render() {
+    const { tasks, onChangeGroup } = this.props;
+    const config = {
+      elements: tasks,
+      elementName: 'task',
+      dateField: 'date_due',
+      additionalPrefix: 'Tasks for',
+      card: <TaskCard />,
+      draggable: {
+        source: <TaskDragCard />,
+        target: <TaskCardDragTarget onChangeGroup={onChangeGroup} />
+      }
+    };
+
     return (
       <div>
-        <Controls date={this.state.date}
-                  onChange={this.onChangeDate} />
+        <Calendar {...config} />
 
-        <table className="calendar-content">
-          <CalendarHeader date={this.state.date} />
-          <CalendarBody date={this.state.date}
-                        tasks={this.props.tasks} />
-        </table>
+        <CustomCardDragLayer>
+          <TaskCardPreviewContainer>
+            <TaskCardPreview />
+          </TaskCardPreviewContainer>
+        </CustomCardDragLayer>
       </div>
     );
   }

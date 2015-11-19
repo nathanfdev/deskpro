@@ -4,7 +4,7 @@ import {
   CardLine,
   CardLineLeft,
   CardLineRight
-} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Card';
+} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
 import {
   BaseTaskCard,
   Title,
@@ -21,18 +21,21 @@ import {
 export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
-    task: PropTypes.object.isRequired
+    task: PropTypes.object,
+    moving: PropTypes.bool
   };
 
   renderDetails() {
+    const { task } = this.props;
+
     return (
       <CardLine>
         <CardLineLeft>
-          <DateDue value={this.state.dateDue}
+          <DateDue value={task.get('date_due')}
                    onChange={this.onChangeDate} />
 
-          {this.state.project &&
-            <ProjectContainer project={this.state.project}>
+          {task.get('project') &&
+            <ProjectContainer project={task.get('project')}>
               <CardProject />
             </ProjectContainer>
           }
@@ -40,9 +43,9 @@ export class TaskCard extends BaseTaskCard {
         </CardLineLeft>
         <CardLineRight>
           <Comments count={this.state.comments} />
-          {this.state.subTasks.total > 0 &&
-            <SubTasks current={this.state.subTasks.current}
-                      total={this.state.subTasks.total} />
+          {task.get('subtasks_total') > 0 &&
+            <SubTasks current={task.get('subtasks_done')}
+                      total={task.get('subtasks_total')} />
           }
         </CardLineRight>
       </CardLine>
@@ -50,23 +53,26 @@ export class TaskCard extends BaseTaskCard {
   }
 
   render() {
+    const { task, moving } = this.props;
+
     return (
       <Card minimized={this.isMinimized()}
             statusBars={false}
             type="task"
+            moving={moving}
             additionalClasses="calendar-task-card">
 
         <CardLine>
           <CardLineLeft>
-            <Title value={this.state.title}
-                   isDone={this.state.isDone}
+            <Title value={task.get('title')}
+                   isDone={task.get('is_done')}
                    onChange={this.onTitleChange} />
           </CardLineLeft>
           <CardLineRight>
-            {this.state.isDone
+            {task.get('is_done')
               ? <ShowDetailsButton expanded={this.state.expanded}
                                    onToggleExpand={this.onToggleExpand}/>
-              : <AssignButton task={this.props.task} />
+              : <AssignButton task={task} />
             }
           </CardLineRight>
         </CardLine>

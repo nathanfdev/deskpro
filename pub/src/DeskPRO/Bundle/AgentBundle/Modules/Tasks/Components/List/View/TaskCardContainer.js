@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { toggleSelected } from '../../../Actions/listActions';
 import {
@@ -9,6 +10,7 @@ import {
   calendarVisibleFieldsSelector,
   currentSortSelector
 } from '../../../Selectors/list';
+import jQuery from 'jquery';
 
 @connect(state => ({
   selectedTasks: selectedSelector(state),
@@ -21,6 +23,7 @@ import {
 export class TaskCardContainer extends React.Component {
 
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
     selectedTasks: PropTypes.object.isRequired,
     task: PropTypes.object.isRequired,
     children: PropTypes.node.isRequired
@@ -29,6 +32,11 @@ export class TaskCardContainer extends React.Component {
   onToggleSelected = () => {
     const { dispatch, task } = this.props;
     dispatch(toggleSelected(task.get('id')));
+  };
+
+  onChangeDisplayOrder = taskId => {
+    const { task } = this.props;
+    console.log('edit task list order', taskId, task.get('display_order'));
   };
 
   render() {
@@ -42,33 +50,38 @@ export class TaskCardContainer extends React.Component {
       ...props,
 
       selected: selected,
-      onToggleSelected: this.onToggleSelected
+      onToggleSelected: this.onToggleSelected,
+      onChangeDisplayOrder: this.onChangeDisplayOrder
     });
   }
 }
 
 export const cardSourceSpec = {
-  beginDrag(props) {
-    return {id: props.task.get('id')};
+  beginDrag({ task }, monitor, component) {
+    return {
+      id: task.get('id'),
+      width: jQuery(ReactDOM.findDOMNode(component)).width()
+    };
   }
 };
 
 export const cardSourceCollect = (dragConnect, monitor) => ({
   connectDragSource: dragConnect.dragSource(),
+  connectDragPreview: dragConnect.dragPreview(),
   isDragging: monitor.isDragging()
 });
 
 export const cardTargetSpec = {
-  drop({ task }, monitor) {
+  drop({ onChangeDisplayOrder }, monitor) {
     const item = monitor.getItem();
-    console.log('edit task', task, item.id);
+    onChangeDisplayOrder(item.id);
   }
 };
 
 export const groupTargetSpec = {
-  drop({ param, value }, monitor) {
+  drop({ param, value, onChangeGroup }, monitor) {
     const item = monitor.getItem();
-    console.log('edit task', param, value, item.id);
+    onChangeGroup(item.id, param, value);
   }
 };
 

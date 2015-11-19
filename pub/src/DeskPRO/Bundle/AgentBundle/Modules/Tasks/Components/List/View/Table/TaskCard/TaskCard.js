@@ -1,15 +1,17 @@
 import React, { PropTypes } from 'react';
 import { DragSource, DropTarget } from 'react-dnd';
+import { getEmptyImage } from 'react-dnd-html5-backend';
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { cardSourceSpec, cardSourceCollect, cardTargetSpec, targetCollect } from '../../TaskCardContainer';
 import { Td, TdId, TdTitle } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
-import { BaseTaskCard, ProjectContainer } from '../../../TaskCard/index';
+import { BaseTaskCard, ProjectContainer, AssigneeContainer } from '../../../TaskCard/index';
 import { Project } from './Project';
-import { AssigneeContainer } from './AssigneeContainer';
 import { TableCheckbox } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
-import Moment from 'moment';
+import classNames from 'classnames';
+import moment from 'moment';
 
-@DragSource('TASK', cardSourceSpec, cardSourceCollect)
-@DropTarget('TASK', cardTargetSpec, targetCollect)
+@DragSource(constants.TYPE_TASK, cardSourceSpec, cardSourceCollect)
+@DropTarget(constants.TYPE_TASK, cardTargetSpec, targetCollect)
 export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
@@ -19,25 +21,30 @@ export class TaskCard extends BaseTaskCard {
     tableVisibleFields: PropTypes.object,
     currentSort: PropTypes.string,
     connectDragSource: PropTypes.func.isRequired,
-    connectDropTarget: PropTypes.func.isRequired
+    connectDropTarget: PropTypes.func.isRequired,
+    isOver: PropTypes.bool,
+    isDragging: PropTypes.bool
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      selected: false
-    };
+  componentDidMount() {
+    this.props.connectDragPreview(getEmptyImage(), {
+      captureDraggingState: true
+    });
   }
 
   render() {
-    const { task, selected, currentSort, onToggleSelected, tableVisibleFields } = this.props;
+    const { task, selected, currentSort, onToggleSelected, tableVisibleFields, isOver, isDragging } = this.props;
     const { connectDragSource, connectDropTarget } = this.props;
 
     const isVisible = type => tableVisibleFields.includes(type);
 
     let result = connectDragSource(
-      <tr>
+      <tr className={classNames({
+        'is-over': isOver,
+        'done': task.get('is_done'),
+        'dragging-item': isDragging
+      })}>
+
         <Td>
           <TableCheckbox selected={selected} onClick={onToggleSelected} />
         </Td>
@@ -49,7 +56,7 @@ export class TaskCard extends BaseTaskCard {
           </ProjectContainer>
         </Td>
         <Td visible={isVisible('date_due')}>
-          {task.get('date_due') ? Moment(task.get('date_due')).format('DD/MM/YY') : 'N/A'}
+          {task.get('date_due') ? moment(task.get('date_due')).format('DD/MM/YY') : 'N/A'}
         </Td>
         <Td visible={isVisible('assignee')}>
           <AssigneeContainer task={task} />

@@ -159,8 +159,8 @@ function getWebpackConfig(mode, isDevServer, isProd) {
           loader: 'file-loader?context=src&name=[path][name].[ext]',
           include: [
             path.resolve(__dirname, 'src/DeskPRO'),
-            path.resolve(__dirname, 'node_modules/node-bourbon'),
-            path.resolve(__dirname, 'node_modules/node-neat'),
+            path.resolve(__dirname, 'node_modules/bourbon'),
+            path.resolve(__dirname, 'node_modules/bourbon-neat'),
             path.resolve(__dirname, 'node_modules/font-awesome'),
             path.resolve(__dirname, 'node_modules/intl-tel-input'),
             path.resolve(__dirname, 'node_modules/cropper')

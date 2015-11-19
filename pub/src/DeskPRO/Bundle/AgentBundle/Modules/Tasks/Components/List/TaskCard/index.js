@@ -8,6 +8,7 @@ import { AssignButton } from './AssignButton';
 import { TicketLinkContainer } from './TicketLinkContainer';
 import { CardProject } from './CardProject';
 import { ProjectContainer } from './ProjectContainer';
+import { AssigneeContainer } from './AssigneeContainer';
 
 export default {
   BaseTaskCard,
@@ -19,5 +20,6 @@ export default {
   AssignButton,
   TicketLinkContainer,
   CardProject,
-  ProjectContainer
+  ProjectContainer,
+  AssigneeContainer
 };

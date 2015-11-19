@@ -49,7 +49,7 @@ class TicketCountsController extends BaseController
 {
     /**
      * @ApiDoc(
-     *      description="get a filter set count",
+     *      description="Get a filter set count",
      *      requirements={
      *          {
      *              "name"="id",
@@ -79,7 +79,7 @@ class TicketCountsController extends BaseController
 
     /**
      * @ApiDoc(
-     *      description="get a filter set count",
+     *      description="Get all filter set counts",
      *      statusCodes={
      *          200="Success",
      *          404="Not Found"
@@ -105,7 +105,7 @@ class TicketCountsController extends BaseController
 
     /**
      * @ApiDoc(
-     *      description="get a filter's count",
+     *      description="Get a filter's count",
      *      requirements={
      *          {
      *              "name"="id",
@@ -142,7 +142,7 @@ class TicketCountsController extends BaseController
 
     /**
      * @ApiDoc(
-     *      description="get all filters counts",
+     *      description="Get all filters counts",
      *      requirements={
      *          {
      *              "name"="group_by",

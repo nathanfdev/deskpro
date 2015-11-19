@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\ApiBundle\Controller\Labels\LabelsHelper;
 use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonType;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Route;
@@ -45,6 +46,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class PeopleController extends CrudController
 {
+    use LabelsHelper;
+
     public static $entity = Person::class;
     public static $type   = PersonType::class;
 

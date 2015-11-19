@@ -22,6 +22,7 @@
 
     <!-- BEGIN NEW TICKET FORM -->
     <div class="dp_ticket_form dpx-form">
+        {{ form_errors(form) }}
         {# avoid putting an absolute action the GET query is significant for defaults #}
         <form method="POST" class="form-ticket" novalidate name="ticket">
         <div class="dynamic-fields-container">
