@@ -607,12 +607,12 @@ return array(
     /*
      * The default "per page" number of results in content lists
      */
-    'portal.per_page_content' => 10,
+    'portal.per_page_content' => 50,
 
     /*
      * The default "per page" number of results in RSS feeds
      */
-    'portal.per_page_rss' => 10,
+    'portal.per_page_rss' => 50,
 
     /*
      * The default "per page" number of results in each of the user's ticket lists

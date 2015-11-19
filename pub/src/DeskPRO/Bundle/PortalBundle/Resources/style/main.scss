@@ -3503,7 +3503,14 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
     cursor: default;
   }
 
-  .active-page, a:hover {
+  .active-page {
+    span {
+      color: #fff;
+    }
+    background-color: #B0B0B0;
+  }
+
+  a:hover {
     background: $surface-secondary;
   }
 
@@ -3511,6 +3518,10 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
     a {
       opacity: 0.5;
     }
+  }
+
+  .disabled {
+    display: none;
   }
 }
 
