@@ -21,7 +21,9 @@ export class ListGroup extends React.Component {
       <div className={classNames({'list-group-hover': isOver})}>
         <div className="divider">
           <hr/>
-          <h1>{title}</h1>
+          <h1>
+            <span>{title}</span>
+          </h1>
         </div>
 
         {children}
