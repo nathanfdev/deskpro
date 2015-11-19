@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
+import { elementsMapSelector } from '../../../Selectors/list';
 
 @connect(state => ({
-  tasks: state.Tasks.list.get('elements')
+  tasksMap: elementsMapSelector(state)
 }))
 export class TaskCardPreviewContainer extends React.Component {
 
@@ -12,19 +12,19 @@ export class TaskCardPreviewContainer extends React.Component {
       id: PropTypes.number.isRequired,
       width: PropTypes.number
     }),
-    tasks: PropTypes.object.isRequired,
+    tasksMap: PropTypes.object.isRequired,
     children: PropTypes.node.isRequired
   };
 
   render() {
     const props = this.props;
-    const { tasks, item, children } = props;
+    const { tasksMap, item, children } = props;
     const childProps = children.props;
 
     return React.cloneElement(children, {
       ...childProps,
 
-      task: mapKeyedFromArray(tasks, 'id').get(item.id),
+      task: tasksMap.get(item.id),
       width: item.width
     });
   }

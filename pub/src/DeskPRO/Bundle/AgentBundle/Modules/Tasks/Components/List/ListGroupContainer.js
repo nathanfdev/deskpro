@@ -19,6 +19,12 @@ import { groupCollection } from 'Util/ListGroup';
 export class ListGroupContainer extends React.Component {
 
   static propTypes = {
+    sort: PropTypes.string,
+    lists: PropTypes.object.isRequired,
+    projects: PropTypes.object.isRequired,
+    agents: PropTypes.object.isRequired,
+    agentTeams: PropTypes.object.isRequired,
+    departments: PropTypes.object.isRequired,
     tasks: PropTypes.object,
     children: PropTypes.node.isRequired
   };

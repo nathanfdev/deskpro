@@ -1,5 +1,6 @@
 import { hashStateSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
 import { createSelector } from 'reselect';
+import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
 
 const stateSelector = state => state.Tasks.list;
 
@@ -47,4 +48,14 @@ export const selectedSelector = createSelector(
 export const selectedCountSelector = createSelector(
   selectedSelector,
   selected => selected.size
+);
+
+export const elementsSelector = createSelector(
+  stateSelector,
+  state => state.get('elements')
+);
+
+export const elementsMapSelector = createSelector(
+  elementsSelector,
+  elements => mapKeyedFromArray(elements, 'id')
 );
