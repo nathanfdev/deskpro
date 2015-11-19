@@ -1,6 +1,9 @@
 import React, { PropTypes } from 'react';
 import { Calendar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Calendar/index';
 import { TaskDragCard } from './TaskCard/TaskDragCard';
+import { TaskCardPreviewContainer } from '../TaskCardPreviewContainer';
+import { TaskCardPreview } from './TaskCard/TaskCardPreview';
+import { CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 
 export class CalendarView extends React.Component {
 
@@ -15,10 +18,20 @@ export class CalendarView extends React.Component {
       dateField: 'date_due',
       additionalPrefix: 'Tasks for',
       draggable: {
-        sourceCard: <TaskDragCard />
+        source: <TaskDragCard />
       }
     };
 
-    return <Calendar {...config} />;
+    return (
+      <div>
+        <Calendar {...config} />
+
+        <CustomCardDragLayer>
+          <TaskCardPreviewContainer>
+            <TaskCardPreview />
+          </TaskCardPreviewContainer>
+        </CustomCardDragLayer>
+      </div>
+    );
   }
 }

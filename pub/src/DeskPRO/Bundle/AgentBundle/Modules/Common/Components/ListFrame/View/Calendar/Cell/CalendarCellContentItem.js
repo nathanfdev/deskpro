@@ -9,8 +9,11 @@ export class CalendarCellContentItem extends React.Component {
 
   static propTypes = {
     item: PropTypes.object.isRequired,
+    dateField: PropTypes.string.isRequired,
     elementName: PropTypes.string.isRequired,
-    draggable: PropTypes.object.isRequired
+    draggable: PropTypes.shape({
+      source: PropTypes.node.isRequired
+    })
   };
 
   constructor(props) {
@@ -42,15 +45,16 @@ export class CalendarCellContentItem extends React.Component {
   };
 
   render() {
-    const { item, draggable, elementName } = this.props;
-    const sourceCardProps = draggable.sourceCard.props;
+    const { item, dateField, draggable, elementName } = this.props;
+    const { source } = draggable;
+    const sourceCardProps = source.props;
 
     return (
       <li className={classNames(
-        {'urgent': moment(item.get('date_due')).isBefore(moment(), 'day')}
+        {'urgent': moment(item.get(dateField)).isBefore(moment(), 'day')}
       )}>
 
-      {React.cloneElement(draggable.sourceCard, {
+      {React.cloneElement(source, {
         ...sourceCardProps,
 
         ref: 'button',

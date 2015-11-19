@@ -21,7 +21,8 @@ import {
 export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
-    task: PropTypes.object.isRequired
+    task: PropTypes.object.isRequired,
+    moving: PropTypes.bool
   };
 
   renderDetails() {
@@ -52,12 +53,13 @@ export class TaskCard extends BaseTaskCard {
   }
 
   render() {
-    const { task } = this.props;
+    const { task, moving } = this.props;
 
     return (
       <Card minimized={this.isMinimized()}
             statusBars={false}
             type="task"
+            moving={moving}
             additionalClasses="calendar-task-card">
 
         <CardLine>

@@ -35,9 +35,7 @@ export class CalendarCellContent extends React.Component {
 
   renderItem(item) {
     return (
-      <CalendarCellContentItem key={item.get('id')}
-                               item={item}
-                               {...this.props} />
+      <CalendarCellContentItem key={item.get('id')} item={item} {...this.props} />
     );
   }
 

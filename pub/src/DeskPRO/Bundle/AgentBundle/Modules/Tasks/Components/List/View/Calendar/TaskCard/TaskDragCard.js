@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { DragSource } from 'react-dnd';
+import { getEmptyImage } from 'react-dnd-html5-backend';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { cardSourceSpec, cardSourceCollect } from '../../TaskCardContainer';
 import { CalendarItemButton } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Calendar/index';
@@ -12,6 +13,12 @@ export class TaskDragCard extends React.Component {
     connectDragSource: PropTypes.func.isRequired,
     onOpenCard: PropTypes.func.isRequired
   };
+
+  componentDidMount() {
+    this.props.connectDragPreview(getEmptyImage(), {
+      captureDraggingState: true
+    });
+  }
 
   render() {
     const { task, onOpenCard, connectDragSource } = this.props;
