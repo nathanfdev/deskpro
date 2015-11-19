@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import { TaskCard } from '../../../../../../Tasks/Components/List/View/Calendar/TaskCard/TaskCard';
-import { TaskDragCard } from '../../../../../../Tasks/Components/List/View/Calendar/TaskCard/TaskDragCard';
 import Detached from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import classNames from 'classnames';
@@ -9,7 +8,9 @@ import moment from 'moment';
 export class CalendarCellContentItem extends React.Component {
 
   static propTypes = {
-    item: PropTypes.object.isRequired
+    item: PropTypes.object.isRequired,
+    elementName: PropTypes.string.isRequired,
+    draggable: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -41,14 +42,21 @@ export class CalendarCellContentItem extends React.Component {
   };
 
   render() {
-    const { item } = this.props;
+    const { item, draggable, elementName } = this.props;
+    const sourceCardProps = draggable.sourceCard.props;
 
     return (
       <li className={classNames(
         {'urgent': moment(item.get('date_due')).isBefore(moment(), 'day')}
       )}>
 
-        <TaskDragCard ref="button" task={item} onOpenTaskCard={this.onOpenTaskCard} />
+      {React.cloneElement(draggable.sourceCard, {
+        ...sourceCardProps,
+
+        ref: 'button',
+        [elementName]: item,
+        onOpenTaskCard: this.onOpenTaskCard
+      })}
 
         <Detached isOpen={this.state.cardOpened}
                   positionTarget={this.refs.button}

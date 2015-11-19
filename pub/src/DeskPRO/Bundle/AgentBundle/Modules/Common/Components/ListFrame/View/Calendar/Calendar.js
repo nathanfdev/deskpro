@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import { Controls } from './ControlBar/Controls';
 import { CalendarHeader } from './CalendarHeader';
 import { CalendarBody } from './CalendarBody';

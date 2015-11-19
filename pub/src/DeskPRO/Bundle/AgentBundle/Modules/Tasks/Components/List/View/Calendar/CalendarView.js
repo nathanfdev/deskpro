@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Calendar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Calendar/Calendar';
+import { TaskDragCard } from './TaskCard/TaskDragCard';
 
 export class CalendarView extends React.Component {
 
@@ -10,7 +11,11 @@ export class CalendarView extends React.Component {
   render() {
     const config = {
       elements: this.props.tasks,
-      dateField: 'date_due'
+      elementName: 'task',
+      dateField: 'date_due',
+      draggable: {
+        sourceCard: <TaskDragCard />
+      }
     };
 
     return <Calendar {...config} />;

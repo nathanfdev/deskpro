@@ -33,6 +33,14 @@ export class CalendarCellContent extends React.Component {
     });
   };
 
+  renderItem(item) {
+    return (
+      <CalendarCellContentItem key={item.get('id')}
+                               item={item}
+                               {...this.props} />
+    );
+  }
+
   render() {
     const { elements, dateField, dayDate } = this.props;
 
@@ -43,7 +51,7 @@ export class CalendarCellContent extends React.Component {
     return (
       <div>
         <ul>
-          {shortList.map(item => <CalendarCellContentItem key={item.get('id')} item={item} />)}
+          {shortList.map(item => this.renderItem(item))}
           {additionalList.count() > 0 &&
             <li>
               <a href="#"
@@ -65,7 +73,7 @@ export class CalendarCellContent extends React.Component {
                     additionalNodes={['.calendar-task-card', '.assign-form']}>
 
             <CalendarCellDropdown dayDate={dayDate}>
-              {additionalList.map(item => <CalendarCellContentItem key={item.get('id')} item={item} />)}
+              {additionalList.map(item => this.renderItem(item))}
             </CalendarCellDropdown>
           </ClickOut>
         </Detached>
