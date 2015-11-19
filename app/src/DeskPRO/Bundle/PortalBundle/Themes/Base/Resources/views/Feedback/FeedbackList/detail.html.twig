@@ -36,37 +36,47 @@
         <p>{{ item.content_html|raw|slice(0,350) ~ '...' }}</p>
       </div>
 
+      <div class="response">
+        <div class="response-meta">
+
+          <div class="avatar" style="background-image: url(https://secure.gravatar.com/avatar/79cfcfdf770db09a40fca15bb845fef1?&amp;s=80);"></div>
+          Response by: <span>Chris Padfield</span>
+        </div>
+        <div class="response-content">
+          <p>These suggestions have been submitted by customers like you; we encourage you to discuss and vote lorel ipsum dolor. Lorel ipsum some more text to have a third line.</p>
+        </div>
+      </div>
+
+
       <div class="article-meta"><!-- TODO this is just copied html for now, need to move stuff from feedback-item-meta below (we don't need .feedback-item-meta any more) -->
-        By <a href="#"><span style="background: url(https://secure.gravatar.com/avatar/79cfcfdf770db09a40fca15bb845fef1?&amp;s=80) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>Corporate Content</a>
-        in 2015-10-27
+        By
+        <a href="#"><span style="background: url(https://secure.gravatar.com/avatar/79cfcfdf770db09a40fca15bb845fef1?&amp;s=80) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>{{ item.person.display_name }}</a>
+         in 2015-10-27
         <hr>
-        <span class="comments"><i class="fa fa-comments-o"></i> <a href="#comments">0 Comments</a></span>
+
+        {% if item.num_comments > 0 %}
+        <span><a href="{{ portal_path(item) }}#comments"><i class="fa fa-comment"></i> {{ phrase('portal.general.comments-count', {count: item.num_comments}) }}</a></span>
         <hr>
+        {% endif %}
+
+        {% if item.getCustomDataSelection() %}
+        <span><i class="fa fa-inbox"></i> {{ item.getCustomDataSelection().title }}</span>
+        <hr>
+        {% endif %}
+
+        {% if item.labels|length %}
+        <span>
+          <i class="fa fa-tags"></i>
+          {% for l in item.labels %}
+          <a href="{{ path('portal_search_labels', { label: l }) }}">{{ l }}</a>{% if not loop.last %}, {% endif %}
+          {% endfor %}
+        </span>
+        <hr>
+        {% endif %}
+
         In <a href="/news/general">General</a>
       </div>
 
-
-
-
-      <div class="feedback-item-meta">
-        <ul>
-          <li><i class="fa fa-user"></i> {{ item.person.display_name }}</li>
-          {% if item.num_comments > 0 %}
-          <li><a href="{{ portal_path(item) }}#comments"><i class="fa fa-comment"></i> {{ phrase('portal.general.comments-count', {count: item.num_comments}) }}</a></li>
-          {% endif %}
-          {% if item.getCustomDataSelection() %}
-          <li><i class="fa fa-inbox"></i> {{ item.getCustomDataSelection().title }}</li>
-          {% endif %}
-          {% if item.labels|length %}
-          <li>
-            <i class="fa fa-tags"></i>
-            {% for l in item.labels %}
-            <a href="{{ path('portal_search_labels', { label: l }) }}">{{ l }}</a>{% if not loop.last %}, {% endif %}
-            {% endfor %}
-          </li>
-          {% endif %}
-        </ul>
-      </div>
     </div>
     <!-- End feedback-item-content -->
   </div>
