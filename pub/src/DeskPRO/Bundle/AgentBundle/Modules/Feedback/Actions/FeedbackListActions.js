@@ -116,7 +116,6 @@ export const loadFeedbackCommentsList = createAction(
       return comments;
     }
   ));
-
 export const loadList = createAction(
   'FEEDBACK_LIST',
   (listParams) => dispatch => {
@@ -191,17 +190,19 @@ export const applyParams = createAction(
   (overwrite = {}) => (dispatch, getState) => {
     const current = currentListParamsSelector(getState()).toJS();
     const params = { ...current, ...overwrite };
+    const { delayReload } = params;
+    delete params.delayReload;
     dispatch(setParams(params));
-    if (params.navItem) {
+    if (params.navItem && !delayReload) {
       dispatch(loadList(params));
     }
   }
 );
 export const setSort = createAction(
   'FEEDBACK_LIST_SET_SORT',
-    sort => dispatch => dispatch(applyParams({ sort }))
+    sort => dispatch => dispatch(applyParams({ sort, delayReload: true }))
 );
 export const setOrder = createAction(
   'FEEDBACK_LIST_SET_ORDER',
-    order => dispatch => dispatch(applyParams({ order }))
+    order => dispatch => dispatch(applyParams({ order, delayReload: true }))
 );
