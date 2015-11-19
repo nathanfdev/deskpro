@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Calendar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Calendar/Calendar';
+import { Calendar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Calendar/index';
 import { TaskDragCard } from './TaskCard/TaskDragCard';
 
 export class CalendarView extends React.Component {

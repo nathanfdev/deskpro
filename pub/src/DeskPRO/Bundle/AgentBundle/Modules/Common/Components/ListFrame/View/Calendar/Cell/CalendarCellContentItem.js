@@ -24,7 +24,7 @@ export class CalendarCellContentItem extends React.Component {
     this.isUnmounted = true;
   }
 
-  onOpenTaskCard = event => {
+  onOpenCard = event => {
     event.preventDefault();
     this.setState({
       cardOpened: true
@@ -55,7 +55,7 @@ export class CalendarCellContentItem extends React.Component {
 
         ref: 'button',
         [elementName]: item,
-        onOpenTaskCard: this.onOpenTaskCard
+        onOpenCard: this.onOpenCard
       })}
 
         <Detached isOpen={this.state.cardOpened}
