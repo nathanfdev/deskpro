@@ -8116,10 +8116,49 @@ table .form-help {
     line-height: normal;
     position: relative;
 
+    .filter-box {
+      width: 60%;
+      input {
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        line-height: 100%;
+        border: none;
+        background: transparent;
+        outline: none;
+        box-shadow: none;
+        font-size: 12px;
+
+        &:focus {
+          border: none;
+          background: transparent;
+          outline: none;
+          box-shadow: none;
+        }
+
+        @include placeholder {
+          font-size: 12px;
+          font-weight: normal;
+          line-height: normal;
+        }
+      }
+    }
+
     &:hover {
       color: $button-text;
       border: 1px solid $button-color;
       background: $button-color;
+
+      .filter-box input {
+        color: #fff;
+
+        @include placeholder {
+          color: #fff;
+          font-size: 12px;
+          font-weight: normal;
+          line-height: normal;
+        }
+      }
     }
 
     &.expanded {
@@ -8192,7 +8231,7 @@ table .form-help {
       li {
         position: relative;
 
-        &:focus {
+        &:focus, &.focused {
           outline: none;
           a {
             background: lighten($main-color-light, 3%);
@@ -8369,10 +8408,7 @@ input[type="text"], input[type="email"], input[type="password"], textarea, .dp-m
 
   @include placeholder {
     color: $text-faded;
-    font-weight: 400;
     font-style: italic;
-    font-family: $fonts;
-    font-size: $font-mid;
   }
 
   &:focus {
