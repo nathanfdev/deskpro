@@ -1799,9 +1799,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 				if (map['newticket[person][id]']) {
 					var person = parseInt(map['newticket[person][id]']);
-					return self.setUser(person, null, true);
+					self.setUser(person, null, true);
 				} else if (map['newticket[person][name]'] || map['newticket[person][email_address]']) {
-					return self.setUser(0, map['newticket[person][email_address]'], true).then(function() {
+					self.setUser(0, map['newticket[person][email_address]'], true).then(function() {
 						$('input[name="newticket[person][name]"]', $form).val(map['newticket[person][name]']);
 						$('input[name="newticket[person][email_address]"]', $form).val(map['newticket[person][email_address]']);
 					});
