@@ -269,3 +269,21 @@ export class CardComments extends Component {
     );
   }
 }
+
+export class CardGroupDivider extends Component {
+
+  static propTypes = {
+    title: PropTypes.string
+  };
+
+  render() {
+    return (
+      <div className="divider">
+        <hr/>
+        <h1>
+          <span>{this.props.title}</span>
+        </h1>
+      </div>
+    );
+  }
+}
