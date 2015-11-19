@@ -9,7 +9,7 @@ export class CalendarCellContent extends React.Component {
 
   static propTypes = {
     dayDate: PropTypes.object.isRequired,
-    tasks: PropTypes.object.isRequired
+    elements: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -33,17 +33,16 @@ export class CalendarCellContent extends React.Component {
   };
 
   render() {
-    const { tasks, dayDate } = this.props;
+    const { elements, dayDate } = this.props;
 
-    const dayTasks = tasks.filter(task => dayDate.isSame(moment(task.get('date_due')), 'day'));
-    const shortList = dayTasks.slice(0, 2);
-    const additionalList = dayTasks.slice(2);
+    const fullList = elements.filter(item => dayDate.isSame(moment(item.get('date_due')), 'day'));
+    const shortList = fullList.slice(0, 2);
+    const additionalList = fullList.slice(2);
 
     return (
       <div>
         <ul>
-          {shortList.map(task => <CalendarCellContentItem key={task.get('id')}
-                                                          task={task} />)}
+          {shortList.map(item => <CalendarCellContentItem key={item.get('id')} item={item} />)}
           {additionalList.count() > 0 &&
             <li>
               <a href="#"
@@ -65,8 +64,7 @@ export class CalendarCellContent extends React.Component {
                     additionalNodes={['.calendar-task-card', '.assign-form']}>
 
             <CalendarCellDropdown dayDate={dayDate}>
-              {additionalList.map(task => <CalendarCellContentItem key={task.get('id')}
-                                                                   task={task} />)}
+              {additionalList.map(item => <CalendarCellContentItem key={item.get('id')} item={item} />)}
             </CalendarCellDropdown>
           </ClickOut>
         </Detached>

@@ -8,12 +8,13 @@ export class CalendarBody extends React.Component {
 
   static propTypes = {
     date: PropTypes.object.isRequired,
-    tasks: PropTypes.object.isRequired
+    elements: PropTypes.object.isRequired
   };
 
   getCalendarMap() {
-    const firstDayOfMonth = moment(this.props.date).startOf('month');
-    const lastDayOfMonth = moment(this.props.date).endOf('month');
+    const { date } = this.props;
+    const firstDayOfMonth = moment(date).startOf('month');
+    const lastDayOfMonth = moment(date).endOf('month');
 
     const start = moment(firstDayOfMonth).subtract(firstDayOfMonth.isoWeekday() - 1, 'day');
     const end = moment(lastDayOfMonth).add(7 - lastDayOfMonth.isoWeekday(), 'day');
@@ -34,7 +35,7 @@ export class CalendarBody extends React.Component {
   }
 
   render() {
-    const { date, tasks } = this.props;
+    const { date, elements } = this.props;
 
     return (
       <tbody>
@@ -45,8 +46,7 @@ export class CalendarBody extends React.Component {
                             dayDate={day}
                             date={date}>
 
-                <CalendarCellContent tasks={tasks}
-                                     dayDate={day} />
+                <CalendarCellContent elements={elements} dayDate={day} />
               </CalendarCell>
             )}
           </tr>

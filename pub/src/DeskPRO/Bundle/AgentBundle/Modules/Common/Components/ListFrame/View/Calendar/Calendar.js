@@ -34,7 +34,7 @@ export class Calendar extends React.Component {
         <table className="calendar-content">
           <CalendarHeader date={this.state.date} />
           <CalendarBody date={this.state.date}
-                        tasks={elements} />
+                        elements={elements} />
         </table>
       </div>
     );

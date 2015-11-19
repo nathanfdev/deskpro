@@ -9,13 +9,13 @@ import moment from 'moment';
 export class CalendarCellContentItem extends React.Component {
 
   static propTypes = {
-    task: PropTypes.object.isRequired
+    item: PropTypes.object.isRequired
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      taskCardOpened: false
+      cardOpened: false
     };
   }
 
@@ -26,7 +26,7 @@ export class CalendarCellContentItem extends React.Component {
   onOpenTaskCard = event => {
     event.preventDefault();
     this.setState({
-      taskCardOpened: true
+      cardOpened: true
     });
   };
 
@@ -36,21 +36,21 @@ export class CalendarCellContentItem extends React.Component {
     }
 
     this.setState({
-      taskCardOpened: false
+      cardOpened: false
     });
   };
 
   render() {
-    const { task } = this.props;
+    const { item } = this.props;
 
     return (
       <li className={classNames(
-        {'urgent': moment(task.get('date_due')).isBefore(moment(), 'day')}
+        {'urgent': moment(item.get('date_due')).isBefore(moment(), 'day')}
       )}>
 
-        <TaskDragCard ref="button" task={task} onOpenTaskCard={this.onOpenTaskCard} />
+        <TaskDragCard ref="button" task={item} onOpenTaskCard={this.onOpenTaskCard} />
 
-        <Detached isOpen={this.state.taskCardOpened}
+        <Detached isOpen={this.state.cardOpened}
                   positionTarget={this.refs.button}
                   positionAt="right top-5"
                   zIndex={1001}>
@@ -58,7 +58,7 @@ export class CalendarCellContentItem extends React.Component {
           <ClickOut onClickOut={this.onCloseTaskCard}
                     additionalNodes={[this.refs.button, '.assign-form']}>
 
-            <TaskCard task={task} />
+            <TaskCard task={item} />
           </ClickOut>
         </Detached>
       </li>
