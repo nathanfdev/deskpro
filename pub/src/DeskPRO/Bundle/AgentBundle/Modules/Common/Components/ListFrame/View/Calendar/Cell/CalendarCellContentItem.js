@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { TaskCard } from '../../../../../../Tasks/Components/List/View/Calendar/TaskCard';
 import Detached from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import classNames from 'classnames';
@@ -11,6 +10,7 @@ export class CalendarCellContentItem extends React.Component {
     item: PropTypes.object.isRequired,
     dateField: PropTypes.string.isRequired,
     elementName: PropTypes.string.isRequired,
+    card: PropTypes.node.isRequired,
     draggable: PropTypes.shape({
       source: PropTypes.node.isRequired
     })
@@ -45,16 +45,16 @@ export class CalendarCellContentItem extends React.Component {
   };
 
   render() {
-    const { item, dateField, draggable, elementName } = this.props;
-    const { source } = draggable;
-    const sourceCardProps = source.props;
+    const { card, item, dateField, draggable, elementName } = this.props;
+    const sourceCardProps = draggable.source.props;
+    const cardProps = card.props;
 
     return (
       <li className={classNames(
         {'urgent': moment(item.get(dateField)).isBefore(moment(), 'day')}
       )}>
 
-      {React.cloneElement(source, {
+      {React.cloneElement(draggable.source, {
         ...sourceCardProps,
 
         ref: 'button',
@@ -70,7 +70,7 @@ export class CalendarCellContentItem extends React.Component {
           <ClickOut onClickOut={this.onCloseTaskCard}
                     additionalNodes={[this.refs.button, '.assign-form']}>
 
-            <TaskCard task={item} />
+            {React.cloneElement(card, {...cardProps, [elementName]: item})}
           </ClickOut>
         </Detached>
       </li>
