@@ -2806,6 +2806,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         return $this->status === self::STATUS_AWAITING_AGENT;
     }
 
+    public function isOpen()
+    {
+        return $this->status === self::STATUS_AWAITING_USER || $this->status === self::STATUS_AWAITING_AGENT;
+    }
+
     /**
      * @return bool
      */

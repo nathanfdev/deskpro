@@ -8339,7 +8339,7 @@ input[type="text"], input[type="email"], input[type="password"], textarea, selec
 }
 
 input[type="text"], input[type="email"], input[type="password"], textarea, select, .dp-medium-rte {
-  font-size: $font-mid;
+  font-size: 12px;
   font-weight: 400;
   width: 100%;
   transition: all 0.30s ease-in-out;
@@ -8409,9 +8409,9 @@ input[type="text"], input[type="email"], input[type="password"], textarea, .dp-m
 
   .medium-editor-toolbar {
     visibility: visible;
-    background: #f3f3f3;
+    background: #fff;
     border: none;
-    border-bottom: 1px solid darken(#f3f3f3, 10%);
+    border-bottom: 1px solid #dedede;
     border-radius: 0;
     box-shadow: none;
 
@@ -8445,9 +8445,9 @@ input[type="text"], input[type="email"], input[type="password"], textarea, .dp-m
   }
 
   .medium-editor-toolbar-form {
-    background: #f3f3f3;
+    background: #fff;
     border: none;
-    border-bottom: 1px solid darken(#f3f3f3, 10%);
+    border-bottom: 1px solid #dedede;
     border-radius: 0;
     box-shadow: none;
 
@@ -8902,6 +8902,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
 
 .ticket-view {
   .header {
+    margin-top: 10px;
     margin-bottom: 15px;
     h1 {
       font-weight: 400;
@@ -9063,10 +9064,13 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
     }
   }
 
+  .button {
+    margin-bottom: 10px;
+  }
+
   .footer {
     display: block;
     padding-bottom: 10px;
-    font-weight: 500;
   }
 }
 
@@ -9178,7 +9182,6 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
 
 .ticket-view-sidebar {
   font-size: 12px;
-  font-weight: 500;
   border: 1px solid #dedede;
   border-radius: 2px;
   color: #a6a6a6;
@@ -9203,7 +9206,6 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
   a {
     text-decoration: none;
     color: #3e77b7;
-    font-weight: 500;
   }
 
   a.ticket-sidebar-close-ticket {
@@ -9414,7 +9416,6 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
   padding: 20px;
   line-height: 1.2em;
   margin: 10px 0px;
-  font-weight: 500;
 
   &.agent-has-replied {
     background: #33aa66;
@@ -9470,6 +9471,11 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
     font-weight: 400;
     line-height: 1.2em;
   }
+
+  input[type="text"], input[type="email"], input[type="password"], textarea, select {
+    margin-bottom: 10px;
+  }
+
   [type="submit"] {
     display: block;
     width: 100%;

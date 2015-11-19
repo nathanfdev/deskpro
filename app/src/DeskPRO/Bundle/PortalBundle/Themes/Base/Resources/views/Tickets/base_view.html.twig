@@ -29,16 +29,6 @@
 
                         We have received your message &amp; will send an email notification as soon as an agent has added a comment.
                     </div>
-                {% else %}
-                    {# RESOLVED #}
-                    <div class="ticket-view-note-for-user">
-
-                        {% if ticket.date_resolved %}
-                            <span class="note-for-user-blue">This ticket was closed {{ date_ago(ticket.date_resolved) }}.</span>
-                        {% endif %}
-
-                        You can <a href="{{ path('portal_kb') }}">return to the knowledge base</a> or <a href="{{ path('portal_new_ticket') }}">open a new ticket</a>.
-                    </div>
                 {% endif %}
 
                 <div class="ticket-view">
@@ -46,7 +36,7 @@
                     <!-- Sidebar with the agents in this ticket, ref etc -->
                     <div class="ticket-view-sidebar-wrapper">
 
-                        {% if can_edit %}
+                        {% if can_edit and ticket.isOpen() %}
                             <div class="ticket-view-sidebar">
                                 <a href="{{ portal_path(ticket, 'resolve') }}" class="ticket-sidebar-close-ticket post-link">Close this ticket</a>
                             </div>
