@@ -37,7 +37,6 @@ export const initialLoad = createAction(
         const payload = flattenBatchResponses(responses);
         payload.customCategories = payload.customCategories.nested;
         payload.statuses = { new: payload.new, active: payload.active, closed: payload.closed, hidden: payload.hidden };
-        dispatch(setFeedbackCategoriesRequest(recordStoresId, payload.customCategories));
         dispatch(setFeedbackTypesRequest(recordStoresId, payload.types));
         resolve(payload);
       });
@@ -87,10 +86,18 @@ export const loadFeedbackList = createAction(
           statusCategories.push(feedback.linked.feedback_status_category[key]);
         }
       }
+
+      const customCategories = [];
+      for (const key in feedback.linked.custom_data_feedback) {
+        if (feedback.linked.custom_data_feedback.hasOwnProperty(key)) {
+          customCategories.push(feedback.linked.custom_data_feedback[key]);
+        }
+      }
+
       dispatch(setPeopleRequest(recordStoresId, people));
       dispatch(setFeedbackStatusCategoriesRequest(recordStoresId, statusCategories));
+      dispatch(setFeedbackCategoriesRequest(recordStoresId, customCategories));
       dispatch(getCommentsCounter(ids));
-      dispatch(getCategories(ids));
 
       return feedback;
     }

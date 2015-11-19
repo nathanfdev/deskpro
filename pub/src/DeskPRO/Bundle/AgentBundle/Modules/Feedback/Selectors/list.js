@@ -71,6 +71,10 @@ export const currentViewModeSelector = hashStateSelectorFactory(['list', 'view']
 export const listFiltersSelector = createSelector(
   [navStateSelector, currentListParamsSelector, feedbackCategoriesSelector, feedbackLabelsSelector, feedbackTypesSelector],
   (navState, currentListParams, categories, labels, types) => {
+    const checkIfShowStatus = ()=> {
+      return !currentListParams.get('navItem') ||
+        (!currentListParams.get('navItem').get('status') && !currentListParams.get('navItem').get('status_category') && !currentListParams.get('navItem').get('hidden_status'));
+    };
     const filterSelector = [
       { label: 'Date', type: 'date', fromParam: 'created_from', toParam: 'created_to' }
     ];
@@ -79,15 +83,19 @@ export const listFiltersSelector = createSelector(
       const typeOptions = types.toArray().map(type => ({ value: type.get('title'), label: type.get('title') }));
       filterSelector.push({ label: 'Type', type: 'select', param: 'category', options: typeOptions });
     }
-    if (!currentListParams.get('navItem') || (!currentListParams.get('navItem').get('status') && !currentListParams.get('navItem').get('status_category'))) {
+    if (checkIfShowStatus()) {
       // Status options
       const statuses = navState.get('statuses').toJS();
-      const toStatusOptions = nested => (nested || []).map(opt => ({ value: opt.group, label: opt.group }));
+      const toStatusOptions = (nested, param) => (nested || []).map(opt => ({
+        value: opt.group,
+        label: opt.group,
+        param: param
+      }));
       const statusOptions = [
         { label: 'New', value: 'new', nested: toStatusOptions(statuses.new.nested) },
-        { label: 'Active', value: 'active', nested: toStatusOptions(statuses.active.nested) },
-        { label: 'Closed', value: 'closed', nested: toStatusOptions(statuses.closed.nested) },
-        { label: 'Hidden', value: 'hidden', nested: toStatusOptions(statuses.hidden.nested) }
+        { label: 'Active', value: 'active', nested: toStatusOptions(statuses.active.nested, 'status_category') },
+        { label: 'Closed', value: 'closed', nested: toStatusOptions(statuses.closed.nested, 'status_category') },
+        { label: 'Hidden', value: 'hidden', nested: toStatusOptions(statuses.hidden.nested, 'hidden_status') }
       ];
       filterSelector.push({ label: 'Status', type: 'select', param: 'status', options: statusOptions });
     }
