@@ -10,8 +10,6 @@ import classNames from 'classnames';
 export class TaskDragCard extends React.Component {
 
   static propTypes = {
-    selected: PropTypes.bool,
-    onToggleSelected: PropTypes.func,
     task: PropTypes.object,
     currentSort: PropTypes.string,
     connectDragSource: PropTypes.func.isRequired,

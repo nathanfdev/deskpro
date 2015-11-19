@@ -26,11 +26,6 @@ export class TaskCard extends BaseTaskCard {
     selected: PropTypes.bool,
     onToggleSelected: PropTypes.func,
     task: PropTypes.object,
-    currentSort: PropTypes.string,
-    connectDragSource: PropTypes.func.isRequired,
-    connectDropTarget: PropTypes.func.isRequired,
-    isOver: PropTypes.bool,
-    isDragging: PropTypes.bool,
     moving: PropTypes.bool
   };
 
