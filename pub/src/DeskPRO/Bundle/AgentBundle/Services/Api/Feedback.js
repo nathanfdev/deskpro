@@ -80,8 +80,8 @@ export function getCustomCategories() {
  * @return {object} Promise
  */
 export function getList(params) {
-  console.log('DP_API/feedback/?include=person,feedback_status_category&' + compileParams(params));
-  return DpApi.sendGet('DP_API/feedback/?include=person,feedback_status_category&' + compileParams(params));
+  console.log('DP_API/feedback/?include=person,feedback_status_category,custom_data_feedback&' + compileParams(params));
+  return DpApi.sendGet('DP_API/feedback/?include=person,feedback_status_category,custom_data_feedback&' + compileParams(params));
 }
 
 /**

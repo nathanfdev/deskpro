@@ -269,13 +269,13 @@ export class FilteringMenu extends Component {
     if (multiple === false) {
       onClick = (value) => () => dispatch(setParamsAction({ [param]: value, delayReload: true }));
     } else {
-      onClick = (value) => () => {
+      onClick = (value, newParam = null) => () => {
         if (filterValue.indexOf(value) === -1) {
           filterValue.push(value);
         } else {
           filterValue.splice(filterValue.indexOf(value), 1);
         }
-        dispatch(setParamsAction({ [param]: filterValue, delayReload: true }));
+        dispatch(setParamsAction({ [newParam ? newParam : param]: filterValue, delayReload: true }));
       };
     }
 
@@ -292,7 +292,7 @@ export class FilteringMenu extends Component {
                 value={option.value}
                 values={filterValue}
                 label={option.label}
-                onClick={onClick(option.value)}
+                onClick={onClick(option.value, option.param)}
                 />
           )}
         </ul>
