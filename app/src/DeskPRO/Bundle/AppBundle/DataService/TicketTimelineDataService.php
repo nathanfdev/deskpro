@@ -47,30 +47,19 @@ class TicketTimelineDataService extends AbstractDataService
      */
     public function getUserTimeline(Ticket $ticket)
     {
-        $logs = $this->getTicketLogRepo()->getLogsForTicket($ticket, array(
+        $raw_logs = $this->getTicketLogRepo()->getLogsForTicket($ticket, array(
             'order_dir' => 'ASC',
             'types'     => array('ticket_created', 'message_created', 'changed_status'),
         ));
 
-        $message_ids = ListUtils::filterOutFalsey(array_map(function (TicketLog $l) {
-            if ($l->action_type == 'message_created') {
-                return $l->id_after;
-            }
+        $messages = $this->getTicketMessageRepo()->getTicketMessages($ticket, array(
+            'order'      => 'ASC',
+            'with_notes' => false
+        ));
 
-            return;
-        }, $logs));
+        $messages = MapUtils::rekeyByProperty($messages, 'id');
 
-        if ($message_ids) {
-            $messages = $this->getTicketMessageRepo()->getTicketMessages($ticket, array(
-                'order'      => 'ASC',
-                'with_notes' => false,
-                'ids'        => $message_ids,
-            ));
-
-            $messages = MapUtils::rekeyByProperty($messages, 'id');
-        } else {
-            $messages = array();
-        }
+        $logs = $this->procLogLines($ticket, $raw_logs, $messages);
 
         $timeline = new TicketTimeline();
 
@@ -106,6 +95,74 @@ class TicketTimelineDataService extends AbstractDataService
         }
 
         return $timeline;
+    }
+
+    /**
+     * This 'corrects' mistakes in the log.
+     *
+     * E.g., to account for bugs or processes which might not result in a log line
+     * such as a mass import, we need to make sure messages are actually in the timeline!
+     *
+     * @param Ticket $ticekt
+     * @param \Application\DeskPRO\Entity\TicketLog[]  $logs
+     * @param \Application\DeskPRO\Entity\TicketMessage[]  $messages
+     */
+    private function procLogLines(Ticket $ticket, array $logs, array $messages)
+    {
+        $has_created = false;
+        $messages_with_log = [];
+
+        $use_logs = [];
+
+        foreach ($logs as $l) {
+            switch ($l->action_type) {
+                case 'ticket_created':
+                    $has_created = true;
+                    $use_logs[] = $l;
+                    break;
+                case 'message_created':
+                    if (isset($messages[$l->id_after])) {
+                        $messages_with_log[] = $l->id_after;
+                    }
+                    $use_logs[] = $l;
+                    break;
+                case 'changed_status':
+                    $use_logs[] = $l;
+                    break;
+            }
+        }
+
+        if (!$has_created) {
+            $l = new TicketLog();
+            $l->person = $ticket->person;
+            $l->action_type = 'ticket_created';
+            $l->date_created = $ticket->date_created;
+            array_unshift($use_logs, $l);
+        }
+
+        $messages_without_log = array_diff(array_keys($messages), $messages_with_log);
+        if ($messages_without_log) {
+            foreach ($messages_without_log as $mid) {
+                $msg = $messages[$mid];
+
+                $l = new TicketLog();
+                $l->person = $msg->person;
+                $l->action_type = 'message_created';
+                $l->date_created = $msg->date_created;
+                $l->id_after = $msg->id;
+
+                $use_logs[] = $l;
+            }
+
+            usort($use_logs, function($a, $b) {
+                if ($a->date_created == $b->date_created) {
+                    return 0;
+                }
+                return $a->date_created < $b->date_created ? -1 : 1;
+            });
+        }
+
+        return $use_logs;
     }
 
     /**
