@@ -6,7 +6,7 @@
         {% show breadcrumbs %}
     </div>
     <article class="ticket-page" id="ticket_view_page">
-        <div class="container">
+        <div class="container relative-height">
             <div class="column-full">
 
                 {% if ticket.isAwaitingUser() %}
@@ -38,7 +38,7 @@
 
                         {% if can_edit and ticket.isOpen() %}
                             <div class="ticket-view-sidebar">
-                                <a href="{{ portal_path(ticket, 'resolve') }}" class="ticket-sidebar-close-ticket post-link">Close this ticket</a>
+                                <a href="{{ portal_path(ticket, 'resolve') }}" class="ticket-sidebar-button post-link">Close this ticket</a>
                             </div>
                         {% endif %}
 
@@ -75,9 +75,9 @@
                                             <li>
                                                 <a href="#" class="sidebar-person add-person clickaway-dropdown" data-clickaway-target="add-cc-user-popover">
                                                     <span class="agent-avatar agent-avatar-mid"><i class="fa fa-plus"></i></span>
-                          <span class="avatar-meta">
-                            <span class="primary single">Add a CC'ed user</span>
-                          </span>
+                                                    <span class="avatar-meta">
+                                                      <span class="primary single">Add a CC'ed user</span>
+                                                    </span>
                                                 </a>
 
                                                 <div class="add-cc-user-popover" id="add-cc-user-popover" style="display: none;">
@@ -128,8 +128,9 @@
                                 </div>
                             {% endif %}
 
+                            {% if ticket_view.hasAnyVisibleProperties() %}
                             <div class="ticket-sidebar-container ticket-sidebar-meta">
-                                {% if can_edit and not edit_page %}
+                                {% if can_edit and ticket.isOpen() and not edit_page %}
                                     <a href="{{ portal_path(ticket, 'edit') }}" class="sidebar-edit">Edit <i class="fa fa-edit"></i></a>
                                 {% endif %}
                                 <h1>Additional ticket information:</h1>
@@ -145,8 +146,17 @@
                                     {% endfor %}
                                 </ul>
                             </div>
+                            {% endif %}
                         </div>
+                    {% if not ticket_view.hasAnyVisibleProperties() %}
+                        {% if can_edit and ticket.isOpen() and not edit_page %}
+                            <div class="ticket-view-sidebar">
+                                <a href="{{ portal_path(ticket, 'edit') }}" class="ticket-sidebar-button ">Edit this ticket</a>
+                            </div>
+                        {% endif %}
+                    {% endif %}
                     </div>
+                        </div>
 
                     <!-- Ticket title -->
                     <div class="header">

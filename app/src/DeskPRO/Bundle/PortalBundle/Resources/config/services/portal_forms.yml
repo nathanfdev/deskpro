@@ -62,7 +62,7 @@ services:
 
   form.csrf_double_submit_extension:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CsrfDoubleSubmitExtension
-    arguments: [@request_stack, %kernel.environment%]
+    arguments: [@request_stack, @language_manager, %kernel.environment%]
     tags:
       - { name: form.type_extension, alias: form }
 

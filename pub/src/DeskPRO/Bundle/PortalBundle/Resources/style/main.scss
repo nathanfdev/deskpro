@@ -315,6 +315,11 @@ section {
   @include row();
 }
 
+.relative-height {
+  height: 100%;
+  position: relative;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Buttons
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -9262,7 +9267,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
     color: #3e77b7;
   }
 
-  a.ticket-sidebar-close-ticket {
+  a.ticket-sidebar-button {
     display: block;
     margin: 5px;
     background: #3e77b7;

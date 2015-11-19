@@ -62,6 +62,8 @@ class NewTicketController extends AbstractController
         $ticket->setPerson($person);
         $ticket_message->setPerson($person);
         $ticket->addMessage($ticket_message);
+        $lang = $this->get('language_manager')->getLanguageStack()->getActiveOrDefault();
+        $ticket->setLanguage($lang);
 
         // do a one through with the GET request to update our model before starting the "real" form
         $form = $this->createForm('ticket', $ticket, array(

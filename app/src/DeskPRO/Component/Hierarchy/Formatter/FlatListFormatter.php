@@ -40,6 +40,6 @@ class FlatListFormatter extends AbstractFormatter
      */
     public function format(HierarchyNode $node)
     {
-        return sprintf('%s', $node->getData()->title);
+        return sprintf('%s', $this->getDataValue($node));
     }
 }
