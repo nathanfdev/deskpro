@@ -1,7 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Controls, CalendarHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Calendar/index';
-import { CalendarBody } from './CalendarBody';
-import moment from 'moment';
+import { Calendar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Calendar/Calendar';
 
 export class CalendarView extends React.Component {
 
@@ -9,31 +7,7 @@ export class CalendarView extends React.Component {
     tasks: PropTypes.object
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      date: moment()
-    };
-  }
-
-  onChangeDate = date => {
-    this.setState({
-      date: date
-    });
-  };
-
   render() {
-    return (
-      <div>
-        <Controls date={this.state.date}
-                  onChange={this.onChangeDate} />
-
-        <table className="calendar-content">
-          <CalendarHeader date={this.state.date} />
-          <CalendarBody date={this.state.date}
-                        tasks={this.props.tasks} />
-        </table>
-      </div>
-    );
+    return <Calendar elements={this.props.tasks} />;
   }
 }

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
-import { TaskCard } from '../TaskCard/TaskCard';
-import { TaskDragCard } from '../TaskCard/TaskDragCard';
+import { TaskCard } from '../../../../../../Tasks/Components/List/View/Calendar/TaskCard/TaskCard';
+import { TaskDragCard } from '../../../../../../Tasks/Components/List/View/Calendar/TaskCard/TaskDragCard';
 import Detached from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import classNames from 'classnames';
