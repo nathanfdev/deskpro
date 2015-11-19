@@ -71,6 +71,14 @@ class DevSetupFixture extends AbstractFixture implements ContainerAwareInterface
      */
     public function load(ObjectManager $manager)
     {
+        if (file_exists(DP_ROOT.'/sys/config/installer-type')) {
+            $f = trim(@file_get_contents(DP_ROOT.'/sys/config/installer-type'));
+            if ($f === 'buildserver') {
+                // buildserver has its own config
+                return;
+            }
+        }
+
         /** @var \Application\DeskPRO\DBAL\Connection $db */
         $db = $this->container->get('database_connection');
 
