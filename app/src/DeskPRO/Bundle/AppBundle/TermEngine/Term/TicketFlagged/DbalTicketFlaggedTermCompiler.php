@@ -47,7 +47,7 @@ class DbalTicketFlaggedTermCompiler extends AbstractDbalTermCompiler
 
         $query_part->addJoin(
             'tickets_flagged',
-            'tickets.id = tickets_flagged.ticket_id AND tickets_flagged.person_id = :agent_id'
+            'ticket.id = tickets_flagged.ticket_id AND tickets_flagged.person_id = :agent_id'
         );
 
         $query_part->setParameter('agent_id', new TermEngineExpression('agent.getId()'));

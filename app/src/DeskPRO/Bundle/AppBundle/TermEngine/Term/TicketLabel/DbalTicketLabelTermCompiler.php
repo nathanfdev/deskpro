@@ -41,9 +41,10 @@ class DbalTicketLabelTermCompiler extends AbstractDbalTermCompiler
         $query_part = $this->getJoinedHelper()->buildQueryPart(
             'labels_tickets.label',
             'labels_tickets',
-            'tickets.id = labels_tickets.ticket_id',
+            'ticket.id = labels_tickets.ticket_id',
             $term->getOp(),
-            $term->getOption('label')
+            $term->getOption('label'),
+            false
         );
 
         return $query_part;

@@ -301,6 +301,8 @@ class TicketFiltersController extends BaseController
         }
 
         // Let's retrieve the tickets for this filter.
+
+        /** @var \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngine $engine */
         $engine        = $this->get('term_engine.dbal_ticket_filters.engine');
         $context       = new TermEngineContext($this->getUser());
         $tickets_query = $engine->evaluate($filter, $context);
@@ -314,6 +316,7 @@ class TicketFiltersController extends BaseController
         $tickets    = $this->getEm()->getRepository('DeskPRO:Ticket')->findBy(['id' => $ticket_ids]);
 
         // retrieve total count and wrap results in Pagerfanta
+
         $total        = $this->get('data.tickets.ticket_counts')->getTicketFilterCount($filter)->getCount();
         $pagerAdapter = new FixedAdapter($total, $tickets);
         $pager        = new Pagerfanta($pagerAdapter);

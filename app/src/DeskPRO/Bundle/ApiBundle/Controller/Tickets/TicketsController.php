@@ -34,8 +34,18 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Labels\LabelsHelper;
+use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketsSelectCriteria;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
+use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Route;
+use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Pagerfanta\Adapter\FixedAdapter;
+use Pagerfanta\Pagerfanta;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class TicketsController.
@@ -48,4 +58,86 @@ class TicketsController extends CrudController
 
     public static $entity = Ticket::class;
     public static $type   = TicketType::class;
+
+    /**
+     * @ApiDoc(
+     *      description="get a list of tickets",
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     * @Get("", name="api_tickets")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function listAction(Request $request)
+    {
+        // if the "ids" param is provided, then just use it to select tickets
+        if ($ids = $request->query->get('ids')) {
+            $currentPage = $request->query->getInt('page', 1);
+            $maxPerPage  = $request->query->getInt('count', min(count($ids), self::$listMaxResults));
+            $ids         = !empty($ids) ? explode(',', $ids) : [];
+            $total       = count($ids);
+        }
+
+        // otherwise search for IDs using term engine and return Pagerfanta instance
+        else {
+            $params = $request->query->all();
+            if (array_key_exists('count', $params)) {
+                unset($params['count']);
+            }
+            if (array_key_exists('page', $params)) {
+                unset($params['page']);
+            }
+            $term = TicketsSelectCriteria::createTerm($params);
+
+            // Wrapping a Term into a Filter to use "term_engine.dbal_ticket_filters.engine" service.
+            // Can't use "term_engine.dbal_ticket_filters.compiler" accepting a Term instance because
+            // there is no way to pass there a context with the current user.
+
+            $filter = new TicketFilter();
+            $filter->setTerm($term);
+
+            /** @var \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngine $engine */
+            $engine        = $this->get('term_engine.dbal_ticket_filters.engine');
+            $context       = new TermEngineContext($this->getUser());
+            $currentPage   = $request->query->getInt('page', 1);
+            $maxPerPage    = $request->query->getInt('count', self::$listPerPage);
+            $tickets_query = $engine->evaluate($filter, $context);
+            $total         = $tickets_query->fetchCount();
+            $tickets_query->setCount($maxPerPage);
+            $tickets_query->setPage($currentPage);
+            $ids = $tickets_query->fetchIds();
+        }
+
+        $tickets      = $this->selectTickets($ids);
+        $pagerAdapter = new FixedAdapter($total, $tickets);
+        $pager        = new Pagerfanta($pagerAdapter);
+        $pager->setMaxPerPage($maxPerPage);
+        $pager->setCurrentPage($currentPage);
+
+        return View::create(
+            $this->dataSerialize($pager),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @param array $ids
+     *
+     * @return Ticket[]
+     */
+    protected function selectTickets($ids = [])
+    {
+        $em  = $this->getManager();
+        $ids = array_map(function ($id) { return (int) $id; }, $ids);
+
+        $query = $em
+            ->createQuery('SELECT t from DeskPRO:Ticket t WHERE t.id IN (?0)')
+            ->setParameters([$ids]);
+
+        return $query->getResult();
+    }
 }
