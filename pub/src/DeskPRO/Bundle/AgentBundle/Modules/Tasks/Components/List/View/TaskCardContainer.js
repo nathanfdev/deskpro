@@ -34,6 +34,11 @@ export class TaskCardContainer extends React.Component {
     dispatch(toggleSelected(task.get('id')));
   };
 
+  onChangeDisplayOrder = taskId => {
+    const { task } = this.props;
+    console.log('edit task list order', taskId, task.get('display_order'));
+  };
+
   render() {
     const props = this.props;
     const { selectedTasks, task, children } = props;
@@ -45,7 +50,8 @@ export class TaskCardContainer extends React.Component {
       ...props,
 
       selected: selected,
-      onToggleSelected: this.onToggleSelected
+      onToggleSelected: this.onToggleSelected,
+      onChangeDisplayOrder: this.onChangeDisplayOrder
     });
   }
 }
@@ -66,11 +72,9 @@ export const cardSourceCollect = (dragConnect, monitor) => ({
 });
 
 export const cardTargetSpec = {
-  drop({ task, onEdit }, monitor) {
+  drop({ onChangeDisplayOrder }, monitor) {
     const item = monitor.getItem();
-    onEdit(item.id, task.get('display_order'));
-
-    console.log('edit task list order', task.get('id'), item.id);
+    onChangeDisplayOrder(item.id);
   }
 };
 
