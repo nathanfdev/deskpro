@@ -11,7 +11,8 @@ export class CalendarHeader extends React.Component {
 
   render() {
     const today = moment();
-    const range = moment.range(moment(this.props.date).startOf('isoweek'), moment(this.props.date).endOf('isoweek'));
+    const { date } = this.props;
+    const range = moment.range(moment(date).startOf('isoweek'), moment(date).endOf('isoweek'));
 
     const items = [];
     range.by('days', weekday => items.push(weekday));
