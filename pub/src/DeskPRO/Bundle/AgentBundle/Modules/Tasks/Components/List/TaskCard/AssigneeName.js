@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-export class Assignee extends React.Component {
+export class AssigneeName extends React.Component {
 
   static propTypes = {
     task: PropTypes.object.isRequired,
