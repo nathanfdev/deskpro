@@ -6,10 +6,6 @@ import moment from 'moment';
 
 export class Calendar extends React.Component {
 
-  static propTypes = {
-    elements: PropTypes.object
-  };
-
   constructor(props) {
     super(props);
     this.state = {
@@ -24,17 +20,12 @@ export class Calendar extends React.Component {
   };
 
   render() {
-    const { elements } = this.props;
-
     return (
       <div>
-        <Controls date={this.state.date}
-                  onChange={this.onChangeDate} />
-
+        <Controls date={this.state.date} onChange={this.onChangeDate} />
         <table className="calendar-content">
           <CalendarHeader date={this.state.date} />
-          <CalendarBody date={this.state.date}
-                        elements={elements} />
+          <CalendarBody date={this.state.date} {...this.props} />
         </table>
       </div>
     );

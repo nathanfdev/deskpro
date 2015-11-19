@@ -8,6 +8,11 @@ export class CalendarView extends React.Component {
   };
 
   render() {
-    return <Calendar elements={this.props.tasks} />;
+    const config = {
+      elements: this.props.tasks,
+      dateField: 'date_due'
+    };
+
+    return <Calendar {...config} />;
   }
 }

@@ -9,6 +9,7 @@ export class CalendarCellContent extends React.Component {
 
   static propTypes = {
     dayDate: PropTypes.object.isRequired,
+    dateField: PropTypes.string.isRequired,
     elements: PropTypes.object.isRequired
   };
 
@@ -33,9 +34,9 @@ export class CalendarCellContent extends React.Component {
   };
 
   render() {
-    const { elements, dayDate } = this.props;
+    const { elements, dateField, dayDate } = this.props;
 
-    const fullList = elements.filter(item => dayDate.isSame(moment(item.get('date_due')), 'day'));
+    const fullList = elements.filter(item => dayDate.isSame(moment(item.get(dateField)), 'day'));
     const shortList = fullList.slice(0, 2);
     const additionalList = fullList.slice(2);
 
