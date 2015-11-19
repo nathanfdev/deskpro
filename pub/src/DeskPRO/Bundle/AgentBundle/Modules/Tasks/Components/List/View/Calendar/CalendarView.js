@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Controls } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Calendar/index';
-import { CalendarHeader } from './CalendarHeader';
+import { Controls, CalendarHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/Calendar/index';
 import { CalendarBody } from './CalendarBody';
 import moment from 'moment';
 
