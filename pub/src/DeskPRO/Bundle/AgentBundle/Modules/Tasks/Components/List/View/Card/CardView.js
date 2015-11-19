@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { ListGroup } from './ListGroup';
 import { TaskCardContainer } from '../TaskCardContainer';
-import { TaskCard } from './TaskCard/TaskCard';
+import { TaskDragCard } from './TaskCard/TaskDragCard';
 
 export class CardView extends React.Component {
 
@@ -25,7 +25,7 @@ export class CardView extends React.Component {
 
             {taskGroup.elements.map(task =>
               <TaskCardContainer task={task} key={task.get('id')}>
-                <TaskCard />
+                <TaskDragCard />
               </TaskCardContainer>
             )}
           </ListGroup>
