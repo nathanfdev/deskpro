@@ -2,6 +2,9 @@ import React, { PropTypes } from 'react';
 import { ListGroup } from './ListGroup';
 import { TaskCardContainer } from '../TaskCardContainer';
 import { TaskDragCard } from './TaskCard/TaskDragCard';
+import { TaskCardPreviewContainer } from '../TaskCardPreviewContainer';
+import { TaskCardPreview } from './TaskCard/TaskCardPreview';
+import { CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 
 export class CardView extends React.Component {
 
@@ -32,6 +35,12 @@ export class CardView extends React.Component {
             )}
           </ListGroup>
         )}
+
+        <CustomCardDragLayer>
+          <TaskCardPreviewContainer>
+            <TaskCardPreview />
+          </TaskCardPreviewContainer>
+        </CustomCardDragLayer>
       </div>
     );
   }
