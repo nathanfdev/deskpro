@@ -3,16 +3,17 @@ import React, { PropTypes } from 'react';
 export class CalendarCellDropdown extends React.Component {
 
   static propTypes = {
+    additionalPrefix: PropTypes.string,
     dayDate: PropTypes.object.isRequired,
     children: PropTypes.node
   };
 
   render() {
-    const { dayDate, children } = this.props;
+    const { additionalPrefix, dayDate, children } = this.props;
 
     return (
       <div className="dpw--popup-main dpw--popup-main-pointer dpw--popup-main-pointer-top-left calendar-popup">
-        <div className="dpw--popup-header">Tasks for {dayDate.format('MMMM Do')}</div>
+        <div className="dpw--popup-header">{additionalPrefix} {dayDate.format('MMMM Do')}</div>
 
         <div className="dpw--popup-content">
           <div className="dpw--popup-content-line">

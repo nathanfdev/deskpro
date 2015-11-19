@@ -42,7 +42,7 @@ export class CalendarCellContent extends React.Component {
   }
 
   render() {
-    const { elements, dateField, dayDate } = this.props;
+    const { elements = [], dateField, dayDate } = this.props;
 
     const fullList = elements.filter(item => dayDate.isSame(moment(item.get(dateField)), 'day'));
     const shortList = fullList.slice(0, 2);
@@ -72,7 +72,7 @@ export class CalendarCellContent extends React.Component {
           <ClickOut onClickOut={this.onCloseAdditionalDropdown}
                     additionalNodes={['.calendar-task-card', '.assign-form']}>
 
-            <CalendarCellDropdown dayDate={dayDate}>
+            <CalendarCellDropdown dayDate={dayDate} {...this.props}>
               {additionalList.map(item => this.renderItem(item))}
             </CalendarCellDropdown>
           </ClickOut>

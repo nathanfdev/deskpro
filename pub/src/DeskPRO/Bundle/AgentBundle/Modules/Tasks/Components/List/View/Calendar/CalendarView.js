@@ -13,6 +13,7 @@ export class CalendarView extends React.Component {
       elements: this.props.tasks,
       elementName: 'task',
       dateField: 'date_due',
+      additionalPrefix: 'Tasks for',
       draggable: {
         sourceCard: <TaskDragCard />
       }
