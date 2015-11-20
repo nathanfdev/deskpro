@@ -5,6 +5,7 @@ import {
   listParamsFiltersSelector,
   currentSortSelector,
   currentOrderSelector,
+  elementsSelector,
   elementsMapSelector
 } from '../Selectors/list';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
@@ -83,15 +84,20 @@ export const editTask = createAction(
   (taskId, updateData) => (dispatch, getState) => {
     const state = getState();
     const tasksMap = elementsMapSelector(state);
-    const task = tasksMap.get(taskId);
-    const changed = Object.keys(updateData).filter(taskProp => task.get(taskProp) !== updateData[taskProp]);
 
+    let tasks = elementsSelector(state);
+    let task = tasksMap.get(taskId);
+
+    const changed = Object.keys(updateData).filter(taskProp => task.get(taskProp) !== updateData[taskProp]);
     if (changed.length) {
-      DpApi
-        .sendPut('DP_API/tasks/' + taskId, updateData)
-        .success(() => dispatch(loadList()));
+      const index = tasks.indexOf(task);
+
+      changed.forEach(changedProp => task = task.set(changedProp, updateData[changedProp]));
+      tasks = tasks.set(index, task);
+
+      DpApi.sendPut('DP_API/tasks/' + taskId, updateData);
     }
 
-    return !changed.length;
+    return tasks;
   }
 );
