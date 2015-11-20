@@ -16,7 +16,7 @@ export class LabelsDictionary extends Component {
     count = labels.count() ? labels.count() : labels.length;
     for (let index = 0, label, letter; index < count; index++) {
       label = Immutable.Iterable.isIterable(labels) ? labels.get(index) : labels[index];
-      letter = label.get('label')[0].toUpperCase();
+      letter = label[0].toUpperCase();
       if (!dictionary.hasOwnProperty(letter)) {
         dictionary[letter] = [];
       }
@@ -56,8 +56,8 @@ export class LabelsDictionary extends Component {
                 <span className="labelCharacter">{group.letter}</span>
                 <ul>
                   {group.labels.map((label, key) =>
-                    <li key={key} onClick={onClick.bind(this, {name: 'label', value: label.get('label')})}>
-                      <a href="#" className="item-label">{label.get('label')}</a>
+                    <li key={key} onClick={onClick.bind(this, {name: 'label', value: label})}>
+                      <a href="#" className="item-label">{label}</a>
                     </li>)}
                 </ul>
               </div>
