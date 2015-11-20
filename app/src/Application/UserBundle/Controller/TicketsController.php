@@ -65,7 +65,7 @@ class TicketsController extends AbstractController
         parent::DeskPRO_onControllerPreAction($event);
 
         /* @var $event PrePostEvent */
-        if ($this->person instanceof PersonGuest) {
+        if ($this->person instanceof PersonGuest && !in_array($event->get('action'), array('feedbackAction', 'feedbackSaveAction', 'feedbackCloseTicketAction'))) {
             $event->setResponse(new RedirectResponse($this->generateUrl(
                 'user_login',
                 array('return' => $this->request->getRequestUri())
