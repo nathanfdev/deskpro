@@ -1,5 +1,4 @@
 import PageWidget from "DeskPRO/Component/PageWidget/PageWidget"
-import DpDropzone from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/DpDropzone";
 import $ from "jquery"
 
 //######################################################################################################################
@@ -25,9 +24,6 @@ class FeedbackValueReader {
 //######################################################################################################################
 
 export default class FeedbackForm extends PageWidget {
-  init() {
-    this.addWidgetDef(DpDropzone, ".new-ticket-attachements-interactive");
-  }
   renderWidget() {
     let $formEl = this.$element.find('.feedback-form-interactive');
     let $expandedForm = this.$element.find('.feedback-form-expanded');
