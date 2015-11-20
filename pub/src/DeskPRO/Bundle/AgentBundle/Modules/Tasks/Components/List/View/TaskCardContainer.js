@@ -38,7 +38,7 @@ export class TaskCardContainer extends React.Component {
   onChangeDisplayOrder = taskId => {
     const { task, dispatch } = this.props;
     const params = {
-      display_order: task.get('display_order')
+      display_order: task.get('display_order') + 1
     };
 
     dispatch(editTask(taskId, params));

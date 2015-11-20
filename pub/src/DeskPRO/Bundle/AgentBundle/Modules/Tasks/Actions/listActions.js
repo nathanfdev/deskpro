@@ -86,14 +86,28 @@ export const editTask = createAction(
     const tasksMap = elementsMapSelector(state);
 
     let tasks = elementsSelector(state);
-    let task = tasksMap.get(taskId);
+    let updatingTask = tasksMap.get(taskId);
 
-    const changed = Object.keys(updateData).filter(taskProp => task.get(taskProp) !== updateData[taskProp]);
-    if (changed.length) {
-      const index = tasks.indexOf(task);
+    const changedProps = Object.keys(updateData).filter(taskProp => updatingTask.get(taskProp) !== updateData[taskProp]);
+    if (changedProps.length) {
+      // Update task props
+      const updatingIndex = tasks.indexOf(updatingTask);
 
-      changed.forEach(changedProp => task = task.set(changedProp, updateData[changedProp]));
-      tasks = tasks.set(index, task);
+      changedProps.forEach(changedProp => updatingTask = updatingTask.set(changedProp, updateData[changedProp]));
+      tasks = tasks.set(updatingIndex, updatingTask);
+
+      // Update display order of related tasks
+      if (updateData.display_order) {
+        tasks
+          .filter(task => task.get('display_order') >= updateData.display_order)
+          .forEach(task => {
+            const index = tasks.indexOf(task);
+            const newOrder = task.get('display_order') + 1;
+
+            tasks = tasks.set(index, task.set('display_order', newOrder));
+          })
+        ;
+      }
 
       DpApi.sendPut('DP_API/tasks/' + taskId, updateData);
     }
