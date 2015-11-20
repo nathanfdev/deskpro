@@ -146,8 +146,8 @@ export class LabelsCollection extends Component {
           {allLabels.map(
             (item, index) =>
               <li key={index}>
-                <a href="#" className="dpw-item-label" onClick={selectLabel.bind(this, item.get('label'))}>
-                  {item.get('label')}
+                <a href="#" className="dpw-item-label" onClick={selectLabel.bind(this, item)}>
+                  {item}
                 </a>
               </li>
           )}

@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { FeedbackCard } from './FeedbackCard';
 import { connect } from 'react-redux';
-import { peopleSelector, feedbackTypesSelector, feedbackLabelsSelector, feedbackCommentsSelector, feedbackCategoriesSelector, feedbackStatusCategoriesSelector }
+import { peopleSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackCategoriesSelector, feedbackStatusCategoriesSelector }
   from '../../../../Selectors/list';
 
 @connect(state => {
@@ -11,7 +11,6 @@ import { peopleSelector, feedbackTypesSelector, feedbackLabelsSelector, feedback
     selected: state.Feedback.list.get('selected'),
     people: peopleSelector(state),
     feedbackTypes: feedbackTypesSelector(state),
-    feedbackLabels: feedbackLabelsSelector(state),
     feedbackComments: feedbackCommentsSelector(state),
     feedbackCategories: feedbackCategoriesSelector(state),
     feedbackStatusCategories: feedbackStatusCategoriesSelector(state)
@@ -26,7 +25,6 @@ export class FeedbackCardsContainer extends Component {
     selected: PropTypes.object.isRequired,
     people: PropTypes.object.isRequired,
     feedbackTypes: PropTypes.object.isRequired,
-    feedbackLabels: PropTypes.object.isRequired,
     feedbackComments: PropTypes.object.isRequired,
     feedbackCategories: PropTypes.object.isRequired,
     feedbackStatusCategories: PropTypes.object,
@@ -34,7 +32,7 @@ export class FeedbackCardsContainer extends Component {
   };
 
   render() {
-    const { feedback, viewFields, selected, toggleSelected, people, feedbackTypes, feedbackLabels, feedbackComments,
+    const { feedback, viewFields, selected, toggleSelected, people, feedbackTypes, feedbackComments,
       feedbackCategories, feedbackStatusCategories } = this.props;
 
     return (

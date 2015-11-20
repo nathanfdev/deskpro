@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { reduceImmutableToProperty } from 'DeskPRO/Component/Util/Map';
 import { createPeopleRequestSelectors }
   from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Selectors/peopleSelectors';
 import { createFeedbackTypesRequestSelectors } from '../RecordStores/Selectors/feedbackTypesSelectors';
@@ -43,7 +44,7 @@ export const feedbackTypesSelector = createSelector(
 
 export const feedbackLabelsSelector = createSelector(
   navStateSelector,
-    state => state.get('labels')
+    state => reduceImmutableToProperty('label', state.get('labels'))
 );
 
 export const feedbackCommentsSelector = createSelector(
