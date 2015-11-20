@@ -31,13 +31,8 @@ export class ListGroupContainer extends React.Component {
     children: PropTypes.node.isRequired
   };
 
-  onChangeGroup = (taskId, param, value) => {
-    const { dispatch } = this.props;
-    const params = {
-      [param]: value
-    };
-
-    dispatch(editTask(taskId, params));
+  onChangeGroup = (taskId, updateData) => {
+    this.props.dispatch(editTask(taskId, updateData));
   };
 
   render() {

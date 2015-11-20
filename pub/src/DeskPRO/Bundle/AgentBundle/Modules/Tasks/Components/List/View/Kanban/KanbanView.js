@@ -21,8 +21,7 @@ export class KanbanView extends React.Component {
         {taskGroups.map((taskGroup, index) =>
           <ListGroup title={taskGroup.title}
                      key={index}
-                     param={taskGroup.param}
-                     value={taskGroup.value}
+                     updateData={taskGroup.updateData}
                      onChangeGroup={onChangeGroup}>
 
             {taskGroup.elements.map(task =>

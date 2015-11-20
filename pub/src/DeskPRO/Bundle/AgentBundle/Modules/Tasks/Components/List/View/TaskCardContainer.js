@@ -84,9 +84,9 @@ export const cardTargetSpec = {
 };
 
 export const groupTargetSpec = {
-  drop({ param, value, onChangeGroup }, monitor) {
+  drop({ updateData, onChangeGroup }, monitor) {
     const item = monitor.getItem();
-    onChangeGroup(item.id, param, value);
+    onChangeGroup(item.id, updateData);
   }
 };
 
