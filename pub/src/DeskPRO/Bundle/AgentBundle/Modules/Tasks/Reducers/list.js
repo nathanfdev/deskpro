@@ -39,7 +39,5 @@ export default createReducer(initialState, {
     start: setValue('async.done', false),
     done: setValue('async.done', true)
   }),
-  [actions.editTask]: async({
-    start: setValue('async.done', false)
-  })
+  [actions.editTask]: setFullPayload('async.done')
 });

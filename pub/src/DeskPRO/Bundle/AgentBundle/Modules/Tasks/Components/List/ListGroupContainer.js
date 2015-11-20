@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { currentSortSelector, elementsMapSelector } from '../../Selectors/list';
+import { currentSortSelector } from '../../Selectors/list';
 import { allProjectsSelector } from '../../RecordStores/Selectors/projectSelectors';
 import { allTaskListsSelector } from '../../RecordStores/Selectors/taskListSelectors';
 import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
@@ -15,8 +15,7 @@ import { editTask } from '../../Actions/listActions';
   projects: allProjectsSelector(state),
   agents: agentsSelector(state),
   agentTeams: agentTeamsSelector(state),
-  departments: allDepartmentsSelector(state),
-  tasksMap: elementsMapSelector(state)
+  departments: allDepartmentsSelector(state)
 }))
 export class ListGroupContainer extends React.Component {
 
@@ -29,18 +28,11 @@ export class ListGroupContainer extends React.Component {
     agentTeams: PropTypes.object.isRequired,
     departments: PropTypes.object.isRequired,
     tasks: PropTypes.object,
-    children: PropTypes.node.isRequired,
-    tasksMap: PropTypes.object.isRequired
+    children: PropTypes.node.isRequired
   };
 
   onChangeGroup = (taskId, updateData) => {
-    const { tasksMap, dispatch } = this.props;
-    const task = tasksMap.get(taskId);
-    const changed = Object.keys(updateData).filter(taskProp => task.get(taskProp) !== updateData[taskProp]);
-
-    if (changed.length) {
-      dispatch(editTask(taskId, updateData));
-    }
+    this.props.dispatch(editTask(taskId, updateData));
   };
 
   render() {

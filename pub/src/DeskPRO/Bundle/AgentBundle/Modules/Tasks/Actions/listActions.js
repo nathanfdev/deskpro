@@ -1,6 +1,12 @@
 import { createAction } from 'Ampliflux';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
-import { listParamsNavSelector, listParamsFiltersSelector, currentSortSelector, currentOrderSelector } from '../Selectors/list';
+import {
+  listParamsNavSelector,
+  listParamsFiltersSelector,
+  currentSortSelector,
+  currentOrderSelector,
+  elementsMapSelector
+} from '../Selectors/list';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 
@@ -29,6 +35,7 @@ export const loadList = createAction(
     const navState = listParamsNavSelector(state);
     if (!navState) {
       resolve({});
+      return null;
     }
 
     const navParams = navState.toJS();
@@ -73,12 +80,18 @@ export const applyFilters = createAction(
 
 export const editTask = createAction(
   'TASKS_LIST_EDIT_TASK',
-  (taskId, data) => dispatch => new Promise(resolve => {
-    DpApi
-      .sendPut('DP_API/tasks/' + taskId, data)
-      .success(response => {
-        resolve(response);
-        dispatch(loadList());
-      });
-  })
+  (taskId, updateData) => (dispatch, getState) => {
+    const state = getState();
+    const tasksMap = elementsMapSelector(state);
+    const task = tasksMap.get(taskId);
+    const changed = Object.keys(updateData).filter(taskProp => task.get(taskProp) !== updateData[taskProp]);
+
+    if (changed.length) {
+      DpApi
+        .sendPut('DP_API/tasks/' + taskId, updateData)
+        .success(() => dispatch(loadList()));
+    }
+
+    return !changed.length;
+  }
 );
