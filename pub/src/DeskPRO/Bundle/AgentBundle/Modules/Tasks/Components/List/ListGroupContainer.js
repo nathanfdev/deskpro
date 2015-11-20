@@ -7,6 +7,7 @@ import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordS
 import { agentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
 import { allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
 import { groupCollection } from 'Util/ListGroup';
+import { editTask } from '../../Actions/listActions';
 
 @connect(state => ({
   sort: currentSortSelector(state),
@@ -19,6 +20,7 @@ import { groupCollection } from 'Util/ListGroup';
 export class ListGroupContainer extends React.Component {
 
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
     sort: PropTypes.string,
     lists: PropTypes.object.isRequired,
     projects: PropTypes.object.isRequired,
@@ -30,8 +32,13 @@ export class ListGroupContainer extends React.Component {
   };
 
   onChangeGroup = (taskId, param, value) => {
-    console.log('edit task', taskId, param, value);
-  }
+    const { dispatch } = this.props;
+    const params = {
+      [param]: value
+    };
+
+    dispatch(editTask(taskId, params));
+  };
 
   render() {
     const { sort, lists, projects, agents, agentTeams, departments } = this.props;
