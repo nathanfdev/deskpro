@@ -37,6 +37,9 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * Class TaskType.
+ */
 class TaskType extends AbstractType
 {
     /**
@@ -63,159 +66,103 @@ class TaskType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $this->task = $options['task'];
-        $builder->addEventSubscriber(new ReplaceNotSubmittedValuesWithDefaultsListener());
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSubmit']);
-        $builder->add(
-                'title',
-                'text',
-                array(
-                    'description' => 'the task title',
-                )
-            )
-            ->add(
-                'is_done',
-                'api_boolean',
-                array(
-                    'description' => 'the task status',
+        $builder
+            ->add('title', 'text', [
+                'description' => 'the task title',
+            ])
+            ->add('is_done', 'api_boolean', [
+                'description' => 'the task status',
+                'required'    => false,
+            ])
+            ->add('percent_complete', 'integer', [
+                'required'    => false,
+                'description' => 'the percentage of the task complete',
+            ])
+            ->add('task_type', 'choice', [
+                'description' => 'the type of task',
+                'required'    => false,
+                'choices'     => [
+                    'task'  => 'Task',
+                    'event' => 'Event',
+                ],
+            ])
+            ->add('date_due', 'api_date', [
+                'required'    => false,
+                'description' => 'the task due date',
+            ])
+            ->add('date_event_start', 'datetime', [
+                'required'    => false,
+                'description' => 'the event start datetime',
+            ])
+            ->add('date_event_end', 'datetime', [
+                'required'    => false,
+                'description' => 'the event end datetime',
+            ])
+            ->add('visibility', 'choice', [
+                'required'    => false,
+                'description' => 'the task visibility',
+                'choices'     => [
+                    'public'  => 'Public',
+                    'project' => 'Project',
+                    'private' => 'Private',
+                ],
+            ])
+            ->add('urgency', 'integer', [
+                'required'    => false,
+                'description' => 'the task urgency',
+            ])
+            ->add('display_order', 'integer', [
+                'required'    => false,
+                'description' => 'the task position in a list',
+            ])
+            ->add('project', 'entity', [
+                'class'    => 'App:TaskProject',
+                'property' => 'title',
+            ])
+            ->add('list', 'entity', [
+                'class'    => 'App:TaskList',
+                'property' => 'title',
+            ])
+            ->add('labels', 'api_labels_collection', [
+                'labels_class'   => LabelTask::class,
+                'labels_owner'   => $builder->getData(),
+                'owner_property' => 'task',
+            ])
+            ->add('departments', 'collection',  [
+                'type'         => 'task_department',
+                'allow_add'    => true,
+                'allow_delete' => true,
+                'delete_empty' => true,
+                'options'      => [
+                    'task'        => $options['task'],
                     'required'    => false,
-                )
-            )
-            ->add(
-                'percent_complete',
-                'integer',
-                array(
+                    'description' => 'task assignees which are departments',
+                ],
+            ])
+            ->add('teams', 'collection', [
+                'type'         => 'task_agent_team',
+                'allow_add'    => true,
+                'allow_delete' => true,
+                'delete_empty' => true,
+                'options'      => [
+                    'task'        => $options['task'],
                     'required'    => false,
-                    'description' => 'the percentage of the task complete',
-                )
-            )
-            ->add(
-                'task_type',
-                'choice',
-                array(
-                    'description' => 'the type of task',
+                    'description' => 'task assignees which are teams',
+                ],
+            ])
+            ->add('agents', 'collection', [
+                'type'         => 'task_person',
+                'allow_add'    => true,
+                'allow_delete' => true,
+                'delete_empty' => true,
+                'options'      => [
+                    'task'        => $options['task'],
                     'required'    => false,
-                    'choices'     => array('task' => 'Task', 'event' => 'Event'),
-                )
-            )
-            ->add(
-                'date_due',
-                'api_date',
-                array(
-                    'required'    => false,
-                    'description' => 'the task due date',
-                )
-            )
-            ->add(
-                'date_event_start',
-                'datetime',
-                array(
-                    'required'    => false,
-                    'description' => 'the event start datetime',
-                )
-            )
-            ->add(
-                'date_event_end',
-                'datetime',
-                array(
-                    'required'    => false,
-                    'description' => 'the event end datetime',
-                )
-            )
-            ->add(
-                'visibility',
-                'choice',
-                array(
-                    'required'    => false,
-                    'description' => 'the task visibility',
-                    'choices'     => array('public' => 'Public', 'project' => 'Project', 'private' => 'Private'),
-                )
-            )
-            ->add(
-                'urgency',
-                'integer',
-                array(
-                    'required'    => false,
-                    'description' => 'the task urgency',
-                )
-            )
-            ->add(
-                'display_order',
-                'integer',
-                array(
-                    'required'    => false,
-                    'description' => 'the task position in a list',
-                )
-            )
-            ->add(
-                'project',
-                'entity',
-                array(
-                    'class'    => 'App:TaskProject',
-                    'property' => 'title',
-                )
-            )
-            ->add(
-                'list',
-                'entity',
-                array(
-                    'class'    => 'App:TaskList',
-                    'property' => 'title',
-                )
-            )
-            ->add(
-                'labels',
-                'api_labels_collection',
-                array(
-                    'labels_class'   => LabelTask::class,
-                    'labels_owner'   => $builder->getData(),
-                    'owner_property' => 'task',
-                )
-            )
-            ->add(
-                'departments',
-                'collection',
-                array(
-                    'type'         => 'task_department',
-                    'allow_add'    => true,
-                    'allow_delete' => true,
-                    'delete_empty' => true,
-                    'options'      => array(
-                        'task'        => $options['task'],
-                        'required'    => false,
-                        'description' => 'task assignees which are departments',
-                    ),
-                )
-            )
-            ->add(
-                'teams',
-                'collection',
-                array(
-                    'type'         => 'task_agent_team',
-                    'allow_add'    => true,
-                    'allow_delete' => true,
-                    'delete_empty' => true,
-                    'options'      => array(
-                        'task'        => $options['task'],
-                        'required'    => false,
-                        'description' => 'task assignees which are teams',
-                    ),
-                )
-            )
-            ->add(
-                'agents',
-                'collection',
-                array(
-                    'type'         => 'task_person',
-                    'allow_add'    => true,
-                    'allow_delete' => true,
-                    'delete_empty' => true,
-                    'options'      => array(
-                        'task'        => $options['task'],
-                        'required'    => false,
-                        'description' => 'task assignees which are people',
-                    ),
-                )
-            );
+                    'description' => 'task assignees which are people',
+                ],
+            ])
+            ->addEventSubscriber(new ReplaceNotSubmittedValuesWithDefaultsListener())
+            ->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSubmit']);
     }
 
     /**
@@ -225,11 +172,11 @@ class TaskType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class'     => 'DeskPRO\Bundle\AppBundle\Entity\Task',
             'task'           => null,
             'entity_manager' => null,
-        ));
+        ]);
     }
 
     /**

@@ -126,7 +126,6 @@ class TasksController extends BaseController implements ClassResourceInterface
     public function massActionAction(Request $request)
     {
         $submitted = $request->request->all();
-
         if (empty($submitted['ids'])) {
             throw $this->createNotFoundException();
         }
@@ -159,10 +158,7 @@ class TasksController extends BaseController implements ClassResourceInterface
             $query->execute();
         }
 
-        return View::create(
-            $this->dataSerialize($task),
-            Response::HTTP_NO_CONTENT
-        );
+        return View::create($this->dataSerialize($task), Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -307,12 +303,11 @@ class TasksController extends BaseController implements ClassResourceInterface
      *
      * @Get("/tasks/{id}/subtasks", name="api_tasks_subtasks_get")
      *
-     * @param Request $request
      * @param $id
      *
      * @return View
      */
-    public function getSubtasksAction(Request $request, $id)
+    public function getSubtasksAction($id)
     {
         $task = $this->getTask($id);
         if (empty($task)) {
@@ -366,7 +361,6 @@ class TasksController extends BaseController implements ClassResourceInterface
     public function getCommentsAction(Request $request, $id)
     {
         $task = $this->getTask($id);
-
         if (empty($task)) {
             throw $this->createNotFoundException();
         }
@@ -425,7 +419,6 @@ class TasksController extends BaseController implements ClassResourceInterface
     public function getAttachmentsAction(Request $request, $id)
     {
         $task = $this->getTask($id);
-
         if (empty($task)) {
             throw $this->createNotFoundException();
         }
@@ -460,25 +453,20 @@ class TasksController extends BaseController implements ClassResourceInterface
      *
      * @Get("/tasks/{id}/linked_items", name="api_tasks_links_get")
      *
-     * @param Request $request
      * @param $id
      *
      * @return View
      */
-    public function getLinksAction(Request $request, $id)
+    public function getLinksAction($id)
     {
         $task = $this->getTask($id);
-
         if (empty($task)) {
             throw $this->createNotFoundException();
         }
 
         $links = $task->getLinkedItems();
 
-        return View::create(
-            $this->dataSerialize($links),
-            Response::HTTP_OK
-        );
+        return View::create($this->dataSerialize($links), Response::HTTP_OK);
     }
 
     /**
@@ -490,9 +478,7 @@ class TasksController extends BaseController implements ClassResourceInterface
      */
     protected function getTask($id)
     {
-        $id   = (int) $id;
-        $task = $this->getDoctrine()->getManager()->getRepository('App:Task')->find($id);
-
+        $task = $this->getDoctrine()->getManager()->getRepository('App:Task')->find((int) $id);
         if (!$task) {
             throw $this->createNotFoundException();
         }
@@ -533,18 +519,12 @@ class TasksController extends BaseController implements ClassResourceInterface
         }
 
         $this->validateForm($request, $task, $submitted);
-        $this->getDoctrine()->getManager()->persist($task);
-        $this->getDoctrine()->getManager()->flush();
 
-        $location = $this->generateUrl('api_tasks_get', ['taskId' => $task->getId()]);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($task);
+        $em->flush();
 
-        return View::create(
-            $this->dataSerialize($task),
-            $status,
-            [
-                'Location' => $location,
-            ]
-        );
+        return View::create($this->dataSerialize($task), $status);
     }
 
     /**
@@ -555,8 +535,6 @@ class TasksController extends BaseController implements ClassResourceInterface
      * @param array   $submitted The submitted data
      *
      * @throws InvalidFormException If form is invalid
-     *
-     * @return bool True if valid
      */
     protected function validateForm(Request $request, Task $task, $submitted)
     {
@@ -570,11 +548,8 @@ class TasksController extends BaseController implements ClassResourceInterface
         ->getForm();
 
         $form->submit($submitted, $request->getMethod() !== 'PUT');
-
-        if ($form->isValid()) {
-            return true;
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
         }
-
-        throw new InvalidFormException($form);
     }
 }
