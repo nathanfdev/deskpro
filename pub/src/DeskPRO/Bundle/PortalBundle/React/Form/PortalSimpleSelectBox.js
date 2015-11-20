@@ -68,9 +68,6 @@ export default class PortalSimpleSelectBox extends React.Component {
 
   componentDidMount() {
     document.addEventListener("click", this.documentClickHandler.bind(this));
-    if (this.refs.filterInput) {
-      this.refs.filterInput.focus();
-    }
   }
 
   componentWillUnmount() {
@@ -81,6 +78,9 @@ export default class PortalSimpleSelectBox extends React.Component {
     this.setState({
       expanded: false
     });
+    if (this.refs.filterInput) {
+      this.refs.filterInput.blur();
+    }
   }
 
   dropdownClickHandler(e) {
@@ -141,13 +141,13 @@ export default class PortalSimpleSelectBox extends React.Component {
 
     if (!this.state.expanded && (this.props.multiple ? this.state.value.length > 0 : this.state.value)) {
       return (
-        <div className={className} onClick={this.onClickHeader} onKeyDown={this.filterNav} tabIndex="0" role="combobox" ref="defaultRow">
+        <div className={className} onClick={this.onClickHeader} tabIndex="0" role="combobox" ref="defaultRow">
           <span>{this.props.multiple ? (
               this.state.value.map((opt) => {
                 return opt.title
               }).join(', ')
           ) : this.state.value.title}</span>
-          <i className="fa fa-caret-down"></i>
+          <i className="fa fa-caret-down" />
         </div>
       );
     } else {
@@ -156,7 +156,7 @@ export default class PortalSimpleSelectBox extends React.Component {
           <div className="filter-box">
             <input type="text" placeholder="Select..." ref="filterInput" onKeyDown={this.filterNav} onKeyUp={this.filterChange} />
           </div>
-          <i className="fa fa-caret-down"></i>
+          <i className="fa fa-caret-down" />
         </div>
       );
     }
@@ -180,7 +180,7 @@ export default class PortalSimpleSelectBox extends React.Component {
                           key={option.id}
                           option={option}
                           multiple={this.props.multiple}
-                          active={this.props.multiple ? _.includes(this.state.value, option) : this.state.value == option }/>
+                          active={this.props.multiple ? _.includes(this.state.value, option) : this.state.value.id == option.id }/>
           );
         })
         }
@@ -225,7 +225,7 @@ export default class PortalSimpleSelectBox extends React.Component {
     }
   }
 
-  filterChange = (ev) => {
+  filterChange(ev) {
     // no change
     if (this.refs.filterInput.value == this.state.filterText) {
       return;
