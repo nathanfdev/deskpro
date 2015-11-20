@@ -6,7 +6,8 @@ import PortalAttach from "DeskPRO/Bundle/PortalBundle/React/Form/PortalAttach";
 
 export default class DpxAttach extends PageWidget {
   renderWidget() {
-    this.$rElement = $('<div class="dp-react-widget as-dpui"></div>').appendTo(this.$element);
+    this.$element.hide();
+    this.$rElement = $('<div class="dp-react-widget as-dpui"></div>').insertAfter(this.$element);
     ReactDOM.render(React.createElement(PortalAttach), this.$rElement.get(0));
   }
 }

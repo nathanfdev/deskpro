@@ -42,7 +42,7 @@ use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class CaptchaEventListener implements EventSubscriberInterface
+class RateLimitEventListener implements EventSubscriberInterface
 {
     /**
      * @var EntityManager
@@ -80,13 +80,13 @@ class CaptchaEventListener implements EventSubscriberInterface
         }
 
         if ($this->getSetting(AntiAbuse::SETTING_RATE_LIMIT_IS_DISABLED)) {
-            $this->logger->debug('[AntiAbuse->CaptchaEventListener] Rate Limit is disabled. Skipping.');
+            $this->logger->debug('[AntiAbuse->RateLimitEventListener] Rate Limit is disabled. Skipping.');
 
             return;
         }
 
         if ($this->isWhitelisted($event->getIp())) {
-            $this->logger->info('[AntiAbuse->CaptchaEventListener] Whitelist matched IP "'.$event->getIp().'"". Skipping rate limit checks.');
+            $this->logger->info('[AntiAbuse->RateLimitEventListener] Whitelist matched IP "'.$event->getIp().'"". Skipping rate limit checks.');
 
             return;
         }
@@ -106,9 +106,10 @@ class CaptchaEventListener implements EventSubscriberInterface
             }
             $this->logger->info(
                 sprintf(
-                    '[AntiAbuse->CaptchaEventListener] captcha is recommended for (IP=%s, Person=%s)',
+                    '[AntiAbuse->RateLimitEventListener] captcha is recommended for (IP=%s, Person=%s, Type=%s)',
                     $event->getIp(),
-                    $p
+                    $p,
+                    $event->getType()
                 )
             );
 
@@ -180,6 +181,7 @@ class CaptchaEventListener implements EventSubscriberInterface
             $event->getType(),
             [
                 AntiAbuse::ACTION_LOGIN,
+                AntiAbuse::ACTION_UPLOAD,
                 AntiAbuse::ACTION_REGISTER,
                 AntiAbuse::ACTION_RESET_PASSWORD,
                 AntiAbuse::ACTION_TOKEN_EXCHANGE,

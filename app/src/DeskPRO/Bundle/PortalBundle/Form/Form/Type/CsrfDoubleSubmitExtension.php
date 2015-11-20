@@ -44,6 +44,8 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class CsrfDoubleSubmitExtension extends AbstractTypeExtension
 {
+    const COOKIE_NAME = '_dp_csrf_token';
+
     /**
      * @var RequestStack
      */
@@ -135,7 +137,7 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
             array(
                 'csrf_protection'                  => false,
                 'csrf_double_submit_protection'    => true,
-                'csrf_double_submit_cookie_name'   => '_dp_csrf_token',
+                'csrf_double_submit_cookie_name'   => self::COOKIE_NAME,
                 'csrf_double_submit_error_message' => 'portal.forms.error_csrf',
             )
         )->setAllowedTypes(

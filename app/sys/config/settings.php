@@ -996,6 +996,9 @@ return array(
     ####################################################################################################################
     # rate limit
     ####################################################################################################################
+    'rate_limit.upload_attachment.limit'    => 50,
+    'rate_limit.upload_attachment.time'     => 15 * 60, // 15 min
+    'rate_limit.upload_attachment.response' => 'lockout',
 
     'rate_limit.login.limit'    => 3,
     'rate_limit.login.time'     => 15 * 60, // 15 min
@@ -1024,6 +1027,10 @@ return array(
     'rate_limit.submit_ticket.limit'    => 3,
     'rate_limit.submit_ticket.time'     => 15 * 60, // 15 min
     'rate_limit.submit_ticket.response' => 'captcha',
+
+    'rate_limit.upload_attachment.guest.limit'    => 50,
+    'rate_limit.upload_attachment.guest.time'     => 15 * 60, // 15 min
+    'rate_limit.upload_attachment.guest.response' => 'lockout',
 
     'rate_limit.submit_comment.guest.limit'    => 3,
     'rate_limit.submit_comment.guest.time'     => 15 * 60, // 15 min
