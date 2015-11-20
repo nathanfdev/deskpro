@@ -168,7 +168,7 @@ class NewTicketController extends AbstractController
                 'rerendering_saved' => $rerendering_saved,
                 'breadcrumbs'       => $breadcrumbs,
                 'page_title'        => $this->createPageTitle()->newticket(),
-                //'form_errors'       => $form->isSubmitted() ? $form->getErrors(true, true) : []
+                'form_errors'       => $form->isSubmitted() ? $form->getErrors() : [],
             )
         );
     }

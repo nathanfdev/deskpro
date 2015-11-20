@@ -187,6 +187,7 @@ class TicketsController extends AbstractController
                 'last_user_reply_in_seconds' => $last_user_reply_in_seconds,
                 'created_in_seconds'         => $created_in_seconds,
                 'edit_page'                  => false,
+                'form_errors'                => $form->isSubmitted() ? $form->getErrors() : [],
             )
         );
     }
