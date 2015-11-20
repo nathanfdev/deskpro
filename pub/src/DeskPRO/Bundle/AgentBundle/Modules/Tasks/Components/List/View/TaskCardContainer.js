@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { toggleSelected } from '../../../Actions/listActions';
+import { editTask } from '../../../Actions/listActions';
 import {
   selectedSelector,
   cardVisibleFieldsSelector,
@@ -35,8 +36,12 @@ export class TaskCardContainer extends React.Component {
   };
 
   onChangeDisplayOrder = taskId => {
-    const { task } = this.props;
-    console.log('edit task list order', taskId, task.get('display_order'));
+    const { task, dispatch } = this.props;
+    const params = {
+      display_order: task.get('display_order')
+    };
+
+    dispatch(editTask(taskId, params));
   };
 
   render() {

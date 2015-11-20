@@ -70,3 +70,15 @@ export const applyFilters = createAction(
       dispatch(loadList());
     }
 );
+
+export const editTask = createAction(
+  'TASKS_LIST_EDIT_TASK',
+  (taskId, data) => dispatch => new Promise(resolve => {
+    DpApi
+      .sendPut('DP_API/tasks/' + taskId, data)
+      .success(response => {
+        resolve(response);
+        dispatch(loadList());
+      });
+  })
+);
