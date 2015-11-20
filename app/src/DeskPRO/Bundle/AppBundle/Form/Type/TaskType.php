@@ -86,8 +86,9 @@ class TaskType extends AbstractType
                     'event' => 'Event',
                 ],
             ])
-            ->add('date_due', 'api_date', [
+            ->add('date_due', 'datetime', [
                 'required'    => false,
+                'widget'      => 'single_text',
                 'description' => 'the task due date',
             ])
             ->add('date_event_start', 'datetime', [
