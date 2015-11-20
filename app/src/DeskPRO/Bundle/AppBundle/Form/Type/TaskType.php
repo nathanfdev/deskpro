@@ -30,7 +30,6 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use DeskPRO\Bundle\AppBundle\Entity\LabelTask;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
-use DeskPRO\Bundle\AppBundle\Form\EventListener\ReplaceNotSubmittedValuesWithDefaultsListener;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -90,6 +89,11 @@ class TaskType extends AbstractType
                 'required'    => false,
                 'widget'      => 'single_text',
                 'description' => 'the task due date',
+            ])
+            ->add('date_done', 'datetime', [
+                'required'    => false,
+                'widget'      => 'single_text',
+                'description' => 'the task done date',
             ])
             ->add('date_event_start', 'datetime', [
                 'required'    => false,
@@ -162,7 +166,6 @@ class TaskType extends AbstractType
                     'description' => 'task assignees which are people',
                 ],
             ])
-            ->addEventSubscriber(new ReplaceNotSubmittedValuesWithDefaultsListener())
             ->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSubmit']);
     }
 
