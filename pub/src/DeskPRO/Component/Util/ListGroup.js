@@ -109,13 +109,14 @@ const dateGroupsBuilder = (groups, { refField, dateGroupKeys }) => {
   ));
 };
 
-const recordGroupsBuilder = (groups, { records, titleField, refField }) => {
+const recordGroupsBuilder = (groups, { records, titleField, refField, collection }) => {
   records.forEach(record => {
     const id = record.get('id');
+    const newValue = collection ? [id] : id;
 
     groups.push(createGroup(
       record.get(titleField),
-      {[refField]: id},
+      {[refField]: newValue},
       item => {
         const value = item.get(refField);
         return value && typeof value === 'object' ? value.includes(id) : value === id;
@@ -139,10 +140,10 @@ const addDateGroups = (groups, groupConfig) => {
 };
 
 const addRecordGroups = (groups, groupConfig) => {
-  const { records, refField, emptyGroup } = groupConfig;
+  const { records, refField, emptyGroup, collection } = groupConfig;
 
   if (Array.isArray(records)) {
-    records.forEach(childGroupConfig => addRecordGroups(groups, childGroupConfig));
+    records.forEach(childGroupConfig => addRecordGroups(groups, {...childGroupConfig, collection}));
   } else {
     recordGroupsBuilder(groups, groupConfig);
   }
@@ -150,8 +151,9 @@ const addRecordGroups = (groups, groupConfig) => {
   if (emptyGroup) {
     let updateData = {};
     if (Array.isArray(records)) {
+      const newValue = collection ? [] : null;
       updateData = {};
-      records.forEach(childGroupConfig => updateData[childGroupConfig.refField] = null);
+      records.forEach(childGroupConfig => updateData[childGroupConfig.refField] = newValue);
     } else {
       updateData[refField] = null;
     }

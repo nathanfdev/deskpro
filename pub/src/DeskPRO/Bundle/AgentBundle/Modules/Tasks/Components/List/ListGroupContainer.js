@@ -69,6 +69,7 @@ export class ListGroupContainer extends React.Component {
         assignee: {
           type: 'record',
           emptyGroup: 'None',
+          collection: true,
           records: [
             {
               records: departments,
