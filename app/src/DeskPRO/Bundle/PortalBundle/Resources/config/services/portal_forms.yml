@@ -188,7 +188,7 @@ services:
 
   form.ticket_message_attachment:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\TicketMessageAttachmentType
-    arguments: [@blob.storage, @blob_repository]
+    arguments: [@blob.storage, @blob_repository, @attachment_accepter]
     tags:
       - { name: form.type, alias: ticket_message_attachment }
 

@@ -328,6 +328,7 @@
 {% block ticket_message_attachment_widget %}
     {% if form.upload is defined %}
         {{ form_widget(form.upload) }}
+        {{ form_errors(form.upload) }}
     {% else %}
         <div
             class="attach-row"
@@ -355,19 +356,16 @@
         {%- set attr = attr|merge({'data-prototype': form_row(prototype) }) -%}
     {% endif %}
     <div class="attach-field">
-        <div class="as-no-dpui">
-            <div {{ block('widget_container_attributes') }}>
-                {%- if form.parent is empty -%}
-                    {{ form_errors(form) }}
-                {%- endif -%}
-                {{- block('form_rows') -}}
-                {{ attr['data-prototype']|str_replace(prototype.vars.name, form.children|length)|raw }}
-                {{- form_rest(form) -}}
-            </div>
-        </div>
-        <div class="as-dpui">
-            <div class="column-full">
-                <div class="dpx-attach"></div>
+       <div class="with-dpx">
+            <div class="dpx-attach">
+                <div {{ block('widget_container_attributes') }}>
+                    {%- if form.parent is empty -%}
+                        {{ form_errors(form) }}
+                    {%- endif -%}
+                    {{- block('form_rows') -}}
+                    {{ attr['data-prototype']|str_replace(prototype.vars.name, form.children|length)|raw }}
+                    {{- form_rest(form) -}}
+                </div>
             </div>
         </div>
     </div>

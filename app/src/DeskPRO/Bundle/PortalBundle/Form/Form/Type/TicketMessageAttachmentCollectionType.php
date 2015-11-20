@@ -31,7 +31,6 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
-use Application\DeskPRO\Entity\TicketAttachment;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\AbstractType;
@@ -54,12 +53,6 @@ class TicketMessageAttachmentCollectionType extends AbstractType
                 $collection = new ArrayCollection();
                 $event->setData($collection);
             }
-
-            // adds a new attachment (allowing the form to show one empty)
-            $attachment = new TicketAttachment();
-            $attachment->setMessage($form->getConfig()->getOption('ticket_message'));
-            $attachment->person = $form->getConfig()->getOption('person');
-            $collection->add($attachment);
         }, 100);
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
