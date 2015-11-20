@@ -527,6 +527,13 @@ class TicketsController extends AbstractController
         $em->beginTransaction();
 
         try {
+            foreach ($message->getAttachments() as $attachment) {
+                if ($blob = $attachment->getBlob()) {
+                    $blob->is_temp = false;
+                }
+                $attachment->setPerson($person);
+            }
+
             $ticket->addMessage($message);
 
             // If status is pending, we'll switch it to open so agents will see it

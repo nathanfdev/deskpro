@@ -118,6 +118,9 @@ class NewTicketController extends AbstractController
                         $ticket->setPerson($person);
                         $ticket_message->setPerson($person);
                         foreach ($ticket_message->getAttachments() as $attachment) {
+                            if ($blob = $attachment->getBlob()) {
+                                $blob->is_temp = false;
+                            }
                             $attachment->setPerson($person);
                         }
                     }
@@ -209,6 +212,15 @@ class NewTicketController extends AbstractController
         $em->beginTransaction();
 
         try {
+            // allow all blobs for a new ticket
+            foreach ($ticket->messages as $message) {
+                foreach ($message->getAttachments() as $attachment) {
+                    if ($blob = $attachment->getBlob()) {
+                        $blob->is_temp = false;
+                    }
+                }
+            }
+
             $em->persist($ticket);
 
             $ticket_manager = $this->getTicketManager();
