@@ -58,8 +58,7 @@ export class TaskCard extends BaseTaskCard {
     const { task, moving, onChangeTitle } = this.props;
 
     return (
-      <Card minimized={this.isMinimized()}
-            statusBars={false}
+      <Card statusBars={false}
             type="task"
             moving={moving}
             additionalClasses="calendar-task-card">
@@ -79,7 +78,7 @@ export class TaskCard extends BaseTaskCard {
           </CardLineRight>
         </CardLine>
 
-        {!this.isMinimized() && this.renderDetails()}
+        {this.renderDetails()}
       </Card>
     );
   }
