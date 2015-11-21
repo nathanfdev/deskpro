@@ -90,7 +90,7 @@ const pastDates = [
   'older'
 ];
 
-const createGroup = (title, updateData, match) => ({title, match, updateData, elements: []});
+const createGroup = (title, updateData, match, sortBy) => ({title, match, updateData, sortBy, elements: []});
 const dateGroupsBuilder = (groups, { refField, dateGroupKeys }) => {
   dateGroupKeys.forEach(groupKey => {
     const { title, compareDate, match } = dateGroups[groupKey];
@@ -104,7 +104,7 @@ const dateGroupsBuilder = (groups, { refField, dateGroupKeys }) => {
   groups.push(createGroup('Other', emptyUpdateData, () => true));
 };
 
-const recordGroupsBuilder = (groups, { records, titleField, refField, collection }) => {
+const recordGroupsBuilder = (groups, { records, titleField, refField, collection, sortBy }) => {
   records.forEach(record => {
     const id = record.get('id');
     const updateData = {[refField]: collection ? [id] : id};
@@ -113,7 +113,7 @@ const recordGroupsBuilder = (groups, { records, titleField, refField, collection
       return value && typeof value === 'object' ? value.includes(id) : value === id;
     };
 
-    groups.push(createGroup(record.get(titleField), updateData, matchItem));
+    groups.push(createGroup(record.get(titleField), updateData, matchItem, sortBy));
   });
 };
 
@@ -132,10 +132,10 @@ const addDateGroups = (groups, groupConfig) => {
 };
 
 const addRecordGroups = (groups, groupConfig) => {
-  const { records, refField, emptyGroup, collection } = groupConfig;
+  const { records, refField, emptyGroup, collection, sortBy } = groupConfig;
 
   if (Array.isArray(records)) {
-    records.forEach(childGroupConfig => addRecordGroups(groups, {...childGroupConfig, collection}));
+    records.forEach(childGroupConfig => addRecordGroups(groups, {...childGroupConfig, collection, sortBy}));
   } else {
     recordGroupsBuilder(groups, groupConfig);
   }
@@ -149,7 +149,7 @@ const addRecordGroups = (groups, groupConfig) => {
       emptyUpdateData[refField] = null;
     }
 
-    groups.push(createGroup(emptyGroup, emptyUpdateData, () => true));
+    groups.push(createGroup(emptyGroup, emptyUpdateData, () => true, sortBy));
   }
 };
 
@@ -171,14 +171,18 @@ export const groupCollection = (groupConfig, collection) => {
   let filtered = collection;
   const groups = getGroups(groupConfig);
 
-  groups.forEach(group =>
+  groups.forEach(group => {
     filtered.forEach(item => {
       if (group.match(item)) {
         group.elements.push(item);
         filtered = filtered.delete(filtered.indexOf(item));
       }
-    })
-  );
+    });
+
+    if (group.sortBy) {
+      group.elements.sort(group.sortBy);
+    }
+  });
 
   return groups;
 };

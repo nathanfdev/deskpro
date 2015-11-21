@@ -93,7 +93,8 @@ export class ListGroupContainer extends React.Component {
           records: lists,
           titleField: 'title',
           refField: 'list',
-          emptyGroup: 'Tasks not in any list'
+          emptyGroup: 'Tasks not in any list',
+          sortBy: (a, b) => a.get('display_order') - b.get('display_order')
         }
       }
     };
