@@ -25,14 +25,10 @@ export class TaskCard extends BaseTaskCard {
   static propTypes = {
     selected: PropTypes.bool,
     onToggleSelected: PropTypes.func,
+    onToggleDone: PropTypes.func,
+    onChangeTitle: PropTypes.func,
     task: PropTypes.object,
     moving: PropTypes.bool
-  };
-
-  onToggleDone = () => {
-    this.setState({
-      isDone: !this.state.isDone
-    });
   };
 
   renderDetails() {
@@ -63,13 +59,11 @@ export class TaskCard extends BaseTaskCard {
   }
 
   render() {
-    const { task, moving, selected, onToggleSelected, onChangeTitle } = this.props;
+    const { task, moving, selected, onToggleSelected, onChangeTitle, onToggleDone } = this.props;
 
     return (
       <Card moving={moving} minimized={this.isMinimized()} type="task">
-        <MarkDoneButton isDone={task.get('is_done')}
-                        onToggle={this.onToggleDone} />
-
+        <MarkDoneButton isDone={task.get('is_done')} onToggle={onToggleDone} />
         <CardCheckbox selected={selected} onClick={onToggleSelected} />
         <CardLine>
           <CardLineLeft>
@@ -79,8 +73,7 @@ export class TaskCard extends BaseTaskCard {
           </CardLineLeft>
           <CardLineRight>
             {task.get('is_done')
-              ? <ShowDetailsButton expanded={this.state.expanded}
-                                   onToggleExpand={this.onToggleExpand}/>
+              ? <ShowDetailsButton expanded={this.state.expanded} onToggleExpand={this.onToggleExpand}/>
               : <AssignButton task={task} />
             }
           </CardLineRight>

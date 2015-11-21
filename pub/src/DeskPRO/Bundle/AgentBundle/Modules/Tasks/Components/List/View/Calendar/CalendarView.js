@@ -22,7 +22,11 @@ export class CalendarView extends React.Component {
       elementName: 'task',
       dateField: 'date_due',
       additionalPrefix: 'Tasks for',
-      card: <TaskCardContainer><TaskCard /></TaskCardContainer>,
+      card: (
+        <TaskCardContainer>
+          <TaskCard />
+        </TaskCardContainer>
+      ),
       draggable: {
         source: <TaskDragCard />,
         target: <TaskCardDragTarget onChangeGroup={onChangeGroup} />

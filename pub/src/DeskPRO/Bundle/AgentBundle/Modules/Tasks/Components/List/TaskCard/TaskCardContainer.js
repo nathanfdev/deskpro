@@ -35,6 +35,15 @@ export class TaskCardContainer extends React.Component {
     dispatch(toggleSelected(task.get('id')));
   };
 
+  onToggleDone = () => {
+    const { task, dispatch } = this.props;
+    const params = {
+      is_done: !task.get('is_done')
+    };
+
+    dispatch(editTask(task.get('id'), params));
+  };
+
   onChangeTitle = value => {
     const { task, dispatch } = this.props;
     const params = {
@@ -65,6 +74,7 @@ export class TaskCardContainer extends React.Component {
 
       selected: selected,
       onToggleSelected: this.onToggleSelected,
+      onToggleDone: this.onToggleDone,
       onChangeDisplayOrder: this.onChangeDisplayOrder,
       onChangeTitle: this.onChangeTitle
     });
