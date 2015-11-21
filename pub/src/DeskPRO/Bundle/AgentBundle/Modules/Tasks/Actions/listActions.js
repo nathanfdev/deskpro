@@ -96,7 +96,9 @@ export const editTask = createAction(
     if (changedProps.length) {
       // Re order tasks
       updatedTasks = reOrderCollection(tasks, taskId, updateData.display_order);
-      changedProps.splice(changedProps.indexOf('display_order', 1));
+      if (changedProps.indexOf('display_order') !== -1) {
+        changedProps.splice(changedProps.indexOf('display_order'), 1);
+      }
 
       // Update task props
       let updatedTask = updatedTasks.get(taskIndex);
