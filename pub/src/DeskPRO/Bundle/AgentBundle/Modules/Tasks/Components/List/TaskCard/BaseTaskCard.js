@@ -23,6 +23,8 @@ export class BaseTaskCard extends React.Component {
   };
 
   isMinimized() {
-    return !this.state.expanded && this.props.task.get('is_done');
+    const { task } = this.props;
+
+    return !this.state.expanded && task.get('is_done');
   }
 }
