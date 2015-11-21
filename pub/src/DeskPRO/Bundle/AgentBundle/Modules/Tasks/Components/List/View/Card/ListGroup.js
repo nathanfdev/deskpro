@@ -39,7 +39,7 @@ export class ListGroup extends React.Component {
 
   renderAddTaskButton() {
     return (
-      <div>
+      <div className="card-add">
         [ <a href="#" onClick={this.onOpenNewTaskForm}>Add task</a> ]
       </div>
     );
