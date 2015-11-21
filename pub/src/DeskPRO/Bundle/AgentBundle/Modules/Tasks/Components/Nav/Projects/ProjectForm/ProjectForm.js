@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import * as ProjectsActions from '../../../../Actions/navActions';
+import { createProject, editProject } from '../../../../Actions/navActions';
 import { FieldErrors } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/FieldErrors';
 import Immutable from 'immutable';
 import Loader from 'react-loader';
@@ -76,9 +76,9 @@ export class ProjectForm extends BaseForm {
 
     let promise;
     if (project) {
-      promise = dispatch(ProjectsActions.editProject(project.get('id'), submitData));
+      promise = dispatch(editProject(project.get('id'), submitData));
     } else {
-      promise = dispatch(ProjectsActions.createProject(submitData));
+      promise = dispatch(createProject(submitData));
     }
 
     promise.then(

@@ -71,8 +71,7 @@ export class TaskCard extends BaseTaskCard {
           </CardLineLeft>
           <CardLineRight>
             {task.get('is_done')
-              ? <ShowDetailsButton expanded={this.state.expanded}
-                                   onToggleExpand={this.onToggleExpand}/>
+              ? <ShowDetailsButton expanded={this.state.expanded} onToggleExpand={this.onToggleExpand}/>
               : <AssignButton task={task} />
             }
           </CardLineRight>
