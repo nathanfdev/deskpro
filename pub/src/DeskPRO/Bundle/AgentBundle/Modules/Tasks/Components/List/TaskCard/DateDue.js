@@ -51,8 +51,7 @@ export class DateDue extends React.Component {
                   zIndex={1002}>
 
           <ClickOut onClickOut={this.onCloseCalendar}>
-            <HiddenDateTimePicker value={value}
-                                  onChange={onChange} />
+            <HiddenDateTimePicker value={value} onChange={onChange} />
           </ClickOut>
         </Detached>
       </div>
