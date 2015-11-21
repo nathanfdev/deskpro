@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { HeaderContainer } from './HeaderContainer';
-import { TaskCardContainer } from '../TaskCardContainer';
+import { TaskCardContainer } from '../../TaskCard/TaskCardContainer';
 import { TaskCard } from './TaskCard/TaskCard';
-import { TaskCardPreviewContainer } from '../TaskCardPreviewContainer';
+import { TaskCardPreviewContainer } from '../../TaskCard/TaskCardPreviewContainer';
 import { TaskCardPreview } from '../Card/TaskCard/TaskCardPreview';
 import { ListGroup } from './ListGroup';
 import { Table, CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';

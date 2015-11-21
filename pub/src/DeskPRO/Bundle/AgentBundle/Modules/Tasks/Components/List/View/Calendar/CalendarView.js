@@ -3,7 +3,7 @@ import { Calendar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/L
 import { TaskCard } from './TaskCard/TaskCard';
 import { TaskDragCard } from './TaskCard/TaskDragCard';
 import { TaskCardDragTarget } from './TaskCard/TaskCardDragTarget';
-import { TaskCardPreviewContainer } from '../TaskCardPreviewContainer';
+import { TaskCardPreviewContainer } from '../../TaskCard/TaskCardPreviewContainer';
 import { TaskCardPreview } from './TaskCard/TaskCardPreview';
 import { CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 
