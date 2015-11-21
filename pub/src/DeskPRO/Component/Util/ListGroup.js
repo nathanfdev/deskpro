@@ -94,34 +94,26 @@ const createGroup = (title, updateData, match) => ({title, match, updateData, el
 const dateGroupsBuilder = (groups, { refField, dateGroupKeys }) => {
   dateGroupKeys.forEach(groupKey => {
     const { title, compareDate, match } = dateGroups[groupKey];
+    const updateData = {[refField]: compareDate};
+    const matchItem = item => match(item.get(refField), compareDate);
 
-    groups.push(createGroup(
-      title,
-      {[refField]: compareDate},
-      task => match(task.get(refField), compareDate)
-    ));
+    groups.push(createGroup(title, updateData, matchItem));
   });
 
-  groups.push(createGroup(
-    'Other',
-    {[refField]: null},
-    () => true
-  ));
+  const emptyUpdateData = {[refField]: null};
+  groups.push(createGroup('Other', emptyUpdateData, () => true));
 };
 
 const recordGroupsBuilder = (groups, { records, titleField, refField, collection }) => {
   records.forEach(record => {
     const id = record.get('id');
-    const newValue = collection ? [id] : id;
+    const updateData = {[refField]: collection ? [id] : id};
+    const matchItem = item => {
+      const value = item.get(refField);
+      return value && typeof value === 'object' ? value.includes(id) : value === id;
+    };
 
-    groups.push(createGroup(
-      record.get(titleField),
-      {[refField]: newValue},
-      item => {
-        const value = item.get(refField);
-        return value && typeof value === 'object' ? value.includes(id) : value === id;
-      }
-    ));
+    groups.push(createGroup(record.get(titleField), updateData, matchItem));
   });
 };
 
@@ -149,16 +141,15 @@ const addRecordGroups = (groups, groupConfig) => {
   }
 
   if (emptyGroup) {
-    let updateData = {};
+    const emptyUpdateData = {};
     if (Array.isArray(records)) {
       const newValue = collection ? [] : null;
-      updateData = {};
-      records.forEach(childGroupConfig => updateData[childGroupConfig.refField] = newValue);
+      records.forEach(childGroupConfig => emptyUpdateData[childGroupConfig.refField] = newValue);
     } else {
-      updateData[refField] = null;
+      emptyUpdateData[refField] = null;
     }
 
-    groups.push(createGroup(emptyGroup, updateData, () => true));
+    groups.push(createGroup(emptyGroup, emptyUpdateData, () => true));
   }
 };
 
