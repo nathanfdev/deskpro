@@ -63,7 +63,7 @@ export class TaskCard extends BaseTaskCard {
   }
 
   render() {
-    const { task, moving, selected, onToggleSelected } = this.props;
+    const { task, moving, selected, onToggleSelected, onChangeTitle } = this.props;
 
     return (
       <Card moving={moving} minimized={this.isMinimized()} type="task">
@@ -75,7 +75,7 @@ export class TaskCard extends BaseTaskCard {
           <CardLineLeft>
             <Title value={task.get('title')}
                    isDone={task.get('is_done')}
-                   onChange={this.onTitleChange} />
+                   onChange={onChangeTitle} />
           </CardLineLeft>
           <CardLineRight>
             {task.get('is_done')

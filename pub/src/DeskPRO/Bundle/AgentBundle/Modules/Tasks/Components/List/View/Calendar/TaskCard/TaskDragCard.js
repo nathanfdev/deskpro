@@ -11,7 +11,7 @@ export class TaskDragCard extends React.Component {
   static propTypes = {
     task: PropTypes.object.isRequired,
     connectDragSource: PropTypes.func.isRequired,
-    onOpenCard: PropTypes.func.isRequired
+    connectDragPreview: PropTypes.func.isRequired
   };
 
   componentDidMount() {
@@ -21,11 +21,11 @@ export class TaskDragCard extends React.Component {
   }
 
   render() {
-    const { task, onOpenCard, connectDragSource } = this.props;
+    const { task, connectDragSource } = this.props;
 
     return connectDragSource(
       <span>
-        <CalendarItemButton title={task.get('title')} onOpenCard={onOpenCard} />
+        <CalendarItemButton title={task.get('title')} {...this.props} />
       </span>
     );
   }

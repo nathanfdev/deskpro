@@ -22,7 +22,7 @@ export class TaskCard extends BaseTaskCard {
   };
 
   render() {
-    const { task, selected, onToggleSelected, moving, dragging } = this.props;
+    const { task, selected, onToggleSelected, onChangeTitle, moving, dragging } = this.props;
 
     return (
       <div className={classNames(
@@ -42,7 +42,7 @@ export class TaskCard extends BaseTaskCard {
         <div className="content">
           <Title value={task.get('title')}
                  isDone={task.get('is_done')}
-                 onChange={this.onTitleChange} />
+                 onChange={onChangeTitle} />
 
           <div className="card-line task-details">
             <div className="top-right-box">

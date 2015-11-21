@@ -29,16 +29,12 @@ export class TaskDragCard extends React.Component {
   }
 
   render() {
-    const { selected, onToggleSelected, task, currentSort, isOver, isDragging } = this.props;
+    const { currentSort, isOver, isDragging } = this.props;
     const { connectDragSource, connectDropTarget } = this.props;
 
     let result = connectDragSource(
       <div>
-        <TaskCard selected={selected}
-                  onToggleSelected={onToggleSelected}
-                  task={task}
-                  dragging={isDragging} />
-
+        <TaskCard dragging={isDragging} {...this.props} />
         <div className={classNames('placeholder', {'is-over': isOver})} />
       </div>
     );

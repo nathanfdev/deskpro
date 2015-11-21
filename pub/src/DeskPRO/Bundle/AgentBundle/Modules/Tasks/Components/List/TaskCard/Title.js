@@ -7,7 +7,7 @@ export class Title extends React.Component {
   static propTypes = {
     value: PropTypes.string,
     isDone: PropTypes.bool,
-    onChange: PropTypes.func.isRequired
+    onChange: PropTypes.func
   };
 
   constructor(props) {

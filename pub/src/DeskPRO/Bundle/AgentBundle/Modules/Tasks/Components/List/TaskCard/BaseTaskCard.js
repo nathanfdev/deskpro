@@ -16,12 +16,6 @@ export class BaseTaskCard extends React.Component {
     };
   }
 
-  onTitleChange = value => {
-    this.setState({
-      title: value
-    });
-  };
-
   onChangeDate = value => {
     this.setState({
       dateDue: value
