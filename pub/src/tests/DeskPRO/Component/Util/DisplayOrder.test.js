@@ -1,7 +1,7 @@
-jest.dontMock('DeskPRO/Bundle/AgentBundle/Services/DisplayOrder.js');
+jest.dontMock('DeskPRO/Component/Util/DisplayOrder.js');
 
 describe('Display order service', () => {
-  const DisplayOrder = require('DeskPRO/Bundle/AgentBundle/Services/DisplayOrder.js');
+  const DisplayOrder = require('DeskPRO/Component/Util/DisplayOrder.js');
   const Immutable = require('immutable');
 
   const originalCollection = new Immutable.fromJS([

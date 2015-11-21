@@ -9,7 +9,7 @@ import {
   elementsMapSelector
 } from '../Selectors/list';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
-import { reOrderCollection } from 'DeskPRO/Bundle/AgentBundle/Services/DisplayOrder';
+import { reOrderCollection } from 'DeskPRO/Component/Util/DisplayOrder';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 
 export const setListParamsNav = createAction('TASKS_LIST_SET_PARAMS_NAV');
