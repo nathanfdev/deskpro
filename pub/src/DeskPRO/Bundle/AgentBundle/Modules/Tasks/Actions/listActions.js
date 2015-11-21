@@ -11,6 +11,7 @@ import {
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import { reOrderCollection } from 'DeskPRO/Component/Util/DisplayOrder';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
+import Immutable from 'immutable';
 
 export const setListParamsNav = createAction('TASKS_LIST_SET_PARAMS_NAV');
 export const setListParamsFilters = createAction(
@@ -102,10 +103,16 @@ export const editTask = createAction(
 
       // Update task props
       let updatedTask = updatedTasks.get(taskIndex);
+      changedProps.forEach(changedProp => {
+        let newValue = updateData[changedProp];
+        if (Array.isArray(newValue)) {
+          newValue = Immutable.fromJS(newValue);
+        }
 
-      changedProps.forEach(changedProp => updatedTask = updatedTask.set(changedProp, updateData[changedProp]));
+        updatedTask = updatedTask.set(changedProp, newValue);
+      });
+
       updatedTasks = updatedTasks.set(taskIndex, updatedTask);
-
       DpApi.sendPut(`DP_API/tasks/${taskId}`, updateData);
     }
 
