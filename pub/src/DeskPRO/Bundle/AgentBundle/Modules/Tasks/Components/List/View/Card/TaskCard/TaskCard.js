@@ -27,18 +27,19 @@ export class TaskCard extends BaseTaskCard {
     onToggleSelected: PropTypes.func,
     onToggleDone: PropTypes.func,
     onChangeTitle: PropTypes.func,
+    onChangeDate: PropTypes.func,
     task: PropTypes.object,
     moving: PropTypes.bool
   };
 
   renderDetails() {
-    const { task } = this.props;
+    const { task, onChangeDate } = this.props;
 
     return (
       <CardLine>
         <CardLineLeft>
           <DateDue value={task.get('date_due')}
-                   onChange={this.onChangeDate} />
+                   onChange={onChangeDate} />
 
           {task.get('project') &&
             <ProjectContainer project={task.get('project')}>
@@ -59,7 +60,7 @@ export class TaskCard extends BaseTaskCard {
   }
 
   render() {
-    const { task, moving, selected, onToggleSelected, onChangeTitle, onToggleDone } = this.props;
+    const { task, moving, selected, onToggleSelected, onToggleDone, onChangeTitle } = this.props;
 
     return (
       <Card moving={moving} minimized={this.isMinimized()} type="task">

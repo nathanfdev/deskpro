@@ -22,17 +22,19 @@ export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
     task: PropTypes.object,
-    moving: PropTypes.bool
+    moving: PropTypes.bool,
+    onChangeTitle: PropTypes.func,
+    onChangeDate: PropTypes.func
   };
 
   renderDetails() {
-    const { task } = this.props;
+    const { task, onChangeDate } = this.props;
 
     return (
       <CardLine>
         <CardLineLeft>
           <DateDue value={task.get('date_due')}
-                   onChange={this.onChangeDate} />
+                   onChange={onChangeDate} />
 
           {task.get('project') &&
             <ProjectContainer project={task.get('project')}>

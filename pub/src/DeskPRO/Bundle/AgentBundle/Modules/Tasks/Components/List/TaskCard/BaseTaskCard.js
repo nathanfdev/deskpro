@@ -16,12 +16,6 @@ export class BaseTaskCard extends React.Component {
     };
   }
 
-  onChangeDate = value => {
-    this.setState({
-      dateDue: value
-    });
-  };
-
   onToggleExpand = () => {
     this.setState({
       expanded: !this.state.expanded
