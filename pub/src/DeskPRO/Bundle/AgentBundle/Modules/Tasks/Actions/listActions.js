@@ -9,6 +9,7 @@ import {
   elementsMapSelector
 } from '../Selectors/list';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
+import { reOrderCollection } from 'DeskPRO/Bundle/AgentBundle/Services/DisplayOrder';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 
 export const setListParamsNav = createAction('TASKS_LIST_SET_PARAMS_NAV');
@@ -85,33 +86,27 @@ export const editTask = createAction(
     const state = getState();
     const tasksMap = elementsMapSelector(state);
 
-    let tasks = elementsSelector(state);
-    let updatingTask = tasksMap.get(taskId);
+    const tasks = elementsSelector(state);
+    const task = tasksMap.get(taskId);
+    const taskIndex = tasks.indexOf(task);
 
-    const changedProps = Object.keys(updateData).filter(taskProp => updatingTask.get(taskProp) !== updateData[taskProp]);
+    const changedProps = Object.keys(updateData).filter(taskProp => task.get(taskProp) !== updateData[taskProp]);
+    let updatedTasks = tasks;
+
     if (changedProps.length) {
+      // Re order tasks
+      updatedTasks = reOrderCollection(tasks, taskId, updateData.display_order);
+      changedProps.splice(changedProps.indexOf('display_order', 1));
+
       // Update task props
-      const updatingIndex = tasks.indexOf(updatingTask);
+      let updatedTask = updatedTasks.get(taskIndex);
 
-      changedProps.forEach(changedProp => updatingTask = updatingTask.set(changedProp, updateData[changedProp]));
-      tasks = tasks.set(updatingIndex, updatingTask);
+      changedProps.forEach(changedProp => updatedTask = updatedTask.set(changedProp, updateData[changedProp]));
+      updatedTasks = updatedTasks.set(taskIndex, updatedTask);
 
-      // Update display order of related tasks
-      if (updateData.display_order) {
-        tasks
-          .filter(task => task.get('display_order') >= updateData.display_order)
-          .forEach(task => {
-            const index = tasks.indexOf(task);
-            const newOrder = task.get('display_order') + 1;
-
-            tasks = tasks.set(index, task.set('display_order', newOrder));
-          })
-        ;
-      }
-
-      DpApi.sendPut('DP_API/tasks/' + taskId, updateData);
+      DpApi.sendPut(`DP_API/tasks/${taskId}`, updateData);
     }
 
-    return tasks;
+    return updatedTasks;
   }
 );

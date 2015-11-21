@@ -1,4 +1,4 @@
-export function reOrderCollection(collection, itemId, newOrder, orderKey) {
+export function reOrderCollection(collection, itemId, newOrder, orderKey = 'display_order') {
   let updatedCollection = collection;
   if (!itemId || !newOrder || !orderKey) {
     return updatedCollection;
