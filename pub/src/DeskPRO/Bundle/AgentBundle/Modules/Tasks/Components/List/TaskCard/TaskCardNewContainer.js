@@ -10,6 +10,7 @@ export class TaskCardNewContainer extends React.Component {
 
   static propTypes = {
     updateData: PropTypes.object,
+    currentNav: PropTypes.object,
     onClose: PropTypes.func.isRequired
   };
 
@@ -38,11 +39,25 @@ export class TaskCardNewContainer extends React.Component {
     return date.format();
   }
 
+  getProject() {
+    const { updateData, currentNav } = this.props;
+    const projects = currentNav.get('project');
+
+    let project = null;
+    if (projects) {
+      project = projects.first();
+    } else if (updateData.project) {
+      project = updateData.project;
+    }
+
+    return project;
+  }
+
   render() {
     const props = this.props;
     const { children } = props;
     const childProps = children.props;
-    const projects = props.currentNav.get('project');
+
 
     return React.cloneElement(children, {
       ...childProps,
@@ -50,7 +65,7 @@ export class TaskCardNewContainer extends React.Component {
 
       title: this.state.title,
       dateDue: this.getDateDue(),
-      project: projects ? projects.first() : null,
+      project: this.getProject(),
       isValid: !!this.state.title,
 
       onChangeTitle: this.onChangeTitle,
