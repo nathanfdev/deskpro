@@ -16,7 +16,7 @@ export class Title extends React.Component {
     super(props);
 
     this.state = {
-      value: '',
+      value: props.value,
       editing: props.editing || false
     };
   }
@@ -25,6 +25,12 @@ export class Title extends React.Component {
     if (this.props.editing) {
       jQuery(this.refs.input).focus();
     }
+  }
+
+  componentWillReceiveProps() {
+    this.setState({
+      title: this.props.value
+    });
   }
 
   componentDidUpdate() {
@@ -40,13 +46,20 @@ export class Title extends React.Component {
 
   onCloseEdit = event => {
     event.preventDefault();
+
     if (!this.state.value) {
+      if (this.props.value) {
+        this.setState({
+          editing: false,
+          value: this.props.value
+        });
+      }
+
       return;
     }
 
     this.props.onChange(this.state.value);
     this.setState({
-      value: '',
       editing: false
     });
   };
@@ -57,14 +70,10 @@ export class Title extends React.Component {
     });
   };
 
-  getValue() {
-    return this.state.value || this.props.value;
-  }
-
   renderHeader() {
     return (
       <h1 onDoubleClick={this.onEdit}>
-        {this.getValue()}
+        {this.state.value}
       </h1>
     );
   }
@@ -74,7 +83,7 @@ export class Title extends React.Component {
       <ClickOut onClickOut={this.onCloseEdit}>
         <form className="inline-form" onSubmit={this.onCloseEdit}>
           <h1 className="ignore-react-onclickoutside">
-            <input type="text" ref="input" name="title" value={this.getValue()} onChange={this.onChange} />
+            <input type="text" ref="input" name="title" value={this.state.value} onChange={this.onChange} />
           </h1>
         </form>
       </ClickOut>
