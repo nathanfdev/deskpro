@@ -21,7 +21,7 @@ import jQuery from 'jquery';
   calendarVisibleFields: calendarVisibleFieldsSelector(state),
   currentSort: currentSortSelector(state)
 }))
-export class TaskCardContainer extends React.Component {
+export class TaskCardEditContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,

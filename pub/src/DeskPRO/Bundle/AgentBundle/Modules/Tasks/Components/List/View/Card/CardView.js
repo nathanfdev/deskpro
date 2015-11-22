@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { ListGroup } from './ListGroup';
-import { TaskCardContainer } from '../../TaskCard/TaskCardContainer';
+import { TaskCardEditContainer } from '../../TaskCard/TaskCardEditContainer';
 import { TaskDragCard } from './TaskCard/TaskDragCard';
 import { TaskCardPreviewContainer } from '../../TaskCard/TaskCardPreviewContainer';
 import { TaskCardPreview } from './TaskCard/TaskCardPreview';
@@ -28,9 +28,9 @@ export class CardView extends React.Component {
                      onChangeGroup={onChangeGroup}>
 
             {taskGroup.elements.map(task =>
-              <TaskCardContainer task={task} key={task.get('id')}>
+              <TaskCardEditContainer task={task} key={task.get('id')}>
                 <TaskDragCard />
-              </TaskCardContainer>
+              </TaskCardEditContainer>
             )}
           </ListGroup>
         )}

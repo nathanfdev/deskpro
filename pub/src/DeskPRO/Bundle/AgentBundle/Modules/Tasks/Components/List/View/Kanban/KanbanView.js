@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { ListGroup } from './ListGroup';
 import { TaskDragCard } from './TaskCard/TaskDragCard';
-import { TaskCardContainer } from '../../TaskCard/TaskCardContainer';
+import { TaskCardEditContainer } from '../../TaskCard/TaskCardEditContainer';
 import { TaskCardPreviewContainer } from '../../TaskCard/TaskCardPreviewContainer';
 import { TaskCardPreview } from './TaskCard/TaskCardPreview';
 import { CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
@@ -25,9 +25,9 @@ export class KanbanView extends React.Component {
                      onChangeGroup={onChangeGroup}>
 
             {taskGroup.elements.map(task =>
-              <TaskCardContainer task={task} key={task.get('id')}>
+              <TaskCardEditContainer task={task} key={task.get('id')}>
                 <TaskDragCard />
-              </TaskCardContainer>
+              </TaskCardEditContainer>
             )}
           </ListGroup>
         )}

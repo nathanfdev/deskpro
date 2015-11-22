@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { HeaderContainer } from './HeaderContainer';
-import { TaskCardContainer } from '../../TaskCard/TaskCardContainer';
+import { TaskCardEditContainer } from '../../TaskCard/TaskCardEditContainer';
 import { TaskCard } from './TaskCard/TaskCard';
 import { TaskCardPreviewContainer } from '../../TaskCard/TaskCardPreviewContainer';
 import { TaskCardPreview } from '../Card/TaskCard/TaskCardPreview';
@@ -32,9 +32,9 @@ export class TableView extends React.Component {
                          onChangeGroup={onChangeGroup}>
 
                 {taskGroup.elements.map(task =>
-                  <TaskCardContainer task={task} key={task.get('id')}>
+                  <TaskCardEditContainer task={task} key={task.get('id')}>
                     <TaskCard />
-                  </TaskCardContainer>
+                  </TaskCardEditContainer>
                 )}
               </ListGroup>
             )}

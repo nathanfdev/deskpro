@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { DropTarget } from 'react-dnd';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import { groupTargetSpec, targetCollect } from '../../TaskCard/TaskCardContainer';
+import { groupTargetSpec, targetCollect } from '../../TaskCard/TaskCardEditContainer';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import { CardGroupDivider } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
 import { TaskCard } from './TaskCard/TaskCard';
