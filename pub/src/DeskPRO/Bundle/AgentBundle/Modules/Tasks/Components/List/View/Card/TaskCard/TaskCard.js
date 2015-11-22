@@ -25,24 +25,21 @@ export class TaskCard extends BaseTaskCard {
   static propTypes = {
     selected: PropTypes.bool,
     onToggleSelected: PropTypes.func,
+    onToggleDone: PropTypes.func,
+    onChangeTitle: PropTypes.func,
+    onChangeDate: PropTypes.func,
     task: PropTypes.object,
     moving: PropTypes.bool
   };
 
-  onToggleDone = () => {
-    this.setState({
-      isDone: !this.state.isDone
-    });
-  };
-
   renderDetails() {
-    const { task } = this.props;
+    const { task, onChangeDate } = this.props;
 
     return (
       <CardLine>
         <CardLineLeft>
           <DateDue value={task.get('date_due')}
-                   onChange={this.onChangeDate} />
+                   onChange={onChangeDate} />
 
           {task.get('project') &&
             <ProjectContainer project={task.get('project')}>
@@ -63,24 +60,21 @@ export class TaskCard extends BaseTaskCard {
   }
 
   render() {
-    const { task, moving, selected, onToggleSelected } = this.props;
+    const { task, moving, selected, onToggleSelected, onToggleDone, onChangeTitle } = this.props;
 
     return (
       <Card moving={moving} minimized={this.isMinimized()} type="task">
-        <MarkDoneButton isDone={task.get('is_done')}
-                        onToggle={this.onToggleDone} />
-
+        <MarkDoneButton isDone={task.get('is_done')} onToggle={onToggleDone} />
         <CardCheckbox selected={selected} onClick={onToggleSelected} />
         <CardLine>
           <CardLineLeft>
             <Title value={task.get('title')}
                    isDone={task.get('is_done')}
-                   onChange={this.onTitleChange} />
+                   onChange={onChangeTitle} />
           </CardLineLeft>
           <CardLineRight>
             {task.get('is_done')
-              ? <ShowDetailsButton expanded={this.state.expanded}
-                                   onToggleExpand={this.onToggleExpand}/>
+              ? <ShowDetailsButton expanded={this.state.expanded} onToggleExpand={this.onToggleExpand}/>
               : <AssignButton task={task} />
             }
           </CardLineRight>

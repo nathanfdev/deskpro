@@ -12,7 +12,7 @@ services:
     tags:
       - { name: kernel.event_subscriber }
   anti_abuse.listener.rate_limit:
-    class: DeskPRO\Bundle\AppBundle\AntiAbuse\EventListener\CaptchaEventListener
+    class: DeskPRO\Bundle\AppBundle\AntiAbuse\EventListener\RateLimitEventListener
     arguments: [@doctrine.orm.default_entity_manager, @settings_resolver, @logger]
     tags:
       - { name: kernel.event_subscriber }

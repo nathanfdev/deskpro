@@ -1,22 +1,36 @@
 import React, { PropTypes } from 'react';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
-import classnames from 'classnames';
+import classNames from 'classnames';
+import jQuery from 'jquery';
 
 export class Title extends React.Component {
 
   static propTypes = {
     value: PropTypes.string,
     isDone: PropTypes.bool,
-    onChange: PropTypes.func.isRequired
+    onChange: PropTypes.func,
+    onSave: PropTypes.func,
+    editing: PropTypes.bool
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      value: '',
-      editing: false
+      error: false,
+      value: props.value,
+      editing: props.editing || false
     };
+  }
+
+  componentDidMount() {
+    if (this.props.editing) {
+      jQuery(this.refs.input).focus();
+    }
+  }
+
+  componentDidUpdate() {
+    jQuery(this.refs.input).focus();
   }
 
   onEdit = () => {
@@ -29,38 +43,69 @@ export class Title extends React.Component {
   onCloseEdit = event => {
     event.preventDefault();
 
-    this.props.onChange(this.state.value);
+    // Skip on click on the input field
+    if (jQuery(this.refs.input).is(event.target)) {
+      return;
+    }
+
+    const { value, onChange, onSave } = this.props;
+
+    // Prevent sending empty data or set default value if it exists
+    if (!this.state.value) {
+      if (value) {
+        this.setState({
+          editing: false,
+          value: value
+        });
+      } else {
+        this.setState({
+          error: true
+        });
+      }
+
+      return;
+    }
+
     this.setState({
-      value: '',
       editing: false
     });
+
+    onChange(this.state.value);
+
+    // Trigger save callback if we clicked on the save task button
+    if (onSave && jQuery('.dpw--single-card-mark-done').has(event.target).length) {
+      onSave();
+    }
   };
 
   onChange = event => {
     this.setState({
-      value: event.target.value
+      value: event.target.value,
+      error: false
     });
   };
-
-  getValue() {
-    return this.state.value || this.props.value;
-  }
 
   renderHeader() {
     return (
       <h1 onDoubleClick={this.onEdit}>
-        {this.getValue()}
+        {this.state.value}
       </h1>
     );
   }
 
   renderForm() {
     return (
-      <ClickOut onClickOut={this.onCloseEdit}>
+      <ClickOut onClickOut={this.onCloseEdit}
+                onClick={this.onCloseEdit}
+                additionalNodes={['.dpw--single-card-mark-done']}>
+
         <form className="inline-form" onSubmit={this.onCloseEdit}>
-          <h1 className="ignore-react-onclickoutside">
-            <input type="text" name="title" value={this.getValue()} onChange={this.onChange} />
-          </h1>
+          <input type="text"
+                 ref="input"
+                 name="title"
+                 value={this.state.value}
+                 className={classNames({'error': this.state.error})}
+                 onChange={this.onChange} />
         </form>
       </ClickOut>
     );
@@ -69,7 +114,11 @@ export class Title extends React.Component {
   render() {
     return (
       <div className="card-title">
-        <div className={classnames('dpwd--card-title', {'strikethrough': this.props.isDone && !this.state.editing})}>
+        <div className={classNames(
+          'dpwd--card-title',
+          {'strikethrough': this.props.isDone && !this.state.editing}
+        )}>
+
           {this.state.editing ? this.renderForm() : this.renderHeader()}
         </div>
       </div>

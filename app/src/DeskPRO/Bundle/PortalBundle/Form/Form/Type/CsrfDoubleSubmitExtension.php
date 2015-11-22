@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
@@ -43,6 +44,8 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class CsrfDoubleSubmitExtension extends AbstractTypeExtension
 {
+    const COOKIE_NAME = '_dp_csrf_token';
+
     /**
      * @var RequestStack
      */
@@ -53,12 +56,18 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
      */
     private $environment;
 
-    public function __construct(RequestStack $request_stack, $environment)
+    /**
+     * @var LanguageManager
+     */
+    private $language_manager;
+
+    public function __construct(RequestStack $request_stack, LanguageManager $language_manager, $environment)
     {
         // generally its not a good idea to make form's directly associated with a request object,
         // but in this case its the easiest way to access the cookie value
-        $this->request_stack = $request_stack;
-        $this->environment   = $environment;
+        $this->request_stack    = $request_stack;
+        $this->environment      = $environment;
+        $this->language_manager = $language_manager;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -128,8 +137,8 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
             array(
                 'csrf_protection'                  => false,
                 'csrf_double_submit_protection'    => true,
-                'csrf_double_submit_cookie_name'   => '_dp_csrf_token',
-                'csrf_double_submit_error_message' => 'You did not submit a valid token. For security reasons, please ensure javascript is enabled, and cookies are enabled.',
+                'csrf_double_submit_cookie_name'   => self::COOKIE_NAME,
+                'csrf_double_submit_error_message' => 'portal.forms.error_csrf',
             )
         )->setAllowedTypes(
             array(

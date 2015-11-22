@@ -70,14 +70,6 @@ $collection->create(
 )
 ;
 $collection->create(
-    'react_agent_old_tasks',
-    [
-        'path'       => '/old_tasks',
-        'controller' => 'AgentBundle:AgentChrome:agentChrome',
-    ]
-)
-;
-$collection->create(
     'react_agent_example',
     [
         'path'       => '/example',

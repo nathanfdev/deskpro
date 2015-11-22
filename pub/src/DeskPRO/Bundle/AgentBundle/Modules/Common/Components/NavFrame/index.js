@@ -3,7 +3,7 @@ import { SectionsPane, Section, SectionHeader, SectionGroupedHeader } from './se
 import { TabsPane, TabsPaneStatefulContainer, Tab, TabSpinner } from './tabs';
 import { ListSection } from './Lists/ListSection';
 import { ListItem } from './Lists/ListItem';
-import { ListItemRouteContainer } from './Lists/ListItemRouteContainer';
+import { ListItemStatefulContainer } from './Lists/ListItemStatefulContainer';
 import { NestedList } from './Lists/NestedList';
 import { ListItemLabelSpinner } from './Lists/ListItemLabelSpinner';
 import { ListGroupingControl } from './ListGroupingControl';
@@ -14,7 +14,7 @@ export default {
   NavFrame, NavFrameHeader, NavFrameBody,
   SectionsPane, Section, SectionHeader, SectionGroupedHeader,
   TabsPane, TabsPaneStatefulContainer, Tab, TabSpinner,
-  ListSection, ListItem, ListItemRouteContainer, NestedList, ListItemLabelSpinner,
+  ListSection, ListItem, ListItemStatefulContainer, NestedList, ListItemLabelSpinner,
   ListGroupingControl,
   LabelsDictionary,
   ButtonsPane, Button

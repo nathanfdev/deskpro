@@ -3,7 +3,8 @@ import { Calendar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/L
 import { TaskCard } from './TaskCard/TaskCard';
 import { TaskDragCard } from './TaskCard/TaskDragCard';
 import { TaskCardDragTarget } from './TaskCard/TaskCardDragTarget';
-import { TaskCardPreviewContainer } from '../TaskCardPreviewContainer';
+import { TaskCardEditContainer } from '../../TaskCard/TaskCardEditContainer';
+import { TaskCardPreviewContainer } from '../../TaskCard/TaskCardPreviewContainer';
 import { TaskCardPreview } from './TaskCard/TaskCardPreview';
 import { CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 
@@ -21,7 +22,11 @@ export class CalendarView extends React.Component {
       elementName: 'task',
       dateField: 'date_due',
       additionalPrefix: 'Tasks for',
-      card: <TaskCard />,
+      card: (
+        <TaskCardEditContainer>
+          <TaskCard />
+        </TaskCardEditContainer>
+      ),
       draggable: {
         source: <TaskDragCard />,
         target: <TaskCardDragTarget onChangeGroup={onChangeGroup} />

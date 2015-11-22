@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { editTask } from '../../../../Actions/listActions';
 import classNames from 'classnames';
 import Loader from 'react-loader';
 import Immutable from 'immutable';
@@ -42,9 +43,15 @@ export class AssignForm extends BaseForm {
 
   onSubmit = event => {
     event.preventDefault();
-    this.setState({
-      submit: true
-    });
+
+    const { task, dispatch } = this.props;
+    const submitData = {
+      agents: this.state.agents,
+      teams: this.state.agentTeams,
+      departments: this.state.departments
+    };
+
+    dispatch(editTask(task.get('id'), submitData));
   };
 
   render() {

@@ -114,7 +114,6 @@ class LockoutEventListener implements EventSubscriberInterface
         $check_time   = $settings->get($settings_prefix.'.attempts_time');
         $lock_time    = $settings->get($settings_prefix.'.lock_time');
 
-        // TODO: verify this method works as expected
         $lockout_time = $rep->getLoginLockoutTime($person, $max_attempts, $check_time, $lock_time);
 
         if ($lockout_time > 0) {

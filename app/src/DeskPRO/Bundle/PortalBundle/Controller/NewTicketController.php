@@ -62,6 +62,8 @@ class NewTicketController extends AbstractController
         $ticket->setPerson($person);
         $ticket_message->setPerson($person);
         $ticket->addMessage($ticket_message);
+        $lang = $this->get('language_manager')->getLanguageStack()->getActiveOrDefault();
+        $ticket->setLanguage($lang);
 
         // do a one through with the GET request to update our model before starting the "real" form
         $form = $this->createForm('ticket', $ticket, array(
@@ -116,6 +118,9 @@ class NewTicketController extends AbstractController
                         $ticket->setPerson($person);
                         $ticket_message->setPerson($person);
                         foreach ($ticket_message->getAttachments() as $attachment) {
+                            if ($blob = $attachment->getBlob()) {
+                                $blob->is_temp = false;
+                            }
                             $attachment->setPerson($person);
                         }
                     }
@@ -166,7 +171,7 @@ class NewTicketController extends AbstractController
                 'rerendering_saved' => $rerendering_saved,
                 'breadcrumbs'       => $breadcrumbs,
                 'page_title'        => $this->createPageTitle()->newticket(),
-                //'form_errors'       => $form->isSubmitted() ? $form->getErrors(true, true) : []
+                'form_errors'       => $form->isSubmitted() ? $form->getErrors() : [],
             )
         );
     }
@@ -207,6 +212,15 @@ class NewTicketController extends AbstractController
         $em->beginTransaction();
 
         try {
+            // allow all blobs for a new ticket
+            foreach ($ticket->messages as $message) {
+                foreach ($message->getAttachments() as $attachment) {
+                    if ($blob = $attachment->getBlob()) {
+                        $blob->is_temp = false;
+                    }
+                }
+            }
+
             $em->persist($ticket);
 
             $ticket_manager = $this->getTicketManager();

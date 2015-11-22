@@ -30,7 +30,8 @@ export class Nav extends Component {
 
   render() {
     const { labels, loaded, types, toValidateCount, commentsToReviewCount, statuses, customCategories, dispatch, dpWindow } = this.props;
-
+    console.log(labels);
+    //labels.forEach((item)=>console.log('Item', item.get('label')));
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
         <NavFrameHeader icon="icon-dp-streamline-hand-like-2">

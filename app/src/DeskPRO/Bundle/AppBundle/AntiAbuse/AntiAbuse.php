@@ -46,6 +46,7 @@ class AntiAbuse
     const SETTING_IP_WHITELIST           = 'core.rate_limit_ips';
 
     const ACTION_LOGIN           = 'login';
+    const ACTION_UPLOAD          = 'upload_attachment';
     const ACTION_REGISTER        = 'registration';
     const ACTION_RESET_PASSWORD  = 'reset_password';
     const ACTION_TOKEN_EXCHANGE  = 'token_exchange';

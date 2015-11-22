@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../Actions/FeedbackListActions';
 import { Nav } from './Nav';
-import { feedbackTypesSelector }
+import { feedbackTypesSelector, feedbackLabelsSelector }
   from '../../Selectors/list';
 
 @connect(state => {
@@ -12,7 +12,7 @@ import { feedbackTypesSelector }
     commentsToReviewCount: state.Feedback.nav.get('commentsToReviewCount'),
     statuses: state.Feedback.nav.get('statuses'),
     types: feedbackTypesSelector(state),
-    labels: state.Feedback.nav.get('labels'),
+    labels: feedbackLabelsSelector(state),
     customCategories: state.Feedback.nav.get('customCategories'),
     dpWindow: state.Application.dpWindow
   });

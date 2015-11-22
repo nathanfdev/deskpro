@@ -1,6 +1,31 @@
 <?php
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
 #                Welcome to DeskPRO
 #             http://support.deskpro.com
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -31,14 +56,6 @@ define('DP_DATABASE_NAME', 'deskpro');
 // Specify an email address to receive reports of any
 // database problems that prevent DeskPRO from working
 define('DP_TECHNICAL_EMAIL', '');
-
-
-
-
-
-
-
-
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # The mySQL database settings are the only required
@@ -198,7 +215,7 @@ $DP_CONFIG['disable_url_corrections'] = false;
 # this option to help debug a problem                #
 ######################################################
 
-$DP_CONFIG['debug']['enable_debug_trace'] = false;
+$DP_CONFIG['debug']['enable_debug_trace']      = false;
 $DP_CONFIG['debug']['enable_debug_trace_keep'] = false;
 
 ######################################################
@@ -210,87 +227,87 @@ $DP_CONFIG['debug']['enable_debug_trace_keep'] = false;
 ######################################################
 
 $DP_CONFIG['debug']['page_log'] = array(
-	/**
-	 * Enable the page log system
-	 */
-	'enabled' => false,
+    /*
+     * Enable the page log system
+     */
+    'enabled' => false,
 
-	/**
-	 * Only enable for URLs that match any of these regex patterns.
-	 * For example: array('/agent\/tickets/')
-	 */
-	'url_pattern' => array(),
+    /*
+     * Only enable for URLs that match any of these regex patterns.
+     * For example: array('/agent\/tickets/')
+     */
+    'url_pattern' => array(),
 
-	/**
-	 * Slow Query Log: data/logs/pagelog-slow-queries.log
-	 * This logs queries that take longer than a certain time.
-	 *
-	 * Value: A a time in seconds
-	 * Example: 0.08 to log any query that takes longer than 0.08 secs
-	 */
-	'slow_query_time' => false,
+    /*
+     * Slow Query Log: data/logs/pagelog-slow-queries.log
+     * This logs queries that take longer than a certain time.
+     *
+     * Value: A a time in seconds
+     * Example: 0.08 to log any query that takes longer than 0.08 secs
+     */
+    'slow_query_time' => false,
 
-	/**
-	 * Query Count Log: data/logs/pagelog-query-count.log
-	 * This logs requests that execute more than a certain number of queries.
-	 *
-	 * Value: Number of queries to start logging on
-	 * Example: 10 to log any page that executes more than 10 queries
-	 */
-	'max_query_count' => false,
+    /*
+     * Query Count Log: data/logs/pagelog-query-count.log
+     * This logs requests that execute more than a certain number of queries.
+     *
+     * Value: Number of queries to start logging on
+     * Example: 10 to log any page that executes more than 10 queries
+     */
+    'max_query_count' => false,
 
-	/**
-	 * Slow DB Log: data/logs/pagelog-slow-db.log
-	 * This logs pages where the total time spent doing database queries is over a certain time.
-	 *
-	 * Value: A time in seconds
-	 * Example: 0.5 to log any page where DB-work takes longer than 0.5 seconds.
-	 */
-	'slow_db_time' => false,
+    /*
+     * Slow DB Log: data/logs/pagelog-slow-db.log
+     * This logs pages where the total time spent doing database queries is over a certain time.
+     *
+     * Value: A time in seconds
+     * Example: 0.5 to log any page where DB-work takes longer than 0.5 seconds.
+     */
+    'slow_db_time' => false,
 
-	/**
-	 * Slow DB Log: data/logs/pagelog-slow-php.log
-	 * This logs pages where the total time spent in PHP is over a certain time.
-	 *
-	 * Value: A time in seconds
-	 * Example: 0.5 to log any page where PHP-work takes longer than 0.5 seconds.
-	 */
-	'slow_php_time' => false,
+    /*
+     * Slow DB Log: data/logs/pagelog-slow-php.log
+     * This logs pages where the total time spent in PHP is over a certain time.
+     *
+     * Value: A time in seconds
+     * Example: 0.5 to log any page where PHP-work takes longer than 0.5 seconds.
+     */
+    'slow_php_time' => false,
 
-	/**
-	 * Slow Page Log: data/logs/pagelog-slow-page.log
-	 * This logs any page that takes longer than a certain time to finish.
-	 *
-	 * Value: A time in seconds
-	 * Example: 0.8 to log any page that takes longer than 0.8 seconds from start to finish
-	 */
-	'slow_page_time' => false,
+    /*
+     * Slow Page Log: data/logs/pagelog-slow-page.log
+     * This logs any page that takes longer than a certain time to finish.
+     *
+     * Value: A time in seconds
+     * Example: 0.8 to log any page that takes longer than 0.8 seconds from start to finish
+     */
+    'slow_page_time' => false,
 
-	/**
-	 * Tracked Query Log: data/logs/pagelog-tracked-queries.log
-	 * This logs tracked queries (configured below).
-	 *
-	 * Value: true or false
-	 */
-	'tracked_query_log' => false,
+    /*
+     * Tracked Query Log: data/logs/pagelog-tracked-queries.log
+     * This logs tracked queries (configured below).
+     *
+     * Value: true or false
+     */
+    'tracked_query_log' => false,
 
-	/**
-	 * In the generated logs, queries are given an 'id'. If you add that ID to this array,
-	 * then a backtrace will be saved each time the query is executed. Use this to find
-	 * out where a certain query is being called from.
-	 *
-	 * Value: An array of strings which are query IDs.
-	 */
-	'track_query_ids' => array(),
+    /*
+     * In the generated logs, queries are given an 'id'. If you add that ID to this array,
+     * then a backtrace will be saved each time the query is executed. Use this to find
+     * out where a certain query is being called from.
+     *
+     * Value: An array of strings which are query IDs.
+     */
+    'track_query_ids' => array(),
 
-	/**
-	 * Add regex patterns to this array and a backtrace will be saved each time the query
-	 * is executed. Similar to above using IDs except this uses regex instead.
-	 *
-	 * Value: An array of regular expressions to match against queries
-	 * Example: array('/UPDATE\s+permissions\s/i')
-	 */
-	'track_query_regex' => array(),
+    /*
+     * Add regex patterns to this array and a backtrace will be saved each time the query
+     * is executed. Similar to above using IDs except this uses regex instead.
+     *
+     * Value: An array of regular expressions to match against queries
+     * Example: array('/UPDATE\s+permissions\s/i')
+     */
+    'track_query_regex' => array(),
 );
 
 ######################################################
@@ -340,11 +357,11 @@ $DP_CONFIG['enable_request_errorlog'] = false;
 # these options to help debug a problem              #
 ######################################################
 
-$DP_CONFIG['debug']['mail'] = array();
+$DP_CONFIG['debug']['mail']                    = array();
 $DP_CONFIG['debug']['mail']['enable_mail_log'] = false;
-$DP_CONFIG['debug']['mail']['save_to_file'] = false;
-$DP_CONFIG['debug']['mail']['disable_send'] = false;
-$DP_CONFIG['debug']['mail']['force_to'] = '';
+$DP_CONFIG['debug']['mail']['save_to_file']    = false;
+$DP_CONFIG['debug']['mail']['disable_send']    = false;
+$DP_CONFIG['debug']['mail']['force_to']        = '';
 
 ######################################################
 # OPTIONAL : Caching                                 #
@@ -354,12 +371,12 @@ $DP_CONFIG['debug']['mail']['force_to'] = '';
 # cached for increased performance.                  #
 ######################################################
 
-$DP_CONFIG['cache']['page_cache'] = array();
-$DP_CONFIG['cache']['page_cache']['enable'] = true;
-$DP_CONFIG['cache']['page_cache']['ttl'] = 900;
-$DP_CONFIG['cache']['page_cache']['max_size'] = 10000000;
+$DP_CONFIG['cache']['page_cache']                   = array();
+$DP_CONFIG['cache']['page_cache']['enable']         = true;
+$DP_CONFIG['cache']['page_cache']['ttl']            = 900;
+$DP_CONFIG['cache']['page_cache']['max_size']       = 10000000;
 $DP_CONFIG['cache']['page_cache']['enable_hit_log'] = false;
-$DP_CONFIG['cache']['page_cache']['hit_log_file'] = '';
+$DP_CONFIG['cache']['page_cache']['hit_log_file']   = '';
 
 ######################################################
 # OPTIONAL : Read Only Database                      #
@@ -375,25 +392,19 @@ $DP_CONFIG['cache']['page_cache']['hit_log_file'] = '';
 # https://support.deskpro.com/kb/articles/175        #
 ######################################################
 
-$DP_CONFIG['db_read'] = array();
-$DP_CONFIG['db_read']['host'] = '';
-$DP_CONFIG['db_read']['user'] = '';
+$DP_CONFIG['db_read']             = array();
+$DP_CONFIG['db_read']['host']     = '';
+$DP_CONFIG['db_read']['user']     = '';
 $DP_CONFIG['db_read']['password'] = '';
-$DP_CONFIG['db_read']['dbname'] = '';
-
-
-
-
-
-
+$DP_CONFIG['db_read']['dbname']   = '';
 
 // Temp
 $DP_CONFIG['SETTINGS'] = array(
-	'portal.http_cache_etags'         => false,
-	'portal.http_cache_last_modified' => false,
-	'portal.smaxage_guest_page'       => 0,
-	'portal.smaxage_guest_tag'        => 0,
-	'portal.smaxage_user_page'        => 0,
-	'portal.smaxage_user_tag'         => 0,
-	'portal.per_page_content'         => 3
+    'portal.http_cache_etags'         => false,
+    'portal.http_cache_last_modified' => false,
+    'portal.smaxage_guest_page'       => 0,
+    'portal.smaxage_guest_tag'        => 0,
+    'portal.smaxage_user_page'        => 0,
+    'portal.smaxage_user_tag'         => 0,
+    'portal.per_page_content'         => 50,
 );

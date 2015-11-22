@@ -1,8 +1,17 @@
 import { createAction } from 'Ampliflux';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
-import { listParamsNavSelector, listParamsFiltersSelector, currentSortSelector, currentOrderSelector } from '../Selectors/list';
+import {
+  listParamsNavSelector,
+  listParamsFiltersSelector,
+  currentSortSelector,
+  currentOrderSelector,
+  elementsSelector,
+  elementsMapSelector
+} from '../Selectors/list';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
+import { reOrderCollection } from 'DeskPRO/Component/Util/DisplayOrder';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
+import Immutable from 'immutable';
 
 export const setListParamsNav = createAction('TASKS_LIST_SET_PARAMS_NAV');
 export const setListParamsFilters = createAction(
@@ -29,6 +38,7 @@ export const loadList = createAction(
     const navState = listParamsNavSelector(state);
     if (!navState) {
       resolve({});
+      return null;
     }
 
     const navParams = navState.toJS();
@@ -69,4 +79,46 @@ export const applyFilters = createAction(
       dispatch(setListParamsFilters(value));
       dispatch(loadList());
     }
+);
+
+export const setTaskEditing = createAction('TASKS_LIST_SET_TASK_EDITING');
+export const unsetTaskEditing = createAction('TASKS_LIST_UNSET_TASK_EDITING');
+
+export const editTask = createAction(
+  'TASKS_LIST_EDIT_TASK',
+  (taskId, updateData) => (dispatch, getState) => {
+    const state = getState();
+    const tasksMap = elementsMapSelector(state);
+
+    const tasks = elementsSelector(state);
+    const task = tasksMap.get(taskId);
+    const taskIndex = tasks.indexOf(task);
+
+    const changedProps = Object.keys(updateData).filter(taskProp => task.get(taskProp) !== updateData[taskProp]);
+    let updatedTasks = tasks;
+
+    if (changedProps.length) {
+      // Re order tasks
+      updatedTasks = reOrderCollection(tasks, taskId, updateData.display_order);
+      if (changedProps.indexOf('display_order') !== -1) {
+        changedProps.splice(changedProps.indexOf('display_order'), 1);
+      }
+
+      // Update task props
+      let updatedTask = updatedTasks.get(taskIndex);
+      changedProps.forEach(changedProp => {
+        let newValue = updateData[changedProp];
+        if (Array.isArray(newValue)) {
+          newValue = Immutable.fromJS(newValue);
+        }
+
+        updatedTask = updatedTask.set(changedProp, newValue);
+      });
+
+      updatedTasks = updatedTasks.set(taskIndex, updatedTask);
+      DpApi.sendPut(`DP_API/tasks/${taskId}`, updateData);
+    }
+
+    return updatedTasks;
+  }
 );

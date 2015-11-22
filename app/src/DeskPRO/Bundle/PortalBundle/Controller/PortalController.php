@@ -31,12 +31,17 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\UploadAbuseCheck;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\CsrfDoubleSubmitExtension;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -235,6 +240,88 @@ class PortalController extends AbstractController
         $url = str_replace($pathInfo, rtrim($pathInfo, ' /'), $requestUri);
 
         return $this->redirect($url, 301);
+    }
+
+    /**
+     * @Route("/dpblob", name="portal_blob_upload")
+     * @Method("POST")
+     */
+    public function uploadBlobAction(Request $request)
+    {
+        // rate limit first
+        $check = new UploadAbuseCheck($this->getUser(), $request->getClientIp());
+        $this->getAntiAbuseService()->check($check);
+        if ($check->isCaptchaRecommended()) {
+            return new JsonResponse([
+                'success' => false,
+                'error'   => [
+                    'code' => 'rate_limit',
+                ],
+            ]);
+        }
+
+        $cookie_val = (string) $request->cookies->get(CsrfDoubleSubmitExtension::COOKIE_NAME);
+        $submit_val = (string) $request->request->get(CsrfDoubleSubmitExtension::COOKIE_NAME);
+
+        if (!(strlen($cookie_val) >= 5 && $cookie_val === $submit_val)) {
+            return new JsonResponse([
+                'success' => false,
+                'error'   => [
+                    'code' => 'csrf',
+                ],
+            ]);
+        }
+
+        $file = $request->files->get('blob');
+
+        if (!$file instanceof UploadedFile) {
+            return new JsonResponse([
+                'success' => false,
+                'error'   => [
+                    'code' => 'no_file_in_request',
+                ],
+            ]);
+        }
+
+        if ($error = $this->get('attachment_accepter')->getError($file, 'user')) {
+            $error_code = $error['error_code'];
+            $params     = [];
+            if ($error_detail = $error['error_detail']) {
+                $params = ['detail' => $error_detail];
+            }
+            $phrase = sprintf('portal.forms.error_accept_%s', $error_code);
+
+            return new JsonResponse([
+                'success' => false,
+                'error'   => [
+                    'message' => $this->phrase($phrase, $params),
+                    'code'    => $error_code,
+                    'detail'  => $error_detail,
+                ],
+            ]);
+        }
+
+        $blob = $this->get('attachment_accepter')->accept($file, true);
+
+        return new JsonResponse([
+            'success' => true,
+            'blob'    => [
+                'id'       => $blob->getId(),
+                'authcode' => $blob->getAuthcode(),
+            ],
+        ]);
+    }
+
+    /**
+     * @Route("/dpblob/{authcode}", name="portal_blob_upload")
+     * @Method("DELETE")
+     */
+    public function deleteBlobAction(Request $request, Blob $blob)
+    {
+        // assuming the authcode is all that is necessary to delete a blob here
+        $success = $this->get('blob.storage')->deleteBlobRecord($blob);
+
+        return new JsonResponse(['success' => (bool) $success]);
     }
 
     /**

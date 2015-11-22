@@ -56,6 +56,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 class TicketType extends AbstractType
 {
@@ -134,7 +135,7 @@ class TicketType extends AbstractType
         $ticket         = $event->getData();
         $form           = $event->getForm();
         $ticket_message = $form->getConfig()->getOption('ticket_message');
-        $layout         = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->department ?: null);
+        $layout         = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->getDepartment() ?: null);
 
         if ($form->getConfig()->getOption('full_version')) {
             $layout = $this->ticket_layout_factory->getFullLayoutForTicketForm();
@@ -143,9 +144,13 @@ class TicketType extends AbstractType
         $context = $this->createTicketFormContext($ticket, $ticket_message, $form, $layout);
 
         // if there is only one department we want to make sure to set it now...
-        $person             = $context->getForm()->getConfig()->getOption('person');
-        $hierarchy          = $this->hierarchy_generator->generateTicketDepartmentsHierarchy($person);
-        $ticket->department = $hierarchy->getFirstSelectable();
+        $person    = $context->getForm()->getConfig()->getOption('person');
+        $hierarchy = $this->hierarchy_generator->generateTicketDepartmentsHierarchy($person);
+
+        // if there is only one dep, and ticket has no dep, just set it on the ticket (we won't be showing the widget)
+        if (!$ticket->getDepartment() && $hierarchy->countSelectable() == 1) {
+            $ticket->setDepartment($hierarchy->getFirstSelectable());
+        }
 
         $displaying_fields = $this->manipulateForm(new Layout(), $context->getActiveLayout(), $context);
 
@@ -176,7 +181,7 @@ class TicketType extends AbstractType
         }
 
         // calculate the initial layout of the form (before any form submissions took place)
-        $layout         = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->department ?: null);
+        $layout         = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->getDepartment() ?: null);
         $context        = $this->createTicketFormContext($ticket, $ticket_message, $form, $layout, $already_displayed_fields);
         $initial_layout = $context->getActiveLayout();
 
@@ -396,7 +401,11 @@ class TicketType extends AbstractType
                     $choice = $choice->getData();
                 }
 
-                $final_data[$key] = $choice->getId();
+                if ($choice) {
+                    $final_data[$key] = $choice->getId();
+                } else {
+                    $final_data[$key] = null;
+                }
             } else {
                 $final_data[$key] = null;
             }
@@ -498,9 +507,6 @@ class TicketType extends AbstractType
             case FormFields::USER_TIMEZONE:
                 $this->addUserTimezone($form_context, $field, $ignore_validation);
                 break;
-            case FormFields::USER_LANGUAGE:
-                $this->addUserLanguage($form_context, $field, $ignore_validation);
-                break;
             case FormFields::USER_FIELD:
                 $this->addCustomUserField($form_context, $field, $ignore_validation);
                 break;
@@ -528,9 +534,13 @@ class TicketType extends AbstractType
         }
 
         $form_context->getForm()->add($field->getId(), 'deskpro_department', array(
-            'label'  => $this->phrase('portal.forms.label_department'),
-            'person' => $form_context->getPerson(),
-            'ticket' => $form_context->getTicket(),
+            'label'       => $this->phrase('portal.forms.label_department'),
+            'person'      => $form_context->getPerson(),
+            'ticket'      => $form_context->getTicket(),
+            'placeholder' => $this->phrase('portal.forms.placeholder_select'),
+            'constraints' => [
+                new NotNull(['message' => 'portal.forms.error_ticket_department_required']),
+            ],
         ));
     }
 
@@ -649,19 +659,6 @@ class TicketType extends AbstractType
         $form_context->getForm()->add($field->getId(), 'timezone', array(
             'property_path' => 'person.timezone',
             'label'         => $this->phrase('portal.forms.label_timezone'),
-        ));
-    }
-
-    private function addUserLanguage(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
-    {
-        if (!$this->language_manager->isMultiLanguagePortal()) {
-            return;
-        }
-
-        $form_context->getForm()->add($field->getId(), 'deskpro_language', array(
-            'label'         => $this->phrase('portal.forms.label_language'),
-            'property_path' => 'person.language',
-            'view_context'  => $form_context->getViewContext(),
         ));
     }
 
@@ -832,7 +829,8 @@ class TicketType extends AbstractType
         }
 
         $form_context->getForm()->add($field->getId(), 'deskpro_category', array(
-            'label' => $this->phrase('portal.forms.label_category'),
+            'label'       => $this->phrase('portal.forms.label_category'),
+            'placeholder' => $this->phrase('portal.forms.placeholder_select'),
         ));
     }
 
@@ -854,7 +852,8 @@ class TicketType extends AbstractType
         }
 
         $form_context->getForm()->add($field->getId(), 'deskpro_priority', array(
-            'label' => $this->phrase('portal.forms.label_priority'),
+            'label'       => $this->phrase('portal.forms.label_priority'),
+            'placeholder' => $this->phrase('portal.forms.placeholder_select'),
         ));
     }
 
@@ -897,7 +896,9 @@ class TicketType extends AbstractType
             }
         }
 
-        $form_context->getForm()->add($field->getId(), 'deskpro_product');
+        $form_context->getForm()->add($field->getId(), 'deskpro_product', array(
+            'placeholder' => $this->phrase('portal.forms.placeholder_select'),
+        ));
     }
 
     private function addCaptcha(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
