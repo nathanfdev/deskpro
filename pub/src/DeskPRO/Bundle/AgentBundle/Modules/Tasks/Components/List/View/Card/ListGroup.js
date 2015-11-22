@@ -5,6 +5,7 @@ import { groupTargetSpec, targetCollect } from '../../TaskCard/TaskCardEditConta
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import { CardGroupDivider } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
 import { TaskCardNew } from './TaskCard/TaskCardNew';
+import { TaskCardNewContainer } from '../../TaskCard/TaskCardNewContainer';
 import classNames from 'classnames';
 
 @DropTarget(constants.TYPE_TASK, groupTargetSpec, targetCollect)
@@ -49,7 +50,9 @@ export class ListGroup extends React.Component {
   renderNewTaskForm() {
     return (
       <ClickOut onClickOut={this.onCloseNewTaskForm}>
-        <TaskCardNew />
+        <TaskCardNewContainer>
+          <TaskCardNew />
+        </TaskCardNewContainer>
       </ClickOut>
     );
   }

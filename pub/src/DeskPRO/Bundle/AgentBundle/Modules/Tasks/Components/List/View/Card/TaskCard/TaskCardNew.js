@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import {
   Card,
   CardCheckbox,
@@ -17,13 +17,20 @@ import moment from 'moment';
 
 export class TaskCardNew extends React.Component {
 
+  static propTypes = {
+    title: PropTypes.string,
+    onChangeTitle: PropTypes.func
+  };
+
   render() {
+    const { title, onChangeTitle } = this.props;
+
     return (
       <Card type="task">
         <CardCheckbox />
         <CardLine>
           <CardLineLeft>
-            <Title />
+            <Title editing value={title} onChange={onChangeTitle} />
           </CardLineLeft>
           <CardLineRight>
             <AssignButton />

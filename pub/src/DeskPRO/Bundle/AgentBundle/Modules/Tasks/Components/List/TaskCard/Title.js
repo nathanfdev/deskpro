@@ -7,7 +7,8 @@ export class Title extends React.Component {
   static propTypes = {
     value: PropTypes.string,
     isDone: PropTypes.bool,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
+    editing: PropTypes.bool
   };
 
   constructor(props) {
@@ -15,7 +16,7 @@ export class Title extends React.Component {
 
     this.state = {
       value: '',
-      editing: false
+      editing: props.editing || false
     };
   }
 
