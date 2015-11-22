@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
-import classnames from 'classnames';
+import classNames from 'classnames';
 import jQuery from 'jquery';
 
 export class Title extends React.Component {
@@ -17,6 +17,7 @@ export class Title extends React.Component {
     super(props);
 
     this.state = {
+      error: false,
       value: props.value,
       editing: props.editing || false
     };
@@ -56,6 +57,10 @@ export class Title extends React.Component {
           editing: false,
           value: value
         });
+      } else {
+        this.setState({
+          error: true
+        });
       }
 
       return;
@@ -75,7 +80,8 @@ export class Title extends React.Component {
 
   onChange = event => {
     this.setState({
-      value: event.target.value
+      value: event.target.value,
+      error: false
     });
   };
 
@@ -98,6 +104,7 @@ export class Title extends React.Component {
                  ref="input"
                  name="title"
                  value={this.state.value}
+                 className={classNames({'error': this.state.error})}
                  onChange={this.onChange} />
         </form>
       </ClickOut>
@@ -107,7 +114,7 @@ export class Title extends React.Component {
   render() {
     return (
       <div className="card-title">
-        <div className={classnames(
+        <div className={classNames(
           'dpwd--card-title',
           {'strikethrough': this.props.isDone && !this.state.editing}
         )}>

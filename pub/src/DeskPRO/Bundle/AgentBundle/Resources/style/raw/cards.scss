@@ -939,7 +939,11 @@ $level-10: #ac2020;
   }
 
   input {
-    padding: 5px;
+    padding: 2px;
+
+    &.error {
+      border: 1px solid #ff0000;
+    }
   }
 }
 
