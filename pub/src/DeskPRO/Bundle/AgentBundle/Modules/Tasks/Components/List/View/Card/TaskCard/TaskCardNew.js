@@ -13,6 +13,7 @@ import {
   CardProject,
   Comments
 } from '../../../TaskCard/index';
+import moment from 'moment';
 
 export class TaskCardNew extends React.Component {
 
@@ -31,7 +32,7 @@ export class TaskCardNew extends React.Component {
 
         <CardLine>
           <CardLineLeft>
-            <DateDue />
+            <DateDue value={moment().endOf('day').format()} />
             <CardProject />
           </CardLineLeft>
           <CardLineRight>
