@@ -37,7 +37,11 @@ export class TaskCardNew extends React.Component {
         <CardCheckbox />
         <CardLine>
           <CardLineLeft>
-            <Title editing value={title} onChange={onChangeTitle} />
+            <Title editing
+                   value={title}
+                   onChange={onChangeTitle}
+                   onSave={onSaveTask} />
+
           </CardLineLeft>
           <CardLineRight>
             <AssignButton />

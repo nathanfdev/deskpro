@@ -9,6 +9,7 @@ export class Title extends React.Component {
     value: PropTypes.string,
     isDone: PropTypes.bool,
     onChange: PropTypes.func,
+    onSave: PropTypes.func,
     editing: PropTypes.bool
   };
 
@@ -27,12 +28,6 @@ export class Title extends React.Component {
     }
   }
 
-  componentWillReceiveProps() {
-    this.setState({
-      title: this.props.value
-    });
-  }
-
   componentDidUpdate() {
     jQuery(this.refs.input).focus();
   }
@@ -47,21 +42,35 @@ export class Title extends React.Component {
   onCloseEdit = event => {
     event.preventDefault();
 
+    // Skip on click on the input field
+    if (jQuery(this.refs.input).is(event.target)) {
+      return;
+    }
+
+    const { value, onChange, onSave } = this.props;
+
+    // Prevent sending empty data or set default value if it exists
     if (!this.state.value) {
-      if (this.props.value) {
+      if (value) {
         this.setState({
           editing: false,
-          value: this.props.value
+          value: value
         });
       }
 
       return;
     }
 
-    this.props.onChange(this.state.value);
     this.setState({
       editing: false
     });
+
+    onChange(this.state.value);
+
+    // Trigger save callback if we clicked on the save task button
+    if (onSave && jQuery('.dpw--single-card-mark-done').has(event.target).length) {
+      onSave();
+    }
   };
 
   onChange = event => {
@@ -80,7 +89,10 @@ export class Title extends React.Component {
 
   renderForm() {
     return (
-      <ClickOut onClickOut={this.onCloseEdit}>
+      <ClickOut onClickOut={this.onCloseEdit}
+                onClick={this.onCloseEdit}
+                additionalNodes={['.dpw--single-card-mark-done']}>
+
         <form className="inline-form" onSubmit={this.onCloseEdit}>
           <h1 className="ignore-react-onclickoutside">
             <input type="text" ref="input" name="title" value={this.state.value} onChange={this.onChange} />
