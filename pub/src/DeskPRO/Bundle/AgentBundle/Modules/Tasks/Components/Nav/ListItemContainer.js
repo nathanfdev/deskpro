@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { urlSanitize } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Service/routing';
-import { ListItemRouteContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { ListItemStatefulContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { currentNavSelector } from '../../Selectors/list';
 import { setListParamsNav, loadList } from '../../Actions/listActions';
 
@@ -46,7 +46,7 @@ export class ListItemContainer extends React.Component {
     };
 
     return (
-      <ListItemRouteContainer {...newProps} />
+      <ListItemStatefulContainer {...newProps} />
     );
   }
 }
