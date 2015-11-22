@@ -71,11 +71,11 @@ export class ControlBar extends Component {
     return (
       <ListFrameMenu>
         <CheckboxContainer {...checkbox} />
-        <SortingMenu {...sorting} onMenuUnmount={onMenuUnmount} />
+        <SortingMenu {...sorting} onMenuUnmount={onMenuUnmount}/>
         <li>
           <hr/>
         </li>
-        <FilteringMenuContainer {...filtering}  onMenuUnmount={onMenuUnmount} />
+        <FilteringMenuContainer {...filtering} onMenuUnmount={onMenuUnmount}/>
         <li>
           <hr/>
         </li>

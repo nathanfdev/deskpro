@@ -30,10 +30,17 @@ export class FilteringMenuContainer extends Component {
   collapse = () => this.setState({ expanded: false });
 
   stateValue(param) {
-    let value = this.props.state.get(param);
-    if (Immutable.Iterable.isIterable(value)) {
-      value = value.toJS();
-    }
+    console.log('State Value param', param);
+    const params = param instanceof Array ? param : [param];
+    let value = [];
+    params.map(item => {
+      console.log('State Value param item', item);
+      value = this.props.state.get(item);
+      if (Immutable.Iterable.isIterable(value)) {
+        value = value.toJS();
+      }
+      console.log('State Value get', value);
+    });
 
     return value;
   }
@@ -75,7 +82,8 @@ export class FilteringMenuContainer extends Component {
                     positionTarget={this.refs.button}>
           <ClickOut
             onClickOut={this.collapse}
-            ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list']}>
+            ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list']}
+            additionalNodes={['.dpw-navigation-dropdown-item-clear']}>
             <FilteringMenu
               dispatch={dispatch}
               filters={filters}
@@ -102,6 +110,7 @@ export class FilteringMenuContainer extends Component {
 export class FilteringMenu extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
+    stateValue: PropTypes.func.isRequired,
     onMenuUnmount: PropTypes.func,
     filters: PropTypes.array.isRequired,
     setParamsAction: PropTypes.func.isRequired,
@@ -183,7 +192,7 @@ export class FilteringMenu extends Component {
 
   renderLabelsFilterInfo(labels) {
     if (labels.length) {
-      const result = [<span className="dpw-navigation-dropdown-item-inline-info">{labels}</span>];
+      const result = [<span className="dpw-navigation-dropdown-item-inline-info">{labels[0]}</span>];
       if (labels.length > 1) {
         result.push(
           <span className="dpw-navigation-dropdown-item-inline-info dpw-navigation-dropdown-item-inline-info-extra">
@@ -243,6 +252,7 @@ export class FilteringMenu extends Component {
   // Select filter -----------------------------------------------------------------------------------------------------
 
   renderSelectFilterInfo(options, filterValue) {
+    console.log('Render Select Filter Info', filterValue);
     const flatOptions = [...options];
     options.forEach(opt => {
       if (opt.nested) {
@@ -251,21 +261,39 @@ export class FilteringMenu extends Component {
     });
     const value = filterValue instanceof Array ? filterValue : [filterValue];
     const selected = [];
+    console.log('Value in filter info', value);
+    console.log('Options in filter info', options);
+    console.log('FlatOptions in filter info', flatOptions);
+    console.log('Filter Value in filter info', filterValue);
     value.forEach(val => {
+      console.log('Some val', val);
       flatOptions.forEach(opt => {
+        console.log('Some val opt', opt);
         if (opt.value === val) {
           selected.push(opt.label);
         }
       });
     });
-
+    console.log('Selected in filter info', selected);
     return this.renderLabelsFilterInfo(selected);
   }
 
   renderSelectFilter({ label, icon, param, multiple, options }, index) {
     const { dispatch, setParamsAction, stateValue } = this.props;
-    const filterValue = stateValue(param) || [];
+    const params = [param];
+    options.map(option=> {
+      if (option.hasOwnProperty('nested')) {
+        option.nested.map(opt => {
+          params.push(opt.param);
+        });
+      }
+    });
+    const filterValue = stateValue([...new Set(params)]) || [];
     const isActive = Boolean(filterValue.length);
+    console.log('params in select filter', [...new Set(params)]);
+    console.log('param in select filter', param);
+    console.log('Options in select filter', options);
+    console.log('Filter Value in select filter', filterValue);
 
     // onClick depending on if filter selects multiple values or a single value
     let onClick;
@@ -273,6 +301,8 @@ export class FilteringMenu extends Component {
       onClick = (value) => () => dispatch(setParamsAction({ [param]: value, delayReload: true }));
     } else {
       onClick = (value, newParam = null) => () => {
+        console.log('HERE WE GO', newParam);
+        console.log('Value', value);
         if (filterValue.indexOf(value) === -1) {
           filterValue.push(value);
         } else {
@@ -301,7 +331,7 @@ export class FilteringMenu extends Component {
         </ul>
       );
     };
-
+console.log('filterValue inside', filterValue);
     return (
       <FilterItem
         key={index}
