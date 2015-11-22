@@ -94,8 +94,12 @@ export class Title extends React.Component {
                 additionalNodes={['.dpw--single-card-mark-done']}>
 
         <form className="inline-form" onSubmit={this.onCloseEdit}>
-          <h1 className="ignore-react-onclickoutside">
-            <input type="text" ref="input" name="title" value={this.state.value} onChange={this.onChange} />
+          <h1>
+            <input type="text"
+                   ref="input"
+                   name="title"
+                   value={this.state.value}
+                   onChange={this.onChange} />
           </h1>
         </form>
       </ClickOut>
