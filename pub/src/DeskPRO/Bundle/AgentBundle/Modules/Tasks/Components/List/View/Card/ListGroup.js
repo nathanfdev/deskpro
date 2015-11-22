@@ -4,9 +4,8 @@ import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { groupTargetSpec, targetCollect } from '../../TaskCard/TaskCardEditContainer';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import { CardGroupDivider } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
-import { TaskCard } from './TaskCard/TaskCard';
+import { TaskCardNew } from './TaskCard/TaskCardNew';
 import classNames from 'classnames';
-import Immutable from 'immutable';
 
 @DropTarget(constants.TYPE_TASK, groupTargetSpec, targetCollect)
 export class ListGroup extends React.Component {
@@ -50,7 +49,7 @@ export class ListGroup extends React.Component {
   renderNewTaskForm() {
     return (
       <ClickOut onClickOut={this.onCloseNewTaskForm}>
-        <TaskCard task={Immutable.fromJS({})} />
+        <TaskCardNew />
       </ClickOut>
     );
   }
