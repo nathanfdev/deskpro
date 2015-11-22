@@ -24,29 +24,29 @@
     font-weight: bold;
     color: darken(#dcdcdc, 10%);
   }
-}
 
-.dpw--single-card-mark-done.dpw--single-card-mark-done-selected {
-  i { color: #62ad8c; }
-}
-
-.dpw--single-card-mark-done:hover {
-  background: #62ad8c;
-  border: 1px solid #62ad8c;
-
-  i, span { color: #fff; }
-}
-
-.dpw--single-card-mark-done.dpw--single-card-mark-done-minimized { // When the card is minimied, resize this box
-  height: 28px;
-
-  i {
-    font-size: 14px;
-    vertical-align: -1px;
-    padding-left: 2px;
+  &.dpw--single-card-mark-done-selected {
+    i { color: #62ad8c; }
   }
 
-  span { display: inline-block; }
+  &:hover, &.hovered {
+    background: #62ad8c;
+    border: 1px solid #62ad8c;
+
+    i, span { color: #fff; }
+  }
+
+  &.dpw--single-card-mark-done-minimized { // When the card is minimied, resize this box
+    height: 28px;
+
+    i {
+      font-size: 14px;
+      vertical-align: -1px;
+      padding-left: 2px;
+    }
+
+    span { display: inline-block; }
+  }
 }
 
 // Left and right sides status colors

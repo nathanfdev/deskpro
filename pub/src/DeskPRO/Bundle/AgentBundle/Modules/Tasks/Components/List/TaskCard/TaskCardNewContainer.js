@@ -9,7 +9,8 @@ import moment from 'moment';
 export class TaskCardNewContainer extends React.Component {
 
   static propTypes = {
-    updateData: PropTypes.object
+    updateData: PropTypes.object,
+    onClose: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -27,6 +28,7 @@ export class TaskCardNewContainer extends React.Component {
 
   onSaveTask = () => {
     console.log('onSaveTask');
+    this.props.onClose();
   };
 
   getDateDue() {
@@ -49,6 +51,7 @@ export class TaskCardNewContainer extends React.Component {
       title: this.state.title,
       dateDue: this.getDateDue(),
       project: projects ? projects.first() : null,
+      isValid: !!this.state.title,
 
       onChangeTitle: this.onChangeTitle,
       onSaveTask: this.onSaveTask

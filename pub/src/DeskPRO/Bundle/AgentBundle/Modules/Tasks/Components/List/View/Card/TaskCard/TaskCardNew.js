@@ -22,17 +22,18 @@ export class TaskCardNew extends React.Component {
     title: PropTypes.string,
     dateDue: PropTypes.string,
     project: PropTypes.number,
+    isValid: PropTypes.bool,
     onChangeTitle: PropTypes.func,
     onSaveTask: PropTypes.func
   };
 
   render() {
-    const { title, dateDue, project } = this.props;
+    const { title, dateDue, project, isValid } = this.props;
     const { onChangeTitle, onSaveTask } = this.props;
 
     return (
       <Card type="task">
-        <SaveTaskButton onClick={onSaveTask} />
+        <SaveTaskButton onClick={onSaveTask} isValid={isValid} />
         <CardCheckbox />
         <CardLine>
           <CardLineLeft>
