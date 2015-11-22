@@ -11,6 +11,7 @@ import {
   AssignButton,
   DateDue,
   CardProject,
+  ProjectContainer,
   Comments
 } from '../../../TaskCard/index';
 
@@ -19,11 +20,13 @@ export class TaskCardNew extends React.Component {
   static propTypes = {
     title: PropTypes.string,
     dateDue: PropTypes.string,
+    project: PropTypes.number,
     onChangeTitle: PropTypes.func
   };
 
   render() {
-    const { title, dateDue, onChangeTitle } = this.props;
+    const { title, dateDue, project, onChangeTitle } = this.props;
+    console.log(project);
 
     return (
       <Card type="task">
@@ -40,7 +43,9 @@ export class TaskCardNew extends React.Component {
         <CardLine>
           <CardLineLeft>
             <DateDue value={dateDue} />
-            <CardProject />
+            <ProjectContainer project={project}>
+              <CardProject />
+            </ProjectContainer>
           </CardLineLeft>
           <CardLineRight>
             <Comments />

@@ -1,8 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { listParamsNavSelector } from '../../../Selectors/list';
 import moment from 'moment';
 
-@connect()
+@connect(state => ({
+  currentNav: listParamsNavSelector(state)
+}))
 export class TaskCardNewContainer extends React.Component {
 
   static propTypes = {
@@ -11,7 +14,6 @@ export class TaskCardNewContainer extends React.Component {
 
   constructor(props) {
     super(props);
-
     this.state = {
       title: ''
     };
@@ -34,6 +36,7 @@ export class TaskCardNewContainer extends React.Component {
     const props = this.props;
     const { children } = props;
     const childProps = children.props;
+    const projects = props.currentNav.get('project');
 
     return React.cloneElement(children, {
       ...childProps,
@@ -41,7 +44,8 @@ export class TaskCardNewContainer extends React.Component {
 
       title: this.state.title,
       onChangeTitle: this.onChangeTitle,
-      dateDue: this.getDateDue()
+      dateDue: this.getDateDue(),
+      project: projects ? projects.first() : null
     });
   }
 }
