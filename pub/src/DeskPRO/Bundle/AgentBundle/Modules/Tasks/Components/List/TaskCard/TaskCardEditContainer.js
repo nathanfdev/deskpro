@@ -97,6 +97,9 @@ export const cardSourceSpec = {
       id: task.get('id'),
       width: jQuery(ReactDOM.findDOMNode(component)).width()
     };
+  },
+  canDrag(props, monitor) {
+    return true;
   }
 };
 

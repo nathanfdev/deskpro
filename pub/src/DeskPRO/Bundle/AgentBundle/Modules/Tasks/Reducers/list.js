@@ -24,6 +24,14 @@ const initialState = {
   }
 };
 
+function setTaskEditing(state, id, value) {
+  const elements = state.get('elements');
+  const editingTask = elements.filter(task => task.get('id') === id).first();
+  const index = elements.indexOf(editingTask);
+
+  return state.set('elements', elements.set(index, editingTask.set('edit', value)));
+}
+
 export default createReducer(initialState, {
   [actions.setListParamsNav]: setFullPayload('listParams.nav'),
   [actions.setListParamsFilters]: setFullPayload('listParams.filters'),
@@ -39,5 +47,7 @@ export default createReducer(initialState, {
     start: setValue('async.done', false),
     done: setValue('async.done', true)
   }),
-  [actions.editTask]: setFullPayload('elements')
+  [actions.editTask]: setFullPayload('elements'),
+  [actions.setTaskEditing]: (state, payload) => setTaskEditing(state, payload, true),
+  [actions.unsetTaskEditing]: (state, payload) => setTaskEditing(state, payload, false)
 });
