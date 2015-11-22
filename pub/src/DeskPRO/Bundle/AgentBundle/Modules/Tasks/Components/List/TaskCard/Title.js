@@ -40,6 +40,9 @@ export class Title extends React.Component {
 
   onCloseEdit = event => {
     event.preventDefault();
+    if (!this.state.value) {
+      return;
+    }
 
     this.props.onChange(this.state.value);
     this.setState({
