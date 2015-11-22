@@ -94,13 +94,11 @@ export class Title extends React.Component {
                 additionalNodes={['.dpw--single-card-mark-done']}>
 
         <form className="inline-form" onSubmit={this.onCloseEdit}>
-          <h1>
-            <input type="text"
-                   ref="input"
-                   name="title"
-                   value={this.state.value}
-                   onChange={this.onChange} />
-          </h1>
+          <input type="text"
+                 ref="input"
+                 name="title"
+                 value={this.state.value}
+                 onChange={this.onChange} />
         </form>
       </ClickOut>
     );
@@ -109,7 +107,11 @@ export class Title extends React.Component {
   render() {
     return (
       <div className="card-title">
-        <div className={classnames('dpwd--card-title', {'strikethrough': this.props.isDone && !this.state.editing})}>
+        <div className={classnames(
+          'dpwd--card-title',
+          {'strikethrough': this.props.isDone && !this.state.editing}
+        )}>
+
           {this.state.editing ? this.renderForm() : this.renderHeader()}
         </div>
       </div>
