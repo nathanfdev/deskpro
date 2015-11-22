@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { SaveTaskButton } from './SaveTaskButton';
 import {
   Card,
   CardCheckbox,
@@ -21,15 +22,17 @@ export class TaskCardNew extends React.Component {
     title: PropTypes.string,
     dateDue: PropTypes.string,
     project: PropTypes.number,
-    onChangeTitle: PropTypes.func
+    onChangeTitle: PropTypes.func,
+    onSaveTask: PropTypes.func
   };
 
   render() {
-    const { title, dateDue, project, onChangeTitle } = this.props;
-    console.log(project);
+    const { title, dateDue, project } = this.props;
+    const { onChangeTitle, onSaveTask } = this.props;
 
     return (
       <Card type="task">
+        <SaveTaskButton onClick={onSaveTask} />
         <CardCheckbox />
         <CardLine>
           <CardLineLeft>

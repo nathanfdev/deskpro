@@ -25,6 +25,10 @@ export class TaskCardNewContainer extends React.Component {
     });
   };
 
+  onSaveTask = () => {
+    console.log('onSaveTask');
+  };
+
   getDateDue() {
     const { updateData } = this.props;
     const date = updateData.date_due ? updateData.date_due : moment().endOf('day');
@@ -43,9 +47,11 @@ export class TaskCardNewContainer extends React.Component {
       ...props,
 
       title: this.state.title,
-      onChangeTitle: this.onChangeTitle,
       dateDue: this.getDateDue(),
-      project: projects ? projects.first() : null
+      project: projects ? projects.first() : null,
+
+      onChangeTitle: this.onChangeTitle,
+      onSaveTask: this.onSaveTask
     });
   }
 }
