@@ -79,6 +79,17 @@ class TicketView
         return $this->ticket->getAuth();
     }
 
+    public function hasAnyVisibleProperties()
+    {
+        foreach ($this->properties as $property) {
+            if ($property->isVisible()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * Gets a ticket proprty by ID.
      *

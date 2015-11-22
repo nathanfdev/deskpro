@@ -34,10 +34,10 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
-use DeskPRO\Bundle\ApiBundle\Task\DisplayOrder;
 use DeskPRO\Bundle\AppBundle\DataService\Tasks\TasksSelectCriteria;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
@@ -126,7 +126,6 @@ class TasksController extends BaseController implements ClassResourceInterface
     public function massActionAction(Request $request)
     {
         $submitted = $request->request->all();
-
         if (empty($submitted['ids'])) {
             throw $this->createNotFoundException();
         }
@@ -159,10 +158,7 @@ class TasksController extends BaseController implements ClassResourceInterface
             $query->execute();
         }
 
-        return View::create(
-            $this->dataSerialize($task),
-            Response::HTTP_NO_CONTENT
-        );
+        return View::create($this->dataSerialize($task), Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -307,12 +303,11 @@ class TasksController extends BaseController implements ClassResourceInterface
      *
      * @Get("/tasks/{id}/subtasks", name="api_tasks_subtasks_get")
      *
-     * @param Request $request
      * @param $id
      *
      * @return View
      */
-    public function getSubtasksAction(Request $request, $id)
+    public function getSubtasksAction($id)
     {
         $task = $this->getTask($id);
         if (empty($task)) {
@@ -366,7 +361,6 @@ class TasksController extends BaseController implements ClassResourceInterface
     public function getCommentsAction(Request $request, $id)
     {
         $task = $this->getTask($id);
-
         if (empty($task)) {
             throw $this->createNotFoundException();
         }
@@ -425,7 +419,6 @@ class TasksController extends BaseController implements ClassResourceInterface
     public function getAttachmentsAction(Request $request, $id)
     {
         $task = $this->getTask($id);
-
         if (empty($task)) {
             throw $this->createNotFoundException();
         }
@@ -460,25 +453,20 @@ class TasksController extends BaseController implements ClassResourceInterface
      *
      * @Get("/tasks/{id}/linked_items", name="api_tasks_links_get")
      *
-     * @param Request $request
      * @param $id
      *
      * @return View
      */
-    public function getLinksAction(Request $request, $id)
+    public function getLinksAction($id)
     {
         $task = $this->getTask($id);
-
         if (empty($task)) {
             throw $this->createNotFoundException();
         }
 
         $links = $task->getLinkedItems();
 
-        return View::create(
-            $this->dataSerialize($links),
-            Response::HTTP_OK
-        );
+        return View::create($this->dataSerialize($links), Response::HTTP_OK);
     }
 
     /**
@@ -490,9 +478,7 @@ class TasksController extends BaseController implements ClassResourceInterface
      */
     protected function getTask($id)
     {
-        $id   = (int) $id;
-        $task = $this->getDoctrine()->getManager()->getRepository('App:Task')->find($id);
-
+        $task = $this->getDoctrine()->getManager()->getRepository('App:Task')->find((int) $id);
         if (!$task) {
             throw $this->createNotFoundException();
         }
@@ -516,35 +502,41 @@ class TasksController extends BaseController implements ClassResourceInterface
 
         $submitted = $request->request->all();
         if (!empty($submitted['display_order']) && $task->getId()) {
-            $displayOrder = new DisplayOrder();
-            $displayOrder->reposition(
-                $this->getDoctrine()->getManager(),
-                $task,
-                $submitted['display_order']
-            );
-        }
+            $old_order = $task->getDisplayOrder();
+            $new_order = $submitted['display_order'];
+            if ($old_order !== $new_order) {
+                /** @var QueryBuilder $qb */
+                $qb = $this->getDoctrine()->getManager()->createQueryBuilder();
+                $qb
+                    ->update()
+                    ->from('App:Task', 't')
+                    ->set('t.display_order', sprintf('t.display_order + %d', ($new_order > $old_order ? -1 : 1)))
+                    ->where(
+                        't.id != :task_id',
+                        't.display_order > :min_order',
+                        't.display_order <= :max_order'
+                    )
+                    ->setParameters([
+                        'task_id'   => $task->getId(),
+                        'min_order' => min($old_order, $new_order),
+                        'max_order' => max($old_order, $new_order),
+                    ]);
 
-        if (!empty($submitted['agents'])) {
-            foreach ($submitted['agents'] as &$agentId) {
-                if ($agentId === 'me') {
-                    $agentId = $this->getUser()->getId();
+                $qb->getQuery()->execute();
+
+                if ($old_order > $new_order) {
+                    ++$submitted['display_order'];
                 }
             }
         }
 
         $this->validateForm($request, $task, $submitted);
-        $this->getDoctrine()->getManager()->persist($task);
-        $this->getDoctrine()->getManager()->flush();
 
-        $location = $this->generateUrl('api_tasks_get', ['taskId' => $task->getId()]);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($task);
+        $em->flush();
 
-        return View::create(
-            $this->dataSerialize($task),
-            $status,
-            [
-                'Location' => $location,
-            ]
-        );
+        return View::create($this->dataSerialize($task), $status);
     }
 
     /**
@@ -555,8 +547,6 @@ class TasksController extends BaseController implements ClassResourceInterface
      * @param array   $submitted The submitted data
      *
      * @throws InvalidFormException If form is invalid
-     *
-     * @return bool True if valid
      */
     protected function validateForm(Request $request, Task $task, $submitted)
     {
@@ -570,11 +560,8 @@ class TasksController extends BaseController implements ClassResourceInterface
         ->getForm();
 
         $form->submit($submitted, $request->getMethod() !== 'PUT');
-
-        if ($form->isValid()) {
-            return true;
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
         }
-
-        throw new InvalidFormException($form);
     }
 }

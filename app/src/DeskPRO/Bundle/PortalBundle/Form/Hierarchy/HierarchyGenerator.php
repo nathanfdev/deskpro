@@ -199,7 +199,7 @@ class HierarchyGenerator
      * @param Person $person
      * @param Ticket $ticket
      *
-     * @return mixed|null
+     * @return Hierarchy|null
      */
     public function generateTicketDepartmentsHierarchy(Person $person, Ticket $ticket = null)
     {
@@ -252,7 +252,7 @@ class HierarchyGenerator
                     );
                 }
 
-                $hierarchy = new Hierarchy($root_nodes, new FlatListFormatter('title'));
+                $hierarchy = new Hierarchy($root_nodes, new FlatListFormatter('user_title'));
                 $hierarchy->markOnlyLeafSelections();
 
                 $recursive = function (Department $dep, HierarchyNode $parent, $depth) use (&$recursive,

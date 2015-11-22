@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { DragSource, DropTarget } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import { cardSourceSpec, cardSourceCollect, cardTargetSpec, targetCollect } from '../../TaskCardContainer';
+import { cardSourceSpec, cardSourceCollect, cardTargetSpec, targetCollect } from '../../../TaskCard/TaskCardEditContainer';
 import { TaskCard } from './TaskCard';
 import classNames from 'classnames';
 
@@ -29,16 +29,12 @@ export class TaskDragCard extends React.Component {
   }
 
   render() {
-    const { selected, onToggleSelected, task, currentSort, isOver, isDragging } = this.props;
+    const { currentSort, isOver, isDragging } = this.props;
     const { connectDragSource, connectDropTarget } = this.props;
 
     let result = connectDragSource(
       <div>
-        <TaskCard selected={selected}
-                  onToggleSelected={onToggleSelected}
-                  task={task}
-                  dragging={isDragging} />
-
+        <TaskCard dragging={isDragging} {...this.props} />
         <div className={classNames('placeholder', {'is-over': isOver})} />
       </div>
     );

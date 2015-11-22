@@ -29,17 +29,22 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Component\Hierarchy\Formatter;
+namespace DeskPRO\Bundle\AppBundle\AntiAbuse\Event;
 
-use DeskPRO\Component\Hierarchy\HierarchyNode;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
 
-class FlatListFormatter extends AbstractFormatter
+/**
+ * Fire this with the AntiAbuse service to log a file upload attempt and
+ * get recommendations about what to do if abuse is detected.
+ *
+ * NOTE: if you are checking for LOCKOUT, then a person object IS required
+ *       in otherwords, LOCKOUT functionality is only checked if the email
+ *       the user provides is actually a Person.
+ */
+class UploadAbuseCheck extends AntiAbuseEvent
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function format(HierarchyNode $node)
+    public function getType()
     {
-        return sprintf('%s', $this->getDataValue($node));
+        return AntiAbuse::ACTION_UPLOAD;
     }
 }

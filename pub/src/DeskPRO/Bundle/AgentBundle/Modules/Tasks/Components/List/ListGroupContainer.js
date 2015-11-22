@@ -7,6 +7,7 @@ import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordS
 import { agentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
 import { allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
 import { groupCollection } from 'Util/ListGroup';
+import { editTask } from '../../Actions/listActions';
 
 @connect(state => ({
   sort: currentSortSelector(state),
@@ -19,6 +20,7 @@ import { groupCollection } from 'Util/ListGroup';
 export class ListGroupContainer extends React.Component {
 
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
     sort: PropTypes.string,
     lists: PropTypes.object.isRequired,
     projects: PropTypes.object.isRequired,
@@ -29,9 +31,9 @@ export class ListGroupContainer extends React.Component {
     children: PropTypes.node.isRequired
   };
 
-  onChangeGroup = (taskId, param, value) => {
-    console.log('edit task', taskId, param, value);
-  }
+  onChangeGroup = (taskId, updateData) => {
+    this.props.dispatch(editTask(taskId, updateData));
+  };
 
   render() {
     const { sort, lists, projects, agents, agentTeams, departments } = this.props;
@@ -67,6 +69,7 @@ export class ListGroupContainer extends React.Component {
         assignee: {
           type: 'record',
           emptyGroup: 'None',
+          collection: true,
           records: [
             {
               records: departments,
@@ -90,7 +93,8 @@ export class ListGroupContainer extends React.Component {
           records: lists,
           titleField: 'title',
           refField: 'list',
-          emptyGroup: 'Tasks not in any list'
+          emptyGroup: 'Tasks not in any list',
+          sortBy: (a, b) => a.get('display_order') - b.get('display_order')
         }
       }
     };

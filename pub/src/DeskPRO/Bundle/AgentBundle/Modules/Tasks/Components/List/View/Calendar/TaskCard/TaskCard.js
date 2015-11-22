@@ -22,17 +22,19 @@ export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
     task: PropTypes.object,
-    moving: PropTypes.bool
+    moving: PropTypes.bool,
+    onChangeTitle: PropTypes.func,
+    onChangeDate: PropTypes.func
   };
 
   renderDetails() {
-    const { task } = this.props;
+    const { task, onChangeDate } = this.props;
 
     return (
       <CardLine>
         <CardLineLeft>
           <DateDue value={task.get('date_due')}
-                   onChange={this.onChangeDate} />
+                   onChange={onChangeDate} />
 
           {task.get('project') &&
             <ProjectContainer project={task.get('project')}>
@@ -53,11 +55,10 @@ export class TaskCard extends BaseTaskCard {
   }
 
   render() {
-    const { task, moving } = this.props;
+    const { task, moving, onChangeTitle } = this.props;
 
     return (
-      <Card minimized={this.isMinimized()}
-            statusBars={false}
+      <Card statusBars={false}
             type="task"
             moving={moving}
             additionalClasses="calendar-task-card">
@@ -66,18 +67,17 @@ export class TaskCard extends BaseTaskCard {
           <CardLineLeft>
             <Title value={task.get('title')}
                    isDone={task.get('is_done')}
-                   onChange={this.onTitleChange} />
+                   onChange={onChangeTitle} />
           </CardLineLeft>
           <CardLineRight>
             {task.get('is_done')
-              ? <ShowDetailsButton expanded={this.state.expanded}
-                                   onToggleExpand={this.onToggleExpand}/>
+              ? <ShowDetailsButton expanded={this.state.expanded} onToggleExpand={this.onToggleExpand}/>
               : <AssignButton task={task} />
             }
           </CardLineRight>
         </CardLine>
 
-        {!this.isMinimized() && this.renderDetails()}
+        {this.renderDetails()}
       </Card>
     );
   }

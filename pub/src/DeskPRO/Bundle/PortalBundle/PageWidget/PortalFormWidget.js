@@ -4,7 +4,7 @@ import DpxSelectBox from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/Dpx
 import DpxMultipleSelectBox from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/DpxMultipleSelectBox";
 import DpxCheckboxGroup from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/DpxCheckboxGroup";
 import DpxDateWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/DpxDateWidget";
-import DpDropzone from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/DpDropzone";
+import DpxAttach from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/DpxAttach";
 import DpxRte from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/DpxRte";
 import DpxRadio from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/DpxRadio";
 import FormSaveDraft from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/FormSaveDraft";
@@ -21,7 +21,7 @@ export default class DpInteractiveFormWidget extends PageWidget {
     this.addWidgetDef(DpxSelectBox, "select[dpx-select]");
     this.addWidgetDef(DpxMultipleSelectBox, "select[dpx-select-multiple]");
     this.addWidgetDef(DpxCheckboxGroup, ".dpx-checkbox-group");
-    this.addWidgetDef(DpDropzone, ".dpx-attachements");
+    this.addWidgetDef(DpxAttach, ".dpx-attach");
     this.addWidgetDef(DpxRte, "[data-rte]");
     this.addWidgetDef(DpxRadio, ".dpx-radio-button");
     this.addWidgetDef(FormSaveDraft, 'form[data-save-draft]');

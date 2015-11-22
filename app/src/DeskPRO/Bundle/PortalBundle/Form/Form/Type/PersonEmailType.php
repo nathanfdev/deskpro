@@ -67,8 +67,8 @@ class PersonEmailType extends AbstractType
                 );
             },
             'email_constraints' => array(
-                new NotBlank(array('message' => 'Please provide us with your email')),
-                new Email(array('message'    => 'This email adddress is not valid')),
+                new NotBlank(array('message' => 'portal.forms.error_ticket_msg_required')),
+                new Email(array('message'    => 'portal.forms.error_email_invalid')),
             ),
         ));
     }

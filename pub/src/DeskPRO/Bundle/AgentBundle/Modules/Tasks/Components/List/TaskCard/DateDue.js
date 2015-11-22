@@ -10,7 +10,7 @@ export class DateDue extends React.Component {
 
   static propTypes = {
     value: PropTypes.string,
-    onChange: PropTypes.func.isRequired
+    onChange: PropTypes.func
   };
 
   constructor(props) {
@@ -51,8 +51,7 @@ export class DateDue extends React.Component {
                   zIndex={1002}>
 
           <ClickOut onClickOut={this.onCloseCalendar}>
-            <HiddenDateTimePicker value={value}
-                                  onChange={onChange} />
+            <HiddenDateTimePicker value={value} onChange={onChange} />
           </ClickOut>
         </Detached>
       </div>

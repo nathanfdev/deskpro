@@ -44,9 +44,10 @@ class DeskproFormExtension extends AbstractTypeExtension
     {
         $resolver->setDefaults(
             array(
-                'help'          => '',
-                'force_boolean' => false,
-                'fully_hidden'  => false,
+                'help'                  => '',
+                'force_boolean'         => false,
+                'fully_hidden'          => false,
+                'post_max_size_message' => 'portal.forms.error_server_rejected_size',
             )
         );
     }

@@ -13,7 +13,7 @@ export class CardProject extends React.Component {
       <span>
         <span className="dpw--card-disc"/>
         <span className="dpwd--card-line-item">
-          <i className="fa fa-book"/> {project && project.get('title')}
+          <i className="fa fa-book"/> {project ? project.get('title') : 'N/A'}
         </span>
       </span>
     );

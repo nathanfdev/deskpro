@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { HeaderContainer } from './HeaderContainer';
-import { TaskCardContainer } from '../TaskCardContainer';
+import { TaskCardEditContainer } from '../../TaskCard/TaskCardEditContainer';
 import { TaskCard } from './TaskCard/TaskCard';
-import { TaskCardPreviewContainer } from '../TaskCardPreviewContainer';
+import { TaskCardPreviewContainer } from '../../TaskCard/TaskCardPreviewContainer';
 import { TaskCardPreview } from '../Card/TaskCard/TaskCardPreview';
 import { ListGroup } from './ListGroup';
 import { Table, CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
@@ -28,14 +28,13 @@ export class TableView extends React.Component {
 
               <ListGroup title={taskGroup.title}
                          key={index}
-                         param={taskGroup.param}
-                         value={taskGroup.value}
+                         updateData={taskGroup.updateData}
                          onChangeGroup={onChangeGroup}>
 
                 {taskGroup.elements.map(task =>
-                  <TaskCardContainer task={task} key={task.get('id')}>
+                  <TaskCardEditContainer task={task} key={task.get('id')}>
                     <TaskCard />
-                  </TaskCardContainer>
+                  </TaskCardEditContainer>
                 )}
               </ListGroup>
             )}

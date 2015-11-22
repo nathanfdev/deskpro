@@ -70,6 +70,10 @@ class CleanerExtension extends AbstractTypeExtension
     {
         $clean_data = array();
 
+        if (empty($raw_data)) {
+            return array();
+        }
+
         foreach ($raw_data as $form_name => $data) {
             // some fields, like _token, don't actually exist on form, but used by validator.
             // this data is not to worry about, as it isn't mapped into the model data.

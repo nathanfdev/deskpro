@@ -67,6 +67,29 @@ class TicketLayoutFactory
                                     ->getOneOrNullResult();
     }
 
+    public function getLayout($department = null)
+    {
+        $layout = null;
+        if ($department) {
+            $layout = $this->entity_manager->createQuery('SELECT l FROM DeskPRO:TicketLayout l WHERE l.department = :department')
+                ->setParameter('department', $department)
+                ->getOneOrNullResult();
+        }
+
+        if (!$layout) {
+            $layout = $this->getInitialLayout();
+        }
+
+        $layout = clone $layout;
+
+        return $layout;
+    }
+
+    public function getLayoutForView($department = null)
+    {
+        return $this->getLayout($department);
+    }
+
     /**
      * Used in the TicketType form type to detect the layout it should use, given the selected dept (or null for initial layout).
      *
@@ -78,16 +101,7 @@ class TicketLayoutFactory
     {
         // TODO: add a quick cahing layer here so that we only ever calc this once per department in a request
         // TODO: do what we do in the DataService's with the in memory hash map.
-        $layout = null;
-        if ($department) {
-            $layout = $this->entity_manager->createQuery('SELECT l FROM DeskPRO:TicketLayout l WHERE l.department = :department')
-                ->setParameter('department', $department)
-                ->getOneOrNullResult();
-        }
-
-        if (!$layout) {
-            $layout = $this->getInitialLayout();
-        }
+        $layout = $this->getLayout($department);
 
         // verify that the user layout has a subject, message, and user email
         $this->verifyRequiredFields($layout->getUserLayout());
@@ -119,6 +133,9 @@ class TicketLayoutFactory
                 $layout->getAgentLayout()->add($f);
             }
         }
+
+        $this->verifyRequiredFields($layout->getUserLayout());
+        $this->verifyRequiredFields($layout->getAgentLayout());
 
         $this->checkAntiAbuseCaptcha($layout->getUserLayout());
         //$this->checkAntiAbuseCaptcha($layout->getAgentLayout()); purposely not checking for agent interface

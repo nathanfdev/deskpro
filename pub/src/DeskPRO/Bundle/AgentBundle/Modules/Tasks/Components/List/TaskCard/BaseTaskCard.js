@@ -16,18 +16,6 @@ export class BaseTaskCard extends React.Component {
     };
   }
 
-  onTitleChange = value => {
-    this.setState({
-      title: value
-    });
-  };
-
-  onChangeDate = value => {
-    this.setState({
-      dateDue: value
-    });
-  };
-
   onToggleExpand = () => {
     this.setState({
       expanded: !this.state.expanded
@@ -35,6 +23,8 @@ export class BaseTaskCard extends React.Component {
   };
 
   isMinimized() {
-    return !this.state.expanded && this.props.task.get('is_done');
+    const { task } = this.props;
+
+    return !this.state.expanded && task.get('is_done');
   }
 }

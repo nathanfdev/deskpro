@@ -19,7 +19,7 @@ export class CheckboxList extends React.Component {
     if (index === -1) {
       selected.push(value);
     } else {
-      delete selected[index];
+      selected.splice(index, 1);
     }
 
     onChange(selected);

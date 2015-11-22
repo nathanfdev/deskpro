@@ -96,7 +96,7 @@ class TicketViewDataService extends AbstractDataService
 
         $view = new TicketView($ticket);
 
-        $full_layout = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->getDepartment());
+        $full_layout = $this->ticket_layout_factory->getLayoutForView($ticket->getDepartment());
         $layout      = $full_layout->getUserLayout();
 
         /** @var \Application\DeskPro\TicketLayout\LayoutField $layout_field */
@@ -116,7 +116,7 @@ class TicketViewDataService extends AbstractDataService
                     $view->addProperty(
                         $field_id,
                         $this->translate->phrase('user.tickets.fields_department'),
-                        $ticket->getDepartment(),
+                        $ticket->getDepartment()->getUserTitle(),
                         $layout_field->isVisibleOnViewAlways()
                     );
                     break;

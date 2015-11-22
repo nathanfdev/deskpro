@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { loadAllProjects } from '../../RecordStores/Actions/projectActions';
 import { loadAllTaskLabels } from '../../RecordStores/Actions/taskLabelActions';
@@ -12,6 +12,10 @@ import { isDoneSelector } from '../../Selectors/nav';
   isDone: isDoneSelector(state)
 }))
 export class NavContainer extends React.Component {
+
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired
+  };
 
   constructor(props) {
     super(props);

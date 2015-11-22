@@ -4,7 +4,7 @@ export class MarkDoneButton extends React.Component {
 
   static propTypes = {
     isDone: PropTypes.bool,
-    onToggle: PropTypes.func.isRequired
+    onToggle: PropTypes.func
   };
 
   render() {

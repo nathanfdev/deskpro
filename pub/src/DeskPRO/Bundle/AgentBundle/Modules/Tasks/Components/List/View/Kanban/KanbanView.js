@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { ListGroup } from './ListGroup';
 import { TaskDragCard } from './TaskCard/TaskDragCard';
-import { TaskCardContainer } from '../TaskCardContainer';
-import { TaskCardPreviewContainer } from '../TaskCardPreviewContainer';
+import { TaskCardEditContainer } from '../../TaskCard/TaskCardEditContainer';
+import { TaskCardPreviewContainer } from '../../TaskCard/TaskCardPreviewContainer';
 import { TaskCardPreview } from './TaskCard/TaskCardPreview';
 import { CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 
@@ -21,14 +21,13 @@ export class KanbanView extends React.Component {
         {taskGroups.map((taskGroup, index) =>
           <ListGroup title={taskGroup.title}
                      key={index}
-                     param={taskGroup.param}
-                     value={taskGroup.value}
+                     updateData={taskGroup.updateData}
                      onChangeGroup={onChangeGroup}>
 
             {taskGroup.elements.map(task =>
-              <TaskCardContainer task={task} key={task.get('id')}>
+              <TaskCardEditContainer task={task} key={task.get('id')}>
                 <TaskDragCard />
-              </TaskCardContainer>
+              </TaskCardEditContainer>
             )}
           </ListGroup>
         )}

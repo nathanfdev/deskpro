@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { DropTarget } from 'react-dnd';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import { groupTargetSpec, targetCollect } from '../TaskCardContainer';
+import { groupTargetSpec, targetCollect } from '../../TaskCard/TaskCardEditContainer';
 import classNames from 'classnames';
 
 @DropTarget(constants.TYPE_TASK, groupTargetSpec, targetCollect)
