@@ -13,17 +13,17 @@ import {
   CardProject,
   Comments
 } from '../../../TaskCard/index';
-import moment from 'moment';
 
 export class TaskCardNew extends React.Component {
 
   static propTypes = {
     title: PropTypes.string,
+    dateDue: PropTypes.string,
     onChangeTitle: PropTypes.func
   };
 
   render() {
-    const { title, onChangeTitle } = this.props;
+    const { title, dateDue, onChangeTitle } = this.props;
 
     return (
       <Card type="task">
@@ -39,7 +39,7 @@ export class TaskCardNew extends React.Component {
 
         <CardLine>
           <CardLineLeft>
-            <DateDue value={moment().endOf('day').format()} />
+            <DateDue value={dateDue} />
             <CardProject />
           </CardLineLeft>
           <CardLineRight>

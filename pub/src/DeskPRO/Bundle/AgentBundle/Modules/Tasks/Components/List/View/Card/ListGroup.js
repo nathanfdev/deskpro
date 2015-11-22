@@ -50,7 +50,7 @@ export class ListGroup extends React.Component {
   renderNewTaskForm() {
     return (
       <ClickOut onClickOut={this.onCloseNewTaskForm}>
-        <TaskCardNewContainer>
+        <TaskCardNewContainer {...this.props}>
           <TaskCardNew />
         </TaskCardNewContainer>
       </ClickOut>
