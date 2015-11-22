@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import classnames from 'classnames';
+import jQuery from 'jquery';
 
 export class Title extends React.Component {
 
@@ -18,6 +19,16 @@ export class Title extends React.Component {
       value: '',
       editing: props.editing || false
     };
+  }
+
+  componentDidMount() {
+    if (this.props.editing) {
+      jQuery(this.refs.input).focus();
+    }
+  }
+
+  componentDidUpdate() {
+    jQuery(this.refs.input).focus();
   }
 
   onEdit = () => {
@@ -60,7 +71,7 @@ export class Title extends React.Component {
       <ClickOut onClickOut={this.onCloseEdit}>
         <form className="inline-form" onSubmit={this.onCloseEdit}>
           <h1 className="ignore-react-onclickoutside">
-            <input type="text" name="title" value={this.getValue()} onChange={this.onChange} />
+            <input type="text" ref="input" name="title" value={this.getValue()} onChange={this.onChange} />
           </h1>
         </form>
       </ClickOut>
