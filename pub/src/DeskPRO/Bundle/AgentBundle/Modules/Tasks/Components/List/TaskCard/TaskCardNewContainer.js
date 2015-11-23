@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { listParamsNavSelector } from '../../../Selectors/list';
+import { addTask } from '../../../Actions/listActions';
 import moment from 'moment';
 
 @connect(state => ({
@@ -9,6 +10,7 @@ import moment from 'moment';
 export class TaskCardNewContainer extends React.Component {
 
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
     updateData: PropTypes.object,
     currentNav: PropTypes.object,
     onClose: PropTypes.func.isRequired
@@ -28,8 +30,17 @@ export class TaskCardNewContainer extends React.Component {
   };
 
   onSaveTask = () => {
-    console.log('onSaveTask');
-    this.props.onClose();
+    const { dispatch, onClose } = this.props;
+    const submitData = {
+      title: this.state.title,
+      task_type: 'task',
+      visibility: 'public',
+      urgency: 1,
+      display_order: 1
+    };
+
+    dispatch(addTask(submitData));
+    onClose();
   };
 
   getDateDue() {
