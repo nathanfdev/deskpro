@@ -107,14 +107,14 @@ export class TaskCardEditContainer extends React.Component {
 }
 
 export const cardSourceSpec = {
-  beginDrag({ task }, monitor, component) {
+  beginDrag({ task }, {}, component) {
     return {
       id: task.get('id'),
       width: jQuery(ReactDOM.findDOMNode(component)).width()
     };
   },
-  canDrag({ editing }) {
-    return !editing;
+  canDrag({ editing, updateData }) {
+    return !editing && !updateData.date_created && !updateData.date_done;
   }
 };
 

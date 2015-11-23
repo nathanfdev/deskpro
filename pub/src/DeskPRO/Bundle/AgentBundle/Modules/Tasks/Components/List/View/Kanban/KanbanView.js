@@ -25,7 +25,9 @@ export class KanbanView extends React.Component {
                      onChangeGroup={onChangeGroup}>
 
             {taskGroup.elements.map(task =>
-              <TaskCardEditContainer task={task} key={task.get('id')}>
+              <TaskCardEditContainer task={task}
+                                     key={task.get('id')}
+                                     updateData={taskGroup.updateData}>
                 <TaskDragCard />
               </TaskCardEditContainer>
             )}
