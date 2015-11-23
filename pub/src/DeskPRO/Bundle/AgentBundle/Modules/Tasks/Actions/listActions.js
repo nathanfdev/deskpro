@@ -81,9 +81,6 @@ export const applyFilters = createAction(
     }
 );
 
-export const setTaskEditing = createAction('TASKS_LIST_SET_TASK_EDITING');
-export const unsetTaskEditing = createAction('TASKS_LIST_UNSET_TASK_EDITING');
-
 export const editTask = createAction(
   'TASKS_LIST_EDIT_TASK',
   (taskId, updateData) => (dispatch, getState) => {

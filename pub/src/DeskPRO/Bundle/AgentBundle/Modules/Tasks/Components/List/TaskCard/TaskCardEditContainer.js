@@ -30,6 +30,19 @@ export class TaskCardEditContainer extends React.Component {
     children: PropTypes.node.isRequired
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      editing: false
+    };
+  }
+
+  onSetEditing = value => {
+    this.setState({
+      editing: !!value
+    });
+  };
+
   onToggleSelected = () => {
     const { dispatch, task } = this.props;
     dispatch(toggleSelected(task.get('id')));
@@ -81,12 +94,14 @@ export class TaskCardEditContainer extends React.Component {
       ...childProps,
       ...props,
 
+      editing: this.state.editing,
       selected: selected,
       onToggleSelected: this.onToggleSelected,
       onToggleDone: this.onToggleDone,
       onChangeDisplayOrder: this.onChangeDisplayOrder,
       onChangeTitle: this.onChangeTitle,
-      onChangeDate: this.onChangeDate
+      onChangeDate: this.onChangeDate,
+      onSetEditing: this.onSetEditing
     });
   }
 }
@@ -98,8 +113,8 @@ export const cardSourceSpec = {
       width: jQuery(ReactDOM.findDOMNode(component)).width()
     };
   },
-  canDrag(props, monitor) {
-    return true;
+  canDrag({ editing }) {
+    return !editing;
   }
 };
 

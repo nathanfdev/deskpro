@@ -10,6 +10,7 @@ export class Title extends React.Component {
     isDone: PropTypes.bool,
     onChange: PropTypes.func,
     onSave: PropTypes.func,
+    onSetEditing: PropTypes.func,
     editing: PropTypes.bool
   };
 
@@ -34,10 +35,13 @@ export class Title extends React.Component {
   }
 
   onEdit = () => {
+    const { value, onSetEditing } = this.props;
     this.setState({
-      value: this.props.value,
+      value: value,
       editing: true
     });
+
+    onSetEditing(true);
   };
 
   onCloseEdit = event => {
@@ -48,7 +52,7 @@ export class Title extends React.Component {
       return;
     }
 
-    const { value, onChange, onSave } = this.props;
+    const { value, onChange, onSave, onSetEditing } = this.props;
 
     // Prevent sending empty data or set default value if it exists
     if (!this.state.value) {
@@ -71,6 +75,7 @@ export class Title extends React.Component {
     });
 
     onChange(this.state.value);
+    onSetEditing(false);
 
     // Trigger save callback if we clicked on the save task button
     if (onSave && jQuery('.dpw--single-card-mark-done').has(event.target).length) {
