@@ -125,6 +125,14 @@ services:
                     name: php_ticket_checker_compiler
                     term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLanguage\TicketLanguageTerm'
 
+    term_engine.php_ticket_checker.compiler.organization:
+            class: DeskPRO\Bundle\AppBundle\TermEngine\Term\Organization\PhpOrganizationTermCompiler
+            parent: term_engine.php_ticket_checker.term_compiler
+            tags:
+                ticket_filter:
+                    name: php_ticket_checker_compiler
+                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\Organization\OrganizationTerm'
+
     term_engine.php_ticket_checker.compiler.ticket_urgency:
             class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketUrgency\PhpTicketUrgencyTermCompiler
             parent: term_engine.php_ticket_checker.term_compiler

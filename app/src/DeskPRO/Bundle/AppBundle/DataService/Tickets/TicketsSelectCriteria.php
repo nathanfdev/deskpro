@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\AppBundle\DataService\Tickets;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStar;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\Organization\OrganizationTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Person\PersonTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketFlagged\TicketFlaggedTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLabel\TicketLabelTerm;
@@ -71,7 +72,7 @@ class TicketsSelectCriteria
                     $composite->addTerm(new PersonTerm(['person_ids' => [$value]]));
                     break;
                 case 'organization':
-                    // ...
+                    $composite->addTerm(new OrganizationTerm(['organization' => $value]));
                     break;
                 case 'problem':
                     // ...

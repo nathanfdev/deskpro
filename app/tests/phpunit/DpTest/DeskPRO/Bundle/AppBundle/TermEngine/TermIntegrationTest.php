@@ -31,6 +31,7 @@
  */
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine;
 
+use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
@@ -133,6 +134,22 @@ abstract class TermIntegrationTest extends ApiTestCase
         }
 
         return $person;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return Person
+     */
+    protected function dummyOrganization($data = [])
+    {
+        $organization       = new Organization();
+        $organization->name = $this->faker->name;
+        foreach ($data as $prop => $value) {
+            $organization->$prop = $value;
+        }
+
+        return $organization;
     }
 
     /**
