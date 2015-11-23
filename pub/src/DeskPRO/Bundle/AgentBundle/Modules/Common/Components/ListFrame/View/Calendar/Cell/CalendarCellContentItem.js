@@ -54,13 +54,9 @@ export class CalendarCellContentItem extends React.Component {
         {'urgent': moment(item.get(dateField)).isBefore(moment(), 'day')}
       )}>
 
-      {React.cloneElement(draggable.source, {
-        ...sourceCardProps,
-
-        ref: 'button',
-        [elementName]: item,
-        onOpenCard: this.onOpenCard
-      })}
+        <a href="#" ref="button" onClick={this.onOpenCard}>
+          {React.cloneElement(draggable.source, {...sourceCardProps, [elementName]: item})}
+        </a>
 
         <Detached isOpen={this.state.cardOpened}
                   positionTarget={this.refs.button}

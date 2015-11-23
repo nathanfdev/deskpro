@@ -3,7 +3,6 @@ import { DragSource } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { cardSourceSpec, cardSourceCollect } from '../../../TaskCard/TaskCardEditContainer';
-import { CalendarItemButton } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Calendar/index';
 
 @DragSource(constants.TYPE_TASK, cardSourceSpec, cardSourceCollect)
 export class TaskDragCard extends React.Component {
@@ -25,7 +24,7 @@ export class TaskDragCard extends React.Component {
 
     return connectDragSource(
       <span>
-        <CalendarItemButton title={task.get('title')} {...this.props} />
+        {task.get('title')}
       </span>
     );
   }
