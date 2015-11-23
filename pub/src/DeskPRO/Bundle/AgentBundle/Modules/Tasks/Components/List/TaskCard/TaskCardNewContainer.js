@@ -45,9 +45,7 @@ export class TaskCardNewContainer extends React.Component {
 
   getDateDue() {
     const { updateData } = this.props;
-    const date = updateData.date_due ? updateData.date_due : moment().endOf('day');
-
-    return date.format();
+    return updateData.date_due ? updateData.date_due : moment().endOf('day').format();
   }
 
   getProject() {
