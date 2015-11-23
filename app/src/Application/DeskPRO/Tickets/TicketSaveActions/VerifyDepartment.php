@@ -63,9 +63,10 @@ class VerifyDepartment implements TicketSaveActionInterface
         }
 
         if (!$ticket->department) {
-            $dep = $this->ticket_deps->getDefaultDepartment();
-            $context->getLogger()->info("Setting system default department: {$dep->id} {$dep->title}");
-            $ticket->department = $dep;
+            if ($dep = $this->ticket_deps->getDefaultDepartment()) {
+                $context->getLogger()->info("Setting system default department: {$dep->id} {$dep->title}");
+                $ticket->department = $dep;
+            }
         }
 
         if ($ticket->department && $this->ticket_deps->getChildren($ticket->department)) {
