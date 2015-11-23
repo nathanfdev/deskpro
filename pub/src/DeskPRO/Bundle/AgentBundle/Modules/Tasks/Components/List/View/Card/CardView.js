@@ -5,6 +5,7 @@ import { TaskDragCard } from './TaskCard/TaskDragCard';
 import { TaskCardPreviewContainer } from '../../TaskCard/TaskCardPreviewContainer';
 import { TaskCardPreview } from './TaskCard/TaskCardPreview';
 import { CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { NewTaskButton } from './NewTaskButton';
 
 export class CardView extends React.Component {
 
@@ -34,6 +35,8 @@ export class CardView extends React.Component {
             )}
           </ListGroup>
         )}
+
+        {!filtered.length && <NewTaskButton />}
 
         <CustomCardDragLayer>
           <TaskCardPreviewContainer>
