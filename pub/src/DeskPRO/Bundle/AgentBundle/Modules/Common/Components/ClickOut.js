@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import jQuery from 'jquery';
 
 export class ClickOut extends React.Component {
@@ -21,6 +22,7 @@ export class ClickOut extends React.Component {
 
   onClick = event => {
     event.preventDefault();
+
     const { additionalNodes = [], ignoreNodes, onClickOut, onClick } = this.props;
     // skip if clicking on one of the ignored nodes
     if (ignoreNodes) {
@@ -59,8 +61,8 @@ export class ClickOut extends React.Component {
     nodes.push(this.refs.container);
     let outside = true;
     nodes.forEach(node => {
-      const $container = jQuery(node);
-      if ($container.is(event.target) || $container.has(event.target).length > 0) {
+      const domNode = ClickOut.getDomNode(node);
+      if (jQuery(domNode).is(event.target) || jQuery.contains(domNode, event.target)) {
         outside = false;
       }
     });
@@ -71,6 +73,10 @@ export class ClickOut extends React.Component {
       onClick(event);
     }
   };
+
+  static getDomNode(node) {
+    return typeof node === 'object' && !(node instanceof jQuery) && ReactDOM.findDOMNode(node) || node;
+  }
 
   render() {
     return (
