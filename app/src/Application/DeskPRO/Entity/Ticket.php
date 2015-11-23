@@ -643,6 +643,20 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @return bool true if all of the messages on the note are agent notes
+     */
+    public function hasNotesOnly()
+    {
+        foreach ($this->messages as $message) {
+            if (!$message->is_agent_note) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Enable auto ticket processing.
      *
      * @see disableAutoTicketProcess
