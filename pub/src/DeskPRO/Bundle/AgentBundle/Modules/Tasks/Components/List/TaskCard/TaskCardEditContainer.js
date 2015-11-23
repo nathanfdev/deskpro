@@ -113,7 +113,7 @@ export const cardSourceSpec = {
       width: jQuery(ReactDOM.findDOMNode(component)).width()
     };
   },
-  canDrag({ editing, updateData }) {
+  canDrag({ editing, updateData = {} }) {
     return !editing && !updateData.date_created && !updateData.date_done;
   }
 };
