@@ -81,6 +81,8 @@ class FeedbackCommentController extends BaseController
         $status = $request->get('status');
         $status_category = $request->get('status_category');
         $labels = $request->get('labels');
+        $created_from = $request->get('created_from');
+        $created_to = $request->get('created_to');
         if ($awaitingValidation) {
             $qb
                 ->andWhere('c.status IN (:validating)')
@@ -121,6 +123,16 @@ class FeedbackCommentController extends BaseController
                 ->innerJoin('feedback.labels', 'labels')
                 ->andWhere('labels.label IN (:labels)')
                 ->setParameter('labels', $labels);
+        }
+        if ($created_from) {
+            $qb
+                ->andWhere('c.date_created >= DATE(:created_from)')
+                ->setParameter('created_from', $created_from);
+        }
+        if ($created_to) {
+            $qb
+                ->andWhere('c.date_created <= DATE(:created_to)')
+                ->setParameter('created_to', $created_to);
         }
         $comments = $qb->getQuery()->getResult();
 

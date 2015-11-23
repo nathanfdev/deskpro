@@ -149,7 +149,7 @@ export class FeedbackCommentTableContainer extends Component {
           {comments.map(
             (element, index) => {
               const feedback = feedbackFromStore.get(element.feedback).toJS();
-console.log('Feedback', feedback);
+
               return (
                 <tr key={index}>
                   {tableFields.comment_id.isShown ?

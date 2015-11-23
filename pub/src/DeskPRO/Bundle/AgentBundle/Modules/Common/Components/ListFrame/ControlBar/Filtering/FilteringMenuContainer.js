@@ -52,12 +52,19 @@ export class FilteringMenuContainer extends Component {
 
   getButtonLabel() {
     const { filters = [] } = this.props;
-console.log('Filters', filters);
     let label = '(none)';
     let count = 0;
+    let value;
     filters.map(filter => {
-      const value = this.stateValue(filter.param);
-      if ((value instanceof Array && value.length) || (!value instanceof Array)) {
+      if (filter.hasOwnProperty('param')) {
+        value = this.stateValue(filter.param);
+      } else if (filter.hasOwnProperty('fromParam')) {
+        value = this.stateValue(filter.fromParam);
+        if (!value) {
+          value = this.stateValue(filter.toParam);
+        }
+      }
+      if (value && ((value instanceof Array && value.length) || !(value instanceof Array))) {
         label = filter.label;
         count++;
       }
