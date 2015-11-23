@@ -2469,6 +2469,14 @@ class PersonController extends AbstractController
         return $this->createApiResponse($ret);
     }
 
+    public function quickSearchEmailAction(Request $request)
+    {
+        /** @var \Application\DeskPRO\EntityRepository\PersonEmail $rep */
+        $rep = $this->em->getRepository('DeskPRO:PersonEmail');
+
+        return $this->createApiResponse($rep->search($request->get('query'), $request->get('limit')));
+    }
+
     /**
      * @SWG\Api(
      *  path="/people/auth-login",

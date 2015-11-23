@@ -599,6 +599,12 @@ $collection->create('api_people_quick_search', array(
     'methods'    => array('GET'),
 ));
 
+$collection->create('api_people_quick_search_email', array(
+    'path'       => '/people/quick_search_email',
+    'controller' => 'ApiBundle:Person:quickSearchEmail',
+    'methods'    => array('GET'),
+));
+
 $collection->create('api_people_post', array(
     'path'       => '/people',
     'controller' => 'ApiBundle:Person:newPerson',

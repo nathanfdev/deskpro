@@ -191,4 +191,12 @@ class PersonEmail extends AbstractEntityRepository
 
         return $results;
     }
+
+    public function search($query, $limit = 10)
+    {
+        return $this->_em->getConnection()->fetchAll(
+            sprintf('select id, email from %s where email like :email limit %d', $this->getTableName(), $limit),
+            array('email' => '%'.mb_strtolower($query).'%')
+        );
+    }
 }

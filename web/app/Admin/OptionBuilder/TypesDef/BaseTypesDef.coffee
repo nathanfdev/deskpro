@@ -93,7 +93,7 @@ define ['DeskPRO/Util/Util', 'DeskPRO/Util/Arrays'], (Util, Arrays) ->
               ajax:
                 data: (term, page) -> { query: term }
                 quietMillis: 200
-                transport: (query) -> me.Api.sendGet(options.url + '/quick_search', query.data).then query.success
+                transport: (query) -> me.Api.sendGet(options.url, query.data).then query.success
                 results: (data, page) -> { results: data.data }
 
             $.extend true, inputOptions, options.inputOptions || {}
@@ -104,27 +104,33 @@ define ['DeskPRO/Util/Util', 'DeskPRO/Util/Arrays'], (Util, Arrays) ->
               op: value.op || _.first(data.operators)
               inputOptions: inputOptions
 
-            if options.isMulti
+            if options.isMulti || value.options[prop_name]?.map?
               ret.value = []
-              value.options[prop_name]?.map? && value.options[prop_name]?.map (org) ->
-                me.Api.sendGet(options.url + '/' + org).then (res) ->
-                  return ret.value.push res.data if !options.map
-                  ret.value.push options.map res.data
+              value.options[prop_name]?.map? && value.options[prop_name]?.map (id) ->
+                if options.hardcodedSkipLoadById
+                  ret.value.push options.map id
+                else
+                  me.Api.sendGet(options.url + '/' + id).then (res) ->
+                    return ret.value.push res.data if !options.map
+                    ret.value.push options.map res.data
             else
-              value.options[prop_name] && me.Api.sendGet(options.url + '/' + value.options[prop_name]).then (res) ->
-                return res.data if !options.map
-                ret.value = options.map res.data
+              return ret if !value.options[prop_name]
+              if options.hardcodedSkipLoadById
+                ret.value = options.map value.options[prop_name]
+              else
+                me.Api.sendGet(options.url + '/' + value.options[prop_name]).then (res) ->
+                  return res.data if !options.map
+                  ret.value = options.map res.data
             ret
 
           getValue: (model = {}, data) ->
-            console.info model, data
             value = {}
             value.type = type
             value.op = model.op
             value.options = {}
 
             if model.op == 'is' || model.op == 'not'
-              if options.isMulti || model.value?[0]
+              if options.isMulti || model.value?.map?
                 value.options[prop_name] = model.value?.map (item) -> item[prop_name]
               else
                 value.options[prop_name] = model.value?[prop_name] || ''
