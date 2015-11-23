@@ -9,7 +9,6 @@ import {
 } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
 import {
   Title,
-  AssignButton,
   DateDue,
   CardProject,
   ProjectContainer,
@@ -44,7 +43,7 @@ export class TaskCardNew extends React.Component {
 
           </CardLineLeft>
           <CardLineRight>
-            <AssignButton />
+            <div />
           </CardLineRight>
         </CardLine>
 
