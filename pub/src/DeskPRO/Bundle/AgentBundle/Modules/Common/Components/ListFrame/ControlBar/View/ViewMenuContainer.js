@@ -68,9 +68,19 @@ export class ViewMenuContainer extends Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
+    onViewFieldsMenuUnmount: PropTypes.func,
     viewMode: PropTypes.string.isRequired,
     options: PropTypes.object.isRequired
   };
+
+  componentWillUnmount() {
+    const {dispatch, onViewFieldsMenuUnmount} = this.props;
+
+    if (onViewFieldsMenuUnmount) {
+      console.log('Implement me, please');
+      // dispatch(onViewFieldsMenuUnmount());
+    }
+  }
 
   render() {
     const { viewMode, options, dispatch } = this.props;

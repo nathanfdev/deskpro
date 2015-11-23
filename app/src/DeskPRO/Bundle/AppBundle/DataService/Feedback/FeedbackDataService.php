@@ -321,7 +321,6 @@ class FeedbackDataService extends AbstractDataService
             ->leftJoin('f.labels', 'labels')
             ->leftJoin('f.category', 'category')
             ->leftJoin('f.person', 'person')
-            ->leftJoin('f.language', 'language')
             ->addGroupBy('f.id');
         $criteria->applyFilters($qb);
 

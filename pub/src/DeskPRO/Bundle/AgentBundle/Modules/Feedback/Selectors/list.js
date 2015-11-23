@@ -69,6 +69,17 @@ export const feedbackSelector = createSelector(
 
 export const currentViewModeSelector = hashStateSelectorFactory(['list', 'view'], 'card');
 
+export const tableVisibleFieldsSelector = createSelector(
+  stateSelector,
+    state => state.get('tableVisibleFields')
+);
+
+export const cardVisibleFieldsSelector = createSelector(
+  stateSelector,
+    state => state.get('cardVisibleFields')
+);
+
+
 export const listFiltersSelector = createSelector(
   [navStateSelector, currentListParamsSelector, feedbackCategoriesSelector, feedbackLabelsSelector, feedbackTypesSelector],
   (navState, currentListParams, categories, labels, types) => {

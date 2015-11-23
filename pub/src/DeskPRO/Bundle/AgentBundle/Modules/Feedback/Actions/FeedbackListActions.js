@@ -213,3 +213,6 @@ export const setOrder = createAction(
   'FEEDBACK_LIST_SET_ORDER',
     order => dispatch => dispatch(applyParams({ order, delayReload: true }))
 );
+
+export const toggleTableFieldVisibility = createAction('FEEDBACK_LIST_TOGGLE_TABLE_FIELD_VISIBILITY');
+export const toggleCardFieldVisibility = createAction('FEEDBACK_LIST_TOGGLE_CARD_FIELD_VISIBILITY');
