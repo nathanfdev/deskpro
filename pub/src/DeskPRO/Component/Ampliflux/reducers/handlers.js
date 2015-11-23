@@ -117,7 +117,28 @@ export function setPayload(statePropKey, payloadPropKey = '@', defaultValue = nu
 }
 
 /**
- * Toggle presense of scalar payload in a collection.
+ * Push payload to a collection.
+ *
+ * @param {String} statePropKey The property to set on the state.
+ * @returns {Function}
+ */
+export function pushPayloadToCollection(statePropKey) {
+  return (state, payload, action) => {
+    verifyActionError(action);
+    verifyImmutable(state);
+
+    const path = statePropKey.split('.');
+    let collection = state.getIn(path);
+    verifyImmutable(collection);
+    const immutableValue = Immutable.fromJS(payload);
+    collection = collection.push(immutableValue);
+
+    return state.setIn(path, collection);
+  };
+}
+
+/**
+ * Toggle presence of scalar payload in a collection.
  *
  * @param {String} statePropKey The property to set on the state.
  * @returns {Function}

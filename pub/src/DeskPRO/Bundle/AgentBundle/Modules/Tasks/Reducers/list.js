@@ -1,5 +1,5 @@
 import { createReducer } from 'Ampliflux';
-import { setFullPayload, setValue, async, togglePayloadInCollection, handleMassAction } from 'Ampliflux/reducers/handlers';
+import { setFullPayload, setValue, async, togglePayloadInCollection, handleMassAction, pushPayloadToCollection } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/listActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
@@ -39,5 +39,8 @@ export default createReducer(initialState, {
     start: setValue('async.done', false),
     done: setValue('async.done', true)
   }),
-  [actions.editTask]: setFullPayload('elements')
+  [actions.editTask]: setFullPayload('elements'),
+  [actions.addTask]: async({
+    success: pushPayloadToCollection('elements')
+  })
 });

@@ -112,6 +112,14 @@ describe('Ampliflux actions handlers', () => {
     });
   });
 
+  describe('pushPayloadToCollection()', () => {
+    it('should add value to collection', () => {
+      const next = handlers.pushPayloadToCollection('elements')(state, {id: 6});
+      expect(next.get('elements').size).toEqual(4);
+      expect(next.get('elements').get(3).get('id')).toEqual(6);
+    });
+  });
+
   describe('togglePayloadInCollection()', () => {
     it('should add value to collection', () => {
       const next = handlers.togglePayloadInCollection('collection')(state, 'c');
