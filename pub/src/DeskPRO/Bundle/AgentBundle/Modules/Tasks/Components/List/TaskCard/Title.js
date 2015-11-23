@@ -41,7 +41,9 @@ export class Title extends React.Component {
       editing: true
     });
 
-    onSetEditing(true);
+    if (onSetEditing) {
+      onSetEditing(true);
+    }
   };
 
   onCloseEdit = event => {
@@ -75,7 +77,9 @@ export class Title extends React.Component {
     });
 
     onChange(this.state.value);
-    onSetEditing(false);
+    if (onSetEditing) {
+      onSetEditing(false);
+    }
 
     // Trigger save callback if we clicked on the save task button
     if (onSave && jQuery('.dpw--single-card-mark-done').has(event.target).length) {

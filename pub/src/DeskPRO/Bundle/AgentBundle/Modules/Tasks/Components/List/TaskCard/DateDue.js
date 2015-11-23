@@ -23,19 +23,25 @@ export class DateDue extends React.Component {
   }
 
   onOpenCalendar = () => {
+    const { onSetEditing } = this.props;
     this.setState({
       isOpen: true
     });
 
-    this.props.onSetEditing(true);
+    if (onSetEditing) {
+      onSetEditing(true);
+    }
   };
 
   onCloseCalendar = () => {
+    const { onSetEditing } = this.props;
     this.setState({
       isOpen: false
     });
 
-    this.props.onSetEditing(false);
+    if (onSetEditing) {
+      onSetEditing(false);
+    }
   };
 
   render() {
