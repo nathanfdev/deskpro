@@ -16,23 +16,10 @@ export class TaskCardNewContainer extends React.Component {
     onClose: PropTypes.func.isRequired
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      title: ''
-    };
-  }
-
-  onChangeTitle = value => {
-    this.setState({
-      title: value
-    });
-  };
-
-  onSaveTask = () => {
+  onSaveTask = title => {
     const { dispatch, onClose } = this.props;
     const submitData = {
-      title: this.state.title,
+      title: title,
       task_type: 'task',
       visibility: 'public',
       urgency: 1,
@@ -72,7 +59,6 @@ export class TaskCardNewContainer extends React.Component {
       ...childProps,
       ...props,
 
-      title: this.state.title,
       dateDue: this.getDateDue(),
       project: this.getProject(),
 

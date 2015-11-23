@@ -18,7 +18,6 @@ import {
 export class TaskCardNew extends React.Component {
 
   static propTypes = {
-    title: PropTypes.string,
     dateDue: PropTypes.string,
     project: PropTypes.number,
     onChangeTitle: PropTypes.func,
@@ -30,7 +29,7 @@ export class TaskCardNew extends React.Component {
   };
 
   render() {
-    const { title, dateDue, project } = this.props;
+    const { dateDue, project } = this.props;
     const { onSaveTask } = this.props;
 
     return (
@@ -40,9 +39,7 @@ export class TaskCardNew extends React.Component {
         <CardLine>
           <CardLineLeft>
             <div className="dpwd--card-title">
-              <TitleForm ref="form"
-                         value={title}
-                         onChange={onSaveTask} />
+              <TitleForm ref="form" onChange={onSaveTask} />
             </div>
           </CardLineLeft>
           <CardLineRight>
