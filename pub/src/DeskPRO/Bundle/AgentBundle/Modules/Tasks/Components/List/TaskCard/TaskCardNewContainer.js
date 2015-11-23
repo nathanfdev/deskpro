@@ -31,12 +31,12 @@ export class TaskCardNewContainer extends React.Component {
   };
 
   getDateDue() {
-    const { updateData } = this.props;
+    const { updateData = {} } = this.props;
     return updateData.date_due ? updateData.date_due : moment().endOf('day').format();
   }
 
   getProject() {
-    const { updateData, currentNav } = this.props;
+    const { updateData = {}, currentNav } = this.props;
     const projects = currentNav.get('project');
 
     let project = null;

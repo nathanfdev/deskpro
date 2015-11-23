@@ -15,13 +15,11 @@ export class CardView extends React.Component {
 
   render() {
     const { taskGroups = [], onChangeGroup } = this.props;
+    const filtered = taskGroups.filter(taskGroup => taskGroup.elements.length);
 
     return (
       <div>
-        {taskGroups
-          .filter(taskGroup => taskGroup.elements.length)
-          .map((taskGroup, index) =>
-
+        {filtered.map((taskGroup, index) =>
           <ListGroup title={taskGroup.title}
                      key={index}
                      updateData={taskGroup.updateData}
