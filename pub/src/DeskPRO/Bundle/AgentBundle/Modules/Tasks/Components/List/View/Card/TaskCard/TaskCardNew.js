@@ -8,7 +8,7 @@ import {
   CardLineRight
 } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
 import {
-  Title,
+  TitleForm,
   DateDue,
   CardProject,
   ProjectContainer,
@@ -21,26 +21,29 @@ export class TaskCardNew extends React.Component {
     title: PropTypes.string,
     dateDue: PropTypes.string,
     project: PropTypes.number,
-    isValid: PropTypes.bool,
     onChangeTitle: PropTypes.func,
     onSaveTask: PropTypes.func
   };
 
+  onSave = event => {
+    this.refs.form.onSubmit(event);
+  };
+
   render() {
-    const { title, dateDue, project, isValid } = this.props;
-    const { onChangeTitle, onSaveTask } = this.props;
+    const { title, dateDue, project } = this.props;
+    const { onSaveTask } = this.props;
 
     return (
       <Card type="task">
-        <SaveTaskButton onClick={onSaveTask} isValid={isValid} />
+        <SaveTaskButton onClick={this.onSave} />
         <CardCheckbox />
         <CardLine>
           <CardLineLeft>
-            <Title editing
-                   value={title}
-                   onChange={onChangeTitle}
-                   onSave={onSaveTask} />
-
+            <div className="dpwd--card-title">
+              <TitleForm ref="form"
+                         value={title}
+                         onChange={onSaveTask} />
+            </div>
           </CardLineLeft>
           <CardLineRight>
             <div />

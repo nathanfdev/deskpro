@@ -1,5 +1,6 @@
 import { BaseTaskCard } from './BaseTaskCard';
 import { Title } from './Title';
+import { TitleForm } from './TitleForm';
 import { Comments } from './Comments';
 import { DateDue } from './DateDue';
 import { SubTasks } from './SubTasks';
@@ -13,6 +14,7 @@ import { AssigneeContainer } from './AssigneeContainer';
 export default {
   BaseTaskCard,
   Title,
+  TitleForm,
   Comments,
   DateDue,
   SubTasks,

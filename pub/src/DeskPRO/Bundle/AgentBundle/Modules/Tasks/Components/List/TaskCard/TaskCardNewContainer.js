@@ -77,7 +77,6 @@ export class TaskCardNewContainer extends React.Component {
       title: this.state.title,
       dateDue: this.getDateDue(),
       project: this.getProject(),
-      isValid: !!this.state.title,
 
       onChangeTitle: this.onChangeTitle,
       onSaveTask: this.onSaveTask
