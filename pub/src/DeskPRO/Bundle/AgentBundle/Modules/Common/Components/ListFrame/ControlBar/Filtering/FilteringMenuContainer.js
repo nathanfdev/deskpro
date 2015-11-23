@@ -30,24 +30,29 @@ export class FilteringMenuContainer extends Component {
   collapse = () => this.setState({ expanded: false });
 
   stateValue(param) {
-    console.log('State Value param', param);
-    const params = param instanceof Array ? param : [param];
-    let value = [];
-    params.map(item => {
-      console.log('State Value param item', item);
-      value = this.props.state.get(item);
-      if (Immutable.Iterable.isIterable(value)) {
-        value = value.toJS();
-      }
-      console.log('State Value get', value);
-    });
-
+    if (param instanceof Array) {
+      const result = [];
+      param.map(item => {
+        let value = this.props.state.get(item);
+        if (Immutable.Iterable.isIterable(value)) {
+          value = value.toJS();
+          value.map(item1=> {
+            result.push(item1);
+          });
+        }
+      });
+      return [...new Set(result)];
+    }
+    let value = this.props.state.get(param);
+    if (Immutable.Iterable.isIterable(value)) {
+      value = value.toJS();
+    }
     return value;
   }
 
   getButtonLabel() {
     const { filters = [] } = this.props;
-
+console.log('Filters', filters);
     let label = '(none)';
     let count = 0;
     filters.map(filter => {
@@ -252,7 +257,6 @@ export class FilteringMenu extends Component {
   // Select filter -----------------------------------------------------------------------------------------------------
 
   renderSelectFilterInfo(options, filterValue) {
-    console.log('Render Select Filter Info', filterValue);
     const flatOptions = [...options];
     options.forEach(opt => {
       if (opt.nested) {
@@ -261,20 +265,13 @@ export class FilteringMenu extends Component {
     });
     const value = filterValue instanceof Array ? filterValue : [filterValue];
     const selected = [];
-    console.log('Value in filter info', value);
-    console.log('Options in filter info', options);
-    console.log('FlatOptions in filter info', flatOptions);
-    console.log('Filter Value in filter info', filterValue);
     value.forEach(val => {
-      console.log('Some val', val);
       flatOptions.forEach(opt => {
-        console.log('Some val opt', opt);
         if (opt.value === val) {
           selected.push(opt.label);
         }
       });
     });
-    console.log('Selected in filter info', selected);
     return this.renderLabelsFilterInfo(selected);
   }
 
@@ -290,10 +287,6 @@ export class FilteringMenu extends Component {
     });
     const filterValue = stateValue([...new Set(params)]) || [];
     const isActive = Boolean(filterValue.length);
-    console.log('params in select filter', [...new Set(params)]);
-    console.log('param in select filter', param);
-    console.log('Options in select filter', options);
-    console.log('Filter Value in select filter', filterValue);
 
     // onClick depending on if filter selects multiple values or a single value
     let onClick;
@@ -301,14 +294,18 @@ export class FilteringMenu extends Component {
       onClick = (value) => () => dispatch(setParamsAction({ [param]: value, delayReload: true }));
     } else {
       onClick = (value, newParam = null) => () => {
-        console.log('HERE WE GO', newParam);
-        console.log('Value', value);
-        if (filterValue.indexOf(value) === -1) {
-          filterValue.push(value);
+        let filterValues = newParam ? this.props.state.get(newParam) : this.props.state.get(param);
+        if (filterValues) {
+          filterValues = filterValues.toJS();
         } else {
-          filterValue.splice(filterValue.indexOf(value), 1);
+          filterValues = [];
         }
-        dispatch(setParamsAction({ [newParam ? newParam : param]: filterValue, delayReload: true }));
+        if (filterValues.indexOf(value) === -1) {
+          filterValues.push(value);
+        } else {
+          filterValues.splice(filterValues.indexOf(value), 1);
+        }
+        dispatch(setParamsAction({ [newParam ? newParam : param]: filterValues, delayReload: true }));
       };
     }
 
@@ -331,7 +328,6 @@ export class FilteringMenu extends Component {
         </ul>
       );
     };
-console.log('filterValue inside', filterValue);
     return (
       <FilterItem
         key={index}
