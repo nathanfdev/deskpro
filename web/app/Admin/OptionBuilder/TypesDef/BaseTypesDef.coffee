@@ -117,16 +117,17 @@ define ['DeskPRO/Util/Util', 'DeskPRO/Util/Arrays'], (Util, Arrays) ->
             ret
 
           getValue: (model = {}, data) ->
+            console.info model, data
             value = {}
             value.type = type
             value.op = model.op
             value.options = {}
 
             if model.op == 'is' || model.op == 'not'
-              if options.isMulti
-                value.options[prop_name] = model.value?.map (item) -> item.id
+              if options.isMulti || model.value?[0]
+                value.options[prop_name] = model.value?.map (item) -> item[prop_name]
               else
-                value.options[prop_name] = model.value?.id || ''
+                value.options[prop_name] = model.value?[prop_name] || ''
             else
               value.options[prop_name] = model.valueString
               value.options.info = model.valueString
