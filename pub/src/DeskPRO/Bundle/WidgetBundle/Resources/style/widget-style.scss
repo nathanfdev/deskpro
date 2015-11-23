@@ -1,0 +1,41 @@
+@import "./normalize.css";
+
+html, body {
+  background: #fff;
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+.trigger-button {
+  min-width: 100%;
+  overflow: hidden;
+  background: #0070C2;
+  border-radius: 150px;
+  color: #fff;
+  cursor: pointer;
+
+  strong {
+    display: inline-block;
+    font-weight: normal;
+    text-align: center;
+    padding: 12px 30px;
+  }
+}
+
+.widget-container {
+  width: 500px;
+  height: 500px;
+  overflow: auto;
+  background: #fff;
+  border-radius: 4px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border: 1px solid #ccc;
+  border-bottom: 0;
+  padding: 15px;
+}
+
+#react_frame_container {
+  position: relative;
+}

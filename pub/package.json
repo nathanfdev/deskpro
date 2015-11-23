@@ -93,7 +93,8 @@
     "fbjs-scripts": "^0.2.2",
     "jest-cli": "0.5.10",
     "react-addons-test-utils": "0.14.0",
-    "react-tools": "0.13.3"
+    "react-tools": "0.13.3",
+    "uglify-js": "^2.6.1"
   },
   "scripts": {
     "test": "jest",
