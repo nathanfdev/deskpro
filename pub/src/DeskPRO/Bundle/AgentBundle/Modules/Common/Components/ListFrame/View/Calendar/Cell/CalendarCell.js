@@ -40,7 +40,7 @@ export class CalendarCell extends React.Component {
         {React.cloneElement(draggable.target, {
           ...targetProps,
 
-          updateData: {[dateField]: dayDate},
+          updateData: {[dateField]: dayDate.format()},
           children: draggableChildren
         })}
       </td>
