@@ -45,6 +45,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class PortalController extends AbstractController
 {
@@ -299,6 +300,15 @@ class PortalController extends AbstractController
             'blob'    => [
                 'id'       => $blob->getId(),
                 'authcode' => $blob->getAuthcode(),
+                'size'     => $blob->getReadableFilesize(),
+                'url'      => $this->generateUrl(
+                    'serve_blob',
+                    [
+                        'blob_auth_id' => $blob->getAuthcode(),
+                        'filename'     => $blob->getFilenameSafe(),
+                    ],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                ),
             ],
         ]);
     }
