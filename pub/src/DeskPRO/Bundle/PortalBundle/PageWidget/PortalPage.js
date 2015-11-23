@@ -11,6 +11,7 @@ import OmniSearchWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/OmniSearchW
 import LanguageChangerWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/LanguageChangerWidget";
 import AgentBarWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/AgentBarWidget";
 import LoginDropdownWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/LoginDropdownWidget";
+import MobileMenuWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/MobileMenuWidget";
 import ArticleHighlighter from "DeskPRO/Bundle/PortalBundle/PageWidget/ArticleHighlighter";
 import CustomPerFieldEdit from "DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/CustomPerFieldEdit";
 import $ from "jquery";
@@ -32,6 +33,7 @@ export default class PortalPage extends PageWidget {
     this.addWidgetDef(AgentBarWidget, "#agent-bar");
     this.addWidgetDef(PortalFormWidget, ".dpx-form");
     this.addWidgetDef(ArticleHighlighter, ".dpx-kb-article-content");
+    this.addWidgetDef(MobileMenuWidget, ".dpx-toggle-big-buttons");
     return new Promise((resolve) => {
       $(document).ready(resolve);
       if (window.DP_LOAD_FN && window.DP_LOAD_FN.length) {

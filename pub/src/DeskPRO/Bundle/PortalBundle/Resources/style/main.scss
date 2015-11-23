@@ -2563,6 +2563,8 @@ header {
   width: 100%;
   background: #383838;
   font-size: $font-mid;
+
+
   ul {
     @include blank-list;
 
@@ -7030,6 +7032,23 @@ ul.big-button-collection {
   padding: 0;
   list-style: none;
   margin: 50px 0;
+  display: block;
+
+  @media screen and (max-width: 760px) {
+    position: fixed;
+    display: none; // JS toggles this
+    top: 0px;
+    left: 0px;
+    background: #fff;
+    width: 70%;
+    max-width: 320px;
+    height: 100%;
+    z-index: 1199;
+    padding: 0px;
+    margin: 0px;
+    padding: 10px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+  }
 
   &.left {
     text-align: left;
@@ -7041,7 +7060,6 @@ ul.big-button-collection {
   }
 
   .big-button-collection-contract-mobile {
-    display: block;// initial
     text-align: left;
     margin-bottom: 10px;
     display: none;
@@ -7105,21 +7123,6 @@ ul.big-button-collection {
     color: #b2b2b2;
     font-size: 0.85em;
     font-weight: 300;
-  }
-
-  &.fixed {
-    position: fixed;
-    top: 0px;
-    left: 0px;
-    background: #fff;
-    width: 70%;
-    max-width: 320px;
-    height: 100%;
-    z-index: 1199;
-    padding: 0px;
-    margin: 0px;
-    padding: 10px;
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
   }
 
   &.small {
@@ -7477,10 +7480,19 @@ ul.big-button-collection {
   line-height: 1em;
   z-index: 9999;
   border-bottom: 3px solid #3d77b6;
+
+  // no agent bar in mobile view
+  @media screen and (max-width: 760px) {
+    display: none;
+  }
 }
 
 body.with-agent-bar {
   margin-top: 43px;
+  // no agent bar in mobile view
+  @media screen and (max-width: 760px) {
+    margin-top: 0px;
+  }
 }
 
 .deskpro-agent-top-bar {
