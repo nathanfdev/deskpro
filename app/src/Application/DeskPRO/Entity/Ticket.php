@@ -2142,6 +2142,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         }
     }
 
+    public function getProblemIds()
+    {
+        $ids = [];
+        foreach ($this->problems as $problem) {
+            $ids[] = $problem->getId();
+        }
+
+        return $ids;
+    }
+
     public function getPriorityId()
     {
         if (!$this->priority) {

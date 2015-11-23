@@ -36,6 +36,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Organization\OrganizationTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Person\PersonTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\Problem\ProblemTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketFlagged\TicketFlaggedTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLabel\TicketLabelTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus\TicketStatusTerm;
@@ -75,7 +76,7 @@ class TicketsSelectCriteria
                     $composite->addTerm(new OrganizationTerm(['organization' => $value]));
                     break;
                 case 'problem':
-                    // ...
+                    $composite->addTerm(new ProblemTerm(['problem' => $value]));
                     break;
                 default:
                     throw new \Exception("Unknown ticket filtering option $param");

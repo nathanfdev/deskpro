@@ -133,6 +133,14 @@ services:
                     name: php_ticket_checker_compiler
                     term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\Organization\OrganizationTerm'
 
+    term_engine.php_ticket_checker.compiler.problem:
+            class: DeskPRO\Bundle\AppBundle\TermEngine\Term\Problem\PhpProblemTermCompiler
+            parent: term_engine.php_ticket_checker.term_compiler
+            tags:
+                ticket_filter:
+                    name: php_ticket_checker_compiler
+                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\Problem\ProblemTerm'
+
     term_engine.php_ticket_checker.compiler.ticket_urgency:
             class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketUrgency\PhpTicketUrgencyTermCompiler
             parent: term_engine.php_ticket_checker.term_compiler

@@ -33,12 +33,14 @@ namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine;
 
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Problem;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalTermEngine;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use DeskPRO\Bundle\AppBundle\TermEngine\Log\TermEngineBufferHandler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use DpTest\ApiTestCase;
 use Faker\Factory;
@@ -114,6 +116,10 @@ abstract class TermIntegrationTest extends ApiTestCase
         $ticket          = new Ticket();
         $ticket->subject = $this->faker->text();
         foreach ($data as $prop => $value) {
+            if ($prop === 'problems' && !$value instanceof ArrayCollection) {
+                $value = new ArrayCollection($value);
+            }
+
             $ticket->$prop = $value;
         }
 
@@ -150,6 +156,22 @@ abstract class TermIntegrationTest extends ApiTestCase
         }
 
         return $organization;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return Problem
+     */
+    protected function dummyProblem($data = [])
+    {
+        $problem        = new Problem();
+        $problem->title = $this->faker->name;
+        foreach ($data as $prop => $value) {
+            $problem->$prop = $value;
+        }
+
+        return $problem;
     }
 
     /**

@@ -128,6 +128,14 @@ services:
                     name: dbal_ticket_filter_compiler
                     term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\Organization\OrganizationTerm'
 
+    term_engine.dbal_ticket_filters.compiler.problem:
+            class: DeskPRO\Bundle\AppBundle\TermEngine\Term\Problem\DbalProblemTermCompiler
+            parent: term_engine.dbal_ticket_filters.term_compiler
+            tags:
+                ticket_filter:
+                    name: dbal_ticket_filter_compiler
+                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\Problem\ProblemTerm'
+
     term_engine.dbal_ticket_filters.compiler.ticket_custom_data:
             class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomData\DbalTicketCustomDataTermCompiler
             parent: term_engine.dbal_ticket_filters.term_compiler
