@@ -182,16 +182,9 @@ class TicketStarsController extends BaseController
      *
      * @Get("/ticket_stars/{star}/tickets", name="api_ticket_flag_tickets")
      */
-    public function getTicketFlagTickets($star)
+    public function getTicketsAction($star)
     {
-        /** @var \DeskPRO\Bundle\AppBundle\Model\TicketFlags $service */
-        $service = $this->get('data.ticketflags');
-        $tickets = $service->getAllTicketsForFlag($this->getUser()->getId(), $star);
-
-        return View::create(
-            $this->dataSerialize($tickets),
-            Response::HTTP_OK
-        );
+        return TicketsController::subRequestSearch($this->get('kernel'), ['star' => $star]);
     }
 
     /**
