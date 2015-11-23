@@ -133,7 +133,8 @@ export class ProjectForm extends BaseForm {
                 <div part="title">
                   Agent <a href="#" onClick={this.onAssignSelf}>Assign to me</a>
                 </div>
-                <AgentsList values={agents}
+                <AgentsList multiple
+                            values={agents}
                             selected={this.state.agents}
                             showOnlySelected={this.state.showOnlySelected}
                             filter={this.state.quickFilter}
@@ -141,7 +142,8 @@ export class ProjectForm extends BaseForm {
               </CollectionField>
 
               <CollectionField title="Team">
-                <AgentTeamsList values={agentTeams}
+                <AgentTeamsList multiple
+                                values={agentTeams}
                                 selected={this.state.agentTeams}
                                 showOnlySelected={this.state.showOnlySelected}
                                 filter={this.state.quickFilter}
@@ -149,7 +151,8 @@ export class ProjectForm extends BaseForm {
               </CollectionField>
 
               <CollectionField title="Department">
-                <DepartmentsList values={departments}
+                <DepartmentsList multiple
+                                 values={departments}
                                  selected={this.state.departments}
                                  showOnlySelected={this.state.showOnlySelected}
                                  filter={this.state.quickFilter}
