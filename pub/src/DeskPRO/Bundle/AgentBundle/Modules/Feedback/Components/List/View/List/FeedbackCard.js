@@ -4,7 +4,6 @@ import { Card, CardLine, CardLineLeft, CardLineRight, CardLineFull, CardContentT
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
 import jQuery from 'jquery';
 import Immutable from 'immutable';
-import { defaultCardFields} from '../../../List/ControlBar/FeedbackViewOptions';
 
 @injectIntl
 export class FeedbackCard extends Component {
@@ -24,7 +23,7 @@ export class FeedbackCard extends Component {
   };
 
   renderLabels(labels) {
-    if (labels) {
+    if (labels.length && this.props.viewFields.includes('labels')) {
       return (
         <CardLineItem>
           <CardDisc/>
@@ -73,15 +72,14 @@ export class FeedbackCard extends Component {
 
   renderOptionalFields() {
     const { feedback, viewFields } = this.props;
-    const optionalFields = (viewFields && viewFields.card) ? viewFields.card : defaultCardFields;
     let output = [];
-    if (optionalFields.id.isShown) {
+    if (viewFields.includes('id')) {
       output = output.concat(this.renderId(feedback.id));
     }
-    if (optionalFields.date_created.isShown) {
+    if (viewFields.includes('date_created')) {
       output = output.concat(this.renderDate(feedback.date_created));
     }
-    if (optionalFields.custom_category.isShown) {
+    if (viewFields.includes('custom_category')) {
       output = output.concat(this.renderCategory());
     }
     return (
@@ -97,7 +95,7 @@ export class FeedbackCard extends Component {
     const { feedback, author, selected, toggleSelected, feedbackLabels, feedbackComments } = this.props;
     const type = this.props.type || Immutable.fromJS({});
     const labels = feedbackLabels ? feedbackLabels : [];
-    const comments = feedbackComments ? parseInt(feedbackComments.get('counter')) : 0;
+    const comments = feedbackComments ? parseInt(feedbackComments.get('counter'), 10) : 0;
     const containerWidth = jQuery('.dp-list-frame-contents').innerWidth();
     const feedbackMarkWidth = jQuery('.dpw--feedback-card-mark').innerWidth();
     const cardWidth = containerWidth - feedbackMarkWidth - 20;

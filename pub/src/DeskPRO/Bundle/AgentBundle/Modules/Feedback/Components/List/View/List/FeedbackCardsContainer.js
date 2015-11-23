@@ -7,7 +7,7 @@ import { peopleSelector, feedbackTypesSelector, feedbackCommentsSelector, feedba
 @connect(state => {
   return ({
     feedback: state.Feedback.list.get('elements'),
-    viewFields: state.Feedback.list.get('viewFields'),
+    viewFields: state.Feedback.list.get('cardVisibleFields'),
     selected: state.Feedback.list.get('selected'),
     people: peopleSelector(state),
     feedbackTypes: feedbackTypesSelector(state),

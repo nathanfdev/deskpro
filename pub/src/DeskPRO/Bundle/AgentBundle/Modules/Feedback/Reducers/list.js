@@ -17,8 +17,8 @@ const initialState = {
   async: {
     done: true
   },
-  tableVisibleFields: ['id', 'urgency', 'person', 'agent', 'subject', 'status'],
-  cardVisibleFields: ['id', 'urgency', 'person', 'agent', 'subject', 'status', 'date_created', 'labels'],
+  tableVisibleFields: ['id', 'title', 'person', 'status'],
+  cardVisibleFields: ['id', 'title', 'person', 'status', 'date_created', 'labels'],
   commentsTableViewFields: [ // temporary, must be removed later
     { name: 'id', label: 'ID', className: 'id-col', status: constants.FIELD_SHOWN, priority: 1 },
     { name: 'status', label: 'Status', status: constants.FIELD_SHOWN, priority: 2 },

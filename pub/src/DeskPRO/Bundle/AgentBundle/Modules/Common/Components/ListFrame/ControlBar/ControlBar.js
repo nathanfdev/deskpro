@@ -61,7 +61,8 @@ export class ControlBar extends Component {
         toggleFieldVisibility: PropTypes.func.isRequired
       })).isRequired,
       viewMode: PropTypes.string.isRequired,
-      viewModeAction: PropTypes.func.isRequired
+      viewModeAction: PropTypes.func.isRequired,
+      onViewFieldsMenuUnmount: PropTypes.func.isRequired
     })
   };
 
@@ -79,7 +80,7 @@ export class ControlBar extends Component {
         <li>
           <hr/>
         </li>
-        <ViewMenuContainer {...view} />
+        <ViewMenuContainer {...view} onViewFieldsMenuUnmount={view.onViewFieldsMenuUnmount}/>
       </ListFrameMenu>
     );
   }
