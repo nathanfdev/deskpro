@@ -32,7 +32,9 @@
 namespace DeskPRO\Bundle\AppBundle\DataService\Tickets;
 
 use DeskPRO\Bundle\AppBundle\Entity\TicketStar;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\Person\PersonTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketFlagged\TicketFlaggedTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLabel\TicketLabelTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus\TicketStatusTerm;
@@ -61,6 +63,18 @@ class TicketsSelectCriteria
                     break;
                 case 'status':
                     $composite->addTerm(new TicketStatusTerm(['status' => $value]));
+                    break;
+                case 'agent':
+                    $composite->addTerm(new AgentTerm(['agent_ids' => [$value]]));
+                    break;
+                case 'person':
+                    $composite->addTerm(new PersonTerm(['person_ids' => [$value]]));
+                    break;
+                case 'organization':
+                    // ...
+                    break;
+                case 'problem':
+                    // ...
                     break;
                 default:
                     throw new \Exception("Unknown ticket filtering option $param");

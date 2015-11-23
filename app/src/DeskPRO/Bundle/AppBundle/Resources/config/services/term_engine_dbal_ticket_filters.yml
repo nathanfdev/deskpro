@@ -4,6 +4,11 @@ services:
     # ENGINE
     #
 
+    term_engine.dbal.engine:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalTermEngine
+        arguments:
+            - @term_engine.dbal_ticket_filters.engine
+
     term_engine.dbal_ticket_filters.engine:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngine
         arguments:
@@ -66,6 +71,14 @@ services:
                 ticket_filter:
                     name: dbal_ticket_filter_compiler
                     term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\AgentTerm'
+
+    term_engine.dbal_ticket_filters.compiler.person:
+            class: DeskPRO\Bundle\AppBundle\TermEngine\Term\Person\DbalPersonTermCompiler
+            parent: term_engine.dbal_ticket_filters.term_compiler
+            tags:
+                ticket_filter:
+                    name: dbal_ticket_filter_compiler
+                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\Person\PersonTerm'
 
     term_engine.dbal_ticket_filters.compiler.department:
             class: DeskPRO\Bundle\AppBundle\TermEngine\Term\Department\DbalDepartmentTermCompiler
