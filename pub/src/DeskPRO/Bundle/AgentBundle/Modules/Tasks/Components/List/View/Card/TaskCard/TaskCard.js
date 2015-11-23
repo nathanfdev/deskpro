@@ -34,13 +34,14 @@ export class TaskCard extends BaseTaskCard {
   };
 
   renderDetails() {
-    const { task, onChangeDate } = this.props;
+    const { task, onChangeDate, onSetEditing } = this.props;
 
     return (
       <CardLine>
         <CardLineLeft>
           <DateDue value={task.get('date_due')}
-                   onChange={onChangeDate} />
+                   onChange={onChangeDate}
+                   onSetEditing={onSetEditing} />
 
           {task.get('project') &&
             <ProjectContainer project={task.get('project')}>

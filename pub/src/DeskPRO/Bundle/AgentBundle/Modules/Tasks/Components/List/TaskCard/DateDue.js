@@ -10,7 +10,8 @@ export class DateDue extends React.Component {
 
   static propTypes = {
     value: PropTypes.string,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
+    onSetEditing: PropTypes.func
   };
 
   constructor(props) {
@@ -25,12 +26,16 @@ export class DateDue extends React.Component {
     this.setState({
       isOpen: true
     });
+
+    this.props.onSetEditing(true);
   };
 
   onCloseCalendar = () => {
     this.setState({
       isOpen: false
     });
+
+    this.props.onSetEditing(false);
   };
 
   render() {
@@ -47,7 +52,7 @@ export class DateDue extends React.Component {
         </span>
         <Detached isOpen={this.state.isOpen}
                   positionTarget={this}
-                  positionAt="center botton"
+                  positionAt="left bottom"
                   zIndex={1002}>
 
           <ClickOut onClickOut={this.onCloseCalendar}>
