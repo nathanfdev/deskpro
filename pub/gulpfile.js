@@ -78,6 +78,21 @@ gulp.task('priv:start-prod', function () {
 
 gulp.task('bundle', function (callback) {
   reducerRefresh("Agent", path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle"));
+
+  reducerRefresh("Widget", path.join(__dirname, "src/DeskPRO/Bundle/WidgetBundle"));
+
+  (function() {
+    console.log("Writing widget_loader");
+    var loaderCode = babel.transformFileSync(path.join(__dirname, "src/DeskPRO/Bundle/WidgetBundle") + "/widget_loader.js", {"stage": "0"}).code;
+    var loaderCodemin = uglify.minify(loaderCode, {
+      "fromString": true
+    }).code;
+
+    fs.writeFileSync(path.join(__dirname, "build") + "/widget_loader.js", loaderCode);
+    fs.writeFileSync(path.join(__dirname, "build") + "/widget_loader.min.js", loaderCodemin);
+    console.log(".. done writing widget_loader");
+  })();
+
   runWebpackBundle(getWebpackConfig('all', deskpro.isProd), callback);
 });
 
