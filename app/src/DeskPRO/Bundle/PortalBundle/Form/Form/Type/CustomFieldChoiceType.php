@@ -78,6 +78,7 @@ class CustomFieldChoiceType extends AbstractType
             'choice_list' => function (Options $options) use ($hierarchy_generator) {
                     return $hierarchy_generator->generateForCustomFormField($options['custom_field'])->getChoiceList();
                 },
+            'placeholder' => '',
         ));
 
         $resolver->setRequired(array(

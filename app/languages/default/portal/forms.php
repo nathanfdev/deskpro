@@ -47,7 +47,6 @@ return array(
     'portal.forms.label_priority'         => 'Priority',
     'portal.forms.label_workflow'         => 'Workflow',
     'portal.forms.label_cc'               => 'CCs',
-    'portal.forms.placeholder_select'     => 'Select...',
 
     'portal.forms.error_ticket_department_required' => 'A department is required',
     'portal.forms.error_ticket_subject_required'    => 'A ticket subject is required',

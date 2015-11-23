@@ -144,9 +144,9 @@ export default class PortalSimpleSelectBox extends React.Component {
         <div className={className} onClick={this.onClickHeader} tabIndex="0" role="combobox" ref="defaultRow">
           <span>{this.props.multiple ? (
               this.state.value.map((opt) => {
-                return opt.title
+                return opt.title || (<span>&nbsp;</span>)
               }).join(', ')
-          ) : this.state.value.title}</span>
+          ) : this.state.value.title || (<span>&nbsp;</span>)}</span>
           <i className="fa fa-caret-down" />
         </div>
       );
@@ -156,10 +156,37 @@ export default class PortalSimpleSelectBox extends React.Component {
           <div className="filter-box">
             <input type="text" placeholder="Select..." ref="filterInput" onKeyDown={this.filterNav} onKeyUp={this.filterChange} />
           </div>
-          <i className="fa fa-caret-down" />
+          <i className="fa fa-times" onClick={this.selectNullOption.bind(this)} />
         </div>
       );
     }
+  }
+
+  selectNullOption() {
+    if (this.props.multiple) {
+      // multiple, clear selected and close the expanded view
+      this.setState({
+        value: [],
+        expanded: false
+      });
+      this.props.onChange([]);
+    } else {
+      // singular, select the null option
+      const null_option = this.getFirstNullOption();
+      if (null_option) {
+        this.onClickOption(null_option, true);
+      }
+    }
+  }
+
+  isNullOption(option) {
+    return !option.id || option.title === '';
+  }
+
+  getFirstNullOption() {
+    return _.find(this.state.visibleOptions, (option) => {
+      return this.isNullOption(option);
+    });
   }
 
   renderDropdownList() {
@@ -169,9 +196,11 @@ export default class PortalSimpleSelectBox extends React.Component {
 
     const options = this.state.visibleOptions;
 
+
     return (
       <ul onClick={this.dropdownClickHandler.bind(this)}>
         {options.map((option) => {
+          if (this.isNullOption(option)) return null;
           return (
             <SelectOption onClickOption={this.onClickOption.bind(this)}
                           disabled={option.children && option.children.length > 0}
@@ -307,7 +336,9 @@ export default class PortalSimpleSelectBox extends React.Component {
   }
 
   onClickHeader = (ev) => {
-    this.toggleExpanded();
+    if (!this.state.expanded) {
+      this.toggleExpanded();
+    }
     this.dropdownClickHandler(ev);
   }
 

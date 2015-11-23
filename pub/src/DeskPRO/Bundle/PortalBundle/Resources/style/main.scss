@@ -8180,6 +8180,11 @@ table .form-help {
     &.expanded {
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
+      &:hover {
+        color: $button-text;
+        border: 1px solid $form-border-color;
+        background: #ffffff;
+      }
     }
 
     &:focus {
@@ -8191,6 +8196,19 @@ table .form-help {
       position: absolute;
       top: 11px;
       right: 15px;
+    }
+
+    i[class^='fa-times'], i[class*=' fa-times'] {
+      padding: 10px;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      right: 0;
+      &:hover {
+        background: $main-color-light;
+        color: #444;
+      }
+      z-index: 99;
     }
   }
 
