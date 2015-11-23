@@ -65,7 +65,7 @@ export class CalendarCellContent extends React.Component {
 
         <Detached isOpen={this.state.dropdownOpened}
                   positionTarget={this.refs.button}
-                  positionAt="left bottom+5">
+                  positionAt="left bottom+10">
 
           <ClickOut onClickOut={this.onCloseAdditionalDropdown}
                     additionalNodes={['.calendar-task-card', '.assign-form']}>

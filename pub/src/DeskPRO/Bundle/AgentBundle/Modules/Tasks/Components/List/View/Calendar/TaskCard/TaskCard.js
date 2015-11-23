@@ -11,7 +11,6 @@ import {
   DateDue,
   SubTasks,
   Comments,
-  ShowDetailsButton,
   AssignButton,
   TicketLinkContainer,
   ProjectContainer,
