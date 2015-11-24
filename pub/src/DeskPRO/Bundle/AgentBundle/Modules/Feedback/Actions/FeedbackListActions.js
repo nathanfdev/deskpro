@@ -4,7 +4,7 @@ import * as PersonSetting from 'DeskPRO/Bundle/AgentBundle/Services/Api/PersonSe
 import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 import { loadFeedbackCommentsCounter } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCommentsActions';
 import { loadFeedbackCategories } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCategoriesActions';
-import { currentListParamsSelector } from '../Selectors/list';
+import { currentListParamsSelector, currentViewFieldsParamsSelector } from '../Selectors/list';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import { setFeedbackRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackActions';
@@ -17,6 +17,11 @@ import { setFeedbackStatusCategoriesRequest } from 'DeskPRO/Bundle/AgentBundle/M
  * @type {string}
  */
 const recordStoresId = 'feedback';
+
+export const setDisplayFields = createAction(
+  'FEEDBACK_SET_DISPLAY_FIELDS',
+    payload => payload
+);
 
 export const initialLoad = createAction(
   'FEEDBACK_NAV_INITIAL_LOAD',
@@ -32,12 +37,33 @@ export const initialLoad = createAction(
           + '&get[closed]=DP_API/feedback/counts?status%3Dclosed%26group_by%3Dstatus_category'
           + '&get[hidden]=DP_API/feedback/counts?status%3Dhidden%26group_by%3Dhidden_status'
           + '&get[commentsToReviewCount]=DP_API/feedback_comments/counts?awaiting_validation%3D1'
+          + '&get[viewFields]=DP_API/person_setting/feedback_display_fields'
         ;
       DpApi.sendGet(batch).success(({responses}) => {
         const payload = flattenBatchResponses(responses);
         payload.customCategories = payload.customCategories.nested;
         payload.statuses = { new: payload.new, active: payload.active, closed: payload.closed, hidden: payload.hidden };
+        if (payload.viewFields && payload.viewFields.hasOwnProperty('value')) {
+          dispatch(setDisplayFields({
+            cardVisibleFields: payload.viewFields.value.cardVisibleFields,
+            tableVisibleFields: payload.viewFields.value.tableVisibleFields,
+            viewFieldsSettingsFromDb: true
+          }));
+        } else {
+          const defaultCardViewFields = ['id', 'title', 'person', 'status', 'date_created', 'labels'];
+          const defaultTableViewFields = ['id', 'title', 'person', 'status', 'date_created', 'labels'];
+          dispatch(setDisplayFields({
+            cardVisibleFields: defaultCardViewFields,
+            tableVisibleFields: defaultTableViewFields,
+            viewFieldsSettingsFromDb: false
+          }));
+        }
         dispatch(setFeedbackTypesRequest(recordStoresId, payload.types));
+        delete payload.new;
+        delete payload.active;
+        delete payload.closed;
+        delete payload.hidden;
+        delete payload.viewFields;
         resolve(payload);
       });
     }
@@ -166,28 +192,31 @@ export const toggleViewMode = createAction(
 
 export const getDisplayFieldsFromPersonSetting = createAction(
   'FEEDBACK_GET_DISPLAY_FIELD_FROM_PERSON_SETTING',
-  () => PersonSetting.get('feedback_display_fields').then(value => value.getData()));
+  () => PersonSetting.get('feedback_display_fields').then(value => value.getData())
+);
+
+export const setViewFieldsSettingStoredFlag = createAction(
+  'FEEDBACK_SET_VIEW_FIELDS_SETTING_STORED_FLAG',
+    payload => payload
+);
 
 export const storeDisplayFieldsToPersonSetting = createAction(
   'FEEDBACK_STORE_DISPLAY_FIELD_TO_PERSON_SETTING',
-  (displayFields) => (dispatch) =>
-    PersonSetting
-      .post('feedback_display_fields', displayFields)
-      .then(value => {
-        dispatch(getDisplayFieldsFromPersonSetting());
-        return value.getData();
-      })
+  () => (dispatch, getState) => {
+    const displayFields = currentViewFieldsParamsSelector(getState());
+    PersonSetting.post('feedback_display_fields', displayFields);
+    dispatch(setViewFieldsSettingStoredFlag(true));
+    return displayFields;
+  }
 );
 
 export const updateDisplayFieldsToPersonSetting = createAction(
   'FEEDBACK_UPDATE_DISPLAY_FIELD_TO_PERSON_SETTING',
-  (displayFields) => (dispatch) =>
-    PersonSetting
-      .put('feedback_display_fields', displayFields)
-      .then(value => {
-        dispatch(getDisplayFieldsFromPersonSetting());
-        return value.getData();
-      })
+  () => (dispatch, getState) => {
+    const displayFields = currentViewFieldsParamsSelector(getState());
+    PersonSetting.put('feedback_display_fields', displayFields);
+    return displayFields;
+  }
 );
 
 export const toggleMassAction = createAction('FEEDBACK_TOGGLE_MASS_ACTION');

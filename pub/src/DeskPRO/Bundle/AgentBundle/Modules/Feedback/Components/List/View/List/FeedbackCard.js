@@ -99,6 +99,7 @@ export class FeedbackCard extends Component {
     const containerWidth = jQuery('.dp-list-frame-contents').innerWidth();
     const feedbackMarkWidth = jQuery('.dpw--feedback-card-mark').innerWidth();
     const cardWidth = containerWidth - feedbackMarkWidth - 20;
+
     return (
       <Card type="feedback" width={cardWidth}>
 

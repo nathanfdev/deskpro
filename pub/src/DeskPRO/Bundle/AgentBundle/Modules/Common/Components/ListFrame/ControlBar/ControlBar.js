@@ -8,7 +8,7 @@ import { ListFrameMenu } from '../../ListFrameMenu';
 export class ControlBar extends Component {
 
   static propTypes = {
-    onMenuUnmount: PropTypes.shape({ onMenuUnmount: PropTypes.func }),
+    onMenuUnmount: PropTypes.func,
     checkbox: PropTypes.shape({
       count: PropTypes.number.isRequired,
       action: PropTypes.func.isRequired

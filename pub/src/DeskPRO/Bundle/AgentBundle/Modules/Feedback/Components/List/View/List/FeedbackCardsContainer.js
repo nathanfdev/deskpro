@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import Immutable from 'immutable';
 import { FeedbackCard } from './FeedbackCard';
 import { connect } from 'react-redux';
 import { peopleSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackCategoriesSelector, feedbackStatusCategoriesSelector }

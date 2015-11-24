@@ -76,7 +76,8 @@ export class FeedbackTableContainer extends Component {
   }
 
   isVisible(field) {
-    return this.props.viewFields.includes(field);
+    const {viewFields} = this.props;
+    return viewFields.includes(field);
   }
 
   render() {
@@ -137,27 +138,27 @@ export class FeedbackTableContainer extends Component {
               <Td visible={this.isVisible('status_category')}>
                 {this.renderStatus(element.status_category)}
               </Td>
-                <Td visible={this.isVisible('hidden_status')}>
-                  {element.hidden_status}
-                </Td>
-                <Td visible={this.isVisible('person')}>
-                  <PersonInTable person={people.get(element.person)}/>
-                </Td>
-                <Td visible={this.isVisible('type')}>
-                  {feedbackTypes.get(element.category_id).get('title')}
-                </Td>
-                <Td visible={this.isVisible('custom_category')}>
-                  {this.renderCategory(element.id)}
-                </Td>
-                <Td visible={this.isVisible('num_ratings')}>
-                  {element.num_ratings}
-                </Td>
-                <Td visible={this.isVisible('num_comments')}>
-                  {this.renderCommentsCounter(element.id)}
-                </Td>
-                <Td visible={this.isVisible('date_created')}>
-                  <div className="dpw--timer"><FormattedRelative value={element.date_created}/></div>
-                </Td>
+              <Td visible={this.isVisible('hidden_status')}>
+                {element.hidden_status}
+              </Td>
+              <Td visible={this.isVisible('person')}>
+                <PersonInTable person={people.get(element.person)}/>
+              </Td>
+              <Td visible={this.isVisible('type')}>
+                {feedbackTypes.get(element.category_id).get('title')}
+              </Td>
+              <Td visible={this.isVisible('custom_category')}>
+                {this.renderCategory(element.id)}
+              </Td>
+              <Td visible={this.isVisible('num_ratings')}>
+                {element.num_ratings}
+              </Td>
+              <Td visible={this.isVisible('num_comments')}>
+                {this.renderCommentsCounter(element.id)}
+              </Td>
+              <Td visible={this.isVisible('date_created')}>
+                <div className="dpw--timer"><FormattedRelative value={element.date_created}/></div>
+              </Td>
             </tr>
         )}
         </tbody>
