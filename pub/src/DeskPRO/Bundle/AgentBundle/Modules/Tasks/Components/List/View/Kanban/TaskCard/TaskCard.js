@@ -17,6 +17,7 @@ export class TaskCard extends BaseTaskCard {
     onToggleSelected: PropTypes.func,
     onChangeTitle: PropTypes.func,
     onChangeDate: PropTypes.func,
+    onSetEditing: PropTypes.func,
     task: PropTypes.object,
     className: PropTypes.string,
     moving: PropTypes.bool,
@@ -25,7 +26,7 @@ export class TaskCard extends BaseTaskCard {
 
   render() {
     const { task, selected, moving, dragging } = this.props;
-    const { onToggleSelected, onChangeTitle, onChangeDate } = this.props;
+    const { onToggleSelected, onChangeTitle, onChangeDate, onSetEditing } = this.props;
 
     return (
       <div className={classNames(
@@ -45,7 +46,8 @@ export class TaskCard extends BaseTaskCard {
         <div className="content">
           <Title value={task.get('title')}
                  isDone={task.get('is_done')}
-                 onChange={onChangeTitle} />
+                 onChange={onChangeTitle}
+                 onSetEditing={onSetEditing} />
 
           <div className="card-line task-details">
             <div className="top-right-box">
@@ -55,7 +57,8 @@ export class TaskCard extends BaseTaskCard {
             </div>
             <div>
               <DateDue value={task.get('date_due')}
-                       onChange={onChangeDate} />
+                       onChange={onChangeDate}
+                       onSetEditing={onSetEditing} />
             </div>
           </div>
           <hr/>
