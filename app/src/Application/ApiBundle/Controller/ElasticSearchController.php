@@ -34,6 +34,7 @@ namespace Application\ApiBundle\Controller;
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Elastica\ClientFactory;
 use Application\DeskPRO\Monolog\Logger;
+use Elastica\Response;
 use FOS\ElasticaBundle\Logger\ElasticaLogger;
 use Orb\Util\Numbers;
 
@@ -72,6 +73,16 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
 
         $this->settings->setSetting('elastica.enabled', $this->in->getBoolInt('elastic_settings.enabled'));
         $this->settings->setSetting('elastica.clients.default.url', $this->in->getString('elastic_settings.url') ?: '');
+
+        if ($this->in->getBoolInt('elastic_settings.enabled')) {
+            try {
+                $this->checkVersion($this->in->getString('elastic_settings.url'));
+            } catch (\Exception $e) {
+                $this->settings->setSetting('elastica.enabled', false);
+
+                return $this->createApiErrorResponse('', $e->getMessage(), 401);
+            }
+        }
 
         // Just turned on, we need to toggle the requires_reset flag
         if ((!$was_enabled || $this->in->getBool('reindex')) && $this->in->getBool('elastic_settings.enabled')) {
@@ -124,7 +135,6 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
         $client_factory = $this->container->get('deskpro.elastica.client_factory');
 
         $client = $client_factory->createClientByConfig($config);
-
         #------------------------------
         # Test client
         #------------------------------
@@ -133,6 +143,9 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
         $error    = false;
 
         try {
+            $elastica_logger->debug('checking version');
+            $this->checkVersion($this->in->getString('url'));
+
             $elastica_logger->debug('Fetching status...');
             $status = $client->getStatus();
             $elastica_logger->debug(sprintf('Done in %.3fs', microtime(true) - $ts_start));
@@ -152,6 +165,24 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
             'is_success' => !$error,
             'log'        => $logger->getSavedMessages(),
         ));
+    }
+
+    protected function checkVersion($url)
+    {
+        if (!$url) {
+            return;
+        }
+        $config = ClientFactory::createConfigFromUrl($url);
+        /** @var \Application\DeskPRO\Elastica\ClientFactory $client_factory */
+        $client_factory = $this->container->get('deskpro.elastica.client_factory');
+        $client         = $client_factory->createClientByConfig($config);
+        $res            = $client->request('/');
+        if ($res instanceof Response) {
+            $res = $res->getData();
+            if (version_compare(@$res['version']['number'], '2.0.0', '>=')) {
+                throw new \Exception('DeskPRO is not compatible with your ElasticSearch 2.x server. Please use DeskPRO with an ElasticSearch 1.x server. ElasticSearch 2.x is a very new update. We are working on adding support for this version and will ship an update in the near future.');
+            }
+        }
     }
 
     ####################################################################################################################
