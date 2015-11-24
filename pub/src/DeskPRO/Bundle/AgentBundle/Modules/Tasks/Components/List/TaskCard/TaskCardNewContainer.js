@@ -17,7 +17,14 @@ export class TaskCardNewContainer extends React.Component {
     onClose: PropTypes.func.isRequired
   };
 
-  onSaveTask = title => {
+  constructor(props) {
+    super(props);
+    this.state = {
+      submit: false
+    };
+  }
+
+  onSubmit = title => {
     const { dispatch, onClose } = this.props;
     const submitData = {
       title: title,
@@ -29,22 +36,25 @@ export class TaskCardNewContainer extends React.Component {
     };
 
     const agent = this.getAgent();
+    const team = this.getTeam();
+    const department = this.getDepartment();
+
     if (agent) {
       submitData.agents = [agent];
     }
-
-    const team = this.getTeam();
     if (team) {
       submitData.teams = [team];
     }
-
-    const department = this.getDepartment();
     if (department) {
       submitData.departments = [department];
     }
 
-    dispatch(addTask(submitData));
-    onClose();
+    this.setState({
+      submit: true
+    });
+
+    const promise = dispatch(addTask(submitData));
+    promise.then(() => onClose());
   };
 
   getDateDue() {
@@ -100,9 +110,10 @@ export class TaskCardNewContainer extends React.Component {
         teams: team ? [team] : [],
         departments: department ? [department] : []
       }),
+      submit: this.state.submit,
 
       onChangeTitle: this.onChangeTitle,
-      onSaveTask: this.onSaveTask
+      onSaveTask: this.onSubmit
     });
   }
 }

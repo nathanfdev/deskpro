@@ -23,6 +23,7 @@ export class TaskCardNew extends React.Component {
     dateDue: PropTypes.string,
     project: PropTypes.number,
     assignee: PropTypes.object,
+    submit: PropTypes.bool,
     onChangeTitle: PropTypes.func,
     onSaveTask: PropTypes.func
   };
@@ -32,12 +33,12 @@ export class TaskCardNew extends React.Component {
   };
 
   render() {
-    const { dateDue, project, assignee } = this.props;
+    const { dateDue, project, assignee, submit } = this.props;
     const { onSaveTask } = this.props;
 
     return (
       <Card type="task">
-        <SaveTaskButton onClick={this.onSave} />
+        <SaveTaskButton onClick={this.onSave} submit={submit} />
         <CardCheckbox />
         <CardLine>
           <CardLineLeft>
