@@ -12,7 +12,9 @@ import {
   DateDue,
   CardProject,
   ProjectContainer,
-  Comments
+  Comments,
+  AssigneeContainer,
+  AssigneeAvatar
 } from '../../../TaskCard/index';
 
 export class TaskCardNew extends React.Component {
@@ -20,6 +22,7 @@ export class TaskCardNew extends React.Component {
   static propTypes = {
     dateDue: PropTypes.string,
     project: PropTypes.number,
+    assignee: PropTypes.object,
     onChangeTitle: PropTypes.func,
     onSaveTask: PropTypes.func
   };
@@ -29,7 +32,7 @@ export class TaskCardNew extends React.Component {
   };
 
   render() {
-    const { dateDue, project } = this.props;
+    const { dateDue, project, assignee } = this.props;
     const { onSaveTask } = this.props;
 
     return (
@@ -43,7 +46,9 @@ export class TaskCardNew extends React.Component {
             </div>
           </CardLineLeft>
           <CardLineRight>
-            <div />
+            <AssigneeContainer>
+              <AssigneeAvatar task={assignee} />
+            </AssigneeContainer>
           </CardLineRight>
         </CardLine>
 

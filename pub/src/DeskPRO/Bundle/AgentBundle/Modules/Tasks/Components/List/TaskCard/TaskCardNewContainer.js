@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { listParamsNavSelector } from '../../../Selectors/list';
 import { addTask } from '../../../Actions/listActions';
 import moment from 'moment';
+import Immutable from 'immutable';
 
 @connect(state => ({
   currentNav: listParamsNavSelector(state)
@@ -84,12 +85,21 @@ export class TaskCardNewContainer extends React.Component {
     const { children } = props;
     const childProps = children.props;
 
+    const agent = this.getAgent();
+    const team = this.getTeam();
+    const department = this.getDepartment();
+
     return React.cloneElement(children, {
       ...childProps,
       ...props,
 
       dateDue: this.getDateDue(),
       project: this.getProject(),
+      assignee: Immutable.fromJS({
+        agents: agent ? [agent] : [],
+        teams: team ? [team] : [],
+        departments: department ? [department] : []
+      }),
 
       onChangeTitle: this.onChangeTitle,
       onSaveTask: this.onSaveTask
