@@ -33,6 +33,12 @@ services:
       tags:
           - { name: form.type, alias: api_labels_collection }
 
+  dp.app.form.person_type:
+      class: DeskPRO\Bundle\AppBundle\Form\Type\People\PersonType
+      arguments: [@doctrine.orm.default_entity_manager]
+      tags:
+          - { name: form.type, alias: api_person }
+
   form.api_boolean:
       class: DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType
       tags:
