@@ -59,6 +59,29 @@
 			"native_only": true
 		},
 		{
+			"name": "sign_authn_request",
+			"type": "checkbox",
+			"label": "Sign Authentication Request",
+			"checkbox_label": "I want to sign SP authentication requests.",
+			"default_value": false,
+			"native_only": true,
+
+			"inline_dependants": [
+				{
+					"name": "sp_public_x509",
+					"type": "textarea",
+					"label": "Copy and paste your server's public x509 key into this field, or upload the file below.",
+					"native_only": true
+				},
+				{
+					"name": "sp_private_key",
+					"type": "textarea",
+					"label": "Copy and paste your server's private key into this field, or upload the file below..",
+					"native_only": true
+				}
+			]
+		},
+		{
 			"name": "login_custom_text",
 			"type": "text",
 			"label": "Login Button Text",

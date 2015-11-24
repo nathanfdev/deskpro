@@ -90,7 +90,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
      */
     protected function getSamlSettings()
     {
-        return array(
+        $settings = array(
             'sp' => array(
                 'entityId'                 => $this->getMetadataXmlUrl(),
                 'assertionConsumerService' => array(
@@ -114,6 +114,17 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
                 'certFingerprint' => $this->options['cert_fingerprint'] ?: null,
             ),
         );
+
+        if ($this->options['sign_authn_request']) {
+            $settings['security'] = array(
+                'authnRequestsSigned' => true,
+            );
+
+            $settings['sp']['privateKey'] = $this->options['sp_private_key'];
+            $settings['sp']['x509cert']   = $this->options['sp_public_x509'];
+        }
+
+        return $settings;
     }
 
     /**

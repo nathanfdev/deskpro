@@ -60,13 +60,16 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
     {
         $us->title   = $app->title;
         $us->options = array(
-            'sso_url'           => $app->getSetting('sso_url'),
-            'slo_url'           => $app->getSetting('slo_url'),
-            'issuer_id'         => $app->getSetting('issuer_id'),
-            'cert_fingerprint'  => $app->getSetting('cert_fingerprint'),
-            'cert'              => $app->getSetting('cert'),
-            'login_custom_text' => $app->getSetting('login_custom_text'),
-            'raw_info_filter'   => $app->getSetting('raw_info_filter') ?: null,
+            'sso_url'            => $app->getSetting('sso_url'),
+            'slo_url'            => $app->getSetting('slo_url'),
+            'issuer_id'          => $app->getSetting('issuer_id'),
+            'cert_fingerprint'   => $app->getSetting('cert_fingerprint'),
+            'cert'               => $app->getSetting('cert'),
+            'login_custom_text'  => $app->getSetting('login_custom_text'),
+            'raw_info_filter'    => $app->getSetting('raw_info_filter') ?: null,
+            'sign_authn_request' => $app->getSetting('sign_authn_request') ?: false,
+            'sp_private_key'     => $app->getSetting('sp_private_key') ?: null,
+            'sp_public_x509'     => $app->getSetting('sp_public_x509') ?: null,
         );
         $us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
         $us->lost_password_url = '';

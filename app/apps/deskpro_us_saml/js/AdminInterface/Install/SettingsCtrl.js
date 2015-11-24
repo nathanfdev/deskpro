@@ -50,8 +50,8 @@ define(['DeskPRO/Util/Strings', 'DeskPRO/Util/Util'], function(Strings, Util) {
 			return deferred.promise;
 		});
 
-		$scope.readContentsFunction = function($fileContents) {
-			$scope.setting_values['cert'] = $fileContents;
+		$scope.readContentsFunction = function($fileContents, setting_name) {
+			$scope.setting_values[setting_name] = $fileContents;
 		};
 
 		//##############################################################################################################
