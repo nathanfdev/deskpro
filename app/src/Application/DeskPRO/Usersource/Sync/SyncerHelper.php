@@ -152,6 +152,13 @@ class SyncerHelper
         }
         LoginProcessor::tryUsergroupPromotion($usersource, $person);
 
+        // Update custom field data
+        App::getSystemService('person_fields_manager')->copyUsersourceData(
+            $person,
+            $user_info,
+            $usersource
+        );
+
         return $person;
     }
 

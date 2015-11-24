@@ -64,7 +64,7 @@ class PersonFieldManager extends FieldManager
         }
     }
 
-    public function copyUsersourceData(Person $person, Identity $identity, Usersource $usersource)
+    public function copyUsersourceData(Person $person, $raw_data, Usersource $usersource)
     {
         $save_data = array();
 
@@ -78,7 +78,9 @@ class PersonFieldManager extends FieldManager
             }
 
             $field_name = $field->getOption('field_name');
-            $raw_data   = $identity->getRawData();
+            if ($raw_data instanceof Identity) {
+                $raw_data = $raw_data->getRawData();
+            }
 
             // Reads the value and does some common input error correction:
             // - Arrays are separated by a slash or a dot: telephonenumber.0 or telephonenumber/0
