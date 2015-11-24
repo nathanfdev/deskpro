@@ -4,6 +4,11 @@ services:
     # ENGINE
     #
 
+    term_engine.dbal.engine:
+        class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalTermEngine
+        arguments:
+            - @term_engine.dbal_ticket_filters.engine
+
     term_engine.dbal_ticket_filters.engine:
         class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngine
         arguments:
@@ -67,6 +72,14 @@ services:
                     name: dbal_ticket_filter_compiler
                     term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\AgentTerm'
 
+    term_engine.dbal_ticket_filters.compiler.person:
+            class: DeskPRO\Bundle\AppBundle\TermEngine\Term\Person\DbalPersonTermCompiler
+            parent: term_engine.dbal_ticket_filters.term_compiler
+            tags:
+                ticket_filter:
+                    name: dbal_ticket_filter_compiler
+                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\Person\PersonTerm'
+
     term_engine.dbal_ticket_filters.compiler.department:
             class: DeskPRO\Bundle\AppBundle\TermEngine\Term\Department\DbalDepartmentTermCompiler
             parent: term_engine.dbal_ticket_filters.term_compiler
@@ -106,6 +119,22 @@ services:
                 ticket_filter:
                     name: dbal_ticket_filter_compiler
                     term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLanguage\TicketLanguageTerm'
+
+    term_engine.dbal_ticket_filters.compiler.organization:
+            class: DeskPRO\Bundle\AppBundle\TermEngine\Term\Organization\DbalOrganizationTermCompiler
+            parent: term_engine.dbal_ticket_filters.term_compiler
+            tags:
+                ticket_filter:
+                    name: dbal_ticket_filter_compiler
+                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\Organization\OrganizationTerm'
+
+    term_engine.dbal_ticket_filters.compiler.problem:
+            class: DeskPRO\Bundle\AppBundle\TermEngine\Term\Problem\DbalProblemTermCompiler
+            parent: term_engine.dbal_ticket_filters.term_compiler
+            tags:
+                ticket_filter:
+                    name: dbal_ticket_filter_compiler
+                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\Problem\ProblemTerm'
 
     term_engine.dbal_ticket_filters.compiler.ticket_custom_data:
             class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomData\DbalTicketCustomDataTermCompiler

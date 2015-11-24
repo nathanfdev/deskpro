@@ -34,20 +34,28 @@ namespace DeskPRO\Bundle\AppBundle\DataService;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\PortalBundle\Model\TicketFilter;
+use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
 class TicketsDataService extends AbstractDataService
 {
+    protected function ignoreTicketsWithOnlyAgentNotes(QueryBuilder $qb)
+    {
+        // make sure a message by the agent or the user has been made via using the last reply columns.
+        $qb->andWhere('(t.date_last_agent_reply IS NOT NULL OR t.date_last_user_reply IS NOT NULL)');
+    }
+
     /**
      * @param Person       $person
      * @param TicketFilter $filter
-     * @param $page
-     * @param $max_per_page
+     * @param int          $page
+     * @param int          $max_per_page
+     * @param bool         $ignore_only_notes if true, we ignore tickets that only have agent messages (USE IN PORTAL)
      *
      * @return Pagerfanta
      */
-    public function getPager(Person $person, TicketFilter $filter, $page, $max_per_page)
+    public function getPager(Person $person, TicketFilter $filter, $page, $max_per_page, $ignore_only_notes = true)
     {
         $em = $this->em;
 
@@ -58,8 +66,9 @@ class TicketsDataService extends AbstractDataService
                 $filter,
                 $page,
                 $max_per_page,
+                $ignore_only_notes,
             ),
-            function () use ($em, $person, $filter, $page, $max_per_page) {
+            function () use ($em, $person, $filter, $page, $max_per_page, $ignore_only_notes) {
                 $qb = $em->createQueryBuilder();
 
                 $qb->select('t')
@@ -67,6 +76,10 @@ class TicketsDataService extends AbstractDataService
                     ->join('t.person', 'p')
                     ->where('t.status != :hidden')->setParameter('hidden', Ticket::STATUS_HIDDEN)
                 ;
+
+                if ($ignore_only_notes) {
+                    $this->ignoreTicketsWithOnlyAgentNotes($qb);
+                }
 
                 // type
                 if (TicketFilter::TYPE_OWN === $filter->getType()) {
@@ -166,11 +179,12 @@ class TicketsDataService extends AbstractDataService
      * Returns the count of tickets that can be seen by the user by default. You can optionally provide a status to count on.
      *
      * @param Person $person
-     * @param string $status "open" [awaiting user or agent], "all" [open + resolved], or a specific status
+     * @param string $status            "open" [awaiting user or agent], "all" [open + resolved], or a specific status
+     * @param bool   $ignore_only_notes if true, we ignore tickets that only have agent messages (USE IN PORTAL)
      *
      * @return int|null
      */
-    public function getTicketCount(Person $person, $status = 'all')
+    public function getTicketCount(Person $person, $status = 'all', $ignore_only_notes = true)
     {
         $em = $this->em;
 
@@ -179,8 +193,9 @@ class TicketsDataService extends AbstractDataService
                 'getTicketCount',
                 $person,
                 $status,
+                $ignore_only_notes,
             ),
-            function () use ($em, $person, $status) {
+            function () use ($em, $person, $status, $ignore_only_notes) {
                 $qb = $em->createQueryBuilder();
 
                 if ('open' === $status) {
@@ -203,6 +218,10 @@ class TicketsDataService extends AbstractDataService
                     ->andWhere('t.status IN (:status_list)')->setParameter('status_list', $status_list)
                 ;
 
+                if ($ignore_only_notes) {
+                    $this->ignoreTicketsWithOnlyAgentNotes($qb);
+                }
+
                 if ($person->is_agent) {
                     $qb->andWhere('t.person = :person')->setParameter('person', $person);
                 } else {
@@ -222,11 +241,12 @@ class TicketsDataService extends AbstractDataService
      * if they clicked "Switch to Organization" in the ticket list).
      *
      * @param Person $person
-     * @param string $status "open" [awaiting user or agent], "all" [open + resolved], or a specific status
+     * @param string $status            "open" [awaiting user or agent], "all" [open + resolved], or a specific status
+     * @param bool   $ignore_only_notes if true, we ignore tickets that only have agent messages (USE IN PORTAL)
      *
      * @return int|null
      */
-    public function getOrganizationTicketCount(Person $person, $status = 'all')
+    public function getOrganizationTicketCount(Person $person, $status = 'all', $ignore_only_notes = true)
     {
         $em = $this->em;
 
@@ -235,8 +255,9 @@ class TicketsDataService extends AbstractDataService
                 'getOrganizationTicketCount',
                 $person,
                 $status,
+                $ignore_only_notes,
             ),
-            function () use ($em, $person, $status) {
+            function () use ($em, $person, $status, $ignore_only_notes) {
                 $qb = $em->createQueryBuilder();
 
                 if ('open' === $status) {
@@ -258,6 +279,10 @@ class TicketsDataService extends AbstractDataService
                     ->from('DeskPRO:Ticket', 't')
                     ->andWhere('t.status IN (:status_list)')->setParameter('status_list', $status_list);
 
+                if ($ignore_only_notes) {
+                    $this->ignoreTicketsWithOnlyAgentNotes($qb);
+                }
+
                 if ($person->organization && $person->organization_manager) {
                     $qb->andWhere('t.organization = :organization')->setParameter('organization', $person->organization);
                 }
@@ -272,11 +297,12 @@ class TicketsDataService extends AbstractDataService
     /**
      * Returns the $count number of most recent resolved tickets.
      *
-     * @param int $count
+     * @param int  $count
+     * @param bool $ignore_only_notes if true, we ignore tickets that only have agent messages (USE IN PORTAL)
      *
      * @return Ticket[]
      */
-    public function getLatestResolvedTickets($count = 20)
+    public function getLatestResolvedTickets($count = 20, $ignore_only_notes = true)
     {
         $em = $this->em;
 
@@ -284,8 +310,9 @@ class TicketsDataService extends AbstractDataService
             array(
                 'getLatestResolvedTickets',
                 $count,
+                $ignore_only_notes,
             ),
-            function () use ($em, $count) {
+            function () use ($em, $count, $ignore_only_notes) {
                 $qb = $em->createQueryBuilder();
 
                 $status_list = [Ticket::STATUS_RESOLVED];
@@ -293,6 +320,10 @@ class TicketsDataService extends AbstractDataService
                 $qb->select('t')
                     ->from('DeskPRO:Ticket', 't')
                     ->andWhere('t.status IN (:status_list)')->setParameter('status_list', $status_list);
+
+                if ($ignore_only_notes) {
+                    $this->ignoreTicketsWithOnlyAgentNotes($qb);
+                }
 
                 $qb->setMaxResults($count);
                 $qb->orderBy('t.date_resolved', 'DESC');

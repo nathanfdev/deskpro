@@ -68,6 +68,9 @@ class RecalculateTicketStats implements TicketSaveActionInterface
         if ($context->getEventType() == 'noop') {
             return;
         }
+        if (!$this->agent_ids) {
+            return;
+        }
 
         $state = $ticket->getStateChangeRecorder();
 

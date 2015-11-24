@@ -33,7 +33,10 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
 
 use Application\DeskPRO\Entity\Organization;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
+use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Route;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 /**
  * Class OrganizationsController.
@@ -44,4 +47,18 @@ class OrganizationsController extends CrudController
 {
     public static $exposeOnly = ['list', 'get'];
     public static $entity     = Organization::class;
+
+    /**
+     * @ApiDoc(
+     *      description="Get tickets of the given organization",
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     * @Get("/{id}/tickets")
+     */
+    public function getTicketsAction($id)
+    {
+        return TicketsController::subRequestSearch($this->get('kernel'), ['organization' => $id]);
+    }
 }

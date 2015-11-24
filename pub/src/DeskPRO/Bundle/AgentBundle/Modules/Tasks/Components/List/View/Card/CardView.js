@@ -5,6 +5,7 @@ import { TaskDragCard } from './TaskCard/TaskDragCard';
 import { TaskCardPreviewContainer } from '../../TaskCard/TaskCardPreviewContainer';
 import { TaskCardPreview } from './TaskCard/TaskCardPreview';
 import { CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { NewTaskButton } from './NewTaskButton';
 
 export class CardView extends React.Component {
 
@@ -15,25 +16,27 @@ export class CardView extends React.Component {
 
   render() {
     const { taskGroups = [], onChangeGroup } = this.props;
+    const filtered = taskGroups.filter(taskGroup => taskGroup.elements.length);
 
     return (
       <div>
-        {taskGroups
-          .filter(taskGroup => taskGroup.elements.length)
-          .map((taskGroup, index) =>
-
+        {filtered.map((taskGroup, index) =>
           <ListGroup title={taskGroup.title}
                      key={index}
                      updateData={taskGroup.updateData}
                      onChangeGroup={onChangeGroup}>
 
             {taskGroup.elements.map(task =>
-              <TaskCardEditContainer task={task} key={task.get('id')}>
+              <TaskCardEditContainer task={task}
+                                     key={task.get('id')}
+                                     updateData={taskGroup.updateData}>
                 <TaskDragCard />
               </TaskCardEditContainer>
             )}
           </ListGroup>
         )}
+
+        {!filtered.length && <NewTaskButton />}
 
         <CustomCardDragLayer>
           <TaskCardPreviewContainer>

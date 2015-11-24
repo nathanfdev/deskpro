@@ -1,5 +1,6 @@
 @import "setup";
 @import "vars";
+@import "custom_vars";
 @import "../../../../../../node_modules/bourbon/app/assets/stylesheets/_bourbon.scss";
 @import "../../../../../../node_modules/bourbon-neat/app/assets/stylesheets/_neat.scss";
 @import "../../../../../../node_modules/font-awesome/scss/font-awesome.scss";
@@ -9,3 +10,4 @@
 @import "dpx";
 @import "main";
 @import "recent-changes";
+@import "custom_style";

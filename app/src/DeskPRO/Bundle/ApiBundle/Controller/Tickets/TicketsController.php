@@ -35,8 +35,8 @@ use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Labels\LabelsHelper;
 use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketsSelectCriteria;
-use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalTermEngine;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Route;
@@ -46,6 +46,7 @@ use Pagerfanta\Adapter\FixedAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * Class TicketsController.
@@ -60,8 +61,30 @@ class TicketsController extends CrudController
     public static $type   = TicketType::class;
 
     /**
+     * @param HttpKernelInterface $kernel
+     * @param array               $params
+     *
+     * @return Response
+     */
+    public static function subRequestSearch($kernel, array $params)
+    {
+        $request = new Request();
+        $request->attributes->set(
+            '_controller',
+            'ApiBundle:Tickets\Tickets:list'
+        );
+        $request->query->add($params);
+        $response = $kernel->handle(
+            $request,
+            HttpKernelInterface::SUB_REQUEST
+        );
+
+        return $response;
+    }
+
+    /**
      * @ApiDoc(
-     *      description="get a list of tickets",
+     *      description="Get a list of tickets",
      *      statusCodes={
      *          200="Success"
      *      }
@@ -93,19 +116,12 @@ class TicketsController extends CrudController
             }
             $term = TicketsSelectCriteria::createTerm($params);
 
-            // Wrapping a Term into a Filter to use "term_engine.dbal_ticket_filters.engine" service.
-            // Can't use "term_engine.dbal_ticket_filters.compiler" accepting a Term instance because
-            // there is no way to pass there a context with the current user.
-
-            $filter = new TicketFilter();
-            $filter->setTerm($term);
-
-            /** @var \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngine $engine */
-            $engine        = $this->get('term_engine.dbal_ticket_filters.engine');
+            /** @var DbalTermEngine $engine */
+            $engine        = $this->get('term_engine.dbal.engine');
             $context       = new TermEngineContext($this->getUser());
             $currentPage   = $request->query->getInt('page', 1);
             $maxPerPage    = $request->query->getInt('count', self::$listPerPage);
-            $tickets_query = $engine->evaluate($filter, $context);
+            $tickets_query = $engine->evaluate($term, $context);
             $total         = $tickets_query->fetchCount();
             $tickets_query->setCount($maxPerPage);
             $tickets_query->setPage($currentPage);

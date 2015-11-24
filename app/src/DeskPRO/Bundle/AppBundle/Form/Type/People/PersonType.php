@@ -32,8 +32,13 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\People;
 
 use Application\DeskPRO\Entity\LabelPerson;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
+use DeskPRO\Bundle\AppBundle\Form\Type\People\PrimaryEmail\PrimaryEmailType;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 /**
  * Class PersonType.
@@ -41,11 +46,36 @@ use Symfony\Component\Form\FormBuilderInterface;
 class PersonType extends ApiType
 {
     /**
-     * @param FormBuilderInterface $builder
-     * @param array                $options
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * PersonType constructor.
+     *
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'api_person';
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        /** @var Person $person */
+        $person = $builder->getData();
+
         $builder
             ->add('name', 'text')
             ->add('first_name', 'text')
@@ -58,6 +88,17 @@ class PersonType extends ApiType
                 'labels_owner'   => $builder->getData(),
                 'owner_property' => 'person',
             ])
+            ->add('primary_email', new PrimaryEmailType($person, $this->em))
         ;
+
+        // primary_email is not mapped to bypass calling setter with side effects on the Person entity (need to bypass
+        // setPrimaryEmail($email) which sets the person value to the passed $email, which bothers validation)
+        //
+        // setting primary_email manually on after validation happened
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($person) {
+            if ($primary_email = $event->getForm()->get('primary_email')->getData()) {
+                $person->setPrimaryEmail($primary_email);
+            }
+        });
     }
 }

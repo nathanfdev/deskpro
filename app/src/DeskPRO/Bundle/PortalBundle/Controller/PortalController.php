@@ -45,6 +45,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class PortalController extends AbstractController
 {
@@ -243,36 +244,27 @@ class PortalController extends AbstractController
     }
 
     /**
+     * SEND a POST request with a file called "file[blob]" and a CSRF called "file[_dp_csrf_token]".
+     *
+     * If the JSON response has "success" === true, then you can use "blob.id" and "blob.authcode"
+     *
+     * You will be checked for rate limit settings... see: 'rate_limit.upload_attachment.guest.limit'
+     * and 'rate_limit.upload_attachment.limit'
+     *
+     * You will be checked for CSRF. Make sure the val pf a cookie named "_dp_csrf_token" is the same
+     * and as the csrf posted with "file[_dp_csrf_token]"
+     *
+     *
      * @Route("/dpblob", name="portal_blob_upload")
      * @Method("POST")
      */
     public function uploadBlobAction(Request $request)
     {
-        // rate limit first
-        $check = new UploadAbuseCheck($this->getUser(), $request->getClientIp());
-        $this->getAntiAbuseService()->check($check);
-        if ($check->isCaptchaRecommended()) {
-            return new JsonResponse([
-                'success' => false,
-                'error'   => [
-                    'code' => 'rate_limit',
-                ],
-            ]);
+        if ($response = $this->checkRateLimitAndCsrf($request)) {
+            return $response;
         }
 
-        $cookie_val = (string) $request->cookies->get(CsrfDoubleSubmitExtension::COOKIE_NAME);
-        $submit_val = (string) $request->request->get(CsrfDoubleSubmitExtension::COOKIE_NAME);
-
-        if (!(strlen($cookie_val) >= 5 && $cookie_val === $submit_val)) {
-            return new JsonResponse([
-                'success' => false,
-                'error'   => [
-                    'code' => 'csrf',
-                ],
-            ]);
-        }
-
-        $file = $request->files->get('blob');
+        $file = $request->files->get('file[blob]', null, true);
 
         if (!$file instanceof UploadedFile) {
             return new JsonResponse([
@@ -306,18 +298,48 @@ class PortalController extends AbstractController
         return new JsonResponse([
             'success' => true,
             'blob'    => [
-                'id'       => $blob->getId(),
-                'authcode' => $blob->getAuthcode(),
+                'id'        => $blob->getId(),
+                'authcode'  => $blob->getAuthcode(),
+                'size'      => $blob->getReadableFilesize(),
+                'icon_html' => $this->get('icon_factory')->makeFileIcon($blob),
+                'url'       => $this->generateUrl(
+                    'serve_blob',
+                    [
+                        'blob_auth_id' => $blob->getAuthcode(),
+                        'filename'     => $blob->getFilenameSafe(),
+                    ],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                ),
             ],
         ]);
     }
 
     /**
-     * @Route("/dpblob/{authcode}", name="portal_blob_upload")
+     * If you know the primary ID and the authcode of blob, you can delete that blob.
+     *
+     * SEND a DELETE request with a CSRF called "file[_dp_csrf_token]" (with a cookie with the
+     * name "_dp_csrf_token" of the same value).
+     *
+     * You will get a 404 if the blob isn't found.
+     * You will get a "success" === false response if you fail CSRF and/or rate limit.
+     * You will get a "success" === false if the delete failed.
+     * And a "success" === true if the delete succeeded.
+     *
+     * You will be checked for rate limit settings... see: 'rate_limit.upload_attachment.guest.limit'
+     * and 'rate_limit.upload_attachment.limit'
+     *
+     * You will be checked for CSRF. Make sure the val pf a cookie named "_dp_csrf_token" is the same
+     * and as the csrf posted with "file[_dp_csrf_token]"
+     *
+     * @Route("/dpblob/{id}-{authcode}", name="portal_blob_delete")
      * @Method("DELETE")
      */
     public function deleteBlobAction(Request $request, Blob $blob)
     {
+        if ($response = $this->checkRateLimitAndCsrf($request)) {
+            return $response;
+        }
+
         // assuming the authcode is all that is necessary to delete a blob here
         $success = $this->get('blob.storage')->deleteBlobRecord($blob);
 
@@ -330,5 +352,37 @@ class PortalController extends AbstractController
     protected function getPersonValidator()
     {
         return $this->get('person.portal_validator');
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return JsonResponse|null
+     */
+    private function checkRateLimitAndCsrf(Request $request)
+    {
+        // rate limit first
+        $check = new UploadAbuseCheck($this->getUser(), $request->getClientIp());
+        $this->getAntiAbuseService()->check($check);
+        if ($check->isCaptchaRecommended()) {
+            return new JsonResponse([
+                'success' => false,
+                'error'   => [
+                    'code' => 'rate_limit',
+                ],
+            ]);
+        }
+
+        $cookie_val = (string) $request->cookies->get(CsrfDoubleSubmitExtension::COOKIE_NAME);
+        $submit_val = (string) $request->request->get('file['.CsrfDoubleSubmitExtension::COOKIE_NAME.']', null, true);
+
+        if (!(strlen($cookie_val) >= 5 && $cookie_val === $submit_val)) {
+            return new JsonResponse([
+                'success' => false,
+                'error'   => [
+                    'code' => 'csrf',
+                ],
+            ]);
+        }
     }
 }

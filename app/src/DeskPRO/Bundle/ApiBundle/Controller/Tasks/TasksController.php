@@ -37,7 +37,6 @@ use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\DataService\Tasks\TasksSelectCriteria;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use Doctrine\ORM\Query;
-use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
@@ -501,34 +500,6 @@ class TasksController extends BaseController implements ClassResourceInterface
         $status = $task->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
         $submitted = $request->request->all();
-        if (!empty($submitted['display_order']) && $task->getId()) {
-            $old_order = $task->getDisplayOrder();
-            $new_order = $submitted['display_order'];
-            if ($old_order !== $new_order) {
-                /** @var QueryBuilder $qb */
-                $qb = $this->getDoctrine()->getManager()->createQueryBuilder();
-                $qb
-                    ->update()
-                    ->from('App:Task', 't')
-                    ->set('t.display_order', sprintf('t.display_order + %d', ($new_order > $old_order ? -1 : 1)))
-                    ->where(
-                        't.id != :task_id',
-                        't.display_order > :min_order',
-                        't.display_order <= :max_order'
-                    )
-                    ->setParameters([
-                        'task_id'   => $task->getId(),
-                        'min_order' => min($old_order, $new_order),
-                        'max_order' => max($old_order, $new_order),
-                    ]);
-
-                $qb->getQuery()->execute();
-
-                if ($old_order > $new_order) {
-                    ++$submitted['display_order'];
-                }
-            }
-        }
 
         $this->validateForm($request, $task, $submitted);
 
@@ -551,15 +522,9 @@ class TasksController extends BaseController implements ClassResourceInterface
     protected function validateForm(Request $request, Task $task, $submitted)
     {
         /** @var Form $form */
-        $form = $this->get('form.factory')->createNamedBuilder(
-            null,
-            'task',
-            $task,
-            ['task' => $task, 'entity_manager' => $this->getDoctrine()->getManager()]
-        )
-        ->getForm();
-
+        $form = $this->get('form.factory')->createNamedBuilder(null, 'task', $task)->getForm();
         $form->submit($submitted, $request->getMethod() !== 'PUT');
+
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }

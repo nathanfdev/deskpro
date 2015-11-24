@@ -32,11 +32,15 @@ function verifyScalar(value) {
   throw new TypeError(`Expected number or string, got ${value}`);
 }
 
+function getStatePath(statePropKey) {
+  return typeof statePropKey === 'string' ? statePropKey.split('.') : statePropKey;
+}
+
 /**
  * Set a value on the state.
  *
- * @param {String} statePropKey  The property to set on the state.
- * @param {any}    value         The value to set
+ * @param {String|Array} statePropKey  The property to set on the state.
+ * @param {any}          value         The value to set
  * @return {Function} Action handler function
  */
 export function setValue(statePropKey, value) {
@@ -45,16 +49,16 @@ export function setValue(statePropKey, value) {
     verifyImmutable(state);
     const immutableValue = Immutable.fromJS(value);
 
-    return state.setIn(statePropKey.split('.'), immutableValue);
+    return state.setIn(getStatePath(statePropKey), immutableValue);
   };
 }
 
 /**
  * Set a value on the state.
  *
- * @param {String} statePropKey  The property to set on the state. If null, the value will be merged into the whole state.
- * @param {any}    value         The value to set
- * @param {Boolean} deep         Merge deep
+ * @param {String|Array} statePropKey  The property to set on the state. If null, the value will be merged into the whole state.
+ * @param {any}          value         The value to set
+ * @param {Boolean}      deep          Merge deep
  * @return {Function} Action handler function
  */
 export function mergeValue(statePropKey, value, deep = false) {
@@ -66,9 +70,9 @@ export function mergeValue(statePropKey, value, deep = false) {
 
     if (statePropKey) {
       if (deep) {
-        return state.mergeDeepIn(statePropKey.split('.'), immutableValue);
+        return state.mergeDeepIn(getStatePath(statePropKey), immutableValue);
       }
-      return state.mergeIn(statePropKey.split('.'), immutableValue);
+      return state.mergeIn(getStatePath(statePropKey), immutableValue);
     }
 
     if (deep) {
@@ -82,9 +86,9 @@ export function mergeValue(statePropKey, value, deep = false) {
 /**
  * Set a value from the action payload.
  *
- * @param {String} statePropKey    The property to set on the state. If null, the whole state will be set.
- * @param {String} payloadPropKey  The property to read from the payload. Use '@' to mean same as statePropKey, or null to mean the payload itself is the value to set.
- * @param {any}    defaultValue    The value to set if the payload doesn't contain the requested property.
+ * @param {String|Array} statePropKey    The property to set on the state. If null, the whole state will be set.
+ * @param {String|Array} payloadPropKey  The property to read from the payload. Use '@' to mean same as statePropKey, or null to mean the payload itself is the value to set.
+ * @param {any}          defaultValue    The value to set if the payload doesn't contain the requested property.
  * @return {Function} Action handler function
  */
 export function setPayload(statePropKey, payloadPropKey = '@', defaultValue = null) {
@@ -98,7 +102,7 @@ export function setPayload(statePropKey, payloadPropKey = '@', defaultValue = nu
     if (usePayloadPropKey) {
       if (payload) {
         verifyIsMapish(payload);
-        value = Immutable.fromJS(payload).getIn(usePayloadPropKey.split('.'), defaultValue);
+        value = Immutable.fromJS(payload).getIn(getStatePath(usePayloadPropKey), defaultValue);
       } else {
         value = defaultValue;
       }
@@ -108,7 +112,7 @@ export function setPayload(statePropKey, payloadPropKey = '@', defaultValue = nu
 
     const immutableValue = Immutable.fromJS(value);
     if (statePropKey) {
-      return state.setIn(statePropKey.split('.'), immutableValue);
+      return state.setIn(getStatePath(statePropKey), immutableValue);
     }
 
     verifyIsMapish(immutableValue);
@@ -117,10 +121,31 @@ export function setPayload(statePropKey, payloadPropKey = '@', defaultValue = nu
 }
 
 /**
- * Toggle presense of scalar payload in a collection.
+ * Push payload to a collection.
  *
- * @param {String} statePropKey The property to set on the state.
- * @returns {Function}
+ * @param {String|Array} statePropKey The property to set on the state.
+ * @return {Function}
+ */
+export function pushPayloadToCollection(statePropKey) {
+  return (state, payload, action) => {
+    verifyActionError(action);
+    verifyImmutable(state);
+
+    const path = getStatePath(statePropKey);
+    let collection = state.getIn(path);
+    verifyImmutable(collection);
+    const immutableValue = Immutable.fromJS(payload);
+    collection = collection.push(immutableValue);
+
+    return state.setIn(path, collection);
+  };
+}
+
+/**
+ * Toggle presence of scalar payload in a collection.
+ *
+ * @param {String|Array} statePropKey The property to set on the state.
+ * @return {Function}
  */
 export function togglePayloadInCollection(statePropKey) {
   return (state, payload, action) => {
@@ -128,7 +153,7 @@ export function togglePayloadInCollection(statePropKey) {
     verifyImmutable(state);
     verifyScalar(payload);
 
-    const path = statePropKey.split('.');
+    const path = getStatePath(statePropKey);
     let collection = state.getIn(path);
     verifyImmutable(collection);
     collection = collection.includes(payload)
@@ -142,20 +167,22 @@ export function togglePayloadInCollection(statePropKey) {
 /**
  * Mass action select/deselect handler
  *
- * @param {String} statePropKey The property to set on the state.
- * @returns {Function}
+ * @param {String|Array} selectFrom    The property to set on the state.
+ * @param {String|Array} selectInto
+ * @param {String}       targetKeyProp
+ * @return {Function}
  */
 export function handleMassAction(selectFrom, selectInto, targetKeyProp = 'id') {
   return (state, select, action) => {
     verifyActionError(action);
     verifyImmutable(state);
 
-    const intoPath = selectInto.split('.');
+    const intoPath = getStatePath(selectInto);
     let selected = state.getIn(intoPath);
     verifyImmutable(selected);
 
     if (select) {
-      state.getIn(selectFrom.split('.')).map(el => {
+      state.getIn(getStatePath(selectFrom)).map(el => {
         const val = Immutable.Iterable.isIterable(el) ? el.get(targetKeyProp) : el[targetKeyProp];
         if (!selected.includes(val)) {
           selected = selected.push(val);
@@ -173,8 +200,8 @@ export function handleMassAction(selectFrom, selectInto, targetKeyProp = 'id') {
  * Like setPayload, except this sets the entire payload. This is the same as passing null as the payloadPropKey to setPayload,
  * it's just a little more intuitive.
  *
- * @param {String} statePropKey    The property to set on the state. If null, the whole state will be set.
- * @param {any}    defaultValue    The value to set if the payload doesn't contain the requested property.
+ * @param {String|Array} statePropKey    The property to set on the state. If null, the whole state will be set.
+ * @param {any}          defaultValue    The value to set if the payload doesn't contain the requested property.
  * @return {Function} Action handler function
  */
 export function setFullPayload(statePropKey, defaultValue = null) {
@@ -185,10 +212,10 @@ export function setFullPayload(statePropKey, defaultValue = null) {
 /**
  * Merge a value from the action payload.
  *
- * @param {String}   statePropKey    The property to set on the state. If null, the whole state will be set.
- * @param {String}   payloadPropKey  The property to read from the payload. Use '@' to mean same as statePropKey, or null to mean the payload itself is the value to set.
- * @param {any}      defaultValue    The value to set if the payload doesn't contain the requested property.
- * @param {Boolean}  deep            Merge deep
+ * @param {String|Array}   statePropKey    The property to set on the state. If null, the whole state will be set.
+ * @param {String|Array}   payloadPropKey  The property to read from the payload. Use '@' to mean same as statePropKey, or null to mean the payload itself is the value to set.
+ * @param {any}            defaultValue    The value to set if the payload doesn't contain the requested property.
+ * @param {Boolean}        deep            Merge deep
  * @return {Function} Action handler function
  */
 export function mergePayload(statePropKey = null, payloadPropKey = '@', defaultValue = {}, deep = false) {
@@ -202,7 +229,7 @@ export function mergePayload(statePropKey = null, payloadPropKey = '@', defaultV
     if (usePayloadPropKey) {
       if (payload) {
         verifyIsMapish(payload);
-        value = Immutable.fromJS(payload).getIn(usePayloadPropKey.split('.'), defaultValue);
+        value = Immutable.fromJS(payload).getIn(getStatePath(usePayloadPropKey), defaultValue);
       } else {
         value = defaultValue;
       }
@@ -215,10 +242,10 @@ export function mergePayload(statePropKey = null, payloadPropKey = '@', defaultV
     const immutableValue = Immutable.fromJS(value);
     if (statePropKey) {
       if (deep) {
-        return state.mergeDeepIn(statePropKey.split('.'), immutableValue);
+        return state.mergeDeepIn(getStatePath(statePropKey), immutableValue);
       }
 
-      return state.mergeIn(statePropKey.split('.'), immutableValue);
+      return state.mergeIn(getStatePath(statePropKey), immutableValue);
     }
 
     if (deep) {
@@ -234,9 +261,9 @@ export function mergePayload(statePropKey = null, payloadPropKey = '@', defaultV
  * Like mergePayload, except this sets the entire payload. This is the same as passing null as the payloadPropKey to setPayload,
  * it's just a little more intuitive.
  *
- * @param {String}   statePropKey    The property to set on the state. If null, the whole state will be set.
- * @param {any}      defaultValue    The value to set if the payload doesn't contain the requested property.
- * @param {Boolean}  deep            Merge deep
+ * @param {String|Array}   statePropKey    The property to set on the state. If null, the whole state will be set.
+ * @param {any}            defaultValue    The value to set if the payload doesn't contain the requested property.
+ * @param {Boolean}        deep            Merge deep
  * @return {Function} Action handler function
  */
 export function mergeFullPayload(statePropKey = null, defaultValue = {}, deep = false) {
@@ -247,7 +274,7 @@ export function mergeFullPayload(statePropKey = null, defaultValue = {}, deep = 
 /**
  * Handle an async action.
  *
- * @param {Function} handlers           Functions to handle each sequence in an async action
+ * @param {Object}   handlers           Functions to handle each sequence in an async action
  * @param {Function} handlers.start     Called as soon as the action is dispatched
  * @param {Function} handlers.success   Called once the promise resolved
  * @param {Function} handlers.error     Called if the promise is rejected

@@ -34,7 +34,9 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 use Application\DeskPRO\Entity\Problem;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use Doctrine\ORM\QueryBuilder;
+use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Route;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -47,6 +49,20 @@ class TicketProblemsController extends CrudController
     public static $exposeOnly = ['list'];
     public static $entity     = Problem::class;
     public static $listSort   = 'created';
+
+    /**
+     * @ApiDoc(
+     *      description="Get tickets associated with the given problem",
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     * @Get("/{id}/tickets")
+     */
+    public function getTicketsAction($id)
+    {
+        return TicketsController::subRequestSearch($this->get('kernel'), ['problem' => $id]);
+    }
 
     /**
      * @param QueryBuilder $qb

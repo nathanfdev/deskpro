@@ -45,8 +45,9 @@ class FeedbackSelectCriteria extends Criteria
     public function applyFilters(QueryBuilder $qb)
     {
         $alias = $qb->getRootAliases()[0];
-        $sort  = "$alias.date_created";
+        $sort = "$alias.date_created";
         $order = 'asc';
+        $labelsMode = 'any';
         foreach ($this->filters as $field => $value) {
             switch ($field) {
                 case 'ids':
@@ -75,10 +76,17 @@ class FeedbackSelectCriteria extends Criteria
                     }
                     $qb->setParameter('title', $value);
                     break;
+                case 'labels_mode':
+                    $labelsMode = $value;
+                    break;
                 case 'label':
-                    $qb
-                        ->andWhere('labels.label IN (:labels)')
-                        ->setParameter('labels', $value);
+                    if ($labelsMode === 'any') {
+                        $qb
+                            ->andWhere('labels.label IN (:labels)')
+                            ->setParameter('labels', $value);
+                    } else {
+                        /** @ToDo all labels mode */
+                    }
                     break;
                 case 'no_labels':
                     $qb
@@ -128,7 +136,7 @@ class FeedbackSelectCriteria extends Criteria
 
     /**
      * @param OptionsResolver $resolver
-     * @param array           $data
+     * @param array $data
      *
      * @throws AccessException
      * @throws UndefinedOptionsException

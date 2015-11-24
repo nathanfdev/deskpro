@@ -1,5 +1,6 @@
 import { BaseTaskCard } from './BaseTaskCard';
 import { Title } from './Title';
+import { TitleForm } from './TitleForm';
 import { Comments } from './Comments';
 import { DateDue } from './DateDue';
 import { SubTasks } from './SubTasks';
@@ -9,10 +10,13 @@ import { TicketLinkContainer } from './TicketLinkContainer';
 import { CardProject } from './CardProject';
 import { ProjectContainer } from './ProjectContainer';
 import { AssigneeContainer } from './AssigneeContainer';
+import { AssigneeName } from './AssigneeName';
+import { AssigneeAvatar } from './AssigneeAvatar';
 
 export default {
   BaseTaskCard,
   Title,
+  TitleForm,
   Comments,
   DateDue,
   SubTasks,
@@ -21,5 +25,7 @@ export default {
   TicketLinkContainer,
   CardProject,
   ProjectContainer,
-  AssigneeContainer
+  AssigneeContainer,
+  AssigneeName,
+  AssigneeAvatar
 };

@@ -33,9 +33,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * API access to ticket labels.
@@ -50,27 +48,10 @@ class TicketLabelsController extends BaseController
      *      }
      * )
      *
-     * @Get("/ticket_labels/{name}/tickets", name="api_ticket_labels_tickets")
+     * @Get("/ticket_labels/{label}/tickets", name="api_ticket_labels_tickets")
      */
-    public function getLabelTicketsAction($name)
+    public function getTicketsAction($label)
     {
-        $repo   = $this->getEm()->getRepository('DeskPRO:LabelTicket');
-        $labels = $repo->findBy(['label' => $name]);
-
-        $tickets = [];
-        foreach ($labels as $label) {
-            $tickets[$label->ticket->getId()] = $label->ticket;
-        }
-
-        return View::create(
-            $this->dataSerialize(array_values($tickets)),
-            Response::HTTP_OK
-        );
-    }
-
-    // A bit of comfort.
-    protected function getEm()
-    {
-        return $this->getDoctrine()->getManager();
+        return TicketsController::subRequestSearch($this->get('kernel'), ['labels' => [$label]]);
     }
 }

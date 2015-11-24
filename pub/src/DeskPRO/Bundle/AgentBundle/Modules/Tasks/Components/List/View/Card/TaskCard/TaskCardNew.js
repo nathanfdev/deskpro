@@ -8,43 +8,48 @@ import {
   CardLineRight
 } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
 import {
-  Title,
-  AssignButton,
+  TitleForm,
   DateDue,
   CardProject,
   ProjectContainer,
-  Comments
+  Comments,
+  AssigneeContainer,
+  AssigneeAvatar
 } from '../../../TaskCard/index';
 
 export class TaskCardNew extends React.Component {
 
   static propTypes = {
-    title: PropTypes.string,
     dateDue: PropTypes.string,
     project: PropTypes.number,
-    isValid: PropTypes.bool,
+    assignee: PropTypes.object,
+    submit: PropTypes.bool,
     onChangeTitle: PropTypes.func,
     onSaveTask: PropTypes.func
   };
 
+  onSave = event => {
+    this.refs.form.onSubmit(event);
+  };
+
   render() {
-    const { title, dateDue, project, isValid } = this.props;
-    const { onChangeTitle, onSaveTask } = this.props;
+    const { dateDue, project, assignee, submit } = this.props;
+    const { onSaveTask } = this.props;
 
     return (
       <Card type="task">
-        <SaveTaskButton onClick={onSaveTask} isValid={isValid} />
+        <SaveTaskButton onClick={this.onSave} submit={submit} />
         <CardCheckbox />
         <CardLine>
           <CardLineLeft>
-            <Title editing
-                   value={title}
-                   onChange={onChangeTitle}
-                   onSave={onSaveTask} />
-
+            <div className="dpwd--card-title">
+              <TitleForm ref="form" onChange={onSaveTask} />
+            </div>
           </CardLineLeft>
           <CardLineRight>
-            <AssignButton />
+            <AssigneeContainer>
+              <AssigneeAvatar task={assignee} />
+            </AssigneeContainer>
           </CardLineRight>
         </CardLine>
 

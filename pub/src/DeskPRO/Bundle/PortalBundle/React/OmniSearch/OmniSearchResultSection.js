@@ -152,7 +152,7 @@ export default class OmniSearchResultSection extends React.Component {
               let sign = item.rating < 0 ? '-' : '+';
               t = (<span><span className="feedback-mark"><i className="fa fa-thumbs-up"></i>{sign + item.rating}</span><span className="item-name">{item.name}</span></span>);
             } else if (this.state.nameApi === 'download') {
-              t = (<span><i className="fa fa-file-pdf-o"></i><span className="item-name">{item.name}</span></span>);
+              t = (<span><span dangerouslySetInnerHTML={{__html: item.icon_html}}></span><span className="item-name">{item.name}</span></span>);
             }
             return (<ListLink key={item.id} url={item.url} text={t}/>);
           })}

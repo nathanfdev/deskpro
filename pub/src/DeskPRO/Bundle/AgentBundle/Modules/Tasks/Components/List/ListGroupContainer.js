@@ -63,7 +63,7 @@ export class ListGroupContainer extends React.Component {
         },
         date_created: {
           type: 'date',
-          refField: 'date_done',
+          refField: 'date_created',
           dateGroupKeys: 'past'
         },
         assignee: {

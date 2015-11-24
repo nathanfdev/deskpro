@@ -33,6 +33,7 @@
 /pub/build
 /pub/npm-debug.log
 /pub/src/DeskPRO/Bundle/AgentBundle/AgentApp_Reducers.js
+/pub/src/DeskPRO/Bundle/WidgetBundle/WidgetApp_Reducers.js
 
 /app/tests/tools/node_modules
 /app/tests/tools/npm-debug.log

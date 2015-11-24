@@ -94,7 +94,7 @@ const createGroup = (title, updateData, match, sortBy) => ({title, match, update
 const dateGroupsBuilder = (groups, { refField, dateGroupKeys }) => {
   dateGroupKeys.forEach(groupKey => {
     const { title, compareDate, match } = dateGroups[groupKey];
-    const updateData = {[refField]: compareDate};
+    const updateData = {[refField]: compareDate.format()};
     const matchItem = item => match(item.get(refField), compareDate);
 
     groups.push(createGroup(title, updateData, matchItem));

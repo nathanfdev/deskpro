@@ -61,6 +61,14 @@ services:
                     name: php_ticket_checker_compiler
                     term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\AgentTerm'
 
+    term_engine.php_ticket_checker.compiler.person:
+            class: DeskPRO\Bundle\AppBundle\TermEngine\Term\Person\PhpPersonTermCompiler
+            parent: term_engine.php_ticket_checker.term_compiler
+            tags:
+                ticket_filter:
+                    name: php_ticket_checker_compiler
+                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\Person\PersonTerm'
+
     term_engine.php_ticket_checker.compiler.ticket_status:
             class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus\PhpTicketStatusTermCompiler
             parent: term_engine.php_ticket_checker.term_compiler
@@ -116,6 +124,22 @@ services:
                 ticket_filter:
                     name: php_ticket_checker_compiler
                     term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLanguage\TicketLanguageTerm'
+
+    term_engine.php_ticket_checker.compiler.organization:
+            class: DeskPRO\Bundle\AppBundle\TermEngine\Term\Organization\PhpOrganizationTermCompiler
+            parent: term_engine.php_ticket_checker.term_compiler
+            tags:
+                ticket_filter:
+                    name: php_ticket_checker_compiler
+                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\Organization\OrganizationTerm'
+
+    term_engine.php_ticket_checker.compiler.problem:
+            class: DeskPRO\Bundle\AppBundle\TermEngine\Term\Problem\PhpProblemTermCompiler
+            parent: term_engine.php_ticket_checker.term_compiler
+            tags:
+                ticket_filter:
+                    name: php_ticket_checker_compiler
+                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\Problem\ProblemTerm'
 
     term_engine.php_ticket_checker.compiler.ticket_urgency:
             class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketUrgency\PhpTicketUrgencyTermCompiler

@@ -5,6 +5,7 @@ import classNames from 'classnames';
 export class CheckboxList extends React.Component {
 
   static propTypes = {
+    multiple: PropTypes.bool,
     selected: PropTypes.array,
     showOnlySelected: PropTypes.bool,
     filter: PropTypes.string,
@@ -13,16 +14,20 @@ export class CheckboxList extends React.Component {
   };
 
   onClick = value => {
-    const { selected = [], onChange } = this.props;
-    const index = selected.indexOf(value);
+    const { multiple, selected = [], onChange } = this.props;
 
-    if (index === -1) {
-      selected.push(value);
+    if (multiple) {
+      const index = selected.indexOf(value);
+      if (index === -1) {
+        selected.push(value);
+      } else {
+        selected.splice(index, 1);
+      }
+
+      onChange(selected);
     } else {
-      selected.splice(index, 1);
+      onChange([value]);
     }
-
-    onChange(selected);
   };
 
   renderItem({label, value, keyword}, index) {

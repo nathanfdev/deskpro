@@ -30,22 +30,41 @@ export class FilteringMenuContainer extends Component {
   collapse = () => this.setState({ expanded: false });
 
   stateValue(param) {
+    if (param instanceof Array) {
+      const result = [];
+      param.map(item => {
+        let value = this.props.state.get(item);
+        if (Immutable.Iterable.isIterable(value)) {
+          value = value.toJS();
+          value.map(item1=> {
+            result.push(item1);
+          });
+        }
+      });
+      return [...new Set(result)];
+    }
     let value = this.props.state.get(param);
     if (Immutable.Iterable.isIterable(value)) {
       value = value.toJS();
     }
-
     return value;
   }
 
   getButtonLabel() {
     const { filters = [] } = this.props;
-
     let label = '(none)';
     let count = 0;
+    let value;
     filters.map(filter => {
-      const value = this.stateValue(filter.param);
-      if ((value instanceof Array && value.length) || (!value instanceof Array)) {
+      if (filter.hasOwnProperty('param')) {
+        value = this.stateValue(filter.param);
+      } else if (filter.hasOwnProperty('fromParam')) {
+        value = this.stateValue(filter.fromParam);
+        if (!value) {
+          value = this.stateValue(filter.toParam);
+        }
+      }
+      if (value && ((value instanceof Array && value.length) || !(value instanceof Array))) {
         label = filter.label;
         count++;
       }
@@ -75,7 +94,8 @@ export class FilteringMenuContainer extends Component {
                     positionTarget={this.refs.button}>
           <ClickOut
             onClickOut={this.collapse}
-            ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list']}>
+            ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list']}
+            additionalNodes={['.dpw-navigation-dropdown-item-clear']}>
             <FilteringMenu
               dispatch={dispatch}
               filters={filters}
@@ -102,6 +122,7 @@ export class FilteringMenuContainer extends Component {
 export class FilteringMenu extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
+    stateValue: PropTypes.func.isRequired,
     onMenuUnmount: PropTypes.func,
     filters: PropTypes.array.isRequired,
     setParamsAction: PropTypes.func.isRequired,
@@ -183,7 +204,7 @@ export class FilteringMenu extends Component {
 
   renderLabelsFilterInfo(labels) {
     if (labels.length) {
-      const result = [<span className="dpw-navigation-dropdown-item-inline-info">{labels}</span>];
+      const result = [<span className="dpw-navigation-dropdown-item-inline-info">{labels[0]}</span>];
       if (labels.length > 1) {
         result.push(
           <span className="dpw-navigation-dropdown-item-inline-info dpw-navigation-dropdown-item-inline-info-extra">
@@ -258,13 +279,20 @@ export class FilteringMenu extends Component {
         }
       });
     });
-
     return this.renderLabelsFilterInfo(selected);
   }
 
   renderSelectFilter({ label, icon, param, multiple, options }, index) {
     const { dispatch, setParamsAction, stateValue } = this.props;
-    const filterValue = stateValue(param) || [];
+    const params = [param];
+    options.map(option=> {
+      if (option.hasOwnProperty('nested')) {
+        option.nested.map(opt => {
+          params.push(opt.param);
+        });
+      }
+    });
+    const filterValue = stateValue([...new Set(params)]) || [];
     const isActive = Boolean(filterValue.length);
 
     // onClick depending on if filter selects multiple values or a single value
@@ -273,12 +301,18 @@ export class FilteringMenu extends Component {
       onClick = (value) => () => dispatch(setParamsAction({ [param]: value, delayReload: true }));
     } else {
       onClick = (value, newParam = null) => () => {
-        if (filterValue.indexOf(value) === -1) {
-          filterValue.push(value);
+        let filterValues = newParam ? this.props.state.get(newParam) : this.props.state.get(param);
+        if (filterValues) {
+          filterValues = filterValues.toJS();
         } else {
-          filterValue.splice(filterValue.indexOf(value), 1);
+          filterValues = [];
         }
-        dispatch(setParamsAction({ [newParam ? newParam : param]: filterValue, delayReload: true }));
+        if (filterValues.indexOf(value) === -1) {
+          filterValues.push(value);
+        } else {
+          filterValues.splice(filterValues.indexOf(value), 1);
+        }
+        dispatch(setParamsAction({ [newParam ? newParam : param]: filterValues, delayReload: true }));
       };
     }
 
@@ -301,7 +335,6 @@ export class FilteringMenu extends Component {
         </ul>
       );
     };
-
     return (
       <FilterItem
         key={index}

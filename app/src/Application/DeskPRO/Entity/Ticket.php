@@ -643,6 +643,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @return bool true if all of the messages on the note are agent notes
+     */
+    public function hasNotesOnly()
+    {
+        return $this->date_last_agent_reply === null && $this->date_last_user_reply === null;
+    }
+
+    /**
      * Enable auto ticket processing.
      *
      * @see disableAutoTicketProcess
@@ -846,9 +854,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * Given an array of agents, sync the current parts with those in the array.
      * So remove ones that aren't in it, or add new ones.
      *
-     * @param array $parts
+     * @param array|ArrayCollection $agents
      */
-    public function setAgentParticipants(array $agents)
+    public function setAgentParticipants($agents)
     {
         $current_agent_ids = array();
         foreach ($this->participants as $p) {
@@ -2140,6 +2148,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         } else {
             $this['product'] = null;
         }
+    }
+
+    public function getProblemIds()
+    {
+        $ids = [];
+        foreach ($this->problems as $problem) {
+            $ids[] = $problem->getId();
+        }
+
+        return $ids;
     }
 
     public function getPriorityId()

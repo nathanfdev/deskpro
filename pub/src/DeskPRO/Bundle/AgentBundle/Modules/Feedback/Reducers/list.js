@@ -1,5 +1,5 @@
 import { createReducer } from 'Ampliflux';
-import { async, setValue, setFullPayload, togglePayloadInCollection, handleMassAction } from 'Ampliflux/reducers/handlers';
+import { async, setValue, setFullPayload, togglePayloadInCollection, handleMassAction, mergeFullPayload } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/FeedbackListActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
@@ -17,8 +17,6 @@ const initialState = {
   async: {
     done: true
   },
-  tableVisibleFields: ['id', 'urgency', 'person', 'agent', 'subject', 'status'],
-  cardVisibleFields: ['id', 'urgency', 'person', 'agent', 'subject', 'status', 'date_created', 'labels'],
   commentsTableViewFields: [ // temporary, must be removed later
     { name: 'id', label: 'ID', className: 'id-col', status: constants.FIELD_SHOWN, priority: 1 },
     { name: 'status', label: 'Status', status: constants.FIELD_SHOWN, priority: 2 },
@@ -43,9 +41,10 @@ export default createReducer(initialState, {
   [actions.toggleSelectedAction]: togglePayloadInCollection('selected'),
   [actions.toggleTableFieldVisibility]: togglePayloadInCollection('tableVisibleFields'),
   [actions.toggleCardFieldVisibility]: togglePayloadInCollection('cardVisibleFields'),
+  [actions.setViewFieldsSettingStoredFlag]: (state, payload) => state.set('viewFieldsSettingsFromDb', payload),
   [actions.getDisplayFieldsFromPersonSetting]: async({
-    success: (state, payload) =>
-      state.setIn(['viewFields'], payload.data.value)
+    success: mergeFullPayload()
   }),
-  [actions.setParams]: setFullPayload('currentListParams')
+  [actions.setParams]: setFullPayload('currentListParams'),
+  [actions.setDisplayFields]: mergeFullPayload()
 });

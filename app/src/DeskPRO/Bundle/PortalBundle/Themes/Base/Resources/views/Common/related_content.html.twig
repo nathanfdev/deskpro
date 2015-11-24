@@ -1,4 +1,3 @@
-{% import 'Theme::icons.html.twig' as icons %}
 {% if related_count %}
     <div class="related">
     {% for type,related in related_content %}
@@ -9,8 +8,9 @@
                 <ul>
                     {% for content in related %}
                         <li>
+                            {{ content_icon(content) }}
                             <a href="{{ path('portal_news_view', { slug: content.slug }) }}">
-                                <i class="fa fa-file-text-o"></i> {{ content.realTitle }}
+                                 {{ content.realTitle }}
                             </a>
                         </li>
                     {% endfor %}
@@ -23,8 +23,9 @@
                 <ul>
                     {% for content in related %}
                         <li>
+                            {{ content_icon(content) }}
                             <a href="{{ path('portal_kb_view', { slug: content.slug }) }}">
-                                <i class="fa fa-file-text-o"></i> {{ content.realTitle }}
+                                 {{ content.realTitle }}
                             </a>
                         </li>
                     {% endfor %}
@@ -37,8 +38,9 @@
                 <ul>
                     {% for content in related %}
                         <li>
+                            {{ content_icon(content) }}
                             <a href="{{ path('portal_downloads_view', { slug: content.slug }) }}">
-                                {{ icons.dl(content) }} {{ content.realTitle }}
+                                 {{ content.realTitle }}
                             </a>
                         </li>
                     {% endfor %}
@@ -51,8 +53,9 @@
                 <ul>
                     {% for content in related %}
                         <li>
+                            {{ content_icon(content) }}
                             <a href="{{ path('portal_feedback_view', { slug: content.slug }) }}">
-                                <i class="fa fa-file-text-o"></i> {{ content.realTitle }}
+                                {{ content.realTitle }}
                             </a>
                         </li>
                     {% endfor %}

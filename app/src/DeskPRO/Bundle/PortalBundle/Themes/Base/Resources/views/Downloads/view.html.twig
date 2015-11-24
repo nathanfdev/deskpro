@@ -1,5 +1,4 @@
 {% extends 'Theme::layout.html.twig' %}
-{% import 'Theme::icons.html.twig' as icons %}
 
 {% block inner_content %}
     <div class="breadcrumbs">
@@ -23,10 +22,10 @@
                     <img style="max-width: 100%;"
                          src="{{ portal_path(file, 'serve') }}"
                          alt="{{ file.title }}"/><br>
-                {% else %}
-                    {{ icons.dl_detailed(file) }}
+                {% else if file.blob %}
+                    {{ content_icon(file) }}
                 {% endif %}
-                [{{ file.blob.content_type }}]
+                {% if file.blob %}[{{ file.blob.content_type }}]{% endif %}
                 {{ phrase('portal.downloads.btn-download', { size: file.readableFileSize }) }}
             </a>
         </div>

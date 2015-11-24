@@ -38,6 +38,8 @@ use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
+use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 use Hateoas\Configuration\Annotation as Hateoas;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -45,6 +47,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TaskRepository")
  * @ORM\Table(name="tasks_new")
+ * @ORM\HasLifecycleCallbacks
  *
  * @Hateoas\Relation(
  *      "self",
@@ -217,6 +220,7 @@ class Task implements EntityInterface, NotifyPropertyChanged
     {
         $this->subtasks = new ArrayCollection();
         $this->labels   = new ArrayCollection();
+        $this->assigned = new ArrayCollection();
         $this->setCreator($creator);
         $this->setDateCreated(new \DateTime());
     }
@@ -709,5 +713,69 @@ class Task implements EntityInterface, NotifyPropertyChanged
     public function removeAssigned(TaskAssignment $assignment)
     {
         $this->assigned->removeElement($assignment);
+    }
+
+    /**
+     * Re order display positions of related tasks.
+     *
+     * @ORM\PrePersist
+     *
+     * @param LifecycleEventArgs $args
+     */
+    public function onSetDisplayOrder(LifecycleEventArgs $args)
+    {
+        if ($this->display_order) {
+            return;
+        }
+
+        $qb = $args
+            ->getObjectManager()
+            ->getRepository('App:Task')
+            ->createQueryBuilder('t')
+            ->select('MAX(t.display_order)')
+        ;
+
+        $this->display_order = (int) $qb->getQuery()->getSingleScalarResult() + 1;
+    }
+
+    /**
+     * Re order display positions of related tasks.
+     *
+     * @ORM\PreUpdate
+     *
+     * @param PreUpdateEventArgs $args
+     */
+    public function onReOrderTasks(PreUpdateEventArgs $args)
+    {
+        if (!$args->hasChangedField('display_order')) {
+            return;
+        }
+
+        $old_order = $args->getOldValue('display_order');
+        $new_order = $args->getNewValue('display_order');
+
+        if ($old_order !== $new_order) {
+            $qb = $args->getEntityManager()->createQueryBuilder();
+            $qb
+                ->update()
+                ->from('App:Task', 't')
+                ->set('t.display_order', sprintf('t.display_order + %d', ($new_order > $old_order ? -1 : 1)))
+                ->where(
+                    't.id != :task_id',
+                    't.display_order > :min_order',
+                    't.display_order <= :max_order'
+                )
+                ->setParameters([
+                    'task_id'   => $this->getId(),
+                    'min_order' => min($old_order, $new_order),
+                    'max_order' => max($old_order, $new_order),
+                ]);
+
+            $qb->getQuery()->execute();
+
+            if ($old_order > $new_order) {
+                ++$this->display_order;
+            }
+        }
     }
 }

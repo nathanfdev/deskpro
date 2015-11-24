@@ -55,6 +55,12 @@
     border-bottom: 8px solid #4681b2;
   }
 
+  &.dpw--popup-main-pointer-top-left:before {
+    top: -16px;
+    left: 20px;
+    border-bottom: 8px solid #4681b2;
+  }
+
   &.dpw--popup-main-pointer-bottom:before {
     bottom: -16px;
     right: 20px;

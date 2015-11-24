@@ -16,12 +16,17 @@ export class Card extends Component {
 
   render() {
     const {type, moving, minimized, width, additionalClasses} = this.props;
-    const classes = classNames('dpmw--single-card', additionalClasses, {
-      'dpmw--single-task-card': type === 'task',
-      'floating': type === 'float',
-      'minimized': minimized,
-      'moving': moving
-    });
+    const classes = classNames(
+      'dpmw--single-card',
+      additionalClasses,
+      {
+        'dpmw--single-task-card': type === 'task',
+        'floating': type === 'float',
+        'minimized': minimized,
+        'moving': moving
+      }
+    );
+
     const styles = {};
     if (width) {
       styles.width = width + 'px';
@@ -39,7 +44,7 @@ export class CardLine extends Component {
 
   static propTypes = {
     children: PropTypes.any
-  }
+  };
 
   render() {
     return (
@@ -54,7 +59,7 @@ export class CardLineLeft extends Component {
 
   static propTypes = {
     children: PropTypes.any
-  }
+  };
 
   render() {
     return (
@@ -69,7 +74,7 @@ export class CardLineRight extends Component {
 
   static propTypes = {
     children: PropTypes.any
-  }
+  };
 
   render() {
     return (
@@ -84,7 +89,7 @@ export class CardLineFull extends Component {
 
   static propTypes = {
     children: PropTypes.any
-  }
+  };
 
   render() {
     return (
@@ -99,7 +104,7 @@ export class CardContentText extends Component {
 
   static propTypes = {
     children: PropTypes.any
-  }
+  };
 
   render() {
     return (

@@ -75,18 +75,24 @@ export const applyOrder = createAction(
 
 export const applyFilters = createAction(
   'TASKS_LIST_APPLY_FILTERS',
-    value => dispatch => {
-      dispatch(setListParamsFilters(value));
-      dispatch(loadList());
-    }
+  value => dispatch => {
+    dispatch(setListParamsFilters(value));
+    dispatch(loadList());
+  }
 );
 
-export const setTaskEditing = createAction('TASKS_LIST_SET_TASK_EDITING');
-export const unsetTaskEditing = createAction('TASKS_LIST_UNSET_TASK_EDITING');
+export const addTask = createAction(
+  'TASKS_LIST_ADD_TASK',
+  data => new Promise(resolve => {
+    return DpApi
+      .sendPost(`DP_API/tasks`, data)
+      .success(response => resolve(response.data));
+  })
+);
 
 export const editTask = createAction(
   'TASKS_LIST_EDIT_TASK',
-  (taskId, updateData) => (dispatch, getState) => {
+  (taskId, data) => (dispatch, getState) => {
     const state = getState();
     const tasksMap = elementsMapSelector(state);
 
@@ -94,12 +100,12 @@ export const editTask = createAction(
     const task = tasksMap.get(taskId);
     const taskIndex = tasks.indexOf(task);
 
-    const changedProps = Object.keys(updateData).filter(taskProp => task.get(taskProp) !== updateData[taskProp]);
+    const changedProps = Object.keys(data).filter(taskProp => task.get(taskProp) !== data[taskProp]);
     let updatedTasks = tasks;
 
     if (changedProps.length) {
       // Re order tasks
-      updatedTasks = reOrderCollection(tasks, taskId, updateData.display_order);
+      updatedTasks = reOrderCollection(tasks, taskId, data.display_order);
       if (changedProps.indexOf('display_order') !== -1) {
         changedProps.splice(changedProps.indexOf('display_order'), 1);
       }
@@ -107,7 +113,7 @@ export const editTask = createAction(
       // Update task props
       let updatedTask = updatedTasks.get(taskIndex);
       changedProps.forEach(changedProp => {
-        let newValue = updateData[changedProp];
+        let newValue = data[changedProp];
         if (Array.isArray(newValue)) {
           newValue = Immutable.fromJS(newValue);
         }
@@ -116,7 +122,7 @@ export const editTask = createAction(
       });
 
       updatedTasks = updatedTasks.set(taskIndex, updatedTask);
-      DpApi.sendPut(`DP_API/tasks/${taskId}`, updateData);
+      DpApi.sendPut(`DP_API/tasks/${taskId}`, data);
     }
 
     return updatedTasks;

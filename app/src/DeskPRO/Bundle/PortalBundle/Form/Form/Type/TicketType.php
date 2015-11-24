@@ -537,7 +537,7 @@ class TicketType extends AbstractType
             'label'       => $this->phrase('portal.forms.label_department'),
             'person'      => $form_context->getPerson(),
             'ticket'      => $form_context->getTicket(),
-            'placeholder' => $this->phrase('portal.forms.placeholder_select'),
+            'placeholder' => '',
             'constraints' => [
                 new NotNull(['message' => 'portal.forms.error_ticket_department_required']),
             ],
@@ -830,7 +830,7 @@ class TicketType extends AbstractType
 
         $form_context->getForm()->add($field->getId(), 'deskpro_category', array(
             'label'       => $this->phrase('portal.forms.label_category'),
-            'placeholder' => $this->phrase('portal.forms.placeholder_select'),
+            'placeholder' => '',
         ));
     }
 
@@ -853,7 +853,7 @@ class TicketType extends AbstractType
 
         $form_context->getForm()->add($field->getId(), 'deskpro_priority', array(
             'label'       => $this->phrase('portal.forms.label_priority'),
-            'placeholder' => $this->phrase('portal.forms.placeholder_select'),
+            'placeholder' => '',
         ));
     }
 
@@ -897,7 +897,7 @@ class TicketType extends AbstractType
         }
 
         $form_context->getForm()->add($field->getId(), 'deskpro_product', array(
-            'placeholder' => $this->phrase('portal.forms.placeholder_select'),
+            'placeholder' => '',
         ));
     }
 

@@ -8,7 +8,7 @@ import { ListFrameMenu } from '../../ListFrameMenu';
 export class ControlBar extends Component {
 
   static propTypes = {
-    onMenuUnmount: PropTypes.shape({ onMenuUnmount: PropTypes.func }),
+    onMenuUnmount: PropTypes.func,
     checkbox: PropTypes.shape({
       count: PropTypes.number.isRequired,
       action: PropTypes.func.isRequired
@@ -61,7 +61,8 @@ export class ControlBar extends Component {
         toggleFieldVisibility: PropTypes.func.isRequired
       })).isRequired,
       viewMode: PropTypes.string.isRequired,
-      viewModeAction: PropTypes.func.isRequired
+      viewModeAction: PropTypes.func.isRequired,
+      onViewFieldsMenuUnmount: PropTypes.func.isRequired
     })
   };
 
@@ -71,15 +72,15 @@ export class ControlBar extends Component {
     return (
       <ListFrameMenu>
         <CheckboxContainer {...checkbox} />
-        <SortingMenu {...sorting} onMenuUnmount={onMenuUnmount} />
+        <SortingMenu {...sorting} onMenuUnmount={onMenuUnmount}/>
         <li>
           <hr/>
         </li>
-        <FilteringMenuContainer {...filtering}  onMenuUnmount={onMenuUnmount} />
+        <FilteringMenuContainer {...filtering} onMenuUnmount={onMenuUnmount}/>
         <li>
           <hr/>
         </li>
-        <ViewMenuContainer {...view} />
+        <ViewMenuContainer {...view} onViewFieldsMenuUnmount={view.onViewFieldsMenuUnmount}/>
       </ListFrameMenu>
     );
   }

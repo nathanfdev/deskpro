@@ -32,8 +32,6 @@ use DeskPRO\Bundle\AppBundle\Entity\LabelTask;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
@@ -42,14 +40,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class TaskType extends AbstractType
 {
     /**
-     * @var Task
-     */
-    private $task;
-
-    /**
-     * Get the name of the object.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -57,14 +48,10 @@ class TaskType extends AbstractType
     }
 
     /**
-     * Build form.
-     *
-     * @param FormBuilderInterface $builder The form builder
-     * @param array                $options Form options
+     * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $this->task = $options['task'];
         $builder
             ->add('title', 'text', [
                 'description' => 'the task title',
@@ -133,72 +120,31 @@ class TaskType extends AbstractType
                 'labels_owner'   => $builder->getData(),
                 'owner_property' => 'task',
             ])
-            ->add('departments', 'collection',  [
-                'type'         => 'task_department',
-                'allow_add'    => true,
-                'allow_delete' => true,
-                'delete_empty' => true,
-                'options'      => [
-                    'task'        => $options['task'],
-                    'required'    => false,
-                    'description' => 'task assignees which are departments',
-                ],
+            ->add('departments', 'entity', [
+                'class'    => 'DeskPRO:Department',
+                'multiple' => true,
+                'required' => false,
             ])
-            ->add('teams', 'collection', [
-                'type'         => 'task_agent_team',
-                'allow_add'    => true,
-                'allow_delete' => true,
-                'delete_empty' => true,
-                'options'      => [
-                    'task'        => $options['task'],
-                    'required'    => false,
-                    'description' => 'task assignees which are teams',
-                ],
+            ->add('teams', 'entity', [
+                'class'    => 'DeskPRO:AgentTeam',
+                'multiple' => true,
+                'required' => false,
             ])
-            ->add('agents', 'collection', [
-                'type'         => 'task_person',
-                'allow_add'    => true,
-                'allow_delete' => true,
-                'delete_empty' => true,
-                'options'      => [
-                    'task'        => $options['task'],
-                    'required'    => false,
-                    'description' => 'task assignees which are people',
-                ],
+            ->add('agents', 'entity', [
+                'class'    => 'DeskPRO:Person',
+                'multiple' => true,
+                'required' => false,
             ])
-            ->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSubmit']);
+        ;
     }
 
     /**
-     * The the default options for the form.
-     *
-     * @param OptionsResolverInterface $resolver
+     * {@inheritdoc}
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class'     => 'DeskPRO\Bundle\AppBundle\Entity\Task',
-            'task'           => null,
-            'entity_manager' => null,
+            'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\Task',
         ]);
-    }
-
-    /**
-     * Code to be executed when the form is submitted
-     * This removes any labels which were not submitted by the form.
-     *
-     * @param FormEvent $event The submit event
-     */
-    public function onSubmit(FormEvent $event)
-    {
-        /** @var Task $data */
-        $data       = $event->getData();
-        $newMembers = $data->getLabels();
-
-        foreach ($this->task->getLabels() as $label) {
-            if (!$newMembers->contains($label)) {
-                $this->task->removeLabel($label);
-            }
-        }
     }
 }

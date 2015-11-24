@@ -211,6 +211,10 @@ class TicketsController extends AbstractController
             return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
         }
 
+        if ($ticket->hasNotesOnly()) {
+            throw new NotFoundHttpException(sprintf('ticket with auth "%s" found but has only agent notes', $ticket->getAuth()));
+        }
+
         $ticket_view = $this->getTicketsViewService()->getUserTicketView($ticket);
 
         $timeline = $this->get('data.ticket_timeline')->getUserTimeline($ticket);
@@ -489,7 +493,13 @@ class TicketsController extends AbstractController
             return $repo->findOneBy(array('ref' => $ticket_ref));
         }
 
-        return $repo->findOneBy(array('id' => $ticket_ref));
+        $ticket = $repo->findOneBy(array('id' => $ticket_ref));
+
+        if ($ticket->hasNotesOnly()) {
+            throw new NotFoundHttpException(sprintf('ticket with ref or id "%s" found but has only agent notes', $ticket_ref));
+        }
+
+        return $ticket;
     }
 
     private function saveEditedTicket(Ticket $ticket, Person $person, $event_type = TicketTrigger::EVENT_TYPE_UPDATE)

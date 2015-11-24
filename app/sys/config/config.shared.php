@@ -211,6 +211,11 @@ $definition->setClass('Application\DeskPRO\Entity\EventListener\PersonCustomData
 $definition->setArguments(array(new Reference('service_container')));
 $definition->addTag('doctrine.entity_listener');
 $container->setDefinition('dp.entity_lister.person_custo_data_changelog', $definition);
+$definition = new Definition();
+$definition->setClass('Application\DeskPRO\Entity\EventListener\ProblemListener');
+$definition->setArguments(array(new Reference('service_container')));
+$definition->addTag('doctrine.entity_listener');
+$container->setDefinition('dp.entity_lister.problem', $definition);
 
 ############################################################################
 # Doctrine Configuration

@@ -191,14 +191,6 @@ class CoreExtension extends Extension
                 'Application\DeskPRO\Entity\EventListener\PersonCustomDataChangeLogListener')
             ->addArgument(new Reference('service_container'))
             ->addTag('doctrine.entity_listener');
-
-        $container
-            ->register(
-                'dp.entity_listener.problem',
-                'Application\DeskPRO\Entity\EventListener\ProblemListener'
-            )
-            ->addArgument(new Reference('service_container'))
-            ->addTag('doctrine.entity_listener');
     }
 
     /**

@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
 import jQuery from 'jquery';
 
 export class ClickOut extends React.Component {
@@ -22,8 +21,8 @@ export class ClickOut extends React.Component {
 
   onClick = event => {
     event.preventDefault();
-    const { additionalNodes = [], ignoreNodes, onClickOut, onClick } = this.props;
 
+    const { additionalNodes = [], ignoreNodes, onClickOut, onClick } = this.props;
     // skip if clicking on one of the ignored nodes
     if (ignoreNodes) {
       let skip = false;

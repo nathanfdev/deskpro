@@ -1,5 +1,5 @@
 import { createReducer } from 'Ampliflux';
-import { setFullPayload, setValue, async, togglePayloadInCollection, handleMassAction } from 'Ampliflux/reducers/handlers';
+import { setFullPayload, setValue, async, togglePayloadInCollection, handleMassAction, pushPayloadToCollection } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/listActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
@@ -24,21 +24,13 @@ const initialState = {
   }
 };
 
-function setTaskEditing(state, id, value) {
-  const elements = state.get('elements');
-  const editingTask = elements.filter(task => task.get('id') === id).first();
-  const index = elements.indexOf(editingTask);
-
-  return state.set('elements', elements.set(index, editingTask.set('edit', value)));
-}
-
 export default createReducer(initialState, {
   [actions.setListParamsNav]: setFullPayload('listParams.nav'),
   [actions.setListParamsFilters]: setFullPayload('listParams.filters'),
-  [actions.toggleCardFieldVisibility]: togglePayloadInCollection(`visibleFields.${constants.VIEW_MODE_CARD}`),
-  [actions.toggleTableFieldVisibility]: togglePayloadInCollection(`visibleFields.${constants.VIEW_MODE_TABLE}`),
-  [actions.toggleKanbanFieldVisibility]: togglePayloadInCollection(`visibleFields.${constants.VIEW_MODE_KANBAN}`),
-  [actions.toggleCalendarFieldVisibility]: togglePayloadInCollection(`visibleFields.${constants.VIEW_MODE_CALENDAR}`),
+  [actions.toggleCardFieldVisibility]: togglePayloadInCollection(['visibleFields', constants.VIEW_MODE_CARD]),
+  [actions.toggleTableFieldVisibility]: togglePayloadInCollection(['visibleFields', constants.VIEW_MODE_TABLE]),
+  [actions.toggleKanbanFieldVisibility]: togglePayloadInCollection(['visibleFields', constants.VIEW_MODE_KANBAN]),
+  [actions.toggleCalendarFieldVisibility]: togglePayloadInCollection(['visibleFields', constants.VIEW_MODE_CALENDAR]),
   [actions.toggleSelected]: togglePayloadInCollection('selected'),
   [actions.toggleAll]: handleMassAction('elements', 'selected'),
   [actions.unload]: setValue('elements', []),
@@ -48,6 +40,7 @@ export default createReducer(initialState, {
     done: setValue('async.done', true)
   }),
   [actions.editTask]: setFullPayload('elements'),
-  [actions.setTaskEditing]: (state, payload) => setTaskEditing(state, payload, true),
-  [actions.unsetTaskEditing]: (state, payload) => setTaskEditing(state, payload, false)
+  [actions.addTask]: async({
+    success: pushPayloadToCollection('elements')
+  })
 });
