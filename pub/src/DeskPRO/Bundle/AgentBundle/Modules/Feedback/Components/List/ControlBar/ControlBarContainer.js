@@ -4,7 +4,8 @@ import {
   currentListSortSelector, currentListOrderSelector, currentListParamsSelector, currentViewModeSelector,
   tableVisibleFieldsSelector, cardVisibleFieldsSelector, listFiltersSelector
 } from '../../../Selectors/list';
-import { toggleMassAction, setSort, setOrder, applyParams, toggleTableFieldVisibility, toggleCardFieldVisibility, storeDisplayFieldsToPersonSetting }
+import { toggleMassAction, setSort, setOrder, applyParams, toggleTableFieldVisibility, toggleCardFieldVisibility,
+  storeDisplayFieldsToPersonSetting, updateDisplayFieldsToPersonSetting }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
@@ -12,6 +13,7 @@ import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components
 
 @connect(state => ({
   count: state.Feedback.list.get('selected').size,
+  viewFieldsSettingsFromDb: state.Feedback.list.get('viewFieldsSettingsFromDb'),
   sort: currentListSortSelector(state),
   order: currentListOrderSelector(state),
   filterParams: currentListParamsSelector(state),
@@ -29,7 +31,8 @@ export class ControlBarContainer extends Component {
     filters: PropTypes.array.isRequired,
     viewMode: PropTypes.string.isRequired,
     tableVisibleFields: PropTypes.object.isRequired,
-    cardVisibleFields: PropTypes.object.isRequired
+    cardVisibleFields: PropTypes.object.isRequired,
+    viewFieldsSettingsFromDb: PropTypes.bool.isRequired
   };
 
   render() {
@@ -92,7 +95,7 @@ export class ControlBarContainer extends Component {
 
         viewMode: this.props.viewMode,
         viewModeAction: (mode) => updateRoutingState('list', 'view', mode),
-        onViewFieldsMenuUnmount: storeDisplayFieldsToPersonSetting
+        onViewFieldsMenuUnmount: this.props.viewFieldsSettingsFromDb ? updateDisplayFieldsToPersonSetting : storeDisplayFieldsToPersonSetting
       }
     };
     return (

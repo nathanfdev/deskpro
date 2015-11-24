@@ -77,8 +77,7 @@ export class ViewMenuContainer extends Component {
     const {dispatch, onViewFieldsMenuUnmount} = this.props;
 
     if (onViewFieldsMenuUnmount) {
-      console.log('Implement me, please');
-      // dispatch(onViewFieldsMenuUnmount());
+      dispatch(onViewFieldsMenuUnmount());
     }
   }
 

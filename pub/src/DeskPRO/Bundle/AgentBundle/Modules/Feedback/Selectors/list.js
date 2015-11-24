@@ -17,6 +17,15 @@ export const currentListParamsSelector = createSelector(
     state => state.get('currentListParams')
 );
 
+export const currentViewFieldsParamsSelector = createSelector(
+  stateSelector,
+  (state) => {
+    const cardVisibleFields = state.get('cardVisibleFields');
+    const tableVisibleFields = state.get('tableVisibleFields');
+    return { cardVisibleFields: cardVisibleFields, tableVisibleFields: tableVisibleFields };
+  }
+);
+
 export const currentListSortSelector = createSelector(
   currentListParamsSelector,
     params => params.get('sort')
