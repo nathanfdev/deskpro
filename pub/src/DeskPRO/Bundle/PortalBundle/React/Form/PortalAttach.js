@@ -16,6 +16,7 @@ export default class PortalAttach extends React.Component {
 
           <ul>
             <li>
+                {/** these icons will be in the payload from the server (HTML) **/}
               <a href="#"><i className="fa fa-file-text-o" /> Screen Shot 2014-09-30 at 6.14.15 PM.png</a><span className="file-size">(245kb)</span>
               <a href="#" className="remove-attachement"><i className="fa fa-times" />Remove</a>
             </li>

@@ -590,6 +590,11 @@ return array(
     'portal.default_brand' => 1,
 
     /*
+     * Use icon colors
+     */
+    'portal.use_icon_colors' => true,
+
+    /*
      * A timestamp used in generating cache keys for permissions, etags, etc (updates automatically in the db)
      */
     'portal.global_cache_timestamp' => 0,

@@ -35,7 +35,6 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Helper\TicketPublicIdResolver;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
-use DeskPRO\Bundle\PortalBundle\View\File\FileViewHelper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
@@ -125,7 +124,11 @@ class PortalExtension extends \Twig_Extension
             new \Twig_SimpleFunction('get_secure_content_cats', array($this, 'getSecureCats')),
             new \Twig_SimpleFunction('user_up_voted', array($this, 'didUserUpVote')),
             new \Twig_SimpleFunction('user_down_voted', array($this, 'didUserDownVote')),
-            new \Twig_SimpleFunction('file_css_class', array($this, 'getFileCssClass')),
+            new \Twig_SimpleFunction('file_icon', array($this, 'makeFileIcon'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('article_icon', array($this, 'makeArticleIcon'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('news_icon', array($this, 'makeNewsIcon'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('feedback_icon', array($this, 'makeFeedbackIcon'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('content_icon', array($this, 'makeContentIcon'), array('is_safe' => array('html'))),
             new \Twig_SimpleFunction('ticket_view', array($this, 'getTicketView')),
             new \Twig_SimpleFunction('phrase_form_error', array($this, 'makeFormError')),
             new \Twig_SimpleFunction('insert_glossary_js', array($this, 'makeGlossaryJs'), array('is_safe' => array('html', 'javascript'))
@@ -180,13 +183,29 @@ class PortalExtension extends \Twig_Extension
         return $cleaned_params;
     }
 
-    public function getFileCssClass(Entity\Download $download)
+    public function makeContentIcon($content)
     {
-        if ($blob = $download->getBlob()) {
-            return implode(' ', FileViewHelper::getCssClassForFileExtension($blob->getExtension()));
-        }
+        return $this->container->get('icon_factory')->makeContentIcon($content);
+    }
 
-        return '';
+    public function makeFileIcon($blob_or_download)
+    {
+        return $this->container->get('icon_factory')->makeFileIcon($blob_or_download);
+    }
+
+    public function makeArticleIcon($article)
+    {
+        return $this->container->get('icon_factory')->makeArticleIcon($article);
+    }
+
+    public function makeNewsIcon($news)
+    {
+        return $this->container->get('icon_factory')->makeNewsIcon($news);
+    }
+
+    public function makeFeedbackIcon($feedback)
+    {
+        return $this->container->get('icon_factory')->makeFeedbackIcon($feedback);
     }
 
     /**
