@@ -1035,7 +1035,7 @@ define [
 
             getValue: (model = {}, data) ->
               return {
-                type: 'CheckUserValidEmail',
+                type: 'CheckUserValidAgent',
                 op: model.op || 'is'
                 options: { run:true }
               }
