@@ -5,6 +5,7 @@
             <h4 class="modal-title">Test Settings</h4>
         </div>
         <div class="modal-body">
+			<div class="alert alert-info">Please note that a popup is expected to appear to test these settings. If you have disabled popups on your browser, please allow them for this page.</div>
             <div class="alert alert-info">If you have changed your settings, you must save them before running this
                 test.
                 <button class="btn btn-default" ng-click="saveAndRun()">Save Settings and Rerun Test</button>
@@ -58,8 +59,7 @@ Email: {{person.email}}
             </div>
             <div ng-show="loading">
                 <i class="spinner-flat"></i>
-                <em>Waiting for response from JWT provider. Please authenticate with the JWT provider in the box
-                    above.</em>
+                <em>Waiting for response from JWT provider. Please authenticate with the JWT provider in the popup window.</em>
 
                 <div class="alert alert-warning" style="margin-bottom: 0; margin-top: 10px;">
                     If you don't see your login form then there is a problem with either the provided settings or your

@@ -354,12 +354,13 @@ class UsersourcesController extends AbstractController
             );
 
             return $this->createApiSuccessResponse(
-                array(
+                array_merge(array(
                     'iframe_html' => $this->renderView(
                             'DeskPRO:Auth:_sso_iframe_for_test.html.twig',
                             $vars
                         ),
-                )
+                ),
+                $adapter->getIframeTemplateParams(false))
             );
         }
     }
