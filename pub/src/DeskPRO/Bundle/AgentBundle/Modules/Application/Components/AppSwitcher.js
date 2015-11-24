@@ -5,26 +5,38 @@ import { Link } from 'react-router';
 export class AppSwitcher extends React.Component {
 
   static propTypes = {
-    dpWindow: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
   };
 
   constructor(props) {
     super(props);
-    this.expanded = false;
+    this.expandTimeout = false;
+    this.state = {
+      expandedSwitcher: false
+    };
   }
 
   hoverSwitcher = () => {
-    this.expanded = setTimeout(() => this.props.dispatch(AppActions.expandSwitcher()), 250);
+    this.expandTimeout = setTimeout(() => this.expandSwitcher(), 250);
   };
 
+  expandSwitcher() {
+    const oldState = this.state;
+    const newState = {...oldState};
+    newState.expandedSwitcher = true;
+    this.setState(newState);
+  }
+
   cancelSwitcher = () => {
-    clearTimeout(this.expanded);
-    this.props.dispatch(AppActions.collapseSwitcher());
+    clearTimeout(this.expandTimeout);
+    const oldState = this.state;
+    const newState = {...oldState};
+    newState.expandedSwitcher = false;
+    this.setState(newState);
   };
 
   renderAppIcon(appId, title, linkClass, iconClass, notificationCount = 0) {
-    const { dispatch, dpWindow } = this.props;
+    const { dispatch } = this.props;
     const clickHandler = () => dispatch(AppActions.setActiveApp(appId));
     const iconClassNames = 'icon ' + iconClass;
 
@@ -35,7 +47,7 @@ export class AppSwitcher extends React.Component {
           <div className="dpw-app-bar-icon">
             <div className={iconClassNames}></div>
           </div>
-          {dpWindow.get('expandedSwitcher') ? (<span className="dps-app-bar-title">{title}</span>) : null }
+          {this.state.expandedSwitcher ? (<span className="dps-app-bar-title">{title}</span>) : null }
         </Link>
       </li>
     );
@@ -43,7 +55,7 @@ export class AppSwitcher extends React.Component {
 
   render() {
     const classesNames = ['dpw-app-bar', 'dpw-app-bar-state-1'];
-    if (this.props.dpWindow.get('expandedSwitcher')) {
+    if (this.state.expandedSwitcher) {
       classesNames.push('dpw-app-bar-expanded');
     }
 

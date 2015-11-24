@@ -8,8 +8,6 @@ export const setActiveApp = createAction(
     return appId;
   }
 );
-export const expandSwitcher = createAction('APP_EXPAND_SWITCHER');
-export const collapseSwitcher = createAction('APP_COLLAPSE_SWITCHER');
 export const toggleView = createAction('APP_TOGGLE_VIEW');
 
 // Welcome page actions
