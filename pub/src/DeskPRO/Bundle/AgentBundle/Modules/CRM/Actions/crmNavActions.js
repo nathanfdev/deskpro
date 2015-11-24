@@ -1,4 +1,4 @@
-import { createAction } from 'Ampliflux/actions';
+import { createAction } from 'Ampliflux';
 import { pluck } from 'lodash';
 import * as People from 'DeskPRO/Bundle/AgentBundle/Services/Api/People';
 import * as UserGroups from 'DeskPRO/Bundle/AgentBundle/Services/Api/UserGroups';
