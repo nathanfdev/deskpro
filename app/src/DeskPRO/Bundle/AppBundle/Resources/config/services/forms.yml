@@ -112,24 +112,6 @@ services:
           - { name: form.type, alias: project_person }
       arguments: [@doctrine.orm.default_entity_manager]
 
-  form.task_department:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\TaskDepartmentType
-      tags:
-          - { name: form.type, alias: task_department }
-      arguments: [@doctrine.orm.default_entity_manager]
-
-  form.task_agent_team:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\TaskAgentTeamType
-      tags:
-          - { name: form.type, alias: task_agent_team }
-      arguments: [@doctrine.orm.default_entity_manager]
-
-  form.task_person:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\TaskPersonType
-      tags:
-          - { name: form.type, alias: task_person }
-      arguments: [@doctrine.orm.default_entity_manager]
-
   form.term_engine.term:
       class: DeskPRO\Bundle\AppBundle\Form\Type\TermEngineTermType
       arguments:

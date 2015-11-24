@@ -57,7 +57,6 @@ class TaskType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $this->task = $options['task'];
         $builder
             ->add('title', 'text', [
                 'description' => 'the task title',
@@ -126,38 +125,20 @@ class TaskType extends AbstractType
                 'labels_owner'   => $builder->getData(),
                 'owner_property' => 'task',
             ])
-            ->add('departments', 'collection',  [
-                'type'         => 'task_department',
-                'allow_add'    => true,
-                'allow_delete' => true,
-                'delete_empty' => true,
-                'options'      => [
-                    'task'        => $options['task'],
-                    'required'    => false,
-                    'description' => 'task assignees which are departments',
-                ],
+            ->add('departments', 'entity', [
+                'class'    => 'DeskPRO:Department',
+                'multiple' => true,
+                'required' => false,
             ])
-            ->add('teams', 'collection', [
-                'type'         => 'task_agent_team',
-                'allow_add'    => true,
-                'allow_delete' => true,
-                'delete_empty' => true,
-                'options'      => [
-                    'task'        => $options['task'],
-                    'required'    => false,
-                    'description' => 'task assignees which are teams',
-                ],
+            ->add('teams', 'entity', [
+                'class'    => 'DeskPRO:AgentTeam',
+                'multiple' => true,
+                'required' => false,
             ])
-            ->add('agents', 'collection', [
-                'type'         => 'task_person',
-                'allow_add'    => true,
-                'allow_delete' => true,
-                'delete_empty' => true,
-                'options'      => [
-                    'task'        => $options['task'],
-                    'required'    => false,
-                    'description' => 'task assignees which are people',
-                ],
+            ->add('agents', 'entity', [
+                'class'    => 'DeskPRO:Person',
+                'multiple' => true,
+                'required' => false,
             ])
         ;
     }
@@ -170,9 +151,7 @@ class TaskType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class'     => 'DeskPRO\Bundle\AppBundle\Entity\Task',
-            'task'           => null,
-            'entity_manager' => null,
+            'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\Task',
         ]);
     }
 }
