@@ -217,6 +217,7 @@ class Task implements EntityInterface, NotifyPropertyChanged
     {
         $this->subtasks = new ArrayCollection();
         $this->labels   = new ArrayCollection();
+        $this->assigned = new ArrayCollection();
         $this->setCreator($creator);
         $this->setDateCreated(new \DateTime());
     }

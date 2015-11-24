@@ -23,8 +23,25 @@ export class TaskCardNewContainer extends React.Component {
       task_type: 'task',
       visibility: 'public',
       urgency: 1,
-      display_order: 1
+      display_order: 1,
+      date_due: this.getDateDue(),
+      project: this.getProject()
     };
+
+    const agent = this.getAgent();
+    if (agent) {
+      submitData.agents = [agent];
+    }
+
+    const team = this.getTeam();
+    if (team) {
+      submitData.teams = [team];
+    }
+
+    const department = this.getDepartment();
+    if (department) {
+      submitData.departments = [department];
+    }
 
     dispatch(addTask(submitData));
     onClose();
@@ -39,21 +56,34 @@ export class TaskCardNewContainer extends React.Component {
     const { updateData = {}, currentNav } = this.props;
     const projects = currentNav.get('project');
 
-    let project = null;
-    if (projects) {
-      project = projects.first();
-    } else if (updateData.project) {
-      project = updateData.project;
+    return projects && projects.size ? projects.first() : updateData.project;
+  }
+
+  getAgent() {
+    const { updateData = {}, currentNav } = this.props;
+    const agents = currentNav.get('assigned_agent');
+
+    if (agents && agents.size) {
+      return agents.first();
     }
 
-    return project;
+    return updateData.agents && updateData.agents.length ? updateData.agents[0] : null;
+  }
+
+  getTeam() {
+    const { updateData = {} } = this.props;
+    return updateData.teams && updateData.teams.length ? updateData.teams[0] : null;
+  }
+
+  getDepartment() {
+    const { updateData = {} } = this.props;
+    return updateData.departments && updateData.departments.length ? updateData.departments[0] : null;
   }
 
   render() {
     const props = this.props;
     const { children } = props;
     const childProps = children.props;
-
 
     return React.cloneElement(children, {
       ...childProps,
