@@ -647,13 +647,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function hasNotesOnly()
     {
-        foreach ($this->messages as $message) {
-            if (!$message->is_agent_note) {
-                return false;
-            }
-        }
-
-        return true;
+        return $this->date_last_agent_reply === null && $this->date_last_user_reply === null;
     }
 
     /**
