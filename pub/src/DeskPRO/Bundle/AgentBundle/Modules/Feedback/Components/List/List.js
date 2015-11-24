@@ -8,6 +8,7 @@ import { FeedbackCommentTableContainer } from './View/Table/FeedbackCommentTable
 import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import Loader from 'react-loader';
+import { PaginationBoxView } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Pagination/PaginationBoxView';
 
 export class List extends Component {
 
@@ -15,9 +16,19 @@ export class List extends Component {
     loaded: PropTypes.bool.isRequired,
     isComments: PropTypes.bool,
     selected: PropTypes.object.isRequired,
+    pagination: PropTypes.object.isRequired,
     toggleSelected: PropTypes.func.isRequired,
     currentViewMode: PropTypes.string.isRequired
   };
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      data: [],
+      offset: 0
+    };
+  }
 
   contentChoice() {
     if (this.props.isComments) {
@@ -56,6 +67,26 @@ export class List extends Component {
     );
   }
 
+  renderPagination() {
+    const { pagination } = this.props;
+    if (pagination && pagination.total_pages > 1) {
+      return (
+        <div className="dpw--pagination">
+          <PaginationBoxView previousLabel={<i className="fa fa-caret-left"></i>}
+                             nextLabel={"next"}
+                             breakLabel={<li className="break"><a href="">...</a></li>}
+                             pageNum={pagination.total_pages}
+                             marginPagesDisplayed={2}
+                             pageRangeDisplayed={5}
+                             clickCallback={this.handlePageClick}
+                             containerClassName={"pages-list"}
+                             subContainerClassName={"pages-list"}
+                             activeClassName={"active"}/>
+        </div>
+      );
+    }
+  }
+
   render() {
     const { loaded } = this.props;
 
@@ -68,6 +99,7 @@ export class List extends Component {
                 width={3}>
           <ListFrameContents>
             {this.contentChoice()}
+            {this.renderPagination()}
           </ListFrameContents>
         </Loader>
       </ListFrameContainer>
