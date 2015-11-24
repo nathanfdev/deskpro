@@ -31,6 +31,8 @@
  */
 namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\PermissionStrategy\MultiPermissions;
+use Application\ApiBundle\PermissionStrategy\SuperKeyPermission;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
@@ -50,6 +52,14 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class PersonController extends AbstractController
 {
+    public function getPermissionStrategy()
+    {
+        $multi = new MultiPermissions();
+        $multi->addPermissionStrategy(new SuperKeyPermission(), 'authLoginAction');
+
+        return $multi;
+    }
+
     /**
      * @SWG\Api(
      * 	path="/people",
