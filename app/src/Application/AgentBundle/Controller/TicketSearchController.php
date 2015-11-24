@@ -40,6 +40,7 @@ use Application\DeskPRO\Searcher\TicketSearch;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
 use Application\DeskPRO\UI\RuleBuilder;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
@@ -246,28 +247,67 @@ class TicketSearchController extends AbstractController
         }
 
         if ($this->container->getSetting('elastica.enabled') && !$this->in->getUint('person_id')) {
-            $elasticsearch = $this->container->get('deskpro.search_manager.elasticsearch');
-            $elasticsearch->setPersonContext($this->person);
+            try {
+                $elasticsearch = $this->container->get('deskpro.search_manager.elasticsearch');
+                $elasticsearch->setPersonContext($this->person);
 
-            list($results, $result_meta, $people_top) = $elasticsearch->quickSearch($q, 'date_active', array('ticket'));
+                list($results, $result_meta, $people_top) = $elasticsearch->quickSearch($q, 'date_active', array('ticket'));
 
-            if (isset($results['ticket'])) {
-                $results = $results['ticket'];
-            } else {
-                $results = array();
-            }
+                if (isset($results['ticket'])) {
+                    $results = $results['ticket'];
+                } else {
+                    $results = array();
+                }
 
-            $results = array_slice($results, 0, $limit);
+                $results = array_slice($results, 0, $limit);
 
-            $output = array();
-            foreach ($results as $ticket) {
-                $output[] = array(
-                    'id'            => $ticket->id,
-                    'value'         => $ticket->id,
-                    'subject'       => $ticket->subject,
-                    'status'        => $ticket->getStatusCode(),
-                    'last_activity' => $ticket->getLastActivityDate()->getTimestamp(),
-                );
+                $output = array();
+                foreach ($results as $ticket) {
+                    $output[] = array(
+                        'id'            => $ticket->id,
+                        'value'         => $ticket->id,
+                        'subject'       => $ticket->subject,
+                        'status'        => $ticket->getStatusCode(),
+                        'last_activity' => $ticket->getLastActivityDate()->getTimestamp(),
+                    );
+                }
+            } catch (\Exception $e) {
+                KernelErrorHandler::logException($e);
+                $searcher = new \Application\DeskPRO\Searcher\TicketSearch();
+                $searcher->setPerson($this->person);
+                $searcher->setOrderBy('ticket.date_created');
+
+                if ($person_id = $this->in->getUint('person_id')) {
+                    $searcher->addTerm('person', 'is', array('person_id' => $person_id));
+                    $searcher->setLimit($this->in->getUInt('limit') ?: 10);
+                    $results = $searcher->getMatches();
+                    $results = Arrays::castToType($results, 'integer');
+                } else {
+                    $searcher->addTerm('ticket_message', 'is', array('query' => $q));
+                    $searcher->addTerm('date_created', 'gte', array('date1' => strtotime('-60 days')));
+                    $results = $searcher->getMatches();
+                    $results = Arrays::castToType($results, 'integer');
+
+                    if (ctype_digit($q) || preg_match('/#^([0-9]+)$/', $q)) {
+                        if ($q[0] == '#') {
+                            $q = substr($q, 1);
+                        }
+                        array_unshift($results, $q);
+                    }
+                }
+
+                $results = array_slice($results, 0, $limit);
+
+                $output = array();
+                foreach (App::getEntityRepository('DeskPRO:Ticket')->getByIds($results, true) as $ticket) {
+                    $output[] = array(
+                        'id'            => $ticket->id,
+                        'value'         => $ticket->id,
+                        'subject'       => $ticket->subject,
+                        'status'        => $ticket->getStatusCode(),
+                        'last_activity' => $ticket->getLastActivityDate()->getTimestamp(),
+                    );
+                }
             }
         } else {
             $searcher = new \Application\DeskPRO\Searcher\TicketSearch();
