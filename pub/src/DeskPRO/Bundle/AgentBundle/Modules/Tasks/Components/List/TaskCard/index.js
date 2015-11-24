@@ -10,6 +10,8 @@ import { TicketLinkContainer } from './TicketLinkContainer';
 import { CardProject } from './CardProject';
 import { ProjectContainer } from './ProjectContainer';
 import { AssigneeContainer } from './AssigneeContainer';
+import { AssigneeName } from './AssigneeName';
+import { AssigneeAvatar } from './AssigneeAvatar';
 
 export default {
   BaseTaskCard,
@@ -23,5 +25,7 @@ export default {
   TicketLinkContainer,
   CardProject,
   ProjectContainer,
-  AssigneeContainer
+  AssigneeContainer,
+  AssigneeName,
+  AssigneeAvatar
 };

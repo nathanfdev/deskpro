@@ -4,9 +4,9 @@ export class AssigneeName extends React.Component {
 
   static propTypes = {
     task: PropTypes.object.isRequired,
-    agents: PropTypes.object.isRequired,
-    agentTeams: PropTypes.object.isRequired,
-    departments: PropTypes.object.isRequired
+    agents: PropTypes.object,
+    agentTeams: PropTypes.object,
+    departments: PropTypes.object
   };
 
   render() {

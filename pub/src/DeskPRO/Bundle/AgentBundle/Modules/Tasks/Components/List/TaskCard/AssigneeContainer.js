@@ -13,6 +13,10 @@ import { allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent
 export class AssigneeContainer extends React.Component {
 
   render() {
-    return <AssigneeName {...this.props} />;
+    const props = this.props;
+    const { children } = props;
+    const childProps = children.props;
+
+    return React.cloneElement(children, {...childProps, ...props});
   }
 }
