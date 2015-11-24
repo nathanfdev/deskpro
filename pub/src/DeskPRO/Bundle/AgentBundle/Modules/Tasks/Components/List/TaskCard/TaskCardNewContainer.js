@@ -23,7 +23,6 @@ export class TaskCardNewContainer extends React.Component {
       task_type: 'task',
       visibility: 'public',
       urgency: 1,
-      display_order: 1,
       date_due: this.getDateDue(),
       project: this.getProject()
     };

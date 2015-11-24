@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
+use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 use Hateoas\Configuration\Annotation as Hateoas;
@@ -712,6 +713,29 @@ class Task implements EntityInterface, NotifyPropertyChanged
     public function removeAssigned(TaskAssignment $assignment)
     {
         $this->assigned->removeElement($assignment);
+    }
+
+    /**
+     * Re order display positions of related tasks.
+     *
+     * @ORM\PrePersist
+     *
+     * @param LifecycleEventArgs $args
+     */
+    public function onSetDisplayOrder(LifecycleEventArgs $args)
+    {
+        if ($this->display_order) {
+            return;
+        }
+
+        $qb = $args
+            ->getObjectManager()
+            ->getRepository('App:Task')
+            ->createQueryBuilder('t')
+            ->select('MAX(t.display_order)')
+        ;
+
+        $this->display_order = (int) $qb->getQuery()->getSingleScalarResult() + 1;
     }
 
     /**
