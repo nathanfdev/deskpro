@@ -134,7 +134,13 @@
       margin-right: 5px;
     }
 
-    p {
+    .message-content {
+
+      p {
+        margin: 0;
+        color: inherit;
+      }
+
       word-wrap: break-word;
       margin-right: 40px;
       overflow: hidden;
@@ -146,7 +152,8 @@
     margin-left: 0px;
     border: 1px dashed rgba(0, 0, 0, 0.1);
     color: #878a8d;
-    p {
+
+    .message-content {
       color: inherit;
       text-shadow: 1px 1px 1px rgba(255, 255, 255, 1);
       margin-bottom: 0px;
@@ -222,6 +229,9 @@
       :focus {
         outline: none;
       }
+    }
+    div.toolbar {
+      min-height: 29px;
     }
 
     input[type="button"], input[type="submit"] button, .button {
@@ -393,6 +403,7 @@
   word-wrap: break-word;
   visibility: hidden;
   z-index: 20000; }
+
 .medium-editor-anchor-preview a {
   color: #fff;
   display: inline-block;
@@ -415,12 +426,13 @@
 
 .medium-editor-placeholder {
   position: relative; }
+
 .medium-editor-placeholder:after {
   content: attr(data-placeholder) !important;
   font-style: italic;
-  left: 0;
+  left: 10px;
   position: absolute;
-  top: 0;
+  top: 10px;
   white-space: pre; }
 
 .medium-toolbar-arrow-under:after, .medium-toolbar-arrow-over:before {
@@ -441,34 +453,34 @@
   top: -8px; }
 
 .medium-editor-toolbar {
+  background-color: #242424;
+  background: -webkit-linear-gradient(top, #242424, rgba(36, 36, 36, 0.75));
+  background: linear-gradient(to bottom, #242424, rgba(36, 36, 36, 0.75));
+  border: 1px solid #000;
+  border-radius: 5px;
+  box-shadow: 0 0 3px #000;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 16px;
   left: 0;
   position: absolute;
   top: 0;
-  visibility: hidden;
-  z-index: 20000; }
+  z-index: 20000;
+
+}
+
 .medium-editor-toolbar ul {
   margin: 0;
   padding: 0; }
+
 .medium-editor-toolbar li {
   float: left;
   list-style: none;
   margin: 0;
   padding: 0; }
-.medium-editor-toolbar li button {
-  box-sizing: border-box;
-  cursor: pointer;
-  display: block;
-  font-size: 14px;
-  line-height: 1.33;
-  margin: 0;
-  padding: 15px;
-  text-decoration: none; }
-.medium-editor-toolbar li button:focus {
-  outline: none; }
+
 .medium-editor-toolbar li .medium-editor-action-underline {
   text-decoration: underline; }
+
 .medium-editor-toolbar li .medium-editor-action-pre {
   font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
   font-size: 12px;
@@ -497,13 +509,16 @@
 
 .medium-editor-toolbar-form {
   display: none; }
+
 .medium-editor-toolbar-form input,
 .medium-editor-toolbar-form a {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+
 .medium-editor-toolbar-form .medium-editor-toolbar-form-row {
   line-height: 14px;
   margin-left: 5px;
   padding-bottom: 5px; }
+
 .medium-editor-toolbar-form .medium-editor-toolbar-input,
 .medium-editor-toolbar-form label {
   border: none;
@@ -513,6 +528,7 @@
   padding: 6px;
   width: 316px;
   display: inline-block; }
+
 .medium-editor-toolbar-form .medium-editor-toolbar-input:focus,
 .medium-editor-toolbar-form label:focus {
   -webkit-appearance: none;
@@ -521,6 +537,7 @@
   border: none;
   box-shadow: none;
   outline: 0; }
+
 .medium-editor-toolbar-form a {
   display: inline-block;
   font-size: 24px;
@@ -553,36 +570,31 @@
   border-color: transparent transparent #242424 transparent;
   top: -8px; }
 
-.medium-editor-toolbar {
-  background-color: #242424;
-  background: -webkit-linear-gradient(top, #242424, rgba(36, 36, 36, 0.75));
-  background: linear-gradient(to bottom, #242424, rgba(36, 36, 36, 0.75));
-  border: 1px solid #000;
-  border-radius: 5px;
-  box-shadow: 0 0 3px #000; }
+
+
 .medium-editor-toolbar li button {
-  background-color: #242424;
-  background: -webkit-linear-gradient(top, #242424, rgba(36, 36, 36, 0.89));
-  background: linear-gradient(to bottom, #242424, rgba(36, 36, 36, 0.89));
   border: 0;
-  border-right: 1px solid #000;
-  border-left: 1px solid #333;
   border-left: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: #e1e6eb;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
-  color: #fff;
-  height: 50px;
+  color: #333;
+  height: 29px;
   min-width: 50px;
   -webkit-transition: background-color 0.2s ease-in;
   transition: background-color 0.2s ease-in; }
+
 .medium-editor-toolbar li button:hover {
   background-color: #000;
-  color: yellow; }
+  color: white; }
+
 .medium-editor-toolbar li .medium-editor-button-first {
   border-bottom-left-radius: 5px;
   border-top-left-radius: 5px; }
+
 .medium-editor-toolbar li .medium-editor-button-last {
   border-bottom-right-radius: 5px;
   border-top-right-radius: 5px; }
+
 .medium-editor-toolbar li .medium-editor-button-active {
   background-color: #000;
   background: -webkit-linear-gradient(top, #242424, rgba(0, 0, 0, 0.89));
@@ -593,11 +605,13 @@
   background: #242424;
   border-radius: 5px;
   color: #999; }
+
 .medium-editor-toolbar-form .medium-editor-toolbar-input {
   background: #242424;
   box-sizing: border-box;
   color: #ccc;
   height: 50px; }
+
 .medium-editor-toolbar-form a {
   color: #fff; }
 

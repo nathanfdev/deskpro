@@ -10,6 +10,12 @@ export class Message extends React.Component {
     message: PropTypes.object.isRequired
   };
 
+  getMessage = () => {
+    return {
+      __html: this.props.message.message
+    };
+  };
+
   renderMy = () => {
     let className = 'chat-message yours';
     if (this.props.message.old === true) {
@@ -22,7 +28,7 @@ export class Message extends React.Component {
           {(this.props.message.status > 1) ? <i className="fa fa-check"></i> : null}
         </div>
         <span className="time"><TimeAgo date={this.props.message.date_created}/> <i className="fa fa-clock-o"></i></span>
-        <p>{this.props.message.message}</p>
+        <div className="message-content" dangerouslySetInnerHTML={this.getMessage()}></div>
       </li>
     );
   };
@@ -39,7 +45,7 @@ export class Message extends React.Component {
           <PersonAvatar person={author} size="22"/>
         </a>
         <span className="time"><TimeAgo date={this.props.message.date_created}/> <i className="fa fa-clock-o"></i></span>
-        <p>{this.props.message.message}</p>
+        <div className="message-content" dangerouslySetInnerHTML={this.getMessage()}></div>
       </li>
     );
   };

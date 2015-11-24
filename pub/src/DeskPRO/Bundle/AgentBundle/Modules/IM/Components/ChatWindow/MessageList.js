@@ -37,7 +37,7 @@ export class MessageList extends React.Component {
       countsInterval: countsInterval
     };
     this.shouldScrollBottom = true;
-    this.scroll();
+    this.firstScroll = true;
   }
 
   componentWillReceiveProps(newProps) {
@@ -48,8 +48,13 @@ export class MessageList extends React.Component {
   }
 
   componentWillUpdate = () => {
+    console.log(this.shouldScrollBottom, this.firstScroll, this.props);
     const node = ReactDOM.findDOMNode(this.refs.list);
     this.shouldScrollBottom = node && (node.scrollTop + node.offsetHeight === node.scrollHeight);
+    if (this.firstScroll === true && node) {
+      this.firstScroll = false;
+      this.shouldScrollBottom = true;
+    }
   };
 
   componentDidUpdate = () => {

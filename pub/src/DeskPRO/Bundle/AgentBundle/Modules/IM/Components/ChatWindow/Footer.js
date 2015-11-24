@@ -24,7 +24,7 @@ export class Footer extends React.Component {
     this.setState(newState);
   };
 
-  handleChange(text, medium) {
+  handleChange(text) {
     const oldState = this.state;
     const newState = {...oldState};
     newState.message = text;
@@ -42,9 +42,9 @@ export class Footer extends React.Component {
   };
 
   handleSubmit = () => {
-    if (this.state.message.trim()) {
+    if (this.state.message) {
       this.props.handleAddMessage(this.state.message);
-      this.handleChange({target: {value: ''}});
+      this.handleChange('<p><br/></p>');
     }
   };
 
@@ -95,25 +95,30 @@ export class Footer extends React.Component {
 
   render() {
     const options = {
+      placeholder: {
+        text: 'Send a message'
+      },
+      anchorPrveiow: false,
       elementsContainer: document.getElementById('toolbar'),
       toolbar: {
+        diffLeft: -150,
+        diffTop: 50,
         buttons: ['bold', 'italic', 'underline'],
-        relativeContainer: this.refs.toolbar,
         'static': true,
+        align: 'left',
         updateOnEmptySelection: true
       }
     };
     return (
       <footer>
-
         <form onSubmit={this.handleSubmit}>
-          <div id="toolbar"></div>
-          <div className="textarea" ref="textarea"></div>
+          <div id="toolbar" className="toolbar" refs="toolbar"></div>
           <Editor
-          tag="div"
-          text={this.state.message}
-          onChange={this.handleChange.bind(this)}
-          options={options}
+            tag="div"
+            className="textarea"
+            text={this.state.message}
+            onChange={this.handleChange.bind(this)}
+            options={options}
           />
           <a href="#" ref="emojiButton" onClick={this.toggleEmoji} className="insert-emoticon"><span className="emoticon sprite sprite-emoticon-1"></span></a>
           <input onClick={this.handleSubmit} type="button" value="&#xf101;"/>
