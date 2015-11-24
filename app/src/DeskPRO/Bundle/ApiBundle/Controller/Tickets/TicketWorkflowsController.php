@@ -42,6 +42,7 @@ use FOS\RestBundle\Controller\Annotations\Route;
  */
 class TicketWorkflowsController extends CrudController
 {
-    public static $exposeOnly = ['list'];
-    public static $entity     = TicketWorkflow::class;
+    public static $exposeOnly   = ['list'];
+    public static $entity       = TicketWorkflow::class;
+    public static $listPaginate = false;
 }

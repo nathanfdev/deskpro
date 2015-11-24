@@ -42,6 +42,7 @@ use FOS\RestBundle\Controller\Annotations\Route;
  */
 class TicketPrioritiesController extends CrudController
 {
-    public static $exposeOnly = ['list'];
-    public static $entity     = TicketPriority::class;
+    public static $exposeOnly   = ['list'];
+    public static $entity       = TicketPriority::class;
+    public static $listPaginate = false;
 }

@@ -42,6 +42,7 @@ use FOS\RestBundle\Controller\Annotations\Route;
  */
 class TicketProductsController extends CrudController
 {
-    public static $exposeOnly = ['list'];
-    public static $entity     = Product::class;
+    public static $exposeOnly   = ['list'];
+    public static $entity       = Product::class;
+    public static $listPaginate = false;
 }
