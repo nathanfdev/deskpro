@@ -1,0 +1,104 @@
+// NOTES:
+// This was in right-panel.scss
+// and was named .ticket-tabs
+
+$tabbar-height: 40px;
+$tabbar-total-height: 43px;
+
+.dp-tabbar-container {
+  position: absolute;
+  top: $tab-frame-padding;
+  left: $tab-frame-padding;
+  right: $tab-frame-padding;
+  height: $tabbar-total-height;
+  border-bottom: 3px solid #4681b2;
+  border-bottom-right-radius: 2px;
+}
+
+.dp-tabbar {
+
+  ul {
+    @extend %flat-list;
+  }
+
+  li {
+    display: inline-block;
+    vertical-align: bottom;
+    margin-right: 3px;
+    border-radius: 2px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    background: #eee;
+    padding: 5px;
+    text-decoration: none;
+    color: #a5a5a5;
+    font-size: 0.85em;
+    font-weight: bold;
+    height: $tabbar-height;
+    min-width: 40px;
+    max-width: 150px;
+    position: relative;
+    cursor: pointer;
+
+    strong {
+      text-transform: uppercase;
+      @extend %whitespace;
+      font-style: normal;
+    }
+
+    cite {
+      margin-top: 2px;
+      .avatar {
+        width: 16px;
+        height: 16px;
+        margin-left: 0px;
+        margin-right: 2px;
+        opacity: 0.5;
+      }
+    }
+  }
+
+  li.add-dropdown {
+    text-align: center;
+    background: #fbfbfb;
+    i { top: 10px; }
+  }
+
+  li.divider {
+    display: inline-block;
+    height: $tabbar-height;
+    border-left: 1px dashed #aaadb2;
+    border-right: 1px dashed #e5e8eb;
+  }
+
+  li.active {
+    border-bottom: 1px solid rgba(0, 0, 0, 0);
+    background: #4681b2;
+    color: #fff;
+
+    cite .avatar { opacity: 1; }
+
+    .em {
+      color: #e9f1ed;
+      text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+    }
+
+    .cite {
+      color: #fff;
+      text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+      opacity: 0.8;
+
+    }
+  }
+}
+
+.dp-tabbody {
+  position: absolute;
+  left: $tab-frame-padding;
+  right: $tab-frame-padding;
+  top: $tab-frame-padding + $tabbar-total-height;
+  bottom: $tab-frame-padding;
+  background: #fff;
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+}
