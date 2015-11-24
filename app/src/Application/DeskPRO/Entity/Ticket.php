@@ -854,9 +854,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * Given an array of agents, sync the current parts with those in the array.
      * So remove ones that aren't in it, or add new ones.
      *
-     * @param array $parts
+     * @param array|ArrayCollection $agents
      */
-    public function setAgentParticipants(array $agents)
+    public function setAgentParticipants($agents)
     {
         $current_agent_ids = array();
         foreach ($this->participants as $p) {
