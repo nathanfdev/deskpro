@@ -40,9 +40,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class TaskType extends AbstractType
 {
     /**
-     * Get the name of the object.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -50,10 +48,7 @@ class TaskType extends AbstractType
     }
 
     /**
-     * Build form.
-     *
-     * @param FormBuilderInterface $builder The form builder
-     * @param array                $options Form options
+     * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -144,9 +139,7 @@ class TaskType extends AbstractType
     }
 
     /**
-     * The the default options for the form.
-     *
-     * @param OptionsResolverInterface $resolver
+     * {@inheritdoc}
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
