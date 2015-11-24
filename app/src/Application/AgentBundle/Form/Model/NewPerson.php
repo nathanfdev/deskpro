@@ -113,6 +113,7 @@ class NewPerson
             $person->language = $this->language;
         }
 
+        $org = null;
         if ($this->organization_id) {
             $org = $this->_em->find('DeskPRO:Organization', $this->organization_id);
             if ($org) {
@@ -144,7 +145,7 @@ class NewPerson
         $person->getLabelManager()->setLabelsArray($this->labels);
         $this->_em->flush();
 
-        if ($this->new_organization && $this->_person_context->hasPerm('agent_org.create')) {
+        if (!$org && $this->new_organization && $this->_person_context->hasPerm('agent_org.create')) {
             $org       = new Organization();
             $org->name = $this->new_organization;
             $this->_em->persist($org);
