@@ -15,7 +15,10 @@ export default class Frame extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      dims: { width: 0, height: 0 },
+      dimensions: {
+        width: 0,
+        height: 0
+      },
       isRendered: false
     };
   }
@@ -58,8 +61,8 @@ export default class Frame extends React.Component {
       border: 'none',
       background: 'transparent',
       zIndex: 99999,
-      width: this.state.dims.width || 0,
-      height: this.state.dims.height || 0,
+      width: this.state.dimensions.width,
+      height: this.state.dimensions.height,
       position: 'fixed',
       display: isVisible ? 'block' : 'none',
 
@@ -68,7 +71,7 @@ export default class Frame extends React.Component {
     };
   }
 
-  autoFrameDimentions() {
+  autoFrameDimensions() {
     const document = this.getContentDocument();
     if (!document) {
       return false;
@@ -78,14 +81,14 @@ export default class Frame extends React.Component {
     const width = $container.width();
     const height = $container.height();
 
-    const dimentions = this.state.dims;
-    if (dimentions.width === width && dimentions.height === height) {
-      // same dims, no need to update
+    const dimensions = this.state.dimensions;
+    if (dimensions.width === width && dimensions.height === height) {
+      // same dimensions, no need to update
       return false;
     }
 
     this.setState({
-      dims: {
+      dimensions: {
         width: width,
         height: height
       }
