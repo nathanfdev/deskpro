@@ -209,7 +209,9 @@ function getWebpackConfig(mode, isDevServer, isProd) {
         {
           test: /\.scss$/,
           include: [
-            path.resolve(__dirname, 'src/DeskPRO')
+            path.resolve(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Resources/style'),
+            path.resolve(__dirname, 'src/DeskPRO/Bundle/PortalBundle/Resources/style'),
+            path.resolve(__dirname, 'src/DeskPRO/Bundle/AppBundle/Resources/style')
           ],
           exclude: [
             path.resolve(__dirname, 'src/DeskPRO/Bundle/WidgetBundle')
