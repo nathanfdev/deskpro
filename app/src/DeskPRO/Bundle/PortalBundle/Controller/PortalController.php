@@ -298,10 +298,11 @@ class PortalController extends AbstractController
         return new JsonResponse([
             'success' => true,
             'blob'    => [
-                'id'       => $blob->getId(),
-                'authcode' => $blob->getAuthcode(),
-                'size'     => $blob->getReadableFilesize(),
-                'url'      => $this->generateUrl(
+                'id'        => $blob->getId(),
+                'authcode'  => $blob->getAuthcode(),
+                'size'      => $blob->getReadableFilesize(),
+                'icon_html' => $this->get('icon_factory')->makeFileIcon($blob),
+                'url'       => $this->generateUrl(
                     'serve_blob',
                     [
                         'blob_auth_id' => $blob->getAuthcode(),

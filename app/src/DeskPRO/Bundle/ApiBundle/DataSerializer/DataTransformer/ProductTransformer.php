@@ -46,11 +46,8 @@ class ProductTransformer extends AbstractDataSerializerTransformer
         return [
             'id',
             'title',
-            'slug',
             'display_order',
-            'custom_data',
             'parent',
-            'children',
         ];
     }
 

@@ -67,6 +67,11 @@ class TicketType extends ApiType
                 'labels_owner'   => $builder->getData(),
                 'owner_property' => 'ticket',
             ])
+            ->add('followers', 'entity', [
+                'class'         => 'DeskPRO:Person',
+                'multiple'      => true,
+                'property_path' => 'agent_participants',
+            ])
         ;
     }
 }

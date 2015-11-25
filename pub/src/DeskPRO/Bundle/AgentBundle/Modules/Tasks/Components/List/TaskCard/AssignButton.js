@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import Detached from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import { AssignFormContainer } from './AssignForm/AssignFormContainer';
+import { AssigneeContainer } from './AssigneeContainer';
+import { AssigneeAvatar } from './AssigneeAvatar';
 
 export class AssignButton extends React.Component {
+
+  static propTypes = {
+    onSetEditing: PropTypes.func,
+    task: PropTypes.object
+  };
 
   constructor(props) {
     super(props);
@@ -18,12 +25,14 @@ export class AssignButton extends React.Component {
   }
 
   onOpenForm = () => {
+    this.props.onSetEditing(true);
     this.setState({
       formOpened: true
     });
   };
 
   onCloseForm = () => {
+    this.props.onSetEditing(false);
     if (this.isUnmounted) {
       return;
     }
@@ -33,15 +42,34 @@ export class AssignButton extends React.Component {
     });
   };
 
+  hasAvatar() {
+    const { task } = this.props;
+    return task.get('agents').size || task.get('teams').size || task.get('departments').size;
+  }
+
+  static renderButton() {
+    return (
+      <div className="dpw--avatar-face" style={{position: 'relative'}}>
+        <i className="fa fa-caret-down" />
+      </div>
+    );
+  }
+
+  renderAvatar() {
+    return (
+      <AssigneeContainer>
+        <AssigneeAvatar task={this.props.task} />
+      </AssigneeContainer>
+    );
+  }
+
   render() {
     return (
       <div>
         <div className="dpwd--card-assigned"
              onClick={this.onOpenForm} ref="button">
 
-          <div className="dpw--avatar-face" style={{position: 'relative'}}>
-            <i className="fa fa-caret-down" />
-          </div>
+          {this.hasAvatar() ? this.renderAvatar() : AssignButton.renderButton()}
         </div>
 
         <Detached isOpen={this.state.formOpened}

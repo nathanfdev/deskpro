@@ -29,50 +29,60 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\People\PrimaryEmail;
 
-use Application\DeskPRO\ORM\EntityManager;
-use DeskPRO\Bundle\AppBundle\Form\DataTransformer\DepartmentTaskAssignmentTransformer;
-use Symfony\Component\Form\AbstractType;
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class TaskDepartmentType extends AbstractType
+/**
+ * Class PrimaryEmailType.
+ *
+ * Handles email string as person primary email
+ */
+class PrimaryEmailType extends ApiType
 {
-    private $entityManager;
+    /**
+     * @var Person
+     */
+    private $person;
 
-    public function __construct(EntityManager $entityManager)
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * @param Person        $person
+     * @param EntityManager $em
+     */
+    public function __construct(Person $person, EntityManager $em)
     {
-        $this->entityManager = $entityManager;
+        $this->person = $person;
+        $this->em     = $em;
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
-    public function getName()
-    {
-        return 'task_department';
-    }
-
-    public function getParent()
-    {
-        return 'text';
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addModelTransformer(new DepartmentTaskAssignmentTransformer($this->entityManager, $options['task']));
-        $builder->addViewTransformer(new DepartmentTaskAssignmentTransformer($this->entityManager, $options['task']));
+        $builder->addViewTransformer(new PrimaryEmailTransformer($this->person, $this->em));
     }
 
     /**
-     * @param OptionsResolverInterface $resolver
+     * {@inheritdoc}
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => 'Application\DeskPRO\Entity\Department',
-            'task'       => null,
-        ));
+        $resolver->setDefaults([
+            'compound'    => false,
+            'mapped'      => false,
+            'constraints' => [
+                new PrimaryEmailConstraint($this->person, $this->em),
+            ],
+        ]);
     }
 }

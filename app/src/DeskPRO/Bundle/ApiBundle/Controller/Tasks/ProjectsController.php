@@ -677,13 +677,7 @@ class ProjectsController extends BaseController implements ClassResourceInterfac
         $submitted = $request->request->all();
 
         /** @var Form $form */
-        $form = $this->get('form.factory')->createNamedBuilder(
-            null,
-            'project',
-            $project,
-            ['project' => $project, 'entity_manager' => $this->getDoctrine()->getManager()]
-        )->getForm();
-
+        $form = $this->get('form.factory')->createNamedBuilder(null, 'project', $project)->getForm();
         $form->submit($submitted, $request->getMethod() !== 'PUT');
 
         if ($form->isValid()) {

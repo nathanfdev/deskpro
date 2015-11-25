@@ -33,6 +33,12 @@ services:
       tags:
           - { name: form.type, alias: api_labels_collection }
 
+  dp.app.form.person_type:
+      class: DeskPRO\Bundle\AppBundle\Form\Type\People\PersonType
+      arguments: [@doctrine.orm.default_entity_manager]
+      tags:
+          - { name: form.type, alias: api_person }
+
   form.api_boolean:
       class: DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType
       tags:
@@ -87,42 +93,6 @@ services:
       class: DeskPRO\Bundle\AppBundle\Form\Type\ProjectMemberType
       tags:
           - { name: form.type, alias: projectmember }
-
-  form.project_department:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\ProjectDepartmentType
-      tags:
-          - { name: form.type, alias: project_department }
-      arguments: [@doctrine.orm.default_entity_manager]
-
-  form.project_agent_team:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\ProjectAgentTeamType
-      tags:
-          - { name: form.type, alias: project_agent_team }
-      arguments: [@doctrine.orm.default_entity_manager]
-
-  form.project_person:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\ProjectPersonType
-      tags:
-          - { name: form.type, alias: project_person }
-      arguments: [@doctrine.orm.default_entity_manager]
-
-  form.task_department:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\TaskDepartmentType
-      tags:
-          - { name: form.type, alias: task_department }
-      arguments: [@doctrine.orm.default_entity_manager]
-
-  form.task_agent_team:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\TaskAgentTeamType
-      tags:
-          - { name: form.type, alias: task_agent_team }
-      arguments: [@doctrine.orm.default_entity_manager]
-
-  form.task_person:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\TaskPersonType
-      tags:
-          - { name: form.type, alias: task_person }
-      arguments: [@doctrine.orm.default_entity_manager]
 
   form.term_engine.term:
       class: DeskPRO\Bundle\AppBundle\Form\Type\TermEngineTermType

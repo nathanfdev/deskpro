@@ -11,14 +11,8 @@ class SuggestionRow extends React.Component {
 
   render() {
     const type = this.props.result.type;
-    let icon;
-    switch (type) {
-      case 'download':
-        icon = (<i className="fa fa-download"></i>);
-        break;
-      default:
-        icon = (<i className="fa fa-file-text-o"></i>);
-    }
+    const icon = this.props.result.object.icon_html;
+
     return (
       <li className="related-article-item">
         <a
@@ -26,7 +20,7 @@ class SuggestionRow extends React.Component {
           href={this.props.result.object.url}
           target="_blank"
           >
-          {icon}
+          <span dangerouslySetInnerHTML={{__html: icon}}></span>
           <span className="item-title">{this.props.result.object.name}</span>
         </a>
       </li>

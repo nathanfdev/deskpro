@@ -23,17 +23,19 @@ export class TaskCard extends BaseTaskCard {
     task: PropTypes.object,
     moving: PropTypes.bool,
     onChangeTitle: PropTypes.func,
-    onChangeDate: PropTypes.func
+    onChangeDate: PropTypes.func,
+    onSetEditing: PropTypes.func
   };
 
   renderDetails() {
-    const { task, onChangeDate } = this.props;
+    const { task, onChangeDate, onSetEditing } = this.props;
 
     return (
       <CardLine>
         <CardLineLeft>
           <DateDue value={task.get('date_due')}
-                   onChange={onChangeDate} />
+                   onChange={onChangeDate}
+                   onSetEditing={onSetEditing}onSetEditing={onSetEditing} />
 
           {task.get('project') &&
             <ProjectContainer project={task.get('project')}>
@@ -54,7 +56,7 @@ export class TaskCard extends BaseTaskCard {
   }
 
   render() {
-    const { task, moving, onChangeTitle } = this.props;
+    const { task, moving, onChangeTitle, onSetEditing } = this.props;
 
     return (
       <Card statusBars={false}
@@ -66,10 +68,11 @@ export class TaskCard extends BaseTaskCard {
           <CardLineLeft>
             <Title value={task.get('title')}
                    isDone={task.get('is_done')}
-                   onChange={onChangeTitle} />
+                   onChange={onChangeTitle}
+                   onSetEditing={onSetEditing} />
           </CardLineLeft>
           <CardLineRight>
-            {!task.get('is_done') && <AssignButton task={task} />}
+            {!task.get('is_done') && <AssignButton task={task} onSetEditing={onSetEditing} />}
           </CardLineRight>
         </CardLine>
 

@@ -26,6 +26,11 @@ describe('Ampliflux actions handlers', () => {
       expect(next.toJS().b.c.d).toEqual(42);
     });
 
+    it('should set scalar value in state object hierarchy (array prop key)', () => {
+      const next = handlers.setValue(['b', 'c', 'd'], 42)(state);
+      expect(next.toJS().b.c.d).toEqual(42);
+    });
+
     it('should set object value in state object hierarchy', () => {
       const next = handlers.setValue('b.c', {d: {e: {f: 42}}})(state);
       expect(next.toJS().b.c.d.e.f).toEqual(42);
@@ -52,6 +57,12 @@ describe('Ampliflux actions handlers', () => {
   describe('mergeValue()', () => {
     it('should merge value in state object hierarchy', () => {
       const next = handlers.mergeValue('b.c', {d: {e: {f: 42}}})(state);
+      expect(next.toJS().b.c.d.e.f).toEqual(42);
+      expect(next.toJS().b.c.e).toEqual(3);
+    });
+
+    it('should merge value in state object hierarchy (array prop key)', () => {
+      const next = handlers.mergeValue(['b', 'c'], {d: {e: {f: 42}}})(state);
       expect(next.toJS().b.c.d.e.f).toEqual(42);
       expect(next.toJS().b.c.e).toEqual(3);
     });
@@ -87,6 +98,11 @@ describe('Ampliflux actions handlers', () => {
   describe('setPayload()', () => {
     it('should set property from payload', () => {
       const next = handlers.setPayload('b.c.d', 'e.f')(state, {e: {f: 42}});
+      expect(next.toJS().b.c.d).toEqual(42);
+    });
+
+    it('should set property from payload (array prop key)', () => {
+      const next = handlers.setPayload(['b', 'c', 'd'], ['e', 'f'])(state, {e: {f: 42}});
       expect(next.toJS().b.c.d).toEqual(42);
     });
 

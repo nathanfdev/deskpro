@@ -647,13 +647,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function hasNotesOnly()
     {
-        foreach ($this->messages as $message) {
-            if (!$message->is_agent_note) {
-                return false;
-            }
-        }
-
-        return true;
+        return $this->date_last_agent_reply === null && $this->date_last_user_reply === null;
     }
 
     /**
@@ -860,9 +854,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * Given an array of agents, sync the current parts with those in the array.
      * So remove ones that aren't in it, or add new ones.
      *
-     * @param array $parts
+     * @param array|ArrayCollection $agents
      */
-    public function setAgentParticipants(array $agents)
+    public function setAgentParticipants($agents)
     {
         $current_agent_ids = array();
         foreach ($this->participants as $p) {

@@ -282,6 +282,11 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
         return $this->person;
     }
 
+    public function getPersonId()
+    {
+        return $this->person ? $this->person->getId() : null;
+    }
+
     public function _postPersist()
     {
         if (!$this->person) {

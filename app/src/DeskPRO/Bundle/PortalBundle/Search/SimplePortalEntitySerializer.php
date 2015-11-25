@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\PortalBundle\Search;
 
 use Application\DeskPRO\Entity;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
+use DeskPRO\Bundle\PortalBundle\View\PortalIconFactory;
 
 /**
  * There are very few serialization needs in the portal, so we just have a very simple class here that is capable
@@ -47,9 +48,15 @@ class SimplePortalEntitySerializer
      */
     private $object_router;
 
-    public function __construct(ObjectRouter $object_router)
+    /**
+     * @var PortalIconFactory
+     */
+    private $icon_factory;
+
+    public function __construct(ObjectRouter $object_router, PortalIconFactory $icon_factory)
     {
         $this->object_router = $object_router;
+        $this->icon_factory  = $icon_factory;
     }
 
     /**
@@ -95,9 +102,10 @@ class SimplePortalEntitySerializer
             || $object instanceof Entity\Download
             || $object instanceof Entity\Feedback
         ) {
-            $result['id']   = $object->getId();
-            $result['name'] = $object->getTitle();
-            $result['url']  = $this->object_router->getPortalUrl($object);
+            $result['id']        = $object->getId();
+            $result['name']      = $object->getTitle();
+            $result['url']       = $this->object_router->getPortalUrl($object);
+            $result['icon_html'] = $this->icon_factory->makeContentIcon($object);
             if ($object instanceof Entity\News) {
                 if (!$date = $object->getDatePublished()) {
                     $date = $object->getDateCreated();
