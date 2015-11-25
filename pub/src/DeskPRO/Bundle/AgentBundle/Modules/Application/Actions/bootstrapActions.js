@@ -6,6 +6,7 @@ import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordS
 import { setAgentTeamsRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentTeamsActions';
 import { setLanguagesRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/RecordStores/Actions/languagesActions';
 import { setUserGroupsRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/userGroupsActions';
+import { setAgentSettings } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
 
 export const preloadData = createAction(
   'BOOTSTRAP_PRELOAD_DATA',
@@ -19,6 +20,7 @@ export const preloadData = createAction(
         + ',DP_API/agent_teams%3Fmy%3Dtrue'
         + ',DP_API/languages'
         + ',DP_API/user_groups'
+        + ',DP_API/helpdesk/agent-client/settings'
       ;
       DpApi.sendGet(batch).success(({responses}) => {
         const data = flattenBatchResponses(responses);
@@ -29,6 +31,7 @@ export const preloadData = createAction(
         dispatch(setAgentTeamsRequest('my', data[4]));
         dispatch(setLanguagesRequest('all', data[5]));
         dispatch(setUserGroupsRequest('all', data[6]));
+        dispatch(setAgentSettings(data[7]));
       });
     }
   )
