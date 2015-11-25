@@ -49,6 +49,34 @@ export default class Frame extends React.Component {
     return domNode.contentDocument;
   }
 
+  getFrameStyles() {
+    const { style = {}, isVisible, positionMode } = this.props;
+
+    let position = {};
+    switch (positionMode) {
+      case 'bottom.left':
+        position = {left: 0, bottom: 0};
+        break;
+      case 'bottom.right':
+      default:
+        position = {right: 0, bottom: 0};
+        break;
+    }
+
+    return {
+      border: 'none',
+      background: 'transparent',
+      zIndex: 99999,
+      width: this.state.dims.width || 0,
+      height: this.state.dims.height || 0,
+      position: 'fixed',
+      display: isVisible ? 'block' : 'none',
+
+      ...style,
+      ...position
+    };
+  }
+
   autoFrameDimentions() {
     const document = this.getFrameDocument();
     if (!document) {
@@ -122,29 +150,6 @@ export default class Frame extends React.Component {
   }
 
   render() {
-    const { style = {}, isVisible, positionMode } = this.props;
-    let frameStyle = {
-      border: 'none',
-      background: 'transparent',
-      zIndex: 99999,
-      width: this.state.dims.width || 0,
-      height: this.state.dims.height || 0,
-      position: 'fixed',
-      display: isVisible ? 'block' : 'none',
-
-      ...style
-    };
-
-    switch (positionMode) {
-      case 'bottom.left':
-        frameStyle = {...frameStyle, left: 0, bottom: 0};
-        break;
-      case 'bottom.right':
-      default:
-        frameStyle = {...frameStyle, right: 0, bottom: 0};
-        break;
-    }
-
-    return <iframe ref="iframe" style={frameStyle} />;
+    return <iframe ref="iframe" style={this.getFrameStyles()} />;
   }
 }
