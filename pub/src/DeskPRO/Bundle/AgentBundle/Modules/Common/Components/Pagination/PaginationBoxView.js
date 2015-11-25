@@ -1,130 +1,125 @@
-'use strict';
+import React, {Component, PropTypes} from 'react';
+import classNames from 'classnames';
+import {PaginationListView} from './PaginationListView';
 
-var React              = require('react');
-var classNames         = require('classnames');
-var PaginationListView = require('./PaginationListView');
+export class PaginationBoxView extends Component {
 
-var PaginationBoxView = React.createClass({
+  static propTypes = {
+    currentPage: PropTypes.number.isRequired,
+    pageNum: PropTypes.number.isRequired,
+    pageRangeDisplayed: PropTypes.number.isRequired,
+    marginPagesDisplayed: PropTypes.number.isRequired,
+    previousLabel: PropTypes.node,
+    nextLabel: PropTypes.node,
+    breakLabel: PropTypes.node,
+    clickCallback: PropTypes.func,
+    forceSelected: PropTypes.number,
+    containerClassName: PropTypes.string,
+    subContainerClassName: PropTypes.string,
+    pageClassName: PropTypes.string,
+    pageLinkClassName: PropTypes.string,
+    activeClassName: PropTypes.string,
+    previousClassName: PropTypes.string,
+    nextClassName: PropTypes.string,
+    previousLinkClassName: PropTypes.string,
+    nextLinkClassName: PropTypes.string,
+    disabledClassName: PropTypes.string
+  };
 
-  propTypes: {
-    pageNum               : React.PropTypes.number.isRequired,
-    pageRangeDisplayed    : React.PropTypes.number.isRequired,
-    marginPagesDisplayed  : React.PropTypes.number.isRequired,
-    previousLabel         : React.PropTypes.node,
-    nextLabel             : React.PropTypes.node,
-    breakLabel            : React.PropTypes.node,
-    clickCallback         : React.PropTypes.func,
-    initialSelected       : React.PropTypes.number,
-    forceSelected         : React.PropTypes.number,
-    containerClassName    : React.PropTypes.string,
-    subContainerClassName : React.PropTypes.string,
-    pageClassName         : React.PropTypes.string,
-    pageLinkClassName     : React.PropTypes.string,
-    activeClassName       : React.PropTypes.string,
-    previousClassName     : React.PropTypes.string,
-    nextClassName         : React.PropTypes.string,
-    previousLinkClassName : React.PropTypes.string,
-    nextLinkClassName     : React.PropTypes.string,
-    disabledClassName     : React.PropTypes.string
-  },
+  static defaultProps = {
+    currentPage: 1,
+    pageNum: 10,
+    pageRangeDisplayed: 2,
+    marginPagesDisplayed: 3,
+    activeClassName: 'current-page',
+    previousClassName: 'previous',
+    nextClassName: 'next',
+    previousLabel: 'Previous',
+    nextLabel: 'Next',
+    breakLabel: '...',
+    disabledClassName: 'disabled'
+  };
 
-  getDefaultProps: function() {
-    return {
-      pageNum              : 10,
-      pageRangeDisplayed   : 2,
-      marginPagesDisplayed : 3,
-      activeClassName      : "selected",
-      previousClassName    : "previous",
-      nextClassName        : "next",
-      previousLabel        : "Previous",
-      nextLabel            : "Next",
-      breakLabel           : "...",
-      disabledClassName    : "disabled"
-    };
-  },
+  constructor(props) {
+    super(props);
+    this.state = { dropdown: false };
+  }
 
-  getInitialState: function() {
-    return {
-      selected: this.props.initialSelected ? this.props.initialSelected : 0,
-      dropdown: false
-    };
-  },
+  componentWillReceiveProps(nextProps) {
+    if (typeof nextProps.forceSelected !== 'undefined' && nextProps.forceSelected !== this.props.currentPage) {
+      this.setState({ selected: nextProps.forceSelected });
+    }
+  }
 
-  handlePageSelected: function(selected, event) {
+  handlePageSelected(selected, event) {
     event.preventDefault();
+    const { currentPage, clickCallback} = this.props;
 
-    if (this.state.selected === selected) {
-      // Display the dropdown list
-      this.setState({dropdown: !this.state.dropdown});
+    if (currentPage === selected + 1) {
+      // Toggle the dropdown list
+      this.setState({ dropdown: !this.state.dropdown });
       return;
     }
 
     this.setState({
-      selected: selected,
       dropdown: false
     });
 
-    if (typeof(this.props.clickCallback) !== "undefined" &&
-        typeof(this.props.clickCallback) === "function") {
-      this.props.clickCallback({selected: selected});
-    }
-  },
-
-  handlePreviousPage: function(event) {
-    event.preventDefault();
-    if (this.state.selected > 0) {
-      this.handlePageSelected(this.state.selected - 1, event);
-    }
-  },
-
-  handleNextPage: function(event) {
-    event.preventDefault();
-    if (this.state.selected < this.props.pageNum - 1) {
-      this.handlePageSelected(this.state.selected + 1, event);
-    }
-  },
-
-  render: function() {
-    var disabled = this.props.disabledClassName;
-
-    var previousClasses = classNames(this.props.previousClassName,
-                                     {disabled: this.state.selected === 0});
-
-    var nextClasses = classNames(this.props.nextClassName,
-                                 {disabled: this.state.selected === this.props.pageNum - 1});
-
-    return (
-      <ul className={this.props.containerClassName}>
-        <li onClick={this.handlePreviousPage} className={previousClasses}>
-          <a href="" className={this.props.previousLinkClassName}>{this.props.previousLabel}</a>
-        </li>
-
-        <PaginationListView
-          onPageSelected={this.handlePageSelected}
-          selected={this.state.selected}
-          pageNum={this.props.pageNum}
-          pageRangeDisplayed={this.props.pageRangeDisplayed}
-          marginPagesDisplayed={this.props.marginPagesDisplayed}
-          breakLabel={this.props.breakLabel}
-          subContainerClassName={this.props.subContainerClassName}
-          pageClassName={this.props.pageClassName}
-          pageLinkClassName={this.props.pageLinkClassName}
-          activeClassName={this.props.activeClassName}
-          disabledClassName={this.props.disabledClassName}
-          dropdown={this.state.dropdown} />
-
-        <li onClick={this.handleNextPage} className={nextClasses}>
-          <a href="" className={this.props.nextLinkClassName}>{this.props.nextLabel}</a>
-        </li>
-      </ul>
-    );
-  },
-
-  componentWillReceiveProps: function (nextProps) {
-    if (typeof nextProps.forceSelected !== 'undefined' && nextProps.forceSelected !== this.state.selected) {
-      this.setState({ selected: nextProps.forceSelected });
+    if (typeof(clickCallback) !== 'undefined' && typeof(clickCallback) === 'function') {
+      clickCallback(selected + 1);
     }
   }
-});
 
-module.exports = PaginationBoxView;
+  handlePreviousPage(event) {
+    event.preventDefault();
+    if (this.props.currentPage > 1) {
+      this.handlePageSelected(this.props.currentPage - 2, event);
+    }
+  }
+
+  handleNextPage(event) {
+    event.preventDefault();
+    if (this.props.currentPage < this.props.pageNum) {
+      this.handlePageSelected(this.props.currentPage, event);
+    }
+  }
+
+  render() {
+    const {disabledClassName, previousClassName, nextClassName, containerClassName, subContainerClassName, pageClassName, pageLinkClassName, activeClassName } = this.props;
+    const {currentPage, pageNum, pageRangeDisplayed, marginPagesDisplayed, breakLabel } = this.props;
+    const previousClasses = classNames(previousClassName, { [disabledClassName]: this.props.currentPage === 1 });
+    const nextClasses = classNames(nextClassName, { [disabledClassName]: this.props.currentPage === this.props.pageNum });
+
+    return (
+      <div className="dpw--pagination">
+        <ul className={containerClassName}>
+          <li onClick={this.handlePreviousPage.bind(this)} className={previousClasses}>
+            <a href=""><i className="fa fa-caret-left"></i></a>
+          </li>
+          <li>
+            <hr/>
+          </li>
+          <PaginationListView onPageSelected={this.handlePageSelected.bind(this)}
+                              currentPage={currentPage}
+                              pageNum={pageNum}
+                              pageRangeDisplayed={pageRangeDisplayed}
+                              marginPagesDisplayed={marginPagesDisplayed}
+                              breakLabel={breakLabel}
+                              subContainerClassName={subContainerClassName}
+                              pageClassName={pageClassName}
+                              pageLinkClassName={pageLinkClassName}
+                              activeClassName={activeClassName}
+                              disabledClassName={disabledClassName}
+                              dropdown={this.state.dropdown}/>
+          <li>
+            <hr/>
+          </li>
+          <li onClick={this.handleNextPage.bind(this)} className={nextClasses}>
+            <a href=""><i className="fa fa-caret-right"></i></a>
+          </li>
+        </ul>
+      </div>
+    );
+  }
+
+}

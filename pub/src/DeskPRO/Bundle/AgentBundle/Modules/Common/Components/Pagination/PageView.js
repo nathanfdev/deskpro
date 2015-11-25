@@ -1,52 +1,70 @@
-'use strict';
+import React, {Component, PropTypes} from 'react';
 
-var React = require('react');
+export class PageView extends Component {
 
-var PageView = React.createClass({
-  render: function() {
-    var linkClassName = this.props.pageLinkClassName;
-    var cssClassName = this.props.pageClassName;
+  static propTypes = {
+    dropdown: PropTypes.bool,
+    currentPage: PropTypes.number.isRequired,
+    page: PropTypes.number.isRequired,
+    pageNum: PropTypes.number.isRequired,
+    pageRangeDisplayed: PropTypes.number.isRequired,
+    marginPagesDisplayed: PropTypes.number.isRequired,
+    onClick: PropTypes.func,
+    activeClassName: PropTypes.string
+  };
 
-    if (this.props.active) {
-      if (typeof(cssClassName) !== 'undefined') {
-        cssClassName = cssClassName + ' ' + this.props.activeClassName;
-      } else {
-        cssClassName = this.props.activeClassName;
-      }
+  renderCaret(active) {
+    if (active) {
+      return (<i className="fa fa-caret-down"/>);
     }
+  }
 
-    // Build up an array of page numbers
-    let pages = [];
-    for (let page = 1; page <= this.props.pageNum; page++) {
-      pages.push(page);
-    }
-
+  renderDropdownOption(page) {
+    const {currentPage, onClick} = this.props;
+    const className = currentPage === page ? 'active' : '';
     return (
-      <li className={cssClassName}>
-        <a {...this.props} href="" className={linkClassName}>
-          {this.props.page}
-          {this.props.active ?
-            <i className="fa fa-caret-down" />
-          : ''}
+      <li key={page}>
+        <a href="#" onClick={onClick.bind(null, page)} className={className}>
+          {page}
         </a>
-        {this.props.dropdown ?
-          <div className="pagination-dropdown">
-            <ul>
-              {
-                pages.map((page) => {
-                  const className = this.props.selected === page - 1 ? 'active' : '';
-                  return <li key={page}>
-                    <a href="#" onClick={this.props.onPageSelected.bind(null, page - 1)} className={className}>
-                      {page}
-                    </a>
-                  </li>;
-                })
-              }
-            </ul>
-          </div> : ''}
       </li>
     );
   }
-});
 
-module.exports = PageView;
+  renderDropDown() {
+    const { pageNum, dropdown } = this.props;
+
+    if (dropdown) {
+      // Build up an array of page numbers
+      const pages = [];
+      for (let value = 1; value <= pageNum; value++) {
+        pages.push(value);
+      }
+
+      return (
+        <div className="pagination-dropdown">
+          <ul>
+            {
+              pages.map((page) => this.renderDropdownOption(page))
+            }
+          </ul>
+        </div>
+      );
+    }
+  }
+
+  render() {
+    const { activeClassName, currentPage, page, onClick } = this.props;
+    const active = currentPage === page;
+
+    return (
+      <li className={active ? activeClassName : false}>
+        <a {...this.props} href="" className={active ? activeClassName : false} onClick={onClick}>
+          {page}
+          {this.renderCaret(active)}
+        </a>
+        {this.renderDropDown()}
+      </li>
+    );
+  }
+}
