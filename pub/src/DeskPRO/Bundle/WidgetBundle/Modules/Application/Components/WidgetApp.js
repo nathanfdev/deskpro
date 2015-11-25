@@ -18,8 +18,9 @@ export default class WidgetAppBody extends React.Component {
   }
 
   triggerResize() {
-    if (this.props.onResize) {
-      window.setTimeout(() => this.props.onResize(), 0);
+    const { onResize } = this.props;
+    if (onResize) {
+      window.setTimeout(() => onResize(), 0);
     }
   }
 
@@ -38,17 +39,18 @@ export default class WidgetAppBody extends React.Component {
 export default class WidgetApp extends React.Component {
 
   static propTypes = {
-    onClick: React.PropTypes.func,
-    isVisible: React.PropTypes.bool
+    onClick: PropTypes.func,
+    isVisible: PropTypes.bool
   };
 
   render() {
+    const { isVisible } = this.props;
     const style = {
       marginRight: '14px'
     };
 
     return (
-      <Frame ref="frame" style={ style } isVisible={this.props.isVisible} id="dp_widget_app">
+      <Frame ref="frame" id="dp_widget_app" style={style} isVisible={isVisible}>
         <WidgetAppBody onResize={() => this.refs.frame && this.refs.frame.autoFrameDimentions()} />
       </Frame>
     );

@@ -29,7 +29,8 @@ export default class Frame extends React.Component {
   }
 
   componentWillUnmount() {
-    React.unmountComponentAtNode(ReactDOM.findDOMNode(this.refs.iframe).contentDocument.getElementById('react_frame_container'));
+    const domNode = ReactDOM.findDOMNode(this.refs.iframe);
+    React.unmountComponentAtNode(domNode.contentDocument.getElementById('react_frame_container'));
   }
 
   getFrameNode() {
@@ -48,44 +49,35 @@ export default class Frame extends React.Component {
     return domNode.contentDocument;
   }
 
-  setFrameDimentions(w, h) {
-    if (this.state.dims.width === w && this.state.dims.height === h) {
-      // same dims, no need to update
-      return false;
-    }
-
-    this.setState({
-      dims: { width: w, height: h }
-    });
-
-    return true;
-  }
-
   autoFrameDimentions() {
-    const iframeDoc = this.getFrameDocument();
-
-    if (!iframeDoc) {
+    const document = this.getFrameDocument();
+    if (!document) {
       return false;
     }
 
-    let w = Math.max(iframeDoc.body.firstChild.clientWidth, iframeDoc.body.firstChild.offsetWidth);
-    const h = Math.max(iframeDoc.body.firstChild.clientHeight, iframeDoc.body.firstChild.offsetHeight);
+    const firstChild = document.body.firstChild;
+    let width = Math.max(firstChild.clientWidth, firstChild.offsetWidth);
+    const height = Math.max(firstChild.clientHeight, firstChild.offsetHeight);
 
     // todo must be better way to calculate width?
-    if (!w) {
-      const tags = iframeDoc.getElementsByTagName('*');
+    if (!width) {
+      const tags = document.getElementsByTagName('*');
       for (let i = 0; i < tags.length; i++) {
-        w += Math.max(tags[i].clientWidth, tags[i].offsetWidth);
+        width += Math.max(tags[i].clientWidth, tags[i].offsetWidth);
       }
     }
 
-    if (this.state.dims.width === w && this.state.dims.height === h) {
+    const dimentions = this.state.dims;
+    if (dimentions.width === width && dimentions.height === height) {
       // same dims, no need to update
       return false;
     }
 
     this.setState({
-      dims: { width: w, height: h }
+      dims: {
+        width: width,
+        height: height
+      }
     });
 
     return true;
@@ -102,15 +94,12 @@ export default class Frame extends React.Component {
     }
 
     if (doc && doc.readyState === 'complete') {
-      var contents = React.createElement('div',
-        undefined,
-        this.props.head,
-        this.props.children
-      );
+      const { head, children } = this.props;
+      const contents = React.createElement('div', undefined, head, children);
 
-      const frameContainer = doc.createElement('div');
-      frameContainer.id = 'react_frame_container';
-      doc.body.appendChild(frameContainer);
+      const container = doc.createElement('div');
+      container.id = 'react_frame_container';
+      doc.body.appendChild(container);
 
       // This is copying CSS from the current page
       // into the iframe
@@ -133,7 +122,7 @@ export default class Frame extends React.Component {
 
       doc.body.appendChild(styleTag);
 
-      ReactDOM.render(contents, frameContainer);
+      ReactDOM.render(contents, container);
       this.setState({isRendered: true});
     } else {
       setTimeout(this.renderFrameContents, 0);
