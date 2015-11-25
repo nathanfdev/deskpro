@@ -4,6 +4,7 @@ $border-color: #e7e7e7;
 @import "../../../../../../node_modules/bourbon/app/assets/stylesheets/bourbon";
 @import "./misc/checkbox", "./misc/mixins", "./misc/popovers", "./misc/powered-by", "./misc/radio", "./misc/search";
 @import "./chat/chat-assets", "./chat/chat-events", "./chat/chat-header", "./chat/chat-messages", "./chat/chat-reply", "./chat/collect-user-info", "./chat/ratings";
+@import "./panel";
 
 html, body {
   background: #fff;
@@ -41,4 +42,91 @@ html, body {
 
 #react_frame_container {
   position: absolute;
+}
+
+.dpdesignportal-button, .dpdesignportal a.dpdesignportal-button, .dpdesignportal .dpdesignportal-button {// Base buttons
+  text-decoration: none;
+  display: inline-block;
+  line-height: 1.3em;
+  background: #4681b2;
+  color: #e0e5ec;
+  padding: 5px 10px;
+  border: 1px solid #4681b2;
+  border-radius: 2px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #3b75a4;
+    color: #fff;
+  }
+
+  &.dpdesignportal-button-wide { width: 100%; }
+
+  &.white {
+    background: #ffffff;
+    border: 1px solid #d8d8d8;
+    color: #959595;
+    &:hover {
+      background: #f7f7f7;
+      color: #333;
+    }
+  }
+
+  &.grey {
+    background: #eaeaea;
+    border: 1px solid #eaeaea;
+    color: #959595;
+    &:hover {
+      background: #e0dddd;
+      border: 1px solid #e0dddd;
+    }
+  }
+}
+
+.dpdesignportal-button + .dpdesignportal-button { margin-left: 5px; }
+
+// Leftovers?
+
+// Originally for feedback but havent done anything with it, probably redo
+.dpdesignportal ul.dpdesignportal-content-list {
+  padding: 10px 30px 10px 10px;
+  li > ul { margin-left: 10px; }// Add margins to lists in lists
+
+  // Main icon style
+  .dpdesignportal-list-icon {
+    display: inline-block;
+    width: 16px;
+    margin-right: 5px;
+    i { color: inherit; font-size: 11px; }
+  }
+
+  // Main level folders only
+  .dpdesignportal-content-list-folder {
+    color: #299969;
+    .dpdesignportal-list-icon i { font-size: 15px; }
+    .dpdesignportal-list-title { font-size: 15px; }
+  }
+
+  // Second level folders
+  .dpdesignportal-content-list-folder.dpdesignportal-content-list-folder-secondary {
+    .dpdesignportal-list-icon i { font-size: 11px; }
+  }
+
+  a {
+    color: #4c4c4c;
+    text-decoration: none;
+    display: block;
+    width: 100%;
+    line-height: 1em;
+    padding: 6px 0;
+    font-size: 12.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    &:hover {
+      color: #299969;
+      text-decoration: underline;
+      i { color: inherit;}
+    }
+  }
 }

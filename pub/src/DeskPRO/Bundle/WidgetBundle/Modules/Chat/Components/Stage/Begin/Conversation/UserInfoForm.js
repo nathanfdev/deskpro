@@ -8,13 +8,18 @@ export class UserInfoForm extends React.Component {
     children: PropTypes.any
   };
 
+  onSubmit = event => {
+    event.preventDefault();
+    this.props.onSubmit();
+  };
+
   render() {
-    const { title, onSubmit, children } = this.props;
+    const { title, children } = this.props;
 
     return (
       <div className="dpdesignportal-collect-user-info">
         <span className="title">{title}</span>
-        <form onSubmit={onSubmit}>
+        <form onSubmit={this.onSubmit}>
           {children}
         </form>
       </div>
