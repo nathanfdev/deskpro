@@ -253,19 +253,19 @@ function getWebpackConfig(mode, isDevServer, isProd) {
     });
   }
 
-  if (mode == 'all' || mode == 'portal') {
-    config.entry['widget_loader']              = ["./src/DeskPRO/Bundle/WidgetBundle/widget_loader.js"];
-    config.entry['DeskPRO_PortalBundle']       = ["./src/DeskPRO/Bundle/PortalBundle/DeskPRO_PortalBundle"];
-    config.entry['DeskPRO_PortalBundle_style'] = ["./src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-style.scss"];
+  if (mode === 'all' || mode === 'portal') {
+    config.entry['widget_loader']              = ['./src/DeskPRO/Bundle/WidgetBundle/widget_loader.js'];
+    config.entry['DeskPRO_PortalBundle']       = ['./src/DeskPRO/Bundle/PortalBundle/DeskPRO_PortalBundle'];
+    config.entry['DeskPRO_PortalBundle_style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-style.scss'];
   }
-  if (mode == 'all' || mode == 'widget') {
-    config.entry['DeskPRO_WidgetBundle']       = ["./src/DeskPRO/Bundle/WidgetBundle/DeskPRO_WidgetBundle"];
-    config.entry['DeskPRO_WidgetBundle_style'] = ["./src/DeskPRO/Bundle/WidgetBundle/Resources/style/widget-style.scss"];
+  if (mode === 'all' || mode === 'widget') {
+    config.entry['DeskPRO_WidgetBundle']       = ['./src/DeskPRO/Bundle/WidgetBundle/DeskPRO_WidgetBundle'];
+    config.entry['DeskPRO_WidgetBundle_style'] = ['./src/DeskPRO/Bundle/WidgetBundle/Resources/style/widget-style.scss'];
   }
-  if (mode == 'all' || mode == 'agent') {
-    config.entry['phonenumber_utils']         = ["./node_modules/intl-tel-input/lib/libphonenumber/build/utils"];
-    config.entry['DeskPRO_AgentBundle']       = ["./src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentBundle"];
-    config.entry['DeskPRO_AgentBundle_style'] = ["./src/DeskPRO/Bundle/AgentBundle/Resources/style/agent-style.scss"];
+  if (mode === 'all' || mode === 'agent') {
+    config.entry['phonenumber_utils']         = ['./node_modules/intl-tel-input/lib/libphonenumber/build/utils'];
+    config.entry['DeskPRO_AgentBundle']       = ['./src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentBundle'];
+    config.entry['DeskPRO_AgentBundle_style'] = ['./src/DeskPRO/Bundle/AgentBundle/Resources/style/agent-style.scss'];
   }
 
   //---
