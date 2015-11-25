@@ -543,6 +543,10 @@ class TemplatingExtension extends \Twig_Extension
         $less_use_css         = App::getConfig('debug.less_use_css_dir', false);
         $disable_client_cache = App::getConfig('debug.disable_client_cache', false);
 
+        if (App::getConfig('debug.dev') && !$raw_packs) {
+            $raw_packs = ['all'];
+        }
+
         if ($raw_packs && (in_array($name, $raw_packs) or in_array('all', $raw_packs) or (in_array('all -vendors', $raw_packs) && $name != 'agent_vendors'))) {
             $urls = $this->getAsseticRaw($name);
         } else {
