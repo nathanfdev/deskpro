@@ -41,9 +41,11 @@
   window.DESKPRO_ENABLED_LANGS = [{% for language in enabled_languages() %}{{ '{' }}code: '{{ language.urlCode }}', title:'{{ language.title|capitalize }}',flag:'{{ language.flag_image }}'{{ '}' }}{% if not loop.last %},{% endif %}{% endfor %}];
   window.DP_ASSET_URL = '{{ asset('') }}';
   window.DP_BASE_URL = '{{ path('portal_home')|trim('/') }}/';
+  window.__DP_APP_SRC__ = '{{ asset('DeskPRO_WidgetBundle.js', 'app_assets') }}';
 })();
 </script>
 <script type="text/javascript" src="{{ asset('DeskPRO_PortalBundle.js', 'app_assets') }}" async="async"></script>
+<script type="text/javascript" src="{{ asset('widget_loader.js', 'app_assets') }}" async="async"></script>
 {% block doc_begin %}{% endblock %}
 
 <div class="dp-page-body">
