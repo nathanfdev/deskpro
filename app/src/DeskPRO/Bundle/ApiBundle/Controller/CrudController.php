@@ -69,6 +69,7 @@ abstract class CrudController extends BaseController
 
     public static $listSort       = 'id';
     public static $listOrder      = 'desc';
+    public static $listPaginate   = true;
     public static $listPerPage    = 10;
     public static $listMaxResults = 200;
 
@@ -150,18 +151,21 @@ abstract class CrudController extends BaseController
             $this->applyListFilters($qb, 'e', $request);
             $this->applySorting($qb, 'e', $request);
 
-            $page  = $request->query->get('page', 1);
-            $count = $request->query->get('count', static::$listPerPage);
-            if ($count > static::$listMaxResults) {
-                throw $this->createBadRequestException(
-                    'You can select maximum '.static::$listMaxResults.' entities');
+            // return QueryBuilder result or Pagerfanta depending on if pagination is enabled for the controller
+            if (static::$listPaginate) {
+                $page  = $request->query->get('page', 1);
+                $count = $request->query->get('count', static::$listPerPage);
+                if ($count > static::$listMaxResults) {
+                    throw $this->createBadRequestException(
+                        'You can select maximum '.static::$listMaxResults.' entities');
+                }
+                $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
+                $pager->setMaxPerPage($count);
+                $pager->setCurrentPage($page);
+                $result = $pager;
+            } else {
+                $result = $qb->getQuery()->getResult();
             }
-
-            $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
-            $pager->setMaxPerPage($count);
-            $pager->setCurrentPage($page);
-
-            $result = $pager;
         }
 
         return View::create(

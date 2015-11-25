@@ -227,6 +227,9 @@ export const applyParams = createAction(
     const current = currentListParamsSelector(getState()).toJS();
     const params = { ...current, ...overwrite };
     const { delayReload } = params;
+    if (!overwrite.hasOwnProperty('page') && current.hasOwnProperty('page')) {
+      delete params.page;
+    }
     delete params.delayReload;
     dispatch(setParams(params));
     if (params.navItem && !delayReload) {

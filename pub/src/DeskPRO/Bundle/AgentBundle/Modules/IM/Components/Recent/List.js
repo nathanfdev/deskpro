@@ -86,20 +86,19 @@ export class List extends React.Component {
     const sortedChats = recentChats.sort((first, second) => {
       const fDate = Date.parse(first.get('date_last_message'));
       const sDate = Date.parse(second.get('date_last_message'));
-      if (fDate === sDate) return 0;
       return sDate - fDate;
     }).slice(0, 5);
 
     return (
       <Loader loaded={loaded} opacity={0} width={3} scale={0.5} left="125%" color="#fff" component="span">
         {
-          sortedChats.map((chat, index) => {
+          sortedChats.toList().map((chat) => {
             return (
               <Item
                 startChat={this.startChat}
                 me={me}
                 counts={loadingCounts ? {} : counts}
-                key={index}
+                key={chat.get('id')}
                 chat={chat}
                 teams={teams}
                 agents={agents}

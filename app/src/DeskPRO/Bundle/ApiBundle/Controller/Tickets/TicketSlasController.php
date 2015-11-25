@@ -29,33 +29,20 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
-use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
+use Application\DeskPRO\Entity\Sla;
+use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use FOS\RestBundle\Controller\Annotations\Route;
 
 /**
- * Class ProductTransformer.
+ * Class TicketSlaController.
+ *
+ * @Route("/ticket_slas")
  */
-class ProductTransformer extends AbstractDataSerializerTransformer
+class TicketSlasController extends CrudController
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
-    {
-        return [
-            'id',
-            'title',
-            'display_order',
-            'parent',
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getCustomProperties(DataTransformerRequest $transformation_request)
-    {
-        return [];
-    }
+    public static $exposeOnly   = ['list'];
+    public static $entity       = Sla::class;
+    public static $listPaginate = false;
 }

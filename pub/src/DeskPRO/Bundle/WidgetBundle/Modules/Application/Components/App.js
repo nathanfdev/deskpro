@@ -1,5 +1,4 @@
 import React from 'react';
-import Frame from 'Ampliflux/common/components/Frame';
 import TriggerButton from './TriggerButton';
 import WidgetApp from './WidgetApp';
 
@@ -17,11 +16,11 @@ export class App extends React.Component {
   }
 
   renderTrigger() {
-    return <TriggerButton isVisible={!this.state.isOpen} onClick={() => this.openWidget()} />
+    return <TriggerButton isVisible={!this.state.isOpen} onClick={() => this.openWidget()} />;
   }
 
   renderWidgetApp() {
-    return <WidgetApp isVisible={this.state.isOpen} />
+    return <WidgetApp isVisible={this.state.isOpen} />;
   }
 
   render() {

@@ -28,7 +28,7 @@ const initialState = {
 
 export default createReducer(initialState, {
   [actions.loadFeedbackList]: async({
-    success: (state, payload) => state.set('elements', payload.data),
+    success: (state, payload) => state.set('elements', payload.data).set('pagination', payload.meta.pagination),
     start: setValue('async.done', false),
     done: setValue('async.done', true)
   }),

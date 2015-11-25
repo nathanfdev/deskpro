@@ -1,24 +1,13 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
+import { Router, Route, Redirect } from 'react-router';
 import Frame from 'Ampliflux/common/components/Frame';
+import { ChatApp } from '../../Chat/Components/ChatApp';
 
 export default class WidgetAppBody extends React.Component {
+
   static propTypes = {
-    onResize: React.PropTypes.func
+    onResize: PropTypes.func
   };
-
-  render() {
-    return (
-      <div className="widget-container">
-        Contents go here.
-      </div>
-    )
-  }
-
-  triggerResize() {
-    if (this.props.onResize) {
-      window.setTimeout(() => this.props.onResize(), 0);
-    }
-  }
 
   componentDidMount() {
     this.triggerResize();
@@ -27,22 +16,41 @@ export default class WidgetAppBody extends React.Component {
   componentDidUpdate() {
     this.triggerResize();
   }
+
+  triggerResize() {
+    const { onResize } = this.props;
+    if (onResize) {
+      window.setTimeout(() => onResize(), 0);
+    }
+  }
+
+  render() {
+    return (
+      <div className="widget-container">
+        <Router>
+          <Redirect from="/" to="chat"/>
+          <Route name="chat" path="chat" component={ChatApp}/>
+        </Router>
+      </div>
+    );
+  }
 }
 
 export default class WidgetApp extends React.Component {
 
   static propTypes = {
-    onClick: React.PropTypes.func,
-    isVisible: React.PropTypes.bool
+    onClick: PropTypes.func,
+    isVisible: PropTypes.bool
   };
 
   render() {
+    const { isVisible } = this.props;
     const style = {
       marginRight: '14px'
     };
 
     return (
-      <Frame ref="frame" style={ style } isVisible={this.props.isVisible} id="dp_widget_app">
+      <Frame ref="frame" id="dp_widget_app" style={style} isVisible={isVisible}>
         <WidgetAppBody onResize={() => this.refs.frame && this.refs.frame.autoFrameDimentions()} />
       </Frame>
     );

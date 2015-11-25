@@ -66,13 +66,14 @@ export default function promiseMiddleware({ dispatch }) {
       });
     } else {
       const sequenceId = uniqueId();
+      const actionMeta = action.meta;
 
       const createSeqAction = (sequence, payload, isError = false) => ({
         ...action,
         payload: payload,
         error: isError === true,
         meta: {
-          ...action.meta,
+          ...actionMeta,
           sequenceId: sequenceId,
           sequence: sequence,
           sequenceType: 'promise',

@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
   return ({
     isComments: isCommentsSelector(state),
     selected: state.Feedback.list.get('selected'),
+    pagination: state.Feedback.list.get('pagination'),
     loaded: state.Feedback.list.getIn(['async', 'done']),
     currentViewMode: currentViewModeSelector(state)
   });

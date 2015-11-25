@@ -71,17 +71,12 @@ class LabelListener
         }
 
         $em  = $args->getEntityManager();
-        $def = $this->findDef($em, $label);
+        $def = $this->findDef($em, $label) ?: $this->createDefFor($label);
         $def->decrement();
-        if ($def->getTotal() > 0) {
-            $em->createQuery('UPDATE DeskPRO:LabelDef d SET d.total = ?0 WHERE d.label_type = ?1 AND d.label = ?2')
-                ->setParameters([$def->getTotal(), $label->getType(), $label->getLabel()])
-                ->execute();
-        } else {
-            $em->createQuery('DELETE FROM DeskPRO:LabelDef d WHERE d.label_type = ?0 AND d.label = ?1')
-                ->setParameters([$label->getType(), $label->getLabel()])
-                ->execute();
-        }
+        $em
+            ->createQuery('UPDATE DeskPRO:LabelDef d SET d.total = ?0 WHERE d.label_type = ?1 AND d.label = ?2')
+            ->setParameters([$def->getTotal(), $label->getType(), $label->getLabel()])
+            ->execute();
     }
 
     /**

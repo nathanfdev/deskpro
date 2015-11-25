@@ -105,7 +105,7 @@ class FeedbackController extends BaseController
             throw new BadRequestHttpException($e->getMessage());
         }
         $page = $request->query->get('page', 1);
-        $count = $request->query->get('count', 10);
+        $count = $request->query->get('count', 5);
 
         $feedback = $dataService->selectFeedback($criteria, $page, $count);
 

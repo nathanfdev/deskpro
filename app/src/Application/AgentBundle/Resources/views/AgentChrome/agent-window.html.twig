@@ -10,11 +10,16 @@
     window.DP_BASE_URL_RELATIVE = '{{ app.request.getBaseUrl() }}';
     window.DP_PHONE_UTIL_PATH = '{{ asset('phonenumber_utils.js', 'app_assets') }}';
   </script>
+
+  {% include 'AgentBundle:AgentChrome:legacy-resources.html.twig' %}
+
+  <link type="text/css" rel="stylesheet" href="{{ asset('stylesheets-less/agent/new-agent-pack-wrapped.css') }}" />
   <link type="text/css" rel="stylesheet" href="{{ asset('DeskPRO_AgentBundle_style.css', 'app_assets') }}" />
   <link href='http://fonts.googleapis.com/css?family=Lato:400,700,100,300' rel='stylesheet' type='text/css'>
   <script type="text/javascript" src="{{ asset('DeskPRO_AgentBundle.js', 'app_assets') }}"></script>
 </head>
 <body>
 <div id="deskpro_app_window"></div>
+<div style="display: none;">{% include 'AgentBundle:AgentChrome:legacy-components.html.twig' %}</div>
 </body>
 </html>

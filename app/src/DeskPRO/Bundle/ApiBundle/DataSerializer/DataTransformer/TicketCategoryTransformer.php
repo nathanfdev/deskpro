@@ -48,7 +48,6 @@ class TicketCategoryTransformer extends AbstractDataSerializerTransformer
             'title',
             'display_order',
             'parent',
-            'children',
         ];
     }
 
