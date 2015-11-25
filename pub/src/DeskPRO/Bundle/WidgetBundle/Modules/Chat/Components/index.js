@@ -1,6 +1,6 @@
 import { ChatApp } from './ChatApp';
 import { ChatBeginSimple } from './Stage/Begin/ChatBeginSimple';
-import { ChatBeginConversation } from './Stage/Begin/ChatBeginConversation';
+import { ChatBeginConversation } from './Stage/Begin/Conversation/ChatBeginConversation';
 import { ChatBeginForm } from './Stage/Begin/ChatBeginForm';
 import { ChatActive } from './Stage/ChatActive';
 import { ChatWaiting } from './Stage/ChatWaiting';
