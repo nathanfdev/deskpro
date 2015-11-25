@@ -20,12 +20,6 @@ services:
       arguments:
         - @doctrine.orm.default_entity_manager
 
-    data_serializer.transformer.ticket_filter:
-      class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\TicketFilterTransformer
-      arguments:
-        - @security.token_storage
-        - @doctrine.orm.default_entity_manager
-
     data_serializer.transformer.person:
       class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\PersonTransformer
       arguments:

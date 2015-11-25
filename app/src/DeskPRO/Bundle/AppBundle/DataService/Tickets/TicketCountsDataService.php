@@ -32,9 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\DataService\Tickets;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\ApiBundle\Controller\Tickets\Filters\TicketFiltersController;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\Entity\PersonSetting;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngine;
@@ -42,6 +40,9 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
+/**
+ * Class TicketCountsDataService.
+ */
 class TicketCountsDataService
 {
     /**
@@ -79,8 +80,6 @@ class TicketCountsDataService
      */
     public function getTicketFilterCount(TicketFilter $filter, $group_by = null)
     {
-        $group_by or $group_by = $this->getTicketFilterGroupBy($filter);
-
         $context = new TermEngineContext($this->user);
         if ($group_by) {
             $context->addGroupByFromString($group_by);
@@ -112,34 +111,23 @@ class TicketCountsDataService
 
     /**
      * @param TicketFilterSet $set
+     * @param array|null      $group_by
      *
-     * @return array
+     * @return Count
      */
-    public function getFilterSetTicketsCount(TicketFilterSet $set)
+    public function getFilterSetTicketsCount(TicketFilterSet $set, array $group_by = null)
     {
-        $total  = 0;
-        $counts = [];
+        is_array($group_by) or $group_by = [];
+        $total                           = 0;
+        $counts                          = [];
 
         foreach ($set->getFilters() as $filter) {
-            $filter_count = $this->getTicketFilterCount($filter);
-            $counts[]     = $filter_count;
+            $filter_grouping = array_key_exists($filter->getId(), $group_by) ? $group_by[$filter->getId()] : null;
+            $filter_count    = $this->getTicketFilterCount($filter, $filter_grouping);
+            $counts[]        = $filter_count;
             $total += $filter_count->getCount();
         }
 
         return Count::create($total, $set->getId(), $counts);
-    }
-
-    /**
-     * @param TicketFilter $filter
-     *
-     * @return string|null
-     */
-    private function getTicketFilterGroupBy(TicketFilter $filter)
-    {
-        $name    = TicketFiltersController::CUSTOM_FILTER_GROUP_BY_PREFIX.$filter->getId();
-        $person  = $this->user;
-        $setting = $this->em->find(PersonSetting::class, compact('name', 'person'));
-
-        return $setting ? $setting->getValue() : null;
     }
 }
