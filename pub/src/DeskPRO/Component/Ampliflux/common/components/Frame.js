@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import jQuery from 'jquery';
 
 export default class Frame extends React.Component {
 
@@ -55,17 +56,9 @@ export default class Frame extends React.Component {
       return false;
     }
 
-    const firstChild = document.body.firstChild;
-    let width = Math.max(firstChild.clientWidth, firstChild.offsetWidth);
-    const height = Math.max(firstChild.clientHeight, firstChild.offsetHeight);
-
-    // todo must be better way to calculate width?
-    if (!width) {
-      const tags = document.getElementsByTagName('*');
-      for (let i = 0; i < tags.length; i++) {
-        width += Math.max(tags[i].clientWidth, tags[i].offsetWidth);
-      }
-    }
+    const $container = jQuery(document.body.firstChild);
+    const width = $container.width();
+    const height = $container.height();
 
     const dimentions = this.state.dims;
     if (dimentions.width === width && dimentions.height === height) {
