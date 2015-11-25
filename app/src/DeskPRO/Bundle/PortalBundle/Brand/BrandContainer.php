@@ -100,7 +100,11 @@ class BrandContainer
      */
     public function getTheme()
     {
-        return $this->theme ? $this->theme : $this->theme = $this->theme_resolver->getThemeById($this->getBrand()->theme_id);
+        if (!$this->theme) {
+            $this->theme = $this->theme_resolver->getThemeById($this->getBrand()->getThemeSet()->getThemeId());
+        }
+
+        return $this->theme;
     }
 
     /**

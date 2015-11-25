@@ -88,7 +88,8 @@ class PortalLoader implements \Twig_LoaderInterface
     {
         $brand = $this->getBrandContainer();
 
-        return $brand->getBrand()->theme_id.$name.$this->brand_stack->getActive()->getBrand()->id;
+        // TODO: factor in the "edit_theme_id" hierarchy here
+        return $brand->getBrand()->getThemeSet()->getThemeId().$name;
     }
 
     /**
