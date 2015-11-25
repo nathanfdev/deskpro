@@ -7,7 +7,6 @@ import jQuery from 'jquery';
 const initialState = {
   activeAppId: 'tickets',
   collapseNav: localStorage.getItem('dpWindow.sidebarMode') === 'hover',
-  expandedSwitcher: false,
   taskView: constants.VIEW_MODE_CARD,
   columnMode: localStorage.getItem('dpWindow.columnMode') || 'column',
   columnDimensions: parseInt(localStorage.getItem('dpWindow.columnDimensions'), 10) || 40,
@@ -31,8 +30,7 @@ function triggerDpLayoutResize() {
 export default createReducer(initialState, {
   [actions.setActiveApp]: (state, payload) => {
     return state.merge({
-      activeAppId: payload,
-      expandedSwitcher: false
+      activeAppId: payload
     });
   },
   [actions.collapseNav]: state => {
@@ -43,8 +41,6 @@ export default createReducer(initialState, {
     triggerDpLayoutResize();
     return state.set('collapseNav', false);
   },
-  [actions.expandSwitcher]: setValue('expandedSwitcher', true),
-  [actions.collapseSwitcher]: setValue('expandedSwitcher', false),
   [actions.toggleView]: setFullPayload('taskView'),
   [actions.toggleWorkspace]: state => {
     return state.merge({
