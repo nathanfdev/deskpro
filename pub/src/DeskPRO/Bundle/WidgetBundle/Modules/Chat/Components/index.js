@@ -1,10 +1,10 @@
 import { ChatApp } from './ChatApp';
-import { ChatBeginSimple } from './Begin/ChatBeginSimple';
-import { ChatBeginConversation } from './Begin/ChatBeginConversation';
-import { ChatBeginForm } from './Begin/ChatBeginForm';
-import { ChatActive } from './ChatActive';
-import { ChatWaiting } from './ChatWaiting';
-import { ChatDone } from './ChatDone';
+import { ChatBeginSimple } from './Stage/Begin/ChatBeginSimple';
+import { ChatBeginConversation } from './Stage/Begin/ChatBeginConversation';
+import { ChatBeginForm } from './Stage/Begin/ChatBeginForm';
+import { ChatActive } from './Stage/ChatActive';
+import { ChatWaiting } from './Stage/ChatWaiting';
+import { ChatDone } from './Stage/ChatDone';
 
 export {
   ChatApp,
