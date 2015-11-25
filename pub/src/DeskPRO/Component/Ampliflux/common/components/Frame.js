@@ -72,12 +72,12 @@ export default class Frame extends React.Component {
   }
 
   autoFrameDimensions() {
-    const document = this.getContentDocument();
-    if (!document) {
+    const doc = this.getContentDocument();
+    if (!doc) {
       return false;
     }
 
-    const $container = jQuery(document.body.firstChild);
+    const $container = jQuery(doc.body.firstChild);
     const width = $container.width();
     const height = $container.height();
 
@@ -124,7 +124,7 @@ export default class Frame extends React.Component {
         css.push(styles[i].innerHTML);
       }
 
-      css = css.join("\n");
+      css = css.join(' ');
 
       const styleTag = doc.createElement('style');
       styleTag.type = 'text/css';
@@ -137,7 +137,9 @@ export default class Frame extends React.Component {
       doc.body.appendChild(styleTag);
 
       ReactDOM.render(contents, container);
-      this.setState({isRendered: true});
+      this.setState({
+        isRendered: true
+      });
     } else {
       setTimeout(this.renderFrameContents, 0);
     }
