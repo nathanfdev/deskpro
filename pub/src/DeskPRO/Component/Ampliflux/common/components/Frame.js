@@ -1,26 +1,38 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 
 export default class Frame extends React.Component {
+
   static propTypes = {
-    style: React.PropTypes.object,
-    head: React.PropTypes.node,
-    isVisible: React.PropTypes.bool
+    style: PropTypes.object,
+    head: PropTypes.node,
+    isVisible: PropTypes.bool,
+    positionMode: PropTypes.string,
+    children: PropTypes.any
   };
 
-  constructor(rawProps) {
-    let props = rawProps;
-
+  constructor(props) {
     super(props);
-
     this.state = {
       dims: { width: 0, height: 0 },
       isRendered: false,
-      positionMode: rawProps.positionMode || 'bottom.right'
+      positionMode: props.positionMode || 'bottom.right'
     };
   }
 
-  getIframeNode() {
+  componentDidMount() {
+    this.renderFrameContents();
+  }
+
+  componentDidUpdate() {
+    this.renderFrameContents();
+  }
+
+  componentWillUnmount() {
+    React.unmountComponentAtNode(ReactDOM.findDOMNode(this.refs.iframe).contentDocument.getElementById('react_frame_container'));
+  }
+
+  getFrameNode() {
     if (!this.refs || !this.refs.iframe) {
       return null;
     }
@@ -28,16 +40,29 @@ export default class Frame extends React.Component {
     return ReactDOM.findDOMNode(this.refs.iframe) || null;
   }
 
-  getIframeDocument() {
-    const domNode = this.getIframeNode();
+  getFrameDocument() {
+    const domNode = this.getFrameNode();
     if (!domNode || !domNode.contentDocument) {
       return null;
     }
     return domNode.contentDocument;
   }
 
+  setFrameDimentions(w, h) {
+    if (this.state.dims.width === w && this.state.dims.height === h) {
+      // same dims, no need to update
+      return false;
+    }
+
+    this.setState({
+      dims: { width: w, height: h }
+    });
+
+    return true;
+  }
+
   autoFrameDimentions() {
-    const iframeDoc = this.getIframeDocument();
+    const iframeDoc = this.getFrameDocument();
 
     if (!iframeDoc) {
       return false;
@@ -54,7 +79,7 @@ export default class Frame extends React.Component {
       }
     }
 
-    if (this.state.dims.width == w && this.state.dims.height == h) {
+    if (this.state.dims.width === w && this.state.dims.height === h) {
       // same dims, no need to update
       return false;
     }
@@ -64,64 +89,6 @@ export default class Frame extends React.Component {
     });
 
     return true;
-  }
-
-  setFrameDimentions(w, h) {
-    if (this.state.dims.width == w && this.state.dims.height == h) {
-      // same dims, no need to update
-      return false;
-    }
-
-    this.setState({
-      dims: { width: w, height: h }
-    });
-
-    return true;
-  }
-
-  render() {
-    const props = {
-      ...this.props,
-      ref: "iframe",
-      children: undefined
-    };
-
-    if (!props.style) {
-      props.style = {};
-    }
-
-    props.style = {
-      border: 'none',
-      background: 'transparent',
-      zIndex: 99999,
-      width: this.state.dims.width || 0,
-      height: this.state.dims.height || 0,
-      position: 'fixed',
-      ...props.style
-    };
-
-    if (!this.props.isVisible) {
-      props.style.display = 'none';
-    } else {
-      props.style.display = 'block';
-    }
-
-    switch (this.state.positionMode) {
-      case 'bottom.left':
-        props.style.left = 0;
-        props.style.bottom = 0;
-        break;
-      case 'bottom.right':
-        props.style.right = 0;
-        props.style.bottom = 0;
-        break;
-    }
-
-    return (<iframe {...props} />);
-  }
-
-  componentDidMount() {
-    this.renderFrameContents();
   }
 
   renderFrameContents() {
@@ -129,7 +96,7 @@ export default class Frame extends React.Component {
       return;
     }
 
-    const doc = this.getIframeDocument();
+    const doc = this.getFrameDocument();
     if (!doc) {
       return;
     }
@@ -142,7 +109,7 @@ export default class Frame extends React.Component {
       );
 
       const frameContainer = doc.createElement('div');
-      frameContainer.id = "react_frame_container";
+      frameContainer.id = 'react_frame_container';
       doc.body.appendChild(frameContainer);
 
       // This is copying CSS from the current page
@@ -158,7 +125,7 @@ export default class Frame extends React.Component {
 
       const styleTag = doc.createElement('style');
       styleTag.type = 'text/css';
-      if (styleTag.styleSheet){
+      if (styleTag.styleSheet) {
         styleTag.styleSheet.cssText = css;
       } else {
         styleTag.appendChild(doc.createTextNode(css));
@@ -173,11 +140,45 @@ export default class Frame extends React.Component {
     }
   }
 
-  componentDidUpdate() {
-    this.renderFrameContents();
-  }
+  render() {
+    const props = this.props;
+    const frameProps = {
+      ...props,
+      ref: 'iframe',
+      children: undefined
+    };
 
-  componentWillUnmount() {
-    React.unmountComponentAtNode(ReactDOM.findDOMNode(this.refs.iframe).contentDocument.getElementById('react_frame_container'));
+    const overrideStyle = frameProps.style || {};
+    frameProps.style = {
+      border: 'none',
+      background: 'transparent',
+      zIndex: 99999,
+      width: this.state.dims.width || 0,
+      height: this.state.dims.height || 0,
+      position: 'fixed',
+
+      ...overrideStyle
+    };
+
+    if (!props.isVisible) {
+      frameProps.style.display = 'none';
+    } else {
+      frameProps.style.display = 'block';
+    }
+
+    switch (this.state.positionMode) {
+      case 'bottom.left':
+        frameProps.style.left = 0;
+        frameProps.style.bottom = 0;
+        break;
+      case 'bottom.right':
+        frameProps.style.right = 0;
+        frameProps.style.bottom = 0;
+        break;
+      default:
+        break;
+    }
+
+    return <iframe {...frameProps} />;
   }
 }
