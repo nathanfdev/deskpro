@@ -8,7 +8,7 @@ import { FeedbackCommentTableContainer } from './View/Table/FeedbackCommentTable
 import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import Loader from 'react-loader';
-import { PaginationBoxView } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Pagination/PaginationBoxView';
+import { PaginationContainer } from './PaginationContainer';
 
 export class List extends Component {
 
@@ -70,17 +70,7 @@ export class List extends Component {
   renderPagination() {
     const { pagination } = this.props;
     if (pagination && pagination.total_pages > 1) {
-      return (
-        <PaginationBoxView breakLabel={<li className="break"><a href="">...</a></li>}
-                           pageNum={pagination.total_pages}
-                           currentPage={pagination.current_page}
-                           marginPagesDisplayed="2"
-                           pageRangeDisplayed="5"
-                           clickCallback={this.handlePageClick}
-                           containerClassName="pages-list"
-                           subContainerClassName="pages-list"
-                           activeClassName="current-page"/>
-      );
+      return (<PaginationContainer/>);
     }
   }
 

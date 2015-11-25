@@ -55,8 +55,8 @@ export class PaginationBoxView extends Component {
     event.preventDefault();
     const { currentPage, clickCallback} = this.props;
 
-    if (currentPage === selected) {
-      // Display the dropdown list
+    if (currentPage === selected + 1) {
+      // Toggle the dropdown list
       this.setState({ dropdown: !this.state.dropdown });
       return;
     }
@@ -66,21 +66,21 @@ export class PaginationBoxView extends Component {
     });
 
     if (typeof(clickCallback) !== 'undefined' && typeof(clickCallback) === 'function') {
-      clickCallback({ selected: selected });
+      clickCallback(selected + 1);
     }
   }
 
   handlePreviousPage(event) {
     event.preventDefault();
-    if (this.props.currentPage > 0) {
-      this.handlePageSelected(this.props.currentPage - 1, event);
+    if (this.props.currentPage > 1) {
+      this.handlePageSelected(this.props.currentPage - 2, event);
     }
   }
 
   handleNextPage(event) {
     event.preventDefault();
-    if (this.props.currentPage < this.props.pageNum - 1) {
-      this.handlePageSelected(this.props.currentPage + 1, event);
+    if (this.props.currentPage < this.props.pageNum) {
+      this.handlePageSelected(this.props.currentPage, event);
     }
   }
 

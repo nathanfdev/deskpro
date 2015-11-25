@@ -24,7 +24,7 @@ export class PageView extends Component {
     const className = currentPage === page ? 'active' : '';
     return (
       <li key={page}>
-        <a href="#" onClick={onClick.bind(null, page - 1)} className={className}>
+        <a href="#" onClick={onClick.bind(null, page)} className={className}>
           {page}
         </a>
       </li>
@@ -54,12 +54,12 @@ export class PageView extends Component {
   }
 
   render() {
-    const { activeClassName, currentPage, page } = this.props;
+    const { activeClassName, currentPage, page, onClick } = this.props;
     const active = currentPage === page;
 
     return (
       <li className={active ? activeClassName : false}>
-        <a {...this.props} href="" className={active ? activeClassName : false}>
+        <a {...this.props} href="" className={active ? activeClassName : false} onClick={onClick}>
           {page}
           {this.renderCaret(active)}
         </a>

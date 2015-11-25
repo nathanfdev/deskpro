@@ -53,13 +53,13 @@ export class PaginationListView extends Component {
         page = index + 1;
 
         const pageView = (
-          <PageView
-            onClick={onPageSelected.bind(null, index)}
-            currentPage={currentPage}
-            pageClassName={pageClassName}
-            pageLinkClassName={pageLinkClassName}
-            activeClassName={activeClassName}
-            page={index + 1}/>
+          <PageView onClick={onPageSelected.bind(null, index)}
+                    currentPage={currentPage}
+                    pageClassName={pageClassName}
+                    pageLinkClassName={pageLinkClassName}
+                    activeClassName={activeClassName}
+                    pageNum={pageNum}
+                    page={index + 1}/>
         );
 
         if (page <= marginPagesDisplayed) {
