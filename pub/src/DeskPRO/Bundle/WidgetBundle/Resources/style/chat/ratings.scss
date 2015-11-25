@@ -3,7 +3,7 @@
   border-top: 1px solid #e7e7e7;
   border-bottom: 1px solid #e7e7e7;
   text-align: center;
-  padding: 15px 5px 0px 5px;
+  padding: 15px 5px 0 5px;
 
   &.dpdesignportal-agent-rating-complete {
     padding: 20px 5px;
@@ -22,7 +22,7 @@
 
   p { font-size: 12px; }
   p.grey { color: #838383; }
-  .dpdesignportal-agent-rating-buttons { margin: 15px 0px 20px 0px; }
+  .dpdesignportal-agent-rating-buttons { margin: 15px 0 20px 0; }
 
   a.dpdesignportal-button {
     background: none;
@@ -51,8 +51,7 @@
   border: 1px solid #e7e7e7;
   border-radius: 2px;
   background: #fff;
-  padding: 5px;
-  padding-top: 7px;
+  padding: 7px 5px 5px;
   counter-reset: rating;
 
   a {
@@ -125,7 +124,7 @@
 .dpdesignportal-transcript-request {
 
   .dpdesignportal-transcript-request-header {
-    padding: 5px 5px 0px 5px;
+    padding: 5px 5px 0 5px;
     color: #a5a5a5;
     text-align: right;
 
@@ -150,12 +149,12 @@
     @include add-corner(4px, #4681b2, "middle", top, "");
     position: relative;
     border: 1px solid #4681b2;
-    padding: 0px 5px;
+    padding: 0 5px;
     border-radius: 2px;
     margin: 5px;
 
     form {
-      margin: 0px;
+      margin: 0;
 
       .inline-form-item { margin-top: 5px; }
     }

@@ -9,8 +9,7 @@ div.dpdesignportal-chat-header .dpdesignportal-agent-state-info {
   @include add-corner(4px, #e7e7e7, middle, top, "");
 
   h1 {
-    margin: 0;
-    margin-bottom: 5px;
+    margin: 0 0 5px;
     color: #4b4b4b;
   }
 
@@ -60,11 +59,6 @@ div.dpdesignportal-chat-header .dpdesignportal-agent-state-info {
       80% { opacity: 1; }
       100% { opacity: 1; }
     }
-
-
-
-
-
   }
 
   .search-dots div {
@@ -73,16 +67,8 @@ div.dpdesignportal-chat-header .dpdesignportal-agent-state-info {
     height: 4px;
     border-radius: 19px;
     background: #cecece;
-    margin: 0px 4px;
+    margin: 0 4px;
   }
-
-
-
-
-
-
-
-
 }
 
 // Avatars and titles
@@ -90,8 +76,7 @@ div.dpdesignportal-chat-header {
   text-align: center;
   position: relative;
   padding-bottom: 20px;
-  margin: 0px 5px;
-  margin-top: 10px;
+  margin: 10px 5px 0;
 
   h1 {
     margin-bottom: 3px;
@@ -180,9 +165,9 @@ div.dpdesignportal-chat-header {
   hr {
     position: absolute;
     top: 22px;
-    border: 0px;
-    padding: 0px;
-    margin: 0px;
+    border: 0;
+    padding: 0;
+    margin: 0;
     width: 100%;
     height: 1px;
     background: #ededed;
@@ -209,13 +194,12 @@ div.dpdesignportal-chat-header {
 
     border-right: 1px solid #e7e7e7;
     &:last-child {
-      border-right: 0px;
+      border-right: 0;
       float: right;
     }
   }
 
   .dpdesignportal-chat-header-control-item {
-    color: inherit;
     text-decoration: none;
     color: #a5a5a5;
     height: 30px;
@@ -230,7 +214,7 @@ div.dpdesignportal-chat-header {
     > i { margin-right: 4px; }
 
     i.fa-power-off, i.fa-exclamation-circle, i.fa-commenting-o {
-      margin-right: 0px;
+      margin-right: 0;
       margin-left: 4px;
     }
 

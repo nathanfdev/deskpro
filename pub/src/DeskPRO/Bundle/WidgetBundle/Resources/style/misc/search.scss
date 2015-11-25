@@ -34,8 +34,7 @@
   input[type="text"] {
     border: 1px solid $border-color;
     font-size: 12px;
-    padding: 9px 10px;
-    padding-right: 30px;
+    padding: 9px 30px 9px 10px;
     border-radius: 2px;
     display: block;
     width: 100%;
@@ -49,10 +48,10 @@
 
 
   .dpdesignportal-search-icon {
-    border: 0px;
+    border: 0;
     background: none;
     padding: 7px;
-    margin: 0px;
+    margin: 0;
     position: absolute;
     top: 3px;
     right: 5px;
