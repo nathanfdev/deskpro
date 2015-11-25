@@ -33,6 +33,7 @@
  */
 namespace Application\DeskPRO\Entity;
 
+use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
@@ -80,14 +81,9 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
     protected $template_compiled = '';
 
     /**
-     * @var Brand|null
+     * @var ThemeSet
      */
-    protected $brand;
-
-    /**
-     * @var string
-     */
-    protected $theme_id;
+    protected $theme_set;
 
     /**
      * @var \DateTime
@@ -152,8 +148,7 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array('fieldName' => 'date_updated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_updated'));
 
         $builder = new ClassMetadataBuilder($metadata);
-        $builder->addManyToOne('brand', 'Application\DeskPRO\Entity\Brand');
-        $builder->mapString('theme_id');
+        $builder->createOneToOne('theme_set', 'DeskPRO\Bundle\AppBundle\Entity\ThemeSet')->build();
 
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }

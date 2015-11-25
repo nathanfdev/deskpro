@@ -26,4 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1448480390);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1448480390 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('theme_sets table does not need to reference brands table');
+        $this->execMutateSql('ALTER TABLE theme_sets DROP FOREIGN KEY FK_DE4AB1EC44F5D008');
+        $this->execMutateSql('DROP INDEX IDX_DE4AB1EC44F5D008 ON theme_sets');
+        $this->execMutateSql('ALTER TABLE theme_sets DROP brand_id');
+    }
+}

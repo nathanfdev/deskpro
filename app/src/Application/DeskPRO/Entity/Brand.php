@@ -32,6 +32,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 
@@ -56,21 +57,19 @@ class Brand extends DomainObject
     protected $name;
 
     /**
-     * @var string the theme id ie. "base"
+     * @var \DeskPRO\Bundle\AppBundle\Entity\ThemeSet
      */
-    protected $theme_id;
+    protected $theme_set;
+
+    /**
+     * @var \DeskPRO\Bundle\AppBundle\Entity\ThemeSet
+     */
+    protected $edit_theme_set;
 
     /**
      * @var Blob
      */
     protected $logo_blob;
-
-    public function __construct($name = 'Default Brand', $theme_id = 'standard')
-    {
-        $this->id       = 0;
-        $this->name     = $name;
-        $this->theme_id = $theme_id;
-    }
 
     public function getId()
     {
@@ -78,19 +77,35 @@ class Brand extends DomainObject
     }
 
     /**
-     * @return string
+     * @return ThemeSet
      */
-    public function getThemeId()
+    public function getThemeSet()
     {
-        return $this->theme_id;
+        return $this->theme_set;
     }
 
     /**
-     * @param string $theme_id
+     * @param ThemeSet $theme_set
      */
-    public function setThemeId($theme_id)
+    public function setThemeSet(ThemeSet $theme_set)
     {
-        $this->setModelField('theme_id', $theme_id);
+        $this->setModelField('theme_set', $theme_set);
+    }
+
+    /**
+     * @return ThemeSet
+     */
+    public function getEditThemeSet()
+    {
+        return $this->edit_theme_set;
+    }
+
+    /**
+     * @param ThemeSet $theme_set
+     */
+    public function setEditThemeSet(ThemeSet $theme_set)
+    {
+        $this->setModelField('edit_theme_set', $theme_set);
     }
 
     /**
@@ -130,7 +145,8 @@ class Brand extends DomainObject
 
         $builder->mapId();
         $builder->mapString('name');
-        $builder->mapString('theme_id');
+        $builder->createOneToOne('theme_set', 'DeskPRO\Bundle\AppBundle\Entity\ThemeSet')->build();
+        $builder->createOneToOne('edit_theme_set', 'DeskPRO\Bundle\AppBundle\Entity\ThemeSet')->build();
         $builder->addOwningOneToOne('logo_blob', 'Application\DeskPRO\Entity\Blob');
     }
 }

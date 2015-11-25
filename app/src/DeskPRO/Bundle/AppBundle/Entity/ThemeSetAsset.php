@@ -38,10 +38,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="brand_assets")
- * @Serializer\ExclusionPolicy("ALL")
+ * @ORM\Table(name="theme_set_assets")
  */
-class BrandAsset implements EntityInterface, NotifyPropertyChanged
+class ThemeSetAsset implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
@@ -49,13 +48,11 @@ class BrandAsset implements EntityInterface, NotifyPropertyChanged
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
-     * @Serializer\Expose()
      */
     protected $id = null;
     /**
      * @var string
      * @ORM\Column(type="string")
-     * @Serializer\Expose()
      * @Assert\NotNull()
      */
     protected $name;
@@ -63,17 +60,16 @@ class BrandAsset implements EntityInterface, NotifyPropertyChanged
     /**
      * @var array
      * @ORM\Column(type="simple_array")
-     * @Serializer\Expose()
      * @Assert\NotNull()
      */
     protected $tags = array();
 
     /**
-     * @var \Application\DeskPRO\Entity\Brand
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Brand")
-     * @ORM\JoinColumn(name="brand_id", referencedColumnName="id", onDelete="CASCADE")
+     * @var \DeskPRO\Bundle\AppBundle\Entity\ThemeSet
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\ThemeSet")
+     * @ORM\JoinColumn(name="theme_set_id", referencedColumnName="id", onDelete="CASCADE")
      */
-    protected $brand;
+    protected $theme_set;
 
     /**
      * @var \Application\DeskPRO\Entity\Blob
@@ -137,19 +133,19 @@ class BrandAsset implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\Brand
+     * @return ThemeSet
      */
-    public function getBrand()
+    public function getThemeSet()
     {
-        return $this->brand;
+        return $this->theme_set;
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\Brand $brand
+     * @param ThemeSet $theme_set
      */
-    public function setBrand($brand)
+    public function setThemeSet(ThemeSet $theme_set)
     {
-        $this->setModelField('brand', $brand);
+        $this->setModelField('theme_set', $theme_set);
     }
 
     /**

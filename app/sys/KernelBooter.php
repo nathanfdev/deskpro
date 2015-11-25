@@ -777,8 +777,7 @@ class KernelBooter
 
                     require_once DP_ROOT.'/sys/Kernel/PortalKernel.php';
                     $kernel = new PortalKernel($env, $debug);
-
-                    $app = new Application($kernel);
+                    $app    = new Application($kernel);
 
                     libxml_disable_entity_loader(false); // needed on some machines
 
