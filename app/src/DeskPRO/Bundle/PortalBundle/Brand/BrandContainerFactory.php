@@ -76,7 +76,8 @@ class BrandContainerFactory
             $brand,
             $this->settings_resolver->getBrandSettings($brand),
             $this->theme_resolver,
-            new BrandAssetLoader($brand, $this->em, $this->bs)
+            new BrandAssetLoader($brand, $this->em, $this->bs),
+            $this->em
         );
     }
 }

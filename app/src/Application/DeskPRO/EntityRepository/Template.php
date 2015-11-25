@@ -33,9 +33,8 @@
  */
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\Entity\Brand as BrandEntity;
 use Application\DeskPRO\Entity\Template as TemplateEntity;
-use DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface;
+use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 
 class Template extends AbstractEntityRepository
 {
@@ -111,49 +110,47 @@ class Template extends AbstractEntityRepository
     }
 
     /**
-     * @param                $name
-     * @param BrandEntity    $brand
-     * @param ThemeInterface $theme
+     * @param          $name
+     * @param ThemeSet $theme_set
      *
      * @return null|TemplateEntity
      */
-    public function getBrandTemplate($name, BrandEntity $brand, ThemeInterface $theme)
+    public function getThemeSetTemplate($name, ThemeSet $theme_set)
     {
-        $loaded   = $this->getLoadedTemplatesForBrand($brand);
-        $theme_id = $theme->getId();
-        if (isset($loaded[$theme_id])) {
-            return isset($loaded[$theme_id][(string) $name]) ? $loaded[$theme_id][(string) $name] : null;
+        $theme_set_id = $theme_set->getId();
+        $loaded       = $this->getLoadedTemplatesForThemeSet($theme_set);
+        if (isset($loaded[$theme_set_id])) {
+            return isset($loaded[$theme_set_id][(string) $name]) ? $loaded[$theme_set_id][(string) $name] : null;
         }
 
         return;
     }
 
-    public function getLoadedTemplatesForBrand(BrandEntity $brand)
+    public function getLoadedTemplatesForThemeSet(ThemeSet $theme_set)
     {
-        if (!isset($this->loadedTemplates[$brand->id])) {
-            $this->loadedTemplates[$brand->id] = $this->loadTemplates($brand);
+        $theme_set_id = $theme_set->getId();
+        if (!isset($this->loadedTemplates[$theme_set_id])) {
+            $this->loadedTemplates[$theme_set_id] = $this->loadTemplates($theme_set);
         }
 
-        return $this->loadedTemplates[$brand->id];
+        return $this->loadedTemplates[$theme_set_id];
     }
 
-    protected function loadTemplates(BrandEntity $brand)
+    protected function loadTemplates(ThemeSet $theme_set)
     {
         $found_brand_templates = $this->findBy(
             array(
-                'brand' => $brand,
+                'theme_set' => $theme_set,
             )
         );
 
-        $theme = $brand->theme_id;
-        $saved = array();
-        //TODO: when we need to, you should get a list of all themes injected so that we can do this for every theme
-        //      however, we only need to do that if a brand can switch themes during a request, and I dont think we
-        //      will ever need to do that? For now, sticking to current brand theme only.
-        $saved[$theme] = array();
+        $theme_set_id         = $theme_set->getId();
+        $saved                = array();
+        $saved[$theme_set_id] = array();
 
+        /** @var \Application\DeskPRO\Entity\Template $template */
         foreach ($found_brand_templates as $template) {
-            $saved[$theme][$template->name] = $template;
+            $saved[$theme_set_id][$template->getName()] = $template;
         }
 
         return $saved;

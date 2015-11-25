@@ -6,6 +6,7 @@ services:
         - @service_container
         - @theme_repository
         - @tag_processor
+        - @doctrine.orm.default_entity_manager
         - @logger
 
 

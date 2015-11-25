@@ -153,4 +153,22 @@ class BrandContainer
     {
         return $this->theme_resolver->processTag($this->getTheme(), $tag_name, $arguments);
     }
+
+    /**
+     * Returns the proper Template entity from storage if it exists.
+     *
+     * @param $name
+     *
+     * @return string
+     */
+    public function getBrandTemplateFromDb($name)
+    {
+        if (false) { // switch to say if we are in admin mode
+            $theme_set = $this->getBrand()->getEditThemeSet();
+        } else {
+            $theme_set = $this->getBrand()->getThemeSet();
+        }
+
+        return $this->theme_resolver->getThemeSetTemplateFromDb($theme_set, $name);
+    }
 }
