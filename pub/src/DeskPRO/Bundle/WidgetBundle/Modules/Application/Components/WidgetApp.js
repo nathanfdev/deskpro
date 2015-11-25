@@ -1,17 +1,20 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
+import { Router, Route, Redirect } from 'react-router';
 import Frame from 'Ampliflux/common/components/Frame';
+import { ChatApp } from '../../Chat/Components/ChatApp';
 
 export default class WidgetAppBody extends React.Component {
+
   static propTypes = {
-    onResize: React.PropTypes.func
+    onResize: PropTypes.func
   };
 
-  render() {
-    return (
-      <div className="widget-container">
-        Contents go here.
-      </div>
-    )
+  componentDidMount() {
+    this.triggerResize();
+  }
+
+  componentDidUpdate() {
+    this.triggerResize();
   }
 
   triggerResize() {
@@ -20,12 +23,15 @@ export default class WidgetAppBody extends React.Component {
     }
   }
 
-  componentDidMount() {
-    this.triggerResize();
-  }
-
-  componentDidUpdate() {
-    this.triggerResize();
+  render() {
+    return (
+      <div className="widget-container">
+        <Router>
+          <Redirect from="/" to="chat"/>
+          <Route name="chat" path="chat" component={ChatApp}/>
+        </Router>
+      </div>
+    );
   }
 }
 
