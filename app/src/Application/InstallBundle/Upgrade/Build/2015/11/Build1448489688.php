@@ -26,4 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1448489688);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1448489688 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('should not be a unique index on templates');
+        $this->execMutateSql('ALTER TABLE templates DROP INDEX UNIQ_6F287D8EC0C33964, ADD INDEX IDX_6F287D8EC0C33964 (theme_set_id)');
+    }
+}
