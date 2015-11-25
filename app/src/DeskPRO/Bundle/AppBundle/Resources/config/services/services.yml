@@ -17,3 +17,7 @@ services:
   doctrine_association_manager:
     class: DeskPRO\Component\DoctrineAssociation\DoctrineAssociationManager
     arguments: [@doctrine.orm.default_entity_manager]
+
+  dp.app.settings_manager:
+    class: DeskPRO\Bundle\AppBundle\Settings\SettingsManager
+    arguments: [@doctrine.orm.entity_manager, @security.token_storage]
