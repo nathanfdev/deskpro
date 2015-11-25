@@ -1,0 +1,254 @@
+.dpdesignportal-chat-form {
+  padding: 5px;
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+
+  .dpdesignportal-chat-form-disabled {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 105px;
+    background: rgba(255, 255, 255, 0.4);
+    z-index: 299;
+    text-align: center;
+
+    .dpdesignportal-button {
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      margin-top: 35px;
+      background: #fff;
+      color: #4681b2;
+      border: 1px solid #e2e2e2;
+      padding: 11px 20px;
+      font-size: 12px;
+      i { margin-right: 3px; }
+      &:hover {
+        border: 1px solid #4681b2;
+        background: #4681b2;
+        color: #fff;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+      }
+    }
+  }
+
+  form {
+    position: relative;
+    padding-right: 30px;
+  }
+
+  .message-container {
+    display: block;
+    width: 100%;
+    border: 1px solid #e7e7e7;
+    &.message-container-with-attached-images .textarea-container { padding-left: 60px; }
+  }
+
+  textarea {
+    display: block;
+    width: 100%;
+    border: 0px;
+    border-radius: 2px;
+    padding: 5px;
+    height: 60px;
+    resize: none;
+    @include placeholder {
+      font-size: 11px;
+      font-style: italic;
+      opacity: 1;
+      color: #cecece;
+    }
+  }
+
+  button {
+    background: #4681b2;
+    color: #fff;
+    text-align: center;
+    border: 0px;
+    border-radius: 2px;
+    height: 60px;
+    width: 25px;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    transition: all 0.2s ease;
+    &:hover { background: #3e76a4; }
+  }
+
+  .dpdesignportal-chat-form-attached-image {
+    display: block;
+    width: 60px;
+    height: 60px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    border-right: 1px solid #e7e7e7;
+    z-index: 299;
+    cursor: pointer;
+
+    .dpdesignportal-chat-form-attached-image-thumb {
+      width: 50px;
+      height: 50px;
+      margin: 0 auto;
+      margin-top: 6px;
+      border-radius: 2px;
+      background-size: cover;
+      background-repeat: repeat;
+    }
+
+    .dpdesignportal-chat-form-attached-image-remove {
+      display: block;
+      width: 12px;
+      height: 12px;
+      background: #e7e7e7;
+      position: absolute;
+      border-radius: 19px;
+      top: 2px;
+      right: 3px;
+      font-size: 7px;
+      text-align: center;
+      color: #a1a1a1;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 500;
+      i { top: 2px; }
+      &:hover { background: #333; color: #fff; }
+    }
+
+    .dpdesignportal-chat-form-attached-image-count {
+      display: block;
+      padding-left: 4px;
+      padding-right: 4px;
+      height: 12px;
+      background: #4681b2;
+      color: #fff;
+      position: absolute;
+      border-radius: 19px;
+      top: 2px;
+      right: 2px;
+      padding-top: 1px;
+      font-size: 8px;
+      font-weight: bold;
+      i { font-size: 9px;}
+    }
+  }
+
+  .dpdesignportal-chat-form-attached-image-list {
+    z-index: 499;
+    position: absolute;
+    display: block;
+    top: 0px;
+    left: -1px;
+    background: #fff;
+    border: 1px solid #e7e7e7;
+    border-radius: 2px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+
+    .dpdesignportal-chat-form-attached-image { border-right: 0px; }
+
+    ul {
+      display: block;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      padding-right: 7px;
+
+      li {
+        width: 53px;
+        height: 60px;
+        display: inline-block;
+        vertical-align: bottom;
+        position: relative;
+      }
+    }
+  }
+
+  .dpdesignportal-chat-form-attached-file {
+    position: relative;
+    border-top: 1px solid #e7e7e7;
+    padding-top: 5px;
+    padding-left: 30px;
+    font-size: 12px;
+    height: 27px;
+
+    .attached-file-title {
+      font-size: 11px;
+      padding-top: 1px;
+    }
+
+    .dpdesignportal-chat-form-attached-file-icon {
+      text-align: center;
+      display: block;
+      width: 20px;
+      height: 20px;
+      border-radius: 2px;
+      background: #898989;
+      color: #fff;
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      font-size: 10px;
+      i { top: 4px;}
+    }
+
+    .dpdesignportal-chat-form-attached-file-remove {
+      width: 27px;
+      height: 27px;
+      text-align: center;
+      position: absolute;
+      right: 0px;
+      top: 0px;
+      color: #cecece;
+      cursor: pointer;
+      transition: all 0.5s ease;
+      i { top: 6px; }
+      &:hover { color: #333; }
+    }
+  }
+
+  .dpdesignportal-chat-form-button-row {
+    a {
+      display: inline-block;
+      color: #adadad;
+      text-decoration: none;
+      font-size: 11px;
+      padding: 7px 7px;
+      height: 30px;
+      i { margin-right: 3px; color: #d6d6d6; }
+      &:hover { color: #333; }
+    }
+
+    .dpdesignportal-chat-form-button-row-main {
+      border: 1px solid #e7e7e7;
+      border-radius: 2px;
+      margin-top: 5px;
+      display: inline-block;
+      height: 30px;
+
+      a { border-right: 1px solid #e7e7e7; }
+
+      a.dpdesignportal-chat-form-button-row-emoticons {
+        border-right: 0px;
+        img {
+          width: 10px;
+          height: 10px;
+          margin-right: 3px;
+        }
+      }
+    }
+
+    .dpdesignportal-chat-form-button-row-end-chat {
+      float: right;
+      display: inline-block;
+
+      a {
+        padding-top: 14px;
+        text-decoration: underline;
+        &:hover {
+          color: #4681b2;
+          i { color: #4681b2; }
+        }
+      }
+    }
+  }
+}

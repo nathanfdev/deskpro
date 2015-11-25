@@ -1,0 +1,352 @@
+.dpdesignportal-message-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 99px;
+  background: #4681b2;
+  text-align: center;
+  color: #fff;
+  font-size: 10px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  display: inline-block;
+  vertical-align: middle;
+
+  i { margin-top: 4px; }
+
+  &.size-2x {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+.dpdesignportal-message.agent-message.dpdesignportal-deskpro-message {
+
+
+  .dpdesignportal-deskpro-message-radio-container {
+    padding: 1px 10px 12px 5px;
+  }
+
+  .dpdesignportal-message-content {
+    border: 1px solid #4681b2;
+    background: #fff;
+    padding: 0px;
+    position: relative;
+  }
+
+  h1 {
+    display: block;
+    padding: 7px 0px 1px 5px;
+    color: #4b4b4b;
+  }
+
+  .dpdesignportal-deskpro-message-hide {
+    position: absolute;
+    top: 12px;
+    font-size: 10px;
+    right: 15px;
+    color: #d9d7d7;
+    transition: all 0.3s ease;
+    &:hover { color: #333;}
+  }
+
+  hr {
+    border: 0px;
+    margin: 10px 0 8px 0px;
+    padding: 0;
+    height: 1px;
+    background: #ededed;
+  }
+
+
+}
+
+
+
+
+
+
+
+.dpdesignportal-message.dpdesignportal-invitation-message {
+  p { color: #919191; padding-top: 2px; }
+
+  .dpdesignportal-message-content {
+    border: 1px solid #4681b2;
+    background: #ededed;
+  }
+
+  .dpdesignportal-invitation-wrapper {
+    @extend %clearfix;
+    margin-bottom: 10px;
+  }
+
+  .dpdesignportal-invitation-mark {
+    width: 44px;
+    height: 44px;
+    padding: 3px;
+    background: #fff;
+    border: 1px solid #e7e7e7;
+    border-radius: 2px;
+    float: left;
+    margin-right: 5px;
+
+    .dpdesignportal-invitation-mark-thumb {
+      width: 36px;
+      height: 36px;
+
+      &.joinme {
+        background-image: url("../img/sample-integration-logo.png");
+        background-size: 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+    }
+  }
+}
+
+
+.dpdesignportal-message {
+  position: relative;
+  padding: 0px 5px;
+
+  .dpdesignportal-message-avatar {
+    position: absolute;
+    top: 0px;
+    left: 5px;
+    border-top-right-radius: 0px;
+  }
+
+  .dpdesignportal-message-avatar-deskpro {
+    background-image: url("../img/deskpro-logo-negative@2x.png");
+    background-size: 12px;
+    background-position: center center;
+  }
+
+  .dpdesignportal-message-content { color: #4b4b4b; }
+
+  &.agent-message { padding-left: 30px; }
+  &.agent-message .dpdesignportal-message-content { background: #ededed; }
+  &.user-message { padding-right: 30px; }
+  &.user-message .dpdesignportal-message-content {
+    background: #fff;
+    color: #868686;
+  }
+
+  &.user-message .dpdesignportal-message-avatar {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 99px;
+    left: initial;
+    right: 5px;
+  }
+
+  &.user-typing {
+    .dpdesignportal-message-content {
+      padding-top: 2px;
+      padding-bottom: 2px;
+    }
+
+    span.dpdesignportal-user-typing {
+      color: #cbcbcb;
+      font-style: italic;
+      font-size: 11px;
+
+      .dot1, .dot2, .dot3 {
+        font-size: 18px;
+        line-height: 15px;
+        margin: 0 0.5px;
+      }
+
+      .dot1 { animation: dot-animation-1 2s infinite; }
+      .dot2 { animation: dot-animation-2 2s infinite; }
+      .dot3 { animation: dot-animation-3 2s infinite; }
+
+      @keyframes dot-animation-1 {
+        0% { opacity: 1; }
+        10% { opacity: 0; }
+        80% { opacity: 1; }
+        100% { opacity: 1; }
+      }
+
+      @keyframes dot-animation-2 {
+        0% { opacity: 1; }
+        30% { opacity: 0; }
+        80% { opacity: 1; }
+        100% { opacity: 1; }
+      }
+
+      @keyframes dot-animation-3 {
+        0% { opacity: 1; }
+        50% { opacity: 0; }
+        80% { opacity: 1; }
+        100% { opacity: 1; }
+      }
+    }
+  }
+
+  li + li { margin-top: 5px; }// Multiple list items only for items
+}
+
+
+
+.dpdesignportal-message-content {
+  background: #fff;
+  border-radius: 2px;
+  border: 1px solid #e7e7e7;
+  padding: 7px 7px;
+  font-size: 12px;
+  line-height: 1.5em;
+
+  p { padding-bottom: 0px; }// Single
+  p + p { padding-top: 5px; }// If there's multiples paragraphs
+  p + ul { margin-top: 5px; }// If there's attachements
+}
+
+
+
+.dpdesignportal-message-asset {
+  @extend %clearfix;
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  cursor: pointer;
+
+  span {
+    display: block;
+    line-height: 1.3em;
+    padding-top: 2px;
+  }
+
+  .dpdesignportal-message-asset-screen-controls { display: none; }
+
+  .dpdesignportal-message-asset-screen-controls {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+
+    a {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.2);
+      width: 30px;
+      height: 30px;
+      margin-left: 5px;
+      color: #fff;
+      text-align: center;
+      border-radius: 2px;
+      vertical-align: top;
+      i { top: 9px; opacity: 0.7; }
+
+    }
+  }
+
+  .dpdesignportal-message-asset-info { color: #bfbfbf; }
+  .dpdesignportal-message-asset-cta {
+    display: block;
+    vertical-align: middle;
+    color: #919191;
+    text-decoration: underline;
+    margin-bottom: 3px;
+    width: 100%;
+    font-weight: 400;
+  }
+
+  .dpdesignportal-message-asset-icon {
+    @include add-corner(3px, #4681b2, 7px, right, "");
+    position: absolute;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    left: 0px;
+    top: 0px;
+    font-size: 10px;
+    border-radius: 2px;
+    text-align: center;
+    color: #fff;
+    background: #4681b2;
+    margin-right: 6px;
+
+    i { position: relative; top: 2px; }
+  }
+
+  img {
+    border-radius: 2px;
+    max-width: 70px;
+    max-height: 50px;
+    float: left;
+    margin-right: 5px;
+    vertical-align: bottom;
+    text-align: right;
+  }
+
+  &.attachement-link {
+    padding-left: 30px;
+    .dpdesignportal-message-asset-cta { color: #4681b2; }
+  }
+
+  .attachement-screen { outline: none; }
+
+  .attachement-screen-expanded {
+    img {
+      max-width: 500px;
+      width: 100%;
+      max-height: initial;
+      height: auto;
+      width: 500px;
+      text-align: right;
+      position: relative;
+      float: right;
+      margin-right: 0px;
+
+      transition: all 1s ease;
+    }
+
+    .dpdesignportal-message-asset-screen-controls {
+      display: block;
+      animation: fade-controls-in 1s 1;
+    }
+
+    .dpdesignportal-message-asset-info, .dpdesignportal-message-asset-cta { display: none; }
+  }
+}
+
+
+@keyframes fade-controls-in {
+  0% {
+    opacity: 0;
+    right: -200px;
+  }
+
+  50% {
+    opacity: 0;
+    right: -200px;
+  }
+
+  100% {
+    opacity: 100;
+    right: 0px;
+  }
+}
+
+.dpdesignportal-event + .dpdesignportal-message { margin-top: 10px; }
+
+
+
+.dpdesignportal-message-footer {
+  font-size: 10px;
+  color: #cdcdcd;
+  height: 20px;
+  .dpdesignportal-message-footer-assets-link {
+    float: right;
+    color: #99b1cc;
+    text-decoration: none;
+    &:hover { color: #4681b2; }
+  }
+}

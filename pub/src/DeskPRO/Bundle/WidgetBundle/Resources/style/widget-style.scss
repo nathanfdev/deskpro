@@ -1,5 +1,8 @@
+$border-color: #e7e7e7;
+
 @import "./normalize.css";
-@import "./collect-user-info";
+@import "./misc/checkbox", "./misc/mixins", "./misc/popovers", "./misc/powered-by", "./misc/radio", "./misc/search";
+@import "./chat/chat-assets", "./chat/chat-events", "./chat/chat-header", "./chat/chat-messages", "./chat/chat-reply", "./chat/collect-user-info", "./chat/ratings";
 
 html, body {
   background: #fff;

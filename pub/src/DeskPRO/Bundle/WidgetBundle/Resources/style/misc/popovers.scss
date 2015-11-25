@@ -1,0 +1,63 @@
+.dpdesignportal-popover {
+  position: relative;
+
+  // Presentation only
+    margin: 100px;
+  //
+
+  font-family: lato, helvetica, arial, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: #363636;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+
+
+  border: 1px solid #4681b2;
+  padding: 12px 10px;
+  border-radius: 2px;
+  background: #fff;
+  max-width: 300px;
+
+  &.dpdesignportal-popover-end-chat {
+    @include add-corner(5px, #4681b2, 90%, bottom, "");
+    text-align: center;
+  }
+
+  &.dpdesignportal-popover-request-transcript {
+    @include add-corner(5px, #4681b2, 90%, top, "");
+    padding: 10px 5px 5px 7px;
+  }
+
+  .dpdesignportal-popover-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #dadada;
+    font-size: 11px;
+  }
+
+  h1 {
+    font-size: 14.5px;
+    margin-bottom: 1px;
+    color: #4b4b4b;
+  }
+
+  p {
+    font-size: 12px;
+    &.grey {
+      color: #a5a5a5;
+    }
+  }
+
+  .popover-buttons {
+    margin-top: 17px;
+  }
+
+  a.dpdesignportal-button {
+    font-size: 12px;
+    i {
+      font-size: 11px;
+      margin-right: 3px;
+    }
+  }
+}
