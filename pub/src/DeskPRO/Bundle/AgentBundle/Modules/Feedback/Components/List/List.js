@@ -71,18 +71,15 @@ export class List extends Component {
     const { pagination } = this.props;
     if (pagination && pagination.total_pages > 1) {
       return (
-        <div className="dpw--pagination">
-          <PaginationBoxView previousLabel={<i className="fa fa-caret-left"></i>}
-                             nextLabel={"next"}
-                             breakLabel={<li className="break"><a href="">...</a></li>}
-                             pageNum={pagination.total_pages}
-                             marginPagesDisplayed={2}
-                             pageRangeDisplayed={5}
-                             clickCallback={this.handlePageClick}
-                             containerClassName={"pages-list"}
-                             subContainerClassName={"pages-list"}
-                             activeClassName={"active"}/>
-        </div>
+        <PaginationBoxView breakLabel={<li className="break"><a href="">...</a></li>}
+                           pageNum={pagination.total_pages}
+                           currentPage={pagination.current_page}
+                           marginPagesDisplayed="2"
+                           pageRangeDisplayed="5"
+                           clickCallback={this.handlePageClick}
+                           containerClassName="pages-list"
+                           subContainerClassName="pages-list"
+                           activeClassName="current-page"/>
       );
     }
   }

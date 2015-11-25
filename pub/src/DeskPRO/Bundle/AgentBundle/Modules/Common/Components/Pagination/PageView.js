@@ -3,71 +3,67 @@ import React, {Component, PropTypes} from 'react';
 export class PageView extends Component {
 
   static propTypes = {
-    active: PropTypes.bool,
+    dropdown: PropTypes.bool,
+    currentPage: PropTypes.number.isRequired,
+    page: PropTypes.number.isRequired,
     pageNum: PropTypes.number.isRequired,
     pageRangeDisplayed: PropTypes.number.isRequired,
     marginPagesDisplayed: PropTypes.number.isRequired,
-    previousLabel: PropTypes.node,
-    nextLabel: PropTypes.node,
-    breakLabel: PropTypes.node,
-    clickCallback: PropTypes.func,
-    initialSelected: PropTypes.number,
-    forceSelected: PropTypes.number,
-    containerClassName: PropTypes.string,
-    subContainerClassName: PropTypes.string,
-    pageClassName: PropTypes.string,
-    pageLinkClassName: PropTypes.string,
-    activeClassName: PropTypes.string,
-    previousClassName: PropTypes.string,
-    nextClassName: PropTypes.string,
-    previousLinkClassName: PropTypes.string,
-    nextLinkClassName: PropTypes.string,
-    disabledClassName: PropTypes.string
+    onClick: PropTypes.func,
+    activeClassName: PropTypes.string
   };
 
-  render() {
-    var linkClassName = this.props.pageLinkClassName;
-    var cssClassName = this.props.pageClassName;
+  renderCaret(active) {
+    if (active) {
+      return (<i className="fa fa-caret-down"/>);
+    }
+  }
 
-    if (this.props.active) {
-      if (typeof(cssClassName) !== 'undefined') {
-        cssClassName = cssClassName + ' ' + this.props.activeClassName;
-      } else {
-        cssClassName = this.props.activeClassName;
+  renderDropdownOption(page) {
+    const {currentPage, onClick} = this.props;
+    const className = currentPage === page ? 'active' : '';
+    return (
+      <li key={page}>
+        <a href="#" onClick={onClick.bind(null, page - 1)} className={className}>
+          {page}
+        </a>
+      </li>
+    );
+  }
+
+  renderDropDown() {
+    const { pageNum, dropdown } = this.props;
+
+    if (dropdown) {
+      // Build up an array of page numbers
+      const pages = [];
+      for (let value = 1; value <= pageNum; value++) {
+        pages.push(value);
       }
-    }
 
-    // Build up an array of page numbers
-    let pages = [];
-    for (let page = 1; page <= this.props.pageNum; page++) {
-      pages.push(page);
+      return (
+        <div className="pagination-dropdown">
+          <ul>
+            {
+              pages.map((page) => this.renderDropdownOption(page))
+            }
+          </ul>
+        </div>
+      );
     }
+  }
+
+  render() {
+    const { activeClassName, currentPage, page } = this.props;
+    const active = currentPage === page;
 
     return (
-      <li className={cssClassName}>
-        <a {...this.props} href="" className={linkClassName}>
-          {this.props.page}
-          {this.props.active ?
-            <i className="fa fa-caret-down"/>
-            : ''}
+      <li className={active ? activeClassName : false}>
+        <a {...this.props} href="" className={active ? activeClassName : false}>
+          {page}
+          {this.renderCaret(active)}
         </a>
-        {this.props.dropdown ?
-          <div className="pagination-dropdown">
-            <ul>
-              {
-                pages.map((page) => {
-                  const className = this.props.selected === page - 1 ? 'active' : '';
-                  return (
-                    <li key={page}>
-                      <a href="#" onClick={this.props.onPageSelected.bind(null, page - 1)} className={className}>
-                        {page}
-                      </a>
-                    </li>
-                  );
-                })
-              }
-            </ul>
-          </div> : ''}
+        {this.renderDropDown()}
       </li>
     );
   }
