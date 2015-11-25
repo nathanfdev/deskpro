@@ -98,21 +98,15 @@ export class Footer extends React.Component {
       placeholder: {
         text: 'Send a message'
       },
-      anchorPrveiow: false,
-      elementsContainer: document.getElementById('toolbar'),
+      anchorPrview: false,
       toolbar: {
-        diffLeft: -150,
-        diffTop: 50,
         buttons: ['bold', 'italic', 'underline'],
-        'static': true,
-        align: 'left',
         updateOnEmptySelection: true
       }
     };
     return (
       <footer>
         <form onSubmit={this.handleSubmit}>
-          <div id="toolbar" className="toolbar" refs="toolbar"></div>
           <Editor
             tag="div"
             className="textarea"
