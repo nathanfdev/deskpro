@@ -29,24 +29,15 @@ export default class Frame extends React.Component {
   }
 
   componentWillUnmount() {
-    const domNode = ReactDOM.findDOMNode(this.refs.iframe);
-    React.unmountComponentAtNode(domNode.contentDocument.getElementById('react_frame_container'));
+    React.unmountComponentAtNode(this.getContentDocument().body);
   }
 
-  getFrameNode() {
-    if (!this.refs || !this.refs.iframe) {
-      return null;
-    }
-
-    return ReactDOM.findDOMNode(this.refs.iframe) || null;
+  getDOMNode() {
+    return ReactDOM.findDOMNode(this.refs.iframe);
   }
 
-  getFrameDocument() {
-    const domNode = this.getFrameNode();
-    if (!domNode || !domNode.contentDocument) {
-      return null;
-    }
-    return domNode.contentDocument;
+  getContentDocument() {
+    return this.getDOMNode().contentDocument;
   }
 
   getFrameStyles() {
@@ -78,7 +69,7 @@ export default class Frame extends React.Component {
   }
 
   autoFrameDimentions() {
-    const document = this.getFrameDocument();
+    const document = this.getContentDocument();
     if (!document) {
       return false;
     }
@@ -108,7 +99,7 @@ export default class Frame extends React.Component {
       return;
     }
 
-    const doc = this.getFrameDocument();
+    const doc = this.getContentDocument();
     if (!doc) {
       return;
     }
