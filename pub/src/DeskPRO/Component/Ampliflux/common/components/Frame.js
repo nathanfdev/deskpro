@@ -16,8 +16,7 @@ export default class Frame extends React.Component {
     super(props);
     this.state = {
       dims: { width: 0, height: 0 },
-      isRendered: false,
-      positionMode: props.positionMode || 'bottom.right'
+      isRendered: false
     };
   }
 
@@ -123,44 +122,29 @@ export default class Frame extends React.Component {
   }
 
   render() {
-    const props = this.props;
-    const frameProps = {
-      ...props,
-      ref: 'iframe',
-      children: undefined
-    };
-
-    const overrideStyles = props.style || {};
-    frameProps.style = {
+    const { style = {}, isVisible, positionMode } = this.props;
+    let frameStyle = {
       border: 'none',
       background: 'transparent',
       zIndex: 99999,
       width: this.state.dims.width || 0,
       height: this.state.dims.height || 0,
       position: 'fixed',
+      display: isVisible ? 'block' : 'none',
 
-      ...overrideStyles
+      ...style
     };
 
-    if (!props.isVisible) {
-      frameProps.style.display = 'none';
-    } else {
-      frameProps.style.display = 'block';
-    }
-
-    switch (this.state.positionMode) {
+    switch (positionMode) {
       case 'bottom.left':
-        frameProps.style.left = 0;
-        frameProps.style.bottom = 0;
+        frameStyle = {...frameStyle, left: 0, bottom: 0};
         break;
       case 'bottom.right':
-        frameProps.style.right = 0;
-        frameProps.style.bottom = 0;
-        break;
       default:
+        frameStyle = {...frameStyle, right: 0, bottom: 0};
         break;
     }
 
-    return <iframe {...frameProps} />;
+    return <iframe ref="iframe" style={frameStyle} />;
   }
 }
