@@ -1,16 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { AppContainer } from 'DeskPRO/Component/AppContainer';
+import { AppPane, NavPane, ListPane } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/panes';
 import { NavContainer } from './Nav/NavContainer';
 import { ListContainer } from './List/ListContainer';
 
 export class ExampleApp extends React.Component {
   render() {
     return (
-      <AppContainer thisAppId="example">
-        <NavContainer/>
-        <ListContainer/>
-      </AppContainer>
+      <AppPane>
+        <NavPane><NavContainer/></NavPane>
+        <ListPane><ListContainer/></ListPane>
+      </AppPane>
     );
   }
 }

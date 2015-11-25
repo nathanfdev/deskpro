@@ -98,8 +98,8 @@ $kanban-frame-width: 800px;
     overflow: hidden;
 
     position: absolute;
-    top: $window-header-height;
-    left: $app-switcher-width;
+    top: 0;
+    left: 0;
     bottom: 0;
     z-index: 100;
     overflow-y: auto;
@@ -163,10 +163,10 @@ $kanban-frame-width: 800px;
   .dp-list-frame {
     position: absolute;
     z-index: 50;
-    top: $window-header-height;
-    left: $app-switcher-width + $nav-frame-width;
+    top: 0;
+    left: 0;
     bottom: 0;
-    width: $list-frame-width;
+    right: 0;
     background: #f8f8f8;
     border-right: 1px solid darken(#f8f8f8, 10%);
     height: auto;
@@ -193,11 +193,10 @@ $kanban-frame-width: 800px;
 
   .dp-tab-frame {
     position: absolute;
-    top: $window-header-height;
-    left: $app-switcher-width + $nav-frame-width + $list-frame-width;
+    top: 0;
+    left: 0;
     right: 0;
     bottom: 0;
-    transition: all 0.25s ease;
 
     background: #d4d8de;
     box-shadow: inset 0px 0px 20px rgba(0, 0, 0, 0.3);
@@ -221,20 +220,82 @@ $kanban-frame-width: 800px;
         margin-bottom: 30px;
       }
     }
+  }
+}
 
-    &.collapsed-nav {
-      left: $app-switcher-width + $nav-collapsed-width + $list-frame-width;
-    }
-    &.collapsed-list {
-      left: 0;
-    }
+.dp-panes-middle {
+  position: absolute;
+  top: $window-header-height;
+  left: $app-switcher-width;
+  right: 0;
+  bottom: 0;
+}
 
-    &.kanban-shifted {
-      left: $app-switcher-width + $nav-frame-width + $kanban-frame-width;
-      &.collapsed-nav {
-        left: $app-switcher-width + $nav-collapsed-width + $kanban-frame-width;
-      }
+.dp-panes-app {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+}
+
+.dp-panes-tabbody {
+  position: absolute;
+  top: 0;
+  left: $nav-frame-width + $list-frame-width;
+  right: 0;
+  bottom: 0;
+}
+
+.dp-panes-nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: $nav-frame-width;
+
+  .dp-collapsed-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: #CACFD6;
+    border-right: 1px solid darken(#CACFD6, 10%);
+    cursor: pointer;
+    box-shadow: inset 0px 0px 20px rgba(0, 0, 0, 0.17);
+    &:hover {
+      background: lighten(#CACFD6, 5%);
     }
+  }
+
+  &.with-nav-hover {
+    .dp-panes-nav-body { display: block !important; }
+  }
+
+  &.with-nav-on {
+    .dp-collapsed-placeholder { display: none; }
+  }
+
+  &.with-nav-off {
+    width: $nav-collapsed-width;
+    .dp-panes-nav-body { display: none; }
+    .dp-collapsed-placeholder { display: block; }
+  }
+}
+
+.dp-panes-list {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: $nav-frame-width;
+
+  &.with-nav-off {
+    left: $nav-collapsed-width;
+  }
+
+  &.with-list-off {
+    display: none;
   }
 }
 
@@ -242,18 +303,6 @@ $kanban-frame-width: 800px;
   display: none;
   &.app-active {
     display: block;
-  }
-
-  &.collapsed-nav {
-    .dp-list-frame {
-      left: $app-switcher-width + $nav-collapsed-width;
-    }
-
-  }
-  &.collapsed-list {
-    .dp-list-frame {
-      display: none;
-    }
   }
 }
 

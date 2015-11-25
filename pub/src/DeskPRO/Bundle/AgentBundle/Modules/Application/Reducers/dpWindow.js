@@ -11,6 +11,7 @@ const initialState = {
   columnMode: localStorage.getItem('dpWindow.columnMode') || 'column',
   columnDimensions: parseInt(localStorage.getItem('dpWindow.columnDimensions'), 10) || 40,
   sidebarMode: localStorage.getItem('dpWindow.sidebarMode') || 'static',
+  winDims: { width: 800, height: 600 },
   showWelcomePage: true,
   isWorkspaceOpen: false,
   isPreferencesOpen: false,
@@ -24,10 +25,15 @@ const initialState = {
  * @return {void}
  */
 function triggerDpLayoutResize() {
-  setTimeout(() => jQuery(document).trigger('dpLayoutResize'), 100);
+  setTimeout(() => jQuery(document).trigger('dpLayoutResize'), 25);
 }
 
 export default createReducer(initialState, {
+  [actions.windowResize]: (state, payload) => {
+    return state.merge({
+      winDims: { width: payload.width || 800, height: payload.height || 600 }
+    });
+  },
   [actions.setActiveApp]: (state, payload) => {
     return state.merge({
       activeAppId: payload

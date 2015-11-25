@@ -8,7 +8,8 @@ export const setActiveApp = createAction(
     return appId;
   }
 );
-export const toggleView = createAction('APP_TOGGLE_VIEW');
+export const toggleView   = createAction('APP_TOGGLE_VIEW');
+export const windowResize = createAction('APP_WIN_RESIZE', (width, height) => ({ width, height }));
 
 // Welcome page actions
 export const showWelcomePage = createAction('APP_SHOW_WELCOME_PAGE');
