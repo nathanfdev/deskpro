@@ -82,6 +82,23 @@
 			]
 		},
 		{
+			"name": "include_custom_metadata_xml",
+			"type": "checkbox",
+			"label": "Custom Metadata XML",
+			"checkbox_label": "Insert custom XML into the SP metadata. This is optional.",
+			"default_value": false,
+			"native_only": true,
+
+			"inline_dependants": [
+				{
+					"name": "custom_metadata_xml",
+					"type": "textarea",
+					"label": "The XML you enter below will be included inside of the md:SPSSODescriptor element. This is useful for inserting a md:AttributeConsumingService element.",
+					"native_only": true
+				}
+			]
+		},
+		{
 			"name": "login_custom_text",
 			"type": "text",
 			"label": "Login Button Text",

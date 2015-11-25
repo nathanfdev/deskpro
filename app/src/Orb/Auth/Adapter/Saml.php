@@ -33,6 +33,7 @@
  */
 namespace Orb\Auth\Adapter;
 
+use Application\DeskPRO\Saml\SamlMetadataBuilder;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
 use Orb\Auth\StateHandler\StateHandlerInterface;
@@ -411,7 +412,12 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
         $saml = $this->createSamlProcessor();
         $sp   = $saml->getSettings()->getSPData();
 
-        return \OneLogin_Saml2_Metadata::builder($sp);
+        $custom_xml = '';
+        if ($this->options->get('include_custom_metadata_xml')) {
+            $custom_xml = $this->options->get('custom_metadata_xml');
+        }
+
+        return SamlMetadataBuilder::builder($sp, false, false, null, null, array(), array(), array(), $custom_xml);
     }
 
     /**
