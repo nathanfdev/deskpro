@@ -6,7 +6,7 @@ export class ChatBeginConversation extends React.Component {
     return (
       <div>
         <div className="dpdesignportal-collect-user-info-header">
-          <img srcSet="../images/icon-chat-dots.png 1x, ../images/icon-chat-dots@2x.png 2x" src="../images/icon-chat-dots@2x.png" alt="" />
+          <span className="img" />
           <span className="text">Your chat is starting...</span>
         </div>
 
