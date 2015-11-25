@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Router, Route, Redirect } from 'react-router';
 import Frame from 'Ampliflux/common/components/Frame';
+import { Widget, WidgetHeader, WidgetBody } from './Widget/index';
 import { ChatApp } from '../../Chat/Components/ChatApp';
 
 export default class WidgetAppBody extends React.Component {
@@ -26,12 +27,15 @@ export default class WidgetAppBody extends React.Component {
 
   render() {
     return (
-      <div className="widget-container">
-        <Router>
-          <Redirect from="/" to="chat"/>
-          <Route name="chat" path="chat" component={ChatApp}/>
-        </Router>
-      </div>
+      <Widget>
+        <WidgetHeader />
+        <WidgetBody>
+          <Router>
+            <Redirect from="/" to="chat"/>
+            <Route name="chat" path="chat" component={ChatApp} />
+          </Router>
+        </WidgetBody>
+      </Widget>
     );
   }
 }
