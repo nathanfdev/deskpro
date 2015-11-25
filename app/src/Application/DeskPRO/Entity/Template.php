@@ -46,7 +46,7 @@ use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
  * @property string $template_code
  * @property string $template_compiled
  * @property Brand $brand
- * @property string $theme_id
+ * @property ThemeSet $theme_set
  * @property \DateTime $date_created
  * @property \DateTime $date_updated
  */
@@ -107,6 +107,16 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
     public function getId()
     {
         return $this->id;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getTemplateCode()
+    {
+        return $this->template_code;
     }
 
     public function setTemplate($code, $compiled)

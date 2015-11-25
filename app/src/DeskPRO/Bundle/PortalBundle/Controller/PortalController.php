@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Template;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\UploadAbuseCheck;
@@ -49,6 +50,49 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class PortalController extends AbstractController
 {
+    /**
+     * @Route("/template_editor", name="portal_temp")
+     */
+    public function tempAction(Request $request)
+    {
+        $t_repo        = $this->getRepo('DeskPRO:Template');
+        $themeset      = $this->getBrandContainer()->getBrand()->getThemeSet();
+        $template_name = $request->get('template_name');
+
+        if ($request->getMethod() === 'POST') {
+            $template_name = $request->get('template_name');
+            $code          = $request->get('template_code');
+
+            if (!$tem = $t_repo->findOneBy(['theme_set' => $themeset, 'name' => $template_name])) {
+                $tem               = new Template();
+                $tem->name         = $template_name;
+                $tem->date_created = new \DateTime();
+            }
+
+            $tem->theme_set     = $themeset;
+            $tem->template_code = $code;
+            $tem->date_updated  = new \DateTime();
+
+            $tem->template_compiled = $this->get('twig')->compileSource($code, $template_name);
+
+            $this->persistAndFlushEntity($tem);
+
+            $this->addFlash('success', 'saved');
+
+            $this->redirectToRoute('portal_temp', ['template_name' => $template_name]);
+        }
+
+        $tem = null;
+        if ($template_name) {
+            $tem = $t_repo->findOneBy(['theme_set' => $themeset, 'name' => $template_name]);
+        }
+
+        return $this->renderThemeView('Theme:Temp:customTemplate.html.twig', [
+            'template_map' => $this->getBrandContainer()->getTheme()->getTemplateMap(),
+            'template'     => $tem,
+        ]);
+    }
+
     /**
      * @Route("/", name="portal_home")
      * @Route("/", name="user")
