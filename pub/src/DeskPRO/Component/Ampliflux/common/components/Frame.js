@@ -137,7 +137,7 @@ export default class Frame extends React.Component {
       children: undefined
     };
 
-    const overrideStyle = frameProps.style || {};
+    const overrideStyles = props.style || {};
     frameProps.style = {
       border: 'none',
       background: 'transparent',
@@ -146,7 +146,7 @@ export default class Frame extends React.Component {
       height: this.state.dims.height || 0,
       position: 'fixed',
 
-      ...overrideStyle
+      ...overrideStyles
     };
 
     if (!props.isVisible) {

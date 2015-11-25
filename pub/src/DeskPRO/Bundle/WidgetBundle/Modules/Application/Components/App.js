@@ -11,12 +11,14 @@ export class App extends React.Component {
     };
   }
 
-  openWidget() {
-    this.setState({isOpen: true});
-  }
+  openWidget = () => {
+    this.setState({
+      isOpen: true
+    });
+  };
 
   renderTrigger() {
-    return <TriggerButton isVisible={!this.state.isOpen} onClick={() => this.openWidget()} />;
+    return <TriggerButton isVisible={!this.state.isOpen} onClick={this.openWidget} />;
   }
 
   renderWidgetApp() {
