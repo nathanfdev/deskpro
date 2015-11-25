@@ -2,17 +2,18 @@ import React from 'react';
 import Frame from 'Ampliflux/common/components/Frame';
 
 export default class TriggerButtonBody extends React.Component {
+
   static propTypes = {
     onResize: React.PropTypes.func,
     onClick: React.PropTypes.func
   };
 
-  render() {
-    return (
-      <div className="trigger-button" onClick={() => this.props.onClick && this.props.onClick()}>
-        <strong>Help</strong>
-      </div>
-    )
+  componentDidMount() {
+    this.triggerResize();
+  }
+
+  componentDidUpdate() {
+    this.triggerResize();
   }
 
   triggerResize() {
@@ -21,12 +22,12 @@ export default class TriggerButtonBody extends React.Component {
     }
   }
 
-  componentDidMount() {
-    this.triggerResize();
-  }
-
-  componentDidUpdate() {
-    this.triggerResize();
+  render() {
+    return (
+      <div className="trigger-button" onClick={() => this.props.onClick && this.props.onClick()}>
+        <strong>Help</strong>
+      </div>
+    );
   }
 }
 
