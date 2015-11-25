@@ -3,6 +3,27 @@ import TextareaAutosize from 'react-textarea-autosize';
 import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
 import Editor from 'react-medium-editor';
 
+class IMEditor extends React.Component {
+
+  static propTypes = {
+    handleChange: PropTypes.func.isRequired,
+    message: PropTypes.string.isRequired,
+    options: PropTypes.object.isRequired
+  };
+
+
+  render() {
+    return (<Editor
+      tag="div"
+      className="textarea"
+      text={this.props.message}
+      onChange={this.props.handleChange}
+      options={this.props.options}
+      />);
+  }
+}
+
+
 export class Footer extends React.Component {
 
   static propTypes = {
@@ -24,10 +45,11 @@ export class Footer extends React.Component {
     this.setState(newState);
   };
 
-  handleChange(text) {
+  handleChange = (text) => {
     const oldState = this.state;
     const newState = {...oldState};
     newState.message = text;
+
     this.setState(newState);
   }
 
@@ -42,7 +64,9 @@ export class Footer extends React.Component {
   };
 
   handleSubmit = () => {
+    console.log(this.state.message, this.state);
     if (this.state.message) {
+
       this.props.handleAddMessage(this.state.message);
       this.handleChange('<p><br/></p>');
     }
@@ -107,13 +131,11 @@ export class Footer extends React.Component {
     return (
       <footer>
         <form onSubmit={this.handleSubmit}>
-          <Editor
-            tag="div"
-            className="textarea"
-            text={this.state.message}
-            onChange={this.handleChange.bind(this)}
+          <IMEditor
+            message={this.state.message}
             options={options}
-          />
+            handleChange={this.handleChange}
+            />
           <a href="#" ref="emojiButton" onClick={this.toggleEmoji} className="insert-emoticon"><span className="emoticon sprite sprite-emoticon-1"></span></a>
           <input onClick={this.handleSubmit} type="button" value="&#xf101;"/>
           { this.renderEmojiTable() }

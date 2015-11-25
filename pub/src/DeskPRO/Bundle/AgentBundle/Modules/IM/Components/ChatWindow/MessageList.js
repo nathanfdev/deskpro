@@ -30,8 +30,8 @@ export class MessageList extends React.Component {
 
   componentDidMount() {
     this.refresh();
-    const interval = setInterval(this.refresh, 5000);
-    const countsInterval = setInterval(() => this.props.dispatch(refreshCounts()), 5000);
+    const interval = setInterval(this.refresh, 15000);
+    const countsInterval = setInterval(() => this.props.dispatch(refreshCounts()), 15000);
     this.state = {
       interval: interval,
       countsInterval: countsInterval
