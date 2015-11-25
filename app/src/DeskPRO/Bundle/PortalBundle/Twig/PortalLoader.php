@@ -47,10 +47,16 @@ class PortalLoader implements \Twig_LoaderInterface
      */
     private $template_repo;
 
+    /**
+     * @var array a list of templates that crashed, so we can fallback on filesystem if needed
+     */
+    private $crashed_templates;
+
     public function __construct(BrandStack $brand_stack, Template $template_repo)
     {
-        $this->brand_stack   = $brand_stack;
-        $this->template_repo = $template_repo;
+        $this->brand_stack       = $brand_stack;
+        $this->template_repo     = $template_repo;
+        $this->crashed_templates = [];
     }
 
     /**
@@ -64,9 +70,10 @@ class PortalLoader implements \Twig_LoaderInterface
      */
     public function getSource($name)
     {
-        if ($template = $this->getDbTemplate($name)) {
-            return $template->template_code;
-        }
+        // if a db template crashes, we will try to fetch again, so make sure it isn't marked as crashed first
+        //if (!in_array($name, $this->crashed_templates) && $template = $this->getDbTemplate($name)) {
+        //    return $template->getTemplateCode();
+        //}
 
         if ($path = $this->getBrandContainer()->resolveTemplatePath((string) $name)) {
             return file_get_contents($path);
@@ -89,7 +96,7 @@ class PortalLoader implements \Twig_LoaderInterface
         $brand = $this->getBrandContainer();
 
         // TODO: factor in the "edit_theme_id" hierarchy here
-        return $brand->getBrand()->getThemeSet()->getThemeId().$name;
+        return $brand->getBrand()->getThemeSet()->getId().$name;
     }
 
     /**
@@ -106,7 +113,7 @@ class PortalLoader implements \Twig_LoaderInterface
     {
         // If a DB template exists, check its update_at value
         if ($template = $this->getDbTemplate($name)) {
-            return $template->date_updated->getTimestamp() <= $time;
+            false;
         }
 
         // TODO: Possible flaw
@@ -133,17 +140,24 @@ class PortalLoader implements \Twig_LoaderInterface
         return $brand_container;
     }
 
+    public function markCustomTemplateAsCrashed($name)
+    {
+        $this->crashed_templates[] = $name;
+    }
+
     /**
      * @param $name
      *
      * @return \Application\DeskPRO\Entity\Template|null
      */
-    protected function getDbTemplate($name)
+    public function getDbTemplate($name)
     {
+        if (in_array($name, $this->crashed_templates)) {
+            return; // this db template crashed, so tell the twig env to look into the filesystem as a fallback
+        }
+
         try {
-            return $this->template_repo->getBrandTemplate(
-                $name, $this->getBrandContainer()->getBrand(), $this->getBrandContainer()->getTheme()
-            );
+            return $this->getBrandContainer()->getBrandTemplateFromDb($name);
         } catch (\Exception $e) {
             return;
         }
