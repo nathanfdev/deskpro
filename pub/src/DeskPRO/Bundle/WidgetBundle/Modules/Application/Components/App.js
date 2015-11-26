@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import TriggerButton from './TriggerButton';
-import WidgetApp from './WidgetApp';
+import { WidgetApp } from './WidgetApp';
 
 export class App extends React.Component {
+
+  static propTypes = {
+    store: PropTypes.object
+  };
 
   constructor(props) {
     super(props);
@@ -22,7 +26,7 @@ export class App extends React.Component {
   }
 
   renderWidgetApp() {
-    return <WidgetApp isVisible={this.state.isOpen} />;
+    return <WidgetApp isVisible={this.state.isOpen} store={this.props.store} />;
   }
 
   render() {

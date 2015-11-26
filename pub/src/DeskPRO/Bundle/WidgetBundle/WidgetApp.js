@@ -2,7 +2,6 @@ import 'babel/polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore, applyMiddleware, compose } from 'redux';
-import { Provider } from 'react-redux';
 import { combineReducerHierarchy } from 'Ampliflux';
 import * as ampMiddleware from 'Ampliflux/middleware';
 import AppReducers from './WidgetApp_Reducers.js';
@@ -57,9 +56,7 @@ export default class WidgetApp {
     pageDoc.body.appendChild(dpWidgetContainer);
 
     ReactDOM.render(
-      <Provider store={store}>
-        <App />
-      </Provider>,
+      <App store={store} />,
       dpWidgetContainer
     );
   }
