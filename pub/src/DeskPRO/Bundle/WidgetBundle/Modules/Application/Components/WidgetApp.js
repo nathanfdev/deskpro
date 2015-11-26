@@ -18,6 +18,7 @@ export class WidgetAppBody extends React.Component {
 
   static propTypes = {
     onResize: PropTypes.func,
+    onClose: PropTypes.func,
     store: PropTypes.object
   };
 
@@ -37,10 +38,12 @@ export class WidgetAppBody extends React.Component {
   }
 
   render() {
+    const { store, onClose } = this.props;
+
     return (
-      <Provider store={this.props.store}>
+      <Provider store={store}>
         <Widget>
-          <WidgetHeader />
+          <WidgetHeader onClose={onClose} />
           <WidgetBody>
             <Router>
               <Redirect from="/" to="chat"/>
@@ -66,19 +69,17 @@ export class WidgetApp extends React.Component {
 
   static propTypes = {
     onClick: PropTypes.func,
-    isVisible: PropTypes.bool,
-    store: PropTypes.object
+    isVisible: PropTypes.bool
   };
 
   render() {
-    const { isVisible, store } = this.props;
     const style = {
       height: '100%'
     };
 
     return (
-      <Frame ref="frame" style={style} isVisible={isVisible}>
-        <WidgetAppBody store={store} onResize={() => this.refs.frame && this.refs.frame.autoFrameDimensions()} />
+      <Frame ref="frame" style={style} isVisible={this.props.isVisible}>
+        <WidgetAppBody {...this.props} onResize={() => this.refs.frame && this.refs.frame.autoFrameDimensions()} />
       </Frame>
     );
   }
