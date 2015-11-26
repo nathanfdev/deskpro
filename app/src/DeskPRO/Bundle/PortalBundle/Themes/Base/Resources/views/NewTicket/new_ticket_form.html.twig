@@ -2,7 +2,7 @@
 
 
     <!-- BEGIN NEW TICKET FORM -->
-    <div class="dp_ticket_form dpx-form">
+    <div class="dp_ticket_form dpx-form{% if show_ticket_suggestions %} dpx-with-ticket-deflection{% endif %}">
 
         {# avoid putting an absolute action the GET query is significant for defaults #}
         <form method="POST" class="form-ticket" novalidate name="ticket" enctype="multipart/form-data">
