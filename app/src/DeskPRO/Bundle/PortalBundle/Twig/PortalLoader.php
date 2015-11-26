@@ -68,14 +68,8 @@ class PortalLoader implements \Twig_LoaderInterface, \Twig_ExistsLoaderInterface
      */
     public function exists($name)
     {
-        // we only support Theme: template names in this loader. All others will be loaded by the normal Twig process.
-        $k = strpos($name, 'Theme:') === 0 || strpos($name, 'ThemeParent:') === 0 || strpos($name, 'ThemeTagTemplate:') === 0;
-
-        if (!$k) {
-            xdebug_break();
-        }
-
-        return $k;
+        // we only support Theme: type template names in this loader. All others will be loaded by the normal Twig process.
+        return strpos($name, 'Theme:') === 0 || strpos($name, 'ThemeParent:') === 0 || strpos($name, 'ThemeTagTemplate:') === 0;
     }
 
     /**
@@ -89,10 +83,6 @@ class PortalLoader implements \Twig_LoaderInterface, \Twig_ExistsLoaderInterface
      */
     public function getSource($name)
     {
-        // we do nothing with db templates here, they are dealt with in the twig env itself
-        if ($name === 'Theme:Portal:Header/top_bar.html.twig') {
-            xdebug_break();
-        }
         if ($path = $this->getBrandContainer()->resolveTemplatePath((string) $name)) {
             return file_get_contents($path);
         }
