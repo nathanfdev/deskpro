@@ -6,8 +6,8 @@ import { combineReducerHierarchy } from 'Ampliflux';
 import * as ampMiddleware from 'Ampliflux/middleware';
 import AppReducers from './WidgetApp_Reducers.js';
 import style from './Resources/style/widget-style.scss';
-
 import { App } from './Modules/Application/Components/App';
+import jQuery from 'jquery';
 
 export default class WidgetApp {
   run() {
@@ -48,16 +48,16 @@ export default class WidgetApp {
     // - From a react app point of view, it doesn't know that
     // the DOM is on a parent frame and the JS/state is on this page. Cool!
 
-    const dpWidgetContainer = pageDoc.createElement('div');
-    dpWidgetContainer.id = 'dp_widget_container';
-    dpWidgetContainer.style.display = 'block';
-    dpWidgetContainer.style.width = '1px';
-    dpWidgetContainer.style.height = '1px';
-    pageDoc.body.appendChild(dpWidgetContainer);
+    const $container = jQuery('<div>', {
+      id: 'dp_widget_container',
+      css: {
+        display: 'block',
+        width: '1px',
+        height: '1px'
+      }
+    });
 
-    ReactDOM.render(
-      <App store={store} />,
-      dpWidgetContainer
-    );
+    $container.appendTo(pageDoc.body);
+    ReactDOM.render(<App store={store} />, $container.get(0));
   }
 }
