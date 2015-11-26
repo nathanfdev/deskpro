@@ -55,7 +55,7 @@ a { color: $link-color; }
   @import 'sidebar-collapsed';
   @import 'sidebar-apps';
   @import 'sidebar-titles';
-@import 'control-bar'; // Filters, order by and so on in ListFrame
+//@import 'control-bar'; // Filters, order by and so on in ListFrame
 
 @import 'top-bar';//Basic structure, logo
   @import 'top-bar-search-form';// Search form (look in live-search.scss for the live results)
@@ -78,7 +78,7 @@ a { color: $link-color; }
   @import 'select-dropdown';
   @import 'dropdown-workspace';
 
-  @import 'navigation-dropdowns';
+  //@import 'navigation-dropdowns';
 
 @import 'live-search';
 @import 'forms';
@@ -116,7 +116,7 @@ a { color: $link-color; }
 @import 'tooltips';
 @import 'stats';
 @import 'editor';
-@import 'pagination';
+// @import 'pagination';
 @import 'tip-panel';
 @import 'growl-notifications';
 

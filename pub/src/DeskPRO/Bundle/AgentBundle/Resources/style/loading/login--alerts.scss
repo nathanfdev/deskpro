@@ -14,7 +14,7 @@
   border-radius: 2px;
   z-index: 2999;
   font-size: 12px;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
   top: 5px;
 
   i { margin-right: 5px; }
@@ -33,8 +33,8 @@
       margin-top: -5px;
       content: "";
       display: block;
-      width: 0px;
-      height: 0px;
+      width: 0;
+      height: 0;
       border: 5px solid rgba(0, 0, 0, 0);
       border-left: 5px solid #fef6ea;
     }
@@ -53,8 +53,8 @@
       margin-top: -5px;
       content: "";
       display: block;
-      width: 0px;
-      height: 0px;
+      width: 0;
+      height: 0;
       border: 5px solid rgba(0, 0, 0, 0);
       border-right: 5px solid #ff5460;
     }
@@ -82,8 +82,8 @@
     margin-left: -10px;
     content: "";
     display: block;
-    width: 0px;
-    height: 0px;
+    width: 0;
+    height: 0;
     border: 10px solid rgba(0, 0, 0, 0);
     border-top: 10px solid #ff5460;
   }
@@ -101,7 +101,7 @@
       max-height: 20px;
       border-radius: 2px;
       vertical-align: middle;
-      margin: 0px 3px;
+      margin: 0 3px;
     }
   }
 
@@ -121,7 +121,7 @@
     display: inline-block;
     text-align: center;
     line-height: 1em;
-    padding: 8px 0px;
+    padding: 8px 0;
     background: #e73e4a;
     border-radius: 2px;
     border-bottom: 1px solid #cb2d39;
@@ -155,15 +155,15 @@
 .dpw-login-kick-browser-out {
   width: 100%;
   background: #606060;
-  padding: 5px 0px;
+  padding: 5px 0;
   margin-top: 10px;
   position: relative;
 
   &:before {
     content: "";
     display: block;
-    width: 0px;
-    height: 0px;
+    width: 0;
+    height: 0;
     border: 4px solid rgba(0,0,0,0);
     border-bottom: 4px solid #606060;
     position: absolute;
@@ -185,9 +185,8 @@
 
     input[type="text"], input[type="submit"], button {
       font-size: 12px;
-      padding: 0;
       margin: 0;
-      border: 0px;
+      border: 0;
       border-radius: 2px;
       background: #808080;
       display: inline-block;

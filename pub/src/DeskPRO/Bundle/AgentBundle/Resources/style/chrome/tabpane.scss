@@ -26,8 +26,8 @@ $tabbar-total-height: 43px;
     vertical-align: bottom;
     margin-right: 3px;
     border-radius: 2px;
-    border-bottom-left-radius: 0px;
-    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
     background: #eee;
     padding: 5px;
     text-decoration: none;
@@ -51,7 +51,7 @@ $tabbar-total-height: 43px;
       .avatar {
         width: 16px;
         height: 16px;
-        margin-left: 0px;
+        margin-left: 0;
         margin-right: 2px;
         opacity: 0.5;
       }
