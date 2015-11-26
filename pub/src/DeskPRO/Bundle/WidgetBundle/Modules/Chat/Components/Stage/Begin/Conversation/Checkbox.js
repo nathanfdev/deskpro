@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 
 export class Checkbox extends React.Component {
 
@@ -8,9 +9,11 @@ export class Checkbox extends React.Component {
   };
 
   render() {
+    const { value, onToggle } = this.props;
+
     return (
-      <span className="checkbox-container">
-        <span className="user-collect-checkbox checked"><i className="fa fa-check"></i></span>
+      <span className="checkbox-container" onClick={onToggle}>
+        <span className={classNames('user-collect-checkbox', {'checked': value})}><i className="fa fa-check"></i></span>
         <span className="checkbox-text"> I prefer not to say</span>
       </span>
     );
