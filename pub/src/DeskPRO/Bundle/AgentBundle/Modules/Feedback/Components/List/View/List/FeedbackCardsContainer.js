@@ -21,7 +21,7 @@ import { peopleSelector, feedbackTypesSelector, feedbackCommentsSelector, feedba
 export class FeedbackCardsContainer extends Component {
 
   static propTypes = {
-    feedback: PropTypes.object.isRequired,
+    feedback: PropTypes.array.isRequired,
     viewFields: PropTypes.object,
     selected: PropTypes.object.isRequired,
     people: PropTypes.object.isRequired,

@@ -23,15 +23,10 @@ export class PaginationContainer extends Component {
   render() {
     const {pagination} = this.props;
     return (
-      <PaginationBoxView breakLabel={<li className="break"><a href="">...</a></li>}
+      <PaginationBoxView breakLabel={<li><span className="pagination-dots">&hellip;</span></li>}
                          pageNum={pagination.total_pages}
                          currentPage={pagination.current_page}
-                         marginPagesDisplayed="2"
-                         pageRangeDisplayed="2"
-                         clickCallback={this.handlePageClick.bind(this)}
-                         containerClassName="pages-list"
-                         subContainerClassName="pages-list"
-                         activeClassName="current-page"/>
+                         clickCallback={this.handlePageClick.bind(this)}/>
     );
   }
 }
