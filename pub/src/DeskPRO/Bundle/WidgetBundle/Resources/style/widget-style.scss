@@ -1,10 +1,33 @@
 $border-color: #e7e7e7;
-
+@import "misc/mixins";
 @import "./normalize.css";
 @import "../../../../../../node_modules/bourbon/app/assets/stylesheets/bourbon";
-@import "./misc/checkbox", "./misc/mixins", "./misc/popovers", "./misc/powered-by", "./misc/radio", "./misc/search";
-@import "./chat/chat-assets", "./chat/chat-events", "./chat/chat-header", "./chat/chat-messages", "./chat/chat-reply", "./chat/collect-user-info", "./chat/ratings";
-@import "./panel";
+
+.dpdesignportal-chat-assets, .dpdesignportal, .dpdesignportal-popover {// Consider these as the root since we don't know where they'll be imported in
+  @import "./normalize.css";// Reset
+  h1, h2, h3 { font-weight: normal; font-size: 14px; padding: 0; margin: 0; }
+  .fa { position: relative; }
+  p { padding: 0; margin: 0; }
+  ul { list-style: none; padding: 0; margin: 0; }
+  li { display: block; }
+  @import "forms/forms";
+  @import "header/panel-header";
+  @import "chat/chat-header";
+  @import "chat/chat-messages";
+  @import "chat/chat-reply";
+  @import "chat/chat-events";
+  @import "chat/ratings";
+  @import "misc/checkbox";
+  @import "misc/radio";
+  @import "misc/powered-by";
+  @import "misc/search";
+}
+
+@import "misc/popovers";// .dpdesignportal-popover
+@import "chat/chat-assets";// .dpdesignportal-chat-assets
+@import "panel";
+@import "preemptive-chat/preemptive-chat";
+@import "chat/collect-user-info";
 
 html, body {
   background: #fff;
