@@ -11,6 +11,6 @@ api.addInterceptor(new UrlCorrector(window.DP_BASE_URL));
 api.addInterceptor(new UrlCorrector(window.DP_BASE_URL + '/portal/api/', /^\/?DP_API\//));
 
 // Replace other DP_API occurrences with just '/api/v2' implying they're used to define sub-requests in batch API
-api.addInterceptor(new UrlCorrector('/api/v2/', /\/?DP_API\//g));
+api.addInterceptor(new UrlCorrector('/portal/api/', /\/?DP_API\//g));
 
 export default api;
