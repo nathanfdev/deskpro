@@ -1,84 +1,59 @@
 // SCCS files rendering too slow?
 // temporarily remove them from the @import list below and link them directly on the html (so running sass --watch ./ doesnt render the externaly linked files through styles.css but creates a new css file for it )
 
-$fa-font-path: "../../../../../../node_modules/font-awesome/fonts";
-$flagsImagePath: "../../../../../../node_modules/intl-tel-input/build/img/";
-@import "../../../../../../../node_modules/font-awesome/scss/font-awesome";
-@import "../../../../../../../node_modules/bourbon/app/assets/stylesheets/bourbon";
-@import "../../../../../../../node_modules/bourbon-neat/app/assets/stylesheets/neat";
-@import "../../../../../../../node_modules/intl-tel-input/src/css/intlTelInput";
-@import "../../../../../../../node_modules/cropper/src/scss/cropper";
+// ATTENTION!
+// If you need some raw, but it had been commented,
+// PLEASE:
+// move it into agent-style.scss
+
 //@import "../fonts/font-awesome/css/font-awesome.min.css";
-
-// // http://bourbon.io
-// @import "./bourbon/bourbon";
-// @import "./neat/neat";
-// // Font awesome: http://fortawesome.github.io/Font-Awesome/cheatsheet/
-// @import "../fonts/font-awesome/css/font-awesome.min.css";
-
-@import 'variables';
-
-$tablet: new-breakpoint(max-width 960px 6);
-$mobile: new-breakpoint(max-width 640px 6);
-
-body {
-  background: #f6f6f6;
-  font-family: $font-stack;
-  font-size: 13px;
-  font-weight: 400;
-  color: #333;
-  min-width: 960px;
-}
-
-* { @include box-sizing(border-box); }
-
-/*
-p {
-  font-weight: 400;
-  color: $text-color;
-}
-*/
-
-a { color: $link-color; }
-
-// So we don't have to repeat it every time we want to reposition an icon
-.fa { position: relative; }
 
 // extras
 @import 'misc';
-@import 'app-bar';// Dark background left sidebar
-@import 'sidebar';// Filters etc
-  @import 'sidebar-urgent-sliders';
-  @import 'sidebar-hover-interactions';
-  @import 'sidebar-labels';
-  @import 'sidebar-flags';
-  @import 'sidebar-collapsed';
-  @import 'sidebar-apps';
-  @import 'sidebar-titles';
+@import 'app-bar';
+// Dark background left sidebar
+@import 'sidebar';
+// Filters etc
+@import 'sidebar-urgent-sliders';
+@import 'sidebar-hover-interactions';
+@import 'sidebar-labels';
+@import 'sidebar-flags';
+@import 'sidebar-collapsed';
+@import 'sidebar-apps';
+@import 'sidebar-titles';
 //@import 'control-bar'; // Filters, order by and so on in ListFrame
 
-@import 'top-bar';//Basic structure, logo
-  @import 'top-bar-search-form';// Search form (look in live-search.scss for the live results)
-  @import 'top-bar-user-options';// User options button & dropdown
-  @import 'top-bar-notifications';// -
-  @import 'top-bar-agent-ims';// Ims (avatar styles in the main top-bar.scss)
-  @import 'top-bar-switches';// All the switches
-  @import 'top-bar-dropdown';
+@import 'top-bar';
+//Basic structure, logo
+@import 'top-bar-search-form';
+// Search form (look in live-search.scss for the live results)
+@import 'top-bar-user-options';
+// User options button & dropdown
+@import 'top-bar-notifications';
+// -
+@import 'top-bar-agent-ims';
+// Ims (avatar styles in the main top-bar.scss)
+@import 'top-bar-switches';
+// All the switches
+@import 'top-bar-dropdown';
 
 @import 'content';
 
 @import 'dropdowns';
-  @import 'dropdown-im';
-  @import 'dropdown-notifications';
-  @import 'dropdown-incoming-chat';
-  @import 'dropdown-incoming-call';
-  @import 'dropdown-active-chat';// Ongoing chat with someone
-  @import 'dropdown-chat';// Chat controls
-  @import 'help-dropdown';// Help stuff
-  @import 'select-dropdown';
-  @import 'dropdown-workspace';
+@import 'dropdown-im';
+@import 'dropdown-notifications';
+@import 'dropdown-incoming-chat';
+@import 'dropdown-incoming-call';
+@import 'dropdown-active-chat';
+// Ongoing chat with someone
+@import 'dropdown-chat';
+// Chat controls
+@import 'help-dropdown';
+// Help stuff
+@import 'select-dropdown';
+@import 'dropdown-workspace';
 
-  //@import 'navigation-dropdowns';
+//@import 'navigation-dropdowns';
 
 @import 'live-search';
 @import 'forms';
@@ -86,30 +61,31 @@ a { color: $link-color; }
 @import 'dropdown-panels';
 
 @import 'setting-popups';
-  @import 'settings-popup-signatures';
-  @import 'settings-popup-avatar-crop';
-  @import 'settings-popup-devices';
-  @import 'settings-notifications';
+@import 'settings-popup-signatures';
+@import 'settings-popup-avatar-crop';
+@import 'settings-popup-devices';
+@import 'settings-notifications';
 
 @import 'tickets';
-  @import 'tickets-timeline';
-  @import 'tickets-header';
-  @import 'tickets-table-view';
-  @import 'ticket-events';
-  @import 'ticket-editing';
-  @import 'cards';
-  @import 'cards-task';
-  @import 'kanban';
-  @import 'task-calendar';
-  @import 'calendar';
+@import 'tickets-timeline';
+@import 'tickets-header';
+@import 'tickets-table-view';
+@import 'ticket-events';
+@import 'ticket-editing';
+@import 'cards';
+@import 'cards-task';
+@import 'kanban';
+@import 'task-calendar';
+@import 'calendar';
 
 @import 'ticket';
-  @import 'ticket-view';
-  @import 'tickets-table-view';
+@import 'ticket-view';
+@import 'tickets-table-view';
 
-@import 'right-panel';//
-  @import 'main-panel';// Container with sidebar for right side view (ticket or other)
-  @import 'external-apps';
+@import 'right-panel';
+@import 'main-panel';
+// Container with sidebar for right side view (ticket or other)
+@import 'external-apps';
 
 @import 'reports';
 @import 'reports-editor';
@@ -120,7 +96,7 @@ a { color: $link-color; }
 @import 'tip-panel';
 @import 'growl-notifications';
 
-@import'../global-widgets/radio';
+@import '../global-widgets/radio';
 
 .checkbox {
   background: rgba(0, 0, 0, 0.1);
@@ -138,7 +114,9 @@ a { color: $link-color; }
   }
 
   &.checked {
-    i { opacity: 1; }
+    i {
+      opacity: 1;
+    }
   }
 }
 
@@ -153,8 +131,9 @@ a { color: $link-color; }
   }
 }
 
-
-.content, .sidebar, .app-bar { overflow-y: scroll; }
+.content, .sidebar, .app-bar {
+  overflow-y: scroll;
+}
 
 // To keep a set width sidebar with a full width content columns: float left and give the content container
 // padding-left equal to the full width of the sidebars.
@@ -190,7 +169,9 @@ $content-width: $app-width + $sidebar-width;
   z-index: 209;
   transition: all 0.25s ease;
   // Hide the expand controls when the sidebar is visible
-  .collapse-button, .collapse-controls { display: none; }
+  .collapse-button, .collapse-controls {
+    display: none;
+  }
 }
 
 .content-wrapper {
@@ -199,7 +180,9 @@ $content-width: $app-width + $sidebar-width;
   transition: all 1s ease;
 }
 
-.report-wrapper { padding-left: $app-width; }
+.report-wrapper {
+  padding-left: $app-width;
+}
 
 .report-list-wrapper {
   float: left;
@@ -216,7 +199,9 @@ $content-width: $app-width + $sidebar-width;
   }
 }
 
-.wrapper { @include clearfix; }
+.wrapper {
+  @include clearfix;
+}
 
 .interface-controls {
   padding: 8px;
@@ -229,7 +214,3 @@ $content-width: $app-width + $sidebar-width;
   }
 }
 
-
-.hidden {
-  display: none;
-}

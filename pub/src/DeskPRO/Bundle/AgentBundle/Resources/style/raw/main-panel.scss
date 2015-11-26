@@ -1,12 +1,8 @@
 // Panel color scheme
 
-
 $dark-text: #525252;
 
 $light-text: #c4c4c4;
-
-
-
 
 @mixin panel-button($background, $color) {
   color: $color;
@@ -15,11 +11,6 @@ $light-text: #c4c4c4;
   border-bottom: 1px solid darken($background, 10%);
   margin-right: 3px;
 }
-
-
-
-
-
 
 .radio-select {
   cursor: pointer;
@@ -44,52 +35,14 @@ $light-text: #c4c4c4;
   margin-right: 4px;
 }
 
-
 .radio-disc {
   @extend .radio;
   width: 4px;
   height: 4px;
   background: #fff;
-  margin-right: 0px;
+  margin-right: 0;
   margin-top: 4px;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //
 
@@ -105,23 +58,22 @@ $light-text: #c4c4c4;
   }
 }
 
-
 $ticket-content-background: #fcfcfc;
 
-.ticket-content-wrapper { padding-left: 260px; }
+.ticket-content-wrapper {
+  padding-left: 260px;
+}
 
 .ticket-content {
   background: $ticket-content-background;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   float: right;
   width: 100%;
 }
 
-
 .main-panel-ticket-status {
   @include clearfix();
-  padding: 10px;
-  padding-bottom: 0px;
+  padding: 10px 10px 0;
 
   .ticket-status {
     display: block;
@@ -131,16 +83,14 @@ $ticket-content-background: #fcfcfc;
     border-radius: 2px;
     text-transform: uppercase;
     background: #fff;
-    padding: 0px 5px;
     font-weight: bold;
     font-size: 0.8em;
     text-decoration: none;
-    padding-right: 30px;
     position: relative;
     color: #8c8c8c;
     height: 37px;
     vertical-align: top;
-    padding-top: 5px;
+    padding: 5px 30px 0 5px;
     cursor: pointer;
 
     .status {
@@ -151,21 +101,25 @@ $ticket-content-background: #fcfcfc;
 
     .flare {
       height: 28px;
-      padding: 0px 7px;
+      padding: 0 7px;
       border-left: 1px solid rgba(0, 0, 0, 0.2);
       color: rgba(0, 0, 0, 0.2);
       position: absolute;
       right: 3px;
       top: 3px;
 
-      i { top: 8px; }
+      i {
+        top: 8px;
+      }
     }
 
     &.editing {
       background: #daeaf7;
       border: 1px solid #4681b2;
       color: #4681b2;
-      .status { color: inherit }
+      .status {
+        color: inherit
+      }
     }
 
     .dropdown-content {
@@ -181,8 +135,8 @@ $ticket-content-background: #fcfcfc;
 
       a {
         display: block;
-        border: 0px;
-        border-radius: 0px;
+        border: 0;
+        border-radius: 0;
         padding: 5px;
         height: auto;
         text-decoration: none;
@@ -229,21 +183,50 @@ $ticket-content-background: #fcfcfc;
     font-size: 0.9em;
     padding-top: 8px;
     position: relative;
-    &.level-1 { background: #fbf250; border: 1px solid darken(#fbf250, 10%); }
-    &.level-2 { background: #fbd944; border: 1px solid darken(#fbd944, 10%); }
-    &.level-3 { background: #fbcc3e; border: 1px solid darken(#fbcc3e, 10%); }
-    &.level-4 { background: #fbbf38; border: 1px solid darken(#fbbf38, 10%); }
-    &.level-5 { background: #e58f3e; border: 1px solid darken(#e58f3e, 10%); }
-    &.level-6 { background: #e17c3b; border: 1px solid darken(#e17c3b, 10%); }
-    &.level-7 { background: #dc6837; border: 1px solid darken(#dc6837, 10%); }
-    &.level-8 { background: #d64a32; border: 1px solid darken(#d64a32, 10%); }
-    &.level-9 { background: #cf2d2d; border: 1px solid darken(#cf2d2d, 10%); }
+    &.level-1 {
+      background: #fbf250;
+      border: 1px solid darken(#fbf250, 10%);
+    }
+    &.level-2 {
+      background: #fbd944;
+      border: 1px solid darken(#fbd944, 10%);
+    }
+    &.level-3 {
+      background: #fbcc3e;
+      border: 1px solid darken(#fbcc3e, 10%);
+    }
+    &.level-4 {
+      background: #fbbf38;
+      border: 1px solid darken(#fbbf38, 10%);
+    }
+    &.level-5 {
+      background: #e58f3e;
+      border: 1px solid darken(#e58f3e, 10%);
+    }
+    &.level-6 {
+      background: #e17c3b;
+      border: 1px solid darken(#e17c3b, 10%);
+    }
+    &.level-7 {
+      background: #dc6837;
+      border: 1px solid darken(#dc6837, 10%);
+    }
+    &.level-8 {
+      background: #d64a32;
+      border: 1px solid darken(#d64a32, 10%);
+    }
+    &.level-9 {
+      background: #cf2d2d;
+      border: 1px solid darken(#cf2d2d, 10%);
+    }
 
     &.editing {
       background: #daeaf7;
       border: 1px solid #4681b2;
       color: #4681b2;
-      .status { color: inherit }
+      .status {
+        color: inherit
+      }
     }
 
     .status {
@@ -265,40 +248,59 @@ $ticket-content-background: #fcfcfc;
 
       a {
         display: block;
-        border: 0px;
-        border-radius: 0px;
+        border: 0;
+        border-radius: 0;
         padding: 5px;
         height: auto;
         text-decoration: none;
         font-size: 0.9em;
         color: rgba(0, 0, 0, 0.5);
 
-        &.level-1 { background: #fbf250; }
-        &.level-2 { background: #fbd944; }
-        &.level-3 { background: #fbcc3e; }
-        &.level-4 { background: #fbbf38; }
-        &.level-5 { background: #e58f3e; }
-        &.level-6 { background: #e17c3b; color: rgba(255, 255, 255, 0.6); }
-        &.level-7 { background: #dc6837; color: rgba(255, 255, 255, 0.7); }
-        &.level-8 { background: #d64a32; color: rgba(255, 255, 255, 0.8); }
-        &.level-9 { background: #cf2d2d; color: rgba(255, 255, 255, 0.8); }
+        &.level-1 {
+          background: #fbf250;
+        }
+        &.level-2 {
+          background: #fbd944;
+        }
+        &.level-3 {
+          background: #fbcc3e;
+        }
+        &.level-4 {
+          background: #fbbf38;
+        }
+        &.level-5 {
+          background: #e58f3e;
+        }
+        &.level-6 {
+          background: #e17c3b;
+          color: rgba(255, 255, 255, 0.6);
+        }
+        &.level-7 {
+          background: #dc6837;
+          color: rgba(255, 255, 255, 0.7);
+        }
+        &.level-8 {
+          background: #d64a32;
+          color: rgba(255, 255, 255, 0.8);
+        }
+        &.level-9 {
+          background: #cf2d2d;
+          color: rgba(255, 255, 255, 0.8);
+        }
       }
     }
   }
 }
 
-
 .main-panel-sidebar-panels {
 
   .panel {
-    transition: all 1s ease;
     background: #ffffff;
     border-bottom: 1px solid #d3d3d3;
     border-radius: 2px;
-    border-top-left-radius: 0px;
-    border-bottom-left-radius: 0px;
-    margin: 5px 10px;
-    margin-left: 0px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    margin: 5px 10px 5px 0;
     transition: all 1s ease;
     color: #525252;
 
@@ -308,8 +310,7 @@ $ticket-content-background: #fcfcfc;
       text-transform: uppercase;
       font-size: 0.8em;
       font-weight: bold;
-      padding: 8px 5px;
-      padding-left: 10px;
+      padding: 8px 5px 8px 10px;
       cursor: pointer;
       background: #f9f9f9;
 
@@ -325,7 +326,7 @@ $ticket-content-background: #fcfcfc;
     }
 
     div:last-child {
-      border-bottom: 0px;
+      border-bottom: 0;
     }
 
     .title {
@@ -340,7 +341,9 @@ $ticket-content-background: #fcfcfc;
       font-size: 0.9em;
       color: #757575;
 
-      p { color: inherit; }
+      p {
+        color: inherit;
+      }
       img {
         vertical-align: middle;
         margin-right: 3px;
@@ -355,7 +358,7 @@ $ticket-content-background: #fcfcfc;
     overflow: hidden;
 
     header {
-      border-bottom: 0px;
+      border-bottom: 0;
     }
 
     > div {
@@ -392,8 +395,6 @@ $ticket-content-background: #fcfcfc;
 
   .active-sla {
     display: inline-block;
-    margin-top: 4px;
-    margin-bottom: 4px;
     line-height: 1em;
     background: #ebebeb;
     border-radius: 2px;
@@ -402,14 +403,13 @@ $ticket-content-background: #fcfcfc;
     font-size: 0.8em;
     padding: 4px;
     position: relative;
-    margin-left: 12px;
-    margin-right: 10px;
+    margin: 4px 10px 4px 12px;
 
     &:before {
       content: "";
       display: block;
-      width: 0px;
-      height: 0px;
+      width: 0;
+      height: 0;
       border: 4px solid rgba(0, 0, 0, 0);
       border-right: 4px solid #ebebeb;
       position: absolute;
@@ -444,7 +444,6 @@ $ticket-content-background: #fcfcfc;
     }
   }
 
-
   .small-button {
     display: inline-block;
     line-height: 1em;
@@ -456,12 +455,13 @@ $ticket-content-background: #fcfcfc;
     text-transform: uppercase;
     font-weight: bold;
     font-size: 0.8em;
-    i { margin-right: 3px; }
-    .grey { color: #bcbcbc; }
+    i {
+      margin-right: 3px;
+    }
+    .grey {
+      color: #bcbcbc;
+    }
   }
-
-
-
 
   .linked-ticket {
     @extend %whitespace;
@@ -496,10 +496,6 @@ $ticket-content-background: #fcfcfc;
 
   }
 
-
-
-
-
   .billing-type {
     text-transform: uppercase;
     font-size: 0.8em;
@@ -510,13 +506,6 @@ $ticket-content-background: #fcfcfc;
       margin-right: 15px;
     }
   }
-
-
-
-
-
-
-
 
   [type="text"], textarea {
     @include placeholder {
@@ -535,12 +524,9 @@ $ticket-content-background: #fcfcfc;
     margin-bottom: 5px;
   }
 
-  textarea { resize: vertical; }
-
-
-
-
-
+  textarea {
+    resize: vertical;
+  }
 
   .billing-input {
     color: #cecece;
@@ -556,7 +542,7 @@ $ticket-content-background: #fcfcfc;
       text-align: center;
       font-size: 0.8em;
       font-style: normal;
-      margin: 2px 0px;
+      margin: 2px 0;
     }
 
     [type="text"] {
@@ -564,13 +550,18 @@ $ticket-content-background: #fcfcfc;
       margin-right: 2px;
     }
 
-    [type="submit"] { @include panel-button(#4681b2, #fff) }
+    [type="submit"] {
+      @include panel-button(#4681b2, #fff)
+    }
 
-    .start { @extend [type="submit"]; }
+    .start {
+      // @extend [ type = "submit" ];
+    }
 
-    .reset { @include panel-button(#f1f1f1, #cecece) }
+    .reset {
+      @include panel-button(#f1f1f1, #cecece)
+    }
   }
-
 
   .ticket-task {
 
@@ -596,14 +587,17 @@ $ticket-content-background: #fcfcfc;
       margin-top: 3px;
       margin-left: 1px;
 
-      .ticket-task-extra {// Use class incase we don't use an actual link tag for the dropdowns
+      .ticket-task-extra {
+        // Use class incase we don't use an actual link tag for the dropdowns
         margin-right: 5px;
         font-size: 0.8em;
         text-decoration: none;
         color: $light-text;
       }
 
-      a:hover { color: darken($light-text, 20%); }
+      a:hover {
+        color: darken($light-text, 20%);
+      }
     }
 
     .chat-avatar {
@@ -620,39 +614,34 @@ $ticket-content-background: #fcfcfc;
       padding-top: 10px;
       padding-bottom: 10px;
       opacity: 0.5;
-      span { text-decoration: line-through; }
+      span {
+        text-decoration: line-through;
+      }
     }
   }
-
-
-
-
-
 
   .billing-totals {
     background: #f9f9f9;
     color: $light-text;
-    strong { color: $dark-text; }
+    strong {
+      color: $dark-text;
+    }
 
     span {
       display: block;
-      padding: 3px 0px;
+      padding: 3px 0;
     }
   }
-
-
 
   .billing-charge {
     color: #9d9d9d;
     font-weight: bold;
 
-
-
     .charge, .agent-name, .billing-date {
       display: inline-block;
       width: 40%;
       text-align: center;
-      padding: 2px 0px;
+      padding: 2px 0;
       font-size: 0.9em;
       color: #9d9d9d;
     }
@@ -665,13 +654,17 @@ $ticket-content-background: #fcfcfc;
       text-align: left;
     }
 
-    .agent-name { width: 20% }
+    .agent-name {
+      width: 20%
+    }
 
     &.billing-charge-header {
       font-weight: normal;
       font-size: 1em;
       color: #898989;
-      .charge, .agent-name, .billing-date { color: inherit; }
+      .charge, .agent-name, .billing-date {
+        color: inherit;
+      }
     }
 
     .billing-comment {
@@ -679,25 +672,18 @@ $ticket-content-background: #fcfcfc;
       font-weight: normal;
       line-height: 1.7em;
 
-      strong { color: $dark-text; }
+      strong {
+        color: $dark-text;
+      }
     }
 
-
-
-
-
-
-
     .chat-avatar {
-      margin-left: 0px;
+      margin-left: 0;
       width: 18px;
       height: 18px;
     }
 
   }
-
-
-
 
   .ratings {
     .rating-status {
@@ -749,7 +735,6 @@ $ticket-content-background: #fcfcfc;
     color: #4681b2;
   }
 
-
   .panel-select-dropdown {
     display: block;
     background: #f3f3f3;
@@ -763,9 +748,8 @@ $ticket-content-background: #fcfcfc;
 
     .title {
       display: block;
-      padding: 10px;
-      padding-right: 30px;
-      margin-bottom: 0px;
+      padding: 10px 30px 10px 10px;
+      margin-bottom: 0;
 
       &:hover {
         color: #333;
@@ -779,18 +763,21 @@ $ticket-content-background: #fcfcfc;
       right: 10px;
     }
 
-
     .dropdown-content {
       position: absolute;
       width: 100%;
       top: 30px;
       background: #f3f3f3;
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       z-index: 199;
 
-      ul { @extend %flat-list; }
+      ul {
+        @extend %flat-list;
+      }
 
-      li { display: block; }
+      li {
+        display: block;
+      }
 
       a {
         display: block;
@@ -801,24 +788,19 @@ $ticket-content-background: #fcfcfc;
         text-transform: none;
       }
 
-      a:hover { color: #333; }
+      a:hover {
+        color: #333;
+      }
     }
   }
-
 
   // End .panel
 }
 
-
-
-
-
-
-
 .panel-labels {
   a {
     display: inline-block;
-    line-height: 0px;
+    line-height: 0;
     padding: 4px 6px;
     background: #f1f1f1;
     border: 1px solid #cecece;
@@ -827,7 +809,9 @@ $ticket-content-background: #fcfcfc;
     text-decoration: none;
     color: #9a9a9a;
 
-    i { margin-left: 3px; }
+    i {
+      margin-left: 3px;
+    }
   }
 }
 
@@ -860,8 +844,7 @@ $ticket-content-background: #fcfcfc;
     display: block;
     text-decoration: none;
     font-size: 0.9em;
-    margin: 7px 0px;
-    margin-bottom: 10px;
+    margin: 7px 0 10px;
     transition: all 0.5s ease;
     position: relative;
     color: #ababab;
@@ -870,17 +853,21 @@ $ticket-content-background: #fcfcfc;
     .chat-avatar {
       width: 16px;
       height: 16px;
-      margin-left: 0px;
+      margin-left: 0;
       margin-right: 3px;
       top: -1px;
     }
-    .name { color: #737373;}
-    .email { color: #ababab; }
+    .name {
+      color: #737373;
+    }
+    .email {
+      color: #ababab;
+    }
   }
 
   .remove-participant {
     position: absolute;
-    right: 0px;
+    right: 0;
     top: 2px;
     font-size: 0.8em;
     color: #cecece;
@@ -889,10 +876,6 @@ $ticket-content-background: #fcfcfc;
   }
 
 }
-
-
-
-
 
 .floaty-tooltip {
   position: fixed;
@@ -908,8 +891,8 @@ $ticket-content-background: #fcfcfc;
 .floaty-tooltip:after {
   content: "";
   display: block;
-  width: 0px;
-  height: 0px;
+  width: 0;
+  height: 0;
   border: 3px solid rgba(0, 0, 0, 0);
   border-top: 3px solid #333;
   position: absolute;
@@ -920,18 +903,3 @@ $ticket-content-background: #fcfcfc;
 .floaty-tooltip.hidden {
   display: none;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//

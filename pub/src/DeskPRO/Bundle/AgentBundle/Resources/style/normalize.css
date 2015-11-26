@@ -53,6 +53,9 @@ audio:not([controls]) {
 /* ==========================================================================
    Base
    ========================================================================== */
+* {
+    box-sizing: border-box;
+}
 
 html, body {
     margin: 0;
@@ -61,8 +64,12 @@ html, body {
     height: 100%;
 }
 
-* {
-    box-sizing: border-box;
+body {
+    background: #f6f6f6;
+    font-size: 13px;
+    font-weight: 400;
+    color: #333;
+    min-width: 960px;
 }
 
 /*
@@ -152,7 +159,6 @@ mark {
     background: #ff0;
     color: #000;
 }
-
 
 /*
  * Corrects font family set oddly in Safari 5 and Chrome.
