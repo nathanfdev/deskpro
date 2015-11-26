@@ -1,10 +1,20 @@
 import React from 'react';
+import Loader from 'react-loader';
 
 export class ChatWaiting extends React.Component {
 
   render() {
     return (
-      <div>Is waiting</div>
+
+      <div>
+        <div>
+          We are finding you an agent...
+        </div>
+        <Loader color="green"
+                width={3}
+                left="50%"
+                top="50%" />
+      </div>
     );
   }
 }
