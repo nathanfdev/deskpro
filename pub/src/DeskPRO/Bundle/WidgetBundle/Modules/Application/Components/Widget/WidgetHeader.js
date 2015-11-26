@@ -3,6 +3,7 @@ import React, { PropTypes } from 'react';
 export class WidgetHeader extends React.Component {
 
   static propTypes = {
+    title: PropTypes.string,
     onClose: PropTypes.func.isRequired
   };
 
@@ -29,7 +30,7 @@ export class WidgetHeader extends React.Component {
 
         <div className="dpdesignportal-header-mark">
           <span className="dpdesignportal-logo sample-logo" />
-          <h1>Acme Corp. Chat and a long name lorel ipsum dolor</h1>
+          <h1>{this.props.title}</h1>
         </div>
       </div>
     );

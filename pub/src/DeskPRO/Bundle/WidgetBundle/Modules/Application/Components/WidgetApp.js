@@ -43,7 +43,7 @@ export class WidgetAppBody extends React.Component {
     return (
       <Provider store={store}>
         <Widget>
-          <WidgetHeader onClose={onClose} />
+          <WidgetHeader title="Acme Corp. Chat and a long name lorel ipsum dolor" onClose={onClose} />
           <WidgetBody>
             <Router>
               <Redirect from="/" to="chat"/>
