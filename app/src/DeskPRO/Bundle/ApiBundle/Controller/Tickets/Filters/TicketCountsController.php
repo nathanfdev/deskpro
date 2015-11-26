@@ -159,7 +159,7 @@ class TicketCountsController extends BaseController
      *          {
      *              "name"="group_by",
      *              "requirement"=".+",
-     *              "description"="the grouping order you want",
+     *              "description"="[Ticket filter ID => group_by] map",
      *              "dataType"="string",
      *              "required"=false
      *          },
