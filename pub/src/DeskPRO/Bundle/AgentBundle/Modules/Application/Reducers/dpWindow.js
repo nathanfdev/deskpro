@@ -16,7 +16,8 @@ const initialState = {
   isWorkspaceOpen: false,
   isPreferencesOpen: false,
   preferenceTab: 'profile',
-  coverShown: false
+  coverShown: false,
+  isDoneInitialLoad: false
 };
 
 /**
@@ -70,7 +71,7 @@ export default createReducer(initialState, {
     return state.set('sidebarMode', payload);
   },
   [actions.showWelcomePage]: setValue('showWelcomePage', true),
-  [actions.hideWelcomePage]: setValue('showWelcomePage', false),
+  [actions.doneInitialLoad]: state => state.merge({ showWelcomePage: false, isDoneInitialLoad: true }),
   [actions.togglePreferences]: state => {
     const isOpen = !state.get('isPreferencesOpen');
 

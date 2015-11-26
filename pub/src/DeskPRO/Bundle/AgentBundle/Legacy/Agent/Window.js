@@ -1,5 +1,10 @@
 class Agent_DeskPRO_Window {
-  constructor() {
+  constructor(options) {
+    this.DEBUG = {};
+    this.registry = {};
+    this.messageBroker = new DeskPRO.MessageBroker();
+    this.translate = new DeskPRO.Translate();
+    this.options = options || {};
 
     this.hashHandling = true;
     this.onloadStack = [];
@@ -65,6 +70,10 @@ class Agent_DeskPRO_Window {
         console.trace();
       },
 
+      filedownload: function() {
+        console.trace();
+      },
+
       slugify: function(str) {
         str = str.replace(/[^a-zA-Z0-9\-]/g, '-');
         str = str.replace(/\-{2,}/g, '-');
@@ -100,6 +109,7 @@ class Agent_DeskPRO_Window {
   }
 
   initPage() {
+    this._initLegacyHacks();
     this._initLayout();
     this._initWindowInterface();
     this._initBasic();
@@ -150,6 +160,18 @@ class Agent_DeskPRO_Window {
 
   loadHashPath(browserHash) {
     // noop
+  }
+
+  updateWindowUrlFragment() {
+    // noop
+  }
+
+  _initLegacyHacks() {
+    this.$scope = {
+      $watch: function() {},
+      $apply: function() {},
+      $digest: function() {}
+    };
   }
 
   //#################################################################
@@ -650,7 +672,7 @@ class Agent_DeskPRO_Window {
    */
   createPageFragment(html, classname, force_classname) {
 
-    pageMeta = {
+    let pageMeta = {
       'title': false,
       'fragmentClass': classname || 'DeskPRO.Agent.PageFragment.Basic'
     };
@@ -1036,9 +1058,7 @@ class Agent_DeskPRO_Window {
     this.layout.doResize(true);
 
     this.TabBar = new DeskPRO.Agent.WindowElement.TabBar({
-      tabPane: $('#tabNavigationPane'),
-      bodyPane: $('#dp_content_wrap'),
-      menuBtn: $('#tabDropdownPicker')
+      bodyPane: 'dp_content_wrap'
     });
 
     this.tabWatcher = new DeskPRO.Agent.TabWatcher({
@@ -1381,7 +1401,47 @@ class Agent_DeskPRO_Window {
   }
 
   prepareWidgetedHtml(html) {
-    console.trace();
+    var finalHtml = html,
+      widgetCssRegex = /<style type="text\/css" data-widget="(\d+)" data-hash="([a-zA-Z0-9]+)">([\s\S]*?)<\/style>/g,
+      widgetJsRegex = /<script type="text\/javascript"([^>]*)>([\s\S]*?)<\/script>/g,
+      cssExists = {},
+      jsSource = [],
+      jsInline = [],
+      match;
+
+    $('style[data-widget]').each(function () { cssExists[$(this).data('widget')] = $(this).data('hash'); });
+
+    while (match = widgetCssRegex.exec(html)) {
+      finalHtml = finalHtml.replace(match[0], '');
+
+      // only insert the CSS once
+      if (cssExists[match[1]] !== match[2]) {
+        cssExists[match[1]] = match[2];
+        $(match[0]).appendTo('head');
+      }
+    }
+
+    while (match = widgetJsRegex.exec(html)) {
+      finalHtml = finalHtml.replace(match[0], '');
+
+      if (match[1].match(/src="([^"]+)"/)) {
+        jsSource.push(RegExp.$1);
+      } else {
+        if (match[2]) {
+          jsInline.push({
+            widget: match[1].match(/data-widget="(\d+)"/) ? RegExp.$1 : false,
+            htmlId: match[1].match(/data-html-id="([^"]+)"/) ? RegExp.$1 : false,
+            code: match[2]
+          });
+        }
+      }
+    }
+
+    return {
+      html: finalHtml,
+      jsSource: jsSource,
+      jsInline: jsInline
+    };
   }
 
   runWidgetedJs(page, src, inline) {
@@ -1712,6 +1772,37 @@ class Agent_DeskPRO_Window {
   isSingleColMode() {
     console.trace();
   }
+
+  //#################################################################
+  //# Global registry, getters
+  //#################################################################
+
+  getTranslate() {
+    console.trace();
+  }
+
+  get(id, def) {
+    console.trace();
+    if (this.registry[id] === undefined) {
+      return def;
+    }
+
+    return this.registry[id];
+  }
+
+  set(id, value) {
+    console.trace();
+    this.registry[id] = value;
+  }
+
+  getMessageBroker() {
+    console.trace();
+    return this.messageBroker;
+  }
+
+  getDebug(name) {
+    console.trace();
+  }
 }
 
-export default Agent_DeskPRO_Window;
+window.DeskPRO.Agent.Window = Agent_DeskPRO_Window;

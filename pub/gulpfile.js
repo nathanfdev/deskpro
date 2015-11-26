@@ -7,10 +7,14 @@ var gulp                  = require('gulp'),
     runSeq                = require('run-sequence'),
     path                  = require("path"),
     ExtractTextPlugin     = require("extract-text-webpack-plugin"),
+    WebpackNotifierPlugin = require('webpack-notifier'),
     glob                  = require("glob"),
     babel                 = require("babel"),
     uglify                = require("uglify-js"),
     fs                    = require("fs"),
+    mkdirp                = require('mkdirp'),
+    watch                 = require('gulp-watch'),
+    notifier              = require('node-notifier'),
     reducerRefresh        = require("./build-tools/app-reducer-gen/loader").refreshBundle;
 
 //######################################################################################################################
@@ -94,6 +98,35 @@ function refreshWidgetLoader() {
   console.log(".. done writing widget_loader");
 }
 
+function refreshLegacy() {
+  var legacyPath = path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle/Legacy");
+  var targetPath = path.join(__dirname, "build/DeskPRO/Bundle/AgentBundle/Legacy");
+
+  console.log("Refreshing legacy... ");
+  glob.sync('**/*.js', { cwd: legacyPath, root: legacyPath }).forEach(function(f) {
+    var filePath    = legacyPath + '/' + f;
+    var targetFile  = targetPath + '/' + f;
+    var targetDir   = path.dirname(targetFile);
+
+    if (!fs.existsSync(targetDir)){
+      mkdirp.sync(targetDir);
+    }
+
+    try {
+      var code = babel.transformFileSync(filePath, {"stage": "0"}).code;
+      fs.writeFileSync(targetFile, code);
+    } catch (e) {
+      notifier.notify({
+        title: "Error refreshing legacy",
+        message: e,
+        sound: true
+      });
+    }
+
+    console.log("- " + filePath);
+  });
+}
+
 gulp.task('bundle', function (callback) {
   reducerRefresh("Agent", path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle"));
   reducerRefresh("Widget", path.join(__dirname, "src/DeskPRO/Bundle/WidgetBundle"));
@@ -122,7 +155,11 @@ gulp.task('bundle:dev-server', function(callback) {
 });
 
 gulp.task('bundle:dev-server:agent', function(callback) {
+  refreshLegacy();
   reducerRefresh("Agent", path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle"));
+  watch(path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle/Legacy/**/*.js"), function() {
+    refreshLegacy();
+  });
   startWebpackServer(getWebpackConfig('agent', true, false));
 });
 
@@ -192,6 +229,9 @@ function getWebpackConfig(mode, isDevServer, isProd) {
             path.resolve(__dirname, 'src/DeskPRO'),
             path.resolve(__dirname, 'node_modules/formsy-react')
           ],
+          exclude: [
+            path.resolve(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Legacy'),
+          ],
           loader: 'babel-loader?stage=0'
         },
         {
@@ -234,6 +274,7 @@ function getWebpackConfig(mode, isDevServer, isProd) {
       noParse: []
     },
     plugins: [
+      new WebpackNotifierPlugin(),
       new ExtractTextPlugin("[name].css"),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': (isProd ? "\"production\"" : "\"development\"")
@@ -244,14 +285,6 @@ function getWebpackConfig(mode, isDevServer, isProd) {
       })
     ]
   };
-
-  if (false) {
-    deps.forEach(function (dep) {
-      var depPath = path.resolve(node_modules_dir, dep[1]);
-      config.resolve.alias[dep[0]] = depPath;
-      config.module.noParse.push(depPath);
-    });
-  }
 
   if (mode === 'all' || mode === 'portal') {
     config.entry['widget_loader']              = ['./src/DeskPRO/Bundle/WidgetBundle/widget_loader.js'];
