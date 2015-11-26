@@ -70,10 +70,12 @@ export default class Frame extends React.Component {
   }
 
   autoFrameDimensions() {
+    const { style = {} } = this.props;
     const doc = this.getContentDocument();
+
     const $container = jQuery(doc.body.firstChild);
-    const width = $container.width();
-    const height = $container.height();
+    const width = style.width || $container.width();
+    const height = style.height || $container.height();
 
     const dimensions = this.state.dimensions;
     if (dimensions.width === width && dimensions.height === height) {

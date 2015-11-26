@@ -67,7 +67,8 @@ export default class WidgetApp extends React.Component {
   render() {
     const { isVisible } = this.props;
     const style = {
-      marginRight: '14px'
+      marginRight: '14px',
+      height: '100%'
     };
 
     return (
