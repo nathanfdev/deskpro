@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { ViewModeSwitcher } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { changeDisplayFieldsStatus } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/Actions/crmNavActions';
 
 @connect(state => ({
@@ -12,7 +11,7 @@ import { changeDisplayFieldsStatus } from 'DeskPRO/Bundle/AgentBundle/Modules/CR
 export class ViewSwitcherContainer extends React.Component {
   render() {
     return (
-      <ViewModeSwitcher
+      <div
         {...this.props}
         toggleView={this.toggleView.bind(this)}
         displayFieldsStatus={this.displayFieldsStatus.bind(this)}/>

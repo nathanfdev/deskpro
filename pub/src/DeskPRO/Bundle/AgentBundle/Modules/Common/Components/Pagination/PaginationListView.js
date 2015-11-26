@@ -5,6 +5,7 @@ import {PageView} from './PageView';
 export class PaginationListView extends Component {
 
   static propTypes = {
+    dropdown: PropTypes.bool,
     subContainerClassName: PropTypes.string,
     pageClassName: PropTypes.string,
     pageLinkClassName: PropTypes.string,
@@ -18,14 +19,15 @@ export class PaginationListView extends Component {
   };
 
   render() {
-    const {pageNum, pageRangeDisplayed, marginPagesDisplayed, onPageSelected, currentPage, breakLabel } = this.props;
+    const {pageNum, pageRangeDisplayed, marginPagesDisplayed, onPageSelected, currentPage, breakLabel, dropdown } = this.props;
     const {subContainerClassName, pageClassName, pageLinkClassName, activeClassName } = this.props;
     const items = {};
 
     if (pageNum <= pageRangeDisplayed) {
       for (let index = 0; index < pageNum; index++) {
         items['key' + index] = (
-          <PageView onClick={onPageSelected.bind(null, index)}
+          <PageView onClick={onPageSelected}
+                    dropdown={dropdown}
                     currentPage={currentPage}
                     pageNum={pageNum}
                     pageClassName={pageClassName}
@@ -53,7 +55,8 @@ export class PaginationListView extends Component {
         page = index + 1;
 
         const pageView = (
-          <PageView onClick={onPageSelected.bind(null, index)}
+          <PageView onClick={onPageSelected}
+                    dropdown={dropdown}
                     currentPage={currentPage}
                     pageClassName={pageClassName}
                     pageLinkClassName={pageLinkClassName}
