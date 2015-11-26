@@ -26,7 +26,7 @@ export default class WidgetApp {
 
     const pageDoc = (parent && parent.document) ? parent.document : null;
     if (!pageDoc) {
-      console.error("No parent document");
+      console.error('No parent document');
       return;
     }
 
@@ -50,7 +50,7 @@ export default class WidgetApp {
     // the DOM is on a parent frame and the JS/state is on this page. Cool!
 
     const dpWidgetContainer = pageDoc.createElement('div');
-    dpWidgetContainer.id = "dp_widget_container";
+    dpWidgetContainer.id = 'dp_widget_container';
     dpWidgetContainer.style.display = 'block';
     dpWidgetContainer.style.width = '1px';
     dpWidgetContainer.style.height = '1px';

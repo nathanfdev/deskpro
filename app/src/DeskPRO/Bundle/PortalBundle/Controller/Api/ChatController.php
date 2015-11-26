@@ -42,6 +42,17 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class ChatController extends BaseController
 {
     /**
+     * @Route("/portal/api/chat/create", name="portal_api_chat_create")
+     * @Method({"POST"})
+     *
+     * @return JsonResponse
+     */
+    public function createNewChatAction()
+    {
+        return new JsonResponse([]);
+    }
+
+    /**
      * @Route("/portal/api/chat/online", name="portal_api_chat_online")
      * @Method({"GET"})
      *

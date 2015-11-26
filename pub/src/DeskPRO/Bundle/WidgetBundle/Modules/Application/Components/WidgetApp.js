@@ -4,6 +4,7 @@ import Frame from 'Ampliflux/common/components/Frame';
 import { Widget, WidgetHeader, WidgetBody } from './Widget/index';
 import {
   ChatApp,
+  ChatBeginContainer,
   ChatBeginSimple,
   ChatBeginConversation,
   ChatBeginForm,
@@ -41,7 +42,7 @@ export default class WidgetAppBody extends React.Component {
           <Router>
             <Redirect from="/" to="chat"/>
             <Route path="chat" component={ChatApp}>
-              <Route path="begin">
+              <Route path="begin" component={ChatBeginContainer}>
                 <Route name="chat_begin_simple" path="simple" component={ChatBeginSimple} />
                 <Route name="chat_begin_conversation" path="conversation" component={ChatBeginConversation} />
                 <Route name="chat_begin_form" path="form" component={ChatBeginForm} />

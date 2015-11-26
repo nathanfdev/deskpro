@@ -1,16 +1,23 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { Header } from './Header';
 import { UserInfoForm } from './UserInfoForm';
 import { Checkbox } from './Checkbox';
 
 export class ChatBeginConversation extends React.Component {
 
+  static propTypes = {
+    name: PropTypes.string,
+    email: PropTypes.string,
+    hiddenEmail: PropTypes.bool,
+    onChangeName: PropTypes.func,
+    onChangeEmail: PropTypes.func,
+    onToggleHiddenEmail: PropTypes.func,
+    onSubmit: PropTypes.func
+  };
+
   constructor(props) {
     super(props);
     this.state = {
-      name: '',
-      email: '',
-      hiddenEmail: false,
       step: 'name'
     };
   }
@@ -21,35 +28,17 @@ export class ChatBeginConversation extends React.Component {
     });
   };
 
-  onChangeName = event => {
-    this.setState({
-      name: event.target.value
-    });
-  };
-
-  onChangeEmail = event => {
-    this.setState({
-      email: event.target.value
-    });
-  };
-
-  onToggleHiddenEmail = () => {
-    this.setState({
-      hiddenEmail: !this.state.hiddenEmail
-    });
-  };
-
-  onSubmit = () => {
-    console.log('submit form');
-  };
-
   renderNameForm() {
+    const { name, onChangeName } = this.props;
+
     return (
-      <UserInfoForm title="Just so we know lorel ipsum, what's your name?" onSubmit={() => this.onChangeStep('email')}>
+      <UserInfoForm title="Just so we know lorel ipsum, what's your name?"
+                    onSubmit={() => this.onChangeStep('email')}>
+
         <input type="text"
                placeholder="First & last name"
-               value={this.state.name}
-               onChange={this.onChangeName} />
+               value={name}
+               onChange={onChangeName} />
 
         <input type="submit" value="Go" />
       </UserInfoForm>
@@ -57,15 +46,20 @@ export class ChatBeginConversation extends React.Component {
   }
 
   renderEmailForm() {
+    const { email, hiddenEmail } = this.props;
+    const { onChangeEmail, onToggleHiddenEmail, onSubmit } = this.props;
+
     return (
-      <UserInfoForm title="What's your email address so we can lorel ipsum?" onSubmit={this.onSubmit}>
+      <UserInfoForm title="What's your email address so we can lorel ipsum?"
+                    onSubmit={onSubmit}>
+
         <input type="text"
                placeholder="email@example.com"
-               value={this.state.email}
-               onChange={this.onChangeEmail} />
+               value={email}
+               onChange={onChangeEmail} />
 
         <input type="submit" value="Go" />
-        <Checkbox value={this.state.hiddenEmail} onToggle={this.onToggleHiddenEmail} />
+        <Checkbox value={hiddenEmail} onToggle={onToggleHiddenEmail} />
       </UserInfoForm>
     );
   }
