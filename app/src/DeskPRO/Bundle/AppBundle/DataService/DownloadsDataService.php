@@ -34,7 +34,7 @@ namespace DeskPRO\Bundle\AppBundle\DataService;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
 use Doctrine\ORM\EntityManager;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -48,11 +48,11 @@ class DownloadsDataService extends AbstractDataService
     protected $em;
 
     /**
-     * @var PortalPermissionsManager
+     * @var PermissionsManager
      */
     protected $permissions_manager;
 
-    public function __construct(EntityManager $em, PortalPermissionsManager $permissions_manager)
+    public function __construct(EntityManager $em, PermissionsManager $permissions_manager)
     {
         $this->em                  = $em;
         $this->permissions_manager = $permissions_manager;
@@ -98,7 +98,7 @@ class DownloadsDataService extends AbstractDataService
                     ->where('d.status = :status')->setParameter('status', Download::STATUS_PUBLISHED)
                     ->orderBy('d.id', 'DESC');
 
-                $allowed_ids = $permissions_manager->getPermissionsBagForPerson($person)->getAllowedDownloadCategories();
+                $allowed_ids = $permissions_manager->getPortalPermissionsBag($person)->getAllowedDownloadCategories();
                 if ($category) {
                     // find allowed ids
                     $cat_ids = $category->getTreeIds(true);
@@ -154,7 +154,7 @@ class DownloadsDataService extends AbstractDataService
                 $person,
             ),
             function () use ($that, $category, $person) {
-                $allowed_ids = $that->permissions_manager->getPermissionsBagForPerson(
+                $allowed_ids = $that->permissions_manager->getPortalPermissionsBag(
                     $person
                 )->getAllowedDownloadCategories();
 

@@ -5,6 +5,17 @@ services:
     # For specific security implmentation details, see security.yml in the kernel bundles.
     # PortalBundle/ApiBundle/etc.
 
+    ###
+    ### Permissions (new permissions services)
+    ###
+
+    permissions_manager:
+        class: DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager
+        arguments: [@portal_permissions_manager, @agent_permissions_manager]
+
+    agent_permissions_manager:
+        class: DeskPRO\Bundle\AppBundle\Security\Permissions\Agent\AgentPermissionsManager
+
     portal_permissions_manager:
         class: DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager
         arguments:
@@ -21,6 +32,11 @@ services:
     portal_usergroup_decider:
         class: DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalUsergroupDecider
         arguments: [@doctrine.orm.default_entity_manager]
+
+
+    ###
+    ### Security Services
+    ###
 
     dp_person_user_provider:
         class: DeskPRO\Bundle\AppBundle\Security\DpPersonUserProvider

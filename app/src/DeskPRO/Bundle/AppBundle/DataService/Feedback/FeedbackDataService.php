@@ -39,7 +39,7 @@ use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\CriteriaInterface;
 use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
-use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
 use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
 use Doctrine\ORM\Query\QueryException;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -53,11 +53,11 @@ class FeedbackDataService extends AbstractDataService
     protected $em;
 
     /**
-     * @var PortalPermissionsManager
+     * @var PermissionsManager
      */
     protected $permissions_manager;
 
-    public function __construct(EntityManager $em, PortalPermissionsManager $permissions_manager)
+    public function __construct(EntityManager $em, PermissionsManager $permissions_manager)
     {
         parent::__construct($em);
         $this->permissions_manager = $permissions_manager;
@@ -105,7 +105,7 @@ class FeedbackDataService extends AbstractDataService
 
                 // we have to filter the user's requested types with what they
                 // are allowed to access.
-                $permissions_bag = $permissions_manager->getPermissionsBagForPerson($person);
+                $permissions_bag = $permissions_manager->getPortalPermissionsBag($person);
                 $allowed_types = $permissions_bag->getAllowedFeedbackCategoryIds();
                 $requested_types = $filter->getTypes();
                 $types = array();
@@ -242,7 +242,7 @@ class FeedbackDataService extends AbstractDataService
      */
     public function getFeedbackCategoriesForPerson(Person $person)
     {
-        $permissions_bag = $this->permissions_manager->getPermissionsBagForPerson($person);
+        $permissions_bag = $this->permissions_manager->getPortalPermissionsBag($person);
 
         return $this->getFeedbackCategoryRepo()->findBy(
             array(
