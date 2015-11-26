@@ -71,7 +71,7 @@ export default class WidgetApp extends React.Component {
     };
 
     return (
-      <Frame ref="frame" id="dp_widget_app" style={style} isVisible={isVisible}>
+      <Frame ref="frame" style={style} isVisible={isVisible}>
         <WidgetAppBody onResize={() => this.refs.frame && this.refs.frame.autoFrameDimensions()} />
       </Frame>
     );
