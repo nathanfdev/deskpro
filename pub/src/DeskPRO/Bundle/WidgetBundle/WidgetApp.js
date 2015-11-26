@@ -11,7 +11,7 @@ import jQuery from 'jquery';
 
 export default class WidgetApp {
   run() {
-    this.start();
+    jQuery(document).on('ready', () => this.start());
   }
 
   start() {
