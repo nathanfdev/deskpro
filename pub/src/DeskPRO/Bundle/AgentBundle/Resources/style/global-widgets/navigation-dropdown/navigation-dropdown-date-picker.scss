@@ -13,7 +13,7 @@ $cell-width: 40px;
   .dpw-date-picker-left, .dpw-date-picker-right {// Two containers for calendar + the buttons above them
     float: left;
     width: 290px;
-    margin: 0px 0px 5px 5px;
+    margin: 0 0 5px 5px;
   }
 
   .dpw-date-picker-calendar {// The actual table
@@ -40,7 +40,7 @@ $cell-width: 40px;
       text-transform: uppercase;
       color: #bdbdbd;
 
-      td + td { border-right: 0px; }
+      td + td { border-right: 0; }
 
       td {
         height: 30px;
@@ -179,7 +179,7 @@ $cell-width: 40px;
 .dpw-date-picker-custom-date-and-time {
   @include deskpro-clearfix();
   width: 100%;
-  padding: 5px 0px;
+  padding: 5px 0;
 
   .dpw-date-picker-custom-date, .dpw-date-picker-custom-time {
     border: 1px solid #ececec;
@@ -200,7 +200,7 @@ $cell-width: 40px;
 
   .dpw-date-picker-custom-date {
     width: 98px;//+2px with borders
-    padding-right: 0px;
+    padding-right: 0;
     float: left;
     cursor: pointer;
     &:hover { border: 1px solid #e1e9f0; }
@@ -214,10 +214,10 @@ $cell-width: 40px;
   }
 
   [type="text"].text-entry-date {
-    border: 0px;
+    border: 0;
     color: inherit;
     font-weight: inherit;
-    padding: 0px;
+    padding: 0;
     font-size: 10px;
     line-height: 1em;
     display: inline-block;

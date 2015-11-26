@@ -11,14 +11,14 @@ $border-color: #d4d4d4;
   }
 
   .divider {
-    border: 0px !important;
+    border: 0 !important;
     background: red;
     position: relative;
     top: -1px;
 
     > div {
       background: $border-color;
-      border: 0px;
+      border: 0;
       height: 1px;
       width: 100%;
       display: block;
@@ -68,7 +68,7 @@ $border-color: #d4d4d4;
     border-left: 1px solid $hover-color;
     border-right: 1px solid $hover-color;
     border-bottom: 1px solid $hover-color;
-    border-top: 0px;
+    border-top: 0;
     color: #fff;
     position: relative;
     z-index: 998;

@@ -1,14 +1,4 @@
 @import "normalize.css";
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-}
-
-* {
-  box-sizing: border-box;
-}
 
 @import "raw/styles";
 @import "include";
@@ -19,6 +9,6 @@ html, body {
 
 @import "chrome/positioning";
 @import "chrome/tabpane";
-@import "feedback/cards";
+@import "cards/_index";
 
 @import "legacy-styles";
