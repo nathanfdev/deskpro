@@ -2438,6 +2438,12 @@ class TicketController extends AbstractController
             if (!$actions_collection->applyCheckPermission($ticket, $this->person)) {
                 $permission_errors = true;
             } else {
+                $reply_action = null;
+                if ($actions_collection->hasActionType('Reply')) {
+                    $reply_action = $actions_collection->getActionType('Reply');
+                    $actions_collection->removeActionType('Reply');
+                }
+
                 $actions_collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
 
                 $newticket = new \Application\AgentBundle\Form\Model\NewTicket($this->em, $this->person);
@@ -2461,6 +2467,36 @@ class TicketController extends AbstractController
                 $tm->markAsManaged($ticket);
                 $context = $tm->createAgentExecutorContext($this->person, 'update', 'web');
                 $tm->saveTicket($ticket, $context);
+
+                if ($reply_action) {
+                    $actions_collection = new ActionsCollection();
+                    $actions_collection->add($reply_action);
+
+                    $actions_collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
+
+                    $newticket = new \Application\AgentBundle\Form\Model\NewTicket($this->em, $this->person);
+                    $newticket->setValuesFromTicket($ticket);
+                    $newticket->status = $ticket->status;
+
+                    $validator = new NewTicketValidator();
+                    $layout    = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);
+                    $layout    = LayoutDisplay::createFromLayout($layout, LayoutDisplay::EDIT_TICKET, $newticket->getMockTicket());
+                    $validator->setLayout($layout);
+
+                    if (!$validator->isValid($newticket)) {
+                        $free = array();
+                        foreach ($validator->getErrorsInfo() as $info) {
+                            $free[] = htmlspecialchars($info['message']);
+                        }
+                        throw new ValidatorException(implode('|', $free));
+                    }
+
+                    $tm = $this->container->getTicketManager();
+                    $tm->markAsManaged($ticket);
+                    $context = $tm->createAgentExecutorContext($this->person, 'newreply', 'web');
+                    $tm->saveTicket($ticket, $context);
+                }
+
                 $this->db->commit();
             }
         } catch (\Exception $e) {
