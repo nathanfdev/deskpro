@@ -33,16 +33,11 @@
       padding-left: 10px;
       padding-right: 10px;
       position: absolute;
-      right: 0px;
+      right: 0;
     }
   }
 
-
-
-
 }
-
-
 
 // Generic dropdown styles
 
@@ -64,11 +59,13 @@ $secondary-surface-border: #d5d6d7;
 
   position: absolute;
   top: 35px;
-  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   font-size: 0.9em;
   text-align: left;
 
-  header, footer { @include clearfix; }
+  header, footer {
+    @include clearfix;
+  }
 
   header {
     background: $secondary-surface;
@@ -113,8 +110,10 @@ $secondary-surface-border: #d5d6d7;
 
       .minimize {
         @extend .close;
-        padding-right: 0px;
-        i { top: 1px; }
+        padding-right: 0;
+        i {
+          top: 1px;
+        }
       }
 
       a.department {
@@ -176,7 +175,7 @@ $secondary-surface-border: #d5d6d7;
   }
 
   h1, h2 {
-    margin-bottom: 0px;
+    margin-bottom: 0;
     color: #333;
   }
 }
@@ -214,20 +213,17 @@ ul.dropdown-tabs {
   }
 }
 
-
-
-
 .user-details-table {
   border: 1px solid #dcddde;
   border-radius: 2px;
   background: #fff;
   color: #838383;
   margin: 10px;
-  margin-top: 0px;
+  margin-top: 0;
 
   > div {
     border-bottom: 1px solid #dcddde;
-    padding: 0px 10px;
+    padding: 0 10px;
     position: relative;
 
     &:last-child {
@@ -303,10 +299,9 @@ ul.dropdown-tabs {
     img {
       position: relative;
       top: 1px;
-      margin: 0px 2px;
+      margin: 0 2px;
     }
   }
-
 
   .details-row {
     margin-top: 10px;
@@ -322,13 +317,13 @@ ul.dropdown-tabs {
   .chat-message-row {
     @extend .details-row;
     position: relative;
-    margin: 10px 0px;
+    margin: 10px 0;
     margin-top: 5px;
-    padding-right: 0px;
+    padding-right: 0;
     min-height: 28px;
 
     .chat-avatar {
-      margin-left: 0px;
+      margin-left: 0;
       margin-right: 5px;
     }
 
@@ -342,7 +337,7 @@ ul.dropdown-tabs {
       }
 
       p {
-        margin-bottom: 0px;
+        margin-bottom: 0;
         line-height: 1.3em;
       }
     }
@@ -383,29 +378,15 @@ ul.dropdown-tabs {
   }
 }
 
-
-
 .typing-cursor {
   display: inline-block;
   width: 2px;
   height: 1.3em;
   margin-top: -3px;
   background: #d0d0d0;
-  display: inline-block;
   vertical-align: middle;
   margin-left: 3px;
 }
-
-
-
-
-
-
-
-
-
-
-
 
 .emoticon {
   display: inline-block;
@@ -562,13 +543,6 @@ ul.dropdown-tabs {
   background-position: -396px 0;
 }
 
-
-
-
-
-
-
-
 .sidebar-dropdown-content {
   display: none;
   @extend .dropdown;
@@ -577,14 +551,16 @@ ul.dropdown-tabs {
   left: 140px;
   top: 120px;
   background: #f5f6f7;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   z-index: 999;
 
   header {
     color: #a8a8a9;
     padding: 10px;
     font-size: 1.1em;
-    strong { color: #fff; }
+    strong {
+      color: #fff;
+    }
   }
 
   .dropdown-content {
@@ -593,7 +569,7 @@ ul.dropdown-tabs {
 
   ul {
     @extend %flat-list;
-    margin: 0px;
+    margin: 0;
     width: 160px;
 
     li {
@@ -606,7 +582,7 @@ ul.dropdown-tabs {
       text-align: left;
       line-height: 1em;
       padding: 10px;
-      top: 0px;
+      top: 0;
       text-decoration: none;
     }
 
@@ -638,7 +614,10 @@ ul.dropdown-tabs {
       margin-bottom: 10px;
       font-size: 1em;
 
-      i { float: right; margin-right: 10px; }
+      i {
+        float: right;
+        margin-right: 10px;
+      }
 
       @include placeholder {
         color: #5b5e68;
@@ -647,12 +626,15 @@ ul.dropdown-tabs {
       }
     }
 
-    .select-dropdown { border-bottom: 2px solid $global-border; text-decoration: none; }
+    .select-dropdown {
+      border-bottom: 2px solid $global-border;
+      text-decoration: none;
+    }
 
     input[type="button"], input[type="submit"], .button, button {
       background: #4681b2;
       padding: 10px;
-      border: 0px;
+      border: 0;
       color: #fff;
       font-size: 1em;
     }
@@ -663,15 +645,15 @@ ul.dropdown-tabs {
       font-size: 0.85em;
       font-weight: 700;
 
-      a { opacity: 0.5; }
-      a:hover { opacity: 1; }
+      a {
+        opacity: 0.5;
+      }
+      a:hover {
+        opacity: 1;
+      }
     }
   }
 }
-
-
-
-
 
 // .minimized {
 //   z-index: 999;

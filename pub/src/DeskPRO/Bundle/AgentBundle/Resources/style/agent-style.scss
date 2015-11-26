@@ -1,3 +1,16 @@
+// @ToDo Need we move below variable set into variables.scss?
+$fa-font-path: "../../../../../../node_modules/font-awesome/fonts";
+$flagsImagePath: "../../../../../../node_modules/intl-tel-input/build/img/";
+$tablet: new-breakpoint(max-width 960px 6);
+$mobile: new-breakpoint(max-width 640px 6);
+
+@import 'variables';
+@import "../../../../../../node_modules/bourbon/app/assets/stylesheets/bourbon";
+@import "../../../../../../node_modules/bourbon-neat/app/assets/stylesheets/neat";
+@import "../../../../../../node_modules/font-awesome/scss/font-awesome";
+@import "../../../../../../node_modules/intl-tel-input/src/css/intlTelInput";
+@import "../../../../../../node_modules/cropper/src/scss/cropper";
+
 @import "normalize.css";
 
 @import "raw/styles";
@@ -12,3 +25,21 @@
 @import "cards/_index";
 
 @import "legacy-styles";
+
+
+body {
+  font-family: $font-stack;
+}
+
+a {
+  color: $link-color;
+}
+
+// So we don't have to repeat it every time we want to reposition an icon
+.fa {
+  position: relative;
+}
+
+.hidden {
+  display: none;
+}
