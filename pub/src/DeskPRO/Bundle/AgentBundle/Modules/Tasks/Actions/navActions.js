@@ -1,5 +1,4 @@
 import { createAction } from 'Ampliflux';
-import * as Tasks from 'DeskPRO/Bundle/AgentBundle/Services/Api/Tasks';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 
