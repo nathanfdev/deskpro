@@ -58,13 +58,13 @@ services:
 
   portal_cache.template_cache_warmer:
     class: DeskPRO\Bundle\PortalBundle\CacheWarmer\ThemeTemplateCacheWarmer
-    arguments: [@theme_resolver]
+    arguments: [@theme_resolver, @service_container ]
     tags:
-      - { name: 'kernel.cache_warmer' }
+      - { name: 'kernel.cache_warmer', priority: -200 }
 
 
   portal_cache.theme_cache_warmer:
     class: DeskPRO\Bundle\PortalBundle\CacheWarmer\ThemeRepositoryCacheWarmer
     arguments: [@theme_repository]
     tags:
-      - { name: 'kernel.cache_warmer' }
+      - { name: 'kernel.cache_warmer', priority: -300 }

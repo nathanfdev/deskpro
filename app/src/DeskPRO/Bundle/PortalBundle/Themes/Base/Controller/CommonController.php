@@ -95,7 +95,7 @@ class CommonController extends AbstractController
                 'brand'    => $brand,
                 'id'       => $brand->getId(),
                 'name'     => $brand->getName(),
-                'theme_id' => $brand->getThemeId(),
+                'theme_id' => $brand->getThemeSet()->getThemeId(),
             ];
         }
 

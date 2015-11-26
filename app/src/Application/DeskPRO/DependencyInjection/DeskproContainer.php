@@ -33,6 +33,7 @@
  */
 namespace Application\DeskPRO\DependencyInjection;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\App\AgentAppPermissions;
 use Orb\Util\Util;
 use Symfony\Component\DependencyInjection\Container;
@@ -740,6 +741,10 @@ class DeskproContainer extends Container
      */
     public function getSetting($name, $default = null)
     {
+        if (!App::$container) {
+            App::$container = $this;
+        }
+
         $settings = $this->get('deskpro.core.settings');
 
         return $settings->get($name, $default);

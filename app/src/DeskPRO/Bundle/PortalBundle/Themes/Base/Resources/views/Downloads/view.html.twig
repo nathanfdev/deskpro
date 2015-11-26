@@ -22,7 +22,7 @@
                     <img style="max-width: 100%;"
                          src="{{ portal_path(file, 'serve') }}"
                          alt="{{ file.title }}"/><br>
-                {% else if file.blob %}
+                {% elseif file.blob %}
                     {{ content_icon(file) }}
                 {% endif %}
                 {% if file.blob %}[{{ file.blob.content_type }}]{% endif %}

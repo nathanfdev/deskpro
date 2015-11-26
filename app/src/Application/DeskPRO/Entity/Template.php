@@ -119,6 +119,11 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
         return $this->template_code;
     }
 
+    public function getTemplateCompiled()
+    {
+        return $this->template_compiled;
+    }
+
     public function setTemplate($code, $compiled)
     {
         $this['template_code']     = $code;

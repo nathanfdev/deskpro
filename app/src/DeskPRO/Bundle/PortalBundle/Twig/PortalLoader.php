@@ -35,7 +35,7 @@ use Application\DeskPRO\EntityRepository\Template;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Twig_Error_Loader;
 
-class PortalLoader implements \Twig_LoaderInterface
+class PortalLoader implements \Twig_LoaderInterface, \Twig_ExistsLoaderInterface
 {
     /**
      * @var \DeskPRO\Bundle\PortalBundle\Brand\BrandStack
@@ -60,6 +60,25 @@ class PortalLoader implements \Twig_LoaderInterface
     }
 
     /**
+     * Check if we have the source code of a template, given its name.
+     *
+     * @param string $name The name of the template to check if we can load
+     *
+     * @return bool If the template source code is handled by this loader or not
+     */
+    public function exists($name)
+    {
+        // we only support Theme: template names in this loader. All others will be loaded by the normal Twig process.
+        $k = strpos($name, 'Theme:') === 0 || strpos($name, 'ThemeParent:') === 0 || strpos($name, 'ThemeTagTemplate:') === 0;
+
+        if (!$k) {
+            xdebug_break();
+        }
+
+        return $k;
+    }
+
+    /**
      * Gets the source code of a template, given its name.
      *
      * @param string $name The name of the template to load
@@ -70,11 +89,10 @@ class PortalLoader implements \Twig_LoaderInterface
      */
     public function getSource($name)
     {
-        // if a db template crashes, we will try to fetch again, so make sure it isn't marked as crashed first
-        //if (!in_array($name, $this->crashed_templates) && $template = $this->getDbTemplate($name)) {
-        //    return $template->getTemplateCode();
-        //}
-
+        // we do nothing with db templates here, they are dealt with in the twig env itself
+        if ($name === 'Theme:Portal:Header/top_bar.html.twig') {
+            xdebug_break();
+        }
         if ($path = $this->getBrandContainer()->resolveTemplatePath((string) $name)) {
             return file_get_contents($path);
         }
@@ -95,8 +113,9 @@ class PortalLoader implements \Twig_LoaderInterface
     {
         $brand = $this->getBrandContainer();
 
-        // TODO: factor in the "edit_theme_id" hierarchy here
-        return $brand->getBrand()->getThemeSet()->getId().$name;
+        // NOT the theme_set id. The actual filesystem theme id.
+
+        return $brand->getBrand()->getThemeSet()->getThemeId().$name;
     }
 
     /**
@@ -111,14 +130,11 @@ class PortalLoader implements \Twig_LoaderInterface
      */
     public function isFresh($name, $time)
     {
-        // If a DB template exists, check its update_at value
+        // If a DB template exists, it should not be fresh
         if ($template = $this->getDbTemplate($name)) {
             false;
         }
 
-        // TODO: Possible flaw
-        // if you have a template in DB and it is deleted, the cached version will still appear due to the below
-        // solution is to mark a template as deleted=1 and have the loader ignore deleted=1 templates.
         return filemtime($this->getBrandContainer()->resolveTemplatePath((string) $name)) <= $time;
     }
 

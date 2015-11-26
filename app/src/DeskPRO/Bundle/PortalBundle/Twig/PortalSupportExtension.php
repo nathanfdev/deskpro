@@ -548,10 +548,7 @@ class PortalSupportExtension extends \Twig_Extension
      */
     public function getTagIncludeTemplate($tag_name)
     {
-        $theme    = $this->brand_stack->getActive()->getTheme();
-        $resolver = $this->container->get('theme_resolver');
-
-        return $resolver->templatePath($theme, 'ThemeTagTemplate::'.$tag_name.'.html.twig');
+        return 'ThemeTagTemplate::'.$tag_name.'.html.twig';
     }
 
     /**
