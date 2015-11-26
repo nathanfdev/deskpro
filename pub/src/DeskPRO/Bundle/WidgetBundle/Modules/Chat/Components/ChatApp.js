@@ -11,7 +11,7 @@ export class ChatApp extends React.Component {
     const { children } = this.props;
 
     return (
-      <div className="dpdesignportal mobile">
+      <div>
         Chat:
 
         <Link to="/chat/begin/simple">/chat/begin/simple</Link><br />

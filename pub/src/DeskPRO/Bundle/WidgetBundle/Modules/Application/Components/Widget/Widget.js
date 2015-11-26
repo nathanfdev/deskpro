@@ -8,7 +8,7 @@ export class Widget extends React.Component {
 
   render() {
     return (
-      <div className="widget-container">
+      <div className="widget-container dpdesignportal mobile">
         {this.props.children}
       </div>
     );

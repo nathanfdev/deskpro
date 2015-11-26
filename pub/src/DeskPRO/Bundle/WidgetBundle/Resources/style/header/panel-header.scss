@@ -51,6 +51,15 @@
   .dpdesignportal-logo {
     float: left;
     margin-right: 5px;
+    display: inline-block;
+
+    &.sample-logo {
+      width: 30px;
+      height: 30px;
+      margin: 0 auto;
+      background: url("../img/sample-logo.png") center;
+      background-size: 30px 30px;
+    }
   }
 
   img {
