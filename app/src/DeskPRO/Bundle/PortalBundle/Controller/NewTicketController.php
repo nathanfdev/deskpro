@@ -162,16 +162,20 @@ class NewTicketController extends AbstractController
         //
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildNewTicket();
 
+        // show ticket deflection? (suggestions)
+        $show_ticket_suggestions = (bool) $this->getBrandSetting('core.show_ticket_suggestions');
+
         return $this->renderThemeView(
             'Theme:NewTicket:new_ticket.html.twig', array(
-                'form'              => $form->createView(),
-                'form_full'         => $form_full->createView(),
-                'ticket_display_js' => $ticket_display_js,
-                'rerendering'       => $rerendering,
-                'rerendering_saved' => $rerendering_saved,
-                'breadcrumbs'       => $breadcrumbs,
-                'page_title'        => $this->createPageTitle()->newticket(),
-                'form_errors'       => $form->isSubmitted() ? $form->getErrors() : [],
+                'form'                    => $form->createView(),
+                'form_full'               => $form_full->createView(),
+                'ticket_display_js'       => $ticket_display_js,
+                'rerendering'             => $rerendering,
+                'rerendering_saved'       => $rerendering_saved,
+                'breadcrumbs'             => $breadcrumbs,
+                'page_title'              => $this->createPageTitle()->newticket(),
+                'form_errors'             => $form->isSubmitted() ? $form->getErrors() : [],
+                'show_ticket_suggestions' => $show_ticket_suggestions,
             )
         );
     }

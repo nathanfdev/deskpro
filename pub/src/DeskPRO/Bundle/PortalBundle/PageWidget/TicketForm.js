@@ -91,9 +91,12 @@ export default class TicketForm extends PageWidget {
       onInit: () => {
         updateLastDepId();
 
-        let $subject = $('#ticket_subject');
-        let $rElement = $('<div class="dp-react-widget"></div>').insertAfter($subject);
-        ReactDOM.render(React.createElement(NewTicketSuggestions, {input: $subject}), $rElement.get(0));
+        // only render ticket deflection if a .dpx-with-ticket-deflection is present on the form
+        if ($formEl.hasClass('dpx-with-ticket-deflection')) {
+          let $subject = $('#ticket_subject');
+          let $rElement = $('<div class="dp-react-widget"></div>').insertAfter($subject);
+          ReactDOM.render(React.createElement(NewTicketSuggestions, {input: $subject}), $rElement.get(0));
+        }
       },
       fieldFilter: (fields, currentFields, dynForm) => {
         if (!window.DESKPRO_TICKET_DISPLAY) {
