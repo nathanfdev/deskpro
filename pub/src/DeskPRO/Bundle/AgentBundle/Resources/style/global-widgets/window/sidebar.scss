@@ -1,6 +1,21 @@
 // Sidebar contains all the styles for the filter sidebar on the left.
 //
 
+// Main sidebar
+.sidebar-wrapper {
+  float: left;
+  width: $sidebar-width;
+  height: 100%;
+  background: #cecece;
+  border-right: 1px solid #e2e4e5;
+  position: relative;
+  z-index: 209;
+  transition: all 0.25s ease;
+  // Hide the expand controls when the sidebar is visible
+  .collapse-button, .collapse-controls {
+    display: none;
+  }
+}
 
 // Sidebar title with the page title, collapse icon etc
 .sidebar-title {

@@ -12,7 +12,7 @@
 @import 'misc';
 @import 'app-bar';
 // Dark background left sidebar
-@import 'sidebar';
+
 // Filters etc
 @import 'sidebar-urgent-sliders';
 @import 'sidebar-hover-interactions';
@@ -20,18 +20,17 @@
 @import 'sidebar-flags';
 @import 'sidebar-collapsed';
 @import 'sidebar-apps';
-@import 'sidebar-titles';
 //@import 'control-bar'; // Filters, order by and so on in ListFrame
 
-@import 'top-bar';
+//@import 'top-bar';
 //Basic structure, logo
 @import 'top-bar-search-form';
 // Search form (look in live-search.scss for the live results)
-@import 'top-bar-user-options';
+//@import 'top-bar-user-options';
 // User options button & dropdown
-@import 'top-bar-notifications';
+//@import 'top-bar-notifications';
 // -
-@import 'top-bar-agent-ims';
+//@import 'top-bar-agent-ims';
 // Ims (avatar styles in the main top-bar.scss)
 @import 'top-bar-switches';
 // All the switches
@@ -146,7 +145,6 @@
 //
 
 $app-width: 55px;
-$sidebar-width: 220px;
 $report-list-width: 555px;
 $content-width: $app-width + $sidebar-width;
 
@@ -156,22 +154,6 @@ $content-width: $app-width + $sidebar-width;
   background: #2b2f34;
   position: relative;
   z-index: 299;
-}
-
-// Main sidebar
-.sidebar-wrapper {
-  float: left;
-  width: $sidebar-width;
-  height: 100%;
-  background: #cecece;
-  border-right: 1px solid #e2e4e5;
-  position: relative;
-  z-index: 209;
-  transition: all 0.25s ease;
-  // Hide the expand controls when the sidebar is visible
-  .collapse-button, .collapse-controls {
-    display: none;
-  }
 }
 
 .content-wrapper {
