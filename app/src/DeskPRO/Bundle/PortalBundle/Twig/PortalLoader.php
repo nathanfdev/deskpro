@@ -105,7 +105,7 @@ class PortalLoader implements \Twig_LoaderInterface, \Twig_ExistsLoaderInterface
 
         // NOT the theme_set id. The actual filesystem theme id.
 
-        return $brand->getBrand()->getThemeSet()->getThemeId().$name;
+        return $brand->getActiveThemeSet()->getThemeId().$name;
     }
 
     /**

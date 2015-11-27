@@ -56,7 +56,7 @@ class PortalController extends AbstractController
     public function tempAction(Request $request)
     {
         $t_repo        = $this->getRepo('DeskPRO:Template');
-        $themeset      = $this->getBrandContainer()->getBrand()->getThemeSet();
+        $themeset      = $this->getBrandContainer()->getActiveThemeSet();
         $template_name = $request->get('template_name');
 
         if ($request->getMethod() === 'POST') {

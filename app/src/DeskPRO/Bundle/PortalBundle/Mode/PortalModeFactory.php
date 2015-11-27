@@ -32,28 +32,30 @@ use Symfony\Component\Validator\Constraints\Url;
 
 class PortalModeFactory
 {
-    const REGEX_ADMIN = '#^/admin\-mode(/{1}.*|$)$#';
-    const REGEX_BRAND = '#^/brand-([0-9]+?)(/{1}.*|$)$#';
-    const REGEX_EMBED = '#^/embed-([0-9]+?)(/{1}.*|$)$#';
+    const REGEX_ADMIN         = '#^/admin\-mode(/{1}.*|$)$#';
+    const REGEX_BRAND         = '#^/brand-([0-9]+?)(/{1}.*|$)$#';
+    const REGEX_ADMIN_PREVIEW = '#^/admin\-preview(/{1}.*|$)$#';
 
     public function createMode($path)
     {
         $mode = new PortalMode($path);
 
-        if (preg_match(self::REGEX_ADMIN, $path, $matches)) {
-            $mode->setAdmin();
+        if (preg_match(self::REGEX_ADMIN_PREVIEW, $path, $matches)) {
+            $mode->setAdminPreview();
             $mode->setInternalPath(strlen($matches[1]) > 0 ? $matches[1] : '/');
-            $mode->setModePath('/admin-mode');
+            $mode->setModePath('/admin-preview');
         } elseif (preg_match(self::REGEX_BRAND, $path, $matches)) {
+            // this will be deleted. brand won't be a mode. brand will be detected on the request listener
+            // because it will depend on hostname. the brand stack is a separate thing.
             $brand_id = (int) $matches[1];
             $mode->setBrand($brand_id);
             $mode->setInternalPath(strlen($matches[2]) > 0 ? $matches[2] : '/');
             $mode->setModePath(sprintf('/brand-%s', $brand_id));
-        } elseif (preg_match(self::REGEX_EMBED, $path, $matches)) {
-            $code = (int) $matches[1];
-            $mode->setEmbed($code);
-            $mode->setInternalPath(strlen($matches[2]) > 0 ? $matches[2] : '/');
-            $mode->setModePath(sprintf('/embed-%s', $code));
+        } elseif (preg_match(self::REGEX_ADMIN, $path, $matches)) {
+            // this one will likely be deleted completey, no use at the moment
+            $mode->setAdmin();
+            $mode->setInternalPath(strlen($matches[1]) > 0 ? $matches[1] : '/');
+            $mode->setModePath('/admin-mode');
         } else {
             $mode->setInternalPath($path);
         }

@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\PortalBundle\Brand;
 
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\NewSettings\SettingsBag;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver;
 
@@ -68,12 +69,23 @@ class BrandContainer
      */
     private $asset_loader;
 
-    public function __construct(Brand $brand, SettingsBag $settings, ThemeResolver $theme_resolver, BrandAssetLoader $asset_loader)
-    {
+    /**
+     * @var PortalModeStorage
+     */
+    private $mode_storage;
+
+    public function __construct(
+        Brand $brand,
+        SettingsBag $settings,
+        ThemeResolver $theme_resolver,
+        BrandAssetLoader $asset_loader,
+        PortalModeStorage $mode_storage
+    ) {
         $this->brand          = $brand;
         $this->settings       = $settings;
         $this->theme_resolver = $theme_resolver;
         $this->asset_loader   = $asset_loader;
+        $this->mode_storage   = $mode_storage;
     }
 
     /**
@@ -101,10 +113,28 @@ class BrandContainer
     public function getTheme()
     {
         if (!$this->theme) {
-            $this->theme = $this->theme_resolver->getThemeById($this->getBrand()->getThemeSet()->getThemeId());
+            $this->theme = $this->theme_resolver->getThemeById($this->getActiveThemeSet()->getThemeId());
         }
 
         return $this->theme;
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\Entity\ThemeSet
+     */
+    public function getActiveThemeSet()
+    {
+        // this depends on the mode we are in
+        $mode = $this->mode_storage->getMode();
+
+        if ($mode && $mode->isAdminPreview()) {
+            // if we end up in admin mode WITHOUT an edit theme set set, default to normal theme set
+            $theme_set = $this->getBrand()->getEditThemeSet() ?: $this->getBrand()->getThemeSet();
+        } else {
+            $theme_set = $this->getBrand()->getThemeSet();
+        }
+
+        return $theme_set;
     }
 
     /**
@@ -163,12 +193,6 @@ class BrandContainer
      */
     public function getBrandTemplateFromDb($name)
     {
-        if (false) { // switch to say if we are in admin mode
-            $theme_set = $this->getBrand()->getEditThemeSet();
-        } else {
-            $theme_set = $this->getBrand()->getThemeSet();
-        }
-
-        return $this->theme_resolver->getThemeSetTemplateFromDb($theme_set, $name);
+        return $this->theme_resolver->getThemeSetTemplateFromDb($this->getActiveThemeSet(), $name);
     }
 }
