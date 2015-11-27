@@ -32,15 +32,18 @@
 namespace DeskPRO\Bundle\PortalBundle\Themes\Standard;
 
 use DeskPRO\Bundle\PortalBundle\Theme\AbstractTheme;
+use DeskPRO\Bundle\PortalBundle\Themes\Base\BaseTheme;
 
 class StandardTheme extends AbstractTheme
 {
+    const THEME_ID = 'standard';
+
     /**
      * {@inheritdoc}
      */
     public function getId()
     {
-        return 'standard';
+        return self::THEME_ID;
     }
 
     /**
@@ -48,7 +51,7 @@ class StandardTheme extends AbstractTheme
      */
     public function getParentId()
     {
-        return 'base';
+        return BaseTheme::THEME_ID;
     }
 
     /**
