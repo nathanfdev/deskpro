@@ -125,7 +125,6 @@ class MiscController extends AbstractController
         $js[] = 'window.DESKPRO_NAME_REGISTRY.hidden_status = '.json_encode(array(
             'deleted'    => App::getTranslator()->phrase('agent.tickets.hidden_status_deleted'),
             'spam'       => App::getTranslator()->phrase('agent.tickets.hidden_status_spam'),
-            'validating' => App::getTranslator()->phrase('agent.tickets.hidden_status_validating'),
         )).';';
 
         // Common URLs

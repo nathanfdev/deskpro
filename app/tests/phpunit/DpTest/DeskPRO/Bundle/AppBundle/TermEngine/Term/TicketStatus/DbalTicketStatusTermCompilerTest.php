@@ -124,7 +124,6 @@ class DbalTicketStatusTermCompilerTest extends AbstractDbalTicketFilterTermCompi
                 'status' => array(
                     Ticket::HIDDEN_STATUS_SPAM,
                     Ticket::HIDDEN_STATUS_DELETED,
-                    Ticket::HIDDEN_STATUS_VALIDATING,
                 ),
             ),
             TermInterface::OP_NOT
@@ -139,7 +138,6 @@ class DbalTicketStatusTermCompilerTest extends AbstractDbalTicketFilterTermCompi
                 'hidden_status' => array(
                     Ticket::HIDDEN_STATUS_SPAM,
                     Ticket::HIDDEN_STATUS_DELETED,
-                    Ticket::HIDDEN_STATUS_VALIDATING,
                 ),
             )
         );

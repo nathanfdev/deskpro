@@ -157,10 +157,6 @@ class FilterData extends AbstractDefaultData
         $term = new TicketStatusTerm(['status' => [Ticket::HIDDEN_STATUS_DELETED]], TermInterface::OP_IS);
         $this->saveFilter('Deleted', $term, $filter_set);
 
-        // awaiting validation
-        $term = new TicketStatusTerm(['status' => [Ticket::HIDDEN_STATUS_VALIDATING]], TermInterface::OP_IS);
-        $this->saveFilter('Awaiting Validation', $term, $filter_set);
-
         /////////
         // save
 

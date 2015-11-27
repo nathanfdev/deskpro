@@ -26,4 +26,24 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1448630261);
+namespace Application\InstallBundle\Upgrade\Build;
+
+use Application\DeskPRO\Entity\Ticket;
+
+class Build1448630261 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('Clean up old temp and validating tickets');
+        $this->execMutateSql(
+            'UPDATE tickets SET hidden_status = ?, date_status = ? WHERE status = ? AND hidden_status IN (?, ?)',
+            array(
+                /*Ticket::HIDDEN_STATUS_DELETED*/'deleted',
+                date('Y-m-d H:i:s'),
+                /*Ticket::STATUS_HIDDEN*/'hidden',
+                /*Ticket::HIDDEN_STATUS_TEMP*/'temp',
+                /*Ticket::HIDDEN_STATUS_VALIDATING*/'validating',
+            )
+        );
+    }
+}

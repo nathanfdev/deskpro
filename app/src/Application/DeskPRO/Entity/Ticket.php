@@ -149,10 +149,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     const STATUS_ARCHIVED       = 'archived';
     const STATUS_HIDDEN         = 'hidden';
 
-    const HIDDEN_STATUS_VALIDATING = 'validating';
     const HIDDEN_STATUS_SPAM       = 'spam';
     const HIDDEN_STATUS_DELETED    = 'deleted';
-    const HIDDEN_STATUS_TEMP       = 'temp';
 
     /**#@+
      * These strings in $notify_email_name have special meanings.
@@ -2709,9 +2707,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                 $hstatus,
                 array(
                     self::HIDDEN_STATUS_DELETED,
-                    self::HIDDEN_STATUS_SPAM,
-                    self::HIDDEN_STATUS_VALIDATING,
-                    self::HIDDEN_STATUS_TEMP,
+                    self::HIDDEN_STATUS_SPAM
                 )
             )
         ) {
@@ -2810,7 +2806,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     public function getStatusCode()
     {
         if ($this->status == 'hidden') {
-            return 'hidden.'.($this->hidden_status ?: 'validating');
+            return 'hidden.'.($this->hidden_status ?: self::HIDDEN_STATUS_DELETED);
         } else {
             return $this->status;
         }
@@ -3332,8 +3328,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                 return 210;
             case self::STATUS_HIDDEN:
                 switch ($hstatus) {
-                    case self::HIDDEN_STATUS_VALIDATING:
-                        return 300;
                     case self::HIDDEN_STATUS_DELETED:
                         return 310;
                     case self::HIDDEN_STATUS_SPAM:
