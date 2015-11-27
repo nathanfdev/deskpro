@@ -130,13 +130,6 @@ class PersonController extends AbstractController
      *				type="boolean"
      *			),
      *			SWG\Parameter(
-     *				name="is_agent_confirmed",
-     *				description="Requires the person to be confirmed by an agent or not.",
-     *				paramType="query",
-     *				required=false,
-     *				type="boolean"
-     *			),
-     *			SWG\Parameter(
      *				name="label[]",
      *				description="Requires person to be have the specified label.",
      *				paramType="query",
@@ -212,7 +205,6 @@ class PersonController extends AbstractController
             'email'              => PersonSearch::TERM_EMAIL,
             'email_domain'       => PersonSearch::TERM_EMAIL_DOMAIN,
             'im'                 => PersonSearch::TERM_CONTACT_IM,
-            'is_agent_confirmed' => PersonSearch::TERM_IS_AGENT_CONFIRMED,
             'label'              => PersonSearch::TERM_LABEL,
             'name'               => PersonSearch::TERM_NAME,
             'language_id'        => PersonSearch::TERM_LANGUAGE,

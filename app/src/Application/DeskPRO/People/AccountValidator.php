@@ -127,10 +127,6 @@ class AccountValidator
                     $ticket->person_email_validating = null;
                     $ticket->person_email            = $this->email;
 
-                    if ($this->person->is_agent_confirmed) {
-                        $ticket->setStatus('awaiting_agent');
-                    }
-
                     $ticket_manager->saveTicket($ticket, $context);
                     $this->em->persist($ticket);
                     $this->em->flush();

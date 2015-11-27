@@ -343,7 +343,6 @@ class TicketListRenderer
         $data['can_agent']             = $person->can_agent;
         $data['can_admin']             = $person->can_admin;
         $data['is_confirmed']          = $person->is_confirmed;
-        $data['is_agent_confirmed']    = $person->is_agent_confirmed;
         $data['is_deleted']            = $person->is_deleted;
         $data['is_disabled']           = $person->is_disabled;
         $data['creation_system']       = $person->creation_system;

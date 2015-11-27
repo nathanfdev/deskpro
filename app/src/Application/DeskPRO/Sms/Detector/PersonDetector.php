@@ -87,10 +87,6 @@ class PersonDetector
         $from_number             = new PhoneNumber($from_number);
         $person->setPrimaryPhoneNumber($from_number);
 
-        if (App::getSetting('core.agent_validation')) {
-            $person->is_agent_confirmed = false;
-        }
-
         $this->em->persist($person);
         $this->em->persist($from_number);
         $this->em->flush();

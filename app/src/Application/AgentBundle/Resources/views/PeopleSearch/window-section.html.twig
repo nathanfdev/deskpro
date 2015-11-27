@@ -7,29 +7,6 @@
 
 	<div class="pane-content pane-content-main">
 
-		<section class="pane-section" id="people_pending_section" {% if not validating_count_agent and not validating_count %}style="display: none;"{% endif %}>
-			<header>
-				<h1>{{ phrase('agent.general.pending') }}</h1>
-			</header>
-			<article>
-				<ul class="nav-list" id="people_outline_people_list">
-					<li class="is-nav-item" id="people_nav_awaiting_agent_validation">
-						<div class="item" data-route="listpane:{{ path('agent_people_validate_list') }}">
-							<h3>{{ phrase('agent.general.awaiting_agent_validation') }}</h3>
-							<em class="counter list-counter">{{ validating_count_agent|default(0) }}</em>
-						</div>
-					</li>
-
-					<li class="is-nav-item" id="people_nav_awaiting_validation">
-						<div class="item" data-route="listpane:{{ path('agent_people_validate_list', {email_validating:1}) }}">
-							<h3>{{ phrase('agent.general.awaiting_email_validation') }}</h3>
-							<em class="counter list-counter">{{ validating_count|default(0) }}</em>
-						</div>
-					</li>
-				</ul>
-			</article>
-		</section>
-
 		{##################################}
 		{# People #}
 		{##################################}

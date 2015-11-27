@@ -393,8 +393,7 @@ class Prefs
     public function getCrmNotifyTypes($type)
     {
         return array(
-            'new_user',
-            'new_user_validate',
+            'new_user'
         );
     }
 

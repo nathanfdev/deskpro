@@ -61,7 +61,6 @@ class FirstAdminFixture extends AbstractFixture implements OrderedFixtureInterfa
         $admin->setPassword('pass');
         $admin->is_user            = true;
         $admin->is_confirmed       = true;
-        $admin->is_agent_confirmed = true;
         $admin->is_agent           = true;
         $admin->can_agent          = true;
         $admin->can_admin          = true;

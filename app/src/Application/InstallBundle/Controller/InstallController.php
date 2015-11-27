@@ -687,7 +687,6 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
             $agent->setPassword($this->getIn()->getString('admin.password'));
             $agent->is_user            = true;
             $agent->is_confirmed       = true;
-            $agent->is_agent_confirmed = true;
             $agent->is_agent           = true;
             $agent->can_agent          = true;
             $agent->can_admin          = true;

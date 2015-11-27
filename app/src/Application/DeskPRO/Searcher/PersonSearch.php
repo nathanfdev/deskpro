@@ -67,7 +67,6 @@ class PersonSearch extends SearcherAbstract
     const TERM_CONTACT_ADDRESS    = 'person_contact_address';
     const TERM_CONTACT_IM         = 'person_contact_im';
     const TERM_ALPHA              = 'alphabetical';
-    const TERM_IS_AGENT_CONFIRMED = 'is_agent_confirmed';
     const TERM_IS_CONFIRMED       = 'is_confirmed';
     const TERM_AGENT_TEAM         = 'person_agent_team';
     const TERM_AGENT_MODE         = 'agent_mode';
@@ -609,21 +608,6 @@ class PersonSearch extends SearcherAbstract
                                 $wheres[] = "$join_name.person_id IS NULL";
                                 break;
                         }
-                        break;
-
-                    case self::TERM_IS_AGENT_CONFIRMED:
-
-                        if (is_array($choice)) {
-                            $choice = array_pop($choice);
-                        }
-
-                        if ($choice) {
-                            $choice = 1;
-                        } else {
-                            $choice = 0;
-                        }
-
-                        $wheres[] = $this->_choiceMatch("$people_table.is_agent_confirmed", $op, $choice, false);
                         break;
 
                     case self::TERM_IS_CONFIRMED:

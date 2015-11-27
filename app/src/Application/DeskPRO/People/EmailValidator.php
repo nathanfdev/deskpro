@@ -169,10 +169,6 @@ class EmailValidator
                     $ticket->person_email_validating = null;
                     $ticket->person_email            = $email;
 
-                    if ($this->person->is_agent_confirmed) {
-                        $ticket->setStatus('awaiting_agent');
-                    }
-
                     $ticket_manager->saveTicket($ticket, $context);
                     $this->em->persist($ticket);
                     $this->em->flush();
@@ -233,7 +229,7 @@ class EmailValidator
 
                         $comment->validating = null;
                         if ($comment->status == 'user_validating') {
-                            if ($this->person->is_agent_confirmed && $validate_perm) {
+                            if ($validate_perm) {
                                 $comment->setStatus('visible');
                             } else {
                                 $comment->setStatus('validating');

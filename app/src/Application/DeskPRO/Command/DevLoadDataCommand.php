@@ -393,9 +393,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
                 ($agent_id, 'agent_notif.new_feedback.email', '1', X'4E3B', NULL),
                 ($agent_id, 'agent_notif.new_feedback_validate.alert', '1', X'4E3B', NULL),
                 ($agent_id, 'agent_notif.new_feedback_validate.email', '1', X'4E3B', NULL),
-                ($agent_id, 'agent_notif.new_user.alert', '1', X'4E3B', NULL),
-                ($agent_id, 'agent_notif.new_user_validate.alert', '1', X'4E3B', NULL),
-                ($agent_id, 'agent_notif.new_user_validate.email', '1', X'4E3B', NULL)
+                ($agent_id, 'agent_notif.new_user.alert', '1', X'4E3B', NULL)
         ");
 
         // Add pref for first login marker

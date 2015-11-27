@@ -131,7 +131,6 @@ abstract class AbstractDbSet implements DataSetInterface
         $new_user->is_deleted   = $is_deleted;
 
         if ($agent || $admin) {
-            $new_user->is_agent_confirmed = true;
             $new_user->is_agent           = true;
             $new_user->can_agent          = true;
         }

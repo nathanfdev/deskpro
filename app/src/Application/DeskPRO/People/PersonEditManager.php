@@ -109,7 +109,6 @@ class PersonEditManager implements PersonContextInterface
             'new_comment.email', 'new_comment.alert',
             'new_comment_validate.email', 'new_comment_validate.alert',
             'new_user.email', 'new_user.alert',
-            'new_user_validate.email', 'new_user_validate.alert',
             'login_attempt.email', 'login_attempt_fail.email',
         );
 

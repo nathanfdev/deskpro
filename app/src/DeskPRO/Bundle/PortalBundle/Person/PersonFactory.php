@@ -134,12 +134,6 @@ class PersonFactory
             $email->is_validated = true;
         }
 
-        if ($this->getBrandSetting('core.agent_validation')) {
-            $person->is_agent_confirmed = false;
-        } else {
-            $person->is_agent_confirmed = true;
-        }
-
         $person->is_confirmed = true; // this is deprecated, so it shouldn't really matter
 
         $this->event_dispatcher->dispatch(Person::EVENT_PRE_CREATE, new PersonCreateEvent($person, $context));

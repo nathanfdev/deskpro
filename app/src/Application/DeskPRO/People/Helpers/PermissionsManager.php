@@ -141,7 +141,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
         }
 
         $reg_ug = App::$container->getUserGroups()->getRegisteredGroup();
-        if ($person->getId() && $person->is_agent_confirmed && $reg_ug->is_enabled) {
+        if ($person->getId() && $reg_ug->is_enabled) {
             $this->usergroup_ids[] = $reg_ug->id;
         }
 

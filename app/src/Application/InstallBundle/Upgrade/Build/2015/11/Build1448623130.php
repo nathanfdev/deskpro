@@ -26,41 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-namespace Application\DeskPRO\Tickets\Triggers\Terms;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Orb\Util\CheckedOptionsArray;
-
-/**
- * Checks if a user is agent validated.
- */
-class CheckUserValidAgent extends AbstractTriggerTerm
+class Build1448623130 extends AbstractBuild
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function getOptionsDef()
+    public function run()
     {
-        $options = new CheckedOptionsArray();
-
-        return $options;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-    {
-        if ($this->getTermOperator() == 'is') {
-            return false;
-        } else {
-            return true;
-        }
+        $this->out('Remove people.is_agent_confirmed');
+        $this->execMutateSql('ALTER TABLE people DROP is_agent_confirmed');
     }
 }

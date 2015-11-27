@@ -416,21 +416,6 @@ $collection->create('agent_people_viewsession', array(
     'requirements' => array('session_id' => '\\d+'),
 ));
 
-$collection->create('agent_people_validate_list', array(
-    'path'       => '/people/validate/list',
-    'controller' => 'AgentBundle:PeopleSearch:validateList',
-));
-
-$collection->create('agent_people_validate_approve', array(
-    'path'       => '/people/validate/approve',
-    'controller' => 'AgentBundle:PeopleSearch:validateApprove',
-));
-
-$collection->create('agent_people_validate_delete', array(
-    'path'       => '/people/validate/delete',
-    'controller' => 'AgentBundle:PeopleSearch:validateDelete',
-));
-
 $collection->create('agent_people_new', array(
     'path'       => '/people/new',
     'controller' => 'AgentBundle:Person:newPerson',

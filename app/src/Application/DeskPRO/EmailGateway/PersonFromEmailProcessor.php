@@ -165,7 +165,6 @@ class PersonFromEmailProcessor
                 'creation_system'    => $this->creation_system,
                 'name'               => $from->getNameUtf8() ?: '',
                 'is_confirmed'       => 1,
-                'is_agent_confirmed' => App::getSetting('core.agent_validation') ? 0 : 1,
             ));
 
             // Create new person record (no chance of conflicts here)

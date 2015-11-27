@@ -48,11 +48,6 @@ return array(
     'core.email_validation' => false,
 
     /*
-     * Is agent validation enabled?
-     */
-    'core.agent_validation' => false,
-
-    /*
      * Enable URL rewriting (removes index.php/ from URLs)
      */
     'core.rewrite_urls' => false,
