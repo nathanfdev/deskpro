@@ -1,6 +1,5 @@
 import React, {Component, PropTypes} from 'react';
 import {QuickFilter} from './QuickFilter';
-import classNames from 'classnames';
 
 export class ChoiceMenu extends Component {
 
@@ -59,7 +58,6 @@ export class ChoiceMenuOption extends Component {
 
   render() {
     const {label, value, onClick} = this.props;
-    var classes = classNames({ 'dpw--checkbox-boxy': this.state.isActive, 'dpw--checkbox-box': !this.state.isActive });
 
     return (
       <li>

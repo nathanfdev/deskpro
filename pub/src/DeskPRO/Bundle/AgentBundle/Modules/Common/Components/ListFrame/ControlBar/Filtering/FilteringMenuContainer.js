@@ -83,6 +83,7 @@ export class FilteringMenuContainer extends Component {
     return (
       <li ref="menuItem">
         <Button
+          isActive={this.state.expanded}
           ref="button"
           title="Filter by:"
           icon={null}

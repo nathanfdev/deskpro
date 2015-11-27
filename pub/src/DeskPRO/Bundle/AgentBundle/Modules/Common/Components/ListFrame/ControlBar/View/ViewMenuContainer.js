@@ -39,6 +39,7 @@ export class ViewMenuContainer extends Component {
     return (
       <li>
         <Button
+          isActive={this.state.expanded}
           onClick={this.expandMenu}
           ref="button"
           title="View:"
