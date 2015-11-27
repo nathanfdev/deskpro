@@ -1,13 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { createChat } from '../../../Actions/chatActions';
-import { isCreated } from '../../../Selectors/chat';
 import { Header } from './Header';
 import history from '../../../../../Services/history';
 
-@connect(state => ({
-  isCreated: isCreated(state)
-}))
+@connect()
 export class ChatBeginContainer extends React.Component {
 
   static propTypes = {
@@ -23,12 +20,6 @@ export class ChatBeginContainer extends React.Component {
       email: '',
       hiddenEmail: false
     };
-  }
-
-  componentDidUpdate() {
-    if (this.props.isCreated) {
-      history.replaceState(null, '/chat/waiting');
-    }
   }
 
   onChangeName = event => {
@@ -55,7 +46,8 @@ export class ChatBeginContainer extends React.Component {
       event.preventDefault();
     }
 
-    this.props.dispatch(createChat(this.state));
+    const promise = this.props.dispatch(createChat(this.state));
+    promise.then(() => history.replaceState(null, '/chat/waiting'));
   };
 
   render() {
