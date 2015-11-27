@@ -14,13 +14,13 @@ import {
   ChatDone
 } from '../../Chat/Components/index';
 import history from '../../../Services/history';
+import store from '../../../Services/store';
 
 export class WidgetAppBody extends React.Component {
 
   static propTypes = {
     onResize: PropTypes.func,
-    onClose: PropTypes.func,
-    store: PropTypes.object
+    onClose: PropTypes.func
   };
 
   componentDidMount() {
@@ -39,7 +39,7 @@ export class WidgetAppBody extends React.Component {
   }
 
   render() {
-    const { store, onClose } = this.props;
+    const { onClose } = this.props;
 
     return (
       <Provider store={store}>
@@ -69,7 +69,6 @@ export class WidgetAppBody extends React.Component {
 export class WidgetApp extends React.Component {
 
   static propTypes = {
-    onClick: PropTypes.func,
     isVisible: PropTypes.bool
   };
 

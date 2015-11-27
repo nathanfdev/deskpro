@@ -33,7 +33,7 @@ export class App extends React.Component {
   renderWidgetApp() {
     return (
       <WidgetApp isVisible={this.state.isOpen}
-                 onClose={this.onCloseWidget} {...this.props} />
+                 onClose={this.onCloseWidget} />
     );
   }
 

@@ -1,10 +1,6 @@
 import 'babel/polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createStore, applyMiddleware, compose } from 'redux';
-import { combineReducerHierarchy } from 'Ampliflux';
-import * as ampMiddleware from 'Ampliflux/middleware';
-import AppReducers from './WidgetApp_Reducers.js';
 import style from './Resources/style/widget-style.scss';
 import { App } from './Modules/Application/Components/App';
 import jQuery from 'jquery';
@@ -29,18 +25,6 @@ export default class WidgetApp {
       return;
     }
 
-    const reducer = combineReducerHierarchy(AppReducers);
-    const middleware = applyMiddleware(
-      ampMiddleware.intervalMiddleware,
-      ampMiddleware.timeoutMiddleware,
-      ampMiddleware.actionThunkMiddleware,
-      ampMiddleware.redispatchDsaPayload,
-      ampMiddleware.promiseMiddleware,
-      ampMiddleware.loggerMiddleware
-    );
-    const makeStore = compose(middleware)(createStore);
-    const store = makeStore(reducer);
-
     // - NOTICE: We are rendering the react root element onto
     // the parent page.
     // - This way, we can render <Frame>'s and they are added
@@ -58,6 +42,6 @@ export default class WidgetApp {
     });
 
     $container.appendTo(pageDoc.body);
-    ReactDOM.render(<App store={store} />, $container.get(0));
+    ReactDOM.render(<App />, $container.get(0));
   }
 }
