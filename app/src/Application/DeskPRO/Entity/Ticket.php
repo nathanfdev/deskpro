@@ -69,7 +69,6 @@ use Orb\Util\WorkHoursSetAll;
  * @property Product $product
  * @property Person $person
  * @property PersonEmail $person_email
- * @property PersonEmailValidating $person_email_validating
  * @property Person $agent
  * @property AgentTeam $agent_team
  * @property Organization $organization
@@ -234,11 +233,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * @var \Application\DeskPRO\Entity\PersonEmail
      */
     protected $person_email = null;
-
-    /**
-     * @var \Application\DeskPRO\Entity\PersonEmailValidating
-     */
-    protected $person_email_validating = null;
 
     /**
      * @var \Application\DeskPRO\Entity\Person
@@ -3647,7 +3641,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             'product_id'                 => $this->product ? $this->product->id : null,
             'person_id'                  => $this->person ? $this->person->id : null,
             'person_email_id'            => $this->person_email ? $this->person_email->id : null,
-            'person_email_validating_id' => $this->person_email_validating ? $this->person_email_validating->id : null,
             'agent_id'                   => $this->agent ? $this->agent->id : null,
             'agent_team_id'              => $this->agent_team ? $this->agent_team->id : null,
             'organization_id'            => $this->organization ? $this->organization->id : null,
@@ -4277,17 +4270,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail',
             'joinColumns'  => array(array(
                 'name'                 => 'person_email_id',
-                'referencedColumnName' => 'id',
-                'nullable'             => true,
-                'onDelete'             => 'set null',
-            )),
-            'dpApi' => true,
-        ));
-        $metadata->mapManyToOne(array(
-            'fieldName'    => 'person_email_validating',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmailValidating',
-            'joinColumns'  => array(array(
-                'name'                 => 'person_email_validating_id',
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'set null',

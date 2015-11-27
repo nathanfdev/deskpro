@@ -391,12 +391,6 @@ $collection->create('agent_settings_ticketslas', array(
     'controller' => 'AgentBundle:Settings:ticketSlas',
 ));
 
-$collection->create('agent_people_validate_email', array(
-    'path'         => '/people/validate-email/{id}/{security_token}',
-    'controller'   => 'AgentBundle:Person:validateEmailAddress',
-    'requirements' => array('id' => '\\d+'),
-));
-
 $collection->create('agent_people_view', array(
     'path'         => '/people/{person_id}',
     'controller'   => 'AgentBundle:Person:view',

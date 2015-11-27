@@ -3954,29 +3954,6 @@ class TicketController extends AbstractController
                 return $this->createJsonResponse(array('error' => true, 'error_codes' => $errors));
             }
 
-            // - It's possible the user account pre-existed before and was validating
-            // - So the act of an agent manually selecting the account to create a new ticket for them should
-            // essentially validate the account.
-            // - This is needed or else the ticket will be created as validating, and no emails (not even to the user) would be sent
-            if (isset($check_person) && $check_person && !$check_person->id != $this->person->id && (!$check_person->is_confirmed)) {
-                $check_person->is_confirmed       = true;
-
-                $email = null;
-                if (isset($new_email) && $new_email) {
-                    $email = $check_person->findEmailAddress($new_email);
-                } else {
-                    $email = $check_person->primary_email;
-                }
-
-                if ($email) {
-                    $email->is_validated = true;
-                }
-
-                // Clear any $check_persons for the user to avoid potential data leaks to do with
-                // validating them now
-                $this->db->delete('sessions', array('person_id' => $check_person->id));
-            }
-
             // Validate based on department...
             $validator = new \Application\AgentBundle\Validator\NewTicketValidator();
             $layout    = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);

@@ -164,7 +164,6 @@ class PersonFromEmailProcessor
             $tmp_person = Entity\Person::newContactPerson(array(
                 'creation_system'    => $this->creation_system,
                 'name'               => $from->getNameUtf8() ?: '',
-                'is_confirmed'       => 1,
             ));
 
             // Create new person record (no chance of conflicts here)

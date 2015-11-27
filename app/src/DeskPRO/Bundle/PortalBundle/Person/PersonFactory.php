@@ -93,9 +93,6 @@ class PersonFactory
 
         $person->addEmailAddress($email);
 
-        $email->is_validated  = true;
-        $person->is_confirmed = true;
-
         $this->event_dispatcher->dispatch(Person::EVENT_PRE_CREATE, new PersonCreateEvent($person, $context));
 
         $this->em->persist($person);
@@ -126,15 +123,6 @@ class PersonFactory
         if (!$person->getLanguage()) {
             $person->setLanguage($this->language_stack->getActiveOrDefault());
         }
-
-        if ($this->getBrandSetting('core.email_validation')) {
-            $email->is_validated = false;
-            $person->getChangeTracker()->recordExtra('email_validating', $person->primary_email->email);
-        } else {
-            $email->is_validated = true;
-        }
-
-        $person->is_confirmed = true; // this is deprecated, so it shouldn't really matter
 
         $this->event_dispatcher->dispatch(Person::EVENT_PRE_CREATE, new PersonCreateEvent($person, $context));
 

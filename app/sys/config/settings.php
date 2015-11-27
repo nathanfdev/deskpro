@@ -43,11 +43,6 @@ return array(
     'core.reg_enabled' => true,
 
     /*
-     * Is email validation enabled?
-     */
-    'core.email_validation' => false,
-
-    /*
      * Enable URL rewriting (removes index.php/ from URLs)
      */
     'core.rewrite_urls' => false,

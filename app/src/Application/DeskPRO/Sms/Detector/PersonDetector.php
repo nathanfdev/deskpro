@@ -83,7 +83,6 @@ class PersonDetector
 
         $person                  = Person::newContactPerson();
         $person->creation_system = 'gateway.person';
-        $person->is_confirmed    = true;
         $from_number             = new PhoneNumber($from_number);
         $person->setPrimaryPhoneNumber($from_number);
 

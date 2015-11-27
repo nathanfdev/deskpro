@@ -26,4 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1448627929);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1448626419 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('Remove people_emails_validating');
+        $this->execMutateSql("SET FOREIGN_KEY_CHECKS = 0");
+        $this->execMutateSql("DROP TABLE people_emails_validating");
+        $this->execMutateSql("SET FOREIGN_KEY_CHECKS = 1");
+    }
+}

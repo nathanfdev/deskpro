@@ -33,6 +33,6 @@ class Build1448623130 extends AbstractBuild
     public function run()
     {
         $this->out('Remove people.is_agent_confirmed');
-        $this->execMutateSql('ALTER TABLE people DROP is_agent_confirmed');
+        $this->execSlowAlterTable('people', 'DROP is_agent_confirmed');
     }
 }

@@ -66,14 +66,6 @@ class RegistrationSettings
     /**
      * @var bool
      */
-    public $email_validation;
-    /**
-     * @var bool
-     */
-    public $agent_validation;
-    /**
-     * @var bool
-     */
     public $existing_account_login;
     /**
      * @var bool
@@ -114,7 +106,6 @@ class RegistrationSettings
     public function resetSettings()
     {
         $this->reg_enabled            = (bool) $this->settings->get('core.reg_enabled');
-        $this->email_validation       = (bool) $this->settings->get('core.email_validation');
         $this->existing_account_login = (bool) $this->settings->get('core.existing_account_login');
         $this->everyone_group_enabled = (bool) $this->everyone_group->is_enabled;
 
@@ -136,8 +127,6 @@ class RegistrationSettings
         $export_settings = array(
             'reg_enabled'            => $this->reg_enabled,
             'reg_required'           => $this->reg_required,
-            'email_validation'       => $this->email_validation,
-            'agent_validation'       => $this->agent_validation,
             'existing_account_login' => $this->existing_account_login,
             'everyone_group_enabled' => $this->everyone_group_enabled,
 
@@ -167,10 +156,8 @@ class RegistrationSettings
     {
         if ($this->reg_enabled) {
             $this->settings->setSetting('core.reg_enabled', 1);
-            $this->settings->setSetting('core.email_validation', (int) $this->email_validation);
         } else {
             $this->settings->setSetting('core.reg_enabled', 0);
-            $this->settings->setSetting('core.email_validation', 0);
         }
 
         $this->settings->setSetting('core.existing_account_login', (int) $this->existing_account_login);

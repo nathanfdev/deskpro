@@ -26,32 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\InstallBundle\Upgrade\Build;
 
-class PersonEmailValidating extends AbstractEntityRepository
+class Build1448624811 extends AbstractBuild
 {
-    public function getForPerson($person)
+    public function run()
     {
-        return $this->getEntityManager()->createQuery('
-            SELECT e
-            FROM DeskPRO:PersonEmailValidating e
-            WHERE e.person = ?1
-            GROUP BY e.email
-            ORDER BY e.id DESC
-        ')->setParameters(array(1 => $person))->execute();
-    }
-
-    public function getEmail($email_address)
-    {
-        return $this->getEntityManager()->createQuery('
-            SELECT e
-            FROM DeskPRO:PersonEmailValidating e
-            WHERE e.email = ?1
-        ')->setParameters(array(1 => $email_address))->setMaxResults(1)->getOneOrNullResult();
+        $this->out('Remove people_emails.is_own_validated');
+        $this->execSlowAlterTable('people_emails', 'DROP is_own_validated');
     }
 }

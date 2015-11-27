@@ -26,41 +26,29 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-namespace Application\DeskPRO\Tickets\Triggers\Terms;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Orb\Util\CheckedOptionsArray;
-
-/**
- * Checks if a user is agent validated.
- */
-class CheckUserValidAgent extends AbstractTriggerTerm
+class Build1448627929 extends AbstractBuild
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function getOptionsDef()
+    public function run()
     {
-        $options = new CheckedOptionsArray();
+        $this->out('Upgrade validation settings');
 
-        return $options;
-    }
+        $trigger_modes = explode(',', strtolower($this->container->getDb()->fetchColumn("
+            SELECT by_user_mode
+            FROM ticket_triggers
+            WHERE sys_name = 'default_newticket_requirevalid' AND is_enabled = 1
+        ") ?: ''));
 
-    /**
-     * {@inheritdoc}
-     */
-    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-    {
-        if ($this->getTermOperator() == 'is') {
-            return false;
-        } else {
-            return true;
-        }
+        $email_validate_email = in_array('email', $trigger_modes);
+        $email_validate_web   = in_array('portal', $trigger_modes);
+
+        // TODO
+
+        $this->container->getDb()->deleteIn('ticket_triggers', array(
+            'default_newticket_requirevalid', // the one that used to enable/disable it
+            'default_newticket_validemail',   // the one that checks for it
+            'default_newticket_validagent'    // the one that cheked for agent validation
+        ), 'sys_name');
     }
 }
