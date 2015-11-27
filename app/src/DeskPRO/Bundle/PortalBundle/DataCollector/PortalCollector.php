@@ -75,19 +75,28 @@ class PortalCollector extends DataCollector
         $brandContainer = $this->brand_stack->getActive();
         $language       = $this->language_stack->getActive();
         $mode           = $this->mode_storage->getMode();
-        $this->data     = array(
+
+        if ($brandContainer) {
+            $brand = $brandContainer->getBrand();
+            $theme = $brandContainer->getTheme();
+        } else {
+            $brand = null;
+            $theme = null;
+        }
+
+        $this->data = [
             'route_name'          => $request->attributes->get('_route'),
             'executed_controller' => $request->attributes->get('_controller'),
-            'brand_id'            => $brandContainer->getBrand()->id,
-            'brand_name'          => $brandContainer->getBrand()->name,
-            'theme_id'            => $brandContainer->getTheme()->getId(),
-            'theme_name'          => $brandContainer->getTheme()->getName(),
+            'brand_id'            => $brand ? $brand->id : 'N/A',
+            'brand_name'          => $brand ? $brand->name : 'N/A',
+            'theme_id'            => $theme ? $theme->getId() : 'N/A',
+            'theme_name'          => $theme ? $theme->getName() : 'N/A',
             'language_code'       => $language ? $language->getTwoLetterLanguageCode() : 'N/A',
             'language_id'         => $language ? $language->getId() : 'N/A',
             'language_img'        => $language ? $language->flag_image : null,
             'mode'                => (string) $mode,
-            'settings'            => $brandContainer->getSettings()->toArray(),
-        );
+            'settings'            => $brandContainer ? $brandContainer->getSettings()->toArray() : null,
+        ];
     }
 
     public function getMode()

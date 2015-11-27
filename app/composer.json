@@ -72,7 +72,8 @@
     "fabpot/php-cs-fixer": "^1.10",
     "defuse/php-encryption": "^1.2",
     "react/promise": "^2.2",
-    "nesbot/carbon": "^1.21"
+    "nesbot/carbon": "^1.21",
+    "nelmio/cors-bundle": "^1.4"
   },
   "preferred-install": "dist"
 }
