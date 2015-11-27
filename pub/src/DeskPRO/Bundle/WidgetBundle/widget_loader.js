@@ -1,13 +1,13 @@
-(function(appSrc) {
+(appSrc => {
   // Create the iframe loader
   const node = document.createElement('iframe');
   node.src = 'javascript:false';
   node.title = '';
   node.role = 'presentation';
-  (node.frameElement || node).style.cssText = "display: none";
+  (node.frameElement || node).style.cssText = 'display: none';
 
   // Insert it into the DOM
-  const allScripts = document.getElementsByTagName("script");
+  const allScripts = document.getElementsByTagName('script');
   const lastScript = allScripts[allScripts.length - 1];
   lastScript.parentNode.insertBefore(node, lastScript);
 
@@ -16,7 +16,9 @@
   const frameWin = node.contentWindow;
   const frameDoc = frameWin.document;
 
-  let doc, docDomain;
+  let doc;
+  let docDomain;
+
   try {
     doc = frameDoc;
   } catch (c) {
@@ -26,7 +28,7 @@
   }
 
   // After onload, we load the script source for real
-  doc.open()._load = function() {
+  doc.open()._load = () => {
     const appNode = this.createElement('script');
     if (docDomain) {
       this.domain = docDomain;
