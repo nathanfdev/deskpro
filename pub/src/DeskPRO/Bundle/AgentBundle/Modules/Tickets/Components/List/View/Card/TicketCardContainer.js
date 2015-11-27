@@ -6,6 +6,8 @@ import { connect } from 'react-redux';
 import { toggleSelected } from '../../../../Actions/listActions';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 
+import { LegacyLinkBlock } from 'DeskPRO/Bundle/AgentBundle/Modules/Legacy/Components/legacyRoutes';
+
 @injectIntl
 @connect()
 export class TicketCardContainer extends Component {
@@ -31,31 +33,33 @@ export class TicketCardContainer extends Component {
     const { dispatch, selected, ticket } = this.props;
 
     return (
-      <Card type="feedback" width={450}>
-        <CardStatusBar align="left" level="5"/>
-        <CardStatusBar align="right" level="5"/>
+      <LegacyLinkBlock route={"/tickets/" + ticket.get('id')}>
+        <Card type="feedback" width={450}>
+          <CardStatusBar align="left" level="5"/>
+          <CardStatusBar align="right" level="5"/>
 
-        <CardCheckbox selected={selected} onClick={() => dispatch(toggleSelected(ticket.get('id')))}/>
+          <CardCheckbox selected={selected} onClick={() => dispatch(toggleSelected(ticket.get('id')))}/>
 
-        <CardLine>
-          <CardLineLeft>
-            <CardTitle content={ticket.get('subject')}/>
-          </CardLineLeft>
+          <CardLine>
+            <CardLineLeft>
+              <CardTitle content={ticket.get('subject')}/>
+            </CardLineLeft>
 
-          <CardLineRight>
-            <CardLineItem>{this.renderStatus(ticket)}</CardLineItem>
-          </CardLineRight>
-        </CardLine>
+            <CardLineRight>
+              <CardLineItem>{this.renderStatus(ticket)}</CardLineItem>
+            </CardLineRight>
+          </CardLine>
 
-        {this.renderPerson(ticket)}
-        <CardLine>
-          {this.renderAgent(ticket)}
-          {this.renderId(ticket)}
-          {this.renderUrgency(ticket)}
-          {this.renderDateCreated(ticket)}
-        </CardLine>
-        {this.renderLabels(ticket)}
-      </Card>
+          {this.renderPerson(ticket)}
+          <CardLine>
+            {this.renderAgent(ticket)}
+            {this.renderId(ticket)}
+            {this.renderUrgency(ticket)}
+            {this.renderDateCreated(ticket)}
+          </CardLine>
+          {this.renderLabels(ticket)}
+        </Card>
+      </LegacyLinkBlock>
     );
   }
 

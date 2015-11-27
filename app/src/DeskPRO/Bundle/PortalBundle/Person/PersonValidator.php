@@ -110,9 +110,8 @@ class PersonValidator
             $validated_email = $validating_email;
         }
 
-        $validated_email->is_own_validated = true;
-        $validated_email->is_validated     = true;
-        $validated_email->date_validated   = new \DateTime();
+        $validated_email->is_validated   = true;
+        $validated_email->date_validated = new \DateTime();
 
         $this->em->persist($validated_email);
 

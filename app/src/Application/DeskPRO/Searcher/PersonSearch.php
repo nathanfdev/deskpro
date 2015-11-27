@@ -50,30 +50,29 @@ class PersonSearch extends SearcherAbstract
     // can be combined with the TicketSearch, so we need to namespace
     // these term names.
 
-    const TERM_ID                 = 'person_id';
-    const TERM_ORGANIZATION       = 'person_organization';
-    const TERM_ORGANIZATION_NAME  = 'person_organization_name';
-    const TERM_LANGUAGE           = 'person_language';
-    const TERM_USERGROUP          = 'person_usergroup';
-    const TERM_EMAIL              = 'person_email';
-    const TERM_EMAIL_DOMAIN       = 'person_email_domain';
-    const TERM_NAME               = 'person_name';
-    const TERM_USERNAME           = 'person_username';
-    const TERM_PERSON_FIELD       = 'person_field';
-    const TERM_LABEL              = 'person_label';
-    const TERM_DATE_CREATED       = 'person_date_created';
-    const TERM_DIRECTORY_NAME     = 'person_directory_name';
-    const TERM_CONTACT_PHONE      = 'person_contact_phone';
-    const TERM_CONTACT_ADDRESS    = 'person_contact_address';
-    const TERM_CONTACT_IM         = 'person_contact_im';
-    const TERM_ALPHA              = 'alphabetical';
-    const TERM_IS_AGENT_CONFIRMED = 'is_agent_confirmed';
-    const TERM_IS_CONFIRMED       = 'is_confirmed';
-    const TERM_AGENT_TEAM         = 'person_agent_team';
-    const TERM_AGENT_MODE         = 'agent_mode';
-    const TERM_USER_MODE          = 'user_mode';
-    const TERM_ANY_MODE           = 'any_mode';
-    const TERM_IP_ADDRESS         = 'person_ip';
+    const TERM_ID                = 'person_id';
+    const TERM_ORGANIZATION      = 'person_organization';
+    const TERM_ORGANIZATION_NAME = 'person_organization_name';
+    const TERM_LANGUAGE          = 'person_language';
+    const TERM_USERGROUP         = 'person_usergroup';
+    const TERM_EMAIL             = 'person_email';
+    const TERM_EMAIL_DOMAIN      = 'person_email_domain';
+    const TERM_NAME              = 'person_name';
+    const TERM_USERNAME          = 'person_username';
+    const TERM_PERSON_FIELD      = 'person_field';
+    const TERM_LABEL             = 'person_label';
+    const TERM_DATE_CREATED      = 'person_date_created';
+    const TERM_DIRECTORY_NAME    = 'person_directory_name';
+    const TERM_CONTACT_PHONE     = 'person_contact_phone';
+    const TERM_CONTACT_ADDRESS   = 'person_contact_address';
+    const TERM_CONTACT_IM        = 'person_contact_im';
+    const TERM_ALPHA             = 'alphabetical';
+    const TERM_IS_CONFIRMED      = 'is_confirmed';
+    const TERM_AGENT_TEAM        = 'person_agent_team';
+    const TERM_AGENT_MODE        = 'agent_mode';
+    const TERM_USER_MODE         = 'user_mode';
+    const TERM_ANY_MODE          = 'any_mode';
+    const TERM_IP_ADDRESS        = 'person_ip';
 
     /**
      * From getSqlParts().
@@ -609,21 +608,6 @@ class PersonSearch extends SearcherAbstract
                                 $wheres[] = "$join_name.person_id IS NULL";
                                 break;
                         }
-                        break;
-
-                    case self::TERM_IS_AGENT_CONFIRMED:
-
-                        if (is_array($choice)) {
-                            $choice = array_pop($choice);
-                        }
-
-                        if ($choice) {
-                            $choice = 1;
-                        } else {
-                            $choice = 0;
-                        }
-
-                        $wheres[] = $this->_choiceMatch("$people_table.is_agent_confirmed", $op, $choice, false);
                         break;
 
                     case self::TERM_IS_CONFIRMED:

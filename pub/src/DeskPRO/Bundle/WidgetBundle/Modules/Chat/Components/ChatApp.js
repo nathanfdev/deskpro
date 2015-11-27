@@ -12,14 +12,13 @@ export class ChatApp extends React.Component {
 
     return (
       <div>
-        Chat:
+        Chat:<br />
 
         <Link to="/chat/begin/simple">/chat/begin/simple</Link><br />
         <Link to="/chat/begin/conversation">/chat/begin/conversation</Link><br />
-        <Link to="/chat/begin/form">/chat/begin/form</Link><br />
-        <Link to="/chat/waiting">/chat/waiting</Link><br />
+        <Link to="/chat/begin/form">/chat/begin/form</Link><br /><br />
         <Link to="/chat/active">/chat/active</Link><br />
-        <Link to="/chat/done">/chat/done</Link><br />
+        <Link to="/chat/done">/chat/done</Link><br /><br />
 
         {children}
       </div>

@@ -99,13 +99,21 @@ export const listFiltersSelector = createSelector(
     const filterSelector = [
       { label: 'Date', type: 'date', fromParam: 'created_from', toParam: 'created_to' }
     ];
+
+    // Type options
     if (!currentListParams.get('navItem') || !currentListParams.get('navItem').get('category')) {
-      // Type options
       const typeOptions = types.toArray().map(type => ({ value: type.get('title'), label: type.get('title') }));
-      filterSelector.push({ label: 'Type', type: 'select', param: 'category', options: typeOptions });
+      filterSelector.push({
+        label: 'Type',
+        type: 'select',
+        param: 'category',
+        quickFilter: true,
+        options: typeOptions
+      });
     }
+
+    // Status options
     if (checkIfShowStatus()) {
-      // Status options
       const statuses = navState.get('statuses').toJS();
       const toStatusOptions = (nested, param) => (nested || []).map(opt => ({
         value: opt.group,
@@ -118,18 +126,26 @@ export const listFiltersSelector = createSelector(
         { label: 'Closed', value: 'closed', nested: toStatusOptions(statuses.closed.nested, 'status_category') },
         { label: 'Hidden', value: 'hidden', nested: toStatusOptions(statuses.hidden.nested, 'hidden_status') }
       ];
-      filterSelector.push({ label: 'Status', type: 'select', param: 'status', options: statusOptions });
+      filterSelector.push({
+        label: 'Status', type: 'select', param: 'status', quickFilter: true,
+        options: statusOptions
+      });
     }
+
+    // Category options
     if (!currentListParams.get('navItem') || (!currentListParams.get('navItem').get('custom_category'))) {
-      // Category options
       const categoryOptions = navState.get('customCategories').toJS().map(cat => ({
         label: cat.group,
         value: cat.group
       }));
-      filterSelector.push({ label: 'Category', type: 'select', param: 'custom_category', options: categoryOptions });
+      filterSelector.push({
+        label: 'Category', type: 'select', param: 'custom_category', quickFilter: true,
+        options: categoryOptions
+      });
     }
+
+    // Labels options
     if (!currentListParams.get('navItem') || !currentListParams.get('navItem').get('label')) {
-      // Labels options
       filterSelector.push({
         label: 'Labels',
         type: 'labels',

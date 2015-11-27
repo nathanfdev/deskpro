@@ -57,8 +57,6 @@ class PeopleSearchController extends AbstractController
         if ($people_count < 10000) {
             $people_count = $this->em->getRepository('DeskPRO:Person')->getCount(true);
         }
-        $validating_count       = $this->em->getRepository('DeskPRO:Person')->getValidatingCount();
-        $validating_count_agent = $this->em->getRepository('DeskPRO:Person')->getAgentValidatingCount();
 
         $label_counts     = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('people', 25);
         $cloud_gen        = new \Application\DeskPRO\UI\TagCloud($label_counts);
@@ -99,14 +97,12 @@ class PeopleSearchController extends AbstractController
             'team_counts' => $team_counts,
             'agent_count' => $agent_count,
 
-            'people_count'           => $people_count,
-            'validating_count'       => $validating_count,
-            'validating_count_agent' => $validating_count_agent,
-            'people_tag_cloud'       => $people_tag_cloud,
-            'people_tag_index'       => $people_tag_index,
-            'org_tag_cloud'          => $org_tag_cloud,
-            'org_tag_index'          => $org_tag_index,
-            'org_count'              => $org_count,
+            'people_count'     => $people_count,
+            'people_tag_cloud' => $people_tag_cloud,
+            'people_tag_index' => $people_tag_index,
+            'org_tag_cloud'    => $org_tag_cloud,
+            'org_tag_index'    => $org_tag_index,
+            'org_count'        => $org_count,
         ));
 
         return $this->createJsonResponse($data);
@@ -120,10 +116,8 @@ class PeopleSearchController extends AbstractController
         }
 
         $data = array(
-            'people_count'           => $people_count,
-            'usergroup_counts'       => $this->em->getRepository('DeskPRO:Usergroup')->getCountsForAll(),
-            'validating_count'       => $this->em->getRepository('DeskPRO:Person')->getValidatingCount(),
-            'validating_count_agent' => $this->em->getRepository('DeskPRO:Person')->getAgentValidatingCount(),
+            'people_count'     => $people_count,
+            'usergroup_counts' => $this->em->getRepository('DeskPRO:Usergroup')->getCountsForAll(),
         );
 
         return $this->createJsonResponse($data);
@@ -320,7 +314,6 @@ class PeopleSearchController extends AbstractController
                 'person_name'          => array('op' => 'contains', 'options' => array()),
                 'person_email'         => array('op' => 'contains', 'options' => array()),
                 'person_contact_phone' => array('op' => 'contains', 'options' => array()),
-                'is_agent_confirmed'   => array('op' => 'is', 'options' => array()),
                 'is_confirmed'         => array('op' => 'is', 'options' => array()),
                 'any_mode'             => array('op' => 'is', 'options' => array()),
             );
@@ -804,129 +797,5 @@ class PeopleSearchController extends AbstractController
         return $this->render($tpl, array(
             'people_list' => $people_list,
         ));
-    }
-
-    ############################################################################
-    # validate-lists
-    ############################################################################
-
-    public function validateListAction()
-    {
-        if ($this->in->getString('email_validating')) {
-            return $this->searchAction(null, array(
-                'is_confirmed' => 0,
-            ), 'awaiting_validation');
-        } else {
-            return $this->searchAction(null, array(
-                'is_agent_confirmed' => 0,
-            ), 'awaiting_validation');
-        }
-    }
-
-    public function validateApproveAction()
-    {
-        $people_ids = $this->in->getCleanValueArray('people_ids', 'uint', 'discard');
-        $people     = $this->em->getRepository('DeskPRO:Person')->getByIds($people_ids);
-
-        $email_ids = array();
-
-        $tm = $this->container->getTicketManager();
-
-        $this->db->beginTransaction();
-        try {
-            $ids = array();
-            foreach ($people as $person) {
-                if (!$person->is_agent) {
-                    $ids[]                      = $person->getId();
-                    $person->is_agent_confirmed = true;
-                    $person->is_confirmed       = true;
-                    $this->em->persist($person);
-
-                    if ($person->primary_email) {
-                        $email_ids[] = $person->primary_email->getId();
-                    }
-
-                    // Make visible any content now
-                    $ticket_ids = $this->db->fetchAllCol('
-                        SELECT id FROM tickets
-                        WHERE person_id = ? AND hidden_status = ?
-                    ', array($person->getId(), 'validating'));
-
-                    foreach ($ticket_ids as $ticket_id) {
-                        $ticket = $this->em->find('DeskPRO:Ticket', $ticket_id);
-                        if ($ticket) {
-                            $context = $tm->createAgentExecutorContext($this->person, 'newreply', 'web');
-                            $tm->markAsManaged($ticket);
-                            $ticket->setStatus('awaiting_agent');
-                            $tm->saveTicket($ticket, $context);
-                        }
-                    }
-                }
-            }
-
-            $all_feedback = $this->container->getEm()->createQuery("
-                SELECT f
-                FROM DeskPRO:Feedback f
-                WHERE f.person = ?0 AND f.hidden_status = 'user_validating'
-            ")->execute(array($people_ids));
-            foreach ($all_feedback as $feedback) {
-                $feedback->setStatus('new');
-                $this->em->persist($feedback);
-            }
-
-            foreach (array('ArticleComment', 'NewsComment', 'FeedbackComment', 'DownloadComment') as $rel) {
-                $all_comments = $this->container->getEm()->createQuery("
-                    SELECT c
-                    FROM DeskPRO:$rel c
-                    WHERE c.person = ?0 AND c.status = 'user_validating'
-                ")->execute(array($people_ids));
-                foreach ($all_comments as $comment) {
-                    $comment->setStatus('visible');
-                    $this->em->persist($comment);
-                }
-            }
-
-            if ($email_ids) {
-                $email_ids = implode(',', $email_ids);
-                $this->db->executeUpdate("UPDATE people_emails SET is_validated = 1 WHERE id IN ($email_ids)");
-            }
-
-            $this->em->flush();
-            $this->db->commit();
-        } catch (\Exception $e) {
-            $this->db->rollback();
-            throw $e;
-        }
-
-        return $this->createJsonResponse(array('confirmed_people_ids' => $ids));
-    }
-
-    public function validateDeleteAction()
-    {
-        $people_ids = $this->in->getCleanValueArray('people_ids', 'uint', 'discard');
-        $people     = $this->em->getRepository('DeskPRO:Person')->getByIds($people_ids);
-
-        $this->db->beginTransaction();
-        try {
-            $ids = array();
-            foreach ($people as $person) {
-                if (!$person->is_agent && (!$person->is_agent_confirmed || !$person->is_confirmed)) {
-                    $ids[] = $person->getId();
-
-                    foreach ($person->emails as $email) {
-                        $this->em->remove($email);
-                    }
-                    $this->em->remove($person);
-                }
-            }
-
-            $this->em->flush();
-            $this->db->commit();
-        } catch (\Exception $e) {
-            $this->db->rollback();
-            throw $e;
-        }
-
-        return $this->createJsonResponse(array('deleted_people_ids' => $ids));
     }
 }

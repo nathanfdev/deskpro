@@ -199,7 +199,7 @@ $kanban-frame-width: 800px;
     bottom: 0;
 
     background: #d4d8de;
-    box-shadow: inset 0px 0px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
 
     .blank-text {
       font-size: 12px;
@@ -262,7 +262,7 @@ $kanban-frame-width: 800px;
     background: #CACFD6;
     border-right: 1px solid darken(#CACFD6, 10%);
     cursor: pointer;
-    box-shadow: inset 0px 0px 20px rgba(0, 0, 0, 0.17);
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.17);
     &:hover {
       background: lighten(#CACFD6, 5%);
     }

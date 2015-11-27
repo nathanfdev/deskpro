@@ -130,13 +130,6 @@ class PersonController extends AbstractController
      *				type="boolean"
      *			),
      *			SWG\Parameter(
-     *				name="is_agent_confirmed",
-     *				description="Requires the person to be confirmed by an agent or not.",
-     *				paramType="query",
-     *				required=false,
-     *				type="boolean"
-     *			),
-     *			SWG\Parameter(
      *				name="label[]",
      *				description="Requires person to be have the specified label.",
      *				paramType="query",
@@ -206,19 +199,18 @@ class PersonController extends AbstractController
     public function searchAction()
     {
         $search_map = array(
-            'address'            => PersonSearch::TERM_CONTACT_ADDRESS,
-            'agent_team_id'      => PersonSearch::TERM_AGENT_TEAM,
-            'alpha'              => PersonSearch::TERM_ALPHA,
-            'email'              => PersonSearch::TERM_EMAIL,
-            'email_domain'       => PersonSearch::TERM_EMAIL_DOMAIN,
-            'im'                 => PersonSearch::TERM_CONTACT_IM,
-            'is_agent_confirmed' => PersonSearch::TERM_IS_AGENT_CONFIRMED,
-            'label'              => PersonSearch::TERM_LABEL,
-            'name'               => PersonSearch::TERM_NAME,
-            'language_id'        => PersonSearch::TERM_LANGUAGE,
-            'organization_id'    => PersonSearch::TERM_ORGANIZATION,
-            'phone'              => PersonSearch::TERM_CONTACT_PHONE,
-            'usergroup_id'       => PersonSearch::TERM_USERGROUP,
+            'address'         => PersonSearch::TERM_CONTACT_ADDRESS,
+            'agent_team_id'   => PersonSearch::TERM_AGENT_TEAM,
+            'alpha'           => PersonSearch::TERM_ALPHA,
+            'email'           => PersonSearch::TERM_EMAIL,
+            'email_domain'    => PersonSearch::TERM_EMAIL_DOMAIN,
+            'im'              => PersonSearch::TERM_CONTACT_IM,
+            'label'           => PersonSearch::TERM_LABEL,
+            'name'            => PersonSearch::TERM_NAME,
+            'language_id'     => PersonSearch::TERM_LANGUAGE,
+            'organization_id' => PersonSearch::TERM_ORGANIZATION,
+            'phone'           => PersonSearch::TERM_CONTACT_PHONE,
+            'usergroup_id'    => PersonSearch::TERM_USERGROUP,
         );
 
         $terms = array();
@@ -242,12 +234,12 @@ class PersonController extends AbstractController
         $date_created_end   = $this->in->getUint('date_created_end');
         if ($date_created_end) {
             $terms[] = array('type' => PersonSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1'             => $date_created_start,
-                'date2'             => $date_created_end,
+                'date1' => $date_created_start,
+                'date2' => $date_created_end,
             ));
         } elseif ($date_created_start) {
             $terms[] = array('type' => PersonSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1'             => $date_created_start,
+                'date1' => $date_created_start,
             ));
         }
 

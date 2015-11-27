@@ -31,7 +31,6 @@
  */
 namespace Application\DeskPRO\Sms\Detector;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PhoneNumber;
 use Doctrine\ORM\EntityManager;
@@ -83,13 +82,8 @@ class PersonDetector
 
         $person                  = Person::newContactPerson();
         $person->creation_system = 'gateway.person';
-        $person->is_confirmed    = true;
         $from_number             = new PhoneNumber($from_number);
         $person->setPrimaryPhoneNumber($from_number);
-
-        if (App::getSetting('core.agent_validation')) {
-            $person->is_agent_confirmed = false;
-        }
 
         $this->em->persist($person);
         $this->em->persist($from_number);

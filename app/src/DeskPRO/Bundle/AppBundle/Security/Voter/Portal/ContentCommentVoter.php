@@ -54,9 +54,6 @@ class ContentCommentVoter extends AbstractVoter
         if ($this->isLoggedIn($user)) {
             $permission_bag = $this->getPortalPermissionsManager()->getPermissionsBagForPerson($user);
         } else {
-            if ($this->getActiveBrandSetting('core.interact_require_login', false)) {
-                return false; // if core.interact_require_login and we aren't logged in, then can't comment
-            }
             $permission_bag = $this->getPortalPermissionsManager()->getPermissionsBagForGuest();
         }
 

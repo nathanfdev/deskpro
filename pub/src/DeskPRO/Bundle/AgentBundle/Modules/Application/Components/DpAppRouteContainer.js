@@ -40,7 +40,7 @@ export class DpAppRouteContainer extends React.Component {
     const { userStatus, dispatch } = this.props;
 
     if (!this.welcomePageTimer && userStatus.get('isDone')) {
-      this.welcomePageTimer = setTimeout(() => dispatch(AppActions.hideWelcomePage()), 3000);
+      this.welcomePageTimer = setTimeout(() => dispatch(AppActions.doneInitialLoad()), 3000);
     }
   }
 

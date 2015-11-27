@@ -1,5 +1,5 @@
 .dpw-navigation-dropdown-reply-controls {
-  margin-top: 0px;
+  margin-top: 0;
   margin-bottom: 7px;
 
   a {
@@ -78,11 +78,10 @@
   textarea {
     padding: 10px;
     display: block;
-    border: 0px;
+    border: 0;
     font-family: inherit;
     line-height: 1.7em;
     background: #f1f1f1;
-    display: block;
     width: 100%;
     resize: vertical;
   }

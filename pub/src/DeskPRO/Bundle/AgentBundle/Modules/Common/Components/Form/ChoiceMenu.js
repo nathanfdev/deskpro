@@ -1,6 +1,5 @@
 import React, {Component, PropTypes} from 'react';
 import {QuickFilter} from './QuickFilter';
-import classNames from 'classnames';
 
 export class ChoiceMenu extends Component {
 
@@ -18,7 +17,7 @@ export class ChoiceMenu extends Component {
         <div className="dpw-navigation-dropdown-panel-content">
           <div className="dpw-navigation-dropdown-panel-content-line">
             <div className="dpw-navigation-dropdown-panel-content-full">
-              <ChoiceMenuHeader title={title}/>
+              {/* <ChoiceMenuHeader title={title}/> */}
               <div className="dpw-departments-long-list">
                 {quickFilter && <QuickFilter/>}
                 <div className="dpw--popup-item-collection">
@@ -50,20 +49,20 @@ export class ChoiceMenuOption extends Component {
     });
   }
 
-  componentWillReceiveProps() {
-    const { values, value } = this.props;
+  componentWillReceiveProps(nextProps) {
+    const { values } = nextProps;
     this.setState({
-      isActive: values && values.indexOf(value) > -1
+      isActive: values && values.indexOf(nextProps.value) > -1
     });
   }
 
   render() {
     const {label, value, onClick} = this.props;
-    var classes = classNames('dpw--popup-item-person', { 'active': this.state.isActive });
 
     return (
       <li>
-        <div className={classes} onClick={onClick.bind(this, value)}>
+        <div className={'dpw--popup-item-box'} onClick={onClick.bind(this, value)}>
+          <span className={'dpw--checkbox-boxy'}>{this.state.isActive && <i className="fa fa-check"></i>}</span>
           <span className="dpw-popup-item-collection-name">
             {label}
           </span>

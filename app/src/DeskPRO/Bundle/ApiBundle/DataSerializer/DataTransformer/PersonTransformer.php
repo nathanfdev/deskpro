@@ -78,7 +78,6 @@ class PersonTransformer extends AbstractDataSerializerTransformer
             'disable_autoresponses',
             'disable_autoresponses_log',
             'is_confirmed',
-            'is_agent_confirmed',
             'is_deleted',
             'is_disabled',
             'creation_system',

@@ -37,6 +37,7 @@ use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Orb\Util\Arrays;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -50,6 +51,7 @@ class DiscoveryController extends BaseController
      *      }
      * )
      * @Get("/helpdesk/discover", name="api_helpdesk_discover")
+     * @Security(true)
      */
     public function discoverAction(Request $request)
     {
@@ -132,16 +134,17 @@ class DiscoveryController extends BaseController
             ['type' => 'open_time'],
         ];
 
-        $group_fields = array_map(function($v) {
+        $group_fields = array_map(function ($v) {
             Arrays::unshiftAssoc($v, 'id', $v['type']);
+
             return $v;
         }, $group_fields);
 
         foreach ($field_manager->getFields() as $f) {
             $group_fields[] = [
-                'id' => 'ticket_field.' . $f->getId(),
-                'type' => 'ticket_field',
-                'field_id' => $f->getId()
+                'id'       => 'ticket_field.'.$f->getId(),
+                'type'     => 'ticket_field',
+                'field_id' => $f->getId(),
             ];
         }
 

@@ -34,18 +34,12 @@
 namespace Application\InstallBundle\Data\DefaultData;
 
 use Application\DeskPRO\Entity\TicketTrigger;
-use Application\DeskPRO\Tickets\Actions\ModStopTriggers;
 use Application\DeskPRO\Tickets\Actions\SendAgentEmail;
 use Application\DeskPRO\Tickets\Actions\SendUserEmail;
 use Application\DeskPRO\Tickets\Actions\SetAgent;
-use Application\DeskPRO\Tickets\Actions\SetRequireValidation;
-use Application\DeskPRO\Tickets\Actions\SetStatus;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckAgent;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckAgentMessage;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckUserIsEmailed;
-use Application\DeskPRO\Tickets\Triggers\Terms\CheckUserIsNew;
-use Application\DeskPRO\Tickets\Triggers\Terms\CheckUserValidAgent;
-use Application\DeskPRO\Tickets\Triggers\Terms\CheckUserValidEmail;
 use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermComposite;
 
 class TriggerData extends AbstractDefaultData
@@ -230,85 +224,5 @@ class TriggerData extends AbstractDefaultData
         if (!isset($ignore[$trigger->sys_name])) {
             $this->getEm()->persist($trigger);
         }
-
-        #-----
-        # newticket: set require validation
-        #-----
-
-        $trigger                = new TicketTrigger();
-        $trigger->event_trigger = 'newticket';
-        $trigger->run_order     = -1000;
-        $trigger->by_user_mode  = array('email', 'form', 'portal', 'widget');
-        $trigger->is_enabled    = false;
-        $trigger->is_hidden     = false;
-        $trigger->sys_name      = 'default_newticket_requirevalid';
-        $trigger->title         = 'Enable email validation';
-
-        $set = new TriggerTermComposite();
-        $set->setOperator('AND');
-        $set->add(new CheckUserIsNew('is'));
-        $trigger->terms->addTerm($set);
-
-        $trigger->actions->addAction(new SetRequireValidation(array('require_validation' => true)));
-        if (!isset($ignore[$trigger->sys_name])) {
-            $this->getEm()->persist($trigger);
-        }
-
-        #-----
-        # newticket: check validation
-        #-----
-
-        $trigger                = new TicketTrigger();
-        $trigger->event_trigger = 'newticket';
-        $trigger->run_order     = -950;
-        $trigger->by_user_mode  = array('api', 'email', 'form', 'portal', 'widget');
-        $trigger->is_enabled    = true;
-        $trigger->is_hidden     = true;
-        $trigger->sys_name      = 'default_newticket_validemail';
-        $trigger->title         = 'Check email validation';
-
-        $set = new TriggerTermComposite();
-        $set->setOperator('AND');
-        $set->add(new CheckUserValidEmail('not'));
-        $trigger->terms->addTerm($set);
-
-        $trigger->actions->addAction(new SetStatus(array('status' => 'hidden.validating')));
-        $trigger->actions->addAction(new SendUserEmail(array(
-            'template'    => 'DeskPRO:emails_user:ticket-new-validate-email.html.twig',
-            'do_cc_users' => false,
-            'from_name'   => 'helpdesk_name',
-        )));
-        $trigger->actions->addAction(new ModStopTriggers());
-
-        if (!isset($ignore[$trigger->sys_name])) {
-            $this->getEm()->persist($trigger);
-        }
-
-        #-----
-        # newticket: check agent validation
-        #-----
-
-        $trigger                = new TicketTrigger();
-        $trigger->event_trigger = 'newticket';
-        $trigger->run_order     = -900;
-        $trigger->by_user_mode  = array('api', 'email', 'form', 'portal', 'widget');
-        $trigger->is_enabled    = true;
-        $trigger->is_hidden     = true;
-        $trigger->sys_name      = 'default_newticket_validagent';
-        $trigger->title         = 'Check agent validation';
-
-        $set = new TriggerTermComposite();
-        $set->setOperator('AND');
-        $set->add(new CheckUserValidAgent('not'));
-        $trigger->terms->addTerm($set);
-
-        $trigger->actions->addAction(new SetStatus(array('status' => 'hidden.validating')));
-        $trigger->actions->addAction(new ModStopTriggers());
-
-        if (!isset($ignore[$trigger->sys_name])) {
-            $this->getEm()->persist($trigger);
-        }
-
-        $this->getEm()->flush();
     }
 }

@@ -16,7 +16,7 @@ export class List extends Component {
     loaded: PropTypes.bool.isRequired,
     isComments: PropTypes.bool,
     selected: PropTypes.object.isRequired,
-    pagination: PropTypes.object.isRequired,
+    pagination: PropTypes.object,
     toggleSelected: PropTypes.func.isRequired,
     currentViewMode: PropTypes.string.isRequired
   };

@@ -72,15 +72,6 @@ class SettingsResolverService
                 new BrandSettingsLoader($container->getEm()->getConnection(), $simple_array_cache)
             );
         }
-
-        // virtual settings
-        $resolver->setVirtual(
-            'core.interact_require_login', function (array $settings) {
-                $settings = new SettingsBag($settings);
-
-                return !$settings->get('core.reg_enabled') || $settings->get('core.reg_required');
-            }
-        );
         $resolver->setVirtual(
             'default_timezone', function ($settings) {
                 $settings = new SettingsBag($settings);

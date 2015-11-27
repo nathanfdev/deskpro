@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import createFragment from 'react-addons-create-fragment';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 import { Card, CardLine, CardLineLeft, CardLineRight, CardLineFull, CardContentText, CardLineItem, CardCheckbox, CardDisc, CardTitle, CardUser, CardLabel, CardComments, CardStatusBar }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
@@ -72,20 +73,23 @@ export class FeedbackCard extends Component {
 
   renderOptionalFields() {
     const { feedback, viewFields } = this.props;
-    let output = [];
+    const output = {};
+    let index = 0;
     if (viewFields.includes('id')) {
-      output = output.concat(this.renderId(feedback.id));
+      output['key' + index] = this.renderId(feedback.id);
+      index++;
     }
     if (viewFields.includes('date_created')) {
-      output = output.concat(this.renderDate(feedback.date_created));
+      output['key' + index] = this.renderDate(feedback.date_created);
+      index++;
     }
     if (viewFields.includes('custom_category')) {
-      output = output.concat(this.renderCategory());
+      output['key' + index] = this.renderCategory();
     }
     return (
       <CardLine>
         <CardLineLeft>
-          { output }
+          { createFragment(output) }
         </CardLineLeft>
       </CardLine>
     );
@@ -104,9 +108,6 @@ export class FeedbackCard extends Component {
       <Card type="feedback" width={cardWidth}>
 
         <FeedbackCardMark numRatings={feedback.num_ratings}/>
-
-        <CardStatusBar align="left" level="5"/>
-        <CardStatusBar align="right" level="5"/>
 
         <CardCheckbox selected={selected} onClick={toggleSelected(feedback.id)}/>
 

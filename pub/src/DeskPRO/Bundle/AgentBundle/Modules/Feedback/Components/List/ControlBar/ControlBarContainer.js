@@ -30,9 +30,9 @@ export class ControlBarContainer extends Component {
     filterParams: PropTypes.object.isRequired,
     filters: PropTypes.array.isRequired,
     viewMode: PropTypes.string.isRequired,
-    tableVisibleFields: PropTypes.object.isRequired,
-    cardVisibleFields: PropTypes.object.isRequired,
-    viewFieldsSettingsFromDb: PropTypes.bool.isRequired
+    tableVisibleFields: PropTypes.object,
+    cardVisibleFields: PropTypes.object,
+    viewFieldsSettingsFromDb: PropTypes.bool
   };
 
   render() {

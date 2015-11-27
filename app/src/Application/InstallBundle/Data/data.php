@@ -149,9 +149,8 @@ if (!function_exists('create_user')) {
         $user->is_deleted   = $is_deleted;
 
         if ($agent || $admin) {
-            $user->is_agent_confirmed = true;
-            $user->is_agent           = true;
-            $user->can_agent          = true;
+            $user->is_agent  = true;
+            $user->can_agent = true;
         }
 
         if ($admin) {

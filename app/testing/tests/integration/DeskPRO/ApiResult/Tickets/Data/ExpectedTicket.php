@@ -127,7 +127,6 @@ return array(
             'disable_autoresponses'     => false,
             'disable_autoresponses_log' => '',
             'is_confirmed'              => true,
-            'is_agent_confirmed'        => true,
             'is_deleted'                => false,
             'is_disabled'               => false,
             'importance'                => 0,

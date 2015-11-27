@@ -42,6 +42,7 @@
   window.DP_ASSET_URL = '{{ asset('') }}';
   window.DP_BASE_URL = '{{ path('portal_home')|trim('/') }}/';
   window.__DP_APP_SRC__ = '{{ asset('DeskPRO_WidgetBundle.js', 'app_assets') }}';
+  window.__DP_URL__ = '{{ root_url() }}';
 })();
 </script>
 <script type="text/javascript" src="{{ asset('DeskPRO_PortalBundle.js', 'app_assets') }}" async="async"></script>

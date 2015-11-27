@@ -127,7 +127,7 @@ class TermEngineDb extends AbstractDbSet
             $user,
             $admin,
             null,
-            Ticket::STATUS_HIDDEN.'.'.Ticket::HIDDEN_STATUS_VALIDATING
+            Ticket::STATUS_HIDDEN.'.'.Ticket::HIDDEN_STATUS_SPAM
         );
         $this->createTicket(
             'UNASSIGNED Test Ticket 27',

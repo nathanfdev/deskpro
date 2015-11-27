@@ -59,14 +59,13 @@ class FirstAdminFixture extends AbstractFixture implements OrderedFixtureInterfa
         $admin->setName('Admin Admin');
         $admin->addEmailAddressString('admin@example.com');
         $admin->setPassword('pass');
-        $admin->is_user            = true;
-        $admin->is_confirmed       = true;
-        $admin->is_agent_confirmed = true;
-        $admin->is_agent           = true;
-        $admin->can_agent          = true;
-        $admin->can_admin          = true;
-        $admin->can_billing        = true;
-        $admin->can_reports        = true;
+        $admin->is_user      = true;
+        $admin->is_confirmed = true;
+        $admin->is_agent     = true;
+        $admin->can_agent    = true;
+        $admin->can_admin    = true;
+        $admin->can_billing  = true;
+        $admin->can_reports  = true;
         $manager->persist($admin);
         $manager->flush();
 

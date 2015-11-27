@@ -1,0 +1,112 @@
+.dpw-sidebar-main-title {// The top sidebar title
+  position: relative;
+  background: #f2f2f2;
+  border-bottom: 1px solid #d1d4d6;
+  height: 48px;
+  padding-left: 10px;
+  padding-top: 10px;
+
+  h1 {
+    display: inline-block;
+    line-height: 1em;
+    font-size: 15px;
+    font-weight: normal;
+    margin: 0;
+    text-transform: uppercase;
+    color: #939393;
+    border-bottom: 2px solid #cecece;
+    padding: 4px 0;
+
+    &.dpw-sidebar-main-title-active-section-1 { border-bottom: 2px solid #eb794f; }
+    &.dpw-sidebar-main-title-active-section-1 { border-bottom: 2px solid #42c1c1; }
+    &.dpw-sidebar-main-title-active-section-1 { border-bottom: 2px solid #eb4f6c; }
+    &.dpw-sidebar-main-title-active-section-1 { border-bottom: 2px solid #955872; }
+    &.dpw-sidebar-main-title-active-section-1 { border-bottom: 2px solid #f0b52f; }
+    &.dpw-sidebar-main-title-active-section-1 { border-bottom: 2px solid #d99379; }
+  }
+
+  .dpw-sidebar-main-title-active-app-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 80px;
+    height: 48px;
+    text-align: right;
+    overflow: hidden;
+
+    .icon {
+      position: absolute;
+      left: 25%;
+      bottom: -20px;
+      font-size: 67px;
+      color: #d6d1d1;
+    }
+  }
+}
+
+.dpw-sidebar-main-title-footer {
+  display: block;
+  background: #f4f4f4;
+  height: 10px;
+  width: 100%;
+  border-bottom: 1px solid #d1d4d6;
+  box-shadow: inset  0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.dpw-sidebar-title {
+  background: #eef1f3;
+  padding: 5px 12px;
+  border-top: 1px solid #dce4ea;
+  border-bottom: 1px solid #dce4ea;
+  color: #7f8081;
+  font-size: 0.9em;
+  font-weight: 600;
+  margin: 20px 0 5px 0;
+  position: relative;
+
+  &:before {// The block to the left
+    content: "";
+    display: inline-block;
+    width: 3px;
+    height: 15px;
+    background: #3c6e98;
+    position: absolute;
+    top: 4px;
+    left: 4px;
+  }
+
+  .dpw-sidebar-title-controls {
+    position: absolute;
+    top: 4px;
+    right: 5px;
+    font-weight: 800;
+    font-size: 8.5px;
+
+    a {
+      text-transform: uppercase;
+      display: inline-block;
+      line-height: 1em;
+      padding: 3px 5px;
+      font-size: 8.5px;
+      vertical-align: top;
+      margin-left: 5px;
+      border: 1px solid #d6d8da;
+      border-radius: 2px;
+      color: #acacac;
+      text-decoration: none;
+      height: 17px;
+    }
+
+    a:hover, a.active {
+      color: #fff;
+      border: 1px solid #4681b2;
+      background: #4681b2;
+    }
+
+    a.square {
+      width: 17px;
+      height: 17px;
+      padding-top: 4px;
+    }
+  }
+}

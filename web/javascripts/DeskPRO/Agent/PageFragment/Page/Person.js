@@ -806,23 +806,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			});
 		}
 
-		var vemails = this.getEl('validating_emails');
-		if (vemails) {
-			vemails.on('click', '.validate-trigger', function() {
-				var id = $(this).data('email-id');
-				var token = $(this).data('token');
-
-				$.ajax({
-					url: BASE_URL + 'old-agent/people/validate-email/'+id+'/'+token,
-					type: 'POST',
-					success: function() {
-						self.closeSelf();
-						DeskPRO_Window.runPageRoute('person:' + BASE_URL + 'old-agent/people/' + self.meta.person_id);
-					}
-				})
-			});
-		}
-
 		this.addEvent('openOrgProfile', function(ev) {
 			ev.preventDefault();
 			self.getEl('org_box').find('.org_link').trigger('click');

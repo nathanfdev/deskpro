@@ -1,13 +1,13 @@
-(function(appSrc) {
+((appSrc, helpdeskUrl) => {
   // Create the iframe loader
   const node = document.createElement('iframe');
   node.src = 'javascript:false';
   node.title = '';
   node.role = 'presentation';
-  (node.frameElement || node).style.cssText = "display: none";
+  (node.frameElement || node).style.cssText = 'display: none';
 
   // Insert it into the DOM
-  const allScripts = document.getElementsByTagName("script");
+  const allScripts = document.getElementsByTagName('script');
   const lastScript = allScripts[allScripts.length - 1];
   lastScript.parentNode.insertBefore(node, lastScript);
 
@@ -16,7 +16,11 @@
   const frameWin = node.contentWindow;
   const frameDoc = frameWin.document;
 
-  let doc, docDomain;
+  frameWin.DP_HELPDESK_URL = helpdeskUrl;
+
+  let doc;
+  let docDomain;
+
   try {
     doc = frameDoc;
   } catch (c) {
@@ -26,18 +30,18 @@
   }
 
   // After onload, we load the script source for real
-  doc.open()._load = function() {
-    const appNode = this.createElement('script');
+  doc.open()._load = () => {
+    const appNode = doc.createElement('script');
     if (docDomain) {
-      this.domain = docDomain;
+      doc.domain = docDomain;
     }
 
     appNode.id = 'dp_loader_iframe';
     appNode.src = appSrc;
 
-    this.body.appendChild(appNode);
+    doc.body.appendChild(appNode);
   };
 
   doc.write('<body onload="document._load();"><div id="dp_loader_element"></div>');
   doc.close();
-})(__DP_APP_SRC__);
+})(__DP_APP_SRC__, __DP_URL__);

@@ -1,16 +1,15 @@
 import { createAction } from 'Ampliflux';
-import * as Tasks from 'DeskPRO/Bundle/AgentBundle/Services/Api/Tasks';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 
 export const createProject = createAction(
   'TASKS_NAV_POST_PROJECT',
-  data => Tasks.createProject(data)
+  data => DpApi.sendPost('DP_API/projects', data)
 );
 
 export const editProject = createAction(
   'TASKS_NAV_EDIT_PROJECT',
-  (projectId, data) => Tasks.editProject(projectId, data)
+  (projectId, data) => DpApi.sendPut('DP_API/projects/' + projectId, data)
 );
 
 export const initialLoad = createAction(

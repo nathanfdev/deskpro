@@ -13,8 +13,3 @@
     {{ phrase('user.emails.register-confirm') }}<br/>
     <a href="{{ verify_url }}">{{ verify_url }}</a>
 {% endif %}
-
-{% if not person.is_agent_confirmed %}
-    <br/><br/>
-    {{ phrase('user.emails.register-agent-validation') }}
-{% endif %}

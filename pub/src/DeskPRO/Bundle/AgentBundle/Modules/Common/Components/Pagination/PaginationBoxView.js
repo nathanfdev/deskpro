@@ -28,16 +28,17 @@ export class PaginationBoxView extends Component {
 
   static defaultProps = {
     currentPage: 1,
-    pageNum: 10,
     pageRangeDisplayed: 2,
     marginPagesDisplayed: 3,
-    activeClassName: 'current-page',
     previousClassName: 'previous',
     nextClassName: 'next',
     previousLabel: 'Previous',
     nextLabel: 'Next',
     breakLabel: '...',
-    disabledClassName: 'disabled'
+    disabledClassName: 'disabled',
+    containerClassName: 'pages-list',
+    subContainerClassName: 'pages-list',
+    activeClassName: 'current-page'
   };
 
   constructor(props) {
@@ -52,6 +53,7 @@ export class PaginationBoxView extends Component {
   }
 
   handlePageSelected(selected, event) {
+    event.stopPropagation();
     event.preventDefault();
     const { currentPage, clickCallback} = this.props;
 

@@ -1,0 +1,103 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+/**
+ * DeskPRO.
+ */
+namespace DeskPRO\Bundle\AppBundle\Settings;
+
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\PersonSetting;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AgentSettings;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\TicketsSettings;
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+
+/**
+ * Class SettingsManager.
+ */
+class SettingsManager
+{
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * @var Person
+     */
+    private $user;
+
+    /**
+     * @param EntityManager $em
+     * @param TokenStorage  $tokenStorage
+     */
+    public function __construct(EntityManager $em, TokenStorage $tokenStorage)
+    {
+        $this->em   = $em;
+        $this->user = $tokenStorage->getToken()->getUser();
+    }
+
+    /**
+     * @return AgentSettings
+     */
+    public function getAgentSettings()
+    {
+        $settings = new AgentSettings();
+        $settings->setTickets($this->getTicketsSettings());
+
+        return $settings;
+    }
+
+    /**
+     * @return TicketsSettings
+     */
+    private function getTicketsSettings()
+    {
+        $settings = new TicketsSettings();
+
+        /** @var PersonSetting[] $personSettings */
+        $personSettings = $this->em
+            ->createQuery('
+              SELECT ps
+              FROM App:PersonSetting ps
+              JOIN ps.person p
+              WHERE  ps.name LIKE ?0 AND p.id = ?1
+            ')
+            ->setParameters([TicketsSettings::FILTER_GROUPING_PREFIX.'%', $this->user->getId()])
+            ->getResult();
+        $grouping = [];
+        foreach ($personSettings as $ps) {
+            $grouping[(int) str_replace(TicketsSettings::FILTER_GROUPING_PREFIX, '', $ps->getName())] = $ps->getValue();
+        }
+
+        $settings->setFilterGroupings($grouping);
+
+        return $settings;
+    }
+}

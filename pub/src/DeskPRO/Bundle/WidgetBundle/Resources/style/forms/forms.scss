@@ -1,0 +1,91 @@
+.popover-form {
+  .dpdesignportal-form {
+    margin-top: 0;
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+}
+
+.dpdesignportal form.dpdesignportal-form, form.dpdesignportal-form {
+  text-align: left;
+  margin-top: 30px;
+  padding-bottom: 5px;
+
+  label, .label {
+    display: block;
+    margin-top: 12px;
+  }
+
+  .inline-form-item {
+    padding-left: 65px;
+    position: relative;
+    margin-top: 10px;
+
+    .dpdesignportal-form-item-label-title {
+      display: inline-block;
+      position: absolute;
+      left: 0;
+      top: 10px;
+
+      font-size: 11px;
+      width: 60px;
+      text-align: right;
+      vertical-align: middle;
+      padding: 0;
+      color: #9b9b9b;
+      line-height: 1.1em;
+    }
+  }
+  .inline-form-item + .inline-form-item { margin-top: 5px;}
+
+  .button-label {
+    text-align: right;
+    margin-top: 5px;
+
+    .dpdesignportal-checkbox-container {
+      float: left;
+      font-size: 11px;
+      color: #a5a5a5;
+      .dpdesignportal-checkbox { position: relative; top: -1px; }
+    }
+  }
+
+  .dpdesignportal-form-item-label-title {
+    display: block;
+    padding-bottom: 9px;
+    padding-left: 5px;
+  }
+
+  %dpdesignportal-form-item-base {// Basic text input style (input, textarea, dropdowns)
+    display: block;
+    width: 100%;
+    border: 1px solid #e7e7e7;
+    border-radius: 2px;
+    background: #fff;
+    padding: 8px 5px;
+    font-size: 12px;
+    position: relative;
+    .fa-caret-down { position: absolute; right: 15px; top: 10px;}
+    &:hover { border: 1px solid #cecece;}
+  }
+
+  [type="text"] { @extend %dpdesignportal-form-item-base; }
+
+  .dpdesignportal-form-item-dropdown {
+    @extend %dpdesignportal-form-item-base;
+    cursor: pointer;
+    i {
+      color: #adadad;
+    }
+  }
+
+  textarea {
+    @extend %dpdesignportal-form-item-base;
+    min-height: 60px;
+    @include placeholder {
+      font-size: 11px;
+      opacity: 1;
+      color: #cecece;
+    }
+  }
+}

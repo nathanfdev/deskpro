@@ -394,7 +394,6 @@ class Prefs
     {
         return array(
             'new_user',
-            'new_user_validate',
         );
     }
 

@@ -35,12 +35,30 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class ChatController.
  */
 class ChatController extends BaseController
 {
+    /**
+     * @Route("/portal/api/chat/create", name="portal_api_chat_create")
+     * @Method({"POST"})
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function createNewChatAction(Request $request)
+    {
+        $params = $request->request->all();
+
+        return new JsonResponse([
+            'id' => 1,
+        ]);
+    }
+
     /**
      * @Route("/portal/api/chat/online", name="portal_api_chat_online")
      * @Method({"GET"})

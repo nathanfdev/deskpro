@@ -3462,6 +3462,22 @@ $collection->create(
 );
 
 ########################################################################################################################
+# Portal App Settings
+########################################################################################################################
+
+$collection->create('api_settings_portalapps', array(
+    'path'       => '/settings/portal/{app}',
+    'controller' => 'LegacyApiBundle:Settings:portalAppSettings',
+    'methods'    => array('GET'),
+));
+
+$collection->create('api_settings_portalapps_save', array(
+    'path'       => '/settings/portal/{app}',
+    'controller' => 'LegacyApiBundle:Settings:savePortalAppSettings',
+    'methods'    => array('POST'),
+));
+
+########################################################################################################################
 # Server Settings
 ########################################################################################################################
 

@@ -56,25 +56,6 @@
 	</section>
 </div>
 <div id="{{baseId}}_contact_outside"></div>
-{% if validating_emails %}
-	<div class="profile-box-container summary">
-		<header>
-			<h4>{{ phrase('agent.people.email_awaiting_validation') }}</h4>
-		</header>
-		<section>
-			<div class="table-content contact-list contact-list-wrapper">
-				<ul class="contact-data-list" id="{{ baseId }}_validating_emails">
-					{% for vemail in validating_emails %}
-						<li class="email">
-							{{ vemail.email }}
-							<span class="set-primary validate-trigger" data-token="{{ security_token('validate_email') }}" data-email-id="{{ vemail.id }}">{{ phrase('agent.general.validate') }}</span>
-						</li>
-					{% endfor %}
-				</ul>
-			</div>
-		</section>
-	</div>
-{% endif %}
 {{ dp_app_loc(baseId, 'contact.after') }}
 {# /Box Contact #}
 

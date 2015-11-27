@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\Filters;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Entity\PersonSetting;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\TicketsSettings;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -47,10 +48,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * Class TicketFiltersController.
+ */
 class TicketFiltersController extends BaseController
 {
-    const CUSTOM_FILTER_GROUP_BY_PREFIX = 'agent.ticket_filter.group_by.';
-
     /**
      * @ApiDoc(
      *      description="Get a list of filters",
@@ -239,7 +241,7 @@ class TicketFiltersController extends BaseController
      */
     private function findOrCreateFilterGroupByPersonSetting(TicketFilter $filter)
     {
-        $settingName = self::CUSTOM_FILTER_GROUP_BY_PREFIX.$filter->getId();
+        $settingName = TicketsSettings::FILTER_GROUPING_PREFIX.$filter->getId();
         $person      = $this->getUser();
 
         $personSetting = $this->getManager()->find(PersonSetting::class, ['person' => $person, 'name' => $settingName]);
@@ -255,7 +257,7 @@ class TicketFiltersController extends BaseController
      */
     private function removeFilterGroupByPersonSetting(TicketFilter $filter)
     {
-        $settingName = self::CUSTOM_FILTER_GROUP_BY_PREFIX.$filter->getId();
+        $settingName = TicketsSettings::FILTER_GROUPING_PREFIX.$filter->getId();
         $person      = $this->getUser();
 
         $personSetting = $this->getManager()->find(PersonSetting::class, ['person' => $person, 'name' => $settingName]);

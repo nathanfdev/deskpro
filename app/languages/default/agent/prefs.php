@@ -213,7 +213,6 @@ return array(
     'agent.prefs.apps_new_comment'           => 'A new comment is submitted',
     'agent.prefs.apps_new_comment_validate'  => 'A new comment is submitted that requires validation',
     'agent.prefs.apps_new_user'              => 'A new user registered',
-    'agent.prefs.apps_new_user_validate'     => 'A new user registered and requires validation',
     'agent.prefs.apps_login_attempt'         => 'Whenever my account is used to log in',
     'agent.prefs.apps_login_attempt_fail'    => 'Whenever my account is used to log in and the credentials are incorrect',
 );

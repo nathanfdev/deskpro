@@ -56,6 +56,11 @@ class TicketCountsController extends BaseController
      *              "requirement"="\d+",
      *              "description"="the id of the filter",
      *              "dataType"="integer"
+     *          },
+     *          {
+     *              "name"="group_by",
+     *              "description"="[Ticket filter ID => group_by] map",
+     *              "dataType"="array"
      *          }
      *      },
      *      statusCodes={
@@ -66,10 +71,10 @@ class TicketCountsController extends BaseController
      * )
      * @Get("/ticket_filter_sets/{id}/count", name="api_ticket_filter_set_count")
      */
-    public function getTicketFilterSetCountAction($id)
+    public function getTicketFilterSetCountAction(Request $request, $id)
     {
         $set   = $this->findOr404('App:TicketFilterSet', $id);
-        $count = $this->getCountsService()->getFilterSetTicketsCount($set);
+        $count = $this->getCountsService()->getFilterSetTicketsCount($set, $request->get('group_by'));
 
         return View::create(
             $this->createRepresentation($count),
@@ -84,17 +89,24 @@ class TicketCountsController extends BaseController
      *          200="Success",
      *          404="Not Found"
      *      },
+     *      requirements={
+     *          {
+     *              "name"="group_by",
+     *              "description"="[Ticket filter ID => group_by] map",
+     *              "dataType"="array"
+     *          }
+     *      },
      *      output="array"
      * )
      * @Get("/ticket_filter_sets/all/counts", name="api_ticket_filters_sets_counts")
      */
-    public function getAllTicketFilterSetCountsAction()
+    public function getAllTicketFilterSetCountsAction(Request $request)
     {
         $sets = $this->getManager()->getRepository('App:TicketFilterSet')->findAll();
 
         $filter_set_counts = [];
         foreach ($sets as $set) {
-            $filter_set_counts[] = $this->getCountsService()->getFilterSetTicketsCount($set);
+            $filter_set_counts[] = $this->getCountsService()->getFilterSetTicketsCount($set, $request->get('group_by'));
         }
 
         return View::create(
@@ -147,7 +159,7 @@ class TicketCountsController extends BaseController
      *          {
      *              "name"="group_by",
      *              "requirement"=".+",
-     *              "description"="the grouping order you want",
+     *              "description"="[Ticket filter ID => group_by] map",
      *              "dataType"="string",
      *              "required"=false
      *          },

@@ -31,18 +31,6 @@ export default createReducer(initialState, {
     return state;
   },
 
-  TICKET_NAV_UPDATE_FILTER: (state, targetFilter) => {
-    let index = null;
-    state.get('filters').forEach((filter, i) => {
-      if (filter.get('id') === targetFilter.id) {
-        index = i;
-        return false;
-      }
-    });
-
-    return index !== null ? state.mergeIn(['filters', index], targetFilter) : state;
-  },
-
   TICKETS_NAV_LOAD_FILTER_COUNT: async({
     success: (state, newFilterCount) => {
       const filterSets = state.get('filterSetsCount').toJS();

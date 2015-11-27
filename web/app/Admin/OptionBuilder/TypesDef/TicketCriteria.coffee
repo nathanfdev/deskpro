@@ -304,11 +304,6 @@ define [
       })
 
       options.push({
-        title: 'Check agent validation status',
-        value: 'CheckUserValidAgent'
-      })
-
-      options.push({
         title: 'Check email validation status',
         value: 'CheckUserValidEmail'
       })
@@ -1015,35 +1010,6 @@ define [
       options.propName = 'is_new'
       def = @getStandardIs(options)
       return def
-
-    getCheckUserValidAgent: (options = {}) ->
-      me = @
-      return {
-        getTemplate: ->
-          return me.dpTemplateManager.get('OptionBuilder/type-criteria-opselect.html')
-
-        getData: ->
-          return {}
-
-        getDataFormatter: ->
-          return {
-            getViewValue: (value = {}, data) ->
-              return {
-                op: value.op || 'is',
-                options: [
-                  { value: 'is', title: 'User has been validated by an agent' },
-                  { value: 'not', title: 'User is waiting to be validated by an agent' }
-                ]
-              }
-
-            getValue: (model = {}, data) ->
-              return {
-                type: 'CheckUserValidEmail',
-                op: model.op || 'is'
-                options: { run:true }
-              }
-          }
-      }
 
     getCheckUserValidEmail: (options = {}) ->
       me = @

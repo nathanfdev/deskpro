@@ -14,19 +14,19 @@ import debounce from 'lodash/function/debounce';
 import $ from 'jquery';
 
 @connect(state => ({
-  user:          meSelector(state),
-  dpWindow:      state.Application.dpWindow,
+  user: meSelector(state),
+  dpWindow: state.Application.dpWindow,
   workspaceDims: workspaceDimsSelector(state)
 }))
 @DragDropContext(HTML5Backend)
 export class DpApp extends React.Component {
 
   static propTypes = {
-    user:      PropTypes.object.isRequired,
-    children:  PropTypes.object.isRequired,
-    dpWindow:  PropTypes.object.isRequired,
+    user: PropTypes.object.isRequired,
+    children: PropTypes.object.isRequired,
+    dpWindow: PropTypes.object.isRequired,
     workspace: PropTypes.object.isRequired,
-    dispatch:  PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -34,11 +34,7 @@ export class DpApp extends React.Component {
     this._resetWinSize();
     this.onResize = debounce(() => {
       this._resetWinSize();
-    }, 350)
-  }
-
-  _resetWinSize() {
-    this.props.dispatch(appActions.windowResize($(window).width(), $(window).height()));
+    }, 350);
   }
 
   componentDidMount() {
@@ -49,19 +45,23 @@ export class DpApp extends React.Component {
     $(window).off('resize', this.onResize);
   }
 
+  _resetWinSize() {
+    this.props.dispatch(appActions.windowResize($(window).width(), $(window).height()));
+  }
+
   render() {
     const { user, dpWindow, dispatch } = this.props;
 
     return (
       <div className="dp-window">
-        <Header user={user} dispatch={dispatch} />
-        <AppSwitcher dispatch={dispatch} />
+        <Header user={user} dispatch={dispatch}/>
+        <AppSwitcher dispatch={dispatch}/>
 
         <div className="dp-panes-middle">
           {this.props.children}
 
           <TabBodyPane>
-            <TabFrame dpWindow={dpWindow} />
+            <TabFrame dpWindow={dpWindow}/>
           </TabBodyPane>
         </div>
         <NotificationsContainer />

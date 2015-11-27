@@ -135,10 +135,8 @@ class DbalTicketStatusTermCompiler extends AbstractDbalTermCompiler
         return in_array(
             $status,
             array(
-                Ticket::HIDDEN_STATUS_VALIDATING,
                 Ticket::HIDDEN_STATUS_SPAM,
                 Ticket::HIDDEN_STATUS_DELETED,
-                Ticket::HIDDEN_STATUS_TEMP,
             )
         );
     }

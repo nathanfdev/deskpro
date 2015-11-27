@@ -77,7 +77,6 @@ class TicketTransformer extends AbstractDataSerializerTransformer
             'agent_team',
             'organization',
             'linked_chat',
-            'labels',
             // 'sent_to_address',
             'email_account',
             'email_account_address',
@@ -169,6 +168,7 @@ class TicketTransformer extends AbstractDataSerializerTransformer
         $props['fields']       = $custom_data;
         $props['participants'] = $this->selectIds($ticket->getUserParticipants());
         $props['followers']    = $this->selectIds($ticket->getAgentParticipants());
+        $props['labels']       = $ticket->getLabelsArray();
 
         return $props;
     }
