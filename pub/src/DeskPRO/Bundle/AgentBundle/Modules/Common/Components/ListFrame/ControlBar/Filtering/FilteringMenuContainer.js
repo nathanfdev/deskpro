@@ -282,7 +282,7 @@ export class FilteringMenu extends Component {
     return this.renderLabelsFilterInfo(selected);
   }
 
-  renderSelectFilter({ label, icon, param, multiple, options }, index) {
+  renderSelectFilter({ label, icon, param, multiple, quickFilter, options }, index) {
     const { dispatch, setParamsAction, stateValue } = this.props;
     const params = [param];
     options.map(option=> {
@@ -345,7 +345,7 @@ export class FilteringMenu extends Component {
         >
         {this.renderSelectFilterInfo(options, filterValue)}
         <Menu>
-          <ChoiceMenu title={label}>
+          <ChoiceMenu title={label} quickFilter={quickFilter}>
             <ul>
               {options.map((option, index2) =>
                   <ChoiceMenuOption

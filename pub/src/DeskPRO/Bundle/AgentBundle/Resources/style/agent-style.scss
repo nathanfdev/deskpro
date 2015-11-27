@@ -16,7 +16,7 @@ $mobile: new-breakpoint(max-width 640px 6);
 @import "raw/styles";
 @import "include";
 @import "loading/login";
-@import "global-widgets/table-view", "global-widgets/id-container", "global-widgets/timer", "global-widgets/pagination", "global-widgets/control-bar", "global-widgets/radio", "global-widgets/cards", "global-widgets/fonts";
+@import "global-widgets/table-view", "global-widgets/id-container", "global-widgets/timer", "global-widgets/pagination", "global-widgets/control-bar", "global-widgets/radio", "global-widgets/cards", "global-widgets/fonts", "global-widgets/checkbox";
 @import "global-widgets/popup", "global-widgets/avatar";
 @import "global-widgets/navigation-dropdown/navigation-dropdowns";
 
@@ -25,7 +25,6 @@ $mobile: new-breakpoint(max-width 640px 6);
 @import "cards/_index";
 
 @import "legacy-styles";
-
 
 body {
   font-family: $font-stack;
