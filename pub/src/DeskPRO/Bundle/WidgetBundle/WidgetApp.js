@@ -41,8 +41,6 @@ export default class WidgetApp {
       }
     });
 
-    console.log(window.DP_HELPDESK_URL);
-
     $container.appendTo(pageDoc.body);
     ReactDOM.render(<App />, $container.get(0));
   }
