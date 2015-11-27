@@ -315,16 +315,16 @@ class Ticket extends AbstractEntityRepository
             return array();
         }
 
-        if ($sort_by === 'date_last_reply') {
+        if ($sort_by === 'last_reply') {
             $ids = $this->getEntityManager()->getConnection()->fetchAllCol(
                 '
                                 SELECT id
                                 FROM tickets
                                 WHERE id IN (?)
                 ORDER BY GREATEST(
-+					COALESCE(date_last_user_reply,0),
-+					COALESCE(date_last_agent_reply,0)
-+				) DESC
+					COALESCE(date_last_user_reply,0),
+					COALESCE(date_last_agent_reply,0)
+				) DESC
             ',
             array($ids), array(Connection::PARAM_INT_ARRAY));
         } elseif ($sort_by == 'status') {
@@ -436,11 +436,15 @@ class Ticket extends AbstractEntityRepository
             $count = App::getDb()->fetchColumn('
                 SELECT SUM(count)
                 FROM (
-                    SELECT COUNT(*) AS count FROM tickets WHERE tickets.person_id = ? '.($status ? " AND tickets.status IN ($status) " : '').' AND (tickets.date_last_agent_reply IS NOT NULL OR tickets.date_last_user_reply IS NOT NULL)
+                    SELECT COUNT(*) AS count FROM tickets WHERE tickets.person_id = ? '
+                        .($status ? " AND tickets.status IN ($status) " : '').'
+                        AND (tickets.date_last_agent_reply IS NOT NULL OR tickets.date_last_user_reply IS NOT NULL)
                     UNION
                     SELECT COUNT(*) AS count FROM tickets_participants
                     LEFT JOIN tickets ON (tickets.id = tickets_participants.ticket_id)
-                    WHERE tickets_participants.person_id = ? '.($status ? " AND tickets.status IN ($status) " : '').' AND (tickets.date_last_agent_reply IS NOT NULL OR tickets.date_last_user_reply IS NOT NULL)
+                    WHERE tickets_participants.person_id = ? '
+                        .($status ? " AND tickets.status IN ($status) " : '').'
+                        AND (tickets.date_last_agent_reply IS NOT NULL OR tickets.date_last_user_reply IS NOT NULL)
                 ) a
             ', array($person->id, $person->id));
         }
