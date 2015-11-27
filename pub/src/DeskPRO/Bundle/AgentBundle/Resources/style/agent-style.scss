@@ -13,12 +13,14 @@ $mobile: new-breakpoint(max-width 640px 6);
 
 @import "normalize.css";
 
-@import "raw/styles";
 @import "include";
 @import "loading/login";
 @import "global-widgets/table-view", "global-widgets/id-container", "global-widgets/timer", "global-widgets/pagination", "global-widgets/control-bar", "global-widgets/radio", "global-widgets/cards", "global-widgets/fonts", "global-widgets/checkbox";
 @import "global-widgets/popup", "global-widgets/avatar";
+@import "global-widgets/window/sidebar-titles", "global-widgets/window/sidebar";
+@import "global-widgets/window/top-bar", "global-widgets/window/top-bar-user-options", "global-widgets/window/top-bar-agent-ims";
 @import "global-widgets/navigation-dropdown/navigation-dropdowns";
+@import "raw/styles";
 
 @import "chrome/positioning";
 @import "chrome/tabpane";

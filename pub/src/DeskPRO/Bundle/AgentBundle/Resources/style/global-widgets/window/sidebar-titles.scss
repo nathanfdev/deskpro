@@ -11,13 +11,11 @@
     line-height: 1em;
     font-size: 15px;
     font-weight: normal;
-    padding: 0;
     margin: 0;
     text-transform: uppercase;
     color: #939393;
     border-bottom: 2px solid #cecece;
-    padding-top: 4px;
-    padding-bottom: 4px;
+    padding: 4px 0;
 
     &.dpw-sidebar-main-title-active-section-1 { border-bottom: 2px solid #eb794f; }
     &.dpw-sidebar-main-title-active-section-1 { border-bottom: 2px solid #42c1c1; }
@@ -29,8 +27,8 @@
 
   .dpw-sidebar-main-title-active-app-icon {
     position: absolute;
-    top: 0px;
-    right: 0px;
+    top: 0;
+    right: 0;
     width: 80px;
     height: 48px;
     text-align: right;
@@ -52,7 +50,7 @@
   height: 10px;
   width: 100%;
   border-bottom: 1px solid #d1d4d6;
-  box-shadow: inset  0px 3px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: inset  0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
 .dpw-sidebar-title {
@@ -63,7 +61,7 @@
   color: #7f8081;
   font-size: 0.9em;
   font-weight: 600;
-  margin: 20px 0px 5px 0px;
+  margin: 20px 0 5px 0;
   position: relative;
 
   &:before {// The block to the left
