@@ -34,6 +34,7 @@ export class SortingMenu extends Component {
     return (
       <li ref="menuItem">
         <Button
+          isActive={this.state.expanded}
           onClick={this.toggleExpanded}
           ref="button"
           title="Order by:"

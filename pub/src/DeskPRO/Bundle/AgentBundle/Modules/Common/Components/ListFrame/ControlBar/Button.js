@@ -1,12 +1,26 @@
 import React, { Component, PropTypes } from 'react';
+import classNames from 'classnames';
 
 export class Button extends Component {
   static propTypes = {
     title: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     icon: PropTypes.string,
+    isActive: PropTypes.bool,
     onClick: PropTypes.func.isRequired
   };
+
+  componentWillMount() {
+    this.setState({
+      isActive: this.props.isActive
+    });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      isActive: nextProps.isActive
+    });
+  }
 
   onClick = event => {
     event.preventDefault();
@@ -17,8 +31,10 @@ export class Button extends Component {
 
   render() {
     const { title, label, icon } = this.props;
+    var classes = classNames('dpwd-navigation-dropdown-top-row-button', { 'active': this.state.isActive });
+
     return (
-      <a href="#" className="dpwd-navigation-dropdown-top-row-button" onClick={this.onClick}>
+      <a href="#" className={classes} onClick={this.onClick}>
         <span
           className="dpwd-navigation-dropdown-top-row-button-text dpwd-navigation-dropdown-top-row-button-text-grey">
           {title}

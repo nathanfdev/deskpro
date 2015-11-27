@@ -192,12 +192,10 @@ const BaseItem = React.createClass({
       });
 
       return (
-        <div className={this.props.widgetClass}>
-          <a href="#" className={divClasses}
-             onClick={this.onClickAction} onMouseOver={onMouseOverAction} onMouseOut={onMouseOutAction}>
-            {this.formatOutput(label, hasMenu, hasItemList)}
-          </a>
-        </div>
+        <a href="#" className={divClasses}
+           onClick={this.onClickAction} onMouseOver={onMouseOverAction} onMouseOut={onMouseOutAction}>
+          {this.formatOutput(label, hasMenu, hasItemList)}
+        </a>
       );
     }
   },
@@ -246,11 +244,11 @@ const BaseItem = React.createClass({
     childrenOutput = childrenOutput.concat(this.renderMenu(hasMenu));
     childrenOutput = childrenOutput.concat(this.renderItemList(hasItemList));
     return (
-      <div onMouseOver={this.props.subMenuMode ? ()=>{} : this.openMenu}
-           onClick={this.props.subMenuMode && this.props.subMenuMode === 'click' ? this.toggleMenu : ()=>{}}>
+      <li onMouseOver={this.props.subMenuMode ? ()=>{} : this.openMenu}
+          onClick={this.props.subMenuMode && this.props.subMenuMode === 'click' ? this.toggleMenu : ()=>{}}>
         {this.renderLabel(hasMenu, hasItemList)}
         {childrenOutput}
-      </div>
+      </li>
     );
   }
 });
