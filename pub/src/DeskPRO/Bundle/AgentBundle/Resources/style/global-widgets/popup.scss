@@ -129,6 +129,12 @@
     &:last-child { padding-right: 7px; }
   }
 
+  .dpw--assignment-scrollable-container {
+    li {
+      padding: 5px;
+    }
+  }
+
   .dpw-popup-content-item {// An item in a content-*, inline
     display: inline-block;
     font-size: 11px;
@@ -199,7 +205,6 @@
     li {
       display: block;
       width: 100%;
-      // padding: 5px; This style is used in the elements in which this property is unacceptable
       margin-bottom: 4px;
       margin-top: 4px;
       border-radius: 2px;
