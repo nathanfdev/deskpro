@@ -94,14 +94,18 @@ export default class Frame extends React.Component {
     const doc = this.getContentDocument();
 
     if (doc.readyState === 'complete') {
-      const $head = jQuery(doc.head);
-      const $body = jQuery(doc.body);
+      if (!this.containerReady) {
+        const $head = jQuery(doc.head);
+        const $body = jQuery(doc.body);
 
-      const $styles = jQuery(document).find('style').clone();
-      const $container = jQuery('<div/>', {id: 'react_frame_container'});
+        const $styles = jQuery(document).find('style').clone();
+        const $container = jQuery('<div/>', {id: 'react_frame_container'});
 
-      $head.html($styles);
-      $body.html($container);
+        $head.html($styles);
+        $body.html($container);
+
+        this.containerReady = true;
+      }
 
       const contents = React.createElement('div', undefined, this.props.children);
       ReactDOM.render(contents, doc.body.firstChild);
