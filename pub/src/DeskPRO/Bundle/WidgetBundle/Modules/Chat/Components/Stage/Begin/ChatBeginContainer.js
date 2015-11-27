@@ -43,13 +43,15 @@ export class ChatBeginContainer extends React.Component {
     });
   };
 
-  onToggleHiddenEmail = () => {
+  onToggleHiddenEmail = event => {
+    event.preventDefault();
     this.setState({
       hiddenEmail: !this.state.hiddenEmail
     });
   };
 
-  onSubmit = () => {
+  onSubmit = event => {
+    event.preventDefault();
     this.props.dispatch(createChat(this.state));
   };
 
