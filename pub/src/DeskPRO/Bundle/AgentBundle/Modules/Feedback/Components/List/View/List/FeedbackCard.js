@@ -84,8 +84,7 @@ export class FeedbackCard extends Component {
       index++;
     }
     if (viewFields.includes('custom_category')) {
-      output['key' + index] = output.concat(this.renderCategory());
-      index++;
+      output['key' + index] = this.renderCategory();
     }
     return (
       <CardLine>
@@ -109,9 +108,6 @@ export class FeedbackCard extends Component {
       <Card type="feedback" width={cardWidth}>
 
         <FeedbackCardMark numRatings={feedback.num_ratings}/>
-
-        <CardStatusBar align="left" level="5"/>
-        <CardStatusBar align="right" level="5"/>
 
         <CardCheckbox selected={selected} onClick={toggleSelected(feedback.id)}/>
 
