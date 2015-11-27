@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { createChat } from '../../../Actions/chatActions';
+import { Header } from './Header';
 
 @connect()
 export class ChatBeginContainer extends React.Component {
@@ -46,7 +47,7 @@ export class ChatBeginContainer extends React.Component {
     const { children } = props;
     const childProps = children.props;
 
-    return React.cloneElement(children, {
+    const content = React.cloneElement(children, {
       ...props,
       ...childProps,
 
@@ -59,5 +60,12 @@ export class ChatBeginContainer extends React.Component {
       onToggleHiddenEmail: this.onToggleHiddenEmail,
       onSubmit: this.onSubmit
     });
+
+    return (
+      <div>
+        <Header />
+        {content}
+      </div>
+    );
   }
 }

@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { Header } from './Header';
 import { UserInfoForm } from './UserInfoForm';
 import { Checkbox } from './Checkbox';
 
@@ -69,10 +68,7 @@ export class ChatBeginConversation extends React.Component {
 
     return (
       <div>
-        <Header />
-
-        {step === 'name' && this.renderNameForm()}
-        {step === 'email' && this.renderEmailForm()}
+        {step === 'email' ? this.renderEmailForm() : this.renderNameForm()}
       </div>
     );
   }

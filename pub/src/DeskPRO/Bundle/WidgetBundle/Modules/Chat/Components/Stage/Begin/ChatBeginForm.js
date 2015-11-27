@@ -16,8 +16,6 @@ export class ChatBeginForm extends React.Component {
 
     return (
       <div>
-        Begin form mode
-
         <form onSubmit={onSubmit}>
           <input type="text" name={name} onChange={onChangeName} />
           <input type="text" name={email} onChange={onChangeEmail} />
