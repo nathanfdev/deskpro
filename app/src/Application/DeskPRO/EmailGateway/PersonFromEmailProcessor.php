@@ -138,11 +138,10 @@ class PersonFromEmailProcessor
      * is properly saved.
      *
      * @param $from
-     * @param bool $do_validated True to validate user, false to use whatever is default
      *
      * @return \Application\DeskPRO\Entity\Person
      */
-    public function createPerson(EmailAddress $from, $do_validated = false)
+    public function createPerson(EmailAddress $from)
     {
         $person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($from->getEmail(), true);
         if ($person) {

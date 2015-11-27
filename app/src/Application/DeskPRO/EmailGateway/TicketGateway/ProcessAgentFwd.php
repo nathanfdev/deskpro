@@ -179,7 +179,7 @@ class ProcessAgentFwd extends ProcessAbstract
         if ($user) {
             $person_processor->passPerson($person_email_item, $user);
         } else {
-            $user = $person_processor->createPerson($person_email_item, true);
+            $user = $person_processor->createPerson($person_email_item);
         }
 
         #------------------------------
@@ -481,7 +481,7 @@ class ProcessAgentFwd extends ProcessAbstract
         if ($user) {
             $person_processor->passPerson($person_email_item, $user);
         } else {
-            $user = $person_processor->createPerson($person_email_item, true);
+            $user = $person_processor->createPerson($person_email_item);
         }
 
         #------------------------------

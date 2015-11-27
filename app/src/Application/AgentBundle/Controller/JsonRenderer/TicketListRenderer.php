@@ -164,7 +164,6 @@ class TicketListRenderer
         $data['ticket_hash']            = $ticket->ticket_hash;
         $data['status']                 = $ticket->status;
         $data['hidden_status']          = $ticket->hidden_status;
-        $data['validating']             = $ticket->validating;
         $data['is_hold']                = $ticket->is_hold;
         $data['urgency']                = $ticket->urgency;
         $data['count_agent_replies']    = $ticket->count_agent_replies;

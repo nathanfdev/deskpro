@@ -26,4 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1448644222);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1448644222 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('Remove tickets.validating');
+        $this->execSlowAlterTable('tickets', 'DROP validating');
+    }
+}

@@ -87,7 +87,6 @@ use Orb\Util\WorkHoursSetAll;
  * @property string $ticket_hash
  * @property string $status
  * @property string $hidden_status
- * @property string $validating
  * @property bool $is_hold
  * @property int $urgency
  * @property int $feedback_rating
@@ -330,11 +329,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * @var string
      */
     protected $hidden_status = null;
-
-    /**
-     * @var string
-     */
-    protected $validating = null;
 
     /**
      * Is the ticket on hold?
@@ -3649,7 +3643,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             'ticket_hash'                => $this->ticket_hash,
             'status'                     => $this->status,
             'hidden_status'              => $this->hidden_status,
-            'validating'                 => $this->validating,
             'is_hold'                    => $this->is_hold,
             'urgency'                    => $this->urgency,
             'count_agent_replies'        => $this->count_agent_replies,
@@ -4004,13 +3997,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             'columnName' => 'hidden_status',
             'type'       => 'string',
             'length'     => 30,
-            'nullable'   => true,
-        ));
-        $metadata->mapField(array(
-            'fieldName'  => 'validating',
-            'columnName' => 'validating',
-            'type'       => 'string',
-            'length'     => 35,
             'nullable'   => true,
         ));
         $metadata->mapField(array(

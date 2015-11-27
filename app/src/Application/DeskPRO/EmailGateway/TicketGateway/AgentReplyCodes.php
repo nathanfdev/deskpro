@@ -342,7 +342,7 @@ class AgentReplyCodes implements Loggable
                         $this->props['user'] = $person;
                     } else {
                         $this->getLogger()->logDebug('[AgentReplyCodes] Creating new person: '.$param);
-                        $person = $person_processor->createPerson($email, true);
+                        $person = $person_processor->createPerson($email);
                         $this->getLogger()->logDebug('[AgentReplyCodes] Creating person #'.$person->id);
                         $this->props['user'] = $person;
                     }

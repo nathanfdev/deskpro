@@ -269,7 +269,6 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
             $ticket->person_email = $email;
         }
         $ticket['subject']    = $this->ticket->subject;
-        $ticket['validating'] = $validating;
 
         // A specific lang was set
         if ($this->language) {
