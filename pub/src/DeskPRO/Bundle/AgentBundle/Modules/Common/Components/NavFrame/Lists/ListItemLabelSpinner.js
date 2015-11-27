@@ -7,8 +7,7 @@ export class ListItemLabelSpinner extends React.Component {
     return (
       <span>
         &nbsp;
-        <Loader loaded={false}
-                scale={0.35}
+        <Loader scale={0.35}
                 left="22px"
                 top="12px"
                 color="green"

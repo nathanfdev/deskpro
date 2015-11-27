@@ -49,7 +49,9 @@ class ChatController extends BaseController
      */
     public function createNewChatAction()
     {
-        return new JsonResponse([]);
+        return new JsonResponse([
+            'id' => 1,
+        ]);
     }
 
     /**
