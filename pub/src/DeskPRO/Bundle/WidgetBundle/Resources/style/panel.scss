@@ -10,8 +10,9 @@ $border-color: #e7e7e7;
   color: #363636;
   width: 340px;
   height: 100%;
+  margin-left: 5px;
   min-height: 300px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  box-shadow: -1px -1px 5px rgba(0, 0, 0, 0.2);
   transition: all 0.5s ease;
   box-sizing: border-box;
   &.hidden { right: -390px; }
