@@ -168,6 +168,12 @@ class GeneralPortalSettings
                 foreach (array('apps_feedback', 'apps_kb', 'apps_news', 'apps_downloads') as $n) {
                     $set_settings[$n] = 0;
                 }
+            } else {
+                if (!($this->apps_downloads || $this->apps_feedback || $this->apps_kb || $this->apps_news)) {
+                    foreach (array('apps_feedback', 'apps_kb', 'apps_news', 'apps_downloads') as $n) {
+                        $set_settings[$n] = 1;
+                    }
+                }
             }
         }
 

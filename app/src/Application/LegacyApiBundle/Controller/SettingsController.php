@@ -35,6 +35,7 @@ use Application\DeskPRO\CacheInvalidator\UserPageCache;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\ResourceScanner\AdvancedSettings;
+use Application\DeskPRO\Settings\GeneralPortalSettings;
 use Application\DeskPRO\Settings\GeneralSettings;
 use Application\DeskPRO\Settings\LoginRateLimitSettings;
 use Application\DeskPRO\Settings\PasswordSettings;
@@ -199,7 +200,7 @@ class SettingsController extends AbstractController implements ProtectedControll
 
     public function portalSettingsAction()
     {
-        $portal_settings = new PortalSettings($this->settings);
+        $portal_settings = new GeneralPortalSettings($this->settings);
 
         return $this->createApiResponse(array(
             'portal_settings' => $portal_settings->toArray(),
@@ -212,7 +213,7 @@ class SettingsController extends AbstractController implements ProtectedControll
 
     public function savePortalSettingsAction()
     {
-        $portal_settings = new PortalSettings($this->settings);
+        $portal_settings = new GeneralPortalSettings($this->settings);
         $portal_settings->setArray($this->in->getArrayValue('portal_settings'));
         $portal_settings->saveSettings();
 
