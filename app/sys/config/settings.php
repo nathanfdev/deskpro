@@ -43,11 +43,6 @@ return array(
     'core.reg_enabled' => true,
 
     /*
-     * Is registration required?
-     */
-    'core.reg_required' => false,
-
-    /*
      * Is email validation enabled?
      */
     'core.email_validation' => false,

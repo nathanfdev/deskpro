@@ -98,25 +98,17 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
         switch ($name) {
             case 'core.tickets_submit_check':
                 if ($this->getPermission('tickets.use')) {
-                    if (!$this->person->id && App::getSetting('core.interact_require_login')) {
-                        return 0;
-                    } else {
-                        return 1;
-                    }
+                    return true;
                 } else {
-                    return 0;
+                    return false;
                 }
                 break;
 
             case 'core.feedback_submit_check':
                 if ($this->getPermission('feedback.use')) {
-                    if (!$this->person->id && App::getSetting('core.interact_require_login')) {
-                        return 0;
-                    } else {
-                        return true;
-                    }
+                    return true;
                 } else {
-                    return 0;
+                    return false;
                 }
                 break;
         }
