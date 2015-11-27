@@ -51,7 +51,10 @@ export class ChatBeginContainer extends React.Component {
   };
 
   onSubmit = event => {
-    event.preventDefault();
+    if (event) {
+      event.preventDefault();
+    }
+
     this.props.dispatch(createChat(this.state));
   };
 
