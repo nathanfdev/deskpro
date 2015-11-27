@@ -8,7 +8,7 @@ export default class Frame extends React.Component {
     style: PropTypes.object,
     isVisible: PropTypes.bool,
     positionMode: PropTypes.string,
-    children: PropTypes.any
+    children: PropTypes.node
   };
 
   constructor(props) {
@@ -77,8 +77,8 @@ export default class Frame extends React.Component {
     const width = style.width || $container.width();
     const height = style.height || $container.height();
 
-    const dimensions = this.state.dimensions;
-    if (dimensions.width === width && dimensions.height === height) {
+    const currentDimensions = this.state.dimensions;
+    if (currentDimensions.width === width && currentDimensions.height === height) {
       return;
     }
 
@@ -94,12 +94,21 @@ export default class Frame extends React.Component {
     const doc = this.getContentDocument();
 
     if (doc.readyState === 'complete') {
+      const { style = {} } = this.props;
+      const containerDimensions = {};
+      if (style.width) {
+        containerDimensions.width = style.width;
+      }
+      if (style.height) {
+        containerDimensions.height = style.height;
+      }
+
       if (!this.containerReady) {
         const $head = jQuery(doc.head);
         const $body = jQuery(doc.body);
 
         const $styles = jQuery(document).find('style').clone();
-        const $container = jQuery('<div/>', {id: 'react_frame_container'});
+        const $container = jQuery('<div/>', {id: 'react_frame_container', css: containerDimensions});
 
         $head.html($styles);
         $body.html($container);
@@ -107,7 +116,7 @@ export default class Frame extends React.Component {
         this.containerReady = true;
       }
 
-      const contents = React.createElement('div', undefined, this.props.children);
+      const contents = React.createElement('div', containerDimensions, this.props.children);
       ReactDOM.render(contents, doc.body.firstChild);
     } else {
       setTimeout(this.renderFrameContents, 0);
