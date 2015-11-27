@@ -4,6 +4,12 @@ import { WaitingPreview } from './WaitingPreview';
 export class ChatWaiting extends React.Component {
 
   render() {
-    return <WaitingPreview />;
+    return (
+      <div>
+        On waiting page:
+
+        <WaitingPreview />
+      </div>
+    );
   }
 }

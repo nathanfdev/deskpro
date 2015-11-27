@@ -13,6 +13,7 @@ import {
   ChatWaiting,
   ChatDone
 } from '../../Chat/Components/index';
+import history from '../../../Services/history';
 
 export class WidgetAppBody extends React.Component {
 
@@ -45,7 +46,7 @@ export class WidgetAppBody extends React.Component {
         <Widget>
           <WidgetHeader title="Acme Corp. Chat and a long name lorel ipsum dolor" onClose={onClose} />
           <WidgetBody>
-            <Router>
+            <Router history={history}>
               <Redirect from="/" to="chat"/>
               <Route path="chat" component={ChatApp}>
                 <Route path="begin" component={ChatBeginContainer}>
