@@ -18,7 +18,7 @@
     {%- elseif 'twitter' == item.contact_type or 'instant_message' == item.contact_type or 'skype' == item.contact_type -%}
         {{ item.username }}
     {%- elseif 'phone' == item.contact_type or 'fax' == item.contact_type or 'mobile' == contact_type  -%}
-        {{ item.country_calling_code }}{{ item.number }}
+        <a href="tel:{{ item.country_calling_code }}{{ item.number }}">{{ item.country_calling_code }}{{ item.number }}</a>
     {%- elseif 'address' == item.contact_type -%}
         <address style="margin-left: 10px;">
         {% for key, val in item if key != 'contact_type' %}
