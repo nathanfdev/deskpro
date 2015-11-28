@@ -36,14 +36,20 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * Class ApiExceptionListener.
+ */
 class ApiExceptionListener implements EventSubscriberInterface
 {
+    /**
+     * @param GetResponseForExceptionEvent $event
+     */
     public function onException(GetResponseForExceptionEvent $event)
     {
         $request   = $event->getRequest();
         $exception = $event->getException();
 
-        $query = array();
+        $query = [];
         if ($request->query->has(JsonHeadersResponseListener::INCLUDE_HEADERS_PARAM)) {
             $query[JsonHeadersResponseListener::INCLUDE_HEADERS_PARAM] = 1;
         }
@@ -51,10 +57,10 @@ class ApiExceptionListener implements EventSubscriberInterface
         $sub_request = $request->duplicate(
             $query,
             null,
-            array(
+            [
                 '_controller' => 'DeskPRO\Bundle\ApiBundle\Controller\ExceptionController::showAction',
                 'exception'   => $exception,
-            )
+            ]
         );
         $sub_request->setMethod('GET');
 
@@ -63,10 +69,13 @@ class ApiExceptionListener implements EventSubscriberInterface
         $event->setResponse($response);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::EXCEPTION => array('onException', 128),
-        );
+        return [
+            KernelEvents::EXCEPTION => ['onException', 128],
+        ];
     }
 }
