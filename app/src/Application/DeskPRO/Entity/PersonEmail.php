@@ -96,8 +96,7 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
     protected $comment = '';
 
     /**
-     * The original time the email was created. If validation is requried, this will be the time
-     * that PersonEmailValidating record was created before this one.
+     * The original time the email was created.
      *
      * @var \DateTime
      */

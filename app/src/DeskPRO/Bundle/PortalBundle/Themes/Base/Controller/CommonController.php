@@ -140,24 +140,25 @@ class CommonController extends AbstractController
             }
         }
 
-        //
-        // Extra Email Validation (when adding more emails)
-        //
-        if ($user && $validating_emails = $this->getEmailDataService()->getValidatingEmails($user)) {
-            foreach ($validating_emails as $validating_email) {
-                $validation_alerts[] = array(
-                    'type'            => PersonValidator::TYPE_EMAIL,
-                    'message'         => $this->phrase('portal.account.validation_alert_extra_email',
-                        array('email' => $validating_email->getEmail())),
-                    'resend_url'      => $person_validator->getResendLink(
-                        PersonValidator::TYPE_EMAIL,
-                        $validating_email,
-                        null,
-                        true
-                    ),
-                );
-            }
-        }
+        // comment this out because doctrine entity EmailValidating is empty now
+        ////
+        //// Extra Email Validation (when adding more emails)
+        ////
+        //if ($user && $validating_emails = $this->getEmailDataService()->getValidatingEmails($user)) {
+        //    foreach ($validating_emails as $validating_email) {
+        //        $validation_alerts[] = array(
+        //            'type'            => PersonValidator::TYPE_EMAIL,
+        //            'message'         => $this->phrase('portal.account.validation_alert_extra_email',
+        //                array('email' => $validating_email->getEmail())),
+        //            'resend_url'      => $person_validator->getResendLink(
+        //                PersonValidator::TYPE_EMAIL,
+        //                $validating_email,
+        //                null,
+        //                true
+        //            ),
+        //        );
+        //    }
+        //}
 
         //
         // DIFFERENT LANG

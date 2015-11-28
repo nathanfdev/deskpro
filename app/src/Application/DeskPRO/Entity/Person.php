@@ -503,11 +503,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     protected $_person_logger = null;
 
     /**
-     * @var PersonEmailValidating
-     */
-    public $email_validating;
-
-    /**
      * @var bool
      */
     protected $_updated_org = false;
