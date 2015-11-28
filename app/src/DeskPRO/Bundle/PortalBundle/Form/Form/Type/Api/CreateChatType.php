@@ -66,7 +66,8 @@ class CreateChatType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'csrf_protection' => false,
+            'csrf_protection'               => false,
+            'csrf_double_submit_protection' => false,
         ]);
     }
 }
