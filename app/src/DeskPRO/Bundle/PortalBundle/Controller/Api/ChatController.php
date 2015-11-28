@@ -45,7 +45,7 @@ use Symfony\Component\HttpFoundation\Request;
 class ChatController extends BaseController
 {
     /**
-     * @Route("/portal/api/chat/create", name="portal_api_chat_create")
+     * @Route("/portal/api/chats/create", name="portal_api_chat_create")
      * @Method({"POST"})
      *
      * @param Request $request
@@ -75,7 +75,7 @@ class ChatController extends BaseController
     }
 
     /**
-     * @Route("/portal/api/chat/{id}/polling", name="portal_api_chat_polling")
+     * @Route("/portal/api/chats/{id}/polling", name="portal_api_chat_polling")
      * @Method({"GET"})
      *
      * @param ChatConversation $conversation
@@ -98,38 +98,5 @@ class ChatController extends BaseController
         }
 
         return new JsonResponse($conversation->getInfo());
-    }
-
-    /**
-     * @Route("/portal/api/chat/online", name="portal_api_chat_online")
-     * @Method({"GET"})
-     *
-     * @return JsonResponse
-     */
-    public function getOnlineAction()
-    {
-        return new JsonResponse([]);
-    }
-
-    /**
-     * @Route("/portal/api/chat/messages", name="portal_api_chat_get_messages")
-     * @Method({"GET"})
-     *
-     * @return JsonResponse
-     */
-    public function getMessagesAction()
-    {
-        return new JsonResponse([]);
-    }
-
-    /**
-     * @Route("/portal/api/chat/messages", name="portal_api_chat_send_messages")
-     * @Method({"POST"})
-     *
-     * @return JsonResponse
-     */
-    public function sendMessageAction()
-    {
-        return new JsonResponse([]);
     }
 }
