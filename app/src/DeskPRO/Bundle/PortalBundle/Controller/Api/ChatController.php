@@ -71,11 +71,20 @@ class ChatController extends BaseController
         $em->persist($convo);
         $em->flush();
 
-        return new JsonResponse([
-            'id'    => $convo->getId(),
-            'name'  => $convo->person_name,
-            'email' => $convo->person_email,
-        ]);
+        return new JsonResponse($convo->getInfo());
+    }
+
+    /**
+     * @Route("/portal/api/chat/polling", name="portal_api_chat_polling")
+     * @Method({"GET"})
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function pollingChatAction(Request $request)
+    {
+        return new JsonResponse([]);
     }
 
     /**
