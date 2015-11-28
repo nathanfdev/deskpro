@@ -1,7 +1,7 @@
 import React from 'react';
 import { Header } from './Header';
 import { MessagesList } from './List/MessagesList';
-import { MessageInput } from './Reply/MessageInput';
+import { ReplyFormContainer } from './Reply/ReplyFormContainer';
 
 export class ChatActive extends React.Component {
 
@@ -10,7 +10,7 @@ export class ChatActive extends React.Component {
       <div>
         <Header />
         <MessagesList />
-        <MessageInput />
+        <ReplyFormContainer />
       </div>
     );
   }

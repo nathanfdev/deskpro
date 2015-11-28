@@ -6,3 +6,13 @@ export const chatInfoSelector = createSelector(
   stateSelector,
   state => state.get('chat')
 );
+
+export const chatIdSelector = createSelector(
+  chatInfoSelector,
+  chatInfo => chatInfo.get('conversation_id')
+);
+
+export const agentIdSelector = createSelector(
+  chatInfoSelector,
+  chatInfo => chatInfo.get('agent_id')
+);

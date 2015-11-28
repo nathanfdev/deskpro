@@ -1,18 +1,20 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { pollingChat } from '../../Actions/chatActions';
-import { chatInfoSelector } from '../../Selectors/chat';
+import { chatIdSelector, agentIdSelector } from '../../Selectors/chat';
 import history from '../../../../Services/history';
 import moment from 'moment';
 
 @connect(state => ({
-  chatInfo: chatInfoSelector(state)
+  chatId: chatIdSelector(state),
+  agentId: agentIdSelector(state)
 }))
 export class ChatPollingContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    chatInfo: PropTypes.object.isRequired,
+    chatId: PropTypes.number,
+    agentId: PropTypes.number,
     children: PropTypes.node
   };
 
@@ -21,9 +23,8 @@ export class ChatPollingContainer extends React.Component {
   }
 
   pollingRequest = () => {
-    const { dispatch, chatInfo } = this.props;
-    const conversationId = chatInfo.get('conversation_id');
-    if (!conversationId) {
+    const { dispatch, chatId, agentId } = this.props;
+    if (!chatId) {
       return;
     }
 
@@ -32,9 +33,9 @@ export class ChatPollingContainer extends React.Component {
       last_message_id: 1
     };
 
-    const promise = dispatch(pollingChat(conversationId, queryParams));
+    const promise = dispatch(pollingChat(chatId, queryParams));
     promise.then(() => {
-      if (chatInfo.get('agent_id') && history.state !== '/chat/active') {
+      if (agentId && history.state !== '/chat/active') {
         history.replaceState(null, '/chat/active');
       }
 

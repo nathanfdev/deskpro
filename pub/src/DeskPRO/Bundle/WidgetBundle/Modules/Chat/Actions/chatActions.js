@@ -13,9 +13,18 @@ export const createChat = createAction(
 
 export const pollingChat = createAction(
   'WIDGET_CHAT_POLLING',
-  (id, params) => new Promise(resolve => {
+  (chatId, params) => new Promise(resolve => {
     DpApi
-      .sendGet(`DP_API/chats/${id}/polling?` + compileParams(params))
+      .sendGet(`DP_API/chats/${chatId}/polling?` + compileParams(params))
+      .success(response => resolve(response));
+  })
+);
+
+export const sendChatMessage = createAction(
+  'WIDGET_CHAT_SEND_MESSAGE',
+  (chatId, params) => new Promise(resolve => {
+    DpApi
+      .sendPost(`DP_API/chats/${chatId}/messages`, params)
       .success(response => resolve(response));
   })
 );
