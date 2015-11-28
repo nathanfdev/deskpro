@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { pollingChat } from '../../Actions/chatActions';
 import { chatInfoSelector } from '../../Selectors/chat';
 import history from '../../../../Services/history';
+import moment from 'moment';
 
 @connect(state => ({
   chatInfo: chatInfoSelector(state)
@@ -26,7 +27,12 @@ export class ChatPollingContainer extends React.Component {
       return;
     }
 
-    const promise = dispatch(pollingChat(conversationId, {}));
+    const queryParams = {
+      last_timestamp: moment().format(),
+      last_message_id: 1
+    };
+
+    const promise = dispatch(pollingChat(conversationId, queryParams));
     promise.then(() => {
       if (chatInfo.get('agent_id') && history.state !== '/chat/active') {
         history.replaceState(null, '/chat/active');
