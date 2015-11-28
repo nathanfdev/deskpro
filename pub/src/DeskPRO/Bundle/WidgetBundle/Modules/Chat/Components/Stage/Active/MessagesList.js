@@ -4,8 +4,8 @@ export class MessagesList extends React.Component {
 
   render() {
     return (
-      <div>
-        MessagesList
+      <div className="dpdesignportal-content">
+        <p>Message box</p>
       </div>
     );
   }
