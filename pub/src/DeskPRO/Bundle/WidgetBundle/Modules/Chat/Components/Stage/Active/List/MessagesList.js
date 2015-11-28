@@ -1,11 +1,13 @@
 import React from 'react';
+import { AgentMessage } from './AgentMessage';
 
 export class MessagesList extends React.Component {
 
   render() {
     return (
       <div className="dpdesignportal-content">
-        <p>Message box</p>
+        <AgentMessage />
+        <AgentMessage />
       </div>
     );
   }
