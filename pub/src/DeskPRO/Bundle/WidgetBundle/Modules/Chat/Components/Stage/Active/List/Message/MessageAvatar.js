@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 export class MessageAvatar extends React.Component {
+
+  static propTypes = {
+    user: PropTypes.object
+  };
 
   render() {
     return (
