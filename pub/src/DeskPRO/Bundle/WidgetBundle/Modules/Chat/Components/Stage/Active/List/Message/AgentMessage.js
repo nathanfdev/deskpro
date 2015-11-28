@@ -1,5 +1,6 @@
 import React from 'react';
 import { Message } from './Message';
+import { MessageAvatar } from './MessageAvatar';
 import { MessageFooter } from './MessageFooter';
 
 export class AgentMessage extends React.Component {
@@ -7,7 +8,7 @@ export class AgentMessage extends React.Component {
   render() {
     return (
       <Message type="agent">
-        <div className="dpdesignportal-message-avatar"><i className="fa fa-user"></i></div>
+        <MessageAvatar />
         <div className="dpdesignportal-message-content">
           <p>I have already written a view to show the current order status of every order that was touched today. I based it off of the view that exists in the system that is based off of the audit table.</p>
           <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sit, temporibus saepe, dolorum fugit ipsum.</p>
