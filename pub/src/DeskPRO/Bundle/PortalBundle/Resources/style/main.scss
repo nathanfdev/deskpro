@@ -10002,3 +10002,34 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
   font-size: .7em;
   font-weight: 700;
 }
+
+
+
+
+
+
+
+
+
+.welcome-block.disabled {
+  padding-bottom: 80px; }
+  .welcome-block.disabled i {
+    font-size: 40px;
+    color: #3575BD;
+    margin-top: 10px; }
+  .welcome-block.disabled h1 {
+    color: #3575BD;
+    margin-top: 20px; }
+  .welcome-block.disabled hr {
+    margin: 110px auto 65px auto;
+    max-width: 50%; }
+  .welcome-block.disabled a.secondary-link {
+    color: #3575BD; }
+  .welcome-block.disabled .disabled-action {
+    display: inline-block;
+    padding-top: 60px;
+    width: 45%; }
+    .welcome-block.disabled .disabled-action span {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 15px; }

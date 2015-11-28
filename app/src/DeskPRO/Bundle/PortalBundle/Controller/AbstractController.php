@@ -174,7 +174,6 @@ class AbstractController extends BaseController
             $pg = $options['page'];
         }
 
-        // TODO: this is probably where we can create view objects??
         $page_vars = array_merge($options, $page_vars);
 
         if ($pg) {
