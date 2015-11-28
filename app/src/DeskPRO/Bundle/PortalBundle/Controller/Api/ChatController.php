@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
+use Application\DeskPRO\Entity\ChatConversation;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -62,8 +63,18 @@ class ChatController extends BaseController
             throw new InvalidFormException($form);
         }
 
+        $convo               = new ChatConversation();
+        $convo->person_name  = $submitted_data['name'];
+        $convo->person_email = $submitted_data['email'];
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($convo);
+        $em->flush();
+
         return new JsonResponse([
-            'id' => 1,
+            'id'    => $convo->getId(),
+            'name'  => $convo->person_name,
+            'email' => $convo->person_email,
         ]);
     }
 
