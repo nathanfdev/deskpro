@@ -1,7 +1,7 @@
 import React from 'react';
-import { AgentMessage } from './AgentMessage';
-import { UserMessage } from './UserMessage';
-import { TypingMessage } from './TypingMessage';
+import { AgentMessage } from './Message/AgentMessage';
+import { UserMessage } from './Message/UserMessage';
+import { TypingMessage } from './Message/TypingMessage';
 
 export class MessagesList extends React.Component {
 

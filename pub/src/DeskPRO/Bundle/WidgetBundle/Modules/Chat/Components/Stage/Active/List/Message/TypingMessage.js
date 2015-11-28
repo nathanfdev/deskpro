@@ -1,10 +1,11 @@
 import React from 'react';
+import { Message } from './Message';
 
 export class TypingMessage extends React.Component {
 
   render() {
     return (
-      <div className="dpdesignportal-message agent-message user-typing">
+      <Message type="agent" typing>
         <div className="dpdesignportal-message-avatar"></div>
         <div className="dpdesignportal-message-content">
           <span className="dpdesignportal-user-typing">Noelle is typing a message
@@ -13,7 +14,7 @@ export class TypingMessage extends React.Component {
             <span className="dot3">.</span>
           </span>
         </div>
-      </div>
+      </Message>
     );
   }
 }
