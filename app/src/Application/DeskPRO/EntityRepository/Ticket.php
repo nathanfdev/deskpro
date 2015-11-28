@@ -295,21 +295,11 @@ class Ticket extends AbstractEntityRepository
      */
     public function getPersonTickets(Entity\Person $person, $limit = null, $sort_by = null, $sort_order = 'DESC')
     {
-        if ($person->is_agent) {
-            $ids = $this->getEntityManager()->getConnection()->fetchAllCol('
-                SELECT id
-                FROM tickets
-                WHERE person_id = ?
-                ORDER BY id DESC
-                LIMIT 2000
-            ', array($person->id));
-        } else {
-            $ids = $this->getEntityManager()->getConnection()->fetchAllCol('
-                SELECT id FROM tickets WHERE person_id = ?
-                UNION
-                SELECT ticket_id FROM tickets_participants WHERE person_id = ?
-            ', array($person->id, $person->id));
-        }
+        $ids = $this->getEntityManager()->getConnection()->fetchAllCol('
+            SELECT id FROM tickets WHERE person_id = ?
+            UNION
+            SELECT ticket_id FROM tickets_participants WHERE person_id = ?
+            LIMIT 2000', array($person->id, $person->id));
 
         if (!$ids) {
             return array();
@@ -418,36 +408,27 @@ class Ticket extends AbstractEntityRepository
      */
     public function countTicketsForPerson(Entity\Person $person, $status = null)
     {
-        if ($status) {
-            $status = (array) $status;
-            foreach ($status as &$s) {
-                $s = "'$s'";
-            }
-            $status = implode(',', $status);
+        $status = $status ? (' AND tickets.status IN ("'.implode('","', (array) $status).'") ') : '';
+
+        $excludeNotesCondition = '';
+        if (defined('DP_INTERFACE') && 'user' === DP_INTERFACE) {
+            $excludeNotesCondition = ' AND (tickets.date_last_agent_reply IS NOT NULL OR tickets.date_last_user_reply IS NOT NULL) ';
         }
 
-        if ($person->is_agent) {
-            $count = App::getDb()->fetchColumn('
-                SELECT COUNT(*)
-                FROM tickets
-                WHERE tickets.person_id = ? '.($status ? " AND tickets.status IN ($status) " : '').'
-            ', array($person->id));
-        } else {
-            $count = App::getDb()->fetchColumn('
-                SELECT SUM(count)
-                FROM (
-                    SELECT COUNT(*) AS count FROM tickets WHERE tickets.person_id = ? '
-                        .($status ? " AND tickets.status IN ($status) " : '').'
-                        AND (tickets.date_last_agent_reply IS NOT NULL OR tickets.date_last_user_reply IS NOT NULL)
-                    UNION
-                    SELECT COUNT(*) AS count FROM tickets_participants
-                    LEFT JOIN tickets ON (tickets.id = tickets_participants.ticket_id)
-                    WHERE tickets_participants.person_id = ? '
-                        .($status ? " AND tickets.status IN ($status) " : '').'
-                        AND (tickets.date_last_agent_reply IS NOT NULL OR tickets.date_last_user_reply IS NOT NULL)
-                ) a
-            ', array($person->id, $person->id));
-        }
+        $count = App::getDb()->fetchColumn('
+            SELECT SUM(count)
+            FROM (
+                SELECT COUNT(*) AS count FROM tickets WHERE tickets.person_id = ? '
+                    .$status
+                    .$excludeNotesCondition.'
+                UNION
+                SELECT COUNT(*) AS count FROM tickets_participants
+                JOIN tickets ON (tickets.id = tickets_participants.ticket_id)
+                WHERE tickets_participants.person_id = ? '
+                .$status
+                .$excludeNotesCondition
+            .') a',
+            array($person->id, $person->id));
 
         return $count;
     }
@@ -464,18 +445,12 @@ class Ticket extends AbstractEntityRepository
      */
     public function getCountInfoForPerson(Entity\Person $person, $status = null)
     {
-        if ($status) {
-            $status = (array) $status;
-            foreach ($status as &$s) {
-                $s = "'$s'";
-            }
-            $status = implode(',', $status);
-        }
-
         $counts = array(
-            'person' => $this->countTicketsForPerson($person),
+            'person' => $this->countTicketsForPerson($person, $status),
             'org'    => 0,
         );
+
+        $status = $status ? (' AND tickets.status IN ("'.implode('","', (array) $status).'") ') : '';
 
         if ($person->organization && $person->organization_manager) {
             $counts['org'] = App::getDb()->fetchColumn('
@@ -483,7 +458,7 @@ class Ticket extends AbstractEntityRepository
                 FROM tickets
                 LEFT JOIN tickets_participants ON tickets_participants.ticket_id = tickets.id
                 WHERE
-                    tickets.organization_id = ? '.($status ? " AND tickets.status IN ($status) " : '').'
+                    tickets.organization_id = ? '.$status.'
                     AND (tickets.date_last_agent_reply IS NOT NULL OR tickets.date_last_user_reply IS NOT NULL)
             ', array($person->getOrganizationId()));
         }
@@ -549,19 +524,13 @@ class Ticket extends AbstractEntityRepository
      */
     public function countTicketsForOrganization(Entity\Organization $org, $status = null)
     {
-        if ($status) {
-            $status = (array) $status;
-            foreach ($status as &$s) {
-                $s = "'$s'";
-            }
-            $status = implode(',', $status);
-        }
+        $status = $status ? (' AND status IN ("'.implode('","', (array) $status).'") ') : '';
 
         $count = App::getDb()->fetchColumn('
             SELECT COUNT(*)
             FROM tickets
-            WHERE organization_id = ? '.($status ? " AND status IN ($status) " : '').'
-        ', array($org['id']));
+            WHERE organization_id = ? '.$status,
+            array($org['id']));
 
         return $count;
     }
