@@ -34,6 +34,7 @@ namespace Application\UserBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\EntityRepository\Ticket;
 use Application\DeskPRO\HttpKernel\Event\PrePostEvent;
 use Application\DeskPRO\People\PersonGuest;
 use Application\UserBundle\Form\NewTicketParticipantType;
@@ -112,7 +113,10 @@ class TicketsController extends AbstractController
                 $sort_dql = 'ticket.id DESC';
         }
 
-        $count = $this->em->getRepository('DeskPRO:Ticket')->countTicketsForPerson($this->person);
+        /** @var Ticket $rep */
+        $rep       = $this->em->getRepository('DeskPRO:Ticket');
+        $countInfo = $rep->getCountInfoForPerson($this->person, array('awaiting_agent', 'awaiting_user', 'resolved', 'archived'));
+        $count     = $countInfo['person'] - $countInfo['org'];
         if ($this->person->is_agent) {
             $tickets = $this->em->createQuery("
                 SELECT ticket
@@ -131,7 +135,7 @@ class TicketsController extends AbstractController
                     FROM DeskPRO:Ticket ticket
                     LEFT JOIN ticket.participants part
                     $dql_join
-                    WHERE (ticket.person = :person OR (part.person = :person AND ticket.organization != :org)) AND ticket.status != 'hidden' AND (ticket.date_last_agent_reply IS NOT NULL OR ticket.date_last_user_reply IS NOT NULL)
+                    WHERE (ticket.person = :person OR part.person = :person) AND ticket.organization != :org AND ticket.status != 'hidden' AND (ticket.date_last_agent_reply IS NOT NULL OR ticket.date_last_user_reply IS NOT NULL)
                     ORDER BY $sort_dql
                 ")->setMaxResults($per_page)->setFirstResult($limit)->execute(array('person' => $this->person, 'org' => $this->person->organization));
             } else {
