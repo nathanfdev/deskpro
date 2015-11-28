@@ -9,6 +9,7 @@ import {
   ChatBeginSimple,
   ChatBeginConversation,
   ChatBeginForm,
+  ChatPollingContainer,
   ChatActive,
   ChatWaiting,
   ChatDone
@@ -54,9 +55,11 @@ export class WidgetAppBody extends React.Component {
                   <Route name="chat_begin_conversation" path="conversation" component={ChatBeginConversation} />
                   <Route name="chat_begin_form" path="form" component={ChatBeginForm} />
                 </Route>
-                <Route name="chat_waiting" path="waiting" component={ChatWaiting} />
-                <Route name="chat_active" path="active" component={ChatActive} />
-                <Route name="chat_done" path="done" component={ChatDone} />
+                <Route component={ChatPollingContainer}>
+                  <Route name="chat_waiting" path="waiting" component={ChatWaiting} />
+                  <Route name="chat_active" path="active" component={ChatActive} />
+                  <Route name="chat_done" path="done" component={ChatDone} />
+                </Route>
               </Route>
             </Router>
           </WidgetBody>

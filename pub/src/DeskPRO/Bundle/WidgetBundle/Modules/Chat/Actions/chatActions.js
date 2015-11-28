@@ -12,9 +12,9 @@ export const createChat = createAction(
 
 export const pollingChat = createAction(
   'WIDGET_CHAT_POLLING',
-  params => new Promise(resolve => {
+  (id, params) => new Promise(resolve => {
     DpApi
-      .sendPost('DP_API/chat/polling', params)
+      .sendGet(`DP_API/chat/${id}/polling`, params)
       .success(response => resolve(response));
   })
 );

@@ -63,28 +63,28 @@ class ChatController extends BaseController
             throw new InvalidFormException($form);
         }
 
-        $convo               = new ChatConversation();
-        $convo->person_name  = $submitted_data['name'];
-        $convo->person_email = $submitted_data['email'];
+        $conversation               = new ChatConversation();
+        $conversation->person_name  = $submitted_data['name'];
+        $conversation->person_email = $submitted_data['email'];
 
         $em = $this->getDoctrine()->getManager();
-        $em->persist($convo);
+        $em->persist($conversation);
         $em->flush();
 
-        return new JsonResponse($convo->getInfo());
+        return new JsonResponse($conversation->getInfo());
     }
 
     /**
-     * @Route("/portal/api/chat/polling", name="portal_api_chat_polling")
+     * @Route("/portal/api/chat/{id}/polling", name="portal_api_chat_polling")
      * @Method({"GET"})
      *
-     * @param Request $request
+     * @param ChatConversation $conversation
      *
      * @return JsonResponse
      */
-    public function pollingChatAction(Request $request)
+    public function pollingChatAction(ChatConversation $conversation)
     {
-        return new JsonResponse([]);
+        return new JsonResponse($conversation->getInfo());
     }
 
     /**

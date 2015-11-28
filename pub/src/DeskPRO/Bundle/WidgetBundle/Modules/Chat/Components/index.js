@@ -4,6 +4,7 @@ import { ChatBeginSimple } from './Stage/Begin/ChatBeginSimple';
 import { ChatBeginConversation } from './Stage/Begin/Conversation/ChatBeginConversation';
 import { ChatBeginForm } from './Stage/Begin/ChatBeginForm';
 import { ChatActive } from './Stage/ChatActive';
+import { ChatPollingContainer } from './Stage/ChatPollingContainer';
 import { ChatWaiting } from './Stage/ChatWaiting';
 import { ChatDone } from './Stage/ChatDone';
 
@@ -14,6 +15,7 @@ export {
   ChatBeginConversation,
   ChatBeginForm,
   ChatActive,
+  ChatPollingContainer,
   ChatWaiting,
   ChatDone
 };

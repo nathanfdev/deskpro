@@ -2,7 +2,7 @@ import { createSelector } from 'reselect';
 
 const stateSelector = state => state.Chat.chat;
 
-export const isCreated = createSelector(
+export const chatInfoSelector = createSelector(
   stateSelector,
-  state => state.getIn(['async', 'createChat'])
+  state => state.get('chat')
 );
