@@ -1,5 +1,6 @@
 import React from 'react';
 import { AgentMessage } from './AgentMessage';
+import { UserMessage } from './UserMessage';
 
 export class MessagesList extends React.Component {
 
@@ -7,7 +8,7 @@ export class MessagesList extends React.Component {
     return (
       <div className="dpdesignportal-content">
         <AgentMessage />
-        <AgentMessage />
+        <UserMessage />
       </div>
     );
   }
