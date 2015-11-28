@@ -1,5 +1,6 @@
 import React from 'react';
 import { Message } from './Message';
+import { MessageFooter } from './MessageFooter';
 
 export class AgentMessage extends React.Component {
 
@@ -19,12 +20,9 @@ export class AgentMessage extends React.Component {
               </a>
             </li>
           </ul>
+        </div>
 
-        </div>
-        <div className="dpdesignportal-message-footer">
-          <span className="dpdesignportal-message-footer-timer">5m ago</span>
-          <a href="#" className="dpdesignportal-message-footer-assets-link"><i className="fa fa-copy"></i> Chat Assets (4)</a>
-        </div>
+        <MessageFooter />
       </Message>
     );
   }
