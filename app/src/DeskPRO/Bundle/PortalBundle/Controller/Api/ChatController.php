@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -52,7 +53,14 @@ class ChatController extends BaseController
      */
     public function createNewChatAction(Request $request)
     {
-        $params = $request->request->all();
+        $submitted_data = $request->request->all();
+
+        $form = $this->get('form.factory')->createNamedBuilder(null, 'api_chat_create')->getForm();
+        $form->submit($submitted_data);
+
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
 
         return new JsonResponse([
             'id' => 1,

@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Class CreateChatType.
@@ -44,7 +45,7 @@ class CreateChatType extends AbstractType
      */
     public function getName()
     {
-        return 'task';
+        return 'api_chat_create';
     }
 
     /**
@@ -57,5 +58,15 @@ class CreateChatType extends AbstractType
             ->add('email', 'email')
             ->add('hidden_email', 'api_boolean')
         ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults([
+            'csrf_protection' => false,
+        ]);
     }
 }

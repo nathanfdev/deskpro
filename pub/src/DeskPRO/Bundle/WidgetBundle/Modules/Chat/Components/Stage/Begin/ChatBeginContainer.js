@@ -18,7 +18,7 @@ export class ChatBeginContainer extends React.Component {
     this.state = {
       name: '',
       email: '',
-      hiddenEmail: false
+      hidden_email: false
     };
   }
 
@@ -37,7 +37,7 @@ export class ChatBeginContainer extends React.Component {
   onToggleHiddenEmail = event => {
     event.preventDefault();
     this.setState({
-      hiddenEmail: !this.state.hiddenEmail
+      hidden_email: !this.state.hidden_email
     });
   };
 
@@ -61,7 +61,7 @@ export class ChatBeginContainer extends React.Component {
 
       name: this.state.name,
       email: this.state.email,
-      hiddenEmail: this.state.hiddenEmail,
+      hiddenEmail: this.state.hidden_email,
 
       onChangeName: this.onChangeName,
       onChangeEmail: this.onChangeEmail,
