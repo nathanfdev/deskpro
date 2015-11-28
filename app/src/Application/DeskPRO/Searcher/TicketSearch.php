@@ -1484,9 +1484,9 @@ class TicketSearch extends SearcherAbstract
 
                         if ($choice == 'set') {
                             if ($op == self::OP_IS) {
-                                $wheres[] = "$tickets_table.feedback_rating IS NOT NULL";
-                            } else {
                                 $wheres[] = "$tickets_table.feedback_rating IS NULL";
+                            } else {
+                                $wheres[] = "$tickets_table.feedback_rating IS NOT NULL";
                             }
                         } else {
                             $op = $op == self::OP_IS ? '=' : '!=';
@@ -2058,7 +2058,7 @@ class TicketSearch extends SearcherAbstract
                             case 'input':
                             case 'value':
 
-                                if (is_array($choice) && !isset($choice['date1'])) {
+                                if (is_array($choice) && !$isDate) {
                                     $choice = array_pop($choice);
                                 }
 
@@ -2126,9 +2126,13 @@ class TicketSearch extends SearcherAbstract
                                             if (!empty($choice['date1'])) {
                                                 $wheres[] = $field.' BETWEEN '.(int) $choice['date1'].' AND '.(int) @$choice['date2'];
                                             } elseif (!empty($choice['date1_relative'])) {
-                                                $d1       = strtotime('-'.$choice['date1_relative'].' '.$choice['date1_relative_type']);
-                                                $d2       = strtotime('-'.@$choice['date2_relative'].' '.@$choice['date2_relative_type']);
-                                                $wheres[] = "$field BETWEEN $d1 AND $d2";
+                                                $d1 = strtotime('-'.$choice['date1_relative'].' '.$choice['date1_relative_type']);
+                                                $d2 = strtotime('-'.@$choice['date2_relative'].' '.@$choice['date2_relative_type']);
+                                                if ($d1 < $d2) {
+                                                    $wheres[] = "$field BETWEEN $d1 AND $d2";
+                                                } else {
+                                                    $wheres[] = "$field BETWEEN $d2 AND $d1";
+                                                }
                                             }
                                         }
                                         break;

@@ -26,44 +26,21 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace Application\AgentBundle\Form\Type;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-
-class NewOrganization extends AbstractType
+class Build1447652667 extends AbstractBuild
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function run()
     {
-        $builder->add('name', 'text', array('required' => false));
+        $this->out('Upgrade Billing Comment');
 
-        $builder->add('labels', 'collection', array(
-            'type'         => 'text',
-            'required'     => false,
-            'allow_add'    => true,
-            'allow_delete' => true,
-        ));
-
-        $builder->add('usergroup_ids', 'collection', array(
-            'type'         => 'text',
-            'required'     => false,
-            'allow_add'    => true,
-            'allow_delete' => true,
-        ));
-    }
-
-    public function getDefaultOptions(array $options)
-    {
-        return array(
-            'data_class' => 'Application\\AgentBundle\\Form\\Model\\NewOrganization',
-        );
-    }
-
-    public function getName()
-    {
-        return 'neworg';
+        $res = $this->container->getDb()->fetchAll('SELECT * FROM custom_def_billing WHERE title = "Comment";');
+        foreach ($res as $row) {
+            if (false !== $options = unserialize($row['options'])) {
+                $options['attr']['style'] = 'min-width: 99%;';
+                $q                        = 'UPDATE custom_def_billing SET options = "'.addslashes(serialize($options)).'" WHERE id = '.$row['id'];
+                $this->execMutateSql($q);
+            }
+        }
     }
 }

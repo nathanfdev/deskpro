@@ -92,7 +92,6 @@ class NewPerson
         $this->_em->beginTransaction();
 
         $person = new Person();
-        $person->getLabelManager()->setLabelsArray($this->labels);
 
         if ($this->name) {
             $person->name = $this->name;
@@ -114,19 +113,13 @@ class NewPerson
             $person->language = $this->language;
         }
 
+        $org = null;
         if ($this->organization_id) {
             $org = $this->_em->find('DeskPRO:Organization', $this->organization_id);
             if ($org) {
                 $person->organization          = $org;
                 $person->organization_position = $this->organization_position;
             }
-        } elseif ($this->new_organization) {
-            $org       = new Organization();
-            $org->name = $this->new_organization;
-            $this->_em->persist($org);
-
-            $person->organization          = $org;
-            $person->organization_position = $this->organization_position;
         }
 
         foreach ($this->usergroup_ids as $ug_id) {
@@ -148,6 +141,18 @@ class NewPerson
 
         $this->_em->flush();
         $this->_em->commit();
+
+        $person->getLabelManager()->setLabelsArray($this->labels);
+        $this->_em->flush();
+
+        if (!$org && $this->new_organization && $this->_person_context->hasPerm('agent_org.create')) {
+            $org       = new Organization();
+            $org->name = $this->new_organization;
+            $this->_em->persist($org);
+
+            $person->organization          = $org;
+            $person->organization_position = $this->organization_position;
+        }
 
         $this->_person = $person;
     }

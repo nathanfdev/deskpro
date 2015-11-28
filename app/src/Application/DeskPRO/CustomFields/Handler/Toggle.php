@@ -47,6 +47,8 @@ class Toggle extends HandlerAbstract
             $data['value'] = true;
         }
 
+        $data['value'] = (bool) @$data['value'];
+
         return parent::getFormField($data);
     }
 

@@ -38,7 +38,8 @@ class ChecksumChecker extends \Orb\File\ChecksumChecker
     public function __construct($chunk_size = 200)
     {
         parent::__construct(realpath(DP_ROOT.'/../'));
-        $this->finder->notName('distro-checksums.php')
+        $this->finder
+            ->notName('distro-checksums.php')
             ->notName('.gitignore')
             ->notName('.gitmodules')
             ->notName('.buildpath')
@@ -57,7 +58,9 @@ class ChecksumChecker extends \Orb\File\ChecksumChecker
             ->exclude('.idea')
             ->notName('.travis.yml')
             ->exclude('data')
-            ->exclude('.feedback');
+            ->exclude('.feedback')
+            ->exclude('dev')
+        ;
     }
 
     /**

@@ -471,11 +471,28 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		} else {
 			this.hasEmailAddress = false;
 		}
-		var data = $('#dp_chat_start').find('input, select, textarea').serializeArray();
-		this.sendMessage('', data, { starting: true });
+		var formData = $('#dp_chat_start').find('input, select, textarea').serializeArray();
+		$('#fields_container .error').remove();
+		$.ajax({
+			cache: false,
+			url: BASE_URL + 'chat/validate-fields/' + this.sessionCode + '?__sid=' + this.sessionCode,
+			context: this,
+			type: 'POST',
+			data: formData,
+			dataType: 'json',
+			success: function(data) {
+				if (!data) {
+					this.sendMessage('', formData, { starting: true });
+					this.startFindingAgent();
+					return $('#dp_chat_start').hide();
+				}
 
-		this.startFindingAgent();
-		$('#dp_chat_start').hide();
+				for (var i in data) {
+					$('#fields_container > div.chat_' + i + ' > div:first').append('<span class="error" style="color: red;">' + data[i] + '</span>');
+				}
+			}
+		});
+
 	},
 
 	startFindingAgent: function() {

@@ -69,9 +69,7 @@ class NewOrganization
     {
         $this->_em->beginTransaction();
 
-        $org = new Organization();
-        $org->getLabelManager()->setLabelsArray($this->labels);
-
+        $org       = new Organization();
         $org->name = $this->name;
 
         foreach ($this->usergroup_ids as $ug_id) {
@@ -91,6 +89,9 @@ class NewOrganization
 
         $this->_em->flush();
         $this->_em->commit();
+
+        $org->getLabelManager()->setLabelsArray($this->labels);
+        $this->_em->flush();
 
         $this->_org = $org;
     }

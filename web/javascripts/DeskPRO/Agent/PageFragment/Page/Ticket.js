@@ -18,6 +18,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.popoutPage = null;
 		this.lastActiveDate = null;
 		this.ticketReplyBox = null;
+    if (DeskPRO_Window.$q) {
+      this.initDeferred = DeskPRO_Window.$q.defer();
+      this.initPromise = this.initDeferred.promise;
+    }
 	},
 
 	getAlertId: function() {
@@ -874,6 +878,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     }, 1500);
 
     this.replaceLinks();
+    this.initDeferred && this.initDeferred.resolve();
 	},
 
 	setTicketReplyBox: function(rb) {
@@ -1362,7 +1367,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			self.getEl('unlock_ticket').hide();
 		}
 
-		var props = ['status', 'department_id', 'category_id', 'product_id', 'workflow_id', 'priority_id', 'urgency', 'is_hold'];
+		var props = ['status', 'urgency', 'is_hold', 'department_id'];
 		if (data.via_reply) {
 			if (data.changed_agent) {
 				props.push('agent_id');
@@ -1382,7 +1387,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 
 			var prop = this.changeManager.getPropertyManager(propId);
-			prop.setIncomingValue(val);
+			prop.setIncomingValue(val, data);
 		}, this);
 
 		if (data.dupe_message) {
@@ -1402,7 +1407,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		this.getEl('messagebox_tabs').find('.logs').addClass('dirty');
 		this.refreshLogTypes();
-    this.replaceLinks();
+		this.replaceLinks();
+		this.changeManager.updateDataholders();
 	},
 
 	updateUi: function(toReplyHeight) {
@@ -1837,7 +1843,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			type: 'POST',
 			context: this,
 			data: data,
-			dataType: 'json'
+			dataType: 'json',
+			success: function(){
+				self.changeManager.updateDataholders();
+			}
 		});
 	},
 
@@ -2775,6 +2784,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 
 	doTicketUpdate: function() {
+    var self = this;
 		if (this.doTicketUpdateRunning) {
 			this.doTicketUpdateRunning.abort();
 			this.doTicketUpdateRunning = null;
@@ -2787,7 +2797,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 		formData.push({
 			name: 'last_log_id',
-			value: this.getEl('messages_wrap').find('.log-row').last().data('log-id')
+			value: this.getEl('logs_wrap').find('.log-row').last().data('log-id')
 		});
 
 		this.doTicketUpdateRunning = $.ajax({
@@ -2798,7 +2808,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			context: this,
 			success: function(result) {
 				this.alertTab();
-				this.handleTicketUpdate(result);
+
+        if (this.initPromise) {
+          this.initPromise.then(function(){
+            self.handleTicketUpdate(result);
+          });
+        } else {
+          this.handleTicketUpdate(result);
+        }
 			}
 		});
 	},

@@ -53,7 +53,6 @@
                     <div class="section title-section" id="{{ baseId }}_org_section">
                         <div class="content">
                             <h4>{{ phrase('agent.general.organization') }}</h4>
-
                             <div
                                     class="org-input"
                                     id="{{ baseId }}_org_searchbox"
@@ -67,7 +66,7 @@
                                     >
                                 <input type="text" class="org-name fill" id="{{ baseId }}_org_name"
                                        name="newperson[new_organization]"
-                                       placeholder="{{ phrase('agent.general.find_or_create_org') }}" value=""/>
+                                       placeholder="{{ phrase('agent.general.find_org') }}" value=""/>
                                 <input type="hidden" class="org-id" id="{{ baseId }}_org_id"
                                        name="newperson[organization_id]" value=""/>
                                 <script type="text/x-deskpro-tmpl" class="user-row-tpl">
@@ -84,10 +83,12 @@
                                         <ul class="results-list">
 
                                         </ul>
+                                        {% if app.user.hasPerm('agent_org.create') %}
                                         <footer>
                                             <span class="create-org">{{ phrase('agent.general.create') }}
                                                 : <em></em></span>
                                         </footer>
+                                        {% endif %}
                                     </section>
                                 </div>
 

@@ -5,19 +5,30 @@
 </head>
 <body>
 <h1>Success</h1>
-<p>You would have been logged in as {{ person.displayName }} (id = {{ person.id }})</p>
+<p>You would have been logged in as <strong>{{ person.displayName }}</strong>{% if person.id %} [id = "<strong>{{ person.id }}</strong>"]{% endif %}{% if person.primary_email %} [primary email address "<strong>{{ person.primary_email.email }}</strong>"]{% endif %}</p>
+<p>You can now close this window. <a id="close" href="#">Close window</a>.</p>
+<h2>Test Log</h2>
+<textarea name="log" style="width: 700px; height: 1400px;">{{ log }}</textarea>
 <script type="text/javascript">
-	parent.window.USERSOURCE_TEST_SCOPE.$apply(function(){
-		parent.window.USERSOURCE_TEST_SCOPE.is_verified = true;
-		parent.window.USERSOURCE_TEST_SCOPE.is_error = false;
-		parent.window.USERSOURCE_TEST_SCOPE.loading = false;
-		parent.window.USERSOURCE_TEST_SCOPE.log = '{{ log|escape('js') }}';
-		parent.window.USERSOURCE_TEST_SCOPE.person = {
-			id: '{{ person.id|escape('js') }}',
-			displayName: '{{ person.displayName|escape('js') }}',
-			email: '{{ person.primary_email.email|escape('js') }}',
-		};
+	document.getElementById('close').addEventListener('click', function(e) {
+		e.preventDefault();
+		window.close();
 	});
+
+	if (window.opener) {
+		window.opener.USERSOURCE_TEST_SCOPE.$apply(function(){
+			window.opener.USERSOURCE_TEST_SCOPE.is_verified = true;
+			window.opener.USERSOURCE_TEST_SCOPE.is_error = false;
+			window.opener.USERSOURCE_TEST_SCOPE.loading = false;
+			window.opener.USERSOURCE_TEST_SCOPE.log = '{{ log|escape('js') }}';
+			window.opener.USERSOURCE_TEST_SCOPE.person = {
+				id: '{{ person.id|escape('js') }}',
+				displayName: '{{ person.displayName|escape('js') }}',
+				email: '{{ person.primary_email.email|escape('js') }}',
+			};
+			window.close();
+		});
+	}
 </script>
 </body>
 </html>

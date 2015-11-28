@@ -36,6 +36,7 @@ use Application\AgentBundle\Controller\JsonRenderer\PeopleListRenderer;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\People\PeopleResultsDisplay;
 use Application\DeskPRO\UI\RuleBuilder;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
@@ -733,37 +734,57 @@ class PeopleSearchController extends AbstractController
         $exclude_org = $this->in->getUint('exclude_org');
 
         if ($this->container->getSetting('elastica.enabled')) {
-            $elasticsearch = $this->container->get('deskpro.search_manager.elasticsearch');
-            $elasticsearch->setPersonContext($this->person);
+            try {
+                $elasticsearch = $this->container->get('deskpro.search_manager.elasticsearch');
+                $elasticsearch->setPersonContext($this->person);
 
-            list($results, $result_meta, $people_top) = $elasticsearch->quickSearch($q, 'date_active', array('person'));
+                list($results, $result_meta, $people_top) = $elasticsearch->quickSearch($q, 'date_active', array('person'));
 
-            if (isset($results['person'])) {
-                $results = $results['person'];
-            } else {
-                $results = array();
-            }
-
-            $results = array_slice($results, 0, $limit);
-
-            $output = array();
-            foreach ($results as $p) {
-                if (!$with_agents && $p->is_agent) {
-                    continue;
-                }
-                if ($exclude_org && $p->organization && $p->organization->id == $exclude_org) {
-                    continue;
+                if (isset($results['person'])) {
+                    $results = $results['person'];
+                } else {
+                    $results = array();
                 }
 
-                $output[] = array(
-                    'id'         => $p->id,
-                    'first_name' => $p->first_name,
-                    'last_name'  => $p->last_name,
-                    'email'      => $p->getPrimaryEmailAddress(),
-                );
-            }
+                $results = array_slice($results, 0, $limit);
 
-            $people_list = $output;
+                $output = array();
+                foreach ($results as $p) {
+                    if (!$with_agents && $p->is_agent) {
+                        continue;
+                    }
+                    if ($exclude_org && $p->organization && $p->organization->id == $exclude_org) {
+                        continue;
+                    }
+
+                    $output[] = array(
+                        'id'         => $p->id,
+                        'first_name' => $p->first_name,
+                        'last_name'  => $p->last_name,
+                        'email'      => $p->getPrimaryEmailAddress(),
+                    );
+                }
+
+                $people_list = $output;
+            } catch (\Exception $e) {
+                KernelErrorHandler::logException($e);
+                /** @var \Application\DeskPRO\EntityRepository\Person $rep */
+                $rep         = $this->em->getRepository('DeskPRO:Person');
+                $people_list = $rep->quickSearch($q, $this->in->getBool('start_with'), $with_agents, $exclude_org, $limit);
+
+                // If the string is an exact email, we can try and find the user in usersources as well
+                if (StringEmail::isValueValid($q)) {
+                    $person = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($q);
+                    if ($person && !isset($people_list[$person->getId()])) {
+                        $people_list[$person->getId()] = array(
+                            'id'         => $person->getId(),
+                            'first_name' => $person->first_name,
+                            'last_name'  => $person->last_name,
+                            'email'      => $person->getPrimaryEmailAddress(),
+                        );
+                    }
+                }
+            }
         } else {
             /** @var \Application\DeskPRO\EntityRepository\Person $rep */
             $rep         = $this->em->getRepository('DeskPRO:Person');

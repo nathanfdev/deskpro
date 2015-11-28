@@ -324,7 +324,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                 if ($this->account_email_address) {
                     $email_to = $this->account_email_address;
                 } else {
-                    $email_to = $this->account->address;
+                    $email_to = $this->account->getUseEmailAddress();
                 }
 
                 $from_address = $this->container->getEmailAccountManager()->getAccountForTicket($ticket)->getUseEmailAddress();

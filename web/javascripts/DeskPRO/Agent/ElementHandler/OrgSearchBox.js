@@ -78,18 +78,33 @@ DeskPRO.Agent.ElementHandler.OrgSearchBox = new Orb.Class({
 			$(document).on('click', this.close.bind(this));
 		}
 
-		var footer = this.resultsBox.find('footer').hide();
-		var footerName = footer.find('em');
+		var footer = this.resultsBox.find('footer');
+		if (footer.length) {
+			footer.hide();
+			var footerName = footer.find('em');
 
-		this.termInput.on('keyup change', function() {
-			var val = self.getTerm();
-			if (!val || !val.length) {
-				footer.hide();
-			} else {
-				footerName.text(val);
-				footer.show();
-			}
-		});
+			this.termInput.on('keyup change', function() {
+				var val = self.getTerm();
+				if (!val || !val.length) {
+					footer.hide();
+				} else {
+					footerName.text(val);
+					footer.show();
+				}
+			});
+
+			$('.create-org', this.resultsBox).on('click', function(ev) {
+				ev.preventDefault();
+
+				self.idInput.val('0');
+				self.el.addClass('is-new').removeClass('is-set');
+
+				self.wasSet = true;
+				self.close();
+
+				self.el.trigger('orgsearchboxcreate', [self.getTerm(), self]);
+			});
+		}
 
 		//------------------------------
 		// Clicking on an item fires an event that
@@ -109,18 +124,6 @@ DeskPRO.Agent.ElementHandler.OrgSearchBox = new Orb.Class({
 			self.close();
 
 			self.el.trigger('orgsearchboxclick', [orgId, name, self]);
-		});
-
-		$('.create-org', this.resultsBox).on('click', function(ev) {
-			ev.preventDefault();
-
-			self.idInput.val('0');
-			self.el.addClass('is-new').removeClass('is-set');
-
-			self.wasSet = true;
-			self.close();
-
-			self.el.trigger('orgsearchboxcreate', [self.getTerm(), self]);
 		});
 
 		//------------------------------

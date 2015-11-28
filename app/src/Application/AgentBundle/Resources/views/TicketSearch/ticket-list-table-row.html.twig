@@ -42,19 +42,19 @@
 			<span class="prop-val"><%- ticket_display.ref %></span>
 		<% } %>
 		<% if (field == 'language') { %>
-			<span class="prop-val"><%= ticket_display.language.title %></span>
+			<span class="prop-val"><%- ticket_display.language.title %></span>
 		<% } %>
 		<% if (field == 'category') { %>
-			<span class="prop-val"><%= ticket_display.category.title %></span>
+			<span class="prop-val"><%- ticket_display.category.title %></span>
 		<% } %>
 		<% if (field == 'priority') { %>
-			<span class="prop-val"><%= ticket_display.priority.title %></span>
+			<span class="prop-val"><%- ticket_display.priority.title %></span>
 		<% } %>
 		<% if (field == 'workflow') { %>
-			<span class="prop-val"><%= ticket_display.workflow.title %></span>
+			<span class="prop-val"><%- ticket_display.workflow.title %></span>
 		<% } %>
 		<% if (field == 'product') { %>
-			<span class="prop-val"><%= ticket_display.product.title %></span>
+			<span class="prop-val"><%- ticket_display.product.title %></span>
 		<% } %>
 		<% if (field == 'agent') { %>
 			<% if (ticket_display.agent && ticket_display.agent.id == DESKPRO_PERSON_ID) { %><span class="prop-val"><img ng-src="<%- ticket.agent.picture_url_16 %>" title="<%- ticket.agent.display_name %>" /> <%- ticket.agent.display_name %></span><% } %>

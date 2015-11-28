@@ -270,7 +270,7 @@ class NewTicket
             $person = App::getSystemService('UsersourceManager')->findPersonByEmail($this->person->email_address);
         }
 
-        if (!$person) {
+        if (!$person && $this->_person_context->hasPerm('agent_people.create')) {
             $person                = new Person();
             $email_obj             = $person->addEmailAddressString($this->person->email_address);
             $person->primary_email = $email_obj;

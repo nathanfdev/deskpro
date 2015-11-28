@@ -1272,14 +1272,16 @@ class PersonController extends AbstractController
 
         $this->em->beginTransaction();
         try {
-            $personDeleted = new Entity\PersonDeleted();
-
-            $personDeleted['person_id'] = $person_id;
-            $personDeleted['by_person'] = $this->getPerson();
-            $personDeleted['reason']    = $this->in->getString('reason');
-
-            $this->em->persist($personDeleted);
-            $this->em->flush();
+            $this->em->getConnection()->executeQuery(
+                    'REPLACE INTO persons_deleted (person_id, by_person_id, reason, date_created)
+                     VALUES (:person, :by_person, :reason, :date)
+                ', array(
+                    'person'    => $person_id,
+                    'by_person' => $this->person->id,
+                    'reason'    => $this->in->getString('reason'),
+                    'date'      => date('Y-m-d H:i:s'),
+                )
+            );
 
             if ($this->in->getBool('ban')) {
                 foreach ($person->emails as $email) {

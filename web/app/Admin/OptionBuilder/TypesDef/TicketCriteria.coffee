@@ -304,6 +304,11 @@ define [
       })
 
       options.push({
+        title: 'Check agent validation status',
+        value: 'CheckUserValidAgent'
+      })
+
+      options.push({
         title: 'Check email validation status',
         value: 'CheckUserValidEmail'
       })
@@ -934,7 +939,7 @@ define [
     getCheckUserId: (options = {}) ->
       options.propName = 'id'
       options.operators = ['is', 'not']
-      options.url = '/people'
+      options.url = '/people/quick_search'
       options.map = (data) ->
         id: data.person.id
         email: data.person.primary_email?.email
@@ -960,20 +965,17 @@ define [
     getCheckUserEmail: (options = {}) ->
       options.propName = 'email'
       options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
-      options.url = '/people'
-      options.map = (data) ->
-        id: data.person.id
-        email: data.person.primary_email?.email
-        first_name: data.person.first_name
-        last_name: data.person.last_name
-        name: data.person.name
-      format = (item) ->
-        "#{item[options.propName]} (#{item.name || ''})"
+      options.url = '/people/quick_search_email'
+      options.hardcodedSkipLoadById = true
+      options.map = (email) -> {id: email, email: email}
+      format = (item) -> item?.email || ''
       options.inputOptions =
         formatResult: format
         formatSelection: format
+        tags: true
+        createSearchChoice: (term) -> {id: term, email: term}
         ajax:
-          data: (term, page) -> { query: term, limit: 10, with_agents: false, start_with: true }
+          data: (term, page) -> { query: term, limit: 10 }
       @getRemoteInput options
 
     getCheckUserLabel: (options = {}) ->
@@ -1010,6 +1012,35 @@ define [
       options.propName = 'is_new'
       def = @getStandardIs(options)
       return def
+
+    getCheckUserValidAgent: (options = {}) ->
+      me = @
+      return {
+        getTemplate: ->
+          return me.dpTemplateManager.get('OptionBuilder/type-criteria-opselect.html')
+
+        getData: ->
+          return {}
+
+        getDataFormatter: ->
+          return {
+            getViewValue: (value = {}, data) ->
+              return {
+                op: value.op || 'is',
+                options: [
+                  { value: 'is', title: 'User has been validated by an agent' },
+                  { value: 'not', title: 'User is waiting to be validated by an agent' }
+                ]
+              }
+
+            getValue: (model = {}, data) ->
+              return {
+                type: 'CheckUserValidAgent',
+                op: model.op || 'is'
+                options: { run:true }
+              }
+          }
+      }
 
     getCheckUserValidEmail: (options = {}) ->
       me = @
@@ -1049,7 +1080,7 @@ define [
     getCheckOrgId: (options = {}) ->
       options.propName = 'id'
       options.operators = ['is', 'not', 'isset', 'not_isset']
-      options.url = '/organizations'
+      options.url = '/organizations/quick_search'
       options.map = (data) ->
         id: data.organization?.id
         name: data.organization?.name
@@ -1242,10 +1273,10 @@ define [
           return {
             getViewValue: (value = {}, data) ->
               options = value?.options || {}
-
               return {
                 op: value.op || 'is',
                 template: options.template || null,
+                custom_email_tpls: me.options_data?.custom_email_tpls
                 with_template: if options.template then true else false
               }
             getValue: (model = {}, data) ->

@@ -26,44 +26,21 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace Application\AgentBundle\Form\Type;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
-class NewOrganization extends AbstractType
+class Build1447684211 extends AbstractBuild
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function run()
     {
-        $builder->add('name', 'text', array('required' => false));
+        $this->out('Remove some spare dev scripts');
 
-        $builder->add('labels', 'collection', array(
-            'type'         => 'text',
-            'required'     => false,
-            'allow_add'    => true,
-            'allow_delete' => true,
-        ));
-
-        $builder->add('usergroup_ids', 'collection', array(
-            'type'         => 'text',
-            'required'     => false,
-            'allow_add'    => true,
-            'allow_delete' => true,
-        ));
-    }
-
-    public function getDefaultOptions(array $options)
-    {
-        return array(
-            'data_class' => 'Application\\AgentBundle\\Form\\Model\\NewOrganization',
-        );
-    }
-
-    public function getName()
-    {
-        return 'neworg';
+        try {
+            $fs = new Filesystem();
+            $fs->remove(DP_WEB_ROOT.DIRECTORY_SEPARATOR.'dev');
+        } catch (\Exception $e) {
+            $this->out('Unlink failed: '.$e->getMessage());
+        }
     }
 }

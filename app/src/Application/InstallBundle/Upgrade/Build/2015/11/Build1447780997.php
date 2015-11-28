@@ -26,44 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace Application\AgentBundle\Form\Type;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-
-class NewOrganization extends AbstractType
+class Build1447780997 extends AbstractBuild
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function run()
     {
-        $builder->add('name', 'text', array('required' => false));
-
-        $builder->add('labels', 'collection', array(
-            'type'         => 'text',
-            'required'     => false,
-            'allow_add'    => true,
-            'allow_delete' => true,
-        ));
-
-        $builder->add('usergroup_ids', 'collection', array(
-            'type'         => 'text',
-            'required'     => false,
-            'allow_add'    => true,
-            'allow_delete' => true,
-        ));
-    }
-
-    public function getDefaultOptions(array $options)
-    {
-        return array(
-            'data_class' => 'Application\\AgentBundle\\Form\\Model\\NewOrganization',
-        );
-    }
-
-    public function getName()
-    {
-        return 'neworg';
+        $this->out('Remove some old sys scripts');
+        @unlink(DP_ROOT.'/sys/scripts/apcclear.php');
+        @unlink(DP_ROOT.'/sys/scripts/check.php');
+        @unlink(DP_ROOT.'/sys/scripts/dev_run_migrations.php');
+        @unlink(DP_ROOT.'/sys/scripts/failed_sendmail_job.php');
+        @unlink(DP_ROOT.'/sys/scripts/savemail.php');
+        @unlink(DP_ROOT.'/sys/scripts/smtp_event.php');
+        @unlink(DP_ROOT.'/sys/scripts/testfile.php');
+        @unlink(DP_ROOT.'/sys/scripts/testmode.php');
     }
 }
