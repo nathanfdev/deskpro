@@ -48,7 +48,6 @@ export class MessageList extends React.Component {
   }
 
   componentWillUpdate = () => {
-    console.log(this.shouldScrollBottom, this.firstScroll, this.props);
     const node = ReactDOM.findDOMNode(this.refs.list);
     this.shouldScrollBottom = node && (node.scrollTop + node.offsetHeight === node.scrollHeight);
     if (this.firstScroll === true && node) {
@@ -123,16 +122,23 @@ export class MessageList extends React.Component {
 
 
   renderList(msg) {
+    let previous = false;
     return (
       <ul ref="list" className="chat-message-list">
         { this.controls() }
         {
           msg.map((message, index) => {
-            return (<Message
+            const result = (
+              <Message
               key={index}
               message={message}
+              size={msg.length}
+              current={index}
+              previousMessage={previous}
               agents={this.props.agents}
               me={this.props.me}/>);
+            previous = message;
+            return result;
           })
         }
       </ul>

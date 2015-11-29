@@ -1,13 +1,17 @@
 import React, { PropTypes } from 'react';
 import TimeAgo from 'react-timeago';
 import { PersonAvatar } from '../../../Common/Components/Avatar/index';
+import moment from 'moment';
 
 export class Message extends React.Component {
 
   static propTypes = {
+    current: PropTypes.number.isRequired,
+    size: PropTypes.number.isRequired,
     me: PropTypes.object.isRequired,
     agents: PropTypes.object.isRequired,
-    message: PropTypes.object.isRequired
+    message: PropTypes.object.isRequired,
+    previousMessage: PropTypes.object.isRequired
   };
 
   getMessage = () => {
@@ -15,6 +19,32 @@ export class Message extends React.Component {
       __html: this.props.message.message
     };
   };
+
+  dateSep() {
+    const date = moment(this.props.message.date_created);
+
+    const previousDate = moment(this.props.previousMessage.date_created);
+    if (this.props.previousMessage && previousDate.dayOfYear() !== date.dayOfYear()) {
+      return this.renderSeparator(this.props.previousMessage.date_created);
+    }
+
+  }
+
+  renderSeparator(dateString) {
+    const date = moment(dateString);
+    let fromNow;
+    if (date.fromNow(true) === 'a day') {
+      fromNow = 'yesterday';
+    } else {
+      fromNow = date.fromNow();
+    }
+    return (
+      <li className="chat-divider">
+        <span>{fromNow + ' ' + date.format('MMM. D')}</span>
+        <hr/>
+      </li>
+    );
+  }
 
   renderMy = () => {
     let className = 'chat-message yours';
@@ -51,6 +81,10 @@ export class Message extends React.Component {
   };
 
   render() {
-    return (this.props.message.person_id === this.props.me.get('id')) ? this.renderMy() : this.renderNotMy();
+    return (
+      <span>
+        {this.dateSep()}
+        {this.props.message.person_id === this.props.me.get('id') ? this.renderMy() : this.renderNotMy()}
+      </span>);
   }
 }

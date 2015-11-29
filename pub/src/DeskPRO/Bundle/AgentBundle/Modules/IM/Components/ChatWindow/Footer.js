@@ -51,7 +51,7 @@ export class Footer extends React.Component {
     newState.message = text;
 
     this.setState(newState);
-  }
+  };
 
   handleTyping = (event) => {
     if (event.keyCode === 13 && event.altKey === true) {
@@ -64,9 +64,7 @@ export class Footer extends React.Component {
   };
 
   handleSubmit = () => {
-    console.log(this.state.message, this.state);
     if (this.state.message) {
-
       this.props.handleAddMessage(this.state.message);
       this.handleChange('<p><br/></p>');
     }
