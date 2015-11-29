@@ -85,7 +85,8 @@ class ChatController extends AbstractController
     public function pollingChatAction(ChatConversation $conversation)
     {
         // todo temp autoassign an agent
-        if (!$conversation->getAgentId()) {
+        // todo disabled
+        if (false && !$conversation->getAgentId()) {
             /** @var \Application\DeskPRO\EntityRepository\Person $person_repository */
             $person_repository = $this->getDoctrine()->getRepository('DeskPRO:Person');
             $agents            = $person_repository->getAgents();
