@@ -21,7 +21,11 @@ export class ReplyForm extends React.Component {
 
   onSubmit = event => {
     event.preventDefault();
+
     this.props.onSendMessage(this.state.message);
+    this.setState({
+      message: ''
+    });
   };
 
   render() {
