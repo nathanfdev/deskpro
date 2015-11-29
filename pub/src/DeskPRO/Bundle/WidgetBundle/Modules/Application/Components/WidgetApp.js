@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { Provider } from 'react-redux';
 import { Router, Route, Redirect } from 'react-router';
 import Frame from 'Ampliflux/common/components/Frame';
-import { Widget, WidgetHeader, WidgetBody } from './Widget/index';
+import { Widget, WidgetHeader, WidgetBody, WidgetFooter } from './Widget/index';
 import {
   ChatApp,
   ChatBeginContainer,
@@ -63,6 +63,7 @@ export class WidgetAppBody extends React.Component {
               </Route>
             </Router>
           </WidgetBody>
+          <WidgetFooter />
         </Widget>
       </Provider>
     );
