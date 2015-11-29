@@ -32,8 +32,8 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\ChatConversation;
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -42,7 +42,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class ChatController.
  */
-class ChatController extends BaseController
+class ChatController extends AbstractController
 {
     /**
      * @Route("/portal/api/chats/create", name="portal_api_chat_create")
@@ -87,7 +87,7 @@ class ChatController extends BaseController
         // todo temp autoassign an agent
         if (!$conversation->getAgentId()) {
             /** @var \Application\DeskPRO\EntityRepository\Person $person_repository */
-            $person_repository = $this->getRepository('DeskPRO:Person');
+            $person_repository = $this->getDoctrine()->getRepository('DeskPRO:Person');
             $agents            = $person_repository->getAgents();
 
             $conversation->setAgent(array_shift($agents));
