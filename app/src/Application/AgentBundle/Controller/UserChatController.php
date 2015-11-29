@@ -76,9 +76,11 @@ class UserChatController extends AbstractController
             ORDER BY m.id DESC
         ')->setParameter(1, $convo)->execute();
 
-        $session     = $convo->session;
-        $visitor     = null;
-        $other_chats = $this->em->getRepository('DeskPRO:ChatConversation')->getPastChatsForVisitor($visitor);
+        $session = $convo->session;
+        $visitor = null;
+
+        // todo no field visitor, disabled other chats info
+        $other_chats = [];//$this->em->getRepository('DeskPRO:ChatConversation')->getPastChatsForVisitor($visitor);
 
         // For selector
         $agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
