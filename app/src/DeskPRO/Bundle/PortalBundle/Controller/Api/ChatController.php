@@ -94,4 +94,27 @@ class ChatController extends AbstractController
             }, $conversation->messages->toArray()),
         ]));
     }
+
+    /**
+     * @Route("/portal/api/chats/{id}/messages", name="portal_api_chat_message")
+     * @Method({"POST"})
+     *
+     * @param ChatConversation $conversation
+     * @param Request          $request
+     *
+     * @return JsonResponse
+     */
+    public function sendMessageAction(ChatConversation $conversation, Request $request)
+    {
+        $message          = new ChatMessage();
+        $message->content = $request->request->get('message');
+
+        $conversation->addMessage($message);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($conversation);
+        $em->flush();
+
+        return new JsonResponse();
+    }
 }
