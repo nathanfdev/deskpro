@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\ChatMessage;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -98,6 +99,13 @@ class ChatController extends AbstractController
             $em->flush();
         }
 
-        return new JsonResponse($conversation->getInfo());
+        return new JsonResponse(array_merge($conversation->getInfo(), [
+            'messages' => array_map(function (ChatMessage $message) {
+                return [
+                    'type'    => 'agent',
+                    'message' => $message->content,
+                ];
+            }, $conversation->messages->toArray()),
+        ]));
     }
 }
