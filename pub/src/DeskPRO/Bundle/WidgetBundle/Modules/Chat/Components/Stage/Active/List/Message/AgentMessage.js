@@ -1,18 +1,22 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { Message } from './Message';
 import { MessageAvatar } from './MessageAvatar';
 import { MessageFooter } from './MessageFooter';
 
 export class AgentMessage extends React.Component {
 
+  static propTypes = {
+    message: PropTypes.object
+  };
+
   render() {
+    const { message } = this.props;
+
     return (
       <Message type="agent">
         <MessageAvatar />
         <div className="dpdesignportal-message-content">
-          <p>I have already written a view to show the current order status of every order that was touched today. I based it off of the view that exists in the system that is based off of the audit table.</p>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sit, temporibus saepe, dolorum fugit ipsum.</p>
-          <p>Vitae quisquam ab vero, officia necessitatibus consequuntur nisi? Est tenetur minima magni assumenda, consequuntur ut temporibus.</p>
+          <p>{message.get('message')}</p>
           <ul>
             <li>
               <a href="#" className="dpdesignportal-message-asset attachement-link">

@@ -16,3 +16,8 @@ export const agentIdSelector = createSelector(
   chatInfoSelector,
   chatInfo => chatInfo.get('agent_id')
 );
+
+export const messagesSelector = createSelector(
+  chatInfoSelector,
+  chatInfo => chatInfo.get('messages')
+);

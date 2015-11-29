@@ -1,6 +1,6 @@
 import React from 'react';
 import { Header } from './Header';
-import { MessagesList } from './List/MessagesList';
+import { MessagesListContainer } from './List/MessagesListContainer';
 import { ReplyFormContainer } from './Reply/ReplyFormContainer';
 
 export class ChatActive extends React.Component {
@@ -9,7 +9,7 @@ export class ChatActive extends React.Component {
     return (
       <div>
         <Header />
-        <MessagesList />
+        <MessagesListContainer />
         <ReplyFormContainer />
       </div>
     );
