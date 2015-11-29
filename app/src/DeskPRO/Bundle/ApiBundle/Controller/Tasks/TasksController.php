@@ -521,7 +521,6 @@ class TasksController extends BaseController implements ClassResourceInterface
      */
     protected function validateForm(Request $request, Task $task, $submitted)
     {
-        /** @var Form $form */
         $form = $this->get('form.factory')->createNamedBuilder(null, 'task', $task)->getForm();
         $form->submit($submitted, $request->getMethod() !== 'PUT');
 

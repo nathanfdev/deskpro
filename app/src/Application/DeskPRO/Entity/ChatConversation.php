@@ -39,6 +39,9 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * A conversation between one or more people.
+ *
+ * @property string $person_name
+ * @property string $person_email
  */
 class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 {

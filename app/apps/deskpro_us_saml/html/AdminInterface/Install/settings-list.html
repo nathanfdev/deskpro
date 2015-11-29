@@ -67,10 +67,33 @@
 						</select>
 					</div>
 				</div>
+				<div ng-switch-when="text">
+					<input type="text" class="form-control" ng-model="setting_values[setting.inline_dependant.name]"
+						ng-required="setting.inline_dependant.is_required"
+						placeholder="{{ setting.inline_dependant.placeholder }}" />
+				</div>
+				<div ng-switch-when="textarea">
+					<textarea class="form-control" ng-model="setting_values[setting.inline_dependant.name]" ng-required="setting.inline_dependant.is_required"
+				placeholder="{{ setting.inline_dependant.placeholder }}" rows="12"></textarea>
+				</div>
 			</div>
 		</div>
-		<div ng-if="setting.name == 'cert'">
-			Select certificate (usually .crt, .cert, .pem) file: <input type="file" dp-read-file="readContentsFunction($fileContent)" style="display: inline-block" />
+
+		<div ng-if="setting.inline_dependants && setting_values[setting.name]">
+			<div ng-repeat="dep_setting in setting.inline_dependants" ng-switch="dep_setting.type">
+				{{ dep_setting.label }}
+				<div ng-switch-when="textarea">
+					<textarea class="form-control" ng-model="setting_values[dep_setting.name]" ng-required="dep_setting.is_required" rows="12"></textarea>
+				</div>
+				<div ng-if="['cert', 'sp_private_key', 'sp_public_x509'].indexOf(dep_setting.name) > -1">
+					Select certificate (usually .crt, .cert, .pem) file: <input type="file" dp-read-file="readContentsFunction($fileContent, dep_setting.name)" style="display: inline-block" />
+				</div>
+				<br>
+			</div>
+			</div>
+		</div>
+		<div ng-if="['cert', 'sp_private_key', 'sp_public_x509'].indexOf(setting.name) > -1">
+			Select certificate (usually .crt, .cert, .pem) file: <input type="file" dp-read-file="readContentsFunction($fileContent, setting.name)" style="display: inline-block" />
 		</div>
 		<p ng-show="errors[setting.name]" class="text-danger">This field is required and cannot be empty.</p>
 	</div>

@@ -1,15 +1,15 @@
 import React from 'react';
-import { AppContainer } from 'DeskPRO/Component/AppContainer';
+import { AppPane, NavPane, ListPane } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/panes';
 import { NavContainer } from './Nav/NavContainer';
 import { ListContainer } from './List/ListContainer';
 
 export class TicketsApp extends React.Component {
   render() {
     return (
-      <AppContainer thisAppId="tickets">
-        <NavContainer />
-        <ListContainer />
-      </AppContainer>
+      <AppPane>
+        <NavPane><NavContainer/></NavPane>
+        <ListPane><ListContainer/></ListPane>
+      </AppPane>
     );
   }
 }

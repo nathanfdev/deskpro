@@ -299,7 +299,7 @@ define [
       # if this model is already in list then we some options
       if listModel != null
         for k, v of listModel
-          if dataModel[k]?
+          if dataModel[k] != undefined
             listModel[k] = dataModel[k]
 
         # case of changing the parent AND if model already has parent - have to re-populate sub-tree with children

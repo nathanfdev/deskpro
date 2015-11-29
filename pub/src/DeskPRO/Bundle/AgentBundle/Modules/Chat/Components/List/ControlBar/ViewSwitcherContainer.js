@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { ViewModeSwitcher } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { currentViewModeOptionSelector } from '../../../Selectors/list';
 
 @connect(state => ({
@@ -12,7 +11,7 @@ import { currentViewModeOptionSelector } from '../../../Selectors/list';
 export class ViewSwitcherContainer extends React.Component {
   render() {
     return (
-      <ViewModeSwitcher {...this.props} />
+      <div {...this.props} />
     );
   }
 }

@@ -1,7 +1,6 @@
 .dpw-login-panels-footer {
   width: 810px;
-  margin: 0 auto;
-  margin-top: 60px;
+  margin: 60px auto 0;
   color: #cccdcc;
   font-size: 12px;
   position: relative;
@@ -33,7 +32,7 @@
   .meta {
     width: 200px;
     text-align: center;
-    a { margin: 0px 3px; }
+    a { margin: 0 3px; }
   }
 
   .social-media {
@@ -61,8 +60,7 @@
       height: 27px;
       margin: 0 auto;
       @include retina-image("../img/loading/footer-deskpro-logo", 27px 27px);
-      background-repeat: no-repeat;
-      background-position: center center;
+      background: no-repeat center center;
     }
 
     .title {

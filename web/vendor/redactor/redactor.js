@@ -4190,8 +4190,8 @@ var RLANG = {
 	"use strict";
 
 	var protocol = 'http://';
-	var url1 = /(^|&lt;|\s)(www\..+?\..+?)(\s|&gt;|$)/g,
-	url2 = /(^|&lt;|\s)(((https?|ftp):\/\/|mailto:).+?)(\s|&gt;|$)/g,
+	var url1 = /(^|&lt;|\s)(www\..+?\..+?)(\.?[\s<>\)\"\']|\.?$)/g,
+			url2 = /(^|&lt;|\s)(((https?|ftp):\/\/|mailto:).+?)(\.?[\s<>\)\"\']|\.?$)/g,
 
 		linkifyThis = function ()
 		{

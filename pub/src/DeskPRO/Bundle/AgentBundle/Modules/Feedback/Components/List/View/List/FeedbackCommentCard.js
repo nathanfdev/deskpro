@@ -66,8 +66,6 @@ export class FeedbackCommentCard extends Component {
           toggleEditMode={this.toggleEditMode.bind(this)}
           />
 
-        <CardStatusBar align="left" level="5"/>
-        <CardStatusBar align="right" level="5"/>
         <CardCheckbox selected={selected} onClick={toggleSelected(comment.id)}/>
 
         <CardLine>

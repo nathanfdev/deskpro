@@ -164,7 +164,6 @@ class TicketListRenderer
         $data['ticket_hash']            = $ticket->ticket_hash;
         $data['status']                 = $ticket->status;
         $data['hidden_status']          = $ticket->hidden_status;
-        $data['validating']             = $ticket->validating;
         $data['is_hold']                = $ticket->is_hold;
         $data['urgency']                = $ticket->urgency;
         $data['count_agent_replies']    = $ticket->count_agent_replies;
@@ -260,7 +259,7 @@ class TicketListRenderer
             }
         }
 
-        $data['labels'] = $this->ticket_display->getTicketLabels($ticket);
+        $data['labels']   = $this->ticket_display->getTicketLabels($ticket);
         $data['problems'] = $this->ticket_display->getTicketProblems($ticket);
 
         $custom_data = $this->ticket_display->getTicketFieldData($ticket);
@@ -343,7 +342,6 @@ class TicketListRenderer
         $data['can_agent']             = $person->can_agent;
         $data['can_admin']             = $person->can_admin;
         $data['is_confirmed']          = $person->is_confirmed;
-        $data['is_agent_confirmed']    = $person->is_agent_confirmed;
         $data['is_deleted']            = $person->is_deleted;
         $data['is_disabled']           = $person->is_disabled;
         $data['creation_system']       = $person->creation_system;

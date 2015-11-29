@@ -305,8 +305,14 @@ class LdapSyncer extends AbstractSyncer
     {
         $curTime = microtime(true);
         $this->helper->log(Logger::INFO, 'syncing the following identity ['.$identity->getIdentity().', usersource='.$usersource->getId().']');
+
         // get an array of info passed to us from remote usersource
         $user_info = $this->getAdapter($usersource)->getFieldsFromIdentity($identity);
+
+        // some adapters REMOVE data in the getFieldFromIdentity call above. We want be sure
+        // we use the data it returns, but any extra data from the identity should still be present
+        // for user filtering and custom fields.
+        $user_info = array_merge($identity->getRawData(), $user_info);
 
         if ($assoc = $this->helper->getAssociation($usersource, $identity->getIdentity())) {
             $person = $assoc->person;
@@ -333,11 +339,6 @@ class LdapSyncer extends AbstractSyncer
 
         $this->helper->savePerson($person);
         $this->helper->saveAssociation($assoc);
-
-        // detach
-        $person->clear();
-        $this->helper->getEm()->detach($person);
-        $this->helper->getEm()->detach($assoc);
 
         $timeConsumed = round(microtime(true) - $curTime, 3) * 1000;
         if ($timeConsumed >= 5) {

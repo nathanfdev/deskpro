@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
@@ -50,7 +49,7 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         $this->addOption('delete', null, InputOption::VALUE_NONE, 'Send a DELETE request');
         $this->addOption('v2', null, InputOption::VALUE_NONE, 'Use v2 api');
         $this->addOption('url', null, InputOption::VALUE_REQUIRED, 'Use this API url instead of generating the URL automatically based on the current helpdesk.');
-        $this->addOption('api-key', null, InputOption::VALUE_REQUIRED, 'Use this API key. When this option is not used, the command will create a key for the first admin in the database.');
+        $this->addOption('api-key', null, InputOption::VALUE_REQUIRED, 'Use this API key. When this option is not used, the command will create a key for the first admin in the database. Use the special string "NONE" to not send any key (e.g., to test open/public APIs).');
         $this->addOption('raw', null, InputOption::VALUE_NONE, 'Output the API result directly without any other info or JSON decoding');
         $this->addOption('printr', null, InputOption::VALUE_NONE, 'Output as PHP array');
         $this->addOption('as-form', null, InputOption::VALUE_NONE, 'For PUT/POST requests, send the data payload as a form instead of JSON which is the default');
@@ -183,6 +182,11 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
             'ssl.certificate_authority' => false,
             'request.options'           => array('headers' => $headers),
         ));
+        if ($api_key !== 'NONE') {
+            $http_client->setDefaultHeaders(array(
+                'X-DeskPRO-API-Key' => $api_key,
+            ));
+        }
 
         switch ($req_type) {
             case 'GET':

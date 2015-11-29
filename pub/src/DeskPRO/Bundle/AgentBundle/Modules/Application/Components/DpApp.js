@@ -4,14 +4,19 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
 import { Header } from './Header';
 import { AppSwitcher } from './AppSwitcher';
+import { TabBodyPane } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/panes';
 import { TabFrame } from './TabFrame';
 import { NotificationsContainer } from './Notifications/notifications';
 import { meSelector } from '../RecordStores/Selectors/meSelectors';
+import { workspaceDimsSelector } from '../Selectors/workspace';
+import * as appActions from '../Actions/appActions';
+import debounce from 'lodash/function/debounce';
+import $ from 'jquery';
 
 @connect(state => ({
-  ...state,
   user: meSelector(state),
-  dpWindow: state.Application.dpWindow
+  dpWindow: state.Application.dpWindow,
+  workspaceDims: workspaceDimsSelector(state)
 }))
 @DragDropContext(HTML5Backend)
 export class DpApp extends React.Component {
@@ -20,20 +25,45 @@ export class DpApp extends React.Component {
     user: PropTypes.object.isRequired,
     children: PropTypes.object.isRequired,
     dpWindow: PropTypes.object.isRequired,
+    workspace: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
   };
 
+  constructor(props) {
+    super(props);
+    this._resetWinSize();
+    this.onResize = debounce(() => {
+      this._resetWinSize();
+    }, 350);
+  }
+
+  componentDidMount() {
+    $(window).on('resize', this.onResize);
+  }
+
+  componentWillUnmount() {
+    $(window).off('resize', this.onResize);
+  }
+
+  _resetWinSize() {
+    this.props.dispatch(appActions.windowResize($(window).width(), $(window).height()));
+  }
+
   render() {
-    const { user, dpWindow, dispatch, children } = this.props;
+    const { user, dpWindow, dispatch } = this.props;
 
     return (
       <div className="dp-window">
-        <Header user={user} dispatch={dispatch} />
-        <AppSwitcher dispatch={dispatch} />
+        <Header user={user} dispatch={dispatch}/>
+        <AppSwitcher dispatch={dispatch}/>
 
-        {children}
+        <div className="dp-panes-middle">
+          {this.props.children}
 
-        <TabFrame dpWindow={dpWindow} />
+          <TabBodyPane>
+            <TabFrame dpWindow={dpWindow}/>
+          </TabBodyPane>
+        </div>
         <NotificationsContainer />
       </div>
     );

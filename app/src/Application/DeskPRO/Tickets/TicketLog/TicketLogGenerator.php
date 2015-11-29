@@ -310,10 +310,11 @@ class TicketLogGenerator
                 );
                 break;
 
-            case 'hold':
+            case 'is_hold':
                 return array(
-                    'id_before' => $old ? 1 : 0,
-                    'id_after'  => $new ? 0 : 1,
+                    'action_type' => 'changed_hold',
+                    'id_before'   => $old ? 1 : 0,
+                    'id_after'    => $new ? 0 : 1,
 
                     'was_hold' => (bool) $old,
                     'is_hold'  => (bool) $new,

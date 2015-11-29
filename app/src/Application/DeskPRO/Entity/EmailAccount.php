@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -233,7 +232,7 @@ class EmailAccount extends DomainObject
     {
         $address = strtolower($address);
 
-        if ($this->address == $address) {
+        if ($this->getUseEmailAddress() == $address) {
             return $address;
         }
 

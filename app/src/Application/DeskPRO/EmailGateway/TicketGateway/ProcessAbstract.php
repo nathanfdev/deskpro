@@ -211,7 +211,7 @@ abstract class ProcessAbstract
                 }
 
                 $db->beginTransaction();
-                $cc_person = $person_processor->createPerson($cc, true);
+                $cc_person = $person_processor->createPerson($cc);
                 $this->logMessage("Added cc: $cc_email (Person {$cc_person->id})");
                 $db->commit();
             }

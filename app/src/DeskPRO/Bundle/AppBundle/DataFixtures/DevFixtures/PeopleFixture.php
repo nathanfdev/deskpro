@@ -125,10 +125,10 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
         $this->loadOrgProps();
 
         $this->loadPeople($this->num_agents, true);
-        $this->agent_ids = $this->db->fetchAllCol("SELECT id FROM people");
+        $this->agent_ids = $this->db->fetchAllCol('SELECT id FROM people');
 
         $this->loadPeople($this->num_people, false);
-        $this->people_ids = $this->db->fetchAllCol("SELECT id FROM people");
+        $this->people_ids = $this->db->fetchAllCol('SELECT id FROM people');
 
         $this->loadPeopleProps();
     }
@@ -140,17 +140,17 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
 
         $batch = [];
 
-        for ($i = 0; $i < $this->num_labels; $i++) {
+        for ($i = 0; $i < $this->num_labels; ++$i) {
             $l = $this->faker->unique()->company;
             if ($l) {
-                $l = strtolower($l);
+                $l       = strtolower($l);
                 $batch[] = array('label_type' => $label_type, 'label' => $l, 'color' => $this->faker->hexColor, 'total' => 0);
             }
         }
 
         $this->db->batchInsert('label_defs', $batch, true);
 
-        $this->labels = $this->db->fetchAllCol("SELECT label FROM label_defs WHERE label_type = ?", array($label_type));
+        $this->labels = $this->db->fetchAllCol('SELECT label FROM label_defs WHERE label_type = ?', array($label_type));
     }
 
     private function loadPeople($num, $is_agent)
@@ -164,24 +164,23 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
             $lname = $this->faker->lastName;
 
             $batch[] = [
-                'organization_id'    => $this->faker->randomElement($this->org_ids),
-                'is_contact'         => 1,
-                'is_user'            => 1,
-                'is_agent'           => (int) $is_agent,
-                'can_agent'          => (int) 1,
-                'is_confirmed'       => 1,
-                'is_agent_confirmed' => 1,
-                'creation_system'    => $creation_string,
-                'name'               => "$fname $lname",
-                'first_name'         => $fname,
-                'last_name'          => $lname,
-                'secret_string'      => Strings::random(40),
-                'timezone'           => $this->faker->timezone,
-                'password'           => '$2a$11$dsjhQYwUUT/W7tqbp4D2iuqksIV4gpNxFmEvbUDh7Li96R6WO5u02',
-                'password_scheme'    => 'bcrypt',
-                'salt'               => Strings::random(40),
-                'date_created'       => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_password_set'  => $this->faker->dateTimeThisMonth->format('Y-m-d H:i:s'),
+                'organization_id'   => $this->faker->randomElement($this->org_ids),
+                'is_contact'        => 1,
+                'is_user'           => 1,
+                'is_agent'          => (int) $is_agent,
+                'can_agent'         => (int) 1,
+                'is_confirmed'      => 1,
+                'creation_system'   => $creation_string,
+                'name'              => "$fname $lname",
+                'first_name'        => $fname,
+                'last_name'         => $lname,
+                'secret_string'     => Strings::random(40),
+                'timezone'          => $this->faker->timezone,
+                'password'          => '$2a$11$dsjhQYwUUT/W7tqbp4D2iuqksIV4gpNxFmEvbUDh7Li96R6WO5u02',
+                'password_scheme'   => 'bcrypt',
+                'salt'              => Strings::random(40),
+                'date_created'      => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_password_set' => $this->faker->dateTimeThisMonth->format('Y-m-d H:i:s'),
             ];
         }
 
@@ -217,32 +216,32 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
     {
         $batch = [];
 
-        for ($i = 0; $i < $this->num_orgs; $i++) {
+        for ($i = 0; $i < $this->num_orgs; ++$i) {
             $batch[] = [
-                'name' => $this->faker->company,
-                'summary' => $this->faker->realText($this->faker->numberBetween(10, 500)),
-                'importance' => 1,
-                'date_created' => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s')
+                'name'         => $this->faker->company,
+                'summary'      => $this->faker->realText($this->faker->numberBetween(10, 500)),
+                'importance'   => 1,
+                'date_created' => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
             ];
         }
 
         $this->db->batchInsert('organizations', $batch);
 
-        $this->org_ids = $this->db->fetchAllCol("SELECT id FROM organizations");
+        $this->org_ids = $this->db->fetchAllCol('SELECT id FROM organizations');
     }
 
     private function loadOrgProps()
     {
-        $notes_batch  = [];
+        $notes_batch = [];
 
         foreach ($this->org_ids as $org_id) {
             $num = $this->faker->numberBetween(1, $this->max_notes);
-            for ($i = 0; $i < $num; $i++) {
+            for ($i = 0; $i < $num; ++$i) {
                 $notes_batch[] = [
                     'organization_id' => $org_id,
                     'agent_id'        => $this->faker->randomElement($this->agent_ids),
                     'date_created'    => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                    'note'            => $this->faker->realText($this->faker->numberBetween(10, 500))
+                    'note'            => $this->faker->realText($this->faker->numberBetween(10, 500)),
                 ];
             }
         }
@@ -263,12 +262,12 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
             }
 
             $num = $this->faker->numberBetween(1, $this->max_notes);
-            for ($i = 0; $i < $num; $i++) {
+            for ($i = 0; $i < $num; ++$i) {
                 $notes_batch[] = [
                     'person_id'    => $people_id,
                     'agent_id'     => $this->faker->randomElement($this->agent_ids),
                     'date_created' => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                    'note'         => $this->faker->realText($this->faker->numberBetween(10, 500))
+                    'note'         => $this->faker->realText($this->faker->numberBetween(10, 500)),
                 ];
             }
         }

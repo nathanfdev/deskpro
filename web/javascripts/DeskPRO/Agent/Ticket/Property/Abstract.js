@@ -69,7 +69,7 @@ DeskPRO.Agent.Ticket.Property.Abstract = new Class({
 	 *
 	 * @param mixed value
 	 */
-	setValue: function(value) {
+	setValue: function(value, extra) {
 		// override
 	},
 
@@ -79,8 +79,8 @@ DeskPRO.Agent.Ticket.Property.Abstract = new Class({
 	 * Sets data that we got from the server. This is usually the same
 	 * as setValue(), but it might be like a new reply or osmething like that.
 	 */
-	setIncomingValue: function(value) {
-		this.setValue(value);
+	setIncomingValue: function(value, extra) {
+		this.setValue(value, extra);
 	},
 
 

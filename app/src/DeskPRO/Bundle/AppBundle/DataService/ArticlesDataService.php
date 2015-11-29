@@ -34,7 +34,7 @@ namespace DeskPRO\Bundle\AppBundle\DataService;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
 use Doctrine\ORM\EntityManager;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -43,12 +43,14 @@ use Pagerfanta\Pagerfanta;
 class ArticlesDataService extends AbstractDataService
 {
     /**
-     * @var PortalPermissionsManager
+     * @var PermissionsManager
      */
     protected $permissions_manager;
 
-    public function __construct(EntityManager $em, PortalPermissionsManager $permissions_manager)
+    public function __construct(EntityManager $em, PermissionsManager $permissions_manager)
     {
+        parent::__construct($em);
+
         $this->em                  = $em;
         $this->permissions_manager = $permissions_manager;
     }
@@ -93,7 +95,7 @@ class ArticlesDataService extends AbstractDataService
                     ->where('a.status = :status')->setParameter('status', Article::STATUS_PUBLISHED)
                     ->orderBy('a.id', 'DESC');
 
-                $allowed_ids = $permissions_manager->getPermissionsBagForPerson($person)->getAllowedArticleCategories();
+                $allowed_ids = $permissions_manager->getPortalPermissionsBag($person)->getAllowedArticleCategories();
                 if ($category) {
                     // find allowed ids
                     $cat_ids = $category->getTreeIds(true);
@@ -145,7 +147,7 @@ class ArticlesDataService extends AbstractDataService
                     ->where('a.status = :status')->setParameter('status', Article::STATUS_PUBLISHED)
                     ->orderBy('a.total_rating', 'DESC');
 
-                $allowed_ids = $permissions_manager->getPermissionsBagForPerson($person)->getAllowedArticleCategories();
+                $allowed_ids = $permissions_manager->getPortalPermissionsBag($person)->getAllowedArticleCategories();
                 $using_ids = $allowed_ids;
 
                 if (empty($using_ids)) {
@@ -191,7 +193,7 @@ class ArticlesDataService extends AbstractDataService
                 $person,
             ),
             function () use ($that, $category, $person, $permissions_manager) {
-                $allowed_ids = $permissions_manager->getPermissionsBagForPerson($person)->getAllowedArticleCategories();
+                $allowed_ids = $permissions_manager->getPortalPermissionsBag($person)->getAllowedArticleCategories();
 
                 if (!$category) { // get root categories
                     return $that->getArticleCategoriesRepo()->findBy(array('parent' => null, 'id' => $allowed_ids));

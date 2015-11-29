@@ -3,10 +3,12 @@ import { connect } from 'react-redux';
 import { editedFilterSelector } from '../../Selectors/nav';
 import { ListGroupingControl } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { applyFilterEditing, closeFilterEditing } from '../../Actions/navActions';
+import { filterSetGroupingsSettingsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Selectors/settings';
 import Immutable from 'immutable';
 
 @connect(state => ({
-  filter: editedFilterSelector(state)
+  filter: editedFilterSelector(state),
+  grouping: filterSetGroupingsSettingsSelector(state)
 }))
 export class FilterEditPopupContainer extends Component {
 
@@ -14,6 +16,7 @@ export class FilterEditPopupContainer extends Component {
     dispatch: PropTypes.func.isRequired,
     filterId: PropTypes.number.isRequired,
     filter: PropTypes.object.isRequired,
+    grouping: PropTypes.object.isRequired,
     attachTo: PropTypes.any.isRequired
   };
 
@@ -32,7 +35,8 @@ export class FilterEditPopupContainer extends Component {
   ];
 
   render() {
-    const { filter = Immutable.fromJS({}), attachTo, filterId } = this.props;
+    const { filter = Immutable.fromJS({}), grouping, attachTo, filterId } = this.props;
+    const groupBy = grouping.get(String(filterId), '');
 
     return (
       <ListGroupingControl
@@ -41,7 +45,7 @@ export class FilterEditPopupContainer extends Component {
         options={FilterEditPopupContainer.groupingOptions}
         onChange={this.applyFilterEditing}
         close={this.closeFilterEditing}
-        selected={filter.get('group_by', '')}
+        selected={groupBy}
         attachTo={attachTo}
       />
     );

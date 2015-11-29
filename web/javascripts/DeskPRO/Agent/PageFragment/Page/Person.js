@@ -800,26 +800,16 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 					data: { 'people_ids[]': self.meta.person_id },
 					success: function() {
 						DeskPRO_Window.getMessageBroker().sendMessage('agent.person.removed', { person_id: self.meta.person_id });
-						DeskPRO_Window.removePage(self);
+						DeskPRO_Window.showAlert('The user was deleted');
+
+						var tabs = DeskPRO_Window.getTabWatcher().findTabs('ticket', function(tab) {
+							return (tab && tab.page && tab.page && tab.page.meta.person_id == person_id);
+						});
+						$.each(tabs, function(k, tab) {
+							DeskPRO_Window.removePage(tab.page);
+						});
 					}
 				});
-			});
-		}
-
-		var vemails = this.getEl('validating_emails');
-		if (vemails) {
-			vemails.on('click', '.validate-trigger', function() {
-				var id = $(this).data('email-id');
-				var token = $(this).data('token');
-
-				$.ajax({
-					url: BASE_URL + 'old-agent/people/validate-email/'+id+'/'+token,
-					type: 'POST',
-					success: function() {
-						self.closeSelf();
-						DeskPRO_Window.runPageRoute('person:' + BASE_URL + 'old-agent/people/' + self.meta.person_id);
-					}
-				})
 			});
 		}
 

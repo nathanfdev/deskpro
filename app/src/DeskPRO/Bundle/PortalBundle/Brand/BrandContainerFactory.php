@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\Brand;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver;
 use Doctrine\ORM\EntityManager;
 
@@ -62,12 +63,23 @@ class BrandContainerFactory
      */
     private $bs;
 
-    public function __construct(SettingsResolver $settings_resolver, ThemeResolver $theme_resolver, EntityManager $em, DeskproBlobStorage $bs)
-    {
+    /**
+     * @var PortalModeStorage
+     */
+    private $mode_storage;
+
+    public function __construct(
+        SettingsResolver $settings_resolver,
+        ThemeResolver $theme_resolver,
+        EntityManager $em,
+        DeskproBlobStorage $bs,
+        PortalModeStorage $mode_storage
+    ) {
         $this->settings_resolver = $settings_resolver;
         $this->theme_resolver    = $theme_resolver;
         $this->em                = $em;
         $this->bs                = $bs;
+        $this->mode_storage      = $mode_storage;
     }
 
     public function create(Brand $brand)
@@ -76,7 +88,8 @@ class BrandContainerFactory
             $brand,
             $this->settings_resolver->getBrandSettings($brand),
             $this->theme_resolver,
-            new BrandAssetLoader($brand, $this->em, $this->bs)
+            new BrandAssetLoader($brand, $this->em, $this->bs),
+            $this->mode_storage
         );
     }
 }

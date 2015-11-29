@@ -71,7 +71,7 @@ export class ControlBar extends Component {
 
     return (
       <ListFrameMenu>
-        <CheckboxContainer {...checkbox} />
+        <CheckboxContainer {...checkbox}/>
         <SortingMenu {...sorting} onMenuUnmount={onMenuUnmount}/>
         <li>
           <hr/>

@@ -1,0 +1,62 @@
+.dpw--feedback-card-mark {// original from .dpmw--single-card
+  position: absolute;
+  right: -65px;
+  top: -1px; // To keep borders aligned
+  display: block;
+  width: 60px;
+  height: 55px;
+  background: #fff;
+  border: 1px solid #d5d5d5;
+  border-radius: 2px;
+  text-align: center;
+
+  .dpw--feedback-card-mark-counter {// The smaller boxes inside the side box
+    margin: 3px;
+    border-radius: 2px;
+    height: 20px;
+    font-size: 11px;
+    padding-top: 2px;
+    font-weight: bold;
+    color: #fff;// Base color scheme for the thumbs
+    background: #14d3a1;
+    border: 1px solid #14d3a1;
+
+    &:hover {
+      background: #fff;
+      color: #14d3a1;
+      border: 1px solid #14d3a1;
+    }
+
+    i { margin-right: 2px; }// Icon
+
+    &.dpw--feedback-card-mark-stars {// Star counter
+      color: #91904d;
+      background: #d0cf6e;
+      border: 1px solid #d0cf6e;
+
+      &:hover {
+        background: #fff;
+        color: #d0cf6e;
+        border: 1px solid #d0cf6e;
+      }
+    }
+
+    &.dpw--feedback-card-mark-thumbs.dpw--feedback-card-mark-thumbs-full {// If we onyl need a thumbs up button
+      height: 47px;
+      span { display: block; }
+      i {
+        font-size: 18px;
+        margin: 3px 0 3px 0;
+      }
+    }
+  }
+
+  hr {
+    border: 0;
+    width: 100%;
+    height: 1px;
+    padding: 0;
+    margin: 0;
+    background: #eaeaea;
+  }
+}

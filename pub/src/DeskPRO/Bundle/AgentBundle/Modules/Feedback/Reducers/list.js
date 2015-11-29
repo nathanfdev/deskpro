@@ -33,7 +33,7 @@ export default createReducer(initialState, {
     done: setValue('async.done', true)
   }),
   [actions.loadFeedbackCommentsList]: async({
-    success: (state, payload) => state.set('elements', payload.data),
+    success: (state, payload) => state.set('elements', payload.data).set('pagination', payload.meta.pagination),
     start: setValue('async.done', false),
     done: setValue('async.done', true)
   }),

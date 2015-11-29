@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import * as legacyUtils from 'DeskPRO/Bundle/AgentBundle/Legacy/legacyUtils';
 import { debounce } from 'lodash';
 
 class TabStrip extends React.Component {
@@ -50,8 +49,6 @@ export class TabFrame extends React.Component {
     if (dpWindow.get('columnMode') === 'focus') {
       classes.push('collapsed-list');
     }
-
-    const tabbarHtml = legacyUtils.getTemplateHtml('tabbar');
 
     return (
       <section className={classes.join(' ')}>

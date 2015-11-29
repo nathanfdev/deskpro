@@ -32,12 +32,15 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
 
 use Application\DeskPRO\Entity\ApiToken;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\TmpData;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiAuthenticator;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken;
 use DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationType;
+use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -119,6 +122,42 @@ class ApiTokensController extends BaseController
                     'token'     => $api_token->id.':'.$api_token->token,
                 ]
             ),
+            Response::HTTP_CREATED
+        );
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="Authenticate device by authorization code and return auth tokens",
+     *      output="token",
+     *      statusCodes={
+     *          201="Created token",
+     *          404="Auth code not found"
+     *      }
+     * )
+     * @Get("/api_tokens/device-setup/{auth}", name="api_authenticate_device")
+     */
+    public function authenticateDeviceAction($auth)
+    {
+        /** @var TmpData $tmpData */
+        if (!$tmpData = $this->getRepository(TmpData::class)->findOneBy(['auth' => $auth])) {
+            throw $this->createNotFoundException();
+        }
+        if (!$person = $this->getManager()->find(Person::class, $tmpData->getData('agent_id'))) {
+            throw $this->createNotFoundException();
+        }
+
+        $token         = new ApiToken();
+        $token->person = $person;
+        $token->scope  = ApiToken::SCOPE_CLIENT;
+        $this->getManager()->remove($tmpData);
+        $this->getManager()->persist($token);
+        $this->getManager()->flush();
+
+        return View::create(
+            $this->createRepresentation([
+                'token' => $token->id.':'.$token->token,
+            ]),
             Response::HTTP_CREATED
         );
     }

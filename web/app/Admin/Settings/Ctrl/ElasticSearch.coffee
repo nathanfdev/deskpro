@@ -60,7 +60,9 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
           @Growl.success(@getRegisteredMessage('saved_settings'))
         )
       ).error( (info, code) =>
+        @Growl.error(info.error_message)
         @stopSpinner('saving', true)
+        @$scope.settings.enabled = false
       )
 
     startReindex: ->

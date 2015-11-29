@@ -148,6 +148,14 @@ class Request extends \Symfony\Component\HttpFoundation\Request
      */
     protected function prepareBaseUrl()
     {
+        // Allow config to hard-code this. Sometimes symfony doesnt
+        // find the base path properly (particularly when DeskPRO in subdir on nginx).
+        // Many bugs filed about similar situations never seems to fix this, so easiest
+        // for us to just add a config var.
+        if (function_exists('dp_get_config') && $base_path = dp_get_config('url_base_path')) {
+            return $base_path;
+        }
+
         // Not Windows (which is case insensitive), then do the normal
         if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
             return parent::prepareBaseUrl();

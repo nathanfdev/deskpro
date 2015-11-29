@@ -70,7 +70,9 @@ define(['DeskPRO/Util/Strings', 'DeskPRO/Util/Util'], function(Strings, Util) {
 
 					Api.sendGet('/usersources/iframe/code/'+ $scope.Ctrl.usersourceType + '/' + $scope.Ctrl.instanceId).then(function(res) {
 						 window.USERSOURCE_TEST_SCOPE = $modalScope;
-						 angular.element('#iframe_html_usersource_test').html(res.data.iframe_html);
+						//angular.element('#iframe_html_usersource_test').html(res.data.iframe_html);
+						// switched from iframe to a popup
+						window.open(res.data.iframe_url, "Usersource Test", "resizable,scrollbars,status");
 					});
 
 					$modalScope.dismiss = function () { $modalInstance.dismiss(); };

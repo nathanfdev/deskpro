@@ -1,22 +1,23 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import jQuery from 'jquery';
 
 export default class Frame extends React.Component {
 
   static propTypes = {
     style: PropTypes.object,
-    head: PropTypes.node,
     isVisible: PropTypes.bool,
     positionMode: PropTypes.string,
-    children: PropTypes.any
+    children: PropTypes.node
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      dims: { width: 0, height: 0 },
-      isRendered: false,
-      positionMode: props.positionMode || 'bottom.right'
+      dimensions: {
+        width: 0,
+        height: 0
+      }
     };
   }
 
@@ -29,145 +30,100 @@ export default class Frame extends React.Component {
   }
 
   componentWillUnmount() {
-    const domNode = ReactDOM.findDOMNode(this.refs.iframe);
-    React.unmountComponentAtNode(domNode.contentDocument.getElementById('react_frame_container'));
+    React.unmountComponentAtNode(this.getContentDocument().body);
   }
 
-  getFrameNode() {
-    if (!this.refs || !this.refs.iframe) {
-      return null;
-    }
-
-    return ReactDOM.findDOMNode(this.refs.iframe) || null;
+  getDOMNode() {
+    return ReactDOM.findDOMNode(this.refs.iframe);
   }
 
-  getFrameDocument() {
-    const domNode = this.getFrameNode();
-    if (!domNode || !domNode.contentDocument) {
-      return null;
-    }
-    return domNode.contentDocument;
+  getContentDocument() {
+    return this.getDOMNode().contentDocument;
   }
 
-  autoFrameDimentions() {
-    const document = this.getFrameDocument();
-    if (!document) {
-      return false;
+  getFrameStyles() {
+    const { style = {}, isVisible, positionMode } = this.props;
+
+    let position;
+    switch (positionMode) {
+      case 'bottom.left':
+        position = {left: 0, bottom: 0};
+        break;
+      case 'bottom.right':
+      default:
+        position = {right: 0, bottom: 0};
+        break;
     }
 
-    const firstChild = document.body.firstChild;
-    let width = Math.max(firstChild.clientWidth, firstChild.offsetWidth);
-    const height = Math.max(firstChild.clientHeight, firstChild.offsetHeight);
+    return {
+      border: 'none',
+      background: 'transparent',
+      zIndex: 99999,
+      width: this.state.dimensions.width,
+      height: this.state.dimensions.height,
+      position: 'fixed',
+      display: isVisible ? 'block' : 'none',
 
-    // todo must be better way to calculate width?
-    if (!width) {
-      const tags = document.getElementsByTagName('*');
-      for (let i = 0; i < tags.length; i++) {
-        width += Math.max(tags[i].clientWidth, tags[i].offsetWidth);
-      }
-    }
+      ...style,
+      ...position
+    };
+  }
 
-    const dimentions = this.state.dims;
-    if (dimentions.width === width && dimentions.height === height) {
-      // same dims, no need to update
-      return false;
+  autoFrameDimensions() {
+    const { style = {} } = this.props;
+    const doc = this.getContentDocument();
+
+    const $container = jQuery(doc.body.firstChild);
+    const width = style.width || $container.width();
+    const height = style.height || $container.height();
+
+    const currentDimensions = this.state.dimensions;
+    if (currentDimensions.width === width && currentDimensions.height === height) {
+      return;
     }
 
     this.setState({
-      dims: {
+      dimensions: {
         width: width,
         height: height
       }
     });
-
-    return true;
   }
 
   renderFrameContents() {
-    if (this.state.isRendered) {
-      return;
-    }
+    const doc = this.getContentDocument();
 
-    const doc = this.getFrameDocument();
-    if (!doc) {
-      return;
-    }
-
-    if (doc && doc.readyState === 'complete') {
-      const { head, children } = this.props;
-      const contents = React.createElement('div', undefined, head, children);
-
-      const container = doc.createElement('div');
-      container.id = 'react_frame_container';
-      doc.body.appendChild(container);
-
-      // This is copying CSS from the current page
-      // into the iframe
-      // TODO this need some xbrowser testing
-      let css = [];
-      const styles = document.getElementsByTagName('style');
-      for (let i = 0; i < styles.length; i++) {
-        css.push(styles[i].innerHTML);
+    if (doc.readyState === 'complete') {
+      const { style = {} } = this.props;
+      const containerDimensions = {};
+      if (style.width) {
+        containerDimensions.width = style.width;
+      }
+      if (style.height) {
+        containerDimensions.height = style.height;
       }
 
-      css = css.join("\n");
+      if (!this.containerReady) {
+        const $head = jQuery(doc.head);
+        const $body = jQuery(doc.body);
 
-      const styleTag = doc.createElement('style');
-      styleTag.type = 'text/css';
-      if (styleTag.styleSheet) {
-        styleTag.styleSheet.cssText = css;
-      } else {
-        styleTag.appendChild(doc.createTextNode(css));
+        const $styles = jQuery(document).find('style').clone();
+        const $container = jQuery('<div/>', {id: 'react_frame_container', css: containerDimensions});
+
+        $head.html($styles);
+        $body.html($container);
+
+        this.containerReady = true;
       }
 
-      doc.body.appendChild(styleTag);
-
-      ReactDOM.render(contents, container);
-      this.setState({isRendered: true});
+      const contents = React.createElement('div', containerDimensions, this.props.children);
+      ReactDOM.render(contents, doc.body.firstChild);
     } else {
       setTimeout(this.renderFrameContents, 0);
     }
   }
 
   render() {
-    const props = this.props;
-    const frameProps = {
-      ...props,
-      ref: 'iframe',
-      children: undefined
-    };
-
-    const overrideStyle = frameProps.style || {};
-    frameProps.style = {
-      border: 'none',
-      background: 'transparent',
-      zIndex: 99999,
-      width: this.state.dims.width || 0,
-      height: this.state.dims.height || 0,
-      position: 'fixed',
-
-      ...overrideStyle
-    };
-
-    if (!props.isVisible) {
-      frameProps.style.display = 'none';
-    } else {
-      frameProps.style.display = 'block';
-    }
-
-    switch (this.state.positionMode) {
-      case 'bottom.left':
-        frameProps.style.left = 0;
-        frameProps.style.bottom = 0;
-        break;
-      case 'bottom.right':
-        frameProps.style.right = 0;
-        frameProps.style.bottom = 0;
-        break;
-      default:
-        break;
-    }
-
-    return <iframe {...frameProps} />;
+    return <iframe ref="iframe" style={this.getFrameStyles()} />;
   }
 }

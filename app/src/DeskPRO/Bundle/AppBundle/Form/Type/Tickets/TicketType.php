@@ -33,7 +33,9 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
 use Application\DeskPRO\Entity\LabelTicket;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket\LeafDepartment;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints;
 
 /**
  * Class TicketType.
@@ -48,7 +50,12 @@ class TicketType extends ApiType
     {
         $builder
             ->add('subject', 'text')
-            ->add('department', 'entity', ['class' => 'DeskPRO:Department'])
+            ->add('department', 'entity', [
+                'class'       => 'DeskPRO:Department',
+                'constraints' => [
+                    new LeafDepartment(),
+                ],
+            ])
             ->add('parent_ticket', 'entity', ['class' => 'DeskPRO:Ticket'])
             ->add('language', 'entity', ['class' => 'DeskPRO:Language'])
             ->add('category', 'entity', ['class' => 'DeskPRO:TicketCategory'])

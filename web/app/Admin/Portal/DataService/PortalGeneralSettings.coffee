@@ -94,6 +94,5 @@ define ['DeskPRO/Util/Util'], (Util)  ->
     updateSettingsTemporary: (settings) ->
       newSettings = Util.merge(@settings, Util.clone(settings, true))
 
-      if not Util.equals(newSettings, @settings)
-        @version += 1
-        @settings = newSettings
+      @version += 1
+      @settings = newSettings

@@ -50,8 +50,8 @@ define(['DeskPRO/Util/Strings', 'DeskPRO/Util/Util'], function(Strings, Util) {
 			return deferred.promise;
 		});
 
-		$scope.readContentsFunction = function($fileContents) {
-			$scope.setting_values['cert'] = $fileContents;
+		$scope.readContentsFunction = function($fileContents, setting_name) {
+			$scope.setting_values[setting_name] = $fileContents;
 		};
 
 		//##############################################################################################################
@@ -73,8 +73,11 @@ define(['DeskPRO/Util/Strings', 'DeskPRO/Util/Util'], function(Strings, Util) {
 					$modalScope.loading = true;
 
 					Api.sendGet('/usersources/iframe/code/'+ $scope.Ctrl.usersourceType + '/' + $scope.Ctrl.instanceId).then(function(res) {
-						 window.USERSOURCE_TEST_SCOPE = $modalScope;
-						 angular.element('#iframe_html_usersource_test').html(res.data.iframe_html);
+						window.USERSOURCE_TEST_SCOPE = $modalScope;
+
+						//angular.element('#iframe_html_usersource_test').html(res.data.iframe_html);
+						// switched from iframe to a popup
+						window.open(res.data.iframe_url, "Usersource Test", "resizable,scrollbars,status");
 					});
 
 					$modalScope.dismiss = function () { $modalInstance.dismiss(); };

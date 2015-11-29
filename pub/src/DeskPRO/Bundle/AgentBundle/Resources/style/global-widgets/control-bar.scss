@@ -83,13 +83,13 @@ $control-bar-height: 50px;
     .multi-down {
       position: absolute;
       display: block;
-      top: 0px;
+      top: 0;
       right: -2px;
       width: 14px;
       height: 15px;
       border-radius: 2px;
-      border-top-left-radius: 0px;
-      border-bottom-left-radius: 0px;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
       background: #e6e6e6;
       color: #c7c7c7;
       text-align: center;

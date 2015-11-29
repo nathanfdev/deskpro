@@ -34,6 +34,8 @@ namespace DeskPRO\Bundle\PortalBundle\Brand;
 use Application\DeskPRO\Entity\Brand as BrandEntity;
 use Application\DeskPRO\EntityRepository\Brand;
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
+use DeskPRO\Bundle\PortalBundle\Themes\Standard\StandardTheme;
 
 /**
  * A serive that can quickly hand you the default brand (useful in cases here there is no request listener detecting
@@ -71,7 +73,14 @@ class DefaultBrandFinder
                 $this->settings_resolver->getGlobalSettings()->get('portal.default_brand', 1)
             );
         } catch (\Exception $e) {
-            return new BrandEntity();
+            // if somehow we don't have a database, just return a brand that represents a "standard theme"
+            $b         = new BrandEntity();
+            $b->id     = 1;
+            $theme_set = new ThemeSet();
+            $theme_set->setThemeId(StandardTheme::THEME_ID);
+            $b->setThemeSet($theme_set);
+
+            return $b;
         }
     }
 }

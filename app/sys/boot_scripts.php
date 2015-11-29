@@ -92,13 +92,6 @@ switch ($_GET['_sys']) {
         require DP_ROOT.'/sys/scripts/errorlog.php';
         break;
 
-    case 'check':
-        if (defined('DPC_IS_CLOUD')) {
-            exit;
-        }
-        require DP_ROOT.'/sys/scripts/check.php';
-        break;
-
     case 'phpinfo':
         if (defined('DPC_IS_CLOUD')) {
             exit;
@@ -124,16 +117,6 @@ switch ($_GET['_sys']) {
             die('Invalid auth code.');
         }
         require DP_ROOT.'/sys/scripts/opcache.php';
-        break;
-
-    case 'apcclear':
-        if (defined('DPC_IS_CLOUD')) {
-            exit;
-        }
-        if (!$is_authed) {
-            die('Invalid auth code.');
-        }
-        require DP_ROOT.'/sys/scripts/apcclear.php';
         break;
 
     case 'wincache':
@@ -167,24 +150,6 @@ switch ($_GET['_sys']) {
         require DP_ROOT.'/sys/scripts/check_http_method.php';
         break;
 
-    case 'dev_run_migrations':
-        if (defined('DPC_IS_CLOUD')) {
-            exit;
-        }
-        if (!$is_authed) {
-            die('Invalid auth code.');
-        }
-        require DP_ROOT.'/sys/scripts/dev_run_migrations.php';
-        break;
-
-    case 'savemail':
-        require DP_ROOT.'/sys/scripts/savemail.php';
-        break;
-
-    case 'save_failed_sendmail':
-        require DP_ROOT.'/sys/scripts/failed_sendmail_job.php';
-        break;
-
     case 'chat_status':
         require DP_ROOT.'/sys/scripts/chat_status.php';
         break;
@@ -201,19 +166,11 @@ switch ($_GET['_sys']) {
         require DP_ROOT.'/sys/scripts/licinfo.php';
         break;
 
-    case 'smtp_event':
-        require DP_ROOT.'/sys/scripts/smtp_event.php';
-        break;
-
     case 'stats':
         require DP_ROOT.'/sys/scripts/stats.php';
         break;
 
     case 'message':
         require DP_ROOT.'/sys/scripts/message.php';
-        break;
-
-    case 'testmode':
-        require DP_ROOT.'/sys/scripts/testmode.php';
         break;
 }

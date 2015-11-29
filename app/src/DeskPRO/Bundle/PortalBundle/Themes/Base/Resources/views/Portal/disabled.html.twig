@@ -1,0 +1,37 @@
+{% extends 'Theme::layout.html.twig' %}
+{% block body %}
+<div class="world">
+  <div class="wrapper">
+
+    <div class="column-full">
+
+      <div class="welcome-block-wrapper">
+        <div class="welcome-block-second-border">
+          <div class="welcome-block disabled">
+            <i class="fa fa-user-times"></i>
+            <h1>No User Portal has been created for this helpdesk</h1>
+
+            <div class="disabled-action">
+              <span>Are you an agent looking to login to your helpdesk?</span>
+              <a href="{{ path('agent') }}" class="button">Log in as an agent</a>
+            </div>
+
+            <div class="disabled-action">
+              <span>Are you an admin looking to login to your helpdesk?</span>
+              <a href="{{ path('admin') }}" class="button">Log in as an admin</a>
+            </div>
+
+            <hr>
+
+            {# TODO: update this URL with a direct path [JS dependant] to the page an admin can toggle this setting. it depends on brand. so this isnt possible to link to at time or writing. #}
+            <a href="{{ path('admin') }}" class="secondary-link">Or click here if you're an admin &amp; want to enable your helpdesk</a>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+{% endblock body %}

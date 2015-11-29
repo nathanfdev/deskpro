@@ -7,8 +7,6 @@ export class PageView extends Component {
     currentPage: PropTypes.number.isRequired,
     page: PropTypes.number.isRequired,
     pageNum: PropTypes.number.isRequired,
-    pageRangeDisplayed: PropTypes.number.isRequired,
-    marginPagesDisplayed: PropTypes.number.isRequired,
     onClick: PropTypes.func,
     activeClassName: PropTypes.string
   };
@@ -24,17 +22,17 @@ export class PageView extends Component {
     const className = currentPage === page ? 'active' : '';
     return (
       <li key={page}>
-        <a href="#" onClick={onClick.bind(null, page)} className={className}>
+        <a href="#" onClick={onClick.bind(null, page - 1)} className={className}>
           {page}
         </a>
       </li>
     );
   }
 
-  renderDropDown() {
+  renderDropDown(active) {
     const { pageNum, dropdown } = this.props;
 
-    if (dropdown) {
+    if (active && dropdown) {
       // Build up an array of page numbers
       const pages = [];
       for (let value = 1; value <= pageNum; value++) {
@@ -59,11 +57,11 @@ export class PageView extends Component {
 
     return (
       <li className={active ? activeClassName : false}>
-        <a {...this.props} href="" className={active ? activeClassName : false} onClick={onClick}>
+        <a {...this.props} href="" className={active ? activeClassName : false} onClick={onClick.bind(null, page - 1)}>
           {page}
           {this.renderCaret(active)}
         </a>
-        {this.renderDropDown()}
+        {this.renderDropDown(active)}
       </li>
     );
   }

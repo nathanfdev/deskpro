@@ -160,10 +160,6 @@ class SendUserEmail extends AbstractEmailAction
      */
     public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
     {
-        if (Ticket::STATUS_HIDDEN === $ticket['status'] && Ticket::HIDDEN_STATUS_TEMP === $ticket['hidden_status']) {
-            return true;
-        }
-
         if (!$this->getContainer()->getEmailAccountManager()->countOutgoingAccounts()) {
             $context->getLogger()->debug('[SendUserEmail] no outgoing email accounts are defined');
 

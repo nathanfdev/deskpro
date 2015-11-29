@@ -32,6 +32,7 @@
 namespace Application\DeskPRO\Chat\UserChat;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\CustomFields\ChatFieldManager;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
@@ -125,6 +126,10 @@ class UserChatManager
 
         $is_new_convo = false;
         $new_person   = false;
+        /** @var ChatFieldManager $field_manager */
+        $field_manager = App::getSystemService('chat_fields_manager');
+        $chat_fields   = @$chat_options['chat_fields'] ?: array();
+
         if (!$convo) {
             $convo          = new ChatConversation();
             $convo->session = $this->session;
@@ -136,6 +141,14 @@ class UserChatManager
                 $dep = $this->em->getRepository('DeskPRO:Department')->find($chat_options['department_id']);
                 if ($dep) {
                     $convo->department = $dep;
+                }
+            }
+
+            if (isset($chat_options['chat_fields'])) {
+                if ($errors = $this->validateCustomFields($chat_fields)) {
+                    $error_code = 'invalid_custom_fields';
+
+                    return;
                 }
             }
 
@@ -178,7 +191,7 @@ class UserChatManager
                         $new_person->name = $convo->person_name;
                     }
                     $new_person->setEmail($convo->person_email);
-                    $convo->person = $new_person;
+                    $convo->person        = $new_person;
                     $new_person->language = $this->tr->getLanguage();
                 }
             }
@@ -223,11 +236,8 @@ class UserChatManager
             }
             $this->em->flush();
 
-            if (isset($chat_options['chat_fields']) && is_array($chat_options['chat_fields']) && !empty($chat_options['chat_fields'])) {
-                $field_manager = App::getSystemService('chat_fields_manager');
-                if ($chat_options['chat_fields']) {
-                    $field_manager->saveFormToObject($chat_options['chat_fields'], $convo);
-                }
+            if (isset($chat_options['chat_fields'])) {
+                $field_manager->saveFormToObject($chat_fields, $convo);
             }
 
             if ($is_new_convo) {
@@ -296,6 +306,39 @@ class UserChatManager
         }
 
         return $convo;
+    }
+
+    public function validateCustomFields($data)
+    {
+        $field_manager         = App::getSystemService('chat_fields_manager');
+        $trans                 = App::getTranslator();
+        $invalid_custom_fields = array();
+
+        foreach ($field_manager->getFields() as $field) {
+            $errors = $field->getHandler()->validateFormData($data);
+            foreach ($errors as $code) {
+                $code = preg_replace('#.*?\.(.*?)$#', '$1', $code);
+                switch ($code) {
+                    case 'min_length':
+                        $code = 'text_min';
+                        $msg  = $trans->getPhraseText('user.error.form_'.$code);
+                        break;
+                    case 'max_length':
+                        $code = 'text_max';
+                        $msg  = $trans->getPhraseText('user.error.form_'.$code);
+                        break;
+                    case 'regex_fail':
+                        $code = 'text_regex';
+                        $msg  = $trans->getPhraseText('user.error.form_'.$code);
+                        break;
+                    default:
+                        $msg = $trans->getPhraseText('user.error.form_'.$code);
+                }
+                $invalid_custom_fields['field_'.$field->getId()] = $msg;
+            }
+        }
+
+        return $invalid_custom_fields;
     }
 
     /**

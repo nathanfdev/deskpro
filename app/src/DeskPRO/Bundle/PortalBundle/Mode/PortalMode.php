@@ -32,10 +32,10 @@ class PortalMode
 {
     const ATTR_NAME = '_portal_mode';
 
-    const MODE_ADMIN  = 'admin';
-    const MODE_NORMAL = 'normal';
-    const MODE_BRAND  = 'brand';
-    const MODE_EMBED  = 'embed';
+    const MODE_ADMIN         = 'admin';
+    const MODE_NORMAL        = 'normal';
+    const MODE_BRAND         = 'brand';
+    const MODE_ADMIN_PREVIEW = 'preview';
 
     protected $mode;
     protected $original_path;
@@ -51,16 +51,16 @@ class PortalMode
 
     public function __toString()
     {
+        if ($this->isAdminPreview()) {
+            return self::MODE_ADMIN_PREVIEW;
+        }
+
         if ($this->isAdmin()) {
             return self::MODE_ADMIN;
         }
 
         if ($this->isBrand()) {
             return sprintf('%s [ID=%s]', self::MODE_BRAND, $this->getData());
-        }
-
-        if ($this->isEmbed()) {
-            return sprintf('%s [ID=%s]', self::MODE_EMBED, $this->getData());
         }
 
         return self::MODE_NORMAL;
@@ -97,15 +97,14 @@ class PortalMode
         $this->mode = self::MODE_ADMIN;
     }
 
-    public function isEmbed()
+    public function isAdminPreview()
     {
-        return self::MODE_EMBED === $this->mode;
+        return self::MODE_ADMIN_PREVIEW === $this->mode;
     }
 
-    public function setEmbed($embed_code)
+    public function setAdminPreview()
     {
-        $this->mode = self::MODE_EMBED;
-        $this->data = $embed_code;
+        $this->mode = self::MODE_ADMIN_PREVIEW;
     }
 
     public function setBrand($data)

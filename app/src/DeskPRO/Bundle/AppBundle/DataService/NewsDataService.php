@@ -34,7 +34,7 @@ namespace DeskPRO\Bundle\AppBundle\DataService;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
 use Doctrine\ORM\EntityManager;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -48,11 +48,11 @@ class NewsDataService extends AbstractDataService
     protected $em;
 
     /**
-     * @var PortalPermissionsManager
+     * @var PermissionsManager
      */
     protected $permissions_manager;
 
-    public function __construct(EntityManager $em, PortalPermissionsManager $permissions_manager)
+    public function __construct(EntityManager $em, PermissionsManager $permissions_manager)
     {
         $this->em                  = $em;
         $this->permissions_manager = $permissions_manager;
@@ -98,7 +98,7 @@ class NewsDataService extends AbstractDataService
                     ->where('n.status = :status')->setParameter('status', News::STATUS_PUBLISHED)
                     ->orderBy('n.id', 'DESC');
 
-                $allowed_ids = $permissions_manager->getPermissionsBagForPerson($person)->getAllowedNewsCategories();
+                $allowed_ids = $permissions_manager->getPortalPermissionsBag($person)->getAllowedNewsCategories();
                 if ($category) {
                     // find allowed ids
                     $cat_ids = $category->getTreeIds(true);
@@ -154,7 +154,7 @@ class NewsDataService extends AbstractDataService
                 $person,
             ),
             function () use ($that, $category, $person) {
-                $allowed_ids = $that->permissions_manager->getPermissionsBagForPerson(
+                $allowed_ids = $that->permissions_manager->getPortalPermissionsBag(
                     $person
                 )->getAllowedNewsCategories();
 

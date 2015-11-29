@@ -1,0 +1,310 @@
+$main-preemptive-color: #62ad8c;
+$main-preemptive-color-hover: #4e9576;
+$main-preemptive-text-color: #fff;
+$main-preemptive-secondary-text-color: #cecece;
+$main-preemptive-border-color: #e7e7e7;
+$secondary-preemptive-background-color: #f8f8f8;
+
+// Buttons that activate the chats
+.dpdesignportal-state-buttons {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+
+  a.preemtive-button {
+    display: inline-block;
+    line-height: 1.2em;
+    background: $main-preemptive-color;
+    color: $main-preemptive-text-color;
+    border-radius: 199px;
+    padding: 7px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 12px;
+
+    &:hover { background: $main-preemptive-color-hover; }
+
+    &.button-s {// Make it small
+      padding: 2px;
+      .state-button-text { margin: 0 5px 0 10px; }
+    }
+
+    &.button-l {// Make it large
+      .state-button-text {
+        font-size: 17px;
+        font-weight: 400;
+      }
+      .state-button-icon {
+        width: 22px;
+        height: 22px;
+        font-size: 15px;
+        border: 5px solid $main-preemptive-color-hover;
+        span { top: 5px; }
+      }
+    }
+
+    .state-button-text {
+      display: inline-block;
+      vertical-align: middle;
+      margin: 0 10px 0 20px;
+      font-size: 12px;
+    }
+
+    .state-button-icon {
+      display: inline-block;
+      background: $main-preemptive-text-color;
+      width: 16px;
+      height: 16px;
+      text-align: center;
+      border: 3px solid $main-preemptive-color-hover;
+      border-radius: 199px;
+      vertical-align: middle;
+
+      color: $main-preemptive-color;
+      font-weight: bold;
+
+      span {
+        position: relative;
+        top: 1px;
+      }
+    }
+  }
+}
+
+// Panel with message
+.preemtive-chat {
+  background: $secondary-preemptive-background-color;
+  padding: 5px 0;
+  border-radius: 3px;
+  max-width: 320px;
+  font-weight: 400;
+  text-align: center;
+  border: 1px solid $main-preemptive-color;
+  margin-bottom: 20px;
+  margin-right: 20px;
+  position: relative;
+
+  &.small {// For the multiple agent avatars/no text type of panel
+    max-width: 170px;
+    h1 { color: $main-preemptive-secondary-text-color; }
+  }
+
+  .close-panel {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    font-size: 10px;
+    cursor: pointer;
+    i { color: $main-preemptive-secondary-text-color; }
+    &:hover i { color: #333; }
+  }
+
+  &:after {
+    content: "";
+    display: block;
+    position: absolute;
+    bottom: -8px;
+    width: 0;
+    height: 0;
+    border: 4px solid rgba(0, 0, 0, 0.0);
+    right: 10px;
+  }
+
+  .preemtive-chat-content {
+    padding: 0 5px;
+  }
+
+  .avatar-container {
+    position: relative;
+    margin-top: 10px;
+
+    ul {
+      display: inline-block;
+      margin: 0;
+      list-style: none;
+      background: $secondary-preemptive-background-color;
+      padding: 0 10px;
+      position: relative;
+      z-index: 200;
+
+      li {
+        display: inline-block;
+      }
+
+      &.multiple li {
+        margin-left: -10px;
+        margin-right: -10px;
+      }
+    }
+
+    hr {
+      position: absolute;
+      top: 50%;
+      z-index: 199;
+      margin: -2px 0 0;
+    }
+  }
+
+  .dpdesignportal-chat-header-avatar {
+    width: 45px;
+    height: 45px;
+    background-color: #eceaea;
+    background-size: cover;
+    border-radius: 199px;
+    border: 3px solid $secondary-preemptive-background-color;
+    color: #cdcdcd;
+    font-size: 16px;
+    margin: 0 auto;
+    position: relative;
+    display: inline-block;
+    z-index: 199;
+    transition: all 0.5s ease;
+  }
+
+
+
+  h1, h2 {
+    margin: 0;
+    padding: 0;
+    font-weight: 400;
+  }
+
+  h1 {
+    font-size: 14px;
+    color: #4b4b4b;
+    margin-bottom: 5px;
+    margin-top: 10px;
+  }
+
+  h2 {
+    font-size: 11px;
+    color: #a2a2a2;
+  }
+
+  p {
+    padding: 0;
+    line-height: 1.7em;
+    font-size: 12px;
+    color: #4b4b4b;
+  }
+
+  hr {
+    border: 0;
+    background: $main-preemptive-border-color;
+    display: block;
+    width: 100%;
+    height: 1px;
+    padding: 0;
+    margin: 5px 0;
+  }
+
+  .quote {
+    background: $main-preemptive-text-color;
+    border: 1px solid $main-preemptive-border-color;
+    border-radius: 2px;
+    padding: 5px 25px;
+    position: relative;
+    text-align: left;
+    margin-bottom: 5px;
+
+    &:before, &:after {
+      position: absolute;
+      font-size: 36px;
+      color: #d6d6d6;
+      line-height: 30px;
+    }
+
+    &:before {
+      content: open-quote;
+      top: 10px;
+      left: 5px;
+    }
+
+    &:after {
+      content: close-quote;
+      bottom: -14px;
+      right: 5px;
+    }
+  }
+
+  .preemtive-chat-footer {
+    text-align: left;
+
+    .preemtive-chat-footer-button {
+      &:after {
+        clear: both;
+        content: "";
+        display: table;
+      }
+
+      a {
+        display: block;
+        padding: 8px 0;
+        border-radius: 2px;
+        font-size: 11.5px;
+        text-decoration: none;
+        background: $main-preemptive-color;
+        color: $main-preemptive-text-color;
+        text-align: center;
+        float: left;
+        width: 50%;
+        &:hover { background: $main-preemptive-color-hover; }
+
+        &.blank {
+          background: none;
+          color: #888888;
+          &:hover { color: #333; }
+        }
+
+        &.wide { width: 100%; }
+      }
+    }
+
+    form {
+      margin: 0;
+      padding: 0 35px 0 0;
+      position: relative;
+    }
+
+    [type="text"] {
+      @include placeholder { color: $main-preemptive-secondary-text-color; }
+
+      border: 1px solid $main-preemptive-border-color;
+      border-radius: 2px;
+      font-family: inherit;
+      font-size: 12px;
+      padding: 7px 10px;
+      margin: 0;
+      height: 30px;
+      width: 100%;
+      color: #333;
+    }
+
+    button {
+      border: 1px solid $main-preemptive-color;
+      border-radius: 2px;
+      font-family: inherit;
+      font-size: 12px;
+      padding: 7px 0;
+      background: $main-preemptive-color;
+      color: $main-preemptive-text-color;
+      text-align: center;
+      margin: 0;
+      width: 30px;
+      height: 30px;
+      position: absolute;
+      top: 0;
+      right: 0;
+
+      i {
+        position: relative;
+        top: -1px;
+      }
+      
+      &:hover {
+        border: 1px solid $main-preemptive-color-hover;
+        background: $main-preemptive-color-hover;
+      }
+    }
+  }
+}

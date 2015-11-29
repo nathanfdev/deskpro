@@ -79,7 +79,7 @@ class SetUserOwner extends AbstractContainerAwareAction implements ActionInterfa
 
             $eml        = new EmailAddress();
             $eml->email = $user_email;
-            $person     = $person_processor->createPerson($eml, true);
+            $person     = $person_processor->createPerson($eml);
         }
 
         $orig_person = $ticket->person;

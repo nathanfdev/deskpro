@@ -95,7 +95,7 @@ class AddCcAction extends AbstractAction
 
                 $eml        = new EmailAddress();
                 $eml->email = $email;
-                $person     = $person_processor->createPerson($eml, false);
+                $person     = $person_processor->createPerson($eml);
 
                 if ($person) {
                     $this->add_people[$person->getId()] = $person;

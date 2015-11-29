@@ -138,11 +138,10 @@ class PersonFromEmailProcessor
      * is properly saved.
      *
      * @param $from
-     * @param bool $do_validated True to validate user, false to use whatever is default
      *
      * @return \Application\DeskPRO\Entity\Person
      */
-    public function createPerson(EmailAddress $from, $do_validated = false)
+    public function createPerson(EmailAddress $from)
     {
         $person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($from->getEmail(), true);
         if ($person) {
@@ -162,10 +161,8 @@ class PersonFromEmailProcessor
         $db->beginTransaction();
         try {
             $tmp_person = Entity\Person::newContactPerson(array(
-                'creation_system'    => $this->creation_system,
-                'name'               => $from->getNameUtf8() ?: '',
-                'is_confirmed'       => 1,
-                'is_agent_confirmed' => App::getSetting('core.agent_validation') ? 0 : 1,
+                'creation_system' => $this->creation_system,
+                'name'            => $from->getNameUtf8() ?: '',
             ));
 
             // Create new person record (no chance of conflicts here)

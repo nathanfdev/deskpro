@@ -91,6 +91,7 @@ class PortalSupportExtension extends \Twig_Extension
     {
         $funcs = array(
             new \Twig_SimpleFunction('can_use_*', array($this, 'canUseCheck')),
+            new \Twig_SimpleFunction('show_tab_*', array($this, 'showTab')),
             new \Twig_SimpleFunction('has_any_*', array($this, 'hasAnyCheck')),
             new \Twig_SimpleFunction('is_user', array($this, 'isUser')),
             new \Twig_SimpleFunction('is_agent', array($this, 'isAgent')),
@@ -100,6 +101,7 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('is_page_*', array($this, 'pageIsCheck')),
             new \Twig_SimpleFunction('col_count', array($this, 'countTruthy')),
             new \Twig_SimpleFunction('has_permission', array($this, 'hasPermission')),
+            new \Twig_SimpleFunction('get_ordered_tabs', array($this, 'getOrderedTabs')),
             new \Twig_SimpleFunction('url_full', array($this, 'urlFull')),
             new \Twig_SimpleFunction('base_url', array($this, 'baseUrl')),
             new \Twig_SimpleFunction('root_url', array($this, 'rootUrl')),
@@ -156,6 +158,28 @@ class PortalSupportExtension extends \Twig_Extension
         $n = strtoupper($name);
 
         return $this->container->get('security.authorization_checker')->isGranted('USE_'.$n);
+    }
+
+    /**
+     * If a tab should be displayed or not (if enabled by admin).
+     *
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function showTab($name)
+    {
+        $n = strtolower($name);
+
+        return (bool) $this->brand_stack->getActive()->getSetting(sprintf('user.portal_tab_%s', $n));
+    }
+
+    /**
+     * @return array the order of tabs, from admin settings
+     */
+    public function getOrderedTabs()
+    {
+        return explode(',', $this->brand_stack->getActive()->getSetting('user.portal_tabs_order'));
     }
 
     /**
@@ -548,10 +572,7 @@ class PortalSupportExtension extends \Twig_Extension
      */
     public function getTagIncludeTemplate($tag_name)
     {
-        $theme    = $this->brand_stack->getActive()->getTheme();
-        $resolver = $this->container->get('theme_resolver');
-
-        return $resolver->templatePath($theme, 'ThemeTagTemplate::'.$tag_name.'.html.twig');
+        return 'ThemeTagTemplate::'.$tag_name.'.html.twig';
     }
 
     /**

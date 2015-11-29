@@ -36,28 +36,41 @@ use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
+/**
+ * Class BaseController.
+ */
 class BaseController extends FOSRestController
 {
-    /** @const DATATYPE_STANDARD Standard and sort of unknown datatype. */
-    const DATATYPE_STANDARD = 1;
-    /** @const DATATYPE_GROUPED_COUNT Provided data is an array resulting from a grouped count query. */
-    const DATATYPE_GROUPED_COUNT = 2;
-    /** @const DATATYPE_COUNT_ONLY Standard datatype, but we only want the total results */
-    const DATATYPE_COUNT_ONLY = 3;
+    /**
+     * @const DATA_TYPE_STANDARD Standard and sort of unknown datatype.
+     */
+    const DATA_TYPE_STANDARD = 1;
 
     /**
+     * @const DATA_TYPE_GROUPED_COUNT Provided data is an array resulting from a grouped count query.
+     */
+    const DATA_TYPE_GROUPED_COUNT = 2;
+
+    /**
+     * @const DATA_TYPE_COUNT_ONLY Standard datatype, but we only want the total results
+     */
+    const DATA_TYPE_COUNT_ONLY = 3;
+
+    /**
+     * @param array|object $data
+     * @param string       $includes_string
+     * @param int          $type
+     *
      * @return array
      */
-    protected function dataSerialize($data, $includes_string = null, $type = self::DATATYPE_STANDARD)
+    protected function dataSerialize($data, $includes_string = null, $type = self::DATA_TYPE_STANDARD)
     {
         // not passing an $includes_string will default to the master request's "include" GET param
         if (null === $includes_string) {
             $includes_string = $this->get('request_stack')->getMasterRequest()->query->get('include');
         }
 
-        if (self::DATATYPE_STANDARD === $type) {
-            return $this->get('data_serializer')->serialize($data, $includes_string);
-        } elseif (self::DATATYPE_COUNT_ONLY === $type) {
+        if (self::DATA_TYPE_COUNT_ONLY === $type) {
             if (is_object($data) && method_exists($data, 'count')) {
                 return [
                     'meta' => [
@@ -74,7 +87,10 @@ class BaseController extends FOSRestController
                 ],
             ];
         }
+
+        return $this->get('data_serializer')->serialize($data, $includes_string);
     }
+
     /**
      * @param mixed $input any array or object
      *
@@ -93,7 +109,7 @@ class BaseController extends FOSRestController
      *
      * @return array
      */
-    protected function createErrorRepresentation($status, $code, $message, $errors_data = array())
+    protected function createErrorRepresentation($status, $code, $message, $errors_data = [])
     {
         return $this->get('api_view_representation_factory')->createErrorRepresentation(
             $status,

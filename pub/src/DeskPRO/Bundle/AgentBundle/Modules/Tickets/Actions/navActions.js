@@ -6,6 +6,9 @@ import { loadPeople as rsLoadPeople, releasePeopleRequest as rsReleasePeopleRequ
 import { loadOrganizations as rsLoadOrganizations, releaseOrganizationsRequest as rsReleaseOrganizationsRequest }
   from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/organizationsActions';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
+import { filterSetGroupingsSettingsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Selectors/settings';
+import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
+import { updateFilterGrouping } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
 
 // Constants -----------------------------------------------------------------------------------------------------------
 
@@ -31,7 +34,6 @@ const releaseOrganizations = createAction(
 );
 
 const markFilterLoading = createAction('TICKETS_NAV_MARK_FILTER_AS_LOADING');
-const updateFilter = createAction('TICKET_NAV_UPDATE_FILTER');
 const removeFilterNestedCounts = createAction('TICKET_NAV_REMOVE_FILTER_NESTED_COUNTS');
 
 /**
@@ -65,14 +67,15 @@ function loadRelatedPeopleAndOrganizations(filterSetsCount, dispatch) {
  */
 const loadFilterCount = createAction(
   'TICKETS_NAV_LOAD_FILTER_COUNT',
-  id => dispatch => new Promise(resolve =>
-    DpApi.sendGet(`DP_API/ticket_filters/${id}/count`)
-         .success(response => {
-           resolve(response.data);
-           loadRelatedPeopleAndOrganizations([{nested: [response.data]}], dispatch);
-         }
-    )
-  )
+  id => (dispatch, getState) => new Promise(resolve => {
+    const groupBy = filterSetGroupingsSettingsSelector(getState()).get(String(id), '');
+    DpApi
+      .sendGet(`DP_API/ticket_filters/${id}/count?group_by=` + groupBy)
+      .success(response => {
+        resolve(response.data);
+        loadRelatedPeopleAndOrganizations([{nested: [response.data]}], dispatch);
+      });
+  })
 );
 
 // Public --------------------------------------------------------------------------------------------------------------
@@ -93,7 +96,7 @@ export const applyFilterEditing = createAction(
     }
 
     DpApi.sendPut(`DP_API/ticket_filters/${id}`, {group_by: groupBy}).success(() => {
-      dispatch(updateFilter({id, group_by: groupBy}));
+      dispatch(updateFilterGrouping(id, groupBy));
 
       // reload filter counts if grouping is applied
       if (groupBy) {
@@ -104,10 +107,13 @@ export const applyFilterEditing = createAction(
 );
 export const initialLoad = createAction(
   'TICKETS_NAV_INITIAL_LOAD',
-  () => dispatch => new Promise(
+  () => (dispatch, getState) => new Promise(
       resolve => {
+        const groupingQueryString =
+          compileParams({group_by: filterSetGroupingsSettingsSelector(getState()).toJS()}).replace(/&/g, '%26');
+
         const batch = 'DP_API/batch'
-          + '?get[filterSetsCount]=DP_API/ticket_filter_sets/all/counts'
+          + '?get[filterSetsCount]=DP_API/ticket_filter_sets/all/counts%3F' + groupingQueryString
           + '&get[filterSets]=DP_API/ticket_filter_sets'
           + '&get[filters]=DP_API/ticket_filters'
           + '&get[labels]=DP_API/ticket_labels'

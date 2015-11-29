@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
 
+use Application\DeskPRO\Entity\TmpData;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\ApiBundle\Model\Me;
@@ -89,6 +90,29 @@ class MeController extends BaseController
     {
         return View::create(
             $this->dataSerialize(new PersonProfile($this->getUser())),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @Get("/me/devise-setup-token")
+     */
+    public function getDeviseSetupTokenAction()
+    {
+        $tmpData = TmpData::create(
+            'devise_setup_token',
+            ['agent_id' => $this->getUser()->getId()],
+            '+10 minutes'
+        );
+        $this->getManager()->persist($tmpData);
+        $this->getManager()->flush();
+
+        $url = $this->generateUrl('api_authenticate_device', ['auth' => $tmpData->auth], true);
+
+        return View::create(
+            $this->createRepresentation([
+                'setup_token' => 'dp_device_setup:'.$url,
+            ]),
             Response::HTTP_OK
         );
     }

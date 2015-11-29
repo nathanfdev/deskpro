@@ -150,7 +150,6 @@ class PeopleListRenderer
         $data['can_agent']             = $entity->can_agent;
         $data['can_admin']             = $entity->can_admin;
         $data['is_confirmed']          = $entity->is_confirmed;
-        $data['is_agent_confirmed']    = $entity->is_agent_confirmed;
         $data['is_deleted']            = $entity->is_deleted;
         $data['is_disabled']           = $entity->is_disabled;
         $data['creation_system']       = $entity->creation_system;

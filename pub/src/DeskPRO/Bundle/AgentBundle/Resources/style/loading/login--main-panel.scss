@@ -44,7 +44,7 @@
   text-align: left;
   max-width: 400px;
   background: #fff;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   border-radius: 2px;
   border: 3px solid #9cbcda;
   padding: 12px;
@@ -160,7 +160,7 @@
   // Buttons and Inputs
   input[type="submit"] {
     background: #3d83c5;
-    border: 0px;
+    border: 0;
     border-radius: 2px;
     display: block;
     width: 100%;
@@ -174,15 +174,13 @@
   }
 
   input[type="text"], input[type="password"], input[type="email"] {
-    border: 0px;
-    padding: 0px;
-    padding: 14px 10px;
+    border: 0;
     line-height: 1.2em;
     margin: 0;
     display: block;
     width: 100%;
     font-weight: 400;
-    padding-left: 30px;
+    padding: 14px 10px 14px 30px;
     outline: none;
 
     &::-webkit-input-placeholder { color: #d3d3d3; font-weight: 400; opacity: 1; }
@@ -223,7 +221,7 @@
   .dpw-login-form-log-out {
     text-align: center;
     display: block;
-    padding: 8px 5px 0px 5px;
+    padding: 8px 5px 0 5px;
     font-size: 14px;
 
 
@@ -253,7 +251,7 @@
       margin-right: 4px;
       width: 13px;
       height: 13px;
-      i { top: 0px; }
+      i { top: 0; }
     }
   }
 
@@ -303,7 +301,7 @@
     width: 1px;
     padding: 0;
     margin: 0 2px;
-    border: 0px;
+    border: 0;
     vertical-align: middle;
     background: #dfdfdf;
   }
@@ -348,7 +346,7 @@
 
 .dpw-login-form-divider {
   position: relative;
-  margin: 15px 0px;
+  margin: 15px 0;
 
   .dpw-login-form-divider-title {
     position: absolute;

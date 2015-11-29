@@ -117,7 +117,7 @@ class BrandAsset implements EntityInterface, NotifyPropertyChanged
      */
     public function setName($name)
     {
-        $this->name = $name;
+        $this->setModelField('name', $name);
     }
 
     /**
@@ -133,7 +133,7 @@ class BrandAsset implements EntityInterface, NotifyPropertyChanged
      */
     public function setTags(array $tags)
     {
-        $this->tags = $tags;
+        $this->setModelField('tags', $tags);
     }
 
     /**
@@ -149,7 +149,7 @@ class BrandAsset implements EntityInterface, NotifyPropertyChanged
      */
     public function setBrand($brand)
     {
-        $this->brand = $brand;
+        $this->setModelField('brand', $brand);
     }
 
     /**
@@ -165,7 +165,7 @@ class BrandAsset implements EntityInterface, NotifyPropertyChanged
      */
     public function setBlob($blob)
     {
-        $this->blob = $blob;
+        $this->setModelField('blob', $blob);
     }
 
     /**
@@ -181,7 +181,7 @@ class BrandAsset implements EntityInterface, NotifyPropertyChanged
      */
     public function setDateCreated($date_created)
     {
-        $this->date_created = $date_created;
+        $this->setModelField('date_created', $date_created);
     }
 
     /**
@@ -197,6 +197,6 @@ class BrandAsset implements EntityInterface, NotifyPropertyChanged
      */
     public function setDateUpdated($date_updated)
     {
-        $this->date_updated = $date_updated;
+        $this->setModelField('date_updated', $date_updated);
     }
 }

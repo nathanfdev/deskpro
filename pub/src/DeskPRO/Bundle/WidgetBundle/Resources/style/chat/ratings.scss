@@ -1,0 +1,162 @@
+.dpdesignportal-agent-rating {
+  background: #f8f8f8;
+  border-top: 1px solid #e7e7e7;
+  border-bottom: 1px solid #e7e7e7;
+  text-align: center;
+  padding: 15px 5px 0 5px;
+
+  &.dpdesignportal-agent-rating-complete {
+    padding: 20px 5px;
+    .fa-check-circle-o { color: #4681b2; font-size: 24px; }
+  }
+
+  h1 {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    color: #4b4b4b;
+    span { color: #a5a5a5; }
+    span.positive { color: #299969 }
+    span.negative { color: #ff5460 }
+    .dpdesignportal-message-avatar { margin-top: -1px; }
+  }
+
+  p { font-size: 12px; }
+  p.grey { color: #838383; }
+  .dpdesignportal-agent-rating-buttons { margin: 15px 0 20px 0; }
+
+  a.dpdesignportal-button {
+    background: none;
+    border: 1px solid #299969;
+    color: #299969;
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 7px 10px;
+    min-width: 120px;
+    transition: all 0.2s ease;
+    i { margin-right: 3px; }
+    &:hover { background: #299969; color: #fff; }
+
+    &.negative {
+      border: 1px solid #ff5460;
+      color: #ff5460;
+      &:hover { background: #ff5460; color: #fff; }
+    }
+  }
+}
+
+.dpdesignportal-radio-group.dpdesignportal-radio-group-rating {
+  @extend %clearfix;
+  width: 100%;
+  border: 1px solid #e7e7e7;
+  border-radius: 2px;
+  background: #fff;
+  padding: 7px 5px 5px;
+  counter-reset: rating;
+
+  a {
+    display: block;
+    text-align: center;
+    width: 10%;
+    margin: 0;
+    float: left;
+
+    &:before {
+      display: block;
+      margin: 0 auto;
+    }
+
+    span {
+      display: block;
+      margin-top: 4px;
+      font-size: 10.5px;
+      color: #636363;
+
+      &::before {
+        counter-increment: rating;
+        content: counter(rating);
+      }
+    }
+
+    &.rate-1 span { opacity: 0.3 }
+    &.rate-2 span { opacity: 0.4 }
+    &.rate-3 span { opacity: 0.5 }
+    &.rate-4 span { opacity: 0.6 }
+    &.rate-5 span { opacity: 0.65 }
+    &.rate-6 span { opacity: 0.7 }
+    &.rate-7 span { opacity: 0.75 }
+    &.rate-8 span { opacity: 0.8 }
+    &.rate-9 span { opacity: 0.9 }
+    &.rate-10 span { opacity: 1 }
+  }
+}
+
+
+
+
+.dpdesignportal-transcript-sent {
+  @extend %clearfix;
+  background: #f8f8f8;
+  border-bottom: 1px solid #e7e7e7;
+  color: #a5a5a5;
+  font-size: 12px;
+
+  i { margin-right: 6px; }
+
+  a {
+    color: #4681b2;
+    display: inline-block;
+    padding: 11px 10px;
+    border-left: 1px solid #e7e7e7;
+    span { text-decoration: underline; }
+  }
+
+  .left {
+    float: left;
+    padding-top: 10px;
+    padding-left: 5px;
+  }
+
+  .right { float: right; }
+}
+
+
+.dpdesignportal-transcript-request {
+
+  .dpdesignportal-transcript-request-header {
+    padding: 5px 5px 0 5px;
+    color: #a5a5a5;
+    text-align: right;
+
+    span {
+      display: inline-block;
+      height: 30px;
+      padding-top: 7px;
+      font-size: 12px;
+      padding-right: 3px;
+    }
+
+    .dpdesignportal-button {
+      height: 30px;
+      vertical-align: top;
+      margin: 0;
+      color: #fff;
+      .fa-print { top: 1px;}
+    }
+  }
+
+  .dpdesignportal-transcript-request-form-container {
+    @include add-corner(4px, #4681b2, "middle", top, "");
+    position: relative;
+    border: 1px solid #4681b2;
+    padding: 0 5px;
+    border-radius: 2px;
+    margin: 5px;
+
+    form {
+      margin: 0;
+
+      .inline-form-item { margin-top: 5px; }
+    }
+  }
+}

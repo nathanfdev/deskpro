@@ -110,9 +110,8 @@ class PersonValidator
             $validated_email = $validating_email;
         }
 
-        $validated_email->is_own_validated = true;
-        $validated_email->is_validated     = true;
-        $validated_email->date_validated   = new \DateTime();
+        $validated_email->is_validated   = true;
+        $validated_email->date_validated = new \DateTime();
 
         $this->em->persist($validated_email);
 
@@ -175,19 +174,6 @@ class PersonValidator
         }
 
         switch ($type) {
-            case self::TYPE_EMAIL:
-                if (!$person_email instanceof PersonEmailValidating) {
-                    throw new \InvalidArgumentException('TYPE_EMAIL expects a PersonEmailValidating');
-                }
-
-                return $this->router->generate(
-                    'portal_validation',
-                    array(
-                        'object_type' => self::TYPE_EMAIL,
-                        'email_id'    => $person_email->getId(),
-                    ),
-                    UrlGeneratorInterface::ABSOLUTE_URL
-                );
             case self::TYPE_EMAIL_PRIMARY:
                 if (!$person_email instanceof PersonEmail) {
                     throw new \InvalidArgumentException('TYPE_EMAIL_PRIMARY expects a PersonEmail');

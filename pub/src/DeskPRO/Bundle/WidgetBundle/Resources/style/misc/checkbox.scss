@@ -1,0 +1,26 @@
+.dpdesignportal-checkbox-container, a.dpdesignportal-checkbox-container {
+  outline: 0;
+  cursor: pointer;
+}
+
+.dpdesignportal-checkbox {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  border: 1px solid #e5e5e5;
+  border-radius: 2px;
+  color: #ededed;
+  text-align: center;
+  font-size: 8px;
+  vertical-align: middle;
+  margin-top: -1px;
+  margin-right: 2px;
+
+  i {
+    position: relative;
+    top: 1px;
+    margin: 0;
+  }
+}
+
+.dpdesignportal-checkbox.active i { color: #333; }

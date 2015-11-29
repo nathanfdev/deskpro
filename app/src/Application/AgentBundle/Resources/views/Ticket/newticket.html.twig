@@ -99,9 +99,11 @@ pageMeta.baseId = '{{ baseId }}';
 						<ul class="results-list">
 
 						</ul>
+						{% if app.user.hasPerm('agent_people.create') %}
 						<footer>
 							<span class="create-user">{{ phrase('agent.general.create_a_new_person') }}</span>
 						</footer>
+						{% endif %}
 					</section>
 				</div>
 			</div>

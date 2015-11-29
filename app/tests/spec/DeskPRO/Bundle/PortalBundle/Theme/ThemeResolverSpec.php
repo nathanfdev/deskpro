@@ -35,6 +35,7 @@ use DeskPRO\Bundle\PortalBundle\Theme\Tag;
 use DeskPRO\Bundle\PortalBundle\Theme\TagProcessor;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeRepository;
+use Doctrine\ORM\EntityManager;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Psr\Log\LoggerInterface;
@@ -49,9 +50,10 @@ class ThemeResolverSpec extends ObjectBehavior
         ContainerInterface $container,
         ThemeRepository $theme_repo,
         TagProcessor $tag_processor,
+        EntityManager $em,
         LoggerInterface $logger
     ) {
-        $this->beConstructedWith($container, $theme_repo, $tag_processor, $logger);
+        $this->beConstructedWith($container, $theme_repo, $tag_processor, $em, $logger);
     }
 
     public function it_processes_a_tag_by_handing_off_to_the_tag_processor(

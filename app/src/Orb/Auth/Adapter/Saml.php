@@ -33,6 +33,7 @@
  */
 namespace Orb\Auth\Adapter;
 
+use Application\DeskPRO\Saml\SamlMetadataBuilder;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
 use Orb\Auth\StateHandler\StateHandlerInterface;
@@ -90,7 +91,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
      */
     protected function getSamlSettings()
     {
-        return array(
+        $settings = array(
             'sp' => array(
                 'entityId'                 => $this->getMetadataXmlUrl(),
                 'assertionConsumerService' => array(
@@ -114,6 +115,17 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
                 'certFingerprint' => $this->options['cert_fingerprint'] ?: null,
             ),
         );
+
+        if ($this->options['sign_authn_request']) {
+            $settings['security'] = array(
+                'authnRequestsSigned' => true,
+            );
+
+            $settings['sp']['privateKey'] = $this->options['sp_private_key'];
+            $settings['sp']['x509cert']   = $this->options['sp_public_x509'];
+        }
+
+        return $settings;
     }
 
     /**
@@ -239,7 +251,12 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
             );
         }
 
-        $user_info = array();
+        // start user_info as the $attrs from the saml response so that people can filter on them
+        if (is_array($attrs)) {
+            $user_info = $attrs;
+        } else {
+            $user_info = array();
+        }
 
         $user_info['email']      = Arrays::reachForFirstValueInKey($attrs, 'email');
         $user_info['first_name'] = Arrays::reachForFirstValueInKey($attrs, 'first_name');
@@ -395,7 +412,12 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
         $saml = $this->createSamlProcessor();
         $sp   = $saml->getSettings()->getSPData();
 
-        return \OneLogin_Saml2_Metadata::builder($sp);
+        $custom_xml = '';
+        if ($this->options->get('include_custom_metadata_xml')) {
+            $custom_xml = $this->options->get('custom_metadata_xml');
+        }
+
+        return SamlMetadataBuilder::builder($sp, false, false, null, null, array(), array(), array(), $custom_xml);
     }
 
     /**

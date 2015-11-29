@@ -40,7 +40,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 /**
  * Delete the ticket.
  */
-class SetDeleted extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
+class SetDeleted extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
     /**
      * {@inheritdoc}
@@ -49,6 +49,13 @@ class SetDeleted extends AbstractAction implements ActionInterface, MacroActionI
     {
         $ticket->setStatus('hidden.deleted');
         $context->getVars()->set('stop_triggers', true);
+        $this->getContainer()->getDb()->replace('tickets_deleted', array(
+            'ticket_id'     => $ticket->id,
+            'by_person_id'  => null,
+            'new_ticket_id' => 0,
+            'reason'        => 'Deleted via trigger #'.$context->getVars()->get('trigger_id'),
+            'date_created'  => date('Y-m-d H:i:s'),
+        ));
     }
 
     /**

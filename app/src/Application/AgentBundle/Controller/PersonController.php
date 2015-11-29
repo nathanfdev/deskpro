@@ -279,8 +279,6 @@ class PersonController extends AbstractController
             return $response;
         }
 
-        $validating_emails = $this->em->getRepository('DeskPRO:PersonEmailValidating')->getForPerson($person);
-
         $has_email_validating = false;
         foreach ($person->emails as $e) {
             if (!$e->is_validated) {
@@ -306,7 +304,6 @@ class PersonController extends AbstractController
             'with_warn_for_email'       => $with_warn_for_email,
             'person'                    => $person,
             'banned_emails'             => $banned_emails,
-            'validating_emails'         => $validating_emails,
             'has_email_validating'      => $has_email_validating,
             'person_api'                => $person_api,
             'person_usergroups_ids'     => $person_usergroups_ids,
@@ -351,27 +348,6 @@ class PersonController extends AbstractController
             'contact_name' => $person->getDisplayContact(),
             'url'          => $this->generateUrl('agent_people_view', array('person_id' => $person->id)),
         ));
-    }
-
-    public function validateEmailAddressAction($id, $security_token)
-    {
-        $this->ensureAuthToken('validate_email', $security_token);
-
-        $email_validating = $this->em->find('DeskPRO:PersonEmailValidating', $id);
-        if (!$email_validating) {
-            throw $this->createNotFoundException();
-        }
-
-        $validator = new \Application\DeskPRO\People\EmailValidator($email_validating);
-
-        $email_exists = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($email_validating->getEmail());
-        if ($email_exists) {
-            return $this->createJsonResponse(array('error' => true, 'message' => 'Email already exists on another account'));
-        }
-
-        $email = $validator->validate();
-
-        return $this->createJsonResponse(array('success' => true));
     }
 
     ############################################################################
@@ -637,22 +613,6 @@ class PersonController extends AbstractController
                     $this->db->delete('sessions', array('person_id' => $person->id));
 
                     $email = $person->getPrimaryEmailAddress();
-                    if (!$email) {
-                        // We are implicitly validating the account when we set a password
-                        $validating_emails = $validating_emails = $this->em->getRepository('DeskPRO:PersonEmailValidating')->getForPerson($person);
-
-                        foreach ($validating_emails as $v_eml) {
-                            $validator = new \Application\DeskPRO\People\EmailValidator($v_eml);
-
-                            $email_exists = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($v_eml->getEmail());
-                            if ($email_exists) {
-                                continue;
-                            }
-
-                            $email = $validator->validate();
-                            break;
-                        }
-                    }
 
                     if ($email) {
                         $message = $this->container->getMailer()->createMessage();
@@ -1312,14 +1272,16 @@ class PersonController extends AbstractController
 
         $this->em->beginTransaction();
         try {
-            $personDeleted = new Entity\PersonDeleted();
-
-            $personDeleted['person_id'] = $person_id;
-            $personDeleted['by_person'] = $this->getPerson();
-            $personDeleted['reason']    = $this->in->getString('reason');
-
-            $this->em->persist($personDeleted);
-            $this->em->flush();
+            $this->em->getConnection()->executeQuery(
+                    'REPLACE INTO persons_deleted (person_id, by_person_id, reason, date_created)
+                     VALUES (:person, :by_person, :reason, :date)
+                ', array(
+                    'person'    => $person_id,
+                    'by_person' => $this->person->id,
+                    'reason'    => $this->in->getString('reason'),
+                    'date'      => date('Y-m-d H:i:s'),
+                )
+            );
 
             if ($this->in->getBool('ban')) {
                 foreach ($person->emails as $email) {

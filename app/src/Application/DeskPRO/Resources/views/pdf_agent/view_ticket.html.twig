@@ -137,7 +137,7 @@
         </tr>
     {% endif %}
 
-    {% for f in custom_fields %}
+    {% for f in custom_fields if layout.has('ticket_' ~ f.name) %}
         <tr>
             <th>{{ f.title }}:</th>
             <td>

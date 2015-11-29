@@ -1,0 +1,32 @@
+.dpdesignportal-radio-group {
+
+  a {
+    text-decoration: none;
+    color: #868686;
+    margin-right: 10px;
+    outline: none;
+
+    &:before {
+      content: "";
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      background: #fbfbfc;
+      border-radius: 19px;
+      border: 2px solid #d7d7d7;
+      vertical-align: middle;
+      margin-right: 4px;
+      margin-top: -2px;
+      transition: all 0.3s ease;
+    }
+
+    &:hover:before { border: 2px solid #4681b2; }
+
+    &.dpdesignportal-radio-active {
+      &:before {
+        background: #6da5d2;
+        border: 2px solid #4681b2;
+      }
+    }
+  }
+}

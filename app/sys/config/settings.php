@@ -43,21 +43,6 @@ return array(
     'core.reg_enabled' => true,
 
     /*
-     * Is registration required?
-     */
-    'core.reg_required' => false,
-
-    /*
-     * Is email validation enabled?
-     */
-    'core.email_validation' => false,
-
-    /*
-     * Is agent validation enabled?
-     */
-    'core.agent_validation' => false,
-
-    /*
      * Enable URL rewriting (removes index.php/ from URLs)
      */
     'core.rewrite_urls' => false,
@@ -914,7 +899,7 @@ return array(
     'user.portal_tab_feedback'     => 1,
     'user.portal_tab_tickets'      => 1,
     'user.portal_tab_downloads'    => 1,
-    'user.portal_tabs_order'       => 'articles,downloads,feedback,newticket,news',
+    'user.portal_tabs_order'       => 'articles,news,feedback,downloads,newticket',
     'user.disable_chat_element'    => false,
     'user.portal_default_news_cat' => 0,
 

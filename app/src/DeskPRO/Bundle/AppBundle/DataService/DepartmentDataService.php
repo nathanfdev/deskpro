@@ -33,21 +33,21 @@ namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
 use Doctrine\ORM\EntityManager;
 
 class DepartmentDataService extends AbstractDataService
 {
     /**
-     * @var \DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager
+     * @var \DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager
      */
-    private $portal_permissions_manager;
+    private $permissions_manager;
 
-    public function __construct(EntityManager $em, PortalPermissionsManager $portal_permissions_manager)
+    public function __construct(EntityManager $em, PermissionsManager $permissions_manager)
     {
         parent::__construct($em);
 
-        $this->portal_permissions_manager = $portal_permissions_manager;
+        $this->permissions_manager = $permissions_manager;
     }
 
     /**
@@ -65,16 +65,16 @@ class DepartmentDataService extends AbstractDataService
      */
     public function getTicketDepartmentsForPerson(Person $person)
     {
-        $portal_permissions_manager = $this->portal_permissions_manager;
-        $em                         = $this->em;
+        $permissions_manager = $this->permissions_manager;
+        $em                  = $this->em;
 
         return $this->generateAndCache(
             array(
                 'getAuthorizedDepartmentsForPersonInPortal',
                 $person,
             ),
-            function () use ($person, $portal_permissions_manager, $em) {
-                $permission_bag = $portal_permissions_manager->getPermissionsBagForPerson($person);
+            function () use ($person, $permissions_manager, $em) {
+                $permission_bag = $permissions_manager->getPortalPermissionsBag($person);
                 $allowed_department_ids = $permission_bag->getAllowedTicketDepartmentIds();
 
                 $departments = $em
@@ -106,16 +106,16 @@ class DepartmentDataService extends AbstractDataService
      */
     public function getChatDepartmentsForPerson(Person $person)
     {
-        $portal_permissions_manager = $this->portal_permissions_manager;
-        $em                         = $this->em;
+        $permissions_manager = $this->permissions_manager;
+        $em                  = $this->em;
 
         return $this->generateAndCache(
             array(
                 'getChatDepartmentsForPerson',
                 $person,
             ),
-            function () use ($person, $portal_permissions_manager, $em) {
-                $permission_bag = $portal_permissions_manager->getPermissionsBagForPerson($person);
+            function () use ($person, $permissions_manager, $em) {
+                $permission_bag = $permissions_manager->getPortalPermissionsBag($person);
                 $allowed_department_ids = $permission_bag->getAllowedChatDepartmentIds();
 
                 $departments = $em

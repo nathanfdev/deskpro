@@ -1,0 +1,76 @@
+.open-new-ticket-button {
+  border: 1px solid #e7e7e7;
+  border-radius: 2px;
+  padding: 5px;
+  margin: 7px;
+
+  a {
+    display: block;
+    background: #3e77b7;
+    color: #fff !important;
+    line-height: 1.2em;
+    padding: 12px   10px;
+    text-align: center;
+    text-decoration: none;
+  }
+  a:hover { background: #2f65a1; }
+}
+
+.dpdesignportal-ticket-list {
+  h1 {
+    display: block;
+    padding: 10px;
+    border-bottom: 1px solid #e7e7e7;
+    border-top: 1px solid #e7e7e7;
+
+    .all-tickets-list {
+      float: right;
+      color: #299969;
+      &:hover { color: #228a5d; }
+    }
+
+    i {
+      opacity: 0.7;
+      margin-right: 5px;
+    }
+  }
+
+  li.resolved {
+    margin-top: 40px;
+    a {
+      opacity: 0.6;
+      &:hover { opacity: 1; }
+    }
+  }
+
+  .ticket-collection {
+    li { border-bottom: 1px solid #e7e7e7; }
+
+    a {
+      display: block;
+      color: #696666;
+      text-decoration: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      position: relative;
+      padding: 11px 25px 11px 10px;
+      &:hover {
+        color: #333;
+      }
+
+      .fa-angle-double-right {
+        position: absolute;
+        top: 50%;
+        margin-top: -6px;
+        right: 10px;
+      }
+
+      span {
+        text-transform: uppercase;
+        font-weight: bold;
+        font-size: 12px;
+      }
+    }
+  }
+}

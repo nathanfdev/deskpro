@@ -33,6 +33,7 @@
  */
 namespace Application\DeskPRO\Entity;
 
+use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
@@ -45,7 +46,7 @@ use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
  * @property string $template_code
  * @property string $template_compiled
  * @property Brand $brand
- * @property string $theme_id
+ * @property ThemeSet $theme_set
  * @property \DateTime $date_created
  * @property \DateTime $date_updated
  */
@@ -80,14 +81,9 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
     protected $template_compiled = '';
 
     /**
-     * @var Brand|null
+     * @var ThemeSet
      */
-    protected $brand;
-
-    /**
-     * @var string
-     */
-    protected $theme_id;
+    protected $theme_set;
 
     /**
      * @var \DateTime
@@ -111,6 +107,21 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
     public function getId()
     {
         return $this->id;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getTemplateCode()
+    {
+        return $this->template_code;
+    }
+
+    public function getTemplateCompiled()
+    {
+        return $this->template_compiled;
     }
 
     public function setTemplate($code, $compiled)
@@ -152,8 +163,7 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array('fieldName' => 'date_updated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_updated'));
 
         $builder = new ClassMetadataBuilder($metadata);
-        $builder->addManyToOne('brand', 'Application\DeskPRO\Entity\Brand');
-        $builder->mapString('theme_id');
+        $builder->createManyToOne('theme_set', 'DeskPRO\Bundle\AppBundle\Entity\ThemeSet')->build();
 
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }

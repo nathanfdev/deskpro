@@ -3896,6 +3896,7 @@ ul.kb-checkbox-extra {
 .response {
   position: relative;
   margin-top: 10px;
+  margin-bottom: 10px;
   margin-left: 160px;
   padding: 5px 10px;
   border: 1px solid $divider-color;
@@ -4783,8 +4784,7 @@ h1.fancy-header {
           input {
             display: inline-block;
             margin-right: 4px;
-            position: relative;
-            top: -1px;
+
           }
           a {
             display: inline-block;
@@ -4794,7 +4794,7 @@ h1.fancy-header {
           background-color: $surface-main;
         }
         white-space: nowrap;
-        padding: 5px;
+        padding: 3px 5px;
         margin: 0;
         text-align: left;
         width: 100%;
@@ -6773,6 +6773,11 @@ ul.categories-article-list {
     font-size: 0.9em;
     min-width: 100px;
     text-align: center;
+
+    span {
+      display: inline-block;
+      margin-left: 5px;
+    }
 
     &:first-child {
       // Align the first sorting link to the content
@@ -9997,3 +10002,34 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
   font-size: .7em;
   font-weight: 700;
 }
+
+
+
+
+
+
+
+
+
+.welcome-block.disabled {
+  padding-bottom: 80px; }
+  .welcome-block.disabled i {
+    font-size: 40px;
+    color: #3575BD;
+    margin-top: 10px; }
+  .welcome-block.disabled h1 {
+    color: #3575BD;
+    margin-top: 20px; }
+  .welcome-block.disabled hr {
+    margin: 110px auto 65px auto;
+    max-width: 50%; }
+  .welcome-block.disabled a.secondary-link {
+    color: #3575BD; }
+  .welcome-block.disabled .disabled-action {
+    display: inline-block;
+    padding-top: 60px;
+    width: 45%; }
+    .welcome-block.disabled .disabled-action span {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 15px; }

@@ -1,12 +1,27 @@
 import React, { PropTypes } from 'react';
+import { Provider } from 'react-redux';
 import { Router, Route, Redirect } from 'react-router';
 import Frame from 'Ampliflux/common/components/Frame';
-import { ChatApp } from '../../Chat/Components/ChatApp';
+import { Widget, WidgetHeader, WidgetBody, WidgetFooter } from './Widget/index';
+import {
+  ChatApp,
+  ChatBeginContainer,
+  ChatBeginSimple,
+  ChatBeginConversation,
+  ChatBeginForm,
+  ChatPollingContainer,
+  ChatActive,
+  ChatWaiting,
+  ChatDone
+} from '../../Chat/Components/index';
+import history from '../../../Services/history';
+import store from '../../../Services/store';
 
-export default class WidgetAppBody extends React.Component {
+export class WidgetAppBody extends React.Component {
 
   static propTypes = {
-    onResize: PropTypes.func
+    onResize: PropTypes.func,
+    onClose: PropTypes.func
   };
 
   componentDidMount() {
@@ -25,33 +40,50 @@ export default class WidgetAppBody extends React.Component {
   }
 
   render() {
+    const { onClose } = this.props;
+
     return (
-      <div className="widget-container">
-        <Router>
-          <Redirect from="/" to="chat"/>
-          <Route name="chat" path="chat" component={ChatApp}/>
-        </Router>
-      </div>
+      <Provider store={store}>
+        <Widget>
+          <WidgetHeader title="Acme Corp. Chat and a long name lorel ipsum dolor" onClose={onClose} />
+          <WidgetBody>
+            <Router history={history}>
+              <Redirect from="/" to="chat"/>
+              <Route path="chat" component={ChatApp}>
+                <Route path="begin" component={ChatBeginContainer}>
+                  <Route name="chat_begin_simple" path="simple" component={ChatBeginSimple} />
+                  <Route name="chat_begin_conversation" path="conversation" component={ChatBeginConversation} />
+                  <Route name="chat_begin_form" path="form" component={ChatBeginForm} />
+                </Route>
+                <Route component={ChatPollingContainer}>
+                  <Route name="chat_waiting" path="waiting" component={ChatWaiting} />
+                  <Route name="chat_active" path="active" component={ChatActive} />
+                  <Route name="chat_done" path="done" component={ChatDone} />
+                </Route>
+              </Route>
+            </Router>
+          </WidgetBody>
+          <WidgetFooter />
+        </Widget>
+      </Provider>
     );
   }
 }
 
-export default class WidgetApp extends React.Component {
+export class WidgetApp extends React.Component {
 
   static propTypes = {
-    onClick: PropTypes.func,
     isVisible: PropTypes.bool
   };
 
   render() {
-    const { isVisible } = this.props;
     const style = {
-      marginRight: '14px'
+      height: '100%'
     };
 
     return (
-      <Frame ref="frame" id="dp_widget_app" style={style} isVisible={isVisible}>
-        <WidgetAppBody onResize={() => this.refs.frame && this.refs.frame.autoFrameDimentions()} />
+      <Frame ref="frame" style={style} isVisible={this.props.isVisible}>
+        <WidgetAppBody {...this.props} onResize={() => this.refs.frame && this.refs.frame.autoFrameDimensions()} />
       </Frame>
     );
   }

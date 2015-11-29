@@ -202,10 +202,6 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
                     }
                     $person->getChangeTracker()->recordExtra('email_validating', $this->person->email);
 
-                    if (App::getSetting('core.agent_validation')) {
-                        $person->is_agent_confirmed = false;
-                    }
-
                     $email = new \Application\DeskPRO\Entity\PersonEmail();
                     $email->setEmail($this->person->email);
                     $email->person = $person;
@@ -272,8 +268,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
         if ($email && $person->primary_email && $person->primary_email->id != $email->id) {
             $ticket->person_email = $email;
         }
-        $ticket['subject']    = $this->ticket->subject;
-        $ticket['validating'] = $validating;
+        $ticket['subject'] = $this->ticket->subject;
 
         // A specific lang was set
         if ($this->language) {
@@ -317,7 +312,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
             $ticket->setStatus('hidden.temp');
         } elseif ($email_validating) {
             $ticket->setStatus('hidden.validating');
-        } elseif (!$person->is_confirmed || !$person->is_agent_confirmed) {
+        } elseif (!$person->is_confirmed) {
             $ticket['status'] = 'hidden.validating';
         } else {
             $ticket['status'] = 'awaiting_agent';
