@@ -85,20 +85,6 @@ class ChatController extends AbstractController
      */
     public function pollingChatAction(ChatConversation $conversation)
     {
-        // todo temp autoassign an agent
-        // todo disabled
-        if (false && !$conversation->getAgentId()) {
-            /** @var \Application\DeskPRO\EntityRepository\Person $person_repository */
-            $person_repository = $this->getDoctrine()->getRepository('DeskPRO:Person');
-            $agents            = $person_repository->getAgents();
-
-            $conversation->setAgent(array_shift($agents));
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($conversation);
-            $em->flush();
-        }
-
         return new JsonResponse(array_merge($conversation->getInfo(), [
             'messages' => array_map(function (ChatMessage $message) {
                 return [
