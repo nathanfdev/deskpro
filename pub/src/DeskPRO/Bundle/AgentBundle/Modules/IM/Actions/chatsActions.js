@@ -5,10 +5,14 @@ import { releaseChats, setChatsRequest } from '../RecordStores/Actions/chatsActi
 
 export const startChat = createAction(
   'IM_START_CHAT',
-  (targetId, targetType = 'agent') => (dispatch) => {
+  (targetId, targetType = 'agent', chatId = null) => (dispatch, getState) => {
     dispatch(openChat(targetId, targetType));
     return new Promise(
       (resolve, reject) => {
+        const store = getState().RecordStores.IM.chats;
+        if (chatId && store.get('records').has(chatId)) {
+          return resolve(store.get('records').get(chatId).toJS());
+        }
         return IM.startChat(targetId, targetType)
           .success((response) => {
             const records = {};
