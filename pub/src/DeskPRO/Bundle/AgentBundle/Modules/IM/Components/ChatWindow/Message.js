@@ -27,7 +27,6 @@ export class Message extends React.Component {
     if (this.props.previousMessage && previousDate.dayOfYear() !== date.dayOfYear()) {
       return this.renderSeparator(this.props.previousMessage.date_created);
     }
-
   }
 
   renderSeparator(dateString) {
