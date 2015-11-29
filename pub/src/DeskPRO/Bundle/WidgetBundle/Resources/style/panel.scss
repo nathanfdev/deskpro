@@ -95,34 +95,34 @@ $border-color: #e7e7e7;
   li.color-3 > a { background: #247457; }
   li.color-4 > a { background: #1e684d; }
 
-  @include respond-to(mobile) {
-    left: 0;
-    width: 80%;
-    height: 100%;
-    top: 0;
-    background: #1e684d;
-    &.mobile-hidden { left: -80%; }
-
-    a {
-      width: 100%;
-      text-align: left;
-      text-decoration: none;
-      padding-left: 15px;
-      padding-top: 10px;
-
-      i {
-        display: inline-block;
-        vertical-align: middle;
-        top: 0;
-        margin-right: 10px;
-      }
-
-      span {
-        display: inline-block;
-        vertical-align: middle;
-      }
-    }
-  }
+  //@include respond-to(mobile) {
+  //  left: 0;
+  //  width: 80%;
+  //  height: 100%;
+  //  top: 0;
+  //  background: #1e684d;
+  //  &.mobile-hidden { left: -80%; }
+  //
+  //  a {
+  //    width: 100%;
+  //    text-align: left;
+  //    text-decoration: none;
+  //    padding-left: 15px;
+  //    padding-top: 10px;
+  //
+  //    i {
+  //      display: inline-block;
+  //      vertical-align: middle;
+  //      top: 0;
+  //      margin-right: 10px;
+  //    }
+  //
+  //    span {
+  //      display: inline-block;
+  //      vertical-align: middle;
+  //    }
+  //  }
+  //}
 }
 
 
