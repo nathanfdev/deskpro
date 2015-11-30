@@ -2518,10 +2518,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             $this->setModelField('date_resolved', null);
         }
 
-        if ($status != 'awaiting_agent' && $this->is_hold) {
-            $this['is_hold'] = false;
-        }
-
         if (!$status || !in_array($status, array(
             self::STATUS_AWAITING_AGENT,
             self::STATUS_AWAITING_USER,
