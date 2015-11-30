@@ -1,12 +1,14 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import Simple from 'DeskPRO/Component/Positioned/Simple';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { EndChatConfirm } from './EndChatConfirm';
 
-export class EndChatButton extends React.Component {
+@connect()
+export class EndChatButtonContainer extends React.Component {
 
   static propTypes = {
-    onEndChat: PropTypes.func
+    children: PropTypes.node
   };
 
   constructor(props) {
@@ -25,7 +27,7 @@ export class EndChatButton extends React.Component {
 
   onEndChat = event => {
     this.onClosePopup(event);
-    this.props.onEndChat();
+    console.log('onEndChat');
   };
 
   onClosePopup = event => {
@@ -36,11 +38,15 @@ export class EndChatButton extends React.Component {
   };
 
   render() {
+    const { children } = this.props;
+    const childProps = children.props;
+
     return (
-      <div className="dpdesignportal-chat-form-button-row-end-chat">
-        <a href="#" onClick={this.onOpenPopup}>
-          <i className="fa fa-upload"></i>End Chat
-        </a>
+      <span>
+        {React.cloneElement(children, {
+          ...childProps,
+          onOpenPopup: this.onOpenPopup
+        })}
 
         <Simple isOpen={this.state.confirmPopup}
                 positionTarget={this}
@@ -54,7 +60,7 @@ export class EndChatButton extends React.Component {
                             onCancel={this.onClosePopup} />
           </ClickOut>
         </Simple>
-      </div>
+      </span>
     );
   }
 }

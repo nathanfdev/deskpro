@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
-import { EndChatButtonContainer } from './EndChat/EndChatButtonContainer';
+import { EndChatButtonContainer } from '../EndChat/EndChatButtonContainer';
+import { EndChatButton } from './EndChatButton';
 
 export class ReplyForm extends React.Component {
 
@@ -58,7 +59,9 @@ export class ReplyForm extends React.Component {
             </a>
           </div>
 
-          <EndChatButtonContainer />
+          <EndChatButtonContainer>
+            <EndChatButton />
+          </EndChatButtonContainer>
         </div>
       </div>
     );
