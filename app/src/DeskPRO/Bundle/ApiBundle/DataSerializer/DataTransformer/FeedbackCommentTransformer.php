@@ -53,7 +53,6 @@ class FeedbackCommentTransformer extends AbstractDataSerializerTransformer
             'website',
             'content',
             'status',
-            'validating',
             'is_reviewed',
             'date_created',
         ];

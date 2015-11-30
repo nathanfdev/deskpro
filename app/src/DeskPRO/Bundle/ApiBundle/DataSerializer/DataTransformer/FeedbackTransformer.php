@@ -57,7 +57,6 @@ class FeedbackTransformer extends AbstractDataSerializerTransformer
             'total_rating',
             'num_ratings',
             'num_comments',
-            'validating',
             'popularity',
             'content',
             'category_id',
