@@ -156,6 +156,12 @@ class TicketsController extends CrudController
      *              "description"="Problem filter.",
      *              "dataType"="number",
      *              "required"=false
+     *          },
+     *          {
+     *              "name"="department",
+     *              "description"="Department filter.",
+     *              "dataType"="number",
+     *              "required"=false
      *          }
      *      },
      *      statusCodes={
@@ -248,6 +254,11 @@ class TicketsController extends CrudController
             ->createQuery('SELECT t from DeskPRO:Ticket t WHERE t.id IN (?0)')
             ->setParameters([$ids]);
 
-        return $query->getResult();
+        $tickets = $query->getResult();
+        usort($tickets, function (Ticket $a, Ticket $b) use ($ids) {
+            return array_search($a->getId(), $ids) > array_search($b->getId(), $ids);
+        });
+
+        return $tickets;
     }
 }

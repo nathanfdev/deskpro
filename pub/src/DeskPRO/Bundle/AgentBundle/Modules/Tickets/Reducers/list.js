@@ -7,8 +7,8 @@ const initialState = {
   viewMode: 'card',
   elements: [],
   listParams: {
-    sort: 'date_created',
-    order: 'asc',
+    sort: 'urgency',
+    order: 'desc',
     filter: null
   },
   selected: [],
