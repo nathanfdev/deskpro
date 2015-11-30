@@ -2,10 +2,12 @@ import { createReducer } from 'Ampliflux';
 import * as actions from '../Actions/chatActions';
 import { async, setFullPayload } from 'Ampliflux/reducers/handlers';
 import Immutable from 'immutable';
+import moment from 'moment';
 
 const initialState = {
   chat: {
-    messages: []
+    messages: [],
+    date_ended: moment().format()
   }
 };
 

@@ -25,10 +25,10 @@ export class RateAgent extends React.Component {
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
 
         <div className="dpdesignportal-agent-rating-buttons">
-          <a href="#" className="dpdesignportal-button" onClick={this.onClickNotHelpful}>
+          <a href="#" className="dpdesignportal-button" onClick={this.onClickHelpful}>
             <i className="fa fa-thumbs-up"></i> Helpful
           </a>
-          <a href="#" className="dpdesignportal-button negative" onClick={this.onClickHelpful}>
+          <a href="#" className="dpdesignportal-button negative" onClick={this.onClickNotHelpful}>
             <i className="fa fa-thumbs-down"></i> Not Helpful
           </a>
         </div>

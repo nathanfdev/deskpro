@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { AgentMessage } from './Message/AgentMessage';
 import { UserMessage } from './Message/UserMessage';
 import { TypingMessage } from './Message/TypingMessage';
-import { RateAgent } from './Feedback/RateAgent';
+import { AgentFeedback } from './Feedback/AgentFeedback';
 import ScrollArea from 'react-scrollbar';
 import Immutable from 'immutable';
 
@@ -28,12 +28,14 @@ export class MessagesList extends React.Component {
     const { messages, isEnded } = this.props;
 
     return (
-      <ScrollArea className="dpdesignportal-content" vertical>
-        {messages.map((message, index) => this.renderMessage(message, index))}
-        <TypingMessage user={Immutable.fromJS({name: 'Noelle'})} />
+      <div>
+        <ScrollArea className="dpdesignportal-content" vertical>
+          {messages.map((message, index) => this.renderMessage(message, index))}
+          <TypingMessage user={Immutable.fromJS({name: 'Noelle'})} />
+        </ScrollArea>
 
-        {isEnded && <RateAgent />}
-      </ScrollArea>
+        {isEnded && <AgentFeedback />}
+      </div>
     );
   }
 }
