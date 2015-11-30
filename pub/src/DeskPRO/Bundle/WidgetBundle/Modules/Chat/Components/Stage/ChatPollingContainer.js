@@ -36,13 +36,18 @@ export class ChatPollingContainer extends React.Component {
     };
 
     const promise = dispatch(pollingChat(chatId, queryParams));
-    promise.then(() => {
-      if (agentId && history.state !== '/chat/active') {
-        history.replaceState(null, '/chat/active');
-      }
+    promise.then(
+      () => {
+        if (agentId && history.state !== '/chat/active') {
+          history.replaceState(null, '/chat/active');
+        }
 
-      setTimeout(this.pollingRequest, 3000);
-    });
+        setTimeout(this.pollingRequest, 3000);
+      },
+      () => {
+        setTimeout(this.pollingRequest, 3000);
+      }
+    );
   };
 
   render() {
