@@ -4,6 +4,7 @@ import jQuery from 'jquery';
 export class ClickOut extends React.Component {
 
   static propTypes = {
+    context: PropTypes.any,
     ignoreNodes: PropTypes.array,
     additionalNodes: PropTypes.array,
     children: PropTypes.node,
@@ -12,11 +13,11 @@ export class ClickOut extends React.Component {
   };
 
   componentDidMount() {
-    jQuery(document).on('click', this.onClick);
+    jQuery(this.getContext()).on('click', this.onClick);
   }
 
   componentWillUnmount() {
-    jQuery(document).off('click', this.onClick);
+    jQuery(this.getContext()).off('click', this.onClick);
   }
 
   onClick = event => {
@@ -72,6 +73,10 @@ export class ClickOut extends React.Component {
       onClick(event);
     }
   };
+
+  getContext() {
+    return this.props.context || document;
+  }
 
   render() {
     return (
