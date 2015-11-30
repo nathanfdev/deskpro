@@ -8,6 +8,7 @@ import { EndChatConfirm } from './EndChatConfirm';
 export class EndChatButtonContainer extends React.Component {
 
   static propTypes = {
+    confirmPosition: PropTypes.string,
     children: PropTypes.node
   };
 
@@ -38,8 +39,10 @@ export class EndChatButtonContainer extends React.Component {
   };
 
   render() {
-    const { children } = this.props;
+    const { children, confirmPosition } = this.props;
     const childProps = children.props;
+    const positionAt = confirmPosition || 'top';
+    const positionMy = positionAt === 'top' ? 'bottom' : 'top';
 
     return (
       <span>
@@ -52,13 +55,14 @@ export class EndChatButtonContainer extends React.Component {
 
         <Simple isOpen={this.state.confirmPopup}
                 positionTarget={this.refs.button}
-                positionAt="right top"
-                positionMy="right bottom">
+                positionAt={`right ${positionAt}`}
+                positionMy={`right ${positionMy}`}>
 
           <ClickOut onClickOut={this.onClosePopup}
                     context={parent.document}>
 
-            <EndChatConfirm onConfirm={this.onEndChat}
+            <EndChatConfirm positionAt={positionAt}
+                            onConfirm={this.onEndChat}
                             onCancel={this.onClosePopup} />
           </ClickOut>
         </Simple>

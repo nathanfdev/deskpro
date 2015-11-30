@@ -4,7 +4,7 @@ export class ControlItem extends React.Component {
 
   static propTypes = {
     children: PropTypes.any,
-    onClick: PropTypes.func.isRequired
+    onClick: PropTypes.func
   };
 
   onClick = event => {

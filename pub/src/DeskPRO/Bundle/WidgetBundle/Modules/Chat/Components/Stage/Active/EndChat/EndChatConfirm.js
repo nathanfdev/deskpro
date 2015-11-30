@@ -1,17 +1,19 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 
 export class EndChatConfirm extends React.Component {
 
   static propTypes = {
+    positionAt: PropTypes.string,
     onCancel: PropTypes.func,
     onConfirm: PropTypes.func
   };
 
   render() {
-    const { onCancel, onConfirm } = this.props;
+    const { onCancel, onConfirm, positionAt } = this.props;
 
     return (
-      <div className="dpdesignportal-popover dpdesignportal-popover-end-chat">
+      <div className={classNames('dpdesignportal-popover', 'dpdesignportal-popover-end-chat', positionAt)}>
         <h1>Are you sure you want to end this chat?</h1>
         <p className="grey">Lorel ipsum dolor closing the chat</p>
 

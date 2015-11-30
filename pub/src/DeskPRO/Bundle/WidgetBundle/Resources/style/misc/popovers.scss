@@ -14,8 +14,14 @@
   width: 300px;
 
   &.dpdesignportal-popover-end-chat {
-    @include add-corner(5px, #4681b2, 90%, bottom, "");
     text-align: center;
+
+    &.top {
+      @include add-corner(5px, #4681b2, 90%, bottom, "");
+    }
+    &.bottom {
+      @include add-corner(5px, #4681b2, 90%, top, "");
+    }
   }
 
   &.dpdesignportal-popover-request-transcript {

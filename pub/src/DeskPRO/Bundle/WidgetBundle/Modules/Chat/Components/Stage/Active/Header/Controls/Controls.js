@@ -26,7 +26,7 @@ export class Controls extends React.Component {
           </span>
         </ControlItem>
 
-        <EndChatButtonContainer>
+        <EndChatButtonContainer confirmPosition="bottom">
           <EndChatButton />
         </EndChatButtonContainer>
       </ControlsPane>
