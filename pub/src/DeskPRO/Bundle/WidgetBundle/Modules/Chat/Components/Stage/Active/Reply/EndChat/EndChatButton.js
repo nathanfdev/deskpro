@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import Simple from 'DeskPRO/Component/Positioned/Simple';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { EndChatConfirm } from './EndChatConfirm';
 
 export class EndChatButton extends React.Component {
+
+  static propTypes = {
+    onEndChat: PropTypes.func
+  };
 
   constructor(props) {
     super(props);
@@ -17,6 +21,11 @@ export class EndChatButton extends React.Component {
     this.setState({
       confirmPopup: true
     });
+  };
+
+  onEndChat = event => {
+    this.onClosePopup(event);
+    this.props.onEndChat();
   };
 
   onClosePopup = event => {
@@ -38,8 +47,11 @@ export class EndChatButton extends React.Component {
                 positionAt="right top"
                 positionMy="right bottom">
 
-          <ClickOut onClickOut={this.onClosePopup} context={parent.document}>
-            <EndChatConfirm />
+          <ClickOut onClickOut={this.onClosePopup}
+                    context={parent.document}>
+
+            <EndChatConfirm onConfirm={this.onEndChat}
+                            onCancel={this.onClosePopup} />
           </ClickOut>
         </Simple>
       </div>
