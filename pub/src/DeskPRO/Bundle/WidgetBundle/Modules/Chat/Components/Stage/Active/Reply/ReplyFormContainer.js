@@ -24,6 +24,6 @@ export class ReplyFormContainer extends React.Component {
   };
 
   render() {
-    return <ReplyForm onSendMessage={this.onSendMessage} />;
+    return <ReplyForm onSendMessage={this.onSendMessage} {...this.props} />;
   }
 }

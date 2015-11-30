@@ -3,6 +3,7 @@ import React, { PropTypes } from 'react';
 export class ReplyForm extends React.Component {
 
   static propTypes = {
+    disabled: PropTypes.bool,
     onSendMessage: PropTypes.func
   };
 
@@ -31,6 +32,12 @@ export class ReplyForm extends React.Component {
   render() {
     return (
       <div className="dpdesignportal-chat-form">
+        {this.props.disabled &&
+          <div className="dpdesignportal-chat-form-disabled">
+            <a href="#" className="dpdesignportal-button"><i className="fa fa-commenting-o"></i> Reopen this chat</a>
+          </div>
+        }
+
         <form onSubmit={this.onSubmit}>
           <div className="message-container">
             <textarea placeholder="Type your message to Noelle"
