@@ -7,7 +7,7 @@ import { EndChatButton } from './EndChatButton';
 export class Controls extends React.Component {
 
   static propTypes = {
-    ended: PropTypes.bool
+    isEnded: PropTypes.bool
   };
 
   renderActive() {
@@ -47,6 +47,6 @@ export class Controls extends React.Component {
   }
 
   render() {
-    return this.props.ended ? this.renderDone() : this.renderActive();
+    return this.props.isEnded ? this.renderDone() : this.renderActive();
   }
 }
