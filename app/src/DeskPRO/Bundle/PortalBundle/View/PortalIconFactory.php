@@ -35,7 +35,9 @@ use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackAttachment;
 use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\TicketAttachment;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 
 class PortalIconFactory
@@ -114,6 +116,10 @@ class PortalIconFactory
             return $this->makeFileIcon($content);
         } elseif ($content instanceof Blob) {
             return $this->makeFileIcon($content);
+        } elseif ($content instanceof TicketAttachment) {
+            return $this->makeFileIcon($content->getBlob());
+        } elseif ($content instanceof FeedbackAttachment) {
+            return $this->makeFileIcon($content->getBlob());
         } elseif ($content instanceof Article) {
             return $this->makeArticleIcon($content);
         } elseif ($content instanceof News) {
