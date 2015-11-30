@@ -1410,6 +1410,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
         $this->_onPropertyChanged('messages', null, $this->messages, true);
         $this->getStateChangeRecorder()->record('message', null, $message);
+
+        if (!$message->is_agent_note) {
+            $this->setIsHold(false);
+        }
     }
 
     public function addSmsMessage(TicketSms $message)
