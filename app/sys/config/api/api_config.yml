@@ -131,7 +131,7 @@ security:
             stateless: true
             anonymous: ~
         api:
-            pattern: ^/api/v2(?!/api_tokens|/doc|/get_session$)
+            pattern: ^/api/v2(?!/api_tokens|/doc|/helpdesk/discover|/get_session$)
             stateless: true
             simple_preauth:
                 authenticator: api_authenticator
