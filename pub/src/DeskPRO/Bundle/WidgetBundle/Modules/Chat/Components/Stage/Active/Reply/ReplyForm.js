@@ -40,6 +40,20 @@ export class ReplyForm extends React.Component {
 
           <button><i className="fa fa-angle-double-right"></i></button>
         </form>
+
+        <div className="dpdesignportal-chat-form-button-row">
+          <div className="dpdesignportal-chat-form-button-row-main">
+            <a href="#"><i className="fa fa-upload"></i> Upload file</a>
+            <a href="#"><i className="fa fa-camera"></i> Screen Share</a>
+            <a href="#" className="dpdesignportal-chat-form-button-row-emoticons" title="Chat Emoticons">
+              <span className="img" />
+            </a>
+          </div>
+
+          <div className="dpdesignportal-chat-form-button-row-end-chat">
+            <a href="#"><i className="fa fa-upload"></i>End Chat</a>
+          </div>
+        </div>
       </div>
     );
   }
