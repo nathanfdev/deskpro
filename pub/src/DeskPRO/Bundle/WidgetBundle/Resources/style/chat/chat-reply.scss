@@ -228,10 +228,9 @@
       a.dpdesignportal-chat-form-button-row-emoticons {
         border-right: 0;
         .img {
-          display: block;
+          display: inline-block;
           width: 10px;
           height: 10px;
-          margin-right: 3px;
           background: url("../img/emoticon.jpg") no-repeat center;
           background-size: 10px 10px;
         }
