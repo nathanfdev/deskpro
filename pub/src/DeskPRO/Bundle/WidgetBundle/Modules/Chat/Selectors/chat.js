@@ -27,7 +27,7 @@ export const lastMessageIdSelector = createSelector(
   messages => messages && messages.size ? messages.max((a, b) => a.get('id') - b.get('id')).first() : null
 );
 
-export const isEndedSekector = createSelector(
+export const isEndedSelector = createSelector(
   chatInfoSelector,
     chatInfo => !!chatInfo.get('date_ended')
 );

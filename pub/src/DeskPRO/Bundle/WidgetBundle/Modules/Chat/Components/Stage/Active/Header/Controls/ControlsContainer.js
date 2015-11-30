@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Controls } from './Controls';
-import { isEndedSekector } from '../../../../../Selectors/chat';
+import { isEndedSelector } from '../../../../../Selectors/chat';
 
 @connect(state => ({
-  isEnded: isEndedSekector(state)
+  isEnded: isEndedSelector(state)
 }))
 export class ControlsContainer extends React.Component {
 

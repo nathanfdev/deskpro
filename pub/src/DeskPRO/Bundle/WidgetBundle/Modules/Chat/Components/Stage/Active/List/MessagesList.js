@@ -3,15 +3,14 @@ import { AgentMessage } from './Message/AgentMessage';
 import { UserMessage } from './Message/UserMessage';
 import { TypingMessage } from './Message/TypingMessage';
 import { RateAgent } from './Feedback/RateAgent';
-import { ExtraRatingInfo } from './Feedback/ExtraRatingInfo';
-import { RatingComplete } from './Feedback/RatingComplete';
 import ScrollArea from 'react-scrollbar';
 import Immutable from 'immutable';
 
 export class MessagesList extends React.Component {
 
   static propTypes = {
-    messages: PropTypes.object
+    messages: PropTypes.object,
+    isEnded: PropTypes.bool
   };
 
   renderMessage(message, index) {
@@ -26,14 +25,14 @@ export class MessagesList extends React.Component {
   }
 
   render() {
+    const { messages, isEnded } = this.props;
+
     return (
       <ScrollArea className="dpdesignportal-content" vertical>
-        {this.props.messages.map((message, index) => this.renderMessage(message, index))}
+        {messages.map((message, index) => this.renderMessage(message, index))}
         <TypingMessage user={Immutable.fromJS({name: 'Noelle'})} />
 
-        <RateAgent />
-        <ExtraRatingInfo />
-        <RatingComplete />
+        {isEnded && <RateAgent />}
       </ScrollArea>
     );
   }
