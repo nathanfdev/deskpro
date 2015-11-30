@@ -5,7 +5,7 @@ import { EndChatButton } from './EndChatButton';
 export class ReplyForm extends React.Component {
 
   static propTypes = {
-    disabled: PropTypes.bool,
+    isEnded: PropTypes.bool,
     onSendMessage: PropTypes.func
   };
 
@@ -34,7 +34,7 @@ export class ReplyForm extends React.Component {
   render() {
     return (
       <div className="dpdesignportal-chat-form">
-        {this.props.disabled &&
+        {this.props.isEnded &&
           <div className="dpdesignportal-chat-form-disabled">
             <a href="#" className="dpdesignportal-button"><i className="fa fa-commenting-o"></i> Reopen this chat</a>
           </div>
