@@ -1,14 +1,15 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { pollingChat } from '../../Actions/chatActions';
-import { chatIdSelector, agentIdSelector, lastMessageIdSelector } from '../../Selectors/chat';
+import { chatIdSelector, agentIdSelector, lastMessageIdSelector, isEndedSekector } from '../../Selectors/chat';
 import history from '../../../../Services/history';
 import moment from 'moment';
 
 @connect(state => ({
   chatId: chatIdSelector(state),
   agentId: agentIdSelector(state),
-  lastMessageId: lastMessageIdSelector(state)
+  lastMessageId: lastMessageIdSelector(state),
+  isEnded: isEndedSekector(state)
 }))
 export class ChatPollingContainer extends React.Component {
 
@@ -17,6 +18,7 @@ export class ChatPollingContainer extends React.Component {
     chatId: PropTypes.number,
     agentId: PropTypes.number,
     lastMessageId: PropTypes.number,
+    isEnded: PropTypes.bool,
     children: PropTypes.node
   };
 
@@ -25,7 +27,7 @@ export class ChatPollingContainer extends React.Component {
   }
 
   pollingRequest = () => {
-    const { dispatch, chatId, agentId, lastMessageId } = this.props;
+    const { dispatch, chatId, agentId, lastMessageId, isEnded } = this.props;
     if (!chatId) {
       return;
     }
@@ -38,8 +40,16 @@ export class ChatPollingContainer extends React.Component {
     const promise = dispatch(pollingChat(chatId, queryParams));
     promise.then(
       () => {
-        if (agentId && history.state !== '/chat/active') {
-          history.replaceState(null, '/chat/active');
+        if (agentId) {
+          if (isEnded) {
+            if (history.state !== '/chat/done') {
+              history.replaceState(null, '/chat/done');
+            }
+          } else {
+            if (history.state !== '/chat/active') {
+              history.replaceState(null, '/chat/active');
+            }
+          }
         }
 
         setTimeout(this.pollingRequest, 3000);
