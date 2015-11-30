@@ -83,7 +83,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var string
      */
-    protected $visitor_id;
+    protected $visitor_id = '';
 
     /**
      * @var string

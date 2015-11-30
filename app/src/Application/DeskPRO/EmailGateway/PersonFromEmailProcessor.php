@@ -188,9 +188,7 @@ class PersonFromEmailProcessor
                 'person_id'      => $person_id,
                 'email'          => $email_address,
                 'email_domain'   => $email_domain,
-                'is_validated'   => 1,
                 'date_created'   => date('Y-m-d H:i:s'),
-                'date_validated' => date('Y-m-d H:i:s'),
             ));
             $email_id = $db->lastInsertId();
 

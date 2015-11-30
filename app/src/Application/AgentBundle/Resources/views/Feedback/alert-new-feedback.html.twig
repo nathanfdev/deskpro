@@ -10,6 +10,5 @@
 	<big>{{ feedback.title }}</big>
 	<small>
 		{{ phrase('agent.publish.new_feedback_by', {name: feedback.person.getDisplayContact()}) }}
-		{% if feedback.getStatusCode() == 'hidden.user_validating' %}({{ phrase('agent.publish.requires_validation') }}){% endif %}
 	</small>
 </li>

@@ -25,10 +25,6 @@ pageMeta.baseId = '{{ baseId }}';
 	{{ phrase('agent.general.record_deleted') }} <button class="clean-gray xxx-small undelete">{{ phrase('agent.general.undelete') }}</button>
 </div>
 
-{% if article.status_code == "hidden.validating" %}
-	{% include 'AgentBundle:Publish:view-approve-header.html.twig' %}
-{% endif %}
-
 <header class="page-header">
 	<h4 class="id-number">#{{ article.id }}</h4>
 	<div style="float:left; padding-left: 8px;">

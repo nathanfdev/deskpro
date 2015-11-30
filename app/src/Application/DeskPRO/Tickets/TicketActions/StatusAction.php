@@ -59,7 +59,7 @@ class StatusAction extends AbstractAction implements PermissionableAction
     {
         if (!in_array($status, array(
             'awaiting_agent', 'awaiting_user', 'resolved', 'archived',
-            'hidden.spam', 'hidden.validating', 'hidden.deleted',
+            'hidden.spam', 'hidden.deleted',
         ))) {
             throw new \InvalidArgumentException("Invalid status `$status`");
         }

@@ -411,15 +411,8 @@ class TicketEmail
                 $to_email = $this->to_person->primary_email->email;
                 $this->logger->info(sprintf('[TicketEmail] to_email(3): %s', $to_email));
             } else {
-                $vars['validating_email'] = $em->getRepository('DeskPRO:PersonEmailValidating')->getForPerson($this->to_person);
-
-                if (!$vars['validating_email']) {
-                    $this->logger->info(sprintf('[TicketEmail] to_email(4): no email and no validating email'));
-                    throw new \RuntimeException('no email and no validating email');
-                }
-
-                $to_email = $vars['validating_email']->email;
-                $this->logger->info(sprintf('[TicketEmail] to_email(4): %s -- validating', $to_email));
+                $this->logger->info(sprintf('[TicketEmail] to_email(4): no email'));
+                throw new \RuntimeException('no email address');
             }
 
         // To agent

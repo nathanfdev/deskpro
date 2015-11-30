@@ -33,7 +33,6 @@ namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
-use Application\DeskPRO\Entity\PersonEmailValidating;
 
 class EmailDataService extends AbstractDataService
 {
@@ -128,10 +127,10 @@ class EmailDataService extends AbstractDataService
     /**
      * @internal
      * @todo no PersonEmailValidating anymore
-     * @return \Application\DeskPRO\EntityRepository\PersonEmailValidating
+     * @return null
      */
     public function getPersonEmailValidatingRepo()
     {
-        return $this->em->getRepository('DeskPRO:PersonEmailValidating');
+        return null;
     }
 }

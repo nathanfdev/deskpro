@@ -224,7 +224,6 @@ final class Articles extends AbstractParser
             ->setContent($formatted['content'])
             ->setStatus($formatted['status'])
             ->setAsReviewed($formatted['is_reviewed'])
-            ->setValidating($formatted['validating'])
             ->setDateCreated($formatted['date_created'])
         ;
 

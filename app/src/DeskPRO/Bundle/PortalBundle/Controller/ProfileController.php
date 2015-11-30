@@ -34,7 +34,6 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 use Application\DeskPRO\Entity\PasswordHistory;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
-use Application\DeskPRO\Entity\PersonEmailValidating;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\RegistrationAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
@@ -109,6 +108,8 @@ class ProfileController extends AbstractController
             $context = new CreatePersonContext('gateway.person');
             $this->getPersonFactory()->saveNewPerson($person, $context);
             $this->getEmailSender()->sendWelcomeEmail($person);
+
+            // TODO core.email_validation is gone
             if (!$this->getBrandSetting('core.email_validation')) {
                 $this->addFlash('success', $this->phrase('portal.flashes.user_registered'));
             } else {
@@ -217,6 +218,7 @@ class ProfileController extends AbstractController
     }
     /**
      * @Route("/profile/emails", name="portal_user_profile_emails")
+     * @todo PersonEmailValidating is gone
      * @Security("is_granted('EDIT_PROFILE', user)")
      */
     public function editEmailsAction(Request $request)

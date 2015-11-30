@@ -726,33 +726,6 @@ class Ticket extends AbstractEntityRepository
         return [];
     }
 
-    public function getTicketIdsWithEmail($email, $for_validation = false)
-    {
-        if (is_object($email)) {
-            $email = $email->getId();
-        }
-
-        $email = (int) $email;
-
-        if ($for_validation) {
-            return $this->getEntityManager()->getConnection()->fetchAllCol("
-                SELECT tickets.id
-                FROM tickets
-                LEFT JOIN people ON (people.id = tickets.person_id)
-                LEFT JOIN people_emails ON (people_emails.id = people.primary_email_id)
-                WHERE (person_email_id = ? OR (person_email_id IS null AND people_emails.id = ?)) AND status = 'hidden' AND hidden_status = 'validating'
-                ORDER BY tickets.id DESC
-            ", array($email, $email));
-        } else {
-            return $this->getEntityManager()->getConnection()->fetchAllCol('
-                SELECT id
-                FROM tickets
-                WHERE person_email_id = ?
-                ORDER BY id DESC
-            ', array($email));
-        }
-    }
-
     public function getTicketCountsForPeople(array $people)
     {
         $ids = array();
