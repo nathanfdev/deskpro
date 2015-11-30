@@ -575,7 +575,7 @@ return array(
     /*
      * Use icon colors
      */
-    'portal.use_icon_colors' => true,
+    'portal.use_icon_colors' => false,
 
     /*
      * A timestamp used in generating cache keys for permissions, etags, etc (updates automatically in the db)
