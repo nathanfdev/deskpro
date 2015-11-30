@@ -36,6 +36,7 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\ChatConversation as ChatConversationEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Ticket as TicketEntity;
 use Application\DeskPRO\Entity\TicketDeleted as TicketDeletedEntity;
@@ -845,6 +846,28 @@ class Ticket extends AbstractEntityRepository
             WHERE t.parent_ticket = ?0 AND t.status != 'hidden'
             ORDER BY t.id ASC
         ")->execute(array($parent_ticket));
+    }
+
+    /**
+     * Find a ticket linked to the chat.
+     *
+     * @param ChatConversationEntity $chat
+     *
+     * @return array
+     */
+    public function getTicketLinkedToChat(ChatConversationEntity $chat)
+    {
+        $linked = $this->_em->createQuery('
+            SELECT t
+            FROM DeskPRO:Ticket t
+            WHERE t.linked_chat = ?0
+        ')->execute(array($chat));
+
+        if (count($linked)) {
+            return current($linked);
+        }
+
+        return;
     }
 
     /**
