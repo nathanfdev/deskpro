@@ -39,8 +39,8 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
+use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomFieldTicketContext;
 use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomPerFieldManager;
 use DeskPRO\Bundle\PortalBundle\CustomField\CustomFieldUtil;
@@ -70,9 +70,9 @@ class TicketViewDataService extends AbstractDataService
     private $custom_per_field_manager;
 
     /**
-     * @var BrandStack
+     * @var BrandAwareSettingsResolver
      */
-    private $brand_stack;
+    private $brand_aware_settings;
 
     public function __construct(
         EntityManager $em,
@@ -80,14 +80,14 @@ class TicketViewDataService extends AbstractDataService
         TicketLayoutFactory $ticket_layout_factory,
         Translate $translate,
         CustomPerFieldManager $custom_per_field_manager,
-        BrandStack $brand_stack = null
+        BrandAwareSettingsResolver $brand_aware_settings
     ) {
         parent::__construct($em);
         $this->form_field_manager       = $form_field_manager;
         $this->ticket_layout_factory    = $ticket_layout_factory;
         $this->translate                = $translate;
         $this->custom_per_field_manager = $custom_per_field_manager;
-        $this->brand_stack              = $brand_stack;
+        $this->brand_aware_settings     = $brand_aware_settings;
     }
 
     public function getUserTicketView(Ticket $ticket)
@@ -281,6 +281,6 @@ class TicketViewDataService extends AbstractDataService
      */
     private function hasSetting($name)
     {
-        return (bool) $this->brand_stack->getActive()->getSetting($name, false);
+        return (bool) $this->brand_aware_settings->getSetting($name, false);
     }
 }

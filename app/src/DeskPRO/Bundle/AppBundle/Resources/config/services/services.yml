@@ -1,5 +1,9 @@
 services:
 
+  brand_aware_settings_resolver:
+    class: DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver
+    arguments: [@settings_resolver, @?brand_stack]
+
   blob.storage:
     class: Application\DeskPRO\BlobStorage\DeskproBlobStorage
     factory_class: Application\DeskPRO\DependencyInjection\SystemServices\BlobStorageService
