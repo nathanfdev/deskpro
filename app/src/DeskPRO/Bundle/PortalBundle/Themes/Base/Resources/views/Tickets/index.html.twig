@@ -130,7 +130,7 @@
 
           {%- macro col_data(ticket, ticket_view, ticket_table, col) -%}
           {% if col.id == 'department_subject' %}
-          <span class="focus">[{{ ticket.department }}]</span>
+          <span class="focus">[{{ ticket.department.user_title }}]</span>
           {{ ticket.subject }}
           {% else %}
           {% if col.id == 'agent' %}
