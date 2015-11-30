@@ -8,11 +8,6 @@ pageMeta.obj_code = 'article_{{ article.id }}';
 
 pageMeta.permalink = '{{ article.permalink }}';
 pageMeta.labelsSaveUrl = '{{ path('agent_kb_ajax_labels_save', {'article_id': article.id}) }}';
-
-{% if article.hidden_status == 'validating' %}
-pageMeta.isValidating = true;
-{% endif %}
-
 pageMeta.glossaryWords = {{ glossary_words|json_encode|raw }};
 
 pageMeta.canEdit   = {% if not perms.can_edit %}false{% else %}true{% endif %};

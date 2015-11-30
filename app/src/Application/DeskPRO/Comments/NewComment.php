@@ -214,7 +214,6 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
                         'person'           => $person,
                         'email_validating' => $email_validating,
                         'email'            => $email,
-                        'validating'       => $validating,
                     );
 
                     $message = App::getMailer()->createMessage();

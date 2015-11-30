@@ -1,7 +1,6 @@
 {{ set_tplvar('agent_notification_footer', 'notify') }}
 <dp:subject>
 	{{ phrase('agent.publish.new_comment_on', {name: comment.getObject().title}) }}
-	{% if comment.status == 'validating' %}({{ phrase('agent.general.requires_validation') }}){% endif %}
 </dp:subject>
 {{ phrase('agent.publish.new_comment_submitted_by', {name: comment.getUserDisplayContact() }) }}
 

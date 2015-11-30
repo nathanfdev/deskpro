@@ -85,11 +85,6 @@ class FeedbackCommentController extends BaseController
         $created_to = $request->get('created_to');
         if ($awaitingValidation) {
             $qb
-                ->andWhere('c.status IN (:validating)')
-                ->setParameter(
-                    'validating',
-                    [FeedbackComment::STATUS_VALIDATING, FeedbackComment::STATUS_USER_VALIDATING]
-                )
                 ->orWhere('c.is_reviewed = 0');
         }
         if ($sort && $order) {

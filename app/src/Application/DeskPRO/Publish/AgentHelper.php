@@ -155,6 +155,7 @@ class AgentHelper implements PersonContextInterface
      */
     public function getValidatingContentCount()
     {
+        // TODO -- what??
         $db = App::getDb();
         foreach ($this->enabled_types as $t) {
             $table       = $db->quoteIdentifier($t);

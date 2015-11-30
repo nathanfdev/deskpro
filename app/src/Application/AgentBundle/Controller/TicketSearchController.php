@@ -1465,7 +1465,6 @@ class TicketSearchController extends AbstractController
             'ticket_hash',
             'status',
             'hidden_status',
-            'validating',
             'is_hold',
             'urgency',
             'date_created',

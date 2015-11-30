@@ -26,33 +26,16 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\Entity\FeedbackComment;
-use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
-use Doctrine\ORM\Query\QueryException;
-
-class FeedbackCommentsDataService extends AbstractDataService
+class Build1448875746 extends AbstractBuild
 {
-    /**
-     * @return Count
-     */
-    public function countAwaitingValidation()
+    public function run()
     {
-        $qb = $this->em->createQueryBuilder();
-        $qb->select('count(c)')
-            ->from('DeskPRO:FeedbackComment', 'c')
-            ->orWhere('c.is_reviewed = 0');
-        try {
-            $count = $qb->getQuery()->getSingleScalarResult();
-        } catch (QueryException $e) {
-            $count = 0;
-        }
-
-        return Count::fromValue($count);
+        $this->execMutateSql('ALTER TABLE article_comments DROP validating');
+        $this->execMutateSql('ALTER TABLE download_comments DROP validating');
+        $this->execMutateSql('ALTER TABLE feedback ADD is_reviewed TINYINT(1) NOT NULL, DROP validating');
+        $this->execMutateSql('ALTER TABLE feedback_comments DROP validating');
+        $this->execMutateSql('ALTER TABLE news_comments DROP validating');
     }
 }

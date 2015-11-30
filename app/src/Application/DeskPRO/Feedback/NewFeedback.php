@@ -220,7 +220,6 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
             $feedback['category_id']  = $this->category_id;
             $feedback['status']       = Feedback::STATUS_NEW;
             $feedback['date_created'] = new \DateTime();
-            $feedback['validating']   = $validating;
             $feedback['person']       = $person;
 
             if ($this->require_login && $this->mode != 'widget') {

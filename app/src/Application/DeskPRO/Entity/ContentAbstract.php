@@ -52,12 +52,9 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     const STATUS_HIDDEN    = 'hidden';
 
     const HIDDEN_STATUS_UNPUBLISHED     = 'unpublished';
-    const HIDDEN_STATUS_VALIDATING      = 'validating';
-    const HIDDEN_STATUS_USER_VALIDATING = 'user_validating';
     const HIDDEN_STATUS_DELETED         = 'deleted';
     const HIDDEN_STATUS_SPAM            = 'spam';
     const HIDDEN_STATUS_DRAFT           = 'draft';
-    const HIDDEN_STATUS_TEMP            = 'temp';
 
     /**
      * @var int
@@ -198,12 +195,9 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         return [
             self::HIDDEN_STATUS_UNPUBLISHED,
-            self::HIDDEN_STATUS_VALIDATING,
-            self::HIDDEN_STATUS_USER_VALIDATING,
             self::HIDDEN_STATUS_DELETED,
             self::HIDDEN_STATUS_SPAM,
-            self::HIDDEN_STATUS_DRAFT,
-            self::HIDDEN_STATUS_TEMP,
+            self::HIDDEN_STATUS_DRAFT
         ];
     }
 
