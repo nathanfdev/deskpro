@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import { ControlsPane } from './ControlsPane';
 import { ControlItem } from './ControlItem';
+import { EndChatButtonContainer } from '../../EndChat/EndChatButtonContainer';
+import { EndChatButton } from './EndChatButton';
 
 export class Controls extends React.Component {
 
@@ -23,9 +25,10 @@ export class Controls extends React.Component {
             Chat Transcript <i className="fa fa-exclamation-circle"></i>
           </span>
         </ControlItem>
-        <ControlItem>
-          End Chat <i className="fa fa-power-off"></i>
-        </ControlItem>
+
+        <EndChatButtonContainer>
+          <EndChatButton />
+        </EndChatButtonContainer>
       </ControlsPane>
     );
   }

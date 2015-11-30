@@ -45,11 +45,13 @@ export class EndChatButtonContainer extends React.Component {
       <span>
         {React.cloneElement(children, {
           ...childProps,
+
+          ref: 'button',
           onOpenPopup: this.onOpenPopup
         })}
 
         <Simple isOpen={this.state.confirmPopup}
-                positionTarget={this}
+                positionTarget={this.refs.button}
                 positionAt="right top"
                 positionMy="right bottom">
 
