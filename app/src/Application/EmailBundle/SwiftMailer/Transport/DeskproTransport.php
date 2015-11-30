@@ -31,6 +31,7 @@
  */
 namespace Application\EmailBundle\SwiftMailer\Transport;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\EmailBundle\SourceMapper\SourceMapperInterface;
 use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
@@ -96,7 +97,7 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
         }
 
         $acc        = $this->email_accounts->findAccountForSwiftmailerMessage($message);
-        $from_name  = Arrays::getFirstItem($message->getFrom() ?: array()) ?: '';
+        $from_name  = Arrays::getFirstItem($message->getFrom() ?: array()) ?: App::getSetting('core.site_name');
         $from_email = $acc->getUseEmailAddress();
 
         if ($message instanceof MessageOptionsInterface) {
