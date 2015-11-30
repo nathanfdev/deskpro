@@ -8,6 +8,10 @@ services:
       class: DeskPRO\Bundle\AppBundle\DataService\TicketViewDataService
       arguments: [@doctrine.orm.default_entity_manager, @form_field_manager, @ticket_layout_factory, @deskpro.core.translate, @tickets.custom_per_field_manager]
 
+  chat.view:
+      class: DeskPRO\Bundle\AppBundle\DataService\Chat\ChatViewDataService
+      arguments: [@doctrine.orm.default_entity_manager]
+
   tickets.table:
       class: DeskPRO\Bundle\AppBundle\DataService\TicketTableDataService
       arguments: [@doctrine.orm.default_entity_manager, @data.tickets, @language_manager, @data.departments, @ticket_layout_factory, @form_field_manager, @?brand_stack]
