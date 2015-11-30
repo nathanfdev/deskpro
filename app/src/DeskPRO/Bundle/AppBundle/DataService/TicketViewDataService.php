@@ -80,7 +80,7 @@ class TicketViewDataService extends AbstractDataService
         TicketLayoutFactory $ticket_layout_factory,
         Translate $translate,
         CustomPerFieldManager $custom_per_field_manager,
-        BrandStack $brand_stack
+        BrandStack $brand_stack = null
     ) {
         parent::__construct($em);
         $this->form_field_manager       = $form_field_manager;
