@@ -280,11 +280,6 @@ return array(
     'core.filestorage_method' => 'db',
 
     /*
-     * Require a user to log in if they enter an email address that is owned by an existing accounts
-     */
-    'core.existing_account_login' => false,
-
-    /*
      * The max attachment an agent can upload
      */
     'core.attach_agent_maxsize' => '5242880',

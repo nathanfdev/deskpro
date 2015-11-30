@@ -168,7 +168,7 @@ class PersonFactory
         // might require the user to log in (in which case the ticket is a temp ticket for a bit)
         if ($email) {
             $person = $email->getPerson();
-            if ($settings->get('core.existing_account_login') && $person->isUser()) {
+            if ($person->isUser()) {
                 throw new LoginRequiredException($person);
             } else {
                 if ($guest->name) {
