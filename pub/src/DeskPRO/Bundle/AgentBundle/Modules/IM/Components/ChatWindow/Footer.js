@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
-import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
+import Positioned from 'DeskPRO/Component/Positioned/Detached';
 
 export class Footer extends React.Component {
 

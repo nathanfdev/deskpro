@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { CalendarCellDropdown } from './CalendarCellDropdown';
-import Detached from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
+import Detached from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import { CalendarCellContentItem } from './CalendarCellContentItem';
 import moment from 'moment';

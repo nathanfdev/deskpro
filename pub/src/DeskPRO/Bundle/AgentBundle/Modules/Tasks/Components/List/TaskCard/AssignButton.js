@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import Detached from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
+import Detached from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 import { AssignFormContainer } from './AssignForm/AssignFormContainer';
 import { AssigneeContainer } from './AssigneeContainer';
