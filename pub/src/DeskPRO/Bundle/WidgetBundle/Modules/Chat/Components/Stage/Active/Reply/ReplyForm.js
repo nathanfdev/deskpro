@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { EndChatButton } from './EndChatButton';
 
 export class ReplyForm extends React.Component {
 
@@ -57,9 +58,7 @@ export class ReplyForm extends React.Component {
             </a>
           </div>
 
-          <div className="dpdesignportal-chat-form-button-row-end-chat">
-            <a href="#"><i className="fa fa-upload"></i>End Chat</a>
-          </div>
+          <EndChatButton />
         </div>
       </div>
     );
