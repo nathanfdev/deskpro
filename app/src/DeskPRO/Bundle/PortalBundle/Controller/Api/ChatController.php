@@ -35,6 +35,7 @@ use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
+use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -80,18 +81,38 @@ class ChatController extends AbstractController
      * @Method({"GET"})
      *
      * @param ChatConversation $conversation
+     * @param Request          $request
      *
      * @return JsonResponse
      */
-    public function pollingChatAction(ChatConversation $conversation)
+    public function pollingChatAction(ChatConversation $conversation, Request $request)
     {
+        /** @var EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+        $qb = $em->createQueryBuilder();
+        $qb
+            ->select('m')
+            ->from('DeskPRO:ChatMessage', 'm')
+            ->where(
+                'm.conversation = :conversation_id',
+                'm.id > :last_message_id'
+            )
+            ->setParameters([
+                'conversation_id' => $conversation->getId(),
+                'last_message_id' => $request->get('last_message_id', 0),
+            ])
+        ;
+
+        $messages = $qb->getQuery()->getResult();
+
         return new JsonResponse(array_merge($conversation->getInfo(), [
             'messages' => array_map(function (ChatMessage $message) {
                 return [
+                    'id'      => $message->getId(),
                     'type'    => 'agent',
                     'message' => $message->content,
                 ];
-            }, $conversation->messages->toArray()),
+            }, $messages),
         ]));
     }
 
