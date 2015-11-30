@@ -1,6 +1,21 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 export class RateAgent extends React.Component {
+
+  static propTypes = {
+    onClickHelpful: PropTypes.func,
+    onClickNotHelpful: PropTypes.func
+  };
+
+  onClickHelpful = event => {
+    event.preventDefault();
+    this.props.onClickHelpful();
+  };
+
+  onClickNotHelpful = event => {
+    event.preventDefault();
+    this.props.onClickNotHelpful();
+  };
 
   render() {
     return (
@@ -10,8 +25,12 @@ export class RateAgent extends React.Component {
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
 
         <div className="dpdesignportal-agent-rating-buttons">
-          <a href="#" className="dpdesignportal-button"><i className="fa fa-thumbs-up"></i> Helpful</a>
-          <a href="#" className="dpdesignportal-button negative"><i className="fa fa-thumbs-down"></i> Not Helpful</a>
+          <a href="#" className="dpdesignportal-button" onClick={this.onClickNotHelpful}>
+            <i className="fa fa-thumbs-up"></i> Helpful
+          </a>
+          <a href="#" className="dpdesignportal-button negative" onClick={this.onClickHelpful}>
+            <i className="fa fa-thumbs-down"></i> Not Helpful
+          </a>
         </div>
       </div>
     );

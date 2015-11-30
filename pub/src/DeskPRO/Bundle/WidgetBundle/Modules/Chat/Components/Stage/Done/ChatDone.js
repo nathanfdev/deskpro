@@ -10,6 +10,8 @@ export class ChatDone extends React.Component {
   render() {
     return (
       <div>
+        <RateAgent />
+        <ExtraRatingInfo />
         <RatingComplete />
         <TranscriptSent />
         <TranscriptForm />
