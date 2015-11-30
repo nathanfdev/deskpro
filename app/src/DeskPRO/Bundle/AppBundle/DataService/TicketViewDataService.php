@@ -31,15 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
-use Application\DeskPRO\CustomFields\Handler\Choice;
 use Application\DeskPRO\CustomFields\Handler\Date;
-use Application\DeskPRO\CustomFields\Handler\DateTime;
-use Application\DeskPRO\CustomFields\Handler\Display;
-use Application\DeskPRO\CustomFields\Handler\Hidden;
-use Application\DeskPRO\CustomFields\Handler\Text;
-use Application\DeskPRO\CustomFields\Handler\Textarea;
-use Application\DeskPRO\CustomFields\Handler\Toggle;
-use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Organization;
@@ -50,6 +42,7 @@ use DeskPRO\Bundle\AppBundle\Model\TicketView;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomFieldTicketContext;
 use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomPerFieldManager;
+use DeskPRO\Bundle\PortalBundle\CustomField\CustomFieldUtil;
 use DeskPRO\Bundle\PortalBundle\Form\FormFields;
 use Doctrine\ORM\EntityManager;
 
@@ -220,70 +213,6 @@ class TicketViewDataService extends AbstractDataService
 
     /**
      * @param $field_def
-     * @param $data
-     *
-     * @return bool|string
-     */
-    protected function getValueForCustomFormField(CustomDefAbstract $field_def, CustomDataAbstract $data)
-    {
-        switch ($field_def->getHandlerClass()) {
-            case Date::class:
-                try {
-                    $datetime = new \DateTime($data->getData());
-                    $value    = date('F j, Y', $datetime->getTimestamp());
-                } catch (\Exception $e) {
-                    $value = '';
-                }
-                break;
-            case DateTime::class:
-                try {
-                    $datetime = new \DateTime($data->getData());
-                    $value    = date('F j, Y, g:i a', $datetime->getTimestamp());
-                } catch (\Exception $e) {
-                    $value = '';
-                }
-                break;
-            case Toggle::class:
-                if ($data->getData() == 1) {
-                    $value = $field_def->getOption('label_text') ?: 'Checked';
-                } else {
-                    $value = 'None';
-                }
-                break;
-            case Text::class:
-            case Textarea::class:
-                $value = $data->getData();
-                break;
-            case Choice::class:
-                if (!$data->getValue()) {
-                    $ids = explode(',', $data->getInput());
-                } else {
-                    $ids = array($data->getValue());
-                }
-                $selected = array();
-                foreach ($ids as $id) {
-                    if ($selected_field = $field_def->getChildById($id)) {
-                        $selected[] = $selected_field->getTitle();
-                    }
-                }
-                $value = implode(', ', $selected);
-                break;
-            case Hidden::class:
-                $value = $data->getInput();
-                break;
-            case Display::class:
-                $value = $field_def->getHtmlOption();
-                break;
-            default:
-                $value = null;
-                break;
-        }
-
-        return $value;
-    }
-
-    /**
-     * @param $field_def
      * @param $context
      * @param $data
      *
@@ -319,7 +248,7 @@ class TicketViewDataService extends AbstractDataService
      */
     public function addCustomDataProperty(TicketView $view, $field_id, CustomDefAbstract $field_def, $data, $is_always_visible)
     {
-        $value = $data ? $this->getValueForCustomFormField($field_def, $data) : null;
+        $value = $data ? CustomFieldUtil::getValueForCustomFormField($field_def, $data) : null;
 
         $view->addProperty(
             $field_id,
