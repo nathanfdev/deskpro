@@ -34,8 +34,9 @@ export class EndChatButton extends React.Component {
         </a>
 
         <Simple isOpen={this.state.confirmPopup}
-                  positionTarget={this}
-                  positionAt="top right">
+                positionTarget={this}
+                positionAt="right top"
+                positionMy="right bottom">
 
           <ClickOut onClickOut={this.onClosePopup}>
             <EndChatConfirm />

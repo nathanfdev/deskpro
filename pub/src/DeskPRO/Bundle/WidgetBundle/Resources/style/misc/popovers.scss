@@ -11,7 +11,7 @@
   padding: 12px 10px;
   border-radius: 2px;
   background: #fff;
-  max-width: 300px;
+  width: 300px;
 
   &.dpdesignportal-popover-end-chat {
     @include add-corner(5px, #4681b2, 90%, bottom, "");
