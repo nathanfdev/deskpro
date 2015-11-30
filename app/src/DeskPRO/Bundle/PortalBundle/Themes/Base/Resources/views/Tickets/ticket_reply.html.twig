@@ -3,10 +3,10 @@
     <div class="ticket-reply-closed">
         <h1>This ticket is now closed</h1>
         {% if ticket.date_resolved %}
-            <p>This ticket was closed {{ date_ago(ticket.date_resolved) }} ({{ ticket.date_resolved|date('day') }}).</p>
+            <p>{{ phrase('portal.tickets.view_closed', { ago: date_ago(ticket.date_resolved), day: ticket.date_resolved|date('day') }) }}</p>
         {% endif %}
         <hr>
-        <p class="footer">You can <a href="{{ path('portal_kb') }}">return to the knowledge base</a> or <a href="{{ path('portal_new_ticket') }}">open a new ticket</a>.</p>
+        <p class="footer">{{ phrase('portal.tickets.view_closed_more', { kb_url: path('portal_kb'), new_ticket_url: path('portal_new_ticket') }) }}</p>
 
         {% if ticket.resolved and has_permission('tickets.reopen_resolved') %}
         <a href="{{ portal_path(ticket, 'unresolve') }}" class="button post-link">
@@ -20,7 +20,7 @@
 
     <div class="ticket-reply dpx-form" id="ticket-reply-form">
         <div class="ticket-reply-header">
-            Add a reply or <a href="{{ portal_path(ticket, 'resolve') }}" class="post-link">close the ticket</a>
+            {{ phrase('portal.tickets.view_reply_or_close', { close_url: portal_path(ticket, 'resolve') }) }}
         </div>
         {{ form_errors(form) }}
         {{ form_start(form, { attr: { class: 'form-ticket' } }) }}
@@ -28,12 +28,12 @@
             <div class="column-full">
                 <div class="bucket">
                     <div class="form-error-list" style="max-width: 620px;">
-                        <h1>There are some errors with your submission.</h1>
+                        <h1>{{ phrase('portal.tickets.view_reply_errors') }}</h1>
                         <ul>
                             {% for error in form_errors %}
                                 {% set error_view = error.origin.createView() %}
                                 <li>
-                                        <span>{{ phrase_form_error(error) }}</span>
+                                    <span>{{ phrase_form_error(error) }}</span>
                                 </li>
                             {% endfor %}
                         </ul>
