@@ -1,5 +1,6 @@
 import React from 'react';
 import Simple from 'DeskPRO/Component/Positioned/Simple';
+import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { EndChatConfirm } from './EndChatConfirm';
 
 export class EndChatButton extends React.Component {
@@ -18,6 +19,13 @@ export class EndChatButton extends React.Component {
     });
   };
 
+  onClosePopup = event => {
+    event.preventDefault();
+    this.setState({
+      confirmPopup: false
+    });
+  };
+
   render() {
     return (
       <div className="dpdesignportal-chat-form-button-row-end-chat">
@@ -29,7 +37,9 @@ export class EndChatButton extends React.Component {
                   positionTarget={this}
                   positionAt="top right">
 
-          <EndChatConfirm />
+          <ClickOut onClickOut={this.onClosePopup}>
+            <EndChatConfirm />
+          </ClickOut>
         </Simple>
       </div>
     );
