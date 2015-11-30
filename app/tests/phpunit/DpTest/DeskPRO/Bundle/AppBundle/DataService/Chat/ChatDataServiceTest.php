@@ -98,7 +98,7 @@ class ChatDataServiceTest extends DeskProTestCase
 
         $result = $this->instance()->countChats($criteria);
 
-        $this->assertNull($result->getGroupedBy());
+        $this->assertNull($result->getType());
     }
 
     /**

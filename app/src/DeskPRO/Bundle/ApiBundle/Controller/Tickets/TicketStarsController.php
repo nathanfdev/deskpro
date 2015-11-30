@@ -144,12 +144,12 @@ class TicketStarsController extends BaseController
     {
         $flags_service = $this->get('data.ticketflags');
 
-        $count = Count::fromValue(0);
+        $count = Count::create(0, null, null, null, 'ticket_star');
         foreach ($flags_service->getFlags() as $i => $color) {
             $flag_id = $i + 1;
 
             $flag_count = count($flags_service->getAllRecordsForFlag($this->getUser()->getId(), $flag_id));
-            $count->addNested($flag_count, $flag_id, true);
+            $count->addNested($flag_count, $flag_id, 'ticket_star', TicketStar::idToColorLabel($flag_id), true);
         }
 
         return View::create($this->createRepresentation($count), Response::HTTP_OK);

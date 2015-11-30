@@ -133,7 +133,7 @@ class ChatDataService
         $count = Count::fromGroupedBy($criteria->getGroupBy());
         foreach ($result as $group) {
             $count->add($group['value']);
-            $count->addNested($group['value'], $group['group_name']);
+            $count->addNested($group['value'], $group['group_name'], $criteria->getGroupBy());
         }
 
         return $count;

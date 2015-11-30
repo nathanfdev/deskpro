@@ -18,8 +18,4 @@ export class NavContainer extends Component {
   componentDidMount() {
     this.props.dispatch(initialLoad());
   }
-
-  componentWillUnmount() {
-    this.props.dispatch(unload());
-  }
 }

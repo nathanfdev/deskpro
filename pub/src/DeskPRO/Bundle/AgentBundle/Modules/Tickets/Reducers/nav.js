@@ -4,11 +4,9 @@ import { startFilterEditing, applyFilterEditing, closeFilterEditing, initialLoad
 
 const initialState = {
   filterSetsCount: {},
-  filterSets: [],
   filters: [],
   labels: [],
   starsCount: [],
-  stars: [],
 
   editedFilterId: null,
 
@@ -37,14 +35,14 @@ export default createReducer(initialState, {
 
       for (let i = 0; i < filterSets.length; i++) {
         for (let j = 0; j < filterSets[i].nested.length; j++) {
-          if (filterSets[i].nested[j].group === newFilterCount.group) {
+          if (filterSets[i].nested[j].id === newFilterCount.id) {
             filterSets[i].nested[j] = newFilterCount;
 
             let next = setFullPayload('filterSetsCount')(state, filterSets);
             next = next.setIn(
               ['async', 'filtersLoading'],
               state.getIn(['async', 'filtersLoading'])
-                   .delete(state.getIn(['async', 'filtersLoading']).indexOf(newFilterCount.group))
+                   .delete(state.getIn(['async', 'filtersLoading']).indexOf(newFilterCount.id))
             );
 
             return next;
@@ -60,7 +58,7 @@ export default createReducer(initialState, {
     const filterSets = state.get('filterSetsCount').toJS();
     for (let i = 0; i < filterSets.length; i++) {
       for (let j = 0; j < filterSets[i].nested.length; j++) {
-        if (filterSets[i].nested[j].group === id) {
+        if (filterSets[i].nested[j].id === id) {
           filterSets[i].nested[j].nested = [];
           return setFullPayload('filterSetsCount')(state, filterSets);
         }

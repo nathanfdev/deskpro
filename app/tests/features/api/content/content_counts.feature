@@ -42,7 +42,7 @@ Feature: Content counts endpoints (/articles/counts, /news/counts, /downloads/co
     And the JSON node "data.grouped_by" should be equal to "category"
 
     # check counts reflect categories hierarchy
-    And the JSON node "data.nested[0].nested[0].nested[0].nested[0].group" should be equal to "9"
+    And the JSON node "data.nested[0].nested[0].nested[0].nested[0].id" should be equal to "9"
     And the JSON node "data.nested[0].nested[0].nested[0].nested[0].count" should be equal to "1"
 
     Examples:
