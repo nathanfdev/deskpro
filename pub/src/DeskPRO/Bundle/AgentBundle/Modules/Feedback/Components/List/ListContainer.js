@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
     selected: state.Feedback.list.get('selected'),
     pagination: state.Feedback.list.get('pagination'),
     loaded: state.Feedback.list.getIn(['async', 'done']),
+    currentApp: state.Application.dpWindow.get('activeAppId'),
     currentViewMode: currentViewModeSelector(state)
   });
 })
@@ -17,6 +18,7 @@ export class ListContainer extends Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
+    currentApp: PropTypes.string.isRequired,
     isComments: PropTypes.bool,
     loaded: PropTypes.bool.isRequired,
     currentViewMode: PropTypes.string.isRequired

@@ -8,7 +8,8 @@ import { unload } from '../../Actions/listActions';
   tasks: elementsSelector(state),
   loaded: isDoneSelector(state),
   currentView: currentViewModeSelector(state),
-  currentNav: listParamsNavSelector(state)
+  currentNav: listParamsNavSelector(state),
+  currentApp: state.Application.dpWindow.get('activeAppId')
 }))
 export class ListContainer extends React.Component {
 

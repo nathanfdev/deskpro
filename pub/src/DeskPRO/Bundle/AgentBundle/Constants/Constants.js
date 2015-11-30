@@ -16,5 +16,13 @@ export default {
   STATUS_VISIBLE: 'visible',
   STATUS_ACTIVE: 'active',
   STATUS_CLOSED: 'closed',
-  TYPE_TASK: 'task'
+  TYPE_TASK: 'task',
+  APP_COLOURS: {
+    crm: '#42c1c1',
+    chat: '#eb4f6c',
+    feedback: '#955872',
+    publish: '#f0b52f',
+    tasks: '#d99379',
+    tickets: '#eb794f'
+  }
 };

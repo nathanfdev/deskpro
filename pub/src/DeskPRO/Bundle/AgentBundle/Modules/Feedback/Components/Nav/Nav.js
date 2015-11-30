@@ -7,6 +7,7 @@ import { TypeTab } from './TypeTab';
 import { CategoryTab } from './CategoryTab';
 import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
 import { applyParams } from '../../Actions/FeedbackListActions';
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 @injectIntl
 export class Nav extends Component {
@@ -30,14 +31,15 @@ export class Nav extends Component {
 
   render() {
     const { labels, loaded, types, toValidateCount, commentsToReviewCount, statuses, customCategories, dispatch, dpWindow } = this.props;
+    const currentApp = dpWindow.get('activeAppId');
 
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
-        <NavFrameHeader icon="icon-dp-streamline-hand-like-2">
+        <NavFrameHeader icon="icon-dp-streamline-hand-like-2" currentApp={currentApp}>
           <FormattedMessage id="feedback.nav.title"/>
         </NavFrameHeader>
         <NavFrameBody>
-          <TabSpinner loaded={loaded}>
+          <TabSpinner loaded={loaded} color={constants.APP_COLOURS[currentApp]}>
             <Pending
               toValidateCount={toValidateCount}
               commentsToReviewCount={commentsToReviewCount}
