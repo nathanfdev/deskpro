@@ -142,6 +142,7 @@ services:
       - { name: form.type, alias: person_change_password }
     arguments:
       - @captcha_decider
+      - @deskpro.core.translate
 
 
   form.deskpro_custom_per_field_data:

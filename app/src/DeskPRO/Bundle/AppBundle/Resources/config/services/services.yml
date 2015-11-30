@@ -6,6 +6,12 @@ services:
     factory_method: create
     arguments: [@service_container]
 
+  deskpro_password_policy_validator:
+    class: Application\DeskPRO\People\PasswordPolicyValidator
+    factory_class: Application\DeskPRO\DependencyInjection\SystemServices\PasswordPolicyValidatorService
+    factory_method: create
+    arguments: [@service_container]
+
   avatar_resolver:
     class: DeskPRO\Bundle\AppBundle\Content\AvatarResolver
     #todo #portal second param here needs to be setting for gravatar

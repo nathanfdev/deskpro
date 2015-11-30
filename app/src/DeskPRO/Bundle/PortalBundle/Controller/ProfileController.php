@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use Application\DeskPRO\Entity\PasswordHistory;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PersonEmailValidating;
@@ -179,12 +180,24 @@ class ProfileController extends AbstractController
         $password_form = $this->createForm('person_change_password', $person, array(
             'settings' => $this->getBrandContainer()->getSettings(),
         ));
-        $password_form->handleRequest($request);
-        if ($password_form->isValid()) {
-            $this->getEm()->flush();
-            $this->addFlash('success', $this->phrase('portal.flashes.user_changed_password'));
+        if ('POST' === $request->getMethod()) {
+            $history = null;
+            if ($person->password && $person->password_scheme == 'bcrypt') {
+                $history                  = new PasswordHistory();
+                $history->person          = $person;
+                $history->password_scheme = $person->password_scheme;
+                $history->password        = $person->password;
+            }
+            $password_form->handleRequest($request);
+            if ($password_form->isValid()) {
+                if ($history) {
+                    $this->getEm()->persist($history);
+                }
+                $this->getEm()->flush();
+                $this->addFlash('success', $this->phrase('portal.flashes.user_changed_password'));
 
-            return $this->redirectToRoute('portal_user_profile');
+                return $this->redirectToRoute('portal_user_profile');
+            }
         }
 
         //

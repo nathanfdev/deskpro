@@ -41,3 +41,10 @@ services:
         - @=service('doctrine.orm.default_entity_manager').getRepository('DeskPRO:BanEmail')
       tags:
         - { name: validator.constraint_validator, alias: 'not_banned_email_validator' }
+
+  validator.dp_password:
+      class: DeskPRO\Bundle\AppBundle\Validator\Constraints\DpPasswordValidator
+      arguments:
+        - @deskpro_password_policy_validator
+      tags:
+        - { name: validator.constraint_validator, alias: 'dp_password' }

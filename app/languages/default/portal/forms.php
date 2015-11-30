@@ -74,4 +74,12 @@ return array(
     'portal.forms.error_accept_server_error'        => 'There was a problem uploading this file. Please try again.',
     'portal.forms.error_accept_not_allowed_exts'    => 'You cannot upload a file with the following file extensions: {{ detail }}',
     'portal.forms.error_server_rejected_size'       => 'There was a problem uploading a file. Please try uploading smaller files.',
+
+    'portal.forms.error_password_min_length'            => 'Minimum of {{count}} character|Minimum of {{count}} characters',
+    'portal.forms.error_password_require_num_uppercase' => 'At least {{count}} uppercase character|At least {{count}} uppercase characters',
+    'portal.forms.error_password_require_num_lowercase' => 'At least {{count}} lowercase character|At least {{count}} lowercase characters',
+    'portal.forms.error_password_require_num_number'    => 'At least {{count}} number|At least {{count}} numbers',
+    'portal.forms.error_password_require_num_symbol'    => 'At least {{count}} symbol|At least {{count}} symbols',
+    'portal.forms.error_password_forbid_reuse'          => 'You cannot use a password you have used before',
+    'portal.forms.error_password_current'               => 'This must be your current password',
 );
