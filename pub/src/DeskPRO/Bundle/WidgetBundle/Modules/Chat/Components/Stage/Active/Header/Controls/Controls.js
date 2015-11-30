@@ -1,23 +1,14 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
-export class Header extends React.Component {
+export class Controls extends React.Component {
+
+  static propTypes = {
+    ended: PropTypes.bool
+  };
 
   render() {
     return (
       <div>
-        <div className="dpdesignportal-chat-header">
-          <div className="dpdesignportal-chat-header-avatar-container multiple">
-            <ul>
-              <li><div className="dpdesignportal-chat-header-avatar"></div></li>
-              <li><div className="dpdesignportal-chat-header-avatar"></div></li>
-              <li><div className="dpdesignportal-chat-header-avatar"></div></li>
-            </ul>
-          </div>
-          <hr/>
-          <h1>You are chatting with <span>Noelle Gray</span>, <span>Roland Holland</span> &amp; <span>Lester Rodriquez</span></h1>
-          <h2>DeskPRO, Customer Support Representatives</h2>
-        </div>
-
         <div className="dpdesignportal-chat-header-controls">
           <ul>
             <li>
