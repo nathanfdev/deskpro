@@ -1,6 +1,7 @@
 import { createReducer } from 'Ampliflux';
 import * as actions from '../Actions/chatActions';
-import { async, mergeFullPayload } from 'Ampliflux/reducers/handlers';
+import { async, setFullPayload } from 'Ampliflux/reducers/handlers';
+import Immutable from 'immutable';
 
 const initialState = {
   chat: {
@@ -10,9 +11,14 @@ const initialState = {
 
 export default createReducer(initialState, {
   [actions.createChat]: async({
-    success: mergeFullPayload('chat')
+    success: setFullPayload('chat')
   }),
   [actions.pollingChat]: async({
-    success: mergeFullPayload('chat')
+    success: (state, payload, action) => {
+      const oldMessages = state.getIn(['chat', 'messages'], Immutable.fromJS([])).toJS();
+      payload.messages = oldMessages.concat(payload.messages);
+
+      return setFullPayload('chat')(state, payload, action);
+    }
   })
 });
