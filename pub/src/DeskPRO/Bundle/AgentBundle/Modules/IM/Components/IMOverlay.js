@@ -4,7 +4,7 @@ import { TeamsList } from './Teams/TeamsList';
 import { DepartmentsList } from './Departments/DepartmentsList';
 import * as actions from '../Actions/chatsActions';
 import * as ui from '../Actions/uiActions';
-import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
+import { ClickOut } from 'DeskPRO/Component/ClickOut';
 
 export class IMOverlay extends React.Component {
   static propTypes = {
