@@ -62,6 +62,8 @@ class Article extends ContentAbstract implements HighlightableModelInterface
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
+     *
+     * @deprecated - this field is unused and will be deleted soon
      */
     protected $products;
 
@@ -639,6 +641,9 @@ class Article extends ContentAbstract implements HighlightableModelInterface
                 'dpApi' => true,
             )
         );
+
+        //
+        // deprecated field - will be deleted soon
         $metadata->mapManyToMany(
             array(
                 'fieldName'    => 'products',
@@ -669,6 +674,9 @@ class Article extends ContentAbstract implements HighlightableModelInterface
                 'dpApi' => true,
             )
         );
+        // end deprecated field
+        //
+
         $metadata->mapOneToMany(
             array(
                 'fieldName'    => 'revisions',
