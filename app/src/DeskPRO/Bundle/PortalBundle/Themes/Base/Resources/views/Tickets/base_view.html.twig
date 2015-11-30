@@ -24,12 +24,12 @@
                         {# to avoid "your last message was 1 second ago" after every reply #}
                         {% if ticket.date_last_user_reply and ticket.messages|length > 1 and last_user_reply_in_seconds > 600 %}
                             <span class="note-for-user-blue">
-                            {{ phrase('portal.tickets.view_last_message', { ago: date_ago(ticket.date_last_user_reply) }) }}
+                            {{ phrase('portal.tickets.view_last_message', { ago: date_ago(ticket.date_last_user_reply, null, false) }) }}
                             </span>
                             {# similarly, only show the "created ago" message if it has been more than 10 mins #}
                         {% elseif created_in_seconds > 600 %}
                             <span class="note-for-user-blue">
-                                {{ phrase('portal.tickets.view_you_created', { ago: date_ago(ticket.date_created) }) }}
+                                {{ phrase('portal.tickets.view_you_created', { ago: date_ago(ticket.date_created, null, false) }) }}
                             </span>
                         {% endif %}
                         {{ phrase('portal.tickets.view_will_notify_you') }}

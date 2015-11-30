@@ -3,10 +3,10 @@
     <div class="ticket-reply-closed">
         <h1>This ticket is now closed</h1>
         {% if ticket.date_resolved %}
-            <p>{{ phrase('portal.tickets.view_closed', { ago: date_ago(ticket.date_resolved), day: ticket.date_resolved|date('day') }) }}</p>
+            <p>{{ phrase('portal.tickets.view_closed', { ago: date_ago(ticket.date_resolved, null, false), day: ticket.date_resolved|date('day') }) }}</p>
         {% endif %}
         <hr>
-        <p class="footer">{{ phrase('portal.tickets.view_closed_more', { kb_url: path('portal_kb'), new_ticket_url: path('portal_new_ticket') }) }}</p>
+        <p class="footer">{{ phrase('portal.tickets.view_closed_more', { kb_url: path('portal_kb'), new_ticket_url: path('portal_new_ticket') })|raw }}</p>
 
         {% if ticket.resolved and has_permission('tickets.reopen_resolved') %}
         <a href="{{ portal_path(ticket, 'unresolve') }}" class="button post-link">

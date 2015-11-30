@@ -130,7 +130,7 @@ class PortalExtension extends \Twig_Extension
             new \Twig_SimpleFunction('feedback_icon', array($this, 'makeFeedbackIcon'), array('is_safe' => array('html'))),
             new \Twig_SimpleFunction('content_icon', array($this, 'makeContentIcon'), array('is_safe' => array('html'))),
             new \Twig_SimpleFunction('ticket_view', array($this, 'getTicketView')),
-            new \Twig_SimpleFunction('phrase_form_error', array($this, 'makeFormError')),
+            new \Twig_SimpleFunction('phrase_form_error', array($this, 'makeFormError'), array('is_safe' => array('html'))),
             new \Twig_SimpleFunction('insert_glossary_js', array($this, 'makeGlossaryJs'), array('is_safe' => array('html', 'javascript'))
             ),
         );
