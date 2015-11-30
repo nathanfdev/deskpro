@@ -55,7 +55,7 @@ export class DpApp extends React.Component {
     return (
       <div className="dp-window">
         <Header user={user} dispatch={dispatch}/>
-        <AppSwitcher dispatch={dispatch}/>
+        <AppSwitcher dispatch={dispatch} currentApp={dpWindow.get('activeAppId')}/>
 
         <div className="dp-panes-middle">
           {this.props.children}

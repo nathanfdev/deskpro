@@ -14,6 +14,7 @@ export class List extends Component {
 
   static propTypes = {
     loaded: PropTypes.bool.isRequired,
+    currentApp: PropTypes.string.isRequired,
     isComments: PropTypes.bool,
     selected: PropTypes.object.isRequired,
     pagination: PropTypes.object,
@@ -67,26 +68,19 @@ export class List extends Component {
     );
   }
 
-  renderPagination() {
-    const { pagination } = this.props;
-    if (pagination && pagination.total_pages > 1) {
-      return (<PaginationContainer/>);
-    }
-  }
-
   render() {
-    const { loaded } = this.props;
+    const { loaded, currentApp, pagination } = this.props;
 
     return (
       <ListFrameContainer>
         <ControlBarContainer />
         <Loader loaded={loaded}
-                color="green"
+                color={constants.APP_COLOURS[currentApp]}
                 opacity={0}
                 width={3}>
           <ListFrameContents>
             {this.contentChoice()}
-            {this.renderPagination()}
+            {pagination && pagination.total_pages > 1 && <PaginationContainer/>}
           </ListFrameContents>
         </Loader>
       </ListFrameContainer>

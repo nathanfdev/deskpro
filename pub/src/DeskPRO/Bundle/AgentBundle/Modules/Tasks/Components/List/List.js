@@ -34,14 +34,14 @@ export class List extends React.Component {
   }
 
   render() {
-    const { currentNav, loaded, tasks } = this.props;
+    const { currentNav, loaded, tasks, currentApp } = this.props;
 
     return (
       <ListFrameContainer className="task-list-frame">
         <ControlBarContainer />
         {currentNav &&
           <Loader loaded={loaded}
-                  color="green"
+                  color={constants.APP_COLOURS[currentApp]}
                   opacity={0}
                   width={3}>
 
