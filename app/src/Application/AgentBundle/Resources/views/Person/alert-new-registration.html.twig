@@ -8,6 +8,5 @@
 	<big>{{ phrase('agent.people.new_registration', {name: person.getDisplayContact()}) }} </big>
 	<small>
 		{{ phrase('agent.people.new_registration') }}
-		{% if not person.is_agent_confirmed %}{{ phrase('agent.general.requires_validation') }}{% endif %}
 	</small>
 </li>

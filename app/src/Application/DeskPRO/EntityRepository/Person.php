@@ -551,34 +551,6 @@ class Person extends AbstractEntityRepository
     }
 
     /**
-     * Get the count of users awaiting validation by agents.
-     *
-     * @return int
-     */
-    public function getAgentValidatingCount()
-    {
-        return App::getDb()->fetchColumn('
-            SELECT COUNT(*)
-            FROM people
-            WHERE is_agent_confirmed = 0
-        ');
-    }
-
-    /**
-     * Get the count of users awaiting validation by agents.
-     *
-     * @return int
-     */
-    public function getValidatingCount()
-    {
-        return App::getDb()->fetchColumn('
-            SELECT COUNT(*)
-            FROM people
-            WHERE is_confirmed = 0
-        ');
-    }
-
-    /**
      * Count the number of things the user owns.
      *
      * @param \Application\DeskPRO\Entity\Person $person

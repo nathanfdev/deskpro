@@ -1,13 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { createChat } from '../../../Actions/chatActions';
-import { isCreated } from '../../../Selectors/chat';
 import { Header } from './Header';
 import history from '../../../../../Services/history';
 
-@connect(state => ({
-  isCreated: isCreated(state)
-}))
+@connect()
 export class ChatBeginContainer extends React.Component {
 
   static propTypes = {
@@ -21,14 +18,8 @@ export class ChatBeginContainer extends React.Component {
     this.state = {
       name: '',
       email: '',
-      hiddenEmail: false
+      hidden_email: false
     };
-  }
-
-  componentDidUpdate() {
-    if (this.props.isCreated) {
-      history.replaceState(null, '/chat/waiting');
-    }
   }
 
   onChangeName = event => {
@@ -43,14 +34,20 @@ export class ChatBeginContainer extends React.Component {
     });
   };
 
-  onToggleHiddenEmail = () => {
+  onToggleHiddenEmail = event => {
+    event.preventDefault();
     this.setState({
-      hiddenEmail: !this.state.hiddenEmail
+      hidden_email: !this.state.hidden_email
     });
   };
 
-  onSubmit = () => {
-    this.props.dispatch(createChat(this.state));
+  onSubmit = event => {
+    if (event) {
+      event.preventDefault();
+    }
+
+    const promise = this.props.dispatch(createChat(this.state));
+    promise.then(() => history.replaceState(null, '/chat/waiting'));
   };
 
   render() {
@@ -64,7 +61,7 @@ export class ChatBeginContainer extends React.Component {
 
       name: this.state.name,
       email: this.state.email,
-      hiddenEmail: this.state.hiddenEmail,
+      hiddenEmail: this.state.hidden_email,
 
       onChangeName: this.onChangeName,
       onChangeEmail: this.onChangeEmail,

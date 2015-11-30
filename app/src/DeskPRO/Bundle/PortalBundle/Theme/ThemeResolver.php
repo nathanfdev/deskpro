@@ -31,6 +31,9 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Theme;
 
+use Application\DeskPRO\Entity\Template;
+use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
+use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -61,10 +64,16 @@ class ThemeResolver
      */
     private $themeTemplateMap;
 
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
     public function __construct(
         ContainerInterface $container,
         ThemeRepository $theme_repo,
         TagProcessor $tag_processor,
+        EntityManager $em,
         LoggerInterface $logger
     ) {
         $this->container        = $container;
@@ -72,6 +81,7 @@ class ThemeResolver
         $this->themeTemplateMap = null;
         $this->logger           = $logger;
         $this->tag_processor    = $tag_processor;
+        $this->em               = $em;
     }
 
     /**
@@ -191,6 +201,14 @@ class ThemeResolver
         }
 
         return;
+    }
+
+    public function getThemeSetTemplateFromDb(ThemeSet $theme_set, $template_name)
+    {
+        /** @var \Application\DeskPRO\EntityRepository\Template $template_repo */
+        $template_repo = $this->em->getRepository('DeskPRO:Template');
+
+        return $template_repo->getThemeSetTemplate($template_name, $theme_set);
     }
 
     /**

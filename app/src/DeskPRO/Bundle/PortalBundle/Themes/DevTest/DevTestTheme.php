@@ -32,15 +32,18 @@
 namespace DeskPRO\Bundle\PortalBundle\Themes\DevTest;
 
 use DeskPRO\Bundle\PortalBundle\Theme\AbstractTheme;
+use DeskPRO\Bundle\PortalBundle\Themes\Base\BaseTheme;
 
 class DevTestTheme extends AbstractTheme
 {
+    const THEME_ID = 'devtest';
+
     /**
      * {@inheritdoc}
      */
     public function getId()
     {
-        return 'devtest';
+        return self::THEME_ID;
     }
 
     /**
@@ -48,7 +51,7 @@ class DevTestTheme extends AbstractTheme
      */
     public function getParentId()
     {
-        return 'base';
+        return BaseTheme::THEME_ID;
     }
 
     /**

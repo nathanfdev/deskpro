@@ -112,6 +112,12 @@ class DataInitializer
         $this->container->getDb()->insert('department_permissions', array('department_id' => 2, 'usergroup_id' => 1, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
         $this->container->getDb()->insert('department_permissions', array('department_id' => 3, 'usergroup_id' => 1, 'app' => 'chat', 'name' => 'full', 'value' => 1));
         $this->container->getDb()->insert('department_permissions', array('department_id' => 4, 'usergroup_id' => 1, 'app' => 'chat', 'name' => 'full', 'value' => 1));
+
+        // The registered group has access to all deps too
+        $this->container->getDb()->insert('department_permissions', array('department_id' => 1, 'usergroup_id' => 2, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
+        $this->container->getDb()->insert('department_permissions', array('department_id' => 2, 'usergroup_id' => 2, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
+        $this->container->getDb()->insert('department_permissions', array('department_id' => 3, 'usergroup_id' => 2, 'app' => 'chat', 'name' => 'full', 'value' => 1));
+        $this->container->getDb()->insert('department_permissions', array('department_id' => 4, 'usergroup_id' => 2, 'app' => 'chat', 'name' => 'full', 'value' => 1));
     }
 
     public function runSearchIndex()

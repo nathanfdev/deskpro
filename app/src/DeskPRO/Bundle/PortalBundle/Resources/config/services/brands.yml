@@ -7,7 +7,12 @@ services:
 
   brand_container_factory:
     class: DeskPRO\Bundle\PortalBundle\Brand\BrandContainerFactory
-    arguments: [@settings_resolver, @theme_resolver, @doctrine.orm.default_entity_manager, @deskpro.blob_storage]
+    arguments:
+      - @settings_resolver
+      - @theme_resolver
+      - @doctrine.orm.default_entity_manager
+      - @deskpro.blob_storage
+      - @portal_mode_storage
 
 
   default_brand_finder:

@@ -391,12 +391,6 @@ $collection->create('agent_settings_ticketslas', array(
     'controller' => 'AgentBundle:Settings:ticketSlas',
 ));
 
-$collection->create('agent_people_validate_email', array(
-    'path'         => '/people/validate-email/{id}/{security_token}',
-    'controller'   => 'AgentBundle:Person:validateEmailAddress',
-    'requirements' => array('id' => '\\d+'),
-));
-
 $collection->create('agent_people_view', array(
     'path'         => '/people/{person_id}',
     'controller'   => 'AgentBundle:Person:view',
@@ -414,21 +408,6 @@ $collection->create('agent_people_viewsession', array(
     'path'         => '/people/session/{session_id}',
     'controller'   => 'AgentBundle:Person:viewSession',
     'requirements' => array('session_id' => '\\d+'),
-));
-
-$collection->create('agent_people_validate_list', array(
-    'path'       => '/people/validate/list',
-    'controller' => 'AgentBundle:PeopleSearch:validateList',
-));
-
-$collection->create('agent_people_validate_approve', array(
-    'path'       => '/people/validate/approve',
-    'controller' => 'AgentBundle:PeopleSearch:validateApprove',
-));
-
-$collection->create('agent_people_validate_delete', array(
-    'path'       => '/people/validate/delete',
-    'controller' => 'AgentBundle:PeopleSearch:validateDelete',
 ));
 
 $collection->create('agent_people_new', array(

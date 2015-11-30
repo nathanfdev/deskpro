@@ -69,6 +69,8 @@ return array(
     'portal.general.nav-emails'                  => 'Emails',
     'portal.general.nav-newticket'               => 'Contact Us',
     'portal.general.nav-newticket-desc'          => 'We\'re here to help',
+    'portal.general.nav-chat'                    => 'Chat Logs',
+    'portal.general.nav-chatlog'                 => 'Chat Log',
     'portal.general.nav-tickets'                 => 'Tickets',
     'portal.general.nav-tickets-org'             => 'Organization Tickets',
     'portal.general.nav-register'                => 'Register',

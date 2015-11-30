@@ -303,6 +303,10 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
             if ($url = $authInterfaceSettings->getLogoutRedirectUrl()) {
                 return $this->redirect($url);
             }
+
+            // if user has just logged out, and we dont get a redirect url from the auth system, we don't
+            // want to continue execution in this method.
+            return;
         }
 
         if ($sso_result = $this->handleAutomaticSso($authInterfaceSettings)) {

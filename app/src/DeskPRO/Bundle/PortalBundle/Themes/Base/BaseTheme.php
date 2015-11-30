@@ -35,6 +35,8 @@ use DeskPRO\Bundle\PortalBundle\Theme\AbstractTheme;
 
 class BaseTheme extends AbstractTheme
 {
+    const THEME_ID = 'base';
+
     public static function getHardCodedTags()
     {
         return array();
@@ -45,7 +47,7 @@ class BaseTheme extends AbstractTheme
      */
     public function getId()
     {
-        return 'base';
+        return self::THEME_ID;
     }
 
     /**

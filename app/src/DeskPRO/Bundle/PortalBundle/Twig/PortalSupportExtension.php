@@ -91,6 +91,7 @@ class PortalSupportExtension extends \Twig_Extension
     {
         $funcs = array(
             new \Twig_SimpleFunction('can_use_*', array($this, 'canUseCheck')),
+            new \Twig_SimpleFunction('show_tab_*', array($this, 'showTab')),
             new \Twig_SimpleFunction('has_any_*', array($this, 'hasAnyCheck')),
             new \Twig_SimpleFunction('is_user', array($this, 'isUser')),
             new \Twig_SimpleFunction('is_agent', array($this, 'isAgent')),
@@ -100,6 +101,7 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('is_page_*', array($this, 'pageIsCheck')),
             new \Twig_SimpleFunction('col_count', array($this, 'countTruthy')),
             new \Twig_SimpleFunction('has_permission', array($this, 'hasPermission')),
+            new \Twig_SimpleFunction('get_ordered_tabs', array($this, 'getOrderedTabs')),
             new \Twig_SimpleFunction('url_full', array($this, 'urlFull')),
             new \Twig_SimpleFunction('base_url', array($this, 'baseUrl')),
             new \Twig_SimpleFunction('root_url', array($this, 'rootUrl')),
@@ -108,6 +110,7 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('enabled_languages', array($this, 'enabledLanguages')),
             new \Twig_SimpleFunction('date', array($this, 'date')),
             new \Twig_SimpleFunction('date_ago', array($this, 'dateAgo'), ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('date_diff', array($this, 'dateDiff'), ['is_safe' => ['html']]),
         );
 
         return $funcs;
@@ -156,6 +159,28 @@ class PortalSupportExtension extends \Twig_Extension
         $n = strtoupper($name);
 
         return $this->container->get('security.authorization_checker')->isGranted('USE_'.$n);
+    }
+
+    /**
+     * If a tab should be displayed or not (if enabled by admin).
+     *
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function showTab($name)
+    {
+        $n = strtolower($name);
+
+        return (bool) $this->brand_stack->getActive()->getSetting(sprintf('user.portal_tab_%s', $n));
+    }
+
+    /**
+     * @return array the order of tabs, from admin settings
+     */
+    public function getOrderedTabs()
+    {
+        return explode(',', $this->brand_stack->getActive()->getSetting('user.portal_tabs_order'));
     }
 
     /**
@@ -408,6 +433,30 @@ class PortalSupportExtension extends \Twig_Extension
         return $ago_string;
     }
 
+    public function dateDiff($date1, $date2)
+    {
+        $date1 = $this->ensureDateTime($date1);
+        $date2 = $this->ensureDateTime($date2);
+
+        if (!$date1 instanceof \DateTime) {
+            $date_str = (string) $date;
+
+            return "invalid_date($date_str)";
+        }
+
+        if (!$date2 instanceof \DateTime) {
+            $date_str = (string) $date;
+
+            return "invalid_date($date_str)";
+        }
+
+        $carbon1     = Carbon::createFromTimestamp($date1->getTimestamp());
+        $carbon2     = Carbon::createFromTimestamp($date2->getTimestamp());
+        $diff_string = $carbon1->diffForHumans($carbon2, true);
+
+        return $diff_string;
+    }
+
     /**
      * @param string|\DateTime $date
      * @param string           $format
@@ -548,10 +597,7 @@ class PortalSupportExtension extends \Twig_Extension
      */
     public function getTagIncludeTemplate($tag_name)
     {
-        $theme    = $this->brand_stack->getActive()->getTheme();
-        $resolver = $this->container->get('theme_resolver');
-
-        return $resolver->templatePath($theme, 'ThemeTagTemplate::'.$tag_name.'.html.twig');
+        return 'ThemeTagTemplate::'.$tag_name.'.html.twig';
     }
 
     /**

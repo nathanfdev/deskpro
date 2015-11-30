@@ -30,7 +30,7 @@ export class TabsPane extends React.Component {
         </ul>
 
         {tabs.map(tab => {
-          const classes = classNames('sidebar-list', {'hidden': tab.index !== this.state.active});
+          const classes = classNames('sidebar-list', { 'hidden': tab.index !== this.state.active });
 
           return (<div key={tab.index} className={classes}>{tab.content}</div>);
         })}
@@ -42,8 +42,8 @@ export class TabsPane extends React.Component {
     const className = index === this.state.active ? 'active' : '';
     const onClick = this.activate(index).bind(this);
     const content = title
-                  ? title
-                  : (<span className="icon"><i className={'fa ' + icon}></i></span>);
+      ? title
+      : (<span className="icon"><i className={'fa ' + icon}></i></span>);
 
     return (<li key={index} className={className}><a href="#" onClick={onClick}>{content}</a></li>);
   }
@@ -70,12 +70,12 @@ export class TabsPane extends React.Component {
   activate(index) {
     return event => {
       event.preventDefault();
-      this.setState({active: index});
+      this.setState({ active: index });
     };
   }
 }
 
-@connect(state => ({state: routingStateSelector(state)}))
+@connect(state => ({ state: routingStateSelector(state) }))
 export class TabsPaneStatefulContainer extends TabsPane {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -107,14 +107,19 @@ export class Tab extends React.Component {
 }
 
 export class TabSpinner extends React.Component {
+  static propTypes = {
+    color: PropTypes.string
+  };
 
   render() {
+    const color = this.props.color ? this.props.color : 'green';
+
     return (
-      <Loader color="green"
+      <Loader color={color}
               width={3}
               left="50%"
               top="50%"
-              {...this.props} />
+        {...this.props} />
     );
   }
 }

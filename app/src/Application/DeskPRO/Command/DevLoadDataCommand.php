@@ -393,9 +393,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
                 ($agent_id, 'agent_notif.new_feedback.email', '1', X'4E3B', NULL),
                 ($agent_id, 'agent_notif.new_feedback_validate.alert', '1', X'4E3B', NULL),
                 ($agent_id, 'agent_notif.new_feedback_validate.email', '1', X'4E3B', NULL),
-                ($agent_id, 'agent_notif.new_user.alert', '1', X'4E3B', NULL),
-                ($agent_id, 'agent_notif.new_user_validate.alert', '1', X'4E3B', NULL),
-                ($agent_id, 'agent_notif.new_user_validate.email', '1', X'4E3B', NULL)
+                ($agent_id, 'agent_notif.new_user.alert', '1', X'4E3B', NULL)
         ");
 
         // Add pref for first login marker
@@ -590,7 +588,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         $time                           = $warning_time.' minutes';
         $warning_trigger->setEventTriggerOption('time', $time);
         $warning_trigger->terms = array(
-            array('type' => 'sla_status', 'op' => 'is', 'options' => array('sla_status' => 'warn', 'sla_id' => $sla->id)),
+            array('type' => 'sla_status', 'op' => 'is', 'options' => array('sla_status' => 'warning', 'sla_id' => $sla->id)),
         );
         $warning_trigger->actions = array(
             array('type' => 'recalculate_sla_status', 'options' => array()),

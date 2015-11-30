@@ -179,7 +179,7 @@ class ProcessAgentFwd extends ProcessAbstract
         if ($user) {
             $person_processor->passPerson($person_email_item, $user);
         } else {
-            $user = $person_processor->createPerson($person_email_item, true);
+            $user = $person_processor->createPerson($person_email_item);
         }
 
         #------------------------------
@@ -243,8 +243,8 @@ class ProcessAgentFwd extends ProcessAbstract
             if ($agent_ticket_message->is_agent_note) {
                 $ticket->setStatus('awaiting_agent');
             } else {
-            $ticket->setStatus('awaiting_user');
-        }
+                $ticket->setStatus('awaiting_user');
+            }
         }
 
         foreach ($this->processBlobs() as $blob) {
@@ -481,7 +481,7 @@ class ProcessAgentFwd extends ProcessAbstract
         if ($user) {
             $person_processor->passPerson($person_email_item, $user);
         } else {
-            $user = $person_processor->createPerson($person_email_item, true);
+            $user = $person_processor->createPerson($person_email_item);
         }
 
         #------------------------------
@@ -555,8 +555,8 @@ class ProcessAgentFwd extends ProcessAbstract
             if ($agent_ticket_message->is_agent_note) {
                 $ticket->setStatus('awaiting_agent');
             } else {
-            $ticket->setStatus('awaiting_user');
-        }
+                $ticket->setStatus('awaiting_user');
+            }
         }
 
         $processed_blobs     = array();

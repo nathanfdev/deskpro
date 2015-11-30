@@ -31,59 +31,111 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\ChatMessage;
+use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
+use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class ChatController.
  */
-class ChatController extends BaseController
+class ChatController extends AbstractController
 {
     /**
-     * @Route("/portal/api/chat/create", name="portal_api_chat_create")
+     * @Route("/portal/api/chats/create", name="portal_api_chat_create")
      * @Method({"POST"})
      *
-     * @return JsonResponse
-     */
-    public function createNewChatAction()
-    {
-        return new JsonResponse([
-            'id' => 1,
-        ]);
-    }
-
-    /**
-     * @Route("/portal/api/chat/online", name="portal_api_chat_online")
-     * @Method({"GET"})
+     * @param Request $request
      *
      * @return JsonResponse
      */
-    public function getOnlineAction()
+    public function createNewChatAction(Request $request)
     {
-        return new JsonResponse([]);
+        $submitted_data = $request->request->all();
+
+        $form = $this->get('form.factory')->createNamedBuilder(null, 'api_chat_create')->getForm();
+        $form->submit($submitted_data);
+
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        $conversation               = new ChatConversation();
+        $conversation->person_name  = $submitted_data['name'];
+        $conversation->person_email = $submitted_data['email'];
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($conversation);
+        $em->flush();
+
+        return new JsonResponse($conversation->getInfo());
     }
 
     /**
-     * @Route("/portal/api/chat/messages", name="portal_api_chat_get_messages")
+     * @Route("/portal/api/chats/{id}/polling", name="portal_api_chat_polling")
      * @Method({"GET"})
+     *
+     * @param ChatConversation $conversation
+     * @param Request          $request
      *
      * @return JsonResponse
      */
-    public function getMessagesAction()
+    public function pollingChatAction(ChatConversation $conversation, Request $request)
     {
-        return new JsonResponse([]);
+        /** @var EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+        $qb = $em->createQueryBuilder();
+        $qb
+            ->select('m')
+            ->from('DeskPRO:ChatMessage', 'm')
+            ->where(
+                'm.conversation = :conversation_id',
+                'm.id > :last_message_id'
+            )
+            ->setParameters([
+                'conversation_id' => $conversation->getId(),
+                'last_message_id' => $request->get('last_message_id', 0),
+            ])
+        ;
+
+        $messages = $qb->getQuery()->getResult();
+
+        return new JsonResponse(array_merge($conversation->getInfo(), [
+            'messages' => array_map(function (ChatMessage $message) {
+                return [
+                    'id'      => $message->getId(),
+                    'type'    => 'agent',
+                    'message' => $message->content,
+                ];
+            }, $messages),
+        ]));
     }
 
     /**
-     * @Route("/portal/api/chat/messages", name="portal_api_chat_send_messages")
+     * @Route("/portal/api/chats/{id}/messages", name="portal_api_chat_message")
      * @Method({"POST"})
      *
+     * @param ChatConversation $conversation
+     * @param Request          $request
+     *
      * @return JsonResponse
      */
-    public function sendMessageAction()
+    public function sendMessageAction(ChatConversation $conversation, Request $request)
     {
-        return new JsonResponse([]);
+        $message          = new ChatMessage();
+        $message->content = $request->request->get('message');
+
+        $conversation->addMessage($message);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($conversation);
+        $em->flush();
+
+        return new JsonResponse();
     }
 }

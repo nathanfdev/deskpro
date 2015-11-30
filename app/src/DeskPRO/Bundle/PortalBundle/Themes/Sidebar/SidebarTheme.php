@@ -32,15 +32,18 @@
 namespace DeskPRO\Bundle\PortalBundle\Themes\Sidebar;
 
 use DeskPRO\Bundle\PortalBundle\Theme\AbstractTheme;
+use DeskPRO\Bundle\PortalBundle\Themes\Base\BaseTheme;
 
 class SidebarTheme extends AbstractTheme
 {
+    const THEME_ID = 'sidebar';
+
     /**
      * {@inheritdoc}
      */
     public function getId()
     {
-        return 'sidebar';
+        return self::THEME_ID;
     }
 
     /**
@@ -48,7 +51,7 @@ class SidebarTheme extends AbstractTheme
      */
     public function getParentId()
     {
-        return 'base';
+        return BaseTheme::THEME_ID;
     }
 
     /**

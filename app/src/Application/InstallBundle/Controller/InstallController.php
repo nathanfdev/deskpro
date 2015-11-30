@@ -685,14 +685,13 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
             $agent->last_name  = $this->getIn()->getString('admin.last_name');
             $agent->setEmail($this->getIn()->getString('admin.email'), true);
             $agent->setPassword($this->getIn()->getString('admin.password'));
-            $agent->is_user            = true;
-            $agent->is_confirmed       = true;
-            $agent->is_agent_confirmed = true;
-            $agent->is_agent           = true;
-            $agent->can_agent          = true;
-            $agent->can_admin          = true;
-            $agent->can_billing        = true;
-            $agent->can_reports        = true;
+            $agent->is_user      = true;
+            $agent->is_confirmed = true;
+            $agent->is_agent     = true;
+            $agent->can_agent    = true;
+            $agent->can_admin    = true;
+            $agent->can_billing  = true;
+            $agent->can_reports  = true;
 
             $this->getOrm()->persist($agent);
             $this->getOrm()->flush();

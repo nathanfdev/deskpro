@@ -132,16 +132,17 @@ class DiscoveryController extends BaseController
             ['type' => 'open_time'],
         ];
 
-        $group_fields = array_map(function($v) {
+        $group_fields = array_map(function ($v) {
             Arrays::unshiftAssoc($v, 'id', $v['type']);
+
             return $v;
         }, $group_fields);
 
         foreach ($field_manager->getFields() as $f) {
             $group_fields[] = [
-                'id' => 'ticket_field.' . $f->getId(),
-                'type' => 'ticket_field',
-                'field_id' => $f->getId()
+                'id'       => 'ticket_field.'.$f->getId(),
+                'type'     => 'ticket_field',
+                'field_id' => $f->getId(),
             ];
         }
 

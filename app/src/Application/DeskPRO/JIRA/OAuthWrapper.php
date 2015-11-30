@@ -58,7 +58,7 @@ class OAuthWrapper
     {
         $this->service = $service;
 
-        if (!$this->base_url = $this->service->getUrl()) {
+        if (!$this->base_url = rtrim($this->service->getUrl(), '/')) {
             throw new ApiGeneralException('JIRA base url is required', 1000);
         }
 

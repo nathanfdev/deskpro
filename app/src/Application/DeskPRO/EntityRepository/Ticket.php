@@ -36,6 +36,7 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\ChatConversation as ChatConversationEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Ticket as TicketEntity;
 use Application\DeskPRO\Entity\TicketDeleted as TicketDeletedEntity;
@@ -715,47 +716,16 @@ class Ticket extends AbstractEntityRepository
         ");
     }
 
+    /**
+     * @deprecated
+     *
+     * @param $validating_email
+     *
+     * @return array
+     */
     public function getTicketIdsWithValidatingEmail($validating_email)
     {
-        if (is_object($validating_email)) {
-            $validating_email = $validating_email->getId();
-        }
-
-        $validating_email = (int) $validating_email;
-
-        return $this->getEntityManager()->getConnection()->fetchAllCol('
-            SELECT id
-            FROM tickets
-            WHERE person_email_validating_id = ?
-            ORDER BY id DESC
-        ', array($validating_email));
-    }
-
-    public function getTicketIdsWithEmail($email, $for_validation = false)
-    {
-        if (is_object($email)) {
-            $email = $email->getId();
-        }
-
-        $email = (int) $email;
-
-        if ($for_validation) {
-            return $this->getEntityManager()->getConnection()->fetchAllCol("
-                SELECT tickets.id
-                FROM tickets
-                LEFT JOIN people ON (people.id = tickets.person_id)
-                LEFT JOIN people_emails ON (people_emails.id = people.primary_email_id)
-                WHERE (person_email_id = ? OR (person_email_id IS null AND people_emails.id = ?)) AND status = 'hidden' AND hidden_status = 'validating'
-                ORDER BY tickets.id DESC
-            ", array($email, $email));
-        } else {
-            return $this->getEntityManager()->getConnection()->fetchAllCol('
-                SELECT id
-                FROM tickets
-                WHERE person_email_id = ?
-                ORDER BY id DESC
-            ', array($email));
-        }
+        return [];
     }
 
     public function getTicketCountsForPeople(array $people)
@@ -845,6 +815,28 @@ class Ticket extends AbstractEntityRepository
             WHERE t.parent_ticket = ?0 AND t.status != 'hidden'
             ORDER BY t.id ASC
         ")->execute(array($parent_ticket));
+    }
+
+    /**
+     * Find a ticket linked to the chat.
+     *
+     * @param ChatConversationEntity $chat
+     *
+     * @return array
+     */
+    public function getTicketLinkedToChat(ChatConversationEntity $chat)
+    {
+        $linked = $this->_em->createQuery('
+            SELECT t
+            FROM DeskPRO:Ticket t
+            WHERE t.linked_chat = ?0
+        ')->execute(array($chat));
+
+        if (count($linked)) {
+            return current($linked);
+        }
+
+        return;
     }
 
     /**

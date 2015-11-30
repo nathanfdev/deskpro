@@ -109,6 +109,11 @@ class FeedbackAttachment extends \Application\DeskPRO\Domain\DomainObject
         return $this;
     }
 
+    public function getBlob()
+    {
+        return $this->blob;
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################

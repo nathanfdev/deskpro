@@ -174,7 +174,6 @@ class AbstractController extends BaseController
             $pg = $options['page'];
         }
 
-        // TODO: this is probably where we can create view objects??
         $page_vars = array_merge($options, $page_vars);
 
         if ($pg) {
@@ -379,6 +378,14 @@ class AbstractController extends BaseController
     protected function getTicketsDataService()
     {
         return $this->get('data.tickets');
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService
+     */
+    protected function getChatDataService()
+    {
+        return $this->get('data.chat');
     }
 
     /**

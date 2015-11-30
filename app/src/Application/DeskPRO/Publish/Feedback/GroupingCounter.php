@@ -239,7 +239,7 @@ class GroupingCounter
         }
         $select_fields[] = 'COUNT(*) AS total';
 
-        $where = "WHERE (feedback.hidden_status IS NULL OR feedback.hidden_status != 'validating')";
+        $where = "WHERE (feedback.status != 'hidden')";
         if (is_array($this->ids)) {
             if (empty($this->ids)) {
                 return array();

@@ -55,7 +55,7 @@ class FilterData extends AbstractDefaultData
     private function newFilterInstall()
     {
         $status_agent = new TicketStatusTerm(['status' => [Ticket::STATUS_AWAITING_AGENT]], TermInterface::OP_IS);
-        $status_user  = new TicketStatusTerm(['status'  => [Ticket::STATUS_AWAITING_USER]], TermInterface::OP_IS);
+        $status_user  = new TicketStatusTerm(['status' => [Ticket::STATUS_AWAITING_USER]], TermInterface::OP_IS);
 
         #------------------------------
         # Inbox
@@ -156,10 +156,6 @@ class FilterData extends AbstractDefaultData
         // deleted
         $term = new TicketStatusTerm(['status' => [Ticket::HIDDEN_STATUS_DELETED]], TermInterface::OP_IS);
         $this->saveFilter('Deleted', $term, $filter_set);
-
-        // awaiting validation
-        $term = new TicketStatusTerm(['status' => [Ticket::HIDDEN_STATUS_VALIDATING]], TermInterface::OP_IS);
-        $this->saveFilter('Awaiting Validation', $term, $filter_set);
 
         /////////
         // save
@@ -280,19 +276,6 @@ class FilterData extends AbstractDefaultData
                     'type'    => 'status',
                     'op'      => 'is',
                     'options' => array('status' => 'archived'),
-                ),
-            ),
-        );
-
-        $filters[] = array(
-            'title'    => 'Awaiting Validation',
-            'sys_name' => 'archive_validating',
-            'order_by' => 'ticket.urgency:desc',
-            'terms'    => array(
-                array(
-                    'type'    => 'status',
-                    'op'      => 'is',
-                    'options' => array('status' => 'hidden.validating'),
                 ),
             ),
         );

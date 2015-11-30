@@ -43,7 +43,7 @@
             "description": "Operations about News Items"
         },
         {
-            "path": "/organization",
+            "path": "/organizations",
             "description": "Operations about Organization"
         },
         {

@@ -138,11 +138,10 @@ class PersonFromEmailProcessor
      * is properly saved.
      *
      * @param $from
-     * @param bool $do_validated True to validate user, false to use whatever is default
      *
      * @return \Application\DeskPRO\Entity\Person
      */
-    public function createPerson(EmailAddress $from, $do_validated = false)
+    public function createPerson(EmailAddress $from)
     {
         $person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($from->getEmail(), true);
         if ($person) {
@@ -162,10 +161,8 @@ class PersonFromEmailProcessor
         $db->beginTransaction();
         try {
             $tmp_person = Entity\Person::newContactPerson(array(
-                'creation_system'    => $this->creation_system,
-                'name'               => $from->getNameUtf8() ?: '',
-                'is_confirmed'       => 1,
-                'is_agent_confirmed' => App::getSetting('core.agent_validation') ? 0 : 1,
+                'creation_system' => $this->creation_system,
+                'name'            => $from->getNameUtf8() ?: '',
             ));
 
             // Create new person record (no chance of conflicts here)
@@ -188,12 +185,10 @@ class PersonFromEmailProcessor
             list(, $email_domain) = explode('@', $email_address, 2);
 
             $db->insert('people_emails', array(
-                'person_id'      => $person_id,
-                'email'          => $email_address,
-                'email_domain'   => $email_domain,
-                'is_validated'   => 1,
-                'date_created'   => date('Y-m-d H:i:s'),
-                'date_validated' => date('Y-m-d H:i:s'),
+                'person_id'    => $person_id,
+                'email'        => $email_address,
+                'email_domain' => $email_domain,
+                'date_created' => date('Y-m-d H:i:s'),
             ));
             $email_id = $db->lastInsertId();
 

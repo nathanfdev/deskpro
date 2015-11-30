@@ -99,7 +99,7 @@ class CommentAbstract extends AbstractEntityRepository
         return App::getDb()->fetchColumn("
             SELECT COUNT(*)
             FROM $table
-            WHERE status = 'validating' OR (status = 'visible' AND is_reviewed = 0)
+            WHERE status = (status = 'hidden' AND is_reviewed = 0)
         ");
     }
 

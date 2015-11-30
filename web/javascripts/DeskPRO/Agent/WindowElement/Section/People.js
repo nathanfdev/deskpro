@@ -70,33 +70,6 @@ DeskPRO.Agent.WindowElement.Section.People = new Orb.Class({
 				}
 			});
 		}
-
-		if (typeof countData.validating_count != 'undefined') {
-			var el = $('#people_nav_awaiting_validation');
-			el.find('span.list-counter').text(countData.validating_count+'');
-
-			if (!parseInt(countData.validating_count)) {
-				el.hide();
-			} else {
-				el.show();
-			}
-		}
-		if (typeof countData.validating_count_agent != 'undefined') {
-			var el = $('#people_nav_awaiting_agent_validation');
-			el.find('span.list-counter').text(countData.validating_count_agent+'');
-
-			if (!parseInt(countData.validating_count_agent)) {
-				el.hide();
-			} else {
-				el.show();
-			}
-		}
-
-		if (!parseInt(countData.validating_count) && !parseInt(countData.validating_count_agent)) {
-			$('#people_pending_section').hide();
-		} else {
-			$('#people_pending_section').show();
-		}
 	},
 
 	reloadLabels: function() {

@@ -48,7 +48,7 @@ class PortalController extends AbstractController
         /** @var \DeskPRO\Bundle\AppBundle\Language\LanguageManager $language_manager */
         $language_manager = $this->get('language_manager');
 
-        return $this->renderThemeView(
+        $view = $this->renderThemeView(
             'Theme:Portal:Header/top_bar.html.twig',
             array(
                 'enabled_languages' => $language_manager->getEnabledLanguages(),
@@ -56,6 +56,8 @@ class PortalController extends AbstractController
                 'is_multi_language' => $language_manager->isMultiLanguagePortal(),
             )
         );
+
+        return $view;
     }
 
     /**
@@ -117,6 +119,7 @@ class PortalController extends AbstractController
         $page_vars = array(
             'display_registration_link' => $this->get('dp_authentication_manager.user')->isRegistrationFormVisible(
             ),
+            'chat_count'                    => $user ? $this->getChatDataService()->countUserChats($user) : 0,
             'ticket_count'                  => $user ? $this->getTicketsDataService()->getTicketCount($user, 'all') : 0,
             'ticket_count_org'              => $user ? $this->getTicketsDataService()->getOrganizationTicketCount($user, 'all') : 0,
             'user'                          => $user,

@@ -142,6 +142,7 @@ services:
       - { name: form.type, alias: person_change_password }
     arguments:
       - @captcha_decider
+      - @deskpro.core.translate
 
 
   form.deskpro_custom_per_field_data:
@@ -326,3 +327,9 @@ services:
     arguments: [@form_hierarchy_generator]
     tags:
       - { name: form.type, alias: entity_hierarchy }
+
+
+  form.api.chat_create:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\CreateChatType
+    tags:
+      - { name: form.type, alias: api_chat_create }

@@ -9,6 +9,7 @@ parameters:
   templating.globals.class: DeskPRO\Bundle\AppBundle\Twig\GlobalVariables
   monolog.logger.class: DeskPRO\Bundle\AppBundle\Logging\NoExceptionsLogger
   file_locator.class: DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator
+  twig.class: DeskPRO\Bundle\PortalBundle\Twig\Environment
 
 framework:
     esi:             { enabled: true }
@@ -130,3 +131,20 @@ white_october_pagerfanta:
 jms_serializer:
     metadata:
         cache: none
+
+nelmio_cors:
+    defaults:
+        allow_credentials: false
+        allow_origin: []
+        allow_headers: []
+        allow_methods: []
+        expose_headers: []
+        max_age: 0
+        hosts: []
+        origin_regex: false
+    paths:
+        '^/portal/api/':
+            allow_origin: ['*']
+            allow_headers: ['X-Agent-Request', 'Content-Type']
+            allow_methods: ['POST', 'PUT', 'GET', 'DELETE']
+            max_age: 3600

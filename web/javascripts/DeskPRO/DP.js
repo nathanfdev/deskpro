@@ -178,6 +178,9 @@ var DP = {
 						}
 					};
 					options.formatSelection = function(data) {
+						if (!data || typeof data.id == 'undefined') {
+							return '';
+						}
 						var opt = el.find('option[value="' + data.id + '"]');
 						if (!opt) {
 							return '';

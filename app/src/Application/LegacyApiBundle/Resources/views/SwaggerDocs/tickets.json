@@ -607,7 +607,7 @@
         },
         {
             "path": "/tickets/filters/count",
-            "description": "Get array of filters and counts",
+            "description": "Get array of filters and counts.",
             "operations": [
                 {
                     "method": "GET",
@@ -732,6 +732,20 @@
                             "type": "integer",
                             "required": true,
                             "description": "ID of the Ticket that needs to be searched."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "with_messages",
+                            "type": "boolean",
+                            "required": false,
+                            "description": "True to fetch message data with the ticket"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "with_loaded_linked_tickets",
+                            "type": "boolean",
+                            "required": false,
+                            "description": "True to load linked ticket data (otherwise, just the IDs are returned)"
                         }
                     ],
                     "responseMessages": [
@@ -1001,6 +1015,45 @@
                             "type": "string",
                             "required": true,
                             "description": "label that needs to deleted."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/tickets/{ticket_id}/link/{link_ticket_id}",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "Links two tickets",
+                    "nickname": "linkTicketAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Ticket that needs to be linked with."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "link_ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Ticket that needs to be linked."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "is_parent",
+                            "type": "boolean",
+                            "required": false,
+                            "description": "Make the second the parent ticket"
                         }
                     ],
                     "responseMessages": [

@@ -59,12 +59,6 @@
 				<% if (ticket_display.status == 'hidden' && ticket_display.hidden_status == 'spam') { %>
 					<label>{{ phrase('agent.tickets.status_hidden_spam') }}</label>
 				<% } %>
-				<% if (ticket_display.status == 'hidden' && ticket_display.hidden_status == 'temp') { %>
-					<label>{{ phrase('agent.tickets.status_hidden_temp') }}</label>
-				<% } %>
-				<% if (ticket_display.status == 'hidden' && ticket_display.hidden_status == 'validating') { %>
-					<label>{{ phrase('agent.tickets.status_hidden_validating') }}</label>
-				<% } %>
 
 				<% if (ticket_display.status == 'awaiting_agent') { %>
 					<i class="ticket-urgency"><%= ticket_display.urgency %></i>
@@ -90,7 +84,7 @@
 			<% } %>
 			<% if (ticket_display.organization) { %>
 				<span class="org">
-					<% if (ticket_display.person.organization_position) { %><%= ticket_display.person.organization_position %>, <% } %><%- ticket_display.organization.name %>
+					<% if (ticket_display.person.organization_position) { %><%- ticket_display.person.organization_position %>, <% } %><%- ticket_display.organization.name %>
 				</span>
 			<% } %>
 		<div class="bound-fade"></div>
@@ -123,27 +117,27 @@
 
 					<% if (field == 'language') { %>
 						<span class="prop-title">{{ phrase('agent.general.language') }}:</span>
-						<span class="prop-val"><%= ticket_display.language.title %></span>
+						<span class="prop-val"><%- ticket_display.language.title %></span>
 					<% } %>
 
 					<% if (field == 'category') { %>
 						<span class="prop-title">{{ phrase('agent.general.category') }}:</span>
-						<span class="prop-val"><%= ticket_display.category.title %></span>
+						<span class="prop-val"><%- ticket_display.category.title %></span>
 					<% } %>
 
 					<% if (field == 'priority') { %>
 						<span class="prop-title">{{ phrase('agent.general.priority') }}:</span>
-						<span class="prop-val"><%= ticket_display.priority.title %></span>
+						<span class="prop-val"><%- ticket_display.priority.title %></span>
 					<% } %>
 
 					<% if (field == 'workflow') { %>
 						<span class="prop-title">{{ phrase('agent.general.workflow') }}:</span>
-						<span class="prop-val"><%= ticket_display.workflow.title %></span>
+						<span class="prop-val"><%- ticket_display.workflow.title %></span>
 					<% } %>
 
 					<% if (field == 'product') { %>
 						<span class="prop-title">{{ phrase('agent.general.product') }}:</span>
-						<span class="prop-val"><%= ticket_display.product.title %></span>
+						<span class="prop-val"><%- ticket_display.product.title %></span>
 					<% } %>
 
 					<% if (field == 'agent') { %>

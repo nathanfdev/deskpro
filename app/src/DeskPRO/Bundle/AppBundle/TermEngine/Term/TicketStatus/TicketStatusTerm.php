@@ -64,10 +64,6 @@ class TicketStatusTerm extends AbstractTerm
                                 Ticket::STATUS_HIDDEN.'.'.Ticket::HIDDEN_STATUS_DELETED,
                                 Ticket::HIDDEN_STATUS_SPAM,
                                 Ticket::STATUS_HIDDEN.'.'.Ticket::HIDDEN_STATUS_SPAM,
-                                Ticket::HIDDEN_STATUS_TEMP,
-                                Ticket::STATUS_HIDDEN.'.'.Ticket::HIDDEN_STATUS_TEMP,
-                                Ticket::HIDDEN_STATUS_VALIDATING,
-                                Ticket::STATUS_HIDDEN.'.'.Ticket::HIDDEN_STATUS_VALIDATING,
                             ),
                         )
                     ),
@@ -93,8 +89,6 @@ class TicketStatusTerm extends AbstractTerm
                         array(
                             Ticket::HIDDEN_STATUS_SPAM,
                             Ticket::HIDDEN_STATUS_DELETED,
-                            Ticket::HIDDEN_STATUS_VALIDATING,
-                            Ticket::HIDDEN_STATUS_TEMP,
                         )
                     )) {
                         $status = Ticket::STATUS_HIDDEN.'.'.$status;

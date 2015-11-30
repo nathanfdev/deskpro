@@ -68,7 +68,7 @@ class Build1352975028 extends AbstractBuild
             'event_trigger' => 'sla.warning',
             'is_enabled'    => 1,
             'terms'         => serialize(array(
-                array('type' => 'sla_status', 'op' => 'is', 'options' => array('sla_status' => 'warn', 'sla_id' => $sla_id)),
+                array('type' => 'sla_status', 'op' => 'is', 'options' => array('sla_status' => 'warning', 'sla_id' => $sla_id)),
             )),
             'actions' => serialize(array(
                 array('type' => 'recalculate_sla_status', 'options' => array()),

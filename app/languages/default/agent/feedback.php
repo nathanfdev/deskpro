@@ -52,7 +52,6 @@ return array(
     'agent.feedback.status_hidden'               => 'Hidden',
     'agent.feedback.status_new'                  => 'New',
     'agent.feedback.status_spam'                 => 'Spam',
-    'agent.feedback.status_validating'           => 'Validating',
     'agent.feedback.top_voted_on_top'            => 'Top voted on top',
     'agent.feedback.update_filter'               => 'Update Filter',
     'agent.feedback.user_submitted_new_feedback' => '{{name}} submitted new feedback',

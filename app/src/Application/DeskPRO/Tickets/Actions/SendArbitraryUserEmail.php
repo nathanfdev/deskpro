@@ -119,7 +119,7 @@ class SendArbitraryUserEmail extends AbstractEmailAction
 
                 $eml        = new EmailAddress();
                 $eml->email = $email;
-                $person     = $person_processor->createPerson($eml, true);
+                $person     = $person_processor->createPerson($eml);
 
                 if ($person) {
                     $send_people[] = $person;

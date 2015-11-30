@@ -31,8 +31,10 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
+use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\DpPassword;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -71,7 +73,7 @@ class PersonRegistrationType extends AbstractType
             'label'       => $this->language_manager->phrase('portal.forms.label_name'),
             'required'    => true,
             'constraints' => array(
-                new NotBlank(),
+                new NotBlank(['message' => 'portal.forms.error_required']),
             ),
         ));
 
@@ -93,7 +95,8 @@ class PersonRegistrationType extends AbstractType
             'mapped'      => false,
             'required'    => true,
             'constraints' => array(
-                new NotBlank(),
+                new NotBlank(['message'  => 'portal.forms.error_required']),
+                new DpPassword(['person' => new PersonGuest()]),
             ),
         ));
 

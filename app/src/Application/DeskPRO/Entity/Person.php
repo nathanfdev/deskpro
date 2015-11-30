@@ -78,7 +78,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @property bool $disable_autoresponses
  * @property string $disable_autoresponses_log
  * @property bool $is_confirmed
- * @property bool $is_agent_confirmed
  * @property bool $is_deleted
  * @property bool $is_disabled
  * @property int $importance
@@ -224,16 +223,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      * @var bool
      */
     protected $is_confirmed = true;
-
-    /**
-     * Has this user ever confirmed themselves via email?
-     *
-     * This is set to true unless agent validation options are enabled,
-     * in which case it is only switched to true once an agent validates.
-     *
-     * @var bool
-     */
-    protected $is_agent_confirmed = true;
 
     /**
      * Is the user deleted?
@@ -514,11 +503,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     protected $_person_logger = null;
 
     /**
-     * @var PersonEmailValidating
-     */
-    public $email_validating;
-
-    /**
      * @var bool
      */
     protected $_updated_org = false;
@@ -780,7 +764,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function isUserValid()
     {
-        return ($this->isEmailValidated() && $this->isAgentValidated());
+        return ($this->isEmailValidated());
     }
 
     /**
@@ -797,18 +781,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         }
 
         return (bool) $primary->isValidated();
-    }
-
-    /**
-     * Tells you if the user is considered to be "agent validated", but they
-     * might still need to validate an email. See isUserValid() for a more
-     * encompassing method.
-     *
-     * @return bool
-     */
-    public function isAgentValidated()
-    {
-        return (bool) $this->is_agent_confirmed;
     }
 
     /**
@@ -856,8 +828,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     public function setIsAgent($yesno)
     {
         if ($yesno) {
-            $this['is_agent_confirmed'] = true;
-            $this['is_confirmed']       = true;
+            $this['is_confirmed'] = true;
         }
 
         $this->setModelField('is_agent', $yesno);
@@ -3582,16 +3553,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'is_confirmed',
-            )
-        );
-        $metadata->mapField(
-            array(
-                'fieldName'  => 'is_agent_confirmed',
-                'type'       => 'boolean',
-                'precision'  => 0,
-                'scale'      => 0,
-                'nullable'   => false,
-                'columnName' => 'is_agent_confirmed',
             )
         );
         $metadata->mapField(

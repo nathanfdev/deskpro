@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
+import Positioned from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
 
 export class ListGroupingControl extends React.Component {

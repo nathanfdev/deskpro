@@ -84,13 +84,6 @@
                         },
                         {
                             "paramType": "query",
-                            "name": "is_agent_confirmed",
-                            "type": "boolean",
-                            "required": false,
-                            "description": "Requires the person to be confirmed by an agent or not."
-                        },
-                        {
-                            "paramType": "query",
                             "name": "label[]",
                             "type": "string",
                             "required": false,

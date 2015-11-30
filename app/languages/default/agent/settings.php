@@ -81,7 +81,6 @@ return array(
     'agent.settings.notif_new_feedback'               => 'New feedback submission',
     'agent.settings.notif_new_feedback_validate'      => 'New feedback is submitted that requires validation',
     'agent.settings.notif_new_user'                   => 'A new user registered',
-    'agent.settings.notif_new_user_validate'          => 'A new user registered and requires validation',
     'agent.settings.notif_notes_with_mentions'        => 'Notes with @mentions',
     'agent.settings.notif_notes_with_mentions_always' => 'Always email and send a message via Agent IM',
     'agent.settings.notif_notes_with_mentions_opt'    => 'How do you want to be notified when an agent mentions you in a ticket note?',

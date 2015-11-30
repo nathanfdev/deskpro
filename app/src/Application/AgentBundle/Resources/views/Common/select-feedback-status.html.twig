@@ -9,7 +9,4 @@
 			<option value="closed.{{ cat.id }}">{{ cat.title }}</option>
 		{% endfor %}
 	</optgroup>
-	{% if constant('DP_DEBUG') %}
-		<option value="hidden.validating" selected="selected">{{ phrase('agent.general.dev_validating') }}</option>
-	{% endif %}
 </select>

@@ -54,7 +54,18 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
 
     const STATUS_ACTIVE = 'active';
     const STATUS_CLOSED = 'closed';
+
+    /**
+     * Not public (e.g., waiting for review). But agents see it.
+     */
     const STATUS_HIDDEN = 'hidden';
+
+    /**
+     * Has this feedback been reviewed by an agent?
+     *
+     * @var bool
+     */
+    protected $is_reviewed = false;
 
     /**
      * @var \Application\DeskPRO\Entity\FeedbackStatusCategory
@@ -67,12 +78,6 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
      *             SWG\Property(name="hidden_status",type="string")
      */
     protected $hidden_status = null;
-
-    /**
-     * @var string
-     *             SWG\Property(name="validating",type="string")
-     */
-    protected $validating = null;
 
     /**
      * @var \Application\DeskPRO\Entity\FeedbackCategory
@@ -145,20 +150,6 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     public function getTotalRating()
     {
         return $this->total_rating;
-    }
-
-    /**
-     * Set the validating status.
-     *
-     * @param string $validating
-     */
-    public function setValidating($validating)
-    {
-        if (!$validating) {
-            $this->setModelField('validating', null);
-        } else {
-            $this->setModelField('validating', $validating);
-        }
     }
 
     /**
@@ -356,11 +347,6 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         } else {
             return $this->status;
         }
-    }
-
-    public function isValidating()
-    {
-        return ($this->hidden_status == self::HIDDEN_STATUS_VALIDATING);
     }
 
     public function getCategoryPath()
@@ -650,17 +636,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
                 'columnName' => 'hidden_status',
             )
         );
-        $metadata->mapField(
-            array(
-                'fieldName'  => 'validating',
-                'type'       => 'string',
-                'length'     => 35,
-                'precision'  => 0,
-                'scale'      => 0,
-                'nullable'   => true,
-                'columnName' => 'validating',
-            )
-        );
+        $metadata->mapField(array('fieldName' => 'is_reviewed', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_reviewed'));
         $metadata->mapField(
             array(
                 'fieldName'  => 'popularity',

@@ -69,7 +69,6 @@ use Orb\Util\WorkHoursSetAll;
  * @property Product $product
  * @property Person $person
  * @property PersonEmail $person_email
- * @property PersonEmailValidating $person_email_validating
  * @property Person $agent
  * @property AgentTeam $agent_team
  * @property Organization $organization
@@ -88,7 +87,6 @@ use Orb\Util\WorkHoursSetAll;
  * @property string $ticket_hash
  * @property string $status
  * @property string $hidden_status
- * @property string $validating
  * @property bool $is_hold
  * @property int $urgency
  * @property int $feedback_rating
@@ -150,10 +148,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     const STATUS_ARCHIVED       = 'archived';
     const STATUS_HIDDEN         = 'hidden';
 
-    const HIDDEN_STATUS_VALIDATING = 'validating';
-    const HIDDEN_STATUS_SPAM       = 'spam';
-    const HIDDEN_STATUS_DELETED    = 'deleted';
-    const HIDDEN_STATUS_TEMP       = 'temp';
+    const HIDDEN_STATUS_SPAM    = 'spam';
+    const HIDDEN_STATUS_DELETED = 'deleted';
 
     /**#@+
      * These strings in $notify_email_name have special meanings.
@@ -234,11 +230,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * @var \Application\DeskPRO\Entity\PersonEmail
      */
     protected $person_email = null;
-
-    /**
-     * @var \Application\DeskPRO\Entity\PersonEmailValidating
-     */
-    protected $person_email_validating = null;
 
     /**
      * @var \Application\DeskPRO\Entity\Person
@@ -338,11 +329,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * @var string
      */
     protected $hidden_status = null;
-
-    /**
-     * @var string
-     */
-    protected $validating = null;
 
     /**
      * Is the ticket on hold?
@@ -2716,8 +2702,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                 array(
                     self::HIDDEN_STATUS_DELETED,
                     self::HIDDEN_STATUS_SPAM,
-                    self::HIDDEN_STATUS_VALIDATING,
-                    self::HIDDEN_STATUS_TEMP,
                 )
             )
         ) {
@@ -2816,7 +2800,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     public function getStatusCode()
     {
         if ($this->status == 'hidden') {
-            return 'hidden.'.($this->hidden_status ?: 'validating');
+            return 'hidden.'.($this->hidden_status ?: self::HIDDEN_STATUS_DELETED);
         } else {
             return $this->status;
         }
@@ -3338,8 +3322,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                 return 210;
             case self::STATUS_HIDDEN:
                 switch ($hstatus) {
-                    case self::HIDDEN_STATUS_VALIDATING:
-                        return 300;
                     case self::HIDDEN_STATUS_DELETED:
                         return 310;
                     case self::HIDDEN_STATUS_SPAM:
@@ -3638,56 +3620,54 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     public function getDbRow()
     {
         $row_data = array(
-            'id'                         => $this->id,
-            'language_id'                => $this->language ? $this->language->id : null,
-            'department_id'              => $this->department ? $this->department->id : null,
-            'category_id'                => $this->category ? $this->category->id : null,
-            'priority_id'                => $this->priority ? $this->priority->id : null,
-            'workflow_id'                => $this->workflow ? $this->workflow->id : null,
-            'product_id'                 => $this->product ? $this->product->id : null,
-            'person_id'                  => $this->person ? $this->person->id : null,
-            'person_email_id'            => $this->person_email ? $this->person_email->id : null,
-            'person_email_validating_id' => $this->person_email_validating ? $this->person_email_validating->id : null,
-            'agent_id'                   => $this->agent ? $this->agent->id : null,
-            'agent_team_id'              => $this->agent_team ? $this->agent_team->id : null,
-            'organization_id'            => $this->organization ? $this->organization->id : null,
-            'linked_chat_id'             => $this->linked_chat ? $this->linked_chat->id : null,
-            'email_account_id'           => $this->email_account ? $this->email_account->id : null,
-            'locked_by_agent'            => $this->locked_by_agent ? $this->locked_by_agent->id : null,
-            'ref'                        => $this->ref,
-            'auth'                       => $this->auth,
-            'sent_to_address'            => $this->sent_to_address,
-            'creation_system'            => $this->creation_system,
-            'creation_system_option'     => $this->creation_system_option,
-            'ticket_hash'                => $this->ticket_hash,
-            'status'                     => $this->status,
-            'hidden_status'              => $this->hidden_status,
-            'validating'                 => $this->validating,
-            'is_hold'                    => $this->is_hold,
-            'urgency'                    => $this->urgency,
-            'count_agent_replies'        => $this->count_agent_replies,
-            'count_user_replies'         => $this->count_user_replies,
-            'feedback_rating'            => $this->feedback_rating,
-            'date_feedback_rating'       => $this->date_feedback_rating ? $this->date_feedback_rating->format('Y-m-d H:i:s') : null,
-            'date_created'               => $this->date_created->format('Y-m-d H:i:s'),
-            'date_resolved'              => $this->date_resolved ? $this->date_resolved->format('Y-m-d H:i:s') : null,
-            'date_archived'              => $this->date_archived ? $this->date_archived->format('Y-m-d H:i:s') : null,
-            'date_first_agent_assign'    => $this->date_first_agent_assign ? $this->date_first_agent_assign->format('Y-m-d H:i:s') : null,
-            'date_first_agent_reply'     => $this->date_first_agent_reply ? $this->date_first_agent_reply->format('Y-m-d H:i:s') : null,
-            'date_last_agent_reply'      => $this->date_last_agent_reply ? $this->date_last_agent_reply->format('Y-m-d H:i:s') : null,
-            'date_last_user_reply'       => $this->date_last_user_reply ? $this->date_last_user_reply->format('Y-m-d H:i:s') : null,
-            'date_agent_waiting'         => $this->date_agent_waiting ? $this->date_agent_waiting->format('Y-m-d H:i:s') : null,
-            'date_user_waiting'          => $this->date_user_waiting ? $this->date_user_waiting->format('Y-m-d H:i:s') : null,
-            'date_status'                => $this->date_status->format('Y-m-d H:i:s'),
-            'total_user_waiting'         => $this->total_user_waiting,
-            'total_to_first_reply'       => $this->total_to_first_reply,
-            'date_locked'                => $this->date_locked ? $this->date_locked->format('Y-m-d H:i:s') : null,
-            'has_attachments'            => $this->has_attachments,
-            'subject'                    => $this->subject,
-            'original_subject'           => $this->original_subject,
-            'properties'                 => $this->properties ? serialize($this->properties) : null,
-            'worst_sla_status'           => $this->worst_sla_status,
-            'waiting_times'              => $this->waiting_times ? serialize($this->waiting_times) : null,
+            'id'                      => $this->id,
+            'language_id'             => $this->language ? $this->language->id : null,
+            'department_id'           => $this->department ? $this->department->id : null,
+            'category_id'             => $this->category ? $this->category->id : null,
+            'priority_id'             => $this->priority ? $this->priority->id : null,
+            'workflow_id'             => $this->workflow ? $this->workflow->id : null,
+            'product_id'              => $this->product ? $this->product->id : null,
+            'person_id'               => $this->person ? $this->person->id : null,
+            'person_email_id'         => $this->person_email ? $this->person_email->id : null,
+            'agent_id'                => $this->agent ? $this->agent->id : null,
+            'agent_team_id'           => $this->agent_team ? $this->agent_team->id : null,
+            'organization_id'         => $this->organization ? $this->organization->id : null,
+            'linked_chat_id'          => $this->linked_chat ? $this->linked_chat->id : null,
+            'email_account_id'        => $this->email_account ? $this->email_account->id : null,
+            'locked_by_agent'         => $this->locked_by_agent ? $this->locked_by_agent->id : null,
+            'ref'                     => $this->ref,
+            'auth'                    => $this->auth,
+            'sent_to_address'         => $this->sent_to_address,
+            'creation_system'         => $this->creation_system,
+            'creation_system_option'  => $this->creation_system_option,
+            'ticket_hash'             => $this->ticket_hash,
+            'status'                  => $this->status,
+            'hidden_status'           => $this->hidden_status,
+            'is_hold'                 => $this->is_hold,
+            'urgency'                 => $this->urgency,
+            'count_agent_replies'     => $this->count_agent_replies,
+            'count_user_replies'      => $this->count_user_replies,
+            'feedback_rating'         => $this->feedback_rating,
+            'date_feedback_rating'    => $this->date_feedback_rating ? $this->date_feedback_rating->format('Y-m-d H:i:s') : null,
+            'date_created'            => $this->date_created->format('Y-m-d H:i:s'),
+            'date_resolved'           => $this->date_resolved ? $this->date_resolved->format('Y-m-d H:i:s') : null,
+            'date_archived'           => $this->date_archived ? $this->date_archived->format('Y-m-d H:i:s') : null,
+            'date_first_agent_assign' => $this->date_first_agent_assign ? $this->date_first_agent_assign->format('Y-m-d H:i:s') : null,
+            'date_first_agent_reply'  => $this->date_first_agent_reply ? $this->date_first_agent_reply->format('Y-m-d H:i:s') : null,
+            'date_last_agent_reply'   => $this->date_last_agent_reply ? $this->date_last_agent_reply->format('Y-m-d H:i:s') : null,
+            'date_last_user_reply'    => $this->date_last_user_reply ? $this->date_last_user_reply->format('Y-m-d H:i:s') : null,
+            'date_agent_waiting'      => $this->date_agent_waiting ? $this->date_agent_waiting->format('Y-m-d H:i:s') : null,
+            'date_user_waiting'       => $this->date_user_waiting ? $this->date_user_waiting->format('Y-m-d H:i:s') : null,
+            'date_status'             => $this->date_status->format('Y-m-d H:i:s'),
+            'total_user_waiting'      => $this->total_user_waiting,
+            'total_to_first_reply'    => $this->total_to_first_reply,
+            'date_locked'             => $this->date_locked ? $this->date_locked->format('Y-m-d H:i:s') : null,
+            'has_attachments'         => $this->has_attachments,
+            'subject'                 => $this->subject,
+            'original_subject'        => $this->original_subject,
+            'properties'              => $this->properties ? serialize($this->properties) : null,
+            'worst_sla_status'        => $this->worst_sla_status,
+            'waiting_times'           => $this->waiting_times ? serialize($this->waiting_times) : null,
         );
 
         return $row_data;
@@ -4020,13 +4000,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             'nullable'   => true,
         ));
         $metadata->mapField(array(
-            'fieldName'  => 'validating',
-            'columnName' => 'validating',
-            'type'       => 'string',
-            'length'     => 35,
-            'nullable'   => true,
-        ));
-        $metadata->mapField(array(
             'fieldName'  => 'is_hold',
             'columnName' => 'is_hold',
             'type'       => 'boolean',
@@ -4277,17 +4250,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail',
             'joinColumns'  => array(array(
                 'name'                 => 'person_email_id',
-                'referencedColumnName' => 'id',
-                'nullable'             => true,
-                'onDelete'             => 'set null',
-            )),
-            'dpApi' => true,
-        ));
-        $metadata->mapManyToOne(array(
-            'fieldName'    => 'person_email_validating',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmailValidating',
-            'joinColumns'  => array(array(
-                'name'                 => 'person_email_validating_id',
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'set null',

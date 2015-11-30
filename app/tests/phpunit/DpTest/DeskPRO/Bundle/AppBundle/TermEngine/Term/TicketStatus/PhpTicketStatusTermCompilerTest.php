@@ -64,7 +64,6 @@ class PhpTicketStatusTermCompilerTest extends AbstractPhpTermCompilerTest
         $this->assertTicketCheck($php_check, true, $this->createTicketProphecy('hidden.spam'));
         $this->assertTicketCheck($php_check, false, $this->createTicketProphecy(Ticket::STATUS_AWAITING_USER));
         $this->assertTicketCheck($php_check, false, $this->createTicketProphecy(Ticket::STATUS_ARCHIVED));
-        $this->assertTicketCheck($php_check, false, $this->createTicketProphecy('hidden.validating'));
     }
 
     public function testCompileIsNot()
@@ -81,7 +80,6 @@ class PhpTicketStatusTermCompilerTest extends AbstractPhpTermCompilerTest
         $this->assertTicketCheck($php_check, false, $this->createTicketProphecy(Ticket::STATUS_ARCHIVED));
         $this->assertTicketCheck($php_check, false, $this->createTicketProphecy(Ticket::STATUS_RESOLVED));
         $this->assertTicketCheck($php_check, false, $this->createTicketProphecy('hidden.spam'));
-        $this->assertTicketCheck($php_check, true, $this->createTicketProphecy('hidden.validating'));
         $this->assertTicketCheck($php_check, true, $this->createTicketProphecy(Ticket::STATUS_AWAITING_AGENT));
         $this->assertTicketCheck($php_check, true, $this->createTicketProphecy(Ticket::STATUS_AWAITING_USER));
     }

@@ -304,10 +304,8 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
             DeskPROEntity\Ticket::STATUS_ARCHIVED,
             DeskPROEntity\Ticket::STATUS_HIDDEN,
 
-            DeskPROEntity\Ticket::STATUS_HIDDEN.'.'.DeskPROEntity\Ticket::HIDDEN_STATUS_VALIDATING,
             DeskPROEntity\Ticket::STATUS_HIDDEN.'.'.DeskPROEntity\Ticket::HIDDEN_STATUS_SPAM,
             DeskPROEntity\Ticket::STATUS_HIDDEN.'.'.DeskPROEntity\Ticket::HIDDEN_STATUS_DELETED,
-            DeskPROEntity\Ticket::STATUS_HIDDEN.'.'.DeskPROEntity\Ticket::HIDDEN_STATUS_TEMP,
         );
 
         return in_array($this->status, $statuses, true);

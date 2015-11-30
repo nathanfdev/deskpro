@@ -220,6 +220,18 @@ class InstanceInstaller
                     $settings[$dep['name']] = $val;
                 }
             }
+
+            if (isset($setting_def['inline_dependants'])) {
+                foreach ($setting_def['inline_dependants'] as $dep) {
+                    $val = isset($settings_form[$dep['name']]) ? $settings_form[$dep['name']] : null;
+                    if ($val === null && isset($dep['default_value'])) {
+                        $val = $dep['default_value'];
+                    }
+                    if ($val !== null) {
+                        $settings[$dep['name']] = $val;
+                    }
+                }
+            }
         }
 
         return $settings;

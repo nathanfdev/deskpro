@@ -1,5 +1,5 @@
 <article
-	class="content-message message-{{message.id}} {% if comment.status == 'agent' %}note-message{% elseif message.person.is_agent %}agent-message{% else %}user-message{% endif %} {% if comment.status == 'validating' %}validating{% endif %}"
+	class="content-message message-{{message.id}} {% if comment.status == 'agent' %}note-message{% elseif message.person.is_agent %}agent-message{% else %}user-message{% endif %}"
 	data-comment-id="{{comment.id}}"
 	data-content-type="{{ comment.object_content_type }}"
 >
@@ -15,7 +15,7 @@
 			{% if comment_num %}
 				<span class="message-counter">#{{ comment_num }}</span>
 			{% endif %}
-			{% if comment.status == 'validating' or (comment.status == 'visible' and comment.is_reviewed == 0) %}<span class="comment-validate-btn count tipped" title="{{ phrase('agent.publish.validating_comment_manage_tip') }}">{{ phrase('agent.general.validate') }}</span>{% endif %}
+			{% if (comment.status != 'visible' and comment.is_reviewed == 0) %}<span class="comment-validate-btn count tipped" title="{{ phrase('agent.publish.validating_comment_manage_tip') }}">{{ phrase('agent.general.validate') }}</span>{% endif %}
 			{% if comment.person %}
 				<h4
 					class="with-route person-popover"

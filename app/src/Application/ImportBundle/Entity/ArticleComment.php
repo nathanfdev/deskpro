@@ -60,11 +60,6 @@ final class ArticleComment extends AbstractEntity
     private $is_reviewed = false;
 
     /**
-     * @var string
-     */
-    private $validating;
-
-    /**
      * @var \DateTime
      */
     private $date_created;
@@ -120,9 +115,6 @@ final class ArticleComment extends AbstractEntity
     {
         return array(
             DeskPROEntity\ArticleComment::STATUS_VISIBLE,
-            DeskPROEntity\ArticleComment::STATUS_VALIDATING,
-            DeskPROEntity\ArticleComment::STATUS_USER_VALIDATING,
-            DeskPROEntity\ArticleComment::STATUS_TEMP,
             DeskPROEntity\ArticleComment::STATUS_DELETED,
             DeskPROEntity\ArticleComment::STATUS_AGENT,
         );
@@ -193,26 +185,6 @@ final class ArticleComment extends AbstractEntity
     }
 
     /**
-     * @return string
-     */
-    public function getValidating()
-    {
-        return $this->validating;
-    }
-
-    /**
-     * @param string $validating
-     *
-     * @return $this
-     */
-    public function setValidating($validating)
-    {
-        $this->validating = $validating;
-
-        return $this;
-    }
-
-    /**
      * Returns date created.
      *
      * @return \DateTime
@@ -247,7 +219,6 @@ final class ArticleComment extends AbstractEntity
             'content'      => $this->content,
             'status'       => $this->status,
             'is_reviewed'  => $this->is_reviewed,
-            'validating'   => $this->validating,
             'date_created' => $this->date_created ? $this->date_created->format('Y-m-d H:i:s') : null,
         );
     }

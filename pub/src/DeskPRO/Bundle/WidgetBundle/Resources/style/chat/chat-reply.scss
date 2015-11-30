@@ -1,7 +1,7 @@
 .dpdesignportal-chat-form {
-  padding: 5px;
+  padding: 5px 10px 5px 5px;
   position: absolute;
-  bottom: 0;
+  bottom: 38px;
   width: 100%;
 
   .dpdesignportal-chat-form-disabled {
@@ -227,10 +227,13 @@
 
       a.dpdesignportal-chat-form-button-row-emoticons {
         border-right: 0;
-        img {
+        .img {
+          display: block;
           width: 10px;
           height: 10px;
           margin-right: 3px;
+          background: url("../img/emoticon.jpg") no-repeat center;
+          background-size: 10px 10px;
         }
       }
     }

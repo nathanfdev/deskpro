@@ -12,22 +12,27 @@
                 {% if ticket.isAwaitingUser() %}
                     {# AWAITING USER #}
                     <div class="ticket-view-note-for-user agent-has-replied">
-                        An agent is waiting for you to reply to a message. <a href="#ticket-reply-form">Click here to scroll down to the form.</a>
+                        {{ phrase('portal.tickets.view_awaiting_user') }}
+                         <a href="#ticket-reply-form">
+                             {{ phrase('portal.tickets.view_scroll_reply') }}
+                         </a>
                     </div>
                 {% elseif ticket.isAwaitingAgent() %}
                     {# AWAITING AGENT #}
                     <div class="ticket-view-note-for-user">
-
                         {# only shows this if its been more than 10 minutes since the last message was posted #}
                         {# to avoid "your last message was 1 second ago" after every reply #}
                         {% if ticket.date_last_user_reply and ticket.messages|length > 1 and last_user_reply_in_seconds > 600 %}
-                            <span class="note-for-user-blue">Your last message was recieved {{ date_ago(ticket.date_last_user_reply) }}.</span>
+                            <span class="note-for-user-blue">
+                            {{ phrase('portal.tickets.view_last_message', { ago: date_ago(ticket.date_last_user_reply, null, false) }) }}
+                            </span>
                             {# similarly, only show the "created ago" message if it has been more than 10 mins #}
                         {% elseif created_in_seconds > 600 %}
-                            <span class="note-for-user-blue">You created this ticket {{ date_ago(ticket.date_created) }}.</span>
+                            <span class="note-for-user-blue">
+                                {{ phrase('portal.tickets.view_you_created', { ago: date_ago(ticket.date_created, null, false) }) }}
+                            </span>
                         {% endif %}
-
-                        We have received your message &amp; will send an email notification as soon as an agent has added a comment.
+                        {{ phrase('portal.tickets.view_will_notify_you') }}
                     </div>
                 {% endif %}
 
@@ -38,16 +43,20 @@
 
                         {% if can_edit and ticket.isOpen() %}
                             <div class="ticket-view-sidebar">
-                                <a href="{{ portal_path(ticket, 'resolve') }}" class="ticket-sidebar-button post-link">Close this ticket</a>
+                                <a href="{{ portal_path(ticket, 'resolve') }}" class="ticket-sidebar-button post-link">
+                                    {{ phrase('portal.tickets.view_close') }}
+                                </a>
                             </div>
                         {% endif %}
 
                         <div class="ticket-view-sidebar">
                             <div class="ticket-sidebar-container ticket-sidebar-info">
-                                <h1>Ticket info:</h1>
+                                <h1>{{ phrase('portal.tickets.view_ticket_info') }}</h1>
                                 <ul class="major">
                                     <li>
-                                        <span class="sidebar-small-title">Assigned agent:</span>
+                                        <span class="sidebar-small-title">
+                                            {{ phrase('portal.tickets.view_assigned_agent') }}
+                                        </span>
                                         <ul>
                                             <li>
                                                 {{ macros.person_sidebar(ticket.agent, false, true) }}
@@ -56,7 +65,9 @@
                                     </li>
 
                                     <li>
-                                        <span class="sidebar-small-title">Ticket opened by:</span>
+                                        <span class="sidebar-small-title">
+                                            {{ phrase('portal.tickets.view_opened_by') }}
+                                        </span>
                                         <ul>
                                             <li>
                                                 {{ macros.person_sidebar(ticket.person) }}
@@ -65,7 +76,9 @@
                                     </li>
 
                                     <li>
-                                        <span class="sidebar-small-title">Also on this ticket:</span>
+                                        <span class="sidebar-small-title">
+                                            {{ phrase('portal.tickets.view_participants' ) }}
+                                        </span>
                                         <ul>
                                             {% for participant in ticket.participants %}
                                                 <li>
@@ -76,7 +89,9 @@
                                                 <a href="#" class="sidebar-person add-person clickaway-dropdown" data-clickaway-target="add-cc-user-popover">
                                                     <span class="agent-avatar agent-avatar-mid"><i class="fa fa-plus"></i></span>
                                                     <span class="avatar-meta">
-                                                      <span class="primary single">Add a CC'ed user</span>
+                                                      <span class="primary single">
+                                                          {{ phrase('portal.tickets.view_btn_add_cc') }}
+                                                      </span>
                                                     </span>
                                                 </a>
 
@@ -86,17 +101,17 @@
                                                         <div class="column-full">
                                                             <div>
                                                                 <div class="bucket">
-                                                                    <label class="title">Your Name: *</label>
-                                                                    <input placeholder="Name (required)" name="name" type="text" required>
+                                                                    <label class="title">{{ phrase('portal.tickets.view_label_your_name') }}: *</label>
+                                                                    <input placeholder="{{ phrase('portal.tickets.view_label_your_name_placeholder') }}" name="name" type="text" required>
                                                                 </div>
 
                                                                 <div class="bucket">
-                                                                    <label class="title">Your Email: *</label>
-                                                                    <input name="email" placeholder="Email:" type="text" required>
+                                                                    <label class="title">{{ phrase('portal.tickets.view_label_your_email') }}: *</label>
+                                                                    <input name="email" placeholder="{{ phrase('portal.tickets.view_label_your_email_placeholder') }}" type="text" required>
                                                                 </div>
 
                                                                 <div class="bucket">
-                                                                    <input type="submit" value="Add To Ticket">
+                                                                    <input type="submit" value="{{ phrase('portal.tickets.view_btn_add_to_ticket') }}">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -117,7 +132,7 @@
 
                             {% if ticket.attachments|length > 0 %}
                                 <div class="ticket-sidebar-container ticket-sidebar-media">
-                                    <h1>Media on this ticket:</h1>
+                                    <h1>{{ phrase('portal.tickets.view_media') }}</h1>
                                     <ul>
                                         {% for attachment in ticket.attachments %}
                                             <li>
@@ -131,9 +146,9 @@
                             {% if ticket_view.hasAnyVisibleProperties() %}
                             <div class="ticket-sidebar-container ticket-sidebar-meta">
                                 {% if can_edit and ticket.isOpen() and not edit_page %}
-                                    <a href="{{ portal_path(ticket, 'edit') }}" class="sidebar-edit">Edit <i class="fa fa-edit"></i></a>
+                                    <a href="{{ portal_path(ticket, 'edit') }}" class="sidebar-edit">{{ phrase('portal.tickets.view_btn_edit') }} <i class="fa fa-edit"></i></a>
                                 {% endif %}
-                                <h1>Additional ticket information:</h1>
+                                <h1>{{ phrase('portal.tickets.view_more_info') }}</h1>
                                 <ul>
                                     {# see the TicketViewService in AppBundle's data services #}
                                     {% for property in ticket_view.properties %}
@@ -151,7 +166,7 @@
                     {% if not ticket_view.hasAnyVisibleProperties() %}
                         {% if can_edit and ticket.isOpen() and not edit_page %}
                             <div class="ticket-view-sidebar">
-                                <a href="{{ portal_path(ticket, 'edit') }}" class="ticket-sidebar-button ">Edit this ticket</a>
+                                <a href="{{ portal_path(ticket, 'edit') }}" class="ticket-sidebar-button ">{{ phrase('portal.tickets.view_btn_edit_full') }}</a>
                             </div>
                         {% endif %}
                     {% endif %}

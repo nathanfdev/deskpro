@@ -2,13 +2,14 @@ import React, { PropTypes } from 'react';
 import { Provider } from 'react-redux';
 import { Router, Route, Redirect } from 'react-router';
 import Frame from 'Ampliflux/common/components/Frame';
-import { Widget, WidgetHeader, WidgetBody } from './Widget/index';
+import { Widget, WidgetHeader, WidgetBody, WidgetFooter } from './Widget/index';
 import {
   ChatApp,
   ChatBeginContainer,
   ChatBeginSimple,
   ChatBeginConversation,
   ChatBeginForm,
+  ChatPollingContainer,
   ChatActive,
   ChatWaiting,
   ChatDone
@@ -54,12 +55,15 @@ export class WidgetAppBody extends React.Component {
                   <Route name="chat_begin_conversation" path="conversation" component={ChatBeginConversation} />
                   <Route name="chat_begin_form" path="form" component={ChatBeginForm} />
                 </Route>
-                <Route name="chat_waiting" path="waiting" component={ChatWaiting} />
-                <Route name="chat_active" path="active" component={ChatActive} />
-                <Route name="chat_done" path="done" component={ChatDone} />
+                <Route component={ChatPollingContainer}>
+                  <Route name="chat_waiting" path="waiting" component={ChatWaiting} />
+                  <Route name="chat_active" path="active" component={ChatActive} />
+                  <Route name="chat_done" path="done" component={ChatDone} />
+                </Route>
               </Route>
             </Router>
           </WidgetBody>
+          <WidgetFooter />
         </Widget>
       </Provider>
     );

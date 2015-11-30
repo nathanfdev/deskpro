@@ -133,7 +133,6 @@ class GetPersonTest extends AbstractApiResultTest
         $this->assertArrayHasKey('is_agent', $data['people'][$keys[0]]);
 
         $this->assertTrue($data['people'][$keys[0]]['is_agent']);
-        $this->assertTrue($data['people'][$keys[0]]['is_agent_confirmed']);
     }
     */
 

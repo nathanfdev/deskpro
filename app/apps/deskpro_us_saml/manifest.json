@@ -59,6 +59,46 @@
 			"native_only": true
 		},
 		{
+			"name": "sign_authn_request",
+			"type": "checkbox",
+			"label": "Sign Authentication Request",
+			"checkbox_label": "I want to sign SP authentication requests.",
+			"default_value": false,
+			"native_only": true,
+
+			"inline_dependants": [
+				{
+					"name": "sp_public_x509",
+					"type": "textarea",
+					"label": "Copy and paste your server's public x509 key into this field, or upload the file below.",
+					"native_only": true
+				},
+				{
+					"name": "sp_private_key",
+					"type": "textarea",
+					"label": "Copy and paste your server's private key into this field, or upload the file below..",
+					"native_only": true
+				}
+			]
+		},
+		{
+			"name": "include_custom_metadata_xml",
+			"type": "checkbox",
+			"label": "Custom Metadata XML",
+			"checkbox_label": "Insert custom XML into the SP metadata. This is optional.",
+			"default_value": false,
+			"native_only": true,
+
+			"inline_dependants": [
+				{
+					"name": "custom_metadata_xml",
+					"type": "textarea",
+					"label": "The XML you enter below will be included inside of the md:SPSSODescriptor element. This is useful for inserting a md:AttributeConsumingService element.",
+					"native_only": true
+				}
+			]
+		},
+		{
 			"name": "login_custom_text",
 			"type": "text",
 			"label": "Login Button Text",

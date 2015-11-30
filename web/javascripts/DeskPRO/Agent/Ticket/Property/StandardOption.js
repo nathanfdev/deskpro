@@ -26,11 +26,9 @@ DeskPRO.Agent.Ticket.Property.StandardOption = new Class({
 			case 'priority_id': this.displayNameType = 'ticket_priority'; this.displayCaption = 'Priority'; break;
 			case 'workflow_id': this.displayNameType = 'ticket_workflow'; this.displayCaption = 'Workflow'; break;
       case 'problem_id':
-        this.displayNameType = 'ticket_problem';
         this.displayCaption = 'Problem';
         break;
       case 'create_problem':
-        this.displayNameType = 'ticket_problem_create';
         this.displayCaption = 'Create Problem';
         break;
 		}
@@ -45,7 +43,7 @@ DeskPRO.Agent.Ticket.Property.StandardOption = new Class({
 		return this.getFormEl().val();
 	},
 
-	setValue: function(value) {
+	setValue: function(value, data) {
 		this.getFormEl().val(value);
 
 		if (value == "0") value = 0;
@@ -58,6 +56,7 @@ DeskPRO.Agent.Ticket.Property.StandardOption = new Class({
 
 		// some elements (agent) have pictures associated with them
 		var el = this.getInterfaceElement();
+		var fieldEl = $('.prop-input-' + this.optionName, this.ticketPage.wrapper);
 		var pictureEl = null;
 		if (el.data('picture-element')) {
 			pictureEl = $(el.data('picture-element'), el.parent());
@@ -73,24 +72,32 @@ DeskPRO.Agent.Ticket.Property.StandardOption = new Class({
 			var displayName = value;
 			if (this.displayNameType) {
 				displayName = DeskPRO_Window.getDisplayName(this.displayNameType, value);
+
+				if (!displayName && fieldEl.is('select')) {
+					displayName = fieldEl.find('option[value="' + value + '"]').text();
+				}
+
 				if (!displayName) displayName = value;
 			}
 
-			this.getInterfaceElement().removeClass('no-value').html(displayName);
+			el.removeClass('no-value').html(displayName);
 
 			if (pictureEl) {
 				pictureEl.removeClass('no-value').show().attr('src', pictureEl.data('picture-url').replace('{value}', value));
 			}
 
 		} else {
-			this.getInterfaceElement().addClass('no-value').html(this.getInterfaceElement().data('no-value-label') || 'None');
+			if ('problem_id' === this.optionName) {
+				el.siblings().remove();
+			}
+			el.addClass('no-value').html(el.data('no-value-label') || 'None');
 
 			if (pictureEl) {
 				pictureEl.addClass('no-value').hide();
 			}
 		}
 
-		var fieldEl = $('.prop-input-' + this.optionName, this.ticketPage.wrapper);
+
 
 		if (fieldEl.hasClass('with-select2')) {
 			fieldEl.select2('val', value);

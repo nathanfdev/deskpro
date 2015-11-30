@@ -9,7 +9,7 @@
 
 <br /><br />
 
-{% if feedback.status_code == 'hidden.validating' %}
+{% if feedback.status == 'hidden' and not feedback.is_reviewed %}
 	{{ phrase('user.emails.feedback_agent-validation') }}
 
 	<br /><br />

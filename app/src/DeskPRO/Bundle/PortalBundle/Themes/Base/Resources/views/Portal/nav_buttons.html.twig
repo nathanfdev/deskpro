@@ -1,52 +1,69 @@
 <ul class="big-button-collection thin small left dpx-toggle-mobile">
   <a href="#" class="big-button-collection-contract-mobile dpx-toggle-big-buttons"><i class="fa fa-navicon"></i></a>
-  {% if can_use_articles() %}
-    <li class="{{ is_page_kb() ? 'active' }}">
-      <a href="{{ path('portal_kb') }}">
-        <i class="fa fa-list-alt"></i>
-        <span class="title">{{ phrase('portal.general.nav-kb') }}</span>
-        <span class="subtitle">{{ phrase('portal.general.nav-kb-desc') }}</span>
-      </a>
-    </li>
-  {% endif %}
 
-  {% if can_use_news() %}
-    <li class="{{ is_page_news() ? 'active' }}">
-      <a href="{{ path('portal_news') }}">
-        <i class="fa fa-calendar-o"></i>
-        <span class="title">{{ phrase('portal.general.nav-news') }}</span>
-        <span class="subtitle">{{ phrase('portal.general.nav-news-desc') }}</span>
-      </a>
-    </li>
-  {% endif %}
+  {% for tab in get_ordered_tabs() %}
 
-  {% if can_use_feedback() %}
-    <li class="{{ is_page_feedback() ? 'active' }}">
-      <a href="{{ path('portal_feedback') }}">
-        <i class="fa fa-thumbs-o-up"></i>
-        <span class="title">{{ phrase('portal.general.nav-feedback') }}</span>
-        <span class="subtitle">{{ phrase('portal.general.nav-feedback-desc') }}</span>
-      </a>
-    </li>
-  {% endif %}
+    {% if 'articles' == tab %}
 
-  {% if can_use_downloads() %}
-    <li class="{{ is_page_downloads() ? 'active' }}">
-      <a href="{{ path('portal_downloads') }}">
-        <i class="fa fa-files-o"></i>
-        <span class="title">{{ phrase('portal.general.nav-downloads') }}</span>
-        <span class="subtitle">{{ phrase('portal.general.nav-downloads-desc') }}</span>
-      </a>
-    </li>
-  {% endif %}
+      {% if can_use_articles() and show_tab_articles() %}
+        <li class="{{ is_page_kb() ? 'active' }}">
+          <a href="{{ path('portal_kb') }}">
+            <i class="fa fa-list-alt"></i>
+            <span class="title">{{ phrase('portal.general.nav-kb') }}</span>
+            <span class="subtitle">{{ phrase('portal.general.nav-kb-desc') }}</span>
+          </a>
+        </li>
+      {% endif %}
 
-  {% if can_use_tickets() %}
-    <li class="{{ is_page_tickets() ? 'active' }}">
-      <a href="{{ path('portal_new_ticket') }}">
-        <i class="fa fa-envelope-o"></i>
-        <span class="title">{{ phrase('portal.general.nav-newticket') }}</span>
-        <span class="subtitle">{{ phrase('portal.general.nav-newticket-desc') }}</span>
-      </a>
-    </li>
-  {% endif %}
+    {% elseif 'news' == tab %}
+
+      {% if can_use_news() and show_tab_news() %}
+        <li class="{{ is_page_news() ? 'active' }}">
+          <a href="{{ path('portal_news') }}">
+            <i class="fa fa-calendar-o"></i>
+            <span class="title">{{ phrase('portal.general.nav-news') }}</span>
+            <span class="subtitle">{{ phrase('portal.general.nav-news-desc') }}</span>
+          </a>
+        </li>
+      {% endif %}
+
+    {% elseif 'feedback' == tab %}
+
+      {% if can_use_feedback() and show_tab_feedback() %}
+        <li class="{{ is_page_feedback() ? 'active' }}">
+          <a href="{{ path('portal_feedback') }}">
+            <i class="fa fa-thumbs-o-up"></i>
+            <span class="title">{{ phrase('portal.general.nav-feedback') }}</span>
+            <span class="subtitle">{{ phrase('portal.general.nav-feedback-desc') }}</span>
+          </a>
+        </li>
+      {% endif %}
+
+    {% elseif 'downloads' == tab %}
+
+      {% if can_use_downloads() and show_tab_downloads() %}
+        <li class="{{ is_page_downloads() ? 'active' }}">
+          <a href="{{ path('portal_downloads') }}">
+            <i class="fa fa-files-o"></i>
+            <span class="title">{{ phrase('portal.general.nav-downloads') }}</span>
+            <span class="subtitle">{{ phrase('portal.general.nav-downloads-desc') }}</span>
+          </a>
+        </li>
+      {% endif %}
+
+    {% elseif 'newticket' == tab %}
+
+      {% if can_use_tickets() and show_tab_tickets() %}
+        <li class="{{ is_page_tickets() ? 'active' }}">
+          <a href="{{ path('portal_new_ticket') }}">
+            <i class="fa fa-envelope-o"></i>
+            <span class="title">{{ phrase('portal.general.nav-newticket') }}</span>
+            <span class="subtitle">{{ phrase('portal.general.nav-newticket-desc') }}</span>
+          </a>
+        </li>
+      {% endif %}
+
+    {% endif %}
+
+  {% endfor %}
 </ul>

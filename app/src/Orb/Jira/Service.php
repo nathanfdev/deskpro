@@ -593,7 +593,7 @@ class Service
                     $person_processor = new PersonFromEmailProcessor();
                     $eml              = new EmailAddress();
                     $eml->email       = $jiraUserEmail;
-                    $person           = $person_processor->createPerson($eml, true);
+                    $person           = $person_processor->createPerson($eml);
 
                     if (!$person) {
                         // todo?

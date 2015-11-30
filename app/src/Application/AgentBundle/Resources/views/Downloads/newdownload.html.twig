@@ -41,9 +41,6 @@ pageMeta.baseId = '{{ baseId }}';
 				{% if app.user.hasPerm('agent_publish.validate') %}
 					<option value="published">{{ phrase('agent.publish.status_published') }}</option>
 				{% endif %}
-				{% if constant('DP_DEBUG') or not app.user.hasPerm('agent_publish.validate') %}
-					<option value="hidden.validating" selected="selected">{{ phrase('agent.publish.status_published') }} ({{ phrase('agent.general.requires_validation') }})</option>
-				{% endif %}
 				<option value="hidden.unpublished">{{ phrase('agent.publish.status_hidden_unpublished') }}</option>
 				<option value="hidden.draft">{{ phrase('agent.publish.status_hidden_draft') }}</option>
 			</select>

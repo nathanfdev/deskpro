@@ -91,7 +91,7 @@ var TicketFormWidget = new (function() {
 				var height = parseInt(data[0]);
 				if (height < 300) height = 300;
 
-				iframe.style.height = (height + 15) + 'px';
+				iframe.style.height = (height + 215) + 'px';
 				break;
 		}
 	};

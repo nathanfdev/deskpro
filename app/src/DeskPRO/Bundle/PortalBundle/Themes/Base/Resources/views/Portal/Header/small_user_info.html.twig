@@ -121,6 +121,11 @@
       <a href="{{ path('portal_tickets') }}">{{ phrase('portal.general.nav-tickets') }} ({{ ticket_count }})</a>
     {% endif %}
 
+    {% if chat_count > 0 %}
+      <span class="disc"></span>
+      <a href="{{ path('portal_chats') }}">{{ phrase('portal.general.nav-chat') }} ({{ chat_count }})</a>
+    {% endif %}
+
     {% if user.organization and user.organization_manager and ticket_count_org > 0 %}
       <span class="disc"></span>
       <a href="{{ path('portal_tickets', { type: 'organization' }) }}">{{ phrase('portal.general.nav-tickets-org') }} ({{ ticket_count_org }})</a>

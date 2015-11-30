@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
-import * as AppActions from '../../../Application/Actions/appActions';
-import { connect } from 'react-redux';
 import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Scrollable';
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export class NavFrame extends React.Component {
 
@@ -30,7 +29,7 @@ export class NavFrame extends React.Component {
         <section className="task-nav-frame dp-nav-frame">
           <div className="sidebar-wrapper">
             <aside className="sidebar has-tabs">
-                {inner}
+              {inner}
             </aside>
           </div>
         </section>
@@ -43,17 +42,18 @@ export class NavFrameHeader extends React.Component {
 
   static propTypes = {
     children: PropTypes.any.isRequired,
-    icon: PropTypes.string.isRequired
+    icon: PropTypes.string.isRequired,
+    currentApp: PropTypes.string.isRequired
   };
 
   render() {
-    const { children, icon } = this.props;
+    const { children, icon, currentApp } = this.props;
     const iconClass = 'icon ' + icon;
 
     return (
       <div>
         <div className="dpw-sidebar-main-title">
-          <h1 className="dpw-sidebar-main-title-active-section-1">{children}</h1>
+          <h1 style={{borderBottomColor: constants.APP_COLOURS[currentApp]}}>{children}</h1>
 
           <div className="dpw-sidebar-main-title-active-app-icon">
             <div className={iconClass}></div>

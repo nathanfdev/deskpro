@@ -40,8 +40,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 			case 'workflow_id':
 			case 'priority_id':
 			case 'language_id':
-      case 'problem_id':
-      case 'create_problem':
+			case 'create_problem':
 				manager = new DeskPRO.Agent.Ticket.Property.StandardOption(this.ticketPage, { optionName: type });
 				break;
 			case 'agent_id':
@@ -76,6 +75,9 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 				break;
 			case 'urgency':
 				manager = new DeskPRO.Agent.Ticket.Property.Urgency(this.ticketPage);
+				break;
+			case 'problem_id':
+				manager = new DeskPRO.Agent.Ticket.Property.Problem(this.ticketPage);
 				break;
 		}
 

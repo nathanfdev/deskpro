@@ -95,7 +95,7 @@ class CommonController extends AbstractController
                 'brand'    => $brand,
                 'id'       => $brand->getId(),
                 'name'     => $brand->getName(),
-                'theme_id' => $brand->getThemeId(),
+                'theme_id' => $brand->getThemeSet()->getThemeId(),
             ];
         }
 
@@ -137,33 +137,28 @@ class CommonController extends AbstractController
                         array('email' => $user->getPrimaryEmail()->getEmail())),
                     'resend_url'      => $person_validator->getResendLink(PersonValidator::TYPE_EMAIL_PRIMARY, $primary_email),
                 );
-            } elseif (!$user->isAgentValidated()) {
-                $validation_alerts[] = array(
-                    'type'       => null,
-                    'message'    => $this->phrase('portal.account.validation_agent_alert'),
-                    'resend_url' => null,
-                );
             }
         }
 
-        //
-        // Extra Email Validation (when adding more emails)
-        //
-        if ($user && $validating_emails = $this->getEmailDataService()->getValidatingEmails($user)) {
-            foreach ($validating_emails as $validating_email) {
-                $validation_alerts[] = array(
-                    'type'            => PersonValidator::TYPE_EMAIL,
-                    'message'         => $this->phrase('portal.account.validation_alert_extra_email',
-                        array('email' => $validating_email->getEmail())),
-                    'resend_url'      => $person_validator->getResendLink(
-                        PersonValidator::TYPE_EMAIL,
-                        $validating_email,
-                        null,
-                        true
-                    ),
-                );
-            }
-        }
+        // comment this out because doctrine entity EmailValidating is empty now
+        ////
+        //// Extra Email Validation (when adding more emails)
+        ////
+        //if ($user && $validating_emails = $this->getEmailDataService()->getValidatingEmails($user)) {
+        //    foreach ($validating_emails as $validating_email) {
+        //        $validation_alerts[] = array(
+        //            'type'            => PersonValidator::TYPE_EMAIL,
+        //            'message'         => $this->phrase('portal.account.validation_alert_extra_email',
+        //                array('email' => $validating_email->getEmail())),
+        //            'resend_url'      => $person_validator->getResendLink(
+        //                PersonValidator::TYPE_EMAIL,
+        //                $validating_email,
+        //                null,
+        //                true
+        //            ),
+        //        );
+        //    }
+        //}
 
         //
         // DIFFERENT LANG

@@ -33,7 +33,7 @@
 		</div>
 		<div class="controls-row">
 			<div class="bound-faded"></div>
-			{% if comment.status == 'validating' or not comment.is_reviewed %}
+			{% if not comment.is_reviewed %}
 				<button class="clean-white small validate-approve">{{ phrase('agent.general.approve') }}</button>
 			{% endif %}
 			<button class="clean-white small validate-delete">{{ phrase('agent.general.delete') }}</button>
