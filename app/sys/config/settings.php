@@ -487,6 +487,9 @@ return array(
     'core_tickets.agent_rte_button_hr'        => true,
     'core_tickets.agent_rte_button_alignment' => false,
 
+    'core_tickets.web_require_validation'   => false,
+    'core_tickets.email_require_validation' => false,
+
     'core_tickets.use_ref' => false,
 
     'core_tickets.email_history_limit' => 11, // 10 + 1 for the original message at top
