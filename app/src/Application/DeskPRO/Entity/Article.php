@@ -62,13 +62,6 @@ class Article extends ContentAbstract implements HighlightableModelInterface
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
-     *
-     * @deprecated - this field is unused and will be deleted soon
-     */
-    protected $products;
-
-    /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $revisions;
 
@@ -108,7 +101,6 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     {
         parent::__construct();
 
-        $this->products    = new ArrayCollection();
         $this->categories  = new ArrayCollection();
         $this->attachments = new ArrayCollection();
         $this->custom_data = new ArrayCollection();
@@ -259,12 +251,6 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     {
         $helper = new \Application\DeskPRO\ORM\CollectionHelper($this, 'categories');
         $helper->setCollection($cats);
-    }
-
-    public function setProducts(array $prods)
-    {
-        $helper = new \Application\DeskPRO\ORM\CollectionHelper($this, 'products');
-        $helper->setCollection($prods);
     }
 
     public function getCategoryNames($sep = ', ', $full = true)
@@ -641,41 +627,6 @@ class Article extends ContentAbstract implements HighlightableModelInterface
                 'dpApi' => true,
             )
         );
-
-        //
-        // deprecated field - will be deleted soon
-        $metadata->mapManyToMany(
-            array(
-                'fieldName'    => 'products',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Product',
-                'cascade'      => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
-                'joinTable'    => array(
-                    'name'        => 'article_to_product',
-                    'schema'      => null,
-                    'joinColumns' => array(
-                        0 => array(
-                            'name'                 => 'article_id',
-                            'referencedColumnName' => 'id',
-                            'nullable'             => true,
-                            'onDelete'             => 'cascade',
-                            'columnDefinition'     => null,
-                        ),
-                    ),
-                    'inverseJoinColumns' => array(
-                        0 => array(
-                            'name'                 => 'product_id',
-                            'referencedColumnName' => 'id',
-                            'nullable'             => true,
-                            'onDelete'             => 'cascade',
-                            'columnDefinition'     => null,
-                        ),
-                    ),
-                ),
-                'dpApi' => true,
-            )
-        );
-        // end deprecated field
-        //
 
         $metadata->mapOneToMany(
             array(

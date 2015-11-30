@@ -26,4 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1448902805);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1448902805 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('Drop article_to_product');
+        $this->execMutateSql('DROP TABLE article_to_product');
+    }
+}
