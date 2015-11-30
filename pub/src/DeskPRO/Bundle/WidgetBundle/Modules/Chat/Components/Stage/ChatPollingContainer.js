@@ -1,15 +1,14 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { pollingChat } from '../../Actions/chatActions';
-import { chatIdSelector, agentIdSelector, lastMessageIdSelector, isEndedSekector } from '../../Selectors/chat';
+import { chatIdSelector, agentIdSelector, lastMessageIdSelector } from '../../Selectors/chat';
 import history from '../../../../Services/history';
 import moment from 'moment';
 
 @connect(state => ({
   chatId: chatIdSelector(state),
   agentId: agentIdSelector(state),
-  lastMessageId: lastMessageIdSelector(state),
-  isEnded: isEndedSekector(state)
+  lastMessageId: lastMessageIdSelector(state)
 }))
 export class ChatPollingContainer extends React.Component {
 
@@ -40,16 +39,8 @@ export class ChatPollingContainer extends React.Component {
     const promise = dispatch(pollingChat(chatId, queryParams));
     promise.then(
       () => {
-        if (agentId) {
-          if (isEnded) {
-            if (history.state !== '/chat/done') {
-              history.replaceState(null, '/chat/done');
-            }
-          } else {
-            if (history.state !== '/chat/active') {
-              history.replaceState(null, '/chat/active');
-            }
-          }
+        if (agentId && history.state !== '/chat/active') {
+          history.replaceState(null, '/chat/active');
         }
 
         setTimeout(this.pollingRequest, 3000);

@@ -2,6 +2,11 @@ import React, { PropTypes } from 'react';
 import { AgentMessage } from './Message/AgentMessage';
 import { UserMessage } from './Message/UserMessage';
 import { TypingMessage } from './Message/TypingMessage';
+import { RateAgent } from './Feedback/RateAgent';
+import { ExtraRatingInfo } from './Feedback/ExtraRatingInfo';
+import { RatingComplete } from './Feedback/RatingComplete';
+import { TranscriptSent } from './Feedback/TranscriptSent';
+import { TranscriptForm } from './Feedback/TranscriptForm';
 import ScrollArea from 'react-scrollbar';
 import Immutable from 'immutable';
 
@@ -27,6 +32,12 @@ export class MessagesList extends React.Component {
       <ScrollArea className="dpdesignportal-content" vertical>
         {this.props.messages.map((message, index) => this.renderMessage(message, index))}
         <TypingMessage user={Immutable.fromJS({name: 'Noelle'})} />
+
+        <RateAgent />
+        <ExtraRatingInfo />
+        <RatingComplete />
+        <TranscriptSent />
+        <TranscriptForm />
       </ScrollArea>
     );
   }
