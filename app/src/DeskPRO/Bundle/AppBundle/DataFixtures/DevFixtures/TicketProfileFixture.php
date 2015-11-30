@@ -440,16 +440,17 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
 
         $ticket = new Ticket();
         $ticket->disableAutoTicketProcess();
-        $ticket->person           = $person;
-        $ticket->department       = $dep;
-        $ticket->ref              = 'DEMO-'.self::$ref_cnt++;
-        $ticket->agent            = $this->faker->randomElement($this->agents);
-        $ticket->agent_team       = $this->faker->randomElement($this->agent_teams);
-        $ticket->urgency          = $this->faker->numberBetween(1, 10);
-        $ticket->status           = $status;
-        $ticket->subject          = $subj;
-        $ticket->original_subject = $subj;
-        $ticket->date_created     = $this->faker->dateTimeThisYear;
+        $ticket->person               = $person;
+        $ticket->department           = $dep;
+        $ticket->ref                  = 'DEMO-'.self::$ref_cnt++;
+        $ticket->agent                = $this->faker->randomElement($this->agents);
+        $ticket->agent_team           = $this->faker->randomElement($this->agent_teams);
+        $ticket->urgency              = $this->faker->numberBetween(1, 10);
+        $ticket->status               = $status;
+        $ticket->subject              = $subj;
+        $ticket->original_subject     = $subj;
+        $ticket->date_created         = $this->faker->dateTimeThisYear;
+        $ticket->date_last_user_reply = $ticket->date_created;
 
         $this->em->persist($ticket);
         $this->em->flush();
@@ -487,12 +488,14 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
                 $author = $person;
             }
 
+            $is_note = ($as_agent && $this->faker->boolean(10));
+
             $batch[] = array(
                 'ticket_id'       => $ticket->getId(),
                 'person_id'       => $author->getId(),
                 'date_created'    => date('Y-m-d H:i:s', $ticket->date_created->getTimestamp() + $this->faker->numberBetween(900, 14400)),
                 'creation_system' => 'web',
-                'is_agent_note'   => (int) ($as_agent && $this->faker->boolean(10)),
+                'is_agent_note'   => (int) $is_note,
                 'ip_address'      => $this->faker->ipv4,
                 'hostname'        => $this->faker->domainName,
                 'geo_country'     => $this->faker->countryCode,
