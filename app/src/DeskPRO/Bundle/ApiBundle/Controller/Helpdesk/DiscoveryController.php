@@ -51,7 +51,6 @@ class DiscoveryController extends BaseController
      *      }
      * )
      * @Get("/helpdesk/discover", name="api_helpdesk_discover")
-     * @Security(true)
      */
     public function discoverAction(Request $request)
     {
