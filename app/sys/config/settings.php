@@ -610,6 +610,11 @@ return array(
     'portal.per_page_tickets' => 50,
 
     /*
+     * The default "per page" number of chats to show in the user's chat list page
+     */
+    'portal.per_page_chat' => 50,
+
+    /*
      * If the portal should validate based on etags in the http cache layer
      */
     'portal.http_cache_etags' => true,
