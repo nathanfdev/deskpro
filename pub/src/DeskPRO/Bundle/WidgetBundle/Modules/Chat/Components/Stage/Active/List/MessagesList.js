@@ -5,8 +5,6 @@ import { TypingMessage } from './Message/TypingMessage';
 import { RateAgent } from './Feedback/RateAgent';
 import { ExtraRatingInfo } from './Feedback/ExtraRatingInfo';
 import { RatingComplete } from './Feedback/RatingComplete';
-import { TranscriptSent } from './Feedback/TranscriptSent';
-import { TranscriptForm } from './Feedback/TranscriptForm';
 import ScrollArea from 'react-scrollbar';
 import Immutable from 'immutable';
 
@@ -36,8 +34,6 @@ export class MessagesList extends React.Component {
         <RateAgent />
         <ExtraRatingInfo />
         <RatingComplete />
-        <TranscriptSent />
-        <TranscriptForm />
       </ScrollArea>
     );
   }
