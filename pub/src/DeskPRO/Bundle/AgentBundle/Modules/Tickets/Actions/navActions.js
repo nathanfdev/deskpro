@@ -65,7 +65,7 @@ export const initialLoad = createAction(
         const batch = 'DP_API/batch'
           + '?get[filterSetsCount]=DP_API/ticket_filter_sets/all/counts%3F' + groupingQueryString
           + '&get[labels]=DP_API/ticket_labels'
-          + '&get[starsCount]=DP_API/ticket_stars_count'
+          + '&get[starsCount]=DP_API/ticket_stars_counts'
           + '&get[filters]=DP_API/ticket_filters'
         ;
         DpApi.sendGet(batch).success(({responses}) => {

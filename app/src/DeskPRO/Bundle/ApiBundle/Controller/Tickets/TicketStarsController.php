@@ -138,7 +138,7 @@ class TicketStarsController extends BaseController
      *      }
      * )
      *
-     * @Get("/ticket_stars_count", name="api_ticket_flag_all_counts")
+     * @Get("/ticket_stars_counts", name="api_ticket_flag_all_counts")
      */
     public function getTicketFlagsCounts()
     {
