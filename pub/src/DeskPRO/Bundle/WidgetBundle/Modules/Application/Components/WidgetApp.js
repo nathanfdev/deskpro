@@ -90,7 +90,7 @@ export class WidgetApp extends React.Component {
     };
 
     return (
-      <Frame ref="frame" style={style} isVisible={this.props.isVisible}>
+      <Frame ref="frame" name="widget_iframe" style={style} isVisible={this.props.isVisible}>
         <WidgetAppBody ref="body" {...this.props} onResize={() => this.refs.frame && this.refs.frame.autoFrameDimensions()} />
       </Frame>
     );

@@ -49,7 +49,7 @@ export class TranscriptContainer extends React.Component {
                 positionMy="right top">
 
           <ClickOut onClickOut={this.onCloseForm}
-                    context={parent.document}>
+                    context={[parent.document, parent.window.widget_iframe.document]}>
 
             <TranscriptForm />
           </ClickOut>

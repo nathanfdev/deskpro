@@ -5,6 +5,7 @@ import jQuery from 'jquery';
 export default class Frame extends React.Component {
 
   static propTypes = {
+    name: PropTypes.string,
     style: PropTypes.object,
     isVisible: PropTypes.bool,
     positionMode: PropTypes.string,
@@ -130,6 +131,10 @@ export default class Frame extends React.Component {
   }
 
   render() {
-    return <iframe ref="iframe" style={this.getFrameStyles()} />;
+    return (
+      <iframe ref="iframe"
+              name={this.props.name}
+              style={this.getFrameStyles()} />
+    );
   }
 }
