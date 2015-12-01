@@ -33,7 +33,12 @@ namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\InstallBundle\Data\DefaultDataProcessor;
 use DpTestSrc\TestBundle\UserDetailsRepo;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Input\ArrayInput;
 
+/**
+ * Class FreshDb.
+ */
 class FreshDb extends AbstractDbSet
 {
     public function getId()
@@ -48,6 +53,8 @@ class FreshDb extends AbstractDbSet
      */
     protected function installSet()
     {
+        $this->loadFixtures();
+
         $count = 0;
 
         $em = $this->getEm();
@@ -175,5 +182,25 @@ class FreshDb extends AbstractDbSet
         ++$count;
 
         return $count;
+    }
+
+    private function loadFixtures()
+    {
+        $app = new Application($this->getContainer()->get('kernel'));
+
+        $fixtures = [
+            DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/InstallFixtures',
+            DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/SeedFixtures',
+        ];
+        foreach ($fixtures as $path) {
+            $app->setAutoExit(false);
+            $input = new ArrayInput(array(
+                'command'          => 'doctrine:fixtures:load',
+                '--fixtures'       => $path,
+                '--no-interaction' => true,
+                '--append'         => true,
+            ));
+            $app->run($input);
+        }
     }
 }
