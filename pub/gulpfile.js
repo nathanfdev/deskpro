@@ -384,7 +384,7 @@ function startWebpackServer(config)
 
   app.use(cors());
 
-  app.listen(9666, 'localhost', function (err) {
+  app.listen(9666, '0.0.0.0', function (err) {
     if(err) throw new gutil.PluginError("webpack-dev-server", err);
 
     gutil.log("[webpack-dev-server]", "http://localhost:9666/");
