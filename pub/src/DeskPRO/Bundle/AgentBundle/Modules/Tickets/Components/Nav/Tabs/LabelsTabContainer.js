@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { TabSpinner } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { labelsSelector, isDoneSelector } from '../../../Selectors/nav';
 import { LabelsTab } from './LabelsTab';
+import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 
 @connect(state => ({
   isDone: isDoneSelector(state),
@@ -16,9 +16,9 @@ export class LabelsTabContainer extends Component {
 
   render() {
     return (
-      <TabSpinner loaded={this.props.isDone}>
+      <LoadIndicator loaded={this.props.isDone}>
         <LabelsTab {...this.props} />
-      </TabSpinner>
+      </LoadIndicator>
     );
   }
 }

@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
-import { NavFrame, NavFrameHeader, NavFrameBody, TabSpinner } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { NavFrame, NavFrameHeader, NavFrameBody } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { GroupsContainer } from './Groups/GroupsContainer';
 import { ProjectsContainer } from './Projects/ProjectsContainer';
 import { AgentsContainer } from './Agents/AgentsContainer';
 import { LabelsContainer } from './Labels/LabelsContainer';
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 
 export class Nav extends React.Component {
 
@@ -25,12 +25,12 @@ export class Nav extends React.Component {
         </NavFrameHeader>
         <NavFrameBody>
           <div className="sidebar-list sidebar-list-filters">
-            <TabSpinner loaded={isDone} color={constants.APP_COLOURS[currentApp]}>
+            <LoadIndicator loaded={isDone}>
               <GroupsContainer />
               <ProjectsContainer />
               <AgentsContainer />
               <LabelsContainer />
-            </TabSpinner>
+            </LoadIndicator>
           </div>
         </NavFrameBody>
       </NavFrame>

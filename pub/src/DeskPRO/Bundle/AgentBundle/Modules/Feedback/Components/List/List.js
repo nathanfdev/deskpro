@@ -7,8 +7,8 @@ import { FeedbackCommentsCardsContainer } from './View/List/FeedbackCommentsCard
 import { FeedbackTableContainer } from './View/Table/FeedbackTableContainer';
 import { FeedbackCommentTableContainer } from './View/Table/FeedbackCommentTableContainer';
 import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
+import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import Loader from 'react-loader';
 import { PaginationContainer } from './PaginationContainer';
 
 export class List extends Component {
@@ -76,15 +76,14 @@ export class List extends Component {
       <ListFrameContainer>
         {!selected.size && <ControlBarContainer />}
         {selected.size && <MassActionContainer />}
-        <Loader loaded={loaded}
-                color={constants.APP_COLOURS[currentApp]}
-                opacity={0}
-                width={3}>
+        <LoadIndicator loaded={loaded}
+                       opacity={0}
+                       width={3}>
           <ListFrameContents>
             {this.contentChoice()}
             {pagination && pagination.total_pages > 1 && <PaginationContainer/>}
           </ListFrameContents>
-        </Loader>
+        </LoadIndicator>
       </ListFrameContainer>
     );
   }
