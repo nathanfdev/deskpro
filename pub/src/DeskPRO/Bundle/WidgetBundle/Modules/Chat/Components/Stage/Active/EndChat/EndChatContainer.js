@@ -3,11 +3,13 @@ import { connect } from 'react-redux';
 import Simple from 'DeskPRO/Component/Positioned/Simple';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { EndChatConfirm } from './EndChatConfirm';
+import { endChat } from '../../../../Actions/chatActions';
 
 @connect()
 export class EndChatContainer extends React.Component {
 
   static propTypes = {
+    dispatch: PropTypes.func,
     confirmPosition: PropTypes.string,
     children: PropTypes.node
   };
@@ -28,7 +30,7 @@ export class EndChatContainer extends React.Component {
 
   onEndChat = event => {
     this.onClosePopup(event);
-    console.log('onEndChat');
+    this.props.dispatch(endChat());
   };
 
   onClosePopup = event => {
