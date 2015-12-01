@@ -31,6 +31,12 @@ export class WidgetAppBody extends React.Component {
     this.triggerResize();
   }
 
+  onOpen = url => {
+    if (history.state !== url) {
+      history.replaceState(null, url);
+    }
+  };
+
   triggerResize() {
     const { onResize } = this.props;
     if (onResize) {
@@ -74,6 +80,10 @@ export class WidgetApp extends React.Component {
     isVisible: PropTypes.bool
   };
 
+  onOpen = url => {
+    this.refs.body.onOpen(url);
+  };
+
   render() {
     const style = {
       height: '100%'
@@ -81,7 +91,7 @@ export class WidgetApp extends React.Component {
 
     return (
       <Frame ref="frame" style={style} isVisible={this.props.isVisible}>
-        <WidgetAppBody {...this.props} onResize={() => this.refs.frame && this.refs.frame.autoFrameDimensions()} />
+        <WidgetAppBody ref="body" {...this.props} onResize={() => this.refs.frame && this.refs.frame.autoFrameDimensions()} />
       </Frame>
     );
   }

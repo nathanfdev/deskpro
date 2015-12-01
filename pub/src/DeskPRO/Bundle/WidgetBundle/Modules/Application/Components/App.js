@@ -1,6 +1,7 @@
 import React from 'react';
 import TriggerButton from './TriggerButton';
 import { WidgetApp } from './WidgetApp';
+import { ChatTriggers } from './ChatTriggers';
 
 export class App extends React.Component {
 
@@ -23,25 +24,14 @@ export class App extends React.Component {
     });
   };
 
-  renderTrigger() {
-    return (
-      <TriggerButton isVisible={!this.state.isOpen}
-                     onClick={this.onOpenWidget} />
-    );
-  }
-
-  renderWidgetApp() {
-    return (
-      <WidgetApp isVisible={this.state.isOpen}
-                 onClose={this.onCloseWidget} />
-    );
-  }
-
   render() {
+    const widgetOpened = this.state.isOpen;
+
     return (
       <div>
-        {this.renderTrigger()}
-        {this.renderWidgetApp()}
+        <TriggerButton isVisible={!widgetOpened} onClick={this.onOpenWidget} />
+        <WidgetApp ref="widget" isVisible={widgetOpened} onClose={this.onCloseWidget} />
+        <ChatTriggers onOpen={url => this.refs.widget.onOpen(url)} isVisible={widgetOpened} />
       </div>
     );
   }
