@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import Loader from 'react-loader';
 import classNames from 'classnames';
 import { updateRoutingState } from '../../../Application/Actions/routingActions';
 import { connect } from 'react-redux';
@@ -103,23 +102,5 @@ export class TabsPaneStatefulContainer extends TabsPane {
 export class Tab extends React.Component {
   render() {
     return null;
-  }
-}
-
-export class TabSpinner extends React.Component {
-  static propTypes = {
-    color: PropTypes.string
-  };
-
-  render() {
-    const color = this.props.color ? this.props.color : 'green';
-
-    return (
-      <Loader color={color}
-              width={3}
-              left="50%"
-              top="50%"
-        {...this.props} />
-    );
   }
 }

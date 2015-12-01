@@ -14,7 +14,6 @@ export class NestedList extends BaseNestedList {
 
   renderListItem(item, depth) {
     this.ensureValidDepth(depth);
-    console.log('Item', item);
     const { title, count, parent } = item;
     const label = title[0].toUpperCase() + title.slice(1);
 

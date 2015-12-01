@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { NavFrame, NavFrameHeader, NavFrameBody, TabsPaneStatefulContainer, Tab, LabelsDictionary, TabSpinner }
+import { NavFrame, NavFrameHeader, NavFrameBody, TabsPaneStatefulContainer, Tab, LabelsDictionary }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { Pending } from './Pending';
 import { StatusTab } from './StatusTab';
@@ -7,7 +7,7 @@ import { TypeTab } from './TypeTab';
 import { CategoryTab } from './CategoryTab';
 import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
 import { applyParams } from '../../Actions/FeedbackListActions';
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 
 @injectIntl
 export class Nav extends Component {
@@ -39,28 +39,26 @@ export class Nav extends Component {
           <FormattedMessage id="feedback.nav.title"/>
         </NavFrameHeader>
         <NavFrameBody>
-          <TabSpinner loaded={loaded} color={constants.APP_COLOURS[currentApp]}>
-            <Pending
-              toValidateCount={toValidateCount}
-              commentsToReviewCount={commentsToReviewCount}
-              />
+          <Pending loaded={loaded}
+                   toValidateCount={toValidateCount}
+                   commentsToReviewCount={commentsToReviewCount}
+            />
 
-            <TabsPaneStatefulContainer id="tab">
+          <TabsPaneStatefulContainer id="tab">
               <Tab title={this.props.intl.formatMessage({id: 'feedback.nav.tabs.status'})}>
-                <StatusTab statuses={statuses}/>
+                <StatusTab statuses={statuses} loaded={loaded}/>
               </Tab>
 
               <Tab title="Labels">
                 <LabelsDictionary labels={labels} onClick={this.onLabelClick}/>
               </Tab>
               <Tab title="Type">
-                <TypeTab types={types}/>
+                <TypeTab types={types} loaded={loaded}/>
               </Tab>
               <Tab title="Category">
-                <CategoryTab customCategories={customCategories}/>
+                <CategoryTab customCategories={customCategories} loaded={loaded}/>
               </Tab>
-            </TabsPaneStatefulContainer>
-          </TabSpinner>
+          </TabsPaneStatefulContainer>
         </NavFrameBody>
       </NavFrame>
     );

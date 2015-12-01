@@ -1,30 +1,24 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { TabSpinner } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { filterSetsCountSelector, isDoneSelector } from '../../../../Selectors/nav';
 import { FiltersTab } from './FiltersTab';
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 
 @connect(state => ({
   isDone: isDoneSelector(state),
-  filterSetsCount: filterSetsCountSelector(state),
-  currentApp: state.Application.dpWindow.get('activeAppId')
+  filterSetsCount: filterSetsCountSelector(state)
 }))
 export class FiltersTabContainer extends Component {
 
   static propTypes = {
-    currentApp: PropTypes.string.isRequired,
     isDone: PropTypes.bool.isRequired
   };
 
   render() {
-    const { currentApp } = this.props;
-
     return (
-      <TabSpinner loaded={this.props.isDone}
-                  color={constants.APP_COLOURS[currentApp]}>
+      <LoadIndicator loaded={this.props.isDone}>
         <FiltersTab {...this.props} />
-      </TabSpinner>
+      </LoadIndicator>
     );
   }
 }

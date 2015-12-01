@@ -5,7 +5,7 @@ import Immutable from 'immutable';
 
 const initialState = {
   async: {
-    done: true
+    done: false
   },
   toValidateCount: { count: 0 },
   commentsToReviewCount: { count: 0 },
