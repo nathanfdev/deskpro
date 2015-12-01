@@ -14,13 +14,14 @@ export default class LoginUsersources extends React.Component {
       <div>
         {_.map(usersources, (us) => {
           return (
-            <a
-              key={us}
-              href={PortalUrlGenerator.path('/login/authenticate/' + us.id)}
-              className={us.classes.join(' ')}>
-              { us.icon ? (<i className={us.icon}></i>) : null }
-              <span> {us.text}</span>
-            </a>
+            <div key={us.id}>
+                <a
+                  href={PortalUrlGenerator.path('/login/authenticate/' + us.id)}
+                  className={us.classes.join(' ')}>
+                  { us.icon ? (<i className={us.icon}></i>) : null }
+                  <span> {us.text}</span>
+                </a>
+            </div>
           );
         })}
       </div>

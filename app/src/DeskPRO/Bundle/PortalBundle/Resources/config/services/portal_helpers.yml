@@ -5,11 +5,13 @@ services:
       class: DeskPRO\Bundle\PortalBundle\Helper\PortalTabsHelper
       arguments: [@brand_stack, @security.authorization_checker]
 
+  usersources_view_helper:
+      class: DeskPRO\Bundle\PortalBundle\View\UsersourcesHelper
+      arguments: [@dp_authentication_manager.user, @language_manager]
 
   ratings_helper:
       class: DeskPRO\Bundle\PortalBundle\Helper\PortalRatingsHelper
       arguments: [@doctrine.orm.default_entity_manager, @request_stack]
-
 
   subscriptions_helper:
       class: DeskPRO\Bundle\PortalBundle\Helper\ContentSubscriptionsHelper

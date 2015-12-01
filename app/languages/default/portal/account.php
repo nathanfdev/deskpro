@@ -33,6 +33,7 @@ return array(
     'portal.account.section-title-your-account'        => 'Your Account',
     'portal.account.section-title-login'               => 'Login',
     'portal.account.login-btn'                         => 'Login',
+    'portal.account.login-btn-usersource'              => 'Login with {{ usersource }}',
     'portal.account.logout-btn'                        => 'Logout',
     'portal.account.login-remember'                    => 'Stay Logged In?',
     'portal.account.login-email'                       => 'Your email',
