@@ -6,7 +6,8 @@ export class ReplyForm extends React.Component {
 
   static propTypes = {
     isEnded: PropTypes.bool,
-    onSendMessage: PropTypes.func
+    onSendMessage: PropTypes.func,
+    onReopen: PropTypes.func
   };
 
   constructor(props) {
@@ -31,12 +32,19 @@ export class ReplyForm extends React.Component {
     });
   };
 
+  onReopen = event => {
+    event.preventDefault();
+    this.props.onReopen();
+  };
+
   render() {
     return (
       <div className="dpdesignportal-chat-form">
         {this.props.isEnded &&
           <div className="dpdesignportal-chat-form-disabled">
-            <a href="#" className="dpdesignportal-button"><i className="fa fa-commenting-o"></i> Reopen this chat</a>
+            <a href="#" className="dpdesignportal-button" onClick={this.onReopen}>
+              <i className="fa fa-commenting-o"></i> Reopen this chat
+            </a>
           </div>
         }
 

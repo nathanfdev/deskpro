@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { chatIdSelector, isEndedSelector } from '../../../../Selectors/chat';
+import { chatIdSelector } from '../../../../Selectors/chat';
 import { sendChatMessage } from '../../../../Actions/chatActions';
 import { ReplyForm } from './ReplyForm';
+import { ReopenChatContainer } from '../ReopenChatContainer';
 
 @connect(state => ({
-  chatId: chatIdSelector(state),
-  isEnded: isEndedSelector(state)
+  chatId: chatIdSelector(state)
 }))
 export class ReplyFormContainer extends React.Component {
 
@@ -25,6 +25,10 @@ export class ReplyFormContainer extends React.Component {
   };
 
   render() {
-    return <ReplyForm onSendMessage={this.onSendMessage} {...this.props} />;
+    return (
+      <ReopenChatContainer>
+        <ReplyForm onSendMessage={this.onSendMessage} {...this.props} />
+      </ReopenChatContainer>
+    );
   }
 }

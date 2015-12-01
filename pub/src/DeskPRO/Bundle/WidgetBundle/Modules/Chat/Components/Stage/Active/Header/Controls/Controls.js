@@ -3,6 +3,8 @@ import { ControlsPane } from './ControlsPane';
 import { ControlItem } from './ControlItem';
 import { EndChatContainer } from '../../EndChat/EndChatContainer';
 import { EndChatButton } from './EndChatButton';
+import { ReopenChatContainer } from '../../ReopenChatContainer';
+import { ReopenChatButton } from './ReopenChatButton';
 
 export class Controls extends React.Component {
 
@@ -39,9 +41,10 @@ export class Controls extends React.Component {
         <ControlItem>
           <i className="fa fa-angle-double-left"></i>Assets
         </ControlItem>
-        <ControlItem>
-          Reopen Chat <i className="fa fa-commenting-o"></i>
-        </ControlItem>
+
+        <ReopenChatContainer>
+          <ReopenChatButton />
+        </ReopenChatContainer>
       </ControlsPane>
     );
   }
