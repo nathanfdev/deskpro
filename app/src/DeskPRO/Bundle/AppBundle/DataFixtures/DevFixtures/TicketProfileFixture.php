@@ -537,15 +537,18 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
                         break;
                     case 'date':
                     case 'datetime':
-                        $row_data['value'] = time();
+                        $row_data['value'] = date('Y-m-d H:i:s');
                         break;
                     case 'choice':
-                        $opt                  = $this->faker->randomElement($f->getChildren()->toArray());
-                        $row_data['field_id'] = $opt->getId();
-                        $row_data['value']    = 1;
+                        $opt               = $this->faker->randomElement($f->getChildren()->toArray());
+                        $row_data['value'] = $opt->getId();
                         break;
                     default:
                         throw new \InvalidArgumentException();
+                }
+
+                if ($row_data) {
+                    $batch[] = $row_data;
                 }
             }
         }
