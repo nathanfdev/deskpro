@@ -4,14 +4,12 @@ export class TranscriptForm extends React.Component {
 
   render() {
     return (
-      <div className="dpdesignportal-transcript-request">
-        <div className="dpdesignportal-transcript-request-header">
-          <span>Need a transcript of your chat?</span>
-          <a href="#" className="dpdesignportal-button">Send transcript</a>
-          <a href="#" className="dpdesignportal-button"><i className="fa fa-print"></i></a>
-        </div>
+      <div className="dpdesignportal-popover dpdesignportal-popover-request-transcript">
+        <div className="dpdesignportal-popover-close"><i className="fa fa-times"></i></div>
+        <h1>Need a transcript of this chat?</h1>
+        <p className="grey">Enter your name &amp; email below and we'll email it to you.</p>
 
-        <div className="dpdesignportal-transcript-request-form-container">
+        <div className="popover-form">
           <form className="dpdesignportal-form">
             <label className="inline-form-item">
               <span className="dpdesignportal-form-item-label-title">Your name:</span>
@@ -24,8 +22,9 @@ export class TranscriptForm extends React.Component {
             </label>
 
             <div className="label button-label">
-              <input type="submit" value="Send me a transcript" className="dpdesignportal-button dpdesignportal-button-wide" />
+              <input type="submit" value="Send me a transcript" className="dpdesignportal-button" />
             </div>
+
           </form>
         </div>
       </div>

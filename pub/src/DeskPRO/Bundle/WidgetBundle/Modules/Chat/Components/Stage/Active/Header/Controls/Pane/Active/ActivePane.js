@@ -3,8 +3,8 @@ import { ControlsPane } from '../ControlsPane';
 import { ControlItem } from '../ControlItem';
 import { EndChatContainer } from '../../../../EndChat/EndChatContainer';
 import { EndChatButton } from './EndChatButton';
-import { TranscriptContainer } from './TranscriptContainer';
-import { TranscriptButton } from './TranscriptButton';
+import { TranscriptContainer } from './Transcript/TranscriptContainer';
+import { TranscriptButton } from './Transcript/TranscriptButton';
 
 export class ActivePane extends React.Component {
 
