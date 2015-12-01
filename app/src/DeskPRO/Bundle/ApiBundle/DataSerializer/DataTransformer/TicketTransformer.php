@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
 use Doctrine\ORM\EntityManager;
@@ -165,9 +166,17 @@ class TicketTransformer extends AbstractDataSerializerTransformer
             $custom_data[$custom->getId()] = $custom->getData();
         }
         $props['fields']       = $custom_data;
+        $props['labels']       = $ticket->getLabelsArray();
         $props['participants'] = $this->selectIds($ticket->getUserParticipants());
         $props['followers']    = $this->selectIds($ticket->getAgentParticipants());
-        $props['labels']       = $ticket->getLabelsArray();
+
+        $context   = $transformation_request->getSerializerContext();
+        $className = (new \ReflectionClass(Person::class))->getShortName();
+        $type      = strtolower($className);
+        if ($context->isTypeIncluded($type)) {
+            $context->getSideloads()->addSideloadCollection($type, $ticket->getUserParticipants());
+            $context->getSideloads()->addSideloadCollection($type, $ticket->getAgentParticipants());
+        }
 
         return $props;
     }
