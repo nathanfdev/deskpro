@@ -102,9 +102,10 @@ class PortalKernel extends BaseKernel
         $catch = true
     ) {
         try {
-            if ($response = AbstractKernel::performSystemChecks($request)) {
-                return $response;
-            }
+            // TODO this was causing an exception
+            //if ($response = AbstractKernel::performSystemChecks($request)) {
+            //    return $response;
+            //}
 
             return parent::handle($request, $type, $catch);
         } catch (\Exception $e) {
