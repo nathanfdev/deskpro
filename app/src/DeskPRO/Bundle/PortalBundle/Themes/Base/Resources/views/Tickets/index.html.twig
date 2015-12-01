@@ -266,9 +266,17 @@
           {% endif %}
           {% endmacro %}
 
+          {% set displayed_at_least_one_table = false %}
           {% for table in ticket_list_tables %}
-          {{ _self.tickets_table(table, loop.index0) }}
+            {% if table.pager|length > 0 %}
+              {% set displayed_at_least_one_table = true %}
+            {% endif %}
+            {{ _self.tickets_table(table, loop.index0) }}
           {% endfor %}
+
+          {% if not displayed_at_least_one_table %}
+            {{ phrase('portal.tickets.list_no_tickets', { open_ticket_url: path('portal_new_ticket') }) }}
+          {% endif %}
         </div>
         {% endblock inner_content %}
         {% block doc_end %}
