@@ -45,7 +45,6 @@ use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomPerFieldManager;
 use DeskPRO\Bundle\PortalBundle\Form\Form\TicketFormContext;
 use DeskPRO\Bundle\PortalBundle\Form\FormFields;
 use DeskPRO\Bundle\PortalBundle\Form\Hierarchy\HierarchyGenerator;
-use DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints\ValidCaptcha;
 use DeskPRO\Component\Hierarchy\HierarchyNode;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
@@ -914,9 +913,6 @@ class TicketType extends AbstractType
         $options = array(
             'mapped'         => false,
             'error_bubbling' => false,
-            'constraints'    => array(
-                new ValidCaptcha(),
-            ),
         );
 
         if ($ignore_validation) {

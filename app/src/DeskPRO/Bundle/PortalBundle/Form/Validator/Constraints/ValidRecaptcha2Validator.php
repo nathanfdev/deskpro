@@ -26,30 +26,46 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints;
 
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use ReCaptcha\ReCaptcha;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\ConstraintValidator;
 
-class ValidCaptcha extends Constraint
+class ValidRecaptcha2Validator extends ConstraintValidator
 {
-    public $message = 'portal.forms.error_captcha';
+    /**
+     * @var BrandStack
+     */
+    private $brand_stack;
 
     /**
-     * {@inheritdoc}
+     * @var RequestStack
      */
-    public function getTargets()
+    private $request_stack;
+
+    public function __construct(BrandStack $brand_stack, RequestStack $request_stack)
     {
-        return Constraint::PROPERTY_CONSTRAINT;
+        $this->brand_stack   = $brand_stack;
+        $this->request_stack = $request_stack;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function validatedBy()
+    public function validate($value, Constraint $constraint)
     {
-        return 'deskpro.captcha';
+        $recaptcha = new ReCaptcha($this->brand_stack->getActive()->getSetting('core.recaptcha2_secret_key'));
+
+        $request         = $this->request_stack->getMasterRequest();
+        $recaptcha_value = $request->get('g-recaptcha-response');
+
+        /* @var \ReCaptcha\Response $response */
+        $response = $recaptcha->verify($recaptcha_value, $request->getClientIp());
+        if (!$response->isSuccess()) {
+            $this->context->addViolation($constraint->message);
+        }
     }
 }

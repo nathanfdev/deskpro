@@ -132,6 +132,8 @@ jms_serializer:
     metadata:
         cache: none
 
+gregwar_captcha: ~
+
 nelmio_cors:
     defaults:
         allow_credentials: false

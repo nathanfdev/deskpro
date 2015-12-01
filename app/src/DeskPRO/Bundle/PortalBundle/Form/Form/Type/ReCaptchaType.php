@@ -33,18 +33,14 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints\ValidRecaptcha2;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class CaptchaType extends AbstractType
+class ReCaptchaType extends AbstractType
 {
-    /**
-     * @var LanguageManager
-     */
-    private $language_manager;
-
     /**
      * @var BrandStack
      */
@@ -56,36 +52,24 @@ class CaptchaType extends AbstractType
         $this->brand_stack      = $brand_stack;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        if ($this->brand_stack->getActive()->getSetting('core.use_recaptcha2')) {
-            $builder->add('captcha', 'deskpro_recaptcha');
-        } else {
-            $builder->add('captcha', 'captcha', [
-                'label'           => false,
-                'as_url'          => true,
-                'invalid_message' => 'portal.forms.error_captcha',
-            ]);
-        }
+        $view->vars['site_key'] = $this->brand_stack->getActive()->getSetting('core.recaptcha2_site_key');
     }
 
     public function getName()
     {
-        return 'deskpro_captcha';
+        return 'deskpro_recaptcha';
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'label'  => false,
-            'mapped' => false,
-            'help'   => function (Options $options) {
-                if ($this->brand_stack->getActive()->getSetting('core.use_recaptcha2')) {
-                    return false;
-                }
-
-                return $this->language_manager->phrase('portal.forms.label_captcha');
-            },
+            'label'       => false,
+            'mapped'      => false,
+            'constraints' => [
+                new ValidRecaptcha2(),
+            ],
         ]);
     }
 }

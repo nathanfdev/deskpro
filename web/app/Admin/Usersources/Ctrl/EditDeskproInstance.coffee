@@ -12,7 +12,6 @@ define ['Admin/Usersources/Ctrl/EditInstance', 'DeskPRO/Util/Util']
       @$q.all([p, @loadPasswordSettings(), @loadRegSettings()])
 
     doSaveUsersource: ->
-      console.log("XXX")
       p = super()
       @$q.all([p, @savePolicySettings(), @saveRegSettings()])
 

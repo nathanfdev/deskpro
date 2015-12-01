@@ -17,7 +17,6 @@ export default class ClickAwayDropdownWidget extends PageWidget {
     });
 
     $target.click((event) => {
-      console.log(event);
       event.stopPropagation();
     });
 

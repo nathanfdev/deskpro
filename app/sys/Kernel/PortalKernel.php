@@ -71,6 +71,7 @@ class PortalKernel extends BaseKernel
             new \FOS\RestBundle\FOSRestBundle(),
             new \JMS\SerializerBundle\JMSSerializerBundle(),
             new \Nelmio\CorsBundle\NelmioCorsBundle(),
+            new \Gregwar\CaptchaBundle\GregwarCaptchaBundle(),
 
             new \Application\DeskPRO\DeskPROBundle(),
             new \Application\EmailBundle\EmailBundle(),
