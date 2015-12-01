@@ -138,4 +138,42 @@ class ChatController extends AbstractController
 
         return new JsonResponse();
     }
+
+    /**
+     * @Route("/portal/api/chats/{id}/end", name="portal_api_chat_end")
+     * @Method({"POST"})
+     *
+     * @param ChatConversation $conversation
+     *
+     * @return JsonResponse
+     */
+    public function endChatAction(ChatConversation $conversation)
+    {
+        $conversation->setStatus(ChatConversation::STATUS_ENDED);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($conversation);
+        $em->flush();
+
+        return new JsonResponse();
+    }
+
+    /**
+     * @Route("/portal/api/chats/{id}/reopen", name="portal_api_chat_reopen")
+     * @Method({"POST"})
+     *
+     * @param ChatConversation $conversation
+     *
+     * @return JsonResponse
+     */
+    public function reopenChatAction(ChatConversation $conversation)
+    {
+        $conversation->setStatus(ChatConversation::STATUS_OPEN);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($conversation);
+        $em->flush();
+
+        return new JsonResponse();
+    }
 }

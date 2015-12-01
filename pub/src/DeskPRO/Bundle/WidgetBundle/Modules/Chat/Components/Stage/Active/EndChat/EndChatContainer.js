@@ -4,12 +4,16 @@ import Simple from 'DeskPRO/Component/Positioned/Simple';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { EndChatConfirm } from './EndChatConfirm';
 import { endChat } from '../../../../Actions/chatActions';
+import { chatIdSelector } from '../../../../Selectors/chat';
 
-@connect()
+@connect(state => ({
+  chatId: chatIdSelector(state)
+}))
 export class EndChatContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func,
+    chatId: PropTypes.number,
     confirmPosition: PropTypes.string,
     children: PropTypes.node
   };
@@ -29,8 +33,10 @@ export class EndChatContainer extends React.Component {
   };
 
   onEndChat = event => {
+    const { chatId, dispatch } = this.props;
+
     this.onClosePopup(event);
-    this.props.dispatch(endChat());
+    dispatch(endChat(chatId));
   };
 
   onClosePopup = event => {

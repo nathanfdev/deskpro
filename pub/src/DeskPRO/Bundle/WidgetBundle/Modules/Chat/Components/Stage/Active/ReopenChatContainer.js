@@ -1,10 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { dateEndedSelector, isEndedSelector } from '../../../Selectors/chat';
+import { dateEndedSelector, chatIdSelector, isEndedSelector } from '../../../Selectors/chat';
 import { reopenChat } from '../../../Actions/chatActions';
 import moment from 'moment';
 
 @connect(state => ({
+  chatId: chatIdSelector(state),
   dateEnded: dateEndedSelector(state),
   isEnded: isEndedSelector(state)
 }))
@@ -12,6 +13,7 @@ export class ReopenChatContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func,
+    chatId: PropTypes.number,
     isEnded: PropTypes.bool,
     dateEnded: PropTypes.string,
     children: PropTypes.any
@@ -43,7 +45,8 @@ export class ReopenChatContainer extends React.Component {
   };
 
   onReopen = () => {
-    this.props.dispatch(reopenChat());
+    const { chatId, dispatch } = this.props;
+    dispatch(reopenChat(chatId));
   };
 
   checkDateEnded() {
