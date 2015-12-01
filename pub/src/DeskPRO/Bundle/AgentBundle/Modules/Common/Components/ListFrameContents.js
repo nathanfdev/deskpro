@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import { Scrollable } from './Scrollable';
-import jQuery from 'jquery';
 
 export default class ListFrameContents extends React.Component {
   static propTypes = {

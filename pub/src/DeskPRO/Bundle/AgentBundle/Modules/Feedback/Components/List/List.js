@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { ControlBarContainer } from './ControlBar/ControlBarContainer';
+import { MassActionContainer } from './ControlBar/MassActionContainer';
 import { FeedbackCardsContainer } from './View/List/FeedbackCardsContainer';
 import { FeedbackCommentsCardsContainer } from './View/List/FeedbackCommentsCardsContainer';
 import { FeedbackTableContainer } from './View/Table/FeedbackTableContainer';
@@ -69,11 +70,12 @@ export class List extends Component {
   }
 
   render() {
-    const { loaded, currentApp, pagination } = this.props;
+    const { loaded, currentApp, pagination, selected } = this.props;
 
     return (
       <ListFrameContainer>
-        <ControlBarContainer />
+        {!selected.size && <ControlBarContainer />}
+        {selected.size && <MassActionContainer />}
         <Loader loaded={loaded}
                 color={constants.APP_COLOURS[currentApp]}
                 opacity={0}

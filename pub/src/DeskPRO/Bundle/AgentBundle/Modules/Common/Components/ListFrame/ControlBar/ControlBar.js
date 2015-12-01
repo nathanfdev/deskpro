@@ -1,9 +1,8 @@
 import React, { Component, PropTypes } from 'react';
-import { CheckboxContainer } from './MassAction/CheckboxContainer';
 import { SortingMenu } from './Sorting/SortingMenu';
 import { FilteringMenuContainer } from './Filtering/FilteringMenuContainer';
 import { ViewMenuContainer } from './View/ViewMenuContainer';
-import { ListFrameMenu } from '../../ListFrameMenu';
+import { ListFrameMenu } from '../ListFrameMenu';
 
 export class ControlBar extends Component {
 
@@ -70,8 +69,7 @@ export class ControlBar extends Component {
     const { checkbox, sorting, filtering, view, onMenuUnmount } = this.props;
 
     return (
-      <ListFrameMenu>
-        <CheckboxContainer {...checkbox}/>
+      <ListFrameMenu checkbox={checkbox}>
         <SortingMenu {...sorting} onMenuUnmount={onMenuUnmount}/>
         <li>
           <hr/>
