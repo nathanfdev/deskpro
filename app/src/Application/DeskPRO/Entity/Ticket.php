@@ -837,6 +837,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @return Ticket
+     */
+    public function getParentTicket()
+    {
+        return $this->parent_ticket;
+    }
+
+    /**
      * Given an array of agents, sync the current parts with those in the array.
      * So remove ones that aren't in it, or add new ones.
      *

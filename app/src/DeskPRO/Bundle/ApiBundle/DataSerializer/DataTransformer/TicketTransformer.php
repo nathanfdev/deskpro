@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
 use Doctrine\ORM\EntityManager;
@@ -170,12 +171,31 @@ class TicketTransformer extends AbstractDataSerializerTransformer
         $props['participants'] = $this->selectIds($ticket->getUserParticipants());
         $props['followers']    = $this->selectIds($ticket->getAgentParticipants());
 
+        // add participant and followers when person is side loaded
         $context   = $transformation_request->getSerializerContext();
         $className = (new \ReflectionClass(Person::class))->getShortName();
         $type      = strtolower($className);
         if ($context->isTypeIncluded($type)) {
             $context->getSideloads()->addSideloadCollection($type, $ticket->getUserParticipants());
             $context->getSideloads()->addSideloadCollection($type, $ticket->getAgentParticipants());
+        }
+
+        // child and sibling tickets
+        $repository             = $this->em->getRepository(Ticket::class);
+        $children               = $repository->findBy(['parent_ticket' => $ticket]);
+        $props['child_tickets'] = $this->selectIds($children);
+        $siblings               = $ticket->getParentTicket()
+                         ? $repository->findBy(['parent_ticket' => $ticket->getParentTicket()])
+                         : [];
+        $siblings = array_filter($siblings, function ($sibling) use ($ticket) { return $sibling !== $ticket; });
+        $props['sibling_tickets'] = $this->selectIds($siblings);
+
+        // add child and sibling tickets when ticket is side loaded
+        $className = (new \ReflectionClass(Ticket::class))->getShortName();
+        $type      = strtolower($className);
+        if ($context->isTypeIncluded($type)) {
+            $context->getSideloads()->addSideloadCollection($type, $children);
+            $context->getSideloads()->addSideloadCollection($type, $siblings);
         }
 
         return $props;
