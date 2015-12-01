@@ -68,7 +68,7 @@ class TicketsController extends CrudController
      */
     public static function subRequestSearch(HttpKernelInterface $kernel, Request $masterRequest, array $params)
     {
-        $request = $masterRequest->duplicate($params, null, [
+        $request = $masterRequest->duplicate(array_merge($params, $masterRequest->query->all()), null, [
             '_controller' => 'ApiBundle:Tickets\Tickets:list',
         ]);
         $request->query->add($params);
