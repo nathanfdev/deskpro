@@ -73,6 +73,44 @@ export class ChoiceMenuOption extends Component {
   }
 }
 
+export class RadioChoiceMenuOption extends Component {
+
+  static propTypes = {
+    label: PropTypes.string.isRequired,
+    value: PropTypes.string.isRequired,
+    values: PropTypes.array,
+    onClick: PropTypes.func.isRequired,
+    children: PropTypes.any
+  };
+
+  componentWillMount() {
+    const { values, value } = this.props;
+    this.setState({
+      isActive: values && values.indexOf(value) > -1
+    });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { values } = nextProps;
+    this.setState({
+      isActive: values && values.indexOf(nextProps.value) > -1
+    });
+  }
+
+  render() {
+    const {label} = this.props;
+
+    return (
+      <li>
+        <span className="dpwd-radio-button">
+          <span className="dpwd-radio-button-disc"></span>
+          <span className="radio-button-title">{label}</span>
+        </span>
+      </li>
+    );
+  }
+}
+
 export class ChoiceMenuHeader extends Component {
 
   static propTypes = {
