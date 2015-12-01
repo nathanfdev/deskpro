@@ -13,6 +13,7 @@ export class AppSwitcher extends React.Component {
 
   constructor(props) {
     super(props);
+
     this.expandTimeout = false;
     this.state = {
       expandedSwitcher: false
@@ -20,22 +21,20 @@ export class AppSwitcher extends React.Component {
   }
 
   hoverSwitcher = () => {
-    this.expandTimeout = setTimeout(() => this.expandSwitcher(), 250);
+    this.expandTimeout = setTimeout(this.expandSwitcher, 250);
   };
 
-  expandSwitcher() {
-    const oldState = this.state;
-    const newState = { ...oldState };
-    newState.expandedSwitcher = true;
-    this.setState(newState);
-  }
+  expandSwitcher = () => {
+    this.setState({
+      expandedSwitcher: true
+    });
+  };
 
   cancelSwitcher = () => {
     clearTimeout(this.expandTimeout);
-    const oldState = this.state;
-    const newState = { ...oldState };
-    newState.expandedSwitcher = false;
-    this.setState(newState);
+    this.setState({
+      expandedSwitcher: false
+    });
   };
 
   renderAppIcon(appId, title, linkClass, iconClass, notificationCount = 0) {
