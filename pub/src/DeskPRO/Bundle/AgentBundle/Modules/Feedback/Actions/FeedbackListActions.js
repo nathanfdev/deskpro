@@ -221,6 +221,11 @@ export const updateDisplayFieldsToPersonSetting = createAction(
 
 export const toggleMassAction = createAction('FEEDBACK_TOGGLE_MASS_ACTION');
 export const toggleSelectedAction = createAction('FEEDBACK_TOGGLE_SELECTED_ACTION');
+export const massAction = createAction('FEEDBACK_MASS_ACTION',
+  (params)=> {
+    console.log('Implement me, please', params.ids);
+  });
+
 export const applyParams = createAction(
   'FEEDBACK_APPLY_LIST_PARAMS',
   (overwrite = {}) => (dispatch, getState) => {

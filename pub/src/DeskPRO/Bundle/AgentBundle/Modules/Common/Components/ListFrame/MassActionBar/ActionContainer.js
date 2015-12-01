@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import Positioned from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
-import { ChoiceMenu, ChoiceMenuOption } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/ChoiceMenu';
+import { RadioChoiceMenuOption } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/ChoiceMenu';
 
 export class ActionContainer extends Component {
   componentWillMount() {
@@ -35,18 +35,12 @@ export class ActionContainer extends Component {
             ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list']}
             additionalNodes={['.dpw-navigation-dropdown-item-clear']}>
             <Menu>
-              <ChoiceMenu title={item.label}>
-                <ul>
-                  {item.options.map((option, index2) =>
-                      <ChoiceMenuOption
-                        key={index2}
-                        value={option.value}
-                        label={option.label}
-                        onClick={this.toggleExpanded.bind(this, option.value)}
-                        />
-                  )}
-                </ul>
-              </ChoiceMenu>
+              {item.options.map((option, index) =>
+                  <RadioChoiceMenuOption key={index}
+                                         value={option.value}
+                                         label={option.label}
+                                         onClick={this.toggleExpanded.bind(this, option.value)}/>
+              )}
             </Menu>
           </ClickOut>
         </Positioned>
