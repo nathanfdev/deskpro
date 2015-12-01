@@ -82,13 +82,13 @@ class FeedbackDataService extends AbstractDataService
      * @param $page
      * @param $max_per_page
      * @param FeedbackFilter $filter
-     * @param Person         $person
+     * @param Person $person
      *
      * @return Pagerfanta
      */
     public function getItemsPager($page, $max_per_page, FeedbackFilter $filter, Person $person)
     {
-        $em                  = $this->em;
+        $em = $this->em;
         $permissions_manager = $this->permissions_manager;
 
         return $this->generateAndCache(
@@ -305,8 +305,8 @@ class FeedbackDataService extends AbstractDataService
      * Select filtered list of feedback.
      *
      * @param CriteriaInterface $criteria
-     * @param int               $page
-     * @param int               $count
+     * @param int $page
+     * @param int $count
      *
      * @return array
      */
@@ -378,12 +378,18 @@ class FeedbackDataService extends AbstractDataService
         $criteria->applyFilters($qb);
         $criteria->applyGroupBy($qb);
         $result = $qb->getQuery()->getArrayResult();
-        $count  = Count::fromGroupedBy($criteria->getGroupBy());
+        $count = Count::fromGroupedBy($criteria->getGroupBy());
+        foreach ($criteria->getFilters() as $field => $value) {
+            switch ($field) {
+                case 'status':
+                    $count->setTitle($value);
+                    break;
+            }
+        }
         foreach ($result as $group) {
             $count->add($group['value']);
-            $count->addNested($group['value'], $group['group_name'], $criteria->getGroupBy());
+            $count->addNested($group['value'], $group['group_name'], $criteria->getGroupBy(), $group['group_name']);
         }
-
         return $count;
     }
 }

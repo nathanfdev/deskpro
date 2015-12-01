@@ -13,7 +13,6 @@ Feature: /feedback_comments/counts endpoint
     When I send a GET request to "/api/v2/feedback_comments_list?include=person&awaiting_validation=1"
     Then the response should be in JSON
     And the response status code should be 200
-    And print last JSON response
     And the JSON node "data" should exist
     And the JSON node "data" should have 4 elements
     And the JSON node "linked" should exist

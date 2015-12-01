@@ -19,6 +19,7 @@ export class ListItemContainer extends Component {
 
   constructor(props) {
     super(props);
+    console.log('Properties', props);
     this.itemId = urlSanitize(props.label);
   }
 

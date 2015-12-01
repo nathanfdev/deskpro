@@ -15,11 +15,11 @@ export class CategoryTab extends Component {
       <ul>
         {customCategories.toArray().map((item, index) =>
             <ListItemContainer key={index}
-                               label={item.get('group')}
-                               listOptions={{isComments: false, navItem: {custom_category: item.get('group')}}}>
+                               label={item.get('title')}
+                               listOptions={{isComments: false, navItem: {custom_category: item.get('title')}}}>
 
               <ListItem count={item.get('count')}
-                        label={item.get('group')}/>
+                        label={item.get('title')}/>
             </ListItemContainer>
         )}
       </ul>
