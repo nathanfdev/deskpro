@@ -13,36 +13,41 @@ export class CheckboxContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      enabled: false
+      enabled: props.count
     };
   }
 
   handleClick = (e) => {
     e.preventDefault();
     this.props.dispatch(this.props.action(!this.state.enabled));
-    this.setState({enabled: !this.state.enabled});
   };
 
-  renderCount() {
-    if (this.props.count) {
-      return (
-        <div className="dpwd-navigation-top-row-mass-action-checkbox-count">
-          <span>{this.props.count}</span>
-        </div>
-      );
-    }
-  }
-
   render() {
-    var divClasses = classNames('dpwd-navigation-top-row-mass-action-checkbox', {'active': this.state.enabled});
-    var checkboxClasses = classNames('fa', {'fa-check': this.state.enabled});
+    const { count } = this.props;
+    const divClasses = classNames('dpwd-navigation-top-row-mass-action-checkbox', { 'active': this.state.enabled });
+    const checkboxClasses = classNames('fa', { 'fa-check': this.state.enabled });
 
     return (
       <div className="dpwd-navigation-top-row-mass-action-checkbox-container">
         <div className={divClasses} onClick={this.handleClick}>
           <i className={checkboxClasses}></i>
         </div>
-        {this.renderCount()}
+        {count > 0 && <CheckboxCounter count={count}/>}
+      </div>
+    );
+  }
+}
+
+export class CheckboxCounter extends Component {
+  static propTypes = {
+    count: PropTypes.number
+  };
+
+  render() {
+    const { count } = this.props;
+    return (
+      <div className="dpwd-navigation-top-row-mass-action-checkbox-count">
+        <span>{count}</span>
       </div>
     );
   }

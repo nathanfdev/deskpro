@@ -1,8 +1,4 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
-import ReactDOM from 'react-dom';
-import jQuery from 'jquery';
-import debounce from 'lodash/function/debounce';
 import classNames from 'classnames';
 
 export class ListFrameContainer extends React.Component {
