@@ -53,6 +53,7 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         $this->addOption('raw', null, InputOption::VALUE_NONE, 'Output the API result directly without any other info or JSON decoding');
         $this->addOption('printr', null, InputOption::VALUE_NONE, 'Output as PHP array');
         $this->addOption('as-form', null, InputOption::VALUE_NONE, 'For PUT/POST requests, send the data payload as a form instead of JSON which is the default');
+        $this->addOption('curl', null, InputOption::VALUE_NONE, 'Output request as a cURL command that can be copy+pasted');
         $this->addArgument('path', InputArgument::REQUIRED, 'The API endpoint to request');
         $this->addArgument('data', InputArgument::OPTIONAL, 'Data to send. This should be a JSON-encoded string. Specify a PHP file that returns an array by prefixing the string with @. E.g., @/my-data.php');
     }
@@ -68,6 +69,8 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         }
 
         $as_form = $input->getOption('as-form');
+
+        $curl = ['curl'];
 
         #------------------------------
         # Get the data to post
@@ -122,13 +125,13 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
                 if (strpos($base_url, '/index.php/') === false) {
                     $base_url .= 'index.php/';
                 }
-                $base_url .= "api/$v2";
+                $base_url .= "api$v2";
             }
             if (!preg_match('#^https?://#', $base_url)) {
                 $base_url = 'http://'.$base_url;
             }
         } else {
-            $base_url = trim(App::getSetting('core.deskpro_url'), '/')."/index.php/api/$v2";
+            $base_url = trim(App::getSetting('core.deskpro_url'), '/')."/index.php/api$v2";
         }
         $path = trim($input->getArgument('path'), '/');
 
@@ -174,8 +177,10 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
 
         if ($v2) {
             $headers['Authorization'] = $api_key;
+            $curl[]                   = '-H \'Authorization: '.$api_key.'\'';
         } else {
             $headers['X-DeskPRO-API-Key'] = $api_key;
+            $curl[]                       = '-H \''.$api_key.'\'';
         }
 
         $http_client = new \Guzzle\Http\Client($base_url, array(
@@ -199,9 +204,12 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
                     }
                 }
                 $request = $http_client->get($path);
+                $curl[]  = '-XGET';
+                $curl[]  = escapeshellarg($base_url.$path);
                 break;
 
             case 'POST':
+                $curl[] = '-XPOST';
                 if ($as_form) {
                     $request = $http_client->post($path, array('Content-Type' => 'application/x-www-form-urlencoded'), $data);
                 } else {
@@ -210,6 +218,7 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
                 break;
 
             case 'PUT':
+                $curl[] = '-XPUT';
                 if ($as_form) {
                     $request = $http_client->put($path, array('Content-Type' => 'application/x-www-form-urlencoded'), $data);
                 } else {
@@ -218,6 +227,7 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
                 break;
 
             case 'DELETE':
+                $curl[] = '-XDELETE';
                 if ($data) {
                     $data_url = http_build_query($data);
                     if (strpos($path, '?')) {
@@ -231,6 +241,27 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
 
             default:
                 return 1;
+        }
+
+        if ($input->getOption('curl')) {
+            if ($req_type == 'POST' || $req_type === 'PUT') {
+                if ($as_form) {
+                    $tmp_name = sys_get_temp_dir().DIRECTORY_SEPARATOR.date('YmdHis').'-'.uniqid('');
+                    file_put_contents($tmp_name, http_build_query($data));
+                    $curl[] = '-d \'@'.$tmp_name.'\'';
+                    $curl[] = '-H \'Content-Type: application/x-www-form-urlencoded\'';
+                } else {
+                    $tmp_name = sys_get_temp_dir().DIRECTORY_SEPARATOR.date('YmdHis').'-'.uniqid('');
+                    file_put_contents($tmp_name, json_encode($data));
+                    $curl[] = '-d \'@'.$tmp_name.'\'';
+                    $curl[] = '-H \'Content-Type: application/json\'';
+                }
+            }
+
+            $output->writeln('<info>'.implode(' ', $curl).'</info>');
+            $output->writeln('');
+
+            return 0;
         }
 
         try {
