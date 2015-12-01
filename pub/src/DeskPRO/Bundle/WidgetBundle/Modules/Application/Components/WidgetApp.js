@@ -85,13 +85,15 @@ export class WidgetApp extends React.Component {
   };
 
   render() {
-    const style = {
-      height: '100%'
-    };
-
     return (
-      <Frame ref="frame" name="widget_iframe" style={style} isVisible={this.props.isVisible}>
-        <WidgetAppBody ref="body" {...this.props} onResize={() => this.refs.frame && this.refs.frame.autoFrameDimensions()} />
+      <Frame ref="frame"
+             name="widget_iframe"
+             frameStyles={{height: '100%'}}
+             containerStyles={{right: 0}}
+             isVisible={this.props.isVisible}>
+
+        <WidgetAppBody ref="body"
+                       onResize={() => this.refs.frame && this.refs.frame.autoFrameDimensions()} {...this.props} />
       </Frame>
     );
   }

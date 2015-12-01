@@ -59,7 +59,7 @@ export class ChatTriggers extends React.Component {
 
     return (
       <Frame ref="frame"
-             style={style}
+             frameStyles={style}
              isVisible={isVisible}
              positionMode="bottom.left">
 

@@ -46,7 +46,7 @@ export default class TriggerButton extends React.Component {
     };
 
     return (
-      <Frame ref="frame" style={style} isVisible={isVisible}>
+      <Frame ref="frame" frameStyles={style} isVisible={isVisible}>
         <TriggerButtonBody onResize={() => this.refs.frame && this.refs.frame.autoFrameDimensions()} onClick={onClick} />
       </Frame>
     );

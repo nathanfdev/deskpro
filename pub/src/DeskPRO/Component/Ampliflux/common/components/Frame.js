@@ -6,7 +6,8 @@ export default class Frame extends React.Component {
 
   static propTypes = {
     name: PropTypes.string,
-    style: PropTypes.object,
+    frameStyles: PropTypes.object,
+    containerStyles: PropTypes.object,
     isVisible: PropTypes.bool,
     positionMode: PropTypes.string,
     children: PropTypes.node
@@ -43,7 +44,7 @@ export default class Frame extends React.Component {
   }
 
   getFrameStyles() {
-    const { style = {}, isVisible, positionMode } = this.props;
+    const { frameStyles = {}, isVisible, positionMode } = this.props;
 
     let position;
     switch (positionMode) {
@@ -71,18 +72,18 @@ export default class Frame extends React.Component {
       position: 'fixed',
       display: isVisible ? 'block' : 'none',
 
-      ...style,
+      ...frameStyles,
       ...position
     };
   }
 
   autoFrameDimensions() {
-    const { style = {} } = this.props;
+    const { frameStyles = {} } = this.props;
     const doc = this.getContentDocument();
 
     const $container = jQuery(doc.body.firstChild);
-    const width = style.width || $container.width();
-    const height = style.height || $container.height();
+    const width = frameStyles.width || $container.width();
+    const height = frameStyles.height || $container.height();
 
     const currentDimensions = this.state.dimensions;
     if (currentDimensions.width === width && currentDimensions.height === height) {
@@ -101,13 +102,13 @@ export default class Frame extends React.Component {
     const doc = this.getContentDocument();
 
     if (doc.readyState === 'complete') {
-      const { style = {} } = this.props;
+      const { frameStyles = {}, containerStyles = {} } = this.props;
       const containerDimensions = {};
-      if (style.width) {
-        containerDimensions.width = style.width;
+      if (frameStyles.width) {
+        containerDimensions.width = frameStyles.width;
       }
-      if (style.height) {
-        containerDimensions.height = style.height;
+      if (frameStyles.height) {
+        containerDimensions.height = frameStyles.height;
       }
 
       if (!this.containerReady) {
@@ -115,7 +116,13 @@ export default class Frame extends React.Component {
         const $body = jQuery(doc.body);
 
         const $styles = jQuery(document).find('style').clone();
-        const $container = jQuery('<div/>', {id: 'react_frame_container', css: containerDimensions});
+        const $container = jQuery('<div/>', {
+          id: 'react_frame_container',
+          css: {
+            ...containerStyles,
+            ...containerDimensions
+          }
+        });
 
         $head.html($styles);
         $body.html($container);
