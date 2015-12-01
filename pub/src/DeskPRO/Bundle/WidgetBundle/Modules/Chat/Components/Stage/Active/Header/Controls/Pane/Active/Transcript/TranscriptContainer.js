@@ -45,8 +45,8 @@ export class TranscriptContainer extends React.Component {
 
         <Simple isOpen={this.state.formOpened}
                 positionTarget={this.refs.button}
-                positionAt="right bottom"
-                positionMy="right top"
+                positionAt="center-18 bottom"
+                positionMy="center top"
                 zIndex={100}>
 
           <ClickOut onClickOut={this.onCloseForm}
