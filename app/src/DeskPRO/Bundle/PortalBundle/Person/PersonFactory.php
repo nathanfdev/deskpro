@@ -35,6 +35,7 @@ use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\People\PersonGuest;
+use Application\DeskPRO\People\UserRuleProcessor;
 use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\AppBundle\Person\Events\PersonCreateEvent;
@@ -64,12 +65,18 @@ class PersonFactory
      */
     private $language_stack;
 
-    public function __construct(EntityManager $em, EventDispatcherInterface $event_dispatcher, BrandStack $brand_stack, LanguageStack $language_stack)
+    /**
+     * @var UserRuleProcessor
+     */
+    private $user_rule_processor;
+
+    public function __construct(EntityManager $em, EventDispatcherInterface $event_dispatcher, BrandStack $brand_stack, LanguageStack $language_stack, UserRuleProcessor $user_rule_processor)
     {
-        $this->em               = $em;
-        $this->brand_stack      = $brand_stack;
-        $this->event_dispatcher = $event_dispatcher;
-        $this->language_stack   = $language_stack;
+        $this->em                  = $em;
+        $this->brand_stack         = $brand_stack;
+        $this->event_dispatcher    = $event_dispatcher;
+        $this->language_stack      = $language_stack;
+        $this->user_rule_processor = $user_rule_processor;
     }
 
     public function createNewPerson()
@@ -119,6 +126,8 @@ class PersonFactory
     public function saveNewPerson(Person $person, CreatePersonContext $context)
     {
         $email = $person->getPrimaryEmail();
+
+        $this->user_rule_processor->newRegister($person);
 
         if (!$person->getLanguage()) {
             $person->setLanguage($this->language_stack->getActiveOrDefault());

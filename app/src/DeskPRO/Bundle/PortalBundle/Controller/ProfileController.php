@@ -302,6 +302,10 @@ class ProfileController extends AbstractController
                 $this->getEm()->flush();
                 // TODO: validation
                 //$this->get('portal_email_sender')->sendEmailConfirmationEmail($new_email);
+
+                // TODO: only apply rules after validation
+                $this->get('user_rule_processor')->newEmail($person, $new_email);
+
                 $this->addFlash('success', $this->phrase('portal.flashes.user_updated_emails'));
 
                 return $this->redirectToRoute('portal_user_profile_emails');
