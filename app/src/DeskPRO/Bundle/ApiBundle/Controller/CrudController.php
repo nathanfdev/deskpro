@@ -41,8 +41,11 @@ use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
+use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Class CrudController.
@@ -359,7 +362,7 @@ abstract class CrudController extends BaseController
             false // clear missing = false to perform partial updates
         );
 
-        if ($form->isValid()) {
+        if ($this->isValid($form)) {
             return View::create($this->dataSerialize($this->persistModel($model)), $status);
         }
 
@@ -389,5 +392,40 @@ abstract class CrudController extends BaseController
         if (!in_array($action, static::$exposeOnly)) {
             throw $this->createAccessDeniedException('Action is restricted');
         }
+    }
+
+    /**
+     * Check form and its' underlying data are valid.
+     *
+     * Even though Symfony form component should call validate on the underlying model, for some reason
+     * $form->isValid() is true even if the model isn't valid. This method fixes the issue by calling validator
+     * on form's model and adding violations to the form if there are any.
+     *
+     * @todo
+     * @fixme
+     *
+     * @param Form $form
+     *
+     * @return bool
+     */
+    private function isValid(Form $form)
+    {
+        $model = $form->getData();
+
+        /** @var ValidatorInterface $validator */
+        $validator  = $this->get('validator');
+        $violations = $validator->validate($model);
+        if ($violations->count()) {
+
+            /** @var \Symfony\Component\Validator\ConstraintViolation $violation */
+            foreach ($violations as $violation) {
+                if (!$targetForm = $form->get($violation->getPropertyPath())) {
+                    $targetForm = $form;
+                }
+                $targetForm->addError(new FormError($violation->getMessage()));
+            }
+        }
+
+        return $form->isValid();
     }
 }

@@ -39,7 +39,7 @@ Feature: /glossary/word endpoint
     """
     Then the response should be in JSON
     And the response status code should be 400
-#    And the JSON node "data.errors.word" should exist
+    And the JSON node "errors.fields.word" should exist
 
   Scenario: I modify a word
     When I send a PUT request to "/api/v2/glossary/words/1" with body:
@@ -71,9 +71,6 @@ Feature: /glossary/word endpoint
     Then the response should be in JSON
     And the response status code should be 200
 
-  @reinstall
-  Scenario: I deleted a word and accessing its' old location
-    When I send a DELETE request to "/api/v2/glossary/words/1"
-    And the response status code should be 200
-    And I send a GET request to "/api/v2/glossary/words/1"
+  Scenario: I try to get not existing word
+    When I send a GET request to "/api/v2/glossary/words/40404"
     Then the response status code should be 404
