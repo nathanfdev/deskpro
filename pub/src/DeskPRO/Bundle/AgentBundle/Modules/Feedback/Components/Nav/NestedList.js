@@ -14,14 +14,15 @@ export class NestedList extends BaseNestedList {
 
   renderListItem(item, depth) {
     this.ensureValidDepth(depth);
-    const { group, count, parent } = item;
-    const label = group[0].toUpperCase() + group.slice(1);
+    console.log('Item', item);
+    const { title, count, parent } = item;
+    const label = title[0].toUpperCase() + title.slice(1);
 
-    const listOptions = this.getListOptions(depth, parent, group);
+    const listOptions = this.getListOptions(depth, parent, title);
     listOptions.isComments = false;
 
     return (
-      <ListItemContainer key={group}
+      <ListItemContainer key={title}
                          label={label}
                          listOptions={listOptions}>
 

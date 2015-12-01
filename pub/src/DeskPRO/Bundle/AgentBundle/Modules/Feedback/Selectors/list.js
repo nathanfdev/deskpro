@@ -116,8 +116,8 @@ export const listFiltersSelector = createSelector(
     if (checkIfShowStatus()) {
       const statuses = navState.get('statuses').toJS();
       const toStatusOptions = (nested, param) => (nested || []).map(opt => ({
-        value: opt.group,
-        label: opt.group,
+        value: opt.title,
+        label: opt.title,
         param: param
       }));
       const statusOptions = [
@@ -135,8 +135,8 @@ export const listFiltersSelector = createSelector(
     // Category options
     if (!currentListParams.get('navItem') || (!currentListParams.get('navItem').get('custom_category'))) {
       const categoryOptions = navState.get('customCategories').toJS().map(cat => ({
-        label: cat.group,
-        value: cat.group
+        label: cat.title,
+        value: cat.title
       }));
       filterSelector.push({
         label: 'Category', type: 'select', param: 'custom_category', quickFilter: true,
