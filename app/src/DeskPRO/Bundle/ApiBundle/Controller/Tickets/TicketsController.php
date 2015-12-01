@@ -188,6 +188,11 @@ class TicketsController extends CrudController
         else {
             $params = $request->query->all();
 
+            // remove include side loading param from the options
+            if (array_key_exists('include', $params)) {
+                unset($params['include']);
+            }
+
             // pagination params
             if (array_key_exists('count', $params)) {
                 unset($params['count']);
