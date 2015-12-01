@@ -16,17 +16,17 @@ Feature: /*_labels endpoints
     And the JSON node "data[0].color" should exist
 
     Examples:
-      | target       | label                    |
-      | person       | First person label       |
-      | organization | First organization label |
-      | ticket       | First ticket label       |
-      | feedback     | First feedback label     |
+      | target       | label        |
+      | person       | AAA-person   |
+      | organization | AAA-org      |
+      | ticket       | AAA-ticket   |
+      | feedback     | AAA-feedback |
 
   Scenario Outline: I search for labels
-    When I send a GET request to "/api/v2/<target>_labels?term=Second"
+    When I send a GET request to "/api/v2/<target>_labels?term=BBB"
     Then the response should be in JSON
     And the response status code should be 200
-    And the JSON node "data[0].label" should contain "Second"
+    And the JSON node "data[0].label" should contain "BBB"
     And the JSON node "data" should have 1 element
 
     Examples:

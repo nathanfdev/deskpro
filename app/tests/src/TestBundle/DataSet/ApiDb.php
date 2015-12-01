@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\LabelDef;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Usersource;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
@@ -461,23 +462,27 @@ class ApiDb extends AbstractDbSet
 
 
         // Labels endpoints test data ----------------------------------------------------------------------------------
+        $feedbackType     = LabelDef::TYPE_FEEDBACK;
+        $organizationType = LabelDef::TYPE_ORGS;
+        $peopleType       = LabelDef::TYPE_PEOPLE;
+        $ticketType       = LabelDef::TYPE_TICKETS;
         $this->getDb()->exec(
             "
             INSERT INTO `label_defs`
                 (`label_type`, `label`, `color`, `total`)
             VALUES
-                ('feedback', 'First feedback label', 'red', 0),
-                ('feedback', 'Second feedback label', 'white', 0),
-                ('feedback', 'Third feedback label', 'red', 0),
-                ('organization', 'First organization label', 'red', 1),
-                ('organization', 'Second organization label', 'blue', 2),
-                ('organization', 'Third organization label', 'green', 42),
-                ('person', 'First person label', 'white', 1),
-                ('person', 'Second person label', 'red', 3),
-                ('person', 'Third person label', 'yellow', 3),
-                ('ticket', 'First ticket label', 'white', 1),
-                ('ticket', 'Second ticket label', 'red', 3),
-                ('ticket', 'Third ticket label', 'green', 13)
+                ('$feedbackType', 'AAA-feedback', 'red', 0),
+                ('$feedbackType', 'BBB-feedback', 'white', 0),
+                ('$feedbackType', 'CCC-feedback', 'red', 0),
+                ('$organizationType', 'AAA-org', 'red', 1),
+                ('$organizationType', 'BBB-org', 'blue', 2),
+                ('$organizationType', 'CCC-org', 'green', 42),
+                ('$peopleType', 'AAA-person', 'white', 1),
+                ('$peopleType', 'BBB-person', 'red', 3),
+                ('$peopleType', 'CCC-person', 'yellow', 3),
+                ('$ticketType', 'AAA-ticket', 'white', 1),
+                ('$ticketType', 'BBB-ticket', 'red', 3),
+                ('$ticketType', 'CCC-ticket', 'green', 13)
             ;
         "
         );
