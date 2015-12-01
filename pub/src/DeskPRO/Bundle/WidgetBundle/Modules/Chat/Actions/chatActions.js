@@ -28,3 +28,7 @@ export const sendChatMessage = createAction(
       .success(response => resolve(response));
   })
 );
+
+export const endChat = createAction('WIDGET_CHAT_END');
+export const reopenChat = createAction('WIDGET_CHAT_REOPEN');
+export const sendFeedback = createAction('WIDGET_CHAT_SEND_FEEDBACK');

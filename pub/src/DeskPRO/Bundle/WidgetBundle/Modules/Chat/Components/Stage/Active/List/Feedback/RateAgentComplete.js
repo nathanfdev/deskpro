@@ -1,6 +1,6 @@
 import React from 'react';
 
-export class RatingComplete extends React.Component {
+export class RateAgentComplete extends React.Component {
 
   render() {
     return (

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { AgentMessage } from './Message/AgentMessage';
 import { UserMessage } from './Message/UserMessage';
 import { TypingMessage } from './Message/TypingMessage';
-import { AgentFeedback } from './Feedback/AgentFeedback';
+import { RateAgentContainer } from './Feedback/RateAgentContainer';
 import ScrollArea from 'react-scrollbar';
 import Immutable from 'immutable';
 
@@ -34,7 +34,7 @@ export class MessagesList extends React.Component {
           <TypingMessage user={Immutable.fromJS({name: 'Noelle'})} />
         </ScrollArea>
 
-        {isEnded && <AgentFeedback />}
+        {isEnded && <RateAgentContainer />}
       </div>
     );
   }

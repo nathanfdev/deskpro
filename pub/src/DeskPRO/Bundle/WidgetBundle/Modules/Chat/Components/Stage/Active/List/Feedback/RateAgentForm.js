@@ -1,6 +1,15 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
-export class ExtraRatingInfo extends React.Component {
+export class RateAgentForm extends React.Component {
+
+  static propTypes = {
+    onSubmit: PropTypes.func.isRequired
+  };
+
+  onSubmit = event => {
+    event.preventDefault();
+    this.props.onSubmit();
+  };
 
   render() {
     return (
@@ -9,7 +18,7 @@ export class ExtraRatingInfo extends React.Component {
         <p className="grey">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
 
         <div className="dpdesignportal-agent-rating-form">
-          <form className="dpdesignportal-form">
+          <form className="dpdesignportal-form" onSubmit={this.onSubmit}>
             <label>
               <span className="dpdesignportal-form-item-label-title">How lorel ipsum is the lorel ipsum</span>
               <textarea placeholder="Enter your message here"></textarea>

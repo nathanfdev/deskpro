@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-export class RateAgent extends React.Component {
+export class RateAgentDialog extends React.Component {
 
   static propTypes = {
     onClickHelpful: PropTypes.func,
