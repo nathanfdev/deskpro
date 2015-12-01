@@ -14,11 +14,9 @@ export class ControlItem extends React.Component {
 
   render() {
     return (
-      <li>
-        <a href="#" className="dpdesignportal-chat-header-control-item" onClick={this.onClick}>
-          {this.props.children}
-        </a>
-      </li>
+      <a href="#" className="dpdesignportal-chat-header-control-item" onClick={this.onClick}>
+        {this.props.children}
+      </a>
     );
   }
 }

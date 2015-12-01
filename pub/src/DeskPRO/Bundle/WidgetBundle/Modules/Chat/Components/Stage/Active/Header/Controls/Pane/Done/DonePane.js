@@ -9,13 +9,16 @@ export class DonePane extends React.Component {
   render() {
     return (
       <ControlsPane>
-        <ControlItem>
-          <i className="fa fa-angle-double-left"></i>Assets
-        </ControlItem>
-
-        <ReopenChatContainer>
-          <ReopenChatButton />
-        </ReopenChatContainer>
+        <li>
+          <ControlItem>
+            <i className="fa fa-angle-double-left"></i>Assets
+          </ControlItem>
+        </li>
+        <li>
+          <ReopenChatContainer>
+            <ReopenChatButton />
+          </ReopenChatContainer>
+        </li>
       </ControlsPane>
     );
   }
