@@ -62,6 +62,7 @@ return array(
     'portal.forms.error_date_day'                   => 'This is not a valid day of the week',
     'portal.forms.error_date_min'                   => 'This date is too far into the past. Please pick a date after {{ date }}.',
     'portal.forms.error_date_max'                   => 'This date is too far into the future. Please pick a date before {{ date }}.',
+    'portal.forms.error_banned_email'               => 'Email "{{ email }}" is banned.',
     'portal.forms.error_captcha'                    => 'This captcha value was incorrect',
     'portal.forms.label_captcha'                    => 'To verify you are a human, please tell us the text you see in the image',
     'portal.forms.error_csrf'                       => 'You did not submit a valid token. For security reasons, please ensure javascript is enabled, and cookies are enabled.',
