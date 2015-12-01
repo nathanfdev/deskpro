@@ -19,6 +19,7 @@ services:
       class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\TicketTransformer
       arguments:
         - @doctrine.orm.default_entity_manager
+        - @ticket_layout_factory
 
     data_serializer.transformer.person:
       class: DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformer\PersonTransformer

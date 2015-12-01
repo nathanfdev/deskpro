@@ -35,6 +35,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTransformerRequest;
 use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
+use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -48,13 +49,19 @@ class TicketTransformer extends AbstractDataSerializerTransformer
     private $em;
 
     /**
+     * @var TicketLayoutFactory
+     */
+    private $ticket_layout_factory;
+
+    /**
      * TicketTransformer constructor.
      *
      * @param $em
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, TicketLayoutFactory $ticket_layout_factory)
     {
-        $this->em = $em;
+        $this->em                    = $em;
+        $this->ticket_layout_factory = $ticket_layout_factory;
     }
 
     /**
@@ -152,6 +159,23 @@ class TicketTransformer extends AbstractDataSerializerTransformer
                     'excerpt'    => $excerpt,
                 ]));
             }
+        }
+
+        if (in_array('ticket_layout', $includes)) {
+            // TODO make this more efficient
+            $edit_layout = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->department);
+            $view_layout = $this->ticket_layout_factory->getLayoutForView($ticket->department);
+
+            $transformation_request->getSerializerContext()->getSideloads()->addSideloadDataId('ticket_layout', $ticket->id, new PrimitiveArray([
+                'edit' => [
+                    'user'  => $edit_layout->getUserLayout()->exportToArray(),
+                    'agent' => $edit_layout->getAgentLayout()->exportToArray(),
+                ],
+                'view' => [
+                    'user'  => $view_layout->getUserLayout()->exportToArray(),
+                    'agent' => $view_layout->getAgentLayout()->exportToArray(),
+                ],
+            ]));
         }
 
         if ($ticket->person_email) {
