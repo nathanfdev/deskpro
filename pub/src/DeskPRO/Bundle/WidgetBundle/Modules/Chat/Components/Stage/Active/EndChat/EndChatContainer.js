@@ -5,7 +5,7 @@ import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { EndChatConfirm } from './EndChatConfirm';
 
 @connect()
-export class EndChatButtonContainer extends React.Component {
+export class EndChatContainer extends React.Component {
 
   static propTypes = {
     confirmPosition: PropTypes.string,

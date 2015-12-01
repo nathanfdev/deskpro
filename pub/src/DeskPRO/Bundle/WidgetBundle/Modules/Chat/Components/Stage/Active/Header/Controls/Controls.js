@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { ControlsPane } from './ControlsPane';
 import { ControlItem } from './ControlItem';
-import { EndChatButtonContainer } from '../../EndChat/EndChatButtonContainer';
+import { EndChatContainer } from '../../EndChat/EndChatContainer';
 import { EndChatButton } from './EndChatButton';
 
 export class Controls extends React.Component {
@@ -26,9 +26,9 @@ export class Controls extends React.Component {
           </span>
         </ControlItem>
 
-        <EndChatButtonContainer confirmPosition="bottom">
+        <EndChatContainer confirmPosition="bottom">
           <EndChatButton />
-        </EndChatButtonContainer>
+        </EndChatContainer>
       </ControlsPane>
     );
   }

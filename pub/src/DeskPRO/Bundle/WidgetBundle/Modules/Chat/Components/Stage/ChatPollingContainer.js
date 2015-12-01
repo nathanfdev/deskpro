@@ -17,7 +17,6 @@ export class ChatPollingContainer extends React.Component {
     chatId: PropTypes.number,
     agentId: PropTypes.number,
     lastMessageId: PropTypes.number,
-    isEnded: PropTypes.bool,
     children: PropTypes.node
   };
 
@@ -26,7 +25,7 @@ export class ChatPollingContainer extends React.Component {
   }
 
   pollingRequest = () => {
-    const { dispatch, chatId, agentId, lastMessageId, isEnded } = this.props;
+    const { dispatch, chatId, agentId, lastMessageId } = this.props;
     if (!chatId) {
       return;
     }
