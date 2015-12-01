@@ -4,11 +4,15 @@ import { RateAgentDialog } from './RateAgentDialog';
 import { RateAgentComplete } from './RateAgentComplete';
 import { RateAgentForm } from './RateAgentForm';
 import { sendFeedback } from '../../../../../Actions/chatActions';
+import { chatIdSelector } from '../../../../../Selectors/chat';
 
-@connect()
+@connect(state => ({
+  chatId: chatIdSelector(state)
+}))
 export class RateAgentContainer extends React.Component {
 
   static propTypes = {
+    chatId: PropTypes.number,
     dispatch: PropTypes.func.isRequired
   };
 
@@ -33,7 +37,9 @@ export class RateAgentContainer extends React.Component {
   };
 
   onSubmitForm = () => {
-    this.props.dispatch(sendFeedback());
+    const { chatId, dispatch } = this.props;
+
+    dispatch(sendFeedback(chatId));
     this.setState({
       stage: 'finished'
     });

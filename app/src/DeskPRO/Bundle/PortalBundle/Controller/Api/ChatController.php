@@ -176,4 +176,18 @@ class ChatController extends AbstractController
 
         return new JsonResponse();
     }
+
+    /**
+     * @Route("/portal/api/chats/{id}/feedback", name="portal_api_chat_feedback")
+     * @Method({"POST"})
+     *
+     * @param ChatConversation $conversation
+     * @param Request          $request
+     *
+     * @return JsonResponse
+     */
+    public function feedbackAction(ChatConversation $conversation, Request $request)
+    {
+        return new JsonResponse();
+    }
 }

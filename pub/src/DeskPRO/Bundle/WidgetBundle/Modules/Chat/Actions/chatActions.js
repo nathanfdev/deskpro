@@ -39,4 +39,7 @@ export const reopenChat = createAction(
   chatId => DpApi.sendPost(`DP_API/chats/${chatId}/reopen`)
 );
 
-export const sendFeedback = createAction('WIDGET_CHAT_SEND_FEEDBACK');
+export const sendFeedback = createAction(
+  'WIDGET_CHAT_SEND_FEEDBACK',
+  (chatId, params) => DpApi.sendPost(`DP_API/chats/${chatId}/feedback`, params)
+);
