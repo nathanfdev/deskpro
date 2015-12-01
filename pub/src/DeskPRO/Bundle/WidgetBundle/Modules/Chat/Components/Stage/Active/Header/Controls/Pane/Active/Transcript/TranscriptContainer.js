@@ -46,7 +46,8 @@ export class TranscriptContainer extends React.Component {
         <Simple isOpen={this.state.formOpened}
                 positionTarget={this.refs.button}
                 positionAt="right bottom"
-                positionMy="right top">
+                positionMy="right top"
+                zIndex={100}>
 
           <ClickOut onClickOut={this.onCloseForm}
                     context={[parent.document, parent.window.widget_iframe.document]}>
