@@ -31,11 +31,14 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
 
+use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupableCriteriaInterface;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\SortableCriteriaInterface;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
@@ -93,6 +96,93 @@ class ChatDataService
     }
 
     /**
+     * Gets a count to display to the user in portal.
+     *
+     * @param Person $person
+     *
+     * @return int
+     */
+    public function countUserChats(Person $person)
+    {
+        $qb = $this->em->createQueryBuilder();
+        $qb->select($qb->expr()->countDistinct('c.id'))
+            ->from('DeskPRO:ChatConversation', 'c');
+
+        $this->configureQbForQueryChats($qb, $person);
+        $qb->distinct(true);
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    /**
+     * Gets a pager of chats for a user in portal.
+     *
+     * @param Person $person
+     * @param $page
+     * @param $max_per_page
+     *
+     * @return Pagerfanta
+     */
+    public function getUserChatPager(Person $person, $page, $max_per_page)
+    {
+        $qb = $this->em->createQueryBuilder();
+        $qb->select('c')
+            ->from('DeskPRO:ChatConversation', 'c');
+
+        $this->configureQbForQueryChats($qb, $person);
+
+        $qb->orderBy('c.id', 'DESC');
+
+        $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
+        $pager->setMaxPerPage($max_per_page);
+        $pager->setCurrentPage($page);
+
+        return $pager;
+    }
+
+    /**
+     * Gets a ChatConversation.
+     *
+     * @param int|Chatconversation $chat
+     *
+     * @return ChatConversation|null
+     */
+    public function getChat($chat)
+    {
+        if (!$chat) { // we need some input
+            return;
+        }
+
+        if ($chat instanceof ChatConversation) { // already have what you seek
+            return $chat;
+        }
+
+        return $this->getChatConversationRepo()->find($chat);
+    }
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\ChatConversation
+     */
+    private function getChatConversationRepo()
+    {
+        return $this->em->getRepository('DeskPRO:ChatConversation');
+    }
+
+    /**
+     * Make a query builder to select ChatConversation's for a user.
+     *
+     * @param Person $person
+     *
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    private function configureQbForQueryChats(QueryBuilder $qb, Person $person)
+    {
+        $qb->andWhere('c.is_agent = 0');
+        $qb->andWhere('c.status = :status')->setParameter('status', ChatConversation::STATUS_ENDED);
+        $qb->andWhere('c.person = :person')->setParameter('person', $person);
+    }
+
+    /**
      * @param GroupableCriteriaInterface $criteria
      *
      * @return Count
@@ -133,7 +223,7 @@ class ChatDataService
         $count = Count::fromGroupedBy($criteria->getGroupBy());
         foreach ($result as $group) {
             $count->add($group['value']);
-            $count->addNested($group['value'], $group['group_name']);
+            $count->addNested($group['value'], $group['group_name'], $criteria->getGroupBy());
         }
 
         return $count;

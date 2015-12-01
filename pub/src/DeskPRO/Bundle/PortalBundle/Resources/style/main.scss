@@ -2792,6 +2792,15 @@ table {
   }
 }
 
+
+      .overflow, a.overflow {
+        @include whitespace;
+      }
+
+      &.use-min-width {
+        min-width: 125px;
+      }
+
 // Date tag for news list
 .date-tag {
   @extend .text-tag;
@@ -9678,6 +9687,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
     text-align: left;
     vertical-align: middle;
     padding: 0;
+    @include whitespace;
   }
 
   td.table-header {

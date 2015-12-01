@@ -58,7 +58,7 @@ class LanguageExtension extends \Twig_Extension
                 'phrase',
                 array($this, 'getPhrase'),
                 array(
-                    'is_safe'           => array('html'),
+                    'is_safe'           => array('all'),
                     'needs_context'     => true,
                     'needs_environment' => true,
                 )

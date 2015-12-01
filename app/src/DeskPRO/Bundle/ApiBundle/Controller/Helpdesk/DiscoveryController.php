@@ -37,7 +37,6 @@ use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Orb\Util\Arrays;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -51,7 +50,6 @@ class DiscoveryController extends BaseController
      *      }
      * )
      * @Get("/helpdesk/discover", name="api_helpdesk_discover")
-     * @Security(true)
      */
     public function discoverAction(Request $request)
     {

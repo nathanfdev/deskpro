@@ -1,10 +1,5 @@
 .dpdesignportal-popover {
   position: relative;
-
-  // Presentation only
-    margin: 100px;
-  //
-
   font-family: lato, helvetica, arial, sans-serif;
   font-size: 13px;
   font-weight: 400;
@@ -16,11 +11,17 @@
   padding: 12px 10px;
   border-radius: 2px;
   background: #fff;
-  max-width: 300px;
+  width: 300px;
 
   &.dpdesignportal-popover-end-chat {
-    @include add-corner(5px, #4681b2, 90%, bottom, "");
     text-align: center;
+
+    &.top {
+      @include add-corner(5px, #4681b2, 90%, bottom, "");
+    }
+    &.bottom {
+      @include add-corner(5px, #4681b2, 90%, top, "");
+    }
   }
 
   &.dpdesignportal-popover-request-transcript {

@@ -4,7 +4,7 @@
     <div class="ticket-message">
       <div class="ticket-owner">
         {{ macros.person_inline(line.person) }}
-        <span>opened this ticket</span>
+        <span>{{ phrase('portal.tickets.timeline_opened') }}</span>
         <span class="ticket-actual-date">({{ line.datetime|date('day') }})</span>
       </div>
     </div>
@@ -13,7 +13,7 @@
       <div class="ticket-owner">
         <div class="ticket-action-date">{{ date_ago(line.datetime) }}</div>
         {{ macros.person_inline(line.person) }}
-        <span>reopened this ticket.</span>
+        <span>{{ phrase('portal.tickets.timeline_re_opened') }}</span>
       </div>
     </div>
   {% elseif line.type == 'ticket_closed' %}
@@ -21,8 +21,8 @@
       <div class="ticket-owner">
         <div class="ticket-action-date">{{ date_ago(line.datetime) }}</div>
         {{ macros.person_inline(line.person) }}
-        <span>marked this ticket:</span>
-        <span class="mark-resolved">Resolved</span>
+        <span>{{ phrase('portal.tickets.timeline_marked') }}</span>
+        <span class="mark-resolved">{{ phrase('portal.tickets.timeline_marked_resolved') }}</span>
       </div>
     </div>
   {% elseif line.type == 'agent_message' %}

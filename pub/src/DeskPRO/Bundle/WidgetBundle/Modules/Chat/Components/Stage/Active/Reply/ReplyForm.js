@@ -1,8 +1,11 @@
 import React, { PropTypes } from 'react';
+import { EndChatButtonContainer } from '../EndChat/EndChatButtonContainer';
+import { EndChatButton } from './EndChatButton';
 
 export class ReplyForm extends React.Component {
 
   static propTypes = {
+    isEnded: PropTypes.bool,
     onSendMessage: PropTypes.func
   };
 
@@ -31,6 +34,12 @@ export class ReplyForm extends React.Component {
   render() {
     return (
       <div className="dpdesignportal-chat-form">
+        {this.props.isEnded &&
+          <div className="dpdesignportal-chat-form-disabled">
+            <a href="#" className="dpdesignportal-button"><i className="fa fa-commenting-o"></i> Reopen this chat</a>
+          </div>
+        }
+
         <form onSubmit={this.onSubmit}>
           <div className="message-container">
             <textarea placeholder="Type your message to Noelle"
@@ -40,6 +49,20 @@ export class ReplyForm extends React.Component {
 
           <button><i className="fa fa-angle-double-right"></i></button>
         </form>
+
+        <div className="dpdesignportal-chat-form-button-row">
+          <div className="dpdesignportal-chat-form-button-row-main">
+            <a href="#"><i className="fa fa-upload"></i> Upload file</a>
+            <a href="#"><i className="fa fa-camera"></i> Screen Share</a>
+            <a href="#" className="dpdesignportal-chat-form-button-row-emoticons" title="Chat Emoticons">
+              <span className="img" />
+            </a>
+          </div>
+
+          <EndChatButtonContainer>
+            <EndChatButton />
+          </EndChatButtonContainer>
+        </div>
       </div>
     );
   }

@@ -147,6 +147,7 @@ define([
   'Admin/Usersources/Ctrl/Edit',
   'Admin/Usersources/Ctrl/New',
   'Admin/Usersources/Ctrl/EditInstance',
+  'Admin/Usersources/Ctrl/EditDeskproInstance',
   'Admin/Usersources/Ctrl/SyncInformation',
   'Admin/Usersources/Helper/UsersourceTypeDecider',
   'Admin/ChatFields/Ctrl/List',

@@ -8,7 +8,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
 
 
     init: ->
-      @instanceId = @$stateParams.id
+      @instanceId = @getInstanceId()
       @permission_groups = []
       @permission_groups_user = []
       @$scope.getController = => return this
@@ -18,7 +18,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
       @presaveCallback = null
       @app = null
 
-
+    getInstanceId: -> @$stateParams.id
 
     initialLoad: ->
       d = @$q.defer()
@@ -164,7 +164,6 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
       @Api.sendPostJson("/apps/instances/#{@instanceId}", postData).then(=>
         @Api.sendGet('/usersources/' + @usersourceType + '/app-' + @instanceId + '/extra-details').then((result) =>
           @$scope.usersource_details = result.data.usersource_details
-          console.log @$scope.usersource_details
         )
         @stopSpinner('saving_settings').then(=>
           @listCtrl().refresh()
@@ -174,9 +173,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
 
 
 
-    saveUsersource: ->
-      @startSpinner('saving_settings')
-
+    doSaveUsersource: ->
       postData = {
         title: @usersource.title,
         is_enabled: @usersource.is_enabled
@@ -189,8 +186,11 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
         (res) =>
           msg = @getRegisteredMessage(res.data.error_code) || res.data.error_message || ''
           @Growl.error msg
-      ).finally => @stopSpinner 'saving_settings'
+      )
 
+    saveUsersource: ->
+      @startSpinner('saving_settings')
+      @doSaveUsersource().finally => @stopSpinner('saving_settings')
 
 
     cannotDeleteUsersource: ->

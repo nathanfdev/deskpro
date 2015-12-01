@@ -85,7 +85,6 @@ class TicketTransformer extends AbstractDataSerializerTransformer
             'ticket_hash',
             'status',
             'hidden_status',
-            'validating',
             'is_hold',
             'urgency',
             'feedback_rating',

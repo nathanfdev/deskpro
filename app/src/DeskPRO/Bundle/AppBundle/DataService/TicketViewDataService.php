@@ -31,15 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
-use Application\DeskPRO\CustomFields\Handler\Choice;
 use Application\DeskPRO\CustomFields\Handler\Date;
-use Application\DeskPRO\CustomFields\Handler\DateTime;
-use Application\DeskPRO\CustomFields\Handler\Display;
-use Application\DeskPRO\CustomFields\Handler\Hidden;
-use Application\DeskPRO\CustomFields\Handler\Text;
-use Application\DeskPRO\CustomFields\Handler\Textarea;
-use Application\DeskPRO\CustomFields\Handler\Toggle;
-use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Organization;
@@ -47,9 +39,11 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
+use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomFieldTicketContext;
 use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomPerFieldManager;
+use DeskPRO\Bundle\PortalBundle\CustomField\CustomFieldUtil;
 use DeskPRO\Bundle\PortalBundle\Form\FormFields;
 use Doctrine\ORM\EntityManager;
 
@@ -75,18 +69,25 @@ class TicketViewDataService extends AbstractDataService
      */
     private $custom_per_field_manager;
 
+    /**
+     * @var BrandAwareSettingsResolver
+     */
+    private $brand_aware_settings;
+
     public function __construct(
         EntityManager $em,
         FormFieldManager $form_field_manager,
         TicketLayoutFactory $ticket_layout_factory,
         Translate $translate,
-        CustomPerFieldManager $custom_per_field_manager
+        CustomPerFieldManager $custom_per_field_manager,
+        BrandAwareSettingsResolver $brand_aware_settings
     ) {
         parent::__construct($em);
         $this->form_field_manager       = $form_field_manager;
         $this->ticket_layout_factory    = $ticket_layout_factory;
         $this->translate                = $translate;
         $this->custom_per_field_manager = $custom_per_field_manager;
+        $this->brand_aware_settings     = $brand_aware_settings;
     }
 
     public function getUserTicketView(Ticket $ticket)
@@ -121,28 +122,34 @@ class TicketViewDataService extends AbstractDataService
                     );
                     break;
                 case FormFields::CATEGORY:
-                    $view->addProperty(
-                        $field_id,
-                        $this->translate->phrase('user.tickets.fields_category'),
-                        $ticket->getCategory(),
-                        $layout_field->isVisibleOnViewAlways()
-                    );
+                    if ($this->hasSetting('core.use_ticket_category')) {
+                        $view->addProperty(
+                            $field_id,
+                            $this->translate->phrase('user.tickets.fields_category'),
+                            $ticket->getCategory(),
+                            $layout_field->isVisibleOnViewAlways()
+                        );
+                    }
                     break;
                 case FormFields::PRODUCT:
-                    $view->addProperty(
-                        $field_id,
-                        $this->translate->phrase('user.tickets.fields_product'),
-                        $ticket->getProduct(),
-                        $layout_field->isVisibleOnViewAlways()
-                    );
+                    if ($this->hasSetting('core.use_product')) {
+                        $view->addProperty(
+                            $field_id,
+                            $this->translate->phrase('user.tickets.fields_product'),
+                            $ticket->getProduct(),
+                            $layout_field->isVisibleOnViewAlways()
+                        );
+                    }
                     break;
                 case FormFields::PRIORITY:
-                    $view->addProperty(
-                        $field_id,
-                        $this->translate->phrase('user.tickets.fields_priority'),
-                        $ticket->getPriority(),
-                        $layout_field->isVisibleOnViewAlways()
-                    );
+                    if ($this->hasSetting('core.use_ticket_priority')) {
+                        $view->addProperty(
+                            $field_id,
+                            $this->translate->phrase('user.tickets.fields_priority'),
+                            $ticket->getPriority(),
+                            $layout_field->isVisibleOnViewAlways()
+                        );
+                    }
                     break;
                 case FormFields::TICKET_FIELD:
                     /** @var \Application\DeskPRO\Entity\CustomDefTicket $field_def */
@@ -220,70 +227,6 @@ class TicketViewDataService extends AbstractDataService
 
     /**
      * @param $field_def
-     * @param $data
-     *
-     * @return bool|string
-     */
-    protected function getValueForCustomFormField(CustomDefAbstract $field_def, CustomDataAbstract $data)
-    {
-        switch ($field_def->getHandlerClass()) {
-            case Date::class:
-                try {
-                    $datetime = new \DateTime($data->getData());
-                    $value    = date('F j, Y', $datetime->getTimestamp());
-                } catch (\Exception $e) {
-                    $value = '';
-                }
-                break;
-            case DateTime::class:
-                try {
-                    $datetime = new \DateTime($data->getData());
-                    $value    = date('F j, Y, g:i a', $datetime->getTimestamp());
-                } catch (\Exception $e) {
-                    $value = '';
-                }
-                break;
-            case Toggle::class:
-                if ($data->getData() == 1) {
-                    $value = $field_def->getOption('label_text') ?: 'Checked';
-                } else {
-                    $value = 'None';
-                }
-                break;
-            case Text::class:
-            case Textarea::class:
-                $value = $data->getData();
-                break;
-            case Choice::class:
-                if (!$data->getValue()) {
-                    $ids = explode(',', $data->getInput());
-                } else {
-                    $ids = array($data->getValue());
-                }
-                $selected = array();
-                foreach ($ids as $id) {
-                    if ($selected_field = $field_def->getChildById($id)) {
-                        $selected[] = $selected_field->getTitle();
-                    }
-                }
-                $value = implode(', ', $selected);
-                break;
-            case Hidden::class:
-                $value = $data->getInput();
-                break;
-            case Display::class:
-                $value = $field_def->getHtmlOption();
-                break;
-            default:
-                $value = null;
-                break;
-        }
-
-        return $value;
-    }
-
-    /**
-     * @param $field_def
      * @param $context
      * @param $data
      *
@@ -319,7 +262,7 @@ class TicketViewDataService extends AbstractDataService
      */
     public function addCustomDataProperty(TicketView $view, $field_id, CustomDefAbstract $field_def, $data, $is_always_visible)
     {
-        $value = $data ? $this->getValueForCustomFormField($field_def, $data) : null;
+        $value = $data ? CustomFieldUtil::getValueForCustomFormField($field_def, $data) : null;
 
         $view->addProperty(
             $field_id,
@@ -329,5 +272,15 @@ class TicketViewDataService extends AbstractDataService
         );
 
         return $value;
+    }
+
+    /**
+     * @param $name
+     *
+     * @return bool
+     */
+    private function hasSetting($name)
+    {
+        return (bool) $this->brand_aware_settings->getSetting($name, false);
     }
 }

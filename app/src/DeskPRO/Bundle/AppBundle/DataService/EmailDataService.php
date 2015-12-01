@@ -33,7 +33,6 @@ namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
-use Application\DeskPRO\Entity\PersonEmailValidating;
 
 class EmailDataService extends AbstractDataService
 {
@@ -68,49 +67,53 @@ class EmailDataService extends AbstractDataService
     /**
      * @param $validating_email_or_id
      *
-     * @return PersonEmailValidating|null
+     * @todo no PersonEmailValidating anymore
      */
     public function getValidatingEmail($validating_email_or_id)
     {
-        $that = $this;
-
-        return $this->generateAndCache(
-            array(
-                'getValidatingEmail',
-                $validating_email_or_id,
-            ),
-            function () use ($that, $validating_email_or_id) {
-                if (!$validating_email_or_id) { // we need some input
-                    return;
-                }
-
-                if ($validating_email_or_id instanceof PersonEmailValidating) { // already have what you seek
-                    return $validating_email_or_id;
-                }
-
-                return $that->getPersonEmailValidatingRepo()->find($validating_email_or_id);
-            }
-        );
+        return;
+        //$that = $this;
+        //
+        //return $this->generateAndCache(
+        //    array(
+        //        'getValidatingEmail',
+        //        $validating_email_or_id,
+        //    ),
+        //    function () use ($that, $validating_email_or_id) {
+        //        if (!$validating_email_or_id) { // we need some input
+        //            return;
+        //        }
+        //
+        //        if ($validating_email_or_id instanceof PersonEmailValidating) { // already have what you seek
+        //            return $validating_email_or_id;
+        //        }
+        //
+        //        return $that->getPersonEmailValidatingRepo()->find($validating_email_or_id);
+        //    }
+        //);
     }
 
     /**
      * @param Person $person
      *
-     * @return PersonEmailValidating[]
+     * @todo no PersonEmailValidating anymore
+     *
+     * @return []
      */
     public function getValidatingEmails(Person $person)
     {
-        $that = $this;
-
-        return $this->generateAndCache(
-            array(
-                'getValidatingEmails',
-                $person,
-            ),
-            function () use ($that, $person) {
-                return $that->getPersonEmailValidatingRepo()->getForPerson($person);
-            }
-        );
+        return [];
+        //$that = $this;
+        //
+        //return $this->generateAndCache(
+        //    array(
+        //        'getValidatingEmails',
+        //        $person,
+        //    ),
+        //    function () use ($that, $person) {
+        //        return $that->getPersonEmailValidatingRepo()->getForPerson($person);
+        //    }
+        //);
     }
 
     /**
@@ -122,10 +125,12 @@ class EmailDataService extends AbstractDataService
     }
 
     /**
-     * @return \Application\DeskPRO\EntityRepository\PersonEmailValidating
+     * @internal
+     *
+     * @todo no PersonEmailValidating anymore
      */
     public function getPersonEmailValidatingRepo()
     {
-        return $this->em->getRepository('DeskPRO:PersonEmailValidating');
+        return;
     }
 }

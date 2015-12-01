@@ -11,8 +11,7 @@ import {
   ChatBeginForm,
   ChatPollingContainer,
   ChatActive,
-  ChatWaiting,
-  ChatDone
+  ChatWaiting
 } from '../../Chat/Components/index';
 import history from '../../../Services/history';
 import store from '../../../Services/store';
@@ -58,7 +57,6 @@ export class WidgetAppBody extends React.Component {
                 <Route component={ChatPollingContainer}>
                   <Route name="chat_waiting" path="waiting" component={ChatWaiting} />
                   <Route name="chat_active" path="active" component={ChatActive} />
-                  <Route name="chat_done" path="done" component={ChatDone} />
                 </Route>
               </Route>
             </Router>

@@ -33,7 +33,6 @@ namespace DeskPRO\Bundle\PortalBundle\Person;
 
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\PersonEmail;
-use Application\DeskPRO\Entity\PersonEmailValidating;
 use DeskPRO\Bundle\AppBundle\DataService\EmailDataService;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackDataService;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
@@ -91,6 +90,8 @@ class PersonValidator
      * @param int|PersonEmail|PersonEmailValidating $email
      * @param bool                                  $is_validating
      * @param bool                                  $flush
+     *
+     * @todo PersonEmailValidating is gone
      */
     public function validateEmail($email, $is_validating = false, $flush = true)
     {
@@ -250,6 +251,8 @@ class PersonValidator
      * @param bool                                  $is_email_validating only true if its a SECONDARY email that was added (not primary)
      *
      * @return string|null the absolute URL that when clicked will re-send the email to the user
+     *
+     * @todo PersonEmailValidating doesn't exist
      */
     public function getResendLink($type, $email_or_id, $type_id = null, $is_email_validating = false)
     {

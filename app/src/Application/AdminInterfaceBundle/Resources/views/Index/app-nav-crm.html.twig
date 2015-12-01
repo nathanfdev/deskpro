@@ -2,8 +2,6 @@
 {% import 'AdminInterfaceBundle:Index:app-nav-macros.html.twig' as nav %}
 {% block nav_content %}
 	{{ nav.list() }}
-		{{ nav.list_item('Registration', ng_href('crm.reg'), 'crm.reg', 'fa-user') }}
-		{{ nav.list_item('Password SEttings', ng_href('crm.password_settings'), 'crm.password_settings', 'fa-asterisk') }}
 		{{ nav.list_item('Auth & SSO', ng_href('crm.usersources'), 'crm.usersources', 'fa-key') }}
 		{{ nav.list_item('User Groups', ng_href('crm.groups'), 'crm.groups', 'fa-group') }}
 		{{ nav.list_item_group('Fields', 'fa-terminal') }}

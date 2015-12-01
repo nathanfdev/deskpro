@@ -138,11 +138,6 @@ class FeedbackController extends AbstractController
                     foreach ($new_feedback->getAttachments() as $attachment) {
                         $attachment->setPerson($person);
                     }
-
-                    // hidden if person isn't valid
-                    if (!$person->isUserValid()) {
-                        $new_feedback->setStatusCode('hidden.user_validating');
-                    }
                 }
 
                 $this->submitNewFeedbackAbuseCheck($person, $request->getClientIp());

@@ -66,6 +66,20 @@ class PasswordPolicyValidator
     }
 
     /**
+     * @param Person $person
+     *
+     * @return PasswordPolicy
+     */
+    public function getPasswordPolicy(Person $person = null)
+    {
+        if ($person && $person->is_agent) {
+            return $this->agent_policy;
+        }
+
+        return $this->user_policy;
+    }
+
+    /**
      * @param string $password The password to check
      * @param Person $person   The user to check on
      * @param string $error
@@ -74,11 +88,7 @@ class PasswordPolicyValidator
      */
     public function checkPassword($password, Person $person = null, &$error = null)
     {
-        if ($person->is_agent) {
-            $policy = $this->agent_policy;
-        } else {
-            $policy = $this->user_policy;
-        }
+        $policy = $this->getPasswordPolicy($person);
 
         if ($policy->min_length && Strings::utf8_strlen($password) < $policy->min_length) {
             $error = 'min_length';

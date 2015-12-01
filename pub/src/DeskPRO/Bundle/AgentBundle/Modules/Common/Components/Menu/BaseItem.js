@@ -1,7 +1,7 @@
 import React from 'react';
 import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
 import ItemFormat from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/ItemFormat';
-import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
+import Positioned from 'DeskPRO/Component/Positioned/Detached';
 import classNames from 'classnames';
 import jQuery from 'jquery';
 

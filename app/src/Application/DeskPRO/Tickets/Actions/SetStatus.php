@@ -70,7 +70,7 @@ class SetStatus extends AbstractAction implements ActionInterface, MacroActionIn
     {
         static $valid_statuses = array(
             'awaiting_agent', 'awaiting_user', 'resolved', 'archived',
-            'hidden.spam', 'hidden.deleted', 'hidden.temp', 'hidden.validating',
+            'hidden.spam', 'hidden.deleted',
         );
 
         return in_array($status, $valid_statuses);

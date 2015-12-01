@@ -17,6 +17,7 @@ export class ChatApp extends React.Component {
         <Link to="/chat/begin/simple">/chat/begin/simple</Link><br />
         <Link to="/chat/begin/conversation">/chat/begin/conversation</Link><br />
         <Link to="/chat/begin/form">/chat/begin/form</Link><br />
+        <Link to="/chat/active">/chat/active</Link><br />
 
         {children}
       </div>

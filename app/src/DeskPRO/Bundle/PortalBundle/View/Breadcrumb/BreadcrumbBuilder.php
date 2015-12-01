@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\PortalBundle\View\Breadcrumb;
 
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\Feedback;
@@ -67,6 +68,32 @@ class BreadcrumbBuilder
             Breadcrumbs::PORTAL,
             array('phrase' => 'portal.general.nav-portal')
         );
+    }
+
+    #####################################################################################################################
+    # CHAT
+    #####################################################################################################################
+
+    public function addChat()
+    {
+        $this->b->add(
+            $this->url_generator->generate('portal_chats'),
+            Breadcrumbs::CHAT,
+            array('phrase' => 'portal.general.nav-chat')
+        );
+
+        return $this;
+    }
+
+    public function addChatView(ChatConversation $chat)
+    {
+        $this->b->add(
+            $this->object_router->getPortalPath($chat),
+            Breadcrumbs::CHAT_VIEW,
+            array('phrase' => 'portal.general.nav-chatlog')
+        );
+
+        return $this;
     }
 
     #####################################################################################################################

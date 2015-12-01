@@ -1452,7 +1452,6 @@ class TicketSearchController extends AbstractController
             'product_id',
             'person_id',
             'person_email_id',
-            'person_email_validating_id',
             'agent_id',
             'agent_team_id',
             'organization_id',
@@ -1465,7 +1464,6 @@ class TicketSearchController extends AbstractController
             'ticket_hash',
             'status',
             'hidden_status',
-            'validating',
             'is_hold',
             'urgency',
             'date_created',
@@ -1510,9 +1508,6 @@ class TicketSearchController extends AbstractController
                     $row[] = preg_replace('/id$/', 'title', $display_field);
                     break;
                 case 'person_email_id':
-                case 'person_email_validating_id':
-                    $row[] = preg_replace('/id$/', 'email', $display_field);
-                    break;
                 case 'person_id':
                 case 'agent_id':
                 case 'agent_team_id':
@@ -1610,17 +1605,6 @@ class TicketSearchController extends AbstractController
                         }
                         break;
                     case 'person_email_id':
-                    case 'person_email_validating_id':
-                        preg_match('/^(.*)_id$/', $display_field, $matches);
-                        list(, $name) = $matches;
-                        $entity       = $ticket->{$name};
-
-                        if ($entity) {
-                            $row[] = $entity->email;
-                        } else {
-                            $row[] = '';
-                        }
-                        break;
                     case 'labels':
                         $row[] = implode('|', $vars['ticket_display']->getTicketLabels($ticket));
                         break;

@@ -280,11 +280,6 @@ return array(
     'core.filestorage_method' => 'db',
 
     /*
-     * Require a user to log in if they enter an email address that is owned by an existing accounts
-     */
-    'core.existing_account_login' => false,
-
-    /*
      * The max attachment an agent can upload
      */
     'core.attach_agent_maxsize' => '5242880',
@@ -487,6 +482,9 @@ return array(
     'core_tickets.agent_rte_button_hr'        => true,
     'core_tickets.agent_rte_button_alignment' => false,
 
+    'core_tickets.web_require_validation'   => false,
+    'core_tickets.email_require_validation' => false,
+
     'core_tickets.use_ref' => false,
 
     'core_tickets.email_history_limit' => 11, // 10 + 1 for the original message at top
@@ -608,6 +606,11 @@ return array(
      * The default "per page" number of results in each of the user's ticket lists
      */
     'portal.per_page_tickets' => 50,
+
+    /*
+     * The default "per page" number of chats to show in the user's chat list page
+     */
+    'portal.per_page_chat' => 50,
 
     /*
      * If the portal should validate based on etags in the http cache layer

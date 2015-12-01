@@ -87,8 +87,8 @@ final class Articles extends AbstractParser
             'oid'            => TransformerInterface::TYPE_STRING,
             'import_map_key' => TransformerInterface::TYPE_STRING,
             'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'     => 'article_',
-                'ref'        => 'oid',
+                'prefix' => 'article_',
+                'ref'    => 'oid',
             )),
             'person'         => TransformerInterface::TYPE_STRING,
             'title'          => TransformerInterface::TYPE_STRING,
@@ -103,10 +103,10 @@ final class Articles extends AbstractParser
             'status'         => TransformerInterface::TYPE_STRING,
             'date_created'   => TransformerInterface::TYPE_DATE,
             'date_published' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
-                'null'       => true,
+                'null' => true,
             )),
             'date_updated' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
-                'null'     => true,
+                'null' => true,
             )),
             'date_end' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
                 'null' => true,
@@ -204,8 +204,8 @@ final class Articles extends AbstractParser
         $formatted = $this->formatter->format($data, array(
             'oid'         => TransformerInterface::TYPE_STRING,
             'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => 'article_comment_',
-                'ref'     => 'oid',
+                'prefix' => 'article_comment_',
+                'ref'    => 'oid',
             )),
             'person_email' => TransformerInterface::TYPE_STRING,
             'content'      => TransformerInterface::TYPE_STRING,
@@ -224,7 +224,6 @@ final class Articles extends AbstractParser
             ->setContent($formatted['content'])
             ->setStatus($formatted['status'])
             ->setAsReviewed($formatted['is_reviewed'])
-            ->setValidating($formatted['validating'])
             ->setDateCreated($formatted['date_created'])
         ;
 

@@ -46,8 +46,6 @@ class FeedbackCommentsDataService extends AbstractDataService
         $qb = $this->em->createQueryBuilder();
         $qb->select('count(c)')
             ->from('DeskPRO:FeedbackComment', 'c')
-            ->andWhere('c.status IN (:validating)')
-            ->setParameter('validating', [FeedbackComment::STATUS_VALIDATING, FeedbackComment::STATUS_USER_VALIDATING])
             ->orWhere('c.is_reviewed = 0');
         try {
             $count = $qb->getQuery()->getSingleScalarResult();

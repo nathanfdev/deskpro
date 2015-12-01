@@ -381,6 +381,14 @@ class AbstractController extends BaseController
     }
 
     /**
+     * @return \DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService
+     */
+    protected function getChatDataService()
+    {
+        return $this->get('data.chat');
+    }
+
+    /**
      * @return \DeskPRO\Bundle\AppBundle\DataService\TicketViewDataService
      */
     protected function getTicketsViewService()

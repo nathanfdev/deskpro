@@ -1817,7 +1817,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function getLabelsArray()
     {
-        return array_map(function ($label) { return $label->getLabel(); }, $this->labels->toArray());
+        $labels = array_map(function ($label) { return $label->getLabel(); }, $this->labels->toArray());
+        sort($labels);
+
+        return $labels;
     }
 
     /**

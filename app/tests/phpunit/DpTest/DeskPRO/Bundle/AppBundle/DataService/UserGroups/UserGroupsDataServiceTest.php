@@ -56,7 +56,7 @@ class UserGroupsDataServiceTest extends DeskProTestCase
     {
         $result = $this->instance()->countPeopleInUserGroups();
         $this->assertInstanceOf(Count::class, $result);
-        $this->assertNotNull($result->getNested());
+        $this->assertNotNull($result->getGroupedBy());
     }
 
     /**

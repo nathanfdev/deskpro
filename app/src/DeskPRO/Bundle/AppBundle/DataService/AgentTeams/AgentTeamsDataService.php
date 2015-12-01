@@ -56,10 +56,10 @@ class AgentTeamsDataService extends AbstractDataService
 
         $result = $qb->getQuery()->getArrayResult();
 
-        $count = Count::fromGroupedBy('agent_teams');
+        $count = Count::fromGroupedBy('agent_team');
         foreach ($result as $group) {
             $count->add($group['value']);
-            $count->addNested($group['value'], $group['group_name']);
+            $count->addNested($group['value'], $group['group_name'], 'agent_team');
         }
 
         return $count;

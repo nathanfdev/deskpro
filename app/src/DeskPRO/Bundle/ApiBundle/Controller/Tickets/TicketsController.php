@@ -34,7 +34,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Labels\LabelsHelper;
-use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketsSelectCriteria;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalTermEngine;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
@@ -61,8 +60,8 @@ class TicketsController extends CrudController
     public static $type   = TicketType::class;
 
     /**
-     * @param HttpKernelInterface $kernel
-     * @param array               $params
+     * @param HttpKernelInterface|object $kernel
+     * @param array                      $params
      *
      * @return Response
      */
@@ -84,7 +83,87 @@ class TicketsController extends CrudController
 
     /**
      * @ApiDoc(
-     *      description="Get a list of tickets",
+     *      description="Get a list of tickets (see parameters description for additional information)",
+     *      parameters={
+     *          {
+     *              "name"="sort",
+     *              "description"="Tickets list sort. Available options: id, date_last_user_reply, urgency.",
+     *              "dataType"="string",
+     *              "required"=false
+     *          },
+     *          {
+     *              "name"="order",
+     *              "description"="Tickets list sort order. Available options: asc, desc.",
+     *              "dataType"="string",
+     *              "required"=false
+     *          },
+     *          {
+     *              "name"="page",
+     *              "description"="Pagination page parameter.",
+     *              "dataType"="number",
+     *              "required"=false
+     *          },
+     *          {
+     *              "name"="count",
+     *              "description"="Pagination results per page parameter.",
+     *              "dataType"="number",
+     *              "required"=false
+     *          },
+     *          {
+     *              "name"="filter",
+     *              "description"="TicketFilter ID option.",
+     *              "dataType"="number",
+     *              "required"=false
+     *          },
+     *          {
+     *              "name"="labels",
+     *              "description"="Labels filter option.",
+     *              "dataType"="array",
+     *              "required"=false
+     *          },
+     *          {
+     *              "name"="star",
+     *              "description"="Star filter.",
+     *              "dataType"="number",
+     *              "required"=false
+     *          },
+     *          {
+     *              "name"="status",
+     *              "description"="Status filter.",
+     *              "dataType"="number",
+     *              "required"=false
+     *          },
+     *          {
+     *              "name"="agent",
+     *              "description"="Agent filter.",
+     *              "dataType"="number",
+     *              "required"=false
+     *          },
+     *          {
+     *              "name"="person",
+     *              "description"="Person filter.",
+     *              "dataType"="number",
+     *              "required"=false
+     *          },
+     *          {
+     *              "name"="organization",
+     *              "description"="Organization filter.",
+     *              "dataType"="number",
+     *              "required"=false
+     *          },
+     *          {
+     *              "name"="problem",
+     *              "description"="Problem filter.",
+     *              "dataType"="number",
+     *              "required"=false
+     *          },
+     *          {
+     *              "name"="department",
+     *              "description"="Department filter.",
+     *              "dataType"="number",
+     *              "required"=false
+     *          }
+     *      },
      *      statusCodes={
      *          200="Success"
      *      }
@@ -108,13 +187,33 @@ class TicketsController extends CrudController
         // otherwise search for IDs using term engine and return Pagerfanta instance
         else {
             $params = $request->query->all();
+
+            // pagination params
             if (array_key_exists('count', $params)) {
                 unset($params['count']);
             }
             if (array_key_exists('page', $params)) {
                 unset($params['page']);
             }
-            $term = TicketsSelectCriteria::createTerm($params);
+
+            // sort and order params
+            if (array_key_exists('sort', $params)) {
+                $sort = $params['sort'];
+                if (!in_array($sort, ['id', 'date_last_user_reply', 'urgency'])) {
+                    throw $this->createBadRequestException("Unknown sort option value: $sort");
+                }
+                unset($params['sort']);
+            } else {
+                $sort = 'id';
+            }
+            if (array_key_exists('order', $params)) {
+                $order = $params['order'];
+                unset($params['order']);
+            } else {
+                $order = 'asc';
+            }
+
+            $term = $this->get('dp.app.term_engine.tickets_select_criteria')->createTerm($params);
 
             /** @var DbalTermEngine $engine */
             $engine        = $this->get('term_engine.dbal.engine');
@@ -125,6 +224,7 @@ class TicketsController extends CrudController
             $total         = $tickets_query->fetchCount();
             $tickets_query->setCount($maxPerPage);
             $tickets_query->setPage($currentPage);
+            $tickets_query->addOrderBy($sort, $order);
             $ids = $tickets_query->fetchIds();
         }
 
@@ -154,6 +254,11 @@ class TicketsController extends CrudController
             ->createQuery('SELECT t from DeskPRO:Ticket t WHERE t.id IN (?0)')
             ->setParameters([$ids]);
 
-        return $query->getResult();
+        $tickets = $query->getResult();
+        usort($tickets, function (Ticket $a, Ticket $b) use ($ids) {
+            return array_search($a->getId(), $ids) > array_search($b->getId(), $ids);
+        });
+
+        return $tickets;
     }
 }

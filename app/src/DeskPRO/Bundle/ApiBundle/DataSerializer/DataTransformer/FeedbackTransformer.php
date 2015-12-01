@@ -57,11 +57,10 @@ class FeedbackTransformer extends AbstractDataSerializerTransformer
             'total_rating',
             'num_ratings',
             'num_comments',
-            'validating',
             'popularity',
             'content',
             'category_id',
-            'custom_data'
+            'custom_data',
         ];
     }
 
@@ -74,7 +73,7 @@ class FeedbackTransformer extends AbstractDataSerializerTransformer
         $feedback = $transformation_request->getDataToBeTransformed();
 
         return [
-            'labels' => $feedback->getStringLabels()
+            'labels' => $feedback->getStringLabels(),
         ];
     }
 }

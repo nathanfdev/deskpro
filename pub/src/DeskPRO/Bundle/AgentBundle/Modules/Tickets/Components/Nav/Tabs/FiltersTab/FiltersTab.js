@@ -4,19 +4,18 @@ import { NestedListContainer } from './NestedListContainer';
 
 export class FiltersTab extends Component {
   static propTypes = {
-    filterSets: PropTypes.object.isRequired,
-    filterSetsCount: PropTypes.object.isRequired,
+    filterSetsCount: PropTypes.object.isRequired
   };
 
   render() {
     return (
       <div>
-        {this.props.filterSets.map(filterSet => (
-          <div key={filterSet.get('id')}>
-            <SectionHeader>{filterSet.get('title')}</SectionHeader>
+        {this.props.filterSetsCount.map(count => (
+          <div key={count.get('id')}>
+            <SectionHeader>{count.get('title')}</SectionHeader>
 
             <NestedListContainer
-              items={this.getFilterSetCounts(filterSet)}
+              items={this.getFilterSetCounts(count)}
               alwaysExpanded
             />
           </div>
@@ -25,8 +24,7 @@ export class FiltersTab extends Component {
     );
   }
 
-  getFilterSetCounts(filterSet) {
-    const count = this.props.filterSetsCount.get(filterSet.get('id'));
+  getFilterSetCounts(count) {
     if (count) {
       const nested = count.get('nested');
       if (nested) {

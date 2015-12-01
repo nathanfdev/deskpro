@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\FeedbackResults;
@@ -671,7 +670,6 @@ class FeedbackController extends AbstractController
             'specific_terms' => array(
                 array('type' => 'label', 'op' => 'is', 'label' => $label),
                 array('type' => 'status', 'op' => 'not', 'status' => 'hidden'),
-                array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating'),
             ),
         ));
 
@@ -709,8 +707,7 @@ class FeedbackController extends AbstractController
         } else {
             $top_result_helper = FeedbackResults::newFromRequest($this, array(
                 'specific_terms' => array(
-                    'status'   => array('type' => 'status', 'op' => 'is', 'status' => $status),
-                    'v_status' => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating'),
+                    'status' => array('type' => 'status', 'op' => 'is', 'status' => $status),
                 ),
             ));
         }
@@ -720,7 +717,6 @@ class FeedbackController extends AbstractController
                 'specific_terms' => array(
                     'status'   => array('type' => 'status', 'op' => 'is', 'status' => $status),
                     'category' => array('type' => 'category', 'op' => 'is', 'category' => $this->in->getString('subgroup')),
-                    'v_status' => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating'),
                 ),
             ));
         } else {

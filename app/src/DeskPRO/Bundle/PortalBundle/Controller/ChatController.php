@@ -1,0 +1,117 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+/**
+ * DeskPRO.
+ */
+namespace DeskPRO\Bundle\PortalBundle\Controller;
+
+use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ChatVoter;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\Request;
+
+class ChatController extends AbstractController
+{
+    /**
+     * @Route("/chat-logs", name="portal_chats")
+     * @Route("/chat-logs", name="user_chatlogs")
+     * @Security("is_granted('ROLE_USER') and is_granted('USE_CHAT')")
+     */
+    public function indexAction(Request $request)
+    {
+        $person = $this->getUser();
+
+        $max_per_page = $this->getBrandSetting('portal.per_page_chat', 50);
+        $page         = $request->get('page', 1);
+
+        $chats = $this->getChatDataService()->getUserChatPager($person, $page, $max_per_page);
+
+        //
+        // BREADCRUMBS
+        //
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildChat();
+
+        return $this->renderThemeView('Theme:Chat:list.html.twig', [
+            'breadcrumbs' => $breadcrumbs,
+            'pager'       => $chats,
+        ]);
+    }
+
+    /**
+     * @Route("/chat-logs/{conversation_id}", name="portal_chats_view")
+     * @Route("/chat-logs/{conversation_id}", name="user_chatlogs_view")
+     * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
+     */
+    public function viewAction(Request $request, $conversation_id)
+    {
+        $chat = $this->getChatDataService()->getChat($conversation_id);
+
+        // if no chat with that ID, or if it was found but is an agent chat
+        if (!$chat || $chat->isAgentChat()) {
+            throw $this->createNotFoundException();
+        }
+
+        // security
+        $this->denyAccessUnlessGranted(ChatVoter::CHAT_VIEW, $chat);
+
+        // ensure the use is able to view the linked ticket
+        $linked_ticket_authorized = null;
+        /** @var \Application\DeskPRO\Entity\Ticket $linked_ticket */
+        if ($linked_ticket = $this->getRepo('DeskPRO:Ticket')->getTicketLinkedToChat($chat)) {
+            if ($this->isGranted(TicketsVoter::TICKET_VIEW, $linked_ticket) && ($linked_ticket->isOpen() || $linked_ticket->isResolved())) {
+                $linked_ticket_authorized = $linked_ticket;
+            }
+        }
+
+        //
+        // BREADCRUMBS
+        //
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildChatConversation($chat);
+
+        //
+        // Gets the chat messages
+        //
+        $chat_messages = $this->getEm()->createQuery('
+            SELECT m
+            FROM DeskPRO:ChatMessage m
+            WHERE m.conversation = :conversation AND m.is_user_hidden = false
+            ORDER BY m.id ASC
+        ')->setParameter('conversation', $chat)->getResult();
+
+        return $this->renderThemeView('Theme:Chat:view.html.twig', [
+            'breadcrumbs'   => $breadcrumbs,
+            'chat'          => $chat,
+            'chat_messages' => $chat_messages,
+            'linked_ticket' => $linked_ticket_authorized,
+            'custom_data'   => $this->get('chat.view')->getCustomDataForChat($chat),
+        ]);
+    }
+}

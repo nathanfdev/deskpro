@@ -16,10 +16,13 @@
     {{ phrase('portal.tickets.list_switch_to_my_tickets') }}
   </a>
   {% endif %}
-
-  <!-- TODO need titles -->
-  <h1>Title</h1>
-  <p>Subtitle</p>
+  {% if type == 'organization' %}
+    <h1>{{ phrase('portal.tickets.list_title_org') }}</h1>
+    <p>{{ phrase('portal.tickets.list_desc_org') }}</p>
+  {% else %}
+    <h1>{{ phrase('portal.tickets.list_title') }}</h1>
+    <p>{{ phrase('portal.tickets.list_desc') }}</p>
+  {% endif %}
 </header>
 
 <div id="ticket_list_page">
@@ -31,9 +34,11 @@
             <a href="{{ path('portal_tickets') }}">
               <div>
                 <div class="title">
-                  Open Tickets
+                  {{ phrase('portal.tickets.list_status_open') }}
                   {% if open_ticket_count > 0 %}
-                  <div class="text-tag rating-tag">{{ open_ticket_count }} awaiting response</div>
+                  <div class="text-tag rating-tag">
+                    {{ phrase('portal.tickets.list_status_open_count', { count: open_ticket_count  }) }}
+                  </div>
                   {% endif %}
                 </div>
               </div>
@@ -43,7 +48,7 @@
           <li class="{{ resolved_only ? 'tab-active' : 'tab-inactive' }}">
             <a href="{{ path('portal_tickets_resolved', { type: type }) }}">
               <div>
-                <span class="title">Resolved</span>
+                <span class="title">{{ phrase('portal.tickets.list_status_resolved') }}</span>
               </div>
             </a>
           </li>
@@ -51,8 +56,8 @@
           <li class="tab-solo">
             <form class="form-filter" method="GET"  id="ticket_list_search_form" action="{{ path('portal_tickets', { type: type }) }}" novalidate>
               <div class="bucket">
-                <span>Search in Tickets:</span>
-                <input title="Search in Tickets" name="q" value="{{ search_query }}" type="text" />
+                <span>{{ phrase('portal.tickets.list_search') }}</span>
+                <input title="{{ phrase('portal.tickets.list_search') }}" name="q" value="{{ search_query }}" type="text" />
               </div>
             </form>
           </li>
@@ -130,7 +135,7 @@
 
           {%- macro col_data(ticket, ticket_view, ticket_table, col) -%}
           {% if col.id == 'department_subject' %}
-          <span class="focus">[{{ ticket.department }}]</span>
+          <span class="focus">[{{ ticket.department.user_title }}]</span>
           {{ ticket.subject }}
           {% else %}
           {% if col.id == 'agent' %}
@@ -193,6 +198,7 @@
           {%- endmacro -%}
 
           {% macro tickets_table(ticket_table, id) %}
+          {% if ticket_table.pager|length > 0 %}
           <div class="column-full">
             <div class="ticket-table" data-id="{{ id }}">
               <header class="titled-header">
@@ -215,7 +221,7 @@
                 <thead>
                   <tr>
                     <td class="table-header ticket-ref">
-                      Reference
+                      {{ phrase('portal.tickets.list_ticket_ref') }}
                     </td>
                     {% for col in ticket_table.columns %}
                     <td class="table-header" data-col="{{ col.id }}"{% if not ticket_table.isActive(col)  %} style="display:none;"{% endif %}>
@@ -229,7 +235,7 @@
                   <tr class="first-in-line">
                     <td class="span-total-cols" colspan="{{ ticket_table.columns|length }}">
                       <div class="filter-warning">
-                        <i class="fa fa-eye"></i> You have an active filter on this view. <a class="dpx-active-filter-link" href="{{ path('portal_tickets', { type: ticket_table.ticketFilter.type }) }}">Click here to clear it</a> and see everything.
+                        <i class="fa fa-eye"></i> {{ phrase('portal.tickets.list_filter') }} <a class="dpx-active-filter-link" href="{{ path('portal_tickets', { type: ticket_table.ticketFilter.type }) }}">{{ phrase('portal.tickets.list_filter_clear') }}</a>
                       </div>
                     </td>
                   </tr>
@@ -248,12 +254,6 @@
                     </td>
                     {% endfor %}
                   </tr>
-                  {% else %}
-                  <tr class="item-row">
-                    <td class="span-total-cols" colspan="{{ ticket_table.columns|length }}">
-                      No tickets! (should we just make the table disappear in this case?)
-                    </td>
-                  </tr>
                   {% endfor %}
                 </tbody>
               </table>
@@ -263,6 +263,7 @@
               {% endif %}
             </div>
           </div>
+          {% endif %}
           {% endmacro %}
 
           {% for table in ticket_list_tables %}

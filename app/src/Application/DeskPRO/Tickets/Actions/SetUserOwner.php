@@ -85,9 +85,8 @@ class SetUserOwner extends AbstractContainerAwareAction implements ActionInterfa
         $orig_person = $ticket->person;
 
         if ($person) {
-            $ticket->person                  = $person;
-            $ticket->person_email            = null;
-            $ticket->person_email_validating = null;
+            $ticket->person       = $person;
+            $ticket->person_email = null;
 
             if ($this->getActionOption('add_cc')) {
                 if (!$ticket->hasParticipantPerson($orig_person)) {

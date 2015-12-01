@@ -281,19 +281,6 @@ class FilterData extends AbstractDefaultData
         );
 
         $filters[] = array(
-            'title'    => 'Awaiting Validation',
-            'sys_name' => 'archive_validating',
-            'order_by' => 'ticket.urgency:desc',
-            'terms'    => array(
-                array(
-                    'type'    => 'status',
-                    'op'      => 'is',
-                    'options' => array('status' => 'hidden.validating'),
-                ),
-            ),
-        );
-
-        $filters[] = array(
             'title'    => 'Spam',
             'sys_name' => 'archive_spam',
             'order_by' => 'ticket.urgency:desc',

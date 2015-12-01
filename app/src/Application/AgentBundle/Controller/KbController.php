@@ -62,7 +62,7 @@ class KbController extends AbstractController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Unknown article $article_id");
         }
 
-        if ($this->in->getBool('do_validate') and $article['status_code'] == 'hidden.validating' && $this->person->hasPerm('agent_publish.validate')) {
+        if ($this->in->getBool('do_validate') and $article['status_code'] == 'hidden.unpublished' && $this->person->hasPerm('agent_publish.validate')) {
             $article['status_code'] = Article::STATUS_PUBLISHED;
             $this->em->persist($article);
             $this->em->flush();
@@ -389,7 +389,7 @@ class KbController extends AbstractController
             case 'status':
                 $article['status_code'] = $this->in->getString('status');
                 if ($article['status_code'] == 'published' && !$this->person->hasPerm('agent_publish.validate')) {
-                    $article['status_code'] = 'hidden.validating';
+                    $article['status_code'] = 'hidden.unpublished';
                 }
                 break;
 

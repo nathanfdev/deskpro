@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
-import Detached from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
-import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
+import Detached from 'DeskPRO/Component/Positioned/Detached';
+import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { YearDropdown } from './YearDropdown';
 
 export class Year extends React.Component {

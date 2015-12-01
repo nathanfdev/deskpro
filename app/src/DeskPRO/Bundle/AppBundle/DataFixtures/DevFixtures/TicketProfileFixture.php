@@ -39,9 +39,11 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
+use DeskPRO\Bundle\AppBundle\DataFixtures\Tools\RandomFileFromDir;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use Orb\Data\ContentTypes;
 use Orb\Types\JsonObjectSerializer;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -62,7 +64,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class TicketProfileFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
 {
-    private static $cnt = 1;
+    private static $cnt     = 1;
     private static $ref_cnt = 1;
 
     /**
@@ -121,10 +123,16 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
     private $fields;
 
     /**
-     * Array of depId => field
+     * Array of depId => field.
+     *
      * @var \Application\DeskPRO\Entity\CustomDefTicket[][]
      */
     private $dep_to_fields;
+
+    /**
+     * @var RandomFileFromDir
+     */
+    private $ava_files;
 
     /**
      * @var array
@@ -185,6 +193,8 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
         $this->db      = $this->container->get('database_connection');
         $this->em      = $this->container->get('doctrine.orm.entity_manager');
 
+        $this->ava_files = new RandomFileFromDir(DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/avatars');
+
         $this->initRecords();
         $this->initDeps();
         $this->initFields();
@@ -194,8 +204,8 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
 
     private function initRecords()
     {
-        $this->agents      = $this->em->createQuery("SELECT p FROM DeskPRO:Person p WHERE p.is_agent = true")->execute();
-        $this->agent_teams = $this->em->createQuery("SELECT t FROM DeskPRO:AgentTeam t")->execute();
+        $this->agents      = $this->em->createQuery('SELECT p FROM DeskPRO:Person p WHERE p.is_agent = true')->execute();
+        $this->agent_teams = $this->em->createQuery('SELECT t FROM DeskPRO:AgentTeam t')->execute();
     }
 
     ####################################################################################################################
@@ -204,37 +214,37 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
 
     protected function initDeps()
     {
-        $this->dep1 = new Department();
+        $this->dep1                     = new Department();
         $this->dep1->is_tickets_enabled = true;
-        $this->dep1->title = 'Widgets';
-        $this->dep1->display_order = self::$cnt++;
-        $this->all_departments[] = $this->dep1;
+        $this->dep1->title              = 'Widgets';
+        $this->dep1->display_order      = self::$cnt++;
+        $this->all_departments[]        = $this->dep1;
 
-        $this->dep2 = new Department();
+        $this->dep2                     = new Department();
         $this->dep2->is_tickets_enabled = true;
-        $this->dep2->title = 'Regulation and Control of Magical Creatures';
-        $this->dep2->display_order = self::$cnt++;
-        $this->all_departments[] = $this->dep2;
+        $this->dep2->title              = 'Regulation and Control of Magical Creatures';
+        $this->dep2->display_order      = self::$cnt++;
+        $this->all_departments[]        = $this->dep2;
 
-        $this->dep2_a = new Department();
+        $this->dep2_a                     = new Department();
         $this->dep2_a->is_tickets_enabled = true;
-        $this->dep2_a->title = 'Regulation';
-        $this->dep2_a->parent = $this->dep2;
-        $this->dep2_a->display_order = self::$cnt++;
-        $this->all_departments[] = $this->dep2_a;
+        $this->dep2_a->title              = 'Regulation';
+        $this->dep2_a->parent             = $this->dep2;
+        $this->dep2_a->display_order      = self::$cnt++;
+        $this->all_departments[]          = $this->dep2_a;
 
-        $this->dep2_b = new Department();
+        $this->dep2_b                     = new Department();
         $this->dep2_b->is_tickets_enabled = true;
-        $this->dep2_b->title = 'Control';
-        $this->dep2_b->parent = $this->dep2;
-        $this->dep2_b->display_order = self::$cnt++;
-        $this->all_departments[] = $this->dep2_b;
+        $this->dep2_b->title              = 'Control';
+        $this->dep2_b->parent             = $this->dep2;
+        $this->dep2_b->display_order      = self::$cnt++;
+        $this->all_departments[]          = $this->dep2_b;
 
-        $this->dep3 = new Department();
+        $this->dep3                     = new Department();
         $this->dep3->is_tickets_enabled = true;
-        $this->dep3->title = 'Hotdogs';
-        $this->dep3->display_order = self::$cnt++;
-        $this->all_departments[] = $this->dep3;
+        $this->dep3->title              = 'Hotdogs';
+        $this->dep3->display_order      = self::$cnt++;
+        $this->all_departments[]        = $this->dep3;
 
         foreach ($this->all_departments as $d) {
             $this->em->persist($d);
@@ -258,59 +268,59 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
 
     private function initFields()
     {
-        $this->fields = [];
+        $this->fields        = [];
         $this->dep_to_fields = [];
 
         #------------------------------
         # Default
         #------------------------------
 
-        $depId = 0;
+        $depId                       = 0;
         $this->dep_to_fields[$depId] = [];
 
-        $f = $this->createField('select', 'Flumdiggler', ['Agree', 'Disagree', 'I\'d rather not say']);
-        $this->fields[] = $f;
+        $f                             = $this->createField('select', 'Flumdiggler', ['Agree', 'Disagree', 'I\'d rather not say']);
+        $this->fields[]                = $f;
         $this->dep_to_fields[$depId][] = $f;
 
         #------------------------------
         # Widgets
         #------------------------------
 
-        $depId = $this->dep1->getId();
+        $depId                       = $this->dep1->getId();
         $this->dep_to_fields[$depId] = [];
 
-        $f = $this->createField('text', 'Widget Type');
-        $this->fields[] = $f;
+        $f                             = $this->createField('text', 'Widget Type');
+        $this->fields[]                = $f;
         $this->dep_to_fields[$depId][] = $f;
 
-        $f = $this->createField('textarea', 'Widget Description');
-        $this->fields[] = $f;
+        $f                             = $this->createField('textarea', 'Widget Description');
+        $this->fields[]                = $f;
         $this->dep_to_fields[$depId][] = $f;
 
-        $f = $this->createField('checkbox', 'Desired Sizes', ['Small', 'Medium', 'Large']);
-        $this->fields[] = $f;
+        $f                             = $this->createField('checkbox', 'Desired Sizes', ['Small', 'Medium', 'Large']);
+        $this->fields[]                = $f;
         $this->dep_to_fields[$depId][] = $f;
 
-        $f = $this->createField('date', 'Manufacture Date');
-        $this->fields[] = $f;
+        $f                             = $this->createField('date', 'Manufacture Date');
+        $this->fields[]                = $f;
         $this->dep_to_fields[$depId][] = $f;
 
         #------------------------------
         # Regulation and Control of Magical Creatures [both]
         #------------------------------
 
-        $depIda = $this->dep2_a->getId();
-        $depIdb = $this->dep2_b->getId();
+        $depIda                       = $this->dep2_a->getId();
+        $depIdb                       = $this->dep2_b->getId();
         $this->dep_to_fields[$depIda] = [];
         $this->dep_to_fields[$depIdb] = [];
 
-        $f = $this->createField('radio', 'Reason for Complaint', ['Nuisance', 'Dangerous', 'Smelly', 'Ugly', 'Mean', 'Other']);
-        $this->fields[] = $f;
+        $f                              = $this->createField('radio', 'Reason for Complaint', ['Nuisance', 'Dangerous', 'Smelly', 'Ugly', 'Mean', 'Other']);
+        $this->fields[]                 = $f;
         $this->dep_to_fields[$depIda][] = $f;
         $this->dep_to_fields[$depIdb][] = $f;
 
-        $f = $this->createField('multiselect', 'Suggested Actions', ['Eviction', 'Shun', 'Fire them off to the moon', 'Strongly worded letter']);
-        $this->fields[] = $f;
+        $f                              = $this->createField('multiselect', 'Suggested Actions', ['Eviction', 'Shun', 'Fire them off to the moon', 'Strongly worded letter']);
+        $this->fields[]                 = $f;
         $this->dep_to_fields[$depIda][] = $f;
         $this->dep_to_fields[$depIdb][] = $f;
 
@@ -318,7 +328,7 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
         # Hotdogs
         #------------------------------
 
-        $depId = $this->dep3->getId();
+        $depId                       = $this->dep3->getId();
         $this->dep_to_fields[$depId] = [];
 
         $f = $this->createField('select', 'Hotdog Kind', [
@@ -326,11 +336,11 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
             ['German', ['Bratwurst', 'Extrawurst', ['Frankfurter', ['Rindswurst', 'Würstchen']]]],
             'Large',
         ]);
-        $this->fields[] = $f;
+        $this->fields[]                = $f;
         $this->dep_to_fields[$depId][] = $f;
 
-        $f = $this->createField('datetime', 'Delivery Time');
-        $this->fields[] = $f;
+        $f                             = $this->createField('datetime', 'Delivery Time');
+        $this->fields[]                = $f;
         $this->dep_to_fields[$depId][] = $f;
     }
 
@@ -360,7 +370,7 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
                 'is_enabled'    => 1,
                 'user_layout'   => $enc,
                 'agent_layout'  => $enc,
-                'date_updated'  => date('Y-m-d H:i:s')
+                'date_updated'  => date('Y-m-d H:i:s'),
             ];
 
             $this->db->replace('ticket_layouts', $insert_layout);
@@ -380,7 +390,7 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
 
     private function setupOrg($name)
     {
-        $org = new Organization();
+        $org       = new Organization();
         $org->name = $name;
 
         $this->em->persist($org);
@@ -393,11 +403,19 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
 
     private function setupPerson(Organization $org, array $person_info = [])
     {
-        $person_info = array_merge(array_shift($this->known_users), $person_info);
+        $person_info                 = array_merge(array_shift($this->known_users), $person_info);
         $person_info['organization'] = $org;
 
         $person = Person::newContactPerson($person_info);
         $person->setPassword('password');
+
+        $ava_file = $this->ava_files->next();
+        $ava      = $this->container->get('deskpro.blob_storage')->createBlobRecordFromString(
+            $ava_file->getRealPath(),
+            $ava_file->getFilename(),
+            ContentTypes::getContentTypeFromFilename($ava_file->getFilename())
+        );
+        $person->picture_blob = $ava;
 
         $this->em->persist($person);
         $this->em->flush();
@@ -422,16 +440,17 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
 
         $ticket = new Ticket();
         $ticket->disableAutoTicketProcess();
-        $ticket->person           = $person;
-        $ticket->department       = $dep;
-        $ticket->ref              = 'DEMO-' . self::$ref_cnt++;
-        $ticket->agent            = $this->faker->randomElement($this->agents);
-        $ticket->agent_team       = $this->faker->randomElement($this->agent_teams);
-        $ticket->urgency          = $this->faker->numberBetween(1, 10);
-        $ticket->status           = $status;
-        $ticket->subject          = $subj;
-        $ticket->original_subject = $subj;
-        $ticket->date_created     = $this->faker->dateTimeThisYear;
+        $ticket->person               = $person;
+        $ticket->department           = $dep;
+        $ticket->ref                  = 'DEMO-'.self::$ref_cnt++;
+        $ticket->agent                = $this->faker->randomElement($this->agents);
+        $ticket->agent_team           = $this->faker->randomElement($this->agent_teams);
+        $ticket->urgency              = $this->faker->numberBetween(1, 10);
+        $ticket->status               = $status;
+        $ticket->subject              = $subj;
+        $ticket->original_subject     = $subj;
+        $ticket->date_created         = $this->faker->dateTimeThisYear;
+        $ticket->date_last_user_reply = $ticket->date_created;
 
         $this->em->persist($ticket);
         $this->em->flush();
@@ -440,7 +459,7 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
         # Messages
         #------------------------------
 
-        $num = $this->faker->numberBetween(1, 8);
+        $num   = $this->faker->numberBetween(1, 8);
         $batch = [];
         for ($i = 0; $i < $num; ++$i) {
             $as_agent = $this->faker->boolean(50);
@@ -469,12 +488,14 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
                 $author = $person;
             }
 
+            $is_note = ($as_agent && $this->faker->boolean(10));
+
             $batch[] = array(
                 'ticket_id'       => $ticket->getId(),
                 'person_id'       => $author->getId(),
                 'date_created'    => date('Y-m-d H:i:s', $ticket->date_created->getTimestamp() + $this->faker->numberBetween(900, 14400)),
                 'creation_system' => 'web',
-                'is_agent_note'   => (int) ($as_agent && $this->faker->boolean(10)),
+                'is_agent_note'   => (int) $is_note,
                 'ip_address'      => $this->faker->ipv4,
                 'hostname'        => $this->faker->domainName,
                 'geo_country'     => $this->faker->countryCode,
@@ -499,7 +520,7 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
                 $num = $this->faker->numberBetween(1, count($f->getChildren()));
             }
 
-            for ($x = 0; $x < $num; $x++) {
+            for ($x = 0; $x < $num; ++$x) {
                 $row_data = [
                     'ticket_id'     => $ticket->getId(),
                     'field_id'      => $f->getId(),
@@ -519,9 +540,9 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
                         $row_data['value'] = time();
                         break;
                     case 'choice':
-                        $opt = $this->faker->randomElement($f->getChildren()->toArray());
+                        $opt                  = $this->faker->randomElement($f->getChildren()->toArray());
                         $row_data['field_id'] = $opt->getId();
-                        $row_data['value'] = 1;
+                        $row_data['value']    = 1;
                         break;
                     default:
                         throw new \InvalidArgumentException();
@@ -540,6 +561,7 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
      * @param string     $type
      * @param string     $title
      * @param array|null $choices
+     *
      * @return CustomDefTicket
      */
     private function createField($type, $title, array $choices = null)
@@ -562,31 +584,31 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
                 $handler_class = 'Application\DeskPRO\CustomFields\Handler\Choice';
                 break;
             case 'multiselect':
-                $handler_class = 'Application\DeskPRO\CustomFields\Handler\Choice';
+                $handler_class       = 'Application\DeskPRO\CustomFields\Handler\Choice';
                 $options['multiple'] = true;
                 break;
             case 'checkbox':
-                $handler_class = 'Application\DeskPRO\CustomFields\Handler\Choice';
+                $handler_class       = 'Application\DeskPRO\CustomFields\Handler\Choice';
                 $options['multiple'] = true;
                 $options['expanded'] = true;
                 break;
             case 'radio':
-                $handler_class = 'Application\DeskPRO\CustomFields\Handler\Choice';
+                $handler_class       = 'Application\DeskPRO\CustomFields\Handler\Choice';
                 $options['multiple'] = false;
                 $options['expanded'] = true;
                 break;
             default:
-                throw new \InvalidArgumentException;
+                throw new \InvalidArgumentException();
         }
 
-        $f = new CustomDefTicket();
-        $f->title = $title;
-        $f->description = 'A custom ' . $f->getWidgetType() . ' field';
-        $f->handler_class = $handler_class;
-        $f->options = $options;
+        $f                  = new CustomDefTicket();
+        $f->title           = $title;
+        $f->description     = 'A custom '.$f->getWidgetType().' field';
+        $f->handler_class   = $handler_class;
+        $f->options         = $options;
         $f->is_user_enabled = true;
-        $f->is_enabled = true;
-        $f->display_order = self::$cnt++;
+        $f->is_enabled      = true;
+        $f->display_order   = self::$cnt++;
 
         $this->em->persist($f);
         $this->em->flush();
@@ -604,25 +626,26 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
      * @param CustomDefTicket      $parent
      * @param CustomDefTicket|null $parent_opt
      * @param array|string         $desc
+     *
      * @return CustomDefTicket
      */
     private function _createSubOptions(CustomDefTicket $parent, CustomDefTicket $parent_opt = null, $desc)
     {
         if (is_array($desc)) {
-            $title = $desc[0];
+            $title  = $desc[0];
             $others = $desc[1];
         } else {
-            $title = $desc;
+            $title  = $desc;
             $others = array();
         }
 
-        $opt_f = new CustomDefTicket();
-        $opt_f->parent = $parent;
-        $opt_f->title = $title;
-        $opt_f->description = '';
+        $opt_f                  = new CustomDefTicket();
+        $opt_f->parent          = $parent;
+        $opt_f->title           = $title;
+        $opt_f->description     = '';
         $opt_f->is_user_enabled = true;
-        $opt_f->is_enabled = true;
-        $opt_f->display_order = self::$cnt++;
+        $opt_f->is_enabled      = true;
+        $opt_f->display_order   = self::$cnt++;
 
         if ($parent_opt) {
             $opt_f->setOption('parent_id', $parent_opt->getId());

@@ -67,11 +67,30 @@ class Problem extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $tickets;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->created = new \DateTime();
         $this->is_open = true;
         $this->tickets = new ArrayCollection();
+    }
+
+    /**
+     * @return Person
+     */
+    public function getCreator()
+    {
+        return $this->creator;
+    }
+
+    /**
+     * @param Person $creator
+     */
+    public function setCreator($creator)
+    {
+        $this->creator = $creator;
     }
 
     ############################################################################
