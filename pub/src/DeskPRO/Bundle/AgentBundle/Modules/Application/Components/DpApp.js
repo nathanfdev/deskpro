@@ -50,7 +50,7 @@ export class DpApp extends React.Component {
   }
 
   render() {
-    const { user, dpWindow, dispatch } = this.props;
+    const { user, dpWindow, dispatch, children } = this.props;
 
     return (
       <div className="dp-window">
@@ -58,7 +58,7 @@ export class DpApp extends React.Component {
         <AppSwitcher dispatch={dispatch} currentApp={dpWindow.get('activeAppId')}/>
 
         <div className="dp-panes-middle">
-          {this.props.children}
+          {children}
 
           <TabBodyPane>
             <TabFrame dpWindow={dpWindow}/>
