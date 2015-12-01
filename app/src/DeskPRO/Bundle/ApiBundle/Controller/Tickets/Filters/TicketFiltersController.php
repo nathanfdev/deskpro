@@ -277,9 +277,7 @@ class TicketFiltersController extends BaseController
      */
     public function getTicketFilterTickets(Request $request, $id)
     {
-        return TicketsController::subRequestSearch($this->get('kernel'), array_merge($request->query->all(), [
-            'filter' => $this->findOr404(TicketFilter::class, $id)->getId(),
-        ]));
+        return TicketsController::subRequestSearch($this->get('kernel'), $request, ['filter' => $this->findOr404(TicketFilter::class, $id)->getId()]);
     }
 
     /**

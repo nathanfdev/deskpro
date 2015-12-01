@@ -60,18 +60,17 @@ class TicketsController extends CrudController
     public static $type   = TicketType::class;
 
     /**
-     * @param HttpKernelInterface|object $kernel
-     * @param array                      $params
+     * @param HttpKernelInterface $kernel
+     * @param Request             $masterRequest
+     * @param array               $params
      *
      * @return Response
      */
-    public static function subRequestSearch($kernel, array $params)
+    public static function subRequestSearch(HttpKernelInterface $kernel, Request $masterRequest, array $params)
     {
-        $request = new Request();
-        $request->attributes->set(
-            '_controller',
-            'ApiBundle:Tickets\Tickets:list'
-        );
+        $request = $masterRequest->duplicate($params, null, [
+            '_controller' => 'ApiBundle:Tickets\Tickets:list',
+        ]);
         $request->query->add($params);
         $response = $kernel->handle(
             $request,

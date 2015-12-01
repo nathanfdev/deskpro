@@ -182,9 +182,9 @@ class TicketStarsController extends BaseController
      *
      * @Get("/ticket_stars/{star}/tickets", name="api_ticket_flag_tickets")
      */
-    public function getTicketsAction($star)
+    public function getTicketsAction(Request $request, $star)
     {
-        return TicketsController::subRequestSearch($this->get('kernel'), ['star' => $star]);
+        return TicketsController::subRequestSearch($this->get('kernel'), $request, ['star' => $star]);
     }
 
     /**

@@ -37,6 +37,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Route;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class OrganizationsController.
@@ -57,8 +58,8 @@ class OrganizationsController extends CrudController
      * )
      * @Get("/{id}/tickets")
      */
-    public function getTicketsAction($id)
+    public function getTicketsAction(Request $request, $id)
     {
-        return TicketsController::subRequestSearch($this->get('kernel'), ['organization' => $id]);
+        return TicketsController::subRequestSearch($this->get('kernel'), $request, ['organization' => $id]);
     }
 }

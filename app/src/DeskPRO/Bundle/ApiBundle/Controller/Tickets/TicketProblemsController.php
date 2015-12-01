@@ -60,9 +60,9 @@ class TicketProblemsController extends CrudController
      * )
      * @Get("/{id}/tickets")
      */
-    public function getTicketsAction($id)
+    public function getTicketsAction(Request $request, $id)
     {
-        return TicketsController::subRequestSearch($this->get('kernel'), ['problem' => $id]);
+        return TicketsController::subRequestSearch($this->get('kernel'), $request, ['problem' => $id]);
     }
 
     /**
