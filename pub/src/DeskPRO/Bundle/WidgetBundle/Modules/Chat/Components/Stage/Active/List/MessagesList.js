@@ -29,8 +29,8 @@ export class MessagesList extends React.Component {
     const { messages, isEnded } = this.props;
 
     return (
-      <div>
-        <ScrollArea className="dpdesignportal-content" vertical>
+      <div className="dpdesignportal-content">
+        <ScrollArea vertical>
           {messages.map((message, index) => this.renderMessage(message, index))}
           <TypingMessage user={Immutable.fromJS({name: 'Noelle'})} />
           <TranscriptSent />
