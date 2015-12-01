@@ -54,8 +54,8 @@ class CheckUserLabelTest extends AbstractEntityCheckTest
         $bogus        = new LabelPerson();
         $bogus->label = 'bogus';
 
-        $person->labels->add($bogus);
-        $person->labels->add($object);
+        $person->addLabel($bogus);
+        $person->addLabel($object);
 
         $ticket         = new Ticket();
         $ticket->id     = $id;
