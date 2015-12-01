@@ -46,6 +46,12 @@ export default class Frame extends React.Component {
 
     let position;
     switch (positionMode) {
+      case 'top.left':
+        position = {left: 0, top: 0};
+        break;
+      case 'top.right':
+        position = {right: 0, top: 0};
+        break;
       case 'bottom.left':
         position = {left: 0, bottom: 0};
         break;
