@@ -1669,6 +1669,11 @@ $search-btn-height: $search-height - 24;
       background: #f3f3f3;
       position: relative;
       top: -(($search-height / 2) - 15);
+
+      @media all and (-ms-high-contrast: none) {
+        top: 25px;
+      }
+
       z-index: 300;
     }
   }
