@@ -16,6 +16,7 @@ Feature: /people endpoint
     And the JSON node "data[0].name" should be equal to "Link Admin"
     And the JSON node "meta.pagination.count" should be equal to 4
 
+  @basic
   Scenario: I get a single person
     When I send a GET request to "/api/v2/people/1"
     Then the response should be in JSON
