@@ -1,11 +1,8 @@
 import React, { PropTypes } from 'react';
 import { AgentMessage } from './Message/AgentMessage';
 import { UserMessage } from './Message/UserMessage';
-import { TypingMessage } from './Message/TypingMessage';
-import { TranscriptSent } from './Message/TranscriptSent';
 import { RateAgentContainer } from './Feedback/RateAgentContainer';
 import ScrollArea from 'react-scrollbar';
-import Immutable from 'immutable';
 
 export class MessagesList extends React.Component {
 
@@ -30,15 +27,14 @@ export class MessagesList extends React.Component {
 
     return (
       <div className="dpdesignportal-content">
-        <ScrollArea vertical>
-          <div className="bottom-aligner"/>
-          <div>
-            {messages.map((message, index) => this.renderMessage(message, index))}
-            <TypingMessage user={Immutable.fromJS({name: 'Noelle'})} />
-            <TypingMessage user={Immutable.fromJS({name: 'Noelle'})} />
-            <TranscriptSent />
-          </div>
-        </ScrollArea>
+        {messages.size &&
+          <ScrollArea vertical>
+            <div className="bottom-aligner"/>
+            <div>
+              {messages.map((message, index) => this.renderMessage(message, index))}
+            </div>
+          </ScrollArea>
+        }
 
         {isEnded && <RateAgentContainer />}
       </div>

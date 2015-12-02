@@ -6,7 +6,10 @@ import moment from 'moment';
 
 const initialState = {
   chat: {
-    messages: [],
+    messages: [
+      {message: 'my message', type: 'user'},
+      {message: 'my message2 ', type: 'agent'}
+    ],
     date_ended: moment().format('X')
   }
 };
