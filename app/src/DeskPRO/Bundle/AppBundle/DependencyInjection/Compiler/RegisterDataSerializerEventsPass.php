@@ -29,14 +29,20 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\DependencyInjection\Compiler;
+namespace DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
+/**
+ * Class RegisterDataSerializerEventsPass.
+ */
 class RegisterDataSerializerEventsPass implements CompilerPassInterface
 {
+    /**
+     * {@inheritdoc}
+     */
     public function process(ContainerBuilder $container)
     {
         $dispatcher_definition = $container->getDefinition('data_serializer.event_dispatcher');
