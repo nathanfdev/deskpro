@@ -183,7 +183,11 @@ class Count
      */
     public function setId($id)
     {
-        $this->id = $id;
+        if ($id === null) {
+            $this->id = 0;
+        } else {
+            $this->id = $id;
+        }
     }
 
     /**
@@ -199,7 +203,11 @@ class Count
      */
     public function setTitle($title)
     {
-        $this->title = $title;
+        if ($title === null) {
+            $this->title = '';
+        } else {
+            $this->title = $title;
+        }
     }
 
     /**
