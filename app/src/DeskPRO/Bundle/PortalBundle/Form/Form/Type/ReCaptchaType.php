@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints\ValidRecaptcha2;
+use ReCaptchaSecureToken\ReCaptchaToken;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
@@ -54,7 +55,21 @@ class ReCaptchaType extends AbstractType
 
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        $view->vars['site_key'] = $this->brand_stack->getActive()->getSetting('core.recaptcha2_site_key');
+        $site_key = $this->getSiteKey();
+
+        $view->vars['site_key'] = $site_key;
+
+        $secure_token = null;
+        if (self::isCloudRecapchaEnabled()) {
+            $secure = new ReCaptchaToken([
+                'site_key'    => $site_key,
+                'site_secret' => $this->getCloudRecaptchaSecret(),
+            ]);
+            $session_id   = uniqid('recaptcha');
+            $secure_token = $secure->secureToken($session_id);
+        }
+
+        $view->vars['secure_token'] = $secure_token;
     }
 
     public function getName()
@@ -71,5 +86,72 @@ class ReCaptchaType extends AbstractType
                 new ValidRecaptcha2(),
             ],
         ]);
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function getSecretKey()
+    {
+        $setting_secret = $this->brand_stack->getActive()->getSetting('core.recaptcha2_secret_key');
+
+        if (strlen($setting_secret) > 0) {
+            return $setting_secret;
+        }
+
+        return self::getCloudRecaptchaSecret();
+    }
+
+    /**
+     * @return null|string
+     */
+    protected function getSiteKey()
+    {
+        $setting_key = $this->brand_stack->getActive()->getSetting('core.recaptcha2_site_key');
+
+        if (strlen($setting_key) > 0) {
+            return $setting_key;
+        }
+
+        // if there is no setting key, try the cloud constants
+        return self::getCloudRecaptchaSiteKey();
+    }
+
+    /**
+     * Returns true/false on if the cloud recaptcha is enabled. This
+     * condition is NOT sufficient to use the cloud credentials, because
+     * a cloud account can still install their own recaptcha app (with
+     * their google credentials).
+     *
+     * Must first check to see if the setting "core.use_recaptcha2" is enabled
+     * and use the credentials from settings.
+     *
+     * @return bool
+     */
+    public static function isCloudRecapchaEnabled()
+    {
+        return (
+            (defined('DPC_IS_CLOUD') && DPC_IS_CLOUD)
+            &&
+            (defined('DP_RECAPTCHA2_CLOUD') && DP_RECAPTCHA2_CLOUD)
+        );
+    }
+
+    public static function getCloudRecaptchaSiteKey()
+    {
+        if (self::isCloudRecapchaEnabled()) {
+            return defined('DP_RECAPTCHA2_SITE_KEY') ? DP_RECAPTCHA2_SITE_KEY : null;
+        }
+
+        return;
+    }
+
+    public static function getCloudRecaptchaSecret()
+    {
+        if (self::isCloudRecapchaEnabled()) {
+            return defined('DP_RECAPTCHA2_SECRET_KEY') ? DP_RECAPTCHA2_SECRET_KEY : null;
+        }
+
+        return;
     }
 }

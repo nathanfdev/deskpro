@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints;
 
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\ReCaptchaType;
 use ReCaptcha\ReCaptcha;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Validator\Constraint;
@@ -57,7 +58,7 @@ class ValidRecaptcha2Validator extends ConstraintValidator
      */
     public function validate($value, Constraint $constraint)
     {
-        $recaptcha = new ReCaptcha($this->brand_stack->getActive()->getSetting('core.recaptcha2_secret_key'));
+        $recaptcha = new ReCaptcha($this->getSecretKey());
 
         $request         = $this->request_stack->getMasterRequest();
         $recaptcha_value = $request->get('g-recaptcha-response');
@@ -67,5 +68,19 @@ class ValidRecaptcha2Validator extends ConstraintValidator
         if (!$response->isSuccess()) {
             $this->context->addViolation($constraint->message);
         }
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function getSecretKey()
+    {
+        $setting_secret = $this->brand_stack->getActive()->getSetting('core.recaptcha2_secret_key');
+
+        if (strlen($setting_secret) > 0) {
+            return $setting_secret;
+        }
+
+        return ReCaptchaType::getCloudRecaptchaSecret();
     }
 }

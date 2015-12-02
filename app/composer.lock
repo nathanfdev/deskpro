@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "86c0d2ab3e54f9a7b0a8fb8345315c8c",
-    "content-hash": "fbc89a3575737b57501d02075ec97c77",
+    "hash": "f216fba597e0fa2612f57d268c295b06",
+    "content-hash": "476030197a4b8dbc5b0183e327200a7f",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -6080,6 +6080,49 @@
             "time": "2015-10-02 13:25:14"
         },
         {
+            "name": "slushie/recaptcha-secure-token",
+            "version": "1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/slushie/recaptcha-secure-token.git",
+                "reference": "1a83759fc08daf27a3fb7ef537a98d2fe38aa26f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/slushie/recaptcha-secure-token/zipball/1a83759fc08daf27a3fb7ef537a98d2fe38aa26f",
+                "reference": "1a83759fc08daf27a3fb7ef537a98d2fe38aa26f",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mcrypt": "*",
+                "php": ">= 5.3.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ReCaptchaSecureToken\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Josh Leder",
+                    "email": "slushie@gmail.com"
+                }
+            ],
+            "description": "Generate ReCaptcha-compatible secure tokens",
+            "homepage": "https://github.com/slushie/recaptcha-secure-token",
+            "keywords": [
+                "recaptcha",
+                "secure token",
+                "stoken"
+            ],
+            "time": "2015-10-07 16:13:48"
+        },
+        {
             "name": "squizlabs/php_codesniffer",
             "version": "1.4.7",
             "source": {
@@ -7003,7 +7046,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/3d75c1cf4a2a24370ba1764e1f9969920420092d",
+                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/187a3ce3c350a4c7fb3c62dcd0acd5e9a2a3d0e4",
                 "reference": "3d75c1cf4a2a24370ba1764e1f9969920420092d",
                 "shasum": ""
             },
