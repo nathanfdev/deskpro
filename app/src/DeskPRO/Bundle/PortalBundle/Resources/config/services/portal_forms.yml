@@ -340,3 +340,8 @@ services:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\CreateChatType
     tags:
       - { name: form.type, alias: api_chat_create }
+
+  form.api.chat_feedback:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\CreateChatType
+    tags:
+      - { name: form.type, alias: api_chat_feedback }
