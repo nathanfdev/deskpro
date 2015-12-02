@@ -76,10 +76,10 @@ class DevLangsFixture extends AbstractFixture implements ContainerAwareInterface
     {
         $batch = [
             [
-                'sys_name'      => 'dev_findmissing',
+                'sys_name'      => 'dev_blankout',
                 'lang_code'     => 'eng',
-                'title'         => 'Dev Find Missing',
-                'base_filepath' => '%DP_ROOT%/languages/dev_findmissing',
+                'title'         => 'Dev Blank Out',
+                'base_filepath' => '%DP_ROOT%/languages/dev_blankout',
                 'locale'        => 'en_T1',
                 'flag_image'    => 'us.png',
                 'is_rtl'        => 0,
