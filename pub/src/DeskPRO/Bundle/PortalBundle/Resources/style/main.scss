@@ -2334,9 +2334,9 @@ header {
   margin-bottom: 10px;
   padding-left: 10px;
 
-  // @media screen and (max-width: 760px) {
-  //   padding-left: 0px;
-  // }
+  @media screen and (max-width: 760px) {
+    padding-left: 0px;
+  }
 
   .news-header-info {
     display: inline-block;
@@ -2539,6 +2539,13 @@ header {
   margin-left: 10px;
   margin-right: 5px;
 
+  @media screen and (max-width: 760px) {
+    display: block;
+    float: none;
+    width: 100%;
+    margin: 0;
+  }
+
   a {
     display: inline-block;
     padding: 0 0.5em;
@@ -2560,6 +2567,15 @@ header {
       color: $text-color-lighter;
       vertical-align: middle;
       font-size: 0.9em;
+    }
+
+    @media screen and (max-width: 760px) {
+      display: block;
+      padding: 5px;
+      width: 100%;
+      margin-bottom: 10px;
+      text-align: center;
+      font-weight: bold;
     }
   }
 }
@@ -5878,6 +5894,9 @@ ul.categories-article-list {
 
   header, .padded {
     padding-left: 10px;
+    @media screen and (max-width: 760px) {
+      padding-left: 0px;
+    }
   }
 
   header {
