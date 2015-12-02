@@ -21,9 +21,12 @@ export class ChatActiveContainer extends React.Component {
     return (
       <div>
         <Header />
-        <MessagesListContainer />
-        {isEnded && <RateAgentContainer />}
-        <ReplyFormContainer />
+
+        <div className="dpdesignportal-chat-footer">
+          <MessagesListContainer />
+          {isEnded && <RateAgentContainer />}
+          <ReplyFormContainer />
+        </div>
       </div>
     );
   }
