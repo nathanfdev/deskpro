@@ -166,6 +166,15 @@ hr {
     font-weight: 400;
     font-size: 1.1em;
   }
+
+  &.minor {
+    text-align: left;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    h1, h2 {
+      padding-left: 0;
+    }
+  }
 }
 
 .titled-header-left {

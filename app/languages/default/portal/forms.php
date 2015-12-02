@@ -27,7 +27,7 @@
  */
 
 return array(
-    'portal.forms.label_save'             => 'Save Changes',
+    'portal.forms.label_save'             => 'Save',
     'portal.forms.label_submit'           => 'Submit',
     'portal.forms.label_email'            => 'Email',
     'portal.forms.label_name'             => 'Name',
