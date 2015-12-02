@@ -25,7 +25,6 @@
 
 @mixin generate-background-and-border($bg) {
   border: 0;
-  border-bottom: 1px solid shade($bg, 15%);
   border-radius: 2px;
   background: $bg;
 }
@@ -34,7 +33,6 @@
   display: inline-block;
   padding: $padding-vertical $padding-horizontal;
   border: 0;
-  border-bottom: 1px solid shade($bg, 15%);
   border-radius: 2px;
   background: $bg;
   color: $text;
@@ -43,7 +41,6 @@
   line-height: 1em;
 
   &:hover {
-    border-bottom: 1px solid shade($bg, 15%);
     background: shade($bg, 5%);
     color: #ffffff;
   }
@@ -364,6 +361,7 @@ button, .button, input[type="submit"] {
   font-weight: 400;
   font-size: 13px;
   line-height: 1em;
+  text-align: center;
 
   @media screen and (max-width: 760px) {
     display: block;
