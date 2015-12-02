@@ -1,0 +1,11 @@
+<style type="text/css">
+    {# This is copy+pasted from dpx.scss. It needs to be inline because it needs to be instant. #}
+    body .as-no-dpui { display: block; }
+    body .as-dpui { display: none; }
+    body.with-dpui .as-no-dpui { display: none; }
+    body.with-dpui .as-dpui { display: block; }
+    body.with-js .with-dpx { visibility: hidden; }
+    body.with-js .with-dpx { visibility: hidden; }
+    body.with-js.without-dpui.with-pageload-done .with-dpx { visibility: visible; }
+    body.with-js.with-dpui.with-pageload-dpx-done .with-dpx { visibility: visible; }
+</style>

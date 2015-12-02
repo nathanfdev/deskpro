@@ -1,0 +1,11 @@
+<script type="text/javascript">
+    (function(){
+        document.body.className = document.body.className + ' with-pageload-done';
+        if (window.WITH_DPUI) {
+            window.setTimeout(function () {
+                // fallback
+                document.body.className = document.body.className + ' with-dpx-done';
+            }, 4000);
+        }
+    })();
+</script>

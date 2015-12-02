@@ -99,6 +99,7 @@ export default class PageWidget {
    * Called to a request to render itself.
    */
   render() {
+    throw new Error("test error");
     let pre = this.preRender();
 
     if (pre && pre.then) {
