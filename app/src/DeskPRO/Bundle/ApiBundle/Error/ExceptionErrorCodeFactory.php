@@ -56,15 +56,18 @@ class ExceptionErrorCodeFactory
      */
     public function getExceptionErrorCode(\Exception $exception)
     {
-        if ($error_code = $this->findMappedMessage($exception->getMessage())) {
+        $error_code = $this->findMappedMessage($exception->getMessage());
+        if ($error_code) {
             return $error_code;
         }
 
-        if ($error_code = $exception->getMessage()) {
+        $error_code = $exception->getMessage();
+        if ($error_code) {
             return $error_code;
         }
 
-        if ($error_code = $this->findMappedErrorCode(get_class($exception))) {
+        $error_code = $this->findMappedErrorCode(get_class($exception));
+        if ($error_code) {
             return $error_code;
         }
 
@@ -73,6 +76,8 @@ class ExceptionErrorCodeFactory
 
     /**
      * @param $exception_class
+     *
+     * @return string
      */
     protected function findMappedErrorCode($exception_class)
     {
@@ -82,11 +87,13 @@ class ExceptionErrorCodeFactory
             }
         }
 
-        return;
+        return '';
     }
 
     /**
      * @param $exception_message
+     *
+     * @return string
      */
     protected function findMappedMessage($exception_message)
     {
@@ -96,6 +103,6 @@ class ExceptionErrorCodeFactory
             }
         }
 
-        return;
+        return '';
     }
 }

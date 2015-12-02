@@ -54,12 +54,12 @@ class ValidatorErrorCodeFactory
         if ($violation->getMessage() === 'This form should not contain extra fields.') {
             return ApiErrors::EXTRA_FIELDS;
         }
-
         if ($violation->getCause() instanceof TransformationFailedException) {
             return ApiErrors::INVALID_DATA_TYPE;
         }
 
-        if ($constraint = $violation->getConstraint()) {
+        $constraint = $violation->getConstraint();
+        if ($constraint) {
             switch (get_class($constraint)) {
                 case 'Symfony\Component\Validator\Constraints\NotNull':
                     return ApiErrors::NOT_NULL;
@@ -78,7 +78,8 @@ class ValidatorErrorCodeFactory
             }
         }
 
-        if ($code = $violation->getMessage()) {
+        $code = $violation->getMessage();
+        if ($code) {
             return $this->filterCode($code);
         }
 
@@ -97,7 +98,8 @@ class ValidatorErrorCodeFactory
             return $this->getConstraintErrorCode($cause);
         }
 
-        if ($code = $form_error->getMessage()) {
+        $code = $form_error->getMessage();
+        if ($code) {
             return $this->filterCode($code);
         }
 
