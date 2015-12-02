@@ -4664,12 +4664,15 @@ h1.fancy-header {
         position: absolute;
         top: 2px;
         left: 3px;
+
+        @media all and (-ms-high-contrast: none) {// Align the check mark on explorer
+          top: 3px;
+          left: 2px;
+        }
       }
 
       @media screen and (-webkit-min-device-pixel-ratio: 0) {
-        i {
-          left: 2px;
-        }
+        i { left: 2px; }
       }
     }
   }
