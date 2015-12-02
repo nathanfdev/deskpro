@@ -16,6 +16,7 @@ const initialState = {
 
 export default createReducer(initialState, {
   [actions.updateChatInfo]: setFullPayload('chatInfo'),
+  [actions.resetMessages]: setValue('messages', []),
   [actions.addNewMessages]: (state, payload) => {
     const oldMessages = state.get('messages', Immutable.fromJS([])).toJS();
     return state.set('messages', Immutable.fromJS(oldMessages.concat(payload)));

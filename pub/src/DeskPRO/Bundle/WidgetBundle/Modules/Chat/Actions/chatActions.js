@@ -2,14 +2,16 @@ import { createAction } from 'Ampliflux';
 import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 
-export const updateChatInfo = createAction('WIDGET_UPDATE_CHAT_INFO');
-export const addNewMessages = createAction('WIDGET_ADD_NEW_MESSAGES');
+export const updateChatInfo = createAction('WIDGET_CHAT_UPDATE_CHAT_INFO');
+export const resetMessages = createAction('WIDGET_CHAT_RESET_MESSAGES');
+export const addNewMessages = createAction('WIDGET_CHAT_ADD_NEW_MESSAGES');
 
 export const createChat = createAction(
   'WIDGET_CHAT_CREATE_NEW',
   params => dispatch => DpApi
     .sendPost('DP_API/chats/create', params)
     .success(response => {
+      dispatch(resetMessages());
       dispatch(updateChatInfo(response.data));
     })
 );
