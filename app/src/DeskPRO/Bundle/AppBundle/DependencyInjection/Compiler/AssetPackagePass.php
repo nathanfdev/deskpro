@@ -52,6 +52,18 @@ class AssetPackagePass implements CompilerPassInterface
         $def->setArguments(array('web', false));
         $container->setDefinition('templating.asset.default_package.ssl', $def);
 
+        //templating.asset.package.vendor_assets.http
+        $def = new Definition('Symfony\Component\Templating\Asset\Package');
+        $def->setFactory(array(new Reference('dp.asset_package_factory'), 'createPackageForPath'));
+        $def->setArguments(array('pub/node_modules', false));
+        $container->setDefinition('templating.asset.package.vendor_assets.http', $def);
+
+        //templating.asset.package.vendor_assets.ssl
+        $def = new Definition('Symfony\Component\Templating\Asset\Package');
+        $def->setFactory(array(new Reference('dp.asset_package_factory'), 'createPackageForPath'));
+        $def->setArguments(array('pub/node_modules', true));
+        $container->setDefinition('templating.asset.package.vendor_assets.ssl', $def);
+
         //templating.asset.package.app_assets.http
         $def = new Definition('Symfony\Component\Templating\Asset\Package');
         $def->setFactory(array(new Reference('dp.asset_package_factory'), 'createPackageForPath'));
