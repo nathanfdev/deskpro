@@ -61,7 +61,8 @@ class AuthTwigExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            'background_sso' => new \Twig_Function_Method($this, 'getBackgroundSsoLoader', array('is_safe' => array('html'))),
+            'background_sso'             => new \Twig_Function_Method($this, 'getBackgroundSsoLoader', array('is_safe' => array('html'))),
+            'is_background_sso_possible' => new \Twig_Function_Method($this, 'isBackgroundSsoPossible'),
         );
     }
 
@@ -69,9 +70,8 @@ class AuthTwigExtension extends \Twig_Extension
     {
         ///////////////////////////////////////////////////////////////////////
         // Settings
-        /** @var \Application\DeskPRO\Auth\AuthSettings $auth_settings */
-        $auth_settings           = $this->container->get('dp_auth_settings');
-        $auth_interface_settings = $interface == 'user' ? $auth_settings->getUserInterfaceSettings() : $auth_settings->getAgentInterfaceSettings();
+        $auth_interface_settings = $this->getAuthInterfaceSettings($interface);
+
         /** @var \Symfony\Component\HttpFoundation\RequestStack $request_stack */
         $request_stack = $this->container->get('request_stack');
 
@@ -121,6 +121,18 @@ class AuthTwigExtension extends \Twig_Extension
         return $iFrameOutput.$legacyOutput;
     }
 
+    public function isBackgroundSsoPossible($interface = 'user')
+    {
+        $request = $this->container->get('request_stack')->getMasterRequest();
+        if ($request->get('retry') === 'auth') {
+            return false;
+        }
+
+        $auth_interface_settings = $this->getAuthInterfaceSettings($interface);
+
+        return $auth_interface_settings->isBackgroundSsoEnabled();
+    }
+
     /**
      * @param $interface
      *
@@ -159,5 +171,19 @@ class AuthTwigExtension extends \Twig_Extension
     public function getName()
     {
         return 'auth_twig_extension';
+    }
+
+    /**
+     * @param $interface
+     *
+     * @return \Application\DeskPRO\Auth\AuthInterfaceSettings
+     */
+    protected function getAuthInterfaceSettings($interface)
+    {
+        /** @var \Application\DeskPRO\Auth\AuthSettings $auth_settings */
+        $auth_settings           = $this->container->get('dp_auth_settings');
+        $auth_interface_settings = $interface == 'user' ? $auth_settings->getUserInterfaceSettings() : $auth_settings->getAgentInterfaceSettings();
+
+        return $auth_interface_settings;
     }
 }

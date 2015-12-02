@@ -55,7 +55,7 @@
 </div>
 
 {% block doc_end %}{% endblock %}
-{% if is_guest() %}
+{% if is_guest() and is_background_sso_possible() %}
   {{ background_sso() }}
 {% endif %}
 <script type="text/javascript">
