@@ -7,7 +7,7 @@ export const createChat = createAction(
   params => new Promise(resolve => {
     DpApi
       .sendPost('DP_API/chats/create', params)
-      .success(response => resolve(response));
+      .success(response => resolve(response.data));
   })
 );
 
@@ -16,7 +16,7 @@ export const pollingChat = createAction(
   (chatId, params) => new Promise(resolve => {
     DpApi
       .sendGet(`DP_API/chats/${chatId}/polling?` + compileParams(params))
-      .success(response => resolve(response));
+      .success(response => resolve(response.data));
   })
 );
 

@@ -68,7 +68,7 @@ class ChatController extends AbstractController
         $em->persist($conversation);
         $em->flush();
 
-        return new JsonResponse($conversation->getInfo());
+        return new JsonResponse($this->dataSerialize($conversation));
     }
 
     /**
@@ -98,17 +98,17 @@ class ChatController extends AbstractController
             ])
         ;
 
-        $messages = $qb->getQuery()->getResult();
+        $messages                       = $qb->getQuery()->getResult();
+        $serialized                     = $this->dataSerialize($conversation);
+        $serialized['data']['messages'] = array_map(function (ChatMessage $message) {
+            return [
+                'id'      => $message->getId(),
+                'type'    => 'agent',
+                'message' => $message->content,
+            ];
+        }, $messages);
 
-        return new JsonResponse(array_merge($conversation->getInfo(), [
-            'messages' => array_map(function (ChatMessage $message) {
-                return [
-                    'id'      => $message->getId(),
-                    'type'    => 'agent',
-                    'message' => $message->content,
-                ];
-            }, $messages),
-        ]));
+        return new JsonResponse($serialized);
     }
 
     /**
@@ -195,5 +195,15 @@ class ChatController extends AbstractController
         $em->flush();
 
         return new JsonResponse();
+    }
+
+    /**
+     * @param $data
+     *
+     * @return array
+     */
+    protected function dataSerialize($data)
+    {
+        return $this->get('data_serializer')->serialize($data);
     }
 }

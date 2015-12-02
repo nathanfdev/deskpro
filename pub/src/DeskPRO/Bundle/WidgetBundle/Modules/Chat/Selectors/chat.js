@@ -9,12 +9,12 @@ export const chatInfoSelector = createSelector(
 
 export const chatIdSelector = createSelector(
   chatInfoSelector,
-  chatInfo => chatInfo.get('conversation_id')
+  chatInfo => chatInfo.get('id')
 );
 
 export const agentIdSelector = createSelector(
   chatInfoSelector,
-  chatInfo => chatInfo.get('agent_id')
+  chatInfo => chatInfo.get('agent')
 );
 
 export const messagesSelector = createSelector(
