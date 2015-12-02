@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { RateAgentDialog } from './RateAgentDialog';
 import { RateAgentComplete } from './RateAgentComplete';
 import { RateAgentForm } from './RateAgentForm';
-import { sendFeedback } from '../../../../../Actions/chatActions';
-import { chatIdSelector } from '../../../../../Selectors/chat';
+import { sendFeedback } from '../../../../Actions/chatActions';
+import { chatIdSelector } from '../../../../Selectors/chat';
 
 @connect(state => ({
   chatId: chatIdSelector(state)

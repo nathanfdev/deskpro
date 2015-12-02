@@ -10,7 +10,7 @@ import {
   ChatBeginConversation,
   ChatBeginForm,
   ChatPollingContainer,
-  ChatActive,
+  ChatActiveContainer,
   ChatWaiting
 } from '../../Chat/Components/index';
 import history from '../../../Services/history';
@@ -62,7 +62,7 @@ export class WidgetAppBody extends React.Component {
                 </Route>
                 <Route component={ChatPollingContainer}>
                   <Route name="chat_waiting" path="waiting" component={ChatWaiting} />
-                  <Route name="chat_active" path="active" component={ChatActive} />
+                  <Route name="chat_active" path="active" component={ChatActiveContainer} />
                 </Route>
               </Route>
             </Router>

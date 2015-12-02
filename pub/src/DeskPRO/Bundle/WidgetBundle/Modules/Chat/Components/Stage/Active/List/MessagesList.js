@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import { AgentMessage } from './Message/AgentMessage';
 import { UserMessage } from './Message/UserMessage';
-import { RateAgentContainer } from './Feedback/RateAgentContainer';
 import ScrollArea from 'react-scrollbar';
 
 export class MessagesList extends React.Component {
@@ -35,7 +34,7 @@ export class MessagesList extends React.Component {
   }
 
   render() {
-    const { messages, isEnded } = this.props;
+    const { messages } = this.props;
 
     return (
       <div className="dpdesignportal-content">
@@ -45,8 +44,6 @@ export class MessagesList extends React.Component {
             {messages.map((message, index) => this.renderMessage(message, index))}
           </div>
         </ScrollArea>
-
-        {isEnded && <RateAgentContainer />}
       </div>
     );
   }
