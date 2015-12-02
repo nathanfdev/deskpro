@@ -4805,6 +4805,11 @@ h1.fancy-header {
             display: inline-block;
             margin-right: 4px;
 
+            @media all and (-ms-high-contrast: none) {// Reposition the checkboxes
+              position: relative;
+              top: 3px;
+            }
+
           }
           a {
             display: inline-block;
