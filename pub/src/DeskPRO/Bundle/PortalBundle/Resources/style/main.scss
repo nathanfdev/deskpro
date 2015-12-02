@@ -1346,6 +1346,7 @@ $search-btn-height: $search-height - 24;
         top: 18px;
         right: 220px;
         color: #cecece;
+        line-height: 1em;
         &:hover { color: #333; }
         @media screen and (max-width: 760px) {
           right: 200px;
@@ -2099,6 +2100,7 @@ hr.divider {
 
 .padded {
   padding-left: 10px;
+  // @media screen and (max-width: 760px) { padding-left: 0px !important; }
 }
 
 .centered {
@@ -2332,9 +2334,9 @@ header {
   margin-bottom: 10px;
   padding-left: 10px;
 
-  @media screen and (max-width: 760px) {
-    padding-left: 0px;
-  }
+  // @media screen and (max-width: 760px) {
+  //   padding-left: 0px;
+  // }
 
   .news-header-info {
     display: inline-block;
@@ -4565,6 +4567,10 @@ h1.fancy-header {
       @media screen and (max-width: 760px) { padding-left: 10px; }
       border-radius: 4px;
       line-height: 1.4em;
+
+      .news-header {
+        @media screen and (max-width: 760px) { padding-left: 0px !important; }
+      }
 
       h1 {
         display: inline;
