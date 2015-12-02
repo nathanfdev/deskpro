@@ -188,6 +188,19 @@ class ChatController extends AbstractController
      */
     public function feedbackAction(ChatConversation $conversation, Request $request)
     {
+        $submitted_data = $request->request->all();
+
+        $form = $this->get('form.factory')->createNamedBuilder(null, 'api_chat_feedback', $conversation)->getForm();
+        $form->submit($submitted_data);
+
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($conversation);
+        $em->flush();
+
         return new JsonResponse();
     }
 }

@@ -342,6 +342,6 @@ services:
       - { name: form.type, alias: api_chat_create }
 
   form.api.chat_feedback:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\CreateChatType
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\ChatFeedbackType
     tags:
       - { name: form.type, alias: api_chat_feedback }
