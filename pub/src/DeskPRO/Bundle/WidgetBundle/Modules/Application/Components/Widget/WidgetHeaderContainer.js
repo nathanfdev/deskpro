@@ -1,10 +1,13 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { closeWidget } from '../../Actions/dpWindowActions';
 
-export class WidgetHeader extends React.Component {
+@connect()
+export class WidgetHeaderContainer extends React.Component {
 
   static propTypes = {
-    title: PropTypes.string,
-    onClose: PropTypes.func.isRequired
+    dispatch: PropTypes.func,
+    title: PropTypes.string
   };
 
   onOpenMenu = event => {
@@ -14,7 +17,7 @@ export class WidgetHeader extends React.Component {
 
   onClose = event => {
     event.preventDefault();
-    this.props.onClose();
+    this.props.dispatch(closeWidget());
   };
 
   render() {

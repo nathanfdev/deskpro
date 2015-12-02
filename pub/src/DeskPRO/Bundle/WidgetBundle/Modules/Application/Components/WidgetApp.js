@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { Provider } from 'react-redux';
 import { Router, Route, Redirect } from 'react-router';
 import Frame from 'Ampliflux/common/components/Frame';
-import { Widget, WidgetHeader, WidgetBody, WidgetFooter } from './Widget/index';
+import { Widget, WidgetHeaderContainer, WidgetBody, WidgetFooter } from './Widget/index';
 import {
   ChatApp,
   ChatBeginContainer,
@@ -19,8 +19,7 @@ import store from '../../../Services/store';
 export class WidgetAppBody extends React.Component {
 
   static propTypes = {
-    onResize: PropTypes.func,
-    onClose: PropTypes.func
+    onResize: PropTypes.func
   };
 
   componentDidMount() {
@@ -39,12 +38,10 @@ export class WidgetAppBody extends React.Component {
   }
 
   render() {
-    const { onClose } = this.props;
-
     return (
       <Provider store={store}>
         <Widget>
-          <WidgetHeader title="Acme Corp. Chat and a long name lorel ipsum dolor" onClose={onClose} />
+          <WidgetHeaderContainer title="Acme Corp. Chat and a long name lorel ipsum dolor" />
           <WidgetBody>
             <Router history={history}>
               <Redirect from="/" to="chat"/>
