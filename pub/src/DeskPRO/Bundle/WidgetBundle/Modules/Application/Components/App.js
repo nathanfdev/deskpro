@@ -30,8 +30,8 @@ export class App extends React.Component {
     return (
       <div>
         <TriggerButton isVisible={!widgetOpened} onClick={this.onOpenWidget} />
-        <WidgetApp ref="widget" isVisible={widgetOpened} onClose={this.onCloseWidget} />
-        <ChatTriggers onOpen={url => this.refs.widget.onOpen(url)} isVisible={widgetOpened} />
+        <WidgetApp isVisible={widgetOpened} onClose={this.onCloseWidget} />
+        <ChatTriggers isVisible={widgetOpened} />
       </div>
     );
   }

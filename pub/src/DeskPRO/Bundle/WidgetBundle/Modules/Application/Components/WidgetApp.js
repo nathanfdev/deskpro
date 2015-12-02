@@ -31,12 +31,6 @@ export class WidgetAppBody extends React.Component {
     this.triggerResize();
   }
 
-  onOpen = url => {
-    if (history.state !== url) {
-      history.replaceState(null, url);
-    }
-  };
-
   triggerResize() {
     const { onResize } = this.props;
     if (onResize) {
@@ -78,10 +72,6 @@ export class WidgetApp extends React.Component {
 
   static propTypes = {
     isVisible: PropTypes.bool
-  };
-
-  onOpen = url => {
-    this.refs.body.onOpen(url);
   };
 
   render() {
