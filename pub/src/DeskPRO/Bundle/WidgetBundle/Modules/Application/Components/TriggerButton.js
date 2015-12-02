@@ -54,6 +54,7 @@ export class TriggerButtonContainer extends React.Component {
 
     return (
       <Frame ref="frame"
+             name="widget_trigger"
              frameStyles={style}
              isVisible={isVisible}>
 
