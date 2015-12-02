@@ -8474,6 +8474,10 @@ input[type="text"], input[type="email"], input[type="password"], textarea, selec
   }
 }
 
+textarea {
+  font-family: inherit;
+}
+
 .multiselect {
   font-size: $font-mid;
   font-weight: 400;
