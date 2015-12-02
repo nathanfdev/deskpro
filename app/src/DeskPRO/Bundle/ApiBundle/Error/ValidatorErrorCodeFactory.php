@@ -35,12 +35,20 @@ use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Validator\ConstraintViolation;
 
+/**
+ * Class ValidatorErrorCodeFactory.
+ */
 class ValidatorErrorCodeFactory
 {
-    public static $static_replacements = array(
+    public static $static_replacements = [
         'This form should not contain extra fields.' => ApiErrors::EXTRA_FIELDS,
-    );
+    ];
 
+    /**
+     * @param ConstraintViolation $violation
+     *
+     * @return mixed|string
+     */
     public function getConstraintErrorCode(ConstraintViolation $violation)
     {
         if ($violation->getMessage() === 'This form should not contain extra fields.') {
@@ -77,6 +85,11 @@ class ValidatorErrorCodeFactory
         return ApiErrors::CONSTRAINT_FALLBACK;
     }
 
+    /**
+     * @param FormError $form_error
+     *
+     * @return mixed|string
+     */
     public function getFormErrorCode(FormError $form_error)
     {
         $cause = $form_error->getCause();
