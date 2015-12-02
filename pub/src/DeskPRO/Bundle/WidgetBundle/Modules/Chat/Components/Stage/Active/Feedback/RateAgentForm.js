@@ -6,9 +6,22 @@ export class RateAgentForm extends React.Component {
     onSubmit: PropTypes.func.isRequired
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      comment: ''
+    };
+  }
+
   onSubmit = event => {
     event.preventDefault();
-    this.props.onSubmit();
+    this.props.onSubmit(this.state.comment);
+  };
+
+  onChangeComment = event => {
+    this.setState({
+      comment: event.target.value
+    });
   };
 
   render() {
@@ -21,7 +34,9 @@ export class RateAgentForm extends React.Component {
           <form className="dpdesignportal-form" onSubmit={this.onSubmit}>
             <label>
               <span className="dpdesignportal-form-item-label-title">How lorel ipsum is the lorel ipsum</span>
-              <textarea placeholder="Enter your message here"></textarea>
+              <textarea placeholder="Enter your message here"
+                        value={this.state.comment}
+                        onChange={this.onChangeComment} />
             </label>
 
             <div className="label button-label">
