@@ -664,7 +664,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
     public function setRatingOverall($rating)
     {
-        if ($rating != 1 && $rating != -1) {
+        if ($rating < 1 || $rating > 10) {
             $rating = 0;
         }
         $this->setModelField('rating_overall', $rating);

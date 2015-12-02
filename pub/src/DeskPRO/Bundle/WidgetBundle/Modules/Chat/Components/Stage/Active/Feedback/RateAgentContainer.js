@@ -26,7 +26,7 @@ export class RateAgentContainer extends React.Component {
   onClickHelpful = () => {
     const { chatId, dispatch } = this.props;
 
-    dispatch(sendFeedback(chatId, {helpful: 1}));
+    dispatch(sendFeedback(chatId, {helpful: 10}));
     this.setState({
       stage: 'finished'
     });
@@ -41,7 +41,7 @@ export class RateAgentContainer extends React.Component {
   onSubmitForm = comment => {
     const { chatId, dispatch } = this.props;
 
-    dispatch(sendFeedback(chatId, {helpful: 0, comment}));
+    dispatch(sendFeedback(chatId, {helpful: 1, comment}));
     this.setState({
       stage: 'finished'
     });

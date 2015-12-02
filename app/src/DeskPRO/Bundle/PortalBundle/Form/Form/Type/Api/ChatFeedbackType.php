@@ -54,8 +54,13 @@ class ChatFeedbackType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('helpful', 'api_boolean')
-            ->add('comment', 'text')
+            ->add('helpful', 'number', [
+                'property_path' => 'rating_overall',
+            ])
+            ->add('comment', 'text', [
+                'property_path' => 'rating_comment',
+                'required'      => false,
+            ])
         ;
     }
 
