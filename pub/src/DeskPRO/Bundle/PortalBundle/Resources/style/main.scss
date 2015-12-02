@@ -2507,6 +2507,7 @@ header {
     background: $surface-secondary;
     color: $text-color;
     text-decoration: none;
+    line-height: 2em;
 
     &:hover { background: darken($surface-secondary, 10%); }
     &.unsubscribe { background: darken($surface-secondary, 5%); }
