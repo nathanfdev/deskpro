@@ -2031,7 +2031,11 @@ $tab-border: $divider-color;
 
     .title {
       color: $text-color;
+    }
+  }
 
+  li {
+    .title {
       .text-tag {
         position: relative;
         top: 0px;
