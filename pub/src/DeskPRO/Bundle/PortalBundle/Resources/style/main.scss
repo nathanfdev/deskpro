@@ -9382,10 +9382,18 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
 
     &.add-person {
       color: #d6d6d6;
+
+      i {
+        left: 0px;
+      }
       .agent-avatar {
         background: #e5e5e5;
       }
       .agent-avatar i {
+        @media all and (-ms-high-contrast: none) {// align top button text alignment
+          left: 0px;
+          top: 7.5px;
+        }
         color: #cdcdcd;
       }
 
@@ -9589,7 +9597,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
   top: 0px;
   left: 0px;
   margin-left: -410px;
-  z-index: 1001;
+  z-index: 2002;
   background: #fff;
   padding: 10px;
   border: 1px solid #dedede;
