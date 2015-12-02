@@ -3886,16 +3886,31 @@ ul.kb-checkbox-extra {
     width: 20%;
     text-align: right;
     line-height: 1.3em;
+    @media screen and (max-width: 760px) {
+      text-align: left;
+      width: 100%;
+      padding-top: 10px;
+      padding-bottom: 20px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
   }
 
   .comment-content {
     width: 80%;
+    @media screen and (max-width: 760px) { width: 100%; }
   }
 
   .avatar {
     display: block;
     margin-top: 10px;
     margin-bottom: 5px;
+
+    @media screen and (max-width: 760px) {
+      display: inline-block;
+      margin: 0px;
+      margin-right: 3px;
+    }
   }
 
   strong {
@@ -3905,6 +3920,14 @@ ul.kb-checkbox-extra {
 
   .author {
     display: block;
+    @media screen and (max-width: 760px) {
+      display: inline-block;
+      vertical-align: middle;
+      position: relative;
+      top: 1px;
+      font-weight: 500;
+      font-size: 15px;
+    }
   }
 
   .date {
@@ -3919,6 +3942,12 @@ ul.kb-checkbox-extra {
     padding: 10px;
     padding-left: 20px;
     border-left: 1px solid $divider-color;
+
+    @media screen and (max-width: 760px) {
+      margin-left: 0px;
+      padding: 0px;
+      border-left: 0px;
+    }
 
     .response {
       border: 0;
