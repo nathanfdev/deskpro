@@ -53,48 +53,54 @@
                 </div>
             {% endif %}
 
-            {% if person.isEmailValidated() %}
-                {{ form_start(add_email_form) }}
-                <table>
-                    {% for email in person.emails %}
-                        <tr>
-                            <td>{{ email.email }}</td>
-                            {% if email.isPrimary %}
-                                <td colspan="2">
-                                    <strong>{{ phrase('portal.account.email-primary-indicator') }}</strong>
-                                </td>
-                            {% else %}
-                                <td>
-                                    <a class="button button-secondary button-small"
-                                       href="{{ path('portal_user_profile_emails', { new_primary: email.id }) }}">
-                                        {{ phrase('portal.account.email-btn-make-primary') }}
-                                    </a>
-                                </td>
-                                <td>
-                                    <a class="button button-small cancel"
-                                       href="{{ path('portal_user_profile_emails', { remove_email: email.id }) }}">
-                                        {{ phrase('portal.account.email-btn-remove') }}
-                                    </a>
-                                </td>
-                            {% endif %}
-                        </tr>
-                    {% endfor %}
+            <div class="titled-header">
+                <h1>{{ phrase('portal.account.your-emails') }}</h1>
+            </div>
+
+            <table>
+                {% for email in person.emails %}
                     <tr>
-                        <td>
-                            {{ form_errors(add_email_form) }}
-                            {{ form_widget(add_email_form.email) }}
-                        </td>
-                        <td>
-                            <button class="button button-small"
-                                    type="submit">{{ phrase('portal.account.email-btn-add') }}</button>
-                        </td>
+                        <td>{{ email.email }}</td>
+                        {% if email.isPrimary %}
+                            <td colspan="2">
+                                <strong></strong>
+                            </td>
+                        {% else %}
+                            <td>
+                                <a class="button button-secondary button-small"
+                                   href="{{ path('portal_user_profile_emails', { new_primary: email.id }) }}">
+                                    {{ phrase('portal.account.email-btn-make-primary') }}
+                                </a>
+                            </td>
+                            <td>
+                                <a class="button button-small cancel"
+                                   href="{{ path('portal_user_profile_emails', { remove_email: email.id }) }}">
+                                    {{ phrase('portal.account.email-btn-remove') }}
+                                </a>
+                            </td>
+                        {% endif %}
                     </tr>
-                </table>
-                {{ form_rest(add_email_form) }}
-                {{ form_end(add_email_form) }}
-            {% else %}
-                {{ phrase('portal.account.email-primary-needs-validation', { email: person.primary_email.email, verify_url: verify_url }) }}
-            {% endif %}
+                {% endfor %}
+            </table>
+
+            <div class="titled-header">
+                <h1>{{ phrase('portal.account.email-btn-add') }}</h1>
+            </div>
+
+            {{ form_start(add_email_form) }}
+
+            <tr>
+                <td>
+                    {{ form_errors(add_email_form) }}
+                    {{ form_widget(add_email_form.email) }}
+                </td>
+                <td>
+                    <button class="button button-small" type="submit">{{ phrase('portal.forms.label_save') }}</button>
+                </td>
+            </tr>
+
+            {{ form_rest(add_email_form) }}
+            {{ form_end(add_email_form) }}
         </div>
     </div>
 {% endblock inner_content %}
