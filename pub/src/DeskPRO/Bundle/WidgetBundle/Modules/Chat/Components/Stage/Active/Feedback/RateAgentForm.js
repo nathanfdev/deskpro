@@ -40,10 +40,6 @@ export class RateAgentForm extends React.Component {
             </label>
 
             <div className="label button-label">
-                <span className="dpdesignportal-checkbox-container">
-                  <span className="dpdesignportal-checkbox"><i className="fa fa-check"></i></span>
-                  Share feedback with agent?
-                </span>
               <input type="submit" className="dpdesignportal-button" value="Send Feedback" />
               </div>
 
