@@ -2034,11 +2034,11 @@ $tab-border: $divider-color;
 
       .text-tag {
         position: relative;
-        top: -1px;
-        padding-top: 3px;
-        padding-bottom: 3px;
-        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
-        font-size: 0.6em;
+        top: 0px;
+        padding: 5px;
+        margin-left: 4px;
+        font-weight: 500;
+        font-size: 0.75em;
       }
     }
   }
