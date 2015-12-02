@@ -99,16 +99,34 @@ export default class PageWidget {
    * Called to a request to render itself.
    */
   render() {
-    throw new Error("test error");
-    let pre = this.preRender();
+    let pre;
+    try {
+      pre = this.preRender();
+    } catch (e) {
+      console.log("Error in preRender()");
+      console.error(e);
+      pre = null;
+    }
 
     if (pre && pre.then) {
       pre.then(() => {
-        this.renderWidget();
+        try {
+          this.renderWidget();
+        } catch (e) {
+          console.log("Error in renderWidget()");
+          console.error(e);
+        }
+
         this.runWidgets();
       });
     } else {
-      this.renderWidget();
+      try {
+        this.renderWidget();
+      } catch (e) {
+        console.log("Error in renderWidget()");
+        console.error(e);
+      }
+
       this.runWidgets();
     }
   }

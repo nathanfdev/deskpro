@@ -3,8 +3,8 @@
         document.body.className = document.body.className + ' with-pageload-done';
         if (window.WITH_DPUI) {
             window.setTimeout(function () {
-                // fallback
-                document.body.className = document.body.className + ' with-dpx-done';
+                // fallback to make sure elements are displayed in case of a script error
+                document.body.className = document.body.className + ' with-pageload-dpx-done';
             }, 4000);
         }
     })();
