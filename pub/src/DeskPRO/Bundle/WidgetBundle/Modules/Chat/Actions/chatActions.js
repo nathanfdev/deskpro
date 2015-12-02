@@ -2,22 +2,32 @@ import { createAction } from 'Ampliflux';
 import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 
+export const updateChatInfo = createAction('WIDGET_UPDATE_CHAT_INFO');
+export const addNewMessages = createAction('WIDGET_ADD_NEW_MESSAGES');
+
 export const createChat = createAction(
   'WIDGET_CHAT_CREATE_NEW',
-  params => new Promise(resolve => {
-    DpApi
-      .sendPost('DP_API/chats/create', params)
-      .success(response => resolve(response.data));
-  })
+  params => dispatch => DpApi
+    .sendPost('DP_API/chats/create', params)
+    .success(response => {
+      dispatch(updateChatInfo(response.data));
+    })
 );
 
 export const pollingChat = createAction(
   'WIDGET_CHAT_POLLING',
-  (chatId, params) => new Promise(resolve => {
-    DpApi
-      .sendGet(`DP_API/chats/${chatId}/polling?` + compileParams(params))
-      .success(response => resolve(response.data));
-  })
+  (chatId, params) => dispatch => DpApi
+    .sendGet(`DP_API/chats/${chatId}/polling?` + compileParams(params))
+    .success(response => {
+      const chatInfo = response.chat_info.data;
+      const newMessages = response.new_messages.data;
+
+      dispatch(updateChatInfo(chatInfo));
+
+      if (newMessages.length) {
+        dispatch(addNewMessages(newMessages));
+      }
+    })
 );
 
 export const sendChatMessage = createAction(

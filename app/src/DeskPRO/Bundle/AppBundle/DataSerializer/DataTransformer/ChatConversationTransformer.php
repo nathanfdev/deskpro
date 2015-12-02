@@ -51,8 +51,6 @@ class ChatConversationTransformer extends AbstractDataSerializerTransformer
      */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        return [
-            'messsages' => [],
-        ];
+        return [];
     }
 }

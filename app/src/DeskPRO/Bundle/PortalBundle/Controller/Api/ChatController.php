@@ -98,17 +98,10 @@ class ChatController extends AbstractController
             ])
         ;
 
-        $messages                       = $qb->getQuery()->getResult();
-        $serialized                     = $this->dataSerialize($conversation);
-        $serialized['data']['messages'] = array_map(function (ChatMessage $message) {
-            return [
-                'id'      => $message->getId(),
-                'type'    => 'agent',
-                'message' => $message->content,
-            ];
-        }, $messages);
-
-        return new JsonResponse($serialized);
+        return new JsonResponse([
+            'chat_info'    => $this->dataSerialize($conversation),
+            'new_messages' => $this->dataSerialize($qb->getQuery()->getResult()),
+        ]);
     }
 
     /**

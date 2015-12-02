@@ -2,9 +2,10 @@ import { createSelector } from 'reselect';
 
 const stateSelector = state => state.Chat.chat;
 
+// Chat info selectors
 export const chatInfoSelector = createSelector(
   stateSelector,
-  state => state.get('chat')
+  state => state.get('chatInfo')
 );
 
 export const chatIdSelector = createSelector(
@@ -17,16 +18,6 @@ export const agentIdSelector = createSelector(
   chatInfo => chatInfo.get('agent')
 );
 
-export const messagesSelector = createSelector(
-  chatInfoSelector,
-  chatInfo => chatInfo.get('messages')
-);
-
-export const lastMessageIdSelector = createSelector(
-  messagesSelector,
-  messages => messages && messages.size ? messages.max((a, b) => a.get('id') - b.get('id')).first() : null
-);
-
 export const dateEndedSelector = createSelector(
   chatInfoSelector,
   chatInfo => chatInfo.get('date_ended')
@@ -35,4 +26,15 @@ export const dateEndedSelector = createSelector(
 export const isEndedSelector = createSelector(
   dateEndedSelector,
   dateEnded => !!dateEnded
+);
+
+// Messages selectors
+export const messagesSelector = createSelector(
+  stateSelector,
+  chatInfo => chatInfo.get('messages')
+);
+
+export const lastMessageIdSelector = createSelector(
+  messagesSelector,
+  messages => messages && messages.size ? messages.max((a, b) => a.get('id') - b.get('id')).first() : null
 );

@@ -16,7 +16,7 @@ export class AgentMessage extends React.Component {
       <Message type="agent">
         <MessageAvatar />
         <div className="dpdesignportal-message-content">
-          <p>{message.get('message')}</p>
+          <p>{message.get('content')}</p>
           <ul>
             <li>
               <a href="#" className="dpdesignportal-message-asset attachement-link">
