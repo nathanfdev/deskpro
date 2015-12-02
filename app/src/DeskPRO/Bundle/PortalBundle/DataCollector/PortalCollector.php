@@ -91,7 +91,7 @@ class PortalCollector extends DataCollector
             'brand_name'          => $brand ? $brand->name : 'N/A',
             'theme_id'            => $theme ? $theme->getId() : 'N/A',
             'theme_name'          => $theme ? $theme->getName() : 'N/A',
-            'language_code'       => $language ? $language->getTwoLetterLanguageCode() : 'N/A',
+            'language_code'       => $language ? $language->getUrlCode() : 'N/A',
             'language_id'         => $language ? $language->getId() : 'N/A',
             'language_img'        => $language ? $language->flag_image : null,
             'mode'                => (string) $mode,

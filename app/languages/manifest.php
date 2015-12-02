@@ -40,6 +40,32 @@ return array(
         'is_managed' => false,
     ),
 
+    'dev_findmissing' => array(
+        'id'         => 'dev_blankout',
+        'lang_code'  => 'eng',
+        'title'      => 'Dev Blank Out',
+        'locale'     => 'en_T1',
+        'flag_image' => 'us.png',
+        'is_rtl'     => false,
+        'has_user'   => true,
+        'has_agent'  => true,
+        'has_admin'  => true,
+        'is_managed' => false,
+    ),
+
+    'dev_longstring' => array(
+        'id'         => 'dev_longstring',
+        'lang_code'  => 'eng',
+        'title'      => 'Dev Long String',
+        'locale'     => 'en_T2',
+        'flag_image' => 'us.png',
+        'is_rtl'     => false,
+        'has_user'   => true,
+        'has_agent'  => true,
+        'has_admin'  => true,
+        'is_managed' => false,
+    ),
+
     'arabic' => array(
         'id'         => 'arabic',
         'lang_code'  => 'ara',

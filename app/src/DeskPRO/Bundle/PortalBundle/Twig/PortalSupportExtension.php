@@ -231,7 +231,7 @@ class PortalSupportExtension extends \Twig_Extension
             $lang = $this->container->get('language_stack')->getDefaultLanguage();
         }
 
-        return $lang->getTwoLetterLanguageCode();
+        return $lang->getUrlCode();
     }
 
     public function isMultLang()

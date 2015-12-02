@@ -77,7 +77,7 @@ class LastLanguageListener implements EventSubscriberInterface
         // only set the cookie if there is actually a language
         // we don't want to set it to null if there is no language because we might want to redirect in the next request
         if ($lang = $this->language_stack->getActive()) {
-            $last_lang = $lang->getTwoLetterLanguageCode();
+            $last_lang = $lang->getUrlCode();
             $this->logger->debug('language: sending cookie for last language: '.$last_lang);
             $event->getResponse()->headers->setCookie(new Cookie(static::COOKIE_NAME, $last_lang));
         }
