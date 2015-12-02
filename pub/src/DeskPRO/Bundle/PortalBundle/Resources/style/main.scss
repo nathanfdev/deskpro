@@ -6789,6 +6789,7 @@ ul.categories-article-list {
 
     &.ticket-ref {
       width: 50px;
+      padding-left: 12px;
     }
   }
 
@@ -6853,6 +6854,7 @@ ul.categories-article-list {
     }
     &.first-in-line {
       border-bottom: 0;
+      // padding-left: 10px !important;
     }
 
     &.item-row:hover {
