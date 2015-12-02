@@ -130,7 +130,7 @@ class CommonController extends AbstractController
         $validation_alerts = array();
         if ($user && !$user->isUserValid()) {
             $primary_email = $user->getPrimaryEmail();
-            if (!$user->isEmailValidated()) {
+            if (!$user->isEmailValidated() && $user->getPrimaryEmail()) {
                 $validation_alerts[] = array(
                     'type'            => PersonValidator::TYPE_EMAIL_PRIMARY,
                     'message'         => $this->phrase('portal.account.validation_alert',
