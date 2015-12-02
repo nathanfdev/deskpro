@@ -59,6 +59,13 @@ class DataTransformerFactory
      */
     private $logger;
 
+    /**
+     * Constructor.
+     *
+     * @param ContainerInterface      $container
+     * @param DataPropertyTransformer $property_transformer
+     * @param LoggerInterface         $logger
+     */
     public function __construct(
         ContainerInterface $container,
         DataPropertyTransformer $property_transformer,
