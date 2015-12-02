@@ -1668,13 +1668,12 @@ $search-btn-height: $search-height - 24;
       padding-bottom: 4px;
       background: #f3f3f3;
       position: relative;
-      top: -(($search-height / 2) - 15);
+      z-index: 300;
 
-      @media all and (-ms-high-contrast: none) {
+      top: -(($search-height / 2) - 15);
+      @media all and (-ms-high-contrast: none) {// Ie fix fir the "or" positioning
         top: 25px;
       }
-
-      z-index: 300;
     }
   }
 
@@ -2449,10 +2448,14 @@ header {
 
   .dcdf-day {
     text-align: center;
-    padding-top: 19px;
     font-weight: 900;
     font-size: 10px;
     color: #cecece;
+
+    padding-top: 19px;
+    @media all and (-ms-high-contrast: none) {// Remove some extra padding top on ie
+      padding-top: 18px;
+    }
   }
 }
 
