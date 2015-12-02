@@ -8829,6 +8829,10 @@ form {
 
   input {
     margin-right: 2px;
+    @media all and (-ms-high-contrast: none) {// reposition for ie
+      position: relative;
+      top: 2px;
+    }
   }
 }
 
