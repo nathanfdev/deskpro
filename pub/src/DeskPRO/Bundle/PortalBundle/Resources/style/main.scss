@@ -8229,23 +8229,6 @@ table .form-help {
       }
     }
 
-    &:hover {
-      color: $button-text;
-      border: 1px solid $button-color;
-      background: $button-color;
-
-      .filter-box input {
-        color: #333;
-
-        @include placeholder {
-          color: #fff;
-          font-size: 12px;
-          font-weight: normal;
-          line-height: normal;
-        }
-      }
-    }
-
     &.expanded {
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
