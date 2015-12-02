@@ -102,10 +102,6 @@
         {
           "label": "Automatic",
           "value": "auto"
-        },
-        {
-          "label": "Background",
-          "value": "background"
         }
       ]
     },
