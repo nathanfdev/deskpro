@@ -29,10 +29,10 @@
 /**
  * DeskPRO.
  */
-namespace DpTest\DeskPRO\Bundle\ApiBundle\DataSerializer;
+namespace DpTest\DeskPRO\Bundle\AppBundle\DataSerializer;
 
-use DeskPRO\Bundle\ApiBundle\DataSerializer\DataSerializerContext;
-use DeskPRO\Bundle\ApiBundle\DataSerializer\DataTypeIdFinder;
+use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializerContext;
+use DeskPRO\Bundle\AppBundle\DataSerializer\DataTypeIdFinder;
 use DpTest\DeskProTestCase;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 

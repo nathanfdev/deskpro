@@ -29,47 +29,47 @@
 /**
  * DeskPRO.
  */
-namespace DpTest\DeskPRO\Bundle\AppBundle\DataSerializer;
+namespace DeskPRO\Bundle\AppBundle\DataSerializer\EventListener;
 
-use Application\DeskPRO\Entity\TicketAttachment;
+use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializerEvent;
+use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializerEvents;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTypeMap;
-use DeskPRO\Bundle\AppBundle\Entity\SandboxWidget;
-use DpTest\DeskProTestCase;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class DataTypeMapTest extends DeskProTestCase
+/**
+ * Find and set the type of data in the context.
+ */
+class TypeListener implements EventSubscriberInterface
 {
-    public function testMapKnowsTypeBasedOnObjectClass()
+    /**
+     * @var DataTypeMap
+     */
+    private $type_map;
+
+    public function __construct(DataTypeMap $type_map)
     {
-        $map = $this->makeMap();
-
-        $widget = new SandboxWidget();
-
-        $this->assertSame('sandbox_widget', $map->findType($widget), 'works for class type');
+        $this->type_map = $type_map;
     }
 
-    public function testMapDefaultsToUnderscoreClassNameTypeByDefault()
+    public static function getSubscribedEvents()
     {
-        $map = $this->makeMap();
-
-        $implicit_type_because_not_in_map = new \stdClass();
-
-        $this->assertSame('std_class', $map->findType($implicit_type_because_not_in_map));
-
-        $implicit_type_because_not_in_map = new TicketAttachment();
-
-        $this->assertSame('ticket_attachment', $map->findType($implicit_type_because_not_in_map));
+        return [
+            DataSerializerEvents::PRE_SERIALIZE => ['preSerialize', 0],
+        ];
     }
 
-    protected function makeMap()
+    public function preSerialize(DataSerializerEvent $event)
     {
-        return new DataTypeMap(
-            [
-                'sandbox_widget' => [
-                    'classes' => [
-                        'DeskPRO\Bundle\AppBundle\Entity\SandboxWidget',
-                    ],
-                ],
-            ]
-        );
+        $context = $event->getContext();
+
+        $type = $context->getMainType();
+        $data = $context->getMainData();
+
+        if (null === $type) {
+            // try to find the type one last time before finally serializing
+            $type = $this->type_map->findType($data);
+
+            $context->setMainType($type);
+        }
     }
 }
