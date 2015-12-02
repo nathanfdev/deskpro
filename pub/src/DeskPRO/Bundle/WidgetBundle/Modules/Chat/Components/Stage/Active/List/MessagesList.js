@@ -11,6 +11,18 @@ export class MessagesList extends React.Component {
     isEnded: PropTypes.bool
   };
 
+  componentDidMount() {
+    this.scrollBottom();
+  }
+
+  componentDidUpdate() {
+    this.scrollBottom();
+  }
+
+  scrollBottom() {
+    setTimeout(() => this.refs.scrollArea.scrollBottom(), 0);
+  }
+
   renderMessage(message, index) {
     switch (message.get('type')) {
       case 'user':
@@ -27,7 +39,7 @@ export class MessagesList extends React.Component {
 
     return (
       <div className="dpdesignportal-content">
-        <ScrollArea vertical>
+        <ScrollArea ref="scrollArea" vertical>
           <div className="bottom-aligner"/>
           <div>
             {messages.map((message, index) => this.renderMessage(message, index))}
