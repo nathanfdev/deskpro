@@ -137,7 +137,7 @@ class UsersourcesHelper
             $info['css_classes'][] = 'auth-twitter';
             $info['text']          = $this->usersourceBtnPhrase('Twitter');
         } else {
-            $info['text']          = $type;
+            $info['text']          = $us->getOption('login_custom_text', 'Login');
             $info['css_classes'][] = 'auth-one';
         }
 
