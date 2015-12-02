@@ -32,6 +32,7 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Problem;
 use Application\DeskPRO\Entity\TicketFilter;
 use Application\DeskPRO\Searcher\TicketSearch;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Orb\Util\DpStrings;
@@ -134,23 +135,8 @@ class ProblemListener
     {
         while (!$this->inserts->isEmpty()) {
             /** @var Problem $problem */
-            $problem = $this->inserts->dequeue();
-
-            $filter           = new TicketFilter();
-            $filter->title    = 'Problem #'.$problem->id;
-            $filter->sys_name = Problem::FILTER_PREFIX.$problem->id;
-            $filter->terms    = array(array(
-                'type'    => TicketSearch::TERM_PROBLEMS,
-                'op'      => 'is',
-                'options' => array(
-                    'problems' => array($problem->id),
-                ),
-            ));
-
-            $filter->is_global  = true;
-            $filter->is_enabled = true;
-            $event->getEntityManager()->persist($filter);
-            $event->getEntityManager()->flush($filter);
+            $problem  = $this->inserts->dequeue();
+            $filterId = $this->createFilter($event->getEntityManager(), $problem);
 
             $this->queue[] = array(
                 'channel'      => self::CHANNEL_NEW,
@@ -159,7 +145,7 @@ class ProblemListener
                 'data'         => serialize(array(
                     'id'        => $problem->id,
                     'title'     => $problem->title,
-                    'filter_id' => $filter->id,
+                    'filter_id' => $filterId,
                 )),
             );
         }
@@ -182,5 +168,32 @@ class ProblemListener
         $this->conn->batchInsert('client_messages', $q);
 
         return count($q);
+    }
+
+    /**
+     * Save filter into the DB.
+     *
+     * Saves a filter w/o entity manager flush() as:
+     * > EntityManager#flush() can NOT be called safely inside its listeners.
+     * http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/events.html#postflush
+     *
+     * @param EntityManager $em
+     * @param Problem       $problem
+     *
+     * @return int
+     */
+    private function createFilter(EntityManager $em, Problem $problem)
+    {
+        $connection = $em->getConnection();
+        $id         = $problem->id;
+        $connection->insert($em->getClassMetadata(TicketFilter::class)->getTableName(), [
+            'title'      => 'Problem #'.$id,
+            'sys_name'   => Problem::FILTER_PREFIX.$id,
+            'is_global'  => 1,
+            'is_enabled' => 1,
+            'terms'      => '[{"type":"'.TicketSearch::TERM_PROBLEMS.'","op":"is","options":{"problems":['.$id.']}}]',
+        ]);
+
+        return $connection->lastInsertId();
     }
 }
