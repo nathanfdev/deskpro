@@ -21,9 +21,6 @@
 </div>
 
 {% block doc_end %}{% endblock %}
-{% if is_guest() and is_background_sso_possible() %}
-    {{ background_sso() }}
-{% endif %}
 {% include 'Theme:Internal:foot-include.html.twig' %}
 </body>
 </html>
