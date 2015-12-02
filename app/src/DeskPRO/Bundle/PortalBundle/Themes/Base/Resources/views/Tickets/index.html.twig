@@ -140,8 +140,8 @@
           {% else %}
           {% if col.id == 'agent' %}
           {% if ticket.agent %}
-          <img src="{{ avatar_url(ticket.agent) }}" class="avatar">
-          <span class="person">{{ ticket.agent.display_name_user }}</span>
+
+          <span class="person">{{ ticket.agent.display_name_user }} <img src="{{ avatar_url(ticket.agent) }}" class="avatar"></span>
           {% endif %}
           {% elseif col.id == 'department' %}
           {{ ticket.department.user_title }}
@@ -149,8 +149,7 @@
           {{ ticket.subject }}
           {% elseif col.id == 'user' %}
           {% if ticket.person %}
-          <img src="{{ avatar_url(ticket.person) }}" class="avatar">
-          <span class="person">{{ ticket.person.display_name_user }}</span>
+          <span class="person">{{ ticket.person.display_name_user }} <img src="{{ avatar_url(ticket.person) }}" class="avatar"></span>
           {% endif %}
           {% elseif col.id == 'date_activity' %}
           {% set last_message = ticket.messages|last %}

@@ -6936,6 +6936,16 @@ ul.categories-article-list {
     font-size: 0.9em;
   }
 
+  .person .avatar {
+    float: none;
+    display: inline-block;
+    margin: 0;
+    vertical-align: middle;
+    margin-left: 4px;
+    position: relative;
+    top: -1px;
+  }
+
   .date {
     color: $text-color-lighter;
   }
