@@ -4947,6 +4947,11 @@ h1.fancy-header {
     margin-top: 50px;
     margin-bottom: 60px;
 
+    @media screen and (max-width: 760px) {
+      margin-top: 10px;
+      margin-bottom: 20px;
+    }
+
     > div {
       display: inline;
     }
