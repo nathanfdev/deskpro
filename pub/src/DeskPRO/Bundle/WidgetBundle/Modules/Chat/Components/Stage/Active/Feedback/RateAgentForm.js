@@ -41,7 +41,7 @@ export class RateAgentForm extends React.Component {
 
             <div className="label button-label">
               <input type="submit" className="dpdesignportal-button" value="Send Feedback" />
-              </div>
+            </div>
 
             </form>
           </div>
