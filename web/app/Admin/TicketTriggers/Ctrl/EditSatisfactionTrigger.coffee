@@ -67,7 +67,6 @@ define [
 
       promise = @Api.sendDataGet(get).then (result) =>
         @customActions = result.data.customActions.action_defs
-
         if result.data?.trigger?.trigger?
           @trigger = result.data.trigger.trigger
           @triggerId = @trigger.id
