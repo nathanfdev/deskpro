@@ -27,14 +27,12 @@ export class MessagesList extends React.Component {
 
     return (
       <div className="dpdesignportal-content">
-        {messages.size &&
-          <ScrollArea vertical>
-            <div className="bottom-aligner"/>
-            <div>
-              {messages.map((message, index) => this.renderMessage(message, index))}
-            </div>
-          </ScrollArea>
-        }
+        <ScrollArea vertical>
+          <div className="bottom-aligner"/>
+          <div>
+            {messages.map((message, index) => this.renderMessage(message, index))}
+          </div>
+        </ScrollArea>
 
         {isEnded && <RateAgentContainer />}
       </div>

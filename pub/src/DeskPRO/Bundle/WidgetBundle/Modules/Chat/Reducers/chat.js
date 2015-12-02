@@ -7,8 +7,8 @@ import moment from 'moment';
 const initialState = {
   chat: {
     messages: [
-      {message: 'my message', type: 'user'},
-      {message: 'my message2 ', type: 'agent'}
+      {id: 100, message: 'my message my message my message my message', type: 'agent'},
+      {id: 101, message: '{"phrase_id":"message_assigned","name":"Admin Admin"}', type: 'agent'}
     ],
     date_ended: moment().format('X')
   }
