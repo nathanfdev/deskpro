@@ -41,7 +41,6 @@ class EngineTest extends PortalTestCase
 {
     public function testEngineRendersBasicEmailBundleTemplate()
     {
-        $this->installDataSet('fresh');
         $this->assertNotEmpty(
             $this->getTemplating()->render('EmailBundle:Portal:reset-password.html.twig', array()),
             'EmailBundle templates load and can be rendered'
@@ -50,7 +49,6 @@ class EngineTest extends PortalTestCase
 
     public function testEngineRendersBasicDeskproEmailTemplate()
     {
-        $this->installDataSet('fresh');
         $this->assertNotEmpty(
             $this->getTemplating()->render('DeskPRO:emails_agent:agent-welcome-usersource.html.twig', array()),
             'DeskPRO email templates load and can be rendered'
