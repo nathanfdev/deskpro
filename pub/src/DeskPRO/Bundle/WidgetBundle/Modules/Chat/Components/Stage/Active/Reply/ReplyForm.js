@@ -7,7 +7,8 @@ export class ReplyForm extends React.Component {
   static propTypes = {
     isEnded: PropTypes.bool,
     onSendMessage: PropTypes.func,
-    onReopen: PropTypes.func
+    onReopen: PropTypes.func,
+    agentName: PropTypes.string
   };
 
   constructor(props) {
@@ -38,9 +39,11 @@ export class ReplyForm extends React.Component {
   };
 
   render() {
+    const { agentName, isEnded } = this.props;
+
     return (
       <div className="dpdesignportal-chat-form">
-        {this.props.isEnded &&
+        {isEnded &&
           <div className="dpdesignportal-chat-form-disabled">
             <a href="#" className="dpdesignportal-button" onClick={this.onReopen}>
               <i className="fa fa-commenting-o"></i> Reopen this chat
@@ -50,7 +53,7 @@ export class ReplyForm extends React.Component {
 
         <form onSubmit={this.onSubmit}>
           <div className="message-container">
-            <textarea placeholder="Type your message to Noelle"
+            <textarea placeholder={`Type your message to ${agentName}`}
                       value={this.state.message}
                       onChange={this.onChangeMessage} />
           </div>
