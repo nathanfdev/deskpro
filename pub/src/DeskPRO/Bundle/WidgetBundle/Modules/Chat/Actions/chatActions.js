@@ -21,11 +21,12 @@ export const pollingChat = createAction(
   (chatId, params) => dispatch => DpApi
     .sendGet(`DP_API/chats/${chatId}/polling?` + compileParams(params))
     .success(response => {
-      const chatInfo = response.chat_info.data;
-      const newMessages = response.new_messages.data;
+      const chatInfo = response.chat_info && response.chat_info.data;
+      const newMessages = response.new_messages ? response.new_messages.data : [];
 
-      dispatch(updateChatInfo(chatInfo));
-
+      if (chatInfo) {
+        dispatch(updateChatInfo(chatInfo));
+      }
       if (newMessages.length) {
         dispatch(addNewMessages(newMessages));
       }
