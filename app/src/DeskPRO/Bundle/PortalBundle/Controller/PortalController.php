@@ -38,10 +38,13 @@ use Application\DeskPRO\Entity\Template;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\UploadAbuseCheck;
+use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\CsrfDoubleSubmitExtension;
+use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -156,40 +159,18 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Route("/validate/{object_type}/{email_id}/{object_id}", name="portal_validation", defaults={"object_id":null})
+     * @Route("/validate/{type}/{auth_code}", name="portal_validation")
+     * @ParamConverter("saved_form", class="App:SavedForm", options={"auth_code" = "auth_code"})
      */
-    public function validateAction(Request $request, $object_type, $email_id, $object_id)
+    public function validateAction(Request $request, $type, SavedForm $saved_form)
     {
-        switch ($object_type) {
-            case PersonValidator::TYPE_EMAIL:
-                $this->getPersonValidator()->validateEmail($email_id, true);
-                $this->addFlash('success', $this->phrase('portal.flashes.validated_email'));
+        switch ($type) {
+            case PortalValidation::REGISTRATION:
+                    return $this->submitSavedForm($saved_form, $request);
                 break;
-            case PersonValidator::TYPE_EMAIL_PRIMARY:
-                $this->getPersonValidator()->validateEmail($email_id);
-                $this->addFlash('success', $this->phrase('portal.flashes.validated_email'));
-                break;
-            case PersonValidator::TYPE_FEEDBACK:
-                if ($this->getPersonValidator()->validateFeedback($email_id, $object_id)) {
-                    $this->addFlash('success', $this->phrase('portal.flashes.validated_email'));
-                } else {
-                    $this->addFlash('error', $this->phrase('portal.flashes.validated_email'));
-                }
+            default:
                 break;
         }
-
-        if (!$this->getUser()) {
-            // if the user is not logged in, send them to the login page with their email filled in
-            $email = $this->getEmailDataService()->getEmail($email_id);
-            $request->getSession()->set(
-                'last_username',
-               $email ? $email->getEmail() : ''
-            );
-
-            return $this->redirectToRoute('portal_login');
-        }
-
-        return $this->redirectToRoute('portal_home');
     }
 
     /**
