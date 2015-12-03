@@ -122,7 +122,7 @@ class FormSaver
 
     /**
      * Meant to be called directly after a form was successfully submitted, but we need to redirect
-     * the user to login first.
+     * the user to login first. This is not useful if you do not yet have a Person object it belongs to.
      *
      * Saves the form information and prepares the session for auto-submit. Returns the correct
      * redirect reponse that your controller should return immediately to auto-submit.
@@ -133,7 +133,7 @@ class FormSaver
      *
      * @return RedirectResponse
      */
-    public function saveFormForPerson(Person $person, FormInterface $form, Request $request)
+    public function saveFormForPersonLogin(Person $person, FormInterface $form, Request $request)
     {
         $data         = $request->request->all();
         $route        = $request->attributes->get('_route');
@@ -160,6 +160,40 @@ class FormSaver
                 'saved_form' => $saved_form->getExternalCode(),
             ))
         );
+    }
+
+    /**
+     * Simply saves a form and gives you the SavedForm object back (already persisted).
+     *
+     * These are usually NOT meant to be automaitcally submitted when the user logs in, because
+     * they cannot log in yet (user registration for example) and will be dealt with outside
+     * of the normal flow of forcing a user to login before submitting.
+     *
+     * @param FormInterface $form    the submitted form
+     * @param Request       $request the request that was used to submit the form
+     *
+     * @return SavedForm
+     */
+    public function saveForm(FormInterface $form, Request $request)
+    {
+        $data         = $request->request->all();
+        $route        = $request->attributes->get('_route');
+        $route_params = $request->attributes->get('_route_params');
+
+        // we have to do a "hack" to find the saved auth codes for the attachments
+        $data = $this->dealWithAttachmentsAuthCodes($form, $data);
+
+        $saved_form = new SavedForm();
+        $saved_form->setFormData($data);
+        $saved_form->setMetaData(array(
+            'route'        => $route,
+            'route_params' => $route_params,
+        ));
+
+        $this->em->persist($saved_form);
+        $this->em->flush($saved_form);
+
+        return $saved_form;
     }
 
     public function getMessage(SavedForm $saved_form)

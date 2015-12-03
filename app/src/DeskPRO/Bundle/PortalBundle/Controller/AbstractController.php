@@ -36,10 +36,14 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonGuest;
+use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
+use DeskPRO\Bundle\PortalBundle\SavedForm\SavedFormView;
 use Doctrine\DBAL\Connection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class AbstractController extends BaseController
@@ -448,5 +452,38 @@ class AbstractController extends BaseController
     protected function getConn()
     {
         return $this->getEm()->getConnection();
+    }
+
+    protected function submitSavedForm(SavedForm $saved_form, Request $request)
+    {
+        $saved_form_view = new SavedFormView($saved_form);
+
+        // prep the sub request to re-submit the form
+        $data = $saved_form->getFormData();
+
+        $url         = $this->generateUrl($saved_form_view->getRouteName(), $saved_form_view->getRouteParams());
+        $sub_request = Request::create(
+            $url,
+            'POST',
+            $data,
+            $request->cookies->all()
+        );
+
+        // sub requests for saved forms have this attribute set
+        $sub_request->attributes->set('saved-form', true);
+        $sub_request->setSession($request->getSession());
+
+        // get rid of the saved form now
+        $this->getFormSaver()->markCompleted($saved_form);
+
+        // submit the form again for the user
+        $response = $this->get('http_kernel')->handle($sub_request, HttpKernelInterface::SUB_REQUEST);
+
+        return $response;
+    }
+
+    protected function isSavedFormSubRequest(Request $request)
+    {
+        return $request->attributes->get('saved-form', false) ? true : false;
     }
 }

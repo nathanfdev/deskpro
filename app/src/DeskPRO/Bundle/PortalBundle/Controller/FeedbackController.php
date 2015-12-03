@@ -131,7 +131,7 @@ class FeedbackController extends AbstractController
                     } catch (LoginRequiredException $e) {
                         $person = $e->getPerson();
 
-                        return $this->getFormSaver()->saveFormForPerson($person, $form, $request);
+                        return $this->getFormSaver()->saveFormForPersonLogin($person, $form, $request);
                     }
 
                     // since the guest is set on the form, we need to update all of the associations

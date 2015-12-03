@@ -31,14 +31,10 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
-use DeskPRO\Bundle\PortalBundle\SavedForm\SavedFormView;
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class SavedFormController extends AbstractController
 {
@@ -57,37 +53,8 @@ class SavedFormController extends AbstractController
         if (!$saved_form) {
             throw new NotFoundHttpException('this saved form does not exist, it may have expired');
         }
-        $saved_form_view = new SavedFormView($saved_form);
 
-        // prep the sub request to re-submit the form
-        $csrf = Strings::random(10);
-        $data = $saved_form->getFormData();
-
-        $data        = Arrays::replaceKeyWithValueRecursive($data, '_dp_csrf_token', $csrf);
-        $url         = $this->generateUrl($saved_form_view->getRouteName(), $saved_form_view->getRouteParams());
-        $sub_request = Request::create(
-            $url,
-            'POST',
-            $data,
-            $request->cookies->all()
-        );
-
-        if (
-            $saved_form->getPerson() !== $this->getUser() // email used in form not the same as this logged in user
-            || $auth_code // if it was from a clicked link, must re-render
-        ) {
-            $sub_request->attributes->set('rerender-form', true); // force a re-render
-        }
-        $sub_request->attributes->set('saved-form', true);
-        $sub_request->setSession($request->getSession());
-        $sub_request->cookies->set('_dp_csrf_token', $csrf);
-        // end prep sub request
-
-        // get rid of the saved form now
-        $this->getFormSaver()->markCompleted($saved_form);
-
-        // submit the form again for the user
-        $response = $this->get('http_kernel')->handle($sub_request, HttpKernelInterface::SUB_REQUEST);
+        $response = $this->submitSavedForm($saved_form, $request);
 
         return $response;
     }

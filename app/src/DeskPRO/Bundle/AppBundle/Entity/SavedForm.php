@@ -94,12 +94,12 @@ class SavedForm implements EntityInterface, NotifyPropertyChanged
      */
     protected $date_expires;
 
-    public function __construct(Person $person)
+    public function __construct(Person $person = null)
     {
         $this->setModelField('person', $person);
         $this->setModelField('date_created', new \DateTime());
         $this->setModelField('auth_code', DpStrings::random(25, Strings::CHARS_ALPHANUM));
-        $this->setDateExpires(new \DateTime('now + 2 days'));
+        $this->setDateExpires(new \DateTime('now + 14 days')); // will be deleted if not used in 2 weeks
     }
 
     public function getExternalCode()
@@ -137,6 +137,26 @@ class SavedForm implements EntityInterface, NotifyPropertyChanged
     public function getMetaData()
     {
         return $this->meta_data;
+    }
+
+    /**
+     * @param $key
+     * @param mixed $default
+     *
+     * @return mixed
+     */
+    public function getMetaDataValue($key, $default = null)
+    {
+        return isset($this->meta_data[$key]) ? $this->meta_data[$key] : $default;
+    }
+
+    /**
+     * @param string $key
+     * @param mixed  $value
+     */
+    public function setMetaDataValue($key, $value)
+    {
+        $this->meta_data[$key] = $value;
     }
 
     /**

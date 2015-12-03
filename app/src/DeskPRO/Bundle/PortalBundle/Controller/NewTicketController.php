@@ -111,7 +111,7 @@ class NewTicketController extends AbstractController
                             // the email used belongs to a user, and brand settings say they need to log in
                             $person = $e->getPerson();
 
-                            return $this->getFormSaver()->saveFormForPerson($person, $form, $request);
+                            return $this->getFormSaver()->saveFormForPersonLogin($person, $form, $request);
                         }
 
                         // since the guest is set on the form, we need to update all of the associations
