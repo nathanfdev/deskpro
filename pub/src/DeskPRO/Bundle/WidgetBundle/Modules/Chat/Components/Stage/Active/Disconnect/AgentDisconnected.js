@@ -3,12 +3,12 @@ import React, { PropTypes } from 'react';
 export class AgentDisconnected extends React.Component {
 
   static propTypes = {
-    agentName: PropTypes.string,
+    children: PropTypes.any,
     agentAvatar: PropTypes.string
   };
 
   render() {
-    const { agentAvatar, agentName } = this.props;
+    const { agentAvatar, children } = this.props;
     const style = {};
 
     if (agentAvatar) {
@@ -31,9 +31,7 @@ export class AgentDisconnected extends React.Component {
         </div>
         <hr />
         <div className="dpdesignportal-agent-state-info">
-          <h1>{agentName} seems to have been disconnected</h1>
-          <h2>If they don't return soon, we'll find another agent for you.</h2>
-          <p><a href="#">Find another agent now</a></p>
+          {children}
         </div>
       </div>
     );
