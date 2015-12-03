@@ -76,8 +76,9 @@ export class ChoiceMenuOption extends Component {
 export class RadioChoiceMenuOption extends Component {
 
   static propTypes = {
+    param: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     values: PropTypes.array,
     onClick: PropTypes.func.isRequired,
     children: PropTypes.any
@@ -98,10 +99,10 @@ export class RadioChoiceMenuOption extends Component {
   }
 
   render() {
-    const {label} = this.props;
+    const {label, param, value, onClick} = this.props;
 
     return (
-      <li>
+      <li onClick={onClick.bind(this, {param: param, value: value})}>
         <span className="dpwd-radio-button">
           <span className="dpwd-radio-button-disc"></span>
           <span className="radio-button-title">{label}</span>

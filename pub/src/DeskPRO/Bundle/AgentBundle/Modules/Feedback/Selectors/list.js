@@ -164,7 +164,7 @@ export const massActionsSelector = createSelector(
     const filterSelector = [];
 
     // Type options
-    const typeOptions = types.toArray().map(type => ({ value: type.get('title'), label: type.get('title') }));
+    const typeOptions = types.toArray().map(type => ({ value: type.get('id'), label: type.get('title') }));
     filterSelector.push({
       label: 'Type',
       type: 'select',

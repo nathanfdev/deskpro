@@ -226,6 +226,11 @@ export const massAction = createAction('FEEDBACK_MASS_ACTION',
     console.log('Implement me, please', params.ids);
   });
 
+export const setMassActionsParams = createAction('FEEDBACK_SET_MASS_ACTIONS_PARAMS',
+  (params)=> {
+    console.log('Set Mass Actions params.', params);
+  });
+
 export const applyParams = createAction(
   'FEEDBACK_APPLY_LIST_PARAMS',
   (overwrite = {}) => (dispatch, getState) => {

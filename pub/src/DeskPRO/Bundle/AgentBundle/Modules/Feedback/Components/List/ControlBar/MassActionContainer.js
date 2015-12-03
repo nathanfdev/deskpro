@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { MassActionBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/MassActionBar/MassActionBar';
-import { toggleMassAction, massAction }
+import { toggleMassAction, massAction, setMassActionsParams }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 import { massActionsSelector } from '../../../Selectors/list';
 
@@ -26,6 +26,7 @@ export class MassActionContainer extends Component {
       },
       selected: this.props.selected,
       actions: this.props.actions,
+      setParams: setMassActionsParams,
       action: massAction
     };
 

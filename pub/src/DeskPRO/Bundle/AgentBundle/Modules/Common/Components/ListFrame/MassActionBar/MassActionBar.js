@@ -7,6 +7,7 @@ export class MassActionBar extends Component {
   static propTypes = {
     selected: PropTypes.object.isRequired,
     action: PropTypes.func.isRequired,
+    setParams: PropTypes.func.isRequired,
     actions: PropTypes.array.isRequired,
     checkbox: PropTypes.shape({
       count: PropTypes.number.isRequired,
@@ -15,12 +16,12 @@ export class MassActionBar extends Component {
   };
 
   render() {
-    const { checkbox, actions, action, selected } = this.props;
+    const { checkbox, actions, action, selected, setParams } = this.props;
 
     return (
       <ListFrameMenu checkbox={checkbox}>
         {actions.map((item, index)=>
-            <ActionContainer key={index} item={item}/>
+            <ActionContainer key={index} id={index} item={item} setParams={setParams}/>
         )}
         <li>
           <hr/>
@@ -50,7 +51,7 @@ export class GoMassActionButton extends Component {
       <li>
         <span
           className="dpwd-navigation-dropdown-top-row-action-button dpwd-navigation-dropdown-top-row-action-button-flat">
-          <a href="#1" className="top-row-action-button-link" onClick={this.onClick.bind(this)}>
+          <a href="" className="top-row-action-button-link" onClick={this.onClick.bind(this)}>
             <span
               className="dpwd-navigation-dropdown-top-row-button-text dpwd-navigation-dropdown-top-row-button-text-grey">
               Go
