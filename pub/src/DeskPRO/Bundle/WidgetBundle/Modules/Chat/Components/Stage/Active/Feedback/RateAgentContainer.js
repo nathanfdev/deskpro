@@ -4,15 +4,17 @@ import { RateAgentDialog } from './RateAgentDialog';
 import { RateAgentComplete } from './RateAgentComplete';
 import { RateAgentForm } from './RateAgentForm';
 import { sendFeedback } from '../../../../Actions/chatActions';
-import { chatIdSelector } from '../../../../Selectors/chat';
+import { chatIdSelector, isEndedSelector } from '../../../../Selectors/chat';
 
 @connect(state => ({
-  chatId: chatIdSelector(state)
+  chatId: chatIdSelector(state),
+  isEnded: isEndedSelector(state)
 }))
 export class RateAgentContainer extends React.Component {
 
   static propTypes = {
     chatId: PropTypes.number,
+    isEnded: PropTypes.bool,
     dispatch: PropTypes.func.isRequired
   };
 
@@ -48,6 +50,10 @@ export class RateAgentContainer extends React.Component {
   };
 
   render() {
+    if (!this.props.isEnded) {
+      return null;
+    }
+
     switch (this.state.stage) {
       case 'finished':
         return <RateAgentComplete />;
