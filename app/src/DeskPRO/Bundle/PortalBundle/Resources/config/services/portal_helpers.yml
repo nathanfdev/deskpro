@@ -1,6 +1,10 @@
 # Helpers we use in portal controllers
 services:
 
+  portal_validation:
+      class: DeskPRO\Bundle\PortalBundle\Helper\PortalValidation
+      arguments: [@portal_email_sender, @brand_stack, @router]
+
   tabs_helper:
       class: DeskPRO\Bundle\PortalBundle\Helper\PortalTabsHelper
       arguments: [@brand_stack, @security.authorization_checker]
