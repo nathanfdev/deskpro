@@ -37,6 +37,8 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\RegistrationAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
+use DeskPRO\Bundle\AppBundle\Security\DpFormLoginToken;
+use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -74,7 +76,9 @@ class ProfileController extends AbstractController
 
         // FORM
         $form = $this->createForm('person_registration', $person, array(
-            'settings' => $this->getBrandContainer()->getSettings(),
+            'settings'              => $this->getBrandContainer()->getSettings(),
+            'saved_form_subrequest' => $this->isSavedFormSubRequest($request),
+            'action'                => $this->generateUrl('portal_user_registration'),
         ));
         $form->handleRequest($request);
 
@@ -107,19 +111,42 @@ class ProfileController extends AbstractController
         }
 
         if ($form->isValid()) {
-            $context = new CreatePersonContext('gateway.person');
-            $this->getPersonFactory()->saveNewPerson($person, $context);
-            $this->getEmailSender()->sendWelcomeEmail($person);
+            if ($this->isSavedFormSubRequest($request)) {
+                // this is coming from the validation controller, so this time we actually want to save the user
+                $request->getSession()->set(
+                    'last_username',
+                    $person->getPrimaryEmail() ? $person->getPrimaryEmail()->getEmail() : ''
+                );
 
-            // TODO core.email_validation is gone
-            if (!$this->getBrandSetting('core.email_validation')) {
-                $this->addFlash('success', $this->phrase('portal.flashes.user_registered'));
+                // normally we do things like this in the validation controller, but for registration its better
+                // to set the flags here (because the Person didn't exist until now).
+                $person->is_confirmed                    = true;
+                $person->getPrimaryEmail()->is_validated = true;
+
+                $context = new CreatePersonContext('gateway.person');
+                $this->getPersonFactory()->saveNewPerson($person, $context);
+                $this->getEmailSender()->sendWelcomeEmail($person);
+
+                // at this point the user exists and is validated
+                // we can log them in directly
+
+                $token = new DpFormLoginToken($person, null, $person->getRoles());
+                $this->container->get('security.token_storage')->setToken($token);
+
+                $this->addFlash('success', $this->phrase('portal.flashes.user_registered_verified_authenticated'));
+
+                return $this->redirectToRoute('portal_home');
             } else {
+                // this is a normal web request, and we need email validation
+                $saved_form = $this->getFormSaver()->saveForm($form, $request);
+                $saved_form->setMetaDataValue('email', $person->getEmailAddress());
+                $saved_form->setMetaDataValue('name', $person->getNameWithTitle());
+                $this->getEm()->flush($saved_form);
+                $this->get('portal_validation')->sendVerificationEmail(PortalValidation::REGISTRATION, $saved_form);
                 $this->addFlash('success', $this->phrase('portal.flashes.user_registered_must_verify'));
             }
-            $request->getSession()->set('last_username', $person->getPrimaryEmail() ? $person->getPrimaryEmail()->getEmail() : '');
 
-            return $this->redirectToRoute('portal_login');
+            return $this->redirectToRoute('portal_home');
         }
 
         // BREADCRUMBS

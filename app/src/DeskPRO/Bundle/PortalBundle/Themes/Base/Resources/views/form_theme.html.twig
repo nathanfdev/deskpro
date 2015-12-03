@@ -428,7 +428,9 @@
 
 {# CAPTHCA #}
 {% block deskpro_captcha_widget %}
+    {% if form.captcha is defined %}
     {{ form_row(form.captcha) }}
+    {% endif %}
 {% endblock deskpro_captcha_widget %}
 
 {% block deskpro_recaptcha_widget %}

@@ -126,8 +126,6 @@ class PersonFactory
      */
     public function saveNewPerson(Person $person, CreatePersonContext $context)
     {
-        $email = $person->getPrimaryEmail();
-
         $this->user_rule_processor->newRegister($person);
 
         if (!$person->getLanguage()) {
