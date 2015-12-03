@@ -5271,6 +5271,12 @@ h1.fancy-header {
       border: 4px solid #fff;
       padding-top: 5px;
       padding-left: 1px;
+
+      @media screen and (-webkit-min-device-pixel-ratio:0) {
+        padding-left: 0px;
+      }
+
+
       @media all and (-ms-high-contrast: none) { // reposition number for ie
         padding-top: 4px;
         padding-left: 0px;
