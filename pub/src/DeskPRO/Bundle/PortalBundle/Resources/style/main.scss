@@ -7106,7 +7106,6 @@ ul.categories-article-list {
     width: 16px;
     height: 16px;
     border-radius: 2px;
-    background: red;
     background: $gold;
     color: #ffffff;
     vertical-align: middle;
@@ -7143,7 +7142,7 @@ ul.categories-article-list {
       display: block;
       width: 5px;
       height: 6px;
-      background: $page-background;
+      background: #fff;
       content: " ";
     }
 
@@ -7153,7 +7152,7 @@ ul.categories-article-list {
     }
 
     &:after {
-      bottom: 1px;
+      bottom: 0px;
       left: -3px;
     }
   }
