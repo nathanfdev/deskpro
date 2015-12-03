@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\Bundle\AppBundle\CountBadge;
 
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;

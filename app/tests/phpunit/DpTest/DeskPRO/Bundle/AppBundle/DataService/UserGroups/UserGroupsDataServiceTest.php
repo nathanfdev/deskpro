@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\Bundle\AppBundle\DataService\UserGroups;
 
 use Application\DeskPRO\ORM\EntityManager;

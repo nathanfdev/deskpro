@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\EventListener\Language;
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageStack;

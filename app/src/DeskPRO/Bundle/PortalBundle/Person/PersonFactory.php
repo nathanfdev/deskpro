@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Person;
 
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;

@@ -51,7 +51,7 @@ class FollowRedirectListener implements EventSubscriberInterface
         $request  = $event->getRequest();
         $response = $event->getResponse();
         if ($response->getStatusCode() === Response::HTTP_FOUND
-            && $request->get(self::FOLLOW_REDIRECT_PARAMETER, false)) {
+            && $request->get(self::FOLLOW_REDIRECT_PARAMETER, false) !== false) {
             $response = $this->getNewResponse($event);
             $event->setResponse($response);
         }

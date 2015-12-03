@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\AgentTeams;
 
 use Application\DeskPRO\Entity\AgentTeam;

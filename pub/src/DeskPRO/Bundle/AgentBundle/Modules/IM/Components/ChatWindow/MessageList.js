@@ -12,7 +12,7 @@ import Loader from 'react-loader';
   agents: agentsSelector(state),
   agentsStatus: agentsStatusSelector(state),
   messages: state.IM.messages,
-  messagesLoaded: !state.IM.messages.get('loadingMessages')
+  loadingMessages: state.IM.messages.get('loadingMessages')
 }))
 export class MessageList extends React.Component {
 
@@ -22,7 +22,7 @@ export class MessageList extends React.Component {
     agentsStatus: PropTypes.object.isRequired,
     current: PropTypes.object.isRequired,
     messages: PropTypes.object.isRequired,
-    messagesLoaded: PropTypes.bool.isRequired,
+    loadingMessages: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired,
     searchQuery: PropTypes.string.isRequired
   };
@@ -30,31 +30,34 @@ export class MessageList extends React.Component {
 
   componentDidMount() {
     this.refresh();
-    const interval = setInterval(this.refresh, 5000);
-    const countsInterval = setInterval(() => this.props.dispatch(refreshCounts()), 5000);
+    const interval = setInterval(this.refresh, 15000);
+    const countsInterval = setInterval(() => this.props.dispatch(refreshCounts()), 15000);
     this.state = {
       interval: interval,
       countsInterval: countsInterval
     };
     this.shouldScrollBottom = true;
+    this.firstScroll = true;
   }
 
   componentWillReceiveProps(newProps) {
     if (newProps.searchQuery !== this.props.searchQuery) {
       this.props.dispatch(loadMessages(this.props.current.id, newProps.searchQuery));
     }
+    this.props = newProps;
   }
 
   componentWillUpdate = () => {
     const node = ReactDOM.findDOMNode(this.refs.list);
-    this.shouldScrollBottom = this.props.messagesLoaded && node && (node.scrollTop + node.offsetHeight === node.scrollHeight);
+    this.shouldScrollBottom = node && (node.scrollTop + node.offsetHeight === node.scrollHeight);
+    if (this.firstScroll === true && node) {
+      this.firstScroll = false;
+      this.shouldScrollBottom = true;
+    }
   };
 
   componentDidUpdate = () => {
-    const node = ReactDOM.findDOMNode(this.refs.list);
-    if (this.shouldScrollBottom && node) {
-      node.scrollTop = node.scrollHeight;
-    }
+    this.scroll();
   };
 
   componentWillUnmount() {
@@ -71,6 +74,14 @@ export class MessageList extends React.Component {
     }
     return path;
   };
+
+  scroll = () => {
+    const node = ReactDOM.findDOMNode(this.refs.list);
+    if (this.shouldScrollBottom && node) {
+      node.scrollTop = node.scrollHeight;
+    }
+  };
+
 
   markNewMessages() {
     const ids = [];
@@ -111,16 +122,23 @@ export class MessageList extends React.Component {
 
 
   renderList(msg) {
+    let previous = false;
     return (
       <ul ref="list" className="chat-message-list">
         { this.controls() }
         {
           msg.map((message, index) => {
-            return (<Message
+            const result = (
+              <Message
               key={index}
               message={message}
+              size={msg.length}
+              current={index}
+              previousMessage={previous}
               agents={this.props.agents}
               me={this.props.me}/>);
+            previous = message;
+            return result;
           })
         }
       </ul>
@@ -143,7 +161,7 @@ export class MessageList extends React.Component {
     msg.sort((first, second) => {
       return first.id - second.id;
     });
-    const loaded = this.props.messagesLoaded || msg.length > 0;
+    const loaded = !this.props.loadingMessages || msg.length > 0;
     return (
        <Loader loaded={loaded}>
          { msg.length > 0 ? this.renderList(msg) : this.renderEmpty()}

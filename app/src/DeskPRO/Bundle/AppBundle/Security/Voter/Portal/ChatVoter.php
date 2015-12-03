@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
 use Application\DeskPRO\Entity\ChatConversation;

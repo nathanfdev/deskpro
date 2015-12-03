@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle;
 
 use DeskPRO\Bundle\ApiBundle\DependencyInjection\Compiler\ApiDocPass;

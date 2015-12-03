@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
 
 use Application\DeskPRO\Entity\ChatConversation;

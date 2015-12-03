@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\Problem;
 
 use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketsSelectCriteria;

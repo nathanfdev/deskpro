@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Application\Brand;
 
 use DeskPRO\Bundle\PortalBundle\Brand\BrandContainerFactory;

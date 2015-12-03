@@ -24,6 +24,7 @@ export class Item extends React.Component {
           avatar: this.renderPersonAvatar(agent),
           name: agent.get('name'),
           id: agent.get('id'),
+          chatId: chat.get('id'),
           type: chat.get('chat_type'),
           elementId: 'chat-with-' + this.props.chat.get('chat_type') + '-' + agent.get('id'),
           online: agent.get('online')
@@ -35,6 +36,7 @@ export class Item extends React.Component {
           avatar: this.renderTeamAvatar(team),
           name: team.get('name'),
           id: team.get('id'),
+          chatId: chat.get('id'),
           type: chat.get('chat_type'),
           elementId: 'chat-with-' + this.props.chat.get('chat_type') + '-' + team.get('id'),
           online: false
@@ -46,6 +48,7 @@ export class Item extends React.Component {
           avatar: this.renderDepartmentAvatar(department),
           name: department.get('title'),
           id: department.get('id'),
+          chatId: chat.get('id'),
           type: chat.get('chat_type'),
           elementId: 'chat-with-' + this.props.chat.get('chat_type') + '-' + department.get('id'),
           online: false
@@ -56,6 +59,7 @@ export class Item extends React.Component {
           avatar: this.renderEveryoneAvatar(),
           name: 'Everyone',
           id: chat.get('id'),
+          chatId: chat.get('id'),
           type: chat.get('chat_type'),
           elementId: 'chat-with-' + this.props.chat.get('chat_type'),
           online: false
@@ -116,7 +120,7 @@ export class Item extends React.Component {
         id={entity.elementId}
         href="#"
         title={entity.name}
-        onClick={this.props.startChat.bind(null, entity.id, entity.type)}
+        onClick={this.props.startChat.bind(null, entity.id, entity.type, entity.chatId)}
         className={className}>
         {entity.avatar}
         {entity.count}

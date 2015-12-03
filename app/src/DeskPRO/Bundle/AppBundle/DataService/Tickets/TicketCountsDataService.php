@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\Tickets;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -148,8 +149,8 @@ class TicketCountsDataService
      * @param string $type
      *
      * @throws \Exception
-     * @return string
      *
+     * @return string
      */
     private function getTitle($id, $type)
     {

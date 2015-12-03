@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Error\Exception;
 
 use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Publish\Feedback;
 
 use Application\DeskPRO\App;

@@ -62,7 +62,7 @@ window.setupLegacy = (function() {
   }
 
   return function setupLegacy() {
-    window.BASE_URL = DP_BASE_URL_RELATIVE;
+    window.BASE_URL = DP_BASE_URL_RELATIVE + '/';
 
     setupJquery();
 

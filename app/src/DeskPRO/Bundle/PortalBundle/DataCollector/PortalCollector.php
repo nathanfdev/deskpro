@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\DataCollector;
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageStack;

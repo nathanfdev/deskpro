@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataSerializer;
 
 use Application\DeskPRO\Domain\DomainObject;

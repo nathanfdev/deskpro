@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Security\Handler;
 
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;

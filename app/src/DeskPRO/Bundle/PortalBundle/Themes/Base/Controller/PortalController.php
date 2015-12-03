@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
 use DeskPRO\Bundle\PortalBundle\Annotation\Tag;

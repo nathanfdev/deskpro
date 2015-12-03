@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
 use Application\DeskPRO\Entity\CustomDataFeedback;
@@ -100,13 +101,13 @@ class FeedbackController extends BaseController
     public function cgetAction(Request $request)
     {
         $dataService = $this->get('data.feedback');
-        $params = $request->query->all();
+        $params      = $request->query->all();
         try {
             $criteria = FeedbackSelectCriteria::fromParameters($params, new OptionsResolver());
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
-        $page = $request->query->get('page', 1);
+        $page  = $request->query->get('page', 1);
         $count = $request->query->get('count', 5);
 
         $feedback = $dataService->selectFeedback($criteria, $page, $count);
@@ -141,7 +142,7 @@ class FeedbackController extends BaseController
     public function getCountsAction(Request $request)
     {
         $dataService = $this->get('data.feedback');
-        $params = $request->query->all();
+        $params      = $request->query->all();
         try {
             $criteria = FeedbackCountCriteria::fromParameters($params, new OptionsResolver());
         } catch (InvalidArgumentException $e) {
@@ -178,7 +179,7 @@ class FeedbackController extends BaseController
      */
     public function massAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em  = $this->getDoctrine()->getManager();
         $ids = $request->query->get('id');
         if (count($ids) > 0) {
             $qb = $em->createQueryBuilder();

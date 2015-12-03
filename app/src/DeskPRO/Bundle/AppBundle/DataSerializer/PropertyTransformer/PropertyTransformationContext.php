@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\PropertyTransformer;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializerContext;

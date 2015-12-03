@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\Bundle\AppBundle\DataService\Chat;
 
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;

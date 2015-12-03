@@ -69,8 +69,8 @@ export class List extends React.Component {
     this.props.dispatch(chatActions.loadRecentChats());
   }
 
-  startChat = (id, type) => {
-    this.props.dispatch(actions.startChat(id, type));
+  startChat = (id, type, chatId) => {
+    this.props.dispatch(actions.startChat(id, type, chatId));
   };
 
   render() {

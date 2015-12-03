@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\Tickets;
 
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;

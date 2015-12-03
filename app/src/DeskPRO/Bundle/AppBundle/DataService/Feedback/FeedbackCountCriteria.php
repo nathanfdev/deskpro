@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
 
 use DeskPRO\Bundle\AppBundle\Data\Criteria\Groupable;
@@ -88,7 +89,8 @@ class FeedbackCountCriteria extends FeedbackSelectCriteria implements GroupableC
         $qb->groupBy('group_name');
     }
 
-    public function getFilters(){
+    public function getFilters()
+    {
         return $this->filters;
     }
 }
