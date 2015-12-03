@@ -1,13 +1,6 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
-import { agentNameSelector, agentAvatarSelector, departmentNameSelector } from '../../../../Selectors/chat';
 
-@connect(state => ({
-  agentName: agentNameSelector(state),
-  agentAvatar: agentAvatarSelector(state),
-  departmentName: departmentNameSelector(state)
-}))
-export class OnlineAgentContainer extends React.Component {
+export class OnlineAgent extends React.Component {
 
   static propTypes = {
     agentName: PropTypes.string,
