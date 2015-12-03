@@ -7,7 +7,8 @@ export class MessageAvatar extends React.Component {
   };
 
   render() {
-    const avatarUrl = this.props.message.get('author_avatar');
+    const { message } = this.props;
+    const avatarUrl = message && message.get('author_avatar');
     const style = {};
 
     if (avatarUrl) {
