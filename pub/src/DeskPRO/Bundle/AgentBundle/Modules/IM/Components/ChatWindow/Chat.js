@@ -3,7 +3,6 @@ import Loader from 'react-loader';
 import { connect } from 'react-redux';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import * as ui from '../../Actions/uiActions';
-import jQuery from 'jquery';
 
 // components
 import { Footer } from './Footer';
@@ -129,7 +128,7 @@ export class Chat extends React.Component {
     return (
     <ClickOut
       onClickOut={this.handleOnClose}
-      ignoreNodes={[jQuery('#active-chat-search-clear')]}
+      ignoreNodes={['#active-chat-search-clear', '#emoticon-panel']}
       >
       <div className="dropdown active-chat-dropdown" id="active-chat-dropdown">
         <Header toggleSearch={this.toggleSearch} onClose={this.handleOnClose} online={this.isOnline()}/>
