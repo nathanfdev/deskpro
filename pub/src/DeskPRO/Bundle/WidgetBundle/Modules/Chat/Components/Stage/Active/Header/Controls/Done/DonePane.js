@@ -1,7 +1,7 @@
 import React from 'react';
 import { ControlsPane } from '../ControlsPane';
 import { ControlItem } from '../ControlItem';
-import { ReopenChatContainer } from '../../../../ReopenChatContainer';
+import { ReopenChatContainer } from '../../../ReopenChatContainer';
 import { ReopenChatButton } from './ReopenChatButton';
 
 export class DonePane extends React.Component {

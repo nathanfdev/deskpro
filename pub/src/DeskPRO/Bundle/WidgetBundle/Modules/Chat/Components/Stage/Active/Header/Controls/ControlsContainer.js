@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Controls } from './Controls';
+import { ActivePane } from './Active/ActivePane';
+import { DonePane } from './Done/DonePane';
 import { isEndedSelector } from '../../../../../Selectors/chat';
 
 @connect(state => ({
@@ -8,7 +9,11 @@ import { isEndedSelector } from '../../../../../Selectors/chat';
 }))
 export class ControlsContainer extends React.Component {
 
+  static propTypes = {
+    isEnded: PropTypes.bool
+  };
+
   render() {
-    return <Controls {...this.props} />;
+    return this.props.isEnded ? <DonePane /> : <ActivePane />;
   }
 }

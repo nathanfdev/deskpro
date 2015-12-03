@@ -1,7 +1,7 @@
 import React from 'react';
 import { ControlsPane } from '../ControlsPane';
 import { ControlItem } from '../ControlItem';
-import { EndChatContainer } from '../../../../EndChat/EndChatContainer';
+import { EndChatContainer } from '../../../EndChat/EndChatContainer';
 import { EndChatButton } from './EndChatButton';
 import { TranscriptContainer } from './Transcript/TranscriptContainer';
 import { TranscriptButton } from './Transcript/TranscriptButton';
