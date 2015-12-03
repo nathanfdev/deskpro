@@ -29,8 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
+use Application\DeskPRO\Translate\Translate;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\DpPassword;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -47,9 +50,15 @@ class PersonChangePasswordType extends AbstractType
      */
     private $captcha_decider;
 
-    public function __construct(CaptchaDecider $captcha_decider)
+    /**
+     * @var Translate
+     */
+    private $translate;
+
+    public function __construct(CaptchaDecider $captcha_decider, Translate $translate)
     {
         $this->captcha_decider = $captcha_decider;
+        $this->translate       = $translate;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -58,29 +67,28 @@ class PersonChangePasswordType extends AbstractType
             $builder->add('current_password', 'password', array(
                 'required'    => true,
                 'constraints' => array(
-                    new UserPassword(),
+                    new UserPassword(['message' => 'portal.forms.error_password_current']),
                 ),
                 'mapped' => false, // not mapping this, just using it for validation
             ));
         }
 
-        $builder->add('new_password', 'repeated', array(
-            'first_name'     => 'password',
-            'first_options'  => array('label' => 'New Password'),
-            'second_name'    => 'confirm',
-            'second_options' => array('label' => 'Confirm'),
-            'type'           => 'password',
-            'required'       => true,
-            'constraints'    => array(
-                new NotBlank(),
-            ),
-            'mapped' => false,
-        ));
-
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            if ($this->captcha_decider->shouldRequireCommentCaptchaForCurrentPerson()) {
-                $event->getForm()->add('captcha', 'deskpro_captcha');
-            }
+            $form = $event->getForm();
+            $person = $event->getData();
+            $form->add('new_password', 'repeated', array(
+                'first_name'     => 'password',
+                'first_options'  => array('label' => $this->phrase('portal.forms.label_password')),
+                'second_name'    => 'confirm',
+                'second_options' => array('label' => $this->phrase('portal.forms.label_password_confirm')),
+                'type'           => 'password',
+                'required'       => true,
+                'constraints'    => array(
+                    new NotBlank(['message'  => 'portal.forms.error_required']),
+                    new DpPassword(['person' => $person]),
+                ),
+                'mapped' => false,
+            ));
         });
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
@@ -106,6 +114,11 @@ class PersonChangePasswordType extends AbstractType
                 'settings' => 'Application\DeskPRO\NewSettings\SettingsBag',
             )
         );
+    }
+
+    public function phrase($phrase, $vars = [])
+    {
+        return $this->translate->phrase($phrase, $vars);
     }
 
     /**

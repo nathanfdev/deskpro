@@ -29,15 +29,32 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use Orb\Data\ContentTypes;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class AgentTeamsFixture extends AbstractFixture implements OrderedFixtureInterface
+class AgentTeamsFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
 {
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -51,11 +68,26 @@ class AgentTeamsFixture extends AbstractFixture implements OrderedFixtureInterfa
      */
     public function load(ObjectManager $manager)
     {
+        $ava_map = [
+            null,
+            '/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/avatars/superman_.jpg',
+            '/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/avatars/captain_america.gif',
+        ];
+
+        $bs = $this->container->get('deskpro.blob_storage');
+
         foreach (array('Support', 'Level 1', 'Level 2') as $k => $title) {
             $team       = new AgentTeam();
             $team->name = $title;
             $this->addReference('team.'.$k, $team);
             $manager->persist($team);
+
+            $ava = $ava_map[$k];
+            if ($ava) {
+                $blob         = $bs->createBlobRecordFromFile(DP_ROOT.$ava, basename($ava), ContentTypes::getContentTypeFromFilename($ava));
+                $team->avatar = $blob;
+                $manager->persist($team);
+            }
         }
 
         $manager->flush();

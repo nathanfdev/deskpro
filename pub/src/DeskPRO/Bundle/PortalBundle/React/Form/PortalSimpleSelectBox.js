@@ -1,6 +1,5 @@
-import _ from "lodash";
 import $ from "jquery";
-import React from "react";
+import React, { PropTypes } from 'react';
 
 
 //######################################################################################################################
@@ -8,6 +7,17 @@ import React from "react";
 //######################################################################################################################
 
 class SelectOption extends React.Component {
+
+  static propTypes = {
+    onClickOption: PropTypes.func,
+    disabled: PropTypes.bool,
+    displayDepth: PropTypes.number,
+    isFocused: PropTypes.bool,
+    option: PropTypes.object.isRequired,
+    multiple: PropTypes.bool,
+    active: PropTypes.bool
+  };
+
   onClickOption = (ev) => {
     ev.preventDefault();
     // do not fire events for disabled options
@@ -75,6 +85,9 @@ export default class PortalSimpleSelectBox extends React.Component {
   }
 
   documentClickHandler() {
+    if (!this.state.expanded) {
+      return;
+    }
     this.setState({
       expanded: false
     });
@@ -101,14 +114,10 @@ export default class PortalSimpleSelectBox extends React.Component {
     let val;
     if (this.props.multiple) {
       val = this.state.value;
-      if (!_.some(val, (v) => {
-            return _.parseInt(v.id) === _.parseInt(option.id);
-          })) {
+      if (!val.some(v => parseInt(v.id, 10) === parseInt(option.id, 10))) {
         val.push(option);
       } else {
-        val = val.filter((opt) => {
-          return _.parseInt(opt.id) !== _.parseInt(option.id);
-        });
+        val = val.filter(opt => parseInt(opt.id, 10) !== parseInt(option.id, 10));
       }
       val = val.filter((v) => {
         return typeof v !== 'undefined';
@@ -180,11 +189,11 @@ export default class PortalSimpleSelectBox extends React.Component {
   }
 
   isNullOption(option) {
-    return !option.id || option.title === '';
+    return option === null || !option.id || option.title === '';
   }
 
   getFirstNullOption() {
-    return _.find(this.state.visibleOptions, (option) => {
+    return this.state.visibleOptions.find((option) => {
       return this.isNullOption(option);
     });
   }
@@ -195,6 +204,18 @@ export default class PortalSimpleSelectBox extends React.Component {
     }
 
     const options = this.state.visibleOptions;
+
+    const isActive = (option) => {
+      if (!this.state.value) {
+        return false;
+      }
+
+      if (this.props.multiple) {
+        return this.state.value.includes(option);
+      } else {
+        return this.state.value.id === option.id;
+      }
+    };
 
 
     return (
@@ -208,8 +229,8 @@ export default class PortalSimpleSelectBox extends React.Component {
                           isFocused={option === this.state.selectedOption}
                           key={option.id}
                           option={option}
-                          multiple={this.props.multiple}
-                          active={this.props.multiple ? _.includes(this.state.value, option) : this.state.value.id == option.id }/>
+                          multiple={!!this.props.multiple}
+                          active={isActive(option)}/>
           );
         })
         }
@@ -254,7 +275,7 @@ export default class PortalSimpleSelectBox extends React.Component {
     }
   }
 
-  filterChange(ev) {
+  filterChange = (ev) => {
     // no change
     if (this.refs.filterInput.value == this.state.filterText) {
       return;

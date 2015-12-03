@@ -1,15 +1,19 @@
 import React, { PropTypes } from 'react';
 import * as AppActions from '../../Application/Actions/appActions';
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { Link } from 'react-router';
+import classNames from 'classnames';
 
 export class AppSwitcher extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
+    currentApp: PropTypes.string.isRequired
   };
 
   constructor(props) {
     super(props);
+
     this.expandTimeout = false;
     this.state = {
       expandedSwitcher: false
@@ -17,22 +21,20 @@ export class AppSwitcher extends React.Component {
   }
 
   hoverSwitcher = () => {
-    this.expandTimeout = setTimeout(() => this.expandSwitcher(), 250);
+    this.expandTimeout = setTimeout(this.expandSwitcher, 250);
   };
 
-  expandSwitcher() {
-    const oldState = this.state;
-    const newState = {...oldState};
-    newState.expandedSwitcher = true;
-    this.setState(newState);
-  }
+  expandSwitcher = () => {
+    this.setState({
+      expandedSwitcher: true
+    });
+  };
 
   cancelSwitcher = () => {
     clearTimeout(this.expandTimeout);
-    const oldState = this.state;
-    const newState = {...oldState};
-    newState.expandedSwitcher = false;
-    this.setState(newState);
+    this.setState({
+      expandedSwitcher: false
+    });
   };
 
   renderAppIcon(appId, title, linkClass, iconClass, notificationCount = 0) {
@@ -42,7 +44,8 @@ export class AppSwitcher extends React.Component {
 
     return (
       <li>
-        <Link className={linkClass} activeClassName="active" to={`${DP_BASE_URL_RELATIVE}/agent/${appId}`} onClick={clickHandler}>
+        <Link className={linkClass} activeClassName="active" to={`${DP_BASE_URL_RELATIVE}/agent/${appId}`}
+              onClick={clickHandler}>
           {notificationCount > 0 ? (<span className="dpw-app-bar-notification">{notificationCount}</span>) : null}
           <div className="dpw-app-bar-icon">
             <div className={iconClassNames}></div>
@@ -54,14 +57,12 @@ export class AppSwitcher extends React.Component {
   }
 
   render() {
-    const classesNames = ['dpw-app-bar', 'dpw-app-bar-state-1'];
-    if (this.state.expandedSwitcher) {
-      classesNames.push('dpw-app-bar-expanded');
-    }
+    const { currentApp } = this.props;
+    const classes = classNames('dpw-app-bar', { 'dpw-app-bar-expanded': this.state.expandedSwitcher });
 
     return (
       <nav className="dp-app-switcher" onMouseEnter={this.hoverSwitcher} onMouseLeave={this.cancelSwitcher}>
-        <div className={classesNames.join(' ')}>
+        <div className={classes} style={{borderRightColor: constants.APP_COLOURS[currentApp]}}>
           <ul className="app-list">
             {this.renderAppIcon('tickets', 'Tickets', 'dpw-app-bar-item-1', 'icon-dp-streamline-mail-2', 15)}
             {this.renderAppIcon('crm', 'CRM', 'dpw-app-bar-item-2', 'icon-dp-streamline-connection-2')}

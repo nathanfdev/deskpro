@@ -29,13 +29,16 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\LabelDef;
+use DeskPRO\Bundle\AppBundle\DataFixtures\Tools\RandomFileFromDir;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use Orb\Data\ContentTypes;
 use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -89,11 +92,23 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
     private $org_ids = [];
 
     /**
+     * @var RandomFileFromDir
+     */
+    private $ava_files;
+
+    /**
+     * @var RandomFileFromDir
+     */
+    private $ava_people_files;
+
+    /**
      * {@inheritdoc}
      */
     public function setContainer(ContainerInterface $container = null)
     {
-        $this->container = $container;
+        $this->container        = $container;
+        $this->ava_files        = new RandomFileFromDir(DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/avatars');
+        $this->ava_people_files = new RandomFileFromDir(DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/avatars_people');
     }
 
     /**
@@ -163,8 +178,26 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
             $fname = $this->faker->firstName;
             $lname = $this->faker->lastName;
 
+            $ava_file = null;
+            if ($is_agent) {
+                $ava_file = $this->ava_people_files->next();
+            } elseif ($this->faker->boolean(30)) {
+                $ava_file = $this->ava_files->next();
+            }
+
+            $ava_id = null;
+            if ($ava_file) {
+                $ava = $this->container->get('deskpro.blob_storage')->createBlobRowFromFile(
+                    $ava_file->getRealPath(),
+                    $ava_file->getFilename(),
+                    ContentTypes::getContentTypeFromFilename($ava_file->getFilename())
+                );
+                $ava_id = $ava['id'];
+            }
+
             $batch[] = [
                 'organization_id'   => $this->faker->randomElement($this->org_ids),
+                'picture_blob_id'   => $ava_id,
                 'is_contact'        => 1,
                 'is_user'           => 1,
                 'is_agent'          => (int) $is_agent,

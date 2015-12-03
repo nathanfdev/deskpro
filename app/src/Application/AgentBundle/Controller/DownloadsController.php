@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\DownloadResults;
@@ -199,7 +200,7 @@ class DownloadsController extends AbstractController
             case 'status':
                 $download['status_code'] = $this->in->getString('status');
                 if ($download['status_code'] == 'published' && !$this->person->hasPerm('agent_publish.validate')) {
-                    $download['status_code'] = 'hidden.validating';
+                    $download['status_code'] = 'hidden.unpublished';
                 }
                 break;
 

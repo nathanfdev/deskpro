@@ -1,7 +1,9 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import Frame from 'Ampliflux/common/components/Frame';
+import { openWidget } from '../Actions/dpWindowActions';
 
-export default class TriggerButtonBody extends React.Component {
+export class TriggerButtonBody extends React.Component {
 
   static propTypes = {
     onResize: PropTypes.func,
@@ -32,22 +34,32 @@ export default class TriggerButtonBody extends React.Component {
   }
 }
 
-export default class TriggerButton extends React.Component {
+@connect()
+export class TriggerButtonContainer extends React.Component {
 
   static propTypes = {
-    onClick: PropTypes.func,
+    dispatch: PropTypes.func,
     isVisible: PropTypes.bool
   };
 
+  onClick = () => {
+    this.props.dispatch(openWidget());
+  };
+
   render() {
-    const { isVisible, onClick } = this.props;
+    const { isVisible } = this.props;
     const style = {
       margin: '14px'
     };
 
     return (
-      <Frame ref="frame" style={style} isVisible={isVisible}>
-        <TriggerButtonBody onResize={() => this.refs.frame && this.refs.frame.autoFrameDimensions()} onClick={onClick} />
+      <Frame ref="frame"
+             name="widget_trigger"
+             frameStyles={style}
+             isVisible={isVisible}>
+
+        <TriggerButtonBody onResize={() => this.refs.frame && this.refs.frame.autoFrameDimensions()}
+                           onClick={this.onClick} />
       </Frame>
     );
   }

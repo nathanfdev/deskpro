@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import Loader from 'react-loader';
 import { connect } from 'react-redux';
-import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
+import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import * as ui from '../../Actions/uiActions';
 import jQuery from 'jquery';
 

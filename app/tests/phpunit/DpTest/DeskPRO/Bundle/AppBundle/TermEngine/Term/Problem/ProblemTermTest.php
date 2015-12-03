@@ -29,7 +29,8 @@
 /**
  * DeskPRO.
  */
-namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent;
+
+namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\Problem;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractTerm;

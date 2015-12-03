@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Settings;
 
 use Orb\Util\Arrays;
@@ -90,6 +91,12 @@ class TicketSettings
     /** @var bool|false */
     public $email_reply_as_note = false;
 
+    /** @var bool */
+    public $web_require_validation = false;
+
+    /** @var bool */
+    public $email_require_validation = false;
+
     public $agent_defaults = array(
         'newticket_status'      => 'awaiting_user',
         'newticket_agent'       => 'assign',
@@ -124,6 +131,9 @@ class TicketSettings
     {
         $this->satisfaction_enabled   = (bool) $this->settings->get('core.tickets.enable_feedback');
         $this->satisfaction_agentread = (bool) $this->settings->get('core.tickets.feedback_agents_read');
+
+        $this->web_require_validation   = (bool) $this->settings->get('core_tickets.web_require_validation');
+        $this->email_require_validation = (bool) $this->settings->get('core_tickets.email_require_validation');
 
         $this->kbsuggest_web_enabled = (bool) $this->settings->get('core.show_ticket_suggestions');
 
@@ -210,6 +220,8 @@ class TicketSettings
         foreach (array(
             'satisfaction_enabled',
             'satisfaction_agentread',
+            'web_require_validation',
+            'email_require_validation',
             'kbsuggest_web_enabled',
             'timelog_enabled',
             'timelog_autostart',
@@ -266,6 +278,9 @@ class TicketSettings
         $this->settings->setSetting('core.tickets.enable_feedback',      (int) $this->satisfaction_enabled);
         $this->settings->setSetting('core.tickets.feedback_agents_read', (int) $this->satisfaction_agentread);
         $this->settings->setSetting('core.show_ticket_suggestions',      (int) $this->kbsuggest_web_enabled);
+
+        $this->settings->setSetting('core_tickets.web_require_validation', (int) $this->web_require_validation);
+        $this->settings->setSetting('core_tickets.email_require_validation', (int) $this->email_require_validation);
 
         $this->settings->setSetting('core_tickets.enable_timelog',       (int) $this->timelog_enabled);
 

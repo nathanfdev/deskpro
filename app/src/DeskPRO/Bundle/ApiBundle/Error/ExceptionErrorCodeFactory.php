@@ -29,40 +29,57 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Error;
 
+/**
+ * Class ExceptionErrorCodeFactory.
+ */
 class ExceptionErrorCodeFactory
 {
-    public static $exceptions_to_error_codes_map = array(
+    public static $exceptions_to_error_codes_map = [
         'DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException'     => ApiErrors::BAD_REQUEST,
         'Symfony\Component\HttpKernel\Exception\BadRequestHttpException'    => ApiErrors::BAD_REQUEST,
         'Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException'  => ApiErrors::UNAUTHORIZED,
         'Symfony\Component\HttpKernel\Exception\NotFoundHttpException'      => ApiErrors::NOT_FOUND,
         'Symfony\Component\Security\Core\Exception\BadCredentialsException' => ApiErrors::BAD_CREDENTIALS,
-    );
+    ];
 
-    public static $exception_messages_to_error_codes_map = array(
+    public static $exception_messages_to_error_codes_map = [
         'Invalid JSONP callback value'  => ApiErrors::INVALID_JSONP_CALLBACK,
         'Invalid json message received' => ApiErrors::INVALID_JSON_BODY,
-    );
+    ];
 
+    /**
+     * @param \Exception $exception
+     *
+     * @return string|void
+     */
     public function getExceptionErrorCode(\Exception $exception)
     {
-        if ($error_code = $this->findMappedMessage($exception->getMessage())) {
+        $error_code = $this->findMappedMessage($exception->getMessage());
+        if ($error_code) {
             return $error_code;
         }
 
-        if ($error_code = $exception->getMessage()) {
+        $error_code = $exception->getMessage();
+        if ($error_code) {
             return $error_code;
         }
 
-        if ($error_code = $this->findMappedErrorCode(get_class($exception))) {
+        $error_code = $this->findMappedErrorCode(get_class($exception));
+        if ($error_code) {
             return $error_code;
         }
 
         return ApiErrors::EXCEPTION_FALLBACK;
     }
 
+    /**
+     * @param $exception_class
+     *
+     * @return string
+     */
     protected function findMappedErrorCode($exception_class)
     {
         foreach (self::$exceptions_to_error_codes_map as $exception_name => $error_code) {
@@ -71,9 +88,14 @@ class ExceptionErrorCodeFactory
             }
         }
 
-        return;
+        return '';
     }
 
+    /**
+     * @param $exception_message
+     *
+     * @return string
+     */
     protected function findMappedMessage($exception_message)
     {
         foreach (self::$exception_messages_to_error_codes_map as $mapped_message => $error_code) {
@@ -82,6 +104,6 @@ class ExceptionErrorCodeFactory
             }
         }
 
-        return;
+        return '';
     }
 }

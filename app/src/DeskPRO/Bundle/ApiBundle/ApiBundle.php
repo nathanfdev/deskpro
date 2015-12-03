@@ -29,10 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle;
 
 use DeskPRO\Bundle\ApiBundle\DependencyInjection\Compiler\ApiDocPass;
-use DeskPRO\Bundle\ApiBundle\DependencyInjection\Compiler\RegisterDataSerializerEventsPass;
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -41,7 +41,6 @@ class ApiBundle extends Bundle
 {
     public function build(ContainerBuilder $container)
     {
-        $container->addCompilerPass(new RegisterDataSerializerEventsPass());
         $container->addCompilerPass(new ApiDocPass());
         parent::build($container);
     }

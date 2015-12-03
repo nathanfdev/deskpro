@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -142,14 +143,14 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
             }
         }
 
-        public function getTwoLetterLanguageCode()
-        {
-            return substr($this->locale, 0, 2);
-        }
-
         public function getUrlCode()
         {
-            return $this->getTwoLetterLanguageCode();
+            // special handling for 'default' to be just 'en'
+            if ($this->sys_name === 'default') {
+                return 'en';
+            } else {
+                return $this->locale;
+            }
         }
 
         public function getSystemName()

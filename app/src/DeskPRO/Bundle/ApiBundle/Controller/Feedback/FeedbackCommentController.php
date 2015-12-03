@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
 use Application\DeskPRO\Entity\FeedbackComment;
@@ -74,22 +75,17 @@ class FeedbackCommentController extends BaseController
             ->from('DeskPRO:FeedbackComment', 'c')
             ->innerJoin('c.feedback', 'feedback');
         $awaitingValidation = $request->get('awaiting_validation');
-        $sort = $request->get('sort');
-        $order = $request->get('order');
-        $category = $request->get('category');
-        $custom_category = $request->get('custom_category');
-        $status = $request->get('status');
-        $status_category = $request->get('status_category');
-        $labels = $request->get('labels');
-        $created_from = $request->get('created_from');
-        $created_to = $request->get('created_to');
+        $sort               = $request->get('sort');
+        $order              = $request->get('order');
+        $category           = $request->get('category');
+        $custom_category    = $request->get('custom_category');
+        $status             = $request->get('status');
+        $status_category    = $request->get('status_category');
+        $labels             = $request->get('labels');
+        $created_from       = $request->get('created_from');
+        $created_to         = $request->get('created_to');
         if ($awaitingValidation) {
             $qb
-                ->andWhere('c.status IN (:validating)')
-                ->setParameter(
-                    'validating',
-                    [FeedbackComment::STATUS_VALIDATING, FeedbackComment::STATUS_USER_VALIDATING]
-                )
                 ->orWhere('c.is_reviewed = 0');
         }
         if ($sort && $order) {
@@ -324,7 +320,7 @@ class FeedbackCommentController extends BaseController
     /**
      * Will be abstracted for use by other controllers.
      *
-     * @param Request $request
+     * @param Request         $request
      * @param FeedbackComment $comment
      *
      * @throws AlreadySubmittedException

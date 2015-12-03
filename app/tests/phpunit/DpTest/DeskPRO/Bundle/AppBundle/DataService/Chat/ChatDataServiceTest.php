@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\Bundle\AppBundle\DataService\Chat;
 
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
@@ -98,7 +99,7 @@ class ChatDataServiceTest extends DeskProTestCase
 
         $result = $this->instance()->countChats($criteria);
 
-        $this->assertNull($result->getGroupedBy());
+        $this->assertNull($result->getType());
     }
 
     /**

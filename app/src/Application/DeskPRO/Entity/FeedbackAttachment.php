@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -107,6 +108,11 @@ class FeedbackAttachment extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('blob', $blob);
 
         return $this;
+    }
+
+    public function getBlob()
+    {
+        return $this->blob;
     }
 
     ############################################################################

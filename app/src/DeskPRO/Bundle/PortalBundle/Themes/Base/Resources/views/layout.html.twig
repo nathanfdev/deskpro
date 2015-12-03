@@ -1,72 +1,26 @@
+<!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
-  <meta charset="utf-8" />
-  <title>{% if page_title is defined %}{{ page_title }}{% else %}{{ global_settings.get('core.site_name')|default(global_settings.get('core.deskpro_name')) }}{% endif %}</title>
-  <meta name="viewport" content="width=device-width">
-  <style>
-      {# This is copy+pasted from dpx.scss. It needs to be inline because it needs to be instant. #}
-      body .as-no-dpui { display: block; }
-      body .as-dpui { display: none; }
-      body.with-dpui .as-no-dpui { display: none; }
-      body.with-dpui .as-dpui { display: block; }
-      body.with-js .with-dpx { visibility: hidden; }
-      body.with-js .with-dpx { visibility: hidden; }
-      body.with-js.without-dpui.with-pageload-done .with-dpx { visibility: visible; }
-      body.with-js.with-dpui.with-pageload-dpx-done .with-dpx { visibility: visible; }
-  </style>
-  {#<link href="{{ path('serve_brand_asset', { brand_id: brand('id'), file: 'DeskPRO/Bundle/Build/Resources/style/DeskPRO_PortalBundle_style.css' }) }}" media="all" rel="stylesheet" />#}
-  <link href="{{ asset('DeskPRO_PortalBundle_style.css', 'app_assets') }}" media="all" rel="stylesheet" type="text/css" />
-  <link href='https://fonts.googleapis.com/css?family=Ubuntu:400,300,500,700|Open+Sans:400,300,600,700|Roboto:400,300,500,700|Lato:400,300,700' rel='stylesheet' type='text/css' />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta charset="utf-8" />
+    <title>{% if page_title is defined %}{{ page_title }}{% else %}{{ global_settings.get('core.site_name')|default(global_settings.get('core.deskpro_name')) }}{% endif %}</title>
+    <meta name="viewport" content="width=device-width">
+    {% include 'Theme:Internal:head-include.html.twig' %}
+    {#<link href="{{ path('serve_brand_asset', { brand_id: brand('id'), file: 'DeskPRO/Bundle/Build/Resources/style/DeskPRO_PortalBundle_style.css' }) }}" media="all" rel="stylesheet" />#}
+    <link href="{{ asset('DeskPRO_PortalBundle_style.css', 'app_assets') }}" media="all" rel="stylesheet" type="text/css" />
+    <link href='https://fonts.googleapis.com/css?family=Ubuntu:400,300,500,700|Open+Sans:400,300,600,700|Roboto:400,300,500,700|Lato:400,300,700' rel='stylesheet' type='text/css' />
 </head>
 <body{% if is_agent() or is_admin() or is_impersonating() %} class="with-agent-bar"{% endif %}>
-<script type="text/javascript">
-(function(){
-  document.body.className = document.body.className + ' with-js';
-
-  window.WITH_DPUI = true;
-  if (window.WITH_DPUI) {
-    document.body.className = document.body.className + ' with-dpui';
-  } else {
-    document.body.className = document.body.className + ' without-dpui';
-  }
-
-  window.DP_LOAD_FN = [];
-
-  window.DESKPRO_BASE_URL = '{{ base_url() }}';
-  window.DESKPRO_ROOT_URL = '{{ root_url() }}';
-  window.DESKPRO_WEB_URL = '{{ root_url() }}web';
-  window.DESKPRO_MULTI_LANG = {{ is_multi_lang() ? 'true' : 'false' }};
-  window.DESKPRO_LANG = '{{ lang_code() }}';
-  window.DESKPRO_ENABLED_LANGS = [{% for language in enabled_languages() %}{{ '{' }}code: '{{ language.urlCode }}', title:'{{ language.title|capitalize }}',flag:'{{ language.flag_image }}'{{ '}' }}{% if not loop.last %},{% endif %}{% endfor %}];
-  window.DP_ASSET_URL = '{{ asset('') }}';
-  window.DP_BASE_URL = '{{ path('portal_home')|trim('/') }}/';
-  window.__DP_APP_SRC__ = '{{ asset('DeskPRO_WidgetBundle.js', 'app_assets') }}';
-  window.__DP_URL__ = '{{ root_url() }}';
-})();
-</script>
+{% include 'Theme:Internal:body-include.html.twig' %}
 <script type="text/javascript" src="{{ asset('DeskPRO_PortalBundle.js', 'app_assets') }}" async="async"></script>
 <script type="text/javascript" src="{{ asset('widget_loader.js', 'app_assets') }}" async="async"></script>
 {% block doc_begin %}{% endblock %}
 
 <div class="dp-page-body">
-  {% block body %}The layout body should be defined in a sub-theme.{% endblock body %}
+    {% block body %}The layout body should be defined in a sub-theme.{% endblock body %}
 </div>
 
 {% block doc_end %}{% endblock %}
-{% if is_guest() %}
-  {{ background_sso() }}
-{% endif %}
-<script type="text/javascript">
-(function(){
-  document.body.className = document.body.className + ' with-pageload-done';
-  if (window.WITH_DPUI) {
-    window.setTimeout(function () {
-      // fallback
-      document.body.className = document.body.className + ' with-dpx-done';
-    }, 4000);
-  }
-})();
-</script>
+{% include 'Theme:Internal:foot-include.html.twig' %}
 </body>
 </html>

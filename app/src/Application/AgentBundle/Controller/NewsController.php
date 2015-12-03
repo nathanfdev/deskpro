@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\NewsResults;
@@ -172,7 +173,7 @@ class NewsController extends AbstractController
             case 'status':
                 $news['status_code'] = $this->in->getString('status');
                 if ($news['status_code'] == 'published' && !$this->person->hasPerm('agent_publish.validate')) {
-                    $news['status_code'] = 'hidden.validating';
+                    $news['status_code'] = 'hidden.unpublished';
                 }
                 break;
 

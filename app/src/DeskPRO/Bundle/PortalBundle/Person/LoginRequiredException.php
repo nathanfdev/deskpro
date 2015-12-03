@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Person;
 
 use Application\DeskPRO\Entity\Person;
@@ -43,7 +44,7 @@ class LoginRequiredException extends \RuntimeException
     public function __construct(Person $person)
     {
         $this->person = $person;
-        parent::__construct('login is required to perform this action due to core.existing_account_login=1');
+        parent::__construct('login is required to perform this action');
     }
 
     /**

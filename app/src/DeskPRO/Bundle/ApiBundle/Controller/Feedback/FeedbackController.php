@@ -29,12 +29,15 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
+use Application\DeskPRO\Entity\CustomDataFeedback;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackCountCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackSelectCriteria;
 use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
@@ -98,13 +101,13 @@ class FeedbackController extends BaseController
     public function cgetAction(Request $request)
     {
         $dataService = $this->get('data.feedback');
-        $params = $request->query->all();
+        $params      = $request->query->all();
         try {
             $criteria = FeedbackSelectCriteria::fromParameters($params, new OptionsResolver());
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
-        $page = $request->query->get('page', 1);
+        $page  = $request->query->get('page', 1);
         $count = $request->query->get('count', 5);
 
         $feedback = $dataService->selectFeedback($criteria, $page, $count);
@@ -139,7 +142,7 @@ class FeedbackController extends BaseController
     public function getCountsAction(Request $request)
     {
         $dataService = $this->get('data.feedback');
-        $params = $request->query->all();
+        $params      = $request->query->all();
         try {
             $criteria = FeedbackCountCriteria::fromParameters($params, new OptionsResolver());
         } catch (InvalidArgumentException $e) {
@@ -151,5 +154,74 @@ class FeedbackController extends BaseController
             $this->createRepresentation($count),
             Response::HTTP_OK
         );
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="Mass action on set of feedback",
+     *      statusCodes={
+     *          200="Success",
+     *          400="Bad Request",
+     *          404="Not Found"
+     *      },
+     *      output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
+     * )
+     * @Put("/feedback/mass_action", name="api_feedback_mass_action")
+     *
+     * @param Request $request
+     *
+     * @throws \LogicException
+     * @throws AccessException
+     * @throws UndefinedOptionsException
+     * @throws BadRequestHttpException
+     *
+     * @return View
+     */
+    public function massAction(Request $request)
+    {
+        $em  = $this->getDoctrine()->getManager();
+        $ids = $request->query->get('id');
+        if (count($ids) > 0) {
+            $qb = $em->createQueryBuilder();
+            $qb
+                ->select('f')
+                ->from('DeskPRO:Feedback', 'f')
+                ->andWhere('f.id IN (:ids)')
+                ->setParameter('ids', $ids);
+
+            $feedback = $qb->getQuery()->getResult();
+
+            $params = $request->request->all();
+            foreach ($params as $param => $value) {
+                if ($param === 'category') {
+                    $category = $em->getRepository('DeskPRO:FeedbackCategory')->find($value);
+                    if (null !== $category) {
+                        foreach ($feedback as $item) {
+                            $item->setCategory($category);
+                        }
+                    }
+                }
+                if ($param === 'status') {
+                    foreach ($feedback as $item) {
+                        $item->setStatus($value);
+                    }
+                }
+                if ($param === 'custom_category') {
+                    $customDef = $em->getRepository('DeskPRO:CustomDefFeedback')->findOneBy(['title' => 'category']);
+                    foreach ($feedback as $item) {
+                        $customCategory = $em->getRepository('DeskPRO:CustomDataFeedback')
+                            ->findOneBy(['feedback' => $item, 'field' => $customDef]);
+                        if (null === $customCategory) {
+                            $customCategory = new CustomDataFeedback();
+                            $customCategory->setFeedback($item);
+                            $customCategory->setField($customDef);
+                        }
+                        $customCategory->setInput($value);
+                        $em->persist($customCategory);
+                    }
+                }
+            }
+            $em->flush();
+        }
     }
 }

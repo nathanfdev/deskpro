@@ -29,21 +29,20 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\Filters;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
 use DeskPRO\Bundle\AppBundle\Entity\PersonSetting;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\TicketsSettings;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Pagerfanta\Adapter\FixedAdapter;
-use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -269,23 +268,7 @@ class TicketFiltersController extends BaseController
 
     /**
      * @ApiDoc(
-     *      description="Get filter's tickets",
-     *      parameters={
-     *          {
-     *              "name"="page",
-     *              "requirement"="\d+",
-     *              "description"="the page you are requesting",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="count",
-     *              "requirement"="\d+",
-     *              "description"="results per page",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          }
-     *      },
+     *      description="Get filter's tickets. See /tickets endpoint docs for the parameter details.",
      *      statusCodes={
      *          200="Success"
      *      }
@@ -295,40 +278,7 @@ class TicketFiltersController extends BaseController
      */
     public function getTicketFilterTickets(Request $request, $id)
     {
-        $filters = $this->get('data.filters');
-        $filter  = $filters->getFilter($id);
-
-        if (!$filter) {
-            throw $this->createNotFoundException();
-        }
-
-        // Let's retrieve the tickets for this filter.
-
-        /** @var \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngine $engine */
-        $engine        = $this->get('term_engine.dbal_ticket_filters.engine');
-        $context       = new TermEngineContext($this->getUser());
-        $tickets_query = $engine->evaluate($filter, $context);
-
-        $currentPage = $request->query->get('page', 1);
-        $maxPerPage  = $request->query->get('count', 10);
-
-        $tickets_query->setCount($maxPerPage);
-        $tickets_query->setPage($currentPage);
-        $ticket_ids = $tickets_query->fetchIds();
-        $tickets    = $this->getEm()->getRepository('DeskPRO:Ticket')->findBy(['id' => $ticket_ids]);
-
-        // retrieve total count and wrap results in Pagerfanta
-
-        $total        = $this->get('data.tickets.ticket_counts')->getTicketFilterCount($filter)->getCount();
-        $pagerAdapter = new FixedAdapter($total, $tickets);
-        $pager        = new Pagerfanta($pagerAdapter);
-        $pager->setCurrentPage($currentPage);
-        $pager->setMaxPerPage($maxPerPage);
-
-        return View::create(
-            $this->dataSerialize($pager),
-            Response::HTTP_OK
-        );
+        return TicketsController::subRequestSearch($this->get('kernel'), $request, ['filter' => $this->findOr404(TicketFilter::class, $id)->getId()]);
     }
 
     /**

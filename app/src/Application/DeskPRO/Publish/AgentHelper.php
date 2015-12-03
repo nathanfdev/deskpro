@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Publish;
 
 use Application\DeskPRO\App;
@@ -155,6 +156,8 @@ class AgentHelper implements PersonContextInterface
      */
     public function getValidatingContentCount()
     {
+        // TODO -- what??
+        // no such thing as validating articels/news/downloads
         $db = App::getDb();
         foreach ($this->enabled_types as $t) {
             $table       = $db->quoteIdentifier($t);
@@ -214,7 +217,7 @@ class AgentHelper implements PersonContextInterface
                 SELECT DISTINCT(c.id) as content_id, '{$t_info['content_type']}' as content_type, r.id AS revision_id, c.date_created
                 FROM $table AS c
                 LEFT JOIN {$t_info['rev_table']} r ON (c.id = r.{$t_info['id_field']})
-                WHERE c.hidden_status = 'validating' OR r.status = 'validating'
+                WHERE r.status = 'hidden' AND r.is_reviewed = 0
             )";
         }
 
@@ -258,7 +261,7 @@ class AgentHelper implements PersonContextInterface
             $sql_parts[] = "(
                 SELECT id as comment_id, '{$t_info['content_type']}' as content_type, date_created
                 FROM {$t_info['table']}
-                WHERE status = 'validating' OR (status = 'visible' AND is_reviewed = 0)
+                WHERE is_reviewed = 0
             )";
         }
 
@@ -325,7 +328,7 @@ class AgentHelper implements PersonContextInterface
             $sql_parts[] = "(
                 SELECT COUNT(*)
                 FROM {$t_info['table']}
-                WHERE status = 'validating' OR (status = 'visible' AND is_reviewed = 0)
+                WHERE is_reviewed = 0
             ) AS $alias";
         }
 

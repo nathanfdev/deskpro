@@ -29,8 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
 
+use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
@@ -44,9 +46,9 @@ class FeedbackSelectCriteria extends Criteria
      */
     public function applyFilters(QueryBuilder $qb)
     {
-        $alias = $qb->getRootAliases()[0];
-        $sort = "$alias.date_created";
-        $order = 'asc';
+        $alias      = $qb->getRootAliases()[0];
+        $sort       = "$alias.date_created";
+        $order      = 'asc';
         $labelsMode = 'any';
         foreach ($this->filters as $field => $value) {
             switch ($field) {
@@ -85,7 +87,7 @@ class FeedbackSelectCriteria extends Criteria
                             ->andWhere('labels.label IN (:labels)')
                             ->setParameter('labels', $value);
                     } else {
-                        /** @ToDo all labels mode */
+                        /* @ToDo all labels mode */
                     }
                     break;
                 case 'no_labels':
@@ -136,7 +138,7 @@ class FeedbackSelectCriteria extends Criteria
 
     /**
      * @param OptionsResolver $resolver
-     * @param array $data
+     * @param array           $data
      *
      * @throws AccessException
      * @throws UndefinedOptionsException
@@ -168,6 +170,20 @@ class FeedbackSelectCriteria extends Criteria
         $resolver->setAllowedValues('awaiting_validation', '1');
         $resolver->setAllowedValues('no_labels', '1');
         $resolver->setAllowedValues('labels_mode', ['any', 'all']);
+        $resolver->setAllowedValues(
+            'status',
+            function ($value) {
+                $allowed = ['new', Feedback::STATUS_ACTIVE, Feedback::STATUS_CLOSED, Feedback::STATUS_HIDDEN];
+                is_array($value) or $value = [$value];
+                foreach ($value as $status) {
+                    if (!in_array($status, $allowed)) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        );
         $resolver->setAllowedValues(
             'sort',
             ['date_created', 'total_rating', 'num_ratings', 'id', 'title', 'status', 'category', 'author_name']

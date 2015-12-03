@@ -1,13 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { TabSpinner } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
-import { starsCountSelector, starNamesSelector, isDoneSelector } from '../../../Selectors/nav';
+import { starsCountSelector, isDoneSelector } from '../../../Selectors/nav';
 import { StarsTab } from './StarsTab';
+import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 
 @connect(state => ({
   isDone: isDoneSelector(state),
-  starsCount: starsCountSelector(state),
-  starNames: starNamesSelector(state)
+  starsCount: starsCountSelector(state)
 }))
 export class StarsTabContainer extends Component {
 
@@ -17,9 +16,9 @@ export class StarsTabContainer extends Component {
 
   render() {
     return (
-      <TabSpinner loaded={this.props.isDone}>
+      <LoadIndicator loaded={this.props.isDone}>
         <StarsTab {...this.props} />
-      </TabSpinner>
+      </LoadIndicator>
     );
   }
 }

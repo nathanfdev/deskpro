@@ -43,7 +43,11 @@ class Build1448627929 extends AbstractBuild
         $email_validate_email = in_array('email', $trigger_modes);
         $email_validate_web   = in_array('portal', $trigger_modes);
 
-        // TODO
+        $this->container->getDb()->deleteIn('settings', ['core_tickets.web_require_validation', 'core_tickets.email_require_validation'], 'name');
+        $this->container->getDb()->insert('settings', [
+            ['name' => 'core_tickets.web_require_validation', 'value' => (int) $email_validate_web],
+            ['name' => 'core_tickets.email_require_validation', 'value' => (int) $email_validate_email],
+        ]);
 
         $this->container->getDb()->deleteIn('ticket_triggers', array(
             'default_newticket_requirevalid', // the one that used to enable/disable it

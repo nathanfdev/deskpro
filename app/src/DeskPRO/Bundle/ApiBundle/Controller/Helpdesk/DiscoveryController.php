@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Helpdesk;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
@@ -37,7 +38,6 @@ use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Orb\Util\Arrays;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -51,7 +51,6 @@ class DiscoveryController extends BaseController
      *      }
      * )
      * @Get("/helpdesk/discover", name="api_helpdesk_discover")
-     * @Security(true)
      */
     public function discoverAction(Request $request)
     {
@@ -134,11 +133,27 @@ class DiscoveryController extends BaseController
             ['type' => 'open_time'],
         ];
 
+        $order_fields = [
+            ['type' => 'urgency'],
+            ['type' => 'date_created'],
+            ['type' => 'date_last_agent_reply'],
+            ['type' => 'date_last_user_reply'],
+            ['type' => 'date_last_reply'],
+            ['type' => 'date_user_waiting'],
+            ['type' => 'total_user_waiting'],
+        ];
+
         $group_fields = array_map(function ($v) {
             Arrays::unshiftAssoc($v, 'id', $v['type']);
 
             return $v;
         }, $group_fields);
+
+        $order_fields = array_map(function ($v) {
+            Arrays::unshiftAssoc($v, 'id', $v['type']);
+
+            return $v;
+        }, $order_fields);
 
         foreach ($field_manager->getFields() as $f) {
             $group_fields[] = [
@@ -181,7 +196,7 @@ class DiscoveryController extends BaseController
                 'enabled' => $settings->get('core_tickets.enable_timelog'),
             ],
             'group_fields' => $group_fields,
-            'order_fields' => $group_fields,
+            'order_fields' => $order_fields,
         ];
 
         $data['chat'] = [

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Application\Brand;
 
 use DeskPRO\Bundle\PortalBundle\Brand\BrandContainerFactory;
@@ -43,10 +44,12 @@ class BrandContainerFactoryTest extends DeskProTestCase
         $mockSettingsResolver = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsResolver');
         $mockEm               = \Mockery::mock('Doctrine\ORM\EntityManager');
         $mockBlobStorage      = \Mockery::mock('Application\DeskPRO\BlobStorage\DeskproBlobStorage');
+        $mockModeStorage      = \Mockery::mock('DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage');
 
         $mockSettingsResolver->shouldReceive('getBrandSettings')->with($mockBrand)->andReturn($mockSettings)->once();
         $themeResolver = \Mockery::mock('DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver');
-        $factory       = new BrandContainerFactory($mockSettingsResolver, $themeResolver, $mockEm, $mockBlobStorage);
+        $factory       = new BrandContainerFactory(
+            $mockSettingsResolver, $themeResolver, $mockEm, $mockBlobStorage, $mockModeStorage);
 
         $container = $factory->create($mockBrand);
 

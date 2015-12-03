@@ -12,3 +12,8 @@ services:
         arguments:
             - %kernel.logs_dir%
             - "termengine.log"
+
+    dp.app.term_engine.tickets_select_criteria:
+        class: DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketsSelectCriteria
+        arguments:
+            - @=service('doctrine.orm.default_entity_manager').getRepository('App:TicketFilter')

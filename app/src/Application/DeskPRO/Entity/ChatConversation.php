@@ -31,9 +31,11 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -42,6 +44,8 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  *
  * @property string $person_name
  * @property string $person_email
+ *
+ * @PortalLinkRoute("portal_chats_view", route_param_map={"conversation_id":"id"})
  */
 class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -224,6 +228,11 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     protected $_user_participants = null;
 
     /**
+     * @var null
+     */
+    protected $_agent_participants = null;
+
+    /**
      * @var \Application\DeskPRO\Labels\LabelManager
      */
     protected $_label_manager = null;
@@ -369,6 +378,31 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * If the person given is the user on the ticket or is a user participant, then they are considered
+     * to be participants on the chat. This is used in portal security checks.
+     *
+     * @param Person $person
+     *
+     * @return bool
+     */
+    public function isParticipating(Person $person)
+    {
+        // if this is the person on the chat
+        if ($this->person === $person) {
+            return true;
+        }
+
+        // or if this is a user participant
+        foreach ($this->getUserParticipants() as $participant) {
+            if ($participant->getId() === $person->getId()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Get an array of only user participants.
      *
      * @return array
@@ -382,12 +416,40 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         $this->_user_participants = array();
 
         foreach ($this->participants as $p) {
-            if (!$p['person']['is_agent']) {
+            if (!$p['is_agent']) {
                 $this->_user_participants[] = $p;
             }
         }
 
         return $this->_user_participants;
+    }
+
+    /**
+     * Get an array of only agent participants (and the agent on chat as well).
+     *
+     * @return array
+     */
+    public function getAgentParticipants()
+    {
+        if ($this->_agent_participants !== null) {
+            return $this->_agent_participants;
+        }
+
+        $this->_agent_participants = array();
+
+        foreach ($this->participants as $p) {
+            if ($p['is_agent']) {
+                $this->_agent_participants[] = $p;
+            }
+        }
+
+        if ($this->agent) {
+            $this->_agent_participants[] = $this->agent;
+        }
+
+        $this->_agent_participants = array_unique($this->_agent_participants);
+
+        return $this->_agent_participants;
     }
 
     /**
@@ -403,6 +465,11 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         }
 
         return $ids;
+    }
+
+    public function isAgentChat()
+    {
+        return $this->is_agent;
     }
 
     /**
@@ -545,6 +612,38 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
+    /**
+     * @return Person|null
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPersonName()
+    {
+        return $this->person_name;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPersonEmail()
+    {
+        return $this->person_email;
+    }
+
+    /**
+     * @return Person|null
+     */
+    public function getAgent()
+    {
+        return $this->agent;
+    }
+
     public function getAgentId()
     {
         if ($this->agent) {
@@ -552,6 +651,14 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         }
 
         return 0;
+    }
+
+    /**
+     * @return Department|null
+     */
+    public function getDepartment()
+    {
+        return $this->department;
     }
 
     public function getDepartmentId()
@@ -591,9 +698,14 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         return 'Chat '.$this->id;
     }
 
+    public function getSubjectPreview()
+    {
+        return trim(substr($this->subject, 0,  80)).(strlen($this->subject) > 80 ? '...' : '');
+    }
+
     public function setRatingOverall($rating)
     {
-        if ($rating != 1 && $rating != -1) {
+        if ($rating < 1 || $rating > 10) {
             $rating = 0;
         }
         $this->setModelField('rating_overall', $rating);
@@ -730,9 +842,9 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Find an existing data record for a field id.
      *
-     * @param int $field_id
+     * @param CustomDefChat|int $field_id
      *
-     * @return CustomDefChat
+     * @return CustomDataChat
      */
     public function getCustomDataForField($field_id)
     {
@@ -786,7 +898,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Check if this ticket has a custom field.
+     * Check if this chat has a custom field.
      *
      * @param $field_id
      *

@@ -83,7 +83,11 @@ div.dpdesignportal-chat-header {
     margin-top: 8px;
     color: #a5a5a5;
     font-size: 14px;
-    span { color: #575757; }
+
+    .name {
+      color: #575757;
+      font-weight: bold;
+    }
   }
 
   h2 {

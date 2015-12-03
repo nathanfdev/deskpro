@@ -29,8 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use Application\DeskPRO\Entity\PasswordHistory;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\PasswordResetAbuseCheck;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -175,12 +177,27 @@ class PasswordController extends AbstractController
             'require_current_password' => false,
         ));
 
+        $history = null;
+        if ('POST' === $request->getMethod()) {
+            if ($person->password && $person->password_scheme == 'bcrypt') {
+                $history                  = new PasswordHistory();
+                $history->person          = $person;
+                $history->password_scheme = $person->password_scheme;
+                $history->password        = $person->password;
+            }
+        }
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->runAntiAbuseCheck($request);
 
             $person->setPasswordResetCode(null);
+
+            if ($history) {
+                $this->getEm()->persist($history);
+            }
+
             $this->persistAndFlushEntity($person);
 
             $primary_email = $person->getPrimaryEmail();

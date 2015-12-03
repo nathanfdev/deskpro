@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
@@ -94,7 +95,7 @@ class NewDownload
         $download->setStatusCode($this->status);
 
         if ($download->getStatusCode() == 'published' && !$this->_person_context->hasPerm('agent_publish.validate')) {
-            $download->setStatusCode('hidden.validating');
+            $download->setStatusCode('hidden.unpublished');
         }
 
         $cat                = $this->_em->find('DeskPRO:DownloadCategory', $this->category_id);

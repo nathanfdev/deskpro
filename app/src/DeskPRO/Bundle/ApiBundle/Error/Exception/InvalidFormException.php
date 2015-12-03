@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Error\Exception;
 
 use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
@@ -61,6 +62,9 @@ class InvalidFormException extends BadRequestHttpException
         parent::__construct(ApiErrors::INVALID_INPUT, $previous, $code);
     }
 
+    /**
+     * @return FormInterface
+     */
     public function getForm()
     {
         return $this->form;

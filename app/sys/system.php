@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Kernel;
 
 use Application\DeskPRO\App;
@@ -45,12 +46,11 @@ require_once DP_ROOT.'/sys/Kernel/HelpdeskOfflineMessage.php';
 
 abstract class AbstractKernel extends BaseKernel
 {
-    final public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
+    /**
+     * @return RedirectResponse|null
+     */
+    public static function performSystemChecks(Request $request)
     {
-        if (false === $this->booted) {
-            $this->boot();
-        }
-
         $path = $request->getPathInfo();
 
         if (!deskpro_install_check_pdo_mysql()) {
@@ -119,6 +119,51 @@ abstract class AbstractKernel extends BaseKernel
             }
         }
 
+        // Make sure we arent banned ip
+        if (!preg_match('#^/admin/?#', $path)) {
+            $ip      = dp_get_user_ip_address();
+            $ip_long = sprintf('%u', ip2long($ip));
+
+            $banned = App::getDb()->fetchColumn('
+                SELECT banned_ip
+                FROM ban_ips
+                WHERE banned_ip = ? OR (ip_start <= ? AND ip_end >= ?)
+                LIMIT 1
+            ', array($ip, $ip_long, $ip_long));
+
+            if ($banned) {
+                $response = new Response();
+                $response->setContent(HelpdeskOfflineMessage::getOfflinePage('The helpdesk is currently unavailable.'));
+
+                return $response;
+            }
+        }
+
+        if (!isset($GLOBALS['DP_CONFIG']['rewrite_urls'])) {
+            $GLOBALS['DP_CONFIG']['rewrite_urls'] = App::getSetting('core.rewrite_urls');
+        }
+
+        if (License::getLicense()->isPastExpireDate()) {
+            define('DP_BILLING_ERROR', true);
+        }
+
+        // TODO: more of the license checks in the handle() method below need to be refactored into here before launch
+
+        return;
+    }
+
+    final public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
+    {
+        if (false === $this->booted) {
+            $this->boot();
+        }
+
+        $path = $request->getPathInfo();
+
+        if ($response = self::performSystemChecks($request)) {
+            return $response;
+        }
+
         if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
             $website_url = '';
             if (!empty($_REQUEST['dp_website_url']) && is_string($_REQUEST['dp_website_url'])) {
@@ -170,36 +215,12 @@ abstract class AbstractKernel extends BaseKernel
             }
         }
 
-        // Make sure we arent banned ip
-        if (!preg_match('#^/admin/?#', $path)) {
-            $ip      = dp_get_user_ip_address();
-            $ip_long = sprintf('%u', ip2long($ip));
-
-            $banned = App::getDb()->fetchColumn('
-                SELECT banned_ip
-                FROM ban_ips
-                WHERE banned_ip = ? OR (ip_start <= ? AND ip_end >= ?)
-                LIMIT 1
-            ', array($ip, $ip_long, $ip_long));
-
-            if ($banned) {
-                $response = new Response();
-                $response->setContent(HelpdeskOfflineMessage::getOfflinePage('The helpdesk is currently unavailable.'));
-
-                return $response;
-            }
-        }
-
         // Make sure we arent offline
         if (!(preg_match('#^/admin/?#', $path) || preg_match('#^/agent/(login|logout)#', $path)) && $this->isHelpdeskOffline()) {
             $response = new Response();
             $response->setContent(HelpdeskOfflineMessage::getOfflinePage());
 
             return $response;
-        }
-
-        if (!isset($GLOBALS['DP_CONFIG']['rewrite_urls'])) {
-            $GLOBALS['DP_CONFIG']['rewrite_urls'] = App::getSetting('core.rewrite_urls');
         }
 
         // Kernels might have work to do before loading a page
@@ -228,10 +249,6 @@ abstract class AbstractKernel extends BaseKernel
                     throw new \RuntimeException("Server max post vars set to {$max} and this form posted {$count} variables");
                 }
             }
-        }
-
-        if (License::getLicense()->isPastExpireDate()) {
-            define('DP_BILLING_ERROR', true);
         }
 
         /** @var $response \Symfony\Component\HttpFoundation\Response */

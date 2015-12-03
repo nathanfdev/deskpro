@@ -29,10 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Problem;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\ProblemType;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Route;
@@ -46,9 +48,9 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class TicketProblemsController extends CrudController
 {
-    public static $exposeOnly = ['list'];
-    public static $entity     = Problem::class;
-    public static $listSort   = 'created';
+    public static $entity   = Problem::class;
+    public static $type     = ProblemType::class;
+    public static $listSort = 'created';
 
     /**
      * @ApiDoc(
@@ -59,9 +61,9 @@ class TicketProblemsController extends CrudController
      * )
      * @Get("/{id}/tickets")
      */
-    public function getTicketsAction($id)
+    public function getTicketsAction(Request $request, $id)
     {
-        return TicketsController::subRequestSearch($this->get('kernel'), ['problem' => $id]);
+        return TicketsController::subRequestSearch($this->get('kernel'), $request, ['problem' => $id]);
     }
 
     /**
@@ -75,5 +77,16 @@ class TicketProblemsController extends CrudController
             $qb->andWhere("{$alias}.is_open = :is_open");
             $qb->setParameters(compact('is_open'));
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function instantiateEntity(Request $request)
+    {
+        $problem = new Problem();
+        $problem->setCreator($this->getUser());
+
+        return $problem;
     }
 }

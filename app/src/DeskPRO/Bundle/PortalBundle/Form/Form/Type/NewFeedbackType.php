@@ -29,12 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
-use DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints\ValidCaptcha;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -98,9 +98,6 @@ class NewFeedbackType extends AbstractType
                     array(
                         'mapped'         => false,
                         'error_bubbling' => false,
-                        'constraints'    => array(
-                            new ValidCaptcha(),
-                        ),
                     )
                 );
             }

@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -49,13 +50,13 @@ class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @var string
-     * @Assert\NotBlank
+     * @Assert\NotBlank()
      */
     protected $word;
 
     /**
      * @var GlossaryWordDefinition
-     * @Assert\NotNull
+     * @Assert\NotNull()
      */
     protected $definition;
 

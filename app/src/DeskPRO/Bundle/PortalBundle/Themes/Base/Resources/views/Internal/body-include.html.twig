@@ -1,0 +1,34 @@
+{% include 'Theme:Internal:modernizr-include.html.twig' %}
+<script type="text/javascript">
+    (function(){
+        document.body.className = document.body.className + ' with-js';
+
+        // Features that determine if 'DPUI' can be enabled for this user
+        window.WITH_DPUI =
+          Modernizr &&
+          !Modernizr.ie8compat &&
+          Modernizr.json &&
+          Modernizr.blobconstructor
+        ;
+
+        if (window.WITH_DPUI) {
+            document.body.className = document.body.className + ' with-dpui';
+        } else {
+            document.body.className = document.body.className + ' without-dpui';
+        }
+
+        window.DP_LOAD_FN = [];
+
+        window.DESKPRO_BASE_URL = '{{ base_url() }}';
+        window.DESKPRO_ROOT_URL = '{{ root_url() }}';
+        window.DESKPRO_WEB_URL = '{{ root_url() }}web';
+        window.DESKPRO_MULTI_LANG = {{ is_multi_lang() ? 'true' : 'false' }};
+        window.DESKPRO_LANG = '{{ lang_code() }}';
+        window.DESKPRO_ENABLED_LANGS = [{% for language in enabled_languages() %}{{ '{' }}code: '{{ language.urlCode }}', title:'{{ language.title|capitalize }}',flag:'{{ language.flag_image }}'{{ '}' }}{% if not loop.last %},{% endif %}{% endfor %}];
+        window.DP_ASSET_URL = '{{ asset('') }}';
+        window.DP_BASE_URL = '{{ path('portal_home')|trim('/') }}/';
+        window.__DP_APP_SRC__ = '{{ asset('DeskPRO_WidgetBundle.js', 'app_assets') }}';
+        window.__DP_URL__ = '{{ root_url() }}';
+        window.DESKPRO_USERSOURCES = {{ auth_usersources_js_object() }};
+    })();
+</script>

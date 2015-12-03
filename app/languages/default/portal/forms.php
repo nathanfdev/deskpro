@@ -27,7 +27,7 @@
  */
 
 return array(
-    'portal.forms.label_save'             => 'Save Changes',
+    'portal.forms.label_save'             => 'Save',
     'portal.forms.label_submit'           => 'Submit',
     'portal.forms.label_email'            => 'Email',
     'portal.forms.label_name'             => 'Name',
@@ -53,7 +53,7 @@ return array(
     'portal.forms.error_ticket_subject_length'      => 'The subject must be at least {{ limit }} characters in length',
     'portal.forms.error_ticket_msg_length'          => 'Your message must be at least {{ limit }} characters in length',
     'portal.forms.error_ticket_msg_required'        => 'You must provide a message',
-    'portal.forms.error_email_required'             => 'You must provide a message',
+    'portal.forms.error_email_required'             => 'You must provide your email address',
     'portal.forms.error_email_invalid'              => 'This email adddress is not valid',
     'portal.forms.error_required'                   => 'This value is required',
     'portal.forms.error_regex'                      => 'This value does not match the expected format',
@@ -62,7 +62,9 @@ return array(
     'portal.forms.error_date_day'                   => 'This is not a valid day of the week',
     'portal.forms.error_date_min'                   => 'This date is too far into the past. Please pick a date after {{ date }}.',
     'portal.forms.error_date_max'                   => 'This date is too far into the future. Please pick a date before {{ date }}.',
+    'portal.forms.error_banned_email'               => 'Email "{{ email }}" is banned.',
     'portal.forms.error_captcha'                    => 'This captcha value was incorrect',
+    'portal.forms.label_captcha'                    => 'To verify you are a human, please tell us the text you see in the image',
     'portal.forms.error_csrf'                       => 'You did not submit a valid token. For security reasons, please ensure javascript is enabled, and cookies are enabled.',
     'portal.forms.error_upload_general'             => 'There was a problem uploading this file. Please try again.',
     'portal.forms.error_upload_html_size'           => 'The file is too large.',
@@ -74,4 +76,12 @@ return array(
     'portal.forms.error_accept_server_error'        => 'There was a problem uploading this file. Please try again.',
     'portal.forms.error_accept_not_allowed_exts'    => 'You cannot upload a file with the following file extensions: {{ detail }}',
     'portal.forms.error_server_rejected_size'       => 'There was a problem uploading a file. Please try uploading smaller files.',
+
+    'portal.forms.error_password_min_length'            => 'Minimum of {{count}} character|Minimum of {{count}} characters',
+    'portal.forms.error_password_require_num_uppercase' => 'At least {{count}} uppercase character|At least {{count}} uppercase characters',
+    'portal.forms.error_password_require_num_lowercase' => 'At least {{count}} lowercase character|At least {{count}} lowercase characters',
+    'portal.forms.error_password_require_num_number'    => 'At least {{count}} number|At least {{count}} numbers',
+    'portal.forms.error_password_require_num_symbol'    => 'At least {{count}} symbol|At least {{count}} symbols',
+    'portal.forms.error_password_forbid_reuse'          => 'You cannot use a password you have used before',
+    'portal.forms.error_password_current'               => 'This must be your current password',
 );

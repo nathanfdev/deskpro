@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\Content\Comment;
 
 use Application\DeskPRO\Entity\CommentAbstract as Comment;
@@ -84,9 +85,6 @@ class CommentsSelectCriteria extends Criteria
         $resolver->setAllowedValues('download', $validateInt);
         $resolver->setAllowedValues('status', [
             Comment::STATUS_VISIBLE,
-            Comment::STATUS_VALIDATING,
-            Comment::STATUS_USER_VALIDATING,
-            Comment::STATUS_TEMP,
             Comment::STATUS_DELETED,
             Comment::STATUS_AGENT,
         ]);

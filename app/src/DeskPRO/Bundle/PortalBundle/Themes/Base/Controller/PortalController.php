@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
 use DeskPRO\Bundle\PortalBundle\Annotation\Tag;
@@ -119,6 +120,7 @@ class PortalController extends AbstractController
         $page_vars = array(
             'display_registration_link' => $this->get('dp_authentication_manager.user')->isRegistrationFormVisible(
             ),
+            'chat_count'                    => $user ? $this->getChatDataService()->countUserChats($user) : 0,
             'ticket_count'                  => $user ? $this->getTicketsDataService()->getTicketCount($user, 'all') : 0,
             'ticket_count_org'              => $user ? $this->getTicketsDataService()->getOrganizationTicketCount($user, 'all') : 0,
             'user'                          => $user,

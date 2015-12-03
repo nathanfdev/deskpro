@@ -29,11 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Security\EventListener;
 
 use Application\DeskPRO\Auth\AuthenticationManager;
 use Application\DeskPRO\Auth\AuthInterfaceSettings;
 use DeskPRO\Bundle\AppBundle\Security\Handler\LogoutHandler;
+use DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -79,6 +81,7 @@ class SsoListener implements EventSubscriberInterface
         // if we need to return a redirect from the auth system, do so now
         if ($res = $this->checkAuthSystemForResponse($this->auth_manager->getSettings(), $event->getRequest())) {
             $this->logger->info('Automatic SSO is detected, redirecting to '.$res->getTargetUrl());
+            $res->headers->set(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, 1);
             $event->setResponse($res);
         }
     }

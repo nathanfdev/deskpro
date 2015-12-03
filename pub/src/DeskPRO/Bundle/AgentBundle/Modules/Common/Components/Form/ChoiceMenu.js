@@ -1,5 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {QuickFilter} from './QuickFilter';
+import classNames from 'classnames';
+import { connect } from 'react-redux';
 
 export class ChoiceMenu extends Component {
 
@@ -68,6 +70,37 @@ export class ChoiceMenuOption extends Component {
           </span>
         </div>
         {this.props.children}
+      </li>
+    );
+  }
+}
+
+@connect()
+export class RadioChoiceMenuOption extends Component {
+
+  static propTypes = {
+    param: PropTypes.string.isRequired,
+    isActive: PropTypes.bool,
+    label: PropTypes.string.isRequired,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    values: PropTypes.array,
+    setParams: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    children: PropTypes.any
+  };
+
+  render() {
+    const {label, param, value, setParams, dispatch, isActive} = this.props;
+    const classes = classNames('dpwd-radio-button', { 'active': isActive });
+
+    return (
+      <li onClick={() => dispatch(setParams({param: param, value: value}))}>
+        <div className="dpw--popup-item-box">
+        <span className={classes}>
+          <span className="dpwd-radio-button-disc"></span>
+          <span className="radio-button-title">{label}</span>
+        </span>
+        </div>
       </li>
     );
   }

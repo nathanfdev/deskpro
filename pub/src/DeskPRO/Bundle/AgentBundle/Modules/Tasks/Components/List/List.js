@@ -7,7 +7,7 @@ import { KanbanView } from './View/Kanban/KanbanView';
 import { TableView } from './View/Table/TableView';
 import { CalendarView } from './View/Calendar/CalendarView';
 import { ListGroupContainer } from './ListGroupContainer';
-import Loader from 'react-loader';
+import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export class List extends React.Component {
@@ -40,17 +40,16 @@ export class List extends React.Component {
       <ListFrameContainer className="task-list-frame">
         <ControlBarContainer />
         {currentNav &&
-          <Loader loaded={loaded}
-                  color="green"
-                  opacity={0}
-                  width={3}>
+        <LoadIndicator loaded={loaded}
+                       opacity={0}
+                       width={3}>
 
-            <ListFrameContents>
-              <ListGroupContainer tasks={tasks}>
-                {this.renderView()}
-              </ListGroupContainer>
-            </ListFrameContents>
-          </Loader>
+          <ListFrameContents>
+            <ListGroupContainer tasks={tasks}>
+              {this.renderView()}
+            </ListGroupContainer>
+          </ListFrameContents>
+        </LoadIndicator>
         }
       </ListFrameContainer>
     );

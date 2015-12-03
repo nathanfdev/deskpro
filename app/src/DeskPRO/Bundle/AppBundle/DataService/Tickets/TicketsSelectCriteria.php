@@ -29,11 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\Tickets;
 
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStar;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\Department\DepartmentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Organization\OrganizationTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Person\PersonTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Problem\ProblemTerm;
@@ -41,6 +44,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketFlagged\TicketFlaggedTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLabel\TicketLabelTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus\TicketStatusTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use Doctrine\ORM\EntityRepository;
 
 /**
  * TicketsSelectCriteria.
@@ -51,12 +55,40 @@ use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
  */
 class TicketsSelectCriteria
 {
-    public static function createTerm(array $parameters)
+    /**
+     * @var EntityRepository
+     */
+    private $filterRepository;
+
+    /**
+     * TicketsSelectCriteria constructor.
+     *
+     * @param EntityRepository $filterRepository
+     */
+    public function __construct(EntityRepository $filterRepository)
+    {
+        $this->filterRepository = $filterRepository;
+    }
+
+    /**
+     * @param array $parameters
+     *
+     * @throws \Exception
+     *
+     * @return CompositeTerm
+     */
+    public function createTerm(array $parameters)
     {
         $composite = new CompositeTerm([], TermInterface::OP_AND);
 
         foreach ($parameters as $param => $value) {
             switch ($param) {
+                case 'filter':
+                    /** @var TicketFilter $filter */
+                    if ($filter = $this->filterRepository->find($value)) {
+                        $composite->addTerm($filter->getTerm());
+                    }
+                    break;
                 case 'labels':
                     $composite->addTerm(new TicketLabelTerm(['label' => $value[0], TermInterface::OP_IS]));
                     break;
@@ -77,6 +109,9 @@ class TicketsSelectCriteria
                     break;
                 case 'problem':
                     $composite->addTerm(new ProblemTerm(['problem' => $value]));
+                    break;
+                case 'department':
+                    $composite->addTerm(new DepartmentTerm(['department_ids' => [$value]]));
                     break;
                 default:
                     throw new \Exception("Unknown ticket filtering option $param");

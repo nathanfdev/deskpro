@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\Person;
@@ -62,9 +63,9 @@ class PeopleController extends CrudController
      * )
      * @Get("/{id}/tickets")
      */
-    public function getTicketsAction($id)
+    public function getTicketsAction(Request $request, $id)
     {
-        return TicketsController::subRequestSearch($this->get('kernel'), ['person' => $id]);
+        return TicketsController::subRequestSearch($this->get('kernel'), $request, ['person' => $id]);
     }
 
     /**

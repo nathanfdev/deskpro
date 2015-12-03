@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\Bundle\AppBundle\DataService\UserGroups;
 
 use Application\DeskPRO\ORM\EntityManager;
@@ -56,7 +57,7 @@ class UserGroupsDataServiceTest extends DeskProTestCase
     {
         $result = $this->instance()->countPeopleInUserGroups();
         $this->assertInstanceOf(Count::class, $result);
-        $this->assertNotNull($result->getNested());
+        $this->assertNotNull($result->getGroupedBy());
     }
 
     /**

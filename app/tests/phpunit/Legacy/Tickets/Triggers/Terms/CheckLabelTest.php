@@ -53,8 +53,8 @@ class CheckLabelTest extends AbstractEntityCheckTest
 
         $ticket     = new Ticket();
         $ticket->id = $id;
-        $ticket->labels->add($bogus);
-        $ticket->labels->add($object);
+        $ticket->addLabel($bogus);
+        $ticket->addLabel($object);
 
         return $ticket;
     }

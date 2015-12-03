@@ -1,5 +1,5 @@
-import React, { PropTypes } from 'react';
-import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
+import React from 'react';
+import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { TaskCardNew } from './TaskCard/TaskCardNew';
 import { TaskCardNewContainer } from '../../TaskCard/TaskCardNewContainer';
 

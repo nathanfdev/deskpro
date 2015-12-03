@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Blob;
@@ -132,6 +133,7 @@ class PortalController extends AbstractController
         if ($abuse_check->isCaptchaRecommended()) {
             $captcha_form = $this->createForm('deskpro_captcha');
         }
+        $usersources_view = $this->get('usersources_view_helper')->createUsersourceViewList();
 
         return $this->renderThemeView(
             'Theme:Portal:User/login.html.twig',
@@ -148,6 +150,7 @@ class PortalController extends AbstractController
                 'set_password_success' => $request->get('set_password_success', 0),
                 'breadcrumbs'          => $this->getBreadcrumbGenerator()->buildLogin(),
                 'page_title'           => $this->createPageTitle()->loginPage(),
+                'usersources_view'     => $usersources_view,
             )
         );
     }

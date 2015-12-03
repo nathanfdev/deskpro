@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { ClickOut } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ClickOut';
+import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { TitleForm } from './TitleForm';
 import classNames from 'classnames';
 

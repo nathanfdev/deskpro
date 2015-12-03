@@ -83,9 +83,6 @@ Feature: /glossary/word-definition endpoint
     Then the response should be in JSON
     And the response status code should be 200
 
-  @reinstall
-  Scenario: I deleted a definition and accessing its' old location
-    When I send a DELETE request to "/api/v2/glossary/word_definitions/1"
-    And the response status code should be 200
-    And I send a GET request to "/api/v2/glossary/word_definitions/1"
+  Scenario: I try to get not existing definition
+    When I send a GET request to "/api/v2/glossary/word_definitions/40404"
     Then the response status code should be 404

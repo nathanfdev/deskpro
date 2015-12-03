@@ -111,7 +111,7 @@
   {% endif %}
 {% else %}
   <li class="welcome">
-    <span class="agent-avatar agent-avatar-mini" style="background: url({{ avatar_url(user, 36) }}) no-repeat; background-size: cover;"></span>
+    <span class="agent-avatar agent-avatar-mini" style="background: url({{ avatar_url(user, 36) }}) no-repeat; background-size: cover; filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='{{ avatar_url(user, 36) }}',sizingMethod='scale'); -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='{{ avatar_url(user, 36) }}', sizingMethod='scale')";"></span>
     {{ phrase('portal.account.welcome-back') }} {{ app.user.first_name }}
     <span class="disc"></span>
     <a href="{{ path('portal_user_profile') }}">{{ phrase('portal.account.section-title-your-account') }}</a>
@@ -119,6 +119,11 @@
     {% if ticket_count > 0 %}
       <span class="disc"></span>
       <a href="{{ path('portal_tickets') }}">{{ phrase('portal.general.nav-tickets') }} ({{ ticket_count }})</a>
+    {% endif %}
+
+    {% if chat_count > 0 %}
+      <span class="disc"></span>
+      <a href="{{ path('portal_chats') }}">{{ phrase('portal.general.nav-chat') }} ({{ chat_count }})</a>
     {% endif %}
 
     {% if user.organization and user.organization_manager and ticket_count_org > 0 %}

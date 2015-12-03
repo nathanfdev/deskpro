@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -3352,7 +3353,10 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function getLabelsArray()
     {
-        return array_map(function ($label) { return $label->getLabel(); }, $this->labels->toArray());
+        $labels = array_map(function ($label) { return $label->getLabel(); }, $this->labels->toArray());
+        sort($labels);
+
+        return $labels;
     }
 
     /**

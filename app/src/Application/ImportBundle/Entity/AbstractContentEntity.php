@@ -209,12 +209,9 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
             ContentAbstract::STATUS_HIDDEN,
 
             $hidden_prefix.ContentAbstract::HIDDEN_STATUS_UNPUBLISHED,
-            $hidden_prefix.ContentAbstract::HIDDEN_STATUS_VALIDATING,
-            $hidden_prefix.ContentAbstract::HIDDEN_STATUS_USER_VALIDATING,
             $hidden_prefix.ContentAbstract::HIDDEN_STATUS_DELETED,
             $hidden_prefix.ContentAbstract::HIDDEN_STATUS_SPAM,
             $hidden_prefix.ContentAbstract::HIDDEN_STATUS_DRAFT,
-            $hidden_prefix.ContentAbstract::HIDDEN_STATUS_TEMP,
         );
     }
 

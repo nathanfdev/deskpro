@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
@@ -138,18 +139,18 @@ class TicketStarsController extends BaseController
      *      }
      * )
      *
-     * @Get("/ticket_stars_count", name="api_ticket_flag_all_counts")
+     * @Get("/ticket_stars_counts", name="api_ticket_flag_all_counts")
      */
     public function getTicketFlagsCounts()
     {
         $flags_service = $this->get('data.ticketflags');
 
-        $count = Count::fromValue(0);
+        $count = Count::create(0, null, null, null, 'ticket_star');
         foreach ($flags_service->getFlags() as $i => $color) {
             $flag_id = $i + 1;
 
             $flag_count = count($flags_service->getAllRecordsForFlag($this->getUser()->getId(), $flag_id));
-            $count->addNested($flag_count, $flag_id, true);
+            $count->addNested($flag_count, $flag_id, 'ticket_star', TicketStar::idToColorLabel($flag_id), true);
         }
 
         return View::create($this->createRepresentation($count), Response::HTTP_OK);
@@ -182,9 +183,9 @@ class TicketStarsController extends BaseController
      *
      * @Get("/ticket_stars/{star}/tickets", name="api_ticket_flag_tickets")
      */
-    public function getTicketsAction($star)
+    public function getTicketsAction(Request $request, $star)
     {
-        return TicketsController::subRequestSearch($this->get('kernel'), ['star' => $star]);
+        return TicketsController::subRequestSearch($this->get('kernel'), $request, ['star' => $star]);
     }
 
     /**

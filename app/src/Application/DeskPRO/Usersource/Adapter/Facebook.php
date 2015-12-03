@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Usersource\Adapter;
 
 use Application\DeskPRO\Usersource\UsersourceInfo;
@@ -45,7 +46,7 @@ class Facebook extends AbstractAdapter
             'first_name'      => isset($info['first_name']) ? $info['first_name'] : '',
             'last_name'       => isset($info['last_name']) ? $info['last_name'] : '',
             'email'           => isset($info['email']) ? $info['email'] : '',
-            'email_confirmed' => isset($info['verified']) ? $info['verified'] : '',
+            'email_confirmed' => isset($info['verified']) ? $info['verified'] : true,
         );
     }
 

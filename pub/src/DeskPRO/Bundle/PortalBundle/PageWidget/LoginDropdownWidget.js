@@ -10,14 +10,7 @@ export default class LoginDropdownWidget extends PageWidget {
 
 
     // we will have some input from the response on the usersources
-    const usersources = [
-      {
-        id: 3,
-        classes: ['button', 'auth-facebook'],
-        text: 'Login with Facebook',
-        icon: 'fa fa-facebook'
-      }
-    ];
+    const usersources = window.DESKPRO_USERSOURCES;
 
 
     ReactDOM.render(React.createElement(LoginDropdown, { usersources }), this.$rElement.get(0));

@@ -448,13 +448,6 @@ define(function() {
 	});
 
 	routes.push({
-		id: 'tickets.statuses.hidden_validating',
-		url: '/statuses/validating',
-		templateName: 'TicketStatuses/status-hidden-validating.html',
-		controller: 'Admin_TicketStatuses_Ctrl_EditHiddenValidating'
-	});
-
-	routes.push({
 		id: 'tickets.statuses.hidden_deleted',
 		url: '/statuses/deleted',
 		templateName: 'TicketStatuses/status-hidden-deleted.html',
@@ -613,7 +606,7 @@ define(function() {
 		templateName: 'TicketFilters/edit_single.html',
 		controller: 'Admin_TicketFilters_Ctrl_EditSingle'
 	});
-  
+
   routes.push({
     id: 'tickets.ticket_filters.edit_view',
     url: '/view/{id:[0-9]+}',
@@ -1154,6 +1147,13 @@ define(function() {
     url: '/sync/{id:[\\d\\w]+}',
     templateName: 'Usersources/sync-information.html',
     controller: 'Admin_Usersources_Ctrl_SyncInformation'
+  });
+
+  routes.push({
+    id: 'crm.usersources.deskpro',
+    url: '/deskpro',
+    templateName: 'Usersources/edit-instance.html',
+    controller: 'Admin_Usersources_Ctrl_EditDeskproInstance'
   });
 
   routes.push({

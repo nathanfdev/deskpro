@@ -1,5 +1,4 @@
 import React, {Component, PropTypes} from 'react';
-import Immutable from 'immutable';
 import { FeedbackCard } from './FeedbackCard';
 import { connect } from 'react-redux';
 import { peopleSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackCategoriesSelector, feedbackStatusCategoriesSelector }
@@ -46,7 +45,7 @@ export class FeedbackCardsContainer extends Component {
                           toggleSelected={toggleSelected}
                           author={people.get(element.person)}
                           feedbackStatusCategory={feedbackStatusCategories.get(element.status_category)}
-                          feedbackCategory={feedbackCategories.get(element.id)}
+                          feedbackCategory={feedbackCategories.get(element.custom_data[0])}
                           feedbackComments={feedbackComments.get(element.id)}
                           feedbackLabels={element.labels}
                           type={feedbackTypes.get(element.category_id)}

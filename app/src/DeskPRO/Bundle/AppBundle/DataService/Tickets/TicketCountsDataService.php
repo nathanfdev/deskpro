@@ -29,8 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\Tickets;
 
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
@@ -90,7 +95,8 @@ class TicketCountsDataService
 
         if ($group_by) {
             $filter_counts = $tickets_query->fetchGroupedCount();
-            $filter_count  = Count::create(0, $filter->getId(), [], 'filter');
+
+            $filter_count = Count::create(0, $filter->getId(), 'filter', $filter->getTitle());
             foreach ($filter_counts as $nested_count) {
                 $value = $nested_count['count'];
                 unset($nested_count['count']);
@@ -98,14 +104,21 @@ class TicketCountsDataService
                 $group = ctype_digit($group) ? (int) $group : $group;
 
                 $filter_count->addNestedInstance(
-                    Count::create($value, $group, [], $group_by),
+                    Count::create($value, $group, $group_by, $this->getTitle($group, $group_by), null, []),
                     true
                 );
             }
 
             return $filter_count;
         } else {
-            return Count::create($tickets_query->fetchCount(), $filter->getId(), [], 'filter');
+            return Count::create(
+                $tickets_query->fetchCount(),
+                $filter->getId(),
+                'filter',
+                $filter->getTitle(),
+                null,
+                []
+            );
         }
     }
 
@@ -128,6 +141,42 @@ class TicketCountsDataService
             $total += $filter_count->getCount();
         }
 
-        return Count::create($total, $set->getId(), $counts);
+        return Count::create($total, $set->getId(), 'ticket_filter_set', $set->getTitle(), null, $counts);
+    }
+
+    /**
+     * @param int    $id
+     * @param string $type
+     *
+     * @throws \Exception
+     *
+     * @return string
+     */
+    private function getTitle($id, $type)
+    {
+        if (is_null($id)) {
+            return;
+        }
+
+        switch ($type) {
+            case 'department':
+                return $this->em->find(Department::class, $id)->getTitle();
+            case 'language':
+                return $this->em->find(Language::class, $id)->getTitle();
+            case 'organization':
+                return $this->em->find(Organization::class, $id)->getName();
+            case 'agent':
+            case 'person':
+                return $this->em->find(Person::class, $id)->getName();
+            case 'agent_team':
+                return $this->em->find(AgentTeam::class, $id)->getName();
+            case 'open_time':
+            case 'waiting_time':
+            case 'all_waiting_time':
+            case 'urgency':
+                return $id;
+            default:
+                throw new \Exception("Unknown type '$type'");
+        }
     }
 }

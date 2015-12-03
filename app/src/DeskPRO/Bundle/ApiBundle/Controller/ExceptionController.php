@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
@@ -41,17 +42,25 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
+/**
+ * Class ExceptionController.
+ */
 class ExceptionController extends BaseController
 {
+    /**
+     * @param \Exception $exception
+     *
+     * @return View|Response
+     */
     public function showAction(\Exception $exception)
     {
-        $parameters = array();
+        $parameters = [];
         if ($exception instanceof WrappedApiErrorException) {
             $parameters = $exception->getParams();
             $exception  = $exception->getException();
         }
 
-        $errors_array = array();
+        $errors_array = [];
         if ($exception instanceof InvalidFormException) {
             $errors_array = $this->generateFormErrors($exception->getForm());
         }
@@ -83,7 +92,7 @@ class ExceptionController extends BaseController
             $errors_array
         );
 
-        $headers = array();
+        $headers = [];
         if ($exception instanceof HttpException) {
             $headers = $exception->getHeaders();
         }
@@ -91,25 +100,31 @@ class ExceptionController extends BaseController
         return View::create($representation, $status, $headers);
     }
 
+    /**
+     * @param FormInterface $form
+     *
+     * @return array
+     */
     private function generateFormErrors(FormInterface $form)
     {
-        $errors = $list = array();
+        $errors = $list = [];
         foreach ($form->getErrors() as $error) {
             $code   = $this->getFormErrorCode($error);
-            $list[] = array(
+            $list[] = [
                 'code'    => $code,
                 'message' => $this->getErrorMessageFactory()->createFormErrorMessage($code, $error),
-            );
+            ];
         }
 
         if ($list) {
             $errors['errors'] = $list;
         }
 
-        $children = array();
+        $children = [];
         foreach ($form->all() as $child) {
             if ($child instanceof FormInterface) {
-                if ($child_errors = $this->generateFormErrors($child)) {
+                $child_errors = $this->generateFormErrors($child);
+                if ($child_errors) {
                     $children[$child->getName()] = $child_errors;
                 }
             }
@@ -121,7 +136,7 @@ class ExceptionController extends BaseController
             && $this->needsPrefix($children)
         ) {
             $prefix       = !is_numeric($form->getName()) ? $form->getName().'_' : 'field_';
-            $new_children = array();
+            $new_children = [];
             foreach ($children as $index => $value) {
                 $new_children[$prefix.$index] = $value;
             }
@@ -135,6 +150,11 @@ class ExceptionController extends BaseController
         return $errors;
     }
 
+    /**
+     * @param array $children
+     *
+     * @return bool
+     */
     protected function needsPrefix(array $children)
     {
         if (array_keys($children) === range(0, count($children) - 1)) {
@@ -153,6 +173,11 @@ class ExceptionController extends BaseController
         return true;
     }
 
+    /**
+     * @param FormError $error
+     *
+     * @return mixed|string
+     */
     protected function getFormErrorCode(FormError $error)
     {
         return $this->getErrorCodeFactory()->getErrorCodeForFormError($error);

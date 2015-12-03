@@ -6,7 +6,6 @@ export class NestedList extends React.Component {
   static propTypes = {
     onClick: PropTypes.func,
     onItemControlClick: PropTypes.func,
-    groups: PropTypes.object,
     items: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
     depth: PropTypes.number,
     alwaysExpanded: PropTypes.bool
@@ -21,13 +20,13 @@ export class NestedList extends React.Component {
   }
 
   getListItemParts(item) {
-    const { nested, group } = item;
+    const { nested, id } = item;
     const hasNested = nested && nested.length;
 
     const parts = {};
-    const label = this.props.groups[group] ? this.props.groups[group] : '—';
+    const label = item.title ? item.title : '—';
     if (hasNested) {
-      const expanded = this.state.expanded.indexOf(group) > -1;
+      const expanded = this.state.expanded.indexOf(id) > -1;
       const caret = this.props.alwaysExpanded ? '' : <i className={'fa fa-caret-' + (expanded ? 'down' : 'right')}></i>;
       parts.label = <span className="icon">{caret} {label}</span>;
       parts.nested = this.renderNested(item);
@@ -42,7 +41,7 @@ export class NestedList extends React.Component {
   // nested list rendering recursion max depth
   static maxDepth = 10;
 
-  toggleExpanded(group) {
+  toggleExpanded(id) {
     return event => {
       event.preventDefault();
 
@@ -52,15 +51,15 @@ export class NestedList extends React.Component {
 
       const expanded = [...this.state.expanded];
 
-      const index = expanded.indexOf(group);
+      const index = expanded.indexOf(id);
       if (index > -1) {
         expanded.splice(index, 1);
       } else {
-        expanded.push(group);
+        expanded.push(id);
 
         // perform onClick when expanding a list item
         if (this.props.onClick) {
-          this.props.onClick(group);
+          this.props.onClick(id);
         }
       }
 
@@ -75,14 +74,14 @@ export class NestedList extends React.Component {
   }
 
   renderNested(item) {
-    const { nested, group, depth } = item;
+    const { nested, id, depth } = item;
     const hasNested = nested && nested.length;
-    const isExpanded = this.props.alwaysExpanded || this.state.expanded.indexOf(group) > -1;
+    const isExpanded = this.props.alwaysExpanded || this.state.expanded.indexOf(id) > -1;
 
     if (hasNested && isExpanded) {
       return (
         <ul className={'with-connectors depth-' + depth}>
-          {nested.map(child => this.renderListItem({...child, parent: group}, depth + 1))}
+          {nested.map(child => this.renderListItem({...child, parent: id}, depth + 1))}
         </ul>
       );
     }
@@ -92,15 +91,15 @@ export class NestedList extends React.Component {
     this.ensureValidDepth(depth);
 
     const parts = this.getListItemParts(item);
-    const { group, count } = item;
+    const { id, count } = item;
     const { onItemControlClick } = this.props;
 
     return (
       <ListItem
-        key={group}
+        key={id}
         count={count}
-        onClick={this.toggleExpanded(group)}
-        onItemControlClick={onItemControlClick ? onItemControlClick(group) : null}
+        onClick={this.toggleExpanded(id)}
+        onItemControlClick={onItemControlClick ? onItemControlClick(id) : null}
         >
         <div part="label">{parts.label}</div>
         <div part="nested">{parts.nested}</div>

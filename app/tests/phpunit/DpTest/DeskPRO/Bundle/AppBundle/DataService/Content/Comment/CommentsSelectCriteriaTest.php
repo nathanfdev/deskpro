@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\Bundle\AppBundle\DataService\Content\ContentSelect;
 
 use DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsSelectCriteria;
@@ -40,7 +41,7 @@ use DpTest\DeskProTestCase;
 class CommentsSelectCriteriaTest extends DeskProTestCase
 {
     public static $dummyProperParams = [
-        'status'         => 'validating',
+        'status'         => 'visible',
         'article'        => '1',
         'is_reviewed'    => '0',
         'period_created' => 'ever',

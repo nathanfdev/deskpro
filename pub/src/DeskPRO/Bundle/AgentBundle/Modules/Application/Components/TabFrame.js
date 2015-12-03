@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { debounce } from 'lodash';
+import classNames from 'classnames';
 
 class TabStrip extends React.Component {
 
@@ -38,20 +38,14 @@ export class TabFrame extends React.Component {
 
   render() {
     const { dpWindow } = this.props;
-    const classes = ['dp-tab-frame'];
-
-    if (dpWindow.get('expandedSwitcher')) {
-      classes.push('expanded');
-    }
-    if (dpWindow.get('collapseNav')) {
-      classes.push('collapsed-nav');
-    }
-    if (dpWindow.get('columnMode') === 'focus') {
-      classes.push('collapsed-list');
-    }
 
     return (
-      <section className={classes.join(' ')}>
+      <section className={classNames('dp-tab-frame', {
+        'expanded': dpWindow.get('expandedSwitcher'),
+        'collapsed-nav': dpWindow.get('collapseNav'),
+        'collapsed-list': dpWindow.get('columnMode') === 'focus'
+      })}>
+
         <div className="dp-tabbar-container"><TabStrip tabs={[]} /></div>
         <div className="dp-tabbody">
           <div className="legacy-dp-interface legacy-tabbody">

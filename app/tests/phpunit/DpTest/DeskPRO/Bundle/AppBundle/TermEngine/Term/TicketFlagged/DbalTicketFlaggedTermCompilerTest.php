@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketFlagged;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
@@ -70,7 +71,7 @@ class DbalTicketFlaggedTermCompilerTest extends AbstractDbalTicketFilterTermComp
             array(
                 'tickets_flagged' => array(
                     'table' => 'tickets_flagged',
-                    'on'    => 'tickets.id = tickets_flagged.ticket_id AND tickets_flagged.person_id = :agent_id',
+                    'on'    => 'ticket.id = tickets_flagged.ticket_id AND tickets_flagged.person_id = :agent_id',
                     'type'  => DbalQuery::JOIN_LEFT,
                 ),
             )
@@ -99,7 +100,7 @@ class DbalTicketFlaggedTermCompilerTest extends AbstractDbalTicketFilterTermComp
             array(
                 'tickets_flagged' => array(
                     'table' => 'tickets_flagged',
-                    'on'    => 'tickets.id = tickets_flagged.ticket_id AND tickets_flagged.person_id = :agent_id',
+                    'on'    => 'ticket.id = tickets_flagged.ticket_id AND tickets_flagged.person_id = :agent_id',
                     'type'  => DbalQuery::JOIN_LEFT,
                 ),
             )

@@ -24,8 +24,8 @@
             <span class="primary {% if as_agent %}single{% endif %}">{{ person.display_name }}</span>
             {% if not as_agent %}<span class="secondary">{{ person.primary_email_address }}</span>{% endif %}
         {% else %}
-            <span class="primary">Unassigned</span>
-            <span class="secondary">An agent will be assigned</span>
+            <span class="primary">{{ phrase('portal.tickets.view_unassigned') }}</span>
+            <span class="secondary">{{ phrase('portal.tickets.view_unassigned_more') }}</span>
         {% endif %}
     </span>
             {% if person and not as_agent %}

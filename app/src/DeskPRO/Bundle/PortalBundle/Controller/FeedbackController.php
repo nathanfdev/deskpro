@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Feedback;
@@ -137,11 +138,6 @@ class FeedbackController extends AbstractController
                     $new_feedback->setPerson($person);
                     foreach ($new_feedback->getAttachments() as $attachment) {
                         $attachment->setPerson($person);
-                    }
-
-                    // hidden if person isn't valid
-                    if (!$person->isUserValid()) {
-                        $new_feedback->setStatusCode('hidden.user_validating');
                     }
                 }
 

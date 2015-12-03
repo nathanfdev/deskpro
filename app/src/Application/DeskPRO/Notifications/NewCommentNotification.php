@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Notifications;
 
 use Application\DeskPRO\Entity\CommentAbstract;
@@ -49,13 +50,9 @@ class NewCommentNotification extends AbstractAgentNotification
 
     public function shouldSendBrowserNotification(Person $person)
     {
-        if ($this->comment->status == 'user_validating') {
-            return false;
-        }
-
-        if ($this->comment->status == 'validating' && $person->getPref('agent_notif.new_comment_validate.alert')) {
+        if ($this->comment->is_reviewed && $person->getPref('agent_notif.new_comment_validate.alert')) {
             return true;
-        } elseif ($this->comment->status != 'hidden' && $person->getPref('agent_notif.new_comment_validate.alert')) {
+        } elseif (!$this->comment->is_reviewed && $person->getPref('agent_notif.new_comment.alert')) {
             return true;
         }
 
@@ -64,13 +61,9 @@ class NewCommentNotification extends AbstractAgentNotification
 
     public function shouldSendEmailNotification(Person $person)
     {
-        if ($this->comment->status == 'user_validating') {
-            return false;
-        }
-
-        if ($this->comment->status == 'validating' && $person->getPref('agent_notif.new_comment.alert')) {
+        if ($this->comment->is_reviewed && $person->getPref('agent_notif.new_comment_validate.email')) {
             return true;
-        } elseif ($this->comment->status != 'hidden' && $person->getPref('agent_notif.new_comment.alert')) {
+        } elseif (!$this->comment->is_reviewed && $person->getPref('agent_notif.new_comment.email')) {
             return true;
         }
 

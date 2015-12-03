@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Notifications;
 
 use Application\DeskPRO\Entity\ClientMessage;
@@ -50,7 +51,7 @@ class NewFeedbackNotification extends AbstractAgentNotification
 
     public function shouldSendBrowserNotification(Person $person)
     {
-        if ($this->feedback->getStatusCode() == 'hidden.validating' && $person->getPref('agent_notif.new_feedback_validate.alert')) {
+        if ($this->feedback->status == 'hidden' && $person->getPref('agent_notif.new_feedback_validate.alert')) {
             return true;
         } elseif ($this->feedback->status != 'hidden' && $person->getPref('agent_notif.new_feedback.alert')) {
             return true;
@@ -61,7 +62,7 @@ class NewFeedbackNotification extends AbstractAgentNotification
 
     public function shouldSendEmailNotification(Person $person)
     {
-        if ($this->feedback->getStatusCode() == 'hidden.validating' && $person->getPref('agent_notif.new_feedback_validate.email')) {
+        if ($this->feedback->status == 'hidden' && $person->getPref('agent_notif.new_feedback_validate.email')) {
             return true;
         } elseif ($this->feedback->status != 'hidden' && $person->getPref('agent_notif.new_feedback.email')) {
             return true;

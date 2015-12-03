@@ -232,9 +232,28 @@ function getWebpackConfig(mode, isDevServer, isProd) {
             path.resolve(__dirname, 'node_modules/formsy-react')
           ],
           exclude: [
-            path.resolve(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Legacy'),
+            path.resolve(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Legacy')
           ],
-          loader: 'babel-loader?stage=0'
+          loader: 'babel',
+          query: {
+            stage: 0,
+            plugins: ['react-transform'],
+            extra: {
+              'react-transform': {
+                'transforms': [
+                  {
+                    'transform': 'react-transform-hmr',
+                    'imports': ['react'],
+                    'locals': ['module']
+                  },
+                  {
+                    'transform': 'react-transform-catch-errors',
+                    'imports': ['react', 'redbox-react', './redboxOptions']
+                  }
+                ]
+              }
+            }
+          }
         },
         {
           test: /\.(png|gif|jpg|jpeg|woff|woff2|ttf|eot|svg)(\?|$)/,
@@ -292,6 +311,10 @@ function getWebpackConfig(mode, isDevServer, isProd) {
     config.entry['widget_loader']              = ['./src/DeskPRO/Bundle/WidgetBundle/widget_loader.js'];
     config.entry['DeskPRO_PortalBundle']       = ['./src/DeskPRO/Bundle/PortalBundle/DeskPRO_PortalBundle'];
     config.entry['DeskPRO_PortalBundle_style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-style.scss'];
+
+    config.entry['DeskPRO_PortalBundle_iestyle'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/ie-overrides.scss'];
+    config.entry['DeskPRO_PortalBundle_ie8style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/ie8-overrides.scss'];
+    config.entry['DeskPRO_PortalBundle_ie9style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/ie9-overrides.scss'];
   }
   if (mode === 'all' || mode === 'widget') {
     config.entry['DeskPRO_WidgetBundle']       = ['./src/DeskPRO/Bundle/WidgetBundle/DeskPRO_WidgetBundle'];
@@ -384,7 +407,7 @@ function startWebpackServer(config)
 
   app.use(cors());
 
-  app.listen(9666, 'localhost', function (err) {
+  app.listen(9666, '0.0.0.0', function (err) {
     if(err) throw new gutil.PluginError("webpack-dev-server", err);
 
     gutil.log("[webpack-dev-server]", "http://localhost:9666/");

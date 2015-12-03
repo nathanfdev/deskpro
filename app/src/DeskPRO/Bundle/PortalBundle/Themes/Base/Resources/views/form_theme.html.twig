@@ -232,7 +232,7 @@
                 {% set label = name|humanize %}
             {%- endif -%}
         {%- endif -%}
-        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans({}, translation_domain) }}{% if required %} *{% endif %}{% if not dp_no_validation_indicator is defined or not dp_no_validation_indicator %}<span class="form-item-valid{% if not  (submitted and valid) %} hidden{% endif %}"><i class="fa fa-check"></i></span>{% endif %}{% if dp_include_link is defined and dp_include_link == 'manage_email' %}
+        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans({}, translation_domain) }}{% if required %} *{% endif %}{% if not dp_no_validation_indicator is defined or not dp_no_validation_indicator %}<span class="form-item-valid{% if not  (submitted and valid) %} hidden{% endif %}">{#<i class="fa fa-check"></i></span>#}{% endif %}{% if dp_include_link is defined and dp_include_link == 'manage_email' %}
             <span class="form-label-link">
                 <a href="{{ path('portal_user_profile_emails') }}">{{ phrase('portal.account.email-managment-from-form') }}<i class="fa fa-angle-double-right"></i></a>
             </span>
@@ -249,8 +249,9 @@
             <label for="{{ id }}"><input
                         type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />{{ checkbox_label|trans }}
             </label>
+        {% else %}
+            {{ parent() }}
         {% endif %}
-        {{ parent() }}
     {% endspaceless %}
 {% endblock checkbox_widget %}
 
@@ -425,25 +426,26 @@
 {% endblock deskpro_display_html_widget %}
 
 
-{# RECAPTHCA #}
+{# CAPTHCA #}
 {% block deskpro_captcha_widget %}
-    {% spaceless %}
-        <div class="bucket{% if form.parent and not form.parent.vars.valid %} show-error{% endif %}">
-            {% if attr.options is defined %}
-                <script type="text/javascript">
-                    var RecaptchaOptions =
-                    {{ attr.options|json_encode|raw }}
-                </script>
-            {% endif %}
-            <script src="{{ form.vars.url_challenge }}" type="text/javascript"></script>
-            <noscript>
-                <iframe src="{{ form.vars.url_noscript }}" height="300" width="500"></iframe>
-                <textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
-                <input type="hidden" name="recaptcha_response_field" value="manual_challenge"/>
-            </noscript>
-        </div>
-    {% endspaceless %}
+    {{ form_row(form.captcha) }}
 {% endblock deskpro_captcha_widget %}
+
+{% block deskpro_recaptcha_widget %}
+    {% spaceless %}
+        <script src="//www.google.com/recaptcha/api.js"></script>
+        <div class="g-recaptcha" data-sitekey="{{ site_key }}"{% if secure_token %} data-stoken="{{ secure_token }}"{% endif %}></div>
+    {% endspaceless %}
+{% endblock deskpro_recaptcha_widget %}
+
+{% block captcha_widget %}
+{% spaceless %}
+    <div class="captcha-field">
+        <img src="{{ captcha_code }}" title="captcha" width="{{ captcha_width }}" height="{{ captcha_height }}" />
+        {{ form_widget(form, { attr: { class: 'shorter' } } ) }}
+    </div>
+{% endspaceless %}
+{% endblock %}
 
 {###
 HEIRARCHY

@@ -1,7 +1,7 @@
 {% if pager|length %}
 <div class="content-list-wrap simple as-articles {% if pager|length %}with-items{% else %}with-no-items{% endif %}">
 
-    <h1>Top Articles</h1>
+    <h1>{{ phrase('portal.sidebar.top_articles_title') }}</h1>
 
     <ul class="content-list no-padding">
       {% for article in pager %}

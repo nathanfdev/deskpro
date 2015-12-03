@@ -1,8 +1,22 @@
 services:
 
+  brand_aware_settings_resolver:
+    class: DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver
+    arguments: [@settings_resolver, @?brand_stack]
+
+  user_rule_processor:
+    class: Application\DeskPRO\People\UserRuleProcessor
+    arguments: [@doctrine.orm.default_entity_manager]
+
   blob.storage:
     class: Application\DeskPRO\BlobStorage\DeskproBlobStorage
     factory_class: Application\DeskPRO\DependencyInjection\SystemServices\BlobStorageService
+    factory_method: create
+    arguments: [@service_container]
+
+  deskpro_password_policy_validator:
+    class: Application\DeskPRO\People\PasswordPolicyValidator
+    factory_class: Application\DeskPRO\DependencyInjection\SystemServices\PasswordPolicyValidatorService
     factory_method: create
     arguments: [@service_container]
 

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
@@ -379,9 +380,16 @@ class FeedbackDataService extends AbstractDataService
         $criteria->applyGroupBy($qb);
         $result = $qb->getQuery()->getArrayResult();
         $count  = Count::fromGroupedBy($criteria->getGroupBy());
+        foreach ($criteria->getFilters() as $field => $value) {
+            switch ($field) {
+                case 'status':
+                    $count->setTitle($value);
+                    break;
+            }
+        }
         foreach ($result as $group) {
             $count->add($group['value']);
-            $count->addNested($group['value'], $group['group_name']);
+            $count->addNested($group['value'], $group['group_name'], $criteria->getGroupBy(), $group['group_name']);
         }
 
         return $count;

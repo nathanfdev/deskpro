@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
@@ -84,7 +85,7 @@ class NewNews
         $news->setStatusCode($this->status);
 
         if ($news->getStatusCode() == 'published' && !$this->_person_context->hasPerm('agent_publish.validate')) {
-            $news->setStatusCode('hidden.validating');
+            $news->setStatusCode('hidden.unpublished');
         }
 
         $cat            = $this->_em->find('DeskPRO:NewsCategory', $this->category_id);

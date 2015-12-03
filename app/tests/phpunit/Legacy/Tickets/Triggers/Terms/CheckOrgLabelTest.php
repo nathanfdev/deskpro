@@ -54,8 +54,8 @@ class CheckOrgLabelTest extends AbstractEntityCheckTest
         $bogus        = new LabelOrganization();
         $bogus->label = 'bogus';
 
-        $org->labels->add($bogus);
-        $org->labels->add($object);
+        $org->addLabel($bogus);
+        $org->addLabel($object);
 
         $ticket               = new Ticket();
         $ticket->id           = $id;

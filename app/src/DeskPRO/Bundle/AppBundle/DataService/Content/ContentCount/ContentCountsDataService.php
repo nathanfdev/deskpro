@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount;
 
 use Application\DeskPRO\Entity\CategoryAbstract as Category;
@@ -95,7 +96,7 @@ class ContentCountsDataService
             $count = Count::fromGroupedBy($criteria->getGroupBy());
             foreach ($result as $group) {
                 $count->add($group['value']);
-                $count->addNested($group['value'], $group['group_name']);
+                $count->addNested($group['value'], $group['group_name'], $criteria->getGroupBy());
             }
         }
 
@@ -131,7 +132,7 @@ class ContentCountsDataService
 
             $count->addNestedInstance(
                 $this->createNestedRecursively(
-                    Count::fromValueAndGroup($countValue, $category->getId()),
+                    Count::create($countValue, $category->getId(), 'category'),
                     $category->getChildren(),
                     $groupToCount,
                     $depth + 1

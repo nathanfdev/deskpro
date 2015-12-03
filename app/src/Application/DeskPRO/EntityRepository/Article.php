@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -48,23 +49,6 @@ class Article extends AbstractEntityRepository
         }
 
         return $this->find($id);
-    }
-
-    /**
-     * Get articles waiting for validating.
-     *
-     * @return array
-     */
-    public function getValidatingArticle()
-    {
-        $articles = $this->getEntityManager()->createQuery('
-            SELECT a
-            FROM DeskPRO:Article a
-            WHERE a.hidden_status = ?1
-            ORDER BY a.id DESC
-        ')->setParameter(1, 'validating')->execute();
-
-        return $articles;
     }
 
     /**

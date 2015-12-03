@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import SimplePositioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Simple';
+import SimplePositioned from 'DeskPRO/Component/Positioned/Simple';
 import { IMOverlay } from './IMOverlay';
 import { Chat } from './ChatWindow/Chat';
 

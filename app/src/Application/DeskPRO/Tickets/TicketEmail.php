@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\Monolog\NullLogger;
@@ -407,23 +408,12 @@ class TicketEmail
             if ($this->ticket->person_email && $this->ticket->person_email->person === $this->to_person) {
                 $to_email = $this->ticket->person_email->email;
                 $this->logger->info(sprintf('[TicketEmail] to_email(1): %s', $to_email));
-            } elseif ($this->ticket->person_email_validating) {
-                $to_email                 = $this->ticket->person_email_validating->email;
-                $vars['validating_email'] = $this->ticket->person_email_validating;
-                $this->logger->info(sprintf('[TicketEmail] to_email(2): %s -- validating', $to_email));
             } elseif ($this->to_person->primary_email) {
                 $to_email = $this->to_person->primary_email->email;
                 $this->logger->info(sprintf('[TicketEmail] to_email(3): %s', $to_email));
             } else {
-                $vars['validating_email'] = $em->getRepository('DeskPRO:PersonEmailValidating')->getForPerson($this->to_person);
-
-                if (!$vars['validating_email']) {
-                    $this->logger->info(sprintf('[TicketEmail] to_email(4): no email and no validating email'));
-                    throw new \RuntimeException('no email and no validating email');
-                }
-
-                $to_email = $vars['validating_email']->email;
-                $this->logger->info(sprintf('[TicketEmail] to_email(4): %s -- validating', $to_email));
+                $this->logger->info(sprintf('[TicketEmail] to_email(4): no email'));
+                throw new \RuntimeException('no email address');
             }
 
         // To agent

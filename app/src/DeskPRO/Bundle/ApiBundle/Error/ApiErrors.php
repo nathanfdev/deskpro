@@ -29,10 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Error;
 
-use Symfony\Component\Validator\Constraint;
-
+/**
+ * Class ApiErrors.
+ */
 class ApiErrors
 {
     /** The absolute last fallback error code for thrown exceptions */

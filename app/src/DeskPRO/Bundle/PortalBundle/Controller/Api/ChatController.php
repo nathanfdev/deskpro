@@ -29,12 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
+use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -55,24 +57,19 @@ class ChatController extends AbstractController
      */
     public function createNewChatAction(Request $request)
     {
-        $submitted_data = $request->request->all();
-
-        $form = $this->get('form.factory')->createNamedBuilder(null, 'api_chat_create')->getForm();
-        $form->submit($submitted_data);
+        $conversation = new ChatConversation();
+        $form         = $this->get('form.factory')->createNamedBuilder(null, 'api_chat_create', $conversation)->getForm();
+        $form->submit($request->request->all());
 
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }
 
-        $conversation               = new ChatConversation();
-        $conversation->person_name  = $submitted_data['name'];
-        $conversation->person_email = $submitted_data['email'];
-
         $em = $this->getDoctrine()->getManager();
         $em->persist($conversation);
         $em->flush();
 
-        return new JsonResponse($conversation->getInfo());
+        return new JsonResponse($this->dataSerialize($conversation));
     }
 
     /**
@@ -80,19 +77,32 @@ class ChatController extends AbstractController
      * @Method({"GET"})
      *
      * @param ChatConversation $conversation
+     * @param Request          $request
      *
      * @return JsonResponse
      */
-    public function pollingChatAction(ChatConversation $conversation)
+    public function pollingChatAction(ChatConversation $conversation, Request $request)
     {
-        return new JsonResponse(array_merge($conversation->getInfo(), [
-            'messages' => array_map(function (ChatMessage $message) {
-                return [
-                    'type'    => 'agent',
-                    'message' => $message->content,
-                ];
-            }, $conversation->messages->toArray()),
-        ]));
+        /** @var EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+        $qb = $em->createQueryBuilder();
+        $qb
+            ->select('m')
+            ->from('DeskPRO:ChatMessage', 'm')
+            ->where(
+                'm.conversation = :conversation_id',
+                'm.id > :last_message_id'
+            )
+            ->setParameters([
+                'conversation_id' => $conversation->getId(),
+                'last_message_id' => $request->get('last_message_id', 0),
+            ])
+        ;
+
+        return new JsonResponse([
+            'chat_info'    => $this->dataSerialize($conversation),
+            'new_messages' => $this->dataSerialize($qb->getQuery()->getResult()),
+        ]);
     }
 
     /**
@@ -116,5 +126,78 @@ class ChatController extends AbstractController
         $em->flush();
 
         return new JsonResponse();
+    }
+
+    /**
+     * @Route("/portal/api/chats/{id}/end", name="portal_api_chat_end")
+     * @Method({"POST"})
+     *
+     * @param ChatConversation $conversation
+     *
+     * @return JsonResponse
+     */
+    public function endChatAction(ChatConversation $conversation)
+    {
+        $conversation->setStatus(ChatConversation::STATUS_ENDED);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($conversation);
+        $em->flush();
+
+        return new JsonResponse();
+    }
+
+    /**
+     * @Route("/portal/api/chats/{id}/reopen", name="portal_api_chat_reopen")
+     * @Method({"POST"})
+     *
+     * @param ChatConversation $conversation
+     *
+     * @return JsonResponse
+     */
+    public function reopenChatAction(ChatConversation $conversation)
+    {
+        $conversation->setStatus(ChatConversation::STATUS_OPEN);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($conversation);
+        $em->flush();
+
+        return new JsonResponse();
+    }
+
+    /**
+     * @Route("/portal/api/chats/{id}/feedback", name="portal_api_chat_feedback")
+     * @Method({"POST"})
+     *
+     * @param ChatConversation $conversation
+     * @param Request          $request
+     *
+     * @return JsonResponse
+     */
+    public function feedbackAction(ChatConversation $conversation, Request $request)
+    {
+        $form = $this->get('form.factory')->createNamedBuilder(null, 'api_chat_feedback', $conversation)->getForm();
+        $form->submit($request->request->all());
+
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($conversation);
+        $em->flush();
+
+        return new JsonResponse();
+    }
+
+    /**
+     * @param $data
+     *
+     * @return array
+     */
+    protected function dataSerialize($data)
+    {
+        return $this->get('data_serializer')->serialize($data);
     }
 }

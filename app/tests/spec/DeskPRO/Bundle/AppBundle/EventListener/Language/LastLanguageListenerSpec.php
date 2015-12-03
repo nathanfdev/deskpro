@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\EventListener\Language;
 
 use Application\DeskPRO\Entity\Language;
@@ -79,7 +80,7 @@ class LastLanguageListenerSpec extends ObjectBehavior
     ) {
         $language_stack->getActive()->willReturn($en);
 
-        $en->getTwoLetterLanguageCode()->willReturn('en');
+        $en->getUrlCode()->willReturn('en');
         $headers->setCookie(Argument::type('Symfony\Component\HttpFoundation\Cookie'))->shouldBeCalled();
 
         $this->onKernelResponse($event);

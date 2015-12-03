@@ -28,7 +28,6 @@
 				<option {% if filter_form.status.status == 'hidden' %}selected="selected"{% endif %} value="hidden">{{ phrase('agent.feedback.status_hidden') }}</option>
 				<option {% if filter_form.status.status == 'hidden.deleted' %}selected="selected"{% endif %} value="hidden.deleted">-- {{ phrase('agent.feedback.status_deleted') }}</option>
 				<option {% if filter_form.status.status == 'hidden.spam' %}selected="selected"{% endif %} value="hidden.spam">-- {{ phrase('agent.feedback.status_spam') }}</option>
-				<option {% if filter_form.status.status == 'hidden.validating' %}selected="selected"{% endif %} value="hidden.validating">{{ phrase('agent.feedback.status_validating') }}</option>
 			</optgroup>
 		</select>
 

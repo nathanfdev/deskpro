@@ -11,7 +11,7 @@
             {% endfor %}
     </ul>
     {% else %}
-        None of our agents are online right now. You can still <a href="{{ path('portal_new_ticket') }}">open a ticket</a>.
+        {{ phrase('portal.sidebar.agents_none', { new_ticket_url: path('portal_new_ticket') }) }}
     {% endif %}
     </div>
     <hr>

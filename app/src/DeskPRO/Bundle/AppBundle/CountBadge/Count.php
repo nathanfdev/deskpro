@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\CountBadge;
 
 /**
@@ -49,12 +50,22 @@ class Count
     /**
      * @var string
      */
-    private $grouped_by;
+    private $id;
 
     /**
      * @var string
      */
-    private $group;
+    private $type;
+
+    /**
+     * @var string
+     */
+    private $title;
+
+    /**
+     * @var string
+     */
+    private $grouped_by;
 
     /**
      * Make constructor private to allow construction only through factory methods.
@@ -91,34 +102,23 @@ class Count
 
     /**
      * @param int    $value
-     * @param string $group
-     *
-     * @return Count
-     */
-    public static function fromValueAndGroup($value, $group)
-    {
-        $count = new self();
-        $count->setCount($value);
-        $count->setGroup($group);
-
-        return $count;
-    }
-
-    /**
-     * @param int    $value
-     * @param string $group
+     * @param string $id
+     * @param string $type
+     * @param string $title
      * @param array  $nested
      * @param string $grouped_by
      *
      * @return Count
      */
-    public static function create($value, $group, array $nested, $grouped_by = null)
+    public static function create($value, $id, $type = null, $title = '', $grouped_by = null, array $nested = [])
     {
         $count = new self();
         $count->setCount($value);
-        $count->setGroup($group);
+        $count->setId($id);
         $count->setNested($nested);
         $count->setGroupedBy($grouped_by);
+        $count->setType($type);
+        $count->setTitle($title);
 
         return $count;
     }
@@ -158,6 +158,62 @@ class Count
     /**
      * @return string
      */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param string $id
+     */
+    public function setId($id)
+    {
+        if ($id === null) {
+            $this->id = 0;
+        } else {
+            $this->id = $id;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     */
+    public function setTitle($title)
+    {
+        if ($title === null) {
+            $this->title = '';
+        } else {
+            $this->title = $title;
+        }
+    }
+
+    /**
+     * @return string
+     */
     public function getGroupedBy()
     {
         return $this->grouped_by;
@@ -172,31 +228,19 @@ class Count
     }
 
     /**
-     * @return string
-     */
-    public function getGroup()
-    {
-        return $this->group;
-    }
-
-    /**
-     * @param string $group
-     */
-    public function setGroup($group)
-    {
-        $this->group = $group;
-    }
-
-    /**
      * @param int    $value
-     * @param string $group
+     * @param string $id
+     * @param string $type
+     * @param string $title
      * @param bool   $sum_to_value If need to increase $this->value by nested count value
      */
-    public function addNested($value, $group, $sum_to_value = false)
+    public function addNested($value, $id, $type, $title = '', $sum_to_value = false)
     {
         $count = new self();
         $count->setCount($value);
-        $count->setGroup($group);
+        $count->setId($id);
+        $count->setType($type);
+        $count->setTitle($title);
         $this->nested[] = $count;
 
         if ($sum_to_value) {
@@ -213,6 +257,9 @@ class Count
         $this->nested[] = $instance;
         if ($sum_to_value) {
             $this->add($instance->getCount());
+        }
+        if ($instance->getType()) {
+            $this->grouped_by = $instance->getType();
         }
     }
 

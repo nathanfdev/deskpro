@@ -100,7 +100,7 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
         ) {
             $this->logger->info(
                 sprintf('detected "%s" and initializing language stack with it',
-                    $lang->getTwoLetterLanguageCode()
+                    $lang->getUrlCode()
                 )
             );
 
@@ -201,7 +201,7 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
         // get the language codes of all portal langs enabled
         $langs      = $this->language_manager->getEnabledLanguages();
         $lang_codes = array_map(function (Language $lang) {
-            return $lang->getTwoLetterLanguageCode();
+            return $lang->getUrlCode();
         }, $langs);
 
         // negotiate between our list of supported langs vs. the Accept-Language header

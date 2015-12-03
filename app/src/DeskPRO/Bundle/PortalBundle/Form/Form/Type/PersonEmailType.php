@@ -29,8 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\NotBannedEmail;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -67,8 +69,9 @@ class PersonEmailType extends AbstractType
                 );
             },
             'email_constraints' => array(
-                new NotBlank(array('message' => 'portal.forms.error_ticket_msg_required')),
-                new Email(array('message'    => 'portal.forms.error_email_invalid')),
+                new NotBannedEmail(['message' => 'portal.forms.error_banned_email']),
+                new NotBlank(array('message'  => 'portal.forms.error_email_required')),
+                new Email(array('message'     => 'portal.forms.error_email_invalid')),
             ),
         ));
     }

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\Content\Comment;
 
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
@@ -79,7 +80,7 @@ class CommentsDataService
             $count  = Count::fromGroupedBy($criteria->getGroupBy());
             foreach ($result as $group) {
                 $count->add($group['value']);
-                $count->addNested($group['value'], $group['group_name']);
+                $count->addNested($group['value'], $group['group_name'], $criteria->getGroupBy());
             }
         } else {
             $total = $qb->getQuery()->getSingleScalarResult();

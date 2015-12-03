@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Brand;
 
 use Application\DeskPRO\Entity\Brand as BrandEntity;
@@ -68,19 +69,23 @@ class DefaultBrandFinder
      */
     public function getDefaultBrand()
     {
+        $brand = null;
         try {
-            return $this->brand_repo->find(
+            $brand = $this->brand_repo->find(
                 $this->settings_resolver->getGlobalSettings()->get('portal.default_brand', 1)
             );
         } catch (\Exception $e) {
-            // if somehow we don't have a database, just return a brand that represents a "standard theme"
-            $b         = new BrandEntity();
-            $b->id     = 1;
+        }
+
+        // if somehow we don't have a database or brand entity, just return a brand that represents a "standard theme"
+        if (!$brand) {
+            $brand     = new BrandEntity();
+            $brand->id = 1;
             $theme_set = new ThemeSet();
             $theme_set->setThemeId(StandardTheme::THEME_ID);
-            $b->setThemeSet($theme_set);
-
-            return $b;
+            $brand->setThemeSet($theme_set);
         }
+
+        return $brand;
     }
 }

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\Bundle\AppBundle\CountBadge;
 
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
@@ -39,15 +40,6 @@ use DpTest\DeskProTestCase;
  */
 class CountTest extends DeskProTestCase
 {
-    /**
-     * @test
-     */
-    public function it_should_be_constructable_from_grouped_by()
-    {
-        $count = Count::fromGroupedBy('test_grouped_by');
-        $this->assertEquals('test_grouped_by', $count->getGroupedBy());
-    }
-
     /**
      * @test
      */
@@ -64,8 +56,8 @@ class CountTest extends DeskProTestCase
     {
         $count = Count::fromValue(42);
 
-        $count->addNested(1, 1);
-        $count->addNested(2, 2);
+        $count->addNested(1, 1, 'type');
+        $count->addNested(2, 2, 'type');
 
         $this->assertCount(2, $count->getNested());
     }

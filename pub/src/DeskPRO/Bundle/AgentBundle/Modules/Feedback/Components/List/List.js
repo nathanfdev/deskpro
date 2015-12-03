@@ -1,19 +1,21 @@
 import React, {Component, PropTypes} from 'react';
 import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { ControlBarContainer } from './ControlBar/ControlBarContainer';
+import { MassActionContainer } from './ControlBar/MassActionContainer';
 import { FeedbackCardsContainer } from './View/List/FeedbackCardsContainer';
 import { FeedbackCommentsCardsContainer } from './View/List/FeedbackCommentsCardsContainer';
 import { FeedbackTableContainer } from './View/Table/FeedbackTableContainer';
 import { FeedbackCommentTableContainer } from './View/Table/FeedbackCommentTableContainer';
 import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
+import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import Loader from 'react-loader';
 import { PaginationContainer } from './PaginationContainer';
 
 export class List extends Component {
 
   static propTypes = {
     loaded: PropTypes.bool.isRequired,
+    currentApp: PropTypes.string.isRequired,
     isComments: PropTypes.bool,
     selected: PropTypes.object.isRequired,
     pagination: PropTypes.object,
@@ -67,28 +69,21 @@ export class List extends Component {
     );
   }
 
-  renderPagination() {
-    const { pagination } = this.props;
-    if (pagination && pagination.total_pages > 1) {
-      return (<PaginationContainer/>);
-    }
-  }
-
   render() {
-    const { loaded } = this.props;
+    const { loaded, currentApp, pagination, selected } = this.props;
 
     return (
       <ListFrameContainer>
-        <ControlBarContainer />
-        <Loader loaded={loaded}
-                color="green"
-                opacity={0}
-                width={3}>
+        {!selected.size && <ControlBarContainer />}
+        {selected.size && <MassActionContainer />}
+        <LoadIndicator loaded={loaded}
+                       opacity={0}
+                       width={3}>
           <ListFrameContents>
             {this.contentChoice()}
-            {this.renderPagination()}
+            {pagination && pagination.total_pages > 1 && <PaginationContainer/>}
           </ListFrameContents>
-        </Loader>
+        </LoadIndicator>
       </ListFrameContainer>
     );
   }

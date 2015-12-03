@@ -31,6 +31,7 @@
  *
  * @category Install
  */
+
 namespace Application\InstallBundle\Data\DefaultData;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -55,7 +56,7 @@ class FilterData extends AbstractDefaultData
     private function newFilterInstall()
     {
         $status_agent = new TicketStatusTerm(['status' => [Ticket::STATUS_AWAITING_AGENT]], TermInterface::OP_IS);
-        $status_user  = new TicketStatusTerm(['status' => [Ticket::STATUS_AWAITING_USER]], TermInterface::OP_IS);
+        $status_user  = new TicketStatusTerm(['status'  => [Ticket::STATUS_AWAITING_USER]], TermInterface::OP_IS);
 
         #------------------------------
         # Inbox
@@ -276,19 +277,6 @@ class FilterData extends AbstractDefaultData
                     'type'    => 'status',
                     'op'      => 'is',
                     'options' => array('status' => 'archived'),
-                ),
-            ),
-        );
-
-        $filters[] = array(
-            'title'    => 'Awaiting Validation',
-            'sys_name' => 'archive_validating',
-            'order_by' => 'ticket.urgency:desc',
-            'terms'    => array(
-                array(
-                    'type'    => 'status',
-                    'op'      => 'is',
-                    'options' => array('status' => 'hidden.validating'),
                 ),
             ),
         );

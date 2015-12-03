@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\Bundle\AppBundle\DataService\Content;
 
 use DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsCountCriteria;
@@ -43,7 +44,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class CommentsCountCriteriaTest extends DeskProTestCase
 {
     public static $dummyProperParams = [
-        'status'         => 'validating',
+        'status'         => 'visible',
         'article'        => '1',
         'is_reviewed'    => '0',
         'period_created' => 'ever',
@@ -118,7 +119,7 @@ class CommentsCountCriteriaTest extends DeskProTestCase
         $qb = $this->mockQueryBuilder();
 
         // expectations when applying self::$dummyProperParams
-        $qb->setParameter('status',         'validating')->shouldBeCalled();
+        $qb->setParameter('status',         'visible')->shouldBeCalled();
         $qb->setParameter('article',        '1')->shouldBeCalled();
         $qb->setParameter('is_reviewed',    '0')->shouldBeCalled();
         $qb->setParameter('period_created', 'ever')->shouldBeCalled();

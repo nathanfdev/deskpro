@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -54,7 +55,7 @@ class Feedback extends AbstractEntityRepository
         return $this->getEntityManager()->getConnection()->fetchColumn("
             SELECT COUNT(*)
             FROM feedback
-            WHERE hidden_status = 'validating'
+            WHERE status = 'hidden' AND is_reviewed = 0
         ");
     }
 
@@ -103,9 +104,9 @@ class Feedback extends AbstractEntityRepository
         return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
             SELECT IFNULL(hidden_status, 'hidden'), COUNT(*) as count
             FROM feedback
-            WHERE status = ? AND hidden_status != ? AND hidden_status != ?
+            WHERE status = ?
             GROUP BY hidden_status WITH ROLLUP
-        ", array('hidden', 'validating', 'temp'));
+        ", array('hidden'));
     }
 
     /**

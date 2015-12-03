@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Orb\Util\Strings;
@@ -43,12 +44,25 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
     const OBJ_PROP = '__abstract__';
 
-    const STATUS_VISIBLE         = 'visible';
-    const STATUS_VALIDATING      = 'validating';
-    const STATUS_USER_VALIDATING = 'user_validating';
-    const STATUS_TEMP            = 'temp';
-    const STATUS_DELETED         = 'deleted';
-    const STATUS_AGENT           = 'agent';
+    /**
+     * Publicly visible.
+     */
+    const STATUS_VISIBLE = 'visible';
+
+    /**
+     * Not public, but visible to agents.
+     */
+    const STATUS_HIDDEN = 'hidden';
+
+    /**
+     * Soft-deleted. Will be cleaned up eventually.
+     */
+    const STATUS_DELETED = 'deleted';
+
+    /**
+     * TODO what is?
+     */
+    const STATUS_AGENT = 'agent';
 
     /**
      * The unique ID.
@@ -70,7 +84,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var string
      */
-    protected $visitor_id;
+    protected $visitor_id = '';
 
     /**
      * @var string
@@ -98,13 +112,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     protected $status = 'visible';
 
     /**
-     * @var string
-     */
-    protected $validating = null;
-
-    /**
-     * Has this comment been reviewed? Either validated, or
-     * if it was published, seen to.
+     * Has this comment been reviewed by an agent?
      *
      * @var bool
      */

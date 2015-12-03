@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Kernel;
 
 use Application\DeskPRO\App;
@@ -71,6 +72,7 @@ class PortalKernel extends BaseKernel
             new \FOS\RestBundle\FOSRestBundle(),
             new \JMS\SerializerBundle\JMSSerializerBundle(),
             new \Nelmio\CorsBundle\NelmioCorsBundle(),
+            new \Gregwar\CaptchaBundle\GregwarCaptchaBundle(),
 
             new \Application\DeskPRO\DeskPROBundle(),
             new \Application\EmailBundle\EmailBundle(),
@@ -101,6 +103,11 @@ class PortalKernel extends BaseKernel
         $catch = true
     ) {
         try {
+            // TODO this was causing an exception
+            //if ($response = AbstractKernel::performSystemChecks($request)) {
+            //    return $response;
+            //}
+
             return parent::handle($request, $type, $catch);
         } catch (\Exception $e) {
             // we catch the DBALExceptions in KernelBooter, so don't handle that here.

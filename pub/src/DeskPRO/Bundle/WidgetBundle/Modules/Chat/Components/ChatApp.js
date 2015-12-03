@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { Link } from 'react-router';
 
 export class ChatApp extends React.Component {
 
@@ -12,12 +11,6 @@ export class ChatApp extends React.Component {
 
     return (
       <div>
-        Chat:<br />
-
-        <Link to="/chat/begin/simple">/chat/begin/simple</Link><br />
-        <Link to="/chat/begin/conversation">/chat/begin/conversation</Link><br />
-        <Link to="/chat/begin/form">/chat/begin/form</Link><br />
-
         {children}
       </div>
     );

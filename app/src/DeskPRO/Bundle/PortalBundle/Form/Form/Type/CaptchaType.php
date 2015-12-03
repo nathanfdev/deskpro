@@ -29,45 +29,45 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
-use DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints\ValidCaptcha;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\FormView;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class CaptchaType extends AbstractType
 {
-    const RECAPTCHA_API_SERVER = '//www.google.com/recaptcha/api';
+    /**
+     * @var LanguageManager
+     */
+    private $language_manager;
 
     /**
-     * @var string
+     * @var BrandStack
      */
-    protected $public_key;
+    private $brand_stack;
 
-    /**
-     * @var string
-     */
-    protected $private_key;
-
-    public function __construct(BrandStack $brand_stack)
+    public function __construct(BrandStack $brand_stack, LanguageManager $language_manager)
     {
-        $this->public_key  = $brand_stack->getActive()->getSetting('core.recaptcha_public_key');
-        $this->private_key = $brand_stack->getActive()->getSetting('core.recaptcha_private_key');
+        $this->language_manager = $language_manager;
+        $this->brand_stack      = $brand_stack;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $view->vars = array_replace($view->vars, array(
-            'url_challenge' => sprintf('%s/challenge?k=%s', self::RECAPTCHA_API_SERVER, $this->public_key),
-            'url_noscript'  => sprintf('%s/noscript?k=%s', self::RECAPTCHA_API_SERVER, $this->public_key),
-            'public_key'    => $this->public_key,
-        ));
+        if ($this->isRecaptchaEnabled()) {
+            $builder->add('captcha', 'deskpro_recaptcha');
+        } else {
+            $builder->add('captcha', 'captcha', [
+                'label'           => false,
+                'as_url'          => true,
+                'invalid_message' => 'portal.forms.error_captcha',
+            ]);
+        }
     }
 
     public function getName()
@@ -78,17 +78,23 @@ class CaptchaType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'attr' => [
-                'options' => [
-                    'theme' => 'clean',
-                ],
-            ],
-            'label'       => false,
-            'empty_data'  => null,
-            'mapped'      => false,
-            'constraints' => [
-                new ValidCaptcha(),
-            ],
+            'label'  => false,
+            'mapped' => false,
+            'help'   => function (Options $options) {
+                if ($this->isRecaptchaEnabled()) {
+                    return false;
+                }
+
+                return $this->language_manager->phrase('portal.forms.label_captcha');
+            },
         ]);
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function isRecaptchaEnabled()
+    {
+        return $this->brand_stack->getActive()->getSetting('core.use_recaptcha2') || ReCaptchaType::isCloudRecapchaEnabled();
     }
 }

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
@@ -85,69 +86,119 @@ class PersonEditProfileType extends AbstractType
             ));
         }
 
+        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onSubmit']);
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreSetData']);
+        $builder->addEventListener(FormEvents::POST_SET_DATA, [$this, 'onPostSetData']);
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     *
+     * @throws \Exception
+     */
+    public function onSubmit(FormEvent $event)
+    {
         $blob_storage = $this->blob_storage;
         $em           = $this->em;
-        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) use ($blob_storage, $em) {
-            /** @var \Application\DeskPRO\Entity\Person $person */
-            $person = $event->getData();
-            $form = $event->getForm();
 
-            if ($form->has('upload_picture')) {
-                $file = $form->get('upload_picture')->getData();
-                if ($file instanceof File && $file->getRealPath()) {
-                    $blob = $blob_storage->createBlobRecordFromFile(
-                        $file->getRealPath(),
-                        $file->getClientOriginalName(),
-                        $file->getClientMimeType()
-                    );
+        /** @var \Application\DeskPRO\Entity\Person $person */
+        $person = $event->getData();
+        $form   = $event->getForm();
 
-                    $person->setPictureBlob($blob);
-                    $em->persist($blob);
-                    $form->remove('upload_picture');
-                    $form->add('delete_picture', 'checkbox', array('required' => false, 'mapped' => false));
-                }
-            }
-
-            if ($form->has('delete_picture')) {
-                if ($form->get('delete_picture')->getData()) {
-                    $blob_storage->deleteBlobRecord($person->picture_blob);
-                    $person->setPictureBlob(null);
-                }
-            }
-        });
-
-        $field_manager = $this->field_manager;
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($field_manager) {
-
-            /** @var \Application\DeskPRO\Entity\Person $person */
-            $person = $event->getData();
-            $form = $event->getForm();
-
-            if ($person->picture_blob) {
-                $form->add('delete_picture', 'checkbox', array('required' => false, 'mapped' => false));
-            } else {
-                $form->add('upload_picture', 'file', array('required' => false, 'mapped' => false));
-            }
-
-            foreach ($field_manager->getAvailablePersonFields() as $field_def) {
-                if (!$field_def->is_enabled) {
-                    continue;
-                }
-
-                $id = $field_def->getId();
-                $form->add(
-                    $id,
-                    'deskpro_custom_data_person',
-                    array(
-                        'custom_data_field' => $field_def,
-                        'person'            => $event->getData(),
-                        'property_path'     => sprintf('getCustomDataCollection[%s]', $id),
-                        'agent_interface'   => false,
-                        'label'             => false,
-                    )
+        if ($form->has('upload_picture')) {
+            $file = $form->get('upload_picture')->getData();
+            if ($file instanceof File && $file->getRealPath()) {
+                $blob = $blob_storage->createBlobRecordFromFile(
+                    $file->getRealPath(),
+                    $file->getClientOriginalName(),
+                    $file->getClientMimeType()
                 );
+
+                $person->setPictureBlob($blob);
+                $em->persist($blob);
+                $form->remove('upload_picture');
+                $form->add('delete_picture', 'checkbox', array('required' => false, 'mapped' => false));
             }
-        });
+        }
+
+        if ($form->has('delete_picture')) {
+            if ($form->get('delete_picture')->getData()) {
+                $blob_storage->deleteBlobRecord($person->picture_blob);
+                $person->setPictureBlob(null);
+            }
+        }
+
+        if ($form->has('manager_auto_add')) {
+            if ($form->get('manager_auto_add')->getData()) {
+                $person->setPreference('org.manager_auto_add', 1);
+            } else {
+                $person->setPreference('org.manager_auto_add', 0);
+            }
+        }
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onPostSetData(FormEvent $event)
+    {
+        /** @var \Application\DeskPRO\Entity\Person $person */
+        $person = $event->getData();
+        $form   = $event->getForm();
+
+        $form->get('manager_auto_add')->setData($person->getPref('org.manager_auto_add') ? true : false);
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onPreSetData(FormEvent $event)
+    {
+        $field_manager = $this->field_manager;
+
+        /** @var \Application\DeskPRO\Entity\Person $person */
+        $person = $event->getData();
+        $form   = $event->getForm();
+
+        if ($person->organization && $person->organization_manager) {
+            $form->add('manager_auto_add', 'checkbox', array(
+                'required'       => false,
+                'mapped'         => false,
+                'label'          => false,
+                'checkbox_label' => $this->phrase('portal.account.automatically_join_org_tickets', ['org_name' => $person->organization->getName()]),
+            ));
+        }
+
+        if ($person->picture_blob) {
+            $form->add('delete_picture', 'checkbox', array('required' => false, 'mapped' => false));
+        } else {
+            $form->add('upload_picture', 'file', array('required' => false, 'mapped' => false));
+        }
+
+        foreach ($field_manager->getAvailablePersonFields() as $field_def) {
+            if (!$field_def->is_enabled) {
+                continue;
+            }
+
+            $id = $field_def->getId();
+            $form->add(
+                $id,
+                'deskpro_custom_data_person',
+                array(
+                    'custom_data_field' => $field_def,
+                    'person'            => $event->getData(),
+                    'property_path'     => sprintf('getCustomDataCollection[%s]', $id),
+                    'agent_interface'   => false,
+                    'label'             => false,
+                )
+            );
+        }
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

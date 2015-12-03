@@ -29,10 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\View\Breadcrumb;
 
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\Feedback;
@@ -80,6 +82,20 @@ class BreadcrumbGenerator
     public function createBuilder()
     {
         return new BreadcrumbBuilder($this->object_router, $this->url_generator);
+    }
+
+    #####################################################################################################################
+    # CHAT
+    #####################################################################################################################
+
+    public function buildChat()
+    {
+        return $this->createBuilder()->addChat()->done();
+    }
+
+    public function buildChatConversation(ChatConversation $chat)
+    {
+        return $this->createBuilder()->addChat()->addChatView($chat)->done();
     }
 
     #####################################################################################################################

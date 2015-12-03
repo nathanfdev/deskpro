@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Language;
 
 use Application\DeskPRO\Entity\Language;
@@ -120,7 +121,7 @@ class LanguageManager
      */
     public function normalizeLanguageCode($lang_code)
     {
-        return strtolower(substr($lang_code, 0, 2));
+        return $lang_code;
     }
 
     /**

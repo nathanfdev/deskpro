@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -36,6 +37,7 @@ use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\LabelDef;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Usersource;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
@@ -103,13 +105,13 @@ class ApiDb extends AbstractDbSet
 
         // this will be refactored into a better "entity creator" once the api data set needs more elaborate data
         // we need some deps, and some other entities
-        $dep1 = new Department();
-        $dep1->title = 'sales';
-        $dep2 = new Department();
-        $dep2->title = 'support';
-        $team = new AgentTeam();
-        $team->name = 'test team';
-        $ticket_def = new CustomDefTicket();
+        $dep1              = new Department();
+        $dep1->title       = 'sales';
+        $dep2              = new Department();
+        $dep2->title       = 'support';
+        $team              = new AgentTeam();
+        $team->name        = 'test team';
+        $ticket_def        = new CustomDefTicket();
         $ticket_def->title = 'def';
 
         // Create a basic task
@@ -123,15 +125,15 @@ class ApiDb extends AbstractDbSet
         $unassignedTask->setTitle('An unassigned task');
 
         // Create a new knowledge base article
-        $article = new Article();
-        $article->slug = 'test';
-        $article->title = 'A test article';
-        $article->content = 'This is a test article';
-        $article->view_count = 0;
+        $article               = new Article();
+        $article->slug         = 'test';
+        $article->title        = 'A test article';
+        $article->content      = 'This is a test article';
+        $article->view_count   = 0;
         $article->total_rating = 0;
         $article->num_comments = 0;
-        $article->num_ratings = 0;
-        $article->status = 'published';
+        $article->num_ratings  = 0;
+        $article->status       = 'published';
         $article->date_created = new \DateTime();
 
         // Persist them in the entity manager
@@ -149,13 +151,13 @@ class ApiDb extends AbstractDbSet
 
         $types = array('user', 'agent');
         foreach ($types as $type) {
-            $deskProUsers = new Usersource();
-            $deskProUsers->type = $type;
-            $deskProUsers->source_type = 'Application\\DeskPRO\\Usersource\\Adapter\\DeskPRO';
-            $deskProUsers->is_enabled = true;
+            $deskProUsers                = new Usersource();
+            $deskProUsers->type          = $type;
+            $deskProUsers->source_type   = 'Application\\DeskPRO\\Usersource\\Adapter\\DeskPRO';
+            $deskProUsers->is_enabled    = true;
             $deskProUsers->display_order = -10; // ensure #1 order (initially!)
-            $deskProUsers->title = 'DeskPRO';
-            $deskProUsers->options = array();
+            $deskProUsers->title         = 'DeskPRO';
+            $deskProUsers->options       = array();
             $this->getEm()->persist($deskProUsers);
         }
 
@@ -199,8 +201,8 @@ class ApiDb extends AbstractDbSet
                 1,
                 1,
                 0,
-                '" . date('Y-m-d H:i:s') . "',
-                '" . date('Y-m-d H:i:s') . "',
+                '".date('Y-m-d H:i:s')."',
+                '".date('Y-m-d H:i:s')."',
                 0,
                 0,
                 0,
@@ -219,26 +221,26 @@ class ApiDb extends AbstractDbSet
                 ('core.cron_logreport.cli-phperr.log', '1380716762'),
                 ('core.default_from_email', 'noreply@example.com'),
                 ('core.default_timezone', 'UTC'),
-                ('core.deskpro_build', '" . time() . "'),
+                ('core.deskpro_build', '".time()."'),
                 ('core.deskpro_build_num', '0'),
                 ('core.deskpro_url', 'http://localhost:8888/'),
                 ('core.deskpro_version', '20131002122551'),
                 ('core.done_data_initializer', '1'),
-                ('core.done_rewrite_urls_check', '" . time() . "'),
-                ('core.install_build', '" . time() . "'),
+                ('core.done_rewrite_urls_check', '".time()."'),
+                ('core.install_build', '".time()."'),
                 ('core.install_key', '6S7X77ZAR2CYSDT4GJCJ'),
-                ('core.install_timestamp', '" . time() . "'),
+                ('core.install_timestamp', '".time()."'),
                 ('core.install_token', 'PUGYIA9E82Z8JCPKO0NKGC957HITHNZRFHY4CQ3V1380214398'),
-                ('core.last_cron_run', '" . time() . "'),
-                ('core.last_cron_start', '" . time() . "'),
+                ('core.last_cron_run', '".time()."'),
+                ('core.last_cron_start', '".time()."'),
                 ('core.license', 'TlZNVi0wMTEyLUZVVVNFVEJHVFJNRU9KQlNHVlJNUVNTUgERC3\r\nlkZGRncEQKPwB2IyU+LiJjOgZ9FhE8ARdRIQ4OCR8seUR0ZRUZ\r\nJi9+cQB4eTF5ZjQ3P2J5TXYxdREHWzB/a1xiVQ0KeQdqMS5Qf1\r\nYtWXwZagd5DX9OCxASXzAzNGJmGTE7HhAKEBBnODZiGyYGAXVt\r\nLh8TKxcMQyFbKiAhP08aEFoECSM4TQkmMS8mEXJ1UQQINRcsAG\r\noHPBBxZxcFP1l7Uw8TJwseDn1IXAI5WwxLfVQoASkUClloBy93\r\nUEF2XFMQCwYFSC9aewFYHwJVeV0RAAonCEkhIzkjHn8WWSkRPn\r\ncpVyxrMQw6fARnIk8TDQcQCGcZRSombUhedVMENwhxUmpTLUIV\r\nZHRUflZ5UAhnAVs0CyhTZgspTkUIfQVdNWA'),
                 ('core.rewrite_urls', '1'),
                 ('core.setup_initial', '1'),
-                ('core.task_completed_add_ticketfield', '" . time() . "'),
-                ('core.twitter_last_cleanup', '" . time() . "'),
+                ('core.task_completed_add_ticketfield', '".time()."'),
+                ('core.twitter_last_cleanup', '".time()."'),
                 ('core.use_agent_team', '1'),
                 ('core_tickets.enable_like_search_auto', '1'),
-                ('user.kb_subscriptions_last', '" . time() . "');
+                ('user.kb_subscriptions_last', '".time()."');
         "
         );
 
@@ -325,73 +327,73 @@ class ApiDb extends AbstractDbSet
 
         $this->getDb()->exec(
             "
-            INSERT INTO `feedback` (`id`, `status_category_id`, `category_id`, `person_id`, `language_id`, `hidden_status`, `validating`, `popularity`, `slug`, `title`, `content`, `view_count`, `total_rating`, `num_comments`, `num_ratings`, `status`, `date_created`, `date_published`, `date_updated`, `date_last_comment`)
-            VALUES
-            (1, NULL, 1, 1, NULL, 'validating', NULL, 0, '_slug-to-feedback-1', 'Test feedback 1', 'Content of test feedback 1. This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 1, 0, 2, 'new', '2015-09-13 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
-            (2, NULL, 1, 1, NULL, 'deleted', NULL, 0, '_slug-to-feedback-2', 'Test feedback 2', 'Content of test feedback 2', 0, 3, 0, 4, 'hidden', '2015-09-14 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (3, 1, 2, 1, NULL, NULL, NULL, 0, '_slug-to-feedback-3', 'Test feedback 3', 'Content of test feedback 3', 0, 5, 0, 6, 'active', '2015-09-15 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (4, 2, 3, 1, NULL, 'validating', NULL, 0, '_slug-to-feedback-4', 'Test feedback 4', 'Content of test feedback 4', 0, 0, 0, 0, 'active', '2015-09-16 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (5, NULL, 1, 1, NULL, 'spam', NULL, 0, '_slug-to-feedback-5', 'Test feedback 5', 'Content of test feedback 5', 0, 1, 0, 1, 'hidden', '2015-09-17 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (6, 5, 1, 1, NULL, 'validating', NULL, 0, '_slug-to-feedback-6', 'Test feedback 6', 'Content of test feedback 6', 0, 2, 0, 1, 'closed', '2015-09-18 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (7, 1, 2, 1, NULL, 'validating', NULL, 15, '_slug-to-feedback-7', 'Test feedback 7', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'new', '2015-09-19 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (8, NULL, 1, 1, NULL, 'validating', NULL, 0, '_slug-to-feedback-8', 'Test feedback 8', 'This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 0, 0, 2, 'new', '2015-09-19 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
-            (9, NULL, 1, 1, NULL, 'validating', NULL, 0, 'slug-to-feedback-9', 'Test feedback 9', 'Content of test feedback 9. This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 1, 0, 2, 'new', '2015-09-20 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
-            (10, NULL, 1, 1, NULL, 'deleted', NULL, 0, 'slug-to-feedback-10', 'Test feedback 10', 'Content of test feedback 10', 0, 3, 0, 4, 'hidden', '2015-09-21 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (11, 1, 2, 1, NULL, NULL, NULL, 0, 'slug-to-feedback-11', 'Test feedback 11', 'Content of test feedback 11', 0, 5, 0, 6, 'active', '2015-09-22 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (12, 2, 3, 1, NULL, 'validating', NULL, 0, 'slug-to-feedback-12', 'Test feedback 12', 'Content of test feedback 12', 0, 0, 0, 0, 'active', '2015-09-23 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (13, NULL, 1, 1, NULL, 'spam', NULL, 0, 'slug-to-feedback-13', 'Test feedback 13', 'Content of test feedback 13', 0, 1, 0, 1, 'hidden', '2015-09-24 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (14, 5, 1, 1, NULL, 'validating', NULL, 0, 'slug-to-feedback-14', 'Test feedback 14', 'Content of test feedback 14', 0, 2, 0, 1, 'closed', '2015-09-25 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (15, 1, 2, 1, NULL, 'validating', NULL, 15, 'slug-to-feedback-15', 'Test feedback 15', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'new', '2015-09-26 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (16, NULL, 1, 1, NULL, 'validating', NULL, 0, 'slug-to-feedback-16', 'Test feedback 16', 'This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 0, 0, 2, 'new', '2015-09-27 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
-            (17, NULL, 1, 1, NULL, 'deleted', NULL, 0, 'slug-to-feedback-17', 'Test feedback 17', 'Content of test feedback 17', 0, 3, 0, 4, 'hidden', '2015-09-27 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (18, 1, 2, 1, NULL, NULL, NULL, 0, 'slug-to-feedback-18', 'Test feedback 18', 'Content of test feedback 18', 0, 5, 0, 6, 'active', '2015-09-28 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (19, 2, 3, 1, NULL, 'validating', NULL, 0, 'slug-to-feedback-19', 'Test feedback 19', 'Content of test feedback 3', 0, 0, 0, 0, 'active', '2015-09-29 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (20, NULL, 1, 1, NULL, 'spam', NULL, 0, 'slug-to-feedback-20', 'Test feedback 20', 'Content of test feedback 20', 0, 1, 0, 1, 'hidden', '2015-09-30 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (21, 5, 1, 1, NULL, 'validating', NULL, 0, 'slug-to-feedback-21', 'Test feedback 21', 'Content of test feedback 21', 0, 2, 0, 1, 'closed', '2015-10-01 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (22, 1, 2, 1, NULL, 'validating', NULL, 15, 'slug-to-feedback-22', 'Test feedback 22', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'new', '2015-10-02 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (23, NULL, 1, 1, NULL, 'validating', NULL, 0, 'slug-to-feedback-23', 'Test feedback 23', 'Content of test feedback 23. This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 1, 0, 2, 'new', '2015-10-02 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
-            (24, NULL, 1, 1, NULL, 'deleted', NULL, 0, 'slug-to-feedback-24', 'Test feedback 24', 'Content of test feedback 24', 0, 3, 0, 4, 'hidden', '2015-10-03 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (25, 1, 2, 1, NULL, NULL, NULL, 0, 'slug-to-feedback-25', 'Test feedback 25', 'Content of test feedback 25', 0, 5, 0, 6, 'active', '2015-10-04 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (26, 2, 3, 1, NULL, 'validating', NULL, 0, 'slug-to-feedback-26', 'Test feedback 26', 'Content of test feedback 26', 0, 0, 0, 0, 'active', '2015-10-05 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (27, NULL, 1, 1, NULL, 'spam', NULL, 0, 'slug-to-feedback-27', 'Test feedback 27', 'Content of test feedback 27', 0, 1, 0, 1, 'hidden', '2015-10-06 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (28, 5, 1, 1, NULL, 'validating', NULL, 0, 'slug-to-feedback-28', 'Test feedback 28', 'Content of test feedback 28', 0, 2, 0, 1, 'closed', '2015-10-07 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (29, 1, 2, 1, NULL, 'validating', NULL, 15, 'slug-to-feedback-29', 'Test feedback 29', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'new', '2015-10-08 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (30, NULL, 1, 1, NULL, 'validating', NULL, 0, 'slug-to-feedback-30', 'Test feedback 30', 'This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 0, 0, 2, 'new', '2015-04-13 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
-            (31, NULL, 1, 1, NULL, 'deleted', NULL, 0, 'slug-to-feedback-31', 'Test feedback 31', 'Content of test feedback 31', 0, 3, 0, 4, 'hidden', '2015-10-09 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (32, 1, 2, 1, NULL, NULL, NULL, 0, 'slug-to-feedback-32', 'Test feedback 32', 'Content of test feedback 32', 0, 5, 0, 6, 'active', '2015-10-10 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (33, 2, 3, 1, NULL, 'validating', NULL, 0, 'slug-to-feedback-33', 'Test feedback 33', 'Content of test feedback 33', 0, 0, 0, 0, 'active', '2015-10-11 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (34, NULL, 1, 1, NULL, 'spam', NULL, 0, 'slug-to-feedback-34', 'Test feedback 34', 'Content of test feedback 34', 0, 1, 0, 1, 'hidden', '2015-10-12 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (35, 5, 1, 1, NULL, 'validating', NULL, 0, 'slug-to-feedback-35', 'Test feedback 35', 'Content of test feedback 35', 0, 2, 0, 1, 'closed', '2015-10-13 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (36, 1, 2, 1, NULL, 'validating', NULL, 15, 'slug-to-feedback-36', 'Test feedback 36', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'new', '2015-10-14 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (37, NULL, 1, 1, NULL, 'validating', NULL, 0, 'slug-to-feedback-37', 'Test feedback 37', 'Content of test feedback 37. This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 1, 0, 2, 'new', '2015-10-14 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
-            (38, NULL, 1, 1, NULL, 'deleted', NULL, 0, 'slug-to-feedback-38', 'Test feedback 38', 'Content of test feedback 38', 0, 3, 0, 4, 'hidden', '2015-10-15 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (39, 1, 2, 1, NULL, NULL, NULL, 0, 'slug-to-feedback-39', 'Test feedback 39', 'Content of test feedback 39', 0, 5, 0, 6, 'active', '2015-06-02 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (40, 2, 3, 1, NULL, 'validating', NULL, 0, 'slug-to-feedback-40', 'Test feedback 40', 'Content of test feedback 40', 0, 0, 0, 0, 'active', '2015-10-16 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (41, NULL, 1, 1, NULL, 'spam', NULL, 0, 'slug-to-feedback-41', 'Test feedback 41', 'Content of test feedback 41', 0, 1, 0, 1, 'hidden', '2015-10-17 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (42, 5, 1, 1, NULL, 'validating', NULL, 0, 'slug-to-feedback-42', 'Test feedback 42', 'Content of test feedback 42', 0, 2, 0, 1, 'closed', '2015-10-18 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (43, 1, 2, 1, NULL, 'validating', NULL, 15, 'slug-to-feedback-43', 'Test feedback 43', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'new', '2015-10-20 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (44, NULL, 1, 1, NULL, 'validating', NULL, 0, 'slug-to-feedback-44', 'Test feedback 44', 'This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 0, 0, 2, 'new', '2015-10-21 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
-            (45, NULL, 1, 1, NULL, 'deleted', NULL, 0, 'slug-to-feedback-45', 'Test feedback 45', 'Content of test feedback 45', 0, 3, 0, 4, 'hidden', '2015-10-22 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (46, 1, 2, 1, NULL, NULL, NULL, 0, 'slug-to-feedback-46', 'Test feedback 46', 'Content of test feedback 46', 0, 5, 0, 6, 'active', '2015-10-23 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (47, 2, 3, 1, NULL, 'validating', NULL, 0, 'slug-to-feedback-47', 'Test feedback 47', 'Content of test feedback 47', 0, 0, 0, 0, 'active', '2015-10-24 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (48, NULL, 1, 1, NULL, 'spam', NULL, 0, 'slug-to-feedback-48', 'Test feedback 48', 'Content of test feedback 48', 0, 1, 0, 1, 'hidden', '2015-10-25 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (49, 5, 1, 1, NULL, 'validating', NULL, 0, 'slug-to-feedback-49', 'Test feedback 49', 'Content of test feedback 49', 0, 2, 0, 1, 'closed', '2015-10-26 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (50, 1, 2, 1, NULL, 'validating', NULL, 15, 'slug-to-feedback-50', 'Test feedback 50', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'new', '2015-10-26 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (51, NULL, 1, 1, NULL, 'validating', NULL, 0, 'slug-to-feedback-51', 'Test feedback 51', 'Content of test feedback 51. This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 1, 0, 2, 'new', '2015-10-28 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
-            (52, NULL, 1, 1, NULL, 'deleted', NULL, 0, 'slug-to-feedback-52', 'Test feedback 52', 'Content of test feedback 52', 0, 3, 0, 4, 'hidden', '2015-10-29 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (53, 1, 2, 1, NULL, NULL, NULL, 0, 'slug-to-feedback-53', 'Test feedback 53', 'Content of test feedback 53', 0, 5, 0, 6, 'active', '2015-10-30 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (54, 2, 3, 1, NULL, 'validating', NULL, 0, 'slug-to-feedback-54', 'Test feedback 54', 'Content of test feedback 54', 0, 0, 0, 0, 'active', '2015-10-31 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (55, NULL, 1, 1, NULL, 'spam', NULL, 0, 'slug-to-feedback-55', 'Test feedback 55', 'Content of test feedback 55', 0, 1, 0, 1, 'hidden', '2015-11-01 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (56, 5, 1, 1, NULL, 'validating', NULL, 0, 'slug-to-feedback-56', 'Test feedback 56', 'Content of test feedback 56', 0, 2, 0, 1, 'closed', '2015-11-02 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (57, 1, 2, 1, NULL, 'validating', NULL, 15, 'slug-to-feedback-57', 'Test feedback 57', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'new', '2015-11-02 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (58, NULL, 1, 1, NULL, 'validating', NULL, 0, 'slug-to-feedback-58', 'Test feedback 58', 'This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 0, 0, 2, 'new', '2015-04-13 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
-            (59, NULL, 1, 1, NULL, 'deleted', NULL, 0, 'slug-to-feedback-59', 'Test feedback 59', 'Content of test feedback 59', 0, 3, 0, 4, 'hidden', '2015-11-04 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (60, 1, 2, 1, NULL, NULL, NULL, 0, 'slug-to-feedback-60', 'Test feedback 60', 'Content of test feedback 60', 0, 5, 0, 6, 'active', '2015-11-05 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (61, 2, 3, 1, NULL, 'validating', NULL, 0, 'slug-to-feedback-61', 'Test feedback 61', 'Content of test feedback 61', 0, 0, 0, 0, 'active', '2015-11-06 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (62, NULL, 1, 1, NULL, 'spam', NULL, 0, 'slug-to-feedback-62', 'Test feedback 62', 'Content of test feedback 62', 0, 1, 0, 1, 'hidden', '2015-11-07 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (63, 5, 1, 1, NULL, 'validating', NULL, 0, 'slug-to-feedback-63', 'Test feedback 63', 'Content of test feedback 63', 0, 2, 0, 1, 'closed', '2015-11-08 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (64, 1, 2, 1, NULL, 'validating', NULL, 15, 'slug-to-feedback-64', 'Test feedback 64', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'new', '2015-11-08 00:00:00', NULL, '0000-00-00 00:00:00', NULL);
-            "
+            INSERT INTO `feedback` (`id`, `status_category_id`, `category_id`, `person_id`, `language_id`, `hidden_status`, `is_reviewed`, `popularity`, `slug`, `title`, `content`, `view_count`, `total_rating`, `num_comments`, `num_ratings`, `status`, `date_created`, `date_published`, `date_updated`, `date_last_comment`)
+                VALUES
+                (1, NULL, 1, 1, NULL, 'validating', 0, 0, '_slug-to-feedback-1', 'Test feedback 1', 'Content of test feedback 1. This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 1, 0, 2, 'new', '2015-09-13 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
+                (2, NULL, 1, 1, NULL, 'deleted', 0, 0, '_slug-to-feedback-2', 'Test feedback 2', 'Content of test feedback 2', 0, 3, 0, 4, 'hidden', '2015-09-14 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (3, 1, 2, 1, NULL, NULL, 0, 0, '_slug-to-feedback-3', 'Test feedback 3', 'Content of test feedback 3', 0, 5, 0, 6, 'active', '2015-09-15 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (4, 2, 3, 1, NULL, 'validating', 0, 0, '_slug-to-feedback-4', 'Test feedback 4', 'Content of test feedback 4', 0, 0, 0, 0, 'active', '2015-09-16 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (5, NULL, 1, 1, NULL, 'spam', 0, 0, '_slug-to-feedback-5', 'Test feedback 5', 'Content of test feedback 5', 0, 1, 0, 1, 'hidden', '2015-09-17 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (6, 5, 1, 1, NULL, 'validating', 0, 0, '_slug-to-feedback-6', 'Test feedback 6', 'Content of test feedback 6', 0, 2, 0, 1, 'closed', '2015-09-18 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (7, NULL, 2, 1, NULL, 'validating', 0, 15, '_slug-to-feedback-7', 'Test feedback 7', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'new', '2015-09-19 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (8, NULL, 1, 1, NULL, 'validating', 0, 0, '_slug-to-feedback-8', 'Test feedback 8', 'This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 0, 0, 2, 'new', '2015-09-19 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
+                (9, NULL, 1, 1, NULL, 'validating', 0, 0, 'slug-to-feedback-9', 'Test feedback 9', 'Content of test feedback 9. This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 1, 0, 2, 'new', '2015-09-20 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
+                (10, NULL, 1, 1, NULL, 'deleted', 0, 0, 'slug-to-feedback-10', 'Test feedback 10', 'Content of test feedback 10', 0, 3, 0, 4, 'hidden', '2015-09-21 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (11, 1, 2, 1, NULL, NULL, 0, 0, 'slug-to-feedback-11', 'Test feedback 11', 'Content of test feedback 11', 0, 5, 0, 6, 'active', '2015-09-22 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (12, 2, 3, 1, NULL, 'validating', 0, 0, 'slug-to-feedback-12', 'Test feedback 12', 'Content of test feedback 12', 0, 0, 0, 0, 'active', '2015-09-23 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (13, NULL, 1, 1, NULL, 'spam', 0, 0, 'slug-to-feedback-13', 'Test feedback 13', 'Content of test feedback 13', 0, 1, 0, 1, 'hidden', '2015-09-24 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (14, 5, 1, 1, NULL, 'validating', 0, 0, 'slug-to-feedback-14', 'Test feedback 14', 'Content of test feedback 14', 0, 2, 0, 1, 'closed', '2015-09-25 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (15, NULL, 2, 1, NULL, 'validating', 0, 15, 'slug-to-feedback-15', 'Test feedback 15', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'new', '2015-09-26 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (16, NULL, 1, 1, NULL, 'validating', 0, 0, 'slug-to-feedback-16', 'Test feedback 16', 'This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 0, 0, 2, 'new', '2015-09-27 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
+                (17, NULL, 1, 1, NULL, 'deleted', 0, 0, 'slug-to-feedback-17', 'Test feedback 17', 'Content of test feedback 17', 0, 3, 0, 4, 'hidden', '2015-09-27 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (18, 1, 2, 1, NULL, NULL, 0, 0, 'slug-to-feedback-18', 'Test feedback 18', 'Content of test feedback 18', 0, 5, 0, 6, 'active', '2015-09-28 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (19, 2, 3, 1, NULL, 'validating', 0, 0, 'slug-to-feedback-19', 'Test feedback 19', 'Content of test feedback 3', 0, 0, 0, 0, 'active', '2015-09-29 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (20, NULL, 1, 1, NULL, 'spam', 0, 0, 'slug-to-feedback-20', 'Test feedback 20', 'Content of test feedback 20', 0, 1, 0, 1, 'hidden', '2015-09-30 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (21, 5, 1, 1, NULL, 'validating', 0, 0, 'slug-to-feedback-21', 'Test feedback 21', 'Content of test feedback 21', 0, 2, 0, 1, 'closed', '2015-10-01 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (22, NULL, 2, 1, NULL, 'validating', 0, 15, 'slug-to-feedback-22', 'Test feedback 22', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'new', '2015-10-02 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (23, NULL, 1, 1, NULL, 'validating', 0, 0, 'slug-to-feedback-23', 'Test feedback 23', 'Content of test feedback 23. This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 1, 0, 2, 'new', '2015-10-02 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
+                (24, NULL, 1, 1, NULL, 'deleted', 0, 0, 'slug-to-feedback-24', 'Test feedback 24', 'Content of test feedback 24', 0, 3, 0, 4, 'hidden', '2015-10-03 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (25, 1, 2, 1, NULL, NULL, 0, 0, 'slug-to-feedback-25', 'Test feedback 25', 'Content of test feedback 25', 0, 5, 0, 6, 'active', '2015-10-04 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (26, 2, 3, 1, NULL, 'validating', 0, 0, 'slug-to-feedback-26', 'Test feedback 26', 'Content of test feedback 26', 0, 0, 0, 0, 'active', '2015-10-05 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (27, NULL, 1, 1, NULL, 'spam', 0, 0, 'slug-to-feedback-27', 'Test feedback 27', 'Content of test feedback 27', 0, 1, 0, 1, 'hidden', '2015-10-06 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (28, 5, 1, 1, NULL, 'validating', 0, 0, 'slug-to-feedback-28', 'Test feedback 28', 'Content of test feedback 28', 0, 2, 0, 1, 'closed', '2015-10-07 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (29, NULL, 2, 1, NULL, 'validating', 0, 15, 'slug-to-feedback-29', 'Test feedback 29', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'new', '2015-10-08 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (30, NULL, 1, 1, NULL, 'validating', 0, 0, 'slug-to-feedback-30', 'Test feedback 30', 'This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 0, 0, 2, 'new', '2015-04-13 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
+                (31, NULL, 1, 1, NULL, 'deleted', 0, 0, 'slug-to-feedback-31', 'Test feedback 31', 'Content of test feedback 31', 0, 3, 0, 4, 'hidden', '2015-10-09 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (32, 1, 2, 1, NULL, NULL, 0, 0, 'slug-to-feedback-32', 'Test feedback 32', 'Content of test feedback 32', 0, 5, 0, 6, 'active', '2015-10-10 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (33, 2, 3, 1, NULL, 'validating', 0, 0, 'slug-to-feedback-33', 'Test feedback 33', 'Content of test feedback 33', 0, 0, 0, 0, 'active', '2015-10-11 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (34, NULL, 1, 1, NULL, 'spam', 0, 0, 'slug-to-feedback-34', 'Test feedback 34', 'Content of test feedback 34', 0, 1, 0, 1, 'hidden', '2015-10-12 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (35, 5, 1, 1, NULL, 'validating', 0, 0, 'slug-to-feedback-35', 'Test feedback 35', 'Content of test feedback 35', 0, 2, 0, 1, 'closed', '2015-10-13 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (36, NULL, 2, 1, NULL, 'validating', 0, 15, 'slug-to-feedback-36', 'Test feedback 36', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'new', '2015-10-14 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (37, NULL, 1, 1, NULL, 'validating', 0, 0, 'slug-to-feedback-37', 'Test feedback 37', 'Content of test feedback 37. This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 1, 0, 2, 'new', '2015-10-14 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
+                (38, NULL, 1, 1, NULL, 'deleted', 0, 0, 'slug-to-feedback-38', 'Test feedback 38', 'Content of test feedback 38', 0, 3, 0, 4, 'hidden', '2015-10-15 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (39, 1, 2, 1, NULL, NULL, 0, 0, 'slug-to-feedback-39', 'Test feedback 39', 'Content of test feedback 39', 0, 5, 0, 6, 'active', '2015-06-02 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (40, 2, 3, 1, NULL, 'validating', 0, 0, 'slug-to-feedback-40', 'Test feedback 40', 'Content of test feedback 40', 0, 0, 0, 0, 'active', '2015-10-16 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (41, NULL, 1, 1, NULL, 'spam', 0, 0, 'slug-to-feedback-41', 'Test feedback 41', 'Content of test feedback 41', 0, 1, 0, 1, 'hidden', '2015-10-17 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (42, 5, 1, 1, NULL, 'validating', 0, 0, 'slug-to-feedback-42', 'Test feedback 42', 'Content of test feedback 42', 0, 2, 0, 1, 'closed', '2015-10-18 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (43, NULL, 2, 1, NULL, 'validating', 0, 15, 'slug-to-feedback-43', 'Test feedback 43', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'new', '2015-10-20 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (44, NULL, 1, 1, NULL, 'validating', 0, 0, 'slug-to-feedback-44', 'Test feedback 44', 'This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 0, 0, 2, 'new', '2015-10-21 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
+                (45, NULL, 1, 1, NULL, 'deleted', 0, 0, 'slug-to-feedback-45', 'Test feedback 45', 'Content of test feedback 45', 0, 3, 0, 4, 'hidden', '2015-10-22 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (46, 1, 2, 1, NULL, NULL, 0, 0, 'slug-to-feedback-46', 'Test feedback 46', 'Content of test feedback 46', 0, 5, 0, 6, 'active', '2015-10-23 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (47, 2, 3, 1, NULL, 'validating', 0, 0, 'slug-to-feedback-47', 'Test feedback 47', 'Content of test feedback 47', 0, 0, 0, 0, 'active', '2015-10-24 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (48, NULL, 1, 1, NULL, 'spam', 0, 0, 'slug-to-feedback-48', 'Test feedback 48', 'Content of test feedback 48', 0, 1, 0, 1, 'hidden', '2015-10-25 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (49, 5, 1, 1, NULL, 'validating', 0, 0, 'slug-to-feedback-49', 'Test feedback 49', 'Content of test feedback 49', 0, 2, 0, 1, 'closed', '2015-10-26 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (50, NULL, 2, 1, NULL, 'validating', 0, 15, 'slug-to-feedback-50', 'Test feedback 50', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'new', '2015-10-26 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (51, NULL, 1, 1, NULL, 'validating', 0, 0, 'slug-to-feedback-51', 'Test feedback 51', 'Content of test feedback 51. This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 1, 0, 2, 'new', '2015-10-28 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
+                (52, NULL, 1, 1, NULL, 'deleted', 0, 0, 'slug-to-feedback-52', 'Test feedback 52', 'Content of test feedback 52', 0, 3, 0, 4, 'hidden', '2015-10-29 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (53, 1, 2, 1, NULL, NULL, 0, 0, 'slug-to-feedback-53', 'Test feedback 53', 'Content of test feedback 53', 0, 5, 0, 6, 'active', '2015-10-30 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (54, 2, 3, 1, NULL, 'validating', 0, 0, 'slug-to-feedback-54', 'Test feedback 54', 'Content of test feedback 54', 0, 0, 0, 0, 'active', '2015-10-31 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (55, NULL, 1, 1, NULL, 'spam', 0, 0, 'slug-to-feedback-55', 'Test feedback 55', 'Content of test feedback 55', 0, 1, 0, 1, 'hidden', '2015-11-01 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (56, 5, 1, 1, NULL, 'validating', 0, 0, 'slug-to-feedback-56', 'Test feedback 56', 'Content of test feedback 56', 0, 2, 0, 1, 'closed', '2015-11-02 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (57, NULL, 2, 1, NULL, 'validating', 0, 15, 'slug-to-feedback-57', 'Test feedback 57', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'new', '2015-11-02 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (58, NULL, 1, 1, NULL, 'validating', 0, 0, 'slug-to-feedback-58', 'Test feedback 58', 'This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 0, 0, 2, 'new', '2015-04-13 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
+                (59, NULL, 1, 1, NULL, 'deleted', 0, 0, 'slug-to-feedback-59', 'Test feedback 59', 'Content of test feedback 59', 0, 3, 0, 4, 'hidden', '2015-11-04 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (60, 1, 2, 1, NULL, NULL, 0, 0, 'slug-to-feedback-60', 'Test feedback 60', 'Content of test feedback 60', 0, 5, 0, 6, 'active', '2015-11-05 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (61, 2, 3, 1, NULL, 'validating', 0, 0, 'slug-to-feedback-61', 'Test feedback 61', 'Content of test feedback 61', 0, 0, 0, 0, 'active', '2015-11-06 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (62, NULL, 1, 1, NULL, 'spam', 0, 0, 'slug-to-feedback-62', 'Test feedback 62', 'Content of test feedback 62', 0, 1, 0, 1, 'hidden', '2015-11-07 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (63, 5, 1, 1, NULL, 'validating', 0, 0, 'slug-to-feedback-63', 'Test feedback 63', 'Content of test feedback 63', 0, 2, 0, 1, 'closed', '2015-11-08 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
+                (64, NULL, 2, 1, NULL, 'validating', 0, 15, 'slug-to-feedback-64', 'Test feedback 64', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'new', '2015-11-08 00:00:00', NULL, '0000-00-00 00:00:00', NULL);
+          "
         );
 
         $this->getDb()->exec(
@@ -407,12 +409,12 @@ class ApiDb extends AbstractDbSet
 
         $this->getDb()->exec(
             "
-              INSERT INTO `feedback_comments` (`id`, `feedback_id`, `person_id`, `ip_address`, `visitor_id`, `email`, `name`, `website`, `content`, `status`, `validating`, `is_reviewed`, `date_created`)
+              INSERT INTO `feedback_comments` (`id`, `feedback_id`, `person_id`, `ip_address`, `visitor_id`, `email`, `name`, `website`, `content`, `status`, `is_reviewed`, `date_created`)
               VALUES
-                (1, 1, 1, '', '', NULL, NULL, NULL, 'Some comment for the first feedback. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ultrices sem ac risus efficitur, vitae.', 'validating', NULL, 0, '2015-08-17 00:00:00'),
-                (2, 1, 1, '', '', NULL, NULL, NULL, 'One more comment for the first feedback', 'validating', '0', 0, '2015-09-08 00:00:00'),
-                (3, 2, 1, '', '', NULL, NULL, NULL, 'Some comment for the second feedback. Quisque id malesuada urna. Aliquam erat volutpat. Duis risus odio, faucibus ac lacus nec, dapibus.', 'validating', NULL, 0, '2015-09-23 00:00:00'),
-                (4, 3, 1, '', '', NULL, NULL, NULL, 'Some comment for the third feedback. Proin enim mauris, faucibus sit amet pretium non, sagittis ut eros. Praesent non sem ut.', 'user_validating', '0', 0, '2015-10-01 00:00:00');
+                (1, 1, 1, '', '', NULL, NULL, NULL, 'Some comment for the first feedback. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ultrices sem ac risus efficitur, vitae.', 'validating', 0, '2015-08-17 00:00:00'),
+                (2, 1, 1, '', '', NULL, NULL, NULL, 'One more comment for the first feedback', 'validating', 0, '2015-09-08 00:00:00'),
+                (3, 2, 1, '', '', NULL, NULL, NULL, 'Some comment for the second feedback. Quisque id malesuada urna. Aliquam erat volutpat. Duis risus odio, faucibus ac lacus nec, dapibus.', 'validating', 0, '2015-09-23 00:00:00'),
+                (4, 3, 1, '', '', NULL, NULL, NULL, 'Some comment for the third feedback. Proin enim mauris, faucibus sit amet pretium non, sagittis ut eros. Praesent non sem ut.', 'user_validating', 0, '2015-10-01 00:00:00');
             ;
         "
         );
@@ -461,23 +463,27 @@ class ApiDb extends AbstractDbSet
 
 
         // Labels endpoints test data ----------------------------------------------------------------------------------
+        $feedbackType     = LabelDef::TYPE_FEEDBACK;
+        $organizationType = LabelDef::TYPE_ORGS;
+        $peopleType       = LabelDef::TYPE_PEOPLE;
+        $ticketType       = LabelDef::TYPE_TICKETS;
         $this->getDb()->exec(
             "
             INSERT INTO `label_defs`
                 (`label_type`, `label`, `color`, `total`)
             VALUES
-                ('feedback', 'First feedback label', 'red', 0),
-                ('feedback', 'Second feedback label', 'white', 0),
-                ('feedback', 'Third feedback label', 'red', 0),
-                ('organization', 'First organization label', 'red', 1),
-                ('organization', 'Second organization label', 'blue', 2),
-                ('organization', 'Third organization label', 'green', 42),
-                ('person', 'First person label', 'white', 1),
-                ('person', 'Second person label', 'red', 3),
-                ('person', 'Third person label', 'yellow', 3),
-                ('ticket', 'First ticket label', 'white', 1),
-                ('ticket', 'Second ticket label', 'red', 3),
-                ('ticket', 'Third ticket label', 'green', 13)
+                ('$feedbackType', 'AAA-feedback', 'red', 0),
+                ('$feedbackType', 'BBB-feedback', 'white', 0),
+                ('$feedbackType', 'CCC-feedback', 'red', 0),
+                ('$organizationType', 'AAA-org', 'red', 1),
+                ('$organizationType', 'BBB-org', 'blue', 2),
+                ('$organizationType', 'CCC-org', 'green', 42),
+                ('$peopleType', 'AAA-person', 'white', 1),
+                ('$peopleType', 'BBB-person', 'red', 3),
+                ('$peopleType', 'CCC-person', 'yellow', 3),
+                ('$ticketType', 'AAA-ticket', 'white', 1),
+                ('$ticketType', 'BBB-ticket', 'red', 3),
+                ('$ticketType', 'CCC-ticket', 'green', 13)
             ;
         "
         );
@@ -679,27 +685,27 @@ class ApiDb extends AbstractDbSet
         $this->getDb()->exec(
             "
             INSERT INTO `article_comments`
-                (`id`, `article_id`, `person_id`, `ip_address`, `email`, `name`, `website`, `content`, `status`, `validating`, `is_reviewed`, `date_created`)
+                (`id`, `article_id`, `person_id`, `ip_address`, `email`, `name`, `website`, `content`, `status`, `is_reviewed`, `date_created`)
             VALUES
-                (1, 1, 1, '', NULL, NULL, NULL, 'Article comment #1', 'visible', NULL, 1, '2011-08-01 00:00:00'),
-                (2, 1, 2, '', NULL, NULL, NULL, 'Article comment #2', 'validating', NULL, 0, '2011-08-01 00:00:00'),
-                (3, 2, 3, '', NULL, NULL, NULL, 'Article comment #3', 'validating', NULL, 0, '2011-08-01 00:00:00')
+                (1, 1, 1, '', NULL, NULL, NULL, 'Article comment #1', 'visible', 1, '2011-08-01 00:00:00'),
+                (2, 2, 2, '', NULL, NULL, NULL, 'Article comment #2', 'visible', 0, '2011-08-01 00:00:00'),
+                (3, 2, 3, '', NULL, NULL, NULL, 'Article comment #3', 'deleted', 0, '2011-08-01 00:00:00')
             ;
 
             INSERT INTO `news_comments`
-                (`id`, `news_id`, `person_id`, `ip_address`, `email`, `name`, `website`, `content`, `status`, `validating`, `is_reviewed`, `date_created`)
+                (`id`, `news_id`, `person_id`, `ip_address`, `email`, `name`, `website`, `content`, `status`, `is_reviewed`, `date_created`)
             VALUES
-                (1, 1, 1, '', NULL, NULL, NULL, 'News comment #1', 'visible', NULL, 1, '2011-08-01 00:00:00'),
-                (2, 1, 2, '', NULL, NULL, NULL, 'News comment #2', 'validating', NULL, 0, '2011-08-01 00:00:00'),
-                (3, 2, 3, '', NULL, NULL, NULL, 'News comment #3', 'validating', NULL, 0, '2011-08-01 00:00:00')
+                (1, 1, 1, '', NULL, NULL, NULL, 'News comment #1', 'visible', 1, '2011-08-01 00:00:00'),
+                (2, 2, 2, '', NULL, NULL, NULL, 'News comment #2', 'visible', 0, '2011-08-01 00:00:00'),
+                (3, 2, 3, '', NULL, NULL, NULL, 'News comment #3', 'deleted', 0, '2011-08-01 00:00:00')
             ;
 
             INSERT INTO `download_comments`
-                (`id`, `download_id`, `person_id`, `ip_address`, `email`, `name`, `website`, `content`, `status`, `validating`, `is_reviewed`, `date_created`)
+                (`id`, `download_id`, `person_id`, `ip_address`, `email`, `name`, `website`, `content`, `status`, `is_reviewed`, `date_created`)
             VALUES
-                (1, 1, 1, '', NULL, NULL, NULL, 'Download comment #1', 'visible', NULL, 1, '2011-08-01 00:00:00'),
-                (2, 1, 2, '', NULL, NULL, NULL, 'Download comment #2', 'validating', NULL, 0, '2011-08-01 00:00:00'),
-                (3, 2, 3, '', NULL, NULL, NULL, 'Download comment #3', 'validating', NULL, 0, '2011-08-01 00:00:00')
+                (1, 1, 1, '', NULL, NULL, NULL, 'Download comment #1', 'visible', 1, '2011-08-01 00:00:00'),
+                (2, 2, 2, '', NULL, NULL, NULL, 'Download comment #2', 'visible', 0, '2011-08-01 00:00:00'),
+                (3, 2, 3, '', NULL, NULL, NULL, 'Download comment #3', 'deleted', 0, '2011-08-01 00:00:00')
             ;
         "
         );

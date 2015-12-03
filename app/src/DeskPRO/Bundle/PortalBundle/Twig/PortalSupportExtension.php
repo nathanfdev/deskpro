@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\Entity\Person;
@@ -110,6 +111,7 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('enabled_languages', array($this, 'enabledLanguages')),
             new \Twig_SimpleFunction('date', array($this, 'date')),
             new \Twig_SimpleFunction('date_ago', array($this, 'dateAgo'), ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('date_diff', array($this, 'dateDiff'), ['is_safe' => ['html']]),
         );
 
         return $funcs;
@@ -230,7 +232,7 @@ class PortalSupportExtension extends \Twig_Extension
             $lang = $this->container->get('language_stack')->getDefaultLanguage();
         }
 
-        return $lang->getTwoLetterLanguageCode();
+        return $lang->getUrlCode();
     }
 
     public function isMultLang()
@@ -430,6 +432,30 @@ class PortalSupportExtension extends \Twig_Extension
         }
 
         return $ago_string;
+    }
+
+    public function dateDiff($date1, $date2)
+    {
+        $date1 = $this->ensureDateTime($date1);
+        $date2 = $this->ensureDateTime($date2);
+
+        if (!$date1 instanceof \DateTime) {
+            $date_str = (string) $date;
+
+            return "invalid_date($date_str)";
+        }
+
+        if (!$date2 instanceof \DateTime) {
+            $date_str = (string) $date;
+
+            return "invalid_date($date_str)";
+        }
+
+        $carbon1     = Carbon::createFromTimestamp($date1->getTimestamp());
+        $carbon2     = Carbon::createFromTimestamp($date2->getTimestamp());
+        $diff_string = $carbon1->diffForHumans($carbon2, true);
+
+        return $diff_string;
     }
 
     /**

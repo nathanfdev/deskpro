@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -378,6 +379,14 @@ class AbstractController extends BaseController
     protected function getTicketsDataService()
     {
         return $this->get('data.tickets');
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService
+     */
+    protected function getChatDataService()
+    {
+        return $this->get('data.chat');
     }
 
     /**

@@ -6,15 +6,15 @@ export class UrgencyList extends Component {
   };
 
   render() {
-    const items = this.props.items.toOrderedSet().sort((a, b) => a.get('group') > b.get('group') ? 1 : -1);
+    const items = this.props.items.toOrderedSet().sort((a, b) => a.get('id') > b.get('id') ? 1 : -1);
 
     return (
       <div className="sidebar-urgent-sliders">
         {items.map(item => (
-          <div key={item.get('group')} className={'slider level-' + item.get('group')}>
+          <div key={item.get('id')} className={'slider level-' + item.get('id')}>
             <div className="slider-container">
               <span className="slider-grabber-wrapper">
-                <span className="slider-grabber">{item.get('group')}</span>
+                <span className="slider-grabber">{item.get('id')}</span>
               </span>
             </div>
             <div className="list-counter-bucket">

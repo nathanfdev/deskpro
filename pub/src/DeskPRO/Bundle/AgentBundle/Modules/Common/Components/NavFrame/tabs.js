@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import Loader from 'react-loader';
 import classNames from 'classnames';
 import { updateRoutingState } from '../../../Application/Actions/routingActions';
 import { connect } from 'react-redux';
@@ -30,7 +29,7 @@ export class TabsPane extends React.Component {
         </ul>
 
         {tabs.map(tab => {
-          const classes = classNames('sidebar-list', {'hidden': tab.index !== this.state.active});
+          const classes = classNames('sidebar-list', { 'hidden': tab.index !== this.state.active });
 
           return (<div key={tab.index} className={classes}>{tab.content}</div>);
         })}
@@ -42,8 +41,8 @@ export class TabsPane extends React.Component {
     const className = index === this.state.active ? 'active' : '';
     const onClick = this.activate(index).bind(this);
     const content = title
-                  ? title
-                  : (<span className="icon"><i className={'fa ' + icon}></i></span>);
+      ? title
+      : (<span className="icon"><i className={'fa ' + icon}></i></span>);
 
     return (<li key={index} className={className}><a href="#" onClick={onClick}>{content}</a></li>);
   }
@@ -70,12 +69,12 @@ export class TabsPane extends React.Component {
   activate(index) {
     return event => {
       event.preventDefault();
-      this.setState({active: index});
+      this.setState({ active: index });
     };
   }
 }
 
-@connect(state => ({state: routingStateSelector(state)}))
+@connect(state => ({ state: routingStateSelector(state) }))
 export class TabsPaneStatefulContainer extends TabsPane {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -103,18 +102,5 @@ export class TabsPaneStatefulContainer extends TabsPane {
 export class Tab extends React.Component {
   render() {
     return null;
-  }
-}
-
-export class TabSpinner extends React.Component {
-
-  render() {
-    return (
-      <Loader color="green"
-              width={3}
-              left="50%"
-              top="50%"
-              {...this.props} />
-    );
   }
 }

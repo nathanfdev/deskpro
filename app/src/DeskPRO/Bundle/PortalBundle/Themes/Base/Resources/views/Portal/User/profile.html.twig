@@ -49,17 +49,30 @@
             {% endif %}
             {{ form_row(profile_form.timezone) }}
             {{ form_row(profile_form.first_name) }}
+            {% if profile_form.manager_auto_add is defined %}
+                {{ form_row(profile_form.manager_auto_add) }}
+            {% endif %}
             {{ form_rest(profile_form) }}
-            <button type="submit">{{ phrase('portal.account.profile-btn-save') }}</button>
+            <div class="column-full">
+                <div class="bucket">
+                    <button type="submit">{{ phrase('portal.account.profile-btn-save') }}</button>
+                </div>
+            </div>
             {{ form_end(profile_form) }}
         </div>
 
         <div class="column-half divide-left omega">
             {{ form_start(password_form, { attr: { class: 'form-ticket' } }) }}
             {{ form_errors(password_form) }}
-            {{ form_row(password_form.current_password) }}
+            {% if password_form.current_password is defined %}
+                {{ form_row(password_form.current_password) }}
+            {% endif %}
             {{ form_row(password_form.new_password) }}
-            <button type="submit">{{ phrase('portal.account.change-password-btn') }}</button>
+            <div class="column-full">
+                <div class="bucket">
+                    <button type="submit">{{ phrase('portal.account.change-password-btn') }}</button>
+                </div>
+            </div>
             {{ form_rest(password_form) }}
             {{ form_end(password_form) }}
             </div>

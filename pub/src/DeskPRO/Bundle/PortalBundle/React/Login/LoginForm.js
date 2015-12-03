@@ -75,7 +75,7 @@ export default class LoginForm extends React.Component {
           <span>Your email</span>
           <input
             ref="username"
-            type="text"
+            type="email"
             tabIndex="2"
             placeholder="email@example.com"
             name="username"

@@ -81,7 +81,7 @@
                                 <button class="button" tabindex="1">{{ phrase('portal.account.login-btn') }}</button>
                                 <div class="remember-me"><label for="remember_me">
                                         <input tabindex="1" type="checkbox" name="remember_me">
-                                        {{ phrase('portal.account.login-remember') }}
+                                        <span>{{ phrase('portal.account.login-remember') }}</span>
                                     </label>
                                 </div>
                             </div>
@@ -102,23 +102,15 @@
             </header>
 
             <section class="padded">
-                {# twitter, facebook, google (the old "icon" usersources) #}
-                {% if auth_manager.hasLoginIconUsersources %}
-                    {% for usersource in auth_manager.getLoginIconUsersources %}
-                        <a href="{{ path('portal_login_authenticate', {'usersource_id': usersource.id}) }}"
-                           class="button auth-{{ usersource.adapter.codeName|lower }}"><i
-                                    class="fa fa-{{ usersource.adapter.codeName|lower }}"></i> Login
-                            with {{ usersource.adapter.codeName|title }}</a>
-                    {% endfor %}
-                {% endif %}
-
-                {# the newer "text button" usersources #}
-                {% if auth_manager.hasLoginTextButtonUsersources %}
-                    {% for usersource in auth_manager.getLoginTextButtonUsersources %}
-                        <a href="{{ path('portal_login_authenticate', {'usersource_id': usersource.id}) }}"
-                           class="button">{{ usersource.options.login_custom_text }}</a>
-                    {% endfor %}
-                {% endif %}
+                {% for usersource in usersources_view %}
+                <a
+                    href="{{ path('portal_login_authenticate', { usersource_id: usersource.id }) }}"
+                    class="{{ usersource.classes|join(' ') }}"
+                >
+                    {% if usersource.icon %}<i class="{{ usersource.icon }}"></i>{% endif %}
+                    {{ usersource.text }}
+                </a>
+                {% endfor %}
             </section>
         {% endif %}
 

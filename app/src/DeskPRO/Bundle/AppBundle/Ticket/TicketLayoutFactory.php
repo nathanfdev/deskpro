@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Ticket;
 
 use Application\DeskPRO\Entity\Department;
@@ -70,7 +71,7 @@ class TicketLayoutFactory
     public function getLayout($department = null)
     {
         $layout = null;
-        if ($department) {
+        if ($department && !($department instanceof Department)) {
             $layout = $this->entity_manager->createQuery('SELECT l FROM DeskPRO:TicketLayout l WHERE l.department = :department')
                 ->setParameter('department', $department)
                 ->getOneOrNullResult();

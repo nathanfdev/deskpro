@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\Entity\Person;
@@ -38,8 +39,8 @@ use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Model\TicketColumn;
 use DeskPRO\Bundle\AppBundle\Model\TicketColumns;
+use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Form\FormFields;
 use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTable;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,11 +51,6 @@ class TicketTableDataService extends AbstractDataService
      * @var TicketsDataService
      */
     private $ticket_data_service;
-
-    /**
-     * @var BrandStack
-     */
-    private $brand_stack;
 
     /**
      * @var LanguageManager
@@ -76,6 +72,11 @@ class TicketTableDataService extends AbstractDataService
      */
     private $form_field_manager;
 
+    /**
+     * @var BrandAwareSettingsResolver
+     */
+    private $brand_aware_settings;
+
     public function __construct(
         EntityManager $em,
         TicketsDataService $ticket_data_service,
@@ -83,26 +84,22 @@ class TicketTableDataService extends AbstractDataService
         DepartmentDataService $department_data_service,
         TicketLayoutFactory $ticket_layout_factory,
         FormFieldManager $form_field_manager,
-        BrandStack $brand_stack = null
+        BrandAwareSettingsResolver $brand_aware_settings
     ) {
         parent::__construct($em);
         $this->ticket_data_service     = $ticket_data_service;
-        $this->brand_stack             = $brand_stack;
         $this->language_manager        = $language_manager;
         $this->department_data_service = $department_data_service;
         $this->ticket_layout_factory   = $ticket_layout_factory;
         $this->form_field_manager      = $form_field_manager;
+        $this->brand_aware_settings    = $brand_aware_settings;
     }
 
     public function makeTicketTable(Person $person, Request $request, $ticket_type, $category, $category_title)
     {
-        $columns = $this->makeColumnControl($person);
-        if ($this->brand_stack) {
-            $per_page = $this->brand_stack->getActive()->getSetting('portal.per_page_tickets', 50);
-        } else {
-            $per_page = 50;
-        }
-        $table = new TicketListTable($category, $ticket_type, $category_title, $columns, $request, $per_page);
+        $columns  = $this->makeColumnControl($person);
+        $per_page = $this->brand_aware_settings->getSetting('portal.per_page_tickets', 50);
+        $table    = new TicketListTable($category, $ticket_type, $category_title, $columns, $request, $per_page);
         $table->makePagerUsingDataService($this->ticket_data_service, $person);
 
         return $table;

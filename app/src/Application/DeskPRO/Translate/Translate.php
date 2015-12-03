@@ -31,6 +31,7 @@
  *
  * @category Translate
  */
+
 namespace Application\DeskPRO\Translate;
 
 use Application\DeskPRO\App;
@@ -146,10 +147,6 @@ class Translate implements PersonContextInterface
     {
         $this->setLanguage(SystemLanguage::getInstance(), false);
         $this->loader = $loader;
-
-        if (App::getConfig('debug.language_report_missing')) {
-            \DpShutdown::add(array($this, 'reportMissingPhrases'));
-        }
 
         $this->_event_dispatcher = $event_dispatcherr;
     }
@@ -795,44 +792,17 @@ class Translate implements PersonContextInterface
      */
     public function phrase($phrase_name, array $vars = array(), $language = null)
     {
-        $debug = App::getConfig('debug.language_test_mode');
-
-        if (!$debug && defined('DP_INTERFACE') && DP_INTERFACE == 'agent' && strpos($phrase_name, 'agent') === 0) {
-            try {
-                $debug = App::getSetting('core.agent_translate_debug');
-            } catch (\Exception $e) {
-            }
+        $lang = $language;
+        if (!$lang) {
+            $lang = $this->_language;
+        }
+        if ($lang && !($lang instanceof Language)) {
+            $lang = @$this->_loaded_languages[$lang];
         }
 
-        if (!$debug && isset($_COOKIE['dp_dev_langdebug'])) {
-            $debug = $_COOKIE['dp_dev_langdebug'];
-        }
-
-        if ($debug == 'user' and $phrase_name != 'agent.general.x_is_y') {
-            if (substr($phrase_name, 0, 4) != 'user') {
-                echo $phrase_name;
-                die();
-            }
-        }
-
-        if ($debug == 'japanese') {
-
-            // Don't try this as single string array. PHP can't handle UTF8 like that :).
-            $chars = array(
-                '一', '丁', '丂', '七', '丄', '丅', '万', '丈', '三', '上', '下', '丌', '不', '与', '丏', '丐', '丑', '丒',
-                '且', '丕', '世', '丗', '丘', '丙', '丞', '丟', '両', '丣', '两', '並', '丨', '丩', '个', '丫', '丬', '中',
-                '丮', '丯', '丰', '丱', '串', '丳', '临', '丵', '丶', '丸', '丹', '主', '丼', '丿', '乀', '乁', '乂', '乃',
-                '乄', '久', '乇', '么', '之', '乍', '乎', '乏', '乑', '乕', '乖', '乗', '乘', '乙', '乚', '乜', '九', '乞',
-                '也', '乢', '乣', '乨', '乩', '乱', '乳', '乴', '乵', '乹', '乾', '乿', '亀', '亂', '了', '予', '争', '亊',
-                '事', '二', '亍', '于', );
-
-            $output = '';
-
-            for ($i = 0; $i < 4; ++$i) {
-                $output .= $chars[rand(0, count($chars) - 1)];
-            }
-
-            return $output;
+        $debug = null;
+        if ($lang && substr($lang->getSystemName(), 0, 4) === 'dev_') {
+            $debug = $lang->getSystemName();
         }
 
         if (is_object($phrase_name) || (is_array($phrase_name) && is_object($phrase_name[0]))) {
@@ -882,57 +852,28 @@ class Translate implements PersonContextInterface
             }
         }
 
-        if ($debug == 'double_length') {
-            return $phrase_text.' '.$phrase_text;
-        } elseif ($debug == 'half_length') {
-            $length = strlen($phrase_text);
-
-            return substr($phrase_text, round($length / 2));
-        } elseif ($debug == 'package') {
-            if (!is_string($phrase_name)) {
-                return '!'.strtoupper(typeof($phrase_name)).'!';
-            } else {
-                $parts = explode('.', $phrase_name);
-
-                return '!'.strtoupper($parts[0]).'!';
-            }
-        } elseif ($debug == 'package_prefix') {
-            $p_prefixes = array(
-                'agent'    => 'Ѯ',
-                'admin'    => 'Ѿ',
-                'user'     => 'Ѱ',
-                'object'   => 'Ѳ',
-                'resource' => 'Ѻ',
-                'array'    => 'Г',
-                'unknown'  => 'Ц',
-            );
-
-            if (!is_scalar($phrase_name)) {
-                $package = typeof($phrase_name);
-            } else {
-                $parts   = explode('.', $phrase_name);
-                $package = $parts[0];
-            }
-
-            if (!isset($p_prefixes[$package])) {
-                $package = 'unknown';
-            }
-        }
-
-        /////////////////////////////////////////////////////////////////////////////////////
-        //
-        // DEBUG - adding this here until we are about to launch new portal so we dont miss any translations
-        //
-        /////////////////////////////////////////////////////////////////////////////////////
-        if (empty($phrase_text)) {
+        if ((empty($phrase_text) && @$DP_CONFIG['debug']['dev'])) {
             return '[missing translation: "'.$phrase_name.'""]';
         }
-        /////////////////////////////////////////////////////////////////////////////////////
-        //
-        // DEBUG - adding this here until we are about to launch new portal so we dont miss any translations
-        //
-        /////////////////////////////////////////////////////////////////////////////////////
 
+        if ($debug === 'dev_blankout') {
+            $output = '';
+
+            $len = min(4, strlen($phrase_text));
+
+            for ($i = 0; $i < $len; ++$i) {
+                $output .= '█';
+            }
+
+            return $output;
+        } elseif ($debug === 'dev_longstring') {
+            // strings that are generally titles or button text etc, lets make them long to test overflow
+            $len = strlen($phrase_text);
+            if ($len < 25) {
+                $more = 25 - $len;
+                $phrase_text .= Strings::randomPronounceable($more, 3);
+            }
+        }
 
         return $phrase_text;
     }

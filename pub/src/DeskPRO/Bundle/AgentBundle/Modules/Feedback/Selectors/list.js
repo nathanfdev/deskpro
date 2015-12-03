@@ -116,8 +116,8 @@ export const listFiltersSelector = createSelector(
     if (checkIfShowStatus()) {
       const statuses = navState.get('statuses').toJS();
       const toStatusOptions = (nested, param) => (nested || []).map(opt => ({
-        value: opt.group,
-        label: opt.group,
+        value: opt.title,
+        label: opt.title,
         param: param
       }));
       const statusOptions = [
@@ -135,8 +135,8 @@ export const listFiltersSelector = createSelector(
     // Category options
     if (!currentListParams.get('navItem') || (!currentListParams.get('navItem').get('custom_category'))) {
       const categoryOptions = navState.get('customCategories').toJS().map(cat => ({
-        label: cat.group,
-        value: cat.group
+        label: cat.title,
+        value: cat.title
       }));
       filterSelector.push({
         label: 'Category', type: 'select', param: 'custom_category', quickFilter: true,
@@ -154,6 +154,58 @@ export const listFiltersSelector = createSelector(
         labels: labels
       });
     }
+    return filterSelector;
+  }
+);
+
+export const massActionsParamsSelector = createSelector(
+  stateSelector,
+    state => state.get('massActions')
+);
+
+export const massActionsSelector = createSelector(
+  [navStateSelector, feedbackCategoriesSelector, feedbackTypesSelector],
+  (navState, categories, types) => {
+    const filterSelector = [];
+
+    // Type options
+    const typeOptions = types.toArray().map(type => ({ value: type.get('id'), label: type.get('title') }));
+    filterSelector.push({
+      label: 'Type',
+      type: 'select',
+      param: 'category',
+      quickFilter: true,
+      options: typeOptions
+    });
+
+    // Status options
+    const statuses = navState.get('statuses').toJS();
+    const toStatusOptions = (nested, param) => (nested || []).map(opt => ({
+      value: opt.title,
+      label: opt.title,
+      param: param
+    }));
+    const statusOptions = [
+      { label: 'New', value: 'new', nested: toStatusOptions(statuses.new.nested) },
+      { label: 'Active', value: 'active', nested: toStatusOptions(statuses.active.nested, 'status_category') },
+      { label: 'Closed', value: 'closed', nested: toStatusOptions(statuses.closed.nested, 'status_category') },
+      { label: 'Hidden', value: 'hidden', nested: toStatusOptions(statuses.hidden.nested, 'hidden_status') }
+    ];
+    filterSelector.push({
+      label: 'Status', type: 'select', param: 'status', quickFilter: true,
+      options: statusOptions
+    });
+
+    // Category options
+    const categoryOptions = navState.get('customCategories').toJS().map(cat => ({
+      label: cat.title,
+      value: cat.title
+    }));
+    filterSelector.push({
+      label: 'Category', type: 'select', param: 'custom_category', quickFilter: true,
+      options: categoryOptions
+    });
+
     return filterSelector;
   }
 );

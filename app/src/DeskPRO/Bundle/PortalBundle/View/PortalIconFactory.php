@@ -29,13 +29,16 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\View;
 
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackAttachment;
 use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\TicketAttachment;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 
 class PortalIconFactory
@@ -86,11 +89,6 @@ class PortalIconFactory
         'wma'     => 'file-audio-o',
     ];
 
-    protected static $stacked = [
-        'php'  => 'ext_text',
-        'epub' => 'book',
-    ];
-
     /**
      * @var BrandStack
      */
@@ -114,6 +112,10 @@ class PortalIconFactory
             return $this->makeFileIcon($content);
         } elseif ($content instanceof Blob) {
             return $this->makeFileIcon($content);
+        } elseif ($content instanceof TicketAttachment) {
+            return $this->makeFileIcon($content->getBlob());
+        } elseif ($content instanceof FeedbackAttachment) {
+            return $this->makeFileIcon($content->getBlob());
         } elseif ($content instanceof Article) {
             return $this->makeArticleIcon($content);
         } elseif ($content instanceof News) {
@@ -144,20 +146,6 @@ class PortalIconFactory
         }
 
         $extension = $blob->getExtension();
-
-        if ($stacked = $this->getStackedFontAwesome($extension)) {
-            if ($stacked === 'ext_text') {
-                return '<span class="fa-stack">
- <span class="fa-stack-1x filetype-text">'.strtoupper($extension).'</span>
-  <i class="fa fa-file-o fa-stack-2x"></i>
-</span>';
-            } else {
-                return '<span class="fa-stack">
-  <i class="fa fa-'.$stacked.' fa-stack-1x"></i>
-  <i class="fa fa-file-o fa-stack-2x"></i>
-</span>';
-            }
-        }
 
         if ($fa = $this->getFontAwesomeCssClassForFileExtension($extension)) {
             $style_bit = '';
@@ -239,23 +227,6 @@ class PortalIconFactory
 
         if (array_key_exists($css_class_or_ext, self::$colors)) {
             return self::$colors[$css_class_or_ext];
-        }
-
-        return;
-    }
-
-    /**
-     * get information on if this extension should be "stacked" with font awesome code:
-     * http://blog.fontawesome.io/2014/09/25/custom-file-types-with-stacked-icons/.
-     *
-     * @param $ext
-     *
-     * @return string|null
-     */
-    public function getStackedFontAwesome($ext)
-    {
-        if (array_key_exists($ext, self::$stacked)) {
-            return self::$stacked[$ext];
         }
 
         return;

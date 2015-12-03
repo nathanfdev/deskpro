@@ -3,7 +3,7 @@
   <div class="ticket-owner">
     <div class="ticket-action-date">{{ date_ago(msg.date_created) }}</div>
     {{ macros.person_inline(msg.person) }}
-    <span>wrote:</span>
+    <span>{{ phrase('portal.tickets.timeline_wrote') }}</span>
   </div>
 
   <div class="ticket-message-content">
@@ -11,7 +11,7 @@
   </div>
   {% if msg.attachments|length > 0 %}
     <div class="ticket-message-files">
-      <h1>Attached with this message:</h1>
+      <h1>{{ phrase('portal.tickets.timeline_attached') }}</h1>
       <ul>
         {% for attachment in msg.attachments %}
           <li>

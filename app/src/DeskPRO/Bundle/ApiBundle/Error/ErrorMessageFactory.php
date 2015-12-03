@@ -29,11 +29,15 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Error;
 
 use Application\DeskPRO\Translate\Translate;
 use Symfony\Component\Form\FormError;
 
+/**
+ * Class ErrorMessageFactory.
+ */
 class ErrorMessageFactory
 {
     /**
@@ -41,20 +45,35 @@ class ErrorMessageFactory
      */
     private $translate;
 
+    /**
+     * Constructor.
+     *
+     * @param Translate $translate
+     */
     public function __construct(Translate $translate)
     {
         $this->translate = $translate;
     }
 
-    public function createMessage($error_code, array $params = array())
+    /**
+     * @param string $error_code
+     * @param array  $params
+     *
+     * @return string
+     */
+    public function createMessage($error_code, array $params = [])
     {
-        if ($message = $this->translate->phrase('api.error_codes.'.$error_code, $params)) {
-            return $message;
-        }
+        $message = $this->translate->phrase('api.error_codes.'.$error_code, $params);
 
-        return $error_code;
+        return $message ?: $error_code;
     }
 
+    /**
+     * @param string    $error_code
+     * @param FormError $form_error
+     *
+     * @return string
+     */
     public function createFormErrorMessage($error_code, FormError $form_error)
     {
         $params = $this->parseParams($form_error->getMessageParameters());
@@ -66,9 +85,14 @@ class ErrorMessageFactory
         return $this->createMessage($error_code, $params);
     }
 
-    protected function parseParams(array $array = array())
+    /**
+     * @param array $array
+     *
+     * @return array
+     */
+    protected function parseParams(array $array = [])
     {
-        $new_array = array();
+        $new_array = [];
 
         foreach ($array as $key => $val) {
             preg_match('#\{\{\s*([a-zA-Z0-9_]+)\s*\}\}#', $key, $matches);

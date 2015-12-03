@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\CacheWarmer;
 
 use Application\DeskPRO\Entity\Brand;
@@ -85,7 +86,8 @@ class ThemeTemplateCacheWarmer implements CacheWarmerInterface
     {
         // we have to "fake" brands in the warmer because our twig env. depends on there being a brand (to determine the filesystem theme).
         // we dont want to make actual db entitites so we just mock this here for the purpose of building the container
-        static $i      = 1;
+        static $i = 100;
+        // dont start at 1 because it interferes with the default brand id inside of the brand stack during a cache warmup
         $the_brand     = new Brand();
         $the_brand->id = $i++;
         $theme_set     = new ThemeSet();

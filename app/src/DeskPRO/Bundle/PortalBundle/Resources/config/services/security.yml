@@ -77,12 +77,6 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
-    dp_security.twig_extension:
-        class: DeskPRO\Bundle\AppBundle\Security\Twig\AuthTwigExtension
-        arguments: [@service_container]
-        tags:
-            - { name: twig.extension }
-
     ###############
     # VOTERS
     ###############
@@ -95,6 +89,12 @@ services:
 
     tickets.voter:
         class: DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter
+        arguments: [@service_container]
+        tags:
+            - { name: security.voter }
+
+    chat.voter:
+        class: DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ChatVoter
         arguments: [@service_container]
         tags:
             - { name: security.voter }

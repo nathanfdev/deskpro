@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
 
 use Application\DeskPRO\Entity\ApiToken;
@@ -154,9 +155,22 @@ class ApiTokensController extends BaseController
         $this->getManager()->persist($token);
         $this->getManager()->flush();
 
+        // TODO this is a copy+pasta from DiscoverController
+        // should be put into some service/model
+        $s            = $this->get('deskpro.core.settings');
+        $helpdesk_url = rtrim($s->get('core.deskpro_url'), '/').'/';
+        $base_api_url = $helpdesk_url.'api/v2/';
+
         return View::create(
             $this->createRepresentation([
-                'token' => $token->id.':'.$token->token,
+                'person_id' => $person->id,
+                'token'     => $token->id.':'.$token->token,
+                'discover'  => [
+                    'is_deskpro'   => true,
+                    'helpdesk_url' => $helpdesk_url,
+                    'base_api_url' => $base_api_url,
+                    'build'        => DP_BUILD_TIME,
+                ],
             ]),
             Response::HTTP_CREATED
         );

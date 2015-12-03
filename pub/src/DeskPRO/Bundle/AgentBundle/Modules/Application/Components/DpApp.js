@@ -50,15 +50,15 @@ export class DpApp extends React.Component {
   }
 
   render() {
-    const { user, dpWindow, dispatch } = this.props;
+    const { user, dpWindow, dispatch, children } = this.props;
 
     return (
       <div className="dp-window">
         <Header user={user} dispatch={dispatch}/>
-        <AppSwitcher dispatch={dispatch}/>
+        <AppSwitcher dispatch={dispatch} currentApp={dpWindow.get('activeAppId')}/>
 
         <div className="dp-panes-middle">
-          {this.props.children}
+          {children}
 
           <TabBodyPane>
             <TabFrame dpWindow={dpWindow}/>

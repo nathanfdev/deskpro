@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { editTask } from '../../../../Actions/listActions';
 import classNames from 'classnames';
-import Loader from 'react-loader';
+import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import Immutable from 'immutable';
 import {
   BaseForm,
@@ -109,7 +109,7 @@ export class AssignForm extends BaseForm {
                         value="Save"
                         className={classNames('dpw--popup-button', {'hidden': this.state.submit})}
                         onClick={this.onSubmit}>Save</button>
-                <Loader opacity={0}
+                <LoadIndicator opacity={0}
                         width={3}
                         loaded={!this.state.submit} />
               </FullField>
