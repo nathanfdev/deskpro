@@ -75,8 +75,7 @@ class FeedbackSelectCriteriaTest extends DeskProTestCase
     /**
      * @test
      * @expectedException        \Symfony\Component\OptionsResolver\Exception\InvalidOptionsException
-     * @expectedExceptionMessage The option "status" with value "unknown" is invalid. Accepted values are:
-     *                           "new", "active", "closed", "hidden".
+     * @expectedExceptionMessage The option "status" with value "unknown" is invalid.
      */
     public function it_should_throw_an_exception_with_list_of_allowed_statuses_values_when_passing_a_wrong_value()
     {
