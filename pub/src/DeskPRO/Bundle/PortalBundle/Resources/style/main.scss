@@ -315,6 +315,12 @@ section {
 .divide-left {
   padding-left: 20px;
   border-left: 1px dashed $divider-color;
+
+  @media screen and (max-width: 760px) {
+    border-left: 0px;
+    padding-left: 0px;
+  }
+
 }
 
 .container, .row {
