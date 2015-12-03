@@ -9,8 +9,9 @@ const initialState = {
     date_ended: moment().format('X')
   },
   messages: [
-    {id: 100, content: 'my message my message my message my message', type: 'agent'},
-    {id: 101, content: '{"phrase_id":"message_assigned","name":"Admin Admin"}', type: 'agent'}
+    {id: 100, content: 'my message my message my message my message', author: null, is_sys: false},
+    {id: 100, content: 'agent reply agent reply agent reply agent reply agent reply agent reply', author: 1, is_sys: false},
+    {id: 101, content: '{"phrase_id":"message_assigned","name":"Admin Admin"}', author: null, is_sys: true}
   ]
 };
 

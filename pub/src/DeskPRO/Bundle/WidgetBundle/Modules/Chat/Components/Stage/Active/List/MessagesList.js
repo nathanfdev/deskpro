@@ -23,14 +23,11 @@ export class MessagesList extends React.Component {
   }
 
   renderMessage(message, index) {
-    switch (message.get('type')) {
-      case 'user':
-        return <UserMessage key={index} message={message} />;
-      case 'agent':
-        return <AgentMessage key={index} message={message} />;
-      default:
-        return null;
+    if (message.get('author')) {
+      return <AgentMessage key={index} message={message} />;
     }
+
+    return <UserMessage key={index} message={message} />;
   }
 
   render() {
