@@ -63,7 +63,7 @@ fi
 IS_JEST_ERROR=0
 
 cd ../../pub
-npm test
+npm test -- -- Ampliflux
 
 if [[ $? -ne 0 ]] ; then
     IS_JEST_ERROR=1
