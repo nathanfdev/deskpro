@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { Message } from './Message';
 import { MessageAvatar } from './MessageAvatar';
 import { MessageFooter } from './MessageFooter';
+import { AttachmentLink } from './Assets/AttachmentLink';
 
 export class UserMessage extends React.Component {
 
@@ -20,10 +21,7 @@ export class UserMessage extends React.Component {
 
           <ul>
             <li>
-              <a href="#" className="dpdesignportal-message-asset attachement-link">
-                <span className="dpdesignportal-message-asset-icon"><i className="fa fa-link"></i></span>
-                <span className="dpdesignportal-message-asset-cta">Can i buy a part-time or "light" agent license?</span>
-              </a>
+              <AttachmentLink />
             </li>
           </ul>
         </div>
