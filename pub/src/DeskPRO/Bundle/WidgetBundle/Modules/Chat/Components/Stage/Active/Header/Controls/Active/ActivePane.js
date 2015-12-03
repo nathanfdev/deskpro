@@ -1,6 +1,7 @@
 import React from 'react';
 import { ControlsPane } from '../ControlsPane';
-import { ControlItem } from '../ControlItem';
+import { AssetsContainer } from './Assets/AssetsContainer';
+import { MuteContainer } from './Mute/MuteContainer';
 import { EndChatContainer } from '../../../EndChat/EndChatContainer';
 import { EndChatButton } from './EndChatButton';
 import { TranscriptContainer } from './Transcript/TranscriptContainer';
@@ -12,19 +13,15 @@ export class ActivePane extends React.Component {
     return (
       <ControlsPane>
         <li>
-          <ControlItem>
-            <i className="fa fa-angle-double-left"></i>Assets
-          </ControlItem>
+          <AssetsContainer />
         </li>
         <li>
-          <ControlItem className="dpdesignportal-chat-header-control-mute">
-            <i className="fa fa-volume-up"></i>Mute
-          </ControlItem>
+          <MuteContainer />
         </li>
         <li>
-        <TranscriptContainer>
-          <TranscriptButton />
-        </TranscriptContainer>
+          <TranscriptContainer>
+            <TranscriptButton />
+          </TranscriptContainer>
         </li>
         <li>
           <EndChatContainer confirmPosition="bottom">
