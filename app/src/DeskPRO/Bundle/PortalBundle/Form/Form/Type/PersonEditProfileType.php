@@ -150,7 +150,9 @@ class PersonEditProfileType extends AbstractType
         $person = $event->getData();
         $form   = $event->getForm();
 
-        $form->get('manager_auto_add')->setData($person->getPref('org.manager_auto_add') ? true : false);
+        if ($form->has('manager_auto_add')) {
+            $form->get('manager_auto_add')->setData($person->getPref('org.manager_auto_add') ? true : false);
+        }
     }
 
     /**
