@@ -111,7 +111,7 @@
   {% endif %}
 {% else %}
   <li class="welcome">
-    <span class="agent-avatar agent-avatar-mini" style="background: url({{ avatar_url(user, 36) }}) no-repeat; background-size: cover;"></span>
+    <span class="agent-avatar agent-avatar-mini" style="background: url({{ avatar_url(user, 36) }}) no-repeat; background-size: cover; filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='{{ avatar_url(user, 36) }}',sizingMethod='scale'); -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='{{ avatar_url(user, 36) }}', sizingMethod='scale')";"></span>
     {{ phrase('portal.account.welcome-back') }} {{ app.user.first_name }}
     <span class="disc"></span>
     <a href="{{ path('portal_user_profile') }}">{{ phrase('portal.account.section-title-your-account') }}</a>
