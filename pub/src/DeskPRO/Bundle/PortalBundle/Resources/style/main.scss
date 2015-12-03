@@ -4708,6 +4708,28 @@ h1.fancy-header {
 // Feedback
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+.feedback-filter {
+  .flat-tabs {
+    select {
+      width: 120px;
+      font-size: 12px;
+      padding: 4px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 2px;
+      position: relative;
+      top: -2px;
+
+      @media screen and (max-width: 760px) {
+        width: 100%;
+        margin-top: 15px;
+        margin-bottom: 15px;
+        top: 0px;
+      }
+
+    }
+  }
+}
+
 .slider-list {
   @include blank-list;
   display: block;
