@@ -64,7 +64,7 @@ export class ReopenChatContainer extends React.Component {
     }
 
     const now = moment().format('X');
-    const delay = dateEnded - now + 120000;
+    const delay = moment().format('X') - now + 120000;
 
     if (this.state.displayChild) {
       if (delay > 0) {
