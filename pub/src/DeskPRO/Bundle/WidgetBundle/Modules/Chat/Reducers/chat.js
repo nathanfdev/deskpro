@@ -5,7 +5,7 @@ import moment from 'moment';
 import Immutable from 'immutable';
 
 const initialState = {
-  audioNotifications: false,
+  audioNotifications: true,
   chatInfo: {
     date_ended: null//moment().format('X')
   },
