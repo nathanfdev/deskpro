@@ -2318,15 +2318,29 @@ header {
   padding: 7px 14px;
   padding-bottom: 14px;
   min-width: 135px;
-  /* border: 1px solid $divider-color; */
-
   border: 1px solid #dedede;
-  border-top: 3px solid #3d77b6;
-
   border-radius: 2px;
   border-top-right-radius: 0;
   background: #ffffff;
   text-align: left;
+
+  &:before, &:after {
+    content: "";
+    width: 55%;
+    height: 3px;
+    background: #3d77b6;
+    display: block;
+    position: absolute;
+    top: -1px;
+  }
+
+  &:before {
+    left: -1px;
+  }
+
+  &:after {
+    right: -1px;
+  }
 
   @media screen and (max-width: 760px) {
     width: 100%;
