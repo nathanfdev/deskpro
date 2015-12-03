@@ -7006,6 +7006,10 @@ ul.categories-article-list {
   font-size: 13px;
   overflow-y: scroll;
 
+  @media screen and (max-width: 760px) {
+    line-height: 1.2em;
+  }
+
   td, td:first-child {
     padding: 0;
     vertical-align: middle;
@@ -7056,6 +7060,10 @@ ul.categories-article-list {
     padding-left: $universal-left-padding;
     color: $text-color;
     text-decoration: none;
+
+    @media screen and (max-width: 760px) {
+      padding: 2px 8px;
+    }
 
     .focus {
       margin-right: 3px;
