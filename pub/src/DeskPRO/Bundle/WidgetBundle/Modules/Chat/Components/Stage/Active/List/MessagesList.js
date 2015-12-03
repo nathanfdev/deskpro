@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { AgentMessage } from './Message/AgentMessage';
 import { UserMessage } from './Message/UserMessage';
+import { JoinedEvent } from './Event/JoinedEvent';
 import ScrollArea from 'react-scrollbar';
 
 export class MessagesList extends React.Component {
@@ -23,6 +24,9 @@ export class MessagesList extends React.Component {
   }
 
   renderMessage(message, index) {
+    if (message.get('is_sys')) {
+      return <JoinedEvent key={index} message={message} />;
+    }
     if (message.get('author')) {
       return <AgentMessage key={index} message={message} />;
     }

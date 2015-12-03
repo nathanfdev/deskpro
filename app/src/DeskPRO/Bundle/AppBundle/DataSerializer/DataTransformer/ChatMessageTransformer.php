@@ -43,7 +43,7 @@ class ChatMessageTransformer extends AbstractDataSerializerTransformer
      */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        return ['id', 'author', 'person_name', 'content', 'is_html', 'is_sys'];
+        return ['id', 'author', 'person_name', 'content', 'is_html', 'is_sys', 'date_created'];
     }
 
     /**
