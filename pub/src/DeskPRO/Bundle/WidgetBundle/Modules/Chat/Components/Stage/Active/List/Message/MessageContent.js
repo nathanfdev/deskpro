@@ -14,11 +14,11 @@ export class MessageContent extends React.Component {
       <div className="dpdesignportal-message-content">
         <p>{message.get('content')}</p>
 
-        <ul>
+        {false && <ul>
           <li>
             <AttachmentLink />
           </li>
-        </ul>
+        </ul>}
       </div>
     );
   }
