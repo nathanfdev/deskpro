@@ -1,28 +1,7 @@
 import React, { PropTypes } from 'react';
-import TextareaAutosize from 'react-textarea-autosize';
-import Positioned from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Positioned/Detached';
-import Editor from 'react-medium-editor';
-
-class IMEditor extends React.Component {
-
-  static propTypes = {
-    handleChange: PropTypes.func.isRequired,
-    message: PropTypes.string.isRequired,
-    options: PropTypes.object.isRequired
-  };
-
-
-  render() {
-    return (<Editor
-      tag="div"
-      className="textarea"
-      text={this.props.message}
-      onChange={this.props.handleChange}
-      options={this.props.options}
-      />);
-  }
-}
-
+import Positioned from 'DeskPRO/Component/Positioned/Detached';
+import MediumEditor from 'medium-editor';
+import jQuery from 'jquery';
 
 export class Footer extends React.Component {
 
@@ -32,83 +11,115 @@ export class Footer extends React.Component {
 
   constructor(props) {
     super(props);
+    this.message = '';
+
+    this.editorOptions = {
+      autoLink: true,
+      placeholder: {
+        text: 'Send a message'
+      },
+      toolbar: {
+        buttons: ['bold', 'italic', 'underline', 'anchor'],
+        updateOnEmptySelection: true
+      }
+    };
+
     this.state = {
-      emojiOpened: false,
-      message: ''
+      emoticonsOpened: false
     };
   }
 
-  toggleEmoji = () => {
-    const oldState = this.state;
-    const newState = {...oldState};
-    newState.emojiOpened = !oldState.emojiOpened;
-    this.setState(newState);
+  componentDidMount() {
+    const that = this;
+    const dom = that.refs.textarea;
+    this.medium = new MediumEditor(dom, that.editorOptions);
+    this.medium.subscribe('editableInput', () => {
+      that.handleChange(dom.innerHTML);
+    });
+  }
+
+  componentWillUnmount() {
+    this.medium.destroy();
+  }
+
+  toggleEmoticons = () => {
+    this.setState({emoticonsOpened: !this.state.emoticonsOpened});
   };
 
   handleChange = (text) => {
-    const oldState = this.state;
-    const newState = {...oldState};
-    newState.message = text;
-
-    this.setState(newState);
+    this.message = text;
   };
 
   handleTyping = (event) => {
     if (event.keyCode === 13 && event.altKey === true) {
-      event.target.value += '\r\n';
-      this.handleChange(event);
+      this.medium.setContent(this.refs.textarea.innerHTML + '<p><br/></p>');
     } else if (event.keyCode === 13) {
-      event.preventDefault();
       this.handleSubmit();
     }
   };
 
   handleSubmit = () => {
-    if (this.state.message) {
-      this.props.handleAddMessage(this.state.message);
-      this.handleChange('<p><br/></p>');
+    if (this.message) {
+      this.props.handleAddMessage(this.message);
+      this.medium.setContent('');
     }
   };
 
-  renderEmojiTable = () => {
+  insertEmoticon = (number) => {
+    // OMG!
+    let str = this.refs.textarea.innerHTML;
+    if (str.trim().substr(0, 3) !== '<p>') {
+      str += '<p>';
+    }
+    str = str.substr(0, str.length - 4);
+    str += this.renderEmoticon(number) + '</p>';
+    this.medium.setContent(str);
+  };
+
+  renderEmoticon(number) {
+    const className = 'emoticon sprite sprite-emoticon-' + number;
+    return '&nbsp;<img src="" class="' + className + '"/>&nbsp;';
+  }
+
+  renderEmoticonsTable = () => {
     return (
       <Positioned
         positionMy="left-18px top+5px"
         positionAt="center bottom"
-        positionTarget={this.refs.emojiButton}
-        isOpen={this.state.emojiOpened}
+        positionTarget={this.refs.emoticonsButton}
+        isOpen={this.state.emoticonsOpened}
         >
-        <div className="emoticon-panel">
+        <div id="emoticon-panel" className="emoticon-panel">
           <div>
-            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-1"></span></a>
-            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-2"></span></a>
-            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-3"></span></a>
-            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-4"></span></a>
-            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-5"></span></a>
+            <a onClick={this.insertEmoticon.bind(null, 1)} className="emoticon-link"><span className="emoticon sprite sprite-emoticon-1"></span></a>
+            <a onClick={this.insertEmoticon.bind(null, 2)} className="emoticon-link"><span className="emoticon sprite sprite-emoticon-2"></span></a>
+            <a onClick={this.insertEmoticon.bind(null, 3)} className="emoticon-link"><span className="emoticon sprite sprite-emoticon-3"></span></a>
+            <a onClick={this.insertEmoticon.bind(null, 4)} className="emoticon-link"><span className="emoticon sprite sprite-emoticon-4"></span></a>
+            <a onClick={this.insertEmoticon.bind(null, 5)} className="emoticon-link"><span className="emoticon sprite sprite-emoticon-5"></span></a>
           </div>
 
           <div>
-            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-6"></span></a>
-            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-7"></span></a>
-            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-8"></span></a>
-            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-9"></span></a>
-            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-10"></span></a>
+            <a onClick={this.insertEmoticon.bind(null, 6)} className="emoticon-link"><span className="emoticon sprite sprite-emoticon-6"></span></a>
+            <a onClick={this.insertEmoticon.bind(null, 7)} className="emoticon-link"><span className="emoticon sprite sprite-emoticon-7"></span></a>
+            <a onClick={this.insertEmoticon.bind(null, 8)} className="emoticon-link"><span className="emoticon sprite sprite-emoticon-8"></span></a>
+            <a onClick={this.insertEmoticon.bind(null, 9)} className="emoticon-link"><span className="emoticon sprite sprite-emoticon-9"></span></a>
+            <a onClick={this.insertEmoticon.bind(null, 10)} className="emoticon-link"><span className="emoticon sprite sprite-emoticon-10"></span></a>
           </div>
 
           <div>
-            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-11"></span></a>
-            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-12"></span></a>
-            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-13"></span></a>
-            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-14"></span></a>
-            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-15"></span></a>
+            <a onClick={this.insertEmoticon.bind(null, 11)} className="emoticon-link"><span className="emoticon sprite sprite-emoticon-11"></span></a>
+            <a onClick={this.insertEmoticon.bind(null, 12)} className="emoticon-link"><span className="emoticon sprite sprite-emoticon-12"></span></a>
+            <a onClick={this.insertEmoticon.bind(null, 13)} className="emoticon-link"><span className="emoticon sprite sprite-emoticon-13"></span></a>
+            <a onClick={this.insertEmoticon.bind(null, 14)} className="emoticon-link"><span className="emoticon sprite sprite-emoticon-14"></span></a>
+            <a onClick={this.insertEmoticon.bind(null, 15)} className="emoticon-link"><span className="emoticon sprite sprite-emoticon-15"></span></a>
           </div>
 
           <div>
-            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-16"></span></a>
-            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-17"></span></a>
-            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-18"></span></a>
-            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-19"></span></a>
-            <a href="#" className="emoticon-link"><span className="emoticon sprite sprite-emoticon-20"></span></a>
+            <a onClick={this.insertEmoticon.bind(null, 16)} className="emoticon-link"><span className="emoticon sprite sprite-emoticon-16"></span></a>
+            <a onClick={this.insertEmoticon.bind(null, 17)} className="emoticon-link"><span className="emoticon sprite sprite-emoticon-17"></span></a>
+            <a onClick={this.insertEmoticon.bind(null, 18)} className="emoticon-link"><span className="emoticon sprite sprite-emoticon-18"></span></a>
+            <a onClick={this.insertEmoticon.bind(null, 19)} className="emoticon-link"><span className="emoticon sprite sprite-emoticon-19"></span></a>
+            <a onClick={this.insertEmoticon.bind(null, 20)} className="emoticon-link"><span className="emoticon sprite sprite-emoticon-20"></span></a>
           </div>
         </div>
       </Positioned>
@@ -116,27 +127,19 @@ export class Footer extends React.Component {
   };
 
   render() {
-    const options = {
-      placeholder: {
-        text: 'Send a message'
-      },
-      anchorPrview: false,
-      toolbar: {
-        buttons: ['bold', 'italic', 'underline'],
-        updateOnEmptySelection: true
-      }
-    };
     return (
       <footer>
         <form onSubmit={this.handleSubmit}>
-          <IMEditor
-            message={this.state.message}
-            options={options}
-            handleChange={this.handleChange}
-            />
-          <a href="#" ref="emojiButton" onClick={this.toggleEmoji} className="insert-emoticon"><span className="emoticon sprite sprite-emoticon-1"></span></a>
+          <div
+            text={this.message}
+            onChange={this.handleChange}
+            onKeyDown={this.handleTyping}
+            className="textarea"
+            ref="textarea">
+          </div>
+          <a href="#" ref="emoticonsButton" onClick={this.toggleEmoticons} className="insert-emoticon"><span className="emoticon sprite sprite-emoticon-1"></span></a>
           <input onClick={this.handleSubmit} type="button" value="&#xf101;"/>
-          { this.renderEmojiTable() }
+          { this.renderEmoticonsTable() }
         </form>
       </footer>
     );
