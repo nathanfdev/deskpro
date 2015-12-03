@@ -24,23 +24,23 @@ export class MessagesList extends React.Component {
     setTimeout(() => this.refs.scrollArea.scrollBottom(), 0);
   }
 
-  static renderMessage(message, index) {
+  static renderMessage(message, key) {
+    const props = {key, message};
+    const isAgent = message.get('author_type') === 'agent';
+
     if (message.get('is_sys')) {
       const sysContent = JSON.parse(message.get('content'));
       switch (sysContent.phrase_id) {
         case 'message_started':
-          return <StartChatEvent key={index} message={message} />;
+          return <StartChatEvent {...props} />;
         case 'message_assigned':
-          return <JoinedEvent key={index} message={message} />;
+          return <JoinedEvent {...props} />;
         default:
           return null;
       }
     }
-    if (message.get('author_type') === 'agent') {
-      return <AgentMessage key={index} message={message} />;
-    }
 
-    return <UserMessage key={index} message={message} />;
+    return isAgent ? <AgentMessage {...props} /> : <UserMessage {...props} />;
   }
 
   render() {
@@ -51,7 +51,7 @@ export class MessagesList extends React.Component {
         <ScrollArea ref="scrollArea" vertical>
           <div className="bottom-aligner"/>
           <div>
-            {messages.map((message, index) => MessagesList.renderMessage(message, index))}
+            {messages.map((message, key) => MessagesList.renderMessage(message, key))}
           </div>
         </ScrollArea>
       </div>
