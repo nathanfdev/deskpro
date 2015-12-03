@@ -6,12 +6,12 @@ import Immutable from 'immutable';
 
 const initialState = {
   chatInfo: {
-    date_ended: moment().format('X')
+    date_ended: null//moment().format('X')
   },
   messages: [
     {id: 100, content: 'my message my message my message my message', author: null, is_sys: false},
-    {id: 100, content: 'agent reply agent reply agent reply agent reply agent reply agent reply', author: 1, is_sys: false},
-    {id: 101, content: '{"phrase_id":"message_assigned","name":"Admin Admin"}', author: null, is_sys: true}
+    {id: 101, content: 'agent reply agent reply agent reply agent reply agent reply agent reply', author: 1, is_sys: false},
+    {id: 102, content: '{"phrase_id":"message_assigned","name":"Admin Admin"}', author: null, is_sys: true, date_created: '2015-12-03 13:58'}
   ]
 };
 

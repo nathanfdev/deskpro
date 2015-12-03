@@ -1,12 +1,19 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
+import TimeAgo from 'react-timeago';
 
 export class MessageFooter extends React.Component {
 
+  static propTypes = {
+    message: PropTypes.object
+  };
+
   render() {
+    const { message } = this.props;
+
     return (
       <div className="dpdesignportal-message-footer">
         <a href="#" className="dpdesignportal-message-footer-assets-link"><i className="fa fa-copy"></i> Chat Assets (4)</a>
-        <span className="dpdesignportal-message-footer-timer">5m ago</span>
+        <TimeAgo className="dpdesignportal-message-footer-timer" minPeriod={60000} date={message.get('date_created')} />
       </div>
     );
   }

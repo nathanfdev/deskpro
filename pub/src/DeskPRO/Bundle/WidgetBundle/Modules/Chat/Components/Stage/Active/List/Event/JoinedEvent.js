@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import moment from 'moment';
+import TimeAgo from 'react-timeago';
 
 export class JoinedEvent extends React.Component {
 
@@ -16,7 +16,7 @@ export class JoinedEvent extends React.Component {
         <div className="dpdesignportal-event-content">
           <hr/>
           <span className="dpdesignportal-event-title">{content.name} has joined the chat</span>
-          <span className="dpdesignportal-event-time">{moment(message.get('date_created')).format('h:mma')}</span>
+          <TimeAgo className="dpdesignportal-event-time" minPeriod={60000} date={message.get('date_created')} />
         </div>
       </div>
     );

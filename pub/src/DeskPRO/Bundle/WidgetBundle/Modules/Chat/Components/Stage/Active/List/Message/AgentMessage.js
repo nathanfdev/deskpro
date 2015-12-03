@@ -26,7 +26,7 @@ export class AgentMessage extends React.Component {
           </ul>
         </div>
 
-        <MessageFooter />
+        <MessageFooter {...this.props} />
       </Message>
     );
   }
