@@ -15,7 +15,7 @@ export const chatIdSelector = createSelector(
 
 export const agentIdSelector = createSelector(
   chatInfoSelector,
-  chatInfo => chatInfo.get('agent')
+  chatInfo => chatInfo.get('agent_id')
 );
 
 export const dateEndedSelector = createSelector(

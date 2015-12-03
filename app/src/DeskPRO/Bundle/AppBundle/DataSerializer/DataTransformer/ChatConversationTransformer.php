@@ -31,6 +31,8 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
+use Application\DeskPRO\Entity\ChatConversation;
+use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 
 /**
@@ -39,11 +41,24 @@ use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 class ChatConversationTransformer extends AbstractDataSerializerTransformer
 {
     /**
+     * @var AvatarResolver
+     */
+    private $avatar_resolver;
+
+    /**
+     * @param AvatarResolver $avatar_resolver
+     */
+    public function __construct(AvatarResolver $avatar_resolver)
+    {
+        $this->avatar_resolver = $avatar_resolver;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        return ['id', 'agent', 'department', 'date_created', 'date_ended', 'status', 'subject'];
+        return ['id', 'subject_line', 'department_id', 'date_created', 'date_ended', 'ended_by', 'status', 'subject'];
     }
 
     /**
@@ -51,6 +66,21 @@ class ChatConversationTransformer extends AbstractDataSerializerTransformer
      */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        return [];
+        /** @var ChatConversation $data */
+        $data       = $transformation_request->getDataToBeTransformed();
+        $person     = $data->getPerson();
+        $agent      = $data->getAgent();
+        $department = $data->getDepartment();
+
+        return [
+            'author_id'       => $person ? $person->getId() : 0,
+            'author_name'     => $person ? $person->getDisplayName() : $data->getPersonName(),
+            'author_email'    => $person ? $person->getPrimaryEmailAddress() : $data->getPersonEmail(),
+            'author_type'     => $person && $person->isAgent() ? 'agent' : 'user',
+            'agent_id'        => $agent ? $agent->getId() : 0,
+            'agent_name'      => $agent ? $agent->getDisplayName() : '',
+            'agent_avatar'    => $agent ? $this->avatar_resolver->getAvatarModel($agent)->getUrl(20) : '',
+            'department_name' => $department ? $department->getFullTitle() : '',
+        ];
     }
 }

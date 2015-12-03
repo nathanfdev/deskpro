@@ -611,6 +611,38 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
+    /**
+     * @return Person|null
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPersonName()
+    {
+        return $this->person_name;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPersonEmail()
+    {
+        return $this->person_email;
+    }
+
+    /**
+     * @return Person|null
+     */
+    public function getAgent()
+    {
+        return $this->agent;
+    }
+
     public function getAgentId()
     {
         if ($this->agent) {
@@ -618,6 +650,14 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         }
 
         return 0;
+    }
+
+    /**
+     * @return Department|null
+     */
+    public function getDepartment()
+    {
+        return $this->department;
     }
 
     public function getDepartmentId()
