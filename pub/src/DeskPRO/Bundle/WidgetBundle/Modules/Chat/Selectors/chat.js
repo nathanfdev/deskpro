@@ -18,6 +18,16 @@ export const agentIdSelector = createSelector(
   chatInfo => chatInfo.get('agent_id')
 );
 
+export const agentNameSelector = createSelector(
+  chatInfoSelector,
+  chatInfo => chatInfo.get('agent_name')
+);
+
+export const agentAvatarSelector = createSelector(
+  chatInfoSelector,
+  chatInfo => chatInfo.get('agent_avatar')
+);
+
 export const dateEndedSelector = createSelector(
   chatInfoSelector,
   chatInfo => chatInfo.get('date_ended')
