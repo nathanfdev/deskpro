@@ -13,7 +13,7 @@ export class LevelSelectActionStore extends FormActionStore {
   onValueChanged(data) {
     let opts = this.el.find('option');
     opts.each((x, el) => {
-      el.selected = el.value == data.value;
+      el.selected = el.value == data.value || $(el).data('id') == data.value;
     });
     this.el.trigger('change');
   }
@@ -133,8 +133,6 @@ export class PortalSelectBox extends React.Component {
       };
     });
 
-
-
     return (
       <div>
         <PortalSimpleSelectBox options={options} value={subGroup ? subGroup : null} level={level} onChange={this.onClickOption.bind(this)} />
@@ -162,10 +160,39 @@ export class PortalSelectBox extends React.Component {
  */
 export function createComponent(select, renderTo, actionStore = null) {
   select = $(select);
+
+  // We need to rewrite opt-groups into normal options or else our widget
+  // doesnt work :(
+  select.find('optgroup').each((x, optgroup) => {
+    optgroup = $(optgroup);
+
+    const memSel = $('<select>');
+    const parentId = _.uniqueId('opt_');
+    const newOpt = $('<option>');
+    newOpt.data('id', parentId);
+    newOpt.data('name', optgroup.attr('label'));
+    newOpt.attr('disabled', true);
+    newOpt.text(optgroup.attr('label'));
+
+    memSel.append(newOpt);
+
+    optgroup.find('option').each((x, opt) => {
+      opt = $(opt).clone();
+      opt.data('parent', parentId);
+      memSel.append(opt);
+    });
+
+    optgroup.after(memSel.children());
+    optgroup.remove();
+  });
+
+  // make sure each option has a unique id
+  // for use within the react widget
   select.find('option').each((x, opt) => {
     opt = $(opt);
     if (!opt.data('id')) {
-      opt.data('id', opt.data('id', _.uniqueId('opt_')));
+      const newId = _.uniqueId('opt_');
+      opt.data('id', newId);
     }
   });
 
