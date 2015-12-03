@@ -50,7 +50,7 @@ return array(
     'portal.account.section-title-emails'              => 'Emails',
     'portal.account.welcome-back'                      => 'Welcome back',
     'portal.account.profile-btn-save'                  => 'Save Profile',
-    'portal.account.profile-delete-picture'            => 'delete picture?',
+    'portal.account.profile-delete-picture'            => 'Delete or replace picture?',
     'portal.account.change-password'                   => 'Change Password',
     'portal.account.change-password-btn'               => 'Update Password',
     'portal.account.reset-password-btn'                => 'Reset Password',

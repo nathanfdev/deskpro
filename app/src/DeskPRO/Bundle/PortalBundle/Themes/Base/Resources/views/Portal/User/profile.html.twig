@@ -42,8 +42,8 @@
                 {{ form_row(profile_form.language_id) }}
             {% endif %}
             {% if profile_form.delete_picture is defined %}
-                <img src="{{ person.picture_url }}"
-                     alt="{{ person }}"/> {{ form_row(profile_form.delete_picture, { label: phrase('portal.account.profile-delete-picture') }) }}
+                <img src="{{ person.picture_url }}" alt="{{ person }}"/>
+                {{ form_row(profile_form.delete_picture, { checkbox_label: phrase('portal.account.profile-delete-picture'), label: false }) }}
             {% else %}
                 {{ form_row(profile_form.upload_picture) }}
             {% endif %}
