@@ -36,7 +36,7 @@ export class MessagesList extends React.Component {
           return null;
       }
     }
-    if (message.get('author')) {
+    if (message.get('author_type') === 'agent') {
       return <AgentMessage key={index} message={message} />;
     }
 
