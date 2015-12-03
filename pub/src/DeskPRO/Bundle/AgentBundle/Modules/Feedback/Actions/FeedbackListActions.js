@@ -173,10 +173,6 @@ export const loadList = createAction(
   }
 );
 
-export const feedbackToValidate = createAction(
-  'FEEDBACK_TO_VALIDATE',
-  () => Feedback.toValidate().then(promise => promise.getData()));
-
 export const commentsToReview = createAction(
   'FEEDBACK_COMMENTS_TO_REVIEW',
   () => Feedback.commentsToReview().then(promise => promise.getData()));
@@ -219,18 +215,6 @@ export const updateDisplayFieldsToPersonSetting = createAction(
   }
 );
 
-export const toggleMassAction = createAction('FEEDBACK_TOGGLE_MASS_ACTION');
-export const toggleSelectedAction = createAction('FEEDBACK_TOGGLE_SELECTED_ACTION');
-export const massAction = createAction('FEEDBACK_MASS_ACTION',
-  (params)=> {
-    console.log('Implement me, please', params.ids);
-  });
-
-export const setMassActionsParams = createAction('FEEDBACK_SET_MASS_ACTIONS_PARAMS',
-  (params)=> {
-    console.log('Set Mass Actions params.', params);
-  });
-
 export const applyParams = createAction(
   'FEEDBACK_APPLY_LIST_PARAMS',
   (overwrite = {}) => (dispatch, getState) => {
@@ -258,3 +242,23 @@ export const setOrder = createAction(
 
 export const toggleTableFieldVisibility = createAction('FEEDBACK_LIST_TOGGLE_TABLE_FIELD_VISIBILITY');
 export const toggleCardFieldVisibility = createAction('FEEDBACK_LIST_TOGGLE_CARD_FIELD_VISIBILITY');
+
+export const toggleMassAction = createAction('FEEDBACK_TOGGLE_MASS_ACTION');
+export const toggleSelectedAction = createAction('FEEDBACK_TOGGLE_SELECTED_ACTION');
+
+export const setMassActionsParams = createAction(
+  'FEEDBACK_SET_MASS_ACTIONS_PARAMS',
+    params => params
+);
+export const resetMassActionsParams = createAction('FEEDBACK_RESET_MASS_ACTIONS_PARAMS');
+
+export const massAction = createAction(
+  'FEEDBACK_MASS_ACTION',
+  (params) => (dispatch) =>
+    Feedback.massAction(params)
+      .then(promise => {
+        dispatch(resetMassActionsParams());
+        dispatch(applyParams());
+        return promise.getData();
+      }
+    ));

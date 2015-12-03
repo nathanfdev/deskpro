@@ -9,6 +9,7 @@ export class ActionContainer extends Component {
   static propTypes = {
     isActive: PropTypes.bool,
     setParams: PropTypes.func.isRequired,
+    currentParams: PropTypes.object,
     id: PropTypes.number.isRequired,
     item: PropTypes.object.isRequired
   };
@@ -26,11 +27,11 @@ export class ActionContainer extends Component {
   collapse = () => this.setState({ expanded: false });
 
   render() {
-    const {id, item, setParams } = this.props;
+    const {id, item, setParams, currentParams } = this.props;
 
     return (
       <li>
-        <Button isActive={this.state.expanded}
+        <Button isActive={this.state.expanded || (currentParams && currentParams.get(item.param))}
                 ref={'button' + id}
                 label={item.label}
                 icon={item.icon}
@@ -43,13 +44,16 @@ export class ActionContainer extends Component {
             ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list']}
             additionalNodes={['.dpw-navigation-dropdown-item-clear']}>
             <Menu>
-              {item.options.map((option, index) =>
-                  <RadioChoiceMenuOption key={index}
-                                         value={option.value}
-                                         label={option.label}
-                                         param={item.param}
-                                         onClick={setParams}/>
-              )}
+              <div className="dpw--popup-item-collection">
+                {item.options.map((option, index) =>
+                    <RadioChoiceMenuOption key={index}
+                                           isActive={currentParams && currentParams.get(item.param) === option.value}
+                                           value={option.value}
+                                           label={option.label}
+                                           param={item.param}
+                                           setParams={setParams}/>
+                )}
+              </div>
             </Menu>
           </ClickOut>
         </Positioned>

@@ -45,7 +45,7 @@ export class FeedbackCardsContainer extends Component {
                           toggleSelected={toggleSelected}
                           author={people.get(element.person)}
                           feedbackStatusCategory={feedbackStatusCategories.get(element.status_category)}
-                          feedbackCategory={feedbackCategories.get(element.id)}
+                          feedbackCategory={feedbackCategories.get(element.custom_data[0])}
                           feedbackComments={feedbackComments.get(element.id)}
                           feedbackLabels={element.labels}
                           type={feedbackTypes.get(element.category_id)}

@@ -158,6 +158,11 @@ export const listFiltersSelector = createSelector(
   }
 );
 
+export const massActionsParamsSelector = createSelector(
+  stateSelector,
+    state => state.get('massActions')
+);
+
 export const massActionsSelector = createSelector(
   [navStateSelector, feedbackCategoriesSelector, feedbackTypesSelector],
   (navState, categories, types) => {

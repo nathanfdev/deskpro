@@ -2,21 +2,30 @@ import React, {Component, PropTypes} from 'react';
 import { MassActionBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/MassActionBar/MassActionBar';
 import { toggleMassAction, massAction, setMassActionsParams }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
-import { massActionsSelector } from '../../../Selectors/list';
+import { massActionsSelector, massActionsParamsSelector } from '../../../Selectors/list';
 
 
 import { connect } from 'react-redux';
 @connect(state => ({
   selected: state.Feedback.list.get('selected'),
-  actions: massActionsSelector(state)
+  actions: massActionsSelector(state),
+  currentMassActionsParams: massActionsParamsSelector(state)
 }))
 
 export class MassActionContainer extends Component {
 
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
     selected: PropTypes.object.isRequired,
-    actions: PropTypes.array.isRequired
+    actions: PropTypes.array.isRequired,
+    currentMassActionsParams: PropTypes.object
   };
+
+  massActionHandler(ids) {
+    const {dispatch, currentMassActionsParams} = this.props;
+    const params = currentMassActionsParams.toJS();
+    dispatch(massAction({ ids: ids, actions: params }));
+  }
 
   render() {
     const config = {
@@ -27,7 +36,8 @@ export class MassActionContainer extends Component {
       selected: this.props.selected,
       actions: this.props.actions,
       setParams: setMassActionsParams,
-      action: massAction
+      action: this.massActionHandler.bind(this),
+      currentParams: this.props.currentMassActionsParams
     };
 
 
