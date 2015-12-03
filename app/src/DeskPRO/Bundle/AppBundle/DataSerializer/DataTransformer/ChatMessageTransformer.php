@@ -139,7 +139,7 @@ class ChatMessageTransformer extends AbstractDataSerializerTransformer
     {
         $author = $message->getAuthor();
         if ($author) {
-            return $this->avatar_resolver->getAvatarModel($author)->getUrl(10);
+            return $this->avatar_resolver->getAvatarModel($author)->getUrl(150);
         }
 
         return;
