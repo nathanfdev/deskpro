@@ -35,8 +35,10 @@ use Application\ApiBundle\Controller\Helper\CustomFieldHelper;
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\ApiBundle\PermissionStrategy\MultiPermissions;
 use Application\ApiBundle\PermissionStrategy\PassPermission;
+use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\TicketCategory;
 use Application\DeskPRO\Entity\TicketLayout;
+use Application\DeskPRO\Entity\TicketPriority;
 use Application\DeskPRO\Hierarchy\HierarchyStructureProcessor;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -673,12 +675,13 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
          * copy children
          */
         foreach ($service->getFlatArray() as $entry) {
+            $tree                        = $entry instanceof TicketCategory || $entry instanceof Product;
             $data['choices_structure'][] = array(
                 'id'            => 'cb_'.$entry['object']['id'],
                 '@is_new'       => true,
                 'title'         => $entry['object']['title'],
-                'parent_id'     => $entry['object']['parent'] ? ('cb_'.$entry['object']['parent']['id']) : null,
-                'display_order' => $entry['object']['display_order'],
+                'parent_id'     => $tree && $entry['object']['parent'] ? ('cb_'.$entry['object']['parent']['id']) : null,
+                'display_order' => $entry instanceof TicketPriority ? 0 : $entry['object']['display_order'],
             );
         }
 

@@ -122,4 +122,15 @@ class TicketPriorities extends LazyCollection
     {
         return parent::getAll();
     }
+
+    public function getFlatArray()
+    {
+        $flat = array();
+
+        foreach ($this->getAll() as $obj) {
+            $flat[] = array('object' => $obj, 'depth' => 0);
+        }
+
+        return $flat;
+    }
 }
