@@ -84,10 +84,11 @@ class ProfileController extends AbstractController
             // check if the person already has an account (or is a contact)
             if ($email = $person->getEmailAddress()) {
                 if ($person_check = $this->get('data.person')->getPersonForEmail($email)) {
-                    if ($person_check->isUser()) {
-                        // this is an error, a registered user cannot register again
-                       $form->get('primary_email')->addError(new FormError($this->phrase('portal.account.registration-email-already-exists')));
-                    } else {
+                    if (!$person_check->isUser()) {
+                        ///
+                        // TODO: what to do if this happens? The person is a contact.
+                        // I think this situation should never happen in practice? But it might... Coming back to this.
+                        ///
                         // contact, they should now get a "set password" email and a redirection
                         // set the reset code
                         $random = new UriSafeTokenGenerator();

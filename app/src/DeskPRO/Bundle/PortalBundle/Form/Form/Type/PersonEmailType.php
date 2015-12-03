@@ -62,7 +62,7 @@ class PersonEmailType extends AbstractType
         $resolver->setDefaults(array(
             'data_class'                 => 'Application\\DeskPRO\\Entity\\PersonEmail',
             'email_label'                => 'Email',
-            'email_exists_error_message' => 'This email already exists in the system.',
+            'email_exists_error_message' => 'portal.account.registration-email-already-exists',
             'constraints'                => function (Options $options) {
                 return array(
                     new UniqueEntity(array('fields' => 'email', 'message' => $options['email_exists_error_message'], 'errorPath' => 'email')),
@@ -70,8 +70,8 @@ class PersonEmailType extends AbstractType
             },
             'email_constraints' => array(
                 new NotBannedEmail(['message' => 'portal.forms.error_banned_email']),
-                new NotBlank(array('message'  => 'portal.forms.error_email_required')),
-                new Email(array('message'     => 'portal.forms.error_email_invalid')),
+                new NotBlank(array('message' => 'portal.forms.error_email_required')),
+                new Email(array('message' => 'portal.forms.error_email_invalid')),
             ),
         ));
     }
