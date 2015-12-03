@@ -2054,6 +2054,10 @@ $tab-border: $divider-color;
 .secondary-tabs {
   position: relative;
 
+  @media screen and (max-width: 760px) {
+    margin-bottom: 50px;
+  }
+
   ul {
     padding-left: 0;
   }
@@ -2078,13 +2082,22 @@ $tab-border: $divider-color;
       }
     }
   }
+
+  li.tab-solo {
+    position: absolute;
+    right: 0;
+    left: auto;
+
+    @media screen and (max-width: 760px) {
+      left: 0px;
+      right: initial;
+      top: 100%;
+      margin-top: 10px;
+    }
+  }
 }
 
-.tab-solo {
-  position: absolute !important;
-  right: 0;
-  left: auto;
-}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Misc
