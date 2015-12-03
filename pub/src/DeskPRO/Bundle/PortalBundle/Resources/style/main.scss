@@ -4401,7 +4401,9 @@ ul.kb-checkbox-extra {
     text-decoration: none;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 0.9em;
+    font-size: 12px;
+    font-weight: 400;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 
     strong {
       color: $text-color-darker;
@@ -4416,8 +4418,7 @@ ul.kb-checkbox-extra {
   }
 
   .flash-success {
-    border-bottom: 1px solid darken($button-color-secondary, 20%);
-    background: $button-color-secondary;
+    background: #259F59;
     color: #ffffff;
   }
 
