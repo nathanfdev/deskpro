@@ -1,7 +1,12 @@
-.dpdesignportal-chat-form {
-  padding: 5px 10px 5px 5px;
+.dpdesignportal-chat-footer {
   position: absolute;
   bottom: 38px;
+  width: 100%;
+}
+
+.dpdesignportal-chat-form {
+  padding: 5px 10px 5px 5px;
+  position: relative;
   width: 100%;
 
   .dpdesignportal-chat-form-disabled {

@@ -77,12 +77,6 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
-    dp_security.twig_extension:
-        class: DeskPRO\Bundle\AppBundle\Security\Twig\AuthTwigExtension
-        arguments: [@service_container]
-        tags:
-            - { name: twig.extension }
-
     ###############
     # VOTERS
     ###############

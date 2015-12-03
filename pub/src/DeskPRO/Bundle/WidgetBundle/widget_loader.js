@@ -4,6 +4,7 @@
   node.src = 'javascript:false';
   node.title = '';
   node.role = 'presentation';
+  node.name = 'dp_loader';
   (node.frameElement || node).style.cssText = 'display: none';
 
   // Insert it into the DOM
@@ -36,7 +37,6 @@
       doc.domain = docDomain;
     }
 
-    appNode.id = 'dp_loader_iframe';
     appNode.src = appSrc;
 
     doc.body.appendChild(appNode);

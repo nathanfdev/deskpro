@@ -114,6 +114,7 @@ class PortalExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
+            new \Twig_SimpleFunction('auth_usersources_js_object', array($this, 'getAuthUsersourcesJsObject'), array('is_safe' => array('html', 'javascript'))),
             new \Twig_SimpleFunction('ticket_status', array($this, 'getTicketStatusString')),
             new \Twig_SimpleFunction('ticket_public_id', array($this, 'getPublicTicketId')),
             new \Twig_SimpleFunction('brand_setting', array($this, 'getBrandSetting'), array('is_safe' => array('html'))),
@@ -134,6 +135,13 @@ class PortalExtension extends \Twig_Extension
             new \Twig_SimpleFunction('insert_glossary_js', array($this, 'makeGlossaryJs'), array('is_safe' => array('html', 'javascript'))
             ),
         );
+    }
+
+    public function getAuthUsersourcesJsObject()
+    {
+        $usersources = $this->container->get('usersources_view_helper')->createUsersourceViewList();
+
+        return json_encode($usersources);
     }
 
     public function makeGlossaryJs($article)

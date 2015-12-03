@@ -80,15 +80,15 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
         //
         // run failed login routine from old controller
         //
-
-        $token = $exception->getToken();
-
-        // Send alert
-        if (!$attempt_person = $this->person_repo->findOneByEmail($token->getUsername())) {
-            $attempt_person = $this->person_repo->findOneByEmail($token->getUser());
-        }
-        if ($attempt_person && $attempt_person->getPref('agent_notif.login_attempt_fail.email') && !$attempt_person->is_deleted) {
-            $this->portal_mailer->sendLoginAlert($attempt_person, false);
+        $attempt_person = null;
+        if ($token = $exception->getToken()) {
+            // Send alert
+            if (!$attempt_person = $this->person_repo->findOneByEmail($token->getUsername())) {
+                $attempt_person = $this->person_repo->findOneByEmail($token->getUser());
+            }
+            if ($attempt_person && $attempt_person->getPref('agent_notif.login_attempt_fail.email') && !$attempt_person->is_deleted) {
+                $this->portal_mailer->sendLoginAlert($attempt_person, false);
+            }
         }
 
         // Save login log

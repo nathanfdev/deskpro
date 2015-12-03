@@ -39,6 +39,8 @@ class PortalExtension extends Extension
 {
     public function load(array $config, ContainerBuilder $container)
     {
+        $container->setParameter('api.data_serializer.types', []);
+
         $loader = new YamlDirectoryLoader($container);
         $loader->loadDir(__DIR__.'/../Resources/config/services');
     }

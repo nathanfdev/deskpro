@@ -77,6 +77,9 @@ class LanguagesController extends AbstractController implements ProtectedControl
         $pack_local_titles = $langpacks->getLangTitles(true);
 
         foreach ($pack_titles as $id => $title) {
+            if (strpos($id, 'dev_') === 0) {
+                continue;
+            }
             $lang = isset($installed_packs[$id]) ? $installed_packs[$id] : null;
             $info = $langpacks->getLangInfo($id);
             $r    = array(

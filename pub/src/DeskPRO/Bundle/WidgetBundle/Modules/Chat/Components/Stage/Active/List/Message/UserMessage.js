@@ -16,7 +16,7 @@ export class UserMessage extends React.Component {
       <Message type="user">
         <MessageAvatar />
         <div className="dpdesignportal-message-content">
-          <p>{message.get('message')}</p>
+          <p>{message.get('content')}</p>
 
           <ul>
             <li>

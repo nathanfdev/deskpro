@@ -63,12 +63,12 @@ class DbalTicketLabelTermCompilerTest extends AbstractDbalTicketFilterTermCompil
                 'input0' => 'blue',
             )
         );
-        $this->assertUniqueJoins(
+        $this->assertJoins(
             $query_part,
             array(
                 'labels_tickets' => array(
                     'table' => 'labels_tickets',
-                    'on'    => 'tickets.id = labels_tickets.ticket_id',
+                    'on'    => 'ticket.id = labels_tickets.ticket_id',
                     'type'  => DbalQuery::JOIN_LEFT,
                 ),
             )
@@ -91,12 +91,12 @@ class DbalTicketLabelTermCompilerTest extends AbstractDbalTicketFilterTermCompil
                 'input0' => 'blue',
             )
         );
-        $this->assertUniqueJoins(
+        $this->assertJoins(
             $query_part,
             array(
                 'labels_tickets' => array(
                     'table' => 'labels_tickets',
-                    'on'    => 'tickets.id = labels_tickets.ticket_id',
+                    'on'    => 'ticket.id = labels_tickets.ticket_id',
                     'type'  => DbalQuery::JOIN_LEFT,
                 ),
             )

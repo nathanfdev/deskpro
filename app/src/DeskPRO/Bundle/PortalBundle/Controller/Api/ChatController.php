@@ -56,24 +56,19 @@ class ChatController extends AbstractController
      */
     public function createNewChatAction(Request $request)
     {
-        $submitted_data = $request->request->all();
-
-        $form = $this->get('form.factory')->createNamedBuilder(null, 'api_chat_create')->getForm();
-        $form->submit($submitted_data);
+        $conversation = new ChatConversation();
+        $form         = $this->get('form.factory')->createNamedBuilder(null, 'api_chat_create', $conversation)->getForm();
+        $form->submit($request->request->all());
 
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }
 
-        $conversation               = new ChatConversation();
-        $conversation->person_name  = $submitted_data['name'];
-        $conversation->person_email = $submitted_data['email'];
-
         $em = $this->getDoctrine()->getManager();
         $em->persist($conversation);
         $em->flush();
 
-        return new JsonResponse($conversation->getInfo());
+        return new JsonResponse($this->dataSerialize($conversation));
     }
 
     /**
@@ -103,17 +98,10 @@ class ChatController extends AbstractController
             ])
         ;
 
-        $messages = $qb->getQuery()->getResult();
-
-        return new JsonResponse(array_merge($conversation->getInfo(), [
-            'messages' => array_map(function (ChatMessage $message) {
-                return [
-                    'id'      => $message->getId(),
-                    'type'    => 'agent',
-                    'message' => $message->content,
-                ];
-            }, $messages),
-        ]));
+        return new JsonResponse([
+            'chat_info'    => $this->dataSerialize($conversation),
+            'new_messages' => $this->dataSerialize($qb->getQuery()->getResult()),
+        ]);
     }
 
     /**
@@ -188,6 +176,27 @@ class ChatController extends AbstractController
      */
     public function feedbackAction(ChatConversation $conversation, Request $request)
     {
+        $form = $this->get('form.factory')->createNamedBuilder(null, 'api_chat_feedback', $conversation)->getForm();
+        $form->submit($request->request->all());
+
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($conversation);
+        $em->flush();
+
         return new JsonResponse();
+    }
+
+    /**
+     * @param $data
+     *
+     * @return array
+     */
+    protected function dataSerialize($data)
+    {
+        return $this->get('data_serializer')->serialize($data);
     }
 }

@@ -8,7 +8,6 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $SCRIPT_DIR
 cd ..
 
-
 # if "coverage" is first arg, do all coverage and show coveralls output but DOES NOT submit to coveralls server
 IS_COVERAGE=0
 if [ "$1" = "coverage" ]; then
@@ -44,9 +43,36 @@ if [[ $? -ne 0 ]] ; then
 fi
 
 ##################################
+# BEHAT @basic scenarios
+##################################
+IS_BEHAT_API_ERROR=0
+bin/behat --profile=api --tags '@basic'
+if [[ $? -ne 0 ]] ; then
+    IS_BEHAT_API_ERROR=1
+fi
+
+IS_BEHAT_PORTAL_ERROR=0
+bin/behat --profile=portal --tags '@basic'
+if [[ $? -ne 0 ]] ; then
+    IS_BEHAT_PORTAL_ERROR=1
+fi
+
+##################################
+# Jest
+##################################
+IS_JEST_ERROR=0
+
+cd ../../pub
+npm test
+
+if [[ $? -ne 0 ]] ; then
+    IS_JEST_ERROR=1
+fi
+
+##################################
 # EXIT IF ERROR
 ##################################
-IS_ERROR=$((IS_PHPSPEC_ERROR + IS_PHPUNIT_ERROR))
+IS_ERROR=$((IS_PHPSPEC_ERROR + IS_PHPUNIT_ERROR + IS_BEHAT_API_ERROR + IS_BEHAT_PORTAL_ERROR + IS_JEST_ERROR))
 if [[ "$IS_ERROR" -ne "0" ]]; then
     if [[ "$IS_PHPSPEC_ERROR" -ne "0" ]]; then
         echo "
@@ -55,6 +81,18 @@ if [[ "$IS_ERROR" -ne "0" ]]; then
     if [[ "$IS_PHPUNIT_ERROR" -ne "0" ]]; then
         echo "
         --- PHPUNIT FAILED --- "
+    fi
+    if [[ "$IS_BEHAT_API_ERROR" -ne "0" ]]; then
+        echo "
+        --- BEHAT API FAILED --- "
+    fi
+    if [[ "$IS_BEHAT_PORTAL_ERROR" -ne "0" ]]; then
+        echo "
+        --- BEHAT PORTAL FAILED --- "
+    fi
+    if [[ "IS_JEST_ERROR" -ne "0" ]]; then
+        echo "
+        --- JEST FAILED --- "
     fi
     exit 1
 fi

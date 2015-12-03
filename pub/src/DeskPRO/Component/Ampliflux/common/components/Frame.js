@@ -133,7 +133,7 @@ export default class Frame extends React.Component {
       const contents = React.createElement('div', containerDimensions, this.props.children);
       ReactDOM.render(contents, doc.body.firstChild);
     } else {
-      setTimeout(this.renderFrameContents, 0);
+      setTimeout(() => this.renderFrameContents(), 0);
     }
   }
 

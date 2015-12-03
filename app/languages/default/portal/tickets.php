@@ -50,6 +50,7 @@ return array(
     'portal.tickets.list_ticket_ref'                   => 'Reference',
     'portal.tickets.list_filter'                       => 'You have an active filter on this view.',
     'portal.tickets.list_filter_clear'                 => 'Click here to clear it and see everything.',
+    'portal.tickets.list_no_tickets'                   => 'There are no tickets to display in this tab. <a href="{{ open_ticket_url }}">Click here to open a new ticket</a>.',
     'portal.tickets.new-section-title'                 => 'Contact Us',
     'portal.tickets.guest-thanks-section-title'        => 'Thank You',
     'portal.tickets.new-intro'                         => 'Please complete this form and one of our agents will reply to you by email as soon as possible.',

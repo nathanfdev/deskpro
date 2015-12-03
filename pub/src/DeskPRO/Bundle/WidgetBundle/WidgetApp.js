@@ -1,9 +1,11 @@
 import 'babel/polyfill';
 import React from 'react';
+import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom';
 import style from './Resources/style/widget-style.scss';
-import { App } from './Modules/Application/Components/App';
+import { AppContainer } from './Modules/Application/Components/AppContainer';
 import jQuery from 'jquery';
+import store from './Services/store';
 
 export default class WidgetApp {
   run() {
@@ -41,7 +43,13 @@ export default class WidgetApp {
       }
     });
 
+    const content = (
+      <Provider store={store}>
+        <AppContainer />
+      </Provider>
+    );
+
     $container.appendTo(pageDoc.body);
-    ReactDOM.render(<App />, $container.get(0));
+    ReactDOM.render(content, $container.get(0));
   }
 }

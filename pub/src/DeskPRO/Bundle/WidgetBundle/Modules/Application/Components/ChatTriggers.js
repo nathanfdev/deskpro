@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
 import Frame from 'Ampliflux/common/components/Frame';
+import history from '../../../Services/history';
 
 export default class ChatTriggersBody extends React.Component {
 
   static propTypes = {
-    onOpen: PropTypes.func,
     onResize: PropTypes.func
   };
 
@@ -26,7 +26,10 @@ export default class ChatTriggersBody extends React.Component {
   renderLink(url) {
     const onClick = event => {
       event.preventDefault();
-      this.props.onOpen(url);
+
+      if (history.state !== url) {
+        history.replaceState(null, url);
+      }
     };
 
     return <div><a href="#" onClick={onClick}>{url}</a></div>;
@@ -47,7 +50,6 @@ export default class ChatTriggersBody extends React.Component {
 export class ChatTriggers extends React.Component {
 
   static propTypes = {
-    onClick: PropTypes.func,
     isVisible: PropTypes.bool
   };
 
@@ -59,6 +61,7 @@ export class ChatTriggers extends React.Component {
 
     return (
       <Frame ref="frame"
+             name="chat_triggers_tp"
              frameStyles={style}
              isVisible={isVisible}
              positionMode="bottom.left">

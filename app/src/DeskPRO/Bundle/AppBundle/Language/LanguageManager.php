@@ -120,7 +120,7 @@ class LanguageManager
      */
     public function normalizeLanguageCode($lang_code)
     {
-        return strtolower(substr($lang_code, 0, 2));
+        return $lang_code;
     }
 
     /**

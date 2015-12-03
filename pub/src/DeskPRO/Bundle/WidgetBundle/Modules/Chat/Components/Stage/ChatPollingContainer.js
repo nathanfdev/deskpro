@@ -16,7 +16,7 @@ export class ChatPollingContainer extends React.Component {
     dispatch: PropTypes.func.isRequired,
     chatId: PropTypes.number,
     agentId: PropTypes.number,
-    lastMessageId: PropTypes.number,
+    lastMessageId: PropTypes.any,
     children: PropTypes.node
   };
 

@@ -433,7 +433,7 @@
 {% block deskpro_recaptcha_widget %}
     {% spaceless %}
         <script src="//www.google.com/recaptcha/api.js"></script>
-        <div class="g-recaptcha" data-sitekey="{{ site_key }}"></div>
+        <div class="g-recaptcha" data-sitekey="{{ site_key }}"{% if secure_token %} data-stoken="{{ secure_token }}"{% endif %}></div>
     {% endspaceless %}
 {% endblock deskpro_recaptcha_widget %}
 

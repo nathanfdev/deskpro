@@ -42,21 +42,34 @@ class UrlMatcher
             'remaining_pathinfo' => $pathinfo,
         );
 
-        $locale = Strings::extractRegexMatch('#^/([a-z]{2})/#', $pathinfo, 1);
+        $locale = $this->getLocale($pathinfo);
 
         if ($locale && 'kb' !== $locale) {
             $return['lang_url_code']      = $locale;
-            $return['remaining_pathinfo'] = preg_replace('#^/(.*?)/#', '/', $pathinfo);
+            $return['remaining_pathinfo'] = preg_replace('#^/(.*?)(/|$)#', '/', $pathinfo);
 
             return $return;
         }
 
-        $locale = Strings::extractRegexMatch('#^/([a-z]{2})$#', $pathinfo, 1);
+        $locale = $this->getLocale($pathinfo);
         if ($locale && 'kb' !== $locale) {
             $return['lang_url_code']      = $locale;
             $return['remaining_pathinfo'] = '/';
         }
 
         return $return;
+    }
+
+    /**
+     * @param string $pathinfo
+     */
+    private function getLocale($pathinfo)
+    {
+        $locale = Strings::extractRegexMatch('#^/([a-z]{2})(/|$)#', $pathinfo, 1);
+        if (!$locale) {
+            $locale = Strings::extractRegexMatch('#^/([a-z]{2}_[A-Z0-9]{2})(/|$)#', $pathinfo, 1);
+        }
+
+        return $locale ?: null;
     }
 }

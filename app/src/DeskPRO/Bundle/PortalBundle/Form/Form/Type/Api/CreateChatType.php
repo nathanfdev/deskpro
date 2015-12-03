@@ -54,9 +54,12 @@ class CreateChatType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', 'text')
-            ->add('email', 'email')
-            ->add('hidden_email', 'api_boolean')
+            ->add('name', 'text', [
+                'property_path' => 'person_name',
+            ])
+            ->add('email', 'email', [
+                'property_path' => 'person_email',
+            ])
         ;
     }
 
@@ -68,6 +71,7 @@ class CreateChatType extends AbstractType
         $resolver->setDefaults([
             'csrf_protection'               => false,
             'csrf_double_submit_protection' => false,
+            'allow_extra_fields'            => true,
         ]);
     }
 }

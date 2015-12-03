@@ -1,11 +1,11 @@
 import { Widget } from './Widget';
-import { WidgetHeader } from './WidgetHeader';
+import { WidgetHeaderContainer } from './WidgetHeaderContainer';
 import { WidgetBody } from './WidgetBody';
 import { WidgetFooter } from './WidgetFooter';
 
 export {
   Widget,
-  WidgetHeader,
+  WidgetHeaderContainer,
   WidgetBody,
   WidgetFooter
 };

@@ -58,7 +58,7 @@ class CaptchaType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if ($this->brand_stack->getActive()->getSetting('core.use_recaptcha2')) {
+        if ($this->isRecaptchaEnabled()) {
             $builder->add('captcha', 'deskpro_recaptcha');
         } else {
             $builder->add('captcha', 'captcha', [
@@ -80,12 +80,20 @@ class CaptchaType extends AbstractType
             'label'  => false,
             'mapped' => false,
             'help'   => function (Options $options) {
-                if ($this->brand_stack->getActive()->getSetting('core.use_recaptcha2')) {
+                if ($this->isRecaptchaEnabled()) {
                     return false;
                 }
 
                 return $this->language_manager->phrase('portal.forms.label_captcha');
             },
         ]);
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function isRecaptchaEnabled()
+    {
+        return $this->brand_stack->getActive()->getSetting('core.use_recaptcha2') || ReCaptchaType::isCloudRecapchaEnabled();
     }
 }

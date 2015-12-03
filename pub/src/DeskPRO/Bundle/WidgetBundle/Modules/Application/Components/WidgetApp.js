@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { Provider } from 'react-redux';
 import { Router, Route, Redirect } from 'react-router';
 import Frame from 'Ampliflux/common/components/Frame';
-import { Widget, WidgetHeader, WidgetBody, WidgetFooter } from './Widget/index';
+import { Widget, WidgetHeaderContainer, WidgetBody, WidgetFooter } from './Widget/index';
 import {
   ChatApp,
   ChatBeginContainer,
@@ -10,7 +10,7 @@ import {
   ChatBeginConversation,
   ChatBeginForm,
   ChatPollingContainer,
-  ChatActive,
+  ChatActiveContainer,
   ChatWaiting
 } from '../../Chat/Components/index';
 import history from '../../../Services/history';
@@ -19,8 +19,7 @@ import store from '../../../Services/store';
 export class WidgetAppBody extends React.Component {
 
   static propTypes = {
-    onResize: PropTypes.func,
-    onClose: PropTypes.func
+    onResize: PropTypes.func
   };
 
   componentDidMount() {
@@ -31,12 +30,6 @@ export class WidgetAppBody extends React.Component {
     this.triggerResize();
   }
 
-  onOpen = url => {
-    if (history.state !== url) {
-      history.replaceState(null, url);
-    }
-  };
-
   triggerResize() {
     const { onResize } = this.props;
     if (onResize) {
@@ -45,12 +38,10 @@ export class WidgetAppBody extends React.Component {
   }
 
   render() {
-    const { onClose } = this.props;
-
     return (
       <Provider store={store}>
         <Widget>
-          <WidgetHeader title="Acme Corp. Chat and a long name lorel ipsum dolor" onClose={onClose} />
+          <WidgetHeaderContainer title="Acme Corp. Chat and a long name lorel ipsum dolor" />
           <WidgetBody>
             <Router history={history}>
               <Redirect from="/" to="chat"/>
@@ -62,7 +53,7 @@ export class WidgetAppBody extends React.Component {
                 </Route>
                 <Route component={ChatPollingContainer}>
                   <Route name="chat_waiting" path="waiting" component={ChatWaiting} />
-                  <Route name="chat_active" path="active" component={ChatActive} />
+                  <Route name="chat_active" path="active" component={ChatActiveContainer} />
                 </Route>
               </Route>
             </Router>
@@ -78,10 +69,6 @@ export class WidgetApp extends React.Component {
 
   static propTypes = {
     isVisible: PropTypes.bool
-  };
-
-  onOpen = url => {
-    this.refs.body.onOpen(url);
   };
 
   render() {

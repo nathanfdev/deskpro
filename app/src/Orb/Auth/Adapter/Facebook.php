@@ -133,7 +133,8 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
         $redirect_url = $this->fb->getLoginUrl(array(
             'redirect_uri' => $this->getCallbackUrl(),
             'display'      => $this->display,
-            'req_perms'    => 'user_about_me,user_birthday,user_website,email',
+            'req_perms'    => 'public_profile,email',
+            'scope'        => 'public_profile,email',
         ));
 
         if ($this->logger) {
@@ -171,7 +172,7 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
         $me = false;
         if ($session) {
             try {
-                $me = $this->fb->api('/me');
+                $me = $this->fb->api('/me?fields=name,email,id');
             } catch (\FacebookApiException $e) {
                 if ($this->logger) {
                     $this->logger->log(
@@ -208,7 +209,7 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
     protected function _meToResult($me)
     {
         $identity = new \Orb\Auth\Identity($me['id'], $me);
-        $identity->setFriendlyIdentity($identity['link']);
+        $identity->setFriendlyIdentity($identity['id']);
         $result = new Result(Result::SUCCESS, $identity);
 
         return $result;
