@@ -2,6 +2,7 @@ import { createReducer } from 'Ampliflux';
 import { async, setValue, setFullPayload, togglePayloadInCollection, handleMassAction, mergeFullPayload } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/FeedbackListActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import Immutable from 'immutable';
 
 const initialState = {
   elements: [], // array of list elements (feedback or comments)
@@ -38,6 +39,8 @@ export default createReducer(initialState, {
     done: setValue('async.done', true)
   }),
   [actions.toggleMassAction]: handleMassAction('elements', 'selected'),
+  [actions.setMassActionsParams]: (state, payload) => state.setIn(['massActions', payload.param], payload.value),
+  [actions.resetMassActionsParams]: (state) => state.set('massActions', Immutable.fromJS({})),
   [actions.toggleSelectedAction]: togglePayloadInCollection('selected'),
   [actions.toggleTableFieldVisibility]: togglePayloadInCollection('tableVisibleFields'),
   [actions.toggleCardFieldVisibility]: togglePayloadInCollection('cardVisibleFields'),

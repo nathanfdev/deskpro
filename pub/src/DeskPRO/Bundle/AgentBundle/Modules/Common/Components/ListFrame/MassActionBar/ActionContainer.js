@@ -6,6 +6,14 @@ import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu
 import { RadioChoiceMenuOption } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/ChoiceMenu';
 
 export class ActionContainer extends Component {
+  static propTypes = {
+    isActive: PropTypes.bool,
+    setParams: PropTypes.func.isRequired,
+    currentParams: PropTypes.object,
+    id: PropTypes.number.isRequired,
+    item: PropTypes.object.isRequired
+  };
+
   componentWillMount() {
     this.setState({
       expanded: this.props.isActive
@@ -19,28 +27,33 @@ export class ActionContainer extends Component {
   collapse = () => this.setState({ expanded: false });
 
   render() {
-    const {key, item } = this.props;
+    const {id, item, setParams, currentParams } = this.props;
+
     return (
       <li>
-        <Button isActive={this.state.expanded}
-                ref={'button' + key}
+        <Button isActive={this.state.expanded || (currentParams && currentParams.get(item.param))}
+                ref={'button' + id}
                 label={item.label}
                 icon={item.icon}
                 onClick={this.toggleExpanded}/>
         <Positioned isOpen={this.state.expanded}
                     positionAt="left bottom"
-                    positionTarget={this.refs['button' + key]}>
+                    positionTarget={this.refs['button' + id]}>
           <ClickOut
             onClickOut={this.collapse}
             ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list']}
             additionalNodes={['.dpw-navigation-dropdown-item-clear']}>
             <Menu>
-              {item.options.map((option, index) =>
-                  <RadioChoiceMenuOption key={index}
-                                         value={option.value}
-                                         label={option.label}
-                                         onClick={this.toggleExpanded.bind(this, option.value)}/>
-              )}
+              <div className="dpw--popup-item-collection">
+                {item.options.map((option, index) =>
+                    <RadioChoiceMenuOption key={index}
+                                           isActive={currentParams && currentParams.get(item.param) === option.value}
+                                           value={option.value}
+                                           label={option.label}
+                                           param={item.param}
+                                           setParams={setParams}/>
+                )}
+              </div>
             </Menu>
           </ClickOut>
         </Positioned>

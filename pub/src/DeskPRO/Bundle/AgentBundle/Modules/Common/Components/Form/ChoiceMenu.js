@@ -1,5 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {QuickFilter} from './QuickFilter';
+import classNames from 'classnames';
+import { connect } from 'react-redux';
 
 export class ChoiceMenu extends Component {
 
@@ -73,39 +75,32 @@ export class ChoiceMenuOption extends Component {
   }
 }
 
+@connect()
 export class RadioChoiceMenuOption extends Component {
 
   static propTypes = {
+    param: PropTypes.string.isRequired,
+    isActive: PropTypes.bool,
     label: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     values: PropTypes.array,
-    onClick: PropTypes.func.isRequired,
+    setParams: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
     children: PropTypes.any
   };
 
-  componentWillMount() {
-    const { values, value } = this.props;
-    this.setState({
-      isActive: values && values.indexOf(value) > -1
-    });
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { values } = nextProps;
-    this.setState({
-      isActive: values && values.indexOf(nextProps.value) > -1
-    });
-  }
-
   render() {
-    const {label} = this.props;
+    const {label, param, value, setParams, dispatch, isActive} = this.props;
+    const classes = classNames('dpwd-radio-button', { 'active': isActive });
 
     return (
-      <li>
-        <span className="dpwd-radio-button">
+      <li onClick={() => dispatch(setParams({param: param, value: value}))}>
+        <div className="dpw--popup-item-box">
+        <span className={classes}>
           <span className="dpwd-radio-button-disc"></span>
           <span className="radio-button-title">{label}</span>
         </span>
+        </div>
       </li>
     );
   }

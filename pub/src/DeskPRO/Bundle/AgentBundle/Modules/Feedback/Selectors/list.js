@@ -158,13 +158,18 @@ export const listFiltersSelector = createSelector(
   }
 );
 
+export const massActionsParamsSelector = createSelector(
+  stateSelector,
+    state => state.get('massActions')
+);
+
 export const massActionsSelector = createSelector(
   [navStateSelector, feedbackCategoriesSelector, feedbackTypesSelector],
   (navState, categories, types) => {
     const filterSelector = [];
 
     // Type options
-    const typeOptions = types.toArray().map(type => ({ value: type.get('title'), label: type.get('title') }));
+    const typeOptions = types.toArray().map(type => ({ value: type.get('id'), label: type.get('title') }));
     filterSelector.push({
       label: 'Type',
       type: 'select',

@@ -2,17 +2,6 @@ import DpApi from '../DpApi';
 import { compileParams } from '../ApiHelpers';
 
 /*
- * Feedback counts
- * @return Promise
- */
-export function toValidate() {
-  const query = {
-    awaiting_validation: 1
-  };
-  return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
-}
-
-/*
  * Feedback comments to review count
  * @return Promise
  */
@@ -31,7 +20,7 @@ export function deleteFeedbackComment(id) {
   return DpApi.sendDelete('DP_API/feedback_comments/' + id);
 }
 
-/**
+/*
  * Update a feedbackComment
  * @param commentId
  * @param data
@@ -74,7 +63,7 @@ export function getCustomCategories() {
   return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
 }
 
-/**
+/*
  * Get list of filtered feedback
  * @param {object} params Request options
  * @return {object} Promise
@@ -84,11 +73,21 @@ export function getList(params) {
   return DpApi.sendGet('DP_API/feedback/?include=person,feedback_status_category,custom_data_feedback&' + compileParams(params));
 }
 
-/**
+/*
  * Feedback comments to review list
  * @return Promise
  */
 export function commentsToReviewList(params) {
   console.log('DP_API/feedback_comments_list?include=person,feedback&' + compileParams(params));
   return DpApi.sendGet('DP_API/feedback_comments_list?include=person,feedback&' + compileParams(params));
+}
+
+export function massAction(params) {
+  const ids = [];
+  params.ids.forEach((id) => {
+    ids.push('id[]=' + id);
+  });
+  console.log('DP_API/feedback/mass_action?' + ids.join('&'));
+  console.log('actions', params.actions);
+  return DpApi.sendPut('DP_API/feedback/mass_action?' + ids.join('&'), params.actions);
 }
