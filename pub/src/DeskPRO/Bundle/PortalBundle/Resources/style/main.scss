@@ -1707,13 +1707,14 @@ $search-btn-height: $search-height - 24;
       padding-top: 4px;
       padding-bottom: 4px;
       background: #f3f3f3;
-      position: relative;
+      position: absolute;
       z-index: 300;
 
-      top: -(($search-height / 2) - 15);
-      @media all and (-ms-high-contrast: none) {// Ie fix fir the "or" positioning
-        top: 25px;
-      }
+      left: 5px;
+      top: (($search-height / 2) - 11);
+      // @media all and (-ms-high-contrast: none) {// Ie fix fir the "or" positioning
+      //   top: 25px;
+      // }
     }
   }
 
