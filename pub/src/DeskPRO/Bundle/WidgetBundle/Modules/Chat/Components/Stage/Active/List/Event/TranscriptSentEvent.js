@@ -1,6 +1,6 @@
 import React from 'react';
 
-export class TranscriptSent extends React.Component {
+export class TranscriptSentEvent extends React.Component {
 
   render() {
     return (

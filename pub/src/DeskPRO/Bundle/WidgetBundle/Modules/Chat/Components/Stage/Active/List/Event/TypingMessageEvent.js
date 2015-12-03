@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
-import { Message } from './Message';
-import { MessageAvatar } from './MessageAvatar';
+import { Message } from '../Message/Message';
+import { MessageAvatar } from '../Message/MessageAvatar';
 
-export class TypingMessage extends React.Component {
+export class TypingMessageEvent extends React.Component {
 
   static propTypes = {
     user: PropTypes.object
