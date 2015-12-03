@@ -12,7 +12,7 @@ export class MessageFooter extends React.Component {
 
     return (
       <div className="dpdesignportal-message-footer">
-        <a href="#" className="dpdesignportal-message-footer-assets-link"><i className="fa fa-copy"></i> Chat Assets (4)</a>
+        {false && <a href="#" className="dpdesignportal-message-footer-assets-link"><i className="fa fa-copy"></i> Chat Assets (4)</a>}
         <TimeAgo className="dpdesignportal-message-footer-timer" minPeriod={60000} date={message.get('date_created')} />
       </div>
     );
