@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 
-export class EndChatConfirm extends React.Component {
+export class EndChatConfirmPopup extends React.Component {
 
   static propTypes = {
     positionAt: PropTypes.string,

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Simple from 'DeskPRO/Component/Positioned/Simple';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
-import { EndChatConfirm } from './EndChatConfirm';
+import { EndChatConfirmPopup } from './EndChatConfirmPopup';
 import { endChat } from '../../../../Actions/chatActions';
 import { chatIdSelector } from '../../../../Selectors/chat';
 
@@ -65,12 +65,12 @@ export class EndChatContainer extends React.Component {
                 positionTarget={this.refs.button}
                 positionAt={`right ${positionAt}`}
                 positionMy={`right ${positionMy}`}
-                zIndex={100}>
+                zIndex={1000}>
 
           <ClickOut onClickOut={this.onClosePopup}
                     context={[parent.document, parent.window.widget_iframe.document]}>
 
-            <EndChatConfirm positionAt={positionAt}
+            <EndChatConfirmPopup positionAt={positionAt}
                             onConfirm={this.onEndChat}
                             onCancel={this.onClosePopup} />
           </ClickOut>
