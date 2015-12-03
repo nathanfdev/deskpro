@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { AgentMessage } from './Message/AgentMessage';
 import { UserMessage } from './Message/UserMessage';
-import { StartChatEvent } from './Event/StartChatEvent';
-import { JoinedEvent } from './Event/JoinedEvent';
+import { StartChatEvent } from './Event/Inline/StartChatEvent';
+import { JoinedEvent } from './Event/Inline/JoinedEvent';
 import ScrollArea from 'react-scrollbar';
 
 export class MessagesList extends React.Component {

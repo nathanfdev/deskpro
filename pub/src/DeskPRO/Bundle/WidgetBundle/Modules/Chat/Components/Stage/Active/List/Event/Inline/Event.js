@@ -1,22 +1,22 @@
 import React, { PropTypes } from 'react';
 import TimeAgo from 'react-timeago';
 
-export class JoinedEvent extends React.Component {
+export class Event extends React.Component {
 
   static propTypes = {
-    message: PropTypes.object
+    message: PropTypes.object,
+    children: PropTypes.any
   };
 
   render() {
-    const { message } = this.props;
-    const content = JSON.parse(message.get('content'));
+    const { message, children } = this.props;
 
     return (
       <div className="dpdesignportal-event">
         <div className="dpdesignportal-event-content">
-          <hr/>
-          <span className="dpdesignportal-event-title">{content.name} has joined the chat</span>
           <TimeAgo className="dpdesignportal-event-time" minPeriod={60000} date={message.get('date_created')} />
+          <hr/>
+          {children}
         </div>
       </div>
     );
