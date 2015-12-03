@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api;
 
+use DeskPRO\Bundle\AppBundle\Form\DataTransformer\TextStringTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -56,11 +57,16 @@ class CreateChatType extends AbstractType
         $builder
             ->add('name', 'text', [
                 'property_path' => 'person_name',
+                'required'      => false,
             ])
             ->add('email', 'email', [
                 'property_path' => 'person_email',
+                'required'      => false,
             ])
         ;
+
+        $builder->get('name')->addModelTransformer(new TextStringTransformer());
+        $builder->get('email')->addModelTransformer(new TextStringTransformer());
     }
 
     /**
