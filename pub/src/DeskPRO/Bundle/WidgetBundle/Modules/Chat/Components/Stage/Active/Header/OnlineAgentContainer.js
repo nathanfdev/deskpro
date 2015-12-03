@@ -25,7 +25,7 @@ export class OnlineAgentContainer extends React.Component {
 
     return (
       <div className="dpdesignportal-chat-header">
-        <div className="dpdesignportal-chat-header-avatar-container multiple">
+        <div className="dpdesignportal-chat-header-avatar-container">
           <ul>
             <li>
               <div className="dpdesignportal-chat-header-avatar" style={style} />
@@ -33,7 +33,7 @@ export class OnlineAgentContainer extends React.Component {
           </ul>
         </div>
         <hr/>
-        <h1>You are chatting with <span>{agentName}</span></h1>
+        <h1>You are chatting with <span className="name">{agentName}</span></h1>
         <h2>{departmentName}</h2>
       </div>
     );
