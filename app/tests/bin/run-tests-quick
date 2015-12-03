@@ -23,6 +23,11 @@ fi
 ##################################
 # PHPUNIT
 ##################################
+
+# This warms up caches so that this test is executed in proper context
+# ToDo: describe issue with AbstractKernelAwareTestCase::getPortalKernel() and this test
+bin/phpunit phpunit/DpTest/Application/EmailBundle/Templating/EngineTest.php > /dev/null
+
 IS_PHPUNIT_ERROR=0
 
 bin/phpunit
