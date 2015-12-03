@@ -295,6 +295,7 @@ function getWebpackConfig(mode, isDevServer, isProd) {
 
     config.entry['DeskPRO_PortalBundle_iestyle'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/ie-overrides.scss'];
     config.entry['DeskPRO_PortalBundle_ie8style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/ie8-overrides.scss'];
+    config.entry['DeskPRO_PortalBundle_ie9style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/ie9-overrides.scss'];
   }
   if (mode === 'all' || mode === 'widget') {
     config.entry['DeskPRO_WidgetBundle']       = ['./src/DeskPRO/Bundle/WidgetBundle/DeskPRO_WidgetBundle'];
