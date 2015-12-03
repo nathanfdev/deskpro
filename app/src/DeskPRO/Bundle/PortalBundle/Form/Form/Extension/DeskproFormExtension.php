@@ -36,6 +36,7 @@ use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class DeskproFormExtension extends AbstractTypeExtension
@@ -48,6 +49,14 @@ class DeskproFormExtension extends AbstractTypeExtension
                 'force_boolean'         => false,
                 'fully_hidden'          => false,
                 'post_max_size_message' => 'portal.forms.error_server_rejected_size',
+                'saved_form_subrequest' => false,
+                'allow_extra_fields'    => function (Options $options) {
+                    // if its a saved form subrequest, allow extra fields
+                    // this is because we disable things like catpcha, and csrf, and they may
+                    // be present in the form data even though we've removed them from the actual form
+                    return $options['saved_form_subrequest'];
+                },
+                'extra_fields_message' => 'portal.forms.extra_fields',
             )
         );
     }

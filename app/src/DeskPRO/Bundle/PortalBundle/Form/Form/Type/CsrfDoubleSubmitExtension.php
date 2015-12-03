@@ -80,11 +80,18 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
             return;
         }
 
+        // don't add CSRF on the saved form requests
+        if ($options['saved_form_subrequest']) {
+            return;
+        }
+
         $builder->addEventListener(FormEvents::PRE_SUBMIT, array($this, 'onPreSubmit'));
     }
 
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
+        // if saved_form_subrequest is true, we should still add to the view, because
+        // if the users sees the view it means there is an error and we need to process CSRf after that
         if ($options['csrf_double_submit_protection'] && !$view->parent && $options['compound']) {
             $factory = $form->getConfig()->getFormFactory();
 

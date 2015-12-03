@@ -96,7 +96,7 @@ class PersonRegistrationType extends AbstractType
             'mapped'      => false,
             'required'    => true,
             'constraints' => array(
-                new NotBlank(['message'  => 'portal.forms.error_required']),
+                new NotBlank(['message' => 'portal.forms.error_required']),
                 new DpPassword(['person' => new PersonGuest()]),
             ),
         ));
@@ -109,13 +109,14 @@ class PersonRegistrationType extends AbstractType
         $field_manager   = $this->field_manager;
         $captcha_decider = $this->captcha_decider;
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($field_manager, $captcha_decider) {
+            $form = $event->getForm();
             foreach ($field_manager->getAvailablePersonFields() as $field_def) {
                 if (!$field_def->is_enabled) {
                     continue;
                 }
 
                 $id = $field_def->getId();
-                $event->getForm()->add(
+                $form->add(
                     $id,
                     'deskpro_custom_data_person',
                     array(

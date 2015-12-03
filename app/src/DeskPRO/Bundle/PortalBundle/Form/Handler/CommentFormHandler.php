@@ -118,7 +118,7 @@ class CommentFormHandler
                     $this->informAntiAbuse($person, $request);
 
                     // return the redirect response
-                    return $this->saver->saveFormForPerson($person, $form, $request);
+                    return $this->saver->saveFormForPersonLogin($person, $form, $request);
                 }
             } else {
                 $this->informAntiAbuse($person, $request);

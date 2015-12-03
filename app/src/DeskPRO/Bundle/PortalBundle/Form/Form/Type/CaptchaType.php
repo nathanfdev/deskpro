@@ -36,6 +36,8 @@ use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
@@ -59,15 +61,27 @@ class CaptchaType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if ($this->isRecaptchaEnabled()) {
-            $builder->add('captcha', 'deskpro_recaptcha');
-        } else {
-            $builder->add('captcha', 'captcha', [
-                'label'           => false,
-                'as_url'          => true,
-                'invalid_message' => 'portal.forms.error_captcha',
-            ]);
-        }
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            $form = $event->getForm();
+
+            // if saved_form_subrequest option is true on the root form, ignore all captcha (don't add it!)
+            $r_form = $form->getRoot();
+            if ($form->getRoot()->getConfig()->getOption('saved_form_subrequest', false)) {
+                $form->getRoot()->remove($form->getName());
+
+                return;
+            }
+
+            if ($this->isRecaptchaEnabled()) {
+                $form->add('captcha', 'deskpro_recaptcha');
+            } else {
+                $form->add('captcha', 'captcha', [
+                    'label'           => false,
+                    'as_url'          => true,
+                    'invalid_message' => 'portal.forms.error_captcha',
+                ]);
+            }
+        });
     }
 
     public function getName()
@@ -87,6 +101,12 @@ class CaptchaType extends AbstractType
 
                 return $this->language_manager->phrase('portal.forms.label_captcha');
             },
+            'allow_extra_fields' => function (Options $options) {
+                    // if its a saved form subrequest, allow extra fields
+                    // this is because we disable things like catpcha, and csrf, and they may
+                    // be present in the form data even though we've removed them from the actual form
+                    return $options['saved_form_subrequest'];
+                },
         ]);
     }
 
