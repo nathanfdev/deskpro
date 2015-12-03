@@ -35,6 +35,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\PortalBundle\Model\EmailTo;
 use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -50,8 +51,8 @@ class PortalEmailSender
 
     public function sendPasswordResetLink(Person $person)
     {
-        $this->sendToPerson(
-            $person,
+        $this->sendTo(
+            new EmailTo($person),
             'EmailBundle:Portal:reset-password.html.twig',
             array(
                 'person'    => $person,
@@ -68,8 +69,8 @@ class PortalEmailSender
 
     public function sendPasswordSetLink(Person $person)
     {
-        $this->sendToPerson(
-            $person,
+        $this->sendTo(
+            new EmailTo($person),
             'EmailBundle:Portal:set-password.html.twig',
             array(
                 'person'    => $person,
@@ -88,21 +89,28 @@ class PortalEmailSender
     {
         $email = $person->getPrimaryEmail();
 
-        if (!$verify_url = $this->getPersonValidator()->getEmailLink(PersonValidator::TYPE_EMAIL_PRIMARY, $email)) {
-            $verify_url = null;
-        }
+        $portal_url = $this->getRouter()->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        $portal_url = $this->getRouter()->generate('portal_home', array(), UrlGeneratorInterface::ABSOLUTE_URL);
-
-        $this->sendToPerson(
-            $person,
-            'EmailBundle:Portal:register-welcome.html.twig',
+        $this->sendTo(
+            new EmailTo($person),
+            'DeskPRO:emails_user:register-welcome.html.twig',
             array(
                 'person'     => $person,
                 'email'      => $email,
-                'verify_url' => $verify_url,
+                'verify_url' => null, // BC - this may be in old templates and it should always be null
                 'portal_url' => $portal_url,
             )
+        );
+    }
+
+    public function sendEmailValidation(EmailTo $email_to, $verify_url)
+    {
+        $this->sendTo(
+            $email_to,
+            'EmailBundle:Portal:email-validation.html.twig',
+            [
+                'verify_url' => $verify_url,
+            ]
         );
     }
 
@@ -113,8 +121,8 @@ class PortalEmailSender
         $tpl        = 'DeskPRO:emails_user:feedback-new.html.twig';
         $verify_url = $this->getPersonValidator()->getEmailLink(PersonValidator::TYPE_FEEDBACK, $person->getPrimaryEmail(), $feedback->getId());
 
-        $this->sendToPerson(
-            $person,
+        $this->sendTo(
+            new EmailTo($person),
             $tpl,
             array(
                 'person'     => $person,
@@ -129,8 +137,8 @@ class PortalEmailSender
     {
         $person = $ticket->getPerson();
 
-        $this->sendToPerson(
-            $person,
+        $this->sendTo(
+            new EmailTo($person),
             'EmailBundle:Portal:new-ticket-guest.html.twig',
             array(
                 'ticket_view_url' => $this->getRouter()->generate(
@@ -144,24 +152,29 @@ class PortalEmailSender
         );
     }
 
-    public function sendToPerson(Person $person, $template, $vars)
-    {
-        $message = $this->container->get('mailer')->createMessage();
-        $message->setTo($person->getPrimaryEmail()->email, $person->name);
-        $message->setTemplate($template, $vars);
-        $message->prepare();
-        $this->container->get('mailer')->send($message);
-    }
-
     public function sendLoginAlert(Person $person, $success)
     {
-        $this->sendToPerson(
-            $person,
+        $this->sendTo(
+            new EmailTo($person),
             'EmailBundle:Portal:login-alert.html.twig',
             array(
                 'success' => $success,
             )
         );
+    }
+
+    public function sendTo(EmailTo $email_to, $template, $vars)
+    {
+        /** @var \Application\DeskPRO\Mail\Message $message */
+        $message = $this->container->get('mailer')->createMessage();
+        if ($person = $email_to->getPerson()) {
+            $message->setToPerson($person);
+        } else {
+            $message->setTo($email_to->getEmailAddress(), $email_to->getName());
+        }
+        $message->setTemplate($template, $vars);
+        $message->prepare();
+        $this->container->get('mailer')->send($message);
     }
 
     public function getDefaultOutgoingEmailAddress()
