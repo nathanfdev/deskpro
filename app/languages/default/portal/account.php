@@ -94,4 +94,5 @@ return array(
     'portal.account.section-desc-register'             => 'Register an account so you can easily manage your communications.',
     'portal.account.section-desc-login'                => 'Already have an account? Login below.',
     'portal.account.section-desc-login-external'       => 'Use the links below if you have an account with another provider.',
+    'portal.account.automatically_join_org_tickets'    => 'Automatically join {{org_name}}\'s tickets?',
 );

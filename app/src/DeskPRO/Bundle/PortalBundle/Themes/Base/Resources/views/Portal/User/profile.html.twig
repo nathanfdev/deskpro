@@ -49,6 +49,9 @@
             {% endif %}
             {{ form_row(profile_form.timezone) }}
             {{ form_row(profile_form.first_name) }}
+            {% if profile_form.manager_auto_add is defined %}
+                {{ form_row(profile_form.manager_auto_add) }}
+            {% endif %}
             {{ form_rest(profile_form) }}
             <div class="column-full">
                 <div class="bucket">

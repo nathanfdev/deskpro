@@ -21,7 +21,9 @@ export class OnlineAgent extends React.Component {
         <div className="dpdesignportal-chat-header-avatar-container">
           <ul>
             <li>
-              <div className="dpdesignportal-chat-header-avatar" style={style} />
+              <div className="dpdesignportal-chat-header-avatar" style={style}>
+                <i className="fa fa-user"></i>
+              </div>
             </li>
           </ul>
         </div>
