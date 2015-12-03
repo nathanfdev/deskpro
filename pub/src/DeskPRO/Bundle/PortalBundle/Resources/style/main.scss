@@ -9640,6 +9640,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
 
       i {
         left: 0px;
+        top: 1px;
       }
       .agent-avatar {
         background: #e5e5e5;
@@ -9647,7 +9648,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
       .agent-avatar i {
         @media all and (-ms-high-contrast: none) {// align top button text alignment
           left: 0px;
-          top: 7.5px;
+          // top: 7.5px;
         }
         color: #cdcdcd;
       }
