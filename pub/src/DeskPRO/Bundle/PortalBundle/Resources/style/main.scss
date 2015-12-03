@@ -9142,13 +9142,17 @@ form {
     cursor: pointer;
   }
 
-  @media all and (-ms-high-contrast: none) {// Reposition the checkboxes
-    [type="checkbox"] {
-      position: relative;
-      top: 2px;
-    }
-
+  [type="checkbox"], span {
+    display: inline-block;
+    vertical-align: middle;
   }
+
+  // @media all and (-ms-high-contrast: none) {// Reposition the checkboxes
+  //   [type="checkbox"] {
+  //     position: relative;
+  //     top: 2px;
+  //   }
+  // }
 
 }
 
