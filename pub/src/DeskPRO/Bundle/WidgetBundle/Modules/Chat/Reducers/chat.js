@@ -5,6 +5,7 @@ import moment from 'moment';
 import Immutable from 'immutable';
 
 const initialState = {
+  audioNotifications: false,
   chatInfo: {
     date_ended: moment().format('X')
   },
@@ -17,6 +18,7 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
+  [actions.toggleAudioNotifications]: state => state.set('audioNotifications', !state.get('audioNotifications')),
   [actions.updateChatInfo]: setFullPayload('chatInfo'),
   [actions.resetMessages]: setValue('messages', []),
   [actions.addNewMessages]: (state, payload) => {
