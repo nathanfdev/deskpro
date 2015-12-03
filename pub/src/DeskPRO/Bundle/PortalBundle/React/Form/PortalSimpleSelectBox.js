@@ -85,6 +85,9 @@ export default class PortalSimpleSelectBox extends React.Component {
   }
 
   documentClickHandler() {
+    if (!this.state.expanded) {
+      return;
+    }
     this.setState({
       expanded: false
     });
@@ -111,14 +114,10 @@ export default class PortalSimpleSelectBox extends React.Component {
     let val;
     if (this.props.multiple) {
       val = this.state.value;
-      if (!val.some(val, (v) => {
-            return parseInt(v.id, 10) === parseInt(option.id, 10);
-          })) {
+      if (!val.some(v => parseInt(v.id, 10) === parseInt(option.id, 10))) {
         val.push(option);
       } else {
-        val = val.filter((opt) => {
-          return parseInt(opt.id, 10) !== parseInt(option.id, 10);
-        });
+        val = val.filter(opt => parseInt(opt.id, 10) !== parseInt(option.id, 10));
       }
       val = val.filter((v) => {
         return typeof v !== 'undefined';
@@ -230,7 +229,7 @@ export default class PortalSimpleSelectBox extends React.Component {
                           isFocused={option === this.state.selectedOption}
                           key={option.id}
                           option={option}
-                          multiple={this.props.multiple}
+                          multiple={!!this.props.multiple}
                           active={isActive(option)}/>
           );
         })
