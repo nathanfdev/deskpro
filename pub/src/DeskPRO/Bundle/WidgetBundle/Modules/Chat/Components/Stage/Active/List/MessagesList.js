@@ -23,9 +23,15 @@ export class MessagesList extends React.Component {
     setTimeout(() => this.refs.scrollArea.scrollBottom(), 0);
   }
 
-  renderMessage(message, index) {
+  static renderMessage(message, index) {
     if (message.get('is_sys')) {
-      return <JoinedEvent key={index} message={message} />;
+      const sysContent = JSON.parse(message.get('content'));
+      switch (sysContent.phrase_id) {
+        case 'message_assigned':
+          return <JoinedEvent key={index} message={message} />;
+        default:
+          return null;
+      }
     }
     if (message.get('author')) {
       return <AgentMessage key={index} message={message} />;
@@ -42,7 +48,7 @@ export class MessagesList extends React.Component {
         <ScrollArea ref="scrollArea" vertical>
           <div className="bottom-aligner"/>
           <div>
-            {messages.map((message, index) => this.renderMessage(message, index))}
+            {messages.map((message, index) => MessagesList.renderMessage(message, index))}
           </div>
         </ScrollArea>
       </div>
