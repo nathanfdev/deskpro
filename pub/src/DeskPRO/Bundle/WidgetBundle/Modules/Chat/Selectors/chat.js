@@ -28,6 +28,11 @@ export const agentAvatarSelector = createSelector(
   chatInfo => chatInfo.get('agent_avatar')
 );
 
+export const departmentNameSelector = createSelector(
+  chatInfoSelector,
+  chatInfo => chatInfo.get('department_name')
+);
+
 export const dateEndedSelector = createSelector(
   chatInfoSelector,
   chatInfo => chatInfo.get('date_ended')
