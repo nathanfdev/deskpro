@@ -4,6 +4,7 @@ import { Header } from './Header/Header';
 import { MessagesListContainer } from './List/MessagesListContainer';
 import { ReplyFormContainer } from './Reply/ReplyFormContainer';
 import { RateAgentContainer } from './Feedback/RateAgentContainer';
+import { AgentDisconnectedContainer } from './Disconnected/AgentDisconnectedContainer';
 import { isEndedSelector } from '../../../Selectors/chat';
 
 @connect(state => ({
@@ -24,6 +25,7 @@ export class ChatActiveContainer extends React.Component {
 
         <div className="dpdesignportal-chat-footer">
           <MessagesListContainer />
+          <AgentDisconnectedContainer />
           {isEnded && <RateAgentContainer />}
           <ReplyFormContainer />
         </div>
