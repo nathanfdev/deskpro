@@ -16,13 +16,17 @@ export class OnlineAgentContainer extends React.Component {
   };
 
   render() {
-    const { agentName, departmentName } = this.props;
+    const { agentAvatar, agentName, departmentName } = this.props;
 
     return (
       <div className="dpdesignportal-chat-header">
         <div className="dpdesignportal-chat-header-avatar-container multiple">
           <ul>
-            <li><div className="dpdesignportal-chat-header-avatar"></div></li>
+            {agentAvatar &&
+              <li>
+                <div className="dpdesignportal-chat-header-avatar" style={{backgroundImage: `url(${agentAvatar})`}} />
+              </li>
+            }
           </ul>
         </div>
         <hr/>

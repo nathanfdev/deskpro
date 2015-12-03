@@ -79,7 +79,7 @@ class ChatConversationTransformer extends AbstractDataSerializerTransformer
             'author_type'     => $person && $person->isAgent() ? 'agent' : 'user',
             'agent_id'        => $agent ? $agent->getId() : 0,
             'agent_name'      => $agent ? $agent->getDisplayName() : '',
-            'agent_avatar'    => $agent ? $this->avatar_resolver->getAvatarModel($agent)->getUrl(20) : '',
+            'agent_avatar'    => $agent ? $this->avatar_resolver->getAvatarModel($agent)->getUrl(45) : '',
             'department_name' => $department ? $department->getFullTitle() : '',
         ];
     }
