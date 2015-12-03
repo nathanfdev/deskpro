@@ -84,4 +84,5 @@ return array(
     'portal.forms.error_password_require_num_symbol'    => 'At least {{count}} symbol|At least {{count}} symbols',
     'portal.forms.error_password_forbid_reuse'          => 'You cannot use a password you have used before',
     'portal.forms.error_password_current'               => 'This must be your current password',
+    'portal.forms.extra_fields'                         => 'There was an error processing your request. Please try again.',
 );
