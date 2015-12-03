@@ -3,7 +3,7 @@ import { Header } from './Header/Header';
 import { MessagesListContainer } from './List/MessagesListContainer';
 import { ReplyFormContainer } from './Reply/ReplyFormContainer';
 import { RateAgentContainer } from './Feedback/RateAgentContainer';
-import { AgentDisconnectedContainer } from './Disconnected/AgentDisconnectedContainer';
+import { AgentDisconnectedContainer } from './Disconnect/AgentDisconnectedContainer';
 
 export class ChatActive extends React.Component {
 
