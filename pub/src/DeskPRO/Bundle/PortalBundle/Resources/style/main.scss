@@ -1435,6 +1435,10 @@ $search-btn-height: $search-height - 24;
       right: -1px;
     }
 
+    .search-result-collection-loading, .search-result-collection-empty {
+      height: 60px;
+    }
+
     .search-result-collection {
       padding: 10px 20px;
       border-bottom: 1px solid #dedede;
@@ -1449,7 +1453,6 @@ $search-btn-height: $search-height - 24;
     }
 
     .search-result-collection-loading {
-      height: 60px;
       background: url("#{$portal-img-path}/search-spinner.gif");
       background-repeat: no-repeat;
       background-position: center center;
@@ -1466,9 +1469,9 @@ $search-btn-height: $search-height - 24;
       text-align: center;
       color: #a6a5a5;
       border-bottom: 1px solid #d6d6d6;
+      padding: 10px;
 
       div {
-        margin: 10px;
         border-radius: 2px;
         background: #f4f4f4;
         border: 1px solid #cfcfcf;
