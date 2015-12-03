@@ -57,6 +57,15 @@ class ContainerMock
         return new self();
     }
 
+    public function withDb()
+    {
+        $db = m::mock('Application\\DeskPRO\\DBAL\\Connection');
+        $db->shouldIgnoreMissing();
+        $this->mock->shouldReceive('getDb')->andReturn($db);
+
+        return $this;
+    }
+
     public function withNullEm()
     {
         $em = m::mock('Application\\DeskPRO\\ORM\\EntityManager');
