@@ -30,6 +30,10 @@ export class TranscriptContainer extends React.Component {
     });
   };
 
+  onSubmit = data => {
+    console.log('submit transcript form', data);
+  };
+
   render() {
     const { children } = this.props;
     const childProps = children.props;
@@ -52,7 +56,7 @@ export class TranscriptContainer extends React.Component {
           <ClickOut onClickOut={this.onCloseForm}
                     context={[parent.document, parent.window.widget_iframe.document]}>
 
-            <TranscriptForm />
+            <TranscriptForm onSubmit={this.onSubmit} onClose={this.onCloseForm} />
           </ClickOut>
         </Simple>
       </span>
