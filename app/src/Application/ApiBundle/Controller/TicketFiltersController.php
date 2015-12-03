@@ -337,6 +337,6 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
         $display_order = $this->in->getCleanValueArray('display_order', 'uint', 'discard');
         $this->em->getRepository('DeskPRO:TicketFilter')->updateDisplayOrder($display_order);
 
-        return $this->createSuccessResponse();
+        return $this->listAction();
     }
 }

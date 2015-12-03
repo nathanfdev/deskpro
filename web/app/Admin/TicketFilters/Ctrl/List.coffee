@@ -30,7 +30,6 @@ define [
           orders = []
           $list.find('li').each(->
             id = parseInt($(this).data('id'))
-            console.log(id)
 
             if id
               orders.push(id)
