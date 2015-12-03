@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { AgentMessage } from './Message/AgentMessage';
 import { UserMessage } from './Message/UserMessage';
+import { StartChatEvent } from './Event/StartChatEvent';
 import { JoinedEvent } from './Event/JoinedEvent';
 import ScrollArea from 'react-scrollbar';
 
@@ -27,6 +28,8 @@ export class MessagesList extends React.Component {
     if (message.get('is_sys')) {
       const sysContent = JSON.parse(message.get('content'));
       switch (sysContent.phrase_id) {
+        case 'message_started':
+          return <StartChatEvent key={index} message={message} />;
         case 'message_assigned':
           return <JoinedEvent key={index} message={message} />;
         default:
