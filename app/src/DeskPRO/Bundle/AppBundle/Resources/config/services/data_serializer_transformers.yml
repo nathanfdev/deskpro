@@ -41,3 +41,8 @@ services:
       class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\DepartmentTransformer
       arguments:
         - @avatar_resolver
+
+    data_serializer.transformer.chat_message:
+        class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\ChatMessageTransformer
+        arguments:
+          - @avatar_resolver
