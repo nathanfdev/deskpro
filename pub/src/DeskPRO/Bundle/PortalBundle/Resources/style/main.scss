@@ -9062,12 +9062,15 @@ form {
   font-size: 0.9em;
   line-height: 1em;
 
+  span {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
   input {
+    display: inline-block;
+    vertical-align: middle;
     margin-right: 2px;
-    @media all and (-ms-high-contrast: none) {// reposition for ie
-      position: relative;
-      top: 2px;
-    }
   }
 }
 
