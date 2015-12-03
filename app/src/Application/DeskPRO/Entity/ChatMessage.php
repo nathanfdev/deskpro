@@ -129,6 +129,9 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $date_received = null;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this['date_created'] = new \DateTime();
@@ -142,7 +145,26 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
-    public function setAuthor($author)
+    /**
+     * @return ChatConversation
+     */
+    public function getConversation()
+    {
+        return $this->conversation;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getAuthor()
+    {
+        return $this->author;
+    }
+
+    /**
+     * @param Person $author
+     */
+    public function setAuthor(Person $author = null)
     {
         // Could be a guest, in which case we dont care
         if ($author && $author->id) {
@@ -212,6 +234,22 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
         }
 
         return $url;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsSys()
+    {
+        return $this->is_sys;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMetadata()
+    {
+        return $this->metadata;
     }
 
     /**

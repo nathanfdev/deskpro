@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
+use Application\DeskPRO\Entity\ChatMessage;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 
 /**
@@ -43,7 +44,7 @@ class ChatMessageTransformer extends AbstractDataSerializerTransformer
      */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        return ['id', 'author', 'person_name', 'content', 'is_html', 'is_sys', 'date_created'];
+        return ['id', 'content', 'metadata', 'is_html', 'is_sys', 'date_created'];
     }
 
     /**
@@ -51,6 +52,66 @@ class ChatMessageTransformer extends AbstractDataSerializerTransformer
      */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        return [];
+        /** @var ChatMessage $data */
+        $data = $transformation_request->getDataToBeTransformed();
+
+        return [
+            'author_id'   => $this->getAuthorId($data),
+            'author_type' => $this->getAuthorType($data),
+            'author_name' => $this->getAuthorName($data),
+        ];
+    }
+
+    /**
+     * @param ChatMessage $message
+     *
+     * @return int
+     */
+    private function getAuthorId(ChatMessage $message)
+    {
+        return $message->getAuthor() ? $message->getAuthor()->getId() : 0;
+    }
+
+    /**
+     * @param ChatMessage $message
+     *
+     * @return string
+     */
+    private function getAuthorType(ChatMessage $message)
+    {
+        $author      = $message->getAuthor();
+        $metadata    = $message->getMetadata();
+        $author_type = $author && $author->is_agent ? 'agent' : 'user';
+
+        // Handle the case where the author is an agent in the user interface
+        if ($author_type === 'agent' && isset($metadata['is_user_message'])) {
+            $author_type = 'user';
+        }
+
+        return $author_type;
+    }
+
+    /**
+     * @param ChatMessage $message
+     *
+     * @return string
+     */
+    private function getAuthorName(ChatMessage $message)
+    {
+        if ($message->getIsSys()) {
+            return '*';
+        }
+
+        $author = $message->getAuthor();
+        if ($author) {
+            return $author['display_name_user'];
+        }
+
+        $conversation = $message->getConversation();
+        if ($conversation['person_name']) {
+            return $conversation['person_name'];
+        }
+
+        return 'User';
     }
 }
