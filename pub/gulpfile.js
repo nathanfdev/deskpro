@@ -232,9 +232,28 @@ function getWebpackConfig(mode, isDevServer, isProd) {
             path.resolve(__dirname, 'node_modules/formsy-react')
           ],
           exclude: [
-            path.resolve(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Legacy'),
+            path.resolve(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Legacy')
           ],
-          loader: 'babel-loader?stage=0'
+          loader: 'babel',
+          query: {
+            stage: 0,
+            plugins: ['react-transform'],
+            extra: {
+              'react-transform': {
+                'transforms': [
+                  {
+                    'transform': 'react-transform-hmr',
+                    'imports': ['react'],
+                    'locals': ['module']
+                  },
+                  {
+                    'transform': 'react-transform-catch-errors',
+                    'imports': ['react', 'redbox-react', './redboxOptions']
+                  }
+                ]
+              }
+            }
+          }
         },
         {
           test: /\.(png|gif|jpg|jpeg|woff|woff2|ttf|eot|svg)(\?|$)/,
