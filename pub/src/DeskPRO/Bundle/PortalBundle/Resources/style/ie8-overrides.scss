@@ -1,4 +1,13 @@
 // Special rules for special IE 8 go here
-body {
+.search-and-ticket {
+  .search-or-ticket {
+    span {
+      display: none !important;
+    }
+  }
+}
+
+
+.top-bar {
 
 }
