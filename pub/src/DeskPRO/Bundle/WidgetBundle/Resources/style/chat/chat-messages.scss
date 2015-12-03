@@ -324,10 +324,17 @@
   font-size: 10px;
   color: #cdcdcd;
   height: 20px;
+
   .dpdesignportal-message-footer-assets-link {
     float: right;
     color: #99b1cc;
     text-decoration: none;
     &:hover { color: #4681b2; }
+  }
+
+  .dpdesignportal-message-footer-timer {
+    &.right {
+      float: right;
+    }
   }
 }
