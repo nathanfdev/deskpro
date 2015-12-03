@@ -249,8 +249,9 @@
             <label for="{{ id }}"><input
                         type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />{{ checkbox_label|trans }}
             </label>
+        {% else %}
+            {{ parent() }}
         {% endif %}
-        {{ parent() }}
     {% endspaceless %}
 {% endblock checkbox_widget %}
 
