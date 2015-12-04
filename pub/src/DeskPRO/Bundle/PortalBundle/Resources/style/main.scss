@@ -997,6 +997,11 @@ button, .button, input[type="submit"] {
     font-weight: bold;
     font-size: 10px;
     text-transform: uppercase;
+
+    @media screen and (max-width: 760px) {
+      display: none;
+    }
+
     span {
       padding-left: 4px;
 
@@ -1944,6 +1949,10 @@ $search-btn-height: $search-height - 24;
   line-height: 1.2em;
   padding-left: 10px;
   margin-bottom: 10px;
+
+  @media screen and (max-width: 760px) {
+    display: none;
+  }
 
   a {
     color: #aab8dc;
@@ -7342,6 +7351,12 @@ ul.categories-article-list {
       }
       &:before { left: -100px; }
       &:after { right: -100px; }
+
+      @media screen and (max-width: 760px) {
+        &:before, &:after {
+          display: none;
+        }
+      }
     }
     a {
       font-size: 24px;
