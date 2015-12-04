@@ -24,6 +24,21 @@ export class ReplyForm extends React.Component {
     });
   };
 
+  onUploadFile = event => {
+    event.preventDefault();
+    console.log('onUploadFile');
+  };
+
+  onScreenShare = event => {
+    event.preventDefault();
+    console.log('onScreenShare');
+  };
+
+  onSelectEmoticon = event => {
+    event.preventDefault();
+    console.log('onSelectEmoticon');
+  };
+
   onSubmit = event => {
     event.preventDefault();
 
@@ -63,9 +78,17 @@ export class ReplyForm extends React.Component {
 
         <div className="dpdesignportal-chat-form-button-row">
           <div className="dpdesignportal-chat-form-button-row-main">
-            <a href="#"><i className="fa fa-upload"></i> Upload file</a>
-            <a href="#"><i className="fa fa-camera"></i> Screen Share</a>
-            <a href="#" className="dpdesignportal-chat-form-button-row-emoticons" title="Chat Emoticons">
+            <a href="#" onClick={this.onUploadFile}>
+              <i className="fa fa-upload"></i> Upload file
+            </a>
+            <a href="#" onClick={this.onScreenShare}>
+              <i className="fa fa-camera"></i> Screen Share
+            </a>
+            <a href="#"
+               className="dpdesignportal-chat-form-button-row-emoticons"
+               title="Chat Emoticons"
+               onClick={this.onSelectEmoticon}>
+
               <span className="img" />
             </a>
           </div>
