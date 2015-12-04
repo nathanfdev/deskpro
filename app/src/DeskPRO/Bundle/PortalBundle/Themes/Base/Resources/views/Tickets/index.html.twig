@@ -243,7 +243,7 @@
                   {% set ticket_view = ticket_view(ticket) %}
                   <tr class="item-row">
                     <td class="first-in-line ticket-ref">
-                      {{ ticket_public_id(ticket) }}
+                      <span>{{ ticket_public_id(ticket) }}</span>
                     </td>
                     {% for col in ticket_table.columns %}
                     <td class="{{ _self.col_td_class(ticket, ticket_view, ticket_table, col) }}" data-col="{{ col.id }}"{% if not ticket_table.isActive(col) %} style="display:none;"{% endif %}>

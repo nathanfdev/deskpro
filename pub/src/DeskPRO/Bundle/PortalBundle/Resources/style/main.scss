@@ -7033,6 +7033,13 @@ ul.categories-article-list {
     &.ticket-ref {
       width: 50px;
       padding-left: 12px;
+      > span {
+        display: block;
+        padding: 0.75em 1em;
+        padding-left: 10px;
+        color: #606060;
+        text-decoration: none;
+      }
     }
   }
 
@@ -7104,15 +7111,48 @@ ul.categories-article-list {
       // padding-left: 10px !important;
     }
 
-    &.item-row:hover {
-      background: $surface-secondary;
 
-      .info-block {
-        &:before, &:after {
-          background: $surface-secondary;
+  }
+
+
+  tbody tr {
+    &:hover {
+      background: #f7f7f7;
+      td:before,  td:after {
+        background: #f7f7f7 !important;
+      }
+    }
+
+    td.first-in-line {
+      position: relative;
+
+      &:before {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 500px;
+        height: 4px;
+        background: #fff;
+      }
+
+      &:after {
+        content: "";
+        display: block;
+        position: absolute;
+        bottom: 1px;
+        left: 0px;
+        width: 500px;
+        height: 4px;
+        background: #fff;
+
+        @media screen and (-webkit-min-device-pixel-ratio:0) {// Fix for webkit bottom positioning
+          bottom: -1px;
         }
       }
     }
+
   }
 
   .status-tag {
@@ -7152,24 +7192,33 @@ ul.categories-article-list {
       width: 100px;
     }
 
-    &:before, &:after {
-      position: absolute;
-      display: block;
-      width: 5px;
-      height: 6px;
-      background: #fff;
-      content: " ";
-    }
 
-    &:before {
-      top: 0;
-      left: -3px;
-    }
 
-    &:after {
-      bottom: 0px;
-      left: -3px;
-    }
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    // &:before, &:after {
+    //   position: absolute;
+    //   display: block;
+    //   width: 5px;
+    //   height: 6px;
+    //   background: #fff;
+    //   content: " ";
+    // }
+    //
+    // &:before {
+    //   top: 0;
+    //   left: -3px;
+    // }
+    //
+    // &:after {
+    //   bottom: 0px;
+    //   left: -3px;
+    // }
   }
 
   .person, .date {
