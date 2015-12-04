@@ -3395,7 +3395,14 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
     position: relative;
     top: 6px;
     color: #ffffff;
-    left: 1px
+    left: 0px;
+    font-size: 12px;
+  }
+
+  @-moz-document url-prefix() {
+    i {
+      left: 1px;
+    }
   }
 
   &.agent-avatar-tiny {
@@ -5294,6 +5301,10 @@ h1.fancy-header {
 
       font-family: "Helvetica Neue", sans-serif;
       border-radius: 99px;
+
+      position: absolute;
+      top: -7px;
+      right: -7px;
     }
 
     .counter {
