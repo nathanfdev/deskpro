@@ -187,7 +187,7 @@ class ExceptionController extends BaseController
      */
     protected function getErrorCodeFactory()
     {
-        return $this->get('error_code_factory');
+        return $this->get('api_error.code_factory');
     }
 
     /**
@@ -195,6 +195,6 @@ class ExceptionController extends BaseController
      */
     protected function getErrorMessageFactory()
     {
-        return $this->get('error_message_factory');
+        return $this->get('api_error.message_factory');
     }
 }
