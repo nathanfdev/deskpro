@@ -15,6 +15,11 @@ describe('Ampliflux actions handlers', () => {
         e: 3
       }
     },
+    some: {
+      bool: {
+        prop: false
+      }
+    },
     collection: ['a', 'b'],
     elements: [{id: 1}, {id: 2}, {id: 3}],
     selected: [1]
@@ -92,6 +97,19 @@ describe('Ampliflux actions handlers', () => {
       const valueInState = next.getIn(['b', 'c']);
       expect(Immutable.Iterable.isIterable(valueInState)).toBeTruthy();
       expect(next.getIn(['b', 'c', 'd', 'e'])).toEqual('test');
+    });
+  });
+
+  describe('toggleBool()', () => {
+    it('should toggle bool property', () => {
+      let next = handlers.toggleBool('some.bool.prop')(state);
+      expect(next.toJS().some.bool.prop).toEqual(true);
+
+      next = handlers.toggleBool('some.bool.prop')(next);
+      expect(next.toJS().some.bool.prop).toEqual(false);
+
+      next = handlers.toggleBool('some.bool.prop')(next);
+      expect(next.toJS().some.bool.prop).toEqual(true);
     });
   });
 
