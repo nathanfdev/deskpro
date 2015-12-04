@@ -237,6 +237,18 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @param bool $is_sys
+     *
+     * @return $this
+     */
+    public function setIsSys($is_sys)
+    {
+        $this->setModelField('is_sys', $is_sys);
+
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function getIsSys()

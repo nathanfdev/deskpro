@@ -70,6 +70,14 @@ class ChatController extends AbstractController
         $em->persist($conversation);
         $em->flush();
 
+        $chat_message = new ChatMessage();
+        $chat_message
+            ->setIsSys(true)
+            ->setContent('{"phrase_id":"message_started"}')
+        ;
+
+        $this->sendMessage($conversation, $chat_message);
+
         return new JsonResponse($this->dataSerialize($conversation));
     }
 
@@ -126,19 +134,7 @@ class ChatController extends AbstractController
             ])
         ;
 
-        $client_message = new ClientMessage();
-        $client_message->fromArray([
-            'channel'           => $conversation->getChannelId('newmessage'),
-            'data'              => $this->dataSerialize($chat_message)['data'],
-            'created_by_client' => '',
-        ]);
-
-        $conversation->addMessage($chat_message);
-
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($conversation);
-        $em->persist($client_message);
-        $em->flush();
+        $this->sendMessage($conversation, $chat_message);
 
         return new JsonResponse();
     }
@@ -227,5 +223,26 @@ class ChatController extends AbstractController
         $errors    = $generator->generateFormErrors($form);
 
         return new JsonResponse($errors, Response::HTTP_BAD_REQUEST);
+    }
+
+    /**
+     * @param ChatConversation $conversation
+     * @param ChatMessage      $chat_message
+     */
+    protected function sendMessage(ChatConversation $conversation, ChatMessage $chat_message)
+    {
+        $client_message = new ClientMessage();
+        $client_message->fromArray([
+            'channel'           => $conversation->getChannelId('newmessage'),
+            'data'              => $this->dataSerialize($chat_message)['data'],
+            'created_by_client' => '',
+        ]);
+
+        $conversation->addMessage($chat_message);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($conversation);
+        $em->persist($client_message);
+        $em->flush();
     }
 }
