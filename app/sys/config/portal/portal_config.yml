@@ -92,7 +92,7 @@ security:
                 use_forward: false
                 require_previous_session: false
                 remember_me: true
-                default_target_path: /tickets
+                default_target_path: /
                 target_path_parameter: _destination
                 use_referer: true
             anonymous:
