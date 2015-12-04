@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
@@ -65,7 +64,6 @@ class CaptchaType extends AbstractType
             $form = $event->getForm();
 
             // if saved_form_subrequest option is true on the root form, ignore all captcha (don't add it!)
-            $r_form = $form->getRoot();
             if ($form->getRoot()->getConfig()->getOption('saved_form_subrequest', false)) {
                 $form->getRoot()->remove($form->getName());
 
