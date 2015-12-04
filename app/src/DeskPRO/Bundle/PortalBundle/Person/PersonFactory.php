@@ -32,7 +32,6 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Person;
 
-use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\People\PersonGuest;
@@ -143,76 +142,52 @@ class PersonFactory
     }
 
     /**
-     * We can treat a guest as a person (in form types and such) as if they are a person (to a limited extent),
-     * and then use this method to convert that PersonGuest into a Person. If the guest has the email of
-     * and existing user, we just use that person.
+     * Use this method to check to see what actions we need to take for guests in the portal.
      *
-     * For example:
+     * It will throw one of three exceptions if something need be done:
      *
-     * $guest = new PersonGuest();
-     * $guest->name = "Chris Tickner"
-     * $guest->primary_email = new EmailAddress('chris.tickner@gmail.com')
-     * $new_person = $person_factory->createPersonFromGuest($guest);
-     *
-     * @param PersonGuest $guest
-     *
-     * @return Person
+     * 1. InvalidArgumentException - if the guest does not have an email set - always be sure an email is on the guest.
+     * 2. LoginRequiredException - this guest is actually a person who can login, so force a login.
+     * 3. EmailValidationRequiredException - this is a new person and we don't want them or their content in the system until
+     *                                       they pass email validation.
      */
-    public function createPersonFromGuest(PersonGuest $guest)
+    public function checkGuestForValidation(PersonGuest $guest)
     {
-        $final_person = null;
-
-        $settings = $this->brand_stack->getActive()->getSettings();
-
         /* @var \Application\DeskPRO\Entity\PersonEmail $email */
-        if ($guest->getPrimaryEmail()) {
-            $email = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($guest->getPrimaryEmail()->email);
-        } else {
-            $email = null;
+        if (!$guest_email = $guest->getEmailAddress()) {
+            throw new \InvalidArgumentException('guest passed to "checkGuestForValidation" did not have an email. email is required to use this method.');
         }
 
-        // Email already exists on an account
-        // Means use the same person, but depending on the setting we
-        // might require the user to log in (in which case the ticket is a temp ticket for a bit)
-        if ($email) {
-            $person = $email->getPerson();
+        if (!$person = $this->getPersonByEmail($guest_email)) {
+            if ($email = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($guest_email)) {
+                $person = $email->getPerson();
+            }
+        }
+
+        if (!$person) {
+            // email does not exist, we need to do email validation here
+            throw new EmailValidationRequiredException($guest->getEmailAddress(), $guest->name);
+        } else {
             if ($person->isUser()) {
+                // this person can login, so force a login!
                 throw new LoginRequiredException($person);
             } else {
-                if ($guest->name) {
-                    $person->name = $guest->name;
-                    $this->em->persist($person);
-                }
-            }
-
-            // If we get here, then its a new user. We add the email address
-            // as an email address that requires validation. If validation is disabled,
-            // we toggles it off
-        } else {
-            $person = $this->getPersonByEmail($email);
-
-            // Still no, if we're here then we make a new person
-            if (!$person) {
-                $person = Person::newContactPerson();
-                $person->setLanguage($this->language_stack->getActiveOrDefault());
-
-                if ($guest->name) {
-                    $person->name = $guest->name;
-                }
-
-                $email = new PersonEmail();
-                $email->setEmail($guest->primary_email->email);
-                $email->person = $person;
-                $person->addEmailAddress($email);
-
-                // saveNewPerson() will check settings and take care of validation flags
-                $this->saveNewPerson($person, new CreatePersonContext('gateway.person'));
+                // this person exists in the db but can't login, send them a validation email!
+                throw new EmailValidationRequiredException($guest->getEmailAddress(), $guest->name);
             }
         }
+    }
 
-        $this->em->flush($person);
+    public function createPersonFromGuestInfo($email_address, $name)
+    {
+        $person = Person::newContactPerson([
+            'email' => $email_address,
+            'name'  => $name,
+        ]);
+        $person->setLanguage($this->language_stack->getActiveOrDefault());
 
-        return $person;
+        // saveNewPerson() will check settings and take care of validation flags
+        $this->saveNewPerson($person, new CreatePersonContext('gateway.person'));
     }
 
     public function getOrCreatePersonByEmail($email, CreatePersonContext $context)

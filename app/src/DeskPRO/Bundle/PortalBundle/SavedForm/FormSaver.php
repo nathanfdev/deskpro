@@ -171,10 +171,12 @@ class FormSaver
      *
      * @param FormInterface $form    the submitted form
      * @param Request       $request the request that was used to submit the form
+     * @param string|null   $name
+     * @param string|null   $email
      *
      * @return SavedForm
      */
-    public function saveForm(FormInterface $form, Request $request)
+    public function saveForm(FormInterface $form, Request $request, $email = null, $name = null)
     {
         $data         = $request->request->all();
         $route        = $request->attributes->get('_route');
@@ -188,6 +190,8 @@ class FormSaver
         $saved_form->setMetaData(array(
             'route'        => $route,
             'route_params' => $route_params,
+            'email'        => $email,
+            'name'         => $name,
         ));
 
         $this->em->persist($saved_form);

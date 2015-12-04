@@ -138,10 +138,7 @@ class ProfileController extends AbstractController
                 return $this->redirectToRoute('portal_home');
             } else {
                 // this is a normal web request, and we need email validation
-                $saved_form = $this->getFormSaver()->saveForm($form, $request);
-                $saved_form->setMetaDataValue('email', $person->getEmailAddress());
-                $saved_form->setMetaDataValue('name', $person->getNameWithTitle());
-                $this->getEm()->flush($saved_form);
+                $saved_form = $this->getFormSaver()->saveForm($form, $request, $person->getEmailAddress(), $person->getDisplayName());
                 $this->get('portal_validation')->sendVerificationEmail(PortalValidation::REGISTRATION, $saved_form);
                 $this->addFlash('success', $this->phrase('portal.flashes.user_registered_must_verify'));
             }

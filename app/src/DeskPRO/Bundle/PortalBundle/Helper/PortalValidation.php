@@ -37,9 +37,11 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class PortalValidation
 {
     const REGISTRATION = 'registration';
+    const COMMENT      = 'comment';
 
     public static $types = [
       self::REGISTRATION,
+      self::COMMENT,
     ];
 
     /**
@@ -86,6 +88,9 @@ class PortalValidation
 
         switch ($type) {
             case self::REGISTRATION:
+                $this->mailer->sendEmailValidation($email_to, $verify_url);
+                break;
+            case self::COMMENT:
                 $this->mailer->sendEmailValidation($email_to, $verify_url);
                 break;
         }

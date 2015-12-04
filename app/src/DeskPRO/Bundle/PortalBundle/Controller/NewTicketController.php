@@ -106,7 +106,7 @@ class NewTicketController extends AbstractController
                     // deal with guests via negotiating with PersonFactory
                     if ($person instanceof PersonGuest) {
                         try {
-                            $person = $this->getPersonFactory()->createPersonFromGuest($person);
+                            $person = $this->getPersonFactory()->checkGuestForValidation($person);
                         } catch (LoginRequiredException $e) {
                             // the email used belongs to a user, and brand settings say they need to log in
                             $person = $e->getPerson();

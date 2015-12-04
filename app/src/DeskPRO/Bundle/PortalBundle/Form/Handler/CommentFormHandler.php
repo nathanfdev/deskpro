@@ -31,19 +31,31 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Form\Handler;
 
+use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\ContentAbstract;
+use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
+use DeskPRO\Bundle\PortalBundle\Helper\ContentSubscriptionsHelper;
+use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
+use DeskPRO\Bundle\PortalBundle\Person\EmailValidationRequiredException;
 use DeskPRO\Bundle\PortalBundle\Person\LoginRequiredException;
 use DeskPRO\Bundle\PortalBundle\Person\PersonFactory;
 use DeskPRO\Bundle\PortalBundle\SavedForm\FormSaver;
+use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
@@ -79,65 +91,75 @@ class CommentFormHandler
      */
     private $anti_abuse;
 
+    /**
+     * @var PortalValidation
+     */
+    private $portal_validation;
+
+    /**
+     * @var LanguageManager
+     */
+    private $language_manager;
+    /**
+     * @var ObjectRouter
+     */
+    private $object_router;
+
+    /**
+     * @var PortalPermissionsManager
+     */
+    private $permissions_manager;
+    /**
+     * @var ContentSubscriptionsHelper
+     */
+    private $subscription_helper;
+
     public function __construct(
         FormSaver $saver,
+        PortalValidation $portal_validation,
+        LanguageManager $language_manager,
+        ObjectRouter $object_router,
+        PortalPermissionsManager $permissions_manager,
+        ContentSubscriptionsHelper $subscription_helper,
         EntityManager $em,
         PersonFactory $person_factory,
         FormFactory $form_factory,
         TokenStorage $token_storage,
         AntiAbuse $anti_abuse
     ) {
-        $this->saver          = $saver;
-        $this->em             = $em;
-        $this->person_factory = $person_factory;
-        $this->form_factory   = $form_factory;
-        $this->token_storage  = $token_storage;
-        $this->anti_abuse     = $anti_abuse;
+        $this->saver               = $saver;
+        $this->em                  = $em;
+        $this->person_factory      = $person_factory;
+        $this->form_factory        = $form_factory;
+        $this->token_storage       = $token_storage;
+        $this->anti_abuse          = $anti_abuse;
+        $this->portal_validation   = $portal_validation;
+        $this->language_manager    = $language_manager;
+        $this->object_router       = $object_router;
+        $this->permissions_manager = $permissions_manager;
+        $this->subscription_helper = $subscription_helper;
     }
 
     public function handle(FormInterface $form, Request $request, ContentAbstract $content, CommentAbstract $comment)
     {
         $comment->setObject($content);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
             $person = $comment->getPerson();
             if ($person instanceof PersonGuest) {
-                // we are dealing with a guest...
-                try {
-                    $e = new PersonEmail();
-                    $e->setEmail($comment->email);
-                    $person->setPrimaryEmail($e);
-                    $person->setName($comment->name);
-                    // turn the guest into a contact or a person
-                    $person = $this->person_factory->createPersonFromGuest($person);
-                    $comment->setPerson($person);
-                    $this->informAntiAbuse($person, $request);
-                } catch (LoginRequiredException $e) {
-                    // oops! A login is required. This "guest" cannot post a comment until logged in.
-                    $person = $e->getPerson();
-                    $this->informAntiAbuse($person, $request);
-
-                    // return the redirect response
-                    return $this->saver->saveFormForPersonLogin($person, $form, $request);
-                }
-            } else {
-                $this->informAntiAbuse($person, $request);
+                return $this->handleGuestSubmit($person, $form, $request, $content, $comment);
             }
-            $content->addComment($comment);
-            $this->em->persist($comment);
-            $this->em->flush(array($comment, $content));
 
-            return true;
+            return $this->handleLoggedInPersonSubmit($request, $content, $comment, $person);
         } elseif ($form->isSubmitted()) {
             $this->informAntiAbuse(null, $request);
-
-            return false;
         }
 
         return false;
     }
 
-    public function createForm(CommentAbstract $comment)
+    public function createForm(CommentAbstract $comment, Request $request)
     {
         if (!$comment->getPerson()) {
             $comment->setPerson($this->getUser());
@@ -146,11 +168,115 @@ class CommentFormHandler
         return $this->form_factory->create(
             'comment',
             $comment,
-            array(
-                'person'             => $this->getUser(),
-                'allow_extra_fields' => true,
-            )
+            [
+                'person'                => $this->getUser(),
+                'allow_extra_fields'    => true,
+                'saved_form_subrequest' => $request->attributes->has('saved-form'),
+            ]
         );
+    }
+
+    /**
+     * @param Request         $request
+     * @param ContentAbstract $content
+     * @param CommentAbstract $comment
+     * @param $person
+     *
+     * @return RedirectResponse
+     */
+    protected function handleLoggedInPersonSubmit(Request $request, ContentAbstract $content, CommentAbstract $comment, $person)
+    {
+        $this->informAntiAbuse($person, $request);
+        $this->acceptComment($content, $comment, $request);
+
+        return new RedirectResponse($this->object_router->getPortalPath($content));
+    }
+
+    /**
+     * @param PersonGuest     $person
+     * @param FormInterface   $form
+     * @param Request         $request
+     * @param ContentAbstract $content
+     * @param CommentAbstract $comment
+     *
+     * @return RedirectResponse
+     */
+    protected function handleGuestSubmit(PersonGuest $person, FormInterface $form, Request $request, ContentAbstract $content, CommentAbstract $comment)
+    {
+        // we are dealing with a guest...
+        // find if this is already a person
+        // if it is, use the auto login feature to submit
+        // if it isn't, save the form and send a validation link
+
+        // comment forms dont put data on the PersonGuest, so we take it from the comment itself:
+        $email        = new PersonEmail();
+        $email->email = $comment->email;
+        $person->setPrimaryEmail($email);
+        $person->setName($comment->name);
+        try {
+            $this->person_factory->checkGuestForValidation($person);
+        } catch (LoginRequiredException $e) {
+            // oops! A login is required. This "guest" cannot post a comment until logged in.
+            $person = $e->getPerson();
+            $this->informAntiAbuse($person, $request);
+
+            // return the redirect response
+            return $this->saver->saveFormForPersonLogin($person, $form, $request);
+        } catch (EmailValidationRequiredException $e) {
+            $this->informAntiAbuse($person, $request);
+
+            $saved_form = $this->saver->saveForm($form, $request, $person->getEmailAddress(), $person->getDisplayName());
+            $this->portal_validation->sendVerificationEmail(PortalValidation::COMMENT, $saved_form);
+            $this->addFlash($request, 'success', 'portal.flashes.guest_content_must_verify');
+
+            return new RedirectResponse($this->object_router->getPortalPath($content));
+        }
+    }
+
+    public function acceptComment(ContentAbstract $content, CommentAbstract $comment, Request $request = null)
+    {
+        $perm_bag = $this->permissions_manager->getPermissionsBagForPerson($comment->getPerson());
+        if (!$perm_bag->get($this->permPrefix($content).'.no_comment_validate')) {
+            // hide the comment until its approved
+            $comment->setStatus(CommentAbstract::STATUS_HIDDEN);
+        } else {
+            $comment->setStatus(CommentAbstract::STATUS_VISIBLE);
+        }
+        $content->addComment($comment);
+        $this->em->persist($comment);
+        $this->em->flush(array($comment, $content));
+
+        $this->addFlash($request, 'success', 'portal.flashes.comment_thank_you');
+
+        // auto subscribe
+        if ($person = $this->getUser()) {
+            if ($person instanceof Person) {
+                if (!$this->subscription_helper->isSubscribedContent($content, $person)) {
+                    $this->subscription_helper->subscribeToContent($content, $person);
+                    $this->addFlash($request, 'success', 'portal.flashes.article_subscribe');
+                }
+            }
+        }
+    }
+
+    protected function permPrefix(ContentAbstract $content)
+    {
+        if ($content instanceof Article) {
+            return 'articles';
+        } elseif ($content instanceof Download) {
+            return 'downloads';
+        } elseif ($content instanceof News) {
+            return 'news';
+        } elseif ($content instanceof Feedback) {
+            return 'feedback';
+        }
+
+        throw new InvalidArgumentException('content type not supported');
+    }
+
+    protected function addFlash(Request $request, $type, $phrase)
+    {
+        $request->getSession()->getFlashBag()->add($type, $this->phrase($phrase));
     }
 
     /**
@@ -173,5 +299,10 @@ class CommentFormHandler
     {
         $check = new SubmitCommentAbuseCheck($person, $request->getClientIp());
         $this->anti_abuse->check($check);
+    }
+
+    private function phrase($name, array $vars = [])
+    {
+        return $this->language_manager->phrase($name, $vars);
     }
 }

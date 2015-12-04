@@ -34,7 +34,6 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
-use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
@@ -194,27 +193,10 @@ class ArticlesController extends AbstractController
             $comment      = new ArticleComment();
             $comment->setVisitorId($visitor_id);
             $comment->setIpAddress($request->getClientIp());
-            $new_comment_form = $form_handler->createForm($comment);
-            if ($form_result = $form_handler->handle($new_comment_form, $request, $article, $comment)) {
-                // auto subscribe a logged in use to this feedback item
-                // because they submitted a comment
-                if ($person = $this->getUser()) {
-                    if ($person instanceof Person) {
-                        $subscriptions_helper = $this->getSubscriptionsHelper();
-                        if (!$subscriptions_helper->isSubscribedContent($article, $person)) {
-                            $subscriptions_helper->subscribeToContent($article, $person);
-                            $this->addFlash('success', $this->phrase('portal.flashes.article_subscribe'));
-                        }
-                    }
-                }
-
-                if ($form_result instanceof Response) {
-                    return $form_result;
-                }
-
-                $this->addFlash('success', $this->phrase('portal.flashes.comment_thank_you'));
-
-                return $this->redirectToRoute('portal_kb_view', array('slug' => $article->getSlug()));
+            $new_comment_form = $form_handler->createForm($comment, $request);
+            $form_result      = $form_handler->handle($new_comment_form, $request, $article, $comment);
+            if ($form_result instanceof Response) {
+                return $form_result;
             }
         }
 

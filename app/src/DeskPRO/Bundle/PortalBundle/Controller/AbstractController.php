@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\PortalBundle\SavedForm\SavedFormView;
+use DeskPRO\Bundle\PortalBundle\Visitor\VisitorIdentificationProvider;
 use Doctrine\DBAL\Connection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -471,6 +472,7 @@ class AbstractController extends BaseController
 
         // sub requests for saved forms have this attribute set
         $sub_request->attributes->set('saved-form', true);
+        $sub_request->attributes->set(VisitorIdentificationProvider::ATTRIBUTE_NAME, $this->get('visitor_identification_provider')->getVisitorIdentifier());
         $sub_request->setSession($request->getSession());
 
         // get rid of the saved form now

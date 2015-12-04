@@ -127,7 +127,7 @@ class FeedbackController extends AbstractController
                 // deal with guests via negotiating with PersonFactory
                 if ($person instanceof PersonGuest) {
                     try {
-                        $person = $this->getPersonFactory()->createPersonFromGuest($person);
+                        $person = $this->getPersonFactory()->checkGuestForValidation($person);
                     } catch (LoginRequiredException $e) {
                         $person = $e->getPerson();
 
@@ -332,27 +332,10 @@ class FeedbackController extends AbstractController
             $comment      = new FeedbackComment();
             $comment->setVisitorId($visitor_id);
             $comment->setIpAddress($request->getClientIp());
-            $new_comment_form = $form_handler->createForm($comment);
-            if ($form_result = $form_handler->handle($new_comment_form, $request, $item, $comment)) {
-                // auto subscribe a logged in use to this feedback item
-                // because they submitted a comment
-                if ($person = $this->getUser()) {
-                    if ($person instanceof Person) {
-                        $subscriptions_helper = $this->getSubscriptionsHelper();
-                        if (!$subscriptions_helper->isSubscribedContent($item, $person)) {
-                            $subscriptions_helper->subscribeToContent($item, $person);
-                            $this->addFlash('success', $this->phrase('portal.flashes.feedback_subscribe'));
-                        }
-                    }
-                }
-
-                if ($form_result instanceof Response) {
-                    return $form_result;
-                }
-
-                $this->addFlash('success', $this->phrase('portal.flashes.comment_thank_you'));
-
-                return $this->redirectToRoute('portal_feedback_view', array('slug' => $item->getSlug()));
+            $new_comment_form = $form_handler->createForm($comment, $request);
+            $form_result      = $form_handler->handle($new_comment_form, $request, $item, $comment);
+            if ($form_result instanceof Response) {
+                return $form_result;
             }
         }
 
