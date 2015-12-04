@@ -15,7 +15,8 @@ a.dpw--panel-button {
 .dpw-navigation-dropdown-panel {
   background: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  margin-left: 4px;
+  margin-left: 0;
+  margin-top: 5px;
   position: absolute;
   z-index: 1999;
   border: 1px solid #62ad8c;
@@ -100,6 +101,7 @@ a.dpw--panel-button {
   &.dpw-navigation-dropdown-panel-corner-left {
     @include add-corner(4px, #62ad8c, 15px, left, nohover); // navigation-mixins.scss
     margin-top: -5px;
+    margin-left: 4px;
   }
 
   .dpw-navigation-dropdown-panel-content {

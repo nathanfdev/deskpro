@@ -1,8 +1,7 @@
 import React, {Component, PropTypes} from 'react';
-import classNames from 'classnames';
 import { CheckboxContainer } from './MassAction/CheckboxContainer';
 
-export class ListFrameMenu extends React.Component {
+export class ListFrameMenu extends Component {
 
   static propTypes = {
     children: PropTypes.any.isRequired,

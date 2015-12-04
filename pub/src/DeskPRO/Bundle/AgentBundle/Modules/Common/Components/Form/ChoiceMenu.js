@@ -89,12 +89,21 @@ export class RadioChoiceMenuOption extends Component {
     children: PropTypes.any
   };
 
+  handleClick() {
+    const {param, setParams, dispatch, isActive} = this.props;
+    let newValue = this.props.value;
+    if (isActive) {
+      newValue = null;
+    }
+    dispatch(setParams({ param: param, value: newValue }));
+  }
+
   render() {
-    const {label, param, value, setParams, dispatch, isActive} = this.props;
+    const {label, isActive} = this.props;
     const classes = classNames('dpwd-radio-button', { 'active': isActive });
 
     return (
-      <li onClick={() => dispatch(setParams({param: param, value: value}))}>
+      <li onClick={this.handleClick.bind(this)}>
         <div className="dpw--popup-item-box">
         <span className={classes}>
           <span className="dpwd-radio-button-disc"></span>

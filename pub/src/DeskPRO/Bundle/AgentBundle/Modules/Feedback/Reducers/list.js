@@ -40,7 +40,8 @@ export default createReducer(initialState, {
   }),
   [actions.toggleMassAction]: handleMassAction('elements', 'selected'),
   [actions.setMassActionsParams]: (state, payload) => state.setIn(['massActions', payload.param], payload.value),
-  [actions.resetMassActionsParams]: (state) => state.set('massActions', Immutable.fromJS({})),
+  [actions.resetAllMassActionsParams]: (state) => state.set('massActions', Immutable.fromJS({})),
+
   [actions.toggleSelectedAction]: togglePayloadInCollection('selected'),
   [actions.toggleTableFieldVisibility]: togglePayloadInCollection('tableVisibleFields'),
   [actions.toggleCardFieldVisibility]: togglePayloadInCollection('cardVisibleFields'),
