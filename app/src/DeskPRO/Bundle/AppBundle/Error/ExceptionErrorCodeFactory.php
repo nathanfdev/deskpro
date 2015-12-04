@@ -29,8 +29,7 @@
 /**
  * DeskPRO.
  */
-
-namespace DeskPRO\Bundle\ApiBundle\Error;
+namespace DeskPRO\Bundle\AppBundle\Error;
 
 /**
  * Class ExceptionErrorCodeFactory.
@@ -38,7 +37,7 @@ namespace DeskPRO\Bundle\ApiBundle\Error;
 class ExceptionErrorCodeFactory
 {
     public static $exceptions_to_error_codes_map = [
-        'DeskPRO\Bundle\ApiBundle\Error\Exception\InvalidFormException'     => ApiErrors::BAD_REQUEST,
+        'DeskPRO\Bundle\AppBundle\Error\Exception\InvalidFormException'     => ApiErrors::BAD_REQUEST,
         'Symfony\Component\HttpKernel\Exception\BadRequestHttpException'    => ApiErrors::BAD_REQUEST,
         'Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException'  => ApiErrors::UNAUTHORIZED,
         'Symfony\Component\HttpKernel\Exception\NotFoundHttpException'      => ApiErrors::NOT_FOUND,

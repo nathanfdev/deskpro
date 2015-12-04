@@ -1,0 +1,18 @@
+services:
+
+  error_message_factory:
+      class: DeskPRO\Bundle\AppBundle\Error\ErrorMessageFactory
+      arguments:
+        - @deskpro.core.translate
+
+  error_code_factory:
+      class: DeskPRO\Bundle\AppBundle\Error\ErrorCodeFactory
+      arguments:
+          - @error_code_factory_exception
+          - @error_code_factory_validator
+
+  error_code_factory_validator:
+      class: DeskPRO\Bundle\AppBundle\Error\ValidatorErrorCodeFactory
+
+  error_code_factory_exception:
+      class: DeskPRO\Bundle\AppBundle\Error\ExceptionErrorCodeFactory

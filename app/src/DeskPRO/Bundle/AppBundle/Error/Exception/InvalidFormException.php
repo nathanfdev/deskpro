@@ -29,10 +29,9 @@
 /**
  * DeskPRO.
  */
+namespace DeskPRO\Bundle\AppBundle\Error\Exception;
 
-namespace DeskPRO\Bundle\ApiBundle\Error\Exception;
-
-use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
+use DeskPRO\Bundle\AppBundle\Error\ApiErrors;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 

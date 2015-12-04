@@ -29,8 +29,7 @@
 /**
  * DeskPRO.
  */
-
-namespace DeskPRO\Bundle\ApiBundle\Error;
+namespace DeskPRO\Bundle\AppBundle\Error;
 
 /**
  * Class ApiErrors.

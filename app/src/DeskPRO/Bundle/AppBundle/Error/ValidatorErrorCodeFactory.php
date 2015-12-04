@@ -29,8 +29,7 @@
 /**
  * DeskPRO.
  */
-
-namespace DeskPRO\Bundle\ApiBundle\Error;
+namespace DeskPRO\Bundle\AppBundle\Error;
 
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\FormError;

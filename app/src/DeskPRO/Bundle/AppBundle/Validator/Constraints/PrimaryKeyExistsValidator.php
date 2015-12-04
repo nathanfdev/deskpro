@@ -31,7 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
-use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
+use DeskPRO\Bundle\AppBundle\Error\ApiErrors;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Orb\Util\Arrays;

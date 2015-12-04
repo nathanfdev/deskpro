@@ -29,9 +29,9 @@
 /**
  * DeskPRO.
  */
-namespace spec\DeskPRO\Bundle\ApiBundle\Error;
+namespace spec\DeskPRO\Bundle\AppBundle\Error;
 
-use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
+use DeskPRO\Bundle\AppBundle\Error\ApiErrors;
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\FormError;
@@ -44,7 +44,7 @@ use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\ConstraintViolation;
 
 /**
- * @mixin \DeskPRO\Bundle\ApiBundle\Error\ValidatorErrorCodeFactory
+ * @mixin \DeskPRO\Bundle\AppBundle\Error\ValidatorErrorCodeFactory
  */
 class ValidatorErrorCodeFactorySpec extends ObjectBehavior
 {

@@ -33,10 +33,10 @@ namespace DeskPRO\Bundle\ApiBundle\Security\Authentication;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Session;
-use DeskPRO\Bundle\ApiBundle\Error\ApiErrors;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AgentSessionSecurityToken;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiTokenSecurityToken;
+use DeskPRO\Bundle\AppBundle\Error\ApiErrors;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;

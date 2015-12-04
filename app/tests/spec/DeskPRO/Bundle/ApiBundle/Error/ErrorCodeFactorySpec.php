@@ -29,16 +29,16 @@
 /**
  * DeskPRO.
  */
-namespace spec\DeskPRO\Bundle\ApiBundle\Error;
+namespace spec\DeskPRO\Bundle\AppBundle\Error;
 
-use DeskPRO\Bundle\ApiBundle\Error\ExceptionErrorCodeFactory;
-use DeskPRO\Bundle\ApiBundle\Error\ValidatorErrorCodeFactory;
+use DeskPRO\Bundle\AppBundle\Error\ExceptionErrorCodeFactory;
+use DeskPRO\Bundle\AppBundle\Error\ValidatorErrorCodeFactory;
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Validator\ConstraintViolation;
 
 /**
- * @mixin \DeskPRO\Bundle\ApiBundle\Error\ErrorCodeFactory
+ * @mixin \DeskPRO\Bundle\AppBundle\Error\ErrorCodeFactory
  */
 class ErrorCodeFactorySpec extends ObjectBehavior
 {
