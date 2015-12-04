@@ -1447,13 +1447,19 @@ $search-btn-height: $search-height - 24;
     }
 
     .search-result-collection-loading, .search-result-collection-empty {
-      height: 60px;
+      // height: 69px;
+      height: 70px;
+
+      @-moz-document url-prefix() {
+        // height: 70px;
+      }
     }
 
     .search-result-collection {
       padding: 10px 20px;
       border-bottom: 1px solid #dedede;
       position: relative;
+      min-height: 70px;
 
       a:hover {
         text-decoration: none;
@@ -1481,6 +1487,7 @@ $search-btn-height: $search-height - 24;
       color: #a6a5a5;
       border-bottom: 1px solid #d6d6d6;
       padding: 10px;
+      padding-top: 15px;
 
       div {
         border-radius: 2px;
