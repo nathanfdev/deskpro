@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\PasswordHistory;
@@ -45,7 +44,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator;
 
 class ProfileController extends AbstractController
 {
@@ -95,12 +93,11 @@ class ProfileController extends AbstractController
                         ///
                         // contact, they should now get a "set password" email and a redirection
                         // set the reset code
-                        $random = new UriSafeTokenGenerator();
-                        $person_check->setPasswordResetCode($random->generateToken());
-                        $person_check->setDatePasswordResetRequested(new \DateTime());
-                        $this->persistAndFlushEntity($person_check);
 
-                        $this->get('portal_email_sender')->sendPasswordSetLink($person_check);
+                        $valid_seconds = $this->getBrandSetting('user.password_reset_code_time_limit', 18000);
+                        $reset         = $this->getPersonDataService()->createPasswordReset($person, $valid_seconds);
+
+                        $this->get('portal_email_sender')->sendPasswordSetLink($person_check, $reset);
 
                         return $this->redirectToRoute('portal_user_register_set_password', array(
                             'email' => $person_check->getPrimaryEmailAddress(),

@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\EntityRepository\Person as PersonRepo;
 
 class PersonDataService extends AbstractDataService
@@ -57,16 +58,74 @@ class PersonDataService extends AbstractDataService
         return $this->getPersonRepo()->findOneByEmail($email);
     }
 
-    public function getPersonForPasswordResetCode($code)
+    /**
+     * @param Person     $person
+     * @param string|int $expire
+     *
+     * @return array
+     */
+    public function createPasswordReset(Person $person, $expire = null)
+    {
+        $name = 'reset-password-'.$person->id;
+
+        // only 1 valid at a time
+        $this->em->getConnection()->delete('tmp_data', ['name' => $name]);
+
+        $tmpdata = TmpData::create('reset-password', ['person' => $person->id], $expire ?: '+1 day', $name);
+        $this->em->persist($tmpdata);
+        $this->em->flush();
+
+        return [
+            'person'         => $person,
+            'tmpdata'        => $tmpdata,
+            'code'           => $tmpdata->getCode(),
+            'date_requested' => $tmpdata->date_created,
+        ];
+    }
+
+    /**
+     * @param string $code
+     *
+     * @return Person|null
+     */
+    public function findPasswordReset($code)
     {
         // using caution and not caching most PersonDataService methods
         if (strlen($code) > 0) {
-            return $this->getPersonRepo()->findOneBy(array(
-                'password_reset_code' => $code,
-            ));
+            $tmpdata = $this->getTmpDataRepo()->getByCode($code, 'reset-password');
+            if ($tmpdata) {
+                $person = $this->getPersonRepo()->find($tmpdata->getData('person', 0));
+                if ($person) {
+                    return [
+                        'person'         => $person,
+                        'tmpdata'        => $tmpdata,
+                        'code'           => $tmpdata->getCode(),
+                        'date_requested' => $tmpdata->date_created,
+                    ];
+                }
+            }
         }
 
         return;
+    }
+
+    /**
+     * Clear a used password reset code.
+     *
+     * @param array $password_reset
+     */
+    public function clearPasswordReset(array $password_reset)
+    {
+        $this->em->remove($password_reset['tmpdata']);
+        $this->em->flush();
+    }
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\TmpData
+     */
+    private function getTmpDataRepo()
+    {
+        return $this->em->getRepository('DeskPRO:TmpData');
     }
 
     /**

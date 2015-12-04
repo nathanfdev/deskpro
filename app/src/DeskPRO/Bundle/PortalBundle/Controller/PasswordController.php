@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\PasswordHistory;
@@ -37,7 +36,6 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\PasswordResetAbuseCheck;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator;
 
 /**
  * The same controller code does both the "reset password" and "set password" urls. We differentate
@@ -90,15 +88,13 @@ class PasswordController extends AbstractController
                 }
 
                 // set the reset code
-                $random = new UriSafeTokenGenerator();
-                $person->setPasswordResetCode($random->generateToken());
-                $person->setDatePasswordResetRequested(new \DateTime());
+                $valid_seconds = $this->getBrandSetting('user.password_reset_code_time_limit', 18000);
+                $reset         = $this->getPersonDataService()->createPasswordReset($person, $valid_seconds);
 
-                $this->persistAndFlushEntity($person);
                 if ($isResetting) {
-                    $this->get('portal_email_sender')->sendPasswordResetLink($person);
+                    $this->get('portal_email_sender')->sendPasswordResetLink($person, $reset);
                 } else {
-                    $this->get('portal_email_sender')->sendPasswordSetLink($person);
+                    $this->get('portal_email_sender')->sendPasswordSetLink($person, $reset);
                 }
             }
 
@@ -142,21 +138,15 @@ class PasswordController extends AbstractController
     public function passwordResetAction(Request $request, $code, $_route)
     {
         // resetting or setting? we use diff templates/routes.
-        $isResetting = $_route === 'portal_reset_password_process';
-
-        /** @var \Application\DeskPRO\Entity\Person $person */
-        $person = $this->getPersonDataService()->getPersonForPasswordResetCode($code);
+        $isResetting   = $_route === 'portal_reset_password_process';
+        $valid_seconds = $this->getBrandSetting('user.password_reset_code_time_limit', 18000);
 
         $valid = false;
-        if ($person && $reset_requested_date = $person->getDatePasswordResetRequested()) {
-            // find the cut-off datetime for an invalid time
-            $valid_seconds = $this->getBrandSetting('user.password_reset_code_time_limit', 86400);
-            $valid_time    = new \DateTime();
-            $valid_time->sub(\DateInterval::createFromDateString(sprintf('%s seconds', $valid_seconds)));
 
-            if ($reset_requested_date > $valid_time) {
-                $valid = true;
-            }
+        /* @var \Application\DeskPRO\Entity\Person $person */
+        $reset = $this->getPersonDataService()->findPasswordReset($code);
+        if ($reset && $reset['date_requested']->getTimestamp() > (time() - $valid_seconds)) {
+            $valid = true;
         }
 
         if (!$valid) {
@@ -171,6 +161,8 @@ class PasswordController extends AbstractController
                 'page_title'  => $this->createPageTitle()->passwordReset($isResetting),
             ));
         }
+
+        $person = $reset['person'];
 
         $form = $this->createForm('person_change_password', $person, array(
             'settings'                 => $this->getBrandContainer()->getSettings(),
@@ -192,13 +184,13 @@ class PasswordController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->runAntiAbuseCheck($request);
 
-            $person->setPasswordResetCode(null);
-
             if ($history) {
                 $this->getEm()->persist($history);
             }
 
             $this->persistAndFlushEntity($person);
+
+            $this->getPersonDataService()->clearPasswordReset($reset);
 
             $primary_email = $person->getPrimaryEmail();
             if ($primary_email) {

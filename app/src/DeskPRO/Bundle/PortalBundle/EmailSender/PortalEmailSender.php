@@ -49,7 +49,7 @@ class PortalEmailSender
         $this->container = $container;
     }
 
-    public function sendPasswordResetLink(Person $person)
+    public function sendPasswordResetLink(Person $person, array $reset)
     {
         $this->sendTo(
             new EmailTo($person),
@@ -59,7 +59,7 @@ class PortalEmailSender
                 'reset_url' => $this->getRouter()->generate(
                     'portal_reset_password_process',
                     array(
-                        'code' => $person->getPasswordResetCode(),
+                        'code' => $reset['code'],
                     ),
                     UrlGeneratorInterface::ABSOLUTE_URL
                 ),
@@ -67,7 +67,7 @@ class PortalEmailSender
         );
     }
 
-    public function sendPasswordSetLink(Person $person)
+    public function sendPasswordSetLink(Person $person, array $reset)
     {
         $this->sendTo(
             new EmailTo($person),
@@ -77,7 +77,7 @@ class PortalEmailSender
                 'reset_url' => $this->getRouter()->generate(
                     'portal_set_password_process',
                     array(
-                        'code' => $person->getPasswordResetCode(),
+                        'code' => $reset['code'],
                     ),
                     UrlGeneratorInterface::ABSOLUTE_URL
                 ),

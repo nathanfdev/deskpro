@@ -37,6 +37,12 @@ use Application\DeskPRO\Entity\TmpData as TmpDataEntity;
 
 class TmpData extends AbstractEntityRepository
 {
+    /**
+     * @param      $code
+     * @param null $type
+     *
+     * @return null|\Application\DeskPRO\Entity\TmpData
+     */
     public function getByCode($code, $type = null)
     {
         $info = TmpDataEntity::getPartsFromCode($code);

@@ -81,12 +81,13 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
     protected $date_expire;
 
     /**
-     * @param string $type
-     * @param array  $data
+     * @param string     $type
+     * @param array      $data
+     * @param string|int $expire Seconds until expire or a relative date string like '+1 days'
      *
      * @return \Application\DeskPRO\Entity\TmpData
      */
-    public static function create($type, array $data = array(), $expire = '+1 week')
+    public static function create($type, array $data = array(), $expire = '+1 week', $name = null)
     {
         $tmpdata = new self();
         $tmpdata->setType($type);
@@ -95,7 +96,15 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
             $tmpdata->setData($k, $v);
         }
 
-        $tmpdata['date_expire'] = new \DateTime($expire);
+        if (ctype_digit($expire)) {
+            $tmpdata['date_expire'] = new \DateTime('@'.(time() + $expire));
+        } else {
+            $tmpdata['date_expire'] = new \DateTime($expire);
+        }
+
+        if ($name) {
+            $tmpdata->name = $name;
+        }
 
         return $tmpdata;
     }

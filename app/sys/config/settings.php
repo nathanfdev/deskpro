@@ -909,7 +909,7 @@ return array(
     /*
      * Invalidate the "password reset" code after this many seconds
      */
-    'user.password_reset_code_time_limit' => 86400,
+    'user.password_reset_code_time_limit' => 18000,
 
     'user.show_ratings'             => true,
     'user.show_ratings_min_votes'   => 1,

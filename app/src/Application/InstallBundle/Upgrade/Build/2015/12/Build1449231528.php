@@ -26,4 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1449231528);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1449231528 extends AbstractBuild
+{
+    public function run()
+    {
+        // TODO NOTE: this was added during dev, and now removed again during dev.
+        // real upgrade script doesnt need to use these fields
+        $this->execMutateSql('ALTER TABLE people DROP password_reset_code, DROP date_password_reset_requested');
+    }
+}

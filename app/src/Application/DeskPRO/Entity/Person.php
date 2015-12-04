@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -428,11 +427,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     protected $department_permissions;
 
     /**
-     * @var string
-     */
-    protected $password_reset_code;
-
-    /**
      * The date the user was inserted into the system.
      *
      * @var \DateTime
@@ -450,11 +444,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      * @var \DateTime
      */
     protected $date_password_set = null;
-
-    /**
-     * @var \DateTime
-     */
-    protected $date_password_reset_requested = null;
 
     /**
      * The last time the users gravatar (or other 3rd party image) was checked.
@@ -948,38 +937,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     public function getUsergroups()
     {
         return $this->usergroups;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDatePasswordResetRequested()
-    {
-        return $this->date_password_reset_requested;
-    }
-
-    /**
-     * @param \DateTime $date_password_reset_requested
-     */
-    public function setDatePasswordResetRequested(\DateTime $date_password_reset_requested = null)
-    {
-        $this->setModelField('date_password_reset_requested', $date_password_reset_requested);
-    }
-
-    /**
-     * @return string
-     */
-    public function getPasswordResetCode()
-    {
-        return $this->password_reset_code;
-    }
-
-    /**
-     * @param string $password_reset_code
-     */
-    public function setPasswordResetCode($password_reset_code)
-    {
-        $this->setModelField('password_reset_code', $password_reset_code);
     }
 
     /**
@@ -3632,16 +3589,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         );
         $metadata->mapField(
             array(
-                'fieldName'  => 'password_reset_code',
-                'type'       => 'string',
-                'precision'  => 0,
-                'scale'      => 0,
-                'nullable'   => true,
-                'columnName' => 'password_reset_code',
-            )
-        );
-        $metadata->mapField(
-            array(
                 'fieldName'  => 'title_prefix',
                 'type'       => 'string',
                 'length'     => 50,
@@ -3794,16 +3741,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'date_picture_check',
-            )
-        );
-        $metadata->mapField(
-            array(
-                'fieldName'  => 'date_password_reset_requested',
-                'type'       => 'datetime',
-                'precision'  => 0,
-                'scale'      => 0,
-                'nullable'   => true,
-                'columnName' => 'date_password_reset_requested',
             )
         );
         $metadata->mapField(
