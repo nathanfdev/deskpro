@@ -6,6 +6,15 @@
     </div>
     <article class="news kb-article">
         <header>
+            <div class="header-button-container">
+                <div class="header-buttons">
+                    {% show download_subscription_link %}
+                    {#<a href="#">{{ phrase('portal.general.btn-email') }} <i class="fa fa-envelope"></i></a>#}
+                    {#<a href="#">{{ phrase('portal.general.btn-print') }} <i class="fa fa-print"></i></a>#}
+                    {#<a href="#">{{ phrase('portal.general.btn-download-pdf') }} <i class="fa fa-file-pdf-o"></i></a>#}
+                </div>
+            </div>
+            
             <h1>{{ file.title }}</h1>
 
             <div class="article-meta">
@@ -15,6 +24,8 @@
                             href="#comments">{{ phrase('portal.general.comments-count', {count: file.num_comments}) }}</a></span>
             </div>
         </header>
+
+        {% show download_subscription_info %}
 
         <div class="article-extras">
             <a href="{{ portal_path(file, 'save') }}">
@@ -29,17 +40,6 @@
                 {{ phrase('portal.downloads.btn-download', { size: file.readableFileSize }) }}
             </a>
         </div>
-
-        <div class="header-button-container">
-            <div class="header-buttons">
-                {% show download_subscription_link %}
-                {#<a href="#">{{ phrase('portal.general.btn-email') }} <i class="fa fa-envelope"></i></a>#}
-                {#<a href="#">{{ phrase('portal.general.btn-print') }} <i class="fa fa-print"></i></a>#}
-                {#<a href="#">{{ phrase('portal.general.btn-download-pdf') }} <i class="fa fa-file-pdf-o"></i></a>#}
-            </div>
-        </div>
-
-        {% show download_subscription_info %}
 
         <div class="article-content padded">
             {{ file.contentDesc|raw }}
