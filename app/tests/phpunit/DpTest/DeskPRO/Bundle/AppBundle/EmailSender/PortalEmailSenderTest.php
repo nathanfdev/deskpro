@@ -66,7 +66,7 @@ class PortalEmailSenderTest extends PortalTestCase
 <dp:subject>This is the custom subject</dp:subject>
 Hello there this is the message
 CODE;
-        $this->saveCustomEmailTemplate('EmailBundle:Portal:register-welcome.html.twig', $custom_template);
+        $this->saveCustomEmailTemplate('DeskPRO:emails_user:register-welcome.html.twig', $custom_template);
 
         $person = $this->getPersonFactory()->createNewInvalidUser('john@appleseed.com', 'John Appleseed');
         $this->getEmailSender()->sendWelcomeEmail($person);
