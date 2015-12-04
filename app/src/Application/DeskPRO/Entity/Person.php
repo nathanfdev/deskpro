@@ -166,6 +166,8 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     /**
      * Is this person a user (someone with login credentials)?
      *
+     * If a password is set or if they can login with a usersource.
+     *
      * @var bool
      */
     protected $is_user = false;
@@ -2074,15 +2076,27 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function hasEmailAddress($email_address)
     {
+        return $this->getEmailByAddress($email_address) ? true : false;
+    }
+
+    /**
+     * Return the PersonEmail object assocaited to this person for an email address.
+     *
+     * @param string $email_address
+     *
+     * @return PersonEmail|false
+     */
+    public function getEmailByAddress($email_address)
+    {
         $email_address = strtolower($email_address);
         if ($this->primary_email && strtolower($this->primary_email->email) == $email_address) {
-            return true;
+            return $this->primary_email;
         }
 
         if ($this->emails) {
             foreach ($this->emails as $email) {
                 if (strtolower($email->email) == $email_address) {
-                    return true;
+                    return $email;
                 }
             }
         }
