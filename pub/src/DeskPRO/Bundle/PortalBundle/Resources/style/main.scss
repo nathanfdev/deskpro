@@ -3684,9 +3684,15 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
     padding: 0 0 0 0;
     background: $page-background;
     color: #8b8b8b;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
   }
 
-  li { display: inline-block; }
+  li {
+    display: inline-block;
+    white-space: nowrap;
+  }
 
   a {
     color: inherit;
