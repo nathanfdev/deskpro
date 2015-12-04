@@ -197,11 +197,14 @@ class PasswordController extends AbstractController
                 $request->getSession()->set('last_username',  $primary_email->email);
             }
 
-            $params = $isResetting ?
-                array('reset_success'        => 1) :
-                array('set_password_success' => 1);
+            // log the user in
+            $this->get('person_manipulator')->authenticatePerson($person);
 
-            return $this->redirectToRoute('portal_login', $params);
+            $this->addFlash('success', $this->phrase(
+                $isResetting ? 'portal.account.reset-password-success' : 'portal.account.set-password-success'
+            ));
+
+            return $this->redirectToRoute('portal_login');
         } elseif ($form->isSubmitted()) {
             $this->runAntiAbuseCheck($request);
         }
@@ -210,6 +213,8 @@ class PasswordController extends AbstractController
             'Theme:Password:password-reset.html.twig' :
             'Theme:Password:set-password.html.twig';
 
+        $person = $this->getCurrentPerson();
+
         return $this->renderThemeView(
             $tpl,
             array(
@@ -217,6 +222,8 @@ class PasswordController extends AbstractController
                 'form'         => $form->createView(),
                 'breadcrumbs'  => $this->getBreadcrumbGenerator()->buildPasswordReset($isResetting),
                 'page_title'   => $this->createPageTitle()->passwordReset($isResetting),
+                'person'       => $person,
+                'from_saved'   => $request->get('from-saved', false),
             )
         );
     }

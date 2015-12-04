@@ -36,7 +36,6 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\RegistrationAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
-use DeskPRO\Bundle\AppBundle\Security\DpFormLoginToken;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
@@ -114,22 +113,11 @@ class ProfileController extends AbstractController
                     'last_username',
                     $person->getPrimaryEmail() ? $person->getPrimaryEmail()->getEmail() : ''
                 );
-
-                // normally we do things like this in the validation controller, but for registration its better
-                // to set the flags here (because the Person didn't exist until now).
-                $person->is_confirmed                    = true;
-                $person->getPrimaryEmail()->is_validated = true;
-
-                $context = new CreatePersonContext('gateway.person');
+                $this->get('person_manipulator')->validatePerson($person, $person->getEmailAddress());
+                $context = new CreatePersonContext(Person::CREATED_WEB_PERSON);
                 $this->getPersonFactory()->saveNewPerson($person, $context);
                 $this->getEmailSender()->sendWelcomeEmail($person);
-
-                // at this point the user exists and is validated
-                // we can log them in directly
-
-                $token = new DpFormLoginToken($person, null, $person->getRoles());
-                $this->container->get('security.token_storage')->setToken($token);
-
+                $this->get('person_manipulator')->authenticatePerson($person);
                 $this->addFlash('success', $this->phrase('portal.flashes.user_registered_verified_authenticated'));
 
                 return $this->redirectToRoute('portal_home');

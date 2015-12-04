@@ -7,6 +7,9 @@ services:
       - @portal_validation
       - @language_manager
       - @object_router
+      - @router
+      - @data.person
+      - @brand_stack
       - @portal_permissions_manager
       - @subscriptions_helper
       - @doctrine.orm.default_entity_manager

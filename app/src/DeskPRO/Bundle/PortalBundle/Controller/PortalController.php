@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Blob;
@@ -38,13 +37,10 @@ use Application\DeskPRO\Entity\Template;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\UploadAbuseCheck;
-use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\CsrfDoubleSubmitExtension;
-use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -156,21 +152,6 @@ class PortalController extends AbstractController
                 'usersources_view'     => $usersources_view,
             )
         );
-    }
-
-    /**
-     * @Route("/validate/{type}/{auth_code}", name="portal_validation")
-     * @ParamConverter("saved_form", class="App:SavedForm", options={"auth_code" = "auth_code"})
-     */
-    public function validateAction(Request $request, $type, SavedForm $saved_form)
-    {
-        switch ($type) {
-            case PortalValidation::REGISTRATION:
-                    return $this->submitSavedForm($saved_form, $request);
-                break;
-            default:
-                break;
-        }
     }
 
     /**

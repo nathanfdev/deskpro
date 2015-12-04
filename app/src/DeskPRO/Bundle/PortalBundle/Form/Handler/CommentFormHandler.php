@@ -42,9 +42,11 @@ use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
+use DeskPRO\Bundle\AppBundle\DataService\PersonDataService;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Helper\ContentSubscriptionsHelper;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
 use DeskPRO\Bundle\PortalBundle\Person\EmailValidationRequiredException;
@@ -57,6 +59,7 @@ use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class CommentFormHandler
@@ -100,6 +103,7 @@ class CommentFormHandler
      * @var LanguageManager
      */
     private $language_manager;
+
     /**
      * @var ObjectRouter
      */
@@ -109,16 +113,34 @@ class CommentFormHandler
      * @var PortalPermissionsManager
      */
     private $permissions_manager;
+
     /**
      * @var ContentSubscriptionsHelper
      */
     private $subscription_helper;
+
+    /**
+     * @var UrlGeneratorInterface
+     */
+    private $url_generator;
+
+    /**
+     * @var PersonDataService
+     */
+    private $person_data_service;
+    /**
+     * @var BrandStack
+     */
+    private $brand_stack;
 
     public function __construct(
         FormSaver $saver,
         PortalValidation $portal_validation,
         LanguageManager $language_manager,
         ObjectRouter $object_router,
+        UrlGeneratorInterface $url_generator,
+        PersonDataService $person_data_service,
+        BrandStack $brand_stack,
         PortalPermissionsManager $permissions_manager,
         ContentSubscriptionsHelper $subscription_helper,
         EntityManager $em,
@@ -138,6 +160,9 @@ class CommentFormHandler
         $this->object_router       = $object_router;
         $this->permissions_manager = $permissions_manager;
         $this->subscription_helper = $subscription_helper;
+        $this->url_generator       = $url_generator;
+        $this->person_data_service = $person_data_service;
+        $this->brand_stack         = $brand_stack;
     }
 
     public function handle(FormInterface $form, Request $request, ContentAbstract $content, CommentAbstract $comment)
@@ -153,6 +178,7 @@ class CommentFormHandler
 
             return $this->handleLoggedInPersonSubmit($request, $content, $comment, $person);
         } elseif ($form->isSubmitted()) {
+            // there was an error in this case, but it was submitted, so inform the anti-abuse system
             $this->informAntiAbuse(null, $request);
         }
 
@@ -184,7 +210,7 @@ class CommentFormHandler
      *
      * @return RedirectResponse
      */
-    protected function handleLoggedInPersonSubmit(Request $request, ContentAbstract $content, CommentAbstract $comment, $person)
+    protected function handleLoggedInPersonSubmit(Request $request, ContentAbstract $content, CommentAbstract $comment, Person $person)
     {
         $this->informAntiAbuse($person, $request);
         $this->acceptComment($content, $comment, $request);
@@ -214,7 +240,27 @@ class CommentFormHandler
         $person->setPrimaryEmail($email);
         $person->setName($comment->name);
         try {
-            $this->person_factory->checkGuestForValidation($person);
+            $this->person_factory->checkGuestForValidation($person, $request->attributes->get('saved-form'));
+
+            // this is someone who clicked the validation link and ended up here (no exception thrown).
+
+            // if its a saved form, it appears to be a guest submission, but its not realy.
+            // get the person and set them on the comment.
+            $person = $this->person_data_service->getPersonForEmail($email->getEmail());
+            $comment->setPerson($person);
+            $this->acceptComment($content, $comment, $request);
+
+            if (!$person->isUser()) {
+                // act as if we generated a "set password" token for this user and they clicked the link
+                $expire_time    = $this->brand_stack->getActive()->getSetting('user.password_reset_code_time_limit', 18000);
+                $password_reset = $this->person_data_service->createPasswordReset($person, $expire_time);
+                $code           = $password_reset['code'];
+
+                return new RedirectResponse($this->url_generator->generate('portal_set_password_process', [
+                    'code'       => $code,
+                    'from-saved' => true,
+                ]));
+            }
         } catch (LoginRequiredException $e) {
             // oops! A login is required. This "guest" cannot post a comment until logged in.
             $person = $e->getPerson();
@@ -249,7 +295,7 @@ class CommentFormHandler
         $this->addFlash($request, 'success', 'portal.flashes.comment_thank_you');
 
         // auto subscribe
-        if ($person = $this->getUser()) {
+        if ($person = $comment->getPerson()) {
             if ($person instanceof Person) {
                 if (!$this->subscription_helper->isSubscribedContent($content, $person)) {
                     $this->subscription_helper->subscribeToContent($content, $person);
