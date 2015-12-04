@@ -7,7 +7,7 @@ import Immutable from 'immutable';
 const initialState = {
   audioNotifications: true,
   chatInfo: {
-    date_ended: null//moment().format('X')
+    date_ended: moment().format('X')
   },
   messages: [
     {id: 104, content: 'my message my message my message my message', author: null, is_sys: false, date_created: '2015-12-03 14:10'},
