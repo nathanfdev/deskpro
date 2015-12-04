@@ -19,37 +19,67 @@ export const createChat = createAction(
 
 export const pollingChat = createAction(
   'WIDGET_CHAT_POLLING',
-  (chatId, params) => dispatch => DpApi
-    .sendGet(`DP_API/chats/${chatId}/polling?` + compileParams(params))
-    .success(response => {
-      const chatInfo = response.chat_info && response.chat_info.data;
-      const newMessages = response.new_messages ? response.new_messages.data : [];
+  (chatId, params) => dispatch => {
+    if (!chatId) {
+      return null;
+    }
 
-      if (chatInfo) {
-        dispatch(updateChatInfo(chatInfo));
-      }
-      if (newMessages.length) {
-        dispatch(addNewMessages(newMessages));
-      }
-    })
+    return DpApi
+      .sendGet(`DP_API/chats/${chatId}/polling?` + compileParams(params))
+      .success(response => {
+        const chatInfo = response.chat_info && response.chat_info.data;
+        const newMessages = response.new_messages ? response.new_messages.data : [];
+
+        if (chatInfo) {
+          dispatch(updateChatInfo(chatInfo));
+        }
+        if (newMessages.length) {
+          dispatch(addNewMessages(newMessages));
+        }
+      });
+  }
 );
 
 export const sendChatMessage = createAction(
   'WIDGET_CHAT_SEND_MESSAGE',
-  (chatId, params) => DpApi.sendPost(`DP_API/chats/${chatId}/messages`, params)
+  (chatId, params) => {
+    if (!chatId) {
+      return null;
+    }
+
+    return DpApi.sendPost(`DP_API/chats/${chatId}/messages`, params);
+  }
 );
 
 export const endChat = createAction(
   'WIDGET_CHAT_END',
-  chatId => DpApi.sendPost(`DP_API/chats/${chatId}/end`)
+  chatId => {
+    if (!chatId) {
+      return null;
+    }
+
+    return DpApi.sendPost(`DP_API/chats/${chatId}/end`);
+  }
 );
 
 export const reopenChat = createAction(
   'WIDGET_CHAT_REOPEN',
-  chatId => DpApi.sendPost(`DP_API/chats/${chatId}/reopen`)
+  chatId => {
+    if (!chatId) {
+      return null;
+    }
+
+    return DpApi.sendPost(`DP_API/chats/${chatId}/reopen`);
+  }
 );
 
 export const sendFeedback = createAction(
   'WIDGET_CHAT_SEND_FEEDBACK',
-  (chatId, params) => DpApi.sendPost(`DP_API/chats/${chatId}/feedback`, params)
+  (chatId, params) => {
+    if (!chatId) {
+      return null;
+    }
+
+    return DpApi.sendPost(`DP_API/chats/${chatId}/feedback`, params);
+  }
 );
