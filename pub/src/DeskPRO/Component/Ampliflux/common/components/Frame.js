@@ -45,6 +45,7 @@ export default class Frame extends React.Component {
 
   getFrameStyles() {
     const { frameStyles = {}, isVisible, positionMode } = this.props;
+    const dimensions = this.state.dimensions;
 
     let position;
     switch (positionMode) {
@@ -67,8 +68,8 @@ export default class Frame extends React.Component {
       border: 'none',
       background: 'transparent',
       zIndex: 99999,
-      width: this.state.dimensions.width,
-      height: this.state.dimensions.height,
+      width: dimensions.width,
+      height: dimensions.height,
       position: 'fixed',
       display: isVisible ? 'block' : 'none',
 
@@ -85,8 +86,8 @@ export default class Frame extends React.Component {
     const width = frameStyles.width || $container.width();
     const height = frameStyles.height || $container.height();
 
-    const currentDimensions = this.state.dimensions;
-    if (currentDimensions.width === width && currentDimensions.height === height) {
+    const dimensions = this.state.dimensions;
+    if (dimensions.width === width && dimensions.height === height) {
       return;
     }
 
