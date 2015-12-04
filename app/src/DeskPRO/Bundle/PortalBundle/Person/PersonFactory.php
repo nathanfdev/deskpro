@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Person;
 
 use Application\DeskPRO\Entity\Person;
@@ -92,6 +91,10 @@ class PersonFactory
     {
         $person = new Person();
 
+        if ($name = $context->getName()) {
+            $person->setName($name);
+        }
+
         $person->setLanguage($this->language_stack->getActiveOrDefault());
 
         $email = new PersonEmail();
@@ -151,8 +154,12 @@ class PersonFactory
      * 3. EmailValidationRequiredException - this is a new person and we don't want them or their content in the system until
      *                                       they pass email validation.
      */
-    public function checkGuestForValidation(PersonGuest $guest)
+    public function checkGuestForValidation(PersonGuest $guest, $already_validated = false)
     {
+        if ($already_validated) {
+            return true;
+        }
+
         /* @var \Application\DeskPRO\Entity\PersonEmail $email */
         if (!$guest_email = $guest->getEmailAddress()) {
             throw new \InvalidArgumentException('guest passed to "checkGuestForValidation" did not have an email. email is required to use this method.');
