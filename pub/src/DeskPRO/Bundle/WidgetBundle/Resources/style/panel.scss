@@ -31,6 +31,7 @@ $border-color: #e7e7e7;
   .dpdesignportal-content {
     position: relative;
     width: 100%;
+    padding-right: 5px;
     height: 400px;
 
     a {
@@ -56,6 +57,10 @@ $border-color: #e7e7e7;
           margin: 1px;
           display: inline-block;
         }
+      }
+
+      .scrollbar-container {
+        display: none;
       }
     }
   }
