@@ -35,8 +35,6 @@ use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Kernel\KernelErrorHandler;
 use FOS\RestBundle\View\View;
-use Symfony\Component\Form\FormError;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -61,7 +59,7 @@ class ExceptionController extends BaseController
 
         $errors_array = [];
         if ($exception instanceof InvalidFormException) {
-            $errors_array = $this->generateFormErrors($exception->getForm());
+            $errors_array = $this->getFormErrorsGenerator()->generateFormErrors($exception->getForm());
         }
 
         if (!$exception instanceof InvalidFormException && !$exception instanceof HttpException) {
@@ -100,86 +98,11 @@ class ExceptionController extends BaseController
     }
 
     /**
-     * @param FormInterface $form
-     *
-     * @return array
+     * @return \DeskPRO\Bundle\AppBundle\Error\FormErrorsGenerator
      */
-    private function generateFormErrors(FormInterface $form)
+    protected function getFormErrorsGenerator()
     {
-        $errors = $list = [];
-        foreach ($form->getErrors() as $error) {
-            $code   = $this->getFormErrorCode($error);
-            $list[] = [
-                'code'    => $code,
-                'message' => $this->getErrorMessageFactory()->createFormErrorMessage($code, $error),
-            ];
-        }
-
-        if ($list) {
-            $errors['errors'] = $list;
-        }
-
-        $children = [];
-        foreach ($form->all() as $child) {
-            if ($child instanceof FormInterface) {
-                $child_errors = $this->generateFormErrors($child);
-                if ($child_errors) {
-                    $children[$child->getName()] = $child_errors;
-                }
-            }
-        }
-
-        // if it is NOT an associated array, we want to make it one
-        if (
-            !empty($children) // not empty
-            && $this->needsPrefix($children)
-        ) {
-            $prefix       = !is_numeric($form->getName()) ? $form->getName().'_' : 'field_';
-            $new_children = [];
-            foreach ($children as $index => $value) {
-                $new_children[$prefix.$index] = $value;
-            }
-            $children = $new_children;
-        }
-
-        if ($children) {
-            $errors['fields'] = $children;
-        }
-
-        return $errors;
-    }
-
-    /**
-     * @param array $children
-     *
-     * @return bool
-     */
-    protected function needsPrefix(array $children)
-    {
-        if (array_keys($children) === range(0, count($children) - 1)) {
-            // indexed array, needs prefix
-            return true;
-        }
-
-        foreach ($children as $key => $val) {
-            if (!is_numeric($key)) {
-                // any non-numeric key means no prefix
-                return false;
-            }
-        }
-
-        // if we get here all keys are numeric, so needs prefixing
-        return true;
-    }
-
-    /**
-     * @param FormError $error
-     *
-     * @return mixed|string
-     */
-    protected function getFormErrorCode(FormError $error)
-    {
-        return $this->getErrorCodeFactory()->getErrorCodeForFormError($error);
+        return $this->get('api_error.form_errors_generator');
     }
 
     /**
