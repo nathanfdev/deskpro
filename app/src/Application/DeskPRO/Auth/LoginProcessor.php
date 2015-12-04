@@ -135,8 +135,11 @@ class LoginProcessor
             if ($mapped_fields->has('email') && $mapped_fields->get('email_confirmed')) {
                 $set_email = $mapped_fields->get('email');
                 $email     = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($mapped_fields->get('email'));
+                /** @var \Application\DeskPRO\Entity\PersonEmail $email */
                 if ($email) {
-                    $this->person = $email->person;
+                    // always validate emails sent from a usersource
+                    $email->is_validated = true;
+                    $this->person        = $email->person;
                 }
             }
 
@@ -147,8 +150,9 @@ class LoginProcessor
             }
 
             if (!$this->person) {
-                $this->new_person              = true;
-                $this->person                  = new Person();
+                $this->new_person = true;
+                $this->person     = new Person();
+                 // always validate people sent from a usersource
                 $this->person->is_user         = true;
                 $this->person->creation_system = 'web.usersource';
             }
@@ -160,6 +164,10 @@ class LoginProcessor
 
             if ($set_email && !$this->person->findEmailAddress($set_email)) {
                 $email_obj = $this->person->addEmailAddressString($set_email);
+                // always validate emails sent from a usersource
+                if ($this_email = $this->person->findEmailAddress($set_email)) {
+                    $this_email->is_validated = true;
+                }
                 $this->persist($em, $email_obj);
                 $this->flush($em);
             }
@@ -198,6 +206,8 @@ class LoginProcessor
                     if (!$email) {
                         $email_obj = $this->person->addEmailAddressString($mapped_fields->get('email'));
                         $this->persist($em, $email_obj);
+                        // always validate emails sent from a usersource
+                        $email_obj->is_validated     = true;
                         $this->person->primary_email = $email_obj;
                         $this->persist($em, $this->person);
                         $this->flush($em);
@@ -220,6 +230,10 @@ class LoginProcessor
         if (self::tryAutoAgent($this->usersource, $this->person)) {
             $this->sendAgentWelcomeEmail();
         }
+
+        // any user who logs in via a usersource is automatically considered to be a user and confirmed
+        $this->person->is_confirmed = true;
+        $this->person->is_user      = true;
 
         $this->persist($em, $this->person);
         $this->persist($em, $this->assoc);
