@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
+use Application\DeskPRO\Entity\ClientMessage;
 use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -116,13 +117,27 @@ class ChatController extends AbstractController
      */
     public function sendMessageAction(ChatConversation $conversation, Request $request)
     {
-        $message          = new ChatMessage();
-        $message->content = $request->request->get('message');
+        $chat_message = new ChatMessage();
+        $chat_message
+            ->setOrigin('user')
+            ->setContent($request->request->get('message'))
+            ->setMetadata([
+                'is_html' => false,
+            ])
+        ;
 
-        $conversation->addMessage($message);
+        $client_message = new ClientMessage();
+        $client_message->fromArray([
+            'channel'           => $conversation->getChannelId('newmessage'),
+            'data'              => $this->dataSerialize($chat_message)['data'],
+            'created_by_client' => '',
+        ]);
+
+        $conversation->addMessage($chat_message);
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($conversation);
+        $em->persist($client_message);
         $em->flush();
 
         return new JsonResponse();

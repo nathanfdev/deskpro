@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
 use Application\DeskPRO\Entity\ChatMessage;
@@ -59,7 +58,7 @@ class ChatMessageTransformer extends AbstractDataSerializerTransformer
      */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        return ['id', 'content', 'metadata', 'is_html', 'is_sys', 'date_created'];
+        return ['id', 'content', 'is_html', 'is_sys', 'date_created'];
     }
 
     /**
@@ -75,6 +74,7 @@ class ChatMessageTransformer extends AbstractDataSerializerTransformer
             'author_type'   => $this->getAuthorType($data),
             'author_name'   => $this->getAuthorName($data),
             'author_avatar' => $this->getAuthorAvatar($data),
+            'metadata'      => $data->getMetadata(),
         ];
     }
 

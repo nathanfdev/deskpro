@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -246,11 +245,47 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @param array $metadata
+     *
+     * @return $this
+     */
+    public function setMetadata(array $metadata)
+    {
+        $this->setModelField('metadata', $metadata);
+
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function getMetadata()
     {
         return $this->metadata;
+    }
+
+    /**
+     * @param string $origin
+     *
+     * @return $this
+     */
+    public function setOrigin($origin)
+    {
+        $this->setModelField('origin', $origin);
+
+        return $this;
+    }
+
+    /**
+     * @param string $content
+     *
+     * @return $this
+     */
+    public function setContent($content)
+    {
+        $this->setModelField('content', $content);
+
+        return $this;
     }
 
     /**
