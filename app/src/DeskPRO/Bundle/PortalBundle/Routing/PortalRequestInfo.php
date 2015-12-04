@@ -132,7 +132,7 @@ class PortalRequestInfo
 
         $pathinfo = $this->request->getPathInfo();
 
-        if ('/_' === substr($pathinfo, 0, 2)) {
+        if ('/_' === substr($pathinfo, 0, 2) || preg_match('#^/portal/api(/|\?|$)#i', $pathinfo)) {
             return true;
         }
 
