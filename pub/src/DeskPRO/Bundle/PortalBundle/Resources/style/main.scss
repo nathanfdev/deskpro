@@ -8526,12 +8526,16 @@ table .form-help {
     width: 100%;
     background: #ffffff;
 
-    ul {
-      @include blank-list;
+    .options-wrapper {
       position: absolute;
       right: 0;
+      left: 0;
       z-index: $zindex-very-top;
       display: block;
+    }
+
+    ul {
+      @include blank-list;
       width: 100%;
       border: 1px solid $form-border-color;
       max-height: 300px;
@@ -8593,6 +8597,10 @@ table .form-help {
     @extend .level-1;
     margin-top: 10px;
     margin-left: 30px;
+    padding-right: 30px;
+    .options-wrapper {
+      padding-right: 30px;
+    }
 
     &:before {
       position: absolute;
@@ -8612,48 +8620,56 @@ table .form-help {
     @extend .level-1;
     @extend .level-2;
     margin-left: 60px;
+    padding-right: 60px;
   }
 
   &.level-4 {
     @extend .level-1;
     @extend .level-2;
     margin-left: 90px;
+    padding-right: 90px;
   }
 
   &.level-5 {
     @extend .level-1;
     @extend .level-2;
     margin-left: 120px;
+    padding-right: 120px;
   }
 
   &.level-6 {
     @extend .level-1;
     @extend .level-2;
     margin-left: 120px;
+    padding-right: 120px;
   }
 
   &.level-7 {
     @extend .level-1;
     @extend .level-2;
     margin-left: 120px;
+    padding-right: 120px;
   }
 
   &.level-8 {
     @extend .level-1;
     @extend .level-2;
     margin-left: 120px;
+    padding-right: 120px;
   }
 
   &.level-9 {
     @extend .level-1;
     @extend .level-2;
     margin-left: 120px;
+    padding-right: 120px;
   }
 
   &.level-10 {
     @extend .level-1;
     @extend .level-2;
     margin-left: 120px;
+    padding-right: 120px;
   }
 }
 

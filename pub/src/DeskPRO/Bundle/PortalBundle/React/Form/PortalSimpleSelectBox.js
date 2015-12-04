@@ -102,12 +102,12 @@ export default class PortalSimpleSelectBox extends React.Component {
     if (!this.state.expanded) {
       return;
     }
-    this.setState({
-      expanded: false
-    });
     if (this.refs.filterInput) {
       this.refs.filterInput.blur();
     }
+    this.setState({
+      expanded: false
+    });
   }
 
   dropdownClickHandler(e) {
@@ -146,6 +146,15 @@ export default class PortalSimpleSelectBox extends React.Component {
     this.props.onChange(val);
   }
 
+  focusedOnKeyDown = (ev) => {
+    const key = ev.keyCode;
+    switch (key) {
+      case 13: // enter
+        ev.preventDefault();
+        this.openMenu();
+        break;
+    }
+  }
 
   renderStaticHeader() {
     const classes = ['default'];
@@ -164,7 +173,7 @@ export default class PortalSimpleSelectBox extends React.Component {
 
     if (!this.state.expanded && (this.props.multiple ? this.state.value.length > 0 : this.state.value)) {
       return (
-        <div className={className} onClick={this.onClickHeader} tabIndex="0" role="combobox" ref="defaultRow">
+        <div className={className} onClick={this.onClickHeader} onKeyDown={this.focusedOnKeyDown} tabIndex="0" role="combobox" ref="defaultRow">
           <span>{this.props.multiple ? (
               this.state.value.map((opt) => {
                 return opt.title || (<span>&nbsp;</span>)
@@ -177,9 +186,8 @@ export default class PortalSimpleSelectBox extends React.Component {
       return (
         <div className={className} onClick={this.onClickHeader}>
           <div className="filter-box">
-            <input type="text" placeholder="Select..." ref="filterInput" onKeyDown={this.filterNav} onKeyUp={this.filterChange} />
+            <input type="text" placeholder="Select..." ref="filterInput" onFocus={() => this.openMenu()} onKeyDown={this.filterNav} onKeyUp={this.filterChange} />
           </div>
-          <i className="fa fa-times" onClick={this.selectNullOption.bind(this)} />
         </div>
       );
     }
@@ -233,27 +241,32 @@ export default class PortalSimpleSelectBox extends React.Component {
 
 
     return (
-      <ul onClick={this.dropdownClickHandler.bind(this)}>
-        {options.map((option) => {
-          if (this.isNullOption(option)) return null;
-          return (
-            <SelectOption onClickOption={this.onClickOption.bind(this)}
-                          disabled={option.children && option.children.length > 0}
-                          displayDepth={option.depth}
-                          isFocused={option === this.state.selectedOption}
-                          key={option.id}
-                          option={option}
-                          multiple={!!this.props.multiple}
-                          active={isActive(option)}/>
-          );
-        })
-        }
-      </ul>);
+      <div className="options-wrapper">
+        <ul onClick={this.dropdownClickHandler.bind(this)}>
+          {options.map((option) => {
+            if (this.isNullOption(option)) return null;
+            return (
+              <SelectOption onClickOption={this.onClickOption.bind(this)}
+                            disabled={option.children && option.children.length > 0}
+                            displayDepth={option.depth}
+                            isFocused={option === this.state.selectedOption}
+                            key={option.id}
+                            option={option}
+                            multiple={!!this.props.multiple}
+                            active={isActive(option)}/>
+            );
+          })
+          }
+        </ul>
+      </div>
+    );
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.refs.filterInput) {
       this.refs.filterInput.focus();
+    } else if (this.refs.defaultRow && this.state.expanded !== prevState.expanded) {
+      this.refs.defaultRow.focus();
     }
   }
 
