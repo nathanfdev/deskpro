@@ -206,6 +206,13 @@ export const massActionsSelector = createSelector(
       options: categoryOptions
     });
 
+    // Other options
+    const otherOptions = [{ label: 'Add label' }, { label: 'Remove label' }];
+    filterSelector.push({
+      icon: 'fa-asterisk', type: 'select', param: 'custom_category', quickFilter: true,
+      options: otherOptions
+    });
+
     return filterSelector;
   }
 );

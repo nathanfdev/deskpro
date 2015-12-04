@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 import Positioned from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
-import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
+import {QuickFilter} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/QuickFilter';
 import { RadioChoiceMenuOption } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/ChoiceMenu';
 
 export class ActionContainer extends Component {
@@ -31,7 +31,8 @@ export class ActionContainer extends Component {
 
     return (
       <li>
-        <Button isActive={this.state.expanded || (currentParams && currentParams.get(item.param))}
+        <Button isActive={this.state.expanded}
+                hasValue={!this.state.expanded && (currentParams && Boolean(currentParams.get(item.param)) === true)}
                 ref={'button' + id}
                 label={item.label}
                 icon={item.icon}
@@ -43,18 +44,31 @@ export class ActionContainer extends Component {
             onClickOut={this.collapse}
             ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list']}
             additionalNodes={['.dpw-navigation-dropdown-item-clear']}>
-            <Menu>
-              <div className="dpw--popup-item-collection">
-                {item.options.map((option, index) =>
-                    <RadioChoiceMenuOption key={index}
-                                           isActive={currentParams && currentParams.get(item.param) === option.value}
-                                           value={option.value}
-                                           label={option.label}
-                                           param={item.param}
-                                           setParams={setParams}/>
-                )}
+            <div className="dpw-navigation-dropdown-panel" style={{width: '250px'}}>
+              <div className="dpw-navigation-dropdown-panel-content">
+                <div className="dpw-navigation-dropdown-panel-content-line">
+                  <div className="dpw-navigation-dropdown-panel-content-full">
+                    <QuickFilter/>
+                  </div>
+                </div>
+                <div className="dpw-navigation-dropdown-panel-content-line">
+                  <div className="dpw-navigation-dropdown-panel-content-full">
+                    <div className="dpw--popup-item-collection">
+                      <ul>
+                        {item.options.map((option, index) =>
+                            <RadioChoiceMenuOption key={index}
+                                                   isActive={currentParams && currentParams.get(item.param) === option.value}
+                                                   value={option.value}
+                                                   label={option.label}
+                                                   param={item.param}
+                                                   setParams={setParams}/>
+                        )}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </Menu>
+            </div>
           </ClickOut>
         </Positioned>
       </li>
@@ -63,6 +77,14 @@ export class ActionContainer extends Component {
 }
 
 export class Button extends Component {
+  static propTypes = {
+    isActive: PropTypes.bool,
+    hasValue: PropTypes.bool,
+    label: PropTypes.string,
+    icon: PropTypes.string,
+    onClick: PropTypes.func.isRequired
+  };
+
   componentWillMount() {
     this.setState({
       isActive: this.props.isActive
@@ -87,8 +109,8 @@ export class Button extends Component {
   }
 
   render() {
-    const classes = classNames('top-row-action-button-link', { 'active': this.state.isActive });
-    const { onClick } = this.props;
+    const { onClick, hasValue } = this.props;
+    const classes = classNames('top-row-action-button-link', { 'active': this.state.isActive, 'has-value': hasValue });
 
     return (
       <span className="dpwd-navigation-dropdown-top-row-action-button">

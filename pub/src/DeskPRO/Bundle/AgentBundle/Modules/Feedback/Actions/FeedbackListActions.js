@@ -248,17 +248,18 @@ export const toggleSelectedAction = createAction('FEEDBACK_TOGGLE_SELECTED_ACTIO
 
 export const setMassActionsParams = createAction(
   'FEEDBACK_SET_MASS_ACTIONS_PARAMS',
-    params => params
+    param => param
 );
-export const resetMassActionsParams = createAction('FEEDBACK_RESET_MASS_ACTIONS_PARAMS');
+export const resetAllMassActionsParams = createAction('FEEDBACK_RESET_ALL_MASS_ACTIONS_PARAMS');
 
 export const massAction = createAction(
   'FEEDBACK_MASS_ACTION',
   (params) => (dispatch) =>
     Feedback.massAction(params)
       .then(promise => {
-        dispatch(resetMassActionsParams());
+        dispatch(resetAllMassActionsParams());
         dispatch(applyParams());
         return promise.getData();
       }
-    ));
+    )
+);
