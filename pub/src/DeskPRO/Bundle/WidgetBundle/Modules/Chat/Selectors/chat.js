@@ -57,5 +57,5 @@ export const messagesSelector = createSelector(
 
 export const lastMessageIdSelector = createSelector(
   messagesSelector,
-  messages => messages && messages.size ? messages.max((a, b) => a.get('id') - b.get('id')).get('id') : null
+  messages => messages && messages.size ? messages.map(message => message.get('id')).max((a, b) => a - b) : null
 );
