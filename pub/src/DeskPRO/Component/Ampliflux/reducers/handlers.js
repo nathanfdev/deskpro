@@ -124,7 +124,7 @@ export function setPayload(statePropKey, payloadPropKey = '@', defaultValue = nu
  * Push payload to a collection.
  *
  * @param {String|Array} statePropKey The property to set on the state.
- * @return {Function}
+ * @return {Function} Action handler function
  */
 export function pushPayloadToCollection(statePropKey) {
   return (state, payload, action) => {
@@ -145,7 +145,7 @@ export function pushPayloadToCollection(statePropKey) {
  * Toggle presence of scalar payload in a collection.
  *
  * @param {String|Array} statePropKey The property to set on the state.
- * @return {Function}
+ * @return {Function} Action handler function
  */
 export function togglePayloadInCollection(statePropKey) {
   return (state, payload, action) => {
@@ -170,7 +170,7 @@ export function togglePayloadInCollection(statePropKey) {
  * @param {String|Array} selectFrom    The property to set on the state.
  * @param {String|Array} selectInto
  * @param {String}       targetKeyProp
- * @return {Function}
+ * @return {Function} Action handler function
  */
 export function handleMassAction(selectFrom, selectInto, targetKeyProp = 'id') {
   return (state, select, action) => {
