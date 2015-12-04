@@ -1,5 +1,9 @@
 services:
 
+  person_manipulator:
+      class: DeskPRO\Bundle\PortalBundle\Person\PersonManipulator
+      arguments: [@router, @security.token_storage]
+
   person.portal_validator:
       class: DeskPRO\Bundle\PortalBundle\Person\PersonValidator
       arguments: [@doctrine.orm.default_entity_manager, @language_router, @data.email, @portal_email_sender, @data.feedback]
