@@ -33,13 +33,14 @@ namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
-use DeskPRO\Bundle\AppBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class ChatController.
@@ -61,7 +62,7 @@ class ChatController extends AbstractController
         $form->submit($request->request->all());
 
         if (!$form->isValid()) {
-            throw new InvalidFormException($form);
+            return $this->generateFormErrorsResponse($form);
         }
 
         $em = $this->getDoctrine()->getManager();
@@ -180,7 +181,7 @@ class ChatController extends AbstractController
         $form->submit($request->request->all());
 
         if (!$form->isValid()) {
-            throw new InvalidFormException($form);
+            return $this->generateFormErrorsResponse($form);
         }
 
         $em = $this->getDoctrine()->getManager();
@@ -198,5 +199,18 @@ class ChatController extends AbstractController
     protected function dataSerialize($data)
     {
         return $this->get('data_serializer')->serialize($data);
+    }
+
+    /**
+     * @param Form $form
+     *
+     * @return JsonResponse
+     */
+    protected function generateFormErrorsResponse(Form $form)
+    {
+        $generator = $this->get('api_error.form_errors_generator');
+        $errors    = $generator->generateFormErrors($form);
+
+        return new JsonResponse($errors, Response::HTTP_BAD_REQUEST);
     }
 }

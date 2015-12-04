@@ -29,13 +29,13 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api;
 
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\TextStringTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class CreateChatType.
@@ -63,6 +63,9 @@ class CreateChatType extends AbstractType
             ->add('email', 'email', [
                 'property_path' => 'person_email',
                 'required'      => false,
+                'constraints'   => [
+                    new Assert\Email(),
+                ],
             ])
         ;
 
