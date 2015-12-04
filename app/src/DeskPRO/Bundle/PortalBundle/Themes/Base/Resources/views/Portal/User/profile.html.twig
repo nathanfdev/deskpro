@@ -36,8 +36,7 @@
         <div class="column-half">
             {{ form_start(profile_form, { attr: { class: 'form-ticket dpx-form' } }) }}
             {{ form_errors(profile_form) }}
-            {{ form_row(profile_form.first_name) }}
-            {{ form_row(profile_form.last_name) }}
+            {{ form_row(profile_form.name) }}
             {% if profile_form.language_id is defined %}
                 {{ form_row(profile_form.language_id) }}
             {% endif %}
@@ -48,7 +47,6 @@
                 {{ form_row(profile_form.upload_picture) }}
             {% endif %}
             {{ form_row(profile_form.timezone) }}
-            {{ form_row(profile_form.first_name) }}
             {% if profile_form.manager_auto_add is defined %}
                 {{ form_row(profile_form.manager_auto_add) }}
             {% endif %}

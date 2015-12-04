@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
@@ -74,8 +73,7 @@ class PersonEditProfileType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('first_name', 'text', array('label' => $this->phrase('portal.forms.label_first_name')));
-        $builder->add('last_name', 'text', array('label' => $this->phrase('portal.forms.label_last_name')));
+        $builder->add('name', 'text', array('label' => $this->phrase('portal.forms.label_name')));
 
         $builder->add('timezone', 'timezone', array('label' => $this->phrase('portal.forms.label_timezone')));
 
