@@ -4,21 +4,20 @@
             <li>
                 <div class="controls">
                     <ul>
-                        {% if dl.num_comments > 0 %}
+                        {%- if dl.num_comments > 0 -%}
                             <li>
                                 <a href="{{ portal_path(dl) }}#comments">
                                     <i class="fa fa-comments"></i>
                                     {{ phrase('portal.general.comments-count', {count: dl.num_comments}) }}
                                 </a>
                             </li>
-                        {% endif %}
+                        {%- endif -%}
                         <li class="the-file">
                             <a href="{{ portal_path(dl, 'serve') }}">
                                 {{ phrase('portal.downloads.download') }}
                                 <i class="fa fa-download"></i>
                             </a>
-                        </li>
-                        <li class="the-cudos has-cudos"><a href="{{ portal_path(dl, 'vote_up') }}" class="post-link"><i class="fa fa-thumbs-up"></i> {{ dl.total_rating }}</a></li>
+                        </li><li class="the-cudos as-vote-widget"><a href="{{ portal_path(dl, 'vote_up') }}" class="post-link as-vote-btn"><i class="fa fa-thumbs-up as-vote-animate"></i> <span class="as-vote-count" data-votes="{{ dl.total_rating }}">{{ dl.total_rating }}</span></a></li>
                     </ul>
                 </div>
 

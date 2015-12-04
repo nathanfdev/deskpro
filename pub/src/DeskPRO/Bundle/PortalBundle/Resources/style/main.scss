@@ -5575,7 +5575,6 @@ h1.fancy-header {
       display: inline-block;
       overflow: hidden;
       border-radius: 2px;
-      background: darken($surface-secondary, 5%);
       font-size: 0.8em;
       line-height: 1em;
 
@@ -5611,6 +5610,11 @@ h1.fancy-header {
 
       .the-cudos {
         border-left: 1px solid $divider-color;
+
+        &.with-voted .as-vote-animate {
+          @include wobble-to-top-right-apply();
+          vertical-align: baseline;
+        }
       }
 
       .the-cudos.has-cudos {

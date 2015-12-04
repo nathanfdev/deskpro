@@ -3,6 +3,7 @@ import TicketForm from "DeskPRO/Bundle/PortalBundle/PageWidget/TicketForm";
 import PortalFormWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/PortalFormWidget";
 import TicketView from "DeskPRO/Bundle/PortalBundle/PageWidget/TicketView";
 import TicketList from "DeskPRO/Bundle/PortalBundle/PageWidget/TicketList";
+import DownloadsList from "DeskPRO/Bundle/PortalBundle/PageWidget/DownloadsList";
 import FeedbackPage from "DeskPRO/Bundle/PortalBundle/PageWidget/FeedbackPage";
 import ClickAwayDropdownWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/ClickAwayDropdownWidget";
 import ClickToDismissWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/ClickToDismissWidget";
@@ -25,6 +26,7 @@ export default class PortalPage extends PageWidget {
     this.addWidgetDef(TicketForm, "#edit_ticket_form");
     this.addWidgetDef(TicketView, "#ticket_view_page");
     this.addWidgetDef(TicketList, "#ticket_list_page");
+    this.addWidgetDef(DownloadsList, ".download-list");
     this.addWidgetDef(FeedbackPage, "#feedback_page");
     this.addWidgetDef(HTmlLinkToPostWidget, "body");
     this.addWidgetDef(CustomPerFieldEdit, ".form-custom-per-field");

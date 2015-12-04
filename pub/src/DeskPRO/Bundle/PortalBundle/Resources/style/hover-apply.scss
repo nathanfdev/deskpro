@@ -1,0 +1,19 @@
+// Using hover.scss but on classnames so they apply when you dynamically add them via js
+// This is basically copy+pasting the effect scss file, naming the mixin '-apply', and just
+// making it apply to the class rather than on &:hover
+
+@mixin buzz-out-apply {
+  @include hacks();
+  @include prefixed(animation-name, #{$nameSpace}-buzz-out);
+  @include prefixed(animation-duration, .75s);
+  @include prefixed(animation-timing-function, linear);
+  @include prefixed(animation-iteration-count, 1);
+}
+
+@mixin wobble-to-top-right-apply {
+  @include hacks();
+  @include prefixed(animation-name, #{$nameSpace}-wobble-to-top-right);
+  @include prefixed(animation-duration, 1s);
+  @include prefixed(animation-timing-function, ease-in-out);
+  @include prefixed(animation-iteration-count, 1);
+}
