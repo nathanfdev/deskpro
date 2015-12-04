@@ -12,7 +12,10 @@ export class MessageContent extends React.Component {
 
     return (
       <div className="dpdesignportal-message-content">
-        <p>{message.get('content')}</p>
+        {message.get('is_html')
+          ? <p dangerouslySetInnerHTML={{__html: message.get('content')}} />
+          : <p>{message.get('content')}</p>
+        }
 
         {false && <ul>
           <li>
