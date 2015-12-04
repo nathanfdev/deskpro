@@ -152,7 +152,12 @@ gulp.task('bundle:widget', function(callback) {
 });
 
 gulp.task('bundle:dev-server', function(callback) {
+  refreshLegacy();
+  watch(path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle/Legacy/**/*.js"), function() {
+    refreshLegacy();
+  });
   reducerRefresh("Agent", path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle"));
+  reducerRefresh("Widget", path.join(__dirname, "src/DeskPRO/Bundle/WidgetBundle"));
   startWebpackServer(getWebpackConfig('all', true, false));
 });
 
