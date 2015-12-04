@@ -1,6 +1,6 @@
 import { createReducer } from 'Ampliflux';
 import * as actions from '../Actions/chatActions';
-import { setFullPayload, setValue } from 'Ampliflux/reducers/handlers';
+import { setFullPayload, setValue, toggleBool } from 'Ampliflux/reducers/handlers';
 import moment from 'moment';
 import Immutable from 'immutable';
 
@@ -18,7 +18,7 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
-  [actions.toggleAudioNotifications]: state => state.set('audioNotifications', !state.get('audioNotifications')),
+  [actions.toggleAudioNotifications]: toggleBool('audioNotifications'),
   [actions.updateChatInfo]: setFullPayload('chatInfo'),
   [actions.resetMessages]: setValue('messages', []),
   [actions.addNewMessages]: (state, payload) => {

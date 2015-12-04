@@ -82,6 +82,23 @@ export function mergeValue(statePropKey, value, deep = false) {
   };
 }
 
+/**
+ * Toggle boolean property of the state.
+ *
+ * @param {String|Array} statePropKey The property to set on the state.
+ * @return {Function} Action handler function
+ */
+export function toggleBool(statePropKey) {
+  return (state, payload, action) => {
+    verifyActionError(action);
+    verifyImmutable(state);
+
+    const path = getStatePath(statePropKey);
+    const value = state.getIn(path);
+
+    return state.setIn(path, !value);
+  };
+}
 
 /**
  * Set a value from the action payload.
