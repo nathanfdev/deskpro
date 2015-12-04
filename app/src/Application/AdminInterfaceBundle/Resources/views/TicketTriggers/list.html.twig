@@ -140,9 +140,12 @@
 						<h4>
 							<i class="fa fa-folder as-closed"></i>
 							<i class="fa fa-folder-open as-open"></i>
-							<span class="title-text">
+							<span class="title-text" ng-if="$parent.settings.satisfaction_enabled">
 								<span ng-pluralize count="List.satisfactions.length" when="{{ ng_plural_phrase('adm.ticket_triggers.count_satisfaction_triggers') }}">
 								</span>
+							</span>
+							<span class="title-text" ng-if="!$parent.settings.satisfaction_enabled">
+								{{ phrase('adm.ticket_triggers.help_satisfaction_disabled') }}
 							</span>
 							&nbsp;
 							<i class="fa fa-caret-down as-closed"></i>
@@ -153,14 +156,20 @@
 						<div class="group-section-shadow"></div>
 						<div class="group-section-content">
 							<div class="help-box">
-								{{ phrase('adm.ticket_triggers.help_satisfaction') }}
+
+								<span class="title-text" ng-if="$parent.settings.satisfaction_enabled">
+									{{ phrase('adm.ticket_triggers.help_satisfaction') }}
+								</span>
+								<span class="title-text" ng-if="!$parent.settings.satisfaction_enabled">
+									{{ phrase('adm.ticket_triggers.help_satisfaction_disabled') }}
+								</span>
 							</div>
 
 							<ul class="dp-item-list">
 								<li ng-repeat="sat in List.satisfactions" dp-state-mark="id:tickets.triggers.editsatisfaction.satisfaction-{{ ng_var('sat.id') }}">
 									<a href="{{ ng_href('tickets.triggers.editsatisfaction', "{type: List.eventType, id: 'satisfaction-' + sat.id}") }}">
 										<div class="pull-right toggle-wrapper">
-											<button dp-toggle-switch ng-model="satisfaction_triggers[sat.title].is_enabled" ng-change="List.updateTriggerEnabledState(satisfaction_triggers[sat.title])"></button>
+											<button dp-toggle-switch ng-model="satisfaction_triggers[sat.title].is_enabled" ng-change="List.updateTriggerEnabledState(satisfaction_triggers[sat.title])" ng-class="!$parent.settings.satisfaction_enabled && 'locked'"></button>
 										</div>
 										<h4>
 											<span class="title-text">{{ ng_var('sat.title.charAt(0).toUpperCase() + sat.title.substr(1)') }}</span>

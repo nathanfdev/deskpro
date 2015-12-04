@@ -16,6 +16,13 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'angular'], (Admin_Ctrl_Bas
             templateName: -> 'DeskPRO:emails_user:ticket-rate.html.twig'
         })
 
+      @$scope.$watch(
+        =>
+          @$scope.settings?.timelog_autostart
+        , (newVal, oldVal) =>
+          @$scope.settings.billing_on_reply = false if newVal == false
+      )
+
     initialLoad: ->
       data_promise = @Api.sendDataGet({
         'settings': '/ticket_settings'

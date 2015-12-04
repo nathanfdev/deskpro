@@ -65,6 +65,9 @@ define [
     initialLoad: ->
       promises = []
 
+      promises.push @Api.sendGet('/ticket_settings').then (res) =>
+        @$scope.$parent.settings = res.data.ticket_settings
+
       promises.push @dpTriggers.loadList(true).then( (list) =>
         window.all_triggers = list
         @all_triggers = list
@@ -106,7 +109,6 @@ define [
         ]
 
       d = @$q.defer()
-
 
       # run re-order stuff (from dpMoveListToPos)
       # while loading indicator is still spinning,

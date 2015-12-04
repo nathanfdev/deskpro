@@ -35,6 +35,7 @@ namespace Application\DeskPRO\People\Helpers;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\EntityRepository\Ticket;
 use Application\DeskPRO\HttpFoundation\Session;
 
 /**
@@ -78,7 +79,10 @@ class HelpdeskUser extends \Application\DeskPRO\Domain\DomainObject implements \
             return $this->ticket_count;
         }
 
-        $this->ticket_count = App::getEntityRepository('DeskPRO:Ticket')->countTicketsForPerson($this->person);
+        /** @var Ticket $rep */
+        $rep                = App::getEntityRepository('DeskPRO:Ticket');
+        $info               = $rep->getCountInfoForPerson($this->person);
+        $this->ticket_count = $info['person'] - $info['org'];
 
         return $this->ticket_count;
     }

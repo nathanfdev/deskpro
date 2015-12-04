@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\JsonRenderer\TicketListRenderer;
@@ -245,6 +244,10 @@ class TicketSearchController extends AbstractController
         $q = $this->in->getString('q');
         if (!$q) {
             $q = $this->in->getString('term');
+        }
+
+        if (!$q) {
+            return $this->createJsonResponse(array());
         }
 
         if ($this->container->getSetting('elastica.enabled') && !$this->in->getUint('person_id')) {

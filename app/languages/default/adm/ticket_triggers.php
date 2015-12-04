@@ -38,10 +38,11 @@ return array(
     'adm.ticket_triggers.count_email_triggers'        => '{{count}} Email Account Trigger|{{count}} Email Account Triggers',
     'adm.ticket_triggers.count_satisfaction_triggers' => '{{count}} Satisfaction Trigger|{{count}} Satisfaction Triggers',
 
-    'adm.ticket_triggers.help_department_newticket' => 'Use these triggers if you want to perform actions based on the department a ticket is created in. Does not apply to tickets created by email.',
-    'adm.ticket_triggers.help_department_update'    => 'Use these triggers if you want to perform actions based on when the department is changed to a new department.',
-    'adm.ticket_triggers.help_emailacc'             => 'Tickets are created when an email is processed by DeskPRO. These triggers perform actions based on the email address used.',
-    'adm.ticket_triggers.help_satisfaction'         => 'Satisfaction triggers.',
+    'adm.ticket_triggers.help_department_newticket'  => 'Use these triggers if you want to perform actions based on the department a ticket is created in. Does not apply to tickets created by email.',
+    'adm.ticket_triggers.help_department_update'     => 'Use these triggers if you want to perform actions based on when the department is changed to a new department.',
+    'adm.ticket_triggers.help_emailacc'              => 'Tickets are created when an email is processed by DeskPRO. These triggers perform actions based on the email address used.',
+    'adm.ticket_triggers.help_satisfaction'          => 'Satisfaction triggers.',
+    'adm.ticket_triggers.help_satisfaction_disabled' => 'Enable the Satisfaction survey to use these triggers, which perform action based on survey responses.',
 
     'adm.ticket_triggers.dep_trigger_title'                 => 'Department Trigger',
     'adm.ticket_triggers.dep_trigger_description_newticket' => 'This is a department trigger. It will apply when a new ticket is created with this department.',

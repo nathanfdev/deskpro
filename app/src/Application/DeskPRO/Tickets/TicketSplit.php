@@ -104,8 +104,10 @@ class TicketSplit implements PersonContextInterface
 
         $this->ticket_manager->markAsManaged($this->ticket);
         try {
-            $this->doSplit($subject, $message_ids);
+            $ticket = $this->doSplit($subject, $message_ids);
             $this->ticket_manager->markAsUnmanaged($this->ticket);
+
+            return $ticket;
         } catch (\Exception $e) {
             $this->ticket_manager->markAsUnmanaged($this->ticket);
             throw $e;

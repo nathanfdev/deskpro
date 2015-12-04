@@ -1808,10 +1808,16 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
           , $form = self.getEl('newticket')
           , $discard = $('#discard-draft-btn', $form)
 					, $attachRow = self.getEl('attach_row')
+					, redactor = self.textarea.data('redactor')
           ;
 
         item.form.forEach(function(el, i){
-          $('[name="' + el.name + '"]', $form).val('').trigger('change', true);
+					if ('newticket[message]' === el.name) {
+						redactor && self.textarea.setCode('');
+						self.addSignature();
+					} else {
+						$('[name="' + el.name + '"]', $form).val('').trigger('change', true);
+					}
         });
 				$attachRow.hide().find('ul.files:first').children().remove();
 

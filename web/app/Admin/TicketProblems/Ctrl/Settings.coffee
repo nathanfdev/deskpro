@@ -12,10 +12,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @$scope.updateAgents = @updateAgents
       @$scope.perm = {selected: 'view'}
 
-      @$scope.$watch('settings', (newVal, oldVal) =>
-        @$scope.updateAgents() if parseInt(newVal?.enabled)
+      @$scope.$watch('settings.enabled', (newVal, oldVal) =>
+        @$scope.updateAgents() if parseInt(newVal)
       )
-
 
 
     initialLoad: ->
