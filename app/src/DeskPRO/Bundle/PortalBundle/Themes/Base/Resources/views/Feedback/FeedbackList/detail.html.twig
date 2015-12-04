@@ -4,7 +4,9 @@
     <a href="{{ portal_path(item, 'vote_up') }}" class="i-agree post-link {% if user_up_voted(item) %} agreed{% endif %}">
       <i class="fa fa-thumbs-up"></i>
       <div>{{ phrase('portal.feedback.btn-vote') }}</div>
-      <span class="counter">{{ item.total_rating }}</span>
+      <span class="counter-wrapper">
+        <span class="counter">{{ item.total_rating }}</span>
+      </span>
     </a>
     {# fav/stars feature not supported yet #}
     {#<a href="#" class="star">#}
