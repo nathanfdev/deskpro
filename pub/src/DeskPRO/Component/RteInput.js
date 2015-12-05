@@ -33,7 +33,12 @@ export default class RteInput extends React.Component {
     const node = ReactDOM.findDOMNode(this);
 
     if (newProps.value !== node.innerHTML) {
-      this.medium.setContent('<p><br></p>');
+      let content = newProps.value;
+      if (!content) {
+        content = '<p><br></p>';
+      }
+
+      this.medium.setContent(content);
     }
   }
 

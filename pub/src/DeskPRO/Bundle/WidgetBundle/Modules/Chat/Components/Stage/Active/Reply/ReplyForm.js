@@ -36,6 +36,12 @@ export class ReplyForm extends React.Component {
     console.log('onScreenShare');
   };
 
+  onSelectEmotion = image => {
+    this.setState({
+      message: this.state.message + `<p>${image}</p>`
+    });
+  };
+
   onSubmit = event => {
     event.preventDefault();
 
@@ -100,7 +106,7 @@ export class ReplyForm extends React.Component {
             <a href="#" onClick={this.onScreenShare}>
               <i className="fa fa-camera"></i> Screen Share
             </a>
-            <EmotionButton />
+            <EmotionButton onSelect={this.onSelectEmotion} />
           </div>
 
           <EndChatContainer>
