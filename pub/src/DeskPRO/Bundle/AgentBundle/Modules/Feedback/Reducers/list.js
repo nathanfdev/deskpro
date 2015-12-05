@@ -40,6 +40,7 @@ export default createReducer(initialState, {
   }),
   [actions.toggleMassAction]: handleMassAction('elements', 'selected'),
   [actions.setMassActionsParams]: (state, payload) => state.setIn(['massActions', payload.param], payload.value),
+  [actions.resetMassActionsParam]: (state, payload) => state.deleteIn(['massActions', payload]),
   [actions.resetAllMassActionsParams]: (state) => state.set('massActions', Immutable.fromJS({})),
 
   [actions.toggleSelectedAction]: togglePayloadInCollection('selected'),

@@ -250,6 +250,11 @@ export const setMassActionsParams = createAction(
   'FEEDBACK_SET_MASS_ACTIONS_PARAMS',
     param => param
 );
+
+export const resetMassActionsParam = createAction(
+  'FEEDBACK_RESET_MASS_ACTIONS_PARAM',
+    param => param
+);
 export const resetAllMassActionsParams = createAction('FEEDBACK_RESET_ALL_MASS_ACTIONS_PARAMS');
 
 export const massAction = createAction(

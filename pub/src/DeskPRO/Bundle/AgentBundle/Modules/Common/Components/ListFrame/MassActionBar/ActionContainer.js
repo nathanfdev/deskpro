@@ -9,6 +9,7 @@ export class ActionContainer extends Component {
   static propTypes = {
     isActive: PropTypes.bool,
     setParams: PropTypes.func.isRequired,
+    resetSingleAction: PropTypes.func.isRequired,
     currentParams: PropTypes.object,
     id: PropTypes.number.isRequired,
     item: PropTypes.object.isRequired
@@ -27,8 +28,28 @@ export class ActionContainer extends Component {
   collapse = () => this.setState({ expanded: false });
 
   render() {
-    const {id, item, setParams, currentParams } = this.props;
+    const {id, item, setParams, currentParams, resetSingleAction } = this.props;
+    const renderNested = (nested) => {
+      if (!nested || !nested.length) {
+        return <span />;
+      }
 
+      return (
+        <ul>
+          {nested.map((option, index1) =>
+              <RadioChoiceMenuOption
+                key={index1}
+                isActive = {currentParams && currentParams.get(option.param) === option.value}
+                value={option.value}
+                param={option.param}
+                label={option.label}
+                resetSingleAction={resetSingleAction}
+                setParams={setParams}
+                />
+          )}
+        </ul>
+      );
+    };
     return (
       <li>
         <Button isActive={this.state.expanded}
@@ -61,7 +82,10 @@ export class ActionContainer extends Component {
                                                    value={option.value}
                                                    label={option.label}
                                                    param={item.param}
-                                                   setParams={setParams}/>
+                                                   resetSingleAction={resetSingleAction}
+                                                   setParams={setParams}>
+                              {renderNested(option.nested)}
+                            </RadioChoiceMenuOption>
                         )}
                       </ul>
                     </div>

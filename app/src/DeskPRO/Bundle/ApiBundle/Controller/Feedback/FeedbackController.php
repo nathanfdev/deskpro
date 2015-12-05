@@ -33,6 +33,8 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
 use Application\DeskPRO\Entity\CustomDataFeedback;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackCountCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackSelectCriteria;
@@ -101,13 +103,13 @@ class FeedbackController extends BaseController
     public function cgetAction(Request $request)
     {
         $dataService = $this->get('data.feedback');
-        $params      = $request->query->all();
+        $params = $request->query->all();
         try {
             $criteria = FeedbackSelectCriteria::fromParameters($params, new OptionsResolver());
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
-        $page  = $request->query->get('page', 1);
+        $page = $request->query->get('page', 1);
         $count = $request->query->get('count', 5);
 
         $feedback = $dataService->selectFeedback($criteria, $page, $count);
@@ -142,7 +144,7 @@ class FeedbackController extends BaseController
     public function getCountsAction(Request $request)
     {
         $dataService = $this->get('data.feedback');
-        $params      = $request->query->all();
+        $params = $request->query->all();
         try {
             $criteria = FeedbackCountCriteria::fromParameters($params, new OptionsResolver());
         } catch (InvalidArgumentException $e) {
@@ -179,7 +181,7 @@ class FeedbackController extends BaseController
      */
     public function massAction(Request $request)
     {
-        $em  = $this->getDoctrine()->getManager();
+        $em = $this->getDoctrine()->getManager();
         $ids = $request->query->get('id');
         if (count($ids) > 0) {
             $qb = $em->createQueryBuilder();
@@ -200,13 +202,27 @@ class FeedbackController extends BaseController
                             $item->setCategory($category);
                         }
                     }
-                }
-                if ($param === 'status') {
+                } elseif ($param === 'status') {
                     foreach ($feedback as $item) {
                         $item->setStatus($value);
                     }
-                }
-                if ($param === 'custom_category') {
+                } elseif ($param === 'status_category') {
+                    $statusCategory = $em->getRepository('DeskPRO:FeedbackStatusCategory')
+                        ->findOneBy(['title' => $value]);
+                    if (null !== $statusCategory) {
+                        foreach ($feedback as $item) {
+                            $item->setStatusCategory($statusCategory);
+                            $item->setStatus($statusCategory->getStatusType());
+                        }
+                    }
+                } elseif ($param === 'hidden_status') {
+                    foreach ($feedback as $item) {
+                        $item->setStatus(Feedback::STATUS_HIDDEN);
+                        $item->setHiddenStatus($value);
+                        $em->persist($item);
+                        $em->flush();
+                    }
+                } elseif ($param === 'custom_category') {
                     $customDef = $em->getRepository('DeskPRO:CustomDefFeedback')->findOneBy(['title' => 'category']);
                     foreach ($feedback as $item) {
                         $customCategory = $em->getRepository('DeskPRO:CustomDataFeedback')
