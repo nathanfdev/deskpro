@@ -356,7 +356,7 @@ export class FilteringMenu extends Component {
                     label={option.label}
                     onClick={onClick(option.value)}
                     >
-                    {renderNested(option.nested)}
+                      {renderNested(option.nested)}
                   </ChoiceMenuOption>
               )}
             </ul>

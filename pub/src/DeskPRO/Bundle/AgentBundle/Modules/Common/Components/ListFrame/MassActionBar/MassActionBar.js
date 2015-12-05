@@ -9,6 +9,7 @@ export class MassActionBar extends Component {
     selected: PropTypes.object.isRequired,
     action: PropTypes.func.isRequired,
     resetAction: PropTypes.func.isRequired,
+    resetSingleAction: PropTypes.func.isRequired,
     setParams: PropTypes.func.isRequired,
     actions: PropTypes.array.isRequired,
     currentParams: PropTypes.object,
@@ -19,7 +20,7 @@ export class MassActionBar extends Component {
   };
 
   render() {
-    const { checkbox, actions, action, selected, setParams, currentParams, resetAction } = this.props;
+    const { checkbox, actions, action, selected, setParams, currentParams, resetAction, resetSingleAction } = this.props;
     const isActive = currentParams && currentParams.size > 0;
     return (
       <ListFrameMenu checkbox={checkbox}>
@@ -27,6 +28,7 @@ export class MassActionBar extends Component {
             <ActionContainer key={index} id={index}
                              item={item}
                              setParams={setParams}
+                             resetSingleAction={resetSingleAction}
                              currentParams={currentParams}/>
         )}
         {isActive && <li>

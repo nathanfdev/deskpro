@@ -209,7 +209,7 @@ export const massActionsSelector = createSelector(
     // Other options
     const otherOptions = [{ label: 'Add label' }, { label: 'Remove label' }];
     filterSelector.push({
-      icon: 'fa-asterisk', type: 'select', param: 'custom_category', quickFilter: true,
+      icon: 'fa-asterisk', type: 'select', param: 'other', quickFilter: true,
       options: otherOptions
     });
 

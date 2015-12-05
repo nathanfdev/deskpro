@@ -85,17 +85,19 @@ export class RadioChoiceMenuOption extends Component {
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     values: PropTypes.array,
     setParams: PropTypes.func.isRequired,
+    resetSingleAction: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     children: PropTypes.any
   };
 
-  handleClick() {
-    const {param, setParams, dispatch, isActive} = this.props;
-    let newValue = this.props.value;
+  handleClick(event) {
+    event.stopPropagation();
+    const {param, value, setParams, dispatch, isActive, resetSingleAction} = this.props;
     if (isActive) {
-      newValue = null;
+      dispatch(resetSingleAction(param));
+    } else {
+      dispatch(setParams({ param: param, value: value }));
     }
-    dispatch(setParams({ param: param, value: newValue }));
   }
 
   render() {
@@ -110,6 +112,7 @@ export class RadioChoiceMenuOption extends Component {
           <span className="radio-button-title">{label}</span>
         </span>
         </div>
+        {this.props.children}
       </li>
     );
   }

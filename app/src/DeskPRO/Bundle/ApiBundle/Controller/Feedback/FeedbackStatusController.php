@@ -55,7 +55,7 @@ class FeedbackStatusController extends BaseController
      */
     public function cgetAction(Request $request)
     {
-        /* @ToDo move below functionality into FeedbackComment repository after removing old code */
+        /* @ToDo move below functionality into repository after removing old code */
         $qb = $this->getDoctrine()->getManager()->createQueryBuilder();
         $qb
             ->select('f.id', 'f.status', 's.title', 'f.hidden_status')
@@ -68,10 +68,10 @@ class FeedbackStatusController extends BaseController
                 ->setParameter('ids', explode(',', $ids));
         }
 
-        $comments = $qb->getQuery()->getResult();
+        $statuses = $qb->getQuery()->getResult();
 
         return View::create(
-            $this->createRepresentation($comments),
+            $this->createRepresentation($statuses),
             Response::HTTP_OK
         );
     }

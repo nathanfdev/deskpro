@@ -383,6 +383,7 @@ class FeedbackDataService extends AbstractDataService
         foreach ($criteria->getFilters() as $field => $value) {
             switch ($field) {
                 case 'status':
+                    $count->setId($value);
                     $count->setTitle($value);
                     break;
             }
