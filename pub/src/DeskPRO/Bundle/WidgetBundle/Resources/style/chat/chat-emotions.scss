@@ -1,0 +1,35 @@
+.emoticon-panel {
+  position: absolute;
+  border-radius: 2px;
+  background: #fff;
+  text-align: left;
+  padding: 5px;
+  z-index: 20000;
+  width: 160px;
+
+  &:before {
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    border: 3px solid rgba(0, 0, 0, 0);
+    border-bottom: 3px solid #fff;
+    position: absolute;
+    top: -6px;
+    left: 16px;
+  }
+
+  .emoticon-link {
+    display: inline-block;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #e5e5e5;
+    margin-bottom: 5px;
+
+    &:hover {
+      background: #e1e6eb;
+    }
+  }
+
+  span { text-align: center; }
+}

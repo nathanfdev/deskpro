@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { EmotionButton } from './EmotionButton';
 import { EndChatContainer } from '../EndChat/EndChatContainer';
 import { EndChatButton } from './EndChatButton';
 import RteInput from 'DeskPRO/Component/RteInput';
@@ -33,11 +34,6 @@ export class ReplyForm extends React.Component {
   onScreenShare = event => {
     event.preventDefault();
     console.log('onScreenShare');
-  };
-
-  onSelectEmoticon = event => {
-    event.preventDefault();
-    console.log('onSelectEmoticon');
   };
 
   onSubmit = event => {
@@ -104,13 +100,7 @@ export class ReplyForm extends React.Component {
             <a href="#" onClick={this.onScreenShare}>
               <i className="fa fa-camera"></i> Screen Share
             </a>
-            <a href="#"
-               className="dpdesignportal-chat-form-button-row-emoticons"
-               title="Chat Emoticons"
-               onClick={this.onSelectEmoticon}>
-
-              <span className="img" />
-            </a>
+            <EmotionButton />
           </div>
 
           <EndChatContainer>
