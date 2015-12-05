@@ -7,17 +7,26 @@ export default class RteInput extends React.Component {
   static propTypes = {
     tag: PropTypes.string,
     value: PropTypes.string,
+    inline: PropTypes.bool,
     options: PropTypes.object,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
+    onSubmit: PropTypes.func
   };
 
   componentDidMount() {
-    const { value = '', options = {}, onChange } = this.props;
+    const { inline, value = '', options = {} } = this.props;
+    const { onChange = () => {}, onSubmit = () => {} } = this.props;
+
     const node = ReactDOM.findDOMNode(this);
 
     this.medium = new MediumEditor(node, options);
-    this.medium.subscribe('editableInput', () => onChange(node.innerHTML));
     this.medium.setContent(value);
+    this.medium.subscribe('editableInput', () => onChange(node.innerHTML));
+    this.medium.subscribe('editableKeydownEnter', event => {
+      if (inline && !event.altKey && !event.ctrlKey && !event.shiftKey) {
+        onSubmit(event, node.innerHTML);
+      }
+    });
   }
 
   componentWillReceiveProps(newProps) {

@@ -72,8 +72,10 @@ export class ReplyForm extends React.Component {
         <form onSubmit={this.onSubmit}>
           <div className="message-container">
             <RteInput
+              inline
               value={this.state.message}
               onChange={this.onChangeMessage}
+              onSubmit={this.onSubmit}
               className="textarea"
               options={{
                 contentWindow: currentFrame.window,
