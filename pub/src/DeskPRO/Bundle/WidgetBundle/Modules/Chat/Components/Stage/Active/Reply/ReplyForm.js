@@ -42,7 +42,6 @@ export class ReplyForm extends React.Component {
 
   onSubmit = event => {
     event.preventDefault();
-    console.log(this.state.message);
 
     this.props.onSendMessage(this.state.message);
     this.setState({
