@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { EndChatContainer } from '../EndChat/EndChatContainer';
 import { EndChatButton } from './EndChatButton';
+import Editor from 'react-medium-editor';
 
 export class ReplyForm extends React.Component {
 
@@ -18,9 +19,9 @@ export class ReplyForm extends React.Component {
     };
   }
 
-  onChangeMessage = event => {
+  onChangeMessage = value => {
     this.setState({
-      message: event.target.value
+      message: value
     });
   };
 
@@ -41,6 +42,7 @@ export class ReplyForm extends React.Component {
 
   onSubmit = event => {
     event.preventDefault();
+    console.log(this.state.message);
 
     this.props.onSendMessage(this.state.message);
     this.setState({
@@ -55,6 +57,7 @@ export class ReplyForm extends React.Component {
 
   render() {
     const { agentName, isEnded } = this.props;
+    const currentFrame = parent.window.widget_iframe;
 
     return (
       <div className="dpdesignportal-chat-form">
@@ -68,12 +71,28 @@ export class ReplyForm extends React.Component {
 
         <form onSubmit={this.onSubmit}>
           <div className="message-container">
-            <textarea placeholder={`Type your message to ${agentName}`}
-                      value={this.state.message}
-                      onChange={this.onChangeMessage} />
+            <Editor
+              text={this.state.message}
+              onChange={this.onChangeMessage}
+              className="textarea"
+              options={{
+                contentWindow: currentFrame.window,
+                ownerDocument: currentFrame.document,
+                autoLink: true,
+                placeholder: {
+                  text: `Type your message to ${agentName}`
+                },
+                toolbar: {
+                  buttons: ['bold', 'italic', 'underline', 'anchor'],
+                  updateOnEmptySelection: true
+                }
+              }}
+            />
           </div>
 
-          <button><i className="fa fa-angle-double-right"></i></button>
+          <button>
+            <i className="fa fa-angle-double-right"></i>
+          </button>
         </form>
 
         <div className="dpdesignportal-chat-form-button-row">
