@@ -49,7 +49,7 @@
     &.message-container-with-attached-images .textarea-container { padding-left: 60px; }
   }
 
-  textarea {
+  .textarea {
     display: block;
     width: 100%;
     border: 0;
@@ -57,7 +57,8 @@
     padding: 5px;
     height: 60px;
     resize: none;
-    @include placeholder {
+
+    &:after {
       font-size: 11px;
       font-style: italic;
       opacity: 1;
