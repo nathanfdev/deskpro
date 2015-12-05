@@ -5,6 +5,7 @@ $fa-font-path: "../../../../../../node_modules/font-awesome/fonts";
 @import "./normalize.css";
 @import "../../../../../../node_modules/bourbon/app/assets/stylesheets/bourbon";
 @import "../../../../../../node_modules/font-awesome/scss/font-awesome";
+@import "../../../../../../node_modules/medium-editor/src/sass/medium-editor";
 
 .dpdesignportal-chat-assets, .dpdesignportal, .dpdesignportal-popover {// Consider these as the root since we don't know where they'll be imported in
   @import "./normalize.css";// Reset
