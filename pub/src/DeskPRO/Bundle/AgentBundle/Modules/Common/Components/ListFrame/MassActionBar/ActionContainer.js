@@ -29,6 +29,30 @@ export class ActionContainer extends Component {
 
   render() {
     const {id, item, setParams, currentParams, resetSingleAction } = this.props;
+    const checkIfButtonHasValue = () => {
+      if (!currentParams) {
+        return false;
+      }
+      if (Boolean(currentParams.get(item.param)) === true) {
+        return true;
+      }
+      if (item.options && item.options.length > 0) {
+        let hasValue = false;
+        item.options.forEach((option) => {
+          if (option.nested && option.nested.length > 0) {
+            option.nested.forEach(
+              (nestedItem) => {
+                if (currentParams.get(nestedItem.param) === nestedItem.value) {
+                  hasValue = true;
+                }
+              }
+            );
+          }
+        });
+        return hasValue;
+      }
+      return false;
+    };
     const renderNested = (nested) => {
       if (!nested || !nested.length) {
         return <span />;
@@ -39,7 +63,7 @@ export class ActionContainer extends Component {
           {nested.map((option, index1) =>
               <RadioChoiceMenuOption
                 key={index1}
-                isActive = {currentParams && currentParams.get(option.param) === option.value}
+                isActive={currentParams && currentParams.get(option.param) === option.value}
                 value={option.value}
                 param={option.param}
                 label={option.label}
@@ -53,7 +77,7 @@ export class ActionContainer extends Component {
     return (
       <li>
         <Button isActive={this.state.expanded}
-                hasValue={!this.state.expanded && (currentParams && Boolean(currentParams.get(item.param)) === true)}
+                hasValue={!this.state.expanded && checkIfButtonHasValue()}
                 ref={'button' + id}
                 label={item.label}
                 icon={item.icon}
