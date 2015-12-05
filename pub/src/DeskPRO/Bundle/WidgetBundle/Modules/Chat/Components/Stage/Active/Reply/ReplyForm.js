@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { EndChatContainer } from '../EndChat/EndChatContainer';
 import { EndChatButton } from './EndChatButton';
-import Editor from 'react-medium-editor';
+import RteInput from 'DeskPRO/Component/RteInput';
 
 export class ReplyForm extends React.Component {
 
@@ -71,8 +71,8 @@ export class ReplyForm extends React.Component {
 
         <form onSubmit={this.onSubmit}>
           <div className="message-container">
-            <Editor
-              text={this.state.message}
+            <RteInput
+              value={this.state.message}
               onChange={this.onChangeMessage}
               className="textarea"
               options={{
