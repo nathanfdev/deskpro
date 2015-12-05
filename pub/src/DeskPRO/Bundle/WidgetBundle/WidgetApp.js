@@ -2,14 +2,17 @@ import 'babel/polyfill';
 import React from 'react';
 import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom';
-import style from './Resources/style/widget-style.scss';
 import { AppContainer } from './Modules/Application/Components/AppContainer';
 import jQuery from 'jquery';
 import store from './Services/store';
 
+// don't remove, it uses
+import style from './Resources/style/widget-style.scss';
+
 export default class WidgetApp {
+
   run() {
-    jQuery(document).on('ready', () => this.start());
+    jQuery(document).on('ready', this.start);
   }
 
   start() {
@@ -21,7 +24,7 @@ export default class WidgetApp {
     // - So here we're getting a reference to the parent document,
     // because below we will render the root react element into it instead.
 
-    const pageDoc = (parent && parent.document) ? parent.document : null;
+    const pageDoc = parent && parent.document;
     if (!pageDoc) {
       console.error('No parent document');
       return;
