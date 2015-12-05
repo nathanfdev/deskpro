@@ -396,6 +396,9 @@ ul.dropdown-tabs {
 /* Be sure that you replace data URIs with generated images */
 .sprite {
   background-image: url('../img/emoticons/emoticon-grid.png');
+  display: inline-block;
+  width: 18px;
+  height: 18px;
 }
 
 @media (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (-webkit-min-device-pixel-ratio: 1.5), (min-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx) {
@@ -406,140 +409,94 @@ ul.dropdown-tabs {
 }
 
 .sprite-emoticon-1 {
-  width: 18px;
-  height: 18px;
   background-position: 0 0;
 }
 
 .sprite-emoticon-2 {
-  width: 18px;
-  height: 18px;
   background-position: -18px 0;
 }
 
 .sprite-emoticon-3 {
-  width: 18px;
-  height: 18px;
   background-position: -36px 0;
 }
 
 .sprite-emoticon-4 {
-  width: 18px;
-  height: 18px;
   background-position: -54px 0;
 }
 
 .sprite-emoticon-5 {
-  width: 18px;
-  height: 18px;
   background-position: -72px 0;
 }
 
 .sprite-emoticon-6 {
-  width: 18px;
-  height: 18px;
   background-position: -90px 0;
 }
 
 .sprite-emoticon-7 {
-  width: 18px;
-  height: 18px;
   background-position: -108px 0;
 }
 
 .sprite-emoticon-8 {
-  width: 18px;
-  height: 18px;
   background-position: -126px 0;
 }
 
 .sprite-emoticon-9 {
-  width: 18px;
-  height: 18px;
   background-position: -144px 0;
 }
 
 .sprite-emoticon-10 {
-  width: 18px;
-  height: 18px;
   background-position: -162px 0;
 }
 
 .sprite-emoticon-11 {
-  width: 18px;
-  height: 18px;
   background-position: -180px 0;
 }
 
 .sprite-emoticon-12 {
-  width: 18px;
-  height: 18px;
   background-position: -198px 0;
 }
 
 .sprite-emoticon-13 {
-  width: 18px;
-  height: 18px;
   background-position: -216px 0;
 }
 
 .sprite-emoticon-14 {
-  width: 18px;
-  height: 18px;
   background-position: -234px 0;
 }
 
 .sprite-emoticon-15 {
-  width: 18px;
-  height: 18px;
   background-position: -252px 0;
 }
 
 .sprite-emoticon-16 {
-  width: 18px;
-  height: 18px;
   background-position: -270px 0;
 }
 
 .sprite-emoticon-17 {
-  width: 18px;
-  height: 18px;
   background-position: -288px 0;
 }
 
 .sprite-emoticon-18 {
-  width: 18px;
-  height: 18px;
   background-position: -306px 0;
 }
 
 .sprite-emoticon-19 {
-  width: 18px;
-  height: 18px;
   background-position: -324px 0;
 }
 
 .sprite-emoticon-20 {
-  width: 18px;
-  height: 18px;
   background-position: -342px 0;
 }
 
 .sprite-emoticon-21 {
-  width: 18px;
-  height: 18px;
   background-position: -360px 0;
 }
 
 .sprite-emoticon-22 {
-  width: 18px;
-  height: 18px;
   background-position: -378px 0;
 }
 
 .sprite-emoticon-23 {
-  width: 18px;
-  height: 18px;
   background-position: -396px 0;
 }
 

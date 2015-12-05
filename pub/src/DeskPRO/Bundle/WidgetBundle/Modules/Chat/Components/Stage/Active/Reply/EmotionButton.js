@@ -44,7 +44,7 @@ export class EmotionButton extends React.Component {
         <Simple
           isOpen={this.state.emotionsPopup}
           positionTarget={this.refs.emotionsButton}
-          positionAt="right top"
+          positionAt="center top"
           positionMy="center bottom"
           zIndex={1000}>
 
