@@ -237,6 +237,18 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @param bool $is_html
+     *
+     * @return $this
+     */
+    public function setIsHtml($is_html)
+    {
+        $this->setModelField('is_html', $is_html);
+
+        return $this;
+    }
+
+    /**
      * @param bool $is_sys
      *
      * @return $this

@@ -129,8 +129,9 @@ class ChatController extends AbstractController
         $chat_message
             ->setOrigin('user')
             ->setContent($request->request->get('message'))
+            ->setIsHtml(true)
             ->setMetadata([
-                'is_html' => false,
+                'is_html' => true,
             ])
         ;
 
