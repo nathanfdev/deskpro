@@ -166,13 +166,13 @@ export const massActionsParamsSelector = createSelector(
 export const massActionsSelector = createSelector(
   [navStateSelector, feedbackCategoriesSelector, feedbackTypesSelector],
   (navState, categories, types) => {
-    const filterSelector = [];
+    const massActions = [];
 
     // Type options
     const typeOptions = types.toArray().map(type => ({ value: type.get('id'), label: type.get('title') }));
-    filterSelector.push({
+    massActions.push({
       label: 'Type',
-      type: 'select',
+      type: 'action',
       param: 'category',
       quickFilter: true,
       options: typeOptions
@@ -191,8 +191,8 @@ export const massActionsSelector = createSelector(
       { label: 'Closed', value: 'closed', nested: toStatusOptions(statuses.closed.nested, 'status_category') },
       { label: 'Hidden', value: 'hidden', nested: toStatusOptions(statuses.hidden.nested, 'hidden_status') }
     ];
-    filterSelector.push({
-      label: 'Status', type: 'select', param: 'status', quickFilter: true,
+    massActions.push({
+      label: 'Status', type: 'action', param: 'status', quickFilter: true,
       options: statusOptions
     });
 
@@ -201,18 +201,21 @@ export const massActionsSelector = createSelector(
       label: cat.title,
       value: cat.title
     }));
-    filterSelector.push({
-      label: 'Category', type: 'select', param: 'custom_category', quickFilter: true,
+    massActions.push({
+      label: 'Category', type: 'action', param: 'custom_category', quickFilter: true,
       options: categoryOptions
     });
 
     // Other options
-    const otherOptions = [{ label: 'Add label' }, { label: 'Remove label' }];
-    filterSelector.push({
-      icon: 'fa-asterisk', type: 'select', param: 'other', quickFilter: true,
+    const otherOptions = [
+      { label: 'Add label', icon: 'plus-square' },
+      { label: 'Remove label', icon: 'minus-square' }
+    ];
+    massActions.push({
+      icon: 'fa-asterisk', type: 'menu', param: 'other', quickFilter: true,
       options: otherOptions
     });
 
-    return filterSelector;
+    return massActions;
   }
 );

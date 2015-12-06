@@ -7,7 +7,6 @@ export class NestedList extends BaseNestedList {
     if (depth === 1) {
       return { navItem: { status: group } };
     } else if (parent === 'hidden') {
-      console.log('Hidden group ', group);
       return { navItem: { hidden_status: group } };
     }
     return { navItem: { status_category: group } };
@@ -15,9 +14,8 @@ export class NestedList extends BaseNestedList {
 
   renderListItem(item, depth) {
     this.ensureValidDepth(depth);
-    const { title, count, parent,id } = item;
+    const { title, count, parent, id } = item;
     const label = title[0].toUpperCase() + title.slice(1);
-console.log('Renndered item', item);
     const listOptions = this.getListOptions(depth, parent, id);
     listOptions.isComments = false;
 

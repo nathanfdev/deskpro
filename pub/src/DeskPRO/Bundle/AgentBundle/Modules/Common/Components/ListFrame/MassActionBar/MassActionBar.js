@@ -22,15 +22,15 @@ export class MassActionBar extends Component {
   render() {
     const { checkbox, actions, action, selected, setParams, currentParams, resetAction, resetSingleAction } = this.props;
     const isActive = currentParams && currentParams.size > 0;
+
     return (
       <ListFrameMenu checkbox={checkbox}>
-        {actions.map((item, index)=>
-            <ActionContainer key={index} id={index}
-                             item={item}
-                             setParams={setParams}
-                             resetSingleAction={resetSingleAction}
-                             currentParams={currentParams}/>
-        )}
+        {actions.map((item, index) =>
+          <ActionContainer key={index} id={index}
+                           item={item}
+                           setParams={setParams}
+                           resetSingleAction={resetSingleAction}
+                           currentParams={currentParams}/>)}
         {isActive && <li>
           <hr/>
         </li>}
