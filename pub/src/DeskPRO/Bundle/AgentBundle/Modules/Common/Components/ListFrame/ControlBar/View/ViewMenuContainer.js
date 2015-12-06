@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { Button } from '../Button';
 import Detached from 'DeskPRO/Component/Positioned/Detached';
