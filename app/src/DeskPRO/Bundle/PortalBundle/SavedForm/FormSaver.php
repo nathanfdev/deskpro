@@ -176,7 +176,7 @@ class FormSaver
      *
      * @return SavedForm
      */
-    public function saveForm(FormInterface $form, Request $request, $email = null, $name = null)
+    public function saveForm(FormInterface $form, Request $request, $email = null, $name = null, Person $person = null)
     {
         $data         = $request->request->all();
         $route        = $request->attributes->get('_route');
@@ -185,7 +185,7 @@ class FormSaver
         // we have to do a "hack" to find the saved auth codes for the attachments
         $data = $this->dealWithAttachmentsAuthCodes($form, $data);
 
-        $saved_form = new SavedForm();
+        $saved_form = new SavedForm($person); // may or may not be a person, but if there is saved it to the form
         $saved_form->setFormData($data);
         $saved_form->setMetaData(array(
             'route'        => $route,

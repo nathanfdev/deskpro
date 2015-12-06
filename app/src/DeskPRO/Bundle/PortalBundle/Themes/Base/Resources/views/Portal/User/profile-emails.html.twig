@@ -4,7 +4,7 @@
     <div class="breadcrumbs">
         {% show breadcrumbs %}
     </div>
-    <div class="column-full">
+    <section class="column-full">
         <div class="column-full">
             <div>
                 <header class="section-header">
@@ -40,18 +40,6 @@
         </div>
 
         <section class="column-full">
-            {% if validating_emails %}
-                <div class="alerts">
-                    {% for email,resend_link in validating_emails %}
-                        <div class="alert">
-                            <a class="button button-plain button-small"
-                               href="{{ resend_link }}">{{ phrase('portal.account.resend_email') }}</a>
-                            <strong>{{ email }}</strong>
-                            {{ phrase('portal.account.emails_are_awaiting_validation') }}
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
 
             <div class="titled-header minor">
                 <h1>{{ phrase('portal.account.your-emails') }}</h1>
@@ -108,7 +96,7 @@
                     </div>
                     {{ form_end(add_email_form) }}
                 </div>
-            </div>
-        </div>
-    </div>
+            </section>
+        </section>
+    </section>
 {% endblock inner_content %}

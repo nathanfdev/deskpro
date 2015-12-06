@@ -89,7 +89,7 @@ class PersonManipulator
                     sprintf('person does not have email address "%s" - cannot validate it', $email_address)
                 );
             }
-            $person_email->is_validated = true;
+            $person_email->setIsValidated(true);
         }
 
         // if the user has a password, we know they are a user

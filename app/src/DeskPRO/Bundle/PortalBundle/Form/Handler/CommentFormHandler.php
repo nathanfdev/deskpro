@@ -250,6 +250,7 @@ class CommentFormHandler
             $comment->setPerson($person);
             $this->acceptComment($content, $comment, $request);
 
+            // if the gues is a user that can't login, send them to a page that will let them set a pw
             if (!$person->isUser()) {
                 // act as if we generated a "set password" token for this user and they clicked the link
                 $expire_time    = $this->brand_stack->getActive()->getSetting('user.password_reset_code_time_limit', 18000);

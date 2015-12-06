@@ -82,14 +82,18 @@ class SavedFormController extends AbstractController
                 // submitting the saved registration form will validate the user and email
                 // there is no person yet to speak of
                 return $this->submitSavedForm($saved_form, $request);
-                break;
             case PortalValidation::COMMENT:
                 $person = $this->getPersonToValidate($saved_form);
                 $this->validateThisPerson($person, $email_address);
                 $this->maybeAauthenticateThisPerson($person);
 
                 return $this->submitSavedForm($saved_form, $request);
-                break;
+            case PortalValidation::ADD_EMAIL:
+                $person = $saved_form->getPerson();
+                $this->get('person_manipulator')->validatePerson($person);
+                $this->maybeAauthenticateThisPerson($person);
+
+                return $this->submitSavedForm($saved_form, $request);
             default:
                 break;
         }

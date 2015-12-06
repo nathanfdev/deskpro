@@ -37,11 +37,13 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class PortalValidation
 {
     const REGISTRATION = 'registration';
+    const ADD_EMAIL    = 'add-email';
     const COMMENT      = 'comment';
 
     public static $types = [
-      self::REGISTRATION,
-      self::COMMENT,
+        self::REGISTRATION,
+        self::COMMENT,
+        self::ADD_EMAIL,
     ];
 
     /**
@@ -65,12 +67,12 @@ class PortalValidation
         $this->url_generator = $url_generator;
     }
 
-    public function sendVerificationEmail($type, SavedForm $saved_form)
+    public function sendVerificationEmail($type, SavedForm $saved_form, $prefer_person_email = true)
     {
         $this->verifyType($type);
 
         // find out who we are emailing to
-        if ($person = $saved_form->getPerson()) {
+        if ($prefer_person_email && $person = $saved_form->getPerson()) {
             $email_to = new EmailTo($person);
         } else {
             if (!$email = $saved_form->getMetaDataValue('email')) {
@@ -91,6 +93,9 @@ class PortalValidation
                 $this->mailer->sendEmailValidation($email_to, $verify_url);
                 break;
             case self::COMMENT:
+                $this->mailer->sendEmailValidation($email_to, $verify_url);
+                break;
+            case self::ADD_EMAIL:
                 $this->mailer->sendEmailValidation($email_to, $verify_url);
                 break;
         }

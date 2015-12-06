@@ -38,10 +38,8 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\RegistrationAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
-use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 
 class ProfileController extends AbstractController
@@ -86,10 +84,6 @@ class ProfileController extends AbstractController
             if ($email = $person->getEmailAddress()) {
                 if ($person_check = $this->get('data.person')->getPersonForEmail($email)) {
                     if (!$person_check->isUser()) {
-                        ///
-                        // TODO: what to do if this happens? The person is a contact.
-                        // I think this situation should never happen in practice? But it might... Coming back to this.
-                        ///
                         // contact, they should now get a "set password" email and a redirection
                         // set the reset code
 
@@ -230,24 +224,20 @@ class ProfileController extends AbstractController
     /**
      * @Route("/profile/emails", name="portal_user_profile_emails")
      *
-     * @todo PersonEmailValidating is gone
      * @Security("is_granted('EDIT_PROFILE', user)")
      */
     public function editEmailsAction(Request $request)
     {
         $person = $this->getUser();
 
-        // find emails awaiting validation
-        $validating = $this->getEmailDataService()->getValidatingEmails($person);
-
         $add_email_form = null;
-        $verify_url     = null;
         if ($person->isEmailValidated()) {
 
             //////////////////////////////////////////////////////////////////////////////////////////////
             // CHANGE PRIMARY EMAIL
             //////////////////////////////////////////////////////////////////////////////////////////////
             if ($email_id = $request->query->get('new_primary')) {
+                /** @var \Application\DeskPRO\Entity\PersonEmail $proposed_new_primary_email */
                 $proposed_new_primary_email = $this->getRepo('DeskPRO:PersonEmail')->find($email_id);
                 if ($proposed_new_primary_email->getPerson()->getId() == $person->getId()) {
                     $person->setPrimaryEmail($proposed_new_primary_email);
@@ -262,6 +252,7 @@ class ProfileController extends AbstractController
             // REMOVE EMAIL
             //////////////////////////////////////////////////////////////////////////////////////////////
             if ($email_id = $request->query->get('remove_email')) {
+                /** @var \Application\DeskPRO\Entity\PersonEmail $proposed_email_removal */
                 $proposed_email_removal = $this->getRepo('DeskPRO:PersonEmail')->find($email_id);
                 if ($proposed_email_removal->getPerson()->getId() == $person->getId()) {
                     if (!$proposed_email_removal->isPrimary()) { // cannot remove primary email
@@ -287,42 +278,32 @@ class ProfileController extends AbstractController
             $new_email      = new PersonEmail();
             $add_email_form = $this->createForm(
                 'deskpro_person_email',
-                $new_email
+                $new_email,
+                ['action' => $this->generateUrl('portal_user_profile_emails')]
             );
             $add_email_form->handleRequest($request);
+            if ($add_email_form->isValid()) {
+                if ($this->isSavedFormSubRequest($request)) {
+                    // this is coming from a validtion link, so we can actually save the email now
+                    $this->get('user_rule_processor')->newEmail($person, $new_email);
+                    $this->getEm()->persist($new_email);
+                    $new_email->person = $person;
+                    $new_email->setIsValidated(true);
+                    $this->getCurrentPerson()->addEmail($new_email);
+                    $this->getEm()->flush();
+                    $this->addFlash('success', $this->phrase('portal.flashes.user_add_email_verified'));
 
-            // quick and dirty custom validation to make sure a new email is not already validating
-            // on another account
-            if ($add_email_form->isSubmitted()) {
-                if ($this->getRepo('DeskPRO:PersonEmailValidating')->getEmail($new_email->getEmail())) {
-                    // this email validating already exists!
-                    $add_email_form->addError(
-                        new FormError(
-                            'The email "'.$new_email->getEmail().' is already awaiting validation.'
-                        )
-                    );
+                    return $this->redirectToRoute('portal_user_profile_emails');
+                } else {
+                    $this->getEm()->detach($new_email);
+                    // valid email, but we need email validation before adding it
+                    $saved_form = $this->getFormSaver()->saveForm($add_email_form, $request, $new_email->getEmail(), $person->getDisplayName(), $person);
+                    $this->get('portal_validation')->sendVerificationEmail(PortalValidation::ADD_EMAIL, $saved_form, false);
+                    $this->addFlash('success', $this->phrase('portal.flashes.user_add_email_verify'));
+
+                    return $this->redirectToRoute('portal_user_profile_emails');
                 }
             }
-
-            if ($add_email_form->isValid()) {
-                $validating_email = new PersonEmailValidating();
-                $validating_email->setEmail($new_email->getEmail());
-                $validating_email->setPerson($person);
-                $validating[] = $validating_email;
-                $this->getEm()->persist($validating_email);
-                $this->getEm()->flush();
-                // TODO: validation
-                //$this->get('portal_email_sender')->sendEmailConfirmationEmail($new_email);
-
-                // TODO: only apply rules after validation
-                $this->get('user_rule_processor')->newEmail($person, $new_email);
-
-                $this->addFlash('success', $this->phrase('portal.flashes.user_updated_emails'));
-
-                return $this->redirectToRoute('portal_user_profile_emails');
-            }
-        } else {
-            $verify_url = $this->get('person.portal_validator')->getResendLink(PersonValidator::TYPE_EMAIL_PRIMARY, $person->getPrimaryEmail());
         }
 
         //
@@ -330,28 +311,12 @@ class ProfileController extends AbstractController
         //
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildProfileEmails();
 
-        // make links for validating emails
-        $validating_ui = array();
-        if ($validating) {
-            $person_validator = $this->get('person.portal_validator');
-            foreach ($validating as $validating_email) {
-                $validating_ui[$validating_email->getEmail()] = $person_validator->getResendLink(
-                    PersonValidator::TYPE_EMAIL,
-                    $validating_email,
-                    null,
-                    true
-                );
-            }
-        }
-
         return $this->renderThemeView(
             'Theme:Portal:User/profile-emails.html.twig', array(
-                'person'            => $person,
-                'verify_url'        => $verify_url,
-                'add_email_form'    => $add_email_form ? $add_email_form->createView() : null,
-                'breadcrumbs'       => $breadcrumbs,
-                'page_title'        => $this->createPageTitle()->profileEmails(),
-                'validating_emails' => $validating_ui,
+                'person'         => $person,
+                'add_email_form' => $add_email_form ? $add_email_form->createView() : null,
+                'breadcrumbs'    => $breadcrumbs,
+                'page_title'     => $this->createPageTitle()->profileEmails(),
             )
         );
     }

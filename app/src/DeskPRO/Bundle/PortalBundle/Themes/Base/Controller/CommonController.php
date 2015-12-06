@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
@@ -121,26 +120,6 @@ class CommonController extends AbstractController
     {
         $user = $this->getUser();
 
-        // TODO: this controller can be refactored into a module that collects alerts, but
-        //       we'll keep the code here until we figure out all of the different alerts
-
-        //
-        // ACCOUNT VALIDATION
-        //
-        $person_validator  = $this->get('person.portal_validator');
-        $validation_alerts = array();
-        if ($user && !$user->isUserValid()) {
-            $primary_email = $user->getPrimaryEmail();
-            if (!$user->isEmailValidated() && $user->getPrimaryEmail()) {
-                $validation_alerts[] = array(
-                    'type'            => PersonValidator::TYPE_EMAIL_PRIMARY,
-                    'message'         => $this->phrase('portal.account.validation_alert',
-                        array('email' => $user->getPrimaryEmail()->getEmail())),
-                    'resend_url'      => $person_validator->getResendLink(PersonValidator::TYPE_EMAIL_PRIMARY, $primary_email),
-                );
-            }
-        }
-
         // comment this out because doctrine entity EmailValidating is empty now
         ////
         //// Extra Email Validation (when adding more emails)
@@ -202,12 +181,11 @@ class CommonController extends AbstractController
             $tickets_awaiting_reply = $this->getRepo('DeskPRO:Ticket')->getWaitingForReplyForPerson($person, 3);
         }
 
-        $should_display = count($saved_forms) || count($validation_alerts) || $lang_diff || count($tickets_awaiting_reply);
+        $should_display = count($saved_forms) || $lang_diff || count($tickets_awaiting_reply);
 
         return $this->renderThemeView('Theme:Common:alerts.html.twig', array(
             'user'                   => $user,
             'saved_forms'            => $saved_forms,
-            'validation_alerts'      => $validation_alerts,
             'display_alerts'         => $should_display,
             'lang_diff'              => $lang_diff,
             'tickets_awaiting_reply' => $tickets_awaiting_reply,
