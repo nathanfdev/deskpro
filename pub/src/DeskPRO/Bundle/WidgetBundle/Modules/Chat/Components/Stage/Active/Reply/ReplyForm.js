@@ -36,12 +36,6 @@ export class ReplyForm extends React.Component {
     console.log('onScreenShare');
   };
 
-  onSelectEmotion = image => {
-    this.setState({
-      message: this.state.message + `<p>${image}</p>`
-    });
-  };
-
   onSubmit = event => {
     event.preventDefault();
 
@@ -74,6 +68,7 @@ export class ReplyForm extends React.Component {
           <div className="message-container">
             <RteInput
               inline
+              ref="editor"
               value={this.state.message}
               onChange={this.onChangeMessage}
               onSubmit={this.onSubmit}
@@ -82,12 +77,17 @@ export class ReplyForm extends React.Component {
                 contentWindow: currentFrame.window,
                 ownerDocument: currentFrame.document,
                 autoLink: true,
+                imageDragging: true,
                 placeholder: {
                   text: `Type your message to ${agentName}`
                 },
                 toolbar: {
-                  buttons: ['bold', 'italic', 'underline', 'anchor'],
+                  buttons: ['bold', 'italic', 'underline'],
                   updateOnEmptySelection: true
+                },
+                paste: {
+                  forcePlainText: false,
+                  cleanPastedHTML: false
                 }
               }}
             />
@@ -106,7 +106,7 @@ export class ReplyForm extends React.Component {
             <a href="#" onClick={this.onScreenShare}>
               <i className="fa fa-camera"></i> Screen Share
             </a>
-            <EmotionButton onSelect={this.onSelectEmotion} />
+            <EmotionButton getEditor={() => this.refs.editor.getMediumEditor()} />
           </div>
 
           <EndChatContainer>
