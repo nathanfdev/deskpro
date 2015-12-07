@@ -21,11 +21,16 @@ export default class RteInput extends React.Component {
 
     this.medium = new MediumEditor(node, options);
     this.medium.setContent(value);
-    this.medium.subscribe('editableInput', () => onChange(node.innerHTML));
+    this.medium.subscribe('editableInput', () => {
+      onChange(node.innerHTML);
+    });
     this.medium.subscribe('editableKeydownEnter', event => {
       if (inline && !event.altKey && !event.ctrlKey && !event.shiftKey) {
         onSubmit(event, node.innerHTML);
       }
+    });
+    this.medium.subscribe('initialFocus', () => {
+      this.medium.selectElement(node);
     });
   }
 

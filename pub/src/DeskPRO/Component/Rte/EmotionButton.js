@@ -49,6 +49,10 @@ export default class EmotionButton extends React.Component {
     const contentWindow = medium.options.contentWindow;
     const ownerDocument = medium.options.ownerDocument;
 
+    if (!medium.checkSelection().selectionState) {
+      medium.trigger('initialFocus');
+    }
+
     const container = medium.getSelectedParentElement();
     const node = ownerDocument.createTextNode(` ${text} `);
     const selection = contentWindow.getSelection();
