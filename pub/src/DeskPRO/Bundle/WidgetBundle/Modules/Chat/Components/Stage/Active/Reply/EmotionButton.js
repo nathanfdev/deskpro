@@ -42,13 +42,8 @@ export class EmotionButton extends React.Component {
     const className = classNames('emoticon', 'sprite', `sprite-emoticon-${num}`);
     const medium = this.props.getEditor();
 
-    if (medium.getFocusedElement()) {
-      medium.restoreSelection();
-    } else {
-      medium.trigger('focus');
-    }
-
-    medium.pasteHTML(`text<span class="${className}"></span>`);
+    medium.restoreSelection();
+    medium.pasteHTML(`<img class="${className}">`);
 
     this.onCloseEmotionsPopup();
   };

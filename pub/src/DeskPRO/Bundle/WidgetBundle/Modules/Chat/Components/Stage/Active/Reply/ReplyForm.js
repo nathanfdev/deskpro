@@ -87,7 +87,8 @@ export class ReplyForm extends React.Component {
                 },
                 paste: {
                   forcePlainText: false,
-                  cleanPastedHTML: false
+                  cleanPastedHTML: false,
+                  cleanAttrs: ['style', 'dir']
                 }
               }}
             />
