@@ -70,13 +70,7 @@ class ChatController extends AbstractController
         $em->persist($conversation);
         $em->flush();
 
-        $chat_message = new ChatMessage();
-        $chat_message
-            ->setIsSys(true)
-            ->setContent('{"phrase_id":"message_started"}')
-        ;
-
-        $this->sendMessage($conversation, $chat_message);
+        $this->sendMessage($conversation, $this->createSysMessage('message_started'));
 
         return new JsonResponse($this->dataSerialize($conversation));
     }
@@ -156,6 +150,8 @@ class ChatController extends AbstractController
         $em->persist($conversation);
         $em->flush();
 
+        $this->sendMessage($conversation, $this->createSysMessage('message_user-left'));
+
         return new JsonResponse();
     }
 
@@ -224,6 +220,22 @@ class ChatController extends AbstractController
         $errors    = $generator->generateFormErrors($form);
 
         return new JsonResponse($errors, Response::HTTP_BAD_REQUEST);
+    }
+
+    /**
+     * @param string $code
+     *
+     * @return ChatMessage
+     */
+    protected function createSysMessage($code)
+    {
+        $chat_message = new ChatMessage();
+        $chat_message
+            ->setIsSys(true)
+            ->setContent(json_encode(['phrase_id' => $code]))
+        ;
+
+        return $chat_message;
     }
 
     /**
