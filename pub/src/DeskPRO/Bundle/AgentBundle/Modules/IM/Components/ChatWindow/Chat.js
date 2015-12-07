@@ -32,7 +32,6 @@ export class Chat extends React.Component {
     dispatch: PropTypes.func.isRequired
   };
 
-
   constructor(props) {
     super(props);
     this.state = {
@@ -69,38 +68,37 @@ export class Chat extends React.Component {
     );
   };
 
-  handleType = (event) => {
-    const oldState = this.state;
-    const newState = {...oldState};
-    newState.searchTyped = event.target.value;
-    this.setState(newState);
+  handleType = event => {
+    this.setState({
+      searchTyped: event.target.value
+    });
   };
 
-  handleOnClose = (event) => {
+  handleOnClose = () => {
     this.props.dispatch(ui.closeChat());
   };
 
   handleSearch = (event) => {
     event.preventDefault();
-    const oldState = this.state;
-    const newState = {...oldState};
-    newState.searchQuery = oldState.searchTyped;
-    this.setState(newState);
+    this.setState({
+      searchQuery: this.state.searchTyped
+    });
   };
 
   toggleSearch = () => {
-    const oldState = this.state;
-    const newState = {...oldState};
-    newState.searchShown = !oldState.searchShown;
+    const newState = {};
+    newState.searchShown = !this.state.searchShown;
     if (!newState.searchShown) {
       newState.searchTyped = '';
       newState.searchQuery = '';
     }
+
     this.setState(newState);
   };
 
-  handleAddMessage = (message) => {
-    this.props.dispatch(addMessage(this.props.current.id, message, this.props.me));
+  handleAddMessage = message => {
+    const { dispatch, current, me } = this.props;
+    dispatch(addMessage(current.id, message, me));
   };
 
   searchForm() {
