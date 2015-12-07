@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import Positioned from 'DeskPRO/Component/Positioned/Detached';
 import RteInput from 'DeskPRO/Component/Rte/RteInput';
+import EmotionButton from 'DeskPRO/Component/Rte/EmotionButton';
 
 export class Footer extends React.Component {
 
@@ -101,7 +102,7 @@ export class Footer extends React.Component {
         <form onSubmit={this.handleSubmit}>
           <RteInput
             inline
-            ref="textarea"
+            ref="editor"
             value={this.state.message}
             onChange={this.handleChange}
             onSubmit={this.handleSubmit}
@@ -123,10 +124,12 @@ export class Footer extends React.Component {
               }
             }}
             />
-
-          <a href="#" ref="emoticonsButton" onClick={this.toggleEmoticons} className="insert-emoticon"><span className="emoticon sprite sprite-emoticon-1"></span></a>
+          <EmotionButton
+            buttonClassName="emoticon sprite sprite-emoticon-1"
+            className="insert-emoticon"
+            getEditor={() => this.refs.editor.getMediumEditor()}
+            />
           <input onClick={this.handleSubmit} type="button" value="&#xf101;"/>
-          { this.renderEmoticonsTable() }
         </form>
       </footer>
     );

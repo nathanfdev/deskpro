@@ -110,7 +110,11 @@ export class ReplyForm extends React.Component {
             <a href="#" onClick={this.onScreenShare}>
               <i className="fa fa-camera"></i> Screen Share
             </a>
-            <EmotionButton getEditor={() => this.refs.editor.getMediumEditor()} />
+            <EmotionButton
+              buttonClassName="img"
+              context={[parent.document, parent.window.widget_iframe.document]}
+              getEditor={() => this.refs.editor.getMediumEditor()}
+              />
           </div>
 
           <EndChatContainer>

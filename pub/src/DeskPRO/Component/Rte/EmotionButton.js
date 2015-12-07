@@ -7,7 +7,11 @@ export default class EmotionButton extends React.Component {
 
   static propTypes = {
     getEditor: PropTypes.func,
-    onSelect: PropTypes.func
+    onSelect: PropTypes.func,
+    context: PropTypes.object,
+    className: PropTypes.string,
+    buttonClassName: PropTypes.string
+
   };
 
   constructor(props) {
@@ -22,7 +26,7 @@ export default class EmotionButton extends React.Component {
 
     const medium = this.props.getEditor();
     medium.saveSelection();
-
+    
     this.setState({
       emotionsPopup: true
     });
@@ -48,13 +52,13 @@ export default class EmotionButton extends React.Component {
 
   render() {
     return (
-      <span>
+      <span className={this.props.className}>
         <a href="#"
            className="dpdesignportal-chat-form-button-row-emoticons"
            title="Chat Emoticons"
            onClick={this.onSelectEmoticon}>
 
-          <span className="img" ref="emotionsButton" />
+          <span className={this.props.buttonClassName} ref="emotionsButton" />
         </a>
 
         <Simple
@@ -66,7 +70,7 @@ export default class EmotionButton extends React.Component {
 
           <ClickOut
             onClickOut={this.onCloseEmotionsPopup}
-            context={[parent.document, parent.window.widget_iframe.document]}>
+            context={this.props.context}>
 
             <EmotionsPopup onClick={this.onSelectEmotion} />
           </ClickOut>
