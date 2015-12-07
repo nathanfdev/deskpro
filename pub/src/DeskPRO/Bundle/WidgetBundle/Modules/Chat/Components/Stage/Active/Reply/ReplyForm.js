@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { EndChatContainer } from '../EndChat/EndChatContainer';
 import { EndChatButton } from './EndChatButton';
 import EmotionButton from 'DeskPRO/Component/Rte/EmotionButton';
+import { replaceSmileCodes } from 'DeskPRO/Component/Rte/Emotions';
 import RteInput from 'DeskPRO/Component/Rte/RteInput';
 import ScrollArea from 'react-scrollbar';
 
@@ -40,7 +41,10 @@ export class ReplyForm extends React.Component {
   onSubmit = event => {
     event.preventDefault();
 
-    this.props.onSendMessage(this.state.message);
+    console.log(this.state.message);
+    console.log(replaceSmileCodes(this.state.message, true));
+
+    this.props.onSendMessage(replaceSmileCodes(this.state.message, true));
     this.setState({
       message: ''
     });

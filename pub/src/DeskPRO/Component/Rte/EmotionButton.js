@@ -2,16 +2,17 @@ import React, { PropTypes } from 'react';
 import { EmotionsPopup } from './EmotionsPopup';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import Simple from 'DeskPRO/Component/Positioned/Simple';
+import * as Emotions from './Emotions';
+import jQuery from 'jquery';
 
 export default class EmotionButton extends React.Component {
 
   static propTypes = {
     getEditor: PropTypes.func,
     onSelect: PropTypes.func,
-    context: PropTypes.object,
+    context: PropTypes.any,
     className: PropTypes.string,
     buttonClassName: PropTypes.string
-
   };
 
   constructor(props) {
@@ -26,7 +27,7 @@ export default class EmotionButton extends React.Component {
 
     const medium = this.props.getEditor();
     medium.saveSelection();
-    
+
     this.setState({
       emotionsPopup: true
     });
@@ -41,7 +42,7 @@ export default class EmotionButton extends React.Component {
     });
   };
 
-  onSelectEmotion = text => {
+  onSelectEmotion = code => {
     const medium = this.props.getEditor();
 
     medium.restoreSelection();
@@ -54,7 +55,7 @@ export default class EmotionButton extends React.Component {
     }
 
     const container = medium.getSelectedParentElement();
-    const node = ownerDocument.createTextNode(` ${text} `);
+    const node = jQuery.parseHTML(`<span> ${Emotions.createEmotionImage(code)} </span>`)[0];
     const selection = contentWindow.getSelection();
 
     container.appendChild(node);
@@ -66,6 +67,7 @@ export default class EmotionButton extends React.Component {
     selection.addRange(range);
 
     medium.saveSelection();
+    medium.pasteHTML('');
 
     this.onCloseEmotionsPopup();
   };

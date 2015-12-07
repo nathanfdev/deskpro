@@ -46,14 +46,25 @@ const SPRITE_MAP = {
   [smiles.ICON_DISAPPOINTED]: 20
 };
 
-function replaceSmileCodes(content) {
-  let text = String(content);
-  let smile;
+function createEmotionImage(code) {
+  const className = classNames('emoticon', 'sprite', `sprite-emoticon-${SPRITE_MAP[code]}`);
+  return `<img class="${className}" />`;
+}
 
-  for (smile in smiles) {
-    if (smiles.hasOwnProperty(smile)) {
-      const className = classNames('emoticon', 'sprite', `sprite-emoticon-${SPRITE_MAP[smile]}`);
-      text = text.replace(smiles[smile], `<img class="${className}" />`);
+function replaceSmileCodes(content, inverse = false) {
+  let text = String(content);
+  let num;
+
+  for (num in smiles) {
+    if (smiles.hasOwnProperty(num)) {
+      const code = smiles[num];
+      const image = createEmotionImage(code);
+
+      if (inverse) {
+        text = text.replace(image, code);
+      } else {
+        text = text.replace(code, image);
+      }
     }
   }
 
@@ -64,5 +75,7 @@ export default {
   ...smiles,
 
   SPRITE_MAP,
+
+  createEmotionImage,
   replaceSmileCodes
 };

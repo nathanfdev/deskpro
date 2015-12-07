@@ -8,10 +8,10 @@ export class EmotionsPopup extends React.Component {
     onClick: PropTypes.func
   };
 
-  renderItem(icon) {
+  renderItem(code) {
     return (
-      <a onClick={() => this.props.onClick(icon)} className="emoticon-link" title={icon}>
-        <span className={classNames('emoticon', 'sprite', `sprite-emoticon-${Emotions.SPRITE_MAP[icon]}`)} />
+      <a onClick={() => this.props.onClick(code)} className="emoticon-link" title={code}>
+        <span className={classNames('emoticon', 'sprite', `sprite-emoticon-${Emotions.SPRITE_MAP[code]}`)} />
       </a>
     );
   }
