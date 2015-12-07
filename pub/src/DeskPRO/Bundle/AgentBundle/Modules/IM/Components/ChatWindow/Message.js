@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import TimeAgo from 'react-timeago';
 import { PersonAvatar } from '../../../Common/Components/Avatar/index';
 import moment from 'moment';
+import { replaceSmileCodes } from 'DeskPRO/Component/Rte/Emotions';
 
 export class Message extends React.Component {
 
@@ -16,7 +17,7 @@ export class Message extends React.Component {
 
   getMessage = () => {
     return {
-      __html: this.props.message.message
+      __html: replaceSmileCodes(this.props.message.message)
     };
   };
 

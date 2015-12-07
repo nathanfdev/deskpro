@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import RteInput from 'DeskPRO/Component/Rte/RteInput';
 import EmotionButton from 'DeskPRO/Component/Rte/EmotionButton';
+import { replaceSmileCodes } from 'DeskPRO/Component/Rte/Emotions';
 
 export class Footer extends React.Component {
 
@@ -24,7 +25,7 @@ export class Footer extends React.Component {
   handleSubmit = event => {
     event.preventDefault();
 
-    this.props.handleAddMessage(this.state.message);
+    this.props.handleAddMessage(replaceSmileCodes(this.state.message, true));
     this.setState({
       message: ''
     });
