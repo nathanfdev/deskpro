@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import { EmotionsPopup } from './EmotionsPopup';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import Simple from 'DeskPRO/Component/Positioned/Simple';
-import classNames from 'classnames';
 
 export class EmotionButton extends React.Component {
 
@@ -38,12 +37,11 @@ export class EmotionButton extends React.Component {
     });
   };
 
-  onSelectEmotion = num => {
-    const className = classNames('emoticon', 'sprite', `sprite-emoticon-${num}`);
+  onSelectEmotion = text => {
     const medium = this.props.getEditor();
 
     medium.restoreSelection();
-    medium.pasteHTML(`<img class="${className}">`);
+    medium.pasteHTML(` ${text}`);
 
     this.onCloseEmotionsPopup();
   };

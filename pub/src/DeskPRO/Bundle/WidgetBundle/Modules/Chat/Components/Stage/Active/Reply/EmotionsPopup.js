@@ -7,46 +7,47 @@ export class EmotionsPopup extends React.Component {
     onClick: PropTypes.func
   };
 
-  renderItem(num) {
+  renderItem(spriteNum, text) {
     return (
-      <a onClick={() => this.props.onClick(num)} className="emoticon-link">
-        <span className={classNames('emoticon', 'sprite', `sprite-emoticon-${num}`)} />
-      </a>);
+      <a onClick={() => this.props.onClick(text)} className="emoticon-link">
+        <span className={classNames('emoticon', 'sprite', `sprite-emoticon-${spriteNum}`)} />
+      </a>
+    );
   }
 
   render() {
     return (
         <div id="emoticon-panel" className="emoticon-panel">
           <div>
-            {this.renderItem(1)}
-            {this.renderItem(2)}
-            {this.renderItem(3)}
-            {this.renderItem(4)}
-            {this.renderItem(5)}
+            {this.renderItem(1, ':)')}
+            {this.renderItem(2, ':)') /* todo smile code */}
+            {this.renderItem(3, ';)')}
+            {this.renderItem(4, ':)') /* todo smile code */}
+            {this.renderItem(5, ':)') /* todo smile code */}
           </div>
 
           <div>
-            {this.renderItem(6)}
-            {this.renderItem(7)}
-            {this.renderItem(8)}
-            {this.renderItem(9)}
-            {this.renderItem(10)}
+            {this.renderItem(6, ':)') /* todo smile code */}
+            {this.renderItem(7, ':D')}
+            {this.renderItem(8, ':)') /* todo smile code */}
+            {this.renderItem(9, ':)') /* todo smile code */}
+            {this.renderItem(10, ':)') /* todo smile code */}
           </div>
 
           <div>
-            {this.renderItem(11)}
-            {this.renderItem(12)}
-            {this.renderItem(13)}
-            {this.renderItem(14)}
-            {this.renderItem(15)}
+            {this.renderItem(11, ':)') /* todo smile code */}
+            {this.renderItem(12, ':)') /* todo smile code */}
+            {this.renderItem(13, ':)') /* todo smile code */}
+            {this.renderItem(14, ':)') /* todo smile code */}
+            {this.renderItem(15, 'O:)')}
           </div>
 
           <div>
-            {this.renderItem(16)}
-            {this.renderItem(17)}
-            {this.renderItem(18)}
-            {this.renderItem(19)}
-            {this.renderItem(20)}
+            {this.renderItem(16, ':)') /* todo smile code */}
+            {this.renderItem(17, ':)') /* todo smile code */}
+            {this.renderItem(18, ':)') /* todo smile code */}
+            {this.renderItem(21, ':)') /* todo smile code */}
+            {this.renderItem(20, ':|')}
           </div>
         </div>
     );
