@@ -3,6 +3,7 @@ import { EmotionButton } from './EmotionButton';
 import { EndChatContainer } from '../EndChat/EndChatContainer';
 import { EndChatButton } from './EndChatButton';
 import RteInput from 'DeskPRO/Component/RteInput';
+import ScrollArea from 'react-scrollbar';
 
 export class ReplyForm extends React.Component {
 
@@ -66,32 +67,34 @@ export class ReplyForm extends React.Component {
 
         <form onSubmit={this.onSubmit}>
           <div className="message-container">
-            <RteInput
-              inline
-              ref="editor"
-              value={this.state.message}
-              onChange={this.onChangeMessage}
-              onSubmit={this.onSubmit}
-              className="textarea"
-              options={{
-                contentWindow: currentFrame.window,
-                ownerDocument: currentFrame.document,
-                autoLink: true,
-                imageDragging: true,
-                placeholder: {
-                  text: `Type your message to ${agentName}`
-                },
-                toolbar: {
-                  buttons: ['bold', 'italic', 'underline'],
-                  updateOnEmptySelection: true
-                },
-                paste: {
-                  forcePlainText: false,
-                  cleanPastedHTML: false,
-                  cleanAttrs: ['style', 'dir']
-                }
-              }}
-            />
+            <ScrollArea vertical>
+              <RteInput
+                inline
+                ref="editor"
+                value={this.state.message}
+                onChange={this.onChangeMessage}
+                onSubmit={this.onSubmit}
+                className="textarea"
+                options={{
+                  contentWindow: currentFrame.window,
+                  ownerDocument: currentFrame.document,
+                  autoLink: true,
+                  imageDragging: true,
+                  placeholder: {
+                    text: `Type your message to ${agentName}`
+                  },
+                  toolbar: {
+                    buttons: ['bold', 'italic', 'underline'],
+                    updateOnEmptySelection: true
+                  },
+                  paste: {
+                    forcePlainText: false,
+                    cleanPastedHTML: false,
+                    cleanAttrs: ['style', 'dir']
+                  }
+                }}
+              />
+            </ScrollArea>
           </div>
 
           <button>
