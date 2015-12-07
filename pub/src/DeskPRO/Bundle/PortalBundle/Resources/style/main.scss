@@ -674,8 +674,11 @@ button, .button, input[type="submit"] {
 }
 
 .sidebar {
-  padding-left: 20px;
-  border-left: 1px dashed $divider-color;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 5px;
+  border-left: 2px solid #e6e6e6;
+  border-right: 2px solid #e6e6e6;
 
   @media screen and (max-width: 760px) {
     padding-left: 0;
@@ -688,18 +691,27 @@ button, .button, input[type="submit"] {
   }
 
   hr {
-    margin-top: 30px;
-    margin-bottom: 25px;
+    margin-top: 15px;
+    margin-bottom: 15px;
     height: 1px;
     border: 0;
-    background: $divider-color;
+    background: #e6e6e6;
   }
 
   h1 {
-    margin-bottom: 5px;
-    color: $text-color-darker;
-    font-weight: 100;
-    font-size: 1.3em;
+    margin-bottom: 12px;
+    color: #4e4e4e;
+    font-weight: 500;
+    font-size: 1.05em;
+
+    &:after {
+      content: "";
+      display: block;
+      width: 50px;
+      height: 4px;
+      background: #dcdcdc;
+      margin-top: 3px;
+    }
 
     @media screen and (max-width: 760px) {
       text-align: center;
