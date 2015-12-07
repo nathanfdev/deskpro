@@ -3,11 +3,10 @@
     <a class="dpx-toggle-big-buttons" href="#"><i class="fa fa-navicon"></i> <span class="title">Navigate</span></a>
   </div>
   <div class="brand">
-      <a href="{{ path('portal_home') }}">
-          <h1>
-              {{ global_settings.get('core.site_name')|default(global_settings.get('core.deskpro_name')) }}
-          </h1>
-      </a>
+    <span class="mobile-expand"><i class="fa fa-angle-double-down"></i></span>
+    <a href="{{ path('portal_home') }}">
+      <h1>{{ global_settings.get('core.site_name')|default(global_settings.get('core.deskpro_name')) }}</h1>
+    </a>
   </div>
 
     <ul id="menu">

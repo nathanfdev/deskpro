@@ -992,6 +992,43 @@ button, .button, input[type="submit"] {
   color: $text-color;
   position: relative;
   text-align: right;
+  @media screen and (max-width: 760px) {
+    border: 1px solid $divider-color;
+    border-radius: 2px;
+    text-align: left;
+    margin-top: 10px;
+    padding: 0px;
+    .brand {
+      padding: 5px;
+      // border-bottom: 1px solid $divider-color;
+      padding-right: 30px;
+      a {
+        display: block;
+      }
+      h1 {
+        font-size: 16px;
+        font-weight: 500;
+      }
+
+      .mobile-expand {
+        display: inline-block;
+        z-index: 299;
+        position: absolute;
+        right: 12px;
+        top: 6px;
+        opacity: 0.5;
+
+        &:hover {
+          opacity: 1;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
+  .mobile-expand {
+    display: none;
+  }
 
   .register-or-signup {
     font-weight: bold;
@@ -1027,6 +1064,11 @@ button, .button, input[type="submit"] {
       color: inherit;
       text-decoration: none;
     }
+
+    @media screen and (max-width: 760px) {
+      float: none;
+      display: block;
+    }
   }
 
   ul {
@@ -1035,6 +1077,11 @@ button, .button, input[type="submit"] {
     list-style: none;
     display: inline-block;
     color: #b4b4b4;
+
+    @media screen and (max-width: 760px) {
+      display: block;
+      width: 100%;
+    }
 
     .disc {
       display: inline-block;
@@ -1049,6 +1096,10 @@ button, .button, input[type="submit"] {
 
     li {
       display: inline-block;
+      @media screen and (max-width: 760px) {
+        display: block;
+        width: 100%;
+      }
     }
 
     li.welcome {
@@ -1061,8 +1112,50 @@ button, .button, input[type="submit"] {
         position: relative;
         top: -1px;
       }
-
     }
+
+    @media screen and (max-width: 760px) {
+      li.register-greeting {
+        border-bottom: 1px solid $divider-color;
+      }
+
+      li.welcome {
+        text-transform: none;
+        font-size: 13px;
+        border-bottom: 1px solid $divider-color;
+        display: block;
+        width: 100%;
+        &:last-child {
+          border-bottom: 0px;
+        }
+
+        .agent-greeting {
+          display: block;
+          padding: 5px;
+          border-top: 1px solid $divider-color;
+          border-bottom: 1px solid $divider-color;
+          .agent-avatar {
+            margin-right: 2px;
+            top: -2px;
+          }
+        }
+
+        a {
+          display: block;
+          font-size: inherit;
+          text-decoration: none;
+          padding: 5px;
+        }
+
+        .disc {
+          display: none;
+        }
+      }
+    }
+
+
+
+
 
     .button-small {
       display: inline-block;
@@ -1081,6 +1174,13 @@ button, .button, input[type="submit"] {
       font-weight: 500;
       cursor: pointer;
       margin-left: 4px;
+
+      @media screen and (max-width: 760px) {
+        display: block;
+        margin-left: 0;
+        border-radius: 0px;
+        padding: 10px 5px;
+      }
 
       .fa-caret-down {
         margin-left: 4px;
@@ -1171,6 +1271,13 @@ button, .button, input[type="submit"] {
         background: #3575bd;
         border: 1px solid #3575bd;
         color: #fff;
+      }
+
+      @media screen and (max-width: 760px) {
+        display: block;
+        padding: 10px 5px;
+        font-size: inherit;
+        text-transform: none;
       }
     }
   }
