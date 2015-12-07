@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Model;
 
+use Application\DeskPRO\Entity\CustomDataAbstract;
 use DeskPRO\Bundle\AppBundle\Exception\UnknownTicketGroupingColumnException;
 
 /**
@@ -38,6 +39,13 @@ use DeskPRO\Bundle\AppBundle\Exception\UnknownTicketGroupingColumnException;
  */
 class TicketGrouping
 {
+    /**
+     * Custom field column prefix.
+     *
+     * Full name of a custom column is "{$prefix}.{$column_id}"
+     */
+    const CUSTOM_FIELD_COLUMN_PREFIX = 'ticket_field';
+
     const DEPARTMENT       = 'department';
     const ORGANIZATION     = 'organization_id';
     const PERSON           = 'person';
@@ -97,10 +105,21 @@ class TicketGrouping
                 //todo
                 break;
         }
+
+        if (self::isCustom($column)) {
+            $this->select = [
+                'alias' => self::CUSTOM_FIELD_COLUMN_PREFIX,
+                'sql'   => CustomDataAbstract::getDataSql(),
+            ];
+        }
     }
 
     public static function fromString($col_string)
     {
+        if (self::isCustom($col_string)) {
+            return new self($col_string);
+        }
+
         // A tiny bit of magic. Need PHP 5.3+
         $constant = constant(sprintf('%s::%s', __CLASS__, strtoupper($col_string)));
 
@@ -119,6 +138,29 @@ class TicketGrouping
         return new self($value);
     }
 
+    /**
+     * @return bool
+     */
+    public function isCustomField()
+    {
+        return self::isCustom($this->column);
+    }
+
+    /**
+     * @throws \Exception
+     * @return int
+     *
+     */
+    public function getCustomFieldId()
+    {
+        if (!$this->isCustomField()) {
+            throw new \Exception('Field is not custom');
+        }
+        $parts = explode('.', $this->column);
+
+        return intval($parts[1]);
+    }
+
     public function getSelect()
     {
         return $this->select;
@@ -132,5 +174,17 @@ class TicketGrouping
     public function getOrderBy()
     {
         return $this->order_by;
+    }
+
+    /**
+     * @param string $column
+     *
+     * @return bool
+     */
+    public static function isCustom($column)
+    {
+        list($prefix, $id) = explode('.', (string) $column, 2);
+
+        return ($prefix === self::CUSTOM_FIELD_COLUMN_PREFIX) && preg_match('/^\d+$/', $id);
     }
 }

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataService\Tickets;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -40,6 +39,7 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
+use DeskPRO\Bundle\AppBundle\Model\TicketGrouping;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngine;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use Doctrine\ORM\EntityManager;
@@ -94,9 +94,16 @@ class TicketCountsDataService
         $tickets_query = $this->engine->evaluate($filter, $context);
 
         if ($group_by) {
-            $filter_counts = $tickets_query->fetchGroupedCount();
-
             $filter_count = Count::create(0, $filter->getId(), 'filter', $filter->getTitle());
+
+            // If grouping by a custom field, then additionally query for total count (w/o grouping)
+            // to determine count of tickets where no value set on the custom field
+            $total = 0;
+            if ($isCustom = TicketGrouping::isCustom($group_by)) {
+                $total = $this->engine->evaluate($filter, new TermEngineContext($this->user))->fetchCount();
+            }
+
+            $filter_counts = $tickets_query->fetchGroupedCount();
             foreach ($filter_counts as $nested_count) {
                 $value = $nested_count['count'];
                 unset($nested_count['count']);
@@ -105,6 +112,17 @@ class TicketCountsDataService
 
                 $filter_count->addNestedInstance(
                     Count::create($value, $group, $group_by, $this->getTitle($group, $group_by), null, []),
+                    true
+                );
+
+                if ($isCustom) {
+                    $total -= $value;
+                }
+            }
+
+            if ($isCustom) {
+                $filter_count->addNestedInstance(
+                    Count::create($total, null, $group_by, null, null, []),
                     true
                 );
             }
@@ -156,6 +174,10 @@ class TicketCountsDataService
     {
         if (is_null($id)) {
             return;
+        }
+
+        if (TicketGrouping::isCustom($type)) {
+            return $id;
         }
 
         switch ($type) {

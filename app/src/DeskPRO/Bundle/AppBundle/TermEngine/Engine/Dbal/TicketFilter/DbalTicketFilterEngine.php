@@ -102,6 +102,9 @@ class DbalTicketFilterEngine extends DbalEngine
         if (count($context->getGroupBys()) > 0) {
             foreach ($context->getGroupBys() as $group_by) {
                 $query->addCountGroup($group_by->getColumn(), $group_by->getSelect());
+                if ($group_by->isCustomField()) {
+                    $query->addCustomFieldTableJoins($group_by->getCustomFieldId());
+                }
                 if ($group_by->getOrderBy()) {
                     foreach ($group_by->getOrderBy() as $col => $dir) {
                         $query->addOrderBy($col, $dir);

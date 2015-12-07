@@ -241,6 +241,11 @@ class DbalQuery
         $this->where .= ' '.trim($append_to_where);
     }
 
+    public function hasJoin($alias)
+    {
+        return array_key_exists($alias, $this->joins);
+    }
+
     public function addJoin($table, $on, $alias = null)
     {
         if (!$alias) {

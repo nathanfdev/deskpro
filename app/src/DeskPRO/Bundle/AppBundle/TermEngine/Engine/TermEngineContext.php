@@ -105,7 +105,7 @@ class TermEngineContext
     /**
      * public function getGroupBys.
      *
-     * @return Array [TicketGrouping]
+     * @return TicketGrouping[]
      */
     public function getGroupBys()
     {

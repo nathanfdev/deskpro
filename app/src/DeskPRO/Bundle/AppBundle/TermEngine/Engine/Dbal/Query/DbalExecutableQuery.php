@@ -536,6 +536,25 @@ class DbalExecutableQuery
     }
 
     /**
+     * Add custom field table join.
+     */
+    public function addCustomFieldTableJoins($field_id)
+    {
+        if (!$this->query->hasJoin('custom_data_ticket') && !$this->query->hasJoin('custom_def_ticket')) {
+            $this->query->addJoin(
+                'custom_data_ticket',
+                'custom_data_ticket.ticket_id = ticket.id'
+            );
+            $this->query->addJoin(
+                'custom_def_ticket',
+                'custom_data_ticket.field_id = custom_def_ticket.id'
+            );
+            $this->query->appendWhere(
+                sprintf('AND (custom_def_ticket.id = %d)', (int) $field_id));
+        }
+    }
+
+    /**
      * @param $query
      */
     protected function manipulateWhere($query)
