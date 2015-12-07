@@ -5,13 +5,6 @@
   </div>
   <article class="news kb-article">
 
-
-
-    {% show news_subscription_info %}
-
-
-
-
     <div class="news-header main-list">
 
       <div class="header-buttons">
@@ -20,10 +13,9 @@
         {#<a href="#">{{ phrase('portal.general.btn-print') }} <i class="fa fa-print"></i></a>#}
         {#<a href="#">{{ phrase('portal.general.btn-download-pdf') }} <i class="fa fa-file-pdf-o"></i></a>#}
       </div>
-      <!-- TODO actual dates -->
       <div class="deskpro-calendar-decoration-flat">
-        <div class="dcdf-month">Jan</div>
-        <div class="dcdf-day">12</div>
+        <div class="dcdf-month">{{ post.date_published | date('M') }}</div>
+        <div class="dcdf-day">{{ post.date_published | date('j') }}</div>
       </div>
 
       <div class="news-header-info">
@@ -40,9 +32,10 @@
           <a href="#comments">{{ phrase('portal.general.comments-count', {count: post.num_comments}) }}</a>
         </span>
 
+        {% if post.category %}
         <hr>
-        <!-- TODO Add categories -->
-        in <a href="#">U.S. Info</a>
+        {{ phrase('portal.general.in') }} <a href="{{ portal_path(post.category) }}">{{ post.category }}</a>
+        {% endif %}
 
       </div>
 
