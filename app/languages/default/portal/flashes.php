@@ -64,6 +64,7 @@ return array(
     'portal.flashes.new_feedback_verify'                    => 'We have sent you the verification link for your feedback. Please check your email and click the link.',
     'portal.flashes.new_feedback_verified'                  => 'Thank you, your email has been verified.',
     'portal.flashes.new_feedback_failed_verification'       => 'There was a problem verifying your email, please contact us.',
+    'portal.flashes.new_feedback_awaiting_review'           => 'Thank you for your feedback. It will be visible on the website after agent review.',
     'portal.flashes.ticket_resolved'                        => 'Your ticket is now marked as resolved. Thank you.',
     'portal.flashes.ticket_re_opened'                       => 'You have re-opened this ticket.',
     'portal.flashes.comment_thank_you'                      => 'Thank you for commenting!',

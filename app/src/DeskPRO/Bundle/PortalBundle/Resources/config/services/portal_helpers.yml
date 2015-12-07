@@ -3,7 +3,7 @@ services:
 
   portal_validation:
       class: DeskPRO\Bundle\PortalBundle\Helper\PortalValidation
-      arguments: [@portal_email_sender, @brand_stack, @router]
+      arguments: [@portal_email_sender, @brand_stack, @router, @data.person]
 
   tabs_helper:
       class: DeskPRO\Bundle\PortalBundle\Helper\PortalTabsHelper

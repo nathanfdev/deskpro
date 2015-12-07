@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\People\PersonGuest;
@@ -40,6 +39,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
 
 class NewFeedbackType extends AbstractType
@@ -66,7 +66,7 @@ class NewFeedbackType extends AbstractType
         $builder->add('content', 'textarea', array('label' => 'portal.forms.label_content'));
         $builder->add('category', 'feedback_category', array(
             'person'      => $options['person'],
-            'empty_value' => 'Select...',
+            'empty_value' => $this->phrase('portal.forms.label_select'),
         ));
         $builder->add('custom_data_collection', 'custom_feedback_fields');
         $builder->add('attachments', 'feedback_attachment_collection', array(
@@ -79,14 +79,15 @@ class NewFeedbackType extends AbstractType
 
         if (!$options['person'] || $options['person'] instanceof PersonGuest) {
             $builder->add('name', 'text', array(
-                'constraints'   => new Length(array('min' => 2)),
+                'constraints'   => new Length(array('minMessage' => 'portal.forms.error_length_min', 'min' => 2)),
                 'property_path' => 'person.name',
                 'label'         => $this->phrase('portal.forms.label_name'),
             ));
             $builder->add('email', 'deskpro_person_email', array(
                 'label'         => false,
                 'property_path' => 'person.primary_email',
-                'email_label'   => false,
+                'constraints'   => array(
+                ),
             ));
         }
 

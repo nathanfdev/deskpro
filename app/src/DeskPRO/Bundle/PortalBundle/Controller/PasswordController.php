@@ -35,6 +35,7 @@ use Application\DeskPRO\Entity\PasswordHistory;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\PasswordResetAbuseCheck;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -43,6 +44,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class PasswordController extends AbstractController
 {
+    const SET_PASSWORD_REDIRECT = 'set_password_redirect';
+
     /**
      * @Route("/login/reset-password", name="portal_reset_password")
      * @Route("/login/reset-password", name="user_login_resetpass")
@@ -203,6 +206,10 @@ class PasswordController extends AbstractController
             $this->addFlash('success', $this->phrase(
                 $isResetting ? 'portal.account.reset-password-success' : 'portal.account.set-password-success'
             ));
+
+            if ($redirect = $request->getSession()->get(self::SET_PASSWORD_REDIRECT)) {
+                return new RedirectResponse($redirect);
+            }
 
             return $this->redirectToRoute('portal_login');
         } elseif ($form->isSubmitted()) {

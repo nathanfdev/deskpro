@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Feedback;
@@ -41,8 +40,10 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitFeedbackAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\Helper\FeedbackFilterUriHelper;
+use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
+use DeskPRO\Bundle\PortalBundle\Person\EmailValidationRequiredException;
 use DeskPRO\Bundle\PortalBundle\Person\LoginRequiredException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -97,13 +98,20 @@ class FeedbackController extends AbstractController
         // NEW FEEDBACK FORM
         //
         $rerendering_saved = $request->attributes->get('rerender-form', false); // true if auto-submit SavedFormController wants us to definitely rerender
-        $is_saved_form     = $request->attributes->get('saved-form', false); // true if auto-submit SavedFormController
+        $permission_bad    = $this->getPermissionBagForCurrentUser();
         $new_feedback      = new Feedback();
+        $new_feedback->setIsReviewed(false);
+        if (!$permission_bad->hasPermission('feedback.no_submit_validate')) {
+            $new_feedback->setStatus(Feedback::STATUS_HIDDEN);
+        } else {
+            $new_feedback->setStatus(Feedback::STATUS_ACTIVE);
+        }
+        $new_feedback->setStatusCategory($this->getDefaultStatusCategory());
         $new_feedback->setPerson($person);
         $form = $this->createForm('new_feedback', $new_feedback, array(
-            'person'             => $person,
-            'action'             => $this->generateUrl('portal_feedback'),
-            'allow_extra_fields' => $is_saved_form,
+            'person'                => $person,
+            'action'                => $this->generateUrl('portal_feedback'),
+            'saved_form_subrequest' => $request->attributes->has('saved-form'),
         ));
 
         $form->handleRequest($request);
@@ -121,26 +129,48 @@ class FeedbackController extends AbstractController
                     )
                 )
             ) {
-                $new_feedback->setStatusCategory($this->getDefaultStatusCategory());
-                $new_feedback->setStatus(Feedback::STATUS_ACTIVE);
-
                 // deal with guests via negotiating with PersonFactory
                 if ($person instanceof PersonGuest) {
                     try {
-                        $person = $this->getPersonFactory()->checkGuestForValidation($person);
+                        $this->getPersonFactory()->checkGuestForValidation($person, $request->attributes->get('saved-form'));
+
+                        // the below block only executes during a saved form request (they clicked validation link)
+                        $email  = $person->getPrimaryEmail();
+                        $person = $this->getPersonDataService()->getPersonForEmail($email->getEmail());
+
+                        // since the guest is set on the form, we need to update all of the associations
+                        $new_feedback->setPerson($person);
+                        foreach ($new_feedback->getAttachments() as $attachment) {
+                            $attachment->setPerson($person);
+                        }
+                        $this->persistAndFlushEntity($new_feedback);
+
+                        $this->addFlash('success', $this->phrase('portal.flashes.new_feedback_awaiting_review'));
+
+                        $destination = $new_feedback->isVisibleOnPortal() ? $this->getObjectRouter()->getPortalPath($new_feedback) : $this->generateUrl('portal_feedback');
+
+                        if ($redirect = $this->get('portal_validation')->getPasswordRedirectIfRequired($person, $request, $destination)) {
+                            return $redirect;
+                        }
+
+                        return $this->redirect($destination);
                     } catch (LoginRequiredException $e) {
                         $person = $e->getPerson();
+                        $this->submitNewFeedbackAbuseCheck($person, $request->getClientIp());
 
                         return $this->getFormSaver()->saveFormForPersonLogin($person, $form, $request);
-                    }
+                    } catch (EmailValidationRequiredException $e) {
+                        $this->submitNewFeedbackAbuseCheck($person, $request->getClientIp());
 
-                    // since the guest is set on the form, we need to update all of the associations
-                    $new_feedback->setPerson($person);
-                    foreach ($new_feedback->getAttachments() as $attachment) {
-                        $attachment->setPerson($person);
+                        $saved_form = $this->getFormSaver()->saveForm($form, $request, $person->getEmailAddress(), $person->getDisplayName());
+                        $this->get('portal_validation')->sendVerificationEmail(PortalValidation::NEW_FEEDBACK, $saved_form);
+                        $this->addFlash('success', $this->phrase('portal.flashes.guest_content_must_verify'));
+
+                        return $this->redirectToRoute('portal_feedback');
                     }
                 }
 
+                // the following block only executes if the person is logged in already
                 $this->submitNewFeedbackAbuseCheck($person, $request->getClientIp());
 
                 $this->persistAndFlushEntity($new_feedback);
@@ -323,6 +353,10 @@ class FeedbackController extends AbstractController
      */
     public function viewAction(Request $request, Feedback $item, $visitor_id)
     {
+        if (!$item->isVisibleOnPortal()) {
+            throw $this->createNotFoundException('this feedback item is hidden');
+        }
+
         //
         // COMMENT FORM
         //
@@ -392,6 +426,10 @@ class FeedbackController extends AbstractController
      */
     public function feedbackRateAction(Feedback $item, $visitor_id, $up_or_down)
     {
+        if (!$item->isVisibleOnPortal()) {
+            throw $this->createNotFoundException('this feedback item is hidden');
+        }
+
         $person = $this->isGranted('ROLE_USER') ? $this->getUser() : null;
 
         if ('down' === $up_or_down) {
@@ -413,6 +451,10 @@ class FeedbackController extends AbstractController
      */
     public function articleSubscriptionAction(Feedback $item)
     {
+        if (!$item->isVisibleOnPortal()) {
+            throw $this->createNotFoundException('this feedback item is hidden');
+        }
+
         $person               = $this->getUser();
         $subscriptions_helper = $this->getSubscriptionsHelper();
 

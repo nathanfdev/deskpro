@@ -94,6 +94,7 @@ services:
       - { name: form.type, alias: comment }
     arguments:
       - @captcha_decider
+      - @language_manager
 
 
   form.new_feedback:

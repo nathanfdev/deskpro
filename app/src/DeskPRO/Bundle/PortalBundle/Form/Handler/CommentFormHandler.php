@@ -243,24 +243,15 @@ class CommentFormHandler
             $this->person_factory->checkGuestForValidation($person, $request->attributes->get('saved-form'));
 
             // this is someone who clicked the validation link and ended up here (no exception thrown).
-
             // if its a saved form, it appears to be a guest submission, but its not realy.
             // get the person and set them on the comment.
             $person = $this->person_data_service->getPersonForEmail($email->getEmail());
             $comment->setPerson($person);
             $this->acceptComment($content, $comment, $request);
 
-            // if the gues is a user that can't login, send them to a page that will let them set a pw
-            if (!$person->isUser()) {
-                // act as if we generated a "set password" token for this user and they clicked the link
-                $expire_time    = $this->brand_stack->getActive()->getSetting('user.password_reset_code_time_limit', 18000);
-                $password_reset = $this->person_data_service->createPasswordReset($person, $expire_time);
-                $code           = $password_reset['code'];
-
-                return new RedirectResponse($this->url_generator->generate('portal_set_password_process', [
-                    'code'       => $code,
-                    'from-saved' => true,
-                ]));
+            $destination = $this->object_router->getPortalPath($content);
+            if ($redirect = $this->portal_validation->getPasswordRedirectIfRequired($person, $request, $destination)) {
+                return $redirect;
             }
         } catch (LoginRequiredException $e) {
             // oops! A login is required. This "guest" cannot post a comment until logged in.

@@ -28,22 +28,29 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Helper;
 
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\DataService\PersonDataService;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Controller\PasswordController;
 use DeskPRO\Bundle\PortalBundle\EmailSender\PortalEmailSender;
 use DeskPRO\Bundle\PortalBundle\Model\EmailTo;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class PortalValidation
 {
     const REGISTRATION = 'registration';
     const ADD_EMAIL    = 'add-email';
+    const NEW_FEEDBACK = 'new-feedback';
     const COMMENT      = 'comment';
 
     public static $types = [
         self::REGISTRATION,
         self::COMMENT,
         self::ADD_EMAIL,
+        self::NEW_FEEDBACK,
     ];
 
     /**
@@ -59,12 +66,21 @@ class PortalValidation
      * @var UrlGeneratorInterface
      */
     private $url_generator;
+    /**
+     * @var PersonDataService
+     */
+    private $person_data_service;
 
-    public function __construct(PortalEmailSender $mailer, BrandStack $brand_stack, UrlGeneratorInterface $url_generator)
-    {
-        $this->mailer        = $mailer;
-        $this->brand_stack   = $brand_stack;
-        $this->url_generator = $url_generator;
+    public function __construct(
+        PortalEmailSender $mailer,
+        BrandStack $brand_stack,
+        UrlGeneratorInterface $url_generator,
+        PersonDataService $person_data_service
+    ) {
+        $this->mailer              = $mailer;
+        $this->brand_stack         = $brand_stack;
+        $this->url_generator       = $url_generator;
+        $this->person_data_service = $person_data_service;
     }
 
     public function sendVerificationEmail($type, SavedForm $saved_form, $prefer_person_email = true)
@@ -98,6 +114,9 @@ class PortalValidation
             case self::ADD_EMAIL:
                 $this->mailer->sendEmailValidation($email_to, $verify_url);
                 break;
+            case self::NEW_FEEDBACK:
+                $this->mailer->sendEmailValidation($email_to, $verify_url);
+                break;
         }
 
         // based on $type, create the correct verification url
@@ -110,6 +129,30 @@ class PortalValidation
         // someone clicked the link
         // based on $type, actions need to take place
         // and a redirection must be returned
+    }
+
+    public function getPasswordRedirectIfRequired(Person $person, Request $request, $redirect_to_after_password_set = null)
+    {
+        // if the gues is a user that can't login, send them to a page that will let them set a pw
+        if (!$person->isUser()) {
+            // act as if we generated a "set password" token for this user and they clicked the link
+            $expire_time    = $this->brand_stack->getActive()->getSetting('user.password_reset_code_time_limit', 18000);
+            $password_reset = $this->person_data_service->createPasswordReset($person, $expire_time);
+            $code           = $password_reset['code'];
+
+            if ($redirect_to_after_password_set) {
+                $request->getSession()->set(PasswordController::SET_PASSWORD_REDIRECT, $redirect_to_after_password_set);
+            }
+
+            return new RedirectResponse(
+                $this->url_generator->generate('portal_set_password_process',
+                    [
+                        'code'       => $code,
+                        'from-saved' => true,
+                    ]
+                )
+            );
+        }
     }
 
     protected function makeValidationUrl($type, SavedForm $saved_form)

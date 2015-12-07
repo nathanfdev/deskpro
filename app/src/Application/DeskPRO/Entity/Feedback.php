@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -277,6 +276,11 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         return $data->field->getChildById($data->getValue());
     }
 
+    public function setIsReviewed($yesno)
+    {
+        $this->setModelField('is_reviewed', $yesno);
+    }
+
     public function setStatus($status)
     {
         $last_status = $this->status;
@@ -333,6 +337,16 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
                 $this['hidden_status'] = $sub_status;
                 break;
         }
+    }
+
+    /**
+     * Can this be seen in the user portal?
+     *
+     * @return bool
+     */
+    public function isVisibleOnPortal()
+    {
+        return self::STATUS_HIDDEN !== $this->status;
     }
 
     public function getStatusCode()

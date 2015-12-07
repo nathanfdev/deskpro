@@ -94,6 +94,12 @@ class SavedFormController extends AbstractController
                 $this->maybeAauthenticateThisPerson($person);
 
                 return $this->submitSavedForm($saved_form, $request);
+            case PortalValidation::NEW_FEEDBACK:
+                $person = $this->getPersonToValidate($saved_form);
+                $this->validateThisPerson($person, $email_address);
+                $this->maybeAauthenticateThisPerson($person);
+
+                return $this->submitSavedForm($saved_form, $request);
             default:
                 break;
         }
