@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\People\PersonGuest;
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -48,17 +49,23 @@ class CommentType extends AbstractType
      */
     private $captcha_decider;
 
-    public function __construct(CaptchaDecider $captcha_decider)
+    /**
+     * @var LanguageManager
+     */
+    private $language_manager;
+
+    public function __construct(CaptchaDecider $captcha_decider, LanguageManager $language_manager)
     {
-        $this->captcha_decider = $captcha_decider;
+        $this->captcha_decider  = $captcha_decider;
+        $this->language_manager = $language_manager;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('content_real', 'textarea', array(
-            'label'       => 'What is your comment?',
+            'label'       => $this->language_manager->phrase('portal.forms.label_comment'),
             'constraints' => array(
-                new NotBlank(),
+                new NotBlank(['message' => 'portal.forms.error_required']),
             ),
         ));
 
@@ -69,16 +76,16 @@ class CommentType extends AbstractType
             // if this is a guest, ask for more information
             if ($comment->getPerson() instanceof PersonGuest) {
                 $form->add('name', 'text', array(
-                    'label'       => 'Your Name',
+                    'label'       => $this->language_manager->phrase('portal.forms.label_full_name'),
                     'constraints' => array(
-                        new NotBlank(),
+                        new NotBlank(['message' => 'portal.forms.error_required']),
                     ),
                 ));
                 $form->add('email', 'email', array(
-                    'label'       => 'Your Email',
+                    'label'       => $this->language_manager->phrase('portal.forms.label_email'),
                     'constraints' => array(
-                        new NotBlank(),
-                        new Email(),
+                        new NotBlank(['message' => 'portal.forms.error_required']),
+                        new Email(['message' => 'portal.forms.error_email_invalid']),
                     ),
                 ));
             }
