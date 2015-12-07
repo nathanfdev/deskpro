@@ -307,7 +307,11 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     public function getMessagePreviewText($max_length = 0, $ellipses = '...')
     {
         $message = $this->message;
-        $message = preg_replace('#\[attach:([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\. ]+)\]#', '', $message);
+        $message = preg_replace(
+            '#\[attach:([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\. ]+)\]#',
+            '',
+            $message
+        );
 
         $sig_pos = strpos($message, '<div class="dp-signature-start">');
 
@@ -363,7 +367,14 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         // codes so we can now turn them into inline images or attachment links
         $fn = function ($m, $before = '') {
             $download_url = App::getSetting('core.deskpro_url');
-            $download_url .= ltrim(App::getRouter()->getGenerator()->generatePath('serve_blob', array('blob_auth_id' => $m[2], 'filename' => $m[3]), false), '/');
+            $download_url .= ltrim(
+                App::getRouter()->getGenerator()->generatePath(
+                    'serve_blob',
+                    array('blob_auth_id' => $m[2], 'filename' => $m[3]),
+                    false
+                ),
+                '/'
+            );
 
             $extra = 'data-downloadurl="'.$download_url.'" data-blob-authid="'.$m[2].'"';
 
@@ -386,12 +397,26 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
             if ($m[1] == 'signature_image') {
                 $url = App::getSetting('core.deskpro_url');
-                $url .= ltrim(App::getRouter()->getGenerator()->generatePath('serve_blob', array('blob_auth_id' => $m[2], 'filename' => $m[3], 'sc' => $sc_code), false), '/');
+                $url .= ltrim(
+                    App::getRouter()->getGenerator()->generatePath(
+                        'serve_blob',
+                        array('blob_auth_id' => $m[2], 'filename' => $m[3], 'sc' => $sc_code),
+                        false
+                    ),
+                    '/'
+                );
 
                 $replace = sprintf('<img src="%s" title="%s" />', $url, $m[3]);
             } elseif ($m[1] == 'image') {
                 $url = App::getSetting('core.deskpro_url');
-                $url .= ltrim(App::getRouter()->getGenerator()->generatePath('serve_blob', array('blob_auth_id' => $m[2], 'filename' => $m[3], 's' => 350, 'sc' => $sc_code), false), '/');
+                $url .= ltrim(
+                    App::getRouter()->getGenerator()->generatePath(
+                        'serve_blob',
+                        array('blob_auth_id' => $m[2], 'filename' => $m[3], 's' => 350, 'sc' => $sc_code),
+                        false
+                    ),
+                    '/'
+                );
 
                 $do_link = true;
 
@@ -402,12 +427,28 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
                 }
 
                 if (!$do_link) {
-                    $replace = sprintf('<img src="%s" title="%s" class="dragout '.$marker_class_img.'" %s/>', $url, $m[3], $extra);
+                    $replace = sprintf(
+                        '<img src="%s" title="%s" class="dragout '.$marker_class_img.'" %s/>',
+                        $url,
+                        $m[3],
+                        $extra
+                    );
                 } else {
-                    $replace = sprintf('<a href="%s" target="_blank" class="dp-is-image dragout '.$marker_class_a.'" %s><img src="%s" title="%s" class="'.$marker_class_img.'" /></a>', $download_url, $extra, $url, $m[3]);
+                    $replace = sprintf(
+                        '<a href="%s" target="_blank" class="dp-is-image dragout '.$marker_class_a.'" %s><img src="%s" title="%s" class="'.$marker_class_img.'" /></a>',
+                        $download_url,
+                        $extra,
+                        $url,
+                        $m[3]
+                    );
                 }
             } else {
-                $replace = sprintf('<a href="%s" target="_blank" class="dp-is-image dragout '.$marker_class_a.'" %s>%s</a>', $download_url, $extra, $m[3]);
+                $replace = sprintf(
+                    '<a href="%s" target="_blank" class="dp-is-image dragout '.$marker_class_a.'" %s>%s</a>',
+                    $download_url,
+                    $extra,
+                    $m[3]
+                );
             }
 
             return $replace;
@@ -464,7 +505,12 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
     public function getUsedSignatureImageBlobs()
     {
-        preg_match_all('#\[attach:signature_image:([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\. ]+)\]#', $this->message, $matches, PREG_SET_ORDER);
+        preg_match_all(
+            '#\[attach:signature_image:([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\. ]+)\]#',
+            $this->message,
+            $matches,
+            PREG_SET_ORDER
+        );
         $auth_codes = array();
         foreach ($matches as $match) {
             $auth_codes[] = $match[1];
@@ -662,7 +708,11 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         $hashes = array();
 
         $hashable_msg = $this->message;
-        $hashable_msg = preg_replace('#\[attach:([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\. ]+)\]#', '$3', $hashable_msg);
+        $hashable_msg = preg_replace(
+            '#\[attach:([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\. ]+)\]#',
+            '$3',
+            $hashable_msg
+        );
 
         $hashes[] = sha1($hashable_msg.($this->person ? $this->person->id : 'noperson'));
 
@@ -727,7 +777,8 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         }
 
         if ($this->numCcedParticipants() > 0) {
-            return array_map(function ($p) {
+            return array_map(
+                function ($p) {
                     return $p->getDisplayContact();
                 },
                 $this->ticket->getUserParticipants()
@@ -745,44 +796,187 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketMessage';
-        $metadata->setPrimaryTable(array(
-            'name'    => 'tickets_messages',
-            'indexes' => array(
-                'date_created_idx' => array('columns' => array('date_created')),
-            ),
-        ));
+        $metadata->setPrimaryTable(
+            array(
+                'name'    => 'tickets_messages',
+                'indexes' => array(
+                    'date_created_idx' => array('columns' => array('date_created')),
+                ),
+            )
+        );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->addLifecycleCallback('initHashCode', 'prePersist');
         $metadata->addLifecycleCallback('incTicketCount', 'prePersist');
         $metadata->addLifecycleCallback('initPersonAccessCode', 'postPersist');
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'id',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'id',
+                'id'         => true,
+            )
+        );
         $metadata->mapField(array('fieldName' => 'date_created', 'type' => 'datetime', 'columnName' => 'date_created'));
-        $metadata->mapField(array('fieldName' => 'is_agent_note', 'type' => 'boolean', 'columnName' => 'is_agent_note'));
-        $metadata->mapField(array('fieldName' => 'creation_system', 'type' => 'string', 'length' => 20, 'columnName' => 'creation_system'));
-        $metadata->mapField(array('fieldName' => 'ip_address', 'type' => 'string', 'length' => 30, 'columnName' => 'ip_address'));
-        $metadata->mapField(array('fieldName' => 'hostname', 'type' => 'string', 'length' => 255, 'columnName' => 'hostname'));
-        $metadata->mapField(array('fieldName' => 'geo_country', 'type' => 'string', 'length' => 10, 'nullable' => true, 'columnName' => 'geo_country'));
-        $metadata->mapField(array('fieldName' => 'email', 'type' => 'string', 'length' => 255, 'columnName' => 'email'));
-        $metadata->mapField(array('fieldName' => 'message_hash', 'type' => 'string', 'length' => 40, 'columnName' => 'message_hash'));
+        $metadata->mapField(
+            array('fieldName' => 'is_agent_note', 'type' => 'boolean', 'columnName' => 'is_agent_note')
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'creation_system',
+                'type'       => 'string',
+                'length'     => 20,
+                'columnName' => 'creation_system',
+            )
+        );
+        $metadata->mapField(
+            array('fieldName' => 'ip_address', 'type' => 'string', 'length' => 30, 'columnName' => 'ip_address')
+        );
+        $metadata->mapField(
+            array('fieldName' => 'hostname', 'type' => 'string', 'length' => 255, 'columnName' => 'hostname')
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'geo_country',
+                'type'       => 'string',
+                'length'     => 10,
+                'nullable'   => true,
+                'columnName' => 'geo_country',
+            )
+        );
+        $metadata->mapField(
+            array('fieldName' => 'email', 'type' => 'string', 'length' => 255, 'columnName' => 'email')
+        );
+        $metadata->mapField(
+            array('fieldName' => 'message_hash', 'type' => 'string', 'length' => 40, 'columnName' => 'message_hash')
+        );
         $metadata->mapField(array('fieldName' => 'message', 'type' => 'text', 'columnName' => 'message'));
-        $metadata->mapField(array('fieldName' => 'message_full', 'type' => 'text', 'nullable' => true, 'columnName' => 'message_full'));
-        $metadata->mapField(array('fieldName' => 'message_raw', 'type' => 'text', 'nullable' => true, 'columnName' => 'message_raw'));
-        $metadata->mapField(array('fieldName' => 'lang_code', 'type' => 'string', 'length' => 80, 'nullable' => true, 'columnName' => 'lang_code'));
-        $metadata->mapField(array('fieldName' => 'show_full_hint', 'type' => 'boolean', 'columnName' => 'show_full_hint'));
+        $metadata->mapField(
+            array('fieldName' => 'message_full', 'type' => 'text', 'nullable' => true, 'columnName' => 'message_full')
+        );
+        $metadata->mapField(
+            array('fieldName' => 'message_raw', 'type' => 'text', 'nullable' => true, 'columnName' => 'message_raw')
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'lang_code',
+                'type'       => 'string',
+                'length'     => 80,
+                'nullable'   => true,
+                'columnName' => 'lang_code',
+            )
+        );
+        $metadata->mapField(
+            array('fieldName' => 'show_full_hint', 'type' => 'boolean', 'columnName' => 'show_full_hint')
+        );
 
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array('fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
-        $metadata->mapManyToOne(array('fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null)), 'dpApi' => true));
-        $metadata->mapManyToOne(array('fieldName' => 'email_source', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailSource', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'email_source_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
-        $metadata->mapManyToOne(array('fieldName' => 'primary_translation', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessageTranslated', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'message_translated_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
-        $metadata->mapManyToOne(array('fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'visitor_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
-        $metadata->mapOneToMany(array('fieldName' => 'attachments', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketAttachment', 'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'message', 'dpApi' => true, 'dpApiDeep' => true));
+        $metadata->mapManyToOne(
+            array(
+                'fieldName'    => 'ticket',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => array(
+                    0 => array(
+                        'name'                 => 'ticket_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'cascade',
+                        'columnDefinition'     => null,
+                    ),
+                ),
+            )
+        );
+        $metadata->mapManyToOne(
+            array(
+                'fieldName'    => 'person',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => array(
+                    0 => array(
+                        'name'                 => 'person_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ),
+                ),
+                'dpApi' => true,
+            )
+        );
+        $metadata->mapManyToOne(
+            array(
+                'fieldName'    => 'email_source',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailSource',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => array(
+                    0 => array(
+                        'name'                 => 'email_source_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ),
+                ),
+            )
+        );
+        $metadata->mapManyToOne(
+            array(
+                'fieldName'    => 'primary_translation',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessageTranslated',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => array(
+                    0 => array(
+                        'name'                 => 'message_translated_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ),
+                ),
+            )
+        );
+        $metadata->mapManyToOne(
+            array(
+                'fieldName'    => 'visitor',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => array(
+                    0 => array(
+                        'name'                 => 'visitor_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ),
+                ),
+            )
+        );
+        $metadata->mapOneToMany(
+            array(
+                'fieldName'    => 'attachments',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketAttachment',
+                'cascade'      => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
+                'mappedBy'     => 'message',
+                'dpApi'        => true,
+                'dpApiDeep'    => true,
+            )
+        );
 
-        $metadata->mapOneToMany(array(
-            'fieldName'    => 'email_message_id',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessageEmailId',
-            'mappedBy'     => 'message',
-            'cascade'      => array('persist'),
-        ));
+        $metadata->mapOneToMany(
+            array(
+                'fieldName'    => 'email_message_id',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessageEmailId',
+                'mappedBy'     => 'message',
+                'cascade'      => array('persist'),
+            )
+        );
     }
 }
