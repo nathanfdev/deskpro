@@ -22,7 +22,7 @@ export class MassActionBar extends Component {
   render() {
     const { checkbox, actions, action, selected, setParams, currentParams, resetAction, resetSingleAction } = this.props;
     const isActive = currentParams && currentParams.size > 0;
-
+console.log(actions);
     return (
       <ListFrameMenu checkbox={checkbox}>
         {actions.map((item, index) =>
@@ -67,7 +67,7 @@ export class GoMassActionButton extends Component {
     });
 
     return (
-      <li className="">
+      <li>
         <span
           className="dpwd-navigation-dropdown-top-row-action-button dpwd-navigation-dropdown-top-row-action-button-flat">
           <a href="" className={classes} onClick={this.clickHandler.bind(this)}>
@@ -105,7 +105,7 @@ export class ResetMassActionButton extends Component {
     });
 
     return (
-      <li className="">
+      <li>
         <span
           className="dpwd-navigation-dropdown-top-row-action-button dpwd-navigation-dropdown-top-row-action-button-flat">
           <a href="" className={classes} onClick={this.clickHandler.bind(this)}>

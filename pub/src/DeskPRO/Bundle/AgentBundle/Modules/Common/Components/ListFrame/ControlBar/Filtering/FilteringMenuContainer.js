@@ -240,22 +240,19 @@ export class FilteringMenu extends Component {
     };
 
     return (
-      <FilterItem
-        key={index}
-        icon={icon || 'tags'}
-        label={label}
-        isActive={isActive}
-        resetFilter={() => this.unsetParams(param)}
-        >
+      <FilterItem key={index}
+                  icon={icon || 'tags'}
+                  label={label}
+                  isActive={isActive}
+                  resetFilter={() => this.unsetParams(param)}>
         {this.renderLabelsFilterInfo(selected)}
         <Menu>
-          <LabelsFilter
-            params={{'get': () => mode}}
-            changeMode={newMode => dispatch(setParamsAction({[modeParam]: newMode, delayReload: true}))}
-            allLabels={labels}
-            selectedLabels={selected}
-            selectLabel={selectLabel}
-            deselectLabel={deselectLabel}
+          <LabelsFilter params={{'get': () => mode}}
+                        changeMode={newMode => dispatch(setParamsAction({[modeParam]: newMode, delayReload: true}))}
+                        allLabels={labels}
+                        selectedLabels={selected}
+                        selectLabel={selectLabel}
+                        deselectLabel={deselectLabel}
             />
         </Menu>
       </FilterItem>
@@ -356,7 +353,7 @@ export class FilteringMenu extends Component {
                     label={option.label}
                     onClick={onClick(option.value)}
                     >
-                      {renderNested(option.nested)}
+                    {renderNested(option.nested)}
                   </ChoiceMenuOption>
               )}
             </ul>

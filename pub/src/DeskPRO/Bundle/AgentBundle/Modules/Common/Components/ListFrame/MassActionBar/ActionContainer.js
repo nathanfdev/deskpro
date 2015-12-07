@@ -70,11 +70,14 @@ export class ActionContainer extends Component {
           <ClickOut onClickOut={this.collapse}
                     ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list']}
                     additionalNodes={['.dpw-navigation-dropdown-item-clear']}>
-            {item.type === 'action' && <DropdownPanel item={item}
+            {item.type === 'action' &&
+            <DropdownPanel item={item}
                            currentParams={currentParams}
                            setParams={setParams}
-                           resetSingleAction={resetSingleAction}/> }
-            {item.type === 'menu' && <Menu>
+                           resetSingleAction={resetSingleAction}/>
+            }
+            {item.type === 'menu' &&
+            <Menu>
               {item.options.map(
                 (option, key)=>
                   <Item key={key}
@@ -82,10 +85,11 @@ export class ActionContainer extends Component {
                     // isActive={viewMode === type}
                     // checked={viewMode === type}
                     // onClick={() => dispatch(viewModeAction(type))}
-                     icon={option.icon}
+                        icon={option.icon}
                     />)
               }
-            </Menu>}
+            </Menu>
+            }
           </ClickOut>
         </Positioned>
       </li>
