@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
-import { EmotionButton } from './EmotionButton';
 import { EndChatContainer } from '../EndChat/EndChatContainer';
 import { EndChatButton } from './EndChatButton';
-import RteInput from 'DeskPRO/Component/RteInput';
+import EmotionButton from 'DeskPRO/Component/Rte/RteInput';
+import RteInput from 'DeskPRO/Component/Rte/RteInput';
 import ScrollArea from 'react-scrollbar';
 
 export class ReplyForm extends React.Component {

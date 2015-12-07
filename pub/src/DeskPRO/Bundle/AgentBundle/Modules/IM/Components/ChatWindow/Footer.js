@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import Positioned from 'DeskPRO/Component/Positioned/Detached';
-import MediumEditor from 'medium-editor';
-import jQuery from 'jquery';
+import RteInput from 'DeskPRO/Component/Rte/RteInput';
 
 export class Footer extends React.Component {
 
@@ -11,35 +10,11 @@ export class Footer extends React.Component {
 
   constructor(props) {
     super(props);
-    this.message = '';
-
-    this.editorOptions = {
-      autoLink: true,
-      placeholder: {
-        text: 'Send a message'
-      },
-      toolbar: {
-        buttons: ['bold', 'italic', 'underline', 'anchor'],
-        updateOnEmptySelection: true
-      }
-    };
 
     this.state = {
+      message: '',
       emoticonsOpened: false
     };
-  }
-
-  componentDidMount() {
-    const that = this;
-    const dom = that.refs.textarea;
-    this.medium = new MediumEditor(dom, that.editorOptions);
-    this.medium.subscribe('editableInput', () => {
-      that.handleChange(dom.innerHTML);
-    });
-  }
-
-  componentWillUnmount() {
-    this.medium.destroy();
   }
 
   toggleEmoticons = () => {
@@ -47,22 +22,16 @@ export class Footer extends React.Component {
   };
 
   handleChange = (text) => {
-    this.message = text;
+    this.setState({message: text});
   };
 
-  handleTyping = (event) => {
-    if (event.keyCode === 13 && event.altKey === true) {
-      this.medium.setContent(this.refs.textarea.innerHTML + '<p><br/></p>');
-    } else if (event.keyCode === 13) {
-      this.handleSubmit();
-    }
-  };
+  handleSubmit = event => {
+    event.preventDefault();
 
-  handleSubmit = () => {
-    if (this.message) {
-      this.props.handleAddMessage(this.message);
-      this.medium.setContent('');
-    }
+    this.props.handleAddMessage(this.state.message);
+    this.setState({
+      message: ''
+    });
   };
 
   insertEmoticon = (number) => {
@@ -130,13 +99,31 @@ export class Footer extends React.Component {
     return (
       <footer>
         <form onSubmit={this.handleSubmit}>
-          <div
-            text={this.message}
+          <RteInput
+            inline
+            ref="textarea"
+            value={this.state.message}
             onChange={this.handleChange}
-            onKeyDown={this.handleTyping}
+            onSubmit={this.handleSubmit}
             className="textarea"
-            ref="textarea">
-          </div>
+            options={{
+              autoLink: true,
+              imageDragging: true,
+              placeholder: {
+                text: 'Send a message'
+              },
+              toolbar: {
+                buttons: ['bold', 'italic', 'underline', 'anchor'],
+                updateOnEmptySelection: true
+              },
+              paste: {
+                forcePlainText: false,
+                cleanPastedHTML: false,
+                cleanAttrs: ['style', 'dir']
+              }
+            }}
+            />
+
           <a href="#" ref="emoticonsButton" onClick={this.toggleEmoticons} className="insert-emoticon"><span className="emoticon sprite sprite-emoticon-1"></span></a>
           <input onClick={this.handleSubmit} type="button" value="&#xf101;"/>
           { this.renderEmoticonsTable() }

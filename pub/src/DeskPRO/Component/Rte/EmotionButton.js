@@ -3,7 +3,7 @@ import { EmotionsPopup } from './EmotionsPopup';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import Simple from 'DeskPRO/Component/Positioned/Simple';
 
-export class EmotionButton extends React.Component {
+export default class EmotionButton extends React.Component {
 
   static propTypes = {
     getEditor: PropTypes.func,
