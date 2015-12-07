@@ -149,6 +149,11 @@ class FormSaver
             'route_params' => $route_params,
         ));
 
+        // if we can, make it easier to login when prompted to login
+        if ($email = $person->getEmailAddress()) {
+            $request->getSession()->set('last_username',  $email);
+        }
+
         $this->em->persist($saved_form);
         $this->em->flush($saved_form);
 
@@ -193,6 +198,13 @@ class FormSaver
             'email'        => $email,
             'name'         => $name,
         ));
+
+        // if we can, make it easier to login when prompted to login
+        if ($email) {
+            $request->getSession()->set('last_username',  $email);
+        } elseif ($person && $person->getPrimaryEmail()) {
+            $request->getSession()->set('last_username',  $person->getEmailAddress());
+        }
 
         $this->em->persist($saved_form);
         $this->em->flush($saved_form);
