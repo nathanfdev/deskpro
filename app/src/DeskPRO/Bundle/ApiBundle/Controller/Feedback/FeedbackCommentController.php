@@ -74,15 +74,15 @@ class FeedbackCommentController extends BaseController
             ->from('DeskPRO:FeedbackComment', 'c')
             ->innerJoin('c.feedback', 'feedback');
         $awaitingValidation = $request->get('awaiting_validation');
-        $sort               = $request->get('sort');
-        $order              = $request->get('order');
-        $category           = $request->get('category');
-        $custom_category    = $request->get('custom_category');
-        $status             = $request->get('status');
-        $status_category    = $request->get('status_category');
-        $labels             = $request->get('labels');
-        $created_from       = $request->get('created_from');
-        $created_to         = $request->get('created_to');
+        $sort = $request->get('sort');
+        $order = $request->get('order');
+        $category = $request->get('category');
+        $custom_category = $request->get('custom_category');
+        $status = $request->get('status');
+        $status_category = $request->get('status_category');
+        $labels = $request->get('labels');
+        $created_from = $request->get('created_from');
+        $created_to = $request->get('created_to');
         if ($awaitingValidation) {
             $qb
                 ->orWhere('c.is_reviewed = 0');
@@ -247,7 +247,7 @@ class FeedbackCommentController extends BaseController
 
     /**
      * @APIDoc(
-     *      description="delete a feedback comment",
+     *      description="delete feedback comments",
      *      requirements={
      *          {
      *              "name"="id",
@@ -261,20 +261,30 @@ class FeedbackCommentController extends BaseController
      *          404="Not Found"
      *      }
      * )
-     * @Delete("/feedback_comments/{id}", name="api_feedback_comments_delete", requirements={"id": "\d+"})
+     * @Delete("/feedback_comments", name="api_feedback_comments_delete", requirements={"id": "\d+"})
      *
-     * @param $id
+     * @param Request $request
      *
      * @throws \LogicException
      *
      * @return View
      */
-    public function deleteAction($id)
+    public function deleteAction(Request $request)
     {
-        $comment = $this->getFeedbackComment($id);
-
         $em = $this->getDoctrine()->getManager();
-        $em->remove($comment);
+        $ids = $request->get('id');
+        $qb = $em->createQueryBuilder();
+        $qb
+            ->select('c')
+            ->from('DeskPRO:FeedbackComment', 'c')
+            ->andWhere('c.id IN (:ids)')
+            ->setParameter('ids', $ids);
+
+        $comments = $qb->getQuery()->getResult();
+        foreach ($comments as $comment) {
+            $em->remove($comment);
+        }
+
         $em->flush();
 
         return View::create(
@@ -319,7 +329,7 @@ class FeedbackCommentController extends BaseController
     /**
      * Will be abstracted for use by other controllers.
      *
-     * @param Request         $request
+     * @param Request $request
      * @param FeedbackComment $comment
      *
      * @throws AlreadySubmittedException

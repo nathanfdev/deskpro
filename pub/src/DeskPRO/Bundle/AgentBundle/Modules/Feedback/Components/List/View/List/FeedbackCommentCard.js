@@ -56,6 +56,7 @@ export class FeedbackCommentCard extends Component {
     const feedback = this.props.feedback || Immutable.fromJS({});
     const containerWidth = jQuery('.dp-list-frame-contents').innerWidth();
     const cardWidth = containerWidth - 15;
+
     return (
       <Card type="feedback" width={cardWidth} additionalClasses="dpmw--single-card-requires-validation">
 
@@ -121,7 +122,7 @@ export class ValidationLine extends Component {
   deleteComment(id, event) {
     event.preventDefault();
     const {dispatch} = this.props;
-    dispatch(deleteComment(id));
+    dispatch(deleteComment([id]));
   }
 
   render() {

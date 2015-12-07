@@ -1,13 +1,14 @@
 import React, {Component, PropTypes} from 'react';
 import { MassActionBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/MassActionBar/MassActionBar';
-import { toggleMassAction, massAction, setMassActionsParams, resetAllMassActionsParams, resetMassActionsParam }
+import { toggleMassAction, massAction, setMassActionsParams, resetAllMassActionsParams, resetMassActionsParam, deleteFeedback }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
-import { massActionsSelector, massActionsParamsSelector } from '../../../Selectors/list';
-
+import { massActionsSelector, massActionsParamsSelector, currentListParamsSelector } from '../../../Selectors/list';
+import { deleteComment } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackCommentsActions';
 
 import { connect } from 'react-redux';
 @connect(state => ({
   selected: state.Feedback.list.get('selected'),
+  currentListParams: currentListParamsSelector(state),
   actions: massActionsSelector(state),
   currentMassActionsParams: massActionsParamsSelector(state)
 }))
@@ -17,14 +18,41 @@ export class MassActionContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     selected: PropTypes.object.isRequired,
+    currentListParams: PropTypes.object.isRequired,
     actions: PropTypes.array.isRequired,
     currentMassActionsParams: PropTypes.object
   };
 
-  massActionHandler(ids) {
-    const {dispatch, currentMassActionsParams} = this.props;
+  massActionsSubmit() {
+    const {dispatch, selected, currentMassActionsParams} = this.props;
+    const ids = selected.toArray();
     const params = currentMassActionsParams.toJS();
     dispatch(massAction({ ids: ids, actions: params }));
+  }
+
+  massActionsCancel() {
+    const {dispatch} = this.props;
+    dispatch(resetAllMassActionsParams());
+  }
+
+  choiceActions() {
+    const {currentListParams, actions, selected, dispatch} = this.props;
+    if (currentListParams.get('navItem') && currentListParams.get('navItem').get('awaiting_validation')) {
+      const ids = selected.toArray();
+      const deleteAction = () => {
+        if (currentListParams.get('isComments')) {
+          dispatch(deleteComment(ids));
+        } else {
+          dispatch(deleteFeedback(ids));
+        }
+        return dispatch(toggleMassAction());
+      };
+      return [
+        { label: 'Approve', type: 'button' },
+        { label: 'Delete', type: 'button', onClick: deleteAction }
+      ];
+    }
+    return actions;
   }
 
   render() {
@@ -34,10 +62,10 @@ export class MassActionContainer extends Component {
         action: toggleMassAction
       },
       selected: this.props.selected,
-      actions: this.props.actions,
+      actions: this.choiceActions(),
       setParams: setMassActionsParams,
-      action: this.massActionHandler.bind(this),
-      resetAction: resetAllMassActionsParams,
+      submitAction: this.massActionsSubmit.bind(this),
+      cancelAction: this.massActionsCancel.bind(this),
       resetSingleAction: resetMassActionsParam,
       currentParams: this.props.currentMassActionsParams
     };
