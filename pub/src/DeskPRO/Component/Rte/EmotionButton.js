@@ -55,14 +55,18 @@ export default class EmotionButton extends React.Component {
     }
 
     const container = medium.getSelectedParentElement();
-    const node = jQuery.parseHTML(`<span> ${Emotions.createEmotionImage(code)} </span>`)[0];
+    const node = jQuery.parseHTML(Emotions.createEmotionImage(code))[0];
     const selection = contentWindow.getSelection();
+    const textNode = ownerDocument.createTextNode(' ');
+    const lastNode = ownerDocument.createTextNode(' ');
 
+    container.appendChild(textNode);
     container.appendChild(node);
+    container.appendChild(lastNode);
     selection.removeAllRanges();
 
     const range = ownerDocument.createRange();
-    range.setStartAfter(node);
+    range.setStartAfter(lastNode);
     range.collapse(true);
     selection.addRange(range);
 

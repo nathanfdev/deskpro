@@ -48,7 +48,7 @@ const SPRITE_MAP = {
 
 function createEmotionImage(code) {
   const className = classNames('emoticon', 'sprite', `sprite-emoticon-${SPRITE_MAP[code]}`);
-  return `<img class="${className}" />`;
+  return `<img class="${className}">`;
 }
 
 function replaceSmileCodes(content, inverse = false) {

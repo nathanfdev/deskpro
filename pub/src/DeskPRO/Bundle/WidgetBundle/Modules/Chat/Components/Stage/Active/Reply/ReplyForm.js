@@ -41,9 +41,6 @@ export class ReplyForm extends React.Component {
   onSubmit = event => {
     event.preventDefault();
 
-    console.log(this.state.message);
-    console.log(replaceSmileCodes(this.state.message, true));
-
     this.props.onSendMessage(replaceSmileCodes(this.state.message, true));
     this.setState({
       message: ''
