@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackCountCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackSelectCriteria;
+use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\View\View;
@@ -240,4 +241,45 @@ class FeedbackController extends BaseController
             $em->flush();
         }
     }
+
+    /**
+     * @APIDoc(
+     *      description="delete feedback",
+     *      statusCodes={
+     *          200="Success",
+     *          404="Not Found"
+     *      }
+     * )
+     * @Delete("/feedback", name="api_feedback_delete")
+     *
+     * @param Request $request
+     *
+     * @throws \LogicException
+     *
+     * @return View
+     */
+    public function deleteAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $ids = $request->get('id');
+        $qb = $em->createQueryBuilder();
+        $qb
+            ->select('f')
+            ->from('DeskPRO:Feedback', 'f')
+            ->andWhere('f.id IN (:ids)')
+            ->setParameter('ids', $ids);
+
+        $feedbackCollection = $qb->getQuery()->getResult();
+        foreach ($feedbackCollection as $feedback) {
+            $em->remove($feedback);
+        }
+
+        $em->flush();
+
+        return View::create(
+            array(),
+            Response::HTTP_OK
+        );
+    }
+
 }

@@ -2,6 +2,18 @@ import DpApi from '../DpApi';
 import { compileParams } from '../ApiHelpers';
 
 /*
+ * Feedback to validate count
+ * @return Promise
+ */
+export function feedbackToValidate() {
+  const query = {
+    awaiting_validation: 1
+  };
+
+  return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
+}
+
+/*
  * Feedback comments to review count
  * @return Promise
  */
@@ -16,8 +28,20 @@ export function commentsToReview() {
 /*
  * @return Promise
  */
-export function deleteFeedbackComment(id) {
-  return DpApi.sendDelete('DP_API/feedback_comments/' + id);
+export function deleteFeedbackComment(ids) {
+  const params = [];
+  ids.forEach((id) => {
+    params.push('id[]=' + id);
+  });
+  return DpApi.sendDelete('DP_API/feedback_comments?' + params.join('&'));
+}
+
+export function deleteFeedback(ids) {
+  const params = [];
+  ids.forEach((id) => {
+    params.push('id[]=' + id);
+  });
+  return DpApi.sendDelete('DP_API/feedback?' + params.join('&'));
 }
 
 /*
@@ -26,7 +50,7 @@ export function deleteFeedbackComment(id) {
  * @param data
  * @return Promise
  */
-export function editComment(commentId, data) {
+export function editFeedbackComment(commentId, data) {
   return DpApi.sendPut('DP_API/feedback_comments/' + commentId, data);
 }
 
@@ -88,6 +112,5 @@ export function massAction(params) {
     ids.push('id[]=' + id);
   });
   console.log('DP_API/feedback/mass_action?' + ids.join('&'));
-  console.log('actions', params.actions);
   return DpApi.sendPut('DP_API/feedback/mass_action?' + ids.join('&'), params.actions);
 }

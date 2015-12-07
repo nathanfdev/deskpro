@@ -1,8 +1,9 @@
 import { createAction } from 'Ampliflux';
-import * as Feedback from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
-import { loadFeedback } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackActions';
-import { commentsToReview } from './FeedbackListActions';
+import { deleteFeedbackComment, editFeedbackComment, commentsToReviewList, commentsToReview }
+  from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
 import { applyParams } from './FeedbackListActions';
+import { setFeedbackRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackActions';
+import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 
 /**
  * Used to identify requests within record stores
@@ -10,14 +11,19 @@ import { applyParams } from './FeedbackListActions';
  */
 const recordStoresId = 'feedback';
 
+export const commentsToReviewCounter = createAction(
+  'FEEDBACK_COMMENTS_TO_REVIEW_COUNTER',
+  () => commentsToReview().then(promise => promise.getData())
+);
+
 export const deleteComment = createAction(
   'FEEDBACK_COMMENTS_DELETE',
-  (id) => dispatch => {
-    Feedback.deleteFeedbackComment(id).then(()=> {
-      dispatch(commentsToReview());
-      dispatch(applyParams({isComments: true}));
+  (ids) => dispatch => {
+    deleteFeedbackComment(ids).then(()=> {
+      dispatch(commentsToReviewCounter());
+      dispatch(applyParams({ isComments: true }));
     });
-    return id;
+    return ids;
   }
 );
 
@@ -26,9 +32,31 @@ export const editComment = createAction(
   (data) => dispatch => {
     const commentId = data.commentId;
     delete data.commentId;
-    Feedback.editComment(commentId, data).then(()=> {
-      dispatch(commentsToReview());
-      dispatch(applyParams({isComments: true}));
+    editFeedbackComment(commentId, data).then(()=> {
+      dispatch(commentsToReviewCounter());
+      dispatch(applyParams({ isComments: true }));
     });
   }
 );
+
+export const loadFeedbackCommentsList = createAction(
+  'FEEDBACK_LIST_OF_COMMENTS',
+    params => (dispatch) => commentsToReviewList(params).then(promise => {
+      const comments = promise.getData();
+      const feedback = [];
+      for (var index in comments.linked.feedback) {
+        if (comments.linked.feedback.hasOwnProperty(index)) {
+          feedback.push(comments.linked.feedback[index]);
+        }
+      }
+      const people = [];
+      for (const key in comments.linked.person) {
+        if (comments.linked.person.hasOwnProperty(key)) {
+          people.push(comments.linked.person[key]);
+        }
+      }
+      dispatch(setFeedbackRequest(recordStoresId, feedback));
+      dispatch(setPeopleRequest(recordStoresId, people));
+      return comments;
+    }
+  ));

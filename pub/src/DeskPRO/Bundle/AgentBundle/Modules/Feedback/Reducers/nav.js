@@ -1,6 +1,7 @@
 import { createReducer } from 'Ampliflux';
 import { async, setFullPayload, mergeFullPayload, setValue } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/FeedbackListActions';
+import * as commentsActions from '../Actions/FeedbackCommentsActions';
 import Immutable from 'immutable';
 
 const initialState = {
@@ -33,11 +34,11 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
-  [actions.feedbackToValidate]: async({
+  [actions.feedbackToValidateCounter]: async({
     success: (state, payload) =>
       state.setIn(['toValidateCount'], payload.data.count)
   }),
-  [actions.commentsToReview]: async({
+  [commentsActions.commentsToReviewCounter]: async({
     success: (state, payload) =>
       state.setIn(['commentsToReviewCount'], payload.data.count)
   }),
