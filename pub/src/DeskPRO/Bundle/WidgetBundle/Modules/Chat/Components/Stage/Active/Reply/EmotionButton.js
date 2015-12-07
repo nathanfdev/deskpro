@@ -7,6 +7,7 @@ import classNames from 'classnames';
 export class EmotionButton extends React.Component {
 
   static propTypes = {
+    getEditor: PropTypes.func,
     onSelect: PropTypes.func
   };
 
@@ -19,12 +20,19 @@ export class EmotionButton extends React.Component {
 
   onSelectEmoticon = event => {
     event.preventDefault();
+
+    const medium = this.props.getEditor();
+    medium.saveSelection();
+
     this.setState({
       emotionsPopup: true
     });
   };
 
   onCloseEmotionsPopup = () => {
+    const medium = this.props.getEditor();
+    medium.restoreSelection();
+
     this.setState({
       emotionsPopup: false
     });
@@ -32,8 +40,16 @@ export class EmotionButton extends React.Component {
 
   onSelectEmotion = num => {
     const className = classNames('emoticon', 'sprite', `sprite-emoticon-${num}`);
+    const medium = this.props.getEditor();
 
-    this.props.onSelect(`<span class="${className}"></span>`);
+    if (medium.getFocusedElement()) {
+      medium.restoreSelection();
+    } else {
+      medium.trigger('focus');
+    }
+
+    medium.pasteHTML(`text<span class="${className}"></span>`);
+
     this.onCloseEmotionsPopup();
   };
 

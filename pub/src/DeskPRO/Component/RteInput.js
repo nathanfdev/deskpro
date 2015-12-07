@@ -46,6 +46,10 @@ export default class RteInput extends React.Component {
     this.medium.destroy();
   }
 
+  getMediumEditor() {
+    return this.medium;
+  }
+
   render() {
     const { tag = 'div' } = this.props;
     return React.createElement(tag, this.props);
