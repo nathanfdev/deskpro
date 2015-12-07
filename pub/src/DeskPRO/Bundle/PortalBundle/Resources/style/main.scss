@@ -8116,6 +8116,13 @@ body.with-agent-bar {
   top: 40px;
   right: 10px;
 
+  &:befre {
+    position: absolute;
+    top: -4px;
+    left: -10px;
+
+  }
+
   ul {
     display: block;
     padding: 0;
@@ -8133,6 +8140,58 @@ body.with-agent-bar {
     }
   }
 
+  ul.theme-selector {
+    text-align: center;
+
+    .active {
+      display: inline-block;
+      position: absolute;
+      bottom: -4px;
+      left: -4px;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #444648;
+      background: #5ba767;
+      color: #fff;
+      border-radius: 199px;
+      text-align: center;
+      i {
+        font-size: 9px;
+        margin: 0;
+        padding:0;
+        display: inline;
+        margin-top: 2px;
+      }
+    }
+
+    li {
+      .image-wrapper {
+        display: block;
+        position: relative;
+      }
+
+      a:hover {
+        text-decoration: none;
+        img {
+          box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+        }
+      }
+
+      img {
+        width: 100%;
+        border-radius: 2px;
+        vertical-align: top;
+      }
+
+      span.theme-title {
+        display: block;
+        padding-top: 6px;
+        font-size: 13px;
+        opacity: 0.5;
+      }
+    }
+  }
+
   a {
     display: block;
     padding: 10px;
@@ -8140,6 +8199,7 @@ body.with-agent-bar {
     font-size: 12px;
     text-decoration: none;
     height: auto !important;
+    position: relative;
     &:hover {
       text-decoration: underline;
     }
