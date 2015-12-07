@@ -127,4 +127,94 @@
 {% endif %}
 {# /Usergroup Box #}
 
+<div class="profile-box-container summary" id="{{baseId}}_hierarchy_box">
+	<header>
+		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+			<ul>
+				<li>{{ phrase('agent.general.hierarchy') }}</li>
+			</ul>
+		</nav>
+	</header>
+	<section>
+        <script type="text/html" id="{{ baseId }}_child-template">
+            <li>
+                <a href="#" data-route="page:{{ path('agent_org_view', {'organization_id': '0000'}) }}">
+                    {{ child.name }}
+                </a>
+                <a href="#" class="remove-child">
+                    x
+                </a>
+            </li>
+        </script>
+		<ul>
+			<li>
+				Parent:
+				{% if org.parent %}
+					<a href="#" data-route="page:{{ path('agent_org_view', {'organization_id': org.parent.id}) }}">
+						{{ org.parent.name }}
+					</a>
+				{% else %}
+					none
+				{% endif %}
+			</li>
+			<li>
+				Children:
+				<ul id="{{ baseId }}_children-list">
+                    {% for child in org.children %}
+                        <li data-id="{{ child.id }}">
+                            <a href="#" data-route="page:{{ path('agent_org_view', {'organization_id': child.id}) }}">
+                                {{ child.name }}
+                            </a>
+                            <a href="#" class="remove-child">
+                                x
+                            </a>
+                        </li>
+                    {% endfor %}
+				</ul>
+			</li>
+			<li>
+				<div
+						class="org-input"
+						id="{{ baseId }}_org_searchbox"
+						data-element-handler="DeskPRO.Agent.ElementHandler.OrgSearchBox"
+						data-search-url="{{ path('agent_orgsearch_quicknamesearch', {'format': 'json', 'limit': 10, 'start_with': 'a'}) }}"
+						data-highlight-term="1"
+						data-touch-focus="1"
+						data-search-param="term"
+						data-position-bound=".org-name"
+						data-super-container=".page-new-content"
+				>
+					<input type="text" class="org-name fill" placeholder="{{ phrase('agent.general.find_org') }}" value="" />
+					<input type="hidden" class="org-id" value="" />
+                    <button type="button" id="{{ baseId }}_add-org-child">Add</button>
+					<script type="text/x-deskpro-tmpl" class="user-row-tpl">
+                        <li>
+                            <a>
+                                <span class="org-name"></span>
+                                <div class="bound-fade"></div>
+                            </a>
+                        </li>
+                    </script>
+					<div class="person-search-box org" style="display: none">
+						<section>
+							<ul class="results-list">
+
+							</ul>
+							{% if app.user.hasPerm('agent_org.create') %}
+								<footer>
+									<span class="create-org">{{ phrase('agent.general.create') }}: <em></em></span>
+								</footer>
+							{% endif %}
+						</section>
+					</div>
+				</div>
+			</li>
+		</ul>
+		<div id="{{baseId}}_hierarchy_body">
+
+		</div>
+	</section>
+	{{ dp_app_loc(baseId, 'usergroups.tab') }}
+</div>
+
 {{ dp_app_loc(baseId, 'right_col.bottom') }}

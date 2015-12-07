@@ -26,4 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1449202371);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1449202371 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('Org Upgrade Class');
+        $this->execMutateSql('ALTER TABLE organizations ADD parent_id INT DEFAULT NULL');
+        $this->execMutateSql('ALTER TABLE organizations ADD CONSTRAINT FK_427C1C7F727ACA70 FOREIGN KEY (parent_id) REFERENCES organizations (id)');
+        $this->execMutateSql('CREATE INDEX IDX_427C1C7F727ACA70 ON organizations (parent_id)');
+    }
+}

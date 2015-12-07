@@ -457,6 +457,48 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 		}
 
 		this.initUgEditor();
+
+
+    /**
+		 * Hierarchy
+		 */
+		var $orgChildren = this.getEl('children-list');
+
+		this.getEl('add-org-child').on('click', function(){
+			var $inputId = $(this).prev('input')
+				, $inputTitle = $inputId.prev('input')
+				, cid = $inputId.val() || 0
+				, title = $inputTitle.val() || ''
+				;
+
+			if (!cid && !title) return;
+			$inputId.val('');
+			$inputTitle.val('');
+
+			$.ajax({
+				method: 'post',
+				url: self.meta.url_add_child,
+				data: {title: title, child_id: cid},
+				success: function(child){
+					if ($orgChildren.find('li[data-id="' + child.id + '"]').length) return;
+					var $tpl = $(self.getEl('child-template').html());
+					$tpl.find('a:first').attr('data-route', $tpl.find('a:first').attr('data-route').replace('0000', child.id)).text(child.name);
+					$tpl.attr('data-id', child.id);
+					self.getEl('children-list').append($tpl);
+				}
+			});
+		});
+
+		$orgChildren.on('click', '.remove-child', function(e){
+			var id = $(e.target).closest('li').data('id');
+			$.ajax({
+				method: 'delete',
+				url: self.meta.url_add_child + '?child_id=' + id,
+				success: function(){
+					$orgChildren.children('[data-id="' + id + '"]').remove();
+				}
+			});
+		});
 	},
 
 	refreshPropBox: function() {
