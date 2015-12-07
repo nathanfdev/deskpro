@@ -3782,9 +3782,9 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
 
 .breadcrumbs {
   margin: 0px;
-  padding: 0px 0px 10px 10px;
+  padding: 0px 0px 8px 10px;
   border-bottom: 1px solid $divider-color;
-  line-height: 100%;
+  line-height: 1.2em;
 
   ul {
     @include blank-list;
