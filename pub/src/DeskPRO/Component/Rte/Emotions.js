@@ -1,3 +1,5 @@
+import classNames from 'classnames';
+
 const smiles = {
   ICON_SMILE: ':)',
   ICON_LAUGHING: ':))',
@@ -44,8 +46,18 @@ const SPRITE_MAP = {
   [smiles.ICON_DISAPPOINTED]: 20
 };
 
-function replaceSmileCodes() {
+function replaceSmileCodes(content) {
+  let text = String(content);
+  let smile;
 
+  for (smile in smiles) {
+    if (smiles.hasOwnProperty(smile)) {
+      const className = classNames('emoticon', 'sprite', `sprite-emoticon-${SPRITE_MAP[smile]}`);
+      text = text.replace(smiles[smile], `<img class="${className}" />`);
+    }
+  }
+
+  return text;
 }
 
 export default {

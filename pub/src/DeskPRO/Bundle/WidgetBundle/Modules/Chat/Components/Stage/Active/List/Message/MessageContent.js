@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { AttachmentLink } from './Assets/AttachmentLink';
+import { replaceSmileCodes } from 'DeskPRO/Component/Rte/Emotions';
 
 export class MessageContent extends React.Component {
 
@@ -9,12 +10,13 @@ export class MessageContent extends React.Component {
 
   render() {
     const { message } = this.props;
+    const content = message.get('is_html') ? replaceSmileCodes(message.get('content')) : message.get('content');
 
     return (
       <div className="dpdesignportal-message-content">
         {message.get('is_html')
-          ? <p dangerouslySetInnerHTML={{__html: message.get('content')}} />
-          : <p>{message.get('content')}</p>
+          ? <p dangerouslySetInnerHTML={{__html: content}} />
+          : <p>{content}</p>
         }
 
         {false && <ul>
