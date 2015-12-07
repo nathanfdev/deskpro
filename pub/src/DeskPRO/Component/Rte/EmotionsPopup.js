@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import * as Emotions from './Emotions';
 
 export class EmotionsPopup extends React.Component {
 
@@ -7,10 +8,10 @@ export class EmotionsPopup extends React.Component {
     onClick: PropTypes.func
   };
 
-  renderItem(spriteNum, text) {
+  renderItem(icon) {
     return (
-      <a onClick={() => this.props.onClick(text)} className="emoticon-link">
-        <span className={classNames('emoticon', 'sprite', `sprite-emoticon-${spriteNum}`)} />
+      <a onClick={() => this.props.onClick(icon)} className="emoticon-link" title={icon}>
+        <span className={classNames('emoticon', 'sprite', `sprite-emoticon-${Emotions.SPRITE_MAP[icon]}`)} />
       </a>
     );
   }
@@ -19,35 +20,35 @@ export class EmotionsPopup extends React.Component {
     return (
         <div id="emoticon-panel" className="emoticon-panel">
           <div>
-            {this.renderItem(1, ':)')}
-            {this.renderItem(2, ':)') /* todo smile code */}
-            {this.renderItem(3, ';)')}
-            {this.renderItem(4, ':)') /* todo smile code */}
-            {this.renderItem(5, ':)') /* todo smile code */}
+            {this.renderItem(Emotions.ICON_SMILE)}
+            {this.renderItem(Emotions.ICON_BLUSHING)}
+            {this.renderItem(Emotions.ICON_WINKING)}
+            {this.renderItem(Emotions.ICON_TONGUE)}
+            {this.renderItem(Emotions.ICON_TONGUE_2)}
           </div>
 
           <div>
-            {this.renderItem(6, ':)') /* todo smile code */}
-            {this.renderItem(7, ':D')}
-            {this.renderItem(8, ':)') /* todo smile code */}
-            {this.renderItem(9, ':)') /* todo smile code */}
-            {this.renderItem(10, ':)') /* todo smile code */}
+            {this.renderItem(Emotions.ICON_LAUGHING)}
+            {this.renderItem(Emotions.ICON_GRIN)}
+            {this.renderItem(Emotions.ICON_EVIL_GREEN)}
+            {this.renderItem(Emotions.ICON_DEVIL)}
+            {this.renderItem(Emotions.ICON_KIKI)}
           </div>
 
           <div>
-            {this.renderItem(11, ':)') /* todo smile code */}
-            {this.renderItem(12, ':)') /* todo smile code */}
-            {this.renderItem(13, ':)') /* todo smile code */}
-            {this.renderItem(14, ':)') /* todo smile code */}
-            {this.renderItem(15, 'O:)')}
+            {this.renderItem(Emotions.ICON_YAWN)}
+            {this.renderItem(Emotions.ICON_HEART)}
+            {this.renderItem(Emotions.ICON_INLOVE)}
+            {this.renderItem(Emotions.ICON_KISS)}
+            {this.renderItem(Emotions.ICON_ANGEL)}
           </div>
 
           <div>
-            {this.renderItem(16, ':)') /* todo smile code */}
-            {this.renderItem(17, ':)') /* todo smile code */}
-            {this.renderItem(18, ':)') /* todo smile code */}
-            {this.renderItem(21, ':)') /* todo smile code */}
-            {this.renderItem(20, ':|')}
+            {this.renderItem(Emotions.ICON_SAD)}
+            {this.renderItem(Emotions.ICON_CRY)}
+            {this.renderItem(Emotions.ICON_SUPRISED)}
+            {this.renderItem(Emotions.ICON_CONFUSED)}
+            {this.renderItem(Emotions.ICON_DISAPPOINTED)}
           </div>
         </div>
     );
