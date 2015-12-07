@@ -19,13 +19,11 @@
 
             <div class="article-meta">
                 <span class="agent-avatar agent-avatar-mini"><img src="{{ avatar_url(file.person, 20) }}"></span>
-                {{ phrase('portal.articles.by-line', { name: file.person.name, date: file.date_published | date('Y-m-d') }) }}
+                {{ phrase('portal.articles.by-line', { name: file.person.name, date: file.date_published | date('day') }) }}
                 <span class="comments"><i class="fa fa-comments"></i> <a
                             href="#comments">{{ phrase('portal.general.comments-count', {count: file.num_comments}) }}</a></span>
             </div>
         </header>
-
-        {% show download_subscription_info %}
 
         <div class="article-extras">
             <a href="{{ portal_path(file, 'save') }}">
