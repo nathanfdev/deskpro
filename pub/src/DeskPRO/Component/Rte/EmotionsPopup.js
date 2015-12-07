@@ -10,7 +10,7 @@ export class EmotionsPopup extends React.Component {
 
   renderItem(icon) {
     return (
-      <a onClick={() => this.props.onClick(icon)} className="emoticon-link">
+      <a onClick={() => this.props.onClick(icon)} className="emoticon-link" title={icon}>
         <span className={classNames('emoticon', 'sprite', `sprite-emoticon-${Emotions.SPRITE_MAP[icon]}`)} />
       </a>
     );
@@ -21,33 +21,33 @@ export class EmotionsPopup extends React.Component {
         <div id="emoticon-panel" className="emoticon-panel">
           <div>
             {this.renderItem(Emotions.ICON_SMILE)}
-            {this.renderItem(2)}
+            {this.renderItem(Emotions.ICON_BLUSHING)}
             {this.renderItem(Emotions.ICON_WINKING)}
-            {this.renderItem(4)}
-            {this.renderItem(5)}
+            {this.renderItem(Emotions.ICON_TONGUE)}
+            {this.renderItem(Emotions.ICON_TONGUE_2)}
           </div>
 
           <div>
-            {this.renderItem(6)}
-            {this.renderItem(Emotions.ICON_BIG_GRIN)}
-            {this.renderItem(8)}
-            {this.renderItem(9)}
-            {this.renderItem(10)}
+            {this.renderItem(Emotions.ICON_LAUGHING)}
+            {this.renderItem(Emotions.ICON_GRIN)}
+            {this.renderItem(Emotions.ICON_EVIL_GREEN)}
+            {this.renderItem(Emotions.ICON_DEVIL)}
+            {this.renderItem(Emotions.ICON_KIKI)}
           </div>
 
           <div>
-            {this.renderItem(11)}
-            {this.renderItem(12)}
-            {this.renderItem(13)}
-            {this.renderItem(14)}
+            {this.renderItem(Emotions.ICON_YAWN)}
+            {this.renderItem(Emotions.ICON_HEART)}
+            {this.renderItem(Emotions.ICON_INLOVE)}
+            {this.renderItem(Emotions.ICON_KISS)}
             {this.renderItem(Emotions.ICON_ANGEL)}
           </div>
 
           <div>
-            {this.renderItem(16)}
-            {this.renderItem(17)}
-            {this.renderItem(18)}
-            {this.renderItem(19)}
+            {this.renderItem(Emotions.ICON_SAD)}
+            {this.renderItem(Emotions.ICON_CRY)}
+            {this.renderItem(Emotions.ICON_SUPRISED)}
+            {this.renderItem(Emotions.ICON_CONFUSED)}
             {this.renderItem(Emotions.ICON_DISAPPOINTED)}
           </div>
         </div>
