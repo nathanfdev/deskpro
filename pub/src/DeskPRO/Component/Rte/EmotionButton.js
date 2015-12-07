@@ -45,7 +45,23 @@ export default class EmotionButton extends React.Component {
     const medium = this.props.getEditor();
 
     medium.restoreSelection();
-    medium.pasteHTML(` ${text}`);
+
+    const contentWindow = medium.options.contentWindow;
+    const ownerDocument = medium.options.ownerDocument;
+
+    const container = medium.getSelectedParentElement();
+    const node = ownerDocument.createTextNode(` ${text} `);
+    const selection = contentWindow.getSelection();
+
+    container.appendChild(node);
+    selection.removeAllRanges();
+
+    const range = ownerDocument.createRange();
+    range.setStartAfter(node);
+    range.collapse(true);
+    selection.addRange(range);
+
+    medium.saveSelection();
 
     this.onCloseEmotionsPopup();
   };
