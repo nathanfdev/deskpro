@@ -77,14 +77,16 @@ export default class EmotionButton extends React.Component {
   };
 
   render() {
+    const { className, buttonClassName, context } = this.props;
+
     return (
-      <span className={this.props.className}>
+      <span className={className}>
         <a href="#"
            className="dpdesignportal-chat-form-button-row-emoticons"
            title="Chat Emoticons"
            onClick={this.onSelectEmoticon}>
 
-          <span className={this.props.buttonClassName} ref="emotionsButton" />
+          <span className={buttonClassName} ref="emotionsButton" />
         </a>
 
         <Simple
@@ -96,7 +98,8 @@ export default class EmotionButton extends React.Component {
 
           <ClickOut
             onClickOut={this.onCloseEmotionsPopup}
-            context={this.props.context}>
+            context={context}
+            additionalNodes={['.dpdesignportal-chat-form-button-row-emoticons']}>
 
             <EmotionsPopup onClick={this.onSelectEmotion} />
           </ClickOut>
