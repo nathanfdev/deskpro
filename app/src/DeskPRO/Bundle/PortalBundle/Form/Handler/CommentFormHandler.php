@@ -47,6 +47,7 @@ use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\EmailSender\PortalEmailSender;
 use DeskPRO\Bundle\PortalBundle\Helper\ContentSubscriptionsHelper;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
 use DeskPRO\Bundle\PortalBundle\Person\EmailValidationRequiredException;
@@ -133,6 +134,11 @@ class CommentFormHandler
      */
     private $brand_stack;
 
+    /**
+     * @var PortalEmailSender
+     */
+    private $email_sender;
+
     public function __construct(
         FormSaver $saver,
         PortalValidation $portal_validation,
@@ -147,7 +153,8 @@ class CommentFormHandler
         PersonFactory $person_factory,
         FormFactory $form_factory,
         TokenStorage $token_storage,
-        AntiAbuse $anti_abuse
+        AntiAbuse $anti_abuse,
+        PortalEmailSender $email_sender
     ) {
         $this->saver               = $saver;
         $this->em                  = $em;
@@ -163,6 +170,7 @@ class CommentFormHandler
         $this->url_generator       = $url_generator;
         $this->person_data_service = $person_data_service;
         $this->brand_stack         = $brand_stack;
+        $this->email_sender        = $email_sender;
     }
 
     public function handle(FormInterface $form, Request $request, ContentAbstract $content, CommentAbstract $comment)
@@ -277,14 +285,16 @@ class CommentFormHandler
         if (!$perm_bag->get($this->permPrefix($content).'.no_comment_validate')) {
             // hide the comment until its approved
             $comment->setStatus(CommentAbstract::STATUS_HIDDEN);
+            $this->addFlash($request, 'success', 'portal.flashes.comment_thank_you_review');
         } else {
             $comment->setStatus(CommentAbstract::STATUS_VISIBLE);
+            $this->addFlash($request, 'success', 'portal.flashes.comment_thank_you');
         }
         $content->addComment($comment);
         $this->em->persist($comment);
         $this->em->flush(array($comment, $content));
 
-        $this->addFlash($request, 'success', 'portal.flashes.comment_thank_you');
+        $this->email_sender->sendCommentThankYouEmail($comment);
 
         // auto subscribe
         if ($person = $comment->getPerson()) {

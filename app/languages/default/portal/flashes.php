@@ -66,4 +66,5 @@ return array(
     'portal.flashes.ticket_resolved'                        => 'Your ticket is now marked as resolved. Thank you.',
     'portal.flashes.ticket_re_opened'                       => 'You have re-opened this ticket.',
     'portal.flashes.comment_thank_you'                      => 'Thank you for commenting!',
+    'portal.flashes.comment_thank_you_review'               => 'Thank you for commenting! It will be visible on the website after agent review.',
 );

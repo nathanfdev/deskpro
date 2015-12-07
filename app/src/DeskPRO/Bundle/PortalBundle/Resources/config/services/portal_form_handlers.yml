@@ -17,3 +17,4 @@ services:
       - @form.factory
       - @security.token_storage
       - @anti_abuse
+      - @portal_email_sender

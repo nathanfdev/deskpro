@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\EmailSender;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
@@ -144,6 +145,27 @@ class PortalEmailSender
                     ),
                     UrlGeneratorInterface::ABSOLUTE_URL
                 ),
+            )
+        );
+    }
+
+    public function sendCommentThankYouEmail(CommentAbstract $comment)
+    {
+        $person = $comment->getPerson();
+        /** @var \Application\DeskPRO\Entity\ContentAbstract $content */
+        $content = $comment->getObject();
+
+        $content_url   = $this->container->get('object_router')->getPortalUrl($content);
+        $content_title = $content->getTitle();
+
+        $this->sendTo(
+            new EmailTo($person),
+            'DeskPRO:emails_user:comment-new.html.twig',
+            array(
+                'content_url'   => $content_url,
+                'content_title' => $content_title,
+                'comment'       => $comment, // keep for bc ({{ comment.object.permalink }})
+                'validating'    => false, // keep here for BC
             )
         );
     }
