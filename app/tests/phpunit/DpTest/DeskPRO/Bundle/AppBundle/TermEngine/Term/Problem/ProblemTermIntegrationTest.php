@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\Problem;
 
 use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketsSelectCriteria;
@@ -91,15 +90,15 @@ class ProblemTermIntegrationTest extends TermIntegrationTest
         $this->assertTermSelectsTickets($term, $this->secondProblemTickets);
     }
 
-    /**
-     * @test Php checker (true)
-     */
-    public function it_should_properly_determine_that_a_ticket_is_associated_with_a_problem()
-    {
-        $term   = new ProblemTerm(['problem' => $this->firstProblem->getId()]);
-        $ticket = $this->dummyTicket(['problems' => [$this->firstProblem]]);
-        $this->assertTermSatisfies($term, $ticket);
-    }
+//    /**
+//     * @test Php checker (true)
+//     */
+//    public function it_should_properly_determine_that_a_ticket_is_associated_with_a_problem()
+//    {
+//        $term   = new ProblemTerm(['problem' => $this->firstProblem->getId()]);
+//        $ticket = $this->dummyTicket(['problems' => [$this->firstProblem]]);
+//        $this->assertTermSatisfies($term, $ticket);
+//    }
 
     /**
      * @test Php checker (false)
