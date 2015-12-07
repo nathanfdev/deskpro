@@ -36,7 +36,6 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\PortalBundle\Model\EmailTo;
-use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -114,21 +113,18 @@ class PortalEmailSender
         );
     }
 
-    public function sendFeedbackValidationLink(Feedback $feedback)
+    public function sendNewFeedbackEmail(Feedback $feedback)
     {
         $person = $feedback->getPerson();
 
-        $tpl        = 'DeskPRO:emails_user:feedback-new.html.twig';
-        $verify_url = $this->getPersonValidator()->getEmailLink(PersonValidator::TYPE_FEEDBACK, $person->getPrimaryEmail(), $feedback->getId());
-
         $this->sendTo(
             new EmailTo($person),
-            $tpl,
+            'DeskPRO:emails_user:feedback-new.html.twig',
             array(
                 'person'     => $person,
-                'verify_url' => $verify_url,
                 'feedback'   => $feedback,
-                'validating' => $person->isUserValid() ? null : 'new',
+                'verify_url' => null,
+                'validating' => false,
             )
         );
     }

@@ -39,7 +39,6 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\UploadAbuseCheck;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\CsrfDoubleSubmitExtension;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
-use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -152,29 +151,6 @@ class PortalController extends AbstractController
                 'usersources_view'     => $usersources_view,
             )
         );
-    }
-
-    /**
-     * @Route("/validate-send/{object_type}/{email_id}/{object_id}", name="portal_send_validation", defaults={"object_id":null})
-     */
-    public function resendValidationEmailAction(Request $request, $object_type, $email_id, $object_id)
-    {
-        switch ($object_type) {
-            case PersonValidator::TYPE_EMAIL:
-                $this->getPersonValidator()->doResendLink(PersonValidator::TYPE_EMAIL, $email_id, null, true);
-                $this->addFlash('success', $this->phrase('portal.flashes.sent_verification_email_secondary'));
-                break;
-            case PersonValidator::TYPE_EMAIL_PRIMARY:
-                $this->getPersonValidator()->doResendLink(PersonValidator::TYPE_EMAIL_PRIMARY, $email_id);
-                $this->addFlash('success', $this->phrase('portal.flashes.sent_verification_email_primary'));
-                break;
-            case PersonValidator::TYPE_FEEDBACK:
-                $this->getPersonValidator()->doResendLink(PersonValidator::TYPE_FEEDBACK, $email_id, $object_id);
-                $this->addFlash('success', $this->phrase('portal.flashes.new_feedback_verify'));
-                break;
-        }
-
-        return $this->redirectToRoute('portal_home');
     }
 
     /**

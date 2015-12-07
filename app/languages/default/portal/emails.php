@@ -38,7 +38,7 @@ return array(
     'portal.emails.comment_validate-email'          => 'Please validate your email address online by clicking the following link:',
     'portal.emails.do-not-reply'                    => 'Please do not reply to this email. This is a machine-generated message and replies will not be read by our staff.',
     'portal.emails.email-too-big'                   => 'Your email "{{subject}}" was not accepted because it is too big. The maximum email size this helpdesk accepts is {{max_size}}. Remove any attachments and try again.',
-    'portal.emails.feedback_agent-validation'       => 'Note that your feedback will not appear publicly on our website until one of our agents manually reviews it',
+    'portal.emails.feedback_agent-validation'       => 'Note that your feedback will not appear publicly on our website until one of our agents manually reviews it.',
     'portal.emails.feedback_approved'               => 'We are emailing to let you know that your feedback as approved and is now publicly visible on our website.',
     'portal.emails.feedback_closed'                 => 'Your submitted feedback "{{title}}" was closed: {{status}}',
     'portal.emails.feedback_disapproved'            => 'We are emailing to let you know that unfortunately your feedback has been declined and will not appear publicly on our website.',

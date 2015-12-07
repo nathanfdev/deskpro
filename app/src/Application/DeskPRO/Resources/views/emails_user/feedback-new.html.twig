@@ -1,21 +1,8 @@
-<dp:subject>
-	{% if validating == 'existing' or validating == 'new' %}
-		{{ phrase('user.email_subjects.feedback_new-confirm') }}
-	{% else %}
-		{{ phrase('user.email_subjects.feedback_new') }}
-	{% endif %}
-</dp:subject>
-{{ phrase('user.emails.feedback_thank-you', {'title':feedback.title}) }}
+<dp:subject>{{ phrase('portal.email_subjects.feedback_new') }}</dp:subject>
+{{ phrase('portal.emails.feedback_thank-you', {'title':feedback.title}) }}
 
 <br /><br />
 
 {% if feedback.status == 'hidden' and not feedback.is_reviewed %}
-	{{ phrase('user.emails.feedback_agent-validation') }}
-
-	<br /><br />
-{% endif %}
-
-{% if validating %}
-	{{ phrase('user.emails.feedback_validate-email') }}
-	{{ verify_url }}
+{{ phrase('user.emails.feedback_agent-validation') }}
 {% endif %}

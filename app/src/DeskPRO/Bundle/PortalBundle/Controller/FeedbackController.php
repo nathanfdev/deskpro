@@ -143,17 +143,8 @@ class FeedbackController extends AbstractController
                         foreach ($new_feedback->getAttachments() as $attachment) {
                             $attachment->setPerson($person);
                         }
-                        $this->persistAndFlushEntity($new_feedback);
 
-                        $this->addFlash('success', $this->phrase('portal.flashes.new_feedback_awaiting_review'));
-
-                        $destination = $new_feedback->isVisibleOnPortal() ? $this->getObjectRouter()->getPortalPath($new_feedback) : $this->generateUrl('portal_feedback');
-
-                        if ($redirect = $this->get('portal_validation')->getPasswordRedirectIfRequired($person, $request, $destination)) {
-                            return $redirect;
-                        }
-
-                        return $this->redirect($destination);
+                        return $this->acceptNewFeedback($new_feedback, $person, $request);
                     } catch (LoginRequiredException $e) {
                         $person = $e->getPerson();
                         $this->submitNewFeedbackAbuseCheck($person, $request->getClientIp());
@@ -170,12 +161,9 @@ class FeedbackController extends AbstractController
                     }
                 }
 
-                // the following block only executes if the person is logged in already
                 $this->submitNewFeedbackAbuseCheck($person, $request->getClientIp());
 
-                $this->persistAndFlushEntity($new_feedback);
-
-                return $this->redirectToRoute('portal_feedback_view', array('slug' => $new_feedback->getSlug()));
+                return $this->acceptNewFeedback($new_feedback, $person, $request);
             }
         } elseif ($form->isSubmitted()) {
             $this->submitNewFeedbackAbuseCheck($person, $request->getClientIp());
@@ -232,6 +220,27 @@ class FeedbackController extends AbstractController
                 'filter_js'          => $filter_js,
             )
         );
+    }
+
+    protected function acceptNewFeedback(Feedback $new_feedback, Person $person, Request $request)
+    {
+        $this->persistAndFlushEntity($new_feedback);
+
+        if ($new_feedback->isVisibleOnPortal()) {
+            $this->addFlash('success', $this->phrase('portal.flashes.new_feedback_posted'));
+            $destination = $this->getObjectRouter()->getPortalPath($new_feedback);
+        } else {
+            $this->addFlash('success', $this->phrase('portal.flashes.new_feedback_awaiting_review'));
+            $destination = $this->generateUrl('portal_feedback');
+        }
+
+        $this->getEmailSender()->sendNewFeedbackEmail($new_feedback);
+
+        if ($redirect = $this->get('portal_validation')->getPasswordRedirectIfRequired($person, $request, $destination)) {
+            return $redirect;
+        }
+
+        return $this->redirect($destination);
     }
 
     public function submitNewFeedbackAbuseCheck($person, $ip)

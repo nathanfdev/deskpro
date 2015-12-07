@@ -3,13 +3,8 @@
 
 <br /><br />
 
-{% if verify_url is null %}
-	{{ phrase('portal.emails.register-welcome') }}<br/>
+{{ phrase('portal.emails.register-welcome') }}<br/>
 {% if portal_url is not defined %}
 	{% set portal_url = url_full('portal_home') %}
 {% endif %}
-	<a href="{{ portal_url }}">{{ portal_url }}</a>
-{% else %}
-	{{ phrase('portal.emails.register-confirm') }}<br/>
-	<a href="{{ verify_url }}">{{ verify_url }}</a>
-{% endif %}
+<a href="{{ portal_url }}">{{ portal_url }}</a>
