@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\Entity\Person;
@@ -92,6 +91,7 @@ class PortalSupportExtension extends \Twig_Extension
     {
         $funcs = array(
             new \Twig_SimpleFunction('can_use_*', array($this, 'canUseCheck')),
+            new \Twig_SimpleFunction('can_rate_*', array($this, 'canRateCheck')),
             new \Twig_SimpleFunction('show_tab_*', array($this, 'showTab')),
             new \Twig_SimpleFunction('has_any_*', array($this, 'hasAnyCheck')),
             new \Twig_SimpleFunction('is_user', array($this, 'isUser')),
@@ -160,6 +160,21 @@ class PortalSupportExtension extends \Twig_Extension
         $n = strtoupper($name);
 
         return $this->container->get('security.authorization_checker')->isGranted('USE_'.$n);
+    }
+
+    /**
+     * Check if the current user can rate a certain content entity.
+     *
+     * @param string $name
+     * @param $object (Atricle/Download/Feedback/News)
+     *
+     * @return bool
+     */
+    public function canRateCheck($name, $object)
+    {
+        $n = strtoupper($name);
+
+        return $this->container->get('security.authorization_checker')->isGranted('RATE_'.$n, $object);
     }
 
     /**
