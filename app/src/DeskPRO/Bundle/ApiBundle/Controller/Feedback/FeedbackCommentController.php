@@ -281,6 +281,9 @@ class FeedbackCommentController extends BaseController
             ->setParameter('ids', $ids);
 
         $comments = $qb->getQuery()->getResult();
+        if (!$comments) {
+            throw $this->createNotFoundException();
+        }
         foreach ($comments as $comment) {
             $em->remove($comment);
         }
