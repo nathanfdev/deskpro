@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -267,21 +266,21 @@ class ApiDb extends AbstractDbSet
         $ticket1->setPersonId(3);
         $ticket1->agent = $agent1;
         $ticket1->setDepartmentId(1);
-        $ticket1->setSubject('');
+        $ticket1->setSubject('Ticket #1');
         $em->persist($ticket1);
         $ticket2 = new Ticket();
         $ticket2->disableAutoTicketProcess();
         $ticket2->setPersonId(3);
         $ticket2->agent = $agent2;
         $ticket2->setDepartmentId(1);
-        $ticket2->setSubject('');
+        $ticket2->setSubject('Ticket #2');
         $em->persist($ticket2);
         $ticket3 = new Ticket();
         $ticket3->disableAutoTicketProcess();
         $ticket3->setPersonId(3);
         $ticket3->agent = $agent1;
         $ticket3->setDepartmentId(2);
-        $ticket3->setSubject('');
+        $ticket3->setSubject('Ticket #3');
         $em->persist($ticket3);
         $em->flush();
 
@@ -460,7 +459,6 @@ class ApiDb extends AbstractDbSet
         "
         );
         // end of "/user_chats" endpoint test data
-
 
         // Labels endpoints test data ----------------------------------------------------------------------------------
         $feedbackType     = LabelDef::TYPE_FEEDBACK;

@@ -53,7 +53,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  * Base REST CRUD controller
  *
  * @todo Location header
- * @todo More user friendly validation errors output
  */
 abstract class CrudController extends BaseController
 {
@@ -245,10 +244,7 @@ abstract class CrudController extends BaseController
         $this->checkExposed(__METHOD__);
 
         $entity = $this->findEntity($id);
-
-        $em = $this->getManager();
-        $em->remove($entity);
-        $em->flush();
+        $this->deleteEntity($entity);
 
         return View::create([], Response::HTTP_OK);
     }
@@ -264,16 +260,6 @@ abstract class CrudController extends BaseController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return object
-     */
-    protected function instantiateEntity(Request $request)
-    {
-        return new static::$entity();
     }
 
     /**
@@ -307,6 +293,16 @@ abstract class CrudController extends BaseController
     }
 
     /**
+     * @param Request $request
+     *
+     * @return object
+     */
+    protected function instantiateEntity(Request $request)
+    {
+        return new static::$entity();
+    }
+
+    /**
      * @param int $id
      *
      * @return object
@@ -332,6 +328,16 @@ abstract class CrudController extends BaseController
         $em->flush();
 
         return $model;
+    }
+
+    /**
+     * @param object $entity
+     */
+    protected function deleteEntity($entity)
+    {
+        $em = $this->getManager();
+        $em->remove($entity);
+        $em->flush();
     }
 
     /**

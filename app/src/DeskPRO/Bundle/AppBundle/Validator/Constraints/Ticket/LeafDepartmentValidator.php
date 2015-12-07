@@ -59,11 +59,14 @@ class LeafDepartmentValidator extends ConstraintValidator
      */
     public function validate($department, Constraint $constraint)
     {
-        if (!$constraint instanceof LeafDepartment) {
-            throw new UnexpectedTypeException($constraint, LeafDepartment::class);
+        if (is_null($department)) {
+            return;
         }
         if (!$department instanceof Department) {
             throw new UnexpectedTypeException($department, Department::class);
+        }
+        if (!$constraint instanceof LeafDepartment) {
+            throw new UnexpectedTypeException($constraint, LeafDepartment::class);
         }
 
         if ($this->repository->findOneBy(['parent' => $department])) {

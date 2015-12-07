@@ -54,6 +54,7 @@ use Orb\Util\Strings;
 use Orb\Util\Util;
 use Orb\Util\WorkHoursSet;
 use Orb\Util\WorkHoursSetAll;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class Ticket.
@@ -429,6 +430,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
     /**
      * @var string
+     * @Assert\NotNull
      */
     protected $subject;
 

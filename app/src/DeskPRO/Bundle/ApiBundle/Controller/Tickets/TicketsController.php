@@ -29,10 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Labels\LabelsHelper;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
@@ -266,4 +266,59 @@ class TicketsController extends CrudController
 
         return $tickets;
     }
+
+    // Override CRUD callbacks to use TicketManager --------------------------------------------------------------------
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function instantiateEntity(Request $request)
+    {
+        return $this->getTicketManager()->createTicket();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function findEntity($id)
+    {
+        return $this->getTicketManager()->getTicket($id);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function persistModel($entity)
+    {
+        /* @var Ticket $entity */
+        $tm      = $this->getTicketManager();
+        $action  = $entity->getId() ? 'update' : 'new';
+        $context = $tm->createAgentExecutorContext($this->getUser(), $action, 'api');
+        $tm->saveTicket($entity, $context);
+
+        return $entity;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function deleteEntity($entity)
+    {
+        /* @var Ticket $entity */
+        $entity->deleteTicket($this->getUser());
+
+        $tm      = $this->getTicketManager();
+        $context = $tm->createAgentExecutorContext($this->getUser(), 'delete', 'api');
+        $tm->saveTicket($entity, $context);
+    }
+
+    /**
+     * @return TicketManager
+     */
+    private function getTicketManager()
+    {
+        return $this->container->getTicketManager();
+    }
+
+    // End of CRUD callbacks -------------------------------------------------------------------------------------------
 }

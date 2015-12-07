@@ -1,5 +1,12 @@
 services:
 
+  deskpro.api.request_auth:
+      class: Application\LegacyApiBundle\Request\RequestAuth
+      scope: request
+      arguments:
+          - @doctrine.orm.entity_manager
+          - @request
+
   api_view_representation_factory:
       class: DeskPRO\Bundle\ApiBundle\View\ApiViewRepresentationFactory
 
