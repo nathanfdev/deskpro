@@ -65,6 +65,14 @@ export class ClickOut extends React.Component {
       if ($container.is(event.target) || $container.has(event.target).length > 0) {
         outside = false;
       }
+
+      // If event target element was removed before this handler was called we can check by its class name
+      if (typeof node === 'string' && node.length > 0) {
+        const $target = jQuery(event.target);
+        if (node[0] === '.' && $target.hasClass(node.substr(1))) {
+          outside = false;
+        }
+      }
     });
 
     if (outside) {

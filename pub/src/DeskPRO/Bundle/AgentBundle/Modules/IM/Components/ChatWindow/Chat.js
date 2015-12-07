@@ -126,7 +126,7 @@ export class Chat extends React.Component {
     return (
     <ClickOut
       onClickOut={this.handleOnClose}
-      ignoreNodes={['#active-chat-search-clear', '.emoticon']}
+      additionalNodes={['#active-chat-search-clear', '.emoticon']}
       >
       <div className="dropdown active-chat-dropdown" id="active-chat-dropdown">
         <Header toggleSearch={this.toggleSearch} onClose={this.handleOnClose} online={this.isOnline()}/>
