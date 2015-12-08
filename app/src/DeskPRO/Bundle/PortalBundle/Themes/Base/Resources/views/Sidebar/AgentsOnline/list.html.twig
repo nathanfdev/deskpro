@@ -1,4 +1,5 @@
 <div class="agents-online">
+  <div class="sidebar-content">
     <h1>Available Agents{% if online_agents_count > 0 %} <span class="text-tag">{{ online_agents_count }} online</span>{% endif %}</h1>
     <div>
         {% if online_agents_count > 0 %}
@@ -14,5 +15,6 @@
         {{ phrase('portal.sidebar.agents_none', { new_ticket_url: path('portal_new_ticket') }) }}
     {% endif %}
     </div>
-    <hr>
+  </div>
+  <hr>
 </div>

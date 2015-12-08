@@ -1,7 +1,9 @@
 {% if total_ratings > 0 %}
-<h1>Customer Satisfaction</h1>
-<div class="satisfaction-meta">
-    <span>{{ satisfied_count }}/{{ total_ratings }}</span> {{ phrase('portal.sidebar.satisfied_customers') }}
+<div class="sidebar-content">
+  <h1>Customer Satisfaction</h1>
+  <div class="satisfaction-meta">
+      <span>{{ satisfied_count }}/{{ total_ratings }}</span> {{ phrase('portal.sidebar.satisfied_customers') }}
+  </div>
 </div>
 <div class="happy-faces">
     {% for rating in ratings %}

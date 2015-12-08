@@ -586,6 +586,12 @@ button, .button, input[type="submit"] {
   margin-bottom: 20px;
 }
 
+.sidebar-content {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+
 .sidebar-news-calendar {
   vertical-align: top;
   line-height: 1em;
@@ -674,8 +680,8 @@ button, .button, input[type="submit"] {
 }
 
 .sidebar {
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 10px;
+  padding-right: 10px;
   padding-top: 5px;
   border-left: 2px solid #e6e6e6;
   border-right: 2px solid #e6e6e6;
