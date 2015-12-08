@@ -1,7 +1,11 @@
 <phpunit bootstrap="bootstrap_minimal.php" backupGlobals="false">
     <testsuites>
-        <testsuite name="deskpro">
+        <testsuite name="DeskPRO">
             <directory>phpunit</directory>
+            <exclude>phpunit/DpTest/DeskPRO/Bundle/AppBundle/TermEngine</exclude>
+        </testsuite>
+        <testsuite name="DeskPRO-TermEngine">
+            <directory>phpunit/DpTest/DeskPRO/Bundle/AppBundle/TermEngine</directory>
         </testsuite>
     </testsuites>
     <filter>
