@@ -74,6 +74,7 @@ class SystemEventListener implements EventSubscriberInterface
         $conversation = $event->getConversation();
         $phrase_id    = $event->getType();
         $params       = $event->getParams();
+        $metadata     = $event->getMetadata();
 
         $chat_message = new ChatMessage();
         $chat_message
@@ -81,6 +82,7 @@ class SystemEventListener implements EventSubscriberInterface
             ->setContent(json_encode(array_merge($params, [
                 'phrase_id' => $phrase_id,
             ])))
+            ->setMetadata(array_merge($params, $metadata))
         ;
 
         $conversation->addMessage($chat_message);
@@ -88,9 +90,10 @@ class SystemEventListener implements EventSubscriberInterface
         $this->em->persist($conversation);
         $this->em->flush();
 
+        $channel = $conversation->getChannelId('newmessage');
         $event->getDispatcher()->dispatch(
             ClientMessageEvent::SEND_MESSAGE,
-            new ClientMessageEvent($conversation->getChannelId('newmessage'), $chat_message)
+            new ClientMessageEvent($channel, $chat_message)
         );
     }
 }

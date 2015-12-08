@@ -64,18 +64,25 @@ class UserChatSystemEvent extends UserChatEvent
     protected $params;
 
     /**
+     * @var array
+     */
+    protected $metadata;
+
+    /**
      * Constructor.
      *
      * @param ChatConversation $conversation
      * @param string           $type
      * @param array            $params
+     * @param array            $metadata
      */
-    public function __construct(ChatConversation $conversation, $type, array $params = [])
+    public function __construct(ChatConversation $conversation, $type, array $params = [], array $metadata = [])
     {
         parent::__construct($conversation);
 
-        $this->type   = $type;
-        $this->params = $params;
+        $this->type     = $type;
+        $this->params   = $params;
+        $this->metadata = $metadata;
     }
 
     /**
@@ -92,5 +99,13 @@ class UserChatSystemEvent extends UserChatEvent
     public function getParams()
     {
         return $this->params;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMetadata()
+    {
+        return $this->metadata;
     }
 }
