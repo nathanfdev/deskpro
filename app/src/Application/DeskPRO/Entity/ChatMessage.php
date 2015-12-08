@@ -269,6 +269,26 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @param $is_user_hidden
+     *
+     * @return $this
+     */
+    public function setIsUserHidden($is_user_hidden)
+    {
+        $this->setModelField('is_user_hidden', $is_user_hidden);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsUserHidden()
+    {
+        return $this->is_user_hidden;
+    }
+
+    /**
      * @param array $metadata
      *
      * @return $this

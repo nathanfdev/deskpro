@@ -74,10 +74,7 @@ class ChatController extends AbstractController
 
         $this->dispatch(
             UserChatSystemEvent::EVENT_NAME,
-            new UserChatSystemEvent($conversation, UserChatSystemEvent::TYPE_STARTED, [], [
-                'user_hidden' => true,
-                'is_html'     => false,
-            ])
+            new UserChatSystemEvent($conversation, UserChatSystemEvent::TYPE_STARTED)
         );
 
         return new JsonResponse($this->dataSerialize($conversation));

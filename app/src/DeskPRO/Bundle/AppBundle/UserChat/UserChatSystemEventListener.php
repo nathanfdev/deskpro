@@ -78,15 +78,16 @@ class UserChatSystemEventListener implements EventSubscriberInterface
         $params       = $event->getParams();
         $metadata     = $event->getMetadata();
 
-        $content = array_merge($params, [
-            'phrase_id' => $phrase_id,
-        ]);
+        $content  = array_merge($params, ['phrase_id' => $phrase_id]);
+        $metadata = array_merge($content, $metadata);
 
         $chat_message = new ChatMessage();
         $chat_message
             ->setIsSys(true)
             ->setContent(json_encode($content))
-            ->setMetadata(array_merge($content, $metadata))
+            ->setMetadata($metadata)
+            ->setIsUserHidden($this->isUserHiddenMessage($event))
+            ->setIsHtml($this->isHtmlMessage($event))
         ;
 
         $conversation->addMessage($chat_message);
@@ -135,5 +136,34 @@ class UserChatSystemEventListener implements EventSubscriberInterface
         }
 
         return '';
+    }
+
+    /**
+     * Is html sys message.
+     *
+     * @param UserChatSystemEvent $event
+     *
+     * @return bool
+     */
+    protected function isHtmlMessage(UserChatSystemEvent $event)
+    {
+        return in_array($event->getType(), [
+            UserChatSystemEvent::TYPE_USER_TRACK,
+        ]);
+    }
+
+    /**
+     * Hide user in sys message.
+     *
+     * @param UserChatSystemEvent $event
+     *
+     * @return bool
+     */
+    protected function isUserHiddenMessage(UserChatSystemEvent $event)
+    {
+        return in_array($event->getType(), [
+            UserChatSystemEvent::TYPE_STARTED,
+            UserChatSystemEvent::TYPE_USER_TRACK,
+        ]);
     }
 }
