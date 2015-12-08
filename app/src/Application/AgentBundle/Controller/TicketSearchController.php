@@ -246,6 +246,10 @@ class TicketSearchController extends AbstractController
             $q = $this->in->getString('term');
         }
 
+        if (!$q) {
+            return $this->createJsonResponse(array());
+        }
+
         if ($this->container->getSetting('elastica.enabled') && !$this->in->getUint('person_id')) {
             try {
                 $elasticsearch = $this->container->get('deskpro.search_manager.elasticsearch');

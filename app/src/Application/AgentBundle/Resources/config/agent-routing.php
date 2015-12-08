@@ -596,6 +596,13 @@ $collection->create('agent_org_view', array(
     'options'      => array('fragment_name'   => 'o'),
 ));
 
+$collection->create('agent_org_child', array(
+    'path'         => '/organizations/{id}/child',
+    'controller'   => 'AgentBundle:Organization:handleChild',
+    'requirements' => array('organization' => '\\d+'),
+    'methods'      => array('POST', 'DELETE'),
+));
+
 $collection->create('agent_org_new', array(
     'path'       => '/organizations/new',
     'controller' => 'AgentBundle:Organization:newOrganization',

@@ -119,6 +119,13 @@ class OrganizationController extends AbstractController
      *				paramType="query",
      *				required=false,
      *				type="string"
+     *			),
+     *			@SWG\Parameter(
+     *				name="parent_id",
+     *				description="The id of the parent group.",
+     *				paramType="query",
+     *				required=false,
+     *				type="integer"
      *			)
      *		)
      * 	)
@@ -334,6 +341,11 @@ class OrganizationController extends AbstractController
             throw $e;
         }
 
+        if ($parent = $this->em->find('DeskPRO:Organization', $this->in->getInt('parent_id') ?: 0)) {
+            $org->parent = $parent;
+            $this->em->flush();
+        }
+
         return $this->createApiCreateResponse(
             array('id' => $org->id),
             $this->generateUrl('api_organizations_organization', array('organization_id' => $org->id), true)
@@ -443,6 +455,15 @@ class OrganizationController extends AbstractController
             $this->db->rollback();
             throw $e;
         }
+
+        if ($parent = $this->em->find('DeskPRO:Organization', $this->in->getInt('parent_id') ?: 0)) {
+            if ($parent !== $org) {
+                $org->parent = $parent;
+            }
+        } else {
+            $org->parent = null;
+        }
+        $this->em->flush();
 
         return $this->createSuccessResponse();
     }

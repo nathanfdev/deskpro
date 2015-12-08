@@ -41,6 +41,7 @@ use Application\DeskPRO\Entity\OrganizationNote;
 use Application\DeskPRO\Searcher\TicketSearch;
 use Orb\Util\Arrays;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -823,5 +824,54 @@ class OrganizationController extends AbstractController
         }
 
         return $org;
+    }
+
+    public function handleChildAction($id, Request $request)
+    {
+        $cid = (int) $request->get('child_id');
+        if (!$org = $this->em->find('DeskPRO:Organization', $id)) {
+            throw new NotFoundHttpException();
+        }
+
+        $child = $this->em->find('DeskPRO:Organization', $cid);
+
+        if ($org === $child) {
+            throw new \BadMethodCallException();
+        }
+
+        if ($request->isMethod('post')) {
+            if (!$child) {
+                if (!$title = $this->in->getString('title')) {
+                    throw new \BadMethodCallException();
+                }
+
+                if (!$this->person->hasPerm('agent_org.create')) {
+                    throw new AccessDeniedHttpException();
+                }
+
+                $child       = new Entity\Organization();
+                $child->name = $title;
+                $this->em->persist($child);
+            }
+
+            $org->children->add($child);
+            $child->parent = $org;
+        } elseif ($request->isMethod('delete')) {
+            if (!$child) {
+                throw new NotFoundHttpException();
+            }
+
+            if ($org->children->contains($child)) {
+                $org->children->removeElement($child);
+                $child->parent = null;
+            }
+        }
+
+        $this->em->flush();
+
+        return $this->createJsonResponse(array(
+            'id'   => $child->id,
+            'name' => $child->name,
+        ));
     }
 }

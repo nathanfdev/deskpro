@@ -361,6 +361,7 @@ return array(
     'agent.general.hidden_unpublished'                      => 'Hidden: Unpublished',
     'agent.general.hidden_validating'                       => 'Hidden: Validating',
     'agent.general.hide'                                    => 'Hide',
+    'agent.general.hierarchy'                               => 'Hierarchy',
     'agent.general.host'                                    => 'Host',
     'agent.general.hostname'                                => 'Hostname',
     'agent.general.hour'                                    => 'Hour',
