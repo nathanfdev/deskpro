@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/ControlBar';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import {
-  selectedCountSelector, listSortSelector, listOrderSelector, tableVisibleFieldsSelector, cardVisibleFieldsSelector,
+  listSortSelector, listOrderSelector, tableVisibleFieldsSelector, cardVisibleFieldsSelector,
   viewModeSelector, listParamsSelector
 } from '../../Selectors/list';
 import {
@@ -12,7 +12,6 @@ import {
 import { labelsSelector } from '../../Selectors/nav';
 
 @connect(state => ({
-  selectedCount: selectedCountSelector(state),
   sort: listSortSelector(state),
   order: listOrderSelector(state),
   viewMode: viewModeSelector(state),
@@ -24,7 +23,6 @@ import { labelsSelector } from '../../Selectors/nav';
 export class ControlBarContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    selectedCount: PropTypes.number.isRequired,
     sort: PropTypes.string.isRequired,
     order: PropTypes.string.isRequired,
     tableVisibleFields: PropTypes.object.isRequired,
@@ -36,15 +34,11 @@ export class ControlBarContainer extends Component {
 
   render() {
     const config = {
-      checkbox: {
-        count: this.props.selectedCount,
-        action: toggleAll
-      },
       sorting: {
         options: {
-          id: {label: 'ID', icon: 'calendar'},
-          date_last_user_reply: {label: 'Last user reply date', icon: 'calendar'},
-          urgency: {label: 'Urgency', icon: 'calendar-o'}
+          id: { label: 'ID', icon: 'calendar' },
+          date_last_user_reply: { label: 'Last user reply date', icon: 'calendar' },
+          urgency: { label: 'Urgency', icon: 'calendar-o' }
         },
         sort: this.props.sort,
         order: this.props.order,
@@ -53,16 +47,26 @@ export class ControlBarContainer extends Component {
       },
       filtering: {
         filters: [
-          {label: 'Date Created', type: 'date', fromParam: 'from', toParam: 'to'},
-          {label: 'Labels', type: 'labels', param: 'labels', modeParam: 'labels_mode', labels: this.props.labels.toJS()},
-          {label: 'Status', type: 'select', param: 'status', options: [
-            {value: 'new', label: 'New', nested: [
-              {value: 'very_new', label: 'Very new'},
-              {value: 'not_so_new', label: 'Not so new'}
-            ]},
-            {value: 'awaiting_agent', label: 'Awaiting agent'},
-            {value: 'closed', label: 'Closed'}
-          ]}
+          { label: 'Date Created', type: 'date', fromParam: 'from', toParam: 'to' },
+          {
+            label: 'Labels',
+            type: 'labels',
+            param: 'labels',
+            modeParam: 'labels_mode',
+            labels: this.props.labels.toJS()
+          },
+          {
+            label: 'Status', type: 'select', param: 'status', options: [
+            {
+              value: 'new', label: 'New', nested: [
+              { value: 'very_new', label: 'Very new' },
+              { value: 'not_so_new', label: 'Not so new' }
+            ]
+            },
+            { value: 'awaiting_agent', label: 'Awaiting agent' },
+            { value: 'closed', label: 'Closed' }
+          ]
+          }
         ],
         setParamsAction: applyListParams,
         state: this.props.listParams
