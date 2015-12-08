@@ -45,6 +45,9 @@ export class MessagesList extends React.Component {
         case 'message_assigned':
           return <JoinedEvent {...props} />;
         default:
+          // todo tmp, for dev
+          alert(`unknown phrase id "${phraseId}"`);
+
           return null;
       }
     }
