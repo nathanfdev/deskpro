@@ -38,8 +38,20 @@ use Application\DeskPRO\Entity\ChatConversation;
  */
 class UserChatSystemEvent extends UserChatEvent
 {
-    const TYPE_STARTED   = 'message_started';
-    const TYPE_USER_LEFT = 'message_user-left';
+    const TYPE_STARTED        = 'message_started';
+    const TYPE_USER_LEFT      = 'message_user-left';
+    const TYPE_USER_RETURNED  = 'message_user-returned';
+    const TYPE_USER_JOINED    = 'message_user-joined';
+    const TYPE_SET_DEPARTMENT = 'message_set-department';
+    const TYPE_ASSIGNED       = 'message_assigned';
+    const TYPE_UNASSIGNED     = 'message_unassigned';
+    const TYPE_USER_TRACK     = 'msg_new_user_track';
+    const TYPE_AGENT_TIMEOUT  = 'message_agent-timeout';
+    const TYPE_USER_TIMEOUT   = 'message_user-timeout';
+    const TYPE_WAIT_TIMEOUT   = 'message_wait-timeout';
+    const TYPE_END_BY_USER    = 'message_ended-by-user';
+    const TYPE_END_BY         = 'message_ended-by';
+    const TYPE_ENDED          = 'message_ended';
 
     /**
      * @var string
