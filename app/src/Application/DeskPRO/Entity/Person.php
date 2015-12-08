@@ -220,11 +220,9 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     protected $disable_autoresponses_log = '';
 
     /**
-     * @deprecated
-     *
      * @var bool
      */
-    protected $is_confirmed = true;
+    protected $is_confirmed = false;
 
     /**
      * Is the user deleted?
@@ -765,6 +763,8 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      * True if the Person is considered confirmed (not a bot). This means the user has
      * either signed in from a usersource, or clicked a link in an email, etc. They are
      * confirmed as trusted.
+     *
+     * It is possible to be is_confirmed and at the same time not yet is_user (no pw).
      *
      * @return bool
      */
