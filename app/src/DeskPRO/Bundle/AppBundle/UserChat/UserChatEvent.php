@@ -39,8 +39,7 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class UserChatEvent extends Event
 {
-    const SYSTEM_EVENT      = 'user_chat.system_event';
-    const POST_SEND_MESSAGE = 'user_chat.post_send_message';
+    const SYSTEM_EVENT = 'user_chat.system_event';
 
     /**
      * @var ChatConversation

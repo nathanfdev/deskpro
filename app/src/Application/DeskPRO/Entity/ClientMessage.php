@@ -140,7 +140,42 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @param  $delivery_method
+     * @param string $channel
+     *
+     * @return $this
+     */
+    public function setChannel($channel)
+    {
+        $this->setModelField('channel', $channel);
+
+        return $this;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return $this
+     */
+    public function setData(array $data)
+    {
+        $this->setModelField('data', $data);
+
+        return $this;
+    }
+
+    /**
+     * @param string $client
+     *
+     * @return $this
+     */
+    public function setCreatedByClient($client)
+    {
+        $this->setModelField('created_by_client', $client);
+
+        return $this;
+    }
+
+    /**
      */
     public function getHandler()
     {

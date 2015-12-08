@@ -17,3 +17,11 @@ services:
     tags:
       - { name: doctrine.event_listener, event: postPersist }
       - { name: doctrine.event_listener, event: postRemove }
+
+  event_listener.listener.client_message_listener:
+      class: DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageListener
+      arguments:
+          - @doctrine.orm.entity_manager
+          - @data_serializer
+      tags:
+          - { name: kernel.event_subscriber }

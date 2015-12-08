@@ -33,8 +33,8 @@ namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
+use DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageEvent;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
-use DeskPRO\Bundle\AppBundle\UserChat\UserChatMessageEvent;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatSystemEvent;
 use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManager;
@@ -244,8 +244,8 @@ class ChatController extends AbstractController
         $em->flush();
 
         $this->dispatch(
-            UserChatEvent::POST_SEND_MESSAGE,
-            new UserChatMessageEvent($conversation, $chat_message)
+            ClientMessageEvent::SEND_MESSAGE,
+            new ClientMessageEvent($conversation->getChannelId('newmessage'), $chat_message)
         );
     }
 

@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\UserChat;
 
 use Application\DeskPRO\Entity\ChatMessage;
+use DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageEvent;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -88,8 +89,8 @@ class SystemEventListener implements EventSubscriberInterface
         $this->em->flush();
 
         $event->getDispatcher()->dispatch(
-            UserChatEvent::POST_SEND_MESSAGE,
-            new UserChatMessageEvent($conversation, $chat_message)
+            ClientMessageEvent::SEND_MESSAGE,
+            new ClientMessageEvent($conversation->getChannelId('newmessage'), $chat_message)
         );
     }
 }

@@ -29,38 +29,67 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\UserChat;
+namespace DeskPRO\Bundle\AppBundle\EventListener\ClientMessage;
 
-use Application\DeskPRO\Entity\ChatConversation;
-use Application\DeskPRO\Entity\ChatMessage;
+use Symfony\Component\EventDispatcher\Event;
 
 /**
- * Class UserChatMessageEvent.
+ * Class ClientMessageEvent.
  */
-class UserChatMessageEvent extends UserChatEvent
+class ClientMessageEvent extends Event
 {
+    const SEND_MESSAGE = 'client_message.send';
+
     /**
-     * @var ChatMessage
+     * @var string
      */
-    protected $message;
+    protected $channel;
+
+    /**
+     * @var mixed
+     */
+    protected $data;
+
+    /**
+     * @var string
+     */
+    protected $created_by;
 
     /**
      * Constructor.
      *
-     * @param ChatConversation $conversation
-     * @param ChatMessage      $message
+     * @param string $channel
+     * @param mixed  $data
+     * @param string $created_by
      */
-    public function __construct(ChatConversation $conversation, ChatMessage $message)
+    public function __construct($channel, $data = [], $created_by = '')
     {
-        parent::__construct($conversation);
-        $this->message = $message;
+        $this->channel    = $channel;
+        $this->data       = $data;
+        $this->created_by = $created_by;
     }
 
     /**
-     * @return ChatMessage
+     * @return string
      */
-    public function getChatMessage()
+    public function getChannel()
     {
-        return $this->message;
+        return $this->channel;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCreatedBy()
+    {
+        return $this->created_by;
     }
 }

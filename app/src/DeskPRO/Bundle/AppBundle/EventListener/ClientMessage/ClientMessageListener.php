@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\UserChat;
+namespace DeskPRO\Bundle\AppBundle\EventListener\ClientMessage;
 
 use Application\DeskPRO\Entity\ClientMessage;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializer;
@@ -69,24 +69,26 @@ class ClientMessageListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            UserChatEvent::POST_SEND_MESSAGE => 'onChatMessage',
+            ClientMessageEvent::SEND_MESSAGE => 'onChatMessage',
         ];
     }
 
     /**
-     * @param UserChatMessageEvent $event
+     * @param ClientMessageEvent $event
      */
-    public function onChatMessage(UserChatMessageEvent $event)
+    public function onChatMessage(ClientMessageEvent $event)
     {
-        $conversation = $event->getConversation();
-        $chat_message = $event->getChatMessage();
+        $data = $event->getData();
+        if (is_object($data)) {
+            $data = $this->data_serializer->serialize($data)['data'];
+        }
 
         $client_message = new ClientMessage();
-        $client_message->fromArray([
-            'channel'           => $conversation->getChannelId('newmessage'),
-            'data'              => $this->data_serializer->serialize($chat_message)['data'],
-            'created_by_client' => '',
-        ]);
+        $client_message
+            ->setChannel($event->getChannel())
+            ->setData($data)
+            ->setCreatedByClient($event->getCreatedBy())
+        ;
 
         $this->em->persist($client_message);
         $this->em->flush();
