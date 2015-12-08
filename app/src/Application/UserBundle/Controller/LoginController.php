@@ -49,6 +49,7 @@ use Orb\Auth\Adapter\SamlAdapterInterface;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
 use Orb\Auth\Result;
 use Orb\Log\Loggable;
+use Orb\Log\Logger;
 use Orb\Log\Writer\ArrayWriter;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
@@ -808,9 +809,20 @@ HTML;
 
         $adapter = $this->_initUserSourceAdapter($usersource);
 
-        $arr_writer = new ArrayWriter();
-        if ($usersource_test && $adapter instanceof Loggable && $adapter->getLogger()) {
-            $adapter->getLogger()->addWriter($arr_writer);
+        if ($usersource_test && $adapter instanceof Loggable) {
+            $arr_writer = new ArrayWriter();
+            $logger     = new Logger();
+            $arr_wr     = new ArrayWriter();
+            $logger->addWriter($arr_wr);
+
+            $logger->logDebug('Adapter: '.get_class($adapter));
+            $logger->logDebug('--- Begin ---');
+
+            if (!$adapter->getLogger()) {
+                $adapter->setLogger($logger);
+            } else {
+                $adapter->getLogger()->addWriter($arr_writer);
+            }
         }
 
         // It must be a callback type to be here, so if not redirect back to login
@@ -833,10 +845,19 @@ HTML;
                 //--------------------------------------
                 // test result
                 //--------------------------------------
+                $writers = $adapter->getLogger()->getWriterChain()->getWriters();
+                /* @var \Orb\Log\Writer\AbstractWriter $writer */
+                $log = '';
+                foreach ($writers as $writer) {
+                    if ($writer instanceof ArrayWriter) {
+                        $log = $writer->getMessagesAsString();
+                    }
+                }
+
                 return $this->render(
                     'DeskPRO:Auth:_sso_test_verified.html.twig', array(
                         'person' => $person,
-                        'log'    => $arr_writer->getMessagesAsString(),
+                        'log'    => $log,
                     )
                 );
             }
