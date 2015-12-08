@@ -69,14 +69,14 @@ class ClientMessageListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            ClientMessageEvent::SEND_MESSAGE => 'onChatMessage',
+            ClientMessageEvent::SEND_MESSAGE => 'onSendMessage',
         ];
     }
 
     /**
      * @param ClientMessageEvent $event
      */
-    public function onChatMessage(ClientMessageEvent $event)
+    public function onSendMessage(ClientMessageEvent $event)
     {
         $data = $event->getData();
         if (is_object($data)) {
