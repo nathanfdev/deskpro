@@ -70,11 +70,12 @@ class ChatMessageTransformer extends AbstractDataSerializerTransformer
         $data = $transformation_request->getDataToBeTransformed();
 
         return [
-            'author_id'     => $this->getAuthorId($data),
-            'author_type'   => $this->getAuthorType($data),
-            'author_name'   => $this->getAuthorName($data),
-            'author_avatar' => $this->getAuthorAvatar($data),
-            'metadata'      => $data->getMetadata(),
+            'conversation_id' => $data->getConversation()->getId(),
+            'author_id'       => $this->getAuthorId($data),
+            'author_type'     => $this->getAuthorType($data),
+            'author_name'     => $this->getAuthorName($data),
+            'author_avatar'   => $this->getAuthorAvatar($data),
+            'metadata'        => $data->getMetadata(),
         ];
     }
 
@@ -139,10 +140,7 @@ class ChatMessageTransformer extends AbstractDataSerializerTransformer
     private function getAuthorAvatar(ChatMessage $message)
     {
         $author = $message->getAuthor();
-        if ($author) {
-            return $this->avatar_resolver->getAvatarModel($author)->getUrl(150);
-        }
 
-        return;
+        return $author ? $this->avatar_resolver->getAvatarModel($author)->getUrl(150) : null;
     }
 }
