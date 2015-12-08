@@ -119,6 +119,11 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
     private $ticket_ids;
 
     /**
+     * @var \Application\DeskPRO\Entity\CustomDefTicket[]
+     */
+    private $fields;
+
+    /**
      * {@inheritdoc}
      */
     public function setContainer(ContainerInterface $container = null)
@@ -139,7 +144,7 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
      */
     public function getOrder()
     {
-        return 50;
+        return 70;
     }
 
     /**
@@ -168,6 +173,12 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
         $this->joe_manager_id     = $this->db->fetchColumn("SELECT people.id FROM people JOIN people_emails pe ON people.id = pe.person_id WHERE pe.email = 'manager@deskprodemo.com';");
         $this->joe_manager_org_id = $this->db->fetchColumn("SELECT org.id FROM organizations org WHERE org.name = 'Mana Publishing'");
         $this->department_ids     = $this->db->fetchAllCol('SELECT id FROM departments WHERE is_tickets_enabled = 1');
+
+        $this->fields = $this->container->get('doctrine.orm.entity_manager')->createQuery('
+            SELECT f
+            FROM DeskPRO:CustomDefTicket f
+            WHERE f.parent IS NULL ORDER BY f.display_order ASC
+        ')->execute();
     }
 
     private function loadProblems()
@@ -388,9 +399,10 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
 
     private function loadTicketProps()
     {
-        $labels_batch = [];
-        $probs_batch  = [];
-        $parts_batch  = [];
+        $labels_batch    = [];
+        $probs_batch     = [];
+        $parts_batch     = [];
+        $fielddata_batch = [];
 
         foreach ($this->ticket_ids as $ticket_id) {
             foreach ($this->faker->randomElements($this->labels, $this->faker->numberBetween(1, 5)) as $l) {
@@ -411,6 +423,49 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
                     'person_id' => $pid,
                 );
             }
+
+            #------------------------------
+            # Field Data
+            #------------------------------
+
+            foreach ($this->fields as $f) {
+                $num = 1;
+                if ($f->getOption('multiple')) {
+                    $num = $this->faker->numberBetween(1, count($f->getChildren()));
+                }
+
+                for ($x = 0; $x < $num; ++$x) {
+                    $row_data = [
+                        'ticket_id'     => $ticket_id,
+                        'field_id'      => $f->getId(),
+                        'root_field_id' => $f->getId(),
+                        'value'         => 0,
+                        'input'         => '',
+                    ];
+                    switch ($f->getTypeName()) {
+                        case 'text':
+                            $row_data['input'] = $this->faker->realText($this->faker->numberBetween(10, 80));
+                            break;
+                        case 'textarea':
+                            $row_data['input'] = $this->faker->realText($this->faker->numberBetween(20, 500));
+                            break;
+                        case 'date':
+                        case 'datetime':
+                            $row_data['value'] = date('Y-m-d H:i:s');
+                            break;
+                        case 'choice':
+                            $opt               = $this->faker->randomElement($f->getChildren()->toArray());
+                            $row_data['value'] = $opt->getId();
+                            break;
+                        default:
+                            throw new \InvalidArgumentException();
+                    }
+
+                    if ($row_data) {
+                        $fielddata_batch[] = $row_data;
+                    }
+                }
+            }
         }
 
         if ($labels_batch) {
@@ -421,6 +476,9 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
         }
         if ($parts_batch) {
             $this->db->batchInsert('tickets_participants', $parts_batch, true);
+        }
+        if ($fielddata_batch) {
+            $this->db->batchInsert('custom_data_ticket', $fielddata_batch, true);
         }
     }
 }

@@ -326,7 +326,7 @@ class Connection extends \Doctrine\DBAL\Connection
         #------------------------------
 
         $res                     = null;
-        $multiple_values_batches = array_chunk($multiple_values, 200, false);
+        $multiple_values_batches = array_chunk($multiple_values, 1000, false);
         foreach ($multiple_values_batches as $multiple_values) {
             $cols       = null;
             $cols_count = 0;
@@ -334,6 +334,8 @@ class Connection extends \Doctrine\DBAL\Connection
 
             $value_parts = array();
             $value_tpl   = '';
+
+            // TODO we need to create batches based on size of max_packet_size
 
             foreach ($multiple_values as $vals) {
                 if ($cols === null) {
