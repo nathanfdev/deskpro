@@ -174,6 +174,15 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     protected $_original_id;
 
     /**
+     * This is a temporary (non-persited) flag that lets us force set an "Access code" for B.C. in emails of old-portal.
+     *
+     * @var bool
+     *
+     * @deprecated remove this after we remove code in PortalValidation::sendTicketVerificationEmail that requires it
+     */
+    protected $_force_access_code = false;
+
+    /**
      * @var string
      */
     protected $ref = null;
@@ -3115,14 +3124,24 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function getAccessCode()
     {
+        // this is for B.C. in emails for new-portal. see the property docblock for $_force_access_code.
+        if ($this->_force_access_code) {
+            return $this->_force_access_code;
+        }
+
         $str = Util::baseEncode($this->id, 'letters');
         $str .= $this->auth;
 
         return $str;
     }
 
+    public function forceSetAccessCode($code)
+    {
+        $this->_force_access_code = $code;
+    }
+
     /**
-     * Get the Message-ID field for an email regarding this ticket, witht he
+     * Get the Message-ID field for an email regarding this ticket, with the
      * embedded PTAC code.
      *
      * @return string

@@ -86,8 +86,7 @@ class NewFeedbackType extends AbstractType
             $builder->add('email', 'deskpro_person_email', array(
                 'label'         => false,
                 'property_path' => 'person.primary_email',
-                'constraints'   => array(
-                ),
+                'constraints'   => array(), // ignore the "unqiue entity" constraint here
             ));
         }
 

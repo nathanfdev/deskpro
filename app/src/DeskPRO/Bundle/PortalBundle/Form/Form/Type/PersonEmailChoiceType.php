@@ -60,10 +60,11 @@ class PersonEmailChoiceType extends AbstractType
             FormEvents::PRE_SUBMIT,
             function (FormEvent $event) use ($options) {
                 $data = $event->getData();
+                $person = $event->getForm()->getConfig()->getOption('person');
                 // if we recieve data that looks like it was for the "deskpro_person_email"
                 // form, we can just revert to the primary email of the now-logged-in user.
                 if (is_array($data) && array_key_exists('email', $data)) {
-                    $event->setData(array());
+                    $event->setData($person->getPrimaryEmail()->getId());
                 }
             }
         );
@@ -84,7 +85,7 @@ class PersonEmailChoiceType extends AbstractType
             'property'   => 'email',
             'multiple'   => false,
             'expanded'   => false,
-            'required'   => true,
+            'required'   => false,
             'empty_data' => function (FormInterface $form) {
                 $person = $form->getConfig()->getOption('person');
                 // if nothing is selected, use their primary email
@@ -95,14 +96,11 @@ class PersonEmailChoiceType extends AbstractType
                 $person = $options['person'];
 
                 $emails = $person->getEmails();
-                if (is_array($emails)) {
-                    return $emails;
-                }
 
                 // traverse to make it an array
                 $ems = array();
                 foreach ($emails as $e) {
-                    $ems[] = $e;
+                    $ems[$e->getId()] = $e;
                 }
 
                 return $ems;

@@ -195,6 +195,8 @@ class PersonFactory
 
         // saveNewPerson() will check settings and take care of validation flags
         $this->saveNewPerson($person, new CreatePersonContext('gateway.person'));
+
+        return $person;
     }
 
     public function getOrCreatePersonByEmail($email, CreatePersonContext $context)

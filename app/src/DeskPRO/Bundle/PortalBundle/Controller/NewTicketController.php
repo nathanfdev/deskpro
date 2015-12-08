@@ -37,7 +37,9 @@ use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Tickets\DuplicateTicketException;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitTicketAbuseCheck;
+use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
+use DeskPRO\Bundle\PortalBundle\Person\EmailValidationRequiredException;
 use DeskPRO\Bundle\PortalBundle\Person\LoginRequiredException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -83,11 +85,13 @@ class NewTicketController extends AbstractController
         }
 
         $form = $this->createForm('ticket', $ticket, array(
-            'person'         => $person,
-            'ticket_message' => $ticket_message,
-            'settings'       => $this->getBrandContainer()->getSettings(),
-            'action'         => $this->generateUrl('portal_new_ticket'),
-            'attr'           => ['data-save-draft' => 'new_ticket'],
+            'person'                => $person,
+            'ticket_message'        => $ticket_message,
+            'settings'              => $this->getBrandContainer()->getSettings(),
+            'action'                => $this->generateUrl('portal_new_ticket'),
+            'attr'                  => ['data-save-draft' => 'new_ticket'],
+            'saved_form_subrequest' => $this->isSavedFormSubRequest($request),
+            'allow_extra_fields'    => true,
         ));
         $form->handleRequest($request);
 
@@ -106,43 +110,56 @@ class NewTicketController extends AbstractController
                     // deal with guests via negotiating with PersonFactory
                     if ($person instanceof PersonGuest) {
                         try {
-                            $person = $this->getPersonFactory()->checkGuestForValidation($person);
+                            $this->getPersonFactory()->checkGuestForValidation($person, $this->isSavedFormSubRequest($request));
+
+                            // the below block only executes during a saved form request (they clicked validation link)
+                            $email  = $person->getPrimaryEmail();
+                            $person = $this->getPersonDataService()->getPersonForEmail($email->getEmail());
+
+                            // since the guest is set on the form, we need to update all of the associations
+                            $ticket->setPerson($person);
+                            $ticket_message->setPerson($person);
+                            foreach ($ticket_message->getAttachments() as $attachment) {
+                                if ($blob = $attachment->getBlob()) {
+                                    $blob->is_temp = false;
+                                }
+                                $attachment->setPerson($person);
+                            }
+
+                            return $this->acceptNewTicket($ticket, $person, $request);
                         } catch (LoginRequiredException $e) {
                             // the email used belongs to a user, and brand settings say they need to log in
                             $person = $e->getPerson();
 
                             return $this->getFormSaver()->saveFormForPersonLogin($person, $form, $request);
-                        }
+                        } catch (EmailValidationRequiredException $e) {
+                            // this exception just means the guest exists but does not
+                            // have a valid email address
+                            // we still need to check this setting
+                            if ($this->getBrandSetting('core_tickets.web_require_validation')) {
+                                $saved_form = $this->getFormSaver()->saveForm(
+                                    $form,
+                                    $request,
+                                    $person->getEmailAddress(),
+                                    $person->getDisplayName()
+                                );
+                                $this->get('portal_validation')->sendTicketVerificationEmail($ticket, $saved_form);
+                                $this->addFlash('success', $this->phrase('portal.flashes.guest_new_ticket_must_verify'));
 
-                        // since the guest is set on the form, we need to update all of the associations
-                        $ticket->setPerson($person);
-                        $ticket_message->setPerson($person);
-                        foreach ($ticket_message->getAttachments() as $attachment) {
-                            if ($blob = $attachment->getBlob()) {
-                                $blob->is_temp = false;
+                                return $this->redirectToRoute('portal_home');
+                            } else {
+                                // this is a guest that we are accepting
+                                return $this->acceptNewTicketForGuest($ticket, $ticket_message, $person, $request);
                             }
-                            $attachment->setPerson($person);
                         }
                     }
 
-                    $this->submitNewTicketAbuseCheck($person, $request->getClientIp());
-
-                    $ticket = $this->saveNewTicket($ticket, $person);
-
-                    $this->addFlash('success', $this->phrase('portal.flashes.ticket_created'));
-
-                    if (!$person->isUser()) { // not a user, redirect to thank you
-                        $this->get('portal_email_sender')->sendNewTicketGuestThankYou($ticket);
-
-                        return $this->redirectToRoute('portal_new_ticket_guest_thank_you');
-                    }
-
-                    // is a user, redirect to ticket view (will ask to login if not already)
-                    return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
+                    return $this->acceptNewTicket($ticket, $person, $request);
                 }
             }
         } elseif ($form->isSubmitted()) {
             $this->submitNewTicketAbuseCheck($person, $request->getClientIp());
+            $err = $form->getErrors(true, true);
         }
 
         $form_full = $this->createForm('ticket', $ticket, array(
@@ -178,6 +195,44 @@ class NewTicketController extends AbstractController
                 'show_ticket_suggestions' => $show_ticket_suggestions,
             )
         );
+    }
+
+    protected function acceptNewTicketForGuest(Ticket $ticket, TicketMessage $ticket_message, Person $person, Request $request)
+    {
+        // in this case we are authorized to make a person from a guest
+        $person_context = new CreatePersonContext(Person::CREATED_WEB_PERSON);
+        $person->setName($person->getDisplayName());
+        $person = $this->getPersonFactory()->createPersonByEmail($person->getEmailAddress(), $person_context);
+
+        $ticket->person = $person;
+        $ticket->setPerson($person);
+        $ticket_message->setPerson($person);
+        foreach ($ticket_message->getAttachments() as $attachment) {
+            if ($blob = $attachment->getBlob()) {
+                $blob->is_temp = false;
+            }
+            $attachment->setPerson($person);
+        }
+
+        return $this->acceptNewTicket($ticket, $person, $request);
+    }
+
+    protected function acceptNewTicket(Ticket $ticket, Person $person, Request $request)
+    {
+        $this->submitNewTicketAbuseCheck($person, $request->getClientIp());
+
+        $ticket = $this->saveNewTicket($ticket, $person);
+
+        $this->addFlash('success', $this->phrase('portal.flashes.ticket_created'));
+
+        $destination = $this->getObjectRouter()->getPortalPath($ticket);
+
+        if ($redirect = $this->get('portal_validation')->getPasswordRedirectIfRequired($person, $request, $destination)) {
+            return $redirect;
+        }
+
+        // is a user, redirect to ticket view (will ask to login if not already)
+        return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
     }
 
     protected function submitNewTicketAbuseCheck($person, $ip)

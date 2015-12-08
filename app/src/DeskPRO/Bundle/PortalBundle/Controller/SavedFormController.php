@@ -67,6 +67,23 @@ class SavedFormController extends AbstractController
     }
 
     /**
+     * TEMP route that proxies to validateAction below. Needed for a route used in legacy "ticket-new-validate-email.html.twig".
+     *
+     * @Route("/validate/new-ticket/{access_code}", name="user_validate_ticket")
+     *
+     * @deprecated
+     */
+    public function ticketValidateAction($access_code)
+    {
+        $auth_code = $access_code;
+
+        return $this->redirectToRoute('portal_validation', [
+            'type'      => PortalValidation::NEW_TICKET,
+            'auth_code' => $auth_code,
+        ]);
+    }
+
+    /**
      * @Route("/validate/{type}/{auth_code}", name="portal_validation")
      * @ParamConverter("saved_form", class="App:SavedForm", options={"auth_code" = "auth_code"})
      */
@@ -85,19 +102,24 @@ class SavedFormController extends AbstractController
             case PortalValidation::COMMENT:
                 $person = $this->getPersonToValidate($saved_form);
                 $this->validateThisPerson($person, $email_address);
-                $this->maybeAauthenticateThisPerson($person);
+                $this->maybeAuthenticateThisPerson($person);
 
                 return $this->submitSavedForm($saved_form, $request);
             case PortalValidation::ADD_EMAIL:
                 $person = $saved_form->getPerson();
                 $this->get('person_manipulator')->validatePerson($person);
-                $this->maybeAauthenticateThisPerson($person);
+                $this->maybeAuthenticateThisPerson($person);
 
                 return $this->submitSavedForm($saved_form, $request);
             case PortalValidation::NEW_FEEDBACK:
                 $person = $this->getPersonToValidate($saved_form);
                 $this->validateThisPerson($person, $email_address);
-                $this->maybeAauthenticateThisPerson($person);
+                $this->maybeAuthenticateThisPerson($person);
+
+                return $this->submitSavedForm($saved_form, $request);
+            case PortalValidation::NEW_TICKET:
+                $person = $this->getPersonToValidate($saved_form);
+                $this->validateThisPerson($person, $email_address);
 
                 return $this->submitSavedForm($saved_form, $request);
             default:
@@ -129,7 +151,7 @@ class SavedFormController extends AbstractController
         $em->flush($to_flush);
     }
 
-    private function maybeAauthenticateThisPerson(Person $person)
+    private function maybeAuthenticateThisPerson(Person $person)
     {
         $this->get('person_manipulator')->authenticatePerson($person);
     }

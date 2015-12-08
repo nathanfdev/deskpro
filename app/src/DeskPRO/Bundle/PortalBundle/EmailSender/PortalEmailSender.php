@@ -114,6 +114,18 @@ class PortalEmailSender
         );
     }
 
+    public function sendNewTicketValidationEmail(EmailTo $email_to, $verify_url, Ticket $ticket)
+    {
+        $this->sendTo(
+            $email_to,
+            'DeskPRO:emails_user:ticket-new-validate-email.html.twig',
+            [
+                'verify_url' => $verify_url,
+                'ticket'     => $ticket,
+            ]
+        );
+    }
+
     public function sendNewFeedbackEmail(Feedback $feedback)
     {
         $person = $feedback->getPerson();

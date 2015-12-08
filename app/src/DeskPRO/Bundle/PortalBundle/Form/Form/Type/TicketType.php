@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -230,7 +229,6 @@ class TicketType extends AbstractType
             //
             // end rerender detection
             //
-
 
             $destination_layout = $this->ticket_layout_factory->getLayoutForTicketForm($new_department_id ?: null);
             $context->setNewLayout($destination_layout);
@@ -614,7 +612,7 @@ class TicketType extends AbstractType
             'options' => [
                 'property_path' => 'person.name',
                 'label'         => $this->phrase('portal.forms.label_name'),
-                'empty_data'    => $form_context->getPerson()->getName(),
+                'empty_data'    => $form_context->getPerson()->getDisplayName(),
             ],
         ];
     }
@@ -649,6 +647,7 @@ class TicketType extends AbstractType
                 'options' => [
                     'property_path' => 'person.primary_email',
                     'label'         => false,
+                    'constraints'   => array(), // ignore the "unqiue entity" constraint here
                 ],
             ];
         }

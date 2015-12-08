@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Helper;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\DataService\PersonDataService;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
@@ -44,6 +45,7 @@ class PortalValidation
     const REGISTRATION = 'registration';
     const ADD_EMAIL    = 'add-email';
     const NEW_FEEDBACK = 'new-feedback';
+    const NEW_TICKET   = 'new-ticket';
     const COMMENT      = 'comment';
 
     public static $types = [
@@ -51,6 +53,7 @@ class PortalValidation
         self::COMMENT,
         self::ADD_EMAIL,
         self::NEW_FEEDBACK,
+        self::NEW_TICKET,
     ];
 
     /**
@@ -81,6 +84,29 @@ class PortalValidation
         $this->brand_stack         = $brand_stack;
         $this->url_generator       = $url_generator;
         $this->person_data_service = $person_data_service;
+    }
+
+    public function sendTicketVerificationEmail(Ticket $ticket, SavedForm $saved_form)
+    {
+        // because we need to support an old verify route created with the ticket's "access_code"
+        $ticket->forceSetAccessCode($saved_form->getAuthCode());
+        $verify_url = $this->makeValidationUrl(self::NEW_TICKET, $saved_form);
+
+         // find out who we are emailing to
+        if ($person = $saved_form->getPerson()) {
+            $email_to = new EmailTo($person);
+        } else {
+            if (!$email = $saved_form->getMetaDataValue('email')) {
+                throw new \InvalidArgumentException(
+                    'trying to send a verification email, but no email provided. saved form must have a Person, or its metadata must have an "email" key.'
+                );
+            }
+            $name     = $saved_form->getMetaDataValue('name');
+            $email_to = new EmailTo();
+            $email_to->setTo($email, $name);
+        }
+
+        $this->mailer->sendNewTicketValidationEmail($email_to, $verify_url, $ticket);
     }
 
     public function sendVerificationEmail($type, SavedForm $saved_form, $prefer_person_email = true)
@@ -117,10 +143,10 @@ class PortalValidation
             case self::NEW_FEEDBACK:
                 $this->mailer->sendEmailValidation($email_to, $verify_url);
                 break;
+            case self::NEW_TICKET:
+                throw new \Exception('use sendTicketVerificationEmail instead of sendVerificationEmail for a ticket.');
+                break;
         }
-
-        // based on $type, create the correct verification url
-        // based on $type, send the right email
     }
 
     public function processVerificationClick($type, SavedForm $saved_form)
@@ -140,9 +166,15 @@ class PortalValidation
             $password_reset = $this->person_data_service->createPasswordReset($person, $expire_time);
             $code           = $password_reset['code'];
 
+            $session = $request->getSession();
             if ($redirect_to_after_password_set) {
-                $request->getSession()->set(PasswordController::SET_PASSWORD_REDIRECT, $redirect_to_after_password_set);
+                $session->set(PasswordController::SET_PASSWORD_REDIRECT, $redirect_to_after_password_set);
             }
+
+            if (!$session->has('last_username')) {
+                $session->set('last_username', $person->getEmailAddress());
+            }
+            $session->set(PasswordController::SET_PASSWORD_REDIRECT, $redirect_to_after_password_set);
 
             return new RedirectResponse(
                 $this->url_generator->generate('portal_set_password_process',

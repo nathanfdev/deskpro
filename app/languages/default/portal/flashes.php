@@ -60,6 +60,7 @@ return array(
     'portal.flashes.sent_verification_email_secondary'      => 'We have sent you an email with a verification link. Please check your email and follow the link to verify your email address.',
     'portal.flashes.user_registered_must_verify'            => 'Thank you for registering. Please check your email, we have sent you a verification link.',
     'portal.flashes.guest_content_must_verify'              => 'Before we can post your content you must verify your email. Please check your email, we have sent you a verification link.',
+    'portal.flashes.guest_new_ticket_must_verify'           => 'Before we can accept your ticket we must verify your email address. Please check your email, we have sent you a verification link.',
     'portal.flashes.user_registered_verified_authenticated' => 'Thank you, your email has been verified and you have been logged in.',
     'portal.flashes.new_feedback_awaiting_review'           => 'Thank you for your feedback. It will be visible on the website after agent review.',
     'portal.flashes.new_feedback_posted'                    => 'Thank you for your feedback.',

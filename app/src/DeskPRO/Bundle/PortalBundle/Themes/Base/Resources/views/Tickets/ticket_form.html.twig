@@ -1,7 +1,7 @@
 <div id="edit_ticket_form">
     <div class="dp_ticket_form dpx-form">
         {{ form_errors(form) }}
-        <form method="POST" class="form-ticket" novalidate name="ticket" enctype="multipart/form-data">
+            {{ form_start(form, { attr: { class: 'form-ticket', novalidate: 'novalidate', name: 'ticket' } }) }}
             <div class="dynamic-fields-container">
                 {% for widget in form.children if widget.vars.name not in ['_token', '_dp_csrf_token'] %}
                     <div class="deskpro-form-widget field_{{ widget.vars.name }} {% if widget.vars.valid is defined and not widget.vars.valid %} form-error{% endif %}"
