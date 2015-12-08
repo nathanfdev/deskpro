@@ -20,14 +20,6 @@ export class MessageFactory extends React.Component {
       const translatedText = window.DESKPRO_LANG[`user.chat.${phraseId}`];
 
       switch (phraseId) {
-        case 'message_ended-by-user':
-        case 'message_started':
-          return (
-            <InlineEvent {...this.props}>
-              <MessageAvatar /> {translatedText}
-            </InlineEvent>
-          );
-
         case 'message_assigned':
           return (
             <InlineEvent {...this.props}>
@@ -36,10 +28,11 @@ export class MessageFactory extends React.Component {
           );
 
         default:
-          // todo tmp, for dev
-          alert(`unknown phrase id "${phraseId}"`);
-
-          return null;
+          return (
+            <InlineEvent {...this.props}>
+              <MessageAvatar /> {translatedText}
+            </InlineEvent>
+          );
       }
     }
 
