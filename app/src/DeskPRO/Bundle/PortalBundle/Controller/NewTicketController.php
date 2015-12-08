@@ -233,7 +233,7 @@ class NewTicketController extends AbstractController
         }
 
         $params = [
-            'ticket_ref'        => $person->isConfirmed() ? $this->get('ticket.public_id_resolver')->findId($ticket) : null,
+            'ticket_ref'        => $person->isUser() ? $this->get('ticket.public_id_resolver')->findId($ticket) : null,
             'create_pw_link'    => $create_pw_link,
             'is_confirmed_user' => $person->isConfirmed(),
         ];
