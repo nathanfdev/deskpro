@@ -69,10 +69,6 @@ export class MassActionContainer extends Component {
 
   render() {
     const config = {
-      checkbox: {
-        count: this.props.selected.size,
-        action: toggleMassAction
-      },
       selected: this.props.selected,
       actions: this.choiceActions(),
       setParams: setMassActionsParams,

@@ -3,17 +3,24 @@ import { ListFrameContainer, ListFrameContents } from 'DeskPRO/Bundle/AgentBundl
 import { ControlBarContainer } from './ControlBarContainer';
 import { ListTableViewContainer } from './View/Table/ListTableViewContainer';
 import { ListCardViewContainer } from './View/Card/ListCardViewContainer';
+import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ListFrameMenu';
+import { toggleAll} from '../../Actions/listActions';
 
 export class List extends Component {
   static propTypes = {
+    selectedCount: PropTypes.number.isRequired,
     viewMode: PropTypes.string.isRequired,
     isDone: PropTypes.bool.isRequired
   };
 
   render() {
+    const checkbox = { count: this.props.selectedCount, action: toggleAll };
+
     return (
       <ListFrameContainer>
-        <ControlBarContainer />
+        <ListFrameMenu checkbox={checkbox}>
+          <ControlBarContainer />
+        </ListFrameMenu>
         <ListFrameContents>
           {this.renderList()}
         </ListFrameContents>

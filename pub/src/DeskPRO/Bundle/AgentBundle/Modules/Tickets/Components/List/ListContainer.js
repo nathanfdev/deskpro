@@ -3,8 +3,10 @@ import { List } from './List';
 import { connect } from 'react-redux';
 import { isDoneSelector, viewModeSelector } from '../../Selectors/list';
 import { unload } from '../../Actions/listActions';
+import { selectedCountSelector } from '../../Selectors/list';
 
 @connect(state => ({
+  selectedCount: selectedCountSelector(state),
   isDone: isDoneSelector(state),
   viewMode: viewModeSelector(state)
 }))
@@ -12,6 +14,7 @@ export class ListContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     isDone: PropTypes.bool.isRequired,
+    selectedCount: PropTypes.number.isRequired,
     viewMode: PropTypes.string.isRequired
   };
 

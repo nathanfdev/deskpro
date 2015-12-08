@@ -17,6 +17,11 @@ export class CheckboxContainer extends Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({ enabled: nextProps.count });
+    return nextProps;
+  }
+
   handleClick = (e) => {
     e.preventDefault();
     this.props.dispatch(this.props.action(!this.state.enabled));

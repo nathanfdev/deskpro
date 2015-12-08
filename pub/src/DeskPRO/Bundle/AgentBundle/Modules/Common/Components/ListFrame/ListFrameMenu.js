@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { CheckboxContainer } from './MassAction/CheckboxContainer';
 
 export class ListFrameMenu extends Component {
@@ -13,14 +14,17 @@ export class ListFrameMenu extends Component {
 
   render() {
     const { checkbox } = this.props;
+
     return (
       <div className="control-bar">
         <div className="ticket-controls-bulk-editing">
           <div className="dpwd-navigation-dropdown-top-row">
             <CheckboxContainer {...checkbox}/>
-            <ul className="dpwd-navigation-dropdown-top-row-main-list">
+            <ReactCSSTransitionGroup transitionName="example"
+                                     transitionEnterTimeout={500}
+                                     transitionLeaveTimeout={100}>
               {this.props.children}
-            </ul>
+            </ReactCSSTransitionGroup>
           </div>
         </div>
       </div>

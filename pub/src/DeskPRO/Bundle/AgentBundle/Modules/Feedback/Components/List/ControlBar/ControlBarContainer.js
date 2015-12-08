@@ -38,10 +38,6 @@ export class ControlBarContainer extends Component {
   render() {
     const config = {
       onMenuUnmount: applyParams,
-      checkbox: {
-        count: this.props.count,
-        action: toggleMassAction
-      },
       sorting: {
         options: {
           date_created: { label: 'Date', icon: 'calendar' },

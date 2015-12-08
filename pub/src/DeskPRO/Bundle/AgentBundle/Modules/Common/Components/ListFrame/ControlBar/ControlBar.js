@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import { SortingMenu } from './Sorting/SortingMenu';
 import { FilteringMenuContainer } from './Filtering/FilteringMenuContainer';
 import { ViewMenuContainer } from './View/ViewMenuContainer';
-import { ListFrameMenu } from '../ListFrameMenu';
 
 export class ControlBar extends Component {
 
@@ -66,10 +65,10 @@ export class ControlBar extends Component {
   };
 
   render() {
-    const { checkbox, sorting, filtering, view, onMenuUnmount } = this.props;
+    const { sorting, filtering, view, onMenuUnmount } = this.props;
 
     return (
-      <ListFrameMenu checkbox={checkbox}>
+      <ul className="dpwd-navigation-dropdown-top-row-main-list">
         <SortingMenu {...sorting} onMenuUnmount={onMenuUnmount}/>
         <li>
           <hr/>
@@ -79,7 +78,7 @@ export class ControlBar extends Component {
           <hr/>
         </li>
         <ViewMenuContainer {...view} onViewFieldsMenuUnmount={view.onViewFieldsMenuUnmount}/>
-      </ListFrameMenu>
+      </ul>
     );
   }
 }
