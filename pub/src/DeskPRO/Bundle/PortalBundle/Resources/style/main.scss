@@ -3768,6 +3768,11 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
     padding: 7px 12px;
     color: $text-color-lighter;
     text-decoration: none;
+
+    @media screen and (max-width: 760px) {
+      padding-left: 7px;
+      padding-right: 7px;
+    }
   }
 
   span {
