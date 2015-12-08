@@ -25,12 +25,21 @@ export class MessagesList extends React.Component {
   }
 
   static renderMessage(message, key) {
-    const props = {key, message};
     const isAgent = message.get('author_type') === 'agent';
+    let props = {key, message};
 
     if (message.get('is_sys')) {
-      const sysContent = JSON.parse(message.get('content'));
-      switch (sysContent.phrase_id) {
+      const content = JSON.parse(message.get('content'));
+      const phraseId = content.phrase_id;
+
+      props = {
+        ...props,
+
+        content,
+        translatedText: window.DESKPRO_LANG[`user.chat.${phraseId}`]
+      };
+
+      switch (phraseId) {
         case 'message_started':
           return <StartChatEvent {...props} />;
         case 'message_assigned':

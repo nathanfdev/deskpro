@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom';
 import { AppContainer } from './Modules/Application/Components/AppContainer';
 import jQuery from 'jquery';
 import store from './Services/store';
+import { bootstrapWidget } from './Modules/Application/Actions/bootstrapActions';
 
 // don't remove, it uses
 import style from './Resources/style/widget-style.scss';
@@ -45,6 +46,8 @@ export default class WidgetApp {
         height: '1px'
       }
     });
+
+    store.dispatch(bootstrapWidget());
 
     const content = (
       <Provider store={store}>

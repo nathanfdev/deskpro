@@ -4,16 +4,18 @@ import { Event } from './Event';
 export class JoinedEvent extends React.Component {
 
   static propTypes = {
-    message: PropTypes.object
+    content: PropTypes.object,
+    translatedText: PropTypes.string
   };
 
   render() {
-    const { message } = this.props;
-    const content = JSON.parse(message.get('content'));
+    const { content, translatedText } = this.props;
 
     return (
       <Event {...this.props}>
-        <span className="dpdesignportal-event-title">{content.name} has joined the chat</span>
+        <span className="dpdesignportal-event-title">
+          {translatedText.replace('{{name}}', content.name)}
+        </span>
       </Event>
     );
   }
