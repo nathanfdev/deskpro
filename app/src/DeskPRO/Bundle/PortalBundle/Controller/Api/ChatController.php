@@ -134,7 +134,17 @@ class ChatController extends AbstractController
             ])
         ;
 
-        $this->sendMessage($conversation, $chat_message);
+        $conversation->addMessage($chat_message);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($conversation);
+        $em->flush();
+
+        $channel = $conversation->getChannelId('newmessage');
+        $this->dispatch(
+            ClientMessageEvent::EVENT_NAME,
+            new ClientMessageEvent($channel, $chat_message)
+        );
 
         return new JsonResponse();
     }
@@ -228,25 +238,6 @@ class ChatController extends AbstractController
         $errors    = $generator->generateFormErrors($form);
 
         return new JsonResponse($errors, Response::HTTP_BAD_REQUEST);
-    }
-
-    /**
-     * @param ChatConversation $conversation
-     * @param ChatMessage      $chat_message
-     */
-    protected function sendMessage(ChatConversation $conversation, ChatMessage $chat_message)
-    {
-        $conversation->addMessage($chat_message);
-
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($conversation);
-        $em->flush();
-
-        $channel = $conversation->getChannelId('newmessage');
-        $this->dispatch(
-            ClientMessageEvent::EVENT_NAME,
-            new ClientMessageEvent($channel, $chat_message)
-        );
     }
 
     /**
