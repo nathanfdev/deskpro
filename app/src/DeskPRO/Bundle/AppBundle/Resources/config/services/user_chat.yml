@@ -1,0 +1,9 @@
+services:
+
+    user_chat.listener.client_message_listener:
+        class: DeskPRO\Bundle\AppBundle\UserChat\ClientMessageListener
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @data_serializer
+        tags:
+            - { name: kernel.event_subscriber }

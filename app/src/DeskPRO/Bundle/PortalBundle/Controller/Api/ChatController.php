@@ -33,7 +33,8 @@ namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
-use Application\DeskPRO\Entity\ClientMessage;
+use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
+use DeskPRO\Bundle\AppBundle\UserChat\UserChatMessageEvent;
 use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -244,18 +245,13 @@ class ChatController extends AbstractController
      */
     protected function sendMessage(ChatConversation $conversation, ChatMessage $chat_message)
     {
-        $client_message = new ClientMessage();
-        $client_message->fromArray([
-            'channel'           => $conversation->getChannelId('newmessage'),
-            'data'              => $this->dataSerialize($chat_message)['data'],
-            'created_by_client' => '',
-        ]);
-
         $conversation->addMessage($chat_message);
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($conversation);
-        $em->persist($client_message);
         $em->flush();
+
+        $dispatcher = $this->get('event_dispatcher');
+        $dispatcher->dispatch(UserChatEvent::POST_SEND_MESSAGE, new UserChatMessageEvent($conversation, $chat_message));
     }
 }

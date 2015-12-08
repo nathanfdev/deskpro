@@ -31,17 +31,64 @@
  */
 namespace DeskPRO\Bundle\AppBundle\UserChat;
 
-use Application\DeskPRO\Entity\ChatMessage;
+use Application\DeskPRO\Entity\ClientMessage;
+use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializer;
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  * Class ClientMessageListener.
  */
-class ClientMessageListener
+class ClientMessageListener implements EventSubscriberInterface
 {
     /**
-     * @param ChatMessage $message
+     * @var EntityManager
      */
-    public function onChatMessage(ChatMessage $message)
+    private $em;
+
+    /**
+     * @var DataSerializer
+     */
+    private $data_serializer;
+
+    /**
+     * Constructor.
+     *
+     * @param EntityManager  $em
+     * @param DataSerializer $data_serializer
+     */
+    public function __construct(EntityManager $em, DataSerializer $data_serializer)
     {
+        $this->em              = $em;
+        $this->data_serializer = $data_serializer;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            UserChatEvent::POST_SEND_MESSAGE => 'onChatMessage',
+        ];
+    }
+
+    /**
+     * @param UserChatMessageEvent $event
+     */
+    public function onChatMessage(UserChatMessageEvent $event)
+    {
+        $conversation = $event->getConversation();
+        $chat_message = $event->getChatMessage();
+
+        $client_message = new ClientMessage();
+        $client_message->fromArray([
+            'channel'           => $conversation->getChannelId('newmessage'),
+            'data'              => $this->data_serializer->serialize($chat_message)['data'],
+            'created_by_client' => '',
+        ]);
+
+        $this->em->persist($client_message);
+        $this->em->flush();
     }
 }
