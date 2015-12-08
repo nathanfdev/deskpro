@@ -1471,10 +1471,12 @@ $search-btn-height: $search-height - 24;
       padding-right: 200px;
 
       @media screen and (max-width: 760px) { padding-right: 160px; }
+      @media screen and (max-width: 460px) { padding-right: 100px; }
 
       [type="text"] {
         width: 100%;
         padding-right: 60px;
+        @media screen and (max-width: 460px) { padding-right: 30px; }
       }
 
       .search-clear {
@@ -1487,6 +1489,9 @@ $search-btn-height: $search-height - 24;
         @media screen and (max-width: 760px) {
           right: 200px;
         }
+        @media screen and (max-width: 460px) {
+          right: 115px
+        }
       }
     }
 
@@ -1497,7 +1502,10 @@ $search-btn-height: $search-height - 24;
       bottom: 12px;
       width: 150px;
       cursor: pointer;
-
+      @media screen and (max-width: 460px) {
+        width: 100px;
+        min-width: 100px;
+      }
     }
 
     .fa-search {
