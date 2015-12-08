@@ -62,7 +62,7 @@ class UserChatSystemEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            UserChatEvent::SYSTEM_EVENT => 'onSystemMessage',
+            UserChatSystemEvent::EVENT_NAME => 'onSystemMessage',
         ];
     }
 
@@ -95,14 +95,14 @@ class UserChatSystemEventListener implements EventSubscriberInterface
         $channel = $this->getBaseChannel($event);
         if ($channel) {
             $event->getDispatcher()->dispatch(
-                ClientMessageEvent::SEND_MESSAGE,
+                ClientMessageEvent::EVENT_NAME,
                 new ClientMessageEvent($channel, $chat_message)
             );
         }
 
         $conversation_channel = $conversation->getChannelId(ClientMessageEvent::CHANNEL_CHAT_NEW_MESSAGE);
         $event->getDispatcher()->dispatch(
-            ClientMessageEvent::SEND_MESSAGE,
+            ClientMessageEvent::EVENT_NAME,
             new ClientMessageEvent($conversation_channel, $chat_message)
         );
     }

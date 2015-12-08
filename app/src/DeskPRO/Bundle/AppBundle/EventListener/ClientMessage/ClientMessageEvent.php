@@ -48,7 +48,7 @@ class ClientMessageEvent extends Event
     const CHANNEL_CHAT_USER_TYPING        = 'usertyping';
     const CHANNEL_CHAT_ACK_MESSAGES       = 'ack_messages';
 
-    const SEND_MESSAGE = 'client_message.send';
+    const EVENT_NAME = 'client_message.send';
 
     /**
      * @var string

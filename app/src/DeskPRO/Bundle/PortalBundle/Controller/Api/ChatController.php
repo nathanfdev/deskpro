@@ -34,7 +34,6 @@ namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageEvent;
-use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatSystemEvent;
 use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManager;
@@ -74,7 +73,7 @@ class ChatController extends AbstractController
         $em->flush();
 
         $this->dispatch(
-            UserChatEvent::SYSTEM_EVENT,
+            UserChatSystemEvent::EVENT_NAME,
             new UserChatSystemEvent($conversation, UserChatSystemEvent::TYPE_STARTED, [], [
                 'user_hidden' => true,
                 'is_html'     => false,
@@ -160,7 +159,7 @@ class ChatController extends AbstractController
         $em->flush();
 
         $this->dispatch(
-            UserChatEvent::SYSTEM_EVENT,
+            UserChatSystemEvent::EVENT_NAME,
             new UserChatSystemEvent($conversation, UserChatSystemEvent::TYPE_END_BY_USER, [], ['chat_ended'])
         );
 
@@ -248,7 +247,7 @@ class ChatController extends AbstractController
 
         $channel = $conversation->getChannelId('newmessage');
         $this->dispatch(
-            ClientMessageEvent::SEND_MESSAGE,
+            ClientMessageEvent::EVENT_NAME,
             new ClientMessageEvent($channel, $chat_message)
         );
     }
