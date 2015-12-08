@@ -8502,6 +8502,13 @@ body.with-agent-bar {
   line-height: 1.2em;
   display: inline-block;
   transition: all 0.3s ease;
+
+  @media screen and (max-width: 760px) {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+
   &:hover {
     background: #e5ebed;
     .fake-button {
@@ -8532,6 +8539,13 @@ body.with-agent-bar {
     vertical-align: middle;
     border-radius: 2px;
     transition: all 0.3s ease;
+    @media screen and (max-width: 760px) {
+      margin: 0;
+      margin-top: 10px;
+      width: 100%;
+      display: block;
+
+    }
   }
 
   div.frame {
