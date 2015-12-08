@@ -216,46 +216,48 @@
               </div>
 
               <!-- Table -->
-              <table class="user-ticket-list">
-                <thead>
-                  <tr>
-                    <td class="table-header ticket-ref">
-                      {{ phrase('portal.tickets.list_ticket_ref') }}
-                    </td>
-                    {% for col in ticket_table.columns %}
-                    <td class="table-header" data-col="{{ col.id }}"{% if not ticket_table.isActive(col)  %} style="display:none;"{% endif %}>
-                      {{ _self.col_header(ticket_table, col) }}
-                    </td>
+              <div class="table-wrapper">
+                <table class="user-ticket-list">
+                  <thead>
+                    <tr>
+                      <td class="table-header ticket-ref">
+                        {{ phrase('portal.tickets.list_ticket_ref') }}
+                      </td>
+                      {% for col in ticket_table.columns %}
+                      <td class="table-header" data-col="{{ col.id }}"{% if not ticket_table.isActive(col)  %} style="display:none;"{% endif %}>
+                        {{ _self.col_header(ticket_table, col) }}
+                      </td>
+                      {% endfor %}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% if ticket_table.ticketFilter.searchQuery %}
+                    <tr class="first-in-line">
+                      <td class="span-total-cols" colspan="{{ ticket_table.columns|length }}">
+                        <div class="filter-warning">
+                          <i class="fa fa-eye"></i> {{ phrase('portal.tickets.list_filter') }} <a class="dpx-active-filter-link" href="{{ path('portal_tickets', { type: ticket_table.ticketFilter.type }) }}">{{ phrase('portal.tickets.list_filter_clear') }}</a>
+                        </div>
+                      </td>
+                    </tr>
+                    {% endif %}
+                    {% for ticket in ticket_table.pager %}
+                    {% set ticket_view = ticket_view(ticket) %}
+                    <tr class="item-row">
+                      <td class="first-in-line ticket-ref">
+                        <span>{{ ticket_public_id(ticket) }}</span>
+                      </td>
+                      {% for col in ticket_table.columns %}
+                      <td class="{{ _self.col_td_class(ticket, ticket_view, ticket_table, col) }}" data-col="{{ col.id }}"{% if not ticket_table.isActive(col) %} style="display:none;"{% endif %}>
+                        <a href="{{ portal_path(ticket) }}">
+                          {{ _self.col_data(ticket, ticket_view, ticket_table, col) }}
+                        </a>
+                      </td>
+                      {% endfor %}
+                    </tr>
                     {% endfor %}
-                  </tr>
-                </thead>
-                <tbody>
-                  {% if ticket_table.ticketFilter.searchQuery %}
-                  <tr class="first-in-line">
-                    <td class="span-total-cols" colspan="{{ ticket_table.columns|length }}">
-                      <div class="filter-warning">
-                        <i class="fa fa-eye"></i> {{ phrase('portal.tickets.list_filter') }} <a class="dpx-active-filter-link" href="{{ path('portal_tickets', { type: ticket_table.ticketFilter.type }) }}">{{ phrase('portal.tickets.list_filter_clear') }}</a>
-                      </div>
-                    </td>
-                  </tr>
-                  {% endif %}
-                  {% for ticket in ticket_table.pager %}
-                  {% set ticket_view = ticket_view(ticket) %}
-                  <tr class="item-row">
-                    <td class="first-in-line ticket-ref">
-                      <span>{{ ticket_public_id(ticket) }}</span>
-                    </td>
-                    {% for col in ticket_table.columns %}
-                    <td class="{{ _self.col_td_class(ticket, ticket_view, ticket_table, col) }}" data-col="{{ col.id }}"{% if not ticket_table.isActive(col) %} style="display:none;"{% endif %}>
-                      <a href="{{ portal_path(ticket) }}">
-                        {{ _self.col_data(ticket, ticket_view, ticket_table, col) }}
-                      </a>
-                    </td>
-                    {% endfor %}
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
+                  </tbody>
+                </table>
+              </div>
 
               {% if ticket_table.pager.haveToPaginate() %}
               {{ pagerfanta(ticket_table.pager, null, { pageParameter: '['~ticket_table.pageName~']' }) }}
