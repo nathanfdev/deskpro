@@ -67,6 +67,8 @@ class SystemEventListener implements EventSubscriberInterface
     }
 
     /**
+     * Sends chat system message to a conversation.
+     *
      * @param UserChatSystemEvent $event
      */
     public function onSystemMessage(UserChatSystemEvent $event)
@@ -90,10 +92,32 @@ class SystemEventListener implements EventSubscriberInterface
         $this->em->persist($conversation);
         $this->em->flush();
 
-        $channel = $conversation->getChannelId('newmessage');
         $event->getDispatcher()->dispatch(
             ClientMessageEvent::SEND_MESSAGE,
-            new ClientMessageEvent($channel, $chat_message)
+            new ClientMessageEvent($this->getChannel($event), $chat_message)
         );
+    }
+
+    /**
+     * Returns client message channel for chat system message.
+     *
+     * @param UserChatSystemEvent $event
+     *
+     * @return string
+     *
+     * @throw \RuntimeException
+     */
+    protected function getChannel(UserChatSystemEvent $event)
+    {
+        switch ($event->getType()) {
+            case UserChatSystemEvent::TYPE_STARTED:
+                return ClientMessageEvent::CHANNEL_CHAT_NEW;
+            case UserChatSystemEvent::TYPE_END_BY_USER:
+                return ClientMessageEvent::CHANNEL_CHAT_ENDED;
+        }
+
+        throw new \RuntimeException(sprintf(
+            'Unable to get client message channel for chat system event `%s`', $event->getType()
+        ));
     }
 }
