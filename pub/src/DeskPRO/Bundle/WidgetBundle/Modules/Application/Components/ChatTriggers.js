@@ -28,7 +28,7 @@ export default class ChatTriggersBody extends React.Component {
       event.preventDefault();
 
       if (history.state !== url) {
-        history.replaceState(null, url);
+        history.replace(url);
       }
     };
 

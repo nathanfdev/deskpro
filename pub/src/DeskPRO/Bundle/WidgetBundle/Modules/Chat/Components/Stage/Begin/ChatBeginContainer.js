@@ -47,7 +47,7 @@ export class ChatBeginContainer extends React.Component {
     }
 
     const promise = this.props.dispatch(createChat(this.state));
-    promise.then(() => history.replaceState(null, '/chat/waiting'));
+    promise.then(() => history.replace('/chat/waiting'));
   };
 
   render() {

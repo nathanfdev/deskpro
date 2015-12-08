@@ -39,7 +39,7 @@ export class ChatPollingContainer extends React.Component {
     promise.then(
       () => {
         if (agentId && history.state !== '/chat/active') {
-          history.replaceState(null, '/chat/active');
+          history.replace('/chat/active');
         }
 
         setTimeout(this.pollingRequest, 3000);
