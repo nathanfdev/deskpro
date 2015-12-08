@@ -153,7 +153,7 @@ class TicketGrouping
      */
     public function getCustomFieldId()
     {
-        self::getCustomFieldIdFromName($this->column);
+        return self::getCustomFieldIdFromName($this->column);
     }
 
     public function getSelect()
@@ -179,11 +179,10 @@ class TicketGrouping
      */
     public static function isCustom($column, $separator = '.')
     {
-        if (strpos($column, self::CUSTOM_FIELD_COLUMN_PREFIX) !== 0) {
+        if (strpos($column, self::CUSTOM_FIELD_COLUMN_PREFIX.$separator) !== 0) {
             return false;
         }
-        $prefix = self::CUSTOM_FIELD_COLUMN_PREFIX;
-        $id     = preg_replace("/{$prefix}{$separator}/", '', $column, 1);
+        $id = substr($column, strlen(self::CUSTOM_FIELD_COLUMN_PREFIX) + strlen($separator));
 
         return preg_match('/^\d+$/', $id);
     }
@@ -193,16 +192,15 @@ class TicketGrouping
      * @param string $separator
      *
      * @throws \Exception
-     * @return int
      *
+     * @return int
      */
     public static function getCustomFieldIdFromName($name, $separator = '.')
     {
         if (!self::isCustom($name, $separator)) {
             throw new \Exception('Field is not custom');
         }
-        $prefix = self::CUSTOM_FIELD_COLUMN_PREFIX;
-        $id     = preg_replace("/{$prefix}{$separator}/", '', $name, 1);
+        $id = substr($name, strlen(self::CUSTOM_FIELD_COLUMN_PREFIX) + strlen($separator));
 
         return intval($id);
     }
