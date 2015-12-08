@@ -78,13 +78,15 @@ class UserChatSystemEventListener implements EventSubscriberInterface
         $params       = $event->getParams();
         $metadata     = $event->getMetadata();
 
+        $content = array_merge($params, [
+            'phrase_id' => $phrase_id,
+        ]);
+
         $chat_message = new ChatMessage();
         $chat_message
             ->setIsSys(true)
-            ->setContent(json_encode(array_merge($params, [
-                'phrase_id' => $phrase_id,
-            ])))
-            ->setMetadata(array_merge($params, $metadata))
+            ->setContent(json_encode($content))
+            ->setMetadata(array_merge($content, $metadata))
         ;
 
         $conversation->addMessage($chat_message);
