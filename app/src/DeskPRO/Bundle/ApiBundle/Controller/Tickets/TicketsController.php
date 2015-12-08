@@ -162,6 +162,14 @@ class TicketsController extends CrudController
      *              "description"="Department filter.",
      *              "dataType"="number",
      *              "required"=false
+     *          },
+     *          {
+     *              "name"="ticket_field.{id}",
+     *              "description"="
+     *                  Custom ticket field filter. To filter by a custom field with ID=1 you need to add
+     *                  ?ticket_field.1=value to the query string",
+     *              "dataType"="number|string",
+     *              "required"=false
      *          }
      *      },
      *      statusCodes={
