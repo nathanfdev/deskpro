@@ -31,6 +31,8 @@
  */
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine;
 
+use Application\DeskPRO\Entity\CustomDataTicket;
+use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Problem;
@@ -175,6 +177,49 @@ abstract class TermIntegrationTest extends ApiTestCase
     }
 
     /**
+     * @param array $data
+     *
+     * @return CustomDefTicket
+     */
+    protected function dummyCustomDefTicket($data = [])
+    {
+        $def = new CustomDefTicket();
+        $def->setTitle($this->faker->text());
+        foreach ($data as $prop => $value) {
+            $def->$prop = $value;
+        }
+
+        return $def;
+    }
+
+    /**
+     * @param Ticket          $ticket
+     * @param CustomDefTicket $def
+     * @param string          $type
+     * @param string          $value
+     *
+     * @throws \Exception
+     * @return CustomDataTicket
+     *
+     */
+    protected function dummyCustomDataTicket(Ticket $ticket, CustomDefTicket $def, $type, $value)
+    {
+        if (!in_array($type, ['value', 'input'])) {
+            throw new \Exception('You can set only value or input on a CustomDataTicket instance');
+        }
+        $data = new CustomDataTicket();
+        $data->setTicket($ticket);
+        $data->setField($def);
+        if ($type === 'value') {
+            $data->setValue($value);
+        } else {
+            $data->setInput($value);
+        }
+
+        return $data;
+    }
+
+    /**
      * @param TermInterface $term
      * @param array         $tickets
      * @param Person|null   $me
@@ -259,7 +304,11 @@ abstract class TermIntegrationTest extends ApiTestCase
     {
         $me or $me = $this->dummyPerson();
 
-        $filter = new TicketFilter();
+        $filter             = new TicketFilter();
+        $reflectionFilter   = new \ReflectionObject($filter);
+        $reflectionFilterId = $reflectionFilter->getProperty('id');
+        $reflectionFilterId->setAccessible(true);
+        $reflectionFilterId->setValue($filter, uniqid());
         $filter->setTerm($term);
 
         /** @var \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\PhpTicketCheckerEngine $engine */

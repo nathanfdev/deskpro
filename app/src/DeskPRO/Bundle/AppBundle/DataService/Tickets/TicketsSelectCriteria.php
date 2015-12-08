@@ -29,13 +29,14 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataService\Tickets;
 
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStar;
+use DeskPRO\Bundle\AppBundle\Model\TicketGrouping;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\CustomData\CustomDataTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Department\DepartmentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Organization\OrganizationTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Person\PersonTerm;
@@ -82,6 +83,14 @@ class TicketsSelectCriteria
         $composite = new CompositeTerm([], TermInterface::OP_AND);
 
         foreach ($parameters as $param => $value) {
+            if (TicketGrouping::isCustom($param, '_')) {
+                $composite->addTerm(new CustomDataTerm([
+                    'field_id'          => TicketGrouping::getCustomFieldIdFromName($param, '_'),
+                    'custom_data_value' => $value,
+                ]));
+                continue;
+            }
+
             switch ($param) {
                 case 'filter':
                     /** @var TicketFilter $filter */

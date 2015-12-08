@@ -71,6 +71,18 @@ class CustomDataTicket extends CustomDataAbstract
     }
 
     /**
+     * @param Ticket $ticket
+     *
+     * @return $this
+     */
+    public function setTicket(Ticket $ticket)
+    {
+        $this->setModelField('ticket', $ticket);
+
+        return $this;
+    }
+
+    /**
      * Set a root field.
      *
      * @param CustomDefTicket $field

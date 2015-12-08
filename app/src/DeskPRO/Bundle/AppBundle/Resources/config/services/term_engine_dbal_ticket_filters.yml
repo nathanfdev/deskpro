@@ -104,6 +104,14 @@ services:
                     name: dbal_ticket_filter_compiler
                     term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeam\AgentTeamTerm'
 
+    term_engine.dbal_ticket_filters.compiler.custom_data:
+            class: DeskPRO\Bundle\AppBundle\TermEngine\Term\CustomData\DbalCustomDataTermCompiler
+            parent: term_engine.dbal_ticket_filters.term_compiler
+            tags:
+                ticket_filter:
+                    name: dbal_ticket_filter_compiler
+                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\CustomData\CustomDataTerm'
+
     term_engine.dbal_ticket_filters.compiler.ticket_participant:
             class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketParticipant\DbalTicketParticipantTermCompiler
             parent: term_engine.dbal_ticket_filters.term_compiler

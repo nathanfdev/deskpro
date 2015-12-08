@@ -125,11 +125,13 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
      *
      * This method is a translation of the $this->getData() method into SQL.
      *
+     * @param string
+     *
      * @return string
      */
-    public static function getDataSql()
+    public static function getDataSql($tableAlias = 'custom_data_ticket')
     {
-        return 'IF(custom_data_ticket.value, custom_data_ticket.value, custom_data_ticket.input)';
+        return "IF($tableAlias.value, $tableAlias.value, $tableAlias.input)";
     }
 
     /**

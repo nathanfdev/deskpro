@@ -93,6 +93,14 @@ services:
                     name: php_ticket_checker_compiler
                     term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeam\AgentTeamTerm'
 
+    term_engine.php_ticket_checker.compiler.custom_data:
+            class: DeskPRO\Bundle\AppBundle\TermEngine\Term\CustomData\PhpCustomDataTermCompiler
+            parent: term_engine.php_ticket_checker.term_compiler
+            tags:
+                ticket_filter:
+                    name: php_ticket_checker_compiler
+                    term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\CustomData\CustomDataTerm'
+
     term_engine.php_ticket_checker.compiler.person_email:
             class: DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmail\PhpPersonEmailTermCompiler
             parent: term_engine.php_ticket_checker.term_compiler

@@ -1568,6 +1568,23 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @param int        $field_id
+     * @param int|string $value
+     *
+     * @return bool
+     */
+    public function isCustomFieldEqualTo($field_id, $value)
+    {
+        foreach ($this->custom_data as $custom_data) {
+            if ($custom_data->getFieldId() === $field_id) {
+                return $custom_data->getData() === $value;
+            }
+        }
+
+        return is_null($value);
+    }
+
+    /**
      * Gets a display array for a specific field.
      *
      * @param $field_id
