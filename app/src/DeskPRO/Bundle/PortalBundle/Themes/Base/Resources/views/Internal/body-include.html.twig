@@ -30,5 +30,8 @@
         window.__DP_APP_SRC__ = '{{ asset('DeskPRO_WidgetBundle.js', 'app_assets') }}';
         window.__DP_URL__ = '{{ root_url() }}';
         window.DESKPRO_USERSOURCES = {{ auth_usersources_js_object() }};
+        window.DESKPRO_CAN_USE_TICKETS = {{ can_use_tickets() ? 'true' : 'false' }};
+        window.DESKPRO_CAN_USE_FEEDBACK = {{ can_use_feedback() ? 'true' : 'false' }};
+        window.DESKPRO_CAN_USE_CHAT = {{ can_use_chat() ? 'true' : 'false' }};
     })();
 </script>

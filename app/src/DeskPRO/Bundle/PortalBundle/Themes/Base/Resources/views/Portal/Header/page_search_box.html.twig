@@ -31,6 +31,7 @@
 
       <div class="dropdown-content" id="top-contactus-dropdown" style="display: none;">
         <ul>
+          {% if can_use_tickets() %}
           <li>
             <a href="{{ path('portal_new_ticket') }}">
               <i class="fa fa-envelope"></i>
@@ -40,6 +41,8 @@
               <p>With this excellent form</p>
             </a>
           </li>
+          {% endif %}
+          {% if can_use_feedback() %}
           <li>
             <a href={{ path('portal_feedback') }}>
               <i class="fa fa-thumbs-o-up"></i>
@@ -49,6 +52,8 @@
               <p>An excellent feedback system</p>
             </a>
           </li>
+          {% endif %}
+          {% if can_use_chat() %}
           <li>
             <a href="#">
               <i class="fa fa-comments-o"></i>
@@ -65,6 +70,7 @@
               </p>
             </a>
           </li>
+          {% endif %}
           <li>
             <div class="info">
               <h1>DeskPRO Ltd</h1>
