@@ -16,7 +16,9 @@ export class Event extends React.Component {
         <div className="dpdesignportal-event-content">
           <TimeAgo className="dpdesignportal-event-time" minPeriod={60000} date={message.get('date_created')} />
           <hr/>
-          {children}
+          <span className="dpdesignportal-event-title">
+            {children}
+          </span>
         </div>
       </div>
     );

@@ -13,9 +13,7 @@ export class StartChatEvent extends React.Component {
 
     return (
       <Event {...this.props}>
-        <span className="dpdesignportal-event-title">
-          <MessageAvatar /> {translatedText}
-        </span>
+        <MessageAvatar /> {translatedText}
       </Event>
     );
   }

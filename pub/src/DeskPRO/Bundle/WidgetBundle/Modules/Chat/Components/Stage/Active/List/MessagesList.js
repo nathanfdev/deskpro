@@ -44,6 +44,9 @@ export class MessagesList extends React.Component {
           return <StartChatEvent {...props} />;
         case 'message_assigned':
           return <JoinedEvent {...props} />;
+        case 'message_ended-by-user':
+          // todo
+          return null;
         default:
           // todo tmp, for dev
           alert(`unknown phrase id "${phraseId}"`);

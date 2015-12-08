@@ -13,9 +13,7 @@ export class JoinedEvent extends React.Component {
 
     return (
       <Event {...this.props}>
-        <span className="dpdesignportal-event-title">
-          {translatedText.replace('{{name}}', content.name)}
-        </span>
+        {translatedText.replace('{{name}}', content.name)}
       </Event>
     );
   }
