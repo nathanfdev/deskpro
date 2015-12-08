@@ -596,11 +596,25 @@ $collection->create('agent_org_view', array(
     'options'      => array('fragment_name'   => 'o'),
 ));
 
-$collection->create('agent_org_child', array(
-    'path'         => '/organizations/{id}/child',
-    'controller'   => 'AgentBundle:Organization:handleChild',
+$collection->create('agent_org_child_add', array(
+    'path'         => '/organizations/{id}/child/add',
+    'controller'   => 'AgentBundle:Organization:addChild',
     'requirements' => array('organization' => '\\d+'),
-    'methods'      => array('POST', 'DELETE'),
+    'methods'      => array('POST'),
+));
+
+$collection->create('agent_org_child_remove', array(
+    'path'         => '/organizations/{id}/child/remove',
+    'controller'   => 'AgentBundle:Organization:removeChild',
+    'requirements' => array('organization' => '\\d+'),
+    'methods'      => array('POST'),
+));
+
+$collection->create('agent_org_child_search', array(
+    'path'         => '/organizations/{id}/child/search',
+    'controller'   => 'AgentBundle:OrganizationSearch:searchChild',
+    'requirements' => array('organization' => '\\d+'),
+    'methods'      => array('GET'),
 ));
 
 $collection->create('agent_org_new', array(

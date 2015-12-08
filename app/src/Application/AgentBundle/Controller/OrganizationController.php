@@ -42,6 +42,8 @@ use Application\DeskPRO\Searcher\TicketSearch;
 use Orb\Util\Arrays;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -826,27 +828,43 @@ class OrganizationController extends AbstractController
         return $org;
     }
 
-    public function handleChildAction($id, Request $request)
+    /**
+     * @param $id
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     */
+    public function addChildAction($id)
     {
-        $cid = (int) $request->get('child_id');
-        if (!$org = $this->em->find('DeskPRO:Organization', $id)) {
-            throw new NotFoundHttpException();
-        }
+        try {
+            $cid = $this->in->getInt('child_id');
+            if (!$org = $this->em->find('DeskPRO:Organization', $id)) {
+                throw new NotFoundHttpException();
+            }
 
-        $child = $this->em->find('DeskPRO:Organization', $cid);
-
-        if ($org === $child) {
-            throw new \BadMethodCallException();
-        }
-
-        if ($request->isMethod('post')) {
-            if (!$child) {
+            if ($cid) {
+                $root = $org;
+                while ($root->parent) {
+                    $root = $root->parent;
+                }
+                $child = $this->em->find('DeskPRO:Organization', $cid);
+                if (!$child || $child->parent || $org === $child || $root === $child) {
+                    throw new BadRequestHttpException('You can\'t add this organization as a child');
+                }
+            } else {
                 if (!$title = $this->in->getString('title')) {
-                    throw new \BadMethodCallException();
+                    throw new BadRequestHttpException('Please, enter a title');
                 }
 
                 if (!$this->person->hasPerm('agent_org.create')) {
-                    throw new AccessDeniedHttpException();
+                    throw new AccessDeniedHttpException('You don\t have permission to create an organization');
+                }
+
+                if ($this->em->getRepository('DeskPRO:Organization')->findOneBy(array('name' => $title))) {
+                    throw new BadRequestHttpException(sprintf('Organization with the name "%s" already exists', $title));
                 }
 
                 $child       = new Entity\Organization();
@@ -856,22 +874,49 @@ class OrganizationController extends AbstractController
 
             $org->children->add($child);
             $child->parent = $org;
-        } elseif ($request->isMethod('delete')) {
-            if (!$child) {
-                throw new NotFoundHttpException();
+            $this->em->flush();
+
+            return $this->createJsonResponse(array(
+                'id'   => $child->id,
+                'name' => $child->name,
+            ));
+        } catch (HttpException $e) {
+            return $this->createJsonResponse($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * @param $id
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     */
+    public function removeChildAction($id)
+    {
+        try {
+            $cid = (int) $this->in->getInt('child_id');
+            if (!$org = $this->em->find('DeskPRO:Organization', $id)) {
+                throw new NotFoundHttpException('There is no such organization');
             }
 
-            if ($org->children->contains($child)) {
+            if (!$child = $this->em->find('DeskPRO:Organization', $cid)) {
+                throw new NotFoundHttpException('There is no such child organization');
+            }
+
+            if ($child->parent === $org) {
                 $org->children->removeElement($child);
                 $child->parent = null;
             }
+
+            return $this->createJsonResponse(array(
+                'id'   => $child->id,
+                'name' => $child->name,
+            ));
+        } catch (HttpException $e) {
+            return $this->createJsonResponse($e->getMessge(), 400);
         }
-
-        $this->em->flush();
-
-        return $this->createJsonResponse(array(
-            'id'   => $child->id,
-            'name' => $child->name,
-        ));
     }
 }

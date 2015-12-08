@@ -135,17 +135,8 @@
 			</ul>
 		</nav>
 	</header>
-	<section>
-        <script type="text/html" id="{{ baseId }}_child-template">
-            <li>
-                <a href="#" data-route="page:{{ path('agent_org_view', {'organization_id': '0000'}) }}">
-                    {{ child.name }}
-                </a>
-                <a href="#" class="remove-child">
-                    x
-                </a>
-            </li>
-        </script>
+	<section style="padding: 10px;">
+
 		<ul>
 			<li>
 				Parent:
@@ -159,50 +150,43 @@
 			</li>
 			<li>
 				Children:
-				<ul id="{{ baseId }}_children-list">
-                    {% for child in org.children %}
-                        <li data-id="{{ child.id }}">
-                            <a href="#" data-route="page:{{ path('agent_org_view', {'organization_id': child.id}) }}">
-                                {{ child.name }}
-                            </a>
-                            <a href="#" class="remove-child">
-                                x
-                            </a>
-                        </li>
-                    {% endfor %}
+				<ul id="{{ baseId }}_children-list" style="margin-left:10px;">
+					<li ng-repeat="child in children">
+						<a href="#" data-route="page:{{ path('agent_org_view', {'organization_id': '0000'})|replace({'0000': ng_var('child.id')}) }}">
+							{{ ng_var('child.name') }}
+						</a>
+						<a href="#" class="remove-child" ng-click="removeChild(child)">
+							x
+						</a>
+					</li>
 				</ul>
 			</li>
 			<li>
-				<div
-						class="org-input"
-						id="{{ baseId }}_org_searchbox"
-						data-element-handler="DeskPRO.Agent.ElementHandler.OrgSearchBox"
-						data-search-url="{{ path('agent_orgsearch_quicknamesearch', {'format': 'json', 'limit': 10, 'start_with': 'a'}) }}"
-						data-highlight-term="1"
-						data-touch-focus="1"
-						data-search-param="term"
-						data-position-bound=".org-name"
-						data-super-container=".page-new-content"
-				>
-					<input type="text" class="org-name fill" placeholder="{{ phrase('agent.general.find_org') }}" value="" />
-					<input type="hidden" class="org-id" value="" />
-                    <button type="button" id="{{ baseId }}_add-org-child">Add</button>
-					<script type="text/x-deskpro-tmpl" class="user-row-tpl">
-                        <li>
-                            <a>
-                                <span class="org-name"></span>
-                                <div class="bound-fade"></div>
-                            </a>
-                        </li>
-                    </script>
-					<div class="person-search-box org" style="display: none">
+				Add child:
+
+				<div style="position: relative; height: 25px; display: inline-block;">
+
+					<input type="text" ng-model="searchChildTitle" placeholder="Find{% if app.user.hasPerm('agent_org.create') %}/add{% endif %} an organization" />
+
+					<div class="person-search-box org" style="position: absolute; top: 25px; min-width: 155px;" ng-show="searchChildrenResults.length || searchChildTitle">
 						<section>
 							<ul class="results-list">
-
+								<li ng-repeat="result in searchChildrenResults">
+									<a ng-click="addChild(result)">
+										<span class="org-name">
+											{{ ng_var('result.name') }}
+										</span>
+									</a>
+								</li>
 							</ul>
 							{% if app.user.hasPerm('agent_org.create') %}
-								<footer>
-									<span class="create-org">{{ phrase('agent.general.create') }}: <em></em></span>
+								<footer ng-show="showCreateChild" ng-click="addChild()">
+									<span class="create-org">
+										{{ phrase('agent.general.create') }}:
+										<em>
+											{{ ng_var('searchChildTitle') }}
+										</em>
+									</span>
 								</footer>
 							{% endif %}
 						</section>
@@ -210,9 +194,7 @@
 				</div>
 			</li>
 		</ul>
-		<div id="{{baseId}}_hierarchy_body">
 
-		</div>
 	</section>
 	{{ dp_app_loc(baseId, 'usergroups.tab') }}
 </div>

@@ -4,15 +4,87 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 
 	initScope: function() {
-		var self = this;
-		var $scope = this.$scope = DeskPRO_Window.$scope.$new();
-		this.$q = DeskPRO_Window.$q;
-		this.$timeout = DeskPRO_Window.$timeout;
+		var self = this
+			, $scope = this.$scope = DeskPRO_Window.$scope.$new()
+			, $q = this.$q = DeskPRO_Window.$q
+			, $timeout = this.$timeout = DeskPRO_Window.$timeout
+			, $http = this.$http = DeskPRO_Window.$http
+			;
 
 		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', function($compile) {
 			self.wrapper.data('$ngControllerController', self);
 			$compile(self.wrapper.contents())(self.$scope);
 		}]);
+
+		$scope.children = [];
+		$scope.searchChildrenResults = [];
+		$scope.searchChildTitle = '';
+
+		self.meta.api_data.children.forEach(function(child){
+			$scope.children.push({id: child.id, name: child.name});
+		});
+
+		var errorHandler = function(res){
+			DeskPRO_Window.showAlert(res.data);
+		};
+
+		$scope.addChild = function(child){
+			var q = {
+				title: $scope.searchChildTitle,
+				child_id: child ? child.id : 0
+			};
+
+			$scope.searchChildTitle = '';
+			$scope.showCreateChild = false;
+			$scope.searchChildrenResults = [];
+
+			$http.post(self.meta.url_child_add, q).then(
+				function(res){
+					$scope.children.push(res.data);
+				},
+				errorHandler
+			);
+		};
+
+		$scope.removeChild = function(child){
+			var q = {child_id: child.id};
+			$http.post(self.meta.url_child_remove, q).then(
+				function(res){
+					$scope.children.splice($scope.children.indexOf(child, 1));
+				},
+				errorHandler
+			);
+		};
+
+		var updateResults = function(){
+			$scope.showCreateChild = false;
+			if ($scope.searchChildTitle) {
+
+				$http.get(self.meta.url_child_search + '?q=' + window.encodeURIComponent($scope.searchChildTitle)).then(
+					function(res){
+						$scope.searchChildrenResults = res.data || [];
+
+						if (!$scope.searchChildrenResults.length) {
+							$scope.showCreateChild = true;
+						}
+					},
+					errorHandler
+				);
+
+			} else {
+				$scope.searchChildrenResults = [];
+			}
+		};
+
+		var updateCaller = new DeskPRO.TouchCaller({
+			timeout: 500,
+			callback: updateResults,
+			context: this
+		});
+
+		$scope.$watch('searchChildTitle', function(val){
+			val && val.length && updateCaller.touch(val);
+		});
 	},
 
 	initializeProperties: function() {
@@ -457,48 +529,6 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 		}
 
 		this.initUgEditor();
-
-
-    /**
-		 * Hierarchy
-		 */
-		var $orgChildren = this.getEl('children-list');
-
-		this.getEl('add-org-child').on('click', function(){
-			var $inputId = $(this).prev('input')
-				, $inputTitle = $inputId.prev('input')
-				, cid = $inputId.val() || 0
-				, title = $inputTitle.val() || ''
-				;
-
-			if (!cid && !title) return;
-			$inputId.val('');
-			$inputTitle.val('');
-
-			$.ajax({
-				method: 'post',
-				url: self.meta.url_add_child,
-				data: {title: title, child_id: cid},
-				success: function(child){
-					if ($orgChildren.find('li[data-id="' + child.id + '"]').length) return;
-					var $tpl = $(self.getEl('child-template').html());
-					$tpl.find('a:first').attr('data-route', $tpl.find('a:first').attr('data-route').replace('0000', child.id)).text(child.name);
-					$tpl.attr('data-id', child.id);
-					self.getEl('children-list').append($tpl);
-				}
-			});
-		});
-
-		$orgChildren.on('click', '.remove-child', function(e){
-			var id = $(e.target).closest('li').data('id');
-			$.ajax({
-				method: 'delete',
-				url: self.meta.url_add_child + '?child_id=' + id,
-				success: function(){
-					$orgChildren.children('[data-id="' + id + '"]').remove();
-				}
-			});
-		});
 	},
 
 	refreshPropBox: function() {

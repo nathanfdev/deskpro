@@ -39,6 +39,7 @@ use Application\DeskPRO\Organizations\OrgResultsDisplay;
 use Application\DeskPRO\Searcher\OrganizationSearch;
 use Application\DeskPRO\UI\RuleBuilder;
 use Orb\Util\Arrays;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Handles searching for orgs.
@@ -352,5 +353,54 @@ class OrganizationSearchController extends AbstractController
         } else {
             return $this->createJsonResponse(array('invalid' => true));
         }
+    }
+
+    public function searchChildAction($id)
+    {
+        if (!$org = $this->em->find('DeskPRO:Organization', $id)) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$limit = $this->in->getUint('limit')) {
+            $limit = 20;
+        }
+
+        $q = $this->in->getString('q');
+
+        $ids = array($org->id);
+        // find root
+        while ($org->parent) {
+            $org = $org->parent;
+        }
+        $ids[] = $org->id;
+
+        if ($q) {
+            $orgs_list = $this->em->createQuery('
+                SELECT o
+                FROM DeskPRO:Organization o
+                WHERE o.name LIKE :name
+                AND o.parent IS NULL
+                AND o.id NOT IN (:ids)
+                ORDER BY o.name ASC
+            ')->setParameters(array('name' => "%$q%", 'ids' => $ids))->setMaxResults($limit)->getResult();
+        } else {
+            $orgs_list = $this->em->createQuery('
+                SELECT o
+                FROM DeskPRO:Organization o
+                WHERE o.parent IS NULL
+                AND o.id NOT IN (:ids)
+                ORDER BY o.name ASC
+            ')->setParameter('ids', $ids)->setMaxResults($limit)->getResult();
+        }
+
+        $res = array();
+        foreach ($orgs_list as $org) {
+            $res[] = array(
+                'id'   => $org['id'],
+                'name' => $org['name'],
+            );
+        }
+
+        return $this->createJsonResponse($res);
     }
 }
