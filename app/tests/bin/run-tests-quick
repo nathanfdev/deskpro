@@ -24,9 +24,9 @@ fi
 # PHPUNIT
 ##################################
 
-# This warms up caches so that this test is executed in proper context
-# ToDo: describe issue with AbstractKernelAwareTestCase::getPortalKernel() and this test
+# Hack: see https://trello.com/c/xv8IRWTo/382-test-is-failing-when-running-for-the-first-time
 bin/phpunit phpunit/DpTest/Application/EmailBundle/Templating/EngineTest.php > /dev/null
+# ---
 
 IS_PHPUNIT_ERROR=0
 bin/phpunit --testsuite DeskPRO
