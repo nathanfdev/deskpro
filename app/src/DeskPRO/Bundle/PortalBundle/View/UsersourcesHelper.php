@@ -117,7 +117,7 @@ class UsersourcesHelper
         $info = [
             'icon'        => null, // a css string to use in an <i> element for font awesome icon (example: "fa fa-facebook").
             'text'        => '', // the full text that appears on the login button
-            'css_classes' => ['button'], // the deskpro css classes that should apply to the login button
+            'css_classes' => ['button', 'auth'], // the deskpro css classes that should apply to the login button
         ];
 
         if ('facebook' === $type) {
