@@ -72,11 +72,14 @@ class SystemEventListener implements EventSubscriberInterface
     {
         $conversation = $event->getConversation();
         $phrase_id    = $event->getType();
+        $params       = $event->getParams();
 
         $chat_message = new ChatMessage();
         $chat_message
             ->setIsSys(true)
-            ->setContent(json_encode(['phrase_id' => $phrase_id]))
+            ->setContent(json_encode(array_merge($params, [
+                'phrase_id' => $phrase_id,
+            ])))
         ;
 
         $conversation->addMessage($chat_message);
