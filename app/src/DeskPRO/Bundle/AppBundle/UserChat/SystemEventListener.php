@@ -92,9 +92,18 @@ class SystemEventListener implements EventSubscriberInterface
         $this->em->persist($conversation);
         $this->em->flush();
 
+        $channel = $this->getBaseChannel($event);
+        if ($channel) {
+            $event->getDispatcher()->dispatch(
+                ClientMessageEvent::SEND_MESSAGE,
+                new ClientMessageEvent($channel, $chat_message)
+            );
+        }
+
+        $conversation_channel = $conversation->getChannelId(ClientMessageEvent::CHANNEL_CHAT_NEW_MESSAGE);
         $event->getDispatcher()->dispatch(
             ClientMessageEvent::SEND_MESSAGE,
-            new ClientMessageEvent($this->getChannel($event), $chat_message)
+            new ClientMessageEvent($conversation_channel, $chat_message)
         );
     }
 
@@ -103,21 +112,26 @@ class SystemEventListener implements EventSubscriberInterface
      *
      * @param UserChatSystemEvent $event
      *
-     * @return string
-     *
-     * @throw \RuntimeException
+     * @return string|null
      */
-    protected function getChannel(UserChatSystemEvent $event)
+    protected function getBaseChannel(UserChatSystemEvent $event)
     {
         switch ($event->getType()) {
             case UserChatSystemEvent::TYPE_STARTED:
+            case UserChatSystemEvent::TYPE_USER_RETURNED:
                 return ClientMessageEvent::CHANNEL_CHAT_NEW;
+            case UserChatSystemEvent::TYPE_ENDED:
+            case UserChatSystemEvent::TYPE_END_BY:
             case UserChatSystemEvent::TYPE_END_BY_USER:
                 return ClientMessageEvent::CHANNEL_CHAT_ENDED;
+            case UserChatSystemEvent::TYPE_SET_DEPARTMENT:
+                return ClientMessageEvent::CHANNEL_CHAT_DEPARTMENT_CHANGE;
+            case UserChatSystemEvent::TYPE_ASSIGNED:
+                return ClientMessageEvent::CHANNEL_CHAT_REASSIGNED;
+            case UserChatSystemEvent::TYPE_UNASSIGNED:
+                return ClientMessageEvent::CHANNEL_CHAT_UNASSIGNED;
         }
 
-        throw new \RuntimeException(sprintf(
-            'Unable to get client message channel for chat system event `%s`', $event->getType()
-        ));
+        return;
     }
 }
