@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import TimeAgo from 'react-timeago';
 
-export class Event extends React.Component {
+export class InlineEvent extends React.Component {
 
   static propTypes = {
     message: PropTypes.object,
