@@ -12,7 +12,9 @@ export default class EmotionButton extends React.Component {
     onSelect: PropTypes.func,
     context: PropTypes.any,
     className: PropTypes.string,
-    buttonClassName: PropTypes.string
+    buttonClassName: PropTypes.string,
+    popupPositionAt: PropTypes.string,
+    popupPositionMy: PropTypes.string
   };
 
   constructor(props) {
@@ -77,7 +79,7 @@ export default class EmotionButton extends React.Component {
   };
 
   render() {
-    const { className, buttonClassName, context } = this.props;
+    const { className, buttonClassName, context, popupPositionAt, popupPositionMy } = this.props;
 
     return (
       <span className={className}>
@@ -92,8 +94,8 @@ export default class EmotionButton extends React.Component {
         <Simple
           isOpen={this.state.emotionsPopup}
           positionTarget={this.refs.emotionsButton}
-          positionAt="center top-15"
-          positionMy="center bottom"
+          positionAt={popupPositionAt}
+          positionMy={popupPositionMy}
           zIndex={1000}>
 
           <ClickOut

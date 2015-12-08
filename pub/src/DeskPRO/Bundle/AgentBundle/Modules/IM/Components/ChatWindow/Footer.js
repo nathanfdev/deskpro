@@ -58,12 +58,15 @@ export class Footer extends React.Component {
                 cleanAttrs: ['style', 'dir']
               }
             }}
-            />
+          />
 
           <EmotionButton
             buttonClassName="emoticon sprite sprite-emoticon-1"
             className="insert-emoticon"
-            getEditor={() => this.refs.editor.getMediumEditor()} />
+            getEditor={() => this.refs.editor.getMediumEditor()}
+            popupPositionAt="left-8 bottom+12"
+            popupPositionMy="left top"
+          />
 
           <input onClick={this.handleSubmit} type="button" value="&#xf101;"/>
         </form>
