@@ -32,36 +32,37 @@
 namespace DeskPRO\Bundle\AppBundle\UserChat;
 
 use Application\DeskPRO\Entity\ChatConversation;
-use Symfony\Component\EventDispatcher\Event;
 
 /**
- * Class UserChatEvent.
+ * Class UserChatSystemEvent.
  */
-class UserChatEvent extends Event
+class UserChatSystemEvent extends UserChatEvent
 {
-    const SYSTEM_EVENT      = 'user_chat.system_event';
-    const POST_SEND_MESSAGE = 'user_chat.post_send_message';
+    const TYPE_STARTED   = 'message_started';
+    const TYPE_USER_LEFT = 'message_user-left';
 
     /**
-     * @var ChatConversation
+     * @var string
      */
-    protected $conversation;
+    protected $type;
 
     /**
      * Constructor.
      *
      * @param ChatConversation $conversation
+     * @param string           $type
      */
-    public function __construct(ChatConversation $conversation)
+    public function __construct(ChatConversation $conversation, $type)
     {
-        $this->conversation = $conversation;
+        parent::__construct($conversation);
+        $this->type = $type;
     }
 
     /**
-     * @return ChatConversation
+     * @return string
      */
-    public function getConversation()
+    public function getType()
     {
-        return $this->conversation;
+        return $this->type;
     }
 }

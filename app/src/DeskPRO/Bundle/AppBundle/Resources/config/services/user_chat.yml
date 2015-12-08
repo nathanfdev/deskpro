@@ -7,3 +7,10 @@ services:
             - @data_serializer
         tags:
             - { name: kernel.event_subscriber }
+
+    user_chat.listener.system_event_listener:
+        class: DeskPRO\Bundle\AppBundle\UserChat\SystemEventListener
+        arguments:
+            - @doctrine.orm.entity_manager
+        tags:
+            - { name: kernel.event_subscriber }

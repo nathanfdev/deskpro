@@ -35,10 +35,12 @@ use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatMessageEvent;
+use DeskPRO\Bundle\AppBundle\UserChat\UserChatSystemEvent;
 use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -71,7 +73,10 @@ class ChatController extends AbstractController
         $em->persist($conversation);
         $em->flush();
 
-        $this->sendMessage($conversation, $this->createSysMessage('message_started'));
+        $this->dispatch(
+            UserChatEvent::SYSTEM_EVENT,
+            new UserChatSystemEvent($conversation, UserChatSystemEvent::TYPE_STARTED)
+        );
 
         return new JsonResponse($this->dataSerialize($conversation));
     }
@@ -151,7 +156,10 @@ class ChatController extends AbstractController
         $em->persist($conversation);
         $em->flush();
 
-        $this->sendMessage($conversation, $this->createSysMessage('message_user-left'));
+        $this->dispatch(
+            UserChatEvent::SYSTEM_EVENT,
+            new UserChatSystemEvent($conversation, UserChatSystemEvent::TYPE_USER_LEFT)
+        );
 
         return new JsonResponse();
     }
@@ -224,22 +232,6 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @param string $code
-     *
-     * @return ChatMessage
-     */
-    protected function createSysMessage($code)
-    {
-        $chat_message = new ChatMessage();
-        $chat_message
-            ->setIsSys(true)
-            ->setContent(json_encode(['phrase_id' => $code]))
-        ;
-
-        return $chat_message;
-    }
-
-    /**
      * @param ChatConversation $conversation
      * @param ChatMessage      $chat_message
      */
@@ -251,7 +243,18 @@ class ChatController extends AbstractController
         $em->persist($conversation);
         $em->flush();
 
-        $dispatcher = $this->get('event_dispatcher');
-        $dispatcher->dispatch(UserChatEvent::POST_SEND_MESSAGE, new UserChatMessageEvent($conversation, $chat_message));
+        $this->dispatch(
+            UserChatEvent::POST_SEND_MESSAGE,
+            new UserChatMessageEvent($conversation, $chat_message)
+        );
+    }
+
+    /**
+     * @param string $event_name
+     * @param Event  $event
+     */
+    protected function dispatch($event_name, Event $event)
+    {
+        $this->get('event_dispatcher')->dispatch($event_name, $event);
     }
 }

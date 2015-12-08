@@ -31,17 +31,62 @@
  */
 namespace DeskPRO\Bundle\AppBundle\UserChat;
 
+use Application\DeskPRO\Entity\ChatMessage;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  * Class SystemMessageListener.
  */
-class SystemMessageListener implements EventSubscriberInterface
+class SystemEventListener implements EventSubscriberInterface
 {
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * {@inheritdoc}
      */
     public static function getSubscribedEvents()
     {
+        return [
+            UserChatEvent::SYSTEM_EVENT => 'onSystemMessage',
+        ];
+    }
+
+    /**
+     * @param UserChatSystemEvent $event
+     */
+    public function onSystemMessage(UserChatSystemEvent $event)
+    {
+        $conversation = $event->getConversation();
+        $phrase_id    = $event->getType();
+
+        $chat_message = new ChatMessage();
+        $chat_message
+            ->setIsSys(true)
+            ->setContent(json_encode(['phrase_id' => $phrase_id]))
+        ;
+
+        $conversation->addMessage($chat_message);
+
+        $this->em->persist($conversation);
+        $this->em->flush();
+
+        $event->getDispatcher()->dispatch(
+            UserChatEvent::POST_SEND_MESSAGE,
+            new UserChatMessageEvent($conversation, $chat_message)
+        );
     }
 }
