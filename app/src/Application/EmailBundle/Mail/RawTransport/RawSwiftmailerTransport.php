@@ -91,6 +91,7 @@ class RawSwiftmailerTransport implements RawTransportInterface
         $raw_message = $this->decoder->createRawMessage($raw_fp);
         $message     = \Swift_Message::newInstance();
         RawMessageUtil::applyRawToSwift($raw_message, $message, $send_tos);
+        $included_tos = array();
         foreach ($raw_message->getCcs() as $to) {
             $message->addCc($to['email'], $to['name']);
             $included_tos[] = strtolower($to['email']);
