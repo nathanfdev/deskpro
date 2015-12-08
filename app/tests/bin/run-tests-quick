@@ -29,19 +29,21 @@ fi
 bin/phpunit phpunit/DpTest/Application/EmailBundle/Templating/EngineTest.php > /dev/null
 
 IS_PHPUNIT_ERROR=0
-
 bin/phpunit --testsuite DeskPRO
-
 if [[ $? -ne 0 ]] ; then
     IS_PHPUNIT_ERROR=1
 fi
 
 IS_PHPUNIT_TERM_ENGINE_ERROR=0
-
 bin/phpunit --testsuite DeskPRO-TermEngine
-
 if [[ $? -ne 0 ]] ; then
     IS_PHPUNIT_TERM_ENGINE_ERROR=1
+fi
+
+IS_PHPUNIT_PORTAL_ERROR=0
+bin/phpunit --testsuite DeskPRO-Portal
+if [[ $? -ne 0 ]] ; then
+    IS_PHPUNIT_PORTAL_ERROR=1
 fi
 
 ##################################
@@ -85,7 +87,7 @@ fi
 ##################################
 # EXIT IF ERROR
 ##################################
-IS_ERROR=$((IS_PHPSPEC_ERROR + IS_PHPUNIT_ERROR + IS_PHPUNIT_TERM_ENGINE_ERROR + IS_BEHAT_API_ERROR + IS_BEHAT_PORTAL_ERROR + IS_JEST_ERROR))
+IS_ERROR=$((IS_PHPSPEC_ERROR + IS_PHPUNIT_ERROR + IS_PHPUNIT_TERM_ENGINE_ERROR + IS_PHPUNIT_PORTAL_ERROR + IS_BEHAT_API_ERROR + IS_BEHAT_PORTAL_ERROR + IS_JEST_ERROR))
 if [[ "$IS_ERROR" -ne "0" ]]; then
     if [[ "$IS_PHPSPEC_ERROR" -ne "0" ]]; then
         echo "
@@ -98,6 +100,10 @@ if [[ "$IS_ERROR" -ne "0" ]]; then
     if [[ "IS_PHPUNIT_TERM_ENGINE_ERROR" -ne "0" ]]; then
         echo "
         --- PHPUNIT TERM ENGINE FAILED --- "
+    fi
+    if [[ "IS_PHPUNIT_PORTAL_ERROR" -ne "0" ]]; then
+        echo "
+        --- PHPUNIT PORTAL FAILED --- "
     fi
     if [[ "$IS_BEHAT_API_ERROR" -ne "0" ]]; then
         echo "
