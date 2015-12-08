@@ -172,10 +172,23 @@
 						<section>
 							<ul class="results-list">
 								<li ng-repeat="result in searchChildrenResults">
-									<a ng-click="addChild(result)">
+									<a ng-click="addChild(result)" ng-if="!result.parent_id && result.id != root_id">
 										<span class="org-name">
 											{{ ng_var('result.name') }}
 										</span>
+									</a>
+									<a>
+										<span class="org-name" style="color: gray;" ng-if="result.parent_id || result.id == root_id">
+											{{ ng_var('result.name') }}
+										</span>
+										<div dp-sticky-tip offset-top="24">
+											<article ng-if="root_id == result.id">
+												This organization is a grandparent of {{ org.name }}
+											</article>
+											<article ng-if="result.parent_id">
+												This organization is already a child of {{ ng_var('result.parent_name') }}
+											</article>
+										</div>
 									</a>
 								</li>
 							</ul>

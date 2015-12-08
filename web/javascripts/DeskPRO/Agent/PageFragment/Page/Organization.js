@@ -62,7 +62,8 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 
 				$http.get(self.meta.url_child_search + '?q=' + window.encodeURIComponent($scope.searchChildTitle)).then(
 					function(res){
-						$scope.searchChildrenResults = res.data || [];
+						$scope.searchChildrenResults = res.data.results || [];
+						$scope.root_id = res.data.root_id;
 
 						if (!$scope.searchChildrenResults.length) {
 							$scope.showCreateChild = true;

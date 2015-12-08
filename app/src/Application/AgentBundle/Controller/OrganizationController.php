@@ -834,8 +834,8 @@ class OrganizationController extends AbstractController
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
-     * @return \Symfony\Component\HttpFoundation\Response
      *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function addChildAction($id)
     {
@@ -852,19 +852,19 @@ class OrganizationController extends AbstractController
                 }
                 $child = $this->em->find('DeskPRO:Organization', $cid);
                 if (!$child || $child->parent || $org === $child || $root === $child) {
-                    throw new BadRequestHttpException('You can\'t add this organization as a child');
+                    throw new BadRequestHttpException('That organization cannot be added as a child of the current organization.');
                 }
             } else {
                 if (!$title = $this->in->getString('title')) {
-                    throw new BadRequestHttpException('Please, enter a title');
+                    throw new BadRequestHttpException('Please, enter a title.');
                 }
 
                 if (!$this->person->hasPerm('agent_org.create')) {
-                    throw new AccessDeniedHttpException('You don\t have permission to create an organization');
+                    throw new AccessDeniedHttpException('You don\t have permission to create an organization.');
                 }
 
                 if ($this->em->getRepository('DeskPRO:Organization')->findOneBy(array('name' => $title))) {
-                    throw new BadRequestHttpException(sprintf('Organization with the name "%s" already exists', $title));
+                    throw new BadRequestHttpException(sprintf('Organization with the name "%s" already exists.', $title));
                 }
 
                 $child       = new Entity\Organization();
@@ -891,8 +891,8 @@ class OrganizationController extends AbstractController
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
-     * @return \Symfony\Component\HttpFoundation\Response
      *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function removeChildAction($id)
     {

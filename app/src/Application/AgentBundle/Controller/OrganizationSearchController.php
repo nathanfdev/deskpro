@@ -369,38 +369,35 @@ class OrganizationSearchController extends AbstractController
 
         $ids = array($org->id);
         // find root
-        while ($org->parent) {
-            $org = $org->parent;
+        $root = $org;
+        while ($root->parent) {
+            $root = $root->parent;
         }
-        $ids[] = $org->id;
 
         if ($q) {
-            $orgs_list = $this->em->createQuery('
-                SELECT o
-                FROM DeskPRO:Organization o
+            $orgs_list = $this->em->getConnection()->executeQuery(sprintf('
+                SELECT o.id, o.name, op.id as parent_id, op.name as parent_name
+                FROM organizations o
+                LEFT JOIN organizations op ON o.parent_id = op.id
                 WHERE o.name LIKE :name
-                AND o.parent IS NULL
-                AND o.id NOT IN (:ids)
+                AND o.id != :id
                 ORDER BY o.name ASC
-            ')->setParameters(array('name' => "%$q%", 'ids' => $ids))->setMaxResults($limit)->getResult();
+                LIMIT %d
+            ', $limit), array('name' => "%$q%", 'id' => $id))->fetchAll();
         } else {
-            $orgs_list = $this->em->createQuery('
-                SELECT o
-                FROM DeskPRO:Organization o
-                WHERE o.parent IS NULL
-                AND o.id NOT IN (:ids)
+            $orgs_list = $this->em->getConnection()->executeQuery(sprintf('
+                SELECT o.id, o.name, op.id as parent_id, op.name as parent_name
+                FROM organizations o
+                LEFT JOIN organizations op ON o.parent_id = op.id
+                WHERE o.id != :id
                 ORDER BY o.name ASC
-            ')->setParameter('ids', $ids)->setMaxResults($limit)->getResult();
+                LIMIT %d
+            ', $limit), array('id' => $id))->fetchAll();
         }
 
-        $res = array();
-        foreach ($orgs_list as $org) {
-            $res[] = array(
-                'id'   => $org['id'],
-                'name' => $org['name'],
-            );
-        }
-
-        return $this->createJsonResponse($res);
+        return $this->createJsonResponse(array(
+            'results' => $orgs_list,
+            'root_id' => $root->id,
+        ));
     }
 }
