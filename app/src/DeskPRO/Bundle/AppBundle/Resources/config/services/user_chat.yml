@@ -1,7 +1,7 @@
 services:
 
     user_chat.listener.system_event_listener:
-        class: DeskPRO\Bundle\AppBundle\UserChat\SystemEventListener
+        class: DeskPRO\Bundle\AppBundle\UserChat\UserChatSystemEventListener
         arguments:
             - @doctrine.orm.entity_manager
         tags:

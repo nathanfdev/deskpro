@@ -37,9 +37,9 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * Class SystemMessageListener.
+ * Class UserChatSystemEventListener.
  */
-class SystemEventListener implements EventSubscriberInterface
+class UserChatSystemEventListener implements EventSubscriberInterface
 {
     /**
      * @var EntityManager
