@@ -1,4 +1,5 @@
 {% extends 'Theme::layout.html.twig' %}
+{% import 'Theme:Portal:User/macros.html.twig' as macros %}
 
 {% block page_content %}
     <div class="breadcrumbs">
@@ -15,57 +16,34 @@
 
         <section class="padded">
             {% if reset_success %}
-                <strong>{{ phrase('portal.account.reset-password-success') }}</strong>
+                {{ macros.user_notice('auth', phrase('portal.account.reset-password-success')) }}
             {% endif %}
 
             {% if set_password_success %}
-                <strong>{{ phrase('portal.account.set-password-success') }}</strong>
+                {{ macros.user_notice('auth', phrase('portal.account.set-password-success')) }}
             {% endif %}
 
             {% if login_error %}
-                <div class="error"
-                     style="border: 2px solid black; background-color: firebrick;  color:black; font-weight:bold; display: block; padding:5px; margin: 8px;">
-                    {{ phrase('portal.account.login-invalid') }}
-                </div>
+                {{ macros.user_notice('auth', phrase('portal.account.login-invalid')) }}
             {% endif %}
 
             {% if lockout_error %}
-                <div class="error"
-                     style="border: 2px solid black; background-color: firebrick;  color:black; font-weight:bold; display: block; padding:5px; margin: 8px;">
-                    {{ phrase('portal.account.login-lockout') }}
-                </div>
+                {{ macros.user_notice('auth', phrase('portal.account.login-lockout')) }}
             {% endif %}
 
             {% if login_captcha_failed %}
-                <div class="error"
-                     style="border: 2px solid black; background-color: firebrick;  color:black; font-weight:bold; display: block; padding:5px; margin: 8px;">
-                    {{ phrase('portal.account.login-captcha-failed') }}
-                </div>
+                {{ macros.user_notice('auth', phrase('portal.account.login-captcha-failed')) }}
             {% endif %}
 
             {% if saved_form %}
-                <div class="error"
-                     style="border: 2px solid black; background-color: firebrick;  color:black; font-weight:bold; display: block; padding:5px; margin: 8px;">
-                    <p>{{ phrase('portal.account.login-saved-form', { type: saved_form_message }) }}</p>
-                </div>
+                {{ macros.user_notice('auth', phrase('portal.account.login-saved-form', { type: saved_form_message })) }}
             {% endif %}
 
             {% if auth_manager.isLoginFormVisible %}
                 <form id="login" class="form-ticket" action="{{ path('portal_login_submit') }}" method="post" novalidate>
                     <input type="hidden" name="_failure_path" value="{{ path('portal_login', {retry:'auth'}) }}"/>
 
-                    <div class="inline-form-wrapper">
-                      <div class="inline-form-alert">
-                        <div class="form-alert-icon">
-                          <i class="fa fa-lock"></i>
-                        </div>
-                        
-                        <div class="content-wrapper">
-                          <h1>Lorel ipsum dolor sit amet</h1>
-                          <p>This is a subtitle to the notice title</p>
-                        </div>
-                      </div>
-                    </div>
+
 
 
                     <div class="column-half">
