@@ -210,6 +210,16 @@ class PortalPermissionsManager
         );
     }
 
+    /**
+     * A very specific method that gets the PermissionsBag for the "Registered" usergroup.
+     *
+     * WARNING: this is a partial permissions bag, and is only meant to be used for permissions (not allowed cat ids, deps, etc).
+     */
+    public function getPartialPermissionBagForRegisteredUsergroup()
+    {
+        return new PermissionsBag($this->generatePermissionsMapForRegisteredUsergroup());
+    }
+
     protected function getAllowedDepartmentIds(Person $person)
     {
         return $this->permissions_loader->loadAllowedDepartments($person);
@@ -312,6 +322,21 @@ class PortalPermissionsManager
         $usergoupIds = $this->usergroup_decider->getUsergroupIdsForPerson($person);
 
         return $this->permissions_loader->loadPermissions($usergoupIds);
+    }
+
+    /**
+     * Generate permission map for a very specific usergroup "Registered".
+     *
+     * @return array
+     *
+     * @deprecated this is meant to be used internally only
+     */
+    public function generatePermissionsMapForRegisteredUsergroup()
+    {
+        /** @var \Application\DeskPRO\Entity\Usergroup $registered */
+        $registered = $this->getEm()->getRepository('DeskPRO:Usergroup')->findOneBy(array('sys_name' => 'registered'));
+
+        return $this->permissions_loader->loadPermissions(array($registered->getId()));
     }
 
     /**

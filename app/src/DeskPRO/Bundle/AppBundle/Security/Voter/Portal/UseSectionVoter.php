@@ -72,7 +72,7 @@ class UseSectionVoter extends AbstractVoter
             case static::USE_NEWS:
                 return $this->getActiveBrandSetting('core.apps_news') && $permissionBag->get('news.use');
             case static::USE_TICKETS:
-                return $permissionBag->get('tickets.use');
+                return $permissionBag->get('tickets.use') || $this->isLoggedOutAndRegisteredUsergroupAllows($user, 'tickets.use');
         }
 
         return false;
@@ -86,5 +86,27 @@ class UseSectionVoter extends AbstractVoter
     protected function getSupportedClasses()
     {
         return true;
+    }
+
+    /**
+     * A very specific method that return true if:.
+     *
+     * 1. The user is logged out
+     * 2. The given permission is granted in the "Registered" usergroup.
+     *
+     * @param $user
+     * @param $perm
+     *
+     * @return bool
+     */
+    private function isLoggedOutAndRegisteredUsergroupAllows($user, $perm)
+    {
+        if ($this->isLoggedIn($user)) {
+            return false; // logged in, so method this is false
+        }
+
+        $registered_bag = $this->getPortalPermissionsManager()->getPartialPermissionBagForRegisteredUsergroup();
+
+        return $registered_bag->get($perm);
     }
 }
