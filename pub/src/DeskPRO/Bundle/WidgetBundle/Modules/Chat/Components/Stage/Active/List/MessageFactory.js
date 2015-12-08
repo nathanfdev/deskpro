@@ -21,6 +21,7 @@ export class MessageFactory extends React.Component {
 
       switch (phraseId) {
         case 'message_assigned':
+        case 'message_ended-by':
           return (
             <InlineEvent {...this.props}>
               {translatedText.replace('{{name}}', content.name)}
