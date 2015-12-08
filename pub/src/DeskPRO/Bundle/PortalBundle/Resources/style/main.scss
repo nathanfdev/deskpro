@@ -7881,6 +7881,10 @@ ul.big-button-collection {
   margin-top: 50px;
   text-align: center;
 
+  @media screen and (max-width: 760px) {
+    margin-top: 20px;
+  }
+
   hr {
     position: absolute;
     top: 10px;
