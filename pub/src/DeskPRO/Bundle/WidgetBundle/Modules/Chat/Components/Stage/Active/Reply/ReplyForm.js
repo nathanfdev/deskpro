@@ -118,11 +118,9 @@ export class ReplyForm extends React.Component {
               />
           </div>
 
-          {!isEnded &&
-            <EndChatContainer>
-              <EndChatButton />
-            </EndChatContainer>
-          }
+          <EndChatContainer>
+            <EndChatButton />
+          </EndChatContainer>
         </div>
       </div>
     );
