@@ -112,7 +112,7 @@ class SystemEventListener implements EventSubscriberInterface
      *
      * @param UserChatSystemEvent $event
      *
-     * @return string|null
+     * @return string
      */
     protected function getBaseChannel(UserChatSystemEvent $event)
     {
@@ -132,6 +132,6 @@ class SystemEventListener implements EventSubscriberInterface
                 return ClientMessageEvent::CHANNEL_CHAT_UNASSIGNED;
         }
 
-        return;
+        return '';
     }
 }
