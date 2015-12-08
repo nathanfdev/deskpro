@@ -7210,9 +7210,11 @@ ul.categories-article-list {
   }
 }
 
-.table-wrapper {
-  width: 100%;
-  overflow-x: scroll;
+@media screen and (max-width: 760px) {
+  .table-wrapper {
+    width: 100%;
+    overflow-x: scroll;
+  }
 }
 
 .user-ticket-list-expanded {
