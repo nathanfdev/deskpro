@@ -122,7 +122,7 @@ class OrganizationController extends AbstractController
      *			),
      *			@SWG\Parameter(
      *				name="parent_id",
-     *				description="The id of the parent group.",
+     *				description="The id of the parent org.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
@@ -134,11 +134,12 @@ class OrganizationController extends AbstractController
     public function searchAction()
     {
         $search_map = array(
-            'address' => OrganizationSearch::TERM_CONTACT_ADDRESS,
-            'im'      => OrganizationSearch::TERM_CONTACT_IM,
-            'label'   => OrganizationSearch::TERM_LABEL,
-            'name'    => OrganizationSearch::TERM_NAME,
-            'phone'   => OrganizationSearch::TERM_CONTACT_PHONE,
+            'address'   => OrganizationSearch::TERM_CONTACT_ADDRESS,
+            'im'        => OrganizationSearch::TERM_CONTACT_IM,
+            'label'     => OrganizationSearch::TERM_LABEL,
+            'name'      => OrganizationSearch::TERM_NAME,
+            'phone'     => OrganizationSearch::TERM_CONTACT_PHONE,
+            'parent_id' => OrganizationSearch::TERM_PARENT_ID,
         );
 
         $terms = array();
@@ -457,9 +458,14 @@ class OrganizationController extends AbstractController
         }
 
         if ($parent = $this->em->find('DeskPRO:Organization', $this->in->getInt('parent_id') ?: 0)) {
-            if ($parent !== $org) {
-                $org->parent = $parent;
+            $test = $parent;
+            while ($test) {
+                if ($test === $org) {
+                    throw new \Exception(sprintf('You can\'t set organization "%s" as a parent of "%s"', $parent->name, $org->name));
+                }
+                $test = $test->parent;
             }
+            $org->parent = $parent;
         } else {
             $org->parent = null;
         }

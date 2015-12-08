@@ -70,6 +70,13 @@
                         },
                         {
                             "paramType": "query",
+                            "name": "parent_id",
+                            "type": "integer",
+                            "required": false,
+                            "description": "The id of the parent organization."
+                        },
+                        {
+                            "paramType": "query",
                             "name": "page",
                             "type": "string",
                             "required": false,
@@ -124,6 +131,13 @@
                             "type": "string",
                             "required": true,
                             "description": "Summary of the organization's details."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "parent_id",
+                            "type": "integer",
+                            "required": false,
+                            "description": "Id of the parent organization."
                         }
                     ]
                 }
@@ -201,6 +215,13 @@
                             "type": "string",
                             "required": true,
                             "description": "Summary of the organization's details."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "parent_id",
+                            "type": "integer",
+                            "required": false,
+                            "description": "Id of the parent organization."
                         }
                     ],
                     "responseMessages": [

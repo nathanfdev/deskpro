@@ -39,6 +39,7 @@ use Orb\Util\Util;
 class OrganizationSearch extends SearcherAbstract
 {
     const TERM_ID                 = 'org_id';
+    const TERM_PARENT_ID          = 'org_parent_id';
     const TERM_NAME               = 'org_name';
     const TERM_ORGANIZATION_FIELD = 'org_field';
     const TERM_LABEL              = 'org_label';
@@ -252,6 +253,10 @@ class OrganizationSearch extends SearcherAbstract
                 switch ($term) {
                     case self::TERM_ID:
                         $wheres[] = $this->_rangeMatch("$org_table.id", $op, $choice, true);
+                        break;
+
+                    case self::TERM_PARENT_ID:
+                        $wheres[] = $this->_rangeMatch("$org_table.parent_id", $op, $choice, true);
                         break;
 
                     case self::TERM_NAME:
