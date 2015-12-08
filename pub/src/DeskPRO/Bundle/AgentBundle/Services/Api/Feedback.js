@@ -36,12 +36,29 @@ export function deleteFeedbackComment(ids) {
   return DpApi.sendDelete('DP_API/feedback_comments?' + params.join('&'));
 }
 
+export function approveFeedbackComment(ids) {
+  const params = [];
+  ids.forEach((id) => {
+    params.push('id[]=' + id);
+  });
+  return DpApi.sendPatch('DP_API/feedback_comments/approve?' + params.join('&'));
+}
+
 export function deleteFeedback(ids) {
   const params = [];
   ids.forEach((id) => {
     params.push('id[]=' + id);
   });
   return DpApi.sendDelete('DP_API/feedback?' + params.join('&'));
+}
+
+export function approveFeedback(ids) {
+  const params = [];
+  ids.forEach((id) => {
+    params.push('id[]=' + id);
+  });
+  console.log('DP_API/feedback/approve?' + params.join('&'));
+  return DpApi.sendPatch('DP_API/feedback/approve?' + params.join('&'));
 }
 
 /*

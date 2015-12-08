@@ -1,5 +1,5 @@
 import { createAction } from 'Ampliflux';
-import { deleteFeedbackComment, editFeedbackComment, commentsToReviewList, commentsToReview }
+import { deleteFeedbackComment, editFeedbackComment, approveFeedbackComment, commentsToReviewList, commentsToReview }
   from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
 import { applyParams } from './FeedbackListActions';
 import { setFeedbackRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackActions';
@@ -20,6 +20,17 @@ export const deleteComment = createAction(
   'FEEDBACK_COMMENTS_DELETE',
   (ids) => dispatch => {
     deleteFeedbackComment(ids).then(()=> {
+      dispatch(commentsToReviewCounter());
+      dispatch(applyParams({ isComments: true }));
+    });
+    return ids;
+  }
+);
+
+export const approveComment = createAction(
+  'FEEDBACK_COMMENTS_APPROVE',
+  (ids) => dispatch => {
+    approveFeedbackComment(ids).then(()=> {
       dispatch(commentsToReviewCounter());
       dispatch(applyParams({ isComments: true }));
     });

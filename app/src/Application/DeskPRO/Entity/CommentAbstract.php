@@ -223,7 +223,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         // any time after its created and the status is set
         // to visible means someone has reviewed its
-        if ($this->id && $new_status == 'visible') {
+        if ($this->id && $new_status == self::STATUS_VISIBLE) {
             $this->setModelField('is_reviewed', true);
         }
 

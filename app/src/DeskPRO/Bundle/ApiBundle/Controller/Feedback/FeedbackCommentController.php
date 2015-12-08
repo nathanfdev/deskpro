@@ -37,6 +37,7 @@ use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Error\Exception\InvalidFormException;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Patch;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -293,6 +294,35 @@ class FeedbackCommentController extends BaseController
         return View::create(
             array(),
             Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @param Request $request
+     * @Patch("/feedback_comments/approve", name="feedback_comments_approve_mass_action")
+     *
+     * @return View
+     */
+    public function massApproveAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $ids = $request->get('id');
+        $qb = $em->createQueryBuilder();
+        $qb
+            ->select('c')
+            ->from('DeskPRO:FeedbackComment', 'c')
+            ->andWhere('c.id IN (:ids)')
+            ->setParameter('ids', $ids);
+        $comments = $qb->getQuery()->getResult();
+
+        foreach ($comments as $comment) {
+            $comment->setStatus(FeedbackComment::STATUS_VISIBLE);
+        }
+        $em->flush();
+
+        return View::create(
+            $this->createRepresentation([]),
+            Response::HTTP_ACCEPTED
         );
     }
 

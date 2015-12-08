@@ -260,3 +260,14 @@ export const deleteFeedback = createAction(
     return ids;
   }
 );
+
+export const approveFeedback = createAction(
+  'FEEDBACK_APPROVE',
+  (ids) => dispatch => {
+    Feedback.approveFeedback(ids).then(()=> {
+      dispatch(feedbackToValidateCounter());
+      dispatch(applyParams({ isComments: false }));
+    });
+    return ids;
+  }
+);
