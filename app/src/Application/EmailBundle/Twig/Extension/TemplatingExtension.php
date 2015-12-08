@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Service\RateLimit;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Usersource\UsersourceInfo;
+use Application\EmailBundle\Templating\GlobalVariables;
 use Orb\Auth\Adapter\IframeSsoInterface;
 use Orb\Auth\Adapter\JsSsoInterface;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
@@ -62,6 +63,13 @@ class TemplatingExtension extends \Twig_Extension
     public function __construct(DeskproContainer $container)
     {
         $this->container = $container;
+    }
+
+    public function getGlobals()
+    {
+        return [
+            'app' => new GlobalVariables($this->container),
+        ];
     }
 
     public function getContainer()

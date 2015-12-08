@@ -76,7 +76,6 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
         'user_newcomment_finishlogin',
         'user_accept_upload',
         'user_validate_email',
-        'user_validate_ticket',
         'user_jstell_login',
         'user_login_inline',
         'user_login_resetpass_send',

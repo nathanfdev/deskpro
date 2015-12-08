@@ -88,7 +88,7 @@ class ProfileController extends AbstractController
                         // set the reset code
 
                         $valid_seconds = $this->getBrandSetting('user.password_reset_code_time_limit', 18000);
-                        $reset         = $this->getPersonDataService()->createPasswordReset($person, $valid_seconds);
+                        $reset         = $this->getPersonDataService()->createPasswordReset($person_check, $valid_seconds);
 
                         $this->get('portal_email_sender')->sendPasswordSetLink($person_check, $reset);
 

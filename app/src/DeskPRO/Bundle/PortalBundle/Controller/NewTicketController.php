@@ -146,7 +146,7 @@ class NewTicketController extends AbstractController
                                 $this->get('portal_validation')->sendTicketVerificationEmail($ticket, $saved_form);
                                 $this->addFlash('success', $this->phrase('portal.flashes.guest_new_ticket_must_verify'));
 
-                                return $this->redirectToRoute('portal_home');
+                                return $this->redirectToRoute('portal_thanks_verify');
                             } else {
                                 // this is a guest that we are accepting
                                 return $this->acceptNewTicketForGuest($ticket, $ticket_message, $person, $request);
@@ -159,7 +159,6 @@ class NewTicketController extends AbstractController
             }
         } elseif ($form->isSubmitted()) {
             $this->submitNewTicketAbuseCheck($person, $request->getClientIp());
-            $err = $form->getErrors(true, true);
         }
 
         $form_full = $this->createForm('ticket', $ticket, array(
@@ -225,35 +224,45 @@ class NewTicketController extends AbstractController
 
         $this->addFlash('success', $this->phrase('portal.flashes.ticket_created'));
 
-        $destination = $this->getObjectRouter()->getPortalPath($ticket);
-
+        // IF this person can't login but they are confirmed. show the thank you screen, but on that screen give
+        // them a link to setup an account straight away if they want to
+        $destination    = $this->getObjectRouter()->getPortalPath($ticket);
+        $create_pw_link = null;
         if ($redirect = $this->get('portal_validation')->getPasswordRedirectIfRequired($person, $request, $destination)) {
-            return $redirect;
+            $create_pw_link = $redirect->getTargetUrl();
         }
 
-        // is a user, redirect to ticket view (will ask to login if not already)
-        return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
+        $params = [
+            'ticket_ref'        => $person->isConfirmed() ? $this->get('ticket.public_id_resolver')->findId($ticket) : null,
+            'create_pw_link'    => $create_pw_link,
+            'is_confirmed_user' => $person->isConfirmed(),
+        ];
+
+        return $this->redirectToRoute('portal_thanks', $params);
+    }
+
+    /**
+     * @Route("/thank-you/verify-email", name="portal_thanks_verify", defaults={"ticket_ref" = null, "do_verify" = true})
+     * @Route("/thank-you/{ticket_ref}", name="portal_thanks", defaults={"ticket_ref" = null})
+     */
+    public function thankYouAction(Request $request, $ticket_ref = null, $do_verify = false)
+    {
+        $create_pw_link    = $request->get('create_pw_link');
+        $is_confirmed_user = $request->get('is_confirmed_user');
+
+        return $this->renderThemeView('Theme:Tickets:thank_you.html.twig', array(
+            'ticket_ref'        => $ticket_ref,
+            'page_title'        => $this->createPageTitle()->newticketGuestThankYou(),
+            'verify_email'      => $do_verify,
+            'create_pw_link'    => $create_pw_link,
+            'is_confirmed_user' => $is_confirmed_user,
+        ));
     }
 
     protected function submitNewTicketAbuseCheck($person, $ip)
     {
         $check = new SubmitTicketAbuseCheck($person, $ip);
         $this->getAntiAbuseService()->check($check);
-    }
-
-    /**
-     * @Route("/new-ticket/thank-you", name="portal_new_ticket_guest_thank_you")
-     * @Security("is_granted('USE_TICKETS')")
-     * @PageHttpCache()
-     */
-    public function guestThankYouAction()
-    {
-        return $this->renderThemeView(
-            'Theme:NewTicket:guest_thank_you.html.twig', array(
-                'breadcrumbs' => $this->getBreadcrumbGenerator()->buildNewTicketGuestThankYou(),
-                'page_title'  => $this->createPageTitle()->newticketGuestThankYou(),
-            )
-        );
     }
 
     /**

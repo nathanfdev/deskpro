@@ -69,7 +69,7 @@ class SavedFormController extends AbstractController
     /**
      * TEMP route that proxies to validateAction below. Needed for a route used in legacy "ticket-new-validate-email.html.twig".
      *
-     * @Route("/validate/new-ticket/{access_code}", name="user_validate_ticket")
+     * @Route("/validate/new-ticket/auth/{access_code}", name="user_validate_ticket")
      *
      * @deprecated
      */

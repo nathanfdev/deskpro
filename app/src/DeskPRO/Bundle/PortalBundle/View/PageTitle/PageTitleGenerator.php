@@ -158,7 +158,6 @@ class PageTitleGenerator
     {
         $builder = $this->createHelpdeskTitleBuilder();
 
-        $builder->prependSection($this->phrase('portal.tickets.new-section-title'));
         $builder->prependSection($this->phrase('portal.tickets.guest-thanks-section-title'));
 
         return (string) $builder;

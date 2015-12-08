@@ -159,8 +159,8 @@ class PortalValidation
 
     public function getPasswordRedirectIfRequired(Person $person, Request $request, $redirect_to_after_password_set = null)
     {
-        // if the gues is a user that can't login, send them to a page that will let them set a pw
-        if (!$person->isUser()) {
+        // if the guest is a confirmed user that can't login, send them to a page that will let them set a pw
+        if (!$person->isUser() && $person->isConfirmed()) {
             // act as if we generated a "set password" token for this user and they clicked the link
             $expire_time    = $this->brand_stack->getActive()->getSetting('user.password_reset_code_time_limit', 18000);
             $password_reset = $this->person_data_service->createPasswordReset($person, $expire_time);

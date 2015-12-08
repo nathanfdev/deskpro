@@ -753,10 +753,24 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      * this person valid?".
      *
      * @return bool
+     *
+     * @deprecated
      */
     public function isUserValid()
     {
         return ($this->isEmailValidated());
+    }
+
+    /**
+     * True if the Person is considered confirmed (not a bot). This means the user has
+     * either signed in from a usersource, or clicked a link in an email, etc. They are
+     * confirmed as trusted.
+     *
+     * @return bool
+     */
+    public function isConfirmed()
+    {
+        return $this->is_confirmed;
     }
 
     /**
