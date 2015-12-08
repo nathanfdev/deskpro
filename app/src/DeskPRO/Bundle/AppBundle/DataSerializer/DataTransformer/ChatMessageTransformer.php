@@ -70,6 +70,7 @@ class ChatMessageTransformer extends AbstractDataSerializerTransformer
         $data = $transformation_request->getDataToBeTransformed();
 
         return [
+            'message_id'      => $data->getId(),
             'conversation_id' => $data->getConversation()->getId(),
             'author_id'       => $this->getAuthorId($data),
             'author_type'     => $this->getAuthorType($data),
@@ -96,6 +97,10 @@ class ChatMessageTransformer extends AbstractDataSerializerTransformer
      */
     private function getAuthorType(ChatMessage $message)
     {
+        if ($message->getIsSys()) {
+            return 'sys';
+        }
+
         $author      = $message->getAuthor();
         $metadata    = $message->getMetadata();
         $author_type = $author && $author->is_agent ? 'agent' : 'user';
