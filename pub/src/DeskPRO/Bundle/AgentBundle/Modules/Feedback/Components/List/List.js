@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ListFrameMenu';
 import { ControlBarContainer } from './ControlBar/ControlBarContainer';
 import { MassActionContainer } from './ControlBar/MassActionContainer';
 import { FeedbackCardsContainer } from './View/List/FeedbackCardsContainer';
@@ -10,6 +11,7 @@ import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Compone
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { PaginationContainer } from './PaginationContainer';
+import { toggleMassAction } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 
 export class List extends Component {
 
@@ -70,12 +72,15 @@ export class List extends Component {
   }
 
   render() {
-    const { loaded, currentApp, pagination, selected } = this.props;
+    const { loaded, pagination, selected } = this.props;
+    const checkbox = { count: selected.size, action: toggleMassAction };
 
     return (
       <ListFrameContainer>
-        {!selected.size && <ControlBarContainer />}
-        {selected.size && <MassActionContainer />}
+        <ListFrameMenu checkbox={checkbox}>
+          {!selected.size && <ControlBarContainer key="1"/>}
+          {selected.size && <MassActionContainer key="2"/>}
+        </ListFrameMenu>
         <LoadIndicator loaded={loaded}
                        opacity={0}
                        width={3}>

@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import { ListFrameMenu } from '../ListFrameMenu';
 import { ActionContainer } from './ActionContainer';
 import { SubmitButton } from './SubmitButton';
 
@@ -19,12 +18,12 @@ export class MassActionBar extends Component {
   };
 
   render() {
-    const { checkbox, actions, submitAction, setParams, currentParams, cancelAction, resetSingleAction } = this.props;
+    const { actions, submitAction, setParams, currentParams, cancelAction, resetSingleAction } = this.props;
     const isActive = currentParams && currentParams.size > 0;
     const renderByType = (item, index)=> {
       if (item.type === 'button') {
         return (
-          <SubmitButton label={item.label}
+          <SubmitButton label={item.label} key={index}
                         onClick={item.onClick}/>
         );
       }
@@ -40,7 +39,7 @@ export class MassActionBar extends Component {
     };
 
     return (
-      <ListFrameMenu checkbox={checkbox}>
+      <ul className="dpwd-navigation-dropdown-top-row-main-list">
         {actions.map((item, index) => renderByType(item, index))}
         {isActive && <li>
           <hr/>
@@ -53,7 +52,7 @@ export class MassActionBar extends Component {
                                    onClick={cancelAction}
                                    isActive={isActive}/>}
 
-      </ListFrameMenu>
+      </ul>
     );
   }
 }

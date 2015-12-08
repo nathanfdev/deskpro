@@ -1,6 +1,6 @@
 import { createAction } from 'Ampliflux';
 import { deleteFeedbackComment, editFeedbackComment, approveFeedbackComment, commentsToReviewList, commentsToReview }
-  from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
+  from 'DeskPRO/Bundle/AgentBundle/Services/Api/FeedbackComment';
 import { applyParams } from './FeedbackListActions';
 import { setFeedbackRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackActions';
 import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
