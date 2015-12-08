@@ -1,9 +1,13 @@
 import React, {Component, PropTypes} from 'react';
 import { MassActionBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/MassActionBar/MassActionBar';
-import { toggleMassAction, massAction, setMassActionsParams, resetAllMassActionsParams, resetMassActionsParam, deleteFeedback }
+import {
+  toggleMassAction, massAction, setMassActionsParams, resetAllMassActionsParams, resetMassActionsParam,
+  deleteFeedback, approveFeedback
+}
   from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
 import { massActionsSelector, massActionsParamsSelector, currentListParamsSelector } from '../../../Selectors/list';
-import { deleteComment } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackCommentsActions';
+import { deleteComment, approveComment }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackCommentsActions';
 
 import { connect } from 'react-redux';
 @connect(state => ({
@@ -47,8 +51,16 @@ export class MassActionContainer extends Component {
         }
         return dispatch(toggleMassAction());
       };
+      const approveAction = () => {
+        if (currentListParams.get('isComments')) {
+          dispatch(approveComment(ids));
+        } else {
+          dispatch(approveFeedback(ids));
+        }
+        return dispatch(toggleMassAction());
+      };
       return [
-        { label: 'Approve', type: 'button' },
+        { label: 'Approve', type: 'button', onClick: approveAction },
         { label: 'Delete', type: 'button', onClick: deleteAction }
       ];
     }

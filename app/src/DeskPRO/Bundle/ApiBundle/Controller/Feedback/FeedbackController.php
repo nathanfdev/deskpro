@@ -40,6 +40,7 @@ use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackCountCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackSelectCriteria;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Patch;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -282,4 +283,32 @@ class FeedbackController extends BaseController
         );
     }
 
+    /**
+     * @param Request $request
+     * @Patch("/feedback/approve", name="feedback_approve_mass_action")
+     *
+     * @return View
+     */
+    public function massApproveAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $ids = $request->get('id');
+        $qb = $em->createQueryBuilder();
+        $qb
+            ->select('f')
+            ->from('DeskPRO:Feedback', 'f')
+            ->andWhere('f.id IN (:ids)')
+            ->setParameter('ids', $ids);
+        $feedback = $qb->getQuery()->getResult();
+
+        foreach ($feedback as $item) {
+            $item->setHiddenStatus(null)->setIsReviewed(true);
+        }
+        $em->flush();
+
+        return View::create(
+            $this->createRepresentation([]),
+            Response::HTTP_ACCEPTED
+        );
+    }
 }

@@ -34,11 +34,11 @@ export default class Http {
    * @param {String} type
    */
   setDefaultHeader(headerName, headerValue, type = 'ALL') {
-    type = type.toUpperCase();
-    if (!this.defaults[type].headers) {
-      this.defaults[type].headers = {};
+    const upperCaseType = type.toUpperCase();
+    if (!this.defaults[upperCaseType].headers) {
+      this.defaults[upperCaseType].headers = {};
     }
-    this.defaults[type].headers[headerName] = headerValue;
+    this.defaults[upperCaseType].headers[headerName] = headerValue;
   }
 
   /*
@@ -49,8 +49,7 @@ export default class Http {
    * @param {String} type
    */
   setDefaultConfig(configName, configValue, type = 'ALL') {
-    type = type.toUpperCase();
-    this.defaults[type][configName] = configValue;
+    this.defaults[type.toUpperCase()][configName] = configValue;
   }
 
   /*
