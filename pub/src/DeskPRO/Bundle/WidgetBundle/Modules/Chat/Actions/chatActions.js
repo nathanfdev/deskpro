@@ -3,6 +3,7 @@ import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 
 export const toggleAudioNotifications = createAction('WIDGET_CHAT_TOGGLE_AUDIO_NOTIFICATIONS');
+export const toggleSendTranscript = createAction('WIDGET_CHAT_TOGGLE_SEND_TRANSCRIPT');
 export const setChatId = createAction('WIDGET_CHAT_SET_ID');
 export const updateChatInfo = createAction('WIDGET_CHAT_UPDATE_CHAT_INFO');
 export const resetMessages = createAction('WIDGET_CHAT_RESET_MESSAGES');

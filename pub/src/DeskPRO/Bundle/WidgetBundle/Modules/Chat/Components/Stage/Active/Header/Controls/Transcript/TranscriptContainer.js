@@ -3,17 +3,21 @@ import { connect } from 'react-redux';
 import Simple from 'DeskPRO/Component/Positioned/Simple';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { TranscriptForm } from './TranscriptForm';
-import { authorEmailSelector, authorNameSelector } from '../../../../../../Selectors/chat';
+import { authorEmailSelector, authorNameSelector, sendTranscriptSelector } from '../../../../../../Selectors/chat';
+import { toggleSendTranscript } from '../../../../../../Actions/chatActions';
 
 @connect(state => ({
   authorName: authorNameSelector(state),
-  authorEmail: authorEmailSelector(state)
+  authorEmail: authorEmailSelector(state),
+  enabled: sendTranscriptSelector(state)
 }))
 export class TranscriptContainer extends React.Component {
 
   static propTypes = {
+    dispatch: PropTypes.func,
     authorName: PropTypes.string,
     authorEmail: PropTypes.string,
+    enabled: PropTypes.bool,
     children: PropTypes.node
   };
 
@@ -24,15 +28,20 @@ export class TranscriptContainer extends React.Component {
     };
   }
 
-  onOpenForm = event => {
+  onClick = event => {
     event.preventDefault();
-    this.setState({
-      formOpened: true
-    });
+
+    const { dispatch, authorName, authorEmail } = this.props;
+    if (authorName && authorEmail) {
+      dispatch(toggleSendTranscript());
+    } else {
+      this.setState({
+        formOpened: true
+      });
+    }
   };
 
-  onCloseForm = event => {
-    event.preventDefault();
+  onCloseForm = () => {
     this.setState({
       formOpened: false
     });
@@ -40,10 +49,11 @@ export class TranscriptContainer extends React.Component {
 
   onSubmit = data => {
     console.log('submit transcript form', data);
+    this.onCloseForm();
   };
 
   render() {
-    const { authorName, authorEmail, children } = this.props;
+    const { authorName, authorEmail, enabled, children } = this.props;
     const childProps = children.props;
 
     return (
@@ -52,7 +62,8 @@ export class TranscriptContainer extends React.Component {
           ...childProps,
 
           ref: 'button',
-          onOpenForm: this.onOpenForm
+          active: enabled,
+          onClick: this.onClick
         })}
 
         <Simple isOpen={this.state.formOpened}

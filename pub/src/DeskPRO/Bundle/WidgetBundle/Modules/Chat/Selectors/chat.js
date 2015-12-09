@@ -2,10 +2,15 @@ import { createSelector } from 'reselect';
 
 const stateSelector = state => state.Chat.chat;
 
-// Audio notifications
+// Controls
 export const audioNotificationsSelector = createSelector(
   stateSelector,
   state => state.get('audioNotifications')
+);
+
+export const sendTranscriptSelector = createSelector(
+  stateSelector,
+  state => state.get('sendTranscript')
 );
 
 // Chat info selectors
