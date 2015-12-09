@@ -35,9 +35,9 @@ use Application\DeskPRO\Entity\ChatConversation;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
- * Class UserChatSystemEvent.
+ * Class UserChatEvent.
  */
-class UserChatSystemEvent extends Event
+class UserChatEvent extends Event
 {
     const TYPE_STARTED        = 'message_started';
     const TYPE_USER_LEFT      = 'message_user-left';

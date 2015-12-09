@@ -69,7 +69,7 @@ class ClientMessageListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            ClientMessageEvent::EVENT_NAME => 'onSendMessage',
+            ClientMessageEvent::SEND => 'onSendMessage',
         ];
     }
 

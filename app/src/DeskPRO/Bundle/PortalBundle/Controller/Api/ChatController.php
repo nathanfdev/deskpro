@@ -34,7 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageEvent;
-use DeskPRO\Bundle\AppBundle\UserChat\UserChatSystemEvent;
+use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -73,8 +73,8 @@ class ChatController extends AbstractController
         $em->flush();
 
         $this->dispatch(
-            UserChatSystemEvent::EVENT_NAME,
-            new UserChatSystemEvent($conversation, UserChatSystemEvent::TYPE_STARTED)
+            UserChatEvent::EVENT_NAME,
+            new UserChatEvent($conversation, UserChatEvent::TYPE_STARTED)
         );
 
         return new JsonResponse($this->dataSerialize($conversation));
@@ -142,7 +142,7 @@ class ChatController extends AbstractController
 
         $conversation_channel = $conversation->getChannelId(ClientMessageEvent::CHANNEL_CHAT_NEW_MESSAGE);
         $this->dispatch(
-            ClientMessageEvent::EVENT_NAME,
+            ClientMessageEvent::SEND,
             new ClientMessageEvent($conversation_channel, $chat_message)
         );
 
@@ -166,8 +166,8 @@ class ChatController extends AbstractController
         $em->flush();
 
         $this->dispatch(
-            UserChatSystemEvent::EVENT_NAME,
-            new UserChatSystemEvent($conversation, UserChatSystemEvent::TYPE_END_BY_USER, [], ['chat_ended'])
+            UserChatEvent::EVENT_NAME,
+            new UserChatEvent($conversation, UserChatEvent::TYPE_END_BY_USER, [], ['chat_ended'])
         );
 
         return new JsonResponse();
@@ -190,8 +190,8 @@ class ChatController extends AbstractController
         $em->flush();
 
         $this->dispatch(
-            UserChatSystemEvent::EVENT_NAME,
-            new UserChatSystemEvent($conversation, UserChatSystemEvent::TYPE_USER_RETURNED)
+            UserChatEvent::EVENT_NAME,
+            new UserChatEvent($conversation, UserChatEvent::TYPE_USER_RETURNED)
         );
 
         return new JsonResponse();
