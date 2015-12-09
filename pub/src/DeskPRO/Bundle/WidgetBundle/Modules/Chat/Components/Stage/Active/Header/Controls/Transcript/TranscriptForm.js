@@ -14,7 +14,8 @@ export class TranscriptForm extends React.Component {
     super(props);
     this.state = {
       name: props.name || '',
-      email: props.email || ''
+      email: props.email || '',
+      submit: false
     };
   }
 
@@ -32,7 +33,21 @@ export class TranscriptForm extends React.Component {
 
   onSubmit = event => {
     event.preventDefault();
-    this.props.onSubmit(this.state);
+
+    const promise = this.props.onSubmit(this.state);
+    if (promise) {
+      this.setState({
+        submit: true
+      });
+
+      const onSubmitResponse = () => {
+        this.setState({
+          submit: false
+        });
+      };
+
+      promise.then(onSubmitResponse, onSubmitResponse);
+    }
   };
 
   render() {
@@ -56,7 +71,10 @@ export class TranscriptForm extends React.Component {
             </FormItem>
 
             <div className="label button-label">
-              <input type="submit" value="Send me a transcript" className="dpdesignportal-button" onClick={this.onSubmit} />
+              {this.state.submit
+                ? 'Saving'
+                : <input type="submit" value="Send me a transcript" className="dpdesignportal-button" onClick={this.onSubmit} />
+              }
             </div>
 
           </form>

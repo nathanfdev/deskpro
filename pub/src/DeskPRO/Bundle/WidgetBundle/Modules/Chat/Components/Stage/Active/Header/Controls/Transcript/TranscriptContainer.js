@@ -99,7 +99,8 @@ export class TranscriptContainer extends React.Component {
                 zIndex={1000}>
 
           <ClickOut onClickOut={this.onCloseForm}
-                    context={[parent.document, parent.window.widget_iframe.document]}>
+                    context={[parent.document, parent.window.widget_iframe.document]}
+                    additionalNodes={['.dpdesignportal-button']}>
 
             <TranscriptForm name={authorName}
                             email={authorEmail}
