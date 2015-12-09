@@ -9,14 +9,14 @@ export const audioNotificationsSelector = createSelector(
 );
 
 // Chat info selectors
+export const chatIdSelector = createSelector(
+  stateSelector,
+  state => state.get('chatId')
+);
+
 export const chatInfoSelector = createSelector(
   stateSelector,
   state => state.get('chatInfo')
-);
-
-export const chatIdSelector = createSelector(
-  chatInfoSelector,
-  chatInfo => chatInfo.get('id')
 );
 
 export const agentIdSelector = createSelector(

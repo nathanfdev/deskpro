@@ -1,13 +1,13 @@
 import { createReducer } from 'Ampliflux';
 import * as actions from '../Actions/chatActions';
 import { setFullPayload, setValue, toggleBool } from 'Ampliflux/reducers/handlers';
-import moment from 'moment';
 import Immutable from 'immutable';
 
 const initialState = {
   audioNotifications: true,
+  chatId: null,
   chatInfo: {
-    date_ended: null//moment().format('X')
+    date_ended: null
   },
   messages: [
     {id: 104, content: 'my message my message my message my message :)', author: null, is_sys: false, is_html: true, date_created: '2015-12-03 14:10'},
@@ -19,6 +19,7 @@ const initialState = {
 
 export default createReducer(initialState, {
   [actions.toggleAudioNotifications]: toggleBool('audioNotifications'),
+  [actions.setChatId]: setFullPayload('chatId'),
   [actions.updateChatInfo]: setFullPayload('chatInfo'),
   [actions.resetMessages]: setValue('messages', []),
   [actions.addNewMessages]: (state, payload) => {
