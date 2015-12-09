@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import { AgentMessage } from './Message/AgentMessage';
 import { UserMessage } from './Message/UserMessage';
-import { MessageAvatar } from './Message/MessageAvatar';
 import { InlineEvent } from './Event/InlineEvent';
 
 export class MessageFactory extends React.Component {
