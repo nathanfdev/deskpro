@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { createProject, editProject } from '../../../../Actions/navActions';
-import { FieldErrors } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/FieldErrors';
+import { FieldErrors } from 'DeskPRO/Component/Form/FormErrors';
 import Immutable from 'immutable';
 import Loader from 'react-loader';
 import classNames from 'classnames';

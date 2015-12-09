@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { FieldErrors } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/FieldErrors';
+import { FieldErrors } from 'DeskPRO/Component/Form/FormErrors';
 
 export class Field extends React.Component {
 
