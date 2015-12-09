@@ -1,6 +1,6 @@
 import React from 'react';
 import { ControlsPane } from './ControlsPane';
-import { ControlItem } from './ControlItem';
+import { AssetsContainer } from './Assets/AssetsContainer';
 import { ReopenChatContainer } from '../../ReopenChatContainer';
 import { ReopenChatButton } from './EndChat/ReopenChatButton';
 
@@ -10,9 +10,7 @@ export class DonePane extends React.Component {
     return (
       <ControlsPane>
         <li>
-          <ControlItem>
-            <i className="fa fa-angle-double-left"></i>Assets
-          </ControlItem>
+          <AssetsContainer />
         </li>
         <li>
           <ReopenChatContainer>

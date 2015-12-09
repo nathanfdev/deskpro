@@ -7,7 +7,7 @@ const initialState = {
   audioNotifications: true,
   chatId: null,
   chatInfo: {
-    date_ended: null
+    date_ended: '2015-12-09' //null
   },
   messages: [
     {id: 104, content: 'my message my message my message my message :)', author: null, is_sys: false, is_html: true, date_created: '2015-12-03 14:10'},
