@@ -33,13 +33,12 @@ export class DateFilter extends Component {
     const isActive = Boolean(from || to);
 
     return (
-      <FilterItem
-        activeItem={activeItem}
-        icon={icon || 'calendar-o'}
-        label={label}
-        isActive={isActive}
-        setActiveItem={setActiveItem}
-        resetFilter={unsetParams.bind(this, [fromParam, toParam])}>
+      <FilterItem activeItem={activeItem}
+                  icon={icon || 'calendar-o'}
+                  label={label}
+                  isActive={isActive}
+                  setActiveItem={setActiveItem}
+                  resetFilter={unsetParams.bind(this, [fromParam, toParam])}>
 
         {this.renderDateCreatedItemContent(from, to)}
         <Menu>

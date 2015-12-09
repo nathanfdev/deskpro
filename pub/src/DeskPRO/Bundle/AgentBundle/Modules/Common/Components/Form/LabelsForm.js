@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {QuickFilter} from './QuickFilter';
 import classNames from 'classnames';
 
-export class LabelsFilter extends Component {
+export class LabelsForm extends Component {
 
   static propTypes = {
     changeMode: PropTypes.func.isRequired,
