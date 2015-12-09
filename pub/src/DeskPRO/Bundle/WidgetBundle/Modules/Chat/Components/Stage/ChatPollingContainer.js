@@ -22,6 +22,11 @@ export class ChatPollingContainer extends React.Component {
 
   componentDidMount() {
     this.pollingRequest();
+    this.mounted = true;
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   pollingRequest = () => {
@@ -38,6 +43,9 @@ export class ChatPollingContainer extends React.Component {
     const promise = dispatch(pollingChat(chatId, queryParams));
     promise.then(
       () => {
+        if (!this.mounted) {
+          return;
+        }
         if (agentId && history.state !== '/chat/active') {
           history.replace('/chat/active');
         }
@@ -45,6 +53,10 @@ export class ChatPollingContainer extends React.Component {
         setTimeout(this.pollingRequest, 3000);
       },
       () => {
+        if (!this.mounted) {
+          return;
+        }
+
         setTimeout(this.pollingRequest, 3000);
       }
     );
