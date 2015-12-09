@@ -103,7 +103,11 @@ class UserChatSystemEventListener implements EventSubscriberInterface
             );
         }
 
-        $conversation_channel = $conversation->getChannelId(ClientMessageEvent::CHANNEL_CHAT_NEW_MESSAGE);
+        $channel_name = $chat_message->getIsUserHidden()
+            ? ClientMessageEvent::CHANNEL_CHAT_NEW_MESSAGE_HIDDEN
+            : ClientMessageEvent::CHANNEL_CHAT_NEW_MESSAGE;
+
+        $conversation_channel = $conversation->getChannelId($channel_name);
         $event->getDispatcher()->dispatch(
             ClientMessageEvent::EVENT_NAME,
             new ClientMessageEvent($conversation_channel, $chat_message)
