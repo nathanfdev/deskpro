@@ -478,7 +478,7 @@ class CsvImport extends AbstractJob
                     if (preg_match('/^custom_(\d+)$/', $map_field, $match)) {
                         $custom_field_id = $match[1];
                         $new_on_unknown  = !empty($info['new_on_unknown']);
-                    } elseif ($map_field == 'new_custom') {
+                    } elseif ($map_field == 'new_custom' && isset($this->_data['new_custom_map'][$column_id])) {
                         $custom_field_id = $this->_data['new_custom_map'][$column_id];
                         $new_on_unknown  = true;
                     }
