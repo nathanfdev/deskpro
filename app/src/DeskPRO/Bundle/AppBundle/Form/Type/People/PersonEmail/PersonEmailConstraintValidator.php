@@ -57,8 +57,12 @@ class PersonEmailConstraintValidator extends ConstraintValidator
             $this->context->addViolation('Expected PersonEmail instance, got '.$personEmail);
         }
 
-        $person = $constraint->getPerson();
-        if ($person->getId() !== $personEmail->getPersonId()) {
+        // Comparing to prev person as during form binding and $person->setEmail($email) call $email->setPerson($this)
+        // could be called
+        $emailPersonId                   = $personEmail->getPrevPersonId();
+        $emailPersonId or $emailPersonId = $personEmail->getPersonId();
+        $person                          = $constraint->getPerson();
+        if ($person->getId() !== $emailPersonId) {
             $this->context->addViolation('This email is already in use');
         }
     }

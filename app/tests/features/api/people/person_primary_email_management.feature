@@ -44,7 +44,7 @@ Feature: Person primary email CRUD
     And the JSON node "data.emails" should have 1 element
     And the JSON node "data.emails[0]" should be equal to "larry.doe@gmail.com"
 
-  Scenario: I remove person's primary email
+  Scenario: I try to remove person's primary email
     Given "Julia Doe" has just created an account with primary email "julia@doe.name"
     When she sends a PUT request to modify her personal data:
     """
@@ -52,10 +52,7 @@ Feature: Person primary email CRUD
   "primary_email": null
 }
     """
-    And I retrieve the person data
-    Then the response status code should be 200
-    And the JSON node "data.primary_email" should be equal to ""
-    And the JSON node "data.emails" should have 0 elements
+    Then the response status code should be 400
 
   Scenario: I try to create a person with primary email which is already taken
     Given I have a person with name "John Connor" and primary email "connor@gmail.com"

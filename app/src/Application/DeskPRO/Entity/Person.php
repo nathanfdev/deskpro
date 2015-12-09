@@ -43,6 +43,7 @@ use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
 use DeskPRO\Bundle\PortalBundle\Form\Collection\CustomDataCollection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -361,6 +362,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      * The primary email address used by this account.
      *
      * @var \Application\DeskPRO\Entity\PersonEmail
+     * @Assert\NotNull()
      */
     protected $primary_email;
 
@@ -1997,28 +1999,41 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return $this->emails;
     }
 
-    /**
-     * @param PersonEmail[] $emails
-     */
-    public function setEmails(array $emails)
-    {
-        $addresses = array_map(function (PersonEmail $email) {
-            return $email->getEmail();
-        }, $emails);
-        $this->setEmailAddresses($addresses);
-    }
-
     public function addEmail(PersonEmail $email)
     {
+        if (!$this->primary_email) {
+            $this->setPrimaryEmail($email);
+        }
+
         $this->emails->add($email);
         $email->setPerson($this);
         $this->_onPropertyChanged('emails', null, $this->emails);
     }
 
-    public function removeEmail(PersonEmail $email)
+    /**
+     * @param PersonEmail[] $emails
+     */
+    public function setEmails($emails)
     {
-        $this->emails->removeElement($email);
-        $this->_onPropertyChanged('emails', null, $this->emails);
+        if ($emails instanceof Collection) {
+            $emails = $emails->toArray();
+        }
+
+        $emails = array_values($emails);
+
+        // unset primary if it's not among new $emails
+        if (!in_array($this->primary_email, $emails)) {
+            $this->primary_email = null;
+        }
+
+        // set first email as primary if no primary email set yet
+        if (!$this->primary_email && count($emails)) {
+            $this->setPrimaryEmail($emails[0]);
+        }
+        $addresses = array_map(function (PersonEmail $email) {
+            return $email->getEmail();
+        }, $emails);
+        $this->setEmailAddresses($addresses);
     }
 
     /**

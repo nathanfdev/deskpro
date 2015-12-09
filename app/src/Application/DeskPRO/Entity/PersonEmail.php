@@ -70,6 +70,12 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
     protected $person;
 
     /**
+     * @var Person This is used by setPerson() method to store the previous value needed for validation.
+     *             Not a mapped property;
+     */
+    private $prevPerson;
+
+    /**
      * The email address.
      *
      * @var string
@@ -252,6 +258,8 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setPerson(Person $person)
     {
+        $this->prevPerson = $this->person;
+
         $this->setModelField('person', $person);
         if ($person->is_agent) {
             $this->setIsValidated(true);
@@ -266,6 +274,14 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
     public function getPerson()
     {
         return $this->person;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getPrevPersonId()
+    {
+        return $this->prevPerson ? $this->prevPerson->getId() : null;
     }
 
     public function getPersonId()

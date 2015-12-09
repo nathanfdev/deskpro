@@ -1,20 +1,20 @@
-Feature: Person secondary emails CRUD
+Feature: Person emails collection CRUD
 
   Background:
     Given I install the api data set
     And there are no registered users
     And my request is authenticated
 
-  Scenario: I create person w/o emails
+  Scenario: I try to create person w/o emails
     When I send a POST request to "/api/v2/people" with body:
     """
 {
   "name": "John Doe"
 }
     """
-    Then the response status code should be 201
+    Then the response status code should be 400
 
-  Scenario: I create a person with a single email
+  Scenario: I create a person with a single email provided within the collection
     When I send a POST request to "/api/v2/people" with body:
     """
 {
@@ -23,7 +23,7 @@ Feature: Person secondary emails CRUD
 }
     """
     Then the response status code should be 201
-    And the JSON node "data.primary_email" should be equal to ""
+    And the JSON node "data.primary_email" should be equal to "john@doe.org"
     And the JSON node "data.emails[0]" should be equal to "john@doe.org"
 
   Scenario: I create a person with two emails
@@ -35,7 +35,7 @@ Feature: Person secondary emails CRUD
 }
     """
     Then the response status code should be 201
-    And the JSON node "data.primary_email" should be equal to ""
+    And the JSON node "data.primary_email" should be equal to "john@doe.org"
     And the JSON node "data.emails[0]" should be equal to "john@doe.org"
     And the JSON node "data.emails[1]" should be equal to "john.doe@gmail.com"
 
@@ -51,8 +51,8 @@ Feature: Person secondary emails CRUD
     """
     Then the response status code should be 201
 
-  Scenario: I add a new secondary email to empty collection
-    Given I've just created a new person with name "Jane Doe"
+  Scenario: I replace a single email
+    Given I've just created a new person with name "Jane Doe" and primary email "jane@doe.org"
     When I send a PUT request to the just created person resource:
     """
 {
@@ -61,10 +61,10 @@ Feature: Person secondary emails CRUD
     """
     And I retrieve the person
     Then the response status code should be 200
-    And the JSON node "data.primary_email" should be equal to ""
     And the JSON node "data.emails" should have 1 element
+    And the JSON node "data.primary_email" should be equal to "jane.doe@gmail.com"
 
-  Scenario: I add a new secondary email in addition to the existing one
+  Scenario: I add a new email in addition to the existing one
     Given I create a person with name "Jane Doe" and emails "jane@doe.org"
     When I send a PUT request to the just created person resource:
     """
@@ -77,7 +77,7 @@ Feature: Person secondary emails CRUD
     And the JSON node "data.emails" should have 2 elements
     And the JSON node "data.emails[1]" should be equal to "jane.doe@gmail.com"
 
-  Scenario: I delete an emails from collection
+  Scenario: I delete emails from collection
     Given I have a person with name "John Doe" and emails "john@doe.org, john.doe@gmail.com, work.john@doe.org"
     When I send a PUT request to the person resource:
     """
@@ -87,6 +87,7 @@ Feature: Person secondary emails CRUD
     """
     And I retrieve the person
     Then the JSON node "data.emails" should have 1 element
+    And the JSON node "data.primary_email" should be equal to "john.doe@gmail.com"
     And the JSON node "data.emails[0]" should be equal to "john.doe@gmail.com"
 
   Scenario: I try to add an email used by another person
