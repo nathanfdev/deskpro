@@ -58,10 +58,16 @@ export class TranscriptContainer extends React.Component {
     });
   };
 
-  onSubmit = data => {
-    const { dispatch, chatId } = this.props;
-    const promise = dispatch(sendTranscriptInfo(chatId, data));
+  onSubmit = ({ name, email }) => {
+    const { dispatch, chatId, authorName, authorEmail } = this.props;
 
+    // no changes
+    if (name === authorName && email === authorEmail) {
+      this.onCloseForm();
+      return null;
+    }
+
+    const promise = dispatch(sendTranscriptInfo(chatId, {name, email}));
     if (promise) {
       promise.then(() => {
         this.onCloseForm();
