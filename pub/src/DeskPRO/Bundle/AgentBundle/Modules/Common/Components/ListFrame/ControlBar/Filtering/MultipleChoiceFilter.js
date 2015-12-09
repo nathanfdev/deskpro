@@ -10,7 +10,7 @@ export class MultipleChoiceFilter extends Component {
     setParamsAction: PropTypes.func.isRequired,
     setActiveItem: PropTypes.func,
     unsetParams: PropTypes.func.isRequired,
-    renderLabelsFilterInfo: PropTypes.func.isRequired,
+    renderFilterInfo: PropTypes.func.isRequired,
     activeItem: PropTypes.object,
     state: PropTypes.object.isRequired,
     filter: PropTypes.object.isRequired
@@ -32,7 +32,7 @@ export class MultipleChoiceFilter extends Component {
         }
       });
     });
-    return this.props.renderLabelsFilterInfo(selected);
+    return this.props.renderFilterInfo(selected);
   }
 
   render() {
