@@ -1,15 +1,14 @@
 import React, { Component, PropTypes } from 'react';
+import Immutable from 'immutable';
 import { connect } from 'react-redux';
 import { Button } from '../Button';
 import Positioned from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
-import Moment from 'moment';
 import { FilterItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/FilterItem';
-import { DateTimePicker } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/DateTime/DateTimePicker';
 import { LabelsFilter } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/LabelsFilter';
-import { ChoiceMenu, ChoiceMenuOption } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/ChoiceMenu';
-import Immutable from 'immutable';
+import { DateFilter } from './DateFilter';
+import { MultipleChoiceFilter } from './MultipleChoiceFilter';
 
 @connect()
 export class FilteringMenuContainer extends Component {
@@ -57,7 +56,17 @@ export class FilteringMenuContainer extends Component {
     let value;
     filters.map(filter => {
       if (filter.hasOwnProperty('param')) {
-        value = this.stateValue(filter.param);
+        const params = [filter.param];
+        if (filter.hasOwnProperty('options')) {
+          filter.options.map(option=> {
+            if (option.hasOwnProperty('nested')) {
+              option.nested.map(opt => {
+                params.push(opt.param);
+              });
+            }
+          });
+        }
+        value = this.stateValue(params);
       } else if (filter.hasOwnProperty('fromParam')) {
         value = this.stateValue(filter.fromParam);
         if (!value) {
@@ -118,7 +127,7 @@ export class FilteringMenuContainer extends Component {
  * properly only if Menu is a first level child of Item and this condition gets broken when adding additional
  * DateFilter/LabelFilter/etc components.
  *
- * @todo Fix Menu component and split this into DateFilter/LabelFilter/SelectFilter
+ 0* @todo Fix Menu component and split this into DateFilter/LabelFilter/SelectFilter
  */
 export class FilteringMenu extends Component {
   static propTypes = {
@@ -146,60 +155,6 @@ export class FilteringMenu extends Component {
     (params instanceof Array ? params : [params]).forEach(param => unset[param] = undefined);
     this.props.dispatch(this.props.setParamsAction(unset));
   }
-
-  // Date filter -------------------------------------------------------------------------------------------------------
-
-  renderDateCreatedItemContent(from, to) {
-    if (from || to) {
-      return (
-        <span className="dpw-navigation-dropdown-item-inline-info">
-          {from ? Moment(from).format('DD/MM/YYYY') : '...'} - {to ? Moment(to).format('DD/MM/YYYY') : '...'}
-        </span>
-      );
-    }
-  }
-
-  renderDateFilter({ label, icon, fromParam, toParam }, index) {
-    const { dispatch, setParamsAction, stateValue } = this.props;
-    const from = stateValue(fromParam);
-    const to = stateValue(toParam);
-    const isActive = Boolean(from || to);
-
-    return (
-      <FilterItem
-        key={index}
-        icon={icon || 'calendar-o'}
-        label={label}
-        isActive={isActive}
-        resetFilter={() => this.unsetParams([fromParam, toParam])}>
-
-        {this.renderDateCreatedItemContent(from, to)}
-        <Menu>
-          <div
-            className="dpw-navigation-dropdown-panel dpw-navigation-date-picker-panel dpw-navigation-dropdown-panel-corner-left">
-            <div className="dpw-date-picker">
-
-              <div className="dpw-date-picker-panel-container">
-                <form>
-                  <DateTimePicker
-                    label="From"
-                    className="dpw-date-picker-left"
-                    value={from}
-                    onChange={value => dispatch(setParamsAction({[fromParam]: value, delayReload: true}))}/>
-                  <DateTimePicker
-                    label="To"
-                    className="dpw-date-picker-right"
-                    value={to}
-                    onChange={value => dispatch(setParamsAction({[toParam]: value, delayReload: true}))}/>
-                </form>
-              </div>
-            </div>
-          </div>
-        </Menu>
-      </FilterItem>
-    );
-  }
-
 
   // Labels filter -----------------------------------------------------------------------------------------------------
 
@@ -261,116 +216,24 @@ export class FilteringMenu extends Component {
 
   // Select filter -----------------------------------------------------------------------------------------------------
 
-  renderSelectFilterInfo(options, filterValue) {
-    const flatOptions = [...options];
-    options.forEach(opt => {
-      if (opt.nested) {
-        flatOptions.push(...opt.nested);
-      }
-    });
-    const value = filterValue instanceof Array ? filterValue : [filterValue];
-    const selected = [];
-    value.forEach(val => {
-      flatOptions.forEach(opt => {
-        if (opt.value === val) {
-          selected.push(opt.label);
-        }
-      });
-    });
-    return this.renderLabelsFilterInfo(selected);
-  }
-
-  renderSelectFilter({ label, icon, param, multiple, quickFilter, options }, index) {
-    const { dispatch, setParamsAction, stateValue } = this.props;
-    const params = [param];
-    options.map(option=> {
-      if (option.hasOwnProperty('nested')) {
-        option.nested.map(opt => {
-          params.push(opt.param);
-        });
-      }
-    });
-    const filterValue = stateValue([...new Set(params)]) || [];
-    const isActive = Boolean(filterValue.length);
-
-    // onClick depending on if filter selects multiple values or a single value
-    let onClick;
-    if (multiple === false) {
-      onClick = (value) => () => dispatch(setParamsAction({ [param]: value, delayReload: true }));
-    } else {
-      onClick = (value, newParam = null) => () => {
-        let filterValues = newParam ? this.props.state.get(newParam) : this.props.state.get(param);
-        if (filterValues) {
-          filterValues = filterValues.toJS();
-        } else {
-          filterValues = [];
-        }
-        if (filterValues.indexOf(value) === -1) {
-          filterValues.push(value);
-        } else {
-          filterValues.splice(filterValues.indexOf(value), 1);
-        }
-        dispatch(setParamsAction({ [newParam ? newParam : param]: filterValues, delayReload: true }));
-      };
-    }
-
-    const renderNested = (nested) => {
-      if (!nested || !nested.length) {
-        return <span />;
-      }
-
-      return (
-        <ul>
-          {nested.map((option, index1) =>
-              <ChoiceMenuOption
-                key={index1}
-                value={option.value}
-                values={filterValue}
-                label={option.label}
-                onClick={onClick(option.value, option.param)}
-                />
-          )}
-        </ul>
-      );
-    };
-    return (
-      <FilterItem
-        key={index}
-        icon={icon || 'filter'}
-        label={label}
-        isActive={isActive}
-        resetFilter={() => this.unsetParams(param)}
-        >
-        {this.renderSelectFilterInfo(options, filterValue)}
-        <Menu>
-          <ChoiceMenu title={label} quickFilter={quickFilter}>
-            <ul>
-              {options.map((option, index2) =>
-                  <ChoiceMenuOption
-                    key={index2}
-                    value={option.value}
-                    values={filterValue}
-                    label={option.label}
-                    onClick={onClick(option.value)}
-                    >
-                    {renderNested(option.nested)}
-                  </ChoiceMenuOption>
-              )}
-            </ul>
-          </ChoiceMenu>
-        </Menu>
-      </FilterItem>
-    );
-  }
 
   renderFilter(filter, index) {
     switch (filter.type) {
       case 'date':
-        return this.renderDateFilter(filter, index);
+        return (
+          <DateFilter {...this.props} filter={filter}
+                                      key={index}
+                                      unsetParams={this.unsetParams}/>
+        );
       case 'labels':
         return this.renderLabelsFilter(filter, index);
       case 'select':
-        return this.renderSelectFilter(filter, index);
+        return (
+          <MultipleChoiceFilter {...this.props} filter={filter}
+                                                key={index}
+                                                unsetParams={this.unsetParams}
+                                                renderLabelsFilterInfo={this.renderLabelsFilterInfo}/>
+        );
       default:
         throw new Error(`Unknown filter type - ${filter.type}`);
     }

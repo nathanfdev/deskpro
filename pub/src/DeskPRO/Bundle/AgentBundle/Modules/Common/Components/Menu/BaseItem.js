@@ -1,131 +1,106 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
+import createFragment from 'react-addons-create-fragment';
 import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
 import ItemFormat from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/ItemFormat';
 import Positioned from 'DeskPRO/Component/Positioned/Detached';
 import classNames from 'classnames';
-import jQuery from 'jquery';
 
-const BaseItem = React.createClass({
+export class BaseItem extends Component {
 
-  /**
-   * Valid prop types
-   * @type {Object}
-   */
-  propTypes: {
-    label: React.PropTypes.string,
-    widgetClass: React.PropTypes.string,
-    overrideWidgetClass: React.PropTypes.bool,
-    children: React.PropTypes.node,
-    parsable: React.PropTypes.node,
-    onClick: React.PropTypes.func,
-    onMouseOver: React.PropTypes.func,
-    onMouseOut: React.PropTypes.func,
-    subMenuMode: React.PropTypes.string,
-    parentMenuLevel: React.PropTypes.number,
-    disabled: React.PropTypes.bool,
-    condensed: React.PropTypes.bool,
-    format: React.PropTypes.string,
-    keepOpen: React.PropTypes.bool,
-    activeItem: React.PropTypes.object,
-    setActiveItem: React.PropTypes.func,
-    closeMenu: React.PropTypes.func,
-    isActive: React.PropTypes.bool
-  },
+  static propTypes = {
+    label: PropTypes.string,
+    widgetClass: PropTypes.string,
+    overrideWidgetClass: PropTypes.bool,
+    children: PropTypes.node,
+    parsable: PropTypes.node,
+    onClick: PropTypes.func,
+    onMouseOver: PropTypes.func,
+    onMouseOut: PropTypes.func,
+    subMenuMode: PropTypes.string,
+    parentMenuLevel: PropTypes.number,
+    disabled: PropTypes.bool,
+    condensed: PropTypes.bool,
+    format: PropTypes.string,
+    keepOpen: PropTypes.bool,
+    hasMenu: PropTypes.bool,
+    activeItem: PropTypes.object,
+    setActiveItem: PropTypes.func,
+    closeMenu: PropTypes.func,
+    isActive: PropTypes.bool
+  };
 
-  /**
-   * Mixins
-   * @type {Array}
-   */
-  mixins: [require('react-onclickoutside')],
-
-  getInitialState() {
-    return {
+  componentDidMount() {
+    this.state = {
       openMenu: false,
       openInnerList: false
     };
-  },
+  }
 
   /**
    * Execute an action on click
    * @param {object} event Click event
    * @return {void}
    */
-  onClickAction: function(event) {
+  onClickAction = (event) => {
     event.preventDefault();
-
     if (this.props.onClick) {
       this.props.onClick();
     }
-
     if (!this.props.keepOpen && this.props.closeMenu) {
       this.props.closeMenu();
     }
-  },
+  };
 
   /**
    * Open the menu
    * @return {void}
    */
-  openMenu: function() {
+  openMenu = () => {
     if (this.props.setActiveItem) {
       this.props.setActiveItem(this);
     }
     this.setState({
       openMenu: true
     });
-  },
+  };
 
   /**
    * Close the menu
    * @return {void}
    */
-  closeMenu: function() {
+  closeMenu = () => {
     if (this.props.setActiveItem) {
       this.props.setActiveItem({});
     }
     this.setState({
       openMenu: false
     });
-  },
-
-  /**
-   * Handle clicks outside the item
-   * @param {Event} event Click event
-   * @return {void}
-   */
-  handleClickOutside: function(event) {
-    // Don't handle clicks for menu items - they deal with that themselves
-    const closestItem = jQuery(event.target).parents('.dropdown-nav-item');
-    const closestDateTimePicker = jQuery(event.target).closest('.dpw-date-picker');
-    if (closestItem.length === 0 && !closestDateTimePicker) {
-      this.closeMenu();
-    }
-  },
+  };
 
   /**
    * @TODO
    * Toggle the menu open/closed
    * @return {void}
    */
-  toggleMenu: function() {
+  toggleMenu = () => {
     if (!this.state.openMenu) {
       this.openMenu();
     } else {
       this.closeMenu();
     }
-  },
+  };
 
   /**
    * Toggle the inner list
    * @param  {object} event The click event
    * @return {[type]} [description]
    */
-  toggleInnerList: function(event) {
+  toggleInnerList = (event) => {
     event.preventDefault();
     this.setState({
       openInnerList: !this.state.openInnerList
     });
-  },
+  };
 
   /**
    * Format the output according to the format prop
@@ -134,7 +109,7 @@ const BaseItem = React.createClass({
    * @param {boolean} hasItemList If nested ItemList exists
    * @return {mixed} output       The formatted output
    */
-  formatOutput: function(output, hasMenu = false, hasItemList = false) {
+  formatOutput(output, hasMenu = false, hasItemList = false) {
     if (this.props.format) {
       if (this.props.format === 'item') {
         return (
@@ -148,11 +123,11 @@ const BaseItem = React.createClass({
       }
     }
     return output;
-  },
+  }
 
-  checkIfMenuExists: function() {
-    let hasMenu = false;
-    if (this.props.children) {
+  checkIfMenuExists() {
+    let {hasMenu} = this.props;
+    if (!hasMenu && this.props.children) {
       React.Children.map(this.props.children,
         (child) => {
           if (child && child.type && child.type.displayName === 'Menu') {
@@ -161,7 +136,7 @@ const BaseItem = React.createClass({
         });
     }
     return hasMenu;
-  },
+  }
 
   checkIfItemListExists() {
     let hasItemList = false;
@@ -174,7 +149,7 @@ const BaseItem = React.createClass({
         });
     }
     return hasItemList;
-  },
+  }
 
   renderLabel(hasMenu, hasItemList) {
     const {label} = this.props;
@@ -198,29 +173,34 @@ const BaseItem = React.createClass({
         </a>
       );
     }
-  },
+  }
 
   renderMenu(hasMenu) {
     if (hasMenu) {
       return React.Children.map(this.props.children, (child) => {
+        if (child && child.type) {
+        }
         if (child && child.type && child.type.displayName === 'Menu') {
           const parentLevel = this.props.parentMenuLevel ? this.props.parentMenuLevel : 1;
           const childProps = child.props;
           const menuLevel = parentLevel + 1;
 
-          return (<Positioned isOpen
-                              positionMy="left top"
-                              positionAt="right top"
-                              collision="none"
-                              positionTarget={this}
-                              key={child}>
-            <Menu {...childProps} menuLevel={menuLevel}
-                                  isOpen={this.props.activeItem === this} closeMenu={this.closeMenu}/>
-          </Positioned>);
+          return (
+            <Positioned isOpen
+                        positionMy="left top"
+                        positionAt="right top"
+                        collision="none"
+                        positionTarget={this}
+                        key={child}>
+              <Menu {...childProps} menuLevel={menuLevel}
+                                    isOpen={this.props.activeItem === this}
+                                    closeMenu={this.closeMenu}/>
+            </Positioned>
+          );
         }
       });
     }
-  },
+  }
 
   renderItemList(hasItemList) {
     if (hasItemList) {
@@ -230,27 +210,20 @@ const BaseItem = React.createClass({
         }
       });
     }
-  },
+  }
 
-  /**
-   * Render the menu
-   * @return {React.Element} The menu container
-   */
-  render: function() {
+  render() {
     const hasItemList = this.checkIfItemListExists();
     const hasMenu = this.checkIfMenuExists();
-
-    let childrenOutput = [];
-    childrenOutput = childrenOutput.concat(this.renderMenu(hasMenu));
-    childrenOutput = childrenOutput.concat(this.renderItemList(hasItemList));
+    const childrenOutput = {};
+    childrenOutput.menu = this.renderMenu(hasMenu);
+    childrenOutput.itemList = this.renderItemList(hasItemList);
     return (
       <li onMouseOver={this.props.subMenuMode ? ()=>{} : this.openMenu}
           onClick={this.props.subMenuMode && this.props.subMenuMode === 'click' ? this.toggleMenu : ()=>{}}>
         {this.renderLabel(hasMenu, hasItemList)}
-        {childrenOutput}
+        {createFragment(childrenOutput)}
       </li>
     );
   }
-});
-
-module.exports = BaseItem;
+}
