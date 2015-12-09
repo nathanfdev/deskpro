@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { FormItem } from './FormItem';
+import { hasErrors } from 'DeskPRO/Component/Form/FormErrors';
 
 export class TranscriptForm extends React.Component {
 
@@ -15,19 +16,22 @@ export class TranscriptForm extends React.Component {
     this.state = {
       name: props.name || '',
       email: props.email || '',
-      submit: false
+      submit: false,
+      errors: null
     };
   }
 
   onChangeName = event => {
     this.setState({
-      name: event.target.value
+      name: event.target.value,
+      errors: null
     });
   };
 
   onChangeEmail = event => {
     this.setState({
-      email: event.target.value
+      email: event.target.value,
+      errors: null
     });
   };
 
@@ -40,13 +44,19 @@ export class TranscriptForm extends React.Component {
         submit: true
       });
 
-      const onSubmitResponse = () => {
-        this.setState({
-          submit: false
-        });
-      };
-
-      promise.then(onSubmitResponse, onSubmitResponse);
+      promise.then(
+        () => {
+          this.setState({
+            submit: false
+          });
+        },
+        result => {
+          this.setState({
+            submit: false,
+            errors: result.getData().errors
+          });
+        }
+      );
     }
   };
 
@@ -62,11 +72,11 @@ export class TranscriptForm extends React.Component {
 
         <div className="popover-form">
           <form className="dpdesignportal-form" onSubmit={this.onSubmit}>
-            <FormItem label="Your name">
+            <FormItem label="Your name" error={hasErrors(this.state.errors, 'name')}>
               <input type="text" value={this.state.name} onChange={this.onChangeName} />
             </FormItem>
 
-            <FormItem label="Your email">
+            <FormItem label="Your email" error={hasErrors(this.state.errors, 'email')}>
               <input type="text" value={this.state.email} onChange={this.onChangeEmail} />
             </FormItem>
 

@@ -1,8 +1,12 @@
 import React, { PropTypes } from 'react';
 
-export function getFormErrors(response, name) {
+export function getErrors(response, name) {
   const errors = response && response.fields || {};
   return errors[name] ? errors[name].errors : [];
+}
+
+export function hasErrors(response, name) {
+  return getErrors(response, name).length > 0;
 }
 
 export class FieldErrors extends React.Component {
@@ -18,7 +22,7 @@ export class FieldErrors extends React.Component {
 
     return (
       <ul className={className}>
-        {getFormErrors(errors, name).map((error, index) => <li key={index}>{error.message}</li>)}
+        {getErrors(errors, name).map((error, index) => <li key={index}>{error.message}</li>)}
       </ul>
     );
   }
