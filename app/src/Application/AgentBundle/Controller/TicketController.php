@@ -3241,7 +3241,8 @@ class TicketController extends AbstractController
             }
         }
 
-        $ticket->person = $new_person;
+        $ticket->person       = $new_person;
+        $ticket->organization = $new_person->organization;
 
         $this->db->beginTransaction();
         try {
