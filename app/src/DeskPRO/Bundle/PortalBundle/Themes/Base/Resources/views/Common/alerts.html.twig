@@ -9,21 +9,12 @@
         </span>
     {% endif %}
 
-    {% for validation in validation_alerts %}
-        {# TODO: add a data-click-to-dismiss that links to a URL that will silence this alert for this session #}
-        <span class="alert">
-            <i class="fa fa-times click-to-dismiss"></i>
-            {{ validation.message }}
-            <a href="{{ validation.resend_url ?: '' }}">Resend</a>
-        </span>
-    {% endfor %}
-
     {% for saved in saved_forms %}
         {# TODO: add a data-click-to-dismiss that links to a URL that will silence this alert for this session #}
         <span class="alert">
             <i class="fa fa-times click-to-dismiss"></i>
-            {{ phrase('portal.account.login-saved-form', { type: saved.message }) }}
-            <a href="{{ saved.link }}">Go</a>
+            {{ phrase('portal.account.submit-saved-form', { type: saved.message }) }}
+            <a class="alert-button" href="{{ saved.link }}">{{ phrase('portal.account.submit-saved-form-go') }}</a>
         </span>
     {% endfor %}
 

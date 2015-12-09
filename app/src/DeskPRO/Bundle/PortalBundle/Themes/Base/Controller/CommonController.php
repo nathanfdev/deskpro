@@ -42,7 +42,6 @@ use DeskPRO\Bundle\PortalBundle\Annotation\Tag;
 use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
 use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\TagHttpCache;
-use DeskPRO\Bundle\PortalBundle\Person\PersonValidator;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -119,26 +118,6 @@ class CommonController extends AbstractController
     public function alertsAction(TagRequest $tag_request)
     {
         $user = $this->getUser();
-
-        // comment this out because doctrine entity EmailValidating is empty now
-        ////
-        //// Extra Email Validation (when adding more emails)
-        ////
-        //if ($user && $validating_emails = $this->getEmailDataService()->getValidatingEmails($user)) {
-        //    foreach ($validating_emails as $validating_email) {
-        //        $validation_alerts[] = array(
-        //            'type'            => PersonValidator::TYPE_EMAIL,
-        //            'message'         => $this->phrase('portal.account.validation_alert_extra_email',
-        //                array('email' => $validating_email->getEmail())),
-        //            'resend_url'      => $person_validator->getResendLink(
-        //                PersonValidator::TYPE_EMAIL,
-        //                $validating_email,
-        //                null,
-        //                true
-        //            ),
-        //        );
-        //    }
-        //}
 
         //
         // DIFFERENT LANG
