@@ -68,6 +68,7 @@ class UseSectionVoterSpec extends ObjectBehavior
         $container->get('portal_permissions_manager')->willReturn($permissions_manager);
         $permissions_manager->getPermissionsBagForGuest()->willReturn($guest_permission_bag);
         $permissions_manager->getPermissionsBagForPerson($person)->willReturn($person_permission_bag);
+        $permissions_manager->getPartialPermissionBagForRegisteredUsergroup()->willReturn($person_permission_bag);
 
         $this->beConstructedWith($container);
     }
