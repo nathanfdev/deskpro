@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\CountBadge;
 
 /**
@@ -207,7 +206,7 @@ class Count
         if ($title === null) {
             $this->title = '';
         } else {
-            $this->title = $title;
+            $this->title = (string) $title;
         }
     }
 
