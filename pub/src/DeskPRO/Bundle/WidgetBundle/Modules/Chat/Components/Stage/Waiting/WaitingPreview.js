@@ -1,5 +1,4 @@
 import React from 'react';
-import Loader from 'react-loader';
 
 export class WaitingPreview extends React.Component {
 
@@ -9,10 +8,9 @@ export class WaitingPreview extends React.Component {
         <div>
           We are finding you an agent...
         </div>
-        <Loader color="green"
-                width={3}
-                left="50%"
-                top="250px" />
+        <div className="spinner">
+          <i className="img"/>
+        </div>
       </div>
     );
   }

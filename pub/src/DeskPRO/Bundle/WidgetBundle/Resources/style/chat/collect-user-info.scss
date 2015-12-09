@@ -102,4 +102,19 @@
 
 .dpdesignportal-collect-user-info-waiting {
   padding: 5px;
+
+  .spinner {
+    display: block;
+    margin: 30px auto 0;
+    width: 30px;
+
+    .img {
+      display: inline-block;
+      background: url('../img/loading-big-circle.gif') center;
+      background-size: 30px 30px;
+      width: 30px;
+      height: 30px;
+      margin: 0 auto;
+    }
+  }
 }
