@@ -18,7 +18,9 @@ export class MessagesList extends React.Component {
   }
 
   scrollBottom() {
-    setTimeout(() => this.refs.scrollArea.scrollBottom(), 0);
+    if (this.refs.scrollArea) {
+      setTimeout(() => this.refs.scrollArea.scrollBottom(), 0);
+    }
   }
 
   render() {
