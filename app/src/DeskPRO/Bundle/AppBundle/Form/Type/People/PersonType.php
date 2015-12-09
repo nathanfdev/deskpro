@@ -34,11 +34,13 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\People;
 use Application\DeskPRO\Entity\LabelPerson;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
-use DeskPRO\Bundle\AppBundle\Form\Type\People\PrimaryEmail\PrimaryEmailType;
+use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonEmail\PersonEmailType;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Validator\Constraints;
+use Symfony\Component\Validator\Context\ExecutionContextInterface as Context;
 
 /**
  * Class PersonType.
@@ -88,16 +90,51 @@ class PersonType extends ApiType
                 'labels_owner'   => $builder->getData(),
                 'owner_property' => 'person',
             ])
-            ->add('primary_email', new PrimaryEmailType($person, $this->em))
+            ->add('primary_email', new PersonEmailType($person, $this->em), ['mapped' => false])
+            ->add('emails', 'collection', [
+                'type'         => new PersonEmailType($person, $this->em),
+                'mapped'       => false,
+                'allow_add'    => true,
+                'allow_delete' => true,
+                'constraints'  => [
+
+                    // Don't allow to remove all emails
+                    new Constraints\Callback(function ($data, Context $context) use ($person) {
+                        $hasEmails = count($person->getEmailAddresses()) > 0;
+                        $submittedPrimaryEmail = !is_null($context->getRoot()->get('primary_email')->getData());
+                        $submittedSecondaryEmails = count($data) > 0;
+                        $submittedAnyEmails = $submittedPrimaryEmail || $submittedSecondaryEmails;
+                        if ($hasEmails && !$submittedAnyEmails) {
+                            $context->addViolation('You can not remove all emails');
+                        }
+                    }),
+                ],
+            ])
         ;
 
-        // primary_email is not mapped to bypass calling setter with side effects on the Person entity (need to bypass
-        // setPrimaryEmail($email) which sets the person value to the passed $email, which bothers validation)
+        // Normalize user input: copy primary_email into emails provided and it doesn't contain the primary email
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
+            $data = $event->getData();
+            if (array_key_exists('primary_email', $data) && array_key_exists('emails', $data)) {
+                if (!in_array($data['primary_email'], $data['emails'])) {
+                    $data['emails'][] = $data['primary_email'];
+                    $event->setData($data);
+                }
+            }
+        });
+
+        // Email fields are not mapped to bypass calling setters with side effects on the Person entity (need to bypass
+        // setting the person value to the passed $email, which bothers validation)
         //
-        // setting primary_email manually on after validation happened
+        // setting primary_email and emails manually on after validation happened
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($person) {
-            if ($primary_email = $event->getForm()->get('primary_email')->getData()) {
-                $person->setPrimaryEmail($primary_email);
+            $emails_form = $event->getForm()->get('emails');
+            if ($emails_form->isSubmitted()) {
+                $person->setEmails($emails_form->getData());
+            }
+            $primary_email_form = $event->getForm()->get('primary_email');
+            if ($primary_email_form->isSubmitted()) {
+                $person->setPrimaryEmail($primary_email_form->getData());
             }
         });
     }

@@ -33,6 +33,7 @@ namespace DpBehat;
 
 use Behat\MinkExtension\Context\RawMinkContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext as KernelAwareContextInterface;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -87,5 +88,23 @@ abstract class BaseContext extends RawMinkContext implements KernelAwareContextI
     {
         $this->getContainer()->get('doctrine.orm.default_entity_manager')->persist($entity);
         $this->getContainer()->get('doctrine.orm.default_entity_manager')->flush($entity);
+    }
+
+    /**
+     * @return EntityManager
+     */
+    protected function em()
+    {
+        return $this->getContainer()->get('doctrine.orm.default_entity_manager');
+    }
+
+    /**
+     * @param string $class
+     *
+     * @return \Doctrine\ORM\EntityRepository
+     */
+    protected function getRepository($class)
+    {
+        return $this->em()->getRepository($class);
     }
 }

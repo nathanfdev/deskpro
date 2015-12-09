@@ -16,6 +16,7 @@ api:
                     em: @doctrine.orm.default_entity_manager
                     user_details: @user_details
                 - DpBehat\TermEngine\TermEngineBehatContext
+                - DpBehat\Api\PeopleContext
     extensions:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:

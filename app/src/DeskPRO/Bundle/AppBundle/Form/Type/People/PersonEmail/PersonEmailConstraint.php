@@ -29,16 +29,16 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type\People\PrimaryEmail;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\People\PersonEmail;
 
 use Application\DeskPRO\Entity\Person;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Validator\Constraint;
 
 /**
- * Class PrimaryEmailConstraint.
+ * Class PersonEmailConstraint.
  */
-class PrimaryEmailConstraint extends Constraint
+class PersonEmailConstraint extends Constraint
 {
     /**
      * @var Person
@@ -51,7 +51,7 @@ class PrimaryEmailConstraint extends Constraint
     private $em;
 
     /**
-     * PersonPrimaryEmailConstraint constructor.
+     * PersonPersonEmailConstraint constructor.
      *
      * @param Person        $person
      * @param EntityManager $em

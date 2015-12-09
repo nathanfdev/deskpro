@@ -29,62 +29,37 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type\People\PrimaryEmail;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\People\PersonEmail;
 
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\Form\DataTransformerInterface;
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\ConstraintValidator;
 
 /**
- * Class PrimaryEmailTransformer.
+ * Class PersonEmailConstraintValidator.
  */
-class PrimaryEmailTransformer implements DataTransformerInterface
+class PersonEmailConstraintValidator extends ConstraintValidator
 {
     /**
-     * @var Person
-     */
-    private $person;
-
-    /**
-     * @var EntityManager
-     */
-    private $em;
-
-    /**
-     * @param Person        $person
-     * @param EntityManager $em
-     */
-    public function __construct(Person $person, EntityManager $em)
-    {
-        $this->person = $person;
-        $this->em     = $em;
-    }
-
-    /**
      * {@inheritdoc}
      */
-    public function transform($value)
+    public function validate($personEmail, Constraint $constraint)
     {
-        if (is_null($value)) {
-            return $value;
+        if (!$constraint instanceof PersonEmailConstraint) {
+            throw new \Exception('Expected PersonPersonEmailConstraint instance, got '.$constraint);
         }
 
-        return $value->getEmail();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function reverseTransform($value)
-    {
-        if (!$email = $this->em->getRepository(PersonEmail::class)->findOneBy(['email' => $value])) {
-            $email = new PersonEmail();
-            $email->setEmail($value);
-            $email->setPerson($this->person);
-            $this->person->addEmail($email);
+        if (!$personEmail) {
+            return;
         }
 
-        return $email;
+        if (!$personEmail instanceof PersonEmail) {
+            $this->context->addViolation('Expected PersonEmail instance, got '.$personEmail);
+        }
+
+        $person = $constraint->getPerson();
+        if ($person->getId() !== $personEmail->getPersonId()) {
+            $this->context->addViolation('This email is already in use');
+        }
     }
 }

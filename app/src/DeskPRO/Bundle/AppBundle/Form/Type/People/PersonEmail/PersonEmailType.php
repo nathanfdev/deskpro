@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type\People\PrimaryEmail;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\People\PersonEmail;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
@@ -38,11 +38,11 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class PrimaryEmailType.
+ * Class PersonEmailType.
  *
  * Handles email string as person primary email
  */
-class PrimaryEmailType extends ApiType
+class PersonEmailType extends ApiType
 {
     /**
      * @var Person
@@ -69,7 +69,7 @@ class PrimaryEmailType extends ApiType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addViewTransformer(new PrimaryEmailTransformer($this->person, $this->em));
+        $builder->addViewTransformer(new PersonEmailTransformer($this->person, $this->em));
     }
 
     /**
@@ -79,9 +79,8 @@ class PrimaryEmailType extends ApiType
     {
         $resolver->setDefaults([
             'compound'    => false,
-            'mapped'      => false,
             'constraints' => [
-                new PrimaryEmailConstraint($this->person, $this->em),
+                new PersonEmailConstraint($this->person, $this->em),
             ],
         ]);
     }

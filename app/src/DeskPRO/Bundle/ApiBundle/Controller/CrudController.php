@@ -41,6 +41,7 @@ use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
+use Symfony\Component\Form\Exception\OutOfBoundsException;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
@@ -425,7 +426,9 @@ abstract class CrudController extends BaseController
 
             /** @var \Symfony\Component\Validator\ConstraintViolation $violation */
             foreach ($violations as $violation) {
-                if (!$targetForm = $form->get($violation->getPropertyPath())) {
+                try {
+                    $targetForm = $form->get($violation->getPropertyPath());
+                } catch (OutOfBoundsException $e) {
                     $targetForm = $form;
                 }
                 $targetForm->addError(new FormError($violation->getMessage()));

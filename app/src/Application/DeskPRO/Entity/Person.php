@@ -1962,9 +1962,11 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return $this->primary_email;
     }
 
-    public function setPrimaryEmail(PersonEmail $person_email)
+    public function setPrimaryEmail(PersonEmail $person_email = null)
     {
-        $person_email->person = $this;
+        if ($person_email) {
+            $person_email->person = $this;
+        }
 
         $this->setModelField('primary_email', $person_email);
     }
@@ -1995,9 +1997,21 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return $this->emails;
     }
 
+    /**
+     * @param PersonEmail[] $emails
+     */
+    public function setEmails(array $emails)
+    {
+        $addresses = array_map(function (PersonEmail $email) {
+            return $email->getEmail();
+        }, $emails);
+        $this->setEmailAddresses($addresses);
+    }
+
     public function addEmail(PersonEmail $email)
     {
         $this->emails->add($email);
+        $email->setPerson($this);
         $this->_onPropertyChanged('emails', null, $this->emails);
     }
 
@@ -3842,13 +3856,14 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         );
         $metadata->mapOneToOne(
             array(
-                'fieldName'    => 'primary_email',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail',
-                'cascade'      => array('persist', 'detach'),
-                'mappedBy'     => null,
-                'inversedBy'   => null,
-                'fetch'        => ClassMetadata::FETCH_EAGER,
-                'joinColumns'  => array(
+                'fieldName'     => 'primary_email',
+                'targetEntity'  => 'Application\\DeskPRO\\Entity\\PersonEmail',
+                'cascade'       => array('persist', 'detach'),
+                'mappedBy'      => null,
+                'inversedBy'    => null,
+                'fetch'         => ClassMetadata::FETCH_EAGER,
+                'orphanRemoval' => true,
+                'joinColumns'   => array(
                     0 => array(
                         'name'                 => 'primary_email_id',
                         'referencedColumnName' => 'id',
@@ -3864,7 +3879,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             array(
                 'fieldName'     => 'emails',
                 'targetEntity'  => 'Application\\DeskPRO\\Entity\\PersonEmail',
-                'cascade'       => array('persist', 'detach'),
+                'cascade'       => array('remove', 'persist', 'detach'),
                 'mappedBy'      => 'person',
                 'dpApi'         => true,
                 'orphanRemoval' => true,

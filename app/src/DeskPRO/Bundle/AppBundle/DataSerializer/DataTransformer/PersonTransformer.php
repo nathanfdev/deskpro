@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
@@ -114,7 +113,7 @@ class PersonTransformer extends AbstractDataSerializerTransformer
 
         $ret = [
             'emails'        => [],
-            'primary_email' => [],
+            'primary_email' => null,
         ];
 
         foreach ($person->getEmails() as $email) {
