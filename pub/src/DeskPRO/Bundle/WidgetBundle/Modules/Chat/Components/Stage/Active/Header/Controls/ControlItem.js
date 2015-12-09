@@ -1,21 +1,32 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 
 export class ControlItem extends React.Component {
 
   static propTypes = {
+    disabled: PropTypes.bool,
     children: PropTypes.any,
     onClick: PropTypes.func
   };
 
   onClick = event => {
     event.preventDefault();
-    this.props.onClick(event);
+
+    const { disabled, onClick } = this.props;
+    if (!disabled) {
+      onClick(event);
+    }
   };
 
   render() {
+    const { disabled, children } = this.props;
+
     return (
-      <a href="#" className="dpdesignportal-chat-header-control-item" onClick={this.onClick}>
-        {this.props.children}
+      <a href="#"
+         className={classNames('dpdesignportal-chat-header-control-item', {'disabled': disabled})}
+         onClick={this.onClick}>
+
+        {children}
       </a>
     );
   }

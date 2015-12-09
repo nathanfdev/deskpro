@@ -10,6 +10,7 @@ export class ReplyForm extends React.Component {
 
   static propTypes = {
     isEnded: PropTypes.bool,
+    canReopen: PropTypes.bool,
     onSendMessage: PropTypes.func,
     onReopen: PropTypes.func,
     agentName: PropTypes.string
@@ -53,8 +54,12 @@ export class ReplyForm extends React.Component {
   };
 
   render() {
-    const { agentName, isEnded } = this.props;
+    const { agentName, isEnded, canReopen } = this.props;
     const currentFrame = parent.window.widget_iframe;
+
+    if (isEnded && !canReopen) {
+      return null;
+    }
 
     return (
       <div className="dpdesignportal-chat-form">

@@ -64,7 +64,7 @@ export class ReopenChatContainer extends React.Component {
     }
 
     const now = moment().format('X');
-    const delay = moment().format('X') - now + 120000;
+    const delay = moment().format('X') - now + 120000; // 2 mins
 
     if (this.state.displayChild) {
       if (delay > 0) {
@@ -79,13 +79,12 @@ export class ReopenChatContainer extends React.Component {
     const { children } = this.props;
     const childProps = children.props;
 
-    return this.state.displayChild
-      ? React.cloneElement(children, {
-        ...childProps,
+    return React.cloneElement(children, {
+      ...childProps,
 
-        isEnded: this.props.isEnded,
-        onReopen: this.onReopen
-      })
-      : null;
+      canReopen: this.state.displayChild,
+      isEnded: this.props.isEnded,
+      onReopen: this.onReopen
+    });
   }
 }
