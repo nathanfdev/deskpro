@@ -140,10 +140,10 @@ class ChatController extends AbstractController
         $em->persist($conversation);
         $em->flush();
 
-        $channel = $conversation->getChannelId('newmessage');
+        $conversation_channel = $conversation->getChannelId(ClientMessageEvent::CHANNEL_CHAT_NEW_MESSAGE);
         $this->dispatch(
             ClientMessageEvent::EVENT_NAME,
-            new ClientMessageEvent($channel, $chat_message)
+            new ClientMessageEvent($conversation_channel, $chat_message)
         );
 
         return new JsonResponse();
@@ -188,6 +188,11 @@ class ChatController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $em->persist($conversation);
         $em->flush();
+
+        $this->dispatch(
+            UserChatSystemEvent::EVENT_NAME,
+            new UserChatSystemEvent($conversation, UserChatSystemEvent::TYPE_USER_RETURNED)
+        );
 
         return new JsonResponse();
     }
