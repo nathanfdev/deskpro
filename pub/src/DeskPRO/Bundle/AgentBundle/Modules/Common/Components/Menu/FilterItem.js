@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import BaseItem from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/BaseItem';
+import { BaseItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/BaseItem';
 
 export class FilterItem extends Component {
   static propTypes = {
@@ -10,8 +10,10 @@ export class FilterItem extends Component {
   };
 
   render() {
-    return (<BaseItem {...this.props} format="filter" subMenuMode="click">
-      {this.props.children}
-    </BaseItem>);
+    return (
+      <BaseItem {...this.props} format="filter" subMenuMode="click" hasMenu>
+        {this.props.children}
+      </BaseItem>
+    );
   }
 }

@@ -1,17 +1,17 @@
-import React from 'react';
-import BaseItem from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/BaseItem';
+import React, {Component, PropTypes} from 'react';
+import { BaseItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/BaseItem';
 
-export default class Item extends React.Component {
+export default class Item extends Component {
   static propTypes = {
-    icon: React.PropTypes.string,
-    itemType: React.PropTypes.string,
-    widgetClass: React.PropTypes.string,
-    checked: React.PropTypes.bool,
-    children: React.PropTypes.any,
-    listItem: React.PropTypes.bool,
-    closeMenu: React.PropTypes.func,
-    activeItem: React.PropTypes.object,
-    isActive: React.PropTypes.bool
+    icon: PropTypes.string,
+    itemType: PropTypes.string,
+    widgetClass: PropTypes.string,
+    checked: PropTypes.bool,
+    children: PropTypes.any,
+    listItem: PropTypes.bool,
+    closeMenu: PropTypes.func,
+    activeItem: PropTypes.object,
+    isActive: PropTypes.bool
   };
 
   render() {
