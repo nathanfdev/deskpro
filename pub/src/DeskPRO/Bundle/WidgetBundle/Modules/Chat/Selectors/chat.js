@@ -2,7 +2,7 @@ import { createSelector } from 'reselect';
 
 const stateSelector = state => state.Chat.chat;
 
-// Controls
+// Controls selectors
 export const audioNotificationsSelector = createSelector(
   stateSelector,
   state => state.get('audioNotifications')

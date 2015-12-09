@@ -5,10 +5,12 @@ import Immutable from 'immutable';
 
 const initialState = {
   audioNotifications: true,
-  sendTranscript: false,
+  sendTranscript: true,
   chatId: null,
   chatInfo: {
-    date_ended: '2015-12-09' //null
+    date_ended: null,
+    author_name: 'User',
+    author_email: 'email@mail.com'
   },
   messages: [
     {id: 104, content: 'my message my message my message my message :)', author: null, is_sys: false, is_html: true, date_created: '2015-12-03 14:10'},
@@ -20,7 +22,8 @@ const initialState = {
 
 export default createReducer(initialState, {
   [actions.toggleAudioNotifications]: toggleBool('audioNotifications'),
-  [actions.toggleSendTranscript]: toggleBool('sendTranscript'),
+  [actions.disableSendTranscript]: setValue('sendTranscript', false),
+  [actions.enableSendTranscript]: setValue('sendTranscript', true),
   [actions.setChatId]: setFullPayload('chatId'),
   [actions.updateChatInfo]: setFullPayload('chatInfo'),
   [actions.resetMessages]: setValue('messages', []),

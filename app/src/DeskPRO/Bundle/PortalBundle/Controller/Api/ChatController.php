@@ -61,9 +61,13 @@ class ChatController extends AbstractController
     public function createNewChatAction(Request $request)
     {
         $conversation = new ChatConversation();
-        $form         = $this->get('form.factory')->createNamedBuilder(null, 'api_chat_create', $conversation)->getForm();
-        $form->submit($request->request->all());
+        $form         = $this
+            ->get('form.factory')
+            ->createNamedBuilder(null, 'api_chat_create', $conversation)
+            ->getForm()
+        ;
 
+        $form->submit($request->request->all());
         if (!$form->isValid()) {
             return $this->generateFormErrorsResponse($form);
         }
@@ -142,6 +146,35 @@ class ChatController extends AbstractController
             ClientMessageEvent::SEND,
             new ClientMessageEvent($conversation_channel, $chat_message)
         );
+
+        return new JsonResponse();
+    }
+
+    /**
+     * @Route("/portal/api/chats/{id}/transcript_info", name="portal_api_chat_transcript_info")
+     * @Method({"POST"})
+     *
+     * @param ChatConversation $conversation
+     * @param Request          $request
+     *
+     * @return JsonResponse
+     */
+    public function sendTranscriptInfoAction(ChatConversation $conversation, Request $request)
+    {
+        $form = $this
+            ->get('form.factory')
+            ->createNamedBuilder(null, 'api_chat_transcription_info', $conversation)
+            ->getForm()
+        ;
+
+        $form->submit($request->request->all());
+        if (!$form->isValid()) {
+            return $this->generateFormErrorsResponse($form);
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($conversation);
+        $em->flush();
 
         return new JsonResponse();
     }

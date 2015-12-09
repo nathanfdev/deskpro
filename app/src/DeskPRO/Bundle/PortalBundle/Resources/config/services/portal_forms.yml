@@ -342,6 +342,13 @@ services:
     tags:
       - { name: form.type, alias: api_chat_create }
 
+
+  form.api.chat_transcription_info:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\ChatTranscriptInfoType
+    tags:
+      - { name: form.type, alias: api_chat_transcription_info }
+
+
   form.api.chat_feedback:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\ChatFeedbackType
     tags:

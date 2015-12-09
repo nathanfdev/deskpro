@@ -3,10 +3,20 @@ import { connect } from 'react-redux';
 import Simple from 'DeskPRO/Component/Positioned/Simple';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { TranscriptForm } from './TranscriptForm';
-import { authorEmailSelector, authorNameSelector, sendTranscriptSelector } from '../../../../../../Selectors/chat';
-import { toggleSendTranscript } from '../../../../../../Actions/chatActions';
+import {
+  disableSendTranscript,
+  enableSendTranscript,
+  sendTranscriptInfo
+} from '../../../../../../Actions/chatActions';
+import {
+  chatIdSelector,
+  authorEmailSelector,
+  authorNameSelector,
+  sendTranscriptSelector
+} from '../../../../../../Selectors/chat';
 
 @connect(state => ({
+  chatId: chatIdSelector(state),
   authorName: authorNameSelector(state),
   authorEmail: authorEmailSelector(state),
   enabled: sendTranscriptSelector(state)
@@ -15,6 +25,7 @@ export class TranscriptContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func,
+    chatId: PropTypes.number,
     authorName: PropTypes.string,
     authorEmail: PropTypes.string,
     enabled: PropTypes.bool,
@@ -30,10 +41,10 @@ export class TranscriptContainer extends React.Component {
 
   onClick = event => {
     event.preventDefault();
+    const { dispatch, authorName, authorEmail, enabled } = this.props;
 
-    const { dispatch, authorName, authorEmail } = this.props;
-    if (authorName && authorEmail) {
-      dispatch(toggleSendTranscript());
+    if (authorName && authorEmail && enabled) {
+      dispatch(disableSendTranscript());
     } else {
       this.setState({
         formOpened: true
@@ -48,8 +59,17 @@ export class TranscriptContainer extends React.Component {
   };
 
   onSubmit = data => {
-    console.log('submit transcript form', data);
-    this.onCloseForm();
+    const { dispatch, chatId } = this.props;
+    const promise = dispatch(sendTranscriptInfo(chatId, data));
+
+    if (promise) {
+      promise.then(() => {
+        this.onCloseForm();
+        dispatch(enableSendTranscript());
+      });
+    }
+
+    return promise;
   };
 
   render() {
