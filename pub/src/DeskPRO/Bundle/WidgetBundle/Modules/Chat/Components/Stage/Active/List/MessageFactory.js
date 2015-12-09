@@ -23,6 +23,7 @@ export class MessageFactory extends React.Component {
         case 'message_assigned':
         case 'message_ended-by':
         case 'message_user-joined':
+        case 'message_user-left':
           return (
             <InlineEvent {...this.props}>
               {translatedText.replace('{{name}}', content.name)}
@@ -32,7 +33,7 @@ export class MessageFactory extends React.Component {
         default:
           return (
             <InlineEvent {...this.props}>
-              <MessageAvatar /> {translatedText}
+              {translatedText}
             </InlineEvent>
           );
       }
