@@ -39,6 +39,16 @@ export const departmentNameSelector = createSelector(
   chatInfo => chatInfo.get('department_name')
 );
 
+export const authorEmailSelector = createSelector(
+  chatInfoSelector,
+  chatInfo => chatInfo.get('author_email')
+);
+
+export const authorNameSelector = createSelector(
+  chatInfoSelector,
+  chatInfo => chatInfo.get('author_name')
+);
+
 export const dateEndedSelector = createSelector(
   chatInfoSelector,
   chatInfo => chatInfo.get('date_ended')

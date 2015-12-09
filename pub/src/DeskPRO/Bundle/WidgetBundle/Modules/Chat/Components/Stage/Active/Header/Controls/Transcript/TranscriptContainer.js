@@ -1,11 +1,19 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import Simple from 'DeskPRO/Component/Positioned/Simple';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { TranscriptForm } from './TranscriptForm';
+import { authorEmailSelector, authorNameSelector } from '../../../../../../Selectors/chat';
 
+@connect(state => ({
+  authorName: authorNameSelector(state),
+  authorEmail: authorEmailSelector(state)
+}))
 export class TranscriptContainer extends React.Component {
 
   static propTypes = {
+    authorName: PropTypes.string,
+    authorEmail: PropTypes.string,
     children: PropTypes.node
   };
 
@@ -35,7 +43,7 @@ export class TranscriptContainer extends React.Component {
   };
 
   render() {
-    const { children } = this.props;
+    const { authorName, authorEmail, children } = this.props;
     const childProps = children.props;
 
     return (
@@ -56,7 +64,10 @@ export class TranscriptContainer extends React.Component {
           <ClickOut onClickOut={this.onCloseForm}
                     context={[parent.document, parent.window.widget_iframe.document]}>
 
-            <TranscriptForm onSubmit={this.onSubmit} onClose={this.onCloseForm} />
+            <TranscriptForm name={authorName}
+                            email={authorEmail}
+                            onSubmit={this.onSubmit}
+                            onClose={this.onCloseForm} />
           </ClickOut>
         </Simple>
       </span>

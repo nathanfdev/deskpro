@@ -4,6 +4,8 @@ import { FormItem } from './FormItem';
 export class TranscriptForm extends React.Component {
 
   static propTypes = {
+    name: PropTypes.string,
+    email: PropTypes.string,
     onSubmit: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired
   };
@@ -11,8 +13,8 @@ export class TranscriptForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: '',
-      email: ''
+      name: props.name || '',
+      email: props.email || ''
     };
   }
 
