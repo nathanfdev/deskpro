@@ -18,24 +18,11 @@ export class MessageFactory extends React.Component {
       const phraseId = content.phrase_id;
       const translatedText = window.DESKPRO_LANG[`user.chat.${phraseId}`];
 
-      switch (phraseId) {
-        case 'message_assigned':
-        case 'message_ended-by':
-        case 'message_user-joined':
-        case 'message_user-left':
-          return (
-            <InlineEvent {...this.props}>
-              {translatedText.replace('{{name}}', content.name)}
-            </InlineEvent>
-          );
-
-        default:
-          return (
-            <InlineEvent {...this.props}>
-              {translatedText}
-            </InlineEvent>
-          );
-      }
+      return (
+        <InlineEvent {...this.props}>
+          {translatedText.replace('{{name}}', content.name)}
+        </InlineEvent>
+      );
     }
 
     return isAgent ? <AgentMessage {...this.props} /> : <UserMessage {...this.props} />;
