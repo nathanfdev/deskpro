@@ -1,9 +1,9 @@
 import React from 'react';
-import { ControlsPane } from '../ControlsPane';
+import { ControlsPane } from './ControlsPane';
 import { AssetsContainer } from './Assets/AssetsContainer';
 import { MuteContainer } from './Mute/MuteContainer';
-import { EndChatContainer } from '../../../EndChat/EndChatContainer';
-import { EndChatButton } from './EndChatButton';
+import { EndChatContainer } from '../../EndChat/EndChatContainer';
+import { EndChatButton } from './EndChat/EndChatButton';
 import { TranscriptContainer } from './Transcript/TranscriptContainer';
 import { TranscriptButton } from './Transcript/TranscriptButton';
 

@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { ControlItem } from '../../ControlItem';
+import { ControlItem } from '../ControlItem';
 
 export class TranscriptButton extends React.Component {
 

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { ActivePane } from './Active/ActivePane';
-import { DonePane } from './Done/DonePane';
+import { ActivePane } from './ActivePane';
+import { DonePane } from './DonePane';
 import { isEndedSelector } from '../../../../../Selectors/chat';
 
 @connect(state => ({

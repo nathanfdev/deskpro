@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { MuteButton } from './MuteButton';
-import { audioNotificationsSelector } from '../../../../../../../Selectors/chat';
-import { toggleAudioNotifications } from '../../../../../../../Actions/chatActions';
+import { audioNotificationsSelector } from '../../../../../../Selectors/chat';
+import { toggleAudioNotifications } from '../../../../../../Actions/chatActions';
 
 @connect(state => ({
   enabled: audioNotificationsSelector(state)

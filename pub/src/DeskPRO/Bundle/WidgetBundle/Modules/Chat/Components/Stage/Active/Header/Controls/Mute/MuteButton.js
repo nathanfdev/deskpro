@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { ControlItem } from '../../ControlItem';
+import { ControlItem } from '../ControlItem';
 import classNames from 'classnames';
 
 export class MuteButton extends React.Component {
