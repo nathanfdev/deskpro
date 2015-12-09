@@ -4,16 +4,17 @@ import { MuteContainer } from './Mute/MuteContainer';
 import { TranscriptContainer } from './Transcript/TranscriptContainer';
 import { TranscriptButton } from './Transcript/TranscriptButton';
 import { EndChatButtonContainer } from './EndChat/EndChatButtonContainer';
+import classNames from 'classnames';
 
 export class ControlsPane extends React.Component {
 
   static propTypes = {
-    children: PropTypes.any
+    isEnded: PropTypes.bool
   };
 
   render() {
     return (
-      <div className="dpdesignportal-chat-header-controls">
+      <div className={classNames('dpdesignportal-chat-header-controls', {'ended': this.props.isEnded})}>
         <ul>
           <li>
             <AssetsContainer />
