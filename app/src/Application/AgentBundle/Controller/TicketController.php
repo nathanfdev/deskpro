@@ -2086,9 +2086,7 @@ class TicketController extends AbstractController
                             ));
                         }
                         $new_custom_fields->handleRequest($this->request);
-                        if ($new_custom_fields->isValid()) {
-                            $new_field_manager->flush($new_custom_fields);
-                        }
+
                         $this->em->flush();
                     }
 
@@ -4119,21 +4117,6 @@ class TicketController extends AbstractController
                 if ($collection->countActions()) {
                     $collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
                     $this->em->flush();
-                }
-
-                #------------------------------
-                # per-person and per-org fields
-                #------------------------------
-                $new_field_manager = $this->container->getCustomFieldManager();
-                $new_custom_fields = $new_field_manager->createFormForOwner($ticket, $ticket->person, $layout, array('allow_edit' => true));
-                if ($org = $ticket->person->organization) {
-                    $new_field_manager->merge($new_custom_fields, $new_field_manager->createFormForOwner(
-                        $ticket, $org, $layout, array('allow_edit' => true)
-                    ));
-                }
-                $new_custom_fields->handleRequest($this->request);
-                if ($new_custom_fields->isValid()) {
-                    $new_field_manager->flush($new_custom_fields);
                 }
 
                 #------------------------------

@@ -72,6 +72,11 @@ class CustomFieldManager
      */
     protected $persister;
 
+    /**
+     * @var array
+     */
+    protected $forms = array();
+
     public function __construct(EntityManager $em, FormFactory $ff)
     {
         $this->em            = $em;
@@ -122,6 +127,15 @@ class CustomFieldManager
         $this->persister->flush($this->em);
     }
 
+    public function flush2(DomainObject $owner, DomainObject $context = null)
+    {
+        if (!$form = @$this->forms[$this->hash($owner, $context)]) {
+            return;
+        }
+
+        $form->isValid() && $this->flush($form);
+    }
+
     /**
      * creates form of defined custom fields.
      *
@@ -153,7 +167,7 @@ class CustomFieldManager
             })
         ;
 
-        return $builder->getForm();
+        return $this->forms[$this->hash($owner, $context)] = $builder->getForm();
     }
 
     /**
@@ -217,7 +231,7 @@ class CustomFieldManager
      *
      * @return array|null
      */
-    public function getFieldRawData($fieldId, DomainObject $owner)
+    public function getFieldRawData($fieldId, DomainObject $owner, DomainObject $context = null)
     {
         if (!$owner['id']) {
             return;
@@ -255,6 +269,10 @@ class CustomFieldManager
             /* @var $field FormInterface */
             $form2->remove($name);
             $form1->add($field);
+        }
+
+        if (false !== $k = array_search($form2, $this->forms)) {
+            unset($this->forms[$k]);
         }
 
         return $form1;
@@ -362,5 +380,10 @@ class CustomFieldManager
     public function getFormFactory()
     {
         return $this->ff;
+    }
+
+    protected function hash(DomainObject $owner, DomainObject $context = null)
+    {
+        return spl_object_hash($owner).($context ? spl_object_hash($context) : null);
     }
 }
