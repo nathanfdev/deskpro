@@ -1,6 +1,6 @@
 import React from 'react';
 import { OnlineAgentContainer } from './Agent/OnlineAgentContainer';
-import { ControlsContainer } from './Controls/ControlsContainer';
+import { ControlsPane } from './Controls/ControlsPane';
 
 export class Header extends React.Component {
 
@@ -8,7 +8,7 @@ export class Header extends React.Component {
     return (
       <div>
         <OnlineAgentContainer />
-        <ControlsContainer />
+        <ControlsPane />
       </div>
     );
   }
