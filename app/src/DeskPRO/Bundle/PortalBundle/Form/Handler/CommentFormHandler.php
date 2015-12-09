@@ -43,6 +43,7 @@ use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
 use DeskPRO\Bundle\AppBundle\DataService\PersonDataService;
+use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
@@ -267,11 +268,11 @@ class CommentFormHandler
             $this->informAntiAbuse($person, $request);
 
             // return the redirect response
-            return $this->saver->saveFormForPersonLogin($person, $form, $request);
+            return $this->saver->saveFormForPersonLogin(SavedForm::TYPE_COMMENT, $person, $form, $request);
         } catch (EmailValidationRequiredException $e) {
             $this->informAntiAbuse($person, $request);
 
-            $saved_form = $this->saver->saveForm($form, $request, $person->getEmailAddress(), $person->getDisplayName());
+            $saved_form = $this->saver->saveForm(SavedForm::TYPE_COMMENT, $form, $request, $person->getEmailAddress(), $person->getDisplayName());
             $this->portal_validation->sendVerificationEmail(PortalValidation::COMMENT, $saved_form);
             $this->addFlash($request, 'success', 'portal.flashes.guest_content_must_verify');
 

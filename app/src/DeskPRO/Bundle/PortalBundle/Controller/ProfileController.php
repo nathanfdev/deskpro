@@ -35,6 +35,7 @@ use Application\DeskPRO\Entity\PasswordHistory;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\RegistrationAbuseCheck;
+use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
@@ -117,7 +118,7 @@ class ProfileController extends AbstractController
                 return $this->redirectToRoute('portal_home');
             } else {
                 // this is a normal web request, and we need email validation
-                $saved_form = $this->getFormSaver()->saveForm($form, $request, $person->getEmailAddress(), $person->getDisplayName());
+                $saved_form = $this->getFormSaver()->saveForm(SavedForm::TYPE_REGISTER, $form, $request, $person->getEmailAddress(), $person->getDisplayName());
                 $this->get('portal_validation')->sendVerificationEmail(PortalValidation::REGISTRATION, $saved_form);
                 $this->addFlash('success', $this->phrase('portal.flashes.user_registered_must_verify'));
             }
@@ -297,7 +298,7 @@ class ProfileController extends AbstractController
                 } else {
                     $this->getEm()->detach($new_email);
                     // valid email, but we need email validation before adding it
-                    $saved_form = $this->getFormSaver()->saveForm($add_email_form, $request, $new_email->getEmail(), $person->getDisplayName(), $person);
+                    $saved_form = $this->getFormSaver()->saveForm(SavedForm::TYPE_REGISTER, $add_email_form, $request, $new_email->getEmail(), $person->getDisplayName(), $person);
                     $this->get('portal_validation')->sendVerificationEmail(PortalValidation::ADD_EMAIL, $saved_form, false);
                     $this->addFlash('success', $this->phrase('portal.flashes.user_add_email_verify'));
 

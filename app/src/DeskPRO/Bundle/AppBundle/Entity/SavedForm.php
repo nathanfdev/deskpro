@@ -45,12 +45,35 @@ class SavedForm implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
+    const TYPE_NEW_FEEDBACK = 'new_feedback';
+    const TYPE_REGISTER     = 'register';
+    const TYPE_ADD_EMAIL    = 'add_email';
+    const TYPE_COMMENT      = 'comment';
+    const TYPE_NEW_TICKET   = 'new_ticket';
+
+    const INTENTION_VERIFY_EMAIL = 'verify_email';
+    const INTENTION_LOGIN        = 'login';
+
     /**
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
      */
     protected $id;
+
+    /**
+     * @ORM\Column(name="data_type", type="string")
+     *
+     * @var string
+     */
+    protected $data_type;
+
+    /**
+     * @ORM\Column(name="intention_type", type="string")
+     *
+     * @var string
+     */
+    protected $intention_type;
 
     /**
      * @ORM\Column(name="auth_code", type="string")
@@ -81,11 +104,25 @@ class SavedForm implements EntityInterface, NotifyPropertyChanged
     protected $meta_data;
 
     /**
+     * @ORM\Column(name="num_sent_reminders", type="smallint")
+     *
+     * @var int
+     */
+    protected $num_sent_reminders;
+
+    /**
      * @ORM\Column(name="date_created", type="datetime")
      *
      * @var \DateTime
      */
     protected $date_created;
+
+    /**
+     * @ORM\Column(name="date_last_reminded", type="datetime")
+     *
+     * @var \DateTime
+     */
+    protected $date_last_reminded;
 
     /**
      * @ORM\Column(name="date_expires", type="datetime")
@@ -94,9 +131,12 @@ class SavedForm implements EntityInterface, NotifyPropertyChanged
      */
     protected $date_expires;
 
-    public function __construct(Person $person = null)
+    public function __construct($data_type, $intention_type, Person $person = null)
     {
+        $this->setModelField('data_type', $data_type);
+        $this->setModelField('intention_type', $intention_type);
         $this->setModelField('person', $person);
+        $this->setModelField('num_sent_reminders', 0);
         $this->setModelField('date_created', new \DateTime());
         $this->setModelField('auth_code', DpStrings::random(25, Strings::CHARS_ALPHANUM));
         $this->setDateExpires(new \DateTime('now + 14 days')); // will be deleted if not used in 2 weeks
@@ -129,6 +169,56 @@ class SavedForm implements EntityInterface, NotifyPropertyChanged
             'id'        => $pieces[0],
             'auth_code' => $pieces[1],
         );
+    }
+
+    public function getDataType()
+    {
+        return $this->data_type;
+    }
+
+    public function getIntentionType()
+    {
+        return $this->intention_type;
+    }
+
+    /**
+     * A descriptor. Used to display in a quick flash message about what this saved form is.
+     *
+     * @return string
+     */
+    public function getMessage()
+    {
+        switch ($this->data_type) {
+            case self::TYPE_COMMENT:
+                return 'comment';
+            case self::TYPE_NEW_FEEDBACK:
+                return 'new feedback';
+            case self::TYPE_NEW_TICKET:
+                return 'new ticket';
+            case self::TYPE_ADD_EMAIL:
+                return 'add email';
+            case self::TYPE_REGISTER:
+                return 'register';
+        }
+
+        return 'form';
+    }
+
+    public function incrementSentReminders()
+    {
+        $new_num = $this->num_sent_reminders + 1;
+        $this->setModelField('num_sent_reminders', $new_num);
+        $this->setModelField('date_last_reminded', new \DateTime());
+    }
+
+    public function getDateLastReminded()
+    {
+        return $this->date_last_reminded;
+    }
+
+    public function getNumSentReminders()
+    {
+        return $this->num_sent_reminders;
     }
 
     /**

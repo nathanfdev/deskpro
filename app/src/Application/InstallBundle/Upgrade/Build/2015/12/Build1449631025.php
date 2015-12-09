@@ -26,4 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1449631025);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1449631025 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('add more metadata to saved_forms');
+        $this->execMutateSql('ALTER TABLE saved_forms ADD data_type VARCHAR(255) NOT NULL, ADD intention_type VARCHAR(255) NOT NULL, ADD num_sent_reminders SMALLINT NOT NULL, ADD date_last_reminded DATETIME DEFAULT NULL');
+    }
+}

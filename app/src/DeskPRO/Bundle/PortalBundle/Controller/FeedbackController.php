@@ -37,6 +37,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitFeedbackAbuseCheck;
+use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\Helper\FeedbackFilterUriHelper;
@@ -149,11 +150,11 @@ class FeedbackController extends AbstractController
                         $person = $e->getPerson();
                         $this->submitNewFeedbackAbuseCheck($person, $request->getClientIp());
 
-                        return $this->getFormSaver()->saveFormForPersonLogin($person, $form, $request);
+                        return $this->getFormSaver()->saveFormForPersonLogin(SavedForm::TYPE_NEW_FEEDBACK, $person, $form, $request);
                     } catch (EmailValidationRequiredException $e) {
                         $this->submitNewFeedbackAbuseCheck($person, $request->getClientIp());
 
-                        $saved_form = $this->getFormSaver()->saveForm($form, $request, $person->getEmailAddress(), $person->getDisplayName());
+                        $saved_form = $this->getFormSaver()->saveForm(SavedForm::TYPE_NEW_FEEDBACK, $form, $request, $person->getEmailAddress(), $person->getDisplayName());
                         $this->get('portal_validation')->sendVerificationEmail(PortalValidation::NEW_FEEDBACK, $saved_form);
                         $this->addFlash('success', $this->phrase('portal.flashes.guest_content_must_verify'));
 

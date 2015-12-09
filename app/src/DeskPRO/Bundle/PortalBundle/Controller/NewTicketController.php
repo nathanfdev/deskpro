@@ -37,6 +37,7 @@ use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Tickets\DuplicateTicketException;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitTicketAbuseCheck;
+use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Person\EmailValidationRequiredException;
@@ -131,13 +132,14 @@ class NewTicketController extends AbstractController
                             // the email used belongs to a user, and brand settings say they need to log in
                             $person = $e->getPerson();
 
-                            return $this->getFormSaver()->saveFormForPersonLogin($person, $form, $request);
+                            return $this->getFormSaver()->saveFormForPersonLogin(SavedForm::TYPE_NEW_TICKET, $person, $form, $request);
                         } catch (EmailValidationRequiredException $e) {
                             // this exception just means the guest exists but does not
                             // have a valid email address
                             // we still need to check this setting
                             if ($this->getBrandSetting('core_tickets.web_require_validation')) {
                                 $saved_form = $this->getFormSaver()->saveForm(
+                                    SavedForm::TYPE_NEW_TICKET,
                                     $form,
                                     $request,
                                     $person->getEmailAddress(),

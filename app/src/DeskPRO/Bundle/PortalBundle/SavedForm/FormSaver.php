@@ -127,13 +127,14 @@ class FormSaver
      * Saves the form information and prepares the session for auto-submit. Returns the correct
      * redirect reponse that your controller should return immediately to auto-submit.
      *
-     * @param Person        $person  the Person that needs to log in
-     * @param FormInterface $form    the submitted form
-     * @param Request       $request the request that was used to submit the form
+     * @param string        $data_type the type of data being saved (feedback, ticket, etc) - a const of this class
+     * @param Person        $person    the Person that needs to log in
+     * @param FormInterface $form      the submitted form
+     * @param Request       $request   the request that was used to submit the form
      *
      * @return RedirectResponse
      */
-    public function saveFormForPersonLogin(Person $person, FormInterface $form, Request $request)
+    public function saveFormForPersonLogin($data_type, Person $person, FormInterface $form, Request $request)
     {
         $data         = $request->request->all();
         $route        = $request->attributes->get('_route');
@@ -142,7 +143,7 @@ class FormSaver
         // we have to do a "hack" to find the saved auth codes for the attachments
         $data = $this->dealWithAttachmentsAuthCodes($form, $data);
 
-        $saved_form = new SavedForm($person);
+        $saved_form = new SavedForm($data_type, SavedForm::INTENTION_LOGIN, $person);
         $saved_form->setFormData($data);
         $saved_form->setMetaData(array(
             'route'        => $route,
@@ -174,14 +175,16 @@ class FormSaver
      * they cannot log in yet (user registration for example) and will be dealt with outside
      * of the normal flow of forcing a user to login before submitting.
      *
-     * @param FormInterface $form    the submitted form
-     * @param Request       $request the request that was used to submit the form
+     * @param string        $data_type the type of data being saved (feedback, ticket, etc) - a const of this class
+     * @param FormInterface $form      the submitted form
+     * @param Request       $request   the request that was used to submit the form
      * @param string|null   $name
      * @param string|null   $email
+     * @param Person        $person    - optional, a Person object if we know it. most calls to this will be for email verification and we won't know the person directly though.
      *
      * @return SavedForm
      */
-    public function saveForm(FormInterface $form, Request $request, $email = null, $name = null, Person $person = null)
+    public function saveForm($data_type, FormInterface $form, Request $request, $email = null, $name = null, Person $person = null)
     {
         $data         = $request->request->all();
         $route        = $request->attributes->get('_route');
@@ -190,7 +193,7 @@ class FormSaver
         // we have to do a "hack" to find the saved auth codes for the attachments
         $data = $this->dealWithAttachmentsAuthCodes($form, $data);
 
-        $saved_form = new SavedForm($person); // may or may not be a person, but if there is saved it to the form
+        $saved_form = new SavedForm($data_type, SavedForm::INTENTION_VERIFY_EMAIL, $person); // may or may not be a person, but if there is saved it to the form
         $saved_form->setFormData($data);
         $saved_form->setMetaData(array(
             'route'        => $route,
@@ -214,17 +217,7 @@ class FormSaver
 
     public function getMessage(SavedForm $saved_form)
     {
-        $meta = $saved_form->getMetaData();
-
-        if ($meta['route'] === 'portal_new_ticket') {
-            return 'new ticket';
-        }
-
-        if ($meta['route'] === 'portal_feedback') {
-            return 'new feedback';
-        }
-
-        return 'form';
+        return $saved_form->getMessage();
     }
 
     /**
