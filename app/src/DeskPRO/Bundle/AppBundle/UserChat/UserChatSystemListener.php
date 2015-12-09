@@ -37,9 +37,9 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * Class UserChatListener.
+ * Class UserChatSystemListener.
  */
-class UserChatListener implements EventSubscriberInterface
+class UserChatSystemListener implements EventSubscriberInterface
 {
     /**
      * @var EntityManager
@@ -62,7 +62,14 @@ class UserChatListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            UserChatEvent::EVENT_NAME => 'onSystemMessage',
+            UserChatEvent::STARTED        => 'onChatEvent',
+            UserChatEvent::USER_RETURNED  => 'onChatEvent',
+            UserChatEvent::ENDED          => 'onChatEvent',
+            UserChatEvent::END_BY         => 'onChatEvent',
+            UserChatEvent::END_BY_USER    => 'onChatEvent',
+            UserChatEvent::SET_DEPARTMENT => 'onChatEvent',
+            UserChatEvent::ASSIGNED       => 'onChatEvent',
+            UserChatEvent::UNASSIGNED     => 'onChatEvent',
         ];
     }
 
@@ -71,15 +78,15 @@ class UserChatListener implements EventSubscriberInterface
      *
      * @param UserChatEvent $event
      */
-    public function onSystemMessage(UserChatEvent $event)
+    public function onChatEvent(UserChatEvent $event)
     {
         $conversation = $event->getConversation();
-        $phrase_id    = $event->getType();
         $params       = $event->getParams();
         $metadata     = $event->getMetadata();
 
-        $content  = array_merge($params, ['phrase_id' => $phrase_id]);
-        $metadata = array_merge($content, $metadata);
+        $phrase_id = preg_replace('/^user_chat\./', '', $event->getName());
+        $content   = array_merge($params, ['phrase_id' => $phrase_id]);
+        $metadata  = array_merge($content, $metadata);
 
         $chat_message = new ChatMessage();
         $chat_message
@@ -95,51 +102,13 @@ class UserChatListener implements EventSubscriberInterface
         $this->em->persist($conversation);
         $this->em->flush();
 
-        $channel = $this->getBaseChannel($event);
-        if ($channel) {
-            $event->getDispatcher()->dispatch(
-                ClientMessageEvent::SEND,
-                new ClientMessageEvent($channel, $chat_message)
-            );
-        }
+        $channel_type         = $chat_message->getIsUserHidden() ? 'newmessage_hidden' : 'newmessage';
+        $conversation_channel = $conversation->getChannelId($channel_type);
 
-        $channel_name = $chat_message->getIsUserHidden()
-            ? ClientMessageEvent::CHANNEL_CHAT_NEW_MESSAGE_HIDDEN
-            : ClientMessageEvent::CHANNEL_CHAT_NEW_MESSAGE;
-
-        $conversation_channel = $conversation->getChannelId($channel_name);
         $event->getDispatcher()->dispatch(
             ClientMessageEvent::SEND,
             new ClientMessageEvent($conversation_channel, $chat_message)
         );
-    }
-
-    /**
-     * Returns client message channel for chat system message.
-     *
-     * @param UserChatEvent $event
-     *
-     * @return string
-     */
-    protected function getBaseChannel(UserChatEvent $event)
-    {
-        switch ($event->getType()) {
-            case UserChatEvent::TYPE_STARTED:
-            case UserChatEvent::TYPE_USER_RETURNED:
-                return ClientMessageEvent::CHANNEL_CHAT_NEW;
-            case UserChatEvent::TYPE_ENDED:
-            case UserChatEvent::TYPE_END_BY:
-            case UserChatEvent::TYPE_END_BY_USER:
-                return ClientMessageEvent::CHANNEL_CHAT_ENDED;
-            case UserChatEvent::TYPE_SET_DEPARTMENT:
-                return ClientMessageEvent::CHANNEL_CHAT_DEPARTMENT_CHANGE;
-            case UserChatEvent::TYPE_ASSIGNED:
-                return ClientMessageEvent::CHANNEL_CHAT_REASSIGNED;
-            case UserChatEvent::TYPE_UNASSIGNED:
-                return ClientMessageEvent::CHANNEL_CHAT_UNASSIGNED;
-        }
-
-        return '';
     }
 
     /**
@@ -151,8 +120,8 @@ class UserChatListener implements EventSubscriberInterface
      */
     protected function isHtmlMessage(UserChatEvent $event)
     {
-        return in_array($event->getType(), [
-            UserChatEvent::TYPE_USER_TRACK,
+        return in_array($event->getName(), [
+            UserChatEvent::USER_TRACK,
         ]);
     }
 
@@ -165,9 +134,9 @@ class UserChatListener implements EventSubscriberInterface
      */
     protected function isUserHiddenMessage(UserChatEvent $event)
     {
-        return in_array($event->getType(), [
-            UserChatEvent::TYPE_STARTED,
-            UserChatEvent::TYPE_USER_TRACK,
+        return in_array($event->getName(), [
+            UserChatEvent::STARTED,
+            UserChatEvent::USER_TRACK,
         ]);
     }
 }

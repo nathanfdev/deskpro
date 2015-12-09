@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
 use Application\DeskPRO\Entity\ChatConversation;
@@ -74,6 +73,7 @@ class ChatConversationTransformer extends AbstractDataSerializerTransformer
         $department = $data->getDepartment();
 
         return [
+            'conversation_id' => $data->getId(),
             'author_id'       => $person ? $person->getId() : 0,
             'author_name'     => $person ? $person->getDisplayName() : $data->getPersonName(),
             'author_email'    => $person ? $person->getPrimaryEmailAddress() : $data->getPersonEmail(),

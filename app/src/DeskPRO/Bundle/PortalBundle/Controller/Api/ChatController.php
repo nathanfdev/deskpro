@@ -72,10 +72,7 @@ class ChatController extends AbstractController
         $em->persist($conversation);
         $em->flush();
 
-        $this->dispatch(
-            UserChatEvent::EVENT_NAME,
-            new UserChatEvent($conversation, UserChatEvent::TYPE_STARTED)
-        );
+        $this->dispatch(UserChatEvent::STARTED, new UserChatEvent($conversation));
 
         return new JsonResponse($this->dataSerialize($conversation));
     }
@@ -140,7 +137,7 @@ class ChatController extends AbstractController
         $em->persist($conversation);
         $em->flush();
 
-        $conversation_channel = $conversation->getChannelId(ClientMessageEvent::CHANNEL_CHAT_NEW_MESSAGE);
+        $conversation_channel = $conversation->getChannelId('newmessage');
         $this->dispatch(
             ClientMessageEvent::SEND,
             new ClientMessageEvent($conversation_channel, $chat_message)
@@ -165,10 +162,7 @@ class ChatController extends AbstractController
         $em->persist($conversation);
         $em->flush();
 
-        $this->dispatch(
-            UserChatEvent::EVENT_NAME,
-            new UserChatEvent($conversation, UserChatEvent::TYPE_END_BY_USER, [], ['chat_ended'])
-        );
+        $this->dispatch(UserChatEvent::END_BY_USER, new UserChatEvent($conversation, [], ['chat_ended']));
 
         return new JsonResponse();
     }
@@ -189,10 +183,7 @@ class ChatController extends AbstractController
         $em->persist($conversation);
         $em->flush();
 
-        $this->dispatch(
-            UserChatEvent::EVENT_NAME,
-            new UserChatEvent($conversation, UserChatEvent::TYPE_USER_RETURNED)
-        );
+        $this->dispatch(UserChatEvent::USER_RETURNED, new UserChatEvent($conversation));
 
         return new JsonResponse();
     }

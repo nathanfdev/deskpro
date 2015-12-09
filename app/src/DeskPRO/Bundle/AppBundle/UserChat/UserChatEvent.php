@@ -39,32 +39,25 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class UserChatEvent extends Event
 {
-    const TYPE_STARTED        = 'message_started';
-    const TYPE_USER_LEFT      = 'message_user-left';
-    const TYPE_USER_RETURNED  = 'message_user-returned';
-    const TYPE_USER_JOINED    = 'message_user-joined';
-    const TYPE_SET_DEPARTMENT = 'message_set-department';
-    const TYPE_ASSIGNED       = 'message_assigned';
-    const TYPE_UNASSIGNED     = 'message_unassigned';
-    const TYPE_USER_TRACK     = 'msg_new_user_track';
-    const TYPE_AGENT_TIMEOUT  = 'message_agent-timeout';
-    const TYPE_USER_TIMEOUT   = 'message_user-timeout';
-    const TYPE_WAIT_TIMEOUT   = 'message_wait-timeout';
-    const TYPE_END_BY_USER    = 'message_ended-by-user';
-    const TYPE_END_BY         = 'message_ended-by';
-    const TYPE_ENDED          = 'message_ended';
-
-    const EVENT_NAME = 'user_chat.system_event';
+    const STARTED        = 'user_chat.message_started';
+    const USER_LEFT      = 'user_chat.message_user-left';
+    const USER_RETURNED  = 'user_chat.message_user-returned';
+    const USER_JOINED    = 'user_chat.message_user-joined';
+    const SET_DEPARTMENT = 'user_chat.message_set-department';
+    const ASSIGNED       = 'user_chat.message_assigned';
+    const UNASSIGNED     = 'user_chat.message_unassigned';
+    const USER_TRACK     = 'user_chat.msg_new_user_track';
+    const AGENT_TIMEOUT  = 'user_chat.message_agent-timeout';
+    const USER_TIMEOUT   = 'user_chat.message_user-timeout';
+    const WAIT_TIMEOUT   = 'user_chat.message_wait-timeout';
+    const END_BY_USER    = 'user_chat.message_ended-by-user';
+    const END_BY         = 'user_chat.message_ended-by';
+    const ENDED          = 'user_chat.message_ended';
 
     /**
      * @var ChatConversation
      */
     protected $conversation;
-
-    /**
-     * @var string
-     */
-    protected $type;
 
     /**
      * @var array
@@ -80,14 +73,12 @@ class UserChatEvent extends Event
      * Constructor.
      *
      * @param ChatConversation $conversation
-     * @param string           $type
      * @param array            $params
      * @param array            $metadata
      */
-    public function __construct(ChatConversation $conversation, $type, array $params = [], array $metadata = [])
+    public function __construct(ChatConversation $conversation, array $params = [], array $metadata = [])
     {
         $this->conversation = $conversation;
-        $this->type         = $type;
         $this->params       = $params;
         $this->metadata     = $metadata;
     }
@@ -98,14 +89,6 @@ class UserChatEvent extends Event
     public function getConversation()
     {
         return $this->conversation;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
     }
 
     /**

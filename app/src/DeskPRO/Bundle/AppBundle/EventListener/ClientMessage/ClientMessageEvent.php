@@ -38,15 +38,11 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class ClientMessageEvent extends Event
 {
-    const CHANNEL_CHAT_NEW                = 'chat.new';
-    const CHANNEL_CHAT_DEPARTMENT_CHANGE  = 'chat.depchange';
-    const CHANNEL_CHAT_REASSIGNED         = 'chat.reassigned';
-    const CHANNEL_CHAT_UNASSIGNED         = 'chat.unassigned';
-    const CHANNEL_CHAT_ENDED              = 'chat.ended';
-    const CHANNEL_CHAT_NEW_MESSAGE        = 'newmessage';
-    const CHANNEL_CHAT_NEW_MESSAGE_HIDDEN = 'newmessage_hidden';
-    const CHANNEL_CHAT_USER_TYPING        = 'usertyping';
-    const CHANNEL_CHAT_ACK_MESSAGES       = 'ack_messages';
+    const CHANNEL_CHAT_NEW               = 'chat.new';
+    const CHANNEL_CHAT_DEPARTMENT_CHANGE = 'chat.depchange';
+    const CHANNEL_CHAT_REASSIGNED        = 'chat.reassigned';
+    const CHANNEL_CHAT_UNASSIGNED        = 'chat.unassigned';
+    const CHANNEL_CHAT_ENDED             = 'chat.ended';
 
     const SEND = 'client_message.send';
 
