@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\UserChat;
 
+use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializer;
 use DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -39,6 +40,21 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class UserChatClientListener implements EventSubscriberInterface
 {
+    /**
+     * @var DataSerializer
+     */
+    private $data_serializer;
+
+    /**
+     * Constructor.
+     *
+     * @param DataSerializer $data_serializer
+     */
+    public function __construct(DataSerializer $data_serializer)
+    {
+        $this->data_serializer = $data_serializer;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -69,7 +85,11 @@ class UserChatClientListener implements EventSubscriberInterface
      */
     public function onUserReturned(UserChatEvent $event)
     {
-        $this->send($event, ClientMessageEvent::CHANNEL_CHAT_NEW, $event->getConversation());
+        $data = array_merge($this->getInfo($event), [
+            'restarted' => true,
+        ]);
+
+        $this->send($event, ClientMessageEvent::CHANNEL_CHAT_NEW, $data);
     }
 
     /**
@@ -77,7 +97,7 @@ class UserChatClientListener implements EventSubscriberInterface
      */
     public function onEnded(UserChatEvent $event)
     {
-        $this->send($event, ClientMessageEvent::CHANNEL_CHAT_ENDED, $event->getConversation());
+        $this->send($event, ClientMessageEvent::CHANNEL_CHAT_ENDED, $this->getInfo($event));
     }
 
     /**
@@ -85,7 +105,7 @@ class UserChatClientListener implements EventSubscriberInterface
      */
     public function onEndedBy(UserChatEvent $event)
     {
-        $this->send($event, ClientMessageEvent::CHANNEL_CHAT_ENDED, $event->getConversation());
+        $this->send($event, ClientMessageEvent::CHANNEL_CHAT_ENDED, $this->getInfo($event));
     }
 
     /**
@@ -93,7 +113,7 @@ class UserChatClientListener implements EventSubscriberInterface
      */
     public function onEndedByUser(UserChatEvent $event)
     {
-        $this->send($event, ClientMessageEvent::CHANNEL_CHAT_ENDED, $event->getConversation());
+        $this->send($event, ClientMessageEvent::CHANNEL_CHAT_ENDED, $this->getInfo($event));
     }
 
     /**
@@ -101,7 +121,7 @@ class UserChatClientListener implements EventSubscriberInterface
      */
     public function onSetDepartment(UserChatEvent $event)
     {
-        $this->send($event, ClientMessageEvent::CHANNEL_CHAT_DEPARTMENT_CHANGE, $event->getConversation());
+        $this->send($event, ClientMessageEvent::CHANNEL_CHAT_DEPARTMENT_CHANGE, $this->getInfo($event));
     }
 
     /**
@@ -109,7 +129,7 @@ class UserChatClientListener implements EventSubscriberInterface
      */
     public function onAssigned(UserChatEvent $event)
     {
-        $this->send($event, ClientMessageEvent::CHANNEL_CHAT_REASSIGNED, $event->getConversation());
+        $this->send($event, ClientMessageEvent::CHANNEL_CHAT_REASSIGNED, $this->getInfo($event));
     }
 
     /**
@@ -117,7 +137,17 @@ class UserChatClientListener implements EventSubscriberInterface
      */
     public function onUnassigned(UserChatEvent $event)
     {
-        $this->send($event, ClientMessageEvent::CHANNEL_CHAT_UNASSIGNED, $event->getConversation());
+        $this->send($event, ClientMessageEvent::CHANNEL_CHAT_UNASSIGNED, $this->getInfo($event));
+    }
+
+    /**
+     * @param UserChatEvent $event
+     *
+     * @return array
+     */
+    protected function getInfo(UserChatEvent $event)
+    {
+        return $this->data_serializer->serialize($event->getConversation());
     }
 
     /**
