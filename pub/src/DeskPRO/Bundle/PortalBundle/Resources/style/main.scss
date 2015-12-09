@@ -735,6 +735,76 @@ button, .button, input[type="submit"] {
     line-height: 1.4em;
   }
 
+  .sidebar-user-welcome {
+    ul {
+      font-size: 12.5px;
+    }
+
+    h1 {
+      margin-left: 35px;
+      position: relative;
+
+      .agent-avatar {
+        width: 23px;
+        height: 23px;
+        position: absolute;
+        left: -35px;
+        top: 5px;
+      }
+    }
+
+    li {
+      padding: 2px 0px;
+    }
+
+    a {
+      color: #4f4f4f;
+      i {
+        display: inline-block;
+        width: 20px;
+        text-align: center;
+        color: #d9d7d7;
+      }
+    }
+
+    a:hover {
+      span {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .sidebar-nav-list {
+    font-size: 12.5px;
+    li {
+      padding: 2px 0px;
+    }
+
+    a {
+      color: #b1aeae;
+      i {
+        display: inline-block;
+        width: 20px;
+        text-align: center;
+        color: #d9d7d7;
+      }
+    }
+
+    a:hover {
+      color: #333;
+      span {
+        text-decoration: underline;
+      }
+    }
+
+    a.active {
+      color: #3575bd;
+      i {
+        color: inherit;
+      }
+    }
+  }
+
   .large-title {
     margin-bottom: 0;
     border-bottom: 0;
