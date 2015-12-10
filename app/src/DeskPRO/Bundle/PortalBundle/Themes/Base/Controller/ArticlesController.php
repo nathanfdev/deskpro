@@ -44,10 +44,10 @@ use Symfony\Component\HttpFoundation\Response;
 class ArticlesController extends AbstractController
 {
     /**
-     * @Tag(name="kb", esi=true)
-     * @Tag(name="kb_cats", esi=true)
-     * @Tag(name="kb_cats_expander", default_options={"style":"expander"}, esi=true)
-     * @Tag(name="kb_cats_simple", default_options={"style":"simple"}, esi=true)
+     * @Tag(name="kb", esi=true, always_guest_inline=true)
+     * @Tag(name="kb_cats", esi=true, always_guest_inline=true)
+     * @Tag(name="kb_cats_expander", default_options={"style":"expander"}, esi=true, always_guest_inline=true)
+     * @Tag(name="kb_cats_simple", default_options={"style":"simple"}, esi=true, always_guest_inline=true)
      * @TagHttpCache
      *
      * @TagOptions(
