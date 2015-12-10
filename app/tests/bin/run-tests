@@ -10,6 +10,8 @@ cd ..
 
 ##################################
 # PHPUNIT
+#
+# ToDo: run coverage "-c phpunit.xml.cov --log-junit junit-results.xml" for all suits, combine into a single report
 ##################################
 
 # Hack: see https://trello.com/c/xv8IRWTo/382-test-is-failing-when-running-for-the-first-time
@@ -17,19 +19,19 @@ bin/phpunit phpunit/DpTest/Application/EmailBundle/Templating/EngineTest.php > /
 # ---
 
 IS_PHPUNIT_ERROR=0
-bin/phpunit -c phpunit.xml.cov --log-junit junit-results.xml --testsuite DeskPRO
+bin/phpunit --testsuite DeskPRO
 if [[ $? -ne 0 ]] ; then
     IS_PHPUNIT_ERROR=1
 fi
 
 IS_PHPUNIT_TERM_ENGINE_ERROR=0
-bin/phpunit -c phpunit.xml.cov --log-junit junit-results.xml --testsuite DeskPRO-TermEngine
+bin/phpunit --testsuite DeskPRO-TermEngine
 if [[ $? -ne 0 ]] ; then
     IS_PHPUNIT_TERM_ENGINE_ERROR=1
 fi
 
 IS_PHPUNIT_PORTAL_ERROR=0
-bin/phpunit -c phpunit.xml.cov --log-junit junit-results.xml --testsuite DeskPRO-Portal
+bin/phpunit --testsuite DeskPRO-Portal
 if [[ $? -ne 0 ]] ; then
     IS_PHPUNIT_PORTAL_ERROR=1
 fi
