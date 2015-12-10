@@ -54,6 +54,10 @@ export class ReplyForm extends React.Component {
     this.props.onReopen();
   };
 
+  onRemoveFile = fileId => {
+    console.log('onRemoveFile ' + fileId);
+  };
+
   render() {
     const { agentName, isEnded, canReopen } = this.props;
     const currentFrame = parent.window.widget_iframe;
@@ -103,9 +107,9 @@ export class ReplyForm extends React.Component {
               />
             </ScrollArea>
 
-            <AttachedFile />
-            <AttachedFile />
-            <AttachedFile />
+            <AttachedFile fileId={1} name="file_name_lorem_ipsum.pdf" onRemove={this.onRemoveFile} />
+            <AttachedFile fileId={2} name="file_name_lorem_ipsum.pdf" onRemove={this.onRemoveFile} />
+            <AttachedFile fileId={3} name="file_name_lorem_ipsum.pdf" onRemove={this.onRemoveFile} />
           </div>
 
           <button>

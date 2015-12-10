@@ -1,6 +1,19 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 export class AttachedFile extends React.Component {
+
+  static propTypes = {
+    fileId: PropTypes.number,
+    name: PropTypes.string,
+    onRemove: PropTypes.func
+  };
+
+  onRemove = event => {
+    event.preventDefault();
+
+    const { fileId, onRemove } = this.props;
+    onRemove(fileId);
+  };
 
   render() {
     return (
@@ -8,8 +21,8 @@ export class AttachedFile extends React.Component {
         <div className="dpdesignportal-chat-form-attached-file-icon">
           <i className="fa fa-file-pdf-o"></i>
         </div>
-        <div className="attached-file-title">file_name_lorem_ipsum.pdf</div>
-        <a href="#" className="dpdesignportal-chat-form-attached-file-remove">
+        <div className="attached-file-title">{this.props.name}</div>
+        <a href="#" className="dpdesignportal-chat-form-attached-file-remove" onClick={this.onRemove}>
           <i className="fa fa-times-circle"></i>
         </a>
       </div>
