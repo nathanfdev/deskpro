@@ -29,11 +29,10 @@ export const initialLoad = createAction(
   () => (dispatch) => new Promise(
     (resolve) => {
       const batch = 'DP_API/batch'
-          + '?get[customCategories]=DP_API/feedback/counts?group_by%3Dcustom_category'
+          + '?get[customCategories]=DP_API/feedback_categories_counts'
           + '&get[types]=DP_API/feedback_types'
           + '&get[labels]=DP_API/feedback_labels'
           + '&get[toValidateCount]=DP_API/feedback/counts?awaiting_validation%3D1'
-          + '&get[new]=DP_API/feedback/counts?status%3Dnew'
           + '&get[active]=DP_API/feedback/counts?status%3Dactive%26group_by%3Dstatus_category'
           + '&get[closed]=DP_API/feedback/counts?status%3Dclosed%26group_by%3Dstatus_category'
           + '&get[hidden]=DP_API/feedback/counts?status%3Dhidden%26group_by%3Dhidden_status'
@@ -42,8 +41,7 @@ export const initialLoad = createAction(
         ;
       DpApi.sendGet(batch).success(({responses}) => {
         const payload = flattenBatchResponses(responses);
-        payload.customCategories = payload.customCategories.nested;
-        payload.statuses = { new: payload.new, active: payload.active, closed: payload.closed, hidden: payload.hidden };
+        payload.statuses = { active: payload.active, closed: payload.closed, hidden: payload.hidden };
         if (payload.viewFields && payload.viewFields.hasOwnProperty('value')) {
           dispatch(setDisplayFields({
             cardVisibleFields: payload.viewFields.value.cardVisibleFields,
@@ -60,7 +58,6 @@ export const initialLoad = createAction(
           }));
         }
         dispatch(setFeedbackTypesRequest(recordStoresId, payload.types));
-        delete payload.new;
         delete payload.active;
         delete payload.closed;
         delete payload.hidden;
@@ -194,6 +191,15 @@ export const applyParams = createAction(
   'FEEDBACK_APPLY_LIST_PARAMS',
   (overwrite = {}) => (dispatch, getState) => {
     const current = currentListParamsSelector(getState()).toJS();
+    if (overwrite.hasOwnProperty('navItem')) {
+      const typesOfStatus = ['status', 'status_category', 'hidden_status'];
+      typesOfStatus.forEach((type)=> {
+        if (overwrite.navItem.hasOwnProperty(type)) {
+          typesOfStatus.splice(typesOfStatus.indexOf(type), 1);
+          typesOfStatus.forEach((item) => delete current[item]);
+        }
+      });
+    }
     const params = { ...current, ...overwrite };
     const { delayReload } = params;
     if (!overwrite.hasOwnProperty('page') && current.hasOwnProperty('page')) {
@@ -206,6 +212,7 @@ export const applyParams = createAction(
     }
   }
 );
+
 export const setSort = createAction(
   'FEEDBACK_LIST_SET_SORT',
     sort => dispatch => dispatch(applyParams({ sort, delayReload: true }))

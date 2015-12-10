@@ -7,7 +7,6 @@ import { TypeTab } from './TypeTab';
 import { CategoryTab } from './CategoryTab';
 import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
 import { applyParams } from '../../Actions/FeedbackListActions';
-import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 
 @injectIntl
 export class Nav extends Component {
@@ -21,7 +20,8 @@ export class Nav extends Component {
     types: PropTypes.object.isRequired,
     customCategories: PropTypes.object.isRequired,
     toValidateCount: PropTypes.object.isRequired,
-    commentsToReviewCount: PropTypes.object.isRequired
+    commentsToReviewCount: PropTypes.object.isRequired,
+    dpWindow: PropTypes.object.isRequired
   };
 
   onLabelClick = (params) => {

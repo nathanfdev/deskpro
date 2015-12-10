@@ -59,8 +59,8 @@ class FeedbackSelectCriteria extends Criteria
                     break;
                 case 'awaiting_validation':
                     $qb
-                        ->andWhere("$alias.hidden_status = :validating")
-                        ->setParameter('validating', 'validating');
+                        ->andWhere("$alias.is_reviewed = :false")
+                        ->setParameter('false', 'false');
                     break;
                 case 'category':
                     if (is_array($value)) {

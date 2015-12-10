@@ -93,8 +93,8 @@ export const listFiltersSelector = createSelector(
   [navStateSelector, currentListParamsSelector, feedbackCategoriesSelector, feedbackLabelsSelector, feedbackTypesSelector],
   (navState, currentListParams, categories, labels, types) => {
     const checkIfShowStatus = ()=> {
-      return !currentListParams.get('navItem') ||
-        (!currentListParams.get('navItem').get('status') && !currentListParams.get('navItem').get('status_category') && !currentListParams.get('navItem').get('hidden_status'));
+      const navItem = currentListParams.get('navItem');
+      return !navItem || (!navItem.get('status') && !navItem.get('status_category') && !navItem.get('hidden_status'));
     };
     const filterSelector = [
       { label: 'Date', type: 'date', fromParam: 'created_from', toParam: 'created_to' }
@@ -121,7 +121,6 @@ export const listFiltersSelector = createSelector(
         param: param
       }));
       const statusOptions = [
-        { label: 'New', value: 'new', nested: toStatusOptions(statuses.new.nested) },
         { label: 'Active', value: 'active', nested: toStatusOptions(statuses.active.nested, 'status_category') },
         { label: 'Closed', value: 'closed', nested: toStatusOptions(statuses.closed.nested, 'status_category') },
         { label: 'Hidden', value: 'hidden', nested: toStatusOptions(statuses.hidden.nested, 'hidden_status') }
@@ -185,7 +184,6 @@ export const massActionsSelector = createSelector(
       param: param
     }));
     const statusOptions = [
-      { label: 'New', value: 'new', nested: toStatusOptions(statuses.new.nested) },
       { label: 'Active', value: 'active', nested: toStatusOptions(statuses.active.nested, 'status_category') },
       { label: 'Closed', value: 'closed', nested: toStatusOptions(statuses.closed.nested, 'status_category') },
       { label: 'Hidden', value: 'hidden', nested: toStatusOptions(statuses.hidden.nested, 'hidden_status') }
