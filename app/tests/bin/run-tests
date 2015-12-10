@@ -8,96 +8,74 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $SCRIPT_DIR
 cd ..
 
-
-# if "coverage" is first arg, do all coverage and show coveralls output but DOES NOT submit to coveralls server
-IS_COVERAGE=0
-if [ "$1" = "coverage" ]; then
-    IS_COVERAGE=1
-fi
-
-# if IS_TRAVIS, we do submit to coveralls
-IS_TRAVIS=0
-if [ "$2" = "travis" ]; then
-    IS_TRAVIS=1
-fi
-
-
-
 ##################################
 # PHPUNIT
 ##################################
-IS_PHPUNIT_ERROR=0
-if [[ "$IS_COVERAGE" -eq "1" ]]; then
-    bin/phpunit -c phpunit.xml.cov --log-junit junit-results.xml
-else
-    bin/phpunit
-fi
 
+# Hack: see https://trello.com/c/xv8IRWTo/382-test-is-failing-when-running-for-the-first-time
+bin/phpunit phpunit/DpTest/Application/EmailBundle/Templating/EngineTest.php > /dev/null
+# ---
+
+IS_PHPUNIT_ERROR=0
+bin/phpunit -c phpunit.xml.cov --log-junit junit-results.xml --testsuite DeskPRO
 if [[ $? -ne 0 ]] ; then
     IS_PHPUNIT_ERROR=1
 fi
 
+IS_PHPUNIT_TERM_ENGINE_ERROR=0
+bin/phpunit -c phpunit.xml.cov --log-junit junit-results.xml --testsuite DeskPRO-TermEngine
+if [[ $? -ne 0 ]] ; then
+    IS_PHPUNIT_TERM_ENGINE_ERROR=1
+fi
 
-
-
-
+IS_PHPUNIT_PORTAL_ERROR=0
+bin/phpunit -c phpunit.xml.cov --log-junit junit-results.xml --testsuite DeskPRO-Portal
+if [[ $? -ne 0 ]] ; then
+    IS_PHPUNIT_PORTAL_ERROR=1
+fi
 
 ##################################
 # PHPSPEC
 ##################################
 IS_PHPSPEC_ERROR=0
-if [[ "$IS_COVERAGE" -eq "1" ]]; then
-    bin/phpspec run --format=dot --config=phpspec.yml.cov
-else
-    bin/phpspec run
-fi
+
+bin/phpspec run --format=dot --config=phpspec.yml.cov
 
 if [[ $? -ne 0 ]] ; then
     IS_PHPSPEC_ERROR=1
 fi
 
-
-
-
-
-
 ##################################
 # BEHAT
 ##################################
-IS_BEHAT_ERROR=0
-PHP_VER=$(php -v | grep "PHP 5" | sed 's/.*PHP \([^-]*\).*/\1/' | cut -c 1-3)
-
-if [[ $PHP_VER != '5.3' ]]; then
-if [[ "$IS_COVERAGE" -eq "1" ]]; then
-    bin/behat --config=behat.yml.cov --profile=portal
-else
-    bin/behat --profile=portal
+IS_BEHAT_API_ERROR=0
+bin/behat --config=behat.yml.cov --profile=api
+if [[ $? -ne 0 ]] ; then
+    IS_BEHAT_API_ERROR=1
 fi
+
+IS_BEHAT_PORTAL_ERROR=0
+bin/behat --config=behat.yml.cov --profile=portal
+if [[ $? -ne 0 ]] ; then
+    IS_BEHAT_PORTAL_ERROR=1
+fi
+
+##################################
+# Jest
+##################################
+IS_JEST_ERROR=0
+
+cd ../../pub
+npm test -- -- Ampliflux
 
 if [[ $? -ne 0 ]] ; then
-    IS_BEHAT_ERROR=1
+    IS_JEST_ERROR=1
 fi
-
-if [[ "$IS_COVERAGE" -eq "1" ]]; then
-    bin/behat --config=behat.yml.cov --profile=api
-else
-    bin/behat --profile=api
-fi
-
-if [[ $? -ne 0 ]] ; then
-    IS_BEHAT_ERROR=1
-fi
-fi
-
-
-
-
-
 
 ##################################
 # EXIT IF ERROR
 ##################################
-IS_ERROR=$((IS_PHPSPEC_ERROR + IS_BEHAT_ERROR + IS_PHPUNIT_ERROR))
+IS_ERROR=$((IS_PHPSPEC_ERROR + IS_PHPUNIT_ERROR + IS_PHPUNIT_TERM_ENGINE_ERROR + IS_PHPUNIT_PORTAL_ERROR + IS_BEHAT_API_ERROR + IS_BEHAT_PORTAL_ERROR + IS_JEST_ERROR))
 if [[ "$IS_ERROR" -ne "0" ]]; then
     if [[ "$IS_PHPSPEC_ERROR" -ne "0" ]]; then
         echo "
@@ -107,31 +85,35 @@ if [[ "$IS_ERROR" -ne "0" ]]; then
         echo "
         --- PHPUNIT FAILED --- "
     fi
-    if [[ "$IS_BEHAT_ERROR" -ne "0" ]]; then
+    if [[ "IS_PHPUNIT_TERM_ENGINE_ERROR" -ne "0" ]]; then
         echo "
-        --- BEHAT FAILED --- "
+        --- PHPUNIT TERM ENGINE FAILED --- "
+    fi
+    if [[ "IS_PHPUNIT_PORTAL_ERROR" -ne "0" ]]; then
+        echo "
+        --- PHPUNIT PORTAL FAILED --- "
+    fi
+    if [[ "$IS_BEHAT_API_ERROR" -ne "0" ]]; then
+        echo "
+        --- BEHAT API FAILED --- "
+    fi
+    if [[ "$IS_BEHAT_PORTAL_ERROR" -ne "0" ]]; then
+        echo "
+        --- BEHAT PORTAL FAILED --- "
+    fi
+    if [[ "IS_JEST_ERROR" -ne "0" ]]; then
+        echo "
+        --- JEST FAILED --- "
     fi
     exit 1
 fi
 
-
-
-
-
-
 ##################################
-# SUCCESS SCRIPT
+# Coverage
 ##################################
-if [[ "$IS_COVERAGE" -eq "1" ]]; then
-    bin/phpcov merge --clover coverage/combined-clover.xml coverage/cov
+bin/phpcov merge --clover coverage/combined-clover.xml coverage/cov
 
-    if [[ "$IS_TRAVIS" -eq "1" ]]; then
-        bin/coveralls -c app/tests/coveralls.yml -v
-    else
-        bin/coveralls -c app/tests/coveralls.yml -v --dry-run
-    fi
-fi
 
-exec travis-ci/after-success
+echo "All OK"
 
 exit 0

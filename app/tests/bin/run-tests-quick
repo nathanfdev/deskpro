@@ -8,18 +8,6 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $SCRIPT_DIR
 cd ..
 
-# if "coverage" is first arg, do all coverage and show coveralls output but DOES NOT submit to coveralls server
-IS_COVERAGE=0
-if [ "$1" = "coverage" ]; then
-    IS_COVERAGE=1
-fi
-
-# if IS_TRAVIS, we do submit to coveralls
-IS_TRAVIS=0
-if [ "$2" = "travis" ]; then
-    IS_TRAVIS=1
-fi
-
 ##################################
 # PHPUNIT
 ##################################
