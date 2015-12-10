@@ -230,16 +230,29 @@
       display: inline-block;
       height: 30px;
 
-      a { border-right: 1px solid #e7e7e7; }
+      a {
+        position: relative;
+        border-right: 1px solid #e7e7e7;
 
-      a.dpdesignportal-chat-form-button-row-emoticons {
-        border-right: 0;
-        .img {
-          display: inline-block;
-          width: 10px;
-          height: 10px;
-          background: url("../img/emoticon.jpg") no-repeat center;
-          background-size: 10px 10px;
+        &.dpdesignportal-chat-form-button-row-emoticons {
+          border-right: 0;
+          .img {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: url("../img/emoticon.jpg") no-repeat center;
+            background-size: 10px 10px;
+          }
+        }
+
+        .file {
+          position: absolute;
+          opacity: 0;
+          z-index: 2;
+          top: 0;
+          right: 0;
+          width: 82px;
+          height: inherit;
         }
       }
     }
