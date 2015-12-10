@@ -16,7 +16,7 @@ Feature: /feedback/ endpoint
     And the JSON node "data" should exist
     And the JSON node "meta" should exist
     And the JSON node "meta.pagination" should exist
-    And the JSON node "meta.pagination.total" should be equal to 37
+    And the JSON node "meta.pagination.total" should be equal to 18
 
   Scenario: I GET list of feedback with hidden_status set to validating and side-loaded author info
     When I send a GET request to "/api/v2/feedback/?include=person&awaiting_validation=1"
@@ -28,7 +28,7 @@ Feature: /feedback/ endpoint
     And the JSON node "linked.person" should exist
     And the JSON node "linked.person" should have 1 element
     And the JSON node "meta.pagination" should exist
-    And the JSON node "meta.pagination.total" should be equal to 37
+    And the JSON node "meta.pagination.total" should be equal to 18
 
   Scenario: I GET list of feedback with hidden_status set to validating and pagination set to 2 results per page
     When I send a GET request to "/api/v2/feedback/?awaiting_validation=1&count=2"
@@ -38,11 +38,11 @@ Feature: /feedback/ endpoint
     And the JSON node "data" should have 2 elements
     And the JSON node "meta" should exist
     And the JSON node "meta.pagination" should exist
-    And the JSON node "meta.pagination.total" should be equal to 37
+    And the JSON node "meta.pagination.total" should be equal to 18
     And the JSON node "meta.pagination.count" should be equal to 2
     And the JSON node "meta.pagination.per_page" should be equal to 2
     And the JSON node "meta.pagination.current_page" should be equal to 1
-    And the JSON node "meta.pagination.total_pages" should be equal to 19
+    And the JSON node "meta.pagination.total_pages" should be equal to 9
 
   Scenario: I GET list of feedback with active status category
     When I send a GET request to "/api/v2/feedback/?status=active&status_category=Gathering+Feedback"
@@ -51,7 +51,7 @@ Feature: /feedback/ endpoint
     And the JSON node "data" should exist
     And the JSON node "meta" should exist
     And the JSON node "meta.pagination" should exist
-    And the JSON node "meta.pagination.total" should be equal to 9
+    And the JSON node "meta.pagination.total" should be equal to 8
 
   Scenario: I GET list of active feedback
     When I send a GET request to "/api/v2/feedback/?status=active"
@@ -60,7 +60,7 @@ Feature: /feedback/ endpoint
     And the JSON node "data" should exist
     And the JSON node "meta" should exist
     And the JSON node "meta.pagination" should exist
-    And the JSON node "meta.pagination.total" should be equal to 18
+    And the JSON node "meta.pagination.total" should be equal to 32
 
   Scenario: I GET list of feedback from one category
     When I send a GET request to "/api/v2/feedback/?category=Suggestion"
