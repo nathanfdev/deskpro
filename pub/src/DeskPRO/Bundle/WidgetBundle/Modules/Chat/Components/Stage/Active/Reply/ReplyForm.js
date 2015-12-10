@@ -30,11 +30,6 @@ export class ReplyForm extends React.Component {
     });
   };
 
-  onUploadFile = event => {
-    event.preventDefault();
-    console.log('onUploadFile');
-  };
-
   onScreenShare = event => {
     event.preventDefault();
     console.log('onScreenShare');
