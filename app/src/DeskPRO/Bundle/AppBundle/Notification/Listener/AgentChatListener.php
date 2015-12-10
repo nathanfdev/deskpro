@@ -26,4 +26,21 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1449705141);
+namespace DeskPRO\Bundle\AppBundle\Notification\Listener;
+
+use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\NewMessageEvent;
+
+class AgentChatListener extends AbstractListener
+{
+    public static function getSubscribedEvents()
+    {
+        return [
+           NewMessageEvent::EVENT_NAME => 'onNewMessage',
+        ];
+    }
+
+    public function onNewMessage(NewMessageEvent $event)
+    {
+        $this->event_manager->handleEvent($event);
+    }
+}

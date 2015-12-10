@@ -26,4 +26,31 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1449705141);
+namespace DeskPRO\Bundle\AppBundle\Notification;
+
+use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Strategy\NotificationStrategyInterface;
+
+/**
+ * Class EventManager.
+ */
+class EventManager
+{
+    /**
+     * @var NotificationStrategyInterface
+     */
+    protected $notification_strategy;
+
+    /**
+     * @param NotificationStrategyInterface $notification_strategy
+     */
+    public function __construct(NotificationStrategyInterface $notification_strategy)
+    {
+        $this->notification_strategy = $notification_strategy;
+    }
+
+    public function handleEvent(SystemEventInterface $event)
+    {
+        $this->notification_strategy->handleSystemEvent($event);
+    }
+}

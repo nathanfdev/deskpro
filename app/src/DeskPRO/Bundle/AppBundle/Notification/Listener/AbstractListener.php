@@ -26,4 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1449705141);
+namespace DeskPRO\Bundle\AppBundle\Notification\Listener;
+
+use DeskPRO\Bundle\AppBundle\Notification\EventManager;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
+abstract class AbstractListener implements EventSubscriberInterface
+{
+    /**
+     * @var EventManager
+     */
+    protected $event_manager;
+
+    final public function __construct(EventManager $event_manager)
+    {
+        $this->event_manager = $event_manager;
+    }
+}

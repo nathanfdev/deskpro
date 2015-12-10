@@ -26,4 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1449705141);
+namespace DeskPRO\Bundle\AppBundle\Notification\Delivery\Plugin;
+
+use DeskPRO\Bundle\AppBundle\Notification\Delivery\DeliveryPluginInterface;
+
+/**
+ * Class DbDeliveryPlugin.
+ */
+class DbDeliveryPlugin implements DeliveryPluginInterface
+{
+}

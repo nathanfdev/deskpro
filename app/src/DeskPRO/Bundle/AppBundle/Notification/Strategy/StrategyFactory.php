@@ -26,4 +26,37 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1449705141);
+namespace DeskPRO\Bundle\AppBundle\Notification\Strategy;
+
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
+/**
+ * Class StrategyFactory.
+ */
+class StrategyFactory
+{
+    /**
+     * @var ContainerInterface
+     */
+    protected $container;
+
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
+    /**
+     * @param $standalone
+     *
+     * @return NotificationStrategyInterface
+     */
+    public function create($standalone = true)
+    {
+        if ($standalone) {
+            return new StandaloneStrategy();
+        } else {
+            //TODO just a stub, it should be created depending on settings via factory
+            return new CloudStrategy($this->container->get('deskpro.notification.peristance.adapter.db'));
+        }
+    }
+}

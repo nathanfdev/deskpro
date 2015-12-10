@@ -26,4 +26,28 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1449705141);
+namespace DeskPRO\Bundle\AppBundle\Notification\Strategy;
+
+use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Persistance\PersistanceAdapterInterface;
+
+class CloudStrategy extends AbstractStrategy
+{
+    /** @var PersistanceAdapterInterface */
+    protected $persistance_adapter;
+
+    public function __construct(PersistanceAdapterInterface $persistance_adapter)
+    {
+        $this->persistance_adapter = $persistance_adapter;
+    }
+
+    public function handleSystemEvent(SystemEventInterface $event)
+    {
+        $this->persistEvent($event);
+    }
+
+    protected function persistEvent($event)
+    {
+        $this->persistance_adapter->persist($event);
+    }
+}

@@ -26,4 +26,32 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1449705141);
+namespace DeskPRO\Bundle\AppBundle\Notification\Persistance;
+
+use Application\DeskPRO\ORM\EntityManager;
+use DeskPRO\Bundle\AppBundle\Entity\Event;
+use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
+
+class DbAdapter implements PersistanceAdapterInterface
+{
+    /**
+     * @var EntityManager
+     */
+    protected $em;
+
+    /**
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
+    public function persist(SystemEventInterface $event)
+    {
+        $event_entity = new Event();
+        $event_entity->setEvent($event);
+        $this->em->persist($event_entity);
+        $this->em->flush();
+    }
+}

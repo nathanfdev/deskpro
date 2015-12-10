@@ -26,4 +26,53 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1449705141);
+namespace DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat;
+
+use DeskPRO\Bundle\AppBundle\Notification\Event\AbstractSystemEvent;
+
+/**
+ * Class NewMessageEvent.
+ */
+class NewMessageEvent extends AbstractSystemEvent
+{
+    const EVENT_NAME = 'notification.agent_chat.new_message';
+
+    /** @var int */
+    protected $message_id;
+
+    /**
+     * @param int $message_id
+     */
+    public function __construct($message_id)
+    {
+        $this->message_id = $message_id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMessageId()
+    {
+        return $this->message_id;
+    }
+
+    /**
+     * @param int $message_id
+     *
+     * @return NewMessageEvent
+     */
+    public function setMessageId($message_id)
+    {
+        $this->message_id = $message_id;
+    }
+
+    public function __sleep()
+    {
+        return ['message_id'];
+    }
+
+    public function __wakeup($array)
+    {
+        $this->message_id = $array['message_id'];
+    }
+}

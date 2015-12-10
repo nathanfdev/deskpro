@@ -26,4 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1449705141);
+namespace DeskPRO\Bundle\AppBundle\Notification\Event;
+
+use Symfony\Component\EventDispatcher\Event;
+
+/**
+ * Class AbstractSystemEvent.
+ */
+abstract class AbstractSystemEvent extends Event implements SystemEventInterface
+{
+    const EVENT_NAME = 'abstract.event';
+}

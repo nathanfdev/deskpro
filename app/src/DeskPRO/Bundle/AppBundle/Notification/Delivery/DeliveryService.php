@@ -26,4 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1449705141);
+namespace DeskPRO\Bundle\AppBundle\Notification\Delivery;
+
+use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
+
+/**
+ * Class DeliveryService.
+ */
+class DeliveryService
+{
+    /**
+     * @param MessageInterface $message
+     */
+    public function deliver(MessageInterface $message)
+    {
+    }
+}

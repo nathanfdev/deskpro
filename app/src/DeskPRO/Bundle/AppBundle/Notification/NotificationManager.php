@@ -26,4 +26,23 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1449705141);
+namespace DeskPRO\Bundle\AppBundle\Notification;
+
+use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
+
+/**
+ * Class NotificationManager.
+ */
+class NotificationManager
+{
+    /**
+     * @param SystemEventInterface $event
+     *
+     * @return MessageInterface[]
+     */
+    public function createMessages(SystemEventInterface $event)
+    {
+        return [];
+    }
+}

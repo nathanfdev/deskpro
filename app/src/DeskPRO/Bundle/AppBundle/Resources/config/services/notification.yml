@@ -1,0 +1,29 @@
+services:
+
+  deskpro.notification.event_manager:
+    class: DeskPRO\Bundle\AppBundle\Notification\EventManager
+    arguments:
+      - @deskpro.notification.notification_strategy
+
+  deskpro.notification.strategy_factory:
+    class: DeskPRO\Bundle\AppBundle\Notification\Strategy\StrategyFactory
+    arguments:
+      - @service_container
+
+  deskpro.notification.notification_strategy:
+    class: DeskPRO\Bundle\AppBundle\Notification\Strategy\AbstractStrategy
+    factory: [@deskpro.notification.strategy_factory, create]
+    arguments:
+      - false
+
+  deskpro.notification.event_listener.agent_chat.new_message_listener:
+    class: DeskPRO\Bundle\AppBundle\Notification\Listener\AgentChatListener
+    arguments:
+      - @deskpro.notification.event_manager
+    tags:
+      - { name: kernel.event_subscriber }
+
+  deskpro.notification.peristance.adapter.db:
+    class: DeskPRO\Bundle\AppBundle\Notification\Persistance\DbAdapter
+    arguments:
+      - @doctrine.orm.default_entity_manager
