@@ -526,7 +526,7 @@ class TicketIncomingEmailMessage
                 $pos_as_note = 999999999;
             }
             if (!$pos_as_reply) {
-                $pos_as_note = 999999999;
+                $pos_as_reply = 999999999;
             }
 
             if ($pos_as_reply < $pos_as_note) {
