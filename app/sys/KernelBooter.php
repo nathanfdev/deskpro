@@ -331,14 +331,13 @@ class KernelBooter
                 $request  = Request::createFromGlobals();
                 $response = $kernel->handle($request);
 
-
                 if ($DP_CONFIG['debug']['dev']) {
                     // ---
                     // debug http cache
                     if ($kernel instanceof PortalHttpCache && strpos($request->getPathInfo(), '/_wdt') === false && strpos($request->getPathInfo(), '/_profile') === false) {
-                        $pretty_log = HttpCacheDebugPrinter::debugPortalCacheKernel($kernel);
+                        $pretty_log       = HttpCacheDebugPrinter::debugPortalCacheKernel($kernel);
                         $response_content = $response->getContent();
-                        $final_content = $response_content . $pretty_log;
+                        $final_content    = $response_content.$pretty_log;
                         $response->setContent($final_content);
                         $response->headers->set('Content-Length', strlen($final_content));
                     }

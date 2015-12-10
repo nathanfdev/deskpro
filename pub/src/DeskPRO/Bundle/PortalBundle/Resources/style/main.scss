@@ -3142,7 +3142,7 @@ table {
   font-size: 100%;
   tr {
     td {
-      padding: 5px 10px;
+      padding: 10px 10px;
       color: $text-color-darker;
       vertical-align: top;
       font-size: 100%;
@@ -3151,6 +3151,16 @@ table {
         color: $text-color-lighter;
         text-align: left;
       }
+    }
+  }
+
+  &.data-table {
+    border-collapse: separate;
+    //border-spacing: 10px 5px;
+    th, td {
+      font-size: 12px;
+      padding: 8px 10px;
+      border-bottom: 1px solid #ddd;
     }
   }
 }
