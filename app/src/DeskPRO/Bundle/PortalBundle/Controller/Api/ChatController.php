@@ -189,17 +189,23 @@ class ChatController extends AbstractController
      */
     public function sendTranscriptDataAction(ChatConversation $conversation)
     {
-        $person     = $conversation->getPerson();
-        $has_email  = $person && $person->getPrimaryEmailAddress() || $conversation->getPersonEmail();
-        $has_answer = $conversation->getDateFirstAgentMessage();
+        $already_sent = $conversation->getShouldSendTranscript();
+        $person       = $conversation->getPerson();
+        $has_email    = $person ? $person->getPrimaryEmailAddress() : $conversation->getPersonEmail();
+        $has_answer   = $conversation->getDateFirstAgentMessage();
 
-        $conversation->setShouldSendTranscript($has_email && $has_answer);
+        $can_send = !$already_sent && $has_email && $has_answer;
+        if ($can_send) {
+            $conversation->setShouldSendTranscript(true);
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($conversation);
-        $em->flush();
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($conversation);
+            $em->flush();
+        }
 
-        return new JsonResponse();
+        return new JsonResponse([
+            'success' => $can_send,
+        ]);
     }
 
     /**
@@ -233,7 +239,13 @@ class ChatController extends AbstractController
      */
     public function reopenChatAction(ChatConversation $conversation)
     {
-        $conversation->setStatus(ChatConversation::STATUS_OPEN);
+        $conversation
+            ->setStatus(ChatConversation::STATUS_OPEN)
+            ->setEndedBy(null)
+            ->setDateEnded(null)
+            ->setShouldSendTranscript(false)
+            ->setDateTranscriptSent(null)
+        ;
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($conversation);

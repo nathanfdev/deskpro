@@ -549,12 +549,14 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Set the status (open or ended).
      *
-     * @param  $status
+     * @param string $status
+     *
+     * @return $this
      */
     public function setStatus($status)
     {
         if ($this->status == $status) {
-            return;
+            return $this;
         }
 
         $this->_onPropertyChanged('status', $this->status, $status);
@@ -569,6 +571,8 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
                 $this['date_ended'] = null;
             }
         }
+
+        return $this;
     }
 
     /**
@@ -720,6 +724,8 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @param \DateTime $date
+     *
+     * @return $this
      */
     public function setDateEnded(\DateTime $date = null)
     {
@@ -730,6 +736,8 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
             $this->setModelField('date_ended', null);
             $this->setModelField('total_to_ended', 0);
         }
+
+        return $this;
     }
 
     /**
@@ -956,6 +964,46 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     public function setShouldSendTranscript($value)
     {
         $this->setModelField('should_send_transcript', $value);
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateTranscriptSent()
+    {
+        return $this->date_transcript_sent;
+    }
+
+    /**
+     * @param \DateTime|null $date
+     *
+     * @return $this
+     */
+    public function setDateTranscriptSent(\DateTime $date = null)
+    {
+        $this->setModelField('date_transcript_sent', $date);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEndedBy()
+    {
+        return $this->ended_by;
+    }
+
+    /**
+     * @param string $ended_by
+     *
+     * @return $this
+     */
+    public function setEndedBy($ended_by)
+    {
+        $this->setModelField('ended_by', $ended_by);
 
         return $this;
     }
