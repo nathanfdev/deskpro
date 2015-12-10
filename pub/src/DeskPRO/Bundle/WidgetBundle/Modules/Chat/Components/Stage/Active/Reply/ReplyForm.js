@@ -72,7 +72,7 @@ export class ReplyForm extends React.Component {
         }
 
         <form onSubmit={this.onSubmit}>
-          <div className="message-container">
+          <div className="message-container message-container-with-attached-images">
             <ScrollArea vertical>
               <RteInput
                 inline
@@ -101,6 +101,24 @@ export class ReplyForm extends React.Component {
                 }}
               />
             </ScrollArea>
+
+            <div className="dpdesignportal-chat-form-attached-file">
+              <div className="dpdesignportal-chat-form-attached-file-icon"><i className="fa fa-file-pdf-o"></i></div>
+              <div className="attached-file-title">file_name_lorem_ipsum.pdf</div>
+              <a href="#" className="dpdesignportal-chat-form-attached-file-remove"><i className="fa fa-times-circle"></i></a>
+            </div>
+
+            <div className="dpdesignportal-chat-form-attached-file">
+              <div className="dpdesignportal-chat-form-attached-file-icon"><i className="fa fa-file-pdf-o"></i></div>
+              <div className="attached-file-title">file_name_lorem_ipsum.pdf</div>
+              <a href="#" className="dpdesignportal-chat-form-attached-file-remove"><i className="fa fa-times-circle"></i></a>
+            </div>
+
+            <div className="dpdesignportal-chat-form-attached-file">
+              <div className="dpdesignportal-chat-form-attached-file-icon"><i className="fa fa-file-pdf-o"></i></div>
+              <div className="attached-file-title">file_name_lorem_ipsum.pdf</div>
+              <a href="#" className="dpdesignportal-chat-form-attached-file-remove"><i className="fa fa-times-circle"></i></a>
+            </div>
           </div>
 
           <button>
