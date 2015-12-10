@@ -1,14 +1,26 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { pollingChat } from '../../Actions/chatActions';
-import { chatIdSelector, agentIdSelector, lastMessageIdSelector } from '../../Selectors/chat';
 import history from '../../../../Services/history';
 import moment from 'moment';
+import {
+  chatIdSelector,
+  agentIdSelector,
+  lastMessageIdSelector,
+  transcriptCheckedSelector,
+  transcriptSentSelector,
+  authorEmailSelector,
+  isEndedSelector
+} from '../../Selectors/chat';
 
 @connect(state => ({
   chatId: chatIdSelector(state),
   agentId: agentIdSelector(state),
-  lastMessageId: lastMessageIdSelector(state)
+  lastMessageId: lastMessageIdSelector(state),
+  authorEmail: authorEmailSelector(state),
+  transcriptChecked: transcriptCheckedSelector(state),
+  transcriptSent: transcriptSentSelector(state),
+  isEnded: isEndedSelector(state)
 }))
 export class ChatPollingContainer extends React.Component {
 
@@ -17,7 +29,10 @@ export class ChatPollingContainer extends React.Component {
     chatId: PropTypes.number,
     agentId: PropTypes.number,
     lastMessageId: PropTypes.any,
-    children: PropTypes.node
+    children: PropTypes.node,
+    authorEmail: PropTypes.string,
+    transcriptSent: PropTypes.bool,
+    isEnded: PropTypes.bool
   };
 
   componentDidMount() {
@@ -31,35 +46,30 @@ export class ChatPollingContainer extends React.Component {
 
   pollingRequest = () => {
     const { dispatch, chatId, agentId, lastMessageId } = this.props;
+
+    // Handle state changes
     if (!chatId) {
       return;
     }
+    if (agentId && history.state !== '/chat/active') {
+      history.replace('/chat/active');
+    }
 
+    // Send next request
     const queryParams = {
       last_timestamp: moment().format(),
       last_message_id: lastMessageId
     };
-
     const promise = dispatch(pollingChat(chatId, queryParams));
-    promise.then(
-      () => {
-        if (!this.mounted) {
-          return;
-        }
-        if (agentId && history.state !== '/chat/active') {
-          history.replace('/chat/active');
-        }
-
-        setTimeout(this.pollingRequest, 3000);
-      },
-      () => {
-        if (!this.mounted) {
-          return;
-        }
-
-        setTimeout(this.pollingRequest, 3000);
+    const onResponse = () => {
+      if (!this.mounted) {
+        return;
       }
-    );
+
+      setTimeout(this.pollingRequest, 3000);
+    };
+
+    promise.then(onResponse, onResponse);
   };
 
   render() {
