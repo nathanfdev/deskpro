@@ -21,7 +21,7 @@ services:
 
   language_stack_initializer.listener:
     class: DeskPRO\Bundle\AppBundle\EventListener\Language\LanguageStackInitializeListener
-    arguments: [@language_manager , @logger, @doctrine.orm.default_entity_manager]
+    arguments: [@language_manager, @portal_mode_storage, @logger, @doctrine.orm.default_entity_manager]
     tags:
       - { name: kernel.event_subscriber }
 

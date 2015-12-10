@@ -119,6 +119,7 @@ class PortalModeListener implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(KernelEvents::REQUEST => array('onKernelRequest', 256));
+        // find the mode before LanguageStackInitializerListener
+        return array(KernelEvents::REQUEST => array('onKernelRequest', 513));
     }
 }

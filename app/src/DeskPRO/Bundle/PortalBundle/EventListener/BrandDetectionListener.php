@@ -96,8 +96,7 @@ class BrandDetectionListener implements EventSubscriberInterface
             return;
         }
 
-        $request = $event->getRequest();
-        $brand   = null;
+        $brand = null;
 
         if ($mode = $this->mode_storage->getMode()) {
             $brand = $this->detectBrandMode($mode);

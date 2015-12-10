@@ -29,13 +29,13 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\EventListener\Language;
 
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Helper\IsProxyRequestHelper;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use DeskPRO\Bundle\PortalBundle\Routing\UrlMatcher;
 use Doctrine\ORM\EntityManager;
 use Negotiation\LanguageNegotiator;
@@ -56,21 +56,23 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
      * @var LoggerInterface
      */
     private $logger;
+
     /**
-     * @var EntityManager
+     * @var PortalModeStorage
      */
-    private $connection;
+    private $portal_mode_store;
 
     /**
      * @var EntityManager
      */
     private $em;
 
-    public function __construct(LanguageManager $language_manager, LoggerInterface $logger, EntityManager $em)
+    public function __construct(LanguageManager $language_manager, PortalModeStorage $portal_mode_store, LoggerInterface $logger, EntityManager $em)
     {
-        $this->language_manager = $language_manager;
-        $this->logger           = $logger;
-        $this->em               = $em;
+        $this->language_manager  = $language_manager;
+        $this->logger            = $logger;
+        $this->em                = $em;
+        $this->portal_mode_store = $portal_mode_store;
     }
 
     public static function getSubscribedEvents()
@@ -116,9 +118,15 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
 
     protected function detectFromRequestPath(Request $request)
     {
-        $pathinfo = $request->getPathInfo();
-        $matcher  = new UrlMatcher();
-        $split    = $matcher->extractLanguageCode($pathinfo);
+        if ($mode = $this->portal_mode_store->getMode()) {
+            // without taking the internal path from the mode like this,
+            // we can get false checks on the regex in the matcher below
+            $pathinfo = $mode->getInternalPath();
+        } else {
+            $pathinfo = $request->getPathInfo();
+        }
+        $matcher = new UrlMatcher();
+        $split   = $matcher->extractLanguageCode($pathinfo);
         if ($lang_code = $split['lang_url_code']) {
             $this->logger->info(sprintf('found "%s" in the uri', $lang_code));
 
