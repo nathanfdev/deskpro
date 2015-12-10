@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
 use DeskPRO\Bundle\PortalBundle\Annotation\Tag;
@@ -41,8 +40,7 @@ use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 class PortalController extends AbstractController
 {
     /**
-     * @Tag(name="page_top", esi=true)
-     * @TagHttpCache()
+     * @Tag(name="page_top")
      */
     public function topBarAction(TagRequest $tag_request)
     {
@@ -62,7 +60,7 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Tag(name="page_tabs", esi=true)
+     * @Tag(name="page_tabs", esi=true, always_guest_inline=true)
      * @TagHttpCache()
      */
     public function topTabsAction(TagRequest $tag_request)
@@ -91,8 +89,9 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Tag(name="search_and_contact_bar", default_options={"include_contact_us":true})
-     * @Tag(name="search_bar", default_options={"include_contact_us":false})
+     * @Tag(name="search_and_contact_bar", default_options={"include_contact_us":true}, esi=true, always_guest_inline=true)
+     * @Tag(name="search_bar", default_options={"include_contact_us":false}, esi=true, always_guest_inline=true)
+     * @TagHttpCache()
      *
      * @TagOptions(
      *      defaults={

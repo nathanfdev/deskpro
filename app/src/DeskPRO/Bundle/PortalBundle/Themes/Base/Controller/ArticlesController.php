@@ -145,7 +145,7 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Tag(name="kb_article_comments")
+     * @Tag(name="kb_article_comments", esi=true)
      *
      * @TagOptions(
      *      defaults={
