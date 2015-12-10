@@ -1,6 +1,6 @@
 import { createReducer } from 'Ampliflux';
 import * as actions from '../Actions/chatActions';
-import { setFullPayload, setValue, toggleBool, async } from 'Ampliflux/reducers/handlers';
+import { setFullPayload, setValue, mergeValue, toggleBool, async } from 'Ampliflux/reducers/handlers';
 import Immutable from 'immutable';
 
 const initialState = {
@@ -28,7 +28,7 @@ export default createReducer(initialState, {
   [actions.toggleAudioNotifications]: toggleBool('audioNotifications'),
   [actions.setChatId]: setFullPayload('chatId'),
   [actions.updateChatInfo]: setFullPayload('chatInfo'),
-  [actions.reopenChat]: setValue('chat.date_ended', null),
+  [actions.reopenChat]: mergeValue(null, {chatInfo: {date_ended: null}, transcript: {sent: false}}, true),
 
   // Messages
   [actions.resetMessages]: setValue('messages', []),
@@ -44,6 +44,6 @@ export default createReducer(initialState, {
   [actions.sendTranscriptData]: async({
     success: setValue('transcript.sent', true),
     start: setValue('transcript.sending', true),
-    done: setValue('transcript.sending', true)
+    done: setValue('transcript.sending', false)
   })
 });
