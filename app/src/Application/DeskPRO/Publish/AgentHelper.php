@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Publish;
 
 use Application\DeskPRO\App;
@@ -217,7 +216,7 @@ class AgentHelper implements PersonContextInterface
                 SELECT DISTINCT(c.id) as content_id, '{$t_info['content_type']}' as content_type, r.id AS revision_id, c.date_created
                 FROM $table AS c
                 LEFT JOIN {$t_info['rev_table']} r ON (c.id = r.{$t_info['id_field']})
-                WHERE r.status = 'hidden' AND r.is_reviewed = 0
+                WHERE r.status = 'hidden' AND c.is_reviewed = 0
             )";
         }
 
