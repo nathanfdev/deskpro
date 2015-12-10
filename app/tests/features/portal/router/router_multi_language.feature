@@ -21,6 +21,8 @@ Feature: Multi Language Router
     When I go to "/admin-mode/register"
     Then I should be on "/admin-mode/en/register"
 
+  @reinstall
   Scenario: I change language in URL
+    Given I login with user credentials
     When I go to "/fr/news"
     Then I should be on "/fr/news"

@@ -13,6 +13,7 @@ Feature: Portal Router
     Then I should be on "/"
 
   Scenario: I visit another page and still don't get redirected
+    Given I login with user credentials
     When I go to "/new-ticket"
     Then I should be on "/new-ticket"
 

@@ -69,10 +69,13 @@ class AuthContext extends BasePortalContext
      */
     public function iLoginWithCredentials($who)
     {
-        $this->getPage('Login')->login(
-            $this->user_details->getEmail($who),
-            $this->user_details->getPass($who)
-        );
+        $this->getSession()->visit('/login');
+
+        /** @var \Behat\Mink\Element\DocumentElement $page */
+        $page = $this->getSession()->getPage();
+        $page->fillField('username', $this->user_details->getEmail($who));
+        $page->fillField('password', $this->user_details->getPass($who));
+        $page->pressButton('Login');
     }
 
     /**
