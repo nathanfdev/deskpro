@@ -79,10 +79,10 @@ class FeedbackCountCriteria extends FeedbackSelectCriteria implements GroupableC
             $qb
                 ->addSelect('g.title as group_name')
                 ->innerJoin("{$alias}.category", 'g');
-        } else {
+        } elseif ($this->group_by === 'status_category') {
             $qb
-                ->addSelect('g.title as group_name')
                 ->leftJoin("{$alias}.{$this->group_by}", 'g')
+                ->addSelect('g.title as group_name')
                 ->andWhere('g.status_type = :type')
                 ->setParameter('type', $this->filters['status']);
         }

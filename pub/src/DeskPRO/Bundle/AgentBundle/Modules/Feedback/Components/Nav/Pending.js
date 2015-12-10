@@ -19,11 +19,11 @@ export class Pending extends Component {
         <Section>
           <SectionHeader>Pending</SectionHeader>
           <ul>
-            <ListItemContainer label="Feedback to Validate"
+            <ListItemContainer label="Feedback to Review"
                                listOptions={{isComments: false, navItem: {awaiting_validation: 1}}}>
 
               <ListItem count={toValidateCount}
-                        label="Feedback to Validate"/>
+                        label="Feedback to Review"/>
             </ListItemContainer>
 
             <ListItemContainer label="Comments to Review"

@@ -42,6 +42,7 @@ use DeskPRO\Bundle\AppBundle\Data\Criteria\CriteriaInterface;
 use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
 use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Query\QueryException;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
@@ -83,13 +84,13 @@ class FeedbackDataService extends AbstractDataService
      * @param $page
      * @param $max_per_page
      * @param FeedbackFilter $filter
-     * @param Person         $person
+     * @param Person $person
      *
      * @return Pagerfanta
      */
     public function getItemsPager($page, $max_per_page, FeedbackFilter $filter, Person $person)
     {
-        $em                  = $this->em;
+        $em = $this->em;
         $permissions_manager = $this->permissions_manager;
 
         return $this->generateAndCache(
@@ -306,8 +307,8 @@ class FeedbackDataService extends AbstractDataService
      * Select filtered list of feedback.
      *
      * @param CriteriaInterface $criteria
-     * @param int               $page
-     * @param int               $count
+     * @param int $page
+     * @param int $count
      *
      * @return array
      */
@@ -341,7 +342,14 @@ class FeedbackDataService extends AbstractDataService
      */
     public function countFeedback(FeedbackCountCriteria $criteria)
     {
-        return $criteria->hasGroupBy() ? $this->countGrouped($criteria) : $this->countFlat($criteria);
+        if (!$criteria->hasGroupBy()) {
+            return $this->countFlat($criteria);
+        }
+        if ($criteria->getGroupBy() === 'status_category') {
+            return $this->countStatusGrouped($criteria);
+        }
+
+        return $this->countGrouped($criteria);
     }
 
     /**
@@ -379,7 +387,8 @@ class FeedbackDataService extends AbstractDataService
         $criteria->applyFilters($qb);
         $criteria->applyGroupBy($qb);
         $result = $qb->getQuery()->getArrayResult();
-        $count  = Count::fromGroupedBy($criteria->getGroupBy());
+
+        $count = Count::fromGroupedBy($criteria->getGroupBy());
         foreach ($criteria->getFilters() as $field => $value) {
             switch ($field) {
                 case 'status':
@@ -388,6 +397,47 @@ class FeedbackDataService extends AbstractDataService
                     break;
             }
         }
+        foreach ($result as $group) {
+            $count->add($group['value']);
+            $count->addNested($group['value'], $group['group_name'], $criteria->getGroupBy(), $group['group_name']);
+        }
+
+        return $count;
+    }
+
+    /**
+     * We need this weird method for select all status categories of whether the feedback associated with them.
+     *
+     * @param FeedbackCountCriteria $criteria
+     *
+     * @throws \LogicException
+     *
+     * @return Count
+     */
+    private function countStatusGrouped(FeedbackCountCriteria $criteria)
+    {
+        $qb = $this->em->createQueryBuilder();
+        $filters = $criteria->getFilters();
+        $type = $filters['status'];
+        $qb
+            ->select('COUNT(feedback.id) as value', 'status.title as group_name')
+            ->from('DeskPRO:FeedbackStatusCategory', 'status')
+            ->leftJoin(
+                'DeskPRO:Feedback',
+                'feedback',
+                Join::WITH,
+                'feedback.status_category = status.id'
+            )
+            ->andWhere('status.status_type = :type')
+            ->setParameter('type', $type)
+            ->groupBy('status.id');
+
+        $result = $qb->getQuery()->getArrayResult();
+
+        $count = Count::fromGroupedBy($criteria->getGroupBy());
+        $count->setId($type);
+        $count->setTitle($type);
+
         foreach ($result as $group) {
             $count->add($group['value']);
             $count->addNested($group['value'], $group['group_name'], $criteria->getGroupBy(), $group['group_name']);
