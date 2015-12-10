@@ -110,10 +110,9 @@ define [
           if @form.perm_type == 'team'
             @filter.agent_team = @teams.filter((x) => x.id == parseInt(@form.team_id))[0]
 
-          @filterData.mergeDataModel(@filter)
+          @filterData.loadList(true).then =>
+            @$state.go('tickets.ticket_filters.gocreate') if !@filterId
 
-          if !@filterId
-            @$state.go('tickets.ticket_filters.gocreate')
         (res) =>
           @Growl.error res.data?.error_message if res.data?.error_message
       )
