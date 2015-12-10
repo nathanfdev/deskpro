@@ -12,14 +12,16 @@ import {
   chatIdSelector,
   authorEmailSelector,
   authorNameSelector,
-  sendTranscriptSelector
+  transcriptCheckedSelector,
+  transcriptSentSelector
 } from '../../../../../../Selectors/chat';
 
 @connect(state => ({
   chatId: chatIdSelector(state),
   authorName: authorNameSelector(state),
   authorEmail: authorEmailSelector(state),
-  enabled: sendTranscriptSelector(state)
+  checked: transcriptCheckedSelector(state),
+  sent: transcriptSentSelector(state)
 }))
 export class TranscriptContainer extends React.Component {
 
@@ -28,7 +30,8 @@ export class TranscriptContainer extends React.Component {
     chatId: PropTypes.number,
     authorName: PropTypes.string,
     authorEmail: PropTypes.string,
-    enabled: PropTypes.bool,
+    checked: PropTypes.bool,
+    sent: PropTypes.bool,
     children: PropTypes.node
   };
 
@@ -41,9 +44,9 @@ export class TranscriptContainer extends React.Component {
 
   onClick = event => {
     event.preventDefault();
-    const { dispatch, authorEmail, enabled } = this.props;
+    const { dispatch, authorEmail, checked } = this.props;
 
-    if (authorEmail && enabled) {
+    if (authorEmail && checked) {
       dispatch(disableSendTranscript());
     } else {
       this.setState({
@@ -88,7 +91,7 @@ export class TranscriptContainer extends React.Component {
   };
 
   render() {
-    const { authorName, authorEmail, enabled, children } = this.props;
+    const { authorName, authorEmail, checked, sent, children } = this.props;
     const childProps = children.props;
 
     return (
@@ -97,7 +100,8 @@ export class TranscriptContainer extends React.Component {
           ...childProps,
 
           ref: 'button',
-          active: enabled,
+          active: checked,
+          disabled: sent,
           onClick: this.onClick
         })}
 

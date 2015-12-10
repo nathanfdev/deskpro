@@ -1,11 +1,14 @@
 import { createReducer } from 'Ampliflux';
 import * as actions from '../Actions/chatActions';
-import { setFullPayload, setValue, toggleBool } from 'Ampliflux/reducers/handlers';
+import { setFullPayload, setValue, toggleBool, async } from 'Ampliflux/reducers/handlers';
 import Immutable from 'immutable';
 
 const initialState = {
   audioNotifications: true,
-  sendTranscript: true,
+  transcript: {
+    checked: false,
+    sent: true
+  },
   chatId: null,
   chatInfo: {
     date_ended: null,
@@ -22,14 +25,22 @@ const initialState = {
 
 export default createReducer(initialState, {
   [actions.toggleAudioNotifications]: toggleBool('audioNotifications'),
-  [actions.disableSendTranscript]: setValue('sendTranscript', false),
-  [actions.enableSendTranscript]: setValue('sendTranscript', true),
   [actions.setChatId]: setFullPayload('chatId'),
   [actions.updateChatInfo]: setFullPayload('chatInfo'),
+  [actions.reopenChat]: setValue('chat.date_ended', null),
+
+  // Messages
   [actions.resetMessages]: setValue('messages', []),
   [actions.addNewMessages]: (state, payload) => {
     const oldMessages = state.get('messages', Immutable.fromJS([])).toJS();
     return state.set('messages', Immutable.fromJS(oldMessages.concat(payload)));
   },
-  [actions.reopenChat]: setValue('chat.date_ended', null)
+
+  // Transcript
+  [actions.disableSendTranscript]: setValue('transcript.checked', false),
+  [actions.enableSendTranscript]: setValue('transcript.checked', true),
+  [actions.resetTranscriptDataSent]: setValue('sent.checked', false),
+  [actions.sendTranscriptData]: async({
+    success: setValue('transcript.sent', true)
+  })
 });

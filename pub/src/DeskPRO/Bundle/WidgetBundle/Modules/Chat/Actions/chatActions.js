@@ -5,6 +5,7 @@ import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 export const toggleAudioNotifications = createAction('WIDGET_CHAT_TOGGLE_AUDIO_NOTIFICATIONS');
 export const disableSendTranscript = createAction('WIDGET_CHAT_DISABLE_SEND_TRANSCRIPT');
 export const enableSendTranscript = createAction('WIDGET_CHAT_ENABLE_SEND_TRANSCRIPT');
+export const resetTranscriptDataSent = createAction('WIDGET_CHAT_RESET_TRANSCRIPT_DATA_SENT');
 export const setChatId = createAction('WIDGET_CHAT_SET_ID');
 export const updateChatInfo = createAction('WIDGET_CHAT_UPDATE_CHAT_INFO');
 export const resetMessages = createAction('WIDGET_CHAT_RESET_MESSAGES');
@@ -21,6 +22,7 @@ export const createChat = createAction(
       if (chatId) {
         dispatch(setChatId(chatId));
         dispatch(resetMessages());
+        dispatch(resetTranscriptDataSent());
         dispatch(updateChatInfo(data));
       }
 
@@ -63,6 +65,11 @@ export const sendChatMessage = createAction(
 export const sendTranscriptInfo = createAction(
   'WIDGET_CHAT_SEND_TRANSCRIPT_INFO',
   (chatId, params) => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/transcript_info`, params) : null
+);
+
+export const sendTranscriptData = createAction(
+  'WIDGET_CHAT_SEND_TRANSCRIPT_DATA',
+  (chatId, params) => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/transcript_data`, params) : null
 );
 
 export const endChat = createAction(
