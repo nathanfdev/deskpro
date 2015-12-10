@@ -46,28 +46,25 @@ class PortalHttpCache extends EventDispatchingHttpCache
      * because "Vary" will be different if these are different, and there's no need for that. If we need to distingush
      * between an "anonymous" and "guest with session" in the app, we can change this value. (NEVER change the GUEST_HASH tho).
      */
-    const ANON_HASH = '2c297f02c63a1203f83d00f05103617658b9f15f87d578c2d558a7fd2ba6531b';
+    const ANON_NO_SESSION_HASH = 'anon_no_session';
 
     /**
-     * If the guest gets through the anon filter (has a session) the following hash is always used, instead of ANON_HASH.
+     * If the guest gets through the anon filter (has a session) the following hash is generated, instead of ANON_NO_SESSION_HASH.
      *
-     * This is generated in PortalUserHashContextProvider, and then hashed by FOSHttpCacheBundle's service.
-     * We can alter the generator if we need to, but just use "portal_cache_helper" service to determine if its a guest request.
-     *
-     * NEVER change this value.
+     * NEVER change this value. It is computed with the normal "everyone" usergroup, as a guest would be.
      */
-    const GUEST_HASH = '2c297f02c63a1203f83d00f05103617658b9f15f87d578c2d558a7fd2ba6531b';
+    const GUEST_WITH_SESSION_HASH = '2c297f02c63a1203f83d00f05103617658b9f15f87d578c2d558a7fd2ba6531b';
 
     protected function getDefaultSubscribers()
     {
         $user_context_subscriber = new UserContextSubscriber(
             array(
-                'anonymous_hash'          => self::ANON_HASH,
+                'anonymous_hash'          => self::ANON_NO_SESSION_HASH,
                 'user_hash_accept_header' => self::USER_CONTEXT_HASH_ACCEPT_HEADER,
                 'user_hash_header'        => self::USER_CONTEXT_HASH_HEADER,
                 'user_hash_uri'           => '/_portal_user_hash',
                 'user_hash_method'        => 'GET',
-                'session_name_prefix'     => 'PHPSESSID',
+                'session_name_prefix'     => 'dpsid',
             )
         );
 
@@ -78,11 +75,23 @@ class PortalHttpCache extends EventDispatchingHttpCache
     {
         global $DP_CONFIG;
 
-        if (isset($DP_CONFIG['portal_disable_cache']) && $DP_CONFIG['portal_disable_cache']) {
+        $cache_disabled = isset($DP_CONFIG['portal_disable_cache']) && $DP_CONFIG['portal_disable_cache'];
+
+        if ($cache_disabled) {
             return $this->kernel->handle($request, $type, $catch);
         }
 
-        return parent::handle($request, $type, $catch);
+        $response = parent::handle($request, $type, $catch);
+
+        // we don't want this to "look" like it should be cached to the outside world. after this method,
+        // we send it to the user. so let's strip away the idea of this response being cachable.
+        // this will force clients (and proxies in the middle) to always hit our proxy cache first.
+
+        $response->setMaxAge(0);
+        $response->setSharedMaxAge(0);
+        $response->setPrivate();
+
+        return $response;
     }
 
     /**
@@ -92,6 +101,6 @@ class PortalHttpCache extends EventDispatchingHttpCache
      */
     protected function getOptions()
     {
-        return array('private_headers' => array(), 'debug' => false);
+        return array('debug' => true);
     }
 }

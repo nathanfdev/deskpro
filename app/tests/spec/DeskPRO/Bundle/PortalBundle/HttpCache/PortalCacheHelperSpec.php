@@ -59,8 +59,8 @@ class PortalCacheHelperSpec extends ObjectBehavior
 
     public function it_knows_if_given_hash_is_a_guest_request_or_not()
     {
-        $this->isGuestHash(PortalHttpCache::ANON_HASH)->shouldBe(true);
-        $this->isGuestHash(PortalHttpCache::GUEST_HASH)->shouldBe(true);
+        $this->isGuestHash(PortalHttpCache::ANON_NO_SESSION_HASH)->shouldBe(true);
+        $this->isGuestHash(PortalHttpCache::GUEST_WITH_SESSION_HASH)->shouldBe(true);
 
         $this->isGuestHash('xyz-gibberish')->shouldBe(false);
     }
@@ -76,7 +76,7 @@ class PortalCacheHelperSpec extends ObjectBehavior
     public function it_determines_a_guest_request_if_master_request_context_hash_indicates_anonymous(
         HeaderBag $headers
     ) {
-        $headers->get(PortalHttpCache::USER_CONTEXT_HASH_HEADER)->willReturn(PortalHttpCache::ANON_HASH);
+        $headers->get(PortalHttpCache::USER_CONTEXT_HASH_HEADER)->willReturn(PortalHttpCache::ANON_NO_SESSION_HASH);
 
         $this->isGuestRequest()->shouldReturn(true);
     }
@@ -84,7 +84,7 @@ class PortalCacheHelperSpec extends ObjectBehavior
     public function it_determines_a_guest_request_if_master_request_context_hash_indicates_guest_hash(
         HeaderBag $headers
     ) {
-        $headers->get(PortalHttpCache::USER_CONTEXT_HASH_HEADER)->willReturn(PortalHttpCache::GUEST_HASH);
+        $headers->get(PortalHttpCache::USER_CONTEXT_HASH_HEADER)->willReturn(PortalHttpCache::GUEST_WITH_SESSION_HASH);
 
         $this->isGuestRequest()->shouldReturn(true);
     }
