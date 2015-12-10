@@ -94,7 +94,7 @@ export class TranscriptForm extends React.Component {
 
             <div className="label button-label">
               {this.state.submit
-                ? 'Saving'
+                ? <div className="spinner"><i/></div>
                 : <input type="submit"
                          value="Send me a transcript"
                          className="dpdesignportal-button"
