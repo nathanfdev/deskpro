@@ -1,7 +1,7 @@
-{##
+{#
  # The standard inline login form used in some forms. This asks the user for their email address, but offers
  # an inline form to log in instead. On the newticket page, this also allows the user to choose amongst their email addresses in the.
- ##}
+ #}
 
 <div id="dp_inline_login_row" class="dp-inline-login dp-inline-login-email {% if login_error %}open{% endif %}">
 	{% if app.user.is_guest %}
@@ -76,6 +76,36 @@
 					<a class="dp-btn small back">{{ phrase('user.profile.lost_password_back_btn') }}</a>
 				</div>
 			</div>
+
+            <div style="max-width: 200px; margin-top: 10px;">
+                {% set am = app.authenticationManager %}
+                {% if am.hasLoginTextButtonUsersources %}
+                    <ul class="dp-unstyled">
+                        {% for usersource in am.getLoginTextButtonUsersources %}
+                            <li style="margin-bottom: 5px">{{ render_usersource(usersource, 'login_text_btn') }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% if am.hasLoginIconUsersources %}
+                        <div class="dp-usersource-list"
+                             style="border-top: 1px solid #ccc;font-size: 11px;margin-top: 12px;padding-top: 7px; text-align: right;">
+                            {{ phrase('user.profile.or_connect_with') }}
+                            {% for usersource in am.getLoginIconUsersources %}
+                                {{ render_usersource(usersource, 'login_pull_btn') }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% else %}
+                    {% if am.hasLoginIconUsersources %}
+                        <div class="dp-usersource-list">
+                            {{ phrase('user.profile.connect_with') }}
+                            {% for usersource in am.getLoginIconUsersources %}
+                                {{ render_usersource(usersource, 'login_pull_btn') }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+
 		</div>
 
 	{% else %}
