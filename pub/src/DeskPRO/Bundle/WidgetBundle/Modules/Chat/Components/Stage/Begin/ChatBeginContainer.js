@@ -24,6 +24,25 @@ export class ChatBeginContainer extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this.mounted = true;
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.children !== this.props.children) {
+      this.setState({
+        name: '',
+        email: '',
+        hidden_email: false,
+        errors: null
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
+  }
+
   onChangeName = event => {
     this.setState({
       name: event.target.value,
@@ -58,15 +77,20 @@ export class ChatBeginContainer extends React.Component {
     promise.then(
       () => {
         history.replace('/chat/waiting');
-        this.setState({
-          submit: false
-        });
+
+        if (this.mounted) {
+          this.setState({
+            submit: false
+          });
+        }
       },
       result => {
-        this.setState({
-          submit: false,
-          errors: result.getData()
-        });
+        if (this.mounted) {
+          this.setState({
+            submit: false,
+            errors: result.getData()
+          });
+        }
       }
     );
   };
