@@ -36,6 +36,7 @@ require_once DP_ROOT.'/sys/Kernel/HelpdeskOfflineMessage.php';
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Console\CronApplication;
+use DeskPRO\Bundle\AppBundle\Debug\HttpCacheDebugPrinter;
 use DeskPRO\Bundle\PortalBundle\HttpCache\PortalHttpCache;
 use DeskPRO\Component\Filesystem\SafeFile;
 use Doctrine\DBAL\DBALException;
@@ -330,7 +331,27 @@ class KernelBooter
                 $request  = Request::createFromGlobals();
                 $response = $kernel->handle($request);
 
+
+                if ($DP_CONFIG['debug']['dev']) {
+                    // ---
+                    // debug http cache
+                    if ($kernel instanceof PortalHttpCache && strpos($request->getPathInfo(), '/_wdt') === false && strpos($request->getPathInfo(), '/_profile') === false) {
+                        $pretty_log = HttpCacheDebugPrinter::debugPortalCacheKernel($kernel);
+                        $response_content = $response->getContent();
+                        $final_content = $response_content . $pretty_log;
+                        $response->setContent($final_content);
+                        $response->headers->set('Content-Length', strlen($final_content));
+                    }
+
+                    if (strpos($request->getPathInfo(), '/_wdt') !== false && $response->getStatusCode() != 200) {
+                        exit;
+                    }
+                    //
+                    // ---
+                }
+
                 $response->send();
+
                 $kernel->terminate($request, $response);
             } catch (DBALException $e) {
                 // note: this try catch block is directly copied from old portal code in this booter, but we added code=0
