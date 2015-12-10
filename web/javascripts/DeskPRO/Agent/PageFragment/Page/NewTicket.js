@@ -1021,9 +1021,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					dataType: 'html',
 					context: this,
 					success: function(html) {
+						var oldPersonId = $(html).find('input.set_person_id').val();
 						placeUserRow(html);
-
-						if ($(html).has('[name="newticket[person][language_id]"]').length) {
+						
+						if (!oldPersonId) {
 							// new user
 							if (term.indexOf('@') !== -1) {
 								$('input.email', userfields).val(term);
