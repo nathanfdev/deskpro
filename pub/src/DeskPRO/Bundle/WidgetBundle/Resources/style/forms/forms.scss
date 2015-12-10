@@ -54,17 +54,6 @@
       color: #a5a5a5;
       .dpdesignportal-checkbox { position: relative; top: -1px; }
     }
-
-    .spinner {
-      i {
-        display: inline-block;
-        background: url('../img/loading-small-flat.gif') center;
-        background-size: 15px 15px;
-        width: 15px;
-        height: 15px;
-        margin: 0 auto;
-      }
-    }
   }
 
   .dpdesignportal-form-item-label-title {
@@ -104,5 +93,16 @@
       opacity: 1;
       color: #cecece;
     }
+  }
+}
+
+.spinner {
+  i {
+    display: inline-block;
+    background: url('../img/loading-small-flat.gif') center;
+    background-size: 15px 15px;
+    width: 15px;
+    height: 15px;
+    margin: 0 auto;
   }
 }

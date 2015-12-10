@@ -98,6 +98,18 @@
       &.checked i  { color: #333; }
     }
   }
+
+  &.error {
+    input[type="text"] {
+      border: 1px solid #ff0000;
+    }
+  }
+
+  .spinner {
+    position: absolute;
+    top: 12px;
+    right: 20px;
+  }
 }
 
 .dpdesignportal-collect-user-info-waiting {

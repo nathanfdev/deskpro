@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { UserInfoForm } from './UserInfoForm';
 import { Checkbox } from './Checkbox';
+import { hasErrors } from 'DeskPRO/Component/Form/FormErrors';
 
 export class ChatBeginConversation extends React.Component {
 
@@ -8,6 +9,8 @@ export class ChatBeginConversation extends React.Component {
     name: PropTypes.string,
     email: PropTypes.string,
     hiddenEmail: PropTypes.bool,
+    submit: PropTypes.bool,
+    errors: PropTypes.object,
     onChangeName: PropTypes.func,
     onChangeEmail: PropTypes.func,
     onToggleHiddenEmail: PropTypes.func,
@@ -28,11 +31,12 @@ export class ChatBeginConversation extends React.Component {
   };
 
   renderNameForm() {
-    const { name, onChangeName } = this.props;
+    const { name, onChangeName, errors } = this.props;
 
     return (
       <UserInfoForm title="Just so we know lorel ipsum, what's your name?"
-                    onSubmit={() => this.onChangeStep('email')}>
+                    onSubmit={() => this.onChangeStep('email')}
+                    error={hasErrors(errors, 'name')}>
 
         <input type="text"
                placeholder="First & last name"
@@ -45,30 +49,33 @@ export class ChatBeginConversation extends React.Component {
   }
 
   renderEmailForm() {
-    const { email, hiddenEmail } = this.props;
+    const { email, hiddenEmail, submit, errors } = this.props;
     const { onChangeEmail, onToggleHiddenEmail, onSubmit } = this.props;
 
     return (
       <UserInfoForm title="What's your email address so we can lorel ipsum?"
-                    onSubmit={onSubmit}>
+                    onSubmit={onSubmit}
+                    error={hasErrors(errors, 'email')}>
 
         <input type="text"
                placeholder="email@example.com"
                value={email}
                onChange={onChangeEmail} />
 
-        <input type="submit" value="Go" />
+        {submit
+          ? <div className="spinner"><i/></div>
+          : <input type="submit" value="Go" />
+        }
+
         <Checkbox value={hiddenEmail} onToggle={onToggleHiddenEmail} />
       </UserInfoForm>
     );
   }
 
   render() {
-    const step = this.state.step;
-
     return (
       <div>
-        {step === 'email' ? this.renderEmailForm() : this.renderNameForm()}
+        {this.state.step === 'email' ? this.renderEmailForm() : this.renderNameForm()}
       </div>
     );
   }
