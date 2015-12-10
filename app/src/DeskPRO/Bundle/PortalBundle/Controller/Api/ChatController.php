@@ -125,6 +125,12 @@ class ChatController extends AbstractController
      */
     public function sendMessageAction(ChatConversation $conversation, Request $request)
     {
+        // Skip empty messages
+        $message = $request->request->get('message');
+        if (!strip_tags($message)) {
+            return new JsonResponse();
+        }
+
         $chat_message = new ChatMessage();
         $chat_message
             ->setOrigin('user')
