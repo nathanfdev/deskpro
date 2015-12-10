@@ -614,13 +614,15 @@ return array(
 
     /*
      * If the portal should validate based on etags in the http cache layer
+     * (EXPERIMENTAL - not to be used in production)
      */
-    'portal.http_cache_etags' => true,
+    'portal.http_cache_etags' => false,
 
     /*
      * If the portal should validate based on last modified dates in the http cache layer
+     * (EXPERIMENTAL - not to be used in production)
      */
-    'portal.http_cache_last_modified' => true,
+    'portal.http_cache_last_modified' => false,
 
     /*
      * http s-maxage for a guest "page"
@@ -635,7 +637,7 @@ return array(
     /*
      * http cache s-maxage for a user "page"
      */
-    'portal.smaxage_user_page' => 600,
+    'portal.smaxage_user_page' => 0,
 
     /*
      * http cache s-maxage for a user "tag"
