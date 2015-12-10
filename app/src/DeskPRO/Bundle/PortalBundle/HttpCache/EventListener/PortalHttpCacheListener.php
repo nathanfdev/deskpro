@@ -174,6 +174,14 @@ class PortalHttpCacheListener implements EventSubscriberInterface
 
         if ($smaxage > 0) {
             $response->setSharedMaxAge($smaxage);
+            if ($this->cache_helper->isGuestRequest()) {
+                // we never want to send cookies in this situation, because this page is about to be cached
+                // for a user without a session
+                foreach ($response->headers->getCookies() as $cookie) {
+                    /* @var \Symfony\Component\HttpFoundation\Cookie $cookie */
+                    $response->headers->removeCookie($cookie->getName());
+                }
+            }
         }
 
         if (isset($this->lastModifiedDates[$request])) {
@@ -187,6 +195,9 @@ class PortalHttpCacheListener implements EventSubscriberInterface
 
             unset($this->etags[$request]);
         }
+
+        // cache ajax requests differently (sometimes we return different response for the same url in these cases)
+        $response->setVary('X-Requested-With', false);
 
         $event->setResponse($response);
     }
