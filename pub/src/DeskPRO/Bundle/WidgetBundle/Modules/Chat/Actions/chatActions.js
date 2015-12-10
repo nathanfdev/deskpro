@@ -69,7 +69,7 @@ export const sendTranscriptInfo = createAction(
 
 export const sendTranscriptData = createAction(
   'WIDGET_CHAT_SEND_TRANSCRIPT_DATA',
-  (chatId, params) => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/transcript_data`, params) : null
+  chatId => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/transcript_data`) : null
 );
 
 export const endChat = createAction(

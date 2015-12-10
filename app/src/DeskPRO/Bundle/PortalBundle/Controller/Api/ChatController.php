@@ -180,6 +180,29 @@ class ChatController extends AbstractController
     }
 
     /**
+     * @Route("/portal/api/chats/{id}/transcript_data", name="portal_api_chat_transcript_data")
+     * @Method({"POST"})
+     *
+     * @param ChatConversation $conversation
+     *
+     * @return JsonResponse
+     */
+    public function sendTranscriptDataAction(ChatConversation $conversation)
+    {
+        $person     = $conversation->getPerson();
+        $has_email  = $person && $person->getPrimaryEmailAddress() || $conversation->getPersonEmail();
+        $has_answer = $conversation->getDateFirstAgentMessage();
+
+        $conversation->setShouldSendTranscript($has_email && $has_answer);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($conversation);
+        $em->flush();
+
+        return new JsonResponse();
+    }
+
+    /**
      * @Route("/portal/api/chats/{id}/end", name="portal_api_chat_end")
      * @Method({"POST"})
      *

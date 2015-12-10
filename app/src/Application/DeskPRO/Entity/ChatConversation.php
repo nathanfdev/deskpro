@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -919,6 +918,46 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         }
 
         return false;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateFirstAgentMessage()
+    {
+        return $this->date_first_agent_message;
+    }
+
+    /**
+     * @param \DateTime $date
+     *
+     * @return $this
+     */
+    public function setDateFirstAgentMessage(\DateTime $date)
+    {
+        $this->setModelField('date_first_agent_message', $date);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getShouldSendTranscript()
+    {
+        return $this->should_send_transcript;
+    }
+
+    /**
+     * @param bool $value
+     *
+     * @return $this
+     */
+    public function setShouldSendTranscript($value)
+    {
+        $this->setModelField('should_send_transcript', $value);
+
+        return $this;
     }
 
     public function toApiData($primary = true, $deep = true, array $visited = array())
