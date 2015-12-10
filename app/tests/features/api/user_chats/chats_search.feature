@@ -39,8 +39,8 @@ Feature: /user_chats endpoint search (GET)
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "meta.pagination.count" should be equal to 5
-    And the JSON node "data[0].agent" should be equal to "2"
-    And the JSON node "data[4].agent" should be equal to "1"
+    And the JSON node "data[0].agent_id" should be equal to "2"
+    And the JSON node "data[4].agent_id" should be equal to "1"
 
   Scenario: I search for chats specifying date_created
     When I send a GET request to "/api/v2/user_chats?date_created=2015-08-01:2015-08-04"
