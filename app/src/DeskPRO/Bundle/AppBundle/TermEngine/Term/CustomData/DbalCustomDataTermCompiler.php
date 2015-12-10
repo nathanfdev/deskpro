@@ -53,9 +53,14 @@ class DbalCustomDataTermCompiler extends AbstractDbalTermCompiler
             '{custom_data_ticket}.ticket_id = ticket.id AND
              {custom_data_ticket}.field_id = '.intval($term->getOption('field_id'))
         );
+        $query_part->addUniqueJoin(
+            'custom_def_ticket',
+            'custom_def_ticket',
+            '{custom_data_ticket}.field_id = {custom_def_ticket}.id'
+        );
         $query_part->setParameter('custom_data_value', $term->getOption('custom_data_value'));
 
-        $dataSql = CustomDataAbstract::getDataSql('{custom_data_ticket}');
+        $dataSql = CustomDataAbstract::getDataSql('{custom_data_ticket}', '{custom_def_ticket}');
         $query_part->setWhereString("$dataSql = :custom_data_value");
 
         $this->logQueryPart($query_part);

@@ -125,13 +125,25 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
      *
      * This method is a translation of the $this->getData() method into SQL.
      *
-     * @param string
+     * @param string $data Data table alias
+     * @param string $def  Def table alias
      *
      * @return string
      */
-    public static function getDataSql($tableAlias = 'custom_data_ticket')
+    public static function getDataSql($data = 'custom_data_ticket', $def = 'custom_def_ticket')
     {
-        return "IF($tableAlias.value, $tableAlias.value, $tableAlias.input)";
+        $toggleHandlerClass = CustomDefAbstract::HANDLER_CLASS_TOGGLE;
+
+        $sql = "
+            CASE
+                WHEN $def.handler_class = '$toggleHandlerClass' THEN $data.value
+                ELSE IF($data.value, $data.value, $data.input)
+            END
+        ";
+        $sql = str_replace("\n", ' ', $sql);
+        $sql = trim($sql);
+
+        return $sql;
     }
 
     /**
