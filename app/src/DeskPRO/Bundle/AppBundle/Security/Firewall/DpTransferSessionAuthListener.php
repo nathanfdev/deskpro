@@ -55,11 +55,14 @@ class DpTransferSessionAuthListener extends AbstractAuthenticationListener imple
             return false;
         }
 
-        if ($request->getSession()->get('is_impersonating', false)) {
+        // if there is no session, we can't be impersonating
+        if (!$request->hasPreviousSession()) {
             return false;
         }
 
-        $session = $request->getSession()->all();
+        if ($request->getSession()->get('is_impersonating', false)) {
+            return false;
+        }
 
         if ($session_id = $this->checkAgentInterfaceAuthNeedsTransfer($request)) {
             return true;
