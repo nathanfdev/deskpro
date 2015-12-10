@@ -124,7 +124,7 @@ class PortalController extends AbstractController
         }
 
         $captcha_form  = null;
-        $last_username = $this->getSession()->get('last_username');
+        $last_username = $request->hasPreviousSession() ? $this->getSession()->get('last_username') : null;
         $abuse_check   = new LoginAbuseCheck($last_username, $request->getClientIp());
         $abuse_check->markAsCheckOnly();
         $this->getAntiAbuseService()->check($abuse_check);
