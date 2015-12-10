@@ -62,8 +62,8 @@ class ChatTranscriptInfoType extends AbstractType
             ])
             ->add('email', 'email', [
                 'property_path' => 'person_email',
-                'required'      => false,
                 'constraints'   => [
+                    new Assert\NotBlank(),
                     new Assert\Email(),
                 ],
             ])
@@ -81,7 +81,6 @@ class ChatTranscriptInfoType extends AbstractType
         $resolver->setDefaults([
             'csrf_protection'               => false,
             'csrf_double_submit_protection' => false,
-            'allow_extra_fields'            => true,
         ]);
     }
 }
