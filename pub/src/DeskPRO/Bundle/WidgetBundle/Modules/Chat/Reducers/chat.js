@@ -40,7 +40,7 @@ export default createReducer(initialState, {
   // Transcript
   [actions.disableSendTranscript]: setValue('transcript.checked', false),
   [actions.enableSendTranscript]: setValue('transcript.checked', true),
-  [actions.resetTranscriptDataSent]: setValue('sent.checked', false),
+  [actions.resetTranscriptDataSent]: setValue('transcript.sent', false),
   [actions.sendTranscriptData]: async({
     success: setValue('transcript.sent', true),
     start: setValue('transcript.sending', true),
