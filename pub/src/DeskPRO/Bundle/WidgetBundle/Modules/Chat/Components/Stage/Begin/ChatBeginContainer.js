@@ -18,7 +18,9 @@ export class ChatBeginContainer extends React.Component {
     this.state = {
       name: '',
       email: '',
-      hidden_email: false
+      hidden_email: false,
+      submit: false,
+      errors: null
     };
   }
 
@@ -46,22 +48,40 @@ export class ChatBeginContainer extends React.Component {
       event.preventDefault();
     }
 
+    this.setState({
+      submit: true
+    });
+
     const promise = this.props.dispatch(createChat(this.state));
-    promise.then(() => history.replace('/chat/waiting'));
+    promise.then(
+      () => {
+        history.replace('/chat/waiting');
+        this.setState({
+          submit: false
+        });
+      },
+      result => {
+        this.setState({
+          submit: false,
+          errors: result.getData()
+        });
+      }
+    );
   };
 
   render() {
     const props = this.props;
+    const state = this.state;
+
     const { children } = props;
     const childProps = children.props;
 
     const content = React.cloneElement(children, {
       ...props,
       ...childProps,
+      ...state,
 
-      name: this.state.name,
-      email: this.state.email,
-      hiddenEmail: this.state.hidden_email,
+      hiddenEmail: state.hidden_email,
 
       onChangeName: this.onChangeName,
       onChangeEmail: this.onChangeEmail,
