@@ -41,9 +41,9 @@ export class TranscriptContainer extends React.Component {
 
   onClick = event => {
     event.preventDefault();
-    const { dispatch, authorName, authorEmail, enabled } = this.props;
+    const { dispatch, authorEmail, enabled } = this.props;
 
-    if (authorName && authorEmail && enabled) {
+    if (authorEmail && enabled) {
       dispatch(disableSendTranscript());
     } else {
       this.setState({
@@ -65,7 +65,7 @@ export class TranscriptContainer extends React.Component {
     if (name === authorName && email === authorEmail) {
       this.onCloseForm();
 
-      if (authorName && authorEmail) {
+      if (email) {
         dispatch(enableSendTranscript());
       }
 
@@ -77,7 +77,10 @@ export class TranscriptContainer extends React.Component {
     if (promise) {
       promise.then(() => {
         this.onCloseForm();
-        dispatch(enableSendTranscript());
+
+        if (email) {
+          dispatch(enableSendTranscript());
+        }
       });
     }
 

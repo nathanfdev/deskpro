@@ -24,7 +24,7 @@ export const createChat = createAction(
         dispatch(updateChatInfo(data));
       }
 
-      if (chatId && data.author_name && data.author_email) {
+      if (chatId && data.author_email) {
         dispatch(enableSendTranscript());
       } else {
         dispatch(disableSendTranscript());
