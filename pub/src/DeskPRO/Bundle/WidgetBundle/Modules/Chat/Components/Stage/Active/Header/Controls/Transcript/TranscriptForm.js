@@ -21,6 +21,14 @@ export class TranscriptForm extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this.mounted = true;
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
+  }
+
   onChangeName = event => {
     this.setState({
       name: event.target.value,
@@ -46,15 +54,19 @@ export class TranscriptForm extends React.Component {
 
       promise.then(
         () => {
-          this.setState({
-            submit: false
-          });
+          if (this.mounted) {
+            this.setState({
+              submit: false
+            });
+          }
         },
         result => {
-          this.setState({
-            submit: false,
-            errors: result.getData().errors
-          });
+          if (this.mounted) {
+            this.setState({
+              submit: false,
+              errors: result.getData()
+            });
+          }
         }
       );
     }
@@ -83,7 +95,10 @@ export class TranscriptForm extends React.Component {
             <div className="label button-label">
               {this.state.submit
                 ? 'Saving'
-                : <input type="submit" value="Send me a transcript" className="dpdesignportal-button" onClick={this.onSubmit} />
+                : <input type="submit"
+                         value="Send me a transcript"
+                         className="dpdesignportal-button"
+                         onClick={this.onSubmit} />
               }
             </div>
 
