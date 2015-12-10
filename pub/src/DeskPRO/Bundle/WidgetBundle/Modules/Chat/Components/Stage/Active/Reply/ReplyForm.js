@@ -5,6 +5,7 @@ import EmotionButton from 'DeskPRO/Component/Rte/EmotionButton';
 import { replaceSmileCodes } from 'DeskPRO/Component/Rte/Emotions';
 import RteInput from 'DeskPRO/Component/Rte/RteInput';
 import ScrollArea from 'react-scrollbar';
+import { AttachedFile } from './AttachedFile';
 
 export class ReplyForm extends React.Component {
 
@@ -102,23 +103,9 @@ export class ReplyForm extends React.Component {
               />
             </ScrollArea>
 
-            <div className="dpdesignportal-chat-form-attached-file">
-              <div className="dpdesignportal-chat-form-attached-file-icon"><i className="fa fa-file-pdf-o"></i></div>
-              <div className="attached-file-title">file_name_lorem_ipsum.pdf</div>
-              <a href="#" className="dpdesignportal-chat-form-attached-file-remove"><i className="fa fa-times-circle"></i></a>
-            </div>
-
-            <div className="dpdesignportal-chat-form-attached-file">
-              <div className="dpdesignportal-chat-form-attached-file-icon"><i className="fa fa-file-pdf-o"></i></div>
-              <div className="attached-file-title">file_name_lorem_ipsum.pdf</div>
-              <a href="#" className="dpdesignportal-chat-form-attached-file-remove"><i className="fa fa-times-circle"></i></a>
-            </div>
-
-            <div className="dpdesignportal-chat-form-attached-file">
-              <div className="dpdesignportal-chat-form-attached-file-icon"><i className="fa fa-file-pdf-o"></i></div>
-              <div className="attached-file-title">file_name_lorem_ipsum.pdf</div>
-              <a href="#" className="dpdesignportal-chat-form-attached-file-remove"><i className="fa fa-times-circle"></i></a>
-            </div>
+            <AttachedFile />
+            <AttachedFile />
+            <AttachedFile />
           </div>
 
           <button>
