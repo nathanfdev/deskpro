@@ -78,9 +78,13 @@ class PersonType extends ApiType
 
         $builder
             ->add('name', 'text')
+            ->add('title_prefix', 'text')
             ->add('first_name', 'text')
             ->add('last_name', 'text')
             ->add('summary', 'text')
+            ->add('organization_position', 'text')
+            ->add('override_display_name', 'text')
+            ->add('timezone', 'text')
             ->add('organization', 'entity', ['class' => 'DeskPRO:Organization'])
             ->add('language', 'entity', ['class' => 'DeskPRO:Language'])
             ->add('labels', 'api_labels_collection', [
