@@ -273,9 +273,13 @@ class ChatController extends AbstractController
      */
     public function feedbackAction(ChatConversation $conversation, Request $request)
     {
-        $form = $this->get('form.factory')->createNamedBuilder(null, 'api_chat_feedback', $conversation)->getForm();
-        $form->submit($request->request->all());
+        $form = $this
+            ->get('form.factory')
+            ->createNamedBuilder(null, 'api_chat_feedback', $conversation)
+            ->getForm()
+        ;
 
+        $form->submit($request->request->all());
         if (!$form->isValid()) {
             return $this->generateFormErrorsResponse($form);
         }
