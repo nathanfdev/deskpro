@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { pollingChat } from '../../Actions/chatActions';
+import { pollingChat, sendTranscriptData } from '../../Actions/chatActions';
 import history from '../../../../Services/history';
 import moment from 'moment';
 import {
@@ -8,6 +8,7 @@ import {
   agentIdSelector,
   lastMessageIdSelector,
   transcriptCheckedSelector,
+  transcriptSendingSelector,
   transcriptSentSelector,
   authorEmailSelector,
   isEndedSelector
@@ -19,6 +20,7 @@ import {
   lastMessageId: lastMessageIdSelector(state),
   authorEmail: authorEmailSelector(state),
   transcriptChecked: transcriptCheckedSelector(state),
+  transcriptSending: transcriptSendingSelector(state),
   transcriptSent: transcriptSentSelector(state),
   isEnded: isEndedSelector(state)
 }))
@@ -31,6 +33,8 @@ export class ChatPollingContainer extends React.Component {
     lastMessageId: PropTypes.any,
     children: PropTypes.node,
     authorEmail: PropTypes.string,
+    transcriptChecked: PropTypes.bool,
+    transcriptSending: PropTypes.bool,
     transcriptSent: PropTypes.bool,
     isEnded: PropTypes.bool
   };
@@ -46,6 +50,7 @@ export class ChatPollingContainer extends React.Component {
 
   pollingRequest = () => {
     const { dispatch, chatId, agentId, lastMessageId } = this.props;
+    const { isEnded, authorEmail, transcriptChecked, transcriptSending, transcriptSent } = this.props;
 
     // Handle state changes
     if (!chatId) {
@@ -53,6 +58,11 @@ export class ChatPollingContainer extends React.Component {
     }
     if (agentId && history.state !== '/chat/active') {
       history.replace('/chat/active');
+    }
+
+    // Can send chat transcript
+    if (isEnded && authorEmail && transcriptChecked && !transcriptSending && !transcriptSent) {
+      dispatch(sendTranscriptData(chatId));
     }
 
     // Send next request

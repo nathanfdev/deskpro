@@ -7,6 +7,7 @@ const initialState = {
   audioNotifications: true,
   transcript: {
     checked: false,
+    sending: false,
     sent: true
   },
   chatId: null,
@@ -41,6 +42,8 @@ export default createReducer(initialState, {
   [actions.enableSendTranscript]: setValue('transcript.checked', true),
   [actions.resetTranscriptDataSent]: setValue('sent.checked', false),
   [actions.sendTranscriptData]: async({
-    success: setValue('transcript.sent', true)
+    success: setValue('transcript.sent', true),
+    start: setValue('transcript.sending', true),
+    done: setValue('transcript.sending', true)
   })
 });
