@@ -26,13 +26,15 @@ export class ChatBeginContainer extends React.Component {
 
   onChangeName = event => {
     this.setState({
-      name: event.target.value
+      name: event.target.value,
+      errors: null
     });
   };
 
   onChangeEmail = event => {
     this.setState({
-      email: event.target.value
+      email: event.target.value,
+      errors: null
     });
   };
 
