@@ -50,7 +50,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * 	basePath="/api"
  * )
  */
-class PersonController extends AbstractController
+class PersonController extends AbstractController implements ProtectedControllerInterface
 {
     public function getPermissionStrategy()
     {
