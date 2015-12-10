@@ -331,7 +331,7 @@ class KernelBooter
                 $request  = Request::createFromGlobals();
                 $response = $kernel->handle($request);
 
-                if ($DP_CONFIG['debug']['dev']) {
+                if (array_key_exists('dev', $DP_CONFIG['debug']) && $DP_CONFIG['debug']['dev']) {
                     // ---
                     // debug http cache
                     if ($kernel instanceof PortalHttpCache && strpos($request->getPathInfo(), '/_wdt') === false && strpos($request->getPathInfo(), '/_profile') === false) {
