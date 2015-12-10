@@ -237,6 +237,10 @@ div.dpdesignportal-chat-header {
     &.disabled {
       opacity: 0.5;
       cursor: default;
+
+      .dpdesignportal-checkbox-container {
+        cursor: default;
+      }
     }
   }
 

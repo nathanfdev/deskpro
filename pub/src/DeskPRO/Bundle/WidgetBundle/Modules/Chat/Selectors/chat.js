@@ -10,12 +10,12 @@ export const audioNotificationsSelector = createSelector(
 
 export const transcriptCheckedSelector = createSelector(
   stateSelector,
-  state => state.get('transcript.checked')
+  state => state.getIn(['transcript', 'checked'])
 );
 
 export const transcriptSentSelector = createSelector(
   stateSelector,
-  state => state.get('transcript.sent')
+  state => state.getIn(['transcript', 'sent'])
 );
 
 // Chat info selectors
