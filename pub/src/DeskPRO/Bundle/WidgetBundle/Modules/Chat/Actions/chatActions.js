@@ -57,55 +57,25 @@ export const pollingChat = createAction(
 
 export const sendChatMessage = createAction(
   'WIDGET_CHAT_SEND_MESSAGE',
-  (chatId, params) => {
-    if (!chatId) {
-      return null;
-    }
-
-    return DpApi.sendPost(`DP_API/chats/${chatId}/messages`, params);
-  }
+  (chatId, params) => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/messages`, params) : null
 );
 
 export const sendTranscriptInfo = createAction(
   'WIDGET_CHAT_SEND_TRANSCRIPT_INFO',
-  (chatId, params) => {
-    if (!chatId) {
-      return null;
-    }
-
-    return DpApi.sendPost(`DP_API/chats/${chatId}/transcript_info`, params);
-  }
+  (chatId, params) => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/transcript_info`, params) : null
 );
 
 export const endChat = createAction(
   'WIDGET_CHAT_END',
-  chatId => {
-    if (!chatId) {
-      return null;
-    }
-
-    return DpApi.sendPost(`DP_API/chats/${chatId}/end`);
-  }
+  chatId => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/end`) : null
 );
 
 export const reopenChat = createAction(
   'WIDGET_CHAT_REOPEN',
-  chatId => {
-    if (!chatId) {
-      return null;
-    }
-
-    return DpApi.sendPost(`DP_API/chats/${chatId}/reopen`);
-  }
+  chatId => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/reopen`) : null
 );
 
 export const sendFeedback = createAction(
   'WIDGET_CHAT_SEND_FEEDBACK',
-  (chatId, params) => {
-    if (!chatId) {
-      return null;
-    }
-
-    return DpApi.sendPost(`DP_API/chats/${chatId}/feedback`, params);
-  }
+  (chatId, params) => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/feedback`, params) : null
 );
