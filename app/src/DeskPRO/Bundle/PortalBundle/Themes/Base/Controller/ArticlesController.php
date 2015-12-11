@@ -105,7 +105,8 @@ class ArticlesController extends AbstractController
 
     /**
      * @Tag(name="kb_list_detail", default_options={"style":"detail"})
-     * @Tag(name="kb_list_simple", default_options={"style":"simple"})
+     * @Tag(name="kb_list_simple", default_options={"style":"simple"}, esi=true, always_guest_inline=true)
+     * @TagHttpCache
      *
      * @TagOptions(
      *      defaults={
@@ -145,7 +146,7 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Tag(name="kb_article_comments", esi=true)
+     * @Tag(name="kb_article_comments")
      *
      * @TagOptions(
      *      defaults={

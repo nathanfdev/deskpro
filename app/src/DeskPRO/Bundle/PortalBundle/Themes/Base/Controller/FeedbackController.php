@@ -36,6 +36,7 @@ use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\PortalBundle\Annotation\Tag;
 use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
 use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
+use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\TagHttpCache;
 use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -44,8 +45,9 @@ use Symfony\Component\HttpFoundation\Response;
 class FeedbackController extends AbstractController
 {
     /**
-     * @Tag(name="feedback_list_simple", default_options={"style":"simple"})
+     * @Tag(name="feedback_list_simple", default_options={"style":"simple"}, esi=true, always_guest_inline=true)
      * @Tag(name="feedback_list_detail", default_options={"style":"detail"})
+     * @TagHttpCache()
      *
      * @TagOptions(
      *      defaults={
