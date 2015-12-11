@@ -19,11 +19,15 @@ export class DropZoneContainer extends React.Component {
 
     $('#fileupload').fileupload({
       url: '/path/to/upload/handler.json',
-      dropZone: overlayNode
+      dropZone: $(overlayNode)
     });
 
     $(document).on('dragover', this.onDragStarted);
     $(parent.window.document).on('dragover', this.onDragStarted);
+  }
+
+  componentWillUnmount() {
+    $('#fileupload').fileupload('destroy');
   }
 
   onDragStarted = () => {
