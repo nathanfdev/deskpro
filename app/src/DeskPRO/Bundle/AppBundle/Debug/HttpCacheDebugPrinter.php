@@ -57,25 +57,40 @@ class HttpCacheDebugPrinter
 
             $parsed_row = [
                 'cache_result'         => $cache_result,
-                'resource_or_tag_name' => $resource,
-                'tag_lang'             => '',
-                'tag_mode'             => '',
+                'resource_or_tag_name' => [$resource, $resource],
+                'tag:options'          => '',
+                'tag:lang'             => '',
+                'tag:theme_set_id'     => '',
+                'tag:brand_id'         => '',
+                'tag:controller'       => '',
                 'method'               => $method,
             ];
 
             if ('tag' == $row_type) {
-                $url       = urldecode($resource);
-                $url_parts = \GuzzleHttp\Psr7\parse_query($url);
-                $tag_name  = $url_parts['_tag_name'];
-                $tag_lang  = $url_parts['lang_url_code'];
-                $tag_mode  = '';
-                if ($m = unserialize($url_parts['_portal_mode'])) {
-                    $tag_mode = (string) $m;
+                $url_parts   = self::getResourceArray($resource);
+                $tag_name    = $url_parts['_path']['_tag_name'];
+                $controller  = $url_parts['_path']['_controller'];
+                $tag_options = [];
+                foreach ($url_parts as $part => $v) {
+                    if (strpos($part, 'tag_options') === 0) {
+                        $key = substr($part, strlen('tag_options['), -1);
+                        if ($key === '_tag_name') {
+                            continue;
+                        }
+                        $tag_options[$key] = $v;
+                    }
                 }
+                $tag_options  = json_encode($tag_options);
+                $tag_lang     = $url_parts['lang_url_code'];
+                $theme_set_id = $url_parts['theme_set_id'];
+                $brand_id     = $url_parts['brand_id'];
 
-                $parsed_row['resource_or_tag_name'] = $tag_name;
-                $parsed_row['tag_lang']             = $tag_lang;
-                $parsed_row['tag_mode']             = $tag_mode;
+                $parsed_row['resource_or_tag_name'] = [$tag_name, $resource];
+                $parsed_row['tag:lang']             = $tag_lang;
+                $parsed_row['tag:controller']       = $controller;
+                $parsed_row['tag:theme_set_id']     = $theme_set_id;
+                $parsed_row['tag:brand_id']         = $brand_id;
+                $parsed_row['tag:options']          = $tag_options;
             }
 
             $parsed_rows[] = $parsed_row;
@@ -98,8 +113,12 @@ class HttpCacheDebugPrinter
         $html .= '<tbody>';
         foreach ($rows as $row) {
             $html .= '<tr>';
-            foreach ($row as $td) {
-                $html .= '<td>'.$td.'</td>';
+            foreach ($row as $key => $td) {
+                if ($key === 'resource_or_tag_name') {
+                    $html .= '<td><a href="#" title="'.$td[1].'">'.$td[0].'</a></td>';
+                } else {
+                    $html .= '<td>'.$td.'</td>';
+                }
             }
             $html .= '</tr>';
         }
@@ -108,5 +127,22 @@ class HttpCacheDebugPrinter
         $html .= '</table>';
 
         return $html;
+    }
+
+    private static function getResourceArray($resource)
+    {
+        $u  = substr($resource, strpos($resource, '?') + 1);
+        $u  = explode('&', $u);
+        $pp = array_map(function ($pair) {
+            return explode('=', $pair);
+        }, $u);
+        $data = [];
+        foreach ($pp as $vv) {
+            $data[urldecode($vv[0])] = urldecode($vv[1]);
+        }
+
+        $data['_path'] = \GuzzleHttp\Psr7\parse_query($data['_path']);
+
+        return $data;
     }
 }
