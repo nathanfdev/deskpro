@@ -5,8 +5,8 @@ import EmotionButton from 'DeskPRO/Component/Rte/EmotionButton';
 import { replaceSmileCodes } from 'DeskPRO/Component/Rte/Emotions';
 import RteInput from 'DeskPRO/Component/Rte/RteInput';
 import ScrollArea from 'react-scrollbar';
-import { DropZone } from './DropZone';
-import { DropZoneOverlay } from './DropZoneOverlay';
+import { AttachedFilesContainer } from './Upload/AttachedFilesContainer';
+import { DropZoneOverlay } from './Upload/DropZoneOverlay';
 
 export class ReplyForm extends React.Component {
 
@@ -98,7 +98,7 @@ export class ReplyForm extends React.Component {
                 }}
               />
             </ScrollArea>
-            <DropZone />
+            <AttachedFilesContainer />
           </div>
 
           <button>
