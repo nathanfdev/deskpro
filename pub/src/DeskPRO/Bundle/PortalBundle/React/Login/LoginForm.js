@@ -26,7 +26,7 @@ export default class LoginForm extends React.Component {
       username: $username.val(),
       password: $password.val(),
       remember_me: $remember_me.val()
-    }).then((r) => {
+    }, {jsonPayload: false}).then((r) => {
       console.log('RESPONSE %o', r);
       if (r.data.success) {
         if ("redirect" in r.data) {
@@ -75,7 +75,7 @@ export default class LoginForm extends React.Component {
           <span>Your email</span>
           <input
             ref="username"
-            type="email"
+            type="text"
             tabIndex="2"
             placeholder="email@example.com"
             name="username"
