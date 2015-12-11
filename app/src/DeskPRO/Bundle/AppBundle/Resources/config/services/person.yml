@@ -1,6 +1,5 @@
 services:
 
-
   person.creation_system.listener:
     class: DeskPRO\Bundle\AppBundle\EventListener\Person\CreationSystemListener
     tags:

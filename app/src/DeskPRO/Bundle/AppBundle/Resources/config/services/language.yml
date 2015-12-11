@@ -46,7 +46,7 @@ services:
     arguments: ['DeskPRO:Language']
 
   language_extension.twig:
-      class: DeskPRO\Bundle\AppBundle\Twig\LanguageExtension
-      arguments: [@language_manager]
-      tags:
-        - { name: twig.extension }
+    class: DeskPRO\Bundle\AppBundle\Twig\LanguageExtension
+    arguments: [@language_manager]
+    tags:
+      - { name: twig.extension }

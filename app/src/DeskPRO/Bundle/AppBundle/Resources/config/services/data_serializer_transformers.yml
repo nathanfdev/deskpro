@@ -1,53 +1,53 @@
 services:
 
-    # DATA TRANSFORMERS
-    #
-    # NOTE: If you are making a transformer and no dependency injection is needed, you don't need
-    # to make it a service. Instead, you can make a class name by convention.
-    # For example the transformer for the type "sandbox_widget" just make the class:
-    # DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\SandboxWidgetTransformer
-    #
-    # note: you don't need a tag for these to work. just make the prefix the same.
-    #       to reference this transformer, just use "sandbox_widget" (ignore the prefix when using).
+  # DATA TRANSFORMERS
+  #
+  # NOTE: If you are making a transformer and no dependency injection is needed, you don't need
+  # to make it a service. Instead, you can make a class name by convention.
+  # For example the transformer for the type "sandbox_widget" just make the class:
+  # DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\SandboxWidgetTransformer
+  #
+  # note: you don't need a tag for these to work. just make the prefix the same.
+  #       to reference this transformer, just use "sandbox_widget" (ignore the prefix when using).
 
-    data_serializer.transformer.task:
-      class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\TaskTransformer
-      arguments:
-        - @doctrine.dbal.default_connection
+  data_serializer.transformer.task:
+    class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\TaskTransformer
+    arguments:
+      - @doctrine.dbal.default_connection
 
-    data_serializer.transformer.ticket:
-      class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\TicketTransformer
-      arguments:
-        - @doctrine.orm.default_entity_manager
-        - @ticket_layout_factory
+  data_serializer.transformer.ticket:
+    class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\TicketTransformer
+    arguments:
+      - @doctrine.orm.default_entity_manager
+      - @ticket_layout_factory
 
-    data_serializer.transformer.person:
-      class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\PersonTransformer
-      arguments:
-        - @avatar_resolver
-        - @data.agent
+  data_serializer.transformer.person:
+    class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\PersonTransformer
+    arguments:
+      - @avatar_resolver
+      - @data.agent
 
-    data_serializer.transformer.person_profile:
-      class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\PersonProfileTransformer
-      arguments:
-        - @avatar_resolver
+  data_serializer.transformer.person_profile:
+    class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\PersonProfileTransformer
+    arguments:
+      - @avatar_resolver
 
-    data_serializer.transformer.agent_team:
-      class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\AgentTeamTransformer
-      arguments:
-        - @avatar_resolver
+  data_serializer.transformer.agent_team:
+    class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\AgentTeamTransformer
+    arguments:
+      - @avatar_resolver
 
-    data_serializer.transformer.department:
-      class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\DepartmentTransformer
-      arguments:
-        - @avatar_resolver
+  data_serializer.transformer.department:
+    class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\DepartmentTransformer
+    arguments:
+      - @avatar_resolver
 
-    data_serializer.transformer.chat_conversation:
-        class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\ChatConversationTransformer
-        arguments:
-          - @avatar_resolver
+  data_serializer.transformer.chat_conversation:
+    class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\ChatConversationTransformer
+    arguments:
+      - @avatar_resolver
 
-    data_serializer.transformer.chat_message:
-        class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\ChatMessageTransformer
-        arguments:
-          - @avatar_resolver
+  data_serializer.transformer.chat_message:
+    class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\ChatMessageTransformer
+    arguments:
+      - @avatar_resolver

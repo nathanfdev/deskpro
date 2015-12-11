@@ -4,7 +4,7 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType
     arguments: [@deskpro.core.input_cleaner]
     tags:
-        - { name: form.type, alias: html_textarea }
+      - { name: form.type, alias: html_textarea }
 
   form_field_manager:
     class: DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager
@@ -18,111 +18,111 @@ services:
     class: DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutDiffer
 
   form.sandbox:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\SandboxWidgetType
-      tags:
-          - { name: form.type, alias: sandbox_widget }
+    class: DeskPRO\Bundle\AppBundle\Form\Type\SandboxWidgetType
+    tags:
+      - { name: form.type, alias: sandbox_widget }
 
   form.api_date:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\ApiDateType
-      tags:
-          - { name: form.type, alias: api_date }
+    class: DeskPRO\Bundle\AppBundle\Form\Type\ApiDateType
+    tags:
+      - { name: form.type, alias: api_date }
 
   form.api_labels_collection:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType
-      arguments: [@doctrine.orm.default_entity_manager]
-      tags:
-          - { name: form.type, alias: api_labels_collection }
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType
+    arguments: [@doctrine.orm.default_entity_manager]
+    tags:
+        - { name: form.type, alias: api_labels_collection }
 
   dp.app.form.person_type:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\People\PersonType
-      arguments: [@doctrine.orm.default_entity_manager]
-      tags:
-          - { name: form.type, alias: api_person }
+    class: DeskPRO\Bundle\AppBundle\Form\Type\People\PersonType
+    arguments: [@doctrine.orm.default_entity_manager]
+    tags:
+        - { name: form.type, alias: api_person }
 
   form.api_boolean:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType
-      tags:
-          - { name: form.type, alias: api_boolean }
+    class: DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType
+    tags:
+        - { name: form.type, alias: api_boolean }
 
   form.single_checkbox:
-      class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\SingleCheckboxType
-      tags:
-          - { name: form.type, alias: single_checkbox }
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\SingleCheckboxType
+    tags:
+        - { name: form.type, alias: single_checkbox }
 
   form.filter:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\FilterType
-      tags:
-          - { name: form.type, alias: filter }
+    class: DeskPRO\Bundle\AppBundle\Form\Type\FilterType
+    tags:
+        - { name: form.type, alias: filter }
 
   form.task:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\TaskType
-      tags:
-          - { name: form.type, alias: task }
+    class: DeskPRO\Bundle\AppBundle\Form\Type\TaskType
+    tags:
+        - { name: form.type, alias: task }
 
   form.task_attachment:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\TaskAttachmentType
-      tags:
-          - { name: form.type, alias: task_attachment }
+    class: DeskPRO\Bundle\AppBundle\Form\Type\TaskAttachmentType
+    tags:
+        - { name: form.type, alias: task_attachment }
 
   form.task_comment:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\TaskCommentType
-      tags:
-          - { name: form.type, alias: task_comment }
+    class: DeskPRO\Bundle\AppBundle\Form\Type\TaskCommentType
+    tags:
+        - { name: form.type, alias: task_comment }
 
   form.task_label:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\TaskLabelType
-      tags:
-          - { name: form.type, alias: task_label }
+    class: DeskPRO\Bundle\AppBundle\Form\Type\TaskLabelType
+    tags:
+        - { name: form.type, alias: task_label }
 
   form.task_link:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\TaskLinkType
-      tags:
-          - { name: form.type, alias: task_link }
+    class: DeskPRO\Bundle\AppBundle\Form\Type\TaskLinkType
+    tags:
+        - { name: form.type, alias: task_link }
 
   form.subtask:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\TaskSubtaskType
-      tags:
-          - { name: form.type, alias: subtask }
+    class: DeskPRO\Bundle\AppBundle\Form\Type\TaskSubtaskType
+    tags:
+        - { name: form.type, alias: subtask }
 
   form.project:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\ProjectType
-      tags:
-          - { name: form.type, alias: project }
+    class: DeskPRO\Bundle\AppBundle\Form\Type\ProjectType
+    tags:
+        - { name: form.type, alias: project }
 
   form.projectmember:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\ProjectMemberType
-      tags:
-          - { name: form.type, alias: projectmember }
+    class: DeskPRO\Bundle\AppBundle\Form\Type\ProjectMemberType
+    tags:
+        - { name: form.type, alias: projectmember }
 
   form.term_engine.term:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\TermEngineTermType
-      arguments:
-          - @form.term_engine.term_transformer
-      tags:
-          - { name: form.type, alias: term_engine_term }
+    class: DeskPRO\Bundle\AppBundle\Form\Type\TermEngineTermType
+    arguments:
+        - @form.term_engine.term_transformer
+    tags:
+        - { name: form.type, alias: term_engine_term }
 
   form.term_engine.term_options:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\TermEngineTermOptionsType
-      tags:
-          - { name: form.type, alias: term_engine_term_options }
+    class: DeskPRO\Bundle\AppBundle\Form\Type\TermEngineTermOptionsType
+    tags:
+        - { name: form.type, alias: term_engine_term_options }
 
   form.term_engine.term_transformer:
-      class: DeskPRO\Bundle\AppBundle\Form\DataTransformer\TermEngineTermTransformer
-      arguments:
-          - @term_to_json_converter
+    class: DeskPRO\Bundle\AppBundle\Form\DataTransformer\TermEngineTermTransformer
+    arguments:
+        - @term_to_json_converter
 
   form.filter_set:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\FilterSetType
-      tags:
-          - { name: form.type, alias: filter_set }
+    class: DeskPRO\Bundle\AppBundle\Form\Type\FilterSetType
+    tags:
+        - { name: form.type, alias: filter_set }
 
   form.feedback_comment:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\FeedbackCommentType
-      tags:
-          - { name: form.type, alias: feedback_comment }
+    class: DeskPRO\Bundle\AppBundle\Form\Type\FeedbackCommentType
+    tags:
+        - { name: form.type, alias: feedback_comment }
 
   form.person_profile:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\PersonProfileType
-      tags:
-          - { name: form.type, alias: person_profile }
-      arguments: [@doctrine.orm.default_entity_manager]
+    class: DeskPRO\Bundle\AppBundle\Form\Type\PersonProfileType
+    tags:
+        - { name: form.type, alias: person_profile }
+    arguments: [@doctrine.orm.default_entity_manager]

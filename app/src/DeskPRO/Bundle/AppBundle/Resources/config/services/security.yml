@@ -1,68 +1,68 @@
 services:
 
-    # Each kernel bundle will have their own specific security services dedicated to it
-    # these are some general security services that should be able to be used app-wide.
-    # For specific security implmentation details, see security.yml in the kernel bundles.
-    # PortalBundle/ApiBundle/etc.
+  # Each kernel bundle will have their own specific security services dedicated to it
+  # these are some general security services that should be able to be used app-wide.
+  # For specific security implmentation details, see security.yml in the kernel bundles.
+  # PortalBundle/ApiBundle/etc.
 
-    ###
-    ### Permissions (new permissions services)
-    ###
+  ###
+  ### Permissions (new permissions services)
+  ###
 
-    permissions_manager:
-        class: DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager
-        arguments: [@portal_permissions_manager, @agent_permissions_manager]
+  permissions_manager:
+    class: DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager
+    arguments: [@portal_permissions_manager, @agent_permissions_manager]
 
-    agent_permissions_manager:
-        class: DeskPRO\Bundle\AppBundle\Security\Permissions\Agent\AgentPermissionsManager
+  agent_permissions_manager:
+    class: DeskPRO\Bundle\AppBundle\Security\Permissions\Agent\AgentPermissionsManager
 
-    portal_permissions_manager:
-        class: DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager
-        arguments:
-            - @settings_resolver
-            - @doctrine.orm.default_entity_manager
-            - @cache.one_day
-            - @portal_usergroup_decider
-            - @portal_permissions_loader
+  portal_permissions_manager:
+    class: DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager
+    arguments:
+      - @settings_resolver
+      - @doctrine.orm.default_entity_manager
+      - @cache.one_day
+      - @portal_usergroup_decider
+      - @portal_permissions_loader
 
-    portal_permissions_loader:
-        class: DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsLoader
-        arguments: [@doctrine.dbal.default_connection]
+  portal_permissions_loader:
+    class: DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsLoader
+    arguments: [@doctrine.dbal.default_connection]
 
-    portal_usergroup_decider:
-        class: DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalUsergroupDecider
-        arguments: [@doctrine.orm.default_entity_manager]
+  portal_usergroup_decider:
+    class: DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalUsergroupDecider
+    arguments: [@doctrine.orm.default_entity_manager]
 
 
-    ###
-    ### Security Services
-    ###
+  ###
+  ### Security Services
+  ###
 
-    dp_person_user_provider:
-        class: DeskPRO\Bundle\AppBundle\Security\DpPersonUserProvider
-        arguments: [@person_repository]
+  dp_person_user_provider:
+    class: DeskPRO\Bundle\AppBundle\Security\DpPersonUserProvider
+    arguments: [@person_repository]
 
-    # use a custom user/password validator
-    security.validator.user_password:
-        class: DeskPRO\Bundle\AppBundle\Validator\Constraints\UserPasswordValidator
-        arguments: [@security.token_storage]
-        tags:
-            - { name: validator.constraint_validator, alias: security.validator.user_password }
+  # use a custom user/password validator
+  security.validator.user_password:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\UserPasswordValidator
+    arguments: [@security.token_storage]
+    tags:
+      - { name: validator.constraint_validator, alias: security.validator.user_password }
 
-    dp_authentication_manager.user:
-        class: Application\DeskPRO\Auth\AuthenticationManager
-        factory_class: Application\DeskPRO\DependencyInjection\SystemServices\AuthenticationManagerService
-        factory_method: create
-        arguments: [@service_container, 'user']
+  dp_authentication_manager.user:
+    class: Application\DeskPRO\Auth\AuthenticationManager
+    factory_class: Application\DeskPRO\DependencyInjection\SystemServices\AuthenticationManagerService
+    factory_method: create
+    arguments: [@service_container, 'user']
 
-    dp_authentication_manager.agent:
-        class: Application\DeskPRO\Auth\AuthenticationManager
-        factory_class: Application\DeskPRO\DependencyInjection\SystemServices\AuthenticationManagerService
-        factory_method: create
-        arguments: [@service_container, 'agent']
+  dp_authentication_manager.agent:
+    class: Application\DeskPRO\Auth\AuthenticationManager
+    factory_class: Application\DeskPRO\DependencyInjection\SystemServices\AuthenticationManagerService
+    factory_method: create
+    arguments: [@service_container, 'agent']
 
-    dp_auth_settings:
-        class: Application\DeskPRO\Auth\AuthSettings
-        factory_class: Application\DeskPRO\DependencyInjection\SystemServices\AuthSettingsService
-        factory_method: create
-        arguments: [@service_container]
+  dp_auth_settings:
+    class: Application\DeskPRO\Auth\AuthSettings
+    factory_class: Application\DeskPRO\DependencyInjection\SystemServices\AuthSettingsService
+    factory_method: create
+    arguments: [@service_container]

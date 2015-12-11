@@ -1,4 +1,5 @@
 services:
+
   inline_attachments.renderer:
     class: DeskPRO\Bundle\AppBundle\Renderer\InlineAttachmentsRenderer
     arguments: [@router, @blob.storage]
