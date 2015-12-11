@@ -99,7 +99,7 @@ class NewsController extends AbstractController
     /**
      * @Tag(name="news_list_excerpts", default_options={"style":"excerpts"})
      * @Tag(name="news_list_full", default_options={"style":"full"})
-     * @Tag(name="news_list_simple", default_options={"style":"simple"}, esi=true, always_guest_inline=true)
+     * @Tag(name="news_list_simple", default_options={"style":"simple"}, esi=true)
      * @TagHttpCache()
      *
      * @TagOptions(

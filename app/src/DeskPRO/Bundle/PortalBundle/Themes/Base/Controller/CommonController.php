@@ -48,7 +48,7 @@ use Symfony\Component\HttpFoundation\Response;
 class CommonController extends AbstractController
 {
     /**
-     * @Tag(name="get_in_touch", esi=true, always_guest_inline=true)
+     * @Tag(name="get_in_touch", esi=true)
      * @TagHttpCache()
      */
     public function getInTouchAction(TagRequest $tag_request)
@@ -57,7 +57,7 @@ class CommonController extends AbstractController
     }
 
     /**
-     * @Tag(name="agent_bar", esi=true, always_guest_inline=true)
+     * @Tag(name="agent_bar", esi=true)
      */
     public function agentBarAction(TagRequest $tag_request)
     {
@@ -109,9 +109,7 @@ class CommonController extends AbstractController
     }
 
     /**
-     * DO NOT use always_guest_inline=true on this or we risk cache alert messages to guests.
-     *
-     * @Tag(name="alerts", esi=true, always_guest_inline=true)
+     * @Tag(name="alerts", esi=true)
      */
     public function alertsAction(TagRequest $tag_request)
     {
@@ -170,9 +168,7 @@ class CommonController extends AbstractController
     }
 
     /**
-     * DO NOT use always_guest_inline=true on this or we risk cache alert messages to guests.
-     *
-     * @Tag(name="flashes", esi=true, always_guest_inline=true)
+     * @Tag(name="flashes", esi=true)
      */
     public function flashesAction(TagRequest $tag_request)
     {
@@ -191,7 +187,7 @@ class CommonController extends AbstractController
     }
 
     /**
-     * @Tag(name="related_content", esi=true, always_guest_inline=true)
+     * @Tag(name="related_content", esi=true)
      * @TagHttpCache()
      *
      * @TagOptions(

@@ -60,8 +60,8 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Tag(name="nav_buttons", default_options={"style":"small"}, esi=true, always_guest_inline=true)
-     * @Tag(name="nav_buttons_big", default_options={"style":"big"}, esi=true, always_guest_inline=true)
+     * @Tag(name="nav_buttons", default_options={"style":"small"}, esi=true)
+     * @Tag(name="nav_buttons_big", default_options={"style":"big"}, esi=true)
      *
      * @TagOptions(
      *      defaults={
@@ -82,7 +82,7 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Tag(name="sidebar", esi=true, always_guest_inline=true)
+     * @Tag(name="sidebar", esi=true)
      */
     public function userSidebarAction(TagRequest $tag_request)
     {
@@ -92,8 +92,8 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Tag(name="search_and_contact_bar", default_options={"include_contact_us":true}, esi=true, always_guest_inline=true)
-     * @Tag(name="search_bar", default_options={"include_contact_us":false}, esi=true, always_guest_inline=true)
+     * @Tag(name="search_and_contact_bar", default_options={"include_contact_us":true}, esi=true)
+     * @Tag(name="search_bar", default_options={"include_contact_us":false}, esi=true)
      * @TagHttpCache()
      *
      * @TagOptions(
@@ -111,7 +111,7 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Tag(name="small_user_info", esi=true, always_guest_inline=true)
+     * @Tag(name="small_user_info", esi=true)
      */
     public function smallUserInfoAction(TagRequest $tag_request)
     {

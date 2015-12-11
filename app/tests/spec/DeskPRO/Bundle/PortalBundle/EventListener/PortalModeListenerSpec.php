@@ -55,7 +55,7 @@ class PortalModeListenerSpec extends ObjectBehavior
     {
         $this->getSubscribedEvents()->shouldBeLike(
             array(
-                KernelEvents::REQUEST => array('onKernelRequest', 256),
+                KernelEvents::REQUEST => array('onKernelRequest', 513),
             )
         );
     }

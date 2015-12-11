@@ -44,9 +44,9 @@ use Symfony\Component\HttpFoundation\Response;
 class DownloadsController extends AbstractController
 {
     /**
-     * @Tag(name="download_cats", default_options={"style":"detail"}, esi=true, always_guest_inline=true)
-     * @Tag(name="download_cats_detail", default_options={"style":"detail"}, esi=true, always_guest_inline=true)
-     * @Tag(name="download_cats_simple", default_options={"style":"simple"}, esi=true, always_guest_inline=true)
+     * @Tag(name="download_cats", default_options={"style":"detail"}, esi=true)
+     * @Tag(name="download_cats_detail", default_options={"style":"detail"}, esi=true)
+     * @Tag(name="download_cats_simple", default_options={"style":"simple"}, esi=true)
      * @TagHttpCache()
      *
      * @TagOptions(
@@ -94,7 +94,7 @@ class DownloadsController extends AbstractController
     }
 
     /**
-     * @Tag(name="download_list_simple", default_options={"style":"simple"}, esi=true, always_guest_inline=true)
+     * @Tag(name="download_list_simple", default_options={"style":"simple"}, esi=true)
      * @Tag(name="download_list_detail", default_options={"style":"detail"})
      * @TagHttpCache()
      *

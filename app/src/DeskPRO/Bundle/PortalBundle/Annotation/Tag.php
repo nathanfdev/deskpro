@@ -40,6 +40,6 @@ class Tag
     public $name;
     public $default_options     = array();
     public $esi                 = false;
-    public $allow_route_params  = true;
-    public $always_guest_inline = false;
+    public $allow_route_params  = false;
+    public $always_guest_inline = true;
 }

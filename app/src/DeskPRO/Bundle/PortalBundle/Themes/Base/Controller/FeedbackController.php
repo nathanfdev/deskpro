@@ -45,7 +45,7 @@ use Symfony\Component\HttpFoundation\Response;
 class FeedbackController extends AbstractController
 {
     /**
-     * @Tag(name="feedback_list_simple", default_options={"style":"simple"}, esi=true, always_guest_inline=true)
+     * @Tag(name="feedback_list_simple", default_options={"style":"simple"}, esi=true)
      * @Tag(name="feedback_list_detail", default_options={"style":"detail"})
      * @TagHttpCache()
      *
