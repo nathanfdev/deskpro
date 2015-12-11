@@ -286,7 +286,8 @@ class FeedbackController extends AbstractController
             if (strlen($generated_uri) < 1) {
                 // actually, in this case, it is all the defaults, so go back to the index
                 return $this->redirectToRoute(
-                    'portal_feedback'
+                    'portal_feedback',
+                    ['page' => $page]
                 );
             }
 
