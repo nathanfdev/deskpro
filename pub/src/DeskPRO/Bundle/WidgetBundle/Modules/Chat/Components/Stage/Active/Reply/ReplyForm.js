@@ -6,7 +6,7 @@ import { replaceSmileCodes } from 'DeskPRO/Component/Rte/Emotions';
 import RteInput from 'DeskPRO/Component/Rte/RteInput';
 import ScrollArea from 'react-scrollbar';
 import { AttachedFilesContainer } from './Upload/AttachedFilesContainer';
-import { DropZoneOverlay } from './Upload/DropZoneOverlay';
+import { DropZoneContainer } from './Upload/DropZoneContainer';
 
 export class ReplyForm extends React.Component {
 
@@ -129,7 +129,7 @@ export class ReplyForm extends React.Component {
           </EndChatContainer>
         </div>
 
-        <DropZoneOverlay />
+        <DropZoneContainer />
       </div>
     );
   }
