@@ -879,6 +879,157 @@
             ]
         },
         {
+            "path": "/people/{person_id}/phone_numbers",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets phone numbers for a person.",
+                    "nickname": "getPersonPhoneNumbersAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "person_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the person that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Person not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "POST",
+                    "summary": "Adds a phone number for a person.",
+                    "nickname": "postPersonPhoneNumbersAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "person_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the person that needs to be searched."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "phone_number",
+                            "type": "string",
+                            "required": true,
+                            "description": "Phone number to add to this person. In E.164 string format, ie. +19021111111"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "label",
+                            "type": "string",
+                            "required": false,
+                            "description": "A label for the phone number."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Person not found"
+                        }
+                    ]
+                }
+            ]
+        },{
+            "path": "/people/{person_id}/phone_numbers/{number_id}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets information about a phone number ID for a person.",
+                    "nickname": "getPersonPhoneNumberAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "person_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the person that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "number_id",
+                            "type": "string",
+                            "required": true,
+                            "description": "Phone number ID that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Person not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "POST",
+                    "summary": "Updates a phone number record for a person.",
+                    "nickname": "postPersonPhoneNumberAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "person_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the person that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "number_id",
+                            "type": "string",
+                            "required": true,
+                            "description": "Phone number ID that needs to be updated."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "label",
+                            "type": "string",
+                            "required": false,
+                            "description": "A label for the phone number."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Person not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "DELETE",
+                    "summary": "Deletes a phone number record for a person",
+                    "nickname": "deletePersonPhoneNumberAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "person_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the person that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "number_id",
+                            "type": "string",
+                            "required": true,
+                            "description": "Phone number ID that needs to be deleted."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Person not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "path": "/people/{person_id}/groups",
             "operations": [
                 {

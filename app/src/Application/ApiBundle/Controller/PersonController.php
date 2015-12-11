@@ -36,11 +36,13 @@ use Application\ApiBundle\PermissionStrategy\SuperKeyPermission;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PhoneNumber;
 use Application\DeskPRO\Searcher\PersonSearch;
 use Orb\Util\Numbers;
 use Orb\Util\Util;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -1901,6 +1903,10 @@ class PersonController extends AbstractController implements ProtectedController
             return $this->createApiErrorResponse('required_field.data', 'data is empty or missing');
         }
 
+        if (in_array($type, array('fax', 'mobile', 'phone'))) {
+            return $this->createApiErrorResponse('error', 'Please use "/people/{person_id}/phone_numbers" API.');
+        }
+
         $data['comment'] = $comment;
 
         $contact_data               = new \Application\DeskPRO\Entity\PersonContactData();
@@ -2549,5 +2555,224 @@ class PersonController extends AbstractController implements ProtectedController
             'success' => 'true',
             'person'  => $identity['person']->toApiData(),
         ), 200);
+    }
+
+    /**
+     * @SWG\Api(
+     * 	path="/people/{person_id}/phone_numbers",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Gets phone numbers for a person.",
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
+     *				name="person_id",
+     *				description="ID of the person that needs to be searched.",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer"
+     *			)
+     *		),
+     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     * 	)
+     * )
+     */
+    public function getPersonPhoneNumbersAction($person_id)
+    {
+        $person = $this->_getPersonOr404($person_id);
+
+        return $this->createApiResponse($this->getApiData($person->phone_numbers));
+    }
+
+    /**
+     * @SWG\Api(
+     * 	path="/people/{person_id}/phone_numbers",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Adds a phone number for a person.",
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
+     *				name="person_id",
+     *				description="ID of the person that needs to be searched.",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer"
+     *			),
+     *			@SWG\Parameter(
+     *				name="phone_number",
+     *				description="Phone number to add to this person. In E.164 string format, ie. +19021111111",
+     *				paramType="query",
+     *				required=true,
+     *				type="string"
+     *			),
+     *			@SWG\Parameter(
+     *				name="label",
+     *				description="A label for the phone number.",
+     *				paramType="query",
+     *				required=false,
+     *				type="string"
+     *			)
+     *		),
+     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     * 	)
+     * )
+     */
+    public function postPersonPhoneNumbersAction($person_id)
+    {
+        $person = $this->_getPersonOr404($person_id, 'edit');
+
+        try {
+            if (!$number = PhoneNumber::parseNumber($this->in->getString('phone_number'))) {
+                throw new \Exception('Invalid phone_number');
+            }
+        } catch (\Exception $e) {
+            return $this->createApiErrorResponse('parse_error', $e->getMessage());
+        }
+
+        $number->label  = $this->in->getString('label');
+        $number->person = $person;
+        $this->em->persist($number);
+        $this->em->flush($number);
+
+        return $this->getPersonPhoneNumberAction($person_id, $number->id);
+    }
+
+    /**
+     * @SWG\Api(
+     * 	path="/people/{person_id}/phone_numbers/{number_id}",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Gets information about an email ID for a person.",
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
+     *				name="person_id",
+     *				description="ID of the person that needs to be searched.",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer"
+     *			),
+     *			@SWG\Parameter(
+     *				name="number_id",
+     *				description="Phone number ID that needs to be searched.",
+     *				paramType="path",
+     *				required=true,
+     *				type="string"
+     *			)
+     *		),
+     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     * 	)
+     * )
+     */
+    public function getPersonPhoneNumberAction($person_id, $number_id)
+    {
+        $person = $this->_getPersonOr404($person_id);
+        /** @var $number PhoneNumber */
+        if (!$number = $this->em->find('DeskPRO:PhoneNumber', $number_id)) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$number->person === $person) {
+            throw new NotFoundHttpException();
+        }
+
+        return $this->createApiResponse($this->getApiData($number));
+    }
+
+    /**
+     * @SWG\Api(
+     * 	path="/people/{person_id}/phone_numbers/{number_id}",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Updates a phone number for a person.",
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
+     *				name="person_id",
+     *				description="ID of the person that needs to be searched.",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer"
+     *			),
+     *			@SWG\Parameter(
+     *				name="number_id",
+     *				description="Phone number ID that needs to be updated.",
+     *				paramType="path",
+     *				required=true,
+     *				type="string"
+     *			),
+     *			@SWG\Parameter(
+     *				name="label",
+     *				description="A label for the phone number.",
+     *				paramType="query",
+     *				required=false,
+     *				type="string"
+     *			)
+     *		),
+     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     * 	)
+     * )
+     */
+    public function postPersonPhoneNumberAction($person_id, $number_id)
+    {
+        $person = $this->_getPersonOr404($person_id, 'edit');
+        /** @var $number PhoneNumber */
+        if (!$number = $this->em->find('DeskPRO:PhoneNumber', $number_id)) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$number->person === $person) {
+            throw new NotFoundHttpException();
+        }
+
+        if ($label = $this->in->getString('label')) {
+            $number->label = $label;
+        }
+
+        $this->em->flush($number);
+
+        return $this->getPersonPhoneNumberAction($person_id, $number_id);
+    }
+
+    /**
+     * @SWG\Api(
+     * 	path="/people/{person_id}/phone_numbers/{number_id}",
+     * 	@SWG\Operation(
+     * 		method="DELETE",
+     * 		summary="Deletes a phone number record for a person",
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
+     *				name="person_id",
+     *				description="ID of the person that needs to be searched.",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer"
+     *			),
+     *			@SWG\Parameter(
+     *				name="number_id",
+     *				description="Phone number ID that needs to be deleted.",
+     *				paramType="path",
+     *				required=true,
+     *				type="string"
+     *			)
+     *		),
+     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     * 	)
+     * )
+     */
+    public function deletePersonPhoneNumberAction($person_id, $number_id)
+    {
+        $person = $this->_getPersonOr404($person_id, 'edit');
+        /** @var $number PhoneNumber */
+        if (!$number = $this->em->find('DeskPRO:PhoneNumber', $number_id)) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$number->person === $person) {
+            throw new NotFoundHttpException();
+        }
+
+        $person->phone_numbers->removeElement($number);
+        $this->em->remove($number);
+        $this->em->flush();
+
+        return $this->createSuccessResponse();
     }
 }

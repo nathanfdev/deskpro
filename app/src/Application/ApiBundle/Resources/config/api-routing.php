@@ -702,6 +702,41 @@ $collection->create('api_people_person_email_delete', array(
     'methods'      => array('DELETE'),
 ));
 
+$collection->create('api_people_person_emails', array(
+    'path'         => '/people/{person_id}/phone_numbers',
+    'controller'   => 'ApiBundle:Person:getPersonPhoneNumbers',
+    'requirements' => array('person_id' => '\\d+'),
+    'methods'      => array('GET'),
+));
+
+$collection->create('api_people_person_emails_post', array(
+    'path'         => '/people/{person_id}/phone_numbers',
+    'controller'   => 'ApiBundle:Person:postPersonPhoneNumbers',
+    'requirements' => array('person_id' => '\\d+'),
+    'methods'      => array('POST'),
+));
+
+$collection->create('api_people_person_email', array(
+    'path'         => '/people/{person_id}/phone_numbers/{number_id}',
+    'controller'   => 'ApiBundle:Person:getPersonPhoneNumber',
+    'requirements' => array('person_id' => '\\d+', 'number_id' => '\\d+'),
+    'methods'      => array('GET'),
+));
+
+$collection->create('api_people_person_email_post', array(
+    'path'         => '/people/{person_id}/phone_numbers/{number_id}',
+    'controller'   => 'ApiBundle:Person:postPersonPhoneNumber',
+    'requirements' => array('person_id' => '\\d+', 'number_id' => '\\d+'),
+    'methods'      => array('POST'),
+));
+
+$collection->create('api_people_person_email_delete', array(
+    'path'         => '/people/{person_id}/phone_numbers/{nubmer_id}',
+    'controller'   => 'ApiBundle:Person:deletePersonPhoneNumber',
+    'requirements' => array('person_id' => '\\d+', 'number_id' => '\\d+'),
+    'methods'      => array('DELETE'),
+));
+
 $collection->create('api_people_person_vcard', array(
     'path'         => '/people/{person_id}/vcard',
     'controller'   => 'ApiBundle:Person:getPersonVcard',
