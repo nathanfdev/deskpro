@@ -57,12 +57,14 @@ export class DropZoneContainer extends React.Component {
       clearTimeout(this.timeout);
     }
 
-    this.timeout = setTimeout(() => {
-      this.timeout = null;
-      this.setState({
-        overlay: false
-      });
-    }, 100);
+    this.timeout = setTimeout(this.onDragEnd, 100);
+  };
+
+  onDragEnd = () => {
+    this.timeout = null;
+    this.setState({
+      overlay: false
+    });
   };
 
   render() {
