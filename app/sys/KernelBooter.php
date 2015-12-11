@@ -334,7 +334,11 @@ class KernelBooter
                 if (array_key_exists('dev', $DP_CONFIG['debug']) && $DP_CONFIG['debug']['dev']) {
                     // ---
                     // debug http cache
-                    if ($kernel instanceof PortalHttpCache && strpos($request->getPathInfo(), '/_wdt') === false && strpos($request->getPathInfo(), '/_profile') === false) {
+                    if ($kernel instanceof PortalHttpCache
+                        && strpos($request->getPathInfo(), '/_wdt') === false
+                        && strpos($request->getPathInfo(), '/_profile') === false
+                        && !$request->isXmlHttpRequest()
+                    ) {
                         $pretty_log       = HttpCacheDebugPrinter::debugPortalCacheKernel($kernel);
                         $response_content = $response->getContent();
                         $final_content    = $response_content.$pretty_log;
