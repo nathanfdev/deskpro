@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -1218,13 +1217,8 @@ HTML;
 
         $person = $identity['person'];
         $person->setLastLoginAt();
-        $person->loadHelper('FeedbackVotes', array(
-            'visitor' => $this->session->getVisitor(),
-        ));
-        $person->loadHelper('HelpdeskUser', array(
-            'session' => $this->session,
-            'visitor' => $this->session->getVisitor(),
-        ));
+        $person->loadHelper('FeedbackVotes', array());
+        $person->loadHelper('HelpdeskUser', array('session' => $this->session));
 
         $this->person = $person;
 

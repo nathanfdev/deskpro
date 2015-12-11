@@ -184,15 +184,6 @@ class MiscController extends AbstractController
             if ($attempt_person && $attempt_person->getPref('agent_notif.login_attempt_fail.email')) {
                 $message = $this->container->getMailer()->createMessage();
 
-                // Make sure we dont show the current URL in email
-                // because that could leak password attempts because
-                // it's possible it's a GET request
-                if ($v = $this->session->getVisitor()) {
-                    if ($v->visit_track) {
-                        $v->visit_track->page_url = '[api]';
-                    }
-                }
-
                 $message->setTemplate('DeskPRO:emails_agent:login-alert.html.twig', array('success' => false, 'session' => $this->session->getEntity()));
                 $message->setTo($attempt_person->getPrimaryEmailAddress(), $attempt_person->getDisplayName());
                 $this->container->getMailer()->send($message);

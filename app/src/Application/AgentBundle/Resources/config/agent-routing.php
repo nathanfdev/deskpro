@@ -2179,13 +2179,6 @@ $collection->create('agent_usertrack_winheadertable', array(
     'controller' => 'AgentBundle:UserTrack:winHeaderTable',
 ));
 
-$collection->create('agent_usertrack_view', array(
-    'path'         => '/user-track/{visitor_id}',
-    'controller'   => 'AgentBundle:UserTrack:view',
-    'requirements' => array('visitor_id' => '\\d+'),
-    'methods'      => array('GET'),
-));
-
 $collection->create('agent_mediamanager', array(
     'path'       => '/media-manager',
     'controller' => 'AgentBundle:MediaManager:window',

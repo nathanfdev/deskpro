@@ -48,14 +48,6 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
     protected $person;
 
     /**
-     * This is set if we're a session, we might be fetching votes based on
-     * visitor id.
-     *
-     * @var \Application\DeskPRO\Entity\Visitor
-     */
-    protected $visitor;
-
-    /**
      * @var int
      */
     protected $num_votes = null;
@@ -79,10 +71,6 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
     public function __construct(Person $person, array $options)
     {
         $this->person = $person;
-
-        if (!empty($options['visitor'])) {
-            $this->visitor = $options['visitor'];
-        }
     }
 
     /**

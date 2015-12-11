@@ -26,13 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\InstallBundle\Upgrade\Build;
 
-class VisitorTrack extends AbstractEntityRepository
+class Build1449845526 extends AbstractBuild
 {
+    public function run()
+    {
+        $db = $this->container->getDb();
+        $db->exec('SET FOREIGN_KEY_CHECKS = 0');
+        $this->execMutateSql('DROP TABLE visitor_tracks, visitors', true);
+        $db->exec('SET FOREIGN_KEY_CHECKS = 1');
+    }
 }

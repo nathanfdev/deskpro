@@ -31,12 +31,10 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person as PersonEntity;
-use Application\DeskPRO\Entity\Visitor as VisitorEntity;
 
 class CommentAbstract extends AbstractEntityRepository
 {
@@ -76,7 +74,7 @@ class CommentAbstract extends AbstractEntityRepository
         }
     }
 
-    public function getDisplayComments($object, PersonEntity $person_context = null, VisitorEntity $visitor_context = null)
+    public function getDisplayComments($object, PersonEntity $person_context = null, $visitor_id = 0)
     {
         $params = array('obj_id' => $object->getId());
         $dql    = "SELECT c FROM {$this->_entityName} c WHERE c.".static::FIELD." = :obj_id AND (c.status = 'visible'";
@@ -84,9 +82,9 @@ class CommentAbstract extends AbstractEntityRepository
             $dql .= ' OR c.person = :person_id';
             $params['person_id'] = $person_context->getId();
         }
-        if ($visitor_context) {
+        if ($visitor_id) {
             $dql .= ' OR c.visitor = :visitor_id';
-            $params['visitor_id'] = $visitor_context->getId();
+            $params['visitor_id'] = $visitor_id;
         }
         $dql .= ')';
 

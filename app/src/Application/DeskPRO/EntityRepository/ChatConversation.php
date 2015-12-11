@@ -321,15 +321,15 @@ class ChatConversation extends AbstractEntityRepository
         return $this->find($conversation_id);
     }
 
-    public function getActiveChatForVisitor($visitor)
+    public function getActiveChatForVisitor($visitor_id)
     {
         try {
             $conversation = $this->getEntityManager()->createQuery('
                 SELECT c
                 FROM DeskPRO:ChatConversation c
-                WHERE c.visitor = ?1
+                WHERE c.visitor_id = ?1
                 ORDER BY c.id ASC
-            ')->setParameter(1, $visitor)->setMaxResults(1)->getSingleResult();
+            ')->setParameter(1, $visitor_id)->setMaxResults(1)->getSingleResult();
         } catch (\Exception $e) {
             $conversation = null;
         }
@@ -337,14 +337,14 @@ class ChatConversation extends AbstractEntityRepository
         return $conversation;
     }
 
-    public function getPastChatsForVisitor($visitor)
+    public function getPastChatsForVisitor($visitor_id)
     {
         return $this->getEntityManager()->createQuery("
             SELECT c
             FROM DeskPRO:ChatConversation c
-            WHERE c.visitor = ?1 AND c.status = 'ended'
+            WHERE c.visitor_id = ?1 AND c.status = 'ended'
             ORDER BY c.id ASC
-        ")->setParameter(1, $visitor)->execute();
+        ")->setParameter(1, $visitor_id)->execute();
     }
 
     public function getPastChatsForPerson($person)

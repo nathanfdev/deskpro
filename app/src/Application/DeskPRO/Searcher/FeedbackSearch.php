@@ -32,7 +32,6 @@
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Visitor;
 use Orb\Util\Util;
 
 class FeedbackSearch extends SearcherAbstract
@@ -57,11 +56,6 @@ class FeedbackSearch extends SearcherAbstract
      * @var bool
      */
     protected $include_hidden = false;
-
-    public function setVisitor($visitor)
-    {
-        $this->visitor = $visitor;
-    }
 
     /**
      * Run the search and return an array of matching ID's.
@@ -266,7 +260,7 @@ class FeedbackSearch extends SearcherAbstract
 
             case 'i-voted':
             case 'i_voted':
-                if (!$this->person && !$this->visitor) {
+                if (!$this->person) {
                     $this->order_by = array('id', 'DESC');
 
                     return $this->getOrderBy();
@@ -274,8 +268,6 @@ class FeedbackSearch extends SearcherAbstract
 
                 if ($this->person->id) {
                     $join = "LEFT JOIN ratings ON (ratings.object_id = feedback.id AND ratings.object_type = 'feedback' AND ratings.person_id = {$this->person->id})";
-                } elseif ($this->visitor) {
-                    $join = "LEFT JOIN ratings ON (ratings.object_id = feedback.id AND ratings.object_type = 'feedback' AND ratings.visitor_id = {$this->visitor->id})";
                 } else {
                     $order_by = "ORDER BY feedback.date_published $dir";
 

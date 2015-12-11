@@ -199,9 +199,6 @@ pageMeta.baseId = '{{ baseId }}';
 		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs" id="{{ baseId }}_main_tabs_nav"><ul>
 			<li data-tab-for="#{{baseId}}_chat">{{ phrase('agent.general.chat') }}</li>
 			<li data-tab-for="#{{ baseId }}_fields_display_main_wrap" id="{{ baseId }}_fields_display_main_wrap_tab" class="is-fields-tab">{{ phrase('agent.general.fields') }}</li>
-			{% if convo.visitor %}
-				<li data-tab-for="#{{baseId}}_session">{{ phrase('agent.userchat.visitor_info') }}</li>
-			{% endif %}
 			{% if convo.status == 'open' or block %}
 				<li data-tab-for="#{{baseId}}_block">{% if block %}{{ phrase('agent.userchat.user_is_blocked') }}{% else %}{{ phrase('agent.userchat.block_user') }}{% endif %}</li>
 			{% endif %}
@@ -299,54 +296,6 @@ pageMeta.baseId = '{{ baseId }}';
 				{% include 'AgentBundle:UserChat:view-page-display-holders.html.twig' %}
 			</div>
 		</article>
-		{% if convo.visitor %}
-			<article id="{{baseId}}_session" style="display: none;">
-				<div class="data-display-table-wrap">
-					<table cellspacing="0" cellpadding="0" width="100%" class="data-display-table">
-						<tbody>
-							<tr>
-								<th>{{ phrase('agent.general.ip_address') }}:</th>
-								<td>
-									{{ convo.visitor.last_track.ip_address }}
-								</td>
-							</tr>
-							<tr>
-								<th>{{ phrase('agent.general.user_agent') }}:</th>
-								<td>
-									{{ convo.visitor.last_track.user_agent }}
-								</td>
-							</tr>
-							{% if convo.session %}
-								<tr>
-									<th>{{ phrase('agent.usertrack.session_start_time') }}:</th>
-									<td>{{ convo.session.date_last|date('fulltime') }}</td>
-								</tr>
-							{% endif %}
-							{% if convo.visitor.visit_track %}
-								<tr>
-									<th>{{ phrase('agent.usertrack.session_landing_page') }}:</th>
-									<td>{{ convo.visitor.visit_track.page_url }}</td>
-								</tr>
-							{% endif %}
-							<tr>
-								<th>{{ phrase('agent.usertrack.initial_visit_time') }}:</th>
-								<td>
-									{{ convo.visitor.date_last|date('fulltime') }}
-								</td>
-							</tr>
-							{% if convo.visitor.initial_track %}
-							<tr>
-								<th>{{ phrase('agent.usertrack.initial_landing_page') }}:</th>
-								<td>
-									{{ convo.visitor.initial_track.page_url }}
-								</td>
-							</tr>
-							{% endif %}
-						</tbody>
-					</table>
-				</div>
-			</article>
-		{% endif %}
 		{% if convo.status == 'open' or block %}
 			<article id="{{baseId}}_block" style="direction: none; padding: 15px;">
 				{% if block %}

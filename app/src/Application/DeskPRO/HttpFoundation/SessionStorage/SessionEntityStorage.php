@@ -343,9 +343,8 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
             $sess_rec['date_last_page'] = date('Y-m-d H:i:s', $_SESSION['_sf2_attributes']['dplastpage']);
         }
 
-        $sess_rec['is_person']  = 0;
-        $sess_rec['person_id']  = null;
-        $sess_rec['visitor_id'] = (isset($_SESSION['_sf2_attributes']['dpvid']) ? $_SESSION['_sf2_attributes']['dpvid'] : null);
+        $sess_rec['is_person'] = 0;
+        $sess_rec['person_id'] = null;
 
         if (!empty($GLOBALS['DP_CURRENT_USER_IP'])) {
             $sess_rec['ip_address'] = $GLOBALS['DP_CURRENT_USER_IP'];
@@ -399,14 +398,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
             $sess_rec['is_helpdesk'] = 1;
         }
 
-        try {
-            $this->db->update('sessions', $sess_rec, array('id' => $id));
-        } catch (\Exception $e) {
-            // Cron periodically clears things like visitor tracks, so there could in rare
-            // cases be an update where the visitor is no longer valid by the time this session is written
-            unset($sess_rec['visitor_id']);
-            $this->db->update('sessions', $sess_rec, array('id' => $id));
-        }
+        $this->db->update('sessions', $sess_rec, array('id' => $id));
 
         return true;
     }
@@ -533,7 +525,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
             $session = new \Application\DeskPRO\Entity\Session();
 
             // hardcoded copy of old session params
-            $copyProps = array('interface', 'person', 'visitor', 'user_agent', 'ip_address', 'is_person', 'is_bot',
+            $copyProps = array('interface', 'person', 'user_agent', 'ip_address', 'is_person', 'is_bot',
                 'is_helpdesk', 'active_status', 'is_chat_available', );
             foreach ($copyProps as $prop) {
                 $session[$prop] = $this->session[$prop];

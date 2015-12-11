@@ -77,10 +77,6 @@ class UserChatController extends AbstractController
         ')->setParameter(1, $convo)->execute();
 
         $session = $convo->session;
-        $visitor = null;
-
-        // todo no field visitor, disabled other chats info
-        $other_chats = [];//$this->em->getRepository('DeskPRO:ChatConversation')->getPastChatsForVisitor($visitor);
 
         // For selector
         $agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
@@ -106,8 +102,6 @@ class UserChatController extends AbstractController
             'convo'          => $convo,
             'convo_api'      => $convo_api,
             'session'        => $session,
-            'visitor'        => $visitor,
-            'other_chats'    => $other_chats,
             'agents'         => $agents,
             'block'          => $block,
             '$field_manager' => $field_manager,

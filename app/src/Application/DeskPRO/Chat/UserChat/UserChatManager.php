@@ -72,11 +72,6 @@ class UserChatManager
     protected $session;
 
     /**
-     * @var \Application\DeskPRO\Entity\Visitor
-     */
-    protected $visitor;
-
-    /**
      * @var \Application\DeskPRO\Entity\Person
      */
     protected $person;
@@ -100,7 +95,6 @@ class UserChatManager
 
         if ($session) {
             $this->session = $session;
-            $this->visitor = null;
             $this->person  = $session->getPerson();
         }
     }
@@ -202,20 +196,6 @@ class UserChatManager
 
                 return;
             }
-
-            // Update the visitor name/email while we have a chance,
-            // its used elsewhere and stays for a long time
-            if ($this->visitor) {
-                if ($convo->person_name) {
-                    $this->visitor->name = $convo->person_name;
-                }
-                if ($convo->person_email) {
-                    $this->visitor->email = $convo->person_email;
-                }
-                if ($convo->person) {
-                    $this->visitor->person = $convo->person;
-                }
-            }
         }
 
         if ($is_window_mode) {
@@ -231,9 +211,6 @@ class UserChatManager
             }
 
             $this->em->persist($convo);
-            if ($this->visitor) {
-                $this->em->persist($this->visitor);
-            }
             $this->em->flush();
 
             if (isset($chat_options['chat_fields'])) {
