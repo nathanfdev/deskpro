@@ -24,6 +24,14 @@ export class DropZoneContainer extends React.Component {
 
     $(document).on('dragover', this.onDragStarted);
     $(parent.window.document).on('dragover', this.onDragStarted);
+
+    $(document).bind('drop dragover', e => {
+      e.preventDefault();
+    });
+
+    $(parent.window.document).bind('drop dragover', e => {
+      e.preventDefault();
+    });
   }
 
   componentWillUnmount() {
