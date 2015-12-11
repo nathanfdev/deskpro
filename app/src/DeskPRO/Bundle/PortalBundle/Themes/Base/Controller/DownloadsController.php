@@ -95,7 +95,7 @@ class DownloadsController extends AbstractController
 
     /**
      * @Tag(name="download_list_simple", default_options={"style":"simple"}, esi=true)
-     * @Tag(name="download_list_detail", default_options={"style":"detail"})
+     * @Tag(name="download_list_detail", default_options={"style":"detail", "show_pager":true}, allow_route_params=true)
      * @TagHttpCache()
      *
      * @TagOptions(
@@ -104,7 +104,8 @@ class DownloadsController extends AbstractController
      *          "style": "detail",
      *          "page": 1,
      *          "count": 10,
-     *          "show_category_link": false
+     *          "show_category_link": false,
+     *          "show_pager": false
      *      },
      *      allowed_values={
      *          "style": {"detail","simple"}
@@ -128,6 +129,7 @@ class DownloadsController extends AbstractController
         return $this->renderThemeView(
             sprintf('Theme:Downloads:DownloadList/%s.html.twig', $options['style']),
             array(
+                'show_pager'         => $options['show_pager'],
                 'category'           => $category,
                 'pager'              => $pager,
                 'show_category_link' => $options['show_category_link'],

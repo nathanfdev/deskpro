@@ -18,6 +18,9 @@
       </li>
     {% endfor %}
   </ul>
+    {% if show_pager %}
+        {% show download_pager %}
+    {% endif %}
 {% else %}
   <strong>{{ phrase('portal.articles.none') }}</strong>
 {% endif %}

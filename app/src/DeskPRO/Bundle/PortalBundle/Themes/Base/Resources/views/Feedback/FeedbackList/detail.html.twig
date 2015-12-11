@@ -86,3 +86,7 @@
   {% else %}
   <strong>{{ phrase('portal.feedback.none') }}</strong>
   {% endfor %}
+
+  {% if show_pager %}
+     {% show feedback_pager %}
+  {% endif %}

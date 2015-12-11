@@ -104,7 +104,7 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Tag(name="kb_list_detail", default_options={"style":"detail"})
+     * @Tag(name="kb_list_detail", default_options={"style":"detail", "show_pager": true}, allow_route_params=true)
      * @Tag(name="kb_list_simple", default_options={"style":"simple"}, esi=true)
      * @TagHttpCache
      *
@@ -114,7 +114,8 @@ class ArticlesController extends AbstractController
      *          "style": "simple",
      *          "page": 1,
      *          "count": 10,
-     *          "show_category_link": false
+     *          "show_category_link": false,
+     *          "show_pager": false
      *      },
      *      inherit_from={"articles_options"},
      *      allowed_values={
@@ -141,6 +142,7 @@ class ArticlesController extends AbstractController
                 'pager'              => $pager,
                 'category'           => $category,
                 'show_category_link' => $options['show_category_link'],
+                'show_pager'         => $options['show_pager'],
             )
         );
     }
