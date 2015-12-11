@@ -31,8 +31,6 @@
  */
 namespace spec\DeskPRO\Bundle\PortalBundle\Theme\TagHandler;
 
-use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\News;
 use DeskPRO\Bundle\PortalBundle\HttpCache\PortalCacheHelper;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
@@ -41,8 +39,6 @@ use DeskPRO\Bundle\PortalBundle\Theme\Tag;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\ParameterBag;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Fragment\EsiFragmentRenderer;
 
 /**
@@ -97,64 +93,5 @@ class EsiTagHandlerSpec extends ObjectBehavior
         $tag->isEsi(Argument::any())->willReturn(false);
 
         $this->supports($tag, $tag_request)->shouldReturn(false);
-    }
-
-    public function it_filters_domain_entities_into_their_ids_removes_other_objects_and_passes_to_esi_renderer(
-        PortalCacheHelper $cache_helper,
-        EsiFragmentRenderer $esi_renderer,
-        Tag $tag,
-        TagRequest $tag_request,
-        ParameterBag $attributes,
-        ParameterBag $query,
-        Response $response,
-        Article $article,
-        News $news,
-        PortalMode $mode
-    ) {
-        $tag->getName()->willReturn('tag_name');
-        $tag->getControllerName()->shouldBeCalled();
-
-        $tag_request->attributes = $attributes;
-        $tag_request->query      = $query;
-
-        $news->getId()->willReturn(10);
-        $attributes->all()->willReturn(array(
-            'news'            => $news,
-            'string'          => 'string',
-            'visitor_id'      => 'special key that will be removed as well',
-            'num'             => 3,
-            'will_be_ignored' => new \SplStack(),
-        ));
-
-        $article->getId()->willReturn(5);
-        $query->all()->willReturn(array(
-            'article' => $article,
-            'param'   => 'param',
-        ));
-
-        // we use objects in a /_proxy esi url, so they need to be filtered out
-        $attributes->replace(
-            array(
-                'news'   => 10,
-                'string' => 'string',
-                'num'    => 3,
-            )
-        )->shouldBeCalled();
-
-        $query->replace(
-            array(
-                'article'             => 5,
-                'param'               => 'param',
-                PortalMode::ATTR_NAME => $mode, // all tags store the mode
-            )
-        )->shouldBeCalled();
-
-        $esi_renderer->render(
-            Argument::type('Symfony\Component\HttpKernel\Controller\ControllerReference'),
-            $tag_request,
-            array('ignore_errors' => true)
-        )->willReturn($response);
-
-        $this->handle($tag, $tag_request)->shouldReturn($response);
     }
 }
