@@ -60,21 +60,24 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Tag(name="page_tabs", esi=true, always_guest_inline=true)
+     * @Tag(name="nav_buttons", default_options={"style":"small"}, esi=true, always_guest_inline=true)
+     * @Tag(name="nav_buttons_big", default_options={"style":"big"}, esi=true, always_guest_inline=true)
+     *
+     * @TagOptions(
+     *      defaults={
+     *          "style": "small",
+     *      },
+     *      allowed_values={
+     *          "style": {"small", "big"}
+     *      }
+     * )
+     *
      * @TagHttpCache()
      */
-    public function topTabsAction(TagRequest $tag_request)
+    public function navButtonsAction(TagRequest $tag_request, array $options)
     {
-        $path_parts = explode('/', ltrim($tag_request->getPathInfo(), '/'));
-
-        $tabs = $this->get('tabs_helper')->getTabsDisplay();
-
         return $this->renderThemeView(
-            'Theme:Portal:Tag/top_tabs.html.twig',
-            array(
-                'url_starts_with' => isset($path_parts[0]) ? $path_parts[0] : null,
-                'tabs'            => $tabs,
-            )
+            sprintf('Theme:Portal:nav_buttons_%s.html.twig', $options['style'])
         );
     }
 
