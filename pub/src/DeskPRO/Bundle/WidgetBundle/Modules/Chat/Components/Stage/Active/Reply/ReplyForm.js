@@ -52,7 +52,6 @@ export class ReplyForm extends React.Component {
 
   render() {
     const { agentName, isEnded, canReopen } = this.props;
-    const currentFrame = parent.window.widget_iframe;
 
     if (isEnded && !canReopen) {
       return null;
@@ -79,8 +78,8 @@ export class ReplyForm extends React.Component {
                 onSubmit={this.onSubmit}
                 className="textarea"
                 options={{
-                  contentWindow: currentFrame.window,
-                  ownerDocument: currentFrame.document,
+                  contentWindow: window.widgetFrame.window,
+                  ownerDocument: window.widgetFrame.document,
                   autoLink: true,
                   imageDragging: true,
                   placeholder: {
@@ -110,14 +109,14 @@ export class ReplyForm extends React.Component {
           <div className="dpdesignportal-chat-form-button-row-main">
             <a href="#" onClick={this.onUploadFile}>
               <i className="fa fa-upload"></i> Upload file
-              <input type="file" className="file" name="file-upload" />
+              <input id="fileupload" className="file" type="file" name="files[]" multiple />
             </a>
             <a href="#" onClick={this.onScreenShare}>
               <i className="fa fa-camera"></i> Screen Share
             </a>
             <EmotionButton
               buttonClassName="img"
-              context={[parent.document, parent.window.widget_iframe.document]}
+              context={[parent.document, window.widgetFrame.document]}
               getEditor={() => this.refs.editor.getMediumEditor()}
               popupPositionAt="center top-15"
               popupPositionMy="center bottom"

@@ -2,20 +2,51 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { DropZoneOverlay } from './DropZoneOverlay';
 import fileupload from 'blueimp-file-upload';
+import $ from 'jquery';
 
 export class DropZoneContainer extends React.Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      overlay: false
+    };
+  }
+
   componentDidMount() {
-    const node = ReactDOM.findDOMNode(this);
+    const document = window.widgetFrame.document;
     const overlayNode = ReactDOM.findDOMNode(this.refs.overlay);
 
-    fileupload(node, {dropZone: overlayNode});
+    $('#fileupload').fileupload({
+      url: '/path/to/upload/handler.json',
+      dropZone: overlayNode
+    });
+
+    $(document).on('dragover', this.onDragStarted);
+    $(parent.window.document).on('dragover', this.onDragStarted);
   }
+
+  onDragStarted = () => {
+    if (!this.timeout) {
+      this.setState({
+        overlay: true
+      });
+    } else {
+      clearTimeout(this.timeout);
+    }
+
+    this.timeout = setTimeout(() => {
+      this.timeout = null;
+      this.setState({
+        overlay: false
+      });
+    }, 100);
+  };
 
   render() {
     return (
       <div>
-        <DropZoneOverlay ref="overlay" />
+        <DropZoneOverlay opened={this.state.overlay} ref="overlay" />
       </div>
     );
   }

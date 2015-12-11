@@ -68,7 +68,7 @@ export class EndChatContainer extends React.Component {
                 zIndex={1000}>
 
           <ClickOut onClickOut={this.onClosePopup}
-                    context={[parent.document, parent.window.widget_iframe.document]}>
+                    context={[parent.document, window.widgetFrame.document]}>
 
             <EndChatConfirmPopup positionAt={positionAt}
                             onConfirm={this.onEndChat}

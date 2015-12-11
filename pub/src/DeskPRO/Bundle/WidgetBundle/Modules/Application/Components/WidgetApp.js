@@ -23,6 +23,7 @@ export class WidgetAppBody extends React.Component {
   };
 
   componentDidMount() {
+    window.widgetFrame = parent.window.widget_iframe;
     this.triggerResize();
   }
 
