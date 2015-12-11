@@ -115,7 +115,7 @@ export class ReplyForm extends React.Component {
 
         <div className="dpdesignportal-chat-form-button-row">
           <div className="dpdesignportal-chat-form-button-row-main">
-            <a href="#" onClick={event => event.preventDefault()}>
+            <a href="#">
               <i className="fa fa-upload"></i> Upload file
               <input ref="fileUpload" className="file" type="file" name="files[]" multiple />
             </a>
