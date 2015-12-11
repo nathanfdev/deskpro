@@ -1199,10 +1199,13 @@ class serve_file extends serve_abstract
         try {
             // Imagine doesnt suppress normal errors, so in addition to exception we'll get errors logged,
             // So @ to get rid of those exceptions
-            $image = @$container->getImagine()->load($file);
+            @$image = $container->getImagine()->load($file);
         } catch (\Imagine\Exception\InvalidArgumentException $e) {
             $this->addLogMessage('Failed to resize: %s', $e->getMessage());
             if ($die_fail) {
+                if ($this->error_mode == 'exception') {
+                    throw new \Exception('Invalid image file. (invalid_image_data)', 400);
+                }
                 header('HTTP/1.0 500 Internal Server Error');
                 echo 'Invalid image file. (invalid_image_data)';
                 exit;
