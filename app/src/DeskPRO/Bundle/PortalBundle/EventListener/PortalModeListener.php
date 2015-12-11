@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
+use DeskPRO\Bundle\AppBundle\Helper\IsProxyRequestHelper;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
@@ -62,7 +63,9 @@ class PortalModeListener implements EventSubscriberInterface
 
     public function onKernelRequest(GetResponseEvent $event)
     {
-        if (!$event->isMasterRequest()) {
+        if (!$event->isMasterRequest() || IsProxyRequestHelper::check($event->getRequest())) {
+            // dont set a portal mode for subrequests
+            // also, don't set a portal mode for master requests that are a proxy (ESI)
             return;
         }
 
@@ -70,17 +73,7 @@ class PortalModeListener implements EventSubscriberInterface
 
         $request = $event->getRequest();
 
-        // an internal request (e.g. /_proxy?_path=x&foo=bar) is still a master request
-        // these (from tags) have a query string serialized representation of the mode
-        // we need to mkae sure this is in the portal_mode_storage service, too!
-        $path = rawurldecode($request->getPathInfo());
-        if ('/_proxy' === substr($path, 0, 7)) {
-            $this->logger->info(sprintf('detected proxy request, attempting to get mode from query'));
-            $this->processInternalRequest($event);
-
-            return;
-        }
-
+        $path = $request->getPathInfo();
         if ('/_' === substr($path, 0, 2)) {
             // ignore any other path that starts with _ (profiler and such)
             return;
@@ -91,25 +84,6 @@ class PortalModeListener implements EventSubscriberInterface
         $this->store->setMode($mode);
 
         $this->logMode($mode);
-    }
-
-    protected function processInternalRequest(GetResponseEvent $event)
-    {
-        // tags store the mode as a urlencoded serialized mode object in the /_proxy query string
-        $query_string = $event->getRequest()->query;
-        if ($query_string->has(PortalMode::ATTR_NAME)) {
-            if ($serialized_mode = $query_string->get(PortalMode::ATTR_NAME)) {
-                $mode = unserialize(urldecode($serialized_mode));
-
-                if ($mode instanceof PortalMode) {
-                    $this->store->setMode($mode);
-
-                    $this->logMode($mode);
-                } else {
-                    $this->logger->error(sprintf('MODE NOT FOUND'));
-                }
-            }
-        }
     }
 
     protected function logMode(PortalMode $mode)
