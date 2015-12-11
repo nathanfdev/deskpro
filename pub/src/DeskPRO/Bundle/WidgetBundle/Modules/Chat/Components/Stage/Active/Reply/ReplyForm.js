@@ -129,7 +129,7 @@ export class ReplyForm extends React.Component {
         </div>
 
         <DropZone getExternalInput={() => this.refs.fileUpload}
-                  uploadUrl={`/url`}
+                  uploadUrl={window.DP_HELPDESK_URL + 'portal/api/blobs/temp'}
                   context={[window.widgetFrame.document, parent.window.document]} />
       </div>
     );
