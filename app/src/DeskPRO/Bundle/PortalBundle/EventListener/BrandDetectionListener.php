@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\EventListener;
 use Application\DeskPRO\Entity\Brand as BrandEntity;
 use Application\DeskPRO\EntityRepository\Brand;
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\Helper\IsProxyRequestHelper;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
@@ -100,6 +101,8 @@ class BrandDetectionListener implements EventSubscriberInterface
 
         if ($mode = $this->mode_storage->getMode()) {
             $brand = $this->detectBrandMode($mode);
+        } else {
+            $brand = $this->detectFromEsiQuery($event->getRequest());
         }
 
         if (!$brand) {
@@ -110,6 +113,19 @@ class BrandDetectionListener implements EventSubscriberInterface
         $this->brand_stack->push($brand);
 
         $this->logger->info('Brand Detector: initialized brand stack with brand id='.$brand->getId());
+    }
+
+    protected function detectFromEsiQuery(Request $request)
+    {
+        if (IsProxyRequestHelper::check($request)) {
+            if ($brand_id = $request->query->get('brand_id')) {
+                $this->logger->info(sprintf('found "%s" in esi brand_id query', $brand_id));
+
+                return $this->brand_repository->find($brand_id);
+            }
+        }
+
+        return;
     }
 
     protected function detectBrandMode(PortalMode $mode)
