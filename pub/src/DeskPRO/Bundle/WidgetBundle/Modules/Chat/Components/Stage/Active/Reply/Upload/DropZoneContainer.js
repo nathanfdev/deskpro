@@ -19,7 +19,7 @@ export class DropZoneContainer extends React.Component {
 
   componentDidMount() {
     const document = window.widgetFrame.document;
-    const overlayNode = ReactDOM.findDOMNode(this.refs.overlay);
+    const overlayNode = ReactDOM.findDOMNode(this);
     const input = ReactDOM.findDOMNode(this.props.input);
 
     $(input).fileupload({
@@ -68,10 +68,6 @@ export class DropZoneContainer extends React.Component {
   };
 
   render() {
-    return (
-      <div>
-        <DropZoneOverlay opened={this.state.overlay} ref="overlay" />
-      </div>
-    );
+    return <DropZoneOverlay opened={this.state.overlay} />;
   }
 }
