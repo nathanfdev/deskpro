@@ -43,14 +43,18 @@ class ExceptionLoggerListener implements EventSubscriberInterface
 {
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
-        $e = $event->getException();
-        KernelErrorHandler::logException($e);
+        // only log if there is no response attached by previous listeners
+        if (!$event->hasResponse()) {
+            $e = $event->getException();
+            KernelErrorHandler::logException($e);
+        }
     }
 
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::EXCEPTION => array('onKernelException', 2048), // very high priority
+            // very low priority, if the exception is caught and handled we dont want to log
+            KernelEvents::EXCEPTION => array('onKernelException', -2048),
         );
     }
 }
