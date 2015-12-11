@@ -67,7 +67,7 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
      */
     private $em;
 
-    public function __construct(LanguageManager $language_manager, PortalModeStorage $portal_mode_store, LoggerInterface $logger, EntityManager $em)
+    public function __construct(LanguageManager $language_manager, PortalModeStorage $portal_mode_store = null, LoggerInterface $logger, EntityManager $em)
     {
         $this->language_manager  = $language_manager;
         $this->logger            = $logger;
@@ -118,7 +118,7 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
 
     protected function detectFromRequestPath(Request $request)
     {
-        if ($mode = $this->portal_mode_store->getMode()) {
+        if ($this->portal_mode_store && $mode = $this->portal_mode_store->getMode()) {
             // without taking the internal path from the mode like this,
             // we can get false checks on the regex in the matcher below
             $pathinfo = $mode->getInternalPath();
