@@ -17,10 +17,11 @@ export class ReplyFormContainer extends React.Component {
     chatId: PropTypes.number
   };
 
-  onSendMessage = message => {
+  onSendMessage = (message, attachments) => {
     const { dispatch, chatId } = this.props;
     const data = {
-      message: message
+      message: message,
+      attachments: attachments
     };
 
     dispatch(sendChatMessage(chatId, data));
