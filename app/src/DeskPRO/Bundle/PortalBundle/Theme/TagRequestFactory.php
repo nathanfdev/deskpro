@@ -148,6 +148,12 @@ class TagRequestFactory
         //    $new_attributes[$attr] = $val;
         //}
 
-        return array_merge($new_attributes, $arguments, array('_tag_name' => $tag->getName()));
+        $tag_params = ['_tag_name' => $tag->getName()];
+        if ($tag->allowRouteParams()) {
+            $tag_params['_route']        = isset($current_attributes['_route']) ? $current_attributes['_route'] : null;
+            $tag_params['_route_params'] = isset($current_attributes['_route_params']) ? $current_attributes['_route_params'] : null;
+        }
+
+        return array_merge($new_attributes, $arguments, $tag_params);
     }
 }
