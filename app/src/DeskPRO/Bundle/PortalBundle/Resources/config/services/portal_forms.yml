@@ -8,9 +8,14 @@ services:
       - @session
 
   listener.response.double_submit:
-        class: DeskPRO\Bundle\PortalBundle\Form\EventListener\DoubleSubmitJavascriptListener
-        tags:
-          - { name: kernel.event_subscriber }
+    class: DeskPRO\Bundle\PortalBundle\Form\EventListener\DoubleSubmitJavascriptListener
+    tags:
+      - { name: kernel.event_subscriber }
+
+  listener.response.visitor_identifier_js:
+    class: DeskPRO\Bundle\PortalBundle\Visitor\EventListener\VisitorIdentifierJavascriptListener
+    tags:
+      - { name: kernel.event_subscriber }
 
   form.form_extension:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Extension\DeskproFormExtension

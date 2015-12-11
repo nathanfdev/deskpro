@@ -139,7 +139,7 @@ class RandUtils
             return '';
         }
 
-        return preg_replace_callback('#%(\d*)(A|a|c|n|An|an|cn|g|h)#', function ($m) {
+        return preg_replace_callback('#%(\d*)(An|an|cn|A|a|c|n|g|h)#', function ($m) {
             $l = (int) $m[1] ?: 1;
             switch ($m[2]) {
                 case 'A':  return RandUtils::randomString($l, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');

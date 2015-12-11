@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Visitor;
 
+use DeskPRO\Component\Util\RandUtils;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -49,33 +50,46 @@ class VisitorIdentificationProvider
      */
     private $logger;
 
+    /**
+     * VisitorIdentificationProvider constructor.
+     *
+     * @param RequestStack    $request_stack
+     * @param LoggerInterface $logger
+     */
     public function __construct(RequestStack $request_stack, LoggerInterface $logger)
     {
         $this->request_stack = $request_stack;
         $this->logger        = $logger;
     }
 
+    /**
+     * @return string
+     */
     public static function generateRandomIdentifier()
     {
-        // take from a comment at: http://php.net/manual/en/function.com-create-guid.php
-        $charid = strtoupper(md5(uniqid(rand(), true)));
-        $hyphen = chr(45);// "-"
-        $uuid   =
-            ''
-            .substr($charid, 0, 8).$hyphen
-            .substr($charid, 8, 4).$hyphen
-            .substr($charid, 12, 4).$hyphen
-            .substr($charid, 16, 4).$hyphen
-            .substr($charid, 20, 12)
-            ;
-
-        return $uuid;
+        // Prefix with current time (minute) just to 'order' the IDs in the datastore which
+        // can potentially aid indexing
+        return ceil(time() / 60).'-'.RandUtils::randomStringFormat('%8An-%8An-%6An-%3A');
     }
 
+    /**
+     * @param string $str
+     *
+     * @return int
+     */
+    private function isValidFormat($str)
+    {
+        return preg_match('#^\d{8}\-[A-Z0-9]{8}\-[A-Z0-9]{8}\-[A-Z0-9]{6}\-[A-Z]{3}$#', $str);
+    }
+
+    /**
+     * @return string
+     */
     public function getVisitorIdentifier()
     {
         if ($this->request_stack->getMasterRequest()) {
-            if ($identifier = $this->request_stack->getMasterRequest()->cookies->get(static::COOKIE_NAME)) {
+            $identifier = $this->request_stack->getMasterRequest()->cookies->get(static::COOKIE_NAME);
+            if ($identifier && $this->isValidFormat($identifier)) {
                 $this->logger->info(sprintf('found visitor identifier in cookie "%s"', static::COOKIE_NAME));
 
                 return $identifier;
