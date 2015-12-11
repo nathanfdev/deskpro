@@ -36,6 +36,7 @@ use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use DeskPRO\Component\Util\EntityUtils;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -51,10 +52,16 @@ class TagRequestFactory
      */
     private $language_manager;
 
-    public function __construct(RequestStack $stack, LanguageManager $language_manager)
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    public function __construct(RequestStack $stack, LanguageManager $language_manager, ContainerInterface $container)
     {
         $this->stack            = $stack;
         $this->language_manager = $language_manager;
+        $this->container        = $container;
     }
 
     public function create(Tag $tag, array $arguments = array())
@@ -100,7 +107,14 @@ class TagRequestFactory
             $lang = $language_stack->getDefaultLanguage();
         }
 
-        return array('tag_options' => $tag_options, 'lang_url_code' => $lang->getUrlCode());
+        $brand_container = $this->container->get('brand_stack')->getActive();
+
+        return array(
+            'tag_options'   => $tag_options,
+            'lang_url_code' => $lang->getUrlCode(),
+            'brand_id'      => $brand_container->getBrand()->getId(),
+            'theme_set_id'  => $brand_container->getActiveThemeSet()->getId(),
+        );
     }
 
     /**
@@ -117,22 +131,22 @@ class TagRequestFactory
 
         $forbidden_attributes = array('tag_request');
 
-        foreach ($current_attributes as $attr => $val) {
-            if (
-                '_' === substr($attr, 0, 1)
-                || in_array($attr, $forbidden_attributes)
-            ) {
-                if (!in_array($attr, array('_route', '_route_params'))) {
-                    continue;
-                }
-
-                if (!$tag->allowRouteParams()) {
-                    continue;
-                }
-            }
-
-            $new_attributes[$attr] = $val;
-        }
+        //foreach ($current_attributes as $attr => $val) {
+        //    if (
+        //        '_' === substr($attr, 0, 1)
+        //        || in_array($attr, $forbidden_attributes)
+        //    ) {
+        //        if (!in_array($attr, array('_route', '_route_params'))) {
+        //            continue;
+        //        }
+        //
+        //        if (!$tag->allowRouteParams()) {
+        //            continue;
+        //        }
+        //    }
+        //
+        //    $new_attributes[$attr] = $val;
+        //}
 
         return array_merge($new_attributes, $arguments, array('_tag_name' => $tag->getName()));
     }

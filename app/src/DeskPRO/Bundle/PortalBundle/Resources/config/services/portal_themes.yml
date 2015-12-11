@@ -37,6 +37,7 @@ services:
     arguments:
       - @request_stack
       - @language_manager
+      - @service_container
 
 
   theme_view_factory:
