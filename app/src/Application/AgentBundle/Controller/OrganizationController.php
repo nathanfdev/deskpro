@@ -909,6 +909,9 @@ class OrganizationController extends AbstractController
             if ($child->parent === $org) {
                 $org->children->removeElement($child);
                 $child->parent = null;
+
+                $this->em->persist($child);
+                $this->em->flush();
             }
 
             return $this->createJsonResponse(array(

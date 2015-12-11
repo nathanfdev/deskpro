@@ -135,10 +135,10 @@
 			</ul>
 		</nav>
 	</header>
-	<section style="padding: 10px;">
+	<section>
 
 		<ul>
-			<li>
+			<li style="padding: 6px 10px;">
 				Parent:
 				{% if org.parent %}
 					<a href="#" data-route="page:{{ path('agent_org_view', {'organization_id': org.parent.id}) }}">
@@ -148,20 +148,19 @@
 					none
 				{% endif %}
 			</li>
-			<li>
+			<li style="padding: 6px 10px; border-top: 1px solid #CAD0D7" ng-show="children && children.length">
 				Children:
 				<ul id="{{ baseId }}_children-list" style="margin-left:10px;">
 					<li ng-repeat="child in children">
+						<i class="fa fa-caret-right" style="font-size: 90%;"></i>
 						<a href="#" data-route="page:{{ path('agent_org_view', {'organization_id': '0000'})|replace({'0000': ng_var('child.id')}) }}">
 							{{ ng_var('child.name') }}
 						</a>
-						<a href="#" class="remove-child" ng-click="removeChild(child)">
-							x
-						</a>
+						<a class="remove-child" ng-click="removeChild(child)" style="color:#999; font-size: 80%" title="Remove association"><i class="fa fa-times"></i></a>
 					</li>
 				</ul>
 			</li>
-			<li>
+			<li style="padding: 6px 10px; border-top: 1px solid #CAD0D7">
 				Add child:
 
 				<div style="position: relative; height: 25px; display: inline-block;">
