@@ -4,10 +4,12 @@ import { DropZoneOverlay } from './DropZoneOverlay';
 import fileupload from 'blueimp-file-upload';
 import $ from 'jquery';
 
-export class DropZoneContainer extends React.Component {
+export class DropZone extends React.Component {
 
   static propTypes = {
-    input: PropTypes.node.isRequired
+    getExternalInput: PropTypes.func.isRequired,
+    uploadUrl: PropTypes.string.isRequired,
+    context: PropTypes.any
   };
 
   constructor(props) {
@@ -18,30 +20,26 @@ export class DropZoneContainer extends React.Component {
   }
 
   componentDidMount() {
-    const document = window.widgetFrame.document;
     const overlayNode = ReactDOM.findDOMNode(this);
-    const input = ReactDOM.findDOMNode(this.props.input);
 
-    $(input).fileupload({
-      url: '/path/to/upload/handler.json',
+    $(this.getInput()).fileupload({
+      url: this.props.uploadUrl,
       dropZone: $(overlayNode)
     });
 
-    $(document).on('dragover', this.onDragStarted);
-    $(parent.window.document).on('dragover', this.onDragStarted);
-
-    $(document).on('drop dragover', this.onDefaultDrop);
-    $(parent.window.document).on('drop dragover', this.onDefaultDrop);
+    this.getContext().forEach(selector => {
+      $(selector).on('dragover', this.onDragStarted);
+      $(selector).on('dragover', this.onDefaultDrop);
+    });
   }
 
   componentWillUnmount() {
-    $('#fileupload').fileupload('destroy');
+    $(this.getInput()).fileupload('destroy');
 
-    $(document).off('dragover', this.onDragStarted);
-    $(parent.window.document).off('dragover', this.onDragStarted);
-
-    $(document).off('drop dragover', this.onDefaultDrop);
-    $(parent.window.document).off('drop dragover', this.onDefaultDrop);
+    this.getContext().forEach(selector => {
+      $(selector).off('dragover', this.onDragStarted);
+      $(selector).off('dragover', this.onDefaultDrop);
+    });
   }
 
   onDefaultDrop = e => {
@@ -66,6 +64,15 @@ export class DropZoneContainer extends React.Component {
       overlay: false
     });
   };
+
+  getContext() {
+    const { context = document } = this.props;
+    return Array.isArray(context) ? context : [...context];
+  }
+
+  getInput() {
+    return ReactDOM.findDOMNode(this.props.getExternalInput());
+  }
 
   render() {
     return <DropZoneOverlay opened={this.state.overlay} />;

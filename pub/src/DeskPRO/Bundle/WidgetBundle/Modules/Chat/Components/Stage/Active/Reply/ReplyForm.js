@@ -6,7 +6,7 @@ import { replaceSmileCodes } from 'DeskPRO/Component/Rte/Emotions';
 import RteInput from 'DeskPRO/Component/Rte/RteInput';
 import ScrollArea from 'react-scrollbar';
 import { AttachedFilesContainer } from './Upload/AttachedFilesContainer';
-import { DropZoneContainer } from './Upload/DropZoneContainer';
+import { DropZone } from './Upload/DropZone';
 
 export class ReplyForm extends React.Component {
 
@@ -128,7 +128,9 @@ export class ReplyForm extends React.Component {
           </EndChatContainer>
         </div>
 
-        <DropZoneContainer input={this.refs.fileUpload} />
+        <DropZone getExternalInput={() => this.refs.fileUpload}
+                  uploadUrl={`/url`}
+                  context={[window.widgetFrame.document, parent.window.document]} />
       </div>
     );
   }
