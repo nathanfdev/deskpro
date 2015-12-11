@@ -233,6 +233,7 @@
       a {
         position: relative;
         border-right: 1px solid #e7e7e7;
+        overflow: hidden;
 
         &.dpdesignportal-chat-form-button-row-emoticons {
           border-right: 0;
@@ -246,13 +247,14 @@
         }
 
         .file {
+          cursor: pointer;
+          font-size: 100px;
+          filter: alpha(opacity=1);
+          -moz-opacity: 0.01;
+          opacity: 0.01;
           position: absolute;
-          opacity: 0;
-          z-index: 2;
-          top: 0;
           right: 0;
-          width: 82px;
-          height: inherit;
+          top: 0;
         }
       }
     }
