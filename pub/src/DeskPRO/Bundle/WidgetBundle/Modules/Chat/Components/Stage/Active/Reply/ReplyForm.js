@@ -107,9 +107,9 @@ export class ReplyForm extends React.Component {
 
         <div className="dpdesignportal-chat-form-button-row">
           <div className="dpdesignportal-chat-form-button-row-main">
-            <a href="#" onClick={this.onUploadFile}>
+            <a href="#">
               <i className="fa fa-upload"></i> Upload file
-              <input id="fileupload" className="file" type="file" name="files[]" multiple />
+              <input ref="fileUpload" className="file" type="file" name="files[]" multiple />
             </a>
             <a href="#" onClick={this.onScreenShare}>
               <i className="fa fa-camera"></i> Screen Share
@@ -128,7 +128,7 @@ export class ReplyForm extends React.Component {
           </EndChatContainer>
         </div>
 
-        <DropZoneContainer />
+        <DropZoneContainer input={this.refs.fileUpload} />
       </div>
     );
   }

@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { DropZoneOverlay } from './DropZoneOverlay';
 import fileupload from 'blueimp-file-upload';
 import $ from 'jquery';
 
 export class DropZoneContainer extends React.Component {
+
+  static propTypes = {
+    input: PropTypes.node.isRequired
+  };
 
   constructor(props) {
     super(props);
@@ -16,8 +20,9 @@ export class DropZoneContainer extends React.Component {
   componentDidMount() {
     const document = window.widgetFrame.document;
     const overlayNode = ReactDOM.findDOMNode(this.refs.overlay);
+    const input = ReactDOM.findDOMNode(this.props.input);
 
-    $('#fileupload').fileupload({
+    $(input).fileupload({
       url: '/path/to/upload/handler.json',
       dropZone: $(overlayNode)
     });
