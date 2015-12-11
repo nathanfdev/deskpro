@@ -211,7 +211,8 @@ function getWebpackConfig(mode, isDevServer, isProd) {
       alias: {
         'invariant': 'fbjs/lib/invariant',
         'warning': 'fbjs/lib/warning',
-        'jquery.ui': 'jquery-ui'
+        'jquery.ui': 'jquery-ui',
+        'jquery.ui.widget': 'jquery.ui.widget/jquery.ui.widget'
       }
     },
     resolveLoader: {
