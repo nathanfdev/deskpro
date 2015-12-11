@@ -5,7 +5,8 @@ import EmotionButton from 'DeskPRO/Component/Rte/EmotionButton';
 import { replaceSmileCodes } from 'DeskPRO/Component/Rte/Emotions';
 import RteInput from 'DeskPRO/Component/Rte/RteInput';
 import ScrollArea from 'react-scrollbar';
-import { AttachedFile } from './AttachedFile';
+import { DropZone } from './DropZone';
+import { DropZoneOverlay } from './DropZoneOverlay';
 
 export class ReplyForm extends React.Component {
 
@@ -47,10 +48,6 @@ export class ReplyForm extends React.Component {
   onReopen = event => {
     event.preventDefault();
     this.props.onReopen();
-  };
-
-  onRemoveFile = fileId => {
-    console.log('onRemoveFile ' + fileId);
   };
 
   render() {
@@ -101,10 +98,7 @@ export class ReplyForm extends React.Component {
                 }}
               />
             </ScrollArea>
-
-            <AttachedFile fileId={1} name="file_name_lorem_ipsum.pdf" onRemove={this.onRemoveFile} />
-            <AttachedFile fileId={2} name="file_name_lorem_ipsum.pdf" onRemove={this.onRemoveFile} />
-            <AttachedFile fileId={3} name="file_name_lorem_ipsum.pdf" onRemove={this.onRemoveFile} />
+            <DropZone />
           </div>
 
           <button>
@@ -134,6 +128,8 @@ export class ReplyForm extends React.Component {
             <EndChatButton />
           </EndChatContainer>
         </div>
+
+        <DropZoneOverlay />
       </div>
     );
   }
