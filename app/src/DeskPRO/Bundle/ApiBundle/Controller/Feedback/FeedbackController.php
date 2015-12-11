@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 use Application\DeskPRO\Entity\CustomDataFeedback;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\ImportBundle\Generator\Exporter\DeskPRO;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackCountCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackSelectCriteria;
@@ -215,14 +216,13 @@ class FeedbackController extends BaseController
                         foreach ($feedback as $item) {
                             $item->setStatusCategory($statusCategory);
                             $item->setStatus($statusCategory->getStatusType());
+                            $item->setHiddenStatus();
                         }
                     }
                 } elseif ($param === 'hidden_status') {
                     foreach ($feedback as $item) {
                         $item->setStatus(Feedback::STATUS_HIDDEN);
                         $item->setHiddenStatus($value);
-                        $em->persist($item);
-                        $em->flush();
                     }
                 } elseif ($param === 'custom_category') {
                     $customDef = $em->getRepository('DeskPRO:CustomDefFeedback')->findOneBy(['title' => 'category']);
@@ -302,7 +302,14 @@ class FeedbackController extends BaseController
         $feedback = $qb->getQuery()->getResult();
 
         foreach ($feedback as $item) {
-            $item->setHiddenStatus(null)->setIsReviewed(true);
+            if ($item->getStatus() === Feedback::STATUS_HIDDEN) {
+                $activeStatusCategory = $em->getRepository('DeskPRO:FeedbackStatusCategory')
+                    ->findBy(['status_type' => Feedback::STATUS_ACTIVE], ['display_order' => 'ASC']);
+                $item->setHiddenStatus();
+                $item->setStatus(Feedback::STATUS_ACTIVE);
+                $item->setStatusCategory($activeStatusCategory[0]);
+            }
+            $item->setIsReviewed(true);
         }
         $em->flush();
 
