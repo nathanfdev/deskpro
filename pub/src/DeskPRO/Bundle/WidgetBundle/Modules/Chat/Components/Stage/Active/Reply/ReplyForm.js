@@ -7,15 +7,18 @@ import RteInput from 'DeskPRO/Component/Rte/RteInput';
 import ScrollArea from 'react-scrollbar';
 import { AttachedFilesContainer } from './Upload/AttachedFilesContainer';
 import { DropZone } from './Upload/DropZone';
+import { addAttachment } from '../../../../Actions/chatActions';
 
 export class ReplyForm extends React.Component {
 
   static propTypes = {
+    dispatch: PropTypes.func,
     isEnded: PropTypes.bool,
     canReopen: PropTypes.bool,
     onSendMessage: PropTypes.func,
     onReopen: PropTypes.func,
-    agentName: PropTypes.string
+    agentName: PropTypes.string,
+    attachments: PropTypes.object
   };
 
   constructor(props) {
@@ -50,8 +53,9 @@ export class ReplyForm extends React.Component {
     this.props.onReopen();
   };
 
-  onUploadedFile = (event, data) => {
-    console.log(event, data);
+  onUploadedFile = (event, response) => {
+    const attachments = response.result || [];
+    attachments.forEach(attachment => this.props.dispatch(addAttachment(attachment)));
   };
 
   render() {

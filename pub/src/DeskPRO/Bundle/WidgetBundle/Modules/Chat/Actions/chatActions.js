@@ -2,15 +2,25 @@ import { createAction } from 'Ampliflux';
 import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 
+// Chat setup actions
+export const setChatId = createAction('WIDGET_CHAT_SET_ID');
+export const updateChatInfo = createAction('WIDGET_CHAT_UPDATE_CHAT_INFO');
+
+// Controls actions
 export const toggleAudioNotifications = createAction('WIDGET_CHAT_TOGGLE_AUDIO_NOTIFICATIONS');
+
+// Transcript actions
 export const disableSendTranscript = createAction('WIDGET_CHAT_DISABLE_SEND_TRANSCRIPT');
 export const enableSendTranscript = createAction('WIDGET_CHAT_ENABLE_SEND_TRANSCRIPT');
 export const resetTranscriptDataSent = createAction('WIDGET_CHAT_RESET_TRANSCRIPT_DATA_SENT');
-export const setChatId = createAction('WIDGET_CHAT_SET_ID');
-export const updateChatInfo = createAction('WIDGET_CHAT_UPDATE_CHAT_INFO');
-export const resetMessages = createAction('WIDGET_CHAT_RESET_MESSAGES');
-export const addNewMessages = createAction('WIDGET_CHAT_ADD_NEW_MESSAGES');
 
+// Messages actions
+export const resetMessages = createAction('WIDGET_CHAT_RESET_MESSAGES');
+export const addNewMessage = createAction('WIDGET_CHAT_ADD_NEW_MESSAGES');
+export const addAttachment = createAction('WIDGET_CHAT_ADD_ATTACHMENT');
+export const removeAttachment = createAction('WIDGET_CHAT_REMOVE_ATTACHMENT');
+
+// Api actions
 export const createChat = createAction(
   'WIDGET_CHAT_CREATE_NEW',
   params => dispatch => DpApi
@@ -51,7 +61,7 @@ export const pollingChat = createAction(
           dispatch(updateChatInfo(chatInfo));
         }
         if (newMessages.length) {
-          dispatch(addNewMessages(newMessages));
+          newMessages.forEach(message => dispatch(addNewMessage(message)));
         }
       });
   }

@@ -1,13 +1,14 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { chatIdSelector, agentNameSelector } from '../../../../Selectors/chat';
+import { chatIdSelector, agentNameSelector, attachmentsSelector } from '../../../../Selectors/chat';
 import { sendChatMessage } from '../../../../Actions/chatActions';
 import { ReplyForm } from './ReplyForm';
 import { ReopenChatContainer } from '../ReopenChatContainer';
 
 @connect(state => ({
   chatId: chatIdSelector(state),
-  agentName: agentNameSelector(state)
+  agentName: agentNameSelector(state),
+  attachments: attachmentsSelector(state)
 }))
 export class ReplyFormContainer extends React.Component {
 

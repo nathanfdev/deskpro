@@ -1,7 +1,6 @@
 import { createReducer } from 'Ampliflux';
 import * as actions from '../Actions/chatActions';
-import { setFullPayload, setValue, mergeValue, toggleBool, async } from 'Ampliflux/reducers/handlers';
-import Immutable from 'immutable';
+import { setFullPayload, setValue, mergeValue, toggleBool, async, pushPayloadToCollection } from 'Ampliflux/reducers/handlers';
 
 const initialState = {
   audioNotifications: true,
@@ -21,21 +20,23 @@ const initialState = {
     {id: 103, content: 'agent reply agent reply agent reply agent reply agent reply agent reply ;)', author: 1, author_type: 'agent', is_sys: false, date_created: '2015-12-03 14:02'},
     {id: 102, content: '{"phrase_id":"message_assigned","name":"Admin Admin"}', author: null, author_type: 'user', is_sys: true, date_created: '2015-12-03 13:58'},
     {id: 101, content: '{"phrase_id":"message_started"}', author: null, is_sys: true, date_created: '2015-12-03 13:50'}
-  ]
+  ],
+  attachments: []
 };
 
 export default createReducer(initialState, {
+  // Controls
   [actions.toggleAudioNotifications]: toggleBool('audioNotifications'),
+
+  // Chat setup
   [actions.setChatId]: setFullPayload('chatId'),
   [actions.updateChatInfo]: setFullPayload('chatInfo'),
   [actions.reopenChat]: mergeValue(null, {chatInfo: {date_ended: null}, transcript: {sent: false}}, true),
 
   // Messages
   [actions.resetMessages]: setValue('messages', []),
-  [actions.addNewMessages]: (state, payload) => {
-    const oldMessages = state.get('messages', Immutable.fromJS([])).toJS();
-    return state.set('messages', Immutable.fromJS(oldMessages.concat(payload)));
-  },
+  [actions.addNewMessage]: pushPayloadToCollection('messages'),
+  [actions.addAttachment]: pushPayloadToCollection('attachments'),
 
   // Transcript
   [actions.disableSendTranscript]: setValue('transcript.checked', false),

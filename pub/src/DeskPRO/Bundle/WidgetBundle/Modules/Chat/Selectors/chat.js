@@ -77,10 +77,15 @@ export const isEndedSelector = createSelector(
 // Messages selectors
 export const messagesSelector = createSelector(
   stateSelector,
-  chatInfo => chatInfo.get('messages')
+  state => state.get('messages')
 );
 
 export const lastMessageIdSelector = createSelector(
   messagesSelector,
   messages => messages && messages.size ? messages.map(message => message.get('id')).max((a, b) => a - b) : null
+);
+
+export const attachmentsSelector = createSelector(
+  stateSelector,
+  state => state.get('attachments')
 );
