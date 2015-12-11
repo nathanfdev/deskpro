@@ -5,7 +5,7 @@ import EmotionButton from 'DeskPRO/Component/Rte/EmotionButton';
 import { replaceSmileCodes } from 'DeskPRO/Component/Rte/Emotions';
 import RteInput from 'DeskPRO/Component/Rte/RteInput';
 import ScrollArea from 'react-scrollbar';
-import { AttachedFilesContainer } from './Upload/AttachedFilesContainer';
+import { AttachedFiles } from './Upload/AttachedFiles';
 import { DropZone } from './Upload/DropZone';
 import { addAttachment } from '../../../../Actions/chatActions';
 
@@ -59,7 +59,7 @@ export class ReplyForm extends React.Component {
   };
 
   render() {
-    const { agentName, isEnded, canReopen } = this.props;
+    const { agentName, attachments, isEnded, canReopen } = this.props;
 
     if (isEnded && !canReopen) {
       return null;
@@ -105,7 +105,7 @@ export class ReplyForm extends React.Component {
                 }}
               />
             </ScrollArea>
-            <AttachedFilesContainer />
+            <AttachedFiles attachments={attachments} />
           </div>
 
           <button>
@@ -115,7 +115,7 @@ export class ReplyForm extends React.Component {
 
         <div className="dpdesignportal-chat-form-button-row">
           <div className="dpdesignportal-chat-form-button-row-main">
-            <a href="#">
+            <a href="#" onClick={event => event.preventDefault()}>
               <i className="fa fa-upload"></i> Upload file
               <input ref="fileUpload" className="file" type="file" name="files[]" multiple />
             </a>
