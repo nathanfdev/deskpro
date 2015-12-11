@@ -50,6 +50,10 @@ export class ReplyForm extends React.Component {
     this.props.onReopen();
   };
 
+  onUploadedFile = (event, data) => {
+    console.log(event, data);
+  };
+
   render() {
     const { agentName, isEnded, canReopen } = this.props;
 
@@ -130,7 +134,8 @@ export class ReplyForm extends React.Component {
 
         <DropZone getExternalInput={() => this.refs.fileUpload}
                   uploadUrl={window.DP_HELPDESK_URL + 'portal/api/blobs/temp'}
-                  context={[window.widgetFrame.document, parent.window.document]} />
+                  context={[window.widgetFrame.document, parent.window.document]}
+                  onSuccess={this.onUploadedFile} />
       </div>
     );
   }
