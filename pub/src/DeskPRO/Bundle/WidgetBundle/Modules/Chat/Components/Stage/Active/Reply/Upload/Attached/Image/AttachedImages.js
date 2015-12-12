@@ -1,20 +1,24 @@
 import React, { PropTypes } from 'react';
+import Immutable from 'immutable';
 
 export class AttachedImages extends React.Component {
 
   static propTypes = {
+    attachments: PropTypes.object,
     count: PropTypes.number
   };
 
   render() {
-    const { count } = this.props;
+    const { attachments, count } = this.props;
+    const lastImage = attachments.last() || Immutable.fromJS({});
 
     return (
       <div className="dpdesignportal-chat-form-attached-image">
         <div className="dpdesignportal-chat-form-attached-image-count">
           {count} <i className="fa fa-angle-double-right"></i>
         </div>
-        <div className="dpdesignportal-chat-form-attached-image-thumb" />
+        <div className="dpdesignportal-chat-form-attached-image-thumb"
+             style={{backgroundImage: `url(${lastImage.get('download_url')})`}} />
       </div>
     );
   }
