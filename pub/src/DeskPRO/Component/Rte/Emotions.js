@@ -59,8 +59,8 @@ function replaceSmileCodes(content, inverse = false) {
     if (smiles.hasOwnProperty(num)) {
       const codes = smiles[num];
       const arrayCodes = Array.isArray(codes) ? codes : [codes];
-
       const image = createEmotionImage(codes);
+
       if (inverse) {
         text = text.replace(image, arrayCodes[0]);
       } else {
@@ -74,7 +74,6 @@ function replaceSmileCodes(content, inverse = false) {
 
 export default {
   ...smiles,
-
   SPRITE_MAP,
 
   createEmotionImage,

@@ -42,7 +42,9 @@ export class ReplyForm extends React.Component {
   onSubmit = event => {
     event.preventDefault();
 
-    this.props.onSendMessage(replaceSmileCodes(this.state.message, true), this.props.attachments);
+    const { onSendMessage, attachments } = this.props;
+    onSendMessage(replaceSmileCodes(this.state.message, true), attachments);
+
     this.setState({
       message: ''
     });
