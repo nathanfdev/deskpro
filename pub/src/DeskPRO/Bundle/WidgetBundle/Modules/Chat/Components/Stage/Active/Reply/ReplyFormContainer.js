@@ -4,6 +4,8 @@ import { chatIdSelector, agentNameSelector, attachmentsSelector } from '../../..
 import { sendChatMessage } from '../../../../Actions/chatActions';
 import { ReplyForm } from './ReplyForm';
 import { ReopenChatContainer } from '../ReopenChatContainer';
+import { addAttachment } from '../../../../Actions/chatActions';
+import { replaceSmileCodes } from 'DeskPRO/Component/Rte/Emotions';
 
 @connect(state => ({
   chatId: chatIdSelector(state),
@@ -14,23 +16,36 @@ export class ReplyFormContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func,
-    chatId: PropTypes.number
+    chatId: PropTypes.number,
+    attachments: PropTypes.object
   };
 
-  onSendMessage = (message, attachments) => {
-    const { dispatch, chatId } = this.props;
+  onSendMessage = message => {
+    const { dispatch, chatId, attachments } = this.props;
     const data = {
-      message: message,
+      message: replaceSmileCodes(message, true),
       attachments: attachments.map(attachment => attachment.get('blob_auth_id'))
     };
 
     dispatch(sendChatMessage(chatId, data));
   };
 
+  onUploadedFile = (event, response) => {
+    const attachments = response.result || [];
+    attachments.forEach(attachment => this.props.dispatch(addAttachment(attachment)));
+  };
+
+  onRemoveFile = attachment => {
+    console.log('onRemoveFile', attachment);
+  };
+
   render() {
     return (
       <ReopenChatContainer>
-        <ReplyForm onSendMessage={this.onSendMessage} {...this.props} />
+        <ReplyForm onSendMessage={this.onSendMessage}
+                   onUploadedFile={this.onUploadedFile}
+                   onRemoveFile={this.onRemoveFile} {...this.props} />
+
       </ReopenChatContainer>
     );
   }

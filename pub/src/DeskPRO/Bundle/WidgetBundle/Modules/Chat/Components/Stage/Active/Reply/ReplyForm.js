@@ -2,20 +2,19 @@ import React, { PropTypes } from 'react';
 import { EndChatContainer } from '../EndChat/EndChatContainer';
 import { EndChatButton } from './EndChatButton';
 import EmotionButton from 'DeskPRO/Component/Rte/EmotionButton';
-import { replaceSmileCodes } from 'DeskPRO/Component/Rte/Emotions';
 import RteInput from 'DeskPRO/Component/Rte/RteInput';
 import ScrollArea from 'react-scrollbar';
 import { AttachedFiles } from './Upload/AttachedFiles';
 import { DropZone } from './Upload/DropZone';
-import { addAttachment } from '../../../../Actions/chatActions';
 
 export class ReplyForm extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func,
     isEnded: PropTypes.bool,
     canReopen: PropTypes.bool,
     onSendMessage: PropTypes.func,
+    onUploadedFile: PropTypes.func,
+    onRemoveFile: PropTypes.func,
     onReopen: PropTypes.func,
     agentName: PropTypes.string,
     attachments: PropTypes.object
@@ -39,29 +38,24 @@ export class ReplyForm extends React.Component {
     console.log('onScreenShare');
   };
 
-  onSubmit = event => {
-    event.preventDefault();
-
-    const { onSendMessage, attachments } = this.props;
-    onSendMessage(replaceSmileCodes(this.state.message, true), attachments);
-
-    this.setState({
-      message: ''
-    });
-  };
-
   onReopen = event => {
     event.preventDefault();
     this.props.onReopen();
   };
 
-  onUploadedFile = (event, response) => {
-    const attachments = response.result || [];
-    attachments.forEach(attachment => this.props.dispatch(addAttachment(attachment)));
+  onSubmit = event => {
+    event.preventDefault();
+
+
+    this.props.onSendMessage(this.state.message);
+    this.setState({
+      message: ''
+    });
   };
 
   render() {
-    const { agentName, attachments, isEnded, canReopen } = this.props;
+    const { agentName, isEnded, canReopen } = this.props;
+    const { attachments, onUploadedFile, onRemoveFile } = this.props;
 
     if (isEnded && !canReopen) {
       return null;
@@ -107,7 +101,7 @@ export class ReplyForm extends React.Component {
                 }}
               />
             </ScrollArea>
-            <AttachedFiles attachments={attachments} />
+            <AttachedFiles attachments={attachments} onRemoveFile={onRemoveFile} />
           </div>
 
           <button>
@@ -141,7 +135,7 @@ export class ReplyForm extends React.Component {
         <DropZone getExternalInput={() => this.refs.fileUpload}
                   uploadUrl={window.DP_HELPDESK_URL + 'portal/api/blobs/temp'}
                   context={[window.widgetFrame.document, parent.window.document]}
-                  onSuccess={this.onUploadedFile} />
+                  onSuccess={onUploadedFile} />
       </div>
     );
   }

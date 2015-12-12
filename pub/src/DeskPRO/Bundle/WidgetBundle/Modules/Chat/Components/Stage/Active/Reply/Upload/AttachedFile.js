@@ -11,7 +11,7 @@ export class AttachedFile extends React.Component {
     event.preventDefault();
 
     const { attachment, onRemove } = this.props;
-    onRemove(attachment.get('blob_auth_id'));
+    onRemove(attachment);
   };
 
   render() {
