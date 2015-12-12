@@ -54,7 +54,7 @@ class ArticlesController extends AbstractController
      *      defaults={
      *          "style": "browse",
      *          "category": null,
-     *          "articles_options": {}
+     *          "articles_count": 10
      *      },
      *      allowed_values={
      *          "style": {"expander", "browse", "list"}
@@ -98,7 +98,7 @@ class ArticlesController extends AbstractController
                 'category_pager'           => $category_pager,
                 'category_children'        => $category_children,
                 'category_children_pagers' => $category_children_pagers,
-                'articles_options'         => $options['articles_options'],
+                'articles_count'           => $options['articles_count'],
             )
         );
     }
