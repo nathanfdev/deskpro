@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageEvent;
@@ -147,6 +148,28 @@ class ChatController extends AbstractController
         ;
 
         $conversation->addMessage($chat_message);
+
+        /** @var Blob $attachments */
+        $attachments = $form->get('attachments')->getData();
+        foreach ($attachments as $attachment) {
+            $msg = "File: <a href=\"{$attachment->getDownloadUrl(true)}\" target=\"_blank\">".htmlspecialchars($attachment->filename).'</a> ('.$attachment->getReadableFilesize().')';
+            if ($attachment->isImage()) {
+                $msg .= '<div class="file-thumb"><img src="'.$attachment->getThumbnailUrl(50, true).'" /></div>';
+            }
+
+            $chat_message = new ChatMessage();
+            $chat_message
+                ->setContent($msg)
+                ->setIsHtml(true)
+                ->setMetadata([
+                    'is_html' => true,
+                    'type'    => 'file',
+                    'blob_id' => $attachment->getId(),
+                ])
+            ;
+
+            $conversation->addMessage($chat_message);
+        }
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($conversation);
