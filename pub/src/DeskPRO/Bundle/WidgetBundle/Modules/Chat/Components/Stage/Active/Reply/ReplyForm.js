@@ -4,8 +4,8 @@ import { EndChatButton } from './EndChatButton';
 import EmotionButton from 'DeskPRO/Component/Rte/EmotionButton';
 import RteInput from 'DeskPRO/Component/Rte/RteInput';
 import ScrollArea from 'react-scrollbar';
-import { AttachedFiles } from './Upload/AttachedFiles';
-import { DropZone } from './Upload/DropZone';
+import { AttachedFiles } from './Upload/Attached/File/AttachedFiles';
+import { DropZone } from './Upload/DropZone/DropZone';
 
 export class ReplyForm extends React.Component {
 
