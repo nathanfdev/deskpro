@@ -26,9 +26,7 @@ export class AttachedImages extends React.Component {
         </div>
         <div className="dpdesignportal-chat-form-attached-image-list">
           <ul>
-            <AttachedImage attachment={lastImage} />
-            <AttachedImage attachment={lastImage} />
-            <AttachedImage attachment={lastImage} />
+            {attachments.map((attachment, index) => <AttachedImage key={index} attachment={attachment} />)}
           </ul>
         </div>
       </div>
