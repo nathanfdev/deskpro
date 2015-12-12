@@ -131,4 +131,3 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\PersonProfileType
     tags:
         - { name: form.type, alias: person_profile }
-    arguments: [@doctrine.orm.default_entity_manager]

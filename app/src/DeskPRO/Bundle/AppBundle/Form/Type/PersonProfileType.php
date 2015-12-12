@@ -29,7 +29,6 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppConstraints;
-use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -43,21 +42,6 @@ use Symfony\Component\Validator\Constraints;
  */
 class PersonProfileType extends AbstractType
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
-
-    /**
-     * Constructor.
-     *
-     * @param EntityManager $em
-     */
-    public function __construct(EntityManager $em)
-    {
-        $this->em = $em;
-    }
-
     /**
      * {@inheritdoc}
      */
