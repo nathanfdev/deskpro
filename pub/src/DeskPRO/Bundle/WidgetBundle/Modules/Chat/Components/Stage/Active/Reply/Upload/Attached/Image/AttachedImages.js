@@ -6,11 +6,12 @@ export class AttachedImages extends React.Component {
 
   static propTypes = {
     attachments: PropTypes.object,
-    count: PropTypes.number
+    count: PropTypes.number,
+    onRemoveFile: PropTypes.func
   };
 
   render() {
-    const { attachments, count } = this.props;
+    const { attachments, count, onRemoveFile } = this.props;
     const lastImage = attachments.last() || Immutable.fromJS({});
 
     return (
@@ -26,7 +27,9 @@ export class AttachedImages extends React.Component {
         </div>
         <div className="dpdesignportal-chat-form-attached-image-list">
           <ul>
-            {attachments.map((attachment, index) => <AttachedImage key={index} attachment={attachment} />)}
+            {attachments.map((attachment, index) => <AttachedImage key={index}
+                                                                   attachment={attachment}
+                                                                   onRemove={onRemoveFile} />)}
           </ul>
         </div>
       </div>
