@@ -13,14 +13,38 @@ export class AttachedImages extends React.Component {
     const lastImage = attachments.last() || Immutable.fromJS({});
 
     return (
-      <div className="dpdesignportal-chat-form-attached-image">
-        {count > 1 &&
-          <div className="dpdesignportal-chat-form-attached-image-count">
-            {count} <i className="fa fa-angle-double-right"></i>
-          </div>
-        }
-        <div className="dpdesignportal-chat-form-attached-image-thumb"
-             style={{backgroundImage: `url(${lastImage.get('download_url')})`}} />
+      <div>
+        <div className="dpdesignportal-chat-form-attached-image">
+          {count > 1 &&
+            <div className="dpdesignportal-chat-form-attached-image-count">
+              {count} <i className="fa fa-angle-double-right"></i>
+            </div>
+          }
+          <div className="dpdesignportal-chat-form-attached-image-thumb"
+               style={{backgroundImage: `url(${lastImage.get('download_url')})`}} />
+        </div>
+        <div className="dpdesignportal-chat-form-attached-image-list">
+          <ul>
+            <li>
+              <div className="dpdesignportal-chat-form-attached-image">
+                <div className="dpdesignportal-chat-form-attached-image-remove"><i className="fa fa-times"></i></div>
+                <div className="dpdesignportal-chat-form-attached-image-thumb" style={{backgroundImage: `url(${lastImage.get('download_url')})`}}></div>
+              </div>
+            </li>
+            <li>
+              <div className="dpdesignportal-chat-form-attached-image">
+                <div className="dpdesignportal-chat-form-attached-image-remove"><i className="fa fa-times"></i></div>
+                <div className="dpdesignportal-chat-form-attached-image-thumb" style={{backgroundImage: `url(${lastImage.get('download_url')})`}}></div>
+              </div>
+            </li>
+            <li>
+              <div className="dpdesignportal-chat-form-attached-image">
+                <div className="dpdesignportal-chat-form-attached-image-remove"><i className="fa fa-times"></i></div>
+                <div className="dpdesignportal-chat-form-attached-image-thumb" style={{backgroundImage: `url(${lastImage.get('download_url')})`}}></div>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
     );
   }
