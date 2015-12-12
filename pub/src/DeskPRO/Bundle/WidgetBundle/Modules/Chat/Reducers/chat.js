@@ -1,6 +1,14 @@
 import { createReducer } from 'Ampliflux';
 import * as actions from '../Actions/chatActions';
-import { setFullPayload, setValue, mergeValue, toggleBool, async, pushPayloadToCollection } from 'Ampliflux/reducers/handlers';
+import {
+  setFullPayload,
+  setValue,
+  mergeValue,
+  toggleBool,
+  async,
+  pushPayloadToCollection,
+  deletePayloadFromCollection
+} from 'Ampliflux/reducers/handlers';
 
 const initialState = {
   audioNotifications: true,
@@ -37,6 +45,7 @@ export default createReducer(initialState, {
   [actions.resetMessages]: setValue('messages', []),
   [actions.addNewMessage]: pushPayloadToCollection('messages'),
   [actions.addAttachment]: pushPayloadToCollection('attachments'),
+  [actions.removeAttachment]: deletePayloadFromCollection('attachments'),
 
   // Transcript
   [actions.disableSendTranscript]: setValue('transcript.checked', false),

@@ -149,12 +149,30 @@ export function pushPayloadToCollection(statePropKey) {
     verifyImmutable(state);
 
     const path = getStatePath(statePropKey);
-    let collection = state.getIn(path);
-    verifyImmutable(collection);
     const immutableValue = Immutable.fromJS(payload);
-    collection = collection.push(immutableValue);
+    const collection = state.getIn(path);
+    verifyImmutable(collection);
 
-    return state.setIn(path, collection);
+    return state.setIn(path, collection.push(immutableValue));
+  };
+}
+
+/**
+ * Push payload to a collection.
+ *
+ * @param {String|Array} statePropKey The property to set on the state.
+ * @return {Function} Action handler function
+ */
+export function deletePayloadFromCollection(statePropKey) {
+  return (state, payload, action) => {
+    verifyActionError(action);
+    verifyImmutable(state);
+
+    const path = getStatePath(statePropKey);
+    const collection = state.getIn(path);
+    verifyImmutable(collection);
+
+    return state.setIn(path, collection.delete(collection.indexOf(payload)));
   };
 }
 
