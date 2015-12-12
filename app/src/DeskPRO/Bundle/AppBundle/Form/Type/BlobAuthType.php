@@ -29,24 +29,39 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api;
+namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use DeskPRO\Bundle\AppBundle\Form\DataTransformer\BlobAuthTransformer;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class ChatMessageType.
+ * Class BlobAuthType.
  */
-class ChatMessageType extends AbstractType
+class BlobAuthType extends AbstractType
 {
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function getName()
     {
-        return 'api_chat_message';
+        return 'auth_blob';
     }
 
     /**
@@ -54,29 +69,15 @@ class ChatMessageType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('message', 'html_textarea', [
-                'constraints' => [
-                    new Assert\NotBlank(),
-                ],
-            ])
-            ->add('attachments', 'collection', [
-                'type'         => 'auth_blob',
-                'allow_add'    => true,
-                'allow_delete' => true,
-                'required'     => false,
-            ])
-        ;
+        $builder->addModelTransformer(new BlobAuthTransformer($this->em));
+        $builder->addViewTransformer(new BlobAuthTransformer($this->em));
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function getParent()
     {
-        $resolver->setDefaults([
-            'csrf_protection'               => false,
-            'csrf_double_submit_protection' => false,
-        ]);
+        return 'text';
     }
 }

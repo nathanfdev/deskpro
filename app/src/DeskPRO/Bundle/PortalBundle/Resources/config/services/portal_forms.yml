@@ -349,8 +349,6 @@ services:
 
   form.api.chat_message:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\ChatMessageType
-    arguments:
-      - @doctrine.orm.entity_manager
     tags:
       - { name: form.type, alias: api_chat_message }
 

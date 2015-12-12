@@ -44,6 +44,12 @@ services:
     tags:
         - { name: form.type, alias: api_boolean }
 
+  form.auth_blob:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType
+    arguments: [@doctrine.orm.default_entity_manager]
+    tags:
+      - { name: form.type, alias: auth_blob }
+
   form.single_checkbox:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\SingleCheckboxType
     tags:

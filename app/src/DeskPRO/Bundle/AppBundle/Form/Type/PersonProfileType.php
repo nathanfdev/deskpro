@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
-use DeskPRO\Bundle\AppBundle\Form\DataTransformer\BlobAuthTransformer;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppConstraints;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
@@ -81,7 +80,7 @@ class PersonProfileType extends AbstractType
             ->add('display_name', 'text', [
                 'property_path' => 'override_display_name',
             ])
-            ->add('avatar_blob_auth_id', 'text', [
+            ->add('avatar_blob_auth_id', 'auth_blob', [
                 'required'      => false,
                 'property_path' => 'picture_blob',
             ])
@@ -140,11 +139,6 @@ class PersonProfileType extends AbstractType
 
                 $event->setData($data);
             })
-        ;
-
-        $builder
-            ->get('avatar_blob_auth_id')
-            ->addModelTransformer(new BlobAuthTransformer($this->em))
         ;
     }
 
