@@ -1,20 +1,20 @@
 import classNames from 'classnames';
 
 const smiles = {
-  ICON_SMILE: ':)',
+  ICON_ANGEL: 'O:)',
+  ICON_EVIL_GREEN: ']:)',
   ICON_LAUGHING: ':))',
+  ICON_SMILE: ':)',
   ICON_BLUSHING: ':$',
   ICON_WINKING: ';)',
   ICON_GRIN: ':D',
-  ICON_EVIL_GREEN: ']:)',
   ICON_YAWN: ':yawn:',
   ICON_DEVIL: '(6)',
   ICON_KIKI: '^_^',
-  ICON_ANGEL: 'O:)',
   ICON_TONGUE: ':p',
   ICON_TONGUE_2: ':P',
   ICON_SAD: ':(',
-  ICON_HEART: '<3',
+  ICON_HEART: ['<3', '&lt;3'],
   ICON_INLOVE: ':inlove:',
   ICON_KISS: ':*',
   ICON_CRY: ';(',
@@ -57,13 +57,14 @@ function replaceSmileCodes(content, inverse = false) {
 
   for (num in smiles) {
     if (smiles.hasOwnProperty(num)) {
-      const code = smiles[num];
-      const image = createEmotionImage(code);
+      const codes = smiles[num];
+      const arrayCodes = Array.isArray(codes) ? codes : [codes];
 
+      const image = createEmotionImage(codes);
       if (inverse) {
-        text = text.replace(image, code);
+        text = text.replace(image, arrayCodes[0]);
       } else {
-        text = text.replace(code, image);
+        arrayCodes.forEach(code => text = text.replace(code, image));
       }
     }
   }
