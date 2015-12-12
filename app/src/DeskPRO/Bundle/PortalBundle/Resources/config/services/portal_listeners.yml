@@ -34,6 +34,12 @@ services:
       - { name: kernel.event_subscriber }
 
 
+  cookie_settings.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\CookieSettingsListener
+    tags:
+      - { name: kernel.event_subscriber }
+
+
   portal_mode.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\PortalModeListener
     arguments: [@portal_mode_factory, @portal_mode_storage, @logger]
