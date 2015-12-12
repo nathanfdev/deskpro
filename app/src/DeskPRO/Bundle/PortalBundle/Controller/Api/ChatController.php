@@ -149,6 +149,12 @@ class ChatController extends AbstractController
 
         $conversation->addMessage($chat_message);
 
+        $conversation_channel = $conversation->getChannelId('newmessage');
+        $this->dispatch(
+            ClientMessageEvent::SEND,
+            new ClientMessageEvent($conversation_channel, $chat_message)
+        );
+
         /** @var Blob $attachments */
         $attachments = $form->get('attachments')->getData();
         foreach ($attachments as $attachment) {
@@ -169,17 +175,17 @@ class ChatController extends AbstractController
             ;
 
             $conversation->addMessage($chat_message);
+
+            $conversation_channel = $conversation->getChannelId('newmessage');
+            $this->dispatch(
+                ClientMessageEvent::SEND,
+                new ClientMessageEvent($conversation_channel, $chat_message)
+            );
         }
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($conversation);
         $em->flush();
-
-        $conversation_channel = $conversation->getChannelId('newmessage');
-        $this->dispatch(
-            ClientMessageEvent::SEND,
-            new ClientMessageEvent($conversation_channel, $chat_message)
-        );
 
         return new JsonResponse();
     }
