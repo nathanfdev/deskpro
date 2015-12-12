@@ -9,7 +9,7 @@ export class EndChatButton extends React.Component {
   render() {
     return (
       <div className="dpdesignportal-chat-form-button-row-end-chat">
-        <a href="#" onClick={this.props.onOpenPopup}>
+        <a href="#" className="dpdesignportal-chat-form-button" onClick={this.props.onOpenPopup}>
           <i className="fa fa-upload"></i>End Chat
         </a>
       </div>

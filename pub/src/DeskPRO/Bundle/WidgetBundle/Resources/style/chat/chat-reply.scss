@@ -212,7 +212,7 @@
   }
 
   .dpdesignportal-chat-form-button-row {
-    a {
+    .dpdesignportal-chat-form-button {
       display: inline-block;
       color: #adadad;
       text-decoration: none;
@@ -230,7 +230,7 @@
       display: inline-block;
       height: 30px;
 
-      a {
+      .dpdesignportal-chat-form-button {
         position: relative;
         border-right: 1px solid #e7e7e7;
         overflow: hidden;

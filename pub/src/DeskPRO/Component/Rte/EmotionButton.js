@@ -84,7 +84,7 @@ export default class EmotionButton extends React.Component {
     return (
       <span className={className}>
         <a href="#"
-           className="dpdesignportal-chat-form-button-row-emoticons"
+           className="dpdesignportal-chat-form-button dpdesignportal-chat-form-button-row-emoticons"
            title="Chat Emoticons"
            onClick={this.onSelectEmoticon}>
 

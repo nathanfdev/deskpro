@@ -117,11 +117,11 @@ export class ReplyForm extends React.Component {
 
         <div className="dpdesignportal-chat-form-button-row">
           <div className="dpdesignportal-chat-form-button-row-main">
-            <a href="#">
+            <span className="dpdesignportal-chat-form-button">
               <i className="fa fa-upload"></i> Upload file
               <input ref="fileUpload" className="file" type="file" name="files[]" multiple />
-            </a>
-            <a href="#" onClick={this.onScreenShare}>
+            </span>
+            <a href="#" className="dpdesignportal-chat-form-button" onClick={this.onScreenShare}>
               <i className="fa fa-camera"></i> Screen Share
             </a>
             <EmotionButton
