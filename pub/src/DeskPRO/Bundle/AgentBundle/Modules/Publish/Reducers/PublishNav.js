@@ -1,5 +1,4 @@
-import { createReducer } from 'Ampliflux';
-/*
+import { Reducer } from 'Ampliflux/reducers';
 import * as actions from '../Actions/publishNavActions';
 
 export default class PublishNav extends Reducer {
@@ -33,8 +32,7 @@ export default class PublishNav extends Reducer {
             validate: {
               grouped_by: 'period_created',
               count: 0,
-              nested: [
-              ],
+              nested: [],
             },
             review: 0
           }
@@ -44,10 +42,10 @@ export default class PublishNav extends Reducer {
       // Lists grouping control popup data
       grouping: {
         options: [
-          {value: 'category', label: 'Category'},
-          {value: 'author', label: 'Author'},
-          {value: 'period_created', label: 'Created'},
-          {value: 'period_updated', label: 'Updated'},
+          { value: 'category', label: 'Category' },
+          { value: 'author', label: 'Author' },
+          { value: 'period_created', label: 'Created' },
+          { value: 'period_updated', label: 'Updated' },
         ],
         visibility: {
           articles: false,
@@ -59,13 +57,11 @@ export default class PublishNav extends Reducer {
       // List labels
       groups: {
         categories: {
-          articles: {/!* id: name *!/},
-          news: {/!* id: name *!/},
-          downloads: {/!* id: name *!/}
+          articles: { /* id: name */ },
+          news: { /* id: name */ },
+          downloads: { /* id: name */ }
         },
-        authors: {
-          /!* id: name *!/
-        }
+        authors: { /* id: name */ }
       }
     };
   }
@@ -85,21 +81,21 @@ export default class PublishNav extends Reducer {
   }
 
   countsLoaded(prev, {payload}) {
-    const next = {...prev};
+    const next = { ...prev };
     next.lists[payload.content] = payload.counts;
 
     return next;
   }
 
   authorNameLoaded(prev, {payload}) {
-    const next = {...prev};
+    const next = { ...prev };
     next.groups.authors[payload.id] = payload.name;
 
     return next;
   }
 
   categoriesLoaded(prev, {payload}) {
-    const categories = {articles: {}, news: {}, downloads: {}};
+    const categories = { articles: {}, news: {}, downloads: {} };
     for (let i = 0; i < payload.articles.length; i++) {
       categories.articles[payload.articles[i].id] = payload.articles[i].title;
     }
@@ -110,14 +106,14 @@ export default class PublishNav extends Reducer {
       categories.downloads[payload.downloads[i].id] = payload.downloads[i].title;
     }
 
-    const next = {...prev};
+    const next = { ...prev };
     next.groups.categories = categories;
 
     return next;
   }
 
   listGroupingVisibilityChanged(prev, {payload}) {
-    const next = {...prev};
+    const next = { ...prev };
     next.grouping = Object.assign({}, next.grouping);
     next.grouping.visibility[payload] = !next.grouping.visibility[payload];
 
@@ -125,38 +121,37 @@ export default class PublishNav extends Reducer {
   }
 
   mineChanged(prev, {payload}) {
-    const next = {...prev};
+    const next = { ...prev };
     next.lists.todo.articles.mine = payload;
 
     return next;
   }
 
   draftsCountLoaded(prev, {payload}) {
-    const next = {...prev};
+    const next = { ...prev };
     next.lists.todo.articles.draft = payload;
 
     return next;
   }
 
   pendingCountLoaded(prev, {payload}) {
-    const next = {...prev};
+    const next = { ...prev };
     next.lists.todo.articles.pending = payload;
 
     return next;
   }
 
   commentsToValidateCountsLoaded(prev, {payload}) {
-    const next = {...prev};
+    const next = { ...prev };
     next.lists.todo.comments.validate = payload;
 
     return next;
   }
 
   commentsToReviewCountLoaded(prev, {payload}) {
-    const next = {...prev};
+    const next = { ...prev };
     next.lists.todo.comments.review = payload;
 
     return next;
   }
 }
-*/

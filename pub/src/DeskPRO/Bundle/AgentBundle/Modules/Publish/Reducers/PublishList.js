@@ -1,5 +1,4 @@
-import { createReducer } from 'Ampliflux';
-/*
+import { Reducer } from 'Ampliflux/reducers';
 import * as actions from '../Actions/publishListActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants'
 
@@ -47,4 +46,3 @@ export default class PublishList extends Reducer {
     return {...prev, view: prev.view === constants.VIEW_MODE_CARD ? constants.VIEW_MODE_TABLE : constants.VIEW_MODE_CARD};
   }
 }
-*/
