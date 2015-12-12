@@ -14,9 +14,11 @@ export class AttachedImages extends React.Component {
 
     return (
       <div className="dpdesignportal-chat-form-attached-image">
-        <div className="dpdesignportal-chat-form-attached-image-count">
-          {count} <i className="fa fa-angle-double-right"></i>
-        </div>
+        {count > 1 &&
+          <div className="dpdesignportal-chat-form-attached-image-count">
+            {count} <i className="fa fa-angle-double-right"></i>
+          </div>
+        }
         <div className="dpdesignportal-chat-form-attached-image-thumb"
              style={{backgroundImage: `url(${lastImage.get('download_url')})`}} />
       </div>
