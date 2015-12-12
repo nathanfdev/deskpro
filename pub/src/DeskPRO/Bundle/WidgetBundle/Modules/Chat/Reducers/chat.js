@@ -44,6 +44,8 @@ export default createReducer(initialState, {
   // Messages
   [actions.resetMessages]: setValue('messages', []),
   [actions.addNewMessage]: pushPayloadToCollection('messages'),
+
+  // Attachments
   [actions.addAttachment]: pushPayloadToCollection('attachments'),
   [actions.removeAttachment]: deletePayloadFromCollection('attachments'),
   [actions.resetAttachments]: setValue('attachments', []),
