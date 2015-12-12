@@ -28,7 +28,7 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Formatter\Transformer;
 
-use Application\ImportBundle\AbstractCollection;
+use DeskPRO\Component\Util\AbstractCollection;
 
 /**
  * Class Collection.

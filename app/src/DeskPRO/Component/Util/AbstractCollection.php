@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle;
+namespace DeskPRO\Component\Util;
 
 /**
  * Base collection.

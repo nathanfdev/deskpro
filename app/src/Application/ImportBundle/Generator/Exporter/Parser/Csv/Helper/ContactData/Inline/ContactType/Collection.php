@@ -28,7 +28,7 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv\Helper\ContactData\Inline\ContactType;
 
-use Application\ImportBundle\AbstractCollection;
+use DeskPRO\Component\Util\AbstractCollection;
 
 /**
  * Contact type configuration collection.

@@ -41,4 +41,8 @@ class DeliveryService
     public function deliver(MessageInterface $message)
     {
     }
+
+    public function addHandler(DeliveryHandlerInterface $handler)
+    {
+    }
 }

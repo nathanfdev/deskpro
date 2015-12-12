@@ -29,7 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Notification\Delivery;
 
 /**
- * Interface DeliveryPluginInterface.
+ * Interface DeliveryHandlerInterface.
  */
 interface DeliveryPluginInterface
 {

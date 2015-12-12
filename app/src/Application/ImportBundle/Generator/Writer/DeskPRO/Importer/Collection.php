@@ -28,7 +28,7 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
-use Application\ImportBundle\AbstractCollection;
+use DeskPRO\Component\Util\AbstractCollection;
 
 /**
  * Collection of DeskPRO importers.

@@ -28,8 +28,8 @@
 
 namespace Application\ImportBundle\Generator;
 
-use Application\ImportBundle\AbstractCollection;
 use Application\ImportBundle\Entity;
+use DeskPRO\Component\Util\AbstractCollection;
 
 /**
  * Collection of entities collections

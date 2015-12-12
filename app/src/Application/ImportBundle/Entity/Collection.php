@@ -28,7 +28,7 @@
 
 namespace Application\ImportBundle\Entity;
 
-use Application\ImportBundle\AbstractCollection;
+use DeskPRO\Component\Util\AbstractCollection;
 
 /**
  * Exporting collection of entities.

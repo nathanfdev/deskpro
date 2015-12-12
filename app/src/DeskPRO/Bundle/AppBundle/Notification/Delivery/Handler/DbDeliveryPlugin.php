@@ -26,13 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Notification\Delivery\Plugin;
+namespace DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler;
 
-use DeskPRO\Bundle\AppBundle\Notification\Delivery\DeliveryPluginInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Delivery\DeliveryHandlerInterface;
 
 /**
- * Class DbDeliveryPlugin.
+ * Class DbDeliveryHandler.
  */
-class DbDeliveryPlugin implements DeliveryPluginInterface
+class DbDeliveryPlugin implements DeliveryHandlerInterface
 {
 }

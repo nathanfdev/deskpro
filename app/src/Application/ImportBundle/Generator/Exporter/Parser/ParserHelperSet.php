@@ -28,11 +28,11 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser;
 
-use Application\ImportBundle\AbstractCollection;
 use Application\ImportBundle\Generator\AbstractGenerator;
 use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
 use Application\ImportBundle\Generator\LoggerAwareInterface;
 use Application\ImportBundle\Generator\ProgressBarAwareInterface;
+use DeskPRO\Component\Util\AbstractCollection;
 
 /**
  * Class ParserHelperSet.

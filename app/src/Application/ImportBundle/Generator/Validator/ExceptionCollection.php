@@ -28,7 +28,7 @@
 
 namespace Application\ImportBundle\Generator\Validator;
 
-use Application\ImportBundle\AbstractCollection;
+use DeskPRO\Component\Util\AbstractCollection;
 
 /**
  * Collection of exporter validators exceptions.

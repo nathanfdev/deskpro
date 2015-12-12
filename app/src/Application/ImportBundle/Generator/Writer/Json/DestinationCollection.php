@@ -28,7 +28,7 @@
 
 namespace Application\ImportBundle\Generator\Writer\Json;
 
-use Application\ImportBundle\AbstractCollection;
+use DeskPRO\Component\Util\AbstractCollection;
 
 /**
  * Collection of the supported json writer entities.
