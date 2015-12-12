@@ -21,7 +21,7 @@ export class ReplyFormContainer extends React.Component {
     const { dispatch, chatId } = this.props;
     const data = {
       message: message,
-      attachments: attachments
+      attachments: attachments.map(attachment => attachment.get('blob_auth_id'))
     };
 
     dispatch(sendChatMessage(chatId, data));
