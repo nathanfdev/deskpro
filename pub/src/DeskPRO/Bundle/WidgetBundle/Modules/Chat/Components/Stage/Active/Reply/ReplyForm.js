@@ -5,6 +5,7 @@ import EmotionButton from 'DeskPRO/Component/Rte/EmotionButton';
 import RteInput from 'DeskPRO/Component/Rte/RteInput';
 import ScrollArea from 'react-scrollbar';
 import { AttachedFiles } from './Upload/Attached/File/AttachedFiles';
+import { AttachedImages } from './Upload/Attached/Image/AttachedImages';
 import { DropZone } from './Upload/DropZone/DropZone';
 
 export class ReplyForm extends React.Component {
@@ -17,7 +18,9 @@ export class ReplyForm extends React.Component {
     onRemoveFile: PropTypes.func,
     onReopen: PropTypes.func,
     agentName: PropTypes.string,
-    attachments: PropTypes.object
+    attachedImages: PropTypes.object,
+    attachedImagesCount: PropTypes.number,
+    attachedFiles: PropTypes.object
   };
 
   constructor(props) {
@@ -52,9 +55,42 @@ export class ReplyForm extends React.Component {
     });
   };
 
+  renderRte() {
+    return (
+      <ScrollArea vertical>
+        <RteInput
+          inline
+          ref="editor"
+          value={this.state.message}
+          onChange={this.onChangeMessage}
+          onSubmit={this.onSubmit}
+          className="textarea"
+          options={{
+            contentWindow: window.widgetFrame.window,
+            ownerDocument: window.widgetFrame.document,
+            autoLink: true,
+            imageDragging: true,
+            placeholder: {
+              text: `Type your message to ${this.props.agentName}`
+            },
+            toolbar: {
+              buttons: ['bold', 'italic', 'underline'],
+              updateOnEmptySelection: true
+            },
+            paste: {
+              forcePlainText: false,
+              cleanPastedHTML: false,
+              cleanAttrs: ['style', 'dir']
+            }
+          }}
+          />
+      </ScrollArea>
+    );
+  }
+
   render() {
-    const { agentName, isEnded, canReopen } = this.props;
-    const { attachments, onUploadedFile, onRemoveFile } = this.props;
+    const { isEnded, canReopen } = this.props;
+    const { attachedImages, attachedImagesCount, attachedFiles, onUploadedFile, onRemoveFile } = this.props;
 
     if (isEnded && !canReopen) {
       return null;
@@ -72,43 +108,17 @@ export class ReplyForm extends React.Component {
 
         <form onSubmit={this.onSubmit}>
           <div className="message-container message-container-with-attached-images">
-            <div className="dpdesignportal-chat-form-attached-image">
-              <div className="dpdesignportal-chat-form-attached-image-count">
-                12 <i className="fa fa-angle-double-right"></i>
-              </div>
-              <div className="dpdesignportal-chat-form-attached-image-thumb" />
-            </div>
-            <div className="textarea-container">
-              <ScrollArea vertical>
-                <RteInput
-                  inline
-                  ref="editor"
-                  value={this.state.message}
-                  onChange={this.onChangeMessage}
-                  onSubmit={this.onSubmit}
-                  className="textarea"
-                  options={{
-                    contentWindow: window.widgetFrame.window,
-                    ownerDocument: window.widgetFrame.document,
-                    autoLink: true,
-                    imageDragging: true,
-                    placeholder: {
-                      text: `Type your message to ${agentName}`
-                    },
-                    toolbar: {
-                      buttons: ['bold', 'italic', 'underline'],
-                      updateOnEmptySelection: true
-                    },
-                    paste: {
-                      forcePlainText: false,
-                      cleanPastedHTML: false,
-                      cleanAttrs: ['style', 'dir']
-                    }
-                  }}
-                />
-              </ScrollArea>
-            </div>
-            <AttachedFiles attachments={attachments} onRemoveFile={onRemoveFile} />
+            {attachedImagesCount
+              ? (
+                <div>
+                  <AttachedImages attachments={attachedImages} count={attachedImagesCount} onRemoveFile={onRemoveFile} />
+                  <div className="textarea-container">{this.renderRte()}</div>
+                </div>
+              )
+              : this.renderRte()
+            }
+
+            <AttachedFiles attachments={attachedFiles} onRemoveFile={onRemoveFile} />
           </div>
 
           <button>
