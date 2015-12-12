@@ -125,16 +125,21 @@ class ChatController extends AbstractController
      */
     public function sendMessageAction(ChatConversation $conversation, Request $request)
     {
-        // Skip empty messages
-        $message = $request->request->get('message');
-        if (!strip_tags($message)) {
-            return new JsonResponse();
+        $form = $this
+            ->get('form.factory')
+            ->createNamedBuilder(null, 'api_chat_message')
+            ->getForm()
+        ;
+
+        $form->submit($request->request->all());
+        if (!$form->isValid()) {
+            return $this->generateFormErrorsResponse($form);
         }
 
         $chat_message = new ChatMessage();
         $chat_message
             ->setOrigin('user')
-            ->setContent($request->request->get('message'))
+            ->setContent($form->get('message')->getData())
             ->setIsHtml(true)
             ->setMetadata([
                 'is_html' => true,

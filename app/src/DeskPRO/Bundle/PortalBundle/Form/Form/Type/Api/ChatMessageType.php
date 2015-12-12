@@ -31,14 +31,33 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api;
 
+use DeskPRO\Bundle\AppBundle\Form\DataTransformer\BlobAuthTransformer;
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class ChatMessageType.
  */
-class ChatMessageType
+class ChatMessageType extends AbstractType
 {
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -50,16 +69,22 @@ class ChatMessageType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('message', 'text')
+            ->add('message', 'html_textarea', [
+                'constraints' => [
+                    new Assert\NotBlank(),
+                ],
+            ])
             ->add('attachments', 'entity', [
                 'class'    => 'DeskPRO:Blob',
                 'multiple' => true,
                 'required' => false,
             ])
         ;
+
+        $builder->get('attachments')->addModelTransformer(new BlobAuthTransformer($this->em));
     }
 
     /**

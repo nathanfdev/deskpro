@@ -347,6 +347,13 @@ services:
     tags:
       - { name: form.type, alias: api_chat_create }
 
+  form.api.chat_message:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\ChatMessageType
+    arguments:
+      - @doctrine.orm.entity_manager
+    tags:
+      - { name: form.type, alias: api_chat_message }
+
 
   form.api.chat_transcription_info:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\ChatTranscriptInfoType

@@ -65,13 +65,9 @@ class BlobAuthTransformer implements DataTransformerInterface
      */
     public function reverseTransform($value)
     {
-        if ($value) {
-            /** @var \Application\DeskPRO\EntityRepository\Blob $repository */
-            $repository = $this->em->getRepository('DeskPRO:Blob');
+        /** @var \Application\DeskPRO\EntityRepository\Blob $repository */
+        $repository = $this->em->getRepository('DeskPRO:Blob');
 
-            return $repository->getByAuthId($value);
-        }
-
-        return;
+        return $value ? $repository->getByAuthId($value) : null;
     }
 }
