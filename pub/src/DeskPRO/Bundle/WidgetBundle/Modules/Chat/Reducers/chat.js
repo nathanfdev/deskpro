@@ -46,6 +46,7 @@ export default createReducer(initialState, {
   [actions.addNewMessage]: pushPayloadToCollection('messages'),
   [actions.addAttachment]: pushPayloadToCollection('attachments'),
   [actions.removeAttachment]: deletePayloadFromCollection('attachments'),
+  [actions.resetAttachments]: setValue('attachments', []),
 
   // Transcript
   [actions.disableSendTranscript]: setValue('transcript.checked', false),

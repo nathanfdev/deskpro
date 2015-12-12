@@ -19,6 +19,7 @@ export const resetMessages = createAction('WIDGET_CHAT_RESET_MESSAGES');
 export const addNewMessage = createAction('WIDGET_CHAT_ADD_NEW_MESSAGES');
 export const addAttachment = createAction('WIDGET_CHAT_ADD_ATTACHMENT');
 export const removeAttachment = createAction('WIDGET_CHAT_REMOVE_ATTACHMENT');
+export const resetAttachments = createAction('WIDGET_CHAT_RESET_ATTACHMENTS');
 
 // Api actions
 export const createChat = createAction(
@@ -69,7 +70,14 @@ export const pollingChat = createAction(
 
 export const sendChatMessage = createAction(
   'WIDGET_CHAT_SEND_MESSAGE',
-  (chatId, params) => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/messages`, params) : null
+  (chatId, params) => dispatch => {
+    if (!chatId) {
+      return null;
+    }
+
+    dispatch(resetAttachments());
+    return DpApi.sendPost(`DP_API/chats/${chatId}/messages`, params);
+  }
 );
 
 export const sendTranscriptInfo = createAction(
