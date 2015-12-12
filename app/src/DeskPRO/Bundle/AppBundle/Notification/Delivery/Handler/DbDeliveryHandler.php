@@ -26,11 +26,32 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Notification\Delivery;
+namespace DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler;
+
+use Application\DeskPRO\ORM\EntityManager;
+use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 
 /**
- * Interface DeliveryHandlerInterface.
+ * Class DbDeliveryHandler.
  */
-interface DeliveryPluginInterface
+class DbDeliveryHandler extends AbstractDeliveryHandler
 {
+    const TYPE = 'notification.delivery.handler.db';
+
+    /**
+     * @var EntityManager
+     */
+    protected $em;
+
+    /**
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
+    public function deliver(MessageInterface $message)
+    {
+    }
 }

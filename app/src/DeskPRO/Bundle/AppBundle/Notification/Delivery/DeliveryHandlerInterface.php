@@ -26,14 +26,24 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Notification\Message;
+namespace DeskPRO\Bundle\AppBundle\Notification\Delivery;
+
+use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 
 /**
- * Interface MessageInterface.
+ * Interface DeliveryHandlerInterface.
  */
-interface MessageInterface
+interface DeliveryHandlerInterface
 {
-    public function getTarget();
+    /**
+     * @return string
+     */
+    public function getType();
 
-    public function getData();
+    /**
+     * @param MessageInterface $message
+     *
+     * @return bool
+     */
+    public function deliver(MessageInterface $message);
 }

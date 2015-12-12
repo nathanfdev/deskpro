@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -40,6 +41,7 @@ class AppExtension extends Extension
     {
         $loader = new YamlDirectoryLoader($container);
         $loader->loadDir(__DIR__.'/../Resources/config/services');
+        $loader->loadDir(__DIR__.'/../Resources/config');
 
         // use our translator
         $container->setAlias('translator', 'translator.noop');

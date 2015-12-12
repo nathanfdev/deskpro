@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification\Delivery;
 
+use DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\DeliveryHandlerCollection;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 
 /**
@@ -35,14 +36,52 @@ use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
  */
 class DeliveryService
 {
+    protected $collection;
+
+    public function __construct()
+    {
+        $this->collection = new DeliveryHandlerCollection();
+    }
+
     /**
      * @param MessageInterface $message
      */
     public function deliver(MessageInterface $message)
     {
+        foreach ($this->collection as $handler) {
+            /* @var DeliveryHandlerInterface $handler */
+            $handler->deliver($message);
+        }
     }
 
-    public function addHandler(DeliveryHandlerInterface $handler)
+    /**
+     * It's just a proxy method.
+     *
+     * @param DeliveryHandlerInterface $handler
+     *
+     * @throws \InvalidArgumentException
+     * @return $this
+     *
+     */
+    public function attachHandler(DeliveryHandlerInterface $handler)
     {
+        $this->collection->addHandler($handler);
+
+        return $this;
+    }
+
+    /**
+     * @param DeliveryHandlerInterface $handler
+     *
+     * @throws \InvalidArgumentException
+     * @throws \LogicException
+     * @return $this
+     *
+     */
+    public function detachHandler(DeliveryHandlerInterface $handler)
+    {
+        $this->collection->removeHandler($handler->getType());
+
+        return $this;
     }
 }

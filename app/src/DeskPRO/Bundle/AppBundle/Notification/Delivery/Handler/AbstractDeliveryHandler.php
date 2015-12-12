@@ -26,14 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Notification\Message;
+namespace DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler;
+
+use DeskPRO\Bundle\AppBundle\Notification\Delivery\DeliveryHandlerInterface;
 
 /**
- * Interface MessageInterface.
+ * Class AbstractDeliveryHandler.
  */
-interface MessageInterface
+abstract class AbstractDeliveryHandler implements DeliveryHandlerInterface
 {
-    public function getTarget();
+    const TYPE = 'notification.delivery.handler.abstract';
 
-    public function getData();
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        if (self::TYPE === static::TYPE) {
+            throw new \LogicException('You should override DeliveryHandler TYPE constant to attach it. Can\'t attach abstract type');
+        }
+
+        return static::TYPE;
+    }
 }

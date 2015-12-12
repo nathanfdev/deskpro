@@ -27,3 +27,23 @@ services:
     class: DeskPRO\Bundle\AppBundle\Notification\Persistance\DbAdapter
     arguments:
       - @doctrine.orm.default_entity_manager
+
+  deskpro.notification.delivery.delivery_service:
+    class: DeskPRO\Bundle\AppBundle\Notification\Delivery\DeliveryService
+    calls:
+      - [attachHandler, [@deskpro.notification.delivery.handler.db] ]
+
+  deskpro.notification.delivery.handler.db:
+    class DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\DbDeliveryHandler
+    arguments:
+      - @doctrine.orm.default_entity_manager
+
+  deskpro.notification.delivery.handler.redis:
+    class: DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\RedisDeliveryHandler
+    arguments:
+      - @deskpro.notification.redis_client
+
+  deskpro.notification.redis_client:
+    class: Predis\Client
+    arguments:
+      - %app.deskpro.notification.redis_client

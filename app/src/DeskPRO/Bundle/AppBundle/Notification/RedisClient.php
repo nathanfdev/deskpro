@@ -26,14 +26,3 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Notification\Message;
-
-/**
- * Interface MessageInterface.
- */
-interface MessageInterface
-{
-    public function getTarget();
-
-    public function getData();
-}

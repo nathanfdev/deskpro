@@ -28,11 +28,27 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler;
 
-use DeskPRO\Bundle\AppBundle\Notification\Delivery\DeliveryHandlerInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
+use Predis\Client;
 
 /**
- * Class DbDeliveryHandler.
+ * Class RedisDeliveryHandler.
  */
-class DbDeliveryPlugin implements DeliveryHandlerInterface
+class RedisDeliveryHandler extends AbstractDeliveryHandler
 {
+    const TYPE = 'notification.delivery.handler.db';
+
+    /**
+     * @var Client
+     */
+    protected $client;
+
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
+    public function deliver(MessageInterface $message)
+    {
+    }
 }
