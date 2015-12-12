@@ -12,6 +12,7 @@ import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import { setFeedbackTypesRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackTypesActions';
 import { setFeedbackCategoriesRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCategoriesActions';
 import { setFeedbackStatusCategoriesRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackStatusCategoriesActions';
+import { toggleMassAction } from './FeedbackMassActions';
 
 /**
  * Used to identify requests within record stores
@@ -144,7 +145,7 @@ export const loadList = createAction(
     } else {
       dispatch(loadFeedbackList(params));
     }
-
+    dispatch(toggleMassAction());
     return params;
   }
 );
@@ -224,33 +225,6 @@ export const setOrder = createAction(
 
 export const toggleTableFieldVisibility = createAction('FEEDBACK_LIST_TOGGLE_TABLE_FIELD_VISIBILITY');
 export const toggleCardFieldVisibility = createAction('FEEDBACK_LIST_TOGGLE_CARD_FIELD_VISIBILITY');
-
-export const toggleMassAction = createAction('FEEDBACK_TOGGLE_MASS_ACTION');
-export const toggleSelectedAction = createAction('FEEDBACK_TOGGLE_SELECTED_ACTION');
-
-export const setMassActionsParams = createAction(
-  'FEEDBACK_SET_MASS_ACTIONS_PARAMS',
-    param => param
-);
-
-export const resetMassActionsParam = createAction(
-  'FEEDBACK_RESET_MASS_ACTIONS_PARAM',
-    param => param
-);
-export const resetAllMassActionsParams = createAction('FEEDBACK_RESET_ALL_MASS_ACTIONS_PARAMS');
-
-export const massAction = createAction(
-  'FEEDBACK_MASS_ACTION',
-  (params) => (dispatch) =>
-    Feedback.massAction(params)
-      .then(promise => {
-        dispatch(resetAllMassActionsParams());
-        dispatch(applyParams());
-        return promise.getData();
-      }
-    )
-);
-
 
 export const feedbackToValidateCounter = createAction(
   'FEEDBACK_TO_VALIDATE_COUNTER',

@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { List } from './List';
 import { isCommentsSelector, currentViewModeSelector } from '../../Selectors/list';
-import { toggleSelectedAction } from '../../Actions/FeedbackListActions';
+import { toggleSelectedAction } from '../../Actions/FeedbackMassActions';
 import { connect } from 'react-redux';
 
 @connect(state => {

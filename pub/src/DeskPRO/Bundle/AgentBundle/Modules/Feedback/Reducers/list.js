@@ -2,6 +2,7 @@ import { createReducer } from 'Ampliflux';
 import { async, setValue, setFullPayload, togglePayloadInCollection, handleMassAction, mergeFullPayload } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/FeedbackListActions';
 import * as commentsActions from '../Actions/FeedbackCommentsActions';
+import * as massActions from '../Actions/FeedbackMassActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import Immutable from 'immutable';
 
@@ -29,22 +30,23 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
-  [actions.loadFeedbackList]: async({
-    success: (state, payload) => state.set('elements', payload.data).set('pagination', payload.meta.pagination),
-    start: setValue('async.done', false),
-    done: setValue('async.done', true)
-  }),
   [commentsActions.loadFeedbackCommentsList]: async({
     success: (state, payload) => state.set('elements', payload.data).set('pagination', payload.meta.pagination),
     start: setValue('async.done', false),
     done: setValue('async.done', true)
   }),
-  [actions.toggleMassAction]: handleMassAction('elements', 'selected'),
-  [actions.setMassActionsParams]: (state, payload) => state.setIn(['massActions', payload.param], payload.value),
-  [actions.resetMassActionsParam]: (state, payload) => state.deleteIn(['massActions', payload]),
-  [actions.resetAllMassActionsParams]: (state) => state.set('massActions', Immutable.fromJS({})),
 
-  [actions.toggleSelectedAction]: togglePayloadInCollection('selected'),
+  [massActions.toggleMassAction]: handleMassAction('elements', 'selected'),
+  [massActions.setMassActionsParams]: (state, payload) => state.setIn(['massActions', payload.param], payload.value),
+  [massActions.resetMassActionsParam]: (state, payload) => state.deleteIn(['massActions', payload]),
+  [massActions.resetAllMassActionsParams]: (state) => state.set('massActions', Immutable.fromJS({})),
+  [massActions.toggleSelectedAction]: togglePayloadInCollection('selected'),
+
+  [actions.loadFeedbackList]: async({
+    success: (state, payload) => state.set('elements', payload.data).set('pagination', payload.meta.pagination),
+    start: setValue('async.done', false),
+    done: setValue('async.done', true)
+  }),
   [actions.toggleTableFieldVisibility]: togglePayloadInCollection('tableVisibleFields'),
   [actions.toggleCardFieldVisibility]: togglePayloadInCollection('cardVisibleFields'),
   [actions.setViewFieldsSettingStoredFlag]: (state, payload) => state.set('viewFieldsSettingsFromDb', payload),

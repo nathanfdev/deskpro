@@ -8,7 +8,7 @@ import { TasksApp } from '../../Tasks/Components/TasksApp';
 import { FeedbackApp } from '../../Feedback/Components/FeedbackApp';
 // tmp disabled import { CrmApp } from '../../CRM/Components/CrmApp';
 import { ChatApp } from '../../Chat/Components/ChatApp';
-// tmp disabled import { PublishApp } from '../../Publish/Components/PublishApp';
+import { PublishApp } from '../../Publish/Components/PublishApp';
 import { LoginApp } from '../../Login/Components/LoginApp';
 import { ExampleApp } from '../../Example/Components/ExampleApp';
 import { loadMe } from '../RecordStores/Actions/meActions';
@@ -68,7 +68,7 @@ export class DpAppContainer extends React.Component {
           <Route name="chat" path="chat" component={ChatApp}/>
           <Route name="tickets" path="tickets" component={TicketsApp}/>
           <Route name="tasks" path="tasks" component={TasksApp}/>
-          {/* tmp disabled <Route name="publish" path="publish" component={PublishApp}/> */}
+          <Route name="publish" path="publish" component={PublishApp}/>
           <Route name="feedback" path="feedback" component={FeedbackApp}/>
           <Route name="example" path="example" component={ExampleApp}/>
         </Route>

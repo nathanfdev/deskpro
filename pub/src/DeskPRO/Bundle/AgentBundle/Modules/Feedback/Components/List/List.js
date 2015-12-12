@@ -11,7 +11,7 @@ import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Compone
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { PaginationContainer } from './PaginationContainer';
-import { toggleMassAction } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
+import { toggleMassAction } from '../../Actions/FeedbackMassActions';
 
 export class List extends Component {
 
