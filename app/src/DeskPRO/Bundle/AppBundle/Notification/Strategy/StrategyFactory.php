@@ -53,7 +53,10 @@ class StrategyFactory
     public function create($standalone = true)
     {
         if ($standalone) {
-            return new StandaloneStrategy();
+            $strategy = new StandaloneStrategy();
+            $strategy->setDeliveryService($this->container->get('deskpro.notification.delivery.delivery_service'));
+
+            return $strategy;
         } else {
             //TODO just a stub, it should be created depending on settings via factory
             return new CloudStrategy($this->container->get('deskpro.notification.peristance.adapter.db'));

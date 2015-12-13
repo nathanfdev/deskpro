@@ -33,4 +33,21 @@ namespace DeskPRO\Bundle\AppBundle\Notification\Message;
  */
 class Notification implements MessageInterface
 {
+    public function __construct(TargetInterface $target, $data)
+    {
+        $this->target = $target;
+        $this->data   = $data;
+    }
+
+    public function getTarget()
+    {
+        return 1;
+    }
+
+    public function getData()
+    {
+        return [
+            'message' => 'test',
+        ];
+    }
 }

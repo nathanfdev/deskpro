@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Notification\Delivery;
 
 use DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\DeliveryHandlerCollection;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class DeliveryService.
@@ -60,8 +61,8 @@ class DeliveryService
      * @param DeliveryHandlerInterface $handler
      *
      * @throws \InvalidArgumentException
-     * @return $this
      *
+     * @return $this
      */
     public function attachHandler(DeliveryHandlerInterface $handler)
     {
@@ -75,13 +76,22 @@ class DeliveryService
      *
      * @throws \InvalidArgumentException
      * @throws \LogicException
-     * @return $this
      *
+     * @return $this
      */
     public function detachHandler(DeliveryHandlerInterface $handler)
     {
         $this->collection->removeHandler($handler->getType());
 
         return $this;
+    }
+
+    public static function create(ContainerInterface $container)
+    {
+        $instance = new static();
+        $instance->attachHandler($container->get('deskpro.notification.delivery.handler.db'));
+        $instance->attachHandler($container->get('deskpro.notification.delivery.handler.redis'));
+
+        return $instance;
     }
 }

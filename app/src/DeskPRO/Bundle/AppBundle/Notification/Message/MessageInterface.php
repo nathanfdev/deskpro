@@ -33,6 +33,8 @@ namespace DeskPRO\Bundle\AppBundle\Notification\Message;
  */
 interface MessageInterface
 {
+    public function __construct($target, $data);
+
     public function getTarget();
 
     public function getData();

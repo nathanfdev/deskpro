@@ -28,6 +28,24 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification\Strategy;
 
+use DeskPRO\Bundle\AppBundle\Notification\Delivery\DeliveryService;
+use DeskPRO\Bundle\AppBundle\Notification\NotificationManager;
+
 abstract class AbstractStrategy implements NotificationStrategyInterface
 {
+    /** @var NotificationManager */
+    protected $notification_manager;
+
+    /** @var DeliveryService */
+    protected $delivery_service;
+
+    public function setNotificationManager(NotificationManager $notification_manager)
+    {
+        $this->notification_manager = $notification_manager;
+    }
+
+    public function setDeliveryService(DeliveryService $delivery_service)
+    {
+        $this->delivery_service = $delivery_service;
+    }
 }

@@ -14,7 +14,7 @@ services:
     class: DeskPRO\Bundle\AppBundle\Notification\Strategy\AbstractStrategy
     factory: [@deskpro.notification.strategy_factory, create]
     arguments:
-      - false
+      - true
 
   deskpro.notification.event_listener.agent_chat.new_message_listener:
     class: DeskPRO\Bundle\AppBundle\Notification\Listener\AgentChatListener
@@ -30,11 +30,13 @@ services:
 
   deskpro.notification.delivery.delivery_service:
     class: DeskPRO\Bundle\AppBundle\Notification\Delivery\DeliveryService
-    calls:
-      - [attachHandler, [@deskpro.notification.delivery.handler.db] ]
+    factory: [DeskPRO\Bundle\AppBundle\Notification\Delivery\DeliveryService, create]
+    arguments:
+      - @service_container
+
 
   deskpro.notification.delivery.handler.db:
-    class DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\DbDeliveryHandler
+    class: DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\DbDeliveryHandler
     arguments:
       - @doctrine.orm.default_entity_manager
 
@@ -45,5 +47,3 @@ services:
 
   deskpro.notification.redis_client:
     class: Predis\Client
-    arguments:
-      - %app.deskpro.notification.redis_client

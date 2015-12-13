@@ -36,19 +36,30 @@ use Predis\Client;
  */
 class RedisDeliveryHandler extends AbstractDeliveryHandler
 {
-    const TYPE = 'notification.delivery.handler.db';
+    const TYPE = 'notification.delivery.handler.redis';
 
     /**
      * @var Client
      */
     protected $client;
 
-    public function __construct(EntityManager $em)
+    protected $parameters = [
+        'schema' => 'tcp',
+        'host'   => '127.0.0.1',
+        'port'   => '6379',
+    ];
+
+    protected $channel_name = 'notifications';
+
+    public function __construct()
     {
-        $this->em = $em;
+        $this->client = new Client($this->parameters);
+        $this->client->connect();
     }
 
     public function deliver(MessageInterface $message)
     {
+        $data = json_encode($message->getData());
+        $this->client->publish($this->channel_name, $data);
     }
 }

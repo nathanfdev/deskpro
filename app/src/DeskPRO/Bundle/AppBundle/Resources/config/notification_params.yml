@@ -1,7 +1,0 @@
-app:
-  deskpro:
-    notification:
-      redis_client:
-        host: localhost
-        port: 6379
-        scheme: tcp

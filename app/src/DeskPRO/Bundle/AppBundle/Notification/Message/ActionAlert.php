@@ -33,4 +33,19 @@ namespace DeskPRO\Bundle\AppBundle\Notification\Message;
  */
 class ActionAlert implements MessageInterface
 {
+    public function __construct($target, $data)
+    {
+        $this->target = $target;
+        $this->data   = $data;
+    }
+
+    public function getTarget()
+    {
+        return 1;
+    }
+
+    public function getData()
+    {
+        return ['alert' => 'test'];
+    }
 }

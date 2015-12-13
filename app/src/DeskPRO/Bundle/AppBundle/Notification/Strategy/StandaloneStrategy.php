@@ -28,25 +28,20 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification\Strategy;
 
-use DeskPRO\Bundle\AppBundle\Notification\Delivery\DeliveryService;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
-use DeskPRO\Bundle\AppBundle\Notification\NotificationManager;
+use DeskPRO\Bundle\AppBundle\Notification\Message\Notification;
 
 class StandaloneStrategy extends AbstractStrategy
 {
-    /** @var NotificationManager */
-    protected $notification_manager;
-
-    /** @var DeliveryService */
-    protected $delivery_service;
-
     public function handleSystemEvent(SystemEventInterface $event)
     {
-        $messages = $this->notification_manager->createMessages($event);
-        foreach ($messages as $message) {
-            /* @var MessageInterface $message */
-            $this->delivery_service->deliver($message);
-        }
+        //        $messages = $this->notification_manager->createMessages($event);
+        $message = new Notification(1, []);
+        $this->delivery_service->deliver($message);
+//        foreach ($messages as $message) {
+//            /* @var MessageInterface $message */
+//            $this->delivery_service->deliver($message);
+//        }
     }
 }
