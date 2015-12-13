@@ -29,6 +29,8 @@
 namespace DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler;
 
 use Application\DeskPRO\ORM\EntityManager;
+use DeskPRO\Bundle\AppBundle\Entity\ActionAlert as ActionAlertEntity;
+use DeskPRO\Bundle\AppBundle\Entity\Notification as NotificationEntity;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Notification;
@@ -56,14 +58,27 @@ class DbDeliveryHandler extends AbstractDeliveryHandler
     public function deliver(MessageInterface $message)
     {
         $persistTo = $this->getChannel($message);
+        $persistTo
+            ->setUuid($message->getId())
+            ->setTargetId($message->getTarget())
+            ->setDateCreated(new \DateTime($message->getDate()))
+            ->setData($message->getData())
+            ->setIsDismissed(false);
+        $this->em->persist($persistTo);
+        $this->em->flush();
     }
 
+    /**
+     * @param MessageInterface $message
+     *
+     * @return ActionAlertEntity|NotificationEntity
+     */
     protected function getChannel(MessageInterface $message)
     {
         if ($message instanceof ActionAlert) {
-            return 1;
+            return new ActionAlertEntity();
         } elseif ($message instanceof Notification) {
-            return 2;
+            return new NotificationEntity();
         }
 
         throw new \InvalidArgumentException('Message should be ActionAlert or Notification');
