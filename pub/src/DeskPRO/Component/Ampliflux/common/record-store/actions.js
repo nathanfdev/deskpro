@@ -1,6 +1,7 @@
 import objGet from 'lodash/object/get';
 import Immutable from 'immutable';
 import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
+import invariant from 'invariant';
 
 export const MODE_APPEND = 'append';
 export const MODE_SET = 'set';
@@ -66,6 +67,32 @@ export function setRequestRecords(defaultMode = MODE_APPEND) {
       records: records,
       ids: ids,
       mode: mode
+    };
+  };
+}
+
+/**
+ * Update record in a record store
+ *
+ * Used to broadcast new record data after record is updated via API service
+ *
+ * @param {Object} overrides New record values
+ * @param {Number} id        Optional record ID, can be passed as `id` prop within the first param
+ * @returns {Function}       action creator
+ */
+export function updateRecordState() {
+  return function(overrides, id = null) {
+    const recordId = id !== null ? id : overrides.id;
+    invariant(
+      recordId,
+      'To update record in record store you must provide INT id either as a second param or within update payload'
+    );
+
+    const recordOverrides = Immutable.Iterable.isIterable(overrides) ? overrides.toJS() : overrides;
+
+    return {
+      id: recordId,
+      overrides: recordOverrides
     };
   };
 }
