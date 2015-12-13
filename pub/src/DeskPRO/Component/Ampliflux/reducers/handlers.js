@@ -169,10 +169,14 @@ export function deletePayloadFromCollection(statePropKey) {
     verifyImmutable(state);
 
     const path = getStatePath(statePropKey);
-    const collection = state.getIn(path);
+    let collection = state.getIn(path);
     verifyImmutable(collection);
 
-    return state.setIn(path, collection.delete(collection.indexOf(payload)));
+    if (collection.includes(payload)) {
+      collection = collection.delete(collection.indexOf(payload));
+    }
+
+    return state.setIn(path, collection);
   };
 }
 

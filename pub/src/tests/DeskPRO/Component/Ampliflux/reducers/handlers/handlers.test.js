@@ -154,6 +154,29 @@ describe('Ampliflux actions handlers', () => {
     });
   });
 
+  describe('deletePayloadFromCollection()', () => {
+    it('should delete first value from collection', () => {
+      const next = handlers.deletePayloadFromCollection('elements')(state, Immutable.fromJS({id: 1}));
+      expect(next.get('elements').size).toEqual(2);
+      expect(next.get('elements').toJS()).toEqual([{id: 2}, {id: 3}]);
+    });
+    it('should delete middle value from collection', () => {
+      const next = handlers.deletePayloadFromCollection('elements')(state, Immutable.fromJS({id: 2}));
+      expect(next.get('elements').size).toEqual(2);
+      expect(next.get('elements').toJS()).toEqual([{id: 1}, {id: 3}]);
+    });
+    it('should delete last value from collection', () => {
+      const next = handlers.deletePayloadFromCollection('elements')(state, Immutable.fromJS({id: 3}));
+      expect(next.get('elements').size).toEqual(2);
+      expect(next.get('elements').toJS()).toEqual([{id: 1}, {id: 2}]);
+    });
+    it('shouldn\'t delete value from collection', () => {
+      const next = handlers.deletePayloadFromCollection('elements')(state, Immutable.fromJS({id: 5}));
+      console.log(next.get('elements').toJS());
+      expect(next.get('elements').size).toEqual(3);
+    });
+  });
+
   describe('togglePayloadInCollection()', () => {
     it('should add value to collection', () => {
       const next = handlers.togglePayloadInCollection('collection')(state, 'c');
