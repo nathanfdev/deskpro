@@ -46,7 +46,7 @@ class UserNotificationHandler extends NotifyHandler
         $messages = [];
         foreach ($this->generators as $generator) {
             if ($generator->canCreateMessage($event)) {
-                $messages[] = $generator->createMessage($event);
+                $messages = array_merge($messages, $generator->createMessages($event));
             }
         }
 

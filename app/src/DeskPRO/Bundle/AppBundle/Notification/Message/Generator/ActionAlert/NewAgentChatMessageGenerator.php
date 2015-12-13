@@ -28,6 +28,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert;
 
+use Application\DeskPRO\ORM\EntityManager;
+use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializer;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\NewMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
@@ -41,17 +43,42 @@ use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 class NewAgentChatMessageGenerator extends AbstractGenerator
 {
     /**
+     * @var DataSerializer
+     */
+    protected $serializer;
+
+    /**
+     * @param EntityManager  $em
+     * @param DataSerializer $serializer
+     */
+    public function __construct(EntityManager $em, DataSerializer $serializer)
+    {
+        parent::__construct($em);
+        $this->serializer = $serializer;
+    }
+
+    /**
      * @param SystemEventInterface $event
      *
      * @return MessageInterface
      */
-    public function createMessage(SystemEventInterface $event)
+    public function createMessages(SystemEventInterface $event)
     {
         $event->getName();
         /* @var NewMessageEvent $event */
-        return new ActionAlert($this->getTarget($event), $this->getData($event));
+        $messages = [];
+        foreach ($this->getTargets($event) as $target) {
+            $messages[] = new ActionAlert($target, $this->getData($event), $event->getName());
+        }
+
+        return $messages;
     }
 
+    /**
+     * @param SystemEventInterface $event
+     *
+     * @return bool
+     */
     public function canCreateMessage(SystemEventInterface $event)
     {
         if ($event instanceof NewMessageEvent) {
@@ -61,23 +88,43 @@ class NewAgentChatMessageGenerator extends AbstractGenerator
         return false;
     }
 
-    protected function getTarget(NewMessageEvent $event)
+    /**
+     * @param NewMessageEvent $event
+     *
+     * @return array
+     */
+    protected function getTargets(NewMessageEvent $event)
     {
         $message = $this->getChatMessage($event);
+        $targets = [];
         foreach ($message->getChat()->getPersonList() as $target) {
-            return $target->getId();
+            $targets[] = $target->getId();
         }
 
-        throw new \LogicException('No target was found!');
+        if (count($targets) < 1) {
+            throw new \LogicException('No target was found!');
+        }
+
+        return $targets;
     }
 
+    /**
+     * @param NewMessageEvent $event
+     *
+     * @return AgentChatMessage
+     */
     protected function getData(NewMessageEvent $event)
     {
         $message = $this->getChatMessage($event);
 
-        return ['message' => $message->getMessage()];
+        return $this->serializer->serialize($message)['data'];
     }
 
+    /**
+     * @param NewMessageEvent $event
+     *
+     * @return AgentChatMessage
+     */
     protected function getChatMessage(NewMessageEvent $event)
     {
         $messageRepo = $this->em->getRepository('App:AgentChatMessage');

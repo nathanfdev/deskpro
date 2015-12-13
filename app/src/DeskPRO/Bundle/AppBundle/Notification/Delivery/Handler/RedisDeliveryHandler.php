@@ -64,7 +64,14 @@ class RedisDeliveryHandler extends AbstractDeliveryHandler
      */
     public function deliver(MessageInterface $message)
     {
-        $data = json_encode($message->getData());
+        $data = json_encode(
+            [
+                'target' => $message->getTarget(),
+                'date'   => $message->getDate(),
+                'id'     => $message->getId(),
+                'type'   => $message->getType(),
+            ] + $message->getData()
+        );
 
         return (bool) $this->client->publish($this->getChannel($message), $data);
     }

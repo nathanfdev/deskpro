@@ -50,7 +50,7 @@ abstract class AbstractGenerator implements MessageGeneratorInterface
     /**
      * @param SystemEventInterface $event
      *
-     * @return MessageInterface
+     * @return MessageInterface[]
      */
-    abstract public function createMessage(SystemEventInterface $event);
+    abstract public function createMessages(SystemEventInterface $event);
 }

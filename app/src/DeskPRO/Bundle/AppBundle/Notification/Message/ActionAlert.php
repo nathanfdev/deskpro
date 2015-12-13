@@ -31,21 +31,6 @@ namespace DeskPRO\Bundle\AppBundle\Notification\Message;
 /**
  * Class ActionAlert.
  */
-class ActionAlert implements MessageInterface
+class ActionAlert extends AbstractMessage
 {
-    public function __construct($target, $data)
-    {
-        $this->target = $target;
-        $this->data   = $data;
-    }
-
-    public function getTarget()
-    {
-        return 1;
-    }
-
-    public function getData()
-    {
-        return ['alert' => 'test'];
-    }
 }

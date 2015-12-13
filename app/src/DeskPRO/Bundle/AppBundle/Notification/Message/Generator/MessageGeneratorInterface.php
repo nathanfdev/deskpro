@@ -34,5 +34,5 @@ interface MessageGeneratorInterface
 {
     public function canCreateMessage(SystemEventInterface $event);
 
-    public function createMessage(SystemEventInterface $event);
+    public function createMessages(SystemEventInterface $event);
 }

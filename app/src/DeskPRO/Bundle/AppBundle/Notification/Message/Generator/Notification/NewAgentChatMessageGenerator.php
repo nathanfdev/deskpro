@@ -45,11 +45,15 @@ class NewAgentChatMessageGenerator extends AbstractGenerator
      *
      * @return MessageInterface
      */
-    public function createMessage(SystemEventInterface $event)
+    public function createMessages(SystemEventInterface $event)
     {
-        $event->getName();
         /* @var NewMessageEvent $event */
-        return new Notification($this->getTarget($event), $this->getData($event));
+        $messages = [];
+        foreach ($this->getTargets($event) as $target) {
+            $messages[] = new Notification($target, $this->getData($event), $event->getName());
+        }
+
+        return $messages;
     }
 
     public function canCreateMessage(SystemEventInterface $event)
@@ -61,21 +65,30 @@ class NewAgentChatMessageGenerator extends AbstractGenerator
         return false;
     }
 
-    protected function getTarget(NewMessageEvent $event)
+    protected function getTargets(NewMessageEvent $event)
     {
         $message = $this->getChatMessage($event);
+        $targets = [];
         foreach ($message->getChat()->getPersonList() as $target) {
-            return $target->getId();
+            $targets[] = $target->getId();
         }
 
-        throw new \LogicException('No target was found!');
+        if (count($targets) < 1) {
+            throw new \LogicException('No target was found!');
+        }
+
+        return $targets;
     }
 
     protected function getData(NewMessageEvent $event)
     {
         $message = $this->getChatMessage($event);
+        $data    = [
+            'notificationTitle'   => sprintf('%s sent a message to you', $message->getPersonName()),
+            'notificationSummary' => $message->getMessage(),
+        ];
 
-        return ['message' => $message->getMessage()];
+        return $data;
     }
 
     protected function getChatMessage(NewMessageEvent $event)
