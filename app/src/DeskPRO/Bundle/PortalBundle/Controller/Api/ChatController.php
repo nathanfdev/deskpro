@@ -137,25 +137,30 @@ class ChatController extends AbstractController
             return $this->generateFormErrorsResponse($form);
         }
 
-        $chat_message = new ChatMessage();
-        $chat_message
-            ->setOrigin('user')
-            ->setContent($form->get('message')->getData())
-            ->setIsHtml(true)
-            ->setMetadata([
-                'is_html' => true,
-            ])
-        ;
+        // Add message to chat conversation
+        $message = $form->get('message')->getData();
+        if ($message) {
+            $chat_message = new ChatMessage();
+            $chat_message
+                ->setOrigin('user')
+                ->setContent($message)
+                ->setIsHtml(true)
+                ->setMetadata([
+                    'is_html' => true,
+                ])
+            ;
 
-        $conversation->addMessage($chat_message);
+            $conversation->addMessage($chat_message);
 
-        $conversation_channel = $conversation->getChannelId('newmessage');
-        $this->dispatch(
-            ClientMessageEvent::SEND,
-            new ClientMessageEvent($conversation_channel, $chat_message)
-        );
+            $conversation_channel = $conversation->getChannelId('newmessage');
+            $this->dispatch(
+                ClientMessageEvent::SEND,
+                new ClientMessageEvent($conversation_channel, $chat_message)
+            );
+        }
 
-        /** @var Blob $attachments */
+        // Add blobs to chat conversation
+        /** @var Blob[] $attachments */
         $attachments = $form->get('attachments')->getData();
         foreach ($attachments as $attachment) {
             $msg = "File: <a href=\"{$attachment->getDownloadUrl(true)}\" target=\"_blank\">".htmlspecialchars($attachment->filename).'</a> ('.$attachment->getReadableFilesize().')';

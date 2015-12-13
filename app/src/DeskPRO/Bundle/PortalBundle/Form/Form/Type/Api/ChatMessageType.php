@@ -34,7 +34,6 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class ChatMessageType.
@@ -55,11 +54,7 @@ class ChatMessageType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('message', 'html_textarea', [
-                'constraints' => [
-                    new Assert\NotBlank(),
-                ],
-            ])
+            ->add('message', 'html_textarea')
             ->add('attachments', 'collection', [
                 'type'         => 'auth_blob',
                 'allow_add'    => true,
