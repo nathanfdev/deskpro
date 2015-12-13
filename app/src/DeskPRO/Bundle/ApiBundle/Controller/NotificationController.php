@@ -26,48 +26,40 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\ApiBundle\Controller;
+
 /**
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\AgentChat;
+namespace DeskPRO\Bundle\ApiBundle\Controller;
 
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\AppBundle\AgentChat\Messenger;
-use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
+use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-abstract class AbstractController extends BaseController
+class NotificationController extends BaseController
 {
     /**
-     * @param $id
+     * @param string $last
      *
      * @throws NotFoundHttpException
      * @throws AccessDeniedHttpException
      *
-     * @return AgentChat|null
+     * @return View
+     * @Annotations\Get("/notify/action_alerts/{last}", name="action_alerts_last")
      */
-    protected function getChat($id)
+    public function getLastActionAlerts($last)
     {
-        /** @var Messenger $messenger */
-        $messenger = $this->get('deskpro.agentchat.messenger');
-        if (!$chat = $messenger->getChat($id)) {
-            throw new NotFoundHttpException();
-        }
+        $service = $this->get('deskpro.notification.service');
 
-        if (!$messenger->isPersonInvolvedInChat($this->getUser(), $chat)) {
-            throw new AccessDeniedHttpException();
-        }
+        $alerts = $service->getLastActionAlerts($last, $this->getUser());
 
-        return $chat;
-    }
-
-    /**
-     * @return \Doctrine\Common\Persistence\ObjectManager|object
-     */
-    protected function em()
-    {
-        return $this->getDoctrine()->getManager();
+        return View::create(
+            $this->dataSerialize($alerts),
+            Response::HTTP_OK
+        );
     }
 }

@@ -67,17 +67,6 @@ interface NotificationEntityInterface
     public function setDateCreated($date_created);
 
     /**
-     * @return bool
-     */
-    public function isIsDismissed();
-    /**
-     * @param bool $is_dismissed
-     *
-     * @return NotificationEntityInterface
-     */
-    public function setIsDismissed($is_dismissed);
-
-    /**
      * @return array
      */
     public function getData();
@@ -88,4 +77,16 @@ interface NotificationEntityInterface
      * @return NotificationEntityInterface
      */
     public function setData($data);
+
+    /**
+     * @return string
+     */
+    public function getType();
+
+    /**
+     * @param string $type
+     *
+     * @return NotificationEntityInterface
+     */
+    public function setType($type);
 }

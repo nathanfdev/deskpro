@@ -1,5 +1,13 @@
 services:
 
+  deskpro.notification.service:
+    class: DeskPRO\Bundle\AppBundle\Notification\NotificationService
+    arguments:
+      - @doctrine.orm.default_entity_manager
+
+  #
+  # Strategis
+  #
   deskpro.notification.strategy_factory:
     class: DeskPRO\Bundle\AppBundle\Notification\Strategy\StrategyFactory
     arguments:
@@ -12,11 +20,17 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
+  #
+  # Persistance adaper for cloud strategy
+  #
   deskpro.notification.peristance.adapter.db:
     class: DeskPRO\Bundle\AppBundle\Notification\Persistance\DbAdapter
     arguments:
       - @doctrine.orm.default_entity_manager
 
+  #
+  # delivery
+  #
   deskpro.notification.delivery.delivery_service:
     class: DeskPRO\Bundle\AppBundle\Notification\Delivery\DeliveryService
     factory: [DeskPRO\Bundle\AppBundle\Notification\Delivery\DeliveryService, create]
@@ -33,6 +47,12 @@ services:
     arguments:
       - @deskpro.notification.redis_client
 
+  deskpro.notification.redis_client:
+    class: Predis\Client
+
+  #
+  # notification handlers
+  #
   deskpro.notification.notify_handler.action_alert:
     class: DeskPRO\Bundle\AppBundle\Notification\ActionAlertHandler
     calls:
@@ -43,8 +63,7 @@ services:
       calls:
         - [attachGenerator, [@deskpro.notification.generator.user_notify.agent_chat_new_message]]
 
-  deskpro.notification.redis_client:
-    class: Predis\Client
+
 
   #
   # UserNotification message generators

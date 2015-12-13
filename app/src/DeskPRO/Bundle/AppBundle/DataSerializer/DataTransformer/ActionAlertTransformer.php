@@ -27,47 +27,47 @@
  */
 
 /**
- * DeskPRO.
+ * deskpro.
+ *
+ * @author Denis Ranneft (aka Immortal) <denis@ranneft.ru>
+ * Date: 11.09.15
+ * Time: 20:58
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\AgentChat;
+namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\AppBundle\AgentChat\Messenger;
-use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
+use DeskPRO\Bundle\AppBundle\Entity\ActionAlert;
 
-abstract class AbstractController extends BaseController
+/**
+ * Class ActionAlertTransformer.
+ */
+class ActionAlertTransformer extends AbstractDataSerializerTransformer
 {
     /**
-     * @param $id
-     *
-     * @throws NotFoundHttpException
-     * @throws AccessDeniedHttpException
-     *
-     * @return AgentChat|null
+     * {@inheritdoc}
      */
-    protected function getChat($id)
+    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        /** @var Messenger $messenger */
-        $messenger = $this->get('deskpro.agentchat.messenger');
-        if (!$chat = $messenger->getChat($id)) {
-            throw new NotFoundHttpException();
-        }
-
-        if (!$messenger->isPersonInvolvedInChat($this->getUser(), $chat)) {
-            throw new AccessDeniedHttpException();
-        }
-
-        return $chat;
+        return [
+            'id',
+            'target_id',
+            'uuid',
+            'date_created',
+            'type',
+        ];
     }
 
     /**
-     * @return \Doctrine\Common\Persistence\ObjectManager|object
+     * {@inheritdoc}
      */
-    protected function em()
+    public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        return $this->getDoctrine()->getManager();
+        /** @var ActionAlert $entity */
+        $entity = $transformation_request->getDataToBeTransformed();
+
+        return [
+            'data' => $entity->getData(),
+        ];
     }
 }

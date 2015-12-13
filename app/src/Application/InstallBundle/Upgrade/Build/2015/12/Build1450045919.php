@@ -34,6 +34,9 @@ class Build1450045919 extends AbstractBuild
     {
         $this->out('Create notifications_tables');
         $this->execMutateSql("CREATE TABLE notify_notifications (id INT AUTO_INCREMENT NOT NULL, target_id INT NOT NULL, uuid VARCHAR(80) NOT NULL, date_created DATETIME NOT NULL, is_dismissed TINYINT(1) DEFAULT '0' NOT NULL, data LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)', PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-        $this->execMutateSql("CREATE TABLE notify_action_alerts (id INT AUTO_INCREMENT NOT NULL, target_id INT NOT NULL, uuid VARCHAR(80) NOT NULL, date_created DATETIME NOT NULL, is_dismissed TINYINT(1) DEFAULT '0' NOT NULL, data LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)', PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+        $this->execMutateSql("CREATE TABLE notify_action_alerts (id INT AUTO_INCREMENT NOT NULL, target_id INT NOT NULL, uuid VARCHAR(80) NOT NULL, date_created DATETIME NOT NULL, data LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)', PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+        $this->execMutateSql('ALTER TABLE notify_notifications ADD type VARCHAR(100) NOT NULL;
+                              ALTER TABLE notify_action_alerts ADD type VARCHAR(100) NOT NULL;
+        ');
     }
 }

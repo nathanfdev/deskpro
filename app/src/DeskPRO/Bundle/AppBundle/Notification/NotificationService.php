@@ -26,48 +26,43 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\AppBundle\Notification;
+
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\ORM\EntityManager;
+use DeskPRO\Bundle\AppBundle\Entity\ActionAlert;
+
 /**
- * DeskPRO.
+ * Class NotificationService.
  */
-
-namespace DeskPRO\Bundle\ApiBundle\Controller\AgentChat;
-
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\AppBundle\AgentChat\Messenger;
-use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-
-abstract class AbstractController extends BaseController
+class NotificationService
 {
     /**
-     * @param $id
-     *
-     * @throws NotFoundHttpException
-     * @throws AccessDeniedHttpException
-     *
-     * @return AgentChat|null
+     * @var EntityManager
      */
-    protected function getChat($id)
-    {
-        /** @var Messenger $messenger */
-        $messenger = $this->get('deskpro.agentchat.messenger');
-        if (!$chat = $messenger->getChat($id)) {
-            throw new NotFoundHttpException();
-        }
-
-        if (!$messenger->isPersonInvolvedInChat($this->getUser(), $chat)) {
-            throw new AccessDeniedHttpException();
-        }
-
-        return $chat;
-    }
+    protected $em;
 
     /**
-     * @return \Doctrine\Common\Persistence\ObjectManager|object
+     * @param EntityManager $em
      */
-    protected function em()
+    public function __construct(EntityManager $em)
     {
-        return $this->getDoctrine()->getManager();
+        $this->em = $em;
+    }
+
+    public function getLastActionAlerts($last, Person $user)
+    {
+        $actionAlertRepo = $this->em->getRepository('App:ActionAlert');
+        /** @var ActionAlert $last */
+        $last   = $actionAlertRepo->findOneBy(['uuid' => $last]);
+        $qb     = $actionAlertRepo->createQueryBuilder('aa');
+        $result = $qb->where('aa.date_created > (:last)')
+            ->andWhere('aa.target_id = :target_id')
+            ->setParameter('last', $last->getDateCreated())
+            ->setParameter('target_id', $user->getId())
+            ->getQuery()
+            ->getResult();
+
+        return $result;
     }
 }

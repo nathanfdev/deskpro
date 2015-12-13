@@ -62,8 +62,8 @@ class DbDeliveryHandler extends AbstractDeliveryHandler
             ->setUuid($message->getId())
             ->setTargetId($message->getTarget())
             ->setDateCreated(new \DateTime($message->getDate()))
-            ->setData($message->getData())
-            ->setIsDismissed(false);
+            ->setData($message->getData()['data'])
+            ->setType($message->getType());
         $this->em->persist($persistTo);
         $this->em->flush();
     }

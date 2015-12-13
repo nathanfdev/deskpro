@@ -84,7 +84,7 @@ class Notification implements EntityInterface, NotifyPropertyChanged, Notificati
      * @ORM\Column(type="boolean", options={"default" = 0}, nullable=false)
      * @Assert\NotNull()
      */
-    protected $is_dismissed;
+    protected $is_dismissed = false;
 
     /**
      * @var array
@@ -92,6 +92,31 @@ class Notification implements EntityInterface, NotifyPropertyChanged, Notificati
      * @Assert\NotNull()
      */
     protected $data;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=100)
+     * @Assert\NotNull()
+     */
+    protected $type;
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return Notification
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
 
     /**
      * @return int

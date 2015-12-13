@@ -80,18 +80,18 @@ class ActionAlert implements EntityInterface, NotifyPropertyChanged, Notificatio
     protected $date_created;
 
     /**
-     * @var bool
-     * @ORM\Column(type="boolean", options={"default" = 0}, nullable=false)
-     * @Assert\NotNull()
-     */
-    protected $is_dismissed;
-
-    /**
      * @var array
      * @ORM\Column(type="json_array", nullable=false)
      * @Assert\NotNull()
      */
     protected $data;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=100)
+     * @Assert\NotNull()
+     */
+    protected $type;
 
     /**
      * @return int
@@ -174,26 +174,6 @@ class ActionAlert implements EntityInterface, NotifyPropertyChanged, Notificatio
     }
 
     /**
-     * @return bool
-     */
-    public function isIsDismissed()
-    {
-        return $this->is_dismissed;
-    }
-
-    /**
-     * @param bool $is_dismissed
-     *
-     * @return ActionAlert
-     */
-    public function setIsDismissed($is_dismissed)
-    {
-        $this->is_dismissed = $is_dismissed;
-
-        return $this;
-    }
-
-    /**
      * @return array
      */
     public function getData()
@@ -211,5 +191,23 @@ class ActionAlert implements EntityInterface, NotifyPropertyChanged, Notificatio
         $this->data = $data;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return ActionAlert
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
     }
 }
