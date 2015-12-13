@@ -1,25 +1,14 @@
 services:
 
-  deskpro.notification.event_manager:
-    class: DeskPRO\Bundle\AppBundle\Notification\EventManager
-    arguments:
-      - @deskpro.notification.notification_strategy
-
   deskpro.notification.strategy_factory:
     class: DeskPRO\Bundle\AppBundle\Notification\Strategy\StrategyFactory
     arguments:
       - @service_container
 
-  deskpro.notification.notification_strategy:
-    class: DeskPRO\Bundle\AppBundle\Notification\Strategy\AbstractStrategy
-    factory: [@deskpro.notification.strategy_factory, create]
+  deskpro.notification.event_manager:
+    class: DeskPRO\Bundle\AppBundle\Notification\EventManager
     arguments:
-      - true
-
-  deskpro.notification.event_listener.agent_chat.new_message_listener:
-    class: DeskPRO\Bundle\AppBundle\Notification\Listener\AgentChatListener
-    arguments:
-      - @deskpro.notification.event_manager
+      - @deskpro.notification.strategy_factory
     tags:
       - { name: kernel.event_subscriber }
 
@@ -34,7 +23,6 @@ services:
     arguments:
       - @service_container
 
-
   deskpro.notification.delivery.handler.db:
     class: DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\DbDeliveryHandler
     arguments:
@@ -45,5 +33,31 @@ services:
     arguments:
       - @deskpro.notification.redis_client
 
+  deskpro.notification.notify_handler.action_alert:
+    class: DeskPRO\Bundle\AppBundle\Notification\ActionAlertHandler
+    calls:
+      - [attachGenerator, [@deskpro.notification.generator.action_alert.agent_chat_new_message]]
+
+  deskpro.notification.notify_handler.user_notify:
+      class: DeskPRO\Bundle\AppBundle\Notification\UserNotificationHandler
+      calls:
+        - [attachGenerator, [@deskpro.notification.generator.user_notify.agent_chat_new_message]]
+
   deskpro.notification.redis_client:
     class: Predis\Client
+
+  #
+  # UserNotification message generators
+  #
+  deskpro.notification.generator.user_notify.agent_chat_new_message:
+    class: DeskPRO\Bundle\AppBundle\Notification\Message\Generator\Notification\NewAgentChatMessageGenerator
+    arguments:
+      - @doctrine.orm.default_entity_manager
+
+  #
+  # ActionAlert message generators
+  #
+  deskpro.notification.generator.action_alert.agent_chat_new_message:
+    class: DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\NewAgentChatMessageGenerator
+    arguments:
+      - @doctrine.orm.default_entity_manager

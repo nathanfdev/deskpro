@@ -26,8 +26,21 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Notification\Strategy;
+namespace DeskPRO\Bundle\AppBundle\Notification;
 
-abstract class AbstractStrategy implements NotificationStrategyInterface
+use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\MessageGeneratorInterface;
+
+abstract class NotifyHandler implements NotifyHandlerInterface
 {
+    /**
+     * @todo get it done with collection
+     *
+     * @var MessageGeneratorInterface[]
+     */
+    protected $generators;
+
+    public function attachGenerator(MessageGeneratorInterface $generator)
+    {
+        $this->generators[] = $generator;
+    }
 }

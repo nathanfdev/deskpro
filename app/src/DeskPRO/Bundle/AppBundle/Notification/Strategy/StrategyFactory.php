@@ -55,6 +55,8 @@ class StrategyFactory
         if ($standalone) {
             $strategy = new StandaloneStrategy();
             $strategy->setDeliveryService($this->container->get('deskpro.notification.delivery.delivery_service'));
+            $strategy->attachEventHandler($this->container->get('deskpro.notification.notify_handler.action_alert'));
+            $strategy->attachEventHandler($this->container->get('deskpro.notification.notify_handler.user_notify'));
 
             return $strategy;
         } else {

@@ -26,23 +26,31 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Notification;
+namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator;
 
+use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 
 /**
- * Class NotificationManager.
+ * Class AbstractGenerator.
  */
-class NotificationManager
+abstract class AbstractGenerator implements MessageGeneratorInterface
 {
+    /**
+     * @var EntityManager
+     */
+    protected $em;
+
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * @param SystemEventInterface $event
      *
-     * @return MessageInterface[]
+     * @return MessageInterface
      */
-    public function createMessages(SystemEventInterface $event)
-    {
-        return [];
-    }
+    abstract public function createMessage(SystemEventInterface $event);
 }

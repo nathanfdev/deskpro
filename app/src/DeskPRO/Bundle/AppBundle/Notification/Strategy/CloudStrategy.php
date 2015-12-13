@@ -31,6 +31,11 @@ namespace DeskPRO\Bundle\AppBundle\Notification\Strategy;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Persistance\PersistanceAdapterInterface;
 
+/**
+ * Class CloudStrategy
+ * The cloud strategy is simple: just persist SystemEvent, and then CloudService started in cron-job should
+ * calculate messages and targets, then it should deliver.
+ */
 class CloudStrategy extends AbstractStrategy
 {
     /** @var PersistanceAdapterInterface */

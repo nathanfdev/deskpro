@@ -26,8 +26,30 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Notification\Strategy;
+namespace DeskPRO\Bundle\AppBundle\Notification;
 
-abstract class AbstractStrategy implements NotificationStrategyInterface
+use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
+
+/**
+ * Class ActionAlertHandler.
+ */
+class ActionAlertHandler extends NotifyHandler
 {
+    /**
+     * @param SystemEventInterface $event
+     *
+     * @return MessageInterface[]
+     */
+    public function processEvent(SystemEventInterface $event)
+    {
+        $messages = [];
+        foreach ($this->generators as $generator) {
+            if ($generator->canCreateMessage($event)) {
+                $messages[] = $generator->createMessage($event);
+            }
+        }
+
+        return $messages;
+    }
 }

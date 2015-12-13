@@ -33,4 +33,5 @@ namespace DeskPRO\Bundle\AppBundle\Notification\Event;
  */
 interface SystemEventInterface
 {
+    public function getName();
 }

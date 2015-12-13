@@ -28,20 +28,54 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification\Strategy;
 
+use DeskPRO\Bundle\AppBundle\Notification\Delivery\DeliveryService;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
-use DeskPRO\Bundle\AppBundle\Notification\Message\Notification;
+use DeskPRO\Bundle\AppBundle\Notification\NotifyHandlerInterface;
 
 class StandaloneStrategy extends AbstractStrategy
 {
+    /** @var  NotifyHandlerInterface[] */
+    protected $eventHandlers;
+
+    /** @var DeliveryService */
+    protected $delivery_service;
+
+    public function setDeliveryService(DeliveryService $delivery_service)
+    {
+        $this->delivery_service = $delivery_service;
+    }
+
     public function handleSystemEvent(SystemEventInterface $event)
     {
-        //        $messages = $this->notification_manager->createMessages($event);
-        $message = new Notification(1, []);
-        $this->delivery_service->deliver($message);
-//        foreach ($messages as $message) {
-//            /* @var MessageInterface $message */
-//            $this->delivery_service->deliver($message);
-//        }
+        $messages = $this->createMessages($event);
+        foreach ($messages as $message) {
+            $this->delivery_service->deliver($message);
+        }
+    }
+
+    /**
+     * @todo get it done with collection
+     *
+     * @param NotifyHandlerInterface $handler
+     */
+    public function attachEventHandler(NotifyHandlerInterface $handler)
+    {
+        $this->eventHandlers[] = $handler;
+    }
+
+    /**
+     * @param SystemEventInterface $event
+     *
+     * @return MessageInterface[]
+     */
+    protected function createMessages(SystemEventInterface $event)
+    {
+        $messages = [];
+        foreach ($this->eventHandlers as $handler) {
+            $messages = array_merge($messages, $handler->processEvent($event));
+        }
+
+        return $messages;
     }
 }

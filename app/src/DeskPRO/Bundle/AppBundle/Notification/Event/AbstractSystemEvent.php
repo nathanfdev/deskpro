@@ -36,4 +36,9 @@ use Symfony\Component\EventDispatcher\Event;
 abstract class AbstractSystemEvent extends Event implements SystemEventInterface
 {
     const EVENT_NAME = 'abstract.event';
+
+    public function getName()
+    {
+        return static::EVENT_NAME;
+    }
 }

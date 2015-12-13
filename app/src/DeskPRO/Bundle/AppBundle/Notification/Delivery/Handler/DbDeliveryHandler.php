@@ -29,7 +29,9 @@
 namespace DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler;
 
 use Application\DeskPRO\ORM\EntityManager;
+use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Message\Notification;
 
 /**
  * Class DbDeliveryHandler.
@@ -53,5 +55,17 @@ class DbDeliveryHandler extends AbstractDeliveryHandler
 
     public function deliver(MessageInterface $message)
     {
+        $persistTo = $this->getChannel($message);
+    }
+
+    protected function getChannel(MessageInterface $message)
+    {
+        if ($message instanceof ActionAlert) {
+            return 1;
+        } elseif ($message instanceof Notification) {
+            return 2;
+        }
+
+        throw new \InvalidArgumentException('Message should be ActionAlert or Notification');
     }
 }

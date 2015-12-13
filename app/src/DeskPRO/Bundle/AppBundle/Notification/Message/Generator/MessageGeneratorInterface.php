@@ -26,8 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Notification\Strategy;
+namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator;
 
-abstract class AbstractStrategy implements NotificationStrategyInterface
+use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
+
+interface MessageGeneratorInterface
 {
+    public function canCreateMessage(SystemEventInterface $event);
+
+    public function createMessage(SystemEventInterface $event);
 }

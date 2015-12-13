@@ -28,7 +28,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler;
 
+use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Message\Notification;
 use Predis\Client;
 
 /**
@@ -38,28 +40,48 @@ class RedisDeliveryHandler extends AbstractDeliveryHandler
 {
     const TYPE = 'notification.delivery.handler.redis';
 
+    const CHANNEL_ACTION_ALERT = 'action_alert';
+    const CHANNEL_USER_NOTIFY  = 'user_notify';
+
     /**
      * @var Client
      */
     protected $client;
 
-    protected $parameters = [
-        'schema' => 'tcp',
-        'host'   => '127.0.0.1',
-        'port'   => '6379',
-    ];
-
-    protected $channel_name = 'notifications';
-
-    public function __construct()
+    /**
+     * @param Client $client
+     */
+    public function __construct(Client $client)
     {
-        $this->client = new Client($this->parameters);
+        $this->client = $client;
         $this->client->connect();
     }
 
+    /**
+     * @param MessageInterface $message
+     *
+     * @return bool
+     */
     public function deliver(MessageInterface $message)
     {
         $data = json_encode($message->getData());
-        $this->client->publish($this->channel_name, $data);
+
+        return (bool) $this->client->publish($this->getChannel($message), $data);
+    }
+
+    /**
+     * @param MessageInterface $message
+     *
+     * @return string
+     */
+    protected function getChannel(MessageInterface $message)
+    {
+        if ($message instanceof ActionAlert) {
+            return self::CHANNEL_ACTION_ALERT;
+        } elseif ($message instanceof Notification) {
+            return self::CHANNEL_USER_NOTIFY;
+        }
+
+        throw new \InvalidArgumentException('Message should be ActionAlert or Notification');
     }
 }

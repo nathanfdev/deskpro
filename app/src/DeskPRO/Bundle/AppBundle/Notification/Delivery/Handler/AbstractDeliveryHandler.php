@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler;
 
 use DeskPRO\Bundle\AppBundle\Notification\Delivery\DeliveryHandlerInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 
 /**
  * Class AbstractDeliveryHandler.
@@ -48,4 +49,6 @@ abstract class AbstractDeliveryHandler implements DeliveryHandlerInterface
 
         return static::TYPE;
     }
+
+    abstract protected function getChannel(MessageInterface $message);
 }

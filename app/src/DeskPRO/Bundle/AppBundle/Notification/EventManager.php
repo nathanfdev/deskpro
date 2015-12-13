@@ -28,29 +28,50 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification;
 
+use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\NewMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Strategy\NotificationStrategyInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Strategy\StrategyFactory;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  * Class EventManager.
  */
-class EventManager
+class EventManager implements EventSubscriberInterface
 {
-    /**
-     * @var NotificationStrategyInterface
-     */
-    protected $notification_strategy;
+    public static function getSubscribedEvents()
+    {
+        return [
+            NewMessageEvent::EVENT_NAME => 'handleEvent',
+        ];
+    }
 
     /**
-     * @param NotificationStrategyInterface $notification_strategy
+     * @var StrategyFactory
      */
-    public function __construct(NotificationStrategyInterface $notification_strategy)
+    protected $strategy_factory;
+
+    /**
+     * @param StrategyFactory $strategy_factory
+     */
+    public function __construct(StrategyFactory $strategy_factory)
     {
-        $this->notification_strategy = $notification_strategy;
+        $this->strategy_factory = $strategy_factory;
     }
 
     public function handleEvent(SystemEventInterface $event)
     {
-        $this->notification_strategy->handleSystemEvent($event);
+        $strategy = $this->getStrategyForEvent($event);
+        $strategy->handleSystemEvent($event);
+    }
+
+    /**
+     * @param SystemEventInterface $event
+     *
+     * @return NotificationStrategyInterface
+     */
+    protected function getStrategyForEvent(SystemEventInterface $event)
+    {
+        return $this->strategy_factory->create(true);
     }
 }
