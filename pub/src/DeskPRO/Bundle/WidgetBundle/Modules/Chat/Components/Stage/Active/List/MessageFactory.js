@@ -17,7 +17,7 @@ export class MessageFactory extends React.Component {
       const content = JSON.parse(message.get('content'));
       const phraseId = content.phrase_id;
       const pharses = window.DESKPRO_LANG || {};
-      const translatedText = pharses[`user.chat.${phraseId}`];
+      const translatedText = String(pharses[`user.chat.${phraseId}`]);
 
       return (
         <InlineEvent {...this.props}>
