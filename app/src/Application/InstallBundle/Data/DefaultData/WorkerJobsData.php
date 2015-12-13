@@ -182,6 +182,15 @@ class WorkerJobsData extends AbstractDefaultData
         );
 
         $jobs[] = array(
+            'id'           => 'ticket_reminders',
+            'worker_group' => 'ticket_reminders',
+            'title'        => 'Ticket Reminders',
+            'description'  => 'Sends reminders to users who created a ticket but have not yet validated their email',
+            'job_class'    => 'Application\\DeskPRO\\WorkerProcess\\Job\\TicketReminders',
+            'run_interval' => Job\TicketReminders::DEFAULT_INTERVAL,
+        );
+
+        $jobs[] = array(
             'id'           => 'kb_subscriptions',
             'worker_group' => 'kb_subscriptions',
             'title'        => 'KB Subscriptions',

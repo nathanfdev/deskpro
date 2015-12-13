@@ -34,6 +34,7 @@ return array(
     'portal.email_subjects.email-too-big'                   => 'Your email "{{subject}}" was not accepted',
     'portal.email_subjects.email_new-confirm'               => 'Validate your email address',
     'portal.email_subjects.email_primary-confirm'           => 'Validate your email address',
+    'portal.email_subjects.email_ticket-reminder'           => 'Action Required: Your ticket has not yet been submitted',
     'portal.email_subjects.feedback_new'                    => 'Thank you for submitting your feedback',
     'portal.email_subjects.feedback_new-approved'           => 'Your feedback has been approved',
     'portal.email_subjects.feedback_new-comment'            => 'There is a new comment on "{{title}}"',

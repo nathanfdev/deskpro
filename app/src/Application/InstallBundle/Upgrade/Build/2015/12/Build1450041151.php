@@ -26,4 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1450041151);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1450041151 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('saved forms date_last_reminded defaults to null');
+        $this->execMutateSql('ALTER TABLE saved_forms CHANGE date_last_reminded date_last_reminded DATETIME DEFAULT NULL');
+    }
+}

@@ -26,4 +26,22 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1450041151);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1450037032 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('add ticket reminders job');
+
+        $j                 = new \Application\DeskPRO\Entity\WorkerJob();
+        $j['id']           = 'ticket_reminders';
+        $j['worker_group'] = 'ticket_reminders';
+        $j['title']        = 'Ticket Reminders';
+        $j['description']  = 'Sends reminders to users who created a ticket but have not yet validated their email';
+        $j['job_class']    = 'Application\\DeskPRO\\WorkerProcess\\Job\\TicketReminders';
+        $j['interval']     = \Application\DeskPRO\WorkerProcess\Job\TicketReminders::DEFAULT_INTERVAL;
+        $this->container->getEm()->persist($j);
+        $this->container->getEm()->flush();
+    }
+}

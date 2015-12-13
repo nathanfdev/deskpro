@@ -27,7 +27,8 @@
  */
 
 return array(
-    'portal.emails.validate-email' => 'Please confirm that this email address is yours by clicking the link below.',
+    'portal.emails.validate-email'  => 'Please confirm that this email address is yours by clicking the link below.',
+    'portal.emails.ticket-reminder' => 'Your ticket is awaiting email validation. Please click the link below to submit your ticket and verify your email address. Your ticket data will be delete without being seen by an agent if you do not click this link before {{ expire_date }}.',
 
     // older clones:
     'portal.emails.auto-close'                      => 'Your ticket "{{ticket.subject}}" will be closed automatically because you have not updated it lately. If you do not want your ticket to be closed, you can add a new reply so our agents can help you further.',

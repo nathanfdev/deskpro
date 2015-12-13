@@ -1803,4 +1803,12 @@ return array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/12/Build1449845526.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1449845526',
     ),
+    1450037032 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/12/Build1450037032.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1450037032',
+    ),
+    1450041151 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/12/Build1450041151.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1450041151',
+    ),
 );
