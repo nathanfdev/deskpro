@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { AttachedImage } from './AttachedImage';
 import { AttachedImagesList } from './AttachedImagesList';
 import Immutable from 'immutable';
 import Simple from 'DeskPRO/Component/Positioned/Simple';
@@ -8,7 +9,8 @@ export class AttachedImages extends React.Component {
 
   static propTypes = {
     attachments: PropTypes.object,
-    count: PropTypes.number
+    count: PropTypes.number,
+    onRemoveFile: PropTypes.func
   };
 
   constructor(props) {
@@ -31,20 +33,16 @@ export class AttachedImages extends React.Component {
   };
 
   render() {
-    const { attachments, count } = this.props;
+    const { attachments, count, onRemoveFile } = this.props;
     const lastImage = attachments.last() || Immutable.fromJS({});
 
     return (
       <div>
-        <div className="dpdesignportal-chat-form-attached-image">
-          {count > 1 &&
-            <div className="dpdesignportal-chat-form-attached-image-count" onClick={this.onExpand}>
-              {count} <i className="fa fa-angle-double-right"></i>
-            </div>
-          }
-          <div className="dpdesignportal-chat-form-attached-image-thumb"
-               style={{backgroundImage: `url(${lastImage.get('download_url')})`}} />
-        </div>
+        <AttachedImage
+          count={count}
+          attachment={lastImage}
+          onExpand={this.onExpand}
+          onRemove={onRemoveFile} />
 
         <Simple
           isOpen={this.state.expanded}
