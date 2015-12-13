@@ -36,20 +36,17 @@ use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageEvent;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
-use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class ChatController.
  */
-class ChatController extends AbstractController
+class ChatController extends AbstractApiController
 {
     /**
      * @Route("/portal/api/chats/create", name="portal_api_chat_create")
@@ -138,12 +135,12 @@ class ChatController extends AbstractController
         }
 
         // Add message to chat conversation
-        $message = $form->get('message')->getData();
-        if ($message) {
+        $content = $form->get('message')->getData();
+        if ($content) {
             $chat_message = new ChatMessage();
             $chat_message
                 ->setOrigin('user')
-                ->setContent($message)
+                ->setContent($content)
                 ->setIsHtml(true)
                 ->setMetadata([
                     'is_html' => true,
@@ -163,19 +160,30 @@ class ChatController extends AbstractController
         /** @var Blob[] $attachments */
         $attachments = $form->get('attachments')->getData();
         foreach ($attachments as $attachment) {
-            $msg = "File: <a href=\"{$attachment->getDownloadUrl(true)}\" target=\"_blank\">".htmlspecialchars($attachment->filename).'</a> ('.$attachment->getReadableFilesize().')';
+            // Support of old attachment message format
+            $content = sprintf(
+                'File: <a href="%s" target="_blank">%s</a> (%s)',
+
+                $attachment->getDownloadUrl(true),
+                htmlspecialchars($attachment->filename),
+                $attachment->getReadableFilesize()
+            );
+
             if ($attachment->isImage()) {
-                $msg .= '<div class="file-thumb"><img src="'.$attachment->getThumbnailUrl(50, true).'" /></div>';
+                $content .= sprintf(
+                    '<div class="file-thumb"><img src="%s" /></div>',
+                    $attachment->getThumbnailUrl(50, true)
+                );
             }
 
             $chat_message = new ChatMessage();
             $chat_message
-                ->setContent($msg)
+                ->setContent($content)
                 ->setIsHtml(true)
                 ->setMetadata([
                     'is_html' => true,
                     'type'    => 'file',
-                    'blob_id' => $attachment->getId(),
+                    'blob'    => $this->dataSerialize($attachment),
                 ])
             ;
 
@@ -328,37 +336,5 @@ class ChatController extends AbstractController
         $em->flush();
 
         return new JsonResponse();
-    }
-
-    /**
-     * @param $data
-     *
-     * @return array
-     */
-    protected function dataSerialize($data)
-    {
-        return $this->get('data_serializer')->serialize($data);
-    }
-
-    /**
-     * @param Form $form
-     *
-     * @return JsonResponse
-     */
-    protected function generateFormErrorsResponse(Form $form)
-    {
-        $generator = $this->get('api_error.form_errors_generator');
-        $errors    = $generator->generateFormErrors($form);
-
-        return new JsonResponse($errors, Response::HTTP_BAD_REQUEST);
-    }
-
-    /**
-     * @param string $event_name
-     * @param Event  $event
-     */
-    protected function dispatch($event_name, Event $event)
-    {
-        $this->get('event_dispatcher')->dispatch($event_name, $event);
     }
 }

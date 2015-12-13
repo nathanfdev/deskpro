@@ -41,7 +41,7 @@ export class ReplyFormContainer extends React.Component {
   };
 
   onUploadedFile = (event, response) => {
-    const attachments = response.result || [];
+    const attachments = response.result && response.result.data || [];
     attachments.forEach(attachment => this.props.dispatch(addAttachment(attachment)));
   };
 

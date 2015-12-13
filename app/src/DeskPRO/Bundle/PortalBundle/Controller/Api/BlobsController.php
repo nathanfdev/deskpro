@@ -32,7 +32,6 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Attachments\AcceptAttachment;
-use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -41,7 +40,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class BlobsController.
  */
-class BlobsController extends AbstractController
+class BlobsController extends AbstractApiController
 {
     /**
      * @Route("/portal/api/blobs/temp", name="portal_api_blobs_temp")
@@ -54,22 +53,13 @@ class BlobsController extends AbstractController
     public function tempAction(Request $request)
     {
         /** @var AcceptAttachment $accept */
-        $accept   = $this->getContainer()->getAttachmentAccepter();
-        $response = [];
+        $accept = $this->getContainer()->getAttachmentAccepter();
+        $blobs  = [];
 
         foreach ($request->files->get('files') as $file) {
-            $blob       = $accept->accept($file);
-            $response[] = [
-                'blob_id'           => $blob['id'],
-                'blob_auth'         => $blob->authcode,
-                'blob_auth_id'      => $blob->id.'-'.$blob->authcode,
-                'download_url'      => $blob->getDownloadUrl(true, false),
-                'filename'          => $blob['filename'],
-                'filesize_readable' => $blob->getReadableFilesize(),
-                'is_image'          => $blob->isImage(),
-            ];
+            $blobs[] = $accept->accept($file);
         };
 
-        return new JsonResponse($response);
+        return new JsonResponse($this->dataSerialize($blobs));
     }
 }
