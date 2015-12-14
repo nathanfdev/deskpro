@@ -9,12 +9,12 @@ import { Nav } from './Nav';
   // select lists labels depending on their grouping
   const labels = {};
   ['articles', 'news', 'downloads'].forEach(list => {
-    switch (state.PublishNav.lists[list].grouped_by) {
+    switch (state.PublishNav.get('lists').get(list).grouped_by) {
       case 'category':
-        labels[list] = state.PublishNav.groups.categories[list];
+        labels[list] = state.PublishNav.get('groups').get('categories').get(list);
         break;
       case 'author':
-        labels[list] = state.PublishNav.groups.authors;
+        labels[list] = state.PublishNav.get('groups').get('authors');
         break;
       case 'period_created':
       case 'period_updated':
@@ -25,20 +25,24 @@ import { Nav } from './Nav';
 
   labels.commentsToValidate = DatePeriods.all;
 
-  return {labels, lists: state.PublishNav.lists, grouping: state.PublishNav.grouping};
+  return {
+    labels,
+    lists: state.PublishNav.get('lists'),
+    grouping: state.PublishNav.get('grouping'),
+    dpWindow: state.Application.dpWindow
+  };
 })
 export class NavContainer extends React.Component {
 
-  constructor(props) {
-    super(props);
+  componentDidMount() {
     const { dispatch, lists } = this.props;
 
-    dispatch(actions.loadCounts('articles', lists.articles.grouped_by));
-    dispatch(actions.loadCounts('news', lists.news.grouped_by));
-    dispatch(actions.loadCounts('downloads', lists.downloads.grouped_by));
+    dispatch(actions.loadCounts('articles', lists.get('articles').get('grouped_by')));
+    dispatch(actions.loadCounts('news', lists.get('news').get('grouped_by')));
+    dispatch(actions.loadCounts('downloads', lists.get('downloads').get('grouped_by')));
     dispatch(actions.loadCategories());
-    dispatch(actions.loadDraftsCount(lists.todo.articles.mine));
-    dispatch(actions.loadPendingCount(lists.todo.articles.mine));
+    dispatch(actions.loadDraftsCount(lists.get('todo').get('articles').mine));
+    dispatch(actions.loadPendingCount(lists.get('todo').get('articles').mine));
     dispatch(actions.loadCommentsToValidateCounts());
     dispatch(actions.loadCommentsToReviewCount());
   }
@@ -87,7 +91,7 @@ export class NavContainer extends React.Component {
         onClick={onClick}
         dispatch={dispatch.bind(this)}
         dpWindow={dpWindow}
-      />
+        />
     );
   }
 
