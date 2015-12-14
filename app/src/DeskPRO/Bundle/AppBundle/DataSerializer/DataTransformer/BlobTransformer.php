@@ -56,11 +56,11 @@ class BlobTransformer extends AbstractDataSerializerTransformer
         $data = $request->getDataToBeTransformed();
 
         return [
-            'blob_id'           => $data['id'],
-            'blob_auth'         => $data->authcode,
-            'blob_auth_id'      => $data->id.'-'.$data->authcode,
+            'blob_id'           => $data->getId(),
+            'blob_auth'         => $data->getAuthcode(),
+            'blob_auth_id'      => $data->getId().'-'.$data->getAuthcode(),
             'download_url'      => $data->getDownloadUrl(true, false),
-            'filename'          => $data['filename'],
+            'filename'          => $data->getFilenameSafe(),
             'filesize_readable' => $data->getReadableFilesize(),
             'is_image'          => $data->isImage(),
         ];
