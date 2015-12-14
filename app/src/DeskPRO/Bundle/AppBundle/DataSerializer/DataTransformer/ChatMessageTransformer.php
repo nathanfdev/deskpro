@@ -102,8 +102,8 @@ class ChatMessageTransformer extends AbstractDataSerializerTransformer
         }
 
         $author      = $message->getAuthor();
-        $metadata    = $message->getMetadata();
         $author_type = $author && $author->is_agent ? 'agent' : 'user';
+        $metadata    = $message->getMetadata();
 
         // Handle the case where the author is an agent in the user interface
         if ($author_type === 'agent' && isset($metadata['is_user_message'])) {

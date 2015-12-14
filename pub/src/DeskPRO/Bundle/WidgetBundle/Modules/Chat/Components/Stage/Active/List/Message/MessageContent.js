@@ -19,11 +19,13 @@ export class MessageContent extends React.Component {
           : <p>{content}</p>
         }
 
-        {false && <ul>
-          <li>
-            <AttachmentLink />
-          </li>
-        </ul>}
+        {false /* disabled */ &&
+          <ul>
+            <li>
+              <AttachmentLink />
+            </li>
+          </ul>
+        }
       </div>
     );
   }
