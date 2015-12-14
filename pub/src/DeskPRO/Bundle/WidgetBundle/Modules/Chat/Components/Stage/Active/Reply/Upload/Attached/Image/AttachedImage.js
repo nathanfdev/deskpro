@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { openFullImage } from '../../../../../../../../../Services/fullImage';
 
 export class AttachedImage extends React.Component {
 
@@ -11,6 +12,7 @@ export class AttachedImage extends React.Component {
 
   render() {
     const { count, attachment, onExpand, onRemove } = this.props;
+    const downloadUrl = attachment.get('download_url');
 
     return (
       <li>
@@ -24,7 +26,8 @@ export class AttachedImage extends React.Component {
               </div>
           }
           <div className="dpdesignportal-chat-form-attached-image-thumb"
-               style={{backgroundImage: `url(${attachment.get('download_url')})`}} />
+               onClick={() => openFullImage(downloadUrl)}
+               style={{backgroundImage: `url(${downloadUrl})`}} />
         </div>
       </li>
     );
