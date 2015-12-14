@@ -8,7 +8,6 @@ export class LabelsFilter extends Component {
     dispatch: PropTypes.func.isRequired,
     stateValue: PropTypes.func.isRequired,
     setParamsAction: PropTypes.func.isRequired,
-    renderFilterInfo: PropTypes.func.isRequired,
     setActiveItem: PropTypes.func,
     matchMode: PropTypes.bool,
     activeItem: PropTypes.object,
@@ -17,7 +16,7 @@ export class LabelsFilter extends Component {
   };
 
   render() {
-    const { dispatch, setParamsAction, stateValue, filter, renderFilterInfo, unsetParams, activeItem, setActiveItem, matchMode } = this.props;
+    const { dispatch, setParamsAction, stateValue, filter, unsetParams, activeItem, setActiveItem, matchMode } = this.props;
     const { label, icon, labels, param, modeParam } = filter;
     const selected = stateValue(param) || [];
     const mode = stateValue(modeParam);
@@ -39,12 +38,13 @@ export class LabelsFilter extends Component {
 
     return (
       <FilterItem activeItem={activeItem}
+                  filterType={param}
                   icon={icon || 'tags'}
                   label={label}
                   isActive={isActive}
                   setActiveItem={setActiveItem}
+                  selected={selected}
                   resetFilter={unsetParams.bind(this, param)}>
-        {renderFilterInfo(selected)}
         <Menu>
           <LabelsForm matchMode={matchMode}
                       params={{'get': () => mode}}

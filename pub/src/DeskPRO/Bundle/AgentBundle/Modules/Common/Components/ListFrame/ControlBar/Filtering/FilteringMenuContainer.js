@@ -97,8 +97,8 @@ export class FilteringMenuContainer extends Component {
           onClick={this.toggleExpanded}
           />
         <Detached isOpen={this.state.expanded}
-                    positionAt="left bottom"
-                    positionTarget={this.refs.button}>
+                  positionAt="left bottom"
+                  positionTarget={this.refs.button}>
           <ClickOut onClickOut={this.collapse}
                     ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list']}
                     additionalNodes={['.dpw-navigation-dropdown-item-clear']}>
