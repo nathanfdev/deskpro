@@ -11,28 +11,30 @@ export class MessageFactory extends React.Component {
     message: PropTypes.object
   };
 
-  render() {
-    const { message } = this.props;
-
-    if (message.get('is_sys')) {
-      const content = JSON.parse(message.get('content'));
-      const phraseId = content.phrase_id;
-      const pharses = window.DESKPRO_LANG || {};
-      const translatedText = String(pharses[`user.chat.${phraseId}`]);
-
-      return (
-        <InlineEvent {...this.props}>
-          {translatedText.replace('{{name}}', content.name)}
-        </InlineEvent>
-      );
-    }
+  renderEvent() {
+    const content = JSON.parse(this.props.message.get('content'));
+    const phraseId = content.phrase_id;
+    const pharses = window.DESKPRO_LANG || {};
+    const translatedText = String(pharses[`user.chat.${phraseId}`]);
 
     return (
-      <Message type={message.get('author_type')}>
+      <InlineEvent {...this.props}>
+        {translatedText.replace('{{name}}', content.name)}
+      </InlineEvent>
+    );
+  }
+
+  renderMessage() {
+    return (
+      <Message type={this.props.message.get('author_type')}>
         <MessageAvatar {...this.props} />
         <MessageContent {...this.props} />
         <MessageFooter {...this.props} />
       </Message>
     );
+  }
+
+  render() {
+    return this.props.message.get('is_sys') ? this.renderEvent() : this.renderMessage();
   }
 }
