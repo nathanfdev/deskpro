@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
+import { Menu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
 import { LabelsFilter } from './LabelsFilter';
 import { DateFilter } from './DateFilter';
 import { MultipleChoiceFilter } from './MultipleChoiceFilter';

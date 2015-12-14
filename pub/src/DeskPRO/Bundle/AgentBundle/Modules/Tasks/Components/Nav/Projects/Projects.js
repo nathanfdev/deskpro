@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import Detached from 'DeskPRO/Component/Positioned/Detached';
+import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { Section, SectionHeader, ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { ProjectFormContainer } from './ProjectForm/ProjectFormContainer';

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import Abstract from './Abstract';
+import { Abstract } from './Abstract';
 
 export default class Simple extends Abstract {
 

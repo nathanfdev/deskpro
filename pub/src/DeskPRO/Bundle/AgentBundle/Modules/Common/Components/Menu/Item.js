@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { BaseItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/BaseItem';
 
-export default class Item extends Component {
+export class Item extends Component {
   static propTypes = {
     icon: PropTypes.string,
     itemType: PropTypes.string,

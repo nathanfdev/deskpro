@@ -1,9 +1,9 @@
 import React, {Component, PropTypes} from 'react';
 import createFragment from 'react-addons-create-fragment';
-import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
-import ItemFormat from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/ItemFormat';
-import Positioned from 'DeskPRO/Component/Positioned/Detached';
 import classNames from 'classnames';
+import { Menu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
+import { ItemFormat } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/ItemFormat';
+import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 
 export class BaseItem extends Component {
 
@@ -186,7 +186,7 @@ export class BaseItem extends Component {
           const menuLevel = parentLevel + 1;
 
           return (
-            <Positioned isOpen
+            <Detached isOpen
                         positionMy="left top"
                         positionAt="right top"
                         collision="none"
@@ -195,7 +195,7 @@ export class BaseItem extends Component {
               <Menu {...childProps} menuLevel={menuLevel}
                                     isOpen={this.props.activeItem === this}
                                     closeMenu={this.closeMenu}/>
-            </Positioned>
+            </Detached>
           );
         }
       });

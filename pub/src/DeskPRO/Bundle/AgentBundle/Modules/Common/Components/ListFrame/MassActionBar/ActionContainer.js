@@ -3,8 +3,9 @@ import Positioned from 'DeskPRO/Component/Positioned/Detached';
 import { Button } from './Button';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { DropdownPanel } from './DropdownPanel';
-import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
-import Item from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item';
+import { Menu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
+import { AddLabelsContainer } from './AddLabelsContainer';
+import { RemoveLabelsContainer } from './RemoveLabelsContainer';
 
 export class ActionContainer extends Component {
   static propTypes = {
@@ -56,6 +57,14 @@ export class ActionContainer extends Component {
       return false;
     };
 
+    const choiceOtherAction = (option, key)=> {
+      if (option.type === 'addLabels') {
+        return (<AddLabelsContainer key={key} option={option}/>);
+      } else if (option.type === 'removeLabels') {
+        return (<RemoveLabelsContainer key={key} option={option}/>);
+      }
+    };
+
     return (
       <li>
         <Button isActive={this.state.expanded}
@@ -78,16 +87,7 @@ export class ActionContainer extends Component {
             }
             {item.type === 'menu' &&
             <Menu>
-              {item.options.map(
-                (option, key)=>
-                  <Item key={key}
-                        label={option.label}
-                    // isActive={viewMode === type}
-                    // checked={viewMode === type}
-                    // onClick={() => dispatch(viewModeAction(type))}
-                        icon={option.icon}
-                    />)
-              }
+              {item.options.map((option, key)=> choiceOtherAction(option, key))}
             </Menu>
             }
           </ClickOut>

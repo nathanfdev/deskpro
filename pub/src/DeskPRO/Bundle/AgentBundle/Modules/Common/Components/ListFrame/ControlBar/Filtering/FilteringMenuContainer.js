@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import Immutable from 'immutable';
 import { connect } from 'react-redux';
 import { Button } from '../Button';
-import Positioned from 'DeskPRO/Component/Positioned/Detached';
+import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { FilteringMenu } from './FilteringMenu';
 
@@ -96,7 +96,7 @@ export class FilteringMenuContainer extends Component {
           label={this.getButtonLabel()}
           onClick={this.toggleExpanded}
           />
-        <Positioned isOpen={this.state.expanded}
+        <Detached isOpen={this.state.expanded}
                     positionAt="left bottom"
                     positionTarget={this.refs.button}>
           <ClickOut onClickOut={this.collapse}
@@ -109,7 +109,7 @@ export class FilteringMenuContainer extends Component {
                            onMenuUnmount={onMenuUnmount}
                            setParamsAction={setParamsAction}/>
           </ClickOut>
-        </Positioned>
+        </Detached>
       </li>
     );
   }

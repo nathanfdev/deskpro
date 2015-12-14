@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 
 @connect()
-export class CheckboxContainer extends Component {
+export class MassActionsCheckboxContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     action: PropTypes.func.isRequired,

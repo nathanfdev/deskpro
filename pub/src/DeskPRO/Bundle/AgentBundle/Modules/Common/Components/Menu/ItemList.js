@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default class ItemList extends React.Component {
+export class ItemList extends React.Component {
 
   /**
    * Valid prop types

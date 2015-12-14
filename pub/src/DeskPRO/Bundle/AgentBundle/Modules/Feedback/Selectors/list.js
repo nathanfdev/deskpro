@@ -205,8 +205,8 @@ export const massActionsSelector = createSelector(
 
     // Other options
     const otherOptions = [
-      { label: 'Add label', icon: 'plus-square' },
-      { label: 'Remove label', icon: 'minus-square' }
+      { label: 'Add label', icon: 'plus-square', type: 'addLabels' },
+      { label: 'Remove label', icon: 'minus-square', type: 'removeLabels' }
     ];
     massActions.push({ icon: 'fa-asterisk', type: 'menu', param: 'other', options: otherOptions });
 
