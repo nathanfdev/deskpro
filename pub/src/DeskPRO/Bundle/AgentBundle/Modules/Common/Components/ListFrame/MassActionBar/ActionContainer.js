@@ -57,30 +57,8 @@ export class ActionContainer extends Component {
     }
   };
 
-  renderFilterInfo = (labels) => {
-    if (labels.length) {
-      const result = [<span className="dpw-navigation-dropdown-item-inline-info">{labels[0]}</span>];
-      if (labels.length > 1) {
-        result.push(
-          <span className="dpw-navigation-dropdown-item-inline-info dpw-navigation-dropdown-item-inline-info-extra">
-            +{labels.length - 1}
-          </span>
-        );
-      }
-
-      return result;
-    }
-
-    return <span />;
-  };
-
-  unsetParams = (param) => {
-    this.props.dispatch(this.props.resetSingleAction(param));
-  };
-
   render() {
     const {id, item, setParams, currentParams, resetSingleAction } = this.props;
-
     const checkIfButtonHasValue = () => {
       if (!currentParams) {
         return false;
@@ -99,6 +77,8 @@ export class ActionContainer extends Component {
                 }
               }
             );
+          } else if (Boolean(currentParams.get(option.param)) === true && currentParams.get(option.param).size > 0) {
+            hasValue = true;
           }
         });
         return hasValue;
@@ -113,8 +93,7 @@ export class ActionContainer extends Component {
                               option={option}
                               setParams={setParams}
                               stateValue={this.stateValue}
-                              renderFilterInfo={this.renderFilterInfo}
-                              unsetParams={this.unsetParams}/>
+                              unsetParams={resetSingleAction}/>
         );
       } else if (option.param === 'removeLabels') {
         return (
@@ -122,8 +101,7 @@ export class ActionContainer extends Component {
                                  option={option}
                                  setParams={setParams}
                                  stateValue={this.stateValue}
-                                 renderFilterInfo={this.renderFilterInfo}
-                                 unsetParams={this.unsetParams}/>
+                                 unsetParams={resetSingleAction}/>
         );
       }
     };
@@ -140,7 +118,7 @@ export class ActionContainer extends Component {
                   positionAt="left bottom"
                   positionTarget={this.refs['button' + id]}>
           <ClickOut onClickOut={this.collapse}
-                    ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list', '.dpw-item-label']}
+                    ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel']}
                     additionalNodes={['.dpw-navigation-dropdown-item-clear']}>
             {item.type === 'action' &&
             <DropdownPanel item={item}

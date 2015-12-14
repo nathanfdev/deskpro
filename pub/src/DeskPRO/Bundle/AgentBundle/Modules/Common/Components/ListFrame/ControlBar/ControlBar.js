@@ -48,6 +48,7 @@ export class ControlBar extends Component {
         })
       ])),
       setParamsAction: PropTypes.func.isRequired,
+      resetFilterAction: PropTypes.func.isRequired,
       state: PropTypes.object.isRequired
     }),
     view: PropTypes.shape({

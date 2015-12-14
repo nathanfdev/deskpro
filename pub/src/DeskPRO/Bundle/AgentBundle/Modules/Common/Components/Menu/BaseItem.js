@@ -113,7 +113,8 @@ export class BaseItem extends Component {
     if (this.props.format) {
       if (this.props.format === 'item') {
         return (
-          <ItemFormat {...this.props} hasMenu={hasMenu} hasItemList={hasItemList}
+          <ItemFormat {...this.props} hasMenu={hasMenu}
+                                      hasItemList={hasItemList}
                                       toggleInnerList={this.toggleInnerList}/>
         );
       } else if (this.props.format === 'filter') {
@@ -187,11 +188,11 @@ export class BaseItem extends Component {
 
           return (
             <Detached isOpen
-                        positionMy="left top"
-                        positionAt="right top"
-                        collision="none"
-                        positionTarget={this}
-                        key={child}>
+                      positionMy="left top"
+                      positionAt="right top"
+                      collision="none"
+                      positionTarget={this}
+                      key={child}>
               <Menu {...childProps} menuLevel={menuLevel}
                                     isOpen={this.props.activeItem === this}
                                     closeMenu={this.closeMenu}/>

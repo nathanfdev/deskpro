@@ -10,13 +10,12 @@ export class MultipleChoiceFilter extends Component {
     setParamsAction: PropTypes.func.isRequired,
     setActiveItem: PropTypes.func,
     unsetParams: PropTypes.func.isRequired,
-    renderFilterInfo: PropTypes.func.isRequired,
     activeItem: PropTypes.object,
     state: PropTypes.object.isRequired,
     filter: PropTypes.object.isRequired
   };
 
-  renderSelectFilterInfo(options, filterValue) {
+  getSelected(options, filterValue) {
     const flatOptions = [...options];
     options.forEach(opt => {
       if (opt.nested) {
@@ -32,7 +31,7 @@ export class MultipleChoiceFilter extends Component {
         }
       });
     });
-    return this.props.renderFilterInfo(selected);
+    return selected;
   }
 
   render() {
@@ -72,13 +71,12 @@ export class MultipleChoiceFilter extends Component {
 
     return (
       <FilterItem activeItem={activeItem}
+                  selected={this.getSelected(options, filterValue)}
                   setActiveItem={setActiveItem}
                   icon={icon || 'filter'}
                   label={label}
                   isActive={isActive}
-                  resetFilter={unsetParams.bind(this, params)}
-        >
-        {this.renderSelectFilterInfo(options, filterValue)}
+                  resetFilter={unsetParams.bind(this, params)}>
         <Menu>
           <ChoiceMenu title={label} quickFilter={quickFilter}>
             <ul>

@@ -10,12 +10,11 @@ export class RemoveLabelsContainer extends Component {
     setParams: PropTypes.func.isRequired,
     stateValue: PropTypes.func.isRequired,
     unsetParams: PropTypes.func.isRequired,
-    renderFilterInfo: PropTypes.func.isRequired,
     option: PropTypes.object.isRequired
   };
 
   render() {
-    const {dispatch, option, activeItem, setActiveItem, stateValue, setParams, renderFilterInfo, unsetParams} = this.props;
+    const {dispatch, option, activeItem, setActiveItem, stateValue, setParams, unsetParams} = this.props;
 
     return (
       <LabelsFilter dispatch={dispatch}
@@ -24,7 +23,6 @@ export class RemoveLabelsContainer extends Component {
                     activeItem={activeItem}
                     icon={option.icon || 'tags'}
                     label={option.label}
-                    renderFilterInfo={renderFilterInfo}
                     setActiveItem={setActiveItem}
                     stateValue={stateValue}
                     unsetParams={unsetParams.bind(this, 'removeLabels')}
