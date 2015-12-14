@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import Detached from 'DeskPRO/Component/Positioned/Detached';
+import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import classNames from 'classnames';
 import moment from 'moment';

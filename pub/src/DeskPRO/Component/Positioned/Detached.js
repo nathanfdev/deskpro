@@ -1,9 +1,9 @@
 import { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import Abstract from './Abstract';
 import jQuery from 'jquery';
+import { Abstract } from './Abstract';
 
-export default class Detached extends Abstract {
+export class Detached extends Abstract {
 
   static propTypes = {
     context: PropTypes.any

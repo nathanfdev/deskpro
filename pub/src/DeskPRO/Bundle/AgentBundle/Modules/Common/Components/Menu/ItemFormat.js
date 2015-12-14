@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-export default class ItemFormat extends React.Component {
+export class ItemFormat extends React.Component {
   static propTypes = {
     icon: React.PropTypes.string,
     label: React.PropTypes.string,

@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-export default class Menu extends React.Component {
+export class Menu extends React.Component {
 
   /**
    * Valid prop types
