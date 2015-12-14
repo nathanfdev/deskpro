@@ -17,6 +17,12 @@ export const resetTranscriptDataSent = createAction('WIDGET_CHAT_RESET_TRANSCRIP
 // Messages actions
 export const resetMessages = createAction('WIDGET_CHAT_RESET_MESSAGES');
 export const addNewMessage = createAction('WIDGET_CHAT_ADD_NEW_MESSAGES');
+
+// Uploading files actions
+export const addUploadingFile = createAction('WIDGET_CHAT_ADD_UPLOADING_FILE');
+export const removeUploadingFile = createAction('WIDGET_CHAT_REMOVE_UPLOADING_FILE');
+
+// Attachment actions
 export const addAttachment = createAction('WIDGET_CHAT_ADD_ATTACHMENT');
 export const removeAttachment = createAction('WIDGET_CHAT_REMOVE_ATTACHMENT');
 export const resetAttachments = createAction('WIDGET_CHAT_RESET_ATTACHMENTS');

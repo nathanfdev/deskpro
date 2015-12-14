@@ -4,14 +4,15 @@ import { ReplyForm } from './ReplyForm';
 import { ReopenChatContainer } from '../ReopenChatContainer';
 import { addAttachment } from '../../../../Actions/chatActions';
 import { replaceSmileCodes } from 'DeskPRO/Component/Rte/Emotions';
-import { sendChatMessage, removeAttachment } from '../../../../Actions/chatActions';
+import { sendChatMessage, removeAttachment, addUploadingFile, removeUploadingFile } from '../../../../Actions/chatActions';
 import {
   chatIdSelector,
   agentNameSelector,
   attachmentsSelector,
   attachedImagesSelector,
   attachedImagesCountSelector,
-  attachedFilesSelector
+  attachedFilesSelector,
+  uploadingFilesSelector
 } from '../../../../Selectors/chat';
 
 @connect(state => ({
@@ -20,7 +21,8 @@ import {
   attachments: attachmentsSelector(state),
   attachedImages: attachedImagesSelector(state),
   attachedImagesCount: attachedImagesCountSelector(state),
-  attachedFiles: attachedFilesSelector(state)
+  attachedFiles: attachedFilesSelector(state),
+  uploadingFiles: uploadingFilesSelector(state)
 }))
 export class ReplyFormContainer extends React.Component {
 
@@ -29,13 +31,6 @@ export class ReplyFormContainer extends React.Component {
     chatId: PropTypes.number,
     attachments: PropTypes.object
   };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      uploading: []
-    };
-  }
 
   onSendMessage = message => {
     const { dispatch, chatId, attachments } = this.props;
@@ -48,9 +43,7 @@ export class ReplyFormContainer extends React.Component {
   };
 
   onUploadedStarted = (event, data) => {
-    this.setState({
-      uploading: this.state.uploading.concat(data.files)
-    });
+    data.files.forEach(file => this.props.dispatch(addUploadingFile(file)));
   };
 
   onUploadedSuccess = (event, response) => {
@@ -60,27 +53,16 @@ export class ReplyFormContainer extends React.Component {
     this.removeFilesFromQueue(response);
   };
 
-  onUploadedFail = (event, response) => {
-    this.removeFilesFromQueue(response);
+  onUploadedFail = (event, data) => {
+    this.removeFilesFromQueue(data);
   };
 
   onRemoveFile = attachment => {
     this.props.dispatch(removeAttachment(attachment));
   };
 
-  removeFilesFromQueue(response) {
-    response.files.forEach(file => setTimeout(() => {
-      const files = this.state.uploading;
-      const index = files.indexOf(file);
-
-      if (index !== -1) {
-        files.splice(index, 1);
-      }
-
-      this.setState({
-        uploading: files
-      });
-    }, 0));
+  removeFilesFromQueue(data) {
+    data.files.forEach(file => this.props.dispatch(removeUploadingFile(file)));
   }
 
   render() {
@@ -90,8 +72,7 @@ export class ReplyFormContainer extends React.Component {
                    onUploadedStarted={this.onUploadedStarted}
                    onUploadedSuccess={this.onUploadedSuccess}
                    onUploadedFail={this.onUploadedFail}
-                   onRemoveFile={this.onRemoveFile}
-                   uploadingFiles={this.state.uploading} {...this.props} />
+                   onRemoveFile={this.onRemoveFile} {...this.props} />
 
       </ReopenChatContainer>
     );

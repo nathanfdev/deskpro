@@ -86,6 +86,12 @@ export const lastMessageIdSelector = createSelector(
   messages => messages && messages.size ? messages.map(message => message.get('id')).max((a, b) => a - b) : null
 );
 
+// Uploading files selectors
+export const uploadingFilesSelector = createSelector(
+  stateSelector,
+  state => state.get('uploadingFiles')
+);
+
 // Attachments selectors
 export const attachmentsSelector = createSelector(
   stateSelector,

@@ -24,7 +24,7 @@ export class ReplyForm extends React.Component {
     attachedImages: PropTypes.object,
     attachedImagesCount: PropTypes.number,
     attachedFiles: PropTypes.object,
-    uploadingFiles: PropTypes.array
+    uploadingFiles: PropTypes.object
   };
 
   constructor(props) {

@@ -31,6 +31,7 @@ const initialState = {
     {id: 102, content: '{"phrase_id":"message_assigned","name":"Admin Admin"}', author: null, author_type: 'user', is_sys: true, date_created: '2015-12-03 13:58'},
     {id: 101, content: '{"phrase_id":"message_started"}', author: null, is_sys: true, date_created: '2015-12-03 13:50'}
   ],
+  uploadingFiles: [],
   attachments: []
 };
 
@@ -46,6 +47,10 @@ export default createReducer(initialState, {
   // Messages
   [actions.resetMessages]: setValue('messages', []),
   [actions.addNewMessage]: pushPayloadToCollection('messages'),
+
+  // Uploading files
+  [actions.addUploadingFile]: pushPayloadToCollection('uploadingFiles'),
+  [actions.removeUploadingFile]: deletePayloadFromCollection('uploadingFiles'),
 
   // Attachments
   [actions.addAttachment]: pushPayloadToCollection('attachments'),
