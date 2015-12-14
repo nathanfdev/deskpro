@@ -12,28 +12,20 @@ export class MessageFile extends React.Component {
     const { attachment } = this.props;
 
     switch (attachment.get('content_type')) {
+      case 'application/zip':
+      case 'application/x-gzip':
+        return 'file-zip-o';
+      case 'application/pdf':
+        return 'file-pdf-o';
+      case 'text/plain':
+        return 'file-text-o';
+      case 'text/x-php':
+        return 'file-code-o';
+      case 'application/msword':
+        return 'file-word-o';
       default:
-        return 'file-o';
+        return 'fa-file-o';
     }
-
-    //file
-    //file-archive-o
-    //file-audio-o
-    //file-code-o
-    //file-excel-o
-    //file-image-o
-    //file-movie-o
-    //file-o
-    //file-pdf-o
-    //file-photo-o
-    //file-picture-o
-    //file-powerpoint-o
-    //file-sound-o
-    //file-text
-    //file-text-o
-    //file-video-o
-    //file-word-o
-    //file-zip-o
   }
 
   render() {
