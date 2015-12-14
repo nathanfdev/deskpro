@@ -30,6 +30,13 @@ export class ReplyFormContainer extends React.Component {
     attachments: PropTypes.object
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      uploading: []
+    };
+  }
+
   onSendMessage = message => {
     const { dispatch, chatId, attachments } = this.props;
     const data = {
@@ -40,9 +47,28 @@ export class ReplyFormContainer extends React.Component {
     dispatch(sendChatMessage(chatId, data));
   };
 
+  onSendFile = (event, data) => {
+    this.setState({
+      uploading: this.state.uploading.concat(data.files)
+    });
+  };
+
   onUploadedFile = (event, response) => {
     const attachments = response.result && response.result.data || [];
     attachments.forEach(attachment => this.props.dispatch(addAttachment(attachment)));
+
+    response.files.forEach(file => setTimeout(() => {
+      const files = this.state.uploading;
+      const index = files.indexOf(file);
+
+      if (index !== -1) {
+        files.splice(index, 1);
+      }
+
+      this.setState({
+        uploading: files
+      });
+    }, 0));
   };
 
   onRemoveFile = attachment => {
@@ -53,8 +79,10 @@ export class ReplyFormContainer extends React.Component {
     return (
       <ReopenChatContainer>
         <ReplyForm onSendMessage={this.onSendMessage}
+                   onSendFile={this.onSendFile}
                    onUploadedFile={this.onUploadedFile}
-                   onRemoveFile={this.onRemoveFile} {...this.props} />
+                   onRemoveFile={this.onRemoveFile}
+                   uploadingFiles={this.state.uploading} {...this.props} />
 
       </ReopenChatContainer>
     );

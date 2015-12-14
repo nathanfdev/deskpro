@@ -10,6 +10,7 @@ export class DropZone extends React.Component {
     getExternalInput: PropTypes.func.isRequired,
     uploadUrl: PropTypes.string.isRequired,
     context: PropTypes.any,
+    onSend: PropTypes.func,
     onSuccess: PropTypes.func,
     onFail: PropTypes.func
   };
@@ -22,12 +23,13 @@ export class DropZone extends React.Component {
   }
 
   componentDidMount() {
-    const { uploadUrl, onSuccess, onFail } = this.props;
+    const { uploadUrl, onSend, onSuccess, onFail } = this.props;
     const overlayNode = ReactDOM.findDOMNode(this);
 
     $(this.getInput()).fileupload({
       url: uploadUrl,
       dropZone: $(overlayNode),
+      send: onSend,
       done: onSuccess,
       fail: onFail
     });

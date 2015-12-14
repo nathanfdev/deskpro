@@ -4,6 +4,7 @@ import { EndChatButton } from './EndChatButton';
 import EmotionButton from 'DeskPRO/Component/Rte/EmotionButton';
 import RteInput from 'DeskPRO/Component/Rte/RteInput';
 import ScrollArea from 'react-scrollbar';
+import { UploadingFiles } from './Upload/Uploading/UploadingFiles';
 import { AttachedFiles } from './Upload/Attached/File/AttachedFiles';
 import { AttachedImages } from './Upload/Attached/Image/AttachedImages';
 import { DropZone } from './Upload/DropZone/DropZone';
@@ -14,13 +15,15 @@ export class ReplyForm extends React.Component {
     isEnded: PropTypes.bool,
     canReopen: PropTypes.bool,
     onSendMessage: PropTypes.func,
+    onSendFile: PropTypes.func,
     onUploadedFile: PropTypes.func,
     onRemoveFile: PropTypes.func,
     onReopen: PropTypes.func,
     agentName: PropTypes.string,
     attachedImages: PropTypes.object,
     attachedImagesCount: PropTypes.number,
-    attachedFiles: PropTypes.object
+    attachedFiles: PropTypes.object,
+    uploadingFiles: PropTypes.array
   };
 
   constructor(props) {
@@ -90,7 +93,8 @@ export class ReplyForm extends React.Component {
 
   render() {
     const { isEnded, canReopen } = this.props;
-    const { attachedImages, attachedImagesCount, attachedFiles, onUploadedFile, onRemoveFile } = this.props;
+    const { uploadingFiles, attachedImages, attachedImagesCount, attachedFiles } = this.props;
+    const { onSendFile, onUploadedFile, onRemoveFile } = this.props;
 
     if (isEnded && !canReopen) {
       return null;
@@ -118,6 +122,7 @@ export class ReplyForm extends React.Component {
               : this.renderRte()
             }
 
+            <UploadingFiles files={uploadingFiles} />
             <AttachedFiles attachments={attachedFiles} onRemoveFile={onRemoveFile} />
           </div>
 
@@ -152,6 +157,7 @@ export class ReplyForm extends React.Component {
         <DropZone getExternalInput={() => this.refs.fileUpload}
                   uploadUrl={window.DP_HELPDESK_URL + 'portal/api/blobs/temp'}
                   context={[window.widgetFrame.document, parent.window.document]}
+                  onSend={onSendFile}
                   onSuccess={onUploadedFile} />
       </div>
     );

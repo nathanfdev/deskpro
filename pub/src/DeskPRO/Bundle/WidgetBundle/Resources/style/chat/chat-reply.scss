@@ -207,6 +207,12 @@
       i { top: 6px; }
       &:hover { color: #333; }
     }
+
+    .spinner {
+      position: absolute;
+      right: 5px;
+      top: 5px;
+    }
   }
 
   .dpdesignportal-chat-form-button-row {
