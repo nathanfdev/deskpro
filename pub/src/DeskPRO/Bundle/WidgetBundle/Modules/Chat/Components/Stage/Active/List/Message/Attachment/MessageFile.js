@@ -41,6 +41,8 @@ export class MessageFile extends React.Component {
         <a href={attachment.get('download_url')}>
           {filenameMaxLength(attachment.get('filename'), 40)}
         </a>
+
+        ({attachment.get('filesize_readable')})
       </div>
     );
   }
