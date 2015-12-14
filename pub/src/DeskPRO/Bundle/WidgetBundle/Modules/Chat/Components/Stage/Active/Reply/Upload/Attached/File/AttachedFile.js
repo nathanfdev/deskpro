@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { filenameMaxLength } from 'DeskPRO/Component/Util/Filename';
 
 export class AttachedFile extends React.Component {
 
@@ -16,9 +17,6 @@ export class AttachedFile extends React.Component {
 
   render() {
     const { attachment } = this.props;
-    const filename = attachment.get('filename') || '';
-    const extension = filename.substring(filename.lastIndexOf('.') + 1);
-    const shortTitle = filename.substring(0, 25);
 
     return (
       <div className="dpdesignportal-chat-form-attached-file">
@@ -26,7 +24,7 @@ export class AttachedFile extends React.Component {
           <i className="fa fa-file-pdf-o"></i>
         </div>
         <div className="attached-file-title">
-          {shortTitle}... .{extension} ({attachment.get('filesize_readable')})
+          {filenameMaxLength(attachment.get('filename'), 25)} ({attachment.get('filesize_readable')})
         </div>
         <a href="#" className="dpdesignportal-chat-form-attached-file-remove" onClick={this.onRemove}>
           <i className="fa fa-times-circle"></i>

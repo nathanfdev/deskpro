@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import { filenameMaxLength } from 'DeskPRO/Component/Util/Filename';
 
 export class MessageFile extends React.Component {
 
@@ -34,7 +35,7 @@ export class MessageFile extends React.Component {
     return (
       <div>
         <i className={classNames('fa', this.getFileIcon())} />
-        <a href={attachment.get('download_url')}>{attachment.get('filename')}</a>
+        <a href={attachment.get('download_url')}>{filenameMaxLength(attachment.get('filename'), 25)}</a>
       </div>
     );
   }
