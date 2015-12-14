@@ -44,7 +44,7 @@ class BlobTransformer extends AbstractDataSerializerTransformer
      */
     public function getAutomaticProperties(DataTransformerRequest $request)
     {
-        return [];
+        return ['content_type', 'is_image'];
     }
 
     /**
@@ -62,7 +62,6 @@ class BlobTransformer extends AbstractDataSerializerTransformer
             'download_url'      => $data->getDownloadUrl(true, false),
             'filename'          => $data->getFilenameSafe(),
             'filesize_readable' => $data->getReadableFilesize(),
-            'is_image'          => $data->isImage(),
         ];
     }
 }
