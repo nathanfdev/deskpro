@@ -96,7 +96,7 @@ export class Avatar extends React.Component {
       error: null
     });
 
-    this.props.onChange(response.blob_auth_id);
+    this.props.onChange(response.data.blob_auth_id);
     this.refs.dropzoneComponent.dropzone.removeFile(file);
   };
 
