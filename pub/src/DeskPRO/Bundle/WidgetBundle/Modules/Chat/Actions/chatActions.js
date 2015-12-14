@@ -6,7 +6,7 @@ import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 export const setChatId = createAction('WIDGET_CHAT_SET_ID');
 export const updateChatInfo = createAction('WIDGET_CHAT_UPDATE_CHAT_INFO');
 
-// Controls actions
+// Audio actions
 export const toggleAudioNotifications = createAction('WIDGET_CHAT_TOGGLE_AUDIO_NOTIFICATIONS');
 
 // Transcript actions

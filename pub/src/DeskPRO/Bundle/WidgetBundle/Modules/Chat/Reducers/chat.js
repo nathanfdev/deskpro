@@ -34,7 +34,7 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
-  // Controls
+  // Audio
   [actions.toggleAudioNotifications]: toggleBool('audioNotifications'),
 
   // Chat setup
