@@ -112,7 +112,15 @@
     @include retina-image("../img/deskpro-logo-negative", 12px 12px);
   }
 
-  .dpdesignportal-message-content { color: #4b4b4b; }
+  .dpdesignportal-message-content {
+    color: #4b4b4b;
+
+    .dpdesignportal-message-content-file-attachment {
+      i {
+        margin-right: 5px;
+      }
+    }
+  }
 
   &.agent-message { padding-left: 30px; }
   &.agent-message .dpdesignportal-message-content { background: #ededed; }

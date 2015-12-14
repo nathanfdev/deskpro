@@ -15,15 +15,17 @@ export class MessageFile extends React.Component {
     switch (attachment.get('content_type')) {
       case 'application/zip':
       case 'application/x-gzip':
-        return 'file-zip-o';
+        return 'fa-file-zip-o';
       case 'application/pdf':
-        return 'file-pdf-o';
+        return 'fa-file-pdf-o';
       case 'text/plain':
-        return 'file-text-o';
+        return 'fa-file-text-o';
       case 'text/x-php':
-        return 'file-code-o';
+        return 'fa-file-code-o';
       case 'application/msword':
-        return 'file-word-o';
+        return 'fa-file-word-o';
+      case 'audio/mpeg':
+        return 'fa-file-audio-o';
       default:
         return 'fa-file-o';
     }
@@ -33,9 +35,12 @@ export class MessageFile extends React.Component {
     const { attachment } = this.props;
 
     return (
-      <div>
+      <div className="dpdesignportal-message-content-file-attachment">
         <i className={classNames('fa', this.getFileIcon())} />
-        <a href={attachment.get('download_url')}>{filenameMaxLength(attachment.get('filename'), 25)}</a>
+
+        <a href={attachment.get('download_url')}>
+          {filenameMaxLength(attachment.get('filename'), 40)}
+        </a>
       </div>
     );
   }
