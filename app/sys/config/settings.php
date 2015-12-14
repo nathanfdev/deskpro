@@ -915,7 +915,6 @@ return array(
 
     'user.show_ratings'             => true,
     'user.show_ratings_min_votes'   => 1,
-    'user.show_num_votes'           => false,
     'user.publish_comments'         => true,
     'user.feedback_notify_comments' => true,
     'user.kb_subscriptions'         => true,
