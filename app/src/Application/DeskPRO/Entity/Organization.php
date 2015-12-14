@@ -840,7 +840,11 @@ class Organization extends DomainObject implements HighlightableModelInterface
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization',
                 'inversedBy'   => 'children',
                 'joinColumns'  => array(
-                    array('name' => 'parent_id', 'referencedColumnName' => 'id'),
+                    array(
+                        'name'                 => 'parent_id',
+                        'referencedColumnName' => 'id',
+                        'onDelete'             => 'set null',
+                    ),
                 ),
                 'dpApi' => true,
             )

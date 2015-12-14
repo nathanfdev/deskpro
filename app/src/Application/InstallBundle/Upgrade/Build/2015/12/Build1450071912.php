@@ -26,4 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1450071912);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1450071912 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('Upgrade Organizations table');
+        $this->execMutateSql('ALTER TABLE organizations DROP FOREIGN KEY FK_427C1C7F727ACA70');
+        $this->execMutateSql('ALTER TABLE organizations ADD CONSTRAINT FK_427C1C7F727ACA70 FOREIGN KEY (parent_id) REFERENCES organizations (id) ON DELETE SET NULL');
+    }
+}
