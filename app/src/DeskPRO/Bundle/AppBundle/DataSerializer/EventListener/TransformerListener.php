@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\EventListener;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializerContext;
@@ -81,18 +80,42 @@ class TransformerListener implements EventSubscriberInterface
 
         if (is_array($main_data) || $main_data instanceof \Traversable) {
             $main_transformed = [];
-            foreach ($main_data as $this_data) {
+            foreach ($main_data as $k => $this_data) {
                 $transformation_response = $this->doTransform($this_data, $context);
-                $main_transformed[]      = $transformation_response->getTransformed();
+                $main_transformed[$k]    = $this->recursiveTransform($transformation_response->getTransformed(), $context);
             }
         } else {
             $transformation_response = $this->doTransform($main_data, $context);
-            $main_transformed        = $transformation_response->getTransformed();
+            $main_transformed        = $this->recursiveTransform($transformation_response->getTransformed(), $context);
         }
 
         $context->setMainTransformed($main_transformed);
     }
 
+    protected function recursiveTransform($data, DataSerializerContext $context)
+    {
+        if (!is_array($data) && !$data instanceof \Traversable) {
+            return $data;
+        }
+
+        foreach ($data as $k => $v) {
+            if (is_object($v) && $this->data_transformer->canTransformData($v)) {
+                $tr       = $this->doTransform($v, $context);
+                $data[$k] = $this->recursiveTransform($tr->getTransformed(), $context);
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param                       $data
+     * @param DataSerializerContext $context
+     *
+     * @throws \DeskPRO\Bundle\AppBundle\DataSerializer\Exception\DataSerializerException
+     * @return \DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerResponse
+     *
+     */
     protected function doTransform($data, DataSerializerContext $context)
     {
         $transformation_request = new DataTransformerRequest(

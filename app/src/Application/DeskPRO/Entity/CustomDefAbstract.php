@@ -828,6 +828,16 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
+     * True if there can be multiple values for this type.
+     *
+     * @return bool
+     */
+    public function isMulti()
+    {
+        return $this->isChoiceType() && $this->getOption('multiple');
+    }
+
+    /**
      * @return bool
      */
     public function isDateType()

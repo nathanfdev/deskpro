@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer;
 
 use Orb\Util\Strings;
@@ -66,12 +65,19 @@ class DataTypeMap
     /**
      * Given some $data give me the object "type" or null if it can't be determined.
      *
-     * @param $data
+     * @param mixed $data
+     * @param bool  $null_on_none True to return null of no found type, otherwise an exception is raised
      *
      * @return string|null
      */
-    public function findType($data)
+    public function findType($data, $null_on_none = false)
     {
+        $object_class = is_object($data) ? get_class($data) : null;
+
+        if ($object_class && $type = $this->findTypeForClass($object_class)) {
+            return $type;
+        }
+
         if (is_array($data)) {
             $data = array_shift($data);
         } elseif ($data instanceof \Traversable) {
@@ -79,6 +85,12 @@ class DataTypeMap
         }
 
         if (is_array($data) || $data instanceof \Traversable) {
+            $object_class = is_object($data) ? get_class($data) : null;
+
+            if ($object_class && $type = $this->findTypeForClass($object_class)) {
+                return $type;
+            }
+
             return; // it is still an array and we can't determine type now
         }
 
@@ -89,6 +101,9 @@ class DataTypeMap
         } elseif ($type = $this->findTypeForClass($object_class)) {
             return $type;
         } else {
+            if ($null_on_none) {
+                return;
+            }
             throw new \Exception("Type for $object_class not found.");
         }
     }

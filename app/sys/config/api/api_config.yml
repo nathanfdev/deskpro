@@ -22,6 +22,9 @@ api:
             avatar:
                 classes:
                     - DeskPRO\Bundle\AppBundle\Content\Avatar
+            custom_data_collection:
+                classes:
+                    - DeskPRO\Bundle\AppBundle\CustomFields\CustomDataCollection
 
 framework:
     esi:             { enabled: true }

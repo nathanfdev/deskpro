@@ -51,3 +51,7 @@ services:
     class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\ChatMessageTransformer
     arguments:
       - @avatar_resolver
+
+  data_serializer.transformer.custom_data_collection:
+    class: DeskPRO\Bundle\AppBundle\CustomFields\DataTransformer\CustomDataCollectionTransformer
+    arguments: ~

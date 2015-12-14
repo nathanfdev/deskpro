@@ -29,12 +29,12 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
+use DeskPRO\Bundle\AppBundle\CustomFields\CustomDataCollection;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use Doctrine\ORM\EntityManager;
@@ -187,11 +187,7 @@ class TicketTransformer extends AbstractDataSerializerTransformer
             $props['person_email'] = null;
         }
 
-        $custom_data = [];
-        foreach ($ticket->getCustomData() as $custom) {
-            $custom_data[$custom->getId()] = $custom->getData();
-        }
-        $props['fields']       = $custom_data;
+        $props['fields']       = new CustomDataCollection($ticket->getCustomData());
         $props['labels']       = $ticket->getLabelsArray();
         $props['participants'] = $this->selectIds($ticket->getUserParticipants());
         $props['followers']    = $this->selectIds($ticket->getAgentParticipants());

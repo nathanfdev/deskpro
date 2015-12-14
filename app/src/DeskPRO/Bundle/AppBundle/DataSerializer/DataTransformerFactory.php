@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\AbstractDataSerializerTransformer;
@@ -81,6 +80,27 @@ class DataTransformerFactory
         $this->container            = $container;
         $this->property_transformer = $property_transformer;
         $this->logger               = $logger;
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return bool
+     */
+    public function hasType($type)
+    {
+        $service_name = self::TRANSFORMER_SERVICE_PREFIX.$type;
+
+        if (!$this->container->has($service_name)) {
+            $transformer_class = 'DeskPRO\\Bundle\\AppBundle\\DataSerializer\\DataTransformer\\'.ucfirst(Strings::underscoreToCamelCase($type)).'Transformer';
+            if (!class_exists($transformer_class)) {
+                return false;
+            }
+
+            return true;
+        } else {
+            return true;
+        }
     }
 
     /**

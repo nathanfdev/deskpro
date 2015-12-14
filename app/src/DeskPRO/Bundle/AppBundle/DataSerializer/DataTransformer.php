@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\Exception\DataSerializerException;
@@ -64,6 +63,21 @@ class DataTransformer
         $this->type_map             = $type_map;
         $this->transformer_factory  = $transformer_factory;
         $this->id_finder            = $id_finder;
+    }
+
+    public function canTransformData($data)
+    {
+        if ($data === null || empty($data)) {
+            return true;
+        }
+
+        $type = $this->type_map->findType($data);
+
+        if ($type && $this->transformer_factory->hasType($type)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function transform(DataTransformerRequest $transformation_request)
