@@ -13,7 +13,7 @@ export class MessageContent extends React.Component {
     const content = message.get('is_html') ? replaceSmileCodes(message.get('content')) : message.get('content');
 
     return (
-      <div className="dpdesignportal-message-content">
+      <div>
         {message.get('is_html')
           ? <p dangerouslySetInnerHTML={{__html: content}} />
           : <p>{content}</p>

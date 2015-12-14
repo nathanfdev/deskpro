@@ -2,7 +2,8 @@ import React, { PropTypes } from 'react';
 import { InlineEvent } from './Event/InlineEvent';
 import { Message } from './Message/Message';
 import { MessageAvatar } from './Message/MessageAvatar';
-import { MessageImage } from './Message/MessageImage';
+import { MessageBody } from './Message/MessageBody';
+import { MessageAttachment } from './Message/Attachment/MessageAttachment';
 import { MessageContent } from './Message/MessageContent';
 import { MessageFooter } from './Message/MessageFooter';
 import Immutable from 'immutable';
@@ -33,12 +34,12 @@ export class MessageFactory extends React.Component {
     return (
       <Message type={message.get('author_type')}>
         <MessageAvatar {...this.props} />
-
-        {metadata.get('type') === 'file'
-          ? <MessageImage {...this.props} />
-          : <MessageContent {...this.props} />
-        }
-
+        <MessageBody>
+          {metadata.get('type') === 'file'
+            ? <MessageAttachment {...this.props} />
+            : <MessageContent {...this.props} />
+          }
+        </MessageBody>
         <MessageFooter {...this.props} />
       </Message>
     );

@@ -3,7 +3,8 @@ import React, { PropTypes } from 'react';
 export class MessageImage extends React.Component {
 
   static propTypes = {
-    message: PropTypes.object
+    message: PropTypes.object,
+    attachment: PropTypes.object
   };
 
   onOpenFullImage = () => {
@@ -11,14 +12,13 @@ export class MessageImage extends React.Component {
   };
 
   render() {
-    const { message } = this.props;
+    const { message, attachment } = this.props;
 
     const authorName = message.get('author_name');
-    const blob = message.get('metadata').get('blob');
-    const downloadUrl = blob.get('download_url');
+    const downloadUrl = attachment.get('download_url');
 
     return (
-      <div className="dpdesignportal-message-content">
+      <div>
         <ul>
           <li className="dpdesignportal-message-asset">
             <div className="dpdesignportal-message-asset attachement-screen">
