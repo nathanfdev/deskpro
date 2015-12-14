@@ -392,11 +392,12 @@ class FeedbackController extends AbstractController
         //
         // RATING
         //
-        if (!$rating = $this->getRatingsHelper()->getPersonRating($item, $this->getUser())) {
-            // TODO: flagging this: using $visitor_id is potentially dangerous due to HTTP caching
-            //       we should consider showing this via a client-side JS request instead.
-            $rating = $this->getRatingsHelper()->findVisitorRating($item, $visitor_id);
-        }
+        $rating = $this->findContentRating($item, $visitor_id);
+
+        //
+        // NUM RATINGS
+        //
+        list($show_rating_counts, $rating_counts) = $this->determineRatingCounts($item);
 
         //
         // SUBSCRIPTION
@@ -416,14 +417,16 @@ class FeedbackController extends AbstractController
         return $this->renderThemeView(
             'Theme:Feedback:view.html.twig',
             array(
-                'item'             => $item,
-                'is_subscribed'    => $is_subscribed,
-                'content_id'       => $item->getId(),
-                'content_type'     => Feedback::CONTENT_TYPE,
-                'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,
-                'page_title'       => $this->createPageTitle()->feedback($item),
-                'breadcrumbs'      => $breadcrumbs,
-                'rating'           => $rating,
+                'item'               => $item,
+                'is_subscribed'      => $is_subscribed,
+                'content_id'         => $item->getId(),
+                'content_type'       => Feedback::CONTENT_TYPE,
+                'new_comment_form'   => $new_comment_form ? $new_comment_form->createView() : null,
+                'page_title'         => $this->createPageTitle()->feedback($item),
+                'breadcrumbs'        => $breadcrumbs,
+                'rating'             => $rating,
+                'show_rating_counts' => $show_rating_counts,
+                'rating_counts'      => $rating_counts,
             )
         );
     }

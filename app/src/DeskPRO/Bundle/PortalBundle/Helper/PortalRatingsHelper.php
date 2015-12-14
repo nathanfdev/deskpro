@@ -197,4 +197,30 @@ class PortalRatingsHelper
             $content_rating->rateUp();
         }
     }
+
+    public function ratingCounts(ContentAbstract $content)
+    {
+        $rating_counts = [];
+
+        $rating_counts['total'] = $this->em->createQuery('
+                SELECT COUNT(DISTINCT r.id)
+                FROM DeskPRO:Rating r
+                WHERE r.object_type = ?1 AND r.object_id = ?2
+            ')
+            ->setParameter(1, $content->getContentType())
+            ->setParameter(2, $content->getId())
+            ->getSingleScalarResult();
+
+        $rating_counts['positive'] = $this->em->createQuery('
+                SELECT COUNT(DISTINCT r.id)
+                FROM DeskPRO:Rating r
+                WHERE r.object_type = ?1 AND r.object_id = ?2
+                AND r.rating > 0
+            ')
+            ->setParameter(1, $content->getContentType())
+            ->setParameter(2, $content->getId())
+            ->getSingleScalarResult();
+
+        return $rating_counts;
+    }
 }

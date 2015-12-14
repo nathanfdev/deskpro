@@ -27,6 +27,7 @@
  */
 
 return array(
+    'portal.general.rating_x_of_y_found_helpful' => '{{vote_up}} of {{vote_count}} people found this page helpful',
     'portal.general.get-in-touch'                => 'Get in touch',
     'portal.general.submit-feedback'             => 'Submit Feedback',
     'portal.general.start-chat'                  => 'Start a chat session',

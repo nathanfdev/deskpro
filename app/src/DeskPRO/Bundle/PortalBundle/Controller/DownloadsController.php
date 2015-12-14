@@ -214,11 +214,12 @@ class DownloadsController extends AbstractController
         //
         // RATING
         //
-        if (!$rating = $this->getRatingsHelper()->getPersonRating($file, $this->getUser())) {
-            // TODO: flagging this: using $visitor_id is potentially dangerous due to HTTP caching
-            //       we should consider showing this via a client-side JS request instead.
-            $rating = $this->getRatingsHelper()->findVisitorRating($file, $visitor_id);
-        }
+        $rating = $this->findContentRating($file, $visitor_id);
+
+        //
+        // NUM RATINGS
+        //
+        list($show_rating_counts, $rating_counts) = $this->determineRatingCounts($file);
 
         //
         // SUBSCRIPTION
@@ -237,14 +238,16 @@ class DownloadsController extends AbstractController
         return $this->renderThemeView(
             'Theme:Downloads:view.html.twig',
             array(
-                'file'             => $file,
-                'content_type'     => Download::CONTENT_TYPE,
-                'content_id'       => $file->getId(),
-                'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,
-                'breadcrumbs'      => $breadcrumbs,
-                'rating'           => $rating,
-                'is_subscribed'    => $is_subscribed,
-                'page_title'       => $this->createPageTitle()->downloads($file),
+                'file'               => $file,
+                'content_type'       => Download::CONTENT_TYPE,
+                'content_id'         => $file->getId(),
+                'new_comment_form'   => $new_comment_form ? $new_comment_form->createView() : null,
+                'breadcrumbs'        => $breadcrumbs,
+                'rating'             => $rating,
+                'is_subscribed'      => $is_subscribed,
+                'page_title'         => $this->createPageTitle()->downloads($file),
+                'show_rating_counts' => $show_rating_counts,
+                'rating_counts'      => $rating_counts,
             )
         );
     }
