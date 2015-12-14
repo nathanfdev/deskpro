@@ -29,10 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\View;
 
 use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ArticleAttachment;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Feedback;
@@ -118,6 +118,8 @@ class PortalIconFactory
             return $this->makeFileIcon($content->getBlob());
         } elseif ($content instanceof Article) {
             return $this->makeArticleIcon($content);
+        } elseif ($content instanceof ArticleAttachment) {
+            return $this->makeFileIcon($content->getBlob());
         } elseif ($content instanceof News) {
             return $this->makeNewsIcon($content);
         } elseif ($content instanceof Feedback) {

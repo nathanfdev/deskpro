@@ -52,6 +52,7 @@ return array(
     'portal.general.related-news'                => 'Related News',
     'portal.general.related-downloads'           => 'Related Files',
     'portal.general.related-feedback'            => 'Related Feedback',
+    'portal.general.attachments'                 => 'Attachments',
     'portal.general.attach-instructions'         => 'Click here to attach a file (or just drag & drop a file here)',
     'portal.general.nav-portal'                  => 'Portal',
     'portal.general.nav-kb'                      => 'Knowledgebase',

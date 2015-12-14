@@ -259,8 +259,6 @@ class DownloadsController extends AbstractController
      */
     public function downloadAction(Request $request, Download $file)
     {
-        $blob = $file->getBlob();
-
         $file->incrementDownloadCount();
         $this->getEm()->flush($file);
 

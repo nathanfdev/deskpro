@@ -33,11 +33,15 @@
  */
 namespace Application\DeskPRO\Entity;
 
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Util\Numbers;
 
 /**
  * Article attachments.
+ *
+ * @PortalLinkCustom(type="serve")
  */
 class ArticleAttachment extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -84,6 +88,11 @@ class ArticleAttachment extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
+    public function getBlob()
+    {
+        return $this->blob;
+    }
+
     /**
      * Set person.
      *
@@ -96,6 +105,22 @@ class ArticleAttachment extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('person', $person);
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReadableFileSize()
+    {
+        if ($this->blob->filesize) {
+            return Numbers::filesizeDisplay($this->blob->filesize);
+        }
+
+        if (!$this->blob) {
+            return '0 B';
+        }
+
+        return $this->blob->getReadableFilesize();
     }
 
     /**
