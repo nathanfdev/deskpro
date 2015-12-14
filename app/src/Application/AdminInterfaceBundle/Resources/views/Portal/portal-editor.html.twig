@@ -1,8 +1,10 @@
 {% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
 {% block fullpane_content %}
-<div class="content-wrapper portal-editor-wrapper">
-    <section class="content peditor">
-        <div class="peditor-panel">
+<div class="content-wrapper">
+    <section class="content editor" style="font-family: Lato, helvetica, verdana, sans-serif;">
+
+        <div class="editor-panel">
+
             <div class="panel-wrapper">
                 <div class="current-theme-actions">
                     <a href="#" class="save-changes">Save Changes</a>
@@ -15,195 +17,386 @@
                     <span class="dropdown-icon"><i class="fa fa-sort"></i></span>
                 </a>
 
-                <div class="panel-sections-wrap" dp-scrollable scroll-watch="[]" suppress-scroll-x="yes">
+                <div class="panel-title">
+                    <a ng-click="Portal.togglePanel('color_scheme')">
+                        Color Scheme
+                        <i class="fa fa-caret-down" ng-show="!Portal.isOpen('color_scheme')"></i>
+                        <i class="fa fa-caret-down" ng-show="Portal.isOpen('color_scheme')"></i>
+                    </a>
+                </div>
+                <div>
+                    <div class="color-scheme" ng-show="Portal.isOpen('color_scheme')">
+                        <a href="#" class="color-preview">
+                            <span class="color-box"></span> <span class="color-title">Background</span>
+                            <div class="color-box-indicator"><i class="fa fa-caret-down"></i></div>
+                        </a>
 
-                    {########################################}
+                        <a href="#" class="color-preview">
+                            <span class="color-box" style="background: #ff5460;"></span> <span class="color-title">Page Background</span>
+                            <div class="color-box-indicator"><i class="fa fa-caret-down"></i></div>
+                        </a>
 
-                    <div class="panel-title">
-                        <a ng-click="section_color_scheme = !section_color_scheme">Color Scheme <i class="fa fa-caret-down" ng-show="!section_color_scheme"></i><i class="fa fa-caret-down" ng-show="section_color_scheme"></i></a>
+                        <a href="#" class="color-preview">
+                            <span class="color-box" style="background: #3d7feb;"></span> <span class="color-title">Link Color</span>
+                            <div class="color-box-indicator"><i class="fa fa-caret-down"></i></div>
+                        </a>
+
+                        <a href="#" class="color-preview">
+                            <span class="color-box" style="background: #4681b2;"></span> <span class="color-title">Main Button Color</span>
+                            <div class="color-box-indicator"><i class="fa fa-caret-down"></i></div>
+                        </a>
+
+                        <a href="#" class="color-preview">
+                            <span class="color-box" style="background: #f4f4f4;"></span> <span class="color-title">Text Color</span>
+                            <div class="color-box-indicator"><i class="fa fa-caret-down"></i></div>
+                        </a>
+
+                        <a href="#" class="color-preview">
+                            <span class="color-box" style="background: #e3e3d6;"></span> <span class="color-title">2nd Button Color</span>
+                            <div class="color-box-indicator"><i class="fa fa-caret-down"></i></div>
+                        </a>
+
+                        <a href="#" class="color-preview">
+                            <span class="color-box" style="background: #ff5460;"></span> <span class="color-title">Secondary Surface</span>
+                            <div class="color-box-indicator"><i class="fa fa-caret-down"></i></div>
+                        </a>
+
+                        <!-- Color Picker -->
+                        <!-- <div class="color-picker">
+                          <a href="#" class="close-panel"><i class="fa fa-times"></i></a>
+                          <div class="title">Current text color: </div>
+                          <form>
+                            <span class="color-box" style="background: #ff5460;"></span>
+                            <input type="text" value="#9da3a8">
+                          </form>
+                          <hr>
+                          <div class="color-picker-area"></div>
+                        </div> -->
+
+                    </div><!-- End Color Scheme -->
+                </div>
+
+                <div class="panel-title">
+                    <a ng-click="Portal.togglePanel('fonts')">
+                        Fonts
+                        <i class="fa fa-caret-down" ng-show="!Portal.isOpen('fonts')"></i>
+                        <i class="fa fa-caret-down" ng-show="Portal.isOpen('fonts')"></i>
+                    </a>
+                </div>
+
+                <div class="font-options" ng-show="Portal.isOpen('fonts')">
+                    <!-- Removed the whitespace between each link to use inline-block without having to deal with the left sid emargin that inline-block has by default - will need the <a> tags to have no whitespace between them -->
+                    <a href="#" class="select font-family">
+                        <span class="title-tag">Font Family:</span> Open Sans, <span class="secondary">Helvetica, Verdana, Sans Serif</span>
+                        <span class="dropdown-icon"><i class="fa fa-sort"></i></span>
+                    </a><a href="#" class="select font-size">
+                        <span class="title-tag">Font Size:</span> 16px
+                        <span class="dropdown-icon"><i class="fa fa-sort"></i></span>
+                    </a>
+
+                    <a href="#" class="select font-headers">
+                        <span class="title-tag">Header:</span> Open Sans, <span class="secondary">Helvetica, Verdana, Sans Serif</span>
+                        <span class="dropdown-icon"><i class="fa fa-sort"></i></span>
+                    </a>
+
+
+                    <!-- Expanded font menu -->
+                    <ul class="select-expanded">
+                        <li>
+                            <span class="title">Select Font</span>
+                        </li>
+                        <li>
+                            <a href="#" class="selected-item font-stack stack-1">
+                                Open Sans, <span class="secondary">Helvetica, Arial, Sans Serif</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="font-stack stack-2">
+                                Baskerville, <span class="secondary">Georgia, Serif</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="font-stack stack-3">
+                                Lato, <span class="secondary">Myriad Pro, Arial, Sans Serif</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="font-stack stack-4">
+                                Ubuntu, <span class="secondary">Trebuchet, Arial, Sans Serif</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="select-font">Use this font</a>
+                        </li>
+                    </ul>
+
+                </div>
+
+                <div class="panel-title">
+                    <a ng-click="Portal.togglePanel('logo')">
+                        Logo
+                        <i class="fa fa-caret-down" ng-show="!Portal.isOpen('logo')"></i>
+                        <i class="fa fa-caret-down" ng-show="Portal.isOpen('logo')"></i>
+                    </a>
+                </div>
+
+                <div class="logo-options" ng-show="Portal.isOpen('logo')">
+
+                    <div class="logo-box logo-size-desktop"><!-- overall box -->
+
+                        <!-- The upload file link -->
+                        <a href="#" class="upload-logo"><span class="icon-box"><i class="fa fa-upload"></i></span> <span>Website Logo</span></a>
+
+                        <div class="bucket"><!-- The border around the logo box -->
+
+                            <!-- The white box -->
+                            <div class="logo-container">
+                                <img src="./img/sample-logo.png">
+                            </div>
+
+                        </div>
                     </div>
-                    <div class="panel-section-body" ng-show="section_color_scheme">
-                        <div class="color-scheme">
 
-                            <a href="#" class="color-preview">
-                                <span class="color-box"></span> <span class="color-title">Background</span>
-                                <div class="color-box-indicator"><i class="fa fa-caret-down"></i></div>
-                            </a>
+                    <div class="logo-box logo-size-mobile">
+                        <a href="#" class="upload-logo"><span class="icon-box"><i class="fa fa-upload"></i></span> <span>Mobile</span></a>
 
-                            <a href="#" class="color-preview">
-                                <span class="color-box" style="background: #ff5460;"></span> <span class="color-title">Page Background</span>
-                                <div class="color-box-indicator"><i class="fa fa-caret-down"></i></div>
-                            </a>
-
-                            <a href="#" class="color-preview">
-                                <span class="color-box" style="background: #3d7feb;"></span> <span class="color-title">Link Color</span>
-                                <div class="color-box-indicator"><i class="fa fa-caret-down"></i></div>
-                            </a>
-
-                            <a href="#" class="color-preview">
-                                <span class="color-box" style="background: #4681b2;"></span> <span class="color-title">Main Button Color</span>
-                                <div class="color-box-indicator"><i class="fa fa-caret-down"></i></div>
-                            </a>
-
-                            <a href="#" class="color-preview">
-                                <span class="color-box" style="background: #f4f4f4;"></span> <span class="color-title">Text Color</span>
-                                <div class="color-box-indicator"><i class="fa fa-caret-down"></i></div>
-                            </a>
-
-                            <a href="#" class="color-preview">
-                                <span class="color-box" style="background: #e3e3d6;"></span> <span class="color-title">2nd Button Color</span>
-                                <div class="color-box-indicator"><i class="fa fa-caret-down"></i></div>
-                            </a>
-
-                            <a href="#" class="color-preview">
-                                <span class="color-box" style="background: #ff5460;"></span> <span class="color-title">Secondary Surface</span>
-                                <div class="color-box-indicator"><i class="fa fa-caret-down"></i></div>
-                            </a>
-
-                            <!-- Color Picker -->
-                            <!-- <div class="color-picker">
-                              <a href="#" class="close-panel"><i class="fa fa-times"></i></a>
-                              <div class="title">Current text color: </div>
-                              <form>
-                                <span class="color-box" style="background: #ff5460;"></span>
-                                <input type="text" value="#9da3a8">
-                              </form>
-                              <hr>
-                              <div class="color-picker-area"></div>
-                            </div> -->
-
-                        </div><!-- End Color Scheme -->
-                    </div>
-
-                    {########################################}
-
-                    <div class="panel-title">
-                        <a ng-click="section_logo = !section_logo">Logo <i class="fa fa-caret-down" ng-show="!section_logo"></i><i class="fa fa-caret-down" ng-show="section_logo"></i></a>
-                    </div>
-                    <div class="panel-section-body logo-options" ng-show="section_logo">
-
-                        <div class="logo-box logo-size-desktop"><!-- overall box -->
-
-                            <!-- The upload file link -->
-                            <a href="#" class="upload-logo"><span class="icon-box"><i class="fa fa-upload"></i></span> <span>Website Logo</span></a>
-
-                            <div class="bucket"><!-- The border around the logo box -->
-
-                                <!-- The white box -->
-                                <div class="logo-container">
-                                    <img src="./img/sample-logo.png">
-                                </div>
-
+                        <div class="bucket">
+                            <div class="logo-container">
+                                <img src="./img/sample-logo.png">
                             </div>
                         </div>
+                    </div>
 
-                        <div class="logo-box logo-size-mobile">
-                            <a href="#" class="upload-logo"><span class="icon-box"><i class="fa fa-upload"></i></span> <span>Mobile</span></a>
+                    <div class="logo-box logo-size-favicon">
+                        <a href="#" class="upload-logo"><span class="icon-box"><i class="fa fa-upload"></i></span> <span>Mobile</span></a>
 
-                            <div class="bucket">
-                                <div class="logo-container">
-                                    <img src="./img/sample-logo.png">
-                                </div>
+                        <div class="bucket">
+                            <div class="logo-container">
+                                <img src="./img/sample-logo.png">
                             </div>
                         </div>
+                    </div>
 
-                        <div class="logo-box logo-size-favicon">
-                            <a href="#" class="upload-logo"><span class="icon-box"><i class="fa fa-upload"></i></span> <span>Mobile</span></a>
+                </div>
 
-                            <div class="bucket">
-                                <div class="logo-container">
-                                    <img src="./img/sample-logo.png">
-                                </div>
-                            </div>
+
+                <div class="panel-title">
+                    <a ng-click="Portal.togglePanel('site_copy')">
+                        Site Copy
+                        <i class="fa fa-caret-down" ng-show="!Portal.isOpen('site_copy')"></i>
+                        <i class="fa fa-caret-down" ng-show="Portal.isOpen('site_copy')"></i>
+                    </a>
+                </div>
+
+                <div class="site-text" ng-show="Portal.isOpen('site_copy')">
+                    <form>
+                        <input type="text" placeholder="Sample input text">
+                        <textarea placeholder="Add a welcome message"></textarea>
+                        <div class="footer">
+                            <input type="submit" value="Preview Welcome Message">
                         </div>
+                    </form>
+                </div>
 
+
+
+                <div class="panel-title">
+                    <a ng-click="Portal.togglePanel('advanced')">
+                        Advanced Edit
+                        <i class="fa fa-caret-down" ng-show="!Portal.isOpen('advanced')"></i>
+                        <i class="fa fa-caret-down" ng-show="Portal.isOpen('advanced')"></i>
+                    </a>
+                </div>
+
+                <div class="code-editor" ng-show="Portal.isOpen('advanced')">
+                    <nav>
+                        <ul>
+                            <li><a href="#">Header</a>
+                            </li><li>
+                                <a href="#">Footer</a>
+                            </li><li class="active">
+                                <a href="#">CSS</a>
+                            </li><li>
+                                <a href="#">Javascript</a>
+                            </li><li>
+                                <a href="#">Assets</a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    <div class="the-code">
+                  <pre>                    <span class="line-number">101</span>&lt;article class="news kb-article kb-article-news"&gt;
+                    <br><span class="line-number">102</span>  &lt;header&gt;
+                    <br><span class="line-number">103</span>    &lt;div class="calendar-decoration"&gt;&lt;span class="month"&gt;Mar&lt;/span&gt;&lt;hr&gt;&lt;span class="day"&gt;27&lt;/span&gt;&lt;/div&gt;
+                    <br><span class="line-number">104</span>    &lt;h1&gt;&lt;a href="#"&gt;New Feature: Interactive API Browser&lt;/a&gt;&lt;/h1&gt;
+                    <br><span class="line-number">105</span>    &lt;div class="article-meta"&gt;
+                    <br><span class="line-number">106</span>      Posted by
+                    <br><span class="line-number">107</span>      &lt;span style="background: url(./img/avatar.png) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"&gt;&lt;/span&gt;
+                    <br><span class="line-number">108</span>      Ben Henley 2 days ago, in category: &lt;a href="#"&gt;Product &lt;i class="fa fa-caret-down"&gt;&lt;/a&gt;&lt;/i&gt;
+                  </pre>
+                    </div>
+                </div>
+
+
+
+                <div class="panel-title">
+                    <a ng-click="Portal.togglePanel('advanced')">
+                        (sample) Advanced Edit
+                        <i class="fa fa-caret-down" ng-show="!Portal.isOpen('advanced')"></i>
+                        <i class="fa fa-caret-down" ng-show="Portal.isOpen('advanced')"></i>
+                    </a>
+                </div>
+
+                <div class="code-editor code-editor-extended" ng-show="Portal.isOpen('advanced')">
+                    <a href="#" class="full-screen-link">Full Screen Editor <span class="icon"><i class="fa fa-expand"></i></span></a>
+                    <nav>
+                        <ul>
+                            <li><a href="#">Header</a>
+                            </li><li>
+                                <a href="#">Footer</a>
+                            </li><li class="active">
+                                <a href="#">CSS</a>
+                            </li><li>
+                                <a href="#">Javascript</a>
+                            </li><li>
+                                <a href="#">Assets</a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    <div class="the-code">
+                  <pre>                    <span class="line-number">101</span>&lt;article class="news kb-article kb-article-news"&gt;
+                    <br><span class="line-number">102</span>  &lt;header&gt;
+                    <br><span class="line-number">103</span>    &lt;div class="calendar-decoration"&gt;&lt;span class="month"&gt;Mar&lt;/span&gt;&lt;hr&gt;&lt;span class="day"&gt;27&lt;/span&gt;&lt;/div&gt;
+                    <br><span class="line-number">104</span>    &lt;h1&gt;&lt;a href="#"&gt;New Feature: Interactive API Browser&lt;/a&gt;&lt;/h1&gt;
+                    <br><span class="line-number">105</span>    &lt;div class="article-meta"&gt;
+                    <br><span class="line-number">106</span>      Posted by
+                    <br><span class="line-number">107</span>      &lt;span style="background: url(./img/avatar.png) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"&gt;&lt;/span&gt;
+                    <br><span class="line-number">108</span>      Ben Henley 2 days ago, in category: &lt;a href="#"&gt;Product &lt;i class="fa fa-caret-down"&gt;&lt;/a&gt;&lt;/i&gt;
+                  </pre>
                     </div>
 
-                    {########################################}
-
-                    <div class="panel-title">
-                        <a ng-click="section_copy = !section_copy">Site Copy <i class="fa fa-caret-down" ng-show="!section_copy"></i><i class="fa fa-caret-down" ng-show="section_copy"></i></a>
+                    <div class="editor-footer">
+                        <a href="#" class="button blank-button">Cancel &amp; Discard Changes</a> <a href="#" class="button">Preview Changes</a>
                     </div>
-                    <div class="panel-section-body site-text" ng-show="section_copy">
-                        <form>
-                            <input type="text" placeholder="Sample input text">
-                            <textarea placeholder="Add a welcome message"></textarea>
-                            <div class="footer">
-                                <input type="submit" value="Preview Welcome Message">
-                            </div>
-                        </form>
-                    </div>
+                </div>
 
-                    {########################################}
 
-                    <div class="panel-title">
-                        <a ng-click="section_adv = !section_adv">Site Copy <i class="fa fa-caret-down" ng-show="!section_adv"></i><i class="fa fa-caret-down" ng-show="section_adv"></i></a>
-                    </div>
-                    <div class="panel-section-body code-editor" ng-show="section_adv">
-                        <nav>
+
+                <div class="panel-title">
+                    <a ng-click="Portal.togglePanel('advanced')">
+                        (sample) Advanced Edit
+                        <i class="fa fa-caret-down" ng-show="!Portal.isOpen('advanced')"></i>
+                        <i class="fa fa-caret-down" ng-show="Portal.isOpen('advanced')"></i>
+                    </a>
+                </div>
+
+                <div class="code-editor code-editor-extended" ng-show="Portal.isOpen('advanced')">
+                    <a href="#" class="full-screen-link">Full Screen Editor <span class="icon"><i class="fa fa-expand"></i></span></a>
+                    <nav>
+                        <ul>
+                            <li><a href="#">Header</a>
+                            </li><li>
+                                <a href="#">Footer</a>
+                            </li><li>
+                                <a href="#">CSS</a>
+                            </li><li>
+                                <a href="#">Javascript</a>
+                            </li><li class="active">
+                                <a href="#">Assets</a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    <div class="the-assets">
+                        <a href="#" class="drag-and-drop-area">
+                    <span><i class="fa fa-upload"></i> Drag &amp; Drop here or just click to upload a new file
+                  </span></a>
+
+                        <div class="file-list">
                             <ul>
-                                <li><a href="#">Header</a>
-                                </li><li>
-                                    <a href="#">Footer</a>
-                                </li><li class="active">
-                                    <a href="#">CSS</a>
-                                </li><li>
-                                    <a href="#">Javascript</a>
-                                </li><li>
-                                    <a href="#">Assets</a>
+                                <li>
+                                    <a href="#" class="file"><span class="file-preview" style="background-image: url(./img/file-preview.png);"></span> file_name.png</a>
+                                    <a href="#" class="file-url-copy">Copy file url</a>
+                                </li>
+
+                                <li>
+                                    <a href="#" class="file"><span class="file-preview" style="background-image: url(./img/file-preview.png);"></span> uploaded_file_28474722.png</a>
+                                    <a href="#" class="file-url-copy">Copy file url</a>
+                                </li>
+
+                                <li>
+                                    <a href="#" class="file"><span class="file-preview" style="background-image: url(./img/file-preview.png);"></span> another_uploaded_file_34346643.png</a>
+                                    <a href="#" class="file-url-copy">Copy file url</a>
+                                </li>
+
+                                <li>
+                                    <a href="#" class="file"><span class="file-preview" style="background-image: url(./img/file-preview.png);"></span> file_name.png</a>
+                                    <a href="#" class="file-url-copy">Copy file url</a>
+                                </li>
+
+                                <li>
+                                    <a href="#" class="file"><span class="file-preview" style="background-image: url(./img/file-preview.png);"></span> uploaded_file_28474722.png</a>
+                                    <a href="#" class="file-url-copy">Copy file url</a>
+                                </li>
+
+                                <li>
+                                    <a href="#" class="file"><span class="file-preview" style="background-image: url(./img/file-preview.png);"></span> another_uploaded_file_34346643.png</a>
+                                    <a href="#" class="file-url-copy">Copy file url</a>
                                 </li>
                             </ul>
-                        </nav>
-
-                        <div class="the-code">
-                          <pre>
-                            <span class="line-number">101</span>&lt;article class=&quot;news kb-article kb-article-news&quot;&gt;
-                            <br><span class="line-number">102</span>  &lt;header&gt;
-                            <br><span class="line-number">103</span>    &lt;div class=&quot;calendar-decoration&quot;&gt;&lt;span class=&quot;month&quot;&gt;Mar&lt;/span&gt;&lt;hr&gt;&lt;span class=&quot;day&quot;&gt;27&lt;/span&gt;&lt;/div&gt;
-                            <br><span class="line-number">104</span>    &lt;h1&gt;&lt;a href=&quot;#&quot;&gt;New Feature: Interactive API Browser&lt;/a&gt;&lt;/h1&gt;
-                            <br><span class="line-number">105</span>    &lt;div class=&quot;article-meta&quot;&gt;
-                            <br><span class="line-number">106</span>      Posted by
-                            <br><span class="line-number">107</span>      &lt;span style=&quot;background: url(./img/avatar.png) no-repeat; background-size: cover&quot; class=&quot;agent-avatar agent-avatar-mini&quot;&gt;&lt;/span&gt;
-                            <br><span class="line-number">108</span>      Ben Henley 2 days ago, in category: &lt;a href=&quot;#&quot;&gt;Product &lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/a&gt;&lt;/i&gt;
-                          </pre>
                         </div>
                     </div>
-
-                    {########################################}
-
-                    <div class="panel-title">
-                        <a href="#">Expert <i class="fa fa-caret-down"></i></a>
-                    </div>
                 </div>
+
+
+
+                <div class="panel-title">
+                    <a ng-click="Portal.togglePanel('expert')">
+                        Expert
+                        <i class="fa fa-caret-down" ng-show="!Portal.isOpen('expert')"></i>
+                        <i class="fa fa-caret-down" ng-show="Portal.isOpen('expert')"></i>
+                    </a>
+                </div>
+
+                <div class="template-picker" ng-show="Portal.isOpen('expert')">
+                    <a href="#" class="select">
+                        <span class="title-tag">View template:</span> Home Page
+                        <span class="dropdown-icon"><i class="fa fa-sort"></i></span>
+                    </a>
+                </div>
+
+            </div><!-- End panel wrapper -->
+
+        </div><!-- End editor panel -->
+
+        <section class="preview-panel">
+            <div class="widescreen-info">
+                The editor works better on screens over 1280 pixels. Something about full screen and hiding the sidebar
             </div>
-            <section class="preview-panel">
-                <div class="widescreen-info">
-                    The editor works better on screens over 1280 pixels. Something about full screen and hiding the sidebar
-                </div>
 
-                <div class="preview-tools">
-                    <ul>
-                        <li>
-                            <a href="#">
-                                Preview as <span>a logged in user</span> <i class="fa fa-user"></i> <i class="fa fa-caret-down"></i>
-                            </a>
+            <div class="preview-tools">
+                <ul>
+                    <li>
+                        <a href="#">
+                            Preview as <span>a logged in user</span> <i class="fa fa-user"></i> <i class="fa fa-caret-down"></i>
+                        </a>
 
-                            <ul>
-                                <li><a href="#" class="active"><i class="fa fa-check"></i> Logged in user</a></li>
-                                <li><a href="#"><i class="fa fa-users"></i> Logged out visitor</a></li>
-                                <li><a href="#"><i class="fa fa-user"></i>Agent</a></li>
-                                <li><a href="#"><i class="fa fa-user"></i>Administrator</a></li>
-                            </ul>
-                        </li><li>
-                            <a href="#">
-                                visiting with a <span>tablet</span> <i class="fa fa-tablet"></i> <i class="fa fa-caret-down"></i>
-                            </a><a>
-                            </a></li><a>
-                        </a></ul><a>
-                    </a></div><a>
-                </a>
-            </section>
-        </div>
-    </section>
+                        <ul>
+                            <li><a href="#" class="active"><i class="fa fa-check"></i> Logged in user</a></li>
+                            <li><a href="#"><i class="fa fa-users"></i> Logged out visitor</a></li>
+                            <li><a href="#"><i class="fa fa-user"></i>Agent</a></li>
+                            <li><a href="#"><i class="fa fa-user"></i>Administrator</a></li>
+                        </ul>
+                    </li><li>
+                        <a href="#">
+                            visiting with a <span>tablet</span> <i class="fa fa-tablet"></i> <i class="fa fa-caret-down"></i>
+                        </a><a>
+                        </a></li><a>
+                    </a></ul><a>
+                </a></div><a>
+            </a></section><a>
+
+        </a></section>
 </div>
 {% endblock %}
