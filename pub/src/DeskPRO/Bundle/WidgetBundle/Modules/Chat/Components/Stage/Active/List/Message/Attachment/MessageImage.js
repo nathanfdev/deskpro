@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { openFullImage } from '../../../../../../../../Services/fullImage';
+import { openFullImage } from '../../../../../../../../Services/image';
 
 export class MessageImage extends React.Component {
 
