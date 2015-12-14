@@ -7,7 +7,7 @@ import ScrollArea from 'react-scrollbar';
 import { UploadingFiles } from './Upload/Uploading/UploadingFiles';
 import { AttachedFiles } from './Upload/Attached/File/AttachedFiles';
 import { AttachedImages } from './Upload/Attached/Image/AttachedImages';
-import { DropZone } from './Upload/DropZone/DropZone';
+import { DropZoneContainer } from './Upload/DropZone/DropZoneContainer';
 
 export class ReplyForm extends React.Component {
 
@@ -15,10 +15,7 @@ export class ReplyForm extends React.Component {
     isEnded: PropTypes.bool,
     canReopen: PropTypes.bool,
     onSendMessage: PropTypes.func,
-    onUploadedStarted: PropTypes.func,
-    onUploadedSuccess: PropTypes.func,
-    onUploadedFail: PropTypes.func,
-    onRemoveFile: PropTypes.func,
+    onRemoveAttachment: PropTypes.func,
     onReopen: PropTypes.func,
     agentName: PropTypes.string,
     attachedImages: PropTypes.object,
@@ -94,8 +91,7 @@ export class ReplyForm extends React.Component {
 
   render() {
     const { isEnded, canReopen } = this.props;
-    const { uploadingFiles, attachedImages, attachedImagesCount, attachedFiles } = this.props;
-    const { onUploadedStarted, onUploadedSuccess, onUploadedFail, onRemoveFile } = this.props;
+    const { uploadingFiles, attachedImages, attachedImagesCount, attachedFiles, onRemoveAttachment } = this.props;
 
     if (isEnded && !canReopen) {
       return null;
@@ -116,15 +112,20 @@ export class ReplyForm extends React.Component {
             {attachedImagesCount
               ? (
                 <div>
-                  <AttachedImages attachments={attachedImages} count={attachedImagesCount} onRemoveFile={onRemoveFile} />
-                  <div className="textarea-container">{this.renderRte()}</div>
+                  <AttachedImages attachments={attachedImages}
+                                  count={attachedImagesCount}
+                                  onRemoveFile={onRemoveAttachment} />
+
+                  <div className="textarea-container">
+                    {this.renderRte()}
+                  </div>
                 </div>
               )
               : this.renderRte()
             }
 
             <UploadingFiles files={uploadingFiles} />
-            <AttachedFiles attachments={attachedFiles} onRemoveFile={onRemoveFile} />
+            <AttachedFiles attachments={attachedFiles} onRemoveFile={onRemoveAttachment} />
           </div>
 
           <button>
@@ -155,12 +156,7 @@ export class ReplyForm extends React.Component {
           </EndChatContainer>
         </div>
 
-        <DropZone getExternalInput={() => this.refs.fileUpload}
-                  uploadUrl={window.DP_HELPDESK_URL + 'portal/api/blobs/temp'}
-                  context={[window.widgetFrame.document, parent.window.document]}
-                  onSend={onUploadedStarted}
-                  onSuccess={onUploadedSuccess}
-                  onFail={onUploadedFail} />
+        <DropZoneContainer getExternalInput={() => this.refs.fileUpload} />
       </div>
     );
   }
