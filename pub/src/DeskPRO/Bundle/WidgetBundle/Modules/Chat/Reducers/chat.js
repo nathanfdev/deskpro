@@ -24,7 +24,7 @@ const initialState = {
     author_email: 'email@mail.com'
   },
   messages: [
-    {id: 105, content: 'File: <a href="#">Some file</a>', author: null, author_type: 'user', is_sys: false, is_html: true, metadata: {type: 'file'}, date_created: '2015-12-03 14:10'},
+    {id: 105, content: 'File: <a href="#">Some file</a>', author: null, author_type: 'user', is_sys: false, is_html: true, metadata: {type: 'file', blob: {is_image: true}}, date_created: '2015-12-03 14:10'},
     {id: 104, content: 'my message my message my message my message :)', author: null, author_type: 'user', is_sys: false, is_html: true, date_created: '2015-12-03 14:10'},
     {id: 103, content: 'agent reply agent reply agent reply agent reply agent reply agent reply ;)', author: 1, author_type: 'agent', is_sys: false, date_created: '2015-12-03 14:02'},
     {id: 102, content: '{"phrase_id":"message_assigned","name":"Admin Admin"}', author: null, author_type: 'user', is_sys: true, date_created: '2015-12-03 13:58'},

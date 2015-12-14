@@ -177,7 +177,7 @@ class ChatController extends AbstractApiController
                     'is_html' => true,
                     'type'    => 'file',
                     'blob_id' => $attachment->getId(),
-                    'blob'    => $this->dataSerialize($attachment),
+                    'blob'    => $this->dataSerialize($attachment)['data'],
                 ])
             ;
 
