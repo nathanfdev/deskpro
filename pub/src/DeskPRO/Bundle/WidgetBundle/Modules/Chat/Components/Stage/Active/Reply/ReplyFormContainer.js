@@ -47,16 +47,28 @@ export class ReplyFormContainer extends React.Component {
     dispatch(sendChatMessage(chatId, data));
   };
 
-  onSendFile = (event, data) => {
+  onUploadedStarted = (event, data) => {
     this.setState({
       uploading: this.state.uploading.concat(data.files)
     });
   };
 
-  onUploadedFile = (event, response) => {
+  onUploadedSuccess = (event, response) => {
     const attachments = response.result && response.result.data || [];
     attachments.forEach(attachment => this.props.dispatch(addAttachment(attachment)));
 
+    this.removeFilesFromQueue(response);
+  };
+
+  onUploadedFail = (event, response) => {
+    this.removeFilesFromQueue(response);
+  };
+
+  onRemoveFile = attachment => {
+    this.props.dispatch(removeAttachment(attachment));
+  };
+
+  removeFilesFromQueue(response) {
     response.files.forEach(file => setTimeout(() => {
       const files = this.state.uploading;
       const index = files.indexOf(file);
@@ -69,18 +81,15 @@ export class ReplyFormContainer extends React.Component {
         uploading: files
       });
     }, 0));
-  };
-
-  onRemoveFile = attachment => {
-    this.props.dispatch(removeAttachment(attachment));
-  };
+  }
 
   render() {
     return (
       <ReopenChatContainer>
         <ReplyForm onSendMessage={this.onSendMessage}
-                   onSendFile={this.onSendFile}
-                   onUploadedFile={this.onUploadedFile}
+                   onUploadedStarted={this.onUploadedStarted}
+                   onUploadedSuccess={this.onUploadedSuccess}
+                   onUploadedFail={this.onUploadedFail}
                    onRemoveFile={this.onRemoveFile}
                    uploadingFiles={this.state.uploading} {...this.props} />
 

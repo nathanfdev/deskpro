@@ -15,8 +15,9 @@ export class ReplyForm extends React.Component {
     isEnded: PropTypes.bool,
     canReopen: PropTypes.bool,
     onSendMessage: PropTypes.func,
-    onSendFile: PropTypes.func,
-    onUploadedFile: PropTypes.func,
+    onUploadedStarted: PropTypes.func,
+    onUploadedSuccess: PropTypes.func,
+    onUploadedFail: PropTypes.func,
     onRemoveFile: PropTypes.func,
     onReopen: PropTypes.func,
     agentName: PropTypes.string,
@@ -94,7 +95,7 @@ export class ReplyForm extends React.Component {
   render() {
     const { isEnded, canReopen } = this.props;
     const { uploadingFiles, attachedImages, attachedImagesCount, attachedFiles } = this.props;
-    const { onSendFile, onUploadedFile, onRemoveFile } = this.props;
+    const { onUploadedStarted, onUploadedSuccess, onUploadedFail, onRemoveFile } = this.props;
 
     if (isEnded && !canReopen) {
       return null;
@@ -157,8 +158,9 @@ export class ReplyForm extends React.Component {
         <DropZone getExternalInput={() => this.refs.fileUpload}
                   uploadUrl={window.DP_HELPDESK_URL + 'portal/api/blobs/temp'}
                   context={[window.widgetFrame.document, parent.window.document]}
-                  onSend={onSendFile}
-                  onSuccess={onUploadedFile} />
+                  onSend={onUploadedStarted}
+                  onSuccess={onUploadedSuccess}
+                  onFail={onUploadedFail} />
       </div>
     );
   }
