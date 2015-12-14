@@ -44,7 +44,7 @@ class CookieSettingsListener implements EventSubscriberInterface
 
         $request = $event->getRequest();
 
-        if (!$request->isSecure()) {
+        if ($request->isSecure()) {
             ini_set('session.cookie_secure', true);
         }
     }
