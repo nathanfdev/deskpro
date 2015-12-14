@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 use Application\DeskPRO\Entity\CustomDataFeedback;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\Entity\LabelFeedback;
 use Application\ImportBundle\Generator\Exporter\DeskPRO;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackCountCriteria;
@@ -236,6 +237,29 @@ class FeedbackController extends BaseController
                         }
                         $customCategory->setInput($value);
                         $em->persist($customCategory);
+                    }
+                } elseif ($param === 'removeLabels') {
+                    $feedbackLabels = $em->getRepository('DeskPRO:LabelFeedback')->findBy(['label' => $value]);
+                    foreach ($feedbackLabels as $feedbackLabel) {
+                        foreach ($feedback as $item) {
+                            if ($feedbackLabel->getFeedback() === $item) {
+                                $em->remove($feedbackLabel);
+                            }
+                        }
+                    }
+                } elseif ($param === 'addLabels') {
+                    foreach ($feedback as $item) {
+                        foreach ($value as $label) {
+                            $feedbackLabel = $em->getRepository('DeskPRO:LabelFeedback')
+                                ->findOneBy(['label' => $label, 'feedback' => $item]);
+                            if (null === $feedbackLabel) {
+                                $feedbackLabel = new LabelFeedback();
+                                $feedbackLabel->setFeedback($item);
+                                $feedbackLabel->setLabel($label);
+                                $em->persist($feedbackLabel);
+                            }
+                        }
+
                     }
                 }
             }

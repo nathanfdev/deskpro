@@ -1,20 +1,33 @@
 import React, { Component, PropTypes } from 'react';
-import { Item } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item';
+import { LabelsFilter }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/Filtering/LabelsFilter';
 
+import { connect } from 'react-redux';
+@connect()
 export class RemoveLabelsContainer extends Component {
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    setParams: PropTypes.func.isRequired,
+    stateValue: PropTypes.func.isRequired,
+    unsetParams: PropTypes.func.isRequired,
+    renderFilterInfo: PropTypes.func.isRequired,
     option: PropTypes.object.isRequired
   };
 
   render() {
-    const {option} = this.props;
+    const {dispatch, option, activeItem, setActiveItem, stateValue, setParams, renderFilterInfo, unsetParams} = this.props;
+
     return (
-      <Item
-        label={option.label}
-        // isActive={viewMode === type}
-        // checked={viewMode === type}
-        // onClick={() => dispatch(viewModeAction(type))}
-        icon={option.icon}
+      <LabelsFilter dispatch={dispatch}
+                    filter={option}
+                    setParamsAction={setParams}
+                    activeItem={activeItem}
+                    icon={option.icon || 'tags'}
+                    label={option.label}
+                    renderFilterInfo={renderFilterInfo}
+                    setActiveItem={setActiveItem}
+                    stateValue={stateValue}
+                    unsetParams={unsetParams.bind(this, 'removeLabels')}
         />
     );
   }

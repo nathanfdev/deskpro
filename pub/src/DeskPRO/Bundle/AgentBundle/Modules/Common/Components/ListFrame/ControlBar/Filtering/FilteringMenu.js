@@ -57,6 +57,7 @@ export class FilteringMenu extends Component {
         return (
           <LabelsFilter {...this.props} filter={filter}
                                         key={index}
+                                        matchMode
                                         unsetParams={this.unsetParams}
                                         renderFilterInfo={this.renderFilterInfo}/>
         );

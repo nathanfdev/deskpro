@@ -10,13 +10,14 @@ export class LabelsFilter extends Component {
     setParamsAction: PropTypes.func.isRequired,
     renderFilterInfo: PropTypes.func.isRequired,
     setActiveItem: PropTypes.func,
+    matchMode: PropTypes.bool,
     activeItem: PropTypes.object,
     unsetParams: PropTypes.func.isRequired,
     filter: PropTypes.object.isRequired
   };
 
   render() {
-    const { dispatch, setParamsAction, stateValue, filter, renderFilterInfo, unsetParams, activeItem, setActiveItem } = this.props;
+    const { dispatch, setParamsAction, stateValue, filter, renderFilterInfo, unsetParams, activeItem, setActiveItem, matchMode } = this.props;
     const { label, icon, labels, param, modeParam } = filter;
     const selected = stateValue(param) || [];
     const mode = stateValue(modeParam);
@@ -28,7 +29,8 @@ export class LabelsFilter extends Component {
         dispatch(setParamsAction({ [param]: selected, delayReload: true }));
       }
     };
-    const deselectLabel = deselectedLabel => {
+    const deselectLabel = (deselectedLabel, event) => {
+      event.preventDefault();
       if (selected.indexOf(deselectedLabel) !== -1) {
         selected.splice(selected.indexOf(deselectedLabel), 1);
         dispatch(setParamsAction({ [param]: selected, delayReload: true }));
@@ -44,7 +46,8 @@ export class LabelsFilter extends Component {
                   resetFilter={unsetParams.bind(this, param)}>
         {renderFilterInfo(selected)}
         <Menu>
-          <LabelsForm params={{'get': () => mode}}
+          <LabelsForm matchMode={matchMode}
+                      params={{'get': () => mode}}
                       changeMode={newMode => dispatch(setParamsAction({[modeParam]: newMode, delayReload: true}))}
                       allLabels={labels}
                       selectedLabels={selected}

@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
-import Positioned from 'DeskPRO/Component/Positioned/Detached';
+import Immutable from 'immutable';
+import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { Button } from './Button';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { DropdownPanel } from './DropdownPanel';
@@ -7,8 +8,11 @@ import { Menu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/
 import { AddLabelsContainer } from './AddLabelsContainer';
 import { RemoveLabelsContainer } from './RemoveLabelsContainer';
 
+import { connect } from 'react-redux';
+@connect()
 export class ActionContainer extends Component {
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
     isActive: PropTypes.bool,
     setParams: PropTypes.func.isRequired,
     resetSingleAction: PropTypes.func.isRequired,
@@ -28,6 +32,51 @@ export class ActionContainer extends Component {
     this.setState({ expanded: !this.state.expanded });
   };
   collapse = () => this.setState({ expanded: false });
+
+  stateValue = (param) => {
+    const {currentParams} = this.props;
+    if (currentParams) {
+      if (param instanceof Array) {
+        const result = [];
+        param.map(item => {
+          let value = currentParams.get(item);
+          if (Immutable.Iterable.isIterable(value)) {
+            value = value.toJS();
+            value.map(item1=> {
+              result.push(item1);
+            });
+          }
+        });
+        return [...new Set(result)];
+      }
+      let value = currentParams.get(param);
+      if (Immutable.Iterable.isIterable(value)) {
+        value = value.toJS();
+      }
+      return value;
+    }
+  };
+
+  renderFilterInfo = (labels) => {
+    if (labels.length) {
+      const result = [<span className="dpw-navigation-dropdown-item-inline-info">{labels[0]}</span>];
+      if (labels.length > 1) {
+        result.push(
+          <span className="dpw-navigation-dropdown-item-inline-info dpw-navigation-dropdown-item-inline-info-extra">
+            +{labels.length - 1}
+          </span>
+        );
+      }
+
+      return result;
+    }
+
+    return <span />;
+  };
+
+  unsetParams = (param) => {
+    this.props.dispatch(this.props.resetSingleAction(param));
+  };
 
   render() {
     const {id, item, setParams, currentParams, resetSingleAction } = this.props;
@@ -58,10 +107,24 @@ export class ActionContainer extends Component {
     };
 
     const choiceOtherAction = (option, key)=> {
-      if (option.type === 'addLabels') {
-        return (<AddLabelsContainer key={key} option={option}/>);
-      } else if (option.type === 'removeLabels') {
-        return (<RemoveLabelsContainer key={key} option={option}/>);
+      if (option.param === 'addLabels') {
+        return (
+          <AddLabelsContainer key={key}
+                              option={option}
+                              setParams={setParams}
+                              stateValue={this.stateValue}
+                              renderFilterInfo={this.renderFilterInfo}
+                              unsetParams={this.unsetParams}/>
+        );
+      } else if (option.param === 'removeLabels') {
+        return (
+          <RemoveLabelsContainer key={key}
+                                 option={option}
+                                 setParams={setParams}
+                                 stateValue={this.stateValue}
+                                 renderFilterInfo={this.renderFilterInfo}
+                                 unsetParams={this.unsetParams}/>
+        );
       }
     };
 
@@ -73,11 +136,11 @@ export class ActionContainer extends Component {
                 label={item.label}
                 icon={item.icon}
                 onClick={this.toggleExpanded}/>
-        <Positioned isOpen={this.state.expanded}
-                    positionAt="left bottom"
-                    positionTarget={this.refs['button' + id]}>
+        <Detached isOpen={this.state.expanded}
+                  positionAt="left bottom"
+                  positionTarget={this.refs['button' + id]}>
           <ClickOut onClickOut={this.collapse}
-                    ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list']}
+                    ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list', '.dpw-item-label']}
                     additionalNodes={['.dpw-navigation-dropdown-item-clear']}>
             {item.type === 'action' &&
             <DropdownPanel item={item}
@@ -91,7 +154,7 @@ export class ActionContainer extends Component {
             </Menu>
             }
           </ClickOut>
-        </Positioned>
+        </Detached>
       </li>
     );
   }

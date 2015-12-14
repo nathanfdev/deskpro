@@ -8,7 +8,10 @@ export const resetAllMassActionsParams = createAction('FEEDBACK_RESET_ALL_MASS_A
 
 export const setMassActionsParams = createAction(
   'FEEDBACK_SET_MASS_ACTIONS_PARAMS',
-    param => param
+  (params) => {
+    delete params.delayReload;
+    return params;
+  }
 );
 
 export const resetMassActionsParam = createAction(
