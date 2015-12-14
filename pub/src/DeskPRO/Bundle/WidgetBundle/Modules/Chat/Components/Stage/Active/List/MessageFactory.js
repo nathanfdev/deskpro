@@ -1,7 +1,9 @@
 import React, { PropTypes } from 'react';
-import { AgentMessage } from './Message/AgentMessage';
-import { UserMessage } from './Message/UserMessage';
 import { InlineEvent } from './Event/InlineEvent';
+import { Message } from './Message/Message';
+import { MessageAvatar } from './Message/MessageAvatar';
+import { MessageContent } from './Message/MessageContent';
+import { MessageFooter } from './Message/MessageFooter';
 
 export class MessageFactory extends React.Component {
 
@@ -11,7 +13,6 @@ export class MessageFactory extends React.Component {
 
   render() {
     const { message } = this.props;
-    const isAgent = message.get('author_type') === 'agent';
 
     if (message.get('is_sys')) {
       const content = JSON.parse(message.get('content'));
@@ -26,6 +27,12 @@ export class MessageFactory extends React.Component {
       );
     }
 
-    return isAgent ? <AgentMessage {...this.props} /> : <UserMessage {...this.props} />;
+    return (
+      <Message type={message.get('author_type')}>
+        <MessageAvatar {...this.props} />
+        <MessageContent {...this.props} />
+        <MessageFooter {...this.props} />
+      </Message>
+    );
   }
 }
