@@ -69,6 +69,7 @@ class UserChatClientListener implements EventSubscriberInterface
             UserChatEvent::SET_DEPARTMENT => 'onSetDepartment',
             UserChatEvent::ASSIGNED       => 'onAssigned',
             UserChatEvent::UNASSIGNED     => 'onUnassigned',
+            UserChatEvent::SEND_MESSAGE   => 'onSendMessage',
         ];
     }
 
@@ -138,6 +139,18 @@ class UserChatClientListener implements EventSubscriberInterface
     public function onUnassigned(UserChatEvent $event)
     {
         $this->send($event, ClientMessageEvent::CHANNEL_CHAT_UNASSIGNED, $this->getInfo($event));
+    }
+
+    /**
+     * @param UserChatEvent $event
+     */
+    public function onSendMessage(UserChatEvent $event)
+    {
+        $conversation = $event->getConversation();
+        $message      = $event->getParams();
+        $channel      = $conversation->getChannelId('newmessage');
+
+        $this->send($event, $channel, $message);
     }
 
     /**

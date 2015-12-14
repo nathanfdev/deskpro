@@ -34,12 +34,10 @@ namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
-use DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageEvent;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -148,19 +146,14 @@ class ChatController extends AbstractApiController
             ;
 
             $conversation->addMessage($chat_message);
-
-            $conversation_channel = $conversation->getChannelId('newmessage');
-            $this->dispatch(
-                ClientMessageEvent::SEND,
-                new ClientMessageEvent($conversation_channel, $chat_message)
-            );
+            $this->dispatch(UserChatEvent::SEND_MESSAGE, new UserChatEvent($conversation, $chat_message));
         }
 
         // Add blobs to chat conversation
         /** @var Blob[] $attachments */
         $attachments = $form->get('attachments')->getData();
         foreach ($attachments as $attachment) {
-            // Support of old attachment message format
+            // Support old attachment message format
             $content = sprintf(
                 'File: <a href="%s" target="_blank">%s</a> (%s)',
 
@@ -183,17 +176,13 @@ class ChatController extends AbstractApiController
                 ->setMetadata([
                     'is_html' => true,
                     'type'    => 'file',
+                    'blob_id' => $attachment->getId(),
                     'blob'    => $this->dataSerialize($attachment),
                 ])
             ;
 
             $conversation->addMessage($chat_message);
-
-            $conversation_channel = $conversation->getChannelId('newmessage');
-            $this->dispatch(
-                ClientMessageEvent::SEND,
-                new ClientMessageEvent($conversation_channel, $chat_message)
-            );
+            $this->dispatch(UserChatEvent::SEND_MESSAGE, new UserChatEvent($conversation, $chat_message));
         }
 
         $em = $this->getDoctrine()->getManager();
