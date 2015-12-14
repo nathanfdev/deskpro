@@ -96,7 +96,7 @@ export class RadioChoiceMenuOption extends Component {
     if (isActive) {
       dispatch(resetSingleAction(param));
     } else {
-      dispatch(setParams({ param: param, value: value }));
+      dispatch(setParams({ [param]: value }));
     }
   }
 

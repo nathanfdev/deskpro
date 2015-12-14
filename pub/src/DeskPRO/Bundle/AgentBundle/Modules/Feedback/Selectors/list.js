@@ -163,8 +163,8 @@ export const massActionsParamsSelector = createSelector(
 );
 
 export const massActionsSelector = createSelector(
-  [navStateSelector, feedbackCategoriesSelector, feedbackTypesSelector],
-  (navState, categories, types) => {
+  [navStateSelector, feedbackCategoriesSelector, feedbackTypesSelector, feedbackLabelsSelector],
+  (navState, categories, types, labels) => {
     const massActions = [];
     // Type options
     const typeOptions = types.toArray().map(type => ({ value: type.get('id'), label: type.get('title') }));
@@ -205,8 +205,8 @@ export const massActionsSelector = createSelector(
 
     // Other options
     const otherOptions = [
-      { label: 'Add label', icon: 'plus-square', type: 'addLabels' },
-      { label: 'Remove label', icon: 'minus-square', type: 'removeLabels' }
+      { label: 'Add label', icon: 'plus-square', labels: labels, param: 'addLabels'},
+      { label: 'Remove label', icon: 'minus-square', labels: labels, param: 'removeLabels' }
     ];
     massActions.push({ icon: 'fa-asterisk', type: 'menu', param: 'other', options: otherOptions });
 

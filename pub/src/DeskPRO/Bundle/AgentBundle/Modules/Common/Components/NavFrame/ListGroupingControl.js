@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import Positioned from 'DeskPRO/Component/Positioned/Detached';
+import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 
 export class ListGroupingControl extends React.Component {
@@ -22,7 +22,7 @@ export class ListGroupingControl extends React.Component {
     const { title, onChange, close, options, visible, selected, attachTo } = this.props;
 
     return (
-      <Positioned isOpen={visible}
+      <Detached isOpen={visible}
                   positionAt="right top"
                   positionTarget={attachTo}
                   style={{marginTop: '-7px', marginLeft: '7px'}}>
@@ -45,7 +45,7 @@ export class ListGroupingControl extends React.Component {
             </div>
           </section>
         </ClickOut>
-      </Positioned>
+      </Detached>
     );
   }
 }

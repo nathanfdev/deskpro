@@ -10,14 +10,15 @@ export class LabelsForm extends Component {
     deselectLabel: PropTypes.func.isRequired,
     selectedLabels: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
     allLabels: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    matchMode: PropTypes.bool,
     params: PropTypes.object
   };
 
   render() {
-    const {params, changeMode, allLabels, selectLabel, selectedLabels, deselectLabel} = this.props;
+    const {params, changeMode, allLabels, selectLabel, selectedLabels, deselectLabel, matchMode} = this.props;
     return (
       <div className="dpw-navigation-dropdown-panel dpw-navigation-dropdown-panel-corner-left">
-        <LabelsMatchingMode mode={params.get('mode')} changeMode={changeMode}/>
+        {matchMode && <LabelsMatchingMode mode={params.get('mode')} changeMode={changeMode}/>}
 
         <div className="dpw-navigation-dropdown-panel-content">
           <div className="dpw-navigation-dropdown-panel-content-line">
