@@ -51,7 +51,9 @@ export class Nav extends React.Component {
                     Knowledgebase
                   </SectionGroupedHeader>
 
-                  <NestedList items={lists.get('articles').nested} groups={labels.articles} onClick={onClick.articles}/>
+                  <NestedList items={lists.get('articles').nested}
+                              groups={labels.articles}
+                              onClick={onClick.articles}/>
                 </Section>
               </SectionsPane>
 
@@ -69,7 +71,9 @@ export class Nav extends React.Component {
                     News
                   </SectionGroupedHeader>
 
-                  <NestedList items={lists.get('news').nested} groups={labels.news} onClick={onClick.news}/>
+                  <NestedList items={lists.get('news').nested}
+                              groups={labels.news}
+                              onClick={onClick.news}/>
                 </Section>
               </SectionsPane>
             </Tab>
@@ -82,7 +86,8 @@ export class Nav extends React.Component {
                     Downloads
                   </SectionGroupedHeader>
 
-                  <NestedList items={lists.get('downloads').nested} groups={labels.downloads}
+                  <NestedList items={lists.get('downloads').nested}
+                              groups={labels.downloads}
                               onClick={onClick.downloads}/>
                 </Section>
               </SectionsPane>
@@ -100,7 +105,8 @@ export class Nav extends React.Component {
                   </SectionHeader>
 
                   <ul>
-                    <ListItem label="Draft Articles" count={lists.get('todo').get('articles').draft} onClick={onClick.draftArticles}/>
+                    <ListItem label="Draft Articles" count={lists.get('todo').get('articles').draft}
+                              onClick={onClick.draftArticles}/>
                     <ListItem label="Pending Articles" count={lists.get('todo').get('articles').pending}
                               onClick={onClick.pendingArticles}/>
                   </ul>
@@ -112,12 +118,10 @@ export class Nav extends React.Component {
                     <ListItem label="Comments to validate"
                               count={lists.get('todo').get('comments').get('validate').count}
                               onClick={onClick.allCommentsToValidate}>
-                      <NestedList
-                        depth="2"
-                        items={lists.get('todo').get('comments').get('validate').get('nested')}
-                        groups={labels.commentsToValidate}
-                        onClick={onClick.commentsToValidate}
-                        />
+                      <NestedList depth="2"
+                                  items={lists.get('todo').get('comments').get('validate').nested}
+                                  groups={labels.commentsToValidate}
+                                  onClick={onClick.commentsToValidate}/>
                     </ListItem>
                     <ListItem label="Comments to review" count={lists.get('todo').get('comments').get('review')}
                               onClick={onClick.commentsToReview}/>

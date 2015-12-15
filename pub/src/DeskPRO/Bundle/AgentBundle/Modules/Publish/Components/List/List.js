@@ -1,74 +1,64 @@
-import React from 'react';
-import { SectionsPane, Section, SectionHeader }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
-import { ListFrameContainer }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import React, {Component, PropTypes} from 'react';
+import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ListFrameMenu';
+import { ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
 
-export class List extends React.Component {
+export class List extends Component {
+  static propTypes = {
+    elements: PropTypes.array.isRequired,
+    view: PropTypes.string.isRequired,
+    toggleView: PropTypes.func.isRequired
+  };
+
   render() {
     const { elements, view, toggleView } = this.props;
+    const checkbox = { count: 1, action: ()=>{} };
 
     return (
       <ListFrameContainer>
-        <SectionsPane>
-          <Section>
-            <div className="tickets-control-bar">
+        <ListFrameMenu checkbox={checkbox}/>
 
-              <div className="bulk-edit-control">
-                <a href="#">
-                        <span className="checkbox">
-                            <i className="fa fa-check"/>
-                        </span>
-                </a>
-                <span className="count" style={{display: "none"}}><span>X</span></span>
-              </div>
-
-                <span className="ticket-controls-default">
-                    Toggle: <a href onClick={toggleView}>{view}</a>
-                </span>
-            </div>
-          </Section>
-          <Section>
-            {this.renderElements(view, elements)}
-          </Section>
-        </SectionsPane>
+        <ListFrameContents>
+          {this.renderElements(view, elements)}
+        </ListFrameContents>
       </ListFrameContainer>
     );
   }
 
   renderElements(view, elements) {
-    if (!elements.length) {
-      return 'No data to display'
+    if (!elements || elements.size === 0) {
+      return 'No data to display';
     }
 
     switch (view) {
       case 'list':
-        return this.renderListView(elements);
+        return this.renderListView();
       case 'table':
-        return this.renderTableView(elements);
+        return this.renderTableView();
       default:
-        throw `Unknown "${view}" view type`;
+        throw new Error(`Unknown "${view}" view type`);
     }
   }
 
-  renderListView(elements) {
-    let key = 0;
-
+  renderListView() {
+    const {elements} = this.props;
     return (
       <div>
         <h1>List View</h1>
-        {elements.map(e => <div key={key++} style={{marginTop:'20px'}}>List item: {e}</div>)}
+        {elements.map((element, index) => <div key={index} style={{marginTop: '20px'}}>List
+          item: {element.content}</div>)}
       </div>
     );
   }
 
-  renderTableView(elements) {
-    let key = 0;
-
+  renderTableView() {
+    const {elements} = this.props;
+    console.log('Elements', elements);
     return (
       <div>
         <h1>Table View</h1>
-        {elements.map(e => <div key={key++} style={{marginTop:'20px'}}>Table row: {e}</div>)}
+        {elements.map((element, index) => <div key={index} style={{marginTop: '20px'}}>Table
+          row: {element.content}</div>)}
       </div>
     );
   }

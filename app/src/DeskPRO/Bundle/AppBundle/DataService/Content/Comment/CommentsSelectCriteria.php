@@ -87,6 +87,7 @@ class CommentsSelectCriteria extends Criteria
             Comment::STATUS_VISIBLE,
             Comment::STATUS_DELETED,
             Comment::STATUS_AGENT,
+            'validating'
         ]);
         $resolver->setAllowedValues('period_created', DatePeriods::$names);
         $resolver->setAllowedValues('is_reviewed', ['0', '1']);

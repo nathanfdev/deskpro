@@ -3,11 +3,19 @@ import { connect } from 'react-redux';
 import { List } from './List';
 import * as actions from '../../Actions/publishListActions';
 
-@connect(state => state.PublishList)
+@connect(state => {
+  return ({
+    elements: state.Publish.list.get(state.Publish.list.get('content')),
+    content: state.Publish.list.get('content'),
+    view: state.Publish.list.get('view'),
+  });
+})
 export class ListContainer extends React.Component {
 
   render() {
-    switch (this.props.content) {
+    const {content, elements, view} = this.props;
+    console.log(elements);
+    switch (content) {
       case 'articles':
       case 'news':
       case 'downloads':
@@ -17,10 +25,10 @@ export class ListContainer extends React.Component {
       case 'commentsToReview':
         return (
           <List
-            elements={this.props[this.props.content]}
-            view={this.props.view}
+            elements={elements}
+            view={view}
             toggleView={this.toggleView.bind(this)}
-          />
+            />
         );
 
       default:
