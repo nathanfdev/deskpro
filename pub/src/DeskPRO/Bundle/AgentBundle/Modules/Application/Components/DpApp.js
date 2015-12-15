@@ -10,13 +10,15 @@ import { NotificationsContainer } from './Notifications/notifications';
 import { meSelector } from '../RecordStores/Selectors/meSelectors';
 import { workspaceDimsSelector } from '../Selectors/workspace';
 import * as appActions from '../Actions/appActions';
+import {pollActionAlerts} from '../Actions/notificationActions';
 import debounce from 'lodash/function/debounce';
 import $ from 'jquery';
 
 @connect(state => ({
   user: meSelector(state),
   dpWindow: state.Application.dpWindow,
-  workspaceDims: workspaceDimsSelector(state)
+  workspaceDims: workspaceDimsSelector(state),
+  actionAlerts: state.Application.notifications.get('actionAlerts')
 }))
 @DragDropContext(HTML5Backend)
 export class DpApp extends React.Component {
@@ -26,6 +28,7 @@ export class DpApp extends React.Component {
     children: PropTypes.object.isRequired,
     dpWindow: PropTypes.object.isRequired,
     workspace: PropTypes.object.isRequired,
+    actionAlerts: PropTypes.string.isRequired,
     dispatch: PropTypes.func.isRequired
   };
 
@@ -39,6 +42,7 @@ export class DpApp extends React.Component {
 
   componentDidMount() {
     $(window).on('resize', this.onResize);
+    setInterval(() => this.props.dispatch(pollActionAlerts()), 5000);
   }
 
   componentWillUnmount() {

@@ -1,6 +1,5 @@
 import * as actions from '../Actions/notificationActions.js';
 import { createReducer } from 'Ampliflux';
-import { mergeValue } from 'Ampliflux/reducers/handlers';
 import uuid from 'node-uuid';
 
 const initialState = {
@@ -20,5 +19,19 @@ export default createReducer(initialState, {
   [actions.destroyNotification]: (state, payload) => state.set(
     'notifications',
     state.get('notifications').filter(notification => notification.id !== payload)
-  )
+  ),
+  [actions.setupActionAlerts]: (state, payload) => state.set(
+    'actionAlerts',
+    payload.uuid),
+  [actions.pollActionAlerts]: (state, payload) => {
+    const last = payload[payload.length - 1];
+    console.log(payload, last);
+    if (last && last.uuid) {
+      return state.set(
+        'actionAlerts',
+        last.uuid);
+    }
+
+    return state;
+  }
 });
