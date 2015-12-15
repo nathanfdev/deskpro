@@ -17,7 +17,8 @@ export class TypingEventContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      displayChild: false
+      displayChild: false,
+      agentLastTypingTime: null
     };
   }
 
@@ -46,9 +47,10 @@ export class TypingEventContainer extends React.Component {
     const now = moment().format('X');
     const delay = ended - now + 10000; // displays in 10 seconds
 
-    if (delay > 0) {
+    if (delay > 0 && (!this.state.displayChild || agentLastTypingTime !== this.state.agentLastTypingTime)) {
       this.setState({
-        displayChild: true
+        displayChild: true,
+        agentLastTypingTime: agentLastTypingTime
       });
 
       this.timeout = setTimeout(this.onHide, delay);
@@ -56,6 +58,6 @@ export class TypingEventContainer extends React.Component {
   }
 
   render() {
-    return this.state.shown ? <TypingEvent {...this.props} /> : null;
+    return this.state.displayChild ? <TypingEvent {...this.props} /> : null;
   }
 }
