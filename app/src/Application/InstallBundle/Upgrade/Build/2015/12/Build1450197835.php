@@ -26,4 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1450197835);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1450197835 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('added last agent typing datetime');
+        $this->execMutateSql('ALTER TABLE `chat_conversations` ADD COLUMN `date_agent_typing` DATETIME NULL AFTER `date_assigned`;');
+    }
+}
