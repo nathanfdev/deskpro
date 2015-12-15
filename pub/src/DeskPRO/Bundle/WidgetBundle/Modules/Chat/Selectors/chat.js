@@ -42,7 +42,7 @@ export const agentIdSelector = createSelector(
 
 export const agentNameSelector = createSelector(
   chatInfoSelector,
-  chatInfo => chatInfo.get('agent_name')
+  chatInfo => chatInfo.get('agent_name') || 'Agent'
 );
 
 export const agentAvatarSelector = createSelector(
