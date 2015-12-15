@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
 import { DatePeriods } from 'DeskPRO/Bundle/AgentBundle/Services/DatePeriods';
 import * as actions from '../../Actions/publishNavActions';
@@ -20,6 +20,7 @@ import { Nav } from './Nav';
       case 'period_updated':
         labels[list] = DatePeriods.all;
         break;
+      default:
     }
   });
 
@@ -27,12 +28,21 @@ import { Nav } from './Nav';
 
   return {
     labels,
+    loaded: state.Publish.nav.getIn(['async', 'done']),
     lists: state.Publish.nav.get('lists'),
     grouping: state.Publish.nav.get('grouping'),
     dpWindow: state.Application.dpWindow
   };
 })
-export class NavContainer extends React.Component {
+export class NavContainer extends Component {
+
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    loaded: PropTypes.bool.isRequired,
+    lists: PropTypes.object.isRequired,
+    grouping: PropTypes.object.isRequired,
+    dpWindow: PropTypes.object.isRequired
+  };
 
   componentDidMount() {
     const { dispatch, lists } = this.props;
@@ -48,11 +58,7 @@ export class NavContainer extends React.Component {
   }
 
   render() {
-    const onGroupingChange = (listName) => this.onGroupingChange(listName).bind(this);
-    const toggleGroupingVisibility = (listName) => this.toggleGroupingVisibility(listName).bind(this);
-    const setMine = (isMine) => this.setMine(isMine).bind(this);
-
-    const { dispatch, lists, dpWindow } = this.props;
+    const { dispatch, lists, dpWindow, loaded } = this.props;
     const onClick = {
       articles: (group) => {
         dispatch(listActions.load('articles', lists.articles.grouped_by, group));
@@ -81,42 +87,42 @@ export class NavContainer extends React.Component {
     };
 
     return (
-      <Nav
-        lists={this.props.lists}
-        labels={this.props.labels}
-        grouping={this.props.grouping}
-        onGroupingChange={onGroupingChange}
-        toggleGroupingVisibility={toggleGroupingVisibility}
-        setMine={setMine}
-        onClick={onClick}
-        dispatch={dispatch.bind(this)}
-        dpWindow={dpWindow}
+      <Nav loaded={loaded}
+           lists={this.props.lists}
+           labels={this.props.labels}
+           grouping={this.props.grouping}
+           onGroupingChange={this.onGroupingChange.bind(this)}
+           toggleGroupingVisibility={this.toggleGroupingVisibility.bind(this)}
+           setMine={this.setMine.bind(this)}
+           onClick={onClick}
+           dispatch={dispatch.bind(this)}
+           dpWindow={dpWindow}
         />
     );
   }
 
   toggleGroupingVisibility(listName) {
-    return function(e) {
-      e.preventDefault();
+    return (event) => {
+      event.preventDefault();
       this.props.dispatch(actions.toggleListGroupingVisibility(listName));
-    }
+    };
   }
 
   onGroupingChange(listName) {
-    return function(e) {
-      const options = e.target.options;
+    return (event) => {
+      const options = event.target.options;
       for (let i = 0; i < options.length; i++) {
         if (options[i].selected) {
           this.props.dispatch(actions.changeListGrouping(listName, options[i].value));
         }
       }
-    }
+    };
   }
 
   setMine(isMine) {
-    return function(e) {
-      e.preventDefault();
+    return (event) => {
+      event.preventDefault();
       this.props.dispatch(actions.setMine(isMine));
-    }
+    };
   }
 }

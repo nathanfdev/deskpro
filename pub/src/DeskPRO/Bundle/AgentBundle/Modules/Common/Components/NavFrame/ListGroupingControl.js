@@ -11,7 +11,7 @@ export class ListGroupingControl extends React.Component {
     close: PropTypes.func.isRequired,
     selected: PropTypes.string,
     onClose: PropTypes.func,
-    attachTo: PropTypes.node.isRequired,
+    attachTo: PropTypes.node.isRequired
   };
 
   shouldComponentUpdate(nextProps) {
@@ -38,7 +38,7 @@ export class ListGroupingControl extends React.Component {
                 <p>
                   <label>Grouping Options:</label>
                   <select onChange={onChange} value={selected}>
-                    {options.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}
+                    {options.map((option, index) => <option key={index} value={option.value}>{option.label}</option>)}
                   </select>
                 </p>
               </form>

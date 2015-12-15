@@ -3,6 +3,9 @@ import { async, setFullPayload, mergeFullPayload, setValue } from 'Ampliflux/red
 import * as actions from '../Actions/publishNavActions';
 
 const initialState = {
+  async: {
+    done: false
+  },
   // Lists data
   lists: {
     articles: {
@@ -81,7 +84,9 @@ export default createReducer(initialState, {
   }),
   [actions.loadCommentsToReviewCount]: async({
     success: (state, payload) =>
-      state.setIn(['lists', 'todo', 'comments', 'review'], payload)
+      state.setIn(['lists', 'todo', 'comments', 'review'], payload),
+    start: setValue('async.done', false),
+    done: setValue('async.done', true)
   }),
 });
 
