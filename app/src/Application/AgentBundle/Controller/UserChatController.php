@@ -441,6 +441,10 @@ class UserChatController extends AbstractController
     {
         /** @var ChatConversation $convo */
         $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
+        $convo->setDateAgentTyping(new \DateTime());
+
+        $this->em->persist($convo);
+        $this->em->flush();
 
         return $this->createJsonCmResponse();
     }

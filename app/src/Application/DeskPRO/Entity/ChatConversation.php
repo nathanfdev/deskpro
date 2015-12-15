@@ -746,6 +746,26 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @return \DateTime
+     */
+    public function getDateAgentTyping()
+    {
+        return $this->date_agent_typing;
+    }
+
+    /**
+     * @param \DateTime $date
+     *
+     * @return $this
+     */
+    public function setDateAgentTyping(\DateTime $date = null)
+    {
+        $this->setModelField('date_agent_typing', $date);
+
+        return $this;
+    }
+
+    /**
      * Get a basic array of information. These are generally used in templates or with
      * client messages to render the message.
      *
