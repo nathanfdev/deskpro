@@ -1,5 +1,5 @@
 import { createReducer } from 'Ampliflux';
-import { async, setFullPayload, mergeFullPayload, setValue } from 'Ampliflux/reducers/handlers';
+import { async, setValue, mergeFullPayload } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/publishNavActions';
 
 const initialState = {
@@ -82,12 +82,21 @@ export default createReducer(initialState, {
     success: (state, payload) =>
       state.setIn(['lists', 'todo', 'articles', 'pending'], payload)
   }),
+  [actions.loadDraftsCount]: async({
+    success: (state, payload) => state.setIn(['lists', 'todo', 'articles', 'draft'], payload)
+  }),
   [actions.loadCommentsToReviewCount]: async({
     success: (state, payload) =>
       state.setIn(['lists', 'todo', 'comments', 'review'], payload),
     start: setValue('async.done', false),
     done: setValue('async.done', true)
   }),
+
+  [actions.initialLoad]: async({
+    success: mergeFullPayload(),
+    start: setValue('async.done', false),
+    done: setValue('async.done', true)
+  })
 });
 
 /*

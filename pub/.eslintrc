@@ -7,16 +7,6 @@
   },
   "parser": "babel-eslint",
   "rules": {
-    "react/sort-comp": [
-      2,
-      {
-        "order": [
-          "lifecycle",
-          "render",
-          "everything-else"
-        ]
-      }
-    ],
     "react/jsx-quotes": 0,
     "react/no-multi-comp": 0,
     "jsx-quotes": [

@@ -1,4 +1,5 @@
 import { createAction } from 'Ampliflux';
+import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import * as Feedback from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
 import * as PersonSetting from 'DeskPRO/Bundle/AgentBundle/Services/Api/PersonSetting';
 import { loadFeedbackCommentsList } from './FeedbackCommentsActions';
@@ -7,7 +8,6 @@ import { loadFeedbackCommentsCounter }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCommentsActions';
 import { loadFeedbackCategories } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCategoriesActions';
 import { currentListParamsSelector, currentViewFieldsParamsSelector } from '../Selectors/list';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import { setFeedbackTypesRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackTypesActions';
 import { setFeedbackCategoriesRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCategoriesActions';

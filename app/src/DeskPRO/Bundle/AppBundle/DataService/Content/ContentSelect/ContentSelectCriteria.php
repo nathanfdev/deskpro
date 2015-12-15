@@ -79,7 +79,17 @@ class ContentSelectCriteria extends Criteria
         /** @var \Application\DeskPRO\Entity\Person $me */
         list($me) = $data;
 
-        $resolver->setDefined(['status', 'hidden_status', 'author', 'category', 'period_created']);
+        $resolver->setDefined(
+            [
+                'include',
+                'include_headers',
+                'status',
+                'hidden_status',
+                'author',
+                'category',
+                'period_created'
+            ]
+        );
 
         // filters validation
         $validateInt = function ($value) {
@@ -87,12 +97,18 @@ class ContentSelectCriteria extends Criteria
         };
         $resolver->setAllowedValues('category', $validateInt);
 
-        $resolver->setNormalizer('author', function ($options, $value) use ($me) {
-            return $value === 'me' ? $me->getId() : $value;
-        });
-        $resolver->setAllowedValues('author', function ($value) {
-            return is_int($value) || ctype_digit($value) || ($value === 'me');
-        });
+        $resolver->setNormalizer(
+            'author',
+            function ($options, $value) use ($me) {
+                return $value === 'me' ? $me->getId() : $value;
+            }
+        );
+        $resolver->setAllowedValues(
+            'author',
+            function ($value) {
+                return is_int($value) || ctype_digit($value) || ($value === 'me');
+            }
+        );
 
         $resolver->setAllowedValues('status', Content::getAllStatuses());
         $resolver->setAllowedValues('hidden_status', Content::getAllHiddenStatuses());

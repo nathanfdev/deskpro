@@ -99,7 +99,7 @@ class ArticlePendingCreateController extends BaseController
         $params = array_diff_assoc($request->query->all(), ['page' => null, 'count' => null]);
         $this->applyFilters($qb, $params);
 
-        $page  = $request->query->get('page', 1);
+        $page = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
         $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
         $pager->setMaxPerPage($count);
@@ -113,7 +113,7 @@ class ArticlePendingCreateController extends BaseController
 
     /**
      * @param QueryBuilder $qb
-     * @param array        $params
+     * @param array $params
      */
     private function applyFilters(QueryBuilder $qb, array $params)
     {
@@ -125,14 +125,15 @@ class ArticlePendingCreateController extends BaseController
 
             $alias = $qb->getRootAliases()[0];
             $qb
-                ->where($alias.'.assigned_person = :assignee')
+                ->where($alias . '.assigned_person = :assignee')
                 ->setParameters(compact('assignee'));
             unset($params['assigned_person']);
         }
 
         // throw Bad Request if there are any filers except "assigned_person"
-        if (!empty($params)) {
+        // No good idea, because we need 'include_headers' parameter
+        /*if (!empty($params)) {
             throw new BadRequestHttpException('Unknown parameters: '.implode(', ', array_keys($params)));
-        }
+        }*/
     }
 }
