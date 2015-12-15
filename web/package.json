@@ -35,5 +35,8 @@
     "bower-install": "bower install --config.interactive=false --allow-root",
     "gulp-prod": "gulp prod",
     "gulp": "gulp"
+  },
+  "devDependencies": {
+    "sassdoc": "^2.1.18"
   }
 }

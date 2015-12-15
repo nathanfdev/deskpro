@@ -127,17 +127,34 @@ function refreshLegacy() {
   });
 }
 
+function refreshPortalDesignerVariables() {
+  var spawn = require('child_process').spawn;
+  process.chdir('../web');
+  var child = spawn('gulp', ['sassdoc']);
+
+  // Print output from Gulpfile
+  child.stdout.on('data', function(data) {
+    if (data) {
+      console.log(data.toString());
+    }
+  });
+
+  process.chdir('../pub');
+}
+
 gulp.task('bundle', function (callback) {
   reducerRefresh("Agent", path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle"));
   reducerRefresh("Widget", path.join(__dirname, "src/DeskPRO/Bundle/WidgetBundle"));
   refreshWidgetLoader();
   refreshLegacy();
+  refreshPortalDesignerVariables();
   runWebpackBundle(getWebpackConfig('all', deskpro.isProd), callback);
 });
 
 gulp.task('bundle:agent', function (callback) {
   reducerRefresh("Agent", path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle"));
   refreshLegacy();
+  refreshPortalDesignerVariables();
   runWebpackBundle(getWebpackConfig('agent', deskpro.isProd), callback);
 });
 
@@ -156,6 +173,7 @@ gulp.task('bundle:dev-server', function(callback) {
   watch(path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle/Legacy/**/*.js"), function() {
     refreshLegacy();
   });
+  refreshPortalDesignerVariables();
   reducerRefresh("Agent", path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle"));
   reducerRefresh("Widget", path.join(__dirname, "src/DeskPRO/Bundle/WidgetBundle"));
   startWebpackServer(getWebpackConfig('all', true, false));
@@ -167,6 +185,7 @@ gulp.task('bundle:dev-server:agent', function(callback) {
   watch(path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle/Legacy/**/*.js"), function() {
     refreshLegacy();
   });
+  refreshPortalDesignerVariables();
   startWebpackServer(getWebpackConfig('agent', true, false));
 });
 

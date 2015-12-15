@@ -16,6 +16,8 @@ var gulp       = require('gulp'),
     gulpif     = require('gulp-if'),
     lazypipe   = require('lazypipe'),
     clean      = require('gulp-clean'),
+    sassdoc    = require('sassdoc'),
+    fs         = require('fs'),
     deskpro    = {util: {}, taskGen: {}};
 
 
@@ -227,7 +229,7 @@ gulp.task('cpjs', ['clean'], function() {
   var target_dir = './app-build/';
 
   return gulp.src(glob)
-      .pipe(gulpif(deskpro.isWatching, cache('watch', {optimizeMemory: true})))
+    .pipe(gulpif(deskpro.isWatching, cache('watch', {optimizeMemory: true})))
     .pipe(gulpif(deskpro.isWatching, plumber()))
     .pipe(gulp.dest(target_dir))
     .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
@@ -255,6 +257,62 @@ gulp.task('sass-app', function () {
 
 gulp.task('sass', ['clean'], function () {
   return deskpro.taskGen.sassCss('./app/**/Resources/style/*-style.scss');
+});
+
+gulp.task('sassdoc', function () {
+
+  /**
+   * Transform sassdoc raw output into grouped variables, fixing variable names from - to _
+   * @param sassdoc_items
+   * @returns {{}}
+   */
+  function transform(sassdoc_items) {
+    var default_type = {
+      colors: 'color_picker',
+      button_colors: 'color_picker',
+      font_colors: 'color_picker',
+      form_colors: 'color_picker',
+      generic_colors: 'color_picker',
+      secondary_colors: 'color_picker',
+      welcome_colors: 'color_picker',
+      positioning: 'pixels',
+      borders: 'pixels',
+      fonts: 'font',
+      font_sizes: 'em'
+    };
+
+    var groups = {};
+    for (var i = 0; i < sassdoc_items.length; i++) {
+      var group = sassdoc_items[i]['group'][0];
+      if (!groups.hasOwnProperty(group)) {
+        groups[group] = [];
+      }
+
+      var name = sassdoc_items[i]['context']['name'].replace(/\-/g, '_');
+
+      var type;
+      if (sassdoc_items[i].hasOwnProperty('type')) {
+        type = sassdoc_items[i]['type'];
+      } else {
+        if (default_type.hasOwnProperty(group)) {
+          type = default_type[group];
+        } else {
+          console.error('Error: ' + name + ' has no @type and there is no default type for the ' + group + ' group');
+        }
+      }
+      groups[group].push({
+        type: type,
+        name: name,
+        default_value: sassdoc_items[i]['context']['value']
+      });
+    }
+
+    return groups;
+  }
+
+  sassdoc.parse('../pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/vars.scss').then(function(items) {
+    fs.writeFileSync('./sassdoc/vars.json', JSON.stringify(transform(items), null, '\t'));
+  });
 });
 
 //------------------------------

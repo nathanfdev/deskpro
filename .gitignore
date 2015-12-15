@@ -97,6 +97,7 @@ data/encryption-key.bin.*
 /data/http_cache/
 /data/importer.pid
 
+web/sassdoc/vars.json
 /web/build
 /web/app/build/*/build.js
 /web/stylesheets/agent
