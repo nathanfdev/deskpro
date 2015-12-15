@@ -1,8 +1,56 @@
 import { createAction } from 'Ampliflux';
+import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import * as Content from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/Content';
 import * as ArticlePendingCreates from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/ArticlePendingCreates';
 import * as Comments from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/Comments';
 import * as People from 'DeskPRO/Bundle/AgentBundle/Services/Api/People';
+
+export const initialLoad = createAction(
+  'PUBLISH_NAV_INITIAL_LOAD',
+  () => new Promise(
+    (resolve) => {
+      const batch = 'DP_API/batch'
+          + '?get[articles]=DP_API/articles/counts?group_by%3Dcategory'
+          + '&get[news]=DP_API/news/counts?group_by%3Dcategory'
+          + '&get[downloads]=DP_API/downloads/counts?group_by%3Dcategory'
+          + '&get[content_categories]=DP_API/content_categories'
+          + '&get[articlesDraftsCount]=DP_API/articles/counts?status%3Dhidden&hidden_status%3Ddraft&author%3Dme'
+          + '&get[articlesPendingCount]=DP_API/article_pending_create/counts?assigned_person%3Dme'
+          + '&get[toValidateCount]=DP_API/article_comments/counts?group_by%3Dperiod_created&status%3Dvalidating'
+          + '&get[commentsToReviewCount]=DP_API/article_comments/counts?is_reviewed%3D0'
+        ;
+
+      DpApi.sendGet(batch).success(({responses}) => {
+        const payload = flattenBatchResponses(responses);
+        payload.lists = { todo: { articles: {}, comments: {} } };
+        payload.lists.articles = payload.articles;
+        payload.lists.news = payload.news;
+        payload.lists.downloads = payload.downloads;
+        payload.lists.todo.articles.draft = payload.articlesDraftsCount.count;
+        payload.lists.todo.articles.pending = payload.articlesPendingCount.count;
+        payload.lists.todo.comments.validate = payload.toValidateCount;
+        payload.lists.todo.comments.review = payload.commentsToReviewCount.count;
+        delete payload.articles;
+        delete payload.news;
+        delete payload.downloads;
+        delete payload.articlesDraftsCount;
+        delete payload.articlesPendingCount;
+        delete payload.toValidateCount;
+        delete payload.commentsToReviewCount;
+        resolve(payload);
+      });
+    }
+  )
+);
+
+export const loadAuthorName = createAction(
+  'PUBLISH_NAV_LOAD_AUTHOR_NAME',
+  (id) => People.loadPerson(id)
+    .then(promise => {
+      return { id, name: promise.getData().data.name };
+    })
+);
 
 export const loadCounts = createAction(
   'PUBLISH_NAV_LOAD_CONTENT_COUNTS',
@@ -39,14 +87,6 @@ export const loadCommentsToReviewCount = createAction(
   'PUBLISH_NAV_LOAD_COMMENTS_TO_REVIEW_COUNT',
   () => Comments.loadCommentsToReviewCount('articles')
     .then(promise => promise.getData().data.count)
-);
-
-export const loadAuthorName = createAction(
-  'PUBLISH_NAV_LOAD_AUTHOR_NAME',
-  (id) => People.loadPerson(id)
-    .then(promise => {
-      return { id, name: promise.getData().data.name };
-    })
 );
 
 export const loadCategories = createAction(

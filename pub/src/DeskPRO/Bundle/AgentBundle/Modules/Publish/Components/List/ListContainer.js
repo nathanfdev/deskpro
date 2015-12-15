@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
 import { List } from './List';
 import * as actions from '../../Actions/publishListActions';
@@ -7,10 +7,17 @@ import * as actions from '../../Actions/publishListActions';
   return ({
     elements: state.Publish.list.get(state.Publish.list.get('content')),
     content: state.Publish.list.get('content'),
-    view: state.Publish.list.get('view'),
+    view: state.Publish.list.get('view')
   });
 })
-export class ListContainer extends React.Component {
+export class ListContainer extends Component {
+
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    content: PropTypes.string.isRequired,
+    elements: PropTypes.object.isRequired,
+    view: PropTypes.string.isRequired
+  };
 
   render() {
     const {content, elements, view} = this.props;
@@ -32,7 +39,7 @@ export class ListContainer extends React.Component {
         );
 
       default:
-        throw `Unknown list ${this.props.content}`;
+        throw new Error(`Unknown list ${this.props.content}`);
     }
   }
 

@@ -6,31 +6,11 @@ import * as listActions from '../../Actions/publishListActions';
 import { Nav } from './Nav';
 
 @connect(state => {
-  // select lists labels depending on their grouping
-  const labels = {};
-  ['articles', 'news', 'downloads'].forEach(list => {
-    switch (state.Publish.nav.get('lists').get(list).grouped_by) {
-      case 'category':
-        labels[list] = state.Publish.nav.get('groups').get('categories').get(list);
-        break;
-      case 'author':
-        labels[list] = state.Publish.nav.get('groups').get('authors');
-        break;
-      case 'period_created':
-      case 'period_updated':
-        labels[list] = DatePeriods.all;
-        break;
-      default:
-    }
-  });
-
-  labels.commentsToValidate = DatePeriods.all;
-
   return {
-    labels,
     loaded: state.Publish.nav.getIn(['async', 'done']),
     lists: state.Publish.nav.get('lists'),
     grouping: state.Publish.nav.get('grouping'),
+    groups: state.Publish.nav.get('groups'),
     dpWindow: state.Application.dpWindow
   };
 })
@@ -45,20 +25,58 @@ export class NavContainer extends Component {
   };
 
   componentDidMount() {
-    const { dispatch, lists } = this.props;
+    const { dispatch } = this.props;
+    dispatch(actions.initialLoad());
+  }
 
-    dispatch(actions.loadCounts('articles', lists.get('articles').get('grouped_by')));
-    dispatch(actions.loadCounts('news', lists.get('news').get('grouped_by')));
-    dispatch(actions.loadCounts('downloads', lists.get('downloads').get('grouped_by')));
-    dispatch(actions.loadCategories());
-    dispatch(actions.loadDraftsCount(lists.get('todo').get('articles').mine));
-    dispatch(actions.loadPendingCount(lists.get('todo').get('articles').mine));
-    dispatch(actions.loadCommentsToValidateCounts());
-    dispatch(actions.loadCommentsToReviewCount());
+  onGroupingChange(listName) {
+    return (event) => {
+      const options = event.target.options;
+      for (let i = 0; i < options.length; i++) {
+        if (options[i].selected) {
+          this.props.dispatch(actions.changeListGrouping(listName, options[i].value));
+        }
+      }
+    };
+  }
+
+  setMine(isMine) {
+    return (event) => {
+      event.preventDefault();
+      this.props.dispatch(actions.setMine(isMine));
+    };
+  }
+
+  toggleGroupingVisibility(listName) {
+    return (event) => {
+      event.preventDefault();
+      this.props.dispatch(actions.toggleListGroupingVisibility(listName));
+    };
   }
 
   render() {
-    const { dispatch, lists, dpWindow, loaded } = this.props;
+    const { dispatch, lists, dpWindow, loaded, groups } = this.props;
+
+    // select lists labels depending on their grouping
+    const labels = {};
+    ['articles', 'news', 'downloads'].forEach(list => {
+      switch (lists.get(list).grouped_by) {
+        case 'category':
+          labels[list] = groups.get('categories').get(list);
+          break;
+        case 'author':
+          labels[list] = groups.get('authors');
+          break;
+        case 'period_created':
+        case 'period_updated':
+          labels[list] = DatePeriods.all;
+          break;
+        default:
+      }
+    });
+    labels.commentsToValidate = DatePeriods.all;
+
+
     const onClick = {
       articles: (group) => {
         dispatch(listActions.load('articles', lists.articles.grouped_by, group));
@@ -89,40 +107,15 @@ export class NavContainer extends Component {
     return (
       <Nav loaded={loaded}
            lists={this.props.lists}
-           labels={this.props.labels}
+           labels={labels}
            grouping={this.props.grouping}
            onGroupingChange={this.onGroupingChange.bind(this)}
            toggleGroupingVisibility={this.toggleGroupingVisibility.bind(this)}
            setMine={this.setMine.bind(this)}
            onClick={onClick}
            dispatch={dispatch.bind(this)}
-           dpWindow={dpWindow}
-        />
+           dpWindow={dpWindow}/>
     );
   }
 
-  toggleGroupingVisibility(listName) {
-    return (event) => {
-      event.preventDefault();
-      this.props.dispatch(actions.toggleListGroupingVisibility(listName));
-    };
-  }
-
-  onGroupingChange(listName) {
-    return (event) => {
-      const options = event.target.options;
-      for (let i = 0; i < options.length; i++) {
-        if (options[i].selected) {
-          this.props.dispatch(actions.changeListGrouping(listName, options[i].value));
-        }
-      }
-    };
-  }
-
-  setMine(isMine) {
-    return (event) => {
-      event.preventDefault();
-      this.props.dispatch(actions.setMine(isMine));
-    };
-  }
 }

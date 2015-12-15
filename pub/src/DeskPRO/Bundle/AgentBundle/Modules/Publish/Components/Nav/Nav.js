@@ -10,7 +10,12 @@ export class Nav extends Component {
     dispatch: PropTypes.func.isRequired,
     loaded: PropTypes.bool.isRequired,
     lists: PropTypes.object.isRequired,
+    labels: PropTypes.object.isRequired,
     grouping: PropTypes.object.isRequired,
+    onGroupingChange: PropTypes.func.isRequired,
+    toggleGroupingVisibility: PropTypes.func.isRequired,
+    setMine: PropTypes.func.isRequired,
+    onClick: PropTypes.func.isRequired,
     dpWindow: PropTypes.object.isRequired
   };
 
@@ -18,7 +23,7 @@ export class Nav extends Component {
     const { lists, labels, grouping, onGroupingChange, toggleGroupingVisibility, setMine, onClick, dispatch, dpWindow, loaded } = this.props;
     const currentApp = dpWindow.get('activeAppId');
     const mine = lists.get('todo').get('articles').mine;
-
+console.log(lists.get('articles').get('nested').toJS());
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
         <div part="outer">
@@ -61,7 +66,7 @@ export class Nav extends Component {
                       Knowledgebase
                     </SectionGroupedHeader>
 
-                    <NestedList items={lists.get('articles').nested}
+                    <NestedList items={lists.get('articles').get('nested').toJS()}
                                 groups={labels.articles}
                                 onClick={onClick.articles}/>
                   </Section>
@@ -83,7 +88,7 @@ export class Nav extends Component {
                       News
                     </SectionGroupedHeader>
 
-                    <NestedList items={lists.get('news').nested}
+                    <NestedList items={lists.get('news').get('nested').toJS()}
                                 groups={labels.news}
                                 onClick={onClick.news}/>
                   </Section>
@@ -100,7 +105,7 @@ export class Nav extends Component {
                       Downloads
                     </SectionGroupedHeader>
 
-                    <NestedList items={lists.get('downloads').nested}
+                    <NestedList items={lists.get('downloads').get('nested').toJS()}
                                 groups={labels.downloads}
                                 onClick={onClick.downloads}/>
                   </Section>
@@ -132,10 +137,10 @@ export class Nav extends Component {
 
                     <ul>
                       <ListItem label="Comments to validate"
-                                count={lists.get('todo').get('comments').get('validate').count}
+                                count={lists.get('todo').get('comments').get('validate').get('count')}
                                 onClick={onClick.allCommentsToValidate}>
                         <NestedList depth="2"
-                                    items={lists.get('todo').get('comments').get('validate').nested}
+                                    items={lists.get('todo').get('comments').get('validate').get('nested').toJS()}
                                     groups={labels.commentsToValidate}
                                     onClick={onClick.commentsToValidate}/>
                       </ListItem>

@@ -7,6 +7,7 @@ import { compileParams } from '../../ApiHelpers';
  * @return Promise
  */
 export function load(target, filters) {
+  console.log('DP_API/' + validateTarget(target) + '?' + compileParams(filters));
   return DpApi.sendGet('DP_API/' + validateTarget(target) + '?' + compileParams(filters));
 }
 
@@ -16,6 +17,7 @@ export function load(target, filters) {
  * @return Promise
  */
 export function loadCounts(target, groupBy) {
+  console.log('DP_API/' + validateTarget(target) + '/counts?group_by=' + groupBy);
   return DpApi.sendGet('DP_API/' + validateTarget(target) + '/counts?group_by=' + groupBy);
 }
 

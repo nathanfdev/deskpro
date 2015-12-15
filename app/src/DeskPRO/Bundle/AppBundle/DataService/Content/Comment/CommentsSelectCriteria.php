@@ -75,7 +75,18 @@ class CommentsSelectCriteria extends Criteria
      */
     public static function configureResolver(OptionsResolver $resolver, array $data = [])
     {
-        $resolver->setDefined(['article', 'news', 'download', 'status', 'period_created', 'is_reviewed']);
+        $resolver->setDefined(
+            [
+                'include',
+                'include_headers',
+                'article',
+                'news',
+                'download',
+                'status',
+                'period_created',
+                'is_reviewed'
+            ]
+        );
 
         $validateInt = function ($value) {
             return is_int($value) || ctype_digit($value);
@@ -83,12 +94,15 @@ class CommentsSelectCriteria extends Criteria
         $resolver->setAllowedValues('article', $validateInt);
         $resolver->setAllowedValues('news', $validateInt);
         $resolver->setAllowedValues('download', $validateInt);
-        $resolver->setAllowedValues('status', [
-            Comment::STATUS_VISIBLE,
-            Comment::STATUS_DELETED,
-            Comment::STATUS_AGENT,
-            'validating'
-        ]);
+        $resolver->setAllowedValues(
+            'status',
+            [
+                Comment::STATUS_VISIBLE,
+                Comment::STATUS_DELETED,
+                Comment::STATUS_AGENT,
+                'validating'
+            ]
+        );
         $resolver->setAllowedValues('period_created', DatePeriods::$names);
         $resolver->setAllowedValues('is_reviewed', ['0', '1']);
     }

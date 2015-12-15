@@ -6,12 +6,11 @@ import { ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Com
 export class List extends Component {
   static propTypes = {
     elements: PropTypes.object.isRequired,
-    view: PropTypes.string.isRequired,
-    toggleView: PropTypes.func.isRequired
+    view: PropTypes.string.isRequired
   };
 
   render() {
-    const { elements, view, toggleView } = this.props;
+    const { elements, view } = this.props;
     const checkbox = { count: 1, action: ()=>{} };
 
     return (
