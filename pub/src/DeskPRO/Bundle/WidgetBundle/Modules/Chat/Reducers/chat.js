@@ -50,6 +50,12 @@ export default createReducer(initialState, {
 
   // Uploading files
   [actions.addUploadingFile]: pushPayloadToCollection('uploadingFiles'),
+  [actions.markUploadingFileFailed]: (state, payload) => {
+    const index = state.get('uploadingFiles').indexOf(payload);
+    payload.failed = true;
+
+    return state.setIn(['uploadingFiles', index], payload);
+  },
   [actions.removeUploadingFile]: deletePayloadFromCollection('uploadingFiles'),
 
   // Attachments

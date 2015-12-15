@@ -20,6 +20,7 @@ export const addNewMessage = createAction('WIDGET_CHAT_ADD_NEW_MESSAGES');
 
 // Uploading files actions
 export const addUploadingFile = createAction('WIDGET_CHAT_ADD_UPLOADING_FILE');
+export const markUploadingFileFailed = createAction('WIDGET_CHAT_MARK_UPLOADING_FILE_FAILED');
 export const removeUploadingFile = createAction('WIDGET_CHAT_REMOVE_UPLOADING_FILE');
 
 // Attachment actions

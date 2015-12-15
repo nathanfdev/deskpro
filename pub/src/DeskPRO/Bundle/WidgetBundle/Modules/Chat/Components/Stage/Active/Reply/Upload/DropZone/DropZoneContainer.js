@@ -1,7 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { DropZone } from './DropZone';
-import { addAttachment, addUploadingFile, removeUploadingFile } from '../../../../../../Actions/chatActions';
+import {
+  addAttachment,
+  addUploadingFile,
+  removeUploadingFile,
+  markUploadingFileFailed
+} from '../../../../../../Actions/chatActions';
 
 @connect()
 export class DropZoneContainer extends React.Component {
@@ -20,16 +25,12 @@ export class DropZoneContainer extends React.Component {
     const { dispatch } = this.props;
 
     attachments.forEach(attachment => dispatch(addAttachment(attachment)));
-    this.removeFilesFromQueue(response);
+    response.files.forEach(file => this.props.dispatch(removeUploadingFile(file)));
   };
 
   onUploadFail = (event, data) => {
-    this.removeFilesFromQueue(data);
+    data.files.forEach(file => this.props.dispatch(markUploadingFileFailed(file)));
   };
-
-  removeFilesFromQueue(data) {
-    data.files.forEach(file => this.props.dispatch(removeUploadingFile(file)));
-  }
 
   render() {
     return (
