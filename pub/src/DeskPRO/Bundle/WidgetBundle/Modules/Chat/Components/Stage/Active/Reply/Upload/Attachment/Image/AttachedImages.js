@@ -10,7 +10,7 @@ export class AttachedImages extends React.Component {
   static propTypes = {
     attachedImages: PropTypes.object,
     attachedImagesCount: PropTypes.number,
-    onRemoveFile: PropTypes.func
+    onRemoveAttachment: PropTypes.func
   };
 
   constructor(props) {
@@ -33,7 +33,7 @@ export class AttachedImages extends React.Component {
   };
 
   render() {
-    const { attachedImages, attachedImagesCount, onRemoveFile } = this.props;
+    const { attachedImages, attachedImagesCount, onRemoveAttachment } = this.props;
     const lastImage = attachedImages.last() || Immutable.fromJS({});
 
     return (
@@ -42,7 +42,7 @@ export class AttachedImages extends React.Component {
           count={attachedImagesCount}
           attachment={lastImage}
           onExpand={this.onExpand}
-          onRemove={onRemoveFile} />
+          onRemove={onRemoveAttachment} />
 
         <Simple
           isOpen={this.state.expanded}

@@ -5,17 +5,17 @@ export class AttachedFiles extends React.Component {
 
   static propTypes = {
     attachedFiles: PropTypes.object,
-    onRemoveFile: PropTypes.func
+    onRemoveAttachment: PropTypes.func
   };
 
   render() {
-    const { attachedFiles, onRemoveFile } = this.props;
+    const { attachedFiles, onRemoveAttachment } = this.props;
 
     return (
       <div className="dropzone-container">
         {attachedFiles.map((attachment, index) => <AttachedFile key={index}
                                                                 attachment={attachment}
-                                                                onRemove={onRemoveFile} />)}
+                                                                onRemove={onRemoveAttachment} />)}
       </div>
     );
   }

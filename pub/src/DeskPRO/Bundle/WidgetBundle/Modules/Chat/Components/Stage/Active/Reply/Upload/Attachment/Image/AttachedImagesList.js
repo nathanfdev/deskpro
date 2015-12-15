@@ -5,18 +5,18 @@ export class AttachedImagesList extends React.Component {
 
   static propTypes = {
     attachedImages: PropTypes.object,
-    onRemoveFile: PropTypes.func
+    onRemoveAttachment: PropTypes.func
   };
 
   render() {
-    const { attachedImages, onRemoveFile } = this.props;
+    const { attachedImages, onRemoveAttachment } = this.props;
 
     return (
       <div className="dpdesignportal-chat-form-attached-image-list">
         <ul>
           {attachedImages.map((attachment, index) => <AttachedImage key={index}
                                                                     attachment={attachment}
-                                                                    onRemove={onRemoveFile} />)}
+                                                                    onRemove={onRemoveAttachment} />)}
         </ul>
       </div>
     );
