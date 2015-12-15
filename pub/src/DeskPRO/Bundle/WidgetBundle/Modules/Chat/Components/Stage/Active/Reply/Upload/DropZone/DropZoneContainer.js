@@ -10,12 +10,12 @@ export class DropZoneContainer extends React.Component {
     dispatch: PropTypes.func
   };
 
-  onUploadedStarted = (event, data) => {
+  onUploadStarted = (event, data) => {
     const { dispatch } = this.props;
     data.files.forEach(file => dispatch(addUploadingFile(file)));
   };
 
-  onUploadedSuccess = (event, response) => {
+  onUploadSuccess = (event, response) => {
     const attachments = response.result && response.result.data || [];
     const { dispatch } = this.props;
 
@@ -23,7 +23,7 @@ export class DropZoneContainer extends React.Component {
     this.removeFilesFromQueue(response);
   };
 
-  onUploadedFail = (event, data) => {
+  onUploadFail = (event, data) => {
     this.removeFilesFromQueue(data);
   };
 
@@ -35,9 +35,9 @@ export class DropZoneContainer extends React.Component {
     return (
       <DropZone uploadUrl={window.DP_HELPDESK_URL + 'portal/api/blobs/temp'}
                 context={[window.widgetFrame.document, parent.window.document]}
-                onSend={this.onUploadedStarted}
-                onSuccess={this.onUploadedSuccess}
-                onFail={this.onUploadedFail} {...this.props} />
+                onSend={this.onUploadStarted}
+                onSuccess={this.onUploadSuccess}
+                onFail={this.onUploadFail} {...this.props} />
     );
   }
 }
