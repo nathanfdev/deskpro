@@ -4,6 +4,9 @@ import * as actions from '../Actions/publishListActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 const initialState = {
+  async: {
+    done: true
+  },
   // view mode (table or list)
   view: constants.VIEW_MODE_TABLE,
 
@@ -19,6 +22,7 @@ const initialState = {
   commentsToValidate: [],
   commentsToReview: []
 };
+
 export default createReducer(initialState, {
   [actions.load]: async({
     success: (state, payload) =>

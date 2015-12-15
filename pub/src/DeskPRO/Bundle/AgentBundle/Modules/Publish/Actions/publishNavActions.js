@@ -43,8 +43,10 @@ export const loadCommentsToReviewCount = createAction(
 
 export const loadAuthorName = createAction(
   'PUBLISH_NAV_LOAD_AUTHOR_NAME',
-  (trigger, id) => People.loadPerson(id)
-    .then(promise => trigger({ id, name: promise.getData().data.name }))
+  (id) => People.loadPerson(id)
+    .then(promise => {
+      return { id, name: promise.getData().data.name };
+    })
 );
 
 export const loadCategories = createAction(
@@ -54,22 +56,22 @@ export const loadCategories = createAction(
 
 export const toggleListGroupingVisibility = createAction(
   'PUBLISH_NAV_TOGGLE_LIST_GROUPING_VISIBILITY',
-  (trigger, list) => trigger(list)
+    list => list
 );
 
 export const changeListGrouping = createAction(
   'PUBLISH_NAV_CHANGE_LIST_GROUPING',
-  (trigger, list, groupBy) => {
-    trigger(loadCounts(list, groupBy));
-    trigger(toggleListGroupingVisibility(list));
+  (list, groupBy) => (dispatch) => {
+    dispatch(loadCounts(list, groupBy));
+    dispatch(toggleListGroupingVisibility(list));
   }
 );
 
 export const setMine = createAction(
   'PUBLISH_NAV_SET_MINE',
-  (trigger, isMine) => {
-    trigger(isMine);
-    trigger(loadDraftsCount(isMine));
-    trigger(loadPendingCount(isMine));
+  (isMine) => (dispatch) => {
+    dispatch(loadDraftsCount(isMine));
+    dispatch(loadPendingCount(isMine));
+    return isMine;
   }
 );

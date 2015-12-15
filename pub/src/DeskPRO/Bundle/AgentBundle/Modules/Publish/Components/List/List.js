@@ -5,7 +5,7 @@ import { ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Com
 
 export class List extends Component {
   static propTypes = {
-    elements: PropTypes.array.isRequired,
+    elements: PropTypes.object.isRequired,
     view: PropTypes.string.isRequired,
     toggleView: PropTypes.func.isRequired
   };
