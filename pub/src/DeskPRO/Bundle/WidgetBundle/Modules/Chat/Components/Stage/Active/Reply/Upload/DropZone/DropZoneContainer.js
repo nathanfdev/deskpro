@@ -33,8 +33,8 @@ export class DropZoneContainer extends React.Component {
     const attachments = response.result && response.result.data || [];
     const { dispatch } = this.props;
 
+    response.files.forEach(file => dispatch(removeUploadingFile(file)));
     attachments.forEach(attachment => dispatch(addAttachment(attachment)));
-    response.files.forEach(file => this.props.dispatch(removeUploadingFile(file)));
   };
 
   onUploadFail = (event, data) => {
