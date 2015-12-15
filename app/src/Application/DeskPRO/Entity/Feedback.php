@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\LabelFeedback;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\PortalBundle\Form\Collection\CustomDataCollection;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -419,11 +420,11 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     /**
      * @param string $value
      *
-     * @return LabelTicket|null
+     * @return LabelFeedback|null
      */
     public function findLabelByString($value)
     {
-        $x        = new LabelTicket();
+        $x        = new LabelFeedback();
         $x->label = $value;
 
         foreach ($this->labels as $l) {

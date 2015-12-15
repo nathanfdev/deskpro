@@ -44,6 +44,8 @@ use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
 use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Query\QueryException;
+use Pagerfanta\Adapter\ArrayAdapter;
+use Pagerfanta\Adapter\DoctrineCollectionAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
@@ -325,8 +327,11 @@ class FeedbackDataService extends AbstractDataService
             ->leftJoin('f.person', 'person')
             ->addGroupBy('f.id');
         $criteria->applyFilters($qb);
+        $feedback = $qb->getQuery()->getResult();
 
-        $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
+        $filters = $criteria->getFilters();
+        $feedback = $this->allLabelsMode($filters, $feedback);
+        $pager = new Pagerfanta(new ArrayAdapter($feedback));
         $pager->setMaxPerPage($count);
         $pager->setCurrentPage($page);
 
@@ -444,5 +449,27 @@ class FeedbackDataService extends AbstractDataService
         }
 
         return $count;
+    }
+
+    /**
+     * @param array $filters
+     * @param array $feedback
+     * @return array
+     */
+    private function allLabelsMode(array $filters, array $feedback)
+    {
+        if (array_key_exists('labels_mode', $filters) && $filters['labels_mode'] === 'all'
+            && array_key_exists('label', $filters) && !empty($filters['label'])
+        ) {
+            foreach ($filters['label'] as $label) {
+                foreach ($feedback as $key => $item) {
+                    if (!$item->findLabelByString($label)) {
+                        unset($feedback[$key]);
+                    }
+                }
+            }
+        }
+
+        return $feedback;
     }
 }
