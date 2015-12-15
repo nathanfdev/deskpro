@@ -65,4 +65,13 @@ class NotificationService
 
         return $result;
     }
+
+    public function lastAlert(Person $user)
+    {
+        $actionAlertRepo = $this->em->getRepository('App:ActionAlert');
+        $last            = $actionAlertRepo->findBy(['target_id' => $user->getId()], ['id' => 'DESC']);
+        if ($last) {
+            return array_shift($last);
+        }
+    }
 }

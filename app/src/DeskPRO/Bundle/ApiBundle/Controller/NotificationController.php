@@ -49,7 +49,7 @@ class NotificationController extends BaseController
      * @throws AccessDeniedHttpException
      *
      * @return View
-     * @Annotations\Get("/notify/action_alerts/{last}", name="action_alerts_last")
+     * @Annotations\Get("/notify/action-alerts/{last}", name="action_alerts_last")
      */
     public function getLastActionAlerts($last)
     {
@@ -59,6 +59,25 @@ class NotificationController extends BaseController
 
         return View::create(
             $this->dataSerialize($alerts),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @throws NotFoundHttpException
+     * @throws AccessDeniedHttpException
+     *
+     * @return View
+     * @Annotations\Get("/notify/setup/action-alerts", name="action_alerts_setup")
+     */
+    public function setupLastActionAlert()
+    {
+        $service = $this->get('deskpro.notification.service');
+
+        $alert = $service->lastAlert($this->getUser());
+
+        return View::create(
+            $this->dataSerialize($alert),
             Response::HTTP_OK
         );
     }
