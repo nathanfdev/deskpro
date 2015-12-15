@@ -5,15 +5,16 @@ import { MessageAvatar } from '../Message/MessageAvatar';
 export class TypingEvent extends React.Component {
 
   static propTypes = {
-    agentName: PropTypes.string
+    agentName: PropTypes.string,
+    agentAvatar: PropTypes.string
   };
 
   render() {
-    const { agentName } = this.props;
+    const { agentName, agentAvatar } = this.props;
 
     return (
       <Message type="agent" typing>
-        <MessageAvatar />
+        <MessageAvatar url={agentAvatar} />
         <div className="dpdesignportal-message-content">
           <span className="dpdesignportal-user-typing">{agentName} is typing a message
             <span className="dot1">.</span>

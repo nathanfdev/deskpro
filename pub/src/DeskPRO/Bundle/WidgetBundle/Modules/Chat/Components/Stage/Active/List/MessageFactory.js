@@ -33,7 +33,7 @@ export class MessageFactory extends React.Component {
 
     return (
       <Message type={message.get('author_type')}>
-        <MessageAvatar {...this.props} />
+        <MessageAvatar url={message.get('author_avatar')} />
         <MessageBody>
           {metadata.get('type') === 'file'
             ? <MessageAttachment {...this.props} />

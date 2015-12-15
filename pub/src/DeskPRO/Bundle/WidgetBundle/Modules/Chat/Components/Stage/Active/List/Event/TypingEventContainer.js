@@ -1,11 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { TypingEvent } from './TypingEvent';
-import { agentNameSelector, agentLastTypingTimeSelector } from '../../../../../Selectors/chat';
+import { agentNameSelector, agentAvatarSelector, agentLastTypingTimeSelector } from '../../../../../Selectors/chat';
 import moment from 'moment';
 
 @connect(state => ({
   agentName: agentNameSelector(state),
+  agentAvatar: agentAvatarSelector(state),
   agentLastTypingTime: agentLastTypingTimeSelector(state)
 }))
 export class TypingEventContainer extends React.Component {
@@ -42,6 +43,9 @@ export class TypingEventContainer extends React.Component {
 
   checkLastTypingDate() {
     const { agentLastTypingTime } = this.props;
+    if (!agentLastTypingTime) {
+      return;
+    }
 
     const ended = moment(agentLastTypingTime).format('X');
     const now = moment().format('X');
