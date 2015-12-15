@@ -199,7 +199,7 @@
       i { top: 4px;}
     }
 
-    .dpdesignportal-chat-form-attached-file-remove {
+    .dpdesignportal-chat-form-attached-file-repeat, .dpdesignportal-chat-form-attached-file-remove {
       width: 27px;
       height: 27px;
       text-align: center;
@@ -209,11 +209,15 @@
       color: #cecece;
       cursor: pointer;
       transition: all 0.5s ease;
-      i { top: 6px; }
+      i { top: 8px; }
       &:hover { color: #333; }
     }
 
-    .spinner {
+    .dpdesignportal-chat-form-attached-file-repeat {
+      right: 20px;
+    }
+
+    .dpdesignportal-chat-form-attached-file-spinner {
       position: absolute;
       right: 5px;
       top: 5px;

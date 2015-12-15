@@ -43,7 +43,9 @@ export class UploadingFile extends React.Component {
                   <i className="fa fa-times-circle"/>
                 </a>
               </div>
-            : <div className="spinner"><i/></div>
+            : <div className="spinner dpdesignportal-chat-form-attached-file-spinner">
+                <i/>
+              </div>
           }
         </div>
       </div>
