@@ -18,9 +18,7 @@ import {
   chatId: chatIdSelector(state),
   agentName: agentNameSelector(state),
   attachments: attachmentsSelector(state),
-  attachedImages: attachedImagesSelector(state),
   attachedImagesCount: attachedImagesCountSelector(state),
-  attachedFiles: attachedFilesSelector(state),
   uploadingFiles: uploadingFilesSelector(state)
 }))
 export class ReplyFormContainer extends React.Component {

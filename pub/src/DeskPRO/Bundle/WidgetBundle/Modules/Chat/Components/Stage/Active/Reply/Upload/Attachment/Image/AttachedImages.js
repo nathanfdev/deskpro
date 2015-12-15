@@ -8,8 +8,8 @@ import { ClickOut } from 'DeskPRO/Component/ClickOut';
 export class AttachedImages extends React.Component {
 
   static propTypes = {
-    attachments: PropTypes.object,
-    count: PropTypes.number,
+    attachedImages: PropTypes.object,
+    attachedImagesCount: PropTypes.number,
     onRemoveFile: PropTypes.func
   };
 
@@ -33,13 +33,13 @@ export class AttachedImages extends React.Component {
   };
 
   render() {
-    const { attachments, count, onRemoveFile } = this.props;
-    const lastImage = attachments.last() || Immutable.fromJS({});
+    const { attachedImages, attachedImagesCount, onRemoveFile } = this.props;
+    const lastImage = attachedImages.last() || Immutable.fromJS({});
 
     return (
       <div>
         <AttachedImage
-          count={count}
+          count={attachedImagesCount}
           attachment={lastImage}
           onExpand={this.onExpand}
           onRemove={onRemoveFile} />

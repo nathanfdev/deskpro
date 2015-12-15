@@ -5,23 +5,21 @@ import EmotionButton from 'DeskPRO/Component/Rte/EmotionButton';
 import RteInput from 'DeskPRO/Component/Rte/RteInput';
 import ScrollArea from 'react-scrollbar';
 import { UploadingFiles } from './Upload/Uploading/UploadingFiles';
-import { AttachedFiles } from './Upload/Attached/File/AttachedFiles';
-import { AttachedImages } from './Upload/Attached/Image/AttachedImages';
+import { AttachmentContainer } from './Upload/Attachment/AttachmentContainer';
+import { AttachedFiles } from './Upload/Attachment/File/AttachedFiles';
+import { AttachedImages } from './Upload/Attachment/Image/AttachedImages';
 import { DropZoneContainer } from './Upload/DropZone/DropZoneContainer';
 
 export class ReplyForm extends React.Component {
 
   static propTypes = {
+    agentName: PropTypes.string,
+    attachedImagesCount: PropTypes.number,
+    uploadingFiles: PropTypes.object,
     isEnded: PropTypes.bool,
     canReopen: PropTypes.bool,
     onSendMessage: PropTypes.func,
-    onRemoveAttachment: PropTypes.func,
-    onReopen: PropTypes.func,
-    agentName: PropTypes.string,
-    attachedImages: PropTypes.object,
-    attachedImagesCount: PropTypes.number,
-    attachedFiles: PropTypes.object,
-    uploadingFiles: PropTypes.object
+    onReopen: PropTypes.func
   };
 
   constructor(props) {
@@ -91,7 +89,7 @@ export class ReplyForm extends React.Component {
 
   render() {
     const { isEnded, canReopen } = this.props;
-    const { uploadingFiles, attachedImages, attachedImagesCount, attachedFiles, onRemoveAttachment } = this.props;
+    const { uploadingFiles, attachedImagesCount } = this.props;
 
     if (isEnded && !canReopen) {
       return null;
@@ -110,22 +108,22 @@ export class ReplyForm extends React.Component {
         <form onSubmit={this.onSubmit}>
           <div className="message-container message-container-with-attached-images">
             {attachedImagesCount
-              ? (
-                <div>
-                  <AttachedImages attachments={attachedImages}
-                                  count={attachedImagesCount}
-                                  onRemoveFile={onRemoveAttachment} />
+              ? <div>
+                  <AttachmentContainer>
+                    <AttachedImages />
+                  </AttachmentContainer>
 
                   <div className="textarea-container">
                     {this.renderRte()}
                   </div>
                 </div>
-              )
               : this.renderRte()
             }
 
             <UploadingFiles files={uploadingFiles} />
-            <AttachedFiles attachments={attachedFiles} onRemoveFile={onRemoveAttachment} />
+            <AttachmentContainer>
+              <AttachedFiles />
+            </AttachmentContainer>
           </div>
 
           <button>
