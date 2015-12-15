@@ -53,22 +53,27 @@ abstract class Criteria implements CriteriaInterface
         $this->filters = $filters;
     }
 
+    public function getFilters()
+    {
+        return $this->filters;
+    }
+
     /**
      * Create an instance from parameters.
      *
      * This method is complicated for the sake of universality. It relies on duck-typing checks to handle creation
      * of different types of Criteria instances such as GroupableCriteriaInterface, SortableCriteriaInterface etc.
      *
-     * @param array           $params
+     * @param array $params
      * @param OptionsResolver $resolver
-     * @param array           $data
+     * @param array $data
      *
      * @return Criteria
      */
     public static function fromParameters(array $params, OptionsResolver $resolver, array $data = [])
     {
         $is_groupable = in_array(GroupableCriteriaInterface::class, class_implements(static::class));
-        $is_sortable  = in_array(SortableCriteriaInterface::class, class_implements(static::class));
+        $is_sortable = in_array(SortableCriteriaInterface::class, class_implements(static::class));
 
         static::configureResolver($resolver, $data);
         if ($is_groupable) {
