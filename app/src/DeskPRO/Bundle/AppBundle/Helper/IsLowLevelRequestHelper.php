@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 /*
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
@@ -25,4 +26,18 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1450203167);
+/**
+ * DeskPRO.
+ */
+namespace DeskPRO\Bundle\AppBundle\Helper;
+
+use DeskPRO\Bundle\PortalBundle\EventListener\IsLowListener;
+use Symfony\Component\HttpFoundation\Request;
+
+class IsLowLevelRequestHelper
+{
+    public static function check(Request $request)
+    {
+        return $request->attributes->has(IsLowListener::ATTR_NAME);
+    }
+}

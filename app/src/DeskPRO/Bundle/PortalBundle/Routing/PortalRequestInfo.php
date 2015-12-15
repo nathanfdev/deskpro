@@ -52,6 +52,7 @@ class PortalRequestInfo
         'portal_login_callback',
         'portal_login_authenticate',
         'portal_login_submit',
+        'dp_pagehit',
     );
 
     /**

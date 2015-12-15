@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use Application\DeskPRO\EntityRepository\Brand;
+use DeskPRO\Bundle\AppBundle\Helper\IsLowLevelRequestHelper;
 use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use Doctrine\Common\Annotations\AnnotationReader;
@@ -72,6 +73,11 @@ class TagOptionsListener implements EventSubscriberInterface
 
     public function onKernelController(FilterControllerEvent $event)
     {
+        if (IsLowLevelRequestHelper::check($event->getRequest())) {
+            // dont run on low level
+            return;
+        }
+
         if (!is_array($controller = $event->getController())) {
             return;
         }

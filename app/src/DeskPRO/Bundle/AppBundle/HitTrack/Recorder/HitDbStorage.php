@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 /*
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
@@ -25,4 +26,38 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1450203167);
+namespace DeskPRO\Bundle\AppBundle\HitTrack\Recorder;
+
+use DeskPRO\Bundle\AppBundle\Entity\HitRecord;
+use Doctrine\ORM\EntityManager;
+
+class HitDbStorage implements HitStorageInterface
+{
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * HitDbStorage constructor.
+     *
+     * @param $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
+    /**
+     * @param HitRecord $record
+     *
+     * @return string
+     */
+    public function record(HitRecord $record)
+    {
+        $this->em->persist($record);
+        $this->em->flush($record);
+
+        return $record->getId();
+    }
+}

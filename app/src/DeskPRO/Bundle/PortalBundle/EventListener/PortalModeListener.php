@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
+use DeskPRO\Bundle\AppBundle\Helper\IsLowLevelRequestHelper;
 use DeskPRO\Bundle\AppBundle\Helper\IsProxyRequestHelper;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory;
@@ -66,6 +67,11 @@ class PortalModeListener implements EventSubscriberInterface
         if (!$event->isMasterRequest() || IsProxyRequestHelper::check($event->getRequest())) {
             // dont set a portal mode for subrequests
             // also, don't set a portal mode for master requests that are a proxy (ESI)
+            return;
+        }
+
+        if (IsLowLevelRequestHelper::check($event->getRequest())) {
+            // dont run on low level
             return;
         }
 

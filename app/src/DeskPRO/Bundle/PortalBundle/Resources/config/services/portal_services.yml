@@ -13,10 +13,10 @@ services:
     arguments: [@request_stack, @logger]
 
   pagerfanta.view.deskpro:
-      class: DeskPRO\Bundle\PortalBundle\View\Pagerfanta\DeskproView
-      public: false
-      tags:
-        - { name: pagerfanta.view, alias: deskpro }
+    class: DeskPRO\Bundle\PortalBundle\View\Pagerfanta\DeskproView
+    public: false
+    tags:
+      - { name: pagerfanta.view, alias: deskpro }
 
   portal_mode_factory:
       class: DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory
@@ -29,7 +29,14 @@ services:
       arguments: [@object_router, @icon_factory]
 
   attachment_accepter:
-      class: Application\DeskPRO\Attachments\AcceptAttachment
-      factory_class: Application\DeskPRO\DependencyInjection\SystemServices\AttachmentAccepterService
-      factory_method: create
-      arguments: [@service_container]
+    class: Application\DeskPRO\Attachments\AcceptAttachment
+    factory_class: Application\DeskPRO\DependencyInjection\SystemServices\AttachmentAccepterService
+    factory_method: create
+    arguments: [@service_container]
+
+  hitrecord.record_factory:
+    class: DeskPRO\Bundle\AppBundle\HitTrack\Recorder\HitRecordFactory
+
+  hitrecord.record_storage:
+    class: DeskPRO\Bundle\AppBundle\HitTrack\Recorder\HitDbStorage
+    arguments: [@doctrine.orm.entity_manager]

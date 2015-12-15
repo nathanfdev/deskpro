@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 /*
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
@@ -25,4 +26,16 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1450203167);
+namespace DeskPRO\Bundle\AppBundle\HitTrack\Recorder;
+
+use DeskPRO\Bundle\AppBundle\Entity\HitRecord;
+
+interface HitStorageInterface
+{
+    /**
+     * @param HitRecord $record
+     *
+     * @return string An ID of some kind (may be empty if storage doesnt support it)
+     */
+    public function record(HitRecord $record);
+}

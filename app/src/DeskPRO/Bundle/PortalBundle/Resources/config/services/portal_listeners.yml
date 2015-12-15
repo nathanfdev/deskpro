@@ -1,5 +1,10 @@
 services:
 
+  is_low.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\IsLowListener
+    tags:
+      - { name: kernel.event_subscriber }
+
   redirect_protection_listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener
     arguments: [@brand_stack, @url_host_checker, @logger]

@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 /*
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
@@ -25,4 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1450203167);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1450199467 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->execMutateSql("CREATE TABLE hit_record (id INT AUTO_INCREMENT NOT NULL, visitor_id VARCHAR(120) DEFAULT NULL, ip_address VARCHAR(45) NOT NULL, page_type VARCHAR(255) NOT NULL, page_id VARCHAR(255) NOT NULL, url VARCHAR(1000) NOT NULL, referrer VARCHAR(1000) NOT NULL, user_agent VARCHAR(255) NOT NULL, geo_country VARCHAR(8) NOT NULL, meta LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json_array)', date_created DATETIME NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+    }
+}

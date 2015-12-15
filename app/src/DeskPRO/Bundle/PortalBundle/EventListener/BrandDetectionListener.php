@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\EventListener;
 use Application\DeskPRO\Entity\Brand as BrandEntity;
 use Application\DeskPRO\EntityRepository\Brand;
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\Helper\IsLowLevelRequestHelper;
 use DeskPRO\Bundle\AppBundle\Helper\IsProxyRequestHelper;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
@@ -94,6 +95,11 @@ class BrandDetectionListener implements EventSubscriberInterface
     {
         if (!$event->isMasterRequest()) {
             // only run this on the master request - we only detect once per request.
+            return;
+        }
+
+        if (IsLowLevelRequestHelper::check($event->getRequest())) {
+            // dont run on low level
             return;
         }
 
