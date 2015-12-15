@@ -1,15 +1,18 @@
-export function openFullImage(downloadUrl) {
-  const image = document.createElement('image');
-  image.src = downloadUrl;
+let fullImageWindow;
 
-  const width = image.naturalWidth < 800 ? image.naturalWidth : 800;
-  const height = image.naturalHeight < 800 ? image.naturalHeight : 800;
+export function openFullImage(imageNode, maxWidth = 800, maxHeight = 800) {
+  const width = imageNode.naturalWidth < maxWidth ? imageNode.naturalWidth : maxWidth;
+  const height = imageNode.naturalHeight < maxHeight ? imageNode.naturalHeight : maxHeight;
 
   const left = (screen.width / 2) - (width / 2);
   const top = (screen.height / 2) - (height / 2);
 
-  window.open(
-    downloadUrl,
+  if (fullImageWindow) {
+    fullImageWindow.close();
+  }
+
+  fullImageWindow = window.open(
+    imageNode.src,
     'Image',
 
     `width=${width},height=${height},left=${left},top=${top},` +

@@ -8,6 +8,10 @@ export class MessageImage extends React.Component {
     attachment: PropTypes.object
   };
 
+  openFullImage = () => {
+    openFullImage(this.refs.image);
+  };
+
   render() {
     const { message, attachment } = this.props;
 
@@ -19,7 +23,7 @@ export class MessageImage extends React.Component {
         <ul>
           <li className="dpdesignportal-message-asset">
             <div className="dpdesignportal-message-asset attachement-screen">
-              <img src={downloadUrl} onClick={() => openFullImage(downloadUrl)} />
+              <img ref="image" src={downloadUrl} onClick={this.openFullImage} />
 
               <div className="dpdesignportal-message-asset-screen-controls">
                 <a href="#"><i className="fa fa-save"></i></a>
@@ -30,7 +34,7 @@ export class MessageImage extends React.Component {
               <p className="dpdesignportal-message-asset-info">
                 {authorName} attached this photo
               </p>
-              <p className="dpdesignportal-message-asset-cta" onClick={() => openFullImage(downloadUrl)}>
+              <p className="dpdesignportal-message-asset-cta" onClick={this.openFullImage}>
                 Click here to see the full image
               </p>
             </div>

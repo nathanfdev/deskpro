@@ -10,6 +10,10 @@ export class AttachedImage extends React.Component {
     onRemove: PropTypes.func
   };
 
+  openFullImage = () => {
+    openFullImage(this.refs.image);
+  };
+
   render() {
     const { count, attachment, onExpand, onRemove } = this.props;
     const downloadUrl = attachment.get('download_url');
@@ -26,8 +30,10 @@ export class AttachedImage extends React.Component {
               </div>
           }
           <div className="dpdesignportal-chat-form-attached-image-thumb"
-               onClick={() => openFullImage(downloadUrl)}
+               onClick={this.openFullImage}
                style={{backgroundImage: `url(${downloadUrl})`}} />
+
+          <img src={downloadUrl} ref="image" className="hidden" />
         </div>
       </li>
     );
