@@ -65,10 +65,10 @@ export class ReopenChatContainer extends React.Component {
 
     const ended = moment(dateEnded).format('X');
     const now = moment().format('X');
-    const delay = ended - now + 120000; // can reopen in 2 minutes
+    const delay = ended - now + 120; // can reopen in 2 minutes
 
     if (this.state.displayChild) {
-      this.timeout = setTimeout(this.onDisableReopen, delay > 0 ? delay : 0);
+      this.timeout = setTimeout(this.onDisableReopen, delay > 0 ? delay * 1000 : 0);
     }
   }
 

@@ -49,7 +49,7 @@ export class TypingEventContainer extends React.Component {
 
     const ended = moment(agentTypingDate).format('X');
     const now = moment().format('X');
-    const delay = ended - now + 10000; // displays in 10 seconds
+    const delay = ended - now + 10; // displays in 10 seconds
 
     if (delay > 0 && (!this.state.displayChild || agentTypingDate !== this.state.agentTypingDate)) {
       this.setState({
@@ -57,7 +57,7 @@ export class TypingEventContainer extends React.Component {
         agentTypingDate: agentTypingDate
       });
 
-      this.timeout = setTimeout(this.onHide, delay);
+      this.timeout = setTimeout(this.onHide, delay * 1000);
     }
   }
 
