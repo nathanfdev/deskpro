@@ -5,7 +5,7 @@ import { MessageAvatar } from '../Message/MessageAvatar';
 export class TypingEvent extends React.Component {
 
   static propTypes = {
-    agentName: PropTypes.object
+    agentName: PropTypes.string
   };
 
   render() {
