@@ -73,15 +73,16 @@ class ChatConversationTransformer extends AbstractDataSerializerTransformer
         $department = $data->getDepartment();
 
         return [
-            'conversation_id' => $data->getId(),
-            'author_id'       => $person ? $person->getId() : 0,
-            'author_name'     => $person ? $person->getDisplayName() : $data->getPersonName(),
-            'author_email'    => $person ? $person->getPrimaryEmailAddress() : $data->getPersonEmail(),
-            'author_type'     => $person && $person->isAgent() ? 'agent' : 'user',
-            'agent_id'        => $agent ? $agent->getId() : 0,
-            'agent_name'      => $agent ? $agent->getDisplayName() : '',
-            'agent_avatar'    => $agent ? $this->avatar_resolver->getAvatarModel($agent)->getUrl(150) : '',
-            'department_name' => $department ? $department->getFullTitle() : '',
+            'conversation_id'        => $data->getId(),
+            'author_id'              => $person ? $person->getId() : 0,
+            'author_name'            => $person ? $person->getDisplayName() : $data->getPersonName(),
+            'author_email'           => $person ? $person->getPrimaryEmailAddress() : $data->getPersonEmail(),
+            'author_type'            => $person && $person->isAgent() ? 'agent' : 'user',
+            'agent_id'               => $agent ? $agent->getId() : 0,
+            'agent_name'             => $agent ? $agent->getDisplayName() : '',
+            'agent_avatar'           => $agent ? $this->avatar_resolver->getAvatarModel($agent)->getUrl(150) : '',
+            'agent_last_typing_time' => new \DateTime(),
+            'department_name'        => $department ? $department->getFullTitle() : '',
         ];
     }
 }

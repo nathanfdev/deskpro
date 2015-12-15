@@ -50,6 +50,11 @@ export const agentAvatarSelector = createSelector(
   chatInfo => chatInfo.get('agent_avatar')
 );
 
+export const agentLastTypingTimeSelector = createSelector(
+  chatInfoSelector,
+  chatInfo => chatInfo.get('agent_last_typing_time')
+);
+
 export const departmentNameSelector = createSelector(
   chatInfoSelector,
   chatInfo => chatInfo.get('department_name')
