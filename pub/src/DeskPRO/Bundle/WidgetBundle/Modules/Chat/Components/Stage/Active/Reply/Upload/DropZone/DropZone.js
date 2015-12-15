@@ -36,7 +36,10 @@ export class DropZone extends React.Component {
       const $input = $(this.getInput());
       this.initializeFileUpload();
 
-      newProps.repeatFiles.forEach(file => $input.fileupload('send', {fileInput: $input, files: [file]}));
+      newProps.repeatFiles.forEach(file => $input.fileupload('send', {
+        fileInput: $input,
+        files: [file]
+      }));
     }
   }
 
@@ -49,8 +52,8 @@ export class DropZone extends React.Component {
     });
   }
 
-  onDefaultDrop = e => {
-    e.preventDefault();
+  onDefaultDrop = event => {
+    event.preventDefault();
   };
 
   onDragStarted = () => {
