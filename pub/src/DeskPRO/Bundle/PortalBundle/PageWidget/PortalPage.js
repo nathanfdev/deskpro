@@ -7,6 +7,7 @@ import DownloadsList from "DeskPRO/Bundle/PortalBundle/PageWidget/DownloadsList"
 import FeedbackPage from "DeskPRO/Bundle/PortalBundle/PageWidget/FeedbackPage";
 import ClickAwayDropdownWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/ClickAwayDropdownWidget";
 import ClickToDismissWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/ClickToDismissWidget";
+import HideAlertsWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/HideAlertsWidget";
 import LoginPage from "DeskPRO/Bundle/PortalBundle/PageWidget/LoginPage";
 import HTmlLinkToPostWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/HtmlLinkToPostWidget";
 import OmniSearchWidget from "DeskPRO/Bundle/PortalBundle/PageWidget/OmniSearchWidget";
@@ -38,6 +39,7 @@ export default class PortalPage extends PageWidget {
     this.addWidgetDef(ArticleHighlighter, ".dpx-kb-article-content");
     this.addWidgetDef(MobileMenuWidget, ".dpx-toggle-big-buttons");
     this.addWidgetDef(LoginPage, "#login-page");
+    this.addWidgetDef(HideAlertsWidget, "#dpx-alerts");
     return new Promise((resolve) => {
       $(document).ready(resolve);
       if (window.DP_LOAD_FN && window.DP_LOAD_FN.length) {

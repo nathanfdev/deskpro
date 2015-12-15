@@ -35,6 +35,7 @@ use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
+use DeskPRO\Bundle\PortalBundle\Themes\Base\Controller\CommonController;
 use DeskPRO\Component\Util\EntityUtils;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -125,28 +126,14 @@ class TagRequestFactory
      */
     private function makeAttributes(Tag $tag, array $arguments)
     {
-        $current_attributes = $this->stack->getCurrentRequest()->attributes->all();
+        $current_request    = $this->stack->getCurrentRequest();
+        $current_attributes = $current_request->attributes->all();
 
         $new_attributes = array();
 
-        $forbidden_attributes = array('tag_request');
-
-        //foreach ($current_attributes as $attr => $val) {
-        //    if (
-        //        '_' === substr($attr, 0, 1)
-        //        || in_array($attr, $forbidden_attributes)
-        //    ) {
-        //        if (!in_array($attr, array('_route', '_route_params'))) {
-        //            continue;
-        //        }
-        //
-        //        if (!$tag->allowRouteParams()) {
-        //            continue;
-        //        }
-        //    }
-        //
-        //    $new_attributes[$attr] = $val;
-        //}
+        if ($cookie = $current_request->cookies->get(CommonController::DISMISSED_ALERTS_COOKIE_NAME)) {
+            $new_attributes[CommonController::DISMISSED_ALERTS_COOKIE_NAME] = $cookie;
+        }
 
         $tag_params = ['_tag_name' => $tag->getName()];
         if ($tag->allowRouteParams()) {
