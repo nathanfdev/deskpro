@@ -60,8 +60,8 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Tag(name="nav_buttons", default_options={"style":"small"}, esi=true)
-     * @Tag(name="nav_buttons_big", default_options={"style":"big"}, esi=true)
+     * @Tag(name="nav_buttons", default_options={"style":"small"})
+     * @Tag(name="nav_buttons_big", default_options={"style":"big"})
      *
      * @TagOptions(
      *      defaults={
@@ -71,8 +71,6 @@ class PortalController extends AbstractController
      *          "style": {"small", "big"}
      *      }
      * )
-     *
-     * @TagHttpCache()
      */
     public function navButtonsAction(TagRequest $tag_request, array $options)
     {
