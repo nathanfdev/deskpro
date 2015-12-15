@@ -41,6 +41,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter;
 use DeskPRO\Bundle\PortalBundle\Model\TicketFilter;
+use DeskPRO\Bundle\PortalBundle\Routing\RedirectToUrlException;
 use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTable;
 use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTablesCollection;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -487,19 +488,63 @@ class TicketsController extends AbstractController
      */
     protected function getTicketByRefOrId($ticket_ref)
     {
-        $repo = $this->getRepo('DeskPRO:Ticket');
-
         if ($this->getBrandSetting('core.tickets.use_ref')) {
-            return $repo->findOneBy(array('ref' => $ticket_ref));
+            if (!$ticket = $this->getTicketByRef($ticket_ref)) {
+                if ($ticket = $this->getTicketById($ticket_ref)) {
+                    if ($ticket->getPersonId() === $this->getCurrentPerson()->getId()) {
+                        // we allow the "other" id to be used only if its the currently logged in user's own ticket
+                        throw new RedirectToUrlException($this->generateUrl('portal_tickets_view', ['ticket_ref' => $ticket->getRef()]));
+                    } else {
+                        throw new NotFoundHttpException(sprintf('ticket not found for "%s"', $ticket_ref));
+                    }
+                }
+            }
+        } else {
+            if (!$ticket = $this->getTicketById($ticket_ref)) {
+                if ($ticket = $this->getTicketByRef($ticket_ref)) {
+                    if ($ticket->getPersonId() === $this->getCurrentPerson()->getId()) {
+                        // we allow the "other" id to be used only if its the currently logged in user's own ticket
+                        throw new RedirectToUrlException($this->generateUrl('portal_tickets_view', ['ticket_ref' => $ticket->getId()]));
+                    } else {
+                        throw new NotFoundHttpException(sprintf('ticket not found for "%s"', $ticket_ref));
+                    }
+                }
+            }
         }
 
-        $ticket = $repo->findOneBy(array('id' => $ticket_ref));
+        if (!$ticket) {
+            throw new NotFoundHttpException(sprintf('ticket not found for "%s"', $ticket_ref));
+        }
 
         if ($ticket->hasNotesOnly()) {
             throw new NotFoundHttpException(sprintf('ticket with ref or id "%s" found but has only agent notes', $ticket_ref));
         }
 
         return $ticket;
+    }
+
+    /**
+     * @param $ticket_ref
+     *
+     * @return Ticket
+     */
+    protected function getTicketByRef($ticket_ref)
+    {
+        $repo = $this->getRepo('DeskPRO:Ticket');
+
+        return $repo->findOneBy(array('ref' => $ticket_ref));
+    }
+
+    /**
+     * @param $ticket_ref
+     *
+     * @return Ticket
+     */
+    protected function getTicketById($ticket_ref)
+    {
+        $repo = $this->getRepo('DeskPRO:Ticket');
+
+        return $repo->findOneBy(array('id' => $ticket_ref));
     }
 
     private function saveEditedTicket(Ticket $ticket, Person $person, $event_type = TicketTrigger::EVENT_TYPE_UPDATE)
