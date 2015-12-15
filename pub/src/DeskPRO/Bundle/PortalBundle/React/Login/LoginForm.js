@@ -47,9 +47,11 @@ export default class LoginForm extends React.Component {
     PortalHttp.sendGet(PortalUrlGenerator.path('/captcha-html?action=login')).then((r) => {
       console.log('CAPTCHA RESPONSE ', r);
         if (r.data.captcha_required) {
-          this.setState({
-            captcha: true
-          });
+          // for now we are not displaying the captcha, and instead are just redirecting the user to login page
+          window.location.href = PortalUrlGenerator.path('/login');
+          //this.setState({
+          //  captcha: true
+          //});
         } else {
           this.setState({
             captcha: false
