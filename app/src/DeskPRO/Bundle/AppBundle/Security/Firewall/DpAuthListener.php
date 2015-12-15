@@ -130,7 +130,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
                     'csrf_double_submit_protection' => false,
                 ]
             );
-            $captcha_check->submit([]); // the validator use the request stack directly
+            $captcha_check->submit($request->get('deskpro_captcha'));
             if (!$captcha_check->isValid()) {
                 if ($request->isXmlHttpRequest()) {
                     return new JsonResponse(
