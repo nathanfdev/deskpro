@@ -1,30 +1,35 @@
-import { createAction } from "Ampliflux";
+import { createAction } from 'Ampliflux';
 import * as Content from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/Content';
 import * as ArticlePendingCreates from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/ArticlePendingCreates';
 import * as Comments from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/Comments';
 
+export const switchContent = createAction(
+  'PUBLISH_LIST_SWITCH_CONTENT',
+    content => content
+);
+
 export const load = createAction(
   'PUBLISH_LIST_LOAD_DATA',
-  (trigger, content, groupBy, group) => Content.load(content, {[groupBy]: group}).then(
-    promise => {
-      trigger({content, elements: promise.getData().data});
-      trigger(switchContent(content));
+  (content, groupBy, group) => (dispatch) => Content.load(content, { [groupBy]: group })
+    .then(promise => {
+      dispatch(switchContent(content));
+      return { content, elements: promise.getData().data };
     }
   )
 );
 
 export const loadDraftArticles = createAction(
   'PUBLISH_LIST_LOAD_DATA',
-  (trigger, mine) => {
-    const filters = {status: 'hidden', hidden_status: 'draft'};
+  (mine) => (dispatch) => {
+    const filters = { status: 'hidden', hidden_status: 'draft' };
     if (mine) {
       filters.author = 'me';
     }
 
-    return Content.load('articles', filters).then(
-      promise => {
-        trigger({content: 'draftArticles', elements: promise.getData().data});
-        trigger(switchContent('draftArticles'));
+    return Content.load('articles', filters)
+      .then(promise => {
+        dispatch(switchContent('draftArticles'));
+        return { content: 'draftArticles', elements: promise.getData().data };
       }
     );
   }
@@ -32,44 +37,39 @@ export const loadDraftArticles = createAction(
 
 export const loadPendingArticles = createAction(
   'PUBLISH_LIST_LOAD_DATA',
-  (trigger, mine) => ArticlePendingCreates.load(mine ? 'me' : null).then(
-    promise => {
-      trigger({content: 'pendingArticles', elements: promise.getData().data});
-      trigger(switchContent('pendingArticles'));
+  (mine) => (dispatch) => ArticlePendingCreates.load(mine ? 'me' : null)
+    .then(promise => {
+      dispatch(switchContent('pendingArticles'));
+      return { content: 'pendingArticles', elements: promise.getData().data };
     }
   )
 );
 
 export const loadCommentsToValidate = createAction(
   'PUBLISH_LIST_LOAD_DATA',
-  (trigger, groupBy, group) => {
-    const filters = {status: 'validating'};
+  (groupBy, group) => (dispatch) => {
+    const filters = { status: 'validating' };
     if (groupBy && group) {
       filters[groupBy] = group;
     }
 
-    return Comments.load('articles', filters).then(
-        promise => {
-        trigger({content: 'commentsToValidate', elements: promise.getData().data});
-        trigger(switchContent('commentsToValidate'));
+    return Comments.load('articles', filters)
+      .then(promise => {
+        dispatch(switchContent('commentsToValidate'));
+        return { content: 'commentsToValidate', elements: promise.getData().data };
       }
-    )
+    );
   }
 );
 
 export const loadCommentsToReview = createAction(
   'PUBLISH_LIST_LOAD_DATA',
-  (trigger) => Comments.load('articles', {is_reviewed: 1}).then(
-    promise => {
-      trigger({content: 'commentsToReview', elements: promise.getData().data});
-      trigger(switchContent('commentsToReview'));
+  () => (dispatch) => Comments.load('articles', { is_reviewed: 1 })
+    .then(promise => {
+      dispatch(switchContent('commentsToReview'));
+      return { content: 'commentsToReview', elements: promise.getData().data };
     }
   )
-);
-
-export const switchContent = createAction(
-  'PUBLISH_LIST_SWITCH_CONTENT',
-  (trigger, content) => trigger(content)
 );
 
 export const toggleView = createAction(

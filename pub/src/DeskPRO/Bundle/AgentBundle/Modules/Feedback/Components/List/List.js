@@ -7,7 +7,7 @@ import { FeedbackCardsContainer } from './View/List/FeedbackCardsContainer';
 import { FeedbackCommentsCardsContainer } from './View/List/FeedbackCommentsCardsContainer';
 import { FeedbackTableContainer } from './View/Table/FeedbackTableContainer';
 import { FeedbackCommentTableContainer } from './View/Table/FeedbackCommentTableContainer';
-import ListFrameContents from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
+import { ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { PaginationContainer } from './PaginationContainer';

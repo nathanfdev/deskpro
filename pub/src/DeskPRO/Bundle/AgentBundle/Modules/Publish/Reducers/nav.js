@@ -75,12 +75,19 @@ export default createReducer(initialState, {
     success: (state, payload) =>
       state.setIn(['lists', payload.content], payload.counts)
   }),
+  [actions.loadPendingCount]: async({
+    success: (state, payload) =>
+      state.setIn(['lists', 'todo', 'articles', 'pending'], payload)
+  }),
+  [actions.loadCommentsToReviewCount]: async({
+    success: (state, payload) =>
+      state.setIn(['lists', 'todo', 'comments', 'review'], payload)
+  }),
 });
 
 /*
  registerHandlers() {
  this
- .r(actions.loadCounts, this.countsLoaded)
  .r(actions.loadAuthorName, this.authorNameLoaded)
  .r(actions.loadCategories, this.categoriesLoaded)
  .r(actions.toggleListGroupingVisibility, this.listGroupingVisibilityChanged)

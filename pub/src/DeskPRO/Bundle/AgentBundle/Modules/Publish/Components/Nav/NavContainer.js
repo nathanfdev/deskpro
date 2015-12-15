@@ -9,12 +9,12 @@ import { Nav } from './Nav';
   // select lists labels depending on their grouping
   const labels = {};
   ['articles', 'news', 'downloads'].forEach(list => {
-    switch (state.PublishNav.get('lists').get(list).grouped_by) {
+    switch (state.Publish.nav.get('lists').get(list).grouped_by) {
       case 'category':
-        labels[list] = state.PublishNav.get('groups').get('categories').get(list);
+        labels[list] = state.Publish.nav.get('groups').get('categories').get(list);
         break;
       case 'author':
-        labels[list] = state.PublishNav.get('groups').get('authors');
+        labels[list] = state.Publish.nav.get('groups').get('authors');
         break;
       case 'period_created':
       case 'period_updated':
@@ -27,8 +27,8 @@ import { Nav } from './Nav';
 
   return {
     labels,
-    lists: state.PublishNav.get('lists'),
-    grouping: state.PublishNav.get('grouping'),
+    lists: state.Publish.nav.get('lists'),
+    grouping: state.Publish.nav.get('grouping'),
     dpWindow: state.Application.dpWindow
   };
 })

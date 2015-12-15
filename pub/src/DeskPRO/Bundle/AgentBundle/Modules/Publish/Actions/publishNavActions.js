@@ -25,9 +25,8 @@ export const loadDraftsCount = createAction(
 
 export const loadPendingCount = createAction(
   'PUBLISH_NAV_LOAD_PENDING_COUNT',
-  (trigger, mine) => ArticlePendingCreates.loadCount(mine ? 'me' : null).then(
-      promise => trigger(promise.getData().data.count)
-  )
+  (mine) => ArticlePendingCreates.loadCount(mine ? 'me' : null)
+    .then(promise => promise.getData().data.count)
 );
 
 export const loadCommentsToValidateCounts = createAction(
@@ -38,14 +37,14 @@ export const loadCommentsToValidateCounts = createAction(
 
 export const loadCommentsToReviewCount = createAction(
   'PUBLISH_NAV_LOAD_COMMENTS_TO_REVIEW_COUNT',
-    trigger => Comments.loadCommentsToReviewCount('articles').then(
-      promise => trigger(promise.getData().data.count)
-  )
+  () => Comments.loadCommentsToReviewCount('articles')
+    .then(promise => promise.getData().data.count)
 );
 
 export const loadAuthorName = createAction(
   'PUBLISH_NAV_LOAD_AUTHOR_NAME',
-  (trigger, id) => People.loadPerson(id).then(promise => trigger({ id, name: promise.getData().data.name }))
+  (trigger, id) => People.loadPerson(id)
+    .then(promise => trigger({ id, name: promise.getData().data.name }))
 );
 
 export const loadCategories = createAction(
