@@ -10,6 +10,7 @@ import { AttachmentContainer } from './Upload/Attachment/AttachmentContainer';
 import { AttachedFiles } from './Upload/Attachment/File/AttachedFiles';
 import { AttachedImages } from './Upload/Attachment/Image/AttachedImages';
 import { DropZoneContainer } from './Upload/DropZone/DropZoneContainer';
+import { ReopenOverlay } from './ReopenOverlay';
 
 export class ReplyForm extends React.Component {
 
@@ -18,8 +19,7 @@ export class ReplyForm extends React.Component {
     attachedImagesCount: PropTypes.number,
     isEnded: PropTypes.bool,
     canReopen: PropTypes.bool,
-    onSendMessage: PropTypes.func,
-    onReopen: PropTypes.func
+    onSendMessage: PropTypes.func
   };
 
   constructor(props) {
@@ -38,11 +38,6 @@ export class ReplyForm extends React.Component {
   onScreenShare = event => {
     event.preventDefault();
     console.log('onScreenShare');
-  };
-
-  onReopen = event => {
-    event.preventDefault();
-    this.props.onReopen();
   };
 
   onSubmit = event => {
@@ -96,13 +91,7 @@ export class ReplyForm extends React.Component {
 
     return (
       <div className="dpdesignportal-chat-form">
-        {isEnded &&
-          <div className="dpdesignportal-chat-form-disabled">
-            <a href="#" className="dpdesignportal-button" onClick={this.onReopen}>
-              <i className="fa fa-commenting-o"></i> Reopen this chat
-            </a>
-          </div>
-        }
+        {isEnded && <ReopenOverlay {...this.props} />}
 
         <form onSubmit={this.onSubmit}>
           <div className="message-container message-container-with-attached-images">
