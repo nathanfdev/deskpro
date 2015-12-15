@@ -82,6 +82,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		}
 
 		messageTextarea.on('keypress', function(ev) {
+			self.typing();
 			if (ev.keyCode == 13 && !ev.metaKey) {
 				ev.preventDefault();
 				sendMsg();
@@ -198,6 +199,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			if (textarea.data('redactor')) {
 				var ed = textarea.getEditor();
 				ed.on('keypress', function(ev) {
+					self.typing();
 					if (ev.keyCode === 13 && !ev.shiftKey && !ev.ctrlKey && !ev.metaKey) {
 						ev.preventDefault();
 						window.setTimeout(function() {
@@ -211,6 +213,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 				var lastH = ed.height();
 				ed.on('keypress change', function() {
+					self.typing();
 					window.setTimeout(function() {
 						var tmp = ed.height();
 						if (lastH != tmp) {
@@ -914,6 +917,20 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		}
 
 		this.updateUi();
+	},
+
+	typing: function() {
+		var self = this;
+
+		if (!self.typingTimeout) {
+			DeskPRO_Window.util.ajaxWithClientMessages({
+				url: BASE_URL + 'old-agent/chat/typing/' + this.meta.conversation_id
+			});
+
+			self.typingTimeout = setTimeout(function() {
+				self.typingTimeout = null;
+			}, 3000);
+		}
 	},
 
 	sendMessage: function(msg, success) {

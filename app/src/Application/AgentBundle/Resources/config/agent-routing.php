@@ -2124,6 +2124,11 @@ $collection->create('agent_userchat_list_active', array(
     'options'    => array('fragment_name' => 'active', 'fragment_type' => 'list'),
 ));
 
+$collection->create('agent_userchat_typing', array(
+    'path'       => '/chat/typing/{conversation_id}',
+    'controller' => 'AgentBundle:UserChat:typing',
+));
+
 $collection->create('agent_userchat_send_messageview', array(
     'path'       => '/chat/send-message/{conversation_id}',
     'controller' => 'AgentBundle:UserChat:sendMessage',

@@ -42,6 +42,7 @@ use Application\DeskPRO\Searcher\ChatConversationSearch;
 use Application\DeskPRO\Searcher\SearcherAbstract;
 use Orb\Util\Dates;
 use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserChatController extends AbstractController
 {
@@ -412,7 +413,9 @@ class UserChatController extends AbstractController
     /**
      * End a chat.
      *
-     * @param  $conversation_id
+     * @param int $conversation_id
+     *
+     * @return Response
      */
     public function endChatAction($conversation_id)
     {
@@ -425,6 +428,19 @@ class UserChatController extends AbstractController
         /** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
         $chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
         $chat_manager->endChat($convo, $this->person, '');
+
+        return $this->createJsonCmResponse();
+    }
+
+    /**
+     * @param $conversation_id
+     *
+     * @return Response
+     */
+    public function typingAction($conversation_id)
+    {
+        /** @var ChatConversation $convo */
+        $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
 
         return $this->createJsonCmResponse();
     }
