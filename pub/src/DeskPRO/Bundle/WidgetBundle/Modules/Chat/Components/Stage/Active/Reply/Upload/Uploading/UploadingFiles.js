@@ -15,7 +15,7 @@ export class UploadingFiles extends React.Component {
       <div className="dropzone-container">
         {files.map((file, index) => <UploadingFile key={index}
                                                    file={file}
-                                                   failed={failed.indexOf(file) !== -1} {...this.props} />)}
+                                                   isFailed={failed.indexOf(file) !== -1} {...this.props} />)}
       </div>
     );
   }

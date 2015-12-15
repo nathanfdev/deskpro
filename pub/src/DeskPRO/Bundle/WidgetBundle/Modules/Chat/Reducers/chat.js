@@ -64,7 +64,7 @@ export default createReducer(initialState, {
     pushPayloadToCollection('uploading.repeat')
   ),
   [actions.removeUploadingFile]: composeHandlers(
-    deletePayloadFromCollection('uploading.active'),
+    deletePayloadFromCollection('uploading.files'),
     deletePayloadFromCollection('uploading.failed'),
     deletePayloadFromCollection('uploading.repeat')
   ),

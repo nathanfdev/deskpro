@@ -10,6 +10,7 @@ export class DropZone extends React.Component {
     getExternalInput: PropTypes.func.isRequired,
     uploadUrl: PropTypes.string.isRequired,
     context: PropTypes.any,
+    repeatFiles: PropTypes.object,
     onSend: PropTypes.func,
     onSuccess: PropTypes.func,
     onFail: PropTypes.func
@@ -23,21 +24,20 @@ export class DropZone extends React.Component {
   }
 
   componentDidMount() {
-    const { uploadUrl, onSend, onSuccess, onFail } = this.props;
-    const overlayNode = ReactDOM.findDOMNode(this);
-
-    $(this.getInput()).fileupload({
-      url: uploadUrl,
-      dropZone: $(overlayNode),
-      send: onSend,
-      done: onSuccess,
-      fail: onFail
-    });
-
+    this.initializeFileUpload();
     this.getContext().forEach(selector => {
       $(selector).on('dragover', this.onDragStarted);
       $(selector).on('dragover', this.onDefaultDrop);
     });
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.repeatFiles.size) {
+      const $input = $(this.getInput());
+      this.initializeFileUpload();
+
+      newProps.repeatFiles.forEach(file => $input.fileupload('send', {fileInput: $input, files: [file]}));
+    }
   }
 
   componentWillUnmount() {
@@ -79,6 +79,21 @@ export class DropZone extends React.Component {
 
   getInput() {
     return ReactDOM.findDOMNode(this.props.getExternalInput());
+  }
+
+  initializeFileUpload() {
+    const { uploadUrl, onSend, onSuccess, onFail } = this.props;
+    const overlayNode = ReactDOM.findDOMNode(this);
+
+    const $input = $(this.getInput());
+    $input.fileupload({
+      fileInput: $input,
+      url: uploadUrl,
+      dropZone: $(overlayNode),
+      send: onSend,
+      done: onSuccess,
+      fail: onFail
+    });
   }
 
   render() {

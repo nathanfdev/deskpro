@@ -5,7 +5,7 @@ export class UploadingFile extends React.Component {
 
   static propTypes = {
     file: PropTypes.object,
-    failed: PropTypes.bool,
+    isFailed: PropTypes.bool,
     onRepeat: PropTypes.func,
     onRemove: PropTypes.func
   };
@@ -25,7 +25,7 @@ export class UploadingFile extends React.Component {
   };
 
   render() {
-    const { file, failed } = this.props;
+    const { file, isFailed } = this.props;
 
     return (
       <div className="dpdesignportal-chat-form-attached-file">
@@ -33,9 +33,9 @@ export class UploadingFile extends React.Component {
           <i className="fa fa-file-pdf-o"></i>
         </div>
         <div className="attached-file-title">
-          {filenameMaxLength(file.name, failed ? 20 : 30)}
-          {failed && <span className="failed-status">(failed)</span>}
-          {failed
+          {filenameMaxLength(file.name, isFailed ? 20 : 30)}
+          {isFailed && <span className="failed-status">(failed)</span>}
+          {isFailed
             ? <div>
                 <a className="dpdesignportal-chat-form-attached-file-repeat" onClick={this.onRepeat}>
                   <i className="fa fa-repeat"/>

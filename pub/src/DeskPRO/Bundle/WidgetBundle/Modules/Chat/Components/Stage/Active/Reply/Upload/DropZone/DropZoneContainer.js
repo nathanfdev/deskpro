@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { DropZone } from './DropZone';
+import { uploadingFilesSelector, uploadingFilesRepeatSelector } from '../../../../../../Selectors/chat';
 import {
   addAttachment,
   addUploadingFile,
@@ -8,16 +9,24 @@ import {
   markUploadingFileFailed
 } from '../../../../../../Actions/chatActions';
 
-@connect()
+@connect(state => ({
+  files: uploadingFilesSelector(state),
+  repeatFiles: uploadingFilesRepeatSelector(state)
+}))
 export class DropZoneContainer extends React.Component {
 
   static propTypes = {
+    files: PropTypes.object,
     dispatch: PropTypes.func
   };
 
   onUploadStarted = (event, data) => {
-    const { dispatch } = this.props;
-    data.files.forEach(file => dispatch(addUploadingFile(file)));
+    const { dispatch, files } = this.props;
+    data.files.forEach(file => {
+      if (files.indexOf(file) === -1) {
+        dispatch(addUploadingFile(file));
+      }
+    });
   };
 
   onUploadSuccess = (event, response) => {
