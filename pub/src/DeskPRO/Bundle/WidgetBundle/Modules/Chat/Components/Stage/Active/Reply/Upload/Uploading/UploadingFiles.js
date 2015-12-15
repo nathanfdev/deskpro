@@ -10,7 +10,7 @@ export class UploadingFiles extends React.Component {
   render() {
     return (
       <div className="dropzone-container">
-        {this.props.uploadingFiles.map((file, index) => <UploadingFile key={index} file={file} />)}
+        {this.props.uploadingFiles.map((file, index) => <UploadingFile key={index} file={file} {...this.props} />)}
       </div>
     );
   }

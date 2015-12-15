@@ -4,7 +4,15 @@ import { filenameMaxLength } from 'DeskPRO/Component/Util/Filename';
 export class UploadingFile extends React.Component {
 
   static propTypes = {
-    file: PropTypes.object
+    file: PropTypes.object,
+    onRetry: PropTypes.func
+  };
+
+  onRetry = event => {
+    event.preventDefault();
+
+    const { file, onRetry } = this.props;
+    onRetry(file);
   };
 
   render() {
@@ -19,7 +27,7 @@ export class UploadingFile extends React.Component {
           {filenameMaxLength(file.name, file.failed ? 20 : 30)}
           {file.failed && <span className="failed-status">(uploading failed)</span>}
           {file.failed
-            ? <a className="dpdesignportal-chat-form-attached-file-remove">
+            ? <a className="dpdesignportal-chat-form-attached-file-remove" onClick={this.onRetry}>
                 <i className="fa fa-repeat"/>
               </a>
             : <div className="spinner"><i/></div>
