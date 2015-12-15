@@ -8,18 +8,14 @@ import {
   chatIdSelector,
   agentNameSelector,
   attachmentsSelector,
-  attachedImagesSelector,
-  attachedImagesCountSelector,
-  attachedFilesSelector,
-  uploadingFilesSelector
+  attachedImagesCountSelector
 } from '../../../../Selectors/chat';
 
 @connect(state => ({
   chatId: chatIdSelector(state),
   agentName: agentNameSelector(state),
   attachments: attachmentsSelector(state),
-  attachedImagesCount: attachedImagesCountSelector(state),
-  uploadingFiles: uploadingFilesSelector(state)
+  attachedImagesCount: attachedImagesCountSelector(state)
 }))
 export class ReplyFormContainer extends React.Component {
 

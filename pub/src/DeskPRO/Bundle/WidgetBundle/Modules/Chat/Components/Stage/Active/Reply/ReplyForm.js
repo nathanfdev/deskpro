@@ -4,6 +4,7 @@ import { EndChatButton } from './EndChatButton';
 import EmotionButton from 'DeskPRO/Component/Rte/EmotionButton';
 import RteInput from 'DeskPRO/Component/Rte/RteInput';
 import ScrollArea from 'react-scrollbar';
+import { UploadingFilesContainer } from './Upload/Uploading/UploadingFilesContainer';
 import { UploadingFiles } from './Upload/Uploading/UploadingFiles';
 import { AttachmentContainer } from './Upload/Attachment/AttachmentContainer';
 import { AttachedFiles } from './Upload/Attachment/File/AttachedFiles';
@@ -15,7 +16,6 @@ export class ReplyForm extends React.Component {
   static propTypes = {
     agentName: PropTypes.string,
     attachedImagesCount: PropTypes.number,
-    uploadingFiles: PropTypes.object,
     isEnded: PropTypes.bool,
     canReopen: PropTypes.bool,
     onSendMessage: PropTypes.func,
@@ -88,8 +88,7 @@ export class ReplyForm extends React.Component {
   }
 
   render() {
-    const { isEnded, canReopen } = this.props;
-    const { uploadingFiles, attachedImagesCount } = this.props;
+    const { attachedImagesCount, isEnded, canReopen } = this.props;
 
     if (isEnded && !canReopen) {
       return null;
@@ -120,7 +119,10 @@ export class ReplyForm extends React.Component {
               : this.renderRte()
             }
 
-            <UploadingFiles files={uploadingFiles} />
+            <UploadingFilesContainer>
+              <UploadingFiles />
+            </UploadingFilesContainer>
+
             <AttachmentContainer>
               <AttachedFiles />
             </AttachmentContainer>
