@@ -251,15 +251,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			loginForm.on('submit', function(ev) {
 				ev.preventDefault();
 
-				var postData = [];
-				postData.push({
-					name: 'email',
-					value: loginForm.find('input[name="email"]').val()
-				});
-				postData.push({
-					name: 'password',
-					value: loginForm.find('input[name="password"]').val()
-				});
+				var postData = loginForm.find('input, select, textarea').serializeArray();
 
 				loginForm.find('.login-loading').show();
 				loginForm.find('.submit-btn').hide();
