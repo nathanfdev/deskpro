@@ -13,7 +13,11 @@ export class UploadingFilesContainer extends React.Component {
     dispatch: PropTypes.func
   };
 
-  onRetry = file => {
+  onRepeat = file => {
+    this.props.dispatch(removeUploadingFile(file));
+  };
+
+  onRemove = file => {
     this.props.dispatch(removeUploadingFile(file));
   };
 
@@ -26,7 +30,8 @@ export class UploadingFilesContainer extends React.Component {
       ...props,
       ...childProps,
 
-      onRetry: this.onRetry
+      onRepeat: this.onRepeat,
+      onRemove: this.onRemove
     });
   }
 }

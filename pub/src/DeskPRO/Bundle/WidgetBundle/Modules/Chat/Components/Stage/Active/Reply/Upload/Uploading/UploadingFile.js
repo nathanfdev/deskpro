@@ -5,14 +5,22 @@ export class UploadingFile extends React.Component {
 
   static propTypes = {
     file: PropTypes.object,
-    onRetry: PropTypes.func
+    onRepeat: PropTypes.func,
+    onRemove: PropTypes.func
   };
 
-  onRetry = event => {
+  onRepeat = event => {
     event.preventDefault();
 
-    const { file, onRetry } = this.props;
-    onRetry(file);
+    const { file, onRepeat } = this.props;
+    onRepeat(file);
+  };
+
+  onRemove = event => {
+    event.preventDefault();
+
+    const { file, onRemove } = this.props;
+    onRemove(file);
   };
 
   render() {
@@ -27,9 +35,14 @@ export class UploadingFile extends React.Component {
           {filenameMaxLength(file.name, file.failed ? 20 : 30)}
           {file.failed && <span className="failed-status">(uploading failed)</span>}
           {file.failed
-            ? <a className="dpdesignportal-chat-form-attached-file-remove" onClick={this.onRetry}>
-                <i className="fa fa-repeat"/>
-              </a>
+            ? <div>
+                <a className="dpdesignportal-chat-form-attached-file-repeat" onClick={this.onRepeat}>
+                  <i className="fa fa-repeat"/>
+                </a>
+                <a className="dpdesignportal-chat-form-attached-file-remove" onClick={this.onRemove}>
+                  <i className="fa fa-times-circle"/>
+                </a>
+              </div>
             : <div className="spinner"><i/></div>
           }
         </div>
