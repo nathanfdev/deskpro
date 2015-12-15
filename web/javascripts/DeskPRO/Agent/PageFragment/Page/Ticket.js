@@ -1117,8 +1117,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				return;
 			}
 
-			self.handleTicketUpdate(result);
-
 			// Reload the message row in results
 			//addTicket
 			if (DeskPRO_Window.sections.tickets_section && DeskPRO_Window.sections.tickets_section.listPage) {
