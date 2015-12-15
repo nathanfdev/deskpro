@@ -33,7 +33,7 @@ export class UploadingFile extends React.Component {
         </div>
         <div className="attached-file-title">
           {filenameMaxLength(file.name, file.failed ? 20 : 30)}
-          {file.failed && <span className="failed-status">(uploading failed)</span>}
+          {file.failed && <span className="failed-status">(failed)</span>}
           {file.failed
             ? <div>
                 <a className="dpdesignportal-chat-form-attached-file-repeat" onClick={this.onRepeat}>
