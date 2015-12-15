@@ -40,6 +40,7 @@ use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutDiffer;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket\LeafDepartment;
 use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomFieldTicketContext;
 use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomPerFieldManager;
 use DeskPRO\Bundle\PortalBundle\Form\Form\TicketFormContext;
@@ -537,6 +538,7 @@ class TicketType extends AbstractType
             'ticket'      => $form_context->getTicket(),
             'placeholder' => '',
             'constraints' => [
+                new LeafDepartment(['message' => 'portal.forms.error_ticket_department_invalid']),
                 new NotNull(['message' => 'portal.forms.error_ticket_department_required']),
             ],
         ));
