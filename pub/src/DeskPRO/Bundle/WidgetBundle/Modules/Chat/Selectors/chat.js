@@ -89,7 +89,17 @@ export const lastMessageIdSelector = createSelector(
 // Uploading files selectors
 export const uploadingFilesSelector = createSelector(
   stateSelector,
-  state => state.get('uploadingFiles')
+  state => state.getIn(['uploading', 'files'])
+);
+
+export const uploadingFilesFailedSelector = createSelector(
+  stateSelector,
+  state => state.getIn(['uploading', 'failed'])
+);
+
+export const uploadingFilesRepeatSelector = createSelector(
+  stateSelector,
+  state => state.getIn(['uploading', 'repeat'])
 );
 
 // Attachments selectors

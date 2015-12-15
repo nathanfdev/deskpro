@@ -7,7 +7,8 @@ import {
   toggleBool,
   async,
   pushPayloadToCollection,
-  deletePayloadFromCollection
+  deletePayloadFromCollection,
+  composeHandlers
 } from 'Ampliflux/reducers/handlers';
 
 const initialState = {
@@ -31,7 +32,11 @@ const initialState = {
     {id: 102, content: '{"phrase_id":"message_assigned","name":"Admin Admin"}', author: null, author_type: 'user', is_sys: true, date_created: '2015-12-03 13:58'},
     {id: 101, content: '{"phrase_id":"message_started"}', author: null, is_sys: true, date_created: '2015-12-03 13:50'}
   ],
-  uploadingFiles: [],
+  uploading: {
+    files: [],
+    failed: [],
+    repeat: []
+  },
   attachments: []
 };
 
@@ -49,14 +54,20 @@ export default createReducer(initialState, {
   [actions.addNewMessage]: pushPayloadToCollection('messages'),
 
   // Uploading files
-  [actions.addUploadingFile]: pushPayloadToCollection('uploadingFiles'),
-  [actions.markUploadingFileFailed]: (state, payload) => {
-    const index = state.get('uploadingFiles').indexOf(payload);
-    payload.failed = true;
-
-    return state.setIn(['uploadingFiles', index], payload);
-  },
-  [actions.removeUploadingFile]: deletePayloadFromCollection('uploadingFiles'),
+  [actions.addUploadingFile]: pushPayloadToCollection('uploading.files'),
+  [actions.markUploadingFileFailed]: composeHandlers(
+    deletePayloadFromCollection('uploading.repeat'),
+    pushPayloadToCollection('uploading.failed')
+  ),
+  [actions.repeatUploadingFile]: composeHandlers(
+    deletePayloadFromCollection('uploading.failed'),
+    pushPayloadToCollection('uploading.repeat')
+  ),
+  [actions.removeUploadingFile]: composeHandlers(
+    deletePayloadFromCollection('uploading.active'),
+    deletePayloadFromCollection('uploading.failed'),
+    deletePayloadFromCollection('uploading.repeat')
+  ),
 
   // Attachments
   [actions.addAttachment]: pushPayloadToCollection('attachments'),

@@ -1,10 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { uploadingFilesSelector } from '../../../../../../Selectors/chat';
-import { removeUploadingFile } from '../../../../../../Actions/chatActions';
+import { uploadingFilesSelector, uploadingFilesFailedSelector } from '../../../../../../Selectors/chat';
+import { repeatUploadingFile, removeUploadingFile } from '../../../../../../Actions/chatActions';
 
 @connect(state => ({
-  uploadingFiles: uploadingFilesSelector(state)
+  files: uploadingFilesSelector(state),
+  failed: uploadingFilesFailedSelector(state)
 }))
 export class UploadingFilesContainer extends React.Component {
 
@@ -13,12 +14,12 @@ export class UploadingFilesContainer extends React.Component {
     dispatch: PropTypes.func
   };
 
-  onRepeat = file => {
+  onRemove = file => {
     this.props.dispatch(removeUploadingFile(file));
   };
 
-  onRemove = file => {
-    this.props.dispatch(removeUploadingFile(file));
+  onRepeat = file => {
+    this.props.dispatch(repeatUploadingFile(file));
   };
 
   render() {

@@ -4,13 +4,18 @@ import { UploadingFile } from './UploadingFile';
 export class UploadingFiles extends React.Component {
 
   static propTypes = {
-    uploadingFiles: PropTypes.object
+    files: PropTypes.object,
+    failed: PropTypes.object
   };
 
   render() {
+    const { files, failed } = this.props;
+
     return (
       <div className="dropzone-container">
-        {this.props.uploadingFiles.map((file, index) => <UploadingFile key={index} file={file} {...this.props} />)}
+        {files.map((file, index) => <UploadingFile key={index}
+                                                   file={file}
+                                                   failed={failed.indexOf(file) !== -1} {...this.props} />)}
       </div>
     );
   }
