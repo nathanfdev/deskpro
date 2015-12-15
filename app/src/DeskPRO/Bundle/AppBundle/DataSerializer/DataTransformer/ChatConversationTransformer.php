@@ -58,7 +58,17 @@ class ChatConversationTransformer extends AbstractDataSerializerTransformer
      */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        return ['id', 'subject_line', 'department_id', 'date_created', 'date_agent_typing', 'date_ended', 'ended_by', 'status', 'subject'];
+        return [
+            'id',
+            'subject_line',
+            'department_id',
+            'date_created',
+            'date_agent_typing',
+            'date_ended',
+            'ended_by',
+            'status',
+            'subject',
+        ];
     }
 
     /**
