@@ -16,7 +16,14 @@ export class UploadingFile extends React.Component {
           <i className="fa fa-file-pdf-o"></i>
         </div>
         <div className="attached-file-title">
-          {filenameMaxLength(file.name, 30)} <div className="spinner"><i/></div>
+          {filenameMaxLength(file.name, file.failed ? 20 : 30)}
+          {file.failed && <span className="failed-status">(uploading failed)</span>}
+          {file.failed
+            ? <a className="dpdesignportal-chat-form-attached-file-remove">
+                <i className="fa fa-repeat"/>
+              </a>
+            : <div className="spinner"><i/></div>
+          }
         </div>
       </div>
     );

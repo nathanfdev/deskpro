@@ -177,6 +177,11 @@
     .attached-file-title {
       font-size: 11px;
       padding-top: 1px;
+
+      .failed-status {
+        margin-left: 5px;
+        color: #ff0000;
+      }
     }
 
     .dpdesignportal-chat-form-attached-file-icon {

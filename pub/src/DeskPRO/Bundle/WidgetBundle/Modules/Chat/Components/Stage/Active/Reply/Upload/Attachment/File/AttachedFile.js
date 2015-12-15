@@ -27,7 +27,7 @@ export class AttachedFile extends React.Component {
           {filenameMaxLength(attachment.get('filename'), 30)} ({attachment.get('filesize_readable')})
         </div>
         <a href="#" className="dpdesignportal-chat-form-attached-file-remove" onClick={this.onRemove}>
-          <i className="fa fa-times-circle"></i>
+          <i className="fa fa-times-circle"/>
         </a>
       </div>
     );
