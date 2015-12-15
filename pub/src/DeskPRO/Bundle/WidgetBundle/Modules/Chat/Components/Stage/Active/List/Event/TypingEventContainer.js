@@ -1,18 +1,18 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { TypingEvent } from './TypingEvent';
-import { agentNameSelector, agentAvatarSelector, agentLastTypingTimeSelector } from '../../../../../Selectors/chat';
+import { agentNameSelector, agentAvatarSelector, agentTypingDateSelector } from '../../../../../Selectors/chat';
 import moment from 'moment';
 
 @connect(state => ({
   agentName: agentNameSelector(state),
   agentAvatar: agentAvatarSelector(state),
-  agentLastTypingTime: agentLastTypingTimeSelector(state)
+  agentTypingDate: agentTypingDateSelector(state)
 }))
 export class TypingEventContainer extends React.Component {
 
   static propTypes = {
-    agentLastTypingTime: PropTypes.string
+    agentTypingDate: PropTypes.string
   };
 
   constructor(props) {
@@ -42,19 +42,19 @@ export class TypingEventContainer extends React.Component {
   };
 
   checkLastTypingDate() {
-    const { agentLastTypingTime } = this.props;
-    if (!agentLastTypingTime) {
+    const { agentTypingDate } = this.props;
+    if (!agentTypingDate) {
       return;
     }
 
-    const ended = moment(agentLastTypingTime).format('X');
+    const ended = moment(agentTypingDate).format('X');
     const now = moment().format('X');
     const delay = ended - now + 10000; // displays in 10 seconds
 
-    if (delay > 0 && (!this.state.displayChild || agentLastTypingTime !== this.state.agentLastTypingTime)) {
+    if (delay > 0 && (!this.state.displayChild || agentTypingDate !== this.state.agentTypingDate)) {
       this.setState({
         displayChild: true,
-        agentLastTypingTime: agentLastTypingTime
+        agentTypingDate: agentTypingDate
       });
 
       this.timeout = setTimeout(this.onHide, delay);
