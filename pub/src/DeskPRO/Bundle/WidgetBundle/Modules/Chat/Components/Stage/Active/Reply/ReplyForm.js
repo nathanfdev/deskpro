@@ -128,9 +128,13 @@ export class ReplyForm extends React.Component {
               <i className="fa fa-upload"></i> Upload file
               <input ref="fileUpload" className="file" type="file" name="files[]" multiple />
             </span>
-            <a href="#" className="dpdesignportal-chat-form-button" onClick={this.onScreenShare}>
-              <i className="fa fa-camera"></i> Screen Share
-            </a>
+
+            {false /* disabled for now */ &&
+              <a href="#" className="dpdesignportal-chat-form-button" onClick={this.onScreenShare}>
+                <i className="fa fa-camera"></i> Screen Share
+              </a>
+            }
+
             <EmotionButton
               buttonClassName="img"
               context={[parent.document, window.widgetFrame.document]}
