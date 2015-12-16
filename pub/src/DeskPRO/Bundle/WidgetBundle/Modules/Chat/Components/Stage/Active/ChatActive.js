@@ -12,8 +12,8 @@ export class ChatActive extends React.Component {
     return (
       <div>
         <Header />
-        <MessagesListContainer />
         <div className="dpdesignportal-chat-footer">
+          <MessagesListContainer />
           <TypingEventContainer />
           <AgentDisconnectedContainer />
           <RateAgentContainer />
