@@ -43,7 +43,15 @@ export class TypingEventContainer extends React.Component {
 
   checkLastTypingDate() {
     const { agentTypingDate } = this.props;
+
     if (!agentTypingDate) {
+      if (this.state.displayChild) {
+        this.setState({
+          displayChild: false,
+          agentTypingDate: null
+        });
+      }
+
       return;
     }
 
