@@ -15,6 +15,9 @@ import {
 } from '../../Chat/Components/index';
 import history from '../../../Services/history';
 import store from '../../../Services/store';
+import $ from 'jquery';
+import debounce from 'lodash/function/debounce';
+import { windowResize } from '../Actions/dpWindowActions';
 
 export class WidgetAppBody extends React.Component {
 
@@ -22,8 +25,18 @@ export class WidgetAppBody extends React.Component {
     onResize: PropTypes.func
   };
 
+  constructor(props) {
+    super(props);
+    this.onWindowResize();
+    this.onResize = debounce(() => {
+      this.onWindowResize();
+    }, 350);
+  }
+
   componentDidMount() {
     window.widgetFrame = parent.window.widget_iframe;
+    $(window.parent).on('resize', this.onResize);
+
     this.triggerResize();
   }
 
@@ -31,11 +44,24 @@ export class WidgetAppBody extends React.Component {
     this.triggerResize();
   }
 
-  triggerResize() {
+  componentWillUnmount() {
+    $(window.parent).off('resize', this.onResize);
+  }
+
+  onWindowResize() {
+    store.dispatch(windowResize(
+      $(window.widgetFrame).width(),
+      $(window.widgetFrame).height()
+    ));
+
     const { onResize } = this.props;
     if (onResize) {
-      window.setTimeout(() => onResize(), 0);
+      onResize();
     }
+  }
+
+  triggerResize() {
+    window.setTimeout(() => this.onWindowResize(), 0);
   }
 
   render() {
