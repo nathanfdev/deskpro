@@ -16,13 +16,6 @@ export class MessagesListContainer extends React.Component {
     widgetHeight: PropTypes.number
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      height: props.widgetHeight
-    };
-  }
-
   componentDidMount() {
     this.reCalcHeight();
   }
@@ -35,19 +28,17 @@ export class MessagesListContainer extends React.Component {
     const { widgetHeight } = this.props;
     const node = ReactDOM.findDOMNode(this);
 
-    let height = widgetHeight - 140; // header height
+    let height = widgetHeight - 280; // header height
     $(node).parent().children().each((i, child) => {
       if (child !== node) {
         height = height - $(child).height();
       }
     });
 
-    this.setState = ({
-      height: height
-    });
+    $(node).css('height', height);
   }
 
   render() {
-    return <MessagesList {...this.props} height={this.state.height} />;
+    return <MessagesList {...this.props} />;
   }
 }
