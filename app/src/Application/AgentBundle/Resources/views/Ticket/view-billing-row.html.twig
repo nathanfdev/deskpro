@@ -4,7 +4,7 @@
 		{% if charge.charge_time %}
         {{ charge.charge_time|time_length(null, true)|raw }}
 		{% endif %}
-		{% if charge.amount >= 0 %}
+		{% if charge.amount > 0 %}
 			<span>
 				{{ charge.amount|number_format(2) }}
 			</span> {{ app.getSetting('core_tickets.billing_currency') }}
