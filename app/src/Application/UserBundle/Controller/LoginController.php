@@ -1382,8 +1382,9 @@ HTML;
             //--------------------------------------
             // test result
             //--------------------------------------
-            $log = $this->getAdapterLog($adapter);
             if ($usersource_test) {
+                $log = $this->getAdapterLog($adapter);
+
                 return $this->render('DeskPRO:Auth:_sso_test_failed.html.twig', array(
                         'log'            => $log,
                         'display_errors' => $result->getMessages('display_errors'),
@@ -1503,15 +1504,24 @@ HTML;
      */
     private function getAdapterLog($adapter)
     {
-        $writers = $adapter->getLogger()->getWriterChain()->getWriters();
-        /* @var \Orb\Log\Writer\AbstractWriter $writer */
-        $log = '';
-        foreach ($writers as $writer) {
-            if ($writer instanceof ArrayWriter) {
-                $log .= $writer->getMessagesAsString();
+        if ($adapter instanceof Loggable) {
+            if (!$logger = $adapter->getLogger()) {
+                return '';
             }
+            if (!$writer_chain = $logger->getWriterChain()) {
+                return '';
+            }
+            $writers = $writer_chain->getWriters();
+            $log     = '';
+            foreach ($writers as $writer) {
+                if ($writer instanceof ArrayWriter) {
+                    $log .= $writer->getMessagesAsString();
+                }
+            }
+
+            return $log;
         }
 
-        return $log;
+        return '';
     }
 }
