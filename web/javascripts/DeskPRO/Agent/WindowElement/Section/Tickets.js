@@ -490,19 +490,17 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-updated', function (data) {
 			var ticketId = data.ticket_id;
-
-			if (!data.via_person || data.via_person != DESKPRO_PERSON_ID || data.changed_fields && data.changed_fields.indexOf('message') > -1) {
-				var tab = DeskPRO_Window.getTabWatcher().findTab('ticket', function(tab) {
-					if (tab && tab.page && tab.page && tab.page.meta.ticket_id == ticketId) {
-						return true;
-					}
-
-					return false;
-				});
-
-				if (tab && data.changed_fields) {
-					tab.page.doTicketUpdate();
+			
+			var tab = DeskPRO_Window.getTabWatcher().findTab('ticket', function(tab) {
+				if (tab && tab.page && tab.page && tab.page.meta.ticket_id == ticketId) {
+					return true;
 				}
+
+				return false;
+			});
+
+			if (tab && data.changed_fields) {
+				tab.page.doTicketUpdate();
 			}
 
 			// And if we're viewing any groups affected by the changed field, then we need to reload the group
