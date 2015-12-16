@@ -441,9 +441,11 @@ class UserChatController extends AbstractController
      */
     public function typingAction($conversation_id)
     {
+        $erase = $this->in->getBoolInt('erase');
+
         /** @var ChatConversation $conversation */
         $conversation = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
-        $conversation->setDateAgentTyping($this->in->getBoolInt('erase') ? null : new \DateTime());
+        $conversation->setDateAgentTyping($erase ? null : new \DateTime());
 
         $this->em->persist($conversation);
         $this->em->flush();

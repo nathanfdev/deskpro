@@ -82,11 +82,14 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		}
 
 		messageTextarea.on('keypress', function(ev) {
-			self.typing();
 			if (ev.keyCode == 13 && !ev.metaKey) {
 				ev.preventDefault();
 				sendMsg();
 			}
+		});
+
+		messageTextarea.on('keyup', function() {
+			self.typing();
 		});
 
 		this.addEvent('destroy', function() {
@@ -199,7 +202,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			if (textarea.data('redactor')) {
 				var ed = textarea.getEditor();
 				ed.on('keypress', function(ev) {
-					self.typing();
 					if (ev.keyCode === 13 && !ev.shiftKey && !ev.ctrlKey && !ev.metaKey) {
 						ev.preventDefault();
 						window.setTimeout(function() {
@@ -213,7 +215,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 				var lastH = ed.height();
 				ed.on('keypress change', function() {
-					self.typing();
 					window.setTimeout(function() {
 						var tmp = ed.height();
 						if (lastH != tmp) {
@@ -222,6 +223,10 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 							self.getEl('messages_box').css('bottom', lastH+44);
 						}
 					}, 50);
+				});
+
+				ed.on('keyup', function() {
+					self.typing();
 				});
 			}
 		}
@@ -930,6 +935,19 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			self.typingTimeout = setTimeout(function() {
 				self.typingTimeout = null;
 			}, 3000);
+		} else {
+			var messageTextarea = this.getEl('replybox_txt');
+			var msg = messageTextarea.val().trim();
+
+			if (self.typingTimeout && msg === '<p><br></p>') {
+				self.typingTimeout = null;
+				DeskPRO_Window.util.ajaxWithClientMessages({
+					url: BASE_URL + 'old-agent/chat/typing/' + this.meta.conversation_id,
+					data: {
+						erase: true
+					}
+				});
+			}
 		}
 	},
 
