@@ -247,7 +247,6 @@ export function setFullPayload(statePropKey, defaultValue = null) {
   return setPayload(statePropKey, null, defaultValue);
 }
 
-
 /**
  * Merge a value from the action payload.
  *
@@ -295,7 +294,6 @@ export function mergePayload(statePropKey = null, payloadPropKey = '@', defaultV
   };
 }
 
-
 /**
  * Like mergePayload, except this sets the entire payload. This is the same as passing null as the payloadPropKey to setPayload,
  * it's just a little more intuitive.
@@ -309,15 +307,13 @@ export function mergeFullPayload(statePropKey = null, defaultValue = {}, deep = 
   return mergePayload(statePropKey, null, defaultValue, deep);
 }
 
-
 /**
  * Handle an async action.
  *
- * @param {Object}   handlers           Functions to handle each sequence in an async action
- * @param {Function} handlers.start     Called as soon as the action is dispatched
- * @param {Function} handlers.success   Called once the promise resolved
- * @param {Function} handlers.error     Called if the promise is rejected
- * @param {Function} handlers.done      Called when the promise is finished, after both success and error
+ * @param {Function} start     Called as soon as the action is dispatched
+ * @param {Function} success   Called once the promise resolved
+ * @param {Function} error     Called if the promise is rejected
+ * @param {Function} done      Called when the promise is finished, after both success and error
  * @return {Function} A handler function
  */
 export function async({ start, success, error, done }) {
