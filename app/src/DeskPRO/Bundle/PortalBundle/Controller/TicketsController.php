@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketParticipant;
 use Application\DeskPRO\Entity\TicketTrigger;
+use Application\DeskPRO\People\PersonGuest;
 use Carbon\Carbon;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
@@ -47,6 +48,7 @@ use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTablesCollection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -189,50 +191,6 @@ class TicketsController extends AbstractController
                 'created_in_seconds'         => $created_in_seconds,
                 'edit_page'                  => false,
                 'form_errors'                => $form->isSubmitted() ? $form->getErrors() : [],
-            )
-        );
-    }
-
-    /**
-     * This URL is accessible if you know the ticket auth code. No other security is done here.
-     *
-     * VIEW ONLY. Must login to interact with things (which will redirect you to viewAction above).
-     *
-     * @Route("/ticket-view/{auth}", name="portal_tickets_guest_view")
-     */
-    public function viewGuestAction(Ticket $ticket, Request $request)
-    {
-        if (
-            $this->isGranted(TicketsVoter::TICKET_VIEW, $ticket)
-            && $this->isGranted('USE_TICKETS')
-            && $this->isGranted('ROLE_USER')
-        ) {
-            // the user passes all security requirements to view the normal ticket view page.
-            // Redirect them to there.
-            return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
-        }
-
-        if ($ticket->hasNotesOnly()) {
-            throw new NotFoundHttpException(sprintf('ticket with auth "%s" found but has only agent notes', $ticket->getAuth()));
-        }
-
-        $ticket_view = $this->getTicketsViewService()->getUserTicketView($ticket);
-
-        $timeline = $this->get('data.ticket_timeline')->getUserTimeline($ticket);
-
-        // BREADCRUMBS
-        $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);
-
-        // TODO: if a user is logged in, we might want to allow SOME interaction on the ticket here...
-
-        return $this->renderThemeView(
-            'Theme:Tickets:guest-view.html.twig',
-            array(
-                'ticket'      => $ticket,
-                'ticket_view' => $ticket_view,
-                'timeline'    => $timeline,
-                'breadcrumbs' => $breadcrumbs,
-                'page_title'  => $this->createPageTitle()->tickets($ticket),
             )
         );
     }
@@ -446,6 +404,135 @@ class TicketsController extends AbstractController
     }
 
     /**
+     * This URL is accessible if you know the ticket auth code. No other security is done here.
+     *
+     * VIEW ONLY. Must login to interact with things (which will redirect you to viewAction above).
+     *
+     * @Route("/ticket-view/{auth}", name="portal_tickets_guest_view")
+     */
+    public function viewGuestAction(Ticket $ticket, Request $request)
+    {
+        if (
+            $this->isGranted(TicketsVoter::TICKET_VIEW, $ticket)
+            && $this->isGranted('USE_TICKETS')
+            && $this->isGranted('ROLE_USER')
+        ) {
+            // the user passes all security requirements to view the normal ticket view page.
+            // Redirect them to there.
+            return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
+        }
+
+        if ($ticket->hasNotesOnly()) {
+            throw new NotFoundHttpException(sprintf('ticket with auth "%s" found but has only agent notes', $ticket->getAuth()));
+        }
+
+        $ticket_view = $this->getTicketsViewService()->getUserTicketView($ticket);
+
+        $timeline = $this->get('data.ticket_timeline')->getUserTimeline($ticket);
+
+        // BREADCRUMBS
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);
+
+        // TODO: if a user is logged in, we might want to allow SOME interaction on the ticket here...
+
+        return $this->renderThemeView(
+            'Theme:Tickets:guest-view.html.twig',
+            array(
+                'ticket'      => $ticket,
+                'ticket_view' => $ticket_view,
+                'timeline'    => $timeline,
+                'breadcrumbs' => $breadcrumbs,
+                'page_title'  => $this->createPageTitle()->tickets($ticket),
+            )
+        );
+    }
+
+    /**
+     * @Route("/ticket-rate/{ticket_ref}/{auth}/{message_id}", name="portal_tickets_feedback", defaults={"message_id"=null})
+     * @Route("/ticket-rate/{ticket_ref}/{auth}/{message_id}", name="user_tickets_feedback", defaults={"message_id"=null})
+     */
+    public function rateTicketAction(Request $request, $ticket_ref, $auth, $message_id = null)
+    {
+        if (!$ticket = $this->getTicketByRef($ticket_ref)) {
+            throw new NotFoundHttpException('ref not found');
+        }
+
+        if ((string) $ticket->getAuth() !== (string) $auth) {
+            throw new NotFoundHttpException('auth does not match ticket');
+        }
+
+        /** @var \Application\DeskPRO\EntityRepository\TicketMessage $ticket_message_repo */
+        $ticket_message_repo = $this->getRepo('DeskPRO:TicketMessage');
+        if ($message_id) {
+            /** @var \Application\DeskPRO\Entity\TicketMessage $message */
+            $message = $ticket_message_repo->find($message_id);
+        } else {
+            /** @var \Application\DeskPRO\Entity\TicketMessage $message */
+            $message = $ticket_message_repo->getLastAgentReply($ticket);
+        }
+
+        // message must exist and belong to the ticket requested
+        if (!$message || $message->getTicketId() !== $ticket->getId()) {
+            throw new NotFoundHttpException('message does not belong to ticket');
+        }
+
+        // message must not be an agent note and the person on the message must be an agent
+        if ($message->is_agent_note || !$message->getPerson()->isAgent()) {
+            throw new NotFoundHttpException('message cannot be an agent note or a non-agent message');
+        }
+
+        $person = $this->getAuthenticatedUserOrTicketPerson($ticket);
+
+        /** @var \Application\DeskPRO\EntityRepository\TicketFeedback $ticket_feedback_repo */
+        $ticket_feedback_repo = $this->getRepo('DeskPRO:TicketFeedback');
+        $feedback             = $ticket_feedback_repo->getFeedback($message, $person, true);
+
+        $rating    = null;
+        $setrating = false;
+        if ($request->get('rating', false)) {
+            $rating = $request->get('rating');
+        } elseif ($request->get('setrating', false)) {
+            $rating    = $request->get('rating');
+            $setrating = true;
+        }
+
+        if ($rating !== null) {
+            $feedback->setRating($rating);
+
+            if ($request->get('save')) {
+                $last_message_id = $this->getConn()->fetchColumn('
+                    SELECT message_id FROM ticket_feedback
+                    WHERE ticket_id = ?
+                    ORDER BY message_id DESC
+                    LIMIT 1
+                ', array($ticket->getId()));
+
+                if (!$last_message_id || $message->getId() >= $last_message_id) {
+                    $ticket->feedback_rating = $feedback->getRating();
+                    $this->getEm()->persist($ticket);
+                }
+
+                $this->getEm()->persist($feedback);
+                $this->getEm()->flush();
+
+                $GLOBALS['DP_SET_SKIP_CACHE'] = true;
+
+                // AJAX request used to auto-save rating as soon as user clicked link
+                if ($request->isXmlHttpRequest()) {
+                    return new JsonResponse(['success' => true]);
+                }
+            }
+        }
+
+        return $this->renderThemeView('Theme:Tickets:feedback.html.twig', array(
+            'ticket'    => $ticket,
+            'message'   => $message,
+            'feedback'  => $feedback,
+            'setrating' => $setrating,
+        ));
+    }
+
+    /**
      * @Route("/tickets/{ticket_ref}/unresolve", name="portal_tickets_unresolve")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
      * @AutoPostOnGetRequest()
@@ -644,5 +731,22 @@ class TicketsController extends AbstractController
         $created_in_seconds = $created->diffInSeconds();
 
         return array($last_user_reply_in_seconds, $created_in_seconds);
+    }
+
+    /**
+     * If the user is authenticated use that person, else use the ticket person.
+     *
+     * @param Ticket $ticket
+     *
+     * @return Person
+     */
+    private function getAuthenticatedUserOrTicketPerson(Ticket $ticket)
+    {
+        $current_person = $this->getCurrentPerson();
+        if (!$current_person instanceof PersonGuest) {
+            return $current_person;
+        }
+
+        return $ticket->person;
     }
 }

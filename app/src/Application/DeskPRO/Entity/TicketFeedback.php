@@ -99,6 +99,11 @@ class TicketFeedback extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
+    public function getRating()
+    {
+        return $this->rating;
+    }
+
     /**
      * Is this is a new record? (ie not persisted, or persisted this request).
      *
