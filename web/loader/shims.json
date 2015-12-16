@@ -30,5 +30,7 @@
   "underscore":                      { "exports": "_" },
   "stacktrace":                      { "exports": "printStackTrace"},
   "trackjs":                         { "exports": "trackJs"},
-  "intl-tel-input":                  ["jquery"]
+  "intl-tel-input":                  ["jquery"],
+  "spectrum":                        ["jquery"],
+  "angularSpectrumColorpicker":      ["angular", "spectrum"]
 }

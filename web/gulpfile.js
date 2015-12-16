@@ -268,17 +268,18 @@ gulp.task('sassdoc', function () {
    */
   function transform(sassdoc_items) {
     var default_type = {
-      colors: 'color_picker',
-      button_colors: 'color_picker',
-      font_colors: 'color_picker',
-      form_colors: 'color_picker',
-      generic_colors: 'color_picker',
-      secondary_colors: 'color_picker',
-      welcome_colors: 'color_picker',
-      positioning: 'pixels',
-      borders: 'pixels',
-      fonts: 'font',
-      font_sizes: 'em'
+      colors: 'color',
+      button_colors: 'color',
+      font_colors: 'color',
+      form_colors: 'color',
+      generic_colors: 'color',
+      secondary_colors: 'color',
+      welcome_colors: 'color',
+      positioning: 'size',
+      form_positioning: 'size',
+      borders: 'size',
+      font_sizes: 'size',
+      fonts: 'font'
     };
 
     var groups = {};

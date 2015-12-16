@@ -60,6 +60,9 @@
   "ZeroClipboard":                   "bower_components/zeroclipboard/dist/ZeroClipboard",
   "ngClip":                          "bower_components/ng-clip/src/ngClip",
 
+  "spectrum":                        "bower_components/spectrum/spectrum",
+  "angularSpectrumColorpicker":      "bower_components/angular-spectrum-colorpicker/dist/angular-spectrum-colorpicker",
+
   "AgentApp":                        "empty:",
   "AppPlatform":                     "empty:",
   "AppPlatformConfig":               "empty:",

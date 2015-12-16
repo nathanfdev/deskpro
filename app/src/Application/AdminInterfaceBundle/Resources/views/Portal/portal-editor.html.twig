@@ -17,120 +17,26 @@
                     <span class="dropdown-icon"><i class="fa fa-sort"></i></span>
                 </a>
 
-                <div class="panel-title">
-                    <a ng-click="Portal.togglePanel('color_scheme')">
-                        Color Scheme
-                        <i class="fa fa-caret-down" ng-show="!Portal.isOpen('color_scheme')"></i>
-                        <i class="fa fa-caret-down" ng-show="Portal.isOpen('color_scheme')"></i>
-                    </a>
-                </div>
-                <div>
-                    <div class="color-scheme" ng-show="Portal.isOpen('color_scheme')">
-                        <a href="#" class="color-preview">
-                            <span class="color-box"></span> <span class="color-title">Background</span>
-                            <div class="color-box-indicator"><i class="fa fa-caret-down"></i></div>
+                <!-- Variables settings -->
+
+                <div ng-repeat="(group, variables) in Portal.groups">
+                    <div class="panel-title">
+                        <a ng-click="Portal.togglePanel(group)">
+                            <span ng-bind="Portal.label(group)"></span>
+                            <i class="fa fa-caret-right" ng-show="!Portal.isOpen(group)"></i>
+                            <i class="fa fa-caret-down" ng-show="Portal.isOpen(group)"></i>
                         </a>
-
-                        <a href="#" class="color-preview">
-                            <span class="color-box" style="background: #ff5460;"></span> <span class="color-title">Page Background</span>
-                            <div class="color-box-indicator"><i class="fa fa-caret-down"></i></div>
-                        </a>
-
-                        <a href="#" class="color-preview">
-                            <span class="color-box" style="background: #3d7feb;"></span> <span class="color-title">Link Color</span>
-                            <div class="color-box-indicator"><i class="fa fa-caret-down"></i></div>
-                        </a>
-
-                        <a href="#" class="color-preview">
-                            <span class="color-box" style="background: #4681b2;"></span> <span class="color-title">Main Button Color</span>
-                            <div class="color-box-indicator"><i class="fa fa-caret-down"></i></div>
-                        </a>
-
-                        <a href="#" class="color-preview">
-                            <span class="color-box" style="background: #f4f4f4;"></span> <span class="color-title">Text Color</span>
-                            <div class="color-box-indicator"><i class="fa fa-caret-down"></i></div>
-                        </a>
-
-                        <a href="#" class="color-preview">
-                            <span class="color-box" style="background: #e3e3d6;"></span> <span class="color-title">2nd Button Color</span>
-                            <div class="color-box-indicator"><i class="fa fa-caret-down"></i></div>
-                        </a>
-
-                        <a href="#" class="color-preview">
-                            <span class="color-box" style="background: #ff5460;"></span> <span class="color-title">Secondary Surface</span>
-                            <div class="color-box-indicator"><i class="fa fa-caret-down"></i></div>
-                        </a>
-
-                        <!-- Color Picker -->
-                        <!-- <div class="color-picker">
-                          <a href="#" class="close-panel"><i class="fa fa-times"></i></a>
-                          <div class="title">Current text color: </div>
-                          <form>
-                            <span class="color-box" style="background: #ff5460;"></span>
-                            <input type="text" value="#9da3a8">
-                          </form>
-                          <hr>
-                          <div class="color-picker-area"></div>
-                        </div> -->
-
-                    </div><!-- End Color Scheme -->
+                    </div>
+                    <div>
+                        <div class="color-scheme font-options" ng-show="Portal.isOpen(group)">
+                            <div ng-repeat="variable in variables" ng-init="variable.label = Portal.label(variable.name)">
+                                <dp-portal-designer-variable-form variable="variable"></dp-portal-designer-variable-form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="panel-title">
-                    <a ng-click="Portal.togglePanel('fonts')">
-                        Fonts
-                        <i class="fa fa-caret-down" ng-show="!Portal.isOpen('fonts')"></i>
-                        <i class="fa fa-caret-down" ng-show="Portal.isOpen('fonts')"></i>
-                    </a>
-                </div>
-
-                <div class="font-options" ng-show="Portal.isOpen('fonts')">
-                    <!-- Removed the whitespace between each link to use inline-block without having to deal with the left sid emargin that inline-block has by default - will need the <a> tags to have no whitespace between them -->
-                    <a href="#" class="select font-family">
-                        <span class="title-tag">Font Family:</span> Open Sans, <span class="secondary">Helvetica, Verdana, Sans Serif</span>
-                        <span class="dropdown-icon"><i class="fa fa-sort"></i></span>
-                    </a><a href="#" class="select font-size">
-                        <span class="title-tag">Font Size:</span> 16px
-                        <span class="dropdown-icon"><i class="fa fa-sort"></i></span>
-                    </a>
-
-                    <a href="#" class="select font-headers">
-                        <span class="title-tag">Header:</span> Open Sans, <span class="secondary">Helvetica, Verdana, Sans Serif</span>
-                        <span class="dropdown-icon"><i class="fa fa-sort"></i></span>
-                    </a>
-
-
-                    <!-- Expanded font menu -->
-                    <ul class="select-expanded">
-                        <li>
-                            <span class="title">Select Font</span>
-                        </li>
-                        <li>
-                            <a href="#" class="selected-item font-stack stack-1">
-                                Open Sans, <span class="secondary">Helvetica, Arial, Sans Serif</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="font-stack stack-2">
-                                Baskerville, <span class="secondary">Georgia, Serif</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="font-stack stack-3">
-                                Lato, <span class="secondary">Myriad Pro, Arial, Sans Serif</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="font-stack stack-4">
-                                Ubuntu, <span class="secondary">Trebuchet, Arial, Sans Serif</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="select-font">Use this font</a>
-                        </li>
-                    </ul>
-
-                </div>
+                <!-- End of variables settings -->
 
                 <div class="panel-title">
                     <a ng-click="Portal.togglePanel('logo')">
