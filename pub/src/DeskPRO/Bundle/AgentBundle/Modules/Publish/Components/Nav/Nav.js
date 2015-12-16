@@ -61,11 +61,9 @@ export class Nav extends Component {
                 <LoadIndicator loaded={loaded}>
                   <SectionsPane>
                     <Section ref="kb">
-                      <SectionGroupedHeader count={lists.get('articles').get('count')}
-                                            callback={toggleGroupingVisibility('articles')}>
-                        Knowledgebase
-                      </SectionGroupedHeader>
-
+                      <SectionGroupedHeader label="Knowledgebase"
+                                            count={lists.get('articles').get('count')}
+                                            callback={toggleGroupingVisibility('articles')}/>
                       <NestedList items={lists.get('articles').get('nested').toJS()}
                                   groups={labels.articles}
                                   onClick={onClick.articles}/>
@@ -84,10 +82,9 @@ export class Nav extends Component {
                 <LoadIndicator loaded={loaded}>
                   <SectionsPane>
                     <Section ref="news">
-                      <SectionGroupedHeader count={lists.get('news').count} callback={toggleGroupingVisibility('news')}>
-                        News
-                      </SectionGroupedHeader>
-
+                      <SectionGroupedHeader label="News"
+                                            count={lists.get('news').get('count')}
+                                            callback={toggleGroupingVisibility('news')}/>
                       <NestedList items={lists.get('news').get('nested').toJS()}
                                   groups={labels.news}
                                   onClick={onClick.news}/>
@@ -100,11 +97,9 @@ export class Nav extends Component {
                 <LoadIndicator loaded={loaded}>
                   <SectionsPane>
                     <Section ref="downloads">
-                      <SectionGroupedHeader count={lists.get('downloads').count}
-                                            callback={toggleGroupingVisibility('downloads')}>
-                        Downloads
-                      </SectionGroupedHeader>
-
+                      <SectionGroupedHeader label="Downloads"
+                                            count={lists.get('downloads').get('count')}
+                                            callback={toggleGroupingVisibility('downloads')}/>
                       <NestedList items={lists.get('downloads').get('nested').toJS()}
                                   groups={labels.downloads}
                                   onClick={onClick.downloads}/>
@@ -126,9 +121,9 @@ export class Nav extends Component {
                       </SectionHeader>
 
                       <ul>
-                        <ListItem label="Draft Articles" count={lists.get('todo').get('articles').draft}
+                        <ListItem label="Draft Articles" count={lists.get('todo').get('articles').get('draft')}
                                   onClick={onClick.draftArticles}/>
-                        <ListItem label="Pending Articles" count={lists.get('todo').get('articles').pending}
+                        <ListItem label="Pending Articles" count={lists.get('todo').get('articles').get('pending')}
                                   onClick={onClick.pendingArticles}/>
                       </ul>
                     </Section>

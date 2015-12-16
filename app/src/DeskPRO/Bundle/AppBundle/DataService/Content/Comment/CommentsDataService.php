@@ -80,7 +80,7 @@ class CommentsDataService
             $count  = Count::fromGroupedBy($criteria->getGroupBy());
             foreach ($result as $group) {
                 $count->add($group['value']);
-                $count->addNested($group['value'], $group['group_name'], $criteria->getGroupBy());
+                $count->addNested($group['value'], $group['group_name'], $criteria->getGroupBy(), $group['group_name']);
             }
         } else {
             $total = $qb->getQuery()->getSingleScalarResult();
