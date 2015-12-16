@@ -43,14 +43,14 @@ export default createReducer(initialState, {
   [actions.addNewMessage]: pushPayloadToCollection('messages'),
 
   // Uploading files
-  [actions.addUploadingFile]: pushPayloadToCollection('uploading.files'),
+  [actions.addUploadingFile]: pushPayloadToCollection('uploading.files', true),
   [actions.markUploadingFileFailed]: composeHandlers(
     deletePayloadFromCollection('uploading.repeat'),
-    pushPayloadToCollection('uploading.failed')
+    pushPayloadToCollection('uploading.failed', true)
   ),
   [actions.repeatUploadingFile]: composeHandlers(
     deletePayloadFromCollection('uploading.failed'),
-    pushPayloadToCollection('uploading.repeat')
+    pushPayloadToCollection('uploading.repeat', true)
   ),
   [actions.removeUploadingFile]: composeHandlers(
     deletePayloadFromCollection('uploading.files'),
