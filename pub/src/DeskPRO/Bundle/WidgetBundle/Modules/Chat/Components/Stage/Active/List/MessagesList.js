@@ -10,6 +10,10 @@ export class MessagesList extends React.Component {
     isEnded: PropTypes.bool
   };
 
+  componentDidMount() {
+    this.scrollBottom();
+  }
+
   componentDidUpdate() {
     this.scrollBottom();
   }
