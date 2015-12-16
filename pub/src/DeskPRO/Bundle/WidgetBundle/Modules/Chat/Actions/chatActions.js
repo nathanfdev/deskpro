@@ -7,7 +7,7 @@ export const setChatId = createAction('WIDGET_CHAT_SET_ID');
 export const updateChatInfo = createAction('WIDGET_CHAT_UPDATE_CHAT_INFO');
 
 // Audio actions
-export const toggleAudioNotifications = createAction('WIDGET_CHAT_TOGGLE_AUDIO_NOTIFICATIONS');
+export const toggleMute = createAction('WIDGET_CHAT_TOGGLE_MUTE');
 
 // Transcript actions
 export const disableSendTranscript = createAction('WIDGET_CHAT_DISABLE_SEND_TRANSCRIPT');

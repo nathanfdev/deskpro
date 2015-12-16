@@ -3,9 +3,9 @@ import { createSelector } from 'reselect';
 const stateSelector = state => state.Chat.chat;
 
 // Audio selectors
-export const audioNotificationsSelector = createSelector(
+export const muteSelector = createSelector(
   stateSelector,
-  state => state.get('audioNotifications')
+  state => state.get('mute')
 );
 
 // Transcript selectors

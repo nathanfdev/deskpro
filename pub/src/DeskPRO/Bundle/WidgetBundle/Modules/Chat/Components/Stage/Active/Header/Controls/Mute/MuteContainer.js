@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { MuteButton } from './MuteButton';
-import { audioNotificationsSelector } from '../../../../../../Selectors/chat';
-import { toggleAudioNotifications } from '../../../../../../Actions/chatActions';
+import { muteSelector } from '../../../../../../Selectors/chat';
+import { toggleMute } from '../../../../../../Actions/chatActions';
 
 @connect(state => ({
-  enabled: audioNotificationsSelector(state)
+  enabled: muteSelector(state)
 }))
 export class MuteContainer extends React.Component {
 
@@ -14,7 +14,7 @@ export class MuteContainer extends React.Component {
   };
 
   onClick = () => {
-    this.props.dispatch(toggleAudioNotifications());
+    this.props.dispatch(toggleMute());
   };
 
   render() {

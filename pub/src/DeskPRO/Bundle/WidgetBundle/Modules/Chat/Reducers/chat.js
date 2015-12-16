@@ -12,7 +12,7 @@ import {
 } from 'Ampliflux/reducers/handlers';
 
 const initialState = {
-  audioNotifications: true,
+  mute: false,
   transcript: {
     checked: false,
     sending: false,
@@ -31,7 +31,7 @@ const initialState = {
 
 export default createReducer(initialState, {
   // Audio
-  [actions.toggleAudioNotifications]: toggleBool('audioNotifications'),
+  [actions.toggleMute]: toggleBool('mute'),
 
   // Chat setup
   [actions.setChatId]: setFullPayload('chatId'),
