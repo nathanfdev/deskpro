@@ -433,17 +433,19 @@ class UserChatController extends AbstractController
     }
 
     /**
-     * @param $conversation_id
+     * Stores datetime of the last agent typing event.
+     *
+     * @param int $conversation_id
      *
      * @return Response
      */
     public function typingAction($conversation_id)
     {
-        /** @var ChatConversation $convo */
-        $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
-        $convo->setDateAgentTyping(new \DateTime());
+        /** @var ChatConversation $conversation */
+        $conversation = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
+        $conversation->setDateAgentTyping($this->in->getBoolInt('erase') ? null : new \DateTime());
 
-        $this->em->persist($convo);
+        $this->em->persist($conversation);
         $this->em->flush();
 
         return $this->createJsonCmResponse();
@@ -451,6 +453,10 @@ class UserChatController extends AbstractController
 
     /**
      * Accepts a POST of a new message to a conversation.
+     *
+     * @param int $conversation_id
+     *
+     * @return Response
      */
     public function sendMessageAction($conversation_id)
     {
@@ -491,7 +497,9 @@ class UserChatController extends AbstractController
     /**
      * End a chat.
      *
-     * @param  $conversation_id
+     * @param int $conversation_id
+     *
+     * @return Response
      */
     public function leaveChatAction($conversation_id)
     {
