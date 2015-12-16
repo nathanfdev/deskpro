@@ -9,6 +9,6 @@ import { MessagesList } from './MessagesList';
 export class MessagesListContainer extends React.Component {
 
   render() {
-    return <MessagesList {...this.props} />;
+    return <MessagesList {...this.props} height={500} />;
   }
 }

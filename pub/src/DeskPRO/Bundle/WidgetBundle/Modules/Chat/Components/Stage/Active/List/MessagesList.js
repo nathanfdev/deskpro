@@ -5,6 +5,7 @@ import { MessageFactory } from './MessageFactory';
 export class MessagesList extends React.Component {
 
   static propTypes = {
+    height: PropTypes.number,
     messages: PropTypes.object,
     isEnded: PropTypes.bool
   };
@@ -24,10 +25,10 @@ export class MessagesList extends React.Component {
   }
 
   render() {
-    const { messages } = this.props;
+    const { messages, height } = this.props;
 
     return (
-      <div className="dpdesignportal-content">
+      <div className="dpdesignportal-content" style={{height: `${height}px`}}>
         <ScrollArea ref="scrollArea" vertical>
           <div className="bottom-aligner"/>
           <div>

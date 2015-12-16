@@ -27,6 +27,7 @@ export class WidgetAppBody extends React.Component {
 
   constructor(props) {
     super(props);
+
     this.onWindowResize();
     this.onResize = debounce(() => {
       this.onWindowResize();
