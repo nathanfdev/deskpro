@@ -64,7 +64,7 @@ export const loadCommentsToValidate = createAction(
 
 export const loadCommentsToReview = createAction(
   'PUBLISH_LIST_LOAD_DATA',
-  () => (dispatch) => Comments.load('articles', { is_reviewed: 1 })
+  () => (dispatch) => Comments.load('articles', { is_reviewed: 0 })
     .then(promise => {
       dispatch(switchContent('commentsToReview'));
       return { content: 'commentsToReview', elements: promise.getData().data };

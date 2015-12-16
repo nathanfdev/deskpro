@@ -9,7 +9,7 @@ export class NavFrame extends React.Component {
   };
 
   render() {
-    const { children, dpWindow } = this.props;
+    const { children } = this.props;
     let outer = '';
     let inner = children;
 

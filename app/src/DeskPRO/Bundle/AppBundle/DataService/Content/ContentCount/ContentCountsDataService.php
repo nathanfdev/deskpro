@@ -132,7 +132,7 @@ class ContentCountsDataService
 
             $count->addNestedInstance(
                 $this->createNestedRecursively(
-                    Count::create($countValue, $category->getId(), 'category'),
+                    Count::create($countValue, $category->getId(), 'category', $category->getTitle()),
                     $category->getChildren(),
                     $groupToCount,
                     $depth + 1

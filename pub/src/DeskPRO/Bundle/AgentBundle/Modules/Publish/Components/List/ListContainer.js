@@ -19,9 +19,13 @@ export class ListContainer extends Component {
     view: PropTypes.string.isRequired
   };
 
+  toggleView(e) {
+    e.preventDefault();
+    this.props.dispatch(actions.toggleView());
+  }
+
   render() {
     const {content, elements, view} = this.props;
-    console.log(elements);
     switch (content) {
       case 'articles':
       case 'news':
@@ -41,10 +45,5 @@ export class ListContainer extends Component {
       default:
         throw new Error(`Unknown list ${this.props.content}`);
     }
-  }
-
-  toggleView(e) {
-    e.preventDefault();
-    this.props.dispatch(actions.toggleView());
   }
 }

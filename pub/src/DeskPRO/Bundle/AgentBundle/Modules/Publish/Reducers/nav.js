@@ -91,7 +91,7 @@ export default createReducer(initialState, {
     start: setValue('async.done', false),
     done: setValue('async.done', true)
   }),
-
+  [actions.setMine]: (state, payload) => state.setIn(['lists', 'todo', 'articles', 'mine'], payload),
   [actions.initialLoad]: async({
     success: mergeFullPayload(),
     start: setValue('async.done', false),

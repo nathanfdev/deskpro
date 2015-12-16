@@ -130,22 +130,22 @@ $em->getConnection()->executeUpdate(
 if (!function_exists('create_user')) {
     function create_user($fname, $lname, $email, $pass, $agent = false, $admin = false, $is_deleted = false)
     {
-        $user             = new \Application\DeskPRO\Entity\Person();
+        $user = new \Application\DeskPRO\Entity\Person();
         $user->first_name = $fname;
-        $user->last_name  = $lname;
+        $user->last_name = $lname;
         $user->setEmail($email, true);
         $user->setPassword($pass);
-        $user->is_user      = true;
+        $user->is_user = true;
         $user->is_confirmed = true;
-        $user->is_deleted   = $is_deleted;
+        $user->is_deleted = $is_deleted;
 
         if ($agent || $admin) {
-            $user->is_agent  = true;
+            $user->is_agent = true;
             $user->can_agent = true;
         }
 
         if ($admin) {
-            $user->can_admin   = true;
+            $user->can_admin = true;
             $user->can_billing = true;
             $user->can_reports = true;
         }
@@ -333,6 +333,30 @@ $em->getConnection()->executeUpdate(
         (7, 2, 3, '7', 'Test Download #7', 'Test Download #7', 0, 0, 0, 0, 'published', NULL, '2011-08-13 00:00:00', NULL, NULL, 0),
         (8, 9, 3, '8', 'Test Download #8', 'Test Download #8', 0, 0, 0, 0, 'hidden', NULL, '2011-08-15 00:00:00', NULL, '2012-08-16 00:00:00', 0)
     ;
+
+    INSERT INTO `article_comments`
+        (`id`, `article_id`, `person_id`, `ip_address`, `email`, `name`, `website`, `content`, `status`, `is_reviewed`, `date_created`)
+      VALUES
+        (1, 1, 1, '', NULL, NULL, NULL, 'Article comment #1', 'visible', 1, '2011-08-01 00:00:00'),
+        (2, 2, 2, '', NULL, NULL, NULL, 'Article comment #2', 'visible', 0, '2011-08-01 00:00:00'),
+        (3, 2, 3, '', NULL, NULL, NULL, 'Article comment #3', 'deleted', 0, '2011-08-01 00:00:00')
+    ;
+
+    INSERT INTO `news_comments`
+        (`id`, `news_id`, `person_id`, `ip_address`, `email`, `name`, `website`, `content`, `status`, `is_reviewed`, `date_created`)
+      VALUES
+        (1, 1, 1, '', NULL, NULL, NULL, 'News comment #1', 'visible', 1, '2011-08-01 00:00:00'),
+        (2, 2, 2, '', NULL, NULL, NULL, 'News comment #2', 'visible', 0, '2011-08-01 00:00:00'),
+        (3, 2, 3, '', NULL, NULL, NULL, 'News comment #3', 'deleted', 0, '2011-08-01 00:00:00')
+    ;
+
+    INSERT INTO `download_comments`
+        (`id`, `download_id`, `person_id`, `ip_address`, `email`, `name`, `website`, `content`, `status`, `is_reviewed`, `date_created`)
+      VALUES
+        (1, 1, 1, '', NULL, NULL, NULL, 'Download comment #1', 'visible', 1, '2011-08-01 00:00:00'),
+        (2, 2, 2, '', NULL, NULL, NULL, 'Download comment #2', 'visible', 0, '2011-08-01 00:00:00'),
+        (3, 2, 3, '', NULL, NULL, NULL, 'Download comment #3', 'deleted', 0, '2011-08-01 00:00:00')
+    ;
 "
 );
 
@@ -512,10 +536,10 @@ $em->getConnection()->executeUpdate(
 $faker = \Faker\Factory::create();
 
 // the content publisher agent guy
-$publisher            = new \Application\DeskPRO\Entity\Person();
-$publisher->name      = 'Corporate Content';
+$publisher = new \Application\DeskPRO\Entity\Person();
+$publisher->name = 'Corporate Content';
 $publisher->can_agent = true;
-$publisher->is_agent  = true;
+$publisher->is_agent = true;
 $publisher->addEmailAddressString('content.publisher@deskprodemo.com');
 $publisher->setPassword('publisher');
 
@@ -528,14 +552,14 @@ $organization->setName('Mana Publishing');
 $organization->setImportance(5);
 
 // a regular dude
-$person       = new \Application\DeskPRO\Entity\Person();
+$person = new \Application\DeskPRO\Entity\Person();
 $person->name = 'Joe Kool';
 $person->addEmailAddressString('joe@deskprodemo.com');
 $person->setPassword('joe');
 $person->setOrganization($organization);
 
 // an organization
-$mana       = new \Application\DeskPRO\Entity\Person();
+$mana = new \Application\DeskPRO\Entity\Person();
 $mana->name = 'Mana Ger';
 $mana->addEmailAddressString('manager@deskprodemo.com');
 $mana->setPassword('manager');
@@ -554,7 +578,7 @@ $em->flush($person);
 // articles
 //////////////////////////////////////////////////////////////
 
-$ac        = new \Application\DeskPRO\Entity\ArticleCategory();
+$ac = new \Application\DeskPRO\Entity\ArticleCategory();
 $ac->title = 'Germany Info';
 $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
@@ -562,14 +586,14 @@ $em->persist($ac);
 for ($i = 0; $i < 15; ++$i) {
     $a = new \Application\DeskPRO\Entity\Article();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
+    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
     $a->setCategories(array($ac));
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
     $em->persist($a);
 }
 
-$ac        = new \Application\DeskPRO\Entity\ArticleCategory();
+$ac = new \Application\DeskPRO\Entity\ArticleCategory();
 $ac->title = 'Finland Info';
 $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
@@ -577,14 +601,14 @@ $em->persist($ac);
 for ($i = 0; $i < 15; ++$i) {
     $a = new \Application\DeskPRO\Entity\Article();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
+    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
     $a->setCategories(array($ac, $em->getRepository('DeskPRO:ArticleCategory')->find(1)));
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
     $em->persist($a);
 }
 
-$ac        = new \Application\DeskPRO\Entity\ArticleCategory();
+$ac = new \Application\DeskPRO\Entity\ArticleCategory();
 $ac->title = 'Japan Info';
 $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
@@ -592,7 +616,7 @@ $em->persist($ac);
 for ($i = 0; $i < 15; ++$i) {
     $a = new \Application\DeskPRO\Entity\Article();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
+    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
     $a->setCategories(array($ac));
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
@@ -603,7 +627,7 @@ for ($i = 0; $i < 15; ++$i) {
 // news
 //////////////////////////////////////////////////////////////
 
-$ac        = new \Application\DeskPRO\Entity\NewsCategory();
+$ac = new \Application\DeskPRO\Entity\NewsCategory();
 $ac->title = 'Canada Info';
 $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
@@ -611,14 +635,14 @@ $em->persist($ac);
 for ($i = 0; $i < 15; ++$i) {
     $a = new \Application\DeskPRO\Entity\News();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
+    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
     $a->setCategory($ac);
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
     $em->persist($a);
 }
 
-$ac        = new \Application\DeskPRO\Entity\NewsCategory();
+$ac = new \Application\DeskPRO\Entity\NewsCategory();
 $ac->title = 'U.S. Info';
 $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
@@ -626,7 +650,7 @@ $em->persist($ac);
 for ($i = 0; $i < 15; ++$i) {
     $a = new \Application\DeskPRO\Entity\News();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
+    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
     $a->setCategory($ac);
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
@@ -638,7 +662,7 @@ $ac = $em->getRepository('DeskPRO:NewsCategory')->find(1);
 for ($i = 0; $i < 15; ++$i) {
     $a = new \Application\DeskPRO\Entity\News();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
+    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
     $a->setCategory($ac);
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
@@ -655,27 +679,27 @@ if (!function_exists('make_blob')) {
         $storage = new \Application\DeskPRO\BlobStorage\DeskproBlobStorage($em);
 
         $blob = $storage->createBlobRecordFromFile(
-            realpath(__DIR__.'/../../../../../web/images/dp-logo-130.png'),
+            realpath(__DIR__ . '/../../../../../web/images/dp-logo-130.png'),
             'dp-logo-130.png',
             'image/png'
         );
 
-        $blob->authcode = rand(0, 18).rand(0, 18).rand(0, 18).rand(0, 18).rand(0, 18).rand(0, 18);
+        $blob->authcode = rand(0, 18) . rand(0, 18) . rand(0, 18) . rand(0, 18) . rand(0, 18) . rand(0, 18);
 
         return $blob;
     }
 }
 
-$ac        = new \Application\DeskPRO\Entity\DownloadCategory();
+$ac = new \Application\DeskPRO\Entity\DownloadCategory();
 $ac->title = 'Canada Info';
 $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
 
 for ($i = 0; $i < 15; ++$i) {
     $blob = make_blob($em);
-    $a    = new \Application\DeskPRO\Entity\Download();
+    $a = new \Application\DeskPRO\Entity\Download();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
+    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
     $a->setCategory($ac);
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
@@ -683,16 +707,16 @@ for ($i = 0; $i < 15; ++$i) {
     $em->persist($a);
 }
 
-$ac        = new \Application\DeskPRO\Entity\DownloadCategory();
+$ac = new \Application\DeskPRO\Entity\DownloadCategory();
 $ac->title = 'U.S. Info';
 $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
 
 for ($i = 0; $i < 15; ++$i) {
     $blob = make_blob($em);
-    $a    = new \Application\DeskPRO\Entity\Download();
+    $a = new \Application\DeskPRO\Entity\Download();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
+    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
     $a->setCategory($ac);
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
@@ -704,9 +728,9 @@ $ac = $em->getRepository('DeskPRO:DownloadCategory')->find(1);
 
 for ($i = 0; $i < 15; ++$i) {
     $blob = make_blob($em);
-    $a    = new \Application\DeskPRO\Entity\Download();
+    $a = new \Application\DeskPRO\Entity\Download();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
+    $a->setContent($faker->text(2000) . '<br><br>' . $faker->text(3000));
     $a->setCategory($ac);
     $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
     $a->setPerson($publisher);
@@ -753,7 +777,7 @@ if (!function_exists('rand_fb_status_pair')) {
 for ($i = 0; $i < 30; ++$i) {
     $a = new \Application\DeskPRO\Entity\Feedback();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(750).'<br><br>'.$faker->text(1000));
+    $a->setContent($faker->text(750) . '<br><br>' . $faker->text(1000));
     $a->setCategory($DEFAULT_IDEA_CAT);
     $fbinfo = rand_fb_status_pair($em);
     $a->setStatus($fbinfo['status']);
@@ -765,7 +789,7 @@ for ($i = 0; $i < 30; ++$i) {
 for ($i = 0; $i < 30; ++$i) {
     $a = new \Application\DeskPRO\Entity\Feedback();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(750).'<br><br>'.$faker->text(1000));
+    $a->setContent($faker->text(750) . '<br><br>' . $faker->text(1000));
     $a->setCategory($FEEDBACK_BUG);
     $fbinfo = rand_fb_status_pair($em);
     $a->setStatus($fbinfo['status']);
@@ -779,7 +803,7 @@ $ac = $em->getRepository('DeskPRO:DownloadCategory')->find(1);
 for ($i = 0; $i < 30; ++$i) {
     $a = new \Application\DeskPRO\Entity\Feedback();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(750).'<br><br>'.$faker->text(1000));
+    $a->setContent($faker->text(750) . '<br><br>' . $faker->text(1000));
     $a->setCategory($FEEDBACK_FEATURE);
     $fbinfo = rand_fb_status_pair($em);
     $a->setStatus($fbinfo['status']);
@@ -798,7 +822,7 @@ foreach (array('default', 'foo', 'bar', 'baz') as $type) {
     for ($i = 1; $i <= 10; ++$i) {
         $a = new \DeskPRO\Bundle\AppBundle\Entity\SandboxWidget();
         $a->setType($type);
-        $a->setName(ucfirst($type).' '.$i);
+        $a->setName(ucfirst($type) . ' ' . $i);
         $a->setInventory(5);
         $em->persist($a);
     }
@@ -874,7 +898,7 @@ VALUES
 SQL;
 
 $em->getConnection()->executeUpdate(
-$sql
+    $sql
 );
 
 $sql = <<<SQL
@@ -887,7 +911,7 @@ VALUES
 SQL;
 
 $em->getConnection()->executeUpdate(
-$sql
+    $sql
 );
 
 $sql = <<<SQL
@@ -927,7 +951,7 @@ VALUES
 SQL;
 
 $em->getConnection()->executeUpdate(
-$sql
+    $sql
 );
 
 $sql = <<<SQL
@@ -938,5 +962,5 @@ VALUES
 SQL;
 
 $em->getConnection()->executeUpdate(
-$sql
+    $sql
 );

@@ -15,9 +15,9 @@ export const initialLoad = createAction(
           + '&get[news]=DP_API/news/counts?group_by%3Dcategory'
           + '&get[downloads]=DP_API/downloads/counts?group_by%3Dcategory'
           + '&get[content_categories]=DP_API/content_categories'
-          + '&get[articlesDraftsCount]=DP_API/articles/counts?status%3Dhidden&hidden_status%3Ddraft&author%3Dme'
-          + '&get[articlesPendingCount]=DP_API/article_pending_create/counts?assigned_person%3Dme'
-          + '&get[toValidateCount]=DP_API/article_comments/counts?group_by%3Dperiod_created&status%3Dvalidating'
+          + '&get[articlesDraftsCount]=DP_API/articles/counts?status%3Dhidden%26hidden_status%3Ddraft'
+          + '&get[articlesPendingCount]=DP_API/article_pending_create/counts'
+          + '&get[toValidateCount]=DP_API/article_comments/counts?group_by%3Dperiod_created%26status%3Dvalidating'
           + '&get[commentsToReviewCount]=DP_API/article_comments/counts?is_reviewed%3D0'
         ;
 

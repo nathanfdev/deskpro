@@ -1,5 +1,5 @@
 import React from 'react';
-import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameMenu';
+import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ListFrameMenu';
 import { OrderByContainer } from './OrderByContainer';
 import { ViewSwitcherContainer } from './ViewSwitcherContainer';
 
