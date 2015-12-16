@@ -36,9 +36,10 @@ export class MessagesListContainer extends React.Component {
     });
 
     $(node).css('height', height);
+    this.refs.list.refresh();
   }
 
   render() {
-    return <MessagesList {...this.props} />;
+    return <MessagesList ref="list" {...this.props} />;
   }
 }

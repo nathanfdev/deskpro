@@ -17,6 +17,13 @@ export class MessagesList extends React.Component {
     this.scrollBottom();
   }
 
+  refresh() {
+    const scrollArea = this.refs.scrollArea;
+
+    scrollArea.setSizesToState();
+    scrollArea.handleWindowResize();
+  }
+
   scrollBottom() {
     if (this.refs.scrollArea) {
       setTimeout(() => this.refs.scrollArea.scrollBottom(), 0);
