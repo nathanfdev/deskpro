@@ -334,6 +334,7 @@ define [
       # Dynamic Options
       #------------------------------
 
+      console.info typesData.dynamicOptions
       if typesData?.dynamicOptions?
 
         options = []
