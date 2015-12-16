@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import classNames from 'classnames';
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import { NavFrame, NavFrameHeader, NavFrameBody, SectionsPane, Section, SectionHeader, SectionGroupedHeader, TabsPaneStatefulContainer, Tab,
   NestedList, ListItem, ButtonsPane, Button, ListGroupingControl }
@@ -22,7 +23,9 @@ export class Nav extends Component {
   render() {
     const { lists, labels, grouping, onGroupingChange, toggleGroupingVisibility, setMine, onClick, dispatch, dpWindow, loaded } = this.props;
     const currentApp = dpWindow.get('activeAppId');
-    const mine = lists.get('todo').get('articles').mine;
+    const mine = lists.get('todo').get('articles').get('mine');
+    const slaButtonAllClasses = classNames('sla-button', { 'selected': !mine });
+    const slaButtonMineClasses = classNames('sla-button', { 'selected': mine });
 
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
@@ -115,8 +118,8 @@ export class Nav extends Component {
                       <SectionHeader>
                         Articles
                         <div className="sla" style={{display: 'inline-block', float: 'right'}}>
-                          <span className={mine ? 'selected' : ''} onClick={setMine(true)}>Mine</span>
-                          <span className={!mine ? 'selected' : ''} onClick={setMine(false)}>All</span>
+                          <span className={slaButtonMineClasses} onClick={setMine(true)}>Mine</span>
+                          <span className={slaButtonAllClasses} onClick={setMine(false)}>All</span>
                         </div>
                       </SectionHeader>
 
