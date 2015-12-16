@@ -404,7 +404,9 @@ class TicketEscalationsController extends AbstractController implements Protecte
             throw new NotFoundHttpException();
         }
 
-        $trigger->is_enabled = $is_enabled;
+        if ($trigger->is_enabled = $is_enabled) {
+            $trigger->date_created = new \DateTime();
+        }
         $this->em->persist($trigger);
         $this->em->flush();
 
