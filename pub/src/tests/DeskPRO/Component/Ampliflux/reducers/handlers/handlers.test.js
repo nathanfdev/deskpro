@@ -152,6 +152,16 @@ describe('Ampliflux actions handlers', () => {
       expect(next.get('elements').size).toEqual(4);
       expect(next.get('elements').get(3).get('id')).toEqual(6);
     });
+    describe('unique check', () => {
+      it('should add value, unique check disabled', () => {
+        const next = handlers.pushPayloadToCollection('elements')(state, {id: 2});
+        expect(next.get('elements').size).toEqual(4);
+      });
+      it('should skip value, unique check enabled', () => {
+        const next = handlers.pushPayloadToCollection('elements', true)(state, {id: 2});
+        expect(next.get('elements').size).toEqual(3);
+      });
+    });
   });
 
   describe('deletePayloadFromCollection()', () => {

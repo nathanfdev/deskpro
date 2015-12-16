@@ -141,19 +141,25 @@ export function setPayload(statePropKey, payloadPropKey = '@', defaultValue = nu
  * Push payload to a collection.
  *
  * @param {String|Array} statePropKey The property to set on the state.
+ * @param {bool}         checkUnique  Check if item already exists in collection.
  * @return {Function} Action handler function
  */
-export function pushPayloadToCollection(statePropKey) {
+export function pushPayloadToCollection(statePropKey, checkUnique = false) {
   return (state, payload, action) => {
     verifyActionError(action);
     verifyImmutable(state);
 
     const path = getStatePath(statePropKey);
     const immutableValue = Immutable.fromJS(payload);
-    const collection = state.getIn(path);
+
+    let collection = state.getIn(path);
     verifyImmutable(collection);
 
-    return state.setIn(path, collection.push(immutableValue));
+    if (!checkUnique || !collection.includes(immutableValue)) {
+      collection = collection.push(immutableValue);
+    }
+
+    return state.setIn(path, collection);
   };
 }
 
