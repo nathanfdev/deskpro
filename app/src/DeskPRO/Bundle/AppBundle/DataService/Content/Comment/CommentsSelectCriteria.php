@@ -77,8 +77,6 @@ class CommentsSelectCriteria extends Criteria
     {
         $resolver->setDefined(
             [
-                'include',
-                'include_headers',
                 'article',
                 'news',
                 'download',

@@ -67,7 +67,9 @@ class ArticlePendingCreateController extends BaseController
         $qb
             ->select('COUNT(apc)')
             ->from(ArticlePendingCreate::class, 'apc');
-        $this->applyFilters($qb, $request->query->all());
+
+        $params = $this->removeAdditionalParameters($request);
+        $this->applyFilters($qb, $params);
 
         $total = $qb->getQuery()->getSingleScalarResult();
         $count = Count::fromValue($total);
@@ -131,9 +133,8 @@ class ArticlePendingCreateController extends BaseController
         }
 
         // throw Bad Request if there are any filers except "assigned_person"
-        // No good idea, because we need 'include_headers' parameter
-        /*if (!empty($params)) {
+        if (!empty($params)) {
             throw new BadRequestHttpException('Unknown parameters: '.implode(', ', array_keys($params)));
-        }*/
+        }
     }
 }
