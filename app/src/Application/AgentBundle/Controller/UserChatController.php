@@ -489,6 +489,12 @@ class UserChatController extends AbstractController
             );
 
             $other_data['message_id'] = $message->getId();
+
+            // Reset last agent typing time on send message
+            $convo->setDateAgentTyping(null);
+
+            $this->em->persist($convo);
+            $this->em->flush();
         }
 
         return $this->createJsonCmResponse($other_data);
