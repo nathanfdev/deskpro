@@ -1,8 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import ReactDOM from 'react-dom';
 import { messagesSelector } from '../../../../Selectors/chat';
 import { widgetHeightSelector } from '../../../../../Application/Selectors/dpWindow';
 import { MessagesList } from './MessagesList';
+import $ from 'jquery';
 
 @connect(state => ({
   messages: messagesSelector(state),
@@ -14,9 +16,38 @@ export class MessagesListContainer extends React.Component {
     widgetHeight: PropTypes.number
   };
 
-  render() {
-    const { widgetHeight } = this.props;
+  constructor(props) {
+    super(props);
+    this.state = {
+      height: props.widgetHeight
+    };
+  }
 
-    return <MessagesList {...this.props} height={widgetHeight} />;
+  componentDidMount() {
+    this.reCalcHeight();
+  }
+
+  componentDidUpdate() {
+    this.reCalcHeight();
+  }
+
+  reCalcHeight() {
+    const { widgetHeight } = this.props;
+    const node = ReactDOM.findDOMNode(this);
+
+    let height = widgetHeight - 140; // header height
+    $(node).parent().children().each((i, child) => {
+      if (child !== node) {
+        height = height - $(child).height();
+      }
+    });
+
+    this.setState = ({
+      height: height
+    });
+  }
+
+  render() {
+    return <MessagesList {...this.props} height={this.state.height} />;
   }
 }
