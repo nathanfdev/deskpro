@@ -16,7 +16,7 @@ export class Nav extends Component {
     onGroupingChange: PropTypes.func.isRequired,
     toggleGroupingVisibility: PropTypes.func.isRequired,
     setMine: PropTypes.func.isRequired,
-    onClick: PropTypes.func.isRequired,
+    onClick: PropTypes.object.isRequired,
     dpWindow: PropTypes.object.isRequired
   };
 

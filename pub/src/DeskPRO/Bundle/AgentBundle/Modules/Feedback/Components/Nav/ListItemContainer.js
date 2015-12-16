@@ -29,6 +29,11 @@ export class ListItemContainer extends Component {
     }
   }
 
+  loadList = () => {
+    const { listOptions } = this.props;
+    this.props.dispatch(actions.applyParams(listOptions));
+  };
+
   render() {
     const props = {
       groupId: 'nav',
@@ -42,10 +47,5 @@ export class ListItemContainer extends Component {
       <ListItemStatefulContainer {...props} />
     );
   }
-
-  loadList = () => {
-    const { listOptions } = this.props;
-    this.props.dispatch(actions.applyParams(listOptions));
-  };
 
 }

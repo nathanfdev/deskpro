@@ -20,6 +20,7 @@ export class NavContainer extends Component {
     dispatch: PropTypes.func.isRequired,
     loaded: PropTypes.bool.isRequired,
     lists: PropTypes.object.isRequired,
+    groups: PropTypes.object.isRequired,
     grouping: PropTypes.object.isRequired,
     dpWindow: PropTypes.object.isRequired
   };
@@ -79,19 +80,19 @@ export class NavContainer extends Component {
 
     const onClick = {
       articles: (group) => {
-        dispatch(listActions.load('articles', lists.articles.grouped_by, group));
+        dispatch(listActions.load('articles', lists.get('articles').get('grouped_by'), group));
       },
       news: (group) => {
-        dispatch(listActions.load('news', lists.news.grouped_by, group));
+        dispatch(listActions.load('news', lists.get('news').get('grouped_by'), group));
       },
       downloads: (group) => {
-        dispatch(listActions.load('downloads', lists.downloads.grouped_by, group));
+        dispatch(listActions.load('downloads', lists.get('downloads').get('grouped_by'), group));
       },
       draftArticles: () => {
-        dispatch(listActions.loadDraftArticles(lists.todo.articles.mine));
+        dispatch(listActions.loadDraftArticles(lists.get('todo').get('articles').get('mine')));
       },
       pendingArticles: () => {
-        dispatch(listActions.loadPendingArticles(lists.todo.articles.mine));
+        dispatch(listActions.loadPendingArticles(lists.get('todo').get('articles').get('mine')));
       },
       commentsToValidate: (group) => {
         dispatch(listActions.loadCommentsToValidate('period_created', group));
