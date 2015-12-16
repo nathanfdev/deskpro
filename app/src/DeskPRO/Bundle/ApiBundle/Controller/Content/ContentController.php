@@ -72,7 +72,7 @@ class ContentController extends BaseController
         /** @var \DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount\ContentCountsDataService $dataService */
         $dataService = $this->get('data.content_counts');
 
-        $params = $request->query->all();
+        $params = $this->removeAdditionalParameters($request);
         try {
 
             // API interfaces for all content types are identical, however articles is different from

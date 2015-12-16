@@ -71,7 +71,7 @@ class CommentsController extends BaseController
         /** @var \DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsDataService $dataService */
         $dataService = $this->get('data.comments');
 
-        $params = $request->query->all();
+        $params = $this->removeAdditionalParameters($request);
         $this->validateParentConsistency($type, $params);
         try {
             $criteria = CommentsCountCriteria::fromParameters($params, new OptionsResolver());

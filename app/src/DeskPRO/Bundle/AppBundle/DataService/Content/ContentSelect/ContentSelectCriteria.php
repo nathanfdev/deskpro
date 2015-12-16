@@ -81,8 +81,6 @@ class ContentSelectCriteria extends Criteria
 
         $resolver->setDefined(
             [
-                'include',
-                'include_headers',
                 'status',
                 'hidden_status',
                 'author',

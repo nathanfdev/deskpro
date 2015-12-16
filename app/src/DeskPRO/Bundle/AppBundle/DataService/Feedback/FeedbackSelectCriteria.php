@@ -140,8 +140,6 @@ class FeedbackSelectCriteria extends Criteria
     {
         $resolver->setDefined(
             [
-                'include',
-                'include_headers',
                 'awaiting_validation',
                 'status',
                 'hidden_status',
@@ -153,8 +151,6 @@ class FeedbackSelectCriteria extends Criteria
                 'no_labels',
                 'sort',
                 'order',
-                'page',
-                'count',
                 'ids',
                 'created_from',
                 'created_to',
