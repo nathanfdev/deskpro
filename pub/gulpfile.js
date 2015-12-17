@@ -194,6 +194,8 @@ gulp.task('bundle:dev-server', function(callback) {
     refreshLegacy();
   });
   refreshPortalDesignerVariables();
+  refreshWidgetLoader();
+  refreshHitRecorder();
   reducerRefresh("Agent", path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle"));
   reducerRefresh("Widget", path.join(__dirname, "src/DeskPRO/Bundle/WidgetBundle"));
   startWebpackServer(getWebpackConfig('all', true, false));
