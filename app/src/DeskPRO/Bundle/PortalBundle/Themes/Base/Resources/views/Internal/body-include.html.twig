@@ -29,6 +29,10 @@
         window.DP_BASE_URL = '{{ path('portal_home')|trim('/') }}/';
         window.__DP_APP_SRC__ = '{{ asset('DeskPRO_WidgetBundle.js', 'app_assets') }}';
         window.__DP_URL__ = '{{ root_url() }}';
+        window.__DP_OPTIONS__ = {
+            companyName: 'Acme Corp. Chat and a long name lorel ipsum dolor',
+            companyLogo: ''
+        };
         window.DESKPRO_USERSOURCES = {{ auth_usersources_js_object() }};
         window.DESKPRO_CAN_USE_TICKETS = {{ can_use_tickets() ? 'true' : 'false' }};
         window.DESKPRO_CAN_USE_FEEDBACK = {{ can_use_feedback() ? 'true' : 'false' }};

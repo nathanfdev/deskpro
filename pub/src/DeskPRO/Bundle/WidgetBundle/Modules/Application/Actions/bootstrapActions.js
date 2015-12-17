@@ -1,5 +1,6 @@
 import { createAction } from 'Ampliflux';
 import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
+import { loadOptions } from './dpWindowActions';
 
 export const loadPhraseTranslations = createAction(
   'WIDGET_LOAD_PHRASE_TRANSLATIONS',
@@ -9,6 +10,7 @@ export const loadPhraseTranslations = createAction(
 export const bootstrapWidget = createAction(
   'WIDGET_BOOTSTRAP',
   () => dispatch => {
+    dispatch(loadOptions(window.DP_OPTIONS));
     dispatch(loadPhraseTranslations());
   }
 );
