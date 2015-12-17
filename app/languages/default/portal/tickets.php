@@ -124,4 +124,6 @@ return array(
     'portal.tickets.resolve_my_ticket_btn'             => 'Resolve my ticket',
     'portal.tickets.resolve_ticket'                    => 'Resolve Ticket: {{subject}}',
     'portal.tickets.resolve_ticket_explain'            => 'Are you sure you want to resolve your ticket? Once your ticket is resolved, our agents will no longer respond.',
+    'portal.tickets.related_articles_title'            => 'Related Articles',
+    'portal.tickets.related_articles_desc'             => 'We found the following articles that may answer your question.',
 );

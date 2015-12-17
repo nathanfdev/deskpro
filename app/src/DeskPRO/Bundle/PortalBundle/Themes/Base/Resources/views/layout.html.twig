@@ -12,8 +12,6 @@
 </head>
 <body{% if is_agent() or is_admin() or is_impersonating() %} class="with-agent-bar"{% endif %}>
 {% include 'Theme:Internal:body-include.html.twig' %}
-<script type="text/javascript" src="{{ asset('DeskPRO_PortalBundle.js', 'app_assets') }}" async="async"></script>
-<script type="text/javascript" src="{{ asset('widget_loader.js', 'app_assets') }}" async="async"></script>
 {% block doc_begin %}{% endblock %}
 
 <div class="dp-page-body">

@@ -37,5 +37,16 @@
         window.DESKPRO_CAN_USE_TICKETS = {{ can_use_tickets() ? 'true' : 'false' }};
         window.DESKPRO_CAN_USE_FEEDBACK = {{ can_use_feedback() ? 'true' : 'false' }};
         window.DESKPRO_CAN_USE_CHAT = {{ can_use_chat() ? 'true' : 'false' }};
+
+        window.DESKPRO_PHRASES = {};
+        window.DP_SET_PHRASES = function(p) {
+            window.DESKPRO_PHRASES = p;
+            if (window.PortalApp && window.PortalApp.phrases) {
+                window.PortalApp.phrases.setPhrases(p);
+            }
+        }
     })();
 </script>
+<script type="text/javascript" src="{{ url('portal_api_lang_widget_phrases', {_format: 'js'}) }}"></script>
+<script type="text/javascript" src="{{ asset('DeskPRO_PortalBundle.js', 'app_assets') }}" async="async"></script>
+<script type="text/javascript" src="{{ asset('widget_loader.js', 'app_assets') }}" async="async"></script>

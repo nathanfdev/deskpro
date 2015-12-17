@@ -1,5 +1,6 @@
 import $ from "jquery";
 import React, { PropTypes } from 'react';
+import PortalPhrases from "DeskPRO/Bundle/PortalBundle/PortalPhrases"
 
 
 //######################################################################################################################
@@ -186,7 +187,7 @@ export default class PortalSimpleSelectBox extends React.Component {
       return (
         <div className={className} onClick={this.onClickHeader}>
           <div className="filter-box">
-            <input type="text" placeholder="Select..." ref="filterInput" onFocus={() => this.openMenu()} onKeyDown={this.filterNav} onKeyUp={this.filterChange} />
+            <input type="text" placeholder={PortalPhrases.get('portal.general.select_placeholder')} ref="filterInput" onFocus={() => this.openMenu()} onKeyDown={this.filterNav} onKeyUp={this.filterChange} />
           </div>
         </div>
       );
