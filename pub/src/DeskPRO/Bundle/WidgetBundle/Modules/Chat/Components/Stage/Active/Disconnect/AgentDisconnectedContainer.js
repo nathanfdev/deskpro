@@ -54,6 +54,7 @@ export class AgentDisconnectedContainer extends React.Component {
       if (agentTimeoutMessages.size > 0) {
         this.setState({
           shown: true,
+          started: true, // auto reassign for now
           lastMessageId: lastMessageId
         });
       } else {
