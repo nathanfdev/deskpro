@@ -1,6 +1,7 @@
 import { createAction } from 'Ampliflux';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
+import { DatePeriods } from 'DeskPRO/Bundle/AgentBundle/Services/DatePeriods';
 import * as Content from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/Content';
 import * as ArticlePendingCreates from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/ArticlePendingCreates';
 import * as Comments from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/Comments';
@@ -11,7 +12,7 @@ export const initialLoad = createAction(
   () => new Promise(
     (resolve) => {
       const batch = 'DP_API/batch'
-          + '?get[articles]=DP_API/articles/counts?group_by%3Dcategory'
+          + '?get[articles]=DP_API/articles/counts?group_by%3Dperiod_created'
           + '&get[news]=DP_API/news/counts?group_by%3Dcategory'
           + '&get[downloads]=DP_API/downloads/counts?group_by%3Dcategory'
           + '&get[content_categories]=DP_API/content_categories'
@@ -23,17 +24,11 @@ export const initialLoad = createAction(
 
       DpApi.sendGet(batch).success(({responses}) => {
         const payload = flattenBatchResponses(responses);
-        payload.lists = { todo: { articles: {}, comments: {} } };
-        payload.lists.articles = payload.articles;
-        payload.lists.news = payload.news;
-        payload.lists.downloads = payload.downloads;
-        payload.lists.todo.articles.draft = payload.articlesDraftsCount.count;
-        payload.lists.todo.articles.pending = payload.articlesPendingCount.count;
-        payload.lists.todo.comments.validate = payload.toValidateCount;
-        payload.lists.todo.comments.review = payload.commentsToReviewCount.count;
-        delete payload.articles;
-        delete payload.news;
-        delete payload.downloads;
+        payload.todo = { articles: {}, comments: {} };
+        payload.todo.articles.draft = payload.articlesDraftsCount.count;
+        payload.todo.articles.pending = payload.articlesPendingCount.count;
+        payload.todo.comments.validate = payload.toValidateCount;
+        payload.todo.comments.review = payload.commentsToReviewCount.count;
         delete payload.articlesDraftsCount;
         delete payload.articlesPendingCount;
         delete payload.toValidateCount;

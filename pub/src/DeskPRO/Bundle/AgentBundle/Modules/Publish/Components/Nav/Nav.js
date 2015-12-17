@@ -10,8 +10,10 @@ export class Nav extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     loaded: PropTypes.bool.isRequired,
-    lists: PropTypes.object.isRequired,
-    labels: PropTypes.object.isRequired,
+    articles: PropTypes.object.isRequired,
+    news: PropTypes.object.isRequired,
+    downloads: PropTypes.object.isRequired,
+    todo: PropTypes.object.isRequired,
     grouping: PropTypes.object.isRequired,
     onGroupingChange: PropTypes.func.isRequired,
     toggleGroupingVisibility: PropTypes.func.isRequired,
@@ -21,9 +23,9 @@ export class Nav extends Component {
   };
 
   render() {
-    const { lists, labels, grouping, onGroupingChange, toggleGroupingVisibility, setMine, onClick, dispatch, dpWindow, loaded } = this.props;
+    const { articles, news, downloads, todo, grouping, onGroupingChange, toggleGroupingVisibility, setMine, onClick, dispatch, dpWindow, loaded } = this.props;
     const currentApp = dpWindow.get('activeAppId');
-    const mine = lists.get('todo').get('articles').get('mine');
+    const mine = todo.get('articles').get('mine');
     const slaButtonAllClasses = classNames('sla-button', { 'selected': !mine });
     const slaButtonMineClasses = classNames('sla-button', { 'selected': mine });
 
@@ -65,10 +67,9 @@ export class Nav extends Component {
                   <SectionsPane>
                     <Section ref="kb">
                       <SectionGroupedHeader label="Knowledgebase"
-                                            count={lists.get('articles').get('count')}
+                                            count={articles.get('count')}
                                             callback={toggleGroupingVisibility('articles')}/>
-                      <NestedList items={lists.get('articles').get('nested').toJS()}
-                                  groups={labels.articles}
+                      <NestedList items={articles.get('nested').toJS()}
                                   onClick={onClick.articles}/>
                     </Section>
                   </SectionsPane>
@@ -86,10 +87,9 @@ export class Nav extends Component {
                   <SectionsPane>
                     <Section ref="news">
                       <SectionGroupedHeader label="News"
-                                            count={lists.get('news').get('count')}
+                                            count={news.get('count')}
                                             callback={toggleGroupingVisibility('news')}/>
-                      <NestedList items={lists.get('news').get('nested').toJS()}
-                                  groups={labels.news}
+                      <NestedList items={news.get('nested').toJS()}
                                   onClick={onClick.news}/>
                     </Section>
                   </SectionsPane>
@@ -101,10 +101,9 @@ export class Nav extends Component {
                   <SectionsPane>
                     <Section ref="downloads">
                       <SectionGroupedHeader label="Downloads"
-                                            count={lists.get('downloads').get('count')}
+                                            count={downloads.get('count')}
                                             callback={toggleGroupingVisibility('downloads')}/>
-                      <NestedList items={lists.get('downloads').get('nested').toJS()}
-                                  groups={labels.downloads}
+                      <NestedList items={downloads.get('nested').toJS()}
                                   onClick={onClick.downloads}/>
                     </Section>
                   </SectionsPane>
@@ -124,9 +123,9 @@ export class Nav extends Component {
                       </SectionHeader>
 
                       <ul>
-                        <ListItem label="Draft Articles" count={lists.get('todo').get('articles').get('draft')}
+                        <ListItem label="Draft Articles" count={todo.get('articles').get('draft')}
                                   onClick={onClick.draftArticles}/>
-                        <ListItem label="Pending Articles" count={lists.get('todo').get('articles').get('pending')}
+                        <ListItem label="Pending Articles" count={todo.get('articles').get('pending')}
                                   onClick={onClick.pendingArticles}/>
                       </ul>
                     </Section>
@@ -135,14 +134,13 @@ export class Nav extends Component {
 
                       <ul>
                         <ListItem label="Comments to validate"
-                                  count={lists.get('todo').get('comments').get('validate').get('count')}
+                                  count={todo.get('comments').get('validate').get('count')}
                                   onClick={onClick.allCommentsToValidate}>
                           <NestedList depth="2"
-                                      items={lists.get('todo').get('comments').get('validate').get('nested').toJS()}
-                                      groups={labels.commentsToValidate}
+                                      items={todo.get('comments').get('validate').get('nested').toJS()}
                                       onClick={onClick.commentsToValidate}/>
                         </ListItem>
-                        <ListItem label="Comments to review" count={lists.get('todo').get('comments').get('review')}
+                        <ListItem label="Comments to review" count={todo.get('comments').get('review')}
                                   onClick={onClick.commentsToReview}/>
                       </ul>
                     </Section>

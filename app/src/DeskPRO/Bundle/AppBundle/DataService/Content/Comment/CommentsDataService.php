@@ -49,6 +49,16 @@ class CommentsDataService
      */
     private $em;
 
+    static $datePeriodLabels = [
+        'today' => 'Today',
+        'yesterday' => 'Yesterday',
+        'this_week' => 'This Week',
+        'this_month' => 'This Month',
+        'last_month' => 'Last Month',
+        'this_year' => 'This Year',
+        'ever' => 'Ever'
+    ];
+
     /**
      * PeopleDataService constructor.
      *
@@ -60,7 +70,7 @@ class CommentsDataService
     }
 
     /**
-     * @param string                     $class    Concrete comment entity class
+     * @param string $class Concrete comment entity class
      * @param GroupableCriteriaInterface $criteria
      *
      * @return Count
@@ -77,10 +87,20 @@ class CommentsDataService
             $criteria->applyGroupBy($qb);
 
             $result = $qb->getQuery()->getArrayResult();
-            $count  = Count::fromGroupedBy($criteria->getGroupBy());
+            $groupedBy = $criteria->getGroupBy();
+            $count = Count::fromGroupedBy($groupedBy);
             foreach ($result as $group) {
                 $count->add($group['value']);
-                $count->addNested($group['value'], $group['group_name'], $criteria->getGroupBy(), $group['group_name']);
+                if ($groupedBy === 'period_created') {
+                    $count->addNested(
+                        $group['value'],
+                        $group['group_name'],
+                        $groupedBy,
+                        self::$datePeriodLabels[$group['group_name']]
+                    );
+                } else {
+                    $count->addNested($group['value'], $group['group_name'], $groupedBy, $group['group_name']);
+                }
             }
         } else {
             $total = $qb->getQuery()->getSingleScalarResult();
@@ -91,10 +111,10 @@ class CommentsDataService
     }
 
     /**
-     * @param string            $class
+     * @param string $class
      * @param CriteriaInterface $criteria
-     * @param int               $page
-     * @param int               $count
+     * @param int $page
+     * @param int $count
      *
      * @return Pagerfanta
      */

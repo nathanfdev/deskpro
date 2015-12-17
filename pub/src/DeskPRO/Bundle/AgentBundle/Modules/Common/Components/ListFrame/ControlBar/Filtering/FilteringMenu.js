@@ -11,7 +11,6 @@ export class FilteringMenu extends Component {
     onMenuUnmount: PropTypes.func,
     filters: PropTypes.array.isRequired,
     setParamsAction: PropTypes.func.isRequired,
-    resetFilterAction: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired
   };
 
