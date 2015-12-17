@@ -40,13 +40,18 @@ export class MessagesList extends React.Component {
   }
 
   checkForNewMessages() {
-    const { lastMessageId, mute } = this.props;
+    const { messages, lastMessageId, mute } = this.props;
     if (lastMessageId !== this.state.lastMessageId) {
       this.setState({
         lastMessageId: lastMessageId
       });
 
-      if (!mute) {
+      // Checking for agent messages
+      const newAgentMessage = messages.filter(message => {
+        return message.get('id') > this.state.lastMessageId && message.get('author_type') === 'agent';
+      });
+
+      if (!mute && newAgentMessage.size > 0) {
         const sound = ReactDOM.findDOMNode(this.refs.sound);
         try {
           sound.play();
