@@ -18,15 +18,20 @@ $secondary-preemptive-background-color: #f8f8f8;
     text-decoration: none;
     font-weight: 600;
     font-size: 12px;
+    width: 82px;
 
     &:hover { background: $main-preemptive-color-hover; }
 
     &.button-s {// Make it small
       padding: 2px;
+      width: 66px;
+
       .state-button-text { margin: 0 5px 0 10px; }
     }
 
     &.button-l {// Make it large
+      width: 100px;
+
       .state-button-text {
         font-size: 17px;
         font-weight: 400;

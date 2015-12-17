@@ -5,7 +5,9 @@ export class HelpButton extends React.Component {
 
   static propTypes = {
     type: PropTypes.string,
-    onClick: PropTypes.func
+    onClick: PropTypes.func,
+    large: PropTypes.bool,
+    small: PropTypes.bool
   };
 
   onClick = event => {
@@ -14,13 +16,13 @@ export class HelpButton extends React.Component {
   };
 
   render() {
-    const { type } = this.props;
+    const { small, large } = this.props;
 
     return (
       <div className="dpdesignportal-state-buttons">
         <a href="#" onClick={this.onClick} className={classNames('preemtive-button', {
-          'button-s': type === 'small',
-          'button-l': type === 'large'
+          'button-s': small,
+          'button-l': large
         })}>
 
           <span className="state-button-text">Help</span>
