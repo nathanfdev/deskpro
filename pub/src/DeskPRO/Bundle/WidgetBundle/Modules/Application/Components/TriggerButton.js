@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Frame from 'Ampliflux/common/components/Frame';
 import { openWidget } from '../Actions/dpWindowActions';
+import { HelpButton } from '../../Trigger/Components/HelpButton';
 
 export class TriggerButtonBody extends React.Component {
 
@@ -26,11 +27,7 @@ export class TriggerButtonBody extends React.Component {
   }
 
   render() {
-    return (
-      <div className="trigger-button" onClick={this.props.onClick}>
-        <strong>Help</strong>
-      </div>
-    );
+    return <HelpButton {...this.props} />;
   }
 }
 
