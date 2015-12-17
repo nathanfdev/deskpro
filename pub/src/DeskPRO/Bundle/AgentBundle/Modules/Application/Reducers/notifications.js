@@ -25,7 +25,6 @@ export default createReducer(initialState, {
     payload.uuid),
   [actions.pollActionAlerts]: (state, payload) => {
     const last = payload[payload.length - 1];
-    console.log(payload, last);
     if (last && last.uuid) {
       return state.set(
         'actionAlerts',

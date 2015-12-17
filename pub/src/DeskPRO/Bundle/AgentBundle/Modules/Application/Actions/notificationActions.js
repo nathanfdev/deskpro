@@ -1,6 +1,5 @@
 import { createAction } from 'Ampliflux';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
-import Immutable from 'immutable';
 
 export const infoNotification = createAction('APP_NOTIFICATION_INFO');
 export const errorNotification = createAction('APP_NOTIFICATION_ERROR');
@@ -25,12 +24,6 @@ export const setupActionAlerts = createAction(
     }
 );
 
-
-export const newMessages = createAction(
-  'NEW_MESSAGES_ACTION',
-  (messages) => messages
-);
-
 export const pollActionAlerts = createAction(
   'POLL_ACTION_ALERTS',
   () => (dispatch, getState) => {
@@ -38,9 +31,6 @@ export const pollActionAlerts = createAction(
       (resolve, reject) => {
         return DpApi.sendGet('DP_API/notify/action-alerts/' + getState().Application.notifications.get('actionAlerts'))
           .success(response => {
-            let list = Immutable.List(response.data);
-            list = list.filter((element) => element.type === 'notification.agent_chat.new_message');
-            dispatch(newMessages(list));
             return resolve(response.data);
           })
           .error(response => reject(response));
