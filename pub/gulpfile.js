@@ -281,7 +281,7 @@ function getWebpackConfig(mode, isDevServer, isProd) {
           }
         },
         {
-          test: /\.(png|gif|jpg|jpeg|woff|woff2|ttf|eot|svg)(\?|$)/,
+          test: /\.(png|gif|jpg|jpeg|woff|woff2|ttf|eot|svg|mp3|ogg|wav)(\?|$)/,
           loader: 'file-loader?context=src&name=[path][name].[ext]',
           include: [
             path.resolve(__dirname, 'src/DeskPRO'),

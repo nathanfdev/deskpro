@@ -1,20 +1,34 @@
 import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import ScrollArea from 'react-scrollbar';
 import { MessageFactory } from './MessageFactory';
+import popMp3 from '../../../../../../Resources/sounds/pop.mp3';
+import popOgg from '../../../../../../Resources/sounds/pop.ogg';
+import popWav from '../../../../../../Resources/sounds/pop.wav';
 
 export class MessagesList extends React.Component {
 
   static propTypes = {
     messages: PropTypes.object,
+    lastMessageId: PropTypes.number,
     isEnded: PropTypes.bool
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      lastMessageId: null
+    };
+  }
+
   componentDidMount() {
     this.scrollBottom();
+    this.checkForNewMessages();
   }
 
   componentDidUpdate() {
     this.scrollBottom();
+    this.checkForNewMessages();
   }
 
   refresh() {
@@ -22,6 +36,23 @@ export class MessagesList extends React.Component {
 
     scrollArea.setSizesToState();
     scrollArea.handleWindowResize();
+  }
+
+  checkForNewMessages() {
+    const { lastMessageId } = this.props;
+    if (lastMessageId !== this.state.lastMessageId) {
+      this.setState({
+        lastMessageId: lastMessageId
+      });
+
+      console.log('new message id: ' + lastMessageId);
+      const sound = ReactDOM.findDOMNode(this.refs.sound);
+      try {
+        sound.play();
+      } catch (e) {
+        console.warn('Unable to play sound');
+      }
+    }
   }
 
   scrollBottom() {
@@ -35,6 +66,11 @@ export class MessagesList extends React.Component {
 
     return (
       <div className="dpdesignportal-content">
+        <audio ref="sound" preload="preload">
+          <source src={popMp3} />
+          <source src={popOgg} />
+          <source src={popWav} />
+        </audio>
         <ScrollArea ref="scrollArea" vertical>
           <div className="bottom-aligner"/>
           <div>

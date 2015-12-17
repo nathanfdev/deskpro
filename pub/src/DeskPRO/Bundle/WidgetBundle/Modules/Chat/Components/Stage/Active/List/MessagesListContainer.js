@@ -1,13 +1,14 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
-import { messagesSelector } from '../../../../Selectors/chat';
+import { messagesSelector, lastMessageIdSelector } from '../../../../Selectors/chat';
 import { widgetHeightSelector } from '../../../../../Application/Selectors/dpWindow';
 import { MessagesList } from './MessagesList';
 import $ from 'jquery';
 
 @connect(state => ({
   messages: messagesSelector(state),
+  lastMessageId: lastMessageIdSelector(state),
   widgetHeight: widgetHeightSelector(state)
 }))
 export class MessagesListContainer extends React.Component {
