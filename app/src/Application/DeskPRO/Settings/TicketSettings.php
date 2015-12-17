@@ -129,8 +129,8 @@ class TicketSettings
      */
     public function resetSettings()
     {
-        $this->satisfaction_enabled   = (bool) $this->settings->get('core.tickets.enable_feedback');
-        $this->satisfaction_agentread = (bool) $this->settings->get('core.tickets.feedback_agents_read');
+        $this->satisfaction_enabled   = (bool) $this->settings->get('core_tickets.enable_feedback');
+        $this->satisfaction_agentread = (bool) $this->settings->get('core_tickets.feedback_agents_read');
 
         $this->web_require_validation   = (bool) $this->settings->get('core_tickets.web_require_validation');
         $this->email_require_validation = (bool) $this->settings->get('core_tickets.email_require_validation');
@@ -148,7 +148,7 @@ class TicketSettings
         $this->lock_autorelease_enabled = (bool) $this->settings->get('core_tickets.unlock_on_close');
         $this->lock_timeout             = (int) $this->settings->get('core_tickets.lock_lifetime');
 
-        $this->ref_enabled = (bool) $this->settings->get('core.tickets.use_ref');
+        $this->ref_enabled = (bool) $this->settings->get('core_tickets.use_ref');
 
         if ($this->ref_enabled && $this->settings->get('core.ref_pattern')) {
             $this->ref_custom_enabled        = true;
@@ -275,8 +275,8 @@ class TicketSettings
      */
     public function saveSettings()
     {
-        $this->settings->setSetting('core.tickets.enable_feedback',      (int) $this->satisfaction_enabled);
-        $this->settings->setSetting('core.tickets.feedback_agents_read', (int) $this->satisfaction_agentread);
+        $this->settings->setSetting('core_tickets.enable_feedback',      (int) $this->satisfaction_enabled);
+        $this->settings->setSetting('core_tickets.feedback_agents_read', (int) $this->satisfaction_agentread);
         $this->settings->setSetting('core.show_ticket_suggestions',      (int) $this->kbsuggest_web_enabled);
 
         $this->settings->setSetting('core_tickets.web_require_validation', (int) $this->web_require_validation);
@@ -299,7 +299,7 @@ class TicketSettings
         $this->settings->setSetting('core_tickets.unlock_on_close',      (int) $this->lock_autorelease_enabled);
         $this->settings->setSetting('core_tickets.lock_lifetime',        (int) $this->lock_timeout);
 
-        $this->settings->setSetting('core.tickets.use_ref',              (int) $this->ref_enabled);
+        $this->settings->setSetting('core_tickets.use_ref',              (int) $this->ref_enabled);
 
         if ($this->ref_enabled) {
             if ($this->ref_custom_enabled) {

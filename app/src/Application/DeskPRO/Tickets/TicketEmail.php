@@ -398,7 +398,7 @@ class TicketEmail
                 }
             }
 
-            if ($this->settings->get('core.tickets.enable_feedback') && $this->user_mode == 'user' && $last_message && $last_message->person->is_agent && !$last_message->is_agent_note) {
+            if ($this->settings->get('core_tickets.enable_feedback') && $this->user_mode == 'user' && $last_message && $last_message->person->is_agent && !$last_message->is_agent_note) {
                 $vars['show_rating_link'] = true;
             }
         }
