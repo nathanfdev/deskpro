@@ -7,18 +7,21 @@ import {
   agentNameSelector,
   agentAvatarSelector,
   messagesSelector,
-  lastMessageIdSelector
+  lastMessageIdSelector,
+  agentIdSelector,
 } from '../../../../Selectors/chat';
 
 @connect(state => ({
   agentName: agentNameSelector(state),
   agentAvatar: agentAvatarSelector(state),
   messages: messagesSelector(state),
-  lastMessageId: lastMessageIdSelector(state)
+  lastMessageId: lastMessageIdSelector(state),
+  agentId: agentIdSelector(state)
 }))
 export class AgentDisconnectedContainer extends React.Component {
 
   static propTypes = {
+    agentId: PropTypes.number,
     lastMessageId: PropTypes.number,
     messages: PropTypes.object
   };
@@ -34,6 +37,7 @@ export class AgentDisconnectedContainer extends React.Component {
 
   componentDidUpdate() {
     this.checkForAgentTimeoutMessage();
+    this.checkForNewAgent();
   }
 
   onStart = () => {
@@ -62,6 +66,15 @@ export class AgentDisconnectedContainer extends React.Component {
           lastMessageId: lastMessageId
         });
       }
+    }
+  }
+
+  checkForNewAgent() {
+    if (this.state.shown && this.props.agentId) {
+      this.setState({
+        shown: false,
+        started: false
+      });
     }
   }
 
