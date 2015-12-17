@@ -318,9 +318,23 @@ class PersonController extends AbstractController implements ProtectedController
      *		@SWG\Parameters (
      *			@SWG\Parameter(
      *				name="name",
-     *				description="Name of the Person.",
+     *				description="Full name of the Person.",
      *				paramType="query",
-     *				required=true,
+     *				required=false,
+     *				type="string"
+     *			),
+     *			@SWG\Parameter(
+     *				name="first_name",
+     *				description="First name of the Person.",
+     *				paramType="query",
+     *				required=false,
+     *				type="string"
+     *			),
+     *			@SWG\Parameter(
+     *				name="last_name",
+     *				description="Last name of the Person.",
+     *				paramType="query",
+     *				required=false,
      *				type="string"
      *			),
      *			@SWG\Parameter(
@@ -441,11 +455,14 @@ class PersonController extends AbstractController implements ProtectedController
         $person = new Person();
         $errors = array();
 
-        $name = $this->in->getString('name');
-        if (!$name) {
-            $errors['name'] = array('required_field.name', 'name is empty or missing');
-        } else {
+        if ($name = $this->in->getString('name')) {
             $person->name = $name;
+        }
+        if ($fname = $this->in->getString('first_name')) {
+            $person->first_name = $fname;
+        }
+        if ($lname = $this->in->getString('last_name')) {
+            $person->last_name = $lname;
         }
 
         $updates = $this->_setBasicPersonDetailsFromInput($person);
