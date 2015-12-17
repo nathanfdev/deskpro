@@ -12,16 +12,18 @@ import {
 } from '../../../../Selectors/chat';
 
 @connect(state => ({
+  agentId: agentIdSelector(state),
   agentName: agentNameSelector(state),
   agentAvatar: agentAvatarSelector(state),
   messages: messagesSelector(state),
-  lastMessageId: lastMessageIdSelector(state),
-  agentId: agentIdSelector(state)
+  lastMessageId: lastMessageIdSelector(state)
 }))
 export class AgentDisconnectedContainer extends React.Component {
 
   static propTypes = {
     agentId: PropTypes.number,
+    agentName: PropTypes.string,
+    agentAvatar: PropTypes.string,
     lastMessageId: PropTypes.number,
     messages: PropTypes.object
   };
@@ -31,13 +33,18 @@ export class AgentDisconnectedContainer extends React.Component {
     this.state = {
       shown: false,
       started: false,
-      lastMessageId: null
+      lastMessageId: null,
+      lastAgentName: props.agentName,
+      lastAgentAvatar: props.agentAvatar
     };
   }
 
   componentDidUpdate() {
-    this.checkForAgentTimeoutMessage();
-    this.checkForNewAgent();
+    if (this.state.shown) {
+      this.checkForNewAgent();
+    } else {
+      this.checkForAgentTimeoutMessage();
+    }
   }
 
   onStart = () => {
@@ -70,10 +77,14 @@ export class AgentDisconnectedContainer extends React.Component {
   }
 
   checkForNewAgent() {
-    if (this.state.shown && this.props.agentId) {
+    const { agentId, agentName, agentAvatar } = this.props;
+
+    if (agentId) {
       this.setState({
         shown: false,
-        started: false
+        started: false,
+        lastAgentName: agentName,
+        lastAgentAvatar: agentAvatar
       });
     }
   }
@@ -84,10 +95,10 @@ export class AgentDisconnectedContainer extends React.Component {
     }
 
     return (
-      <AgentDisconnected {...this.props}>
+      <AgentDisconnected agentAvatar={this.state.lastAgentAvatar}>
         {this.state.started
-          ? <WaitingLoader {...this.props} />
-          : <FindAnotherAgent onClick={this.onStart} {...this.props} />
+          ? <WaitingLoader agentName={this.state.lastAgentName} />
+          : <FindAnotherAgent onClick={this.onStart} agentName={this.state.lastAgentName} />
         }
       </AgentDisconnected>
     );
