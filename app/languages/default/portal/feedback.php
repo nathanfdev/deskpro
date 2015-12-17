@@ -55,4 +55,5 @@ return array(
     'portal.feedback.form_start'                => 'Start',
     'portal.feedback.attachments'               => 'Attachements',
     'portal.feedback.subscribed_info'           => 'You are subscribed to recieve notifications about this feedback item',
+    'portal.feedback.submit_feedback'           => 'Submit feedback',
 );
