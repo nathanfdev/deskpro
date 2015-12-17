@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { TriggerButtonContainer } from './TriggerButton';
+import { TriggerApp } from '../../Trigger/Components/TriggerApp';
 import { WidgetApp } from './WidgetApp';
 import { ChatTriggers } from './ChatTriggers';
 import { widgetOpenedSelector } from '../Selectors/dpWindow';
@@ -19,7 +19,7 @@ export class AppContainer extends React.Component {
 
     return (
       <div>
-        <TriggerButtonContainer isVisible={!widgetOpened} />
+        <TriggerApp />
         <WidgetApp isVisible={widgetOpened} />
         <ChatTriggers isVisible={widgetOpened} />
       </div>
