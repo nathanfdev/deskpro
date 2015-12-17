@@ -86,7 +86,7 @@ export class AgentDisconnectedContainer extends React.Component {
     return (
       <AgentDisconnected {...this.props}>
         {this.state.started
-          ? <WaitingLoader />
+          ? <WaitingLoader {...this.props} />
           : <FindAnotherAgent onClick={this.onStart} {...this.props} />
         }
       </AgentDisconnected>
