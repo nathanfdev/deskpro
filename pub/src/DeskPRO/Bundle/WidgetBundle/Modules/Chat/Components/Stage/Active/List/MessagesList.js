@@ -11,6 +11,7 @@ export class MessagesList extends React.Component {
   static propTypes = {
     messages: PropTypes.object,
     lastMessageId: PropTypes.number,
+    mute: PropTypes.bool,
     isEnded: PropTypes.bool
   };
 
@@ -39,18 +40,19 @@ export class MessagesList extends React.Component {
   }
 
   checkForNewMessages() {
-    const { lastMessageId } = this.props;
+    const { lastMessageId, mute } = this.props;
     if (lastMessageId !== this.state.lastMessageId) {
       this.setState({
         lastMessageId: lastMessageId
       });
 
-      console.log('new message id: ' + lastMessageId);
-      const sound = ReactDOM.findDOMNode(this.refs.sound);
-      try {
-        sound.play();
-      } catch (e) {
-        console.warn('Unable to play sound');
+      if (!mute) {
+        const sound = ReactDOM.findDOMNode(this.refs.sound);
+        try {
+          sound.play();
+        } catch (e) {
+          console.warn('Unable to play sound');
+        }
       }
     }
   }
