@@ -3,7 +3,6 @@ import { EmotionsPopup } from './EmotionsPopup';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import Simple from 'DeskPRO/Component/Positioned/Simple';
 import * as Emotions from './Emotions';
-import jQuery from 'jquery';
 
 export default class EmotionButton extends React.Component {
 
@@ -56,25 +55,50 @@ export default class EmotionButton extends React.Component {
       medium.trigger('initialFocus');
     }
 
-    const container = medium.getSelectedParentElement();
-    const node = jQuery.parseHTML(Emotions.createEmotionImage(code))[0];
-    const selection = contentWindow.getSelection();
-    const textNode = ownerDocument.createTextNode(' ');
-    const lastNode = ownerDocument.createTextNode(' ');
+    const html = ` ${Emotions.createEmotionImage(code)} `;
 
-    container.appendChild(textNode);
-    container.appendChild(node);
-    container.appendChild(lastNode);
-    selection.removeAllRanges();
+    if (contentWindow.getSelection) {
+      // IE9 and non-IE
+      const selection = contentWindow.getSelection();
+      if (selection.getRangeAt && selection.rangeCount) {
+        let range = selection.getRangeAt(0);
+        range.deleteContents();
 
-    const range = ownerDocument.createRange();
-    range.setStartAfter(lastNode);
-    range.collapse(true);
-    selection.addRange(range);
+        // Range.createContextualFragment() would be useful here but is
+        // only relatively recently standardized and is not supported in
+        // some browsers (IE9, for one)
+        var el = document.createElement('div');
+        el.innerHTML = html;
+        const frag = document.createDocumentFragment();
+
+        let node;
+        let lastNode;
+
+        do {
+          node = el.firstChild;
+          if (node) {
+            lastNode = frag.appendChild(node);
+          }
+        } while (node);
+
+        range.insertNode(frag);
+
+        // Preserve the selection
+        if (lastNode) {
+          range = range.cloneRange();
+          range.setStartAfter(lastNode);
+          range.collapse(true);
+
+          selection.removeAllRanges();
+          selection.addRange(range);
+        }
+      }
+    } else if (ownerDocument.selection && ownerDocument.selection.type !== 'Control') {
+      // IE < 9
+      ownerDocument.selection.createRange().pasteHTML(html);
+    }
 
     medium.saveSelection();
-    medium.pasteHTML('');
-
     this.onCloseEmotionsPopup();
   };
 
