@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import sampleLogo from '../../../../Resources/img/sample-logo.png';
 
 export class WidgetHeader extends React.Component {
 
@@ -36,7 +35,7 @@ export class WidgetHeader extends React.Component {
         </a>
 
         <div className="dpdesignportal-header-mark">
-          <img src={companyLogo || sampleLogo} className="dpdesignportal-logo" />
+          {companyLogo && <img src={companyLogo} className="dpdesignportal-logo" />}
           <h1>{companyName}</h1>
         </div>
       </div>
