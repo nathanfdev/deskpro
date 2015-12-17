@@ -94,15 +94,12 @@
     right: 0;
     top: 12px;
     border: 1px solid #e2e5e8;
-    border-radius: 2px;
-    border-bottom-right-radius: 0;
-    border-top-right-radius: 0;
+    border-radius: 2px 0 0 2px;
     border-right: 0;
     width: 26px;
     height: 26px;
     @include retina-image('../img/icon-collapse', 11px 12px);
-    background-position: center center;
-    background-repeat: no-repeat;
+    background: no-repeat center center;
   }
 
   .slider-control:hover {
@@ -469,10 +466,8 @@
   a.item {
     @extend %whitespace;
     display: block;
-    padding: 5px;
-    padding-left: 16px;
     color: #5b5b5b;
-    padding-right: 40px;
+    padding: 5px 40px 5px 16px;
     position: relative;
     outline: none;
 
@@ -611,8 +606,7 @@
       background: #f1f4f6;
       border: 1px solid #c1cad4;
       border-radius: 2px;
-      padding: 2px;
-      padding-right: 20px;
+      padding: 2px 20px 2px 2px;
       position: relative;
 
       i {
@@ -653,10 +647,8 @@
   }
 
   .flag {
-    background: none;
-    background-repeat: no-repeat;
     background-size: 100%;
-    background-position: center center;
+    background: none no-repeat center center;
   }
 
   .avatar {
@@ -676,9 +668,7 @@ a.item.urgent {
   padding: 0;
   border-radius: 2px;
   line-height: 20px;
-  margin: 6px 20px;
-  margin-right: 40px;
-  margin-left: 20px;
+  margin: 6px 40px 6px 20px;
   height: 20px;
   position: relative;
   top: 5px;

@@ -6,37 +6,34 @@ const initialState = {
   async: {
     done: false
   },
-  // Lists data
-  lists: {
+  articles: {
+    grouped_by: 'category',
+    count: 0,
+    nested: []
+  },
+  news: {
+    grouped_by: 'category',
+    count: 0,
+    nested: []
+  },
+  downloads: {
+    grouped_by: 'category',
+    count: 0,
+    nested: []
+  },
+  todo: {
     articles: {
-      grouped_by: 'category',
-      count: 0,
-      nested: []
+      draft: 0,
+      pending: 0,
+      mine: true
     },
-    news: {
-      grouped_by: 'category',
-      count: 0,
-      nested: []
-    },
-    downloads: {
-      grouped_by: 'category',
-      count: 0,
-      nested: []
-    },
-    todo: {
-      articles: {
-        draft: 0,
-        pending: 0,
-        mine: true
+    comments: {
+      validate: {
+        grouped_by: 'author',
+        count: 0,
+        nested: []
       },
-      comments: {
-        validate: {
-          grouped_by: 'period_created',
-          count: 0,
-          nested: [],
-        },
-        review: 0
-      }
+      review: 0
     }
   },
 
@@ -68,30 +65,30 @@ const initialState = {
 export default createReducer(initialState, {
   [actions.loadCommentsToValidateCounts]: async({
     success: (state, payload) =>
-      state.setIn(['lists', 'todo', 'comments', 'validate'], payload)
+      state.setIn(['todo', 'comments', 'validate'], payload)
   }),
   [actions.loadCounts]: async({
     success: (state, payload) =>
-      state.setIn(['lists', payload.content], payload.counts)
+      state.setIn([payload.content], payload.counts)
   }),
   [actions.loadCategories]: async({
     success: (state, payload) =>
-      state.setIn(['lists', payload.content], payload.counts)
+      state.setIn([payload.content], payload.counts)
   }),
   [actions.loadPendingCount]: async({
     success: (state, payload) =>
-      state.setIn(['lists', 'todo', 'articles', 'pending'], payload)
+      state.setIn(['todo', 'articles', 'pending'], payload)
   }),
   [actions.loadDraftsCount]: async({
-    success: (state, payload) => state.setIn(['lists', 'todo', 'articles', 'draft'], payload)
+    success: (state, payload) => state.setIn(['todo', 'articles', 'draft'], payload)
   }),
   [actions.loadCommentsToReviewCount]: async({
     success: (state, payload) =>
-      state.setIn(['lists', 'todo', 'comments', 'review'], payload),
+      state.setIn(['todo', 'comments', 'review'], payload),
     start: setValue('async.done', false),
     done: setValue('async.done', true)
   }),
-  [actions.setMine]: (state, payload) => state.setIn(['lists', 'todo', 'articles', 'mine'], payload),
+  [actions.setMine]: (state, payload) => state.setIn(['todo', 'articles', 'mine'], payload),
   [actions.initialLoad]: async({
     success: mergeFullPayload(),
     start: setValue('async.done', false),
