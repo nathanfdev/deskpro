@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import { NavFrame, NavFrameHeader, NavFrameBody, TabsPaneStatefulContainer, Tab }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { FiltersTabContainer, LabelsTabContainer, StarsTabContainer } from './Tabs/index';
-import { FilterEditPopupContainer } from './FilterEditPopupContainer';
 
 export class Nav extends Component {
   static propTypes = {

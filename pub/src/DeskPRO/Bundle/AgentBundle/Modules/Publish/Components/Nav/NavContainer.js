@@ -46,10 +46,7 @@ export class NavContainer extends Component {
   }
 
   setMine(isMine) {
-    return (event) => {
-      event.preventDefault();
-      this.props.dispatch(actions.setMine(isMine));
-    };
+    this.props.dispatch(actions.setMine(isMine));
   }
 
   toggleGroupingVisibility(listName) {
