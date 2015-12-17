@@ -45,7 +45,6 @@ export default class EmotionButton extends React.Component {
 
   onSelectEmotion = code => {
     const medium = this.props.getEditor();
-
     medium.restoreSelection();
 
     const contentWindow = medium.options.contentWindow;
@@ -53,6 +52,10 @@ export default class EmotionButton extends React.Component {
 
     if (!medium.checkSelection().selectionState) {
       medium.trigger('initialFocus');
+
+      if (contentWindow.getSelection) {
+        contentWindow.getSelection().collapseToEnd();
+      }
     }
 
     const html = ` ${Emotions.createEmotionImage(code)} `;
