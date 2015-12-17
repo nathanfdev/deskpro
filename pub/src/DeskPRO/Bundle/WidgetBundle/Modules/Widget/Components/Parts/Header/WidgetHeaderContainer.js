@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { closeWidget } from '../../Actions/dpWindowActions';
-import { companyNameSelector, companyLogoSelector } from '../../Selectors/dpWindow';
+import { closeWidget } from '../../../../Application/Actions/dpWindowActions';
+import { companyNameSelector, companyLogoSelector } from '../../../../Application/Selectors/dpWindow';
 import { WidgetHeader } from './WidgetHeader';
 
 @connect(state => ({
