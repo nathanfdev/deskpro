@@ -17,6 +17,9 @@ export default {
   STATUS_ACTIVE: 'active',
   STATUS_CLOSED: 'closed',
   TYPE_TASK: 'task',
+  CONTENT_ARTICLES: 'articles',
+  CONTENT_NEWS: 'news',
+  CONTENT_DOWNLOADS: 'downloads',
   APP_COLOURS: {
     crm: '#42c1c1',
     chat: '#eb4f6c',

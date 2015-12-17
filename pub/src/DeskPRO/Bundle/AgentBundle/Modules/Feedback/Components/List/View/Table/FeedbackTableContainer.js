@@ -3,7 +3,6 @@ import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 import { peopleSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackStatusCategoriesSelector, feedbackCategoriesSelector }
   from '../../../../Selectors/list';
 import { Table, Th, Td, TdId, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
-import { defaultTableFields } from '../../../List/ControlBar/FeedbackViewOptions';
 import { applyParams } from '../../../../Actions/FeedbackListActions';
 import { connect } from 'react-redux';
 
@@ -43,6 +42,12 @@ export class FeedbackTableContainer extends Component {
     this.props.dispatch(applyParams({ sort: param, order }));
   }
 
+
+  isVisible(field) {
+    const {viewFields} = this.props;
+    return viewFields.includes(field);
+  }
+
   renderLongString(string) {
     let content = string.substr(0, 40);
     if (string.length > 40) {
@@ -73,11 +78,6 @@ export class FeedbackTableContainer extends Component {
       return feedbackComments.get(id).get('counter');
     }
     return 0;
-  }
-
-  isVisible(field) {
-    const {viewFields} = this.props;
-    return viewFields.includes(field);
   }
 
   render() {

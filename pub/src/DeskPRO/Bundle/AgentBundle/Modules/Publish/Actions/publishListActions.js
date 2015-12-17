@@ -13,7 +13,7 @@ export const load = createAction(
   (content, groupBy, group) => (dispatch) => Content.load(content, { [groupBy]: group })
     .then(promise => {
       dispatch(switchContent(content));
-      return { content, elements: promise.getData().data };
+      return { content, data: promise.getData()};
     }
   )
 );
