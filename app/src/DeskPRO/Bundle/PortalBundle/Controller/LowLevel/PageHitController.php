@@ -60,7 +60,6 @@ class PageHitController extends BaseController
      */
     public function hitAction($page_type, $page_id, Request $request)
     {
-        exit;
         if ($request->getMethod() === 'OPTIONS') {
             return new Response('', 200, [
                 'Content-Type'                 => 'text/plain',

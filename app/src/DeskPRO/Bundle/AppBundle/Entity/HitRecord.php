@@ -39,11 +39,19 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity()
- * @ORM\Table(name="hit_record")
+ * @ORM\Table(name="hit_record", indexes={
+ *     @ORM\Index(name="visitor_id_idx", columns={"visitor_id"}),
+ *     @ORM\Index(name="page_type_idx", columns={"page_type", "page_id"})
+ * })
  */
 class HitRecord implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
+
+    const PAGETYPE_NEWS     = 'deskpro.news_view';
+    const PAGETYPE_ARTICLE  = 'deskpro.kb_view';
+    const PAGETYPE_FEEDBACK = 'deskpro.feedback_view';
+    const PAGETYPE_DOWNLOAD = 'deskpro.download_view';
 
     /**
      * @ORM\Id()
@@ -276,7 +284,7 @@ class HitRecord implements EntityInterface, NotifyPropertyChanged
      */
     public function getMeta()
     {
-        return $this->meta;
+        return $this->meta ?: [];
     }
 
     /**
@@ -284,7 +292,7 @@ class HitRecord implements EntityInterface, NotifyPropertyChanged
      */
     public function setMeta($meta)
     {
-        $this->meta = $meta;
+        $this->meta = $meta ?: null;
     }
 
     /**
@@ -301,5 +309,21 @@ class HitRecord implements EntityInterface, NotifyPropertyChanged
     public function setDateCreated($date_created)
     {
         $this->date_created = $date_created;
+    }
+
+    /**
+     * An array of the types of pages that DeskPRO itself knows about
+     * as single content pages.
+     *
+     * @return array
+     */
+    public static function getContentPageTypes()
+    {
+        return [
+            self::PAGETYPE_NEWS,
+            self::PAGETYPE_ARTICLE,
+            self::PAGETYPE_DOWNLOAD,
+            self::PAGETYPE_FEEDBACK,
+        ];
     }
 }

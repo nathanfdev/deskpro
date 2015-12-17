@@ -26,27 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace DeskPRO\Bundle\AppBundle\HitTrack\ViewCount;
 
 /**
- * Updates viewcounts on articles and handles cleanup of hittracks.
+ * A view counter is called on a cron job (UpdateViewCounts) every 10 minutes.
+ * The purpose is to go through the hit log and count views on DeskPRO content: articles, news, downloads, feedback.
+ *
+ * How it does this is up to the implementation.
  */
-class UpdateViewCounts extends AbstractJob
+interface ViewCounterInterface
 {
-    const DEFAULT_INTERVAL = 600; // 10 minutes
-
-    public function run()
-    {
-        $counter = $this->getContainer()->get('hitrecord.viewcounts.counter');
-        $views   = $counter->getViews(new \DateTime('-10 minutes'));
-
-        $updater = $this->getContainer()->get('hitrecord.viewcounts.updater');
-        $updater->updateViews($views);
-
-        $cleaner = $this->getContainer()->get('hitrecord.cleaner');
-        $cleaner->clean(new \DateTime('-10 minutes'));
-    }
+    /**
+     * @param \DateTime $last_proc_date
+     *
+     * @return Views
+     */
+    public function getViews(\DateTime $last_proc_date);
 }

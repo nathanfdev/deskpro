@@ -26,27 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace DeskPRO\Bundle\AppBundle\HitTrack\Cleaner;
 
 /**
- * Updates viewcounts on articles and handles cleanup of hittracks.
+ * Cleans hit records.
  */
-class UpdateViewCounts extends AbstractJob
+interface HitCleanerInterface
 {
-    const DEFAULT_INTERVAL = 600; // 10 minutes
-
-    public function run()
-    {
-        $counter = $this->getContainer()->get('hitrecord.viewcounts.counter');
-        $views   = $counter->getViews(new \DateTime('-10 minutes'));
-
-        $updater = $this->getContainer()->get('hitrecord.viewcounts.updater');
-        $updater->updateViews($views);
-
-        $cleaner = $this->getContainer()->get('hitrecord.cleaner');
-        $cleaner->clean(new \DateTime('-10 minutes'));
-    }
+    /**
+     * @param \DateTime $last_clean
+     */
+    public function clean(\DateTime $last_clean);
 }

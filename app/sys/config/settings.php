@@ -436,15 +436,10 @@ return array(
     'core.task_reminder_time' => '09:00',
 
     /*
-     * How long to keep visitor tracks around for
+     * How many visitor tracks to keep around at a time
+     * when storing in the db
      */
-    'core.visitor_cleanup_time' => 604800,
-
-    /*
-     * How long to keep visitor tracks around for
-     * when they are suspected dupes/bots/unconnected
-     */
-    'core.visitor_cleanup_bogus_time' => 1800,
+    'core.hit_tracks_db_count' => 7500,
 
     'core.agent_translate_debug'     => false,
     'core.agent_enable_kb_shortcuts' => true,

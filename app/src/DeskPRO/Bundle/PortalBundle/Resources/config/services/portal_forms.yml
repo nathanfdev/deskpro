@@ -17,6 +17,11 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
+  listener.response.hit_track_js:
+    class: DeskPRO\Bundle\AppBundle\HitTrack\EventListener\HitTrackJavascriptListener
+    tags:
+      - { name: kernel.event_subscriber }
+
   form.form_extension:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Extension\DeskproFormExtension
     tags:

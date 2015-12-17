@@ -26,27 +26,52 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace DeskPRO\Bundle\AppBundle\HitTrack\Cleaner;
 
-/**
- * Updates viewcounts on articles and handles cleanup of hittracks.
- */
-class UpdateViewCounts extends AbstractJob
+use Doctrine\DBAL\Connection;
+
+class HitDbCleaner implements HitCleanerInterface
 {
-    const DEFAULT_INTERVAL = 600; // 10 minutes
+    const MAX_RECORDS = 7500;
 
-    public function run()
+    /**
+     * @var Connection
+     */
+    private $db;
+
+    /**
+     * @param Connection $db
+     */
+    public function __construct(Connection $db)
     {
-        $counter = $this->getContainer()->get('hitrecord.viewcounts.counter');
-        $views   = $counter->getViews(new \DateTime('-10 minutes'));
+        $this->db = $db;
+    }
 
-        $updater = $this->getContainer()->get('hitrecord.viewcounts.updater');
-        $updater->updateViews($views);
+    /**
+     * @param \DateTime $last_clean
+     */
+    public function clean(\DateTime $last_clean)
+    {
+        $top_id = $this->db->fetchColumn('SELECT id FROM hit_record ORDER BY id DESC LIMIT 1');
 
-        $cleaner = $this->getContainer()->get('hitrecord.cleaner');
-        $cleaner->clean(new \DateTime('-10 minutes'));
+        if (!$top_id) {
+            return;
+        }
+
+        $clean_below_id = $top_id - self::MAX_RECORDS;
+
+        if ($clean_below_id <= 1) {
+            return;
+        }
+        $has_below = $this->db->fetchColumn('SELECT id FROM hit_record WHERE id < ? ORDER BY id DESC LIMIT 1', [$clean_below_id]);
+
+        if (!$has_below) {
+            return;
+        }
+
+        $this->db->executeUpdate('
+            DELETE FROM hit_record
+            WHERE id < ?
+        ', [$clean_below_id]);
     }
 }

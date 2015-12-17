@@ -32,6 +32,8 @@ if (!defined('DP_ROOT')) {
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
+$loader->import(__DIR__.'/services.yml');
+
 /* @var \Symfony\Component\DependencyInjection\ContainerBuilder $container */
 
 $container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%/../doctrine-proxies');
@@ -88,7 +90,6 @@ $loader->import(__DIR__.'/../../src/DeskPRO/Bundle/AppBundle/Resources/config/se
 ############################################################################
 # Ticket Public ID Resolver
 ############################################################################
-
 
 $definition = new Definition();
 $definition->setClass('DeskPRO\Bundle\AppBundle\Helper\TicketPublicIdResolver');
@@ -568,7 +569,7 @@ $container->loadFromExtension(
                             'title'        => array('analyzer' => 'title_content_analyzer'),
                             'content'      => array('analyzer' => 'text_content_analyzer'),
                             'status'       => array(),
-                            'category_ids' => array('type'     => 'integer'),
+                            'category_ids' => array('type' => 'integer'),
                             'labels'       => array('analyzer' => 'title_content_analyzer'),
                             'sticky_words' => array(),
                             'date_created' => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
@@ -580,7 +581,7 @@ $container->loadFromExtension(
                             'provider'                      => array(),
                             'finder'                        => array(),
                             'elastica_to_model_transformer' => array('ignore_missing' => true),
-                            'model_to_elastica_transformer' => array('service'        => 'deskpro.search.article_to_elastica_transformer'),
+                            'model_to_elastica_transformer' => array('service' => 'deskpro.search.article_to_elastica_transformer'),
                             'repository'                    => 'Application\DeskPRO\NewSearch\Repository\ArticleRepository',
                         ),
                     ),
@@ -601,7 +602,7 @@ $container->loadFromExtension(
                             'provider'                      => array(),
                             'finder'                        => array(),
                             'elastica_to_model_transformer' => array('ignore_missing' => true),
-                            'model_to_elastica_transformer' => array('service'        => 'deskpro.search.news_to_elastica_transformer'),
+                            'model_to_elastica_transformer' => array('service' => 'deskpro.search.news_to_elastica_transformer'),
                             'repository'                    => 'Application\DeskPRO\NewSearch\Repository\NewsRepository',
                         ),
                     ),
@@ -622,7 +623,7 @@ $container->loadFromExtension(
                             'provider'                      => array(),
                             'finder'                        => array(),
                             'elastica_to_model_transformer' => array('ignore_missing' => true),
-                            'model_to_elastica_transformer' => array('service'        => 'deskpro.search.download_to_elastica_transformer'),
+                            'model_to_elastica_transformer' => array('service' => 'deskpro.search.download_to_elastica_transformer'),
                             'repository'                    => 'Application\DeskPRO\NewSearch\Repository\DownloadRepository',
                         ),
                     ),
@@ -643,7 +644,7 @@ $container->loadFromExtension(
                             'provider'                      => array(),
                             'finder'                        => array(),
                             'elastica_to_model_transformer' => array('ignore_missing' => true),
-                            'model_to_elastica_transformer' => array('service'        => 'deskpro.search.feedback_to_elastica_transformer'),
+                            'model_to_elastica_transformer' => array('service' => 'deskpro.search.feedback_to_elastica_transformer'),
                             'repository'                    => 'Application\DeskPRO\NewSearch\Repository\FeedbackRepository',
                         ),
                     ),
@@ -661,7 +662,7 @@ $container->loadFromExtension(
                             'provider'                      => array(),
                             'finder'                        => array(),
                             'elastica_to_model_transformer' => array('ignore_missing' => true),
-                            'model_to_elastica_transformer' => array('service'        => 'deskpro.search.org_to_elastica_transformer'),
+                            'model_to_elastica_transformer' => array('service' => 'deskpro.search.org_to_elastica_transformer'),
                             'repository'                    => 'Application\DeskPRO\NewSearch\Repository\OrganizationRepository',
                         ),
                     ),
@@ -682,7 +683,7 @@ $container->loadFromExtension(
                             'provider'                      => array(),
                             'finder'                        => array(),
                             'elastica_to_model_transformer' => array('ignore_missing' => true),
-                            'model_to_elastica_transformer' => array('service'        => 'deskpro.search.chat_conversation_to_elastica_transformer'),
+                            'model_to_elastica_transformer' => array('service' => 'deskpro.search.chat_conversation_to_elastica_transformer'),
                             'repository'                    => 'Application\DeskPRO\NewSearch\Repository\ChatConversationRepository',
                         ),
                     ),
@@ -703,7 +704,7 @@ $container->loadFromExtension(
                             'provider'                      => array(),
                             'finder'                        => array(),
                             'elastica_to_model_transformer' => array('ignore_missing' => true),
-                            'model_to_elastica_transformer' => array('service'        => 'deskpro.search.person_to_elastica_transformer'),
+                            'model_to_elastica_transformer' => array('service' => 'deskpro.search.person_to_elastica_transformer'),
                             'repository'                    => 'Application\DeskPRO\NewSearch\Repository\PersonRepository',
                         ),
                     ),
@@ -728,7 +729,7 @@ $container->loadFromExtension(
                             'provider'                      => array(),
                             'finder'                        => array(),
                             'elastica_to_model_transformer' => array('ignore_missing' => true),
-                            'model_to_elastica_transformer' => array('service'        => 'deskpro.search.ticket_to_elastica_transformer'),
+                            'model_to_elastica_transformer' => array('service' => 'deskpro.search.ticket_to_elastica_transformer'),
                             'repository'                    => 'Application\DeskPRO\NewSearch\Repository\TicketRepository',
                         ),
                     ),

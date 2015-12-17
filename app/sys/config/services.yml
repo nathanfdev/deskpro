@@ -1,0 +1,19 @@
+services:
+  hitrecord.record_factory:
+    class: DeskPRO\Bundle\AppBundle\HitTrack\Recorder\HitRecordFactory
+
+  hitrecord.record_storage:
+    class: DeskPRO\Bundle\AppBundle\HitTrack\Recorder\HitDbStorage
+    arguments: [@doctrine.dbal.default_connection]
+
+  hitrecord.viewcounts.updater:
+    class: DeskPRO\Bundle\AppBundle\HitTrack\ViewCount\ViewCountUpdater
+    arguments: [@doctrine.dbal.default_connection]
+
+  hitrecord.viewcounts.counter:
+    class: DeskPRO\Bundle\AppBundle\HitTrack\ViewCount\ViewDbCounter
+    arguments: [@doctrine.dbal.default_connection, @settings_resolver]
+
+  hitrecord.cleaner:
+    class: DeskPRO\Bundle\AppBundle\HitTrack\Cleaner\HitDbCleaner
+    arguments: [@doctrine.dbal.default_connection]

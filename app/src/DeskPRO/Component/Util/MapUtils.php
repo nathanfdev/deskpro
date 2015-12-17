@@ -43,6 +43,29 @@ class MapUtils
     }
 
     /**
+     * Given an array where each item is an array of [key, value] pairs,
+     * create a new array keyed by the key where the value is the value.
+     *
+     * @param \Traversable|array $array   The array to work on
+     * @param int                $key_idx
+     * @param int                $val_idx
+     *
+     * @return array
+     */
+    public static function arrayMapFromPairs($array, $key_idx = 0, $val_idx = 0)
+    {
+        $return = [];
+
+        foreach ($array as $row) {
+            if (array_key_exists($key_idx, $row) && array_key_exists($val_idx, $row)) {
+                $return[$row[$key_idx]] = $row[$val_idx];
+            }
+        }
+
+        return $return;
+    }
+
+    /**
      * Remove all falsey values from an array.
      *
      * @param \Traversable|array $array The array to work on
@@ -170,5 +193,52 @@ class MapUtils
         }
 
         return $new;
+    }
+
+    /**
+     * Calls your function on each element of an array. Your function will be passed the key and value,
+     * and you MUST return an array of [key, value] to add to the resulting array.
+     *
+     * @param \Traversable|array $array
+     * @param callable           $fn
+     *
+     * @return array
+     */
+    public static function map($array, $fn)
+    {
+        $return = [];
+
+        foreach ($array as $k => $v) {
+            $user_return = call_user_func($fn, $k, $v);
+            if (!is_array($user_return) || !array_key_exists(0, $user_return) || !array_key_exists(1, $user_return)) {
+                throw new \InvalidArgumentException('Invalid return value');
+            }
+
+            $return[$user_return[0]] = $user_return[1];
+        }
+
+        return $return;
+    }
+
+    /**
+     * Like array_map except your function is called with $key and $value as params.
+     *
+     * @param \Traversable|array $array
+     * @param callable           $fn
+     *
+     * @return array
+     */
+    public static function filter($array, $fn)
+    {
+        $return = [];
+
+        foreach ($array as $k => $v) {
+            $user_return = call_user_func($fn, $k, $v);
+            if ($user_return === true) {
+                $return[$k] = $v;
+            }
+        }
+
+        return $ret;
     }
 }
