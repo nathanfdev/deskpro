@@ -21,35 +21,18 @@ export class FilterEditPopupContainer extends Component {
   };
 
   static groupingOptions = [
-    {value: '', label: 'None'},
-    {value: 'department', label: 'Department'},
-    {value: 'organization', label: 'Organization'},
-    {value: 'person', label: 'Person'},
-    {value: 'language', label: 'Language'},
-    {value: 'urgency', label: 'Urgency'},
-    {value: 'agent', label: 'Agent'},
-    {value: 'agent_team', label: 'Agent Team'},
-    {value: 'waiting_time', label: 'Waiting Time'},
-    {value: 'all_waiting_time', label: 'All Waiting Time'},
-    {value: 'open_time', label: 'Open Time'}
+    { value: '', label: 'None' },
+    { value: 'department', label: 'Department' },
+    { value: 'organization', label: 'Organization' },
+    { value: 'person', label: 'Person' },
+    { value: 'language', label: 'Language' },
+    { value: 'urgency', label: 'Urgency' },
+    { value: 'agent', label: 'Agent' },
+    { value: 'agent_team', label: 'Agent Team' },
+    { value: 'waiting_time', label: 'Waiting Time' },
+    { value: 'all_waiting_time', label: 'All Waiting Time' },
+    { value: 'open_time', label: 'Open Time' }
   ];
-
-  render() {
-    const { filter = Immutable.fromJS({}), grouping, attachTo, filterId } = this.props;
-    const groupBy = grouping.get(String(filterId), '');
-
-    return (
-      <ListGroupingControl
-        visible={filter.get('id') === filterId}
-        title={filter.get('title')}
-        options={FilterEditPopupContainer.groupingOptions}
-        onChange={this.applyFilterEditing}
-        close={this.closeFilterEditing}
-        selected={groupBy}
-        attachTo={attachTo}
-      />
-    );
-  }
 
   applyFilterEditing = (e) => {
     const options = e.target.options;
@@ -62,4 +45,19 @@ export class FilterEditPopupContainer extends Component {
   };
 
   closeFilterEditing = () => this.props.dispatch(closeFilterEditing());
+
+  render() {
+    const { filter = Immutable.fromJS({}), grouping, attachTo, filterId } = this.props;
+    const groupBy = grouping.get(String(filterId), '');
+
+    return (
+      <ListGroupingControl visible={filter.get('id') === filterId}
+                           title={filter.get('title')}
+                           options={FilterEditPopupContainer.groupingOptions}
+                           onChange={this.applyFilterEditing}
+                           close={this.closeFilterEditing}
+                           selected={groupBy}
+                           attachTo={attachTo}/>
+    );
+  }
 }
