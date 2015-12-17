@@ -80,6 +80,8 @@
                             <a href="{{ attachment.blob.downloadUrl }}" class="attachement">
                                 {% if attachment.blob.is_image %}
                                     <img src="{{ attachment.blob.thumbnailUrl }}" alt="{{ attachment.blob.filename }}">
+                                {% else %}
+                                    {{ file_icon(attachment.blob) }}
                                 {% endif %}
                                 {{ attachment.blob.filename }}
                                 <span class="attachement-size">{{ attachment.blob.filesize }} bytes </span>

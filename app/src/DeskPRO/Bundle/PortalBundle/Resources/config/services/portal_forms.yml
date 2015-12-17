@@ -117,7 +117,7 @@ services:
 
   form.feedback_attachment:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\FeedbackAttachmentType
-    arguments: [@blob.storage, @blob_repository]
+    arguments: [@blob.storage, @blob_repository, @attachment_accepter]
     tags:
       - { name: form.type, alias: feedback_attachment }
 

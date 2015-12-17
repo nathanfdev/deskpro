@@ -31,13 +31,16 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
+use Application\DeskPRO\Attachments\AcceptAttachment;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\FeedbackAttachment;
 use Application\DeskPRO\EntityRepository\Blob as BlobRepo;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
@@ -53,10 +56,16 @@ class FeedbackAttachmentType extends AbstractType
      */
     private $blob_repo;
 
-    public function __construct(DeskproBlobStorage $blob_storage, BlobRepo $blob_repo)
+    /**
+     * @var AcceptAttachment
+     */
+    private $attachment_accepter;
+
+    public function __construct(DeskproBlobStorage $blob_storage, BlobRepo $blob_repo, AcceptAttachment $attachment_accepter)
     {
-        $this->blob_storage = $blob_storage;
-        $this->blob_repo    = $blob_repo;
+        $this->blob_storage        = $blob_storage;
+        $this->blob_repo           = $blob_repo;
+        $this->attachment_accepter = $attachment_accepter;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -67,7 +76,7 @@ class FeedbackAttachmentType extends AbstractType
             $form = $event->getForm();
 
             if (!$attachment->getBlob()) {
-                $form->add('upload', 'file', array('mapped' => false, 'required' => false, 'label' => false));
+                $this->addUpload($form);
             } else {
                 $form->add('blob_auth', 'hidden', array('property_path' => 'blob.authcode'));
                 $form->add('delete', 'checkbox', array('mapped' => false, 'required' => false));
@@ -76,6 +85,31 @@ class FeedbackAttachmentType extends AbstractType
 
         $builder->addEventListener(FormEvents::SUBMIT, array($this, 'postSubmit'));
         $builder->addEventListener(FormEvents::PRE_SUBMIT, array($this, 'preSubmit'));
+    }
+
+    public function addUpload(FormInterface $form)
+    {
+        $form->add(
+            'upload',
+            'file',
+            [
+                'mapped'      => false,
+                'required'    => false,
+                'label'       => false,
+                'constraints' => [
+                    new \Symfony\Component\Validator\Constraints\File(
+                        [
+                            'uploadErrorMessage'         => 'portal.forms.error_upload_general',
+                            'uploadFormSizeErrorMessage' => 'portal.forms.error_upload_html_size',
+                            'uploadIniSizeErrorMessage'  => 'portal.forms.error_upload_ini_size',
+                            'notFoundMessage'            => 'portal.forms.error_upload_general',
+                            'notReadableMessage'         => 'portal.forms.error_upload_general',
+                            'disallowEmptyMessage'       => 'portal.forms.error_upload_empty',
+                        ]
+                    ),
+                ],
+            ]
+        );
     }
 
     public function preSubmit(FormEvent $event)
@@ -99,7 +133,7 @@ class FeedbackAttachmentType extends AbstractType
                     $form->setData(null);
                     $form->remove('blob_auth');
                     $form->remove('delete');
-                    $form->add('upload', 'file', array('mapped' => false, 'required' => false, 'label' => false));
+                    $this->addUpload($form);
                 }
             } else {
                 if ($form->has('upload')) {
@@ -122,7 +156,24 @@ class FeedbackAttachmentType extends AbstractType
         if ($form->has('upload')) {
             $file = $form->get('upload')->getData();
 
-            if ($file instanceof File && $file->getRealPath()) {
+            if ($file instanceof File) {
+                $error = $this->attachment_accepter->getError($file, 'user');
+                if ($error) {
+                    $error_code = $error['error_code'];
+                    $params     = [];
+                    if ($error_detail = $error['error_detail']) {
+                        $params = ['detail' => $error_detail];
+                    }
+                    $phrase = sprintf('portal.forms.error_accept_%s', $error_code);
+                    $form->get('upload')->addError(new FormError($phrase, $phrase, $params));
+
+                    return;
+                }
+            } else {
+                $error = [];
+            }
+
+            if ($file instanceof File && empty($error) && $file->getRealPath()) {
                 $blob = $this->blob_storage->createBlobRecordFromFile(
                     $file->getRealPath(),
                     $file->getClientOriginalName(),
