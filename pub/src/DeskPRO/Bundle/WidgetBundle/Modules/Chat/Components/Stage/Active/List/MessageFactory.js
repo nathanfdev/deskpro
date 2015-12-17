@@ -20,6 +20,11 @@ export class MessageFactory extends React.Component {
     const pharses = window.DESKPRO_LANG || {};
     const translatedText = String(pharses[`user.chat.${phraseId}`]);
 
+    // Should display disconnected block
+    if (phraseId === 'message_agent-timeout') {
+      return null;
+    }
+
     return (
       <InlineEvent {...this.props}>
         {translatedText.replace('{{name}}', content.name)}
