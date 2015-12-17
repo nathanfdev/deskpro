@@ -69,7 +69,7 @@ export class WidgetAppBody extends React.Component {
     return (
       <Provider store={store}>
         <Widget>
-          <WidgetHeaderContainer title="Acme Corp. Chat and a long name lorel ipsum dolor" />
+          <WidgetHeaderContainer />
           <WidgetBody>
             <Router history={history}>
               <Redirect from="/" to="chat"/>

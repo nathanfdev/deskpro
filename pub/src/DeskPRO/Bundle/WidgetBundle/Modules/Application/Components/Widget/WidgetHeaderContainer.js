@@ -1,13 +1,18 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { closeWidget } from '../../Actions/dpWindowActions';
+import { companyNameSelector, companyLogoSelector } from '../../Selectors/dpWindow';
 
-@connect()
+@connect(state => ({
+  companyName: companyNameSelector(state),
+  companyLogo: companyLogoSelector(state)
+}))
 export class WidgetHeaderContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func,
-    title: PropTypes.string
+    companyName: PropTypes.string,
+    companyLogo: PropTypes.string
   };
 
   onOpenMenu = event => {
@@ -21,6 +26,8 @@ export class WidgetHeaderContainer extends React.Component {
   };
 
   render() {
+    const { companyName, companyLogo } = this.props;
+
     return (
       <div className="dpdesignportal-header">
         {false /* disabled for now */ &&
@@ -34,8 +41,8 @@ export class WidgetHeaderContainer extends React.Component {
         </a>
 
         <div className="dpdesignportal-header-mark">
-          <span className="dpdesignportal-logo sample-logo" />
-          <h1>{this.props.title}</h1>
+          <img src={companyLogo} className="dpdesignportal-logo sample-logo" />
+          <h1>{companyName}</h1>
         </div>
       </div>
     );
