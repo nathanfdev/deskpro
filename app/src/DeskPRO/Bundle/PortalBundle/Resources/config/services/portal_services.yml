@@ -39,4 +39,4 @@ services:
 
   hitrecord.record_storage:
     class: DeskPRO\Bundle\AppBundle\HitTrack\Recorder\HitDbStorage
-    arguments: [@doctrine.orm.entity_manager]
+    arguments: [@doctrine.dbal.default_connection]

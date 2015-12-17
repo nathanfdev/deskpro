@@ -40,7 +40,16 @@ use Symfony\Component\HttpFoundation\Response;
 class PageHitController extends BaseController
 {
     /**
-     * @Route("/dp/hit/{page_type}/{page_id}", requirements={"page_type"="[a-zA-Z_\-0-9\.]+", "page_id"="[a-zA-Z_\-0-9\.]+"}, defaults={"page_id"="0"}, name="dp_pagehit")
+     * @Route(
+     *     "/dp/hit/{page_type}/{page_id}.{_format}",
+     *     requirements={
+     *         "page_type"="[a-zA-Z_\-0-9\.]+",
+     *         "page_id"="[a-zA-Z_\-0-9\.]+",
+     *         "_format"="txt|html|json|png|gif"
+     *     },
+     *     defaults={"page_id"="0"},
+     *     name="dp_pagehit"
+     * )
      * @Method({"GET", "POST", "OPTIONS"})
      *
      * @param string  $page_type
@@ -51,6 +60,7 @@ class PageHitController extends BaseController
      */
     public function hitAction($page_type, $page_id, Request $request)
     {
+        exit;
         if ($request->getMethod() === 'OPTIONS') {
             return new Response('', 200, [
                 'Content-Type'                 => 'text/plain',
@@ -70,15 +80,35 @@ class PageHitController extends BaseController
             throw $this->createNotFoundException($e->getMessage());
         }
 
-        $id  = $this->get('hitrecord.record_storage')->record($hit);
-        $res = ['hit_id' => $id];
+        $id = $this->get('hitrecord.record_storage')->record($hit);
 
-        $res = new Response(
-            json_encode($res),
-            200,
-            ['Content-Type' => 'application/json']
-        );
+        switch ($request->getRequestFormat('json')) {
+            case 'text':
+            case 'txt':
+                $resData = 'hit_id='.$id;
+                $resType = 'text/plain';
+                break;
+            case 'html':
+                $resData = 'hit_id='.$id;
+                $resType = 'text/html';
+                break;
+            case 'json':
+                $resData = json_encode(['hit_id' => $id]);
+                $resType = 'application/json';
+                break;
+            case 'png':
+                $resData = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQYV2NgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=');
+                $resType = 'image/png';
+                break;
+            case 'gif':
+                $resData = base64_decode('R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==');
+                $resType = 'image/gif';
+                break;
+            default:
+                throw $this->createNotFoundException();
+        }
 
+        $res = new Response($resData, 200, ['Content-Type' => $resType]);
         $res->setPrivate();
         $res->setMaxAge(0);
         $res->setLastModified(new \DateTime());
