@@ -37,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Symfony\Bundle\FrameworkBundle\Controller\ControllerNameParser as BaseParser;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 class ControllerNameParser extends BaseParser
@@ -52,23 +53,31 @@ class ControllerNameParser extends BaseParser
     protected $cache;
 
     /**
-     * @var \DeskPRO\Bundle\PortalBundle\Brand\BrandStack
+     * @var ContainerInterface
      */
-    private $brand_stack;
+    private $container;
 
-    public function __construct(KernelInterface $kernel, BrandStack $brand_stack)
+    public function __construct(KernelInterface $kernel, ContainerInterface $container)
     {
         parent::__construct($kernel);
-        $this->brand_stack = $brand_stack;
+        $this->container = $container;
+    }
+
+    /**
+     * @return BrandStack
+     */
+    private function getBrandStack()
+    {
+        return $this->container->get('brand_stack');
     }
 
     public function parse($controller)
     {
-        if (!$brand_container = $this->brand_stack->getActive()) {
-            $this->brand_stack->push($this->brand_stack->getDefault());
+        if (!$brand_container = $this->getBrandStack()->getActive()) {
+            $this->getBrandStack()->push($this->getBrandStack()->getDefault());
         }
 
-        if (!$brand_container && !$brand_container = $this->brand_stack->getActive()) {
+        if (!$brand_container && !$brand_container = $this->getBrandStack()->getActive()) {
             throw new \RuntimeException('no brand is active in the brand stack. cannot parse theme controller.');
         }
 
