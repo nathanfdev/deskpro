@@ -11,7 +11,7 @@ export class AgentAvatars extends React.Component {
 
   render() {
     const { onlineAgents, multiple } = this.props;
-    const displayAgents = multiple ? onlineAgents : onlineAgents.slice(0, 1);
+    const displayAgents = onlineAgents.slice(0, multiple ? 3 : 1);
 
     return (
       <div className="avatar-container">
