@@ -112,7 +112,7 @@ class DataTransformer
             return new DataTransformerResponse($transformation_request, $transformation_request->getView(), null, null, []);
         }
 
-        $type = $transformation_request->getSerializerContext()->getMainType() ?: $this->type_map->findType($data);
+        $type = $this->type_map->findType($data);
         $id   = $this->id_finder->findDataId($data);
 
         if ($type && $id) {
