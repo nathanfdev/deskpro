@@ -85,10 +85,6 @@ export const loadCommentsToReview = createAction(
   )
 );
 
-export const toggleView = createAction(
-  'PUBLISH_LIST_TOGGLE_VIEW'
-);
-
 export const setParams = createAction('PUBLISH_LIST_SET_CURRENT_PARAMS');
 
 export const applyParams = createAction(
@@ -108,4 +104,12 @@ export const applyParams = createAction(
   }
 );
 
+export const setSort = createAction(
+  'PUBLISH_LIST_SET_SORT',
+    sort => dispatch => dispatch(applyParams({ sort, delayReload: true }))
+);
+export const setOrder = createAction(
+  'PUBLISH_LIST_SET_ORDER',
+    order => dispatch => dispatch(applyParams({ order, delayReload: true }))
+);
 

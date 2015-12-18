@@ -3,6 +3,7 @@ import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Co
 import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ListFrameMenu';
 import { ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
+import { ControlBarContainer } from './ControlBar/ControlBarContainer';
 import { ArticlesTableContainer } from './View/Table/ArticlesTableContainer';
 import { NewsTableContainer } from './View/Table/NewsTableContainer';
 import { DownloadsTableContainer } from './View/Table/DownloadsTableContainer';
@@ -18,23 +19,23 @@ export class List extends Component {
     content: PropTypes.string.isRequired,
     loaded: PropTypes.bool.isRequired,
     pagination: PropTypes.object,
-    view: PropTypes.string.isRequired
+    currentViewMode: PropTypes.string.isRequired
   };
 
   renderElements() {
-    const { elements, view } = this.props;
+    const { elements, currentViewMode } = this.props;
 
     if (!elements || elements.size === 0) {
       return 'No data to display';
     }
 
-    switch (view) {
+    switch (currentViewMode) {
       case constants.VIEW_MODE_CARD:
         return this.renderListView();
       case constants.VIEW_MODE_TABLE:
         return this.renderTableView();
       default:
-        throw new Error(`Unknown "${view}" view type`);
+        throw new Error(`Unknown "${currentViewMode}" view type`);
     }
   }
 
@@ -85,7 +86,9 @@ export class List extends Component {
 
     return (
       <ListFrameContainer>
-        <ListFrameMenu checkbox={checkbox}/>
+        <ListFrameMenu checkbox={checkbox}>
+          <ControlBarContainer key="1"/>
+        </ListFrameMenu>
         <LoadIndicator loaded={loaded}
                        opacity={0}
                        width={3}>

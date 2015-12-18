@@ -49,7 +49,8 @@ class ContentSelectCriteria extends Criteria
     public function applyFilters(QueryBuilder $qb)
     {
         $alias = $qb->getRootAliases()[0];
-
+        $sort = "$alias.date_created";
+        $order = 'asc';
         foreach ($this->filters as $field => $value) {
             switch ($field) {
                 case 'status':
@@ -78,7 +79,14 @@ class ContentSelectCriteria extends Criteria
                     }
                     $qb->setParameter('category', $value);
                     break;
+                case 'sort':
+                    $sort = "$alias.$value";
+                    break;
+                case 'order':
+                    $order = "$value";
+                    break;
             }
+            $qb->orderBy($sort, $order);
         }
     }
 
