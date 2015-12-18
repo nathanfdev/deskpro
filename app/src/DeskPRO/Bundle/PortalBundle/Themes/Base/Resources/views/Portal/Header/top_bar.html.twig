@@ -13,12 +13,12 @@
       {% show section small_user_info %}
 
       {% if is_multi_language %}
-      <li>
+      <li class="language-switcher-container">
           <form method="POST" action="{{ path('portal_change_language') }}" id="language-changer" class="as-no-dpui">
               <select name="lang_code" class="button button-dropdown button-dropdown-language">
                   {% for language in enabled_languages %}
                       <option value="{{ language.urlCode }}"
-                          {% if language.urlCode == current_language.urlCode %}selected="selected"{% endif %}>
+                              {% if language.urlCode == current_language.urlCode %}selected="selected"{% endif %}>
                           {{ language.title|capitalize }}
                       </option>
                   {% endfor %}

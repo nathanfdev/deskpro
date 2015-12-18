@@ -1289,6 +1289,18 @@ button, .button, input[type="submit"] {
       display: block;
     }
 
+    @media screen and (max-width: 760px) {
+      .normal-form {
+        display: block;
+      }
+      .dp-react-widget {
+        display: none;
+      }
+      .language-changer-widget {
+        display: none;
+      }
+    }
+
     .language-changer-widget {
       .button-small.button-language {
         padding-left: 35px;
