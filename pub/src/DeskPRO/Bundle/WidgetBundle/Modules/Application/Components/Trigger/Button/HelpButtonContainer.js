@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { HelpButton } from './HelpButton';
-import { helpButtonSizeSelector, helpPopupSelector } from '../../../Selectors/dpWindow';
 import { OnlineAgentsPopup } from '../Popups/OnlineAgentsPopup';
+import { windowResize } from '../../../Actions/dpWindowActions';
+import { helpButtonSizeSelector, helpPopupSelector } from '../../../Selectors/dpWindow';
 
 @connect(state => ({
   size: helpButtonSizeSelector(state),
@@ -11,6 +12,7 @@ import { OnlineAgentsPopup } from '../Popups/OnlineAgentsPopup';
 export class HelpButtonContainer extends React.Component {
 
   static propTypes = {
+    dispatch: PropTypes.func,
     onClick: PropTypes.func,
     popup: PropTypes.string
   };
@@ -23,7 +25,7 @@ export class HelpButtonContainer extends React.Component {
   }
 
   onButtonClick = () => {
-    const { popup, onClick } = this.props;
+    const { dispatch, popup, onClick } = this.props;
 
     if (!popup || popup === 'none') {
       onClick();
@@ -31,6 +33,8 @@ export class HelpButtonContainer extends React.Component {
       this.setState({
         popupShown: true
       });
+
+      dispatch(windowResize());
     }
   };
 
