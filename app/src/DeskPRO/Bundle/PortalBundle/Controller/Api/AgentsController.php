@@ -48,6 +48,10 @@ class AgentsController extends AbstractApiController
      */
     public function getOnlineAgentsAction()
     {
-        return new JsonResponse([]);
+        /** @var \Application\DeskPRO\EntityRepository\Person $repository */
+        $repository = $this->getDoctrine()->getRepository('DeskPRO:Person');
+        $agents     = $repository->getAgents();
+
+        return new JsonResponse($this->dataSerialize($agents));
     }
 }

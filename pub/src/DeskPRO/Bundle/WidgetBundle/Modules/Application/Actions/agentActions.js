@@ -6,6 +6,6 @@ export const loadOnlineAgents = createAction(
   () => new Promise(resolve => {
     return DpApi
       .sendGet('DP_API/agents/online')
-      .success(response => resolve(response));
+      .success(response => resolve(response.data));
   })
 );
