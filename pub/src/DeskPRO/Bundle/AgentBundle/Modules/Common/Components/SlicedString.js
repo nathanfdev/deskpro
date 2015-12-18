@@ -9,7 +9,7 @@ export class SlicedString extends Component {
 
   render() {
     const { string, length = 40 } = this.props;
-    let content = string.substr(0, 40);
+    let content = string.substr(0, length);
     if (string.length > length) {
       content += '...';
     }
