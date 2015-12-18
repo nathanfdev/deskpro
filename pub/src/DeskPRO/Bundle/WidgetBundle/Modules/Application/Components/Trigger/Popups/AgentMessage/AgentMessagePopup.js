@@ -5,11 +5,12 @@ export class AgentMessagePopup extends React.Component {
 
   static propTypes = {
     onClick: PropTypes.func,
-    children: PropTypes.node
+    children: PropTypes.node,
+    helpPopupMessage: PropTypes.string
   };
 
   render() {
-    const { children, onClick } = this.props;
+    const { children, onClick, helpPopupMessage } = this.props;
 
     return (
       <div className="dpdesignportal-state-buttons dpdesignportal-agent-message">
@@ -27,7 +28,7 @@ export class AgentMessagePopup extends React.Component {
               <h1><span>Noelle Gray</span></h1>
               <h2>DeskPRO Customer Support</h2>
               <p className="quote">
-                Given a string consisting of printable ASCII chars, produce an output consisting of its unique chars in the original order.
+                {helpPopupMessage}
               </p>
             </div>
           </div>

@@ -48,3 +48,8 @@ export const helpPopupSelector = createSelector(
   widgetOptionsSelector,
   options => options.get('helpPopup')
 );
+
+export const helpPopupMessageSelector = createSelector(
+  widgetOptionsSelector,
+  options => options.get('helpPopupMessage')
+);
