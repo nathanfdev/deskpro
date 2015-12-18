@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { RateAgentDialog } from './RateAgentDialog';
 import { RateAgentComplete } from './RateAgentComplete';
 import { RateAgentForm } from './RateAgentForm';
+import { windowResize } from '../../../../../Application/Actions/dpWindowActions';
 import { sendFeedback } from '../../../../Actions/chatActions';
 import { chatIdSelector, isEndedSelector } from '../../../../Selectors/chat';
 
@@ -32,12 +33,16 @@ export class RateAgentContainer extends React.Component {
     this.setState({
       stage: 'finished'
     });
+
+    dispatch(windowResize());
   };
 
   onClickNotHelpful = () => {
     this.setState({
       stage: 'form'
     });
+
+    this.props.dispatch(windowResize());
   };
 
   onSubmitForm = comment => {
@@ -47,6 +52,8 @@ export class RateAgentContainer extends React.Component {
     this.setState({
       stage: 'finished'
     });
+
+    dispatch(windowResize());
   };
 
   render() {
