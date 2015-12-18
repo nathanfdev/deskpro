@@ -11,3 +11,8 @@ export const onlineAgentsCountSelector = createSelector(
   onlineAgentsSelector,
   onlineAgents => onlineAgents.size
 );
+
+export const primaryAgentSelector = createSelector(
+  onlineAgentsSelector,
+  onlineAgents => onlineAgents.first()
+);

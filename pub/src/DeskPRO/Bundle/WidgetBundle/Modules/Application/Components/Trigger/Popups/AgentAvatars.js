@@ -6,23 +6,23 @@ export class AgentAvatars extends React.Component {
 
   static propTypes = {
     onlineAgents: PropTypes.object,
-    multiple: PropTypes.bool
+    primaryAgent: PropTypes.object
   };
 
   render() {
-    const { onlineAgents, multiple } = this.props;
-    const displayAgents = onlineAgents.slice(0, multiple ? 3 : 1);
+    const { onlineAgents, primaryAgent } = this.props;
+    const displayAgents = primaryAgent ? [primaryAgent] : onlineAgents.slice(0, 3);
 
     return (
       <div className="avatar-container">
-        <ul className={classNames({'multiple': multiple})}>
+        <ul className={classNames({'multiple': !primaryAgent})}>
           {displayAgents.map((agent, index) =>
               <li key={index}>
                 <div className="dpdesignportal-chat-header-avatar" style={{backgroundImage: `url(${SampleAvatar})`}} />
               </li>
           )}
         </ul>
-        {!multiple && <hr/>}
+        {primaryAgent && <hr/>}
       </div>
     );
   }

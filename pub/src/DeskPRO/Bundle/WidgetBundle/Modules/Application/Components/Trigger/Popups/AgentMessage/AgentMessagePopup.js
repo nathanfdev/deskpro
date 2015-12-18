@@ -4,21 +4,21 @@ import { AgentAvatars } from '../AgentAvatars';
 export class AgentMessagePopup extends React.Component {
 
   static propTypes = {
-    onlineAgents: PropTypes.object,
+    primaryAgent: PropTypes.object,
     onClick: PropTypes.func,
     children: PropTypes.node,
     helpPopupMessage: PropTypes.string
   };
 
   render() {
-    const { onlineAgents, children, onClick, helpPopupMessage } = this.props;
+    const { primaryAgent, children, onClick, helpPopupMessage } = this.props;
 
     return (
       <div className="dpdesignportal-state-buttons dpdesignportal-agent-message">
         <div className="preemtive-chat">
           <div className="preemtive-chat-content" onClick={onClick}>
             <div className="dpdesignportal-chat-header">
-              <AgentAvatars onlineAgents={onlineAgents} />
+              <AgentAvatars primaryAgent={primaryAgent} />
 
               <h1><span>Noelle Gray</span></h1>
               <h2>DeskPRO Customer Support</h2>

@@ -35,7 +35,7 @@ export class OnlineAgentsPopup extends React.Component {
                 </h1>
 
                 <div className="dpdesignportal-chat-header">
-                  <AgentAvatars onlineAgents={onlineAgents} multiple/>
+                  <AgentAvatars onlineAgents={onlineAgents} />
                 </div>
               </div>
               <hr/>

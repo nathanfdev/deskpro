@@ -1,9 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { onlineAgentsSelector } from '../../../../Application/Selectors/agent';
+import { onlineAgentsSelector, primaryAgentSelector } from '../../../../Application/Selectors/agent';
 
 @connect(state => ({
-  onlineAgents: onlineAgentsSelector(state)
+  onlineAgents: onlineAgentsSelector(state),
+  primaryAgent: primaryAgentSelector(state)
 }))
 export class OnlineAgentsContainer extends React.Component {
 
