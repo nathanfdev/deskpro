@@ -122,6 +122,7 @@ class UserSearch implements UserSearchInterface
             $f->addMust(new Filter\Term(array('_type' => 'ticket')));
 
             $f2 = new Filter\BoolOr();
+            $f2->addFilter(new Filter\Term(array('agent' => $context->getPerson()->getId())));
             $f2->addFilter(new Filter\Term(array('person_id' => $context->getPerson()->getId())));
             $f2->addFilter(new Filter\Term(array('participants' => $context->getPerson()->getId())));
 
@@ -144,7 +145,7 @@ class UserSearch implements UserSearchInterface
         $bool_query = new Query\Bool();
         $qs         = $this->getQueryString($query);
         $qs->setDefaultField('_all');
-        $qs->setFields(array('title', 'labels', 'content', 'messages'));
+        $qs->setFields(array('_id', 'ref', 'title', 'labels', 'content', 'messages'));
         $qs->setDefaultOperator('AND');
         $bool_query->addMust($qs);
 
