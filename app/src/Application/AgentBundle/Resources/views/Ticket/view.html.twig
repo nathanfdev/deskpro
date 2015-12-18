@@ -550,7 +550,7 @@ pageMeta.lang = {{ {
 			</article>
 		{% endif %}
 		{% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
-			<article id="{{baseId}}_billing_wrap">
+			<article id="{{baseId}}_billing_wrap" style="overflow-x: auto;">
 				{% include 'AgentBundle:Ticket:view-billing.html.twig' %}
 			</article>
 		{% endif %}
