@@ -10,9 +10,13 @@ export const loadPhraseTranslations = createAction(
 
 export const bootstrapWidget = createAction(
   'WIDGET_BOOTSTRAP',
-  () => dispatch => {
-    dispatch(loadOptions(window.DP_OPTIONS));
-    dispatch(loadPhraseTranslations());
-    dispatch(loadOnlineAgents());
-  }
+  () => dispatch => new Promise(resolve => {
+    Promise.
+      all([
+        dispatch(loadOptions(window.DP_OPTIONS)),
+        dispatch(loadPhraseTranslations()),
+        dispatch(loadOnlineAgents())
+      ])
+      .then(response => resolve(response));
+  })
 );
