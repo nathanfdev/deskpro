@@ -4,7 +4,7 @@
     {#{% for article in pager %}#}
       {#<li>#}
         {#<a href="{{ portal_path(article) }}">#}
-          {#<h1>{{ article.realTitle }}</h1>#}
+          {#<h1>{{ article.translated_title }}</h1>#}
 
           {#<div class="article-meta">#}
             {#<span class="updated"><i class="fa fa-calendar-o"></i> {{ article.date_created|date('day') }}</span>#}

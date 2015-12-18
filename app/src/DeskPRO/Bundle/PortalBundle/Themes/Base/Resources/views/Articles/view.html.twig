@@ -17,7 +17,7 @@
         </div>
       </div>
 
-      <h1>{{ article.real_title }}</h1>
+      <h1>{{ article.translated_title }}</h1>
 
       <div class="article-meta"><!-- TODO translations? -->
         <span style="background: url({{ avatar_url(article.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>
@@ -32,7 +32,7 @@
     </header>
 
     <div class="article-content padded dpx-kb-article-content">
-      {{ article.realContent|raw }}
+      {{ article.translated_content|raw }}
     </div>
 
     {% if article.labels|length %}
