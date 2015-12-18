@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer;
 
 /**
@@ -86,10 +85,19 @@ class DataSerializerContext
      */
     private $id_finder;
 
+    /**
+     * Constructor.
+     *
+     * @param mixed            $source_data
+     * @param array            $requested_includes
+     * @param string           $main_view
+     * @param string           $main_type
+     * @param DataTypeIdFinder $id_finder
+     */
     public function __construct($source_data, array $requested_includes = [], $main_view = null, $main_type = null, DataTypeIdFinder $id_finder)
     {
         $this->source_data        = $source_data;
-        $this->main_data          = $source_data; // main data starts the same as source data, but event listneres can change this
+        $this->main_data          = $source_data; // main data starts the same as source data, but event listeners can change this
         $this->requested_includes = $requested_includes;
         $this->main_type          = $main_type;
         $this->includes           = [];
@@ -116,6 +124,11 @@ class DataSerializerContext
         return new self($source_data, self::parseIncludes($requested_includes_string), $main_view, $main_type, $id_finder);
     }
 
+    /**
+     * @param string|null $requested_includes_string
+     *
+     * @return array
+     */
     public static function parseIncludes($requested_includes_string)
     {
         if (null === $requested_includes_string) {
