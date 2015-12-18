@@ -134,4 +134,5 @@ return array(
     'portal.general.prop_comments'               => 'Comments',
     'portal.general.select_placeholder'          => 'Select...',
     'portal.general.show_x_more'                 => 'Show {num} more',
+    'portal.general.show_more'                   => 'Show more',
 );

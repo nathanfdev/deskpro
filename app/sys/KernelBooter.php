@@ -338,7 +338,7 @@ class KernelBooter
                     if ($kernel instanceof PortalHttpCache
                         && strpos($request->getPathInfo(), '/_wdt') === false
                         && strpos($request->getPathInfo(), '/_profile') === false
-                        //&& !$request->isXmlHttpRequest()
+                        && !$request->isXmlHttpRequest()
                         && $response->headers->get('Content-Type') !== 'application/json'
                     ) {
                         $pretty_log       = HttpCacheDebugPrinter::debugPortalCacheKernel($kernel);
