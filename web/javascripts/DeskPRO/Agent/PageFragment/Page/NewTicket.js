@@ -498,6 +498,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			-1 == $problems.val() ? $title.show() : $title.hide();
 		});
 
+		this.draft.init();
+		this.draft.save(true);
     this.draft.load();
 	},
 
@@ -1023,7 +1025,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					success: function(html) {
 						var oldPersonId = $(html).find('input.set_person_id').val();
 						placeUserRow(html);
-						
+
 						if (!oldPersonId) {
 							// new user
 							if (term.indexOf('@') !== -1) {
@@ -1731,42 +1733,51 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
     this.draft = d = {
 			_key: null,
-      key: function () {
-        if (this._key) return this._key;
-        return this._key = 'drafts.new-ticket';
+      key: function (backup) {
+        return backup ? 'drafts.new-ticket-backup' : 'drafts.new-ticket';
       },
-      get: function () {
-        var str = window.localStorage.getItem(this.key());
+      get: function (backup) {
+        var str = window.localStorage.getItem(this.key(backup));
         return str
           ? JSON.parse(str)
           : {form:[], attachments:[]};
       },
-      set: function (item) {
+      set: function (item, backup) {
         try {
-          window.localStorage.setItem(this.key(), JSON.stringify(item));
+          window.localStorage.setItem(this.key(backup), JSON.stringify(item));
         } catch (e) {
           console.error(e);
           this.resetAllDrafts();
         }
       },
-      load: function() {
-				if (!this.key() || !self.wrapper) return;
+			init: function() {
+				var $form = self.getEl('newticket')
+					, $discard = $('#discard-draft-btn', $form)
+					, redactor = self.textarea.data('redactor')
+					;
+
+				$form.on('keyup change', 'input, select, textarea', function(e, byDraft){
+					!byDraft && d.save();
+				});
+
+				$discard.on('click', function(){
+					d.reset();
+				});
+
+				redactor && self.textarea.getEditor().on('keyup.draft change.draft synced.draft', function(){
+					d.save();
+				});
+			},
+      load: function(backup) {
+				if (!self.wrapper) return;
 
         var $form = self.getEl('newticket')
           , $discard = $('#discard-draft-btn', $form)
           , redactor = self.textarea.data('redactor')
-					, item = d.get()
+					, item = d.get(backup)
 					, $attachRow = self.getEl('attach_row')
 					, person = 0
         ;
-
-        $form.on('keyup change', 'input, select, textarea', function(e, byDraft){
-          !byDraft && d.save();
-        });
-
-        $discard.on('click', function(){
-          d.reset();
-        });
 
 				var map = {};
         item.form.forEach(function(el, i){
@@ -1812,20 +1823,18 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				$attachRow.find('ul.files:first').append(html);
 				item.attachments.length && $attachRow.removeClass('is-hidden').show();
 
-        d.isEmpty() ? $discard.hide() : $discard.show();
-        redactor && self.textarea.getEditor().on('keyup change synced', function(){
-          d.save();
-        });
+        d.isEmpty() || backup ? $discard.hide() : $discard.show();
       },
-      save: function () {
+      save: function (backup) {
+				console.info('saving item, backup is: ', backup);
         var $form = self.getEl('newticket')
           , $discard = $('#discard-draft-btn', $form)
-					, item = this.get()
+					, item = this.get(backup)
           ;
 
 				item.form = $form.serializeArray();
-        this.set(item);
-        $discard.show();
+        this.set(item, backup);
+        !backup && $discard.show();
       },
       reset: function () {
         var item = this.get()
@@ -1852,6 +1861,12 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
         window.localStorage.removeItem(this.key());
         $discard.hide();
+
+				redactor && self.textarea.getEditor().off('keyup.draft change.draft synced.draft');
+				d.load(true);
+				redactor && self.textarea.getEditor().on('keyup.draft change.draft synced.draft', function(){
+					d.save();
+				});
       },
       isEmpty: function() {
         var item = this.get();
@@ -1880,4 +1895,5 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
       }
     };
   }
+
 });
