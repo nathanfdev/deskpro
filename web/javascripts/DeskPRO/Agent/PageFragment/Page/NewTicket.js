@@ -1843,14 +1843,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					, redactor = self.textarea.data('redactor')
           ;
 
-        item.form.forEach(function(el, i){
-					if ('newticket[message]' === el.name) {
-						redactor && self.textarea.setCode('');
-						self.addSignature();
-					} else {
-						$('[name="' + el.name + '"]', $form).val('').trigger('change', true);
-					}
-        });
 				$attachRow.hide().find('ul.files:first').children().remove();
 
         var $btn = self.getEl('switch_user');
