@@ -239,6 +239,6 @@ class MapUtils
             }
         }
 
-        return $ret;
+        return $return;
     }
 }

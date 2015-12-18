@@ -77,7 +77,7 @@ services:
   controller_name_converter:
       class: DeskPRO\Bundle\PortalBundle\HttpKernel\ControllerNameParser
       tags: [{name: monolog.logger, channel: request}]
-      arguments: [@kernel, @service_container]
+      arguments: [@kernel, @brand_stack]
 
 
   tag_options.listener:

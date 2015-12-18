@@ -37,7 +37,6 @@ use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Symfony\Bundle\FrameworkBundle\Controller\ControllerNameParser as BaseParser;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 class ControllerNameParser extends BaseParser
@@ -53,14 +52,14 @@ class ControllerNameParser extends BaseParser
     protected $cache;
 
     /**
-     * @var ContainerInterface
+     * @var BrandStack
      */
-    private $container;
+    private $brand_stack;
 
-    public function __construct(KernelInterface $kernel, ContainerInterface $container)
+    public function __construct(KernelInterface $kernel, BrandStack $brand_stack)
     {
         parent::__construct($kernel);
-        $this->container = $container;
+        $this->brand_stack = $brand_stack;
     }
 
     /**
@@ -68,7 +67,7 @@ class ControllerNameParser extends BaseParser
      */
     private function getBrandStack()
     {
-        return $this->container->get('brand_stack');
+        return $this->brand_stack;
     }
 
     public function parse($controller)
