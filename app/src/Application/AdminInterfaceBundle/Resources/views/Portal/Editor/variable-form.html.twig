@@ -12,14 +12,14 @@
 <!-- Render proper directive depending on variable type -->
 
 <div ng-if="variable.type == 'color'">
-    <dp-portal-designer-color-form variable="variable"></dp-portal-designer-color-form>
+    <dp-portal-designer-color-form variable="variable" values="values"></dp-portal-designer-color-form>
 </div>
 <div ng-if="variable.type == 'float'">
-    <dp-portal-designer-float-form variable="variable"></dp-portal-designer-float-form>
+    <dp-portal-designer-float-form variable="variable" values="values"></dp-portal-designer-float-form>
 </div>
 <div ng-if="variable.type == 'size'">
-    <dp-portal-designer-size-form variable="variable"></dp-portal-designer-size-form>
+    <dp-portal-designer-size-form variable="variable" values="values"></dp-portal-designer-size-form>
 </div>
 <div ng-if="variable.type == 'font'">
-    <dp-portal-designer-font-form variable="variable"></dp-portal-designer-font-form>
+    <dp-portal-designer-font-form variable="variable" values="values"></dp-portal-designer-font-form>
 </div>

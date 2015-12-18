@@ -7,7 +7,7 @@
 
             <div class="panel-wrapper">
                 <div class="current-theme-actions">
-                    <a href="#" class="save-changes">Save Changes</a>
+                    <a href ng-click="Portal.commitChanges()" class="save-changes">Save Changes</a>
                     <a href="#" class="discard-changes">Discard Changes</a>
                 </div>
 
@@ -30,7 +30,10 @@
                     <div>
                         <div class="color-scheme font-options" ng-show="Portal.isOpen(group)">
                             <div ng-repeat="variable in variables" ng-init="variable.label = Portal.label(variable.name)">
-                                <dp-portal-designer-variable-form variable="variable"></dp-portal-designer-variable-form>
+                                <dp-portal-designer-variable-form
+                                    variable="variable"
+                                    values="Portal.values">
+                                </dp-portal-designer-variable-form>
                             </div>
                         </div>
                     </div>

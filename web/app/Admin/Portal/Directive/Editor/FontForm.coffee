@@ -4,11 +4,16 @@ define [], () ->
       restrict: 'E',
       templateUrl: DP_BASE_ADMIN_URL + '/load-view/Portal/Editor/font-form.html',
       scope: {
-        variable: '='
+        variable: '=',
+        values: '='
       },
       link: (scope) ->
         scope.selected = 1
-        scope.selectStack = (stack) -> scope.selected = stack
+        scope.selectStack = (stack) ->
+          scope.selected = stack
+          scope.values[scope.variable.name] = {stack}
+          if stack != 'custom'
+            scope.values[scope.variable.name].custom = ''
         scope.isStackSelected = (stack) -> scope.selected == stack
     }
   ]

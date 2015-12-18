@@ -2,11 +2,18 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
   class Admin_Portal_Ctrl_PortalEditor extends Admin_Ctrl_Base
     @CTRL_ID = 'Admin_Portal_Ctrl_PortalEditor'
     @CTRL_AS = 'Portal'
-    @DEPS    = ['$http']
+    @DEPS    = ['$http', '$scope']
 
     init: ->
-      @portal_enabled = false
       @open_panels = []
+      @values = {}
+      @$scope.$watch((() => @values), @saveValues, true);
+
+    saveValues: (newValues) ->
+      console.log('Saving', newValues);
+
+    commitChanges: () ->
+      console.log('Committing', @values)
 
     initialLoad: ->
       @$http.get('/web/sassdoc/vars.json').success((data) => @groups = data)
