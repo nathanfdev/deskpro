@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
-import SampleAvatar from '../../../../../Resources/img/sample-avatar.jpg';
+import { AgentAvatars } from './AgentAvatars';
 
 export class OnlineAgentsPopup extends React.Component {
 
   static propTypes = {
-    agents: PropTypes.object,
+    onlineAgents: PropTypes.object,
     onClick: PropTypes.func,
     onClose: PropTypes.func
   };
@@ -31,19 +31,7 @@ export class OnlineAgentsPopup extends React.Component {
               <span>Agents Online</span>
             </h1>
             <div className="dpdesignportal-chat-header">
-              <div className="avatar-container">
-                <ul className="multiple">
-                  <li>
-                    <div className="dpdesignportal-chat-header-avatar" style={{backgroundImage: `url(${SampleAvatar})`}} />
-                  </li>
-                  <li>
-                    <div className="dpdesignportal-chat-header-avatar" style={{backgroundImage: `url(${SampleAvatar})`}} />
-                  </li>
-                  <li>
-                    <div className="dpdesignportal-chat-header-avatar" style={{backgroundImage: `url(${SampleAvatar})`}} />
-                  </li>
-                </ul>
-              </div>
+              <AgentAvatars onlineAgents={this.props.onlineAgents} multiple />
             </div>
           </div>
           <hr/>

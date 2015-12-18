@@ -8,6 +8,7 @@ import { ReplyForm } from '../Popups/AgentMessage/ReplyForm';
 import { windowResize } from '../../../Actions/dpWindowActions';
 import { helpButtonSizeSelector, helpPopupSelector } from '../../../Selectors/dpWindow';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
+import { OnlineAgentsContainer } from '../Popups/OnlineAgentsContainer';
 
 @connect(state => ({
   size: helpButtonSizeSelector(state),
@@ -92,7 +93,9 @@ export class HelpButtonContainer extends React.Component {
           <ClickOut onClickOut={this.onClosePopup}
                     context={[parent.document, window.triggerFrame.document]}>
 
-            {this.renderPopup()}
+            <OnlineAgentsContainer>
+              {this.renderPopup()}
+            </OnlineAgentsContainer>
           </ClickOut>
         }
         <HelpButton {...this.props} onClick={this.onButtonClick} />
