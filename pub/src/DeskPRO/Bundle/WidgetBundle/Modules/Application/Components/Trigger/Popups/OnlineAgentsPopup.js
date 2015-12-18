@@ -21,7 +21,7 @@ export class OnlineAgentsPopup extends React.Component {
 
   render() {
     return (
-      <div className="dpdesignportal-state-buttons">
+      <div className="dpdesignportal-state-buttons dpdesignportal-online-agents">
         <div className="preemtive-chat small">
           <span className="close-panel" onClick={this.onClose}>
             <i className="fa fa-close" />

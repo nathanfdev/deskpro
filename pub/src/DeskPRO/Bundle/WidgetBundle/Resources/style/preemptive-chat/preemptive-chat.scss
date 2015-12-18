@@ -8,6 +8,10 @@ $secondary-preemptive-background-color: #f8f8f8;
 // Buttons that activate the chats
 .dpdesignportal-state-buttons {
 
+  &.dpdesignportal-online-agents {
+    width: 170px;
+  }
+
   a.preemtive-button {
     display: inline-block;
     line-height: 1.2em;
@@ -19,6 +23,7 @@ $secondary-preemptive-background-color: #f8f8f8;
     font-weight: 600;
     font-size: 12px;
     width: 82px;
+    float: right;
 
     &:hover { background: $main-preemptive-color-hover; }
 
@@ -83,7 +88,6 @@ $secondary-preemptive-background-color: #f8f8f8;
   text-align: center;
   border: 1px solid $main-preemptive-color;
   margin-bottom: 20px;
-  margin-right: 20px;
   position: relative;
 
   &.small {// For the multiple agent avatars/no text type of panel
