@@ -7,19 +7,22 @@ import { ReplyButtons } from '../Popups/AgentMessage/ReplyButtons';
 import { ReplyForm } from '../Popups/AgentMessage/ReplyForm';
 import { windowResize } from '../../../Actions/dpWindowActions';
 import { helpButtonSizeSelector, helpPopupSelector } from '../../../Selectors/dpWindow';
+import { onlineAgentsCountSelector } from '../../../Selectors/agent';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { OnlineAgentsContainer } from '../Popups/OnlineAgentsContainer';
 
 @connect(state => ({
   size: helpButtonSizeSelector(state),
-  popup: helpPopupSelector(state)
+  popup: helpPopupSelector(state),
+  agentsCounts: onlineAgentsCountSelector(state)
 }))
 export class HelpButtonContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func,
     onClick: PropTypes.func,
-    popup: PropTypes.string
+    popup: PropTypes.string,
+    agentsCounts: PropTypes.number
   };
 
   constructor(props) {
@@ -30,9 +33,9 @@ export class HelpButtonContainer extends React.Component {
   }
 
   onButtonClick = () => {
-    const { dispatch, popup, onClick } = this.props;
+    const { dispatch, popup, agentsCounts, onClick } = this.props;
 
-    if (!popup || popup === 'none') {
+    if (!popup || popup === 'none' || !agentsCounts) {
       onClick();
     } else {
       this.setState({

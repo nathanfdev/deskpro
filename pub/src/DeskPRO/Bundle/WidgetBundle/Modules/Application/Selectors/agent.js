@@ -6,3 +6,8 @@ export const onlineAgentsSelector = createSelector(
   stateSelector,
   state => state.get('agents')
 );
+
+export const onlineAgentsCountSelector = createSelector(
+  onlineAgentsSelector,
+  onlineAgents => onlineAgents.size
+);
