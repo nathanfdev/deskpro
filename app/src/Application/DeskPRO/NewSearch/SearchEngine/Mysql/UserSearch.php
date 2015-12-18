@@ -237,17 +237,16 @@ class UserSearch implements UserSearchInterface
 
         $search_places = array();
         $search_params = array();
-        $search_types  = array();
 
         foreach ($query_words as $w) {
-            if (strlen($w) <= 2) {
-                continue;
-            }
-
             $search_places[] = 'tickets.id = '.(int) $w;
 
             $search_places[] = 'tickets.ref = ?';
             $search_params[] = $w;
+
+            if (strlen($w) <= 2) {
+                continue;
+            }
 
             $search_places[] = 'tickets_messages.message LIKE ?';
             $search_params[] = '%'.str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w).'%';
