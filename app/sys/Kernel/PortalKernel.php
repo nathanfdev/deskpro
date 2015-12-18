@@ -245,10 +245,6 @@ class PortalKernel extends BaseKernel
         $cacheFile = (string) $cache;
         $content   = file_get_contents($cacheFile);
 
-        if (!$this->debug) {
-            $content = self::stripComments($content);
-        }
-
         // Re-write absolute paths to use DP_ROOT instead
         $content = str_replace("'".DP_ROOT, 'DP_ROOT.\'', $content);
         // Correct double slash paths
