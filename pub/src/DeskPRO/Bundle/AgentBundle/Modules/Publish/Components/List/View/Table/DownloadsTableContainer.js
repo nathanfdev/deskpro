@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { Table, Th, Td, TdId } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
 
 import { connect } from 'react-redux';
 @connect(state => {
@@ -12,16 +13,6 @@ export class DownloadsTableContainer extends Component {
   static propTypes = {
     downloads: PropTypes.object.isRequired
   };
-
-  renderLongString(string) {
-    let content = string.substr(0, 40);
-    if (string.length > 40) {
-      content += '...';
-    }
-    return (
-      <a href="#">{content}</a>
-    );
-  }
 
   render() {
     const {downloads} = this.props;
@@ -41,12 +32,11 @@ export class DownloadsTableContainer extends Component {
                 {article.id}
               </TdId>
               <Td className="item-title" visible>
-                {this.renderLongString(article.title)}
+                <a href="#"><SlicedString string={article.title}/></a>
               </Td>
               <Td className="item-title" visible>
-                {this.renderLongString(article.content)}
+                <a href="#"><SlicedString string={article.content}/></a>
               </Td>
-
             </tr>
         )
         }
