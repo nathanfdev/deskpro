@@ -4,7 +4,7 @@ export class SlicedString extends Component {
 
   static propTypes = {
     string: PropTypes.string.isRequired,
-    length: PropTypes.number.isRequired
+    length: PropTypes.number
   };
 
   render() {

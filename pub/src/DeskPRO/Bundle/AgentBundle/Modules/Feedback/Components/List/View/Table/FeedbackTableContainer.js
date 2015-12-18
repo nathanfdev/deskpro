@@ -107,7 +107,7 @@ export class FeedbackTableContainer extends Component {
               onChange={this.sortTable.bind(this)}
               visible={this.isVisible('num_ratings')}/>
           <Th sort="num_comments" title="Comments"
-              visible={this.isVisible('num_coments')}/>
+              visible={this.isVisible('num_comments')}/>
           <Th sort="date_created" title="Created"
               order={this.state.sort === 'date_created' ? this.state.order : false}
               onChange={this.sortTable.bind(this)}

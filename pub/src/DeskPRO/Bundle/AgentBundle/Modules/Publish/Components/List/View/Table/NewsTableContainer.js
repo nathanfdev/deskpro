@@ -1,41 +1,57 @@
 import React, {Component, PropTypes} from 'react';
-import { Table, Th, Td, TdId } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
+import { Table, Th, Td, TdId, PersonInTable }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
+import { peopleSelector }
+  from '../../../../Selectors/list';
 
 import { connect } from 'react-redux';
 @connect(state => {
   return {
+    people: peopleSelector(state),
     news: state.Publish.list.get('news')
   };
 })
 
+@injectIntl
 export class NewsTableContainer extends Component {
   static propTypes = {
+    intl: intlShape.isRequired,
+    people: PropTypes.object.isRequired,
     news: PropTypes.object.isRequired
   };
 
   render() {
-    const {news} = this.props;
+    const {news, people} = this.props;
     return (
       <Table>
         <thead>
         <tr>
           <Th sort="id" title="ID" visible/>
+          <Th sort="author_name" title="Author" visible/>
+          <Th sort="date_created" title="Created" visible/>
           <Th sort="title" title="Title" visible/>
           <Th sort="content" title="Content" visible/>
         </tr>
         </thead>
         <tbody>
-        {news.map((article, index) =>
+        {news.map((element, index) =>
             <tr key={index}>
               <TdId visible>
-                {article.id}
+                {element.id}
               </TdId>
-              <Td className="item-title" visible>
-                <a href="#"><SlicedString string={article.title}/></a>
+              <Td visible>
+                <PersonInTable person={people.get(element.person)}/>
+              </Td>
+              <Td visible>
+                <div className="dpw--timer"><FormattedRelative value={element.date_created}/></div>
               </Td>
               <Td className="item-title" visible>
-                <a href="#"><SlicedString string={article.content}/></a>
+                <a href="#"><SlicedString string={element.title}/></a>
+              </Td>
+              <Td className="item-title" visible>
+                <a href="#"><SlicedString string={element.content}/></a>
               </Td>
             </tr>
         )
