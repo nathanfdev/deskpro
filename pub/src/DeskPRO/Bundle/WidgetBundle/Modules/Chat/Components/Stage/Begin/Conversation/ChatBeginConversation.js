@@ -67,7 +67,7 @@ export class ChatBeginConversation extends React.Component {
           : <input type="submit" value="Go" />
         }
 
-        <Checkbox value={hiddenEmail} onToggle={onToggleHiddenEmail} />
+        {false && /* disabled for now */ <Checkbox value={hiddenEmail} onToggle={onToggleHiddenEmail} />}
       </UserInfoForm>
     );
   }
