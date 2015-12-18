@@ -1356,7 +1356,6 @@ define [
           project: value.options?.project
           projects: me.options_data.jira_settings.meta.projects
         getValue: (model = {}, data) ->
-          console.info model
           project = model.project
           project = null if !model.strict_project
           type: 'CheckJIRANewLinkedIssue',
