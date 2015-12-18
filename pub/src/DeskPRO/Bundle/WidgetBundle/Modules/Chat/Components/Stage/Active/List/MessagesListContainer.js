@@ -30,7 +30,7 @@ export class MessagesListContainer extends React.Component {
     const { widgetHeight } = this.props;
     const node = ReactDOM.findDOMNode(this);
 
-    let height = widgetHeight - 280; // header height
+    let height = widgetHeight - 240; // header height
     $(node).parent().children().each((i, child) => {
       if (child !== node) {
         height = height - $(child).height();
