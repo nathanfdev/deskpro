@@ -1,7 +1,6 @@
 import { createAction } from 'Ampliflux';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
-import { DatePeriods } from 'DeskPRO/Bundle/AgentBundle/Services/DatePeriods';
 import * as Content from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/Content';
 import * as ArticlePendingCreates from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/ArticlePendingCreates';
 import * as Comments from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/Comments';
@@ -12,7 +11,7 @@ export const initialLoad = createAction(
   () => new Promise(
     (resolve) => {
       const batch = 'DP_API/batch'
-          + '?get[articles]=DP_API/articles/counts?group_by%3Dperiod_created'
+          + '?get[articles]=DP_API/articles/counts?group_by%3Dcategory'
           + '&get[news]=DP_API/news/counts?group_by%3Dcategory'
           + '&get[downloads]=DP_API/downloads/counts?group_by%3Dcategory'
           + '&get[content_categories]=DP_API/content_categories'

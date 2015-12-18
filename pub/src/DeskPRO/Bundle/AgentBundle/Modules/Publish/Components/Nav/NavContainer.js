@@ -1,9 +1,9 @@
 import React, {Component, PropTypes} from 'react';
-import { connect } from 'react-redux';
 import * as actions from '../../Actions/publishNavActions';
 import * as listActions from '../../Actions/publishListActions';
 import { Nav } from './Nav';
 
+import { connect } from 'react-redux';
 @connect(state => {
   return {
     loaded: state.Publish.nav.getIn(['async', 'done']),
@@ -61,13 +61,13 @@ export class NavContainer extends Component {
 
     const onClick = {
       articles: (group) => {
-        dispatch(listActions.load('articles', articles.get('grouped_by'), group));
+        dispatch(listActions.applyParams({ content: 'articles', [articles.get('grouped_by')]: group }));
       },
       news: (group) => {
-        dispatch(listActions.load('news', news.get('grouped_by'), group));
+        dispatch(listActions.applyParams({ content: 'news', [news.get('grouped_by')]: group }));
       },
       downloads: (group) => {
-        dispatch(listActions.load('downloads', downloads.get('grouped_by'), group));
+        dispatch(listActions.applyParams({ content: 'downloads', [downloads.get('grouped_by')]: group }));
       },
       draftArticles: () => {
         dispatch(listActions.loadDraftArticles(todo.get('articles').get('mine')));

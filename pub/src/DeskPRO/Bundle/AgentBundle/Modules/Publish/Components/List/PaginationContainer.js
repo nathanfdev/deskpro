@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { PaginationBoxView } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Pagination/PaginationBoxView';
-// import { applyParams } from '../../Actions/FeedbackListActions';
+import { applyParams } from '../../Actions/publishListActions';
 
 import { connect } from 'react-redux';
 @connect(state => {
@@ -17,8 +17,7 @@ export class PaginationContainer extends Component {
   };
 
   handlePageClick(page) {
-    console.log('Implement me, please');
-    //this.props.dispatch(applyParams({ page: page }));
+    this.props.dispatch(applyParams({ page: page }));
   }
 
   render() {

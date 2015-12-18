@@ -5,8 +5,8 @@ import * as actions from '../../Actions/publishListActions';
 
 @connect(state => {
   return ({
-    elements: state.Publish.list.get(state.Publish.list.get('content')),
-    content: state.Publish.list.get('content'),
+    elements: state.Publish.list.get(state.Publish.list.get('currentListParams').get('content')),
+    content: state.Publish.list.get('currentListParams').get('content'),
     loaded: state.Publish.list.getIn(['async', 'done']),
     pagination: state.Publish.list.get('pagination'),
     view: state.Publish.list.get('view')

@@ -3,7 +3,9 @@ import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Co
 import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ListFrameMenu';
 import { ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
-import { ArticlesTableContainer } from './View/Table/ArticlesTableContainer'
+import { ArticlesTableContainer } from './View/Table/ArticlesTableContainer';
+import { NewsTableContainer } from './View/Table/NewsTableContainer';
+import { DownloadsTableContainer } from './View/Table/DownloadsTableContainer';
 import { PaginationContainer } from './PaginationContainer';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
@@ -47,11 +49,19 @@ export class List extends Component {
   }
 
   renderTableView() {
-    const {elements, content} = this.props;
+    const {content} = this.props;
     switch (content) {
       case constants.CONTENT_ARTICLES:
         return (
-          <ArticlesTableContainer articles={elements}/>
+          <ArticlesTableContainer/>
+        );
+      case constants.CONTENT_NEWS:
+        return (
+          <NewsTableContainer/>
+        );
+      case constants.CONTENT_DOWNLOADS:
+        return (
+          <DownloadsTableContainer/>
         );
       default:
     }

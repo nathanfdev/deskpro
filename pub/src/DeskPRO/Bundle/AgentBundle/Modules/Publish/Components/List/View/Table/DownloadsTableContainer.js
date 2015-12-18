@@ -4,13 +4,13 @@ import { Table, Th, Td, TdId } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/C
 import { connect } from 'react-redux';
 @connect(state => {
   return {
-    articles: state.Publish.list.get('articles')
+    downloads: state.Publish.list.get('downloads')
   };
 })
 
-export class ArticlesTableContainer extends Component {
+export class DownloadsTableContainer extends Component {
   static propTypes = {
-    articles: PropTypes.object.isRequired
+    downloads: PropTypes.object.isRequired
   };
 
   renderLongString(string) {
@@ -24,7 +24,7 @@ export class ArticlesTableContainer extends Component {
   }
 
   render() {
-    const {articles} = this.props;
+    const {downloads} = this.props;
     return (
       <Table>
         <thead>
@@ -35,7 +35,7 @@ export class ArticlesTableContainer extends Component {
         </tr>
         </thead>
         <tbody>
-        {articles.map((article, index) =>
+        {downloads.map((article, index) =>
             <tr key={index}>
               <TdId visible>
                 {article.id}
