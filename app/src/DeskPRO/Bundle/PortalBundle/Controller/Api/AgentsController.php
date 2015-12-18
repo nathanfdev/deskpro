@@ -52,6 +52,6 @@ class AgentsController extends AbstractApiController
         $repository = $this->getDoctrine()->getRepository('DeskPRO:Person');
         $agents     = $repository->getAgents();
 
-        return new JsonResponse($this->dataSerialize($agents, 'person_chat'));
+        return new JsonResponse($this->dataSerialize($agents, 'widget_person'));
     }
 }

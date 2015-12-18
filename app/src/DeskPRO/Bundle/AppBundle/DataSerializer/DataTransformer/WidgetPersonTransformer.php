@@ -31,19 +31,33 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
+use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 
 /**
- * Class PersonChatTransformer.
+ * Class WidgetPersonTransformer.
  */
-class PersonChatTransformer extends AbstractDataSerializerTransformer
+class WidgetPersonTransformer extends AbstractDataSerializerTransformer
 {
+    /**
+     * @var AvatarResolver
+     */
+    private $avatar_resolver;
+
+    /**
+     * @param AvatarResolver $avatar_resolver
+     */
+    public function __construct(AvatarResolver $avatar_resolver)
+    {
+        $this->avatar_resolver = $avatar_resolver;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function getAutomaticProperties(DataTransformerRequest $request)
     {
-        return [];
+        return ['name'];
     }
 
     /**
@@ -51,6 +65,10 @@ class PersonChatTransformer extends AbstractDataSerializerTransformer
      */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        return [];
+        $data = $transformation_request->getDataToBeTransformed();
+
+        return [
+            'avatar' => $this->avatar_resolver->getAvatarModel($data)->getUrl(150),
+        ];
     }
 }
