@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\Exception\DataSerializerException;
@@ -80,7 +79,7 @@ class DataSerializer
          * this context holds all state for this serialization, and it is passed to every event and mutated by
          * those events until it finally holds the final serialized array.
          */
-        $context = DataSerializerContext::create($data, $includes_string, $type, $view, $this->id_finder);
+        $context = DataSerializerContext::create($data, $includes_string, $view, $type, $this->id_finder);
 
         /*
          * PRE_SERIALIZE

@@ -43,13 +43,14 @@ use Symfony\Component\HttpFoundation\Response;
 abstract class AbstractApiController extends AbstractController
 {
     /**
-     * @param $data
+     * @param mixed  $data
+     * @param string $type
      *
      * @return array
      */
-    protected function dataSerialize($data)
+    protected function dataSerialize($data, $type = null)
     {
-        return $this->get('data_serializer')->serialize($data);
+        return $this->get('data_serializer')->serialize($data, null, null, $type);
     }
 
     /**
