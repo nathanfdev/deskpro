@@ -1,7 +1,7 @@
 import React from 'react';
 import { TriggerFrameContainer } from './TriggerFrameContainer';
 import { WidgetOpenContainer } from './WidgetOpenContainer';
-import { HelpButton } from './Button/HelpButton';
+import { HelpButtonContainer } from './Button/HelpButtonContainer';
 
 export class Trigger extends React.Component {
 
@@ -9,7 +9,7 @@ export class Trigger extends React.Component {
     return (
       <TriggerFrameContainer>
         <WidgetOpenContainer>
-          <HelpButton />
+          <HelpButtonContainer />
         </WidgetOpenContainer>
       </TriggerFrameContainer>
     );

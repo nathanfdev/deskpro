@@ -7,6 +7,7 @@ export const widgetOpenedSelector = createSelector(
   state => state.get('widgetOpened')
 );
 
+// Widget dimensions selectors
 export const widgetDimensionsSelector = createSelector(
   stateSelector,
   state => state.get('widgetDimensions')
@@ -17,6 +18,7 @@ export const widgetHeightSelector = createSelector(
   dimensions => dimensions.get('height')
 );
 
+// Options selectors
 export const widgetOptionsSelector = createSelector(
   stateSelector,
   state => state.get('options')
@@ -30,4 +32,9 @@ export const companyNameSelector = createSelector(
 export const companyLogoSelector = createSelector(
   widgetOptionsSelector,
   options => options.get('companyLogo')
+);
+
+export const helpButtonSizeSelector = createSelector(
+  widgetOptionsSelector,
+  options => options.get('helpButtonSize')
 );

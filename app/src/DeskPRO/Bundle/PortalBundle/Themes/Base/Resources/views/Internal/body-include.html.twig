@@ -31,7 +31,8 @@
         window.__DP_URL__ = '{{ root_url() }}';
         window.__DP_OPTIONS__ = {
             companyName: 'Acme Corp. Chat and a long name lorel ipsum dolor',
-            companyLogo: ''
+            companyLogo: '',
+            helpButtonSize: 'large'
         };
         window.DESKPRO_USERSOURCES = {{ auth_usersources_js_object() }};
         window.DESKPRO_CAN_USE_TICKETS = {{ can_use_tickets() ? 'true' : 'false' }};
