@@ -20,7 +20,7 @@ export class AgentMessagePopup extends React.Component {
               <div className="avatar-container">
                 <ul>
                   <li>
-                    <div className="dpdesignportal-chat-header-avatar" style={{backgroundImage: `url(${SampleAvatar});`}}></div>
+                    <div className="dpdesignportal-chat-header-avatar" style={{backgroundImage: `url(${SampleAvatar})`}}></div>
                   </li>
                 </ul>
                 <hr/>

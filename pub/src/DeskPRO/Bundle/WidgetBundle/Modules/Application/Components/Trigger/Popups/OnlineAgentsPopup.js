@@ -34,13 +34,13 @@ export class OnlineAgentsPopup extends React.Component {
               <div className="avatar-container">
                 <ul className="multiple">
                   <li>
-                    <div className="dpdesignportal-chat-header-avatar" style={{backgroundImage: `url(${SampleAvatar});`}} />
+                    <div className="dpdesignportal-chat-header-avatar" style={{backgroundImage: `url(${SampleAvatar})`}} />
                   </li>
                   <li>
-                    <div className="dpdesignportal-chat-header-avatar" style={{backgroundImage: `url(${SampleAvatar});`}} />
+                    <div className="dpdesignportal-chat-header-avatar" style={{backgroundImage: `url(${SampleAvatar})`}} />
                   </li>
                   <li>
-                    <div className="dpdesignportal-chat-header-avatar" style={{backgroundImage: `url(${SampleAvatar});`}} />
+                    <div className="dpdesignportal-chat-header-avatar" style={{backgroundImage: `url(${SampleAvatar})`}} />
                   </li>
                 </ul>
               </div>
