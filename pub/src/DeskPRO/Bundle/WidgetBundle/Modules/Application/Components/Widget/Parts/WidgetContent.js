@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-export class Widget extends React.Component {
+export class WidgetContent extends React.Component {
 
   static propTypes = {
     children: PropTypes.any

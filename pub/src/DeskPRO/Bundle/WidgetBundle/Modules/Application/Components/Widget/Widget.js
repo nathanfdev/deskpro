@@ -1,7 +1,7 @@
 import React from 'react';
 import { Router, Route, Redirect } from 'react-router';
 import { WidgetFrameContainer } from './WidgetFrameContainer';
-import { Widget } from './Parts/Widget';
+import { WidgetContent } from './Parts/WidgetContent';
 import { WidgetHeaderContainer } from './Parts/Header/WidgetHeaderContainer';
 import { WidgetBody } from './Parts/WidgetBody';
 import { WidgetFooter } from './Parts/WidgetFooter';
@@ -14,10 +14,10 @@ import {
   ChatPollingContainer,
   ChatActive,
   ChatWaiting
-} from '../../Chat/Components/index';
-import history from '../../../Services/history';
+} from '../../../Chat/Components/index';
+import history from '../../../../Services/history';
 
-export class WidgetApp extends React.Component {
+export class Widget extends React.Component {
 
   componentDidMount() {
     window.widgetFrame = parent.window.widget_iframe;
@@ -26,7 +26,7 @@ export class WidgetApp extends React.Component {
   render() {
     return (
       <WidgetFrameContainer>
-        <Widget>
+        <WidgetContent>
           <WidgetHeaderContainer />
           <WidgetBody>
             <Router history={history}>
@@ -45,7 +45,7 @@ export class WidgetApp extends React.Component {
             </Router>
           </WidgetBody>
           <WidgetFooter />
-        </Widget>
+        </WidgetContent>
       </WidgetFrameContainer>
     );
   }

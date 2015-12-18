@@ -3,7 +3,7 @@ import { TriggerFrameContainer } from './TriggerFrameContainer';
 import { WidgetOpenContainer } from './WidgetOpenContainer';
 import { HelpButton } from './Button/HelpButton';
 
-export class TriggerApp extends React.Component {
+export class Trigger extends React.Component {
 
   render() {
     return (

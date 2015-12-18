@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect, Provider } from 'react-redux';
-import { widgetOpenedSelector } from '../../Application/Selectors/dpWindow';
+import { widgetOpenedSelector } from '../../Selectors/dpWindow';
 import Frame from 'Ampliflux/common/components/Frame';
-import store from '../../../Services/store';
+import store from '../../../../Services/store';
 
 @connect(state => ({
   widgetOpened: widgetOpenedSelector(state)

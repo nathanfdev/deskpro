@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { openWidget } from '../../Application/Actions/dpWindowActions';
+import { openWidget } from '../../Actions/dpWindowActions';
 
 @connect()
 export class WidgetOpenContainer extends React.Component {
