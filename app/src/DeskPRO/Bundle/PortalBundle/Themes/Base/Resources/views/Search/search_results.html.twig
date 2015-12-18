@@ -21,19 +21,19 @@
               <h1>{{ phrase('portal.general.x-search-results-no-query', { num: combined['total_results'] }) }}</h1>
               <ul>
                   {% if can_use_articles() and article_info %}
-                <li><a href="#"><i class="fa fa-list-alt"></i><span class="title">{{ phrase('portal.articles.search-title') }} <span class="count">({{ article_info['total_results'] }})</span></span></a></li>
+                <li><a href="#article_results"><i class="fa fa-list-alt"></i><span class="title">{{ phrase('portal.articles.search-title') }} <span class="count">({{ article_info['total_results'] }})</span></span></a></li>
                   {% endif %}
 
                   {% if can_use_news() and news_info %}
-                <li><a href="#"><i class="fa fa-calendar-o"></i><span class="title">{{ phrase('portal.news.search-title') }} <span class="count">({{ news_info['total_results'] }})</span></span></a></li>
+                <li><a href="#news_results"><i class="fa fa-calendar-o"></i><span class="title">{{ phrase('portal.news.search-title') }} <span class="count">({{ news_info['total_results'] }})</span></span></a></li>
                   {% endif %}
 
                   {% if can_use_feedback() and feedback_info %}
-                <li><a href="#"><i class="fa fa-thumbs-o-up"></i><span class="title">{{ phrase('portal.feedback.search-title') }} <span class="count">({{ feedback_info['total_results'] }})</span></span></a></li>
+                <li><a href="#feedback_results"><i class="fa fa-thumbs-o-up"></i><span class="title">{{ phrase('portal.feedback.search-title') }} <span class="count">({{ feedback_info['total_results'] }})</span></span></a></li>
                   {% endif %}
 
                   {% if can_use_downloads() and download_info %}
-                <li><a href="#"><i class="fa fa-copy"></i><span class="title">{{ phrase('portal.downloads.search-title') }} <span class="count">({{ download_info['total_results'] }})</span></span></a></li>
+                <li><a href="#download_results"><i class="fa fa-copy"></i><span class="title">{{ phrase('portal.downloads.search-title') }} <span class="count">({{ download_info['total_results'] }})</span></span></a></li>
                   {% endif %}
               </ul>
             </div>
@@ -45,7 +45,7 @@
             {% else %}
 
             {% if can_use_articles() and article_results %}
-                <div class="search-result-category-wrapper">
+                <div class="search-result-category-wrapper" id="article_results">
                   <div class="deskpro-search-results">
                     <div class="search-result-category"><hr><i class="fa fa-list-alt"></i><span class="title">{{ phrase('portal.articles.search-title') }}</span></div>
                     <ul class="dpx-dynamic-search-results" data-type="article" data-next="{{ article_info.next ? 1 : 0 }}">
@@ -63,7 +63,7 @@
             {% endif %}
 
             {% if can_use_news() and news_results %}
-                <div class="search-result-category-wrapper">
+                <div class="search-result-category-wrapper" id="news_results">
                   <div class="deskpro-search-results">
                     <div class="search-result-category"><hr><i class="fa fa-calendar-o"></i><span class="title">{{ phrase('portal.news.search-title') }}</span></div>
                     <ul class="dpx-dynamic-search-results" data-type="news" data-next="{{ news_info.next ? 1 : 0 }}">
@@ -81,7 +81,7 @@
             {% endif %}
 
             {% if can_use_feedback() and feedback_results %}
-                <div class="search-result-category-wrapper">
+                <div class="search-result-category-wrapper" id="feedback_results">
                   <div class="deskpro-search-results">
                     <div class="search-result-category"><hr><i class="fa fa-thumbs-o-up"></i><span class="title">{{ phrase('portal.feedback.search-title') }}</span></div>
                     <ul class="dpx-dynamic-search-results" data-type="feedback" data-next="{{ feedback_info.next ? 1 : 0 }}">
@@ -99,7 +99,7 @@
             {% endif %}
 
             {% if can_use_downloads() and download_results %}
-                <div class="search-result-category-wrapper">
+                <div class="search-result-category-wrapper" id="download_results">
                   <div class="deskpro-search-results">
                     <div class="search-result-category"><hr><i class="fa fa-copy"></i><span class="title">{{ phrase('portal.downloads.search-title') }}</span></div>
                     <ul class="dpx-dynamic-search-results" data-type="download" data-next="{{ download_info.next ? 1 : 0 }}">
