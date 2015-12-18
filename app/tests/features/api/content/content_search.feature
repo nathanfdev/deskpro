@@ -44,3 +44,36 @@ Feature: /articles, /news, /downloads endpoints
       | articles  |
       | news      |
       | downloads |
+
+  Scenario: I GET list of articles from category id=1
+    When I send a GET request to "/api/v2/articles?sort=date_created&order=desc&category=1"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data" should exist
+    And the JSON node "meta" should exist
+    And the JSON node "meta.pagination" should exist
+    And the JSON node "meta.pagination.total" should be equal to 6
+    And the JSON node "meta.pagination.per_page" should be equal to 10
+    And the JSON node "meta.pagination.total_pages" should be equal to 1
+
+  Scenario: I GET list of news from category id=1
+    When I send a GET request to "/api/v2/news?sort=date_created&order=desc&category=1"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data" should exist
+    And the JSON node "meta" should exist
+    And the JSON node "meta.pagination" should exist
+    And the JSON node "meta.pagination.total" should be equal to 6
+    And the JSON node "meta.pagination.per_page" should be equal to 10
+    And the JSON node "meta.pagination.total_pages" should be equal to 1
+
+  Scenario: I GET list of downloads from category id=1
+    When I send a GET request to "/api/v2/downloads?sort=date_created&order=desc&category=1"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data" should exist
+    And the JSON node "meta" should exist
+    And the JSON node "meta.pagination" should exist
+    And the JSON node "meta.pagination.total" should be equal to 6
+    And the JSON node "meta.pagination.per_page" should be equal to 10
+    And the JSON node "meta.pagination.total_pages" should be equal to 1

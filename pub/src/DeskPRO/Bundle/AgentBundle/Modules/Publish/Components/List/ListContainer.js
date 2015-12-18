@@ -5,8 +5,10 @@ import * as actions from '../../Actions/publishListActions';
 
 @connect(state => {
   return ({
-    elements: state.Publish.list.get(state.Publish.list.get('content')),
-    content: state.Publish.list.get('content'),
+    elements: state.Publish.list.get(state.Publish.list.get('currentListParams').get('content')),
+    content: state.Publish.list.get('currentListParams').get('content'),
+    loaded: state.Publish.list.getIn(['async', 'done']),
+    pagination: state.Publish.list.get('pagination'),
     view: state.Publish.list.get('view')
   });
 })
@@ -16,6 +18,8 @@ export class ListContainer extends Component {
     dispatch: PropTypes.func.isRequired,
     content: PropTypes.string.isRequired,
     elements: PropTypes.object.isRequired,
+    pagination: PropTypes.object.isRequired,
+    loaded: PropTypes.bool.isRequired,
     view: PropTypes.string.isRequired
   };
 
@@ -25,7 +29,7 @@ export class ListContainer extends Component {
   }
 
   render() {
-    const {content, elements, view} = this.props;
+    const {content, elements, view, loaded, pagination} = this.props;
     switch (content) {
       case 'articles':
       case 'news':
@@ -35,10 +39,12 @@ export class ListContainer extends Component {
       case 'commentsToValidate':
       case 'commentsToReview':
         return (
-          <List
-            elements={elements}
-            view={view}
-            toggleView={this.toggleView.bind(this)}
+          <List elements={elements}
+                loaded={loaded}
+                pagination={pagination}
+                view={view}
+                content={content}
+                toggleView={this.toggleView.bind(this)}
             />
         );
 

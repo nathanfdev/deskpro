@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect;
 
+use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ContentAbstract as Content;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
 use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
@@ -67,6 +68,16 @@ class ContentSelectCriteria extends Criteria
                     $qb->andWhere("$alias.person = :person");
                     $qb->setParameter('person', $value);
                     break;
+
+                case 'category':
+                    if ($qb->getRootEntities()[0] === 'Application\DeskPRO\Entity\Article') {
+                        $qb->innerJoin("$alias.categories", 'categories');
+                        $qb->andWhere('categories.id = :category');
+                    } else {
+                        $qb->andWhere("$alias.category = :category");
+                    }
+                    $qb->setParameter('category', $value);
+                    break;
             }
         }
     }
@@ -85,7 +96,9 @@ class ContentSelectCriteria extends Criteria
                 'hidden_status',
                 'author',
                 'category',
-                'period_created'
+                'period_created',
+                'order',
+                'sort'
             ]
         );
 
@@ -111,5 +124,6 @@ class ContentSelectCriteria extends Criteria
         $resolver->setAllowedValues('status', Content::getAllStatuses());
         $resolver->setAllowedValues('hidden_status', Content::getAllHiddenStatuses());
         $resolver->setAllowedValues('period_created', DatePeriods::$names);
+        $resolver->setAllowedValues('order', ['asc', 'desc']);
     }
 }

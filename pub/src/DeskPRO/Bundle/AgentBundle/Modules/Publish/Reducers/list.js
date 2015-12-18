@@ -1,5 +1,5 @@
 import { createReducer } from 'Ampliflux';
-import { async, setFullPayload, mergeFullPayload, setValue } from 'Ampliflux/reducers/handlers';
+import { async, setFullPayload } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/publishListActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
@@ -9,9 +9,13 @@ const initialState = {
   },
   // view mode (table or list)
   view: constants.VIEW_MODE_TABLE,
-
-  // which list is displayed
-  content: 'articles',
+  // currently viewed list GET parameters map
+  currentListParams: {
+    sort: 'date_created',
+    order: constants.ORDER_DESC,
+    // which list is displayed
+    content: 'articles'
+  },
 
   // lists
   articles: [],
@@ -26,12 +30,13 @@ const initialState = {
 export default createReducer(initialState, {
   [actions.load]: async({
     success: (state, payload) =>
-      state.set(payload.content, payload.elements)
+      state.set(payload.content, payload.data.data).set('pagination', payload.data.meta.pagination)
   }),
-  [actions.switchContent]: (state, payload) => state.set('content', payload),
+  // [actions.switchContent]: (state, payload) => state.set('content', payload),
   [actions.toggleView]: async({
-    success: (state, payload) => state.set('view', constants.VIEW_MODE_CARD)
+    success: state => state.set('view', constants.VIEW_MODE_CARD)
   }),
+  [actions.setParams]: setFullPayload('currentListParams')
 });
 
 /*

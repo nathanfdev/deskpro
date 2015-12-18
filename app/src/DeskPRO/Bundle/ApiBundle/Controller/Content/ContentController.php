@@ -79,8 +79,8 @@ class ContentController extends BaseController
             // news and downloads internally because of Category relation (Article::$categories, while
             // News::$category and Download::$category)
             $criteria = $type === 'articles'
-                      ? ArticlesCountCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()])
-                      : ContentCountCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()]);
+                ? ArticlesCountCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()])
+                : ContentCountCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()]);
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
@@ -115,14 +115,14 @@ class ContentController extends BaseController
         /** @var \DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect\ContentDataService $dataService */
         $dataService = $this->get('data.content');
 
-        $params = array_diff_assoc($request->query->all(), ['count' => null, 'page' => null]);
+        $params = $params = $this->removeAdditionalParameters($request);
         try {
             $criteria = ContentSelectCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()]);
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
 
-        $page  = $request->query->get('page', 1);
+        $page = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
         $chats = $dataService->selectContent($this->getClass($type), $criteria, $page, $count);
 
@@ -142,8 +142,8 @@ class ContentController extends BaseController
     private function getClass($type)
     {
         $typeToClass = [
-            'articles'  => Article::class,
-            'news'      => News::class,
+            'articles' => Article::class,
+            'news' => News::class,
             'downloads' => Download::class,
         ];
 

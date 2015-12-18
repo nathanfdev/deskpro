@@ -2,13 +2,15 @@ import DpApi from '../../DpApi';
 import { compileParams } from '../../ApiHelpers';
 
 /**
- * @param target
- * @param filters
+ * @param params
  * @return Promise
  */
-export function load(target, filters) {
-  console.log('DP_API/' + validateTarget(target) + '?' + compileParams(filters));
-  return DpApi.sendGet('DP_API/' + validateTarget(target) + '?' + compileParams(filters));
+export function load(params) {
+  const {content} = params;
+  const newParams = {...params};
+  delete newParams.content;
+  console.log('DP_API/' + validateTarget(content) + '?' + compileParams(newParams));
+  return DpApi.sendGet('DP_API/' + validateTarget(content) + '?' + compileParams(newParams));
 }
 
 /**
