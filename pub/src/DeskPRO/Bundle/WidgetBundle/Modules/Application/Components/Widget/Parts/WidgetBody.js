@@ -8,7 +8,7 @@ export class WidgetBody extends React.Component {
 
   render() {
     return (
-      <div className="widget-body">
+      <div className="dpdesignportal-widget-body">
         {this.props.children}
       </div>
     );
