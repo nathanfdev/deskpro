@@ -61,52 +61,12 @@ class SearchController extends AbstractController
         $results        = array();
         $total          = 0;
         $cur_page       = $request->get('page', 1);
-        $per_page       = 10;
-
-        ////////////////////////////////////////////////////////////////////////
-        // search types
-        $allowed_search_types = array('article', 'news', 'download', 'feedback');
-        if (!$limit_types_array = $request->get('types', null)) {
-            $limit_types_array = $allowed_search_types;
-        }
-        if (!is_array($limit_types_array)) {
-            $limit_types_array = explode(',', $limit_types_array);
-        }
-        $limit_types_array = array_filter($limit_types_array, function ($value) use ($allowed_search_types) {
-            return in_array($value, $allowed_search_types);
-        });
-        $limit_types = implode(',', $limit_types_array);
+        $per_page       = 2;
 
         if ($q) {
             $is_search = true;
 
-            $se             = $this->get('search_engine');
-            $contextFactory = new SearchContextFactory($this->getContainer());
-            $context        = $contextFactory->createUserSearchContext($person);
-
-            /** @var \Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet $result_set */
-            $result_set = $se->getUserSearch()->search($context, $q, array('page' => $cur_page, 'per_page' => $per_page, 'limit_types' => $limit_types));
-
-            $total   = $result_set->getTotal();
-            $results = $result_set->getTypedResults();
-
-            $sticky_search = new StickyWordSearch($this->getEm());
-            $sticky_search->setPersonContext($person);
-            $sticky_results = $sticky_search->getResults($q, 5);
-
-            if ($sticky_results) {
-                $got_sticky = array();
-                foreach ($sticky_results as $sitem) {
-                    ++$total;
-                    $got_sticky[get_class($sitem['object']).$sitem['object']->getId()] = true;
-                }
-                $results = array_filter(
-                    $results,
-                    function ($r) use ($got_sticky) {
-                        return !isset($got_sticky[get_class($r['object']).$r['object']->getId()]);
-                    }
-                );
-            }
+            $results = $this->fetchSearchResults($request, $person, $q, $cur_page, $per_page);
 
             $searchlog             = SearchLog::create($q, count($results) + count($sticky_results));
             $searchlog->person     = $this->getUser();
@@ -121,22 +81,24 @@ class SearchController extends AbstractController
             $request->getSession()->set('last_searchlog_id', $searchlog->id);
         }
 
-        $pageinfo = Numbers::getPaginationPages($total, $cur_page, $per_page);
+        $combined_counts = ['total_results' => 0];
+        foreach ($results as $result) {
+            $pageinfo = $result['pageinfo'];
+            $combined_counts['total_results'] += $pageinfo['total_results'];
+        }
 
         if ($request->isXmlHttpRequest()) {
-            $serialized_results = $this->get('portal_search_serializer')->serializeArray($results);
-
             return $this->makeJsonResponse(
                 array(
-                    'results'  => $serialized_results,
-                    'pageinfo' => $pageinfo,
+                    'results'  => $results,
+                    'combined' => $combined_counts,
                 )
             );
         }
 
-        $pagination = new Pagerfanta(new DeskproSearchAdapter($pageinfo));
-        $pagination->setMaxPerPage((int) $pageinfo['per_page']);
-        $pagination->setCurrentPage((int) $pageinfo['curpage']);
+        //$pagination = new Pagerfanta(new DeskproSearchAdapter($pageinfo));
+        //$pagination->setMaxPerPage((int) $pageinfo['per_page']);
+        //$pagination->setCurrentPage((int) $pageinfo['curpage']);
 
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildSearch($q);
 
@@ -147,12 +109,10 @@ class SearchController extends AbstractController
                 'results'        => $results,
                 'sticky_results' => $sticky_results,
                 'query'          => $q,
-                'pageinfo'       => $pageinfo,
                 'num_results'    => $total,
-                'pager'          => $pagination,
                 'breadcrumbs'    => $breadcrumbs,
                 'page_title'     => $this->createPageTitle()->search(),
-                'limit_types'    => $limit_types_array,
+                'combined'       => $combined_counts,
             )
         );
     }
@@ -164,43 +124,11 @@ class SearchController extends AbstractController
     {
         $q = $request->get('q');
 
-        $is_search      = false;
-        $person         = $this->getUser() ?: new PersonGuest();
-        $sticky_results = array();
-        $results        = array();
-        $total          = 0;
-        $cur_page       = $request->get('page', 1);
-        $per_page       = 10;
+        $person   = $this->getUser() ?: new PersonGuest();
+        $cur_page = $request->get('page', 1);
+        $per_page = 10;
 
-        ////////////////////////////////////////////////////////////////////////
-        // search types
-        $allowed_search_types = array('article', 'news', 'download', 'feedback');
-        if (!$limit_types_array = $request->get('types', null)) {
-            $limit_types_array = $allowed_search_types;
-        }
-        if (!is_array($limit_types_array)) {
-            $limit_types_array = explode(',', $limit_types_array);
-        }
-        $limit_types_array = array_filter($limit_types_array, function ($value) use ($allowed_search_types) {
-            return in_array($value, $allowed_search_types);
-        });
-
-        $contextFactory = new SearchContextFactory($this->getContainer());
-        $context        = $contextFactory->createUserSearchContext($person);
-
-        $omnisearch_results = [];
-        foreach ($limit_types_array as $type) {
-            list($pageinfo, $serialized_results) = $this->doSearch(
-                $request,
-                $type,
-                $q,
-                $person,
-                $cur_page,
-                $per_page,
-                $context
-            );
-            $omnisearch_results[$type] = ['results' => $serialized_results, 'pageinfo' => $pageinfo];
-        }
+        $omnisearch_results = $this->fetchSerializedSearchResults($request, $person, $q, $cur_page, $per_page);
 
         return $this->makeJsonResponse($omnisearch_results);
     }
@@ -375,8 +303,8 @@ class SearchController extends AbstractController
      * @param $per_page
      *
      * @throws \Exception
-     * @return array
      *
+     * @return array
      */
     protected function doSearch(Request $request, $type, $q, $person, $cur_page, $per_page, $context)
     {
@@ -431,8 +359,57 @@ class SearchController extends AbstractController
 
         $pageinfo = Numbers::getPaginationPages($total, $cur_page, $per_page);
 
-        $serialized_results = $this->get('portal_search_serializer')->serializeArray($results);
+        return [$pageinfo, $results];
+    }
 
-        return [$pageinfo, $serialized_results];
+    /**
+     * @param Request $request
+     * @param $person
+     * @param $q
+     * @param $cur_page
+     * @param $per_page
+     *
+     * @return array
+     */
+    private function fetchSearchResults(Request $request, $person, $q, $cur_page, $per_page)
+    {
+        ////////////////////////////////////////////////////////////////////////
+        // search types
+        $allowed_search_types = array('article', 'news', 'download', 'feedback');
+        if (!$limit_types_array = $request->get('types', null)) {
+            $limit_types_array = $allowed_search_types;
+        }
+        if (!is_array($limit_types_array)) {
+            $limit_types_array = explode(',', $limit_types_array);
+        }
+        $limit_types_array = array_filter($limit_types_array, function ($value) use ($allowed_search_types) {
+            return in_array($value, $allowed_search_types);
+        });
+
+        $contextFactory = new SearchContextFactory($this->getContainer());
+        $context        = $contextFactory->createUserSearchContext($person);
+
+        $omnisearch_results = [];
+        foreach ($limit_types_array as $type) {
+            list($pageinfo, $results) = $this->doSearch(
+                $request,
+                $type,
+                $q,
+                $person,
+                $cur_page,
+                $per_page,
+                $context
+            );
+            $omnisearch_results[$type] = ['results' => $results, 'pageinfo' => $pageinfo];
+        }
+
+        return $omnisearch_results;
+    }
+
+    private function fetchSerializedSearchResults(Request $request, $person, $q, $cur_page, $per_page)
+    {
+        $results = $this->fetchSearchResults($request, $person, $q, $cur_page, $per_page);
+
+        return $this->get('portal_search_serializer')->serializeArray($results);
     }
 }
