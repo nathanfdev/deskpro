@@ -1826,7 +1826,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
         d.isEmpty() || backup ? $discard.hide() : $discard.show();
       },
       save: function (backup) {
-				console.info('saving item, backup is: ', backup);
         var $form = self.getEl('newticket')
           , $discard = $('#discard-draft-btn', $form)
 					, item = this.get(backup)
