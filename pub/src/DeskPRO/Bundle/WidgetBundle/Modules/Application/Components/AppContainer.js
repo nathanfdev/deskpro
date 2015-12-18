@@ -2,20 +2,15 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Trigger } from './Trigger/Trigger';
 import { Widget } from './Widget/Widget';
-import { ChatTriggers } from './ChatTriggers';
-import { widgetOpenedSelector } from '../Selectors/dpWindow';
 import { windowResize } from '../Actions/dpWindowActions';
 import $ from 'jquery';
 import debounce from 'lodash/function/debounce';
 
-@connect(state => ({
-  widgetOpened: widgetOpenedSelector(state)
-}))
+@connect()
 export class AppContainer extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func,
-    widgetOpened: PropTypes.bool
+    dispatch: PropTypes.func
   };
 
   constructor(props) {
@@ -44,13 +39,10 @@ export class AppContainer extends React.Component {
   }
 
   render() {
-    const { widgetOpened } = this.props;
-
     return (
       <div>
         <Trigger />
         <Widget />
-        <ChatTriggers isVisible={widgetOpened} />
       </div>
     );
   }

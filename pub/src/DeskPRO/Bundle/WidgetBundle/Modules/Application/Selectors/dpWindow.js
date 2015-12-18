@@ -38,3 +38,8 @@ export const helpButtonSizeSelector = createSelector(
   widgetOptionsSelector,
   options => options.get('helpButtonSize')
 );
+
+export const chatModeSelector = createSelector(
+  widgetOptionsSelector,
+  options => options.get('chatMode')
+);
