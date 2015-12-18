@@ -20,8 +20,8 @@ export class WidgetOpenContainer extends React.Component {
 
     dispatch(openWidget());
     switch (chatMode) {
-      default:
       case 'simple':
+      default:
         history.replace('/chat/begin/simple');
         break;
       case 'conversation':

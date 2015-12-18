@@ -38,10 +38,41 @@ export class HelpButtonContainer extends React.Component {
     }
   };
 
+  onPopupClick = () => {
+    this.setState({
+      popupShown: false
+    });
+
+    this.props.onClick();
+    this.props.dispatch(windowResize());
+  };
+
+  onClosePopup = () => {
+    this.setState({
+      popupShown: false
+    });
+
+    this.props.dispatch(windowResize());
+  };
+
+  renderPopup() {
+    const { popup } = this.props;
+    const popupProps = {
+      onClick: this.onPopupClick,
+      onClose: this.onClosePopup
+    };
+
+    switch (popup) {
+      case 'agents':
+      default:
+        return <OnlineAgentsPopup {...popupProps} />;
+    }
+  }
+
   render() {
     return (
       <div>
-        {this.state.popupShown && <OnlineAgentsPopup />}
+        {this.state.popupShown && this.renderPopup()}
         <HelpButton {...this.props} onClick={this.onButtonClick} />
       </div>
     );

@@ -5,13 +5,13 @@ export class OnlineAgentsPopup extends React.Component {
 
   static propTypes = {
     agents: PropTypes.object,
-    onStart: PropTypes.func,
+    onClick: PropTypes.func,
     onClose: PropTypes.func
   };
 
-  onStart = event => {
+  onClick = event => {
     event.preventDefault();
-    this.props.onStart();
+    this.props.onClick();
   };
 
   onClose = event => {
@@ -50,7 +50,7 @@ export class OnlineAgentsPopup extends React.Component {
           <div className="preemtive-chat-content">
             <div className="preemtive-chat-footer">
               <div className="preemtive-chat-footer-button">
-                <a href="#" onClick={this.onStart} className="wide">
+                <a href="#" onClick={this.onClick} className="wide">
                   Start a conversation
                 </a>
               </div>
