@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
-import SampleAvatar from '../../../Resources/img/sample-avatar.jpg';
+import SampleAvatar from '../../../../../Resources/img/sample-avatar.jpg';
 
-export class AgentsOnlinePopup extends React.Component {
+export class OnlineAgentsPopup extends React.Component {
 
   static propTypes = {
     agents: PropTypes.object,
