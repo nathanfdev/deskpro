@@ -49,6 +49,12 @@ class DataSerializer
      */
     private $id_finder;
 
+    /**
+     * Constructor.
+     *
+     * @param EventDispatcherInterface $event_dispatcher
+     * @param DataTypeIdFinder         $id_finder
+     */
     public function __construct(
         EventDispatcherInterface $event_dispatcher,
         DataTypeIdFinder $id_finder
