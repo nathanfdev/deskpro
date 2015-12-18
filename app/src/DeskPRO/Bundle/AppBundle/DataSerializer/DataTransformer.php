@@ -101,8 +101,8 @@ class DataTransformer
      * @param DataTransformerRequest $transformation_request
      *
      * @throws DataSerializerException
-     * @return DataTransformerResponse
      *
+     * @return DataTransformerResponse
      */
     public function transform(DataTransformerRequest $transformation_request)
     {
@@ -112,7 +112,7 @@ class DataTransformer
             return new DataTransformerResponse($transformation_request, $transformation_request->getView(), null, null, []);
         }
 
-        $type = $this->type_map->findType($data);
+        $type = $transformation_request->getSerializerContext()->getMainType() ?: $this->type_map->findType($data);
         $id   = $this->id_finder->findDataId($data);
 
         if ($type && $id) {
