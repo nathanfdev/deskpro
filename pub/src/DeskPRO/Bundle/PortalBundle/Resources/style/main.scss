@@ -2632,6 +2632,11 @@ header {
     border: 0;
     background: $divider-color;
   }
+
+
+  form .error .message {
+    bottom: -17px;
+  }
 }
 
 .cleared { @include clearfix; }
