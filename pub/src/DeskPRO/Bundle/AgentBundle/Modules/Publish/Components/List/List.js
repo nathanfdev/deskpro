@@ -6,6 +6,9 @@ import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import { ArticlesTableContainer } from './View/Table/ArticlesTableContainer';
 import { NewsTableContainer } from './View/Table/NewsTableContainer';
 import { DownloadsTableContainer } from './View/Table/DownloadsTableContainer';
+import { ArticlesCardsContainer } from './View/Cards/ArticlesCardsContainer';
+import { NewsCardsContainer } from './View/Cards/NewsCardsContainer';
+import { DownloadsCardsContainer } from './View/Cards/DownloadsCardsContainer';
 import { PaginationContainer } from './PaginationContainer';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
@@ -18,7 +21,9 @@ export class List extends Component {
     view: PropTypes.string.isRequired
   };
 
-  renderElements(view, elements) {
+  renderElements() {
+    const { elements, view } = this.props;
+
     if (!elements || elements.size === 0) {
       return 'No data to display';
     }
@@ -34,15 +39,19 @@ export class List extends Component {
   }
 
   renderListView() {
-    const {elements, content} = this.props;
+    const {content} = this.props;
     switch (content) {
       case constants.CONTENT_ARTICLES:
         return (
-          <div>
-            <h1>List View</h1>
-            {elements.map((element, index) => <div key={index} style={{marginTop: '20px'}}>List
-              item: {element.content}</div>)}
-          </div>
+          <ArticlesCardsContainer/>
+        );
+      case constants.CONTENT_NEWS:
+        return (
+          <NewsCardsContainer/>
+        );
+      case constants.CONTENT_DOWNLOADS:
+        return (
+          <DownloadsCardsContainer/>
         );
       default:
     }
@@ -68,7 +77,7 @@ export class List extends Component {
   }
 
   render() {
-    const { elements, view, loaded, pagination } = this.props;
+    const { loaded, pagination } = this.props;
     const checkbox = {
       count: 1, action: ()=> {
       }
@@ -81,7 +90,7 @@ export class List extends Component {
                        opacity={0}
                        width={3}>
           <ListFrameContents>
-            {this.renderElements(view, elements)}
+            {this.renderElements()}
             {pagination && pagination.total_pages > 1 && <PaginationContainer/>}
           </ListFrameContents>
         </LoadIndicator>

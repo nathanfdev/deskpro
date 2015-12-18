@@ -8,7 +8,7 @@ const initialState = {
     done: true
   },
   // view mode (table or list)
-  view: constants.VIEW_MODE_TABLE,
+  view: constants.VIEW_MODE_CARD,
   // currently viewed list GET parameters map
   currentListParams: {
     sort: 'date_created',
