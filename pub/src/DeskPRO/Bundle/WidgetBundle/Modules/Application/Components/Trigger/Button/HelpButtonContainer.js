@@ -4,8 +4,10 @@ import { HelpButton } from './HelpButton';
 import { OnlineAgentsPopup } from '../Popups/OnlineAgentsPopup';
 import { AgentMessagePopup } from '../Popups/AgentMessage/AgentMessagePopup';
 import { ReplyButtons } from '../Popups/AgentMessage/ReplyButtons';
+import { ReplyForm } from '../Popups/AgentMessage/ReplyForm';
 import { windowResize } from '../../../Actions/dpWindowActions';
 import { helpButtonSizeSelector, helpPopupSelector } from '../../../Selectors/dpWindow';
+import { ClickOut } from 'DeskPRO/Component/ClickOut';
 
 @connect(state => ({
   size: helpButtonSizeSelector(state),
@@ -67,14 +69,14 @@ export class HelpButtonContainer extends React.Component {
     switch (popup) {
       case 'replyMessageButtons':
         return (
-          <AgentMessagePopup>
-            <ReplyButtons />
+          <AgentMessagePopup {...popupProps}>
+            <ReplyButtons {...popupProps} />
           </AgentMessagePopup>
         );
       case 'replyMessageForm':
         return (
-          <AgentMessagePopup>
-            <ReplyButtons />
+          <AgentMessagePopup {...popupProps}>
+            <ReplyForm {...popupProps} />
           </AgentMessagePopup>
         );
       case 'agents':
@@ -86,7 +88,13 @@ export class HelpButtonContainer extends React.Component {
   render() {
     return (
       <div>
-        {this.state.popupShown && this.renderPopup()}
+        {this.state.popupShown &&
+          <ClickOut onClickOut={this.onClosePopup}
+                    context={[parent.document, window.triggerFrame.document]}>
+
+            {this.renderPopup()}
+          </ClickOut>
+        }
         <HelpButton {...this.props} onClick={this.onButtonClick} />
       </div>
     );

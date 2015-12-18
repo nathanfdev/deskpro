@@ -35,7 +35,7 @@ export class TriggerFrameContainer extends React.Component {
 
     return (
       <Frame ref="frame"
-             name="widget_trigger"
+             name="widget_trigger_iframe"
              frameStyles={style}
              isVisible={!widgetOpened}>
 
