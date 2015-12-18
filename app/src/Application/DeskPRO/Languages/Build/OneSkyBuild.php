@@ -311,9 +311,10 @@ class OneSkyBuild extends AbstractBuild
     public function getPlatformId($section)
     {
         switch ($section) {
-            case 'user':  return '11467';
-            case 'agent': return '11470';
-            case 'admin': return '0';
+            case 'user':    return '11467';
+            case 'portal':  return '121794';
+            case 'agent':   return '11470';
+            case 'admin':   return '0';
         }
 
         throw new \InvalidArgumentException("Invalid platform $section");
