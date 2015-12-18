@@ -4,16 +4,17 @@ import SampleAvatar from '../../../../../../Resources/img/sample-avatar.jpg';
 export class AgentMessagePopup extends React.Component {
 
   static propTypes = {
+    onClick: PropTypes.func,
     children: PropTypes.node
   };
 
   render() {
-    const { children } = this.props;
+    const { children, onClick } = this.props;
 
     return (
       <div className="dpdesignportal-state-buttons dpdesignportal-agent-message">
         <div className="preemtive-chat">
-          <div className="preemtive-chat-content">
+          <div className="preemtive-chat-content" onClick={onClick}>
             <div className="dpdesignportal-chat-header">
               <div className="avatar-container">
                 <ul>
