@@ -33,9 +33,6 @@ export default createReducer(initialState, {
       state.set(payload.content, payload.data.data).set('pagination', payload.data.meta.pagination)
   }),
   // [actions.switchContent]: (state, payload) => state.set('content', payload),
-  [actions.toggleView]: async({
-    success: state => state.set('view', constants.VIEW_MODE_CARD)
-  }),
   [actions.setParams]: setFullPayload('currentListParams')
 });
 

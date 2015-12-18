@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
 import { List } from './List';
 import * as actions from '../../Actions/publishListActions';
+import { currentViewModeSelector } from '../../Selectors/list';
 
 @connect(state => {
   return ({
@@ -9,7 +10,7 @@ import * as actions from '../../Actions/publishListActions';
     content: state.Publish.list.get('currentListParams').get('content'),
     loaded: state.Publish.list.getIn(['async', 'done']),
     pagination: state.Publish.list.get('pagination'),
-    view: state.Publish.list.get('view')
+    currentViewMode: currentViewModeSelector(state)
   });
 })
 export class ListContainer extends Component {
@@ -20,7 +21,7 @@ export class ListContainer extends Component {
     elements: PropTypes.object.isRequired,
     pagination: PropTypes.object.isRequired,
     loaded: PropTypes.bool.isRequired,
-    view: PropTypes.string.isRequired
+    currentViewMode: PropTypes.string.isRequired
   };
 
   toggleView(e) {
@@ -29,7 +30,7 @@ export class ListContainer extends Component {
   }
 
   render() {
-    const {content, elements, view, loaded, pagination} = this.props;
+    const {content, elements, currentViewMode, loaded, pagination} = this.props;
     switch (content) {
       case 'articles':
       case 'news':
@@ -42,7 +43,7 @@ export class ListContainer extends Component {
           <List elements={elements}
                 loaded={loaded}
                 pagination={pagination}
-                view={view}
+                currentViewMode={currentViewMode}
                 content={content}
                 toggleView={this.toggleView.bind(this)}
             />
