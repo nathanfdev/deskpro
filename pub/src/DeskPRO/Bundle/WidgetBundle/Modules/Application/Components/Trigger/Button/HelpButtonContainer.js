@@ -1,10 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { HelpButton } from './HelpButton';
-import { helpButtonSizeSelector } from '../../../Selectors/dpWindow';
+import { helpButtonSizeSelector, helpPopupSelector } from '../../../Selectors/dpWindow';
 
 @connect(state => ({
-  size: helpButtonSizeSelector(state)
+  size: helpButtonSizeSelector(state),
+  popup: helpPopupSelector(state)
 }))
 export class HelpButtonContainer extends React.Component {
 

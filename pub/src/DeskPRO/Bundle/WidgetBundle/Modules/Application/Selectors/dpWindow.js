@@ -43,3 +43,8 @@ export const chatModeSelector = createSelector(
   widgetOptionsSelector,
   options => options.get('chatMode')
 );
+
+export const helpPopupSelector = createSelector(
+  widgetOptionsSelector,
+  options => options.get('helpPopup')
+);
