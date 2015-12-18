@@ -9,8 +9,8 @@ export function load(params) {
   const {content} = params;
   const newParams = {...params};
   delete newParams.content;
-  console.log('DP_API/' + validateTarget(content) + '?' + compileParams(newParams));
-  return DpApi.sendGet('DP_API/' + validateTarget(content) + '?' + compileParams(newParams));
+  console.log('DP_API/' + validateTarget(content) + '?include=person&' + compileParams(newParams));
+  return DpApi.sendGet('DP_API/' + validateTarget(content) + '?include=person&' + compileParams(newParams));
 }
 
 /**

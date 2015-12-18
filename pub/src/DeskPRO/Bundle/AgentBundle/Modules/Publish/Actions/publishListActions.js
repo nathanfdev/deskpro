@@ -3,20 +3,30 @@ import * as Content from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/Conten
 import * as ArticlePendingCreates from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/ArticlePendingCreates';
 import * as Comments from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/Comments';
 import { currentListParamsSelector } from '../Selectors/list';
+import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
+
+const recordStoresId = 'publish';
 
 /*
-export const switchContent = createAction(
-  'PUBLISH_LIST_SWITCH_CONTENT',
-    content => content
-);
-*/
+ export const switchContent = createAction(
+ 'PUBLISH_LIST_SWITCH_CONTENT',
+ content => content
+ );
+ */
 
 export const load = createAction(
   'PUBLISH_LIST_LOAD_DATA',
-  (params) => Content.load(params)
-    .then(promise => {
-      // dispatch(switchContent(params.content));
-      return { content: params.content, data: promise.getData()};
+    params => (dispatch) => Content.load(params).then(promise => {
+      const content = promise.getData();
+      const people = [];
+      for (const key in content.linked.person) {
+        if (content.linked.person.hasOwnProperty(key)) {
+          people.push(content.linked.person[key]);
+        }
+      }
+      dispatch(setPeopleRequest(recordStoresId, people));
+
+      return { content: params.content, data: content };
     }
   )
 );

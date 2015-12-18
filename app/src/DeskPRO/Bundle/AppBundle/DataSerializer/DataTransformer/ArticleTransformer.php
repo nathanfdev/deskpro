@@ -44,7 +44,7 @@ class ArticleTransformer extends AbstractDataSerializerTransformer
      */
     public function getAutomaticProperties(DataTransformerRequest $request)
     {
-        return ['id', 'slug', 'title', 'content'];
+        return ['id', 'slug', 'title', 'content', 'date_created', 'person'];
     }
 
     /**
