@@ -2,6 +2,8 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { HelpButton } from './HelpButton';
 import { OnlineAgentsPopup } from '../Popups/OnlineAgentsPopup';
+import { AgentMessagePopup } from '../Popups/AgentMessage/AgentMessagePopup';
+import { ReplyButtons } from '../Popups/AgentMessage/ReplyButtons';
 import { windowResize } from '../../../Actions/dpWindowActions';
 import { helpButtonSizeSelector, helpPopupSelector } from '../../../Selectors/dpWindow';
 
@@ -63,6 +65,18 @@ export class HelpButtonContainer extends React.Component {
     };
 
     switch (popup) {
+      case 'replyMessageButtons':
+        return (
+          <AgentMessagePopup>
+            <ReplyButtons />
+          </AgentMessagePopup>
+        );
+      case 'replyMessageForm':
+        return (
+          <AgentMessagePopup>
+            <ReplyButtons />
+          </AgentMessagePopup>
+        );
       case 'agents':
       default:
         return <OnlineAgentsPopup {...popupProps} />;

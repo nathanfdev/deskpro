@@ -26,7 +26,7 @@ export class OnlineAgentsPopup extends React.Component {
           <span className="close-panel" onClick={this.onClose}>
             <i className="fa fa-close" />
           </span>
-          <div className="preemtive-chat-content">
+          <div className="preemtive-chat-content" onClick={this.onClick}>
             <h1>
               <span>Agents Online</span>
             </h1>

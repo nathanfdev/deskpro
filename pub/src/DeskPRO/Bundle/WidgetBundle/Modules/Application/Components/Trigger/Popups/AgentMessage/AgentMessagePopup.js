@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import SampleAvatar from '../../../Resources/img/sample-avatar.jpg';
+import SampleAvatar from '../../../../../../Resources/img/sample-avatar.jpg';
 
 export class AgentMessagePopup extends React.Component {
 
@@ -11,7 +11,7 @@ export class AgentMessagePopup extends React.Component {
     const { children } = this.props;
 
     return (
-      <div className="dpdesignportal-state-buttons">
+      <div className="dpdesignportal-state-buttons dpdesignportal-agent-message">
         <div className="preemtive-chat">
           <div className="preemtive-chat-content">
             <div className="dpdesignportal-chat-header">
