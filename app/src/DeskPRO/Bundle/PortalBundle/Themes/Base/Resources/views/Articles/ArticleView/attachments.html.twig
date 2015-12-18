@@ -1,4 +1,4 @@
-{% if article.attachments %}
+{% if article.attachments|length > 0 %}
     <div class="related">
         <div class="titled-header">
             <h1>{{ phrase('portal.general.attachments') }}</h1>
