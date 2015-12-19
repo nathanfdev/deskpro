@@ -107,7 +107,7 @@ export class TranscriptContainer extends React.Component {
 
         <Simple isOpen={this.state.formOpened}
                 positionTarget={this.refs.button}
-                positionAt="center-18 bottom"
+                positionAt="center+40 bottom"
                 positionMy="center top"
                 zIndex={1000}>
 
