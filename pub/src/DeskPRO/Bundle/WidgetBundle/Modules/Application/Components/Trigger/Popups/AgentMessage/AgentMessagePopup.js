@@ -23,9 +23,10 @@ export class AgentMessagePopup extends React.Component {
 
               <h1><span>{primaryAgent.get('name')}</span></h1>
               <h2>DeskPRO Customer Support</h2>
-              <p className="quote">
-                {helpPopupMessage}
-              </p>
+
+              {helpPopupMessage &&
+                <p className="quote">{helpPopupMessage}</p>
+              }
             </div>
           </div>
           <hr/>
