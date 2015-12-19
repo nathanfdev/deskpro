@@ -33,8 +33,10 @@ export class HelpButtonContainer extends React.Component {
   }
 
   componentDidMount() {
+    const { agentsCounts } = this.props;
     const storageKey = 'widget.dpWindow.popupShown';
-    if (!(storageKey in localStorage) || localStorage[storageKey] !== 'none') {
+
+    if (!(storageKey in localStorage) || localStorage[storageKey] !== 'none' && agentsCounts > 0) {
       setTimeout(() => this.setState({popupShown: true}), 0);
     }
   }
