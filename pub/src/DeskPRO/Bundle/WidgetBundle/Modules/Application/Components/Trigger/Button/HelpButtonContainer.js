@@ -5,6 +5,7 @@ import { OnlineAgentsPopup } from '../Popups/OnlineAgentsPopup';
 import { AgentMessagePopupContainer } from '../Popups/AgentMessage/AgentMessagePopupContainer';
 import { ReplyButtons } from '../Popups/AgentMessage/ReplyButtons';
 import { ReplyForm } from '../Popups/AgentMessage/ReplyForm';
+import { loadOnlineAgents } from '../../../Actions/agentActions';
 import { windowResize } from '../../../Actions/dpWindowActions';
 import { helpButtonSizeSelector, helpPopupSelector } from '../../../Selectors/dpWindow';
 import { onlineAgentsCountSelector } from '../../../Selectors/agent';
@@ -39,6 +40,13 @@ export class HelpButtonContainer extends React.Component {
     if (!(storageKey in localStorage) || localStorage[storageKey] !== 'none' && agentsCounts > 0) {
       setTimeout(() => this.setState({popupShown: true}), 0);
     }
+
+    this.mounted = true;
+    this.pollingRequest();
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   onButtonClick = () => {
@@ -77,6 +85,19 @@ export class HelpButtonContainer extends React.Component {
     localStorage['widget.dpWindow.popupShown'] = 'none';
     this.props.dispatch(windowResize());
   };
+
+  pollingRequest() {
+    const promise = this.props.dispatch(loadOnlineAgents());
+    const onResponse = () => {
+      if (!this.mounted) {
+        return;
+      }
+
+      setTimeout(() => this.pollingRequest(), 10000);
+    };
+
+    promise.then(onResponse, onResponse);
+  }
 
   renderPopup() {
     const { popup } = this.props;
