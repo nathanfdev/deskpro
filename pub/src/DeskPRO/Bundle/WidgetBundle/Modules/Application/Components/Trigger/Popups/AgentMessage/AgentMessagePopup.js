@@ -8,11 +8,13 @@ export class AgentMessagePopup extends React.Component {
     primaryAgent: PropTypes.object,
     onClick: PropTypes.func,
     children: PropTypes.node,
+    helpPopupTitle: PropTypes.string,
     helpPopupMessage: PropTypes.string
   };
 
   render() {
-    const { primaryAgent = Immutable.fromJS({}), children, onClick, helpPopupMessage } = this.props;
+    const { primaryAgent = Immutable.fromJS({}), children, onClick } = this.props;
+    const { helpPopupTitle, helpPopupMessage } = this.props;
 
     return (
       <div className="dpdesignportal-state-buttons dpdesignportal-agent-message">
@@ -22,7 +24,7 @@ export class AgentMessagePopup extends React.Component {
               <AgentAvatars primaryAgent={primaryAgent} />
 
               <h1><span>{primaryAgent.get('name')}</span></h1>
-              <h2>DeskPRO Customer Support</h2>
+              <h2>{helpPopupTitle}</h2>
 
               {helpPopupMessage &&
                 <p className="quote">{helpPopupMessage}</p>
