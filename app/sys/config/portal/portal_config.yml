@@ -14,7 +14,7 @@ parameters:
 app:
   data_serializer:
     types:
-        person:
+        widget_person:
           classes:
             - Application\DeskPRO\Entity\Person
 
