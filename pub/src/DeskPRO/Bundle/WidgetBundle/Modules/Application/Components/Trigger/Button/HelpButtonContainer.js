@@ -27,15 +27,16 @@ export class HelpButtonContainer extends React.Component {
 
   constructor(props) {
     super(props);
-
-    let popupShown = true;
-    if ('widget.dpWindow.popupShown' in localStorage) {
-      popupShown = localStorage['widget.dpWindow.popupShown'] !== 'none';
-    }
-
     this.state = {
-      popupShown: popupShown
+      popupShown: false
     };
+  }
+
+  componentDidMount() {
+    const storageKey = 'widget.dpWindow.popupShown';
+    if (!(storageKey in localStorage) || localStorage[storageKey] !== 'none') {
+      setTimeout(() => this.setState({popupShown: true}), 0);
+    }
   }
 
   onButtonClick = () => {
