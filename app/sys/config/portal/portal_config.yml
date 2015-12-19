@@ -11,6 +11,13 @@ parameters:
   file_locator.class: DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator
   twig.class: DeskPRO\Bundle\PortalBundle\Twig\Environment
 
+app:
+  data_serializer:
+    types:
+        person:
+          classes:
+            - Application\DeskPRO\Entity\Person
+
 framework:
     esi:             { enabled: true }
     fragments:       { path: /_proxy }

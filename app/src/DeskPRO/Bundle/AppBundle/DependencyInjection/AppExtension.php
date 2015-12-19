@@ -36,8 +36,35 @@ use Symfony\Component\DependencyInjection\Extension\Extension;
 
 class AppExtension extends Extension
 {
+    /**
+     * {@inheritdoc}
+     */
     public function load(array $config, ContainerBuilder $container)
     {
+        $config = $this->processConfiguration(new Configuration(), $config);
+
+        $types = [];
+
+        if (array_key_exists('data_serializer', $config)) {
+            if (array_key_exists('types', $config['data_serializer'])) {
+                foreach ($config['data_serializer']['types'] as $type => $matchers) {
+                    $classes = [];
+                    if (isset($matchers['classes'])) {
+                        foreach ($matchers['classes'] as $class) {
+                            $classes[] = $class;
+                            // automatically add the doctrine proxy name to the map as well
+                            $classes[] = 'Proxies\\__CG__\\'.$class;
+                        }
+                    }
+                    $types[$type] = [
+                        'classes' => $classes,
+                    ];
+                }
+            }
+        }
+
+        $container->setParameter('data_serializer.types', $types);
+
         $loader = new YamlDirectoryLoader($container);
         $loader->loadDir(__DIR__.'/../Resources/config/services');
 
@@ -47,6 +74,9 @@ class AppExtension extends Extension
         $this->applyBackwardsCompatibilityRequirements($container);
     }
 
+    /**
+     * @param ContainerBuilder $container
+     */
     protected function applyBackwardsCompatibilityRequirements(ContainerBuilder $container)
     {
         $container->setAlias('deskpro.blob_storage', 'blob.storage');
