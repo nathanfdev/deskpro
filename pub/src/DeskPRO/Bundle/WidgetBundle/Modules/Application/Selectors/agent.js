@@ -1,10 +1,11 @@
 import { createSelector } from 'reselect';
+import Immutable from 'immutable';
 
 const stateSelector = state => state.Application.agent;
 
 export const onlineAgentsSelector = createSelector(
   stateSelector,
-  state => state.get('agents')
+  state => state.get('agents') || Immutable.fromJS({})
 );
 
 export const onlineAgentsCountSelector = createSelector(
