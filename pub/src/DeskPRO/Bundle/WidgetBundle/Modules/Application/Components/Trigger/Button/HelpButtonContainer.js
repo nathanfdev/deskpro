@@ -5,6 +5,7 @@ import { OnlineAgentsPopup } from '../Popups/OnlineAgentsPopup';
 import { AgentMessagePopupContainer } from '../Popups/AgentMessage/AgentMessagePopupContainer';
 import { ReplyButtons } from '../Popups/AgentMessage/ReplyButtons';
 import { ReplyForm } from '../Popups/AgentMessage/ReplyForm';
+import { windowResize } from '../../../Actions/dpWindowActions';
 import { helpButtonSizeSelector, helpPopupSelector } from '../../../Selectors/dpWindow';
 import { onlineAgentsCountSelector } from '../../../Selectors/agent';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
@@ -41,7 +42,7 @@ export class HelpButtonContainer extends React.Component {
   }
 
   onButtonClick = () => {
-    const { popup, agentsCounts, onClick } = this.props;
+    const { dispatch, popup, agentsCounts, onClick } = this.props;
 
     if (!agentsCounts) {
       return;
@@ -54,6 +55,8 @@ export class HelpButtonContainer extends React.Component {
       this.setState({
         popupShown: true
       });
+
+      dispatch(windowResize());
     }
   };
 
@@ -63,6 +66,7 @@ export class HelpButtonContainer extends React.Component {
     });
 
     this.props.onClick();
+    this.props.dispatch(windowResize());
   };
 
   onClosePopup = () => {
@@ -71,6 +75,7 @@ export class HelpButtonContainer extends React.Component {
     });
 
     localStorage['widget.dpWindow.popupShown'] = 'none';
+    this.props.dispatch(windowResize());
   };
 
   renderPopup() {

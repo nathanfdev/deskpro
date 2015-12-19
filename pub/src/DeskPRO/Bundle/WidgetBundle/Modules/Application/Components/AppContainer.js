@@ -15,8 +15,6 @@ export class AppContainer extends React.Component {
 
   constructor(props) {
     super(props);
-
-    this.onWindowResize();
     this.onResize = debounce(() => {
       this.onWindowResize();
     }, 350);
@@ -24,6 +22,8 @@ export class AppContainer extends React.Component {
 
   componentDidMount() {
     window.widgetFrame = parent.window.widget_iframe;
+
+    this.onWindowResize();
     $(window.parent).on('resize', this.onResize);
   }
 
@@ -32,10 +32,7 @@ export class AppContainer extends React.Component {
   }
 
   onWindowResize() {
-    this.props.dispatch(windowResize(
-      $(window.widgetFrame).width(),
-      $(window.widgetFrame).height()
-    ));
+    this.props.dispatch(windowResize());
   }
 
   render() {
