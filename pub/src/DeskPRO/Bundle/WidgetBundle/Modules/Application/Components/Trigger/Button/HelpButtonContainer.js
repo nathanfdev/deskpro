@@ -44,7 +44,11 @@ export class HelpButtonContainer extends React.Component {
   onButtonClick = () => {
     const { dispatch, popup, agentsCounts, onClick } = this.props;
 
-    if (!popup || popup === 'none' || !agentsCounts) {
+    if (!agentsCounts) {
+      return;
+    }
+
+    if (!popup || popup === 'none') {
       onClick();
     } else {
       localStorage['widget.dpWindow.popupShown'] = 'true';
@@ -101,6 +105,8 @@ export class HelpButtonContainer extends React.Component {
   }
 
   render() {
+    const { agentsCounts } = this.props;
+
     return (
       <div>
         {this.state.popupShown &&
@@ -112,7 +118,7 @@ export class HelpButtonContainer extends React.Component {
             </OnlineAgentsContainer>
           </ClickOut>
         }
-        <HelpButton {...this.props} onClick={this.onButtonClick} />
+        <HelpButton {...this.props} onClick={this.onButtonClick} disabled={!agentsCounts} />
       </div>
     );
   }

@@ -29,7 +29,16 @@ $secondary-preemptive-background-color: #f8f8f8;
     width: 82px;
     float: right;
 
-    &:hover { background: $main-preemptive-color-hover; }
+    &.disabled {
+      cursor: default !important;
+      opacity: 0.5;
+    }
+
+    &:not(.disabled) {
+      &:hover {
+        background: $main-preemptive-color-hover;
+      }
+    }
 
     &.button-s {// Make it small
       padding: 2px;
