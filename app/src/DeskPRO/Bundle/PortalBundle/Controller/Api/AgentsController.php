@@ -50,7 +50,10 @@ class AgentsController extends AbstractApiController
     {
         /** @var \Application\DeskPRO\EntityRepository\Person $repository */
         $repository = $this->getDoctrine()->getRepository('DeskPRO:Person');
-        $agents     = $repository->getAgents();
+        $agent_ids  = $repository->getActiveAgentIdsForUserChat();
+        $agents     = $repository->findBy([
+            'id' => $agent_ids,
+        ]);
 
         return new JsonResponse($this->dataSerialize($agents, 'widget_person'));
     }
