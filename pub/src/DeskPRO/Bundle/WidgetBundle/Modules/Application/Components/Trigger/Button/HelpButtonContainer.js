@@ -27,8 +27,14 @@ export class HelpButtonContainer extends React.Component {
 
   constructor(props) {
     super(props);
+
+    let popupShown = true;
+    if ('widget.dpWindow.popupShown' in localStorage) {
+      popupShown = localStorage['widget.dpWindow.popupShown'] !== 'none';
+    }
+
     this.state = {
-      popupShown: false
+      popupShown: popupShown
     };
   }
 
@@ -60,6 +66,7 @@ export class HelpButtonContainer extends React.Component {
       popupShown: false
     });
 
+    localStorage['widget.dpWindow.popupShown'] = 'none';
     this.props.dispatch(windowResize());
   };
 
