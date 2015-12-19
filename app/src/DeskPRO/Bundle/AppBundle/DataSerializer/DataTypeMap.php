@@ -43,6 +43,11 @@ class DataTypeMap
      */
     protected $map;
 
+    /**
+     * Constructor.
+     *
+     * @param array|null $map
+     */
     public function __construct(array $map = null)
     {
         if ($map) {
@@ -68,7 +73,9 @@ class DataTypeMap
      * @param mixed $data
      * @param bool  $null_on_none True to return null of no found type, otherwise an exception is raised
      *
-     * @return string|null
+     * @throws \Exception
+     * @return string
+     *
      */
     public function findType($data, $null_on_none = false)
     {
@@ -91,18 +98,18 @@ class DataTypeMap
                 return $type;
             }
 
-            return; // it is still an array and we can't determine type now
+            return ''; // it is still an array and we can't determine type now
         }
 
         $object_class = is_object($data) ? get_class($data) : null;
 
         if (!$object_class) {
-            return;
+            return '';
         } elseif ($type = $this->findTypeForClass($object_class)) {
             return $type;
         } else {
             if ($null_on_none) {
-                return;
+                return '';
             }
             throw new \Exception("Type for $object_class not found.");
         }
@@ -140,7 +147,7 @@ class DataTypeMap
             return Strings::camelCaseToUnderscore($class_name);
         }
 
-        return;
+        return '';
     }
 
     /**
