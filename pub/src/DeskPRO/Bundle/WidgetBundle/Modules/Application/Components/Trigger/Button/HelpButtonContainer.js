@@ -45,6 +45,7 @@ export class HelpButtonContainer extends React.Component {
     if (!popup || popup === 'none' || !agentsCounts) {
       onClick();
     } else {
+      localStorage['widget.dpWindow.popupShown'] = 'true';
       this.setState({
         popupShown: true
       });

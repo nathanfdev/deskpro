@@ -8,6 +8,22 @@ export class AgentAvatars extends React.Component {
     primaryAgent: PropTypes.object
   };
 
+  static renderAvatar(agent, index) {
+    const avatar = agent.get('avatar');
+    const style = {};
+    if (avatar) {
+      style.backgroundImage = `url(${avatar})`;
+    }
+
+    return (
+      <li key={index}>
+        <div className="dpdesignportal-chat-header-avatar" style={style}>
+          <i className="fa fa-user"></i>
+        </div>
+      </li>
+    );
+  }
+
   render() {
     const { onlineAgents, primaryAgent } = this.props;
     const displayAgents = primaryAgent ? [primaryAgent] : onlineAgents.slice(0, 3);
@@ -15,11 +31,7 @@ export class AgentAvatars extends React.Component {
     return (
       <div className="avatar-container">
         <ul className={classNames({'multiple': !primaryAgent})}>
-          {displayAgents.map((agent, index) =>
-              <li key={index}>
-                <div className="dpdesignportal-chat-header-avatar" style={{backgroundImage: `url(${agent.get('avatar')})`}} />
-              </li>
-          )}
+          {displayAgents.map((agent, index) => AgentAvatars.renderAvatar(agent, index))}
         </ul>
         {primaryAgent && <hr/>}
       </div>

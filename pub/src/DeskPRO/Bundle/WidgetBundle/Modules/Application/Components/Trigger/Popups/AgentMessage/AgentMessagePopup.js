@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { AgentAvatars } from '../AgentAvatars';
+import Immutable from 'immutable';
 
 export class AgentMessagePopup extends React.Component {
 
@@ -11,7 +12,7 @@ export class AgentMessagePopup extends React.Component {
   };
 
   render() {
-    const { primaryAgent, children, onClick, helpPopupMessage } = this.props;
+    const { primaryAgent = Immutable.fromJS({}), children, onClick, helpPopupMessage } = this.props;
 
     return (
       <div className="dpdesignportal-state-buttons dpdesignportal-agent-message">
