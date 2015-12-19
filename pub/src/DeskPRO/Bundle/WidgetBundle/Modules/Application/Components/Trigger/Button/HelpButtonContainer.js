@@ -7,12 +7,13 @@ import { ReplyButtons } from '../Popups/AgentMessage/ReplyButtons';
 import { ReplyForm } from '../Popups/AgentMessage/ReplyForm';
 import { loadOnlineAgents } from '../../../Actions/agentActions';
 import { windowResize } from '../../../Actions/dpWindowActions';
-import { helpButtonSizeSelector, helpPopupSelector } from '../../../Selectors/dpWindow';
+import { widgetOpenedSelector, helpButtonSizeSelector, helpPopupSelector } from '../../../Selectors/dpWindow';
 import { onlineAgentsCountSelector } from '../../../Selectors/agent';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { OnlineAgentsContainer } from '../Popups/OnlineAgentsContainer';
 
 @connect(state => ({
+  widgetOpened: widgetOpenedSelector(state),
   size: helpButtonSizeSelector(state),
   popup: helpPopupSelector(state),
   agentsCounts: onlineAgentsCountSelector(state)
@@ -20,6 +21,7 @@ import { OnlineAgentsContainer } from '../Popups/OnlineAgentsContainer';
 export class HelpButtonContainer extends React.Component {
 
   static propTypes = {
+    widgetOpened: PropTypes.bool,
     dispatch: PropTypes.func,
     onClick: PropTypes.func,
     popup: PropTypes.string,
@@ -41,12 +43,7 @@ export class HelpButtonContainer extends React.Component {
       setTimeout(() => this.setState({popupShown: true}), 0);
     }
 
-    this.mounted = true;
     this.pollingRequest();
-  }
-
-  componentWillUnmount() {
-    this.mounted = false;
   }
 
   onButtonClick = () => {
@@ -87,12 +84,13 @@ export class HelpButtonContainer extends React.Component {
   };
 
   pollingRequest() {
-    const promise = this.props.dispatch(loadOnlineAgents());
-    const onResponse = () => {
-      if (!this.mounted) {
-        return;
-      }
+    const { widgetOpened, dispatch } = this.props;
+    if (widgetOpened) {
+      return;
+    }
 
+    const promise = dispatch(loadOnlineAgents());
+    const onResponse = () => {
       setTimeout(() => this.pollingRequest(), 10000);
     };
 
