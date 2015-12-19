@@ -61,7 +61,7 @@ export const pollingChat = createAction(
     }
 
     return DpApi
-      .sendGet(`DP_API/chats/${chatId}/polling?` + compileParams(params))
+      .sendGet(`DP_API/chats/${chatId}/polling?` + compileParams(params), {crossDomain: true, dataType: 'json'})
       .success(response => {
         const chatInfo = response.chat_info && response.chat_info.data;
         const newMessages = response.new_messages ? response.new_messages.data : [];
