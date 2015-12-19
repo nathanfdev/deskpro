@@ -33,16 +33,12 @@ export class RateAgentContainer extends React.Component {
     this.setState({
       stage: 'finished'
     });
-
-    dispatch(windowResize());
   };
 
   onClickNotHelpful = () => {
     this.setState({
       stage: 'form'
     });
-
-    this.props.dispatch(windowResize());
   };
 
   onSubmitForm = comment => {
@@ -52,8 +48,6 @@ export class RateAgentContainer extends React.Component {
     this.setState({
       stage: 'finished'
     });
-
-    dispatch(windowResize());
   };
 
   render() {
