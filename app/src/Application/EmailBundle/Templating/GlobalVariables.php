@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\Templating;
 
 use Application\DeskPRO\App;
@@ -158,7 +159,7 @@ class GlobalVariables extends BaseGlobalVariables
      */
     public function getStyle()
     {
-        return App::getSystemService('style');
+        return;
     }
 
     public function getLogoBlob()
