@@ -29,20 +29,23 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect;
+namespace DeskPRO\Bundle\AppBundle\DataService\Content;
 
-use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ContentAbstract as Content;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\Groupable;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupableCriteriaInterface;
 use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class ContentSelectCriteria.
+ * Class BaseContentCriteria.
  */
-class ContentSelectCriteria extends Criteria
+abstract class BaseContentCriteria extends Criteria implements GroupableCriteriaInterface
 {
+    use Groupable;
+
     /**
      * @param QueryBuilder $qb
      */
@@ -70,15 +73,6 @@ class ContentSelectCriteria extends Criteria
                     $qb->setParameter('person', $value);
                     break;
 
-                case 'category':
-                    if ($qb->getRootEntities()[0] === 'Application\DeskPRO\Entity\Article') {
-                        $qb->innerJoin("$alias.categories", 'categories');
-                        $qb->andWhere('categories.id = :category');
-                    } else {
-                        $qb->andWhere("$alias.category = :category");
-                    }
-                    $qb->setParameter('category', $value);
-                    break;
                 case 'sort':
                     $sort = "$alias.$value";
                     break;
@@ -88,6 +82,51 @@ class ContentSelectCriteria extends Criteria
             }
             $qb->orderBy($sort, $order);
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getGroupByAllowedValues()
+    {
+        return ['author', 'category', 'period_created', 'period_updated'];
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     */
+    public function applyGroupBy(QueryBuilder $qb)
+    {
+        $this->ensureGroupBy();
+
+        $alias = $qb->getRootAliases()[0];
+        switch ($this->group_by) {
+            case 'author':
+                $qb->addSelect('p.id as group_name');
+                $qb->leftJoin("$alias.person", 'p');
+                break;
+
+            case 'period_created':
+                $datePeriodCaseWhen = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_created");
+                $qb->addSelect("$datePeriodCaseWhen as group_name");
+                break;
+
+            case 'period_updated':
+                $datePeriodCaseWhen =
+                    DatePeriods::getDatePeriodCaseWhenDql("COALESCE($alias.date_updated, $alias.date_created)");
+                $qb->addSelect("$datePeriodCaseWhen as group_name");
+                break;
+        }
+
+        $qb->groupBy('group_name');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isGroupedByCategory()
+    {
+        return $this->group_by === 'category';
     }
 
     /**
