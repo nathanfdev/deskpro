@@ -29,16 +29,17 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount;
+namespace DeskPRO\Bundle\AppBundle\DataService\Content;
 
+use DeskPRO\Bundle\AppBundle\DataService\Content\BaseContentCriteria;
 use Doctrine\ORM\QueryBuilder;
 
 /**
- * Class ContentCountCriteria.
+ * Class ContentCriteria.
  *
- * Extends BaseContentCountCriteria with category relation handling to meet News and Download entities' criteria needs
+ * Extends BaseContentCriteria with category relation handling to meet News and Download entities' criteria needs
  */
-class ContentCountCriteria extends BaseContentCountCriteria
+class ContentCriteria extends BaseContentCriteria
 {
     /**
      * @param QueryBuilder $qb
@@ -50,8 +51,7 @@ class ContentCountCriteria extends BaseContentCountCriteria
         foreach ($this->filters as $field => $value) {
             switch ($field) {
                 case 'category':
-                    $qb->leftJoin("$alias.category", 'cat');
-                    $qb->andWhere('cat.id = :category');
+                    $qb->andWhere("$alias.category = :category");
                     $qb->setParameter('category', $value);
                     break;
             }

@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount;
 
 use Application\DeskPRO\Entity\CategoryAbstract as Category;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use DeskPRO\Bundle\AppBundle\DataService\Content\BaseContentCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Content\Category\CategoriesDataService;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 
@@ -74,11 +75,11 @@ class ContentCountsDataService
 
     /**
      * @param string $class Concrete content entity class
-     * @param BaseContentCountCriteria $criteria
+     * @param BaseContentCriteria $criteria
      *
      * @return Count
      */
-    public function countContent($class, BaseContentCountCriteria $criteria)
+    public function countContent($class, BaseContentCriteria $criteria)
     {
         $qb = $this->em->createQueryBuilder();
 
@@ -176,12 +177,12 @@ class ContentCountsDataService
     }
 
     /**
-     * @param BaseContentCountCriteria $criteria
+     * @param BaseContentCriteria $criteria
      * @param string $class
      *
      * @return int
      */
-    private function countDistinct(BaseContentCountCriteria $criteria, $class)
+    private function countDistinct(BaseContentCriteria $criteria, $class)
     {
         $totalQb = $this->em->createQueryBuilder();
         $totalQb
