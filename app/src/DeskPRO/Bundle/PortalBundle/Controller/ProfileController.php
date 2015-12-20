@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\PasswordHistory;
@@ -257,7 +258,7 @@ class ProfileController extends AbstractController
                 $proposed_email_removal = $this->getRepo('DeskPRO:PersonEmail')->find($email_id);
                 if ($proposed_email_removal->getPerson()->getId() == $person->getId()) {
                     if (!$proposed_email_removal->isPrimary()) { // cannot remove primary email
-                        $person->removeEmail($proposed_email_removal);
+                        $person->removeEmailAddressId($proposed_email_removal->getId());
                         $this->getEm()->remove($proposed_email_removal);
                         $this->getEm()->flush();
                         $this->addFlash(
