@@ -55,7 +55,7 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
     {
         $options = new CheckedOptionsArray();
         $options->addRequiredNames('title', 'creator');
-        $options->addValidNames('date_due', 'public', 'assignee', 'offset');
+        $options->addValidNames('date_due', 'public', 'assignee', 'offset', 'link');
 
         return $options;
     }
@@ -131,6 +131,10 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
             'assigned_agent'      => $assigned_agent,
             'assigned_agent_team' => $assigned_agent_team,
         );
+
+        if ((int) $this->getActionOption('link')) {
+            $formData['ticket'] = $ticket->id;
+        }
 
         $form->submit($formData);
         if (!$form->isValid()) {

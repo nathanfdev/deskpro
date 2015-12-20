@@ -1490,6 +1490,7 @@ define [
                 assignee: options.assignee
                 timezones: timezones
                 offset: options.offset
+                link: options.link
               }
 
             getValue: (model = {}, data) ->
@@ -1503,6 +1504,7 @@ define [
                   creator: model.creator
                   assignee: model.assignee
                   offset: model.offset
+                  link: model.link
                 }
               }
           }
