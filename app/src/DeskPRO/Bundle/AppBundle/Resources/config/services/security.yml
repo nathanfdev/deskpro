@@ -38,6 +38,10 @@ services:
   ### Security Services
   ###
 
+  usersource_identity_saver:
+    class: DeskPRO\Bundle\AppBundle\Usersource\UsersourceIdentitySaver
+    arguments: [@doctrine.orm.default_entity_manager]
+
   dp_person_user_provider:
     class: DeskPRO\Bundle\AppBundle\Security\DpPersonUserProvider
     arguments: [@person_repository]
