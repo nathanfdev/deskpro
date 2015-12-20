@@ -29,9 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
@@ -41,6 +44,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class SavedFormController extends AbstractController
@@ -81,6 +85,77 @@ class SavedFormController extends AbstractController
             'type'      => PortalValidation::NEW_TICKET,
             'auth_code' => $auth_code,
         ]);
+    }
+
+    /**
+     * @Route("/validate/usersource-email/auth/{tmp_auth}", name="user_validate_usersource_email")
+     */
+    public function validateUsersourceEmailAction(Request $request, $tmp_auth)
+    {
+        if (!$usersource = $this->get('usersource_identity_saver')->fetchUsersource($tmp_auth)) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$identity = $this->get('usersource_identity_saver')->fetchIdentity($tmp_auth)) {
+            throw new NotFoundHttpException();
+        }
+
+        $form = $this->createForm('deskpro_person_email');
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            /** @var \Application\DeskPRO\Entity\PersonEmail $email */
+            $email         = $form->getData();
+            $email_address = $email->getEmail();
+            // create a NEW tmp data and hold this old tmp_data_auth in it
+            // (for security reasons, we dont want to use it again for step 2 in "validateUsersourceEmailAfterClickAction").
+            $new_tmp = TmpData::create('usersource_email_verification', [
+                'usersource_tmp_auth' => $tmp_auth,
+                'email_address'       => $email_address,
+            ]);
+            $this->persistAndFlushEntity($new_tmp);
+            // fire an email with a link to validate
+            $verify_url = $this->generateUrl('user_validate_usersource_email_2', ['tmp_auth' => $new_tmp->getAuth()], UrlGeneratorInterface::ABSOLUTE_URL);
+            $this->get('portal_validation')->sendUsersourceEmailValidation($email_address, $verify_url);
+            $this->addFlash('success', $this->phrase('portal.flashes.usersource_new_add_email_verify'));
+
+            return $this->redirectToRoute('portal_home');
+        }
+
+        return $this->renderThemeView('Theme:Portal:User/usersource-set-email.html.twig',
+            [
+                'form' => $form->createView(),
+            ]
+        );
+    }
+
+    /**
+     * @Route("/validate/usersource-email-clicked/auth/{tmp_auth}", name="user_validate_usersource_email_2")
+     */
+    public function validateUsersourceEmailAfterClickAction(Request $request, $tmp_auth)
+    {
+        /** @var \Application\DeskPRO\Entity\TmpData $tmp_data */
+        if (!$tmp_data = $this->getRepo('DeskPRO:TmpData')->findOneBy(['auth' => $tmp_auth])) {
+            throw new NotFoundHttpException();
+        }
+
+        $usersource_tmp_auth = $tmp_data->getData('usersource_tmp_auth');
+        $email               = $tmp_data->getData('email_address');
+
+        if (!$usersource = $this->get('usersource_identity_saver')->fetchUsersource($usersource_tmp_auth)) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$identity = $this->get('usersource_identity_saver')->fetchIdentity($usersource_tmp_auth)) {
+            throw new NotFoundHttpException();
+        }
+
+        $this->loginAndAuthenticateTmpUsersource($usersource_tmp_auth, $email);
+
+        $this->addFlash('success', $this->phrase('portal.flashes.usersource_new_add_email_verified'));
+
+        $this->removeUsedTmpData($usersource_tmp_auth, $tmp_data);
+
+        return $this->redirectToRoute('portal_home');
     }
 
     /**
@@ -216,5 +291,36 @@ class SavedFormController extends AbstractController
         $person      = $person_data->getPersonForEmail($email_address);
 
         return $person;
+    }
+
+    /**
+     * @param $usersource_tmp_auth
+     * @param $tmp_data
+     */
+    private function removeUsedTmpData($usersource_tmp_auth, $tmp_data)
+    {
+        $usersource_tmp_data = $this->getEm()->getRepository('DeskPRO:TmpData')->findOneBy(['auth' => $usersource_tmp_auth]);
+        $this->getEm()->remove($tmp_data);
+        $this->getEm()->remove($usersource_tmp_data);
+        $this->getEm()->flush([$tmp_data, $usersource_tmp_data]);
+    }
+
+    /**
+     * @param $tmp_auth
+     * @param $email
+     */
+    private function loginAndAuthenticateTmpUsersource($tmp_auth, $email)
+    {
+        $usersource = $this->get('usersource_identity_saver')->fetchUsersource($tmp_auth);
+        $identity   = $this->get('usersource_identity_saver')->fetchIdentity($tmp_auth);
+
+        $processor = new LoginProcessor($usersource, $identity);
+        $person    = $processor->getPerson($email);
+
+        // run our rules on the new email for this new person
+        $this->get('user_rule_processor')->newEmail($person, $person->getPrimaryEmail());
+
+        $this->validateThisPerson($person);
+        $this->maybeAuthenticateThisPerson($person);
     }
 }
