@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -3871,14 +3872,13 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         );
         $metadata->mapOneToOne(
             array(
-                'fieldName'     => 'primary_email',
-                'targetEntity'  => 'Application\\DeskPRO\\Entity\\PersonEmail',
-                'cascade'       => array('persist', 'detach'),
-                'mappedBy'      => null,
-                'inversedBy'    => null,
-                'fetch'         => ClassMetadata::FETCH_EAGER,
-                'orphanRemoval' => true,
-                'joinColumns'   => array(
+                'fieldName'    => 'primary_email',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail',
+                'cascade'      => array('persist', 'detach'),
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'fetch'        => ClassMetadata::FETCH_EAGER,
+                'joinColumns'  => array(
                     0 => array(
                         'name'                 => 'primary_email_id',
                         'referencedColumnName' => 'id',
