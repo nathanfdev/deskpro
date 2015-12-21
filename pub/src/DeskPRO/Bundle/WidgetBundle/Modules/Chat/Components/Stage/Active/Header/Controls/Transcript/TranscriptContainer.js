@@ -15,7 +15,9 @@ import {
   authorEmailSelector,
   authorNameSelector,
   transcriptCheckedSelector,
-  transcriptSentSelector
+  transcriptSentSelector,
+  transcriptSavingSelector,
+  transcriptSendingSelector
 } from '../../../../../../Selectors/chat';
 
 @connect(state => ({
@@ -23,7 +25,9 @@ import {
   authorName: authorNameSelector(state),
   authorEmail: authorEmailSelector(state),
   checked: transcriptCheckedSelector(state),
-  sent: transcriptSentSelector(state)
+  sent: transcriptSentSelector(state),
+  saving: transcriptSavingSelector(state),
+  sending: transcriptSendingSelector(state)
 }))
 export class TranscriptContainer extends React.Component {
 
@@ -33,6 +37,8 @@ export class TranscriptContainer extends React.Component {
     authorName: PropTypes.string,
     authorEmail: PropTypes.string,
     checked: PropTypes.bool,
+    saving: PropTypes.bool,
+    sending: PropTypes.bool,
     sent: PropTypes.bool,
     children: PropTypes.node
   };
@@ -94,7 +100,7 @@ export class TranscriptContainer extends React.Component {
   };
 
   render() {
-    const { authorName, authorEmail, checked, sent, children } = this.props;
+    const { authorName, authorEmail, checked, saving, sending, sent, children } = this.props;
     const childProps = children.props;
 
     return (
@@ -103,6 +109,7 @@ export class TranscriptContainer extends React.Component {
           ...childProps,
 
           ref: 'button',
+          disabled: saving || sending,
           active: checked,
           onClick: this.onClick
         })}

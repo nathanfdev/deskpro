@@ -16,6 +16,7 @@ const initialState = {
   mute: false,
   transcript: {
     checked: false,
+    saving: false,
     sending: false,
     sent: true
   },
@@ -71,6 +72,10 @@ export default createReducer(initialState, {
   [actions.disableSendTranscript]: setValue('transcript.checked', false),
   [actions.enableSendTranscript]: setValue('transcript.checked', true),
   [actions.resetTranscriptDataSent]: setValue('transcript.sent', false),
+  [actions.sendTranscriptInfo]: async({
+    start: setValue('transcript.saving', true),
+    done: setValue('transcript.saving', false)
+  }),
   [actions.sendTranscriptData]: async({
     success: setValue('transcript.sent', true),
     start: setValue('transcript.sending', true),

@@ -20,6 +20,11 @@ export const transcriptCheckedSelector = createSelector(
   state => state.getIn(['transcript', 'checked'])
 );
 
+export const transcriptSavingSelector = createSelector(
+  stateSelector,
+    state => state.getIn(['transcript', 'saving'])
+);
+
 export const transcriptSendingSelector = createSelector(
   stateSelector,
   state => state.getIn(['transcript', 'sending'])
