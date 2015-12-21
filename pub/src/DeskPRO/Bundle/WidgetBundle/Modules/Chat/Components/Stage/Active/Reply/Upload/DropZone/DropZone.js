@@ -99,8 +99,6 @@ export class DropZone extends React.Component {
           this.pushBlobToQueue(blob, 'image/png');
         });
       }
-
-      //this.$pasteCatcher.html('');
     }
   };
 
