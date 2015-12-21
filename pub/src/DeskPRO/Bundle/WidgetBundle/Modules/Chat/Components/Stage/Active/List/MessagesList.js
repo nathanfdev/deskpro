@@ -23,12 +23,10 @@ export class MessagesList extends React.Component {
   }
 
   componentDidMount() {
-    this.scrollBottom();
     this.checkForNewMessages();
   }
 
   componentDidUpdate() {
-    this.scrollBottom();
     this.checkForNewMessages();
   }
 
@@ -46,6 +44,10 @@ export class MessagesList extends React.Component {
         lastMessageId: lastMessageId
       });
 
+      if (this.refs.scrollArea) {
+        setTimeout(() => this.refs.scrollArea.scrollBottom(), 0);
+      }
+
       // Checking for agent messages
       const newAgentMessage = messages.filter(message => {
         return message.get('id') > this.state.lastMessageId && message.get('author_type') === 'agent';
@@ -59,12 +61,6 @@ export class MessagesList extends React.Component {
           console.warn('Unable to play sound');
         }
       }
-    }
-  }
-
-  scrollBottom() {
-    if (this.refs.scrollArea) {
-      setTimeout(() => this.refs.scrollArea.scrollBottom(), 0);
     }
   }
 
