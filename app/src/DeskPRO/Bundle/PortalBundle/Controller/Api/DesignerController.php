@@ -60,6 +60,21 @@ class DesignerController extends AbstractApiController
     }
 
     /**
+     * @Route("/portal/api/style/portal.css", name="dp_portal_designer_custom_css")
+     * @Method({"GET"})
+     *
+     * @return View
+     */
+    public function getCssFileAction()
+    {
+        if (!$blob_storage = $this->getStylesManager()->getCssBlobStorage()) {
+            throw $this->createNotFoundException('Custom styles not found');
+        }
+
+        return new Response($blob_storage->data, 200, ['Content-Type' => 'text/css']);
+    }
+
+    /**
      * @return StylesManager
      */
     private function getStylesManager()
