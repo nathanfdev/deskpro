@@ -540,11 +540,11 @@ class FeedbackController extends AbstractController
         $the_array = array(
             'filter'    => array_merge($filter->toArray(), array('page' => $page)),
             'available' => array(
-                'status'            => FeedbackFilter::$statuses_translated,
+                'status'            => $this->transArray(FeedbackFilter::$statuses_translated),
                 'status_categories' => $status_categories,
                 'types'             => $allowed_types_parsed,
-                'sorts'             => FeedbackFilter::$sorts_translated,
-                'sort_directions'   => FeedbackFilter::$sort_directions_translated,
+                'sorts'             => $this->transArray(FeedbackFilter::$sorts_translated),
+                'sort_directions'   => $this->transArray(FeedbackFilter::$sort_directions_translated),
             ),
         );
 
@@ -554,5 +554,16 @@ class FeedbackController extends AbstractController
         );
 
         return $filter_js;
+    }
+
+    protected function transArray(array $array)
+    {
+        $new_array = [];
+
+        foreach ($array as $key => $phrase) {
+            $new_array[$key] = $this->phrase($phrase);
+        }
+
+        return $new_array;
     }
 }
