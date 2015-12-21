@@ -5,7 +5,7 @@ import { loadOnlineAgents } from './agentActions';
 
 export const loadPhraseTranslations = createAction(
   'WIDGET_LOAD_PHRASE_TRANSLATIONS',
-  () => DpApi.sendGet('DP_SERVE_API/dp.php/user-lang-1.js')
+  () => DpApi.sendGet('DP_API/lang/widget-chat-phrases.json', {crossDomain: true, dataType: 'json'})
 );
 
 export const bootstrapWidget = createAction(
