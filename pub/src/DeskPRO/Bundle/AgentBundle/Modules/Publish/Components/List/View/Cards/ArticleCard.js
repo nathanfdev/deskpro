@@ -12,21 +12,22 @@ export class ArticleCard extends Component {
     intl: intlShape.isRequired,
     element: PropTypes.object.isRequired,
     author: PropTypes.object.isRequired,
+    selected: PropTypes.bool.isRequired,
+    toggleSelected: PropTypes.func.isRequired
   };
 
   render() {
-    const { element, author } = this.props;
+    const { element, author, toggleSelected, selected } = this.props;
     const containerWidth = jQuery('.dp-list-frame-contents').innerWidth();
     const feedbackMarkWidth = jQuery('.dpw--feedback-card-mark').innerWidth();
     const cardWidth = containerWidth - feedbackMarkWidth - 20;
-    const selected = false;
 
     return (
       <Card type="article" width={cardWidth}>
 
         <ArticleCardMark numRatings={element.num_ratings}/>
 
-        <CardCheckbox selected={selected} onClick={()=>{}}/>
+        <CardCheckbox selected={selected} onClick={toggleSelected(element.id)}/>
 
         <CardLine>
           <CardLineLeft>

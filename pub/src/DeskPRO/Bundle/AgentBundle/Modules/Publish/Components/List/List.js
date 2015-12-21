@@ -4,6 +4,7 @@ import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Compone
 import { ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import { ControlBarContainer } from './ControlBar/ControlBarContainer';
+import { MassActionContainer } from './ControlBar/MassActionContainer';
 import { ArticlesTableContainer } from './View/Table/ArticlesTableContainer';
 import { NewsTableContainer } from './View/Table/NewsTableContainer';
 import { DownloadsTableContainer } from './View/Table/DownloadsTableContainer';
@@ -15,19 +16,15 @@ import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export class List extends Component {
   static propTypes = {
-    elements: PropTypes.object.isRequired,
     content: PropTypes.string.isRequired,
     loaded: PropTypes.bool.isRequired,
     pagination: PropTypes.object,
+    selected: PropTypes.object.isRequired,
     currentViewMode: PropTypes.string.isRequired
   };
 
   renderElements() {
-    const { elements, currentViewMode } = this.props;
-
-    if (!elements || elements.size === 0) {
-      return 'No data to display';
-    }
+    const { currentViewMode } = this.props;
 
     switch (currentViewMode) {
       case constants.VIEW_MODE_CARD:
@@ -78,16 +75,17 @@ export class List extends Component {
   }
 
   render() {
-    const { loaded, pagination } = this.props;
+    const { loaded, pagination, selected } = this.props;
     const checkbox = {
-      count: 1, action: ()=> {
+      count: selected.size, action: ()=> {
       }
     };
 
     return (
       <ListFrameContainer>
         <ListFrameMenu checkbox={checkbox}>
-          <ControlBarContainer key="1"/>
+          {!selected.size && <ControlBarContainer key="1"/>}
+          {selected.size && <MassActionContainer key="1"/>}
         </ListFrameMenu>
         <LoadIndicator loaded={loaded}
                        opacity={0}
