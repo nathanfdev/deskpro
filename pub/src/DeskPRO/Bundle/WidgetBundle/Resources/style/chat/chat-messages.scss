@@ -194,6 +194,11 @@
   font-size: 12px;
   line-height: 1.5em;
 
+  div {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+
   p { padding-bottom: 0; }// Single
   p + p { padding-top: 5px; }// If there's multiples paragraphs
   p + ul { margin-top: 5px; }// If there's attachements
