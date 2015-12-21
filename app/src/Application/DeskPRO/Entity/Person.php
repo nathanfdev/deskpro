@@ -31,12 +31,10 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Labels\Label;
 use Application\DeskPRO\Entity\Labels\LabelsOwner;
 use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
@@ -1373,7 +1371,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     /**
      * Add a preference value to this user.
      *
-     * @param Entity\PersonPref $pref
+     * @param PersonPref $pref
      */
     public function addPreference(PersonPref $pref)
     {

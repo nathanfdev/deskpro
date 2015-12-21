@@ -28,7 +28,7 @@
 
 namespace Application\DeskPRO\Elastica;
 
-use Elastica\Client;
+use Elastica\Client as EClient;
 
 /**
  * DeskPRO.
@@ -41,9 +41,9 @@ class IndexFactory
     private $client;
 
     /**
-     * @param Client $client
+     * @param EClient $client
      */
-    public function __construct(Client $client)
+    public function __construct(EClient $client)
     {
         $this->client = $client;
     }

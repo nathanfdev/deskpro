@@ -52,7 +52,7 @@ class PasswordValueType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildView(FormView $view, FormInterface $form)
+    public function buildView(FormView $view, FormInterface $form, array $options)
     {
         if ($form->getAttribute('always_empty')) {
             $view->set('value', '');
@@ -72,7 +72,7 @@ class PasswordValueType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getParent(array $options)
+    public function getParent()
     {
         return 'text';
     }
