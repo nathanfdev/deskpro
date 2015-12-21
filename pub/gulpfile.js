@@ -337,6 +337,13 @@ function getWebpackConfig(mode, isDevServer, isProd) {
             path.resolve(__dirname, 'src/DeskPRO/Bundle/WidgetBundle')
           ],
           loader: 'style!css!sass?outputStyle=expanded&'
+        },
+        {
+          test: /\.json/,
+          loader: 'json-loader',
+          include: [
+            path.resolve(__dirname, 'node_modules/mime-db')
+          ]
         }
       ],
       noParse: []
