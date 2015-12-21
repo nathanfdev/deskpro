@@ -29,25 +29,23 @@
 /**
  * DeskPRO.
  */
-namespace DpTest\Bundle\AppBundle\DataService\Content\ContentCount;
+namespace DpTest\Bundle\AppBundle\DataService\Content;
 
-use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount\ContentCountCriteria;
-use DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect\ContentSelectCriteria;
+use DeskPRO\Bundle\AppBundle\DataService\Content\BaseContentCriteria;
+use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCriteria;
 use DpTest\DeskProTestCase;
 use Prophecy\Argument;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class ContentCountCriteriaTest.
+ * Class ContentCriteriaTest.
  */
-class ContentCountCriteriaTest extends DeskProTestCase
+class ContentCriteriaTest extends DeskProTestCase
 {
     public static $dummyProperParams = [
         'status'         => 'published',
         'author'         => 1,
         'category'       => 1,
         'period_created' => 'this_month',
-        'group_by'       => 'period_updated',
     ];
 
     /**
@@ -55,15 +53,7 @@ class ContentCountCriteriaTest extends DeskProTestCase
      */
     public function it_should_be_constructable_with_empty_params()
     {
-        $this->assertInstanceOf(ContentCountCriteria::class, $this->instance([]));
-    }
-
-    /**
-     * @test
-     */
-    public function it_should_be_constructable_with_only_group_by()
-    {
-        $this->assertInstanceOf(ContentCountCriteria::class, $this->instance(['group_by' => 'author']));
+        $this->assertInstanceOf(ContentCriteria::class, $this->instance([]));
     }
 
     /**
@@ -71,32 +61,23 @@ class ContentCountCriteriaTest extends DeskProTestCase
      */
     public function it_should_be_constructable_with_proper_parameters()
     {
-        $this->assertInstanceOf(ContentCountCriteria::class, $this->instance(self::$dummyProperParams));
+        $this->assertInstanceOf(ContentCriteria::class, $this->instance(self::$dummyProperParams));
     }
 
     /**
      * @test
      */
-    public function it_should_extend_ContentSelectCriteria()
+    public function it_should_be_constructable_with_only_group_by()
     {
-        $this->assertInstanceOf(ContentSelectCriteria::class, $this->instance([]));
+        $this->assertInstanceOf(ContentCriteria::class, $this->instance(['group_by' => 'author']));
     }
 
     /**
      * @test
      */
-    public function it_should_inherit_all_OptionsResolver_configurations_from_ContentCountCriteria_except_group_by_option()
+    public function it_should_extend_BaseContentCriteria()
     {
-        $data = [new \Application\DeskPRO\Entity\Person()];
-        ContentCountCriteria::fromParameters([], $countOptionsResolver = new OptionsResolver(), $data);
-        ContentSelectCriteria::fromParameters([], $selectOptionsResolver = new OptionsResolver(), $data);
-        $countOptions  = $countOptionsResolver->getDefinedOptions();
-        $selectOptions = $selectOptionsResolver->getDefinedOptions();
-
-        $this->assertEquals(
-            array_values($selectOptions),
-            array_values($this->removeFromArray('group_by', $countOptions))
-        );
+        $this->assertInstanceOf(BaseContentCriteria::class, $this->instance([]));
     }
 
     /**
@@ -130,11 +111,11 @@ class ContentCountCriteriaTest extends DeskProTestCase
     /**
      * @param array $parameters
      *
-     * @return ContentCountCriteria
+     * @return ContentCriteria
      */
-    private function instance(array $parameters)
+    private function instance(array $parameters = [])
     {
-        return ContentCountCriteria::fromParameters(
+        return ContentCriteria::fromParameters(
             $parameters,
             new \Symfony\Component\OptionsResolver\OptionsResolver(),
             [new \Application\DeskPRO\Entity\Person()]

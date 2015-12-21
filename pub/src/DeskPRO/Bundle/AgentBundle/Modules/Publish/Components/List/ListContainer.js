@@ -6,10 +6,10 @@ import { currentViewModeSelector } from '../../Selectors/list';
 
 @connect(state => {
   return ({
-    elements: state.Publish.list.get(state.Publish.list.get('currentListParams').get('content')),
     content: state.Publish.list.get('currentListParams').get('content'),
     loaded: state.Publish.list.getIn(['async', 'done']),
     pagination: state.Publish.list.get('pagination'),
+    selected: state.Publish.list.get('selected'),
     currentViewMode: currentViewModeSelector(state)
   });
 })
@@ -18,8 +18,8 @@ export class ListContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     content: PropTypes.string.isRequired,
-    elements: PropTypes.object.isRequired,
     pagination: PropTypes.object.isRequired,
+    selected: PropTypes.object.isRequired,
     loaded: PropTypes.bool.isRequired,
     currentViewMode: PropTypes.string.isRequired
   };
@@ -30,7 +30,7 @@ export class ListContainer extends Component {
   }
 
   render() {
-    const {content, elements, currentViewMode, loaded, pagination} = this.props;
+    const {content, currentViewMode, loaded, pagination, selected} = this.props;
     switch (content) {
       case 'articles':
       case 'news':
@@ -40,8 +40,8 @@ export class ListContainer extends Component {
       case 'commentsToValidate':
       case 'commentsToReview':
         return (
-          <List elements={elements}
-                loaded={loaded}
+          <List loaded={loaded}
+                selected={selected}
                 pagination={pagination}
                 currentViewMode={currentViewMode}
                 content={content}

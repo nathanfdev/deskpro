@@ -5,6 +5,11 @@ import { createPeopleRequestSelectors }
 
 const stateSelector = state => state.Publish.list;
 
+export const articlesSelector = createSelector(
+  stateSelector,
+    state => state.get('articles')
+);
+
 export const currentListParamsSelector = createSelector(
   stateSelector,
     state => state.get('currentListParams')
@@ -28,3 +33,18 @@ export const currentListOrderSelector = createSelector(
 );
 
 export const currentViewModeSelector = hashStateSelectorFactory(['list', 'view'], 'card');
+
+export const massActionsSelector = createSelector(
+  [],
+  () => {
+    const massActions = [];
+    massActions.push({
+      label: 'Example',
+      type: 'action',
+      param: 'example',
+      quickFilter: true,
+      options: [{ value: 1, label: 'Example1' }, { value: 2, label: 'Example2' }]
+    });
+    return massActions;
+  }
+);

@@ -29,21 +29,23 @@
 /**
  * DeskPRO.
  */
-namespace DpTest\Bundle\AppBundle\DataService\Content\ContentSelect;
+namespace DpTest\Bundle\AppBundle\DataService\Content;
 
-use DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect\ContentSelectCriteria;
+use DeskPRO\Bundle\AppBundle\DataService\Content\ArticlesCriteria;
 use DpTest\DeskProTestCase;
+use Prophecy\Argument;
 
 /**
- * Class ContentSelectCriteriaTest.
+ * Class ArticlesCountCriteriaTest.
  */
-class ContentSelectCriteriaTest extends DeskProTestCase
+class ArticlesCriteriaTest extends DeskProTestCase
 {
     public static $dummyProperParams = [
         'status'         => 'published',
         'author'         => 1,
         'category'       => 1,
         'period_created' => 'this_month',
+        'group_by'       => 'category',
     ];
 
     /**
@@ -51,25 +53,28 @@ class ContentSelectCriteriaTest extends DeskProTestCase
      */
     public function it_should_be_constructable_with_empty_params()
     {
-        $this->assertInstanceOf(ContentSelectCriteria::class, $this->instance([]));
+        $this->assertInstanceOf(ArticlesCriteria::class, $this->instance([]));
     }
 
     /**
      * @test
      */
-    public function it_should_be_constructable_with_proper_parameters()
+    public function it_should_apply_given_group_by_to_the_passed_QueryBuilder()
     {
-        $this->assertInstanceOf(ContentSelectCriteria::class, $this->instance(self::$dummyProperParams));
+        $qb = $this->mockQueryBuilder();
+        $qb->groupBy(Argument::any())->shouldBeCalled();
+        $this->instance(self::$dummyProperParams)->applyGroupBy($qb->reveal());
     }
+
 
     /**
      * @param array $parameters
      *
-     * @return ContentSelectCriteria
+     * @return ArticlesCriteria
      */
-    private function instance(array $parameters = [])
+    private function instance(array $parameters)
     {
-        return ContentSelectCriteria::fromParameters(
+        return ArticlesCriteria::fromParameters(
             $parameters,
             new \Symfony\Component\OptionsResolver\OptionsResolver(),
             [new \Application\DeskPRO\Entity\Person()]

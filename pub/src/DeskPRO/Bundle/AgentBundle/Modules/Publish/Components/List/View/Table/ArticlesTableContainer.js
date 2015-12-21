@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
-import { peopleSelector }
+import { peopleSelector, articlesSelector }
   from '../../../../Selectors/list';
 import { Table, Th, Td, TdId, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 @connect(state => {
   return {
     people: peopleSelector(state),
-    articles: state.Publish.list.get('articles')
+    articles: articlesSelector(state)
   };
 })
 
