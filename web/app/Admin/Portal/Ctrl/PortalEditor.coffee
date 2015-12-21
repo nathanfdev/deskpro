@@ -7,8 +7,6 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     init: ->
       @open_panels = []
       @values = {}
-      @$scope.$watch((() => @values), @saveValuesDelayed, true);
-
 
     saveValuesDelayed: (newValues, oldValues) =>
       if not angular.equals(newValues, oldValues)
@@ -18,7 +16,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     saveValues: () =>
       request = @$http({
         method: 'PUT',
-        url: '/portal/api/style/variables',
+        url: '/portal/api/style/variable-values',
         data: @values
       })
       request.then(
@@ -30,7 +28,12 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       console.log('Committing', @values)
 
     initialLoad: ->
-      @$http.get('/web/sassdoc/vars.json').success((data) => @groups = data)
+      @$http.get('/portal/api/style/variable-groups').success((data) => @groups = data)
+      @$http.get('/portal/api/style/variable-values').success(
+        (values) =>
+          angular.extend(@values, values)
+          @$scope.$watch((() => @values), @saveValuesDelayed, true);
+      )
 
     togglePanel: (name) ->
       if name in @open_panels

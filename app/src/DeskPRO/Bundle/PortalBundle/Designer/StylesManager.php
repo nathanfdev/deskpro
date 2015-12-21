@@ -45,7 +45,15 @@ use Doctrine\ORM\EntityManager;
  */
 class StylesManager
 {
+    /**
+     * @var string ThemeSet option name
+     */
     private static $custom_vars_theme_set_option = 'custom_vars';
+
+    /**
+     * @var string DP_ROOT relative path to sassdoc parsed variables
+     */
+    private static $variables_json_file_path = '/../web/sassdoc/vars.json';
 
     /**
      * @var EntityManager
@@ -125,12 +133,36 @@ class StylesManager
 
     /**
      * @throws \Exception
-     * @return array|null
+     *
+     * @return array Variables specs
+     */
+    public function getVariableGroups()
+    {
+        return json_decode(file_get_contents(DP_ROOT.self::$variables_json_file_path), true);
+    }
+
+    /**
+     * @param bool $add_default
+     *
+     * @throws \Exception
+     * @return array
      *
      */
-    public function getVariables()
+    public function getVariableValues($add_default = true)
     {
-        return $this->getThemeSet()->getOption(self::$custom_vars_theme_set_option);
+        $values = $this->getThemeSet()->getOption(self::$custom_vars_theme_set_option, []);
+
+        if ($add_default) {
+            $groups    = $this->getVariableGroups();
+            $variables = call_user_func_array('array_merge', $groups);
+            foreach ($variables as $variable) {
+                if (!array_key_exists($variable['name'], $values)) {
+                    $values[$variable['name']] = $variable['default_value'];
+                }
+            }
+        }
+
+        return $values;
     }
 
     /**
@@ -164,11 +196,11 @@ class StylesManager
         $project->setSource($source);
 
         // Compile custom_vars.scss from $variables
-        $scss = '';
+        $custom_vars_scss = '';
         foreach ($variables as $variable => $value) {
-            $scss = '$'."$variable: '$value';\n";
+            $custom_vars_scss .= '$'."$variable: $value;\n";
         }
-        $project->addFileSource('custom_vars.scss', $scss);
+        $project->addFileSource("$source_dir/custom_vars.scss", $custom_vars_scss);
 
         $result = $compiler->compile($project);
 
@@ -177,8 +209,8 @@ class StylesManager
 
     /**
      * @throws \Exception
-     * @return \DeskPRO\Bundle\AppBundle\Entity\ThemeSet
      *
+     * @return \DeskPRO\Bundle\AppBundle\Entity\ThemeSet
      */
     private function getThemeSet()
     {
@@ -191,8 +223,8 @@ class StylesManager
 
     /**
      * @throws \Exception
-     * @return Brand
      *
+     * @return Brand
      */
     private function getBrand()
     {

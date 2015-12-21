@@ -35,6 +35,7 @@ use DeskPRO\Bundle\PortalBundle\Designer\StylesManager;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -44,7 +45,29 @@ use Symfony\Component\HttpFoundation\Response;
 class DesignerController extends AbstractApiController
 {
     /**
-     * @Route("/portal/api/style/variables")
+     * @Route("/portal/api/style/variable-groups")
+     * @Method({"GET"})
+     *
+     * @return View
+     */
+    public function getVariableGroupsAction()
+    {
+        return new JsonResponse($this->getStylesManager()->getVariableGroups());
+    }
+
+    /**
+     * @Route("/portal/api/style/variable-values")
+     * @Method({"GET"})
+     *
+     * @return View
+     */
+    public function getVariableValuesAction()
+    {
+        return new JsonResponse($this->getStylesManager()->getVariableValues());
+    }
+
+    /**
+     * @Route("/portal/api/style/variable-values")
      * @Method({"PUT"})
      *
      * @param Request $request
