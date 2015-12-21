@@ -252,8 +252,9 @@ class NewTicketController extends AbstractController
             $newticket->custom_org_fields         = isset($_POST['newticket_custom_org_fields']) ? $_POST['newticket_custom_org_fields'] : array();
 
             if ($newticket->ticket->department_id) {
-                $layout_page = $layouts->getLayout($newticket->ticket->department_id);
-                $layout_page = LayoutDisplay::createFromLayout($layout_page, LayoutDisplay::NEW_TICKET);
+                $layout_page       = $layouts->getLayout($newticket->ticket->department_id);
+                $layout_page       = LayoutDisplay::createFromLayout($layout_page, LayoutDisplay::NEW_TICKET);
+                $newticket->layout = $layout_page;
             } else {
                 $layout_page = $default_page;
             }
@@ -272,10 +273,6 @@ class NewTicketController extends AbstractController
 
                     if (!$request->request->has($new_custom_fields_form->getName())) {
                         $request->request->set($new_custom_fields_form->getName(), array());
-                    }
-                    $new_custom_fields_form->handleRequest($this->get('request'));
-                    if ($new_custom_fields_form->isValid()) {
-                        $manager->flush($new_custom_fields_form);
                     }
                 } catch (DuplicateTicketException $e) {
                     // Double submit detected, just continue on

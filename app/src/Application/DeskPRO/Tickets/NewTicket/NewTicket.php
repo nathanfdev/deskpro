@@ -95,6 +95,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
     public $account;
     public $account_address;
     public $sent_to;
+    public $layout;
 
     /**
      * @var
@@ -501,6 +502,15 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
             if (!empty($this->custom_org_fields) && $person->organization) {
                 $org_field_manager->saveFormToObject($this->custom_org_fields, $person->organization);
             }
+
+            $new_field_manager = App::$container->getCustomFieldManager();
+            $new_custom_fields = $new_field_manager->createFormForOwner($ticket, $ticket->person, $this->layout, array('allow_edit' => true));
+            if ($org = $ticket->person->organization) {
+                $new_field_manager->merge($new_custom_fields, $new_field_manager->createFormForOwner(
+                    $ticket, $org, $this->layout, array('allow_edit' => true)
+                ));
+            }
+            $new_custom_fields->handleRequest(App::$container->getRequest());
 
             $ticket_manager->saveTicket($ticket, $context);
             App::getOrm()->flush();
