@@ -1,5 +1,6 @@
 import React from 'react';
 import { Header } from './Header/Header';
+import { ChatContentContainer } from './ChatContentContainer';
 import { MessagesListContainer } from './List/MessagesListContainer';
 import { ReplyFormContainer } from './Reply/ReplyFormContainer';
 import { RateAgentContainer } from './Feedback/RateAgentContainer';
@@ -12,13 +13,13 @@ export class ChatActive extends React.Component {
     return (
       <div>
         <Header />
-        <div className="dpdesignportal-chat-footer">
+        <ChatContentContainer>
           <MessagesListContainer />
           <TypingEventContainer />
           <AgentDisconnectedContainer />
           <RateAgentContainer />
           <ReplyFormContainer />
-        </div>
+        </ChatContentContainer>
       </div>
     );
   }

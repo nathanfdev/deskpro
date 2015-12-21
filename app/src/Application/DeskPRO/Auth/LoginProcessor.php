@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Application\DeskPRO\Entity\PhoneNumber;
 use Application\DeskPRO\Entity\Usersource;
+use DeskPRO\Bundle\AppBundle\Exception\UsersourceNoEmailException;
 use Doctrine\ORM\EntityManager;
 use Orb\Auth\Identity;
 use Orb\Util\Arrays;
@@ -94,9 +95,11 @@ class LoginProcessor
     }
 
     /**
+     * @param string $use_email_address if there is no email found in the usersource data, then use this one
+     *
      * @return Person
      */
-    public function getPerson()
+    public function getPerson($use_email_address = null)
     {
         if ($this->person !== null) {
             return $this->person;
@@ -132,8 +135,9 @@ class LoginProcessor
             // If we can trust the email address and there already exists a person
             // with this email address, then we can just link the accounts now
             $set_email = false;
-            if ($mapped_fields->has('email') && $mapped_fields->get('email_confirmed')) {
-                $set_email = $mapped_fields->get('email');
+            // I removed the "email_confirmed" requirement below; after new validation rules, all emails from a usersource are considered valid
+            if ($mapped_fields->has('email') || $use_email_address) {
+                $set_email = $mapped_fields->get('email', $use_email_address);
                 $email     = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($mapped_fields->get('email'));
                 /** @var \Application\DeskPRO\Entity\PersonEmail $email */
                 if ($email) {
@@ -150,6 +154,11 @@ class LoginProcessor
             }
 
             if (!$this->person) {
+                if (!$set_email) {
+                    $em->rollback();
+                    // we are making a new person, and no email was sent in. this is not possible. throw an exception:
+                    throw new UsersourceNoEmailException();
+                }
                 $this->new_person = true;
                 $this->person     = new Person();
                  // always validate people sent from a usersource

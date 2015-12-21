@@ -1,17 +1,20 @@
 import React, {Component, PropTypes} from 'react';
-import classNames from 'classnames';
-import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
-import { NavFrame, NavFrameHeader, NavFrameBody, SectionsPane, Section, SectionHeader, SectionGroupedHeader, TabsPaneStatefulContainer, Tab,
-  NestedList, ListItem, ButtonsPane, Button, ListGroupingControl }
+import { NavFrame, NavFrameHeader, NavFrameBody, TabsPaneStatefulContainer, Tab, ListGroupingControl }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { KBTab } from './Tabs/KBTab';
+import { NewsTab } from './Tabs/NewsTab';
+import { DownloadsTab } from './Tabs/DownloadsTab';
+import { ToDoTab } from './Tabs/ToDoTab';
 
 export class Nav extends Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     loaded: PropTypes.bool.isRequired,
-    lists: PropTypes.object.isRequired,
-    labels: PropTypes.object.isRequired,
+    articles: PropTypes.object.isRequired,
+    news: PropTypes.object.isRequired,
+    downloads: PropTypes.object.isRequired,
+    todo: PropTypes.object.isRequired,
     grouping: PropTypes.object.isRequired,
     onGroupingChange: PropTypes.func.isRequired,
     toggleGroupingVisibility: PropTypes.func.isRequired,
@@ -21,11 +24,9 @@ export class Nav extends Component {
   };
 
   render() {
-    const { lists, labels, grouping, onGroupingChange, toggleGroupingVisibility, setMine, onClick, dispatch, dpWindow, loaded } = this.props;
+    const { articles, news, downloads, todo, grouping, onGroupingChange, toggleGroupingVisibility, setMine, onClick, dispatch, dpWindow, loaded } = this.props;
     const currentApp = dpWindow.get('activeAppId');
-    const mine = lists.get('todo').get('articles').get('mine');
-    const slaButtonAllClasses = classNames('sla-button', { 'selected': !mine });
-    const slaButtonMineClasses = classNames('sla-button', { 'selected': mine });
+
 
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
@@ -61,99 +62,30 @@ export class Nav extends Component {
           <NavFrameBody>
             <TabsPaneStatefulContainer id="tab">
               <Tab title="KB">
-                <LoadIndicator loaded={loaded}>
-                  <SectionsPane>
-                    <Section ref="kb">
-                      <SectionGroupedHeader label="Knowledgebase"
-                                            count={lists.get('articles').get('count')}
-                                            callback={toggleGroupingVisibility('articles')}/>
-                      <NestedList items={lists.get('articles').get('nested').toJS()}
-                                  groups={labels.articles}
-                                  onClick={onClick.articles}/>
-                    </Section>
-                  </SectionsPane>
-
-                  <ButtonsPane>
-                    <Button title="Glossary" icon="fa-quote-left"/>
-                    <Button title="Search" icon="fa-search"/>
-                    <Button title="Comments" icon="fa-comments-o"/>
-                  </ButtonsPane>
-                </LoadIndicator>
+                <KBTab articles={articles}
+                       loaded={loaded}
+                       toggleGroupingVisibility={toggleGroupingVisibility}
+                       onClick={onClick.articles}/>
               </Tab>
-
               <Tab title="News">
-                <LoadIndicator loaded={loaded}>
-                  <SectionsPane>
-                    <Section ref="news">
-                      <SectionGroupedHeader label="News"
-                                            count={lists.get('news').get('count')}
-                                            callback={toggleGroupingVisibility('news')}/>
-                      <NestedList items={lists.get('news').get('nested').toJS()}
-                                  groups={labels.news}
-                                  onClick={onClick.news}/>
-                    </Section>
-                  </SectionsPane>
-                </LoadIndicator>
+                <NewsTab news={news}
+                         loaded={loaded}
+                         toggleGroupingVisibility={toggleGroupingVisibility}
+                         onClick={onClick.news}/>
               </Tab>
-
               <Tab icon="fa-download">
-                <LoadIndicator loaded={loaded}>
-                  <SectionsPane>
-                    <Section ref="downloads">
-                      <SectionGroupedHeader label="Downloads"
-                                            count={lists.get('downloads').get('count')}
-                                            callback={toggleGroupingVisibility('downloads')}/>
-                      <NestedList items={lists.get('downloads').get('nested').toJS()}
-                                  groups={labels.downloads}
-                                  onClick={onClick.downloads}/>
-                    </Section>
-                  </SectionsPane>
-                </LoadIndicator>
+                <DownloadsTab downloads={downloads}
+                              loaded={loaded}
+                              toggleGroupingVisibility={toggleGroupingVisibility}
+                              onClick={onClick.downloads}/>
               </Tab>
-
-              <Tab title="Todos">
-                <LoadIndicator loaded={loaded}>
-                  <SectionsPane>
-                    <Section ref="todos">
-                      <SectionHeader>
-                        Articles
-                        <div className="sla" style={{display: 'inline-block', float: 'right'}}>
-                          <span className={slaButtonMineClasses} onClick={setMine(true)}>Mine</span>
-                          <span className={slaButtonAllClasses} onClick={setMine(false)}>All</span>
-                        </div>
-                      </SectionHeader>
-
-                      <ul>
-                        <ListItem label="Draft Articles" count={lists.get('todo').get('articles').get('draft')}
-                                  onClick={onClick.draftArticles}/>
-                        <ListItem label="Pending Articles" count={lists.get('todo').get('articles').get('pending')}
-                                  onClick={onClick.pendingArticles}/>
-                      </ul>
-                    </Section>
-                    <Section>
-                      <SectionHeader>Comments</SectionHeader>
-
-                      <ul>
-                        <ListItem label="Comments to validate"
-                                  count={lists.get('todo').get('comments').get('validate').get('count')}
-                                  onClick={onClick.allCommentsToValidate}>
-                          <NestedList depth="2"
-                                      items={lists.get('todo').get('comments').get('validate').get('nested').toJS()}
-                                      groups={labels.commentsToValidate}
-                                      onClick={onClick.commentsToValidate}/>
-                        </ListItem>
-                        <ListItem label="Comments to review" count={lists.get('todo').get('comments').get('review')}
-                                  onClick={onClick.commentsToReview}/>
-                      </ul>
-                    </Section>
-                    <Section>
-                      <SectionHeader>Translations</SectionHeader>
-                      &nbsp;
-                    </Section>
-                  </SectionsPane>
-                </LoadIndicator>
+              <Tab title="Todo">
+                <ToDoTab todo={todo}
+                         loaded={loaded}
+                         toggleGroupingVisibility={toggleGroupingVisibility}
+                         onClick={onClick.downloads}
+                         setMine={setMine}/>
               </Tab>
-
             </TabsPaneStatefulContainer>
           </NavFrameBody>
         </div>

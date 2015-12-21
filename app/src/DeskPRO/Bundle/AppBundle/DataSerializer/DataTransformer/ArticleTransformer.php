@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
@@ -44,7 +43,18 @@ class ArticleTransformer extends AbstractDataSerializerTransformer
      */
     public function getAutomaticProperties(DataTransformerRequest $request)
     {
-        return ['id', 'slug', 'title', 'content'];
+        return [
+            'id',
+            'slug',
+            'title',
+            'content',
+            'date_created',
+            'person',
+            'view_count',
+            'total_rating',
+            'num_ratings',
+            'num_comments',
+        ];
     }
 
     /**

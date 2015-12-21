@@ -1,17 +1,23 @@
 import { createReducer } from 'Ampliflux';
-import { async, setFullPayload, mergeFullPayload, setValue } from 'Ampliflux/reducers/handlers';
+import { async, setFullPayload, togglePayloadInCollection,handleMassAction } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/publishListActions';
+import * as massActions from '../Actions/publishMassActions.js';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 const initialState = {
   async: {
     done: true
   },
+  selected: [],
   // view mode (table or list)
-  view: constants.VIEW_MODE_TABLE,
-
-  // which list is displayed
-  content: 'articles',
+  view: constants.VIEW_MODE_CARD,
+  // currently viewed list GET parameters map
+  currentListParams: {
+    sort: 'date_created',
+    order: constants.ORDER_DESC,
+    // which list is displayed
+    content: 'articles'
+  },
 
   // lists
   articles: [],
@@ -26,12 +32,13 @@ const initialState = {
 export default createReducer(initialState, {
   [actions.load]: async({
     success: (state, payload) =>
-      state.set(payload.content, payload.elements)
+      state.set(payload.content, payload.data.data).set('pagination', payload.data.meta.pagination)
   }),
-  [actions.switchContent]: (state, payload) => state.set('content', payload),
-  [actions.toggleView]: async({
-    success: (state, payload) => state.set('view', constants.VIEW_MODE_CARD)
-  }),
+  // [actions.switchContent]: (state, payload) => state.set('content', payload),
+  [actions.setParams]: setFullPayload('currentListParams'),
+  [massActions.toggleMassAction]: handleMassAction('elements', 'selected'),
+  [massActions.toggleSelectedAction]: togglePayloadInCollection('selected'),
+
 });
 
 /*

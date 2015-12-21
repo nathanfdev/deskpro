@@ -32,7 +32,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -308,9 +307,22 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @return string
      */
-    public function getTitle()
+    public function getTranslatedTitle()
     {
-        return $this->title;
+        // will go thru ObjectTranslatable
+        // Note: do NOT implement getTitle or else it will override the magic dyn dispatch
+        // that uses ObjectTranslatable.
+        // yay...magic...
+        return $this->get('title');
+    }
+
+    /**
+     * @return string
+     */
+    public function getTranslatedContent()
+    {
+        // will go thru ObjectTranslatable
+        return $this->get('content');
     }
 
     /**

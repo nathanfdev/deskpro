@@ -29,11 +29,11 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount;
 
 use Application\DeskPRO\Entity\CategoryAbstract as Category;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use DeskPRO\Bundle\AppBundle\DataService\Content\BaseContentCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Content\Category\CategoriesDataService;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 
@@ -52,8 +52,19 @@ class ContentCountsDataService
      */
     private $categories;
 
+    public static $datePeriodLabels = [
+        'today'      => 'Today',
+        'yesterday'  => 'Yesterday',
+        'this_week'  => 'This Week',
+        'this_month' => 'This Month',
+        'last_month' => 'Last Month',
+        'this_year'  => 'This Year',
+        'ever'       => 'Ever',
+    ];
+
     /**
-     * @param EntityManager $em
+     * @param EntityManager         $em
+     * @param CategoriesDataService $categories
      */
     public function __construct(EntityManager $em, CategoriesDataService $categories)
     {
@@ -62,17 +73,17 @@ class ContentCountsDataService
     }
 
     /**
-     * @param string                   $class    Concrete content entity class
-     * @param BaseContentCountCriteria $criteria
+     * @param string              $class    Concrete content entity class
+     * @param BaseContentCriteria $criteria
      *
      * @return Count
      */
-    public function countContent($class, BaseContentCountCriteria $criteria)
+    public function countContent($class, BaseContentCriteria $criteria)
     {
         $qb = $this->em->createQueryBuilder();
 
         $qb->select('count(c) as value')
-           ->from($class, 'c');
+            ->from($class, 'c');
 
         $criteria->applyFilters($qb);
         if ($criteria->hasGroupBy()) {
@@ -89,18 +100,24 @@ class ContentCountsDataService
             $groupToCount = $this->resultToMap($result);
             $count        = $this->createNestedRecursively($count, $roots, $groupToCount);
             $count->setCount($this->countDistinct($criteria, $class));
-        }
-
-        // else structure into a Count with a CountsGroup containing all result groups
+        } // else structure into a Count with a CountsGroup containing all result groups
         elseif ($criteria->hasGroupBy()) {
-            $count = Count::fromGroupedBy($criteria->getGroupBy());
+            $groupedBy = $criteria->getGroupBy();
+            $count     = Count::fromGroupedBy($groupedBy);
             foreach ($result as $group) {
                 $count->add($group['value']);
-                $count->addNested($group['value'], $group['group_name'], $criteria->getGroupBy());
+                if ($groupedBy === 'period_created') {
+                    $count->addNested(
+                        $group['value'],
+                        $group['group_name'],
+                        $groupedBy,
+                        self::$datePeriodLabels[$group['group_name']]
+                    );
+                } else {
+                    $count->addNested($group['value'], $group['group_name'], $groupedBy);
+                }
             }
-        }
-
-        // return a single int result if count isn't grouped
+        } // return a single int result if count isn't grouped
         else {
             $count = Count::fromValue($result[0]['value']);
         }
@@ -126,8 +143,8 @@ class ContentCountsDataService
 
         foreach ($childrenCategories as $category) {
             $countValue = array_key_exists($category->getId(), $groupToCount)
-                        ? $groupToCount[$category->getId()]
-                        : 0;
+                ? $groupToCount[$category->getId()]
+                : 0;
             $count->add($countValue);
 
             $count->addNestedInstance(
@@ -159,12 +176,12 @@ class ContentCountsDataService
     }
 
     /**
-     * @param BaseContentCountCriteria $criteria
-     * @param string                   $class
+     * @param BaseContentCriteria $criteria
+     * @param string              $class
      *
      * @return int
      */
-    private function countDistinct(BaseContentCountCriteria $criteria, $class)
+    private function countDistinct(BaseContentCriteria $criteria, $class)
     {
         $totalQb = $this->em->createQueryBuilder();
         $totalQb

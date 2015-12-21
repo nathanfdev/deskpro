@@ -98,6 +98,24 @@ function refreshWidgetLoader() {
   console.log(".. done writing widget_loader");
 }
 
+function refreshHitRecorder() {
+  console.log("Writing hit_recorder");
+  var loaderCode = babel.transformFileSync(path.join(__dirname, "src/DeskPRO/Bundle/WidgetBundle") + "/hit_recorder.js", {"stage": "0"}).code;
+  var loaderCodemin = uglify.minify(loaderCode, {
+    "fromString": true
+  }).code;
+
+  var buildDir = path.join(__dirname, "build");
+
+  if (!fs.existsSync(buildDir)){
+    fs.mkdirSync(buildDir);
+  }
+
+  fs.writeFileSync(buildDir + "/hit_recorder.js", loaderCode);
+  fs.writeFileSync(path.join(__dirname, "build") + "/hit_recorder.min.js", loaderCodemin);
+  console.log(".. done writing hit_recorder");
+}
+
 function refreshLegacy() {
   var legacyPath = path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle/Legacy");
   var targetPath = path.join(__dirname, "build/DeskPRO/Bundle/AgentBundle/Legacy");
@@ -146,6 +164,7 @@ gulp.task('bundle', function (callback) {
   reducerRefresh("Agent", path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle"));
   reducerRefresh("Widget", path.join(__dirname, "src/DeskPRO/Bundle/WidgetBundle"));
   refreshWidgetLoader();
+  refreshHitRecorder();
   refreshLegacy();
   refreshPortalDesignerVariables();
   runWebpackBundle(getWebpackConfig('all', deskpro.isProd), callback);
@@ -165,6 +184,7 @@ gulp.task('bundle:portal', function (callback) {
 gulp.task('bundle:widget', function(callback) {
   reducerRefresh("Widget", path.join(__dirname, "src/DeskPRO/Bundle/WidgetBundle"));
   refreshWidgetLoader();
+  refreshHitRecorder();
   runWebpackBundle(getWebpackConfig('widget', deskpro.isProd), callback);
 });
 
@@ -174,6 +194,8 @@ gulp.task('bundle:dev-server', function(callback) {
     refreshLegacy();
   });
   refreshPortalDesignerVariables();
+  refreshWidgetLoader();
+  refreshHitRecorder();
   reducerRefresh("Agent", path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle"));
   reducerRefresh("Widget", path.join(__dirname, "src/DeskPRO/Bundle/WidgetBundle"));
   startWebpackServer(getWebpackConfig('all', true, false));
@@ -281,7 +303,7 @@ function getWebpackConfig(mode, isDevServer, isProd) {
           }
         },
         {
-          test: /\.(png|gif|jpg|jpeg|woff|woff2|ttf|eot|svg)(\?|$)/,
+          test: /\.(png|gif|jpg|jpeg|woff|woff2|ttf|eot|svg|mp3|ogg|wav)(\?|$)/,
           loader: 'file-loader?context=src&name=[path][name].[ext]',
           include: [
             path.resolve(__dirname, 'src/DeskPRO'),

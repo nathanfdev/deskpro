@@ -23,17 +23,11 @@ export const initialLoad = createAction(
 
       DpApi.sendGet(batch).success(({responses}) => {
         const payload = flattenBatchResponses(responses);
-        payload.lists = { todo: { articles: {}, comments: {} } };
-        payload.lists.articles = payload.articles;
-        payload.lists.news = payload.news;
-        payload.lists.downloads = payload.downloads;
-        payload.lists.todo.articles.draft = payload.articlesDraftsCount.count;
-        payload.lists.todo.articles.pending = payload.articlesPendingCount.count;
-        payload.lists.todo.comments.validate = payload.toValidateCount;
-        payload.lists.todo.comments.review = payload.commentsToReviewCount.count;
-        delete payload.articles;
-        delete payload.news;
-        delete payload.downloads;
+        payload.todo = { articles: {}, comments: {} };
+        payload.todo.articles.draft = payload.articlesDraftsCount.count;
+        payload.todo.articles.pending = payload.articlesPendingCount.count;
+        payload.todo.comments.validate = payload.toValidateCount;
+        payload.todo.comments.review = payload.commentsToReviewCount.count;
         delete payload.articlesDraftsCount;
         delete payload.articlesPendingCount;
         delete payload.toValidateCount;

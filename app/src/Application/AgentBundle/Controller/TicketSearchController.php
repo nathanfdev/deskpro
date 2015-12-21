@@ -1380,7 +1380,7 @@ class TicketSearchController extends AbstractController
 
         $json_renderer = new TicketListRenderer($ticket_display);
 
-        if (!$this->container->getSetting('core.tickets.use_ref') && in_array('ref', $vars['display_fields'])) {
+        if (!$this->container->getSetting('core_tickets.use_ref') && in_array('ref', $vars['display_fields'])) {
             $vars['display_fields'] = Arrays::removeValue($vars['display_fields'], 'ref');
         }
 

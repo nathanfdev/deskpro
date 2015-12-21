@@ -1,5 +1,6 @@
 import React from "react"
 import _ from "lodash"
+import PortalPhrases from "DeskPRO/Bundle/PortalBundle/PortalPhrases"
 
 export default class SortWidget extends React.Component {
   changeSort(e) {
@@ -8,16 +9,16 @@ export default class SortWidget extends React.Component {
 
   render() {
     let sorts = {
-      'date-desc': 'Date ' + String.fromCharCode(8595),
-      'date-asc': 'Date ' + String.fromCharCode(8593),
-      'most-views-desc': 'Views ' + String.fromCharCode(8595),
-      'most-views-asc': 'Views ' + String.fromCharCode(8593),
-      'highest-rating-desc': 'Rating ' + String.fromCharCode(8595),
-      'highest-rating-asc': 'Rating ' + String.fromCharCode(8593),
-      'most-popular-desc': 'Popularity ' + String.fromCharCode(8595),
-      'most-popular-asc': 'Popularity ' + String.fromCharCode(8593),
-      'most-discussed-desc': 'Comments ' + String.fromCharCode(8595),
-      'most-discussed-asc': 'Comments ' + String.fromCharCode(8593)
+      'date-desc':           PortalPhrases.get('portal.general.prop_date') + String.fromCharCode(8595),
+      'date-asc':            PortalPhrases.get('portal.general.prop_date') + String.fromCharCode(8593),
+      'most-views-desc':     PortalPhrases.get('portal.general.prop_vuews') + String.fromCharCode(8595),
+      'most-views-asc':      PortalPhrases.get('portal.general.prop_views') + String.fromCharCode(8593),
+      'highest-rating-desc': PortalPhrases.get('portal.general.prop_rating') + String.fromCharCode(8595),
+      'highest-rating-asc':  PortalPhrases.get('portal.general.prop_rating') + String.fromCharCode(8593),
+      'most-popular-desc':   PortalPhrases.get('portal.general.prop_popularity')+ String.fromCharCode(8595),
+      'most-popular-asc':    PortalPhrases.get('portal.general.prop_popularity') + String.fromCharCode(8593),
+      'most-discussed-desc': PortalPhrases.get('portal.general.prop_comments') + String.fromCharCode(8595),
+      'most-discussed-asc':  PortalPhrases.get('portal.general.prop_comments') + String.fromCharCode(8593)
     };
 
     let selected_sort = this.props.filter.sort + '-' + this.props.filter.sort_direction;

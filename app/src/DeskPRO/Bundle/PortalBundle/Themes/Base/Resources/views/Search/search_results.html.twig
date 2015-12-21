@@ -1,121 +1,120 @@
 {% extends 'Theme::layout.html.twig' %}
+{% import 'Theme:Search:search_macros.html.twig' as search_macros %}
 
 {% block inner_content %}
     <div class="breadcrumbs">
         {% show breadcrumbs %}
     </div>
-    <div class="search-results">
-        <div class="search-results-sidebar">
-            <div class="search-result-filters">
-                <form method="GET" novalidate>
-                    <div class="box-header">Search Filter</div>
-                    <label class="box">
-                        <input type="text" name="q" value="{{ query }}" style="width: 100%; border: 1px solid #fff0ec;" />
-                    </label>
-                    {% if can_use_articles() %}
-                    <hr />
-                    <label class="box">
-                        <span class="kb-checkbox-wrapper">
-                          <input type="checkbox" name="types[]" value="article" {% if 'article' in limit_types %} checked="checked"{% endif %}>
-                          <span class="kb-checkbox-title">{{ phrase('portal.articles.section-title') }}</span>
-                        </span>
-                    </label>
-                    {% endif %}
-                    {% if can_use_news() %}
-                    <hr />
-                    <label class="box">
-                        <span class="kb-checkbox-wrapper">
-                          <input type="checkbox" name="types[]" value="news" {% if 'news' in limit_types %} checked="checked"{% endif %}>
-                          <span class="kb-checkbox-title">{{ phrase('portal.news.section-title') }}</span>
-                        </span>
-                    </label>
-                    {% endif %}
-                    {% if can_use_downloads() %}
-                    <hr />
-                    <label class="box">
-                        <span class="kb-checkbox-wrapper">
-                          <input type="checkbox" name="types[]" value="download" {% if 'download' in limit_types %} checked="checked"{% endif %}>
-                          <span class="kb-checkbox-title">{{ phrase('portal.downloads.section-title') }}</span>
-                        </span>
-                    </label>
-                    {% endif %}
-                    {% if can_use_feedback() %}
-                    <hr />
-                    <label class="box">
-                        <span class="kb-checkbox-wrapper">
-                          <input type="checkbox" name="types[]" value="feedback" {% if 'feedback' in limit_types %} checked="checked"{% endif %}>
-                          <span class="kb-checkbox-title">{{ phrase('portal.feedback.section-title') }}</span>
-                        </span>
-                    </label>
-                    {% endif %}
-                    <hr />
-                    <div style="width: 100%; text-align: center; margin-top:5px;">
-                        <button type="submit" style="width: 80%; margin-top: 12px;">Search</button>
-                    </div>
-                </form>
+
+    <div id="search-results-page" data-query="{{ query }}">
+
+        {% set article_info = results['article'] is defined ? results['article']['pageinfo'] : null %}
+        {% set article_results = results['article'] in results ? results['article']['results'] : null %}
+        {% set news_info = results['news'] in results ? results['news']['pageinfo'] : null %}
+        {% set news_results = results['news'] in results ? results['news']['results'] : null %}
+        {% set feedback_info = results['feedback'] in results ? results['feedback']['pageinfo'] : null %}
+        {% set feedback_results = results['feedback'] in results ? results['feedback']['results'] : null %}
+        {% set download_info = results['download'] in results ? results['download']['pageinfo'] : null %}
+        {% set download_results = results['download'] in results ? results['download']['results'] : null %}
+
+        <div class="search-result-controls">
+              <h1>{{ phrase('portal.general.x-search-results-no-query', { num: combined['total_results'] }) }}</h1>
+              <ul>
+                  {% if can_use_articles() and article_info %}
+                <li><a href="#article_results"><i class="fa fa-list-alt"></i><span class="title">{{ phrase('portal.articles.search-title') }} <span class="count">({{ article_info['total_results'] }})</span></span></a></li>
+                  {% endif %}
+
+                  {% if can_use_news() and news_info %}
+                <li><a href="#news_results"><i class="fa fa-calendar-o"></i><span class="title">{{ phrase('portal.news.search-title') }} <span class="count">({{ news_info['total_results'] }})</span></span></a></li>
+                  {% endif %}
+
+                  {% if can_use_feedback() and feedback_info %}
+                <li><a href="#feedback_results"><i class="fa fa-thumbs-o-up"></i><span class="title">{{ phrase('portal.feedback.search-title') }} <span class="count">({{ feedback_info['total_results'] }})</span></span></a></li>
+                  {% endif %}
+
+                  {% if can_use_downloads() and download_info %}
+                <li><a href="#download_results"><i class="fa fa-copy"></i><span class="title">{{ phrase('portal.downloads.search-title') }} <span class="count">({{ download_info['total_results'] }})</span></span></a></li>
+                  {% endif %}
+              </ul>
             </div>
-        </div>
-        <div class="search-results-content">
-                <div class="search-result-count">
-                    {% if pageinfo.total_results %}
-                        {{ phrase('portal.general.x-search-results', { num: num_results, query: query }) }}
-                    {% else %}
-                        {{ phrase('portal.general.no-search-results') }}
-                    {% endif %}
-                </div>
+
             {% if not is_search %}
                 {{ phrase('portal.general.no-search-query') }}
+            {% elseif combined['total_results'] < 1 %}
+                {{ phrase('portal.general.no-search-results') }}
             {% else %}
-                <div class="search-results">
-                    <div class="search-results-content">
-                        {% if results|length > 0 %}
-                            <ul class="search-result-items">
-                                {% for result_item in results %}
-                                    {% set result = result_item['object'] %}
-                                    {% set type = result_item['type'] %}
-                                    <li class="search-result-item">
-                                        <h1><a href="{{ portal_path(result) }}">{{ result.title }}</a></h1>
-                                        <div class="search-result-meta">
-                                            {% set cats = get_secure_content_cats(result) %}
-                                            {% if cats|length > 0 %}
-                                            <i class="fa fa-tags"></i>
-                                            {% for cat in cats %}
-                                                <a href="{{ portal_path(cat) }}">
-                                                    {% if cat.title is defined %}
-                                                        {{ cat.title }}
-                                                    {% elseif cat.name is defined %}
-                                                        {{ cat.name }}
-                                                    {% else %}
-                                                        {{ portal_path(cat) }}
-                                                    {% endif %}
-                                                </a>
-                                                {% if not loop.last %}
-                                                    <i class="fa fa-angle-right"></i>
-                                                {% endif %}
-                                            {% endfor %}
-                                            {% endif %}
-                                            {% if result.date_published is not null %}
-                                                <hr>
-                                                <span>{{ date(result.date_published) }}</span>
-                                            {% endif %}
-                                            {% if result.num_comments > 0 %}
-                                                <hr>
-                                                <a href="{{ portal_path(result) }}#comments">
-                                                    {{ phrase('portal.general.comments-count', { count: result.num_comments }) }}
-                                                </a>
-                                            {% endif %}
-                                        </div>
-                                        <p>{{ result.search_summary }}</p>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        {% endif %}
-                        {% if pager.haveToPaginate %}
-                            {{ pagerfanta(pager) }}
-                        {% endif %}
-                    </div>
+
+            {% if can_use_articles() and article_results %}
+                <div class="search-result-category-wrapper" id="article_results">
+                  <div class="deskpro-search-results">
+                    <div class="search-result-category"><hr><i class="fa fa-list-alt"></i><span class="title">{{ phrase('portal.articles.search-title') }}</span></div>
+                    <ul class="dpx-dynamic-search-results" data-type="article" data-next="{{ article_info.next ? 1 : 0 }}">
+                        {% for result_set in article_results %}
+                            {{ search_macros.search_result(result_set) }}
+                        {% endfor %}
+                      <li class="dpx-show-more">
+                        <div class="button-wrapper">
+                          <a href="#" class="show-more-content">{{ phrase('portal.general.show_more') }} <i class="fa fa-angle-double-down"></i></a>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
             {% endif %}
-        </div>
+
+            {% if can_use_news() and news_results %}
+                <div class="search-result-category-wrapper" id="news_results">
+                  <div class="deskpro-search-results">
+                    <div class="search-result-category"><hr><i class="fa fa-calendar-o"></i><span class="title">{{ phrase('portal.news.search-title') }}</span></div>
+                    <ul class="dpx-dynamic-search-results" data-type="news" data-next="{{ news_info.next ? 1 : 0 }}">
+                        {% for result_set in news_results %}
+                            {{ search_macros.search_result(result_set) }}
+                        {% endfor %}
+                      <li class="dpx-show-more">
+                        <div class="button-wrapper">
+                          <a href="#" class="show-more-content">{{ phrase('portal.general.show_more') }} <i class="fa fa-angle-double-down"></i></a>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+            {% endif %}
+
+            {% if can_use_feedback() and feedback_results %}
+                <div class="search-result-category-wrapper" id="feedback_results">
+                  <div class="deskpro-search-results">
+                    <div class="search-result-category"><hr><i class="fa fa-thumbs-o-up"></i><span class="title">{{ phrase('portal.feedback.search-title') }}</span></div>
+                    <ul class="dpx-dynamic-search-results" data-type="feedback" data-next="{{ feedback_info.next ? 1 : 0 }}">
+                        {% for result_set in feedback_results %}
+                            {{ search_macros.search_result(result_set) }}
+                        {% endfor %}
+                      <li class="dpx-show-more">
+                        <div class="button-wrapper">
+                          <a href="#" class="show-more-content">{{ phrase('portal.general.show_more') }} <i class="fa fa-angle-double-down"></i></a>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+            {% endif %}
+
+            {% if can_use_downloads() and download_results %}
+                <div class="search-result-category-wrapper" id="download_results">
+                  <div class="deskpro-search-results">
+                    <div class="search-result-category"><hr><i class="fa fa-copy"></i><span class="title">{{ phrase('portal.downloads.search-title') }}</span></div>
+                    <ul class="dpx-dynamic-search-results" data-type="download" data-next="{{ download_info.next ? 1 : 0 }}">
+                        {% for result_set in download_results %}
+                            {{ search_macros.search_result(result_set) }}
+                        {% endfor %}
+                      <li class="dpx-show-more">
+                        <div class="button-wrapper">
+                          <a href="#" class="show-more-content">{{ phrase('portal.general.show_more') }} <i class="fa fa-angle-double-down"></i></a>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+            {% endif %}
+        {% endif %}
     </div>
 {% endblock inner_content %}

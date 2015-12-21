@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\View\Breadcrumb;
 
 use Application\DeskPRO\Entity\Article;
@@ -41,6 +40,7 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -59,7 +59,12 @@ class BreadcrumbBuilder
      */
     private $url_generator;
 
-    public function __construct(ObjectRouter $object_router, UrlGeneratorInterface $url_generator)
+    /**
+     * @var LanguageManager
+     */
+    private $language_manager;
+
+    public function __construct(ObjectRouter $object_router, UrlGeneratorInterface $url_generator, LanguageManager $language_manager)
     {
         $this->object_router = $object_router;
         $this->url_generator = $url_generator;
@@ -69,6 +74,7 @@ class BreadcrumbBuilder
             Breadcrumbs::PORTAL,
             array('phrase' => 'portal.general.nav-portal')
         );
+        $this->language_manager = $language_manager;
     }
 
     #####################################################################################################################
@@ -117,7 +123,7 @@ class BreadcrumbBuilder
         $this->b->add(
             $this->object_router->getPortalPath($cat),
             Breadcrumbs::KB_CAT,
-            $cat
+            ['title' => $this->language_manager->objectPhrase($cat)]
         );
 
         return $this;
@@ -154,7 +160,7 @@ class BreadcrumbBuilder
         $this->b->add(
             $this->object_router->getPortalPath($cat),
             Breadcrumbs::NEWS_CAT,
-            $cat
+            ['title' => $this->language_manager->objectPhrase($cat)]
         );
 
         return $this;
@@ -191,7 +197,7 @@ class BreadcrumbBuilder
         $this->b->add(
             $this->object_router->getPortalPath($cat),
             Breadcrumbs::DOWNLOADS_CAT,
-            $cat
+            ['title' => $this->language_manager->objectPhrase($cat)]
         );
 
         return $this;
@@ -359,7 +365,6 @@ class BreadcrumbBuilder
     #####################################################################################################################
     # Tickets
     #####################################################################################################################
-
 
     public function addNewTicket()
     {

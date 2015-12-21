@@ -2,12 +2,15 @@ import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
 import { List } from './List';
 import * as actions from '../../Actions/publishListActions';
+import { currentViewModeSelector } from '../../Selectors/list';
 
 @connect(state => {
   return ({
-    elements: state.Publish.list.get(state.Publish.list.get('content')),
-    content: state.Publish.list.get('content'),
-    view: state.Publish.list.get('view')
+    content: state.Publish.list.get('currentListParams').get('content'),
+    loaded: state.Publish.list.getIn(['async', 'done']),
+    pagination: state.Publish.list.get('pagination'),
+    selected: state.Publish.list.get('selected'),
+    currentViewMode: currentViewModeSelector(state)
   });
 })
 export class ListContainer extends Component {
@@ -15,8 +18,10 @@ export class ListContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     content: PropTypes.string.isRequired,
-    elements: PropTypes.object.isRequired,
-    view: PropTypes.string.isRequired
+    pagination: PropTypes.object.isRequired,
+    selected: PropTypes.object.isRequired,
+    loaded: PropTypes.bool.isRequired,
+    currentViewMode: PropTypes.string.isRequired
   };
 
   toggleView(e) {
@@ -25,7 +30,7 @@ export class ListContainer extends Component {
   }
 
   render() {
-    const {content, elements, view} = this.props;
+    const {content, currentViewMode, loaded, pagination, selected} = this.props;
     switch (content) {
       case 'articles':
       case 'news':
@@ -35,10 +40,12 @@ export class ListContainer extends Component {
       case 'commentsToValidate':
       case 'commentsToReview':
         return (
-          <List
-            elements={elements}
-            view={view}
-            toggleView={this.toggleView.bind(this)}
+          <List loaded={loaded}
+                selected={selected}
+                pagination={pagination}
+                currentViewMode={currentViewMode}
+                content={content}
+                toggleView={this.toggleView.bind(this)}
             />
         );
 

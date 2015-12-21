@@ -35,9 +35,8 @@ use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\News;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount\ArticlesCountCriteria;
-use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount\ContentCountCriteria;
-use DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect\ContentSelectCriteria;
+use DeskPRO\Bundle\AppBundle\DataService\Content\ArticlesCriteria;
+use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCriteria;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -66,6 +65,11 @@ class ContentController extends BaseController
      *         "type"="articles|news|downloads"
      *     }
      * )
+     *
+     * @param string  $type
+     * @param Request $request
+     *
+     * @return View
      */
     public function getContentCountsAction($type, Request $request)
     {
@@ -79,8 +83,8 @@ class ContentController extends BaseController
             // news and downloads internally because of Category relation (Article::$categories, while
             // News::$category and Download::$category)
             $criteria = $type === 'articles'
-                      ? ArticlesCountCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()])
-                      : ContentCountCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()]);
+                ? ArticlesCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()])
+                : ContentCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()]);
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
@@ -109,15 +113,22 @@ class ContentController extends BaseController
      *         "type"="articles|news|downloads"
      *     }
      * )
+     *
+     * @param string  $type
+     * @param Request $request
+     *
+     * @return View
      */
     public function getAction($type, Request $request)
     {
         /** @var \DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect\ContentDataService $dataService */
         $dataService = $this->get('data.content');
 
-        $params = array_diff_assoc($request->query->all(), ['count' => null, 'page' => null]);
+        $params = $params = $this->removeAdditionalParameters($request);
         try {
-            $criteria = ContentSelectCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()]);
+            $criteria = $type === 'articles'
+                ? ArticlesCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()])
+                : ContentCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()]);
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }

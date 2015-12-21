@@ -31,7 +31,6 @@
  *
  * @category Install
  */
-
 namespace Application\InstallBundle\Data\DefaultData;
 
 use Application\DeskPRO\WorkerProcess\Job;
@@ -332,6 +331,15 @@ class WorkerJobsData extends AbstractDefaultData
             'description'  => 'Checks for errors and timeouts during incoming email logs',
             'job_class'    => 'Application\\DeskPRO\\WorkerProcess\\Job\\IncomingEmailSupervisor',
             'run_interval' => Job\IncomingEmailSupervisor::DEFAULT_INTERVAL,
+        );
+
+        $jobs[] = array(
+            'id'           => 'update_view_counts',
+            'worker_group' => 'update_view_counts',
+            'title'        => 'Udpate View Counts',
+            'description'  => 'Checks hit tracker for pageviews on content, and updates the view counter',
+            'job_class'    => 'Application\\DeskPRO\\WorkerProcess\\Job\\UpdateViewCounts',
+            'run_interval' => Job\UpdateViewCounts::DEFAULT_INTERVAL,
         );
 
         #------------------------------

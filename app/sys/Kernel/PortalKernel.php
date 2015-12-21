@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Kernel;
 
 use Application\DeskPRO\App;
@@ -37,7 +36,6 @@ use Doctrine\DBAL\DBALException;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
@@ -242,12 +240,10 @@ class PortalKernel extends BaseKernel
             @unlink($dql_cache);
         }
 
-        // cache the container
-        $dumper  = new PhpDumper($container);
-        $content = $dumper->dump(array('class' => $class, 'base_class' => $baseClass));
-        if (!$this->debug) {
-            $content = self::stripComments($content);
-        }
+        parent::dumpContainer($cache, $container, $class, $baseClass);
+
+        $cacheFile = (string) $cache;
+        $content   = file_get_contents($cacheFile);
 
         // Re-write absolute paths to use DP_ROOT instead
         $content = str_replace("'".DP_ROOT, 'DP_ROOT.\'', $content);

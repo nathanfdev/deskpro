@@ -3,10 +3,10 @@ import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 import { peopleSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackStatusCategoriesSelector, feedbackCategoriesSelector }
   from '../../../../Selectors/list';
 import { Table, Th, Td, TdId, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
-import { defaultTableFields } from '../../../List/ControlBar/FeedbackViewOptions';
 import { applyParams } from '../../../../Actions/FeedbackListActions';
-import { connect } from 'react-redux';
+import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
 
+import { connect } from 'react-redux';
 @connect(state => ({
   feedback: state.Feedback.list.get('elements'),
   viewFields: state.Feedback.list.get('tableVisibleFields'),
@@ -43,14 +43,10 @@ export class FeedbackTableContainer extends Component {
     this.props.dispatch(applyParams({ sort: param, order }));
   }
 
-  renderLongString(string) {
-    let content = string.substr(0, 40);
-    if (string.length > 40) {
-      content += '...';
-    }
-    return (
-      <a href="#">{content}</a>
-    );
+
+  isVisible(field) {
+    const {viewFields} = this.props;
+    return viewFields.includes(field);
   }
 
   renderStatus(statusCategory) {
@@ -73,11 +69,6 @@ export class FeedbackTableContainer extends Component {
       return feedbackComments.get(id).get('counter');
     }
     return 0;
-  }
-
-  isVisible(field) {
-    const {viewFields} = this.props;
-    return viewFields.includes(field);
   }
 
   render() {
@@ -116,7 +107,7 @@ export class FeedbackTableContainer extends Component {
               onChange={this.sortTable.bind(this)}
               visible={this.isVisible('num_ratings')}/>
           <Th sort="num_comments" title="Comments"
-              visible={this.isVisible('num_coments')}/>
+              visible={this.isVisible('num_comments')}/>
           <Th sort="date_created" title="Created"
               order={this.state.sort === 'date_created' ? this.state.order : false}
               onChange={this.sortTable.bind(this)}
@@ -130,10 +121,10 @@ export class FeedbackTableContainer extends Component {
                 {element.id}
               </TdId>
               <Td className="item-title" visible={this.isVisible('title')}>
-                {this.renderLongString(element.title)}
+                <a href="#"><SlicedString string={element.title}/></a>
               </Td>
               <Td className="item-title" visible={this.isVisible('content')}>
-                {this.renderLongString(element.content)}
+                <a href="#"><SlicedString string={element.content}/></a>
               </Td>
               <Td visible={this.isVisible('status_category')}>
                 {this.renderStatus(element.status_category)}

@@ -7,7 +7,7 @@
                     <h1>
                         <i class="fa fa-star"></i>
                         <a href="{{ portal_path(category) }}">
-                            {{ category.title }}
+                            {{ object_phrase(category) }}
                             <span class="count">({{ category_children_pagers[category.id]|length }})</span>
                         </a>
                     </h1>

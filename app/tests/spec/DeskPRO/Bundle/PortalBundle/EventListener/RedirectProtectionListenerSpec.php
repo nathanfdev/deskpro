@@ -38,6 +38,8 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
+use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
 class RedirectProtectionListenerSpec extends ObjectBehavior
@@ -63,20 +65,29 @@ class RedirectProtectionListenerSpec extends ObjectBehavior
 
     public function it_does_not_change_response_if_not_redirect(
         Response $response,
-        FilterResponseEvent $event
+        FilterResponseEvent $event,
+        Request $request,
+        AttributeBag $attr_bag
     ) {
         $response->isRedirect()->willReturn(false);
 
         $event->setResponse(Argument::any())->shouldNotBeCalled();
+
+        $event->getRequest()->willReturn($request);
+        $request->attributes = $attr_bag;
 
         $this->onResponse($event);
     }
 
     public function it_does_not_change_response_if_special_header_exists_and_it_removes_the_special_header(
         Response $response,
+        Request $request,
+        AttributeBagInterface $attr_bag,
         HeaderBag $response_headers,
         FilterResponseEvent $event
     ) {
+        $request->attributes = $attr_bag;
+        $event->getRequest()->willReturn($request);
         $response->isRedirect()->willReturn(true);
 
         $response_headers
@@ -97,8 +108,11 @@ class RedirectProtectionListenerSpec extends ObjectBehavior
         Response $response,
         HeaderBag $response_headers,
         FilterResponseEvent $event,
-        Request $request
+        Request $request,
+        AttributeBagInterface $attr_bag
     ) {
+        $request->attributes = $attr_bag;
+        $event->getRequest()->willReturn($request);
         $response->isRedirect()->willReturn(true);
 
         $response_headers
@@ -125,8 +139,11 @@ class RedirectProtectionListenerSpec extends ObjectBehavior
         Response $response,
         HeaderBag $response_headers,
         FilterResponseEvent $event,
-        Request $request
+        Request $request,
+        AttributeBagInterface $attr_bag
     ) {
+        $request->attributes = $attr_bag;
+        $event->getRequest()->willReturn($request);
         $response->isRedirect()->willReturn(true);
 
         $response_headers
@@ -153,8 +170,11 @@ class RedirectProtectionListenerSpec extends ObjectBehavior
         HeaderBag $response_headers,
         FilterResponseEvent $event,
         Request $request,
-        BrandContainer $brand_container
+        BrandContainer $brand_container,
+        AttributeBagInterface $attr_bag
     ) {
+        $request->attributes = $attr_bag;
+        $event->getRequest()->willReturn($request);
         $response->isRedirect()->willReturn(true);
 
         $response_headers

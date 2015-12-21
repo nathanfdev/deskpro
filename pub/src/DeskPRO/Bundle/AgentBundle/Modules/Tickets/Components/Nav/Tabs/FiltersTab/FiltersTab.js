@@ -7,6 +7,17 @@ export class FiltersTab extends Component {
     filterSetsCount: PropTypes.object.isRequired
   };
 
+  getFilterSetCounts(count) {
+    if (count) {
+      const nested = count.get('nested');
+      if (nested) {
+        return nested.toJS();
+      }
+    }
+
+    return [];
+  }
+
   render() {
     return (
       <div>
@@ -17,21 +28,10 @@ export class FiltersTab extends Component {
             <NestedListContainer
               items={this.getFilterSetCounts(count)}
               alwaysExpanded
-            />
+              />
           </div>
         ))}
       </div>
     );
-  }
-
-  getFilterSetCounts(count) {
-    if (count) {
-      const nested = count.get('nested');
-      if (nested) {
-        return nested.toJS();
-      }
-    }
-
-    return [];
   }
 }

@@ -35,6 +35,7 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -65,9 +66,11 @@ class PortalModeListenerSpec extends ObjectBehavior
         GetResponseEvent $event,
         PortalModeFactory $factory,
         Request $request,
-        PortalModeStorage $store
+        PortalModeStorage $store,
+        AttributeBag $attr_bag
     ) {
         $request->getPathInfo()->willReturn($path = '/admin-mode/en/tickets');
+        $request->attributes = $attr_bag;
 
         $event->isMasterRequest()->willReturn(true);
         $event->getRequest()->willReturn($request);
@@ -83,9 +86,13 @@ class PortalModeListenerSpec extends ObjectBehavior
     public function it_ignores_sub_requests(
         GetResponseEvent $event,
         PortalModeFactory $factory,
-        PortalModeStorage $store
+        PortalModeStorage $store,
+        Request $request,
+        AttributeBag $attr_bag
     ) {
         $event->isMasterRequest()->willReturn(false);
+        $request->attributes = $attr_bag;
+        $event->getRequest()->willReturn($request);
 
         $factory->createMode(Argument::any())->shouldNotBeCalled();
         $store->setMode(Argument::any())->shouldNotBeCalled();

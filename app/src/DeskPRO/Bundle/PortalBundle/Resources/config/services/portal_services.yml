@@ -33,10 +33,3 @@ services:
     factory_class: Application\DeskPRO\DependencyInjection\SystemServices\AttachmentAccepterService
     factory_method: create
     arguments: [@service_container]
-
-  hitrecord.record_factory:
-    class: DeskPRO\Bundle\AppBundle\HitTrack\Recorder\HitRecordFactory
-
-  hitrecord.record_storage:
-    class: DeskPRO\Bundle\AppBundle\HitTrack\Recorder\HitDbStorage
-    arguments: [@doctrine.orm.entity_manager]

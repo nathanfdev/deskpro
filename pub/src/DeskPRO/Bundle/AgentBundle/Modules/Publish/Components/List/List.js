@@ -2,63 +2,100 @@ import React, {Component, PropTypes} from 'react';
 import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ListFrameMenu';
 import { ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
+import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
+import { ControlBarContainer } from './ControlBar/ControlBarContainer';
+import { MassActionContainer } from './ControlBar/MassActionContainer';
+import { ArticlesTableContainer } from './View/Table/ArticlesTableContainer';
+import { NewsTableContainer } from './View/Table/NewsTableContainer';
+import { DownloadsTableContainer } from './View/Table/DownloadsTableContainer';
+import { ArticlesCardsContainer } from './View/Cards/ArticlesCardsContainer';
+import { NewsCardsContainer } from './View/Cards/NewsCardsContainer';
+import { DownloadsCardsContainer } from './View/Cards/DownloadsCardsContainer';
+import { PaginationContainer } from './PaginationContainer';
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export class List extends Component {
   static propTypes = {
-    elements: PropTypes.object.isRequired,
-    view: PropTypes.string.isRequired
+    content: PropTypes.string.isRequired,
+    loaded: PropTypes.bool.isRequired,
+    pagination: PropTypes.object,
+    selected: PropTypes.object.isRequired,
+    currentViewMode: PropTypes.string.isRequired
   };
 
-  render() {
-    const { elements, view } = this.props;
-    const checkbox = { count: 1, action: ()=>{} };
+  renderElements() {
+    const { currentViewMode } = this.props;
 
-    return (
-      <ListFrameContainer>
-        <ListFrameMenu checkbox={checkbox}/>
-
-        <ListFrameContents>
-          {this.renderElements(view, elements)}
-        </ListFrameContents>
-      </ListFrameContainer>
-    );
-  }
-
-  renderElements(view, elements) {
-    if (!elements || elements.size === 0) {
-      return 'No data to display';
-    }
-
-    switch (view) {
-      case 'list':
+    switch (currentViewMode) {
+      case constants.VIEW_MODE_CARD:
         return this.renderListView();
-      case 'table':
+      case constants.VIEW_MODE_TABLE:
         return this.renderTableView();
       default:
-        throw new Error(`Unknown "${view}" view type`);
+        throw new Error(`Unknown "${currentViewMode}" view type`);
     }
   }
 
   renderListView() {
-    const {elements} = this.props;
-    return (
-      <div>
-        <h1>List View</h1>
-        {elements.map((element, index) => <div key={index} style={{marginTop: '20px'}}>List
-          item: {element.content}</div>)}
-      </div>
-    );
+    const {content} = this.props;
+    switch (content) {
+      case constants.CONTENT_ARTICLES:
+        return (
+          <ArticlesCardsContainer/>
+        );
+      case constants.CONTENT_NEWS:
+        return (
+          <NewsCardsContainer/>
+        );
+      case constants.CONTENT_DOWNLOADS:
+        return (
+          <DownloadsCardsContainer/>
+        );
+      default:
+    }
   }
 
   renderTableView() {
-    const {elements} = this.props;
-    console.log('Elements', elements);
+    const {content} = this.props;
+    switch (content) {
+      case constants.CONTENT_ARTICLES:
+        return (
+          <ArticlesTableContainer/>
+        );
+      case constants.CONTENT_NEWS:
+        return (
+          <NewsTableContainer/>
+        );
+      case constants.CONTENT_DOWNLOADS:
+        return (
+          <DownloadsTableContainer/>
+        );
+      default:
+    }
+  }
+
+  render() {
+    const { loaded, pagination, selected } = this.props;
+    const checkbox = {
+      count: selected.size, action: ()=> {
+      }
+    };
+
     return (
-      <div>
-        <h1>Table View</h1>
-        {elements.map((element, index) => <div key={index} style={{marginTop: '20px'}}>Table
-          row: {element.content}</div>)}
-      </div>
+      <ListFrameContainer>
+        <ListFrameMenu checkbox={checkbox}>
+          {!selected.size && <ControlBarContainer key="1"/>}
+          {selected.size && <MassActionContainer key="1"/>}
+        </ListFrameMenu>
+        <LoadIndicator loaded={loaded}
+                       opacity={0}
+                       width={3}>
+          <ListFrameContents>
+            {this.renderElements()}
+            {pagination && pagination.total_pages > 1 && <PaginationContainer/>}
+          </ListFrameContents>
+        </LoadIndicator>
+      </ListFrameContainer>
     );
   }
 }

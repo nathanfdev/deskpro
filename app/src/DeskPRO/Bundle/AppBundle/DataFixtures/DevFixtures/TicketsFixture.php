@@ -33,9 +33,11 @@ namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\LabelDef;
+use Application\DeskPRO\Entity\Ticket;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -248,6 +250,7 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
                 'person_id'               => $this->faker->randomElement($this->people_ids),
                 'agent_team_id'           => $this->agent_team_ids && $this->faker->boolean(40) ? $this->faker->randomElement($this->agent_team_ids) : null,
                 'ref'                     => Strings::random(15, Strings::CHARS_ALPHANUM_IU),
+                'auth'                    => DpStrings::random(Ticket::TAC_AUTHCODE_LEN, Strings::CHARS_KEY),
                 'status'                  => $status,
                 'urgency'                 => $this->faker->numberBetween(1, 10),
                 'subject'                 => $subj,
@@ -289,6 +292,7 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
                 'person_id'               => $this->joe_id,
                 'agent_team_id'           => $this->agent_team_ids && $this->faker->boolean(40) ? $this->faker->randomElement($this->agent_team_ids) : null,
                 'ref'                     => Strings::random(15, Strings::CHARS_ALPHANUM_IU),
+                'auth'                    => DpStrings::random(Ticket::TAC_AUTHCODE_LEN, Strings::CHARS_KEY),
                 'status'                  => $status,
                 'urgency'                 => $this->faker->numberBetween(1, 10),
                 'subject'                 => $subj,
@@ -330,6 +334,7 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
                 'person_id'               => $this->joe_manager_id,
                 'agent_team_id'           => $this->agent_team_ids && $this->faker->boolean(40) ? $this->faker->randomElement($this->agent_team_ids) : null,
                 'ref'                     => Strings::random(15, Strings::CHARS_ALPHANUM_IU),
+                'auth'                    => DpStrings::random(Ticket::TAC_AUTHCODE_LEN, Strings::CHARS_KEY),
                 'status'                  => $status,
                 'urgency'                 => $this->faker->numberBetween(1, 10),
                 'subject'                 => $subj,

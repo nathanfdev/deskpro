@@ -89,6 +89,13 @@ class HitRecordFactory
 
         $meta = array_filter($meta, function ($v) { return is_scalar($v); });
 
+        // If we werent given a URL specifically,
+        // maybe its a fallback image in which case we sholud use
+        // the referrer which will be the 'real' page the user is actually on
+        if (!$url) {
+            $url = $request->headers->get('Referer', null);
+        }
+
         if (!$url) {
             throw new \InvalidArgumentException('Missing URL');
         }

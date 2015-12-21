@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { pollingChat, sendTranscriptData } from '../../Actions/chatActions';
 import history from '../../../../Services/history';
 import moment from 'moment';
+import { widgetOpenedSelector } from '../../../Application/Selectors/dpWindow';
 import {
   chatIdSelector,
   agentIdSelector,
@@ -15,6 +16,7 @@ import {
 } from '../../Selectors/chat';
 
 @connect(state => ({
+  widgetOpened: widgetOpenedSelector(state),
   chatId: chatIdSelector(state),
   agentId: agentIdSelector(state),
   lastMessageId: lastMessageIdSelector(state),
@@ -27,6 +29,7 @@ import {
 export class ChatPollingContainer extends React.Component {
 
   static propTypes = {
+    widgetOpened: PropTypes.bool,
     dispatch: PropTypes.func.isRequired,
     chatId: PropTypes.number,
     agentId: PropTypes.number,
@@ -49,11 +52,11 @@ export class ChatPollingContainer extends React.Component {
   }
 
   pollingRequest = () => {
-    const { dispatch, chatId, agentId, lastMessageId } = this.props;
+    const { dispatch, chatId, agentId, lastMessageId, widgetOpened } = this.props;
     const { isEnded, authorEmail, transcriptChecked, transcriptSending, transcriptSent } = this.props;
 
     // Handle state changes
-    if (!chatId) {
+    if (!chatId || !widgetOpened) {
       return;
     }
     if (agentId && history.state !== '/chat/active') {

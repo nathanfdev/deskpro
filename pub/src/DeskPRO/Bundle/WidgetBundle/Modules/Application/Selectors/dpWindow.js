@@ -7,12 +7,54 @@ export const widgetOpenedSelector = createSelector(
   state => state.get('widgetOpened')
 );
 
-export const widgetDimentionsSelector = createSelector(
+// Widget dimensions selectors
+export const widgetDimensionsSelector = createSelector(
   stateSelector,
   state => state.get('widgetDimensions')
 );
 
 export const widgetHeightSelector = createSelector(
-  widgetDimentionsSelector,
-  state => state.get('height')
+  widgetDimensionsSelector,
+  dimensions => dimensions.get('height')
+);
+
+// Options selectors
+export const widgetOptionsSelector = createSelector(
+  stateSelector,
+  state => state.get('options')
+);
+
+export const companyNameSelector = createSelector(
+  widgetOptionsSelector,
+  options => options.get('companyName')
+);
+
+export const companyLogoSelector = createSelector(
+  widgetOptionsSelector,
+  options => options.get('companyLogo')
+);
+
+export const helpButtonSizeSelector = createSelector(
+  widgetOptionsSelector,
+  options => options.get('helpButtonSize')
+);
+
+export const chatModeSelector = createSelector(
+  widgetOptionsSelector,
+  options => options.get('chatMode')
+);
+
+export const helpPopupSelector = createSelector(
+  widgetOptionsSelector,
+  options => options.get('helpPopup')
+);
+
+export const helpPopupTitleSelector = createSelector(
+  widgetOptionsSelector,
+  options => options.get('helpPopupTitle')
+);
+
+export const helpPopupMessageSelector = createSelector(
+  widgetOptionsSelector,
+  options => options.get('helpPopupMessage')
 );

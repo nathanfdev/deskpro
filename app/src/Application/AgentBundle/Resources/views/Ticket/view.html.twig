@@ -654,7 +654,7 @@ pageMeta.lang = {{ {
 			<ul>
 				<li data-list-type="messages" class="on" data-tab-for="#{{baseId}}_messages_wrap">{{ phrase('agent.tickets.messages') }}</li>
 				<li class="logs" data-list-type="log" data-tab-for="#{{baseId}}_logs_wrap">{{ phrase('agent.tickets.full_log') }}</li>
-				{% if app.getSetting('core.tickets.enable_feedback') and app.getSetting('core.tickets.feedback_agents_read') and ticket.date_feedback_rating %}
+				{% if app.getSetting('core_tickets.enable_feedback') and app.getSetting('core_tickets.feedback_agents_read') and ticket.date_feedback_rating %}
 					<li data-list-type="feedback" data-tab-for="#{{baseId}}_messages_wrap">
 						{{ phrase('agent.tickets.ticket_feedback') }} <span class="feedback-rating feedback-{{ ticket.feedback_rating_type }}">{% if ticket.feedback_rating == 1 %}☺{% elseif ticket.feedback_rating == -1 %}☹{% else %}&mdash;{% endif %}</span>
 					</li>

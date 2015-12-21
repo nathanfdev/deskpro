@@ -125,6 +125,14 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @return string
+     */
+    public function getAuth()
+    {
+        return $this->auth;
+    }
+
+    /**
      * Get the type.
      *
      * @return string

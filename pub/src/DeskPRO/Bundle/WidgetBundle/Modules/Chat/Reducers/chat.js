@@ -12,6 +12,7 @@ import {
 } from 'Ampliflux/reducers/handlers';
 
 const initialState = {
+  phrases: {},
   mute: false,
   transcript: {
     checked: false,
@@ -20,28 +21,7 @@ const initialState = {
   },
   chatId: null,
   chatInfo: {},
-  messages: [
-    {id: 104, content: 'my message my message my message my message :)', author: null, author_type: 'user', is_sys: false, is_html: true, date_created: '2015-12-03 14:10'},
-    {id: 104, content: 'my message my message my message my message :)', author: null, author_type: 'user', is_sys: false, is_html: true, date_created: '2015-12-03 14:10'},
-    {id: 104, content: 'my message my message my message my message :)', author: null, author_type: 'user', is_sys: false, is_html: true, date_created: '2015-12-03 14:10'},
-    {id: 104, content: 'my message my message my message my message :)', author: null, author_type: 'user', is_sys: false, is_html: true, date_created: '2015-12-03 14:10'},
-    {id: 104, content: 'my message my message my message my message :)', author: null, author_type: 'user', is_sys: false, is_html: true, date_created: '2015-12-03 14:10'},
-    {id: 104, content: 'my message my message my message my message :)', author: null, author_type: 'user', is_sys: false, is_html: true, date_created: '2015-12-03 14:10'},
-    {id: 104, content: 'my message my message my message my message :)', author: null, author_type: 'user', is_sys: false, is_html: true, date_created: '2015-12-03 14:10'},
-    {id: 104, content: 'my message my message my message my message :)', author: null, author_type: 'user', is_sys: false, is_html: true, date_created: '2015-12-03 14:10'},
-    {id: 104, content: 'my message my message my message my message :)', author: null, author_type: 'user', is_sys: false, is_html: true, date_created: '2015-12-03 14:10'},
-    {id: 104, content: 'my message my message my message my message :)', author: null, author_type: 'user', is_sys: false, is_html: true, date_created: '2015-12-03 14:10'},
-    {id: 104, content: 'my message my message my message my message :)', author: null, author_type: 'user', is_sys: false, is_html: true, date_created: '2015-12-03 14:10'},
-    {id: 104, content: 'my message my message my message my message :)', author: null, author_type: 'user', is_sys: false, is_html: true, date_created: '2015-12-03 14:10'},
-    {id: 104, content: 'my message my message my message my message :)', author: null, author_type: 'user', is_sys: false, is_html: true, date_created: '2015-12-03 14:10'},
-    {id: 104, content: 'my message my message my message my message :)', author: null, author_type: 'user', is_sys: false, is_html: true, date_created: '2015-12-03 14:10'},
-    {id: 104, content: 'my message my message my message my message :)', author: null, author_type: 'user', is_sys: false, is_html: true, date_created: '2015-12-03 14:10'},
-    {id: 104, content: 'my message my message my message my message :)', author: null, author_type: 'user', is_sys: false, is_html: true, date_created: '2015-12-03 14:10'},
-    {id: 104, content: 'my message my message my message my message :)', author: null, author_type: 'user', is_sys: false, is_html: true, date_created: '2015-12-03 14:10'},
-    {id: 104, content: 'my message my message my message my message :)', author: null, author_type: 'user', is_sys: false, is_html: true, date_created: '2015-12-03 14:10'},
-    {id: 104, content: 'my message my message my message my message :)', author: null, author_type: 'user', is_sys: false, is_html: true, date_created: '2015-12-03 14:10'},
-    {id: 104, content: 'my message my message my message my message :)', author: null, author_type: 'user', is_sys: false, is_html: true, date_created: '2015-12-03 14:10'}
-  ],
+  messages: [],
   uploading: {
     files: [],
     failed: [],
@@ -51,6 +31,9 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
+  // Phrase translations
+  [actions.setPhraseTranslations]: setFullPayload('phrases'),
+
   // Audio
   [actions.toggleMute]: toggleBool('mute'),
 

@@ -48,7 +48,6 @@ use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTablesCollection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -297,9 +296,10 @@ class TicketsController extends AbstractController
             $this->saveEditedTicket($ticket, $person);
             $this->addFlash('success', $this->phrase('portal.flashes.ticket_resolved'));
 
-            // TODO: when we do feedback, we'd want to show them that form now
-
-            return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
+            return $this->redirectToRoute('portal_tickets_feedback', [
+                'auth'       => $ticket->getAuth(),
+                'ticket_ref' => $ticket->getRef(),
+            ]);
         }
 
         return $this->renderThemeView('Theme:Tickets:resolve.html.twig', array(
@@ -487,48 +487,46 @@ class TicketsController extends AbstractController
         $ticket_feedback_repo = $this->getRepo('DeskPRO:TicketFeedback');
         $feedback             = $ticket_feedback_repo->getFeedback($message, $person, true);
 
-        $rating    = null;
-        $setrating = false;
-        if ($request->get('rating', false)) {
-            $rating = $request->get('rating');
-        } elseif ($request->get('setrating', false)) {
-            $rating    = $request->get('rating');
-            $setrating = true;
+        $rating             = null;
+        $set_rating_via_get = false;
+        if (null !== $request->get('rating', null)) {
+            $rating = $request->get('rating'); // from the form
+        }
+        if (null !== $request->get('setrating', null)) {
+            // email links use "setrating" to signify we should record the feedback on the GET request, and ask for a comment
+            $rating             = $request->get('setrating');
+            $set_rating_via_get = true;
         }
 
         if ($rating !== null) {
+            $isPostRequest = 'POST' === $request->getMethod();
             $feedback->setRating($rating);
-
-            if ($request->get('save')) {
-                $last_message_id = $this->getConn()->fetchColumn('
-                    SELECT message_id FROM ticket_feedback
-                    WHERE ticket_id = ?
-                    ORDER BY message_id DESC
-                    LIMIT 1
-                ', array($ticket->getId()));
-
-                if (!$last_message_id || $message->getId() >= $last_message_id) {
-                    $ticket->feedback_rating = $feedback->getRating();
-                    $this->getEm()->persist($ticket);
-                }
+            if ($isPostRequest) {
+                $feedback->setMessage($request->get('message', ''));
+            }
+            if ($isPostRequest || $set_rating_via_get) {
+                $this->updateTicketFeedbackRating($ticket, $message, $feedback);
 
                 $this->getEm()->persist($feedback);
                 $this->getEm()->flush();
 
-                $GLOBALS['DP_SET_SKIP_CACHE'] = true;
+                if ($isPostRequest) {
+                    $this->addFlash('success', $this->phrase('portal.flashes.ticket_feedback_thank_you'));
 
-                // AJAX request used to auto-save rating as soon as user clicked link
-                if ($request->isXmlHttpRequest()) {
-                    return new JsonResponse(['success' => true]);
+                    return $this->redirectToRoute('portal_home');
                 }
             }
         }
 
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);
+
         return $this->renderThemeView('Theme:Tickets:feedback.html.twig', array(
-            'ticket'    => $ticket,
-            'message'   => $message,
-            'feedback'  => $feedback,
-            'setrating' => $setrating,
+            'page_title'  => $this->get('portal_view.page_title_generator')->kb(),
+            'breadcrumbs' => $breadcrumbs,
+            'ticket'      => $ticket,
+            'message'     => $message,
+            'feedback'    => $feedback,
+            'setrating'   => $set_rating_via_get,
         ));
     }
 
@@ -575,7 +573,7 @@ class TicketsController extends AbstractController
      */
     protected function getTicketByRefOrId($ticket_ref)
     {
-        if ($this->getBrandSetting('core.tickets.use_ref')) {
+        if ($this->getBrandSetting('core_tickets.use_ref')) {
             if (!$ticket = $this->getTicketByRef($ticket_ref)) {
                 if ($ticket = $this->getTicketById($ticket_ref)) {
                     if ($ticket->getPersonId() === $this->getCurrentPerson()->getId()) {
@@ -748,5 +746,25 @@ class TicketsController extends AbstractController
         }
 
         return $ticket->person;
+    }
+
+    /**
+     * @param $ticket
+     * @param $message
+     * @param $feedback
+     */
+    private function updateTicketFeedbackRating($ticket, $message, $feedback)
+    {
+        $last_message_id = $this->getConn()->fetchColumn('
+                    SELECT message_id FROM ticket_feedback
+                    WHERE ticket_id = ?
+                    ORDER BY message_id DESC
+                    LIMIT 1
+                ', array($ticket->getId()));
+
+        if (!$last_message_id || $message->getId() >= $last_message_id) {
+            $ticket->feedback_rating = $feedback->getRating();
+            $this->getEm()->persist($ticket);
+        }
     }
 }

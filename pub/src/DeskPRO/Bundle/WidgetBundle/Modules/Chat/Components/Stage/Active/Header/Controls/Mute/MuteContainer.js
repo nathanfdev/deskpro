@@ -5,7 +5,7 @@ import { muteSelector } from '../../../../../../Selectors/chat';
 import { toggleMute } from '../../../../../../Actions/chatActions';
 
 @connect(state => ({
-  enabled: muteSelector(state)
+  mute: muteSelector(state)
 }))
 export class MuteContainer extends React.Component {
 

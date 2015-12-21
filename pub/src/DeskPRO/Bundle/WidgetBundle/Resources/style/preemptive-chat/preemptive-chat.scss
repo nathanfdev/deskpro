@@ -7,9 +7,14 @@ $secondary-preemptive-background-color: #f8f8f8;
 
 // Buttons that activate the chats
 .dpdesignportal-state-buttons {
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
+
+  &.dpdesignportal-online-agents {
+    width: 170px;
+  }
+
+  &.dpdesignportal-agent-message {
+    width: 320px;
+  }
 
   a.preemtive-button {
     display: inline-block;
@@ -21,15 +26,30 @@ $secondary-preemptive-background-color: #f8f8f8;
     text-decoration: none;
     font-weight: 600;
     font-size: 12px;
+    width: 82px;
+    float: right;
 
-    &:hover { background: $main-preemptive-color-hover; }
+    &.disabled {
+      cursor: default !important;
+      opacity: 0.5;
+    }
+
+    &:not(.disabled) {
+      &:hover {
+        background: $main-preemptive-color-hover;
+      }
+    }
 
     &.button-s {// Make it small
       padding: 2px;
+      width: 66px;
+
       .state-button-text { margin: 0 5px 0 10px; }
     }
 
     &.button-l {// Make it large
+      width: 100px;
+
       .state-button-text {
         font-size: 17px;
         font-weight: 400;
@@ -107,11 +127,13 @@ $secondary-preemptive-background-color: #f8f8f8;
     width: 0;
     height: 0;
     border: 4px solid rgba(0, 0, 0, 0.0);
+    border-top: 4px solid #62ad8c;
     right: 10px;
   }
 
   .preemtive-chat-content {
     padding: 0 5px;
+    cursor: pointer;
   }
 
   .avatar-container {
@@ -159,6 +181,10 @@ $secondary-preemptive-background-color: #f8f8f8;
     display: inline-block;
     z-index: 199;
     transition: all 0.5s ease;
+
+    i {
+      margin-top: 12px;
+    }
   }
 
 

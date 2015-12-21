@@ -1,0 +1,79 @@
+import React, {Component, PropTypes} from 'react';
+import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
+import { Card, CardLine, CardLineLeft, CardLineRight, CardLineFull, CardContentText, CardLineItem, CardCheckbox, CardDisc, CardTitle, CardUser, CardLabel, CardComments, CardStatusBar }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
+import jQuery from 'jquery';
+import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
+
+@injectIntl
+export class ArticleCard extends Component {
+
+  static propTypes = {
+    intl: intlShape.isRequired,
+    element: PropTypes.object.isRequired,
+    author: PropTypes.object.isRequired,
+    selected: PropTypes.bool.isRequired,
+    toggleSelected: PropTypes.func.isRequired
+  };
+
+  render() {
+    const { element, author, toggleSelected, selected } = this.props;
+    const containerWidth = jQuery('.dp-list-frame-contents').innerWidth();
+    const feedbackMarkWidth = jQuery('.dpw--feedback-card-mark').innerWidth();
+    const cardWidth = containerWidth - feedbackMarkWidth - 20;
+
+    return (
+      <Card type="article" width={cardWidth}>
+
+        <ArticleCardMark numRatings={element.num_ratings}/>
+
+        <CardCheckbox selected={selected} onClick={toggleSelected(element.id)}/>
+
+        <CardLine>
+          <CardLineLeft>
+            <CardTitle content={element.title}/>
+          </CardLineLeft>
+        </CardLine>
+
+        <CardLine>
+          <CardLineFull>
+            <CardContentText>
+              <p><SlicedString string={element.content} length={255}/></p>
+            </CardContentText>
+          </CardLineFull>
+        </CardLine>
+
+        <CardLine>
+          <CardLineLeft>
+            <CardUser user={author}/>
+            <CardDisc/>
+          </CardLineLeft>
+        </CardLine>
+      </Card>
+    );
+  }
+
+}
+
+export class ArticleCardMark extends Component {
+
+  static propTypes = {
+    numRatings: PropTypes.number.isRequired
+  };
+
+  render() {
+    const {numRatings} = this.props;
+
+    return (
+      <div className="dpw--feedback-card-mark">
+        <div className="dpw--feedback-card-mark-counter dpw--feedback-card-mark-thumbs">
+          <i className="fa fa-thumbs-up"></i> <span className="feedback-card-mark-count">{numRatings}</span>
+        </div>
+        <hr/>
+        <div className="dpw--feedback-card-mark-counter dpw--feedback-card-mark-stars">
+          <i className="fa fa-star"></i> <span className="feedback-card-mark-count">0</span>
+        </div>
+      </div>
+    );
+  }
+}

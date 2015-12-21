@@ -1,8 +1,8 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 
-export class ListGroupingControl extends React.Component {
+export class ListGroupingControl extends Component {
   static propTypes = {
     title: PropTypes.string.isRequired,
     visible: PropTypes.bool.isRequired,
@@ -11,7 +11,7 @@ export class ListGroupingControl extends React.Component {
     close: PropTypes.func.isRequired,
     selected: PropTypes.string,
     onClose: PropTypes.func,
-    attachTo: PropTypes.node.isRequired
+    attachTo: PropTypes.any.isRequired
   };
 
   shouldComponentUpdate(nextProps) {
@@ -23,9 +23,9 @@ export class ListGroupingControl extends React.Component {
 
     return (
       <Detached isOpen={visible}
-                  positionAt="right top"
-                  positionTarget={attachTo}
-                  style={{marginTop: '-7px', marginLeft: '7px'}}>
+                positionAt="right top"
+                positionTarget={attachTo}
+                style={{marginTop: '-7px', marginLeft: '7px'}}>
         <ClickOut onClickOut={close}>
           <section className="sidebar-hover show">
             <div className="sidebar-hover-content">

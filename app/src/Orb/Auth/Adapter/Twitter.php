@@ -185,7 +185,7 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
         if (!$has_set_http_client) {
             $has_set_http_client = true;
             $httpClient          = new \Zend\Http\Client(null, array(
-                'adapter'       => 'Zend\Http\Client\Adapter\Socket',
+                'adapter'       => 'Zend\Http\Client\Adapter\Curl',
                 'sslverifypeer' => false,
             ));
             OAuth::setHttpClient($httpClient);

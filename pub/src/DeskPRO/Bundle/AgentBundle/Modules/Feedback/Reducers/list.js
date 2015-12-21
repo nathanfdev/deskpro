@@ -7,6 +7,9 @@ import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import Immutable from 'immutable';
 
 const initialState = {
+  async: {
+    done: true
+  },
   elements: [], // array of list elements (feedback or comments)
   selected: [], // array of IDs
 
@@ -16,9 +19,6 @@ const initialState = {
     sort: 'date_created',
     order: constants.ORDER_DESC,
     labels_mode: 'any'
-  },
-  async: {
-    done: true
   },
   commentsTableViewFields: [ // temporary, must be removed later
     { name: 'id', label: 'ID', className: 'id-col', status: constants.FIELD_SHOWN, priority: 1 },

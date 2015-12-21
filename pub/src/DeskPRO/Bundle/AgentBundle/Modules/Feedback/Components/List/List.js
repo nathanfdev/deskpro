@@ -9,9 +9,9 @@ import { FeedbackTableContainer } from './View/Table/FeedbackTableContainer';
 import { FeedbackCommentTableContainer } from './View/Table/FeedbackCommentTableContainer';
 import { ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { PaginationContainer } from './PaginationContainer';
 import { toggleMassAction } from '../../Actions/FeedbackMassActions';
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export class List extends Component {
 

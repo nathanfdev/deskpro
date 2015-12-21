@@ -1,4 +1,4 @@
-((appSrc, helpdeskUrl) => {
+((appSrc, helpdeskUrl, options = {}) => {
   // Create the iframe loader
   const node = document.createElement('iframe');
   node.src = 'javascript:false';
@@ -18,6 +18,7 @@
   const frameDoc = frameWin.document;
 
   frameWin.DP_HELPDESK_URL = helpdeskUrl;
+  frameWin.DP_OPTIONS = options;
 
   let doc;
   let docDomain;
@@ -33,6 +34,7 @@
   // After onload, we load the script source for real
   doc.open()._load = () => {
     const appNode = doc.createElement('script');
+    appNode.charset = 'UTF8';
     if (docDomain) {
       doc.domain = docDomain;
     }
@@ -44,4 +46,4 @@
 
   doc.write('<body onload="document._load();"><div id="dp_loader_element"></div>');
   doc.close();
-})(__DP_APP_SRC__, __DP_URL__);
+})(__DP_APP_SRC__, __DP_URL__, __DP_OPTIONS__);

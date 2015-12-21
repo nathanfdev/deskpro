@@ -4,7 +4,7 @@
       <li>
         <div class="news-header">
           <div class="news-header-info">
-            <a href="{{ portal_path(article) }}"><h1>{{ article.realTitle }}</h1></a>
+            <a href="{{ portal_path(article) }}"><h1>{{ article.translated_title }}</h1></a>
             <div class="article-meta">
               Posted by <a href="#"><span style="background: url({{ avatar_url(article.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>{{ article.person.name }}</a>
               in {{ article.date_published | date('Y-m-d') }}

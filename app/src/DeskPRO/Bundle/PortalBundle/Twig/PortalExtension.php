@@ -403,7 +403,10 @@ class PortalExtension extends \Twig_Extension
      */
     public function getGlobals()
     {
-        return array('global_settings' => $this->getSettingsResolver()->getGlobalSettings());
+        return array(
+            'global_settings' => $this->getSettingsResolver()->getGlobalSettings(),
+            'language'        => $this->getLanguageManager()->getLanguageStack()->getActive(),
+        );
     }
 
     /**

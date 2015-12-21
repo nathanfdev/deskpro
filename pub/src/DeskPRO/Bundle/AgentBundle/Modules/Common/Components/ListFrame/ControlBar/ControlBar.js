@@ -48,7 +48,6 @@ export class ControlBar extends Component {
         })
       ])),
       setParamsAction: PropTypes.func.isRequired,
-      resetFilterAction: PropTypes.func.isRequired,
       state: PropTypes.object.isRequired
     }),
     view: PropTypes.shape({
@@ -70,15 +69,15 @@ export class ControlBar extends Component {
 
     return (
       <ul className="dpwd-navigation-dropdown-top-row-main-list">
-        <SortingMenu {...sorting} onMenuUnmount={onMenuUnmount}/>
+        {sorting && <SortingMenu {...sorting} onMenuUnmount={onMenuUnmount}/>}
         <li>
           <hr/>
         </li>
-        <FilteringMenuContainer {...filtering} onMenuUnmount={onMenuUnmount}/>
+        {filtering && <FilteringMenuContainer {...filtering} onMenuUnmount={onMenuUnmount}/>}
         <li>
           <hr/>
         </li>
-        <ViewMenuContainer {...view} onViewFieldsMenuUnmount={view.onViewFieldsMenuUnmount}/>
+        {view && <ViewMenuContainer {...view} onViewFieldsMenuUnmount={view.onViewFieldsMenuUnmount}/>}
       </ul>
     );
   }

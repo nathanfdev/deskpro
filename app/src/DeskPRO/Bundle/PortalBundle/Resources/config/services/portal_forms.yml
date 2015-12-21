@@ -17,6 +17,11 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
+  listener.response.hit_track_js:
+    class: DeskPRO\Bundle\AppBundle\HitTrack\EventListener\HitTrackJavascriptListener
+    tags:
+      - { name: kernel.event_subscriber }
+
   form.form_extension:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Extension\DeskproFormExtension
     tags:
@@ -38,7 +43,7 @@ services:
 
   form_hierarchy_generator:
     class: DeskPRO\Bundle\PortalBundle\Form\Hierarchy\HierarchyGenerator
-    arguments: [@doctrine.orm.default_entity_manager, @data.departments, @data.feedback]
+    arguments: [@doctrine.orm.default_entity_manager, @data.departments, @data.feedback, @language_manager]
 
   deskpro.validator.valid_recaptcha:
     class: DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints\ValidRecaptcha2Validator
@@ -117,7 +122,7 @@ services:
 
   form.feedback_attachment:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\FeedbackAttachmentType
-    arguments: [@blob.storage, @blob_repository]
+    arguments: [@blob.storage, @blob_repository, @attachment_accepter]
     tags:
       - { name: form.type, alias: feedback_attachment }
 

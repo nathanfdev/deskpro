@@ -7,7 +7,7 @@ services:
   data_serializer.type_map:
     class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTypeMap
     arguments:
-      - %api.data_serializer.types%
+      - %data_serializer.types%
 
   data_serializer.type_id_finder:
     class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTypeIdFinder

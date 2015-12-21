@@ -131,7 +131,7 @@ class Department extends AbstractCategoryRepository
     {
         switch ($context) {
             case 'ticket':
-                $opt         = 'core.tickets.default_department';
+                $opt         = 'core_tickets.default_department';
                 $check_field = 'is_tickets_enabled';
                 break;
             case 'chat':

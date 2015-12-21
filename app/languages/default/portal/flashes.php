@@ -53,6 +53,8 @@ return array(
     'portal.flashes.user_removed_an_email'                  => 'Your email {{email}} was removed.',
     'portal.flashes.user_updated_profile'                   => 'Your profile has been updated.',
     'portal.flashes.user_add_email_verify'                  => 'We need to verify your email before we add it to your account. Please check your email for a verification link.',
+    'portal.flashes.usersource_new_add_email_verify'        => 'We need to verify your email before we create your account. Please check your email for a verification link.',
+    'portal.flashes.usersource_new_add_email_verified'      => 'Thank you for verifying your email address. Your account is now active.',
     'portal.flashes.user_add_email_verified'                => 'Your email address has been added to your account.',
     'portal.flashes.user_changed_password'                  => 'Your password has been updated.',
     'portal.flashes.validated_email'                        => 'Your email has been verified. Thank you.',
@@ -68,4 +70,5 @@ return array(
     'portal.flashes.ticket_re_opened'                       => 'You have re-opened this ticket.',
     'portal.flashes.comment_thank_you'                      => 'Thank you for commenting!',
     'portal.flashes.comment_thank_you_review'               => 'Thank you for commenting! It will be visible on the website after agent review.',
+    'portal.flashes.ticket_feedback_thank_you'              => 'Thank you for your feedback!',
 );

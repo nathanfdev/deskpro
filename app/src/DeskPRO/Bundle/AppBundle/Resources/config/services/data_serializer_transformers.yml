@@ -42,6 +42,11 @@ services:
     arguments:
       - @avatar_resolver
 
+  data_serializer.transformer.widget_person:
+    class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\WidgetPersonTransformer
+    arguments:
+      - @avatar_resolver
+
   data_serializer.transformer.chat_conversation:
     class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\ChatConversationTransformer
     arguments:

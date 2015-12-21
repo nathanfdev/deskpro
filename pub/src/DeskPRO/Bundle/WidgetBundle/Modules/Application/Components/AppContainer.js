@@ -1,27 +1,45 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { TriggerButtonContainer } from './TriggerButton';
-import { WidgetApp } from './WidgetApp';
-import { ChatTriggers } from './ChatTriggers';
-import { widgetOpenedSelector } from '../Selectors/dpWindow';
+import { Trigger } from './Trigger/Trigger';
+import { Widget } from './Widget/Widget';
+import { windowResize } from '../Actions/dpWindowActions';
+import $ from 'jquery';
+import debounce from 'lodash/function/debounce';
 
-@connect(state => ({
-  widgetOpened: widgetOpenedSelector(state)
-}))
+@connect()
 export class AppContainer extends React.Component {
 
   static propTypes = {
-    widgetOpened: PropTypes.bool
+    dispatch: PropTypes.func
   };
 
-  render() {
-    const { widgetOpened } = this.props;
+  constructor(props) {
+    super(props);
+    this.onResize = debounce(() => {
+      this.onWindowResize();
+    }, 350);
+  }
 
+  componentDidMount() {
+    window.widgetFrame = parent.window.widget_iframe;
+
+    this.onWindowResize();
+    $(window.parent).on('resize', this.onResize);
+  }
+
+  componentWillUnmount() {
+    $(window.parent).off('resize', this.onResize);
+  }
+
+  onWindowResize() {
+    this.props.dispatch(windowResize());
+  }
+
+  render() {
     return (
       <div>
-        <TriggerButtonContainer isVisible={!widgetOpened} />
-        <WidgetApp isVisible={widgetOpened} />
-        <ChatTriggers isVisible={widgetOpened} />
+        <Trigger />
+        <Widget />
       </div>
     );
   }

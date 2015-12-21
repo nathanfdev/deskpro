@@ -1,34 +1,83 @@
 import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import ScrollArea from 'react-scrollbar';
-import { MessageFactory } from './MessageFactory';
+import { MessageFactoryContainer } from './MessageFactoryContainer';
+import popMp3 from '../../../../../../Resources/sounds/pop.mp3';
+import popOgg from '../../../../../../Resources/sounds/pop.ogg';
+import popWav from '../../../../../../Resources/sounds/pop.wav';
 
 export class MessagesList extends React.Component {
 
   static propTypes = {
-    height: PropTypes.number,
     messages: PropTypes.object,
+    lastMessageId: PropTypes.number,
+    mute: PropTypes.bool,
     isEnded: PropTypes.bool
   };
 
-  componentDidUpdate() {
-    this.scrollBottom();
+  constructor(props) {
+    super(props);
+    this.state = {
+      lastMessageId: null
+    };
   }
 
-  scrollBottom() {
-    if (this.refs.scrollArea) {
-      setTimeout(() => this.refs.scrollArea.scrollBottom(), 0);
+  componentDidMount() {
+    this.checkForNewMessages();
+  }
+
+  componentDidUpdate() {
+    this.checkForNewMessages();
+  }
+
+  refresh() {
+    const scrollArea = this.refs.scrollArea;
+
+    scrollArea.setSizesToState();
+    scrollArea.handleWindowResize();
+  }
+
+  checkForNewMessages() {
+    const { messages, lastMessageId, mute } = this.props;
+    if (lastMessageId !== this.state.lastMessageId) {
+      this.setState({
+        lastMessageId: lastMessageId
+      });
+
+      if (this.refs.scrollArea) {
+        setTimeout(() => this.refs.scrollArea.scrollBottom(), 0);
+      }
+
+      // Checking for agent messages
+      const newAgentMessage = messages.filter(message => {
+        return message.get('id') > this.state.lastMessageId && message.get('author_type') === 'agent';
+      });
+
+      if (!mute && newAgentMessage.size > 0) {
+        const sound = ReactDOM.findDOMNode(this.refs.sound);
+        try {
+          sound.play();
+        } catch (e) {
+          console.warn('Unable to play sound');
+        }
+      }
     }
   }
 
   render() {
-    const { messages, height } = this.props;
+    const { messages } = this.props;
 
     return (
-      <div className="dpdesignportal-content" style={{height: `${height}px`}}>
+      <div className="dpdesignportal-content">
+        <audio ref="sound" preload="preload">
+          <source src={popMp3} />
+          <source src={popOgg} />
+          <source src={popWav} />
+        </audio>
         <ScrollArea ref="scrollArea" vertical>
           <div className="bottom-aligner"/>
           <div>
-            {messages.map((message, key) => <MessageFactory key={key} message={message} />)}
+            {messages.map((message, key) => <MessageFactoryContainer key={key} message={message} />)}
           </div>
         </ScrollArea>
       </div>

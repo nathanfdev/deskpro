@@ -33,6 +33,9 @@ namespace DeskPRO\Bundle\AppBundle\DataSerializer;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\Exception\DataSerializerException;
 
+/**
+ * Class DataTransformer.
+ */
 class DataTransformer
 {
     /**
@@ -48,11 +51,20 @@ class DataTransformer
      * @var DataTransformerFactory
      */
     private $transformer_factory;
+
     /**
      * @var DataTypeIdFinder
      */
     private $id_finder;
 
+    /**
+     * Constructor.
+     *
+     * @param DataTransformerRegistry $transformed_registry
+     * @param DataTransformerFactory  $transformer_factory
+     * @param DataTypeMap             $type_map
+     * @param DataTypeIdFinder        $id_finder
+     */
     public function __construct(
         DataTransformerRegistry $transformed_registry,
         DataTransformerFactory $transformer_factory,
@@ -65,6 +77,11 @@ class DataTransformer
         $this->id_finder            = $id_finder;
     }
 
+    /**
+     * @param mixed $data
+     *
+     * @return bool
+     */
     public function canTransformData($data)
     {
         if ($data === null || empty($data)) {
@@ -80,6 +97,13 @@ class DataTransformer
         }
     }
 
+    /**
+     * @param DataTransformerRequest $transformation_request
+     *
+     * @throws DataSerializerException
+     *
+     * @return DataTransformerResponse
+     */
     public function transform(DataTransformerRequest $transformation_request)
     {
         $data = $transformation_request->getDataToBeTransformed();

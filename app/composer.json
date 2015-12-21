@@ -51,7 +51,7 @@
     "behat/behat": "~3.0",
     "behat/symfony2-extension": "~2.0",
     "bossa/phpspec2-expect": "~1.0",
-    "ocramius/proxy-manager": "~0.5",
+    "ocramius/proxy-manager": "~1.0",
     "phpunit/phpunit": "~4.0",
     "henrikbjorn/phpspec-code-coverage": "~1.0",
     "phpunit/phpcov": "~2.0",
@@ -76,7 +76,9 @@
     "nelmio/cors-bundle": "^1.4",
     "gregwar/captcha-bundle": "^1.1",
     "google/recaptcha": "~1.1",
-    "slushie/recaptcha-secure-token": "^1.1"
+    "slushie/recaptcha-secure-token": "^1.1",
+    "symfony/proxy-manager-bridge": "~2.3",
+    "gnugat/nomo-spaco": "~0.4"
   },
   "preferred-install": "dist"
 }

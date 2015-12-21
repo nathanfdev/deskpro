@@ -271,7 +271,7 @@ $errors       = array();
 $errors_codes = array();
 
 if (!deskpro_install_check_version() && !defined('DP_IGNORE_VERSION_CHECK')) {
-    $errors[]       = "The version of PHP you have is too old. DeskPRO requires PHP v5.3.9 or newer but <a href='?phpinfo'>you are using ".phpversion().'</a>. You need to upgrade your version.';
+    $errors[]       = "The version of PHP you have is too old. DeskPRO requires PHP v5.5.0 or newer but <a href='?phpinfo'>you are using ".phpversion().'</a>. You need to upgrade your version.';
     $errors_codes[] = 'php_version';
 }
 

@@ -60,6 +60,7 @@ class PortalValidation
      * @var PortalEmailSender
      */
     private $mailer;
+
     /**
      * @var BrandStack
      */
@@ -69,6 +70,7 @@ class PortalValidation
      * @var UrlGeneratorInterface
      */
     private $url_generator;
+
     /**
      * @var PersonDataService
      */
@@ -149,12 +151,11 @@ class PortalValidation
         }
     }
 
-    public function processVerificationClick($type, SavedForm $saved_form)
+    public function sendUsersourceEmailValidation($email, $verify_url)
     {
-        $this->verifyType($type);
-        // someone clicked the link
-        // based on $type, actions need to take place
-        // and a redirection must be returned
+        $email_to = new EmailTo();
+        $email_to->setTo($email, $email);
+        $this->mailer->sendEmailValidation($email_to, $verify_url);
     }
 
     public function getPasswordRedirectIfRequired(Person $person, Request $request, $redirect_to_after_password_set = null)

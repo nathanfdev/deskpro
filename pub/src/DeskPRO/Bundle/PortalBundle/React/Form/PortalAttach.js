@@ -1,6 +1,7 @@
 import _ from "lodash";
 import $ from "jquery";
 import React from "react";
+import PortalPhrases from "DeskPRO/Bundle/PortalBundle/PortalPhrases"
 
 export default class PortalAttach extends React.Component {
   render() {
@@ -18,12 +19,12 @@ export default class PortalAttach extends React.Component {
             <li>
                 {/** these icons will be in the payload from the server (HTML) **/}
               <a href="#"><i className="fa fa-file-text-o" /> Screen Shot 2014-09-30 at 6.14.15 PM.png</a><span className="file-size">(245kb)</span>
-              <a href="#" className="remove-attachement"><i className="fa fa-times" />Remove</a>
+              <a href="#" className="remove-attachement"><i className="fa fa-times" />{PortalPhrases.get('portal.general.delete')}</a>
             </li>
 
             <li>
               <a href="#"><i className="fa fa-file-text-o" /> a_doc_file.doc</a><span className="file-size">(84kb)</span>
-              <a href="#" className="remove-attachement"><i className="fa fa-times" />Remove</a>
+              <a href="#" className="remove-attachement"><i className="fa fa-times" />{PortalPhrases.get('portal.general.delete')}</a>
             </li>
           </ul>
       </div>

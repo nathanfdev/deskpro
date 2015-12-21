@@ -3191,7 +3191,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function getPublicId()
     {
-        if (App::getSetting('core.tickets.use_ref')) {
+        if (App::getSetting('core_tickets.use_ref')) {
             return $this->ref;
         }
 

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Language;
 
 use Application\DeskPRO\Entity\Language;
@@ -141,7 +140,7 @@ class LanguageManager
     }
 
     /**
-     * TODO this is meant to return a translate object for a specific lang.
+     * Get a DeskPRO Translate object ready to be used with the currently active Lang.
      *
      * @param Language|string|null $lang
      *
@@ -169,12 +168,24 @@ class LanguageManager
      *
      * @param $name
      * @param array         $vars
-     * @param Language|null $lang
+     * @param Language|null $lang not necessary, will use currently active lang if null
      *
      * @return string
      */
     public function phrase($name, array $vars = array(), Language $lang = null)
     {
         return $this->getTranslator($lang)->phrase($name, $vars);
+    }
+
+    /**
+     * @param $object
+     * @param null          $property
+     * @param Language|null $lang     not necessary, will use currently active lang if null
+     *
+     * @return string
+     */
+    public function objectPhrase($object, $property = null, Language $lang = null)
+    {
+        return $this->getTranslator($lang)->getPhraseObject($object, $property);
     }
 }

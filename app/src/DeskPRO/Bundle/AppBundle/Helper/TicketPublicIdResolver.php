@@ -51,7 +51,7 @@ class TicketPublicIdResolver
 
     public function findId(Ticket $ticket)
     {
-        if ($this->settings_resolver->getGlobalSettings()->get('core.tickets.use_ref')) {
+        if ($this->settings_resolver->getGlobalSettings()->get('core_tickets.use_ref')) {
             $ref = $ticket->getRef();
         } else {
             $ref = $ticket->getId();

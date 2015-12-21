@@ -40,11 +40,11 @@
         <?php else: $failed = true; ?>
         <span class="label important" style="float:right">FAIL</span>
         <?php endif ?>
-        Check that the <a href="http://php.net/">PHP</a> version is &gt;= 5.3.9
+        Check that the <a href="http://php.net/">PHP</a> version is &gt;= 5.5.0
         <?php if ($failed): ?>
         <div class="alert-message block-message error">
             <a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_php_version') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
-            DeskPRO requires PHP 5.3.9. You have <?php echo phpversion() ?>.
+            DeskPRO requires PHP 5.5.0. You have <?php echo phpversion() ?>.
         </div>
         <?php endif ?>
     </td>

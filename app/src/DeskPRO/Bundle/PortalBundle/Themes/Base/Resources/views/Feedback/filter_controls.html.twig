@@ -32,7 +32,7 @@
                             <span class="slider-status">{{ phrase('portal.general.toggle_on') }}</span>
                             <span class="slider-icon"><i class="fa fa-check"></i></span>
                         </a>
-                        <span class="slider-label">{{ type.title }}</span>
+                        <span class="slider-label">{{ object_phrase(type) }}</span>
                         <span class="slider-options"><i class="fa fa-caret-down"></i></span>
                     {% else %}
                         <a href="{{ path('portal_feedback_browse', { filter_uri: 'type-' ~ type.id }) }}"
@@ -40,7 +40,7 @@
                             <span class="slider-icon"><i class="fa fa-times"></i></span>
                             <span class="slider-status">{{ phrase('portal.general.toggle_off') }}</span>
                         </a>
-                        <span class="slider-label">{{ type.title }}</span>
+                        <span class="slider-label">{{ object_phrase(type) }}</span>
                         <span class="slider-options"><i class="fa fa-caret-down"></i></span>
                     {% endif %}
                 </div>

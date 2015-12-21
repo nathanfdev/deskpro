@@ -29,23 +29,23 @@
 namespace DeskPRO\Bundle\AppBundle\HitTrack\Recorder;
 
 use DeskPRO\Bundle\AppBundle\Entity\HitRecord;
-use Doctrine\ORM\EntityManager;
+use Doctrine\DBAL\Connection;
 
 class HitDbStorage implements HitStorageInterface
 {
     /**
-     * @var EntityManager
+     * @var Connection
      */
-    private $em;
+    private $db;
 
     /**
      * HitDbStorage constructor.
      *
-     * @param $em
+     * @param Connection $db
      */
-    public function __construct(EntityManager $em)
+    public function __construct(Connection $db)
     {
-        $this->em = $em;
+        $this->db = $db;
     }
 
     /**
@@ -55,9 +55,19 @@ class HitDbStorage implements HitStorageInterface
      */
     public function record(HitRecord $record)
     {
-        $this->em->persist($record);
-        $this->em->flush($record);
+        $rec = [
+            'visitor_id'   => $record->getVisitorId(),
+            'ip_address'   => $record->getIpAddress(),
+            'page_type'    => $record->getPageType(),
+            'page_id'      => $record->getPageId(),
+            'url'          => $record->getUrl(),
+            'referrer'     => $record->getReferrer(),
+            'user_agent'   => $record->getUserAgent(),
+            'geo_country'  => $record->getGeoCountry(),
+            'meta'         => $record->getMeta() ? json_encode($record->getMeta()) : null,
+            'date_created' => $record->getDateCreated()->format('Y-m-d H:i:s'),
+        ];
 
-        return $record->getId();
+        return $this->db->insert('hit_record', $rec);
     }
 }
