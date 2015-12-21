@@ -77,7 +77,8 @@
     "gregwar/captcha-bundle": "^1.1",
     "google/recaptcha": "~1.1",
     "slushie/recaptcha-secure-token": "^1.1",
-    "symfony/proxy-manager-bridge": "~2.3"
+    "symfony/proxy-manager-bridge": "~2.3",
+    "gnugat/nomo-spaco": "~0.4"
   },
   "preferred-install": "dist"
 }

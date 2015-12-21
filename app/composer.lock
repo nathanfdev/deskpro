@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "121992b91d72733616d0a17f8f4b1618",
-    "content-hash": "e79b0e9e07b48f5ec2a5055b4348865c",
+    "hash": "e0a85b558427a4224d3fcf37b4a049a3",
+    "content-hash": "0d7d03251ecf51335549c575d2e18c79",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -2331,6 +2331,52 @@
                 "fixtures"
             ],
             "time": "2015-05-29 06:29:14"
+        },
+        {
+            "name": "gnugat/nomo-spaco",
+            "version": "v0.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gnugat/nomo-spaco.git",
+                "reference": "eff318d06960b0e76ecd976fb9705d21be844868"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gnugat/nomo-spaco/zipball/eff318d06960b0e76ecd976fb9705d21be844868",
+                "reference": "eff318d06960b0e76ecd976fb9705d21be844868",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.3"
+            },
+            "require-dev": {
+                "phpspec/phpspec": "~2.0"
+            },
+            "type": "project",
+            "autoload": {
+                "psr-4": {
+                    "Gnugat\\NomoSpaco\\": "src/Gnugat/NomoSpaco"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Loïc Chardonnet",
+                    "email": "loic.chardonnet@gmail.com",
+                    "homepage": "http://gnugat.github.io",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Displays the declared fully qualified classnames of a project",
+            "keywords": [
+                "available",
+                "detect",
+                "fully qualified classname"
+            ],
+            "time": "2014-12-07 16:08:01"
         },
         {
             "name": "google/apiclient",
