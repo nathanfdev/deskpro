@@ -1318,6 +1318,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		if (data.replybox_html) {
 			// Only refresh the box if we've not begun writing a message
 			if (!this.getEl('replybox_wrap').find('textarea.touched')[0]) {
+				var chargeCheckboxState = $('input[name="charge_time"]', this.wrapper).prop('checked');
 				var textarea = this.getReplyTextArea();
 				if (textarea.data('redactor')) {
 					textarea.destroyEditor();
@@ -1325,6 +1326,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				this.getEl('replybox_wrap').empty().append(data.replybox_html);
 				DeskPRO_Window.initInterfaceServices(this.getEl('replybox_wrap'));
 				$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySave.bind(this));
+				$('input[name="charge_time"]', this.wrapper).prop('checked', chargeCheckboxState);
 			}
 		}
 
