@@ -32,6 +32,7 @@ define ['require', 'Admin/Main/Ctrl/Base', 'Admin/Usersources/Helper/UsersourceT
 
         @permission_groups_user = [{"value": 0, "label": ""}]
         for val in result.data.user_groups.groups
+          continue if val.sys_name == 'everyone'
           @permission_groups_user.push({"value": val.id.toString(), "label": val.title})
 
         form_template = @packageName + '/Install/install.html'
