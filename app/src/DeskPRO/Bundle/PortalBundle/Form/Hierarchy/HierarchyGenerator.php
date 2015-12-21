@@ -44,8 +44,9 @@ use Application\DeskPRO\Entity\TicketCategory;
 use DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackDataService;
 use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
-use DeskPRO\Component\Hierarchy\Formatter\FlatListFormatter;
-use DeskPRO\Component\Hierarchy\Formatter\ParentListFormatter;
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Component\Hierarchy\Formatter\FlatListLanguageAwareFormatter;
+use DeskPRO\Component\Hierarchy\Formatter\ParentListLanguageAwareFormatter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 
@@ -80,11 +81,17 @@ class HierarchyGenerator
      */
     private $feedback_data_service;
 
-    public function __construct(EntityManager $em, DepartmentDataService $department_data_service, FeedbackDataService $feedback_data_service)
+    /**
+     * @var LanguageManager
+     */
+    private $language_manager;
+
+    public function __construct(EntityManager $em, DepartmentDataService $department_data_service, FeedbackDataService $feedback_data_service, LanguageManager $language_manager)
     {
         $this->em                      = $em;
         $this->department_data_service = $department_data_service;
         $this->feedback_data_service   = $feedback_data_service;
+        $this->language_manager        = $language_manager;
     }
 
     public function generateForCustomFormField(CustomDefAbstract $field)
@@ -104,9 +111,9 @@ class HierarchyGenerator
                 }
 
                 if ($expanded = $field->getOption('expanded')) {
-                    $formatter = new ParentListFormatter('title');
+                    $formatter = new ParentListLanguageAwareFormatter($this->language_manager);
                 } else {
-                    $formatter = new FlatListFormatter('title');
+                    $formatter = new FlatListLanguageAwareFormatter($this->language_manager);
                 }
 
                 $hierarchy = new Hierarchy($root_nodes, $formatter);
@@ -141,9 +148,9 @@ class HierarchyGenerator
                 }
 
                 if ($expanded = $field->getOption('expanded')) {
-                    $formatter = new ParentListFormatter('title');
+                    $formatter = new ParentListLanguageAwareFormatter($this->language_manager);
                 } else {
-                    $formatter = new FlatListFormatter('title');
+                    $formatter = new FlatListLanguageAwareFormatter($this->language_manager);
                 }
 
                 $hierarchy = new Hierarchy($root_nodes, $formatter);
@@ -173,7 +180,7 @@ class HierarchyGenerator
                     $root_nodes[] = new HierarchyNode($product, 0, HierarchyGenerator::reverseDisplayOrder($product->display_order));
                 }
 
-                $hierarchy = new Hierarchy($root_nodes, new FlatListFormatter('title'));
+                $hierarchy = new Hierarchy($root_nodes, new FlatListLanguageAwareFormatter($this->language_manager));
                 $hierarchy->markOnlyLeafSelections();
 
                 $recursive = function (Product $prod, HierarchyNode $parent, $depth) use (&$recursive) {
@@ -252,7 +259,7 @@ class HierarchyGenerator
                     );
                 }
 
-                $hierarchy = new Hierarchy($root_nodes, new FlatListFormatter('user_title'));
+                $hierarchy = new Hierarchy($root_nodes, new FlatListLanguageAwareFormatter($this->language_manager, 'user'));
                 $hierarchy->markOnlyLeafSelections();
 
                 $recursive = function (Department $dep, HierarchyNode $parent, $depth) use (&$recursive,
@@ -296,7 +303,7 @@ class HierarchyGenerator
                     $root_nodes[] = new HierarchyNode($product, 0, HierarchyGenerator::reverseDisplayOrder($product->display_order));
                 }
 
-                $hierarchy = new Hierarchy($root_nodes, new FlatListFormatter('title'));
+                $hierarchy = new Hierarchy($root_nodes, new FlatListLanguageAwareFormatter($this->language_manager));
                 $hierarchy->markOnlyLeafSelections();
 
                 $recursive = function (TicketCategory $prod, HierarchyNode $parent, $depth) use (&$recursive) {
@@ -336,7 +343,7 @@ class HierarchyGenerator
                     $root_nodes[] = new HierarchyNode($category, 0, HierarchyGenerator::reverseDisplayOrder($category->display_order));
                 }
 
-                $hierarchy = new Hierarchy($root_nodes, new FlatListFormatter('title'));
+                $hierarchy = new Hierarchy($root_nodes, new FlatListLanguageAwareFormatter($this->language_manager));
                 $hierarchy->markOnlyLeafSelections();
 
                 $recursive = function (FeedbackCategory $cat, HierarchyNode $parent, $depth) use (&$recursive) {

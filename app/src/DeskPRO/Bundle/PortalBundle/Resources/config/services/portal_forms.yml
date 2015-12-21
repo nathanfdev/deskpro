@@ -43,7 +43,7 @@ services:
 
   form_hierarchy_generator:
     class: DeskPRO\Bundle\PortalBundle\Form\Hierarchy\HierarchyGenerator
-    arguments: [@doctrine.orm.default_entity_manager, @data.departments, @data.feedback]
+    arguments: [@doctrine.orm.default_entity_manager, @data.departments, @data.feedback, @language_manager]
 
   deskpro.validator.valid_recaptcha:
     class: DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints\ValidRecaptcha2Validator
