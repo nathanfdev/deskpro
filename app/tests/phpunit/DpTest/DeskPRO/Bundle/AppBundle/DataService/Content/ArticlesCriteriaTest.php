@@ -66,6 +66,23 @@ class ArticlesCriteriaTest extends DeskProTestCase
         $this->instance(self::$dummyProperParams)->applyGroupBy($qb->reveal());
     }
 
+    /**
+     * @test
+     */
+    public function it_should_apply_given_parameters_to_the_passed_QueryBuilder()
+    {
+        $qb = $this->mockQueryBuilder();
+
+        // expectations when applying self::$dummyProperParams
+        $qb->setParameter('status', 'published')->shouldBeCalled();
+        $qb->setParameter('person', 1)->shouldBeCalled();
+        $qb->setParameter('category', 1)->shouldBeCalled();
+        $qb->setParameter('period_created', 'this_month')->shouldBeCalled();
+
+        /** @var \Doctrine\ORM\QueryBuilder $qb */
+        $qb = $qb->reveal();
+        $this->instance(self::$dummyProperParams)->applyFilters($qb);
+    }
 
     /**
      * @param array $parameters

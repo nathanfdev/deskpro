@@ -32,8 +32,8 @@
 namespace DpTest\Bundle\AppBundle\DataService\Content\ContentSelect;
 
 use Application\DeskPRO\Entity\Article;
+use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect\ContentDataService;
-use DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect\ContentSelectCriteria;
 use DpTest\DeskProTestCase;
 use Pagerfanta\Pagerfanta;
 
@@ -55,8 +55,8 @@ class ContentDataServiceTest extends DeskProTestCase
      */
     public function it_should_return_Pagerfanta_instance()
     {
-        /** @var ContentSelectCriteria $criteria */
-        $criteria = $this->prophesize(ContentSelectCriteria::class)->reveal();
+        /** @var ContentCriteria $criteria */
+        $criteria = $this->prophesize(ContentCriteria::class)->reveal();
         $result   = $this->instance()->selectContent(Article::class, $criteria, 1, 10);
         $this->assertInstanceOf(Pagerfanta::class, $result);
     }
