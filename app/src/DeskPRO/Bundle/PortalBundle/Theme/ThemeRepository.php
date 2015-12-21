@@ -110,7 +110,7 @@ class ThemeRepository
         }
 
         // if fresh, we are done, return the stored array and retain it for easy access
-        if (file_exists($this->config_cache) && !$this->config_cache->isFresh()) {
+        if (file_exists($this->config_cache) && $this->config_cache->isFresh()) {
             $this->logger->debug('theme repository: unserializing from file cache');
 
             return $this->theme_map = require $this->config_cache;
