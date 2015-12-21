@@ -4340,7 +4340,11 @@ class TicketController extends AbstractController
                 ));
             } catch (\Exception $e) {
                 $this->db->rollback();
-                throw $e;
+
+                return $this->createJsonResponse(array(
+                    'error'   => true,
+                    'message' => $e->getMessage(),
+                ), 400);
             }
 
             return $this->createJsonResponse(array(

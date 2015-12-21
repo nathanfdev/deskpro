@@ -771,6 +771,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					this.closeSelf();
 					this.draft.reset();
 				}
+			},
+			error: function(xhr) {
+				xhr.responseJSON && xhr.responseJSON.message && DeskPRO_Window.showAlert(xhr.responseJSON.message);
 			}
 		});
 	},

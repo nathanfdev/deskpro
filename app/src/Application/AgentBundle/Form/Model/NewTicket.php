@@ -270,10 +270,14 @@ class NewTicket
             $person = App::getSystemService('UsersourceManager')->findPersonByEmail($this->person->email_address);
         }
 
-        if (!$person && $this->_person_context->hasPerm('agent_people.create')) {
-            $person                = new Person();
-            $email_obj             = $person->addEmailAddressString($this->person->email_address);
-            $person->primary_email = $email_obj;
+        if (!$person) {
+            if ($this->_person_context->hasPerm('agent_people.create')) {
+                $person                = new Person();
+                $email_obj             = $person->addEmailAddressString($this->person->email_address);
+                $person->primary_email = $email_obj;
+            } else {
+                throw new \Exception('You do not have permission to create a new user. If you think this is a mistake, please contact your administrator.');
+            }
         }
 
         if ($this->person->organization) {
