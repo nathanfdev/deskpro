@@ -304,16 +304,17 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         // note: removed the setSlug call, we do that in the DoctrineContentSlugListener now (prepersist/preupdate)
     }
 
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
     /**
      * @return string
      */
     public function getTranslatedTitle()
     {
-        // will go thru ObjectTranslatable
-        // Note: do NOT implement getTitle or else it will override the magic dyn dispatch
-        // that uses ObjectTranslatable.
-        // yay...magic...
-        return $this->get('title');
+        return $this->__call('getTitle', []);
     }
 
     /**
@@ -321,8 +322,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getTranslatedContent()
     {
-        // will go thru ObjectTranslatable
-        return $this->get('content');
+        return $this->__call('getContent', []);
     }
 
     /**
