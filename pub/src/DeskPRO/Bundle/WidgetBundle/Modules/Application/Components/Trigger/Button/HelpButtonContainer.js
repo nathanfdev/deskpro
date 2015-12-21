@@ -36,52 +36,56 @@ export class HelpButtonContainer extends React.Component {
   }
 
   componentDidMount() {
-    const { agentsCounts } = this.props;
-    const storageKey = 'widget.dpWindow.popupShown';
-
-    if (!(storageKey in localStorage) || localStorage[storageKey] !== 'none' && agentsCounts > 0) {
-      setTimeout(() => this.setState({popupShown: true}), 0);
-    }
-
+    this.checkRenderPopup();
     this.pollingRequest();
   }
 
-  onButtonClick = () => {
-    const { dispatch, popup, agentsCounts, onClick } = this.props;
+  componentDidUpdate() {
+    this.checkRenderPopup();
+  }
+
+  onOpenWidget = () => {
+    const { agentsCounts, onClick, dispatch } = this.props;
 
     if (!agentsCounts) {
       return;
     }
 
-    if (!popup || popup === 'none') {
-      onClick();
-    } else {
-      localStorage['widget.dpWindow.popupShown'] = 'true';
-      this.setState({
-        popupShown: true
-      });
-
-      dispatch(windowResize());
-    }
-  };
-
-  onPopupClick = () => {
-    this.setState({
-      popupShown: false
-    });
-
-    this.props.onClick();
-    this.props.dispatch(windowResize());
+    onClick();
+    dispatch(windowResize());
   };
 
   onClosePopup = () => {
+    localStorage['widget.dpWindow.popupShown'] = 'none';
     this.setState({
       popupShown: false
     });
 
-    localStorage['widget.dpWindow.popupShown'] = 'none';
     this.props.dispatch(windowResize());
   };
+
+  checkRenderPopup() {
+    const { agentsCounts, dispatch } = this.props;
+    const storageKey = 'widget.dpWindow.popupShown';
+
+    if ((!(storageKey in localStorage) || localStorage[storageKey] !== 'none') && agentsCounts > 0) {
+      if (!this.state.popupShown) {
+        this.setState({
+          popupShown: true
+        });
+
+        dispatch(windowResize());
+      }
+    } else {
+      if (this.state.popupShown) {
+        this.setState({
+          popupShown: false
+        });
+
+        dispatch(windowResize());
+      }
+    }
+  }
 
   pollingRequest() {
     const { widgetOpened, dispatch } = this.props;
@@ -100,7 +104,7 @@ export class HelpButtonContainer extends React.Component {
   renderPopup() {
     const { popup } = this.props;
     const popupProps = {
-      onClick: this.onPopupClick,
+      onClick: this.onOpenWidget,
       onClose: this.onClosePopup
     };
 
@@ -137,7 +141,7 @@ export class HelpButtonContainer extends React.Component {
             </OnlineAgentsContainer>
           </ClickOut>
         }
-        <HelpButton {...this.props} onClick={this.onButtonClick} disabled={!agentsCounts} />
+        <HelpButton {...this.props} onClick={this.onOpenWidget} disabled={!agentsCounts} />
       </div>
     );
   }
