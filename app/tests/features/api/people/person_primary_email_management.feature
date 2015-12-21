@@ -41,8 +41,9 @@ Feature: Person primary email CRUD
     And I retrieve the person
     Then the response status code should be 200
     And the JSON node "data.primary_email" should be equal to "larry.doe@gmail.com"
-    And the JSON node "data.emails" should have 1 element
-    And the JSON node "data.emails[0]" should be equal to "larry.doe@gmail.com"
+    And the JSON node "data.emails" should have 2 elements
+    And the JSON node "data.emails[0]" should be equal to "larry@doe.name"
+    And the JSON node "data.emails[1]" should be equal to "larry.doe@gmail.com"
 
   Scenario: I try to remove person's primary email
     Given "Julia Doe" has just created an account with primary email "julia@doe.name"
