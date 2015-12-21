@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import ScrollArea from 'react-scrollbar';
-import { MessageFactory } from './MessageFactory';
+import { MessageFactoryContainer } from './MessageFactoryContainer';
 import popMp3 from '../../../../../../Resources/sounds/pop.mp3';
 import popOgg from '../../../../../../Resources/sounds/pop.ogg';
 import popWav from '../../../../../../Resources/sounds/pop.wav';
@@ -81,7 +81,7 @@ export class MessagesList extends React.Component {
         <ScrollArea ref="scrollArea" vertical>
           <div className="bottom-aligner"/>
           <div>
-            {messages.map((message, key) => <MessageFactory key={key} message={message} />)}
+            {messages.map((message, key) => <MessageFactoryContainer key={key} message={message} />)}
           </div>
         </ScrollArea>
       </div>

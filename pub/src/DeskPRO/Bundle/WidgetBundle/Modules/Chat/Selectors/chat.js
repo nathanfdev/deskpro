@@ -2,6 +2,12 @@ import { createSelector } from 'reselect';
 
 const stateSelector = state => state.Chat.chat;
 
+// Phrase translations
+export const phraseTranslationsSelector = createSelector(
+  stateSelector,
+    state => state.get('phrases')
+);
+
 // Audio selectors
 export const muteSelector = createSelector(
   stateSelector,

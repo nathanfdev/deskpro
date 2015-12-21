@@ -12,6 +12,7 @@ import {
 } from 'Ampliflux/reducers/handlers';
 
 const initialState = {
+  phrases: {},
   mute: false,
   transcript: {
     checked: false,
@@ -30,6 +31,9 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
+  // Phrase translations
+  [actions.setPhraseTranslations]: setFullPayload('phrases'),
+
   // Audio
   [actions.toggleMute]: toggleBool('mute'),
 

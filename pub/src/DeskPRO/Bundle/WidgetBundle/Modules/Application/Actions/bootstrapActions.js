@@ -1,15 +1,9 @@
 import { createAction } from 'Ampliflux';
-import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { loadOptions } from './dpWindowActions';
 import { loadOnlineAgents } from './agentActions';
+import { loadPhraseTranslations } from '../../Chat/Actions/chatActions';
 
 export const ajaxOptions = {crossDomain: true, dataType: 'json'};
-
-export const loadPhraseTranslations = createAction(
-  'WIDGET_LOAD_PHRASE_TRANSLATIONS',
-  () => DpApi.sendGet('DP_API/lang/widget-chat-phrases.json', {...ajaxOptions})
-);
-
 export const bootstrapWidget = createAction(
   'WIDGET_BOOTSTRAP',
   () => dispatch => new Promise(resolve => {

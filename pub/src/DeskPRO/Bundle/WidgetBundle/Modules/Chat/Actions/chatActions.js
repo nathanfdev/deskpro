@@ -3,6 +3,9 @@ import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
 
+// Phrase translations
+export const setPhraseTranslations = createAction('WIDGET_CHAT_SET_PHRASE_TRANSLATIONS');
+
 // Chat setup actions
 export const setChatId = createAction('WIDGET_CHAT_SET_ID');
 export const updateChatInfo = createAction('WIDGET_CHAT_UPDATE_CHAT_INFO');
@@ -31,6 +34,15 @@ export const removeAttachment = createAction('WIDGET_CHAT_REMOVE_ATTACHMENT');
 export const resetAttachments = createAction('WIDGET_CHAT_RESET_ATTACHMENTS');
 
 // Api actions
+export const loadPhraseTranslations = createAction(
+  'WIDGET_CHAT_LOAD_PHRASE_TRANSLATIONS',
+  () => dispatch => DpApi
+    .sendGet('DP_API/lang/widget-chat-phrases.json', {...ajaxOptions})
+    .success(response => {
+      dispatch(setPhraseTranslations(response));
+    })
+);
+
 export const createChat = createAction(
   'WIDGET_CHAT_CREATE_NEW',
   params => dispatch => DpApi
