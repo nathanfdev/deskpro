@@ -135,7 +135,10 @@
 						</td>
 						<td class="overflow-ellipsis">{{ ng_var('result.header_to') }}</td>
 						<td>{{ ng_var('result.header_subject') }}</td>
-						<td ng-if="!tracking_enabled">{{ ng_var('result.status') }}</td>
+						<td ng-if="!tracking_enabled">
+							{{ ng_var('result.status') }}
+							<span ng-if="result.status == 'error' && result.error_code">({{ ng_var('result.error_code') }})</span>
+						</td>
 						<td ng-if="tracking_enabled">{{ ng_var('result.num_targets') }}/{{ ng_var('result.num_pending') }}/{{ ng_var('result.num_complete') }}/{{ ng_var('result.num_error') }}</td>
 					</tr>
 				</tbody>
