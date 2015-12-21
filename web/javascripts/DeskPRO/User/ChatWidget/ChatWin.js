@@ -638,7 +638,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 
 		var a_p = "am";
 		var curr_hour = d.getHours();
-		if (d.getHours() > 12) {
+		if (d.getHours() >= 12) {
 			a_p = "pm";
 		}
 		if (curr_hour == 0) {
