@@ -4,6 +4,8 @@ import { DropZoneOverlay } from './DropZoneOverlay';
 import fileupload from 'blueimp-file-upload';
 import $ from 'jquery';
 import { extension } from 'mime-types';
+import moment from 'moment';
+import { getImageDataUrl, dataUrlToBlob } from 'DeskPRO/Component/Util/Blob';
 
 export class DropZone extends React.Component {
 
@@ -26,32 +28,41 @@ export class DropZone extends React.Component {
 
   componentDidMount() {
     this.initializeFileUpload();
-    this.getContext().forEach(selector => {
-      $(selector).on('dragover', this.onDragStarted);
-      $(selector).on('dragover', this.onDefaultDrop);
-      $(selector).on('paste', this.onPaste);
+    this.getContext().forEach(context => {
+      $(context).on('dragover', this.onDragStarted);
+      $(context).on('dragover', this.onDefaultDrop);
+      $(context).on('paste', this.onPaste);
     });
+
+    // for Firefox
+    this.$pasteCatcher = $('<div/>')
+      .attr('contenteditable', 'true')
+      .css({
+        position: 'absolute',
+        left: -999,
+        width: 0,
+        height: 0,
+        overflow: 'hidden',
+        outline: 0
+      });
+
+    $(window.widgetFrame.document.body).prepend(this.$pasteCatcher);
   }
 
   componentWillReceiveProps(newProps) {
     if (newProps.repeatFiles.size) {
-      const $input = $(this.getInput());
-      this.initializeFileUpload();
-
-      newProps.repeatFiles.forEach(file => $input.fileupload('send', {
-        fileInput: $input,
-        files: [file]
-      }));
+      newProps.repeatFiles.forEach(file => this.pushFileToQueue(file));
     }
   }
 
   componentWillUnmount() {
     $(this.getInput()).fileupload('destroy');
+    this.$pasteCatcher.remove();
 
-    this.getContext().forEach(selector => {
-      $(selector).off('dragover', this.onDragStarted);
-      $(selector).off('dragover', this.onDefaultDrop);
-      $(selector).off('paste', this.onPaste);
+    this.getContext().forEach(context => {
+      $(context).off('dragover', this.onDragStarted);
+      $(context).off('dragover', this.onDefaultDrop);
+      $(context).off('paste', this.onPaste);
     });
   }
 
@@ -78,12 +89,23 @@ export class DropZone extends React.Component {
     });
   };
 
+  onGetBlobFromPasteChecker = () => {
+    const child = this.$pasteCatcher.children().last().get(0);
+    if (child) {
+      if (child.tagName === 'IMG') {
+        const imgSrc = child.src;
+        getImageDataUrl(imgSrc, dataUrl => {
+          const blob = dataUrlToBlob(dataUrl);
+          this.pushBlobToQueue(blob, 'image/png');
+        });
+      }
+
+      //this.$pasteCatcher.html('');
+    }
+  };
+
   onPaste = event => {
     const originalEvent = event.originalEvent;
-
-    const $input = $(this.getInput());
-    this.initializeFileUpload();
-
     if (originalEvent.clipboardData) {
       const items = originalEvent.clipboardData.items;
       if (items) {
@@ -92,12 +114,12 @@ export class DropZone extends React.Component {
 
           if (item.kind === 'file' && item.type.indexOf('image') !== -1) {
             const blob = item.getAsFile();
-            $input.fileupload('send', {
-              fileInput: $input,
-              files: [new File([blob], 'from_clipboard.' + extension(item.type))]
-            });
+            this.pushBlobToQueue(blob, item.type);
           }
         }
+      } else {
+        this.$pasteCatcher.focus();
+        setTimeout(this.onGetBlobFromPasteChecker, 100);
       }
     }
   };
@@ -124,6 +146,22 @@ export class DropZone extends React.Component {
       done: onSuccess,
       fail: onFail
     });
+  }
+
+  pushFileToQueue(file) {
+    const $input = $(this.getInput());
+    this.initializeFileUpload();
+
+    console.log(file);
+    $input.fileupload('send', {
+      fileInput: $input,
+      files: [file]
+    });
+  }
+
+  pushBlobToQueue(blob, contentType) {
+    const file = new File([blob], `clipboard_${moment().format()}.${extension(contentType)}`);
+    this.pushFileToQueue(file);
   }
 
   render() {
