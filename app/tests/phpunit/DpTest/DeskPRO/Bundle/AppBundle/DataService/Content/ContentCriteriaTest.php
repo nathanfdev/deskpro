@@ -42,10 +42,11 @@ use Prophecy\Argument;
 class ContentCriteriaTest extends DeskProTestCase
 {
     public static $dummyProperParams = [
-        'status'         => 'published',
-        'author'         => 1,
-        'category'       => 1,
+        'status' => 'published',
+        'author' => 1,
+        'category' => 1,
         'period_created' => 'this_month',
+        'group_by' => 'author'
     ];
 
     /**
@@ -98,9 +99,9 @@ class ContentCriteriaTest extends DeskProTestCase
         $qb = $this->mockQueryBuilder();
 
         // expectations when applying self::$dummyProperParams
-        $qb->setParameter('status',         'published')->shouldBeCalled();
-        $qb->setParameter('person',         1)->shouldBeCalled();
-        $qb->setParameter('category',       1)->shouldBeCalled();
+        $qb->setParameter('status', 'published')->shouldBeCalled();
+        $qb->setParameter('person', 1)->shouldBeCalled();
+        $qb->setParameter('category', 1)->shouldBeCalled();
         $qb->setParameter('period_created', 'this_month')->shouldBeCalled();
 
         /** @var \Doctrine\ORM\QueryBuilder $qb */
