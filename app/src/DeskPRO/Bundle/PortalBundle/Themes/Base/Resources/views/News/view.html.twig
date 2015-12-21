@@ -34,7 +34,7 @@
 
         {% if post.category %}
         <hr>
-        {{ phrase('portal.general.in') }} <a href="{{ portal_path(post.category) }}">{{ post.category }}</a>
+        {{ phrase('portal.general.in') }} <a href="{{ portal_path(post.category) }}">{{ object_phrase(post.category) }}</a>
         {% endif %}
 
       </div>

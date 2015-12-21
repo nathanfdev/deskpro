@@ -16,7 +16,7 @@
             <hr>
             <span class="comments"><i class="fa fa-comments"></i> <a href="{{ portal_path(item) }}#comments">{{ phrase('portal.general.comments-count', {count: item.num_comments}) }}</a></span>
             <hr>
-            {{ phrase('portal.general.in') }} <a href="{{ portal_path(item.category) }}">{{ item.category.title }}</a>
+            {{ phrase('portal.general.in') }} <a href="{{ portal_path(item.category) }}">{{ object_phrase(item.category) }}</a>
           </div>
         </div>
       </div>

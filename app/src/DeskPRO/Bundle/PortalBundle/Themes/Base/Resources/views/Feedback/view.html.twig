@@ -26,7 +26,7 @@
                 <span class="feedback-status">
                     {% if item.status_category %}
                         <a href="{{ portal_path(item.status_category) }}">
-                            {{ item.status_category }}
+                            {{ object_phrase(item.status_category) }}
                         </a>
                     {% else %}
                         {{ item.status }}
@@ -35,7 +35,7 @@
                     {% endif %}
                 </span>
 
-                <span class="feedback-item-type"><a href="{{ portal_path(item.category) }}">{{ item.category }}</a></span>
+                <span class="feedback-item-type"><a href="{{ portal_path(item.category) }}">{{ object_phrase(item.category) }}</a></span>
 
                 <div class="header-buttons">
                     {% show feedback_subscription_link %}

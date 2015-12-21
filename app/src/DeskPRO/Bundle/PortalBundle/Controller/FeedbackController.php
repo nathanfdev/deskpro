@@ -521,7 +521,7 @@ class FeedbackController extends AbstractController
     {
         $allowed_types_parsed = array();
         foreach ($feedback_types as $cat) {
-            $allowed_types_parsed[$cat->getId()] = $cat->getTitle();
+            $allowed_types_parsed[$cat->getId()] = $this->objectPhrase($cat);
         }
 
         $status_categories        = array();
@@ -533,7 +533,7 @@ class FeedbackController extends AbstractController
             }
             $status_categories[$status_type][] = array(
                 'id'    => $status_category->getId(),
-                'title' => $status_category->getTitle(),
+                'title' => $this->objectPhrase($status_category),
             );
         }
 

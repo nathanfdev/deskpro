@@ -433,6 +433,18 @@ class AbstractController extends BaseController
         return $this->get('language_manager')->phrase($phrase, $vars, $lang);
     }
 
+    /**
+     * @param $object
+     * @param null          $property
+     * @param Language|null $lang
+     *
+     * @return string
+     */
+    protected function objectPhrase($object, $property = null, Language $lang = null)
+    {
+        return $this->get('language_manager')->objectPhrase($object, $property, $lang);
+    }
+
     protected function makeJsonResponse(array $array)
     {
         $response = new JsonResponse(array('data' => $array));
