@@ -34,6 +34,7 @@
   // After onload, we load the script source for real
   doc.open()._load = () => {
     const appNode = doc.createElement('script');
+    appNode.charset = 'UTF8';
     if (docDomain) {
       doc.domain = docDomain;
     }
