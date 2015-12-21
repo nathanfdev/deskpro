@@ -3,12 +3,11 @@ import $ from 'jquery';
 
 export const windowResize = createAction(
   'WIDGET_WINDOW_RESIZE',
-  () => {
-    return {
-      width: $(window.widgetFrame).width(),
-      height: $(window.widgetFrame).height()
-    };
-  });
+  () => ({
+    width: $(window.widgetFrame).width(),
+    height: $(window.widgetFrame).height()
+  })
+);
 
 export const loadOptions = createAction('WIDGET_OPTIONS', options => ({...options}));
 export const openWidget = createAction('WIDGET_OPEN');
