@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import jQuery from 'jquery';
+import $ from 'jquery';
 
 export default class Frame extends React.Component {
 
@@ -82,7 +82,7 @@ export default class Frame extends React.Component {
     const { frameStyles = {} } = this.props;
     const doc = this.getContentDocument();
 
-    const $container = jQuery(doc.body.firstChild);
+    const $container = $(doc.body.firstChild);
     const width = frameStyles.width || $container.width();
     const height = frameStyles.height || $container.height();
 
@@ -113,11 +113,11 @@ export default class Frame extends React.Component {
       }
 
       if (!this.containerReady) {
-        const $head = jQuery(doc.head);
-        const $body = jQuery(doc.body);
+        const $head = $(doc.head);
+        const $body = $(doc.body);
 
-        const $styles = jQuery(document).find('style').clone();
-        const $container = jQuery('<div/>', {
+        const $styles = $(document).find('style').clone();
+        const $container = $('<div/>', {
           id: 'react_frame_container',
           css: {
             ...containerStyles,
