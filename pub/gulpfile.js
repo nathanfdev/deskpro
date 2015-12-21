@@ -340,10 +340,7 @@ function getWebpackConfig(mode, isDevServer, isProd) {
         },
         {
           test: /\.json/,
-          loader: 'json-loader',
-          include: [
-            path.resolve(__dirname, 'node_modules/mime-db')
-          ]
+          loader: 'json-loader'
         }
       ],
       noParse: []
