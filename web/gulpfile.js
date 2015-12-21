@@ -289,7 +289,7 @@ gulp.task('sassdoc', function () {
         groups[group] = [];
       }
 
-      var name = sassdoc_items[i]['context']['name'].replace(/\-/g, '_');
+      var name = sassdoc_items[i]['context']['name'];
 
       var type;
       if (sassdoc_items[i].hasOwnProperty('type')) {

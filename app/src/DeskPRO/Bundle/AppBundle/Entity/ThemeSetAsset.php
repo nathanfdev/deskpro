@@ -93,6 +93,15 @@ class ThemeSetAsset implements EntityInterface, NotifyPropertyChanged
     protected $date_updated;
 
     /**
+     * ThemeSetAsset constructor.
+     */
+    public function __construct()
+    {
+        $this->date_created = new \DateTime();
+        $this->date_updated = new \DateTime();
+    }
+
+    /**
      * @return mixed
      */
     public function getId()
