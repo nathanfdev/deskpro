@@ -1,6 +1,7 @@
 import { createAction } from 'Ampliflux';
 import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
+import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
 
 // Chat setup actions
 export const setChatId = createAction('WIDGET_CHAT_SET_ID');
@@ -33,7 +34,7 @@ export const resetAttachments = createAction('WIDGET_CHAT_RESET_ATTACHMENTS');
 export const createChat = createAction(
   'WIDGET_CHAT_CREATE_NEW',
   params => dispatch => DpApi
-    .sendPost('DP_API/chats/create', params)
+    .sendPost('DP_API/chats/create', params, {...ajaxOptions})
     .success(response => {
       const data = response.data || {};
       const chatId = data.id;
@@ -61,7 +62,7 @@ export const pollingChat = createAction(
     }
 
     return DpApi
-      .sendGet(`DP_API/chats/${chatId}/polling?` + compileParams(params), {crossDomain: true, dataType: 'json'})
+      .sendGet(`DP_API/chats/${chatId}/polling?` + compileParams(params), {...ajaxOptions})
       .success(response => {
         const chatInfo = response.chat_info && response.chat_info.data;
         const newMessages = response.new_messages ? response.new_messages.data : [];
@@ -84,31 +85,31 @@ export const sendChatMessage = createAction(
     }
 
     dispatch(resetAttachments());
-    return DpApi.sendPost(`DP_API/chats/${chatId}/messages`, params);
+    return DpApi.sendPost(`DP_API/chats/${chatId}/messages`, params, {...ajaxOptions});
   }
 );
 
 export const sendTranscriptInfo = createAction(
   'WIDGET_CHAT_SEND_TRANSCRIPT_INFO',
-  (chatId, params) => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/transcript_info`, params) : null
+  (chatId, params) => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/transcript_info`, params, {...ajaxOptions}) : null
 );
 
 export const sendTranscriptData = createAction(
   'WIDGET_CHAT_SEND_TRANSCRIPT_DATA',
-  chatId => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/transcript_data`) : null
+  chatId => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/transcript_data`, {...ajaxOptions}) : null
 );
 
 export const endChat = createAction(
   'WIDGET_CHAT_END',
-  chatId => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/end`) : null
+  chatId => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/end`, {...ajaxOptions}) : null
 );
 
 export const reopenChat = createAction(
   'WIDGET_CHAT_REOPEN',
-  chatId => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/reopen`) : null
+  chatId => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/reopen`, {...ajaxOptions}) : null
 );
 
 export const sendFeedback = createAction(
   'WIDGET_CHAT_SEND_FEEDBACK',
-  (chatId, params) => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/feedback`, params) : null
+  (chatId, params) => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/feedback`, params, {...ajaxOptions}) : null
 );

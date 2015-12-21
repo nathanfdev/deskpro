@@ -3,9 +3,11 @@ import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { loadOptions } from './dpWindowActions';
 import { loadOnlineAgents } from './agentActions';
 
+export const ajaxOptions = {crossDomain: true, dataType: 'json'};
+
 export const loadPhraseTranslations = createAction(
   'WIDGET_LOAD_PHRASE_TRANSLATIONS',
-  () => DpApi.sendGet('DP_API/lang/widget-chat-phrases.json', {crossDomain: true, dataType: 'json'})
+  () => DpApi.sendGet('DP_API/lang/widget-chat-phrases.json', {...ajaxOptions})
 );
 
 export const bootstrapWidget = createAction(
