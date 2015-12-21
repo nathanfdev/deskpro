@@ -152,7 +152,6 @@ export class DropZone extends React.Component {
     const $input = $(this.getInput());
     this.initializeFileUpload();
 
-    console.log(file);
     $input.fileupload('send', {
       fileInput: $input,
       files: [file]
