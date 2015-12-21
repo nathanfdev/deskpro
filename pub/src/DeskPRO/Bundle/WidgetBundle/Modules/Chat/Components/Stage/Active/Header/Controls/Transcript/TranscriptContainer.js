@@ -2,7 +2,9 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Simple from 'DeskPRO/Component/Positioned/Simple';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
+import { TranscriptPopup } from './TranscriptPopup';
 import { TranscriptForm } from './TranscriptForm';
+import { TranscriptSent } from './TranscriptSent';
 import {
   disableSendTranscript,
   enableSendTranscript,
@@ -44,9 +46,9 @@ export class TranscriptContainer extends React.Component {
 
   onClick = event => {
     event.preventDefault();
-    const { dispatch, authorEmail, checked } = this.props;
+    const { dispatch, authorEmail, checked, sent } = this.props;
 
-    if (authorEmail && checked) {
+    if (authorEmail && checked && !sent) {
       dispatch(disableSendTranscript());
     } else {
       this.setState({
@@ -65,7 +67,8 @@ export class TranscriptContainer extends React.Component {
     const { dispatch, chatId, authorName, authorEmail } = this.props;
 
     // no changes
-    if (name === authorName && email === authorEmail) {
+    // don't allow to close popup if no changes and empty email
+    if (authorEmail && name === authorName && email === authorEmail) {
       this.onCloseForm();
 
       if (email) {
@@ -101,7 +104,6 @@ export class TranscriptContainer extends React.Component {
 
           ref: 'button',
           active: checked,
-          disabled: sent,
           onClick: this.onClick
         })}
 
@@ -115,10 +117,14 @@ export class TranscriptContainer extends React.Component {
                     context={[parent.document, window.widgetFrame.document]}
                     additionalNodes={['.dpdesignportal-button']}>
 
-            <TranscriptForm name={authorName}
-                            email={authorEmail}
-                            onSubmit={this.onSubmit}
-                            onClose={this.onCloseForm} />
+            <TranscriptPopup onClose={this.onCloseForm}>
+              {sent
+                ? <TranscriptSent email={authorEmail} />
+                : <TranscriptForm name={authorName}
+                                  email={authorEmail}
+                                  onSubmit={this.onSubmit} />
+              }
+            </TranscriptPopup>
           </ClickOut>
         </Simple>
       </span>

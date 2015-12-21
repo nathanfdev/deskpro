@@ -29,6 +29,11 @@
   &.dpdesignportal-popover-request-transcript {
     @include add-corner(5px, #4681b2, 50%, top, "");
     padding: 10px 5px 5px 7px;
+
+    .dpdesignportal-popover-request-transcript-sent-message {
+      text-align: center;
+      padding: 0 20px;
+    }
   }
 
   .dpdesignportal-popover-close {
@@ -38,6 +43,7 @@
     color: #dadada;
     font-size: 11px;
     cursor: hand;
+    z-index: 1001;
   }
 
   h1 {

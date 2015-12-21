@@ -7,8 +7,7 @@ export class TranscriptForm extends React.Component {
   static propTypes = {
     name: PropTypes.string,
     email: PropTypes.string,
-    onSubmit: PropTypes.func.isRequired,
-    onClose: PropTypes.func.isRequired
+    onSubmit: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -74,11 +73,7 @@ export class TranscriptForm extends React.Component {
 
   render() {
     return (
-      <div className="dpdesignportal-popover dpdesignportal-popover-request-transcript">
-        <div className="dpdesignportal-popover-close" onClick={this.props.onClose}>
-          <i className="fa fa-times"></i>
-        </div>
-
+      <div>
         <h1>Need a transcript of this chat?</h1>
         <p className="grey">Enter your name &amp; email below and we'll email it to you.</p>
 

@@ -2,6 +2,7 @@ import { createAction } from 'Ampliflux';
 import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
+import { isEndedSelector } from '../Selectors/chat';
 
 // Phrase translations
 export const setPhraseTranslations = createAction('WIDGET_CHAT_SET_PHRASE_TRANSLATIONS');
@@ -101,14 +102,29 @@ export const sendChatMessage = createAction(
   }
 );
 
-export const sendTranscriptInfo = createAction(
-  'WIDGET_CHAT_SEND_TRANSCRIPT_INFO',
-  (chatId, params) => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/transcript_info`, params, {...ajaxOptions}) : null
-);
-
 export const sendTranscriptData = createAction(
   'WIDGET_CHAT_SEND_TRANSCRIPT_DATA',
-  chatId => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/transcript_data`, {...ajaxOptions}) : null
+    chatId => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/transcript_data`, {...ajaxOptions}) : null
+);
+
+export const sendTranscriptInfo = createAction(
+  'WIDGET_CHAT_SEND_TRANSCRIPT_INFO',
+  (chatId, params) => (dispatch, getState) => {
+    if (!chatId) {
+      return null;
+    }
+
+    const state = getState();
+    const chatEnded = isEndedSelector(state);
+
+    return DpApi
+      .sendPost(`DP_API/chats/${chatId}/transcript_info`, params, {...ajaxOptions})
+      .success(() => {
+        if (chatEnded) {
+          dispatch(sendTranscriptData());
+        }
+      });
+  }
 );
 
 export const endChat = createAction(
