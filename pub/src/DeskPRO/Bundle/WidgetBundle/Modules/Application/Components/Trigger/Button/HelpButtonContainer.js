@@ -117,7 +117,7 @@ export class HelpButtonContainer extends React.Component {
             <ReplyForm {...popupProps} />
           </AgentMessagePopupContainer>
         );
-      case 'agents':
+      case 'onlineAgents':
       default:
         return <OnlineAgentsPopup {...popupProps} />;
     }
