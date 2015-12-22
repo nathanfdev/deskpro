@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
-import { currentListSortSelector, currentListOrderSelector, currentViewModeSelector } from '../../../Selectors/list';
+import { currentListSortSelector, currentListOrderSelector, currentListParamsSelector, listFiltersSelector, currentViewModeSelector }
+  from '../../../Selectors/list';
 import { setSort, setOrder, applyParams }
   from '../../../Actions/publishListActions';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
@@ -10,12 +11,16 @@ import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components
 @connect(state => ({
   sort: currentListSortSelector(state),
   order: currentListOrderSelector(state),
+  filterParams: currentListParamsSelector(state),
+  filters: listFiltersSelector(state),
   viewMode: currentViewModeSelector(state)
 }))
 export class ControlBarContainer extends Component {
   static propTypes = {
     sort: PropTypes.string.isRequired,
     order: PropTypes.string.isRequired,
+    filterParams: PropTypes.object.isRequired,
+    filters: PropTypes.array.isRequired,
     viewMode: PropTypes.string.isRequired
   };
 
@@ -32,6 +37,11 @@ export class ControlBarContainer extends Component {
         order: this.props.order,
         sortAction: setSort,
         orderAction: setOrder
+      },
+      filtering: {
+        filters: this.props.filters,
+        setParamsAction: applyParams,
+        state: this.props.filterParams
       },
       view: {
         options: {

@@ -24,7 +24,6 @@ export class NavContainer extends Component {
     news: PropTypes.object.isRequired,
     downloads: PropTypes.object.isRequired,
     todo: PropTypes.object.isRequired,
-    groups: PropTypes.object.isRequired,
     grouping: PropTypes.object.isRequired,
     dpWindow: PropTypes.object.isRequired
   };
@@ -60,21 +59,9 @@ export class NavContainer extends Component {
     const { dispatch, articles, news, downloads, todo, dpWindow, loaded } = this.props;
 
     const onClick = {
-     /* articles: (group) => {
-        dispatch(listActions.applyParams({ content: 'articles', [articles.get('grouped_by')]: group }));
-      },
-      news: (group) => {
-        dispatch(listActions.applyParams({ content: 'news', [news.get('grouped_by')]: group }));
-      },
-      downloads: (group) => {
-        dispatch(listActions.applyParams({ content: 'downloads', [downloads.get('grouped_by')]: group }));
-      },*/
       draftArticles: () => {
         dispatch(listActions.applyParams({ content: 'articles', status: 'hidden', hidden_status: 'draft'}));
       },
-      /* draftArticles: () => {
-        dispatch(listActions.loadDraftArticles(todo.get('articles').get('mine')));
-      },*/
       pendingArticles: () => {
         dispatch(listActions.loadPendingArticles(todo.get('articles').get('mine')));
       },

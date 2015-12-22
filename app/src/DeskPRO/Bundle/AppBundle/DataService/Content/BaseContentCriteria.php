@@ -52,13 +52,17 @@ abstract class BaseContentCriteria extends Criteria implements GroupableCriteria
     public function applyFilters(QueryBuilder $qb)
     {
         $alias = $qb->getRootAliases()[0];
-        $sort  = "$alias.date_created";
+        $sort = "$alias.date_created";
         $order = 'asc';
         foreach ($this->filters as $field => $value) {
             switch ($field) {
                 case 'status':
                 case 'hidden_status':
-                    $qb->andWhere("$alias.$field = :$field");
+                    if (is_array($value)) {
+                        $qb->andWhere("$alias.$field IN (:$field)");
+                    } else {
+                        $qb->andWhere("$alias.$field = :$field");
+                    }
                     $qb->setParameter($field, $value);
                     break;
 
@@ -168,7 +172,20 @@ abstract class BaseContentCriteria extends Criteria implements GroupableCriteria
             }
         );
 
-        $resolver->setAllowedValues('status', Content::getAllStatuses());
+        $resolver->setAllowedValues(
+            'status',
+            function ($value) {
+                $allowed = Content::getAllStatuses();
+                is_array($value) or $value = [$value];
+                foreach ($value as $status) {
+                    if (!in_array($status, $allowed)) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        );
         $resolver->setAllowedValues('hidden_status', Content::getAllHiddenStatuses());
         $resolver->setAllowedValues('period_created', DatePeriods::$names);
         $resolver->setAllowedValues('order', ['asc', 'desc']);
