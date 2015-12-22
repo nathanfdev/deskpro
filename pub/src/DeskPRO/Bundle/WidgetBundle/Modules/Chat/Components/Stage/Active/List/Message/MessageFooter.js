@@ -24,10 +24,11 @@ export class MessageFooter extends React.Component {
         }
 
         <div className={classNames({'right': isUser})}>
-          <TimeAgo className="dpdesignportal-message-footer-timer"
-                   minPeriod={60000}
-                   date={date} />
-
+          {date &&
+            <TimeAgo className="dpdesignportal-message-footer-timer"
+                     minPeriod={60000}
+                     date={date}/>
+          }
           {notDelivered &&
             <span className="dpdesignportal-message-footer-not-delivered">
               <i className="fa fa-warning"/> Not delivered

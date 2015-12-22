@@ -2,7 +2,7 @@ import { createAction } from 'Ampliflux';
 import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
-import { isEndedSelector, messagesSelector } from '../Selectors/chat';
+import { isEndedSelector, messagesSelector, attachmentsSelector } from '../Selectors/chat';
 
 // Phrase translations
 export const setPhraseTranslations = createAction('WIDGET_CHAT_SET_PHRASE_TRANSLATIONS');
@@ -103,12 +103,38 @@ export const pollingChat = createAction(
 
 export const sendChatMessage = createAction(
   'WIDGET_CHAT_SEND_MESSAGE',
-  (chatId, params) => dispatch => {
+  (chatId, params) => (dispatch, getState) => {
     if (!chatId) {
       return null;
     }
 
+    // add optimistic message
+    dispatch(addNewMessage({
+      content: params.message,
+      is_html: true,
+      author_type: 'user'
+    }));
+
+    const state = getState();
+    const attachments = attachmentsSelector(state);
+
+    params.attachments.forEach(blobAuthId => {
+      const attachment = attachments.filter(blob => blob.get('blob_auth_id') === blobAuthId).first();
+      dispatch(addNewMessage({
+        content: null,
+        is_html: true,
+        author_type: 'user',
+        metadata: {
+          type: 'file',
+          blob_id: attachment.get('blob_id'),
+          blob: attachment
+        }
+      }));
+    });
+
+    // reset attachments after send
     dispatch(resetAttachments());
+
     return DpApi.sendPost(`DP_API/chats/${chatId}/messages`, params, {...ajaxOptions});
   }
 );

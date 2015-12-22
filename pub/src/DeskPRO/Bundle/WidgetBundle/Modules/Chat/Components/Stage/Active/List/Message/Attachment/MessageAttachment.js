@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { MessageImage } from './MessageImage';
 import { MessageFile } from './MessageFile';
+import Immutable from 'immutable';
 
 export class MessageAttachment extends React.Component {
 
@@ -10,7 +11,10 @@ export class MessageAttachment extends React.Component {
 
   render() {
     const props = this.props;
-    const attachment = props.message.get('metadata').get('blob');
+    const { message = Immutable.fromJS({}) } = this.props;
+
+    const metadata = message.get('metadata') || Immutable.fromJS({});
+    const attachment = metadata.get('blob') || Immutable.fromJS({});
     const newProps = {...props, attachment};
 
     return attachment.get('is_image') ? <MessageImage {...newProps} /> : <MessageFile {...newProps} />;
