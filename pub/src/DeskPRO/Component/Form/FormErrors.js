@@ -5,6 +5,11 @@ export function getErrors(response, name) {
   return errors[name] ? errors[name].errors : [];
 }
 
+export function getError(response, name) {
+  const error = getErrors(response, name)[0];
+  return error ? error.message : null;
+}
+
 export function hasErrors(response, name) {
   return getErrors(response, name).length > 0;
 }

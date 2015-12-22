@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { UserInfoForm } from './UserInfoForm';
 import { Checkbox } from './Checkbox';
-import { hasErrors } from 'DeskPRO/Component/Form/FormErrors';
+import { hasErrors, FieldErrors } from 'DeskPRO/Component/Form/FormErrors';
 
 export class ChatBeginConversation extends React.Component {
 
@@ -61,6 +61,8 @@ export class ChatBeginConversation extends React.Component {
                placeholder="email@example.com"
                value={email}
                onChange={onChangeEmail} />
+
+        <FieldErrors errors={errors} name="email" />
 
         {submit
           ? <div className="spinner"><i/></div>
