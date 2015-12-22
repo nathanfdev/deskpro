@@ -34,8 +34,10 @@ namespace DeskPRO\Bundle\PortalBundle\Designer;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\BlobStorage;
 use Application\DeskPRO\Entity\Brand;
+use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use DeskPRO\Component\SassCompiler\Compiler\ScssPhpCompiler;
 use DeskPRO\Component\SassCompiler\SassProject;
 use Doctrine\ORM\EntityManager;
@@ -66,15 +68,22 @@ class StylesManager
     private $brand_stack;
 
     /**
+     * @var PortalModeStorage
+     */
+    private $portal_mode_storage;
+
+    /**
      * StylesManager constructor.
      *
-     * @param EntityManager $em
-     * @param BrandStack    $brand_stack
+     * @param EntityManager     $em
+     * @param BrandStack        $brand_stack
+     * @param PortalModeStorage $portal_mode_storage
      */
-    public function __construct(EntityManager $em, BrandStack $brand_stack)
+    public function __construct(EntityManager $em, BrandStack $brand_stack, PortalModeStorage $portal_mode_storage)
     {
-        $this->em          = $em;
-        $this->brand_stack = $brand_stack;
+        $this->em                  = $em;
+        $this->brand_stack         = $brand_stack;
+        $this->portal_mode_storage = $portal_mode_storage;
     }
 
     /**
@@ -86,7 +95,7 @@ class StylesManager
      */
     public function recompile(array $variables)
     {
-        $themeSet = $this->getThemeSet();
+        $themeSet = $this->getEditThemeSet();
         $themeSet->setOption(self::$custom_vars_theme_set_option, $variables);
 
         $this->em->persist($themeSet);
@@ -145,8 +154,8 @@ class StylesManager
      * @param bool $add_default
      *
      * @throws \Exception
-     * @return array
      *
+     * @return array
      */
     public function getVariableValues($add_default = true)
     {
@@ -166,11 +175,43 @@ class StylesManager
     }
 
     /**
+     * Commit changes of the EditThemeSet.
+     */
+    public function commitEditThemeSet()
+    {
+        $brand = $this->getBrand();
+        $brand->setThemeSet($newThemeSet = $this->getEditThemeSet());
+        $brand->setEditThemeSet($newEditThemeSet = $this->cloneThemeSet($newThemeSet));
+        $this->em->persist($newThemeSet);
+        $this->em->persist($newEditThemeSet);
+        $this->em->persist($brand);
+        $this->em->flush();
+    }
+
+    /**
+     * Discard changes of the EditThemeSet.
+     */
+    public function discardEditThemeSet()
+    {
+        $brand = $this->getBrand();
+        $brand->setEditThemeSet($newEditThemeSet = $this->cloneThemeSet($this->getThemeSet()));
+        $this->em->persist($newEditThemeSet);
+        $this->em->persist($brand);
+        $this->em->flush();
+    }
+
+    /**
+     * @throws \Exception
      * @return Blob|null
+     *
      */
     private function getCssBlob()
     {
-        if ($asset = $this->em->getRepository(ThemeSetAsset::class)->findOneBy(['name' => 'portal.css'])) {
+        $criteria = [
+            'theme_set' => $this->isPreviewMode() ? $this->getEditThemeSet() : $this->getThemeSet(),
+            'name'      => 'portal.css',
+        ];
+        if ($asset = $this->em->getRepository(ThemeSetAsset::class)->findOneBy($criteria)) {
             return $asset->getBlob();
         }
 
@@ -224,6 +265,25 @@ class StylesManager
     /**
      * @throws \Exception
      *
+     * @return \DeskPRO\Bundle\AppBundle\Entity\ThemeSet
+     */
+    private function getEditThemeSet()
+    {
+        if (!$themeSet = $this->getBrand()->getEditThemeSet()) {
+            $themeSet = $this->cloneThemeSet($this->getThemeSet());
+            $brand    = $this->getBrand();
+            $brand->setEditThemeSet($themeSet);
+            $this->em->persist($themeSet);
+            $this->em->persist($brand);
+            $this->em->flush();
+        }
+
+        return $themeSet;
+    }
+
+    /**
+     * @throws \Exception
+     *
      * @return Brand
      */
     private function getBrand()
@@ -253,5 +313,27 @@ class StylesManager
         $source = str_replace('darken($page-background', 'darken('.$variables['page-background'], $source);
 
         return $source;
+    }
+
+    /**
+     * @param ThemeSet $themeSet
+     *
+     * @return ThemeSet
+     */
+    private function cloneThemeSet(ThemeSet $themeSet)
+    {
+        $clone = new ThemeSet();
+        $clone->setThemeId($themeSet->getThemeId());
+        $clone->setOptions($themeSet->getOptions());
+
+        return $clone;
+    }
+
+    /**
+     * @return bool
+     */
+    private function isPreviewMode()
+    {
+        return $this->portal_mode_storage->getMode()->isAdminPreview();
     }
 }

@@ -67,7 +67,7 @@ class DesignerController extends AbstractApiController
     }
 
     /**
-     * @Route("/portal/api/style/variable-values")
+     * @Route("/portal/api/style/edit-theme-set/variable-values")
      * @Method({"PUT"})
      *
      * @param Request $request
@@ -80,6 +80,28 @@ class DesignerController extends AbstractApiController
         $this->getStylesManager()->recompile($variables);
 
         return new Response(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/commit")
+     * @Method({"GET"})
+     *
+     * @return View
+     */
+    public function commitEditThemeSetAction()
+    {
+        return new JsonResponse($this->getStylesManager()->commitEditThemeSet());
+    }
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/discard")
+     * @Method({"GET"})
+     *
+     * @return View
+     */
+    public function discardEditThemeSetAction()
+    {
+        return new JsonResponse($this->getStylesManager()->discardEditThemeSet());
     }
 
     /**

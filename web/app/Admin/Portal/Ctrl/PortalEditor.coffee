@@ -8,15 +8,10 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @open_panels = []
       @values = {}
 
-    saveValuesDelayed: (newValues, oldValues) =>
-      if not angular.equals(newValues, oldValues)
-        @$timeout.cancel(@saveValuesTimeout)
-        @saveValuesTimeout = @$timeout(@saveValues, 1500)
-
-    saveValues: () =>
+    save: () =>
       request = @$http({
         method: 'PUT',
-        url: '/portal/api/style/variable-values',
+        url: '/portal/api/style/edit-theme-set/variable-values',
         data: @values
       })
       request.then(
@@ -24,15 +19,23 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         () -> console.log('Error')
       )
 
-    commitChanges: () ->
-      console.log('Committing', @values)
+    commit: () ->
+      @$http.get('/portal/api/style/edit-theme-set/commit').then(
+        () -> console.log('Committed'),
+        () -> console.log('Error')
+      );
+
+    discard: () ->
+      @$http.get('/portal/api/style/edit-theme-set/discard').then(
+        () -> console.log('Committed'),
+        () -> console.log('Error')
+      );
 
     initialLoad: ->
       @$http.get('/portal/api/style/variable-groups').success((data) => @groups = data)
       @$http.get('/portal/api/style/variable-values').success(
         (values) =>
           angular.extend(@values, values)
-          @$scope.$watch((() => @values), @saveValuesDelayed, true);
       )
 
     togglePanel: (name) ->

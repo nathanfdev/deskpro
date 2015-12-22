@@ -5,9 +5,16 @@ services:
     arguments:
       - @doctrine.orm.default_entity_manager
       - @brand_stack
+      - @portal_mode_storage
 
   dp.portal.designer.portal_css_twig_extension:
     class: DeskPRO\Bundle\PortalBundle\Designer\PortalCssTwigExtension
     arguments: [@service_container]
     tags:
         - { name: twig.extension }
+
+  dp.portal.designer.admin_preview_iframe_listener:
+    class: DeskPRO\Bundle\PortalBundle\Designer\AdminPreviewIframeListener
+    arguments: [@portal_mode_storage]
+    tags:
+      - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse, priority: -255 }
