@@ -7,16 +7,22 @@ import { ReplyButtons } from '../Popups/AgentMessage/ReplyButtons';
 import { ReplyForm } from '../Popups/AgentMessage/ReplyForm';
 import { loadOnlineAgents } from '../../../Actions/agentActions';
 import { windowResize } from '../../../Actions/dpWindowActions';
-import { widgetOpenedSelector, helpButtonSizeSelector, helpPopupSelector } from '../../../Selectors/dpWindow';
 import { onlineAgentsCountSelector } from '../../../Selectors/agent';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { OnlineAgentsContainer } from '../Popups/OnlineAgentsContainer';
+import {
+  widgetOpenedSelector,
+  helpButtonSizeSelector,
+  helpPopupSelector,
+  agentPollingTimeoutSelector
+} from '../../../Selectors/dpWindow';
 
 @connect(state => ({
   widgetOpened: widgetOpenedSelector(state),
   size: helpButtonSizeSelector(state),
   popup: helpPopupSelector(state),
-  agentsCounts: onlineAgentsCountSelector(state)
+  agentsCounts: onlineAgentsCountSelector(state),
+  agentPollingTimeout: agentPollingTimeoutSelector(state)
 }))
 export class HelpButtonContainer extends React.Component {
 
@@ -25,7 +31,11 @@ export class HelpButtonContainer extends React.Component {
     dispatch: PropTypes.func,
     onClick: PropTypes.func,
     popup: PropTypes.string,
-    agentsCounts: PropTypes.number
+    agentsCounts: PropTypes.number,
+    agentPollingTimeout: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ])
   };
 
   constructor(props) {
@@ -88,14 +98,16 @@ export class HelpButtonContainer extends React.Component {
   }
 
   pollingRequest() {
-    const { widgetOpened, dispatch } = this.props;
+    const { widgetOpened, dispatch, agentPollingTimeout } = this.props;
     if (widgetOpened) {
       return;
     }
 
     const promise = dispatch(loadOnlineAgents());
     const onResponse = () => {
-      setTimeout(() => this.pollingRequest(), 10000);
+      if (agentPollingTimeout !== 'off' && agentPollingTimeout > 0) {
+        setTimeout(() => this.pollingRequest(), agentPollingTimeout * 1000);
+      }
     };
 
     promise.then(onResponse, onResponse);

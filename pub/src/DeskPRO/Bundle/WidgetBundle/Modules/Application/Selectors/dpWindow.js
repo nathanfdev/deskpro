@@ -58,3 +58,8 @@ export const helpPopupMessageSelector = createSelector(
   widgetOptionsSelector,
   options => options.get('helpPopupMessage')
 );
+
+export const agentPollingTimeoutSelector = createSelector(
+  widgetOptionsSelector,
+  options => options.get('agentPollingTimeout') || 'off'
+);
