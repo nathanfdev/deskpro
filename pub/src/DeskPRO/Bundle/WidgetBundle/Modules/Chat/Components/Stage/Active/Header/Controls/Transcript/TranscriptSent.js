@@ -9,7 +9,7 @@ export class TranscriptSent extends React.Component {
   render() {
     return (
       <div className="dpdesignportal-popover-request-transcript-sent-message">
-        A transcript has already been sent to {this.props.email}
+        A transcript has already been sent to <b>{this.props.email}</b>
       </div>
     );
   }
