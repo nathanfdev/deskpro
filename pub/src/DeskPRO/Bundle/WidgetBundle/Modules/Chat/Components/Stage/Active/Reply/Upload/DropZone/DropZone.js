@@ -6,6 +6,7 @@ import $ from 'jquery';
 import { extension } from 'mime-types';
 import moment from 'moment';
 import { getImageDataUrl, dataUrlToBlob } from 'DeskPRO/Component/Util/Blob';
+import { PasteCatcher } from './PasteCatcher';
 
 export class DropZone extends React.Component {
 
@@ -33,20 +34,6 @@ export class DropZone extends React.Component {
       $(context).on('dragover', this.onDefaultDrop);
       $(context).on('paste', this.onPaste);
     });
-
-    // for Firefox
-    this.$pasteCatcher = $('<div/>')
-      .attr('contenteditable', 'true')
-      .css({
-        position: 'absolute',
-        left: -999,
-        width: 0,
-        height: 0,
-        overflow: 'hidden',
-        outline: 0
-      });
-
-    $(window.widgetFrame.document.body).prepend(this.$pasteCatcher);
   }
 
   componentWillReceiveProps(newProps) {
@@ -162,6 +149,11 @@ export class DropZone extends React.Component {
   }
 
   render() {
-    return <DropZoneOverlay opened={this.state.overlay} />;
+    return (
+      <div>
+        <DropZoneOverlay opened={this.state.overlay} />
+        <PasteCatcher />
+      </div>
+    );
   }
 }
