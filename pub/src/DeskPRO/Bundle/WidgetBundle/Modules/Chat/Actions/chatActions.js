@@ -2,7 +2,7 @@ import { createAction } from 'Ampliflux';
 import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
-import { isEndedSelector } from '../Selectors/chat';
+import { isEndedSelector, messagesSelector } from '../Selectors/chat';
 
 // Phrase translations
 export const setPhraseTranslations = createAction('WIDGET_CHAT_SET_PHRASE_TRANSLATIONS');
@@ -69,7 +69,7 @@ export const createChat = createAction(
 
 export const pollingChat = createAction(
   'WIDGET_CHAT_POLLING',
-  (chatId, params) => dispatch => {
+  (chatId, params) => (dispatch, getState) => {
     if (!chatId) {
       return null;
     }
@@ -84,7 +84,18 @@ export const pollingChat = createAction(
           dispatch(updateChatInfo(chatInfo));
         }
         if (newMessages.length) {
-          newMessages.forEach(message => dispatch(addNewMessage(message)));
+          const state = getState();
+          const existMessages = messagesSelector(state);
+
+          newMessages.forEach(newMessage => {
+            const alreadyExists = existMessages
+                .filter(existMessage => existMessage.get('id') === newMessage.id)
+                .size > 0;
+
+            if (!alreadyExists) {
+              dispatch(addNewMessage(newMessage));
+            }
+          });
         }
       });
   }
