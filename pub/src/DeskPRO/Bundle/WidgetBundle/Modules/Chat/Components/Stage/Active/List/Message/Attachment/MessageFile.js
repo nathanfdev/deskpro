@@ -38,7 +38,7 @@ export class MessageFile extends React.Component {
       <div className="dpdesignportal-message-content-file-attachment">
         <i className={classNames('fa', this.getFileIcon())} />
 
-        <a href={attachment.get('download_url')}>
+        <a href={`${attachment.get('download_url')}?dl=1`} target="_blank">
           {filenameMaxLength(attachment.get('filename'), 40)}
         </a>
 
