@@ -17,7 +17,7 @@ export class ListItemStatefulContainer extends React.Component {
   };
 
   render() {
-    const { state, groupId, itemId, dispatch, onClick } = this.props;
+    const { state, groupId, itemId, dispatch, onClick, active = 'active' } = this.props;
     const child = this.props.children;
     const childProps = child.props;
 
@@ -25,7 +25,7 @@ export class ListItemStatefulContainer extends React.Component {
       ...childProps,
 
       // declaring "active" property accordingly to the URL state
-      active: state.getIn([groupId, 'active']) === itemId,
+      active: state.getIn([groupId, active]) === itemId,
 
       // decorating original "onClick" with additional URL state saving functionality
       onClick: event => {
@@ -33,7 +33,7 @@ export class ListItemStatefulContainer extends React.Component {
         event.stopPropagation();
 
         onClick(event);
-        dispatch(updateRoutingState(groupId, 'active', itemId));
+        dispatch(updateRoutingState(groupId, active, itemId));
       }
     });
   }

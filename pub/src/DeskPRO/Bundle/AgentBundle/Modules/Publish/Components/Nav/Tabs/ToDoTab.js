@@ -9,7 +9,7 @@ export class ToDoTab extends Component {
   static propTypes = {
     loaded: PropTypes.bool.isRequired,
     todo: PropTypes.object.isRequired,
-    onClick: PropTypes.func.isRequired,
+    onClick: PropTypes.object.isRequired,
     setMine: PropTypes.func.isRequired
   };
 

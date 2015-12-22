@@ -124,8 +124,8 @@ export function stateFromString(string) {
   const state = {};
 
   const components = string.split('.');
-  components.forEach((string) => {
-    const [component, data] = string.split(':');
+  components.forEach((item) => {
+    const [component, data] = item.split(':');
     state[component] = componentStateFromString(data);
   });
 

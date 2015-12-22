@@ -1,19 +1,19 @@
 import React, {Component, PropTypes} from 'react';
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
-import { SectionsPane, Section, SectionGroupedHeader, NestedList }
+import { SectionsPane, Section, SectionGroupedHeader }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { NestedList } from '../NestedList';
 
 export class NewsTab extends Component {
 
   static propTypes = {
     loaded: PropTypes.bool.isRequired,
     news: PropTypes.object.isRequired,
-    toggleGroupingVisibility: PropTypes.func.isRequired,
-    onClick: PropTypes.func.isRequired
+    toggleGroupingVisibility: PropTypes.func.isRequired
   };
 
   render() {
-    const { loaded, news, toggleGroupingVisibility, onClick} = this.props;
+    const { loaded, news, toggleGroupingVisibility} = this.props;
     return (
       <LoadIndicator loaded={loaded}>
         <SectionsPane>
@@ -21,8 +21,8 @@ export class NewsTab extends Component {
             <SectionGroupedHeader label="News"
                                   count={news.get('count')}
                                   callback={toggleGroupingVisibility('news')}/>
-            <NestedList items={news.get('nested').toJS()}
-                        onClick={onClick}/>
+            <NestedList content="news"
+                        items={news.get('nested').toJS()}/>
           </Section>
         </SectionsPane>
       </LoadIndicator>

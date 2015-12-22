@@ -1,19 +1,20 @@
 import React, {Component, PropTypes} from 'react';
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
-import { SectionsPane, Section, SectionGroupedHeader, NestedList, ButtonsPane, Button }
+import { SectionsPane, Section, SectionGroupedHeader, ButtonsPane, Button }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { NestedList } from '../NestedList';
+
 
 export class KBTab extends Component {
 
   static propTypes = {
     loaded: PropTypes.bool.isRequired,
     articles: PropTypes.object.isRequired,
-    toggleGroupingVisibility: PropTypes.func.isRequired,
-    onClick: PropTypes.func.isRequired
+    toggleGroupingVisibility: PropTypes.func.isRequired
   };
 
   render() {
-    const { loaded, articles, toggleGroupingVisibility, onClick} = this.props;
+    const { loaded, articles, toggleGroupingVisibility } = this.props;
     return (
       <LoadIndicator loaded={loaded}>
         <SectionsPane>
@@ -21,8 +22,8 @@ export class KBTab extends Component {
             <SectionGroupedHeader label="Knowledgebase"
                                   count={articles.get('count')}
                                   callback={toggleGroupingVisibility('articles')}/>
-            <NestedList items={articles.get('nested').toJS()}
-                        onClick={onClick}/>
+            <NestedList content="articles"
+                        items={articles.get('nested').toJS()}/>
           </Section>
         </SectionsPane>
 

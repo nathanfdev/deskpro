@@ -33,15 +33,13 @@ export const load = createAction(
 
 export const loadDraftArticles = createAction(
   'PUBLISH_LIST_LOAD_DATA',
-  (mine) => (dispatch) => {
+  (mine) => () => {
     const filters = { status: 'hidden', hidden_status: 'draft' };
     if (mine) {
       filters.author = 'me';
     }
-
     return Content.load('articles', filters)
       .then(promise => {
-        // dispatch(switchContent('draftArticles'));
         return { content: 'draftArticles', elements: promise.getData().data };
       }
     );
