@@ -34,11 +34,9 @@ export default createReducer(initialState, {
     success: (state, payload) =>
       state.set(payload.content, payload.data.data).set('pagination', payload.data.meta.pagination)
   }),
-  // [actions.switchContent]: (state, payload) => state.set('content', payload),
   [actions.setParams]: setFullPayload('currentListParams'),
   [massActions.toggleMassAction]: handleMassAction('elements', 'selected'),
-  [massActions.toggleSelectedAction]: togglePayloadInCollection('selected'),
-
+  [massActions.toggleSelectedAction]: togglePayloadInCollection('selected')
 });
 
 /*

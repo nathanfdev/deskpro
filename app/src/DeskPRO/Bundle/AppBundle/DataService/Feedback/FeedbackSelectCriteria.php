@@ -162,7 +162,7 @@ class FeedbackSelectCriteria extends Criteria
         $resolver->setAllowedValues(
             'status',
             function ($value) {
-                $allowed = ['new', Feedback::STATUS_ACTIVE, Feedback::STATUS_CLOSED, Feedback::STATUS_HIDDEN];
+                $allowed = [Feedback::STATUS_ACTIVE, Feedback::STATUS_CLOSED, Feedback::STATUS_HIDDEN];
                 is_array($value) or $value = [$value];
                 foreach ($value as $status) {
                     if (!in_array($status, $allowed)) {

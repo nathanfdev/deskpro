@@ -7,13 +7,6 @@ import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordS
 
 const recordStoresId = 'publish';
 
-/*
- export const switchContent = createAction(
- 'PUBLISH_LIST_SWITCH_CONTENT',
- content => content
- );
- */
-
 export const load = createAction(
   'PUBLISH_LIST_LOAD_DATA',
     params => (dispatch) => Content.load(params).then(promise => {
