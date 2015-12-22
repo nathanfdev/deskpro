@@ -50,7 +50,7 @@
       </div>
 
 
-      <div class="article-meta"><!-- TODO this is just copied html for now, need to move stuff from feedback-item-meta below (we don't need .feedback-item-meta any more) -->
+      <div class="article-meta">
         {{ phrase('portal.general.by_2') }}
         <a href="#"><span style="background: url({{ avatar_url(item.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>{{ item.person.display_name }}</a>
          {{ phrase('portal.general.on') }} {{ item.date_published ? item.date_published|date('day') : item.date_created|date('day') }}

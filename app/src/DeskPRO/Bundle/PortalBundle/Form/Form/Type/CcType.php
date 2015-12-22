@@ -99,7 +99,6 @@ class CcType extends AbstractType
             }
 
             if ($email = trim($email)) {
-                // TODO: rethink this "context" approach, because it makes no sense to make one unless creating a person...
                 $new_person_context = new CreatePersonContext('gateway.person'); // used only if email makes new person
                 $participants[]     = $this->person_factory->getOrCreatePersonByEmail($email, $new_person_context);
             }

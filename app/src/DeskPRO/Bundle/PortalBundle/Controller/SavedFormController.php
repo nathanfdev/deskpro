@@ -274,7 +274,6 @@ class SavedFormController extends AbstractController
         if ($person = $this->getExistingPersonByEmailAddress($email_address)) {
             // the authenticated user doesn't have this email, but it belongs to someone else
             // this is an edge case where we just throw a 403.
-            // TODO: make a better error page
             throw new AccessDeniedException();
         }
     }
