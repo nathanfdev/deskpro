@@ -1,21 +1,25 @@
 import React, { PropTypes } from 'react';
+import { hasErrors, FieldErrors } from 'DeskPRO/Component/Form/FormErrors';
 import classNames from 'classnames';
 
 export class FormItem extends React.Component {
 
   static propTypes = {
     label: PropTypes.string,
-    error: PropTypes.bool,
+    field: PropTypes.string,
+    errors: PropTypes.object,
     children: PropTypes.any
   };
 
   render() {
-    const { label, children, error } = this.props;
+    const { label, field, children, errors } = this.props;
 
     return (
-      <label className={classNames('inline-form-item', {'error': error})}>
+      <label className={classNames('inline-form-item', {'error': hasErrors(errors, field)})}>
         <span className="dpdesignportal-form-item-label-title">{label}:</span>
+
         {children}
+        <FieldErrors errors={errors} name={field} />
       </label>
     );
   }

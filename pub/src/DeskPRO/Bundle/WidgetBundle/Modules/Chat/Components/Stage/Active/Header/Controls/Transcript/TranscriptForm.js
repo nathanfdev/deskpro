@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import { FormItem } from './FormItem';
-import { hasErrors } from 'DeskPRO/Component/Form/FormErrors';
 
 export class TranscriptForm extends React.Component {
 
@@ -79,11 +78,11 @@ export class TranscriptForm extends React.Component {
 
         <div className="popover-form">
           <form className="dpdesignportal-form" onSubmit={this.onSubmit}>
-            <FormItem label="Your name" error={hasErrors(this.state.errors, 'name')}>
+            <FormItem label="Your name" field="name" errors={this.state.errors}>
               <input type="text" value={this.state.name} onChange={this.onChangeName} />
             </FormItem>
 
-            <FormItem label="Your email" error={hasErrors(this.state.errors, 'email')}>
+            <FormItem label="Your email" field="email" errors={this.state.errors}>
               <input type="text" value={this.state.email} onChange={this.onChangeEmail} />
             </FormItem>
 
