@@ -3,6 +3,8 @@ import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
 import { isEndedSelector, messagesSelector, attachmentsSelector } from '../Selectors/chat';
+import { generate } from 'randomstring';
+import moment from 'moment';
 
 // Phrase translations
 export const setPhraseTranslations = createAction('WIDGET_CHAT_SET_PHRASE_TRANSLATIONS');
@@ -108,11 +110,18 @@ export const sendChatMessage = createAction(
       return null;
     }
 
+    const tmpId = generate({
+      length: 20,
+      charset: 'alphabetic'
+    });
+
     // add optimistic message
     dispatch(addNewMessage({
+      tmpId: tmpId,
       content: params.message,
       is_html: true,
-      author_type: 'user'
+      author_type: 'user',
+      date_created: moment().format()
     }));
 
     const state = getState();
@@ -121,9 +130,11 @@ export const sendChatMessage = createAction(
     params.attachments.forEach(blobAuthId => {
       const attachment = attachments.filter(blob => blob.get('blob_auth_id') === blobAuthId).first();
       dispatch(addNewMessage({
+        tmpId: tmpId,
         content: null,
         is_html: true,
         author_type: 'user',
+        date_created: moment().format(),
         metadata: {
           type: 'file',
           blob_id: attachment.get('blob_id'),
