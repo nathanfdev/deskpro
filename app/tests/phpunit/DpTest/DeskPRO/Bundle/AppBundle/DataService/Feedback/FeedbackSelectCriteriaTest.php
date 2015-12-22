@@ -44,7 +44,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class FeedbackSelectCriteriaTest extends DeskProTestCase
 {
     private static $dummyProperParams = [
-        'status' => 'new',
+        'status' => 'closed',
     ];
 
     /**
