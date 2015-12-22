@@ -24,6 +24,7 @@ export const resetTranscriptDataSent = createAction('WIDGET_CHAT_RESET_TRANSCRIP
 // Messages actions
 export const resetMessages = createAction('WIDGET_CHAT_RESET_MESSAGES');
 export const addNewMessage = createAction('WIDGET_CHAT_ADD_NEW_MESSAGES');
+export const markNotDelivered = createAction('WIDGET_CHAT_MARK_NOT_DELIVERED');
 
 // Uploading files actions
 export const addUploadingFile = createAction('WIDGET_CHAT_ADD_UPLOADING_FILE');
@@ -121,7 +122,7 @@ export const sendChatMessage = createAction(
 
     // add optimistic message
     dispatch(addNewMessage({
-      tmpId: tmpId,
+      tmp_id: tmpId,
       content: params.message,
       is_html: true,
       author_type: 'user',
@@ -134,7 +135,7 @@ export const sendChatMessage = createAction(
     params.attachments.forEach(blobAuthId => {
       const attachment = attachments.filter(blob => blob.get('blob_auth_id') === blobAuthId).first();
       dispatch(addNewMessage({
-        tmpId: tmpId,
+        tmp_id: tmpId,
         content: null,
         is_html: true,
         author_type: 'user',
@@ -151,13 +152,9 @@ export const sendChatMessage = createAction(
     dispatch(resetAttachments());
 
     const promise = DpApi.sendPost(`DP_API/chats/${chatId}/messages`, params, {...ajaxOptions});
-    promise
-      .success(response => {
-        console.log(response);
-      })
-      .catch(response => {
-        console.log(response);
-      });
+    promise.catch(() => {
+      dispatch(markNotDelivered(tmpId));
+    });
 
     return promise;
   }

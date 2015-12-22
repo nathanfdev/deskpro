@@ -47,6 +47,19 @@ export default createReducer(initialState, {
   // Messages
   [actions.resetMessages]: setValue('messages', []),
   [actions.addNewMessage]: pushPayloadToCollection('messages'),
+  [actions.markNotDelivered]: (state, tmpId) => {
+    let newMessages = state.get('messages');
+
+    const sendingMessages = newMessages.filter(message => message.get('tmp_id') === tmpId);
+    sendingMessages.forEach(sendingMessage => {
+      const index = newMessages.indexOf(sendingMessage);
+      const newMessage = sendingMessage.set('not_delivered', true);
+
+      newMessages = newMessages.set(index, newMessage);
+    });
+
+    return state.set('messages', newMessages);
+  },
 
   // Uploading files
   [actions.addUploadingFile]: pushPayloadToCollection('uploading.files', true),
