@@ -132,6 +132,8 @@ class ChatController extends AbstractApiController
             return $this->generateFormErrorsResponse($form);
         }
 
+        $chat_messages = [];
+
         // Add message to chat conversation
         $content = $form->get('message')->getData();
         if ($content) {
@@ -147,6 +149,8 @@ class ChatController extends AbstractApiController
 
             $conversation->addMessage($chat_message);
             $this->dispatch(UserChatEvent::SEND_MESSAGE, new UserChatEvent($conversation, $chat_message));
+
+            $chat_messages[] = $chat_message;
         }
 
         // Add blobs to chat conversation
@@ -183,13 +187,15 @@ class ChatController extends AbstractApiController
 
             $conversation->addMessage($chat_message);
             $this->dispatch(UserChatEvent::SEND_MESSAGE, new UserChatEvent($conversation, $chat_message));
+
+            $chat_messages[] = $chat_message;
         }
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($conversation);
         $em->flush();
 
-        return new JsonResponse();
+        return new JsonResponse($this->dataSerialize($chat_messages));
     }
 
     /**

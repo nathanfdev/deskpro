@@ -89,15 +89,19 @@ export const pollingChat = createAction(
           const state = getState();
           const existMessages = messagesSelector(state);
 
-          newMessages.forEach(newMessage => {
-            const alreadyExists = existMessages
-                .filter(existMessage => existMessage.get('id') === newMessage.id)
-                .size > 0;
+          newMessages
+            // skips user's messages because they are added optimistically
+            .filter(newMessage => newMessage.author_type !== 'user')
+            // check for unique ids and add new messages
+            .forEach(newMessage => {
+              const alreadyExists = existMessages
+                  .filter(existMessage => existMessage.get('id') === newMessage.id)
+                  .size > 0;
 
-            if (!alreadyExists) {
-              dispatch(addNewMessage(newMessage));
-            }
-          });
+              if (!alreadyExists) {
+                dispatch(addNewMessage(newMessage));
+              }
+            });
         }
       });
   }
@@ -146,7 +150,16 @@ export const sendChatMessage = createAction(
     // reset attachments after send
     dispatch(resetAttachments());
 
-    return DpApi.sendPost(`DP_API/chats/${chatId}/messages`, params, {...ajaxOptions});
+    const promise = DpApi.sendPost(`DP_API/chats/${chatId}/messages`, params, {...ajaxOptions});
+    promise
+      .success(response => {
+        console.log(response);
+      })
+      .catch(response => {
+        console.log(response);
+      });
+
+    return promise;
   }
 );
 
