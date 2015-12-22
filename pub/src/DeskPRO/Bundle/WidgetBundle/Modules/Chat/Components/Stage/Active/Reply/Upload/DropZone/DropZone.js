@@ -44,8 +44,6 @@ export class DropZone extends React.Component {
 
   componentWillUnmount() {
     $(this.getInput()).fileupload('destroy');
-    this.$pasteCatcher.remove();
-
     this.getContext().forEach(context => {
       $(context).off('dragover', this.onDragStarted);
       $(context).off('dragover', this.onDefaultDrop);
@@ -77,7 +75,9 @@ export class DropZone extends React.Component {
   };
 
   onGetBlobFromPasteChecker = () => {
-    const child = this.$pasteCatcher.children().last().get(0);
+    const $pasteCatcher = $(this.getPasteCatcher());
+    const child = $pasteCatcher.children().last().get(0);
+
     if (child) {
       if (child.tagName === 'IMG') {
         const imgSrc = child.src;
@@ -103,7 +103,9 @@ export class DropZone extends React.Component {
           }
         }
       } else {
-        this.$pasteCatcher.focus();
+        const $pasteCatcher = $(this.getPasteCatcher());
+        $pasteCatcher.focus();
+
         setTimeout(this.onGetBlobFromPasteChecker, 100);
       }
     }
@@ -116,6 +118,10 @@ export class DropZone extends React.Component {
 
   getInput() {
     return ReactDOM.findDOMNode(this.props.getExternalInput());
+  }
+
+  getPasteCatcher() {
+    return ReactDOM.findDOMNode(this.refs.pasteCatcher);
   }
 
   initializeFileUpload() {
@@ -152,7 +158,7 @@ export class DropZone extends React.Component {
     return (
       <div>
         <DropZoneOverlay opened={this.state.overlay} />
-        <PasteCatcher />
+        <PasteCatcher ref="pasteCatcher" />
       </div>
     );
   }
