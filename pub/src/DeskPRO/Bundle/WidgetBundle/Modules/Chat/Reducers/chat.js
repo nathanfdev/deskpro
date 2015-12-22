@@ -3,6 +3,7 @@ import * as actions from '../Actions/chatActions';
 import {
   setFullPayload,
   setValue,
+  setValueOnError,
   mergeValue,
   toggleBool,
   async,
@@ -74,11 +75,13 @@ export default createReducer(initialState, {
   [actions.resetTranscriptDataSent]: setValue('transcript.sent', false),
   [actions.sendTranscriptInfo]: async({
     start: setValue('transcript.saving', true),
-    done: setValue('transcript.saving', false)
+    done: setValue('transcript.saving', false),
+    error: setValueOnError('transcript.saving', false)
   }),
   [actions.sendTranscriptData]: async({
     success: setValue('transcript.sent', true),
     start: setValue('transcript.sending', true),
-    done: setValue('transcript.sending', false)
+    done: setValue('transcript.sending', false),
+    error: setValueOnError('transcript.sending', false)
   })
 });

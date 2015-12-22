@@ -37,6 +37,22 @@ function getStatePath(statePropKey) {
 }
 
 /**
+ * Set a value on the state as async error callback.
+ *
+ * @param {String|Array} statePropKey  The property to set on the state.
+ * @param {any}          value         The value to set
+ * @return {Function} Action handler function
+ */
+export function setValueOnError(statePropKey, value) {
+  return state => {
+    verifyImmutable(state);
+    const immutableValue = Immutable.fromJS(value);
+
+    return state.setIn(getStatePath(statePropKey), immutableValue);
+  };
+}
+
+/**
  * Set a value on the state.
  *
  * @param {String|Array} statePropKey  The property to set on the state.

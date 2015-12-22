@@ -104,7 +104,7 @@ export const sendChatMessage = createAction(
 
 export const sendTranscriptData = createAction(
   'WIDGET_CHAT_SEND_TRANSCRIPT_DATA',
-    chatId => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/transcript_data`, {...ajaxOptions}) : null
+  chatId => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/transcript_data`, {...ajaxOptions}) : null
 );
 
 export const sendTranscriptInfo = createAction(
@@ -117,13 +117,14 @@ export const sendTranscriptInfo = createAction(
     const state = getState();
     const chatEnded = isEndedSelector(state);
 
-    return DpApi
-      .sendPost(`DP_API/chats/${chatId}/transcript_info`, params, {...ajaxOptions})
-      .success(() => {
-        if (chatEnded) {
-          dispatch(sendTranscriptData());
-        }
-      });
+    const promise = DpApi.sendPost(`DP_API/chats/${chatId}/transcript_info`, params, {...ajaxOptions});
+    promise.success(() => {
+      if (chatEnded) {
+        dispatch(sendTranscriptData(chatId));
+      }
+    });
+
+    return promise;
   }
 );
 

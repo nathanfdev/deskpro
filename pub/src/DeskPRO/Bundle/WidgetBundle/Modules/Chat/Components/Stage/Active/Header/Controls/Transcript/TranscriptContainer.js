@@ -85,7 +85,7 @@ export class TranscriptContainer extends React.Component {
     }
 
     // update user info
-    const promise = dispatch(sendTranscriptInfo(chatId, {name, email}));
+    const promise = dispatch(sendTranscriptInfo(chatId, { name, email }));
     if (promise) {
       promise.then(() => {
         this.onCloseForm();
