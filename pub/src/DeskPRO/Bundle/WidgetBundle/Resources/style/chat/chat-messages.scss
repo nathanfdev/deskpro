@@ -345,9 +345,12 @@
     &:hover { color: #4681b2; }
   }
 
-  .dpdesignportal-message-footer-timer {
-    &.right {
-      float: right;
-    }
+  .right {
+    float: right;
+  }
+
+  .dpdesignportal-message-footer-not-delivered {
+    margin-left: 5px;
+    color: #3e76a4;
   }
 }
