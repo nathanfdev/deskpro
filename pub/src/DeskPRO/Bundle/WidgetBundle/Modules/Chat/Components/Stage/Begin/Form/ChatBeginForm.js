@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import { FormItem } from './FormItem';
-import { hasErrors } from 'DeskPRO/Component/Form/FormErrors';
 
 export class ChatBeginForm extends React.Component {
 
@@ -22,18 +21,14 @@ export class ChatBeginForm extends React.Component {
     return (
       <div className="dpdesignportal-open-new-ticket">
         <form className="dpdesignportal-form" onSubmit={onSubmit}>
-          <FormItem label="Your Details"
-                    error={hasErrors(errors, 'name')}>
-
+          <FormItem label="Your Details" field="name" errors={errors}>
             <input type="text"
                    placeholder="First name, Last name"
                    value={name}
                    onChange={onChangeName} />
           </FormItem>
 
-          <FormItem label="Your Email"
-                    error={hasErrors(errors, 'email')}>
-
+          <FormItem label="Your Email" field="email" errors={errors}>
             <input type="text"
                    placeholder="email@example.com"
                    value={email}

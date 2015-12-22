@@ -1,22 +1,25 @@
 import React, { PropTypes } from 'react';
+import { hasErrors, FieldErrors } from 'DeskPRO/Component/Form/FormErrors';
 import classNames from 'classnames';
 
 export class FormItem extends React.Component {
 
   static propTypes = {
     label: PropTypes.string,
-    error: PropTypes.bool,
+    field: PropTypes.string,
+    errors: PropTypes.object,
     children: PropTypes.any
   };
 
   render() {
-    const { label, children, error } = this.props;
+    const { label, field, children, errors } = this.props;
 
     return (
-      <div className={classNames({'error': error})}>
+      <div className={classNames({'error': hasErrors(errors, field)})}>
         <label>{label}</label>
 
         {children}
+        <FieldErrors errors={errors} name={field} />
       </div>
     );
   }
