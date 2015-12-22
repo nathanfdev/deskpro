@@ -262,7 +262,7 @@
     "category": "ticket",
     "description": "",
     "display_order": "131",
-    "query": "DISPLAY TABLE, BAR\nSELECT PERCENT(tickets.date_resolved <> NULL AND UNIX_TIMESTAMP(tickets.date_resolved) - UNIX_TIMESTAMP(tickets.date_created) < 24 * 60 * 60) AS 'Percentage'\nFROM tickets\nWHERE tickets.date_created = %1:DATE_GROUP%\nGROUP BY %2:FIELD_GROUP:tickets%",
+    "query": "DISPLAY TABLE, BAR\nSELECT PERCENT(tickets.date_resolved <> NULL AND (UNIX_TIMESTAMP(tickets.date_resolved) - UNIX_TIMESTAMP(tickets.date_created)) < 24 * 60 * 60) AS 'Percentage'\nFROM tickets\nWHERE tickets.date_created = %1:DATE_GROUP%\nGROUP BY %2:FIELD_GROUP:tickets%",
     "title": "Percentage of tickets created <1:date group, default: this_month> resolved within 24 hours, grouped by <2:field group:tickets> <chart:bar>"
   },
   "percent-tickets-created-date-replied-hour-group-x": {
