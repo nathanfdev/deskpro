@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { pollingChat, sendTranscriptData } from '../../Actions/chatActions';
 import history from '../../../../Services/history';
 import moment from 'moment';
-import { widgetOpenedSelector } from '../../../Application/Selectors/dpWindow';
 import {
   chatIdSelector,
   agentIdSelector,
@@ -16,7 +15,6 @@ import {
 } from '../../Selectors/chat';
 
 @connect(state => ({
-  widgetOpened: widgetOpenedSelector(state),
   chatId: chatIdSelector(state),
   agentId: agentIdSelector(state),
   lastMessageId: lastMessageIdSelector(state),
@@ -29,7 +27,6 @@ import {
 export class ChatPollingContainer extends React.Component {
 
   static propTypes = {
-    widgetOpened: PropTypes.bool,
     dispatch: PropTypes.func.isRequired,
     chatId: PropTypes.number,
     agentId: PropTypes.number,
@@ -44,19 +41,14 @@ export class ChatPollingContainer extends React.Component {
 
   componentDidMount() {
     this.pollingRequest();
-    this.mounted = true;
-  }
-
-  componentWillUnmount() {
-    this.mounted = false;
   }
 
   pollingRequest = () => {
-    const { dispatch, chatId, agentId, lastMessageId, widgetOpened } = this.props;
+    const { dispatch, chatId, agentId, lastMessageId } = this.props;
     const { isEnded, authorEmail, transcriptChecked, transcriptSending, transcriptSent } = this.props;
 
     // Handle state changes
-    if (!chatId || !widgetOpened) {
+    if (!chatId) {
       return;
     }
     if (agentId && history.state !== '/chat/active') {
@@ -75,10 +67,6 @@ export class ChatPollingContainer extends React.Component {
     };
     const promise = dispatch(pollingChat(chatId, queryParams));
     const onResponse = () => {
-      if (!this.mounted) {
-        return;
-      }
-
       setTimeout(this.pollingRequest, 3000);
     };
 
