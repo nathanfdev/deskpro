@@ -18,7 +18,7 @@ export class ListContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     content: PropTypes.string.isRequired,
-    pagination: PropTypes.object.isRequired,
+    pagination: PropTypes.object,
     selected: PropTypes.object.isRequired,
     loaded: PropTypes.bool.isRequired,
     currentViewMode: PropTypes.string.isRequired
@@ -31,26 +31,14 @@ export class ListContainer extends Component {
 
   render() {
     const {content, currentViewMode, loaded, pagination, selected} = this.props;
-    switch (content) {
-      case 'articles':
-      case 'news':
-      case 'downloads':
-      case 'draftArticles':
-      case 'pendingArticles':
-      case 'commentsToValidate':
-      case 'commentsToReview':
-        return (
-          <List loaded={loaded}
-                selected={selected}
-                pagination={pagination}
-                currentViewMode={currentViewMode}
-                content={content}
-                toggleView={this.toggleView.bind(this)}
-            />
-        );
-
-      default:
-        throw new Error(`Unknown list ${this.props.content}`);
-    }
+    return (
+      <List loaded={loaded}
+            selected={selected}
+            pagination={pagination}
+            currentViewMode={currentViewMode}
+            content={content}
+            toggleView={this.toggleView.bind(this)}
+        />
+    );
   }
 }

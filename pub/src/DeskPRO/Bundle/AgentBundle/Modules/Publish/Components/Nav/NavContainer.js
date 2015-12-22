@@ -60,7 +60,7 @@ export class NavContainer extends Component {
     const { dispatch, articles, news, downloads, todo, dpWindow, loaded } = this.props;
 
     const onClick = {
-      articles: (group) => {
+     /* articles: (group) => {
         dispatch(listActions.applyParams({ content: 'articles', [articles.get('grouped_by')]: group }));
       },
       news: (group) => {
@@ -68,10 +68,13 @@ export class NavContainer extends Component {
       },
       downloads: (group) => {
         dispatch(listActions.applyParams({ content: 'downloads', [downloads.get('grouped_by')]: group }));
-      },
+      },*/
       draftArticles: () => {
-        dispatch(listActions.loadDraftArticles(todo.get('articles').get('mine')));
+        dispatch(listActions.applyParams({ content: 'articles', status: 'hidden', hidden_status: 'draft'}));
       },
+      /* draftArticles: () => {
+        dispatch(listActions.loadDraftArticles(todo.get('articles').get('mine')));
+      },*/
       pendingArticles: () => {
         dispatch(listActions.loadPendingArticles(todo.get('articles').get('mine')));
       },

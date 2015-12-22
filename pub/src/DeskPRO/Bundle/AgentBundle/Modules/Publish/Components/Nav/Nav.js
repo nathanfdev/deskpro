@@ -64,26 +64,23 @@ export class Nav extends Component {
               <Tab title="KB">
                 <KBTab articles={articles}
                        loaded={loaded}
-                       toggleGroupingVisibility={toggleGroupingVisibility}
-                       onClick={onClick.articles}/>
+                       toggleGroupingVisibility={toggleGroupingVisibility}/>
               </Tab>
               <Tab title="News">
                 <NewsTab news={news}
                          loaded={loaded}
-                         toggleGroupingVisibility={toggleGroupingVisibility}
-                         onClick={onClick.news}/>
+                         toggleGroupingVisibility={toggleGroupingVisibility}/>
               </Tab>
               <Tab icon="fa-download">
                 <DownloadsTab downloads={downloads}
                               loaded={loaded}
-                              toggleGroupingVisibility={toggleGroupingVisibility}
-                              onClick={onClick.downloads}/>
+                              toggleGroupingVisibility={toggleGroupingVisibility}/>
               </Tab>
               <Tab title="Todo">
                 <ToDoTab todo={todo}
                          loaded={loaded}
                          toggleGroupingVisibility={toggleGroupingVisibility}
-                         onClick={onClick.downloads}
+                         onClick={onClick}
                          setMine={setMine}/>
               </Tab>
             </TabsPaneStatefulContainer>
