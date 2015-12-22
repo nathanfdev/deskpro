@@ -57,11 +57,10 @@ Feature: Person primary email CRUD
     And I retrieve the person
     Then the response status code should be 200
     And the JSON node "data.primary_email" should be equal to "larry.doe@gmail.com"
-    And the JSON node "data.emails" should have 4 elements
-    And the JSON node "data.emails[0]" should be equal to "larry@doe.name"
-    And the JSON node "data.emails[1]" should be equal to "larry.doe@gmail.com"
-    And the JSON node "data.emails[2]" should be equal to "one@test.com"
-    And the JSON node "data.emails[3]" should be equal to "two@test.com"
+    And the JSON node "data.emails" should have 3 elements
+    And the JSON node "data.emails[0]" should be equal to "larry.doe@gmail.com"
+    And the JSON node "data.emails[1]" should be equal to "one@test.com"
+    And the JSON node "data.emails[2]" should be equal to "two@test.com"
 
   Scenario: I try to remove person's primary email
     Given "Julia Doe" has just created an account with primary email "julia@doe.name"
