@@ -13,6 +13,7 @@ export class MessageFooter extends React.Component {
 
     const isUser = message.get('author_type') !== 'agent';
     const date = message.get('date_created');
+    const notDelivered = message.get('not_delivered');
 
     return (
       <div className="dpdesignportal-message-footer">
@@ -27,9 +28,11 @@ export class MessageFooter extends React.Component {
                    minPeriod={60000}
                    date={date} />
 
-          <span className="dpdesignportal-message-footer-not-delivered">
-            <i className="fa fa-warning" /> Not delivered
-          </span>
+          {notDelivered &&
+            <span className="dpdesignportal-message-footer-not-delivered">
+              <i className="fa fa-warning"/> Not delivered
+            </span>
+          }
         </div>
       </div>
     );
