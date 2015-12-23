@@ -32,9 +32,9 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Attachments\AcceptAttachment;
+use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -48,7 +48,7 @@ class BlobsController extends AbstractApiController
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return View
      */
     public function tempAction(Request $request)
     {
@@ -60,6 +60,6 @@ class BlobsController extends AbstractApiController
             $blobs[] = $accept->accept($file);
         };
 
-        return new JsonResponse($this->dataSerialize($blobs));
+        return new View($this->dataSerialize($blobs));
     }
 }

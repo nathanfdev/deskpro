@@ -31,9 +31,9 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
+use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Class AgentsController.
@@ -44,7 +44,7 @@ class AgentsController extends AbstractApiController
      * @Route("/portal/api/agents/online", name="portal_api_agents_online")
      * @Method({"GET"})
      *
-     * @return JsonResponse
+     * @return View
      */
     public function getOnlineAgentsAction()
     {
@@ -55,6 +55,6 @@ class AgentsController extends AbstractApiController
             'id' => $agent_ids,
         ]);
 
-        return new JsonResponse($this->dataSerialize($agents, 'widget_person'));
+        return new View($this->dataSerialize($agents, 'widget_person'));
     }
 }

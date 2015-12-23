@@ -39,7 +39,6 @@ use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -53,7 +52,7 @@ class ChatController extends AbstractApiController
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return View
      */
     public function createNewChatAction(Request $request)
     {
@@ -75,7 +74,7 @@ class ChatController extends AbstractApiController
 
         $this->dispatch(UserChatEvent::STARTED, new UserChatEvent($conversation));
 
-        return new JsonResponse($this->dataSerialize($conversation));
+        return View::create($this->dataSerialize($conversation));
     }
 
     /**
@@ -85,7 +84,7 @@ class ChatController extends AbstractApiController
      * @param ChatConversation $conversation
      * @param Request          $request
      *
-     * @return JsonResponse
+     * @return View
      */
     public function pollingChatAction(ChatConversation $conversation, Request $request)
     {
@@ -118,7 +117,7 @@ class ChatController extends AbstractApiController
      * @param ChatConversation $conversation
      * @param Request          $request
      *
-     * @return JsonResponse
+     * @return View
      */
     public function sendMessageAction(ChatConversation $conversation, Request $request)
     {
@@ -196,7 +195,7 @@ class ChatController extends AbstractApiController
         $em->persist($conversation);
         $em->flush();
 
-        return new JsonResponse($this->dataSerialize($chat_messages));
+        return View::create($this->dataSerialize($chat_messages));
     }
 
     /**
@@ -206,7 +205,7 @@ class ChatController extends AbstractApiController
      * @param ChatConversation $conversation
      * @param Request          $request
      *
-     * @return JsonResponse
+     * @return View
      */
     public function sendTranscriptInfoAction(ChatConversation $conversation, Request $request)
     {
@@ -225,7 +224,7 @@ class ChatController extends AbstractApiController
         $em->persist($conversation);
         $em->flush();
 
-        return new JsonResponse();
+        return View::create();
     }
 
     /**
@@ -234,7 +233,7 @@ class ChatController extends AbstractApiController
      *
      * @param ChatConversation $conversation
      *
-     * @return JsonResponse
+     * @return View
      */
     public function sendTranscriptDataAction(ChatConversation $conversation)
     {
@@ -252,7 +251,7 @@ class ChatController extends AbstractApiController
             $em->flush();
         }
 
-        return new JsonResponse([
+        return View::create([
             'success' => $can_send,
         ]);
     }
@@ -263,7 +262,7 @@ class ChatController extends AbstractApiController
      *
      * @param ChatConversation $conversation
      *
-     * @return JsonResponse
+     * @return View
      */
     public function endChatAction(ChatConversation $conversation)
     {
@@ -275,7 +274,7 @@ class ChatController extends AbstractApiController
 
         $this->dispatch(UserChatEvent::END_BY_USER, new UserChatEvent($conversation, [], ['chat_ended']));
 
-        return new JsonResponse();
+        return View::create();
     }
 
     /**
@@ -284,7 +283,7 @@ class ChatController extends AbstractApiController
      *
      * @param ChatConversation $conversation
      *
-     * @return JsonResponse
+     * @return View
      */
     public function reopenChatAction(ChatConversation $conversation)
     {
@@ -302,7 +301,7 @@ class ChatController extends AbstractApiController
 
         $this->dispatch(UserChatEvent::USER_RETURNED, new UserChatEvent($conversation));
 
-        return new JsonResponse();
+        return View::create();
     }
 
     /**
@@ -312,7 +311,7 @@ class ChatController extends AbstractApiController
      * @param ChatConversation $conversation
      * @param Request          $request
      *
-     * @return JsonResponse
+     * @return View
      */
     public function feedbackAction(ChatConversation $conversation, Request $request)
     {
@@ -331,6 +330,6 @@ class ChatController extends AbstractApiController
         $em->persist($conversation);
         $em->flush();
 
-        return new JsonResponse();
+        return View::create();
     }
 }
