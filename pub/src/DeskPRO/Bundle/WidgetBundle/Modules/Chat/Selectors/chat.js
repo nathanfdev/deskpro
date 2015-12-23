@@ -5,7 +5,7 @@ const stateSelector = state => state.Chat.chat;
 // Phrase translations
 export const phraseTranslationsSelector = createSelector(
   stateSelector,
-    state => state.get('phrases')
+  state => state.get('phrases')
 );
 
 // Audio selectors
@@ -22,7 +22,7 @@ export const transcriptCheckedSelector = createSelector(
 
 export const transcriptSavingSelector = createSelector(
   stateSelector,
-    state => state.getIn(['transcript', 'saving'])
+  state => state.getIn(['transcript', 'saving'])
 );
 
 export const transcriptSendingSelector = createSelector(
