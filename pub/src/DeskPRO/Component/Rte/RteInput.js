@@ -34,6 +34,11 @@ export default class RteInput extends React.Component {
     this.medium.subscribe('initialFocus', () => {
       this.medium.selectElement(node);
     });
+    this.medium.subscribe('clearEmptyContent', () => {
+      if (node.innerHTML === '<p><br></p>') {
+        node.innerHTML = '';
+      }
+    });
   }
 
   componentWillReceiveProps(newProps) {

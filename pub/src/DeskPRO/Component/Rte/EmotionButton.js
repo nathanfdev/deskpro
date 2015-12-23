@@ -50,6 +50,9 @@ export default class EmotionButton extends React.Component {
     const contentWindow = medium.options.contentWindow;
     const ownerDocument = medium.options.ownerDocument;
 
+    // Clears default empty content to avoid new lines
+    medium.trigger('clearEmptyContent');
+
     if (!medium.checkSelection().selectionState) {
       medium.trigger('initialFocus');
 
