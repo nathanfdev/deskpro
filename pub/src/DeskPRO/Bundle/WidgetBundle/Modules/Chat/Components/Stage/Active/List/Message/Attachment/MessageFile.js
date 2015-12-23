@@ -39,7 +39,7 @@ export class MessageFile extends React.Component {
         <i className={classNames('fa', this.getFileIcon())} />
 
         <a href={`${attachment.get('download_url')}?dl=1`} target="_blank">
-          {filenameMaxLength(attachment.get('filename'), 40)}
+          {filenameMaxLength(attachment.get('filename'), 30)}
         </a>
 
         ({attachment.get('filesize_readable')})
