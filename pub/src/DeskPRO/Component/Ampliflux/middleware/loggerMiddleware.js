@@ -49,9 +49,11 @@ export default function loggerMiddleware({ getState }) {
         if (jsResult && jsResult.error && jsResult.error === true) {
           isErrorStatus = true;
           console.error('Result', jsResult);
-        } else {
-          console.debug('Result', jsResult);
         }
+        /* if no errors, the Result fully coincides with the Action
+        else {
+          console.debug('Result', jsResult);
+        }*/
       }
 
       console.debug('NextState', jsValue(getState()));

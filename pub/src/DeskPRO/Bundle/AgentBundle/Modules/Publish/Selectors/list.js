@@ -54,14 +54,23 @@ export const listFiltersSelector = createSelector(
   [navStateSelector, currentListParamsSelector],
   (navState, currentListParams) => {
     const filterSelector = [
-      { label: 'Date', type: 'date', fromParam: 'created_from', toParam: 'created_to' }
+      { label: 'Date', type: 'datePeriod', fromParam: 'created_from', toParam: 'created_to' }
     ];
 
     // Status options
     const statusOptions = [
       { label: 'Archived', value: 'archived' },
       { label: 'Published', value: 'published' },
-      { label: 'Hidden', value: 'hidden' }
+      {
+        label: 'Hidden',
+        value: 'hidden',
+        nested: [
+          { value: 'unpublished', label: 'Unpublished', param: 'hidden_status' },
+          { value: 'deleted', label: 'Deleted', param: 'hidden_status' },
+          { value: 'spam', label: 'Spam', param: 'hidden_status' },
+          { value: 'draft', label: 'Draft', param: 'hidden_status' }
+        ]
+      }
     ];
     filterSelector.push({
       label: 'Status', type: 'select', param: 'status', quickFilter: true,
