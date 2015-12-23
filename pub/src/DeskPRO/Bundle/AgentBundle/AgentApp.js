@@ -9,7 +9,6 @@ import * as ampMiddleware from 'Ampliflux/middleware';
 import AppReducers from './AgentApp_Reducers.js';
 import { DpAppContainer } from './Modules/Application/Components/DpAppContainer';
 import { preloadData } from './Modules/Application/Actions/bootstrapActions';
-import { batchedUpdatesMiddleware } from 'redux-batched-updates';
 import { IntlProvider } from 'react-intl';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
 import Immutable from 'immutable';
@@ -55,8 +54,7 @@ export default class AgentApp {
       ampMiddleware.redispatchDsaPayload,
       ampMiddleware.guidMiddleware,
       ampMiddleware.promiseMiddleware,
-      ampMiddleware.loggerMiddleware,
-      batchedUpdatesMiddleware
+      ampMiddleware.loggerMiddleware
     );
     const makeStore = compose(middleware)(createStore);
     const store = makeStore(reducer);
