@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use Doctrine\ORM\EntityManager;
+use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -104,7 +105,7 @@ class ChatController extends AbstractApiController
             ])
         ;
 
-        return new JsonResponse([
+        return View::create([
             'chat_info'    => $this->dataSerialize($conversation),
             'new_messages' => $this->dataSerialize($qb->getQuery()->getResult()),
         ]);
