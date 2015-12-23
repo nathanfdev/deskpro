@@ -2,6 +2,7 @@ $text-color-secondary: #757575;
 $list-view-border-color: #e1e1e1;
 
 .dpmw--items-table-list {
+  overflow-x: auto;
   table {
     width: 100%;
     background: #fbfbfb;
