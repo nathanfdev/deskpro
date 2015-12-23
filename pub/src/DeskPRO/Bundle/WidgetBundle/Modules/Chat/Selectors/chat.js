@@ -97,9 +97,14 @@ export const messagesSelector = createSelector(
   state => state.get('messages')
 );
 
-export const lastMessageIdSelector = createSelector(
+export const messageIdsSelector = createSelector(
   messagesSelector,
-  messages => messages && messages.size ? messages.map(message => message.get('id')).max((a, b) => a - b) : null
+  messages => messages.map(message => message.get('id')).filter(id => id !== null)
+);
+
+export const lastMessageIdSelector = createSelector(
+  messageIdsSelector,
+  messageIds => messageIds.size ? messageIds.max((a, b) => a - b) : null
 );
 
 // Uploading files selectors

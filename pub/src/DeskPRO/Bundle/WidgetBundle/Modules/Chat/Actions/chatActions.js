@@ -2,7 +2,7 @@ import { createAction } from 'Ampliflux';
 import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
-import { isEndedSelector, messagesSelector, attachmentsSelector } from '../Selectors/chat';
+import { isEndedSelector, messageIdsSelector, attachmentsSelector } from '../Selectors/chat';
 import { generate } from 'randomstring';
 import moment from 'moment';
 
@@ -94,21 +94,15 @@ export const pollingChat = createAction(
         }
         if (newMessages.length) {
           const state = getState();
-          const existMessages = messagesSelector(state);
+          const existMessageIds = messageIdsSelector(state);
 
           newMessages
             // skip user's messages because they are added optimistically
-            .filter(newMessage => newMessage.author_type !== 'user')
-            // check for unique ids and add new messages
-            .forEach(newMessage => {
-              const alreadyExists = existMessages
-                  .filter(existMessage => existMessage.get('id') === newMessage.id)
-                  .size > 0;
-
-              if (!alreadyExists) {
-                dispatch(addNewMessage(newMessage));
-              }
-            });
+            .filter(message => message.author_type !== 'user')
+            // check for unique ids
+            .filter(message => existMessageIds.indexOf(message.id) === -1)
+            // add new messages
+            .forEach(message => dispatch(addNewMessage(message)));
         }
       });
   }
