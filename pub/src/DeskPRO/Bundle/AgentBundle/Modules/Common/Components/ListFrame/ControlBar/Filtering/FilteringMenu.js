@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Menu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
 import { LabelsFilter } from './LabelsFilter';
 import { DateFilter } from './DateFilter';
+import { DatePeriodFilter } from './DatePeriodFilter';
 import { MultipleChoiceFilter } from './MultipleChoiceFilter';
 
 export class FilteringMenu extends Component {
@@ -35,6 +36,12 @@ export class FilteringMenu extends Component {
           <DateFilter {...this.props} filter={filter}
                                       key={index}
                                       unsetParams={this.unsetParams}/>
+        );
+      case 'datePeriod':
+        return (
+          <DatePeriodFilter {...this.props} filter={filter}
+                                            key={index}
+                                            unsetParams={this.unsetParams}/>
         );
       case 'labels':
         return (
