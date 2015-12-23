@@ -91,7 +91,7 @@ export const pollingChat = createAction(
           const existMessages = messagesSelector(state);
 
           newMessages
-            // skips user's messages because they are added optimistically
+            // skip user's messages because they are added optimistically
             .filter(newMessage => newMessage.author_type !== 'user')
             // check for unique ids and add new messages
             .forEach(newMessage => {
@@ -129,6 +129,7 @@ export const sendChatMessage = createAction(
       date_created: moment().format()
     }));
 
+    // add optimistic attachments
     const state = getState();
     const attachments = attachmentsSelector(state);
 
