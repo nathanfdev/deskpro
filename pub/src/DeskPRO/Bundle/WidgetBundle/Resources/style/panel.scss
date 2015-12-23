@@ -63,6 +63,27 @@ $border-color: #e7e7e7;
         display: none;
       }
     }
+
+    .circle-spinner {
+      display: block;
+      margin: 30px auto 0;
+      width: 30px;
+
+      i {
+        display: inline-block;
+        background: url('../img/loading-big-circle.gif') center;
+        background-size: 30px 30px;
+        width: 30px;
+        height: 30px;
+        margin: 0 auto;
+      }
+
+      &.chat-message-list {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+      }
+    }
   }
 }
 

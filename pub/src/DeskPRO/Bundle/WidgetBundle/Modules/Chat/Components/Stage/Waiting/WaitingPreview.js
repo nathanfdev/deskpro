@@ -9,7 +9,7 @@ export class WaitingPreview extends React.Component {
           We are finding you an agent...
         </div>
         <div className="spinner">
-          <i className="img"/>
+          <i />
         </div>
       </div>
     );

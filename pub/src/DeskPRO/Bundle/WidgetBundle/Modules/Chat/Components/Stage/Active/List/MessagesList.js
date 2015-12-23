@@ -34,9 +34,10 @@ export class MessagesList extends React.Component {
 
   refresh() {
     const scrollArea = this.refs.scrollArea;
-
-    scrollArea.setSizesToState();
-    scrollArea.handleWindowResize();
+    if (scrollArea) {
+      scrollArea.setSizesToState();
+      scrollArea.handleWindowResize();
+    }
   }
 
   checkForNewMessages() {
@@ -69,7 +70,15 @@ export class MessagesList extends React.Component {
   }
 
   render() {
-    const { messages } = this.props;
+    const { messages, chatLoaded } = this.props;
+
+    if (!chatLoaded) {
+      return (
+        <div className="dpdesignportal-content">
+          <div className="circle-spinner chat-message-list"><i/></div>
+        </div>
+      );
+    }
 
     return (
       <div className="dpdesignportal-content">
