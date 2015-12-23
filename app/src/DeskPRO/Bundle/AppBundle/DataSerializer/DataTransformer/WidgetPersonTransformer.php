@@ -68,7 +68,7 @@ class WidgetPersonTransformer extends AbstractDataSerializerTransformer
         $data = $transformation_request->getDataToBeTransformed();
 
         return [
-            'avatar' => $this->avatar_resolver->getAvatarModel($data)->getUrl(150),
+            'avatar' => $this->avatar_resolver->getAvatarModel($data),
         ];
     }
 }
