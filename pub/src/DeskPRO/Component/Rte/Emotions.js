@@ -51,6 +51,10 @@ function createEmotionImage(code) {
   return `<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="${className}">`;
 }
 
+function createCodeHtml(code) {
+  return `<span class="smile">${code}</span>`;
+}
+
 function replaceSmileCodes(content, inverse = false) {
   let text = String(content);
   let num;
@@ -62,9 +66,9 @@ function replaceSmileCodes(content, inverse = false) {
       const image = createEmotionImage(codes);
 
       if (inverse) {
-        text = text.replace(image, arrayCodes[0]);
+        text = text.replace(image, createCodeHtml(arrayCodes[0]));
       } else {
-        arrayCodes.forEach(code => text = text.replace(code, image));
+        arrayCodes.forEach(code => text = text.replace(createCodeHtml(code), image));
       }
     }
   }
