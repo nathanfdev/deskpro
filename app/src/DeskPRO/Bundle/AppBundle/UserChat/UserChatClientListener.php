@@ -160,7 +160,7 @@ class UserChatClientListener implements EventSubscriberInterface
      */
     protected function getInfo(UserChatEvent $event)
     {
-        return $this->data_serializer->serialize($event->getConversation());
+        return $this->data_serializer->serialize($event->getConversation())['data'];
     }
 
     /**
