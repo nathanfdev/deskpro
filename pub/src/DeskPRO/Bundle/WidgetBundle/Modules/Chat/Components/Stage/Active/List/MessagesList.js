@@ -18,6 +18,7 @@ export class MessagesList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      messagesCount: 0,
       lastMessageId: null
     };
   }
@@ -39,8 +40,9 @@ export class MessagesList extends React.Component {
 
   checkForNewMessages() {
     const { messages, lastMessageId, mute } = this.props;
-    if (lastMessageId !== this.state.lastMessageId) {
+    if (messages.size !== this.state.messagesCount) {
       this.setState({
+        messagesCount: messages.size,
         lastMessageId: lastMessageId
       });
 
