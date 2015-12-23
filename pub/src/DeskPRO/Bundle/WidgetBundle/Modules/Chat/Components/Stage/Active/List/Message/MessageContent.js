@@ -1,12 +1,21 @@
 import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import { AttachmentLink } from './Assets/AttachmentLink';
 import { replaceSmileCodes } from 'DeskPRO/Component/Rte/Emotions';
+import $ from 'jquery';
 
 export class MessageContent extends React.Component {
 
   static propTypes = {
     message: PropTypes.object
   };
+
+  componentDidMount() {
+    const contentNode = ReactDOM.findDOMNode(this);
+    $('a', contentNode).each((i, linkNode) => {
+      $(linkNode).attr('target', '_blank');
+    });
+  }
 
   render() {
     const { message } = this.props;
