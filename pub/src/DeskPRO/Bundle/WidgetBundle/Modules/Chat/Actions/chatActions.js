@@ -2,7 +2,7 @@ import { createAction } from 'Ampliflux';
 import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
-import { isEndedSelector, messageIdsSelector, attachmentsSelector } from '../Selectors/chat';
+import { isEndedSelector, messageIdsSelector, chatInfoSelector, attachmentsSelector } from '../Selectors/chat';
 import { generate } from 'randomstring';
 import moment from 'moment';
 
@@ -86,19 +86,22 @@ export const pollingChat = createAction(
     return DpApi
       .sendGet(`DP_API/chats/${chatId}/polling?` + compileParams(params), {...ajaxOptions})
       .success(response => {
-        const chatInfo = response.chat_info && response.chat_info.data;
+        const state = getState();
+
+        const oldChatInfo = chatInfoSelector(state);
+        const newChatInfo = response.chat_info && response.chat_info.data;
         const newMessages = response.new_messages ? response.new_messages.data : [];
 
-        if (chatInfo) {
-          dispatch(updateChatInfo(chatInfo));
+        if (newChatInfo) {
+          dispatch(updateChatInfo(newChatInfo));
         }
         if (newMessages.length) {
-          const state = getState();
           const existMessageIds = messageIdsSelector(state);
 
           newMessages
-            // skip user's messages because they are added optimistically
-            .filter(message => message.author_type !== 'user')
+            // skip user's messages because they are added optimistically,
+            // but do load user's messages on initial polling request
+            .filter(message => !oldChatInfo.size || (oldChatInfo.size && message.author_type !== 'user'))
             // check for unique ids
             .filter(message => existMessageIds.indexOf(message.id) === -1)
             // add new messages
