@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Avatar, DepartmentAvatar, PersonAvatar, AgentTeamAvatar } from '../../../Common/Components/Avatar/index';
+import { Avatar, DepartmentAvatar, PersonAvatar, AgentTeamAvatar } from 'DeskPRO/Component/Avatar/index';
 export class Item extends React.Component {
 
   static propTypes = {

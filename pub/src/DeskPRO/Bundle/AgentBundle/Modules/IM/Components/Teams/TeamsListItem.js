@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import * as actions from '../../Actions/chatsActions';
-import { AgentTeamAvatar } from '../../../Common/Components/Avatar/index';
+import { AgentTeamAvatar } from 'DeskPRO/Component/Avatar/index';
 
 export class TeamsListItem extends React.Component {
   static propTypes = {

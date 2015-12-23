@@ -3,7 +3,7 @@ import {
   PersonAvatar,
   DepartmentAvatar,
   AgentTeamAvatar
-} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/index';
+} from 'DeskPRO/Component/Avatar/index';
 
 export class AssigneeAvatar extends React.Component {
 

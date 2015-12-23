@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import * as actions from '../../Actions/chatsActions';
-import { DepartmentAvatar } from '../../../Common/Components/Avatar/index';
+import { DepartmentAvatar } from 'DeskPRO/Component/Avatar/index';
 
 export class DepartmentsListItem extends React.Component {
   static propTypes = {
