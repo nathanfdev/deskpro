@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\Content;
 
 use Doctrine\ORM\QueryBuilder;
@@ -51,7 +52,11 @@ class ArticlesCriteria extends BaseContentCriteria
             switch ($field) {
                 case 'category':
                     $qb->leftJoin("$alias.categories", 'cat');
-                    $qb->andWhere('cat.id = :category');
+                    if (is_array($value)) {
+                        $qb->andWhere('cat.id IN (:category)');
+                    } else {
+                        $qb->andWhere('cat.id = :category');
+                    }
                     $qb->setParameter('category', $value);
                     break;
             }

@@ -8,7 +8,7 @@ export class NestedList extends BaseNestedList {
     this.ensureValidDepth(depth);
     const { title, count, id, type } = item;
     const label = title[0].toUpperCase() + title.slice(1);
-    const listOptions = { content: content, [type]: id };
+    const listOptions = { content: content, navItem: { [type]: id } };
 
     return (
       <ListItemContainer key={title}

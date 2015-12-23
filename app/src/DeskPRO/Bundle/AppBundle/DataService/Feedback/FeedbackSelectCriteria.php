@@ -46,10 +46,9 @@ class FeedbackSelectCriteria extends Criteria
      */
     public function applyFilters(QueryBuilder $qb)
     {
-        $alias      = $qb->getRootAliases()[0];
-        $sort       = "$alias.date_created";
-        $order      = 'asc';
-        $labelsMode = 'any';
+        $alias = $qb->getRootAliases()[0];
+        $sort  = "$alias.date_created";
+        $order = 'asc';
         foreach ($this->filters as $field => $value) {
             switch ($field) {
                 case 'ids':

@@ -4,6 +4,7 @@ import { createPeopleRequestSelectors }
   from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Selectors/peopleSelectors';
 
 const stateSelector = state => state.Publish.list;
+const navStateSelector = state => state.Publish.nav;
 
 export const contentSelector = createSelector(
   stateSelector,
@@ -50,8 +51,8 @@ export const currentListOrderSelector = createSelector(
 export const currentViewModeSelector = hashStateSelectorFactory(['list', 'view'], 'card');
 
 export const listFiltersSelector = createSelector(
-  [],
-  () => {
+  [navStateSelector, currentListParamsSelector],
+  (navState, currentListParams) => {
     const filterSelector = [
       { label: 'Date', type: 'date', fromParam: 'created_from', toParam: 'created_to' }
     ];
@@ -68,16 +69,16 @@ export const listFiltersSelector = createSelector(
     });
 
     // Category options
-    /* if (!currentListParams.get('navItem') || (!currentListParams.get('navItem').get('custom_category'))) {
-      const categoryOptions = navState.get('customCategories').toJS().map(cat => ({
+    if ((!currentListParams.get('navItem') || !currentListParams.get('navItem').get('category')) && navState.get('categories')) {
+      const categoryOptions = navState.get('categories').get(currentListParams.get('content')).toJS().map(cat => ({
         label: cat.title,
-        value: cat.title
+        value: cat.id
       }));
       filterSelector.push({
-        label: 'Category', type: 'select', param: 'custom_category', quickFilter: true,
+        label: 'Category', type: 'select', param: 'category', quickFilter: true,
         options: categoryOptions
       });
-    }*/
+    }
 
     return filterSelector;
   }

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\Content;
 
 use Doctrine\ORM\QueryBuilder;
@@ -50,7 +51,11 @@ class ContentCriteria extends BaseContentCriteria
         foreach ($this->filters as $field => $value) {
             switch ($field) {
                 case 'category':
-                    $qb->andWhere("$alias.category = :category");
+                    if (is_array($value)) {
+                        $qb->andWhere("$alias.category IN (:category)");
+                    } else {
+                        $qb->andWhere("$alias.category = :category");
+                    }
                     $qb->setParameter('category', $value);
                     break;
             }
