@@ -19,7 +19,7 @@ const initialState = {
     checked: false,
     saving: false,
     sending: false,
-    sent: true
+    sent: false
   },
   chatId: null,
   chatLoaded: false,
@@ -43,14 +43,15 @@ export default createReducer(initialState, {
   // Chat setup
   [actions.setChatId]: composeHandlers(
     setFullPayload('chatId'),
-    setValue('chatLoaded', false)
+    setValue('chatLoaded', false),
+    setValue('messages', []),
+    setValue('transcript.sent', false)
   ),
   [actions.setLoaded]: setValue('chatLoaded', true),
   [actions.updateChatInfo]: setFullPayload('chatInfo'),
   [actions.reopenChat]: mergeValue(null, {chatInfo: {date_ended: null}, transcript: {sent: false}}, true),
 
   // Messages
-  [actions.resetMessages]: setValue('messages', []),
   [actions.addNewMessages]: pushPayloadToCollection('messages'),
   [actions.markNotDelivered]: (state, tmpId) => {
     let newMessages = state.get('messages');
@@ -90,7 +91,6 @@ export default createReducer(initialState, {
   // Transcript
   [actions.disableSendTranscript]: setValue('transcript.checked', false),
   [actions.enableSendTranscript]: setValue('transcript.checked', true),
-  [actions.resetTranscriptDataSent]: setValue('transcript.sent', false),
   [actions.sendTranscriptInfo]: async({
     start: setValue('transcript.saving', true),
     done: setValue('transcript.saving', false),

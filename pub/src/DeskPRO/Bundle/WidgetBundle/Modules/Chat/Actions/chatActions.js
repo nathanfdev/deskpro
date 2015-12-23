@@ -26,10 +26,8 @@ export const toggleMute = createAction('WIDGET_CHAT_TOGGLE_MUTE');
 // Transcript actions
 export const disableSendTranscript = createAction('WIDGET_CHAT_DISABLE_SEND_TRANSCRIPT');
 export const enableSendTranscript = createAction('WIDGET_CHAT_ENABLE_SEND_TRANSCRIPT');
-export const resetTranscriptDataSent = createAction('WIDGET_CHAT_RESET_TRANSCRIPT_DATA_SENT');
 
 // Messages actions
-export const resetMessages = createAction('WIDGET_CHAT_RESET_MESSAGES');
 export const addNewMessages = createAction('WIDGET_CHAT_ADD_NEW_MESSAGES');
 export const markNotDelivered = createAction('WIDGET_CHAT_MARK_NOT_DELIVERED');
 
@@ -64,8 +62,6 @@ export const createChat = createAction(
 
       if (chatId) {
         dispatch(setChatId(chatId));
-        dispatch(resetMessages());
-        dispatch(resetTranscriptDataSent());
         dispatch(updateChatInfo(data));
       }
 
