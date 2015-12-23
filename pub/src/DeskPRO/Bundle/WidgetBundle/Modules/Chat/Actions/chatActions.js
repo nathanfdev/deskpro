@@ -30,7 +30,7 @@ export const resetTranscriptDataSent = createAction('WIDGET_CHAT_RESET_TRANSCRIP
 
 // Messages actions
 export const resetMessages = createAction('WIDGET_CHAT_RESET_MESSAGES');
-export const addNewMessage = createAction('WIDGET_CHAT_ADD_NEW_MESSAGES');
+export const addNewMessages = createAction('WIDGET_CHAT_ADD_NEW_MESSAGES');
 export const markNotDelivered = createAction('WIDGET_CHAT_MARK_NOT_DELIVERED');
 
 // Uploading files actions
@@ -99,15 +99,14 @@ export const pollingChat = createAction(
         }
         if (newMessages.length) {
           const existMessageIds = messageIdsSelector(state);
-
-          newMessages
+          const filteredMessages = newMessages
             // skip user's messages because they are added optimistically,
             // but do load user's messages on initial polling request
             .filter(message => initialLoad || (!initialLoad && message.author_type !== 'user'))
             // check for unique ids
-            .filter(message => existMessageIds.indexOf(message.id) === -1)
-            // add new messages
-            .forEach(message => dispatch(addNewMessage(message)));
+            .filter(message => existMessageIds.indexOf(message.id) === -1);
+
+          dispatch(addNewMessages(filteredMessages));
         }
         if (initialLoad) {
           dispatch(setLoaded());
@@ -129,7 +128,7 @@ export const sendChatMessage = createAction(
     });
 
     // add optimistic message
-    dispatch(addNewMessage({
+    dispatch(addNewMessages({
       tmp_id: tmpId,
       content: params.message,
       is_html: true,
@@ -143,7 +142,7 @@ export const sendChatMessage = createAction(
 
     params.attachments.forEach(blobAuthId => {
       const attachment = attachments.filter(blob => blob.get('blob_auth_id') === blobAuthId).first();
-      dispatch(addNewMessage({
+      dispatch(addNewMessages({
         tmp_id: tmpId,
         content: null,
         is_html: true,

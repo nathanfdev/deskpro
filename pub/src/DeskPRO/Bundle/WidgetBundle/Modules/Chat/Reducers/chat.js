@@ -51,7 +51,7 @@ export default createReducer(initialState, {
 
   // Messages
   [actions.resetMessages]: setValue('messages', []),
-  [actions.addNewMessage]: pushPayloadToCollection('messages'),
+  [actions.addNewMessages]: pushPayloadToCollection('messages'),
   [actions.markNotDelivered]: (state, tmpId) => {
     let newMessages = state.get('messages');
 
