@@ -1,29 +1,35 @@
 import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
-import { Table, Th, Td, TdId, PersonInTable }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
-import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
-import { peopleSelector }
+import { contentSelector, peopleSelector, articlesSelector, newsSelector, downloadsSelector }
   from '../../../../Selectors/list';
+import { Table, Th, Td, TdId, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
 
 import { connect } from 'react-redux';
 @connect(state => {
   return {
     people: peopleSelector(state),
-    downloads: state.Publish.list.get('downloads')
+    content: contentSelector(state),
+    articles: articlesSelector(state),
+    news: newsSelector(state),
+    downloads: downloadsSelector(state)
   };
 })
 
 @injectIntl
-export class DownloadsTableContainer extends Component {
+export class TableContainer extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    content: PropTypes.string.isRequired,
     people: PropTypes.object.isRequired,
-    downloads: PropTypes.object.isRequired
+    articles: PropTypes.object,
+    news: PropTypes.object,
+    downloads: PropTypes.object
   };
 
   render() {
-    const {downloads, people} = this.props;
+    const { content, people } = this.props;
+    const elements = this.props[content];
 
     return (
       <Table>
@@ -39,7 +45,7 @@ export class DownloadsTableContainer extends Component {
         </tr>
         </thead>
         <tbody>
-        {downloads.map((element, index) =>
+        {elements.map((element, index) =>
             <tr key={index}>
               <TdId visible>
                 {element.id}
@@ -59,7 +65,7 @@ export class DownloadsTableContainer extends Component {
               <Td visible>
                 @ToDo some labels stuff
               </Td>
-              <Td className="item-title" visible>
+              <Td className="item-title">
                 <a href="#"><SlicedString string={element.title}/></a>
               </Td>
             </tr>

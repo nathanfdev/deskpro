@@ -5,9 +5,24 @@ import { createPeopleRequestSelectors }
 
 const stateSelector = state => state.Publish.list;
 
+export const contentSelector = createSelector(
+  stateSelector,
+    state => state.get('currentListParams').get('content')
+);
+
 export const articlesSelector = createSelector(
   stateSelector,
     state => state.get('articles')
+);
+
+export const newsSelector = createSelector(
+  stateSelector,
+    state => state.get('news')
+);
+
+export const downloadsSelector = createSelector(
+  stateSelector,
+    state => state.get('downloads')
 );
 
 export const currentListParamsSelector = createSelector(

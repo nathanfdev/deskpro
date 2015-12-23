@@ -6,7 +6,7 @@ import jQuery from 'jquery';
 import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
 
 @injectIntl
-export class ArticleCard extends Component {
+export class ContentCard extends Component {
 
   static propTypes = {
     intl: intlShape.isRequired,

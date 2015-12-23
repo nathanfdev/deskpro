@@ -5,18 +5,13 @@ import { ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Com
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import { ControlBarContainer } from './ControlBar/ControlBarContainer';
 import { MassActionContainer } from './ControlBar/MassActionContainer';
-import { ArticlesTableContainer } from './View/Table/ArticlesTableContainer';
-import { NewsTableContainer } from './View/Table/NewsTableContainer';
-import { DownloadsTableContainer } from './View/Table/DownloadsTableContainer';
-import { ArticlesCardsContainer } from './View/Cards/ArticlesCardsContainer';
-import { NewsCardsContainer } from './View/Cards/NewsCardsContainer';
-import { DownloadsCardsContainer } from './View/Cards/DownloadsCardsContainer';
+import { TableContainer } from './View/Table/TableContainer';
+import { CardsContainer } from './View/Cards/CardsContainer';
 import { PaginationContainer } from './PaginationContainer';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export class List extends Component {
   static propTypes = {
-    content: PropTypes.string.isRequired,
     loaded: PropTypes.bool.isRequired,
     pagination: PropTypes.object,
     selected: PropTypes.object.isRequired,
@@ -28,49 +23,15 @@ export class List extends Component {
 
     switch (currentViewMode) {
       case constants.VIEW_MODE_CARD:
-        return this.renderListView();
+        return (
+          <CardsContainer/>
+        );
       case constants.VIEW_MODE_TABLE:
-        return this.renderTableView();
+        return (
+          <TableContainer/>
+        );
       default:
         throw new Error(`Unknown "${currentViewMode}" view type`);
-    }
-  }
-
-  renderListView() {
-    const {content} = this.props;
-    switch (content) {
-      case constants.CONTENT_ARTICLES:
-        return (
-          <ArticlesCardsContainer/>
-        );
-      case constants.CONTENT_NEWS:
-        return (
-          <NewsCardsContainer/>
-        );
-      case constants.CONTENT_DOWNLOADS:
-        return (
-          <DownloadsCardsContainer/>
-        );
-      default:
-    }
-  }
-
-  renderTableView() {
-    const {content} = this.props;
-    switch (content) {
-      case constants.CONTENT_ARTICLES:
-        return (
-          <ArticlesTableContainer/>
-        );
-      case constants.CONTENT_NEWS:
-        return (
-          <NewsTableContainer/>
-        );
-      case constants.CONTENT_DOWNLOADS:
-        return (
-          <DownloadsTableContainer/>
-        );
-      default:
     }
   }
 
