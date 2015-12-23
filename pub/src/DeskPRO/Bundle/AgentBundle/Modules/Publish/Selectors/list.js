@@ -61,7 +61,16 @@ export const listFiltersSelector = createSelector(
     const statusOptions = [
       { label: 'Archived', value: 'archived' },
       { label: 'Published', value: 'published' },
-      { label: 'Hidden', value: 'hidden' }
+      {
+        label: 'Hidden',
+        value: 'hidden',
+        nested: [
+          { value: 'unpublished', label: 'Unpublished', param: 'hidden_status' },
+          { value: 'deleted', label: 'Deleted', param: 'hidden_status' },
+          { value: 'spam', label: 'Spam', param: 'hidden_status' },
+          { value: 'draft', label: 'Draft', param: 'hidden_status' }
+        ]
+      }
     ];
     filterSelector.push({
       label: 'Status', type: 'select', param: 'status', quickFilter: true,

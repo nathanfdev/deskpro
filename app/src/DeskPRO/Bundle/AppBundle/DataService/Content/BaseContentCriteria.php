@@ -196,7 +196,20 @@ abstract class BaseContentCriteria extends Criteria implements GroupableCriteria
                 return true;
             }
         );
-        $resolver->setAllowedValues('hidden_status', Content::getAllHiddenStatuses());
+        $resolver->setAllowedValues(
+            'hidden_status',
+            function ($value) {
+                $allowed = Content::getAllHiddenStatuses();
+                is_array($value) or $value = [$value];
+                foreach ($value as $status) {
+                    if (!in_array($status, $allowed)) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        );
         $resolver->setAllowedValues('period_created', DatePeriods::$names);
         $resolver->setAllowedValues('order', ['asc', 'desc']);
     }
