@@ -68,7 +68,6 @@ export const createChat = createAction(
 
       if (chatId) {
         dispatch(setChatId(chatId));
-        dispatch(updateChatInfo(data));
       }
     })
 );
