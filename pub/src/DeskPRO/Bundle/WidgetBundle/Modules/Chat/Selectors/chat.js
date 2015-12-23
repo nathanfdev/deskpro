@@ -41,6 +41,11 @@ export const chatIdSelector = createSelector(
   state => state.get('chatId')
 );
 
+export const chatLoadedSelector = createSelector(
+  stateSelector,
+  state => state.get('chatLoaded')
+);
+
 export const chatInfoSelector = createSelector(
   stateSelector,
   state => state.get('chatInfo')

@@ -1,12 +1,13 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
-import { messagesSelector, lastMessageIdSelector, muteSelector } from '../../../../Selectors/chat';
+import { chatLoadedSelector, messagesSelector, lastMessageIdSelector, muteSelector } from '../../../../Selectors/chat';
 import { widgetDimensionsSelector, widgetHeightSelector } from '../../../../../Application/Selectors/dpWindow';
 import { MessagesList } from './MessagesList';
 import $ from 'jquery';
 
 @connect(state => ({
+  chatLoaded: chatLoadedSelector(state),
   messages: messagesSelector(state),
   lastMessageId: lastMessageIdSelector(state),
   widgetDimensions: widgetDimensionsSelector(state),

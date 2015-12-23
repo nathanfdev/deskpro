@@ -22,6 +22,7 @@ const initialState = {
     sent: true
   },
   chatId: null,
+  chatLoaded: false,
   chatInfo: {},
   messages: [],
   uploading: {
@@ -40,7 +41,11 @@ export default createReducer(initialState, {
   [actions.toggleMute]: toggleBool('mute'),
 
   // Chat setup
-  [actions.setChatId]: setFullPayload('chatId'),
+  [actions.setChatId]: composeHandlers(
+    setFullPayload('chatId'),
+    setValue('chatLoaded', false)
+  ),
+  [actions.setLoaded]: setValue('chatLoaded', true),
   [actions.updateChatInfo]: setFullPayload('chatInfo'),
   [actions.reopenChat]: mergeValue(null, {chatInfo: {date_ended: null}, transcript: {sent: false}}, true),
 

@@ -9,6 +9,7 @@ import popWav from '../../../../../../Resources/sounds/pop.wav';
 export class MessagesList extends React.Component {
 
   static propTypes = {
+    chatLoaded: PropTypes.bool,
     messages: PropTypes.object,
     lastMessageId: PropTypes.number,
     mute: PropTypes.bool,
@@ -39,7 +40,7 @@ export class MessagesList extends React.Component {
   }
 
   checkForNewMessages() {
-    const { messages, lastMessageId, mute } = this.props;
+    const { chatLoaded, messages, lastMessageId, mute } = this.props;
     if (messages.size !== this.state.messagesCount) {
       this.setState({
         messagesCount: messages.size,
@@ -55,7 +56,8 @@ export class MessagesList extends React.Component {
         return message.get('id') > this.state.lastMessageId && message.get('author_type') === 'agent';
       });
 
-      if (!mute && newAgentMessage.size > 0) {
+      // Don't play sound on initial load
+      if (chatLoaded && !mute && newAgentMessage.size > 0) {
         const sound = ReactDOM.findDOMNode(this.refs.sound);
         try {
           sound.play();

@@ -17,6 +17,7 @@ export const setChatId = createAction(
     return chatId;
   }
 );
+export const setLoaded = createAction('WIDGET_CHAT_SET_LOADED');
 export const updateChatInfo = createAction('WIDGET_CHAT_UPDATE_CHAT_INFO');
 
 // Audio actions
@@ -91,6 +92,7 @@ export const pollingChat = createAction(
         const oldChatInfo = chatInfoSelector(state);
         const newChatInfo = response.chat_info && response.chat_info.data;
         const newMessages = response.new_messages ? response.new_messages.data : [];
+        const initialLoad = !oldChatInfo.size;
 
         if (newChatInfo) {
           dispatch(updateChatInfo(newChatInfo));
@@ -101,11 +103,14 @@ export const pollingChat = createAction(
           newMessages
             // skip user's messages because they are added optimistically,
             // but do load user's messages on initial polling request
-            .filter(message => !oldChatInfo.size || (oldChatInfo.size && message.author_type !== 'user'))
+            .filter(message => initialLoad || (!initialLoad && message.author_type !== 'user'))
             // check for unique ids
             .filter(message => existMessageIds.indexOf(message.id) === -1)
             // add new messages
             .forEach(message => dispatch(addNewMessage(message)));
+        }
+        if (initialLoad) {
+          dispatch(setLoaded());
         }
       });
   }
