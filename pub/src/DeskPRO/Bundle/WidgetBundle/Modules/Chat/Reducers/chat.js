@@ -4,7 +4,6 @@ import {
   setFullPayload,
   setValue,
   setValueOnError,
-  mergeValue,
   toggleBool,
   async,
   pushPayloadToCollection,
@@ -49,7 +48,10 @@ export default createReducer(initialState, {
   ),
   [actions.setLoaded]: setValue('chatLoaded', true),
   [actions.updateChatInfo]: setFullPayload('chatInfo'),
-  [actions.reopenChat]: mergeValue(null, {chatInfo: {date_ended: null}, transcript: {sent: false}}, true),
+  [actions.reopenChat]: composeHandlers(
+    setValue('chatInfo.date_ended', null),
+    setValue('transcript.sent', false)
+  ),
 
   // Messages
   [actions.addNewMessages]: pushPayloadToCollection('messages'),
