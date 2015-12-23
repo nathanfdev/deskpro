@@ -155,6 +155,7 @@ export function setPayload(statePropKey, payloadPropKey = '@', defaultValue = nu
 
 /**
  * Push payload to a collection.
+ * Payload could be scalar or object. If payload would be array, then all its items will be merged to a collection.
  *
  * @param {String|Array} statePropKey The property to set on the state.
  * @param {bool}         checkUnique  Check if item already exists in collection.
@@ -166,14 +167,17 @@ export function pushPayloadToCollection(statePropKey, checkUnique = false) {
     verifyImmutable(state);
 
     const path = getStatePath(statePropKey);
-    const immutableValue = Immutable.fromJS(payload);
-
     let collection = state.getIn(path);
     verifyImmutable(collection);
 
-    if (!checkUnique || !collection.includes(immutableValue)) {
-      collection = collection.push(immutableValue);
-    }
+    const values = Array.isArray(payload) ? payload : [payload];
+    values.forEach(value => {
+      const immutableValue = Immutable.fromJS(value);
+
+      if (!checkUnique || !collection.includes(immutableValue)) {
+        collection = collection.push(immutableValue);
+      }
+    });
 
     return state.setIn(path, collection);
   };

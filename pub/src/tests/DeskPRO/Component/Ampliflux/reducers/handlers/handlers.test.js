@@ -152,6 +152,12 @@ describe('Ampliflux actions handlers', () => {
       expect(next.get('elements').size).toEqual(4);
       expect(next.get('elements').get(3).get('id')).toEqual(6);
     });
+    it('should merge values to collection', () => {
+      const next = handlers.pushPayloadToCollection('elements')(state, [{id: 6}, {id: 7}]);
+      expect(next.get('elements').size).toEqual(5);
+      expect(next.get('elements').get(3).get('id')).toEqual(6);
+      expect(next.get('elements').get(4).get('id')).toEqual(7);
+    });
     describe('unique check', () => {
       it('should add value, unique check disabled', () => {
         const next = handlers.pushPayloadToCollection('elements')(state, {id: 2});
@@ -160,6 +166,11 @@ describe('Ampliflux actions handlers', () => {
       it('should skip value, unique check enabled', () => {
         const next = handlers.pushPayloadToCollection('elements', true)(state, {id: 2});
         expect(next.get('elements').size).toEqual(3);
+      });
+      it('should skip some values, unique check enabled', () => {
+        const next = handlers.pushPayloadToCollection('elements', true)(state, [{id: 2}, {id: 6}]);
+        expect(next.get('elements').size).toEqual(4);
+        expect(next.get('elements').get(3).get('id')).toEqual(6);
       });
     });
   });
