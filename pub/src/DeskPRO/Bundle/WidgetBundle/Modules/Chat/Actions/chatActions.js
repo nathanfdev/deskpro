@@ -2,9 +2,15 @@ import { createAction } from 'Ampliflux';
 import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
-import { isEndedSelector, messageIdsSelector, chatInfoSelector, attachmentsSelector } from '../Selectors/chat';
 import { generate } from 'randomstring';
 import moment from 'moment';
+import {
+  chatInfoSelector,
+  isEndedSelector,
+  messageIdsSelector,
+  attachmentsSelector,
+  transcriptCheckedSelector
+} from '../Selectors/chat';
 
 // Phrase translations
 export const setPhraseTranslations = createAction('WIDGET_CHAT_SET_PHRASE_TRANSLATIONS');
@@ -64,12 +70,6 @@ export const createChat = createAction(
         dispatch(setChatId(chatId));
         dispatch(updateChatInfo(data));
       }
-
-      if (chatId && data.author_email) {
-        dispatch(enableSendTranscript());
-      } else {
-        dispatch(disableSendTranscript());
-      }
     })
 );
 
@@ -89,9 +89,20 @@ export const pollingChat = createAction(
         const newChatInfo = response.chat_info && response.chat_info.data;
         const newMessages = response.new_messages ? response.new_messages.data : [];
         const initialLoad = !oldChatInfo.size;
+        const transcriptEnabled = transcriptCheckedSelector(state);
 
         if (newChatInfo) {
           dispatch(updateChatInfo(newChatInfo));
+
+          if (newChatInfo.author_email) {
+            if (!transcriptEnabled) {
+              dispatch(enableSendTranscript());
+            }
+          } else {
+            if (transcriptEnabled) {
+              dispatch(disableSendTranscript());
+            }
+          }
         }
         if (newMessages.length) {
           const existMessageIds = messageIdsSelector(state);
