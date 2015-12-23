@@ -9,19 +9,28 @@ const recordStoresId = 'publish';
 
 export const load = createAction(
   'PUBLISH_LIST_LOAD_DATA',
-    params => (dispatch) => Content.load(params).then(promise => {
-      const content = promise.getData();
-      const people = [];
-      for (const key in content.linked.person) {
-        if (content.linked.person.hasOwnProperty(key)) {
-          people.push(content.linked.person[key]);
-        }
-      }
-      dispatch(setPeopleRequest(recordStoresId, people));
-
-      return { content: params.content, data: content };
+  (listParams) => dispatch => {
+    let params = listParams;
+    const { navItem } = params;
+    if (navItem) {
+      delete params.navItem;
+      params = { ...params, ...navItem };
     }
-  )
+    return Content.load(params)
+      .then(promise => {
+        const content = promise.getData();
+        const people = [];
+        for (const key in content.linked.person) {
+          if (content.linked.person.hasOwnProperty(key)) {
+            people.push(content.linked.person[key]);
+          }
+        }
+        dispatch(setPeopleRequest(recordStoresId, people));
+
+        return { content: params.content, data: content };
+      }
+    );
+  }
 );
 
 export const loadDraftArticles = createAction(

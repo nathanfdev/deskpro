@@ -1,35 +1,43 @@
 import React, {Component, PropTypes} from 'react';
-import { ArticleCard } from './ArticleCard';
-import { connect } from 'react-redux';
-import { peopleSelector }
+import { ContentCard } from './ContentCard';
+import { contentSelector, peopleSelector, articlesSelector, newsSelector, downloadsSelector }
   from '../../../../Selectors/list';
 import { toggleSelectedAction } from '../../../../Actions/publishMassActions';
 
+
+import { connect } from 'react-redux';
 @connect(state => {
   return ({
     people: peopleSelector(state),
-    downloads: state.Publish.list.get('downloads'),
+    content: contentSelector(state),
+    articles: articlesSelector(state),
+    news: newsSelector(state),
+    downloads: downloadsSelector(state),
     selected: state.Publish.list.get('selected')
   });
 })
 
-export class DownloadsCardsContainer extends Component {
+export class CardsContainer extends Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
+    content: PropTypes.string.isRequired,
     people: PropTypes.object.isRequired,
-    downloads: PropTypes.object.isRequired,
+    articles: PropTypes.object,
+    news: PropTypes.object,
+    downloads: PropTypes.object,
     selected: PropTypes.object.isRequired
   };
 
   render() {
-    const { downloads, people, selected, dispatch } = this.props;
+    const { content, people, dispatch, selected } = this.props;
+    const elements = this.props[content];
     const toggleSelected = (id) => () => dispatch(toggleSelectedAction(id));
 
     return (
       <div>
-        {downloads.map((element, index) =>
-            <ArticleCard key={index}
+        {elements.map((element, index) =>
+            <ContentCard key={index}
                          element={element}
                          toggleSelected={toggleSelected}
                          selected={selected.includes(element.id)}

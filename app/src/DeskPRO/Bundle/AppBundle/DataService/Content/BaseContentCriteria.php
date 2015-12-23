@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\Content;
 
 use Application\DeskPRO\Entity\ContentAbstract as Content;
@@ -52,7 +53,7 @@ abstract class BaseContentCriteria extends Criteria implements GroupableCriteria
     public function applyFilters(QueryBuilder $qb)
     {
         $alias = $qb->getRootAliases()[0];
-        $sort = "$alias.date_created";
+        $sort  = "$alias.date_created";
         $order = 'asc';
         foreach ($this->filters as $field => $value) {
             switch ($field) {
@@ -154,10 +155,19 @@ abstract class BaseContentCriteria extends Criteria implements GroupableCriteria
         );
 
         // filters validation
-        $validateInt = function ($value) {
-            return is_int($value) || ctype_digit($value);
-        };
-        $resolver->setAllowedValues('category', $validateInt);
+        $resolver->setAllowedValues(
+            'category',
+            function ($value) {
+                is_array($value) or $value = [$value];
+                foreach ($value as $categoryId) {
+                    if (!is_int($categoryId) && !ctype_digit($categoryId)) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        );
 
         $resolver->setNormalizer(
             'author',

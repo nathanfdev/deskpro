@@ -47,9 +47,8 @@ class FeedbackSelectCriteria extends Criteria
     public function applyFilters(QueryBuilder $qb)
     {
         $alias = $qb->getRootAliases()[0];
-        $sort = "$alias.date_created";
+        $sort  = "$alias.date_created";
         $order = 'asc';
-        $labelsMode = 'any';
         foreach ($this->filters as $field => $value) {
             switch ($field) {
                 case 'ids':
@@ -131,7 +130,7 @@ class FeedbackSelectCriteria extends Criteria
 
     /**
      * @param OptionsResolver $resolver
-     * @param array $data
+     * @param array           $data
      *
      * @throws AccessException
      * @throws UndefinedOptionsException
@@ -175,7 +174,7 @@ class FeedbackSelectCriteria extends Criteria
         );
         $resolver->setAllowedValues(
             'sort',
-            ['date_created', 'total_rating', 'num_ratings', 'id', 'title', 'status', 'category', 'author_name']
+            ['date_created', 'total_rating', 'num_ratings', 'id', 'title', 'status', 'category', 'person']
         );
         $resolver->setAllowedValues('order', ['asc', 'desc']);
     }
