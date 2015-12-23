@@ -2,6 +2,8 @@ import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 import { peopleSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackStatusCategoriesSelector, feedbackCategoriesSelector }
   from '../../../../Selectors/list';
+import { currentListSortSelector, currentListOrderSelector }
+  from '../../../../Selectors/list';
 import { Table, Th, Td, TdId, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { applyParams } from '../../../../Actions/FeedbackListActions';
 import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
@@ -14,7 +16,9 @@ import { connect } from 'react-redux';
   feedbackComments: feedbackCommentsSelector(state),
   feedbackStatusCategories: feedbackStatusCategoriesSelector(state),
   feedbackCategories: feedbackCategoriesSelector(state),
-  people: peopleSelector(state)
+  people: peopleSelector(state),
+  currentSort: currentListSortSelector(state),
+  currentOrder: currentListOrderSelector(state)
 }))
 @injectIntl
 export class FeedbackTableContainer extends Component {
@@ -28,6 +32,8 @@ export class FeedbackTableContainer extends Component {
     feedbackCategories: PropTypes.object.isRequired,
     feedbackTypes: PropTypes.object.isRequired,
     viewFields: PropTypes.object,
+    currentSort: PropTypes.string.isRequired,
+    currentOrder: PropTypes.string.isRequired,
     dispatch: PropTypes.func.isRequired
   };
 
@@ -72,7 +78,7 @@ export class FeedbackTableContainer extends Component {
   }
 
   render() {
-    const { feedback, people, feedbackTypes } = this.props;
+    const { feedback, people, feedbackTypes, currentSort, currentOrder } = this.props;
 
     return (
       <Table>
@@ -81,12 +87,14 @@ export class FeedbackTableContainer extends Component {
           <Th sort="id"
               title="ID"
               visible={this.isVisible('id')}
-              order={this.state.sort === 'id' ? this.state.order : false}
+              currentOrder={currentOrder}
+              currentSort={currentSort}
               onChange={this.sortTable.bind(this)}/>
           <Th sort="title"
               title="Title"
               visible={this.isVisible('title')}
-              order={this.state.sort === 'title' ? this.state.order : false}
+              currentOrder={currentOrder}
+              currentSort={currentSort}
               onChange={this.sortTable.bind(this)}/>
           <Th sort="content"
               title="Content"
@@ -95,21 +103,27 @@ export class FeedbackTableContainer extends Component {
               visible={this.isVisible('status_category')}/>
           <Th sort="hidden_status" title="Hidden"
               visible={this.isVisible('hidden_status')}/>
-          <Th sort="author_name" title="Author"
-              visible={this.isVisible('person')}/>
+          <Th sort="person"
+              title="Author"
+              visible={this.isVisible('person')}
+              currentOrder={currentOrder}
+              currentSort={currentSort}
+              onChange={this.sortTable.bind(this)}/>
           <Th sort="type" title="Type"
               visible={this.isVisible('type')}/>
           <Th sort="custom_category" title="Category"
               visible={this.isVisible('custom_category')}/>
           <Th sort="num_ratings"
               title="Votes"
-              order={this.state.sort === 'num_ratings' ? this.state.order : false}
+              currentOrder={currentOrder}
+              currentSort={currentSort}
               onChange={this.sortTable.bind(this)}
               visible={this.isVisible('num_ratings')}/>
           <Th sort="num_comments" title="Comments"
               visible={this.isVisible('num_comments')}/>
           <Th sort="date_created" title="Created"
-              order={this.state.sort === 'date_created' ? this.state.order : false}
+              currentOrder={currentOrder}
+              currentSort={currentSort}
               onChange={this.sortTable.bind(this)}
               visible={this.isVisible('date_created')}/>
         </tr>

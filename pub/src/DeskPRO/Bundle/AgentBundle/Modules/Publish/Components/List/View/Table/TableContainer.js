@@ -1,8 +1,9 @@
 import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
-import { contentSelector, peopleSelector, articlesSelector, newsSelector, downloadsSelector }
+import { contentSelector, peopleSelector, articlesSelector, newsSelector, downloadsSelector, currentListSortSelector, currentListOrderSelector }
   from '../../../../Selectors/list';
 import { Table, Th, Td, TdId, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { applyParams } from '../../../../Actions/publishListActions';
 import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
 
 import { connect } from 'react-redux';
@@ -12,7 +13,9 @@ import { connect } from 'react-redux';
     content: contentSelector(state),
     articles: articlesSelector(state),
     news: newsSelector(state),
-    downloads: downloadsSelector(state)
+    downloads: downloadsSelector(state),
+    currentSort: currentListSortSelector(state),
+    currentOrder: currentListOrderSelector(state)
   };
 })
 
@@ -20,6 +23,9 @@ import { connect } from 'react-redux';
 export class TableContainer extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    currentSort: PropTypes.string.isRequired,
+    currentOrder: PropTypes.string.isRequired,
     content: PropTypes.string.isRequired,
     people: PropTypes.object.isRequired,
     articles: PropTypes.object,
@@ -27,21 +33,63 @@ export class TableContainer extends Component {
     downloads: PropTypes.object
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      order: '',
+      sort: ''
+    };
+  }
+
+  sortTable(param, order) {
+    this.props.dispatch(applyParams({ sort: param, order }));
+  }
+
   render() {
-    const { content, people } = this.props;
+    const { content, people, currentSort, currentOrder } = this.props;
     const elements = this.props[content];
 
     return (
       <Table>
         <thead>
         <tr>
-          <Th sort="id" title="ID" visible/>
-          <Th sort="author_name" title="Author" visible/>
-          <Th sort="date_created" title="Created" visible/>
-          <Th sort="date_updated" title="Updated" visible/>
-          <Th sort="status" title="Status" visible/>
+          <Th sort="id"
+              title="ID"
+              visible
+              currentOrder={currentOrder}
+              currentSort={currentSort}
+              onChange={this.sortTable.bind(this)}/>
+          <Th sort="person"
+              title="Author"
+              visible
+              currentOrder={currentOrder}
+              currentSort={currentSort}
+              onChange={this.sortTable.bind(this)}/>
+          <Th sort="date_created"
+              title="Created"
+              visible
+              currentOrder={currentOrder}
+              currentSort={currentSort}
+              onChange={this.sortTable.bind(this)}/>
+          <Th sort="date_updated"
+              title="Updated"
+              visible
+              currentOrder={currentOrder}
+              currentSort={currentSort}
+              onChange={this.sortTable.bind(this)}/>
+          <Th sort="status"
+              title="Status"
+              visible
+              currentOrder={currentOrder}
+              currentSort={currentSort}
+              onChange={this.sortTable.bind(this)}/>
           <Th title="Labels" visible/>
-          <Th sort="title" title="Title" visible/>
+          <Th sort="title"
+              title="Title"
+              visible
+              currentOrder={currentOrder}
+              currentSort={currentSort}
+              onChange={this.sortTable.bind(this)}/>
         </tr>
         </thead>
         <tbody>
