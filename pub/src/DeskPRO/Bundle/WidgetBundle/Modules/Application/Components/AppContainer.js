@@ -2,9 +2,11 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Trigger } from './Trigger/Trigger';
 import { Widget } from './Widget/Widget';
-import { windowResize } from '../Actions/dpWindowActions';
+import { windowResize, openWidget } from '../Actions/dpWindowActions';
+import { setChatId } from '../../Chat/Actions/chatActions';
 import $ from 'jquery';
 import debounce from 'lodash/function/debounce';
+import history from '../../../Services/history';
 
 @connect()
 export class AppContainer extends React.Component {
@@ -22,9 +24,10 @@ export class AppContainer extends React.Component {
 
   componentDidMount() {
     window.widgetFrame = parent.window.widget_iframe;
+    $(window.parent).on('resize', this.onResize);
 
     this.onWindowResize();
-    $(window.parent).on('resize', this.onResize);
+    this.checkStoredChatId();
   }
 
   componentWillUnmount() {
@@ -33,6 +36,18 @@ export class AppContainer extends React.Component {
 
   onWindowResize() {
     this.props.dispatch(windowResize());
+  }
+
+  checkStoredChatId() {
+    const { dispatch } = this.props;
+    const storedChatId = Number(localStorage.getItem('dpWidget.chat.chatId'));
+
+    if (storedChatId) {
+      history.replace('/chat/active');
+
+      dispatch(setChatId(storedChatId));
+      dispatch(openWidget());
+    }
   }
 
   render() {

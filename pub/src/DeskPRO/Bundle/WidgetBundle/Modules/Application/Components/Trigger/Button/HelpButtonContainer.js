@@ -66,7 +66,7 @@ export class HelpButtonContainer extends React.Component {
   };
 
   onClosePopup = () => {
-    localStorage['widget.dpWindow.popupShown'] = 'none';
+    localStorage['dpWidget.dpWindow.popupShown'] = 'none';
     this.setState({
       popupShown: false
     });
@@ -76,7 +76,7 @@ export class HelpButtonContainer extends React.Component {
 
   checkRenderPopup() {
     const { agentsCounts, dispatch } = this.props;
-    const storageKey = 'widget.dpWindow.popupShown';
+    const storageKey = 'dpWidget.dpWindow.popupShown';
 
     if ((!(storageKey in localStorage) || localStorage[storageKey] !== 'none') && agentsCounts > 0) {
       if (!this.state.popupShown) {

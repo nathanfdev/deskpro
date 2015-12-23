@@ -10,7 +10,13 @@ import moment from 'moment';
 export const setPhraseTranslations = createAction('WIDGET_CHAT_SET_PHRASE_TRANSLATIONS');
 
 // Chat setup actions
-export const setChatId = createAction('WIDGET_CHAT_SET_ID');
+export const setChatId = createAction(
+  'WIDGET_CHAT_SET_ID',
+  chatId => {
+    localStorage.setItem('dpWidget.chat.chatId', chatId);
+    return chatId;
+  }
+);
 export const updateChatInfo = createAction('WIDGET_CHAT_UPDATE_CHAT_INFO');
 
 // Audio actions
