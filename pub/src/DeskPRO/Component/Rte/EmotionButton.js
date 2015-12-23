@@ -102,7 +102,7 @@ export default class EmotionButton extends React.Component {
     }
 
     medium.saveSelection();
-    medium.trigger('editableKeypress', {which: ''.charCodeAt(0)});
+    medium.trigger('onChange');
 
     this.onCloseEmotionsPopup();
   };
