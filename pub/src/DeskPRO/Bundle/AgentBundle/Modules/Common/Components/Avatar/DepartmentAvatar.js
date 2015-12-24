@@ -28,7 +28,7 @@ export class DepartmentAvatar extends React.Component {
       color: chooseColor(department.get('id')),
       url: avatar.get('url'),
       urlPattern: avatar.get('url_pattern'),
-      fallbackText: this.getDepartmentFallbackText()
+      text: this.getDepartmentFallbackText()
     };
 
     return (

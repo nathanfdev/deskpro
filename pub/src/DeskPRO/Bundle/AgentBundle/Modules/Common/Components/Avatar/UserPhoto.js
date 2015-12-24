@@ -9,16 +9,20 @@ export class UserPhoto extends React.Component {
     height: PropTypes.number,
     imageUrl: PropTypes.string,
     text: PropTypes.string,
+    color: PropTypes.string,
     children: PropTypes.node
   };
 
   getStyle() {
-    const { imageUrl, width, height } = this.props;
+    const { imageUrl, color, width, height } = this.props;
     const style = {
       width: `${width}px !important`,
       height: `${height}px !important`
     };
 
+    if (color) {
+      style.backgroundColor = color;
+    }
     if (imageUrl) {
       style.backgroundImage = `url(${imageUrl})`;
     }
@@ -30,9 +34,9 @@ export class UserPhoto extends React.Component {
     const { width, height } = this.props;
 
     return {
-      lineHeight: height,
-      width: width,
-      height: height,
+      width: `${width}px`,
+      height: `${height}px`,
+      lineHeight: `${height}px`,
       display: 'inline-block',
       textAlign: 'center'
     };
@@ -42,8 +46,15 @@ export class UserPhoto extends React.Component {
     const { type, text, children } = this.props;
 
     return (
-      <span className={classNames('user-photo', {'text-fallback': type === 'text'})} style={this.getStyle()}>
-        <span className="text" style={this.getTextStyle()}>{text}</span>
+      <span
+        style={this.getStyle()}
+        className={classNames(
+        'user-photo', {
+          'text-fallback': type === 'text',
+          'gravatar': type === 'gravatar'
+        })}>
+
+        {text && <span className="text" style={this.getTextStyle()}>{text}</span>}
         {children}
       </span>
     );

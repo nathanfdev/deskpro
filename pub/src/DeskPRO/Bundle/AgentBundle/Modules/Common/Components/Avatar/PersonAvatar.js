@@ -27,7 +27,7 @@ export class PersonAvatar extends React.Component {
       color: '#CDD2D4',
       urlPattern: avatar.get('url_pattern'),
       gravatar: avatar.get('base_gravatar_url'),
-      fallbackText: this.getPersonFallbackText()
+      text: this.getPersonFallbackText()
     };
 
     return (

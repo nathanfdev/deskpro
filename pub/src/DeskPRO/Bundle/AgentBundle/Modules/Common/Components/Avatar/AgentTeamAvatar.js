@@ -28,7 +28,7 @@ export class AgentTeamAvatar extends React.Component {
       color: chooseColor(agentTeam.get('id')),
       url: avatar.get('url'),
       urlPattern: avatar.get('url_pattern'),
-      fallbackText: this.getAgentTeamFallbackText()
+      text: this.getAgentTeamFallbackText()
     };
 
     return (
