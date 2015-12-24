@@ -17,21 +17,33 @@ export const initialLoad = createAction(
           + '&get[categories]=DP_API/content_categories'
           + '&get[articlesDraftsCount]=DP_API/articles/counts?status%3Dhidden%26hidden_status%3Ddraft'
           + '&get[articlesPendingCount]=DP_API/article_pending_create/counts'
-          + '&get[toValidateCount]=DP_API/article_comments/counts?group_by%3Dperiod_created%26status%3Dvalidating'
-          + '&get[commentsToReviewCount]=DP_API/article_comments/counts?is_reviewed%3D0'
+          + '&get[articlesCommentsToValidateCount]=DP_API/article_comments/counts?status%3Dvalidating'
+          + '&get[newsCommentsToValidateCount]=DP_API/news_comments/counts?status%3Dvalidating'
+          + '&get[downloadsCommentsToValidateCount]=DP_API/download_comments/counts?status%3Dvalidating'
+          + '&get[articlesCommentsToReviewCount]=DP_API/article_comments/counts?is_reviewed%3D0'
+          + '&get[newsCommentsToReviewCount]=DP_API/news_comments/counts?is_reviewed%3D0'
+          + '&get[downloadsCommentsToReviewCount]=DP_API/download_comments/counts?is_reviewed%3D0'
         ;
 
       DpApi.sendGet(batch).success(({responses}) => {
         const payload = flattenBatchResponses(responses);
-        payload.todo = { articles: {}, comments: {} };
+        payload.todo = { articles: {}, comments: { validate: {}, review: {} } };
         payload.todo.articles.draft = payload.articlesDraftsCount.count;
         payload.todo.articles.pending = payload.articlesPendingCount.count;
-        payload.todo.comments.validate = payload.toValidateCount;
-        payload.todo.comments.review = payload.commentsToReviewCount.count;
+        payload.todo.comments.validate.articles = payload.articlesCommentsToValidateCount.count;
+        payload.todo.comments.validate.news = payload.newsCommentsToValidateCount.count;
+        payload.todo.comments.validate.downloads = payload.downloadsCommentsToValidateCount.count;
+        payload.todo.comments.review.articles = payload.articlesCommentsToReviewCount.count;
+        payload.todo.comments.review.news = payload.newsCommentsToReviewCount.count;
+        payload.todo.comments.review.downloads = payload.downloadsCommentsToReviewCount.count;
         delete payload.articlesDraftsCount;
         delete payload.articlesPendingCount;
-        delete payload.toValidateCount;
-        delete payload.commentsToReviewCount;
+        delete payload.articlesCommentsToValidateCount;
+        delete payload.newsCommentsToValidateCount;
+        delete payload.downloadsCommentsToValidateCount;
+        delete payload.articlesCommentsToReviewCount;
+        delete payload.newsCommentsToReviewCount;
+        delete payload.downloadsCommentsToReviewCount;
         resolve(payload);
       });
     }

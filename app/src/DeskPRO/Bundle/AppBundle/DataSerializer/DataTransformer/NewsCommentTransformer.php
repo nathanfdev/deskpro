@@ -32,9 +32,18 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
+use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
+
 /**
  * Class NewsCommentTransformer.
  */
 class NewsCommentTransformer extends ArticleCommentTransformer
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getAutomaticProperties(DataTransformerRequest $request)
+    {
+        return ['id', 'person', 'content', 'status', 'is_reviewed', 'date_created', 'news'];
+    }
 }

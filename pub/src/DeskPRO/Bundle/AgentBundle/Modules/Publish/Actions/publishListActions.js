@@ -3,9 +3,22 @@ import * as Content from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/Conten
 import * as ArticlePendingCreates from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/ArticlePendingCreates';
 import * as Comments from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/Comments';
 import { currentListParamsSelector } from '../Selectors/list';
+import { setArticlesRequest } from '../RecordStores/Actions/articlesActions';
+import { setNewsRequest } from '../RecordStores/Actions/newsActions';
+import { setDownloadsRequest } from '../RecordStores/Actions/downloadsActions';
 import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 
 const recordStoresId = 'publish';
+
+const prepareLinkedData = (linked) =>{
+  const result = [];
+  for (const key in linked) {
+    if (linked.hasOwnProperty(key)) {
+      result.push(linked[key]);
+    }
+  }
+  return result;
+};
 
 export const load = createAction(
   'PUBLISH_LIST_LOAD_DATA',
@@ -18,16 +31,23 @@ export const load = createAction(
     }
     return Content.load(params)
       .then(promise => {
-        const content = promise.getData();
-        const people = [];
-        for (const key in content.linked.person) {
-          if (content.linked.person.hasOwnProperty(key)) {
-            people.push(content.linked.person[key]);
-          }
-        }
-        dispatch(setPeopleRequest(recordStoresId, people));
+        const data = promise.getData();
 
-        return { content: params.content, data: content };
+        switch (params.content) {
+          case 'article_comments':
+            dispatch(setArticlesRequest(recordStoresId, prepareLinkedData(data.linked.article)));
+            break;
+          case 'download_comments':
+            dispatch(setDownloadsRequest(recordStoresId, prepareLinkedData(data.linked.download)));
+            break;
+          case 'news_comments':
+            dispatch(setNewsRequest(recordStoresId, prepareLinkedData(data.linked.news)));
+            break;
+          default:
+        }
+        dispatch(setPeopleRequest(recordStoresId, prepareLinkedData(data.linked.person)));
+
+        return { content: params.content, data: data };
       }
     );
   }
