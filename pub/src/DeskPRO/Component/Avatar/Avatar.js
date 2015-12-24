@@ -3,6 +3,7 @@ import React, { PropTypes } from 'react';
 export class Avatar extends React.Component {
 
   static propTypes = {
+    url: PropTypes.string,
     size: PropTypes.any.isRequired,
     fallbackText: PropTypes.string.isRequired,
     color: PropTypes.string,
@@ -11,51 +12,12 @@ export class Avatar extends React.Component {
     gravatar: PropTypes.string
   };
 
-  render() {
-    if (this.props.urlPattern) {
-      return this.renderImage();
-    }
-    if (this.props.gravatar) {
-      return this.renderGravatar();
-    }
+  getImg() {
+    const { url, size, urlPattern } = this.props;
 
-    return this.renderFallbackText();
-  }
-
-  renderFallbackText(content = '') {
-    const style = this.getStyle();
-    if (this.props.color) {
-      style.backgroundColor = this.props.color;
-    }
-
-    return (
-      <span className="user-photo text-fallback" style={style}>
-        <span className="text" style={this.getTextStyle()}>{this.props.fallbackText}</span>
-        {content}
-      </span>
-    );
-  }
-
-  renderImage(content = '') {
-    return (
-      <span className="user-photo" style={this.getStyle('url(' + this.getImg() + ')')}>
-        <span className="text" style={this.getTextStyle()}>&nbsp;</span>
-        {content}
-      </span>
-    );
-  }
-
-  renderGravatar() {
-    const { gravatar, size } = this.props;
-    const delimiter = gravatar.indexOf('?') === -1 ? '?' : '&';
-    const gravatarImg = gravatar + delimiter + 'default=blank' + (size ? '&s=' + size : '');
-    const gravatarStyle = this.getStyle('url(' + gravatarImg + ')');
-    gravatarStyle.position = 'absolute';
-    gravatarStyle.top = '0';
-    gravatarStyle.left = '0';
-    const gravatarContent = (<span className="user-photo gravatar" style={gravatarStyle} />);
-
-    return this.props.urlPattern ? this.renderImage(gravatarContent) : this.renderFallbackText(gravatarContent);
+    return size && urlPattern
+      ? urlPattern.replace(/\{\{IMG_SIZE}}/, size)
+      : url;
   }
 
   getStyle(backgroundImage) {
@@ -86,11 +48,50 @@ export class Avatar extends React.Component {
     };
   }
 
-  getImg() {
-    const { url, size, urlPattern } = this.props;
+  renderImage(content = '') {
+    return (
+      <span className="user-photo" style={this.getStyle('url(' + this.getImg() + ')')}>
+        <span className="text" style={this.getTextStyle()}>&nbsp;</span>
+        {content}
+      </span>
+    );
+  }
 
-    return size && urlPattern
-      ? urlPattern.replace(/\{\{IMG_SIZE}}/, size)
-      : url;
+  renderGravatar() {
+    const { gravatar, size } = this.props;
+    const delimiter = gravatar.indexOf('?') === -1 ? '?' : '&';
+    const gravatarImg = gravatar + delimiter + 'default=blank' + (size ? '&s=' + size : '');
+    const gravatarStyle = this.getStyle('url(' + gravatarImg + ')');
+    gravatarStyle.position = 'absolute';
+    gravatarStyle.top = '0';
+    gravatarStyle.left = '0';
+    const gravatarContent = (<span className="user-photo gravatar" style={gravatarStyle} />);
+
+    return this.props.urlPattern ? this.renderImage(gravatarContent) : this.renderFallbackText(gravatarContent);
+  }
+
+  renderFallbackText(content = '') {
+    const style = this.getStyle();
+    if (this.props.color) {
+      style.backgroundColor = this.props.color;
+    }
+
+    return (
+      <span className="user-photo text-fallback" style={style}>
+        <span className="text" style={this.getTextStyle()}>{this.props.fallbackText}</span>
+        {content}
+      </span>
+    );
+  }
+
+  render() {
+    if (this.props.urlPattern) {
+      return this.renderImage();
+    }
+    if (this.props.gravatar) {
+      return this.renderGravatar();
+    }
+
+    return this.renderFallbackText();
   }
 }

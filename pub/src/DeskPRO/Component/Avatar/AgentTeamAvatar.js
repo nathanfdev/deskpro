@@ -4,6 +4,7 @@ import { Avatar } from './Avatar';
 import { chooseColor } from './colors';
 
 export class AgentTeamAvatar extends React.Component {
+
   static propTypes = {
     agentTeam: PropTypes.object.isRequired,
     size: PropTypes.any

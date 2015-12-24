@@ -3,6 +3,7 @@ import Immutable from 'immutable';
 import { Avatar } from './Avatar';
 
 export class PersonAvatar extends React.Component {
+
   static propTypes = {
     person: PropTypes.object.isRequired,
     size: PropTypes.any

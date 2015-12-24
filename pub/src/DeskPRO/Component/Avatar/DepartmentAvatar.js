@@ -4,10 +4,19 @@ import { Avatar } from './Avatar';
 import { chooseColor } from './colors';
 
 export class DepartmentAvatar extends React.Component {
+
   static propTypes = {
     department: PropTypes.object.isRequired,
     size: PropTypes.any
   };
+
+  getDepartmentFallbackText() {
+    const department = this.props.department || Immutable.fromJS({});
+    const name = department.get('title');
+    const text = (name && name.length ? name[0] : '');
+
+    return text ? text : '?';
+  }
 
   render() {
     const { size } = this.props;
@@ -25,13 +34,5 @@ export class DepartmentAvatar extends React.Component {
     return (
       <Avatar {...props} />
     );
-  }
-
-  getDepartmentFallbackText() {
-    const department = this.props.department || Immutable.fromJS({});
-    const name = department.get('title');
-    const text = (name && name.length ? name[0] : '');
-
-    return text ? text : '?';
   }
 }
