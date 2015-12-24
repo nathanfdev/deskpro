@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
-import { Card, CardLine, CardLineLeft, CardLineRight, CardLineFull, CardContentText, CardLineItem, CardCheckbox, CardDisc, CardTitle, CardUser, CardLabel, CardComments, CardStatusBar }
+import { Card, CardLine, CardLineLeft, CardLineRight, CardLineFull, CardContentText, CardLineItem, CardCheckbox, CardDisc, CardTitle, CardUser }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
 import jQuery from 'jquery';
 import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
@@ -12,12 +12,13 @@ export class ContentCard extends Component {
     intl: intlShape.isRequired,
     element: PropTypes.object.isRequired,
     author: PropTypes.object.isRequired,
+    lastRevisionAuthor: PropTypes.object.isRequired,
     selected: PropTypes.bool.isRequired,
     toggleSelected: PropTypes.func.isRequired
   };
 
   render() {
-    const { element, author, toggleSelected, selected } = this.props;
+    const { element, author, lastRevisionAuthor, toggleSelected, selected } = this.props;
     const containerWidth = jQuery('.dp-list-frame-contents').innerWidth();
     const feedbackMarkWidth = jQuery('.dpw--feedback-card-mark').innerWidth();
     const cardWidth = containerWidth - feedbackMarkWidth - 20;
@@ -33,6 +34,9 @@ export class ContentCard extends Component {
           <CardLineLeft>
             <CardTitle content={element.title}/>
           </CardLineLeft>
+          <CardLineRight>
+            <CardUser user={author}/>
+          </CardLineRight>
         </CardLine>
 
         <CardLine>
@@ -45,9 +49,24 @@ export class ContentCard extends Component {
 
         <CardLine>
           <CardLineLeft>
-            <CardUser user={author}/>
-            <CardDisc/>
+            <CardLineItem>{element.status}</CardLineItem>
+            {
+              element.revisions.length > 0 &&
+              <CardLineItem>
+                <CardDisc/>
+                <CardUser user={lastRevisionAuthor}/>
+                <CardDisc/>
+                <FormattedRelative value={element.date_updated}/>
+                <CardDisc/>
+              </CardLineItem>
+            }
           </CardLineLeft>
+          <CardLineRight>
+            <CardLineItem icon="fa-thumbs-up">{element.vote_stats.up}</CardLineItem>
+            <CardLineItem icon="fa-thumbs-down">{element.vote_stats.down}</CardLineItem>
+            <CardLineItem icon="fa-comments-o">{element.num_comments}</CardLineItem>
+            <CardLineItem icon="fa-eye">{element.view_count}</CardLineItem>
+          </CardLineRight>
         </CardLine>
       </Card>
     );
