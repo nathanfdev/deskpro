@@ -15,7 +15,7 @@ export class AgentAvatar extends React.Component {
 
     return (
       <div className="dpdesignportal-chat-header-avatar" style={style}>
-        <i className="fa fa-user"></i>
+        {!imageUrl && <i className="fa fa-user"></i>}
       </div>
     );
   }
