@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { pollingChat, sendTranscriptData } from '../../Actions/chatActions';
+import { pollingChat, sendTranscriptData, unsetLoaded } from '../../Actions/chatActions';
 import history from '../../../../Services/history';
 import moment from 'moment';
 import {
@@ -47,16 +47,22 @@ export class ChatPollingContainer extends React.Component {
     const { dispatch, chatId, agentId, lastMessageId } = this.props;
     const { isEnded, authorEmail, transcriptChecked, transcriptSending, transcriptSent } = this.props;
 
-    // Handle state changes
     if (!chatId) {
       return;
     }
-    if (agentId && history.state !== '/chat/active') {
-      history.replace('/chat/active');
-    }
 
-    // Can send chat transcript
+    history.listen(location => {
+      if (agentId && location.pathname !== '/chat/active') {
+        // If agent id is defined redirect to active stage
+        history.replace('/chat/active');
+        // Mark chat unloaded to show spinner until get messages in next polling request
+        dispatch(unsetLoaded());
+      }
+    });
+
+    // If can send chat transcript and chat ended
     if (isEnded && authorEmail && transcriptChecked && !transcriptSending && !transcriptSent) {
+      // send transcript data
       dispatch(sendTranscriptData(chatId));
     }
 

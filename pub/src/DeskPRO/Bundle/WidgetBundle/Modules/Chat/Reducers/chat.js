@@ -47,6 +47,7 @@ export default createReducer(initialState, {
     setValue('transcript.sent', false)
   ),
   [actions.setLoaded]: setValue('chatLoaded', true),
+  [actions.unsetLoaded]: setValue('chatLoaded', false),
   [actions.updateChatInfo]: setFullPayload('chatInfo'),
   [actions.reopenChat]: composeHandlers(
     setValue('chatInfo.date_ended', null),

@@ -27,6 +27,7 @@ export const setChatId = createAction(
   }
 );
 export const setLoaded = createAction('WIDGET_CHAT_SET_LOADED');
+export const unsetLoaded = createAction('WIDGET_CHAT_UNSET_LOADED');
 export const updateChatInfo = createAction('WIDGET_CHAT_UPDATE_CHAT_INFO');
 
 // Audio actions

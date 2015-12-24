@@ -49,7 +49,7 @@ export class MessagesList extends React.Component {
       });
 
       if (this.refs.scrollArea) {
-        setTimeout(() => this.refs.scrollArea.scrollBottom(), 0);
+        this.refs.scrollArea.scrollBottom();
       }
 
       // Checking for agent messages
