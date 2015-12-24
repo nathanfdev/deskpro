@@ -3,14 +3,14 @@ import React, { PropTypes } from 'react';
 export class AgentAvatar extends React.Component {
 
   static propTypes = {
-    avatarUrl: PropTypes.string
+    imageUrl: PropTypes.object
   };
 
   render() {
-    const { avatarUrl } = this.props;
+    const { imageUrl } = this.props;
     const style = {};
-    if (avatarUrl) {
-      style.backgroundImage = `url(${avatarUrl})`;
+    if (imageUrl) {
+      style.backgroundImage = `url(${imageUrl})`;
     }
 
     return (

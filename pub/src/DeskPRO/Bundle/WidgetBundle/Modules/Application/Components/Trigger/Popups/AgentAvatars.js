@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { AvatarResolver } from '../../AvatarResolver';
 import { AgentAvatar } from './AgentAvatar';
 import classNames from 'classnames';
 
@@ -18,7 +19,9 @@ export class AgentAvatars extends React.Component {
         <ul className={classNames({'multiple': !primaryAgent})}>
           {displayAgents.map((agent, index) =>
             <li key={index}>
-              <AgentAvatar avatarUrl={agent.get('avatar')} />
+              <AvatarResolver avatar={agent.get('avatar')} size={150}>
+                <AgentAvatar />
+              </AvatarResolver>
             </li>
           )}
         </ul>
