@@ -1,7 +1,5 @@
 import React, { PropTypes } from 'react';
-import { ImageAvatar } from 'DeskPRO/Component/Avatar/ImageAvatar';
-import { Gravatar } from 'DeskPRO/Component/Avatar/Gravatar';
-import { TextAvatar } from 'DeskPRO/Component/Avatar/TextAvatar';
+import { ImageAvatar, Gravatar, TextAvatar } from 'DeskPRO/Component/Avatar/index';
 import { UserPhoto } from './UserPhoto';
 
 export class Avatar extends React.Component {
