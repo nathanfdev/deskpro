@@ -31,12 +31,8 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api;
 
-use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\TextStringTransformer;
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -44,30 +40,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class CreateChatType.
  */
-class CreateChatType extends AbstractType
+class CreateChatType extends AbstractCreateChatType
 {
-    /**
-     * @var EmailAccountManager
-     */
-    private $email_account_manager;
-
-    /**
-     * @var EntityManager
-     */
-    private $em;
-
-    /**
-     * Constructor.
-     *
-     * @param EmailAccountManager $email_account_manager
-     * @param EntityManager       $em
-     */
-    public function __construct(EmailAccountManager $email_account_manager, EntityManager $em)
-    {
-        $this->email_account_manager = $email_account_manager;
-        $this->em                    = $em;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -97,7 +71,7 @@ class CreateChatType extends AbstractType
 
         $builder->get('name')->addModelTransformer(new TextStringTransformer());
         $builder->get('email')->addModelTransformer(new TextStringTransformer());
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetPerson']);
     }
 
     /**
@@ -109,30 +83,5 @@ class CreateChatType extends AbstractType
             'csrf_protection'               => false,
             'csrf_double_submit_protection' => false,
         ]);
-    }
-
-    /**
-     * Check for existing person and assign to chat.
-     *
-     * @param FormEvent $event
-     */
-    public function onPreSubmit(FormEvent $event)
-    {
-        $form  = $event->getForm();
-        $data  = $event->getData();
-        $email = !empty($data['email']) ? $data['email'] : null;
-
-        /** @var \Application\DeskPRO\EntityRepository\Person $repository */
-        $repository = $this->em->getRepository('DeskPRO:Person');
-        $person     = $repository->findOneByEmail($email);
-
-        if (!$this->email_account_manager->findAccountForEmailAddress($email) && $person) {
-            $form->add('person', 'entity', [
-                'class' => 'DeskPRO:Person',
-            ]);
-            $event->setData(array_merge($event->getData(), [
-                'person' => $person->getId(),
-            ]));
-        }
     }
 }

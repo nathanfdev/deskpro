@@ -32,15 +32,15 @@
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api;
 
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\TextStringTransformer;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class ChatTranscriptInfoType.
  */
-class ChatTranscriptInfoType extends AbstractType
+class ChatTranscriptInfoType extends AbstractCreateChatType
 {
     /**
      * {@inheritdoc}
@@ -71,6 +71,7 @@ class ChatTranscriptInfoType extends AbstractType
 
         $builder->get('name')->addModelTransformer(new TextStringTransformer());
         $builder->get('email')->addModelTransformer(new TextStringTransformer());
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetPerson']);
     }
 
     /**
