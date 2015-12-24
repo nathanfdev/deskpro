@@ -48,9 +48,7 @@ export class MessagesList extends React.Component {
         lastMessageId: lastMessageId
       });
 
-      if (this.refs.scrollArea) {
-        this.refs.scrollArea.scrollBottom();
-      }
+      setTimeout(() => this.refs.scrollArea && this.refs.scrollArea.scrollBottom(), 0);
 
       // Checking for agent messages
       const newAgentMessage = messages.filter(message => {
