@@ -90,7 +90,7 @@ export class Item extends React.Component {
       color: '#DD00AA',
       urlPattern: null,
       gravatar: null,
-      fallbackText: 'E'
+      text: 'E'
     };
 
     return <Avatar {...props} />;
