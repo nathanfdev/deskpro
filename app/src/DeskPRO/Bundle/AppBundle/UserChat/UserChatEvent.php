@@ -54,6 +54,7 @@ class UserChatEvent extends Event
     const END_BY         = 'user_chat.message_ended-by';
     const ENDED          = 'user_chat.message_ended';
     const SEND_MESSAGE   = 'user_chat.send_message';
+    const ACK_MESSAGES   = 'user.chat.ack_messages';
 
     /**
      * @var ChatConversation
@@ -63,7 +64,7 @@ class UserChatEvent extends Event
     /**
      * @var mixed
      */
-    protected $params;
+    protected $data;
 
     /**
      * @var array
@@ -74,13 +75,13 @@ class UserChatEvent extends Event
      * Constructor.
      *
      * @param ChatConversation $conversation
-     * @param mixed            $params
+     * @param mixed            $data
      * @param array            $metadata
      */
-    public function __construct(ChatConversation $conversation, $params = [], array $metadata = [])
+    public function __construct(ChatConversation $conversation, $data = [], array $metadata = [])
     {
         $this->conversation = $conversation;
-        $this->params       = $params;
+        $this->data         = $data;
         $this->metadata     = $metadata;
     }
 
@@ -95,9 +96,9 @@ class UserChatEvent extends Event
     /**
      * @return mixed
      */
-    public function getParams()
+    public function getData()
     {
-        return $this->params;
+        return $this->data;
     }
 
     /**

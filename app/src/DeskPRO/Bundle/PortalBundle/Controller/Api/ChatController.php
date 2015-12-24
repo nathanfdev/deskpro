@@ -202,6 +202,42 @@ class ChatController extends AbstractApiController
     }
 
     /**
+     * @Route("/portal/api/chats/{id}/ack_messages", name="portal_api_chat_ack_messages")
+     * @Method({"POST"})
+     *
+     * @param ChatConversation $conversation
+     * @param Request          $request
+     *
+     * @return View
+     */
+    public function ackMessagesAction(ChatConversation $conversation, Request $request)
+    {
+        $message_ids = $request->request->get('message_ids');
+
+        if (!empty($message_ids)) {
+            /** @var EntityManager $em */
+            $em = $this->getDoctrine()->getManager();
+            $qb = $em->createQueryBuilder();
+            $qb
+                ->update('DeskPRO:ChatMessage', 'cm')
+                ->set('cm.date_received', new \DateTime())
+                ->where(
+                    'cm.id IN(:message_ids)',
+                    'cm.conversation_id = :conversation_id'
+                )
+                ->setParameters([
+                    'message_ids'     => $message_ids,
+                    'conversation_id' => $conversation->getId(),
+                ])
+            ;
+
+            $this->dispatch(UserChatEvent::ACK_MESSAGES, new UserChatEvent($conversation, $message_ids));
+        }
+
+        return View::create();
+    }
+
+    /**
      * @Route("/portal/api/chats/{id}/transcript_info", name="portal_api_chat_transcript_info")
      * @Method({"POST"})
      *
