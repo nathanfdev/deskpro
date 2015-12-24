@@ -46,11 +46,7 @@ export class Avatar extends React.Component {
   }
 
   renderImage() {
-    return (
-      <span className="user-photo" style={this.getStyle('url(' + this.getImg() + ')')}>
-        <span className="text" style={this.getTextStyle()}>&nbsp;</span>
-      </span>
-    );
+    return <span className="user-photo" style={this.getStyle('url(' + this.getImg() + ')')} />;
   }
 
   renderGravatar() {
@@ -61,7 +57,7 @@ export class Avatar extends React.Component {
     gravatarStyle.position = 'absolute';
     gravatarStyle.top = '0';
     gravatarStyle.left = '0';
-    const gravatarContent = (<span className="user-photo gravatar" style={gravatarStyle} />);
+    const gravatarContent = <span className="user-photo gravatar" style={gravatarStyle} />;
 
     return this.renderFallbackText(gravatarContent);
   }
