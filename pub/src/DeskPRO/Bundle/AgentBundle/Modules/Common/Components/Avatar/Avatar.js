@@ -1,4 +1,6 @@
 import React, { PropTypes } from 'react';
+import { ImageAvatar } from 'DeskPRO/Component/Avatar/ImageAvatar';
+import { UserPhoto } from './UserPhoto';
 
 export class Avatar extends React.Component {
 
@@ -10,14 +12,6 @@ export class Avatar extends React.Component {
     color: PropTypes.string,
     fallbackText: PropTypes.string.isRequired
   };
-
-  getImg() {
-    const { url, size, urlPattern } = this.props;
-
-    return size && urlPattern
-      ? urlPattern.replace(/\{\{IMG_SIZE}}/, size)
-      : url;
-  }
 
   getStyle(backgroundImage) {
     const { size } = this.props;
@@ -43,10 +37,6 @@ export class Avatar extends React.Component {
       display: 'inline-block',
       textAlign: 'center'
     };
-  }
-
-  renderImage() {
-    return <span className="user-photo" style={this.getStyle('url(' + this.getImg() + ')')} />;
   }
 
   renderGravatar() {
@@ -82,7 +72,11 @@ export class Avatar extends React.Component {
     const { url, urlPattern, gravatar } = this.props;
 
     if (url || urlPattern) {
-      return this.renderImage();
+      return (
+        <ImageAvatar {...this.props}>
+          <UserPhoto />
+        </ImageAvatar>
+      );
     }
     if (gravatar) {
       return this.renderGravatar();

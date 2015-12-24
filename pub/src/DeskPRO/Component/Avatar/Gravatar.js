@@ -22,7 +22,7 @@ export class Gravatar extends React.Component {
     return React.cloneElement(children, {
       ...childProps,
 
-      url: this.getUrl(),
+      imageUrl: this.getUrl(),
       width: size,
       height: size
     });

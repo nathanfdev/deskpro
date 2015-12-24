@@ -16,7 +16,6 @@ export class TextAvatar extends React.Component {
       ...childProps,
 
       text,
-      lineHeight: size,
       width: size,
       height: size
     });
