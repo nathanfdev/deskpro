@@ -128,7 +128,7 @@ export const pollingChat = createAction(
           // Filter not acked messages and send ack request
           const ackMessages = filteredMessages.filter(message => message.author_type === 'agent' && !message.date_received);
           if (ackMessages.length) {
-            dispatch(ackChatMessages(chatId, ackMessages.map(message => message.id)));
+            dispatch(ackChatMessages(chatId, {message_ids: ackMessages.map(message => message.id)}));
           }
         }
         if (!loaded) {

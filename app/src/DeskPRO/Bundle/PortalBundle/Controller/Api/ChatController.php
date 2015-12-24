@@ -212,7 +212,8 @@ class ChatController extends AbstractApiController
      */
     public function ackMessagesAction(ChatConversation $conversation, Request $request)
     {
-        $message_ids = $request->request->get('message_ids');
+        $message_ids  = $request->request->get('message_ids');
+        $current_date = new \DateTime();
 
         if (!empty($message_ids)) {
             /** @var EntityManager $em */
@@ -220,17 +221,19 @@ class ChatController extends AbstractApiController
             $qb = $em->createQueryBuilder();
             $qb
                 ->update('DeskPRO:ChatMessage', 'cm')
-                ->set('cm.date_received', new \DateTime())
+                ->set('cm.date_received', ':date_received')
                 ->where(
                     'cm.id IN(:message_ids)',
-                    'cm.conversation_id = :conversation_id'
+                    'cm.conversation = :conversation_id'
                 )
                 ->setParameters([
+                    'date_received'   => $current_date->format('c'),
                     'message_ids'     => $message_ids,
                     'conversation_id' => $conversation->getId(),
                 ])
             ;
 
+            $qb->getQuery()->execute();
             $this->dispatch(UserChatEvent::ACK_MESSAGES, new UserChatEvent($conversation, $message_ids));
         }
 
