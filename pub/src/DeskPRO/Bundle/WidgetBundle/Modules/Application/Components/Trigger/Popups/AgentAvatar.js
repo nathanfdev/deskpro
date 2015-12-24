@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 export class AgentAvatar extends React.Component {
 
   static propTypes = {
-    imageUrl: PropTypes.object,
+    imageUrl: PropTypes.string,
     disconnected: PropTypes.bool
   };
 

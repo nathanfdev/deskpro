@@ -6,7 +6,7 @@ export class OnlineAgent extends React.Component {
 
   static propTypes = {
     agentName: PropTypes.string,
-    agentAvatar: PropTypes.string,
+    agentAvatar: PropTypes.object,
     departmentName: PropTypes.string
   };
 

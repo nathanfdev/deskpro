@@ -3,19 +3,19 @@ import React, { PropTypes } from 'react';
 export class MessageAvatar extends React.Component {
 
   static propTypes = {
-    url: PropTypes.string
+    imageUrl: PropTypes.string
   };
 
   render() {
-    const { url } = this.props;
+    const { imageUrl } = this.props;
     const style = {};
-    if (url) {
-      style.backgroundImage = `url(${url})`;
+    if (imageUrl) {
+      style.backgroundImage = `url(${imageUrl})`;
     }
 
     return (
       <div className="dpdesignportal-message-avatar" style={style}>
-        <i className="fa fa-user"></i>
+        {!imageUrl && <i className="fa fa-user" />}
       </div>
     );
   }

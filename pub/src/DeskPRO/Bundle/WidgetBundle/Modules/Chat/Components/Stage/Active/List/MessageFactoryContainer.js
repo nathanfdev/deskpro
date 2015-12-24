@@ -7,8 +7,9 @@ import { MessageBody } from './Message/MessageBody';
 import { MessageAttachment } from './Message/Attachment/MessageAttachment';
 import { MessageContent } from './Message/MessageContent';
 import { MessageFooter } from './Message/MessageFooter';
-import Immutable from 'immutable';
+import { AvatarResolver } from '../../../../../Application/Components/AvatarResolver';
 import { phraseTranslationsSelector } from '../../../../Selectors/chat';
+import Immutable from 'immutable';
 
 @connect(state => ({
   phraseTranslations: phraseTranslationsSelector(state)
@@ -45,7 +46,9 @@ export class MessageFactoryContainer extends React.Component {
 
     return (
       <Message type={message.get('author_type')}>
-        <MessageAvatar url={message.get('author_avatar')} />
+        <AvatarResolver avatar={message.get('author_avatar')} size={20}>
+          <MessageAvatar />
+        </AvatarResolver>
         <MessageBody>
           {metadata.get('type') === 'file'
             ? <MessageAttachment {...this.props} />

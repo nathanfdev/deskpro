@@ -1,12 +1,13 @@
 import React, { PropTypes } from 'react';
 import { Message } from '../Message/Message';
 import { MessageAvatar } from '../Message/MessageAvatar';
+import { AvatarResolver } from '../../../../../../Application/Components/AvatarResolver';
 
 export class TypingEvent extends React.Component {
 
   static propTypes = {
     agentName: PropTypes.string,
-    agentAvatar: PropTypes.string
+    agentAvatar: PropTypes.object
   };
 
   render() {
@@ -14,7 +15,9 @@ export class TypingEvent extends React.Component {
 
     return (
       <Message type="agent" typing>
-        <MessageAvatar url={agentAvatar} />
+        <AvatarResolver avatar={agentAvatar} size={20}>
+          <MessageAvatar />
+        </AvatarResolver>
         <div className="dpdesignportal-message-content">
           <span className="dpdesignportal-user-typing">{agentName} is typing a message
             <span className="dot1">.</span>
