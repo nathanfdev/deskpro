@@ -76,6 +76,11 @@ export const createChat = createAction(
     })
 );
 
+export const ackChatMessages = createAction(
+  'WIDGET_CHAT_ACK_MESSAGES',
+  (chatId, params) => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/ack_messages`, params, {...ajaxOptions}) : null
+);
+
 export const pollingChat = createAction(
   'WIDGET_CHAT_POLLING',
   (chatId, params) => (dispatch, getState) => {
@@ -110,13 +115,21 @@ export const pollingChat = createAction(
         if (newMessages.length) {
           const existMessageIds = messageIdsSelector(state);
           const filteredMessages = newMessages
-            // skip user's messages because they are added optimistically,
+            // Skip user's messages because they are added optimistically,
             // but do load user's messages on initial polling request
             .filter(message => loaded || (!loaded && message.author_type !== 'user'))
-            // check for unique ids
+            // Check for unique ids
             .filter(message => existMessageIds.indexOf(message.id) === -1);
 
-          dispatch(addNewMessages(filteredMessages));
+          if (filteredMessages.length) {
+            dispatch(addNewMessages(filteredMessages));
+          }
+
+          // Filter not acked messages and send ack request
+          const ackMessages = filteredMessages.filter(message => message.author_type === 'agent' && !message.date_received);
+          if (ackMessages.length) {
+            dispatch(ackChatMessages(chatId, ackMessages.map(message => message.id)));
+          }
         }
         if (!loaded) {
           dispatch(setLoaded());
@@ -139,7 +152,7 @@ export const sendChatMessage = createAction(
       charset: 'alphabetic'
     });
 
-    // add optimistic message
+    // Add optimistic message
     dispatch(addNewMessages({
       tmp_id: tmpId,
       content: params.message,
@@ -149,7 +162,7 @@ export const sendChatMessage = createAction(
       date_created: moment().format()
     }));
 
-    // add optimistic attachments
+    // Add optimistic attachments
     const attachments = attachmentsSelector(state);
     params.attachments.forEach(blobAuthId => {
       const attachment = attachments.filter(blob => blob.get('blob_auth_id') === blobAuthId).first();
@@ -168,7 +181,7 @@ export const sendChatMessage = createAction(
       }));
     });
 
-    // reset attachments after send
+    // Reset attachments after send
     dispatch(resetAttachments());
 
     const promise = DpApi.sendPost(`DP_API/chats/${chatId}/messages`, params, {...ajaxOptions});
