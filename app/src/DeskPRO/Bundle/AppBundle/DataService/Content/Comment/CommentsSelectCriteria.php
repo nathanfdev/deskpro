@@ -82,7 +82,9 @@ class CommentsSelectCriteria extends Criteria
                 'download',
                 'status',
                 'period_created',
-                'is_reviewed'
+                'is_reviewed',
+                'sort',
+                'order',
             ]
         );
 
@@ -98,10 +100,15 @@ class CommentsSelectCriteria extends Criteria
                 Comment::STATUS_VISIBLE,
                 Comment::STATUS_DELETED,
                 Comment::STATUS_AGENT,
-                'validating'
+                'validating',
             ]
         );
         $resolver->setAllowedValues('period_created', DatePeriods::$names);
         $resolver->setAllowedValues('is_reviewed', ['0', '1']);
+        $resolver->setAllowedValues(
+            'sort',
+            ['date_created', 'person']
+        );
+        $resolver->setAllowedValues('order', ['asc', 'desc']);
     }
 }

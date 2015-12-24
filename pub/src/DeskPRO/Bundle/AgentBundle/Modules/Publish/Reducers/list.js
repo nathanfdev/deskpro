@@ -1,5 +1,6 @@
 import { createReducer } from 'Ampliflux';
-import { async, setFullPayload, togglePayloadInCollection,handleMassAction } from 'Ampliflux/reducers/handlers';
+import { async, setFullPayload, togglePayloadInCollection, setValue, handleMassAction }
+  from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/publishListActions';
 import * as massActions from '../Actions/publishMassActions.js';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
@@ -30,10 +31,14 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
-  [actions.load]: async({
-    success: (state, payload) =>
-      state.set(payload.content, payload.data.data).set('pagination', payload.data.meta.pagination)
-  }),
+  [actions.load]:
+    async({
+      success: (state, payload) =>
+        state.set(payload.content, payload.data.data).set('pagination', payload.data.meta.pagination),
+      start: setValue('async.done', false),
+      done: setValue('async.done', true)
+    }
+  ),
   [actions.setParams]: setFullPayload('currentListParams'),
   [massActions.toggleMassAction]: handleMassAction('elements', 'selected'),
   [massActions.toggleSelectedAction]: togglePayloadInCollection('selected')

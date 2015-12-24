@@ -9,20 +9,29 @@ export function load(params) {
   const {content} = params;
   const newParams = { ...params };
   delete newParams.content;
-  const revision = () => {
+  const include = () => {
     switch (content) {
       case 'articles':
-        return 'article';
+        return 'article_revision';
         break;
       case 'downloads':
+        return 'download_revision';
+        break;
+      case 'news':
+        return 'news_revision';
+      case 'article_comments':
+        return 'article';
+        break;
+      case 'download_comments':
         return 'download';
         break;
-      default:
+      case 'news_comments':
         return 'news';
+      default:
     }
   };
-  console.log('DP_API/' + validateTarget(content) + '?include=person,' + revision() + '_revision&' + compileParams(newParams));
-  return DpApi.sendGet('DP_API/' + validateTarget(content) + '?include=person,' + revision() + '_revision&' + compileParams(newParams));
+  console.log('DP_API/' + validateTarget(content) + '?include=person,' + include() + '&' + compileParams(newParams));
+  return DpApi.sendGet('DP_API/' + validateTarget(content) + '?include=person,' + include() + '&' + compileParams(newParams));
 }
 
 /**
@@ -61,7 +70,7 @@ export function loadDraftsCount(target, author) {
  * @return {*}
  */
 export function validateTarget(target) {
-  if (['articles', 'news', 'downloads'].indexOf(target) === -1) {
+  if (['articles', 'news', 'downloads', 'article_comments', 'news_comments', 'download_comments'].indexOf(target) === -1) {
     throw 'Unknown content type ' + target;
   }
 

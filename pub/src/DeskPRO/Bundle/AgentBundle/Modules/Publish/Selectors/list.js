@@ -1,7 +1,5 @@
 import { createSelector } from 'reselect';
 import { hashStateSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
-import { createPeopleRequestSelectors }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Selectors/peopleSelectors';
 
 const stateSelector = state => state.Publish.list;
 const navStateSelector = state => state.Publish.nav;
@@ -26,17 +24,25 @@ export const downloadsSelector = createSelector(
     state => state.get('downloads')
 );
 
+export const articlesCommentsSelector = createSelector(
+  stateSelector,
+    state => state.get('article_comments')
+);
+
+export const newsCommentsSelector = createSelector(
+  stateSelector,
+    state => state.get('news_comments')
+);
+
+export const downloadsCommentsSelector = createSelector(
+  stateSelector,
+    state => state.get('download_comments')
+);
+
 export const currentListParamsSelector = createSelector(
   stateSelector,
     state => state.get('currentListParams')
 );
-
-
-export const peopleSelector = createSelector(
-  createPeopleRequestSelectors('publish').recordsSel,
-    people => people
-);
-
 
 export const currentListSortSelector = createSelector(
   currentListParamsSelector,
@@ -76,19 +82,21 @@ export const listFiltersSelector = createSelector(
       label: 'Status', type: 'select', param: 'status', quickFilter: true,
       options: statusOptions
     });
-
-    // Category options
-    if ((!currentListParams.get('navItem') || !currentListParams.get('navItem').get('category')) && navState.get('categories')) {
-      const categoryOptions = navState.get('categories').get(currentListParams.get('content')).toJS().map(cat => ({
-        label: cat.title,
-        value: cat.id
-      }));
-      filterSelector.push({
-        label: 'Category', type: 'select', param: 'category', quickFilter: true,
-        options: categoryOptions
-      });
+    const content = currentListParams.get('content');
+    if (['articles', 'news', 'downloads'].indexOf(content) > -1) { // Temporary, until full understanding of comments functionality
+      // Category options
+      if ((!currentListParams.get('navItem') || !currentListParams.get('navItem').get('category')) && navState.get('categories')) {
+        const categoryOptions = navState.get('categories').get(content).toJS()
+          .map(cat => ({
+            label: cat.title,
+            value: cat.id
+          }));
+        filterSelector.push({
+          label: 'Category', type: 'select', param: 'category', quickFilter: true,
+          options: categoryOptions
+        });
+      }
     }
-
     return filterSelector;
   }
 );

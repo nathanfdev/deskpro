@@ -44,7 +44,7 @@ class ArticleCommentTransformer extends AbstractDataSerializerTransformer
      */
     public function getAutomaticProperties(DataTransformerRequest $request)
     {
-        return ['id', 'person', 'content', 'status', 'is_reviewed'];
+        return ['id', 'person', 'content', 'status', 'is_reviewed', 'date_created', 'article'];
     }
 
     /**

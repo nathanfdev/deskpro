@@ -66,8 +66,11 @@ export class NavContainer extends Component {
         dispatch(listActions.loadPendingArticles(todo.get('articles').get('mine')));
       },
       commentsToValidate: (group) => {
-        dispatch(listActions.loadCommentsToValidate('period_created', group));
+        dispatch(listActions.applyParams({content: group, status: 'validating'}));
       },
+      /* commentsToValidate: (group) => {
+        dispatch(listActions.loadCommentsToValidate('period_created', group));
+      },*/
       allCommentsToValidate: () => {
         dispatch(listActions.loadCommentsToValidate());
       },

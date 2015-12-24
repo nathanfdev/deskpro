@@ -1,8 +1,9 @@
 import React, {Component, PropTypes} from 'react';
 import classNames from 'classnames';
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
-import { SectionsPane, Section, SectionHeader, NestedList, ListItem }
+import { SectionsPane, Section, SectionHeader, ListItem }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { ListItemContainer } from '../ListItemContainer';
 
 export class ToDoTab extends Component {
 
@@ -18,6 +19,8 @@ export class ToDoTab extends Component {
     const mine = todo.get('articles').get('mine');
     const slaButtonAllClasses = classNames('sla-button', { 'selected': !mine });
     const slaButtonMineClasses = classNames('sla-button', { 'selected': mine });
+    const commentsToValidate = todo.get('comments').get('validate');
+    const commentsToReview = todo.get('comments').get('review');
 
     return (
       <LoadIndicator loaded={loaded}>
@@ -45,18 +48,48 @@ export class ToDoTab extends Component {
             </ul>
           </Section>
           <Section>
-            <SectionHeader>Comments</SectionHeader>
-
+            <SectionHeader>Comments to validate</SectionHeader>
             <ul>
-              <ListItem label="Comments to validate"
-                        count={todo.get('comments').get('validate').get('count')}
-                        onClick={onClick.allCommentsToValidate}>
-                <NestedList depth={2}
-                            items={todo.get('comments').get('validate').get('nested').toJS()}
-                            onClick={onClick.commentsToValidate}/>
-              </ListItem>
-              <ListItem label="Comments to review" count={todo.get('comments').get('review')}
-                        onClick={onClick.commentsToReview}/>
+              <ListItemContainer label="ToValidate"
+                                 group="article_comments"
+                                 listOptions={{content: 'article_comments', navItem: {status: 'validating'}}}>
+                <ListItem label="Articles"
+                          count={commentsToValidate.get('articles')}/>
+              </ListItemContainer>
+              <ListItemContainer label="ToValidate"
+                                 group="news_comments"
+                                 listOptions={{content: 'news_comments', navItem: {status: 'validating'}}}>
+                <ListItem label="News"
+                          count={commentsToValidate.get('news')}/>
+              </ListItemContainer>
+              <ListItemContainer label="ToValidate"
+                                 group="download_comments"
+                                 listOptions={{content: 'download_comments', navItem: {status: 'validating'}}}>
+                <ListItem label="Downloads"
+                          count={commentsToValidate.get('downloads')}/>
+              </ListItemContainer>
+            </ul>
+          </Section>
+          <Section>
+            <SectionHeader>Comments to review</SectionHeader>
+            <ul>
+              <ListItemContainer label="ToReview"
+                                 group="article_comments"
+                                 listOptions={{content: 'article_comments', navItem: {is_reviewed: 0}}}>
+                <ListItem label="Articles" count={commentsToReview.get('articles')}/>
+              </ListItemContainer>
+              <ListItemContainer label="ToReview"
+                                 group="news_comments"
+                                 listOptions={{content: 'news_comments', navItem: {is_reviewed: 0}}}>
+                <ListItem label="News" count={commentsToReview.get('news')}
+                          onClick={onClick.commentsToReview}/>
+              </ListItemContainer>
+              <ListItemContainer label="ToReview"
+                                 group="download_comments"
+                                 listOptions={{content: 'download_comments', navItem: {is_reviewed: 0}}}>
+                <ListItem label="Downloads" count={commentsToReview.get('downloads')}
+                          onClick={onClick.commentsToReview}/>
+              </ListItemContainer>
             </ul>
           </Section>
           <Section>
