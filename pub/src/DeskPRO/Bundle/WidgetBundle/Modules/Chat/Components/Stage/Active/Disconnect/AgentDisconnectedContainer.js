@@ -23,7 +23,7 @@ export class AgentDisconnectedContainer extends React.Component {
   static propTypes = {
     agentId: PropTypes.number,
     agentName: PropTypes.string,
-    agentAvatar: PropTypes.string,
+    agentAvatar: PropTypes.object,
     lastMessageId: PropTypes.number,
     messages: PropTypes.object
   };

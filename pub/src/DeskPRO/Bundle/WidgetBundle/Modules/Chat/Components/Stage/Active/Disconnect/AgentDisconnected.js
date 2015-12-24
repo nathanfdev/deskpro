@@ -1,31 +1,27 @@
 import React, { PropTypes } from 'react';
+import { AvatarResolver } from '../../../../../Application/Components/AvatarResolver';
+import { AgentAvatar } from '../../../../../Application/Components/Trigger/Popups/AgentAvatar';
 
 export class AgentDisconnected extends React.Component {
 
   static propTypes = {
     children: PropTypes.any,
-    agentAvatar: PropTypes.string
+    agentAvatar: PropTypes.object
   };
 
   render() {
     const { agentAvatar, children } = this.props;
-    const style = {};
-
-    if (agentAvatar) {
-      style.backgroundImage = `url(${agentAvatar})`;
-    }
 
     return (
       <div className="dpdesignportal-chat-header">
         <div className="dpdesignportal-chat-header-avatar-container">
           <ul>
             <li>
-              <div className="dpdesignportal-chat-header-avatar" style={style}>
-                <i className="fa fa-user"></i>
-                <span className="dpdesignportal-chat-header-avatar-disconnected">
-                  <i className="fa fa-plug"></i>
-                </span>
-              </div>
+              {agentAvatar &&
+                <AvatarResolver avatar={agentAvatar} size={150}>
+                  <AgentAvatar disconnected />
+                </AvatarResolver>
+              }
             </li>
           </ul>
         </div>
