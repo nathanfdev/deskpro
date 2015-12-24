@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Cropper } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Cropper';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
-import { Avatar as AvatarIcon } from 'DeskPRO/Component/Avatar/Avatar';
+import { Avatar as AvatarIcon } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/Avatar';
 import Dropzone from 'dropzone';
 import DropzoneComponent from 'react-dropzone-component';
 import jQuery from 'jquery';

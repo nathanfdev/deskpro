@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { CheckboxList } from './CheckboxList';
-import { PersonAvatar } from 'DeskPRO/Component/Avatar/index';
+import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/index';
 
 export class AgentsList extends React.Component {
 
