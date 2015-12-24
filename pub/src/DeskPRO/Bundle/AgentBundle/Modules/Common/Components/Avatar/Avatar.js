@@ -48,17 +48,16 @@ export class Avatar extends React.Component {
     };
   }
 
-  renderImage(content = '') {
+  renderImage() {
     return (
       <span className="user-photo" style={this.getStyle('url(' + this.getImg() + ')')}>
         <span className="text" style={this.getTextStyle()}>&nbsp;</span>
-        {content}
       </span>
     );
   }
 
   renderGravatar() {
-    const { gravatar, size, urlPattern } = this.props;
+    const { gravatar, size } = this.props;
     const delimiter = gravatar.indexOf('?') === -1 ? '?' : '&';
     const gravatarImg = gravatar + delimiter + 'default=blank' + (size ? '&s=' + size : '');
     const gravatarStyle = this.getStyle('url(' + gravatarImg + ')');
@@ -67,7 +66,7 @@ export class Avatar extends React.Component {
     gravatarStyle.left = '0';
     const gravatarContent = (<span className="user-photo gravatar" style={gravatarStyle} />);
 
-    return urlPattern ? this.renderImage(gravatarContent) : this.renderFallbackText(gravatarContent);
+    return this.renderFallbackText(gravatarContent);
   }
 
   renderFallbackText(content = '') {
@@ -87,9 +86,9 @@ export class Avatar extends React.Component {
   }
 
   render() {
-    const { urlPattern, gravatar } = this.props;
+    const { url, urlPattern, gravatar } = this.props;
 
-    if (urlPattern) {
+    if (url || urlPattern) {
       return this.renderImage();
     }
     if (gravatar) {
