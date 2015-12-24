@@ -73,7 +73,11 @@ export class ChatBeginContainer extends React.Component {
       submit: true
     });
 
-    const promise = this.props.dispatch(createChat(this.state));
+    const promise = this.props.dispatch(createChat({
+      name: this.state.name,
+      email: this.state.email
+    }));
+
     promise.then(
       () => {
         history.replace('/chat/waiting');

@@ -349,6 +349,7 @@ services:
 
   form.api.chat_create:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\CreateChatType
+    arguments: [@email.email_account_manager, @doctrine.orm.default_entity_manager]
     tags:
       - { name: form.type, alias: api_chat_create }
 
