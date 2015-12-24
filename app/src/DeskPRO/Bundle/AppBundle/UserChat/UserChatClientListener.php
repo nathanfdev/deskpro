@@ -159,9 +159,11 @@ class UserChatClientListener implements EventSubscriberInterface
      */
     public function onAckMessages(UserChatEvent $event)
     {
-        $message_ids = $event->getData();
+        $conversation = $event->getConversation();
+        $message_ids  = $event->getData();
+        $channel      = $conversation->getChannelId('ack_messages');
 
-        $this->send($event, ClientMessageEvent::CHANNEL_CHAT_ACK_MESSAGES, ['message_ids' => $message_ids]);
+        $this->send($event, $channel, ['message_ids' => $message_ids]);
     }
 
     /**

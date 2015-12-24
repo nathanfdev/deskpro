@@ -43,7 +43,6 @@ class ClientMessageEvent extends Event
     const CHANNEL_CHAT_REASSIGNED        = 'chat.reassigned';
     const CHANNEL_CHAT_UNASSIGNED        = 'chat.unassigned';
     const CHANNEL_CHAT_ENDED             = 'chat.ended';
-    const CHANNEL_CHAT_ACK_MESSAGES      = 'ack_messages';
 
     const SEND = 'client_message.send';
 
