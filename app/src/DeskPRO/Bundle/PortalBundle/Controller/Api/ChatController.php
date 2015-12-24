@@ -140,6 +140,7 @@ class ChatController extends AbstractApiController
             $chat_message = new ChatMessage();
             $chat_message
                 ->setOrigin('user')
+                ->setAuthor($conversation->getPerson())
                 ->setContent($content)
                 ->setIsHtml(true)
                 ->setMetadata([
@@ -175,6 +176,8 @@ class ChatController extends AbstractApiController
 
             $chat_message = new ChatMessage();
             $chat_message
+                ->setOrigin('user')
+                ->setAuthor($conversation->getPerson())
                 ->setContent($content)
                 ->setIsHtml(true)
                 ->setMetadata([

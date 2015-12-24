@@ -7,6 +7,7 @@ import moment from 'moment';
 import {
   chatInfoSelector,
   isEndedSelector,
+  authorAvatarSelector,
   messageIdsSelector,
   attachmentsSelector,
   transcriptCheckedSelector
@@ -128,6 +129,8 @@ export const sendChatMessage = createAction(
       return null;
     }
 
+    const state = getState();
+    const authorAvatar = authorAvatarSelector(state);
     const tmpId = generate({
       length: 20,
       charset: 'alphabetic'
@@ -138,20 +141,20 @@ export const sendChatMessage = createAction(
       tmp_id: tmpId,
       content: params.message,
       is_html: true,
+      author_avatar: authorAvatar,
       author_type: 'user',
       date_created: moment().format()
     }));
 
     // add optimistic attachments
-    const state = getState();
     const attachments = attachmentsSelector(state);
-
     params.attachments.forEach(blobAuthId => {
       const attachment = attachments.filter(blob => blob.get('blob_auth_id') === blobAuthId).first();
       dispatch(addNewMessages({
         tmp_id: tmpId,
         content: null,
         is_html: true,
+        author_avatar: authorAvatar,
         author_type: 'user',
         date_created: moment().format(),
         metadata: {

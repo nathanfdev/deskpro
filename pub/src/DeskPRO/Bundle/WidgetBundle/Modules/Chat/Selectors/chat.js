@@ -86,6 +86,11 @@ export const authorNameSelector = createSelector(
   chatInfo => chatInfo.get('author_name')
 );
 
+export const authorAvatarSelector = createSelector(
+  chatInfoSelector,
+  chatInfo => chatInfo.get('author_avatar')
+);
+
 export const dateEndedSelector = createSelector(
   chatInfoSelector,
   chatInfo => chatInfo.get('date_ended')

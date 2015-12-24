@@ -163,6 +163,8 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @param Person $author
+     *
+     * @return $this
      */
     public function setAuthor(Person $author = null)
     {
@@ -173,6 +175,8 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
                 $this['person_name'] = $author->getDisplayNameUser();
             }
         }
+
+        return $this;
     }
 
     public function getAuthorId()
