@@ -7,10 +7,22 @@ import { compileParams } from '../../ApiHelpers';
  */
 export function load(params) {
   const {content} = params;
-  const newParams = {...params};
+  const newParams = { ...params };
   delete newParams.content;
-  console.log('DP_API/' + validateTarget(content) + '?include=person&' + compileParams(newParams));
-  return DpApi.sendGet('DP_API/' + validateTarget(content) + '?include=person&' + compileParams(newParams));
+  const revision = () => {
+    switch (content) {
+      case 'articles':
+        return 'article';
+        break;
+      case 'downloads':
+        return 'download';
+        break;
+      default:
+        return 'news';
+    }
+  };
+  console.log('DP_API/' + validateTarget(content) + '?include=person,' + revision() + '_revision&' + compileParams(newParams));
+  return DpApi.sendGet('DP_API/' + validateTarget(content) + '?include=person,' + revision() + '_revision&' + compileParams(newParams));
 }
 
 /**

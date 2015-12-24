@@ -35,9 +35,9 @@ namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 
 /**
- * Class ArticleTransformer.
+ * Class NewsRevisionTransformer.
  */
-class ArticleTransformer extends AbstractDataSerializerTransformer
+class NewsRevisionTransformer extends AbstractDataSerializerTransformer
 {
     /**
      * {@inheritdoc}
@@ -46,18 +46,9 @@ class ArticleTransformer extends AbstractDataSerializerTransformer
     {
         return [
             'id',
-            'slug',
-            'title',
-            'content',
-            'date_created',
-            'date_updated',
+            'news_id',
             'person',
-            'status',
-            'view_count',
-            'total_rating',
-            'num_ratings',
-            'num_comments',
-            'revisions',
+            'date_created',
         ];
     }
 
@@ -66,11 +57,6 @@ class ArticleTransformer extends AbstractDataSerializerTransformer
      */
     public function getCustomProperties(DataTransformerRequest $request)
     {
-        /** @var \Application\DeskPRO\Entity\Article $article */
-        $article    = $request->getDataToBeTransformed();
-        $authors    = $article->getAuthors();
-        $lastAuthor = end($authors);
-
-        return ['last_author_id' => $lastAuthor->getId(), 'vote_stats' => $article->getVoteStats()];
+        return [];
     }
 }

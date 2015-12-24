@@ -41,7 +41,8 @@ export class CardsContainer extends Component {
                          element={element}
                          toggleSelected={toggleSelected}
                          selected={selected.includes(element.id)}
-                         author={people.get(element.person)}/>
+                         author={people.get(element.person)}
+                         lastRevisionAuthor={people.get(element.last_author_id)}/>
         )}
       </div>
     );

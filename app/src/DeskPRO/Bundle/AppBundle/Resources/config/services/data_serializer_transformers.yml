@@ -60,3 +60,11 @@ services:
   data_serializer.transformer.custom_data_collection:
     class: DeskPRO\Bundle\AppBundle\CustomFields\DataTransformer\CustomDataCollectionTransformer
     arguments: ~
+
+  data_serializer.transformer.article_revision:
+    class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\ArticlesRevisionTransformer
+    arguments: ~
+
+  data_serializer.transformer.download_revision:
+    class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\DownloadsRevisionTransformer
+    arguments: ~
