@@ -241,6 +241,23 @@ class ChatController extends AbstractApiController
     }
 
     /**
+     * @Route("/portal/api/chats/{id}/user_typing", name="portal_api_chat_user_typing")
+     * @Method({"POST"})
+     *
+     * @param ChatConversation $conversation
+     * @param Request          $request
+     *
+     * @return View
+     */
+    public function userTypingAction(ChatConversation $conversation, Request $request)
+    {
+        $preview_string = $request->request->get('preview_string');
+        $this->dispatch(UserChatEvent::USER_TYPING, new UserChatEvent($conversation, $preview_string));
+
+        return View::create();
+    }
+
+    /**
      * @Route("/portal/api/chats/{id}/transcript_info", name="portal_api_chat_transcript_info")
      * @Method({"POST"})
      *

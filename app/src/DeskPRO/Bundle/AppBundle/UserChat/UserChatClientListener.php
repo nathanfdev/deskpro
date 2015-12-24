@@ -71,6 +71,7 @@ class UserChatClientListener implements EventSubscriberInterface
             UserChatEvent::UNASSIGNED     => 'onUnassigned',
             UserChatEvent::SEND_MESSAGE   => 'onSendMessage',
             UserChatEvent::ACK_MESSAGES   => 'onAckMessages',
+            UserChatEvent::USER_TYPING    => 'onUserTyping',
         ];
     }
 
@@ -164,6 +165,18 @@ class UserChatClientListener implements EventSubscriberInterface
         $channel      = $conversation->getChannelId('ack_messages');
 
         $this->send($event, $channel, ['message_ids' => $message_ids]);
+    }
+
+    /**
+     * @param UserChatEvent $event
+     */
+    public function onUserTyping(UserChatEvent $event)
+    {
+        $conversation   = $event->getConversation();
+        $preview_string = $event->getData();
+        $channel        = $conversation->getChannelId('usertyping');
+
+        $this->send($event, $channel, ['preview' => $preview_string]);
     }
 
     /**
