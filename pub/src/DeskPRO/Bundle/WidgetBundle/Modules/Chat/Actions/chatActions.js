@@ -117,7 +117,7 @@ export const pollingChat = createAction(
           const filteredMessages = newMessages
             // Skip user's messages because they are added optimistically,
             // but do load user's messages on initial polling request
-            .filter(message => loaded || (!loaded && message.author_type !== 'user'))
+            .filter(message => !loaded || (loaded && message.author_type !== 'user'))
             // Check for unique ids
             .filter(message => existMessageIds.indexOf(message.id) === -1);
 
