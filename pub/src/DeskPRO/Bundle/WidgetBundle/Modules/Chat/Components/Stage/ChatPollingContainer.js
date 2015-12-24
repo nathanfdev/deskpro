@@ -66,7 +66,7 @@ export class ChatPollingContainer extends React.Component {
       dispatch(sendTranscriptData(chatId));
     }
 
-    // Send next request
+    // Send ajax next request
     const queryParams = {
       last_timestamp: moment().format(),
       last_message_id: lastMessageId
