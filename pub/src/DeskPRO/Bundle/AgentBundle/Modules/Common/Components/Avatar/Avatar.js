@@ -21,10 +21,7 @@ export class Avatar extends React.Component {
 
   getStyle(backgroundImage) {
     const { size } = this.props;
-    const style = {
-      display: 'inline-block',
-      marginRight: '5px'
-    };
+    const style = {};
 
     if (backgroundImage) {
       style.backgroundImage = backgroundImage;
