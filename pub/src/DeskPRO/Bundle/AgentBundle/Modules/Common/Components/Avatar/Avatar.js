@@ -6,7 +6,6 @@ export class Avatar extends React.Component {
     size: PropTypes.any.isRequired,
     url: PropTypes.string,
     urlPattern: PropTypes.string,
-    defaultUrlPattern: PropTypes.string,
     gravatar: PropTypes.string,
     color: PropTypes.string,
     fallbackText: PropTypes.string.isRequired
