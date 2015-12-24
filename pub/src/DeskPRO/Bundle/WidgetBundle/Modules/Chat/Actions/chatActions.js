@@ -4,8 +4,10 @@ import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
 import { generate } from 'randomstring';
 import moment from 'moment';
+import Immutable from 'immutable';
 import {
   chatInfoSelector,
+  chatLoadedSelector,
   isEndedSelector,
   authorAvatarSelector,
   messageIdsSelector,
@@ -88,10 +90,10 @@ export const pollingChat = createAction(
         const oldChatInfo = chatInfoSelector(state);
         const newChatInfo = response.chat_info && response.chat_info.data;
         const newMessages = response.new_messages ? response.new_messages.data : [];
-        const initialLoad = !oldChatInfo.size;
+        const loaded = chatLoadedSelector(state);
         const transcriptEnabled = transcriptCheckedSelector(state);
 
-        if (newChatInfo) {
+        if (newChatInfo && !oldChatInfo.equals(Immutable.fromJS(newChatInfo))) {
           dispatch(updateChatInfo(newChatInfo));
 
           if (newChatInfo.author_email) {
@@ -109,13 +111,13 @@ export const pollingChat = createAction(
           const filteredMessages = newMessages
             // skip user's messages because they are added optimistically,
             // but do load user's messages on initial polling request
-            .filter(message => initialLoad || (!initialLoad && message.author_type !== 'user'))
+            .filter(message => loaded || (!loaded && message.author_type !== 'user'))
             // check for unique ids
             .filter(message => existMessageIds.indexOf(message.id) === -1);
 
           dispatch(addNewMessages(filteredMessages));
         }
-        if (initialLoad) {
+        if (!loaded) {
           dispatch(setLoaded());
         }
       });
