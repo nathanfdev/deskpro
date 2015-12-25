@@ -10,6 +10,7 @@ import {
   deletePayloadFromCollection,
   composeHandlers
 } from 'Ampliflux/reducers/handlers';
+import moment from 'moment';
 
 const initialState = {
   phrases: {},
@@ -49,6 +50,7 @@ export default createReducer(initialState, {
   [actions.setLoaded]: setValue('chatLoaded', true),
   [actions.unsetLoaded]: setValue('chatLoaded', false),
   [actions.updateChatInfo]: setFullPayload('chatInfo'),
+  [actions.endChat]: setValue('chatInfo.date_ended', moment().format()),
   [actions.reopenChat]: composeHandlers(
     setValue('chatInfo.date_ended', null),
     setValue('transcript.sent', false)
