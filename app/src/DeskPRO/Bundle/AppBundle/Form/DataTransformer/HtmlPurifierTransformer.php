@@ -33,8 +33,10 @@ namespace DeskPRO\Bundle\AppBundle\Form\DataTransformer;
 
 use Orb\Input\Cleaner\Cleaner;
 use Symfony\Component\Form\DataTransformerInterface;
-use Symfony\Component\Form\Exception\TransformationFailedException;
 
+/**
+ * Class HtmlPurifierTransformer.
+ */
 class HtmlPurifierTransformer implements DataTransformerInterface
 {
     /**
@@ -47,9 +49,15 @@ class HtmlPurifierTransformer implements DataTransformerInterface
      */
     private $html_type;
 
+    /**
+     * Constructor.
+     *
+     * @param Cleaner $cleaner
+     * @param string  $type
+     */
     public function __construct(Cleaner $cleaner, $type = 'html')
     {
-        $this->cleaner = $cleaner;
+        $this->cleaner   = $cleaner;
         $this->html_type = $type;
 
         if ($type !== 'html' && strpos($type, 'html_') !== 0) {
@@ -57,11 +65,17 @@ class HtmlPurifierTransformer implements DataTransformerInterface
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function transform($value)
     {
         return $value;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function reverseTransform($value)
     {
         if ($value === null || empty($value) || ctype_digit($value)) {
