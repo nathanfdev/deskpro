@@ -11,13 +11,3 @@ export function loadCount(assignee) {
   );
 }
 
-/**
- * @param assignee
- * @return Promise
- */
-export function load(assignee) {
-  return DpApi.sendGet(
-    'DP_API/article_pending_creates'
-    + (assignee ? '?assigned_person=' + assignee : '')
-  );
-}

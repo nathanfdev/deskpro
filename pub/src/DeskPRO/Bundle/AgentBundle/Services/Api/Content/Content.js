@@ -28,6 +28,7 @@ export function load(params) {
       case 'news_comments':
         return 'news';
       default:
+        return '';
     }
   };
   console.log('DP_API/' + validateTarget(content) + '?include=person,' + include() + '&' + compileParams(newParams));
@@ -70,7 +71,7 @@ export function loadDraftsCount(target, author) {
  * @return {*}
  */
 export function validateTarget(target) {
-  if (['articles', 'news', 'downloads', 'article_comments', 'news_comments', 'download_comments'].indexOf(target) === -1) {
+  if (['articles', 'news', 'downloads', 'article_comments', 'news_comments', 'download_comments', 'article_pending_creates'].indexOf(target) === -1) {
     throw 'Unknown content type ' + target;
   }
 

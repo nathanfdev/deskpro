@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { ContentCard } from './ContentCard';
 import { ContentCommentCard } from './ContentCommentCard';
+import { ArticlePendingCreateCard } from './ArticlePendingCreateCard';
 import { contentSelector, articlesSelector, newsSelector, downloadsSelector,
   articlesCommentsSelector, newsCommentsSelector, downloadsCommentsSelector }
   from '../../../../Selectors/list';
@@ -20,6 +21,7 @@ import { connect } from 'react-redux';
     articles: articlesSelector(state),
     news: newsSelector(state),
     downloads: downloadsSelector(state),
+    article_pending_creates: state.Publish.list.get('article_pending_creates'),
     article_comments: articlesCommentsSelector(state),
     news_comments: newsCommentsSelector(state),
     download_comments: downloadsCommentsSelector(state),
@@ -48,19 +50,12 @@ export class CardsContainer extends Component {
   toggleSelected(id) {
     //this.props.dispatch(toggleSelectedAction(id));
   }
-/*
-
-  toggleSelected(id) {
-    this.props.dispatch(toggleSelectedAction(id));
-  }
-*/
 
   renderCommentCard(elements) {
     const { content, people, selected, linkedArticles, linkedNews, linkedDownloads } = this.props;
     const getParent = (element) => {
       switch (content) {
         case 'article_comments':
-          console.log(linkedArticles.get(element.article));
           return linkedArticles.get(element.article);
         case 'download_comments':
           return linkedDownloads.get(element.download);
@@ -82,7 +77,7 @@ export class CardsContainer extends Component {
   }
 
   render() {
-    const { content, people, dispatch, selected } = this.props;
+    const { content, people, selected } = this.props;
     const elements = this.props[content];
 
     return (
@@ -95,6 +90,15 @@ export class CardsContainer extends Component {
                          selected={selected.includes(element.id)}
                          author={people.get(element.person)}
                          lastRevisionAuthor={people.get(element.last_author_id)}/>
+        )}
+        {content === 'article_pending_creates' &&
+        elements.map((element, index) =>
+            <ArticlePendingCreateCard key={index}
+                                      element={element}
+                                      toggleSelected={this.toggleSelected.bind(this)}
+                                      selected={selected.includes(element.id)}
+                                      author={people.get(element.person)}
+                                      assigned={people.get(element.assigned_person)}/>
         )}
         {['article_comments', 'news_comments', 'download_comments'].indexOf(content) > -1
         && this.renderCommentCard(elements)}

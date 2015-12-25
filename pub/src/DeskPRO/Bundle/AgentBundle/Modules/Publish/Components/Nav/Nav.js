@@ -19,12 +19,11 @@ export class Nav extends Component {
     onGroupingChange: PropTypes.func.isRequired,
     toggleGroupingVisibility: PropTypes.func.isRequired,
     setMine: PropTypes.func.isRequired,
-    onClick: PropTypes.object.isRequired,
     dpWindow: PropTypes.object.isRequired
   };
 
   render() {
-    const { articles, news, downloads, todo, grouping, onGroupingChange, toggleGroupingVisibility, setMine, onClick, dispatch, dpWindow, loaded } = this.props;
+    const { articles, news, downloads, todo, grouping, onGroupingChange, toggleGroupingVisibility, setMine, dispatch, dpWindow, loaded } = this.props;
     const currentApp = dpWindow.get('activeAppId');
 
 
@@ -80,7 +79,6 @@ export class Nav extends Component {
                 <ToDoTab todo={todo}
                          loaded={loaded}
                          toggleGroupingVisibility={toggleGroupingVisibility}
-                         onClick={onClick}
                          setMine={setMine}/>
               </Tab>
             </TabsPaneStatefulContainer>

@@ -1,7 +1,5 @@
 import { createAction } from 'Ampliflux';
 import * as Content from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/Content';
-import * as ArticlePendingCreates from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/ArticlePendingCreates';
-import * as Comments from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/Comments';
 import { currentListParamsSelector } from '../Selectors/list';
 import { setArticlesRequest } from '../RecordStores/Actions/articlesActions';
 import { setNewsRequest } from '../RecordStores/Actions/newsActions';
@@ -51,58 +49,6 @@ export const load = createAction(
       }
     );
   }
-);
-
-export const loadDraftArticles = createAction(
-  'PUBLISH_LIST_LOAD_DATA',
-  (mine) => () => {
-    const filters = { status: 'hidden', hidden_status: 'draft' };
-    if (mine) {
-      filters.author = 'me';
-    }
-    return Content.load('articles', filters)
-      .then(promise => {
-        return { content: 'draftArticles', elements: promise.getData().data };
-      }
-    );
-  }
-);
-
-export const loadPendingArticles = createAction(
-  'PUBLISH_LIST_LOAD_DATA',
-  (mine) => (dispatch) => ArticlePendingCreates.load(mine ? 'me' : null)
-    .then(promise => {
-      // dispatch(switchContent('pendingArticles'));
-      return { content: 'pendingArticles', elements: promise.getData().data };
-    }
-  )
-);
-
-export const loadCommentsToValidate = createAction(
-  'PUBLISH_LIST_LOAD_DATA',
-  (groupBy, group) => (dispatch) => {
-    const filters = { status: 'validating' };
-    if (groupBy && group) {
-      filters[groupBy] = group;
-    }
-
-    return Comments.load('articles', filters)
-      .then(promise => {
-        // dispatch(switchContent('commentsToValidate'));
-        return { content: 'commentsToValidate', elements: promise.getData().data };
-      }
-    );
-  }
-);
-
-export const loadCommentsToReview = createAction(
-  'PUBLISH_LIST_LOAD_DATA',
-  () => (dispatch) => Comments.load('articles', { is_reviewed: 0 })
-    .then(promise => {
-      // dispatch(switchContent('commentsToReview'));
-      return { content: 'commentsToReview', elements: promise.getData().data };
-    }
-  )
 );
 
 export const setParams = createAction('PUBLISH_LIST_SET_CURRENT_PARAMS');

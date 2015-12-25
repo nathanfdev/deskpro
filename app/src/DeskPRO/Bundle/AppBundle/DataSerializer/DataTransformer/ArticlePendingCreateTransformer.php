@@ -44,7 +44,7 @@ class ArticlePendingCreateTransformer extends AbstractDataSerializerTransformer
      */
     public function getAutomaticProperties(DataTransformerRequest $request)
     {
-        return ['id', 'comment', 'assigned_person'];
+        return ['id', 'comment', 'assigned_person', 'date_created', 'person'];
     }
 
     /**

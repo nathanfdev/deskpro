@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Content;
 
 use Application\DeskPRO\Entity\Article;
@@ -133,12 +134,12 @@ class ContentController extends BaseController
             throw new BadRequestHttpException($e->getMessage());
         }
 
-        $page  = $request->query->get('page', 1);
-        $count = $request->query->get('count', 10);
-        $chats = $dataService->selectContent($this->getClass($type), $criteria, $page, $count);
+        $page    = $request->query->get('page', 1);
+        $count   = $request->query->get('count', 10);
+        $content = $dataService->selectContent($this->getClass($type), $criteria, $page, $count);
 
         return View::create(
-            $this->dataSerialize($chats),
+            $this->dataSerialize($content),
             Response::HTTP_OK
         );
     }
