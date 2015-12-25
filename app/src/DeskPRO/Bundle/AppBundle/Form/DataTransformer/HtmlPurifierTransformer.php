@@ -60,8 +60,8 @@ class HtmlPurifierTransformer implements DataTransformerInterface
         $this->cleaner   = $cleaner;
         $this->html_type = $type;
 
-        if ($type !== 'html' && strpos($type, 'html_') !== 0) {
-            throw new \InvalidArgumentException('$type must begin with html_ prefix.');
+        if (strpos($type, 'html') === false) {
+            throw new \InvalidArgumentException('$type must contains `html` word.');
         }
     }
 

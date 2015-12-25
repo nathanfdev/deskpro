@@ -53,9 +53,9 @@ class ChatUserTypingType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('partial_message', 'html_textarea')
-        ;
+        $builder->add('partial_message', 'html_textarea', [
+            'html_type' => 'striphtml',
+        ]);
     }
 
     /**
