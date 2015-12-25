@@ -37,6 +37,9 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * Class HtmlTextareaType.
+ */
 class HtmlTextareaType extends AbstractType
 {
     /**
@@ -44,11 +47,19 @@ class HtmlTextareaType extends AbstractType
      */
     private $cleaner;
 
+    /**
+     * Constructor.
+     *
+     * @param Cleaner $cleaner
+     */
     public function __construct(Cleaner $cleaner)
     {
         $this->cleaner = $cleaner;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         parent::buildForm($builder, $options);
@@ -56,18 +67,27 @@ class HtmlTextareaType extends AbstractType
         $builder->addViewTransformer(new HtmlPurifierTransformer($this->cleaner, $options['html_type']));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'html_type' => 'html'
+            'html_type' => 'html',
         ]);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getParent()
     {
         return 'textarea';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'html_textarea';
