@@ -4,7 +4,7 @@ import classNames from 'classnames';
 export class WidgetContent extends React.Component {
 
   static propTypes = {
-    isBubble: PropTypes.string,
+    isBubble: PropTypes.bool,
     children: PropTypes.any
   };
 
