@@ -53,6 +53,14 @@ export const removeAttachment = createAction('WIDGET_CHAT_REMOVE_ATTACHMENT');
 export const resetAttachments = createAction('WIDGET_CHAT_RESET_ATTACHMENTS');
 
 // Api actions
+
+// Make sure that we get actual data in polling response after api action
+// Uses for optimistic actions
+let skipPollingResponse = false;
+
+const lockPollingResponse = () => skipPollingResponse = true;
+const unlockPollingResponse = () => skipPollingResponse = false;
+
 export const loadPhraseTranslations = createAction(
   'WIDGET_CHAT_LOAD_PHRASE_TRANSLATIONS',
   () => dispatch => DpApi
@@ -91,6 +99,11 @@ export const pollingChat = createAction(
     return DpApi
       .sendGet(`DP_API/chats/${chatId}/polling?` + compileParams(params), {...ajaxOptions})
       .success(response => {
+        // Waiting for ajax response
+        if (skipPollingResponse) {
+          return;
+        }
+
         const state = getState();
 
         const oldChatInfo = chatInfoSelector(state);
@@ -226,12 +239,36 @@ export const sendTranscriptInfo = createAction(
 
 export const endChat = createAction(
   'WIDGET_CHAT_END',
-  chatId => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/end`, {...ajaxOptions}) : null
+  chatId => {
+    if (!chatId) {
+      return null;
+    }
+
+    lockPollingResponse();
+
+    const promise = DpApi.sendPost(`DP_API/chats/${chatId}/end`, {...ajaxOptions});
+    promise.success(unlockPollingResponse);
+    promise.catch(unlockPollingResponse);
+
+    return promise;
+  }
 );
 
 export const reopenChat = createAction(
   'WIDGET_CHAT_REOPEN',
-  chatId => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/reopen`, {...ajaxOptions}) : null
+  chatId => {
+    if (!chatId) {
+      return null;
+    }
+
+    lockPollingResponse();
+
+    const promise = DpApi.sendPost(`DP_API/chats/${chatId}/reopen`, {...ajaxOptions});
+    promise.success(unlockPollingResponse);
+    promise.catch(unlockPollingResponse);
+
+    return promise;
+  }
 );
 
 export const sendFeedback = createAction(
