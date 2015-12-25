@@ -3,7 +3,7 @@ import { Router, Route, Redirect } from 'react-router';
 import { WidgetFrameContainer } from './WidgetFrameContainer';
 import { WidgetContent } from './Parts/WidgetContent';
 import { WidgetHeaderContainer } from './Parts/Header/WidgetHeaderContainer';
-import { WidgetBody } from './Parts/WidgetBody';
+import { WidgetBodyContainer } from './Parts/Body/WidgetBodyContainer';
 import { WidgetFooter } from './Parts/WidgetFooter';
 import {
   ChatApp,
@@ -28,7 +28,7 @@ export class Widget extends React.Component {
       <WidgetFrameContainer>
         <WidgetContent>
           <WidgetHeaderContainer />
-          <WidgetBody>
+          <WidgetBodyContainer>
             <Router history={history}>
               <Redirect from="/" to="chat"/>
               <Route path="chat" component={ChatApp}>
@@ -43,7 +43,7 @@ export class Widget extends React.Component {
                 </Route>
               </Route>
             </Router>
-          </WidgetBody>
+          </WidgetBodyContainer>
           <WidgetFooter />
         </WidgetContent>
       </WidgetFrameContainer>

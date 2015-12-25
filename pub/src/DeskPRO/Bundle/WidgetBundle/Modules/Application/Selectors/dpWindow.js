@@ -64,7 +64,12 @@ export const agentPollingTimeoutSelector = createSelector(
   options => options.get('agentPollingTimeout') || 'off'
 );
 
-export const windowTypeSelector = createSelector(
+export const widgetTypeSelector = createSelector(
   widgetOptionsSelector,
   options => options.get('windowType') || 'default'
+);
+
+export const isBubbleSelector = createSelector(
+  widgetTypeSelector,
+  widgetType => widgetType === 'bubble'
 );
