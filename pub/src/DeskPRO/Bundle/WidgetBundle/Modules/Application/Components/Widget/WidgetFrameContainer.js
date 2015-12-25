@@ -42,18 +42,20 @@ export class WidgetFrameContainer extends React.Component {
     const childProps = children.props;
 
     const frameStyles = {};
+    const containerStyles = {};
     if (isBubble) {
       frameStyles.marginRight = 20;
       frameStyles.marginBottom = 70;
     } else {
       frameStyles.height = '100%';
+      containerStyles.right = 0;
     }
 
     return (
       <Frame ref="frame"
              name="widget_iframe"
              frameStyles={frameStyles}
-             containerStyles={{right: 0}}
+             containerStyles={containerStyles}
              isVisible={widgetLoaded && widgetOpened && agentsCounts}>
 
         <Provider store={store}>
