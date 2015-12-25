@@ -29,49 +29,43 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
+namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api;
 
-use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
-use FOS\RestBundle\View\View;
-use Symfony\Component\EventDispatcher\Event;
-use Symfony\Component\Form\Form;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class AbstractApiController.
+ * Class ChatUserTypingType.
  */
-abstract class AbstractApiController extends AbstractController
+class ChatUserTypingType extends AbstractType
 {
     /**
-     * @param mixed  $data
-     * @param string $type
-     *
-     * @return array
+     * {@inheritdoc}
      */
-    protected function dataSerialize($data, $type = null)
+    public function getName()
     {
-        return $this->get('data_serializer')->serialize($data, null, null, $type);
+        return 'api_chat_user_typing';
     }
 
     /**
-     * @param Form $form
-     *
-     * @return View
+     * {@inheritdoc}
      */
-    protected function generateFormErrorsResponse(Form $form)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $generator = $this->get('api_error.form_errors_generator');
-        $errors    = $generator->generateFormErrors($form);
-
-        return new View($errors, Response::HTTP_BAD_REQUEST);
+        $builder
+            ->add('partial_message', 'html_textarea')
+        ;
     }
 
     /**
-     * @param string $event_name
-     * @param Event  $event
+     * {@inheritdoc}
      */
-    protected function dispatch($event_name, Event $event)
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $this->get('event_dispatcher')->dispatch($event_name, $event);
+        $resolver->setDefaults([
+            'csrf_protection'               => false,
+            'csrf_double_submit_protection' => false,
+        ]);
     }
 }

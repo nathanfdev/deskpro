@@ -27,7 +27,7 @@ export class ReplyFormContainer extends React.Component {
 
   onUserTyping = message => {
     const { dispatch, chatId } = this.props;
-    const data = {preview_string: message};
+    const data = {partial_message: message};
 
     dispatch(sendUserTyping(chatId, data));
   };

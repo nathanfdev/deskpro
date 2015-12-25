@@ -353,6 +353,11 @@ services:
     tags:
       - { name: form.type, alias: api_chat_create }
 
+  form.api.chat_user_typing:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\ChatUserTypingType
+    tags:
+      - { name: form.type, alias: api_chat_user_typing }
+
   form.api.chat_message:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\ChatMessageType
     tags:

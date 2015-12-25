@@ -251,8 +251,19 @@ class ChatController extends AbstractApiController
      */
     public function userTypingAction(ChatConversation $conversation, Request $request)
     {
-        $preview_string = $request->request->get('preview_string');
-        $this->dispatch(UserChatEvent::USER_TYPING, new UserChatEvent($conversation, $preview_string));
+        $form = $this
+            ->get('form.factory')
+            ->createNamedBuilder(null, 'api_chat_user_typing')
+            ->getForm()
+        ;
+
+        $form->submit($request->request->all());
+        if (!$form->isValid()) {
+            return $this->generateFormErrorsResponse($form);
+        }
+
+        $partial_message = $form->get('partial_message')->getData();
+        $this->dispatch(UserChatEvent::USER_TYPING, new UserChatEvent($conversation, $partial_message));
 
         return View::create();
     }
