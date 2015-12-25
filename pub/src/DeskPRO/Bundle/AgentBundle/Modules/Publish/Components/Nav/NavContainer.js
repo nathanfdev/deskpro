@@ -58,27 +58,6 @@ export class NavContainer extends Component {
   render() {
     const { dispatch, articles, news, downloads, todo, dpWindow, loaded } = this.props;
 
-    const onClick = {
-      draftArticles: () => {
-        dispatch(listActions.applyParams({ content: 'articles', status: 'hidden', hidden_status: 'draft'}));
-      },
-      pendingArticles: () => {
-        dispatch(listActions.loadPendingArticles(todo.get('articles').get('mine')));
-      },
-      commentsToValidate: (group) => {
-        dispatch(listActions.applyParams({content: group, status: 'validating'}));
-      },
-      /* commentsToValidate: (group) => {
-        dispatch(listActions.loadCommentsToValidate('period_created', group));
-      },*/
-      allCommentsToValidate: () => {
-        dispatch(listActions.loadCommentsToValidate());
-      },
-      commentsToReview: () => {
-        dispatch(listActions.loadCommentsToReview());
-      }
-    };
-
     return (
       <Nav loaded={loaded}
            articles={articles}
@@ -89,7 +68,6 @@ export class NavContainer extends Component {
            onGroupingChange={this.onGroupingChange.bind(this)}
            toggleGroupingVisibility={this.toggleGroupingVisibility.bind(this)}
            setMine={this.setMine.bind(this)}
-           onClick={onClick}
            dispatch={dispatch.bind(this)}
            dpWindow={dpWindow}/>
     );

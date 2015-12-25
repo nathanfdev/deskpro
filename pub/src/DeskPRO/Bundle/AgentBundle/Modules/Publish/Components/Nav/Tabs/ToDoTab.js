@@ -10,17 +10,36 @@ export class ToDoTab extends Component {
   static propTypes = {
     loaded: PropTypes.bool.isRequired,
     todo: PropTypes.object.isRequired,
-    onClick: PropTypes.object.isRequired,
     setMine: PropTypes.func.isRequired
   };
 
   render() {
-    const { loaded, todo, onClick, setMine} = this.props;
+    const { loaded, todo, setMine} = this.props;
     const mine = todo.get('articles').get('mine');
     const slaButtonAllClasses = classNames('sla-button', { 'selected': !mine });
     const slaButtonMineClasses = classNames('sla-button', { 'selected': mine });
     const commentsToValidate = todo.get('comments').get('validate');
     const commentsToReview = todo.get('comments').get('review');
+    const commentsConfig = [
+      {
+        content: 'article_comments',
+        type: 'articles',
+        label: 'Articles',
+        count: { toValidate: commentsToValidate.get('articles'), toReview: commentsToReview.get('articles') }
+      },
+      {
+        content: 'news_comments',
+        type: 'news',
+        label: 'News',
+        count: { toValidate: commentsToValidate.get('news'), toReview: commentsToReview.get('news') }
+      },
+      {
+        content: 'download_comments',
+        type: 'downloads',
+        label: 'Downloads',
+        count: { toValidate: commentsToValidate.get('downloads'), toReview: commentsToReview.get('downloads') }
+      }
+    ];
 
     return (
       <LoadIndicator loaded={loaded}>
@@ -41,63 +60,82 @@ export class ToDoTab extends Component {
             </SectionHeader>
 
             <ul>
-              <ListItem label="Draft Articles" count={todo.get('articles').get('draft')}
-                        onClick={onClick.draftArticles}/>
-              <ListItem label="Pending Articles" count={todo.get('articles').get('pending')}
-                        onClick={onClick.pendingArticles}/>
-            </ul>
-          </Section>
-          <Section>
-            <SectionHeader>Comments to validate</SectionHeader>
-            <ul>
-              <ListItemContainer label="ToValidate"
-                                 group="article_comments"
-                                 listOptions={{content: 'article_comments', navItem: {status: 'validating'}}}>
-                <ListItem label="Articles"
-                          count={commentsToValidate.get('articles')}/>
+              <ListItemContainer label="DraftArticles"
+                                 group="aticles"
+                                 listOptions={{content: 'articles', navItem: {hidden_status: 'draft'}}}>
+                <ListItem label="Draft Articles"
+                          count={todo.get('articles').get('draft')}/>
               </ListItemContainer>
-              <ListItemContainer label="ToValidate"
-                                 group="news_comments"
-                                 listOptions={{content: 'news_comments', navItem: {status: 'validating'}}}>
-                <ListItem label="News"
-                          count={commentsToValidate.get('news')}/>
-              </ListItemContainer>
-              <ListItemContainer label="ToValidate"
-                                 group="download_comments"
-                                 listOptions={{content: 'download_comments', navItem: {status: 'validating'}}}>
-                <ListItem label="Downloads"
-                          count={commentsToValidate.get('downloads')}/>
+              <ListItemContainer label="PendingArticles"
+                                 group="article_pending_creates"
+                                 listOptions={{content: 'article_pending_creates', navItem: {assigned_person: mine ? 'me' : ''}}}>
+                <ListItem label="Pending Articles"
+                          count={todo.get('articles').get('pending')}/>
               </ListItemContainer>
             </ul>
           </Section>
-          <Section>
-            <SectionHeader>Comments to review</SectionHeader>
-            <ul>
-              <ListItemContainer label="ToReview"
-                                 group="article_comments"
-                                 listOptions={{content: 'article_comments', navItem: {is_reviewed: 0}}}>
-                <ListItem label="Articles" count={commentsToReview.get('articles')}/>
-              </ListItemContainer>
-              <ListItemContainer label="ToReview"
-                                 group="news_comments"
-                                 listOptions={{content: 'news_comments', navItem: {is_reviewed: 0}}}>
-                <ListItem label="News" count={commentsToReview.get('news')}
-                          onClick={onClick.commentsToReview}/>
-              </ListItemContainer>
-              <ListItemContainer label="ToReview"
-                                 group="download_comments"
-                                 listOptions={{content: 'download_comments', navItem: {is_reviewed: 0}}}>
-                <ListItem label="Downloads" count={commentsToReview.get('downloads')}
-                          onClick={onClick.commentsToReview}/>
-              </ListItemContainer>
-            </ul>
-          </Section>
+          <CommentsToValidateSection config={commentsConfig}/>
+          <CommentsToReviewSection config={commentsConfig}/>
           <Section>
             <SectionHeader>Translations</SectionHeader>
             &nbsp;
           </Section>
         </SectionsPane>
       </LoadIndicator>
+    );
+  }
+}
+
+export class CommentsToValidateSection extends Component {
+
+  static propTypes = {
+    config: PropTypes.array.isRequired
+  };
+
+  render() {
+    const { config } = this.props;
+
+    return (
+      <Section>
+        <SectionHeader>Comments to validate</SectionHeader>
+        <ul>
+          {config.map((item, index)=>
+            <ListItemContainer key={index}
+                               label="ToValidate"
+                               group={item.content}
+                               listOptions={{content: item.content, navItem: {status: 'validating'}}}>
+              <ListItem label={item.label}
+                        count={item.count.toValidate}/>
+            </ListItemContainer>)}
+        </ul>
+      </Section>
+    );
+  }
+}
+
+export class CommentsToReviewSection extends Component {
+
+  static propTypes = {
+    config: PropTypes.array.isRequired
+  };
+
+  render() {
+    const { config } = this.props;
+
+    return (
+      <Section>
+        <SectionHeader>Comments to review</SectionHeader>
+        <ul>
+          {config.map((item, index)=>
+            <ListItemContainer key={index}
+                               label="ToValidate"
+                               group={item.content}
+                               listOptions={{content: item.content, navItem: {is_reviewed: 0}}}>
+              <ListItem label={item.label}
+                        count={item.count.toReview}/>
+            </ListItemContainer>)}
+        </ul>
+      </Section>
     );
   }
 }

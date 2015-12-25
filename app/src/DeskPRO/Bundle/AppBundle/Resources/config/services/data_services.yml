@@ -120,6 +120,10 @@ services:
     class: DeskPRO\Bundle\AppBundle\DataService\Content\Category\CategoriesDataService
     arguments: [@doctrine.orm.default_entity_manager]
 
+  data.apc:
+    class: DeskPRO\Bundle\AppBundle\DataService\Content\ArticlePendingCreateDataService
+    arguments: [@doctrine.orm.default_entity_manager]
+
   data.agent:
     class: DeskPRO\Bundle\AppBundle\DataService\AgentDataService
     arguments: [@doctrine.orm.default_entity_manager]

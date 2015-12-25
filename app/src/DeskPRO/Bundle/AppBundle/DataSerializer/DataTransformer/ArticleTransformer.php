@@ -67,10 +67,14 @@ class ArticleTransformer extends AbstractDataSerializerTransformer
     public function getCustomProperties(DataTransformerRequest $request)
     {
         /** @var \Application\DeskPRO\Entity\Article $article */
-        $article    = $request->getDataToBeTransformed();
-        $authors    = $article->getAuthors();
-        $lastAuthor = end($authors);
+        $article      = $request->getDataToBeTransformed();
+        $authors      = $article->getAuthors();
+        $lastAuthor   = end($authors);
+        $lastAuthorId = $lastAuthor ? $lastAuthor->getId() : null;
 
-        return ['last_author_id' => $lastAuthor->getId(), 'vote_stats' => $article->getVoteStats()];
+        return [
+            'last_author_id' => $lastAuthorId,
+            'vote_stats'     => $article->getVoteStats(),
+        ];
     }
 }
