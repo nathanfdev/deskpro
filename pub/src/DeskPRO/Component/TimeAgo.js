@@ -41,8 +41,10 @@ export class TimeAgo extends React.Component {
   }
 
   componentDidUpdate(lastProps) {
-    if (this.props.live !== lastProps.live || this.props.date !== lastProps.date) {
-      if (!this.props.live && this.timeoutId) {
+    const { live } = this.props;
+
+    if (live !== lastProps.live || date !== lastProps.date) {
+      if (!live && this.timeoutId) {
         clearTimeout(this.timeoutId);
         this.timeoutId = undefined;
       }
@@ -61,16 +63,16 @@ export class TimeAgo extends React.Component {
   }
 
   tick(refresh) {
-    if (!this.mounted || !this.props.live) {
+    const { live, date, minPeriod, maxPeriod } = this.props;
+    if (!this.mounted || !live) {
       return;
     }
 
-    var period = 1000;
+    const then = (new Date(date)).valueOf();
+    const now = Date.now();
+    const seconds = Math.round(Math.abs(now - then) / 1000);
 
-    var then = (new Date(this.props.date)).valueOf();
-    var now = Date.now();
-    var seconds = Math.round(Math.abs(now - then) / 1000);
-
+    let period = 1000;
     if (seconds < 60) {
       period = 1000;
     } else if (seconds < 60 * 60) {
@@ -81,7 +83,7 @@ export class TimeAgo extends React.Component {
       period = 0;
     }
 
-    period = Math.min(Math.max(period, this.props.minPeriod), this.props.maxPeriod);
+    period = Math.min(Math.max(period, minPeriod), maxPeriod);
 
     if (!!period) {
       this.timeoutId = setTimeout(this.tick, period);
@@ -92,11 +94,14 @@ export class TimeAgo extends React.Component {
   }
 
   render() {
+    const { date, component, formatter } = this.props;
     const props = this.props;
-    const then = (new Date(this.props.date)).valueOf();
+
+    const then = (new Date(date)).valueOf();
     const now = Date.now();
     const seconds = Math.round(Math.abs(now - then) / 1000);
     const suffix = then < now ? 'ago' : 'from now';
+
     let value;
     let unit;
 
@@ -123,12 +128,12 @@ export class TimeAgo extends React.Component {
       unit = 'year';
     }
 
-    var newProps = {...props};
+    const newProps = {...props};
 
     delete newProps.date;
     delete newProps.formatter;
     delete newProps.component;
 
-    return React.createElement( this.props.component, newProps, this.props.formatter(value, unit, suffix, then) );
+    return React.createElement(component, newProps, formatter(value, unit, suffix, then));
   }
 }
