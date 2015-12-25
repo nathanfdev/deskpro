@@ -69,5 +69,9 @@
       font-size: 11px;
       margin-right: 3px;
     }
+    &.locked {
+      opacity: 0.5;
+      cursor: default;
+    }
   }
 }
