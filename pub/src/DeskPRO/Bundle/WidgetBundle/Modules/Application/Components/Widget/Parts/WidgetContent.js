@@ -4,19 +4,19 @@ import classNames from 'classnames';
 export class WidgetContent extends React.Component {
 
   static propTypes = {
-    widgetType: PropTypes.string,
+    isBubble: PropTypes.string,
     children: PropTypes.any
   };
 
   render() {
-    const { widgetType, children } = this.props;
+    const { isBubble, children } = this.props;
 
     return (
       <div className={classNames(
         'widget-container',
         'dpdesignportal', {
-          'chat-bubble': widgetType === 'bubble',
-          'mobile': widgetType !== 'bubble'
+          'chat-bubble': isBubble,
+          'mobile': !isBubble
         })}>
 
         {children}

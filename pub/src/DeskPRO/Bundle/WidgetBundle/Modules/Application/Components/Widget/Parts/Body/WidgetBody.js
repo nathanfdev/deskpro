@@ -12,7 +12,7 @@ export class WidgetBody extends React.Component {
     const { isBubble, children } = this.props;
     const bodyStyles = {};
     if (isBubble) {
-      bodyStyles.height = 350;
+      bodyStyles.height = 500;
       bodyStyles.paddingBottom = 37;
     }
 
