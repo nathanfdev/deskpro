@@ -38,6 +38,9 @@ export class MessagesListContainer extends React.Component {
         height = height - $(child).outerHeight();
       }
     });
+    if (height < 100) {
+      height = 100;
+    }
 
     $(node).css('height', height);
     this.refs.list.refresh();
