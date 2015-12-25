@@ -26,6 +26,15 @@ export class RateAgentContainer extends React.Component {
     };
   }
 
+  componentWillReceiveProps(newProps) {
+    // Reset feedback block on reopen chat
+    if (!newProps.isEnded) {
+      this.setState({
+        stage: 'dialog'
+      });
+    }
+  }
+
   onClickHelpful = () => {
     const { chatId, dispatch } = this.props;
 
