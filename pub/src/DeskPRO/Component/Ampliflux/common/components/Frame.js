@@ -83,8 +83,8 @@ export default class Frame extends React.Component {
     const doc = this.getContentDocument();
 
     const $container = $(doc.body.firstChild);
-    const width = frameStyles.width || $container.width();
-    const height = frameStyles.height || $container.height();
+    const width = frameStyles.width || $container.outerWidth();
+    const height = frameStyles.height || $container.outerHeight();
 
     const dimensions = this.state.dimensions;
     if (dimensions.width === width && dimensions.height === height) {
@@ -105,6 +105,7 @@ export default class Frame extends React.Component {
     if (doc.readyState === 'complete') {
       const { frameStyles = {}, containerStyles = {} } = this.props;
       const containerDimensions = {};
+
       if (frameStyles.width) {
         containerDimensions.width = frameStyles.width;
       }
