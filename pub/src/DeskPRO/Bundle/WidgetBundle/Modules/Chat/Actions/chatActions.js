@@ -138,6 +138,11 @@ export const pollingChat = createAction(
   }
 );
 
+export const sendUserTyping = createAction(
+  'WIDGET_CHAT_SEND_USER_TYPING',
+  (chatId, params) => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/user_typing`, params, {...ajaxOptions}) : null
+);
+
 export const sendChatMessage = createAction(
   'WIDGET_CHAT_SEND_MESSAGE',
   (chatId, params) => (dispatch, getState) => {

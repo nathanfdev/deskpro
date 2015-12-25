@@ -19,6 +19,7 @@ export class ReplyForm extends React.Component {
     attachedImagesCount: PropTypes.number,
     isEnded: PropTypes.bool,
     canReopen: PropTypes.bool,
+    onUserTyping: PropTypes.func,
     onSendMessage: PropTypes.func
   };
 
@@ -33,6 +34,15 @@ export class ReplyForm extends React.Component {
     this.setState({
       message: value
     });
+
+    if (!this.timeout) {
+      const onUserTyping = () => {
+        this.props.onUserTyping(this.state.message);
+        this.timeout = null;
+      };
+
+      this.timeout = setTimeout(onUserTyping, 1000);
+    }
   };
 
   onScreenShare = event => {

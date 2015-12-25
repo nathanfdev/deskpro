@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { ReplyForm } from './ReplyForm';
 import { ReopenChatContainer } from '../ReopenChatContainer';
 import { replaceSmileCodes } from 'DeskPRO/Component/Rte/Emotions';
-import { sendChatMessage, removeAttachment } from '../../../../Actions/chatActions';
+import { sendUserTyping, sendChatMessage, removeAttachment } from '../../../../Actions/chatActions';
 import {
   chatIdSelector,
   agentNameSelector,
@@ -25,6 +25,13 @@ export class ReplyFormContainer extends React.Component {
     attachments: PropTypes.object
   };
 
+  onUserTyping = message => {
+    const { dispatch, chatId } = this.props;
+    const data = {preview_string: message};
+
+    dispatch(sendUserTyping(chatId, data));
+  };
+
   onSendMessage = message => {
     const { dispatch, chatId, attachments } = this.props;
     const data = {
@@ -42,7 +49,8 @@ export class ReplyFormContainer extends React.Component {
   render() {
     return (
       <ReopenChatContainer>
-        <ReplyForm onSendMessage={this.onSendMessage}
+        <ReplyForm onUserTyping={this.onUserTyping}
+                   onSendMessage={this.onSendMessage}
                    onRemoveAttachment={this.onRemoveAttachment} {...this.props} />
 
       </ReopenChatContainer>
