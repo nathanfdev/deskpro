@@ -8,6 +8,7 @@ import {
   attachmentsSelector
 } from '../../../Selectors/chat';
 
+// Define chat selectors to force dispatch re render of the widget content
 @connect(state => ({
   isEnded: isEndedSelector(state),
   messages: messagesSelector(state),
