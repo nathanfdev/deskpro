@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import $ from 'jquery';
 
 export class WidgetBody extends React.Component {
 
@@ -11,9 +12,16 @@ export class WidgetBody extends React.Component {
   render() {
     const { isBubble, children } = this.props;
     const bodyStyles = {};
+
     if (isBubble) {
-      bodyStyles.height = 500;
       bodyStyles.paddingBottom = 37;
+      bodyStyles.height = $(parent.window).height() / 2;
+      if (bodyStyles.height > 550) {
+        bodyStyles.height = 550;
+      }
+      if (bodyStyles.height < 300) {
+        bodyStyles.height = 300;
+      }
     }
 
     return (
