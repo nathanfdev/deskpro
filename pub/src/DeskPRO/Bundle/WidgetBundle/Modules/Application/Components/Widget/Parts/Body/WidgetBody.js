@@ -14,13 +14,13 @@ export class WidgetBody extends React.Component {
     const bodyStyles = {};
 
     if (isBubble) {
-      bodyStyles.paddingBottom = 37;
+      bodyStyles.overflow = 'scroll';
       bodyStyles.height = $(parent.window).height() / 2;
       if (bodyStyles.height > 550) {
         bodyStyles.height = 550;
       }
       if (bodyStyles.height < 300) {
-        bodyStyles.height = 300;
+        bodyStyles.height = 350;
       }
     }
 

@@ -28,7 +28,7 @@ $border-color: #e7e7e7;
     .dpdesignportal-powered-by-deskpro {
       border-bottom-left-radius: 8px;
       border-bottom-right-radius: 8px;
-      position: relative;
+      position: static;
       padding: 7.5px 0;
     }
 
@@ -36,11 +36,15 @@ $border-color: #e7e7e7;
       position: static;
 
       .dpdesignportal-header {
-        position: relative;
+        position: static;
       }
 
       .dpdesignportal-chat-header-wrapper {
-        position: relative;
+        position: static;
+      }
+
+      .dpdesignportal-chat-footer {
+        position: static;
       }
     }
 
