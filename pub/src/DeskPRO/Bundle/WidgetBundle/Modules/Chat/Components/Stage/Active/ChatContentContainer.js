@@ -1,8 +1,19 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { windowResize } from '../../../../Application/Actions/dpWindowActions';
+import {
+  isEndedSelector,
+  messagesSelector,
+  uploadingFilesSelector,
+  attachmentsSelector
+} from '../../../Selectors/chat';
 
-@connect()
+@connect(state => ({
+  isEnded: isEndedSelector(state),
+  messages: messagesSelector(state),
+  uploading: uploadingFilesSelector(state),
+  attachments: attachmentsSelector(state)
+}))
 export class ChatContentContainer extends React.Component {
 
   static propTypes = {
@@ -10,7 +21,7 @@ export class ChatContentContainer extends React.Component {
     children: PropTypes.any
   };
 
-  componentDidUpdate() {
+  componentWillReceiveProps() {
     this.props.dispatch(windowResize());
   }
 
