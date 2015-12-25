@@ -1,11 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { dateEndedSelector, chatIdSelector, isEndedSelector } from '../../../Selectors/chat';
+import { dateEndedSelector, chatIdSelector, isEndedSelector, lockedPollingSelector } from '../../../Selectors/chat';
 import { reopenChat } from '../../../Actions/chatActions';
 import moment from 'moment';
 
 @connect(state => ({
   chatId: chatIdSelector(state),
+  locked: lockedPollingSelector(state),
   dateEnded: dateEndedSelector(state),
   isEnded: isEndedSelector(state)
 }))
@@ -14,6 +15,7 @@ export class ReopenChatContainer extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func,
     chatId: PropTypes.number,
+    locked: PropTypes.bool,
     isEnded: PropTypes.bool,
     dateEnded: PropTypes.string,
     children: PropTypes.any
@@ -47,7 +49,11 @@ export class ReopenChatContainer extends React.Component {
   };
 
   onReopen = () => {
-    const { chatId, dispatch } = this.props;
+    const { chatId, locked, dispatch } = this.props;
+    if (locked) {
+      return;
+    }
+
     dispatch(reopenChat(chatId));
   };
 
@@ -75,14 +81,15 @@ export class ReopenChatContainer extends React.Component {
   }
 
   render() {
-    const { children } = this.props;
+    const { children, isEnded, locked } = this.props;
     const childProps = children.props;
 
     return React.cloneElement(children, {
       ...childProps,
 
+      locked,
+      isEnded,
       canReopen: this.state.displayChild,
-      isEnded: this.props.isEnded,
       onReopen: this.onReopen
     });
   }

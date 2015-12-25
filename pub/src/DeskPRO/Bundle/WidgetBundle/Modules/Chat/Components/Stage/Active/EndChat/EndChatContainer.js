@@ -4,15 +4,17 @@ import Simple from 'DeskPRO/Component/Positioned/Simple';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { EndChatConfirmPopup } from './EndChatConfirmPopup';
 import { endChat } from '../../../../Actions/chatActions';
-import { chatIdSelector } from '../../../../Selectors/chat';
+import { chatIdSelector, lockedPollingSelector } from '../../../../Selectors/chat';
 
 @connect(state => ({
-  chatId: chatIdSelector(state)
+  chatId: chatIdSelector(state),
+  locked: lockedPollingSelector(state)
 }))
 export class EndChatContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func,
+    locked: PropTypes.bool,
     chatId: PropTypes.number,
     confirmPosition: PropTypes.string,
     children: PropTypes.node
@@ -33,7 +35,10 @@ export class EndChatContainer extends React.Component {
   };
 
   onEndChat = event => {
-    const { chatId, dispatch } = this.props;
+    const { chatId, dispatch, locked } = this.props;
+    if (locked) {
+      return;
+    }
 
     this.onClosePopup(event);
     dispatch(endChat(chatId));
@@ -47,7 +52,7 @@ export class EndChatContainer extends React.Component {
   };
 
   render() {
-    const { children, confirmPosition } = this.props;
+    const { children, confirmPosition, locked } = this.props;
     const childProps = children.props;
     const positionAt = confirmPosition || 'top';
     const positionMy = positionAt === 'top' ? 'bottom' : 'top';
@@ -58,6 +63,7 @@ export class EndChatContainer extends React.Component {
           ...childProps,
 
           ref: 'button',
+          locked,
           onOpenPopup: this.onOpenPopup
         })}
 

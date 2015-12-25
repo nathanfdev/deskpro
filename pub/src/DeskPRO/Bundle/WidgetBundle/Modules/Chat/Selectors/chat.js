@@ -2,6 +2,17 @@ import { createSelector } from 'reselect';
 
 const stateSelector = state => state.Chat.chat;
 
+// Polling
+export const lockedPollingSelector = createSelector(
+  stateSelector,
+  state => state.getIn(['polling', 'locked'])
+);
+
+export const skippedPollingSelector = createSelector(
+  stateSelector,
+    state => state.getIn(['polling', 'skipped'])
+);
+
 // Phrase translations
 export const phraseTranslationsSelector = createSelector(
   stateSelector,

@@ -21,6 +21,10 @@ const initialState = {
     sending: false,
     sent: false
   },
+  polling: {
+    locked: false,
+    skipped: false
+  },
   chatId: null,
   chatLoaded: false,
   chatInfo: {},
@@ -34,6 +38,11 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
+  // Polling
+  [actions.lockPollingResponse]: setValue('polling.locked', true),
+  [actions.unlockPollingResponse]: setValue('polling', {locked: false, skipped: true}),
+  [actions.enablePollingResponse]: setValue('polling', {locked: false, skipped: false}),
+
   // Phrase translations
   [actions.setPhraseTranslations]: setFullPayload('phrases'),
 

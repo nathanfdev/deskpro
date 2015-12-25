@@ -6,6 +6,8 @@ import { generate } from 'randomstring';
 import moment from 'moment';
 import Immutable from 'immutable';
 import {
+  skippedPollingSelector,
+  lockedPollingSelector,
   chatInfoSelector,
   chatLoadedSelector,
   isEndedSelector,
@@ -29,6 +31,9 @@ export const setChatId = createAction(
 export const setLoaded = createAction('WIDGET_CHAT_SET_LOADED');
 export const unsetLoaded = createAction('WIDGET_CHAT_UNSET_LOADED');
 export const updateChatInfo = createAction('WIDGET_CHAT_UPDATE_CHAT_INFO');
+export const lockPollingResponse = createAction('WIDGET_LOCK_POLLING_RESPONSE');
+export const unlockPollingResponse = createAction('WIDGET_UNLOCK_POLLING_RESPONSE');
+export const enablePollingResponse = createAction('WIDGET_ENABLE_POLLING_RESPONSE');
 
 // Audio actions
 export const toggleMute = createAction('WIDGET_CHAT_TOGGLE_MUTE');
@@ -53,14 +58,6 @@ export const removeAttachment = createAction('WIDGET_CHAT_REMOVE_ATTACHMENT');
 export const resetAttachments = createAction('WIDGET_CHAT_RESET_ATTACHMENTS');
 
 // Api actions
-
-// Make sure that we get actual data in polling response after api action
-// Uses for optimistic actions
-let skipPollingResponse = false;
-
-const lockPollingResponse = () => skipPollingResponse = true;
-const unlockPollingResponse = () => skipPollingResponse = false;
-
 export const loadPhraseTranslations = createAction(
   'WIDGET_CHAT_LOAD_PHRASE_TRANSLATIONS',
   () => dispatch => DpApi
@@ -99,12 +96,20 @@ export const pollingChat = createAction(
     return DpApi
       .sendGet(`DP_API/chats/${chatId}/polling?` + compileParams(params), {...ajaxOptions})
       .success(response => {
+        const state = getState();
+        const locked = lockedPollingSelector(state);
+        const skipped = skippedPollingSelector(state);
+
         // Waiting for ajax response
-        if (skipPollingResponse) {
+        if (locked) {
           return;
         }
 
-        const state = getState();
+        // Waiting for next response to get actual data
+        if (skipped) {
+          dispatch(enablePollingResponse());
+          return;
+        }
 
         const oldChatInfo = chatInfoSelector(state);
         const newChatInfo = response.chat_info && response.chat_info.data;
@@ -239,16 +244,16 @@ export const sendTranscriptInfo = createAction(
 
 export const endChat = createAction(
   'WIDGET_CHAT_END',
-  chatId => {
+  chatId => dispatch => {
     if (!chatId) {
       return null;
     }
 
-    lockPollingResponse();
+    dispatch(lockPollingResponse());
 
     const promise = DpApi.sendPost(`DP_API/chats/${chatId}/end`, {...ajaxOptions});
-    promise.success(unlockPollingResponse);
-    promise.catch(unlockPollingResponse);
+    promise.success(() => dispatch(unlockPollingResponse()));
+    promise.catch(() => dispatch(unlockPollingResponse()));
 
     return promise;
   }
@@ -256,16 +261,16 @@ export const endChat = createAction(
 
 export const reopenChat = createAction(
   'WIDGET_CHAT_REOPEN',
-  chatId => {
+  chatId => dispatch => {
     if (!chatId) {
       return null;
     }
 
-    lockPollingResponse();
+    dispatch(lockPollingResponse());
 
     const promise = DpApi.sendPost(`DP_API/chats/${chatId}/reopen`, {...ajaxOptions});
-    promise.success(unlockPollingResponse);
-    promise.catch(unlockPollingResponse);
+    promise.success(() => dispatch(unlockPollingResponse()));
+    promise.catch(() => dispatch(unlockPollingResponse()));
 
     return promise;
   }
