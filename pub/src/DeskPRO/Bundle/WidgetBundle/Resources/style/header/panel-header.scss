@@ -15,21 +15,23 @@
   display: block;
   font-size: 11px;
   position: absolute;
-  right: 0;
   top: 0;
   color: #dadada;
   width: 55px;
   height: 55px;
   text-align: center;
-  border-right: 1px solid #e7e7e7;
   transition: all 0.3s ease;
 
   i { top: 22px; transition: all 0.3s ease; }
   i.fa-navicon { top: 20px; font-size: 1.4em; }
   &:hover i { color: #333; }
-  &.left { left: 0; }
-  &.right { right: 0; }
-  &  ~ .dpdesignportal-header-controls {
+  &.left {
+    left: 0;
+    border-right: 1px solid #e7e7e7;
+    border-left: 0;
+  }
+  &.right {
+    right: 0;
     border-right: 0;
     border-left: 1px solid #e7e7e7;
   }
