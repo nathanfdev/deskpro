@@ -37,7 +37,10 @@ export class ReplyForm extends React.Component {
 
     if (!this.timeout) {
       const onUserTyping = () => {
-        this.props.onUserTyping(this.state.message);
+        if (this.state.message !== '<p><br></p>') {
+          this.props.onUserTyping(this.state.message);
+        }
+
         this.timeout = null;
       };
 
