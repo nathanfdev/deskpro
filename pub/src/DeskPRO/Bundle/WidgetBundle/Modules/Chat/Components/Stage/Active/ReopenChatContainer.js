@@ -39,9 +39,11 @@ export class ReopenChatContainer extends React.Component {
   }
 
   onDisableReopen = () => {
-    this.setState({
-      displayChild: false
-    });
+    if (this.state.displayChild) {
+      this.setState({
+        displayChild: false
+      });
+    }
   };
 
   onReopen = () => {
