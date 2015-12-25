@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api;
+namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\TextStringTransformer;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -38,16 +38,16 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class ChatTranscriptInfoType.
+ * Class CreateChatType.
  */
-class ChatTranscriptInfoType extends AbstractCreateChatType
+class CreateChatType extends AbstractCreateChatType
 {
     /**
      * {@inheritdoc}
      */
     public function getName()
     {
-        return 'api_chat_transcription_info';
+        return 'api_chat_create';
     }
 
     /**
@@ -62,8 +62,8 @@ class ChatTranscriptInfoType extends AbstractCreateChatType
             ])
             ->add('email', 'email', [
                 'property_path' => 'person_email',
+                'required'      => false,
                 'constraints'   => [
-                    new Assert\NotBlank(),
                     new Assert\Email(),
                 ],
             ])

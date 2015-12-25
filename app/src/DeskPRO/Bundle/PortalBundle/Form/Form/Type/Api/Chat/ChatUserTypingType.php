@@ -29,23 +29,23 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api;
+namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class ChatMessageType.
+ * Class ChatUserTypingType.
  */
-class ChatMessageType extends AbstractType
+class ChatUserTypingType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function getName()
     {
-        return 'api_chat_message';
+        return 'api_chat_user_typing';
     }
 
     /**
@@ -54,13 +54,7 @@ class ChatMessageType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('message', 'html_textarea')
-            ->add('attachments', 'collection', [
-                'type'         => 'auth_blob',
-                'allow_add'    => true,
-                'allow_delete' => true,
-                'required'     => false,
-            ])
+            ->add('partial_message', 'html_textarea')
         ;
     }
 

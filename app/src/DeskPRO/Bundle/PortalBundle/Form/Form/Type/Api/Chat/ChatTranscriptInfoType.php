@@ -29,24 +29,25 @@
 /**
  * DeskPRO.
  */
+namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
-namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api;
-
-use Symfony\Component\Form\AbstractType;
+use DeskPRO\Bundle\AppBundle\Form\DataTransformer\TextStringTransformer;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class ChatFeedbackType.
+ * Class ChatTranscriptInfoType.
  */
-class ChatFeedbackType extends AbstractType
+class ChatTranscriptInfoType extends AbstractCreateChatType
 {
     /**
      * {@inheritdoc}
      */
     public function getName()
     {
-        return 'api_chat_feedback';
+        return 'api_chat_transcription_info';
     }
 
     /**
@@ -55,14 +56,22 @@ class ChatFeedbackType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('helpful', 'number', [
-                'property_path' => 'rating_overall',
-            ])
-            ->add('comment', 'text', [
-                'property_path' => 'rating_comment',
+            ->add('name', 'text', [
+                'property_path' => 'person_name',
                 'required'      => false,
             ])
+            ->add('email', 'email', [
+                'property_path' => 'person_email',
+                'constraints'   => [
+                    new Assert\NotBlank(),
+                    new Assert\Email(),
+                ],
+            ])
         ;
+
+        $builder->get('name')->addModelTransformer(new TextStringTransformer());
+        $builder->get('email')->addModelTransformer(new TextStringTransformer());
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetPerson']);
     }
 
     /**

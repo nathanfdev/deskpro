@@ -29,23 +29,23 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api;
+namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class ChatUserTypingType.
+ * Class ChatFeedbackType.
  */
-class ChatUserTypingType extends AbstractType
+class ChatFeedbackType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function getName()
     {
-        return 'api_chat_user_typing';
+        return 'api_chat_feedback';
     }
 
     /**
@@ -54,7 +54,13 @@ class ChatUserTypingType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('partial_message', 'html_textarea')
+            ->add('helpful', 'number', [
+                'property_path' => 'rating_overall',
+            ])
+            ->add('comment', 'text', [
+                'property_path' => 'rating_comment',
+                'required'      => false,
+            ])
         ;
     }
 
