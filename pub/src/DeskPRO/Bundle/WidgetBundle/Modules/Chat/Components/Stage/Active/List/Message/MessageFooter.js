@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
-import { TimeAgo } from 'DeskPRO/Component/TimeAgo';
+import TimeAgo from 'react-timeago';
 import classNames from 'classnames';
+import { timeAgoForamtter } from '../../../../../../../Services/timeago';
 
 export class MessageFooter extends React.Component {
 
@@ -26,6 +27,7 @@ export class MessageFooter extends React.Component {
         <div className={classNames({'right': isUser})}>
           {date &&
             <TimeAgo className="dpdesignportal-message-footer-timer"
+                     formatter={timeAgoForamtter}
                      minPeriod={60000}
                      date={date}/>
           }
