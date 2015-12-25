@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import TimeAgo from 'react-timeago';
+import { TimeAgo } from 'DeskPRO/Component/TimeAgo';
 import classNames from 'classnames';
 
 export class MessageFooter extends React.Component {

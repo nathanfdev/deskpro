@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import TimeAgo from 'react-timeago';
+import { TimeAgo } from 'DeskPRO/Component/TimeAgo';
 
 export class InlineEvent extends React.Component {
 
