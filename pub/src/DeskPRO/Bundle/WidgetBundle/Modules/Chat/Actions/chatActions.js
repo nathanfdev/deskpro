@@ -300,7 +300,10 @@ export const endChat = createAction(
     dispatch(lockPollingResponse());
 
     const promise = DpApi.sendPost(`DP_API/chats/${chatId}/end`, {...ajaxOptions});
-    promise.success(() => dispatch(unlockPollingResponse()));
+    promise.success(() => {
+      dispatch(unlockPollingResponse());
+      localStorage.removeItem('dpWidget.chat.chatId');
+    });
     promise.catch(() => dispatch(unlockPollingResponse()));
 
     return promise;
@@ -317,7 +320,10 @@ export const reopenChat = createAction(
     dispatch(lockPollingResponse());
 
     const promise = DpApi.sendPost(`DP_API/chats/${chatId}/reopen`, {...ajaxOptions});
-    promise.success(() => dispatch(unlockPollingResponse()));
+    promise.success(() => {
+      dispatch(unlockPollingResponse());
+      localStorage.setItem('dpWidget.chat.chatId', chatId);
+    });
     promise.catch(() => dispatch(unlockPollingResponse()));
 
     return promise;
