@@ -3,15 +3,13 @@ import { connect, Provider } from 'react-redux';
 import { windowResize } from '../../Actions/dpWindowActions';
 import { widgetOpenedSelector, isBubbleSelector } from '../../Selectors/dpWindow';
 import { widgetLoadedSelector } from '../../Selectors/bootstrap';
-import { onlineAgentsCountSelector } from '../../Selectors/agent';
 import Frame from 'Ampliflux/common/components/Frame';
 import store from '../../../../Services/store';
 
 @connect(state => ({
   widgetOpened: widgetOpenedSelector(state),
   widgetLoaded: widgetLoadedSelector(state),
-  isBubble: isBubbleSelector(state),
-  agentsCounts: onlineAgentsCountSelector(state)
+  isBubble: isBubbleSelector(state)
 }))
 export class WidgetFrameContainer extends React.Component {
 
@@ -19,7 +17,6 @@ export class WidgetFrameContainer extends React.Component {
     dispatch: PropTypes.func,
     widgetOpened: PropTypes.bool,
     widgetLoaded: PropTypes.bool,
-    agentsCounts: PropTypes.number,
     isBubble: PropTypes.bool,
     children: PropTypes.any
   };
@@ -38,7 +35,7 @@ export class WidgetFrameContainer extends React.Component {
   }
 
   render() {
-    const { widgetOpened, widgetLoaded, isBubble, agentsCounts, children } = this.props;
+    const { widgetOpened, widgetLoaded, isBubble, children } = this.props;
     const childProps = children.props;
 
     const frameStyles = {};
@@ -56,7 +53,7 @@ export class WidgetFrameContainer extends React.Component {
              name="widget_iframe"
              frameStyles={frameStyles}
              containerStyles={containerStyles}
-             isVisible={widgetLoaded && widgetOpened && agentsCounts}>
+             isVisible={widgetLoaded && widgetOpened}>
 
         <Provider store={store}>
           {React.cloneElement(children, {...childProps, isBubble})}

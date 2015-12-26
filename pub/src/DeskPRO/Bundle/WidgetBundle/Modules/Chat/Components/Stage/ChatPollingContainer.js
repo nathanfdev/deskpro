@@ -60,7 +60,7 @@ export class ChatPollingContainer extends React.Component {
       }
     });
 
-    // If can send chat transcript and chat ended
+    // If can send chat transcript data and chat is ended
     if (isEnded && authorEmail && transcriptChecked && !transcriptSending && !transcriptSent) {
       // send transcript data
       dispatch(sendTranscriptData(chatId));

@@ -4,22 +4,27 @@ import { Trigger } from './Trigger/Trigger';
 import { Widget } from './Widget/Widget';
 import { windowResize, openWidget } from '../Actions/dpWindowActions';
 import { setChatId } from '../../Chat/Actions/chatActions';
+import { widgetLoadedSelector } from '../Selectors/bootstrap';
+import { onlineAgentsCountSelector } from '../Selectors/agent';
 import $ from 'jquery';
 import debounce from 'lodash/function/debounce';
 import history from '../../../Services/history';
 
-@connect()
+@connect(state => ({
+  widgetLoaded: widgetLoadedSelector(state),
+  onlineAgentsCount: onlineAgentsCountSelector(state)
+}))
 export class AppContainer extends React.Component {
 
   static propTypes = {
+    widgetLoaded: PropTypes.bool,
+    onlineAgentsCount: PropTypes.number,
     dispatch: PropTypes.func
   };
 
   constructor(props) {
     super(props);
-    this.onResize = debounce(() => {
-      this.onWindowResize();
-    }, 350);
+    this.onResize = debounce(() => this.onWindowResize(), 350);
   }
 
   componentDidMount() {
@@ -27,6 +32,10 @@ export class AppContainer extends React.Component {
     $(window.parent).on('resize', this.onResize);
 
     this.onWindowResize();
+    this.checkStoredChatId();
+  }
+
+  componentWillUpdate() {
     this.checkStoredChatId();
   }
 
@@ -39,10 +48,11 @@ export class AppContainer extends React.Component {
   }
 
   checkStoredChatId() {
-    const { dispatch } = this.props;
+    const { dispatch, widgetLoaded, onlineAgentsCount } = this.props;
     const storedChatId = Number(localStorage.getItem('dpWidget.chat.chatId'));
 
-    if (storedChatId) {
+    // If we have stored chat and online agents then force load previous chat
+    if (storedChatId && widgetLoaded && onlineAgentsCount > 0) {
       history.replace('/chat/active');
 
       dispatch(setChatId(storedChatId));
