@@ -3,6 +3,7 @@ import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
 import { generate } from 'randomstring';
+import striptags from 'striptags';
 import moment from 'moment';
 import Immutable from 'immutable';
 import {
@@ -247,14 +248,16 @@ export const sendChatMessage = createAction(
     });
 
     // Add optimistic message
-    dispatch(addNewMessages({
-      tmp_id: tmpId,
-      content: params.message,
-      is_html: true,
-      author_avatar: authorAvatar,
-      author_type: 'user',
-      date_created: moment().format()
-    }));
+    if (striptags(params.message)) {
+      dispatch(addNewMessages({
+        tmp_id: tmpId,
+        content: params.message,
+        is_html: true,
+        author_avatar: authorAvatar,
+        author_type: 'user',
+        date_created: moment().format()
+      }));
+    }
 
     // Add optimistic attachments
     const attachments = attachmentsSelector(state);
