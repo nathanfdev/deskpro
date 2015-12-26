@@ -72,6 +72,6 @@ class EventManager implements EventSubscriberInterface
      */
     protected function getStrategyForEvent(SystemEventInterface $event)
     {
-        return $this->strategy_factory->create(true);
+        return $this->strategy_factory->create($event);
     }
 }

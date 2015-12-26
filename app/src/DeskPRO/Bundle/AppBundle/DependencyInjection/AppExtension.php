@@ -39,8 +39,11 @@ class AppExtension extends Extension
 {
     public function load(array $config, ContainerBuilder $container)
     {
+        $config = $this->processConfiguration(new Configuration(), $config);
         $loader = new YamlDirectoryLoader($container);
         $loader->loadDir(__DIR__.'/../Resources/config/services');
+
+        $container->setParameter('notification.settings', $config['notification']['strategies']);
 
         // use our translator
         $container->setAlias('translator', 'translator.noop');

@@ -42,7 +42,7 @@ export class DpApp extends React.Component {
 
   componentDidMount() {
     $(window).on('resize', this.onResize);
-    setInterval(() => this.props.dispatch(pollActionAlerts()), 5000);
+    setInterval(() => this.props.dispatch(pollActionAlerts()), 25000);
   }
 
   componentWillUnmount() {

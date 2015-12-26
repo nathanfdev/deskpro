@@ -28,9 +28,15 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification\Strategy;
 
+use DeskPRO\Bundle\AppBundle\Notification\Delivery\DeliveryService;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
+use DeskPRO\Bundle\AppBundle\Notification\NotifyHandlerInterface;
 
 interface NotificationStrategyInterface
 {
     public function handleSystemEvent(SystemEventInterface $event);
+
+    public function setDeliveryService(DeliveryService $deliveryService);
+
+    public function attachEventHandler(NotifyHandlerInterface $handler);
 }
