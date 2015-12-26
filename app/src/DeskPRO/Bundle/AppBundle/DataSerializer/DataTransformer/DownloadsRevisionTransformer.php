@@ -46,7 +46,7 @@ class DownloadsRevisionTransformer extends AbstractDataSerializerTransformer
     {
         return [
             'id',
-            'news_id',
+            'download_id',
             'person',
             'date_created',
         ];
