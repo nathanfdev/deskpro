@@ -1,5 +1,4 @@
 import { createSelector } from 'reselect';
-import moment from 'moment';
 
 const stateSelector = state => state.Chat.chat;
 
@@ -64,6 +63,11 @@ export const chatLoadedSelector = createSelector(
   state => state.getIn(['chat', 'loaded'])
 );
 
+export const canReopenSelector = createSelector(
+  stateSelector,
+  state => state.getIn(['chat', 'canReopen'])
+);
+
 export const chatInfoSelector = createSelector(
   stateSelector,
   state => state.getIn(['chat', 'info'])
@@ -117,17 +121,6 @@ export const dateEndedSelector = createSelector(
 export const isEndedSelector = createSelector(
   dateEndedSelector,
   dateEnded => !!dateEnded
-);
-
-export const canReopenSelector = createSelector(
-  dateEndedSelector,
-  dateEnded => {
-    const ended = moment(dateEnded).format('X');
-    const now = moment().format('X');
-    const delay = ended - now + 120; // can reopen in 2 minutes
-
-    return delay > 0;
-  }
 );
 
 // Messages selectors
