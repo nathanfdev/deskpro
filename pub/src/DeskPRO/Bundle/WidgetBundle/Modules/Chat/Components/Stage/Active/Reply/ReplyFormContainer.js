@@ -6,12 +6,14 @@ import { replaceSmileCodes } from 'DeskPRO/Component/Rte/Emotions';
 import { sendUserTyping, sendChatMessage, removeAttachment } from '../../../../Actions/chatActions';
 import {
   chatIdSelector,
+  chatLoadedSelector,
   agentNameSelector,
   attachmentsSelector,
   attachedImagesCountSelector
 } from '../../../../Selectors/chat';
 
 @connect(state => ({
+  chatLoaded: chatLoadedSelector(state),
   chatId: chatIdSelector(state),
   agentName: agentNameSelector(state),
   attachments: attachmentsSelector(state),
@@ -21,6 +23,7 @@ export class ReplyFormContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func,
+    chatLoaded: PropTypes.bool,
     chatId: PropTypes.number,
     attachments: PropTypes.object
   };
@@ -47,6 +50,10 @@ export class ReplyFormContainer extends React.Component {
   };
 
   render() {
+    if (!this.props.chatLoaded) {
+      return null;
+    }
+
     return (
       <ReopenChatContainer>
         <ReplyForm onUserTyping={this.onUserTyping}

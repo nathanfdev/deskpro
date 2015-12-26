@@ -2,14 +2,16 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { windowResize } from '../../../../Application/Actions/dpWindowActions';
 import {
+  chatLoadedSelector,
   isEndedSelector,
   messagesSelector,
   uploadingFilesSelector,
   attachmentsSelector
 } from '../../../Selectors/chat';
 
-// Define chat selectors to force dispatch re render of the widget content
+// Define chat selectors to force dispatch to re render the widget content
 @connect(state => ({
+  chatLoaded: chatLoadedSelector(state),
   isEnded: isEndedSelector(state),
   messages: messagesSelector(state),
   uploading: uploadingFilesSelector(state),

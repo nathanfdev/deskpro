@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { dateEndedSelector, chatIdSelector, isEndedSelector, lockedPollingSelector } from '../../../Selectors/chat';
 import { reopenChat } from '../../../Actions/chatActions';
+import { windowResize } from '../../../../Application/Actions/dpWindowActions';
 import moment from 'moment';
 
 @connect(state => ({
@@ -45,6 +46,8 @@ export class ReopenChatContainer extends React.Component {
       this.setState({
         displayChild: false
       });
+
+      this.props.dispatch(windowResize());
     }
   };
 
@@ -58,7 +61,7 @@ export class ReopenChatContainer extends React.Component {
   };
 
   checkDateEnded() {
-    const { dateEnded } = this.props;
+    const { dispatch, dateEnded } = this.props;
     if (!dateEnded) {
       clearTimeout(this.timeout);
 
@@ -66,6 +69,8 @@ export class ReopenChatContainer extends React.Component {
         this.setState({
           displayChild: true
         });
+
+        dispatch(windowResize());
       }
 
       return;
@@ -76,7 +81,11 @@ export class ReopenChatContainer extends React.Component {
     const delay = ended - now + 120; // can reopen in 2 minutes
 
     if (this.state.displayChild) {
-      this.timeout = setTimeout(this.onDisableReopen, delay > 0 ? delay * 1000 : 0);
+      if (delay > 0) {
+        this.timeout = setTimeout(this.onDisableReopen, delay * 1000);
+      } else {
+        this.onDisableReopen();
+      }
     }
   }
 
