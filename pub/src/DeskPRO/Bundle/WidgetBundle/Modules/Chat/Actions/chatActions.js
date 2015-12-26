@@ -124,19 +124,24 @@ export const pollingChat = createAction(
         const loaded = chatLoadedSelector(state);
         const transcriptEnabled = transcriptCheckedSelector(state);
 
-        if (newChatInfo && !oldChatInfo.equals(Immutable.fromJS(newChatInfo))) {
-          dispatch(updateChatInfo(newChatInfo));
+        if (newChatInfo) {
+          // New chat info was changed
+          if (!oldChatInfo.equals(Immutable.fromJS(newChatInfo))) {
+            dispatch(updateChatInfo(newChatInfo));
 
-          if (newChatInfo.author_email) {
-            if (!transcriptEnabled) {
-              dispatch(enableSendTranscript());
-            }
-          } else {
-            if (transcriptEnabled) {
-              dispatch(disableSendTranscript());
+            if (newChatInfo.author_email) {
+              if (!transcriptEnabled) {
+                dispatch(enableSendTranscript());
+              }
+            } else {
+              if (transcriptEnabled) {
+                dispatch(disableSendTranscript());
+              }
             }
           }
         }
+
+        // Received new messages
         if (newMessages.length) {
           const existMessageIds = messageIdsSelector(state);
           const filteredMessages = newMessages
@@ -156,6 +161,8 @@ export const pollingChat = createAction(
             dispatch(ackChatMessages(chatId, {message_ids: ackMessages.map(message => message.id)}));
           }
         }
+
+        // Mark chat as loaded on first polling response
         if (!loaded) {
           dispatch(setLoaded());
         }
