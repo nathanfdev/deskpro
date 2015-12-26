@@ -44,9 +44,25 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-            ->arrayNode('data_serializer')
-                ->children()
-                    ->variableNode('types')
+                ->arrayNode('data_serializer')
+                    ->children()
+                        ->variableNode('types')->end()
+                    ->end()
+                ->end()
+                ->arrayNode('notification')
+                    ->children()
+                        ->arrayNode('strategies')->isRequired()
+                            ->prototype('array')
+                                ->children()
+                                    ->scalarNode('strategy')->defaultValue('immediate')->end()
+                                    ->arrayNode('delivery')->isRequired()->requiresAtLeastOneElement()
+                                        ->prototype('scalar')->end()
+                                    ->end()
+                                    ->scalarNode('persistance')->end()
+                                ->end()
+                            ->end()
+                        ->end()
+                    ->end()
                 ->end()
             ->end();
 
