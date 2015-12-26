@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\AgentChat;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -322,5 +323,19 @@ class Messenger
             }
         }
         $this->em->flush();
+    }
+
+    public function createCountResponse($count)
+    {
+        foreach ($count as $cnt) {
+            $data[$cnt['chat_id']] = $cnt;
+        }
+        $chat_ids = array_keys($data);
+
+        // this looks like very, VERY dirty hack. Smells :(
+        $chats_data = $this->dataSerialize($messenger->getChats($chat_ids));
+        foreach ($chats_data['data'] as $chat) {
+            $data[$chat['id']]['chat'] = $chat;
+        }
     }
 }

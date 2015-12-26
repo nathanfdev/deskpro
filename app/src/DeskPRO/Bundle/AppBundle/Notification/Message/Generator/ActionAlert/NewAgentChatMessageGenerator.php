@@ -36,6 +36,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\AbstractGenerator;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Class NewAgentChatMessageGenerator.
@@ -48,12 +49,13 @@ class NewAgentChatMessageGenerator extends AbstractGenerator
     protected $serializer;
 
     /**
-     * @param EntityManager  $em
-     * @param DataSerializer $serializer
+     * @param EntityManager         $em
+     * @param TokenStorageInterface $token_storage
+     * @param DataSerializer        $serializer
      */
-    public function __construct(EntityManager $em, DataSerializer $serializer)
+    public function __construct(EntityManager $em, TokenStorageInterface $token_storage, DataSerializer $serializer)
     {
-        parent::__construct($em);
+        parent::__construct($em, $token_storage);
         $this->serializer = $serializer;
     }
 

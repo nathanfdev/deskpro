@@ -70,7 +70,9 @@ class NewAgentChatMessageGenerator extends AbstractGenerator
         $message = $this->getChatMessage($event);
         $targets = [];
         foreach ($message->getChat()->getPersonList() as $target) {
-            $targets[] = $target->getId();
+            if (is_object($this->user) && $target->getId() !== $this->user->getId()) {
+                $targets[] = $target->getId();
+            }
         }
 
         if (count($targets) < 1) {

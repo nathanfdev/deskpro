@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f216fba597e0fa2612f57d268c295b06",
-    "content-hash": "476030197a4b8dbc5b0183e327200a7f",
+    "hash": "7c6d45a00a1b6120540da45345b294c1",
+    "content-hash": "4fca080a9ae1fdf0648ba93a5786a946",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -619,7 +619,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behatch/contexts/zipball/85537f70350c6e4e1a95f235082b5d49fd8b2c0e",
+                "url": "https://api.github.com/repos/Behatch/contexts/zipball/5df15c4dfa9e79f328bf8871d3b958e1c520e0de",
                 "reference": "85537f70350c6e4e1a95f235082b5d49fd8b2c0e",
                 "shasum": ""
             },
@@ -759,7 +759,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DeskPRO/deskpro-api-php/zipball/e1b38aa839402225ad8da5c70803bfc244ac241e",
+                "url": "https://api.github.com/repos/DeskPRO/deskpro-api-php/zipball/60c2cc427e872e2508be307135552317eb9cbf89",
                 "reference": "e1b38aa839402225ad8da5c70803bfc244ac241e",
                 "shasum": ""
             },
@@ -1194,7 +1194,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/c4ffef2b2296e9d0179eb0b5248e5ae25c9bba3b",
+                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/1b7261af4cedb10080bb56a070c16be2754c75bb",
                 "reference": "c4ffef2b2296e9d0179eb0b5248e5ae25c9bba3b",
                 "shasum": ""
             },
@@ -4046,7 +4046,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/d670d64a389666cc8bf108bc51aef8c467db19a5",
+                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/5a9e0b2a16d8ed4f8e81eb19cad7b18e2455e26e",
                 "reference": "d670d64a389666cc8bf108bc51aef8c467db19a5",
                 "shasum": ""
             },
@@ -5243,6 +5243,50 @@
             "time": "2012-12-21 11:40:51"
         },
         {
+            "name": "pusher/pusher-php-server",
+            "version": "v2.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/pusher/pusher-http-php.git",
+                "reference": "79d755cc5d5b02b67779e2a40782fd6e3726657d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/pusher/pusher-http-php/zipball/79d755cc5d5b02b67779e2a40782fd6e3726657d",
+                "reference": "79d755cc5d5b02b67779e2a40782fd6e3726657d",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "lib/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Library for interacting with the Pusher REST API",
+            "homepage": "https://github.com/pusher/pusher-php-server",
+            "keywords": [
+                "events",
+                "php-pusher-server",
+                "publish",
+                "pusher",
+                "realtime",
+                "rest",
+                "trigger"
+            ],
+            "time": "2015-05-13 11:01:46"
+        },
+        {
             "name": "react/child-process",
             "version": "v0.4.0",
             "source": {
@@ -5485,7 +5529,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/satooshi/php-coveralls/zipball/2fbf803803d179ab1082807308a67bbd5a760c70",
+                "url": "https://api.github.com/repos/satooshi/php-coveralls/zipball/f2fe833caef2c65620c11f5fabe60040df39339f",
                 "reference": "2fbf803803d179ab1082807308a67bbd5a760c70",
                 "shasum": ""
             },

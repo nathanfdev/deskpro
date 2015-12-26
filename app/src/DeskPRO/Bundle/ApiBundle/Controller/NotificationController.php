@@ -73,7 +73,7 @@ class NotificationController extends BaseController
     public function setupLastActionAlert()
     {
         $service = $this->get('deskpro.notification.service');
-
+        $this->getUser();
         $alert = $service->lastAlert($this->getUser());
 
         return View::create(

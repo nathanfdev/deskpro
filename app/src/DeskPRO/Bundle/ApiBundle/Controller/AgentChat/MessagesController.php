@@ -138,19 +138,9 @@ class MessagesController extends AbstractController
         /* @var Messenger $messenger */
 
         $search_service = $this->get('deskpro.agentchat.history');
-        $messenger      = $this->get('deskpro.agentchat.messenger');
+        $helper_service = $this->get('deskpro.agentchat.helper');
         $count          = $search_service->countMessages($this->getUser());
-        $data           = [];
-        foreach ($count as $cnt) {
-            $data[$cnt['chat_id']] = $cnt;
-        }
-        $chat_ids = array_keys($data);
-
-        // this looks like very, VERY dirty hack. Smells :(
-        $chats_data = $this->dataSerialize($messenger->getChats($chat_ids));
-        foreach ($chats_data['data'] as $chat) {
-            $data[$chat['id']]['chat'] = $chat;
-        }
+        $data           = $helper_service->createCountResponse($count);
 
         return View::create(
             $this->createRepresentation($data),
