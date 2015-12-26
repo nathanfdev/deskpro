@@ -36,6 +36,8 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
+use Pusher;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -79,6 +81,32 @@ class NotificationController extends BaseController
         return View::create(
             $this->dataSerialize($alert),
             Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @throws NotFoundHttpException
+     * @throws AccessDeniedHttpException
+     *
+     * @return View
+     * @Annotations\Post("/pusher/auth", name="pusher_auth")
+     */
+    public function pusherAuth(Request $request)
+    {
+        $submitted = $request->request->all();
+        /** @var Pusher $pusher */
+        $pusher = $this->get('deskpro.notification.pusher');
+        $user   = $this->getUser();
+        if ($user->getId() === (int) $submitted['user_id']) {
+            $status = Response::HTTP_OK;
+            $data   = json_decode($pusher->socket_auth($submitted['channel_name'], $submitted['socket_id']), true);
+        } else {
+            $data   = [];
+            $status = Response::HTTP_FORBIDDEN;
+        }
+
+        return View::create(
+            $data, $status
         );
     }
 }
