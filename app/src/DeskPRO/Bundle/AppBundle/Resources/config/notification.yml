@@ -1,0 +1,12 @@
+app:
+  notification:
+    strategies:
+      notification.agent_chat.new_message:
+        strategy: immediate
+        delivery:
+          - pusher
+      notification.yet.another.system.event:
+        strategy: deffered
+        delivery:
+          - db
+        persistance: db
