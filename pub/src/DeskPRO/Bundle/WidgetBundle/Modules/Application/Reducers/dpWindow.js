@@ -6,12 +6,21 @@ const initialState = {
   options: {},
   triggerPopupOpened: false,
   widgetOpened: false,
-  widgetDimensions: {width: null, height: null}
+  dimensions: {
+    window: {
+      width: null,
+      height: null
+    },
+    widget: {
+      width: null,
+      height: null
+    }
+  }
 };
 
 export default createReducer(initialState, {
   [actions.loadOptions]: setFullPayload('options'),
-  [actions.windowResize]: setFullPayload('widgetDimensions'),
+  [actions.windowResize]: setFullPayload('dimensions'),
 
   [actions.openTriggerPopup]: setValue('triggerPopupOpened', true),
   [actions.closeTriggerPopup]: setValue('triggerPopupOpened', false),

@@ -13,15 +13,25 @@ export const triggerPopupOpenedSelector = createSelector(
   state => state.get('triggerPopupOpened')
 );
 
-// Widget dimensions selectors
-export const widgetDimensionsSelector = createSelector(
+// Dimensions selectors
+export const dimensionsSelector = createSelector(
   stateSelector,
-  state => state.get('widgetDimensions')
+  state => state.get('dimensions')
+);
+
+export const windowDimensionsSelector = createSelector(
+  dimensionsSelector,
+  dimensions => dimensions.get('window')
+);
+
+export const widgetDimensionsSelector = createSelector(
+  dimensionsSelector,
+  dimensions => dimensions.get('widget')
 );
 
 export const widgetHeightSelector = createSelector(
   widgetDimensionsSelector,
-  dimensions => dimensions.get('height')
+  widgetDimensions => widgetDimensions.get('height')
 );
 
 // Options selectors

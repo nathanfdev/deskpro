@@ -4,8 +4,14 @@ import $ from 'jquery';
 export const windowResize = createAction(
   'WIDGET_WINDOW_RESIZE',
   () => ({
-    width: $(window.widgetFrame).width(),
-    height: $(window.widgetFrame).height()
+    window: {
+      width: $(parent.window).width(),
+      height: $(parent.window).height()
+    },
+    widget: {
+      width: $(window.widgetFrame).width(),
+      height: $(window.widgetFrame).height()
+    }
   })
 );
 
