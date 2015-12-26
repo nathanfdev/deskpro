@@ -63,6 +63,11 @@ export const chatLoadedSelector = createSelector(
   state => state.getIn(['chat', 'loaded'])
 );
 
+export const canReopenSelector = createSelector(
+  stateSelector,
+  state => state.getIn(['chat', 'canReopen'])
+);
+
 export const chatInfoSelector = createSelector(
   stateSelector,
   state => state.getIn(['chat', 'info'])

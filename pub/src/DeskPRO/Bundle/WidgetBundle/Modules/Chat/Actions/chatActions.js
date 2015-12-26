@@ -31,6 +31,8 @@ export const setChatId = createAction(
 export const setLoaded = createAction('WIDGET_CHAT_SET_LOADED');
 export const unsetLoaded = createAction('WIDGET_CHAT_UNSET_LOADED');
 export const updateChatInfo = createAction('WIDGET_CHAT_UPDATE_CHAT_INFO');
+export const enableChatReopen = createAction('WIDGET_CHAT_ENABLE_REOPEN');
+export const disableChatReopen = createAction('WIDGET_CHAT_DISABLE_REOPEN');
 
 // Polling actions
 export const lockPollingResponse = createAction('WIDGET_LOCK_POLLING_RESPONSE');

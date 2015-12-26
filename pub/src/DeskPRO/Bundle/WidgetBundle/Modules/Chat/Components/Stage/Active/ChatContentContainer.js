@@ -7,7 +7,8 @@ import {
   messagesSelector,
   uploadingFilesSelector,
   attachmentsSelector,
-  feedbackStageSelector
+  feedbackStageSelector,
+  canReopenSelector
 } from '../../../Selectors/chat';
 
 // Define chat selectors to force dispatch to re render the widget content
@@ -17,7 +18,8 @@ import {
   messages: messagesSelector(state),
   uploading: uploadingFilesSelector(state),
   attachments: attachmentsSelector(state),
-  feedbackStage: feedbackStageSelector(state)
+  feedbackStage: feedbackStageSelector(state),
+  canReopen: canReopenSelector(state)
 }))
 export class ChatContentContainer extends React.Component {
 
