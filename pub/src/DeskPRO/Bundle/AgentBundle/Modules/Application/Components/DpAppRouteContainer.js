@@ -46,7 +46,7 @@ export class DpAppRouteContainer extends React.Component {
       this.welcomePageTimer = setTimeout(() => dispatch(AppActions.doneInitialLoad()), 3000);
       // this.pollingInterval = setInterval(() => this.props.dispatch(pollActionAlerts()), 25000);
       const pusher = new PusherClient(user);
-      pusher.bind('test_channel', 'action_alert', dispatch, newActionAlerts);
+      pusher.bind('private-channel-' + user.get('id'), 'action_alert', dispatch, newActionAlerts);
     }
   }
 

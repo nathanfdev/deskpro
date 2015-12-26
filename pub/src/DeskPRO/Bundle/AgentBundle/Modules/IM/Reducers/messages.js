@@ -50,17 +50,4 @@ export default createReducer(initialState, {
 
     return newState;
   },
-  [newActionAlerts]: async({
-    success: (state, payload) => {
-      let newState = state;
-      Immutable.List(payload).map((element) => {
-        if (element.type === 'refresh_counts') {
-          newState = state.set('counts', payload);
-        }
-      });
-      return newState;
-    },
-    begin: (state) => state.set('countsLoading', true),
-    done: (state) => state.set('countsLoading', false)
-  })
 });
