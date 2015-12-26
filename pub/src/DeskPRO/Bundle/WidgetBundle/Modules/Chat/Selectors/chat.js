@@ -49,17 +49,17 @@ export const transcriptSentSelector = createSelector(
 // Chat info selectors
 export const chatIdSelector = createSelector(
   stateSelector,
-  state => state.get('chatId')
+  state => state.getIn(['chat', 'id'])
 );
 
 export const chatLoadedSelector = createSelector(
   stateSelector,
-  state => state.get('chatLoaded')
+  state => state.getIn(['chat', 'loaded'])
 );
 
 export const chatInfoSelector = createSelector(
   stateSelector,
-  state => state.get('chatInfo')
+  state => state.getIn(['chat', 'info'])
 );
 
 export const agentIdSelector = createSelector(

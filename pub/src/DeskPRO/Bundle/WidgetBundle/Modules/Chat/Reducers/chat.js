@@ -25,9 +25,11 @@ const initialState = {
     locked: false,
     skipped: false
   },
-  chatId: null,
-  chatLoaded: false,
-  chatInfo: {},
+  chat: {
+    id: null,
+    loaded: false,
+    info: {}
+  },
   messages: [],
   uploading: {
     files: [],
@@ -51,17 +53,17 @@ export default createReducer(initialState, {
 
   // Chat setup
   [actions.setChatId]: composeHandlers(
-    setFullPayload('chatId'),
-    setValue('chatLoaded', false),
+    setFullPayload('chat.id'),
+    setValue('chat.loaded', false),
     setValue('messages', []),
     setValue('transcript.sent', false)
   ),
-  [actions.setLoaded]: setValue('chatLoaded', true),
-  [actions.unsetLoaded]: setValue('chatLoaded', false),
-  [actions.updateChatInfo]: setFullPayload('chatInfo'),
-  [actions.endChat]: setValue('chatInfo.date_ended', moment().format()),
+  [actions.setLoaded]: setValue('chat.loaded', true),
+  [actions.unsetLoaded]: setValue('chat.loaded', false),
+  [actions.updateChatInfo]: setFullPayload('chat.info'),
+  [actions.endChat]: setValue('chat.info.date_ended', moment().format()),
   [actions.reopenChat]: composeHandlers(
-    setValue('chatInfo.date_ended', null),
+    setValue('chat.info.date_ended', null),
     setValue('transcript.sent', false)
   ),
 
