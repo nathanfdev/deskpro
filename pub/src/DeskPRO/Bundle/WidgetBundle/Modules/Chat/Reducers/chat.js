@@ -30,6 +30,7 @@ const initialState = {
     loaded: false,
     info: {}
   },
+  feedbackStage: 'dialog',
   messages: [],
   uploading: {
     files: [],
@@ -64,7 +65,8 @@ export default createReducer(initialState, {
   [actions.endChat]: setValue('chat.info.date_ended', moment().format()),
   [actions.reopenChat]: composeHandlers(
     setValue('chat.info.date_ended', null),
-    setValue('transcript.sent', false)
+    setValue('transcript.sent', false),
+    setValue('feedbackStage', 'dialog')
   ),
 
   // Messages
@@ -117,5 +119,9 @@ export default createReducer(initialState, {
     start: setValue('transcript.sending', true),
     done: setValue('transcript.sending', false),
     error: setValueOnError('transcript.sending', false)
-  })
+  }),
+
+  // Feedback
+  [actions.showNotHelpfulForm]: setValue('feedbackStage', 'form'),
+  [actions.sendFeedback]: setValue('feedbackStage', 'finished')
 });

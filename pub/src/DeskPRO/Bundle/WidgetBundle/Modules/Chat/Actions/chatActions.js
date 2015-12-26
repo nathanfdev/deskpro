@@ -31,6 +31,8 @@ export const setChatId = createAction(
 export const setLoaded = createAction('WIDGET_CHAT_SET_LOADED');
 export const unsetLoaded = createAction('WIDGET_CHAT_UNSET_LOADED');
 export const updateChatInfo = createAction('WIDGET_CHAT_UPDATE_CHAT_INFO');
+
+// Polling actions
 export const lockPollingResponse = createAction('WIDGET_LOCK_POLLING_RESPONSE');
 export const unlockPollingResponse = createAction('WIDGET_UNLOCK_POLLING_RESPONSE');
 export const enablePollingResponse = createAction('WIDGET_ENABLE_POLLING_RESPONSE');
@@ -56,6 +58,9 @@ export const removeUploadingFile = createAction('WIDGET_CHAT_REMOVE_UPLOADING_FI
 export const addAttachment = createAction('WIDGET_CHAT_ADD_ATTACHMENT');
 export const removeAttachment = createAction('WIDGET_CHAT_REMOVE_ATTACHMENT');
 export const resetAttachments = createAction('WIDGET_CHAT_RESET_ATTACHMENTS');
+
+// Feedback actions
+export const showNotHelpfulForm = createAction('WIDGET_CHAT_SHOW_NOT_HELPFUL_FORM');
 
 // Api actions
 export const loadPhraseTranslations = createAction(

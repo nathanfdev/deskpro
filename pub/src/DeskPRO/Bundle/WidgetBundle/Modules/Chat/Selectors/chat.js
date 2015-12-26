@@ -19,6 +19,12 @@ export const phraseTranslationsSelector = createSelector(
   state => state.get('phrases')
 );
 
+// Feedback selectors
+export const feedbackStageSelector = createSelector(
+  stateSelector,
+  state => state.get('feedbackStage')
+);
+
 // Audio selectors
 export const muteSelector = createSelector(
   stateSelector,
