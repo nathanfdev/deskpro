@@ -28,7 +28,6 @@ const initialState = {
   chat: {
     id: null,
     loaded: false,
-    canReopen: true,
     info: {}
   },
   feedbackStage: 'dialog',
@@ -69,8 +68,6 @@ export default createReducer(initialState, {
     setValue('transcript.sent', false),
     setValue('feedbackStage', 'dialog')
   ),
-  [actions.enableChatReopen]: setValue('canReopen', true),
-  [actions.disableChatReopen]: setValue('canReopen', false),
 
   // Messages
   [actions.addNewMessages]: pushPayloadToCollection('messages'),
