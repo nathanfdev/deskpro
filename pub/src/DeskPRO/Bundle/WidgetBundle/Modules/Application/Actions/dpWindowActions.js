@@ -2,16 +2,18 @@ import { createAction } from 'Ampliflux';
 import $ from 'jquery';
 
 export const windowResize = createAction(
-  'WIDGET_WINDOW_RESIZE',
+  'WINDOW_RESIZE',
   () => ({
-    window: {
-      width: $(parent.window).width(),
-      height: $(parent.window).height()
-    },
-    widget: {
-      width: $(window.widgetFrame).width(),
-      height: $(window.widgetFrame).height()
-    }
+    width: $(parent.window).width(),
+    height: $(parent.window).height()
+  })
+);
+
+export const widgetResize = createAction(
+  'WIDGET_RESIZE',
+  () => ({
+    width: $(window.widgetFrame).width(),
+    height: $(window.widgetFrame).height()
   })
 );
 

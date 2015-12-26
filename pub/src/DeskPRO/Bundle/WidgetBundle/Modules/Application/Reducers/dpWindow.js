@@ -20,7 +20,9 @@ const initialState = {
 
 export default createReducer(initialState, {
   [actions.loadOptions]: setFullPayload('options'),
-  [actions.windowResize]: setFullPayload('dimensions'),
+
+  [actions.windowResize]: setFullPayload('dimensions.window'),
+  [actions.widgetResize]: setFullPayload('dimensions.widget'),
 
   [actions.openTriggerPopup]: setValue('triggerPopupOpened', true),
   [actions.closeTriggerPopup]: setValue('triggerPopupOpened', false),

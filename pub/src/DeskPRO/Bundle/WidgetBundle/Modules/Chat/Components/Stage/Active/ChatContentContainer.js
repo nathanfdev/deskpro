@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { windowResize } from '../../../../Application/Actions/dpWindowActions';
+import { widgetResize } from '../../../../Application/Actions/dpWindowActions';
 import {
   chatLoadedSelector,
   isEndedSelector,
@@ -29,7 +29,7 @@ export class ChatContentContainer extends React.Component {
   };
 
   componentWillReceiveProps() {
-    this.props.dispatch(windowResize());
+    this.props.dispatch(widgetResize());
   }
 
   render() {
