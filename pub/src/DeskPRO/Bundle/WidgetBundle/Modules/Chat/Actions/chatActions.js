@@ -14,7 +14,8 @@ import {
   authorAvatarSelector,
   messageIdsSelector,
   attachmentsSelector,
-  transcriptCheckedSelector
+  transcriptCheckedSelector,
+  canReopenSelector
 } from '../Selectors/chat';
 
 // Phrase translations
@@ -137,6 +138,23 @@ export const pollingChat = createAction(
               if (transcriptEnabled) {
                 dispatch(disableSendTranscript());
               }
+            }
+          }
+
+          // Toggle chat reopen
+          const canReopen = canReopenSelector(state);
+
+          if (!newChatInfo.date_ended) {
+            if (!canReopen) {
+              dispatch(enableChatReopen());
+            }
+          } else {
+            const ended = moment(newChatInfo.date_ended).format('X');
+            const now = moment().format('X');
+            const delay = ended - now + 120; // can reopen in 2 minutes
+
+            if (canReopen && delay < 0) {
+              dispatch(disableChatReopen());
             }
           }
         }

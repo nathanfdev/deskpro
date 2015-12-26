@@ -2,13 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import history from '../../../../Services/history';
 import moment from 'moment';
-import {
-  pollingChat,
-  sendTranscriptData,
-  unsetLoaded,
-  disableChatReopen,
-  enableChatReopen
-} from '../../Actions/chatActions';
+import { pollingChat, sendTranscriptData, unsetLoaded } from '../../Actions/chatActions';
 import {
   chatIdSelector,
   agentIdSelector,
@@ -56,7 +50,7 @@ export class ChatPollingContainer extends React.Component {
   }
 
   pollingRequest = () => {
-    const { dispatch, chatId, agentId, lastMessageId, dateEnded, canReopen } = this.props;
+    const { dispatch, chatId, agentId, lastMessageId } = this.props;
     const { isEnded, authorEmail, transcriptChecked, transcriptSending, transcriptSent } = this.props;
 
     if (!chatId) {
@@ -76,21 +70,6 @@ export class ChatPollingContainer extends React.Component {
     if (isEnded && authorEmail && transcriptChecked && !transcriptSending && !transcriptSent) {
       // send transcript data
       dispatch(sendTranscriptData(chatId));
-    }
-
-    // Toggle chat reopen
-    if (!dateEnded) {
-      if (!canReopen) {
-        dispatch(enableChatReopen());
-      }
-    } else {
-      const ended = moment(dateEnded).format('X');
-      const now = moment().format('X');
-      const delay = ended - now + 120; // can reopen in 2 minutes
-
-      if (canReopen && delay < 0) {
-        dispatch(disableChatReopen());
-      }
     }
 
     // Send ajax next request
