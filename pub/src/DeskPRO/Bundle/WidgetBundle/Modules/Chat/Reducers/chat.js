@@ -65,6 +65,7 @@ export default createReducer(initialState, {
   [actions.updateChatInfo]: setFullPayload('chat.info'),
   [actions.endChat]: setValue('chat.info.date_ended', moment().format()),
   [actions.reopenChat]: composeHandlers(
+    setValue('chat.canReopen', true),
     setValue('chat.info.date_ended', null),
     setValue('transcript.sent', false),
     setValue('feedbackStage', 'dialog')
