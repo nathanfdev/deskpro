@@ -128,7 +128,7 @@ export class CommentsToReviewSection extends Component {
         <ul>
           {config.map((item, index)=>
             <ListItemContainer key={index}
-                               label="ToValidate"
+                               label="ToReview"
                                group={item.content}
                                listOptions={{content: item.content, navItem: {is_reviewed: 0}}}>
               <ListItem label={item.label}

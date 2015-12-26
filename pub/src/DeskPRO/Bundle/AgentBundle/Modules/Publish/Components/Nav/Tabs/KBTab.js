@@ -3,6 +3,7 @@ import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import { SectionsPane, Section, SectionGroupedHeader, ButtonsPane, Button }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { NestedList } from '../NestedList';
+import { NavGroupingPopupContainer } from '../NavGroupingPopupContainer';
 
 
 export class KBTab extends Component {
@@ -10,20 +11,33 @@ export class KBTab extends Component {
   static propTypes = {
     loaded: PropTypes.bool.isRequired,
     articles: PropTypes.object.isRequired,
-    toggleGroupingVisibility: PropTypes.func.isRequired
+    toggleGroupingVisibility: PropTypes.func.isRequired,
+    closeGroupingVisibility: PropTypes.func.isRequired
   };
 
+  constructor(props) {
+    super(props);
+    this.state = { expanded: false };
+  }
+
   render() {
-    const { loaded, articles, toggleGroupingVisibility } = this.props;
+    const { loaded, articles, toggleGroupingVisibility, closeGroupingVisibility } = this.props;
+
     return (
       <LoadIndicator loaded={loaded}>
         <SectionsPane>
-          <Section ref="kb">
+          <Section>
             <SectionGroupedHeader label="Knowledgebase"
+                                  ref="articles"
                                   count={articles.get('count')}
-                                  callback={toggleGroupingVisibility('articles')}/>
+                                  callback={toggleGroupingVisibility.bind(this)}/>
             <NestedList content="articles"
                         items={articles.get('nested').toJS()}/>
+            <NavGroupingPopupContainer attachTo={this.refs.articles}
+                                       title="articles"
+                                       visible={this.state.expanded}
+                                       closeGroupingVisibility={closeGroupingVisibility.bind(this)}
+                                       groupedBy={articles.get('grouped_by')}/>
           </Section>
         </SectionsPane>
 

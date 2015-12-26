@@ -1,6 +1,5 @@
 import React, {Component, PropTypes} from 'react';
 import * as actions from '../../Actions/publishNavActions';
-import * as listActions from '../../Actions/publishListActions';
 import { Nav } from './Nav';
 
 import { connect } from 'react-redux';
@@ -48,13 +47,6 @@ export class NavContainer extends Component {
     this.props.dispatch(actions.setMine(isMine));
   }
 
-  toggleGroupingVisibility(listName) {
-    return (event) => {
-      event.preventDefault();
-      this.props.dispatch(actions.toggleListGroupingVisibility(listName));
-    };
-  }
-
   render() {
     const { dispatch, articles, news, downloads, todo, dpWindow, loaded } = this.props;
 
@@ -66,7 +58,6 @@ export class NavContainer extends Component {
            todo={todo}
            grouping={this.props.grouping}
            onGroupingChange={this.onGroupingChange.bind(this)}
-           toggleGroupingVisibility={this.toggleGroupingVisibility.bind(this)}
            setMine={this.setMine.bind(this)}
            dispatch={dispatch.bind(this)}
            dpWindow={dpWindow}/>
