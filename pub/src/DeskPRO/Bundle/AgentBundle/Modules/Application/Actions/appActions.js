@@ -3,12 +3,12 @@ import { hashChanged } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Acti
 
 export const setActiveApp = createAction(
   'APP_SET_ACTIVE_APP',
-  appId => dispatch => {
+  (appId) => dispatch => {
     dispatch(hashChanged());
     return appId;
   }
 );
-export const toggleView   = createAction('APP_TOGGLE_VIEW');
+export const toggleView = createAction('APP_TOGGLE_VIEW');
 export const windowResize = createAction('APP_WIN_RESIZE', (width, height) => ({ width, height }));
 
 // Welcome page actions
@@ -24,7 +24,7 @@ export const expandNav = createAction('APP_EXPAND_NAV');
 export const setColumnDimensions = createAction('APP_SET_COLUMN_DIMENSIONS');
 export const setSidebarMode = createAction(
   'APP_SET_SIDEBAR_MODE',
-  mode => dispatch => {
+  (mode) => dispatch => {
     if (mode === 'static') {
       dispatch(expandNav());
     } else {

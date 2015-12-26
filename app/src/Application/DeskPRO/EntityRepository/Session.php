@@ -31,12 +31,12 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Session as SessionEntity;
-use Application\DeskPRO\Entity\Visitor as VisitorEntity;
 
 class Session extends AbstractEntityRepository
 {
@@ -97,29 +97,6 @@ class Session extends AbstractEntityRepository
         }
 
         return $session;
-    }
-
-    /**
-     * Find an active session that is tied to a visitor.
-     *
-     * @param  $visitor
-     *
-     * @return Session
-     */
-    public function getSessionFromVisitor(VisitorEntity $visitor)
-    {
-        $session = $this->getEntityManager()->createQuery('
-            SELECT s
-            FROM DeskPRO:Session s
-            WHERE s.visitor = ?1
-            ORDER BY s.id DESC
-        ')->setParameter(1, $visitor)->setMaxResults(1)->execute();
-
-        if (!count($session)) {
-            return;
-        }
-
-        return $session[0];
     }
 
     /**

@@ -3,6 +3,7 @@ import _ from "lodash"
 import $ from "jquery"
 import PortalHttp from "DeskPRO/Bundle/PortalBundle/Http/PortalHttp"
 import PortalUrlGenerator from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator"
+import PortalPhrases from "DeskPRO/Bundle/PortalBundle/PortalPhrases"
 
 class SuggestionRow extends React.Component {
   constructor(props) {
@@ -40,7 +41,7 @@ class SuggestionMore extends React.Component {
           onClick={this.props.showAll}
           className="show-more-content"
           >
-          Show <strong>{this.props.count}</strong> more...
+          {PortalPhrases.get('portal.general.show_x_more', {num: this.props.count})}
         </a>
       </li>
     );
@@ -149,8 +150,8 @@ export default class NewTicketSuggestions extends React.Component {
       <div style={{"display": (this.state.search_query.content.length >= 3 && data.results.length > 0 ? " block" : "none")}}>
         <div className="ticket-related-articles">
           <header>
-            <h1>Related Articles</h1>
-            <h2>We found the following articles that may answer your question</h2>
+            <h1>{PortalPhrases.get('portal.tickets.related_articles_title')}</h1>
+            <h2>{PortalPhrases.get('portal.tickets.related_articles_desc')}</h2>
           </header>
           <Suggestions results={data.results} />
         </div>

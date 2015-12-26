@@ -31,6 +31,7 @@
  *
  * @category Commands
  */
+
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\Pop3Config;
@@ -115,8 +116,6 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
         $output->writeln('Clearing out some tables');
 
         $tables = array(
-            'visitor_tracks',
-            'visitors',
             'twitter_accounts',
             'twitter_accounts_followers',
             'twitter_accounts_friends',

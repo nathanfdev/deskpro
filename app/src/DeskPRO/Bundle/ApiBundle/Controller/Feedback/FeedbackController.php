@@ -35,6 +35,8 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 use Application\DeskPRO\Entity\CustomDataFeedback;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\Entity\LabelFeedback;
+use Application\ImportBundle\Generator\Exporter\DeskPRO;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackCountCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackSelectCriteria;
@@ -105,13 +107,13 @@ class FeedbackController extends BaseController
     public function cgetAction(Request $request)
     {
         $dataService = $this->get('data.feedback');
-        $params = $request->query->all();
+        $params      = $this->removeAdditionalParameters($request);
         try {
             $criteria = FeedbackSelectCriteria::fromParameters($params, new OptionsResolver());
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
-        $page = $request->query->get('page', 1);
+        $page  = $request->query->get('page', 1);
         $count = $request->query->get('count', 5);
 
         $feedback = $dataService->selectFeedback($criteria, $page, $count);
@@ -146,7 +148,7 @@ class FeedbackController extends BaseController
     public function getCountsAction(Request $request)
     {
         $dataService = $this->get('data.feedback');
-        $params = $request->query->all();
+        $params      = $this->removeAdditionalParameters($request);
         try {
             $criteria = FeedbackCountCriteria::fromParameters($params, new OptionsResolver());
         } catch (InvalidArgumentException $e) {
@@ -183,7 +185,7 @@ class FeedbackController extends BaseController
      */
     public function massAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em  = $this->getDoctrine()->getManager();
         $ids = $request->query->get('id');
         if (count($ids) > 0) {
             $qb = $em->createQueryBuilder();
@@ -215,14 +217,13 @@ class FeedbackController extends BaseController
                         foreach ($feedback as $item) {
                             $item->setStatusCategory($statusCategory);
                             $item->setStatus($statusCategory->getStatusType());
+                            $item->setHiddenStatus();
                         }
                     }
                 } elseif ($param === 'hidden_status') {
                     foreach ($feedback as $item) {
                         $item->setStatus(Feedback::STATUS_HIDDEN);
                         $item->setHiddenStatus($value);
-                        $em->persist($item);
-                        $em->flush();
                     }
                 } elseif ($param === 'custom_category') {
                     $customDef = $em->getRepository('DeskPRO:CustomDefFeedback')->findOneBy(['title' => 'category']);
@@ -236,6 +237,28 @@ class FeedbackController extends BaseController
                         }
                         $customCategory->setInput($value);
                         $em->persist($customCategory);
+                    }
+                } elseif ($param === 'removeLabels') {
+                    $feedbackLabels = $em->getRepository('DeskPRO:LabelFeedback')->findBy(['label' => $value]);
+                    foreach ($feedbackLabels as $feedbackLabel) {
+                        foreach ($feedback as $item) {
+                            if ($feedbackLabel->getFeedback() === $item) {
+                                $em->remove($feedbackLabel);
+                            }
+                        }
+                    }
+                } elseif ($param === 'addLabels') {
+                    foreach ($feedback as $item) {
+                        foreach ($value as $label) {
+                            $feedbackLabel = $em->getRepository('DeskPRO:LabelFeedback')
+                                ->findOneBy(['label' => $label, 'feedback' => $item]);
+                            if (null === $feedbackLabel) {
+                                $feedbackLabel = new LabelFeedback();
+                                $feedbackLabel->setFeedback($item);
+                                $feedbackLabel->setLabel($label);
+                                $em->persist($feedbackLabel);
+                            }
+                        }
                     }
                 }
             }
@@ -261,9 +284,9 @@ class FeedbackController extends BaseController
      */
     public function deleteAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em  = $this->getDoctrine()->getManager();
         $ids = $request->get('id');
-        $qb = $em->createQueryBuilder();
+        $qb  = $em->createQueryBuilder();
         $qb
             ->select('f')
             ->from('DeskPRO:Feedback', 'f')
@@ -291,9 +314,9 @@ class FeedbackController extends BaseController
      */
     public function massApproveAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em  = $this->getDoctrine()->getManager();
         $ids = $request->get('id');
-        $qb = $em->createQueryBuilder();
+        $qb  = $em->createQueryBuilder();
         $qb
             ->select('f')
             ->from('DeskPRO:Feedback', 'f')
@@ -302,7 +325,14 @@ class FeedbackController extends BaseController
         $feedback = $qb->getQuery()->getResult();
 
         foreach ($feedback as $item) {
-            $item->setHiddenStatus(null)->setIsReviewed(true);
+            if ($item->getStatus() === Feedback::STATUS_HIDDEN) {
+                $activeStatusCategory = $em->getRepository('DeskPRO:FeedbackStatusCategory')
+                    ->findBy(['status_type' => Feedback::STATUS_ACTIVE], ['display_order' => 'ASC']);
+                $item->setHiddenStatus();
+                $item->setStatus(Feedback::STATUS_ACTIVE);
+                $item->setStatusCategory($activeStatusCategory[0]);
+            }
+            $item->setIsReviewed(true);
         }
         $em->flush();
 

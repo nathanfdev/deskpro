@@ -1,17 +1,39 @@
 import React, {Component, PropTypes} from 'react';
 import { BaseItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/BaseItem';
 
+import { connect } from 'react-redux';
+@connect()
 export class FilterItem extends Component {
   static propTypes = {
     icon: PropTypes.string,
     children: PropTypes.any,
-    resetFilter: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
     isActive: PropTypes.bool
+  };
+
+  renderFilterInfo = (labels) => {
+    if (labels.length) {
+      const result = [<span className="dpw-navigation-dropdown-item-inline-info">{labels[0]}</span>];
+      if (labels.length > 1) {
+        result.push(
+          <span className="dpw-navigation-dropdown-item-inline-info dpw-navigation-dropdown-item-inline-info-extra">
+            +{labels.length - 1}
+          </span>
+        );
+      }
+
+      return result;
+    }
+
+    return <span />;
   };
 
   render() {
     return (
-      <BaseItem {...this.props} format="filter" subMenuMode="click" hasMenu>
+      <BaseItem {...this.props} format="filter"
+                                subMenuMode="click"
+                                hasMenu
+                                renderFilterInfo={this.renderFilterInfo}>
         {this.props.children}
       </BaseItem>
     );

@@ -234,12 +234,12 @@ class ServerChecks
         #------------------------------
 
         if ($type == 'php_version' || $type == 'all') {
-            $this->getLogger()->log('[CHECK] Checking PHP version >= 5.3.9', Logger::DEBUG);
+            $this->getLogger()->log('[CHECK] Checking PHP version >= 5.5.0', Logger::DEBUG);
             if (deskpro_install_check_version()) {
                 $this->getLogger()->log('[OK] PHP version of '.phpversion().' is OK', Logger::DEBUG);
             } else {
                 $this->has_fatal_server_errors = true;
-                $msg                           = '[FATAL] Install PHP 5.3.9 or newer. You currently have '.phpversion();
+                $msg                           = '[FATAL] Install PHP 5.5.0 or newer. You currently have '.phpversion();
                 $this->getLogger()->log("[FATAL] $msg", Logger::INFO);
                 $this->server_errors['php_version'] = array(
                     'message' => $msg,

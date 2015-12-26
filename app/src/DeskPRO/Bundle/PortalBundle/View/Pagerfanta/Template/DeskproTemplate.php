@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\View\Pagerfanta\Template;
 
 use Pagerfanta\View\Template\Template;
@@ -146,6 +147,8 @@ class DeskproTemplate extends Template
     {
         $liClass = $class ? sprintf(' class="%s"', $class) : '';
 
+        $href = $this->removeQueryParams($href, ['lang_url_code', 'brand_id', 'theme_set_id']);
+
         return sprintf('<li%s><a href="%s">%s</a></li>', $liClass, $href, $text);
     }
 
@@ -154,5 +157,50 @@ class DeskproTemplate extends Template
         $liClass = $class ? sprintf(' class="%s"', $class) : '';
 
         return sprintf('<li%s><span>%s</span></li>', $liClass, $text);
+    }
+
+    private function unparse_url($parsed_url)
+    {
+        $scheme   = isset($parsed_url['scheme']) ? $parsed_url['scheme'].'://' : '';
+        $host     = isset($parsed_url['host']) ? $parsed_url['host'] : '';
+        $port     = isset($parsed_url['port']) ? ':'.$parsed_url['port'] : '';
+        $user     = isset($parsed_url['user']) ? $parsed_url['user'] : '';
+        $pass     = isset($parsed_url['pass']) ? ':'.$parsed_url['pass']  : '';
+        $pass     = ($user || $pass) ? "$pass@" : '';
+        $path     = isset($parsed_url['path']) ? $parsed_url['path'] : '';
+        $query    = isset($parsed_url['query']) ? '?'.$parsed_url['query'] : '';
+        $fragment = isset($parsed_url['fragment']) ? '#'.$parsed_url['fragment'] : '';
+
+        return "$scheme$user$pass$host$port$path$query$fragment";
+    }
+
+    /**
+     * Remove params (if they exist) from a URL string's query.
+     *
+     * @param string $url              source url
+     * @param array  $params_to_remove
+     *
+     * @return string result url
+     */
+    private function removeQueryParams($url, array $params_to_remove)
+    {
+        $parsed = parse_url($url);
+        if ($parsed && isset($parsed['query'])) {
+            $parsed['query'] = implode('&', array_filter(explode('&', $parsed['query']), function ($param) use ($params_to_remove) {
+                $param_name = explode('=', $param)[0];
+                if ($param_name === 'page' && explode('=', $param)[1] == 1) {
+                    return false;
+                }
+
+                return !in_array($param_name, $params_to_remove);
+            }));
+            if ($parsed['query'] === '') {
+                unset($parsed['query']);
+            }
+
+            return $this->unparse_url($parsed);
+        } else {
+            return $url;
+        }
     }
 }

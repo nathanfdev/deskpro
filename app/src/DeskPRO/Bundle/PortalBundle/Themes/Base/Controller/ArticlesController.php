@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
 use Application\DeskPRO\Entity\Article;
@@ -54,7 +55,7 @@ class ArticlesController extends AbstractController
      *      defaults={
      *          "style": "browse",
      *          "category": null,
-     *          "articles_options": {}
+     *          "articles_count": 10
      *      },
      *      allowed_values={
      *          "style": {"expander", "browse", "list"}
@@ -98,14 +99,15 @@ class ArticlesController extends AbstractController
                 'category_pager'           => $category_pager,
                 'category_children'        => $category_children,
                 'category_children_pagers' => $category_children_pagers,
-                'articles_options'         => $options['articles_options'],
+                'articles_count'           => $options['articles_count'],
             )
         );
     }
 
     /**
-     * @Tag(name="kb_list_detail", default_options={"style":"detail"})
-     * @Tag(name="kb_list_simple", default_options={"style":"simple"})
+     * @Tag(name="kb_list_detail", default_options={"style":"detail", "show_pager": true}, allow_route_params=true)
+     * @Tag(name="kb_list_simple", default_options={"style":"simple"}, esi=true)
+     * @TagHttpCache
      *
      * @TagOptions(
      *      defaults={
@@ -113,7 +115,8 @@ class ArticlesController extends AbstractController
      *          "style": "simple",
      *          "page": 1,
      *          "count": 10,
-     *          "show_category_link": false
+     *          "show_category_link": false,
+     *          "show_pager": false
      *      },
      *      inherit_from={"articles_options"},
      *      allowed_values={
@@ -140,6 +143,7 @@ class ArticlesController extends AbstractController
                 'pager'              => $pager,
                 'category'           => $category,
                 'show_category_link' => $options['show_category_link'],
+                'show_pager'         => $options['show_pager'],
             )
         );
     }

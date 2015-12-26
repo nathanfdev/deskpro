@@ -88,7 +88,7 @@
 .dpdesignportal-content-file-drop-active-container {
   position: relative;
   background: red;
-  width: 97%;
+  width: 100%;
   margin: 0 auto;
 
   .dpdesignportal-content-file-drop-active {
@@ -102,6 +102,7 @@
     text-align: center;
     border: 1px solid #e8e8e8;
     padding-top: 65%;
+    z-index: 500;
 
     .dpdesignportal-content-file-drop-mark {
       display: block;

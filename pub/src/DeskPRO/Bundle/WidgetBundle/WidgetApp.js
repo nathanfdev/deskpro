@@ -3,7 +3,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom';
 import { AppContainer } from './Modules/Application/Components/AppContainer';
-import jQuery from 'jquery';
+import $ from 'jquery';
 import store from './Services/store';
 import { bootstrapWidget } from './Modules/Application/Actions/bootstrapActions';
 
@@ -13,7 +13,7 @@ import style from './Resources/style/widget-style.scss';
 export default class WidgetApp {
 
   run() {
-    jQuery(document).on('ready', this.start);
+    $(document).on('ready', this.start);
   }
 
   start() {
@@ -38,7 +38,7 @@ export default class WidgetApp {
     // - From a react app point of view, it doesn't know that
     // the DOM is on a parent frame and the JS/state is on this page. Cool!
 
-    const $container = jQuery('<div>', {
+    const $container = $('<div>', {
       id: 'dp_widget_container',
       css: {
         display: 'block',

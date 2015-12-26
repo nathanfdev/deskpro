@@ -98,6 +98,24 @@ function refreshWidgetLoader() {
   console.log(".. done writing widget_loader");
 }
 
+function refreshHitRecorder() {
+  console.log("Writing hit_recorder");
+  var loaderCode = babel.transformFileSync(path.join(__dirname, "src/DeskPRO/Bundle/WidgetBundle") + "/hit_recorder.js", {"stage": "0"}).code;
+  var loaderCodemin = uglify.minify(loaderCode, {
+    "fromString": true
+  }).code;
+
+  var buildDir = path.join(__dirname, "build");
+
+  if (!fs.existsSync(buildDir)){
+    fs.mkdirSync(buildDir);
+  }
+
+  fs.writeFileSync(buildDir + "/hit_recorder.js", loaderCode);
+  fs.writeFileSync(path.join(__dirname, "build") + "/hit_recorder.min.js", loaderCodemin);
+  console.log(".. done writing hit_recorder");
+}
+
 function refreshLegacy() {
   var legacyPath = path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle/Legacy");
   var targetPath = path.join(__dirname, "build/DeskPRO/Bundle/AgentBundle/Legacy");
@@ -127,17 +145,35 @@ function refreshLegacy() {
   });
 }
 
+function refreshPortalDesignerVariables() {
+  var spawn = require('child_process').spawn;
+  process.chdir('../web');
+  var child = spawn('gulp', ['sassdoc']);
+
+  // Print output from Gulpfile
+  child.stdout.on('data', function(data) {
+    if (data) {
+      console.log(data.toString());
+    }
+  });
+
+  process.chdir('../pub');
+}
+
 gulp.task('bundle', function (callback) {
   reducerRefresh("Agent", path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle"));
   reducerRefresh("Widget", path.join(__dirname, "src/DeskPRO/Bundle/WidgetBundle"));
   refreshWidgetLoader();
+  refreshHitRecorder();
   refreshLegacy();
+  refreshPortalDesignerVariables();
   runWebpackBundle(getWebpackConfig('all', deskpro.isProd), callback);
 });
 
 gulp.task('bundle:agent', function (callback) {
   reducerRefresh("Agent", path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle"));
   refreshLegacy();
+  refreshPortalDesignerVariables();
   runWebpackBundle(getWebpackConfig('agent', deskpro.isProd), callback);
 });
 
@@ -148,6 +184,7 @@ gulp.task('bundle:portal', function (callback) {
 gulp.task('bundle:widget', function(callback) {
   reducerRefresh("Widget", path.join(__dirname, "src/DeskPRO/Bundle/WidgetBundle"));
   refreshWidgetLoader();
+  refreshHitRecorder();
   runWebpackBundle(getWebpackConfig('widget', deskpro.isProd), callback);
 });
 
@@ -156,6 +193,9 @@ gulp.task('bundle:dev-server', function(callback) {
   watch(path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle/Legacy/**/*.js"), function() {
     refreshLegacy();
   });
+  refreshPortalDesignerVariables();
+  refreshWidgetLoader();
+  refreshHitRecorder();
   reducerRefresh("Agent", path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle"));
   reducerRefresh("Widget", path.join(__dirname, "src/DeskPRO/Bundle/WidgetBundle"));
   startWebpackServer(getWebpackConfig('all', true, false));
@@ -167,6 +207,7 @@ gulp.task('bundle:dev-server:agent', function(callback) {
   watch(path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle/Legacy/**/*.js"), function() {
     refreshLegacy();
   });
+  refreshPortalDesignerVariables();
   startWebpackServer(getWebpackConfig('agent', true, false));
 });
 
@@ -211,7 +252,8 @@ function getWebpackConfig(mode, isDevServer, isProd) {
       alias: {
         'invariant': 'fbjs/lib/invariant',
         'warning': 'fbjs/lib/warning',
-        'jquery.ui': 'jquery-ui'
+        'jquery.ui': 'jquery-ui',
+        'jquery.ui.widget': 'jquery.ui.widget/jquery.ui.widget'
       }
     },
     resolveLoader: {
@@ -261,7 +303,7 @@ function getWebpackConfig(mode, isDevServer, isProd) {
           }
         },
         {
-          test: /\.(png|gif|jpg|jpeg|woff|woff2|ttf|eot|svg)(\?|$)/,
+          test: /\.(png|gif|jpg|jpeg|woff|woff2|ttf|eot|svg|mp3|ogg|wav)(\?|$)/,
           loader: 'file-loader?context=src&name=[path][name].[ext]',
           include: [
             path.resolve(__dirname, 'src/DeskPRO'),
@@ -295,6 +337,10 @@ function getWebpackConfig(mode, isDevServer, isProd) {
             path.resolve(__dirname, 'src/DeskPRO/Bundle/WidgetBundle')
           ],
           loader: 'style!css!sass?outputStyle=expanded&'
+        },
+        {
+          test: /\.json/,
+          loader: 'json-loader'
         }
       ],
       noParse: []

@@ -1,75 +1,62 @@
-import React from 'react';
-import { SectionsPane, Section, SectionHeader }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
-import { ListFrameContainer }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import React, {Component, PropTypes} from 'react';
+import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ListFrameMenu';
+import { ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
+import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
+import { ControlBarContainer } from './ControlBar/ControlBarContainer';
+import { MassActionContainer } from './ControlBar/MassActionContainer';
+import { TableContainer } from './View/Table/TableContainer';
+import { CardsContainer } from './View/Cards/CardsContainer';
+import { PaginationContainer } from './PaginationContainer';
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
-export class List extends React.Component {
+export class List extends Component {
+  static propTypes = {
+    loaded: PropTypes.bool.isRequired,
+    pagination: PropTypes.object,
+    selected: PropTypes.object.isRequired,
+    currentViewMode: PropTypes.string.isRequired
+  };
+
+  renderElements() {
+    const { currentViewMode } = this.props;
+
+    switch (currentViewMode) {
+      case constants.VIEW_MODE_CARD:
+        return (
+          <CardsContainer/>
+        );
+      case constants.VIEW_MODE_TABLE:
+        return (
+          <TableContainer/>
+        );
+      default:
+        throw new Error(`Unknown "${currentViewMode}" view type`);
+    }
+  }
+
   render() {
-    const { elements, view, toggleView } = this.props;
+    const { loaded, pagination, selected } = this.props;
+    const checkbox = {
+      count: selected.size, action: ()=> {
+      }
+    };
 
     return (
       <ListFrameContainer>
-        <SectionsPane>
-          <Section>
-            <div className="tickets-control-bar">
-
-              <div className="bulk-edit-control">
-                <a href="#">
-                        <span className="checkbox">
-                            <i className="fa fa-check"/>
-                        </span>
-                </a>
-                <span className="count" style={{display: "none"}}><span>X</span></span>
-              </div>
-
-                <span className="ticket-controls-default">
-                    Toggle: <a href onClick={toggleView}>{view}</a>
-                </span>
-            </div>
-          </Section>
-          <Section>
-            {this.renderElements(view, elements)}
-          </Section>
-        </SectionsPane>
+        <ListFrameMenu checkbox={checkbox}>
+          {!selected.size && <ControlBarContainer key="1"/>}
+          {selected.size && <MassActionContainer key="1"/>}
+        </ListFrameMenu>
+        <LoadIndicator loaded={loaded}
+                       opacity={0}
+                       width={3}>
+          <ListFrameContents>
+            {this.renderElements()}
+            {pagination && pagination.total_pages > 1 && <PaginationContainer/>}
+          </ListFrameContents>
+        </LoadIndicator>
       </ListFrameContainer>
-    );
-  }
-
-  renderElements(view, elements) {
-    if (!elements.length) {
-      return 'No data to display'
-    }
-
-    switch (view) {
-      case 'list':
-        return this.renderListView(elements);
-      case 'table':
-        return this.renderTableView(elements);
-      default:
-        throw `Unknown "${view}" view type`;
-    }
-  }
-
-  renderListView(elements) {
-    let key = 0;
-
-    return (
-      <div>
-        <h1>List View</h1>
-        {elements.map(e => <div key={key++} style={{marginTop:'20px'}}>List item: {e}</div>)}
-      </div>
-    );
-  }
-
-  renderTableView(elements) {
-    let key = 0;
-
-    return (
-      <div>
-        <h1>Table View</h1>
-        {elements.map(e => <div key={key++} style={{marginTop:'20px'}}>Table row: {e}</div>)}
-      </div>
     );
   }
 }

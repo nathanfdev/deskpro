@@ -29,11 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\View\Representation\StandardRepresentation;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
@@ -161,5 +163,23 @@ class BaseController extends FOSRestController
     protected function createBadRequestException($message = null)
     {
         return new BadRequestHttpException($message);
+    }
+
+    /**
+     * Remove additional service parameters like `include_headers` before parameters validation.
+     *
+     * @param Request $request
+     *
+     * @return array
+     */
+    protected function removeAdditionalParameters(Request $request)
+    {
+        $params = $request->query->all();
+        unset($params['include_headers']);
+        unset($params['include']);
+        unset($params['page']);
+        unset($params['count']);
+
+        return $params;
     }
 }

@@ -1,5 +1,5 @@
 {% if display_alerts %}
-    <div class="alerts">
+    <div class="alerts" id="dpx-alerts">
     {% if lang_diff %}
         <span class="alert" >
           <i class="fa fa-times click-to-dismiss" data-click-to-dismiss="{{ path('portal_dismiss_lang_alert') }}"></i>
@@ -10,8 +10,8 @@
     {% endif %}
 
     {% for saved in saved_forms %}
-        {# TODO: add a data-click-to-dismiss that links to a URL that will silence this alert for this session #}
-        <span class="alert">
+        {% set alert_id = saved.link %}
+        <span class="alert" data-alert-id="{{ alert_id }}"{% if alert_id in dismissed_alerts %} style="display:none;"{% endif %}>
             <i class="fa fa-times click-to-dismiss"></i>
             {{ phrase('portal.account.submit-saved-form', { type: saved.message }) }}
             <a class="alert-button" href="{{ saved.link }}">{{ phrase('portal.account.submit-saved-form-go') }}</a>
@@ -21,8 +21,8 @@
     {% for ticket in tickets_awaiting_reply %}
         {% set last_msg = ticket.getLastAgentMessage() %}
         {% if last_msg.person.display_name_user is defined %}
-            {# TODO: add a data-click-to-dismiss that links to a URL that will silence this alert for this session #}
-            <span class="alert">
+            {% set alert_id = portal_path(ticket) %}
+            <span class="alert" data-alert-id="{{ alert_id }}"{% if alert_id in dismissed_alerts %} style="display:none;"{% endif %}>
                 <i class="fa fa-times click-to-dismiss"></i>
                 <a href="{{ portal_path(ticket) }}">
                     You have a new reply on your ticket "<span class="ticket-title">{{ ticket.subject }}</span>" by {{ last_msg.person.display_name_user }}: <span class="post-content">{{ last_msg.getMessagePreviewText(100) }}</span>

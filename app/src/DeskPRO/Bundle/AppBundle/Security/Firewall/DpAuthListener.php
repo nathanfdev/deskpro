@@ -29,12 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Security\Firewall;
 
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usersource;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
+use DeskPRO\Bundle\AppBundle\Exception\UsersourceNoEmailException;
 use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
 use DeskPRO\Bundle\AppBundle\Security\DpFormLoginToken;
 use DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener;
@@ -130,7 +132,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
                     'csrf_double_submit_protection' => false,
                 ]
             );
-            $captcha_check->submit([]); // the validator use the request stack directly
+            $captcha_check->submit($request->get('deskpro_captcha'));
             if (!$captcha_check->isValid()) {
                 if ($request->isXmlHttpRequest()) {
                     return new JsonResponse(
@@ -255,12 +257,15 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
 
         // Valid
         if ($result->isValid()) {
-            $login_processor = new LoginProcessor($usersource, $result->getIdentity());
-            $person          = $login_processor->getPerson();
-            $person->setLastLoginAt();
-
-            $em->persist($person);
-            $em->flush();
+            try {
+                $login_processor = new LoginProcessor($usersource, $result->getIdentity());
+                $person          = $login_processor->getPerson();
+                $person->setLastLoginAt();
+                $em->persist($person);
+                $em->flush();
+            } catch (UsersourceNoEmailException $e) {
+                return $this->saveTmpDataAndRedirectToSetEmailPage($usersource, $result);
+            }
 
             if ($usersource_test) {
                 // test result
@@ -379,13 +384,17 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
      */
     protected function createTokenFromUsersourceResult(Usersource $usersource, Result $result)
     {
-        $em              = $this->container->get('doctrine.orm.default_entity_manager');
-        $login_processor = new LoginProcessor($usersource, $result->getIdentity());
-        $person          = $login_processor->getPerson();
-        $person->setLastLoginAt();
+        try {
+            $em              = $this->container->get('doctrine.orm.default_entity_manager');
+            $login_processor = new LoginProcessor($usersource, $result->getIdentity());
+            $person          = $login_processor->getPerson();
+            $person->setLastLoginAt();
 
-        $em->persist($person);
-        $em->flush();
+            $em->persist($person);
+            $em->flush();
+        } catch (UsersourceNoEmailException $e) {
+            return $this->saveTmpDataAndRedirectToSetEmailPage($usersource, $result);
+        }
 
         return $this->createTokenFromPerson($person);
     }
@@ -419,5 +428,20 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
                 )
             );
         }
+    }
+
+    /**
+     * @param $usersource
+     * @param $result
+     *
+     * @return RedirectResponse
+     */
+    protected function saveTmpDataAndRedirectToSetEmailPage(Usersource $usersource, Result $result)
+    {
+        // a usersource did NOT provide an email, and we were about to make a new person without an email.
+        // instead, trigger our workflow that requires the user to give us an email and verify it before we proceeed.
+        $tmp_auth = $this->container->get('usersource_identity_saver')->save($usersource, $result->getIdentity());
+
+        return $this->redirectRoute('user_validate_usersource_email', ['tmp_auth' => $tmp_auth]);
     }
 }

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Symfony\Component\Debug\Exception\FlattenException;
@@ -41,14 +42,8 @@ class ErrorController extends AbstractController
 {
     public function showExceptionAction(FlattenException $exception, $logger = null)
     {
-        $code = $exception->getStatusCode();
-
-        // try for status code specific template
+        $code     = $exception->getStatusCode();
         $template = $this->makeTemplateName($code);
-        if (!$this->templateExists($template)) {
-            // if that is not found, use the default for this status code (error.html.twig or exception.html.twig)
-            $template = $this->makeTemplateName($code, true);
-        }
 
         // if an exception occured BEFORE the security (Firewall) listener runs, then
         // there is no token in storage. Our templates usually do is_granted type checks,
@@ -77,15 +72,30 @@ class ErrorController extends AbstractController
         $request  = Request::createFromGlobals();
         $base_url = $request->getBaseUrl();
 
-        return $this->renderThemeView(
-            $template,
-            array(
-                'base_url'    => $base_url,
-                'status_code' => $code,
-                'status_text' => isset(Response::$statusTexts[$code]) ? Response::$statusTexts[$code] : '',
-                'exception'   => $exception,
-            )
-        );
+        try {
+            return $this->renderThemeView(
+                $template,
+                array(
+                    'base_url'    => $base_url,
+                    'status_code' => $code,
+                    'status_text' => isset(Response::$statusTexts[$code]) ? Response::$statusTexts[$code] : '',
+                    'exception'   => $exception,
+                )
+            );
+        } catch (\Exception $e) {
+            // if that is not found, use the default for this status code (error.html.twig or exception.html.twig)
+            $template = $this->makeTemplateName($code, true);
+
+            return $this->renderThemeView(
+                $template,
+                array(
+                    'base_url'    => $base_url,
+                    'status_code' => $code,
+                    'status_text' => isset(Response::$statusTexts[$code]) ? Response::$statusTexts[$code] : '',
+                    'exception'   => $exception,
+                )
+            );
+        }
     }
 
     public function notFoundAction($path)

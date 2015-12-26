@@ -112,7 +112,15 @@
     @include retina-image("../img/deskpro-logo-negative", 12px 12px);
   }
 
-  .dpdesignportal-message-content { color: #4b4b4b; }
+  .dpdesignportal-message-content {
+    color: #4b4b4b;
+
+    .dpdesignportal-message-content-file-attachment {
+      a, i {
+        margin-right: 5px;
+      }
+    }
+  }
 
   &.agent-message { padding-left: 30px; }
   &.agent-message .dpdesignportal-message-content { background: #ededed; }
@@ -186,6 +194,11 @@
   font-size: 12px;
   line-height: 1.5em;
 
+  div {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+
   p { padding-bottom: 0; }// Single
   p + p { padding-top: 5px; }// If there's multiples paragraphs
   p + ul { margin-top: 5px; }// If there's attachements
@@ -201,7 +214,7 @@
   position: relative;
   cursor: pointer;
 
-  span {
+  p {
     display: block;
     line-height: 1.3em;
     padding-top: 2px;
@@ -332,9 +345,12 @@
     &:hover { color: #4681b2; }
   }
 
-  .dpdesignportal-message-footer-timer {
-    &.right {
-      float: right;
-    }
+  .right {
+    float: right;
+  }
+
+  .dpdesignportal-message-footer-not-delivered {
+    margin-left: 5px;
+    color: #3e76a4;
   }
 }

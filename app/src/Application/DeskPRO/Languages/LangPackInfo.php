@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Languages;
 
 class LangPackInfo
@@ -170,9 +171,10 @@ class LangPackInfo
     public function getDefaultCategories($section)
     {
         switch ($section) {
-            case 'user':  return array('chat', 'defaults', 'downloads', 'emails', 'email_subjects', 'error', 'feedback', 'general', 'knowledgebase', 'lang', 'news', 'portal', 'profile', 'tickets', 'time', 'widget');
-            case 'agent': return array('chat', 'chrome', 'deal', 'defaults', 'emails', 'feedback', 'general', 'interface', 'login', 'media', 'organizations', 'people', 'publish', 'report', 'search', 'settings', 'snippets', 'tasks', 'tickets', 'time', 'twitter', 'userchat', 'usertrack');
-            case 'admin': return array('agents', 'api', 'banning', 'billing', 'custom_fields', 'departments', 'designer', 'emailtpl_desc', 'feedback', 'gateway', 'general', 'languages', 'license', 'logs', 'menu', 'plugins', 'portal', 'products', 'server', 'settings', 'setup', 'templates', 'tickets', 'twitter', 'user_groups', 'user_registration', 'user_rules');
+            case 'user':   return array('chat', 'defaults', 'downloads', 'emails', 'email_subjects', 'error', 'feedback', 'general', 'knowledgebase', 'lang', 'news', 'portal', 'profile', 'tickets', 'time', 'widget');
+            case 'portal': return array('account', 'articles', 'chat', 'downloads', 'email_subjects', 'emails', 'error', 'feedback', 'flashes', 'forms', 'general', 'news', 'sidebar', 'tickets');
+            case 'agent':  return array('chat', 'chrome', 'deal', 'defaults', 'emails', 'feedback', 'general', 'interface', 'login', 'media', 'organizations', 'people', 'publish', 'report', 'search', 'settings', 'snippets', 'tasks', 'tickets', 'time', 'twitter', 'userchat', 'usertrack');
+            case 'admin':  return array('agents', 'api', 'banning', 'billing', 'custom_fields', 'departments', 'designer', 'emailtpl_desc', 'feedback', 'gateway', 'general', 'languages', 'license', 'logs', 'menu', 'plugins', 'portal', 'products', 'server', 'settings', 'setup', 'templates', 'tickets', 'twitter', 'user_groups', 'user_registration', 'user_rules');
         }
 
         throw new \InvalidArgumentException("Invalid section $section");

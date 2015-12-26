@@ -28,13 +28,13 @@
   border-bottom: 1px solid #dbddde;
 
   z-index: 299;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 
   .sidebar-type-icon {
     display: inline-block;
     vertical-align: middle;
     position: relative;
-    top: 2px;// to align with the slider butto nand bulk edit checkbox
+    top: 2px; // to align with the slider butto nand bulk edit checkbox
     border: 1px solid #e4e4e4;
     border-radius: 2px;
     width: 26px;
@@ -60,7 +60,9 @@
       text-align: center;
       border: 2px solid #fff;
       font-size: 10px;
-      i { top: 1px; }
+      i {
+        top: 1px;
+      }
     }
 
     .help:hover {
@@ -89,31 +91,27 @@
   .slider-control {
     display: block;
     position: absolute;
-    right: 0px;
+    right: 0;
     top: 12px;
     border: 1px solid #e2e5e8;
-    border-radius: 2px;
-    border-bottom-right-radius: 0px;
-    border-top-right-radius: 0px;
-    border-right: 0px;
+    border-radius: 2px 0 0 2px;
+    border-right: 0;
     width: 26px;
     height: 26px;
     @include retina-image('../img/icon-collapse', 11px 12px);
-    background-position: center center;
-    background-repeat: no-repeat;
+    background: no-repeat center center;
   }
 
   .slider-control:hover {
     border: 1px solid darken(#e2e5e8, 10%);
-    border-right: 0px;
+    border-right: 0;
   }
 }
-
 
 .sidebar {
   background: $sidebar-background;
   font-weight: 400;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 
   a {
     text-decoration: none;
@@ -136,12 +134,12 @@
     font-size: 0.8em;
     font-weight: bold;
     margin-top: 5px;
-    &:hover { color: darken(#6f6f70, 15%); }
+    &:hover {
+      color: darken(#6f6f70, 15%);
+    }
   }
 
 }
-
-
 
 // Section title
 .list-sidebar-title {
@@ -153,10 +151,12 @@
   color: #7f8081;
   font-size: 0.9em;
   font-weight: 600;
-  margin: 20px 0px 5px 0px;
+  margin: 20px 0 5px 0;
   position: relative;
 
-  &:first-child { margin-top: 10px; }
+  &:first-child {
+    margin-top: 10px;
+  }
 
   &:before {
     content: "";
@@ -239,25 +239,29 @@
       margin-left: 7px;
       margin-right: 3px;
 
-      i { margin-left: 5px; }
+      i {
+        margin-left: 5px;
+      }
     }
 
     .calendar {
       color: $top-bar-blue;
-      i { position: relative; top: -1px; }
+      i {
+        position: relative;
+        top: -1px;
+      }
     }
   }
 }
 
 .list-sidebar-title.list-sidebar-title-kb {
-  border: 0px;
+  border: 0;
   background: none;
-  margin-top: 0px;
-  margin-bottom: 0px;
+  margin-top: 0;
+  margin-bottom: 0;
   padding-left: 10px;
   padding-right: 4px;
 }
-
 
 // SLA on any kind of sidebar .item | these work in any .item
 .sla {
@@ -266,9 +270,13 @@
   font-weight: 700;
   line-height: 1em;
 
+  .sla-button {
+    cursor: pointer;
+  }
+
   span {
     margin-right: 5px;
-    padding: 0px 5px;
+    padding: 0 5px;
   }
 
   .selected, span:hover {
@@ -289,19 +297,26 @@
     border-radius: 199px;
   }
 
-  span.sla-yellow:before {  background: #f6be1a; }
-  span.sla-red:before { background: #ff5460; }
-}
-// Adjustments for slas on active items
-.item.active, .item:hover {
-  .sla {
-    span { opacity: 0.5; }
-
-    span.selected, span:hover { opacity: 1; }
+  span.sla-yellow:before {
+    background: #f6be1a;
+  }
+  span.sla-red:before {
+    background: #ff5460;
   }
 }
 
+// Adjustments for slas on active items
+.item.active, .item:hover {
+  .sla {
+    span {
+      opacity: 0.5;
+    }
 
+    span.selected, span:hover {
+      opacity: 1;
+    }
+  }
+}
 
 // Forms in sidebars
 .sidebar {
@@ -321,8 +336,8 @@
 
       a {
         position: absolute;
-        bottom: 0px;
-        right: 0px;
+        bottom: 0;
+        right: 0;
         text-decoration: underline;
         font-size: 0.95em;
       }
@@ -349,7 +364,7 @@
 
     input[type="button"], .button, button {
       background: #6899c1;
-      border: 0px;
+      border: 0;
       padding: 8px;
       color: #fff;
     }
@@ -397,7 +412,9 @@
     top: 2px;
     z-index: 999;
     border-bottom: 1px solid #f8f8f8;
-    a { color: #3c6e98; }
+    a {
+      color: #3c6e98;
+    }
   }
 
   li:hover {
@@ -420,7 +437,9 @@
 
   li {
     display: block;
-    &:last-child { border-bottom: 0px; }
+    &:last-child {
+      border-bottom: 0;
+    }
     position: relative;
   }
 
@@ -431,11 +450,13 @@
     .sidebar-item {
       border-bottom: 1px solid $sidebar-divider;
       margin-left: 0;
-      > .item { padding-left: 12px; }
+      > .item {
+        padding-left: 12px;
+      }
     }
   }
 
-  > ul > li ul, .sidebar-urgent-sliders  {
+  > ul > li ul, .sidebar-urgent-sliders {
     .list-counter {
       background: #dcddde;
       color: #8c8c8d;
@@ -445,10 +466,8 @@
   a.item {
     @extend %whitespace;
     display: block;
-    padding: 5px;
-    padding-left: 16px;
     color: #5b5b5b;
-    padding-right: 40px;
+    padding: 5px 40px 5px 16px;
     position: relative;
     outline: none;
 
@@ -470,7 +489,9 @@
       position: relative;
       z-index: 89;
 
-      i { color: #fff; }
+      i {
+        color: #fff;
+      }
     }
   }
 
@@ -506,7 +527,7 @@
       content: " ";
       position: absolute;
       left: -0px;
-      top: 0px;
+      top: 0;
       width: 1px;
       height: 100%;
       background: #c7c8c9;
@@ -574,7 +595,9 @@
     background: #e1e6eb;
     border-bottom: 1px solid #dedfe0;
 
-    * { vertical-align: middle; }
+    * {
+      vertical-align: middle;
+    }
 
     a {
       @extend %whitespace;
@@ -583,8 +606,7 @@
       background: #f1f4f6;
       border: 1px solid #c1cad4;
       border-radius: 2px;
-      padding: 2px;
-      padding-right: 20px;
+      padding: 2px 20px 2px 2px;
       position: relative;
 
       i {
@@ -594,7 +616,9 @@
       }
     }
 
-    .faded { opacity: 0.5; }
+    .faded {
+      opacity: 0.5;
+    }
 
     .brand-logo {
       display: inline-block;
@@ -611,20 +635,20 @@
 
       li {
         a {
-          border-bottom: 0px;
-          border-radius: 0px;
+          border-bottom: 0;
+          border-radius: 0;
         }
 
-        &:last-child a {  border-bottom: 1px solid #c1cad4;}
+        &:last-child a {
+          border-bottom: 1px solid #c1cad4;
+        }
       }
     }
   }
 
   .flag {
-    background: none;
-    background-repeat: no-repeat;
     background-size: 100%;
-    background-position: center center;
+    background: none no-repeat center center;
   }
 
   .avatar {
@@ -641,51 +665,70 @@
 
 a.item.urgent {
   color: #fff;
-  padding: 0px;
+  padding: 0;
   border-radius: 2px;
   line-height: 20px;
-  margin: 6px 20px;
-  margin-right: 40px;
-  margin-left: 20px;
+  margin: 6px 40px 6px 20px;
   height: 20px;
   position: relative;
   top: 5px;
 
-  &.level-1 { background: #70de7d; }
-  &.level-2 { background: #aede70; }
-  &.level-3 { background: #bbde70; }
-  &.level-4 { background: #ffa454; }
-  &.level-5 { background: #ff9454; }
-  &.level-6 { background: #ff7854; }
-  &.level-7 { background: #ff6054; }
-  &.level-8 { background: #e53f3f; }
-  &.level-9 { background: #cf2d2d; }
-  &.level-10 { background: #ac2020; }
+  &.level-1 {
+    background: #70de7d;
+  }
+  &.level-2 {
+    background: #aede70;
+  }
+  &.level-3 {
+    background: #bbde70;
+  }
+  &.level-4 {
+    background: #ffa454;
+  }
+  &.level-5 {
+    background: #ff9454;
+  }
+  &.level-6 {
+    background: #ff7854;
+  }
+  &.level-7 {
+    background: #ff6054;
+  }
+  &.level-8 {
+    background: #e53f3f;
+  }
+  &.level-9 {
+    background: #cf2d2d;
+  }
+  &.level-10 {
+    background: #ac2020;
+  }
 
   .label {
     display: inline-block;
-    padding: 0px 5px;
+    padding: 0 5px;
   }
 
   .level {
     float: right;
     border-left: 1px solid rgba(0, 0, 0, 0.1);
     color: rgba(255, 255, 255, 0.7);
-    padding: 0px 7px;
+    padding: 0 7px;
   }
 
   &:hover {
-    &:before { display: none; }
+    &:before {
+      display: none;
+    }
   }
 }
-
 
 // Numbers next to list items
 .list-counter-bucket {
   display: inline-block;
   position: absolute;
-  top: 0px;
-  right: 0px;
+  top: 0;
+  right: 0;
   padding-right: 5px;
   font-size: 0.9em;
   z-index: 99;
@@ -726,7 +769,7 @@ a.item.urgent {
     }
   }
 
-  a.list-counter, .list-counter, a.list-counter-dropdown, .list-counter-dropdown  {
+  a.list-counter, .list-counter, a.list-counter-dropdown, .list-counter-dropdown {
     background: $sidebar-color-selected-counter;
     border-radius: 199px;
     color: #fff;
@@ -738,17 +781,19 @@ a.item.urgent {
     }
   }
 
-  a.list-counter.faded { background: none; }
+  a.list-counter.faded {
+    background: none;
+  }
 }
 
 .collapse {
   transition: max-height 0.25s ease-in-out;
   overflow: hidden;
-  
+
   &.open {
     max-height: 1000px;
   }
   &.closed {
-    max-height: 0px;
+    max-height: 0;
   }
 }

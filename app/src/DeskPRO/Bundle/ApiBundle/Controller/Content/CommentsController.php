@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Content;
 
 use Application\DeskPRO\Entity\ArticleComment;
@@ -71,7 +72,7 @@ class CommentsController extends BaseController
         /** @var \DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsDataService $dataService */
         $dataService = $this->get('data.comments');
 
-        $params = $request->query->all();
+        $params = $this->removeAdditionalParameters($request);
         $this->validateParentConsistency($type, $params);
         try {
             $criteria = CommentsCountCriteria::fromParameters($params, new OptionsResolver());
@@ -107,7 +108,7 @@ class CommentsController extends BaseController
         /** @var \DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsDataService $dataService */
         $dataService = $this->get('data.comments');
 
-        $params = array_diff_assoc($request->query->all(), ['page' => null, 'count' => null]);
+        $params = $this->removeAdditionalParameters($request);
         $this->validateParentConsistency($type, $params);
         try {
             $criteria = CommentsSelectCriteria::fromParameters($params, new OptionsResolver());
@@ -146,7 +147,8 @@ class CommentsController extends BaseController
         if (array_key_exists('group_by', $params)) {
             if (!in_array($params['group_by'], [$type, 'status', 'period_created'])) {
                 throw new BadRequestHttpException(
-                    "You can't group_by \"{$params['group_by']}\" when selecting $type comments.");
+                    "You can't group_by \"{$params['group_by']}\" when selecting $type comments."
+                );
             }
             unset($params['group_by']);
         }

@@ -29,9 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\Helper\IsLowLevelRequestHelper;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -81,6 +83,11 @@ class DisabledHelpdeskListener implements EventSubscriberInterface
     {
         if (!$event->isMasterRequest()) {
             // we only make this decision on master requests. sub requests are never "offline".
+            return;
+        }
+
+        if (IsLowLevelRequestHelper::check($event->getRequest())) {
+            // dont run on low level
             return;
         }
 

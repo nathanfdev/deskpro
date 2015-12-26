@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
 use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;
@@ -72,7 +73,12 @@ class UseSectionVoter extends AbstractVoter
             case static::USE_NEWS:
                 return $this->getActiveBrandSetting('core.apps_news') && $permissionBag->get('news.use');
             case static::USE_TICKETS:
-                return $permissionBag->get('tickets.use') || $this->isLoggedOutAndRegisteredUsergroupAllows($user, 'tickets.use');
+                return
+                    (
+                        $permissionBag->get('tickets.use')
+                        || $this->isLoggedOutAndRegisteredUsergroupAllows($user, 'tickets.use')
+                    )
+                    && count($permissionBag->getAllowedTicketDepartmentIds()) > 0;
         }
 
         return false;

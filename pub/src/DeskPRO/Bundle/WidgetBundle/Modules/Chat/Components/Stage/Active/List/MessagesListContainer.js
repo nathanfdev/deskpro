@@ -1,14 +1,54 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { messagesSelector } from '../../../../Selectors/chat';
+import ReactDOM from 'react-dom';
+import { chatLoadedSelector, messagesSelector, lastMessageIdSelector, muteSelector } from '../../../../Selectors/chat';
+import { widgetDimensionsSelector, widgetHeightSelector, isBubbleSelector } from '../../../../../Application/Selectors/dpWindow';
 import { MessagesList } from './MessagesList';
+import $ from 'jquery';
 
 @connect(state => ({
-  messages: messagesSelector(state)
+  chatLoaded: chatLoadedSelector(state),
+  messages: messagesSelector(state),
+  lastMessageId: lastMessageIdSelector(state),
+  widgetDimensions: widgetDimensionsSelector(state),
+  widgetHeight: widgetHeightSelector(state),
+  mute: muteSelector(state),
+  isBubble: isBubbleSelector(state)
 }))
 export class MessagesListContainer extends React.Component {
 
+  static propTypes = {
+    isBubble: PropTypes.bool,
+    widgetHeight: PropTypes.number
+  };
+
+  componentDidMount() {
+    this.reCalcHeight();
+  }
+
+  componentDidUpdate() {
+    this.reCalcHeight();
+  }
+
+  reCalcHeight() {
+    const { widgetHeight, isBubble } = this.props;
+    const node = ReactDOM.findDOMNode(this);
+
+    let height = widgetHeight - (isBubble ? 242 : 230); // header height
+    $(node).parent().children().each((i, child) => {
+      if (child !== node) {
+        height = height - $(child).outerHeight();
+      }
+    });
+    if (height < 100) {
+      height = 100;
+    }
+
+    $(node).css('height', height);
+    this.refs.list.refresh();
+  }
+
   render() {
-    return <MessagesList {...this.props} />;
+    return <MessagesList ref="list" {...this.props} />;
   }
 }

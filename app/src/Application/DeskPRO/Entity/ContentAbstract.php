@@ -305,12 +305,25 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         // note: removed the setSlug call, we do that in the DoctrineContentSlugListener now (prepersist/preupdate)
     }
 
-    /**
-     * @return string
-     */
     public function getTitle()
     {
         return $this->title;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTranslatedTitle()
+    {
+        return $this->__call('getTitle', []);
+    }
+
+    /**
+     * @return string
+     */
+    public function getTranslatedContent()
+    {
+        return $this->__call('getContent', []);
     }
 
     /**

@@ -1,35 +1,131 @@
 import { createReducer } from 'Ampliflux';
 import * as actions from '../Actions/chatActions';
-import { setFullPayload, setValue, toggleBool } from 'Ampliflux/reducers/handlers';
-import Immutable from 'immutable';
+import {
+  setFullPayload,
+  setValue,
+  setValueOnError,
+  toggleBool,
+  async,
+  pushPayloadToCollection,
+  deletePayloadFromCollection,
+  composeHandlers
+} from 'Ampliflux/reducers/handlers';
+import moment from 'moment';
 
 const initialState = {
-  audioNotifications: true,
-  sendTranscript: true,
-  chatId: null,
-  chatInfo: {
-    date_ended: null,
-    author_name: 'User',
-    author_email: 'email@mail.com'
+  phrases: {},
+  mute: false,
+  transcript: {
+    checked: false,
+    saving: false,
+    sending: false,
+    sent: false
   },
-  messages: [
-    {id: 104, content: 'my message my message my message my message :)', author: null, is_sys: false, is_html: true, date_created: '2015-12-03 14:10'},
-    {id: 103, content: 'agent reply agent reply agent reply agent reply agent reply agent reply ;)', author: 1, author_type: 'agent', is_sys: false, date_created: '2015-12-03 14:02'},
-    {id: 102, content: '{"phrase_id":"message_assigned","name":"Admin Admin"}', author: null, author_type: 'user', is_sys: true, date_created: '2015-12-03 13:58'},
-    {id: 101, content: '{"phrase_id":"message_started"}', author: null, is_sys: true, date_created: '2015-12-03 13:50'}
-  ]
+  polling: {
+    locked: false,
+    skipped: false
+  },
+  chat: {
+    id: null,
+    loaded: false,
+    canReopen: true,
+    info: {}
+  },
+  feedbackStage: 'dialog',
+  messages: [],
+  uploading: {
+    files: [],
+    failed: [],
+    repeat: []
+  },
+  attachments: []
 };
 
 export default createReducer(initialState, {
-  [actions.toggleAudioNotifications]: toggleBool('audioNotifications'),
-  [actions.disableSendTranscript]: setValue('sendTranscript', false),
-  [actions.enableSendTranscript]: setValue('sendTranscript', true),
-  [actions.setChatId]: setFullPayload('chatId'),
-  [actions.updateChatInfo]: setFullPayload('chatInfo'),
-  [actions.resetMessages]: setValue('messages', []),
-  [actions.addNewMessages]: (state, payload) => {
-    const oldMessages = state.get('messages', Immutable.fromJS([])).toJS();
-    return state.set('messages', Immutable.fromJS(oldMessages.concat(payload)));
+  // Polling
+  [actions.lockPollingResponse]: setValue('polling.locked', true),
+  [actions.unlockPollingResponse]: setValue('polling', {locked: false, skipped: true}),
+  [actions.enablePollingResponse]: setValue('polling', {locked: false, skipped: false}),
+
+  // Phrase translations
+  [actions.setPhraseTranslations]: setFullPayload('phrases'),
+
+  // Audio
+  [actions.toggleMute]: toggleBool('mute'),
+
+  // Chat setup
+  [actions.setChatId]: composeHandlers(
+    setFullPayload('chat.id'),
+    setValue('chat.loaded', false),
+    setValue('messages', []),
+    setValue('transcript.sent', false)
+  ),
+  [actions.setLoaded]: setValue('chat.loaded', true),
+  [actions.unsetLoaded]: setValue('chat.loaded', false),
+  [actions.updateChatInfo]: setFullPayload('chat.info'),
+  [actions.endChat]: setValue('chat.info.date_ended', moment().format()),
+  [actions.reopenChat]: composeHandlers(
+    setValue('chat.canReopen', true),
+    setValue('chat.info.date_ended', null),
+    setValue('transcript.sent', false),
+    setValue('feedbackStage', 'dialog')
+  ),
+  [actions.enableChatReopen]: setValue('chat.canReopen', true),
+  [actions.disableChatReopen]: setValue('chat.canReopen', false),
+
+  // Messages
+  [actions.addNewMessages]: pushPayloadToCollection('messages'),
+  [actions.markNotDelivered]: (state, tmpId) => {
+    let newMessages = state.get('messages');
+
+    const sendingMessages = newMessages.filter(message => message.get('tmp_id') === tmpId);
+    sendingMessages.forEach(sendingMessage => {
+      const index = newMessages.indexOf(sendingMessage);
+      const newMessage = sendingMessage.set('not_delivered', true);
+
+      newMessages = newMessages.set(index, newMessage);
+    });
+
+    return state.set('messages', newMessages);
   },
-  [actions.reopenChat]: setValue('chat.date_ended', null)
+
+  // Uploading files
+  [actions.addUploadingFile]: pushPayloadToCollection('uploading.files', true),
+  [actions.markUploadingFileFailed]: composeHandlers(
+    deletePayloadFromCollection('uploading.repeat'),
+    pushPayloadToCollection('uploading.failed', true)
+  ),
+  [actions.repeatUploadingFile]: composeHandlers(
+    deletePayloadFromCollection('uploading.failed'),
+    pushPayloadToCollection('uploading.repeat', true)
+  ),
+  [actions.removeUploadingFile]: composeHandlers(
+    deletePayloadFromCollection('uploading.files'),
+    deletePayloadFromCollection('uploading.failed'),
+    deletePayloadFromCollection('uploading.repeat')
+  ),
+
+  // Attachments
+  [actions.addAttachment]: pushPayloadToCollection('attachments'),
+  [actions.removeAttachment]: deletePayloadFromCollection('attachments'),
+  [actions.resetAttachments]: setValue('attachments', []),
+
+  // Transcript
+  [actions.disableSendTranscript]: setValue('transcript.checked', false),
+  [actions.enableSendTranscript]: setValue('transcript.checked', true),
+  [actions.sendTranscriptInfo]: async({
+    start: setValue('transcript.saving', true),
+    done: setValue('transcript.saving', false),
+    error: setValueOnError('transcript.saving', false)
+  }),
+  [actions.sendTranscriptData]: async({
+    success: setValue('transcript.sent', true),
+    start: setValue('transcript.sending', true),
+    done: setValue('transcript.sending', false),
+    error: setValueOnError('transcript.sending', false)
+  }),
+
+  // Feedback
+  [actions.showNotHelpfulForm]: setValue('feedbackStage', 'form'),
+  [actions.sendFeedback]: setValue('feedbackStage', 'finished')
 });

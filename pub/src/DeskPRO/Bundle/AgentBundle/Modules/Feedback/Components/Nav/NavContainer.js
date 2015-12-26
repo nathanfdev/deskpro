@@ -32,25 +32,22 @@ export class NavContainer extends Component {
   };
 
   componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch(actions.initialLoad());
+    this.props.dispatch(actions.initialLoad());
   }
 
   render() {
     const {statuses, toValidateCount, commentsToReviewCount, dispatch, labels, types, customCategories, dpWindow, loaded} = this.props;
 
     return (
-      <Nav
-        loaded={loaded}
-        toValidateCount={toValidateCount}
-        commentsToReviewCount={commentsToReviewCount}
-        dispatch={dispatch}
-        statuses={statuses}
-        labels={labels}
-        types={types}
-        customCategories={customCategories}
-        dpWindow={dpWindow}
-        />
+      <Nav loaded={loaded}
+           toValidateCount={toValidateCount}
+           commentsToReviewCount={commentsToReviewCount}
+           dispatch={dispatch}
+           statuses={statuses}
+           labels={labels}
+           types={types}
+           customCategories={customCategories}
+           dpWindow={dpWindow}/>
     );
   }
 }

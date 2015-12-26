@@ -34,6 +34,10 @@
         color: #fff;
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
       }
+      &.locked {
+        opacity: 0.5;
+        cursor: default;
+      }
     }
   }
 
@@ -140,8 +144,6 @@
   }
 
   .dpdesignportal-chat-form-attached-image-list {
-    z-index: 499;
-    position: absolute;
     display: block;
     top: 0;
     left: -1px;
@@ -179,6 +181,11 @@
     .attached-file-title {
       font-size: 11px;
       padding-top: 1px;
+
+      .failed-status {
+        margin-left: 5px;
+        color: #ff0000;
+      }
     }
 
     .dpdesignportal-chat-form-attached-file-icon {
@@ -196,7 +203,7 @@
       i { top: 4px;}
     }
 
-    .dpdesignportal-chat-form-attached-file-remove {
+    .dpdesignportal-chat-form-attached-file-repeat, .dpdesignportal-chat-form-attached-file-remove {
       width: 27px;
       height: 27px;
       text-align: center;
@@ -206,13 +213,23 @@
       color: #cecece;
       cursor: pointer;
       transition: all 0.5s ease;
-      i { top: 6px; }
+      i { top: 8px; }
       &:hover { color: #333; }
+    }
+
+    .dpdesignportal-chat-form-attached-file-repeat {
+      right: 20px;
+    }
+
+    .dpdesignportal-chat-form-attached-file-spinner {
+      position: absolute;
+      right: 5px;
+      top: 5px;
     }
   }
 
   .dpdesignportal-chat-form-button-row {
-    a {
+    .dpdesignportal-chat-form-button {
       display: inline-block;
       color: #adadad;
       text-decoration: none;
@@ -230,16 +247,32 @@
       display: inline-block;
       height: 30px;
 
-      a { border-right: 1px solid #e7e7e7; }
+      .dpdesignportal-chat-form-button {
+        position: relative;
+        border-right: 1px solid #e7e7e7;
+        overflow: hidden;
 
-      a.dpdesignportal-chat-form-button-row-emoticons {
-        border-right: 0;
-        .img {
-          display: inline-block;
-          width: 10px;
-          height: 10px;
-          background: url("../img/emoticon.jpg") no-repeat center;
-          background-size: 10px 10px;
+        &.dpdesignportal-chat-form-button-row-emoticons {
+          border-right: 0;
+          .img {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: url("../img/emoticon.jpg") no-repeat center;
+            background-size: 10px 10px;
+          }
+        }
+
+        .file {
+          cursor: pointer;
+          font-size: 100px;
+          filter: alpha(opacity=1);
+          -moz-opacity: 0.01;
+          opacity: 0.01;
+          position: absolute;
+          right: 0;
+          top: 0;
+          height: inherit;
         }
       }
     }

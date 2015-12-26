@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -150,11 +151,6 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('date_last', new \DateTime());
         $this->setModelField('date_last_page', new \DateTime());
         $this->_is_new = true;
-    }
-
-    public function getVisitor()
-    {
-        return;
     }
 
     /**

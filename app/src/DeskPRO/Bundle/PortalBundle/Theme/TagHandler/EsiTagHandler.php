@@ -29,12 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Theme\TagHandler;
 
 use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\PortalBundle\HttpCache\PortalCacheHelper;
-use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use DeskPRO\Bundle\PortalBundle\Theme\Tag;
@@ -106,8 +106,7 @@ class EsiTagHandler implements TagHandlerInterface
         $tag_request->attributes->replace(
             $new_attrs
         );
-        $new_query                        = $this->filterOutObjects($tag_request->query);
-        $new_query[PortalMode::ATTR_NAME] = $this->mode_storage->getSerializedMode();
+        $new_query = $this->filterOutObjects($tag_request->query);
         $tag_request->query->replace(
             $new_query
         );

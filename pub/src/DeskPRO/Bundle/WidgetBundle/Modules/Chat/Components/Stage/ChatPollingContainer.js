@@ -1,14 +1,22 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { pollingChat } from '../../Actions/chatActions';
-import { chatIdSelector, agentIdSelector, lastMessageIdSelector } from '../../Selectors/chat';
 import history from '../../../../Services/history';
 import moment from 'moment';
+import { pollingChat, unsetLoaded } from '../../Actions/chatActions';
+import {
+  chatIdSelector,
+  agentIdSelector,
+  lastMessageIdSelector,
+  authorEmailSelector,
+  isEndedSelector
+} from '../../Selectors/chat';
 
 @connect(state => ({
   chatId: chatIdSelector(state),
   agentId: agentIdSelector(state),
-  lastMessageId: lastMessageIdSelector(state)
+  lastMessageId: lastMessageIdSelector(state),
+  authorEmail: authorEmailSelector(state),
+  isEnded: isEndedSelector(state)
 }))
 export class ChatPollingContainer extends React.Component {
 
@@ -17,16 +25,13 @@ export class ChatPollingContainer extends React.Component {
     chatId: PropTypes.number,
     agentId: PropTypes.number,
     lastMessageId: PropTypes.any,
-    children: PropTypes.node
+    children: PropTypes.node,
+    authorEmail: PropTypes.string,
+    isEnded: PropTypes.bool
   };
 
   componentDidMount() {
     this.pollingRequest();
-    this.mounted = true;
-  }
-
-  componentWillUnmount() {
-    this.mounted = false;
   }
 
   pollingRequest = () => {
@@ -35,31 +40,26 @@ export class ChatPollingContainer extends React.Component {
       return;
     }
 
+    history.listen(location => {
+      if (agentId && location.pathname !== '/chat/active') {
+        // If agent id is defined redirect to active stage
+        history.replace('/chat/active');
+        // Mark chat unloaded to show spinner until get messages in next polling request
+        dispatch(unsetLoaded());
+      }
+    });
+
+    // Send ajax next request
     const queryParams = {
       last_timestamp: moment().format(),
       last_message_id: lastMessageId
     };
-
     const promise = dispatch(pollingChat(chatId, queryParams));
-    promise.then(
-      () => {
-        if (!this.mounted) {
-          return;
-        }
-        if (agentId && history.state !== '/chat/active') {
-          history.replace('/chat/active');
-        }
+    const onResponse = () => {
+      setTimeout(this.pollingRequest, 3000);
+    };
 
-        setTimeout(this.pollingRequest, 3000);
-      },
-      () => {
-        if (!this.mounted) {
-          return;
-        }
-
-        setTimeout(this.pollingRequest, 3000);
-      }
-    );
+    promise.then(onResponse, onResponse);
   };
 
   render() {

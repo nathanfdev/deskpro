@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Avatar, DepartmentAvatar, PersonAvatar, AgentTeamAvatar } from '../../../Common/Components/Avatar/index';
+import { Avatar, DepartmentAvatar, PersonAvatar, AgentTeamAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/index';
 export class Item extends React.Component {
 
   static propTypes = {
@@ -90,7 +90,7 @@ export class Item extends React.Component {
       color: '#DD00AA',
       urlPattern: null,
       gravatar: null,
-      fallbackText: 'E'
+      text: 'E'
     };
 
     return <Avatar {...props} />;

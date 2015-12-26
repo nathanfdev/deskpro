@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\ResourceScanner\TemplateFiles;
@@ -208,11 +209,6 @@ class TemplatesController extends AbstractController implements ProtectedControl
             ), 400);
         }
 
-        // CSS templates must regenerate CSS blob file
-        if (strpos($name, ':Css:') !== false) {
-            \Application\DeskPRO\Style\RefreshStylesheets::refresh($this->container);
-        }
-
         return $this->createSuccessResponse(array(
             'name' => $template->getName(),
         ));
@@ -238,10 +234,6 @@ class TemplatesController extends AbstractController implements ProtectedControl
 
         $set->deleteTemplate($template);
 
-        if (strpos($name, ':Css:') !== false) {
-            \Application\DeskPRO\Style\RefreshStylesheets::refresh($this->container);
-        }
-
         return $this->createSuccessResponse(array(
             'old_name' => $name,
         ));
@@ -256,8 +248,7 @@ class TemplatesController extends AbstractController implements ProtectedControl
     {
         $set = new TemplateSet(
             $this->em,
-            $this->container->get('twig'),
-            $this->container->getSystemService('style')
+            $this->container->get('twig')
         );
 
         return $set;

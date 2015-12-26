@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Feedback;
@@ -286,7 +287,8 @@ class FeedbackController extends AbstractController
             if (strlen($generated_uri) < 1) {
                 // actually, in this case, it is all the defaults, so go back to the index
                 return $this->redirectToRoute(
-                    'portal_feedback'
+                    'portal_feedback',
+                    ['page' => $page]
                 );
             }
 
@@ -391,11 +393,12 @@ class FeedbackController extends AbstractController
         //
         // RATING
         //
-        if (!$rating = $this->getRatingsHelper()->getPersonRating($item, $this->getUser())) {
-            // TODO: flagging this: using $visitor_id is potentially dangerous due to HTTP caching
-            //       we should consider showing this via a client-side JS request instead.
-            $rating = $this->getRatingsHelper()->findVisitorRating($item, $visitor_id);
-        }
+        $rating = $this->findContentRating($item, $visitor_id);
+
+        //
+        // NUM RATINGS
+        //
+        list($show_rating_counts, $rating_counts) = $this->determineRatingCounts($item);
 
         //
         // SUBSCRIPTION
@@ -415,14 +418,16 @@ class FeedbackController extends AbstractController
         return $this->renderThemeView(
             'Theme:Feedback:view.html.twig',
             array(
-                'item'             => $item,
-                'is_subscribed'    => $is_subscribed,
-                'content_id'       => $item->getId(),
-                'content_type'     => Feedback::CONTENT_TYPE,
-                'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,
-                'page_title'       => $this->createPageTitle()->feedback($item),
-                'breadcrumbs'      => $breadcrumbs,
-                'rating'           => $rating,
+                'item'               => $item,
+                'is_subscribed'      => $is_subscribed,
+                'content_id'         => $item->getId(),
+                'content_type'       => Feedback::CONTENT_TYPE,
+                'new_comment_form'   => $new_comment_form ? $new_comment_form->createView() : null,
+                'page_title'         => $this->createPageTitle()->feedback($item),
+                'breadcrumbs'        => $breadcrumbs,
+                'rating'             => $rating,
+                'show_rating_counts' => $show_rating_counts,
+                'rating_counts'      => $rating_counts,
             )
         );
     }
@@ -517,7 +522,7 @@ class FeedbackController extends AbstractController
     {
         $allowed_types_parsed = array();
         foreach ($feedback_types as $cat) {
-            $allowed_types_parsed[$cat->getId()] = $cat->getTitle();
+            $allowed_types_parsed[$cat->getId()] = $this->objectPhrase($cat);
         }
 
         $status_categories        = array();
@@ -529,18 +534,18 @@ class FeedbackController extends AbstractController
             }
             $status_categories[$status_type][] = array(
                 'id'    => $status_category->getId(),
-                'title' => $status_category->getTitle(),
+                'title' => $this->objectPhrase($status_category),
             );
         }
 
         $the_array = array(
             'filter'    => array_merge($filter->toArray(), array('page' => $page)),
             'available' => array(
-                'status'            => FeedbackFilter::$statuses_translated,
+                'status'            => $this->transArray(FeedbackFilter::$statuses_translated),
                 'status_categories' => $status_categories,
                 'types'             => $allowed_types_parsed,
-                'sorts'             => FeedbackFilter::$sorts_translated,
-                'sort_directions'   => FeedbackFilter::$sort_directions_translated,
+                'sorts'             => $this->transArray(FeedbackFilter::$sorts_translated),
+                'sort_directions'   => $this->transArray(FeedbackFilter::$sort_directions_translated),
             ),
         );
 
@@ -550,5 +555,16 @@ class FeedbackController extends AbstractController
         );
 
         return $filter_js;
+    }
+
+    protected function transArray(array $array)
+    {
+        $new_array = [];
+
+        foreach ($array as $key => $phrase) {
+            $new_array[$key] = $this->phrase($phrase);
+        }
+
+        return $new_array;
     }
 }

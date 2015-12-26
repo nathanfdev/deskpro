@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Routing;
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
@@ -62,6 +63,7 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
         'serve_default_picture',
         'serve_blob',
         'admin',
+        'user_context_hash',
         'agent',
         'serve_brand_asset',
         '_wdt',
@@ -241,8 +243,12 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
             ($this->isMultiLanguage() && !$request_info->getLanguageUrlCode())
             || (!$this->isMultiLanguage() && $request_info->getLanguageUrlCode())
         ) {
+            $url = $this->buildUrl($request_info->getRoutablePath());
+            if ($query_params = $request->query->all()) {
+                $url .= '?'.http_build_query($query_params);
+            }
             throw new RedirectToUrlException(
-                $this->buildUrl($request_info->getRoutablePath())
+                $url
             );
         }
 

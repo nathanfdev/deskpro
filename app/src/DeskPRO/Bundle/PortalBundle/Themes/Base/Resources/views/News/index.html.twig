@@ -7,13 +7,13 @@
 
   <article class="news main-news">
 
-    <header class="large-title"><!-- TODO actual content -->
+    <header class="large-title">
         <div class="header-buttons">{% show rss_link %}</div>
-        <h1>News</h1>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea</p>
+        <h1>{{ phrase('portal.news.section-title') }}</h1>
+        <p>{{ phrase('portal.news.section-desc') }}</p>
     </header>
 
     {% show news_cats_tabs %}
-    {% show news_list_full with { show_pager: true } %}
+    {% show news_list_full %}
   </article>
 {% endblock inner_content %}

@@ -34,79 +34,68 @@ namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\People\PersonGuest;
-use DeskPRO\Bundle\AppBundle\Helper\TicketPublicIdResolver;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormError;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class PortalExtension extends \Twig_Extension
 {
-    /**
-     * @var \DeskPRO\Bundle\PortalBundle\Brand\BrandStack
-     */
-    private $brand_stack;
-
-    /**
-     * @var \Application\DeskPRO\NewSettings\SettingsResolver
-     */
-    private $settings_resolver;
-
-    /**
-     * @var \DeskPRO\Bundle\AppBundle\Content\AvatarResolver
-     */
-    private $avatar_resolver;
-
     /**
      * @var ContainerInterface
      */
     private $container;
 
     /**
-     * @var TicketPublicIdResolver
-     */
-    private $ticket_public_id_resolver;
-
-    /**
-     * @var TokenStorage
-     */
-    private $token_storage;
-
-    /**
-     * @var \DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager
-     */
-    private $permission_manager;
-
-    /**
-     * @var \DeskPRO\Bundle\PortalBundle\Helper\PortalRatingsHelper
-     */
-    private $ratings_helper;
-
-    /**
-     * @var \DeskPRO\Bundle\PortalBundle\Visitor\VisitorIdentificationProvider
-     */
-    private $visitor_identification_provider;
-
-    /**
-     * @var \DeskPRO\Bundle\AppBundle\Language\LanguageManager
-     */
-    private $language_manager;
-
-    /**
      * @param ContainerInterface $continer
      */
     public function __construct(ContainerInterface $continer)
     {
-        $this->container                       = $continer;
-        $this->brand_stack                     = $continer->get('brand_stack');
-        $this->settings_resolver               = $continer->get('settings_resolver');
-        $this->avatar_resolver                 = $continer->get('avatar_resolver');
-        $this->ticket_public_id_resolver       = $continer->get('ticket.public_id_resolver');
-        $this->permission_manager              = $continer->get('portal_permissions_manager');
-        $this->token_storage                   = $continer->get('security.token_storage');
-        $this->ratings_helper                  = $continer->get('ratings_helper');
-        $this->visitor_identification_provider = $continer->get('visitor_identification_provider');
-        $this->language_manager                = $continer->get('language_manager');
+        $this->container = $continer;
+    }
+
+    public function getBrandStack()
+    {
+        return $this->container->get('brand_stack');
+    }
+
+    public function getSettingsResolver()
+    {
+        return $this->container->get('settings_resolver');
+    }
+
+    public function getAvatarResolver()
+    {
+        return $this->container->get('avatar_resolver');
+    }
+
+    public function getTicketPublicIdResolver()
+    {
+        return $this->container->get('ticket.public_id_resolver');
+    }
+
+    public function getPermissionManager()
+    {
+        return $this->container->get('portal_permissions_manager');
+    }
+
+    public function getTokenStorage()
+    {
+        return $this->container->get('security.token_storage');
+    }
+
+    public function getRatingsHelper()
+    {
+        return $this->container->get('ratings_helper');
+    }
+
+    public function getVisitorIdentificationProvider()
+    {
+        return $this->container->get('visitor_identification_provider');
+    }
+
+    public function getLanguageManager()
+    {
+        return $this->container->get('language_manager');
     }
 
     /**
@@ -172,7 +161,7 @@ class PortalExtension extends \Twig_Extension
     {
         $params = $this->parseErrorParams($form_error->getMessageParameters());
 
-        return $this->language_manager->phrase($form_error->getMessageTemplate(), $params);
+        return $this->getLanguageManager()->phrase($form_error->getMessageTemplate(), $params);
     }
 
     protected function parseErrorParams(array $params)
@@ -255,13 +244,13 @@ class PortalExtension extends \Twig_Extension
         $person = $this->getPerson();
 
         if ($person instanceof Entity\Person && !$person instanceof PersonGuest) {
-            if ($rating = $this->ratings_helper->findPersonRating($object, $person)) {
+            if ($rating = $this->getRatingsHelper()->findPersonRating($object, $person)) {
                 return $rating;
             }
         } else {
-            $visitor_id = $this->visitor_identification_provider->getVisitorIdentifier();
+            $visitor_id = $this->getVisitorIdentificationProvider()->getVisitorIdentifier();
 
-            if ($rating = $this->ratings_helper->findVisitorRating($object, $visitor_id)) {
+            if ($rating = $this->getRatingsHelper()->findVisitorRating($object, $visitor_id)) {
                 return $rating;
             }
         }
@@ -289,7 +278,7 @@ class PortalExtension extends \Twig_Extension
             );
         }
 
-        return $this->ticket_public_id_resolver->findId($ticket);
+        return $this->getTicketPublicIdResolver()->findId($ticket);
     }
 
     public function getSecureCats(Entity\ContentAbstract $content)
@@ -340,7 +329,7 @@ class PortalExtension extends \Twig_Extension
      */
     public function getBrandSetting($setting, $default = null)
     {
-        return $this->brand_stack->getActive()->getSetting($setting, $default);
+        return $this->getBrandStack()->getActive()->getSetting($setting, $default);
     }
 
     /**
@@ -350,7 +339,7 @@ class PortalExtension extends \Twig_Extension
      */
     public function getBrand($prop)
     {
-        return $this->brand_stack->getActive()->getBrand()->get($prop);
+        return $this->getBrandStack()->getActive()->getBrand()->get($prop);
     }
 
     /**
@@ -386,7 +375,7 @@ class PortalExtension extends \Twig_Extension
      */
     public function getAvatarUrl($obj = null, $size = 80)
     {
-        return $this->avatar_resolver->getAvatar($obj, $size);
+        return $this->getAvatarResolver()->getAvatar($obj, $size);
     }
 
     /**
@@ -415,7 +404,10 @@ class PortalExtension extends \Twig_Extension
      */
     public function getGlobals()
     {
-        return array('global_settings' => $this->settings_resolver->getGlobalSettings());
+        return array(
+            'global_settings' => $this->getSettingsResolver()->getGlobalSettings(),
+            'language'        => $this->getLanguageManager()->getLanguageStack()->getActive(),
+        );
     }
 
     /**
@@ -424,7 +416,7 @@ class PortalExtension extends \Twig_Extension
     protected function getPerson()
     {
         $person = null;
-        if ($token = $this->token_storage->getToken()) {
+        if ($token = $this->getTokenStorage()->getToken()) {
             $person = $token->getUser();
         }
 
@@ -440,10 +432,10 @@ class PortalExtension extends \Twig_Extension
         $person = $this->getPerson();
 
         if ($person) {
-            return $this->permission_manager->getPermissionsBagForPerson($person);
+            return $this->getPermissionManager()->getPermissionsBagForPerson($person);
         }
 
-        return $this->permission_manager->getPermissionsBagForGuest();
+        return $this->getPermissionManager()->getPermissionsBagForGuest();
     }
 
     /**

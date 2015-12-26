@@ -29,13 +29,16 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Theme;
 
 use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
+use DeskPRO\Bundle\PortalBundle\Themes\Base\Controller\CommonController;
 use DeskPRO\Component\Util\EntityUtils;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -51,10 +54,16 @@ class TagRequestFactory
      */
     private $language_manager;
 
-    public function __construct(RequestStack $stack, LanguageManager $language_manager)
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    public function __construct(RequestStack $stack, LanguageManager $language_manager, ContainerInterface $container)
     {
         $this->stack            = $stack;
         $this->language_manager = $language_manager;
+        $this->container        = $container;
     }
 
     public function create(Tag $tag, array $arguments = array())
@@ -100,7 +109,14 @@ class TagRequestFactory
             $lang = $language_stack->getDefaultLanguage();
         }
 
-        return array('tag_options' => $tag_options, 'lang_url_code' => $lang->getUrlCode());
+        $brand_container = $this->container->get('brand_stack')->getActive();
+
+        return array(
+            'tag_options'   => $tag_options,
+            'lang_url_code' => $lang->getUrlCode(),
+            'brand_id'      => $brand_container->getBrand()->getId(),
+            'theme_set_id'  => $brand_container->getActiveThemeSet()->getId(),
+        );
     }
 
     /**
@@ -111,29 +127,21 @@ class TagRequestFactory
      */
     private function makeAttributes(Tag $tag, array $arguments)
     {
-        $current_attributes = $this->stack->getCurrentRequest()->attributes->all();
+        $current_request    = $this->stack->getCurrentRequest();
+        $current_attributes = $current_request->attributes->all();
 
         $new_attributes = array();
 
-        $forbidden_attributes = array('tag_request');
-
-        foreach ($current_attributes as $attr => $val) {
-            if (
-                '_' === substr($attr, 0, 1)
-                || in_array($attr, $forbidden_attributes)
-            ) {
-                if (!in_array($attr, array('_route', '_route_params'))) {
-                    continue;
-                }
-
-                if (!$tag->allowRouteParams()) {
-                    continue;
-                }
-            }
-
-            $new_attributes[$attr] = $val;
+        if ($cookie = $current_request->cookies->get(CommonController::DISMISSED_ALERTS_COOKIE_NAME)) {
+            $new_attributes[CommonController::DISMISSED_ALERTS_COOKIE_NAME] = $cookie;
         }
 
-        return array_merge($new_attributes, $arguments, array('_tag_name' => $tag->getName()));
+        $tag_params = ['_tag_name' => $tag->getName()];
+        if ($tag->allowRouteParams()) {
+            $tag_params['_route']        = isset($current_attributes['_route']) ? $current_attributes['_route'] : null;
+            $tag_params['_route_params'] = isset($current_attributes['_route_params']) ? $current_attributes['_route_params'] : null;
+        }
+
+        return array_merge($new_attributes, $arguments, $tag_params);
     }
 }

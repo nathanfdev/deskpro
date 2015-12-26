@@ -29,8 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Log\Logger;
 
 /**
@@ -55,6 +57,14 @@ abstract class AbstractJob
         $this->options = new \Orb\Util\OptionsArray($options);
         $this->logger  = $logger;
         $this->init();
+    }
+
+    /**
+     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    public function getContainer()
+    {
+        return App::$container;
     }
 
     protected function init()

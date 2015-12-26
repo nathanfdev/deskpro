@@ -23,6 +23,28 @@ export class ListItemContainer extends Component {
     children: PropTypes.node
   };
 
+  /**
+   * Get item label
+   *
+   * @return {string} Label
+   */
+  getItemLabel() {
+    const { type, id, parentIsLoading, title } = this.props;
+
+    if (parentIsLoading) {
+      return <ListItemLabelSpinner />;
+    }
+
+    const useIdAsLabel = ['waiting_time', 'all_waiting_time', 'open_time'].indexOf(type) > -1;
+    const label = useIdAsLabel ? id : title;
+
+    return label ? label : '—';
+  }
+
+  startFilterEditing(filterId) {
+    return () => this.props.dispatch(startFilterEditing(filterId));
+  }
+
   render() {
     const { dispatch, count, id, type, notDoneFilters, isTopLevel, listFilters, children } = this.props;
 
@@ -48,31 +70,9 @@ export class ListItemContainer extends Component {
         <div part="label">{label}</div>
         <div part="nested">
           {children}
-          {isTopLevel ? <FilterEditPopupContainer attachTo={this.refs.item} filterId={id} /> : ''}
+          {isTopLevel && <FilterEditPopupContainer attachTo={this.refs.item} filterId={id} />}
         </div>
       </ListItem>
     );
-  }
-
-  startFilterEditing(filterId) {
-    return () => this.props.dispatch(startFilterEditing(filterId));
-  }
-
-  /**
-   * Get item label
-   *
-   * @return {string} Label
-   */
-  getItemLabel() {
-    const { type, id, parentIsLoading, title } = this.props;
-
-    if (parentIsLoading) {
-      return <ListItemLabelSpinner />;
-    }
-
-    const useIdAsLabel = ['waiting_time', 'all_waiting_time', 'open_time'].indexOf(type) > -1;
-    const label = useIdAsLabel ? id : title;
-
-    return label ? label : '—';
   }
 }

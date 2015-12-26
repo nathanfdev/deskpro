@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\UserChat;
 
 use Application\DeskPRO\Entity\ChatMessage;
@@ -81,7 +82,7 @@ class UserChatSystemListener implements EventSubscriberInterface
     public function onChatEvent(UserChatEvent $event)
     {
         $conversation = $event->getConversation();
-        $params       = $event->getParams();
+        $params       = $event->getData();
         $metadata     = $event->getMetadata();
 
         $phrase_id = preg_replace('/^user_chat\./', '', $event->getName());

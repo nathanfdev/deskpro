@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
@@ -60,10 +61,14 @@ class FeedbackTypeController extends BaseController
         $qb = $this->getDoctrine()->getManager()->createQueryBuilder();
         $qb
             ->select('type.id', 'type.title', 'COUNT(feedback.id) as counter')
-            ->from('DeskPRO:Feedback', 'feedback')
-            ->innerJoin('feedback.category', 'type')
-            ->groupBy('type.id')
-        ;
+            ->from('DeskPRO:FeedbackCategory', 'type')
+            ->leftJoin(
+                'DeskPRO:Feedback',
+                'feedback',
+                \Doctrine\ORM\Query\Expr\Join::WITH,
+                'feedback.category = type.id'
+            )
+            ->groupBy('type.id');
 
         $types = $qb->getQuery()->getArrayResult();
 

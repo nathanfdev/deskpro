@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -99,6 +100,16 @@ class TicketFeedback extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
+    public function getMessage()
+    {
+        return $this->message;
+    }
+
+    public function getRating()
+    {
+        return $this->rating;
+    }
+
     /**
      * Is this is a new record? (ie not persisted, or persisted this request).
      *
@@ -148,6 +159,11 @@ class TicketFeedback extends \Application\DeskPRO\Domain\DomainObject
     public function ratePositive()
     {
         $this->setRating(1);
+    }
+
+    public function setMessage($message)
+    {
+        $this->setModelField('message', $message);
     }
 
     public function rateNegative()

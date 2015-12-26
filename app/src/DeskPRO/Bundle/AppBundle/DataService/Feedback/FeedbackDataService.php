@@ -42,7 +42,9 @@ use DeskPRO\Bundle\AppBundle\Data\Criteria\CriteriaInterface;
 use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
 use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Query\QueryException;
+use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
@@ -324,8 +326,11 @@ class FeedbackDataService extends AbstractDataService
             ->leftJoin('f.person', 'person')
             ->addGroupBy('f.id');
         $criteria->applyFilters($qb);
+        $feedback = $qb->getQuery()->getResult();
 
-        $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
+        $filters  = $criteria->getFilters();
+        $feedback = $this->allLabelsMode($filters, $feedback);
+        $pager    = new Pagerfanta(new ArrayAdapter($feedback));
         $pager->setMaxPerPage($count);
         $pager->setCurrentPage($page);
 
@@ -341,7 +346,14 @@ class FeedbackDataService extends AbstractDataService
      */
     public function countFeedback(FeedbackCountCriteria $criteria)
     {
-        return $criteria->hasGroupBy() ? $this->countGrouped($criteria) : $this->countFlat($criteria);
+        if (!$criteria->hasGroupBy()) {
+            return $this->countFlat($criteria);
+        }
+        if ($criteria->getGroupBy() === 'status_category') {
+            return $this->countStatusGrouped($criteria);
+        }
+
+        return $this->countGrouped($criteria);
     }
 
     /**
@@ -379,7 +391,8 @@ class FeedbackDataService extends AbstractDataService
         $criteria->applyFilters($qb);
         $criteria->applyGroupBy($qb);
         $result = $qb->getQuery()->getArrayResult();
-        $count  = Count::fromGroupedBy($criteria->getGroupBy());
+
+        $count = Count::fromGroupedBy($criteria->getGroupBy());
         foreach ($criteria->getFilters() as $field => $value) {
             switch ($field) {
                 case 'status':
@@ -394,5 +407,69 @@ class FeedbackDataService extends AbstractDataService
         }
 
         return $count;
+    }
+
+    /**
+     * We need this weird method for select all status categories of whether the feedback associated with them.
+     *
+     * @param FeedbackCountCriteria $criteria
+     *
+     * @throws \LogicException
+     *
+     * @return Count
+     */
+    private function countStatusGrouped(FeedbackCountCriteria $criteria)
+    {
+        $qb      = $this->em->createQueryBuilder();
+        $filters = $criteria->getFilters();
+        $type    = $filters['status'];
+        $qb
+            ->select('COUNT(feedback.id) as value', 'status.title as group_name')
+            ->from('DeskPRO:FeedbackStatusCategory', 'status')
+            ->leftJoin(
+                'DeskPRO:Feedback',
+                'feedback',
+                Join::WITH,
+                'feedback.status_category = status.id'
+            )
+            ->andWhere('status.status_type = :type')
+            ->setParameter('type', $type)
+            ->groupBy('status.id');
+
+        $result = $qb->getQuery()->getArrayResult();
+
+        $count = Count::fromGroupedBy($criteria->getGroupBy());
+        $count->setId($type);
+        $count->setTitle($type);
+
+        foreach ($result as $group) {
+            $count->add($group['value']);
+            $count->addNested($group['value'], $group['group_name'], $criteria->getGroupBy(), $group['group_name']);
+        }
+
+        return $count;
+    }
+
+    /**
+     * @param array $filters
+     * @param array $feedback
+     *
+     * @return array
+     */
+    private function allLabelsMode(array $filters, array $feedback)
+    {
+        if (array_key_exists('labels_mode', $filters) && $filters['labels_mode'] === 'all'
+            && array_key_exists('label', $filters) && !empty($filters['label'])
+        ) {
+            foreach ($filters['label'] as $label) {
+                foreach ($feedback as $key => $item) {
+                    if (!$item->findLabelByString($label)) {
+                        unset($feedback[$key]);
+                    }
+                }
+            }
+        }
+
+        return $feedback;
     }
 }

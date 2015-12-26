@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\HttpKernel;
 
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
@@ -52,7 +53,7 @@ class ControllerNameParser extends BaseParser
     protected $cache;
 
     /**
-     * @var \DeskPRO\Bundle\PortalBundle\Brand\BrandStack
+     * @var BrandStack
      */
     private $brand_stack;
 
@@ -62,13 +63,21 @@ class ControllerNameParser extends BaseParser
         $this->brand_stack = $brand_stack;
     }
 
+    /**
+     * @return BrandStack
+     */
+    private function getBrandStack()
+    {
+        return $this->brand_stack;
+    }
+
     public function parse($controller)
     {
-        if (!$brand_container = $this->brand_stack->getActive()) {
-            $this->brand_stack->push($this->brand_stack->getDefault());
+        if (!$brand_container = $this->getBrandStack()->getActive()) {
+            $this->getBrandStack()->push($this->getBrandStack()->getDefault());
         }
 
-        if (!$brand_container && !$brand_container = $this->brand_stack->getActive()) {
+        if (!$brand_container && !$brand_container = $this->getBrandStack()->getActive()) {
             throw new \RuntimeException('no brand is active in the brand stack. cannot parse theme controller.');
         }
 

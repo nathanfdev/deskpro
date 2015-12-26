@@ -131,7 +131,7 @@
                 <article class="news front-page-news">
                   <div class="large-title clearfix"><h1>Knowledgebase</h1></div>
                   {% if opts.show_kb == 'normal' %}
-                    {% show section kb with { articles_options: { count: 3 }} %}
+                    {% show section kb with { articles_count: 3 } %}
                   {% elseif opts.show_kb == 'expander' %}
                     {% show section kb_cats_expander %}
                   {% endif %}

@@ -190,6 +190,11 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var \DateTime
      */
+    protected $date_agent_typing;
+
+    /**
+     * @var \DateTime
+     */
     protected $date_first_agent_message;
 
     /**
@@ -550,12 +555,14 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Set the status (open or ended).
      *
-     * @param  $status
+     * @param string $status
+     *
+     * @return $this
      */
     public function setStatus($status)
     {
         if ($this->status == $status) {
-            return;
+            return $this;
         }
 
         $this->_onPropertyChanged('status', $this->status, $status);
@@ -570,6 +577,8 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
                 $this['date_ended'] = null;
             }
         }
+
+        return $this;
     }
 
     /**
@@ -721,6 +730,8 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @param \DateTime $date
+     *
+     * @return $this
      */
     public function setDateEnded(\DateTime $date = null)
     {
@@ -731,6 +742,28 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
             $this->setModelField('date_ended', null);
             $this->setModelField('total_to_ended', 0);
         }
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateAgentTyping()
+    {
+        return $this->date_agent_typing;
+    }
+
+    /**
+     * @param \DateTime $date
+     *
+     * @return $this
+     */
+    public function setDateAgentTyping(\DateTime $date = null)
+    {
+        $this->setModelField('date_agent_typing', $date);
+
+        return $this;
     }
 
     /**
@@ -921,6 +954,86 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         return false;
     }
 
+    /**
+     * @return \DateTime
+     */
+    public function getDateFirstAgentMessage()
+    {
+        return $this->date_first_agent_message;
+    }
+
+    /**
+     * @param \DateTime $date
+     *
+     * @return $this
+     */
+    public function setDateFirstAgentMessage(\DateTime $date)
+    {
+        $this->setModelField('date_first_agent_message', $date);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getShouldSendTranscript()
+    {
+        return $this->should_send_transcript;
+    }
+
+    /**
+     * @param bool $value
+     *
+     * @return $this
+     */
+    public function setShouldSendTranscript($value)
+    {
+        $this->setModelField('should_send_transcript', $value);
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateTranscriptSent()
+    {
+        return $this->date_transcript_sent;
+    }
+
+    /**
+     * @param \DateTime|null $date
+     *
+     * @return $this
+     */
+    public function setDateTranscriptSent(\DateTime $date = null)
+    {
+        $this->setModelField('date_transcript_sent', $date);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEndedBy()
+    {
+        return $this->ended_by;
+    }
+
+    /**
+     * @param string $ended_by
+     *
+     * @return $this
+     */
+    public function setEndedBy($ended_by)
+    {
+        $this->setModelField('ended_by', $ended_by);
+
+        return $this;
+    }
+
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
         $data = parent::toApiData($primary, $deep, $visited);
@@ -963,6 +1076,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array('fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
         $metadata->mapField(array('fieldName' => 'date_user_waiting', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_user_waiting'));
         $metadata->mapField(array('fieldName' => 'date_assigned', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_assigned'));
+        $metadata->mapField(array('fieldName' => 'date_agent_typing', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_agent_typing'));
         $metadata->mapField(array('fieldName' => 'date_first_agent_message', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_first_agent_message'));
         $metadata->mapField(array('fieldName' => 'date_ended', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_ended'));
         $metadata->mapField(array('fieldName' => 'should_send_transcript', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'should_send_transcript'));

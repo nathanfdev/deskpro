@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\PortalBundle\Theme;
 
 use DeskPRO\Bundle\PortalBundle\Theme\Tag;
@@ -139,7 +140,7 @@ class TagSpec extends ObjectBehavior
         $this->isEsi($is_guest = true)->shouldBe(false);
     }
 
-    public function it_alows_route_params_by_default()
+    public function it_disallows_route_params_by_default()
     {
         $this->beConstructedWith(
             'knowledgebase',
@@ -149,7 +150,7 @@ class TagSpec extends ObjectBehavior
             $esi = true
         );
 
-        $this->allowRouteParams()->shouldBe(true);
+        $this->allowRouteParams()->shouldBe(false);
     }
 
     public function it_can_be_marked_to_allow_route_params()
@@ -163,7 +164,7 @@ class TagSpec extends ObjectBehavior
             array(),
             array(),
             $esi = true,
-            $always_inline_guests = false,
+            $always_inline_guests = true,
             $allow_route_params = true
         );
 

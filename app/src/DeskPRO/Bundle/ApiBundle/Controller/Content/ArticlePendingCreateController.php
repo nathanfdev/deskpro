@@ -29,21 +29,23 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Content;
 
 use Application\DeskPRO\Entity\ArticlePendingCreate;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use DeskPRO\Bundle\AppBundle\DataService\Content\ArticlePendingCreateCriteria;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
-use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\OptionsResolver\Exception\InvalidArgumentException;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class ArticlePendingCreateController.
@@ -67,7 +69,9 @@ class ArticlePendingCreateController extends BaseController
         $qb
             ->select('COUNT(apc)')
             ->from(ArticlePendingCreate::class, 'apc');
-        $this->applyFilters($qb, $request->query->all());
+
+        $params = $this->removeAdditionalParameters($request);
+        $this->applyFilters($qb, $params);
 
         $total = $qb->getQuery()->getSingleScalarResult();
         $count = Count::fromValue($total);
@@ -91,22 +95,31 @@ class ArticlePendingCreateController extends BaseController
      */
     public function listAction(Request $request)
     {
+        /** @var \DeskPRO\Bundle\AppBundle\DataService\Content\ArticlePendingCreateDataService $dataService */
+        $dataService = $this->get('data.apc');
+
         $qb = $this->getManager()->createQueryBuilder();
         $qb
             ->select('apc')
             ->from(ArticlePendingCreate::class, 'apc');
 
-        $params = array_diff_assoc($request->query->all(), ['page' => null, 'count' => null]);
-        $this->applyFilters($qb, $params);
+        $params = $this->removeAdditionalParameters($request);
+        $params = $dataService->normalizeAssigned($params, $this->getUser());
 
+        try {
+            $criteria = ArticlePendingCreateCriteria::fromParameters(
+                $params,
+                new OptionsResolver()
+            );
+        } catch (InvalidArgumentException $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        }
         $page  = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
-        $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
-        $pager->setMaxPerPage($count);
-        $pager->setCurrentPage($page);
+        $apc   = $dataService->selectAPC($criteria, $page, $count);
 
         return View::create(
-            $this->dataSerialize($pager),
+            $this->dataSerialize($apc),
             Response::HTTP_OK
         );
     }
@@ -115,8 +128,10 @@ class ArticlePendingCreateController extends BaseController
      * @param QueryBuilder $qb
      * @param array        $params
      */
-    private function applyFilters(QueryBuilder $qb, array $params)
-    {
+    private function applyFilters(
+        QueryBuilder $qb,
+        array $params
+    ) {
         // handle the only allowed filter "assigned_person"
         if (array_key_exists('assigned_person', $params)) {
             $assignee = $params['assigned_person'] === 'me'

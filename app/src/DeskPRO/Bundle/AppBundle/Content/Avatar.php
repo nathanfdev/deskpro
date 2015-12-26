@@ -29,8 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Content;
 
+/**
+ * Class Avatar.
+ */
 class Avatar
 {
     const GRAVATAR_DEFAULT_404     = '404';
@@ -78,7 +82,7 @@ class Avatar
     public function getUrl($size = 80)
     {
         if (!$this->url_pattern) {
-            return;
+            return '';
         }
 
         return str_replace('{{IMG_SIZE}}', $size, $this->url_pattern);
@@ -90,7 +94,7 @@ class Avatar
     public function getUrlPattern()
     {
         if (!$this->url_pattern) {
-            return;
+            return '';
         }
 
         return $this->url_pattern;
@@ -104,7 +108,7 @@ class Avatar
     public function getDefaultUrl($size = 80)
     {
         if (!$this->default_url_pattern) {
-            return;
+            return '';
         }
 
         return str_replace('{{IMG_SIZE}}', $size, $this->default_url_pattern);
@@ -116,7 +120,7 @@ class Avatar
     public function getDefaultUrlPattern()
     {
         if (!$this->default_url_pattern) {
-            return;
+            return '';
         }
 
         return $this->default_url_pattern;
@@ -125,12 +129,13 @@ class Avatar
     /**
      * @param int    $size
      * @param string $default
-     * @param string|null
+     *
+     * @return string
      */
     public function getGravatarUrl($size = 80, $default = self::GRAVATAR_DEFAULT_BLANK)
     {
         if (!$this->base_gravatar_url) {
-            return;
+            return '';
         }
 
         return $this->base_gravatar_url."?s={$size}&d=$default";

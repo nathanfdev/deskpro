@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -825,6 +826,16 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
             default:
                 return false;
         }
+    }
+
+    /**
+     * True if there can be multiple values for this type.
+     *
+     * @return bool
+     */
+    public function isMulti()
+    {
+        return $this->isChoiceType() && $this->getOption('multiple');
     }
 
     /**

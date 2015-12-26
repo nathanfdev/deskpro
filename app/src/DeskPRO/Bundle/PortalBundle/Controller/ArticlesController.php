@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Article;
@@ -208,11 +209,12 @@ class ArticlesController extends AbstractController
         //
         // RATING
         //
-        if (!$rating = $this->getRatingsHelper()->getPersonRating($article, $this->getUser())) {
-            // TODO: flagging this: using $visitor_id is potentially dangerous due to HTTP caching
-            //       we should consider showing this via a client-side JS request instead.
-            $rating = $this->getRatingsHelper()->findVisitorRating($article, $visitor_id);
-        }
+        $rating = $this->findContentRating($article, $visitor_id);
+
+        //
+        // NUM RATINGS
+        //
+        list($show_rating_counts, $rating_counts) = $this->determineRatingCounts($article);
 
         //
         // SUBSCRIPTION
@@ -232,15 +234,17 @@ class ArticlesController extends AbstractController
         return $this->renderThemeView(
             'Theme:Articles:view.html.twig',
             array(
-                'article'          => $article,
-                'rating'           => $rating,
-                'is_subscribed'    => $is_subscribed,
-                'category'         => $article->getPrimaryCategory(),
-                'breadcrumbs'      => $breadcrumbs,
-                'content_id'       => $article->getId(),
-                'content_type'     => Article::CONTENT_TYPE,
-                'page_title'       => $this->get('portal_view.page_title_generator')->kb($article),
-                'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,
+                'article'            => $article,
+                'rating'             => $rating,
+                'is_subscribed'      => $is_subscribed,
+                'category'           => $article->getPrimaryCategory(),
+                'breadcrumbs'        => $breadcrumbs,
+                'content_id'         => $article->getId(),
+                'content_type'       => Article::CONTENT_TYPE,
+                'page_title'         => $this->get('portal_view.page_title_generator')->kb($article),
+                'new_comment_form'   => $new_comment_form ? $new_comment_form->createView() : null,
+                'show_rating_counts' => $show_rating_counts,
+                'rating_counts'      => $rating_counts,
             )
         );
     }

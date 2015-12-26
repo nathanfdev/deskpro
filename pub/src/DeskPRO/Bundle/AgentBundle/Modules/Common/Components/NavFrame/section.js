@@ -48,16 +48,18 @@ export class SectionHeader extends React.Component {
 export class SectionGroupedHeader extends React.Component {
 
   static propTypes = {
+    label: PropTypes.string.isRequired,
     count: PropTypes.number.isRequired,
     callback: PropTypes.func.isRequired,
     children: PropTypes.node
   };
 
   render() {
-    const { count, callback, children } = this.props;
+    const { count, callback, label, children } = this.props;
 
     return (
       <div className="list-sidebar-title">
+        {label}
         {children}
         <div className="list-counter-bucket">
           <a className="list-counter-dropdown active" href="#" onClick={callback}>

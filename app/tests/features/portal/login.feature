@@ -21,6 +21,6 @@ Feature: Login
     When I login with admin credentials
     Then I should be authenticated as admin
 
-  Scenario: I login via the sidebar
-    When I login using the sidebar with user credentials
-    Then I should be authenticated as user
+#  Scenario: I login via the sidebar
+#    When I login using the sidebar with user credentials
+#    Then I should be authenticated as user

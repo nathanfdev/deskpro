@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-export default class ItemFormat extends React.Component {
+export class ItemFormat extends React.Component {
   static propTypes = {
     icon: React.PropTypes.string,
     label: React.PropTypes.string,
@@ -16,7 +16,9 @@ export default class ItemFormat extends React.Component {
     listItem: React.PropTypes.bool,
     hasMenu: React.PropTypes.bool,
     hasItemList: React.PropTypes.bool,
+    selected: React.PropTypes.array,
     resetFilter: React.PropTypes.func,
+    renderFilterInfo: React.PropTypes.func,
     toggleInnerList: React.PropTypes.func
   };
 
@@ -59,7 +61,7 @@ export default class ItemFormat extends React.Component {
   renderChildren() {
     if (this.props.children) {
       return React.Children.map(this.props.children, (child) => {
-        if (child && child.type && child.type.displayName !== 'ItemList' && child.type.displayName !== 'Menu' ) {
+        if (child && child.type && child.type.displayName !== 'ItemList' && child.type.displayName !== 'Menu') {
           return child;
         }
       });
@@ -108,6 +110,7 @@ export default class ItemFormat extends React.Component {
   }
 
   render() {
+    const {selected, format, renderFilterInfo} = this.props;
     let typeClass = '';
 
     if (this.props.itemType) {
@@ -139,15 +142,18 @@ export default class ItemFormat extends React.Component {
         </div>
       );
     }
-    return (<div>
-      {this.renderDiscMark()}
-      {this.renderIcon()}
-      {this.renderLabel()}
-      {this.renderChildren()}
-      {this.renderSubmenuCaret()}
-      {this.renderCheckedMark()}
-      {this.renderInnerListSwitcher()}
-      {this.renderFilterClear()}
-    </div>);
+    return (
+      <div>
+        {this.renderDiscMark()}
+        {this.renderIcon()}
+        {this.renderLabel()}
+        {format === 'filter' && selected && renderFilterInfo(selected)}
+        {this.renderChildren()}
+        {this.renderSubmenuCaret()}
+        {this.renderCheckedMark()}
+        {this.renderInnerListSwitcher()}
+        {this.renderFilterClear()}
+      </div>
+    );
   }
 }

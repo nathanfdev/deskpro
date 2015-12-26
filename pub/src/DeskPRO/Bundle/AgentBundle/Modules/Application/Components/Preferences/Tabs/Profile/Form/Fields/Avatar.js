@@ -96,7 +96,7 @@ export class Avatar extends React.Component {
       error: null
     });
 
-    this.props.onChange(response.blob_auth_id);
+    this.props.onChange(response.data.blob_auth_id);
     this.refs.dropzoneComponent.dropzone.removeFile(file);
   };
 
@@ -262,7 +262,7 @@ export class Avatar extends React.Component {
             size={24}
             color="#CDD2D4"
             urlPattern={this.getImagePath()}
-            fallbackText={this.getPersonInitials()} />
+            text={this.getPersonInitials()} />
           Manage Avatar
         </a>
         <ClickOut onClickOut={this.onCloseEdit}

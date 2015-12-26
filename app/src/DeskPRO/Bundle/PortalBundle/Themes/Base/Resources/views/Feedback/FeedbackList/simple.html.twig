@@ -6,7 +6,7 @@
                     <a href="{{ portal_path(item, 'vote_up') }}" class="post-link thumbs">
                         <span><i class="fa fa-thumbs-up"></i> {{ item.total_rating }}</span>
                     </a>
-                    <span class="text-tag">{{ item.status_category ?: item.status }}</span>
+                    <span class="text-tag">{{ item.status_category ? object_phrase(item.status_category) : item.status }}</span>
                     <a href="{{ portal_path(item) }}">{{ item.title }}</a>
                 </li>
             {% endfor %}
@@ -21,5 +21,9 @@
                 {{ phrase('portal.feedback.view-x-feedback', {count: pager|length}) }}<i class="fa fa-caret-right"></i>
             </a>
         </div>
+    {% endif %}
+
+    {% if show_pager %}
+       {% show feedback_pager %}
     {% endif %}
 </div>

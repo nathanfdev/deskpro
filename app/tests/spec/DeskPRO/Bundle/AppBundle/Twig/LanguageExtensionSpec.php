@@ -29,9 +29,9 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\Twig;
 
-use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use PhpSpec\ObjectBehavior;
 
@@ -40,10 +40,8 @@ use PhpSpec\ObjectBehavior;
  */
 class LanguageExtensionSpec extends ObjectBehavior
 {
-    public function let(LanguageManager $language_manager, Translate $translate)
+    public function let(LanguageManager $language_manager)
     {
-        $language_manager->getTranslator()->willReturn($translate);
-
         $this->beConstructedWith($language_manager);
     }
 
@@ -55,9 +53,9 @@ class LanguageExtensionSpec extends ObjectBehavior
 
     public function it_uses_the_translator_from_language_stack_to_resolve_phrases(
         \Twig_Environment $twig,
-        Translate $translate
+        LanguageManager $language_manager
     ) {
-        $translate->phrase('portal.phrase.here', array('name' => 'Chris Tickner', '_context' => 'context'))
+        $language_manager->phrase('portal.phrase.here', array('name' => 'Chris Tickner', '_context' => 'context'))
             ->willReturn('hi Chris Tickner');
 
         $this->getPhrase($twig, 'context', 'portal.phrase.here', array('name' => 'Chris Tickner'), true)

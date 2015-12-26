@@ -44,7 +44,21 @@ class ArticleTransformer extends AbstractDataSerializerTransformer
      */
     public function getAutomaticProperties(DataTransformerRequest $request)
     {
-        return ['id', 'slug', 'title', 'content'];
+        return [
+            'id',
+            'slug',
+            'title',
+            'content',
+            'date_created',
+            'date_updated',
+            'person',
+            'status',
+            'view_count',
+            'total_rating',
+            'num_ratings',
+            'num_comments',
+            'revisions',
+        ];
     }
 
     /**
@@ -52,6 +66,15 @@ class ArticleTransformer extends AbstractDataSerializerTransformer
      */
     public function getCustomProperties(DataTransformerRequest $request)
     {
-        return [];
+        /** @var \Application\DeskPRO\Entity\Article $article */
+        $article      = $request->getDataToBeTransformed();
+        $authors      = $article->getAuthors();
+        $lastAuthor   = end($authors);
+        $lastAuthorId = $lastAuthor ? $lastAuthor->getId() : null;
+
+        return [
+            'last_author_id' => $lastAuthorId,
+            'vote_stats'     => $article->getVoteStats(),
+        ];
     }
 }

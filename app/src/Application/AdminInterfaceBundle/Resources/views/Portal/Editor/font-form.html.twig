@@ -1,0 +1,46 @@
+<div class="input">
+    <ul class="select-expanded">
+        <li>
+            <span class="title">Select Font</span>
+        </li>
+        <li>
+            <a href ng-click="selectStack(1)" class="font-stack stack-1" ng-class="{'selected-item': isStackSelected(1)}">
+                Open Sans, <span class="secondary">Helvetica, Arial, Sans Serif</span>
+            </a>
+        </li>
+        <li>
+            <a href ng-click="selectStack(2)" class="font-stack stack-2" ng-class="{'selected-item': isStackSelected(2)}">
+                Baskerville, <span class="secondary">Georgia, Serif</span>
+            </a>
+        </li>
+        <li>
+            <a href ng-click="selectStack(3)" class="font-stack stack-3" ng-class="{'selected-item': isStackSelected(3)}">
+                Lato, <span class="secondary">Myriad Pro, Arial, Sans Serif</span>
+            </a>
+        </li>
+        <li>
+            <a href ng-click="selectStack(4)" class="font-stack stack-4" ng-class="{'selected-item': isStackSelected(4)}">
+                Ubuntu, <span class="secondary">Trebuchet, Arial, Sans Serif</span>
+            </a>
+        </li>
+        <li>
+            <a href ng-click="selectStack('custom')" class="font-stack custom" ng-class="{'selected-item': isStackSelected('custom')}">
+                Custom
+            </a>
+        </li>
+    </ul>
+    <div class="font-params" ng-if="!isStackSelected('custom')">
+        <input type="number" step="0.01" class="one-fourth" />
+        <select class="one-sixth">
+            <option>px</option>
+            <option>pt</option>
+            <option>%</option>
+            <option>em</option>
+        </select>
+        <span class="input-label">Font Size</span>
+    </div>
+
+    <div class="font-params" ng-if="isStackSelected('custom')">
+        <input type="text" placeholder="Custom font CSS value" ng-model="values[variable.name]['custom']" />
+    </div>
+</div>

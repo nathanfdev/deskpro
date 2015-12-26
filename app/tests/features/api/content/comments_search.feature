@@ -21,7 +21,7 @@ Feature: Comment counts endpoints (/article_comments, /news_comments, /download_
       | download  |
 
   Scenario Outline: I select comments filtering them by parent, status, is_reviewed and period_created
-    When I send a GET request to "/api/v2/<target>_comments?<target>=2&status=validating&is_reviewed=0&period_created=ever"
+    When I send a GET request to "/api/v2/<target>_comments?<target>=2&status=visible&is_reviewed=0&period_created=ever"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should have 1 element

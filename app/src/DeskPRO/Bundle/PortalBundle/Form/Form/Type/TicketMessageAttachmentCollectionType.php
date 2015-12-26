@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -80,8 +81,8 @@ class TicketMessageAttachmentCollectionType extends AbstractType
                 'type'    => 'ticket_message_attachment',
                 'options' => function (Options $options) {
                         return array(
-                            'ticket_message' => $options->get('ticket_message'),
-                            'person'         => $options->get('person'),
+                            'ticket_message' => $options['ticket_message'],
+                            'person'         => $options['person'],
                             'label'          => false,
                         );
                     },

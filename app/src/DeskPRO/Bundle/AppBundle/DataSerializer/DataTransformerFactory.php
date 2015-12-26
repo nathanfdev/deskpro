@@ -84,6 +84,27 @@ class DataTransformerFactory
     }
 
     /**
+     * @param string $type
+     *
+     * @return bool
+     */
+    public function hasType($type)
+    {
+        $service_name = self::TRANSFORMER_SERVICE_PREFIX.$type;
+
+        if (!$this->container->has($service_name)) {
+            $transformer_class = 'DeskPRO\\Bundle\\AppBundle\\DataSerializer\\DataTransformer\\'.ucfirst(Strings::underscoreToCamelCase($type)).'Transformer';
+            if (!class_exists($transformer_class)) {
+                return false;
+            }
+
+            return true;
+        } else {
+            return true;
+        }
+    }
+
+    /**
      * @param string $type the object "type" string, like "ticket" or "person"
      *
      * @throws DataSerializerException

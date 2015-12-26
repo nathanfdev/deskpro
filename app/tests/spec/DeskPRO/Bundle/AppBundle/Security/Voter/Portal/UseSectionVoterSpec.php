@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
 use Application\DeskPRO\Entity\Person;
@@ -108,9 +109,11 @@ class UseSectionVoterSpec extends ObjectBehavior
         PermissionsBag $guest_permission_bag
     ) {
         $person_permission_bag->get('tickets.use')->willReturn(true);
+        $person_permission_bag->getAllowedTicketDepartmentIds()->willReturn(1); // > 0
         $this->verifyGrantedVote(UseSectionVoter::USE_TICKETS, $token);
 
         $guest_permission_bag->get('tickets.use')->willReturn(true);
+        $guest_permission_bag->getAllowedTicketDepartmentIds()->willReturn(1); // > 0
         $this->verifyGrantedVote(UseSectionVoter::USE_TICKETS, $guest_token);
     }
 

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\HttpCache;
 
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -96,6 +97,6 @@ class PortalCacheHelper
 
     public function isGuestHash($hash)
     {
-        return in_array($hash, array(PortalHttpCache::ANON_HASH, PortalHttpCache::GUEST_HASH));
+        return in_array($hash, array(PortalHttpCache::ANON_NO_SESSION_HASH));
     }
 }

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
 use Application\DeskPRO\Entity\Feedback;
@@ -36,16 +37,17 @@ use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\PortalBundle\Annotation\Tag;
 use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
 use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
+use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\TagHttpCache;
 use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\HttpFoundation\Response;
 
 class FeedbackController extends AbstractController
 {
     /**
-     * @Tag(name="feedback_list_simple", default_options={"style":"simple"})
-     * @Tag(name="feedback_list_detail", default_options={"style":"detail"})
+     * @Tag(name="feedback_list_simple", default_options={"style":"simple"}, esi=true)
+     * @Tag(name="feedback_list_detail", default_options={"style":"detail", "show_pager":true}, allow_route_params=true)
+     * @TagHttpCache()
      *
      * @TagOptions(
      *      defaults={
@@ -57,7 +59,8 @@ class FeedbackController extends AbstractController
      *          "types": {},
      *          "sort": "date",
      *          "sort_direction": "desc",
-     *          "show_category_link": true
+     *          "show_category_link": true,
+     *          "show_pager": false
      *      },
      *      allowed_values={
      *          "style": {"simple", "detail"},
@@ -93,60 +96,7 @@ class FeedbackController extends AbstractController
             array(
                 'pager'              => $pager,
                 'show_category_link' => $options['show_category_link'],
-            )
-        );
-    }
-
-    /**
-     * @Tag(name="feedback_pager")
-     *
-     * @TagOptions(
-     *      defaults={
-     *          "show_pagination": true,
-     *          "count": 10,
-     *          "page": 1,
-     *          "status": "all",
-     *          "status_categories": {},
-     *          "types": {},
-     *          "sort": "date",
-     *          "sort_direction": "desc"
-     *      },
-     *      allowed_values={
-     *          "sort": {"date", "most-popular", "highest-rating", "most-discussed", "most-views"},
-     *          "sort_direction": {"desc", "asc"},
-     *          "status": {"all","active","closed"}
-     *      }
-     * )
-     *
-     * @Security("is_granted('USE_FEEDBACK')")
-     */
-    public function pagerAction(TagRequest $tag_request, array $options)
-    {
-        if (!$options['show_pagination']) {
-            return new Response('');
-        }
-
-        $person = $this->getUser() ?: new PersonGuest();
-
-        $filter = new FeedbackFilter(array(
-            'status'            => $options['status'],
-            'status_categories' => $options['status_categories'],
-            'types'             => $options['types'],
-            'sort'              => $options['sort'],
-            'sort_direction'    => $options['sort_direction'],
-        ));
-
-        $pager = $this->getFeedbackDataService()->getItemsPager(
-            $options['page'],
-            $options['count'],
-            $filter,
-            $person
-        );
-
-        return $this->renderThemeView(
-            'Theme:Common:pager.html.twig',
-            array(
-                'pager' => $pager,
+                'show_pager'         => $options['show_pager'],
             )
         );
     }

@@ -43,22 +43,6 @@ html, body {
   padding: 0;
 }
 
-.trigger-button {
-  min-width: 100%;
-  overflow: hidden;
-  background: #0070C2;
-  border-radius: 150px;
-  color: #fff;
-  cursor: pointer;
-
-  strong {
-    display: inline-block;
-    font-weight: normal;
-    text-align: center;
-    padding: 12px 30px;
-  }
-}
-
 .widget-container {
   overflow: auto;
 }
@@ -161,6 +145,7 @@ html, body {
   width: 200px;
   height: 200px;
   padding: 10px;
+  background: #fff;
 
   a {
     color: #000;

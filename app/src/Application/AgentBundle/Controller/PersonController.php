@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -160,7 +161,6 @@ class PersonController extends AbstractController
         ))->createView();
 
         $session = $this->em->getRepository('DeskPRO:Session')->getSessionForPerson($person);
-        $visitor = null;
 
         $timezone_options = \DateTimeZone::listIdentifiers();
         $usergroup_names  = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
@@ -232,7 +232,6 @@ class PersonController extends AbstractController
             $vcard->setFormattedName($person->name);
             $vcard->setName($person->last_name, $person->first_name, '', '', '');
             //$vcard->setPhoto($person->gravatar_url);
-
 
             if ($person->organization) {
                 $vcard->addOrganization($person->organization->name);
@@ -309,7 +308,6 @@ class PersonController extends AbstractController
             'person_usergroups_ids'     => $person_usergroups_ids,
             'person_org_usergroups_ids' => $person_org_usergroups_ids,
             'session'                   => $session,
-            'visitor'                   => $visitor,
             'timezone_options'          => $timezone_options,
             'usergroup_names'           => $usergroup_names,
             'contact_data'              => $contact_data,
@@ -363,7 +361,6 @@ class PersonController extends AbstractController
         }
 
         // removed visitor assocations
-        $visitor            = null;
         $related_person     = null;
         $person_chats       = array();
         $person_chats_count = 0;
@@ -372,7 +369,6 @@ class PersonController extends AbstractController
             'person_chats'       => $person_chats,
             'person_chats_count' => $person_chats_count,
             'session'            => $session,
-            'visitor'            => $visitor,
         ));
     }
 

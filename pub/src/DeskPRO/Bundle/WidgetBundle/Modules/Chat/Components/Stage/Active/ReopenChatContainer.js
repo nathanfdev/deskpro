@@ -1,89 +1,52 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { dateEndedSelector, chatIdSelector, isEndedSelector } from '../../../Selectors/chat';
 import { reopenChat } from '../../../Actions/chatActions';
-import moment from 'moment';
+import {
+  dateEndedSelector,
+  chatIdSelector,
+  isEndedSelector,
+  lockedPollingSelector,
+  canReopenSelector
+} from '../../../Selectors/chat';
 
 @connect(state => ({
   chatId: chatIdSelector(state),
+  locked: lockedPollingSelector(state),
   dateEnded: dateEndedSelector(state),
-  isEnded: isEndedSelector(state)
+  isEnded: isEndedSelector(state),
+  canReopen: canReopenSelector(state)
 }))
 export class ReopenChatContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func,
     chatId: PropTypes.number,
+    locked: PropTypes.bool,
     isEnded: PropTypes.bool,
     dateEnded: PropTypes.string,
+    canReopen: PropTypes.bool,
     children: PropTypes.any
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      displayChild: true
-    };
-  }
-
-  componentDidMount() {
-    this.checkDateEnded();
-  }
-
-  componentDidUpdate() {
-    this.checkDateEnded();
-  }
-
-  componentWillUnmount() {
-    clearTimeout(this.timeout);
-  }
-
-  onDisableReopen = () => {
-    this.setState({
-      displayChild: false
-    });
-  };
-
   onReopen = () => {
-    const { chatId, dispatch } = this.props;
-    dispatch(reopenChat(chatId));
-  };
-
-  checkDateEnded() {
-    const { dateEnded } = this.props;
-    if (!dateEnded) {
-      clearTimeout(this.timeout);
-
-      if (!this.state.displayChild) {
-        this.setState({
-          displayChild: true
-        });
-      }
-
+    const { chatId, canReopen, locked, dispatch } = this.props;
+    if (!canReopen || locked) {
       return;
     }
 
-    const now = moment().format('X');
-    const delay = moment().format('X') - now + 120000; // 2 mins
-
-    if (this.state.displayChild) {
-      if (delay > 0) {
-        this.timeout = setTimeout(this.onDisableReopen, delay);
-      } else {
-        this.onDisableReopen();
-      }
-    }
-  }
+    dispatch(reopenChat(chatId));
+  };
 
   render() {
-    const { children } = this.props;
+    const { children, canReopen, isEnded, locked } = this.props;
     const childProps = children.props;
 
     return React.cloneElement(children, {
       ...childProps,
 
-      canReopen: this.state.displayChild,
-      isEnded: this.props.isEnded,
+      locked,
+      isEnded,
+      canReopen,
       onReopen: this.onReopen
     });
   }

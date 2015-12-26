@@ -98,6 +98,24 @@
       &.checked i  { color: #333; }
     }
   }
+
+  &.error {
+    input[type="text"] {
+      border: 1px solid #ff0000;
+    }
+
+    ul {
+      padding-top: 5px;
+      color: #ff0000;
+      font-size: 10px;
+    }
+  }
+
+  .spinner {
+    position: absolute;
+    top: 12px;
+    right: 20px;
+  }
 }
 
 .dpdesignportal-collect-user-info-waiting {
@@ -108,7 +126,7 @@
     margin: 30px auto 0;
     width: 30px;
 
-    .img {
+    i {
       display: inline-block;
       background: url('../img/loading-big-circle.gif') center;
       background-size: 30px 30px;

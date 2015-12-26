@@ -13,16 +13,15 @@ parameters:
   file_locator.class: DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator
   nelmio_api_doc.extractor.api_doc_extractor.class: DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor\ApiDocExtractor
 
-api:
-    data_serializer:
-    # This is where we define the map, but you only need to do this if your "type" does not map
-    # directly to the underscore version of the object name. For example, if
-    # "DeskPRO\\Bundle\\AppBundle\\Entity\\SandboxWidget" is for type "sandbox_widget" then
-    # it does NOT need to be in this map because the naming convention is the default.
-        types:
-            avatar:
-                classes:
-                    - DeskPRO\Bundle\AppBundle\Content\Avatar
+app:
+  data_serializer:
+    types:
+        avatar:
+          classes:
+            - DeskPRO\Bundle\AppBundle\Content\Avatar
+        custom_data_collection:
+          classes:
+            - DeskPRO\Bundle\AppBundle\CustomFields\CustomDataCollection
 
 framework:
     esi:             { enabled: true }

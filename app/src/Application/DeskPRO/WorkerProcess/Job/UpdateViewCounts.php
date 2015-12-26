@@ -29,13 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\PageViewLog;
-
 /**
- * Updates viewcounts on articles.
+ * Updates viewcounts on articles and handles cleanup of hittracks.
  */
 class UpdateViewCounts extends AbstractJob
 {
@@ -43,53 +41,13 @@ class UpdateViewCounts extends AbstractJob
 
     public function run()
     {
-        // VIEW_COUNTER
-        return;
-        $time      = time();
-        $last_time = App::getSetting('core.last_viewcount_update');
-        if (!$last_time) {
-            $last_time = time() - 600;
-        }
+        $counter = $this->getContainer()->get('hitrecord.viewcounts.counter');
+        $views   = $counter->getViews(new \DateTime('-10 minutes'));
 
-        $update_objects = App::getDb()->fetchAll('
-            SELECT object_type, object_id, COUNT(*) AS count
-            FROM page_view_log
-            WHERE date_created > ?
-            GROUP BY object_type, object_id
-        ', array(date('Y-m-d H:i:s', $last_time)));
+        $updater = $this->getContainer()->get('hitrecord.viewcounts.updater');
+        $updater->updateViews($views);
 
-        App::getDb()->beginTransaction();
-        try {
-            foreach ($update_objects as $obj) {
-                switch ($obj['object_type']) {
-                    case PageViewLog::TYPE_ARTICLE:  $table = 'articles';  break;
-                    case PageViewLog::TYPE_DOWNLOAD: $table = 'downloads'; break;
-                    case PageViewLog::TYPE_FEEDBACK: $table = 'feedback';  break;
-                    case PageViewLog::TYPE_NEWS:     $table = 'news';      break;
-                    default: $table                         = null;
-                }
-
-                if (!$table) {
-                    continue;
-                }
-
-                App::getDb()->executeUpdate("
-                    UPDATE $table
-                    SET view_count = view_count + ?
-                    WHERE id = ?
-                ", array($obj['count'], $obj['object_id']));
-            }
-
-            App::getDb()->commit();
-        } catch (\Exception $e) {
-            App::getDb()->rollback();
-            throw $e;
-        }
-
-        if ($update_objects) {
-            $this->logStatus('Updated '.count($update_objects).' view counts');
-        }
-
-        App::get('deskpro.core.settings')->setSetting('core.last_viewcount_update', $time);
+        $cleaner = $this->getContainer()->get('hitrecord.cleaner');
+        $cleaner->clean(new \DateTime('-10 minutes'));
     }
 }

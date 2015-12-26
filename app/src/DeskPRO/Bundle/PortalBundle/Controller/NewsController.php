@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\News;
@@ -210,11 +211,12 @@ class NewsController extends AbstractController
         //
         // RATINGS
         //
-        if (!$rating = $this->getRatingsHelper()->getPersonRating($post, $this->getUser())) {
-            // TODO: flagging this: using $visitor_id is potentially dangerous due to HTTP caching
-            //       we should consider showing this via a client-side JS request instead.
-            $rating = $this->getRatingsHelper()->findVisitorRating($post, $visitor_id);
-        }
+        $rating = $this->findContentRating($post, $visitor_id);
+
+        //
+        // NUM RATINGS
+        //
+        list($show_rating_counts, $rating_counts) = $this->determineRatingCounts($post);
 
         //
         // SUBSCRIPTIONS
@@ -233,15 +235,17 @@ class NewsController extends AbstractController
         return $this->renderThemeView(
             'Theme:News:view.html.twig',
             array(
-                'post'             => $post,
-                'is_subscribed'    => $is_subscribed,
-                'rating'           => $rating,
-                'category'         => $post->getCategory(),
-                'content_id'       => $post->getId(),
-                'content_type'     => News::CONTENT_TYPE,
-                'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,
-                'page_title'       => $this->createPageTitle()->news($post),
-                'breadcrumbs'      => $breadcrumbs,
+                'post'               => $post,
+                'is_subscribed'      => $is_subscribed,
+                'rating'             => $rating,
+                'category'           => $post->getCategory(),
+                'content_id'         => $post->getId(),
+                'content_type'       => News::CONTENT_TYPE,
+                'new_comment_form'   => $new_comment_form ? $new_comment_form->createView() : null,
+                'page_title'         => $this->createPageTitle()->news($post),
+                'breadcrumbs'        => $breadcrumbs,
+                'show_rating_counts' => $show_rating_counts,
+                'rating_counts'      => $rating_counts,
             )
         );
     }

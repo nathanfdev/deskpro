@@ -28,7 +28,7 @@ export default createReducer(initialState, {
     // @todo Think about optimization, ideally comparing hash strings, not state objects
     //
     if (!shallowEqual(state.get('hash').toJS(), newHashState.toJS())) {
-      next = next.merge({hash: payload ? newHashState : {}});
+      next = next.merge({ hash: payload ? newHashState : {} });
     }
 
     return next;
@@ -37,9 +37,9 @@ export default createReducer(initialState, {
     let next = state;
 
     if (!next.hasIn(['hash', component])) {
-      next = next.mergeIn(['hash'], Immutable.fromJS({[component]: {}}));
+      next = next.mergeIn(['hash'], Immutable.fromJS({ [component]: {} }));
     }
-    next = next.setIn(['hash', component, option], value);
+    next = next.setIn(['hash', component], Immutable.fromJS({ [option]: value }));
 
     window.location.hash = stateToString(next.get('hash'));
 

@@ -1,131 +1,72 @@
-import React from 'react';
-import { NavFrame, NavFrameHeader, SectionsPane, Section, SectionHeader, SectionGroupedHeader, TabsPane, Tab,
-         NestedList, ListItem, ButtonsPane, Button, ListGroupingControl }
-       from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import React, {Component, PropTypes} from 'react';
+import { NavFrame, NavFrameHeader, NavFrameBody, TabsPaneStatefulContainer, Tab }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { KBTab } from './Tabs/KBTab';
+import { NewsTab } from './Tabs/NewsTab';
+import { DownloadsTab } from './Tabs/DownloadsTab';
+import { ToDoTab } from './Tabs/ToDoTab';
 
-export class Nav extends React.Component {
+export class Nav extends Component {
+
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    loaded: PropTypes.bool.isRequired,
+    articles: PropTypes.object.isRequired,
+    news: PropTypes.object.isRequired,
+    downloads: PropTypes.object.isRequired,
+    todo: PropTypes.object.isRequired,
+    grouping: PropTypes.object.isRequired,
+    onGroupingChange: PropTypes.func.isRequired,
+    setMine: PropTypes.func.isRequired,
+    dpWindow: PropTypes.object.isRequired
+  };
+
+  toggle(event) {
+    event.preventDefault();
+    this.setState({ 'expanded': !this.state.expanded });
+  }
+
+  close() {
+    this.setState({ 'expanded': false });
+  }
 
   render() {
-    const { lists, labels, grouping, onGroupingChange, toggleGroupingVisibility, setMine, onClick, dispatch, dpWindow } = this.props;
-    const mine = lists.todo.articles.mine;
+    const { articles, news, downloads, todo, setMine, dispatch, dpWindow, loaded } = this.props;
+    const currentApp = dpWindow.get('activeAppId');
+
 
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
-        <div part="outer">
-
-          <ListGroupingControl
-            title="Articles"
-            options={grouping.options}
-            visible={grouping.visibility.articles}
-            onChange={onGroupingChange('articles')}
-          />
-
-          <ListGroupingControl
-            title="News"
-            options={grouping.options}
-            visible={grouping.visibility.news}
-            onChange={onGroupingChange('news')}
-          />
-
-          <ListGroupingControl
-            title="Downloads"
-            options={grouping.options}
-            visible={grouping.visibility.downloads}
-            onChange={onGroupingChange('downloads')}
-          />
-
-        </div>
-
-        <div part="inner">
-          <NavFrameHeader icon="icon-dp-streamline-edit-1">
-            Publish
-          </NavFrameHeader>
-          <TabsPane>
-
+        <NavFrameHeader icon="icon-dp-streamline-edit-1" currentApp={currentApp}>
+          Publish
+        </NavFrameHeader>
+        <NavFrameBody>
+          <TabsPaneStatefulContainer id="tab">
             <Tab title="KB">
-              <SectionsPane>
-                <Section>
-                  <SectionGroupedHeader count={lists.articles.count} callback={toggleGroupingVisibility('articles')}>
-                    Knowledgebase
-                  </SectionGroupedHeader>
-
-                  <NestedList items={lists.articles.nested} groups={labels.articles} onClick={onClick.articles} />
-                </Section>
-              </SectionsPane>
-
-              <ButtonsPane>
-                <Button title="Glossary" icon="fa-quote-left" />
-                <Button title="Search" icon="fa-search" />
-                <Button title="Comments" icon="fa-comments-o" />
-              </ButtonsPane>
+              <KBTab articles={articles}
+                     loaded={loaded}
+                     toggleGroupingVisibility={this.toggle}
+                     closeGroupingVisibility={this.close}/>
             </Tab>
-
             <Tab title="News">
-              <SectionsPane>
-                <Section>
-                  <SectionGroupedHeader count={lists.news.count} callback={toggleGroupingVisibility('news')}>
-                    News
-                  </SectionGroupedHeader>
-
-                  <NestedList items={lists.news.nested} groups={labels.news} onClick={onClick.news} />
-                </Section>
-              </SectionsPane>
+              <NewsTab news={news}
+                       loaded={loaded}
+                       toggleGroupingVisibility={this.toggle}
+                       closeGroupingVisibility={this.close}/>
             </Tab>
-
             <Tab icon="fa-download">
-              <SectionsPane>
-                <Section>
-                  <SectionGroupedHeader count={lists.downloads.count} callback={toggleGroupingVisibility('downloads')}>
-                    Downloads
-                  </SectionGroupedHeader>
-
-                  <NestedList items={lists.downloads.nested} groups={labels.downloads} onClick={onClick.downloads} />
-                </Section>
-              </SectionsPane>
+              <DownloadsTab downloads={downloads}
+                            loaded={loaded}
+                            toggleGroupingVisibility={this.toggle}
+                            closeGroupingVisibility={this.close}/>
             </Tab>
-
-            <Tab title="Todos">
-              <SectionsPane>
-                <Section>
-                  <SectionHeader>
-                    Articles
-                    <div className="sla" style={{display: "inline-block", float: "right"}}>
-                      <span className={mine ? 'selected' : ''} onClick={setMine(true)}>Mine</span>
-                      <span className={!mine ? 'selected' : ''} onClick={setMine(false)}>All</span>
-                    </div>
-                  </SectionHeader>
-
-                  <ul>
-                    <ListItem label="Draft Articles" count={lists.todo.articles.draft} onClick={onClick.draftArticles} />
-                    <ListItem label="Pending Articles" count={lists.todo.articles.pending} onClick={onClick.pendingArticles} />
-                  </ul>
-                </Section>
-                <Section>
-                  <SectionHeader>Comments</SectionHeader>
-
-                  <ul>
-                    <ListItem label="Comments to validate"
-                              count={lists.todo.comments.validate.count}
-                              onClick={onClick.allCommentsToValidate}>
-                      <NestedList
-                        depth="2"
-                        items={lists.todo.comments.validate.nested}
-                        groups={labels.commentsToValidate}
-                        onClick={onClick.commentsToValidate}
-                      />
-                    </ListItem>
-                    <ListItem label="Comments to review" count={lists.todo.comments.review} onClick={onClick.commentsToReview} />
-                  </ul>
-                </Section>
-                <Section>
-                  <SectionHeader>Translations</SectionHeader>
-                  &nbsp;
-                </Section>
-              </SectionsPane>
+            <Tab title="Todo">
+              <ToDoTab todo={todo}
+                       loaded={loaded}
+                       setMine={setMine}/>
             </Tab>
-
-          </TabsPane>
-        </div>
+          </TabsPaneStatefulContainer>
+        </NavFrameBody>
       </NavFrame>
     );
   }

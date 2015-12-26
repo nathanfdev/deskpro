@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\View\PageTitle;
 
 use Application\DeskPRO\Entity\Article;
@@ -322,10 +323,10 @@ class PageTitleGenerator
         }
 
         foreach ($cat->getTreeParents() as $parent) {
-            $section[] = $parent->getTitle();
+            $section[] = $this->language_manager->objectPhrase($parent);
         }
 
-        $section[] = $cat->getTitle();
+        $section[] = $this->language_manager->objectPhrase($cat);
 
         return $section;
     }

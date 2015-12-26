@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Doctrine\Common\NotifyPropertyChanged;
@@ -91,6 +92,15 @@ class ThemeSetAsset implements EntityInterface, NotifyPropertyChanged
      * @Serializer\Expose()
      */
     protected $date_updated;
+
+    /**
+     * ThemeSetAsset constructor.
+     */
+    public function __construct()
+    {
+        $this->date_created = new \DateTime();
+        $this->date_updated = new \DateTime();
+    }
 
     /**
      * @return mixed

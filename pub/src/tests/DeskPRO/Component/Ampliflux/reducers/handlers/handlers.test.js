@@ -152,6 +152,50 @@ describe('Ampliflux actions handlers', () => {
       expect(next.get('elements').size).toEqual(4);
       expect(next.get('elements').get(3).get('id')).toEqual(6);
     });
+    it('should merge values to collection', () => {
+      const next = handlers.pushPayloadToCollection('elements')(state, [{id: 6}, {id: 7}]);
+      expect(next.get('elements').size).toEqual(5);
+      expect(next.get('elements').get(3).get('id')).toEqual(6);
+      expect(next.get('elements').get(4).get('id')).toEqual(7);
+    });
+    describe('unique check', () => {
+      it('should add value, unique check disabled', () => {
+        const next = handlers.pushPayloadToCollection('elements')(state, {id: 2});
+        expect(next.get('elements').size).toEqual(4);
+      });
+      it('should skip value, unique check enabled', () => {
+        const next = handlers.pushPayloadToCollection('elements', true)(state, {id: 2});
+        expect(next.get('elements').size).toEqual(3);
+      });
+      it('should skip some values, unique check enabled', () => {
+        const next = handlers.pushPayloadToCollection('elements', true)(state, [{id: 2}, {id: 6}]);
+        expect(next.get('elements').size).toEqual(4);
+        expect(next.get('elements').get(3).get('id')).toEqual(6);
+      });
+    });
+  });
+
+  describe('deletePayloadFromCollection()', () => {
+    it('should delete first value from collection', () => {
+      const next = handlers.deletePayloadFromCollection('elements')(state, Immutable.fromJS({id: 1}));
+      expect(next.get('elements').size).toEqual(2);
+      expect(next.get('elements').toJS()).toEqual([{id: 2}, {id: 3}]);
+    });
+    it('should delete middle value from collection', () => {
+      const next = handlers.deletePayloadFromCollection('elements')(state, Immutable.fromJS({id: 2}));
+      expect(next.get('elements').size).toEqual(2);
+      expect(next.get('elements').toJS()).toEqual([{id: 1}, {id: 3}]);
+    });
+    it('should delete last value from collection', () => {
+      const next = handlers.deletePayloadFromCollection('elements')(state, Immutable.fromJS({id: 3}));
+      expect(next.get('elements').size).toEqual(2);
+      expect(next.get('elements').toJS()).toEqual([{id: 1}, {id: 2}]);
+    });
+    it('shouldn\'t delete value from collection', () => {
+      const next = handlers.deletePayloadFromCollection('elements')(state, Immutable.fromJS({id: 5}));
+      console.log(next.get('elements').toJS());
+      expect(next.get('elements').size).toEqual(3);
+    });
   });
 
   describe('togglePayloadInCollection()', () => {

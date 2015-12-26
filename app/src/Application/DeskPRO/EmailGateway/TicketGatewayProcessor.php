@@ -31,11 +31,12 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Cutter\ForwardCutter;
-use Application\DeskPRO\EmailGateway\Ticket\BounceDetector;
+use Application\DeskPRO\EmailGateway\Ticket\BounceDetector as TicketBounceDetector;
 use Application\DeskPRO\EmailGateway\Ticket\CodeTicketDetector;
 use Application\DeskPRO\EmailGateway\Ticket\CompositeDetector;
 use Application\DeskPRO\EmailGateway\Ticket\Dp3Detector;
@@ -102,7 +103,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
         $can_add_new_person = false;
 
-        $bounce_detector = new BounceDetector($this->reader, $this->getEm());
+        $bounce_detector = new TicketBounceDetector($this->reader, $this->getEm());
         $bounce_detector->setLogger($this->logger);
 
         if ($bounce_detector->isBounced()) {

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTestSrc\TestBundle\MockHelpers;
 
 use Doctrine\ORM\AbstractQuery as Query;
@@ -83,6 +84,7 @@ trait DbalMocksHelper
         $qb->where(Argument::any())->willReturn($qb);
         $qb->andWhere(Argument::any())->willReturn($qb);
         $qb->groupBy(Argument::any())->willReturn($qb);
+        $qb->orderBy(Argument::type('string'), Argument::type('string'))->willReturn($qb);
         $qb->expr()->willReturn(new \Doctrine\ORM\Query\Expr());
 
         return $qb;

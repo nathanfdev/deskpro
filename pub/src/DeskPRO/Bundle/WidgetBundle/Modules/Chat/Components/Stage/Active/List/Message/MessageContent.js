@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import { AttachmentLink } from './Assets/AttachmentLink';
 import { replaceSmileCodes } from 'DeskPRO/Component/Rte/Emotions';
+import $ from 'jquery';
 
 export class MessageContent extends React.Component {
 
@@ -8,22 +10,31 @@ export class MessageContent extends React.Component {
     message: PropTypes.object
   };
 
+  componentDidMount() {
+    const contentNode = ReactDOM.findDOMNode(this);
+    $('a', contentNode).each((i, linkNode) => {
+      $(linkNode).attr('target', '_blank');
+    });
+  }
+
   render() {
     const { message } = this.props;
     const content = message.get('is_html') ? replaceSmileCodes(message.get('content')) : message.get('content');
 
     return (
-      <div className="dpdesignportal-message-content">
+      <div>
         {message.get('is_html')
           ? <p dangerouslySetInnerHTML={{__html: content}} />
           : <p>{content}</p>
         }
 
-        {false && <ul>
-          <li>
-            <AttachmentLink />
-          </li>
-        </ul>}
+        {false /* disabled */ &&
+          <ul>
+            <li>
+              <AttachmentLink />
+            </li>
+          </ul>
+        }
       </div>
     );
   }

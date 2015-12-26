@@ -7,7 +7,7 @@ services:
 
   portal_view.breadcrumb_generator:
     class: DeskPRO\Bundle\PortalBundle\View\Breadcrumb\BreadcrumbGenerator
-    arguments: [@portal_permissions_manager, @security.token_storage, @object_router, @router]
+    arguments: [@portal_permissions_manager, @security.token_storage, @object_router, @router, @language_manager]
 
   portal_view.page_title_generator:
     class: DeskPRO\Bundle\PortalBundle\View\PageTitle\PageTitleGenerator

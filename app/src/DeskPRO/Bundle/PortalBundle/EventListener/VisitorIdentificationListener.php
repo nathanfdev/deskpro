@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use DeskPRO\Bundle\PortalBundle\Visitor\VisitorIdentificationProvider;
@@ -87,7 +88,11 @@ class VisitorIdentificationListener implements EventSubscriberInterface
         $cookie = new Cookie(
             VisitorIdentificationProvider::COOKIE_NAME,
             $identifier,
-            new \DateTime('now + 5 years')
+            new \DateTime('now + 5 years'),
+            '/',
+            null,
+            false,
+            false
         );
         $response->headers->setCookie($cookie);
         $this->logger->debug(sprintf('set cookie "%s" with visitor identifier "%s" - %s', VisitorIdentificationProvider::COOKIE_NAME, $identifier, $cookie));

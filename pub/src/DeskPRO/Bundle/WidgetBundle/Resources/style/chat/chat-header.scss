@@ -71,6 +71,22 @@ div.dpdesignportal-chat-header .dpdesignportal-agent-state-info {
   }
 }
 
+.dpdesignportal-widget-body {
+  position: absolute;
+  width: 340px;
+  top: 55px;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.dpdesignportal-chat-header-wrapper {
+  position: absolute;
+  top: 0;
+  z-index: 400;
+  background-color: #fff;
+  width: 100%;
+}
+
 // Avatars and titles
 div.dpdesignportal-chat-header {
   text-align: center;
@@ -237,6 +253,10 @@ div.dpdesignportal-chat-header {
     &.disabled {
       opacity: 0.5;
       cursor: default;
+
+      .dpdesignportal-checkbox-container {
+        cursor: default;
+      }
     }
   }
 

@@ -1,3 +1,15 @@
+.user-photo {
+  display: inline-block;
+  margin-right: 5px;
+  position: relative;
+
+  &.gravatar {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+}
+
 %dp--avatar {
   display: inline-block;
   line-height: 1em;

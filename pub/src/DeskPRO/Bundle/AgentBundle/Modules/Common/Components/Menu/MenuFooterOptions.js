@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-export default class MenuFooterOptions extends React.Component {
+export class MenuFooterOptions extends React.Component {
 
   static propTypes = {
     options: React.PropTypes.array,

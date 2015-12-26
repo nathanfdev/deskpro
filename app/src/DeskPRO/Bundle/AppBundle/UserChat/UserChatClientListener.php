@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\UserChat;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializer;
@@ -69,6 +70,9 @@ class UserChatClientListener implements EventSubscriberInterface
             UserChatEvent::SET_DEPARTMENT => 'onSetDepartment',
             UserChatEvent::ASSIGNED       => 'onAssigned',
             UserChatEvent::UNASSIGNED     => 'onUnassigned',
+            UserChatEvent::SEND_MESSAGE   => 'onSendMessage',
+            UserChatEvent::ACK_MESSAGES   => 'onAckMessages',
+            UserChatEvent::USER_TYPING    => 'onUserTyping',
         ];
     }
 
@@ -142,12 +146,48 @@ class UserChatClientListener implements EventSubscriberInterface
 
     /**
      * @param UserChatEvent $event
+     */
+    public function onSendMessage(UserChatEvent $event)
+    {
+        $conversation = $event->getConversation();
+        $message      = $event->getData();
+        $channel      = $conversation->getChannelId('newmessage');
+
+        $this->send($event, $channel, $message);
+    }
+
+    /**
+     * @param UserChatEvent $event
+     */
+    public function onAckMessages(UserChatEvent $event)
+    {
+        $conversation = $event->getConversation();
+        $message_ids  = $event->getData();
+        $channel      = $conversation->getChannelId('ack_messages');
+
+        $this->send($event, $channel, ['message_ids' => $message_ids]);
+    }
+
+    /**
+     * @param UserChatEvent $event
+     */
+    public function onUserTyping(UserChatEvent $event)
+    {
+        $conversation   = $event->getConversation();
+        $preview_string = $event->getData();
+        $channel        = $conversation->getChannelId('usertyping');
+
+        $this->send($event, $channel, ['preview' => $preview_string]);
+    }
+
+    /**
+     * @param UserChatEvent $event
      *
      * @return array
      */
     protected function getInfo(UserChatEvent $event)
     {
-        return $this->data_serializer->serialize($event->getConversation());
+        return $this->data_serializer->serialize($event->getConversation())['data'];
     }
 
     /**

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\Tickets;
 
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
@@ -44,6 +45,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Term\Problem\ProblemTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketFlagged\TicketFlaggedTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLabel\TicketLabelTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus\TicketStatusTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketUrgency\TicketUrgencyTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Doctrine\ORM\EntityRepository;
 
@@ -121,6 +123,9 @@ class TicketsSelectCriteria
                     break;
                 case 'department':
                     $composite->addTerm(new DepartmentTerm(['department_ids' => [$value]]));
+                    break;
+                case 'urgency':
+                    $composite->addTerm(new TicketUrgencyTerm(['num' => [$value]]));
                     break;
                 default:
                     throw new \Exception("Unknown ticket filtering option $param");

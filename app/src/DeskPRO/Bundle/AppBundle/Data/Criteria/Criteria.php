@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Data\Criteria;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -51,6 +52,11 @@ abstract class Criteria implements CriteriaInterface
     protected function __construct(array $filters = [])
     {
         $this->filters = $filters;
+    }
+
+    public function getFilters()
+    {
+        return $this->filters;
     }
 
     /**

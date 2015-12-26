@@ -4,6 +4,7 @@ import { Avatar } from './Avatar';
 import { chooseColor } from './colors';
 
 export class AgentTeamAvatar extends React.Component {
+
   static propTypes = {
     agentTeam: PropTypes.object.isRequired,
     size: PropTypes.any
@@ -27,7 +28,7 @@ export class AgentTeamAvatar extends React.Component {
       color: chooseColor(agentTeam.get('id')),
       url: avatar.get('url'),
       urlPattern: avatar.get('url_pattern'),
-      fallbackText: this.getAgentTeamFallbackText()
+      text: this.getAgentTeamFallbackText()
     };
 
     return (

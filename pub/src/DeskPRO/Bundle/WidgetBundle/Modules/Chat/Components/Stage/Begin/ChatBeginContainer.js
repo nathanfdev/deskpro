@@ -18,19 +18,42 @@ export class ChatBeginContainer extends React.Component {
     this.state = {
       name: '',
       email: '',
-      hidden_email: false
+      hidden_email: false,
+      submit: false,
+      errors: null
     };
+  }
+
+  componentDidMount() {
+    this.mounted = true;
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.children !== this.props.children) {
+      this.setState({
+        name: '',
+        email: '',
+        hidden_email: false,
+        errors: null
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   onChangeName = event => {
     this.setState({
-      name: event.target.value
+      name: event.target.value,
+      errors: null
     });
   };
 
   onChangeEmail = event => {
     this.setState({
-      email: event.target.value
+      email: event.target.value,
+      errors: null
     });
   };
 
@@ -46,22 +69,49 @@ export class ChatBeginContainer extends React.Component {
       event.preventDefault();
     }
 
-    const promise = this.props.dispatch(createChat(this.state));
-    promise.then(() => history.replace('/chat/waiting'));
+    this.setState({
+      submit: true
+    });
+
+    const promise = this.props.dispatch(createChat({
+      name: this.state.name,
+      email: this.state.email
+    }));
+
+    promise.then(
+      () => {
+        history.replace('/chat/waiting');
+
+        if (this.mounted) {
+          this.setState({
+            submit: false
+          });
+        }
+      },
+      result => {
+        if (this.mounted) {
+          this.setState({
+            submit: false,
+            errors: result.getData()
+          });
+        }
+      }
+    );
   };
 
   render() {
     const props = this.props;
+    const state = this.state;
+
     const { children } = props;
     const childProps = children.props;
 
     const content = React.cloneElement(children, {
       ...props,
       ...childProps,
+      ...state,
 
-      name: this.state.name,
-      email: this.state.email,
-      hiddenEmail: this.state.hidden_email,
+      hiddenEmail: state.hidden_email,
 
       onChangeName: this.onChangeName,
       onChangeEmail: this.onChangeEmail,

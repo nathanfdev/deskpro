@@ -47,7 +47,7 @@ class FeedbackCommentsDataService extends AbstractDataService
         $qb = $this->em->createQueryBuilder();
         $qb->select('count(c)')
             ->from('DeskPRO:FeedbackComment', 'c')
-            ->orWhere('c.is_reviewed = 0');
+            ->where('c.is_reviewed = 0');
         try {
             $count = $qb->getQuery()->getSingleScalarResult();
         } catch (QueryException $e) {

@@ -87,7 +87,11 @@ abstract class AbstractDataSerializerTransformer implements DataSerializerTransf
             $transformed[$property_name] = $transformation;
         }
 
-        return array_merge($transformed, $this->getCustomProperties($transformation_request));
+        if (!$transformed) {
+            return $this->getCustomProperties($transformation_request);
+        } else {
+            return array_merge($transformed, $this->getCustomProperties($transformation_request));
+        }
     }
 
     /**

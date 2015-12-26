@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
 use Application\DeskPRO\Entity\Person;
@@ -37,14 +38,15 @@ use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\PortalBundle\Annotation\Tag;
 use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
 use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
+use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\TagHttpCache;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class SidebarController extends AbstractController
 {
     /**
-     * @Tag(name="kb_top_articles_detail", default_options={"style":"detail"})
-     * @Tag(name="kb_top_articles", default_options={"style":"simple"})
+     * @Tag(name="kb_top_articles_detail", default_options={"style":"detail"}, esi=true)
+     * @Tag(name="kb_top_articles", default_options={"style":"simple"}, esi=true)
      *
      * @TagOptions(
      *      defaults={
@@ -61,6 +63,7 @@ class SidebarController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_ARTICLES')")
+     * @TagHttpCache()
      */
     public function topArticlesAction(TagRequest $tag_request, array $options)
     {
@@ -78,7 +81,7 @@ class SidebarController extends AbstractController
     }
 
     /**
-     * @Tag(name="customer_satisfaction")
+     * @Tag(name="customer_satisfaction", esi=true)
      *
      * @TagOptions(
      *      defaults={
@@ -88,6 +91,8 @@ class SidebarController extends AbstractController
      *          "style": {"icons"}
      *      }
      * )
+     *
+     * @TagHttpCache()
      */
     public function customerSatisfactionAction(TagRequest $tag_request, array $options)
     {
@@ -122,8 +127,8 @@ class SidebarController extends AbstractController
     }
 
     /**
-     * @Tag(name="agents_online", default_options={"style":"list"})
-     * @Tag(name="agents_online_small", default_options={"style":"small"})
+     * @Tag(name="agents_online", default_options={"style":"list"}, esi=true)
+     * @Tag(name="agents_online_small", default_options={"style":"small"}, esi=true)
      *
      * @TagOptions(
      *      defaults={
@@ -133,6 +138,8 @@ class SidebarController extends AbstractController
      *          "style": {"list", "small"}
      *      }
      * )
+     *
+     * @TagHttpCache()
      */
     public function onlineAgentsAction(TagRequest $tag_request, array $options)
     {
@@ -172,8 +179,8 @@ class SidebarController extends AbstractController
     }
 
     /**
-     * @Tag(name="news_sidebar", default_options={"style":"recent"})
-     * @Tag(name="news_sidebar_dates", default_options={"style":"dates"})
+     * @Tag(name="news_sidebar", default_options={"style":"recent"}, esi=true)
+     * @Tag(name="news_sidebar_dates", default_options={"style":"dates"}, esi=true)
      *
      * @TagOptions(
      *      defaults={
@@ -183,6 +190,7 @@ class SidebarController extends AbstractController
      *          "style": {"dates", "recent"}
      *      }
      * )
+     * @TagHttpCache()
      */
     public function newsAction(TagRequest $tag_request, array $options)
     {

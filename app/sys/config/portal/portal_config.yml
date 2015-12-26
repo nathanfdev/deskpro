@@ -11,6 +11,16 @@ parameters:
   file_locator.class: DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator
   twig.class: DeskPRO\Bundle\PortalBundle\Twig\Environment
 
+app:
+  data_serializer:
+    types:
+        avatar:
+          classes:
+            - DeskPRO\Bundle\AppBundle\Content\Avatar
+        widget_person:
+          classes:
+            - Application\DeskPRO\Entity\Person
+
 framework:
     esi:             { enabled: true }
     fragments:       { path: /_proxy }
@@ -134,6 +144,39 @@ jms_serializer:
         cache: none
 
 gregwar_captcha: ~
+
+fos_rest:
+    routing_loader:
+        default_format: json
+        include_format: false
+    allowed_methods_listener: true
+    body_converter:
+        enabled: false
+    param_fetcher_listener: true
+    serializer:
+        serialize_null: true
+    body_listener:
+        default_format: json
+        throw_exception_on_unsupported_content_type:  true
+        decoders:
+            json: fos_rest.decoder.jsontoform
+        array_normalizer:
+            forms: false
+    format_listener:
+        rules:
+            - { path: '^/portal/api/', priorities: ['json', 'jsonp'], fallback_format: json, exception_fallback_format: json, prefer_extension: false }
+            - { path: '^/', stop: true }
+    view:
+        view_response_listener: force
+        formats:
+            json: true
+            jsonp: true
+            html: false
+        jsonp_handler:
+            callback_param: callback
+        failed_validation: HTTP_BAD_REQUEST
+    routing_loader:
+        default_format: json
 
 nelmio_cors:
     defaults:

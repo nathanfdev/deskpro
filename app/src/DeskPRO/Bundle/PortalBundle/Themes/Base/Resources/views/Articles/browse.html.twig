@@ -7,7 +7,7 @@
 
   <div class="browse-page">
     <header class="large-title">
-      <h1>{{ category.title }}</h1>
+      <h1>{{ object_phrase(category) }}</h1>
 
       <div class="header-buttons">
         {% show rss_link %}
@@ -17,6 +17,5 @@
 
     {% show kb %}
     {% show kb_list_detail %}
-    {% show kb_pager %}
   </div>
 {% endblock inner_content %}

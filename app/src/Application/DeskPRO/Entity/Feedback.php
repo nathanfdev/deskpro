@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -419,11 +420,11 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     /**
      * @param string $value
      *
-     * @return LabelTicket|null
+     * @return LabelFeedback|null
      */
     public function findLabelByString($value)
     {
-        $x        = new LabelTicket();
+        $x        = new LabelFeedback();
         $x->label = $value;
 
         foreach ($this->labels as $l) {
@@ -612,9 +613,11 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
      *
      * @return Feedback $this
      */
-    public function setHiddenStatus($value)
+    public function setHiddenStatus($value = null)
     {
+        $last_hidden_status  = $this->hidden_status;
         $this->hidden_status = $value;
+        $this->_onPropertyChanged('hidden_status', $last_hidden_status, $value);
 
         return $this;
     }

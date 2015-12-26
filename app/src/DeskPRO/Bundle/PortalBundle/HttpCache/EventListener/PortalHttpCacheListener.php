@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\HttpCache\EventListener;
 
 use Application\DeskPRO\Entity\Article;
@@ -148,9 +149,6 @@ class PortalHttpCacheListener implements EventSubscriberInterface
             return;
         }
 
-        /** @var \DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PortalHttpCache $config */
-        $config = $page_cache_config ?: $tag_cache_config;
-
         // http://tools.ietf.org/html/draft-ietf-httpbis-p4-conditional-12#section-3.1
         if (!in_array($response->getStatusCode(), array(200, 203, 300, 301, 302, 304, 404, 410))) {
             return;
@@ -174,6 +172,14 @@ class PortalHttpCacheListener implements EventSubscriberInterface
 
         if ($smaxage > 0) {
             $response->setSharedMaxAge($smaxage);
+            if ($this->cache_helper->isGuestRequest()) {
+                // we never want to send cookies in this situation, because this page is about to be cached
+                // for a user without a session
+                foreach ($response->headers->getCookies() as $cookie) {
+                    /* @var \Symfony\Component\HttpFoundation\Cookie $cookie */
+                    $response->headers->removeCookie($cookie->getName());
+                }
+            }
         }
 
         if (isset($this->lastModifiedDates[$request])) {
@@ -187,6 +193,9 @@ class PortalHttpCacheListener implements EventSubscriberInterface
 
             unset($this->etags[$request]);
         }
+
+        // cache ajax requests differently (sometimes we return different response for the same url in these cases)
+        $response->setVary('X-Requested-With', false);
 
         $event->setResponse($response);
     }

@@ -29,8 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator;
 
+use Application\DeskPRO\Entity\ArticleAttachment;
 use Application\DeskPRO\Entity\Download;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGeneratorInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -55,17 +57,23 @@ class DownloadsLinkGenerator implements LinkGeneratorInterface
 
     public function supports($object, $type, $context)
     {
-        return $object instanceof Download && $type === 'serve';
+        return
+            ($object instanceof Download && $type === 'serve')
+            ||
+            ($object instanceof ArticleAttachment && $type === 'serve')
+        ;
     }
 
-    public function generate($download, $type, $context, $extra_params, $reference_type)
+    public function generate($download_or_article_attachment, $type, $context, $extra_params, $reference_type)
     {
-        /* @var \Application\DeskPRO\Entity\Download $download */
+        /* @var \Application\DeskPRO\Entity\ArticleAttachment|\Application\DeskPRO\Entity\Download $download_or_article_attachment */
+        $blob = $download_or_article_attachment->getBlob();
+
         return $this->url_generator->generate(
             'serve_blob',
             array_merge(array(
-                'blob_auth_id' => $download->getBlob()->getAuthcode(),
-                'filename'     => $download->getBlob()->getFilenameSafe(),
+                'blob_auth_id' => $blob->getAuthcode(),
+                'filename'     => $blob->getFilenameSafe(),
             ), $extra_params),
             $reference_type
         );

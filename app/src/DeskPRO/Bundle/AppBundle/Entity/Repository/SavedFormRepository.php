@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 
 use Application\DeskPRO\Entity\Person;
@@ -52,6 +53,23 @@ class SavedFormRepository extends EntityRepository
                 'auth_code' => $parsed['auth_code'],
             )
         );
+    }
+
+    /**
+     * @param $num_reminders
+     * @param \DateTime $date_last_modified
+     *
+     * @return SavedForm[]
+     */
+    public function getForTicketReminders($num_reminders, \DateTime $min_date_created)
+    {
+        $qb = $this->createQueryBuilder('s');
+        $qb->andWhere('s.num_sent_reminders = :num_reminders')->setParameter('num_reminders', $num_reminders);
+        $qb->andWhere('s.date_created <= :date_created')->setParameter('date_created', $min_date_created);
+        $qb->andWhere('s.data_type = :data_type')->setParameter('data_type', SavedForm::TYPE_NEW_TICKET);
+        $qb->andWhere('s.intention_type = :intention_type')->setParameter('intention_type', SavedForm::INTENTION_VERIFY_EMAIL);
+
+        return $qb->getQuery()->getResult();
     }
 
     /**

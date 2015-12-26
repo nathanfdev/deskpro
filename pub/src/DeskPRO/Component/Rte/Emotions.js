@@ -1,20 +1,20 @@
 import classNames from 'classnames';
 
 const smiles = {
-  ICON_SMILE: ':)',
+  ICON_ANGEL: 'O:)',
+  ICON_EVIL_GREEN: ']:)',
   ICON_LAUGHING: ':))',
+  ICON_SMILE: ':)',
   ICON_BLUSHING: ':$',
   ICON_WINKING: ';)',
   ICON_GRIN: ':D',
-  ICON_EVIL_GREEN: ']:)',
   ICON_YAWN: ':yawn:',
   ICON_DEVIL: '(6)',
   ICON_KIKI: '^_^',
-  ICON_ANGEL: 'O:)',
   ICON_TONGUE: ':p',
   ICON_TONGUE_2: ':P',
   ICON_SAD: ':(',
-  ICON_HEART: '<3',
+  ICON_HEART: ['<3', '&lt;3'],
   ICON_INLOVE: ':inlove:',
   ICON_KISS: ':*',
   ICON_CRY: ';(',
@@ -48,7 +48,11 @@ const SPRITE_MAP = {
 
 function createEmotionImage(code) {
   const className = classNames('emoticon', 'sprite', `sprite-emoticon-${SPRITE_MAP[code]}`);
-  return `<img class="${className}">`;
+  return `<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="${className}">`;
+}
+
+function createCodeHtml(code) {
+  return `<span class="smile">${code}</span>`;
 }
 
 function replaceSmileCodes(content, inverse = false) {
@@ -57,13 +61,14 @@ function replaceSmileCodes(content, inverse = false) {
 
   for (num in smiles) {
     if (smiles.hasOwnProperty(num)) {
-      const code = smiles[num];
-      const image = createEmotionImage(code);
+      const codes = smiles[num];
+      const arrayCodes = Array.isArray(codes) ? codes : [codes];
+      const image = createEmotionImage(codes);
 
       if (inverse) {
-        text = text.replace(image, code);
+        text = text.replace(image, createCodeHtml(arrayCodes[0]));
       } else {
-        text = text.replace(code, image);
+        arrayCodes.forEach(code => text = text.replace(createCodeHtml(code), image));
       }
     }
   }
@@ -73,7 +78,6 @@ function replaceSmileCodes(content, inverse = false) {
 
 export default {
   ...smiles,
-
   SPRITE_MAP,
 
   createEmotionImage,

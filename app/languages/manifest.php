@@ -66,6 +66,19 @@ return array(
         'is_managed' => false,
     ),
 
+    'dev_rtl' => array(
+        'id'         => 'dev_rtl',
+        'lang_code'  => 'eng',
+        'title'      => 'Dev RTL',
+        'locale'     => 'en_T3',
+        'flag_image' => 'us.png',
+        'is_rtl'     => true,
+        'has_user'   => true,
+        'has_agent'  => true,
+        'has_admin'  => true,
+        'is_managed' => false,
+    ),
+
     'arabic' => array(
         'id'         => 'arabic',
         'lang_code'  => 'ara',

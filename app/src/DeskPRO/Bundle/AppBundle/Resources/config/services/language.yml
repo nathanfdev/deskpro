@@ -21,7 +21,7 @@ services:
 
   language_stack_initializer.listener:
     class: DeskPRO\Bundle\AppBundle\EventListener\Language\LanguageStackInitializeListener
-    arguments: [@language_manager , @logger, @doctrine.orm.default_entity_manager]
+    arguments: [@language_manager, @?portal_mode_storage, @logger, @doctrine.orm.default_entity_manager]
     tags:
       - { name: kernel.event_subscriber }
 
@@ -46,7 +46,7 @@ services:
     arguments: ['DeskPRO:Language']
 
   language_extension.twig:
-      class: DeskPRO\Bundle\AppBundle\Twig\LanguageExtension
-      arguments: [@language_manager]
-      tags:
-        - { name: twig.extension }
+    class: DeskPRO\Bundle\AppBundle\Twig\LanguageExtension
+    arguments: [@language_manager]
+    tags:
+      - { name: twig.extension }

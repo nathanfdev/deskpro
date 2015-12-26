@@ -16,9 +16,11 @@ export class ControlsPane extends React.Component {
     return (
       <div className={classNames('dpdesignportal-chat-header-controls', {'ended': this.props.isEnded})}>
         <ul>
-          <li>
-            <AssetsContainer />
-          </li>
+          {false /* disabled for now */ &&
+            <li>
+             <AssetsContainer />
+            </li>
+          }
           <li>
             <MuteContainer />
           </li>

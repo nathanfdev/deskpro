@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\ServerFileUploads;
 
 use Application\DeskPRO\App;
@@ -250,9 +251,6 @@ class ServerFileUploads
                 $settings->setSetting('core.filestorage_s3_key',    $options->get('s3_key', null));
                 $settings->setSetting('core.filestorage_s3_secret', $options->get('s3_secret', null));
                 $settings->setSetting('core.filestorage_s3_bucket', $options->get('s3_bucket', null));
-
-                // Need to clear CSS blobs too, since the URLs will change
-                \Application\DeskPRO\Style\RefreshStylesheets::refresh($this->container);
 
                 break;
         }

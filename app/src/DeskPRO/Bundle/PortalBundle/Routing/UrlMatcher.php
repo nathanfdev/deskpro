@@ -45,7 +45,7 @@ class UrlMatcher
 
         $locale = $this->getLocale($pathinfo);
 
-        if ($locale && 'kb' !== $locale) {
+        if ($locale && 'kb' !== $locale && 'dp' !== $locale) {
             $return['lang_url_code']      = $locale;
             $return['remaining_pathinfo'] = preg_replace('#^/(.*?)(/|$)#', '/', $pathinfo);
 
@@ -53,7 +53,7 @@ class UrlMatcher
         }
 
         $locale = $this->getLocale($pathinfo);
-        if ($locale && 'kb' !== $locale) {
+        if ($locale && 'kb' !== $locale && 'dp' !== $locale) {
             $return['lang_url_code']      = $locale;
             $return['remaining_pathinfo'] = '/';
         }

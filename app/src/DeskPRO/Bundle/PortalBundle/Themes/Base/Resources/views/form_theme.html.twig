@@ -379,15 +379,27 @@
 {% block feedback_attachment_widget %}
     {% if form.upload is defined %}
         {{ form_widget(form.upload) }}
+        {{ form_errors(form.upload) }}
     {% else %}
-        <a href="{{ form.vars.data.blob.downloadUrl }}">
-            {% if form.vars.data.blob.is_image %}
-                <img src="{{ form.vars.data.blob.thumbnailUrl }}" alt=""/>
-            {% endif %}
-            {{ form.vars.data.blob.filename }}
-        </a>
-        [ {{ form_widget(form.delete) }} {{ phrase('portal.general.delete_question') }} ]
-        {{ form_widget(form.blob_auth) }}
+        <div
+            class="attach-row"
+            data-blob-id="{{ form.vars.data.blob.id }}"
+            data-blob-auth="{{ form.vars.data.blob.authcode }}"
+            data-blob-filename="{{ form.vars.data.blob.filename }}"
+            data-blob-download-url="{{ form.vars.data.blob.downloadUrl }}"
+            {% if form.vars.data.blob.is_image %}data-blob-thumb-url="{{ form.vars.data.blob.thumbnailUrl }}"{% endif %}
+            >
+            <a href="{{ form.vars.data.blob.downloadUrl }}">
+                {% if form.vars.data.blob.is_image %}
+                    <img src="{{ form.vars.data.blob.thumbnailUrl }}" alt=""/>
+                {% else %}
+                    {{ content_icon(form.vars.data) }}
+                {% endif %}
+                {{ form.vars.data.blob.filename }}
+            </a>
+            [ {{ form_widget(form.delete) }} Delete? ]
+            {{ form_widget(form.blob_auth) }}
+        </div>
     {% endif %}
 {% endblock feedback_attachment_widget %}
 

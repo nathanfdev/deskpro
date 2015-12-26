@@ -121,7 +121,7 @@ function deskpro_install_check_reqs()
 
 function deskpro_install_check_version()
 {
-    return version_compare(phpversion(), '5.3.9', '>=');
+    return version_compare(phpversion(), '5.5.0', '>=');
 }
 
 function deskpro_install_check_pcre()

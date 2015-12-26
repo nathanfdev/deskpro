@@ -1,0 +1,13 @@
+services:
+
+  dp.portal.designer.styles_manager:
+    class: DeskPRO\Bundle\PortalBundle\Designer\StylesManager
+    arguments:
+      - @doctrine.orm.default_entity_manager
+      - @brand_stack
+
+  dp.portal.designer.portal_css_twig_extension:
+    class: DeskPRO\Bundle\PortalBundle\Designer\PortalCssTwigExtension
+    arguments: [@service_container]
+    tags:
+        - { name: twig.extension }

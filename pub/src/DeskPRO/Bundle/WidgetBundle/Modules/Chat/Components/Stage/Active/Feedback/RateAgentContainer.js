@@ -3,58 +3,45 @@ import { connect } from 'react-redux';
 import { RateAgentDialog } from './RateAgentDialog';
 import { RateAgentComplete } from './RateAgentComplete';
 import { RateAgentForm } from './RateAgentForm';
-import { sendFeedback } from '../../../../Actions/chatActions';
-import { chatIdSelector, isEndedSelector } from '../../../../Selectors/chat';
+import { sendFeedback, showNotHelpfulForm } from '../../../../Actions/chatActions';
+import { chatIdSelector, isEndedSelector, feedbackStageSelector } from '../../../../Selectors/chat';
 
 @connect(state => ({
   chatId: chatIdSelector(state),
-  isEnded: isEndedSelector(state)
+  isEnded: isEndedSelector(state),
+  stage: feedbackStageSelector(state)
 }))
 export class RateAgentContainer extends React.Component {
 
   static propTypes = {
     chatId: PropTypes.number,
     isEnded: PropTypes.bool,
+    stage: PropTypes.string,
     dispatch: PropTypes.func.isRequired
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      stage: 'dialog'
-    };
-  }
-
   onClickHelpful = () => {
     const { chatId, dispatch } = this.props;
-
-    dispatch(sendFeedback(chatId, {helpful: 10}));
-    this.setState({
-      stage: 'finished'
-    });
+    dispatch(sendFeedback(chatId, { helpful: 10 }));
   };
 
   onClickNotHelpful = () => {
-    this.setState({
-      stage: 'form'
-    });
+    const { dispatch } = this.props;
+    dispatch(showNotHelpfulForm());
   };
 
   onSubmitForm = comment => {
     const { chatId, dispatch } = this.props;
-
-    dispatch(sendFeedback(chatId, {helpful: 1, comment}));
-    this.setState({
-      stage: 'finished'
-    });
+    dispatch(sendFeedback(chatId, { helpful: 1, comment }));
   };
 
   render() {
-    if (!this.props.isEnded) {
+    const { stage, isEnded } = this.props;
+    if (!isEnded) {
       return null;
     }
 
-    switch (this.state.stage) {
+    switch (stage) {
       case 'finished':
         return <RateAgentComplete />;
       case 'form':

@@ -52,6 +52,7 @@ return array(
     'portal.forms.label_select'           => 'Select...',
 
     'portal.forms.error_ticket_department_required' => 'A department is required',
+    'portal.forms.error_ticket_department_invalid'  => 'You can not select a parent department',
     'portal.forms.error_ticket_subject_required'    => 'A ticket subject is required',
     'portal.forms.error_ticket_subject_length'      => 'The subject must be at least {{ limit }} characters in length',
     'portal.forms.error_ticket_msg_length'          => 'Your message must be at least {{ limit }} characters in length',

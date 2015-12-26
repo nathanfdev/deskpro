@@ -81,7 +81,7 @@ export class NestedList extends React.Component {
     if (hasNested && isExpanded) {
       return (
         <ul className={'with-connectors depth-' + depth}>
-          {nested.map(child => this.renderListItem({...child, parent: id}, depth + 1))}
+          {nested.map(child => this.renderListItem({ ...child, parent: id }, depth + 1))}
         </ul>
       );
     }
@@ -95,12 +95,10 @@ export class NestedList extends React.Component {
     const { onItemControlClick } = this.props;
 
     return (
-      <ListItem
-        key={id}
-        count={count}
-        onClick={this.toggleExpanded(id)}
-        onItemControlClick={onItemControlClick ? onItemControlClick(id) : null}
-        >
+      <ListItem key={id}
+                count={count}
+                onClick={this.toggleExpanded(id)}
+                onItemControlClick={onItemControlClick ? onItemControlClick(id) : null}>
         <div part="label">{parts.label}</div>
         <div part="nested">{parts.nested}</div>
       </ListItem>

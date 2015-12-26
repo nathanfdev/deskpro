@@ -2,7 +2,9 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Simple from 'DeskPRO/Component/Positioned/Simple';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
+import { TranscriptPopup } from './TranscriptPopup';
 import { TranscriptForm } from './TranscriptForm';
+import { TranscriptSent } from './TranscriptSent';
 import {
   disableSendTranscript,
   enableSendTranscript,
@@ -12,14 +14,20 @@ import {
   chatIdSelector,
   authorEmailSelector,
   authorNameSelector,
-  sendTranscriptSelector
+  transcriptCheckedSelector,
+  transcriptSentSelector,
+  transcriptSavingSelector,
+  transcriptSendingSelector
 } from '../../../../../../Selectors/chat';
 
 @connect(state => ({
   chatId: chatIdSelector(state),
   authorName: authorNameSelector(state),
   authorEmail: authorEmailSelector(state),
-  enabled: sendTranscriptSelector(state)
+  checked: transcriptCheckedSelector(state),
+  sent: transcriptSentSelector(state),
+  saving: transcriptSavingSelector(state),
+  sending: transcriptSendingSelector(state)
 }))
 export class TranscriptContainer extends React.Component {
 
@@ -28,7 +36,10 @@ export class TranscriptContainer extends React.Component {
     chatId: PropTypes.number,
     authorName: PropTypes.string,
     authorEmail: PropTypes.string,
-    enabled: PropTypes.bool,
+    checked: PropTypes.bool,
+    saving: PropTypes.bool,
+    sending: PropTypes.bool,
+    sent: PropTypes.bool,
     children: PropTypes.node
   };
 
@@ -41,9 +52,9 @@ export class TranscriptContainer extends React.Component {
 
   onClick = event => {
     event.preventDefault();
-    const { dispatch, authorName, authorEmail, enabled } = this.props;
+    const { dispatch, authorEmail, checked, sent } = this.props;
 
-    if (authorName && authorEmail && enabled) {
+    if (authorEmail && checked && !sent) {
       dispatch(disableSendTranscript());
     } else {
       this.setState({
@@ -62,16 +73,26 @@ export class TranscriptContainer extends React.Component {
     const { dispatch, chatId, authorName, authorEmail } = this.props;
 
     // no changes
-    if (name === authorName && email === authorEmail) {
+    // don't allow to close popup if no changes and empty email
+    if (authorEmail && name === authorName && email === authorEmail) {
       this.onCloseForm();
+
+      if (email) {
+        dispatch(enableSendTranscript());
+      }
+
       return null;
     }
 
-    const promise = dispatch(sendTranscriptInfo(chatId, {name, email}));
+    // update user info
+    const promise = dispatch(sendTranscriptInfo(chatId, { name, email }));
     if (promise) {
       promise.then(() => {
         this.onCloseForm();
-        dispatch(enableSendTranscript());
+
+        if (email) {
+          dispatch(enableSendTranscript());
+        }
       });
     }
 
@@ -79,7 +100,7 @@ export class TranscriptContainer extends React.Component {
   };
 
   render() {
-    const { authorName, authorEmail, enabled, children } = this.props;
+    const { authorName, authorEmail, checked, saving, sending, sent, children } = this.props;
     const childProps = children.props;
 
     return (
@@ -88,24 +109,29 @@ export class TranscriptContainer extends React.Component {
           ...childProps,
 
           ref: 'button',
-          active: enabled,
+          disabled: saving || sending,
+          active: checked,
           onClick: this.onClick
         })}
 
         <Simple isOpen={this.state.formOpened}
                 positionTarget={this.refs.button}
-                positionAt="center-18 bottom"
+                positionAt="center+40 bottom"
                 positionMy="center top"
                 zIndex={1000}>
 
           <ClickOut onClickOut={this.onCloseForm}
-                    context={[parent.document, parent.window.widget_iframe.document]}
+                    context={[parent.document, window.widgetFrame.document]}
                     additionalNodes={['.dpdesignportal-button']}>
 
-            <TranscriptForm name={authorName}
-                            email={authorEmail}
-                            onSubmit={this.onSubmit}
-                            onClose={this.onCloseForm} />
+            <TranscriptPopup onClose={this.onCloseForm}>
+              {sent
+                ? <TranscriptSent email={authorEmail} />
+                : <TranscriptForm name={authorName}
+                                  email={authorEmail}
+                                  onSubmit={this.onSubmit} />
+              }
+            </TranscriptPopup>
           </ClickOut>
         </Simple>
       </span>

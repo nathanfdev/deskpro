@@ -29,9 +29,31 @@
         window.DP_BASE_URL = '{{ path('portal_home')|trim('/') }}/';
         window.__DP_APP_SRC__ = '{{ asset('DeskPRO_WidgetBundle.js', 'app_assets') }}';
         window.__DP_URL__ = '{{ root_url() }}';
+        window.__DP_OPTIONS__ = {
+            windowType: 'bubble',
+            agentPollingTimeout: 10,
+            companyName: 'Acme Corp. Chat and a long name lorel ipsum dolor',
+            companyLogo: '',
+            helpButtonSize: 'large',
+            helpPopup: 'replyMessageButtons',
+            helpPopupTitle: 'DeskPRO Customer Support',
+            helpPopupMessage: 'Given a string consisting of printable ASCII chars, produce an output consisting of its unique chars in the original order.',
+            chatMode: 'conversation'
+        };
         window.DESKPRO_USERSOURCES = {{ auth_usersources_js_object() }};
         window.DESKPRO_CAN_USE_TICKETS = {{ can_use_tickets() ? 'true' : 'false' }};
         window.DESKPRO_CAN_USE_FEEDBACK = {{ can_use_feedback() ? 'true' : 'false' }};
         window.DESKPRO_CAN_USE_CHAT = {{ can_use_chat() ? 'true' : 'false' }};
+
+        window.DESKPRO_PHRASES = {};
+        window.DP_SET_PHRASES = function(p) {
+            window.DESKPRO_PHRASES = p;
+            if (window.PortalApp && window.PortalApp.phrases) {
+                window.PortalApp.phrases.setPhrases(p);
+            }
+        }
     })();
 </script>
+<script type="text/javascript" src="{{ url('portal_api_lang_widget_phrases', {_format: 'js'}) }}"></script>
+<script type="text/javascript" src="{{ asset('DeskPRO_PortalBundle.js', 'app_assets') }}" async="async"></script>
+<script type="text/javascript" src="{{ asset('widget_loader.js', 'app_assets') }}" async="async"></script>

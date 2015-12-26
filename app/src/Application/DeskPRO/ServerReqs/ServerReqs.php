@@ -163,8 +163,8 @@ class ServerReqs
 
         $this->checksTable = array(
             'php_version' => array(
-                'description' => 'Check that the <a href="http://php.net/">PHP</a> version is &gt;= 5.3.9',
-                'error'       => 'DeskPRO requires PHP 5.3.9. You have '.phpversion(),
+                'description' => 'Check that the <a href="http://php.net/">PHP</a> version is &gt;= 5.5.0',
+                'error'       => 'DeskPRO requires PHP 5.5.0. You have '.phpversion(),
                 'readMore'    => App::get('deskpro.service_urls')->get('dp.kb.install.error_php_version'),
             ),
             'pdo_ext' => array(

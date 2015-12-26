@@ -1,10 +1,8 @@
 import React, {Component, PropTypes} from 'react';
 import { MassActionBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/MassActionBar/MassActionBar';
-import {
-  toggleMassAction, massAction, setMassActionsParams, resetAllMassActionsParams, resetMassActionsParam,
-  deleteFeedback, approveFeedback
-}
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackListActions';
+import { deleteFeedback, approveFeedback } from '../../../Actions/FeedbackListActions';
+import { toggleMassAction, massAction, setMassActionsParams, resetAllMassActionsParams, resetMassActionsParam }
+  from '../../../Actions/FeedbackMassActions';
 import { massActionsSelector, massActionsParamsSelector, currentListParamsSelector } from '../../../Selectors/list';
 import { deleteComment, approveComment }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackCommentsActions';

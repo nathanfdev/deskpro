@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Kernel;
 
 use Application\DeskPRO\App;
@@ -154,9 +155,6 @@ class get_messages extends serve_abstract
             }
             if (($count && $count % 2 === 0) || $count == 1) {
                 $dos[] = 'get-online-agents';
-            }
-            if ($count && $count % 3 === 0) {
-                $dos[] = 'get-online-visitors';
             }
 
             $dos = array_unique($dos);
@@ -710,29 +708,6 @@ class get_messages extends serve_abstract
         }
 
         return $messages;
-    }
-
-    ############################################################################
-    # getOnlineVisitors
-    ############################################################################
-
-    public function getOnlineVisitorsMessage()
-    {
-        $timeout = $this->_getSetting('core_chat.user_online_time', 600);
-        $cutoff  = date('Y-m-d H:i:s', time() - $timeout);
-
-        $q = $this->getPdoRead()->prepare('
-            SELECT COUNT(*)
-            FROM visitors
-            WHERE date_last > ? AND last_track_id IS NOT NULL AND hint_hidden = 0
-        ');
-        $q->execute(array($cutoff));
-
-        $online_count = $q->fetchColumn(0);
-
-        return array(
-            array(null, 'agent.online-users-count', array('online_count' => $online_count)),
-        );
     }
 
     ############################################################################

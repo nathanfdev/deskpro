@@ -31,12 +31,13 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\BigMode;
 use Application\DeskPRO\DBAL\Connection;
-use Application\DeskPRO\Entity\DepartmentPermission;
+use Application\DeskPRO\Entity\DepartmentPermission as DepartmentPermissionEntity;
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Usergroup as UsergroupEntity;
@@ -154,8 +155,8 @@ class Person extends AbstractEntityRepository
             ORDER BY p.last_name ASC, p.first_name ASC
         ')
             ->setParameter('department', $department)
-            ->setParameter('permission', DepartmentPermission::FULL)
-            ->setParameter('app', DepartmentPermission::APP_TICKETS)
+            ->setParameter('permission', DepartmentPermissionEntity::FULL)
+            ->setParameter('app', DepartmentPermissionEntity::APP_TICKETS)
             ->execute();
     }
 

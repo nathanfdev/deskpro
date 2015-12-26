@@ -28,39 +28,41 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk\Request;
 
-/**
- * Override CurlRequest to tune curl options.
- *
- * Class CurlRequest
- */
-class CurlRequest extends \Zendesk\API\CurlRequest
-{
+if (class_exists('\Zendesk\API\CurlRequest')) {
     /**
-     * @var array
-     */
-    private $options;
-
-    /**
-     * Constructor.
+     * Override CurlRequest to tune curl options.
      *
-     * @param string $url
-     * @param array  $options
+     * Class CurlRequest
      */
-    public function __construct($url, array $options = array())
+    class CurlRequest extends \Zendesk\API\CurlRequest
     {
-        parent::__construct($url);
-        $this->options = $options;
-    }
+        /**
+         * @var array
+         */
+        private $options;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setopt($option, $value)
-    {
-        if (isset($this->options[$option])) {
-            $value = $this->options[$option];
+        /**
+         * Constructor.
+         *
+         * @param string $url
+         * @param array  $options
+         */
+        public function __construct($url, array $options = array())
+        {
+            parent::__construct($url);
+            $this->options = $options;
         }
 
-        return parent::setopt($option, $value);
+        /**
+         * {@inheritdoc}
+         */
+        public function setopt($option, $value)
+        {
+            if (isset($this->options[$option])) {
+                $value = $this->options[$option];
+            }
+
+            return parent::setopt($option, $value);
+        }
     }
 }

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Model;
 
 class FeedbackFilter
@@ -53,9 +54,9 @@ class FeedbackFilter
     );
 
     public static $statuses_translated = array(
-        self::STATUS_ALL    => 'All items',
-        self::STATUS_ACTIVE => 'Open items',
-        self::STATUS_CLOSED => 'Closed items',
+        self::STATUS_ALL    => 'portal.feedback.status_all',
+        self::STATUS_ACTIVE => 'portal.feedback.status_active',
+        self::STATUS_CLOSED => 'portal.feedback.status_closed',
     );
 
     public static $sorts = array(
@@ -67,11 +68,11 @@ class FeedbackFilter
     );
 
     public static $sorts_translated = array(
-        self::SORT_DATE       => 'Date',
-        self::SORT_POPULARITY => 'Popularity',
-        self::SORT_VIEWS      => 'Views',
-        self::SORT_COMMENTS   => 'Comments',
-        self::SORT_RATING     => 'Rating',
+        self::SORT_DATE       => 'portal.feedback.sort_date',
+        self::SORT_POPULARITY => 'portal.feedback.sort_popularity',
+        self::SORT_VIEWS      => 'portal.feedback.sort_views',
+        self::SORT_COMMENTS   => 'portal.feedback.sort_comments',
+        self::SORT_RATING     => 'portal.feedback.sort_rating',
     );
 
     public static $sort_directions = array(
@@ -80,8 +81,8 @@ class FeedbackFilter
     );
 
     public static $sort_directions_translated = array(
-        self::SORT_DIRECTION_ASC  => 'ASC',
-        self::SORT_DIRECTION_DESC => 'DESC',
+        self::SORT_DIRECTION_ASC  => 'portal.feedback.dir_asc',
+        self::SORT_DIRECTION_DESC => 'portal.feedback.dir_desc',
     );
 
     protected $status;

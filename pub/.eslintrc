@@ -9,7 +9,10 @@
   "rules": {
     "react/jsx-quotes": 0,
     "react/no-multi-comp": 0,
-    "jsx-quotes": [2, "prefer-double"],
+    "jsx-quotes": [
+      2,
+      "prefer-double"
+    ],
     "valid-jsdoc": 2,
     "react/jsx-uses-react": 2,
     "react/jsx-uses-vars": 2,
@@ -19,7 +22,13 @@
     "comma-dangle": 0,
     "new-cap": 0,
     "no-console": 0,
-    "indent": [2, 2, {"SwitchCase": 1}]
+    "indent": [
+      2,
+      2,
+      {
+        "SwitchCase": 1
+      }
+    ]
   },
   "plugins": [
     "react"

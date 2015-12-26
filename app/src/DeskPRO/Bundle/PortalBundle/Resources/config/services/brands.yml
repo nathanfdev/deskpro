@@ -3,6 +3,7 @@ services:
   brand_stack:
     class: DeskPRO\Bundle\PortalBundle\Brand\BrandStack
     arguments: [@brand_container_factory, @default_brand]
+    lazy: true
 
 
   brand_container_factory:

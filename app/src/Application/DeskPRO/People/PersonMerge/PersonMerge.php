@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\People\PersonMerge;
 
 use Application\DeskPRO\App;
@@ -304,7 +305,6 @@ class PersonMerge implements PersonContextInterface
             'page_view_log',
             'ratings',
             'searchlog',
-            'visitors',
         );
 
         foreach ($simple_tables as $table) {

@@ -15,7 +15,8 @@ define [
   'angularSelectize'
   'angularGrid'
   'angularScrollGlue'
-  'ngFileUpload'
+  'ngFileUpload',
+  'angularSpectrumColorpicker'
 
   'moment'
   'momentTimezone'
@@ -71,7 +72,8 @@ define [
     'deskpro.option_builder'
     'deskpro.category_builder'
     'dp.datetimepicker'
-    'luegg.directives'
+    'luegg.directives',
+    'angularSpectrumColorpicker'
   ])
 
   AdminModule.config(['datepickerConfig', 'datepickerPopupConfig', (datepickerConfig, datepickerPopupConfig) ->

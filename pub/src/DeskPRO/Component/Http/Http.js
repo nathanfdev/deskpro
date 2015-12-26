@@ -140,6 +140,9 @@ export default class Http {
           config.data = JSON.stringify(config.data || {});
         }
       }
+      if (config.crossDomain && config.dataType === 'json') {
+        delete config.headers;
+      }
 
       if (config.transformRequest) {
         config = config.transformRequest(config);

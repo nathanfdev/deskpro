@@ -46,10 +46,9 @@ class FeedbackSelectCriteria extends Criteria
      */
     public function applyFilters(QueryBuilder $qb)
     {
-        $alias      = $qb->getRootAliases()[0];
-        $sort       = "$alias.date_created";
-        $order      = 'asc';
-        $labelsMode = 'any';
+        $alias = $qb->getRootAliases()[0];
+        $sort  = "$alias.date_created";
+        $order = 'asc';
         foreach ($this->filters as $field => $value) {
             switch ($field) {
                 case 'ids':
@@ -59,8 +58,8 @@ class FeedbackSelectCriteria extends Criteria
                     break;
                 case 'awaiting_validation':
                     $qb
-                        ->andWhere("$alias.hidden_status = :validating")
-                        ->setParameter('validating', 'validating');
+                        ->andWhere("$alias.is_reviewed = :false")
+                        ->setParameter('false', 'false');
                     break;
                 case 'category':
                     if (is_array($value)) {
@@ -78,17 +77,10 @@ class FeedbackSelectCriteria extends Criteria
                     }
                     $qb->setParameter('title', $value);
                     break;
-                case 'labels_mode':
-                    $labelsMode = $value;
-                    break;
                 case 'label':
-                    if ($labelsMode === 'any') {
-                        $qb
-                            ->andWhere('labels.label IN (:labels)')
-                            ->setParameter('labels', $value);
-                    } else {
-                        /* @ToDo all labels mode */
-                    }
+                    $qb
+                        ->andWhere('labels.label IN (:labels)')
+                        ->setParameter('labels', $value);
                     break;
                 case 'no_labels':
                     $qb
@@ -147,8 +139,6 @@ class FeedbackSelectCriteria extends Criteria
     {
         $resolver->setDefined(
             [
-                'include',
-                'include_headers',
                 'awaiting_validation',
                 'status',
                 'hidden_status',
@@ -160,8 +150,6 @@ class FeedbackSelectCriteria extends Criteria
                 'no_labels',
                 'sort',
                 'order',
-                'page',
-                'count',
                 'ids',
                 'created_from',
                 'created_to',
@@ -173,7 +161,7 @@ class FeedbackSelectCriteria extends Criteria
         $resolver->setAllowedValues(
             'status',
             function ($value) {
-                $allowed = ['new', Feedback::STATUS_ACTIVE, Feedback::STATUS_CLOSED, Feedback::STATUS_HIDDEN];
+                $allowed = [Feedback::STATUS_ACTIVE, Feedback::STATUS_CLOSED, Feedback::STATUS_HIDDEN];
                 is_array($value) or $value = [$value];
                 foreach ($value as $status) {
                     if (!in_array($status, $allowed)) {
@@ -186,7 +174,7 @@ class FeedbackSelectCriteria extends Criteria
         );
         $resolver->setAllowedValues(
             'sort',
-            ['date_created', 'total_rating', 'num_ratings', 'id', 'title', 'status', 'category', 'author_name']
+            ['date_created', 'total_rating', 'num_ratings', 'id', 'title', 'status', 'category', 'person']
         );
         $resolver->setAllowedValues('order', ['asc', 'desc']);
     }

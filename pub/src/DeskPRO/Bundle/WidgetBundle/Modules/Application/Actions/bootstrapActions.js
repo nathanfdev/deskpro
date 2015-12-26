@@ -1,14 +1,16 @@
 import { createAction } from 'Ampliflux';
-import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
+import { loadOptions } from './dpWindowActions';
+import { loadPhraseTranslations } from '../../Chat/Actions/chatActions';
 
-export const loadPhraseTranslations = createAction(
-  'WIDGET_LOAD_PHRASE_TRANSLATIONS',
-  () => DpApi.sendPost('DP_SERVE_API/dp.php/user-lang-1.js')
-);
-
+export const ajaxOptions = {crossDomain: true, dataType: 'json'};
 export const bootstrapWidget = createAction(
   'WIDGET_BOOTSTRAP',
-  () => dispatch => {
-    dispatch(loadPhraseTranslations());
-  }
+  () => dispatch => new Promise(resolve => {
+    Promise.
+      all([
+        dispatch(loadOptions(window.DP_OPTIONS)),
+        dispatch(loadPhraseTranslations())
+      ])
+      .then(response => resolve(response));
+  })
 );

@@ -49,6 +49,16 @@ class CommentsDataService
      */
     private $em;
 
+    public static $datePeriodLabels = [
+        'today'      => 'Today',
+        'yesterday'  => 'Yesterday',
+        'this_week'  => 'This Week',
+        'this_month' => 'This Month',
+        'last_month' => 'Last Month',
+        'this_year'  => 'This Year',
+        'ever'       => 'Ever',
+    ];
+
     /**
      * PeopleDataService constructor.
      *
@@ -76,11 +86,21 @@ class CommentsDataService
         if ($criteria->hasGroupBy()) {
             $criteria->applyGroupBy($qb);
 
-            $result = $qb->getQuery()->getArrayResult();
-            $count  = Count::fromGroupedBy($criteria->getGroupBy());
+            $result    = $qb->getQuery()->getArrayResult();
+            $groupedBy = $criteria->getGroupBy();
+            $count     = Count::fromGroupedBy($groupedBy);
             foreach ($result as $group) {
                 $count->add($group['value']);
-                $count->addNested($group['value'], $group['group_name'], $criteria->getGroupBy());
+                if ($groupedBy === 'period_created') {
+                    $count->addNested(
+                        $group['value'],
+                        $group['group_name'],
+                        $groupedBy,
+                        self::$datePeriodLabels[$group['group_name']]
+                    );
+                } else {
+                    $count->addNested($group['value'], $group['group_name'], $groupedBy, $group['group_name']);
+                }
             }
         } else {
             $total = $qb->getQuery()->getSingleScalarResult();

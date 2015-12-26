@@ -2,7 +2,6 @@ import { async, asyncIndicator, composeHandlers } from '../../reducers/handlers'
 import { MODE_SET } from './actions';
 import Immutable from 'immutable';
 import invariant from 'invariant';
-import warning from 'warning';
 
 /**
  * (Reducer builder) Runs cleanup of unused records
@@ -101,6 +100,20 @@ function handleSetRequestRecords(state, requestId, setRecords, ids, mode) {
 
 
 /**
+ * (Reducer builder) Handles record store record update.
+ *
+ * @param {Immutable.Map} state The current state
+ * @param {Object} payload Payload containing {overrides, id}
+ * @returns {Immutable.Map} New state
+ */
+function updateRecord() {
+  return function(state, {overrides, id}) {
+    return state.mergeIn(['records', Number(id)], overrides);
+  };
+}
+
+
+/**
  * (Reducer builder) Handles a 'set' request.
  *
  * @return {Function} reducer
@@ -173,12 +186,15 @@ export function createEmptyRecordStoreState() {
  * @return {Object} Handlers map
  */
 export function buildRecordStoreHandlers(actionTypes) {
-  const { releaseRecordsAction, releaseRequestAction, setRequestRecordAction, requestRecordsAction } = actionTypes;
+  const {
+    releaseRecordsAction, releaseRequestAction, setRequestRecordAction, requestRecordsAction, updateRecordStateAction
+  } = actionTypes;
 
   return {
     [releaseRecordsAction]: releaseRecords(),
     [releaseRequestAction]: releaseRequest(),
     [setRequestRecordAction]: setRequestRecords(),
-    [requestRecordsAction]: requestRecords()
+    [requestRecordsAction]: requestRecords(),
+    [updateRecordStateAction]: updateRecord()
   };
 }

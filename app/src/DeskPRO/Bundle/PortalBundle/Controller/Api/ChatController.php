@@ -29,26 +29,23 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
-use DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageEvent;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
-use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManager;
+use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\EventDispatcher\Event;
-use Symfony\Component\Form\Form;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class ChatController.
  */
-class ChatController extends AbstractController
+class ChatController extends AbstractApiController
 {
     /**
      * @Route("/portal/api/chats/create", name="portal_api_chat_create")
@@ -56,7 +53,7 @@ class ChatController extends AbstractController
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return View
      */
     public function createNewChatAction(Request $request)
     {
@@ -78,7 +75,7 @@ class ChatController extends AbstractController
 
         $this->dispatch(UserChatEvent::STARTED, new UserChatEvent($conversation));
 
-        return new JsonResponse($this->dataSerialize($conversation));
+        return View::create($this->dataSerialize($conversation));
     }
 
     /**
@@ -88,7 +85,7 @@ class ChatController extends AbstractController
      * @param ChatConversation $conversation
      * @param Request          $request
      *
-     * @return JsonResponse
+     * @return View
      */
     public function pollingChatAction(ChatConversation $conversation, Request $request)
     {
@@ -108,7 +105,7 @@ class ChatController extends AbstractController
             ])
         ;
 
-        return new JsonResponse([
+        return View::create([
             'chat_info'    => $this->dataSerialize($conversation),
             'new_messages' => $this->dataSerialize($qb->getQuery()->getResult()),
         ]);
@@ -121,33 +118,155 @@ class ChatController extends AbstractController
      * @param ChatConversation $conversation
      * @param Request          $request
      *
-     * @return JsonResponse
+     * @return View
      */
     public function sendMessageAction(ChatConversation $conversation, Request $request)
     {
-        $chat_message = new ChatMessage();
-        $chat_message
-            ->setOrigin('user')
-            ->setContent($request->request->get('message'))
-            ->setIsHtml(true)
-            ->setMetadata([
-                'is_html' => true,
-            ])
+        $form = $this
+            ->get('form.factory')
+            ->createNamedBuilder(null, 'api_chat_message')
+            ->getForm()
         ;
 
-        $conversation->addMessage($chat_message);
+        $form->submit($request->request->all());
+        if (!$form->isValid()) {
+            return $this->generateFormErrorsResponse($form);
+        }
+
+        $chat_messages = [];
+
+        // Add message to chat conversation
+        $content = $form->get('message')->getData();
+        if ($content) {
+            $chat_message = new ChatMessage();
+            $chat_message
+                ->setOrigin('user')
+                ->setAuthor($conversation->getPerson())
+                ->setContent($content)
+                ->setIsHtml(true)
+                ->setMetadata([
+                    'is_html' => true,
+                ])
+            ;
+
+            $conversation->addMessage($chat_message);
+            $this->dispatch(UserChatEvent::SEND_MESSAGE, new UserChatEvent($conversation, $chat_message));
+
+            $chat_messages[] = $chat_message;
+        }
+
+        // Add blobs to chat conversation
+        /** @var Blob[] $attachments */
+        $attachments = $form->get('attachments')->getData();
+        foreach ($attachments as $attachment) {
+            // Support old attachment message format
+            $content = sprintf(
+                'File: <a href="%s" target="_blank">%s</a> (%s)',
+
+                $attachment->getDownloadUrl(true),
+                htmlspecialchars($attachment->filename),
+                $attachment->getReadableFilesize()
+            );
+
+            if ($attachment->isImage()) {
+                $content .= sprintf(
+                    '<div class="file-thumb"><img src="%s" /></div>',
+                    $attachment->getThumbnailUrl(50, true)
+                );
+            }
+
+            $chat_message = new ChatMessage();
+            $chat_message
+                ->setOrigin('user')
+                ->setAuthor($conversation->getPerson())
+                ->setContent($content)
+                ->setIsHtml(true)
+                ->setMetadata([
+                    'is_html' => true,
+                    'type'    => 'file',
+                    'blob_id' => $attachment->getId(),
+                    'blob'    => $this->dataSerialize($attachment)['data'],
+                ])
+            ;
+
+            $conversation->addMessage($chat_message);
+            $this->dispatch(UserChatEvent::SEND_MESSAGE, new UserChatEvent($conversation, $chat_message));
+
+            $chat_messages[] = $chat_message;
+        }
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($conversation);
         $em->flush();
 
-        $conversation_channel = $conversation->getChannelId('newmessage');
-        $this->dispatch(
-            ClientMessageEvent::SEND,
-            new ClientMessageEvent($conversation_channel, $chat_message)
-        );
+        return View::create($this->dataSerialize($chat_messages));
+    }
 
-        return new JsonResponse();
+    /**
+     * @Route("/portal/api/chats/{id}/ack_messages", name="portal_api_chat_ack_messages")
+     * @Method({"POST"})
+     *
+     * @param ChatConversation $conversation
+     * @param Request          $request
+     *
+     * @return View
+     */
+    public function ackMessagesAction(ChatConversation $conversation, Request $request)
+    {
+        $message_ids  = $request->request->get('message_ids');
+        $current_date = new \DateTime();
+
+        if (!empty($message_ids)) {
+            /** @var EntityManager $em */
+            $em = $this->getDoctrine()->getManager();
+            $qb = $em->createQueryBuilder();
+            $qb
+                ->update('DeskPRO:ChatMessage', 'cm')
+                ->set('cm.date_received', ':date_received')
+                ->where(
+                    'cm.id IN(:message_ids)',
+                    'cm.conversation = :conversation_id'
+                )
+                ->setParameters([
+                    'date_received'   => $current_date->format('c'),
+                    'message_ids'     => $message_ids,
+                    'conversation_id' => $conversation->getId(),
+                ])
+            ;
+
+            $qb->getQuery()->execute();
+            $this->dispatch(UserChatEvent::ACK_MESSAGES, new UserChatEvent($conversation, $message_ids));
+        }
+
+        return View::create();
+    }
+
+    /**
+     * @Route("/portal/api/chats/{id}/user_typing", name="portal_api_chat_user_typing")
+     * @Method({"POST"})
+     *
+     * @param ChatConversation $conversation
+     * @param Request          $request
+     *
+     * @return View
+     */
+    public function userTypingAction(ChatConversation $conversation, Request $request)
+    {
+        $form = $this
+            ->get('form.factory')
+            ->createNamedBuilder(null, 'api_chat_user_typing')
+            ->getForm()
+        ;
+
+        $form->submit($request->request->all());
+        if (!$form->isValid()) {
+            return $this->generateFormErrorsResponse($form);
+        }
+
+        $partial_message = $form->get('partial_message')->getData();
+        $this->dispatch(UserChatEvent::USER_TYPING, new UserChatEvent($conversation, $partial_message));
+
+        return View::create();
     }
 
     /**
@@ -157,7 +276,7 @@ class ChatController extends AbstractController
      * @param ChatConversation $conversation
      * @param Request          $request
      *
-     * @return JsonResponse
+     * @return View
      */
     public function sendTranscriptInfoAction(ChatConversation $conversation, Request $request)
     {
@@ -176,7 +295,36 @@ class ChatController extends AbstractController
         $em->persist($conversation);
         $em->flush();
 
-        return new JsonResponse();
+        return View::create();
+    }
+
+    /**
+     * @Route("/portal/api/chats/{id}/transcript_data", name="portal_api_chat_transcript_data")
+     * @Method({"POST"})
+     *
+     * @param ChatConversation $conversation
+     *
+     * @return View
+     */
+    public function sendTranscriptDataAction(ChatConversation $conversation)
+    {
+        $already_sent = $conversation->getShouldSendTranscript();
+        $person       = $conversation->getPerson();
+        $has_email    = $person ? $person->getPrimaryEmailAddress() : $conversation->getPersonEmail();
+        $has_answer   = $conversation->getDateFirstAgentMessage();
+
+        $can_send = !$already_sent && $has_email && $has_answer;
+        if ($can_send) {
+            $conversation->setShouldSendTranscript(true);
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($conversation);
+            $em->flush();
+        }
+
+        return View::create([
+            'success' => $can_send,
+        ]);
     }
 
     /**
@@ -185,7 +333,7 @@ class ChatController extends AbstractController
      *
      * @param ChatConversation $conversation
      *
-     * @return JsonResponse
+     * @return View
      */
     public function endChatAction(ChatConversation $conversation)
     {
@@ -197,7 +345,7 @@ class ChatController extends AbstractController
 
         $this->dispatch(UserChatEvent::END_BY_USER, new UserChatEvent($conversation, [], ['chat_ended']));
 
-        return new JsonResponse();
+        return View::create();
     }
 
     /**
@@ -206,11 +354,17 @@ class ChatController extends AbstractController
      *
      * @param ChatConversation $conversation
      *
-     * @return JsonResponse
+     * @return View
      */
     public function reopenChatAction(ChatConversation $conversation)
     {
-        $conversation->setStatus(ChatConversation::STATUS_OPEN);
+        $conversation
+            ->setStatus(ChatConversation::STATUS_OPEN)
+            ->setEndedBy(null)
+            ->setDateEnded(null)
+            ->setShouldSendTranscript(false)
+            ->setDateTranscriptSent(null)
+        ;
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($conversation);
@@ -218,7 +372,7 @@ class ChatController extends AbstractController
 
         $this->dispatch(UserChatEvent::USER_RETURNED, new UserChatEvent($conversation));
 
-        return new JsonResponse();
+        return View::create();
     }
 
     /**
@@ -228,13 +382,17 @@ class ChatController extends AbstractController
      * @param ChatConversation $conversation
      * @param Request          $request
      *
-     * @return JsonResponse
+     * @return View
      */
     public function feedbackAction(ChatConversation $conversation, Request $request)
     {
-        $form = $this->get('form.factory')->createNamedBuilder(null, 'api_chat_feedback', $conversation)->getForm();
-        $form->submit($request->request->all());
+        $form = $this
+            ->get('form.factory')
+            ->createNamedBuilder(null, 'api_chat_feedback', $conversation)
+            ->getForm()
+        ;
 
+        $form->submit($request->request->all());
         if (!$form->isValid()) {
             return $this->generateFormErrorsResponse($form);
         }
@@ -243,38 +401,6 @@ class ChatController extends AbstractController
         $em->persist($conversation);
         $em->flush();
 
-        return new JsonResponse();
-    }
-
-    /**
-     * @param $data
-     *
-     * @return array
-     */
-    protected function dataSerialize($data)
-    {
-        return $this->get('data_serializer')->serialize($data);
-    }
-
-    /**
-     * @param Form $form
-     *
-     * @return JsonResponse
-     */
-    protected function generateFormErrorsResponse(Form $form)
-    {
-        $generator = $this->get('api_error.form_errors_generator');
-        $errors    = $generator->generateFormErrors($form);
-
-        return new JsonResponse($errors, Response::HTTP_BAD_REQUEST);
-    }
-
-    /**
-     * @param string $event_name
-     * @param Event  $event
-     */
-    protected function dispatch($event_name, Event $event)
-    {
-        $this->get('event_dispatcher')->dispatch($event_name, $event);
+        return View::create();
     }
 }

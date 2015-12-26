@@ -1,16 +1,52 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import { Router, Route, Redirect } from 'react-router';
+import { WidgetFrameContainer } from './WidgetFrameContainer';
+import { WidgetContent } from './Parts/WidgetContent';
+import { WidgetHeaderContainer } from './Parts/Header/WidgetHeaderContainer';
+import { WidgetBodyContainer } from './Parts/Body/WidgetBodyContainer';
+import { WidgetFooter } from './Parts/WidgetFooter';
+import {
+  ChatApp,
+  ChatBeginContainer,
+  ChatBeginSimple,
+  ChatBeginConversation,
+  ChatBeginForm,
+  ChatPollingContainer,
+  ChatActive,
+  ChatWaiting
+} from '../../../Chat/Components/index';
+import history from '../../../../Services/history';
 
 export class Widget extends React.Component {
 
-  static propTypes = {
-    children: PropTypes.any
-  };
+  componentDidMount() {
+    window.widgetFrame = parent.window.widget_iframe;
+  }
 
   render() {
     return (
-      <div className="widget-container dpdesignportal mobile">
-        {this.props.children}
-      </div>
+      <WidgetFrameContainer>
+        <WidgetContent>
+          <WidgetHeaderContainer />
+          <WidgetBodyContainer>
+            <Router history={history}>
+              <Redirect from="/" to="chat"/>
+              <Route path="chat" component={ChatApp}>
+                <Route path="begin" component={ChatBeginContainer}>
+                  <Route name="chat_begin_simple" path="simple" component={ChatBeginSimple} />
+                  <Route name="chat_begin_conversation" path="conversation" component={ChatBeginConversation} />
+                  <Route name="chat_begin_form" path="form" component={ChatBeginForm} />
+                </Route>
+                <Route component={ChatPollingContainer}>
+                  <Route name="chat_waiting" path="waiting" component={ChatWaiting} />
+                  <Route name="chat_active" path="active" component={ChatActive} />
+                </Route>
+              </Route>
+            </Router>
+          </WidgetBodyContainer>
+          <WidgetFooter />
+        </WidgetContent>
+      </WidgetFrameContainer>
     );
   }
 }

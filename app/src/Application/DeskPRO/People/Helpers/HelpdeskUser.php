@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\People\Helpers;
 
 use Application\DeskPRO\App;
@@ -47,8 +48,6 @@ class HelpdeskUser extends \Application\DeskPRO\Domain\DomainObject implements \
     protected $person;
     /** @var Session */
     protected $session;
-    /** @var \Application\DeskPRO\Entity\Visitor */
-    protected $visitor;
 
     protected $ticket_count = null;
 
@@ -56,7 +55,6 @@ class HelpdeskUser extends \Application\DeskPRO\Domain\DomainObject implements \
     {
         $this->person  = $person;
         $this->session = $options['session'];
-        $this->visitor = $options['visitor'];
     }
 
     public function _getThis()

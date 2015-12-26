@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
+import moment from 'moment';
 import { CalendarCellDropdown } from './CalendarCellDropdown';
-import Detached from 'DeskPRO/Component/Positioned/Detached';
+import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { CalendarCellContentItem } from './CalendarCellContentItem';
-import moment from 'moment';
 
 export class CalendarCellContent extends React.Component {
 

@@ -29,10 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\DBAL\Connection;
 use Symfony\Component\Finder\Finder;
 
 class CleanupHourly extends AbstractJob
@@ -49,7 +49,6 @@ class CleanupHourly extends AbstractJob
     {
         $this->_cleanupDrafts();
         $this->_cleanupSessions();
-        $this->_cleanupVisitors();
         $this->_cleanupChatBlobs();
         $this->_cleanupTempAttachments();
         $this->_cleanupTempData();
@@ -104,50 +103,6 @@ class CleanupHourly extends AbstractJob
 
         if ($num) {
             $this->logStatus("Cleaned up $num stale sessions");
-        }
-    }
-
-    ####################################################################################################################
-
-    private function _cleanupVisitors()
-    {
-        $datesnip  = date('Y-m-d H:i:s', time() - App::getSetting('core.visitor_cleanup_time'));
-        $datesnip2 = date('Y-m-d H:i:s', time() - App::getSetting('core.visitor_cleanup_bogus_time'));
-
-        // old
-        $ids = App::getDb()->fetchAllCol('
-            SELECT id
-            FROM visitors
-            WHERE date_last < ?
-            LIMIT 1500
-        ', array($datesnip));
-
-        // bogus
-        $ids = array_merge($ids, App::getDb()->fetchAllCol('
-            SELECT id
-            FROM visitors
-            WHERE
-                date_last < ?
-                AND (
-                    visitors.hint_hidden = 1
-                    OR visitors.last_track_id IS NULL
-                )
-        ', array($datesnip2)));
-
-        $ids = array_unique($ids);
-
-        if ($ids) {
-            $batch_ids = array_chunk($ids, 50);
-            foreach ($batch_ids as $ids) {
-                $num = App::getDb()->executeUpdate('
-                    DELETE FROM visitors
-                    WHERE id IN (?)
-                ', array($ids), array(Connection::PARAM_INT_ARRAY));
-
-                if ($num) {
-                    $this->logStatus("Cleaned up $num stale visitors");
-                }
-            }
         }
     }
 

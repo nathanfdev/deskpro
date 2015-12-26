@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Kernel;
 
 require_once DP_ROOT.'/sys/DpShutdown.php';
@@ -36,6 +37,7 @@ require_once DP_ROOT.'/sys/Kernel/HelpdeskOfflineMessage.php';
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Console\CronApplication;
+use DeskPRO\Bundle\AppBundle\Debug\HttpCacheDebugPrinter;
 use DeskPRO\Bundle\PortalBundle\HttpCache\PortalHttpCache;
 use DeskPRO\Component\Filesystem\SafeFile;
 use Doctrine\DBAL\DBALException;
@@ -330,7 +332,35 @@ class KernelBooter
                 $request  = Request::createFromGlobals();
                 $response = $kernel->handle($request);
 
+                // ------------------------------------------------------------------------------------
+                // debug http cache
+                //
+                if (array_key_exists('dev', $DP_CONFIG['debug']) && $DP_CONFIG['debug']['dev']) {
+                    if ($kernel instanceof PortalHttpCache
+                        && strpos($request->getPathInfo(), '/_wdt') === false
+                        && strpos($request->getPathInfo(), '/_profile') === false
+                        && !$request->isXmlHttpRequest()
+                        && $response->headers->get('Content-Type') !== 'application/json'
+                    ) {
+                        $pretty_log       = HttpCacheDebugPrinter::debugPortalCacheKernel($kernel);
+                        $response_content = $response->getContent();
+                        $final_content    = $response_content.$pretty_log;
+                        $response->setContent($final_content);
+                        $response->headers->set('Content-Length', strlen($final_content));
+                    }
+
+                    // sometimes the web debug toolbar crashes due to a fully cached page not having
+                    // a new profile code, so lets just disable those annoying JS popups here in dev mode
+                    if (strpos($request->getPathInfo(), '/_wdt') !== false && $response->getStatusCode() != 200) {
+                        exit;
+                    }
+                }
+                //
+                //
+                // ------------------------------------------------------------------------------------
+
                 $response->send();
+
                 $kernel->terminate($request, $response);
             } catch (DBALException $e) {
                 // note: this try catch block is directly copied from old portal code in this booter, but we added code=0

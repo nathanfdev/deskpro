@@ -29,14 +29,15 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\Bundle\AppBundle\DataService\Content\ContentCount;
 
 use Application\DeskPRO\Entity\Article;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use DeskPRO\Bundle\AppBundle\DataService\Content\ArticlesCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Content\Category\CategoriesDataService;
-use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount\ArticlesCountCriteria;
-use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount\ContentCountCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount\ContentCountsDataService;
+use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCriteria;
 use DpTest\DeskProTestCase;
 
 /**
@@ -98,26 +99,26 @@ class ContentCountsDataServiceTest extends DeskProTestCase
     /**
      * @param array $params
      *
-     * @return ContentCountCriteria
+     * @return ContentCriteria
      */
     private function contentCriteria($params = ['group_by' => 'author'])
     {
         $resolver = new \Symfony\Component\OptionsResolver\OptionsResolver();
         $me       = new \Application\DeskPRO\Entity\Person();
-        $criteria = ContentCountCriteria::fromParameters($params, $resolver, [$me]);
+        $criteria = ContentCriteria::fromParameters($params, $resolver, [$me]);
 
         return $criteria;
     }
     /**
      * @param array $params
      *
-     * @return ArticlesCountCriteria
+     * @return ArticlesCriteria
      */
     private function articlesCriteria($params = ['group_by' => 'author'])
     {
         $resolver = new \Symfony\Component\OptionsResolver\OptionsResolver();
         $me       = new \Application\DeskPRO\Entity\Person();
-        $criteria = ArticlesCountCriteria::fromParameters($params, $resolver, [$me]);
+        $criteria = ArticlesCriteria::fromParameters($params, $resolver, [$me]);
 
         return $criteria;
     }

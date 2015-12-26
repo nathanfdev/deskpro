@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\SoapClient;
 
 if (!class_exists('\SoapClient', false)) {
@@ -74,6 +75,8 @@ if (!class_exists('\SoapClient', false)) {
     }
 }
 
-class SafeSoapClientException extends \SoapFault
-{
+if (class_exists('\SoapFault')) {
+    class SafeSoapClientException extends \SoapFault
+    {
+    }
 }

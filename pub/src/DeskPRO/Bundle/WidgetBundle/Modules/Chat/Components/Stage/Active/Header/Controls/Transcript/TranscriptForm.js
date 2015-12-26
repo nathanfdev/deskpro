@@ -1,14 +1,12 @@
 import React, { PropTypes } from 'react';
 import { FormItem } from './FormItem';
-import { hasErrors } from 'DeskPRO/Component/Form/FormErrors';
 
 export class TranscriptForm extends React.Component {
 
   static propTypes = {
     name: PropTypes.string,
     email: PropTypes.string,
-    onSubmit: PropTypes.func.isRequired,
-    onClose: PropTypes.func.isRequired
+    onSubmit: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -19,6 +17,14 @@ export class TranscriptForm extends React.Component {
       submit: false,
       errors: null
     };
+  }
+
+  componentDidMount() {
+    this.mounted = true;
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   onChangeName = event => {
@@ -46,15 +52,19 @@ export class TranscriptForm extends React.Component {
 
       promise.then(
         () => {
-          this.setState({
-            submit: false
-          });
+          if (this.mounted) {
+            this.setState({
+              submit: false
+            });
+          }
         },
         result => {
-          this.setState({
-            submit: false,
-            errors: result.getData().errors
-          });
+          if (this.mounted) {
+            this.setState({
+              submit: false,
+              errors: result.getData()
+            });
+          }
         }
       );
     }
@@ -62,28 +72,27 @@ export class TranscriptForm extends React.Component {
 
   render() {
     return (
-      <div className="dpdesignportal-popover dpdesignportal-popover-request-transcript">
-        <div className="dpdesignportal-popover-close" onClick={this.props.onClose}>
-          <i className="fa fa-times"></i>
-        </div>
-
+      <div>
         <h1>Need a transcript of this chat?</h1>
         <p className="grey">Enter your name &amp; email below and we'll email it to you.</p>
 
         <div className="popover-form">
           <form className="dpdesignportal-form" onSubmit={this.onSubmit}>
-            <FormItem label="Your name" error={hasErrors(this.state.errors, 'name')}>
+            <FormItem label="Your name" field="name" errors={this.state.errors}>
               <input type="text" value={this.state.name} onChange={this.onChangeName} />
             </FormItem>
 
-            <FormItem label="Your email" error={hasErrors(this.state.errors, 'email')}>
+            <FormItem label="Your email" field="email" errors={this.state.errors}>
               <input type="text" value={this.state.email} onChange={this.onChangeEmail} />
             </FormItem>
 
             <div className="label button-label">
               {this.state.submit
-                ? 'Saving'
-                : <input type="submit" value="Send me a transcript" className="dpdesignportal-button" onClick={this.onSubmit} />
+                ? <div className="spinner"><i/></div>
+                : <input type="submit"
+                         value="Send me a transcript"
+                         className="dpdesignportal-button"
+                         onClick={this.onSubmit} />
               }
             </div>
 

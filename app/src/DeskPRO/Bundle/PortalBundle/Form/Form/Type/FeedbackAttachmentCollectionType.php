@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\Entity\FeedbackAttachment;
@@ -86,7 +87,7 @@ class FeedbackAttachmentCollectionType extends AbstractType
                 'type'    => 'feedback_attachment',
                 'options' => function (Options $options) {
                         return array(
-                            'person' => $options->get('person'),
+                            'person' => $options['person'],
                             'label'  => false,
                         );
                     },

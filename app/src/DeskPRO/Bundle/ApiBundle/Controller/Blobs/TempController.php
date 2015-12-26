@@ -55,17 +55,6 @@ class TempController extends BaseController
         $accept = $this->container->getAttachmentAccepter();
         $blob   = $accept->accept($file);
 
-        return View::create(
-            [
-                'blob_id'           => $blob['id'],
-                'blob_auth'         => $blob->authcode,
-                'blob_auth_id'      => $blob->id.'-'.$blob->authcode,
-                'download_url'      => $blob->getDownloadUrl(true, false),
-                'filename'          => $blob['filename'],
-                'filesize_readable' => $blob->getReadableFilesize(),
-                'is_image'          => $blob->isImage(),
-            ],
-            Response::HTTP_CREATED
-        );
+        return View::create($this->dataSerialize($blob), Response::HTTP_CREATED);
     }
 }

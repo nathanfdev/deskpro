@@ -4,13 +4,14 @@ import classNames from 'classnames';
 export class EndChatConfirmPopup extends React.Component {
 
   static propTypes = {
+    locked: PropTypes.bool,
     positionAt: PropTypes.string,
     onCancel: PropTypes.func,
     onConfirm: PropTypes.func
   };
 
   render() {
-    const { onCancel, onConfirm, positionAt } = this.props;
+    const { onCancel, onConfirm, locked, positionAt } = this.props;
 
     return (
       <div className={classNames('dpdesignportal-popover', 'dpdesignportal-popover-end-chat', positionAt)}>
@@ -18,7 +19,7 @@ export class EndChatConfirmPopup extends React.Component {
         <p className="grey">Lorel ipsum dolor closing the chat</p>
 
         <div className="popover-buttons">
-          <a href="#" className="dpdesignportal-button" onClick={onConfirm}>
+          <a href="#" className={classNames('dpdesignportal-button', {'locked': locked})} onClick={onConfirm}>
             <i className="fa fa-power-off"></i> End Chat
           </a>
           <a href="#" className="dpdesignportal-button grey" onClick={onCancel}>

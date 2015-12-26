@@ -11,7 +11,7 @@
       {% for child in category_children %}
         <li class="{% if child is same as(category) %}dpt-active-tab{% endif %}">
           <a href="{{ portal_path(child) }}">
-            {{ child.title }}
+            {{ object_phrase(child) }}
           </a>
         </li>
       {% endfor %}

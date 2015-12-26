@@ -29,8 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
+use DeskPRO\Bundle\AppBundle\Helper\IsLowLevelRequestHelper;
 use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Psr\Log\LoggerInterface;
@@ -69,6 +71,11 @@ class RedirectProtectionListener implements EventSubscriberInterface
     {
         $response = $event->getResponse();
         $request  = $event->getRequest();
+
+        if (IsLowLevelRequestHelper::check($event->getRequest())) {
+            // dont run on low level
+            return;
+        }
 
         // you can bypass this check if you set the right header
         // onto the redirect response object (ie. in the controller)

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
@@ -118,7 +119,7 @@ class SavedForm implements EntityInterface, NotifyPropertyChanged
     protected $date_created;
 
     /**
-     * @ORM\Column(name="date_last_reminded", type="datetime")
+     * @ORM\Column(name="date_last_reminded", type="datetime", nullable=true)
      *
      * @var \DateTime
      */

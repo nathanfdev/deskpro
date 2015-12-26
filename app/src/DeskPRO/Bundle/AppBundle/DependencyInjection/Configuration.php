@@ -26,6 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
+
 namespace DeskPRO\Bundle\AppBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -40,22 +44,11 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-            ->arrayNode('notification')
+            ->arrayNode('data_serializer')
                 ->children()
-                    ->arrayNode('strategies')->isRequired()
-                        ->prototype('array')
-                            ->children()
-                                ->scalarNode('strategy')->defaultValue('immediate')->end()
-                                ->arrayNode('delivery')->isRequired()->requiresAtLeastOneElement()
-                                    ->prototype('scalar')->end()
-                                ->end()
-                                ->scalarNode('persistance')->end()
-                            ->end()
-                        ->end()
-                    ->end()
+                    ->variableNode('types')
                 ->end()
-            ->end()
-        ->end();
+            ->end();
 
         return $treeBuilder;
     }

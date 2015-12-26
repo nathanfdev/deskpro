@@ -49,6 +49,12 @@ define [
   'Admin/TicketDeps/Directive/LayoutEditorField',
 
   'Admin/License/Directive/PaymentFormDirective',
+
+  'Admin/Portal/Directive/Editor/VariableForm',
+  'Admin/Portal/Directive/Editor/ColorForm',
+  'Admin/Portal/Directive/Editor/FloatForm',
+  'Admin/Portal/Directive/Editor/FontForm',
+  'Admin/Portal/Directive/Editor/SizeForm'
 ], (
   DeskPRO_Directive_DpClickHref,
   DeskPRO_Directive_DpClosestNumber,
@@ -99,7 +105,13 @@ define [
   Admin_TicketDeps_Directive_LayoutEditor,
   Admin_TicketDeps_Directive_LayoutEditorField,
 
-  Admin_License_Directive_PaymentFormDirective
+  Admin_License_Directive_PaymentFormDirective,
+
+  Admin_Portal_Directive_Editor_VariableForm,
+  Admin_Portal_Directive_Editor_ColorForm,
+  Admin_Portal_Directive_Editor_FloatForm,
+  Admin_Portal_Directive_Editor_FontForm,
+  Admin_Portal_Directive_Editor_SizeForm
 ) ->
   return (Module) ->
     Module.directive('dpClickHref',                    DeskPRO_Directive_DpClickHref)
@@ -152,6 +164,12 @@ define [
     Module.directive('dpTicketLayoutEditorField',      Admin_TicketDeps_Directive_LayoutEditorField)
 
     Module.directive('dpLicensePaymentForm',           Admin_License_Directive_PaymentFormDirective)
+
+    Module.directive('dpPortalDesignerVariableForm',   Admin_Portal_Directive_Editor_VariableForm)
+    Module.directive('dpPortalDesignerColorForm',      Admin_Portal_Directive_Editor_ColorForm)
+    Module.directive('dpPortalDesignerFloatForm',      Admin_Portal_Directive_Editor_FloatForm)
+    Module.directive('dpPortalDesignerFontForm',       Admin_Portal_Directive_Editor_FontForm)
+    Module.directive('dpPortalDesignerSizeForm',       Admin_Portal_Directive_Editor_SizeForm)
 
     Module.directive('dpToggleShowIds', [ ->
       return {

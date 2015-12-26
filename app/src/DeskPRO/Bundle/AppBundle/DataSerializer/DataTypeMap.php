@@ -44,6 +44,11 @@ class DataTypeMap
      */
     protected $map;
 
+    /**
+     * Constructor.
+     *
+     * @param array|null $map
+     */
     public function __construct(array $map = null)
     {
         if ($map) {
@@ -66,12 +71,21 @@ class DataTypeMap
     /**
      * Given some $data give me the object "type" or null if it can't be determined.
      *
-     * @param $data
+     * @param mixed $data
+     * @param bool  $null_on_none True to return null of no found type, otherwise an exception is raised
      *
-     * @return string|null
+     * @throws \Exception
+     *
+     * @return string
      */
-    public function findType($data)
+    public function findType($data, $null_on_none = false)
     {
+        $object_class = is_object($data) ? get_class($data) : null;
+
+        if ($object_class && $type = $this->findTypeForClass($object_class)) {
+            return $type;
+        }
+
         if (is_array($data)) {
             $data = array_shift($data);
         } elseif ($data instanceof \Traversable) {
@@ -79,16 +93,25 @@ class DataTypeMap
         }
 
         if (is_array($data) || $data instanceof \Traversable) {
-            return; // it is still an array and we can't determine type now
+            $object_class = is_object($data) ? get_class($data) : null;
+
+            if ($object_class && $type = $this->findTypeForClass($object_class)) {
+                return $type;
+            }
+
+            return ''; // it is still an array and we can't determine type now
         }
 
         $object_class = is_object($data) ? get_class($data) : null;
 
         if (!$object_class) {
-            return;
+            return '';
         } elseif ($type = $this->findTypeForClass($object_class)) {
             return $type;
         } else {
+            if ($null_on_none) {
+                return '';
+            }
             throw new \Exception("Type for $object_class not found.");
         }
     }
@@ -125,7 +148,7 @@ class DataTypeMap
             return Strings::camelCaseToUnderscore($class_name);
         }
 
-        return;
+        return '';
     }
 
     /**

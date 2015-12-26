@@ -29,24 +29,23 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\DataService\Tasks\TasksSelectCriteria;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Form\Type\TaskType;
 use Doctrine\ORM\Query;
-use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Put;
-use FOS\RestBundle\Routing\ClassResourceInterface;
+use FOS\RestBundle\Controller\Annotations\Route;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Pagerfanta;
-use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -55,9 +54,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class TasksController.
+ *
+ * @Route("/tasks")
  */
-class TasksController extends BaseController implements ClassResourceInterface
+class TasksController extends CrudController
 {
+    public static $entity = Task::class;
+    public static $type   = TaskType::class;
+
     /**
      * @ApiDoc(
      *      description="get a list of tasks",
@@ -81,7 +85,7 @@ class TasksController extends BaseController implements ClassResourceInterface
      *          200="Success"
      *      }
      * )
-     * @Get("/tasks", name="api_tasks")
+     * @Get("", name="api_tasks")
      *
      * @param Request $request
      *
@@ -114,7 +118,7 @@ class TasksController extends BaseController implements ClassResourceInterface
      *          404="Not Found"
      *      }
      * )
-     * @Put("/tasks/mass", name="api_tasks_mass_put")
+     * @Put("/mass", name="api_tasks_mass_put")
      *
      * @param Request $request
      *
@@ -133,7 +137,7 @@ class TasksController extends BaseController implements ClassResourceInterface
         $taskIds = $submitted['ids'];
         unset($submitted['ids']);
 
-        $task = $this->getTask($taskIds[0]);
+        $task = $this->findEntity($taskIds[0]);
 
         $this->validateForm($request, $task, $submitted);
 
@@ -161,130 +165,6 @@ class TasksController extends BaseController implements ClassResourceInterface
     }
 
     /**
-     * @ApiDoc(
-     *      description="get a task",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the task",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success",
-     *          404="Not Found"
-     *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\Task"
-     * )
-     * @Get("/tasks/{taskId}", name="api_tasks_get")
-     *
-     * @param int $taskId
-     *
-     * @return View
-     */
-    public function getAction($taskId)
-    {
-        $task = $this->getTask($taskId);
-        if (empty($task)) {
-            throw $this->createNotFoundException();
-        }
-
-        return View::create($this->dataSerialize($task), Response::HTTP_OK);
-    }
-
-    /**
-     * @ApiDoc(
-     *      description="create a new task",
-     *      input={"class"="task", "name"=""},
-     *      statusCodes={
-     *          201="Created",
-     *          400="Bad Request"
-     *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\Task"
-     * )
-     * @Post("/tasks", name="api_tasks_post")
-     *
-     * @param Request $request
-     *
-     * @throws WrappedApiErrorException
-     * @throws InvalidFormException
-     *
-     * @return View
-     */
-    public function postAction(Request $request)
-    {
-        $task = new Task($this->getUser());
-
-        return $this->handleFormSubmission($request, $task);
-    }
-
-    /**
-     * @APIDoc(
-     *      description="update a task",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the task",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      input={"class"="task", "name"=""},
-     *      statusCodes={
-     *          204="Updated",
-     *          400="Bad Request",
-     *          404="Not Found"
-     *      }
-     * )
-     * @Put("/tasks/{id}", name="api_tasks_put")
-     *
-     * @param Request $request
-     * @param $id
-     *
-     * @throws WrappedApiErrorException
-     *
-     * @return View
-     */
-    public function putAction(Request $request, $id)
-    {
-        $task = $this->getTask($id);
-
-        return $this->handleFormSubmission($request, $task);
-    }
-
-    /**
-     * @APIDoc(
-     *      description="delete a task",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the task",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success",
-     *          404="Not Found"
-     *      }
-     * )
-     * @Delete("/tasks/{id}", name="api_tasks_delete")
-     *
-     * @param $id
-     *
-     * @return View
-     */
-    public function deleteAction($id)
-    {
-        $task = $this->getTask($id);
-        $this->getDoctrine()->getManager()->remove($task);
-        $this->getDoctrine()->getManager()->flush();
-
-        return View::create([], Response::HTTP_OK);
-    }
-
-    /**
      * @APIDoc(
      *      description="get subtasks for a task",
      *      requirements={
@@ -300,7 +180,7 @@ class TasksController extends BaseController implements ClassResourceInterface
      *      }
      * )
      *
-     * @Get("/tasks/{id}/subtasks", name="api_tasks_subtasks_get")
+     * @Get("/{id}/subtasks", name="api_tasks_subtasks_get")
      *
      * @param $id
      *
@@ -308,7 +188,7 @@ class TasksController extends BaseController implements ClassResourceInterface
      */
     public function getSubtasksAction($id)
     {
-        $task = $this->getTask($id);
+        $task = $this->findEntity($id);
         if (empty($task)) {
             throw $this->createNotFoundException();
         }
@@ -350,7 +230,7 @@ class TasksController extends BaseController implements ClassResourceInterface
      *      }
      * )
      *
-     * @Get("/tasks/{id}/comments", name="api_tasks_comments_get")
+     * @Get("/{id}/comments", name="api_tasks_comments_get")
      *
      * @param Request $request
      * @param $id
@@ -359,7 +239,7 @@ class TasksController extends BaseController implements ClassResourceInterface
      */
     public function getCommentsAction(Request $request, $id)
     {
-        $task = $this->getTask($id);
+        $task = $this->findEntity($id);
         if (empty($task)) {
             throw $this->createNotFoundException();
         }
@@ -408,7 +288,7 @@ class TasksController extends BaseController implements ClassResourceInterface
      *      }
      * )
      *
-     * @Get("/tasks/{id}/attachments", name="api_tasks_attachments_get")
+     * @Get("/{id}/attachments", name="api_tasks_attachments_get")
      *
      * @param Request $request
      * @param $id
@@ -417,7 +297,7 @@ class TasksController extends BaseController implements ClassResourceInterface
      */
     public function getAttachmentsAction(Request $request, $id)
     {
-        $task = $this->getTask($id);
+        $task = $this->findEntity($id);
         if (empty($task)) {
             throw $this->createNotFoundException();
         }
@@ -450,7 +330,7 @@ class TasksController extends BaseController implements ClassResourceInterface
      *      }
      * )
      *
-     * @Get("/tasks/{id}/linked_items", name="api_tasks_links_get")
+     * @Get("/{id}/linked_items", name="api_tasks_links_get")
      *
      * @param $id
      *
@@ -458,7 +338,7 @@ class TasksController extends BaseController implements ClassResourceInterface
      */
     public function getLinksAction($id)
     {
-        $task = $this->getTask($id);
+        $task = $this->findEntity($id);
         if (empty($task)) {
             throw $this->createNotFoundException();
         }
@@ -466,48 +346,6 @@ class TasksController extends BaseController implements ClassResourceInterface
         $links = $task->getLinkedItems();
 
         return View::create($this->dataSerialize($links), Response::HTTP_OK);
-    }
-
-    /**
-     * Retrieve a single task.
-     *
-     * @param int $id
-     *
-     * @return Task
-     */
-    protected function getTask($id)
-    {
-        $task = $this->getDoctrine()->getManager()->getRepository('App:Task')->find((int) $id);
-        if (!$task) {
-            throw $this->createNotFoundException();
-        }
-
-        return $task;
-    }
-
-    /**
-     * Will be abstracted for use by other controllers.
-     *
-     * @param Request $request
-     * @param Task    $task
-     *
-     * @throws WrappedApiErrorException
-     *
-     * @return View
-     */
-    protected function handleFormSubmission(Request $request, Task $task)
-    {
-        $status = $task->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
-
-        $submitted = $request->request->all();
-
-        $this->validateForm($request, $task, $submitted);
-
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($task);
-        $em->flush();
-
-        return View::create($this->dataSerialize($task), $status);
     }
 
     /**
@@ -519,7 +357,7 @@ class TasksController extends BaseController implements ClassResourceInterface
      *
      * @throws InvalidFormException If form is invalid
      */
-    protected function validateForm(Request $request, Task $task, $submitted)
+    private function validateForm(Request $request, Task $task, $submitted)
     {
         $form = $this->get('form.factory')->createNamedBuilder(null, 'task', $task)->getForm();
         $form->submit($submitted, $request->getMethod() !== 'PUT');
@@ -527,5 +365,13 @@ class TasksController extends BaseController implements ClassResourceInterface
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function instantiateEntity(Request $request)
+    {
+        return new Task($this->getUser());
     }
 }

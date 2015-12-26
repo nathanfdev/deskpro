@@ -1,96 +1,167 @@
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Variables
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//-------------------------
+//----------------------------------------------------------------------------------------------------------------------
 // Outer page
-//-------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
+/// @group colors
 $world-background: #fff;
+
+/// @group positioning
 $world-padding: 20px;
 
-//-------------------------
+//----------------------------------------------------------------------------------------------------------------------
 // Main scheme
-//-------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
+/// @group colors
 $page-background: #fff;
+
+/// @group fonts
 $fonts: "Helvetica Neue", "Segoe UI", "Roboto", sans-serif;
 // $fonts: "Helvetica Neue", Helvetica, Arial, sans-serif;
 // $fonts: "Ubuntu", helvetica, verdana, sans-serif;
 
+/// @group colors
 $divider-color: #cdcdcd;
+
+/// @group positioning
 $universal-left-padding: 10px;
+
+/// @group colors
 $main-color: #3575bd;
+
+/// @group colors
 $main-color-light: lighten(#3575bd, 45%);
 
-// Font sizes
+// Font sizes ----------------------------------------------------------------------------------------------------------
+
+/// @group font_sizes
 $font-small: 0.8em;
+
+/// @group font_sizes
 $font-mid: 0.9em;
+
+/// @group font_sizes
 $font-default: 0.85em;
+
+/// @group font_sizes
 $font-large: 1.4em;
 
-// Font colors
+// Font colors ---------------------------------------------------------------------------------------------------------
+
+/// @group font_colors
 $text-color: #606060;
+
+/// @group font_colors
 $text-color-darker: darken($text-color, 30%);
+
+/// @group font_colors
 $text-color-lighter: lighten($text-color, 15%);
+
+/// @group font_colors
 $text-faded: lighten($text-color, 20%);
+
+/// @group font_colors
 $link-color: darken($main-color, 10%);
 
-// Secondary font colors
+// Secondary font colors -----------------------------------------------------------------------------------------------
+
+/// @group font_colors
 $grey: #e6e6e6;
+
+/// @group font_colors
 $red: #dc7575;
+
+/// @group font_colors
 $gold: #d0cf6e;
+
+/// @group font_colors
 $filter: #e0d5ad;
+
+/// @group font_colors
+/// @type float
 $text-opacue: 0.5;
 
-// Generic static colors
+// Generic static colors -----------------------------------------------------------------------------------------------
+
+/// @group generic_colors
 $color-twitter: #6eb9e4;
+
+/// @group generic_colors
 $color-facebook: #4c6fab;
 
 // Use for placeholders, disabled, can be switched to rgba opacity safely
+/// @group generic_colors
 $text-faded: #d4d4d4;
 
-// Buttons
+// Buttons -------------------------------------------------------------------------------------------------------------
+
+/// @group button_colors
 $button-color: $main-color;
-// Blue
+
+/// @group button_colors
 $button-text: $page-background;
-// #fff
+
+/// @group button_colors
 $button-color-secondary: #93d06e;
-// Green
+
+/// @group button_colors
 $button-color-secondary-darker: darken($button-color-secondary, 15%);
 
-// Secondary surface colors
+// Secondary surface colors --------------------------------------------------------------------------------------------
+
+/// @group secondary_colors
 $surface-main: #f2f2ec;
-// Grey to yellow-ish
+
+/// @group secondary_colors
 $surface-secondary: #f6f6f6;
-// Grey
 
 // Generic use cases
+
+/// @group secondary_colors
 $button-grey: #e8e8e8;
+
+/// @group secondary_colors
 $button-text: $page-background;
+
+/// @group secondary_colors
 $popup-background: #f5f6f7;
 
-// Forms
+// Forms ---------------------------------------------------------------------------------------------------------------
+
+/// @group form_colors
 $form-input: lighten($page-background, 5%);
-//#f7f7f7;
+
+/// @group form_colors
 $form-border-color: #c0c0c0;
 // Could follow from $divider-color for a lot of cases
 
 // This is the marked text when filtering stuff
+
+/// @group form_colors
 $marked-search: #ffe47f;
 
 // Default corners
+
+/// @group borders
 $border-radius-main: 4px;
+
+/// @group borders
 $border-radius-small: 2px;
 
 // Inner shadow for buttons that need it (usualy large buttons)
 $common-box-shadow-inner: inset 0 0 20px 10px rgba(0, 0, 0, 0.05);
 
 // Form paddings
+
+/// @group form_positioning
 $form-padding-vertical: 0.75em;
+
+/// @group form_positioning
 $form-padding-horizontal: 1em;
 
 // Max page width
+/// @group positioning
 $max-width: 1080px;
 
 // Simple condition used to see if the world div should be 'framed'
@@ -100,8 +171,22 @@ $with-world-framed: $world-background != $page-background;
 $form-widget-selector: 'input[type="text"], input[type="email"], input[type="[password"], textarea, .dp-choice-widget-group, .dp-medium-rte-wrapper';
 $zindex-very-top: 5000;
 
-
+/// @group welcome_colors
 $welcome-block-badger-blue: #3575BD;
+
+/// @group welcome_colors
 $welcome-block-border-color: #e3e3e3;
+
+/// @group welcome_colors
 $welcome-block-title-color: #5a5a5a;
+
+/// @group welcome_colors
 $welcome-block-text-color: #7b7b7b;
+
+
+$beaver-bg: #fff;// Background
+$gopher-grey: #dedede;// Borders and lines
+$sturgeon-silver: #b2b2b2;// Grey-ish
+$badger-blue: #3575BD;// Blue
+$tapir-text: #4f4f4f;// Text
+$dino-dark-grey: #A4A1A1;// General grey-ish text

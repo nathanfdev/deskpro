@@ -64,6 +64,13 @@ class LanguageExtension extends \Twig_Extension
                     'needs_environment' => true,
                 )
             ),
+            new \Twig_SimpleFunction(
+                'object_phrase',
+                array($this, 'getObjectPhrase'),
+                array(
+                    'is_safe' => array('all'),
+                )
+            ),
         );
     }
 
@@ -92,7 +99,18 @@ class LanguageExtension extends \Twig_Extension
 
         $vars['_context'] = $context;
 
-        return $this->language_manager->getTranslator()->phrase($phrase_name, $vars);
+        return $this->language_manager->phrase($phrase_name, $vars);
+    }
+
+    /**
+     * @param object $object
+     * @param bool   $property
+     *
+     * @return string
+     */
+    public function getObjectPhrase($object, $property = false)
+    {
+        return $this->language_manager->objectPhrase($object, $property);
     }
 
     /**

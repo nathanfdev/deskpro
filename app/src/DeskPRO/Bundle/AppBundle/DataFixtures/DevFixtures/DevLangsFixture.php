@@ -101,6 +101,18 @@ class DevLangsFixture extends AbstractFixture implements ContainerAwareInterface
                 'has_admin'     => 1,
             ],
             [
+                'sys_name'      => 'dev_rtl',
+                'lang_code'     => 'eng',
+                'title'         => 'Dev RTL',
+                'base_filepath' => '%DP_ROOT%/languages/dev_rtl',
+                'locale'        => 'en_T3',
+                'flag_image'    => 'us.png',
+                'is_rtl'        => 1,
+                'has_user'      => 1,
+                'has_agent'     => 1,
+                'has_admin'     => 1,
+            ],
+            [
                 'sys_name'      => 'arabic',
                 'lang_code'     => 'ara',
                 'title'         => 'العربية',

@@ -13,18 +13,26 @@
       {% show section small_user_info %}
 
       {% if is_multi_language %}
-      <li>
+      <li class="language-switcher-container">
           <form method="POST" action="{{ path('portal_change_language') }}" id="language-changer" class="as-no-dpui">
               <select name="lang_code" class="button button-dropdown button-dropdown-language">
                   {% for language in enabled_languages %}
                       <option value="{{ language.urlCode }}"
-                          {% if language.urlCode == current_language.urlCode %}selected="selected"{% endif %}>
+                              {% if language.urlCode == current_language.urlCode %}selected="selected"{% endif %}>
                           {{ language.title|capitalize }}
                       </option>
                   {% endfor %}
               </select>
               <button class="button button-plain button-small" type="submit">Go</button>
           </form>
+          {# This widget below is rendered before JS replaces with the smart widget, so its a placeholder #}
+          <div class="language-changer-widget dpx-placeholder">
+              <a href="#" class="button-small button-language">
+                  <img src="http://dev.dp.devput.com:8080/web/images/flags/us.png" alt="">
+                  <span class="text">English</span>
+                  <span class="extra"><i class="fa fa-caret-down"></i></span>
+              </a>
+          </div>
       </li>
       {% endif %}
     </ul>

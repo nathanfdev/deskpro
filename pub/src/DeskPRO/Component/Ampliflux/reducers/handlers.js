@@ -37,6 +37,22 @@ function getStatePath(statePropKey) {
 }
 
 /**
+ * Set a value on the state as async error callback.
+ *
+ * @param {String|Array} statePropKey  The property to set on the state.
+ * @param {any}          value         The value to set
+ * @return {Function} Action handler function
+ */
+export function setValueOnError(statePropKey, value) {
+  return state => {
+    verifyImmutable(state);
+    const immutableValue = Immutable.fromJS(value);
+
+    return state.setIn(getStatePath(statePropKey), immutableValue);
+  };
+}
+
+/**
  * Set a value on the state.
  *
  * @param {String|Array} statePropKey  The property to set on the state.
@@ -139,11 +155,13 @@ export function setPayload(statePropKey, payloadPropKey = '@', defaultValue = nu
 
 /**
  * Push payload to a collection.
+ * Payload could be scalar or object. If payload would be array, then all its items will be merged to a collection.
  *
  * @param {String|Array} statePropKey The property to set on the state.
+ * @param {bool}         checkUnique  Check if item already exists in collection.
  * @return {Function} Action handler function
  */
-export function pushPayloadToCollection(statePropKey) {
+export function pushPayloadToCollection(statePropKey, checkUnique = false) {
   return (state, payload, action) => {
     verifyActionError(action);
     verifyImmutable(state);
@@ -151,8 +169,38 @@ export function pushPayloadToCollection(statePropKey) {
     const path = getStatePath(statePropKey);
     let collection = state.getIn(path);
     verifyImmutable(collection);
-    const immutableValue = Immutable.fromJS(payload);
-    collection = collection.push(immutableValue);
+
+    const values = Array.isArray(payload) ? payload : [payload];
+    values.forEach(value => {
+      const immutableValue = Immutable.fromJS(value);
+
+      if (!checkUnique || !collection.includes(immutableValue)) {
+        collection = collection.push(immutableValue);
+      }
+    });
+
+    return state.setIn(path, collection);
+  };
+}
+
+/**
+ * Push payload to a collection.
+ *
+ * @param {String|Array} statePropKey The property to set on the state.
+ * @return {Function} Action handler function
+ */
+export function deletePayloadFromCollection(statePropKey) {
+  return (state, payload, action) => {
+    verifyActionError(action);
+    verifyImmutable(state);
+
+    const path = getStatePath(statePropKey);
+    let collection = state.getIn(path);
+    verifyImmutable(collection);
+
+    if (collection.includes(payload)) {
+      collection = collection.delete(collection.indexOf(payload));
+    }
 
     return state.setIn(path, collection);
   };
@@ -225,7 +273,6 @@ export function setFullPayload(statePropKey, defaultValue = null) {
   return setPayload(statePropKey, null, defaultValue);
 }
 
-
 /**
  * Merge a value from the action payload.
  *
@@ -273,7 +320,6 @@ export function mergePayload(statePropKey = null, payloadPropKey = '@', defaultV
   };
 }
 
-
 /**
  * Like mergePayload, except this sets the entire payload. This is the same as passing null as the payloadPropKey to setPayload,
  * it's just a little more intuitive.
@@ -287,15 +333,13 @@ export function mergeFullPayload(statePropKey = null, defaultValue = {}, deep = 
   return mergePayload(statePropKey, null, defaultValue, deep);
 }
 
-
 /**
  * Handle an async action.
  *
- * @param {Object}   handlers           Functions to handle each sequence in an async action
- * @param {Function} handlers.start     Called as soon as the action is dispatched
- * @param {Function} handlers.success   Called once the promise resolved
- * @param {Function} handlers.error     Called if the promise is rejected
- * @param {Function} handlers.done      Called when the promise is finished, after both success and error
+ * @param {Function} start     Called as soon as the action is dispatched
+ * @param {Function} success   Called once the promise resolved
+ * @param {Function} error     Called if the promise is rejected
+ * @param {Function} done      Called when the promise is finished, after both success and error
  * @return {Function} A handler function
  */
 export function async({ start, success, error, done }) {

@@ -38,7 +38,8 @@ export class PaginationBoxView extends Component {
     disabledClassName: 'disabled',
     containerClassName: 'pages-list',
     subContainerClassName: 'pages-list',
-    activeClassName: 'current-page'
+    activeClassName: 'current-page',
+
   };
 
   constructor(props) {

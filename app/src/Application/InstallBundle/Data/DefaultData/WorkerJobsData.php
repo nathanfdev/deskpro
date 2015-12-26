@@ -182,6 +182,15 @@ class WorkerJobsData extends AbstractDefaultData
         );
 
         $jobs[] = array(
+            'id'           => 'ticket_reminders',
+            'worker_group' => 'ticket_reminders',
+            'title'        => 'Ticket Reminders',
+            'description'  => 'Sends reminders to users who created a ticket but have not yet validated their email',
+            'job_class'    => 'Application\\DeskPRO\\WorkerProcess\\Job\\TicketReminders',
+            'run_interval' => Job\TicketReminders::DEFAULT_INTERVAL,
+        );
+
+        $jobs[] = array(
             'id'           => 'kb_subscriptions',
             'worker_group' => 'kb_subscriptions',
             'title'        => 'KB Subscriptions',
@@ -323,6 +332,15 @@ class WorkerJobsData extends AbstractDefaultData
             'description'  => 'Checks for errors and timeouts during incoming email logs',
             'job_class'    => 'Application\\DeskPRO\\WorkerProcess\\Job\\IncomingEmailSupervisor',
             'run_interval' => Job\IncomingEmailSupervisor::DEFAULT_INTERVAL,
+        );
+
+        $jobs[] = array(
+            'id'           => 'update_view_counts',
+            'worker_group' => 'update_view_counts',
+            'title'        => 'Udpate View Counts',
+            'description'  => 'Checks hit tracker for pageviews on content, and updates the view counter',
+            'job_class'    => 'Application\\DeskPRO\\WorkerProcess\\Job\\UpdateViewCounts',
+            'run_interval' => Job\UpdateViewCounts::DEFAULT_INTERVAL,
         );
 
         #------------------------------

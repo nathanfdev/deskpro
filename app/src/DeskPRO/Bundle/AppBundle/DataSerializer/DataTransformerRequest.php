@@ -43,6 +43,13 @@ class DataTransformerRequest
     private $serializer_context;
     private $view;
 
+    /**
+     * Constructor.
+     *
+     * @param mixed                 $data_to_be_transformed
+     * @param DataSerializerContext $serializer_context
+     * @param string                $view
+     */
     public function __construct(
         $data_to_be_transformed,
         DataSerializerContext $serializer_context,
@@ -61,6 +68,9 @@ class DataTransformerRequest
         return $this->data_to_be_transformed;
     }
 
+    /**
+     * @return bool
+     */
     public function isDefaultView()
     {
         return self::DEFAULT_VIEW === $this->view;

@@ -1,13 +1,18 @@
 import React, { Component, PropTypes } from 'react';
-import Positioned from 'DeskPRO/Component/Positioned/Detached';
+import Immutable from 'immutable';
+import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { Button } from './Button';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { DropdownPanel } from './DropdownPanel';
-import Menu from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
-import Item from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item';
+import { Menu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
+import { AddLabelsContainer } from './AddLabelsContainer';
+import { RemoveLabelsContainer } from './RemoveLabelsContainer';
 
+import { connect } from 'react-redux';
+@connect()
 export class ActionContainer extends Component {
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
     isActive: PropTypes.bool,
     setParams: PropTypes.func.isRequired,
     resetSingleAction: PropTypes.func.isRequired,
@@ -28,9 +33,32 @@ export class ActionContainer extends Component {
   };
   collapse = () => this.setState({ expanded: false });
 
+  stateValue = (param) => {
+    const {currentParams} = this.props;
+    if (currentParams) {
+      if (param instanceof Array) {
+        const result = [];
+        param.map(item => {
+          let value = currentParams.get(item);
+          if (Immutable.Iterable.isIterable(value)) {
+            value = value.toJS();
+            value.map(item1=> {
+              result.push(item1);
+            });
+          }
+        });
+        return [...new Set(result)];
+      }
+      let value = currentParams.get(param);
+      if (Immutable.Iterable.isIterable(value)) {
+        value = value.toJS();
+      }
+      return value;
+    }
+  };
+
   render() {
     const {id, item, setParams, currentParams, resetSingleAction } = this.props;
-
     const checkIfButtonHasValue = () => {
       if (!currentParams) {
         return false;
@@ -49,11 +77,33 @@ export class ActionContainer extends Component {
                 }
               }
             );
+          } else if (Boolean(currentParams.get(option.param)) === true && currentParams.get(option.param).size > 0) {
+            hasValue = true;
           }
         });
         return hasValue;
       }
       return false;
+    };
+
+    const choiceOtherAction = (option, key)=> {
+      if (option.param === 'addLabels') {
+        return (
+          <AddLabelsContainer key={key}
+                              option={option}
+                              setParams={setParams}
+                              stateValue={this.stateValue}
+                              unsetParams={resetSingleAction}/>
+        );
+      } else if (option.param === 'removeLabels') {
+        return (
+          <RemoveLabelsContainer key={key}
+                                 option={option}
+                                 setParams={setParams}
+                                 stateValue={this.stateValue}
+                                 unsetParams={resetSingleAction}/>
+        );
+      }
     };
 
     return (
@@ -64,11 +114,11 @@ export class ActionContainer extends Component {
                 label={item.label}
                 icon={item.icon}
                 onClick={this.toggleExpanded}/>
-        <Positioned isOpen={this.state.expanded}
-                    positionAt="left bottom"
-                    positionTarget={this.refs['button' + id]}>
+        <Detached isOpen={this.state.expanded}
+                  positionAt="left bottom"
+                  positionTarget={this.refs['button' + id]}>
           <ClickOut onClickOut={this.collapse}
-                    ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list']}
+                    ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel']}
                     additionalNodes={['.dpw-navigation-dropdown-item-clear']}>
             {item.type === 'action' &&
             <DropdownPanel item={item}
@@ -78,20 +128,11 @@ export class ActionContainer extends Component {
             }
             {item.type === 'menu' &&
             <Menu>
-              {item.options.map(
-                (option, key)=>
-                  <Item key={key}
-                        label={option.label}
-                    // isActive={viewMode === type}
-                    // checked={viewMode === type}
-                    // onClick={() => dispatch(viewModeAction(type))}
-                        icon={option.icon}
-                    />)
-              }
+              {item.options.map((option, key)=> choiceOtherAction(option, key))}
             </Menu>
             }
           </ClickOut>
-        </Positioned>
+        </Detached>
       </li>
     );
   }

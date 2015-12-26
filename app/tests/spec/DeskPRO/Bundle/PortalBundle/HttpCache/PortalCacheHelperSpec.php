@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\PortalBundle\HttpCache;
 
 use DeskPRO\Bundle\PortalBundle\HttpCache\PortalHttpCache;
@@ -59,8 +60,8 @@ class PortalCacheHelperSpec extends ObjectBehavior
 
     public function it_knows_if_given_hash_is_a_guest_request_or_not()
     {
-        $this->isGuestHash(PortalHttpCache::ANON_HASH)->shouldBe(true);
-        $this->isGuestHash(PortalHttpCache::GUEST_HASH)->shouldBe(true);
+        $this->isGuestHash(PortalHttpCache::ANON_NO_SESSION_HASH)->shouldBe(true);
+        $this->isGuestHash(PortalHttpCache::GUEST_WITH_SESSION_HASH)->shouldBe(false); // session = not guest
 
         $this->isGuestHash('xyz-gibberish')->shouldBe(false);
     }
@@ -76,17 +77,17 @@ class PortalCacheHelperSpec extends ObjectBehavior
     public function it_determines_a_guest_request_if_master_request_context_hash_indicates_anonymous(
         HeaderBag $headers
     ) {
-        $headers->get(PortalHttpCache::USER_CONTEXT_HASH_HEADER)->willReturn(PortalHttpCache::ANON_HASH);
+        $headers->get(PortalHttpCache::USER_CONTEXT_HASH_HEADER)->willReturn(PortalHttpCache::ANON_NO_SESSION_HASH);
 
         $this->isGuestRequest()->shouldReturn(true);
     }
 
-    public function it_determines_a_guest_request_if_master_request_context_hash_indicates_guest_hash(
+    public function it_is_not_a_guest_request_if_master_request_context_hash_indicates_guest_with_session_hash(
         HeaderBag $headers
     ) {
-        $headers->get(PortalHttpCache::USER_CONTEXT_HASH_HEADER)->willReturn(PortalHttpCache::GUEST_HASH);
+        $headers->get(PortalHttpCache::USER_CONTEXT_HASH_HEADER)->willReturn(PortalHttpCache::GUEST_WITH_SESSION_HASH);
 
-        $this->isGuestRequest()->shouldReturn(true);
+        $this->isGuestRequest()->shouldReturn(false);  // session = not guest
     }
 
     public function it_determines_not_a_guest_request_if_master_request_context_hash_does_not_look_like_guest(

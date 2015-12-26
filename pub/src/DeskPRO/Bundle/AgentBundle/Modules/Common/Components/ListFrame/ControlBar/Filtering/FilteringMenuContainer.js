@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import Immutable from 'immutable';
 import { connect } from 'react-redux';
 import { Button } from '../Button';
-import Positioned from 'DeskPRO/Component/Positioned/Detached';
+import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { FilteringMenu } from './FilteringMenu';
 
@@ -20,6 +20,37 @@ export class FilteringMenuContainer extends Component {
   constructor(props) {
     super(props);
     this.state = { expanded: false };
+  }
+
+  render() {
+    const { dispatch, state, setParamsAction, onMenuUnmount, filters = [] } = this.props;
+
+    return (
+      <li ref="menuItem">
+        <Button
+          isActive={this.state.expanded}
+          ref="button"
+          title="Filter by:"
+          icon={null}
+          label={this.getButtonLabel()}
+          onClick={this.toggleExpanded}
+          />
+        <Detached isOpen={this.state.expanded}
+                  positionAt="left bottom"
+                  positionTarget={this.refs.button}>
+          <ClickOut onClickOut={this.collapse}
+                    ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list']}
+                    additionalNodes={['.dpw-navigation-dropdown-item-clear']}>
+            <FilteringMenu dispatch={dispatch}
+                           filters={filters}
+                           state={state}
+                           stateValue={this.stateValue.bind(this)}
+                           onMenuUnmount={onMenuUnmount}
+                           setParamsAction={setParamsAction}/>
+          </ClickOut>
+        </Detached>
+      </li>
+    );
   }
 
   toggleExpanded = () => this.setState({ expanded: !this.state.expanded });
@@ -83,34 +114,4 @@ export class FilteringMenuContainer extends Component {
     return label;
   }
 
-  render() {
-    const { dispatch, state, setParamsAction, onMenuUnmount, filters = [] } = this.props;
-
-    return (
-      <li ref="menuItem">
-        <Button
-          isActive={this.state.expanded}
-          ref="button"
-          title="Filter by:"
-          icon={null}
-          label={this.getButtonLabel()}
-          onClick={this.toggleExpanded}
-          />
-        <Positioned isOpen={this.state.expanded}
-                    positionAt="left bottom"
-                    positionTarget={this.refs.button}>
-          <ClickOut onClickOut={this.collapse}
-                    ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list']}
-                    additionalNodes={['.dpw-navigation-dropdown-item-clear']}>
-            <FilteringMenu dispatch={dispatch}
-                           filters={filters}
-                           state={state}
-                           stateValue={this.stateValue.bind(this)}
-                           onMenuUnmount={onMenuUnmount}
-                           setParamsAction={setParamsAction}/>
-          </ClickOut>
-        </Positioned>
-      </li>
-    );
-  }
 }

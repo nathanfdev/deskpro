@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import TimeAgo from 'react-timeago';
 import classNames from 'classnames';
+import { timeAgoForamtter } from '../../../../../../../Services/timeago';
 
 export class MessageFooter extends React.Component {
 
@@ -13,7 +14,7 @@ export class MessageFooter extends React.Component {
 
     const isUser = message.get('author_type') !== 'agent';
     const date = message.get('date_created');
-    const timerClasses = classNames('dpdesignportal-message-footer-timer', {'right': isUser});
+    const notDelivered = message.get('not_delivered');
 
     return (
       <div className="dpdesignportal-message-footer">
@@ -23,9 +24,19 @@ export class MessageFooter extends React.Component {
           </a>
         }
 
-        <TimeAgo className={timerClasses}
-                 minPeriod={60000}
-                 date={date} />
+        <div className={classNames({'right': isUser})}>
+          {date &&
+            <TimeAgo className="dpdesignportal-message-footer-timer"
+                     formatter={timeAgoForamtter}
+                     minPeriod={60000}
+                     date={date}/>
+          }
+          {notDelivered &&
+            <span className="dpdesignportal-message-footer-not-delivered">
+              <i className="fa fa-warning"/> Not delivered
+            </span>
+          }
+        </div>
       </div>
     );
   }

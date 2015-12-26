@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -42,6 +43,7 @@ use Application\DeskPRO\Searcher\ChatConversationSearch;
 use Application\DeskPRO\Searcher\SearcherAbstract;
 use Orb\Util\Dates;
 use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserChatController extends AbstractController
 {
@@ -77,10 +79,6 @@ class UserChatController extends AbstractController
         ')->setParameter(1, $convo)->execute();
 
         $session = $convo->session;
-        $visitor = null;
-
-        // todo no field visitor, disabled other chats info
-        $other_chats = [];//$this->em->getRepository('DeskPRO:ChatConversation')->getPastChatsForVisitor($visitor);
 
         // For selector
         $agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
@@ -106,8 +104,6 @@ class UserChatController extends AbstractController
             'convo'          => $convo,
             'convo_api'      => $convo_api,
             'session'        => $session,
-            'visitor'        => $visitor,
-            'other_chats'    => $other_chats,
             'agents'         => $agents,
             'block'          => $block,
             '$field_manager' => $field_manager,
@@ -418,7 +414,9 @@ class UserChatController extends AbstractController
     /**
      * End a chat.
      *
-     * @param  $conversation_id
+     * @param int $conversation_id
+     *
+     * @return Response
      */
     public function endChatAction($conversation_id)
     {
@@ -436,7 +434,32 @@ class UserChatController extends AbstractController
     }
 
     /**
+     * Stores datetime of the last agent typing event.
+     *
+     * @param int $conversation_id
+     *
+     * @return Response
+     */
+    public function typingAction($conversation_id)
+    {
+        $erase = $this->in->getBoolInt('erase');
+
+        /** @var ChatConversation $conversation */
+        $conversation = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
+        $conversation->setDateAgentTyping($erase ? null : new \DateTime());
+
+        $this->em->persist($conversation);
+        $this->em->flush();
+
+        return $this->createJsonCmResponse();
+    }
+
+    /**
      * Accepts a POST of a new message to a conversation.
+     *
+     * @param int $conversation_id
+     *
+     * @return Response
      */
     public function sendMessageAction($conversation_id)
     {
@@ -469,6 +492,12 @@ class UserChatController extends AbstractController
             );
 
             $other_data['message_id'] = $message->getId();
+
+            // Reset last agent typing time on send message
+            $convo->setDateAgentTyping(null);
+
+            $this->em->persist($convo);
+            $this->em->flush();
         }
 
         return $this->createJsonCmResponse($other_data);
@@ -477,7 +506,9 @@ class UserChatController extends AbstractController
     /**
      * End a chat.
      *
-     * @param  $conversation_id
+     * @param int $conversation_id
+     *
+     * @return Response
      */
     public function leaveChatAction($conversation_id)
     {
@@ -529,12 +560,24 @@ class UserChatController extends AbstractController
         }
 
         /** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
-        $chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
+        $chat_manager = $this->container->getSystemObject('user_chat_manager', ['session' => $this->session->getEntity()]);
         $chat_manager->addMessage(
             $convo,
             $this->person,
             $msg,
-            array('is_html' => true, 'type' => 'file', 'blob_id' => $blob->id)
+            [
+                'is_html' => true,
+                'type'    => 'file',
+                'blob_id' => $blob->id,
+                'blob'    => [
+                    'blob_id'           => $blob->getId(),
+                    'blob_auth'         => $blob->getAuthcode(),
+                    'blob_auth_id'      => $blob->getId().'-'.$blob->getAuthcode(),
+                    'download_url'      => $blob->getDownloadUrl(true, false),
+                    'filename'          => $blob->getFilenameSafe(),
+                    'filesize_readable' => $blob->getReadableFilesize(),
+                ],
+            ]
         );
 
         return $this->createJsonCmResponse();

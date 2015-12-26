@@ -41,8 +41,26 @@ Feature: Person primary email CRUD
     And I retrieve the person
     Then the response status code should be 200
     And the JSON node "data.primary_email" should be equal to "larry.doe@gmail.com"
-    And the JSON node "data.emails" should have 1 element
+    And the JSON node "data.emails" should have 2 elements
+    And the JSON node "data.emails[0]" should be equal to "larry@doe.name"
+    And the JSON node "data.emails[1]" should be equal to "larry.doe@gmail.com"
+
+  Scenario: I modify person's primary email and email collection at the same time
+    Given I've just created a new person with name "Larry Doe" and primary email "larry@doe.name"
+    When I send a PUT request to the just created person resource:
+    """
+{
+  "primary_email": "larry.doe@gmail.com",
+  "emails": ["one@test.com", "two@test.com"]
+}
+    """
+    And I retrieve the person
+    Then the response status code should be 200
+    And the JSON node "data.primary_email" should be equal to "larry.doe@gmail.com"
+    And the JSON node "data.emails" should have 3 elements
     And the JSON node "data.emails[0]" should be equal to "larry.doe@gmail.com"
+    And the JSON node "data.emails[1]" should be equal to "one@test.com"
+    And the JSON node "data.emails[2]" should be equal to "two@test.com"
 
   Scenario: I try to remove person's primary email
     Given "Julia Doe" has just created an account with primary email "julia@doe.name"

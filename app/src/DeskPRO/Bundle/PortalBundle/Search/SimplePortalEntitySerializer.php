@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Search;
 
 use Application\DeskPRO\Entity;
@@ -70,8 +71,8 @@ class SimplePortalEntitySerializer
     {
         $result = array();
 
-        foreach ($data as $node) {
-            $result[] = $this->transformNode($node);
+        foreach ($data as $key => $node) {
+            $result[$key] = $this->transformNode($node);
         }
 
         return $result;

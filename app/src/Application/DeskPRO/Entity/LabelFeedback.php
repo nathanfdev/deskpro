@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -48,6 +49,18 @@ class LabelFeedback extends LabelAssocAbstract
      */
     protected $feedback;
 
+    public function getFeedback()
+    {
+        return $this->feedback;
+    }
+
+    public function setFeedback(Feedback $feedback)
+    {
+        $this->feedback = $feedback;
+
+        return $this;
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -56,14 +69,44 @@ class LabelFeedback extends LabelAssocAbstract
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\LabelFeedback';
-        $metadata->setPrimaryTable(array(
-            'name'    => 'labels_feedback',
-            'indexes' => array(
-                'label_idx' => array('columns' => array('label')),
-            ),
-        ));
+        $metadata->setPrimaryTable(
+            array(
+                'name'    => 'labels_feedback',
+                'indexes' => array(
+                    'label_idx' => array('columns' => array('label')),
+                ),
+            )
+        );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapManyToOne(array('fieldName' => 'feedback', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Feedback', 'id' => true, 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'feedback_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
-        $metadata->mapField(array('fieldName' => 'label', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'label', 'id' => true));
+        $metadata->mapManyToOne(
+            array(
+                'fieldName'    => 'feedback',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Feedback',
+                'id'           => true,
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => array(
+                    0 => array(
+                        'name'                 => 'feedback_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'cascade',
+                        'columnDefinition'     => null,
+                    ),
+                ),
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'label',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'label',
+                'id'         => true,
+            )
+        );
     }
 }

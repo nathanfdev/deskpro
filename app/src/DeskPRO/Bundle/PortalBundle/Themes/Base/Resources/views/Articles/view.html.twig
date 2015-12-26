@@ -17,9 +17,9 @@
         </div>
       </div>
 
-      <h1>{{ article.real_title }}</h1>
+      <h1>{{ article.translated_title }}</h1>
 
-      <div class="article-meta"><!-- TODO translations? -->
+      <div class="article-meta">
         <span style="background: url({{ avatar_url(article.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>
         {{ article.person.name }}
         <hr>
@@ -27,12 +27,12 @@
         <hr>
         <span class="comments"><i class="fa fa-comments-o"></i> <a href="#comments">{{ phrase('portal.general.comments-count', {count: article.num_comments}) }}</a></span>
         <hr>
-        In <a href="{{ portal_path(article.primary_category) }}">{{ article.primary_category }}</a>
+        {{ phrase('portal.general.in') }} <a href="{{ portal_path(article.primary_category) }}">{{ object_phrase(article.primary_category) }}</a>
       </div>
     </header>
 
     <div class="article-content padded dpx-kb-article-content">
-      {{ article.realContent|raw }}
+      {{ article.translated_content|raw }}
     </div>
 
     {% if article.labels|length %}
@@ -47,6 +47,7 @@
     {% endif %}
   </article>
 
+  {% show kb_attachments %}
   {% show kb_ratings %}
   {% show related_content %}
 

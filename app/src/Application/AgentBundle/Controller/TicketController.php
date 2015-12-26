@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Form\Model\NewTicket;
@@ -1195,8 +1196,6 @@ class TicketController extends AbstractController
         $message['person']          = $this->person;
         $message['ip_address']      = dp_get_user_ip_address();
         $message['creation_system'] = Entity\TicketMessage::CREATED_WEB_AGENT_PORTAL;
-
-        $message->setVisitorFromRequest();
 
         if ($this->in->getBool('is_html_reply')) {
             $message_text = $request_message_orig;
@@ -4387,12 +4386,6 @@ class TicketController extends AbstractController
 
         if (!$person) {
             $person = new Person();
-            if ($session && $session->visitor) {
-                $person->name = $session->visitor->name;
-                if ($session->visitor->email) {
-                    $person->setEmail($session->visitor->email);
-                }
-            }
         }
 
         $api_data = $person->toApiData();

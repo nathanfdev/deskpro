@@ -50,6 +50,12 @@ class DataSerializer
      */
     private $id_finder;
 
+    /**
+     * Constructor.
+     *
+     * @param EventDispatcherInterface $event_dispatcher
+     * @param DataTypeIdFinder         $id_finder
+     */
     public function __construct(
         EventDispatcherInterface $event_dispatcher,
         DataTypeIdFinder $id_finder
@@ -80,7 +86,7 @@ class DataSerializer
          * this context holds all state for this serialization, and it is passed to every event and mutated by
          * those events until it finally holds the final serialized array.
          */
-        $context = DataSerializerContext::create($data, $includes_string, $type, $view, $this->id_finder);
+        $context = DataSerializerContext::create($data, $includes_string, $view, $type, $this->id_finder);
 
         /*
          * PRE_SERIALIZE

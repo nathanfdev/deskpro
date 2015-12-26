@@ -33,6 +33,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonGuest;
@@ -433,6 +434,18 @@ class AbstractController extends BaseController
         return $this->get('language_manager')->phrase($phrase, $vars, $lang);
     }
 
+    /**
+     * @param $object
+     * @param null          $property
+     * @param Language|null $lang
+     *
+     * @return string
+     */
+    protected function objectPhrase($object, $property = null, Language $lang = null)
+    {
+        return $this->get('language_manager')->objectPhrase($object, $property, $lang);
+    }
+
     protected function makeJsonResponse(array $array)
     {
         $response = new JsonResponse(array('data' => $array));
@@ -487,5 +500,46 @@ class AbstractController extends BaseController
     protected function isSavedFormSubRequest(Request $request)
     {
         return $request->attributes->get('saved-form', false) ? true : false;
+    }
+
+    /**
+     * @param ContentAbstract $content
+     * @param $visitor_id
+     *
+     * @return \Application\DeskPRO\Entity\Rating|null
+     */
+    protected function findContentRating(ContentAbstract $content, $visitor_id)
+    {
+        if (!$rating = $this->getRatingsHelper()->getPersonRating($content, $this->getUser())) {
+            $rating = $this->getRatingsHelper()->findVisitorRating($content, $visitor_id);
+            if ($rating && $this->get('portal_cache_helper')->isGuestRequest()) {
+                // this request is going to be cached for every non-session user, and so we cannot display
+                // their rating on the page. If they rated recently, they'd have a session and would see it
+                // because isGuestRequest() above would be false.
+                // in the future maybe we could start a session here and redirect to this same page
+                return;
+            }
+        }
+
+        return $rating;
+    }
+
+    /**
+     * @param ContentAbstract $content
+     *
+     * @return array
+     */
+    protected function determineRatingCounts(ContentAbstract $content)
+    {
+        $show_rating_counts = false;
+        $rating_counts      = ['positive' => 0, 'total' => 0];
+        if ($this->getBrandSetting('user.show_ratings')) {
+            $rating_counts = $this->getRatingsHelper()->ratingCounts($content);
+            if ($rating_counts['total'] >= $this->getBrandSetting('user.show_ratings_min_votes')) {
+                $show_rating_counts = true;
+            }
+        }
+
+        return array($show_rating_counts, $rating_counts);
     }
 }

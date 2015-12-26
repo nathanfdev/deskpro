@@ -41,8 +41,7 @@ use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 class PortalController extends AbstractController
 {
     /**
-     * @Tag(name="page_top", esi=true)
-     * @TagHttpCache()
+     * @Tag(name="page_top")
      */
     public function topBarAction(TagRequest $tag_request)
     {
@@ -62,26 +61,27 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Tag(name="page_tabs", esi=true)
-     * @TagHttpCache()
+     * @Tag(name="nav_buttons", default_options={"style":"small"})
+     * @Tag(name="nav_buttons_big", default_options={"style":"big"})
+     *
+     * @TagOptions(
+     *      defaults={
+     *          "style": "small",
+     *      },
+     *      allowed_values={
+     *          "style": {"small", "big"}
+     *      }
+     * )
      */
-    public function topTabsAction(TagRequest $tag_request)
+    public function navButtonsAction(TagRequest $tag_request, array $options)
     {
-        $path_parts = explode('/', ltrim($tag_request->getPathInfo(), '/'));
-
-        $tabs = $this->get('tabs_helper')->getTabsDisplay();
-
         return $this->renderThemeView(
-            'Theme:Portal:Tag/top_tabs.html.twig',
-            array(
-                'url_starts_with' => isset($path_parts[0]) ? $path_parts[0] : null,
-                'tabs'            => $tabs,
-            )
+            sprintf('Theme:Portal:nav_buttons_%s.html.twig', $options['style'])
         );
     }
 
     /**
-     * @Tag(name="sidebar", esi=true, always_guest_inline=true)
+     * @Tag(name="sidebar", esi=true)
      */
     public function userSidebarAction(TagRequest $tag_request)
     {
@@ -91,8 +91,9 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Tag(name="search_and_contact_bar", default_options={"include_contact_us":true})
-     * @Tag(name="search_bar", default_options={"include_contact_us":false})
+     * @Tag(name="search_and_contact_bar", default_options={"include_contact_us":true}, esi=true)
+     * @Tag(name="search_bar", default_options={"include_contact_us":false}, esi=true)
+     * @TagHttpCache()
      *
      * @TagOptions(
      *      defaults={
@@ -109,7 +110,7 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Tag(name="small_user_info", esi=true, always_guest_inline=true)
+     * @Tag(name="small_user_info", esi=true)
      */
     public function smallUserInfoAction(TagRequest $tag_request)
     {

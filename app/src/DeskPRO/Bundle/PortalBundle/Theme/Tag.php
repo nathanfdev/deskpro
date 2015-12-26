@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Theme;
 
 /**
@@ -59,8 +60,8 @@ class Tag implements \Serializable
         $defined_options = array(),
         $default_options = array(),
         $esi = false,
-        $always_guest_inline = false,
-        $allow_route_params = true
+        $always_guest_inline = true,
+        $allow_route_params = false
     ) {
         $this->name                = $name;
         $this->controller_name     = $controller_name;

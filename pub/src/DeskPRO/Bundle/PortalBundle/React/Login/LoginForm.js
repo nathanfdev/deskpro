@@ -1,6 +1,7 @@
 import React from "react"
 import PortalHttp from "DeskPRO/Bundle/PortalBundle/Http/PortalHttp"
 import PortalUrlGenerator from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator"
+import PortalPhrases from "DeskPRO/Bundle/PortalBundle/PortalPhrases"
 
 export default class LoginForm extends React.Component {
   constructor(props) {
@@ -26,7 +27,7 @@ export default class LoginForm extends React.Component {
       username: $username.val(),
       password: $password.val(),
       remember_me: $remember_me.val()
-    }).then((r) => {
+    }, {jsonPayload: false}).then((r) => {
       console.log('RESPONSE %o', r);
       if (r.data.success) {
         if ("redirect" in r.data) {
@@ -47,9 +48,11 @@ export default class LoginForm extends React.Component {
     PortalHttp.sendGet(PortalUrlGenerator.path('/captcha-html?action=login')).then((r) => {
       console.log('CAPTCHA RESPONSE ', r);
         if (r.data.captcha_required) {
-          this.setState({
-            captcha: true
-          });
+          // for now we are not displaying the captcha, and instead are just redirecting the user to login page
+          window.location.href = PortalUrlGenerator.path('/login');
+          //this.setState({
+          //  captcha: true
+          //});
         } else {
           this.setState({
             captcha: false
@@ -75,7 +78,7 @@ export default class LoginForm extends React.Component {
           <span>Your email</span>
           <input
             ref="username"
-            type="email"
+            type="text"
             tabIndex="2"
             placeholder="email@example.com"
             name="username"
@@ -83,18 +86,16 @@ export default class LoginForm extends React.Component {
         </label>
 
         <label className={this.state.failed ? "error" : null}>
-          {this.state.failed ? (<div className="message">Login failed. Please try again.</div>) : null}
+          {this.state.failed ? (<div className="message">{PortalPhrases.get('portal.account.login-invalid')}</div>) : null}
           <span>Your password</span>
           <input
             ref="password"
             type="password"
             tabIndex="2"
-            placeholder="Your password"
+            placeholder={PortalPhrases.get('portal.account.login-password')}
             name="password"
             />
         </label>
-
-        { this.state.captcha ? (<div id="top-login-captcha">CAPTCHA REQUIRED (WIP)</div>) : null}
 
         {/*<label className="error">
         //  <div className="message">This is a password error</div>
@@ -118,7 +119,7 @@ export default class LoginForm extends React.Component {
         <button type="submit" tabIndex="2">Login</button>
 
         <div className="secondary-action">
-          <a href="/en/login/reset-password">Need a password reminder?</a>
+          <a href={PortalUrlGenerator.path('/login/reset-password')}>{PortalPhrases.get('portal.account.login-password-reminder')}</a>
         </div>
       </form>
     );

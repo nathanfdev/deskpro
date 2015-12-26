@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Routing;
 
 use DeskPRO\Bundle\AppBundle\Helper\IsProxyRequestHelper;
@@ -52,6 +53,7 @@ class PortalRequestInfo
         'portal_login_callback',
         'portal_login_authenticate',
         'portal_login_submit',
+        'dp_pagehit',
     );
 
     /**

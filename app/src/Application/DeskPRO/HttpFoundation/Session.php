@@ -31,13 +31,12 @@
  *
  * @category HttpFoundation
  */
+
 namespace Application\DeskPRO\HttpFoundation;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Orb\Util\Arrays;
-use Orb\Util\Strings;
-use Orb\Util\Web;
 
 /**
  * Session is able to load up a user, their language etc.
@@ -57,13 +56,6 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
      * @var \Application\DeskPRO\Entity\Language
      */
     protected $language;
-
-    /**
-     * The current visitor.
-     *
-     * @var \Application\DeskPRO\Entity\Visitor
-     */
-    protected $visitor;
 
     /**
      * True if this is the first page view of a session.
@@ -259,212 +251,6 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
         // IP, but dont want to tie the App/container/request into SessionEntityStorage
         $GLOBALS['DP_CURRENT_USER_IP'] = $user_ip;
 
-        // Also make sure the user is a visitor
-        $vis = null;
-
-        $user_token = null;
-        if (isset($_COOKIE['dpvut'])) {
-            $user_token = $_COOKIE['dpvut'];
-        }
-
-        if (!Web::isBotUseragent()) {
-            $is_new_vis      = false;
-            $soft_visitor_id = null;
-            if (!$vis) {
-                $is_new_vis          = true;
-                $vis                 = new Entity\Visitor();
-                $vis['page_url']     = $url;
-                $vis['ref_page_url'] = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
-                $vis['ip_address']   = $user_ip;
-                $vis['user_agent']   = !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'Unknown';
-
-                // If there have been multiple requests from the same ip
-                // and those visitor counts arent increasing, it probably means
-                // this is a bot or a user without cookies. So prevent the
-                // track from being displayed to agents a bajillion times.
-                $soft_visitor_id = App::getDb()->fetchColumn('
-                    SELECT v.id
-                    FROM visitors v
-                    LEFT JOIN visitor_tracks AS vt ON (vt.id = v.last_track_id)
-                    WHERE
-                        v.date_last > ?
-                        AND v.page_count = 1
-                        AND v.hint_hidden = 0
-                        AND vt.ip_address = ?
-                    LIMIT 1
-                ', array(
-                    date('Y-m-d H:i:s', time() - 600),
-                    $user_ip,
-                ));
-
-                if ($soft_visitor_id) {
-                    $vis->hint_hidden = true;
-                }
-            } else {
-                // This was requested a second time, so the user is "real"
-                // disbale the hidden hint if it was enabled
-                if ($vis->hint_hidden) {
-                    $vis->hint_hidden = false;
-                }
-
-                // Clear out any soft links to this record
-                // If there's a page2, then it means any soft-links
-                // are not actually theirs.
-                // (theyre sending the cookie etc so the "guess" wouldnt be neccessary)
-                if ($vis->page_count < 4) {
-                    App::getDb()->executeUpdate('
-                        DELETE FROM visitor_tracks
-                        WHERE visitor_id = ? AND is_soft_track = 1
-                    ', array($vis->getId()));
-                }
-            }
-
-            $prev_date_last = $vis->date_last;
-
-            if (!$vis->user_token) {
-                $vis->user_token = Strings::random(8, Strings::CHARS_KEY);
-            }
-
-            $this->visitor = $vis;
-
-            $is_ajax = false;
-            if (App::getContainer()->isScopeActive('request')) {
-                $is_ajax = App::getRequest()->isXmlHttpRequest();
-            }
-
-            // Insert tracks
-            $track = null;
-            if (!$vis->initial_track || (DP_INTERFACE == 'user' && $url && !preg_match('#/chat/#', $url) && !preg_match('#/widget/#', $url) && !$is_ajax)) {
-                $track                 = array();
-                $track['date_created'] = date('Y-m-d H:i:s');
-                $track['page_url']     = $url;
-                $track['ref_page_url'] = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
-                $track['ip_address']   = $user_ip;
-                $track['user_Agent']   = !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'Unknown';
-
-                if (DP_INTERFACE == 'agent') {
-                    $track['page_url'] = preg_replace('#/agent/.*?$#', '/agent/', $track['page_url']);
-                }
-
-                if (!$vis->initial_track || $prev_date_last->getTimestamp() < time() - 900) {
-                    $track['is_new_visit'] = 1;
-                } else {
-                    $track['is_new_visit'] = 0;
-                }
-
-                $geoip = App::getSystemService('geo_ip');
-                $geo   = $geoip->lookup($user_ip);
-
-                if (!empty($geo['continent'])) {
-                    $track['geo_continent'] = $geo['continent'];
-                }
-                if (!empty($geo['country'])) {
-                    $track['geo_country'] = $geo['country'];
-                }
-                if (!empty($geo['region'])) {
-                    $track['geo_region'] = $geo['region'];
-                }
-                if (!empty($geo['city'])) {
-                    $track['geo_city'] = $geo['city'];
-                }
-                if (!empty($geo['longitude'])) {
-                    $track['geo_long'] = $geo['longitude'];
-                }
-                if (!empty($geo['latitude'])) {
-                    $track['geo_lat'] = $geo['latitude'];
-                }
-            }
-
-            if ($is_new_vis) {
-                App::getOrm()->persist($vis);
-                App::getOrm()->flush();
-            }
-
-            if ($track) {
-                App::getDb()->insert('visitor_tracks', $track);
-                $track['id'] = App::getDb()->lastInsertId();
-
-                $trackRef        = App::getContainer()->getEm()->getReference('DeskPRO:VisitorTrack', $track['id']);
-                $vis->date_last  = new \DateTime();
-                $vis->last_track = $trackRef;
-
-                if (!$vis->initial_track) {
-                    $vis->initial_track = $trackRef;
-                }
-
-                if ($track['is_new_visit']) {
-                    $vis->visit_track = $trackRef;
-                }
-
-                if (!$vis->hint_hidden) {
-                    $vis->last_track_soft = null;
-                }
-
-                $vis['page_count'] = (int) $vis['page_count'] + 1;
-
-                foreach (array(
-                    'page_title',
-                    'page_url',
-                    'ref_page_url',
-                    'user_agent',
-                    'ip_address',
-                    'geo_continent',
-                    'geo_country',
-                ) as $field) {
-                    if (isset($track[$field])) {
-                        $vis[$field]    = $track[$field];
-                        $params[$field] = $track[$field];
-                    }
-                }
-                App::getContainer()->getEm()->flush();
-
-                $vis->new_track_id = $track['id'];
-            }
-
-            //if ($track && $soft_visitor_id) {
-            //    // If we suspect this is linked to a different visitor,
-            //    // duplicate the track and set it as the soft link
-            //    $track_dupe = $track;
-            //    unset($track_dupe['id']);
-            //    $track_dupe['visitor_id'] = $soft_visitor_id;
-            //    $track_dupe['is_soft_track'] = 1;
-            //
-            //    // Also update the last time so it appears in the agent list
-            //    App::getDb()->insert('visitor_tracks', $track_dupe);
-            //    $soft_track_id = App::getDb()->lastInsertId();
-            //
-            //    try {
-            //        App::getDb()->executeUpdate("
-            //            UPDATE visitors
-            //            SET date_last = ?, last_track_id_soft = ?
-            //            WHERE id = ?
-            //        ", array(
-            //            date('Y-m-d H:i:s'),
-            //            $soft_track_id,
-            //            $soft_visitor_id
-            //        ));
-            //    } catch (\Exception $e) {
-            //        // This could potentially fail with a FK failure
-            //        // if the soft track we just inserted is deleted
-            //        // in another request (theyre deleted once we "know" a user isnt using soft tracks)
-            //    }
-            //}
-
-            if ($vis) {
-                $this->set('dpvid', $vis['id']);
-
-                \Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dpvc', $vis['visitor_code'], 'never')->setPath('/')->send();
-            } else {
-                $this->remove('dpvid');
-                \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dpvc')->send();
-            }
-        } else {
-            $this->visitor = null;
-            $this->remove('dpvid');
-
-            \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dpvc')->send();
-        }
-
         if ($this->getPerson() && $this->getPerson()->is_agent && !preg_match('#^/agent/(client-messages/|poller|.*/new)#', $path) && !preg_match('#\.json(\?.*?)?$#', $path) && empty($_GET['dp_no_activity'])) {
             $agent               = $this->getPerson();
             $date_active         = new \DateTime();
@@ -503,16 +289,6 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
         }
 
         $this->set('auth_person_id', $person->getId());
-    }
-
-    /**
-     * Get the current visitor record.
-     *
-     * @return \Application\DeskPRO\Entity\Visitor
-     */
-    public function getVisitor()
-    {
-        return $this->visitor ?: null;
     }
 
     /**
