@@ -11,17 +11,7 @@ export const destroyNotification = createAction('APP_NOTIFICATION_DESTROY');
 
 export const setupActionAlerts = createAction(
   'SETUP_ACTION_ALERTS',
-    () => {
-      return new Promise(
-        (resolve, reject) => {
-          return DpApi.sendGet('DP_API/notify/setup/action-alerts')
-            .success(response => {
-              return resolve(response.data);
-            })
-            .error(response => reject(response));
-        }
-      );
-    }
+    (data) => data
 );
 
 export const pollActionAlerts = createAction(

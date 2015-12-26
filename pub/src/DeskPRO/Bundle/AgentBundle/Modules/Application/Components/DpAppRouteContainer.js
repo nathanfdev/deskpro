@@ -7,6 +7,7 @@ import { WelcomeBack } from '../../Welcome/Components/WelcomeBack';
 import { meSelector, meStateSelector } from '../RecordStores/Selectors/meSelectors';
 import { IMContainer } from '../../IM/Components/IMContainer';
 import { PreferencesContainer } from './Preferences/PreferencesContainer';
+import {pollActionAlerts} from '../Actions/notificationActions';
 
 @connect(state => ({
   dpWindow: state.Application.dpWindow,
@@ -26,6 +27,8 @@ export class DpAppRouteContainer extends React.Component {
   componentDidMount() {
     this.props.dispatch(AppActions.showWelcomePage());
     this.hideWelcomePage();
+
+    this.pollingInterval = setInterval(() => this.props.dispatch(pollActionAlerts()), 5000);
   }
 
   componentDidUpdate() {
@@ -34,6 +37,7 @@ export class DpAppRouteContainer extends React.Component {
 
   componentWillUnmount() {
     clearTimeout(this.welcomePageTimer);
+    clearInterval(this.pollingInterval);
   }
 
   hideWelcomePage() {

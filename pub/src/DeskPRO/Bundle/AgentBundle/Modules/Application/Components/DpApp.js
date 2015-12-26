@@ -10,7 +10,6 @@ import { NotificationsContainer } from './Notifications/notifications';
 import { meSelector } from '../RecordStores/Selectors/meSelectors';
 import { workspaceDimsSelector } from '../Selectors/workspace';
 import * as appActions from '../Actions/appActions';
-import {pollActionAlerts} from '../Actions/notificationActions';
 import debounce from 'lodash/function/debounce';
 import $ from 'jquery';
 
@@ -42,7 +41,6 @@ export class DpApp extends React.Component {
 
   componentDidMount() {
     $(window).on('resize', this.onResize);
-    setInterval(() => this.props.dispatch(pollActionAlerts()), 25000);
   }
 
   componentWillUnmount() {

@@ -9,7 +9,6 @@ import * as ampMiddleware from 'Ampliflux/middleware';
 import AppReducers from './AgentApp_Reducers.js';
 import { DpAppContainer } from './Modules/Application/Components/DpAppContainer';
 import { preloadData } from './Modules/Application/Actions/bootstrapActions';
-import { setupActionAlerts } from './Modules/Application/Actions/notificationActions';
 import { batchedUpdatesMiddleware } from 'redux-batched-updates';
 import { IntlProvider } from 'react-intl';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
@@ -62,7 +61,6 @@ export default class AgentApp {
     const makeStore = compose(middleware)(createStore);
     const store = makeStore(reducer);
     store.dispatch(preloadData());
-    store.dispatch(setupActionAlerts());
 
     ReactDOM.render(
       <div>
