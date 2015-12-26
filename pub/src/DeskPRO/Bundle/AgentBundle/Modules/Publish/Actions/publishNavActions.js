@@ -4,14 +4,13 @@ import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import * as Content from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/Content';
 import * as ArticlePendingCreates from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/ArticlePendingCreates';
 import * as Comments from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/Comments';
-import * as People from 'DeskPRO/Bundle/AgentBundle/Services/Api/People';
 
 export const initialLoad = createAction(
   'PUBLISH_NAV_INITIAL_LOAD',
   () => new Promise(
     (resolve) => {
       const batch = 'DP_API/batch'
-          + '?get[articles]=DP_API/articles/counts?group_by%3Dperiod_created'
+          + '?get[articles]=DP_API/articles/counts?group_by%3Dcategory'
           + '&get[news]=DP_API/news/counts?group_by%3Dcategory'
           + '&get[downloads]=DP_API/downloads/counts?group_by%3Dcategory'
           + '&get[categories]=DP_API/content_categories'
@@ -50,22 +49,10 @@ export const initialLoad = createAction(
   )
 );
 
-export const loadAuthorName = createAction(
-  'PUBLISH_NAV_LOAD_AUTHOR_NAME',
-  (id) => People.loadPerson(id)
-    .then(promise => {
-      return { id, name: promise.getData().data.name };
-    })
-);
-
 export const loadCounts = createAction(
   'PUBLISH_NAV_LOAD_CONTENT_COUNTS',
-  (content, groupBy) => (dispatch) => Content.loadCounts(content, groupBy).then(promise => {
+  (content, groupBy) => Content.loadCounts(content, groupBy).then(promise => {
     const counts = promise.getData().data;
-
-    if (groupBy === 'author') {
-      counts.nested.forEach(count => dispatch(loadAuthorName(count.group)));
-    }
 
     return { content, counts };
   })
@@ -100,16 +87,11 @@ export const loadCategories = createAction(
   () => Content.loadCategories().then(promise => promise.getData().data)
 );
 
-export const toggleListGroupingVisibility = createAction(
-  'PUBLISH_NAV_TOGGLE_LIST_GROUPING_VISIBILITY',
-    list => list
-);
-
 export const changeListGrouping = createAction(
   'PUBLISH_NAV_CHANGE_LIST_GROUPING',
   (list, groupBy) => (dispatch) => {
     dispatch(loadCounts(list, groupBy));
-    dispatch(toggleListGroupingVisibility(list));
+    return { content: list, grouped_by: groupBy };
   }
 );
 

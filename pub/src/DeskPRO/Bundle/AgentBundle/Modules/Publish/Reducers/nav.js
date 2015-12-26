@@ -1,4 +1,5 @@
 import { createReducer } from 'Ampliflux';
+import Immutable from 'immutable';
 import { async, setValue, mergeFullPayload } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/publishNavActions';
 
@@ -69,7 +70,9 @@ export default createReducer(initialState, {
   }),
   [actions.loadCounts]: async({
     success: (state, payload) =>
-      state.setIn([payload.content], payload.counts)
+      state.set(payload.content, Immutable.fromJS(payload.counts)),
+    start: setValue('async.done', false),
+    done: setValue('async.done', true)
   }),
   [actions.loadCategories]: async({
     success: (state, payload) =>
@@ -88,6 +91,7 @@ export default createReducer(initialState, {
     start: setValue('async.done', false),
     done: setValue('async.done', true)
   }),
+  [actions.changeListGrouping]: (state, payload) => state.setIn([payload.content, 'grouped_by'], payload.grouped_by),
   [actions.setMine]: (state, payload) => state.setIn(['todo', 'articles', 'mine'], payload),
   [actions.initialLoad]: async({
     success: mergeFullPayload(),
@@ -99,9 +103,7 @@ export default createReducer(initialState, {
 /*
  registerHandlers() {
  this
- .r(actions.loadAuthorName, this.authorNameLoaded)
  .r(actions.loadCategories, this.categoriesLoaded)
- .r(actions.toggleListGroupingVisibility, this.listGroupingVisibilityChanged)
  .r(actions.setMine, this.mineChanged)
  .r(actions.loadDraftsCount, this.draftsCountLoaded)
  .r(actions.loadPendingCount, this.pendingCountLoaded)
@@ -113,13 +115,6 @@ export default createReducer(initialState, {
  countsLoaded(prev, {payload}) {
  const next = { ...prev };
  next.lists[payload.content] = payload.counts;
-
- return next;
- }
-
- authorNameLoaded(prev, {payload}) {
- const next = { ...prev };
- next.groups.authors[payload.id] = payload.name;
 
  return next;
  }
@@ -138,14 +133,6 @@ export default createReducer(initialState, {
 
  const next = { ...prev };
  next.groups.categories = categories;
-
- return next;
- }
-
- listGroupingVisibilityChanged(prev, {payload}) {
- const next = { ...prev };
- next.grouping = Object.assign({}, next.grouping);
- next.grouping.visibility[payload] = !next.grouping.visibility[payload];
 
  return next;
  }

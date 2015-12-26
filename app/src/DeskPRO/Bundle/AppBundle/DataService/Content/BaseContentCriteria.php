@@ -108,6 +108,7 @@ abstract class BaseContentCriteria extends Criteria implements GroupableCriteria
         switch ($this->group_by) {
             case 'author':
                 $qb->addSelect('p.id as group_name');
+                $qb->addSelect('p.name as title');
                 $qb->leftJoin("$alias.person", 'p');
                 break;
 
@@ -149,6 +150,7 @@ abstract class BaseContentCriteria extends Criteria implements GroupableCriteria
                 'author',
                 'category',
                 'period_created',
+                'period_updated',
                 'order',
                 'sort',
             ]
@@ -211,6 +213,7 @@ abstract class BaseContentCriteria extends Criteria implements GroupableCriteria
             }
         );
         $resolver->setAllowedValues('period_created', DatePeriods::$names);
+        $resolver->setAllowedValues('period_updated', DatePeriods::$names);
         $resolver->setAllowedValues('order', ['asc', 'desc']);
     }
 }

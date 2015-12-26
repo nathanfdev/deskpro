@@ -21,7 +21,8 @@ export class Nav extends Component {
     dpWindow: PropTypes.object.isRequired
   };
 
-  toggle() {
+  toggle(event) {
+    event.preventDefault();
     this.setState({ 'expanded': !this.state.expanded });
   }
 

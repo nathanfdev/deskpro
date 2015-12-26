@@ -32,7 +32,7 @@ export class NewsTab extends Component {
             <NestedList content="news"
                         items={news.get('nested').toJS()}/>
             <NavGroupingPopupContainer attachTo={this.refs.news}
-                                       title="news"
+                                       content="news"
                                        visible={this.state.expanded}
                                        closeGroupingVisibility={closeGroupingVisibility.bind(this)}
                                        groupedBy={news.get('grouped_by')}/>
