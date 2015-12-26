@@ -2,16 +2,11 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import history from '../../../../Services/history';
 import moment from 'moment';
-import { pollingChat, sendTranscriptData, unsetLoaded } from '../../Actions/chatActions';
+import { pollingChat, unsetLoaded } from '../../Actions/chatActions';
 import {
   chatIdSelector,
   agentIdSelector,
-  dateEndedSelector,
-  canReopenSelector,
   lastMessageIdSelector,
-  transcriptCheckedSelector,
-  transcriptSendingSelector,
-  transcriptSentSelector,
   authorEmailSelector,
   isEndedSelector
 } from '../../Selectors/chat';
@@ -19,13 +14,8 @@ import {
 @connect(state => ({
   chatId: chatIdSelector(state),
   agentId: agentIdSelector(state),
-  dateEnded: dateEndedSelector(state),
-  canReopen: canReopenSelector(state),
   lastMessageId: lastMessageIdSelector(state),
   authorEmail: authorEmailSelector(state),
-  transcriptChecked: transcriptCheckedSelector(state),
-  transcriptSending: transcriptSendingSelector(state),
-  transcriptSent: transcriptSentSelector(state),
   isEnded: isEndedSelector(state)
 }))
 export class ChatPollingContainer extends React.Component {
@@ -34,14 +24,9 @@ export class ChatPollingContainer extends React.Component {
     dispatch: PropTypes.func.isRequired,
     chatId: PropTypes.number,
     agentId: PropTypes.number,
-    dateEnded: PropTypes.string,
-    canReopen: PropTypes.bool,
     lastMessageId: PropTypes.any,
     children: PropTypes.node,
     authorEmail: PropTypes.string,
-    transcriptChecked: PropTypes.bool,
-    transcriptSending: PropTypes.bool,
-    transcriptSent: PropTypes.bool,
     isEnded: PropTypes.bool
   };
 
@@ -51,8 +36,6 @@ export class ChatPollingContainer extends React.Component {
 
   pollingRequest = () => {
     const { dispatch, chatId, agentId, lastMessageId } = this.props;
-    const { isEnded, authorEmail, transcriptChecked, transcriptSending, transcriptSent } = this.props;
-
     if (!chatId) {
       return;
     }
@@ -65,12 +48,6 @@ export class ChatPollingContainer extends React.Component {
         dispatch(unsetLoaded());
       }
     });
-
-    // If can send chat transcript data and chat is ended
-    if (isEnded && authorEmail && transcriptChecked && !transcriptSending && !transcriptSent) {
-      // send transcript data
-      dispatch(sendTranscriptData(chatId));
-    }
 
     // Send ajax next request
     const queryParams = {

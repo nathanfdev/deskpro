@@ -14,8 +14,10 @@ import {
   authorAvatarSelector,
   messageIdsSelector,
   attachmentsSelector,
+  canReopenSelector,
   transcriptCheckedSelector,
-  canReopenSelector
+  transcriptSendingSelector,
+  transcriptSentSelector,
 } from '../Selectors/chat';
 
 // Phrase translations
@@ -94,6 +96,32 @@ export const ackChatMessages = createAction(
   (chatId, params) => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/ack_messages`, params, {...ajaxOptions}) : null
 );
 
+export const sendTranscriptData = createAction(
+  'WIDGET_CHAT_SEND_TRANSCRIPT_DATA',
+    chatId => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/transcript_data`, {...ajaxOptions}) : null
+);
+
+export const sendTranscriptInfo = createAction(
+  'WIDGET_CHAT_SEND_TRANSCRIPT_INFO',
+  (chatId, params) => (dispatch, getState) => {
+    if (!chatId) {
+      return null;
+    }
+
+    const state = getState();
+    const chatEnded = isEndedSelector(state);
+
+    const promise = DpApi.sendPost(`DP_API/chats/${chatId}/transcript_info`, params, {...ajaxOptions});
+    promise.success(() => {
+      if (chatEnded) {
+        dispatch(sendTranscriptData(chatId));
+      }
+    });
+
+    return promise;
+  }
+);
+
 export const pollingChat = createAction(
   'WIDGET_CHAT_POLLING',
   (chatId, params) => (dispatch, getState) => {
@@ -131,8 +159,19 @@ export const pollingChat = createAction(
             dispatch(updateChatInfo(newChatInfo));
 
             if (newChatInfo.author_email) {
+              // Auto select transcript checkbox if user has email
               if (!transcriptEnabled) {
                 dispatch(enableSendTranscript());
+              }
+
+              // If can send transcript data and chat is ended
+              const transcriptChecked = transcriptCheckedSelector(state);
+              const transcriptSending = transcriptSendingSelector(state);
+              const transcriptSent = transcriptSentSelector(state);
+
+              if (newChatInfo.date_ended && transcriptChecked && !transcriptSending && !transcriptSent) {
+                // send transcript data
+                dispatch(sendTranscriptData(chatId));
               }
             } else {
               if (transcriptEnabled) {
@@ -242,32 +281,6 @@ export const sendChatMessage = createAction(
     const promise = DpApi.sendPost(`DP_API/chats/${chatId}/messages`, params, {...ajaxOptions});
     promise.catch(() => {
       dispatch(markNotDelivered(tmpId));
-    });
-
-    return promise;
-  }
-);
-
-export const sendTranscriptData = createAction(
-  'WIDGET_CHAT_SEND_TRANSCRIPT_DATA',
-  chatId => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/transcript_data`, {...ajaxOptions}) : null
-);
-
-export const sendTranscriptInfo = createAction(
-  'WIDGET_CHAT_SEND_TRANSCRIPT_INFO',
-  (chatId, params) => (dispatch, getState) => {
-    if (!chatId) {
-      return null;
-    }
-
-    const state = getState();
-    const chatEnded = isEndedSelector(state);
-
-    const promise = DpApi.sendPost(`DP_API/chats/${chatId}/transcript_info`, params, {...ajaxOptions});
-    promise.success(() => {
-      if (chatEnded) {
-        dispatch(sendTranscriptData(chatId));
-      }
     });
 
     return promise;
