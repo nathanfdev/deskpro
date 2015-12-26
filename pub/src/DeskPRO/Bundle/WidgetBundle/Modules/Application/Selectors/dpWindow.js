@@ -7,6 +7,12 @@ export const widgetOpenedSelector = createSelector(
   state => state.get('widgetOpened')
 );
 
+// Trigger selectors
+export const triggerPopupOpenedSelector = createSelector(
+  stateSelector,
+  state => state.get('triggerPopupOpened')
+);
+
 // Widget dimensions selectors
 export const widgetDimensionsSelector = createSelector(
   stateSelector,

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect, Provider } from 'react-redux';
-import { widgetOpenedSelector, isBubbleSelector, widgetDimensionsSelector } from '../../Selectors/dpWindow';
+import { widgetOpenedSelector, isBubbleSelector, triggerPopupOpenedSelector } from '../../Selectors/dpWindow';
 import { widgetLoadedSelector } from '../../Selectors/bootstrap';
 import Frame from 'Ampliflux/common/components/Frame';
 import store from '../../../../Services/store';
@@ -9,7 +9,9 @@ import store from '../../../../Services/store';
   widgetLoaded: widgetLoadedSelector(state),
   widgetOpened: widgetOpenedSelector(state),
   isBubble: isBubbleSelector(state),
-  windowDimensions: widgetDimensionsSelector(state)
+
+  // Use it to re calc frame dimension
+  triggerPopupOpened: triggerPopupOpenedSelector(state)
 }))
 export class TriggerFrameContainer extends React.Component {
 

@@ -6,15 +6,16 @@ import { AgentMessagePopupContainer } from '../Popups/AgentMessage/AgentMessageP
 import { ReplyButtons } from '../Popups/AgentMessage/ReplyButtons';
 import { ReplyForm } from '../Popups/AgentMessage/ReplyForm';
 import { loadOnlineAgents } from '../../../Actions/agentActions';
-import { windowResize } from '../../../Actions/dpWindowActions';
 import { onlineAgentsCountSelector } from '../../../Selectors/agent';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { OnlineAgentsContainer } from '../Popups/OnlineAgentsContainer';
+import { windowResize, openTriggerPopup, closeTriggerPopup } from '../../../Actions/dpWindowActions';
 import {
   widgetOpenedSelector,
   helpButtonSizeSelector,
   helpPopupSelector,
-  agentPollingTimeoutSelector
+  agentPollingTimeoutSelector,
+  triggerPopupOpenedSelector
 } from '../../../Selectors/dpWindow';
 
 @connect(state => ({
@@ -22,11 +23,13 @@ import {
   size: helpButtonSizeSelector(state),
   popup: helpPopupSelector(state),
   agentsCounts: onlineAgentsCountSelector(state),
-  agentPollingTimeout: agentPollingTimeoutSelector(state)
+  agentPollingTimeout: agentPollingTimeoutSelector(state),
+  triggerPopupOpened: triggerPopupOpenedSelector(state)
 }))
 export class HelpButtonContainer extends React.Component {
 
   static propTypes = {
+    triggerPopupOpened: PropTypes.bool,
     widgetOpened: PropTypes.bool,
     dispatch: PropTypes.func,
     onClick: PropTypes.func,
@@ -37,13 +40,6 @@ export class HelpButtonContainer extends React.Component {
       PropTypes.number
     ])
   };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      popupShown: false
-    };
-  }
 
   componentDidMount() {
     this.checkRenderPopup();
@@ -56,7 +52,6 @@ export class HelpButtonContainer extends React.Component {
 
   onOpenWidget = () => {
     const { agentsCounts, onClick, dispatch } = this.props;
-
     if (!agentsCounts) {
       return;
     }
@@ -66,33 +61,20 @@ export class HelpButtonContainer extends React.Component {
   };
 
   onClosePopup = () => {
-    localStorage['dpWidget.dpWindow.popupShown'] = 'none';
-    this.setState({
-      popupShown: false
-    });
-
-    this.props.dispatch(windowResize());
+    this.props.dispatch(closeTriggerPopup());
   };
 
   checkRenderPopup() {
-    const { agentsCounts, dispatch } = this.props;
+    const { triggerPopupOpened, agentsCounts, dispatch } = this.props;
     const storageKey = 'dpWidget.dpWindow.popupShown';
 
     if ((!(storageKey in localStorage) || localStorage[storageKey] !== 'none') && agentsCounts > 0) {
-      if (!this.state.popupShown) {
-        this.setState({
-          popupShown: true
-        });
-
-        dispatch(windowResize());
+      if (!triggerPopupOpened) {
+        dispatch(openTriggerPopup());
       }
     } else {
-      if (this.state.popupShown) {
-        this.setState({
-          popupShown: false
-        });
-
-        dispatch(windowResize());
+      if (triggerPopupOpened) {
+        dispatch(closeTriggerPopup());
       }
     }
   }
@@ -140,11 +122,11 @@ export class HelpButtonContainer extends React.Component {
   }
 
   render() {
-    const { agentsCounts } = this.props;
+    const { triggerPopupOpened, agentsCounts } = this.props;
 
     return (
       <div>
-        {this.state.popupShown &&
+        {triggerPopupOpened &&
           <ClickOut onClickOut={this.onClosePopup}
                     context={[parent.document, window.triggerFrame.document]}>
 

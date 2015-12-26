@@ -10,5 +10,11 @@ export const windowResize = createAction(
 );
 
 export const loadOptions = createAction('WIDGET_OPTIONS', options => ({...options}));
+
+export const openTriggerPopup = createAction('WIDGET_OPEN_TRIGGER_POPUP');
+export const closeTriggerPopup = createAction('WIDGET_CLOSE_TRIGGER_POPUP', () => {
+  localStorage['dpWidget.dpWindow.popupShown'] = 'none';
+});
+
 export const openWidget = createAction('WIDGET_OPEN');
 export const closeWidget = createAction('WIDGET_CLOSE');
