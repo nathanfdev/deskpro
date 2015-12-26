@@ -9,7 +9,7 @@ import { loadOnlineAgents } from '../../../Actions/agentActions';
 import { onlineAgentsCountSelector } from '../../../Selectors/agent';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { OnlineAgentsContainer } from '../Popups/OnlineAgentsContainer';
-import { windowResize, openTriggerPopup, closeTriggerPopup } from '../../../Actions/dpWindowActions';
+import { openTriggerPopup, closeTriggerPopup } from '../../../Actions/dpWindowActions';
 import {
   widgetOpenedSelector,
   helpButtonSizeSelector,
@@ -51,13 +51,12 @@ export class HelpButtonContainer extends React.Component {
   }
 
   onOpenWidget = () => {
-    const { agentsCounts, onClick, dispatch } = this.props;
+    const { agentsCounts, onClick } = this.props;
     if (!agentsCounts) {
       return;
     }
 
     onClick();
-    dispatch(windowResize());
   };
 
   onClosePopup = () => {
