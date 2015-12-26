@@ -34,7 +34,7 @@ export class KBTab extends Component {
             <NestedList content="articles"
                         items={articles.get('nested').toJS()}/>
             <NavGroupingPopupContainer attachTo={this.refs.articles}
-                                       title="articles"
+                                       content="articles"
                                        visible={this.state.expanded}
                                        closeGroupingVisibility={closeGroupingVisibility.bind(this)}
                                        groupedBy={articles.get('grouped_by')}/>

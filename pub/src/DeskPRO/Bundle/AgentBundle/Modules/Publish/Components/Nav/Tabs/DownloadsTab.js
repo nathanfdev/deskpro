@@ -32,7 +32,7 @@ export class DownloadsTab extends Component {
             <NestedList content="downloads"
                         items={downloads.get('nested').toJS()}/>
             <NavGroupingPopupContainer attachTo={this.refs.downloads}
-                                       title="downloads"
+                                       content="downloads"
                                        visible={this.state.expanded}
                                        closeGroupingVisibility={closeGroupingVisibility.bind(this)}
                                        groupedBy={downloads.get('grouped_by')}/>

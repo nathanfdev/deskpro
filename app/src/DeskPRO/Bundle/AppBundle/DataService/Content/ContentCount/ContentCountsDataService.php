@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount;
 
 use Application\DeskPRO\Entity\CategoryAbstract as Category;
@@ -106,7 +107,7 @@ class ContentCountsDataService
             $count     = Count::fromGroupedBy($groupedBy);
             foreach ($result as $group) {
                 $count->add($group['value']);
-                if ($groupedBy === 'period_created') {
+                if ($groupedBy === 'period_created' || $groupedBy === 'period_updated') {
                     $count->addNested(
                         $group['value'],
                         $group['group_name'],
@@ -114,7 +115,7 @@ class ContentCountsDataService
                         self::$datePeriodLabels[$group['group_name']]
                     );
                 } else {
-                    $count->addNested($group['value'], $group['group_name'], $groupedBy);
+                    $count->addNested($group['value'], $group['group_name'], $groupedBy, $group['title']);
                 }
             }
         } // return a single int result if count isn't grouped
