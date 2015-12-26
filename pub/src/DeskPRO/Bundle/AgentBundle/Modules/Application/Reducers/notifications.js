@@ -23,7 +23,7 @@ export default createReducer(initialState, {
   [actions.setupActionAlerts]: (state, payload) => state.set(
     'actionAlerts',
     payload.uuid),
-  [actions.pollActionAlerts]: (state, payload) => {
+  [actions.newActionAlerts]: (state, payload) => {
     const last = payload[payload.length - 1];
     if (last && last.uuid) {
       return state.set(

@@ -7,7 +7,8 @@ import { WelcomeBack } from '../../Welcome/Components/WelcomeBack';
 import { meSelector, meStateSelector } from '../RecordStores/Selectors/meSelectors';
 import { IMContainer } from '../../IM/Components/IMContainer';
 import { PreferencesContainer } from './Preferences/PreferencesContainer';
-import {pollActionAlerts} from '../Actions/notificationActions';
+import { newActionAlerts } from '../Actions/notificationActions';
+import PusherClient from 'DeskPRO/Bundle/AppBundle/Pusher';
 
 @connect(state => ({
   dpWindow: state.Application.dpWindow,
@@ -27,8 +28,6 @@ export class DpAppRouteContainer extends React.Component {
   componentDidMount() {
     this.props.dispatch(AppActions.showWelcomePage());
     this.hideWelcomePage();
-
-    this.pollingInterval = setInterval(() => this.props.dispatch(pollActionAlerts()), 5000);
   }
 
   componentDidUpdate() {
@@ -37,14 +36,17 @@ export class DpAppRouteContainer extends React.Component {
 
   componentWillUnmount() {
     clearTimeout(this.welcomePageTimer);
-    clearInterval(this.pollingInterval);
+    // clearInterval(this.pollingInterval);
   }
 
   hideWelcomePage() {
-    const { userStatus, dispatch } = this.props;
+    const { userStatus, dispatch, user } = this.props;
 
     if (!this.welcomePageTimer && userStatus.get('isDone')) {
       this.welcomePageTimer = setTimeout(() => dispatch(AppActions.doneInitialLoad()), 3000);
+      // this.pollingInterval = setInterval(() => this.props.dispatch(pollActionAlerts()), 25000);
+      const pusher = new PusherClient(user);
+      pusher.bind('test_channel', 'action_alert', dispatch, newActionAlerts);
     }
   }
 

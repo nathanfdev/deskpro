@@ -14,6 +14,11 @@ export const setupActionAlerts = createAction(
     (data) => data
 );
 
+export const newActionAlerts = createAction(
+  'NEW_ACTION_ALERTS',
+  (data) => data
+);
+
 export const pollActionAlerts = createAction(
   'POLL_ACTION_ALERTS',
   () => (dispatch, getState) => {
@@ -21,6 +26,9 @@ export const pollActionAlerts = createAction(
       (resolve, reject) => {
         return DpApi.sendGet('DP_API/notify/action-alerts/' + getState().Application.notifications.get('actionAlerts'))
           .success(response => {
+            if (response.data.length > 0) {
+              dispatch(newActionAlerts(response.data));
+            }
             return resolve(response.data);
           })
           .error(response => reject(response));

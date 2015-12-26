@@ -1,5 +1,5 @@
 import * as actions from '../Actions/messagesActions';
-import { pollActionAlerts } from '../../Application/Actions/notificationActions';
+import { newActionAlerts } from '../../Application/Actions/notificationActions';
 import { createReducer } from 'Ampliflux';
 import { async } from 'Ampliflux/reducers/handlers';
 import Immutable from 'immutable';
@@ -35,23 +35,31 @@ export default createReducer(initialState, {
       done: (state) => state.set('loadingMessages', false)
     }
   ),
-  [pollActionAlerts]: async({
-    success: (state, payload) => {
-      let newState = state;
-      Immutable.List(payload).map((element) => {
-        if (element.type === 'notification.agent_chat.new_message') {
-          const path = ['chatMessages', element.data.agent_chat_id];
-          const chat = newState.getIn(path);
+  [newActionAlerts]: (state, payload) => {
+    let newState = state;
+    Immutable.List(payload).map((element) => {
+      if (element.type === 'notification.agent_chat.new_message') {
+        const path = ['chatMessages', element.data.agent_chat_id];
+        const chat = newState.getIn(path);
+        if (chat) {
           chat.messages.push(element.data);
           newState = newState.setIn(path, {...chat});
         }
-      });
+      }
+    });
 
+    return newState;
+  },
+  [newActionAlerts]: async({
+    success: (state, payload) => {
+      let newState = state;
+      Immutable.List(payload).map((element) => {
+        if (element.type === 'refresh_counts') {
+          newState = state.set('counts', payload);
+        }
+      });
       return newState;
-    }
-  }),
-  [actions.refreshCounts]: async({
-    success: (state, payload) => state.set('counts', payload),
+    },
     begin: (state) => state.set('countsLoading', true),
     done: (state) => state.set('countsLoading', false)
   })

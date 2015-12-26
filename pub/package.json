@@ -50,6 +50,7 @@
     "node-libs-browser": "0.5.3",
     "node-sass": "3.4.2",
     "node-uuid": "1.4.3",
+    "pusher-js": "^3.0.0",
     "qrcode.react": "^0.5.2",
     "react": "0.14.*",
     "react-addons-create-fragment": "0.14.0",
