@@ -21,7 +21,7 @@ services:
       - { name: kernel.event_subscriber }
 
   #
-  # Persistance adaper for cloud strategy
+  # Persistance adaper for deffered strategy
   #
   deskpro.notification.peristance.adapter.db:
     class: DeskPRO\Bundle\AppBundle\Notification\Persistance\DbAdapter
@@ -29,14 +29,8 @@ services:
       - @doctrine.orm.default_entity_manager
 
   #
-  # delivery
+  # delivery handlers
   #
-  deskpro.notification.delivery.delivery_service:
-    class: DeskPRO\Bundle\AppBundle\Notification\Delivery\DeliveryService
-    factory: [DeskPRO\Bundle\AppBundle\Notification\Delivery\DeliveryService, create]
-    arguments:
-      - @service_container
-
   deskpro.notification.delivery.handler.db:
     class: DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\DbDeliveryHandler
     arguments:
@@ -62,8 +56,6 @@ services:
       class: DeskPRO\Bundle\AppBundle\Notification\UserNotificationHandler
       calls:
         - [attachGenerator, [@deskpro.notification.generator.user_notify.agent_chat_new_message]]
-
-
 
   #
   # UserNotification message generators

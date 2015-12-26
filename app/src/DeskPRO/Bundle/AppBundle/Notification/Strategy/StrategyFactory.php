@@ -32,6 +32,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Delivery\DeliveryHandlerInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Delivery\DeliveryService;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\NotifyHandlerInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Persistance\PersistanceAdapterInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -44,8 +45,14 @@ class StrategyFactory
      */
     protected $container;
 
+    /**
+     * @var mixed
+     */
     protected $config;
 
+    /**
+     * @param ContainerInterface $container
+     */
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
@@ -66,13 +73,17 @@ class StrategyFactory
         }
     }
 
+    /**
+     * @param $config
+     *
+     * @return NotificationStrategyInterface
+     */
     private function internalCreate($config)
     {
         $strategy = $this->getStrategy($config['strategy']);
-        $strategy->setDeliveryService($this->buildDeliveryService($config['delivery']));
-        foreach ($this->getNotifyHandlers() as $handler) {
-            $strategy->attachEventHandler($handler);
-        }
+        $this->setDeliveryService($strategy, $config);
+        $this->setNotifyHandlers($strategy, $config);
+        $this->setPersistanceAdapter($strategy, $config);
 
         return $strategy;
     }
@@ -94,6 +105,22 @@ class StrategyFactory
         }
     }
 
+    /**
+     * @param NotificationStrategyInterface $strategy
+     * @param array                         $config
+     *
+     * @return NotificationStrategyInterface
+     */
+    private function setDeliveryService(NotificationStrategyInterface $strategy, array $config)
+    {
+        return $strategy->setDeliveryService($this->buildDeliveryService($config['delivery']));
+    }
+
+    /**
+     * @param $config
+     *
+     * @return DeliveryService
+     */
     private function buildDeliveryService($config)
     {
         $delivery_service       = new DeliveryService();
@@ -112,6 +139,13 @@ class StrategyFactory
         return $delivery_service;
     }
 
+    private function setNotifyHandlers(NotificationStrategyInterface $strategy, array $config)
+    {
+        foreach ($this->getNotifyHandlers() as $handler) {
+            $strategy->attachEventHandler($handler);
+        }
+    }
+
     /**
      * assume that we always have tow notify handlers for system events (just a stub mb)
      * this is UserNotificationHandler and ActionAlertHandler.
@@ -124,5 +158,19 @@ class StrategyFactory
             $this->container->get('deskpro.notification.notify_handler.user_notify'),
             $this->container->get('deskpro.notification.notify_handler.action_alert'),
         ];
+    }
+
+    private function setPersistanceAdapter(NotificationStrategyInterface $strategy, $config)
+    {
+        if (array_key_exists('persistance', $config)) {
+            $adapter_id = sprintf('deskpro.notification.peristance.adapter.%s', $config['persistance']);
+            if ($this->container->has($adapter_id)) {
+                /** @var PersistanceAdapterInterface $adapter */
+                $adapter = $this->container->get($adapter_id);
+                $strategy->setPersistanceAdapter($adapter);
+            } else {
+                throw new \RuntimeException(sprintf('Persistance adapter with alias [ %s ] wasn\'t found!', $config['persistance']));
+            }
+        }
     }
 }

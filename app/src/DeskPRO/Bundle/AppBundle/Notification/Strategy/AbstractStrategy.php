@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Notification\Strategy;
 
 use DeskPRO\Bundle\AppBundle\Notification\Delivery\DeliveryService;
 use DeskPRO\Bundle\AppBundle\Notification\NotifyHandlerInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Persistance\PersistanceAdapterInterface;
 
 abstract class AbstractStrategy implements NotificationStrategyInterface
 {
@@ -38,6 +39,9 @@ abstract class AbstractStrategy implements NotificationStrategyInterface
 
     /** @var  NotifyHandlerInterface[] */
     protected $eventHandlers;
+
+    /** @var PersistanceAdapterInterface */
+    protected $persistance_adapter;
 
     public function setDeliveryService(DeliveryService $delivery_service)
     {

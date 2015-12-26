@@ -31,12 +31,36 @@ namespace DeskPRO\Bundle\AppBundle\Notification\Strategy;
 use DeskPRO\Bundle\AppBundle\Notification\Delivery\DeliveryService;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\NotifyHandlerInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Persistance\PersistanceAdapterInterface;
 
+/**
+ * Interface NotificationStrategyInterface.
+ */
 interface NotificationStrategyInterface
 {
+    /**
+     * @param SystemEventInterface $event
+     */
     public function handleSystemEvent(SystemEventInterface $event);
 
+    /**
+     * @param DeliveryService $deliveryService
+     *
+     * @return NotificationStrategyInterface
+     */
     public function setDeliveryService(DeliveryService $deliveryService);
 
+    /**
+     * @param NotifyHandlerInterface $handler
+     *
+     * @return NotificationStrategyInterface
+     */
     public function attachEventHandler(NotifyHandlerInterface $handler);
+
+    /**
+     * @param PersistanceAdapterInterface $persistance_adapter
+     *
+     * @return NotificationStrategyInterface
+     */
+    public function setPersistanceAdapter(PersistanceAdapterInterface $persistance_adapter);
 }
