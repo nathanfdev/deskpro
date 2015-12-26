@@ -12,13 +12,13 @@ import history from '../../../Services/history';
 
 @connect(state => ({
   widgetLoaded: widgetLoadedSelector(state),
-  onlineAgentsCount: onlineAgentsCountSelector(state)
+  agentsCounts: onlineAgentsCountSelector(state)
 }))
 export class AppContainer extends React.Component {
 
   static propTypes = {
     widgetLoaded: PropTypes.bool,
-    onlineAgentsCount: PropTypes.number,
+    agentsCounts: PropTypes.number,
     dispatch: PropTypes.func
   };
 
@@ -35,7 +35,7 @@ export class AppContainer extends React.Component {
     this.checkStoredChatId();
   }
 
-  componentWillUpdate() {
+  componentDidUpdate() {
     this.checkStoredChatId();
   }
 
@@ -48,11 +48,11 @@ export class AppContainer extends React.Component {
   }
 
   checkStoredChatId() {
-    const { dispatch, widgetLoaded, onlineAgentsCount } = this.props;
+    const { dispatch, widgetLoaded, agentsCounts } = this.props;
     const storedChatId = Number(localStorage.getItem('dpWidget.chat.chatId'));
 
     // If we have stored chat and online agents then force load previous chat
-    if (storedChatId && widgetLoaded && onlineAgentsCount > 0) {
+    if (storedChatId && widgetLoaded && agentsCounts > 0) {
       history.replace('/chat/active');
 
       dispatch(setChatId(storedChatId));
