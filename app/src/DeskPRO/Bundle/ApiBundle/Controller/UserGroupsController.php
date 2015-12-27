@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -76,27 +77,6 @@ class UserGroupsController extends BaseController
 
         return View::create(
             $this->dataSerialize($service->loadSingleUserGroupEnabled($id)),
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * @ApiDoc(
-     *      description="Count Users in User Groups",
-     *      statusCodes={
-     *          200="Success",
-     *          400="Bad Request"
-     *      }
-     * )
-     * @Get("/user_groups/counts", name="api_user_group_count_users")
-     */
-    public function getUsersCountsAction()
-    {
-        /** @var \DeskPRO\Bundle\AppBundle\DataService\UserGroups\UserGroupsDataService $service */
-        $service = $this->get('data.user_groups');
-
-        return View::create(
-            $this->createRepresentation($service->countPeopleInUserGroups()),
             Response::HTTP_OK
         );
     }

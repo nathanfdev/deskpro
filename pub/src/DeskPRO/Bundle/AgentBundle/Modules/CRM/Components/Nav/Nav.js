@@ -16,7 +16,7 @@ export class Nav extends Component {
   };
 
   render() {
-    const { labels, users, organizations, agents, groupNames, teamNames, dispatch, dpWindow, loaded } = this.props;
+    const { labels, users, organizations, agents, dispatch, dpWindow, loaded } = this.props;
 
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
@@ -35,32 +35,38 @@ export class Nav extends Component {
             </Tab>
             <Tab title="Filters">Filters tab content</Tab>
             <Tab title="Labels">
-              <LabelsDictionary labels={labels.get('person')}/>
+              <LoadIndicator loaded={loaded}>
+                <LabelsDictionary labels={labels.get('person')}/>
+              </LoadIndicator>
             </Tab>
           </TabsPane>
           <SectionHeader>Organizations</SectionHeader>
           <TabsPane>
             <Tab title="All">
-              <ul>
-                <ListItem count={organizations.get('count')} label="All Organizations"/>
-              </ul>
+              <LoadIndicator loaded={loaded}>
+                <ul>
+                  <ListItem count={organizations.get('count')} label="All Organizations"/>
+                </ul>
+              </LoadIndicator>
             </Tab>
             <Tab title="Labels">
-              <LabelsDictionary labels={labels.get('organization')}/>
+              <LoadIndicator loaded={loaded}>
+                <LabelsDictionary labels={labels.get('organization')}/>
+              </LoadIndicator>
             </Tab>
           </TabsPane>
 
-           <SectionHeader>Agents</SectionHeader>
+          <SectionHeader>Agents</SectionHeader>
 
-           <div className="sidebar-list">
-           <ul>
-             <LoadIndicator loaded={loaded}>
-               <ul>
-                 <NestedList items={[agents.toJS()]} alwaysExpanded/>
-               </ul>
-             </LoadIndicator>
-           </ul>
-           </div>
+          <div className="sidebar-list">
+            <ul>
+              <LoadIndicator loaded={loaded}>
+                <ul>
+                  <NestedList items={[agents.toJS()]} alwaysExpanded/>
+                </ul>
+              </LoadIndicator>
+            </ul>
+          </div>
         </NavFrameBody>
       </NavFrame>
     );

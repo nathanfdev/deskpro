@@ -2,11 +2,6 @@ import { createAction } from 'Ampliflux';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import { pluck } from 'lodash';
-import * as People from 'DeskPRO/Bundle/AgentBundle/Services/Api/People';
-import * as UserGroups from 'DeskPRO/Bundle/AgentBundle/Services/Api/UserGroups';
-import * as Organizations from 'DeskPRO/Bundle/AgentBundle/Services/Api/Organizations';
-import * as AgentTeams from 'DeskPRO/Bundle/AgentBundle/Services/Api/AgentTeams';
-import * as Labels from 'DeskPRO/Bundle/AgentBundle/Services/Api/Labels';
 
 export const initialLoad = createAction(
   'CRM_NAV_INITIAL_LOAD',
@@ -32,39 +27,4 @@ export const initialLoad = createAction(
       });
     }
   )
-);
-
-export const loadUsersTotalCount = createAction(
-  'CRM_NAV_LOAD_USERS_TOTAL_COUNT',
-  () => People.loadUsersTotalCount().then(promise => promise.getData().data.count)
-);
-
-export const loadGroupsCounts = createAction(
-  'CRM_NAV_LOAD_GROUPS_COUNTS',
-  () => UserGroups.loadCounts().then(promise => promise.getData().data.nested)
-);
-
-export const loadOrganizationsTotalCount = createAction(
-  'CRM_NAV_LOAD_ORG_TOTAL_COUNT',
-  () => Organizations.loadCount().then(promise => promise.getData().data.count)
-);
-
-export const loadAgentsTotalCount = createAction(
-  'CRM_NAV_LOAD_AGENTS_TOTAL_COUNT',
-  () => People.loadAgentsTotalCount().then(promise => promise.getData().data.count)
-);
-
-export const loadTeamsCounts = createAction(
-  'CRM_NAV_LOAD_TEAMS_COUNTS',
-  () => AgentTeams.loadCounts().then(promise => promise.getData().data.nested)
-);
-
-export const loadPersonLabels = createAction(
-  'CRM_NAV_LOAD_PERSON_LABELS',
-  () => Labels.loadPersonLabels().then(promise => pluck(promise.getData().data, 'label'))
-);
-
-export const loadOrganizationLabels = createAction(
-  'CRM_NAV_LOAD_ORGANIZATION_LABELS',
-  () => Labels.loadOrganizationLabels().then(promise => pluck(promise.getData().data, 'label'))
 );

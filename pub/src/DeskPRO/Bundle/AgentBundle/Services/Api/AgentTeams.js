@@ -21,10 +21,6 @@ export function loadAgentTeamAgents(teamId) {
   return DpApi.sendGet(`DP_API/agent_teams/${teamId}/agents`);
 }
 
-export function loadCounts() {
-  return DpApi.sendGet('DP_API/agent_teams/counts');
-}
-
 /**
  * Compile parameters into a URL string
  * @param {Object} params - parameters to be compiled

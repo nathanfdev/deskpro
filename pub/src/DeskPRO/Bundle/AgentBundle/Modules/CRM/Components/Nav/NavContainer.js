@@ -1,17 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../Actions/crmNavActions';
-import { agentTeamNamesSelector }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
-import { userGroupNamesSelector }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Selectors/userGroupsSelectors';
 import { Nav } from './Nav';
 
 @connect(state => {
   return {
     loaded: state.CRM.nav.getIn(['async', 'done']),
-    teamNames: agentTeamNamesSelector(state),
-    groupNames: userGroupNamesSelector(state),
     dpWindow: state.Application.dpWindow,
     users: state.CRM.nav.get('users'),
     organizations: state.CRM.nav.get('organizations'),
@@ -31,24 +25,13 @@ export class NavContainer extends Component {
     labels: PropTypes.object.isRequired
   };
 
-  constructor(props) {
-    super(props);
+  componentDidMount() {
     const { dispatch } = this.props;
-
     dispatch(actions.initialLoad());
-    /*
-     dispatch(actions.loadUsersTotalCount());
-     dispatch(actions.loadGroupsCounts());
-     dispatch(actions.loadOrganizationsTotalCount());
-     dispatch(actions.loadAgentsTotalCount());
-     dispatch(actions.loadTeamsCounts());
-     dispatch(actions.loadPersonLabels());
-     dispatch(actions.loadOrganizationLabels());
-     */
   }
 
   render() {
-    const {loaded, labels, users, organizations, agents, groupNames, teamNames, dpWindow, dispatch} = this.props;
+    const {loaded, labels, users, organizations, agents, dpWindow, dispatch} = this.props;
 
     return (
       <Nav loaded={loaded}
@@ -56,8 +39,6 @@ export class NavContainer extends Component {
            users={users}
            organizations={organizations}
            agents={agents}
-           groupNames={groupNames}
-           teamNames={teamNames}
            dispatch={dispatch}
            dpWindow={dpWindow}/>
     );

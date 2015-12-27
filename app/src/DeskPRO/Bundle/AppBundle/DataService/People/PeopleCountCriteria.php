@@ -83,7 +83,9 @@ class PeopleCountCriteria extends Criteria implements GroupableCriteriaInterface
             $qb
                 ->leftJoin("$alias.usergroups", 'groups')
                 ->addSelect('groups.title as title')
-                ->addSelect('groups.id as group_name');
+                ->addSelect('groups.id as group_name')
+                ->andWhere('groups.is_agent_group = false')
+                ->andWhere('groups.is_enabled = true');
         } elseif ($this->group_by === 'agent_team') {
             $qb
                 ->leftJoin("$alias.teams", 'teams')
