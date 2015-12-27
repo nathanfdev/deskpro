@@ -31,7 +31,10 @@ export class Nav extends Component {
             <Tab title="Groups">
               <LoadIndicator loaded={loaded}>
                 <ul>
-                  <NestedList items={[users.toJS()]} alwaysExpanded/>
+                  <NestedList items={[users.toJS()]}
+                              isAgent={0}
+                              group="people"
+                              alwaysExpanded/>
                 </ul>
               </LoadIndicator>
             </Tab>
@@ -64,7 +67,10 @@ export class Nav extends Component {
             <ul>
               <LoadIndicator loaded={loaded}>
                 <ul>
-                  <NestedList items={[agents.toJS()]} alwaysExpanded/>
+                  <NestedList items={[agents.toJS()]}
+                              isAgent={1}
+                              group="agents"
+                              alwaysExpanded/>
                 </ul>
               </LoadIndicator>
             </ul>

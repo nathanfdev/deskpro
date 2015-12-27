@@ -1,19 +1,23 @@
 import React, {Component, PropTypes} from 'react';
+import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ListFrameMenu';
-import { CrmList } from './View/List/CrmList';
-import { CrmTable } from './View/Table/CrmTable';
+import { ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
+import { CrmCardContainer } from './View/List/CrmCardContainer';
+import { CrmTableContainer } from './View/Table/CrmTableContainer';
 import { ControlBarContainer } from './ControlBar/ControlBarContainer';
 import { MassActionContainer } from './ControlBar/MassActionContainer';
+import { PaginationContainer } from './PaginationContainer';
 
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export class List extends Component {
 
   static propTypes = {
-    elements: PropTypes.array.isRequired,
     selected: PropTypes.object.isRequired,
-    viewModeOptions: PropTypes.array.isRequired
+    loaded: PropTypes.bool.isRequired,
+    pagination: PropTypes.object,
+    currentViewMode: PropTypes.string.isRequired
   };
 
   constructor(props) {
@@ -21,7 +25,7 @@ export class List extends Component {
   }
 
   render() {
-    const { elements, viewModeOptions, selected } = this.props;
+    const { currentViewMode, selected, loaded, pagination } = this.props;
     const checkbox = {
       count: selected.size, action: ()=> {
       }
@@ -33,7 +37,14 @@ export class List extends Component {
           {!selected.size && <ControlBarContainer key="1"/>}
           {selected.size && <MassActionContainer key="2"/>}
         </ListFrameMenu>
-        {viewModeOptions.find((option)=>option.current === true).field === constants.VIEW_MODE_CARD ? <CrmList elements={elements}/> : <CrmTable elements={elements}/>}
+        <LoadIndicator loaded={loaded}
+                       opacity={0}
+                       width={3}>
+          <ListFrameContents>
+            {currentViewMode === constants.VIEW_MODE_CARD ? <CrmCardContainer/> : <CrmTableContainer/>}
+            {pagination && pagination.total_pages > 1 && <PaginationContainer/>}
+          </ListFrameContents>
+        </LoadIndicator>
       </ListFrameContainer>
     );
   }

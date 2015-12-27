@@ -31,6 +31,7 @@ export function loadPeople(options) {
   }
 
   const request = Object.keys(options).length > 0 ? ('?' + compileParams(options)) : '';
+  console.log(`DP_API/people${request}`);
   return DpApi.sendGet(`DP_API/people${request}`);
 }
 

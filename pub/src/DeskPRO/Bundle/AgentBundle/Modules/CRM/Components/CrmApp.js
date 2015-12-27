@@ -12,7 +12,7 @@ export class CrmApp extends React.Component {
     return (
       <AppPane>
         <NavPane><NavContainer/></NavPane>
-        <ListPane>{/*ListContainer/*/}</ListPane>
+        <ListPane><ListContainer/></ListPane>
       </AppPane>
     );
   }

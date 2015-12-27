@@ -2,16 +2,16 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { ListItemStatefulContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import * as actions from '../../Actions/crmListActions';
-import { hashStateSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
 import { urlSanitize } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Service/routing';
 
 @connect(state => ({
-  activeItemId: hashStateSelectorFactory(['nav', 'active'])(state)
+  hash: state.Application.routing.get('hash')
 }))
 export class ListItemContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    activeItemId: PropTypes.string,
+    hash: PropTypes.object,
+    group: PropTypes.string,
     label: PropTypes.string.isRequired,
     children: PropTypes.node,
     listOptions: PropTypes.object.isRequired
@@ -23,7 +23,8 @@ export class ListItemContainer extends Component {
   }
 
   componentDidMount() {
-    const {activeItemId, listOptions, dispatch} = this.props;
+    const {hash, listOptions, dispatch, group} = this.props;
+    const activeItemId = hash.get('nav') ? hash.get('nav').get(group) : null;
     if (activeItemId === this.itemId) {
       dispatch(actions.applyParams(listOptions));
     }
@@ -37,6 +38,7 @@ export class ListItemContainer extends Component {
   render() {
     const props = {
       groupId: 'nav',
+      active: this.props.group,
       onClick: this.loadList,
       itemId: this.itemId,
       label: this.props.label,
@@ -47,5 +49,4 @@ export class ListItemContainer extends Component {
       <ListItemStatefulContainer {...props} />
     );
   }
-
 }

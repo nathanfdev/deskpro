@@ -78,10 +78,39 @@ class PeopleController extends CrudController
             $qb->setParameter('is_agent', (int) $is_agent);
         }
 
+        if ($is_deleted = $request->get('is_deleted')) {
+            $qb->andWhere("$alias.is_deleted = :is_deleted");
+            $qb->setParameter('is_deleted', (int) $is_deleted);
+        }
+
         if ($request->get('not_me')) {
             $user = $this->getUser();
             $qb->andWhere("$alias.id != :id");
             $qb->setParameter('id', $user->getId());
+        }
+
+        $user_group = (int) $request->get('user_group');
+        if ($user_group > -1) {
+            $qb->leftJoin("$alias.usergroups", 'ug');
+            if ($user_group > 0) {
+                $qb
+                    ->andWhere('ug.id = :user_group_id')
+                    ->setParameter('user_group_id', $user_group);
+            } else {
+                $qb->andWhere('ug.id IS NULL');
+            }
+        }
+
+        $agent_team = (int) $request->get('agent_team');
+        if ($agent_team > -1) {
+            $qb->leftJoin("$alias.teams", 'teams');
+            if ($agent_team > 0) {
+                $qb
+                    ->andWhere('teams.id = :agent_team_id')
+                    ->setParameter('agent_team_id', $agent_team);
+            } else {
+                $qb->andWhere('teams.id IS NULL');
+            }
         }
     }
 }
