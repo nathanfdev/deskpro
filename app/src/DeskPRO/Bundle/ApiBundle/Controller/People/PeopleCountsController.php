@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
@@ -78,7 +79,7 @@ class PeopleCountsController extends BaseController implements ClassResourceInte
         /** @var \DeskPRO\Bundle\AppBundle\DataService\People\PeopleCountsDataService $dataService */
         $dataService = $this->get('data.people_counts');
 
-        $params = $request->query->all();
+        $params = $this->removeAdditionalParameters($request);
         try {
             $criteria = PeopleCountCriteria::fromParameters($params, new OptionsResolver());
         } catch (InvalidArgumentException $e) {

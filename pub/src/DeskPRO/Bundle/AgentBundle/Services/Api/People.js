@@ -37,19 +37,3 @@ export function loadPeople(options) {
 export function loadPerson(id) {
   return DpApi.sendGet(`DP_API/people/${id}`);
 }
-
-/**
- * @return {Promise} promise
- */
-export function loadUsersTotalCount() {
-  return DpApi.sendGet('DP_API/people/counts?is_agent=0&is_deleted=0');
-}
-
-/**
- * @return {Promise} promise
- */
-export function loadAgentsTotalCount() {
-  return DpApi.sendGet('DP_API/people/counts?is_agent=1&is_deleted=0');
-}
-
-

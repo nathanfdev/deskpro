@@ -29,10 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\Bundle\AppBundle\DataService\AgentTeams;
 
 use Application\DeskPRO\ORM\EntityManager;
-use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\DataService\AgentTeams\AgentTeamsDataService;
 use DpTest\DeskProTestCase;
 
@@ -47,16 +47,6 @@ class AgentTeamsDataServiceTest extends DeskProTestCase
     public function it_should_be_instantiable()
     {
         $this->assertInstanceOf(AgentTeamsDataService::class, $this->instance());
-    }
-
-    /**
-     * @test
-     */
-    public function it_should_return_Count_instance_with_group_by_indication_when_counting_agents_in_teams()
-    {
-        $result = $this->instance()->countAgentsInTeams();
-        $this->assertInstanceOf(Count::class, $result);
-        $this->assertNotNull($result->getGroupedBy());
     }
 
     /**

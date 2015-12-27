@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\People;
 
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
@@ -63,10 +64,21 @@ class PeopleCountsDataService
     public function countPeople(PeopleCountCriteria $criteria)
     {
         $qb = $this->em->createQueryBuilder();
-
-        $qb->select('count(p)')
+        $qb->select('count(p) as value')
             ->from('DeskPRO:Person', 'p');
         $criteria->applyFilters($qb);
+        if ($criteria->hasGroupBy()) {
+            $criteria->applyGroupBy($qb);
+            $result = $qb->getQuery()->getArrayResult();
+            $count  = Count::fromGroupedBy($criteria->getGroupBy());
+            $count->setTitle('Users');
+            foreach ($result as $group) {
+                $count->add($group['value']);
+                $count->addNested($group['value'], $group['group_name'], $criteria->getGroupBy(), $group['title']);
+            }
+
+            return $count;
+        }
 
         try {
             $count = $qb->getQuery()->getSingleScalarResult();

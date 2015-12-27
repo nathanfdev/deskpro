@@ -33,7 +33,6 @@
 namespace DpTest\Bundle\AppBundle\DataService\UserGroups;
 
 use Application\DeskPRO\ORM\EntityManager;
-use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\DataService\UserGroups\UserGroupsDataService;
 use DpTest\DeskProTestCase;
 
@@ -48,16 +47,6 @@ class UserGroupsDataServiceTest extends DeskProTestCase
     public function it_should_be_instantiable()
     {
         $this->assertInstanceOf(UserGroupsDataService::class, $this->instance());
-    }
-
-    /**
-     * @test
-     */
-    public function it_should_return_Count_instance_with_group_by_indication_when_counting_people_in_user_groups()
-    {
-        $result = $this->instance()->countPeopleInUserGroups();
-        $this->assertInstanceOf(Count::class, $result);
-        $this->assertNotNull($result->getGroupedBy());
     }
 
     /**
