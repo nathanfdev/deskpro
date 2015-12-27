@@ -41,23 +41,22 @@ export class Nav extends Component {
         <NavFrameBody>
           <Pending loaded={loaded}
                    toValidateCount={toValidateCount}
-                   commentsToReviewCount={commentsToReviewCount}
-            />
+                   commentsToReviewCount={commentsToReviewCount}/>
 
           <TabsPaneStatefulContainer id="tab">
-              <Tab title={this.props.intl.formatMessage({id: 'feedback.nav.tabs.status'})}>
-                <StatusTab statuses={statuses} loaded={loaded}/>
-              </Tab>
+            <Tab title={this.props.intl.formatMessage({id: 'feedback.nav.tabs.status'})}>
+              <StatusTab statuses={statuses} loaded={loaded}/>
+            </Tab>
 
-              <Tab title="Labels">
-                <LabelsDictionary labels={labels} onClick={this.onLabelClick}/>
-              </Tab>
-              <Tab title="Type">
-                <TypeTab types={types} loaded={loaded}/>
-              </Tab>
-              <Tab title="Category">
-                <CategoryTab customCategories={customCategories} loaded={loaded}/>
-              </Tab>
+            <Tab title="Labels">
+              <LabelsDictionary labels={labels} onClick={this.onLabelClick}/>
+            </Tab>
+            <Tab title="Type">
+              <TypeTab types={types} loaded={loaded}/>
+            </Tab>
+            <Tab title="Category">
+              <CategoryTab customCategories={customCategories} loaded={loaded}/>
+            </Tab>
           </TabsPaneStatefulContainer>
         </NavFrameBody>
       </NavFrame>

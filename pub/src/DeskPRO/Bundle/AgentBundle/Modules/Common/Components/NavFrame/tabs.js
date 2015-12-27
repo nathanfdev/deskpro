@@ -5,17 +5,54 @@ import { connect } from 'react-redux';
 import { routingStateSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
 
 export class TabsPane extends React.Component {
+
   static propTypes = {
     children: PropTypes.node
   };
-
-  static defaultTab = 0;
 
   constructor(props) {
     super(props);
     this.state = {
       active: TabsPane.defaultTab
     };
+  }
+
+  static defaultTab = 0;
+
+  activate(index) {
+    return event => {
+      event.preventDefault();
+      this.setState({ active: index });
+    };
+  }
+
+  tabsFromChildren() {
+    const tabs = [];
+    const children = this.props.children.length ? this.props.children : [this.props.children];
+    for (let i = 0; i < children.length; i++) {
+      if (children[i].type.name !== 'Tab') {
+        throw new Error('TabsPane can only contain Tab components as first level children');
+      }
+
+      tabs.push({
+        index: i,
+        title: children[i].props.title,
+        icon: children[i].props.icon,
+        content: children[i].props.children
+      });
+    }
+
+    return tabs;
+  }
+
+  renderTabHeader({title, icon, index}) {
+    const className = index === this.state.active ? 'active' : '';
+    const onClick = this.activate(index).bind(this);
+    const content = title
+      ? title
+      : (<span className="icon"><i className={'fa ' + icon}></i></span>);
+
+    return (<li key={index} className={className}><a href="#" onClick={onClick}>{content}</a></li>);
   }
 
   render() {
@@ -35,42 +72,6 @@ export class TabsPane extends React.Component {
         })}
       </div>
     );
-  }
-
-  renderTabHeader({title, icon, index}) {
-    const className = index === this.state.active ? 'active' : '';
-    const onClick = this.activate(index).bind(this);
-    const content = title
-      ? title
-      : (<span className="icon"><i className={'fa ' + icon}></i></span>);
-
-    return (<li key={index} className={className}><a href="#" onClick={onClick}>{content}</a></li>);
-  }
-
-  tabsFromChildren() {
-    const tabs = [];
-    const children = this.props.children.length ? this.props.children : [this.props.children];
-    for (let i = 0; i < children.length; i++) {
-      if (children[i].type.name !== 'Tab') {
-        throw 'TabsPane can only contain Tab components as first level children';
-      }
-
-      tabs.push({
-        index: i,
-        title: children[i].props.title,
-        icon: children[i].props.icon,
-        content: children[i].props.children
-      });
-    }
-
-    return tabs;
-  }
-
-  activate(index) {
-    return event => {
-      event.preventDefault();
-      this.setState({ active: index });
-    };
   }
 }
 
