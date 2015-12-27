@@ -88,9 +88,4 @@ class FeedbackCountCriteria extends FeedbackSelectCriteria implements GroupableC
         }
         $qb->groupBy('group_name');
     }
-
-    public function getFilters()
-    {
-        return $this->filters;
-    }
 }

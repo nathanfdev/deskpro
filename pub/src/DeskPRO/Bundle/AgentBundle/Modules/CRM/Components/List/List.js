@@ -1,30 +1,38 @@
 import React, {Component, PropTypes} from 'react';
 import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
-import { CrmListControlBar } from './ControlBar/CrmListControlBar';
+import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ListFrameMenu';
 import { CrmList } from './View/List/CrmList';
 import { CrmTable } from './View/Table/CrmTable';
+import { ControlBarContainer } from './ControlBar/ControlBarContainer';
+import { MassActionContainer } from './ControlBar/MassActionContainer';
 
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export class List extends Component {
 
+  static propTypes = {
+    elements: PropTypes.array.isRequired,
+    selected: PropTypes.object.isRequired,
+    viewModeOptions: PropTypes.array.isRequired
+  };
+
   constructor(props) {
     super(props);
   }
 
-  static propTypes = {
-    elements: PropTypes.array.isRequired,
-    viewModeOptions: PropTypes.array.isRequired
-  };
-
-
   render() {
-
-    const { elements, viewModeOptions } = this.props;
+    const { elements, viewModeOptions, selected } = this.props;
+    const checkbox = {
+      count: selected.size, action: ()=> {
+      }
+    };
 
     return (
       <ListFrameContainer>
-        <CrmListControlBar />
+        <ListFrameMenu checkbox={checkbox}>
+          {!selected.size && <ControlBarContainer key="1"/>}
+          {selected.size && <MassActionContainer key="2"/>}
+        </ListFrameMenu>
         {viewModeOptions.find((option)=>option.current === true).field === constants.VIEW_MODE_CARD ? <CrmList elements={elements}/> : <CrmTable elements={elements}/>}
       </ListFrameContainer>
     );

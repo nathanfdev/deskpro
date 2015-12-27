@@ -46,7 +46,7 @@ export class List extends Component {
       <ListFrameContainer>
         <ListFrameMenu checkbox={checkbox}>
           {!selected.size && <ControlBarContainer key="1"/>}
-          {selected.size && <MassActionContainer key="1"/>}
+          {selected.size && <MassActionContainer key="2"/>}
         </ListFrameMenu>
         <LoadIndicator loaded={loaded}
                        opacity={0}

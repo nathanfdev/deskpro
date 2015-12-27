@@ -107,13 +107,13 @@ class FeedbackController extends BaseController
     public function cgetAction(Request $request)
     {
         $dataService = $this->get('data.feedback');
-        $params = $this->removeAdditionalParameters($request);
+        $params      = $this->removeAdditionalParameters($request);
         try {
             $criteria = FeedbackSelectCriteria::fromParameters($params, new OptionsResolver());
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
-        $page = $request->query->get('page', 1);
+        $page  = $request->query->get('page', 1);
         $count = $request->query->get('count', 5);
 
         $feedback = $dataService->selectFeedback($criteria, $page, $count);
@@ -147,8 +147,9 @@ class FeedbackController extends BaseController
      */
     public function getCountsAction(Request $request)
     {
+        /** @var \DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackDataService $dataService */
         $dataService = $this->get('data.feedback');
-        $params = $this->removeAdditionalParameters($request);
+        $params      = $this->removeAdditionalParameters($request);
         try {
             $criteria = FeedbackCountCriteria::fromParameters($params, new OptionsResolver());
         } catch (InvalidArgumentException $e) {
@@ -185,7 +186,7 @@ class FeedbackController extends BaseController
      */
     public function massAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em  = $this->getDoctrine()->getManager();
         $ids = $request->query->get('id');
         if (count($ids) > 0) {
             $qb = $em->createQueryBuilder();
@@ -259,7 +260,6 @@ class FeedbackController extends BaseController
                                 $em->persist($feedbackLabel);
                             }
                         }
-
                     }
                 }
             }
@@ -285,9 +285,9 @@ class FeedbackController extends BaseController
      */
     public function deleteAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em  = $this->getDoctrine()->getManager();
         $ids = $request->get('id');
-        $qb = $em->createQueryBuilder();
+        $qb  = $em->createQueryBuilder();
         $qb
             ->select('f')
             ->from('DeskPRO:Feedback', 'f')
@@ -315,9 +315,9 @@ class FeedbackController extends BaseController
      */
     public function massApproveAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em  = $this->getDoctrine()->getManager();
         $ids = $request->get('id');
-        $qb = $em->createQueryBuilder();
+        $qb  = $em->createQueryBuilder();
         $qb
             ->select('f')
             ->from('DeskPRO:Feedback', 'f')

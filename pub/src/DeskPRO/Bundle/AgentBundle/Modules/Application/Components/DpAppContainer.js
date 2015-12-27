@@ -6,7 +6,7 @@ import { LoginRouteContainer } from '../../Login/Components/LoginRouteContainer'
 import { TicketsApp } from '../../Tickets/Components/TicketsApp';
 import { TasksApp } from '../../Tasks/Components/TasksApp';
 import { FeedbackApp } from '../../Feedback/Components/FeedbackApp';
-// tmp disabled import { CrmApp } from '../../CRM/Components/CrmApp';
+import { CrmApp } from '../../CRM/Components/CrmApp';
 import { ChatApp } from '../../Chat/Components/ChatApp';
 import { PublishApp } from '../../Publish/Components/PublishApp';
 import { LoginApp } from '../../Login/Components/LoginApp';
@@ -64,7 +64,7 @@ export class DpAppContainer extends React.Component {
       <Router history={history}>
         <Redirect from={basePath} to={defaultPath}/>
         <Route path={basePath} component={DpAppRouteContainer}>
-          {/* tmp disabled <Route name="crm" path="crm" component={CrmApp}/> */}
+          <Route name="crm" path="crm" component={CrmApp}/>
           <Route name="chat" path="chat" component={ChatApp}/>
           <Route name="tickets" path="tickets" component={TicketsApp}/>
           <Route name="tasks" path="tasks" component={TasksApp}/>
