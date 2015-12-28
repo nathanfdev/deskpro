@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { NavFrame, NavFrameHeader, NavFrameBody, SectionsPane, Section, SectionHeader, TabsPane, Tab, ListItem, LabelsDictionary }
+import { NavFrame, NavFrameHeader, NavFrameBody, SectionHeader, TabsPaneStatefulContainer, TabsPane, Tab, ListItem, LabelsDictionary }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import { NestedList } from './NestedList';
@@ -12,24 +12,29 @@ export class Nav extends Component {
     dpWindow: PropTypes.object.isRequired,
     users: PropTypes.object.isRequired,
     organizations: PropTypes.object.isRequired,
+    agents: PropTypes.object.isRequired,
     labels: PropTypes.object.isRequired
   };
 
   render() {
     const { labels, users, organizations, agents, dispatch, dpWindow, loaded } = this.props;
+    const currentApp = dpWindow.get('activeAppId');
 
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
-        <NavFrameHeader icon="icon-dp-streamline-connection-2">
+        <NavFrameHeader icon="icon-dp-streamline-connection-2" currentApp={currentApp}>
           CRM
         </NavFrameHeader>
         <NavFrameBody>
           <SectionHeader>People</SectionHeader>
-          <TabsPane>
+          <TabsPaneStatefulContainer id="peopleTab">
             <Tab title="Groups">
               <LoadIndicator loaded={loaded}>
                 <ul>
-                  <NestedList items={[users.toJS()]} alwaysExpanded/>
+                  <NestedList items={[users.toJS()]}
+                              isAgent={0}
+                              group="people"
+                              alwaysExpanded/>
                 </ul>
               </LoadIndicator>
             </Tab>
@@ -39,9 +44,9 @@ export class Nav extends Component {
                 <LabelsDictionary labels={labels.get('person')}/>
               </LoadIndicator>
             </Tab>
-          </TabsPane>
+          </TabsPaneStatefulContainer>
           <SectionHeader>Organizations</SectionHeader>
-          <TabsPane>
+          <TabsPaneStatefulContainer id="orgTab">
             <Tab title="All">
               <LoadIndicator loaded={loaded}>
                 <ul>
@@ -54,7 +59,7 @@ export class Nav extends Component {
                 <LabelsDictionary labels={labels.get('organization')}/>
               </LoadIndicator>
             </Tab>
-          </TabsPane>
+          </TabsPaneStatefulContainer>
 
           <SectionHeader>Agents</SectionHeader>
 
@@ -62,7 +67,10 @@ export class Nav extends Component {
             <ul>
               <LoadIndicator loaded={loaded}>
                 <ul>
-                  <NestedList items={[agents.toJS()]} alwaysExpanded/>
+                  <NestedList items={[agents.toJS()]}
+                              isAgent={1}
+                              group="agents"
+                              alwaysExpanded/>
                 </ul>
               </LoadIndicator>
             </ul>

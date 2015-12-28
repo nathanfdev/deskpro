@@ -64,8 +64,15 @@ class PeopleCountCriteria extends Criteria implements GroupableCriteriaInterface
             switch ($field) {
                 case 'is_agent':
                 case 'is_deleted':
-                    $qb->andWhere($qb->expr()->eq("$alias.$field", ":$field"));
-                    $qb->setParameter($field, $value);
+                    $qb
+                        ->andWhere($qb->expr()->eq("$alias.$field", ":$field"))
+                        ->setParameter($field, $value);
+                    break;
+                case 'user_group':
+                    $qb
+                        ->innerJoin("$alias.usergroups", 'ug')
+                        ->andWhere('ug.id = :id')
+                        ->setParameter('id', $value);
                     break;
             }
         }
@@ -83,9 +90,9 @@ class PeopleCountCriteria extends Criteria implements GroupableCriteriaInterface
             $qb
                 ->leftJoin("$alias.usergroups", 'groups')
                 ->addSelect('groups.title as title')
-                ->addSelect('groups.id as group_name')
-                ->andWhere('groups.is_agent_group = false')
-                ->andWhere('groups.is_enabled = true');
+                ->addSelect('groups.id as group_name')/*->andWhere('groups.is_agent_group = false')
+                ->andWhere('groups.is_enabled = true')*/
+            ;
         } elseif ($this->group_by === 'agent_team') {
             $qb
                 ->leftJoin("$alias.teams", 'teams')

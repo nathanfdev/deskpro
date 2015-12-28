@@ -73,15 +73,44 @@ class PeopleController extends CrudController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        if ($is_agent = $request->get('is_agent')) {
+        if (null !== $request->get('is_agent')) {
             $qb->andWhere("$alias.is_agent = :is_agent");
-            $qb->setParameter('is_agent', (int) $is_agent);
+            $qb->setParameter('is_agent', (int) $request->get('is_agent'));
+        }
+
+        if (null !== $request->get('is_deleted')) {
+            $qb->andWhere("$alias.is_deleted = :is_deleted");
+            $qb->setParameter('is_deleted', (int) $request->get('is_deleted'));
         }
 
         if ($request->get('not_me')) {
             $user = $this->getUser();
             $qb->andWhere("$alias.id != :id");
             $qb->setParameter('id', $user->getId());
+        }
+
+        if (null !== $request->get('user_group')) {
+            $user_group = (int) $request->get('user_group');
+            $qb->leftJoin("$alias.usergroups", 'ug');
+            if ($user_group > 0) {
+                $qb
+                    ->andWhere('ug.id = :user_group_id')
+                    ->setParameter('user_group_id', $user_group);
+            } else {
+                $qb->andWhere('ug.id IS NULL');
+            }
+        }
+
+        if (null !== $request->get('agent_team')) {
+            $agent_team = (int) $request->get('agent_team');
+            $qb->leftJoin("$alias.teams", 'teams');
+            if ($agent_team > 0) {
+                $qb
+                    ->andWhere('teams.id = :agent_team_id')
+                    ->setParameter('agent_team_id', $agent_team);
+            } else {
+                $qb->andWhere('teams.id IS NULL');
+            }
         }
     }
 }

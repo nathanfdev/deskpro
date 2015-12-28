@@ -5,10 +5,10 @@ import { currentViewModeSelector } from '../../Selectors/list';
 
 @connect(state => {
   return ({
-    content: state.Publish.list.get('currentListParams').get('content'),
-    loaded: state.Publish.list.getIn(['async', 'done']),
-    pagination: state.Publish.list.get('pagination'),
-    selected: state.Publish.list.get('selected'),
+    content: state.CRM.list.get('currentListParams').get('content'),
+    loaded: state.CRM.list.getIn(['async', 'done']),
+    pagination: state.CRM.list.get('pagination'),
+    selected: state.CRM.list.get('selected'),
     currentViewMode: currentViewModeSelector(state)
   });
 })
