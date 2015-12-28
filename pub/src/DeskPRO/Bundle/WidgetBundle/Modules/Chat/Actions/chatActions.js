@@ -150,40 +150,39 @@ export const pollingChat = createAction(
 
         const oldChatInfo = chatInfoSelector(state);
         const newChatInfo = response.chat_info && response.chat_info.data;
-        const newMessages = response.new_messages ? response.new_messages.data : [];
         const loaded = chatLoadedSelector(state);
-        const transcriptEnabled = transcriptCheckedSelector(state);
 
         if (newChatInfo) {
-          // New chat info was changed
+          // Chat info was changed
           if (!oldChatInfo.equals(Immutable.fromJS(newChatInfo))) {
+            // Update chat info
             dispatch(updateChatInfo(newChatInfo));
 
+            // Handle chat transcript
+            const transcriptChecked = transcriptCheckedSelector(state);
             if (newChatInfo.author_email) {
               // Auto select transcript checkbox if user has email
-              if (!transcriptEnabled) {
+              if (!transcriptChecked) {
                 dispatch(enableSendTranscript());
-              }
+              } else {
+                // If can send transcript data and chat is ended
+                const transcriptSending = transcriptSendingSelector(state);
+                const transcriptSent = transcriptSentSelector(state);
 
-              // If can send transcript data and chat is ended
-              const transcriptChecked = transcriptCheckedSelector(state);
-              const transcriptSending = transcriptSendingSelector(state);
-              const transcriptSent = transcriptSentSelector(state);
-
-              if (newChatInfo.date_ended && transcriptChecked && !transcriptSending && !transcriptSent) {
-                // send transcript data
-                dispatch(sendTranscriptData(chatId));
+                if (newChatInfo.date_ended && !transcriptSending && !transcriptSent) {
+                  // send transcript data
+                  dispatch(sendTranscriptData(chatId));
+                }
               }
             } else {
-              if (transcriptEnabled) {
+              if (transcriptChecked) {
                 dispatch(disableSendTranscript());
               }
             }
           }
 
-          // Toggle chat reopen
+          // Toggle reopen chat
           const canReopen = canReopenSelector(state);
-
           if (!newChatInfo.date_ended) {
             if (!canReopen) {
               dispatch(enableChatReopen());
@@ -200,6 +199,7 @@ export const pollingChat = createAction(
         }
 
         // Received new messages
+        const newMessages = response.new_messages ? response.new_messages.data : [];
         if (newMessages.length) {
           const existMessageIds = messageIdsSelector(state);
           const filteredMessages = newMessages
