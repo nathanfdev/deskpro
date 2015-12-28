@@ -1,0 +1,123 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+/**
+ * DeskPRO.
+ */
+namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
+
+use DeskPRO\Bundle\AppBundle\Error\Exception\InvalidFormException;
+use DeskPRO\Kernel\KernelErrorHandler;
+use FOS\RestBundle\View\View;
+use Symfony\Component\Debug\Exception\FlattenException;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+
+/**
+ * Class ExceptionController.
+ */
+class ExceptionController extends AbstractApiController
+{
+    /**
+     * @param \Exception $exception
+     *
+     * @return View|Response
+     */
+    public function showAction($exception)
+    {
+        if ($exception instanceof FlattenException) {
+            $representation = [
+                'code'    => $exception->getCode(),
+                'message' => $exception->getMessage(),
+            ];
+
+            return View::create($representation, $exception->getStatusCode());
+        }
+
+        if ($exception instanceof InvalidFormException) {
+            $errors = $this->getFormErrorsGenerator()->generateFormErrors($exception->getForm());
+
+            return new View($errors, Response::HTTP_BAD_REQUEST);
+        }
+
+        if (!$exception instanceof InvalidFormException && !$exception instanceof HttpException) {
+            KernelErrorHandler::handleException($exception);
+        }
+
+        $request = Request::createFromGlobals();
+
+        // in dev environment, display a stack trace, dont show if we have a test.client
+        if ($this->container->getParameter('kernel.debug') && !$this->container->has('test.client') && !$request->headers->has('x-agent-request')) {
+            $error_response = new Response((string) $exception, 500);
+            $error_response->headers->set('content-type', 'text/html');
+
+            return $error_response;
+        }
+
+        $status  = $exception instanceof HttpException ? $exception->getStatusCode() : 500;
+        $code    = $this->getErrorCodeFactory()->getErrorCodeForException($exception);
+        $message = $this->getErrorMessageFactory()->createMessage($code);
+
+        $representation = [
+            'code'    => $code,
+            'message' => $message,
+        ];
+
+        $headers = [];
+        if ($exception instanceof HttpException) {
+            $headers = $exception->getHeaders();
+        }
+
+        return View::create($representation, $status, $headers);
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\Error\FormErrorsGenerator
+     */
+    protected function getFormErrorsGenerator()
+    {
+        return $this->get('api_error.form_errors_generator');
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\Error\ErrorCodeFactory
+     */
+    protected function getErrorCodeFactory()
+    {
+        return $this->get('api_error.code_factory');
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\Error\ErrorMessageFactory
+     */
+    protected function getErrorMessageFactory()
+    {
+        return $this->get('api_error.message_factory');
+    }
+}
