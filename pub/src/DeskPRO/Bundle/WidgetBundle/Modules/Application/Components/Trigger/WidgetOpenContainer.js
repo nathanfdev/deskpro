@@ -22,23 +22,27 @@ export class WidgetOpenContainer extends React.Component {
   };
 
   onClick = () => {
-    const { chatId, chatMode, dispatch } = this.props;
+    const { agentsCounts, chatId, chatMode, dispatch } = this.props;
 
-    if (chatId) {
-      history.replace('/chat/active');
-    } else {
-      switch (chatMode) {
-        case 'simple':
-        default:
-          history.replace('/chat/begin/simple');
-          break;
-        case 'conversation':
-          history.replace('/chat/begin/conversation');
-          break;
-        case 'form':
-          history.replace('/chat/begin/form');
-          break;
+    if (agentsCounts > 0) {
+      if (chatId) {
+        history.replace('/chat/active');
+      } else {
+        switch (chatMode) {
+          case 'simple':
+          default:
+            history.replace('/chat/begin/simple');
+            break;
+          case 'conversation':
+            history.replace('/chat/begin/conversation');
+            break;
+          case 'form':
+            history.replace('/chat/begin/form');
+            break;
+        }
       }
+    } else {
+      history.replace('/ticket/form');
     }
 
     dispatch(openWidget());
