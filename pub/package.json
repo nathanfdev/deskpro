@@ -69,7 +69,7 @@
     "react-proxy": "1.1.1",
     "react-redux": "4.0.0",
     "react-router": "^1.0.0-rc3",
-    "react-scrollbar": "0.2.2",
+    "react-scrollbar-iframe": "^0.3.4",
     "react-select": "^0.8.1",
     "react-textarea-autosize": "^3.0.0",
     "react-timeago": "^2.2.1",

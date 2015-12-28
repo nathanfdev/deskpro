@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import ScrollArea from 'react-scrollbar';
+import ScrollArea from 'react-scrollbar-iframe';
 import { MessageFactoryContainer } from './MessageFactoryContainer';
 import popMp3 from '../../../../../../Resources/sounds/pop.mp3';
 import popOgg from '../../../../../../Resources/sounds/pop.ogg';
@@ -77,7 +77,7 @@ export class MessageList extends React.Component {
           <source src={popOgg} />
           <source src={popWav} />
         </audio>
-        <ScrollArea ref="scrollArea" vertical>
+        <ScrollArea ref="scrollArea" ownerDocument={window.widgetFrame.document} vertical>
           <div className="bottom-aligner"/>
           <div>
             {this.props.messages.map((message, key) => <MessageFactoryContainer key={key} message={message} />)}
