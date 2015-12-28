@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
 import { chatLoadedSelector, messagesSelector, lastMessageIdSelector, muteSelector } from '../../../../Selectors/chat';
 import { widgetDimensionsSelector, widgetHeightSelector, isBubbleSelector } from '../../../../../Application/Selectors/dpWindow';
-import { MessagesList } from './MessagesList';
+import { MessageList } from './MessageList';
+import { MessageListSpinner } from './MessageListSpinner';
 import $ from 'jquery';
 
 @connect(state => ({
@@ -15,9 +16,10 @@ import $ from 'jquery';
   mute: muteSelector(state),
   isBubble: isBubbleSelector(state)
 }))
-export class MessagesListContainer extends React.Component {
+export class MessageListContainer extends React.Component {
 
   static propTypes = {
+    chatLoaded: PropTypes.bool,
     isBubble: PropTypes.bool,
     widgetHeight: PropTypes.number
   };
@@ -45,10 +47,12 @@ export class MessagesListContainer extends React.Component {
     }
 
     $(node).css('height', height);
-    this.refs.list.refresh();
+    if (this.refs.list) {
+      this.refs.list.refresh();
+    }
   }
 
   render() {
-    return <MessagesList ref="list" {...this.props} />;
+    return this.props.chatLoaded ? <MessageList ref="list" {...this.props} /> : <MessageListSpinner />;
   }
 }

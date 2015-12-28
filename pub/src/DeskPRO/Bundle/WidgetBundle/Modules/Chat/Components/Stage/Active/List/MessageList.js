@@ -6,10 +6,9 @@ import popMp3 from '../../../../../../Resources/sounds/pop.mp3';
 import popOgg from '../../../../../../Resources/sounds/pop.ogg';
 import popWav from '../../../../../../Resources/sounds/pop.wav';
 
-export class MessagesList extends React.Component {
+export class MessageList extends React.Component {
 
   static propTypes = {
-    chatLoaded: PropTypes.bool,
     messages: PropTypes.object,
     lastMessageId: PropTypes.number,
     mute: PropTypes.bool,
@@ -25,6 +24,7 @@ export class MessagesList extends React.Component {
   }
 
   componentDidMount() {
+    this.playSound = false;
     this.checkForNewMessages();
   }
 
@@ -41,7 +41,7 @@ export class MessagesList extends React.Component {
   }
 
   checkForNewMessages() {
-    const { chatLoaded, messages, lastMessageId, mute } = this.props;
+    const { messages, lastMessageId, mute } = this.props;
     if (messages.size !== this.state.messagesCount) {
       this.setState({
         messagesCount: messages.size,
@@ -56,7 +56,7 @@ export class MessagesList extends React.Component {
       });
 
       // Don't play sound on initial load
-      if (chatLoaded && !mute && newAgentMessage.size > 0) {
+      if (this.playSound && !mute && newAgentMessage.size > 0) {
         const sound = ReactDOM.findDOMNode(this.refs.sound);
         try {
           sound.play();
@@ -64,20 +64,12 @@ export class MessagesList extends React.Component {
           console.warn('Unable to play sound');
         }
       }
+
+      this.playSound = true;
     }
   }
 
   render() {
-    const { messages, chatLoaded } = this.props;
-
-    if (!chatLoaded) {
-      return (
-        <div className="dpdesignportal-content">
-          <div className="circle-spinner chat-message-list"><i/></div>
-        </div>
-      );
-    }
-
     return (
       <div className="dpdesignportal-content">
         <audio ref="sound" preload="preload">
@@ -88,7 +80,7 @@ export class MessagesList extends React.Component {
         <ScrollArea ref="scrollArea" vertical>
           <div className="bottom-aligner"/>
           <div>
-            {messages.map((message, key) => <MessageFactoryContainer key={key} message={message} />)}
+            {this.props.messages.map((message, key) => <MessageFactoryContainer key={key} message={message} />)}
           </div>
         </ScrollArea>
       </div>
