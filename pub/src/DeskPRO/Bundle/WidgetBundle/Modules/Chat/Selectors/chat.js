@@ -10,7 +10,7 @@ export const lockedPollingSelector = createSelector(
 
 export const skippedPollingSelector = createSelector(
   stateSelector,
-    state => state.getIn(['polling', 'skipped'])
+  state => state.getIn(['polling', 'skipped'])
 );
 
 // Phrase translations
