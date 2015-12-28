@@ -94,3 +94,8 @@ export const isBubbleSelector = createSelector(
   widgetTypeSelector,
   widgetType => widgetType === 'bubble'
 );
+
+export const widgetHasChat = createSelector(
+  widgetOptionsSelector,
+  options => options.get('hasChat') || true
+);
