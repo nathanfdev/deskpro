@@ -80,6 +80,11 @@ export const agentPollingTimeoutSelector = createSelector(
   options => options.get('agentPollingTimeout') || 'off'
 );
 
+export const agentAcceptingTimeoutSelector = createSelector(
+  widgetOptionsSelector,
+  options => options.get('agentAcceptingTimeout') || 120 // 2 minutes
+);
+
 export const widgetTypeSelector = createSelector(
   widgetOptionsSelector,
   options => options.get('windowType') || 'default'
