@@ -50,15 +50,6 @@ export class HelpButtonContainer extends React.Component {
     this.checkRenderPopup();
   }
 
-  onOpenWidget = () => {
-    const { agentsCounts, onClick } = this.props;
-    if (!agentsCounts) {
-      return;
-    }
-
-    onClick();
-  };
-
   onClosePopup = () => {
     this.props.dispatch(closeTriggerPopup());
   };
@@ -95,9 +86,9 @@ export class HelpButtonContainer extends React.Component {
   }
 
   renderPopup() {
-    const { popup } = this.props;
+    const { popup, onClick } = this.props;
     const popupProps = {
-      onClick: this.onOpenWidget,
+      onClick: onClick,
       onClose: this.onClosePopup
     };
 
@@ -121,7 +112,7 @@ export class HelpButtonContainer extends React.Component {
   }
 
   render() {
-    const { triggerPopupOpened, agentsCounts } = this.props;
+    const { triggerPopupOpened, onClick } = this.props;
 
     return (
       <div>
@@ -134,7 +125,7 @@ export class HelpButtonContainer extends React.Component {
             </OnlineAgentsContainer>
           </ClickOut>
         }
-        <HelpButton {...this.props} onClick={this.onOpenWidget} disabled={!agentsCounts} />
+        <HelpButton {...this.props} onClick={onClick} />
       </div>
     );
   }
