@@ -55,11 +55,16 @@ export class ChatPollingContainer extends React.Component {
       last_message_id: lastMessageId
     };
     const promise = dispatch(pollingChat(chatId, queryParams));
-    const onResponse = () => {
+    const onSuccessResponse = () => {
       setTimeout(this.pollingRequest, 3000);
     };
 
-    promise.then(onResponse, onResponse);
+    const onErrorResponse = response => {
+      console.log(response.xhr);
+      setTimeout(this.pollingRequest, 3000);
+    };
+
+    promise.then(onSuccessResponse, onErrorResponse);
   };
 
   render() {

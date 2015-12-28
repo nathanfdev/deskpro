@@ -159,100 +159,101 @@ export const pollingChat = createAction(
     const state = getState();
     const queryParams = compileParams(addSessionCode(state, params));
 
-    return DpApi
-      .sendGet(`DP_API/chats/${chatId}/polling?${queryParams}`, {...ajaxOptions})
-      .success(response => {
-        const locked = lockedPollingSelector(state);
-        const skipped = skippedPollingSelector(state);
+    const promise = DpApi.sendGet(`DP_API/chats/${chatId}/polling?${queryParams}`, {...ajaxOptions});
+    promise.success(response => {
+      const locked = lockedPollingSelector(state);
+      const skipped = skippedPollingSelector(state);
 
-        // Waiting for ajax response
-        if (locked) {
-          return;
-        }
+      // Waiting for ajax response
+      if (locked) {
+        return;
+      }
 
-        // Waiting for next response to get actual data
-        if (skipped) {
-          dispatch(enablePollingResponse());
-          return;
-        }
+      // Waiting for next response to get actual data
+      if (skipped) {
+        dispatch(enablePollingResponse());
+        return;
+      }
 
-        const oldChatInfo = chatInfoSelector(state);
-        const newChatInfo = response.chat_info && response.chat_info.data;
-        const loaded = chatLoadedSelector(state);
+      const oldChatInfo = chatInfoSelector(state);
+      const newChatInfo = response.chat_info && response.chat_info.data;
+      const loaded = chatLoadedSelector(state);
 
-        if (newChatInfo) {
-          // Chat info was changed
-          if (!oldChatInfo.equals(Immutable.fromJS(newChatInfo))) {
-            // Update chat info
-            dispatch(updateChatInfo(newChatInfo));
+      if (newChatInfo) {
+        // Chat info was changed
+        if (!oldChatInfo.equals(Immutable.fromJS(newChatInfo))) {
+          // Update chat info
+          dispatch(updateChatInfo(newChatInfo));
 
-            // Handle chat transcript
-            const transcriptChecked = transcriptCheckedSelector(state);
-            if (newChatInfo.author_email) {
-              // Auto select transcript checkbox if user has email
-              if (!transcriptChecked) {
-                dispatch(enableSendTranscript());
-              } else {
-                // If can send transcript data and chat is ended
-                const transcriptSending = transcriptSendingSelector(state);
-                const transcriptSent = transcriptSentSelector(state);
-
-                if (newChatInfo.date_ended && !transcriptSending && !transcriptSent) {
-                  // send transcript data
-                  dispatch(sendTranscriptData(chatId));
-                }
-              }
+          // Handle chat transcript
+          const transcriptChecked = transcriptCheckedSelector(state);
+          if (newChatInfo.author_email) {
+            // Auto select transcript checkbox if user has email
+            if (!transcriptChecked) {
+              dispatch(enableSendTranscript());
             } else {
-              if (transcriptChecked) {
-                dispatch(disableSendTranscript());
-              }
-            }
-          }
+              // If can send transcript data and chat is ended
+              const transcriptSending = transcriptSendingSelector(state);
+              const transcriptSent = transcriptSentSelector(state);
 
-          // Toggle reopen chat
-          const canReopen = canReopenSelector(state);
-          if (!newChatInfo.date_ended) {
-            if (!canReopen) {
-              dispatch(enableChatReopen());
+              if (newChatInfo.date_ended && !transcriptSending && !transcriptSent) {
+                // send transcript data
+                dispatch(sendTranscriptData(chatId));
+              }
             }
           } else {
-            const ended = moment(newChatInfo.date_ended).format('X');
-            const now = moment().format('X');
-            const delay = ended - now + 120; // can reopen in 2 minutes
-
-            if (canReopen && delay < 0) {
-              dispatch(disableChatReopen());
+            if (transcriptChecked) {
+              dispatch(disableSendTranscript());
             }
           }
         }
 
-        // Received new messages
-        const newMessages = response.new_messages ? response.new_messages.data : [];
-        if (newMessages.length) {
-          const existMessageIds = messageIdsSelector(state);
-          const filteredMessages = newMessages
-            // Skip user's messages because they are added optimistically,
-            // but do load user's messages on initial polling request
-            .filter(message => !loaded || (loaded && message.author_type !== 'user'))
-            // Check for unique ids
-            .filter(message => existMessageIds.indexOf(message.id) === -1);
-
-          if (filteredMessages.length) {
-            dispatch(addNewMessages(filteredMessages));
+        // Toggle reopen chat
+        const canReopen = canReopenSelector(state);
+        if (!newChatInfo.date_ended) {
+          if (!canReopen) {
+            dispatch(enableChatReopen());
           }
+        } else {
+          const ended = moment(newChatInfo.date_ended).format('X');
+          const now = moment().format('X');
+          const delay = ended - now + 120; // can reopen in 2 minutes
 
-          // Filter not acked messages and send ack request
-          const ackMessages = filteredMessages.filter(message => message.author_type === 'agent' && !message.date_received);
-          if (ackMessages.length) {
-            dispatch(ackChatMessages(chatId, {message_ids: ackMessages.map(message => message.id)}));
+          if (canReopen && delay < 0) {
+            dispatch(disableChatReopen());
           }
         }
+      }
 
-        // Mark chat as loaded on first polling response
-        if (!loaded) {
-          dispatch(setLoaded());
+      // Received new messages
+      const newMessages = response.new_messages ? response.new_messages.data : [];
+      if (newMessages.length) {
+        const existMessageIds = messageIdsSelector(state);
+        const filteredMessages = newMessages
+          // Skip user's messages because they are added optimistically,
+          // but do load user's messages on initial polling request
+          .filter(message => !loaded || (loaded && message.author_type !== 'user'))
+          // Check for unique ids
+          .filter(message => existMessageIds.indexOf(message.id) === -1);
+
+        if (filteredMessages.length) {
+          dispatch(addNewMessages(filteredMessages));
         }
-      });
+
+        // Filter not acked messages and send ack request
+        const ackMessages = filteredMessages.filter(message => message.author_type === 'agent' && !message.date_received);
+        if (ackMessages.length) {
+          dispatch(ackChatMessages(chatId, {message_ids: ackMessages.map(message => message.id)}));
+        }
+      }
+
+      // Mark chat as loaded on first polling response
+      if (!loaded) {
+        dispatch(setLoaded());
+      }
+    });
+
+    return promise;
   }
 );
 
