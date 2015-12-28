@@ -3,20 +3,24 @@ import $ from 'jquery';
 
 export const widgetResize = createAction(
   'WIDGET_RESIZE',
-  () => ({
-    width: $(window.widgetFrame).width(),
-    height: $(window.widgetFrame).height()
-  })
+  () => {
+    const $window = $(window.widgetFrame);
+    return {
+      width: $window.width(),
+      height: $window.height()
+    };
+  }
 );
 
 export const windowResize = createAction(
   'WINDOW_RESIZE',
   () => dispatch => {
     dispatch(widgetResize());
+    const $window = $(parent.window);
 
     return {
-      width: $(parent.window).width(),
-      height: $(parent.window).height()
+      width: $window.width(),
+      height: $window.height()
     };
   }
 );
