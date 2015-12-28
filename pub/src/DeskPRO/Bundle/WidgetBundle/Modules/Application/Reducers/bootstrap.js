@@ -8,7 +8,9 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
-  [actions.setSessionCode]: setFullPayload('sessionCode'),
+  [actions.getSession]: async({
+    success: setFullPayload('sessionCode')
+  }),
   [actions.bootstrapWidget]: async({
     done: setValue('loaded', true)
   })

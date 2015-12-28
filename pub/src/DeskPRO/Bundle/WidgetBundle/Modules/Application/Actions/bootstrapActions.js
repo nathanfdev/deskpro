@@ -2,38 +2,31 @@ import { createAction } from 'Ampliflux';
 import { loadOptions } from './dpWindowActions';
 import { loadPhraseTranslations } from '../../Chat/Actions/chatActions';
 import { widgetSessionCodeSelector } from '../Selectors/bootstrap';
-import { generate } from 'randomstring';
+import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 
 export const ajaxOptions = {crossDomain: true, dataType: 'json'};
 export const addSessionCode = (state, params = {}) => {
   return {...params, __sid: widgetSessionCodeSelector(state)};
 };
 
-export const setSessionCode = createAction(
-  'WIDGET_SET_SESSION_CODE',
-  sessionCode => {
-    localStorage.setItem('dpWidget.sessionCode', sessionCode);
-    return sessionCode;
-  }
+export const getSession = createAction(
+  'WIDGET_GET_SESSION',
+  sessionCode => new Promise(resolve =>
+    DpApi
+      .sendPost('DP_API/auth/get_session', {session_code: sessionCode}, {...ajaxOptions})
+      .success(response => {
+        localStorage.setItem('dpWidget.sessionCode', response.session_code);
+        resolve(response.session_code);
+      })
+  )
 );
 
 export const bootstrapWidget = createAction(
   'WIDGET_BOOTSTRAP',
   () => dispatch => new Promise(resolve => {
-    const storedSessionCode = localStorage.getItem('dpWidget.sessionCode');
-    if (storedSessionCode) {
-      dispatch(setSessionCode(storedSessionCode));
-    } else {
-      const newSessionCode = generate({
-        length: 20,
-        charset: 'alphabetic'
-      });
-
-      dispatch(setSessionCode(newSessionCode));
-    }
-
     Promise.
       all([
+        dispatch(getSession(localStorage.getItem('dpWidget.sessionCode'))),
         dispatch(loadOptions(window.DP_OPTIONS)),
         dispatch(loadPhraseTranslations())
       ])
