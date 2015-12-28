@@ -6,3 +6,8 @@ export const widgetLoadedSelector = createSelector(
   stateSelector,
   state => state.get('loaded')
 );
+
+export const widgetSessionCodeSelector = createSelector(
+  stateSelector,
+  state => state.get('sessionCode')
+);
