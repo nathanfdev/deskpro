@@ -3,7 +3,7 @@ import * as actions from '../Actions/bootstrapActions';
 import { setValue, setFullPayload, async } from 'Ampliflux/reducers/handlers';
 
 const initialState = {
-  sessionCode: localStorage.getItem('dpWidget.sessionCode'),
+  sessionCode: null,
   loaded: false
 };
 

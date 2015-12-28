@@ -2,6 +2,7 @@ import { createAction } from 'Ampliflux';
 import { loadOptions } from './dpWindowActions';
 import { loadPhraseTranslations } from '../../Chat/Actions/chatActions';
 import { widgetSessionCodeSelector } from '../Selectors/bootstrap';
+import { generate } from 'randomstring';
 
 export const ajaxOptions = {crossDomain: true, dataType: 'json'};
 export const addSessionCode = (state, params = {}) => {
@@ -19,6 +20,18 @@ export const setSessionCode = createAction(
 export const bootstrapWidget = createAction(
   'WIDGET_BOOTSTRAP',
   () => dispatch => new Promise(resolve => {
+    const storedSessionCode = localStorage.getItem('dpWidget.sessionCode');
+    if (storedSessionCode) {
+      dispatch(setSessionCode(storedSessionCode));
+    } else {
+      const newSessionCode = generate({
+        length: 20,
+        charset: 'alphabetic'
+      });
+
+      dispatch(setSessionCode(newSessionCode));
+    }
+
     Promise.
       all([
         dispatch(loadOptions(window.DP_OPTIONS)),
