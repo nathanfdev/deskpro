@@ -6,7 +6,6 @@ import { AgentMessagePopupContainer } from '../Popups/AgentMessage/AgentMessageP
 import { ReplyButtons } from '../Popups/AgentMessage/ReplyButtons';
 import { ReplyForm } from '../Popups/AgentMessage/ReplyForm';
 import { loadOnlineAgents } from '../../../Actions/agentActions';
-import { onlineAgentsCountSelector } from '../../../Selectors/agent';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { OnlineAgentsContainer } from '../Popups/OnlineAgentsContainer';
 import { openTriggerPopup, closeTriggerPopup } from '../../../Actions/dpWindowActions';
@@ -22,7 +21,6 @@ import {
   widgetOpened: widgetOpenedSelector(state),
   size: helpButtonSizeSelector(state),
   popup: helpPopupSelector(state),
-  agentsCounts: onlineAgentsCountSelector(state),
   agentPollingTimeout: agentPollingTimeoutSelector(state),
   triggerPopupOpened: triggerPopupOpenedSelector(state)
 }))
@@ -34,7 +32,6 @@ export class HelpButtonContainer extends React.Component {
     dispatch: PropTypes.func,
     onClick: PropTypes.func,
     popup: PropTypes.string,
-    agentsCounts: PropTypes.number,
     agentPollingTimeout: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number
@@ -55,10 +52,10 @@ export class HelpButtonContainer extends React.Component {
   };
 
   checkRenderPopup() {
-    const { triggerPopupOpened, agentsCounts, dispatch } = this.props;
+    const { triggerPopupOpened, dispatch } = this.props;
     const storageKey = 'dpWidget.dpWindow.popupShown';
 
-    if ((!(storageKey in localStorage) || localStorage[storageKey] !== 'none') && agentsCounts > 0) {
+    if (!(storageKey in localStorage) || localStorage[storageKey] !== 'none') {
       if (!triggerPopupOpened) {
         dispatch(openTriggerPopup());
       }

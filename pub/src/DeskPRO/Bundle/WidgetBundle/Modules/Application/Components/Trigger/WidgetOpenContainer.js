@@ -1,13 +1,15 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { openWidget } from '../../Actions/dpWindowActions';
+import { onlineAgentsCountSelector } from '../../Selectors/agent';
 import { chatModeSelector } from '../../Selectors/dpWindow';
 import { chatIdSelector } from '../../../Chat/Selectors/chat';
 import history from '../../../../Services/history';
 
 @connect(state => ({
   chatMode: chatModeSelector(state),
-  chatId: chatIdSelector(state)
+  chatId: chatIdSelector(state),
+  agentsCounts: onlineAgentsCountSelector(state)
 }))
 export class WidgetOpenContainer extends React.Component {
 
@@ -15,7 +17,8 @@ export class WidgetOpenContainer extends React.Component {
     dispatch: PropTypes.func,
     children: PropTypes.node,
     chatId: PropTypes.number,
-    chatMode: PropTypes.string
+    chatMode: PropTypes.string,
+    agentsCounts: PropTypes.number
   };
 
   onClick = () => {
