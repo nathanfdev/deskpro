@@ -51,8 +51,20 @@ class PeopleController extends CrudController
 {
     use LabelsHelper;
 
-    public static $entity = Person::class;
-    public static $type   = 'api_person';
+    public static $entity      = Person::class;
+    public static $type        = 'api_person';
+    public static $sortOptions = [
+        'date_created'    => 'date_created',
+        'date_last_login' => 'date_last_login',
+        'id'              => 'id',
+        'first_name'      => 'first_name',
+        'last_name'       => 'last_name',
+        'primary_email'   => 'primary_email',
+        'timezone'        => 'timezone',
+        'organization'    => 'organization',
+    ];
+    public static $listSort  = 'date_created';
+    public static $listOrder = 'desc';
 
     /**
      * @ApiDoc(

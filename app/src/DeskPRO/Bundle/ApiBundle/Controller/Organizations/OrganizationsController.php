@@ -47,8 +47,17 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class OrganizationsController extends CrudController
 {
-    public static $exposeOnly = ['list', 'get'];
-    public static $entity     = Organization::class;
+    public static $exposeOnly  = ['list', 'get'];
+    public static $entity      = Organization::class;
+    public static $sortOptions = [
+        'date_created' => 'date_created',
+        'id'           => 'id',
+        'name'         => 'name',
+        'summary'      => 'summary',
+        'importance'   => 'importance',
+    ];
+    public static $listSort  = 'date_created';
+    public static $listOrder = 'desc';
 
     /**
      * @ApiDoc(

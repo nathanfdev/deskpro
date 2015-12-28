@@ -1,22 +1,53 @@
 import React, {Component, PropTypes} from 'react';
-import { CrmTable } from './CrmTable';
+import { OrganizationsTable } from './OrganizationsTable';
+import { PeopleTable } from './PeopleTable';
+import { peopleSelector, organizationsSelector, currentContentSelector, currentListSortSelector, currentListOrderSelector }
+  from '../../../../Selectors/list';
+import { organizationsRecordsSelector } from '../../../../Selectors/recordStores';
+import { applyParams} from '../../../../Actions/crmListActions';
 
 import { connect } from 'react-redux';
 @connect(state => {
   return ({
-    people: state.CRM.list.get('people')
+    content: currentContentSelector(state),
+    people: peopleSelector(state),
+    linkedOrganizations: organizationsRecordsSelector(state),
+    organizations: organizationsSelector(state),
+    currentOrder: currentListOrderSelector(state),
+    currentSort: currentListSortSelector(state)
   });
 })
-
 export class CrmTableContainer extends Component {
   static propTypes = {
-    people: PropTypes.object.isRequired
+    dispatch: PropTypes.string.isRequired,
+    content: PropTypes.string.isRequired,
+    people: PropTypes.object,
+    linkedOrganizations: PropTypes.object,
+    organizations: PropTypes.object,
+    currentSort: PropTypes.string.isRequired,
+    currentOrder: PropTypes.string.isRequired
   };
 
+  sortTable(param, order) {
+    this.props.dispatch(applyParams({ sort: param, order }));
+  }
+
   render() {
-    const { people } = this.props;
+    const {content, organizations, people, linkedOrganizations, currentSort, currentOrder } = this.props;
+    if (content === 'organizations') {
+      return (
+        <OrganizationsTable organizations={organizations}
+                            currentSort={currentSort}
+                            currentOrder={currentOrder}
+                            sortTable={this.sortTable.bind(this)}/>
+      );
+    }
     return (
-      <CrmTable elements={people}/>
+      <PeopleTable people={people}
+                   organizations={linkedOrganizations}
+                   currentSort={currentSort}
+                   currentOrder={currentOrder}
+                   sortTable={this.sortTable.bind(this)}/>
     );
   }
 }

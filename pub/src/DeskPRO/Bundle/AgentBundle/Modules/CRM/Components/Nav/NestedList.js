@@ -18,7 +18,6 @@ export class NestedList extends BaseNestedList {
                          group={group}
                          label={label}
                          listOptions={listOptions}>
-
         <ListItem label={label}
                   count={count}>
           {this.renderNested(item, depth)}

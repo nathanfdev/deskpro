@@ -8,7 +8,7 @@ import DpApi from '../DpApi';
 function compileParams(params) {
   const compiled = [];
 
-  for (let key of Object.keys(params)) {
+  for (const key of Object.keys(params)) {
     compiled.push(key + '=' + String(params[key]));
   }
 
@@ -30,9 +30,9 @@ export function loadPeople(options) {
     options.is_agent = 1;
   }
 
-  const request = Object.keys(options).length > 0 ? ('?' + compileParams(options)) : '';
-  console.log(`DP_API/people${request}`);
-  return DpApi.sendGet(`DP_API/people${request}`);
+  const request = Object.keys(options).length > 0 ? ('&' + compileParams(options)) : '';
+  console.log(`DP_API/people?include=organization${request}`);
+  return DpApi.sendGet(`DP_API/people?include=organization${request}`);
 }
 
 export function loadPerson(id) {

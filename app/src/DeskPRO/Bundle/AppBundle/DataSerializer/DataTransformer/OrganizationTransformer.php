@@ -49,6 +49,7 @@ class OrganizationTransformer extends AbstractDataSerializerTransformer
             'name',
             'summary',
             'importance',
+            'date_created',
         ];
     }
 

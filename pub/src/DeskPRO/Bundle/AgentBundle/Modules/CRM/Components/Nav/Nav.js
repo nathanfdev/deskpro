@@ -1,8 +1,9 @@
 import React, { Component, PropTypes } from 'react';
-import { NavFrame, NavFrameHeader, NavFrameBody, SectionHeader, TabsPaneStatefulContainer, TabsPane, Tab, ListItem, LabelsDictionary }
+import { NavFrame, NavFrameHeader, NavFrameBody, SectionHeader, TabsPaneStatefulContainer, Tab, ListItem, LabelsDictionary }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import { NestedList } from './NestedList';
+import { ListItemContainer } from './ListItemContainer';
 
 export class Nav extends Component {
 
@@ -26,6 +27,7 @@ export class Nav extends Component {
           CRM
         </NavFrameHeader>
         <NavFrameBody>
+
           <SectionHeader>People</SectionHeader>
           <TabsPaneStatefulContainer id="peopleTab">
             <Tab title="Groups">
@@ -45,12 +47,17 @@ export class Nav extends Component {
               </LoadIndicator>
             </Tab>
           </TabsPaneStatefulContainer>
+
           <SectionHeader>Organizations</SectionHeader>
           <TabsPaneStatefulContainer id="orgTab">
             <Tab title="All">
               <LoadIndicator loaded={loaded}>
                 <ul>
-                  <ListItem count={organizations.get('count')} label="All Organizations"/>
+                  <ListItemContainer group="organizations"
+                                     label="all"
+                                     listOptions={{content: 'organizations'}}>
+                    <ListItem count={organizations.get('count')} label="All Organizations"/>
+                  </ListItemContainer>
                 </ul>
               </LoadIndicator>
             </Tab>
@@ -62,19 +69,16 @@ export class Nav extends Component {
           </TabsPaneStatefulContainer>
 
           <SectionHeader>Agents</SectionHeader>
-
-          <div className="sidebar-list">
-            <ul>
-              <LoadIndicator loaded={loaded}>
-                <ul>
-                  <NestedList items={[agents.toJS()]}
-                              isAgent={1}
-                              group="agents"
-                              alwaysExpanded/>
-                </ul>
-              </LoadIndicator>
-            </ul>
-          </div>
+          <LoadIndicator loaded={loaded}>
+            <div className="sidebar-list">
+              <ul>
+                <NestedList items={[agents.toJS()]}
+                            isAgent={1}
+                            group="agents"
+                            alwaysExpanded/>
+              </ul>
+            </div>
+          </LoadIndicator>
         </NavFrameBody>
       </NavFrame>
     );

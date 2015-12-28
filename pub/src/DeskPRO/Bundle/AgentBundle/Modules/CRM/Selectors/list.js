@@ -10,6 +10,15 @@ export const currentListParamsSelector = createSelector(
     state => state.get('currentListParams')
 );
 
+export const organizationsSelector = createSelector(
+  stateSelector,
+    state => state.get('organizations')
+);
+
+export const peopleSelector = createSelector(
+  stateSelector,
+    state => state.get('people')
+);
 
 export const currentListSortSelector = createSelector(
   currentListParamsSelector,
@@ -19,4 +28,9 @@ export const currentListSortSelector = createSelector(
 export const currentListOrderSelector = createSelector(
   currentListParamsSelector,
     params => params.get('order')
+);
+
+export const currentContentSelector = createSelector(
+  currentListParamsSelector,
+    params => params.get('content')
 );
