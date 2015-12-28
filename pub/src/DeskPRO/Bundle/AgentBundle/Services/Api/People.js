@@ -30,9 +30,9 @@ export function loadPeople(options) {
     options.is_agent = 1;
   }
 
-  const request = Object.keys(options).length > 0 ? ('?' + compileParams(options)) : '';
-  console.log(`DP_API/people${request}`);
-  return DpApi.sendGet(`DP_API/people${request}`);
+  const request = Object.keys(options).length > 0 ? ('&' + compileParams(options)) : '';
+  console.log(`DP_API/people?include=organization${request}`);
+  return DpApi.sendGet(`DP_API/people?include=organization${request}`);
 }
 
 export function loadPerson(id) {
