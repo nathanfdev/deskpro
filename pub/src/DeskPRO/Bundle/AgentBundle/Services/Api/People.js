@@ -8,7 +8,7 @@ import DpApi from '../DpApi';
 function compileParams(params) {
   const compiled = [];
 
-  for (let key of Object.keys(params)) {
+  for (const key of Object.keys(params)) {
     compiled.push(key + '=' + String(params[key]));
   }
 
