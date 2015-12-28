@@ -32,7 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\Session;
-use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
+use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Form\Form;
@@ -43,7 +43,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 /**
  * Class AbstractApiController.
  */
-abstract class AbstractApiController extends AbstractController
+abstract class AbstractApiController extends FOSRestController
 {
     /**
      * @param mixed  $data
