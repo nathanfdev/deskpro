@@ -82,16 +82,21 @@ export const loadPhraseTranslations = createAction(
 
 export const createChat = createAction(
   'WIDGET_CHAT_CREATE_NEW',
-  params => dispatch => DpApi
-    .sendPost('DP_API/chats/create', params, {...ajaxOptions})
-    .success(response => {
-      const data = response.data || {};
-      const chatId = data.id;
+  params => (dispatch, getState) => {
+    const state = getState();
+    const queryParams = compileParams(addSessionCode(state));
 
-      if (chatId) {
-        dispatch(setChatId(chatId));
-      }
-    })
+    return DpApi
+      .sendPost(`DP_API/chats/create?${queryParams}`, params, {...ajaxOptions})
+      .success(response => {
+        const data = response.data || {};
+        const chatId = data.id;
+
+        if (chatId) {
+          dispatch(setChatId(chatId));
+        }
+      });
+  }
 );
 
 export const ackChatMessages = createAction(
