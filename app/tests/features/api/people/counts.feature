@@ -24,7 +24,6 @@ Feature: /people/counts endpoint
     When I send a GET request to "/api/v2/people/counts?is_agent=0&is_deleted=0&group_by=user_group"
     Then the response should be in JSON
     And the response status code should be 200
-    And print last JSON response
     And the JSON node "data" should exist
     And the JSON node "data.count" should be equal to 3
     And the JSON node "data.nested" should exist
