@@ -4,6 +4,7 @@ import { TicketFormContent } from './TicketFormContent';
 import { TicketFormSpinner } from './TicketFormSpinner';
 import { loadNewTicketForm, saveNewTicketForm } from '../../Actions/ticketActions';
 import { contentSelector, contentLoadingSelector } from '../../Selectors/ticket';
+import history from '../../../../Services/history';
 
 @connect(state => ({
   content: contentSelector(state),
@@ -24,7 +25,8 @@ export class TicketFormContentContainer extends React.Component {
 
   onSubmit = data => {
     const { dispatch } = this.props;
-    dispatch(saveNewTicketForm(data));
+    const promise = dispatch(saveNewTicketForm(data));
+    promise.then(() => history.replace('ticket/form_submitted'));
   };
 
   render() {

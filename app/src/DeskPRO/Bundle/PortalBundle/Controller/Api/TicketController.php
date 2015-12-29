@@ -69,6 +69,13 @@ class TicketController extends AbstractApiController
             'action'            => $this->generateUrl('portal_new_ticket'),
         ]);
 
+        $form->submit($request->query->get('ticket', []), false);
+        if ($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($ticket);
+            $em->flush();
+        }
+
         $form_full = $this->createForm('ticket', $ticket, [
             'person'         => $person,
             'ticket_message' => null,

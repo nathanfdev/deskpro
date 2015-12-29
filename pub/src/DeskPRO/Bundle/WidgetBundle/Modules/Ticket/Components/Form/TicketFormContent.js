@@ -1,39 +1,39 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
-import history from '../../../../Services/history';
 import TicketForm from '../../../../../PortalBundle/PageWidget/TicketForm';
+import serializeJSON from 'jquery.serializejson';
 
 export class TicketFormContent extends React.Component {
 
   static propTypes = {
+    onSubmit: PropTypes.func,
     content: PropTypes.string
   };
 
   componentDidMount() {
-    const $button = this.getButton();
-    $button.on('click', this.onSubmit);
-
+    this.getForm().on('submit', this.onSubmit);
     this.formWidget = new TicketForm($('#new_ticket_page', this.getCurrentNode()));
     this.formWidget.renderWhenReady();
   }
 
   componentWillUnmount() {
-    const $button = this.getButton();
-    $button.off('click', this.onSubmit);
+    this.getForm().off('submit', this.onSubmit);
   }
 
   onSubmit = event => {
     event.preventDefault();
-    history.replace('ticket/form_submitted');
+
+    const data = $(event.target).serializeJSON();
+    this.props.onSubmit(data);
   };
 
   getCurrentNode() {
     return ReactDOM.findDOMNode(this);
   }
 
-  getButton() {
-    return $('button[type=submit]', this.getCurrentNode());
+  getForm() {
+    return $('.form-ticket', this.getCurrentNode());
   }
 
   render() {
