@@ -6,3 +6,8 @@ export const contentSelector = createSelector(
   stateSelector,
   state => state.get('content')
 );
+
+export const contentLoadingSelector = createSelector(
+  stateSelector,
+  state => state.get('loading')
+);

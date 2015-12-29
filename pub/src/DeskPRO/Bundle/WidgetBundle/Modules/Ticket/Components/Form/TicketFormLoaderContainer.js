@@ -1,16 +1,18 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { loadForm } from '../../Actions/ticketActions';
-import { contentSelector } from '../../Selectors/ticket';
+import { contentSelector, contentLoadingSelector } from '../../Selectors/ticket';
 
 @connect(state => ({
-  content: contentSelector(state)
+  content: contentSelector(state),
+  loading: contentLoadingSelector(state)
 }))
 export class TicketFormLoaderContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func,
-    content: PropTypes.string
+    content: PropTypes.string,
+    loading: PropTypes.bool
   };
 
   componentDidMount() {
@@ -19,8 +21,15 @@ export class TicketFormLoaderContainer extends React.Component {
   }
 
   render() {
-    return (
-      <div dangerouslySetInnerHTML={{__html: this.props.content}} />
-    );
+    const { loading, content } = this.props;
+    if (loading) {
+      return (
+        <div className="dpdesignportal-content">
+          <div className="circle-spinner"><i/></div>
+        </div>
+      );
+    }
+
+    return <div dangerouslySetInnerHTML={{__html: content}} />;
   }
 }
