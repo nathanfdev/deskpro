@@ -5,8 +5,13 @@ export class TicketForm extends React.Component {
 
   render() {
     return (
-      <div>
-        Ticket form
+      <div className="dpdesignportal-content dpdesignportal-open-new-ticket">
+        <div className="header">
+          <span className="img" />
+          <h1>Open a new ticket</h1>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut.</p>
+        </div>
+
         <TicketFormContentContainer />
       </div>
     );
