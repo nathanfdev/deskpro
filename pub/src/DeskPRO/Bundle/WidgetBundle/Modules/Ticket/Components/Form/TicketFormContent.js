@@ -14,7 +14,7 @@ export class TicketFormContent extends React.Component {
     const $button = this.getButton();
     $button.on('click', this.onSubmit);
 
-    this.formWidget = new TicketForm('#new_ticket_page', this.getCurrentNode());
+    this.formWidget = new TicketForm($('#new_ticket_page', this.getCurrentNode()));
     this.formWidget.renderWhenReady();
   }
 

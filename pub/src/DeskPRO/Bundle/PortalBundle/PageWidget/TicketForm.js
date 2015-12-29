@@ -89,7 +89,7 @@ export default class TicketForm extends PageWidget {
 
         // only render ticket deflection if a .dpx-with-ticket-deflection is present on the form
         if ($formEl.hasClass('dpx-with-ticket-deflection')) {
-          const $subject = $('#ticket_subject');
+          const $subject = $('#ticket_subject', $formEl);
           const $rElement = $('<div class="dp-react-widget"></div>').insertAfter($subject);
           ReactDOM.render(React.createElement(NewTicketSuggestions, {input: $subject}), $rElement.get(0));
         }
