@@ -117,7 +117,10 @@ export default class TicketForm extends PageWidget {
         setDisplayedFields(fields);
       },
       onPostUpdate: () => {
-        PortalApp.getPortalPage().refresh($formEl);
+        const portalPage = PortalApp.getPortalPage();
+        if (portalPage) {
+          portalPage.refresh($formEl);
+        }
       }
     });
 
