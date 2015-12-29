@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Session;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
@@ -98,5 +99,13 @@ abstract class AbstractApiController extends FOSRestController
         }
 
         return $session;
+    }
+
+    /**
+     * @return DeskproContainer|\Symfony\Component\DependencyInjection\ContainerInterface
+     */
+    protected function getContainer()
+    {
+        return $this->container;
     }
 }
