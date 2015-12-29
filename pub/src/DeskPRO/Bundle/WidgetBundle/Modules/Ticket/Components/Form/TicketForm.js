@@ -1,6 +1,5 @@
 import React from 'react';
-import history from '../../../../Services/history';
-import { TicketFormLoaderContainer } from './TicketFormLoaderContainer';
+import { TicketFormContentContainer } from './TicketFormContentContainer';
 
 export class TicketForm extends React.Component {
 
@@ -8,8 +7,7 @@ export class TicketForm extends React.Component {
     return (
       <div>
         Ticket form
-        <TicketFormLoaderContainer />
-        <button onClick={() => history.replace('ticket/form_submitted')} />
+        <TicketFormContentContainer />
       </div>
     );
   }
