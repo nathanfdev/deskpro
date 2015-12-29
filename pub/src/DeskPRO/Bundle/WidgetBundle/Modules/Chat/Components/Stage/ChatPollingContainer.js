@@ -60,7 +60,11 @@ export class ChatPollingContainer extends React.Component {
     };
 
     const onErrorResponse = response => {
-      console.log(response.xhr);
+      // Stop polling on wring session code
+      if (response.xhr && response.xhr.status === 400) {
+        return;
+      }
+
       setTimeout(this.pollingRequest, 3000);
     };
 
