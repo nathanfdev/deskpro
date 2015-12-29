@@ -51,7 +51,7 @@ html, body {
   position: absolute;
 }
 
-.dpdesignportal-button, .dpdesignportal a.dpdesignportal-button, .dpdesignportal .dpdesignportal-button {// Base buttons
+.dpdesignportal-button, .dpdesignportal a.dpdesignportal-button, .dpdesignportal .dpdesignportal-button, .dpdesignportal-open-new-ticket button[type=submit] {// Base buttons
   text-decoration: none;
   display: inline-block;
   line-height: 1.3em;
