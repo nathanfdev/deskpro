@@ -2,19 +2,35 @@
  * wrapper for pusher-app client
  */
 import Pusher from 'pusher-js';
+import { AbstractClient } from './AbstractClient';
 
-export default class PusherClient {
-  constructor(me) {
-    this.me = me;
-    Pusher.log = function(message) {
-      if (window.console && window.console.log) {
-        window.console.log(message);
-      }
-    };
+export default class PusherClient extends AbstractClient {
+  constructor(props) {
+    super(props);
+    const that = this;
 
-    this.client = new Pusher('eaa00fb39fddc251d116', {
-      encrypted: true, authEndpoint: '/api/v2/pusher/auth', authTransport: 'rest'
+    if (this.options.debug) {
+      Pusher.log = function(message) {
+        if (window.console && window.console.log) {
+          window.console.log(message);
+        }
+      };
+    }
+
+    this.client = new Pusher(that.options.appKey, {
+      encrypted: true,
+      authEndpoint: that.options.authEndpoint,
+      authTransport: that.options.authTransport
     });
+  }
+
+  getDefaultOptions() {
+    return {
+      authEndpoint: '/api/v2/pusher/auth',
+      authTransport: 'rest',
+      appKey: '',
+      me: 0
+    };
   }
 
   bind(channelName, eventName, dispatcher, action) {
@@ -57,13 +73,13 @@ export default class PusherClient {
         }
       };
 
-      xhr.send(JSON.stringify({socket_id: socketId, channel_name: channelName, user_id: that.me.get('id')}));
+      xhr.send(JSON.stringify({socket_id: socketId, channel_name: channelName, user_id: that.options.me}));
       return xhr;
     };
 
     const channel = this.client.subscribe(channelName);
     channel.bind(eventName, (data) => {
-      if (data.target === that.me.get('id')) {
+      if (data.target === that.options.me) {
         dispatcher(action([data]));
       }
     });

@@ -8,7 +8,7 @@ import { meSelector, meStateSelector } from '../RecordStores/Selectors/meSelecto
 import { IMContainer } from '../../IM/Components/IMContainer';
 import { PreferencesContainer } from './Preferences/PreferencesContainer';
 import { newActionAlerts } from '../Actions/notificationActions';
-import PusherClient from 'DeskPRO/Bundle/AppBundle/Pusher';
+import PusherClient from 'DeskPRO/Component/Notification/Client/PusherClient';
 
 @connect(state => ({
   dpWindow: state.Application.dpWindow,
@@ -45,7 +45,7 @@ export class DpAppRouteContainer extends React.Component {
     if (!this.welcomePageTimer && userStatus.get('isDone')) {
       this.welcomePageTimer = setTimeout(() => dispatch(AppActions.doneInitialLoad()), 3000);
       // this.pollingInterval = setInterval(() => this.props.dispatch(pollActionAlerts()), 25000);
-      const pusher = new PusherClient(user);
+      const pusher = new PusherClient({appKey: 'eaa00fb39fddc251d116', me: user.get('id')});
       pusher.bind('private-channel-' + user.get('id'), 'action_alert', dispatch, newActionAlerts);
     }
   }
