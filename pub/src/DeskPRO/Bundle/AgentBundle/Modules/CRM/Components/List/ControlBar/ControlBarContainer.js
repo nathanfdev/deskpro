@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
-import { currentListSortSelector, currentListOrderSelector, currentListParamsSelector, listFiltersSelector, currentViewModeSelector }
+import { currentListSortSelector, currentListOrderSelector, currentListParamsSelector, listFiltersSelector, currentViewModeSelector, currentContentSelector }
   from '../../../Selectors/list';
 import { setSort, setOrder, applyParams }
   from '../../../Actions/crmListActions';
@@ -11,23 +11,25 @@ import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components
 @connect(state => ({
   sort: currentListSortSelector(state),
   order: currentListOrderSelector(state),
-  viewMode: currentViewModeSelector(state)
+  viewMode: currentViewModeSelector(state),
+  content: currentContentSelector(state)
 }))
 export class ControlBarContainer extends Component {
   static propTypes = {
     sort: PropTypes.string.isRequired,
     order: PropTypes.string.isRequired,
-    viewMode: PropTypes.string.isRequired
+    viewMode: PropTypes.string.isRequired,
+    content: PropTypes.string.isRequired
   };
 
   render() {
+    const {content} = this.props;
     const config = {
       onMenuUnmount: applyParams,
       sorting: {
         options: {
           date_created: { label: 'Created', icon: 'calendar' },
-          date_updated: { label: 'Updated', icon: 'calendar-o' },
-          person: { label: 'Author', icon: 'calendar' }
+          name: { label: 'Name', icon: 'sort-alpha-asc' }
         },
         sort: this.props.sort,
         order: this.props.order,
@@ -63,6 +65,10 @@ export class ControlBarContainer extends Component {
         viewModeAction: (mode) => updateRoutingState('list', 'view', mode)
       }
     };
+
+    if (content === 'people') {
+      config.sorting.options.date_last_login = { label: 'Last login', icon: 'calendar' };
+    }
     return (
       <ControlBar {...config} />
     );

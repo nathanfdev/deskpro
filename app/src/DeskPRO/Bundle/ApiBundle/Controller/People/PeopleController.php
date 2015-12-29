@@ -57,6 +57,7 @@ class PeopleController extends CrudController
         'date_created'    => 'date_created',
         'date_last_login' => 'date_last_login',
         'id'              => 'id',
+        'name'            => 'name',
         'first_name'      => 'first_name',
         'last_name'       => 'last_name',
         'primary_email'   => 'primary_email',
