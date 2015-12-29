@@ -3,13 +3,15 @@ import { connect } from 'react-redux';
 import { openWidget } from '../../Actions/dpWindowActions';
 import { onlineAgentsCountSelector } from '../../Selectors/agent';
 import { chatModeSelector, widgetHasChatSelector } from '../../Selectors/dpWindow';
-import { chatIdSelector } from '../../../Chat/Selectors/chat';
+import { chatIdSelector, agentIdSelector, dateEndedSelector } from '../../../Chat/Selectors/chat';
 import history from '../../../../Services/history';
 
 @connect(state => ({
   widgetHasChat: widgetHasChatSelector(state),
   chatMode: chatModeSelector(state),
   chatId: chatIdSelector(state),
+  agentId: agentIdSelector(state),
+  dateEnded: dateEndedSelector(state),
   agentsCounts: onlineAgentsCountSelector(state)
 }))
 export class WidgetOpenContainer extends React.Component {
@@ -20,15 +22,21 @@ export class WidgetOpenContainer extends React.Component {
     widgetHasChat: PropTypes.bool,
     chatId: PropTypes.number,
     chatMode: PropTypes.string,
-    agentsCounts: PropTypes.number
+    agentId: PropTypes.number,
+    agentsCounts: PropTypes.number,
+    dateEnded: PropTypes.string
   };
 
   onClick = () => {
-    const { widgetHasChat, agentsCounts, chatId, chatMode, dispatch } = this.props;
+    const { widgetHasChat, agentsCounts, chatId, chatMode, agentId, dateEnded, dispatch } = this.props;
 
     if (widgetHasChat && agentsCounts > 0) {
       if (chatId) {
-        history.replace('/chat/active');
+        if (agentId || dateEnded) {
+          history.replace('/chat/active');
+        } else {
+          history.replace('/chat/waiting');
+        }
       } else {
         switch (chatMode) {
           case 'simple':
