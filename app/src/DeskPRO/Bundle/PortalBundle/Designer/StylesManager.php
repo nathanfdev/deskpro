@@ -37,9 +37,6 @@ use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
-use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
-use DeskPRO\Component\SassCompiler\Compiler\ScssPhpCompiler;
-use DeskPRO\Component\SassCompiler\SassProject;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -47,16 +44,6 @@ use Doctrine\ORM\EntityManager;
  */
 class StylesManager
 {
-    /**
-     * @var string ThemeSet option name
-     */
-    private static $custom_vars_theme_set_option = 'custom_vars';
-
-    /**
-     * @var string DP_ROOT relative path to sassdoc parsed variables
-     */
-    private static $variables_json_file_path = '/../web/sassdoc/vars.json';
-
     /**
      * @var EntityManager
      */
@@ -68,64 +55,31 @@ class StylesManager
     private $brand_stack;
 
     /**
-     * @var PortalModeStorage
+     * @var ThemeSetCopyingService
      */
-    private $portal_mode_storage;
+    private $theme_set_copying_service;
 
     /**
-     * StylesManager constructor.
-     *
-     * @param EntityManager     $em
-     * @param BrandStack        $brand_stack
-     * @param PortalModeStorage $portal_mode_storage
+     * @var SassDocParser
      */
-    public function __construct(EntityManager $em, BrandStack $brand_stack, PortalModeStorage $portal_mode_storage)
-    {
-        $this->em                  = $em;
-        $this->brand_stack         = $brand_stack;
-        $this->portal_mode_storage = $portal_mode_storage;
-    }
+    private $sass_doc_parser;
 
     /**
-     * Recompile portal css.
-     * 
-     * @param array $variables
-     *
-     * @throws \Exception
+     * @param EntityManager          $em
+     * @param ThemeSetCopyingService $theme_set_copying_service
+     * @param SassDocParser          $sass_doc_parser
+     * @param BrandStack             $brand_stack
      */
-    public function recompile(array $variables)
-    {
-        $themeSet = $this->getEditThemeSet();
-        $themeSet->setOption(self::$custom_vars_theme_set_option, $variables);
-
-        $this->em->persist($themeSet);
-        $this->em->flush();
-
-        $css = $this->compileCss($variables);
-
-        // Find existing or create a new blob storage for the custom Css
-        if (!$blob_storage = $this->getCssBlobStorage()) {
-            $blob = new Blob();
-            $blob->setFilename('portal.css');
-            $blob->blob_hash = md5($css);
-            $this->em->persist($blob);
-            $this->em->flush();
-
-            $asset = new ThemeSetAsset();
-            $asset->setName('portal.css');
-            $asset->setThemeSet($themeSet);
-            $asset->setTags(['portal_css']);
-            $asset->setBlob($blob);
-            $this->em->persist($asset);
-            $this->em->flush();
-
-            $blob_storage          = new BlobStorage();
-            $blob_storage->blob_id = $blob->getId();
-        }
-
-        $blob_storage->data = $css;
-        $this->em->persist($blob_storage);
-        $this->em->flush();
+    public function __construct(
+        EntityManager $em,
+        ThemeSetCopyingService $theme_set_copying_service,
+        SassDocParser $sass_doc_parser,
+        BrandStack $brand_stack
+    ) {
+        $this->em                        = $em;
+        $this->theme_set_copying_service = $theme_set_copying_service;
+        $this->brand_stack               = $brand_stack;
+        $this->sass_doc_parser           = $sass_doc_parser;
     }
 
     /**
@@ -136,39 +90,28 @@ class StylesManager
         if ($blob = $this->getCssBlob()) {
             return $this->em->getRepository(BlobStorage::class)->findOneBy(['blob_id' => $blob->getId()]);
         }
-
-        return;
     }
 
     /**
-     * @throws \Exception
-     *
-     * @return array Variables specs
+     * @return BlobStorage|null
      */
-    public function getVariableGroups()
+    public function getEditThemeSetCssBlobStorage()
     {
-        return json_decode(file_get_contents(DP_ROOT.self::$variables_json_file_path), true);
+        if ($blob = $this->getEditThemeSetCssBlob()) {
+            return $this->em->getRepository(BlobStorage::class)->findOneBy(['blob_id' => $blob->getId()]);
+        }
     }
 
     /**
      * @param bool $add_default
      *
-     * @throws \Exception
-     *
      * @return array
      */
-    public function getVariableValues($add_default = true)
+    public function getEditThemeSetVariableValues($add_default = true)
     {
-        $values = $this->getThemeSet()->getOption(self::$custom_vars_theme_set_option, []);
-
+        $values = $this->getEditThemeSet()->getOption(PortalStylesCompiler::$custom_vars_theme_set_option, []);
         if ($add_default) {
-            $groups    = $this->getVariableGroups();
-            $variables = call_user_func_array('array_merge', $groups);
-            foreach ($variables as $variable) {
-                if (!array_key_exists($variable['name'], $values)) {
-                    $values[$variable['name']] = $variable['default_value'];
-                }
-            }
+            $values = array_merge($this->sass_doc_parser->getVariableValues(), $values);
         }
 
         return $values;
@@ -179,12 +122,8 @@ class StylesManager
      */
     public function commitEditThemeSet()
     {
-        $brand = $this->getBrand();
-        $brand->setThemeSet($newThemeSet = $this->getEditThemeSet());
-        $brand->setEditThemeSet($newEditThemeSet = $this->cloneThemeSet($newThemeSet));
-        $this->em->persist($newThemeSet);
-        $this->em->persist($newEditThemeSet);
-        $this->em->persist($brand);
+        $this->theme_set_copying_service->copy($this->getEditThemeSet(), $ts = $this->getThemeSet());
+        $this->em->persist($ts);
         $this->em->flush();
     }
 
@@ -193,22 +132,40 @@ class StylesManager
      */
     public function discardEditThemeSet()
     {
-        $brand = $this->getBrand();
-        $brand->setEditThemeSet($newEditThemeSet = $this->cloneThemeSet($this->getThemeSet()));
-        $this->em->persist($newEditThemeSet);
-        $this->em->persist($brand);
+        $this->theme_set_copying_service->copy($this->getThemeSet(), $ts = $this->getEditThemeSet());
+        $this->em->persist($ts);
         $this->em->flush();
     }
 
     /**
      * @throws \Exception
-     * @return Blob|null
      *
+     * @return \DeskPRO\Bundle\AppBundle\Entity\ThemeSet
+     */
+    private function getEditThemeSet()
+    {
+        if (!$themeSet = $this->getBrand()->getEditThemeSet()) {
+            $themeSet = new ThemeSet();
+            $this->theme_set_copying_service->copy($this->getThemeSet(), $themeSet);
+            $brand = $this->getBrand();
+            $brand->setEditThemeSet($themeSet);
+            $this->em->persist($themeSet);
+            $this->em->persist($brand);
+            $this->em->flush();
+        }
+
+        return $themeSet;
+    }
+
+    /**
+     * @throws \Exception
+     *
+     * @return Blob|null
      */
     private function getCssBlob()
     {
         $criteria = [
-            'theme_set' => $this->isPreviewMode() ? $this->getEditThemeSet() : $this->getThemeSet(),
+            'theme_set' => $this->getThemeSet(),
             'name'      => 'portal.css',
         ];
         if ($asset = $this->em->getRepository(ThemeSetAsset::class)->findOneBy($criteria)) {
@@ -219,33 +176,21 @@ class StylesManager
     }
 
     /**
-     * Compile portal css from scss sources.
-     * 
-     * @param array $variables
+     * @throws \Exception
      *
-     * @return string
+     * @return Blob|null
      */
-    private function compileCss(array $variables)
+    private function getEditThemeSetCssBlob()
     {
-        $compiler = new ScssPhpCompiler();
-        $project  = new SassProject();
-
-        // Can't simply set source file and need to retrieve source as string to hack it so that scssphp can compile
-        $source_dir = realpath(DP_ROOT.'/../pub/src/DeskPRO/Bundle/PortalBundle/Resources/style');
-        $source     = file_get_contents("$source_dir/portal-style.scss");
-        $source     = $this->hackScss($source, $source_dir, $variables);
-        $project->setSource($source);
-
-        // Compile custom_vars.scss from $variables
-        $custom_vars_scss = '';
-        foreach ($variables as $variable => $value) {
-            $custom_vars_scss .= '$'."$variable: $value;\n";
+        $criteria = [
+            'theme_set' => $this->getEditThemeSet(),
+            'name'      => 'portal.css',
+        ];
+        if ($asset = $this->em->getRepository(ThemeSetAsset::class)->findOneBy($criteria)) {
+            return $asset->getBlob();
         }
-        $project->addFileSource("$source_dir/custom_vars.scss", $custom_vars_scss);
 
-        $result = $compiler->compile($project);
-
-        return $result;
+        return;
     }
 
     /**
@@ -265,25 +210,6 @@ class StylesManager
     /**
      * @throws \Exception
      *
-     * @return \DeskPRO\Bundle\AppBundle\Entity\ThemeSet
-     */
-    private function getEditThemeSet()
-    {
-        if (!$themeSet = $this->getBrand()->getEditThemeSet()) {
-            $themeSet = $this->cloneThemeSet($this->getThemeSet());
-            $brand    = $this->getBrand();
-            $brand->setEditThemeSet($themeSet);
-            $this->em->persist($themeSet);
-            $this->em->persist($brand);
-            $this->em->flush();
-        }
-
-        return $themeSet;
-    }
-
-    /**
-     * @throws \Exception
-     *
      * @return Brand
      */
     private function getBrand()
@@ -293,47 +219,5 @@ class StylesManager
         }
 
         return $container->getBrand();
-    }
-
-    /**
-     * Hack scss source so that leafo/scssphp lib can compile it.
-     *
-     * @param string $source
-     * @param string $dir
-     * @param array  $variables
-     *
-     * @return string
-     */
-    private function hackScss($source, $dir, array $variables)
-    {
-        // fix imports to absolute paths
-        $source = str_replace('@import "', "@import \"$dir/", $source);
-
-        // fix darken() with variable
-        $source = str_replace('darken($page-background', 'darken('.$variables['page-background'], $source);
-
-        return $source;
-    }
-
-    /**
-     * @param ThemeSet $themeSet
-     *
-     * @return ThemeSet
-     */
-    private function cloneThemeSet(ThemeSet $themeSet)
-    {
-        $clone = new ThemeSet();
-        $clone->setThemeId($themeSet->getThemeId());
-        $clone->setOptions($themeSet->getOptions());
-
-        return $clone;
-    }
-
-    /**
-     * @return bool
-     */
-    private function isPreviewMode()
-    {
-        return $this->portal_mode_storage->getMode()->isAdminPreview();
     }
 }

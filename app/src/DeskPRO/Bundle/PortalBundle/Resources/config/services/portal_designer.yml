@@ -4,8 +4,27 @@ services:
     class: DeskPRO\Bundle\PortalBundle\Designer\StylesManager
     arguments:
       - @doctrine.orm.default_entity_manager
+      - @dp.portal.designer.theme_set_copying_service
+      - @dp.portal.designer.sass_doc_parser
       - @brand_stack
-      - @portal_mode_storage
+
+  dp.portal.designer.portal_styles_compiler:
+    class: DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler
+    arguments:
+      - @doctrine.orm.default_entity_manager
+      - @brand_stack
+      - '../pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-style.scss'
+      - 'custom_vars.scss'
+
+  dp.portal.designer.sass_doc_parser:
+    class: DeskPRO\Bundle\PortalBundle\Designer\SassDocParser
+    arguments:
+      - '../web/sassdoc/vars.json'
+
+  dp.portal.designer.theme_set_copying_service:
+    class: DeskPRO\Bundle\PortalBundle\Designer\ThemeSetCopyingService
+    arguments:
+      - @doctrine.orm.default_entity_manager
 
   dp.portal.designer.portal_css_twig_extension:
     class: DeskPRO\Bundle\PortalBundle\Designer\PortalCssTwigExtension

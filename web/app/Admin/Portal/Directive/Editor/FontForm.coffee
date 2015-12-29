@@ -8,13 +8,19 @@ define [], () ->
         values: '='
       },
       link: (scope) ->
-        scope.selected = 1
-        scope.selectStack = (stack) ->
-          scope.selected = stack
-          scope.values[scope.variable.name] = {stack}
-          if stack != 'custom'
-            scope.values[scope.variable.name].custom = ''
-        scope.isStackSelected = (stack) -> scope.selected == stack
+        scope.stack1 = 'Open Sans, Helvetica, Arial, Sans Serif'
+        scope.stack2 = 'Baskerville, Georgia, Serif'
+        scope.stack3 = 'Lato, Myriad Pro, Arial, Sans Serif'
+        scope.stack4 = 'Ubuntu, Trebuchet, Arial, Sans Serif'
+
+        scope.select = (font) ->
+          scope.values[scope.variable.name] = font
+        scope.isSelected = (font) -> scope.values[scope.variable.name] == font
+        scope.selectCustom = () ->
+          scope.values[scope.variable.name] = ''
+        scope.isCustomSelected = () ->
+          val = scope.values[scope.variable.name]
+          val != scope.stack1 && val != scope.stack2 && val != scope.stack3 && val != scope.stack4
     }
   ]
 

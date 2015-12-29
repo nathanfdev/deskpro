@@ -167,6 +167,16 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
     }
 
     /**
+     * @param $entity
+     *
+     * @return \Doctrine\ORM\EntityManager
+     */
+    protected function getRepository($entity)
+    {
+        return $this->getRepo($entity);
+    }
+
+    /**
      * @return \Doctrine\ORM\EntityManager
      */
     protected function getEntityManager()

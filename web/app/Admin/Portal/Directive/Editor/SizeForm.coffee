@@ -8,6 +8,8 @@ define [], () ->
         values: '='
       },
       link: (scope, element, attrs, ngModel) ->
+        if not scope.values[scope.variable.name]
+          scope.values[scope.variable.name] = {}
     }
   ]
 
