@@ -10,6 +10,7 @@ import { PreferencesContainer } from './Preferences/PreferencesContainer';
 import { newActionAlerts } from '../Actions/notificationActions';
 import PusherClient from 'DeskPRO/Component/Notification/Client/PusherClient';
 import EventEmitter2 from 'eventemitter2';
+import { NotificationService } from 'DeskPRO/Bundle/AgentBundle/Services/NotificationService';
 
 @connect(state => ({
   dpWindow: state.Application.dpWindow,
@@ -41,6 +42,7 @@ export class DpAppRouteContainer extends React.Component {
   }
 
   setupPolling() {
+    const ns = new NotificationService();
     const { user, dispatch } = this.props;
     const eventEmitter = new EventEmitter2({
       wildcard: false,

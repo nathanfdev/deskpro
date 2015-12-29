@@ -17,7 +17,6 @@ import $ from 'jquery';
   user: meSelector(state),
   dpWindow: state.Application.dpWindow,
   workspaceDims: workspaceDimsSelector(state),
-  actionAlerts: state.Application.notifications.get('actionAlerts')
 }))
 @DragDropContext(HTML5Backend)
 export class DpApp extends React.Component {
@@ -27,7 +26,6 @@ export class DpApp extends React.Component {
     children: PropTypes.object.isRequired,
     dpWindow: PropTypes.object.isRequired,
     workspace: PropTypes.object.isRequired,
-    actionAlerts: PropTypes.string.isRequired,
     dispatch: PropTypes.func.isRequired
   };
 
