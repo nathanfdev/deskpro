@@ -93,7 +93,9 @@
     &:hover { border: 1px solid #cecece;}
   }
 
-  [type="text"] { @extend %dpdesignportal-form-item-base; }
+  [type="text"], [type="email"] {
+    @extend %dpdesignportal-form-item-base;
+  }
 
   .dpdesignportal-form-item-dropdown {
     @extend %dpdesignportal-form-item-base;
