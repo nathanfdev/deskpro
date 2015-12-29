@@ -2,11 +2,12 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { openWidget } from '../../Actions/dpWindowActions';
 import { onlineAgentsCountSelector } from '../../Selectors/agent';
-import { chatModeSelector } from '../../Selectors/dpWindow';
+import { chatModeSelector, widgetHasChatSelector } from '../../Selectors/dpWindow';
 import { chatIdSelector } from '../../../Chat/Selectors/chat';
 import history from '../../../../Services/history';
 
 @connect(state => ({
+  widgetHasChat: widgetHasChatSelector(state),
   chatMode: chatModeSelector(state),
   chatId: chatIdSelector(state),
   agentsCounts: onlineAgentsCountSelector(state)
@@ -16,15 +17,16 @@ export class WidgetOpenContainer extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func,
     children: PropTypes.node,
+    widgetHasChat: PropTypes.bool,
     chatId: PropTypes.number,
     chatMode: PropTypes.string,
     agentsCounts: PropTypes.number
   };
 
   onClick = () => {
-    const { agentsCounts, chatId, chatMode, dispatch } = this.props;
+    const { widgetHasChat, agentsCounts, chatId, chatMode, dispatch } = this.props;
 
-    if (agentsCounts > 0) {
+    if (widgetHasChat && agentsCounts > 0) {
       if (chatId) {
         history.replace('/chat/active');
       } else {

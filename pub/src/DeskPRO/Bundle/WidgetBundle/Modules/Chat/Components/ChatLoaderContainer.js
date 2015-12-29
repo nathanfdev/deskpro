@@ -3,17 +3,20 @@ import { connect } from 'react-redux';
 import { loadChatInfo, setChatId, unsetChatId } from '../Actions/chatActions';
 import { openWidget } from '../../Application/Actions/dpWindowActions';
 import { widgetLoadedSelector } from '../../Application/Selectors/bootstrap';
+import { widgetHasChatSelector } from '../../Application/Selectors/dpWindow';
 import { onlineAgentsCountSelector } from '../../Application/Selectors/agent';
 import history from '../../../Services/history';
 
 @connect(state => ({
   widgetLoaded: widgetLoadedSelector(state),
+  widgetHasChat: widgetHasChatSelector(state),
   agentsCounts: onlineAgentsCountSelector(state)
 }))
 export class ChatLoaderContainer extends React.Component {
 
   static propTypes = {
     widgetLoaded: PropTypes.bool,
+    widgetHasChat: PropTypes.bool,
     agentsCounts: PropTypes.number,
     dispatch: PropTypes.func
   };
@@ -27,10 +30,10 @@ export class ChatLoaderContainer extends React.Component {
   }
 
   onLoad() {
-    const { dispatch, widgetLoaded, agentsCounts } = this.props;
+    const { dispatch, widgetLoaded, widgetHasChat, agentsCounts } = this.props;
     const storedChatId = Number(localStorage.getItem('dpWidget.chat.chatId'));
 
-    if (!widgetLoaded || !storedChatId || !agentsCounts) {
+    if (!widgetLoaded || !widgetHasChat || !storedChatId || !agentsCounts) {
       return;
     }
 

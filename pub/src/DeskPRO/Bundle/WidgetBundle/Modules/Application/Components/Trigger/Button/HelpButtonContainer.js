@@ -18,11 +18,11 @@ import {
 } from '../../../Selectors/dpWindow';
 
 @connect(state => ({
+  triggerPopupOpened: triggerPopupOpenedSelector(state),
   widgetOpened: widgetOpenedSelector(state),
   size: helpButtonSizeSelector(state),
   popup: helpPopupSelector(state),
-  agentPollingTimeout: agentPollingTimeoutSelector(state),
-  triggerPopupOpened: triggerPopupOpenedSelector(state)
+  agentPollingTimeout: agentPollingTimeoutSelector(state)
 }))
 export class HelpButtonContainer extends React.Component {
 
