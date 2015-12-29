@@ -12,7 +12,9 @@ export class TicketForm extends React.Component {
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut.</p>
         </div>
 
-        <TicketFormContentContainer />
+        <div className="dpdesignportal-form">
+          <TicketFormContentContainer />
+        </div>
       </div>
     );
   }
