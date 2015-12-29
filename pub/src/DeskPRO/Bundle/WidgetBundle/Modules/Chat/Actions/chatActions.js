@@ -154,6 +154,24 @@ export const sendTranscriptInfo = createAction(
   }
 );
 
+export const loadChatInfo = createAction(
+  'WIDGET_CHAT_LOAD_INFO',
+  chatId => (dispatch, getState) => {
+    if (!chatId) {
+      return null;
+    }
+
+    const state = getState();
+    const queryParams = compileParams(addSessionCode(state));
+
+    return new Promise(resolve => {
+      DpApi
+        .sendGet(`DP_API/chats/${chatId}/polling?${queryParams}`, {...ajaxOptions})
+        .success(response => resolve(response.chat_info && response.chat_info.data));
+    });
+  }
+);
+
 export const pollingChat = createAction(
   'WIDGET_CHAT_POLLING',
   (chatId, params) => (dispatch, getState) => {

@@ -2,23 +2,19 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Trigger } from './Trigger/Trigger';
 import { Widget } from './Widget/Widget';
-import { windowResize, openWidget } from '../Actions/dpWindowActions';
-import { setChatId } from '../../Chat/Actions/chatActions';
+import { windowResize } from '../Actions/dpWindowActions';
 import { widgetLoadedSelector } from '../Selectors/bootstrap';
-import { onlineAgentsCountSelector } from '../Selectors/agent';
 import $ from 'jquery';
 import debounce from 'lodash/function/debounce';
-import history from '../../../Services/history';
+import { ChatLoaderContainer } from '../../Chat/Components/ChatLoaderContainer';
 
 @connect(state => ({
-  widgetLoaded: widgetLoadedSelector(state),
-  agentsCounts: onlineAgentsCountSelector(state)
+  widgetLoaded: widgetLoadedSelector(state)
 }))
 export class AppContainer extends React.Component {
 
   static propTypes = {
     widgetLoaded: PropTypes.bool,
-    agentsCounts: PropTypes.number,
     dispatch: PropTypes.func
   };
 
@@ -32,11 +28,6 @@ export class AppContainer extends React.Component {
     $(window.parent).on('resize', this.onResize);
 
     this.onWindowResize();
-    this.checkStoredChatId();
-  }
-
-  componentDidUpdate() {
-    this.checkStoredChatId();
   }
 
   componentWillUnmount() {
@@ -47,24 +38,12 @@ export class AppContainer extends React.Component {
     this.props.dispatch(windowResize());
   }
 
-  checkStoredChatId() {
-    const { dispatch, widgetLoaded, agentsCounts } = this.props;
-    const storedChatId = Number(localStorage.getItem('dpWidget.chat.chatId'));
-
-    // If we have stored chat and online agents then force load previous chat
-    if (storedChatId && widgetLoaded && agentsCounts > 0) {
-      history.replace('/chat/active');
-
-      dispatch(setChatId(storedChatId));
-      dispatch(openWidget());
-    }
-  }
-
   render() {
     return (
       <div>
         <Trigger />
         <Widget />
+        <ChatLoaderContainer />
       </div>
     );
   }
