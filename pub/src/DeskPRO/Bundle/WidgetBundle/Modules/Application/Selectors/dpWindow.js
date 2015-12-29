@@ -97,5 +97,5 @@ export const isBubbleSelector = createSelector(
 
 export const widgetHasChatSelector = createSelector(
   widgetOptionsSelector,
-  options => options.get('hasChat') || true
+  options => options.get('hasChat') !== undefined ? options.get('hasChat') : true
 );
