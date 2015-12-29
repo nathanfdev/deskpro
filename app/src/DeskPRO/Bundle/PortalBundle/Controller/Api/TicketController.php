@@ -42,11 +42,13 @@ use Symfony\Component\HttpFoundation\Request;
 class TicketController extends AbstractApiController
 {
     /**
-     * @Route("/portal/api/ticket/new", name="portal_api_ticket_new")
+     * @Route("/portal/api/tickets/new", name="portal_api_ticket_new")
      * @Method({"GET", "POST"})
      */
     public function newTicketAction(Request $request)
     {
-        return new View([]);
+        return new View([
+            'data' => '<div>Sample form content</div>',
+        ]);
     }
 }

@@ -8,7 +8,7 @@ export const loadForm = createAction(
     return new Promise(resolve => {
       DpApi
         .sendGet(`DP_API/tickets/new`, {...ajaxOptions})
-        .success(response => resolve(response && response.data));
+        .success(response => resolve(response.data));
     });
   }
 );
