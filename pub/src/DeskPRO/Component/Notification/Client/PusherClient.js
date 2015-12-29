@@ -33,7 +33,7 @@ export default class PusherClient extends AbstractClient {
     };
   }
 
-  bind(channelName, eventName, dispatcher, action) {
+  bind(channelName, eventName) {
     const that = this;
 
     Pusher.authorizers.rest = (socketId, callback) => {
@@ -80,7 +80,7 @@ export default class PusherClient extends AbstractClient {
     const channel = this.client.subscribe(channelName);
     channel.bind(eventName, (data) => {
       if (data.target === that.options.me) {
-        dispatcher(action([data]));
+        that.options.dispatcher(eventName, data);
       }
     });
   }

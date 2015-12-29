@@ -41,17 +41,14 @@ export default createReducer(initialState, {
   ),
   [newActionAlerts]: (state, payload) => {
     let newState = state;
-    Immutable.List(payload).map((element) => {
-      if (element.type === 'notification.agent_chat.new_message') {
-        const path = ['chatMessages', element.data.agent_chat_id];
-        const chat = newState.getIn(path);
-        if (chat) {
-          chat.messages.push(element.data);
-          newState = newState.setIn(path, {...chat});
-        }
+    if (payload.type === 'notification.agent_chat.new_message') {
+      const path = ['chatMessages', payload.data.agent_chat_id];
+      const chat = newState.getIn(path);
+      if (chat) {
+        chat.messages.push(payload.data);
+        newState = newState.setIn(path, {...chat});
       }
-    });
-
+    }
     return newState;
-  },
+  }
 });

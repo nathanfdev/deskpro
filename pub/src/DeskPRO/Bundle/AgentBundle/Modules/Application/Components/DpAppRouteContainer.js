@@ -9,6 +9,7 @@ import { IMContainer } from '../../IM/Components/IMContainer';
 import { PreferencesContainer } from './Preferences/PreferencesContainer';
 import { newActionAlerts } from '../Actions/notificationActions';
 import PusherClient from 'DeskPRO/Component/Notification/Client/PusherClient';
+import EventEmitter2 from 'eventemitter2';
 
 @connect(state => ({
   dpWindow: state.Application.dpWindow,
@@ -39,14 +40,32 @@ export class DpAppRouteContainer extends React.Component {
     // clearInterval(this.pollingInterval);
   }
 
-  hideWelcomePage() {
-    const { userStatus, dispatch, user } = this.props;
+  setupPolling() {
+    const { user, dispatch } = this.props;
+    const eventEmitter = new EventEmitter2({
+      wildcard: false,
+      delimiter: '::',
+      newListener: false,
+      maxListeners: 10
+    });
+    const pusher = new PusherClient(
+      {
+        appKey: 'eaa00fb39fddc251d116',
+        me: user.get('id'),
+        dispatcher: eventEmitter.emit.bind(eventEmitter),
+        debug: true
+      }
+    );
+    eventEmitter.on('action_alert', (data) => dispatch(newActionAlerts(data)));
+    pusher.bind('private-channel-' + user.get('id'), 'action_alert');
+  }
 
+  hideWelcomePage() {
+    const { userStatus, dispatch } = this.props;
     if (!this.welcomePageTimer && userStatus.get('isDone')) {
       this.welcomePageTimer = setTimeout(() => dispatch(AppActions.doneInitialLoad()), 3000);
       // this.pollingInterval = setInterval(() => this.props.dispatch(pollActionAlerts()), 25000);
-      const pusher = new PusherClient({appKey: 'eaa00fb39fddc251d116', me: user.get('id')});
-      pusher.bind('private-channel-' + user.get('id'), 'action_alert', dispatch, newActionAlerts);
+      this.setupPolling();
     }
   }
 
