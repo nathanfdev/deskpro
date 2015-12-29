@@ -182,7 +182,7 @@ class NewTicketController extends AbstractController
         ]);
 
         /** @var \Application\DeskPRO\TicketLayout\LayoutCollection $layouts */
-        $layouts           = $this->container->getTicketLayoutManager()->getUserLayouts(true);
+        $layouts           = $this->getContainer()->getTicketLayoutManager()->getUserLayouts(true);
         $ticket_display_js = 'window.DESKPRO_TICKET_DISPLAY = '.$layouts->compileJsObj().';';
 
         //
@@ -319,8 +319,8 @@ class NewTicketController extends AbstractController
      * @param Person $person
      *
      * @throws \Exception
-     * @return Ticket
      *
+     * @return Ticket
      */
     private function saveNewTicket(Ticket $ticket, Person $person)
     {
