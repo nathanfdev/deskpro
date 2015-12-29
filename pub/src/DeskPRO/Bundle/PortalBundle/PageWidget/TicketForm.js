@@ -44,6 +44,7 @@ class TicketValueReader {
 
 // Page widget
 export default class TicketForm extends PageWidget {
+
   renderWidget() {
     const $formEl = this.$element.find('.dp_ticket_form');
     const formName = $formEl.find('form').attr('name');
@@ -120,12 +121,7 @@ export default class TicketForm extends PageWidget {
       }
     });
 
-    updateHitter = _.throttle(()=> {
-      this.dynForm.update();
-    }, 250);
-
-    allFormFields.on('change', function() {
-      updateHitter();
-    });
+    updateHitter = _.throttle(()=> this.dynForm.update(), 250);
+    allFormFields.on('change', updateHitter);
   }
 }
