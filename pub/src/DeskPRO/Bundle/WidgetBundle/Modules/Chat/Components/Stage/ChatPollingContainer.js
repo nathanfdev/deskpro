@@ -31,12 +31,17 @@ export class ChatPollingContainer extends React.Component {
   };
 
   componentDidMount() {
+    this.mounted = true;
     this.pollingRequest();
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   pollingRequest = () => {
     const { dispatch, chatId, agentId, lastMessageId } = this.props;
-    if (!chatId) {
+    if (!chatId || !this.mounted) {
       return;
     }
 
