@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import history from '../../../../Services/history';
 import moment from 'moment';
-import { pollingChat, unsetLoaded } from '../../Actions/chatActions';
+import { pollingChat, unsetLoaded, unsetChatId } from '../../Actions/chatActions';
 import {
   chatIdSelector,
   agentIdSelector,
@@ -61,7 +61,9 @@ export class ChatPollingContainer extends React.Component {
 
     const onErrorResponse = response => {
       // Stop polling on wring session code
-      if (response.xhr && response.xhr.status === 400) {
+      const data = response.data;
+      if (data && data.code === 400 && data.message === 'wrong_session_code') {
+        dispatch(unsetChatId());
         return;
       }
 

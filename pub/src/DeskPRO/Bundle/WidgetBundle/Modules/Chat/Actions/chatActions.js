@@ -34,6 +34,11 @@ export const setChatId = createAction(
   }
 );
 
+export const unsetChatId = createAction(
+  'WIDGET_CHAT_UNSET_ID',
+  () => localStorage.removeItem('dpWidget.chat.chatId')
+);
+
 export const setLoaded = createAction('WIDGET_CHAT_SET_LOADED');
 export const unsetLoaded = createAction('WIDGET_CHAT_UNSET_LOADED');
 export const updateChatInfo = createAction('WIDGET_CHAT_UPDATE_CHAT_INFO');

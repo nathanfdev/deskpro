@@ -432,7 +432,7 @@ class ChatController extends AbstractApiController
         $conversation_session = $conversation->getSession();
 
         if (!$conversation_session || $request_session->getId() !== $conversation_session->getId()) {
-            throw new BadRequestHttpException('Wrong user\'s session code');
+            throw new BadRequestHttpException('wrong_session_code');
         }
     }
 }
