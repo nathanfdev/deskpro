@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import history from '../../../../Services/history';
+import TicketForm from '../../../../../PortalBundle/PageWidget/TicketForm';
 
 export class TicketFormContent extends React.Component {
 
@@ -12,6 +13,9 @@ export class TicketFormContent extends React.Component {
   componentDidMount() {
     const $button = this.getButton();
     $button.on('click', this.onSubmit);
+
+    this.formWidget = new TicketForm('#new_ticket_page', this.getCurrentNode());
+    this.formWidget.renderWhenReady();
   }
 
   componentWillUnmount() {
@@ -24,8 +28,12 @@ export class TicketFormContent extends React.Component {
     history.replace('ticket/form_submitted');
   };
 
+  getCurrentNode() {
+    return ReactDOM.findDOMNode(this);
+  }
+
   getButton() {
-    return $('button[type=submit]', ReactDOM.findDOMNode(this));
+    return $('button[type=submit]', this.getCurrentNode());
   }
 
   render() {

@@ -19,6 +19,9 @@
     frameWin.DP_HELPDESK_URL = helpdeskUrl;
     frameWin.DP_OPTIONS = options;
 
+    // todo temp
+    frameWin.DESKPRO_TICKET_DISPLAY = window.DESKPRO_TICKET_DISPLAY;
+
     let doc;
     let docDomain;
 

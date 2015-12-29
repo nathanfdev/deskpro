@@ -120,6 +120,8 @@ export default class TicketForm extends PageWidget {
         const portalPage = PortalApp.getPortalPage();
         if (portalPage) {
           portalPage.refresh($formEl);
+        } else {
+          this.refresh($formEl);
         }
       }
     });
