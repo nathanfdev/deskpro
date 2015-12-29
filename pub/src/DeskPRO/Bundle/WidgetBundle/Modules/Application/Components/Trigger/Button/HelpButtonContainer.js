@@ -6,7 +6,6 @@ import { AgentMessagePopupContainer } from '../Popups/AgentMessage/AgentMessageP
 import { ReplyButtons } from '../Popups/AgentMessage/ReplyButtons';
 import { ReplyForm } from '../Popups/AgentMessage/ReplyForm';
 import { loadOnlineAgents } from '../../../Actions/agentActions';
-import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { OnlineAgentsContainer } from '../Popups/OnlineAgentsContainer';
 import { openTriggerPopup, closeTriggerPopup } from '../../../Actions/dpWindowActions';
 import {
@@ -114,13 +113,9 @@ export class HelpButtonContainer extends React.Component {
     return (
       <div>
         {triggerPopupOpened &&
-          <ClickOut onClickOut={this.onClosePopup}
-                    context={[parent.document, window.triggerFrame.document]}>
-
-            <OnlineAgentsContainer>
-              {this.renderPopup()}
-            </OnlineAgentsContainer>
-          </ClickOut>
+          <OnlineAgentsContainer>
+            {this.renderPopup()}
+          </OnlineAgentsContainer>
         }
         <HelpButton {...this.props} onClick={onClick} />
       </div>
