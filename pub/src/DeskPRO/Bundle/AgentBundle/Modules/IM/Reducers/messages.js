@@ -28,7 +28,11 @@ export default createReducer(initialState, {
         }
 
         const chat = state.getIn(path);
-        payload.messages.map((message) => chat.messages.push(message));
+        let union = {};
+        chat.messages.map((message) => union[message.id] = message);
+        payload.messages.map((message) => union[message.id] = message);
+        union = Immutable.Map(union);
+        chat.messages = union.toArray();
         chat.page = Math.max(chat.page, payload.page);
         return state.setIn(path, {...chat});
       },
