@@ -4,6 +4,7 @@ import { LabelsFilter } from './LabelsFilter';
 import { DateFilter } from './DateFilter';
 import { DatePeriodFilter } from './DatePeriodFilter';
 import { MultipleChoiceFilter } from './MultipleChoiceFilter';
+import { SingleChoiceFilter } from './SingleChoiceFilter';
 
 export class FilteringMenu extends Component {
   static propTypes = {
@@ -55,6 +56,12 @@ export class FilteringMenu extends Component {
           <MultipleChoiceFilter {...this.props} filter={filter}
                                                 key={index}
                                                 unsetParams={this.unsetParams}/>
+        );
+      case 'singleSelect':
+        return (
+          <SingleChoiceFilter {...this.props} filter={filter}
+                                              key={index}
+                                              unsetParams={this.unsetParams}/>
         );
       default:
         throw new Error(`Unknown filter type - ${filter.type}`);

@@ -57,6 +57,7 @@ class PeopleController extends CrudController
         'date_created'    => 'date_created',
         'date_last_login' => 'date_last_login',
         'id'              => 'id',
+        'name'            => 'name',
         'first_name'      => 'first_name',
         'last_name'       => 'last_name',
         'primary_email'   => 'primary_email',
@@ -122,6 +123,34 @@ class PeopleController extends CrudController
                     ->setParameter('agent_team_id', $agent_team);
             } else {
                 $qb->andWhere('teams.id IS NULL');
+            }
+        }
+    }
+
+    /**
+     * Apply 'sort' and 'order' depending on static::$sortOptions.
+     *
+     * @param QueryBuilder $qb
+     * @param string       $alias
+     * @param Request      $request
+     */
+    protected function applySorting(QueryBuilder $qb, $alias, Request $request)
+    {
+        if (is_array(static::$sortOptions)) {
+            $sortParam = strtolower($request->get('sort'));
+            if ($sortParam && !array_key_exists($sortParam, static::$sortOptions)) {
+                throw $this->createBadRequestException('Unknown sort field');
+            }
+            if ($sortParam === 'organization') {
+                $qb->leftJoin("$alias.organization", 'organization');
+                $sort  = 'organization.name';
+                $order = strtolower($request->get('order'));
+                if ($order && !in_array($order, ['asc', 'desc'])) {
+                    throw $this->createBadRequestException('Unknown order value');
+                }
+                $qb->orderBy($sort, $order);
+            } else {
+                parent::applySorting($qb, $alias, $request);
             }
         }
     }

@@ -1,18 +1,19 @@
 import React, { Component, PropTypes } from 'react';
 import {QuickFilter} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/QuickFilter';
+import classNames from 'classnames';
 import { RadioChoiceMenuOption } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/ChoiceMenu';
 
-export class DropdownPanel extends Component {
+export class SingleChoicePanel extends Component {
   static propTypes = {
     setParams: PropTypes.func.isRequired,
     resetSingleAction: PropTypes.func.isRequired,
     currentParams: PropTypes.object,
-    item: PropTypes.object.isRequired
+    item: PropTypes.object.isRequired,
+    depth: PropTypes.bool
   };
 
   render() {
-    const { item, setParams, currentParams, resetSingleAction } = this.props;
-
+    const { item, setParams, currentParams, resetSingleAction, depth } = this.props;
     const renderNested = (nested) => {
       if (!nested || !nested.length) {
         return <span />;
@@ -33,8 +34,10 @@ export class DropdownPanel extends Component {
       );
     };
 
+    const classes = classNames('dpw-navigation-dropdown-panel', { 'dpw-navigation-dropdown-panel-corner-left': depth });
+
     return (
-      <div className="dpw-navigation-dropdown-panel" style={{width: '250px'}}>
+      <div className={classes} style={{width: '250px'}}>
         <div className="dpw-navigation-dropdown-panel-content">
           <div className="dpw-navigation-dropdown-panel-content-line">
             <div className="dpw-navigation-dropdown-panel-content-full">

@@ -78,4 +78,3 @@ export const setOrder = createAction(
   'PUBLISH_LIST_SET_ORDER',
     order => dispatch => dispatch(applyParams({ order, delayReload: true }))
 );
-
