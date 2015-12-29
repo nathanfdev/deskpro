@@ -32,6 +32,8 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use FOS\RestBundle\View\View;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
