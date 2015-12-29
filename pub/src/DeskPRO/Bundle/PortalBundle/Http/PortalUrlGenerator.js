@@ -1,15 +1,16 @@
 import PortalWindow from 'DeskPRO/Bundle/PortalBundle/PortalWindow';
 
 class PortalUrlGenerator {
+
   /**
    * base_url must NOT contain lang_code. it is base path to index.php via the web.
    */
-  constructor(portal_window) {
-    this.lang_code = portal_window.lang;
-    this.is_multi_lang = portal_window.is_multi_lang;
-    this.base_url = portal_window.base_url.replace(/\/$/, ''); // remove trailing slash
-    this.root_url = portal_window.root_url.replace(/\/$/, ''); // remove trailing slash
-    this.web_url = portal_window.web_url.replace(/\/$/, ''); // remove trailing slash
+  constructor(portalWindow) {
+    this.lang_code = portalWindow.lang;
+    this.is_multi_lang = portalWindow.is_multi_lang;
+    this.base_url = String(portalWindow.base_url).replace(/\/$/, ''); // remove trailing slash
+    this.root_url = String(portalWindow.root_url).replace(/\/$/, ''); // remove trailing slash
+    this.web_url = String(portalWindow.web_url).replace(/\/$/, ''); // remove trailing slash
   }
 
   path(path) {
@@ -25,24 +26,24 @@ class PortalUrlGenerator {
   }
 
   _makeUrl(base, path) {
-    let return_path = [base];
+    const returnPath = [base];
 
     // remove leading/trailing slashes from path input
-    path = path.replace(/^\/|\/$/g, '');
-    return_path.push(path);
+    const editedPath = path.replace(/^\/|\/$/g, '');
+    returnPath.push(editedPath);
 
-    return return_path.join('/');
+    return returnPath.join('/');
   }
 
   getSpinnerPath() {
     return this.webPath('/spinner.gif');
   }
 
-  getFlagPath(flag_img_name) {
-    return this.webPath(`/images/flags/${flag_img_name}`);
+  getFlagPath(flagImgName) {
+    return this.webPath(`/images/flags/${flagImgName}`);
   }
 }
 
-const url_generator = new PortalUrlGenerator(PortalWindow);
+const urlGenerator = new PortalUrlGenerator(PortalWindow);
 
-export default url_generator;
+export default urlGenerator;
