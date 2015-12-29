@@ -2,8 +2,8 @@ import { createAction } from 'Ampliflux';
 import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
 
-export const loadForm = createAction(
-  'WIDGET_TICKET_LOAD_FORM',
+export const loadNewTicketForm = createAction(
+  'WIDGET_LOAD_NEW_TICKET_FORM',
   () => {
     return new Promise(resolve => {
       DpApi
@@ -13,8 +13,8 @@ export const loadForm = createAction(
   }
 );
 
-export const saveForm = createAction(
-  'WIDGET_TICKET_SAVE_FORM',
+export const saveNewTicketForm = createAction(
+  'WIDGET_SAVE_NEW_TICKET_FORM',
   params => {
     return new Promise(resolve => {
       DpApi

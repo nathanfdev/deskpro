@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { TicketFormContent } from './TicketFormContent';
 import { TicketFormSpinner } from './TicketFormSpinner';
-import { loadForm } from '../../Actions/ticketActions';
+import { loadNewTicketForm, saveNewTicketForm } from '../../Actions/ticketActions';
 import { contentSelector, contentLoadingSelector } from '../../Selectors/ticket';
 
 @connect(state => ({
@@ -19,11 +19,18 @@ export class TicketFormContentContainer extends React.Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    dispatch(loadForm());
+    dispatch(loadNewTicketForm());
   }
+
+  onSubmit = data => {
+    const { dispatch } = this.props;
+    dispatch(saveNewTicketForm(data));
+  };
 
   render() {
     const { loading, content } = this.props;
-    return loading ? <TicketFormSpinner /> : <TicketFormContent content={content} />;
+    return loading
+      ? <TicketFormSpinner />
+      : <TicketFormContent content={content} onSubmit={this.onSubmit} />;
   }
 }
