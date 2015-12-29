@@ -15,7 +15,7 @@ import {
   ChatActive,
   ChatWaiting
 } from '../../../Chat/Components/index';
-import { TicketApp, TicketForm } from '../../../Ticket/Components/index';
+import { TicketApp, TicketForm, TicketFormSubmitted } from '../../../Ticket/Components/index';
 import history from '../../../../Services/history';
 
 export class Widget extends React.Component {
@@ -45,6 +45,7 @@ export class Widget extends React.Component {
               </Route>
               <Route path="ticket" component={TicketApp}>
                 <Route name="ticket_form" path="form" component={TicketForm} />
+                <Route name="ticket_form_submitted" path="form_submitted" component={TicketFormSubmitted} />
               </Route>
             </Router>
           </WidgetBodyContainer>
