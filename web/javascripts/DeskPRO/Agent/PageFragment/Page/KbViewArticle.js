@@ -140,6 +140,12 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		this._initTrans();
 	},
 
+	replaceLinks: function() {
+		$('#dp_article_content a', this.wrapper).each(function(){
+			$(this).attr('target', '_blank');
+		});
+	},
+
 	handleUnloadRevisions: function(revision_id) {
 		if (!revision_id) {
 			return;
@@ -734,7 +740,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 	//#################################################################
 
 	_initArticleArea: function() {
-
+		this.replaceLinks();
 	},
 
 	//#################################################################

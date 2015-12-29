@@ -92,6 +92,12 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		this.ownObject(this.whoVotedOverlay);
 	},
 
+	replaceLinks: function() {
+		$('.news-content-wrap a', this.wrapper).each(function(){
+			$(this).attr('target', '_blank');
+		});
+	},
+
 	destroyPage: function() {
 		// Workaround for tinymce bug to do with remove()
 		// We'll manually remove the node ourselves
@@ -665,6 +671,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		$('.news-editor-wrap', this.getEl('content_ed')).hide();
 		$('.news-content-wrap', this.getEl('content_ed')).show();
 		this.updateUi();
+		this.replaceLinks();
 	},
 
 	_initMediaBrowser: function() {
