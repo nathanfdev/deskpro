@@ -80,15 +80,8 @@ class TicketController extends AbstractApiController
         // show ticket deflection? (suggestions)
         $show_ticket_suggestions = (bool) $this->getBrandContainer()->getSetting('core.show_ticket_suggestions');
 
-        /** @var \Application\DeskPRO\TicketLayout\LayoutCollection $layouts */
-        $layouts           = $this->getContainer()->getTicketLayoutManager()->getUserLayouts(true);
-        $ticket_display_js = 'window.DESKPRO_TICKET_DISPLAY = '.$layouts->compileJsObj().';';
-
         return new View([
-            'data' => $this->render('Theme:NewTicket:new_ticket.html.twig', [
-                'rerendering'             => false,
-                'rerendering_saved'       => false,
-                'ticket_display_js'       => $ticket_display_js,
+            'data' => $this->render('Theme:NewTicket:new_ticket_form.html.twig', [
                 'form'                    => $form->createView(),
                 'form_full'               => $form_full->createView(),
                 'form_errors'             => $form->isSubmitted() ? $form->getErrors() : [],
