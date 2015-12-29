@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import createFragment from 'react-addons-create-fragment';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
-import { Card, CardLine, CardLineLeft, CardLineRight, CardLineFull, CardContentText, CardLineItem, CardCheckbox, CardDisc, CardTitle, CardUser, CardLabel, CardComments, CardStatusBar }
+import { Card, CardLine, CardLineLeft, CardLineRight, CardLineFull, CardContentText, CardLineItem, CardCheckbox, CardDisc, CardTitle, CardUser, CardLabel, CardComments }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
 import jQuery from 'jquery';
 import Immutable from 'immutable';

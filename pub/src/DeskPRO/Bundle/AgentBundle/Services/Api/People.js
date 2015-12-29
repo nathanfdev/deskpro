@@ -31,8 +31,8 @@ export function loadPeople(options) {
   }
 
   const request = Object.keys(options).length > 0 ? ('&' + compileParams(options)) : '';
-  console.log(`DP_API/people?include=organization${request}`);
-  return DpApi.sendGet(`DP_API/people?include=organization${request}`);
+  console.log(`DP_API/people?include=organization,usergroup,language${request}`);
+  return DpApi.sendGet(`DP_API/people?include=organization,usergroup,language${request}`);
 }
 
 export function loadPerson(id) {

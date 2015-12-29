@@ -13,6 +13,7 @@ const initialState = {
   view: constants.VIEW_MODE_CARD,
   // currently viewed list GET parameters map
   currentListParams: {
+    content: 'people',
     sort: 'date_created',
     order: constants.ORDER_DESC,
     is_deleted: 0

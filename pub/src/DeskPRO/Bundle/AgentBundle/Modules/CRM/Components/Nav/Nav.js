@@ -43,7 +43,7 @@ export class Nav extends Component {
             <Tab title="Filters">Filters tab content</Tab>
             <Tab title="Labels">
               <LoadIndicator loaded={loaded}>
-                <LabelsDictionary labels={labels.get('person')}/>
+                {labels && <LabelsDictionary labels={labels.get('person')} onClick={()=>{}}/>}
               </LoadIndicator>
             </Tab>
           </TabsPaneStatefulContainer>
@@ -63,7 +63,7 @@ export class Nav extends Component {
             </Tab>
             <Tab title="Labels">
               <LoadIndicator loaded={loaded}>
-                <LabelsDictionary labels={labels.get('organization')}/>
+                {labels && <LabelsDictionary labels={labels.get('organization')} onClick={()=>{}}/>}
               </LoadIndicator>
             </Tab>
           </TabsPaneStatefulContainer>

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
@@ -96,6 +97,7 @@ class PersonTransformer extends AbstractDataSerializerTransformer
             'date_last_login',
             'browser',
             'usergroups',
+            'labels',
         ];
     }
 

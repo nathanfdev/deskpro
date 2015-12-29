@@ -3,10 +3,12 @@ import * as People from 'DeskPRO/Bundle/AgentBundle/Services/Api/People';
 import * as Organizations from 'DeskPRO/Bundle/AgentBundle/Services/Api/Organizations';
 import { currentListParamsSelector } from '../Selectors/list';
 import { setOrganizationsRequest } from '../RecordStores/Actions/organizationsActions';
+import { setUserGroupsRequest } from '../RecordStores/Actions/userGroupsActions';
+import { setLanguagesRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/RecordStores/Actions/languagesActions';
 
 const recordStoresId = 'crm';
 
-const prepareLinkedData = (linked) =>{
+const prepareLinkedData = (linked) => {
   const result = [];
   for (const key in linked) {
     if (linked.hasOwnProperty(key)) {
@@ -22,6 +24,8 @@ export const loadPeople = createAction(
   (params) => dispatch => People.loadPeople(params).then(promise => {
     const data = promise.getData();
     dispatch(setOrganizationsRequest(recordStoresId, prepareLinkedData(data.linked.organization)));
+    dispatch(setUserGroupsRequest(recordStoresId, prepareLinkedData(data.linked.usergroup)));
+    dispatch(setLanguagesRequest(recordStoresId, prepareLinkedData(data.linked.language)));
     return { content: params.content, data: data };
   })
 );
