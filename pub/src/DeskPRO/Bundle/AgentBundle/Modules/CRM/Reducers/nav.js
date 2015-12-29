@@ -16,8 +16,13 @@ const initialState = {
   agents: {
     total: 0,
     teams: [/* {count, group} */]
+  },
+  labels: {
+    person: [/* string */],
+    organization: [/* string */]
   }
 };
+
 export default createReducer(initialState, {
   [actions.initialLoad]: async({
     success: mergeFullPayload(),
@@ -48,10 +53,7 @@ export default createReducer(initialState, {
  ],
  listViewFields: [/!* {name: 'id', label: 'ID', status: constants.FIELD_SHOWN, priority: 1} *!/],
 
- labels: {
- person: [/!* string *!/],
- organization: [/!* string *!/]
- },
+
  users: {
  total: 0,
  groups: [/!* {count, group} *!/]
