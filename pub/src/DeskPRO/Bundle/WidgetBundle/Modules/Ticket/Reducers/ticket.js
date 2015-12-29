@@ -4,7 +4,8 @@ import { async, setFullPayload, setValue, setValueOnError } from 'Ampliflux/redu
 
 const initialState = {
   content: null,
-  loading: false
+  loading: false,
+  saving: false
 };
 
 export default createReducer(initialState, {
@@ -13,5 +14,11 @@ export default createReducer(initialState, {
     start: setValue('loading', true),
     done: setValue('loading', false),
     error: setValueOnError('loading', false)
+  }),
+  [actions.saveForm]: async({
+    success: setFullPayload('content'),
+    start: setValue('saving', true),
+    done: setValue('saving', false),
+    error: setValueOnError('saving', false)
   })
 });

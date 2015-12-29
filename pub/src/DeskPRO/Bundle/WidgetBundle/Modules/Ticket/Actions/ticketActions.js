@@ -12,3 +12,14 @@ export const loadForm = createAction(
     });
   }
 );
+
+export const saveForm = createAction(
+  'WIDGET_TICKET_SAVE_FORM',
+  params => {
+    return new Promise(resolve => {
+      DpApi
+        .sendPost(`DP_API/tickets/new`, params, {...ajaxOptions})
+        .success(response => resolve(response.data));
+    });
+  }
+);
