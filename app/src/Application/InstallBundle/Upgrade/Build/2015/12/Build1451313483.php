@@ -26,11 +26,23 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
-    'install' => array(
-        'handler' => 'deskpro_us_google\\InstallerHandler',
-    ),
-    'api' => array(
-        'package_request_handler' => 'deskpro_us_google\\RequestHandler\\PackageRequestHandler',
-    ),
-);
+namespace Application\InstallBundle\Upgrade\Build;
+
+use Symfony\Component\Filesystem\Filesystem;
+
+class Build1451313483 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->execMutateSql('delete from app_instances where package_name = "deskpro_us_google"');
+        $this->execMutateSql('delete from app_assets where package_name = "deskpro_us_google"');
+        $this->execMutateSql('delete from app_packages where name = "deskpro_us_google"');
+
+        try {
+            $fs = new Filesystem();
+            $fs->remove(DP_WEB_ROOT.DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'apps'.DIRECTORY_SEPARATOR.'deskpro_us_google');
+        } catch (\Exception $e) {
+            $this->out('Unlink failed: '.$e->getMessage());
+        }
+    }
+}
