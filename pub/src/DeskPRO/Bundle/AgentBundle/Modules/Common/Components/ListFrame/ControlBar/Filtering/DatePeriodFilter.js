@@ -41,7 +41,7 @@ export class DatePeriodFilter extends Component {
                   setActiveItem={setActiveItem}
                   resetFilter={unsetParams.bind(this, [fromParam, toParam])}>
 
-        {this.renderDateCreatedItemContent(from, to)}
+        {/*this.renderDateCreatedItemContent(from, to)*/}
         <Menu>
           <div
             className="dpw-navigation-dropdown-panel dpw-navigation-dropdown-panel-corner-left">

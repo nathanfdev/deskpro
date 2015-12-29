@@ -9,17 +9,22 @@ import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/ControlBar';
 
 @connect(state => ({
+  content: currentContentSelector(state),
   sort: currentListSortSelector(state),
   order: currentListOrderSelector(state),
-  viewMode: currentViewModeSelector(state),
-  content: currentContentSelector(state)
+  filters: listFiltersSelector(state),
+  filterParams: currentListParamsSelector(state),
+  viewMode: currentViewModeSelector(state)
 }))
 export class ControlBarContainer extends Component {
+
   static propTypes = {
+    content: PropTypes.string.isRequired,
     sort: PropTypes.string.isRequired,
     order: PropTypes.string.isRequired,
-    viewMode: PropTypes.string.isRequired,
-    content: PropTypes.string.isRequired
+    filters: PropTypes.array.isRequired,
+    filterParams: PropTypes.object.isRequired,
+    viewMode: PropTypes.string.isRequired
   };
 
   render() {
@@ -35,6 +40,11 @@ export class ControlBarContainer extends Component {
         order: this.props.order,
         sortAction: setSort,
         orderAction: setOrder
+      },
+      filtering: {
+        filters: this.props.filters,
+        setParamsAction: applyParams,
+        state: this.props.filterParams
       },
       view: {
         options: {
