@@ -31,6 +31,8 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
+use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\People\PersonGuest;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -47,8 +49,59 @@ class TicketController extends AbstractApiController
      */
     public function newTicketAction(Request $request)
     {
-        return new View([
-            'data' => '<div>Sample form content</div>',
+        $person = $this->getUser() ?: new PersonGuest();
+        $ticket = $this->get('ticket_manager')->createTicket();
+
+        $ticket_message = new TicketMessage();
+        $ticket_message->setIpAddress($request->getClientIp());
+        $ticket->setPerson($person);
+        $ticket_message->setPerson($person);
+        $ticket->addMessage($ticket_message);
+        $lang = $this->get('language_manager')->getLanguageStack()->getActiveOrDefault();
+        $ticket->setLanguage($lang);
+
+        $form = $this->createForm('ticket', $ticket, [
+            'person'            => $person,
+            'ticket_message'    => $ticket_message,
+            'method'            => 'GET',
+            'validation_groups' => false,
+            'settings'          => $this->getBrandContainer()->getSettings(),
+            'action'            => $this->generateUrl('portal_new_ticket'),
         ]);
+
+        $form_full = $this->createForm('ticket', $ticket, [
+            'person'         => $person,
+            'ticket_message' => null,
+            'settings'       => $this->getBrandContainer()->getSettings(),
+            'full_version'   => true,
+            'action'         => $this->generateUrl('portal_new_ticket'),
+        ]);
+
+        // show ticket deflection? (suggestions)
+        $show_ticket_suggestions = (bool) $this->getBrandContainer()->getSetting('core.show_ticket_suggestions');
+
+        /** @var \Application\DeskPRO\TicketLayout\LayoutCollection $layouts */
+        $layouts           = $this->getContainer()->getTicketLayoutManager()->getUserLayouts(true);
+        $ticket_display_js = 'window.DESKPRO_TICKET_DISPLAY = '.$layouts->compileJsObj().';';
+
+        return new View([
+            'data' => $this->render('Theme:NewTicket:new_ticket.html.twig', [
+                'rerendering'             => false,
+                'rerendering_saved'       => false,
+                'ticket_display_js'       => $ticket_display_js,
+                'form'                    => $form->createView(),
+                'form_full'               => $form_full->createView(),
+                'form_errors'             => $form->isSubmitted() ? $form->getErrors() : [],
+                'show_ticket_suggestions' => $show_ticket_suggestions,
+            ])->getContent(),
+        ]);
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\PortalBundle\Brand\BrandContainer
+     */
+    protected function getBrandContainer()
+    {
+        return $this->get('brand_stack')->getActive();
     }
 }
