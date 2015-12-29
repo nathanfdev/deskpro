@@ -1,6 +1,6 @@
-import _ from "lodash";
-import $ from "jquery";
-import EventEmitter from "eventemitter2";
+import _ from 'lodash';
+import $ from 'jquery';
+import EventEmitter from 'eventemitter2';
 
 /**
  * fieldFilter takes the follow parameters:
@@ -25,45 +25,51 @@ export default class DynamicForm {
       alwaysFields: []
     });
 
-    this.$formEl         = $(options.formEl);
-    this.$tplEl          = $(options.tplEl);
-    this.fieldFilter     = options.fieldFilter;
+    this.$formEl = $(options.formEl);
+    this.$tplEl = $(options.tplEl);
+    this.fieldFilter = options.fieldFilter;
     this.widgetClassName = options.widgetClassName;
-    this.alwaysFields    = options.alwaysFields;
+    this.alwaysFields = options.alwaysFields;
     this.ee = new EventEmitter({
       maxListeners: 0
     });
 
     this.$tplEl.detach();
 
-    this.fields = new  Map();
+    this.fields = new Map();
     this.currentFields = [];
 
-    this.$formEl.find('.'+this.widgetClassName).each((x, el) => {
+    this.$formEl.find('.' + this.widgetClassName).each((x, el) => {
       el = $(el);
-      let name = el.data('field');
+      const name = el.data('field');
       if (name && !el.hasClass('as-static') && !this.fields.has(name)) {
         this.currentFields.push(name);
         this.fields.set(name, el);
       }
     });
 
-    this.$tplEl.find('.'+this.widgetClassName).each((x, el) => {
+    this.$tplEl.find('.' + this.widgetClassName).each((x, el) => {
       el = $(el);
-      let name = el.data('field');
+      const name = el.data('field');
       if (name && !el.hasClass('as-static') && !this.fields.has(name)) {
         this.fields.set(name, el);
       }
     });
 
-    if (options.onInit)          this.ee.on('init', options.onInit);
-    if (options.onFieldsUpdated) this.ee.on('fieldsUpdated', options.onFieldsUpdated);
-    if (options.onPostUpdate)    this.ee.on('postUpdate', options.onPostUpdate);
+    if (options.onInit) {
+      this.ee.on('init', options.onInit);
+    }
+    if (options.onFieldsUpdated) {
+      this.ee.on('fieldsUpdated', options.onFieldsUpdated);
+    }
+    if (options.onPostUpdate) {
+      this.ee.on('postUpdate', options.onPostUpdate);
+    }
 
     this.fieldNames = Array.from(this.fields.keys());
     this.fieldElements = Array.from(this.fields.values());
 
-    console.log("[DynamicForm] <constructor> Field Names: %o -- Current Fields: %o", this.fieldNames, this.currentFields);
+    console.log('[DynamicForm] <constructor> Field Names: %o -- Current Fields: %o', this.fieldNames, this.currentFields);
 
     if (options.runInitUpdate) {
       this.update();
@@ -119,9 +125,9 @@ export default class DynamicForm {
 
     this.currentFields = this.resolveFields(evData.fields);
 
-    console.log("[DynamicForm] <setFieldSet> Fields: %o", fields);
+    console.log('[DynamicForm] <setFieldSet> Fields: %o', fields);
 
-    this.$formEl.find('.'+this.widgetClassName).not('.as-static').detach();
+    this.$formEl.find('.' + this.widgetClassName).not('.as-static').detach();
 
     let insertPoint = this.$formEl.find('.dynamic-fields-container');
     if (!insertPoint[0]) {
@@ -130,9 +136,9 @@ export default class DynamicForm {
 
     this.currentFields.map((name) => {
       if (this.fields.has(name)) {
-        let $el = this.fields.get(name);
+        const $el = this.fields.get(name);
         if (!$el) {
-          console.warn("Unknown field: %s", name);
+          console.warn('Unknown field: %s', name);
         }
         $el.detach().appendTo(insertPoint);
       }
@@ -147,7 +153,6 @@ export default class DynamicForm {
    * @returns {Array}
    */
   resolveFields(fields) {
-
     if (this.alwaysFields.length) {
       fields = _.union(fields, this.alwaysFields);
     }
@@ -161,14 +166,19 @@ export default class DynamicForm {
    * Update the form.
    */
   update() {
-    if (this._firePreUpdate().cancel) return false;
-    let r = this._fireUpdateFields(this.fieldFilter(this.fieldNames, this));
-    if (r.cancel) return false;
+    if (this._firePreUpdate().cancel) {
+      return false;
+    }
 
-    let newFields = this.resolveFields(r.newFields);
+    const r = this._fireUpdateFields(this.fieldFilter(this.fieldNames, this));
+    if (r.cancel) {
+      return false;
+    }
+
+    const newFields = this.resolveFields(r.newFields);
     let didChange = false;
 
-    if (newFields.length != this.currentFields.length) {
+    if (newFields.length !== this.currentFields.length) {
       didChange = true;
     } else {
       for (let i = 0; i < newFields.length; i++) {
@@ -180,7 +190,7 @@ export default class DynamicForm {
     }
 
     if (!didChange) {
-      console.log("[DynamicForm] <update> No change. Fields: %o", this.currentFields);
+      console.log('[DynamicForm] <update> No change. Fields: %o', this.currentFields);
     }
 
     if (didChange) {
@@ -193,20 +203,23 @@ export default class DynamicForm {
   }
 
   _firePreUpdate() {
-    let evData = {inst: this, cancel: false};
+    const evData = {inst: this, cancel: false};
     this.ee.emit('preUpdate', evData);
+
     return evData;
   }
 
   _firePostUpdate(didChange) {
-    let evData = {inst: this, didChange: didChange};
+    const evData = {inst: this, didChange: didChange};
     this.ee.emit('postUpdate', evData);
+
     return evData;
   }
 
   _fireUpdateFields(newFields) {
-    let evData = {inst: this, cancel: false, newFields: newFields, currentFields: this.currentFields};
+    const evData = {inst: this, cancel: false, newFields: newFields, currentFields: this.currentFields};
     this.ee.emit('updateFields', evData);
+
     return evData;
   }
 }
