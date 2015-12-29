@@ -53,7 +53,7 @@ export class OrganizationsTable extends Component {
         </tr>
         </thead>
         <tbody>
-        {organizations.map((element, index) =>
+        {organizations && organizations.map((element, index) =>
             <tr key={index}>
               <TdId visible>
                 {element.id}

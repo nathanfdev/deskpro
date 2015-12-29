@@ -7,8 +7,8 @@ export class PeopleTable extends Component {
 
   static propTypes = {
     intl: intlShape.isRequired,
-    people: PropTypes.object,
-    organizations: PropTypes.object,
+    people: PropTypes.array,
+    organizations: PropTypes.array,
     sortTable: PropTypes.func.isRequired,
     currentSort: PropTypes.string.isRequired,
     currentOrder: PropTypes.string.isRequired
@@ -79,7 +79,7 @@ export class PeopleTable extends Component {
         </tr>
         </thead>
         <tbody>
-        {people.map((element, index) =>
+        {people && people.map((element, index) =>
             <tr key={index}>
               <TdId visible>
                 {element.id}

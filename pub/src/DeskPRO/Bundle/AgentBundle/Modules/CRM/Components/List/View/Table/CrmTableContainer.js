@@ -19,11 +19,11 @@ import { connect } from 'react-redux';
 })
 export class CrmTableContainer extends Component {
   static propTypes = {
-    dispatch: PropTypes.string.isRequired,
+    dispatch: PropTypes.func.isRequired,
     content: PropTypes.string.isRequired,
-    people: PropTypes.object,
+    people: PropTypes.array,
     linkedOrganizations: PropTypes.object,
-    organizations: PropTypes.object,
+    organizations: PropTypes.aray,
     currentSort: PropTypes.string.isRequired,
     currentOrder: PropTypes.string.isRequired
   };

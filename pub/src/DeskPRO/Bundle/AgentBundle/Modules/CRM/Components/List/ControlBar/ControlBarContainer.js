@@ -68,6 +68,7 @@ export class ControlBarContainer extends Component {
 
     if (content === 'people') {
       config.sorting.options.date_last_login = { label: 'Last login', icon: 'calendar' };
+      config.sorting.options.organization = { label: 'Organization', icon: 'building-o' };
     }
     return (
       <ControlBar {...config} />

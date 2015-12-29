@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { NavFrame, NavFrameHeader, NavFrameBody, SectionHeader, TabsPaneStatefulContainer, Tab, ListItem, LabelsDictionary }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
@@ -55,7 +56,7 @@ export class Nav extends Component {
                 <ul>
                   <ListItemContainer group="organizations"
                                      label="all"
-                                     listOptions={{content: 'organizations'}}>
+                                     listOptions={{content: 'organizations', sort: 'name', order: constants.ORDER_ASC}}>
                     <ListItem count={organizations.get('count')} label="All Organizations"/>
                   </ListItemContainer>
                 </ul>
