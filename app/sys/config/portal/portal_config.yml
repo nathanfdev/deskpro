@@ -168,7 +168,6 @@ fos_rest:
             - { path: '^/', stop: true }
     exception:
         enabled: true
-        exception_controller: 'DeskPRO\Bundle\PortalBundle\Controller\Api\ExceptionController::showAction'
     view:
         view_response_listener: force
         formats:
