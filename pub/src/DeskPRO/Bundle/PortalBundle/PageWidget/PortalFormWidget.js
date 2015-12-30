@@ -8,7 +8,7 @@ import DpxRte from 'DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/DpxRte';
 import DpxRadio from 'DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/DpxRadio';
 import FormSaveDraft from 'DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/FormSaveDraft';
 
-export default class DpInteractiveFormWidget extends PageWidget {
+export default class PortalFormWidget extends PageWidget {
   init() {
     this.addWidgetDef(DpxDateWidget, '.dpx-date');
     this.addWidgetDef(DpxDateWidget, '.dpx-date-time');
