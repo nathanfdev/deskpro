@@ -63,6 +63,35 @@
     line-height: 110%;
     color: #868686;
   }
+
+  .radio-button {
+    position: relative;
+    display: inline-block;
+    min-width: 125px;
+    margin: 0 10px 0 0;
+
+    input[type="radio"] {
+      display: none;
+      border: 1px solid #3575bd;
+    }
+
+    label {
+      padding-left: 0;
+
+      &:before {
+        display: block;
+        float: left;
+        margin-right: 6px;
+        width: 17px;
+        height: 17px;
+        line-height: 1.3em;
+        border: 1px solid #c0c0c0;
+        background: #f0f0f0;
+        border-radius: 24px;
+        content: "";
+      }
+    }
+  }
 }
 
 .dpdesignportal-ticket-info {
