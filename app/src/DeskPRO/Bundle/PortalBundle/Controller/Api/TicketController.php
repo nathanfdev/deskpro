@@ -35,6 +35,7 @@ use Application\DeskPRO\Entity\TicketMessage;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -43,6 +44,22 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class TicketController extends AbstractApiController
 {
+    /**
+     * @Route("/portal/api/tickets/display.js", name="portal_api_ticket_display")
+     * @Method({"GET"})
+     *
+     * @return JsonResponse
+     */
+    public function ticketDisplayAction()
+    {
+        $layouts = $this->getContainer()->getTicketLayoutManager()->getUserLayouts(true);
+        $output  = $layouts->compileJsObj();
+
+        return new Response($output, Response::HTTP_OK, [
+            'Content-Type' => 'text/javascript',
+        ]);
+    }
+
     /**
      * @Route("/portal/api/tickets/new", name="portal_api_ticket_new")
      * @Method({"GET", "POST"})
