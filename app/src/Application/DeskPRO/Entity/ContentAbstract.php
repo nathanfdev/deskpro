@@ -32,6 +32,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -203,12 +204,12 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     public function __construct()
     {
-        $this['date_created'] = new \DateTime();
         $this->setModelField('date_updated', new \DateTime());
-        $this->revisions    = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->labels       = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->slug_history = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->comments     = new \Doctrine\Common\Collections\ArrayCollection();
+        $this['date_created'] = new \DateTime();
+        $this->revisions      = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->labels         = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->slug_history   = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->comments       = new \Doctrine\Common\Collections\ArrayCollection();
 
         $this['status']        = self::STATUS_HIDDEN;
         $this['hidden_status'] = self::HIDDEN_STATUS_DRAFT;
@@ -257,8 +258,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         KernelErrorHandler::logExceptionIfUniqueBacktrace(
             new \Exception('DEPRECATED METHOD CALL: '.get_called_class().'::getPath()')
-        )
-        ;
+        );
 
         return App::getObjectRouter()->getPortalPath($this);
     }
@@ -272,8 +272,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         KernelErrorHandler::logExceptionIfUniqueBacktrace(
             new \Exception('DEPRECATED METHOD CALL: '.get_called_class().'::getLink()')
-        )
-        ;
+        );
 
         return App::getObjectRouter()->getPortalUrl($this);
     }
@@ -287,8 +286,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         KernelErrorHandler::logExceptionIfUniqueBacktrace(
             new \Exception('DEPRECATED METHOD CALL: '.get_called_class().'::getPermalink()')
-        )
-        ;
+        );
 
         if ($absolute) {
             return App::getObjectRouter()->getPortalUrl($this, 'permalink');
@@ -496,9 +494,12 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         if ($new_slug !== $this->slug && $this->slug) {
             // if the slug exists in history already, we don't want to add it again
             $object_slug = $this->slug;
-            if (!$this->slug_history->exists(function ($key, $history) use ($object_slug) {
-                return $object_slug === $history->getSlug();
-            })) {
+            if (!$this->slug_history->exists(
+                function ($key, $history) use ($object_slug) {
+                    return $object_slug === $history->getSlug();
+                }
+            )
+            ) {
                 $history = $this->addSlugHistory($this->slug);
             }
         }
@@ -529,13 +530,15 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         $ent   = $this->getEntityName().'Revision';
         $field = strtolower(str_replace('DeskPRO:', '', $this->getEntityName()));
 
-        $revs = App::getOrm()->createQuery("
+        $revs = App::getOrm()->createQuery(
+            "
             SELECT r, p
             FROM $ent r
             LEFT JOIN r.person p
             WHERE r.$field = ?1 AND r.person IS NOT NULL
             ORDER BY r.date_created DESC
-        ")->setParameter(1, $this)->execute();
+        "
+        )->setParameter(1, $this)->execute();
 
         foreach ($revs as $r) {
             if ($r->person) {
@@ -646,6 +649,22 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         }
 
         return $this->_label_manager;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLabelsArray()
+    {
+        $labels = array_map(
+            function ($label) {
+                return $label->getLabel();
+            },
+            $this->labels->toArray()
+        );
+        sort($labels);
+
+        return $labels;
     }
 
     /**

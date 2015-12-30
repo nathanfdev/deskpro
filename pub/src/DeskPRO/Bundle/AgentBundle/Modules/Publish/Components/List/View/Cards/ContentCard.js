@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
-import { Card, CardLine, CardLineLeft, CardLineRight, CardLineFull, CardContentText, CardLineItem, CardCheckbox, CardDisc, CardTitle, CardUser }
+import { Card, CardLine, CardLineLeft, CardLineRight, CardLineFull, CardContentText, CardLineItem, CardCheckbox, CardDisc, CardTitle, CardUser, CardLabel }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
 import jQuery from 'jquery';
 import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
@@ -16,6 +16,19 @@ export class ContentCard extends Component {
     selected: PropTypes.bool.isRequired,
     toggleSelected: PropTypes.func.isRequired
   };
+
+  renderLabels() {
+    const {labels} = this.props.element;
+    if (labels.length) {
+      return (
+        <CardLine>
+          <CardLineItem>
+            <i className="fa fa-tags"></i> {labels.map((label, index)=> <CardLabel key={index} label={label}/>)}
+          </CardLineItem>
+        </CardLine>
+      );
+    }
+  }
 
   render() {
     const { element, author, lastRevisionAuthor, toggleSelected, selected } = this.props;
@@ -46,6 +59,8 @@ export class ContentCard extends Component {
             </CardContentText>
           </CardLineFull>
         </CardLine>
+
+        {this.renderLabels()}
 
         <CardLine>
           <CardLineLeft>

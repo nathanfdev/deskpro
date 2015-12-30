@@ -1,7 +1,9 @@
 import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
-import { contentSelector, peopleSelector, articlesSelector, newsSelector, downloadsSelector, currentListSortSelector, currentListOrderSelector }
+import { contentSelector, articlesSelector, newsSelector, downloadsSelector, currentListSortSelector, currentListOrderSelector }
   from '../../../../Selectors/list';
+import { peopleSelector }
+  from '../../../../Selectors/recordStores';
 import { Table, Th, Td, TdId, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { applyParams } from '../../../../Actions/publishListActions';
 import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
@@ -111,7 +113,7 @@ export class TableContainer extends Component {
                 {element.status}
               </Td>
               <Td visible>
-                @ToDo some labels stuff
+                {element.labels && element.labels.join(', ')}
               </Td>
               <Td className="item-title">
                 <a href="#"><SlicedString string={element.title}/></a>
