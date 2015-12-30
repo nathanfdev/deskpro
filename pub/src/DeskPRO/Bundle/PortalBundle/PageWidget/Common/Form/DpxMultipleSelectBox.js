@@ -1,6 +1,6 @@
-import $ from "jquery";
-import PageWidget from "DeskPRO/Component/PageWidget/PageWidget";
-import * as PortalMultipleSelectBox from "DeskPRO/Bundle/PortalBundle/React/Form/PortalMultipleSelectBox";
+import $ from 'jquery';
+import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
+import * as PortalMultipleSelectBox from 'DeskPRO/Bundle/PortalBundle/React/Form/PortalMultipleSelectBox';
 
 export default class DpxLevelSelect extends PageWidget {
   renderWidget() {

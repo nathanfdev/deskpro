@@ -1,6 +1,6 @@
-import $ from "jquery";
-import MediumEditor from "medium-editor";
-import PageWidget from "DeskPRO/Component/PageWidget/PageWidget";
+import $ from 'jquery';
+import MediumEditor from 'medium-editor';
+import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
 
 /**
  * A DpxRte takes three fields:

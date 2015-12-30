@@ -1,5 +1,5 @@
-import $ from "jquery";
-import PageWidget from "DeskPRO/Component/PageWidget/PageWidget";
+import $ from 'jquery';
+import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
 
 export default class DpxRadio extends PageWidget {
   renderWidget() {

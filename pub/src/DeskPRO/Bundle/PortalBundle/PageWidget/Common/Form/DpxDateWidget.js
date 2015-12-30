@@ -1,7 +1,7 @@
-import $ from "jquery";
-import PageWidget from "DeskPRO/Component/PageWidget/PageWidget";
-import datetimepicker from "jquery-datetimepicker";
-import moment from "moment";
+import $ from 'jquery';
+import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
+import 'jquery-datetimepicker';
+import moment from 'moment';
 
 export default class DpxDateWidget extends PageWidget {
   renderWidget() {
