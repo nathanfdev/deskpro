@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import TicketForm from '../../../../../PortalBundle/PageWidget/TicketForm';
-import serializeJSON from 'jquery.serializejson';
+import 'jquery.serializejson';
 
 export class TicketFormContent extends React.Component {
 
