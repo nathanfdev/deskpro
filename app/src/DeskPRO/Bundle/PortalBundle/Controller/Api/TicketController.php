@@ -53,7 +53,7 @@ class TicketController extends AbstractApiController
     public function ticketDisplayAction()
     {
         $layouts = $this->getContainer()->getTicketLayoutManager()->getUserLayouts(true);
-        $output  = $layouts->compileJsObj();
+        $output  = 'window.DESKPRO_TICKET_DISPLAY ='.$layouts->compileJsObj();
 
         return new Response($output, Response::HTTP_OK, [
             'Content-Type' => 'text/javascript',

@@ -1,6 +1,7 @@
 import { createAction } from 'Ampliflux';
 import { loadOptions } from './dpWindowActions';
 import { loadPhraseTranslations } from '../../Chat/Actions/chatActions';
+import { loadTicketDisplayFields } from '../../Ticket/Actions/ticketActions';
 import { widgetSessionCodeSelector } from '../Selectors/bootstrap';
 import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 
@@ -28,7 +29,8 @@ export const bootstrapWidget = createAction(
       all([
         dispatch(getSession(localStorage.getItem('dpWidget.sessionCode'))),
         dispatch(loadOptions(window.DP_OPTIONS)),
-        dispatch(loadPhraseTranslations())
+        dispatch(loadPhraseTranslations()),
+        dispatch(loadTicketDisplayFields())
       ])
       .then(response => resolve(response));
   })
