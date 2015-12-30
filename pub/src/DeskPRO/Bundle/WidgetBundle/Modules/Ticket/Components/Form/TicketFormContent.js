@@ -12,13 +12,19 @@ export class TicketFormContent extends React.Component {
   };
 
   componentDidMount() {
-    this.getForm().on('submit', this.onSubmit);
-    this.formWidget = new TicketForm($('#new_ticket_page', this.getCurrentNode()));
-    this.formWidget.renderWhenReady();
+    this.addListeners();
+  }
+
+  componentWillReceiveProps() {
+    this.removeListeners();
+  }
+
+  componentDidUpdate() {
+    this.addListeners();
   }
 
   componentWillUnmount() {
-    this.getForm().off('submit', this.onSubmit);
+    this.removeListeners();
   }
 
   onSubmit = event => {
@@ -34,6 +40,16 @@ export class TicketFormContent extends React.Component {
 
   getForm() {
     return $('.form-ticket', this.getCurrentNode());
+  }
+
+  addListeners() {
+    this.getForm().on('submit', this.onSubmit);
+    this.formWidget = new TicketForm($('#new_ticket_page', this.getCurrentNode()));
+    this.formWidget.renderWhenReady();
+  }
+
+  removeListeners() {
+    this.getForm().off('submit', this.onSubmit);
   }
 
   render() {
