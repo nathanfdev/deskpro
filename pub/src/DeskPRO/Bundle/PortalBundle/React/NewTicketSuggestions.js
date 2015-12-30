@@ -150,16 +150,17 @@ export default class NewTicketSuggestions extends React.Component {
   }
 
 	render() {
-    const data = this.state.data;
+    const data = this.state.data || [];
+    const results = data.results || [];
 
     return (
-      <div style={{display: (this.state.search_query.content.length >= 3 && data.results.length > 0 ? ' block' : 'none')}}>
+      <div style={{display: (this.state.search_query.content.length >= 3 && results.length > 0 ? ' block' : 'none')}}>
         <div className="ticket-related-articles">
           <header>
             <h1>{PortalPhrases.get('portal.tickets.related_articles_title')}</h1>
             <h2>{PortalPhrases.get('portal.tickets.related_articles_desc')}</h2>
           </header>
-          <Suggestions results={data.results} />
+          <Suggestions results={results} />
         </div>
       </div>
     );
