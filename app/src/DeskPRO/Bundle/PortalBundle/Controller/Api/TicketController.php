@@ -32,11 +32,11 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\People\PersonGuest;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class TicketController.
@@ -46,10 +46,14 @@ class TicketController extends AbstractApiController
     /**
      * @Route("/portal/api/tickets/new", name="portal_api_ticket_new")
      * @Method({"GET", "POST"})
+     *
+     * @param Request $request
+     *
+     * @return View
      */
     public function newTicketAction(Request $request)
     {
-        $person = $this->getUser() ?: new PersonGuest();
+        $person = $this->getUser() ?: $this->getDoctrine()->getRepository('DeskPRO:Person')->find(1);
         $ticket = $this->get('ticket_manager')->createTicket();
 
         $ticket_message = new TicketMessage();
@@ -61,15 +65,17 @@ class TicketController extends AbstractApiController
         $ticket->setLanguage($lang);
 
         $form = $this->createForm('ticket', $ticket, [
-            'person'            => $person,
-            'ticket_message'    => $ticket_message,
-            'method'            => 'GET',
-            'validation_groups' => false,
-            'settings'          => $this->getBrandContainer()->getSettings(),
-            'action'            => $this->generateUrl('portal_new_ticket'),
+            'person'                        => $person,
+            'ticket_message'                => $ticket_message,
+            'settings'                      => $this->getBrandContainer()->getSettings(),
+            'action'                        => $this->generateUrl('portal_new_ticket'),
+            'attr'                          => ['data-save-draft' => 'new_ticket'],
+            'csrf_protection'               => false,
+            'csrf_double_submit_protection' => false,
+            'allow_extra_fields'            => true,
         ]);
 
-        $form->submit($request->query->get('ticket', []), false);
+        $form->handleRequest($request);
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($ticket);
@@ -94,7 +100,7 @@ class TicketController extends AbstractApiController
                 'form_errors'             => $form->isSubmitted() ? $form->getErrors() : [],
                 'show_ticket_suggestions' => $show_ticket_suggestions,
             ])->getContent(),
-        ]);
+        ], !$form->isSubmitted() || $form->isValid() ? Response::HTTP_OK : Response::HTTP_BAD_REQUEST);
     }
 
     /**

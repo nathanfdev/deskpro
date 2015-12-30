@@ -11,14 +11,13 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
+  [actions.setNewTicketFormContent]: setFullPayload('newForm.content'),
   [actions.loadNewTicketForm]: async({
-    success: setFullPayload('newForm.content'),
     start: setValue('newForm.loading', true),
     done: setValue('newForm.loading', false),
     error: setValueOnError('newForm.loading', false)
   }),
   [actions.saveNewTicketForm]: async({
-    success: setFullPayload('newForm.content'),
     start: setValue('newForm.saving', true),
     done: setValue('newForm.saving', false),
     error: setValueOnError('newForm.saving', false)

@@ -2,24 +2,26 @@ import { createAction } from 'Ampliflux';
 import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
 
+export const setNewTicketFormContent = createAction('WIDGET_SET_NEW_TICKET_FORM_CONTENT');
 export const loadNewTicketForm = createAction(
   'WIDGET_LOAD_NEW_TICKET_FORM',
-  () => {
-    return new Promise(resolve => {
-      DpApi
-        .sendGet(`DP_API/tickets/new`, {...ajaxOptions})
-        .success(response => resolve(response.data));
-    });
+  () => dispatch => {
+    const promise = DpApi.sendGet(`DP_API/tickets/new`, {...ajaxOptions});
+    promise.success(response => dispatch(setNewTicketFormContent(response.data)));
+
+    return promise;
   }
 );
 
 export const saveNewTicketForm = createAction(
   'WIDGET_SAVE_NEW_TICKET_FORM',
-  params => {
-    return new Promise(resolve => {
-      DpApi
-        .sendPost(`DP_API/tickets/new`, params, {...ajaxOptions})
-        .success(response => resolve(response.data));
-    });
+  params => dispatch => {
+    const promise = DpApi.sendPost(`DP_API/tickets/new`, params, {...ajaxOptions});
+    promise.then(
+      response => dispatch(setNewTicketFormContent(response.data)),
+      response => dispatch(setNewTicketFormContent(response.data.data))
+    );
+
+    return promise;
   }
 );
