@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import { TicketFormWidget } from './TicketFormWidget';
 import $ from 'jquery';
-import TicketForm from '../../../../../PortalBundle/PageWidget/TicketForm';
 import 'jquery.serializejson';
 
 export class TicketFormContent extends React.Component {
@@ -44,7 +44,7 @@ export class TicketFormContent extends React.Component {
 
   addListeners() {
     this.getForm().on('submit', this.onSubmit);
-    this.formWidget = new TicketForm($('#new_ticket_page', this.getCurrentNode()));
+    this.formWidget = new TicketFormWidget($(this.getCurrentNode()));
     this.formWidget.renderWhenReady();
   }
 

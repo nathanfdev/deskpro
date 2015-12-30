@@ -223,6 +223,10 @@ export default class PageWidget {
    * @private
    */
   _runWidgetDef(widgetDef, $el) {
+    if (!$el) {
+      $el = this.$element;
+    }
+
     const insts = this._createWidgetInst(widgetDef, $el);
 
     insts.forEach(i => {
