@@ -8,29 +8,35 @@ import { ReplyForm } from '../Popups/AgentMessage/ReplyForm';
 import { loadOnlineAgents } from '../../../Actions/agentActions';
 import { OnlineAgentsContainer } from '../Popups/OnlineAgentsContainer';
 import { openTriggerPopup, closeTriggerPopup } from '../../../Actions/dpWindowActions';
+import { onlineAgentsCountSelector } from '../../../Selectors/agent';
 import {
   widgetOpenedSelector,
   helpButtonSizeSelector,
   helpPopupSelector,
   agentPollingTimeoutSelector,
-  triggerPopupOpenedSelector
+  triggerPopupOpenedSelector,
+  widgetHasChatSelector
 } from '../../../Selectors/dpWindow';
 
 @connect(state => ({
+  hasChat: widgetHasChatSelector(state),
   triggerPopupOpened: triggerPopupOpenedSelector(state),
   widgetOpened: widgetOpenedSelector(state),
   size: helpButtonSizeSelector(state),
   popup: helpPopupSelector(state),
+  agentsCounts: onlineAgentsCountSelector(state),
   agentPollingTimeout: agentPollingTimeoutSelector(state)
 }))
 export class HelpButtonContainer extends React.Component {
 
   static propTypes = {
+    hasChat: PropTypes.bool,
     triggerPopupOpened: PropTypes.bool,
     widgetOpened: PropTypes.bool,
     dispatch: PropTypes.func,
     onClick: PropTypes.func,
     popup: PropTypes.string,
+    agentsCounts: PropTypes.number,
     agentPollingTimeout: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number
@@ -51,10 +57,10 @@ export class HelpButtonContainer extends React.Component {
   };
 
   checkRenderPopup() {
-    const { triggerPopupOpened, dispatch } = this.props;
+    const { triggerPopupOpened, agentsCounts, hasChat, dispatch } = this.props;
     const storageKey = 'dpWidget.dpWindow.popupShown';
 
-    if (!(storageKey in localStorage) || localStorage[storageKey] !== 'none') {
+    if ((!(storageKey in localStorage) || localStorage[storageKey] !== 'none') && hasChat && agentsCounts > 0) {
       if (!triggerPopupOpened) {
         dispatch(openTriggerPopup());
       }
