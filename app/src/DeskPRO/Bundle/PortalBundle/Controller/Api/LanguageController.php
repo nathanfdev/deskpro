@@ -66,6 +66,7 @@ class LanguageController extends AbstractApiController
             'portal.account.login-password-reminder',
             'portal.general.show_x_more',
             'portal.general.select_placeholder',
+            'portal.general.delete',
         ];
 
         return $this->getResponse($request, $phrases);
