@@ -33,8 +33,8 @@ export const currentContentSelector = createSelector(
 );
 
 export const listFiltersSelector = createSelector(
-  [currentListParamsSelector, userGroupsSelector],
-  (currentListParams, userGroups) => {
+  [currentContentSelector, userGroupsSelector],
+  (currentContent, userGroups) => {
     const datePeriodsOptions = () => {
       const periods = DatePeriods.all;
       const options = [];
@@ -46,9 +46,9 @@ export const listFiltersSelector = createSelector(
       return options;
     };
     const filterSelector = [
-      { label: 'Created', type: 'singleSelect', param: 'date_created', options: datePeriodsOptions() }
+      { label: 'Created', type: 'singleSelect', param: 'period_created', options: datePeriodsOptions() }
     ];
-    if (currentListParams.get('content') === 'people') {
+    if (currentContent === 'people') {
       const userGroupsOptions = userGroups.toArray()
         .map(group => ({
           label: group.get('title'),
@@ -56,7 +56,7 @@ export const listFiltersSelector = createSelector(
         })
       );
       filterSelector.push({
-        label: 'User group', type: 'singleSelect', param: 'usergroups', quickFilter: true,
+        label: 'User group', type: 'select', param: 'user_group', quickFilter: true,
         options: userGroupsOptions
       });
     }

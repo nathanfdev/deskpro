@@ -22,61 +22,6 @@ export class FilteringMenuContainer extends Component {
     this.state = { expanded: false };
   }
 
-  render() {
-    const { dispatch, state, setParamsAction, onMenuUnmount, filters = [] } = this.props;
-
-    return (
-      <li ref="menuItem">
-        <Button
-          isActive={this.state.expanded}
-          ref="button"
-          title="Filter by:"
-          icon={null}
-          label={this.getButtonLabel()}
-          onClick={this.toggleExpanded}
-          />
-        <Detached isOpen={this.state.expanded}
-                  positionAt="left bottom"
-                  positionTarget={this.refs.button}>
-          <ClickOut onClickOut={this.collapse}
-                    ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list']}
-                    additionalNodes={['.dpw-navigation-dropdown-item-clear']}>
-            <FilteringMenu dispatch={dispatch}
-                           filters={filters}
-                           state={state}
-                           stateValue={this.stateValue.bind(this)}
-                           onMenuUnmount={onMenuUnmount}
-                           setParamsAction={setParamsAction}/>
-          </ClickOut>
-        </Detached>
-      </li>
-    );
-  }
-
-  toggleExpanded = () => this.setState({ expanded: !this.state.expanded });
-  collapse = () => this.setState({ expanded: false });
-
-  stateValue(param) {
-    if (param instanceof Array) {
-      const result = [];
-      param.map(item => {
-        let value = this.props.state.get(item);
-        if (Immutable.Iterable.isIterable(value)) {
-          value = value.toJS();
-          value.map(item1=> {
-            result.push(item1);
-          });
-        }
-      });
-      return [...new Set(result)];
-    }
-    let value = this.props.state.get(param);
-    if (Immutable.Iterable.isIterable(value)) {
-      value = value.toJS();
-    }
-    return value;
-  }
-
   getButtonLabel() {
     const { filters = [] } = this.props;
     let label = '(none)';
@@ -112,6 +57,61 @@ export class FilteringMenuContainer extends Component {
     }
 
     return label;
+  }
+
+  stateValue(param) {
+    if (param instanceof Array) {
+      const result = [];
+      param.map(item => {
+        let value = this.props.state.get(item);
+        if (Immutable.Iterable.isIterable(value)) {
+          value = value.toJS();
+          value.map(item1=> {
+            result.push(item1);
+          });
+        } else if (value) {
+          result.push(value);
+        }
+      });
+      return [...new Set(result)];
+    }
+    let value = this.props.state.get(param);
+    if (Immutable.Iterable.isIterable(value)) {
+      value = value.toJS();
+    }
+    return value;
+  }
+
+  toggleExpanded = () => this.setState({ expanded: !this.state.expanded });
+  collapse = () => this.setState({ expanded: false });
+
+  render() {
+    const { dispatch, state, setParamsAction, onMenuUnmount, filters = [] } = this.props;
+
+    return (
+      <li ref="menuItem">
+        <Button isActive={this.state.expanded}
+                ref="button"
+                title="Filter by:"
+                icon={null}
+                label={this.getButtonLabel()}
+                onClick={this.toggleExpanded}/>
+        <Detached isOpen={this.state.expanded}
+                  positionAt="left bottom"
+                  positionTarget={this.refs.button}>
+          <ClickOut onClickOut={this.collapse}
+                    ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list']}
+                    additionalNodes={['.dpw-navigation-dropdown-item-clear']}>
+            <FilteringMenu dispatch={dispatch}
+                           filters={filters}
+                           state={state}
+                           stateValue={this.stateValue.bind(this)}
+                           onMenuUnmount={onMenuUnmount}
+                           setParamsAction={setParamsAction}/>
+          </ClickOut>
+        </Detached>
+      </li>
+    );
   }
 
 }

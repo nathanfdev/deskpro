@@ -15,28 +15,9 @@ export class SingleChoiceFilter extends Component {
     filter: PropTypes.object.isRequired
   };
 
-  getSelected(options, filterValue) {
-    const flatOptions = [...options];
-    options.forEach(opt => {
-      if (opt.nested) {
-        flatOptions.push(...opt.nested);
-      }
-    });
-    const value = filterValue instanceof Array ? filterValue : [filterValue];
-    const selected = [];
-    value.forEach(val => {
-      flatOptions.forEach(opt => {
-        if (opt.value === val) {
-          selected.push(opt.label);
-        }
-      });
-    });
-    return selected;
-  }
-
   render() {
-    const { dispatch, setParamsAction, stateValue, filter, activeItem, setActiveItem, unsetParams } = this.props;
-    const { label, icon, param, multiple, quickFilter, options } = filter;
+    const { dispatch, setParamsAction, filter, activeItem, setActiveItem, unsetParams, state } = this.props;
+    const { label, icon, param, quickFilter, options } = filter;
     const params = [param];
     options.map(option=> {
       if (option.hasOwnProperty('nested')) {
@@ -45,33 +26,13 @@ export class SingleChoiceFilter extends Component {
         });
       }
     });
-    const filterValue = stateValue([...new Set(params)]) || [];
-    const isActive = Boolean(filterValue.length);
-
-    // onClick depending on if filter selects multiple values or a single value
-    let onClick;
-    if (multiple === false) {
-      onClick = (value) => () => dispatch(setParamsAction({ [param]: value, delayReload: true }));
-    } else {
-      onClick = (value, newParam = null) => () => {
-        let filterValues = newParam ? this.props.state.get(newParam) : this.props.state.get(param);
-        if (filterValues) {
-          filterValues = filterValues.toJS();
-        } else {
-          filterValues = [];
-        }
-        if (filterValues.indexOf(value) === -1) {
-          filterValues.push(value);
-        } else {
-          filterValues.splice(filterValues.indexOf(value), 1);
-        }
-        dispatch(setParamsAction({ [newParam ? newParam : param]: filterValues, delayReload: true }));
-      };
-    }
+    const filterValue = state.get(param);
+    const isActive = Boolean(filterValue);
+    const onClick = (value) => () => dispatch(setParamsAction({ [param]: value, delayReload: true }));
 
     return (
       <FilterItem activeItem={activeItem}
-                  selected={this.getSelected(options, filterValue)}
+                  selected={state.get(param) ? [state.get(param)] : []}
                   setActiveItem={setActiveItem}
                   icon={icon || 'filter'}
                   label={label}
@@ -80,6 +41,8 @@ export class SingleChoiceFilter extends Component {
         <Menu>
           <SingleChoicePanel title={label}
                              depth
+                             currentParam={state.get(param)}
+                             setParams={onClick}
                              quickFilter={quickFilter}
                              item={filter}/>
         </Menu>

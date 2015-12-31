@@ -18,7 +18,9 @@ const prepareLinkedData = (linked) => {
   }
   return result;
 };
+
 export const setParams = createAction('CRM_LIST_SET_CURRENT_PARAMS');
+export const removeParam = createAction('CRM_LIST_REMOVE_PARAM');
 
 export const loadPeople = createAction(
   'CRM_LIST_LOAD_DATA',
@@ -70,6 +72,9 @@ export const applyParams = createAction(
       delete params.page;
     }
     delete params.delayReload;
+    if (!overwrite.hasOwnProperty('navItem')) {
+      delete params.navItem;
+    }
     dispatch(setParams(params));
     if (params.content && !delayReload) {
       dispatch(load(params));
