@@ -72,10 +72,8 @@ export default class TicketForm extends PageWidget {
       }
     };
 
-    setDisplayedFields = (e) => {
-      const displayedFields = e.inst.currentFields.filter((field) => {
-        return field !== 'displayed_fields'; // don't include this special field in the list
-      }).join(',');
+    setDisplayedFields = event => {
+      const displayedFields = event.inst.currentFields.filter(field => field !== 'displayed_fields').join(',');
       const $df = $formEl.find("[data-field='displayed_fields']").find('input[type="hidden"]');
       console.log('[TicketForm] [setDisplayedFields] setting displayed_fields to: ', displayedFields);
       $df.val(displayedFields);
@@ -113,7 +111,7 @@ export default class TicketForm extends PageWidget {
 
         return _.flatten(newFields);
       },
-      onFieldsUpdated: (fields) => {
+      onFieldsUpdated: fields => {
         updateLastDepId();
         setDisplayedFields(fields);
       },
