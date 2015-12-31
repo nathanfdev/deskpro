@@ -1,19 +1,5 @@
 import DpApi from '../DpApi';
-
-/**
- * Compile parameters into a URL string
- * @param {Object} params - to compile
- * @return {string} - compiled string
- */
-function compileParams(params) {
-  const compiled = [];
-
-  for (const key of Object.keys(params)) {
-    compiled.push(key + '=' + String(params[key]));
-  }
-
-  return compiled.join('&');
-}
+import { compileParams } from '../ApiHelpers';
 
 /**
  * @return {Promise} promise

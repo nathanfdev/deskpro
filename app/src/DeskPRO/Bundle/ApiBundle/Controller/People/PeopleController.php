@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Labels\LabelsHelper;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
+use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Route;
@@ -101,16 +102,27 @@ class PeopleController extends CrudController
             $qb->andWhere("$alias.id != :id");
             $qb->setParameter('id', $user->getId());
         }
-
-        if (null !== $request->get('user_group')) {
-            $user_group = (int) $request->get('user_group');
+        if ($period = $request->get('period_created')) {
+            $datePeriodCaseWhen = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_created");
+            $qb->andWhere("$datePeriodCaseWhen = :period_created");
+            $qb->setParameter('period_created', $period);
+        }
+        $userGroups = $request->get('user_group');
+        if (null !== $userGroups) {
             $qb->leftJoin("$alias.usergroups", 'ug');
-            if ($user_group > 0) {
+            if (is_array($userGroups)) {
                 $qb
-                    ->andWhere('ug.id = :user_group_id')
-                    ->setParameter('user_group_id', $user_group);
+                    ->andWhere('ug.id in (:user_group_id)')
+                    ->setParameter('user_group_id', $userGroups);
             } else {
-                $qb->andWhere('ug.id IS NULL');
+                $user_group = (int) $userGroups;
+                if ($user_group > 0) {
+                    $qb
+                        ->andWhere('ug.id = :user_group_id')
+                        ->setParameter('user_group_id', $user_group);
+                } else {
+                    $qb->andWhere('ug.id IS NULL');
+                }
             }
         }
 
@@ -134,8 +146,11 @@ class PeopleController extends CrudController
      * @param string       $alias
      * @param Request      $request
      */
-    protected function applySorting(QueryBuilder $qb, $alias, Request $request)
-    {
+    protected function applySorting(
+        QueryBuilder $qb,
+        $alias,
+        Request $request
+    ) {
         if (is_array(static::$sortOptions)) {
             $sortParam = strtolower($request->get('sort'));
             if ($sortParam && !array_key_exists($sortParam, static::$sortOptions)) {

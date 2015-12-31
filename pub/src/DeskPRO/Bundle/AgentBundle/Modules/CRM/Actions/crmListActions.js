@@ -18,7 +18,9 @@ const prepareLinkedData = (linked) => {
   }
   return result;
 };
+
 export const setParams = createAction('CRM_LIST_SET_CURRENT_PARAMS');
+export const removeParam = createAction('CRM_LIST_REMOVE_PARAM');
 
 export const loadPeople = createAction(
   'CRM_LIST_LOAD_DATA',
