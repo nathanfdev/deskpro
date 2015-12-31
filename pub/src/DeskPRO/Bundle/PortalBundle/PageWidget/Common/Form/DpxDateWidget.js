@@ -68,6 +68,7 @@ export default class DpxDateWidget extends PageWidget {
       timepicker: isTimeIncluded,
       format: isTimeIncluded ? 'm/d/Y h:ia' : 'm/d/Y',
       startDate: initialValue,
+      closeOnDateSelect: true,
       onChangeDateTime: (dp, $input) => {
         const m = moment($input.val(), isTimeIncluded ? 'M/D/YYYY hh:mma' : 'M/D/YYYY');
 
