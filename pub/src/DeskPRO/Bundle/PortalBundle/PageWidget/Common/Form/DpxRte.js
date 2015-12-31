@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import MediumEditor from 'medium-editor';
 import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
 
@@ -16,7 +15,7 @@ export default class DpxRte extends PageWidget {
   renderWidget() {
     const $textTextarea = this.$element.find('textarea[data-rte-field="text"]');
     const $htmlTextarea = this.$element.find('textarea[data-rte-field="html"]');
-    const $format       = this.$element.find('input[data-rte-field="format"]');
+    const $format = this.$element.find('input[data-rte-field="format"]');
 
     $htmlTextarea.wrap('<div class="dp-medium-rte-wrapper as-dpui" />');
     const $wrap = $htmlTextarea.parent();
