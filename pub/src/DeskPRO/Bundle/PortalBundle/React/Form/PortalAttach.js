@@ -1,9 +1,8 @@
-import _ from "lodash";
-import $ from "jquery";
-import React from "react";
-import PortalPhrases from "DeskPRO/Bundle/PortalBundle/PortalPhrases"
+import React from 'react';
+import PortalPhrases from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export default class PortalAttach extends React.Component {
+
   render() {
     return (
        <div className="new-ticket-attachements">
