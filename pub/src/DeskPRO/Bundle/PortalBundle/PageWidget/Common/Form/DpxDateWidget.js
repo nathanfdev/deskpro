@@ -8,8 +8,8 @@ export default class DpxDateWidget extends PageWidget {
     // this widget can work with a DATE form type or a DATETIME
     // it works by following "id" naming conventions from symfony's form component ("choice" widgets for the date)
     // it hides the original widgets and connects them with events to a new text input that uses jquery-datetimepicker
-    const id_div = this.$element.find('.fallback-input').find('div:first');
-    const id = id_div.attr('id');
+    const idDiv = this.$element.find('.fallback-input').find('div:first');
+    const id = idDiv.attr('id');
 
     let isTimeIncluded = false;
     let $sYear = $(`#${id}_year`);
@@ -67,7 +67,7 @@ export default class DpxDateWidget extends PageWidget {
       timepicker: isTimeIncluded,
       format: isTimeIncluded ? 'm/d/Y h:ia' : 'm/d/Y',
       startDate: initialValue,
-      onChangeDateTime: function (dp, $input) {
+      onChangeDateTime: (dp, $input) => {
         const m = moment($input.val(), isTimeIncluded ? 'M/D/YYYY hh:mma' : 'M/D/YYYY');
 
         $sMonth.val(m.month() + 1);
@@ -85,7 +85,7 @@ export default class DpxDateWidget extends PageWidget {
       // disable all days of week
       options.onGenerate = function() {
         const that = this;
-        const allowed_weekdays = _.map(weekdays, (day) => {
+        const allowedWeekdays = _.map(weekdays, (day) => {
           // php stores 1 as monday and sunday as 7, but our cal uses 0 for sunday, 1 for monday, and so on.
           let d = _.parseInt(day);
           if (d === 6) {
@@ -94,7 +94,7 @@ export default class DpxDateWidget extends PageWidget {
           return d + 1;
         });
         _.forEach([0, 1, 2, 3, 4, 5, 6], function(day) {
-          if (!_.includes(allowed_weekdays, day)) {
+          if (!_.includes(allowedWeekdays, day)) {
             $(that).find('.xdsoft_day_of_week' + day).addClass('xdsoft_disabled');
           }
         });
