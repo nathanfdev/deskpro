@@ -17,6 +17,9 @@ export default class DpxRte extends PageWidget {
     const $htmlTextarea = this.$element.find('textarea[data-rte-field="html"]');
     const $format = this.$element.find('input[data-rte-field="format"]');
 
+    const ownerDocument = this.$element.context.ownerDocument;
+    const contentWindow = ownerDocument.defaultView;
+
     $htmlTextarea.wrap('<div class="dp-medium-rte-wrapper as-dpui" />');
     const $wrap = $htmlTextarea.parent();
 
@@ -25,6 +28,8 @@ export default class DpxRte extends PageWidget {
     $textTextarea.hide();
 
     const editor = new MediumEditor($htmlTextarea.get(0), {
+      contentWindow: contentWindow,
+      ownerDocument: ownerDocument,
       toolbar: {
         buttons: ['bold', 'italic', 'underline', 'anchor', 'unorderedlist', 'orderedlist', 'quote', 'pre', 'removeFormat'],
         static: true,
