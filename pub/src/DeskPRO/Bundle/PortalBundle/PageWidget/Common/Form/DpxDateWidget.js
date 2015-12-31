@@ -64,6 +64,7 @@ export default class DpxDateWidget extends PageWidget {
     }
 
     const options = {
+      parentID: $(this.$element).parent(),
       timepicker: isTimeIncluded,
       format: isTimeIncluded ? 'm/d/Y h:ia' : 'm/d/Y',
       startDate: initialValue,
