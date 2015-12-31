@@ -70,6 +70,9 @@ export const applyParams = createAction(
       delete params.page;
     }
     delete params.delayReload;
+    if (!overwrite.hasOwnProperty('navItem')) {
+      delete params.navItem;
+    }
     dispatch(setParams(params));
     if (params.content && !delayReload) {
       dispatch(load(params));

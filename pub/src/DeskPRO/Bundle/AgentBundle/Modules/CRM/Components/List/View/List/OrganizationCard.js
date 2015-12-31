@@ -13,7 +13,7 @@ export class OrganizationCard extends Component {
   };
 
   renderLabels() {
-    const {labels} = this.props.organization;
+    const labels = this.props.organization.get('labels');
     if (labels.length) {
       return (
         <CardLineItem>
@@ -26,12 +26,12 @@ export class OrganizationCard extends Component {
   }
 
   renderDomains() {
-    const {email_domains} = this.props.organization;
-    if (email_domains.length) {
+    const emailDomains = this.props.organization.get('email_domains');
+    if (emailDomains.length) {
       return (
         <CardLineItem>
           <CardDisc/>
-          {email_domains.join(', ')}
+          {emailDomains.join(', ')}
         </CardLineItem>
       );
     }
@@ -47,7 +47,7 @@ export class OrganizationCard extends Component {
 
         <CardLine>
           <CardLineLeft>
-            <CardLineItem>{organization.name}</CardLineItem>
+            <CardLineItem>{organization.get('name')}</CardLineItem>
             {this.renderLabels()}
           </CardLineLeft>
           <CardLineRight>
@@ -57,7 +57,7 @@ export class OrganizationCard extends Component {
 
         <CardLine>
           <CardLineLeft>
-            <CardLineItem><FormattedRelative value={organization.date_created}/></CardLineItem>
+            <CardLineItem><FormattedRelative value={organization.get('date_created')}/></CardLineItem>
           </CardLineLeft>
           <CardLineRight/>
         </CardLine>
