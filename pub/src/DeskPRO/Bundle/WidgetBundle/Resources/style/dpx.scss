@@ -270,6 +270,73 @@ $grey: #e6e6e6;
   }
 }
 
+.radio-button {
+  position: relative;
+  display: inline-block;
+  min-width: 125px;
+  margin: 0 10px 0 0;
+
+  &:focus {
+    outline: none;
+    label {
+      outline: 1px dotted #aaa;
+    }
+  }
+
+  &:focus.no-focus-border label {
+    outline: none;
+  }
+
+  input[type="radio"] {
+    display: none;
+    border: 1px solid $button-color;
+
+    &:checked + label {
+      &:before {
+        background: $button-color;
+        border: 1px solid $button-color;
+      }
+      &:after {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        display: block;
+        float: left;
+        margin-right: 3px;
+        width: 7px;
+        height: 7px;
+        border: 1px solid #fff;
+        border-radius: 16px;
+        background-color: #fff;
+        content: "";
+      }
+    }
+  }
+
+  label, label.title {
+    position: relative;
+    cursor: pointer;
+    font-size: 0.9em;
+    line-height: 18px;
+    &.title {
+      padding-left: 0;
+    }
+
+    &:before {
+      display: block;
+      float: left;
+      margin-right: 6px;
+      width: 17px;
+      height: 17px;
+      line-height: 1.3em;
+      border: 1px solid $form-border-color;
+      background: #f0f0f0;
+      border-radius: 24px;
+      content: "";
+    }
+  }
+}
+
 .checkbox {
   background: #f0f0f0;
   border: 1px solid #c7c7c7;
