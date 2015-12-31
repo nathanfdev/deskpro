@@ -76,7 +76,7 @@ export const resetAttachments = createAction('WIDGET_CHAT_RESET_ATTACHMENTS');
 export const showNotHelpfulForm = createAction('WIDGET_CHAT_SHOW_NOT_HELPFUL_FORM');
 
 // Api actions
-export const loadPhraseTranslations = createAction(
+export const loadChatPhraseTranslations = createAction(
   'WIDGET_CHAT_LOAD_PHRASE_TRANSLATIONS',
   () => dispatch => DpApi
     .sendGet('DP_API/lang/widget-chat-phrases.json', {...ajaxOptions})
