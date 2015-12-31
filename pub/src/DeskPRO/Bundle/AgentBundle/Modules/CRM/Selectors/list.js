@@ -12,14 +12,9 @@ export const currentListParamsSelector = createSelector(
     state => state.get('currentListParams')
 );
 
-export const organizationsSelector = createSelector(
+export const elementsSelector = createSelector(
   stateSelector,
-    state => state.get('organizations')
-);
-
-export const peopleSelector = createSelector(
-  stateSelector,
-    state => state.get('people')
+    state => state.get('elements')
 );
 
 export const currentListSortSelector = createSelector(
