@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PortalApp from 'DeskPRO/Bundle/PortalBundle/PortalApp';
 import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
+import emitter from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
 import NewTicketSuggestions from 'DeskPRO/Bundle/PortalBundle/React/NewTicketSuggestions';
 import DynamicForm from 'DeskPRO/Bundle/AppBundle/Form/DynamicForm.js';
 import _ from 'lodash';
@@ -120,6 +121,8 @@ export default class TicketForm extends PageWidget {
         const portalPage = PortalApp.getPortalPage();
         if (portalPage) {
           portalPage.refresh($formEl);
+        } else {
+          emitter.emit('refresh', this);
         }
       }
     });
