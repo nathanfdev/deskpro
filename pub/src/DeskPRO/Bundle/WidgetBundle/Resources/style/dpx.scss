@@ -17,6 +17,10 @@ $button-color: $main-color;
 $zindex-very-top: 5000;
 $universal-left-padding: 10px;
 
+.dp-react-widget {
+  display: inline !important;
+}
+
 .multiselect {
   position: relative;
   margin-bottom: 10px;
@@ -246,6 +250,21 @@ $universal-left-padding: 10px;
     @extend .level-2;
     margin-left: 120px;
     padding-right: 120px;
+  }
+}
+.checkbox-container {
+  display: inline-block;
+  min-width: 90px;
+  margin: 0 10px 0 0;
+  cursor: pointer;
+  font-size: 0.9em;
+
+  &:focus {
+    outline: 1px dotted #aaa;
+  }
+
+  &:focus.no-focus-border {
+    outline: none;
   }
 }
 
