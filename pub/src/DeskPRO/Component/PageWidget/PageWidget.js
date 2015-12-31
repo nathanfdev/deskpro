@@ -223,10 +223,6 @@ export default class PageWidget {
    * @private
    */
   _runWidgetDef(widgetDef, $el) {
-    if (!$el) {
-      $el = this.$element;
-    }
-
     const insts = this._createWidgetInst(widgetDef, $el);
 
     insts.forEach(i => {
@@ -237,41 +233,44 @@ export default class PageWidget {
 
   /**
    * @param {Array} widgetDef
-   * @param {HTMLElement/jQuery} $el Optionally scope the run to this element
+   * @param {HTMLElement/jQuery} $parent Optionally scope the run to this element
    * @returns {Array}
    * @private
    */
-  _createWidgetInst(widgetDef, $el) {
+  _createWidgetInst(widgetDef, $parent) {
     const widgetClass = widgetDef[0];
     const selector = widgetDef[1];
-    let matches;
 
-    if (!$el) {
-      $el = $(document);
+    let matches;
+    let $context;
+
+    if ($parent) {
+      $context = $($parent);
+    } else if (this.$element) {
+      $context = $(this.$element);
     } else {
-      $el = $($el);
+      $context = $(document);
     }
 
     if (_.isFunction(selector)) {
-      matches = selector(widgetClass, $el, this);
+      matches = selector(widgetClass, $context, this);
     } else {
-      matches = $el.find(selector);
+      matches = $context.find(selector);
     }
-
     if (!matches || !matches[0]) {
       return [];
     }
 
     const insts = [];
     matches.each((x, el) => {
-      el = $(el);
-      if (!el.data('dpWidgetInsts')) {
-        el.data('dpWidgetInsts', new WeakMap());
+      const $el = $(el);
+      if (!$el.data('dpWidgetInsts')) {
+        $el.data('dpWidgetInsts', new WeakMap());
       }
-      const elInsts = el.data('dpWidgetInsts');
 
+      const elInsts = $el.data('dpWidgetInsts');
       if (!elInsts.has(widgetClass)) {
-        const i = new widgetClass(el, this);
+        const i = new widgetClass($el, this);
         elInsts.set(widgetClass, i);
         insts.push(i);
       }
