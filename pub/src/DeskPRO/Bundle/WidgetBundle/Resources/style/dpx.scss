@@ -442,3 +442,8 @@ $grey: #e6e6e6;
   margin-bottom: 0;
   cursor: pointer;
 }
+
+// Hide 'add attachments' submit button when js-capable
+.deskpro-form-widget.field_more_attachments {
+  display: none;
+}

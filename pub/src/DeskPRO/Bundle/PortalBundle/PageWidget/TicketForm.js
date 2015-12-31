@@ -75,6 +75,7 @@ export default class TicketForm extends PageWidget {
     setDisplayedFields = event => {
       const displayedFields = event.inst.currentFields.filter(field => field !== 'displayed_fields').join(',');
       const $df = $formEl.find("[data-field='displayed_fields']").find('input[type="hidden"]');
+
       console.log('[TicketForm] [setDisplayedFields] setting displayed_fields to: ', displayedFields);
       $df.val(displayedFields);
     };
@@ -90,6 +91,7 @@ export default class TicketForm extends PageWidget {
         if ($formEl.hasClass('dpx-with-ticket-deflection')) {
           const $subject = $('#ticket_subject', $formEl);
           const $rElement = $('<div class="dp-react-widget"></div>').insertAfter($subject);
+
           ReactDOM.render(React.createElement(NewTicketSuggestions, {input: $subject}), $rElement.get(0));
         }
       },
