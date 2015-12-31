@@ -21,10 +21,10 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
-  [actions.load]:
-    async({
+  [actions.load]: async(
+    {
       success: (state, payload) =>
-        state.set(payload.content, payload.data.data).set('pagination', payload.data.meta.pagination),
+        state.set('elements', payload.ids).set('pagination', payload.pagination),
       start: setValue('async.done', false),
       done: setValue('async.done', true)
     }

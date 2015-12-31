@@ -25,21 +25,24 @@ export class PersonCard extends Component {
   }
 
   renderLabels() {
-    const {labels} = this.props.person;
-    if (labels.length) {
+    const labels = this.props.person.get('labels');
+    if (labels.size) {
       return (
-        <CardLineItem>
-          <i className="fa fa-tags"></i> {labels.map((label, index)=> <CardLabel key={index} label={label}/>)}
-        </CardLineItem>
+        <CardLine>
+          <CardLineItem>
+            <i className="fa fa-tags"></i> {labels.map((label, index)=> <CardLabel key={index} label={label}/>)}
+          </CardLineItem>
+        </CardLine>
       );
     }
   }
 
   renderUserGroups() {
-    const {usergroups, person} = this.props;
-    if (person.usergroups.length > 0) {
+    const { usergroups, person } = this.props;
+    const personGroups = person.get('usergroups');
+    if (personGroups.size > 0) {
       return (
-        person.usergroups.map((groupId, index) =>
+        personGroups.map((groupId, index) =>
           <CardLineItem key={index}>
             <i className="fa fa-group"></i>{usergroups.get(groupId).get('title')}
           </CardLineItem>)
@@ -66,18 +69,20 @@ export class PersonCard extends Component {
 
         <CardLine>
           <CardLineLeft>
-            <CardLineItem>[#{person.id}] {person.name}</CardLineItem>
-            <CardLineItem><CardDisc/>{person.primary_email}</CardLineItem>
+            <CardLineItem>[#{person.get('id')}] {person.get('name')}</CardLineItem>
+            <CardLineItem><CardDisc/>{person.get('primary_email')}</CardLineItem>
           </CardLineLeft>
           <CardLineRight>
             {this.renderOrganization()}
-            {person.organization_position && <CardLineItem><CardDisc/>{person.organization_position}</CardLineItem>}
+            {person.get('organization_position') &&
+            <CardLineItem><CardDisc/>{person.get('organization_position')}</CardLineItem>}
           </CardLineRight>
         </CardLine>
 
+        {this.renderLabels()}
+
         <CardLine>
           <CardLineLeft>
-            {this.renderLabels()}
             {this.renderUserGroups()}
           </CardLineLeft>
           <CardLineRight/>
@@ -85,7 +90,7 @@ export class PersonCard extends Component {
 
         <CardLine>
           <CardLineLeft>
-            <CardLineItem><FormattedRelative value={person.date_created}/></CardLineItem>
+            <CardLineItem><FormattedRelative value={person.get('date_created')}/></CardLineItem>
             {this.renderLanguage()}
           </CardLineLeft>
           <CardLineRight/>

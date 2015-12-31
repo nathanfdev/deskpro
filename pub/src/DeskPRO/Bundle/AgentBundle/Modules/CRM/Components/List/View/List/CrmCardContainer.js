@@ -1,15 +1,16 @@
 import React, {Component, PropTypes} from 'react';
 import { OrganizationCard } from './OrganizationCard';
 import { PersonCard } from './PersonCard';
-import { currentContentSelector, peopleSelector, organizationsSelector }
+import { currentContentSelector, elementsSelector }
   from '../../../../Selectors/list';
-import { organizationsRecordsSelector, userGroupsSelector, languagesSelector } from '../../../../Selectors/recordStores';
+import { peopleSelector, organizationsSelector, userGroupsSelector, languagesSelector }
+  from '../../../../Selectors/recordStores';
 
 import { connect } from 'react-redux';
 @connect(state => {
   return ({
+    elements: elementsSelector(state),
     people: peopleSelector(state),
-    linkedOrganizations: organizationsRecordsSelector(state),
     organizations: organizationsSelector(state),
     selected: state.CRM.list.get('selected'),
     usergroups: userGroupsSelector(state),
@@ -20,8 +21,8 @@ import { connect } from 'react-redux';
 
 export class CrmCardContainer extends Component {
   static propTypes = {
+    elements: PropTypes.array,
     people: PropTypes.array,
-    linkedOrganizations: PropTypes.object,
     organizations: PropTypes.array,
     content: PropTypes.string.isRequired,
     usergroups: PropTypes.object.isRequired,
@@ -30,14 +31,14 @@ export class CrmCardContainer extends Component {
   };
 
   render() {
-    const { people, linkedOrganizations, organizations, selected, content, usergroups, languages } = this.props;
+    const { people, organizations, elements, selected, content, usergroups, languages } = this.props;
     if (content === 'organizations') {
       return (
         <div>
-          {organizations.map((element, index) =>
+          {elements.map((id, index) =>
               <OrganizationCard key={index}
-                                organization={element}
-                                selected={selected.includes(element.id)}/>
+                                organization={organizations.get(id)}
+                                selected={selected.includes(id)}/>
           )}
         </div>
       );
@@ -45,14 +46,17 @@ export class CrmCardContainer extends Component {
 
     return (
       <div>
-        {people && people.map((element, index) =>
+        {elements && elements.map((id, index) => {
+          const person = people.get(id);
+          return (
             <PersonCard key={index}
-                        person={element}
-                        organization={linkedOrganizations.get(element.organization)}
+                        person={person}
                         usergroups={usergroups}
-                        language={languages.get(element.language)}
-                        selected={selected.includes(element.id)}/>
-        )}
+                        organization={organizations.get(person.organization)}
+                        language={languages.get(person.language)}
+                        selected={selected.includes('id')}/>
+          );
+        })}
       </div>
     );
   }

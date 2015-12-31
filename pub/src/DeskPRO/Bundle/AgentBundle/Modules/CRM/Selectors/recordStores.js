@@ -1,4 +1,6 @@
 import { createSelector } from 'reselect';
+import { createPeopleRequestSelectors }
+  from '../RecordStores/Selectors/peopleSelectors';
 import { createOrganizationsRequestSelectors }
   from '../RecordStores/Selectors/organizationsSelectors';
 import { createUserGroupsRequestSelectors }
@@ -6,7 +8,12 @@ import { createUserGroupsRequestSelectors }
 import { createLanguagesRequestSelectors }
   from '../../Common/RecordStores/Selectors/languagesSelectors.js';
 
-export const organizationsRecordsSelector = createSelector(
+export const peopleSelector = createSelector(
+  createPeopleRequestSelectors('crm').recordsSel,
+    people => people
+);
+
+export const organizationsSelector = createSelector(
   createOrganizationsRequestSelectors('crm').recordsSel,
     organizations => organizations
 );
