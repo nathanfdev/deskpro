@@ -49,7 +49,8 @@ class CommentsSelectCriteria extends Criteria
     public function applyFilters(QueryBuilder $qb)
     {
         $alias = $qb->getRootAliases()[0];
-
+        $sort  = "$alias.date_created";
+        $order = 'desc';
         foreach ($this->filters as $field => $value) {
             switch ($field) {
                 case 'article':
@@ -66,7 +67,14 @@ class CommentsSelectCriteria extends Criteria
                     $qb->andWhere("$datePeriodCaseWhen = :period_created");
                     $qb->setParameter('period_created', $value);
                     break;
+                case 'sort':
+                    $sort = "$alias.$value";
+                    break;
+                case 'order':
+                    $order = "$value";
+                    break;
             }
+            $qb->orderBy($sort, $order);
         }
     }
 
@@ -107,7 +115,7 @@ class CommentsSelectCriteria extends Criteria
         $resolver->setAllowedValues('is_reviewed', ['0', '1']);
         $resolver->setAllowedValues(
             'sort',
-            ['date_created', 'person']
+            ['date_created', 'person', 'id', 'status']
         );
         $resolver->setAllowedValues('order', ['asc', 'desc']);
     }
