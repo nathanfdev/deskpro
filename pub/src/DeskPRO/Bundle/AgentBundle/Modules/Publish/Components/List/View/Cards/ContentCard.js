@@ -18,8 +18,8 @@ export class ContentCard extends Component {
   };
 
   renderLabels() {
-    const {labels} = this.props.element;
-    if (labels.length) {
+    const labels = this.props.element.get('labels');
+    if (labels.size) {
       return (
         <CardLine>
           <CardLineItem>
@@ -39,13 +39,13 @@ export class ContentCard extends Component {
     return (
       <Card type="article" width={cardWidth}>
 
-        <ArticleCardMark numRatings={element.num_ratings}/>
+        <ArticleCardMark numRatings={element.get('num_ratings')}/>
 
-        <CardCheckbox selected={selected} onClick={toggleSelected(element.id)}/>
+        <CardCheckbox selected={selected} onClick={toggleSelected(element.get('id'))}/>
 
         <CardLine>
           <CardLineLeft>
-            <CardTitle content={element.title}/>
+            <CardTitle content={element.get('title')}/>
           </CardLineLeft>
           <CardLineRight>
             <CardUser user={author}/>
@@ -55,7 +55,7 @@ export class ContentCard extends Component {
         <CardLine>
           <CardLineFull>
             <CardContentText>
-              <p><SlicedString string={element.content} length={255}/></p>
+              <p><SlicedString string={element.get('content')} length={255}/></p>
             </CardContentText>
           </CardLineFull>
         </CardLine>
@@ -64,23 +64,23 @@ export class ContentCard extends Component {
 
         <CardLine>
           <CardLineLeft>
-            <CardLineItem>{element.status}</CardLineItem>
+            <CardLineItem>{element.get('status')}</CardLineItem>
             {
-              element.revisions.length > 0 &&
+              element.get('revisions').size > 0 &&
               <CardLineItem>
                 <CardDisc/>
                 <CardUser user={lastRevisionAuthor}/>
                 <CardDisc/>
-                <FormattedRelative value={element.date_updated}/>
+                <FormattedRelative value={element.get('date_updated')}/>
                 <CardDisc/>
               </CardLineItem>
             }
           </CardLineLeft>
           <CardLineRight>
-            <CardLineItem icon="fa-thumbs-up">{element.vote_stats.up}</CardLineItem>
-            <CardLineItem icon="fa-thumbs-down">{element.vote_stats.down}</CardLineItem>
-            <CardLineItem icon="fa-comments-o">{element.num_comments}</CardLineItem>
-            <CardLineItem icon="fa-eye">{element.view_count}</CardLineItem>
+            <CardLineItem icon="fa-thumbs-up">{element.get('vote_stats').get('up')}</CardLineItem>
+            <CardLineItem icon="fa-thumbs-down">{element.get('vote_stats').get('down')}</CardLineItem>
+            <CardLineItem icon="fa-comments-o">{element.get('num_comments')}</CardLineItem>
+            <CardLineItem icon="fa-eye">{element.get('view_count')}</CardLineItem>
           </CardLineRight>
         </CardLine>
       </Card>

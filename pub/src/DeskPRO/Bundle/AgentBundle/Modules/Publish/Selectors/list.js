@@ -9,34 +9,9 @@ export const contentSelector = createSelector(
     state => state.get('currentListParams').get('content')
 );
 
-export const articlesSelector = createSelector(
+export const elementsSelector = createSelector(
   stateSelector,
-    state => state.get('articles')
-);
-
-export const newsSelector = createSelector(
-  stateSelector,
-    state => state.get('news')
-);
-
-export const downloadsSelector = createSelector(
-  stateSelector,
-    state => state.get('downloads')
-);
-
-export const articlesCommentsSelector = createSelector(
-  stateSelector,
-    state => state.get('article_comments')
-);
-
-export const newsCommentsSelector = createSelector(
-  stateSelector,
-    state => state.get('news_comments')
-);
-
-export const downloadsCommentsSelector = createSelector(
-  stateSelector,
-    state => state.get('download_comments')
+    state => state.get('elements')
 );
 
 export const currentListParamsSelector = createSelector(
