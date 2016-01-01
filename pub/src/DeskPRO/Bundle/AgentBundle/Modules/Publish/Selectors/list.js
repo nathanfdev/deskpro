@@ -60,7 +60,7 @@ export const listFiltersSelector = createSelector(
   [navStateSelector, currentListParamsSelector],
   (navState, currentListParams) => {
     const filterSelector = [
-      { label: 'Date', type: 'datePeriod', fromParam: 'created_from', toParam: 'created_to' }
+      { label: 'Date', type: 'datePeriod', param: 'date_filter' }
     ];
 
     // Status options
