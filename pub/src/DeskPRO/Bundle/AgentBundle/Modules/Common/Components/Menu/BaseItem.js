@@ -179,8 +179,6 @@ export class BaseItem extends Component {
   renderMenu(hasMenu) {
     if (hasMenu) {
       return React.Children.map(this.props.children, (child) => {
-        if (child && child.type) {
-        }
         if (child && child.type && child.type.displayName === 'Menu') {
           const parentLevel = this.props.parentMenuLevel ? this.props.parentMenuLevel : 1;
           const childProps = child.props;

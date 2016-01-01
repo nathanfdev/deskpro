@@ -66,9 +66,17 @@ export class FilteringMenuContainer extends Component {
         let value = this.props.state.get(item);
         if (Immutable.Iterable.isIterable(value)) {
           value = value.toJS();
-          value.map(item1=> {
-            result.push(item1);
-          });
+          if (value.isArray) {
+            value.map(item1=> {
+              result.push(item1);
+            });
+          } else {
+            for (var property in value) {
+              if (value.hasOwnProperty(property)) {
+                result.push(value[property]);
+              }
+            }
+          }
         } else if (value) {
           result.push(value);
         }

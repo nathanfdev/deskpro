@@ -8,7 +8,7 @@ import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordS
 
 const recordStoresId = 'publish';
 
-const prepareLinkedData = (linked) =>{
+const prepareLinkedData = (linked) => {
   const result = [];
   for (const key in linked) {
     if (linked.hasOwnProperty(key)) {
@@ -27,6 +27,12 @@ export const load = createAction(
       delete params.navItem;
       params = { ...params, ...navItem };
     }
+    if (params.hasOwnProperty('date_filter')) {
+      const dateFilter = params.date_filter;
+      delete params.date_filter;
+      params = { ...dateFilter, ...params };
+    }
+
     return Content.load(params)
       .then(promise => {
         const data = promise.getData();

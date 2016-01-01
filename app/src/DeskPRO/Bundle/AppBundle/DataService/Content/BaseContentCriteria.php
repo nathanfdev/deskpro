@@ -69,8 +69,30 @@ abstract class BaseContentCriteria extends Criteria implements GroupableCriteria
 
                 case 'period_created':
                     $datePeriodCaseWhen = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_created");
-                    $qb->andWhere("$datePeriodCaseWhen = :period_created");
-                    $qb->setParameter('period_created', $value);
+                    $qb
+                        ->andWhere("$datePeriodCaseWhen = :period_created")
+                        ->setParameter('period_created', $value);
+                    break;
+
+                case 'period_updated':
+                    $datePeriodCaseWhen = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_updated");
+                    $qb
+                        ->andWhere("$datePeriodCaseWhen = :period_updated")
+                        ->setParameter('period_updated', $value);
+                    break;
+
+                case 'period_published':
+                    $datePeriodCaseWhen = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_published");
+                    $qb
+                        ->andWhere("$datePeriodCaseWhen = :period_published")
+                        ->setParameter('period_published', $value);
+                    break;
+
+                case 'period_last_comment':
+                    $datePeriodCaseWhen = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_last_comment");
+                    $qb
+                        ->andWhere("$datePeriodCaseWhen = :period_last_comment")
+                        ->setParameter('period_last_comment', $value);
                     break;
 
                 case 'author':
@@ -151,6 +173,8 @@ abstract class BaseContentCriteria extends Criteria implements GroupableCriteria
                 'category',
                 'period_created',
                 'period_updated',
+                'period_published',
+                'period_last_comment',
                 'order',
                 'sort',
             ]
@@ -214,6 +238,8 @@ abstract class BaseContentCriteria extends Criteria implements GroupableCriteria
         );
         $resolver->setAllowedValues('period_created', DatePeriods::$names);
         $resolver->setAllowedValues('period_updated', DatePeriods::$names);
+        $resolver->setAllowedValues('period_published', DatePeriods::$names);
+        $resolver->setAllowedValues('period_last_comment', DatePeriods::$names);
         $resolver->setAllowedValues('order', ['asc', 'desc']);
     }
 }
