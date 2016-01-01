@@ -36,17 +36,17 @@ export class ContentCommentCard extends Component {
         <CardLine>
           <CardLineFull>
             <CardContentText>
-              <p><SlicedString string={element.content} length={255}/></p>
+              <p><SlicedString string={element.get('content')} length={255}/></p>
             </CardContentText>
           </CardLineFull>
         </CardLine>
 
         <CardLine>
           <CardLineLeft>
-            <CardLineItem>{element.status}</CardLineItem>
+            <CardLineItem>{element.get('status')}</CardLineItem>
             <CardLineItem>
               <CardDisc/>
-              <FormattedRelative value={element.date_created}/>
+              <FormattedRelative value={element.get('date_created')}/>
               <CardDisc/>
             </CardLineItem>
           </CardLineLeft>

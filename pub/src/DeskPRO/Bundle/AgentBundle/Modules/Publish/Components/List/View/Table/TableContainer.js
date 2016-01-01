@@ -1,8 +1,8 @@
 import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
-import { contentSelector, articlesSelector, newsSelector, downloadsSelector, currentListSortSelector, currentListOrderSelector }
+import { elementsSelector, contentSelector, currentListSortSelector, currentListOrderSelector }
   from '../../../../Selectors/list';
-import { peopleSelector }
+import { peopleSelector, articlesSelector, newsSelector, downloadsSelector }
   from '../../../../Selectors/recordStores';
 import { Table, Th, Td, TdId, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { applyParams } from '../../../../Actions/publishListActions';
@@ -11,6 +11,7 @@ import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Componen
 import { connect } from 'react-redux';
 @connect(state => {
   return {
+    elements: elementsSelector(state),
     people: peopleSelector(state),
     content: contentSelector(state),
     articles: articlesSelector(state),
@@ -29,6 +30,7 @@ export class TableContainer extends Component {
     currentSort: PropTypes.string.isRequired,
     currentOrder: PropTypes.string.isRequired,
     content: PropTypes.string.isRequired,
+    elements: PropTypes.array.isRequired,
     people: PropTypes.object.isRequired,
     articles: PropTypes.object,
     news: PropTypes.object,
@@ -47,9 +49,39 @@ export class TableContainer extends Component {
     this.props.dispatch(applyParams({ sort: param, order }));
   }
 
+  renderRow(id) {
+    const { content, people } = this.props;
+    const element = this.props[content].get(id);
+
+    return (
+      <tr key={id}>
+        <TdId visible>
+          {id}
+        </TdId>
+        <Td visible>
+          <PersonInTable person={people.get(element.get('person'))}/>
+        </Td>
+        <Td visible>
+          <div className="dpw--timer"><FormattedRelative value={element.get('date_created')}/></div>
+        </Td>
+        <Td visible>
+          <div className="dpw--timer"><FormattedRelative value={element.get('date_updated')}/></div>
+        </Td>
+        <Td visible>
+          {element.get('status')}
+        </Td>
+        <Td visible>
+          {element.get('labels') && element.get('labels').join(', ')}
+        </Td>
+        <Td className="item-title">
+          <a href="#"><SlicedString string={element.get('title')}/></a>
+        </Td>
+      </tr>
+    );
+  }
+
   render() {
-    const { content, people, currentSort, currentOrder } = this.props;
-    const elements = this.props[content];
+    const { elements, currentSort, currentOrder } = this.props;
 
     return (
       <Table>
@@ -95,32 +127,7 @@ export class TableContainer extends Component {
         </tr>
         </thead>
         <tbody>
-        {elements.map((element, index) =>
-            <tr key={index}>
-              <TdId visible>
-                {element.id}
-              </TdId>
-              <Td visible>
-                <PersonInTable person={people.get(element.person)}/>
-              </Td>
-              <Td visible>
-                <div className="dpw--timer"><FormattedRelative value={element.date_created}/></div>
-              </Td>
-              <Td visible>
-                <div className="dpw--timer"><FormattedRelative value={element.date_updated}/></div>
-              </Td>
-              <Td visible>
-                {element.status}
-              </Td>
-              <Td visible>
-                {element.labels && element.labels.join(', ')}
-              </Td>
-              <Td className="item-title">
-                <a href="#"><SlicedString string={element.title}/></a>
-              </Td>
-            </tr>
-        )
-        }
+        {elements.map(id => this.renderRow(id))}
         </tbody>
       </Table>
     );
