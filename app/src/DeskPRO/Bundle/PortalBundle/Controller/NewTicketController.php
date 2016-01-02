@@ -102,10 +102,7 @@ class NewTicketController extends AbstractController
         ]);
         $form->handleRequest($request);
 
-        $rerendering = false;
-        if ($form->has('rerender_form')) {
-            $rerendering = true;
-        }
+        $rerendering       = $form->has('rerender_form');
         $rerendering_saved = $request->attributes->get('rerender-form', false);
 
         if ($form->isValid()) {
