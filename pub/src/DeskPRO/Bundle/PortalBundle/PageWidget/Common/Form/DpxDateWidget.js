@@ -70,6 +70,7 @@ export default class DpxDateWidget extends PageWidget {
       format: isTimeIncluded ? 'm/d/Y h:ia' : 'm/d/Y',
       startDate: initialValue,
       closeOnDateSelect: true,
+      scrollInput: false,
       onChangeDateTime: (dp, $input) => {
         const m = moment($input.val(), isTimeIncluded ? 'M/D/YYYY hh:mma' : 'M/D/YYYY');
 
