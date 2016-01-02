@@ -184,11 +184,6 @@ class NewTicketController extends AbstractController
         $layouts           = $this->getContainer()->getTicketLayoutManager()->getUserLayouts(true);
         $ticket_display_js = 'window.DESKPRO_TICKET_DISPLAY = '.$layouts->compileJsObj().';';
 
-        //
-        // BREADCRUMBS
-        //
-        $breadcrumbs = $this->getBreadcrumbGenerator()->buildNewTicket();
-
         // show ticket deflection? (suggestions)
         $show_ticket_suggestions = (bool) $this->getBrandSetting('core.show_ticket_suggestions');
 
@@ -199,7 +194,7 @@ class NewTicketController extends AbstractController
                 'ticket_display_js'       => $ticket_display_js,
                 'rerendering'             => $rerendering,
                 'rerendering_saved'       => $rerendering_saved,
-                'breadcrumbs'             => $breadcrumbs,
+                'breadcrumbs'             => $this->getBreadcrumbGenerator()->buildNewTicket(),
                 'page_title'              => $this->createPageTitle()->newticket(),
                 'form_errors'             => $form->isSubmitted() ? $form->getErrors() : [],
                 'show_ticket_suggestions' => $show_ticket_suggestions,
