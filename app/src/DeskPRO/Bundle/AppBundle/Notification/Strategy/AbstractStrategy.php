@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Notification\Strategy;
 
 use DeskPRO\Bundle\AppBundle\Notification\Delivery\DeliveryService;
+use DeskPRO\Bundle\AppBundle\Notification\NotifyHandlerCollection;
 use DeskPRO\Bundle\AppBundle\Notification\NotifyHandlerInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Persistance\PersistanceAdapterInterface;
 
@@ -37,11 +38,16 @@ abstract class AbstractStrategy implements NotificationStrategyInterface
     /** @var DeliveryService */
     protected $delivery_service;
 
-    /** @var  NotifyHandlerInterface[] */
-    protected $eventHandlers;
+    /** @var  NotifyHandlerCollection */
+    protected $event_handlers;
 
     /** @var PersistanceAdapterInterface */
     protected $persistance_adapter;
+
+    public function __construct()
+    {
+        $this->event_handlers = new NotifyHandlerCollection();
+    }
 
     public function setDeliveryService(DeliveryService $delivery_service)
     {
@@ -49,12 +55,14 @@ abstract class AbstractStrategy implements NotificationStrategyInterface
     }
 
     /**
-     * @todo get it done with collection
-     *
      * @param NotifyHandlerInterface $handler
+     *
+     * @return $this;
      */
     public function attachEventHandler(NotifyHandlerInterface $handler)
     {
-        $this->eventHandlers[] = $handler;
+        $this->event_handlers->attachHandler($handler);
+
+        return $this;
     }
 }

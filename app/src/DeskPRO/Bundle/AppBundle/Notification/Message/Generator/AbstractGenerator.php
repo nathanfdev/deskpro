@@ -49,6 +49,10 @@ abstract class AbstractGenerator implements MessageGeneratorInterface
      */
     protected $user;
 
+    /**
+     * @param EntityManager         $em
+     * @param TokenStorageInterface $token_storage
+     */
     public function __construct(EntityManager $em, TokenStorageInterface $token_storage)
     {
         $this->em   = $em;
@@ -61,4 +65,19 @@ abstract class AbstractGenerator implements MessageGeneratorInterface
      * @return MessageInterface[]
      */
     abstract public function createMessages(SystemEventInterface $event);
+
+    /**
+     * @param SystemEventInterface $event
+     *
+     * @return bool
+     */
+    abstract public function canCreateMessage(SystemEventInterface $event);
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return get_called_class();
+    }
 }

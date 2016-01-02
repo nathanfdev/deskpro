@@ -51,12 +51,12 @@ class DeliveryHandlerCollection extends AbstractCollection
      * @param DeliveryHandlerInterface $handler
      *
      * @throws \InvalidArgumentException
-     * @return $this
      *
+     * @return $this
      */
     public function addHandler(DeliveryHandlerInterface $handler)
     {
-        if ($this->checkHandlerExists($handler->getType())) {
+        if ($this->hasHandler($handler->getType())) {
             throw new \InvalidArgumentException(sprintf('Handler with type [%s] already attached!', $handler->getType()));
         }
 
@@ -70,12 +70,12 @@ class DeliveryHandlerCollection extends AbstractCollection
      * @param $handler_type
      *
      * @throws \InvalidArgumentException
-     * @return $this
      *
+     * @return $this
      */
     public function removeHandler($handler_type)
     {
-        if (!$this->checkHandlerExists($handler_type)) {
+        if (!$this->hasHandler($handler_type)) {
             throw new \InvalidArgumentException(sprintf('Trying to remove handler with type [%s] that wasn\'t attached'));
         }
 
@@ -94,12 +94,12 @@ class DeliveryHandlerCollection extends AbstractCollection
      *
      * @throws \InvalidArgumentException
      * @throws \LogicException
-     * @return DeliveryHandlerInterface
      *
+     * @return DeliveryHandlerInterface
      */
     public function getHandler($handler_type)
     {
-        if (!$this->checkHandlerExists($handler_type)) {
+        if (!$this->hasHandler($handler_type)) {
             throw new \InvalidArgumentException(sprintf('Trying to get handler with type [%s] that wasn\'t attached'));
         }
 
@@ -113,11 +113,11 @@ class DeliveryHandlerCollection extends AbstractCollection
     }
 
     /**
-     * @param $handler_type
+     * @param string $handler_type
      *
      * @return bool
      */
-    protected function checkHandlerExists($handler_type)
+    protected function hasHandler($handler_type)
     {
         return array_key_exists($handler_type, $this->attached_types);
     }

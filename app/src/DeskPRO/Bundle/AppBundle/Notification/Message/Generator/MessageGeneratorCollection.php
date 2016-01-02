@@ -26,20 +26,29 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Notification\Listener;
+namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator;
 
-use DeskPRO\Bundle\AppBundle\Notification\EventManager;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use DeskPRO\Component\Util\AbstractCollection;
 
-abstract class AbstractListener implements EventSubscriberInterface
+class MessageGeneratorCollection extends AbstractCollection
 {
-    /**
-     * @var EventManager
-     */
-    protected $event_manager;
+    private $attached_generators = [];
 
-    final public function __construct(EventManager $event_manager)
+    public function addGenerator(MessageGeneratorInterface $generator)
     {
-        $this->event_manager = $event_manager;
+        if (!$this->hasGenerator($generator)) {
+            $this->attached_generators[$generator->getType()] = true;
+            $this->collection[]                               = $generator;
+        }
+    }
+
+    /**
+     * @param $generator
+     *
+     * @return bool
+     */
+    protected function hasGenerator(MessageGeneratorInterface $generator)
+    {
+        return array_key_exists($generator->getType(), $this->attached_generators);
     }
 }

@@ -56,7 +56,7 @@ class ImmediateStrategy extends AbstractStrategy
     protected function createMessages(SystemEventInterface $event)
     {
         $messages = [];
-        foreach ($this->eventHandlers as $handler) {
+        foreach ($this->event_handlers as $handler) {
             $messages = array_merge($messages, $handler->processEvent($event));
         }
 

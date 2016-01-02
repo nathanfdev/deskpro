@@ -26,21 +26,38 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Notification\Listener;
+namespace DeskPRO\Bundle\AppBundle\Notification;
 
-use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\NewMessageEvent;
+use DeskPRO\Component\Util\AbstractCollection;
 
-class AgentChatListener extends AbstractListener
+/**
+ * Class NotifyHandlerCollection.
+ */
+class NotifyHandlerCollection extends AbstractCollection
 {
-    public static function getSubscribedEvents()
+    /**
+     * @var array
+     */
+    private $attached_handlers = [];
+
+    /**
+     * @param NotifyHandlerInterface $handler
+     */
+    public function attachHandler(NotifyHandlerInterface $handler)
     {
-        return [
-           NewMessageEvent::EVENT_NAME => 'onNewMessage',
-        ];
+        if (!$this->hasHandler($handler)) {
+            $this->attached_handlers[$handler->getType()] = true;
+            $this->collection[]                           = $handler;
+        }
     }
 
-    public function onNewMessage(NewMessageEvent $event)
+    /**
+     * @param NotifyHandlerInterface $handler
+     *
+     * @return bool
+     */
+    protected function hasHandler(NotifyHandlerInterface $handler)
     {
-        $this->event_manager->handleEvent($event);
+        return array_key_exists($handler->getType(), $this->attached_handlers);
     }
 }

@@ -107,4 +107,12 @@ abstract class AbstractCollection implements \Iterator, \Countable
     {
         return array_pop($this->collection);
     }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return get_called_class();
+    }
 }

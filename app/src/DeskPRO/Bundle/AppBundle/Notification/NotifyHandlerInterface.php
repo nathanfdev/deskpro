@@ -39,4 +39,9 @@ interface NotifyHandlerInterface
      * @return MessageInterface[]
      */
     public function processEvent(SystemEventInterface $event);
+
+    /**
+     * @return string
+     */
+    public function getType();
 }
