@@ -34,7 +34,6 @@ namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class SearchController.
@@ -45,15 +44,10 @@ class SearchController extends AbstractApiController
      * @Route("/portal/api/search/similar/{content_type}", name="portal_api_search_similar", defaults={"content_type":null})
      * @Method({"GET"})
      *
-     * @param Request $request
-     *
      * @return View
      */
-    public function similarTicketsAction(Request $request)
+    public function similarTicketsAction()
     {
-        return new View([
-            'results' => [],
-            'words'   => [],
-        ]);
+        return $this->redirectToRoute('portal_search_similar');
     }
 }
