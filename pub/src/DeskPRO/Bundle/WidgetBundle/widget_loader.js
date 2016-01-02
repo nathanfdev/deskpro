@@ -19,6 +19,9 @@
     frameWin.DP_HELPDESK_URL = helpdeskUrl;
     frameWin.DP_OPTIONS = options;
 
+    // Portal page widget config
+    frameWin.DESKPRO_BASE_URL = helpdeskUrl + 'portal/api/';
+
     let doc;
     let docDomain;
 
