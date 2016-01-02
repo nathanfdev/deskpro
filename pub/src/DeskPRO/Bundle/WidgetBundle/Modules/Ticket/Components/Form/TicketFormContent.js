@@ -7,6 +7,7 @@ import 'jquery.serializejson';
 export class TicketFormContent extends React.Component {
 
   static propTypes = {
+    saving: PropTypes.bool,
     onSubmit: PropTypes.func,
     content: PropTypes.string
   };
@@ -21,6 +22,7 @@ export class TicketFormContent extends React.Component {
 
   componentDidUpdate() {
     this.addListeners();
+    this.toggleSavingSpinner();
   }
 
   componentWillUnmount() {
@@ -46,6 +48,13 @@ export class TicketFormContent extends React.Component {
     this.getForm().on('submit', this.onSubmit);
     this.formWidget = new TicketFormWidget($(this.getCurrentNode()));
     this.formWidget.renderWhenReady();
+  }
+
+  toggleSavingSpinner() {
+    const { saving } = this.props;
+    const $buttonContainer = $('button[type=submit]', this.getCurrentNode()).parent();
+
+    $buttonContainer.toggleClass('saving-form', saving);
   }
 
   removeListeners() {
