@@ -19,12 +19,3 @@ services:
   tickets.custom_per_field_manager:
     class: DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomPerFieldManager
     arguments: [@doctrine.orm.default_entity_manager]
-
-  tickets.new_ticket:
-    class: DeskPRO\Bundle\AppBundle\Ticket\NewTicket
-    arguments:
-      - @doctrine.orm.default_entity_manager
-      - @ticket_manager
-      - @tickets.custom_per_field_manager
-      - @person_factory
-      - @anti_abuse

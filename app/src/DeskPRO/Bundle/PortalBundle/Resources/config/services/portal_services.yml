@@ -33,3 +33,12 @@ services:
     factory_class: Application\DeskPRO\DependencyInjection\SystemServices\AttachmentAccepterService
     factory_method: create
     arguments: [@service_container]
+
+  tickets.new_ticket:
+    class: DeskPRO\Bundle\PortalBundle\Ticket\NewTicket
+    arguments:
+      - @doctrine.orm.default_entity_manager
+      - @ticket_manager
+      - @tickets.custom_per_field_manager
+      - @person_factory
+      - @anti_abuse
