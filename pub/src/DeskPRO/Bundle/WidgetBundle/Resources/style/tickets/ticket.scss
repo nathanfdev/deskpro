@@ -93,6 +93,146 @@
       }
     }
   }
+
+  .ticket-related-articles {
+    background: #f9f9f9;
+    border: 1px solid #d6d6d6;
+    color: #575757;
+    margin: 10px 0;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    max-width: 620px;
+
+    header {
+      border-bottom: 1px solid #d6d6d6;
+      padding: 10px;
+      h1 {
+        color: #3d3d3d;
+      }
+      h2 {
+        color: #9f9f9f;
+      }
+    }
+
+    ul {
+      margin: 0;
+      padding: 0;
+      display: block;
+      list-style: none;
+      line-height: 1.2em;
+    }
+
+    .file-icon {
+      position: relative;
+      top: -1px;
+      color: #8f8f8f;
+      text-align: center;
+      width: 20px;
+    }
+
+    .expand-content {
+      position: absolute;
+      right: 15px;
+    }
+
+    li {
+      display: block;
+    }
+
+    li + li {
+      border-top: 1px solid #d6d6d6;
+    }
+
+    li.active,
+    li:hover {
+      background: #fff;
+      cursor: pointer;
+    }
+
+    li.related-list-meta {
+      text-align: right;
+      padding: 5px;
+    }
+
+    .related-articles-footer {
+      border-top: 1px solid #d6d6d6;
+      padding: 5px;
+
+      a {
+        text-align: center;
+        text-decoration: none;
+        font-size: 12px;
+        display: block;
+        line-height: 1.1em;
+        padding: 10px;
+        border-radius: 2px;
+        background: #d5d5d5;
+        color: #5f5f5f;
+        &:hover {
+          background: #333;
+          color: #f9f9f9;
+        }
+      }
+
+      i {
+        margin-right: 5px;
+        color: #9f9f9f;
+        position: relative;
+        top: -2px;
+      }
+    }
+
+    .related-article-link {
+      color: inherit;
+      display: block;
+      text-decoration: none;
+      padding: 9px 10px;
+      font-size: 12px;
+      position: relative;
+      &:hover {
+        color: #333;
+        .item-title {
+          text-decoration: underline;
+        }
+      }
+
+      i {
+        margin-right: 4px;
+      }
+    }
+
+    .expanded-content {
+      margin-left: 25px;
+      padding: 0 10px 10px 10px;
+      overflow: hidden;
+
+      &.hidden {
+        display: none;
+      }
+
+      p {
+        font-size: 12px;
+        line-height: 1.7em;
+        color: #737171;
+      }
+
+      p + p {
+        padding-top: 10px;
+      }
+
+      .show-more-content-container {
+        margin-top: 10px;
+      }
+    }
+
+    .expanded-content.intro {
+      padding-right: 5px;
+      padding-bottom: 5px;
+      .show-more-content-container {
+        text-align: right;
+        opacity: 0.5;
+      }
+    }
+  }
 }
 
 .dpdesignportal-ticket-info {
