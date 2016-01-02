@@ -61,8 +61,6 @@ class NewTicketController extends AbstractController
      */
     public function newTicketAction(Request $request, $visitor_id)
     {
-        $new_ticket_service = $this->get('tickets.new_ticket');
-
         $person         = $this->getUser() ?: new PersonGuest();
         $ticket         = $this->getTicketManager()->createTicket();
         $ticket_message = new TicketMessage();
@@ -132,7 +130,7 @@ class NewTicketController extends AbstractController
                                 $attachment->setPerson($person);
                             }
 
-                            $new_ticket = $new_ticket_service->acceptNewTicket($ticket, $person, $request);
+                            $new_ticket = $this->getNewTicketService()->acceptNewTicket($ticket, $person, $request);
 
                             return $this->onSavedTicket($new_ticket, $person, $request);
                         } catch (LoginRequiredException $e) {
@@ -158,20 +156,20 @@ class NewTicketController extends AbstractController
                                 return $this->redirectToRoute('portal_thanks_verify');
                             } else {
                                 // this is a guest that we are accepting
-                                $new_ticket = $new_ticket_service->acceptNewTicketForGuest($ticket, $ticket_message, $person, $request);
+                                $new_ticket = $this->getNewTicketService()->acceptNewTicketForGuest($ticket, $ticket_message, $person, $request);
 
                                 return $this->onSavedTicket($new_ticket, $person, $request);
                             }
                         }
                     }
 
-                    $new_ticket = $new_ticket_service->acceptNewTicket($ticket, $person, $request);
+                    $new_ticket = $this->getNewTicketService()->acceptNewTicket($ticket, $person, $request);
 
                     return $this->onSavedTicket($new_ticket, $person, $request);
                 }
             }
         } elseif ($form->isSubmitted()) {
-            $new_ticket_service->submitNewTicketAbuseCheck($person, $request->getClientIp());
+            $this->getNewTicketService()->submitNewTicketAbuseCheck($person, $request->getClientIp());
         }
 
         $form_full = $this->createForm('ticket', $ticket, [
@@ -261,5 +259,13 @@ class NewTicketController extends AbstractController
         ];
 
         return $this->redirectToRoute('portal_thanks', $params);
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\PortalBundle\Ticket\NewTicket
+     */
+    protected function getNewTicketService()
+    {
+        return $this->get('tickets.new_ticket');
     }
 }
