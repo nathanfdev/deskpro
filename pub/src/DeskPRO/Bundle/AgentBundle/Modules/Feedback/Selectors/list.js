@@ -92,9 +92,9 @@ export const listFiltersSelector = createSelector(
 
     // Category options
     if (!currentListParams.get('navItem') || (!currentListParams.get('navItem').get('custom_category'))) {
-      const categoryOptions = categories.map(cat => ({
-        label: cat.title,
-        value: cat.title
+      const categoryOptions = categories.toArray().map(cat => ({
+        label: cat.get('input'),
+        value: cat.get('input')
       }));
       filterSelector.push({
         label: 'Category', type: 'select', param: 'custom_category', quickFilter: true,

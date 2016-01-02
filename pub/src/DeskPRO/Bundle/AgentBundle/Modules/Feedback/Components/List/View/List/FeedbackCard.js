@@ -63,12 +63,11 @@ export class FeedbackCard extends Component {
   }
 
   renderCategory() {
-    const { feedback, feedbackCategories } = this.props;
-    const categories = feedback.get('custom_data').map(category=>feedbackCategories.get(category).input);
-    console.log('Categories', categories);
-    if (categories) {
+    const { feedback } = this.props;
+    const category = feedback.get('custom_data');
+    if (category) {
       return (
-        <CardLineItem><CardDisc/>{ categories.join(', ') }</CardLineItem>
+        <CardLineItem><CardDisc/>{ category }</CardLineItem>
       );
     }
   }
@@ -85,7 +84,7 @@ export class FeedbackCard extends Component {
       output['key' + index] = this.renderDate(feedback.get('date_created'));
       index++;
     }
-    if (viewFields.includes('custom_category')) {
+    if (viewFields.includes('category')) {
       output['key' + index] = this.renderCategory();
     }
     return (

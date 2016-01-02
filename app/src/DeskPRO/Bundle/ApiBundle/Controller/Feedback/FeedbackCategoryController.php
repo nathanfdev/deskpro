@@ -64,7 +64,7 @@ class FeedbackCategoryController extends BaseController
             ->leftJoin('category.field', 'field')
             ->where('field.title = :title')
             ->setParameter('title', 'Category')
-            ->groupBy('category.id')
+            ->groupBy('category.input')
             ->orderBy('category.input', 'asc');
 
         $categories = $qb->getQuery()->getResult();

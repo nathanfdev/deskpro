@@ -31,21 +31,23 @@ export const initialLoad = createAction(
       DpApi.sendGet(batch).success(({responses}) => {
         const payload = flattenBatchResponses(responses);
         payload.statuses = { active: payload.active, closed: payload.closed, hidden: payload.hidden };
-        if (payload.viewFields && payload.viewFields.hasOwnProperty('value')) {
-          dispatch(setDisplayFields({
-            cardVisibleFields: payload.viewFields.value.cardVisibleFields,
-            tableVisibleFields: payload.viewFields.value.tableVisibleFields,
-            viewFieldsSettingsFromDb: true
-          }));
-        } else {
-          const defaultCardViewFields = ['id', 'title', 'person', 'status', 'date_created', 'labels'];
-          const defaultTableViewFields = ['id', 'title', 'person', 'status', 'date_created', 'labels'];
-          dispatch(setDisplayFields({
-            cardVisibleFields: defaultCardViewFields,
-            tableVisibleFields: defaultTableViewFields,
-            viewFieldsSettingsFromDb: false
-          }));
-        }
+        /*if (payload.viewFields && payload.viewFields.hasOwnProperty('value')) {
+         dispatch(setDisplayFields({
+         cardVisibleFields: payload.viewFields.value.cardVisibleFields,
+         tableVisibleFields: payload.viewFields.value.tableVisibleFields,
+         viewFieldsSettingsFromDb: true
+         }));
+         } else {*/
+        const defaultCardViewFields = ['id', 'title', 'person', 'status', 'date_created', 'labels', 'category'];
+        const defaultTableViewFields = ['id', 'title', 'person', 'status', 'date_created', 'labels'];
+        const defaultCommentsTableViewFields = ['comment_id', 'comment_content', 'comment_author', 'id', 'title', 'person', 'status', 'date_created', 'labels'];
+        dispatch(setDisplayFields({
+          cardVisibleFields: defaultCardViewFields,
+          tableVisibleFields: defaultTableViewFields,
+          commentsTableVisibleFields: defaultCommentsTableViewFields,
+          viewFieldsSettingsFromDb: false
+        }));
+        /*}*/
         dispatch(setFeedbackTypesRequest(recordStoresId, payload.rsTypes));
         dispatch(setFeedbackCategoriesRequest(recordStoresId, payload.rsCategories));
         delete payload.rsTypes;

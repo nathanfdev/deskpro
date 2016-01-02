@@ -27,8 +27,8 @@ export class NavContainer extends Component {
     commentsToReviewCount: PropTypes.object.isRequired,
     statuses: PropTypes.object.isRequired,
     labels: PropTypes.object.isRequired,
-    types: PropTypes.object.isRequired,
-    categories: PropTypes.object.isRequired,
+    types: PropTypes.object,
+    categories: PropTypes.object,
     dpWindow: PropTypes.object.isRequired
   };
 
@@ -40,15 +40,15 @@ export class NavContainer extends Component {
     const {statuses, toValidateCount, commentsToReviewCount, dispatch, labels, types, categories, dpWindow, loaded} = this.props;
 
     return (
-      <Nav loaded={loaded}
-           toValidateCount={toValidateCount}
-           commentsToReviewCount={commentsToReviewCount}
-           dispatch={dispatch}
-           statuses={statuses}
-           labels={labels}
-           types={types}
-           categories={categories}
-           dpWindow={dpWindow}/>
+        <Nav loaded={loaded}
+             toValidateCount={toValidateCount}
+             commentsToReviewCount={commentsToReviewCount}
+             dispatch={dispatch}
+             statuses={statuses}
+             labels={labels}
+             types={types}
+             categories={categories}
+             dpWindow={dpWindow}/>
     );
   }
 }

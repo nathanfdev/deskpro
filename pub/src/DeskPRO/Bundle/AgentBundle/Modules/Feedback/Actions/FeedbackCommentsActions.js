@@ -2,7 +2,8 @@ import { createAction } from 'Ampliflux';
 import { deleteFeedbackComment, editFeedbackComment, approveFeedbackComment, commentsToReviewList, commentsToReview }
   from 'DeskPRO/Bundle/AgentBundle/Services/Api/FeedbackComment';
 import { applyParams } from './FeedbackListActions';
-import { setFeedbackRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackActions';
+import { setFeedbackCommentsRequest } from '../RecordStores/Actions/feedbackCommentsActions.js';
+import { setFeedbackRequest } from '../RecordStores/Actions/feedbackActions';
 import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 
 /**
@@ -10,6 +11,16 @@ import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordS
  * @type {string}
  */
 const recordStoresId = 'feedback';
+
+const prepareLinkedData = (linked) => {
+  const result = [];
+  for (const key in linked) {
+    if (linked.hasOwnProperty(key)) {
+      result.push(linked[key]);
+    }
+  }
+  return result;
+};
 
 export const commentsToReviewCounter = createAction(
   'FEEDBACK_COMMENTS_TO_REVIEW_COUNTER',
@@ -53,21 +64,13 @@ export const editComment = createAction(
 export const loadFeedbackCommentsList = createAction(
   'FEEDBACK_LIST_OF_COMMENTS',
     params => (dispatch) => commentsToReviewList(params).then(promise => {
-      const comments = promise.getData();
-      const feedback = [];
-      for (var index in comments.linked.feedback) {
-        if (comments.linked.feedback.hasOwnProperty(index)) {
-          feedback.push(comments.linked.feedback[index]);
-        }
-      }
-      const people = [];
-      for (const key in comments.linked.person) {
-        if (comments.linked.person.hasOwnProperty(key)) {
-          people.push(comments.linked.person[key]);
-        }
-      }
-      dispatch(setFeedbackRequest(recordStoresId, feedback));
-      dispatch(setPeopleRequest(recordStoresId, people));
-      return comments;
+      const res = promise.getData();
+      const ids = res.data.map(item=>item.id);
+
+      dispatch(setFeedbackCommentsRequest(recordStoresId, res.data));
+      dispatch(setFeedbackRequest(recordStoresId, prepareLinkedData(res.linked.feedback)));
+      dispatch(setPeopleRequest(recordStoresId, prepareLinkedData(res.linked.person)));
+
+      return { ids: ids, pagination: res.meta.pagination };
     }
   ));

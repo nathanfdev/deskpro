@@ -61,7 +61,6 @@ class FeedbackTransformer extends AbstractDataSerializerTransformer
             'popularity',
             'content',
             'category',
-            'custom_data',
         ];
     }
 
@@ -71,10 +70,12 @@ class FeedbackTransformer extends AbstractDataSerializerTransformer
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
         /** @var \Application\DeskPRO\Entity\Feedback $feedback */
-        $feedback = $transformation_request->getDataToBeTransformed();
+        $feedback   = $transformation_request->getDataToBeTransformed();
+        $customData = $feedback->getCustomDataForField(1) ? $feedback->getCustomDataForField(1)->getInput() : '';
 
         return [
-            'labels' => $feedback->getStringLabels(),
+            'labels'      => $feedback->getStringLabels(),
+            'custom_data' => $customData,
         ];
     }
 }
