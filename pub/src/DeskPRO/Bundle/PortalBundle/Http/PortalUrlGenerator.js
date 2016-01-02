@@ -2,7 +2,7 @@ import PortalWindow from 'DeskPRO/Bundle/PortalBundle/PortalWindow';
 
 class PortalUrlGenerator {
 
-  /**
+  /*
    * base_url must NOT contain lang_code. it is base path to index.php via the web.
    */
   constructor(portalWindow) {
