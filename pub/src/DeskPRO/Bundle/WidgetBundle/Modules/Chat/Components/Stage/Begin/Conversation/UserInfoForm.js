@@ -19,7 +19,7 @@ export class UserInfoForm extends React.Component {
     const { title, children, error } = this.props;
 
     return (
-      <div className={classNames('dpdesignportal-collect-user-info', {'error': error})}>
+      <div className={classNames('dpdesignportal-collect-user-info', {'error-field': error})}>
         <span className="title">{title}</span>
         <form onSubmit={this.onSubmit}>
           {children}
