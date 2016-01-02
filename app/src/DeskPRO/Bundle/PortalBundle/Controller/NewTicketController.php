@@ -35,9 +35,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\People\PersonGuest;
-use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitTicketAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
-use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Person\EmailValidationRequiredException;
 use DeskPRO\Bundle\PortalBundle\Person\LoginRequiredException;
@@ -63,8 +61,9 @@ class NewTicketController extends AbstractController
      */
     public function newTicketAction(Request $request, $visitor_id)
     {
-        $person = $this->getUser() ?: new PersonGuest();
+        $new_ticket_service = $this->get('tickets.new_ticket');
 
+        $person         = $this->getUser() ?: new PersonGuest();
         $ticket         = $this->getTicketManager()->createTicket();
         $ticket_message = new TicketMessage();
         $ticket_message->setVisitorId($visitor_id);
@@ -136,7 +135,9 @@ class NewTicketController extends AbstractController
                                 $attachment->setPerson($person);
                             }
 
-                            return $this->acceptNewTicket($ticket, $person, $request);
+                            $new_ticket = $new_ticket_service->acceptNewTicket($ticket, $person, $request);
+
+                            return $this->onSaveTicket($new_ticket, $person, $request);
                         } catch (LoginRequiredException $e) {
                             // the email used belongs to a user, and brand settings say they need to log in
                             $person = $e->getPerson();
@@ -160,16 +161,20 @@ class NewTicketController extends AbstractController
                                 return $this->redirectToRoute('portal_thanks_verify');
                             } else {
                                 // this is a guest that we are accepting
-                                return $this->acceptNewTicketForGuest($ticket, $ticket_message, $person, $request);
+                                $new_ticket = $new_ticket_service->acceptNewTicketForGuest($ticket, $ticket_message, $person, $request);
+
+                                return $this->onSaveTicket($new_ticket, $person, $request);
                             }
                         }
                     }
 
-                    return $this->acceptNewTicket($ticket, $person, $request);
+                    $new_ticket = $new_ticket_service->acceptNewTicket($ticket, $person, $request);
+
+                    return $this->onSaveTicket($new_ticket, $person, $request);
                 }
             }
         } elseif ($form->isSubmitted()) {
-            $this->submitNewTicketAbuseCheck($person, $request->getClientIp());
+            $new_ticket_service->submitNewTicketAbuseCheck($person, $request->getClientIp());
         }
 
         $form_full = $this->createForm('ticket', $ticket, [
@@ -208,70 +213,6 @@ class NewTicketController extends AbstractController
     }
 
     /**
-     * @param Ticket        $ticket
-     * @param TicketMessage $ticket_message
-     * @param Person        $person
-     * @param Request       $request
-     *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     */
-    protected function acceptNewTicketForGuest(Ticket $ticket, TicketMessage $ticket_message, Person $person, Request $request)
-    {
-        // in this case we are authorized to make a person from a guest
-        $person_context = new CreatePersonContext(Person::CREATED_WEB_PERSON);
-        $person->setName($person->getDisplayName());
-        $person = $this->getPersonFactory()->createPersonByEmail($person->getEmailAddress(), $person_context);
-
-        $ticket->person = $person;
-        $ticket->setPerson($person);
-        $ticket_message->setPerson($person);
-        foreach ($ticket_message->getAttachments() as $attachment) {
-            $blob = $attachment->getBlob();
-            if ($blob) {
-                $blob->is_temp = false;
-            }
-
-            $attachment->setPerson($person);
-        }
-
-        return $this->acceptNewTicket($ticket, $person, $request);
-    }
-
-    /**
-     * @param Ticket  $ticket
-     * @param Person  $person
-     * @param Request $request
-     *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     */
-    protected function acceptNewTicket(Ticket $ticket, Person $person, Request $request)
-    {
-        $this->submitNewTicketAbuseCheck($person, $request->getClientIp());
-
-        $ticket = $this->get('tickets.new_ticket')->saveNewTicket($ticket, $person);
-
-        $this->addFlash('success', $this->phrase('portal.flashes.ticket_created'));
-
-        // IF this person can't login but they are confirmed. show the thank you screen, but on that screen give
-        // them a link to setup an account straight away if they want to
-        $destination    = $this->getObjectRouter()->getPortalPath($ticket);
-        $create_pw_link = null;
-
-        $redirect = $this->get('portal_validation')->getPasswordRedirectIfRequired($person, $request, $destination);
-        if ($redirect) {
-            $create_pw_link = $redirect->getTargetUrl();
-        }
-
-        $params = [
-            'ticket_ref'        => $person->isUser() ? $this->get('ticket.public_id_resolver')->findId($ticket) : null,
-            'create_pw_link'    => $create_pw_link,
-            'is_confirmed_user' => $person->isConfirmed(),
-        ];
-
-        return $this->redirectToRoute('portal_thanks', $params);
-    }
-
-    /**
      * @Route("/thank-you/verify-email", name="portal_thanks_verify", defaults={"ticket_ref" = null, "do_verify" = true})
      * @Route("/thank-you/{ticket_ref}", name="portal_thanks", defaults={"ticket_ref" = null})
      *
@@ -296,12 +237,32 @@ class NewTicketController extends AbstractController
     }
 
     /**
-     * @param string $person
-     * @param string $ip
+     * @param Ticket  $ticket
+     * @param Person  $person
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    protected function submitNewTicketAbuseCheck($person, $ip)
+    protected function onSaveTicket(Ticket $ticket, Person $person, Request $request)
     {
-        $check = new SubmitTicketAbuseCheck($person, $ip);
-        $this->getAntiAbuseService()->check($check);
+        $this->addFlash('success', $this->phrase('portal.flashes.ticket_created'));
+
+        // IF this person can't login but they are confirmed. show the thank you screen, but on that screen give
+        // them a link to setup an account straight away if they want to
+        $destination    = $this->getObjectRouter()->getPortalPath($ticket);
+        $create_pw_link = null;
+
+        $redirect = $this->get('portal_validation')->getPasswordRedirectIfRequired($person, $request, $destination);
+        if ($redirect) {
+            $create_pw_link = $redirect->getTargetUrl();
+        }
+
+        $params = [
+            'ticket_ref'        => $person->isUser() ? $this->get('ticket.public_id_resolver')->findId($ticket) : null,
+            'create_pw_link'    => $create_pw_link,
+            'is_confirmed_user' => $person->isConfirmed(),
+        ];
+
+        return $this->redirectToRoute('portal_thanks', $params);
     }
 }

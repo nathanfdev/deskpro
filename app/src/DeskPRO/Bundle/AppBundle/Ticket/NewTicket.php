@@ -33,10 +33,16 @@ namespace DeskPRO\Bundle\AppBundle\Ticket;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Tickets\DuplicateTicketException;
 use Application\DeskPRO\Tickets\TicketManager;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitTicketAbuseCheck;
+use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomPerFieldManager;
+use DeskPRO\Bundle\PortalBundle\Person\PersonFactory;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class NewTicket.
@@ -59,17 +65,90 @@ class NewTicket
     private $custom_per_field_manager;
 
     /**
+     * @var PersonFactory
+     */
+    private $person_factory;
+
+    /**
+     * @var AntiAbuse
+     */
+    private $anti_abuse;
+
+    /**
      * Constructor.
      *
      * @param EntityManager         $em
      * @param TicketManager         $ticket_manager
      * @param CustomPerFieldManager $custom_per_field_manager
+     * @param PersonFactory         $person_factory
+     * @param AntiAbuse             $anti_abuse
      */
-    public function __construct(EntityManager $em, TicketManager $ticket_manager, CustomPerFieldManager $custom_per_field_manager)
-    {
+    public function __construct(
+        EntityManager         $em,
+        TicketManager         $ticket_manager,
+        CustomPerFieldManager $custom_per_field_manager,
+        PersonFactory         $person_factory,
+        AntiAbuse             $anti_abuse
+    ) {
         $this->em                       = $em;
         $this->ticket_manager           = $ticket_manager;
         $this->custom_per_field_manager = $custom_per_field_manager;
+        $this->person_factory           = $person_factory;
+        $this->anti_abuse               = $anti_abuse;
+    }
+
+    /**
+     * @param Ticket        $ticket
+     * @param TicketMessage $ticket_message
+     * @param Person        $person
+     * @param Request       $request
+     *
+     * @return Ticket
+     */
+    public function acceptNewTicketForGuest(Ticket $ticket, TicketMessage $ticket_message, Person $person, Request $request)
+    {
+        // in this case we are authorized to make a person from a guest
+        $person_context = new CreatePersonContext(Person::CREATED_WEB_PERSON);
+        $person->setName($person->getDisplayName());
+        $person = $this->person_factory->createPersonByEmail($person->getEmailAddress(), $person_context);
+
+        $ticket->person = $person;
+        $ticket->setPerson($person);
+        $ticket_message->setPerson($person);
+        foreach ($ticket_message->getAttachments() as $attachment) {
+            $blob = $attachment->getBlob();
+            if ($blob) {
+                $blob->is_temp = false;
+            }
+
+            $attachment->setPerson($person);
+        }
+
+        return $this->acceptNewTicket($ticket, $person, $request);
+    }
+
+    /**
+     * @param Ticket  $ticket
+     * @param Person  $person
+     * @param Request $request
+     *
+     * @return Ticket
+     */
+    public function acceptNewTicket(Ticket $ticket, Person $person, Request $request)
+    {
+        $this->submitNewTicketAbuseCheck($person, $request->getClientIp());
+
+        return $this->saveNewTicket($ticket, $person);
+    }
+
+    /**
+     * @param string $person
+     * @param string $ip
+     */
+    public function submitNewTicketAbuseCheck($person, $ip)
+    {
+        $check = new SubmitTicketAbuseCheck($person, $ip);
+        $this->anti_abuse->check($check);
     }
 
     /**
@@ -80,7 +159,7 @@ class NewTicket
      *
      * @return Ticket
      */
-    public function saveNewTicket(Ticket $ticket, Person $person)
+    protected function saveNewTicket(Ticket $ticket, Person $person)
     {
         $this->em->beginTransaction();
 
