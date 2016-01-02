@@ -1,7 +1,7 @@
 import { createStoreSelectors, createRequestSelectorsBuilder } from 'Ampliflux/common/record-store/selectors';
 
 function feedbackCategoriesStateSel(state) {
-  return state.RecordStores.Feedback.feedback.categories;
+  return state.RecordStores.Feedback.categories;
 }
 
 export const feedbackCategoriesStateSelector = createStoreSelectors(feedbackCategoriesStateSel);

@@ -1,19 +1,20 @@
 import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../../Actions/FeedbackListActions';
+import * as actions from '../../Actions/feedbackNavActions';
 import { Nav } from './Nav';
-import { feedbackTypesSelector, feedbackLabelsSelector }
-  from '../../Selectors/list';
+import { typeCountersSelector, categoryCountersSelector, statusCountersSelector, feedbackLabelsSelector }
+  from '../../Selectors/nav';
+
 
 @connect(state => {
   return ({
     loaded: state.Feedback.nav.getIn(['async', 'done']),
     toValidateCount: state.Feedback.nav.get('toValidateCount'),
     commentsToReviewCount: state.Feedback.nav.get('commentsToReviewCount'),
-    statuses: state.Feedback.nav.get('statuses'),
-    types: feedbackTypesSelector(state),
+    statuses: statusCountersSelector(state),
+    types: typeCountersSelector(state),
     labels: feedbackLabelsSelector(state),
-    customCategories: state.Feedback.nav.get('customCategories'),
+    categories: categoryCountersSelector(state),
     dpWindow: state.Application.dpWindow
   });
 })
@@ -26,8 +27,8 @@ export class NavContainer extends Component {
     commentsToReviewCount: PropTypes.object.isRequired,
     statuses: PropTypes.object.isRequired,
     labels: PropTypes.object.isRequired,
-    types: PropTypes.object.isRequired,
-    customCategories: PropTypes.object.isRequired,
+    types: PropTypes.object,
+    categories: PropTypes.object,
     dpWindow: PropTypes.object.isRequired
   };
 
@@ -36,18 +37,18 @@ export class NavContainer extends Component {
   }
 
   render() {
-    const {statuses, toValidateCount, commentsToReviewCount, dispatch, labels, types, customCategories, dpWindow, loaded} = this.props;
+    const {statuses, toValidateCount, commentsToReviewCount, dispatch, labels, types, categories, dpWindow, loaded} = this.props;
 
     return (
-      <Nav loaded={loaded}
-           toValidateCount={toValidateCount}
-           commentsToReviewCount={commentsToReviewCount}
-           dispatch={dispatch}
-           statuses={statuses}
-           labels={labels}
-           types={types}
-           customCategories={customCategories}
-           dpWindow={dpWindow}/>
+        <Nav loaded={loaded}
+             toValidateCount={toValidateCount}
+             commentsToReviewCount={commentsToReviewCount}
+             dispatch={dispatch}
+             statuses={statuses}
+             labels={labels}
+             types={types}
+             categories={categories}
+             dpWindow={dpWindow}/>
     );
   }
 }

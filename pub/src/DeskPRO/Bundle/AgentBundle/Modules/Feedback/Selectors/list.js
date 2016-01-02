@@ -1,13 +1,7 @@
 import { createSelector } from 'reselect';
-import { reduceImmutableToProperty } from 'DeskPRO/Component/Util/Map';
-import { createPeopleRequestSelectors }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Selectors/peopleSelectors';
-import { createFeedbackTypesRequestSelectors } from '../RecordStores/Selectors/feedbackTypesSelectors';
-import { createFeedbackCommentsRequestSelectors } from '../RecordStores/Selectors/feedbackCommentsSelectors';
-import { createFeedbackCategoriesRequestSelectors } from '../RecordStores/Selectors/feedbackCategoriesSelectors';
-import { createFeedbackStatusCategoriesRequestSelectors } from '../RecordStores/Selectors/feedbackStatusCategoriesSelectors';
-import { createFeedbackRequestSelectors } from '../RecordStores/Selectors/feedbackSelectors';
 import { hashStateSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
+import { feedbackCategoriesSelector, feedbackTypesSelector } from './recordStores';
+import { feedbackLabelsSelector } from './nav';
 
 const stateSelector = state => state.Feedback.list;
 const navStateSelector = state => state.Feedback.nav;
@@ -37,43 +31,8 @@ export const currentListOrderSelector = createSelector(
 );
 
 export const isCommentsSelector = createSelector(
-  stateSelector,
-    list => list.get('currentListParams').get('isComments')
-);
-
-export const peopleSelector = createSelector(
-  createPeopleRequestSelectors('feedback').recordsSel,
-    people => people
-);
-
-export const feedbackTypesSelector = createSelector(
-  createFeedbackTypesRequestSelectors('feedback').recordsSel,
-    types => types
-);
-
-export const feedbackLabelsSelector = createSelector(
-  navStateSelector,
-    state => reduceImmutableToProperty('label', state.get('labels'))
-);
-
-export const feedbackCommentsSelector = createSelector(
-  createFeedbackCommentsRequestSelectors('feedback').recordsSel,
-    comments => comments
-);
-
-export const feedbackCategoriesSelector = createSelector(
-  createFeedbackCategoriesRequestSelectors('feedback').recordsSel,
-    categories => categories
-);
-
-export const feedbackStatusCategoriesSelector = createSelector(
-  createFeedbackStatusCategoriesRequestSelectors('feedback').recordsSel,
-    categories => categories
-);
-
-export const feedbackSelector = createSelector(
-  createFeedbackRequestSelectors('feedback').recordsSel,
-    feedback => feedback
+  currentListParamsSelector,
+    params => params.get('isComments')
 );
 
 export const currentViewModeSelector = hashStateSelectorFactory(['list', 'view'], 'card');
@@ -116,7 +75,7 @@ export const listFiltersSelector = createSelector(
     if (checkIfShowStatus()) {
       const statuses = navState.get('statuses').toJS();
       const toStatusOptions = (nested, param) => (nested || []).map(opt => ({
-        value: opt.title,
+        value: opt.id,
         label: opt.title,
         param: param
       }));
@@ -133,9 +92,9 @@ export const listFiltersSelector = createSelector(
 
     // Category options
     if (!currentListParams.get('navItem') || (!currentListParams.get('navItem').get('custom_category'))) {
-      const categoryOptions = navState.get('customCategories').toJS().map(cat => ({
-        label: cat.title,
-        value: cat.title
+      const categoryOptions = categories.toArray().map(cat => ({
+        label: cat.get('input'),
+        value: cat.get('input')
       }));
       filterSelector.push({
         label: 'Category', type: 'select', param: 'custom_category', quickFilter: true,
@@ -205,7 +164,7 @@ export const massActionsSelector = createSelector(
 
     // Other options
     const otherOptions = [
-      { label: 'Add label', icon: 'plus-square', labels: labels, param: 'addLabels'},
+      { label: 'Add label', icon: 'plus-square', labels: labels, param: 'addLabels' },
       { label: 'Remove label', icon: 'minus-square', labels: labels, param: 'removeLabels' }
     ];
     massActions.push({ icon: 'fa-asterisk', type: 'menu', param: 'other', options: otherOptions });

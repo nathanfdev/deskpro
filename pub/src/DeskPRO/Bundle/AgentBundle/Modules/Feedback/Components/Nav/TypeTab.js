@@ -12,12 +12,12 @@ export class TypeTab extends Component {
 
     return (
       <ul>
-        {types.toArray().map((item, index) =>
+        {types && types.get('nested').map((item, index) =>
             <ListItemContainer key={index}
                                label={item.get('title')}
                                listOptions={{isComments: false, navItem: {category: item.get('title')}}}>
 
-              <ListItem count={item.get('counter')}
+              <ListItem count={item.get('count')}
                         label={item.get('title')} />
             </ListItemContainer>
         )}

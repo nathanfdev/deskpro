@@ -46,9 +46,7 @@ export class List extends Component {
 
     if (currentViewMode === constants.VIEW_MODE_CARD) {
       return (
-        <FeedbackCardsContainer
-          toggleSelected={toggleSelected}
-          />
+        <FeedbackCardsContainer toggleSelected={toggleSelected}/>
       );
     }
     return (
@@ -60,10 +58,8 @@ export class List extends Component {
     const { currentViewMode, selected, toggleSelected } = this.props;
     if (currentViewMode === constants.VIEW_MODE_CARD) {
       return (
-        <FeedbackCommentsCardsContainer
-          selected={selected}
-          toggleSelected={toggleSelected}
-          />
+        <FeedbackCommentsCardsContainer selected={selected}
+                                        toggleSelected={toggleSelected}/>
       );
     }
     return (
