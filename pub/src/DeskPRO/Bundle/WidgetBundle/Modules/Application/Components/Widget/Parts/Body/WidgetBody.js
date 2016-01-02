@@ -14,7 +14,6 @@ export class WidgetBody extends React.Component {
     const bodyStyles = {};
 
     if (isBubble) {
-      bodyStyles.overflow = 'scroll';
       bodyStyles.height = $(parent.window).height() / 2;
       if (bodyStyles.height > 550) {
         bodyStyles.height = 550;
