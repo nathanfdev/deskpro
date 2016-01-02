@@ -304,12 +304,4 @@ class NewTicketController extends AbstractController
         $check = new SubmitTicketAbuseCheck($person, $ip);
         $this->getAntiAbuseService()->check($check);
     }
-
-    /**
-     * @return \Application\DeskPRO\EntityRepository\Ticket
-     */
-    protected function getTicketsRepo()
-    {
-        return $this->getRepo('DeskPRO:Ticket');
-    }
 }
