@@ -60,7 +60,7 @@ class FeedbackTransformer extends AbstractDataSerializerTransformer
             'num_comments',
             'popularity',
             'content',
-            'category_id',
+            'category',
             'custom_data',
         ];
     }

@@ -1,10 +1,10 @@
-import { setFeedbackStatusCategoriesRequest } from '../../Actions/feedbackStatusCategoriesActions';
+import { setFeedbackTypesRequest } from '../Actions/feedbackTypesActions';
 import { createReducer } from 'Ampliflux';
 import { createEmptyRecordStoreState, buildRecordStoreHandlers } from 'Ampliflux/common/record-store/handlers';
 
 export default createReducer(
   createEmptyRecordStoreState(),
   buildRecordStoreHandlers({
-    setRequestRecordAction: setFeedbackStatusCategoriesRequest
+    setRequestRecordAction: setFeedbackTypesRequest
   })
 );

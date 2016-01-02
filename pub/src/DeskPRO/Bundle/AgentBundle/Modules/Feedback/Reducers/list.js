@@ -43,7 +43,7 @@ export default createReducer(initialState, {
   [massActions.toggleSelectedAction]: togglePayloadInCollection('selected'),
 
   [actions.loadFeedbackList]: async({
-    success: (state, payload) => state.set('elements', payload.data).set('pagination', payload.meta.pagination),
+    success: (state, payload) => state.set('elements', payload.ids).set('pagination', payload.pagination),
     start: setValue('async.done', false),
     done: setValue('async.done', true)
   }),

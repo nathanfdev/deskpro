@@ -4,15 +4,13 @@ import * as Feedback from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
 import * as PersonSetting from 'DeskPRO/Bundle/AgentBundle/Services/Api/PersonSetting';
 import { loadFeedbackCommentsList } from './FeedbackCommentsActions';
 import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
-import { loadFeedbackCommentsCounter }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCommentsActions';
 import { loadFeedbackCategories } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCategoriesActions';
 import { currentListParamsSelector, currentViewFieldsParamsSelector } from '../Selectors/list';
-import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
-import { setFeedbackTypesRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackTypesActions';
-import { setFeedbackCategoriesRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCategoriesActions';
-import { setFeedbackStatusCategoriesRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackStatusCategoriesActions';
+import { setFeedbackStatusCategoriesRequest } from '../RecordStores/Actions/feedbackStatusCategoriesActions';
+import { loadFeedbackCommentsCounter } from '../RecordStores/Actions/feedbackCommentsActions';
+import { setFeedbackRequest } from '../RecordStores/Actions/feedbackActions';
 import { toggleMassAction } from './FeedbackMassActions';
+import { feedbackToValidateCounter } from './feedbackNavActions';
 
 /**
  * Used to identify requests within record stores
@@ -20,64 +18,20 @@ import { toggleMassAction } from './FeedbackMassActions';
  */
 const recordStoresId = 'feedback';
 
-export const setDisplayFields = createAction(
-  'FEEDBACK_SET_DISPLAY_FIELDS',
-    payload => payload
-);
-
-export const initialLoad = createAction(
-  'FEEDBACK_NAV_INITIAL_LOAD',
-  () => (dispatch) => new Promise(
-    (resolve) => {
-      const batch = 'DP_API/batch'
-          + '?get[customCategories]=DP_API/feedback_categories_counts'
-          + '&get[types]=DP_API/feedback_types'
-          + '&get[labels]=DP_API/feedback_labels'
-          + '&get[toValidateCount]=DP_API/feedback/counts?awaiting_validation%3D1'
-          + '&get[active]=DP_API/feedback/counts?status%3Dactive%26group_by%3Dstatus_category'
-          + '&get[closed]=DP_API/feedback/counts?status%3Dclosed%26group_by%3Dstatus_category'
-          + '&get[hidden]=DP_API/feedback/counts?status%3Dhidden%26group_by%3Dhidden_status'
-          + '&get[commentsToReviewCount]=DP_API/feedback_comments/counts?awaiting_validation%3D1'
-          + '&get[viewFields]=DP_API/person_setting/feedback_display_fields'
-        ;
-      DpApi.sendGet(batch).success(({responses}) => {
-        const payload = flattenBatchResponses(responses);
-        payload.statuses = { active: payload.active, closed: payload.closed, hidden: payload.hidden };
-        if (payload.viewFields && payload.viewFields.hasOwnProperty('value')) {
-          dispatch(setDisplayFields({
-            cardVisibleFields: payload.viewFields.value.cardVisibleFields,
-            tableVisibleFields: payload.viewFields.value.tableVisibleFields,
-            viewFieldsSettingsFromDb: true
-          }));
-        } else {
-          const defaultCardViewFields = ['id', 'title', 'person', 'status', 'date_created', 'labels'];
-          const defaultTableViewFields = ['id', 'title', 'person', 'status', 'date_created', 'labels'];
-          dispatch(setDisplayFields({
-            cardVisibleFields: defaultCardViewFields,
-            tableVisibleFields: defaultTableViewFields,
-            viewFieldsSettingsFromDb: false
-          }));
-        }
-        dispatch(setFeedbackTypesRequest(recordStoresId, payload.types));
-        delete payload.active;
-        delete payload.closed;
-        delete payload.hidden;
-        delete payload.viewFields;
-        resolve(payload);
-      });
+const prepareLinkedData = (linked) => {
+  const result = [];
+  for (const key in linked) {
+    if (linked.hasOwnProperty(key)) {
+      result.push(linked[key]);
     }
-  )
-);
+  }
+  return result;
+};
 
 export const loadLabels = createAction(
   'FEEDBACK_LOAD_LABELS',
   () => new Promise(resolve =>
     DpApi.sendGet('DP_API/feedback_labels').success(response => resolve(response.data.map(def => def.label))))
-);
-
-export const getCommentsCounter = createAction(
-  'FEEDBACK_GET_COMMENTS_COUNTER',
-    ids => dispatch => dispatch(loadFeedbackCommentsCounter(recordStoresId, ids))
 );
 
 export const getCategories = createAction(
@@ -87,44 +41,28 @@ export const getCategories = createAction(
 
 export const setParams = createAction('FEEDBACK_LIST_SET_CURRENT_PARAMS');
 
+export const getCommentsCounter = createAction(
+  'FEEDBACK_GET_COMMENTS_COUNTER',
+    ids => dispatch => dispatch(loadFeedbackCommentsCounter(recordStoresId, ids))
+);
+
+export const setDisplayFields = createAction(
+  'FEEDBACK_SET_DISPLAY_FIELDS',
+    payload => payload
+);
+
 export const loadFeedbackList = createAction(
   'FEEDBACK_LIST_OF_FEEDBACK',
     params => (dispatch) => Feedback.getList(params).then(promise => {
-      const feedback = promise.getData();
-      const ids = [];
-      for (var index in feedback.data) {
-        if (feedback.data.hasOwnProperty(index)) {
-          ids.push(feedback.data[index].id);
-        }
-      }
+      const res = promise.getData();
+      const ids = res.data.map(item=>item.id);
 
-      const people = [];
-      for (const key in feedback.linked.person) {
-        if (feedback.linked.person.hasOwnProperty(key)) {
-          people.push(feedback.linked.person[key]);
-        }
-      }
-
-      const statusCategories = [];
-      for (const key in feedback.linked.feedback_status_category) {
-        if (feedback.linked.feedback_status_category.hasOwnProperty(key)) {
-          statusCategories.push(feedback.linked.feedback_status_category[key]);
-        }
-      }
-
-      const customCategories = [];
-      for (const key in feedback.linked.custom_data_feedback) {
-        if (feedback.linked.custom_data_feedback.hasOwnProperty(key)) {
-          customCategories.push(feedback.linked.custom_data_feedback[key]);
-        }
-      }
-
-      dispatch(setPeopleRequest(recordStoresId, people));
-      dispatch(setFeedbackStatusCategoriesRequest(recordStoresId, statusCategories));
-      dispatch(setFeedbackCategoriesRequest(recordStoresId, customCategories));
+      dispatch(setFeedbackRequest(recordStoresId, res.data));
+      dispatch(setPeopleRequest(recordStoresId, prepareLinkedData(res.linked.person)));
+      dispatch(setFeedbackStatusCategoriesRequest(recordStoresId, prepareLinkedData(res.linked.feedback_status_category)));
       dispatch(getCommentsCounter(ids));
 
-      return feedback;
+      return { ids: ids, pagination: res.meta.pagination };
     }
   ));
 export const loadList = createAction(
@@ -148,11 +86,6 @@ export const loadList = createAction(
     dispatch(toggleMassAction());
     return params;
   }
-);
-
-export const feedbackCustomCategories = createAction(
-  'FEEDBACK_CUSTOM_CATEGORIES',
-  () => Feedback.getCustomCategories().then(promise => promise.getData())
 );
 
 export const toggleViewMode = createAction(
@@ -226,10 +159,6 @@ export const setOrder = createAction(
 export const toggleTableFieldVisibility = createAction('FEEDBACK_LIST_TOGGLE_TABLE_FIELD_VISIBILITY');
 export const toggleCardFieldVisibility = createAction('FEEDBACK_LIST_TOGGLE_CARD_FIELD_VISIBILITY');
 
-export const feedbackToValidateCounter = createAction(
-  'FEEDBACK_TO_VALIDATE_COUNTER',
-  () => Feedback.feedbackToValidate().then(promise => promise.getData())
-);
 
 export const deleteFeedback = createAction(
   'FEEDBACK_DELETE',

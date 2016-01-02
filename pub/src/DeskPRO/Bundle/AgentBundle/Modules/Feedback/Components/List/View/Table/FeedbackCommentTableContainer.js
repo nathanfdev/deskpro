@@ -1,11 +1,11 @@
 import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
+import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
 import { Table, Th, Td, TdId, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
-import { feedbackSelector } from '../../../../Selectors/list';
-import { feedbackTypesSelector, feedbackCommentsSelector, feedbackCategoriesSelector, peopleSelector } from '../../../../Selectors/list';
+import { feedbackSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackCategoriesSelector, peopleSelector }
+  from '../../../../Selectors/recordStores';
 import { defaultTableFields } from '../../../List/ControlBar/FeedbackViewOptions';
 import { applyParams } from '../../../../Actions/FeedbackListActions';
-import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
 
 import { connect } from 'react-redux';
 @connect(state => ({
@@ -154,9 +154,9 @@ export class FeedbackCommentTableContainer extends Component {
                 {tableFields.id.isShown ?
                   <TdId>{feedback.id}</TdId> : null }
                 {tableFields.title.isShown &&
-                  <Td className="item-title"><a href="#"><SlicedString string={feedback.title}/></a></Td>}
+                <Td className="item-title"><a href="#"><SlicedString string={feedback.title}/></a></Td>}
                 {tableFields.content.isShown &&
-                  <Td className="item-title"><a href="#"><SlicedString string={feedback.content}/></a></Td> }
+                <Td className="item-title"><a href="#"><SlicedString string={feedback.content}/></a></Td> }
                 {tableFields.status_category.isShown ?
                   <Td>{this.renderStatus(feedback.id)}</Td> : null }
                 {tableFields.hidden_status.isShown ?

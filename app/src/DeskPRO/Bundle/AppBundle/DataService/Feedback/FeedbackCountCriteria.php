@@ -65,12 +65,13 @@ class FeedbackCountCriteria extends FeedbackSelectCriteria implements GroupableC
         if ($this->group_by === 'hidden_status') {
             $qb
                 ->addSelect("{$alias}.hidden_status as group_name")
+                ->addSelect("{$alias}.hidden_status as id")
                 ->andWhere("{$alias}.hidden_status IS NOT NULL")
                 ->andWhere("{$alias}.hidden_status <> ''");
         } elseif ($this->group_by === 'custom_category') {
             $qb
                 ->addSelect('g.input as group_name')
-                ->addSelect('g.id as cust_cat_id')
+                ->addSelect('g.id as id')
                 ->leftJoin("{$alias}.custom_data", 'g')
                 ->leftJoin('g.field', 'def')
                 ->andWhere('def.sys_name = :cat')
@@ -78,11 +79,13 @@ class FeedbackCountCriteria extends FeedbackSelectCriteria implements GroupableC
         } elseif ($this->group_by === 'category') {
             $qb
                 ->addSelect('g.title as group_name')
+                ->addSelect('g.id as id')
                 ->innerJoin("{$alias}.category", 'g');
         } elseif ($this->group_by === 'status_category') {
             $qb
                 ->leftJoin("{$alias}.{$this->group_by}", 'g')
                 ->addSelect('g.title as group_name')
+                ->addSelect('g.id as id')
                 ->andWhere('g.status_type = :type')
                 ->setParameter('type', $this->filters['status']);
         }

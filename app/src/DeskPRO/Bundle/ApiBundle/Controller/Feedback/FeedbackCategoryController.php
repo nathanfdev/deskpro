@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
@@ -58,52 +59,15 @@ class FeedbackCategoryController extends BaseController
         /* @ToDo move below functionality into repository after removing old code */
         $qb = $this->getDoctrine()->getManager()->createQueryBuilder();
         $qb
-            ->select('feedback.id', 'category.input')
+            ->select('category.id', 'category.input')
             ->from('DeskPRO:CustomDataFeedback', 'category')
-            ->leftJoin('category.feedback', 'feedback')
-            ->leftJoin('category.field', 'field')
-            ->where('field.title = :title')
-            ->setParameter('title', 'Category');
-        $ids = $request->get('ids');
-        if ($ids) {
-            $qb
-                ->andWhere('feedback.id IN (:ids)')
-                ->setParameter('ids', explode(',', $ids));
-        }
-
-        $categories = $qb->getQuery()->getResult();
-
-        return View::create(
-            $this->createRepresentation($categories),
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * @ApiDoc(
-     *      description="get counts of feedback by categories",
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     * @Get("/feedback_categories_counts", name="api_feedback_categories_counts")
-     *
-     * @return View
-     */
-    public function countsAction()
-    {
-        /* @ToDo move below functionality into repository after removing old code */
-        $qb = $this->getDoctrine()->getManager()->createQueryBuilder();
-        $qb
-            ->select('COUNT(feedback.id) as counter', 'category.input as title')
-            ->from('DeskPRO:CustomDataFeedback', 'category')
-            ->leftJoin('category.feedback', 'feedback')
             ->leftJoin('category.field', 'field')
             ->where('field.title = :title')
             ->setParameter('title', 'Category')
-            ->groupBy('category.input');
+            ->groupBy('category.id')
+            ->orderBy('category.input', 'asc');
 
-        $categories = $qb->getQuery()->getArrayResult();
+        $categories = $qb->getQuery()->getResult();
 
         return View::create(
             $this->createRepresentation($categories),

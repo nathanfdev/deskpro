@@ -18,7 +18,7 @@ export class Nav extends Component {
     statuses: PropTypes.object.isRequired,
     labels: PropTypes.object.isRequired,
     types: PropTypes.object.isRequired,
-    customCategories: PropTypes.object.isRequired,
+    categories: PropTypes.object.isRequired,
     toValidateCount: PropTypes.object.isRequired,
     commentsToReviewCount: PropTypes.object.isRequired,
     dpWindow: PropTypes.object.isRequired
@@ -30,7 +30,7 @@ export class Nav extends Component {
   };
 
   render() {
-    const { labels, loaded, types, toValidateCount, commentsToReviewCount, statuses, customCategories, dispatch, dpWindow } = this.props;
+    const { labels, loaded, types, toValidateCount, commentsToReviewCount, statuses, categories, dispatch, dpWindow } = this.props;
     const currentApp = dpWindow.get('activeAppId');
 
     return (
@@ -55,7 +55,7 @@ export class Nav extends Component {
               <TypeTab types={types} loaded={loaded}/>
             </Tab>
             <Tab title="Category">
-              <CategoryTab customCategories={customCategories} loaded={loaded}/>
+              <CategoryTab categories={categories} loaded={loaded}/>
             </Tab>
           </TabsPaneStatefulContainer>
         </NavFrameBody>

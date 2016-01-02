@@ -1,4 +1,4 @@
-import { loadFeedbackCommentsCounter } from '../../Actions/feedbackCommentsActions';
+import { loadFeedbackCommentsCounter } from '../Actions/feedbackCommentsActions';
 import { createReducer } from 'Ampliflux';
 import { createEmptyRecordStoreState, buildRecordStoreHandlers } from 'Ampliflux/common/record-store/handlers';
 

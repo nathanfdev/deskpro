@@ -5,20 +5,20 @@ import { ListItemContainer } from './ListItemContainer';
 export class CategoryTab extends Component {
 
   static propTypes = {
-    customCategories: PropTypes.object.isRequired
+    categories: PropTypes.object.isRequired
   };
 
   render() {
-    const { customCategories } = this.props;
+    const { categories } = this.props;
 
     return (
       <ul>
-        {customCategories.toArray().map((item, index) =>
+        {categories && categories.get('nested').map((item, index) =>
             <ListItemContainer key={index}
                                label={item.get('title')}
                                listOptions={{isComments: false, navItem: {custom_category: item.get('title')}}}>
 
-              <ListItem count={item.get('counter')}
+              <ListItem count={item.get('count')}
                         label={item.get('title')}/>
             </ListItemContainer>
         )}

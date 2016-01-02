@@ -1,12 +1,12 @@
 import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
-import { peopleSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackStatusCategoriesSelector, feedbackCategoriesSelector }
-  from '../../../../Selectors/list';
-import { currentListSortSelector, currentListOrderSelector }
-  from '../../../../Selectors/list';
+import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
 import { Table, Th, Td, TdId, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { applyParams } from '../../../../Actions/FeedbackListActions';
-import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
+import { peopleSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackStatusCategoriesSelector, feedbackCategoriesSelector }
+  from '../../../../Selectors/recordStores';
+import { currentListSortSelector, currentListOrderSelector }
+  from '../../../../Selectors/list';
 
 import { connect } from 'react-redux';
 @connect(state => ({

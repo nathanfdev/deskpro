@@ -13,7 +13,7 @@ export class LabelsDictionary extends Component {
     let count;
 
     // count BC both for Immutable and JS objects
-    count = labels.count() ? labels.count() : labels.length;
+    count = labels.count() ? labels.count() : labels.size;
     for (let index = 0, label, letter; index < count; index++) {
       label = Immutable.Iterable.isIterable(labels) ? labels.get(index) : labels[index];
       letter = label[0].toUpperCase();

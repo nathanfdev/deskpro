@@ -1,12 +1,13 @@
 import React, {Component, PropTypes} from 'react';
 import { FeedbackCard } from './FeedbackCard';
 import { connect } from 'react-redux';
-import { peopleSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackCategoriesSelector, feedbackStatusCategoriesSelector }
-  from '../../../../Selectors/list';
+import { feedbackSelector, peopleSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackCategoriesSelector, feedbackStatusCategoriesSelector }
+  from '../../../../Selectors/recordStores';
 
 @connect(state => {
   return ({
-    feedback: state.Feedback.list.get('elements'),
+    ids: state.Feedback.list.get('elements'),
+    feedback: feedbackSelector(state),
     viewFields: state.Feedback.list.get('cardVisibleFields'),
     selected: state.Feedback.list.get('selected'),
     people: peopleSelector(state),
@@ -20,7 +21,8 @@ import { peopleSelector, feedbackTypesSelector, feedbackCommentsSelector, feedba
 export class FeedbackCardsContainer extends Component {
 
   static propTypes = {
-    feedback: PropTypes.array.isRequired,
+    ids: PropTypes.array.isRequired,
+    feedback: PropTypes.object.isRequired,
     viewFields: PropTypes.object,
     selected: PropTypes.object.isRequired,
     people: PropTypes.object.isRequired,
@@ -31,26 +33,32 @@ export class FeedbackCardsContainer extends Component {
     toggleSelected: PropTypes.func.isRequired
   };
 
-  render() {
+  renderCard(id) {
     const { feedback, viewFields, selected, toggleSelected, people, feedbackTypes, feedbackComments,
       feedbackCategories, feedbackStatusCategories } = this.props;
+    const element = feedback.get(id);
+
+    return (
+      <FeedbackCard key={id}
+                    viewFields={viewFields}
+                    feedback={element}
+                    selected={selected.includes(id)}
+                    toggleSelected={toggleSelected}
+                    author={people.get(element.get('person'))}
+                    feedbackStatusCategory={feedbackStatusCategories.get(element.get('status_category'))}
+                    feedbackCategories={feedbackCategories}
+                    feedbackComments={feedbackComments.get(id)}
+                    feedbackLabels={element.get('labels')}
+                    type={feedbackTypes.get(element.get('category'))}/>
+    );
+  }
+
+  render() {
+    const { ids } = this.props;
 
     return (
       <div>
-        {feedback.map((element, index) =>
-            <FeedbackCard key={index}
-                          viewFields={viewFields}
-                          feedback={element}
-                          selected={selected.includes(element.id)}
-                          toggleSelected={toggleSelected}
-                          author={people.get(element.person)}
-                          feedbackStatusCategory={feedbackStatusCategories.get(element.status_category)}
-                          feedbackCategory={feedbackCategories.get(element.custom_data[0])}
-                          feedbackComments={feedbackComments.get(element.id)}
-                          feedbackLabels={element.labels}
-                          type={feedbackTypes.get(element.category_id)}
-              />
-        )}
+        {ids.map(id =>this.renderCard(id))}
       </div>
     );
   }

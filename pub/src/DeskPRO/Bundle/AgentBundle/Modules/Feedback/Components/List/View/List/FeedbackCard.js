@@ -18,13 +18,13 @@ export class FeedbackCard extends Component {
     author: PropTypes.object.isRequired,
     type: PropTypes.object.isRequired,
     feedbackLabels: PropTypes.array,
-    feedbackCategory: PropTypes.object,
+    feedbackCategories: PropTypes.object,
     feedbackStatusCategory: PropTypes.object,
     feedbackComments: PropTypes.object
   };
 
   renderLabels(labels) {
-    if (labels.length && this.props.viewFields.includes('labels')) {
+    if (labels.size && this.props.viewFields.includes('labels')) {
       return (
         <CardLineItem>
           <CardDisc/>
@@ -41,7 +41,7 @@ export class FeedbackCard extends Component {
     if (feedback.status === 'new') {
       realStatus = 'New';
     } else if (feedback.status === 'hidden') {
-      realStatus = feedback.hidden_status;
+      realStatus = feedback.get('hidden_status');
     } else if (feedbackStatusCategory) {
       realStatus = feedbackStatusCategory.get('title');
     }
@@ -63,10 +63,12 @@ export class FeedbackCard extends Component {
   }
 
   renderCategory() {
-    const { feedbackCategory } = this.props;
-    if (feedbackCategory) {
+    const { feedback, feedbackCategories } = this.props;
+    const categories = feedback.get('custom_data').map(category=>feedbackCategories.get(category).input);
+    console.log('Categories', categories);
+    if (categories) {
       return (
-        <CardLineItem><CardDisc/>{ feedbackCategory.get('input') }</CardLineItem>
+        <CardLineItem><CardDisc/>{ categories.join(', ') }</CardLineItem>
       );
     }
   }
@@ -76,11 +78,11 @@ export class FeedbackCard extends Component {
     const output = {};
     let index = 0;
     if (viewFields.includes('id')) {
-      output['key' + index] = this.renderId(feedback.id);
+      output['key' + index] = this.renderId(feedback.get('id'));
       index++;
     }
     if (viewFields.includes('date_created')) {
-      output['key' + index] = this.renderDate(feedback.date_created);
+      output['key' + index] = this.renderDate(feedback.get('date_created'));
       index++;
     }
     if (viewFields.includes('custom_category')) {
@@ -107,13 +109,13 @@ export class FeedbackCard extends Component {
     return (
       <Card type="feedback" width={cardWidth}>
 
-        <FeedbackCardMark numRatings={feedback.num_ratings}/>
+        <FeedbackCardMark numRatings={feedback.get('num_ratings')}/>
 
-        <CardCheckbox selected={selected} onClick={toggleSelected(feedback.id)}/>
+        <CardCheckbox selected={selected} onClick={toggleSelected(feedback.get('id'))}/>
 
         <CardLine>
           <CardLineLeft>
-            <CardTitle content={feedback.title}/>
+            <CardTitle content={feedback.get('title')}/>
           </CardLineLeft>
 
           <CardLineRight>
@@ -124,7 +126,7 @@ export class FeedbackCard extends Component {
         <CardLine>
           <CardLineFull>
             <CardContentText>
-              <p>{feedback.content}</p>
+              <p>{feedback.get('content')}</p>
             </CardContentText>
           </CardLineFull>
         </CardLine>
