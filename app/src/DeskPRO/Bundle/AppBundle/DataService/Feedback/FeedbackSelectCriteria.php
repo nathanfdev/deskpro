@@ -71,11 +71,11 @@ class FeedbackSelectCriteria extends Criteria
                     break;
                 case 'status_category':
                     if (is_array($value)) {
-                        $qb->andWhere('statusCategory.title IN (:title)');
+                        $qb->andWhere('statusCategory.id IN (:statusCategory)');
                     } else {
-                        $qb->andWhere('statusCategory.title = :title');
+                        $qb->andWhere('statusCategory.id = :statusCategory');
                     }
-                    $qb->setParameter('title', $value);
+                    $qb->setParameter('statusCategory', $value);
                     break;
                 case 'label':
                     $qb

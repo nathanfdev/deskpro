@@ -18,7 +18,6 @@ export class FeedbackCard extends Component {
     author: PropTypes.object.isRequired,
     type: PropTypes.object.isRequired,
     feedbackLabels: PropTypes.array,
-    feedbackCategories: PropTypes.object,
     feedbackStatusCategory: PropTypes.object,
     feedbackComments: PropTypes.object
   };

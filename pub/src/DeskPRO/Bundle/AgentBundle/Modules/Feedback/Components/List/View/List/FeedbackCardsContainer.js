@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { FeedbackCard } from './FeedbackCard';
 import { connect } from 'react-redux';
-import { feedbackSelector, peopleSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackCategoriesSelector, feedbackStatusCategoriesSelector }
+import { feedbackSelector, peopleSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackStatusCategoriesSelector }
   from '../../../../Selectors/recordStores';
 
 @connect(state => {
@@ -13,7 +13,6 @@ import { feedbackSelector, peopleSelector, feedbackTypesSelector, feedbackCommen
     people: peopleSelector(state),
     feedbackTypes: feedbackTypesSelector(state),
     feedbackComments: feedbackCommentsSelector(state),
-    feedbackCategories: feedbackCategoriesSelector(state),
     feedbackStatusCategories: feedbackStatusCategoriesSelector(state)
   });
 })
@@ -28,14 +27,12 @@ export class FeedbackCardsContainer extends Component {
     people: PropTypes.object.isRequired,
     feedbackTypes: PropTypes.object.isRequired,
     feedbackComments: PropTypes.object.isRequired,
-    feedbackCategories: PropTypes.object.isRequired,
     feedbackStatusCategories: PropTypes.object,
     toggleSelected: PropTypes.func.isRequired
   };
 
   renderCard(id) {
-    const { feedback, viewFields, selected, toggleSelected, people, feedbackTypes, feedbackComments,
-      feedbackCategories, feedbackStatusCategories } = this.props;
+    const { feedback, viewFields, selected, toggleSelected, people, feedbackTypes, feedbackComments, feedbackStatusCategories } = this.props;
     const element = feedback.get(id);
 
     return (
@@ -46,7 +43,6 @@ export class FeedbackCardsContainer extends Component {
                     toggleSelected={toggleSelected}
                     author={people.get(element.get('person'))}
                     feedbackStatusCategory={feedbackStatusCategories.get(element.get('status_category'))}
-                    feedbackCategories={feedbackCategories}
                     feedbackComments={feedbackComments.get(id)}
                     feedbackLabels={element.get('labels')}
                     type={feedbackTypes.get(element.get('category'))}/>
