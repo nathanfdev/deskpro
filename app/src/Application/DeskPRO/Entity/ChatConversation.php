@@ -1034,6 +1034,14 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         return $this;
     }
 
+    /**
+     * @return Session
+     */
+    public function getSession()
+    {
+        return $this->session;
+    }
+
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
         $data = parent::toApiData($primary, $deep, $visited);

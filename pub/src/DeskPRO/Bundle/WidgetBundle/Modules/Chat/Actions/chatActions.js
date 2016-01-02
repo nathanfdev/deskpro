@@ -2,6 +2,7 @@ import { createAction } from 'Ampliflux';
 import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
+import { addSessionCode } from '../../Application/Actions/bootstrapActions';
 import { generate } from 'randomstring';
 import striptags from 'striptags';
 import moment from 'moment';
@@ -32,6 +33,12 @@ export const setChatId = createAction(
     return chatId;
   }
 );
+
+export const unsetChatId = createAction(
+  'WIDGET_CHAT_UNSET_ID',
+  () => localStorage.removeItem('dpWidget.chat.chatId')
+);
+
 export const setLoaded = createAction('WIDGET_CHAT_SET_LOADED');
 export const unsetLoaded = createAction('WIDGET_CHAT_UNSET_LOADED');
 export const updateChatInfo = createAction('WIDGET_CHAT_UPDATE_CHAT_INFO');
@@ -69,7 +76,7 @@ export const resetAttachments = createAction('WIDGET_CHAT_RESET_ATTACHMENTS');
 export const showNotHelpfulForm = createAction('WIDGET_CHAT_SHOW_NOT_HELPFUL_FORM');
 
 // Api actions
-export const loadPhraseTranslations = createAction(
+export const loadChatPhraseTranslations = createAction(
   'WIDGET_CHAT_LOAD_PHRASE_TRANSLATIONS',
   () => dispatch => DpApi
     .sendGet('DP_API/lang/widget-chat-phrases.json', {...ajaxOptions})
@@ -80,26 +87,49 @@ export const loadPhraseTranslations = createAction(
 
 export const createChat = createAction(
   'WIDGET_CHAT_CREATE_NEW',
-  params => dispatch => DpApi
-    .sendPost('DP_API/chats/create', params, {...ajaxOptions})
-    .success(response => {
-      const data = response.data || {};
-      const chatId = data.id;
+  params => (dispatch, getState) => {
+    const state = getState();
+    const queryParams = compileParams(addSessionCode(state));
 
-      if (chatId) {
-        dispatch(setChatId(chatId));
-      }
-    })
+    return DpApi
+      .sendPost(`DP_API/chats/create?${queryParams}`, params, {...ajaxOptions})
+      .success(response => {
+        const data = response.data || {};
+        const chatId = data.id;
+
+        if (chatId) {
+          dispatch(setChatId(chatId));
+        }
+      });
+  }
 );
 
 export const ackChatMessages = createAction(
   'WIDGET_CHAT_ACK_MESSAGES',
-  (chatId, params) => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/ack_messages`, params, {...ajaxOptions}) : null
+  (chatId, params) => (dispatch, getState) => {
+    if (!chatId) {
+      return null;
+    }
+
+    const state = getState();
+    const queryParams = compileParams(addSessionCode(state));
+
+    return DpApi.sendPost(`DP_API/chats/${chatId}/ack_messages?${queryParams}`, params, {...ajaxOptions});
+  }
 );
 
 export const sendTranscriptData = createAction(
   'WIDGET_CHAT_SEND_TRANSCRIPT_DATA',
-    chatId => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/transcript_data`, {...ajaxOptions}) : null
+  chatId => (dispatch, getState) => {
+    if (!chatId) {
+      return null;
+    }
+
+    const state = getState();
+    const queryParams = compileParams(addSessionCode(state));
+
+    return DpApi.sendPost(`DP_API/chats/${chatId}/transcript_data?${queryParams}`, null, {...ajaxOptions});
+  }
 );
 
 export const sendTranscriptInfo = createAction(
@@ -111,8 +141,9 @@ export const sendTranscriptInfo = createAction(
 
     const state = getState();
     const chatEnded = isEndedSelector(state);
+    const queryParams = compileParams(addSessionCode(state));
 
-    const promise = DpApi.sendPost(`DP_API/chats/${chatId}/transcript_info`, params, {...ajaxOptions});
+    const promise = DpApi.sendPost(`DP_API/chats/${chatId}/transcript_info?${queryParams}`, params, {...ajaxOptions});
     promise.success(() => {
       if (chatEnded) {
         dispatch(sendTranscriptData(chatId));
@@ -123,6 +154,24 @@ export const sendTranscriptInfo = createAction(
   }
 );
 
+export const loadChatInfo = createAction(
+  'WIDGET_CHAT_LOAD_INFO',
+  chatId => (dispatch, getState) => {
+    if (!chatId) {
+      return null;
+    }
+
+    const state = getState();
+    const queryParams = compileParams(addSessionCode(state));
+
+    return new Promise(resolve => {
+      DpApi
+        .sendGet(`DP_API/chats/${chatId}/polling?${queryParams}`, {...ajaxOptions})
+        .success(response => resolve(response.chat_info && response.chat_info.data));
+    });
+  }
+);
+
 export const pollingChat = createAction(
   'WIDGET_CHAT_POLLING',
   (chatId, params) => (dispatch, getState) => {
@@ -130,107 +179,119 @@ export const pollingChat = createAction(
       return null;
     }
 
-    return DpApi
-      .sendGet(`DP_API/chats/${chatId}/polling?` + compileParams(params), {...ajaxOptions})
-      .success(response => {
-        const state = getState();
-        const locked = lockedPollingSelector(state);
-        const skipped = skippedPollingSelector(state);
+    const state = getState();
+    const queryParams = compileParams(addSessionCode(state, params));
 
-        // Waiting for ajax response
-        if (locked) {
-          return;
-        }
+    const promise = DpApi.sendGet(`DP_API/chats/${chatId}/polling?${queryParams}`, {...ajaxOptions});
+    promise.success(response => {
+      const locked = lockedPollingSelector(state);
+      const skipped = skippedPollingSelector(state);
 
-        // Waiting for next response to get actual data
-        if (skipped) {
-          dispatch(enablePollingResponse());
-          return;
-        }
+      // Waiting for ajax response
+      if (locked) {
+        return;
+      }
 
-        const oldChatInfo = chatInfoSelector(state);
-        const newChatInfo = response.chat_info && response.chat_info.data;
-        const newMessages = response.new_messages ? response.new_messages.data : [];
-        const loaded = chatLoadedSelector(state);
-        const transcriptEnabled = transcriptCheckedSelector(state);
+      // Waiting for next response to get actual data
+      if (skipped) {
+        dispatch(enablePollingResponse());
+        return;
+      }
 
-        if (newChatInfo) {
-          // New chat info was changed
-          if (!oldChatInfo.equals(Immutable.fromJS(newChatInfo))) {
-            dispatch(updateChatInfo(newChatInfo));
+      const oldChatInfo = chatInfoSelector(state);
+      const newChatInfo = response.chat_info && response.chat_info.data;
+      const loaded = chatLoadedSelector(state);
 
-            if (newChatInfo.author_email) {
-              // Auto select transcript checkbox if user has email
-              if (!transcriptEnabled) {
-                dispatch(enableSendTranscript());
-              }
+      if (newChatInfo) {
+        // Chat info was changed
+        if (!oldChatInfo.equals(Immutable.fromJS(newChatInfo))) {
+          // Update chat info
+          dispatch(updateChatInfo(newChatInfo));
 
+          // Handle chat transcript
+          const transcriptChecked = transcriptCheckedSelector(state);
+          if (newChatInfo.author_email) {
+            // Auto select transcript checkbox if user has email
+            if (!transcriptChecked) {
+              dispatch(enableSendTranscript());
+            } else {
               // If can send transcript data and chat is ended
-              const transcriptChecked = transcriptCheckedSelector(state);
               const transcriptSending = transcriptSendingSelector(state);
               const transcriptSent = transcriptSentSelector(state);
 
-              if (newChatInfo.date_ended && transcriptChecked && !transcriptSending && !transcriptSent) {
+              if (newChatInfo.date_ended && !transcriptSending && !transcriptSent) {
                 // send transcript data
                 dispatch(sendTranscriptData(chatId));
               }
-            } else {
-              if (transcriptEnabled) {
-                dispatch(disableSendTranscript());
-              }
-            }
-          }
-
-          // Toggle chat reopen
-          const canReopen = canReopenSelector(state);
-
-          if (!newChatInfo.date_ended) {
-            if (!canReopen) {
-              dispatch(enableChatReopen());
             }
           } else {
-            const ended = moment(newChatInfo.date_ended).format('X');
-            const now = moment().format('X');
-            const delay = ended - now + 120; // can reopen in 2 minutes
-
-            if (canReopen && delay < 0) {
-              dispatch(disableChatReopen());
+            if (transcriptChecked) {
+              dispatch(disableSendTranscript());
             }
           }
         }
 
-        // Received new messages
-        if (newMessages.length) {
-          const existMessageIds = messageIdsSelector(state);
-          const filteredMessages = newMessages
-            // Skip user's messages because they are added optimistically,
-            // but do load user's messages on initial polling request
-            .filter(message => !loaded || (loaded && message.author_type !== 'user'))
-            // Check for unique ids
-            .filter(message => existMessageIds.indexOf(message.id) === -1);
-
-          if (filteredMessages.length) {
-            dispatch(addNewMessages(filteredMessages));
+        // Toggle reopen chat
+        const canReopen = canReopenSelector(state);
+        if (!newChatInfo.date_ended) {
+          if (!canReopen) {
+            dispatch(enableChatReopen());
           }
+        } else {
+          const ended = moment(newChatInfo.date_ended).format('X');
+          const now = moment().format('X');
+          const delay = ended - now + 120; // can reopen in 2 minutes
 
-          // Filter not acked messages and send ack request
-          const ackMessages = filteredMessages.filter(message => message.author_type === 'agent' && !message.date_received);
-          if (ackMessages.length) {
-            dispatch(ackChatMessages(chatId, {message_ids: ackMessages.map(message => message.id)}));
+          if (canReopen && delay < 0) {
+            dispatch(disableChatReopen());
           }
         }
+      }
 
-        // Mark chat as loaded on first polling response
-        if (!loaded) {
-          dispatch(setLoaded());
+      // Received new messages
+      const newMessages = response.new_messages ? response.new_messages.data : [];
+      if (newMessages.length) {
+        const existMessageIds = messageIdsSelector(state);
+        const filteredMessages = newMessages
+          // Skip user's messages because they are added optimistically,
+          // but do load user's messages on initial polling request
+          .filter(message => !loaded || (loaded && message.author_type !== 'user'))
+          // Check for unique ids
+          .filter(message => existMessageIds.indexOf(message.id) === -1);
+
+        if (filteredMessages.length) {
+          dispatch(addNewMessages(filteredMessages));
         }
-      });
+
+        // Filter not acked messages and send ack request
+        const ackMessages = filteredMessages.filter(message => message.author_type === 'agent' && !message.date_received);
+        if (ackMessages.length) {
+          dispatch(ackChatMessages(chatId, {message_ids: ackMessages.map(message => message.id)}));
+        }
+      }
+
+      // Mark chat as loaded on first polling response
+      if (!loaded) {
+        dispatch(setLoaded());
+      }
+    });
+
+    return promise;
   }
 );
 
 export const sendUserTyping = createAction(
   'WIDGET_CHAT_SEND_USER_TYPING',
-  (chatId, params) => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/user_typing`, params, {...ajaxOptions}) : null
+  (chatId, params) => (dispatch, getState) => {
+    if (!chatId) {
+      return null;
+    }
+
+    const state = getState();
+    const queryParams = compileParams(addSessionCode(state));
+
+    return DpApi.sendPost(`DP_API/chats/${chatId}/user_typing?${queryParams}`, params, {...ajaxOptions});
+  }
 );
 
 export const sendChatMessage = createAction(
@@ -281,7 +342,8 @@ export const sendChatMessage = createAction(
     // Reset attachments after send
     dispatch(resetAttachments());
 
-    const promise = DpApi.sendPost(`DP_API/chats/${chatId}/messages`, params, {...ajaxOptions});
+    const queryParams = compileParams(addSessionCode(state));
+    const promise = DpApi.sendPost(`DP_API/chats/${chatId}/messages?${queryParams}`, params, {...ajaxOptions});
     promise.catch(() => {
       dispatch(markNotDelivered(tmpId));
     });
@@ -292,14 +354,17 @@ export const sendChatMessage = createAction(
 
 export const endChat = createAction(
   'WIDGET_CHAT_END',
-  chatId => dispatch => {
+  chatId => (dispatch, getState) => {
     if (!chatId) {
       return null;
     }
 
     dispatch(lockPollingResponse());
 
-    const promise = DpApi.sendPost(`DP_API/chats/${chatId}/end`, {...ajaxOptions});
+    const state = getState();
+    const queryParams = compileParams(addSessionCode(state));
+
+    const promise = DpApi.sendPost(`DP_API/chats/${chatId}/end?${queryParams}`, null, {...ajaxOptions});
     promise.success(() => {
       dispatch(unlockPollingResponse());
       localStorage.removeItem('dpWidget.chat.chatId');
@@ -312,14 +377,17 @@ export const endChat = createAction(
 
 export const reopenChat = createAction(
   'WIDGET_CHAT_REOPEN',
-  chatId => dispatch => {
+  chatId => (dispatch, getState) => {
     if (!chatId) {
       return null;
     }
 
     dispatch(lockPollingResponse());
 
-    const promise = DpApi.sendPost(`DP_API/chats/${chatId}/reopen`, {...ajaxOptions});
+    const state = getState();
+    const queryParams = compileParams(addSessionCode(state));
+
+    const promise = DpApi.sendPost(`DP_API/chats/${chatId}/reopen?${queryParams}`, null, {...ajaxOptions});
     promise.success(() => {
       dispatch(unlockPollingResponse());
       localStorage.setItem('dpWidget.chat.chatId', chatId);
@@ -332,5 +400,14 @@ export const reopenChat = createAction(
 
 export const sendFeedback = createAction(
   'WIDGET_CHAT_SEND_FEEDBACK',
-  (chatId, params) => chatId ? DpApi.sendPost(`DP_API/chats/${chatId}/feedback`, params, {...ajaxOptions}) : null
+  (chatId, params) => (dispatch, getState) => {
+    if (!chatId) {
+      return null;
+    }
+
+    const state = getState();
+    const queryParams = compileParams(addSessionCode(state));
+
+    return DpApi.sendPost(`DP_API/chats/${chatId}/feedback?${queryParams}`, params, {...ajaxOptions});
+  }
 );

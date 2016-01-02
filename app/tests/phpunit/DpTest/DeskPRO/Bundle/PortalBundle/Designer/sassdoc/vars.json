@@ -1,0 +1,28 @@
+{
+	"borders": [
+		{
+			"type": "size",
+			"name": "border-radius-main",
+			"default_value": "1.5%"
+		}
+	],
+	"colors": [
+		{
+			"type": "color",
+			"name": "button-color",
+			"default_value": "purple"
+		}
+	],
+	"fonts": [
+		{
+			"type": "font",
+			"name": "main-font",
+			"default_value": "Georgia, serif"
+		},
+		{
+		  "type": "float",
+		  "name": "text-opacue",
+		  "default_value": "0.5"
+		}
+	]
+}

@@ -41,6 +41,7 @@ use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class ChatController.
@@ -57,7 +58,8 @@ class ChatController extends AbstractApiController
      */
     public function createNewChatAction(Request $request)
     {
-        $conversation = new ChatConversation();
+        $session      = $this->getApiSession($request);
+        $conversation = ChatConversation::newForUserSession($session);
         $form         = $this
             ->get('form.factory')
             ->createNamedBuilder(null, 'api_chat_create', $conversation)
@@ -89,6 +91,8 @@ class ChatController extends AbstractApiController
      */
     public function pollingChatAction(ChatConversation $conversation, Request $request)
     {
+        $this->checkUserSession($conversation, $request);
+
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder();
@@ -122,6 +126,7 @@ class ChatController extends AbstractApiController
      */
     public function sendMessageAction(ChatConversation $conversation, Request $request)
     {
+        $this->checkUserSession($conversation, $request);
         $form = $this
             ->get('form.factory')
             ->createNamedBuilder(null, 'api_chat_message')
@@ -213,6 +218,8 @@ class ChatController extends AbstractApiController
      */
     public function ackMessagesAction(ChatConversation $conversation, Request $request)
     {
+        $this->checkUserSession($conversation, $request);
+
         $message_ids  = $request->request->get('message_ids');
         $current_date = new \DateTime();
 
@@ -252,6 +259,7 @@ class ChatController extends AbstractApiController
      */
     public function userTypingAction(ChatConversation $conversation, Request $request)
     {
+        $this->checkUserSession($conversation, $request);
         $form = $this
             ->get('form.factory')
             ->createNamedBuilder(null, 'api_chat_user_typing')
@@ -280,6 +288,7 @@ class ChatController extends AbstractApiController
      */
     public function sendTranscriptInfoAction(ChatConversation $conversation, Request $request)
     {
+        $this->checkUserSession($conversation, $request);
         $form = $this
             ->get('form.factory')
             ->createNamedBuilder(null, 'api_chat_transcription_info', $conversation)
@@ -303,11 +312,14 @@ class ChatController extends AbstractApiController
      * @Method({"POST"})
      *
      * @param ChatConversation $conversation
+     * @param Request          $request
      *
      * @return View
      */
-    public function sendTranscriptDataAction(ChatConversation $conversation)
+    public function sendTranscriptDataAction(ChatConversation $conversation, Request $request)
     {
+        $this->checkUserSession($conversation, $request);
+
         $already_sent = $conversation->getShouldSendTranscript();
         $person       = $conversation->getPerson();
         $has_email    = $person ? $person->getPrimaryEmailAddress() : $conversation->getPersonEmail();
@@ -332,11 +344,13 @@ class ChatController extends AbstractApiController
      * @Method({"POST"})
      *
      * @param ChatConversation $conversation
+     * @param Request          $request
      *
      * @return View
      */
-    public function endChatAction(ChatConversation $conversation)
+    public function endChatAction(ChatConversation $conversation, Request $request)
     {
+        $this->checkUserSession($conversation, $request);
         $conversation->setStatus(ChatConversation::STATUS_ENDED);
 
         $em = $this->getDoctrine()->getManager();
@@ -353,11 +367,13 @@ class ChatController extends AbstractApiController
      * @Method({"POST"})
      *
      * @param ChatConversation $conversation
+     * @param Request          $request
      *
      * @return View
      */
-    public function reopenChatAction(ChatConversation $conversation)
+    public function reopenChatAction(ChatConversation $conversation, Request $request)
     {
+        $this->checkUserSession($conversation, $request);
         $conversation
             ->setStatus(ChatConversation::STATUS_OPEN)
             ->setEndedBy(null)
@@ -386,6 +402,7 @@ class ChatController extends AbstractApiController
      */
     public function feedbackAction(ChatConversation $conversation, Request $request)
     {
+        $this->checkUserSession($conversation, $request);
         $form = $this
             ->get('form.factory')
             ->createNamedBuilder(null, 'api_chat_feedback', $conversation)
@@ -402,5 +419,21 @@ class ChatController extends AbstractApiController
         $em->flush();
 
         return View::create();
+    }
+
+    /**
+     * @param ChatConversation $conversation
+     * @param Request          $request
+     *
+     * @return bool
+     */
+    protected function checkUserSession(ChatConversation $conversation, Request $request)
+    {
+        $request_session      = $this->getApiSession($request);
+        $conversation_session = $conversation->getSession();
+
+        if (!$conversation_session || $request_session->getId() !== $conversation_session->getId()) {
+            throw new BadRequestHttpException('wrong_session_code');
+        }
     }
 }

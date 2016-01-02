@@ -16,8 +16,11 @@
     const frameWin = node.contentWindow;
     const frameDoc = frameWin.document;
 
-    frameWin.DP_HELPDESK_URL = helpdeskUrl;
+    frameWin.DP_HELPDESK_URL = helpdeskUrl.replace(/\/$/, '') + '/';
     frameWin.DP_OPTIONS = options;
+
+    // Portal page widget config
+    frameWin.DESKPRO_BASE_URL = helpdeskUrl.replace(/\/$/, '') + '/portal/api/';
 
     let doc;
     let docDomain;

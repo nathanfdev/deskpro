@@ -16,6 +16,6 @@ Feature: /feedback_types endpoint
     And the JSON node "meta" should exist
     And the JSON node "data" should exist
     And the JSON node "data" should have 3 elements
-    And the JSON node "data[0].title" should be equal to "Suggestion"
+    And the JSON node "data[0].title" should be equal to "Bug Report"
     And the JSON node "data[1].title" should be equal to "Feature Request"
-    And the JSON node "data[2].title" should be equal to "Bug Report"
+    And the JSON node "data[2].title" should be equal to "Suggestion"

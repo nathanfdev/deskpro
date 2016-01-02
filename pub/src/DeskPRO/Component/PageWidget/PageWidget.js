@@ -1,10 +1,10 @@
-import _ from "lodash";
-import $ from "jquery";
+import _ from 'lodash';
+import $ from 'jquery';
 
 /**
  * A page widget is something that can be attached to a page. It's a self-contained
- * piece of code that handles logic for specific parts of the page, typcially
- * by attaching logic to particular elements (i.e., to replace a dumb form element with an ehanched one).
+ * piece of code that handles logic for specific parts of the page, typically
+ * by attaching logic to particular elements (i.e., to replace a dumb form element with an enhanced one).
  *
  * == Lifecycle ==
  *
@@ -52,12 +52,12 @@ export default class PageWidget {
     this.initState = 'pre_init';
     this.waitingRender = false;
 
-    this.$element    = element ? $(element) : null;
-    this.parent      = parent;
-    this.widgetDefs  = [];
+    this.$element = element ? $(element) : null;
+    this.parent = parent;
+    this.widgetDefs = [];
     this.widgetInsts = [];
 
-    let initVal = this.init();
+    const initVal = this.init();
     if (initVal && initVal.then) {
       initVal.then(() => {
         this.initState = 'done_init';
@@ -103,7 +103,7 @@ export default class PageWidget {
     try {
       pre = this.preRender();
     } catch (e) {
-      console.log("Error in preRender()");
+      console.log('Error in preRender()');
       console.error(e);
       pre = null;
     }
@@ -113,7 +113,7 @@ export default class PageWidget {
         try {
           this.renderWidget();
         } catch (e) {
-          console.log("Error in renderWidget()");
+          console.log('Error in renderWidget()');
           console.error(e);
         }
 
@@ -123,7 +123,7 @@ export default class PageWidget {
       try {
         this.renderWidget();
       } catch (e) {
-        console.log("Error in renderWidget()");
+        console.log('Error in renderWidget()');
         console.error(e);
       }
 
@@ -174,12 +174,12 @@ export default class PageWidget {
    */
   _runDoneInit() {
     if (this.waitingRender) {
-      let p = this.render();
+      const p = this.render();
 
       if (p && p.then) {
         p.then(() => {
           this.runWidgets();
-        })
+        });
       } else {
         this.runWidgets();
       }
@@ -193,11 +193,11 @@ export default class PageWidget {
    * @param {String/Function} selector
    */
   addWidgetDef(widgetClass, selector) {
-    let desc = [widgetClass, selector];
+    const desc = [widgetClass, selector];
     this.widgetDefs.push(desc);
 
     if (this.initState === 'done_init') {
-      this._runWidgetDef(desc)
+      this._runWidgetDef(desc);
     }
   }
 
@@ -219,10 +219,11 @@ export default class PageWidget {
 
   /**
    * @param {Array} widgetDef
+   * @param {Object} $el
    * @private
    */
   _runWidgetDef(widgetDef, $el) {
-    let insts = this._createWidgetInst(widgetDef, $el);
+    const insts = this._createWidgetInst(widgetDef, $el);
 
     insts.forEach(i => {
       this.widgetInsts.push(i);
@@ -232,41 +233,44 @@ export default class PageWidget {
 
   /**
    * @param {Array} widgetDef
-   * @param {HTMLElement/jQuery} $el Optionally scope the run to this element
+   * @param {HTMLElement/jQuery} $parent Optionally scope the run to this element
    * @returns {Array}
    * @private
    */
-  _createWidgetInst(widgetDef, $el) {
-    let widgetClass = widgetDef[0];
-    let selector = widgetDef[1];
-    let matches;
+  _createWidgetInst(widgetDef, $parent) {
+    const widgetClass = widgetDef[0];
+    const selector = widgetDef[1];
 
-    if (!$el) {
-      $el = $(document);
+    let matches;
+    let $context;
+
+    if ($parent) {
+      $context = $($parent);
+    } else if (this.$element) {
+      $context = $(this.$element);
     } else {
-      $el = $($el);
+      $context = $(document);
     }
 
     if (_.isFunction(selector)) {
-      matches = selector(widgetClass, $el, this);
+      matches = selector(widgetClass, $context, this);
     } else {
-      matches = $el.find(selector);
+      matches = $context.find(selector);
     }
-
     if (!matches || !matches[0]) {
       return [];
     }
 
-    let insts = [];
+    const insts = [];
     matches.each((x, el) => {
-      el = $(el);
-      if (!el.data('dpWidgetInsts')) {
-        el.data('dpWidgetInsts', new WeakMap());
+      const $el = $(el);
+      if (!$el.data('dpWidgetInsts')) {
+        $el.data('dpWidgetInsts', new WeakMap());
       }
-      let elInsts = el.data('dpWidgetInsts');
 
+      const elInsts = $el.data('dpWidgetInsts');
       if (!elInsts.has(widgetClass)) {
-        let i = new widgetClass(el, this);
+        const i = new widgetClass($el, this);
         elInsts.set(widgetClass, i);
         insts.push(i);
       }

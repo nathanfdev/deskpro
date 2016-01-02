@@ -1,22 +1,25 @@
 import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
+import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
 import { Table, Th, Td, TdId, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
-import { feedbackSelector } from '../../../../Selectors/list';
-import { feedbackTypesSelector, feedbackCommentsSelector, feedbackCategoriesSelector, peopleSelector } from '../../../../Selectors/list';
+import { feedbackSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackCategoriesSelector, peopleSelector }
+  from '../../../../Selectors/recordStores';
+import { currentListSortSelector, currentListOrderSelector }
+  from '../../../../Selectors/list';
 import { defaultTableFields } from '../../../List/ControlBar/FeedbackViewOptions';
 import { applyParams } from '../../../../Actions/FeedbackListActions';
-import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
 
 import { connect } from 'react-redux';
 @connect(state => ({
-  comments: state.Feedback.list.get('elements'),
-  viewFields: state.Feedback.list.get('viewFields'),
-  feedbackFromStore: feedbackSelector(state),
-  feedbackComments: feedbackCommentsSelector(state),
+  ids: state.Feedback.list.get('elements'),
+  comments: feedbackCommentsSelector(state),
+  feedback: feedbackSelector(state),
   feedbackCategories: feedbackCategoriesSelector(state),
   feedbackTypes: feedbackTypesSelector(state),
   people: peopleSelector(state),
-  commentsTableViewFields: state.Feedback.list.get('commentsTableViewFields')
+  viewFields: state.Feedback.list.get('commentsTableVisibleFields'),
+  currentSort: currentListSortSelector(state),
+  currentOrder: currentListOrderSelector(state)
 }))
 
 @injectIntl
@@ -24,30 +27,31 @@ export class FeedbackCommentTableContainer extends Component {
 
   static propTypes = {
     intl: intlShape.isRequired,
+    ids: PropTypes.array.isRequired,
+    dispatch: PropTypes.func.isRequired,
     comments: PropTypes.object.isRequired,
-    viewFields: PropTypes.object,
-    commentsTableViewFields: PropTypes.array.isRequired,
+    viewFields: PropTypes.array.isRequired,
     people: PropTypes.object.isRequired,
     feedbackCategories: PropTypes.object.isRequired,
     feedbackTypes: PropTypes.object.isRequired,
-    feedbackComments: PropTypes.object.isRequired,
-    feedbackFromStore: PropTypes.object.isRequired,
+    feedback: PropTypes.object.isRequired,
     feedbackStatuses: PropTypes.object.isRequired,
-    dispatch: PropTypes.func.isRequired
+    currentSort: PropTypes.string.isRequired,
+    currentOrder: PropTypes.string.isRequired
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      order: '',
-      sort: '',
-      ownViewFields: {
-        comment_id: { isShown: true },
-        comment_content: { isShown: true },
-        comment_author: { isShown: true }
-      }
-    };
+  isVisible(field) {
+    const {viewFields} = this.props;
+    return viewFields.includes(field);
   }
+
+  /* It's for change display and priority fields functionality
+   isVisible(field) {
+   const {commentsTableViewFields} = this.props;
+   const tableFields = commentsTableViewFields ? commentsTableViewFields.toJS() : defaultTableFields;
+   const fieldSettings = tableFields.find(item=> item.name === field);
+   return fieldSettings && fieldSettings.status === 'show';
+   }*/
 
   sortTable(param, order) {
     this.props.dispatch(applyParams({ sort: param, order }));
@@ -67,121 +71,135 @@ export class FeedbackCommentTableContainer extends Component {
     }
   }
 
-  renderCommentsCounter(id) {
-    const { feedbackComments } = this.props;
-    if (feedbackComments && feedbackComments.get(id)) {
-      return feedbackComments.get(id).get('counter');
-    }
-    return 0;
+  renderRow(id) {
+    const { comments, people, feedback, feedbackTypes } = this.props;
+    const element = comments.get(id);
+    const parent = feedback.get(element.get('feedback'));
+
+    return (
+      <tr key={id}>
+        <TdId visible={this.isVisible('comment_id')}>
+          {element.get('id')}
+        </TdId>
+        <Td visible={this.isVisible('comment_author')}>
+          <PersonInTable person={people.get(element.get('person'))}/>
+        </Td>
+        <Td visible={this.isVisible('comment_content')}
+            className="item-title">
+          <a href="#"><SlicedString string={element.get('content')}/></a>
+        </Td>
+        <TdId visible={this.isVisible('id')}>
+          {parent.get('id')}
+        </TdId>
+        <Td className="item-title"
+            visible={this.isVisible('title')}>
+          <a href="#"><SlicedString string={parent.get('title')}/></a>
+        </Td>
+        <Td className="item-title"
+            visible={this.isVisible('content')}>
+          <a href="#"><SlicedString string={parent.get('content')}/></a>
+        </Td>
+        <Td visible={this.isVisible('status_category')}>
+          {this.renderStatus(parent.get('id'))}
+        </Td>
+        <Td visible={this.isVisible('hidden_status')}>
+          {parent.get('hidden_status')}
+        </Td>
+        <Td visible={this.isVisible('author_name')}>
+          <PersonInTable person={people.get(parent.get('person'))}/>
+        </Td>
+        <Td visible={this.isVisible('type')}>
+          {feedbackTypes.get(parent.get('category')) ? feedbackTypes.get(parent.get('category')).get('title') : ''}
+        </Td>
+        <Td visible={this.isVisible('custom_category')}>
+          {this.renderCategory(parent.get('id'))}
+        </Td>
+        <Td visible={this.isVisible('num_ratings')}>
+          {parent.get('num_ratings')}
+        </Td>
+        <Td visible={this.isVisible('num_comments')}>
+          {parent.get('num_comments')}
+        </Td>
+        <Td visible={this.isVisible('date_created')}>
+          <div className="dpw--timer"><FormattedRelative value={parent.get('date_created')}/></div>
+        </Td>
+      </tr>
+    );
   }
 
   render() {
-    const { comments, viewFields, people, feedbackFromStore, feedbackTypes } = this.props;
-    let tableFields = (viewFields && viewFields.get('table')) ? viewFields.get('table').toJS() : defaultTableFields;
-    const {ownViewFields} = this.state;
-    tableFields = { ...ownViewFields, ...tableFields };
+    const { ids, currentOrder, currentSort } = this.props;
 
     return (
       <Table>
         <thead>
         <tr>
-          {tableFields.comment_id.isShown ?
-            <Th sort="id"
-                title="ID"
-                order={this.state.sort === 'id' ? this.state.order : false}
-                onChange={this.sortTable.bind(this)}/> : null }
-          {tableFields.comment_author.isShown ?
-            <Th sort="author"
-                title="Author"
-                order={this.state.sort === 'id' ? this.state.order : false}
-                onChange={this.sortTable.bind(this)}/> : null }
-          {tableFields.comment_content.isShown ?
-            <Th sort="content"
-                title="Content"
-                order={this.state.sort === 'id' ? this.state.order : false}
-                onChange={this.sortTable.bind(this)}/> : null }
-          {tableFields.id.isShown ?
-            <Th sort="id"
-                title="ID"
-                order={this.state.sort === 'id' ? this.state.order : false}
-                onChange={this.sortTable.bind(this)}/> : null }
-          {tableFields.title.isShown ?
-            <Th sort="title"
-                title="Title"
-                order={this.state.sort === 'title' ? this.state.order : false}
-                onChange={this.sortTable.bind(this)}/> : null }
-          {tableFields.content.isShown ? <Th sort="content" title="Content"/> : null }
-          {tableFields.status_category.isShown ?
-            <Th sort="status_category" title="Status"/> : null }
-          {tableFields.hidden_status.isShown ?
-            <Th sort="hidden_status" title="Hidden"/> : null }
-          {tableFields.author_name.isShown ?
-            <Th sort="author_name" title="Author"/> : null }
-          {tableFields.type.isShown ?
-            <Th sort="type" title="Type"/> : null }
-          {tableFields.custom_category.isShown ?
-            <Th sort="custom_category" title="Category"/> : null }
-          {tableFields.num_ratings.isShown ?
-            <Th sort="num_ratings"
-                title="Votes"
-                order={this.state.sort === 'num_ratings' ? this.state.order : false}
-                onChange={this.sortTable.bind(this)}/> : null }
-          {tableFields.num_comments.isShown ?
-            <Th sort="num_comments" title="Comments"/> : null }
-          {tableFields.date_created.isShown ?
-            <Th sort="date_created"
-                title="Created"
-                order={this.state.sort === 'date_created' ? this.state.order : false}
-                onChange={this.sortTable.bind(this)}/> : null }
+          <Th sort="id"
+              visible={this.isVisible('comment_id')}
+              title="ID"
+              currentOrder={currentOrder}
+              currentSort={currentSort}
+              onChange={this.sortTable.bind(this)}/>
+          <Th sort="author"
+              title="Author"
+              visible={this.isVisible('comment_author')}
+              currentOrder={currentOrder}
+              currentSort={currentSort}
+              onChange={this.sortTable.bind(this)}/>
+          <Th sort="content"
+              title="Content"
+              visible={this.isVisible('comment_content')}
+              currentOrder={currentOrder}
+              currentSort={currentSort}
+              onChange={this.sortTable.bind(this)}/>
+          <Th sort="id"
+              title="Feedback ID"
+              visible={this.isVisible('id')}
+              currentOrder={currentOrder}
+              currentSort={currentSort}
+              onChange={this.sortTable.bind(this)}/>
+          <Th sort="title"
+              title="Feedback title"
+              visible={this.isVisible('title')}
+              currentOrder={currentOrder}
+              currentSort={currentSort}
+              onChange={this.sortTable.bind(this)}/>
+          <Th visible={this.isVisible('content')}
+              title="Feedback content"/>
+          <Th sort="status_category"
+              visible={this.isVisible('status_category')}
+              title="Status"/>
+          <Th sort="hidden_status"
+              visible={this.isVisible('hidden_status')}
+              title="Hidden"/>
+          <Th sort="author_name"
+              visible={this.isVisible('author_name')}
+              title="Author"/>
+          <Th sort="type"
+              visible={this.isVisible('type')}
+              title="Type"/>
+          <Th sort="custom_category"
+              visible={this.isVisible('custom_category')}
+              title="Category"/>
+          <Th sort="num_ratings"
+              visible={this.isVisible('num_ratings')}
+              title="Votes"
+              currentOrder={currentOrder}
+              currentSort={currentSort}
+              onChange={this.sortTable.bind(this)}/>
+          <Th sort="num_comments"
+              visible={this.isVisible('num_comments')}
+              title="Comments"/>
+          <Th sort="date_created"
+              visible={this.isVisible('date_created')}
+              title="Created"
+              currentOrder={currentOrder}
+              currentSort={currentSort}
+              onChange={this.sortTable.bind(this)}/>
         </tr>
         </thead>
         <tbody>
-        {comments.map(
-          (element, index) => {
-            const feedback = feedbackFromStore.get(element.feedback).toJS();
-
-            return (
-              <tr key={index}>
-                {tableFields.comment_id.isShown ?
-                  <TdId>{element.id}</TdId> : null }
-                {tableFields.comment_author.isShown ?
-                  <Td>
-                    <PersonInTable person={people.get(feedback.person)}/>
-                  </Td>
-                  : null }
-                {tableFields.comment_content.isShown &&
-                <Td className="item-title"><a href="#"><SlicedString string={element.content}/></a></Td>}
-                {tableFields.id.isShown ?
-                  <TdId>{feedback.id}</TdId> : null }
-                {tableFields.title.isShown &&
-                  <Td className="item-title"><a href="#"><SlicedString string={feedback.title}/></a></Td>}
-                {tableFields.content.isShown &&
-                  <Td className="item-title"><a href="#"><SlicedString string={feedback.content}/></a></Td> }
-                {tableFields.status_category.isShown ?
-                  <Td>{this.renderStatus(feedback.id)}</Td> : null }
-                {tableFields.hidden_status.isShown ?
-                  <Td>{feedback.hidden_status}</Td> : null }
-                {tableFields.author_name.isShown ?
-                  <Td>
-                    <PersonInTable person={people.get(feedback.person)}/>
-                  </Td>
-                  : null }
-                {tableFields.type.isShown ?
-                  <Td>{feedbackTypes.get(feedback.category_id) ? feedbackTypes.get(feedback.category_id).get('title') : ''}</Td> : null }
-                {tableFields.custom_category.isShown ?
-                  <Td>{this.renderCategory(feedback.id)}</Td> : null }
-                {tableFields.num_ratings.isShown ?
-                  <Td>{feedback.num_ratings}</Td> : null }
-                {tableFields.num_comments.isShown ?
-                  <Td>{this.renderCommentsCounter(feedback.id)}</Td> : null }
-                {tableFields.date_created.isShown ?
-                  <Td>
-                    <div className="dpw--timer"><FormattedRelative value={feedback.date_created}/></div>
-                  </Td> : null }
-              </tr>
-            );
-          }
-        )}
+        {ids.map(id => this.renderRow(id))}
         </tbody>
       </Table>
     );

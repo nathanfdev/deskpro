@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
@@ -46,6 +47,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Class NewTicketController.
+ */
 class NewTicketController extends AbstractController
 {
     /**
@@ -53,6 +57,11 @@ class NewTicketController extends AbstractController
      * @Route("/new-ticket", name="user_tickets_new")
      * @Security("is_granted('USE_TICKETS')")
      * @PageHttpCache()
+     *
+     * @param Request $request
+     * @param string  $visitor_id
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function newTicketAction(Request $request, $visitor_id)
     {
@@ -69,15 +78,15 @@ class NewTicketController extends AbstractController
         $ticket->setLanguage($lang);
 
         // do a one through with the GET request to update our model before starting the "real" form
-        $form = $this->createForm('ticket', $ticket, array(
+        $form = $this->createForm('ticket', $ticket, [
             'person'            => $person,
             'ticket_message'    => $ticket_message,
             'method'            => 'GET',
             'validation_groups' => false,
             'settings'          => $this->getBrandContainer()->getSettings(),
             'action'            => $this->generateUrl('portal_new_ticket'),
-        ));
-        $form->submit($request->query->get('ticket', array()), false);
+        ]);
+        $form->submit($request->query->get('ticket', []), false);
 
         foreach ($ticket_message->getAttachments() as $attachment) {
             if (!$attachment->getBlob()) {
@@ -85,7 +94,7 @@ class NewTicketController extends AbstractController
             }
         }
 
-        $form = $this->createForm('ticket', $ticket, array(
+        $form = $this->createForm('ticket', $ticket, [
             'person'                => $person,
             'ticket_message'        => $ticket_message,
             'settings'              => $this->getBrandContainer()->getSettings(),
@@ -93,7 +102,7 @@ class NewTicketController extends AbstractController
             'attr'                  => ['data-save-draft' => 'new_ticket'],
             'saved_form_subrequest' => $this->isSavedFormSubRequest($request),
             'allow_extra_fields'    => true,
-        ));
+        ]);
         $form->handleRequest($request);
 
         $rerendering = false;
@@ -121,9 +130,11 @@ class NewTicketController extends AbstractController
                             $ticket->setPerson($person);
                             $ticket_message->setPerson($person);
                             foreach ($ticket_message->getAttachments() as $attachment) {
-                                if ($blob = $attachment->getBlob()) {
+                                $blob = $attachment->getBlob();
+                                if ($blob) {
                                     $blob->is_temp = false;
                                 }
+
                                 $attachment->setPerson($person);
                             }
 
@@ -163,16 +174,16 @@ class NewTicketController extends AbstractController
             $this->submitNewTicketAbuseCheck($person, $request->getClientIp());
         }
 
-        $form_full = $this->createForm('ticket', $ticket, array(
+        $form_full = $this->createForm('ticket', $ticket, [
             'person'         => $person,
             'ticket_message' => null,
             'settings'       => $this->getBrandContainer()->getSettings(),
             'full_version'   => true,
             'action'         => $this->generateUrl('portal_new_ticket'),
-        ));
+        ]);
 
         /** @var \Application\DeskPRO\TicketLayout\LayoutCollection $layouts */
-        $layouts           = $this->container->getTicketLayoutManager()->getUserLayouts(true);
+        $layouts           = $this->getContainer()->getTicketLayoutManager()->getUserLayouts(true);
         $ticket_display_js = 'window.DESKPRO_TICKET_DISPLAY = '.$layouts->compileJsObj().';';
 
         //
@@ -184,7 +195,7 @@ class NewTicketController extends AbstractController
         $show_ticket_suggestions = (bool) $this->getBrandSetting('core.show_ticket_suggestions');
 
         return $this->renderThemeView(
-            'Theme:NewTicket:new_ticket.html.twig', array(
+            'Theme:NewTicket:new_ticket.html.twig', [
                 'form'                    => $form->createView(),
                 'form_full'               => $form_full->createView(),
                 'ticket_display_js'       => $ticket_display_js,
@@ -194,10 +205,18 @@ class NewTicketController extends AbstractController
                 'page_title'              => $this->createPageTitle()->newticket(),
                 'form_errors'             => $form->isSubmitted() ? $form->getErrors() : [],
                 'show_ticket_suggestions' => $show_ticket_suggestions,
-            )
+            ]
         );
     }
 
+    /**
+     * @param Ticket        $ticket
+     * @param TicketMessage $ticket_message
+     * @param Person        $person
+     * @param Request       $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     protected function acceptNewTicketForGuest(Ticket $ticket, TicketMessage $ticket_message, Person $person, Request $request)
     {
         // in this case we are authorized to make a person from a guest
@@ -209,15 +228,24 @@ class NewTicketController extends AbstractController
         $ticket->setPerson($person);
         $ticket_message->setPerson($person);
         foreach ($ticket_message->getAttachments() as $attachment) {
-            if ($blob = $attachment->getBlob()) {
+            $blob = $attachment->getBlob();
+            if ($blob) {
                 $blob->is_temp = false;
             }
+
             $attachment->setPerson($person);
         }
 
         return $this->acceptNewTicket($ticket, $person, $request);
     }
 
+    /**
+     * @param Ticket  $ticket
+     * @param Person  $person
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     protected function acceptNewTicket(Ticket $ticket, Person $person, Request $request)
     {
         $this->submitNewTicketAbuseCheck($person, $request->getClientIp());
@@ -230,7 +258,9 @@ class NewTicketController extends AbstractController
         // them a link to setup an account straight away if they want to
         $destination    = $this->getObjectRouter()->getPortalPath($ticket);
         $create_pw_link = null;
-        if ($redirect = $this->get('portal_validation')->getPasswordRedirectIfRequired($person, $request, $destination)) {
+
+        $redirect = $this->get('portal_validation')->getPasswordRedirectIfRequired($person, $request, $destination);
+        if ($redirect) {
             $create_pw_link = $redirect->getTargetUrl();
         }
 
@@ -246,21 +276,31 @@ class NewTicketController extends AbstractController
     /**
      * @Route("/thank-you/verify-email", name="portal_thanks_verify", defaults={"ticket_ref" = null, "do_verify" = true})
      * @Route("/thank-you/{ticket_ref}", name="portal_thanks", defaults={"ticket_ref" = null})
+     *
+     * @param Request $request
+     * @param null    $ticket_ref
+     * @param bool    $do_verify
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function thankYouAction(Request $request, $ticket_ref = null, $do_verify = false)
     {
         $create_pw_link    = $request->get('create_pw_link');
         $is_confirmed_user = $request->get('is_confirmed_user');
 
-        return $this->renderThemeView('Theme:Tickets:thank_you.html.twig', array(
+        return $this->renderThemeView('Theme:Tickets:thank_you.html.twig', [
             'ticket_ref'        => $ticket_ref,
             'page_title'        => $this->createPageTitle()->newticketGuestThankYou(),
             'verify_email'      => $do_verify,
             'create_pw_link'    => $create_pw_link,
             'is_confirmed_user' => $is_confirmed_user,
-        ));
+        ]);
     }
 
+    /**
+     * @param string $person
+     * @param string $ip
+     */
     protected function submitNewTicketAbuseCheck($person, $ip)
     {
         $check = new SubmitTicketAbuseCheck($person, $ip);
@@ -275,6 +315,14 @@ class NewTicketController extends AbstractController
         return $this->getRepo('DeskPRO:Ticket');
     }
 
+    /**
+     * @param Ticket $ticket
+     * @param Person $person
+     *
+     * @throws \Exception
+     *
+     * @return Ticket
+     */
     private function saveNewTicket(Ticket $ticket, Person $person)
     {
         $em = $this->getEm();
@@ -285,7 +333,8 @@ class NewTicketController extends AbstractController
             // allow all blobs for a new ticket
             foreach ($ticket->messages as $message) {
                 foreach ($message->getAttachments() as $attachment) {
-                    if ($blob = $attachment->getBlob()) {
+                    $blob = $attachment->getBlob();
+                    if ($blob) {
                         $blob->is_temp = false;
                     }
                 }

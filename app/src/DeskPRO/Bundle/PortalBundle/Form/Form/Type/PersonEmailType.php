@@ -41,38 +41,50 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
+/**
+ * Class PersonEmailType.
+ */
 class PersonEmailType extends AbstractType
 {
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('email', 'email', array(
+        $builder->add('email', 'email', [
             'label'       => $options['email_label'],
             'required'    => $options['required'],
             'constraints' => $options['email_constraints'],
-        ));
+        ]);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'deskpro_person_email';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class'                 => 'Application\\DeskPRO\\Entity\\PersonEmail',
             'email_label'                => 'Email',
             'email_exists_error_message' => 'portal.account.registration-email-already-exists',
             'constraints'                => function (Options $options) {
-                return array(
-                    new UniqueEntity(array('fields' => 'email', 'message' => $options['email_exists_error_message'], 'errorPath' => 'email')),
-                );
+                return [
+                    new UniqueEntity(['fields' => 'email', 'message' => $options['email_exists_error_message'], 'errorPath' => 'email']),
+                ];
             },
-            'email_constraints' => array(
+            'email_constraints' => [
                 new NotBannedEmail(['message' => 'portal.forms.error_banned_email']),
-                new NotBlank(array('message' => 'portal.forms.error_email_required')),
-                new Email(array('message' => 'portal.forms.error_email_invalid')),
-            ),
-        ));
+                new NotBlank(['message' => 'portal.forms.error_email_required']),
+                new Email(['message' => 'portal.forms.error_email_invalid']),
+            ],
+        ]);
     }
 }

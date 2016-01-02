@@ -1,41 +1,58 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { openWidget } from '../../Actions/dpWindowActions';
-import { chatModeSelector } from '../../Selectors/dpWindow';
-import { chatIdSelector } from '../../../Chat/Selectors/chat';
+import { onlineAgentsCountSelector } from '../../Selectors/agent';
+import { chatModeSelector, widgetHasChatSelector } from '../../Selectors/dpWindow';
+import { chatIdSelector, agentIdSelector, dateEndedSelector } from '../../../Chat/Selectors/chat';
 import history from '../../../../Services/history';
 
 @connect(state => ({
+  widgetHasChat: widgetHasChatSelector(state),
   chatMode: chatModeSelector(state),
-  chatId: chatIdSelector(state)
+  chatId: chatIdSelector(state),
+  agentId: agentIdSelector(state),
+  dateEnded: dateEndedSelector(state),
+  agentsCounts: onlineAgentsCountSelector(state)
 }))
 export class WidgetOpenContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func,
     children: PropTypes.node,
+    widgetHasChat: PropTypes.bool,
     chatId: PropTypes.number,
-    chatMode: PropTypes.string
+    chatMode: PropTypes.string,
+    agentId: PropTypes.number,
+    agentsCounts: PropTypes.number,
+    dateEnded: PropTypes.string
   };
 
   onClick = () => {
-    const { chatId, chatMode, dispatch } = this.props;
+    const { widgetHasChat, agentsCounts, chatId, chatMode, agentId, dateEnded, dispatch } = this.props;
 
-    if (chatId) {
-      history.replace('/chat/active');
-    } else {
-      switch (chatMode) {
-        case 'simple':
-        default:
-          history.replace('/chat/begin/simple');
-          break;
-        case 'conversation':
-          history.replace('/chat/begin/conversation');
-          break;
-        case 'form':
-          history.replace('/chat/begin/form');
-          break;
+    if (widgetHasChat && agentsCounts > 0) {
+      if (chatId) {
+        if (agentId || dateEnded) {
+          history.replace('/chat/active');
+        } else {
+          history.replace('/chat/waiting');
+        }
+      } else {
+        switch (chatMode) {
+          case 'simple':
+          default:
+            history.replace('/chat/begin/simple');
+            break;
+          case 'conversation':
+            history.replace('/chat/begin/conversation');
+            break;
+          case 'form':
+            history.replace('/chat/begin/form');
+            break;
+        }
       }
+    } else {
+      history.replace('/ticket/form');
     }
 
     dispatch(openWidget());

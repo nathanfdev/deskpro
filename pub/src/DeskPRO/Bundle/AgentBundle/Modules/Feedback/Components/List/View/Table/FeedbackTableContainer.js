@@ -1,16 +1,17 @@
 import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
-import { peopleSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackStatusCategoriesSelector, feedbackCategoriesSelector }
-  from '../../../../Selectors/list';
-import { currentListSortSelector, currentListOrderSelector }
-  from '../../../../Selectors/list';
+import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
 import { Table, Th, Td, TdId, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { applyParams } from '../../../../Actions/FeedbackListActions';
-import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
+import { feedbackSelector, peopleSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackStatusCategoriesSelector, feedbackCategoriesSelector }
+  from '../../../../Selectors/recordStores';
+import { currentListSortSelector, currentListOrderSelector }
+  from '../../../../Selectors/list';
 
 import { connect } from 'react-redux';
 @connect(state => ({
-  feedback: state.Feedback.list.get('elements'),
+  ids: state.Feedback.list.get('elements'),
+  feedback: feedbackSelector(state),
   viewFields: state.Feedback.list.get('tableVisibleFields'),
   feedbackTypes: feedbackTypesSelector(state),
   feedbackComments: feedbackCommentsSelector(state),
@@ -25,8 +26,9 @@ export class FeedbackTableContainer extends Component {
 
   static propTypes = {
     intl: intlShape.isRequired,
+    ids: PropTypes.array.isRequired,
     people: PropTypes.object.isRequired,
-    feedback: PropTypes.array.isRequired,
+    feedback: PropTypes.object.isRequired,
     feedbackStatusCategories: PropTypes.object,
     feedbackComments: PropTypes.object.isRequired,
     feedbackCategories: PropTypes.object.isRequired,
@@ -37,22 +39,13 @@ export class FeedbackTableContainer extends Component {
     dispatch: PropTypes.func.isRequired
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      order: '',
-      sort: ''
-    };
-  }
-
   sortTable(param, order) {
     this.props.dispatch(applyParams({ sort: param, order }));
   }
 
-
   isVisible(field) {
     const {viewFields} = this.props;
-    return viewFields.includes(field);
+    return viewFields && viewFields.includes(field);
   }
 
   renderStatus(statusCategory) {
@@ -69,16 +62,51 @@ export class FeedbackTableContainer extends Component {
     }
   }
 
-  renderCommentsCounter(id) {
-    const { feedbackComments } = this.props;
-    if (feedbackComments.get(id)) {
-      return feedbackComments.get(id).get('counter');
-    }
-    return 0;
+  renderRow(id) {
+    const { feedback, people, feedbackTypes } = this.props;
+    const element = feedback.get(id);
+
+    return (
+      <tr key={id}>
+        <TdId visible={this.isVisible('id')}>
+          {element.get('id')}
+        </TdId>
+        <Td className="item-title" visible={this.isVisible('title')}>
+          <a href="#"><SlicedString string={element.get('title')}/></a>
+        </Td>
+        <Td className="item-title" visible={this.isVisible('content')}>
+          <a href="#"><SlicedString string={element.get('content')}/></a>
+        </Td>
+        <Td visible={this.isVisible('status_category')}>
+          {this.renderStatus(element.get('status_category'))}
+        </Td>
+        <Td visible={this.isVisible('hidden_status')}>
+          {element.get('hidden_status')}
+        </Td>
+        <Td visible={this.isVisible('person')}>
+          <PersonInTable person={people.get(element.get('person'))}/>
+        </Td>
+        <Td visible={this.isVisible('type')}>
+          {feedbackTypes.get(element.get('category')).get('title')}
+        </Td>
+        <Td visible={this.isVisible('custom_category')}>
+          {this.renderCategory(element.get('id'))}
+        </Td>
+        <Td visible={this.isVisible('num_ratings')}>
+          {element.get('num_ratings')}
+        </Td>
+        <Td visible={this.isVisible('num_comments')}>
+          {element.get('num_comments')}
+        </Td>
+        <Td visible={this.isVisible('date_created')}>
+          <div className="dpw--timer"><FormattedRelative value={element.get('date_created')}/></div>
+        </Td>
+      </tr>
+    );
   }
 
   render() {
-    const { feedback, people, feedbackTypes, currentSort, currentOrder } = this.props;
+    const { ids, currentSort, currentOrder } = this.props;
 
     return (
       <Table>
@@ -129,43 +157,7 @@ export class FeedbackTableContainer extends Component {
         </tr>
         </thead>
         <tbody>
-        {feedback.map((element, index) =>
-            <tr key={index}>
-              <TdId visible={this.isVisible('id')}>
-                {element.id}
-              </TdId>
-              <Td className="item-title" visible={this.isVisible('title')}>
-                <a href="#"><SlicedString string={element.title}/></a>
-              </Td>
-              <Td className="item-title" visible={this.isVisible('content')}>
-                <a href="#"><SlicedString string={element.content}/></a>
-              </Td>
-              <Td visible={this.isVisible('status_category')}>
-                {this.renderStatus(element.status_category)}
-              </Td>
-              <Td visible={this.isVisible('hidden_status')}>
-                {element.hidden_status}
-              </Td>
-              <Td visible={this.isVisible('person')}>
-                <PersonInTable person={people.get(element.person)}/>
-              </Td>
-              <Td visible={this.isVisible('type')}>
-                {feedbackTypes.get(element.category_id).get('title')}
-              </Td>
-              <Td visible={this.isVisible('custom_category')}>
-                {this.renderCategory(element.id)}
-              </Td>
-              <Td visible={this.isVisible('num_ratings')}>
-                {element.num_ratings}
-              </Td>
-              <Td visible={this.isVisible('num_comments')}>
-                {this.renderCommentsCounter(element.id)}
-              </Td>
-              <Td visible={this.isVisible('date_created')}>
-                <div className="dpw--timer"><FormattedRelative value={element.date_created}/></div>
-              </Td>
-            </tr>
-        )}
+        {ids.map(id => this.renderRow(id))}
         </tbody>
       </Table>
     );

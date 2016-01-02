@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
-import { Card, CardLine, CardLineLeft, CardLineRight, CardLineFull, CardContentText, CardLineItem, CardCheckbox, CardDisc, CardTitle, CardUser }
+import { Card, CardLine, CardLineLeft, CardLineRight, CardLineFull, CardContentText, CardLineItem, CardCheckbox, CardDisc, CardTitle, CardUser, CardLabel }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
 import jQuery from 'jquery';
 import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
@@ -17,6 +17,19 @@ export class ContentCard extends Component {
     toggleSelected: PropTypes.func.isRequired
   };
 
+  renderLabels() {
+    const labels = this.props.element.get('labels');
+    if (labels.size) {
+      return (
+        <CardLine>
+          <CardLineItem>
+            <i className="fa fa-tags"></i> {labels.map((label, index)=> <CardLabel key={index} label={label}/>)}
+          </CardLineItem>
+        </CardLine>
+      );
+    }
+  }
+
   render() {
     const { element, author, lastRevisionAuthor, toggleSelected, selected } = this.props;
     const containerWidth = jQuery('.dp-list-frame-contents').innerWidth();
@@ -26,13 +39,13 @@ export class ContentCard extends Component {
     return (
       <Card type="article" width={cardWidth}>
 
-        <ArticleCardMark numRatings={element.num_ratings}/>
+        <ArticleCardMark numRatings={element.get('num_ratings')}/>
 
-        <CardCheckbox selected={selected} onClick={toggleSelected(element.id)}/>
+        <CardCheckbox selected={selected} onClick={toggleSelected(element.get('id'))}/>
 
         <CardLine>
           <CardLineLeft>
-            <CardTitle content={element.title}/>
+            <CardTitle content={element.get('title')}/>
           </CardLineLeft>
           <CardLineRight>
             <CardUser user={author}/>
@@ -42,30 +55,32 @@ export class ContentCard extends Component {
         <CardLine>
           <CardLineFull>
             <CardContentText>
-              <p><SlicedString string={element.content} length={255}/></p>
+              <p><SlicedString string={element.get('content')} length={255}/></p>
             </CardContentText>
           </CardLineFull>
         </CardLine>
 
+        {this.renderLabels()}
+
         <CardLine>
           <CardLineLeft>
-            <CardLineItem>{element.status}</CardLineItem>
+            <CardLineItem>{element.get('status')}</CardLineItem>
             {
-              element.revisions.length > 0 &&
+              element.get('revisions').size > 0 &&
               <CardLineItem>
                 <CardDisc/>
                 <CardUser user={lastRevisionAuthor}/>
                 <CardDisc/>
-                <FormattedRelative value={element.date_updated}/>
+                <FormattedRelative value={element.get('date_updated')}/>
                 <CardDisc/>
               </CardLineItem>
             }
           </CardLineLeft>
           <CardLineRight>
-            <CardLineItem icon="fa-thumbs-up">{element.vote_stats.up}</CardLineItem>
-            <CardLineItem icon="fa-thumbs-down">{element.vote_stats.down}</CardLineItem>
-            <CardLineItem icon="fa-comments-o">{element.num_comments}</CardLineItem>
-            <CardLineItem icon="fa-eye">{element.view_count}</CardLineItem>
+            <CardLineItem icon="fa-thumbs-up">{element.get('vote_stats').get('up')}</CardLineItem>
+            <CardLineItem icon="fa-thumbs-down">{element.get('vote_stats').get('down')}</CardLineItem>
+            <CardLineItem icon="fa-comments-o">{element.get('num_comments')}</CardLineItem>
+            <CardLineItem icon="fa-eye">{element.get('view_count')}</CardLineItem>
           </CardLineRight>
         </CardLine>
       </Card>

@@ -76,7 +76,8 @@ div.dpdesignportal-chat-header .dpdesignportal-agent-state-info {
   width: 340px;
   top: 55px;
   bottom: 0;
-  overflow: hidden;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .dpdesignportal-chat-header-wrapper {
@@ -93,6 +94,7 @@ div.dpdesignportal-chat-header {
   position: relative;
   padding-bottom: 20px;
   margin: 10px 5px 0;
+  height: 92px;
 
   h1 {
     margin-bottom: 3px;

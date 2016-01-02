@@ -1,52 +1,46 @@
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../Actions/crmNavActions';
-import { agentTeamNamesSelector }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
-import { userGroupNamesSelector }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Selectors/userGroupsSelectors';
 import { Nav } from './Nav';
 
-@connect(state => Object.assign({},
-  state.CrmNav,
-  {teamNames: agentTeamNamesSelector(state)},
-  {groupNames: userGroupNamesSelector(state)},
-  {dpWindow: state.Application.dpWindow}
-))
-export class NavContainer extends React.Component {
+@connect(state => {
+  return {
+    loaded: state.CRM.nav.getIn(['async', 'done']),
+    dpWindow: state.Application.dpWindow,
+    users: state.CRM.nav.get('users'),
+    organizations: state.CRM.nav.get('organizations'),
+    agents: state.CRM.nav.get('agents'),
+    labels: state.CRM.nav.get('labels')
+  };
+})
+export class NavContainer extends Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    dpWindow: PropTypes.object.isRequired
+    loaded: PropTypes.bool.isRequired,
+    dpWindow: PropTypes.object.isRequired,
+    users: PropTypes.object.isRequired,
+    organizations: PropTypes.object.isRequired,
+    agents: PropTypes.object.isRequired,
+    labels: PropTypes.object.isRequired
   };
 
-  constructor(props) {
-    super(props);
+  componentDidMount() {
     const { dispatch } = this.props;
-
-    dispatch(actions.loadUsersTotalCount());
-    dispatch(actions.loadGroupsCounts());
-    dispatch(actions.loadOrganizationsTotalCount());
-    dispatch(actions.loadAgentsTotalCount());
-    dispatch(actions.loadTeamsCounts());
-    dispatch(actions.loadPersonLabels());
-    dispatch(actions.loadOrganizationLabels());
+    dispatch(actions.initialLoad());
   }
 
   render() {
-    const {labels, users, organizations, agents, groupNames, teamNames, dpWindow, dispatch} = this.props;
+    const {loaded, labels, users, organizations, agents, dpWindow, dispatch} = this.props;
 
     return (
-      <Nav
-          labels={labels}
-          users={users}
-          organizations={organizations}
-          agents={agents}
-          groupNames={groupNames}
-          teamNames={teamNames}
-          dispatch={dispatch}
-          dpWindow={dpWindow}
-      />
+      <Nav loaded={loaded}
+           labels={labels}
+           users={users}
+           organizations={organizations}
+           agents={agents}
+           dispatch={dispatch}
+           dpWindow={dpWindow}/>
     );
   }
 }

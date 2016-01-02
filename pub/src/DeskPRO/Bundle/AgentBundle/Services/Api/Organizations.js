@@ -1,9 +1,7 @@
-import DpApi from "../DpApi";
+import DpApi from '../DpApi';
+import { compileParams } from '../ApiHelpers';
 
-/**
- * Get organizations total count
- * @return Promise
- */
-export function loadCount() {
-  return DpApi.sendGet('DP_API/organizations/counts');
+export function load(options) {
+  console.log('DP_API/organizations?' + compileParams(options));
+  return DpApi.sendGet('DP_API/organizations?' + compileParams(options));
 }

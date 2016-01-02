@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -59,6 +60,30 @@ class BlobStorage extends \Application\DeskPRO\Domain\DomainObject
      * @var string
      */
     protected $data;
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getBlobId()
+    {
+        return $this->blob_id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
 
     ############################################################################
     # Doctrine Metadata

@@ -34,6 +34,8 @@ $fa-font-path: "../../../../../../node_modules/font-awesome/fonts";
 @import "preemptive-chat/preemptive-chat";
 @import "chat/collect-user-info";
 
+@import "dpx";
+@import "datetime";
 @import "tickets/ticket";
 @import "tickets/ticket-list";
 
@@ -51,7 +53,7 @@ html, body {
   position: absolute;
 }
 
-.dpdesignportal-button, .dpdesignportal a.dpdesignportal-button, .dpdesignportal .dpdesignportal-button {// Base buttons
+.dpdesignportal-button, .dpdesignportal a.dpdesignportal-button, .dpdesignportal .dpdesignportal-button, .dpdesignportal-open-new-ticket button[type=submit] {// Base buttons
   text-decoration: none;
   display: inline-block;
   line-height: 1.3em;

@@ -1,6 +1,5 @@
-import $ from "jquery";
-import MediumEditor from "medium-editor";
-import PageWidget from "DeskPRO/Component/PageWidget/PageWidget";
+import MediumEditor from 'medium-editor';
+import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
 
 /**
  * A DpxRte takes three fields:
@@ -16,7 +15,10 @@ export default class DpxRte extends PageWidget {
   renderWidget() {
     const $textTextarea = this.$element.find('textarea[data-rte-field="text"]');
     const $htmlTextarea = this.$element.find('textarea[data-rte-field="html"]');
-    const $format       = this.$element.find('input[data-rte-field="format"]');
+    const $format = this.$element.find('input[data-rte-field="format"]');
+
+    const ownerDocument = this.$element.context.ownerDocument;
+    const contentWindow = ownerDocument.defaultView;
 
     $htmlTextarea.wrap('<div class="dp-medium-rte-wrapper as-dpui" />');
     const $wrap = $htmlTextarea.parent();
@@ -26,6 +28,8 @@ export default class DpxRte extends PageWidget {
     $textTextarea.hide();
 
     const editor = new MediumEditor($htmlTextarea.get(0), {
+      contentWindow: contentWindow,
+      ownerDocument: ownerDocument,
       toolbar: {
         buttons: ['bold', 'italic', 'underline', 'anchor', 'unorderedlist', 'orderedlist', 'quote', 'pre', 'removeFormat'],
         static: true,

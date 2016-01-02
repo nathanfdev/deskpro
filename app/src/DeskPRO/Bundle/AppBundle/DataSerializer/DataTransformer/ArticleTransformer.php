@@ -75,6 +75,7 @@ class ArticleTransformer extends AbstractDataSerializerTransformer
         return [
             'last_author_id' => $lastAuthorId,
             'vote_stats'     => $article->getVoteStats(),
+            'labels'         => $article->getLabelsArray(),
         ];
     }
 }

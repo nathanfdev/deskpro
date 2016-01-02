@@ -35,6 +35,8 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
 use Application\DeskPRO\Entity\Organization;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
+use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
+use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Route;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -47,8 +49,17 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class OrganizationsController extends CrudController
 {
-    public static $exposeOnly = ['list', 'get'];
-    public static $entity     = Organization::class;
+    public static $exposeOnly  = ['list', 'get'];
+    public static $entity      = Organization::class;
+    public static $sortOptions = [
+        'date_created' => 'date_created',
+        'id'           => 'id',
+        'name'         => 'name',
+        'summary'      => 'summary',
+        'importance'   => 'importance',
+    ];
+    public static $listSort  = 'date_created';
+    public static $listOrder = 'desc';
 
     /**
      * @ApiDoc(
@@ -62,5 +73,17 @@ class OrganizationsController extends CrudController
     public function getTicketsAction(Request $request, $id)
     {
         return TicketsController::subRequestSearch($this->get('kernel'), $request, ['organization' => $id]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
+    {
+        if ($period = $request->get('period_created')) {
+            $datePeriodCaseWhen = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_created");
+            $qb->andWhere("$datePeriodCaseWhen = :period_created");
+            $qb->setParameter('period_created', $period);
+        }
     }
 }

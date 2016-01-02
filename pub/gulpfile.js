@@ -253,7 +253,8 @@ function getWebpackConfig(mode, isDevServer, isProd) {
         'invariant': 'fbjs/lib/invariant',
         'warning': 'fbjs/lib/warning',
         'jquery.ui': 'jquery-ui',
-        'jquery.ui.widget': 'jquery.ui.widget/jquery.ui.widget'
+        'jquery.ui.widget': 'jquery.ui.widget/jquery.ui.widget',
+        'jquery.serializejson': 'jquery-serializejson/jquery.serializejson'
       }
     },
     resolveLoader: {

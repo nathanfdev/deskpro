@@ -1,12 +1,16 @@
 import { createReducer } from 'Ampliflux';
 import * as actions from '../Actions/bootstrapActions';
-import { setValue, async } from 'Ampliflux/reducers/handlers';
+import { setValue, setFullPayload, async } from 'Ampliflux/reducers/handlers';
 
 const initialState = {
+  sessionCode: null,
   loaded: false
 };
 
 export default createReducer(initialState, {
+  [actions.getSession]: async({
+    success: setFullPayload('sessionCode')
+  }),
   [actions.bootstrapWidget]: async({
     done: setValue('loaded', true)
   })

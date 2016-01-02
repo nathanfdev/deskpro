@@ -1,0 +1,603 @@
+$main-color: #3575bd;
+$main-color-light: lighten(#3575bd, 45%);
+
+$page-background: #fff;
+
+$text-color: #606060;
+$text-color-lighter: lighten($text-color, 15%);
+$text-opacue: 0.5;
+
+$form-border-color: #c0c0c0;
+$form-padding-vertical: 8px;
+$form-padding-horizontal: 1em;
+$form-input: lighten($page-background, 5%);
+
+$button-text: $page-background;
+$button-color: $main-color;
+
+$zindex-very-top: 5000;
+$universal-left-padding: 10px;
+$grey: #e6e6e6;
+
+.dp-react-widget {
+  display: inline !important;
+}
+
+.multiselect {
+  position: relative;
+  margin-bottom: 10px;
+  cursor: pointer;
+  background: #ffffff;
+
+  .default {
+    border: 1px solid $form-border-color;
+    border-radius: 2px;
+    width: 100%;
+    display: block;
+    padding: $form-padding-vertical $form-padding-horizontal;
+    background: #ffffff;
+    line-height: normal;
+    position: relative;
+
+    .filter-box {
+      width: 60%;
+      input {
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        line-height: 100%;
+        border: none !important;
+        background: transparent;
+        outline: none;
+        box-shadow: none;
+        font-size: 12px;
+
+        &:focus {
+          border: none;
+          background: transparent;
+          outline: none;
+          box-shadow: none;
+        }
+
+        @include placeholder {
+          font-size: 12px;
+          font-weight: normal;
+          line-height: normal;
+        }
+      }
+    }
+
+    &.expanded {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      &:hover {
+        color: $button-text;
+        border: 1px solid $form-border-color;
+        background: #ffffff;
+      }
+    }
+
+    &:focus {
+      outline: none;
+      border: 1px solid $button-color;
+    }
+
+    i[class^='fa-caret'], i[class*=' fa-caret'] {
+      position: absolute;
+      top: 11px;
+      right: 15px;
+    }
+
+    i[class^='fa-times'], i[class*=' fa-times'] {
+      padding: 10px;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      right: 0;
+      &:hover {
+        background: $main-color-light;
+        color: #444;
+      }
+      z-index: 99;
+    }
+  }
+
+  &.level-1 {
+
+    display: block;
+    width: 100%;
+    background: #ffffff;
+
+    .options-wrapper {
+      position: absolute;
+      right: 0;
+      left: 0;
+      z-index: $zindex-very-top;
+      display: block;
+    }
+
+    ul {
+      @include blank-list;
+      width: 100%;
+      border: 1px solid $form-border-color;
+      max-height: 300px;
+      overflow-y: auto;
+      margin: -1px 0 0 0;
+      background: #ffffff;
+
+      border-bottom-left-radius: 2px;
+      border-bottom-right-radius: 2px;
+
+      a {
+        display: block;
+        width: 100%;
+        padding: 5px $universal-left-padding;
+        background: $form-input;
+        color: $text-color;
+        text-decoration: none;
+
+        &:hover, &.active {
+          background: lighten($main-color-light, 3%);
+          color: #444;
+          .checkbox {
+            color: #444;
+            background: rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+          }
+        }
+        &.active {
+          background: $main-color-light;
+          color: #444;
+          .checkbox {
+            color: #444;
+            background: rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+          }
+        }
+      }
+
+      li {
+        position: relative;
+
+        &:focus, &.focused {
+          outline: none;
+          a {
+            background: lighten($main-color-light, 3%);
+            color: #444;
+            .checkbox {
+              color: #444;
+              background: rgba(0, 0, 0, 0.1);
+              border: 1px solid rgba(0, 0, 0, 0.1);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &.level-2 {
+    @extend .level-1;
+    margin-top: 10px;
+    margin-left: 30px;
+    padding-right: 30px;
+    .options-wrapper {
+      padding-right: 30px;
+    }
+
+    &:before {
+      position: absolute;
+      top: 0;
+      left: -20px;
+      display: block;
+      width: 10px;
+      height: 20px;
+      border: 1px dotted $text-color-lighter;
+      border-top: none;
+      border-right: none;
+      content: " ";
+    }
+  }
+
+  &.level-3 {
+    @extend .level-1;
+    @extend .level-2;
+    margin-left: 60px;
+    padding-right: 60px;
+  }
+
+  &.level-4 {
+    @extend .level-1;
+    @extend .level-2;
+    margin-left: 90px;
+    padding-right: 90px;
+  }
+
+  &.level-5 {
+    @extend .level-1;
+    @extend .level-2;
+    margin-left: 120px;
+    padding-right: 120px;
+  }
+
+  &.level-6 {
+    @extend .level-1;
+    @extend .level-2;
+    margin-left: 120px;
+    padding-right: 120px;
+  }
+
+  &.level-7 {
+    @extend .level-1;
+    @extend .level-2;
+    margin-left: 120px;
+    padding-right: 120px;
+  }
+
+  &.level-8 {
+    @extend .level-1;
+    @extend .level-2;
+    margin-left: 120px;
+    padding-right: 120px;
+  }
+
+  &.level-9 {
+    @extend .level-1;
+    @extend .level-2;
+    margin-left: 120px;
+    padding-right: 120px;
+  }
+
+  &.level-10 {
+    @extend .level-1;
+    @extend .level-2;
+    margin-left: 120px;
+    padding-right: 120px;
+  }
+}
+.checkbox-container {
+  display: inline-block;
+  min-width: 90px;
+  margin: 0 10px 0 0;
+  cursor: pointer;
+  font-size: 0.9em;
+
+  &:focus {
+    outline: 1px dotted #aaa;
+  }
+
+  &:focus.no-focus-border {
+    outline: none;
+  }
+}
+
+.radio-button {
+  position: relative;
+  display: inline-block;
+  min-width: 125px;
+  margin: 0 10px 0 0;
+
+  &:focus {
+    outline: none;
+    label {
+      outline: 1px dotted #aaa;
+    }
+  }
+
+  &:focus.no-focus-border label {
+    outline: none;
+  }
+
+  input[type="radio"] {
+    display: none;
+    border: 1px solid $button-color;
+
+    &:checked + label {
+      &:before {
+        background: $button-color;
+        border: 1px solid $button-color;
+      }
+      &:after {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        display: block;
+        float: left;
+        margin-right: 3px;
+        width: 7px;
+        height: 7px;
+        border: 1px solid #fff;
+        border-radius: 16px;
+        background-color: #fff;
+        content: "";
+      }
+    }
+  }
+
+  label, label.title {
+    position: relative;
+    cursor: pointer;
+    font-size: 0.9em;
+    line-height: 18px;
+    &.title {
+      padding-left: 0;
+    }
+
+    &:before {
+      display: block;
+      float: left;
+      margin-right: 6px;
+      width: 17px;
+      height: 17px;
+      line-height: 1.3em;
+      border: 1px solid $form-border-color;
+      background: #f0f0f0;
+      border-radius: 24px;
+      content: "";
+    }
+  }
+}
+
+.checkbox {
+  background: #f0f0f0;
+  border: 1px solid #c7c7c7;
+  display: inline-block;
+  width: 17px;
+  height: 17px;
+  line-height: 1.3em;
+  border-radius: 2px;
+  vertical-align: middle;
+  text-align: center;
+  margin-top: -3px;
+  margin-right: 6px;
+  color: #333;
+  cursor: pointer;
+
+  i {
+    padding-top: 3px;
+    line-height: 1.1em;
+    font-size: 9px;
+    opacity: 0;
+    position: relative;
+    top: -1px;
+    color: inherit;
+  }
+
+  &:hover i {
+    opacity: 0.2;
+  }
+
+  &.checked {
+    background: #3575bd;
+    border: 1px solid #3575bd;
+    color: #fff;
+    i {
+      opacity: 1;
+    }
+  }
+}
+
+.new-ticket-attachements {
+  cursor: pointer;
+  margin-top: 10px;
+
+  .title {
+    margin-top: 10px;
+    margin-bottom: 0;
+  }
+
+  ul {
+    @include blank-list;
+    margin-bottom: 20px;
+
+    li {
+      position: relative;
+      font-size: 0.9em;
+      padding-left: 10px;
+      i {
+        margin-right: 4px;
+      }
+    }
+
+    a {
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .file-size {
+      margin-left: 3px;
+      font-size: 0.9em;
+      opacity: $text-opacue;
+    }
+  }
+}
+
+.attach-file {
+  background: #ebf2f5;
+  border: 1px solid #dce4e7;
+  padding: 5px;
+  font-size: 11.5px;
+  line-height: 1.2em;
+  display: inline-block;
+  transition: all 0.3s ease;
+
+  @media screen and (max-width: 760px) {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+
+  &:hover {
+    background: #e5ebed;
+    .fake-button {
+      background: #afbbc9;
+    }
+  }
+
+  i {
+    color: #c5cbce;
+    font-size: 14px;
+    margin-right: 7px;
+    margin-left: 7px;
+    position: relative;
+    top: 2px;
+  }
+
+  .text {
+    position: relative;
+    top: 1px;
+  }
+
+  .fake-button {
+    background: #b9c6d5;
+    color: #51575f;
+    padding: 7px 50px;
+    margin-left: 10px;
+    display: inline-block;
+    vertical-align: middle;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    @media screen and (max-width: 760px) {
+      margin: 10px 0 0;
+      width: 100%;
+      display: block;
+
+    }
+  }
+
+  div.frame {
+    display: inline-block;
+    padding: 5px;
+    border-radius: 1px;
+    background: $text-color-lighter;
+    color: $grey;
+    font-size: 0.9em;
+    line-height: 1em;
+    margin-right: 5px;
+    text-align: center;
+    span {
+      color: #ffffff;
+      display: block;
+      white-space: nowrap;
+    }
+    .caption {
+      margin-top: 10px;
+      display: block;
+      clear: both;
+    }
+    img {
+      margin: auto auto 10px;
+      text-align: center;
+      display: block;
+      clear: both;
+    }
+  }
+
+  div.previews {
+    display: block;
+  }
+
+  span {
+    color: $text-color-lighter;
+    font-weight: normal;
+    text-decoration: none;
+  }
+
+  color: $text-color;
+  text-decoration: none;
+  margin-bottom: 0;
+  cursor: pointer;
+}
+
+.dp-medium-rte-wrapper {
+  position: relative;
+
+  .dp-medium-rte {
+    min-height: 125px;
+    padding-top: 38px; // padding to make room for the fixed toolbar
+
+    &.medium-editor-placeholder:after {
+      padding: 0.75em 1em;
+    }
+  }
+
+  .medium-editor-toolbar {
+    visibility: visible;
+    background: #fff;
+    border: none;
+    border-bottom: 1px solid #dedede;
+    border-radius: 0;
+    box-shadow: none;
+
+    top: 1px;
+    right: 1px;
+    left: 1px;
+
+    &.medium-editor-toolbar-active {
+      button {
+        color: #777;
+      }
+    }
+
+    button {
+      background: transparent;
+      border-radius: 0;
+      border: none;
+      box-shadow: none;
+      color: #aaa;
+      padding: 8px;
+      height: 30px;
+      min-width: 30px;
+      line-height: 15px;
+      text-shadow: none;
+
+      &:hover, &.medium-editor-button-active {
+        color: #444;
+        background: transparent;
+      }
+    }
+  }
+
+  .medium-editor-toolbar-form {
+    background: #fff;
+    border: none;
+    border-bottom: 1px solid #dedede;
+    border-radius: 0;
+    box-shadow: none;
+
+    .medium-editor-toolbar-input {
+      background: transparent;
+      height: 30px;
+      color: #444;
+    }
+
+    a {
+      color: #777;
+    }
+  }
+}
+
+.dp-medium-rte {
+  background-color: #fff;
+  outline: none;
+}
+
+.medium-editor-hidden {
+  display: none !important;
+}
+
+// Hide 'add attachments' submit button when js-capable
+.deskpro-form-widget.field_more_attachments {
+  display: none;
+}
+
+.column-full {
+  position: relative;
+}
+
+.xdsoft_datetimepicker {
+  position: absolute;
+  left: 0 !important;
+  top: 70px !important;
+}

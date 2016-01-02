@@ -349,9 +349,6 @@ class FeedbackDataService extends AbstractDataService
         if (!$criteria->hasGroupBy()) {
             return $this->countFlat($criteria);
         }
-        if ($criteria->getGroupBy() === 'status_category') {
-            return $this->countStatusGrouped($criteria);
-        }
 
         return $this->countGrouped($criteria);
     }
@@ -403,48 +400,7 @@ class FeedbackDataService extends AbstractDataService
         }
         foreach ($result as $group) {
             $count->add($group['value']);
-            $count->addNested($group['value'], $group['group_name'], $criteria->getGroupBy(), $group['group_name']);
-        }
-
-        return $count;
-    }
-
-    /**
-     * We need this weird method for select all status categories of whether the feedback associated with them.
-     *
-     * @param FeedbackCountCriteria $criteria
-     *
-     * @throws \LogicException
-     *
-     * @return Count
-     */
-    private function countStatusGrouped(FeedbackCountCriteria $criteria)
-    {
-        $qb      = $this->em->createQueryBuilder();
-        $filters = $criteria->getFilters();
-        $type    = $filters['status'];
-        $qb
-            ->select('COUNT(feedback.id) as value', 'status.title as group_name')
-            ->from('DeskPRO:FeedbackStatusCategory', 'status')
-            ->leftJoin(
-                'DeskPRO:Feedback',
-                'feedback',
-                Join::WITH,
-                'feedback.status_category = status.id'
-            )
-            ->andWhere('status.status_type = :type')
-            ->setParameter('type', $type)
-            ->groupBy('status.id');
-
-        $result = $qb->getQuery()->getArrayResult();
-
-        $count = Count::fromGroupedBy($criteria->getGroupBy());
-        $count->setId($type);
-        $count->setTitle($type);
-
-        foreach ($result as $group) {
-            $count->add($group['value']);
-            $count->addNested($group['value'], $group['group_name'], $criteria->getGroupBy(), $group['group_name']);
+            $count->addNested($group['value'], $group['id'], $criteria->getGroupBy(), $group['group_name']);
         }
 
         return $count;

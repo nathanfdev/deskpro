@@ -6,7 +6,7 @@
   }
 }
 
-.dpdesignportal form.dpdesignportal-form, form.dpdesignportal-form {
+.dpdesignportal-form, {
   text-align: left;
   margin-top: 30px;
   padding-bottom: 5px;
@@ -38,7 +38,7 @@
   }
   .inline-form-item + .inline-form-item { margin-top: 5px;}
 
-  .error {
+  .error-field {
     input {
       border: 1px solid #ff0000 !important;
     }
@@ -93,7 +93,9 @@
     &:hover { border: 1px solid #cecece;}
   }
 
-  [type="text"] { @extend %dpdesignportal-form-item-base; }
+  [type="text"], [type="email"] {
+    @extend %dpdesignportal-form-item-base;
+  }
 
   .dpdesignportal-form-item-dropdown {
     @extend %dpdesignportal-form-item-base;

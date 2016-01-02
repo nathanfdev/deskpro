@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { NavFrame, NavFrameHeader, NavFrameBody, TabsPaneStatefulContainer, Tab, LabelsDictionary }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import { Pending } from './Pending';
 import { StatusTab } from './StatusTab';
 import { TypeTab } from './TypeTab';
@@ -17,8 +18,8 @@ export class Nav extends Component {
     dispatch: PropTypes.func.isRequired,
     statuses: PropTypes.object.isRequired,
     labels: PropTypes.object.isRequired,
-    types: PropTypes.object.isRequired,
-    customCategories: PropTypes.object.isRequired,
+    types: PropTypes.object,
+    categories: PropTypes.object,
     toValidateCount: PropTypes.object.isRequired,
     commentsToReviewCount: PropTypes.object.isRequired,
     dpWindow: PropTypes.object.isRequired
@@ -30,7 +31,7 @@ export class Nav extends Component {
   };
 
   render() {
-    const { labels, loaded, types, toValidateCount, commentsToReviewCount, statuses, customCategories, dispatch, dpWindow } = this.props;
+    const { labels, loaded, types, toValidateCount, commentsToReviewCount, statuses, categories, dispatch, dpWindow } = this.props;
     const currentApp = dpWindow.get('activeAppId');
 
     return (
@@ -41,23 +42,24 @@ export class Nav extends Component {
         <NavFrameBody>
           <Pending loaded={loaded}
                    toValidateCount={toValidateCount}
-                   commentsToReviewCount={commentsToReviewCount}
-            />
+                   commentsToReviewCount={commentsToReviewCount}/>
 
           <TabsPaneStatefulContainer id="tab">
-              <Tab title={this.props.intl.formatMessage({id: 'feedback.nav.tabs.status'})}>
-                <StatusTab statuses={statuses} loaded={loaded}/>
-              </Tab>
+            <Tab title={this.props.intl.formatMessage({id: 'feedback.nav.tabs.status'})}>
+              <StatusTab statuses={statuses} loaded={loaded}/>
+            </Tab>
 
-              <Tab title="Labels">
+            <Tab title="Labels">
+              <LoadIndicator loaded={loaded}>
                 <LabelsDictionary labels={labels} onClick={this.onLabelClick}/>
-              </Tab>
-              <Tab title="Type">
-                <TypeTab types={types} loaded={loaded}/>
-              </Tab>
-              <Tab title="Category">
-                <CategoryTab customCategories={customCategories} loaded={loaded}/>
-              </Tab>
+              </LoadIndicator>
+            </Tab>
+            <Tab title="Type">
+              <TypeTab types={types} loaded={loaded}/>
+            </Tab>
+            <Tab title="Category">
+              <CategoryTab categories={categories} loaded={loaded}/>
+            </Tab>
           </TabsPaneStatefulContainer>
         </NavFrameBody>
       </NavFrame>

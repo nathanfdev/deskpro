@@ -1,6 +1,6 @@
 import React from 'react';
 import { Header } from '../Begin/Header';
-import { WaitingPreview } from './WaitingPreview';
+import { ChatWaitingContainer } from './ChatWaitingContainer';
 
 export class ChatWaiting extends React.Component {
 
@@ -8,7 +8,7 @@ export class ChatWaiting extends React.Component {
     return (
       <div>
         <Header />
-        <WaitingPreview />
+        <ChatWaitingContainer />
       </div>
     );
   }

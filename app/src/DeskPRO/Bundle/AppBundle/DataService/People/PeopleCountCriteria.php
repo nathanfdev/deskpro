@@ -29,17 +29,30 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\People;
 
 use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\Groupable;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupableCriteriaInterface;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class PeopleCountCriteria.
  */
-class PeopleCountCriteria extends Criteria
+class PeopleCountCriteria extends Criteria implements GroupableCriteriaInterface
 {
+    use Groupable;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getGroupByAllowedValues()
+    {
+        return ['user_group', 'agent_team'];
+    }
+
     /**
      * @param QueryBuilder $qb
      */
@@ -51,11 +64,42 @@ class PeopleCountCriteria extends Criteria
             switch ($field) {
                 case 'is_agent':
                 case 'is_deleted':
-                    $qb->andWhere($qb->expr()->eq("$alias.$field", ":$field"));
-                    $qb->setParameter($field, $value);
+                    $qb
+                        ->andWhere($qb->expr()->eq("$alias.$field", ":$field"))
+                        ->setParameter($field, $value);
+                    break;
+                case 'user_group':
+                    $qb
+                        ->innerJoin("$alias.usergroups", 'ug')
+                        ->andWhere('ug.id = :id')
+                        ->setParameter('id', $value);
                     break;
             }
         }
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     *
+     * @throws \LogicException
+     */
+    public function applyGroupBy(QueryBuilder $qb)
+    {
+        $alias = $qb->getRootAliases()[0];
+        if ($this->group_by === 'user_group') {
+            $qb
+                ->leftJoin("$alias.usergroups", 'groups')
+                ->addSelect('groups.title as title')
+                ->addSelect('groups.id as group_name')/*->andWhere('groups.is_agent_group = false')
+                ->andWhere('groups.is_enabled = true')*/
+            ;
+        } elseif ($this->group_by === 'agent_team') {
+            $qb
+                ->leftJoin("$alias.teams", 'teams')
+                ->addSelect('teams.name as title')
+                ->addSelect('teams.id as group_name');
+        }
+        $qb->groupBy('group_name');
     }
 
     /**
@@ -63,8 +107,21 @@ class PeopleCountCriteria extends Criteria
      */
     public static function configureResolver(OptionsResolver $resolver, array $data = [])
     {
-        $resolver->setDefined(['is_agent', 'is_deleted']);
+        $resolver->setDefined(['is_agent', 'is_deleted', 'user_group']);
         $resolver->setAllowedValues('is_agent', ['0', '1']);
         $resolver->setAllowedValues('is_deleted', ['0', '1']);
+        $resolver->setAllowedValues(
+            'user_group',
+            function ($value) {
+                is_array($value) or $value = [$value];
+                foreach ($value as $categoryId) {
+                    if (!is_int($categoryId) && !ctype_digit($categoryId)) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        );
     }
 }

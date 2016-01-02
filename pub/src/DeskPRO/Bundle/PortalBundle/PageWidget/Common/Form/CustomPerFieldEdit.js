@@ -1,6 +1,6 @@
-import $ from "jquery"
-import PageWidget from "DeskPRO/Component/PageWidget/PageWidget"
-import PortalHttp from "DeskPRO/Bundle/PortalBundle/Http/PortalHttp"
+import $ from 'jquery';
+import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
+import PortalHttp from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 
 let id_incrementer = 1;
 

@@ -6,9 +6,7 @@ import { AppContainer } from './Modules/Application/Components/AppContainer';
 import $ from 'jquery';
 import store from './Services/store';
 import { bootstrapWidget } from './Modules/Application/Actions/bootstrapActions';
-
-// don't remove, it uses
-import style from './Resources/style/widget-style.scss';
+import './Resources/style/widget-style.scss';
 
 export default class WidgetApp {
 

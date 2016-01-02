@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Designer;
 
+use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Bundle\TwigBundle\Extension\AssetsExtension;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -73,8 +74,16 @@ class PortalCssTwigExtension extends \Twig_Extension
      */
     public function getPortalCssUrl()
     {
-        if ($blob_storage = $this->getStylesManager()->getCssBlobStorage()) {
-            return $this->getRouter()->generate('dp_portal_designer_custom_css', [], true);
+        $blob_storage = $this->isPreviewMode()
+                      ? $this->getStylesManager()->getEditThemeSetCssBlobStorage()
+                      : $this->getStylesManager()->getCssBlobStorage();
+
+        if ($blob_storage) {
+            return $this->getRouter()->generate(
+                'dp_portal_designer_custom_css',
+                ['version' => $blob_storage->getId(), 'preview' => intval($this->isPreviewMode())],
+                true
+            );
         } else {
             return $this->getAssetsExtension()->getAssetUrl(self::$default_css_asset, 'app_assets');
         }
@@ -110,5 +119,19 @@ class PortalCssTwigExtension extends \Twig_Extension
     private function getRouter()
     {
         return $this->container->get('router');
+    }
+
+    /**
+     * @return bool
+     */
+    private function isPreviewMode()
+    {
+        /** @var PortalModeStorage $portal_mode_storage */
+        $portal_mode_storage = $this->container->get('portal_mode_storage');
+        if ($mode = $portal_mode_storage->getMode()) {
+            return $mode->isAdminPreview();
+        }
+
+        return false;
     }
 }

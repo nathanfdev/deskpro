@@ -38,7 +38,7 @@ export class ChoiceMenuOption extends Component {
 
   static propTypes = {
     label: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     values: PropTypes.array,
     onClick: PropTypes.func.isRequired,
     children: PropTypes.any
@@ -85,7 +85,7 @@ export class RadioChoiceMenuOption extends Component {
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     values: PropTypes.array,
     setParams: PropTypes.func.isRequired,
-    resetSingleAction: PropTypes.func.isRequired,
+    resetSingleAction: PropTypes.func,
     dispatch: PropTypes.func.isRequired,
     children: PropTypes.any
   };

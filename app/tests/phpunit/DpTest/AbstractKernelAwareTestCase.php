@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest;
 
 use Application\DeskPRO\Entity\Template;
@@ -164,6 +165,16 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
     protected function getRepo($entity)
     {
         return $this->getEntityManager()->getRepository($entity);
+    }
+
+    /**
+     * @param $entity
+     *
+     * @return \Doctrine\ORM\EntityManager
+     */
+    protected function getRepository($entity)
+    {
+        return $this->getRepo($entity);
     }
 
     /**

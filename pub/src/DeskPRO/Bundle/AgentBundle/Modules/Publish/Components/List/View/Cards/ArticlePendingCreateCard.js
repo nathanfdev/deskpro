@@ -22,7 +22,7 @@ export class ArticlePendingCreateCard extends Component {
     return (
       <Card type="article">
 
-        <CardCheckbox selected={selected} onClick={toggleSelected(element.id)}/>
+        <CardCheckbox selected={selected} onClick={toggleSelected(element.get('id'))}/>
 
         <CardLine>
           <CardLineRight>
@@ -33,7 +33,7 @@ export class ArticlePendingCreateCard extends Component {
         <CardLine>
           <CardLineFull>
             <CardContentText>
-              <p><SlicedString string={element.comment} length={255}/></p>
+              <p><SlicedString string={element.get('comment')} length={255}/></p>
             </CardContentText>
           </CardLineFull>
         </CardLine>
@@ -43,7 +43,7 @@ export class ArticlePendingCreateCard extends Component {
             <CardLineItem>
               <CardUser user={assigned}/>
               <CardDisc/>
-              <FormattedRelative value={element.date_created}/>
+              <FormattedRelative value={element.get('date_created')}/>
               <CardDisc/>
             </CardLineItem>
           </CardLineLeft>

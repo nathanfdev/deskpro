@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -41,27 +42,6 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class AgentTeamsController extends BaseController
 {
-    /**
-     * @ApiDoc(
-     *      description="Count Agents in Teams",
-     *      statusCodes={
-     *          200="Success",
-     *          400="Bad Request"
-     *      }
-     * )
-     * @Get("/agent_teams/counts", name="api_agent_teams_count_agents")
-     */
-    public function getUsersCountsAction()
-    {
-        /** @var \DeskPRO\Bundle\AppBundle\DataService\AgentTeams\AgentTeamsDataService $service */
-        $service = $this->get('data.agent_teams');
-
-        return View::create(
-            $this->createRepresentation($service->countAgentsInTeams()),
-            Response::HTTP_OK
-        );
-    }
-
     /**
      * @ApiDoc(
      *      description="Return agents from team",

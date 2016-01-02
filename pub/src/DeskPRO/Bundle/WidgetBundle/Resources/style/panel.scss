@@ -77,7 +77,6 @@ $border-color: #e7e7e7;
     position: relative;
     width: 100%;
     padding-right: 5px;
-    height: 400px;
 
     a {
       color: #3E77B7;
@@ -104,8 +103,53 @@ $border-color: #e7e7e7;
         }
       }
 
+      $scrollbar-w: 5px;
+      $scrollbar-w2: 12px;
+
       .scrollbar-container {
-        display: none;
+        position: absolute;
+        background: transparent;
+        opacity: 0;
+        z-index: 1000;
+        transition: opacity .3s;
+
+        &:hover, &.active{
+          background: transparent;
+          opacity: 1;
+        }
+
+        .scrollbar {
+          background: rgba(0,0,0,0.3);
+          border-radius: 50px;
+        }
+
+        &.horizontal {
+          height: $scrollbar-w;
+          left: 0;
+          bottom: 2px;
+          right: 0;
+
+          .scrollbar {
+            width: 20px;
+            height: $scrollbar-w;
+          }
+        }
+
+        &.vertical{
+          width: $scrollbar-w;
+          right: 2px;
+          top: 0;
+          bottom: 0;
+
+          .scrollbar{
+            width: $scrollbar-w;
+            height: 20px;
+          }
+        }
+      }
+
+      &:hover .scrollbar-container{
+        opacity: .3;
       }
     }
 

@@ -4,6 +4,13 @@
   display: table;
 }
 
+
+@mixin blank-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
 @mixin placeholder {
   $placeholders: ":-webkit-input" ":-moz" "-moz" "-ms-input";
   @each $placeholder in $placeholders {

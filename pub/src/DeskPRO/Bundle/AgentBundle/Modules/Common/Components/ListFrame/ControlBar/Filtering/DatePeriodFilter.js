@@ -7,31 +7,47 @@ import { FilterItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components
 export class DatePeriodFilter extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    stateValue: PropTypes.func.isRequired,
     setParamsAction: PropTypes.func.isRequired,
     unsetParams: PropTypes.func.isRequired,
+    stateValue: PropTypes.func.isRequired,
     setActiveItem: PropTypes.func,
     activeItem: PropTypes.object,
     filter: PropTypes.object.isRequired
   };
+
+  handleChange() {
+    const { dispatch, setParamsAction } = this.props;
+    const filter = this.refs.filter.value;
+    if (filter) {
+      const value = this.refs.filterValue.value;
+      dispatch(setParamsAction({ date_filter: { [filter]: value }, delayReload: true }));
+    }
+  }
 
   renderPeriods() {
     const periods = DatePeriods.all;
     const options = {};
     for (var property in periods) {
       if (periods.hasOwnProperty(property)) {
-        options[property] = <option key={property} value="">{periods[property]}</option>;
+        options[property] = <option key={property} value={property}>{periods[property]}</option>;
       }
     }
     return options;
   }
 
   render() {
-    const { dispatch, setParamsAction, stateValue, filter, unsetParams, setActiveItem, activeItem } = this.props;
-    const {fromParam, toParam, icon, label} = filter;
-    const from = stateValue(fromParam);
-    const to = stateValue(toParam);
-    const isActive = Boolean(from || to);
+    const { filter, unsetParams, setActiveItem, activeItem, stateValue } = this.props;
+    const {icon, label} = filter;
+    const value = stateValue(filter.param);
+    let filterType = 'Select option';
+    let filterValue = 'Today';
+    for (const property in value) {
+      if (value.hasOwnProperty(property)) {
+        filterType = property;
+        filterValue = value[property];
+      }
+    }
+    const isActive = Boolean(value);
 
     return (
       <FilterItem activeItem={activeItem}
@@ -39,26 +55,27 @@ export class DatePeriodFilter extends Component {
                   label={label}
                   isActive={isActive}
                   setActiveItem={setActiveItem}
-                  resetFilter={unsetParams.bind(this, [fromParam, toParam])}>
-
-        {this.renderDateCreatedItemContent(from, to)}
+                  resetFilter={unsetParams.bind(this)}>
         <Menu>
           <div
             className="dpw-navigation-dropdown-panel dpw-navigation-dropdown-panel-corner-left">
             <div className="dpw-navigation-dropdown-panel-content">
               <div className="dpw-navigation-dropdown-panel-content-line">
                 <div className="dpw-navigation-dropdown-panel-content-full">
-                  <select>
-                    <option value="date_created">Created</option>
-                    <option value="date_updated">Updated</option>
-                    <option value="date_pulished">Published</option>
-                    <option value="date_last_comment">Last comment</option>
+                  <select ref="filter" value={filterType}
+                          onChange={this.handleChange.bind(this)}>
+                    <option value="">Select option</option>
+                    <option value="period_created">Created</option>
+                    <option value="period_updated">Updated</option>
+                    <option value="period_published">Published</option>
+                    <option value="period_last_comment">Last comment</option>
                   </select>
                 </div>
               </div>
               <div className="dpw-navigation-dropdown-panel-content-line">
                 <div className="dpw-navigation-dropdown-panel-content-full">
-                  <select>
+                  <select ref="filterValue" value={filterValue}
+                          onChange={this.handleChange.bind(this)}>
                     {createFragment(this.renderPeriods())}
                   </select>
                 </div>

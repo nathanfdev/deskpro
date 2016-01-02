@@ -29,12 +29,8 @@ const initialState = {
       mine: true
     },
     comments: {
-      validate: {
-        grouped_by: 'author',
-        count: 0,
-        nested: []
-      },
-      review: 0
+      validate: {},
+      review: {}
     }
   },
 
@@ -44,7 +40,7 @@ const initialState = {
       { value: 'category', label: 'Category' },
       { value: 'author', label: 'Author' },
       { value: 'period_created', label: 'Created' },
-      { value: 'period_updated', label: 'Updated' },
+      { value: 'period_updated', label: 'Updated' }
     ],
     visibility: {
       articles: false,
@@ -99,77 +95,3 @@ export default createReducer(initialState, {
     done: setValue('async.done', true)
   })
 });
-
-/*
- registerHandlers() {
- this
- .r(actions.loadCategories, this.categoriesLoaded)
- .r(actions.setMine, this.mineChanged)
- .r(actions.loadDraftsCount, this.draftsCountLoaded)
- .r(actions.loadPendingCount, this.pendingCountLoaded)
- .r(actions.loadCommentsToValidateCounts, this.commentsToValidateCountsLoaded)
- .r(actions.loadCommentsToReviewCount, this.commentsToReviewCountLoaded)
- ;
- }
-
- countsLoaded(prev, {payload}) {
- const next = { ...prev };
- next.lists[payload.content] = payload.counts;
-
- return next;
- }
-
- categoriesLoaded(prev, {payload}) {
- const categories = { articles: {}, news: {}, downloads: {} };
- for (let i = 0; i < payload.articles.length; i++) {
- categories.articles[payload.articles[i].id] = payload.articles[i].title;
- }
- for (let i = 0; i < payload.news.length; i++) {
- categories.news[payload.news[i].id] = payload.news[i].title;
- }
- for (let i = 0; i < payload.downloads.length; i++) {
- categories.downloads[payload.downloads[i].id] = payload.downloads[i].title;
- }
-
- const next = { ...prev };
- next.groups.categories = categories;
-
- return next;
- }
-
- mineChanged(prev, {payload}) {
- const next = { ...prev };
- next.lists.todo.articles.mine = payload;
-
- return next;
- }
-
- draftsCountLoaded(prev, {payload}) {
- const next = { ...prev };
- next.lists.todo.articles.draft = payload;
-
- return next;
- }
-
- pendingCountLoaded(prev, {payload}) {
- const next = { ...prev };
- next.lists.todo.articles.pending = payload;
-
- return next;
- }
-
- commentsToValidateCountsLoaded(prev, {payload}) {
- const next = { ...prev };
- next.lists.todo.comments.validate = payload;
-
- return next;
- }
-
- commentsToReviewCountLoaded(prev, {payload}) {
- const next = { ...prev };
- next.lists.todo.comments.review = payload;
-
- return next;
- }
- }
- */

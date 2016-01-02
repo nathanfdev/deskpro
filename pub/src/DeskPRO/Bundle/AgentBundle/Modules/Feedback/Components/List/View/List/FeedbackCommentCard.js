@@ -30,7 +30,7 @@ export class FeedbackCommentCard extends Component {
     this.setState({isEditingNow: !this.state.isEditingNow});
     if (this.state.isEditingNow) {
       const newValues = {
-        commentId: comment.id,
+        commentId: comment.get('id'),
         content: this.refs.commentContent.value.trim()
       };
       dispatch(editComment(newValues));
@@ -41,12 +41,12 @@ export class FeedbackCommentCard extends Component {
     const { comment } = this.props;
     if (this.state.isEditingNow) {
       return (
-        <textarea defaultValue={comment.content} style={{width: '100%'}} ref="commentContent"/>
+        <textarea defaultValue={comment.get('content')} style={{width: '100%'}} ref="commentContent"/>
       );
     }
     return (
       <CardContentText>
-        <p>{comment.content}</p>
+        <p>{comment.get('content')}</p>
       </CardContentText>
     );
   }
@@ -67,7 +67,7 @@ export class FeedbackCommentCard extends Component {
           toggleEditMode={this.toggleEditMode.bind(this)}
           />
 
-        <CardCheckbox selected={selected} onClick={toggleSelected(comment.id)}/>
+        <CardCheckbox selected={selected} onClick={toggleSelected(comment.get('id'))}/>
 
         <CardLine>
           <CardLineLeft>
@@ -86,7 +86,7 @@ export class FeedbackCommentCard extends Component {
         <CardLine>
           <CardLineLeft>
             <CardLineItem icon="fa-comments-o">
-              <CardDate date={comment.date_created} label="Posted"/>
+              <CardDate date={comment.get('date_created')} label="Posted"/>
             </CardLineItem>
             <CardDisc/>
             <CardLineItem icon="fa-link">
@@ -133,7 +133,7 @@ export class ValidationLine extends Component {
         <ul>
           <li><span className="validation-mark">Waiting for approval:</span></li>
           <li>
-            <a href="#" onClick={this.approveComment.bind(this, comment.id)}>
+            <a href="#" onClick={this.approveComment.bind(this, comment.get('id'))}>
               <span className="validation-line-icon"><i className="fa fa-check-circle"></i></span> <span
               className="validation-line-title">Approve</span>
             </a>
@@ -147,7 +147,7 @@ export class ValidationLine extends Component {
             </a>
           </li>
           <li>
-            <a href="#" onClick={this.deleteComment.bind(this, comment.id)}>
+            <a href="#" onClick={this.deleteComment.bind(this, comment.get('id'))}>
               <span className="validation-line-icon trash"><i className="fa fa-trash"></i></span> <span
               className="validation-line-title">Delete</span>
             </a>

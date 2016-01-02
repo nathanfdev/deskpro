@@ -51,7 +51,7 @@ export class ControlBarContainer extends Component {
 
             configurableFields: {
               id: 'ID',
-              date_created: 'Date created',
+              date_created: 'Date created'
             }
           },
           [constants.VIEW_MODE_TABLE]: {

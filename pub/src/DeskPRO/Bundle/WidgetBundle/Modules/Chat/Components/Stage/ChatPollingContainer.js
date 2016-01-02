@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import history from '../../../../Services/history';
 import moment from 'moment';
-import { pollingChat, unsetLoaded } from '../../Actions/chatActions';
+import { pollingChat, unsetLoaded, unsetChatId } from '../../Actions/chatActions';
 import {
   chatIdSelector,
   agentIdSelector,
@@ -31,12 +31,17 @@ export class ChatPollingContainer extends React.Component {
   };
 
   componentDidMount() {
+    this.mounted = true;
     this.pollingRequest();
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   pollingRequest = () => {
     const { dispatch, chatId, agentId, lastMessageId } = this.props;
-    if (!chatId) {
+    if (!chatId || !this.mounted) {
       return;
     }
 
@@ -55,11 +60,22 @@ export class ChatPollingContainer extends React.Component {
       last_message_id: lastMessageId
     };
     const promise = dispatch(pollingChat(chatId, queryParams));
-    const onResponse = () => {
+    const onSuccessResponse = () => {
       setTimeout(this.pollingRequest, 3000);
     };
 
-    promise.then(onResponse, onResponse);
+    const onErrorResponse = response => {
+      // Stop polling on wring session code
+      const data = response.data;
+      if (data && data.code === 400 && data.message === 'wrong_session_code') {
+        dispatch(unsetChatId());
+        return;
+      }
+
+      setTimeout(this.pollingRequest, 3000);
+    };
+
+    promise.then(onSuccessResponse, onErrorResponse);
   };
 
   render() {

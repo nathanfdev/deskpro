@@ -3,7 +3,7 @@ import { EndChatContainer } from '../EndChat/EndChatContainer';
 import { EndChatButton } from './EndChatButton';
 import EmotionButton from 'DeskPRO/Component/Rte/EmotionButton';
 import RteInput from 'DeskPRO/Component/Rte/RteInput';
-import ScrollArea from 'react-scrollbar';
+import ScrollArea from 'react-scrollbar-iframe';
 import { UploadingFilesContainer } from './Upload/Uploading/UploadingFilesContainer';
 import { UploadingFiles } from './Upload/Uploading/UploadingFiles';
 import { AttachmentContainer } from './Upload/Attachment/AttachmentContainer';

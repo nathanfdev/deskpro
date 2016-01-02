@@ -1,126 +1,98 @@
 import React, {Component, PropTypes} from 'react';
-import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
-import { contentSelector, peopleSelector, articlesSelector, newsSelector, downloadsSelector, currentListSortSelector, currentListOrderSelector }
+import { elementsSelector, contentSelector, currentListSortSelector, currentListOrderSelector }
   from '../../../../Selectors/list';
-import { Table, Th, Td, TdId, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { peopleSelector, articlesSelector, newsSelector, downloadsSelector,
+  articlesCommentsSelector, newsCommentsSelector, downloadsCommentsSelector, articlePendingCreatesSelector }
+  from '../../../../Selectors/recordStores';
 import { applyParams } from '../../../../Actions/publishListActions';
-import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
+import { ContentTable } from './ContentTable';
+import { CommentTable } from './CommentTable';
+import { APCTable } from './APCTable';
 
 import { connect } from 'react-redux';
 @connect(state => {
   return {
+    elements: elementsSelector(state),
     people: peopleSelector(state),
     content: contentSelector(state),
     articles: articlesSelector(state),
     news: newsSelector(state),
     downloads: downloadsSelector(state),
+    article_pending_creates: articlePendingCreatesSelector(state),
+    article_comments: articlesCommentsSelector(state),
+    news_comments: newsCommentsSelector(state),
+    download_comments: downloadsCommentsSelector(state),
     currentSort: currentListSortSelector(state),
     currentOrder: currentListOrderSelector(state)
   };
 })
 
-@injectIntl
 export class TableContainer extends Component {
   static propTypes = {
-    intl: intlShape.isRequired,
     dispatch: PropTypes.func.isRequired,
-    currentSort: PropTypes.string.isRequired,
-    currentOrder: PropTypes.string.isRequired,
+    elements: PropTypes.array.isRequired,
     content: PropTypes.string.isRequired,
-    people: PropTypes.object.isRequired,
     articles: PropTypes.object,
+    downloads: PropTypes.object,
     news: PropTypes.object,
-    downloads: PropTypes.object
+    people: PropTypes.object.isRequired,
+    currentSort: PropTypes.string.isRequired,
+    currentOrder: PropTypes.string.isRequired
   };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      order: '',
-      sort: ''
-    };
-  }
 
   sortTable(param, order) {
     this.props.dispatch(applyParams({ sort: param, order }));
   }
 
+  renderContentTable(config) {
+    return (
+      <ContentTable {...config} />
+    );
+  }
+
+  renderCommentTable(config) {
+    const getParents = () => {
+      switch (this.props.content) {
+        case 'article_comments':
+          return this.props.articles;
+        case 'download_comments':
+          return this.props.downloads;
+        case 'news_comments':
+          return this.props.news;
+        default:
+      }
+    };
+    return (
+      <CommentTable {...config} parents={getParents()}/>
+    );
+  }
+
+  renderAPCTable(config) {
+    return (
+      <APCTable {...config} />
+    );
+  }
+
   render() {
-    const { content, people, currentSort, currentOrder } = this.props;
-    const elements = this.props[content];
+    const { content, elements, people, currentSort, currentOrder } = this.props;
+    const config = {
+      content: content,
+      ids: elements,
+      elements: this.props[content],
+      people: people,
+      currentSort: currentSort,
+      currentOrder: currentOrder,
+      sortTable: this.sortTable.bind(this)
+    };
 
     return (
-      <Table>
-        <thead>
-        <tr>
-          <Th sort="id"
-              title="ID"
-              visible
-              currentOrder={currentOrder}
-              currentSort={currentSort}
-              onChange={this.sortTable.bind(this)}/>
-          <Th sort="person"
-              title="Author"
-              visible
-              currentOrder={currentOrder}
-              currentSort={currentSort}
-              onChange={this.sortTable.bind(this)}/>
-          <Th sort="date_created"
-              title="Created"
-              visible
-              currentOrder={currentOrder}
-              currentSort={currentSort}
-              onChange={this.sortTable.bind(this)}/>
-          <Th sort="date_updated"
-              title="Updated"
-              visible
-              currentOrder={currentOrder}
-              currentSort={currentSort}
-              onChange={this.sortTable.bind(this)}/>
-          <Th sort="status"
-              title="Status"
-              visible
-              currentOrder={currentOrder}
-              currentSort={currentSort}
-              onChange={this.sortTable.bind(this)}/>
-          <Th title="Labels" visible/>
-          <Th sort="title"
-              title="Title"
-              visible
-              currentOrder={currentOrder}
-              currentSort={currentSort}
-              onChange={this.sortTable.bind(this)}/>
-        </tr>
-        </thead>
-        <tbody>
-        {elements.map((element, index) =>
-            <tr key={index}>
-              <TdId visible>
-                {element.id}
-              </TdId>
-              <Td visible>
-                <PersonInTable person={people.get(element.person)}/>
-              </Td>
-              <Td visible>
-                <div className="dpw--timer"><FormattedRelative value={element.date_created}/></div>
-              </Td>
-              <Td visible>
-                <div className="dpw--timer"><FormattedRelative value={element.date_updated}/></div>
-              </Td>
-              <Td visible>
-                {element.status}
-              </Td>
-              <Td visible>
-                @ToDo some labels stuff
-              </Td>
-              <Td className="item-title">
-                <a href="#"><SlicedString string={element.title}/></a>
-              </Td>
-            </tr>
-        )
-        }
-        </tbody>
-      </Table>
+      <div>
+        {elements && ['articles', 'news', 'downloads'].indexOf(content) > -1 && this.renderContentTable(config)}
+
+        {elements && ['article_comments', 'news_comments', 'download_comments'].indexOf(content) > -1 && this.renderCommentTable(config)}
+
+        {elements && content === 'article_pending_creates' && this.renderAPCTable(config)}
+      </div>
     );
   }
 }

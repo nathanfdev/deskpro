@@ -32,16 +32,20 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
-use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\Session;
+use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class AbstractApiController.
  */
-abstract class AbstractApiController extends AbstractController
+abstract class AbstractApiController extends FOSRestController
 {
     /**
      * @param mixed  $data
@@ -74,5 +78,35 @@ abstract class AbstractApiController extends AbstractController
     protected function dispatch($event_name, Event $event)
     {
         $this->get('event_dispatcher')->dispatch($event_name, $event);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return Session|null
+     */
+    protected function getApiSession(Request $request)
+    {
+        /** @var \Application\DeskPRO\EntityRepository\Session $session_repository */
+        $session_repository = $this->getDoctrine()->getRepository('DeskPRO:Session');
+        $session_code       = $request->query->get('__sid');
+
+        $session = null;
+        if ($session_code) {
+            $session = $session_repository->getSessionFromCode($session_code);
+        }
+        if (!$session) {
+            throw new BadRequestHttpException('User session not found');
+        }
+
+        return $session;
+    }
+
+    /**
+     * @return DeskproContainer|\Symfony\Component\DependencyInjection\ContainerInterface
+     */
+    protected function getContainer()
+    {
+        return $this->container;
     }
 }

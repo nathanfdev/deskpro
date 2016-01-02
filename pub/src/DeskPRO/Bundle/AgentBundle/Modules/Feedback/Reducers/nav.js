@@ -1,6 +1,6 @@
 import { createReducer } from 'Ampliflux';
 import { async, setFullPayload, mergeFullPayload, setValue } from 'Ampliflux/reducers/handlers';
-import * as actions from '../Actions/FeedbackListActions';
+import * as actions from '../Actions/feedbackNavActions';
 import * as commentsActions from '../Actions/FeedbackCommentsActions';
 import Immutable from 'immutable';
 
@@ -11,8 +11,6 @@ const initialState = {
   toValidateCount: { count: 0 },
   commentsToReviewCount: { count: 0 },
   labels: [/* string */],
-  types: [/* {title, value} */],
-  customCategories: [/* {title, value} */],
   statuses: {
     new: 0,
     active: {

@@ -60,15 +60,9 @@ class FeedbackTypeController extends BaseController
     {
         $qb = $this->getDoctrine()->getManager()->createQueryBuilder();
         $qb
-            ->select('type.id', 'type.title', 'COUNT(feedback.id) as counter')
+            ->select('type.id', 'type.title')
             ->from('DeskPRO:FeedbackCategory', 'type')
-            ->leftJoin(
-                'DeskPRO:Feedback',
-                'feedback',
-                \Doctrine\ORM\Query\Expr\Join::WITH,
-                'feedback.category = type.id'
-            )
-            ->groupBy('type.id');
+            ->orderBy('type.title', 'asc');
 
         $types = $qb->getQuery()->getArrayResult();
 

@@ -147,6 +147,7 @@ class FeedbackController extends BaseController
      */
     public function getCountsAction(Request $request)
     {
+        /** @var \DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackDataService $dataService */
         $dataService = $this->get('data.feedback');
         $params      = $this->removeAdditionalParameters($request);
         try {

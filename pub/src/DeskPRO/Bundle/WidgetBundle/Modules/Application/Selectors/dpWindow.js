@@ -80,6 +80,11 @@ export const agentPollingTimeoutSelector = createSelector(
   options => options.get('agentPollingTimeout') || 'off'
 );
 
+export const agentAcceptTimeoutSelector = createSelector(
+  widgetOptionsSelector,
+  options => options.get('agentAcceptTimeout') || 120 // 2 minutes
+);
+
 export const widgetTypeSelector = createSelector(
   widgetOptionsSelector,
   options => options.get('windowType') || 'default'
@@ -88,4 +93,9 @@ export const widgetTypeSelector = createSelector(
 export const isBubbleSelector = createSelector(
   widgetTypeSelector,
   widgetType => widgetType === 'bubble'
+);
+
+export const widgetHasChatSelector = createSelector(
+  widgetOptionsSelector,
+  options => options.get('hasChat') !== undefined ? options.get('hasChat') : true
 );

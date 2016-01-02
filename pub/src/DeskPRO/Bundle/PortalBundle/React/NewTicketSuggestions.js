@@ -1,9 +1,9 @@
-import React from "react"
-import _ from "lodash"
-import $ from "jquery"
-import PortalHttp from "DeskPRO/Bundle/PortalBundle/Http/PortalHttp"
-import PortalUrlGenerator from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator"
-import PortalPhrases from "DeskPRO/Bundle/PortalBundle/PortalPhrases"
+import React from 'react';
+import _ from 'lodash';
+import $ from 'jquery';
+import PortalHttp from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
+import PortalUrlGenerator from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
+import PortalPhrases from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 class SuggestionRow extends React.Component {
   constructor(props) {
@@ -53,7 +53,7 @@ class Suggestions extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-        show_all: false
+      show_all: false
     };
   }
   showMore() {
@@ -72,13 +72,14 @@ class Suggestions extends React.Component {
     if (this.props.results.length === 0) {
       return null;
     }
-    let visible_results;
 
+    let visible_results;
     if (!this.state.show_all) {
       visible_results = _.slice(this.props.results, 0, 5);
     } else {
       visible_results = this.props.results;
     }
+
     return (
       <ul>
         {
@@ -97,6 +98,7 @@ class Suggestions extends React.Component {
 }
 
 export default class NewTicketSuggestions extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -111,15 +113,17 @@ export default class NewTicketSuggestions extends React.Component {
       }
     };
   }
+
   componentDidMount() {
-    let throttleChanges = _.throttle((e) => {
+    const throttleChanges = _.throttle((e) => {
       this.doSearch({ content: e.target.value });
     }, 250);
     this.state.$input.on('keyup', throttleChanges);
   }
-  doSearch(query_modifications) {
-    const last_query = this.state.search_query || {};
-    const search_query = {...last_query, ...query_modifications};
+
+  doSearch(queryModifications) {
+    const lastQuery = this.state.search_query || {};
+    const search_query = {...lastQuery, ...queryModifications};
     this.setState({
       search_query
     });
@@ -144,19 +148,21 @@ export default class NewTicketSuggestions extends React.Component {
       }
     });
   }
+
 	render() {
-    let data = this.state.data;
+    const data = this.state.data || [];
+    const results = data.results || [];
+
     return (
-      <div style={{"display": (this.state.search_query.content.length >= 3 && data.results.length > 0 ? " block" : "none")}}>
+      <div style={{display: (this.state.search_query.content.length >= 3 && results.length > 0 ? ' block' : 'none')}}>
         <div className="ticket-related-articles">
           <header>
             <h1>{PortalPhrases.get('portal.tickets.related_articles_title')}</h1>
             <h2>{PortalPhrases.get('portal.tickets.related_articles_desc')}</h2>
           </header>
-          <Suggestions results={data.results} />
+          <Suggestions results={results} />
         </div>
       </div>
     );
   }
 }
-

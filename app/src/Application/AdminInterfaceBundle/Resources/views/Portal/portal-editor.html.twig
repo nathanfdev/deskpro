@@ -7,8 +7,9 @@
 
             <div class="panel-wrapper">
                 <div class="current-theme-actions">
-                    <a href ng-click="Portal.commitChanges()" class="save-changes">Save Changes</a>
-                    <a href="#" class="discard-changes">Discard Changes</a>
+                    <a href ng-click="Portal.save()" class="save-changes">Preview Changes</a>
+                    <a href ng-click="Portal.discard()" class="discard-changes">Discard Changes</a>
+                    <a href ng-click="Portal.commit()" class="save-changes">Save Changes</a>
                 </div>
 
                 <a href="#" class="current-theme">
@@ -280,6 +281,9 @@
         </div><!-- End editor panel -->
 
         <section class="preview-panel">
+            <iframe ng-if="!Portal.recompiling" ng-src="{{ '{{ Portal.preview_url }}' }}" width="100%" height="100%"></iframe>
+            <div ng-if="Portal.recompiling">Recompiling assets...</div>
+
             <div class="widescreen-info">
                 The editor works better on screens over 1280 pixels. Something about full screen and hiding the sidebar
             </div>
@@ -297,15 +301,15 @@
                             <li><a href="#"><i class="fa fa-user"></i>Agent</a></li>
                             <li><a href="#"><i class="fa fa-user"></i>Administrator</a></li>
                         </ul>
-                    </li><li>
+                    </li>
+                    <li>
                         <a href="#">
                             visiting with a <span>tablet</span> <i class="fa fa-tablet"></i> <i class="fa fa-caret-down"></i>
-                        </a><a>
-                        </a></li><a>
-                    </a></ul><a>
-                </a></div><a>
-            </a></section><a>
-
-        </a></section>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </section>
+    </section>
 </div>
 {% endblock %}

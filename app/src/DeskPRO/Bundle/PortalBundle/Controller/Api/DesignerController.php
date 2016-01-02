@@ -32,6 +32,8 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
+use DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler;
+use DeskPRO\Bundle\PortalBundle\Designer\SassDocParser;
 use DeskPRO\Bundle\PortalBundle\Designer\StylesManager;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -53,7 +55,7 @@ class DesignerController extends AbstractApiController
      */
     public function getVariableGroupsAction()
     {
-        return new JsonResponse($this->getStylesManager()->getVariableGroups());
+        return new JsonResponse($this->getSassDocParser()->getVariableGroups());
     }
 
     /**
@@ -64,11 +66,11 @@ class DesignerController extends AbstractApiController
      */
     public function getVariableValuesAction()
     {
-        return new JsonResponse($this->getStylesManager()->getVariableValues());
+        return new JsonResponse($this->getStylesManager()->getEditThemeSetVariableValues());
     }
 
     /**
-     * @Route("/portal/api/style/variable-values")
+     * @Route("/portal/api/style/edit-theme-set/variable-values")
      * @Method({"PUT"})
      *
      * @param Request $request
@@ -78,9 +80,31 @@ class DesignerController extends AbstractApiController
     public function saveStyleVariablesAction(Request $request)
     {
         $variables = json_decode($request->getContent(), true);
-        $this->getStylesManager()->recompile($variables);
+        $this->getPortalStylesCompiler()->recompile($variables);
 
         return new Response(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/commit")
+     * @Method({"GET"})
+     *
+     * @return View
+     */
+    public function commitEditThemeSetAction()
+    {
+        return new JsonResponse($this->getStylesManager()->commitEditThemeSet());
+    }
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/discard")
+     * @Method({"GET"})
+     *
+     * @return View
+     */
+    public function discardEditThemeSetAction()
+    {
+        return new JsonResponse($this->getStylesManager()->discardEditThemeSet());
     }
 
     /**
@@ -89,9 +113,13 @@ class DesignerController extends AbstractApiController
      *
      * @return View
      */
-    public function getCssFileAction()
+    public function getCssFileAction(Request $request)
     {
-        if (!$blob_storage = $this->getStylesManager()->getCssBlobStorage()) {
+        $blob_storage = $request->get('preview')
+                      ? $this->getStylesManager()->getEditThemeSetCssBlobStorage()
+                      : $this->getStylesManager()->getCssBlobStorage();
+
+        if (!$blob_storage) {
             throw $this->createNotFoundException('Custom styles not found');
         }
 
@@ -104,5 +132,21 @@ class DesignerController extends AbstractApiController
     private function getStylesManager()
     {
         return $this->get('dp.portal.designer.styles_manager');
+    }
+
+    /**
+     * @return PortalStylesCompiler
+     */
+    private function getPortalStylesCompiler()
+    {
+        return $this->get('dp.portal.designer.portal_styles_compiler');
+    }
+
+    /**
+     * @return SassDocParser
+     */
+    private function getSassDocParser()
+    {
+        return $this->get('dp.portal.designer.sass_doc_parser');
     }
 }

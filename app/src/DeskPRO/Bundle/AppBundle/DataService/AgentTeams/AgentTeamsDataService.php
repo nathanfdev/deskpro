@@ -33,7 +33,6 @@
 namespace DeskPRO\Bundle\AppBundle\DataService\AgentTeams;
 
 use Application\DeskPRO\Entity\AgentTeam;
-use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
 
 /**
@@ -41,31 +40,6 @@ use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
  */
 class AgentTeamsDataService extends AbstractDataService
 {
-    /**
-     * @return Count
-     */
-    public function countAgentsInTeams()
-    {
-        $qb = $this->em->createQueryBuilder();
-
-        $qb->select('count(m) as value, at.id as group_name')
-            ->from('DeskPRO:AgentTeam', 'at')
-            ->join('at.members', 'm')
-            ->andWhere('m.is_deleted = false')
-            ->groupBy('group_name')
-        ;
-
-        $result = $qb->getQuery()->getArrayResult();
-
-        $count = Count::fromGroupedBy('agent_team');
-        foreach ($result as $group) {
-            $count->add($group['value']);
-            $count->addNested($group['value'], $group['group_name'], 'agent_team');
-        }
-
-        return $count;
-    }
-
     public function getAgentsFromTeam($teamId)
     {
         $repo = $this->em->getRepository('DeskPRO:AgentTeam');

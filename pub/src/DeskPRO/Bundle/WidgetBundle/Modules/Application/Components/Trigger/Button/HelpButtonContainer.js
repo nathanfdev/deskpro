@@ -6,29 +6,31 @@ import { AgentMessagePopupContainer } from '../Popups/AgentMessage/AgentMessageP
 import { ReplyButtons } from '../Popups/AgentMessage/ReplyButtons';
 import { ReplyForm } from '../Popups/AgentMessage/ReplyForm';
 import { loadOnlineAgents } from '../../../Actions/agentActions';
-import { onlineAgentsCountSelector } from '../../../Selectors/agent';
-import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { OnlineAgentsContainer } from '../Popups/OnlineAgentsContainer';
 import { openTriggerPopup, closeTriggerPopup } from '../../../Actions/dpWindowActions';
+import { onlineAgentsCountSelector } from '../../../Selectors/agent';
 import {
   widgetOpenedSelector,
   helpButtonSizeSelector,
   helpPopupSelector,
   agentPollingTimeoutSelector,
-  triggerPopupOpenedSelector
+  triggerPopupOpenedSelector,
+  widgetHasChatSelector
 } from '../../../Selectors/dpWindow';
 
 @connect(state => ({
+  hasChat: widgetHasChatSelector(state),
+  triggerPopupOpened: triggerPopupOpenedSelector(state),
   widgetOpened: widgetOpenedSelector(state),
   size: helpButtonSizeSelector(state),
   popup: helpPopupSelector(state),
   agentsCounts: onlineAgentsCountSelector(state),
-  agentPollingTimeout: agentPollingTimeoutSelector(state),
-  triggerPopupOpened: triggerPopupOpenedSelector(state)
+  agentPollingTimeout: agentPollingTimeoutSelector(state)
 }))
 export class HelpButtonContainer extends React.Component {
 
   static propTypes = {
+    hasChat: PropTypes.bool,
     triggerPopupOpened: PropTypes.bool,
     widgetOpened: PropTypes.bool,
     dispatch: PropTypes.func,
@@ -50,24 +52,15 @@ export class HelpButtonContainer extends React.Component {
     this.checkRenderPopup();
   }
 
-  onOpenWidget = () => {
-    const { agentsCounts, onClick } = this.props;
-    if (!agentsCounts) {
-      return;
-    }
-
-    onClick();
-  };
-
   onClosePopup = () => {
     this.props.dispatch(closeTriggerPopup());
   };
 
   checkRenderPopup() {
-    const { triggerPopupOpened, agentsCounts, dispatch } = this.props;
+    const { triggerPopupOpened, agentsCounts, hasChat, dispatch } = this.props;
     const storageKey = 'dpWidget.dpWindow.popupShown';
 
-    if ((!(storageKey in localStorage) || localStorage[storageKey] !== 'none') && agentsCounts > 0) {
+    if ((!(storageKey in localStorage) || localStorage[storageKey] !== 'none') && hasChat && agentsCounts > 0) {
       if (!triggerPopupOpened) {
         dispatch(openTriggerPopup());
       }
@@ -95,9 +88,9 @@ export class HelpButtonContainer extends React.Component {
   }
 
   renderPopup() {
-    const { popup } = this.props;
+    const { popup, onClick } = this.props;
     const popupProps = {
-      onClick: this.onOpenWidget,
+      onClick: onClick,
       onClose: this.onClosePopup
     };
 
@@ -121,20 +114,16 @@ export class HelpButtonContainer extends React.Component {
   }
 
   render() {
-    const { triggerPopupOpened, agentsCounts } = this.props;
+    const { triggerPopupOpened, onClick } = this.props;
 
     return (
       <div>
         {triggerPopupOpened &&
-          <ClickOut onClickOut={this.onClosePopup}
-                    context={[parent.document, window.triggerFrame.document]}>
-
-            <OnlineAgentsContainer>
-              {this.renderPopup()}
-            </OnlineAgentsContainer>
-          </ClickOut>
+          <OnlineAgentsContainer>
+            {this.renderPopup()}
+          </OnlineAgentsContainer>
         }
-        <HelpButton {...this.props} onClick={this.onOpenWidget} disabled={!agentsCounts} />
+        <HelpButton {...this.props} onClick={onClick} />
       </div>
     );
   }

@@ -166,6 +166,8 @@ fos_rest:
         rules:
             - { path: '^/portal/api/', priorities: ['json', 'jsonp'], fallback_format: json, exception_fallback_format: json, prefer_extension: false }
             - { path: '^/', stop: true }
+    exception:
+        enabled: true
     view:
         view_response_listener: force
         formats:

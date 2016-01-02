@@ -3,7 +3,7 @@ import Immutable from 'immutable';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { Button } from './Button';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
-import { DropdownPanel } from './DropdownPanel';
+import { SingleChoicePanel } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/SingleChoicePanel';
 import { Menu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
 import { AddLabelsContainer } from './AddLabelsContainer';
 import { RemoveLabelsContainer } from './RemoveLabelsContainer';
@@ -121,10 +121,10 @@ export class ActionContainer extends Component {
                     ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel']}
                     additionalNodes={['.dpw-navigation-dropdown-item-clear']}>
             {item.type === 'action' &&
-            <DropdownPanel item={item}
-                           currentParams={currentParams}
-                           setParams={setParams}
-                           resetSingleAction={resetSingleAction}/>
+            <SingleChoicePanel item={item}
+                               currentParams={currentParams}
+                               setParams={setParams}
+                               resetSingleAction={resetSingleAction}/>
             }
             {item.type === 'menu' &&
             <Menu>

@@ -1,10 +1,10 @@
-require("babel/polyfill");
+require('babel/polyfill');
 
-import Http from "DeskPRO/Component/Http/Http";
-import UrlCorrector from "DeskPRO/Bundle/AppBundle/Http/UrlCorrector";
-import PortalPage from "DeskPRO/Bundle/PortalBundle/PageWidget/PortalPage";
-import PortalPhrases from "DeskPRO/Bundle/PortalBundle/PortalPhrases"
-import $ from "jquery";
+import Http from 'DeskPRO/Component/Http/Http';
+import UrlCorrector from 'DeskPRO/Bundle/AppBundle/Http/UrlCorrector';
+import PortalPage from 'DeskPRO/Bundle/PortalBundle/PageWidget/PortalPage';
+import PortalPhrases from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import $ from 'jquery';
 
 class PortalApp {
   constructor() {
@@ -22,7 +22,7 @@ class PortalApp {
   }
 
   run() {
-    let page = new PortalPage();
+    const page = new PortalPage();
     page.renderWhenReady();
     this._portalPage = page;
   }

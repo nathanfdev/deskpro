@@ -1,15 +1,16 @@
 import React, {Component, PropTypes} from 'react';
 import { FeedbackCommentCard } from './FeedbackCommentCard';
-import { peopleSelector, feedbackSelector } from '../../../../Selectors/list';
+import { feedbackCommentsSelector, peopleSelector, feedbackSelector } from '../../../../Selectors/recordStores';
 
 import { connect } from 'react-redux';
 @connect(state => {
   return ({
-    comments: state.Feedback.list.get('elements'),
+    ids: state.Feedback.list.get('elements'),
+    comments: feedbackCommentsSelector(state),
     selected: state.Feedback.list.get('selected'),
     people: peopleSelector(state),
     massAction: state.Feedback.list.get('massAction'),
-    feedbackFromStore: feedbackSelector(state)
+    feedback: feedbackSelector(state)
   });
 })
 
@@ -17,8 +18,8 @@ export class FeedbackCommentsCardsContainer extends Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
+    ids: PropTypes.array.isRequired,
     comments: PropTypes.object.isRequired,
-    feedbackFromStore: PropTypes.object.isRequired,
     toggleSelected: PropTypes.func.isRequired,
     people: PropTypes.object.isRequired,
     feedback: PropTypes.object.isRequired,
@@ -26,23 +27,27 @@ export class FeedbackCommentsCardsContainer extends Component {
     selected: PropTypes.object.isRequired
   };
 
+  renderComment(id) {
+    const { dispatch, comments, selected, toggleSelected, massAction, people, feedback } = this.props;
+    const element = comments.get(id);
+    return (
+      <FeedbackCommentCard key={id}
+                           comment={element}
+                           dispatch={dispatch}
+                           feedback={feedback.get(element.get('feedback'))}
+                           selected={selected.includes(id)}
+                           toggleSelected={toggleSelected}
+                           massAction={massAction}
+                           author={people.get(element.get('person'))}/>
+    );
+  }
+
   render() {
-    const {dispatch, comments, selected, toggleSelected, massAction, people, feedbackFromStore} = this.props;
+    const {ids} = this.props;
 
     return (
       <div>
-        {comments.map((element, index) =>
-          <FeedbackCommentCard
-            dispatch={dispatch}
-            feedback={feedbackFromStore.get(element.feedback)}
-            selected={selected.includes(element.id)}
-            toggleSelected={toggleSelected}
-            massAction={massAction}
-            author={people.get(element.person)}
-            comment={element}
-            key={index}>
-            {element.content}
-          </FeedbackCommentCard>)}
+        {ids.map(id => this.renderComment(id))}
       </div>
     );
   }
