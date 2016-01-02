@@ -134,7 +134,7 @@ class NewTicketController extends AbstractController
 
                             $new_ticket = $new_ticket_service->acceptNewTicket($ticket, $person, $request);
 
-                            return $this->onSaveTicket($new_ticket, $person, $request);
+                            return $this->onSavedTicket($new_ticket, $person, $request);
                         } catch (LoginRequiredException $e) {
                             // the email used belongs to a user, and brand settings say they need to log in
                             $person = $e->getPerson();
@@ -160,14 +160,14 @@ class NewTicketController extends AbstractController
                                 // this is a guest that we are accepting
                                 $new_ticket = $new_ticket_service->acceptNewTicketForGuest($ticket, $ticket_message, $person, $request);
 
-                                return $this->onSaveTicket($new_ticket, $person, $request);
+                                return $this->onSavedTicket($new_ticket, $person, $request);
                             }
                         }
                     }
 
                     $new_ticket = $new_ticket_service->acceptNewTicket($ticket, $person, $request);
 
-                    return $this->onSaveTicket($new_ticket, $person, $request);
+                    return $this->onSavedTicket($new_ticket, $person, $request);
                 }
             }
         } elseif ($form->isSubmitted()) {
@@ -240,7 +240,7 @@ class NewTicketController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    protected function onSaveTicket(Ticket $ticket, Person $person, Request $request)
+    protected function onSavedTicket(Ticket $ticket, Person $person, Request $request)
     {
         $this->addFlash('success', $this->phrase('portal.flashes.ticket_created'));
 
