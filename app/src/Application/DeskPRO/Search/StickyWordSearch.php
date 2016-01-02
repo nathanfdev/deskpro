@@ -66,6 +66,11 @@ class StickyWordSearch implements PersonContextInterface
      */
     protected $person_context;
 
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
@@ -80,6 +85,11 @@ class StickyWordSearch implements PersonContextInterface
         $this->person_context = $person;
     }
 
+    /**
+     * @param string $query
+     *
+     * @return array|mixed
+     */
     public function getWordsFromQuery($query)
     {
         // Split query into words, quoted strings are grouped togehter
@@ -103,6 +113,13 @@ class StickyWordSearch implements PersonContextInterface
         return $words;
     }
 
+    /**
+     * @param string $type
+     * @param int    $id
+     * @param int    $limit
+     *
+     * @return array
+     */
     public function getStickyWords($type, $id, $limit = 5)
     {
         $ret = array();
@@ -120,6 +137,12 @@ class StickyWordSearch implements PersonContextInterface
         return $ret;
     }
 
+    /**
+     * @param string $query
+     * @param int    $limit
+     *
+     * @return array
+     */
     public function getResults($query, $limit = 10)
     {
         $words = $this->getWordsFromQuery($query);
