@@ -35,7 +35,6 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\People\PersonGuest;
-use Application\DeskPRO\Tickets\DuplicateTicketException;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitTicketAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
@@ -249,7 +248,7 @@ class NewTicketController extends AbstractController
     {
         $this->submitNewTicketAbuseCheck($person, $request->getClientIp());
 
-        $ticket = $this->saveNewTicket($ticket, $person);
+        $ticket = $this->get('tickets.new_ticket')->saveNewTicket($ticket, $person);
 
         $this->addFlash('success', $this->phrase('portal.flashes.ticket_created'));
 
@@ -312,54 +311,5 @@ class NewTicketController extends AbstractController
     protected function getTicketsRepo()
     {
         return $this->getRepo('DeskPRO:Ticket');
-    }
-
-    /**
-     * @param Ticket $ticket
-     * @param Person $person
-     *
-     * @throws \Exception
-     *
-     * @return Ticket
-     */
-    private function saveNewTicket(Ticket $ticket, Person $person)
-    {
-        $em = $this->getEm();
-
-        $em->beginTransaction();
-
-        try {
-            // allow all blobs for a new ticket
-            foreach ($ticket->messages as $message) {
-                foreach ($message->getAttachments() as $attachment) {
-                    $blob = $attachment->getBlob();
-                    if ($blob) {
-                        $blob->is_temp = false;
-                    }
-                }
-            }
-
-            $em->persist($ticket);
-
-            $ticket_manager = $this->getTicketManager();
-            // we handle this the new way (TicketManager), so disable the doctrine auto ticket process
-            $ticket->disableAutoTicketProcess();
-            $context = $ticket_manager->createUserExecutorContext($person, 'newticket', 'portal');
-
-            $ticket_manager->saveTicket($ticket, $context);
-            $em->flush();
-            $this->get('tickets.custom_per_field_manager')->flushDataQueue();
-            $em->commit();
-        } catch (DuplicateTicketException $e) {
-            $em->rollback();
-            $ticket = $em->find('DeskPRO:Ticket', $e->ticket_id);
-
-            return $ticket;
-        } catch (\Exception $e) {
-            $em->rollback();
-            throw $e;
-        }
-
-        return $ticket;
     }
 }
