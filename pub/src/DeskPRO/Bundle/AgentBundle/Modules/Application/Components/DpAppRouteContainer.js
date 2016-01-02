@@ -7,9 +7,6 @@ import { WelcomeBack } from '../../Welcome/Components/WelcomeBack';
 import { meSelector, meStateSelector } from '../RecordStores/Selectors/meSelectors';
 import { IMContainer } from '../../IM/Components/IMContainer';
 import { PreferencesContainer } from './Preferences/PreferencesContainer';
-import { newActionAlerts } from '../Actions/notificationActions';
-import PusherClient from 'DeskPRO/Component/Notification/Client/PusherClient';
-import EventEmitter2 from 'eventemitter2';
 import { NotificationService } from 'DeskPRO/Bundle/AgentBundle/Services/NotificationService';
 
 @connect(state => ({
@@ -38,35 +35,32 @@ export class DpAppRouteContainer extends React.Component {
 
   componentWillUnmount() {
     clearTimeout(this.welcomePageTimer);
-    // clearInterval(this.pollingInterval);
+    this.ns.stopPolling();
   }
 
   setupPolling() {
-    const ns = new NotificationService();
     const { user, dispatch } = this.props;
-    const eventEmitter = new EventEmitter2({
-      wildcard: false,
-      delimiter: '::',
-      newListener: false,
-      maxListeners: 10
-    });
-    const pusher = new PusherClient(
+    this.ns = new NotificationService(
       {
-        appKey: 'eaa00fb39fddc251d116',
-        me: user.get('id'),
-        dispatcher: eventEmitter.emit.bind(eventEmitter),
-        debug: true
+        user: user,
+        dispatch: dispatch,
+        client: {
+          type: 'pusher',
+          options: {
+            appKey: 'eaa00fb39fddc251d116',
+            debug: true,
+            pollingInterval: 5000
+          }
+        }
       }
     );
-    eventEmitter.on('action_alert', (data) => dispatch(newActionAlerts(data)));
-    pusher.bind('private-channel-' + user.get('id'), 'action_alert');
+    this.ns.startPolling();
   }
 
   hideWelcomePage() {
     const { userStatus, dispatch } = this.props;
     if (!this.welcomePageTimer && userStatus.get('isDone')) {
       this.welcomePageTimer = setTimeout(() => dispatch(AppActions.doneInitialLoad()), 3000);
-      // this.pollingInterval = setInterval(() => this.props.dispatch(pollActionAlerts()), 25000);
       this.setupPolling();
     }
   }

@@ -54,11 +54,13 @@ class NotificationService
     {
         $actionAlertRepo = $this->em->getRepository('App:ActionAlert');
         /** @var ActionAlert $last */
-        $last   = $actionAlertRepo->findOneBy(['uuid' => $last]);
+        if ($last) {
+            $last = $actionAlertRepo->findOneBy(['uuid' => $last]);
+        }
         $qb     = $actionAlertRepo->createQueryBuilder('aa');
         $result = $qb->where('aa.date_created > (:last)')
             ->andWhere('aa.target_id = :target_id')
-            ->setParameter('last', $last->getDateCreated())
+            ->setParameter('last', $last ? $last->getDateCreated() : 'Y-m-d H:i:s')
             ->setParameter('target_id', $user->getId())
             ->getQuery()
             ->getResult();
