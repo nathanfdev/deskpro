@@ -455,7 +455,7 @@
 {% block captcha_widget %}
 {% spaceless %}
     <div class="captcha-field">
-        <img src="{{ root_url(false) }}{{ captcha_code }}" title="captcha" width="{{ captcha_width }}" height="{{ captcha_height }}" />
+        <img src="{{ root_url(false) }}{{ no_cache_url(captcha_code) }}" title="captcha" width="{{ captcha_width }}" height="{{ captcha_height }}" />
         {{ form_widget(form, { attr: { class: 'shorter' } } ) }}
     </div>
 {% endspaceless %}
