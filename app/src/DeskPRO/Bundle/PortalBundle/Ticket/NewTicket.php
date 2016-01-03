@@ -147,7 +147,6 @@ class NewTicket
         $person->setName($person->getDisplayName());
         $person = $this->person_factory->createPersonByEmail($person->getEmailAddress(), $person_context);
 
-        $ticket->person = $person;
         $ticket->setPerson($person);
         $ticket_message->setPerson($person);
         foreach ($ticket_message->getAttachments() as $attachment) {
