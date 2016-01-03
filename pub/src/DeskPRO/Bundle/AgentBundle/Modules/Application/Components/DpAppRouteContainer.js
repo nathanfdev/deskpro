@@ -48,7 +48,7 @@ export class DpAppRouteContainer extends React.Component {
       {
         user: user,
         dispatch: dispatch,
-        client: actionAlerts.client
+        clients: actionAlerts.clients
       }
     );
     this.ns.startPolling();

@@ -7,9 +7,10 @@ export class NotificationService {
 
   constructor(props) {
     this.options = {};
+    this.clients = [];
     Object.assign(this.options, props);
     this.createEmitter();
-    this.createClient();
+    this.createClients();
   }
 
   createEmitter() {
@@ -21,27 +22,33 @@ export class NotificationService {
     });
   }
 
-  createClient() {
-    this.options.client.options.me = this.options.user.get('id');
-    this.options.client.options.dispatcher = this.eventEmitter.emit.bind(this.eventEmitter);
-    switch (this.options.client.type) {
+  createClients() {
+    const me = this.options.user.get('id');
+    const dispatcher = this.eventEmitter.emit.bind(this.eventEmitter);
+    this.options.clients.map(client => {
+      client.options.dispatcher = dispatcher;
+      client.options.me = me;
+      this.clients.push(this.createClient(client));
+    });
+  }
+
+  createClient(clientConfig) {
+    switch (clientConfig.type) {
       case 'pusher':
-        this.client = new PusherClient(this.options.client.options);
-        break;
+        return new PusherClient(clientConfig.options);
       case 'polling':
-        this.client = new PollingClient(this.options.client.options);
-        break;
+        return new PollingClient(clientConfig.options);
       default:
-        throw new Error('You should provide supported client. Given is ' + this.options.client.type);
+        throw new Error('You should provide supported client. Given is ' + clientConfig.type);
     }
   }
 
   startPolling() {
     this.eventEmitter.on('action_alert', (data) => this.options.dispatch(newActionAlerts(data)));
-    this.client.bind('private-channel-' + this.options.user.get('id'), 'action_alert');
+    this.clients.map(client => client.bind('private-channel-' + this.options.user.get('id'), 'action_alert'));
   }
 
   stopPolling() {
-    this.client.stopPolling();
+    this.clients.map(client => client.stopPolling());
   }
 }
