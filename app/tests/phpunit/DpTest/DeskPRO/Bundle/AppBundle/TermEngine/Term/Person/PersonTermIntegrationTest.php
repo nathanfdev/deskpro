@@ -29,9 +29,9 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent;
 
-use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketsSelectCriteria;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Person\PersonTerm;
 use DpTest\DeskPRO\Bundle\AppBundle\TermEngine\TermIntegrationTest;
 
@@ -119,7 +119,7 @@ class PersonTermIntegrationTest extends TermIntegrationTest
      */
     public function it_should_properly_select_Carol_tickets_when_using_TicketSelectCriteria()
     {
-        $term = TicketsSelectCriteria::createTerm(['person' => $this->carol->getId()]);
+        $term = $this->get('dp.app.term_engine.tickets_select_criteria')->createTerm(['person' => $this->carol->getId()]);
         $this->assertTermSelectsTickets($term, $this->carolTickets);
     }
 }
