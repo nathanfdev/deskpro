@@ -269,7 +269,12 @@ class PortalSupportExtension extends \Twig_Extension
         return $base_url;
     }
 
-    public function rootUrl()
+    /**
+     * @param bool $trailing_slash
+     *
+     * @return string
+     */
+    public function rootUrl($trailing_slash = true)
     {
         $portal_router = $this->container->get('router');
 
@@ -284,6 +289,10 @@ class PortalSupportExtension extends \Twig_Extension
             array(),
             UrlGeneratorInterface::ABSOLUTE_URL
         );
+
+        if (!$trailing_slash) {
+            $root_url = rtrim($root_url, '/');
+        }
 
         return $root_url;
     }
