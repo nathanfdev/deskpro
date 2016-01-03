@@ -109,7 +109,7 @@ class RefreshCountsMessageGenerator extends AbstractGenerator
         $message = $this->getChatMessage($event);
         $targets = [];
         foreach ($message->getChat()->getPersonList() as $target) {
-            if (is_object($this->user) && $target->getId() !== $this->user->getId()) {
+            if (is_object($this->token->getUser()) && $target->getId() !== $this->token->getUser()->getId()) {
                 $targets[] = $target;
             }
         }

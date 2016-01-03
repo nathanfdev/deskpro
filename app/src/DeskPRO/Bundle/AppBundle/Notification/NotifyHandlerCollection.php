@@ -48,8 +48,9 @@ class NotifyHandlerCollection extends AbstractCollection
         if (!$this->hasHandler($handler)) {
             $this->attached_handlers[$handler->getType()] = true;
             $this->collection[]                           = $handler;
+        } else {
+            throw new \InvalidArgumentException(sprintf('Handler [ %s ] already exists!', $handler->getType()));
         }
-        throw new \InvalidArgumentException(sprintf('Handler [ %s ] already exists!', $handler->getType()));
     }
 
     /**

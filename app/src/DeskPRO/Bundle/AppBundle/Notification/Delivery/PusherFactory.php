@@ -28,13 +28,13 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification\Delivery;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Application\DeskPRO\NewSettings\SettingsResolver;
 
 class PusherFactory
 {
-    public function createPusher(ContainerInterface $container)
+    public function createPusher(SettingsResolver $resolver)
     {
-        $settings = $container->get('settings_resolver')->getGlobalSettings();
+        $settings = $resolver->getGlobalSettings();
 
         return new \Pusher(
             $settings->get('notification.settings.pusher_client.appKey'),
