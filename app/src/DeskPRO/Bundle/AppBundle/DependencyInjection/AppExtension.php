@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -64,6 +65,7 @@ class AppExtension extends Extension
         }
 
         $container->setParameter('data_serializer.types', $types);
+        $container->setParameter('notification.settings', $config['notification']['strategies']);
 
         $loader = new YamlDirectoryLoader($container);
         $loader->loadDir(__DIR__.'/../Resources/config/services');

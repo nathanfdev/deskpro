@@ -31,6 +31,7 @@
  *
  * @category HttpFoundation
  */
+
 namespace Application\DeskPRO\HttpFoundation\SessionStorage;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;

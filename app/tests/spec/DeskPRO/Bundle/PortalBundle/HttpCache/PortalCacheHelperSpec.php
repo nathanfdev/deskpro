@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\PortalBundle\HttpCache;
 
 use DeskPRO\Bundle\PortalBundle\HttpCache\PortalHttpCache;

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\People\PersonMerge;
 
 use Application\DeskPRO\App;

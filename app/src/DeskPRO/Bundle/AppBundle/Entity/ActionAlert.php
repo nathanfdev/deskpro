@@ -1,0 +1,213 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+/**
+ * DeskPRO.
+ */
+
+namespace DeskPRO\Bundle\AppBundle\Entity;
+
+use Doctrine\Common\NotifyPropertyChanged;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * Class Event.
+ *
+ * @ORM\Entity
+ * @ORM\Table(name="notify_action_alerts")
+ * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
+ * @ORM\InheritanceType("NONE")
+ *
+ * @category Entities
+ */
+class ActionAlert implements EntityInterface, NotifyPropertyChanged, NotificationEntityInterface
+{
+    use NotifyPropertyChangedTrait;
+
+    /**
+     * @var int
+     * @ORM\Id()
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    protected $id;
+
+    /**
+     * @var int
+     * @ORM\Column(type="integer")
+     * @Assert\NotNull()
+     */
+    protected $target_id;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=80)
+     * @Assert\NotNull()
+     */
+    protected $uuid;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(type="datetime", nullable=false)
+     * @Assert\NotNull()
+     */
+    protected $date_created;
+
+    /**
+     * @var array
+     * @ORM\Column(type="json_array", nullable=false)
+     * @Assert\NotNull()
+     */
+    protected $data;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=100)
+     * @Assert\NotNull()
+     */
+    protected $type;
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return Event
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTargetId()
+    {
+        return $this->target_id;
+    }
+
+    /**
+     * @param mixed $target_id
+     *
+     * @return ActionAlert
+     */
+    public function setTargetId($target_id)
+    {
+        $this->target_id = $target_id;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * @param string $uuid
+     *
+     * @return ActionAlert
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
+    /**
+     * @param \DateTime $date_created
+     *
+     * @return ActionAlert
+     */
+    public function setDateCreated($date_created)
+    {
+        $this->date_created = $date_created;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return ActionAlert
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return ActionAlert
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+}

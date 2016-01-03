@@ -13,6 +13,12 @@ services:
       - @doctrine.orm.default_entity_manager
       - @data.departments
 
+  deskpro.agentchat.helper:
+    class: DeskPRO\Bundle\AppBundle\AgentChat\Helper
+    arguments:
+      - @deskpro.agentchat.messenger
+      - @data_serializer
+
   deskpro.agentchat.searcher:
     class: DeskPRO\Bundle\AppBundle\AgentChat\Search\Doctrine
     arguments: [@doctrine.orm.default_entity_manager]

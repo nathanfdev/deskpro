@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\View\Pagerfanta\Template;
 
 use Pagerfanta\View\Template\Template;

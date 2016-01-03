@@ -1031,4 +1031,47 @@ return array(
     'rate_limit.submit_ticket.guest.limit'    => 3,
     'rate_limit.submit_ticket.guest.time'     => 15 * 60, // 15 min
     'rate_limit.submit_ticket.guest.response' => 'captcha',
+
+    ####################################################################################################################
+    # notification.settings
+    ####################################################################################################################
+
+    /*
+     * Here you CAN define strategies for different notifications.
+     * E.g. you can deliver messages from IM immediately via pusher application
+     * or ticket updates only via db. Therefore you can use several methods to deliver one event - but you should avoid it,
+     * because it could be unstable just right now.
+     */
+    'notification.settings.strategies' => [
+        'notification.agent_chat.new_message' => [
+            'strategy' => 'immediate',
+            'delivery' => [
+                'pusher',
+            ],
+        ],
+        'notification.yet.another.system.event' => [
+            'strategy' => 'deferred',
+            'delivery' => [
+                'db',
+            ],
+            'persistance' => 'db',
+        ],
+    ],
+    # Also you MUST provide default strategy. It will be used to handle events that was not described.
+    'notification.settings.default_strategy' => [
+        'strategy' => 'immediate',
+        'delivery' => [
+            'db',
+        ],
+    ],
+    # You MUST provide pusher application settings if you plan to use it.
+    # You SHOULD place it in your config.php file
+    'notification.settings.pusher_client.appKey'  => '',
+    'notification.settings.pusher_client.secret'  => '',
+    'notification.settings.pusher_client.appId'   => '',
+    'notification.settings.pusher_client.options' => [],
+    'notification.settings.pusher_client.debug'   => true,
+
+    # Simple delivery handler with polling
+    'notification.settings.polling_client.polling_interval' => 5000,
 );

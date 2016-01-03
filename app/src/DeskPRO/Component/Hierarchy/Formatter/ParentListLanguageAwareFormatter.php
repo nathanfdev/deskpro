@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Component\Hierarchy\Formatter;
 
 use DeskPRO\Component\Hierarchy\HierarchyNode;

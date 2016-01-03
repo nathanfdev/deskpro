@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\Bundle\AppBundle\DataService\Content\ContentCount;
 
 use Application\DeskPRO\Entity\Article;

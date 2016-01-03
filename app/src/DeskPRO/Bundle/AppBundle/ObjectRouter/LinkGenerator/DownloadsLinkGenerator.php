@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator;
 
 use Application\DeskPRO\Entity\ArticleAttachment;

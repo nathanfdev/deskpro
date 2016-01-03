@@ -31,6 +31,7 @@
  *
  * @category Search
  */
+
 namespace Application\DeskPRO\Search;
 
 use Application\DeskPRO\Entity\Person;

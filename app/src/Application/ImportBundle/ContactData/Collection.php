@@ -28,7 +28,7 @@
 
 namespace Application\ImportBundle\ContactData;
 
-use Application\ImportBundle\AbstractCollection;
+use DeskPRO\Component\Util\AbstractCollection;
 
 /**
  * Collection of contact data helpers.

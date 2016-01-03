@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\Twig;
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;

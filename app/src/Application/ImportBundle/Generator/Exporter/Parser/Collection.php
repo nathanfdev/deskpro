@@ -28,7 +28,7 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser;
 
-use Application\ImportBundle\AbstractCollection;
+use DeskPRO\Component\Util\AbstractCollection;
 use Exception;
 
 /**

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler;

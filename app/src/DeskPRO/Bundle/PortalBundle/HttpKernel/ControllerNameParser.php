@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\HttpKernel;
 
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;

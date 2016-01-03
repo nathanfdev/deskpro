@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\Bundle\AppBundle\DataService\Content;
 
 use DeskPRO\Bundle\AppBundle\DataService\Content\ArticlesCriteria;

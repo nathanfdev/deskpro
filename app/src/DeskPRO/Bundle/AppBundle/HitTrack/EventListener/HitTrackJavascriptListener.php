@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\HitTrack\EventListener;
 
 use DeskPRO\Bundle\AppBundle\Entity\HitRecord;

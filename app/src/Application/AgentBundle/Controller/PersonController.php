@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -231,7 +232,6 @@ class PersonController extends AbstractController
             $vcard->setFormattedName($person->name);
             $vcard->setName($person->last_name, $person->first_name, '', '', '');
             //$vcard->setPhoto($person->gravatar_url);
-
 
             if ($person->organization) {
                 $vcard->addOrganization($person->organization->name);

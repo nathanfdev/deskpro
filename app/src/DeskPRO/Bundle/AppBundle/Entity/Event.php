@@ -26,85 +26,79 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle;
+/**
+ * DeskPRO.
+ */
+
+namespace DeskPRO\Bundle\AppBundle\Entity;
+
+use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
+use Doctrine\Common\NotifyPropertyChanged;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Base collection.
+ * Class Event.
  *
- * Class AbstractCollection
+ * @ORM\Entity
+ * @ORM\Table(name="notification_system_event")
+ * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
+ * @ORM\InheritanceType("NONE")
+ *
+ * @category Entities
  */
-abstract class AbstractCollection implements \Iterator, \Countable
+class Event implements EntityInterface, NotifyPropertyChanged
 {
-    /**
-     * @var array
-     */
-    protected $collection = array();
+    use NotifyPropertyChangedTrait;
 
     /**
-     * {@inheritdoc}
+     * @var int
+     * @ORM\Id()
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    public function current()
+    protected $id;
+
+    /**
+     * @var SystemEventInterface
+     * @ORM\Column(type="object")
+     */
+    protected $event;
+
+    /**
+     * @return int
+     */
+    public function getId()
     {
-        return current($this->collection);
+        return $this->id;
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function next()
-    {
-        next($this->collection);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function key()
-    {
-        return key($this->collection);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function valid()
-    {
-        return current($this->collection);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function rewind()
-    {
-        reset($this->collection);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function count()
-    {
-        return count($this->collection);
-    }
-
-    /**
-     * To array.
+     * @param int $id
      *
-     * @return array
+     * @return Event
      */
-    public function toArray()
+    public function setId($id)
     {
-        return $this->collection;
+        $this->id = $id;
     }
 
     /**
-     * Get and remove last element of the collection.
-     *
-     * @return mixed|null
+     * @return SystemEventInterface
      */
-    public function pop()
+    public function getEvent()
     {
-        return array_pop($this->collection);
+        return $this->event;
+    }
+
+    /**
+     * @param SystemEventInterface $event
+     *
+     * @return Event
+     */
+    public function setEvent(SystemEventInterface $event)
+    {
+        $this->event = $event;
+
+        return $this;
     }
 }

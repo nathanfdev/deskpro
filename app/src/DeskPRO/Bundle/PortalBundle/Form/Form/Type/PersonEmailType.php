@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\NotBannedEmail;
@@ -81,8 +82,8 @@ class PersonEmailType extends AbstractType
             },
             'email_constraints' => [
                 new NotBannedEmail(['message' => 'portal.forms.error_banned_email']),
-                new NotBlank(['message'       => 'portal.forms.error_email_required']),
-                new Email(['message'          => 'portal.forms.error_email_invalid']),
+                new NotBlank(['message' => 'portal.forms.error_email_required']),
+                new Email(['message' => 'portal.forms.error_email_invalid']),
             ],
         ]);
     }

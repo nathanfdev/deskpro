@@ -31,10 +31,10 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\LabelFeedback;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\PortalBundle\Form\Collection\CustomDataCollection;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -615,7 +615,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
      */
     public function setHiddenStatus($value = null)
     {
-        $last_hidden_status = $this->hidden_status;
+        $last_hidden_status  = $this->hidden_status;
         $this->hidden_status = $value;
         $this->_onPropertyChanged('hidden_status', $last_hidden_status, $value);
 

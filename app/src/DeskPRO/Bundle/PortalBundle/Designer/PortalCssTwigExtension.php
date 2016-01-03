@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Designer;
 
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;

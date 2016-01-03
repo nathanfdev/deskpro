@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTestSrc\TestBundle\MockHelpers;
 
 use Doctrine\ORM\AbstractQuery as Query;

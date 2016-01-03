@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Helper;
 
 use Application\DeskPRO\Entity\Ticket;

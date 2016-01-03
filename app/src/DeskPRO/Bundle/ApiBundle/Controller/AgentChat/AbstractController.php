@@ -29,9 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\AgentChat;
 
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController as BaseController;
+use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\AgentChat\Messenger;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;

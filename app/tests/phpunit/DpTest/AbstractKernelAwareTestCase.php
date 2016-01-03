@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest;
 
 use Application\DeskPRO\Entity\Template;

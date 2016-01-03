@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\View\PageTitle;
 
 use Application\DeskPRO\Entity\Article;

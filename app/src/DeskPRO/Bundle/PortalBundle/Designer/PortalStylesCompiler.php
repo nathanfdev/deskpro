@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Designer;
 
 use Application\DeskPRO\Entity\Blob;
@@ -285,8 +286,8 @@ class PortalStylesCompiler
 
     /**
      * @throws \Exception
-     * @return string
      *
+     * @return string
      */
     private function getStylePath()
     {

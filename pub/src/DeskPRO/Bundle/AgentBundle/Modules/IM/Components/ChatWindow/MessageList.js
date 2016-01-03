@@ -30,12 +30,12 @@ export class MessageList extends React.Component {
 
   componentDidMount() {
     this.refresh();
-    const interval = setInterval(this.refresh, 15000);
-    const countsInterval = setInterval(() => this.props.dispatch(refreshCounts()), 15000);
-    this.state = {
-      interval: interval,
-      countsInterval: countsInterval
-    };
+    //const interval = setInterval(this.refresh, 15000);
+    //const countsInterval = setInterval(() => this.props.dispatch(refreshCounts()), 15000);
+    //this.state = {
+    //  interval: interval,
+    //  countsInterval: countsInterval
+    //};
     this.shouldScrollBottom = true;
     this.firstScroll = true;
   }
@@ -61,8 +61,8 @@ export class MessageList extends React.Component {
   };
 
   componentWillUnmount() {
-    clearInterval(this.state.interval);
-    clearInterval(this.state.countsInterval);
+    //clearInterval(this.state.interval);
+    //clearInterval(this.state.countsInterval);
   }
 
   getPath = () => {

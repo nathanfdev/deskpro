@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Languages\Build;
 
 use Guzzle\Http\Client as HttpClient;

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\EventListener;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializerContext;
@@ -113,8 +114,8 @@ class TransformerListener implements EventSubscriberInterface
      * @param DataSerializerContext $context
      *
      * @throws \DeskPRO\Bundle\AppBundle\DataSerializer\Exception\DataSerializerException
-     * @return \DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerResponse
      *
+     * @return \DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerResponse
      */
     protected function doTransform($data, DataSerializerContext $context)
     {

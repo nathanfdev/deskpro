@@ -16,7 +16,7 @@ import $ from 'jquery';
 @connect(state => ({
   user: meSelector(state),
   dpWindow: state.Application.dpWindow,
-  workspaceDims: workspaceDimsSelector(state)
+  workspaceDims: workspaceDimsSelector(state),
 }))
 @DragDropContext(HTML5Backend)
 export class DpApp extends React.Component {

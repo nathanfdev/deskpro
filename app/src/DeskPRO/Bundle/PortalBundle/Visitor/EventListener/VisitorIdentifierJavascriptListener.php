@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Visitor\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;

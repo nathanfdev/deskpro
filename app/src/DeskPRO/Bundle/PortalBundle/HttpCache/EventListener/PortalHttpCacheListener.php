@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\HttpCache\EventListener;
 
 use Application\DeskPRO\Entity\Article;

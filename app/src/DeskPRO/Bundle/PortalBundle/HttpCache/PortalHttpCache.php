@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\HttpCache;
 
 use FOS\HttpCache\SymfonyCache\UserContextSubscriber;

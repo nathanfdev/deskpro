@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\DependencyInjection;
 
 use DeskPRO\Bundle\AppBundle\DependencyInjection\YamlDirectoryLoader;

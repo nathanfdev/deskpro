@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Designer;
 
 /**
@@ -80,8 +81,8 @@ class SassDocParser
      * @param array $variable
      *
      * @throws \Exception
-     * @return string
      *
+     * @return string
      */
     private function cssToValue(array $variable)
     {
@@ -101,8 +102,8 @@ class SassDocParser
      * @param string $value
      *
      * @throws \Exception
-     * @return array
      *
+     * @return array
      */
     private function parseSizeVariable($value)
     {
@@ -116,8 +117,8 @@ class SassDocParser
 
     /**
      * @throws \Exception
-     * @return string
      *
+     * @return string
      */
     private function resolveFilePath()
     {

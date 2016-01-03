@@ -1819,4 +1819,12 @@ return array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/12/Build1450199467.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1450199467',
     ),
+    1450199468 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/12/Build1450199468.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1450199467',
+    ),
+    1450199568 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/12/Build1450199568.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1450199467',
+    ),
 );

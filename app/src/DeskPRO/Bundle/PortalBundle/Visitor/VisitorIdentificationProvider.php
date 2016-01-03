@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Visitor;
 
 use DeskPRO\Component\Util\RandUtils;

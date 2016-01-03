@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller\LowLevel;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;

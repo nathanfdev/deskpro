@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\View\Representation\StandardRepresentation;
@@ -59,8 +60,8 @@ class BaseController extends FOSRestController
 
     /**
      * @param array|object $data
-     * @param string $includes_string
-     * @param int $type
+     * @param string       $includes_string
+     * @param int          $type
      *
      * @return array
      */
@@ -75,7 +76,7 @@ class BaseController extends FOSRestController
             if (is_object($data) && method_exists($data, 'count')) {
                 return [
                     'meta' => [
-                        'count' => $data->count(),
+                        'count'       => $data->count(),
                         'total_count' => $data->count(),
                     ],
                 ];
@@ -83,7 +84,7 @@ class BaseController extends FOSRestController
 
             return [
                 'meta' => [
-                    'count' => $data['count'],
+                    'count'       => $data['count'],
                     'total_count' => $data['count'],
                 ],
             ];
@@ -122,7 +123,7 @@ class BaseController extends FOSRestController
 
     /**
      * @param string $class
-     * @param int $id
+     * @param int    $id
      * @param string $message
      *
      * @return object
@@ -165,7 +166,7 @@ class BaseController extends FOSRestController
     }
 
     /**
-     * Remove additional service parameters like `include_headers` before parameters validation
+     * Remove additional service parameters like `include_headers` before parameters validation.
      *
      * @param Request $request
      *

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Component\Util;
 
 use Doctrine\Common\Proxy\Exception\InvalidArgumentException;

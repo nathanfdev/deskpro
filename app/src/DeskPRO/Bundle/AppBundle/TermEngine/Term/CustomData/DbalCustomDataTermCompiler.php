@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\CustomData;
 
 use Application\DeskPRO\Entity\CustomDataAbstract;

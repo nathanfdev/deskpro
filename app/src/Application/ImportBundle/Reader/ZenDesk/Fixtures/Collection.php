@@ -28,7 +28,7 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk\Fixtures;
 
-use Application\ImportBundle\AbstractCollection;
+use DeskPRO\Component\Util\AbstractCollection;
 use Exception;
 
 /**

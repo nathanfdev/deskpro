@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Helper;
 
 use Application\DeskPRO\Entity\ContentAbstract;

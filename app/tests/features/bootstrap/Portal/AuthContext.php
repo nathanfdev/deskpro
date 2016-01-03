@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpBehat\Portal;
 
 use Application\DeskPRO\Entity\Person;

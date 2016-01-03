@@ -28,9 +28,9 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\ImportBundle\AbstractCollection;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\TypeOrderInterface;
+use DeskPRO\Component\Util\AbstractCollection;
 use Exception;
 
 /**

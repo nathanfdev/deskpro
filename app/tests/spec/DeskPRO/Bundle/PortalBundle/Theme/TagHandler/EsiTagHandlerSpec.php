@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\PortalBundle\Theme\TagHandler;
 
 use DeskPRO\Bundle\PortalBundle\HttpCache\PortalCacheHelper;

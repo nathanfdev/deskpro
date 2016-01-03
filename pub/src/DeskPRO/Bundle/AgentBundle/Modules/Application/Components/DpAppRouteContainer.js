@@ -7,11 +7,14 @@ import { WelcomeBack } from '../../Welcome/Components/WelcomeBack';
 import { meSelector, meStateSelector } from '../RecordStores/Selectors/meSelectors';
 import { IMContainer } from '../../IM/Components/IMContainer';
 import { PreferencesContainer } from './Preferences/PreferencesContainer';
+import { NotificationService } from 'DeskPRO/Bundle/AgentBundle/Services/NotificationService';
 
 @connect(state => ({
   dpWindow: state.Application.dpWindow,
   userStatus: meStateSelector.statusSel(state),
-  user: meSelector(state)
+  user: meSelector(state),
+  actionAlerts: state.Application.notifications.get('actionAlerts'),
+  actionAlertsSetup: state.Application.notifications.get('actionAlertsSetup')
 }))
 export class DpAppRouteContainer extends React.Component {
 
@@ -20,7 +23,9 @@ export class DpAppRouteContainer extends React.Component {
     dpWindow: PropTypes.object.isRequired,
     userStatus: PropTypes.object.isRequired,
     user: PropTypes.object.isRequired,
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
+    actionAlerts: PropTypes.object.isRequired,
+    actionAlertsSetup: PropTypes.bool.isRequired
   };
 
   componentDidMount() {
@@ -34,13 +39,26 @@ export class DpAppRouteContainer extends React.Component {
 
   componentWillUnmount() {
     clearTimeout(this.welcomePageTimer);
+    this.ns.stopPolling();
+  }
+
+  setupPolling() {
+    const { user, dispatch, actionAlerts} = this.props;
+    this.ns = new NotificationService(
+      {
+        user: user,
+        dispatch: dispatch,
+        clients: actionAlerts.clients
+      }
+    );
+    this.ns.startPolling();
   }
 
   hideWelcomePage() {
-    const { userStatus, dispatch } = this.props;
-
-    if (!this.welcomePageTimer && userStatus.get('isDone')) {
+    const { userStatus, dispatch, actionAlertsSetup } = this.props;
+    if (!this.welcomePageTimer && userStatus.get('isDone') && !actionAlertsSetup) {
       this.welcomePageTimer = setTimeout(() => dispatch(AppActions.doneInitialLoad()), 3000);
+      this.setupPolling();
     }
   }
 

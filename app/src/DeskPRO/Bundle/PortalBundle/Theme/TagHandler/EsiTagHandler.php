@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Theme\TagHandler;
 
 use Application\DeskPRO\Domain\DomainObject;
