@@ -42,6 +42,9 @@ use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * Class PersonFactory.
+ */
 class PersonFactory
 {
     /**
@@ -69,6 +72,15 @@ class PersonFactory
      */
     private $user_rule_processor;
 
+    /**
+     * Constructor.
+     *
+     * @param EntityManager            $em
+     * @param EventDispatcherInterface $event_dispatcher
+     * @param BrandStack               $brand_stack
+     * @param LanguageStack            $language_stack
+     * @param UserRuleProcessor        $user_rule_processor
+     */
     public function __construct(EntityManager $em, EventDispatcherInterface $event_dispatcher, BrandStack $brand_stack, LanguageStack $language_stack, UserRuleProcessor $user_rule_processor)
     {
         $this->em                  = $em;
@@ -78,20 +90,29 @@ class PersonFactory
         $this->user_rule_processor = $user_rule_processor;
     }
 
+    /**
+     * @return Person
+     */
     public function createNewPerson()
     {
         $person = new Person();
-
         $person->setLanguage($this->language_stack->getActiveOrDefault());
 
         return $person;
     }
 
+    /**
+     * @param string              $raw_email
+     * @param CreatePersonContext $context
+     *
+     * @return Person
+     */
     public function createPersonByEmail($raw_email, CreatePersonContext $context)
     {
         $person = new Person();
 
-        if ($name = $context->getName()) {
+        $name = $context->getName();
+        if ($name) {
             $person->setName($name);
         }
 
@@ -113,6 +134,12 @@ class PersonFactory
         return $person;
     }
 
+    /**
+     * @param string $name
+     * @param null   $default
+     *
+     * @return mixed
+     */
     protected function getBrandSetting($name, $default = null)
     {
         return $this->brand_stack->getActive()->getSetting($name, $default);
@@ -153,6 +180,11 @@ class PersonFactory
      * 2. LoginRequiredException - this guest is actually a person who can login, so force a login.
      * 3. EmailValidationRequiredException - this is a new person and we don't want them or their content in the system until
      *                                       they pass email validation.
+     *
+     * @param PersonGuest $guest
+     * @param bool        $already_validated
+     *
+     * @return bool
      */
     public function checkGuestForValidation(PersonGuest $guest, $already_validated = false)
     {
@@ -166,7 +198,8 @@ class PersonFactory
         }
 
         if (!$person = $this->getPersonByEmail($guest_email)) {
-            if ($email = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($guest_email)) {
+            $email = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($guest_email);
+            if ($email) {
                 $person = $email->getPerson();
             }
         }
@@ -185,6 +218,12 @@ class PersonFactory
         }
     }
 
+    /**
+     * @param string $email_address
+     * @param string $name
+     *
+     * @return Person
+     */
     public function createPersonFromGuestInfo($email_address, $name)
     {
         $person = Person::newContactPerson([
@@ -199,15 +238,27 @@ class PersonFactory
         return $person;
     }
 
+    /**
+     * @param string              $email
+     * @param CreatePersonContext $context
+     *
+     * @return Person
+     */
     public function getOrCreatePersonByEmail($email, CreatePersonContext $context)
     {
-        if ($person = $this->getPersonByEmail($email)) {
+        $person = $this->getPersonByEmail($email);
+        if ($person) {
             return $person;
         }
 
         return $this->createPersonByEmail($email, $context);
     }
 
+    /**
+     * @param string $email
+     *
+     * @return Person
+     */
     public function getPersonByEmail($email)
     {
         if ($email instanceof PersonEmail) {
