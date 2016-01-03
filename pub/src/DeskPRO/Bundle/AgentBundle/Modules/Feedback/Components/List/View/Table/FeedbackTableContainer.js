@@ -5,12 +5,12 @@ import { Table, Th, Td, TdId, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/M
 import { applyParams } from '../../../../Actions/FeedbackListActions';
 import { feedbackSelector, peopleSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackStatusCategoriesSelector, feedbackCategoriesSelector }
   from '../../../../Selectors/recordStores';
-import { currentListSortSelector, currentListOrderSelector }
+import { idsSelector, currentListSortSelector, currentListOrderSelector }
   from '../../../../Selectors/list';
 
 import { connect } from 'react-redux';
 @connect(state => ({
-  ids: state.Feedback.list.get('elements'),
+  ids: idsSelector(state),
   feedback: feedbackSelector(state),
   viewFields: state.Feedback.list.get('tableVisibleFields'),
   feedbackTypes: feedbackTypesSelector(state),
@@ -89,7 +89,7 @@ export class FeedbackTableContainer extends Component {
         <Td visible={this.isVisible('type')}>
           {feedbackTypes.get(element.get('category')).get('title')}
         </Td>
-        <Td visible={this.isVisible('custom_category')}>
+        <Td visible={this.isVisible('category')}>
           {this.renderCategory(element.get('id'))}
         </Td>
         <Td visible={this.isVisible('num_ratings')}>
@@ -140,7 +140,7 @@ export class FeedbackTableContainer extends Component {
           <Th sort="type" title="Type"
               visible={this.isVisible('type')}/>
           <Th sort="custom_category" title="Category"
-              visible={this.isVisible('custom_category')}/>
+              visible={this.isVisible('category')}/>
           <Th sort="num_ratings"
               title="Votes"
               currentOrder={currentOrder}

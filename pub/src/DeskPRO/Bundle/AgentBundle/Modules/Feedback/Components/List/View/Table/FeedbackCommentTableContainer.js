@@ -4,14 +4,13 @@ import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Componen
 import { Table, Th, Td, TdId, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { feedbackSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackCategoriesSelector, peopleSelector }
   from '../../../../Selectors/recordStores';
-import { currentListSortSelector, currentListOrderSelector }
+import { idsSelector, currentListSortSelector, currentListOrderSelector }
   from '../../../../Selectors/list';
-import { defaultTableFields } from '../../../List/ControlBar/FeedbackViewOptions';
 import { applyParams } from '../../../../Actions/FeedbackListActions';
 
 import { connect } from 'react-redux';
 @connect(state => ({
-  ids: state.Feedback.list.get('elements'),
+  ids: idsSelector(state),
   comments: feedbackCommentsSelector(state),
   feedback: feedbackSelector(state),
   feedbackCategories: feedbackCategoriesSelector(state),
@@ -42,16 +41,8 @@ export class FeedbackCommentTableContainer extends Component {
 
   isVisible(field) {
     const {viewFields} = this.props;
-    return viewFields.includes(field);
+    return viewFields && viewFields.includes(field);
   }
-
-  /* It's for change display and priority fields functionality
-   isVisible(field) {
-   const {commentsTableViewFields} = this.props;
-   const tableFields = commentsTableViewFields ? commentsTableViewFields.toJS() : defaultTableFields;
-   const fieldSettings = tableFields.find(item=> item.name === field);
-   return fieldSettings && fieldSettings.status === 'show';
-   }*/
 
   sortTable(param, order) {
     this.props.dispatch(applyParams({ sort: param, order }));
