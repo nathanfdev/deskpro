@@ -28,11 +28,11 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 /**
  * Class AbstractGenerator.
@@ -45,9 +45,9 @@ abstract class AbstractGenerator implements MessageGeneratorInterface
     protected $em;
 
     /**
-     * @var TokenInterface
+     * @var TokenStorageInterface
      */
-    protected $token;
+    protected $token_storage;
 
     /**
      * @param EntityManager         $em
@@ -55,8 +55,8 @@ abstract class AbstractGenerator implements MessageGeneratorInterface
      */
     public function __construct(EntityManager $em, TokenStorageInterface $token_storage)
     {
-        $this->em    = $em;
-        $this->token = $token_storage->getToken();
+        $this->em            = $em;
+        $this->token_storage = $token_storage;
     }
 
     /**
@@ -79,5 +79,13 @@ abstract class AbstractGenerator implements MessageGeneratorInterface
     public function getType()
     {
         return get_called_class();
+    }
+
+    /**
+     * @return Person
+     */
+    public function getUser()
+    {
+        $this->token_storage->getToken()->getUser();
     }
 }
