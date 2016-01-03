@@ -50,13 +50,25 @@ class StrategyFactory
      */
     protected $config;
 
+    /** @var NotificationStrategyInterface */
+    protected $default_strategy;
+
     /**
      * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->config    = $this->container->getParameter('notification.settings');
+        $this->config    = $this->container->get('deskpro.core.settings')->get(
+            'notification.settings.strategies',
+            $this->container->getParameter('notification.settings')
+        );
+        $this->createDefaultStrategy($this->container->get('deskpro.core.settings')->get('notification.settings.default_strategy'));
+    }
+
+    private function createDefaultStrategy($config)
+    {
+        $this->default_strategy = $this->internalCreate($config);
     }
 
     /**
@@ -69,7 +81,7 @@ class StrategyFactory
         if (array_key_exists($event->getName(), $this->config)) {
             return $this->internalCreate($this->config[$event->getName()]);
         } else {
-            throw new \RuntimeException(sprintf('No strategy found for event [ %s ]', $event->getName()));
+            return $this->default_strategy;
         }
     }
 
@@ -98,8 +110,8 @@ class StrategyFactory
         switch ($strategy_name) {
             case 'immediate':
                 return new ImmediateStrategy();
-            case 'deffered':
-                return new DefferedStrategy();
+            case 'deferred':
+                return new DeferredStrategy();
             default:
                 throw new \RuntimeException(sprintf('Strategy with alias [ %s ] wasn\'t found!', $strategy_name));
         }

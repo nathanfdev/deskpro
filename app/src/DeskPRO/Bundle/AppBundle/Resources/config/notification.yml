@@ -6,7 +6,7 @@ app:
         delivery:
           - pusher
       notification.yet.another.system.event:
-        strategy: deffered
+        strategy: deferred
         delivery:
           - db
         persistance: db

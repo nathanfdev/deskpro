@@ -7,7 +7,7 @@ import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 export default class PollingClient extends AbstractClient {
   getDefaultOptions() {
     return {
-      pollingInterval: 25000,
+      polling_interval: 25000,
       me: 0,
       last_alert: Math.floor(Date.now() / 1000)
     };
@@ -16,7 +16,7 @@ export default class PollingClient extends AbstractClient {
   bind(channelName, eventName) {
     const that = this;
     that.options.eventName = eventName;
-    that.interval = setInterval(that.sendPoll.bind(that), that.options.pollingInterval);
+    that.interval = setInterval(that.sendPoll.bind(that), that.options.polling_interval);
   }
 
   sendPoll() {

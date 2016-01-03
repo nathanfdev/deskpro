@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Notification;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\ORM\EntityManager;
-use DeskPRO\Bundle\AppBundle\Entity\ActionAlert;
+use Application\DeskPRO\Settings\Settings;
 
 /**
  * Class NotificationService.
@@ -43,11 +43,17 @@ class NotificationService
     protected $em;
 
     /**
+     * @var Settings
+     */
+    protected $settings;
+
+    /**
      * @param EntityManager $em
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, Settings $settings)
     {
-        $this->em = $em;
+        $this->em       = $em;
+        $this->settings = $settings;
     }
 
     /**
@@ -86,21 +92,50 @@ class NotificationService
      */
     public function getClientsSetup()
     {
-        return [
-            [
-                'type'    => 'pusher',
-                'options' => [
-                    'appKey' => 'eaa00fb39fddc251d116',
-                    'debug'  => true,
-                ],
-            ],
-            [
-                'type'    => 'polling',
-                'options' => [
-                    'last_alert'      => $this->lastAlert(),
-                    'pollingInterval' => 5000,
-                ],
-            ],
-        ];
+        $handlers = [];
+
+        $strategies_config = $this->settings->get('notification.settings.strategies');
+
+        $strategies = array_merge(
+            is_array($strategies_config) ? $strategies_config : [],
+            [$this->settings->get('notification.settings.default_strategy')]
+        );
+
+        foreach ($strategies as $strategy) {
+            foreach ($strategy['delivery'] as $handler) {
+                $handlers[$handler] = true;
+            }
+        }
+
+        $setup = [];
+        foreach (array_keys($handlers) as $handler) {
+            $setup[] = $this->getClientSetup($handler);
+        }
+
+        return $setup;
+    }
+
+    protected function getClientSetup($handler)
+    {
+        switch ($handler) {
+            case 'pusher':
+                return [
+                    'type'    => 'pusher',
+                    'options' => [
+                        'appKey' => $this->settings->get('notification.settings.pusher_client.appKey'),
+                        'debug'  => $this->settings->get('notification.settings.pusher_client.debug'),
+                    ],
+                ];
+            case 'db':
+                return [
+                    'type'    => 'polling',
+                    'options' => [
+                        'last_alert'       => $this->lastAlert(),
+                        'polling_interval' => $this->settings->get('notification.settings.polling_client.polling_interval', 5000),
+                    ],
+                ];
+            default:
+                throw new \RuntimeException(sprintf('We can\'t find settings for [ %s ] client', $handler));
+        }
     }
 }
