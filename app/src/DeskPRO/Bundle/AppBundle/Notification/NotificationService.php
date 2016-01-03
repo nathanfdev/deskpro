@@ -50,17 +50,20 @@ class NotificationService
         $this->em = $em;
     }
 
+    /**
+     * @param        $last
+     * @param Person $user
+     *
+     * @return array
+     */
     public function getLastActionAlerts($last, Person $user)
     {
         $actionAlertRepo = $this->em->getRepository('App:ActionAlert');
-        /** @var ActionAlert $last */
-        if ($last) {
-            $last = $actionAlertRepo->findOneBy(['uuid' => $last]);
-        }
-        $qb     = $actionAlertRepo->createQueryBuilder('aa');
-        $result = $qb->where('aa.date_created > (:last)')
+        $qb              = $actionAlertRepo->createQueryBuilder('aa');
+        $date            = new \DateTime('@'.$last);
+        $result          = $qb->where('aa.date_created > (:last)')
             ->andWhere('aa.target_id = :target_id')
-            ->setParameter('last', $last ? $last->getDateCreated() : date('Y-m-d H:i:s'))
+            ->setParameter('last', $date->getTimestamp())
             ->setParameter('target_id', $user->getId())
             ->getQuery()
             ->getResult();
@@ -68,12 +71,36 @@ class NotificationService
         return $result;
     }
 
-    public function lastAlert(Person $user)
+    /**
+     * @return int
+     */
+    public function lastAlert()
     {
-        $actionAlertRepo = $this->em->getRepository('App:ActionAlert');
-        $last            = $actionAlertRepo->findBy(['target_id' => $user->getId()], ['id' => 'DESC']);
-        if ($last) {
-            return array_shift($last);
-        }
+        $date = new \DateTime();
+
+        return $date->getTimestamp();
+    }
+
+    /**
+     * @return array
+     */
+    public function getClientsSetup()
+    {
+        return [
+            [
+                'type'    => 'pusher',
+                'options' => [
+                    'appKey' => 'eaa00fb39fddc251d116',
+                    'debug'  => true,
+                ],
+            ],
+            [
+                'type'    => 'polling',
+                'options' => [
+                    'last_alert'      => $this->lastAlert(),
+                    'pollingInterval' => 5000,
+                ],
+            ],
+        ];
     }
 }
