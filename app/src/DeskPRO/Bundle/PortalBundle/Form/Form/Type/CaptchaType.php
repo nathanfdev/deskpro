@@ -40,6 +40,9 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * Class CaptchaType.
+ */
 class CaptchaType extends AbstractType
 {
     /**
@@ -52,12 +55,21 @@ class CaptchaType extends AbstractType
      */
     private $brand_stack;
 
+    /**
+     * Constructor.
+     *
+     * @param BrandStack      $brand_stack
+     * @param LanguageManager $language_manager
+     */
     public function __construct(BrandStack $brand_stack, LanguageManager $language_manager)
     {
         $this->language_manager = $language_manager;
         $this->brand_stack      = $brand_stack;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
@@ -82,17 +94,23 @@ class CaptchaType extends AbstractType
         });
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'deskpro_captcha';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
             'label'  => false,
             'mapped' => false,
-            'help'   => function (Options $options) {
+            'help'   => function () {
                 if ($this->isRecaptchaEnabled()) {
                     return false;
                 }
