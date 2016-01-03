@@ -31,7 +31,6 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
@@ -60,7 +59,7 @@ class NewTicketController extends AbstractController
      */
     public function newTicketAction(Request $request, $visitor_id)
     {
-        $ticket         = $this->getNewTicketService()->createNewTicket($request, $visitor_id, $this->getUser());
+        $ticket         = $this->getNewTicketService()->createNewTicket($request, $visitor_id);
         $person         = $ticket->getPerson();
         $ticket_message = $ticket->messages[0];
 
@@ -122,7 +121,7 @@ class NewTicketController extends AbstractController
                                 $attachment->setPerson($person);
                             }
 
-                            $new_ticket = $this->getNewTicketService()->acceptNewTicket($ticket, $person, $request);
+                            $new_ticket = $this->getNewTicketService()->acceptNewTicket($ticket, $request);
 
                             return $this->onSavedTicket($new_ticket, $request);
                         } catch (LoginRequiredException $e) {
@@ -142,20 +141,21 @@ class NewTicketController extends AbstractController
                                     $person->getEmailAddress(),
                                     $person->getDisplayName()
                                 );
+
                                 $this->get('portal_validation')->sendTicketVerificationEmail($ticket, $saved_form);
                                 $this->addFlash('success', $this->phrase('portal.flashes.guest_new_ticket_must_verify'));
 
                                 return $this->redirectToRoute('portal_thanks_verify');
                             } else {
                                 // this is a guest that we are accepting
-                                $new_ticket = $this->getNewTicketService()->acceptNewTicketForGuest($ticket, $ticket_message, $person, $request);
+                                $new_ticket = $this->getNewTicketService()->acceptNewTicketForGuest($ticket, $request);
 
                                 return $this->onSavedTicket($new_ticket, $request);
                             }
                         }
                     }
 
-                    $new_ticket = $this->getNewTicketService()->acceptNewTicket($ticket, $person, $request);
+                    $new_ticket = $this->getNewTicketService()->acceptNewTicket($ticket, $request);
 
                     return $this->onSavedTicket($new_ticket, $request);
                 }

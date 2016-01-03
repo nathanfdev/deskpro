@@ -108,4 +108,12 @@ abstract class AbstractApiController extends FOSRestController
     {
         return $this->container;
     }
+
+    /**
+     * @return \DeskPRO\Bundle\PortalBundle\Brand\BrandContainer
+     */
+    protected function getBrandContainer()
+    {
+        return $this->get('brand_stack')->getActive();
+    }
 }

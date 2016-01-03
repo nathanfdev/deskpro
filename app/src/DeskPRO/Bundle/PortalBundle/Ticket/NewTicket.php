@@ -133,15 +133,16 @@ class NewTicket
     }
 
     /**
-     * @param Ticket        $ticket
-     * @param TicketMessage $ticket_message
-     * @param Person        $person
-     * @param Request       $request
+     * @param Ticket  $ticket
+     * @param Request $request
      *
      * @return Ticket
      */
-    public function acceptNewTicketForGuest(Ticket $ticket, TicketMessage $ticket_message, Person $person, Request $request)
+    public function acceptNewTicketForGuest(Ticket $ticket, Request $request)
     {
+        $person         = $ticket->getPerson();
+        $ticket_message = $ticket->messages[0];
+
         // in this case we are authorized to make a person from a guest
         $person_context = new CreatePersonContext(Person::CREATED_WEB_PERSON);
         $person->setName($person->getDisplayName());
@@ -158,18 +159,18 @@ class NewTicket
             $attachment->setPerson($person);
         }
 
-        return $this->acceptNewTicket($ticket, $person, $request);
+        return $this->acceptNewTicket($ticket, $request);
     }
 
     /**
      * @param Ticket  $ticket
-     * @param Person  $person
      * @param Request $request
      *
      * @return Ticket
      */
-    public function acceptNewTicket(Ticket $ticket, Person $person, Request $request)
+    public function acceptNewTicket(Ticket $ticket, Request $request)
     {
+        $person = $ticket->getPerson();
         $this->submitNewTicketAbuseCheck($person, $request->getClientIp());
 
         return $this->saveNewTicket($ticket, $person);

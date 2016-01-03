@@ -31,7 +31,6 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
-use Application\DeskPRO\Entity\TicketMessage;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -65,27 +64,22 @@ class TicketController extends AbstractApiController
      * @Method({"GET", "POST"})
      *
      * @param Request $request
+     * @param string  $visitor_id
      *
      * @return View
      */
-    public function newTicketAction(Request $request)
+    public function newTicketAction(Request $request, $visitor_id)
     {
-        $person = $this->getUser() ?: $this->getDoctrine()->getRepository('DeskPRO:Person')->find(1);
-        $ticket = $this->get('ticket_manager')->createTicket();
-
-        $ticket_message = new TicketMessage();
-        $ticket_message->setIpAddress($request->getClientIp());
-        $ticket->setPerson($person);
-        $ticket_message->setPerson($person);
-        $ticket->addMessage($ticket_message);
-        $lang = $this->get('language_manager')->getLanguageStack()->getActiveOrDefault();
-        $ticket->setLanguage($lang);
+        $ticket_service = $this->get('tickets.new_ticket');
+        $ticket         = $ticket_service->createNewTicket($request, $visitor_id, $this->getUser());
+        $person         = $ticket->getPerson();
+        $ticket_message = $ticket->messages[0];
 
         $form = $this->createForm('ticket', $ticket, [
             'person'                        => $person,
             'ticket_message'                => $ticket_message,
             'settings'                      => $this->getBrandContainer()->getSettings(),
-            'action'                        => $this->generateUrl('portal_new_ticket'),
+            'action'                        => $this->generateUrl('portal_api_ticket_display'),
             'attr'                          => ['data-save-draft' => 'new_ticket'],
             'csrf_protection'               => false,
             'csrf_double_submit_protection' => false,
@@ -94,9 +88,27 @@ class TicketController extends AbstractApiController
 
         $form->handleRequest($request);
         if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($ticket);
-            $em->flush();
+            $email  = $person->getPrimaryEmail();
+            $person = $this->get('data.person')->getPersonForEmail($email->getEmail());
+
+            if ($person) {
+                $ticket->setPerson($person);
+                $ticket_message->setPerson($person);
+                foreach ($ticket_message->getAttachments() as $attachment) {
+                    $blob = $attachment->getBlob();
+                    if ($blob) {
+                        $blob->is_temp = false;
+                    }
+
+                    $attachment->setPerson($person);
+                }
+
+                $ticket_service->acceptNewTicket($ticket, $request);
+            } else {
+                $ticket_service->acceptNewTicketForGuest($ticket, $request);
+            }
+
+            return new View();
         }
 
         $form_full = $this->createForm('ticket', $ticket, [
@@ -107,24 +119,16 @@ class TicketController extends AbstractApiController
             'action'         => $this->generateUrl('portal_new_ticket'),
         ]);
 
-        // show ticket deflection? (suggestions)
-        $show_ticket_suggestions = (bool) $this->getBrandContainer()->getSetting('core.show_ticket_suggestions');
+        $params = [
+            'form'                    => $form->createView(),
+            'form_full'               => $form_full->createView(),
+            'form_errors'             => $form->isSubmitted() ? $form->getErrors() : [],
+            'show_ticket_suggestions' => (bool) $this->getBrandContainer()->getSetting('core.show_ticket_suggestions'),
+        ];
 
-        return new View([
-            'data' => $this->render('Theme:NewTicket:new_ticket_form.html.twig', [
-                'form'                    => $form->createView(),
-                'form_full'               => $form_full->createView(),
-                'form_errors'             => $form->isSubmitted() ? $form->getErrors() : [],
-                'show_ticket_suggestions' => $show_ticket_suggestions,
-            ])->getContent(),
-        ], !$form->isSubmitted() || $form->isValid() ? Response::HTTP_OK : Response::HTTP_BAD_REQUEST);
-    }
+        $content     = ['data' => $this->render('Theme:NewTicket:new_ticket_form.html.twig', $params)->getContent()];
+        $status_code = !$form->isSubmitted() ? Response::HTTP_OK : Response::HTTP_BAD_REQUEST;
 
-    /**
-     * @return \DeskPRO\Bundle\PortalBundle\Brand\BrandContainer
-     */
-    protected function getBrandContainer()
-    {
-        return $this->get('brand_stack')->getActive();
+        return new View($content, $status_code);
     }
 }
