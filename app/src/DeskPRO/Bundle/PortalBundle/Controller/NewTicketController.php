@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -60,7 +59,7 @@ class NewTicketController extends AbstractController
      */
     public function newTicketAction(Request $request, $visitor_id)
     {
-        $ticket         = $this->getNewTicketService()->createNewTicket($request, $visitor_id);
+        $ticket         = $this->getNewTicketService()->createNewTicket($request, $visitor_id, $this->getCurrentPerson());
         $person         = $ticket->getPerson();
         $ticket_message = $ticket->messages[0];
 
