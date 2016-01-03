@@ -124,7 +124,7 @@ class NewTicketController extends AbstractController
 
                             $new_ticket = $this->getNewTicketService()->acceptNewTicket($ticket, $person, $request);
 
-                            return $this->onSavedTicket($new_ticket, $person, $request);
+                            return $this->onSavedTicket($new_ticket, $request);
                         } catch (LoginRequiredException $e) {
                             // the email used belongs to a user, and brand settings say they need to log in
                             $person = $e->getPerson();
@@ -150,14 +150,14 @@ class NewTicketController extends AbstractController
                                 // this is a guest that we are accepting
                                 $new_ticket = $this->getNewTicketService()->acceptNewTicketForGuest($ticket, $ticket_message, $person, $request);
 
-                                return $this->onSavedTicket($new_ticket, $person, $request);
+                                return $this->onSavedTicket($new_ticket, $request);
                             }
                         }
                     }
 
                     $new_ticket = $this->getNewTicketService()->acceptNewTicket($ticket, $person, $request);
 
-                    return $this->onSavedTicket($new_ticket, $person, $request);
+                    return $this->onSavedTicket($new_ticket, $request);
                 }
             }
         } elseif ($form->isSubmitted()) {
@@ -220,13 +220,13 @@ class NewTicketController extends AbstractController
 
     /**
      * @param Ticket  $ticket
-     * @param Person  $person
      * @param Request $request
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    protected function onSavedTicket(Ticket $ticket, Person $person, Request $request)
+    protected function onSavedTicket(Ticket $ticket, Request $request)
     {
+        $person = $ticket->getPerson();
         $this->addFlash('success', $this->phrase('portal.flashes.ticket_created'));
 
         // IF this person can't login but they are confirmed. show the thank you screen, but on that screen give
