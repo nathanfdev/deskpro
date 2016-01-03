@@ -279,7 +279,7 @@ $text-faded: lighten($text-color, 20%);
     }
   }
 
-  input[type="text"], input[type="email"], input[type="password"], textarea, .dp-medium-rte {
+  input[type="text"], input[type="email"], input[type="password"], textarea {
     border: 1px solid $form-border-color;
     border-radius: 2px;
     background: $form-input;
