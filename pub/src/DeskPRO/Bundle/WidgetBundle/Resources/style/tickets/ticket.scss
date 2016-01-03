@@ -1,3 +1,7 @@
+$red: #dc7575;
+$text-color: #606060;
+$text-faded: lighten($text-color, 20%);
+
 .dpdesignportal-open-new-ticket {
   background: #f8f8f8;
   border-top: 1px solid #e7e7e7;
@@ -272,6 +276,45 @@
       width: 15px;
       height: 15px;
       margin: 0 5px;
+    }
+  }
+
+  input[type="text"], input[type="email"], input[type="password"], textarea, .dp-medium-rte {
+    border: 1px solid $form-border-color;
+    border-radius: 2px;
+    background: $form-input;
+    padding: $form-padding-vertical $form-padding-horizontal;
+    color: $text-color;
+
+    @include placeholder {
+      color: $text-faded;
+      font-style: italic;
+    }
+
+    &:focus {
+      outline: none;
+      border: 1px solid $button-color;
+      background: #fff;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    &.email {
+      color: $button-color;
+      font-weight: 400;
+    }
+
+    &.shorter {
+      width: 33%;
+    }
+
+    &.show-error {
+      border: 1px solid $red;
+      border-top-right-radius: 0;
+      background: #fff0ec;
+    }
+
+    &.email-present {
+      border: 1px dashed $form-border-color;
     }
   }
 }
