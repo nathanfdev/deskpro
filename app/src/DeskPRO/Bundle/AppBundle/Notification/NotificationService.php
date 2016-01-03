@@ -60,7 +60,7 @@ class NotificationService
         $qb     = $actionAlertRepo->createQueryBuilder('aa');
         $result = $qb->where('aa.date_created > (:last)')
             ->andWhere('aa.target_id = :target_id')
-            ->setParameter('last', $last ? $last->getDateCreated() : 'Y-m-d H:i:s')
+            ->setParameter('last', $last ? $last->getDateCreated() : date('Y-m-d H:i:s'))
             ->setParameter('target_id', $user->getId())
             ->getQuery()
             ->getResult();

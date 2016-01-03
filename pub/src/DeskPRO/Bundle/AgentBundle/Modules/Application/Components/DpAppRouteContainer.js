@@ -12,7 +12,9 @@ import { NotificationService } from 'DeskPRO/Bundle/AgentBundle/Services/Notific
 @connect(state => ({
   dpWindow: state.Application.dpWindow,
   userStatus: meStateSelector.statusSel(state),
-  user: meSelector(state)
+  user: meSelector(state),
+  actionAlerts: state.Application.notifications.get('actionAlerts'),
+  actionAlertsSetup: state.Application.notifications.get('actionAlertsSetup')
 }))
 export class DpAppRouteContainer extends React.Component {
 
@@ -21,7 +23,9 @@ export class DpAppRouteContainer extends React.Component {
     dpWindow: PropTypes.object.isRequired,
     userStatus: PropTypes.object.isRequired,
     user: PropTypes.object.isRequired,
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
+    actionAlerts: PropTypes.object.isRequired,
+    actionAlertsSetup: PropTypes.bool.isRequired
   };
 
   componentDidMount() {
@@ -39,27 +43,20 @@ export class DpAppRouteContainer extends React.Component {
   }
 
   setupPolling() {
-    const { user, dispatch } = this.props;
+    const { user, dispatch, actionAlerts} = this.props;
     this.ns = new NotificationService(
       {
         user: user,
         dispatch: dispatch,
-        client: {
-          type: 'pusher',
-          options: {
-            appKey: 'eaa00fb39fddc251d116',
-            debug: true,
-            pollingInterval: 5000
-          }
-        }
+        client: actionAlerts.client
       }
     );
     this.ns.startPolling();
   }
 
   hideWelcomePage() {
-    const { userStatus, dispatch } = this.props;
-    if (!this.welcomePageTimer && userStatus.get('isDone')) {
+    const { userStatus, dispatch, actionAlertsSetup } = this.props;
+    if (!this.welcomePageTimer && userStatus.get('isDone') && !actionAlertsSetup) {
       this.welcomePageTimer = setTimeout(() => dispatch(AppActions.doneInitialLoad()), 3000);
       this.setupPolling();
     }

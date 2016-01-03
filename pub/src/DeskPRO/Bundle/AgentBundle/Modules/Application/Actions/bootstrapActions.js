@@ -22,6 +22,7 @@ export const preloadData = createAction(
         + ',DP_API/languages'
         + ',DP_API/user_groups'
         + ',DP_API/helpdesk/agent-client/settings'
+        + ',DP_API/notify/setup/action-alerts'
       ;
       DpApi.sendGet(batch).success(({responses}) => {
         const data = flattenBatchResponses(responses);
@@ -33,6 +34,7 @@ export const preloadData = createAction(
         dispatch(setLanguagesRequest('all', data[5]));
         dispatch(setUserGroupsRequest('all', data[6]));
         dispatch(setAgentSettings(data[7]));
+        dispatch(setupActionAlerts(data[8]));
       });
     }
   )
