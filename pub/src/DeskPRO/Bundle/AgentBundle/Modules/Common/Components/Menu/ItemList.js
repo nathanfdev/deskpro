@@ -12,10 +12,6 @@ export class ItemList extends React.Component {
     children: React.PropTypes.node
   };
 
-  /**
-   * Render the menu
-   * @return {React.Element} The menu container
-   */
   render() {
 // dpw-navigation-dropdown-column-list-v2 must be a widgetClass prop, because in some Item list we don't need this class
     return (

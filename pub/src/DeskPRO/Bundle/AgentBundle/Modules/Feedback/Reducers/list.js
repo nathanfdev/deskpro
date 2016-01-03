@@ -10,7 +10,7 @@ const initialState = {
   async: {
     done: true
   },
-  elements: [], // array of list elements (feedback or comments)
+  elements: [], // array of elements ids (feedback or comments)
   selected: [], // array of IDs
 
   // currently viewed list GET parameters map
@@ -19,14 +19,7 @@ const initialState = {
     sort: 'date_created',
     order: constants.ORDER_DESC,
     labels_mode: 'any'
-  },
-  commentsTableViewFields: [ // temporary, must be removed later
-    { name: 'id', label: 'ID', className: 'id-col', status: constants.FIELD_SHOWN, priority: 1 },
-    { name: 'status', label: 'Status', status: constants.FIELD_SHOWN, priority: 2 },
-    { name: 'date_created', label: 'Created', status: constants.FIELD_SHOWN, priority: 10 },
-    { name: 'validating', label: 'Validating', status: constants.FIELD_SHOWN, priority: 16 },
-    { name: 'content', label: 'Content', status: constants.FIELD_SHOWN, priority: 18 }
-  ]
+  }
 };
 
 export default createReducer(initialState, {

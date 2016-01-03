@@ -30,7 +30,7 @@ export class ItemFormat extends React.Component {
       return (
         <span className="dpw-navigation-dropdown-item-mark">
             <span className={classes}></span>
-          </span>
+        </span>
       );
     }
   }
