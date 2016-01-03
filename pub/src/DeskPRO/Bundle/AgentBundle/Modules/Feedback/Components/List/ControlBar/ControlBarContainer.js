@@ -62,7 +62,7 @@ export class ControlBarContainer extends Component {
 
             configurableFields: {
               id: 'ID',
-              custom_category: 'Category',
+              category: 'Category',
               date_created: 'Date created',
               labels: 'Labels'
             },
@@ -77,7 +77,7 @@ export class ControlBarContainer extends Component {
             configurableFields: {
               id: 'ID',
               title: 'Title',
-              person: 'Person',
+              person: 'Author',
               content: 'Content',
               status: 'Status',
               date_created: 'Date created',

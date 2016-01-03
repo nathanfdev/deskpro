@@ -3,13 +3,14 @@ import { FeedbackCard } from './FeedbackCard';
 import { connect } from 'react-redux';
 import { feedbackSelector, peopleSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackStatusCategoriesSelector }
   from '../../../../Selectors/recordStores';
+import { idsSelector, selectedSelector } from '../../../../Selectors/list';
 
 @connect(state => {
   return ({
-    ids: state.Feedback.list.get('elements'),
+    ids: idsSelector(state),
     feedback: feedbackSelector(state),
     viewFields: state.Feedback.list.get('cardVisibleFields'),
-    selected: state.Feedback.list.get('selected'),
+    selected: selectedSelector(state),
     people: peopleSelector(state),
     feedbackTypes: feedbackTypesSelector(state),
     feedbackComments: feedbackCommentsSelector(state),

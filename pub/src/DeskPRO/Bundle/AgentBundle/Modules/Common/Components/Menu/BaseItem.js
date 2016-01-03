@@ -29,7 +29,8 @@ export class BaseItem extends Component {
     isActive: PropTypes.bool
   };
 
-  componentDidMount() {
+  constructor(props) {
+    super(props);
     this.state = {
       openMenu: false,
       openInnerList: false
@@ -201,10 +202,10 @@ export class BaseItem extends Component {
     }
   }
 
-  renderItemList(hasItemList) {
+  renderItemList(hasItemList, expanded) {
     if (hasItemList) {
       return React.Children.map(this.props.children, (child) => {
-        if (child && child.type && child.type.displayName === 'ItemList' && this.state.openInnerList) {
+        if (child && child.type && child.type.displayName === 'ItemList' && expanded) {
           return child;
         }
       });
@@ -216,7 +217,7 @@ export class BaseItem extends Component {
     const hasMenu = this.checkIfMenuExists();
     const childrenOutput = {};
     childrenOutput.menu = this.renderMenu(hasMenu);
-    childrenOutput.itemList = this.renderItemList(hasItemList);
+    childrenOutput.itemList = this.renderItemList(hasItemList, this.state.openInnerList);
     return (
       <li onMouseOver={this.props.subMenuMode ? ()=>{} : this.openMenu}
           onClick={this.props.subMenuMode && this.props.subMenuMode === 'click' ? this.toggleMenu : ()=>{}}>

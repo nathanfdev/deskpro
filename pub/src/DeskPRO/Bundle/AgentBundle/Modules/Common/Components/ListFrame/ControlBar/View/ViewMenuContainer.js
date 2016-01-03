@@ -37,14 +37,12 @@ export class ViewMenuContainer extends Component {
 
     return (
       <li>
-        <Button
-          isActive={this.state.expanded}
-          onClick={this.expandMenu}
-          ref="button"
-          title="View:"
-          icon={null}
-          label={viewMode.charAt(0).toUpperCase() + viewMode.slice(1)}
-          />
+        <Button isActive={this.state.expanded}
+                onClick={this.expandMenu}
+                ref="button"
+                title="View:"
+                icon={null}
+                label={viewMode.charAt(0).toUpperCase() + viewMode.slice(1)}/>
 
         <Detached isOpen={this.state.expanded}
                   positionAt="left bottom"
@@ -102,8 +100,7 @@ export class ViewMenuContainer extends Component {
                   key={type}
                   label={option.label}
                   widgetClass="dpw-navigation-dropdown-column-list-item"
-                  isActive={viewMode === type}
-              >
+                  isActive={viewMode === type}>
               <ItemList>
                 {jQuery.map(option.configurableFields, (label, name) =>
                     <ViewField
@@ -150,7 +147,6 @@ class ViewModeMenu extends Component {
             <a href="#"
                ref="optionsButton"
                onClick={expandOptions}>
-
               View Options <i className="fa fa-cog"></i>
             </a>
           </div>

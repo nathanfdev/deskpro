@@ -1,24 +1,31 @@
-const defaultCardFields = {
-  id: { isShown: true },
-  custom_category: { isShown: true },
-  date_created: { isShown: true }
-};
+const defaultCardFields = [
+  'id',
+  'title',
+  'person',
+  'status',
+  'labels',
+  'category',
+  'date_created'
+];
 
-const defaultTableFields = {
-  id: { isShown: true },
-  num_ratings: { isShown: true },
-  title: { isShown: true },
-  content: { isShown: true },
-  hidden_status: { isShown: true },
-  status_category: { isShown: true },
-  type: { isShown: true },
-  custom_category: { isShown: true },
-  labels: { isShown: true },
-  author_name: { isShown: true },
-  num_comments: { isShown: true },
-  date_created: { isShown: true },
-  total_rating: { isShown: true }
-};
+const defaultTableFields = [
+  'id',
+  'num_ratings',
+  'title',
+  'content',
+  'hidden_status',
+  'status_category',
+  'type',
+  'category',
+  'labels',
+  'author_name',
+  'num_comments',
+  'date_created',
+  'total_rating'
+];
+
+const defaultCommentTableFields = ['comment_id', 'comment_content', 'comment_author'];
 
 module.exports.defaultCardFields = defaultCardFields;
 module.exports.defaultTableFields = defaultTableFields;
+module.exports.defaultCommentTableFields = defaultCommentTableFields;
