@@ -4,7 +4,7 @@ services:
     class: DeskPRO\Bundle\AppBundle\Notification\NotificationService
     arguments:
       - @doctrine.orm.default_entity_manager
-      - @deskpro.core.settings
+      - @settings_resolver
 
   #
   # Strategis
@@ -56,7 +56,7 @@ services:
     class: Pusher
     factory: [@deskpro.notification.pusher_factory, createPusher]
     arguments:
-      - @service_container
+      - @settings_resolver
 
   #
   # notification handlers

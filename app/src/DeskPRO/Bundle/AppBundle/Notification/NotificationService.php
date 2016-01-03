@@ -29,8 +29,9 @@
 namespace DeskPRO\Bundle\AppBundle\Notification;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\NewSettings\SettingsBag;
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use Application\DeskPRO\ORM\EntityManager;
-use Application\DeskPRO\Settings\Settings;
 
 /**
  * Class NotificationService.
@@ -43,17 +44,18 @@ class NotificationService
     protected $em;
 
     /**
-     * @var Settings
+     * @var SettingsBag
      */
     protected $settings;
 
     /**
-     * @param EntityManager $em
+     * @param EntityManager    $em
+     * @param SettingsResolver $settings
      */
-    public function __construct(EntityManager $em, Settings $settings)
+    public function __construct(EntityManager $em, SettingsResolver $settings)
     {
         $this->em       = $em;
-        $this->settings = $settings;
+        $this->settings = $settings->getGlobalSettings();
     }
 
     /**

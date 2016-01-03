@@ -59,11 +59,12 @@ class StrategyFactory
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->config    = $this->container->get('deskpro.core.settings')->get(
+        $global_settings = $this->container->get('settings_resolver')->getGlobalSettings();
+        $this->config    = $global_settings->get(
             'notification.settings.strategies',
             $this->container->getParameter('notification.settings')
         );
-        $this->createDefaultStrategy($this->container->get('deskpro.core.settings')->get('notification.settings.default_strategy'));
+        $this->createDefaultStrategy($global_settings->get('notification.settings.default_strategy'));
     }
 
     private function createDefaultStrategy($config)

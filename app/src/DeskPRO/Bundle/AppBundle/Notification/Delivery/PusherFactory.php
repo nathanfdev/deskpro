@@ -34,7 +34,7 @@ class PusherFactory
 {
     public function createPusher(ContainerInterface $container)
     {
-        $settings = $container->get('deskpro.core.settings');
+        $settings = $container->get('settings_resolver')->getGlobalSettings();
 
         return new \Pusher(
             $settings->get('notification.settings.pusher_client.appKey'),
