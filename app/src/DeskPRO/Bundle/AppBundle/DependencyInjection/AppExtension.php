@@ -65,7 +65,11 @@ class AppExtension extends Extension
         }
 
         $container->setParameter('data_serializer.types', $types);
-        $container->setParameter('notification.settings', $config['notification']['strategies']);
+        if (array_key_exists('notification', $config)) {
+            if (array_key_exists('strategies', $config['notification'])) {
+                $container->setParameter('notification.settings', $config['notification']['strategies']);
+            }
+        }
 
         $loader = new YamlDirectoryLoader($container);
         $loader->loadDir(__DIR__.'/../Resources/config/services');
