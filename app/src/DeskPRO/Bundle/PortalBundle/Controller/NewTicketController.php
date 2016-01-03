@@ -33,7 +33,6 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
@@ -61,16 +60,9 @@ class NewTicketController extends AbstractController
      */
     public function newTicketAction(Request $request, $visitor_id)
     {
-        $person         = $this->getUser() ?: new PersonGuest();
-        $ticket         = $this->getTicketManager()->createTicket();
-        $ticket_message = new TicketMessage();
-        $ticket_message->setVisitorId($visitor_id);
-        $ticket_message->setIpAddress($request->getClientIp());
-        $ticket->setPerson($person);
-        $ticket_message->setPerson($person);
-        $ticket->addMessage($ticket_message);
-        $lang = $this->get('language_manager')->getLanguageStack()->getActiveOrDefault();
-        $ticket->setLanguage($lang);
+        $ticket         = $this->getNewTicketService()->createNewTicket($request, $visitor_id, $this->getUser());
+        $person         = $ticket->getPerson();
+        $ticket_message = $ticket->messages[0];
 
         // do a one through with the GET request to update our model before starting the "real" form
         $form = $this->createForm('ticket', $ticket, [

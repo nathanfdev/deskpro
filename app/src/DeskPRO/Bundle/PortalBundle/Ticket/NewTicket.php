@@ -34,10 +34,12 @@ namespace DeskPRO\Bundle\PortalBundle\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Tickets\DuplicateTicketException;
 use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitTicketAbuseCheck;
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomPerFieldManager;
 use DeskPRO\Bundle\PortalBundle\Person\PersonFactory;
@@ -65,6 +67,11 @@ class NewTicket
     private $custom_per_field_manager;
 
     /**
+     * @var LanguageManager
+     */
+    private $language_manager;
+
+    /**
      * @var PersonFactory
      */
     private $person_factory;
@@ -80,6 +87,7 @@ class NewTicket
      * @param EntityManager         $em
      * @param TicketManager         $ticket_manager
      * @param CustomPerFieldManager $custom_per_field_manager
+     * @param LanguageManager       $language_manager
      * @param PersonFactory         $person_factory
      * @param AntiAbuse             $anti_abuse
      */
@@ -87,14 +95,41 @@ class NewTicket
         EntityManager         $em,
         TicketManager         $ticket_manager,
         CustomPerFieldManager $custom_per_field_manager,
+        LanguageManager       $language_manager,
         PersonFactory         $person_factory,
         AntiAbuse             $anti_abuse
     ) {
         $this->em                       = $em;
         $this->ticket_manager           = $ticket_manager;
         $this->custom_per_field_manager = $custom_per_field_manager;
+        $this->language_manager         = $language_manager;
         $this->person_factory           = $person_factory;
         $this->anti_abuse               = $anti_abuse;
+    }
+
+    /**
+     * @param Request $request
+     * @param string  $visitor_id
+     * @param Person  $person
+     *
+     * @return Ticket
+     */
+    public function createNewTicket(Request $request, $visitor_id, Person $person = null)
+    {
+        $language = $this->language_manager->getLanguageStack()->getActiveOrDefault();
+        $person   = $person ?: new PersonGuest();
+
+        $ticket = $this->ticket_manager->createTicket();
+        $ticket->setPerson($person);
+        $ticket->setLanguage($language);
+
+        $ticket_message = new TicketMessage();
+        $ticket_message->setVisitorId($visitor_id);
+        $ticket_message->setIpAddress($request->getClientIp());
+        $ticket_message->setPerson($person);
+        $ticket->addMessage($ticket_message);
+
+        return $ticket;
     }
 
     /**

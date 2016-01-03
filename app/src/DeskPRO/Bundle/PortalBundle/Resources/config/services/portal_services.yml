@@ -40,5 +40,6 @@ services:
       - @doctrine.orm.default_entity_manager
       - @ticket_manager
       - @tickets.custom_per_field_manager
+      - @language_manager
       - @person_factory
       - @anti_abuse
