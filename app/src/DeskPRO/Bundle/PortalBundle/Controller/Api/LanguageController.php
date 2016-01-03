@@ -68,6 +68,8 @@ class LanguageController extends AbstractApiController
             'portal.general.show_x_more',
             'portal.general.select_placeholder',
             'portal.general.delete',
+            'portal.tickets.thank_you',
+            'portal.tickets.thank_you_desc',
         ];
 
         return $this->getResponse($request, $phrases);

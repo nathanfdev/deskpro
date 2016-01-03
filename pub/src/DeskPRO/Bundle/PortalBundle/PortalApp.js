@@ -1,7 +1,4 @@
-require('babel/polyfill');
-
-import Http from 'DeskPRO/Component/Http/Http';
-import UrlCorrector from 'DeskPRO/Bundle/AppBundle/Http/UrlCorrector';
+import 'babel/polyfill';
 import PortalPage from 'DeskPRO/Bundle/PortalBundle/PageWidget/PortalPage';
 import PortalPhrases from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import $ from 'jquery';

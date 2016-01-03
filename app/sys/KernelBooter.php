@@ -340,7 +340,8 @@ class KernelBooter
                         && strpos($request->getPathInfo(), '/_wdt') === false
                         && strpos($request->getPathInfo(), '/_profile') === false
                         && !$request->isXmlHttpRequest()
-                        && $response->headers->get('Content-Type') !== 'application/json'
+                        && strpos($response->headers->get('Content-Type'), 'application/json') === false
+                        && strpos($response->headers->get('Content-Type'), 'text/javascript') === false
                     ) {
                         $pretty_log       = HttpCacheDebugPrinter::debugPortalCacheKernel($kernel);
                         $response_content = $response->getContent();

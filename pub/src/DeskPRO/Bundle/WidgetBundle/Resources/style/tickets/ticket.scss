@@ -1,3 +1,7 @@
+$red: #dc7575;
+$text-color: #606060;
+$text-faded: lighten($text-color, 20%);
+
 .dpdesignportal-open-new-ticket {
   background: #f8f8f8;
   border-top: 1px solid #e7e7e7;
@@ -53,8 +57,33 @@
     max-width: 620px;
     z-index: 199;
 
+    &:before {
+      position: absolute;
+      top: -8px;
+      left: 40px;
+      display: block;
+      width: 0;
+      border: 4px solid rgba(0, 0, 0, 0);
+      border-bottom: 4px solid #dc7575;
+      content: " ";
+    }
+    &.solo {
+      // If there's no margin on the parent element
+      margin-top: 10px;
+    }
     &.no-hover {
       position: relative;
+
+      &:before {
+        position: absolute;
+        top: -8px;
+        left: 40px;
+        display: block;
+        width: 0;
+        border: 4px solid rgba(0, 0, 0, 0);
+        border-bottom: 4px solid #dc7575;
+        content: " ";
+      }
     }
   }
 
@@ -231,6 +260,61 @@
         text-align: right;
         opacity: 0.5;
       }
+    }
+  }
+
+  .saving-form {
+    button[type="submit"] {
+      display: none;
+    }
+
+    &:after {
+      content: "";
+      display: inline-block;
+      background: url('../img/loading-small-flat.gif') center;
+      background-size: 15px 15px;
+      width: 15px;
+      height: 15px;
+      margin: 0 5px;
+    }
+  }
+
+  input[type="text"], input[type="email"], input[type="password"], textarea {
+    border: 1px solid $form-border-color;
+    border-radius: 2px;
+    background: $form-input;
+    padding: $form-padding-vertical $form-padding-horizontal;
+    color: $text-color;
+
+    @include placeholder {
+      color: $text-faded;
+      font-style: italic;
+    }
+
+    &:focus {
+      outline: none;
+      border: 1px solid $button-color;
+      background: #fff;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    &.email {
+      color: $button-color;
+      font-weight: 400;
+    }
+
+    &.shorter {
+      width: 33%;
+    }
+
+    &.show-error {
+      border: 1px solid $red;
+      border-top-right-radius: 0;
+      background: #fff0ec;
+    }
+
+    &.email-present {
+      border: 1px dashed $form-border-color;
     }
   }
 }
@@ -453,5 +537,59 @@
     padding-bottom: 3px;
     color: #595959;
     font-size: 12px;
+  }
+}
+
+.ticket-success-blurb {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  text-align: center;
+  max-width: 750px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin: 30px auto;
+  font-size: 12px;
+
+  .icon-mark {
+    display: block;
+    width: 61px;
+    height: 59px;
+    margin: 38px auto 5px;
+    background-image: url(../img/ticket-success.png);
+  }
+
+  @media only screen and (-webkit-min-device-pixel-ratio: 1.3), only screen and (min--moz-device-pixel-ratio: 1.3), only screen and (-o-min-device-pixel-ratio: 1.3 / 1), only screen and (min-resolution: 125dpi), only screen and (min-resolution: 1.3dppx) {
+    .icon-mark {
+      background-image: url(../img/ticket-success@2x.png);
+      background-size: 61px 59px;
+    }
+  }
+
+  h1 {
+    font-weight: 300;
+    font-size: 24px;
+    color: #555555;
+    margin-top: 20px;
+    margin-bottom: 13px;
+  }
+
+
+  p {
+    display: inline-block;
+    max-width: 550px;
+    opacity: 0.6;
+    margin: 0;
+    padding: 0;
+    line-height: 2.2em;
+  }
+
+  .footer {
+    padding: 20px 10px;
+    margin-top: 40px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    background: rgba(0, 0, 0, 0.03);
+
+    p {
+      opacity: 0.9;
+    }
   }
 }

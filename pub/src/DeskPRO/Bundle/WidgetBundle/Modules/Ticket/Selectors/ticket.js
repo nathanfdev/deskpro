@@ -11,3 +11,8 @@ export const contentLoadingSelector = createSelector(
   stateSelector,
   state => state.getIn(['newForm', 'loading'])
 );
+
+export const contentSavingSelector = createSelector(
+  stateSelector,
+  state => state.getIn(['newForm', 'saving'])
+);

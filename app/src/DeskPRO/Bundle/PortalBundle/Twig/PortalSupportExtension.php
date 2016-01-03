@@ -106,6 +106,7 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('url_full', array($this, 'urlFull')),
             new \Twig_SimpleFunction('base_url', array($this, 'baseUrl')),
             new \Twig_SimpleFunction('root_url', array($this, 'rootUrl')),
+            new \Twig_SimpleFunction('no_cache_url', array($this, 'noCacheUrl')),
             new \Twig_SimpleFunction('is_multi_lang', array($this, 'isMultLang')),
             new \Twig_SimpleFunction('lang_code', array($this, 'langCode')),
             new \Twig_SimpleFunction('enabled_languages', array($this, 'enabledLanguages')),
@@ -269,7 +270,12 @@ class PortalSupportExtension extends \Twig_Extension
         return $base_url;
     }
 
-    public function rootUrl()
+    /**
+     * @param bool $trailing_slash
+     *
+     * @return string
+     */
+    public function rootUrl($trailing_slash = true)
     {
         $portal_router = $this->container->get('router');
 
@@ -285,7 +291,21 @@ class PortalSupportExtension extends \Twig_Extension
             UrlGeneratorInterface::ABSOLUTE_URL
         );
 
+        if (!$trailing_slash) {
+            $root_url = rtrim($root_url, '/');
+        }
+
         return $root_url;
+    }
+
+    /**
+     * @param string $url
+     *
+     * @return string
+     */
+    public function noCacheUrl($url)
+    {
+        return $url.'?'.time();
     }
 
     /**

@@ -40,6 +40,9 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * Class CaptchaType.
+ */
 class CaptchaType extends AbstractType
 {
     /**
@@ -52,12 +55,21 @@ class CaptchaType extends AbstractType
      */
     private $brand_stack;
 
+    /**
+     * Constructor.
+     *
+     * @param BrandStack      $brand_stack
+     * @param LanguageManager $language_manager
+     */
     public function __construct(BrandStack $brand_stack, LanguageManager $language_manager)
     {
         $this->language_manager = $language_manager;
         $this->brand_stack      = $brand_stack;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
@@ -82,11 +94,17 @@ class CaptchaType extends AbstractType
         });
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'deskpro_captcha';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
@@ -100,11 +118,11 @@ class CaptchaType extends AbstractType
                 return $this->language_manager->phrase('portal.forms.label_captcha');
             },
             'allow_extra_fields' => function (Options $options) {
-                    // if its a saved form subrequest, allow extra fields
-                    // this is because we disable things like catpcha, and csrf, and they may
-                    // be present in the form data even though we've removed them from the actual form
-                    return $options['saved_form_subrequest'];
-                },
+                // if its a saved form subrequest, allow extra fields
+                // this is because we disable things like catpcha, and csrf, and they may
+                // be present in the form data even though we've removed them from the actual form
+                return $options['saved_form_subrequest'];
+            },
         ]);
     }
 

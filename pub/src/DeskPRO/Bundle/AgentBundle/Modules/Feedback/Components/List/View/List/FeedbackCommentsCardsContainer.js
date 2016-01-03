@@ -1,13 +1,14 @@
 import React, {Component, PropTypes} from 'react';
 import { FeedbackCommentCard } from './FeedbackCommentCard';
 import { feedbackCommentsSelector, peopleSelector, feedbackSelector } from '../../../../Selectors/recordStores';
+import { idsSelector, selectedSelector } from '../../../../Selectors/list';
 
 import { connect } from 'react-redux';
 @connect(state => {
   return ({
-    ids: state.Feedback.list.get('elements'),
+    ids: idsSelector(state),
     comments: feedbackCommentsSelector(state),
-    selected: state.Feedback.list.get('selected'),
+    selected: selectedSelector(state),
     people: peopleSelector(state),
     massAction: state.Feedback.list.get('massAction'),
     feedback: feedbackSelector(state)

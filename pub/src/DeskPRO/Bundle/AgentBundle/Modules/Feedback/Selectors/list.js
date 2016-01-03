@@ -6,6 +6,16 @@ import { feedbackLabelsSelector } from './nav';
 const stateSelector = state => state.Feedback.list;
 const navStateSelector = state => state.Feedback.nav;
 
+export const idsSelector = createSelector(
+  stateSelector,
+    state => state.get('elements')
+);
+
+export const selectedSelector = createSelector(
+  stateSelector,
+    state => state.get('selected')
+);
+
 export const currentListParamsSelector = createSelector(
   stateSelector,
     state => state.get('currentListParams')

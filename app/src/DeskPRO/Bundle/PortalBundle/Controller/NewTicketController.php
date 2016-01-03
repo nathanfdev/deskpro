@@ -32,14 +32,9 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\People\PersonGuest;
-use Application\DeskPRO\Tickets\DuplicateTicketException;
-use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitTicketAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
-use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Person\EmailValidationRequiredException;
 use DeskPRO\Bundle\PortalBundle\Person\LoginRequiredException;
@@ -65,17 +60,9 @@ class NewTicketController extends AbstractController
      */
     public function newTicketAction(Request $request, $visitor_id)
     {
-        $person = $this->getUser() ?: new PersonGuest();
-
-        $ticket         = $this->getTicketManager()->createTicket();
-        $ticket_message = new TicketMessage();
-        $ticket_message->setVisitorId($visitor_id);
-        $ticket_message->setIpAddress($request->getClientIp());
-        $ticket->setPerson($person);
-        $ticket_message->setPerson($person);
-        $ticket->addMessage($ticket_message);
-        $lang = $this->get('language_manager')->getLanguageStack()->getActiveOrDefault();
-        $ticket->setLanguage($lang);
+        $ticket         = $this->getNewTicketService()->createNewTicket($request, $visitor_id);
+        $person         = $ticket->getPerson();
+        $ticket_message = $ticket->messages[0];
 
         // do a one through with the GET request to update our model before starting the "real" form
         $form = $this->createForm('ticket', $ticket, [
@@ -105,10 +92,7 @@ class NewTicketController extends AbstractController
         ]);
         $form->handleRequest($request);
 
-        $rerendering = false;
-        if ($form->has('rerender_form')) {
-            $rerendering = true;
-        }
+        $rerendering       = $form->has('rerender_form');
         $rerendering_saved = $request->attributes->get('rerender-form', false);
 
         if ($form->isValid()) {
@@ -138,7 +122,9 @@ class NewTicketController extends AbstractController
                                 $attachment->setPerson($person);
                             }
 
-                            return $this->acceptNewTicket($ticket, $person, $request);
+                            $new_ticket = $this->getNewTicketService()->acceptNewTicket($ticket, $request);
+
+                            return $this->onSavedTicket($new_ticket, $request);
                         } catch (LoginRequiredException $e) {
                             // the email used belongs to a user, and brand settings say they need to log in
                             $person = $e->getPerson();
@@ -156,22 +142,27 @@ class NewTicketController extends AbstractController
                                     $person->getEmailAddress(),
                                     $person->getDisplayName()
                                 );
+
                                 $this->get('portal_validation')->sendTicketVerificationEmail($ticket, $saved_form);
                                 $this->addFlash('success', $this->phrase('portal.flashes.guest_new_ticket_must_verify'));
 
                                 return $this->redirectToRoute('portal_thanks_verify');
                             } else {
                                 // this is a guest that we are accepting
-                                return $this->acceptNewTicketForGuest($ticket, $ticket_message, $person, $request);
+                                $new_ticket = $this->getNewTicketService()->acceptNewTicketForGuest($ticket, $request);
+
+                                return $this->onSavedTicket($new_ticket, $request);
                             }
                         }
                     }
 
-                    return $this->acceptNewTicket($ticket, $person, $request);
+                    $new_ticket = $this->getNewTicketService()->acceptNewTicket($ticket, $request);
+
+                    return $this->onSavedTicket($new_ticket, $request);
                 }
             }
         } elseif ($form->isSubmitted()) {
-            $this->submitNewTicketAbuseCheck($person, $request->getClientIp());
+            $this->getNewTicketService()->submitNewTicketAbuseCheck($person, $request->getClientIp());
         }
 
         $form_full = $this->createForm('ticket', $ticket, [
@@ -186,11 +177,6 @@ class NewTicketController extends AbstractController
         $layouts           = $this->getContainer()->getTicketLayoutManager()->getUserLayouts(true);
         $ticket_display_js = 'window.DESKPRO_TICKET_DISPLAY = '.$layouts->compileJsObj().';';
 
-        //
-        // BREADCRUMBS
-        //
-        $breadcrumbs = $this->getBreadcrumbGenerator()->buildNewTicket();
-
         // show ticket deflection? (suggestions)
         $show_ticket_suggestions = (bool) $this->getBrandSetting('core.show_ticket_suggestions');
 
@@ -201,76 +187,12 @@ class NewTicketController extends AbstractController
                 'ticket_display_js'       => $ticket_display_js,
                 'rerendering'             => $rerendering,
                 'rerendering_saved'       => $rerendering_saved,
-                'breadcrumbs'             => $breadcrumbs,
+                'breadcrumbs'             => $this->getBreadcrumbGenerator()->buildNewTicket(),
                 'page_title'              => $this->createPageTitle()->newticket(),
                 'form_errors'             => $form->isSubmitted() ? $form->getErrors() : [],
                 'show_ticket_suggestions' => $show_ticket_suggestions,
             ]
         );
-    }
-
-    /**
-     * @param Ticket        $ticket
-     * @param TicketMessage $ticket_message
-     * @param Person        $person
-     * @param Request       $request
-     *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     */
-    protected function acceptNewTicketForGuest(Ticket $ticket, TicketMessage $ticket_message, Person $person, Request $request)
-    {
-        // in this case we are authorized to make a person from a guest
-        $person_context = new CreatePersonContext(Person::CREATED_WEB_PERSON);
-        $person->setName($person->getDisplayName());
-        $person = $this->getPersonFactory()->createPersonByEmail($person->getEmailAddress(), $person_context);
-
-        $ticket->person = $person;
-        $ticket->setPerson($person);
-        $ticket_message->setPerson($person);
-        foreach ($ticket_message->getAttachments() as $attachment) {
-            $blob = $attachment->getBlob();
-            if ($blob) {
-                $blob->is_temp = false;
-            }
-
-            $attachment->setPerson($person);
-        }
-
-        return $this->acceptNewTicket($ticket, $person, $request);
-    }
-
-    /**
-     * @param Ticket  $ticket
-     * @param Person  $person
-     * @param Request $request
-     *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     */
-    protected function acceptNewTicket(Ticket $ticket, Person $person, Request $request)
-    {
-        $this->submitNewTicketAbuseCheck($person, $request->getClientIp());
-
-        $ticket = $this->saveNewTicket($ticket, $person);
-
-        $this->addFlash('success', $this->phrase('portal.flashes.ticket_created'));
-
-        // IF this person can't login but they are confirmed. show the thank you screen, but on that screen give
-        // them a link to setup an account straight away if they want to
-        $destination    = $this->getObjectRouter()->getPortalPath($ticket);
-        $create_pw_link = null;
-
-        $redirect = $this->get('portal_validation')->getPasswordRedirectIfRequired($person, $request, $destination);
-        if ($redirect) {
-            $create_pw_link = $redirect->getTargetUrl();
-        }
-
-        $params = [
-            'ticket_ref'        => $person->isUser() ? $this->get('ticket.public_id_resolver')->findId($ticket) : null,
-            'create_pw_link'    => $create_pw_link,
-            'is_confirmed_user' => $person->isConfirmed(),
-        ];
-
-        return $this->redirectToRoute('portal_thanks', $params);
     }
 
     /**
@@ -298,69 +220,40 @@ class NewTicketController extends AbstractController
     }
 
     /**
-     * @param string $person
-     * @param string $ip
-     */
-    protected function submitNewTicketAbuseCheck($person, $ip)
-    {
-        $check = new SubmitTicketAbuseCheck($person, $ip);
-        $this->getAntiAbuseService()->check($check);
-    }
-
-    /**
-     * @return \Application\DeskPRO\EntityRepository\Ticket
-     */
-    protected function getTicketsRepo()
-    {
-        return $this->getRepo('DeskPRO:Ticket');
-    }
-
-    /**
-     * @param Ticket $ticket
-     * @param Person $person
+     * @param Ticket  $ticket
+     * @param Request $request
      *
-     * @throws \Exception
-     *
-     * @return Ticket
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    private function saveNewTicket(Ticket $ticket, Person $person)
+    protected function onSavedTicket(Ticket $ticket, Request $request)
     {
-        $em = $this->getEm();
+        $person = $ticket->getPerson();
+        $this->addFlash('success', $this->phrase('portal.flashes.ticket_created'));
 
-        $em->beginTransaction();
+        // IF this person can't login but they are confirmed. show the thank you screen, but on that screen give
+        // them a link to setup an account straight away if they want to
+        $destination    = $this->getObjectRouter()->getPortalPath($ticket);
+        $create_pw_link = null;
 
-        try {
-            // allow all blobs for a new ticket
-            foreach ($ticket->messages as $message) {
-                foreach ($message->getAttachments() as $attachment) {
-                    $blob = $attachment->getBlob();
-                    if ($blob) {
-                        $blob->is_temp = false;
-                    }
-                }
-            }
-
-            $em->persist($ticket);
-
-            $ticket_manager = $this->getTicketManager();
-            // we handle this the new way (TicketManager), so disable the doctrine auto ticket process
-            $ticket->disableAutoTicketProcess();
-            $context = $ticket_manager->createUserExecutorContext($person, 'newticket', 'portal');
-
-            $ticket_manager->saveTicket($ticket, $context);
-            $em->flush();
-            $this->get('tickets.custom_per_field_manager')->flushDataQueue();
-            $em->commit();
-        } catch (DuplicateTicketException $e) {
-            $em->rollback();
-            $ticket = $em->find('DeskPRO:Ticket', $e->ticket_id);
-
-            return $ticket;
-        } catch (\Exception $e) {
-            $em->rollback();
-            throw $e;
+        $redirect = $this->get('portal_validation')->getPasswordRedirectIfRequired($person, $request, $destination);
+        if ($redirect) {
+            $create_pw_link = $redirect->getTargetUrl();
         }
 
-        return $ticket;
+        $params = [
+            'ticket_ref'        => $person->isUser() ? $this->get('ticket.public_id_resolver')->findId($ticket) : null,
+            'create_pw_link'    => $create_pw_link,
+            'is_confirmed_user' => $person->isConfirmed(),
+        ];
+
+        return $this->redirectToRoute('portal_thanks', $params);
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\PortalBundle\Ticket\NewTicket
+     */
+    protected function getNewTicketService()
+    {
+        return $this->get('tickets.new_ticket');
     }
 }
