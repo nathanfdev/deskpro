@@ -26,4 +26,17 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace spec\DeskPRO\Bundle\AppBundle\AgentChat;
+namespace spec\DeskPRO\Bundle\AppBundle\Notification;
+
+use DeskPRO\Bundle\AppBundle\Notification\NotifyHandlerCollection;
+use PhpSpec\ObjectBehavior;
+
+/**
+ * @mixin NotifyHandlerCollection
+ */
+class NotifyHandlerCollectionSpec extends ObjectBehavior
+{
+    public function it_can_attach_different_handlers($handler)
+    {
+    }
+}

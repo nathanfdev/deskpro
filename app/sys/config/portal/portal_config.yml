@@ -1,6 +1,6 @@
 imports:
     - { resource: ../config.shared.php }
-
+    - { resource: ../../../src/DeskPRO/Bundle/AppBundle/Resources/config/notification.yml }
 # Keeping all parameter changes here rather than in various bundles
 parameters:
   router.options.matcher.cache_class: null
