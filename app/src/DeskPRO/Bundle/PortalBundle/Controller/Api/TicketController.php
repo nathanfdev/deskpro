@@ -79,11 +79,12 @@ class TicketController extends AbstractApiController
             'person'                        => $person,
             'ticket_message'                => $ticket_message,
             'settings'                      => $this->getBrandContainer()->getSettings(),
-            'action'                        => $this->generateUrl('portal_api_ticket_display'),
+            'action'                        => $this->generateUrl('portal_api_ticket_new'),
             'attr'                          => ['data-save-draft' => 'new_ticket'],
             'csrf_protection'               => false,
             'csrf_double_submit_protection' => false,
             'allow_extra_fields'            => true,
+            'use_captcha'                   => false,
         ]);
 
         $form->handleRequest($request);
@@ -116,7 +117,8 @@ class TicketController extends AbstractApiController
             'ticket_message' => null,
             'settings'       => $this->getBrandContainer()->getSettings(),
             'full_version'   => true,
-            'action'         => $this->generateUrl('portal_new_ticket'),
+            'action'         => $this->generateUrl('portal_api_ticket_new'),
+            'use_captcha'    => false,
         ]);
 
         $params = [

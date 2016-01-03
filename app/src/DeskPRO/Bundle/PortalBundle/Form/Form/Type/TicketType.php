@@ -446,6 +446,7 @@ class TicketType extends AbstractType
             'allow_extra_fields'  => true,
             'ticket_message'      => null,
             'full_version'        => false,
+            'use_captcha'         => true,
         ]);
         $resolver->setRequired([
             'person',
@@ -498,7 +499,6 @@ class TicketType extends AbstractType
         }
 
         switch ($field->getFieldType()) {
-
             case FormFields::SUBJECT:
                 $this->addSubject($form_context, $field, $ignore_validation);
                 break;
@@ -553,7 +553,6 @@ class TicketType extends AbstractType
             case FormFields::CUSTOM_FIELD:
                 $this->addCustomPerField($form_context, $field, $ignore_validation);
                 break;
-
         }
     }
 
@@ -1027,6 +1026,10 @@ class TicketType extends AbstractType
      */
     private function addCaptcha(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
+        if (!$form_context->getForm()->getConfig()->getOption('use_captcha')) {
+            return;
+        }
+
         // ensure captcha is only present once
         if ($form_context->doesCaptchaExistOnForm()) {
             return;
