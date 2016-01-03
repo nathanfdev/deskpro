@@ -118,11 +118,11 @@ class CaptchaType extends AbstractType
                 return $this->language_manager->phrase('portal.forms.label_captcha');
             },
             'allow_extra_fields' => function (Options $options) {
-                    // if its a saved form subrequest, allow extra fields
-                    // this is because we disable things like catpcha, and csrf, and they may
-                    // be present in the form data even though we've removed them from the actual form
-                    return $options['saved_form_subrequest'];
-                },
+                // if its a saved form subrequest, allow extra fields
+                // this is because we disable things like catpcha, and csrf, and they may
+                // be present in the form data even though we've removed them from the actual form
+                return $options['saved_form_subrequest'];
+            },
         ]);
     }
 
