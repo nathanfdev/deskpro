@@ -1,10 +1,10 @@
 import { createAction } from 'Ampliflux';
+import { loadMe } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Actions/meActions';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 
 export const emailSetError = createAction('LOGIN_EMAIL_SET_ERROR');
 export const passwordSetError = createAction('LOGIN_PASSWORD_SET_ERROR');
 export const setHasAuth = createAction('LOGIN_SET_HAS_AUTH');
-import { loadMe } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Actions/meActions';
 
 export const login = createAction(
   'LOGIN_SUBMIT_FORM',

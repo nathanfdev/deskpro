@@ -6,6 +6,7 @@ import { Email } from './Fields/Email';
 import { Password } from './Fields/Password';
 import { Options } from './Fields/Options';
 import { WarningMajorWrapper } from './WarningMajor/WarningMajorWrapper';
+import classNames from 'classnames';
 
 @connect(state => ({
   loginState: state.Login.login
@@ -88,14 +89,9 @@ export class LeftPanelContainer extends React.Component {
   render() {
     const { loginState } = this.props;
 
-    const loginClassNames = ['dpw-login'];
-    if (this.hasError()) {
-      loginClassNames.push('error');
-    }
-
     return (
       <div className="left-panel">
-        <div className={loginClassNames.join(' ')}>
+        <div className={classNames('dpw-login', {'error': this.hasError()})}>
 
           <WarningMajorWrapper />
 
@@ -137,7 +133,9 @@ export class LeftPanelContainer extends React.Component {
             </div>
 
             <div className="dpw-login-form-extra-buttons">
-              <a href="#" className="dpw-login-form-alternate-login-button more">Other <i className="fa fa-caret-down"></i></a>
+              <a href="#" className="dpw-login-form-alternate-login-button more">
+                Other <i className="fa fa-caret-down"></i>
+              </a>
             </div>
           </div>
 
