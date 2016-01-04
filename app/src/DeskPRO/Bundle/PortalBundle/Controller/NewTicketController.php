@@ -97,9 +97,7 @@ class NewTicketController extends AbstractController
         if ($form->isValid()) {
             // dont process if user hit "more attachments"
             if ($form->getClickedButton()->getConfig()->getName() !== 'more_attachments') {
-                // if the form set a hidden field "rerender_form" then we want to skip actual processing for now
-                // keep the $form->has('rerender_form') because it may have changed after $form->isValid
-                if (!$form->has('rerender_form') && !$rerendering_saved) {
+                if (!$rerendering && !$rerendering_saved) {
                     // deal with guests via negotiating with PersonFactory
                     if ($person instanceof PersonGuest) {
                         try {

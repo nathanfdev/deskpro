@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -44,6 +43,7 @@ use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket\LeafDepartment;
 use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomFieldTicketContext;
 use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomPerFieldManager;
+use DeskPRO\Bundle\PortalBundle\Form\Form\DefaultValueForTicketLayoutField;
 use DeskPRO\Bundle\PortalBundle\Form\Form\TicketFormContext;
 use DeskPRO\Bundle\PortalBundle\Form\FormFields;
 use DeskPRO\Bundle\PortalBundle\Form\Hierarchy\HierarchyGenerator;
@@ -100,15 +100,21 @@ class TicketType extends AbstractType
     private $custom_per_field_manager;
 
     /**
+     * @var DefaultValueForTicketLayoutField
+     */
+    private $default_value_finder;
+
+    /**
      * Constructor.
      *
-     * @param FormFieldManager      $field_manager
-     * @param TicketLayoutFactory   $ticket_layout_factory
-     * @param TicketLayoutDiffer    $layout_differ
-     * @param HierarchyGenerator    $hierarchy_generator
-     * @param EntityManager         $em
-     * @param LanguageManager       $language_manager
-     * @param CustomPerFieldManager $custom_per_field_manager
+     * @param FormFieldManager                 $field_manager
+     * @param TicketLayoutFactory              $ticket_layout_factory
+     * @param TicketLayoutDiffer               $layout_differ
+     * @param HierarchyGenerator               $hierarchy_generator
+     * @param EntityManager                    $em
+     * @param LanguageManager                  $language_manager
+     * @param CustomPerFieldManager            $custom_per_field_manager
+     * @param DefaultValueForTicketLayoutField $default_value_finder
      */
     public function __construct(
         FormFieldManager $field_manager,
@@ -117,7 +123,8 @@ class TicketType extends AbstractType
         HierarchyGenerator $hierarchy_generator,
         EntityManager $em,
         LanguageManager $language_manager,
-        CustomPerFieldManager $custom_per_field_manager
+        CustomPerFieldManager $custom_per_field_manager,
+        DefaultValueForTicketLayoutField $default_value_finder
     ) {
         $this->layout_differ            = $layout_differ;
         $this->field_manager            = $field_manager;
@@ -126,6 +133,7 @@ class TicketType extends AbstractType
         $this->em                       = $em;
         $this->language_manager         = $language_manager;
         $this->custom_per_field_manager = $custom_per_field_manager;
+        $this->default_value_finder     = $default_value_finder;
     }
 
     /**
@@ -175,7 +183,7 @@ class TicketType extends AbstractType
         }
         $context->getForm()->add('displayed_fields', 'hidden', [
             'mapped' => false,
-            'data'   => implode(',', $displaying_fields),
+            'data'   => $displaying_fields['displayed_fields'],
         ]);
     }
 
@@ -252,9 +260,7 @@ class TicketType extends AbstractType
             $context->setNewLayout($destination_layout);
         }
 
-        $displaying_fields = $this->manipulateForm($initial_layout, $context->getActiveLayout(), $context, $pre_submit_data, $potentially_rerender_form);
-
-        $extra_data_to_submit = ['displayed_fields' => implode(',', $displaying_fields)];
+        $extra_data_to_submit = $this->manipulateForm($initial_layout, $context->getActiveLayout(), $context, $pre_submit_data, $potentially_rerender_form);
 
         // $new_fields is an array of field names that are NEW after this submit (and there will be a re-render with them)
         //$new_fields = array_diff($displaying_fields, $already_displayed_fields);
@@ -302,27 +308,20 @@ class TicketType extends AbstractType
      */
     protected function manipulateForm(Layout $initial_layout, Layout $new_layout, TicketFormContext $context, $submitted_data = [], $potentially_rerender_form = false)
     {
-        $additional_fields = $this->layout_differ->findFieldsToAdd($initial_layout, $new_layout);
-        $fields_to_remove  = $this->layout_differ->findFieldsToRemove($initial_layout, $new_layout);
-
-        $extracted_data = $this->getTicketDataIds($submitted_data, $context);
-
-        //$pre_existing_displayed_fields = [];
-        //if ($context->getForm()->has('displayed_fields')) {
-            $pre_existing_displayed_fields = $context->getPreviouslyDisplayedFields();
-        //}
+        $additional_fields             = $this->layout_differ->findFieldsToAdd($initial_layout, $new_layout);
+        $fields_to_remove              = $this->layout_differ->findFieldsToRemove($initial_layout, $new_layout);
+        $extracted_data                = $this->getTicketDataIds($submitted_data, $context);
+        $pre_existing_displayed_fields = $context->getPreviouslyDisplayedFields();
 
         // DEPENDENT FIELDS
         // find fields that should be rendered, but weren't before, via criteria with recently submitted data
         $fields_requiring_rerender = [];
         foreach ($new_layout->all() as $field) {
-            if (in_array($field->getId(), $context->getPreviouslyDisplayedFields())) {
-                // this field was displayed before. should it still be?
-                if ($field->getCriteria() && !$field->getCriteria()->isSubmittedDataMatch($extracted_data)) {
+            if ($this->fieldWasDisplayedBefore($context, $field)) {
+                if ($this->fieldHasCriteriaAndCriteriaDoesNOTMatch($field, $extracted_data)) {
                     $fields_to_remove[] = $field;
-                } elseif ($field->getCriteria() && $field->getCriteria()->isSubmittedDataMatch($extracted_data)) {
-                    // add this one directly, as it was already displayed and won't count as a "new" field that can trigger
-                    // a form re-render. this field was displayed before + is still supposed to be on the form after the submit.
+                } elseif ($this->fieldHasCriteriaAndItDOESMatch($field, $extracted_data)) {
+                    // this field was displayed before + is still supposed to be on the form after the submit
                     if (!$context->hasValidVisibility($field)) {
                         continue;
                     }
@@ -331,8 +330,16 @@ class TicketType extends AbstractType
                 }
             } else {
                 // this field was not displayed before, but should it be added and the form re-rendered?
-                if ($field->getCriteria() && $field->getCriteria()->isSubmittedDataMatch($extracted_data)) {
-                    $additional_fields[]         = $field;
+                $has_field_criteria = $field->getCriteria();
+// FIX: any new dynamic fields that do not depend on criteria will never be added to $fields_req_rerender...
+                if (
+                    !$has_field_criteria
+                    ||
+                    ($has_field_criteria && $field->getCriteria()->isSubmittedDataMatch($extracted_data))
+                ) {
+                    if (!in_array($field, $additional_fields)) {
+                        $additional_fields[] = $field;
+                    }
                     $fields_requiring_rerender[] = $field;
                 }
             }
@@ -342,6 +349,7 @@ class TicketType extends AbstractType
 
         $added_something       = false;
         $new_fields_to_display = [];
+        $extra_data_to_submit  = [];
         foreach ($additional_fields as $field) {
             if (!$context->hasValidVisibility($field)) {
                 continue;
@@ -370,6 +378,15 @@ class TicketType extends AbstractType
             $added_something = true;
 
             $new_fields_to_display[] = $field->getId();
+
+            // attach the default value to the submitted values of the form (to newly added fields that need a re-render)
+            if (count($submitted_data) && in_array($field, $fields_requiring_rerender)) {
+                $ticket_field_id = $field->getId();
+                if ($default_value = $this->default_value_finder->determineDefaultSubmitData($field)) {
+                    $extra_data_to_submit[$ticket_field_id] = $default_value;
+                }
+            }
+
             $this->addField($context, $field, $potentially_rerender_form);
         }
 
@@ -387,7 +404,11 @@ class TicketType extends AbstractType
 
         $this->addSubmit($context);
 
-        return array_merge($pre_existing_displayed_fields, $new_fields_to_display);
+        $displayed_fields_data = [
+            'displayed_fields' => implode(',', array_merge($pre_existing_displayed_fields, $new_fields_to_display)),
+        ];
+
+        return array_merge($extra_data_to_submit, $displayed_fields_data);
     }
 
     /**
@@ -579,7 +600,7 @@ class TicketType extends AbstractType
             'placeholder' => '',
             'constraints' => [
                 new LeafDepartment(['message' => 'portal.forms.error_ticket_department_invalid']),
-                new NotNull(['message'        => 'portal.forms.error_ticket_department_required']),
+                new NotNull(['message' => 'portal.forms.error_ticket_department_required']),
             ],
         ]);
     }
@@ -1161,5 +1182,38 @@ class TicketType extends AbstractType
     private function phrase($name, array $vars = [])
     {
         return $this->language_manager->phrase($name, $vars);
+    }
+
+    /**
+     * @param TicketFormContext $context
+     * @param $field
+     *
+     * @return bool
+     */
+    protected function fieldWasDisplayedBefore(TicketFormContext $context, $field)
+    {
+        return in_array($field->getId(), $context->getPreviouslyDisplayedFields());
+    }
+
+    /**
+     * @param $field
+     * @param $extracted_data
+     *
+     * @return bool
+     */
+    protected function fieldHasCriteriaAndCriteriaDoesNOTMatch($field, $extracted_data)
+    {
+        return $field->getCriteria() && !$field->getCriteria()->isSubmittedDataMatch($extracted_data);
+    }
+
+    /**
+     * @param $field
+     * @param $extracted_data
+     *
+     * @return bool
+     */
+    protected function fieldHasCriteriaAndItDOESMatch($field, $extracted_data)
+    {
+        return $field->getCriteria() && $field->getCriteria()->isSubmittedDataMatch($extracted_data);
     }
 }
