@@ -209,90 +209,29 @@ class TicketType extends AbstractType
         $context        = $this->createTicketFormContext($ticket, $ticket_message, $form, $layout, $already_displayed_fields);
         $initial_layout = $context->getActiveLayout();
 
-        // by default, we treat a submit as a "potentially_rerender", but it wont actually rerender unless
-        // new fields are added to the form.
-        $potentially_rerender_form = true;
-
-        // now we need to compare the department's layout and see if we need to add/remove fields before we submit data
+        // now we need to compare the department's layout, maybe the layout has changed
         if ($form->has(FormFields::DEPARTMENT) && isset($pre_submit_data[FormFields::DEPARTMENT])) {
-            //
-            // here we just get the submitted department id (its not the same as submitted value due to choice lists)
-            //
-            /* @var \Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceList $choice_list */
-            // choice types dont submit entity IDS, they submit choice list IDs. So we need to calc the real entity Id.
             $extracted_data    = $this->getTicketDataIds($pre_submit_data, $context);
             $new_department_id = $extracted_data['department'];
-            //
-            // end get new department id
-            //
 
-            //
-            // Re-render detection
-            //
-            // determine if we actually changed department between requests
-            // this keeps state in a hidden form variable so we know if we
-            // are using the original dep, and need to rerender, OR if we
-            // are on multiple re-renders...
-            // we do this because we only disable validation on new fields
-            // the first time a department is changed.
-            // Errors must still render on subsequent requests!
-            // set potentially_rerender = false if we shouldnt treat this as a rerender
-            //if (array_key_exists('last_department_id', $pre_submit_data)) {
-            //    $last_department_id = $pre_submit_data['last_department_id'];
-
-                // there wasn't actually a change in department between requests. treat validation as if we didnt just
-                // rerender the form
-                //if ($new_department_id == $last_department_id) {
-                //    $potentially_rerender_form = false;
-                //}
-            //}
             if ($context->getForm()->has('last_department_id')) {
                 $context->getForm()->remove('last_department_id');
             }
 
             $context->getForm()->add('last_department_id', 'hidden', ['mapped' => false, 'label' => false]);
             $event->setData(array_merge($pre_submit_data, ['last_department_id' => $new_department_id]));
-            //
-            // end rerender detection
-            //
 
             $destination_layout = $this->ticket_layout_factory->getLayoutForTicketForm($new_department_id ?: null);
             $context->setNewLayout($destination_layout);
         }
 
-        $extra_data_to_submit = $this->manipulateForm($initial_layout, $context->getActiveLayout(), $context, $pre_submit_data, $potentially_rerender_form);
-
-        // $new_fields is an array of field names that are NEW after this submit (and there will be a re-render with them)
-        //$new_fields = array_diff($displaying_fields, $already_displayed_fields);
-        //foreach ($context->getActiveLayout()->all() as $field) {
-        //    // we need to insert the default value for $field here for non JS users
-        //    if (in_array($field->getId(), $new_fields)) {
-        //        $default = null;
-        //        if ($custom_def = $this->field_manager->getCustomDefForLayoutField($field)) {
-        //            $default = explode(',',$custom_def->getDefaultValue());
-        //        } elseif (FormFields::CUSTOM_FIELD === $field->getFieldType()) {
-        //            if ($custom_def = $this->field_manager->getCustomPerFieldById($field->getId())){
-        //                $default = $custom_def->getDefaultValue();
-        //            }
-        //        }
-        //        if ($default) {
-        //            // the problem here is that $default is the object definition default value
-        //            // but the $submitted_data here on this event expects what symfony would
-        //            // hand the different form types after a submit. For example, choice fields would
-        //            // be an array, date fields would be array of ['day','month','year'] or:
-        //            // ['date' => ['day','month','year'], 'time' => ['hour','second']]
-        //            // bools different, but text can go without any pre-processing
-        //            // this is a huge duplication, is prone to error, and overall feels really out of place
-        //            // we could put this logic in the forms themselves, but then we have to leak down the form
-        //            // the information that this particular field should have a default injected but not any others
-        //            // and we still have to setup this formatting because the normal data transformers that would
-        //            // happen pre-data for these form types wont happen on pre-submit
-        //            // add on top form can't be used without JS anyway and all of this is for nothing, unless
-        //            // we change the way we do CSRF (which atm requires a javascript to run to set a cookie).
-        //            $extra_data_to_submit[$field->getId()] = $default;
-        //        }
-        //    }
-        //}
+        // when manipulating the form, it may return data that we need to add to the pre submit event's data (new defaults)
+        $extra_data_to_submit = $this->manipulateForm(
+            $initial_layout,
+            $context->getActiveLayout(),
+            $context,
+            $pre_submit_data
+        );
 
         $event->setData(array_merge($event->getData(), $extra_data_to_submit));
     }
@@ -302,48 +241,17 @@ class TicketType extends AbstractType
      * @param Layout            $new_layout
      * @param TicketFormContext $context
      * @param array             $submitted_data
-     * @param bool              $potentially_rerender_form
      *
      * @return array of field names that are now displayed on the form
      */
-    protected function manipulateForm(Layout $initial_layout, Layout $new_layout, TicketFormContext $context, $submitted_data = [], $potentially_rerender_form = false)
+    protected function manipulateForm(Layout $initial_layout, Layout $new_layout, TicketFormContext $context, $submitted_data = [])
     {
         $additional_fields             = $this->layout_differ->findFieldsToAdd($initial_layout, $new_layout);
         $fields_to_remove              = $this->layout_differ->findFieldsToRemove($initial_layout, $new_layout);
         $extracted_data                = $this->getTicketDataIds($submitted_data, $context);
         $pre_existing_displayed_fields = $context->getPreviouslyDisplayedFields();
 
-        // DEPENDENT FIELDS
-        // find fields that should be rendered, but weren't before, via criteria with recently submitted data
-        $fields_requiring_rerender = [];
-        foreach ($new_layout->all() as $field) {
-            if ($this->fieldWasDisplayedBefore($context, $field)) {
-                if ($this->fieldHasCriteriaAndCriteriaDoesNOTMatch($field, $extracted_data)) {
-                    $fields_to_remove[] = $field;
-                } elseif ($this->fieldHasCriteriaAndItDOESMatch($field, $extracted_data)) {
-                    // this field was displayed before + is still supposed to be on the form after the submit
-                    if (!$context->hasValidVisibility($field)) {
-                        continue;
-                    }
-
-                    $this->addField($context, $field);
-                }
-            } else {
-                // this field was not displayed before, but should it be added and the form re-rendered?
-                $has_field_criteria = $field->getCriteria();
-// FIX: any new dynamic fields that do not depend on criteria will never be added to $fields_req_rerender...
-                if (
-                    !$has_field_criteria
-                    ||
-                    ($has_field_criteria && $field->getCriteria()->isSubmittedDataMatch($extracted_data))
-                ) {
-                    if (!in_array($field, $additional_fields)) {
-                        $additional_fields[] = $field;
-                    }
-                    $fields_requiring_rerender[] = $field;
-                }
-            }
-        }
+        list($fields_requiring_rerender, $fields_to_remove, $additional_fields) = $this->useLayoutCriteriaToDetermineDynamicLayoutChanges($new_layout, $context, $extracted_data, $fields_to_remove, $additional_fields);
 
         $form = $context->getForm();
 
@@ -378,16 +286,17 @@ class TicketType extends AbstractType
             $added_something = true;
 
             $new_fields_to_display[] = $field->getId();
+            $field_requires_rerender = in_array($field, $fields_requiring_rerender);
 
             // attach the default value to the submitted values of the form (to newly added fields that need a re-render)
-            if (count($submitted_data) && in_array($field, $fields_requiring_rerender)) {
+            if (count($submitted_data) && $field_requires_rerender) {
                 $ticket_field_id = $field->getId();
                 if ($default_value = $this->default_value_finder->determineDefaultSubmitData($field)) {
                     $extra_data_to_submit[$ticket_field_id] = $default_value;
                 }
             }
 
-            $this->addField($context, $field, $potentially_rerender_form);
+            $this->addField($context, $field, $field_requires_rerender);
         }
 
         foreach ($fields_to_remove as $field) {
@@ -1196,24 +1105,80 @@ class TicketType extends AbstractType
     }
 
     /**
-     * @param $field
+     * @param LayoutField $field
      * @param $extracted_data
      *
      * @return bool
      */
-    protected function fieldHasCriteriaAndCriteriaDoesNOTMatch($field, $extracted_data)
+    protected function fieldHasCriteriaAndCriteriaDoesNOTMatch(LayoutField $field, $extracted_data)
     {
         return $field->getCriteria() && !$field->getCriteria()->isSubmittedDataMatch($extracted_data);
     }
 
     /**
-     * @param $field
+     * @param LayoutField $field
      * @param $extracted_data
      *
      * @return bool
      */
-    protected function fieldHasCriteriaAndItDOESMatch($field, $extracted_data)
+    protected function fieldHasCriteriaAndItDOESMatch(LayoutField $field, $extracted_data)
     {
         return $field->getCriteria() && $field->getCriteria()->isSubmittedDataMatch($extracted_data);
+    }
+
+    /**
+     * @param $has_field_criteria
+     * @param LayoutField $field
+     * @param $extracted_data
+     *
+     * @return bool
+     */
+    protected function fieldDoesNotHaveCriteriaOrHasCriteriaAndMatches($has_field_criteria, LayoutField $field, $extracted_data)
+    {
+        return !$has_field_criteria
+        ||
+        ($has_field_criteria && $field->getCriteria()->isSubmittedDataMatch($extracted_data));
+    }
+
+    /**
+     * @param Layout            $new_layout
+     * @param TicketFormContext $context
+     * @param $extracted_data
+     * @param $fields_to_remove
+     * @param $additional_fields
+     *
+     * @return array
+     */
+    protected function useLayoutCriteriaToDetermineDynamicLayoutChanges(Layout $new_layout, TicketFormContext $context, $extracted_data, $fields_to_remove, $additional_fields)
+    {
+        // DEPENDENT FIELDS
+        // find fields that should be rendered, but weren't before, via criteria with recently submitted data
+        $fields_requiring_rerender = [];
+        foreach ($new_layout->all() as $field) {
+            if ($this->fieldWasDisplayedBefore($context, $field)) {
+                // this field was displayed before. should it continue to be displayed?
+                if ($this->fieldHasCriteriaAndCriteriaDoesNOTMatch($field, $extracted_data)) {
+                    $fields_to_remove[] = $field;
+                } elseif ($this->fieldHasCriteriaAndItDOESMatch($field, $extracted_data)) {
+                    // this field was displayed before + is still supposed to be on the form after the submit
+                    if (!$context->hasValidVisibility($field)) {
+                        continue;
+                    }
+
+                    $this->addField($context, $field);
+                }
+            } else {
+                // this field was not displayed before, but should it be added and the form re-rendered?
+                $has_field_criteria = $field->getCriteria();
+                if ($this->fieldDoesNotHaveCriteriaOrHasCriteriaAndMatches($has_field_criteria, $field, $extracted_data)) {
+                    if (!in_array($field, $additional_fields)) {
+                        $additional_fields[] = $field;
+                    }
+                    $fields_requiring_rerender[] = $field;
+                }
+            }
+        }
+
+        return array($fields_requiring_rerender, $fields_to_remove, $additional_fields);
     }
 }
