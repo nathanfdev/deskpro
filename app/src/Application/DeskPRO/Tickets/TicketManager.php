@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -42,6 +43,7 @@ use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\Actions\SendAgentAlert;
 use Application\DeskPRO\Tickets\Slas\SlaClientMessageSender;
 use Application\LegacyApiBundle\Request\RequestAuth;
+use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -363,15 +365,22 @@ class TicketManager
         }
 
         if (!$is_trivial_change) {
+            $data = [
+                'ticket_id'      => $ticket->getId(),
+                'changed_fields' => $ticket->getStateChangeRecorder()->getChangedFields(),
+                'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null,
+            ];
+
+            $this->container->get('event_dispatcher')->dispatch(
+                TicketUpdatedEvent::EVENT_NAME,
+                new TicketUpdatedEvent($ticket->getId(), $data)
+            );
+
             $this->db->insert('client_messages', array(
                 'channel'      => 'agent.ticket-updated',
                 'auth'         => DpStrings::random(15, Strings::CHARS_KEY),
                 'date_created' => date('Y-m-d H:i:s'),
-                'data'         => serialize(array(
-                    'ticket_id'      => $ticket->getId(),
-                    'changed_fields' => $ticket->getStateChangeRecorder()->getChangedFields(),
-                    'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null,
-                )),
+                'data'         => serialize($data),
             ));
         }
 

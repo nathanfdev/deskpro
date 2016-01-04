@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Notification;
 
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\NewMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Strategy\NotificationStrategyInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Strategy\StrategyFactory;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -42,7 +43,8 @@ class EventManager implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            NewMessageEvent::EVENT_NAME => 'handleEvent',
+            NewMessageEvent::EVENT_NAME    => 'handleEvent',
+            TicketUpdatedEvent::EVENT_NAME => 'handleEvent',
         ];
     }
 

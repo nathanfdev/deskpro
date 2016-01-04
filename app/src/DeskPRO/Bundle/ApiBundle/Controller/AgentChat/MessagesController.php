@@ -116,7 +116,7 @@ class MessagesController extends AbstractController
 
         $data    = $form->getData();
         $message = $messenger->addMessage($chat, $user, $data['message']);
-        // TODO just a stub maybe
+
         $this->container->get('event_dispatcher')->dispatch(
             NewMessageEvent::EVENT_NAME,
             new NewMessageEvent($message->getId())

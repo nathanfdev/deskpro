@@ -26,55 +26,84 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat;
+namespace DeskPRO\Bundle\AppBundle\Notification\Event\Ticket;
 
 use DeskPRO\Bundle\AppBundle\Notification\Event\AbstractSystemEvent;
 
-/**
- * Class NewMessageEvent.
- */
-class NewMessageEvent extends AbstractSystemEvent
+class TicketUpdatedEvent extends AbstractSystemEvent
 {
-    const EVENT_NAME = 'notification.agent_chat.new_message';
+    const EVENT_NAME = 'notification.ticket.updated';
 
     /** @var int */
-    protected $message_id;
+    protected $ticket_id;
+
+    /** @var array */
+    protected $data;
 
     /**
-     * @param int $message_id
+     * @param int   $ticket_id
+     * @param array $data
      */
-    public function __construct($message_id)
+    public function __construct($ticket_id, array $data)
     {
-        $this->message_id = $message_id;
+        $this->$ticket_id = $ticket_id;
+        $this->data       = $data;
     }
 
     /**
      * @return int
      */
-    public function getMessageId()
+    public function getTicketId()
     {
-        return $this->message_id;
+        return $this->ticket_id;
     }
 
     /**
-     * @param int $message_id
+     * @param int $ticket_id
      *
-     * @return NewMessageEvent
+     * @return TicketUpdatedEvent
      */
-    public function setMessageId($message_id)
+    public function setTicketId($ticket_id)
     {
-        $this->message_id = $message_id;
+        $this->ticket_id = $ticket_id;
 
         return $this;
     }
 
-    public function __sleep()
+    /**
+     * @return array
+     */
+    public function getData()
     {
-        return ['message_id'];
+        return $this->data;
     }
 
+    /**
+     * @param array $data
+     *
+     * @return TicketUpdatedEvent
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function __sleep()
+    {
+        return ['ticket_id', 'data'];
+    }
+
+    /**
+     * @param $array
+     */
     public function __wakeup($array)
     {
-        $this->message_id = $array['message_id'];
+        $this->ticket_id = $array['ticket_id'];
+        $this->data      = $array('data');
     }
 }
