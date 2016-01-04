@@ -38,9 +38,9 @@ use Symfony\Bundle\TwigBundle\Extension\AssetsExtension;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class PortalCssTwigExtension.
+ * Class PortalCustomizationsTwigExtension.
  */
-class PortalCssTwigExtension extends \Twig_Extension
+class PortalCustomizationsTwigExtension extends \Twig_Extension
 {
     private static $default_css_asset = 'DeskPRO_PortalBundle_style.css';
 
@@ -64,6 +64,7 @@ class PortalCssTwigExtension extends \Twig_Extension
     {
         return [
             new \Twig_SimpleFunction('portal_css_url', array($this, 'getPortalCssUrl')),
+            new \Twig_SimpleFunction('portal_custom_js', array($this, 'getPortalCustomJs')),
         ];
     }
 
@@ -90,11 +91,21 @@ class PortalCssTwigExtension extends \Twig_Extension
     }
 
     /**
+     * @return string
+     */
+    public function getPortalCustomJs()
+    {
+        return $this->isPreviewMode()
+                   ? $this->getAdvancedEditsManager()->getEditThemeSetJs()
+                   : $this->getAdvancedEditsManager()->getJs();
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getName()
     {
-        return 'portal_css';
+        return 'portal_customizations';
     }
 
     /**
@@ -103,6 +114,14 @@ class PortalCssTwigExtension extends \Twig_Extension
     private function getStylesManager()
     {
         return $this->container->get('dp.portal.designer.styles_manager');
+    }
+
+    /**
+     * @return AdvancedEditsManager
+     */
+    private function getAdvancedEditsManager()
+    {
+        return $this->container->get('dp.portal.designer.advanced_edits_manager');
     }
 
     /**

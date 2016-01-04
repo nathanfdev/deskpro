@@ -279,7 +279,7 @@ gulp.task('sassdoc', function () {
       form_positioning: 'size',
       borders: 'size',
       font_sizes: 'size',
-      fonts: 'font-family'
+      fonts: 'font'
     };
 
     var groups = {};

@@ -11,6 +11,7 @@
     <link href='https://fonts.googleapis.com/css?family=Ubuntu:400,300,500,700|Open+Sans:400,300,600,700|Roboto:400,300,500,700|Lato:400,300,700' rel='stylesheet' type='text/css' />
 </head>
 <body{% if is_agent() or is_admin() or is_impersonating() %} class="with-agent-bar"{% endif %}>
+{% include 'Theme:Internal:custom-header.html.twig' %}
 {% include 'Theme:Internal:body-include.html.twig' %}
 {% block doc_begin %}{% endblock %}
 
@@ -18,7 +19,13 @@
     {% block body %}The layout body should be defined in a sub-theme.{% endblock body %}
 </div>
 
+{% include 'Theme:Internal:custom-footer.html.twig' %}
 {% block doc_end %}{% endblock %}
 {% include 'Theme:Internal:foot-include.html.twig' %}
+
+<script type="text/javascript">
+    {{ portal_custom_js()|raw }}
+</script>
+
 </body>
 </html>

@@ -29,8 +29,7 @@
 /**
  * DeskPRO.
  */
-
-namespace DpTest\Bundle\AppBundle\DataService\Content;
+namespace DpTest\DeskPRO\Bundle\PortalBundle\Designer;
 
 use DeskPRO\Bundle\PortalBundle\Designer\SassDocParser;
 use DpTest\PortalTestCase;

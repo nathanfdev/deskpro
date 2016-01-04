@@ -8,6 +8,12 @@ services:
       - @dp.portal.designer.sass_doc_parser
       - @brand_stack
 
+  dp.portal.designer.advanced_edits_manager:
+    class: DeskPRO\Bundle\PortalBundle\Designer\AdvancedEditsManager
+    arguments:
+      - @doctrine.orm.default_entity_manager
+      - @brand_stack
+
   dp.portal.designer.portal_styles_compiler:
     class: DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler
     arguments:
@@ -15,6 +21,8 @@ services:
       - @brand_stack
       - '../pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-style.scss'
       - 'custom_vars.scss'
+      - '@=service("dp.portal.designer.advanced_edits_manager").getEditThemeSetScss()'
+      - 'custom_style.scss'
 
   dp.portal.designer.sass_doc_parser:
     class: DeskPRO\Bundle\PortalBundle\Designer\SassDocParser
@@ -26,8 +34,8 @@ services:
     arguments:
       - @doctrine.orm.default_entity_manager
 
-  dp.portal.designer.portal_css_twig_extension:
-    class: DeskPRO\Bundle\PortalBundle\Designer\PortalCssTwigExtension
+  dp.portal.designer.portal_customizations_twig_extension:
+    class: DeskPRO\Bundle\PortalBundle\Designer\PortalCustomizationsTwigExtension
     arguments: [@service_container]
     tags:
         - { name: twig.extension }

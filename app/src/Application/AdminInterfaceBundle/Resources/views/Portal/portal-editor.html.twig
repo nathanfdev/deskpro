@@ -108,7 +108,7 @@
                     </form>
                 </div>
 
-
+                <!-- Advanced edit ------------------------------------------------------------------------------------>
 
                 <div class="panel-title">
                     <a ng-click="Portal.togglePanel('advanced')">
@@ -118,111 +118,97 @@
                     </a>
                 </div>
 
-                <div class="code-editor" ng-show="Portal.isOpen('advanced')">
+                <div class="code-editor"
+                     ng-class="{'code-editor-extended': Portal.isAdvancedTab('assets')}"
+                     ng-show="Portal.isOpen('advanced')">
                     <nav>
                         <ul>
-                            <li><a href="#">Header</a>
-                            </li><li>
-                                <a href="#">Footer</a>
-                            </li><li class="active">
-                                <a href="#">CSS</a>
-                            </li><li>
-                                <a href="#">Javascript</a>
-                            </li><li>
-                                <a href="#">Assets</a>
+                            <li ng-class="{active: Portal.isAdvancedTab('header')}">
+                                <a href ng-click="Portal.openAdvancedTab('header')">Header</a>
+                            </li>
+                            <li ng-class="{active: Portal.isAdvancedTab('footer')}">
+                                <a href ng-click="Portal.openAdvancedTab('footer')">Footer</a>
+                            </li>
+                            <li ng-class="{active: Portal.isAdvancedTab('scss')}">
+                                <a href ng-click="Portal.openAdvancedTab('scss')">(S)CSS</a>
+                            </li>
+                            <li ng-class="{active: Portal.isAdvancedTab('javascript')}">
+                                <a href ng-click="Portal.openAdvancedTab('javascript')">Javascript</a>
+                            </li>
+                            <li ng-class="{active: Portal.isAdvancedTab('assets')}">
+                                <a href ng-click="Portal.openAdvancedTab('assets')">Assets</a>
                             </li>
                         </ul>
                     </nav>
 
-                    <div class="the-code">
-                  <pre>                    <span class="line-number">101</span>&lt;article class="news kb-article kb-article-news"&gt;
-                    <br><span class="line-number">102</span>  &lt;header&gt;
-                    <br><span class="line-number">103</span>    &lt;div class="calendar-decoration"&gt;&lt;span class="month"&gt;Mar&lt;/span&gt;&lt;hr&gt;&lt;span class="day"&gt;27&lt;/span&gt;&lt;/div&gt;
-                    <br><span class="line-number">104</span>    &lt;h1&gt;&lt;a href="#"&gt;New Feature: Interactive API Browser&lt;/a&gt;&lt;/h1&gt;
-                    <br><span class="line-number">105</span>    &lt;div class="article-meta"&gt;
-                    <br><span class="line-number">106</span>      Posted by
-                    <br><span class="line-number">107</span>      &lt;span style="background: url(./img/avatar.png) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"&gt;&lt;/span&gt;
-                    <br><span class="line-number">108</span>      Ben Henley 2 days ago, in category: &lt;a href="#"&gt;Product &lt;i class="fa fa-caret-down"&gt;&lt;/a&gt;&lt;/i&gt;
-                  </pre>
-                    </div>
-                </div>
+                    <!-- Header -->
+                    <dp-code-editor
+                        code="Portal.advanced.header"
+                        syntax="twig"
+                        visible="Portal.isAdvancedTab('header') && Portal.isAdvancedExpanded()"
+                        close="Portal.collapseAdvanced">
+                    </dp-code-editor>
+                    <div class="the-code"
+                         ng-click="Portal.expandAdvanced()"
+                         ng-show="Portal.isAdvancedTab('header')"
+                         style="height: 100px;"
+                         ui-ace="{theme: 'monokai', mode: 'twig'}"
+                         ng-model="Portal.advanced.header"
+                         readonly
+                    ></div>
 
+                    <!-- Footer -->
+                    <dp-code-editor
+                        code="Portal.advanced.footer"
+                        syntax="twig"
+                        visible="Portal.isAdvancedTab('footer') && Portal.isAdvancedExpanded()"
+                        close="Portal.collapseAdvanced">
+                    </dp-code-editor>
+                    <div class="the-code"
+                         ng-click="Portal.expandAdvanced()"
+                         ng-show="Portal.isAdvancedTab('footer')"
+                         style="height: 100px;"
+                         ui-ace="{theme: 'monokai', mode: 'html'}"
+                         ng-model="Portal.advanced.footer"
+                         readonly
+                    ></div>
 
+                    <!-- CSS -->
+                    <dp-code-editor
+                        code="Portal.advanced.scss"
+                        syntax="scss"
+                        visible="Portal.isAdvancedTab('scss') && Portal.isAdvancedExpanded()"
+                        close="Portal.collapseAdvanced">
+                    </dp-code-editor>
+                    <div class="the-code"
+                         ng-click="Portal.expandAdvanced()"
+                         ng-show="Portal.isAdvancedTab('scss')"
+                         style="height: 100px;"
+                         ui-ace="{theme: 'monokai', mode: 'scss'}"
+                         ng-model="Portal.advanced.scss"
+                         readonly
+                    ></div>
 
-                <div class="panel-title">
-                    <a ng-click="Portal.togglePanel('advanced')">
-                        (sample) Advanced Edit
-                        <i class="fa fa-caret-down" ng-show="!Portal.isOpen('advanced')"></i>
-                        <i class="fa fa-caret-down" ng-show="Portal.isOpen('advanced')"></i>
-                    </a>
-                </div>
+                    <!-- Javascript -->
+                    <dp-code-editor
+                        code="Portal.advanced.javascript"
+                        syntax="javascript"
+                        visible="Portal.isAdvancedTab('javascript') && Portal.isAdvancedExpanded()"
+                        close="Portal.collapseAdvanced">
+                    </dp-code-editor>
+                    <div class="the-code"
+                         ng-click="Portal.expandAdvanced()"
+                         ng-show="Portal.isAdvancedTab('javascript')"
+                         style="height: 100px;"
+                         ui-ace="{theme: 'monokai', mode: 'javascript'}"
+                         ng-model="Portal.advanced.javascript"
+                         readonly
+                    ></div>
 
-                <div class="code-editor code-editor-extended" ng-show="Portal.isOpen('advanced')">
-                    <a href="#" class="full-screen-link">Full Screen Editor <span class="icon"><i class="fa fa-expand"></i></span></a>
-                    <nav>
-                        <ul>
-                            <li><a href="#">Header</a>
-                            </li><li>
-                                <a href="#">Footer</a>
-                            </li><li class="active">
-                                <a href="#">CSS</a>
-                            </li><li>
-                                <a href="#">Javascript</a>
-                            </li><li>
-                                <a href="#">Assets</a>
-                            </li>
-                        </ul>
-                    </nav>
-
-                    <div class="the-code">
-                  <pre>                    <span class="line-number">101</span>&lt;article class="news kb-article kb-article-news"&gt;
-                    <br><span class="line-number">102</span>  &lt;header&gt;
-                    <br><span class="line-number">103</span>    &lt;div class="calendar-decoration"&gt;&lt;span class="month"&gt;Mar&lt;/span&gt;&lt;hr&gt;&lt;span class="day"&gt;27&lt;/span&gt;&lt;/div&gt;
-                    <br><span class="line-number">104</span>    &lt;h1&gt;&lt;a href="#"&gt;New Feature: Interactive API Browser&lt;/a&gt;&lt;/h1&gt;
-                    <br><span class="line-number">105</span>    &lt;div class="article-meta"&gt;
-                    <br><span class="line-number">106</span>      Posted by
-                    <br><span class="line-number">107</span>      &lt;span style="background: url(./img/avatar.png) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"&gt;&lt;/span&gt;
-                    <br><span class="line-number">108</span>      Ben Henley 2 days ago, in category: &lt;a href="#"&gt;Product &lt;i class="fa fa-caret-down"&gt;&lt;/a&gt;&lt;/i&gt;
-                  </pre>
-                    </div>
-
-                    <div class="editor-footer">
-                        <a href="#" class="button blank-button">Cancel &amp; Discard Changes</a> <a href="#" class="button">Preview Changes</a>
-                    </div>
-                </div>
-
-
-
-                <div class="panel-title">
-                    <a ng-click="Portal.togglePanel('advanced')">
-                        (sample) Advanced Edit
-                        <i class="fa fa-caret-down" ng-show="!Portal.isOpen('advanced')"></i>
-                        <i class="fa fa-caret-down" ng-show="Portal.isOpen('advanced')"></i>
-                    </a>
-                </div>
-
-                <div class="code-editor code-editor-extended" ng-show="Portal.isOpen('advanced')">
-                    <a href="#" class="full-screen-link">Full Screen Editor <span class="icon"><i class="fa fa-expand"></i></span></a>
-                    <nav>
-                        <ul>
-                            <li><a href="#">Header</a>
-                            </li><li>
-                                <a href="#">Footer</a>
-                            </li><li>
-                                <a href="#">CSS</a>
-                            </li><li>
-                                <a href="#">Javascript</a>
-                            </li><li class="active">
-                                <a href="#">Assets</a>
-                            </li>
-                        </ul>
-                    </nav>
-
-                    <div class="the-assets">
+                    <!-- Assets -->
+                    <div class="the-assets" ng-show="Portal.isAdvancedTab('assets')">
                         <a href="#" class="drag-and-drop-area">
-                    <span><i class="fa fa-upload"></i> Drag &amp; Drop here or just click to upload a new file
-                  </span></a>
-
+                            <span><i class="fa fa-upload"></i> Drag &amp; Drop here or just click to upload a new file</span></a>
                         <div class="file-list">
                             <ul>
                                 <li>
@@ -259,10 +245,10 @@
                     </div>
                 </div>
 
+                <!-- End of the Advanced edit ------------------------------------------------------------------------->
 
-
-                <div class="panel-title">
-                    <a ng-click="Portal.togglePanel('expert')">
+                <div class="panel-title" style="z-index: 10;">
+                    <a ng-click="Portal.togglePanel('expert')" style="z-index: 99;">
                         Expert
                         <i class="fa fa-caret-down" ng-show="!Portal.isOpen('expert')"></i>
                         <i class="fa fa-caret-down" ng-show="Portal.isOpen('expert')"></i>

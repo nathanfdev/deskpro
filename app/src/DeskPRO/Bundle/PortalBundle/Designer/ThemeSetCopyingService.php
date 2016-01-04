@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\Designer;
 
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\BlobStorage;
+use Application\DeskPRO\Entity\Template;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use Doctrine\ORM\EntityManager;
@@ -70,6 +71,9 @@ class ThemeSetCopyingService
         $this->dropThemeSetAssets($destination);
         $this->cloneThemeSetAssets($source, $destination);
 
+        $this->dropTemplates($destination);
+        $this->cloneTemplates($source, $destination);
+
         $this->em->persist($destination);
     }
 
@@ -96,6 +100,34 @@ class ThemeSetCopyingService
         foreach ($assets as $asset) {
             $this->cloneThemeSetAsset($asset, $destination);
         }
+    }
+
+    /**
+     * @param ThemeSet $theme_set
+     */
+    private function dropTemplates(ThemeSet $theme_set)
+    {
+        $templates = $this->em->getRepository(Template::class)->findBy(compact('theme_set'));
+        foreach ($templates as $template) {
+            $this->em->remove($template);
+        }
+        $this->em->flush();
+    }
+
+    /**
+     * @param ThemeSet $source
+     * @param ThemeSet $destination
+     */
+    private function cloneTemplates(ThemeSet $source, ThemeSet $destination)
+    {
+        /** @var ThemeSetAsset[] $templates */
+        $templates = $this->em->getRepository(Template::class)->findBy(['theme_set' => $source]);
+        foreach ($templates as $template) {
+            $clone = clone $template;
+            $clone->setThemeSet($destination);
+            $this->em->persist($clone);
+        }
+        $this->em->flush();
     }
 
     /**
