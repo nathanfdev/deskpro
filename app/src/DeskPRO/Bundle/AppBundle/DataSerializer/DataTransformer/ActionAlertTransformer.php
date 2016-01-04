@@ -67,7 +67,8 @@ class ActionAlertTransformer extends AbstractDataSerializerTransformer
         $entity = $transformation_request->getDataToBeTransformed();
 
         return [
-            'data' => $entity->getData(),
+            'data'      => $entity->getData(),
+            'timestamp' => $entity->getDateCreated()->getTimestamp(),
         ];
     }
 }

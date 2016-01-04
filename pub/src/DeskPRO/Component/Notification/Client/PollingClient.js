@@ -22,17 +22,19 @@ export default class PollingClient extends AbstractClient {
   sendPoll() {
     const that = this;
     DpApi.sendGet('DP_API/notify/action-alerts/' + that.options.last_alert)
-      .success(that.handlePoll.bind(that));
+      .success((response) => that.handlePoll(response));
   }
 
   handlePoll(response) {
     const that = this;
     const last = response.data[response.data.length - 1];
-    if (last && last.date_created) {
-      if (response.data.length > 0 && response.data.target === that.options.me) {
-        that.options.last_alert = last.date_created;
-        that.options.dispatcher(that.options.eventName, response.data);
-      }
+    if (last && last.timestamp) {
+      that.options.last_alert = last.timestamp;
+      response.data.map((datum) => {
+        if (datum.target_id === that.options.me) {
+          that.options.dispatcher(that.options.eventName, datum);
+        }
+      });
     }
   }
 

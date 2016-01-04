@@ -71,7 +71,7 @@ class NotificationService
         $date            = new \DateTime('@'.$last);
         $result          = $qb->where('aa.date_created > (:last)')
             ->andWhere('aa.target_id = :target_id')
-            ->setParameter('last', $date->getTimestamp())
+            ->setParameter('last', $date->format('Y-m-d H:i:s'))
             ->setParameter('target_id', $user->getId())
             ->getQuery()
             ->getResult();
