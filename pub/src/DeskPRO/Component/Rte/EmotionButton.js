@@ -73,7 +73,7 @@ export default class EmotionButton extends React.Component {
         // Range.createContextualFragment() would be useful here but is
         // only relatively recently standardized and is not supported in
         // some browsers (IE9, for one)
-        var el = document.createElement('div');
+        const el = document.createElement('div');
         el.innerHTML = html;
         const frag = document.createDocumentFragment();
 
@@ -95,7 +95,12 @@ export default class EmotionButton extends React.Component {
           range.setStartAfter(lastNode);
           range.collapse(true);
 
-          selection.removeAllRanges();
+          if (selection.empty) {  // Chrome
+            selection.empty();
+          } else if (selection.removeAllRanges) {  // Firefox
+            selection.removeAllRanges();
+          }
+
           selection.addRange(range);
         }
       }

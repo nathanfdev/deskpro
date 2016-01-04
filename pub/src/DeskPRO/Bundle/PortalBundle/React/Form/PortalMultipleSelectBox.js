@@ -1,17 +1,14 @@
-import _ from "lodash";
-import $ from "jquery";
-import FormActionStore from "DeskPRO/Component/React/Standalone/FormActionStore";
-import React from "react";
+import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import PortalSimpleSelectBox from "./PortalSimpleSelectBox";
-
-//######################################################################################################################
-//# Action Store
-//######################################################################################################################
+import FormActionStore from 'DeskPRO/Component/React/Standalone/FormActionStore';
+import PortalSimpleSelectBox from './PortalSimpleSelectBox';
+import _ from 'lodash';
+import $ from 'jquery';
 
 export class LevelSelectActionStore extends FormActionStore {
+
   onValueChanged(data) {
-    let opts = this.el.find('option');
+    const opts = this.el.find('option');
     opts.each((x, el) => {
       el.selected = _.some(data.value, (v) => {
         return _.parseInt(v) === _.parseInt(el.value);
@@ -23,34 +20,34 @@ export class LevelSelectActionStore extends FormActionStore {
   readValueFromForm() {
     const v = [];
     this.el.find('option:selected').each((x, opt) => {
-      opt = $(opt);
-      v.push(opt.data('id'));
+      const $opt = $(opt);
+      v.push($opt.data('id'));
     });
+
     return v;
   }
 
   getOptionData() {
-    let options = [];
+    const options = [];
     this.el.find('option').each((x, optEl) => {
-      optEl = $(optEl);
-      let parent = optEl.data('parent') || null;
-      if (!parent || parent === "0" || parent === 0) {
+      const $optEl = $(optEl);
+      let parent = $optEl.data('parent') || null;
+      if (!parent || parent === '0' || parent === 0) {
         parent = null;
       }
 
       options.push({
-        id: optEl.data('id'),
-        title: optEl.data('title') || optEl.data('name') || optEl.text(),
+        id: $optEl.data('id'),
+        title: $optEl.data('title') || $optEl.data('name') || $optEl.text(),
         parent: parent,
         children: []
       });
     });
 
-    let walkerFn = (parent = null, path = []) => {
-      let r = [];
-
+    const walkerFn = (parent = null, path = []) => {
+      const r = [];
       options.forEach(opt => {
-        if (opt.parent == parent) {
+        if (opt.parent === parent) {
           opt.path = _.clone(path);
           path.push(opt.id);
           opt.children = walkerFn(opt.id, path);
@@ -63,27 +60,24 @@ export class LevelSelectActionStore extends FormActionStore {
       return r;
     };
 
-    let hierarchy = walkerFn();
-
-    return {
-      options: options,
-      hierarchy: hierarchy
-    }
+    return { options, hierarchy: walkerFn() };
   }
 }
 
-//######################################################################################################################
-//# React Component
-//######################################################################################################################
-
 export class PortalMultipleSelectBox extends React.Component {
+
+  static propTypes = {
+    widgetOptions: PropTypes.object,
+    actionStore: PropTypes.object
+  };
+
   constructor(props) {
     super(props);
-    this.actionStore = this.props.actionStore;
+    this.actionStore = props.actionStore;
     this.updateOptions();
 
-    let value = this.actionStore.getValue();
-    let valuePath = this.getValuePath(value);
+    const value = this.actionStore.getValue();
+    const valuePath = this.getValuePath(value);
     this.state = {
       value: value,
       valuePath: valuePath,
@@ -91,22 +85,24 @@ export class PortalMultipleSelectBox extends React.Component {
     };
 
     this.actionStore.on('formChanged', (data) => {
-      let value = data.value;
-      let valuePath = this.getValuePath(value);
-      let state = {value: value, valuePath: valuePath};
-      this.setState(state);
+      this.setState({
+        value: data.value,
+        valuePath: this.getValuePath(data.value)
+      });
     });
   }
 
-  updateOptions() {
-    this.optionData = this.actionStore.getOptionData();
-  }
+  onClickOption = options => {
+    this.actionStore.setValue(options ? options.map((opt) => opt.id) : []);
+  };
 
   getValuePath(value) {
     let path = [];
-    if (!value) return path;
+    if (!value) {
+      return path;
+    }
 
-    let opt = _.find(this.optionData.options, o => o.id == value);
+    const opt = _.find(this.optionData.options, o => o.id === value);
     if (opt) {
       path = _.clone(opt.path);
     } else {
@@ -118,47 +114,42 @@ export class PortalMultipleSelectBox extends React.Component {
     return path;
   }
 
-  getValueForId(id) {
-    return _.find(this.optionData.options, o => o.id == id);
-  }
-
-  onClickOption(options) {
-    this.actionStore.setValue(options ? options.map((opt) => {
-      return opt.id;
-    }) : []);
+  updateOptions() {
+    this.optionData = this.actionStore.getOptionData();
   }
 
   renderSelect() {
-    const map_option = (g) => {
+    const { widgetOptions } = this.props;
+    const mapOption = (g) => {
       const r = {
         id: g.id,
         title: g.title,
-        children: g.children.map(map_option),
+        children: g.children.map(mapOption),
         parent: g.parent,
         depth: g.path.length
       };
 
       if (r.children.length > 0) {
-        return [
-            r,
-            r.children
-        ]
-      } else {
-        return r;
+        return [r, r.children];
       }
+
+      return r;
     };
-    let options = this.optionData.hierarchy.map(map_option);
+
+    let options = this.optionData.hierarchy.map(mapOption);
     options = _.flattenDeep(options);
-    const values = this.actionStore.getValue().map((selected_id) => {
-      return _.find(options, (opt) => {
-        return _.parseInt(opt.id) === _.parseInt(selected_id);
-      });
+    const values = this.actionStore.getValue().map(selectedId => {
+      return _.find(options, (opt) => _.parseInt(opt.id) === _.parseInt(selectedId));
     });
 
     return (
-      <div>
-        <PortalSimpleSelectBox multiple="true" options={options} value={values} level="1" onChange={this.onClickOption.bind(this)} />
-      </div>
+      <PortalSimpleSelectBox
+        multiple
+        widgetOptions={widgetOptions}
+        options={options}
+        value={values}
+        level={1}
+        onChange={this.onClickOption} />
     );
   }
 
@@ -167,32 +158,29 @@ export class PortalMultipleSelectBox extends React.Component {
   }
 }
 
-//######################################################################################################################
-//# Factory
-//######################################################################################################################
-
 /**
  * Configures and renders a multi-level select box bound to `select` into `renderTo`.
  *
  * @param {jQuery/HTMLElement} select
  * @param {jQuery/HTMLElement} renderTo
  * @param {FormActionStore}    actionStore
+ * @param {Object}             widgetOptions
  * @returns {FormActionStore}
  */
-export function createComponent(select, renderTo, actionStore = null) {
-  select = $(select);
-  select.find('option').each((x, opt) => {
-    opt = $(opt);
-    if (!opt.data('id')) {
-      opt.data('id', opt.data('id', _.uniqueId('opt_')));
+export function createComponent(select, renderTo, actionStore = null, widgetOptions = {}) {
+  const $select = $(select);
+  $select.find('option').each((x, opt) => {
+    const $opt = $(opt);
+    if (!$opt.data('id')) {
+      $opt.data('id', $opt.data('id', _.uniqueId('opt_')));
     }
   });
 
   if (!actionStore) {
-    actionStore = new LevelSelectActionStore(select);
+    actionStore = new LevelSelectActionStore($select);
   }
 
-  ReactDOM.render(React.createElement(PortalMultipleSelectBox, {actionStore: actionStore}), $(renderTo).get(0));
+  ReactDOM.render(React.createElement(PortalMultipleSelectBox, { actionStore, widgetOptions }), $(renderTo).get(0));
 
   return actionStore;
 }

@@ -34,13 +34,13 @@ namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalAgentTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalCompositeTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalDepartmentTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @mixin \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\DbalTermCompilerFactory
@@ -82,7 +82,7 @@ class DbalTermCompilerFactorySpec extends ObjectBehavior
 
 class FakeTerm extends AbstractTerm
 {
-    public function configureOptions(OptionsResolver $resolver)
+    public static function configureOptions(TermOptionsResolver $resolver)
     {
     }
 

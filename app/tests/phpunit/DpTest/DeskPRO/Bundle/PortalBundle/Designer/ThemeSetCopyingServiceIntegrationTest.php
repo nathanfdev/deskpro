@@ -29,11 +29,11 @@
 /**
  * DeskPRO.
  */
-
-namespace DpTest\Bundle\AppBundle\DataService\Content;
+namespace DpTest\DeskPRO\Bundle\PortalBundle\Designer;
 
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\BlobStorage;
+use Application\DeskPRO\Entity\Template;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use DeskPRO\Bundle\PortalBundle\Designer\ThemeSetCopyingService;
@@ -120,7 +120,7 @@ class ThemeSetCopyingServiceIntegrationTest extends PortalTestCase
     /**
      * @test
      */
-    public function it_should_clone_ThemeSetAsset_as_new_entity()
+    public function it_should_copy_ThemeSetAsset_as_new_entity()
     {
         $asset = $this->persistDummyThemeSetAsset($this->source);
         $this->copy();
@@ -165,7 +165,7 @@ class ThemeSetCopyingServiceIntegrationTest extends PortalTestCase
     /**
      * @test
      */
-    public function it_should_clone_asset_blobs_as_new_entities()
+    public function it_should_copy_asset_blobs_as_new_entities()
     {
         $asset = $this->persistDummyThemeSetAsset($this->source);
         $blob  = $asset->getBlob();
@@ -195,7 +195,7 @@ class ThemeSetCopyingServiceIntegrationTest extends PortalTestCase
     /**
      * @test
      */
-    public function it_should_clone_blob_storage_as_new_entity()
+    public function it_should_copy_blob_storage_as_new_entity()
     {
         $asset   = $this->persistDummyThemeSetAsset($this->source);
         $blob    = $asset->getBlob();
@@ -206,6 +206,52 @@ class ThemeSetCopyingServiceIntegrationTest extends PortalTestCase
         $blob2    = $this->findAssets($this->destination)[0]->getBlob();
         $storage2 = $this->findBlobStorage($blob2);
         $this->assertNotEquals($storage->getId(), $storage2->getId());
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_copy_Templates()
+    {
+        $this->persistDummyTemplates($this->source, 2);
+
+        $this->copy();
+
+        $this->assertCount(2, $templates = $this->findTemplates($this->destination));
+        $names = array_map(function ($tpl) { return $tpl->name; }, $templates);
+        sort($names);
+        $this->assertEquals(['tpl_1', 'tpl_2'], $names);
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_copy_Template_names_and_code()
+    {
+        $this->persistDummyTemplates($this->source, 2);
+
+        $this->copy();
+
+        $templates = $this->findTemplates($this->destination);
+        $names     = array_map(function ($tpl) { return $tpl->name; }, $templates);
+        $contents = array_map(function ($tpl) { return $tpl->template_compiled; }, $templates);
+        sort($names);
+        sort($contents);
+        $this->assertEquals(['tpl_1', 'tpl_2'], $names);
+        $this->assertEquals(['tpl_1_code', 'tpl_2_code'], $contents);
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_drop_destination_Templates()
+    {
+        $this->persistDummyTemplates($this->destination, 3);
+        $this->persistDummyTemplates($this->source, 2);
+
+        $this->copy();
+
+        $this->assertCount(2, $this->findTemplates($this->destination));
     }
 
     // Helpers ---------------------------------------------------------------------------------------------------------
@@ -226,6 +272,16 @@ class ThemeSetCopyingServiceIntegrationTest extends PortalTestCase
     private function findAssets(ThemeSet $theme_set)
     {
         return $this->getRepository(ThemeSetAsset::class)->findBy(['theme_set' => $theme_set]);
+    }
+
+    /**
+     * @param ThemeSet $theme_set
+     *
+     * @return Template[]
+     */
+    private function findTemplates(ThemeSet $theme_set)
+    {
+        return $this->getRepository(Template::class)->findBy(['theme_set' => $theme_set]);
     }
 
     /**
@@ -288,5 +344,21 @@ class ThemeSetCopyingServiceIntegrationTest extends PortalTestCase
         }
 
         return $blob;
+    }
+
+    /**
+     * @param ThemeSet $theme_set
+     * @param int      $num
+     */
+    private function persistDummyTemplates(ThemeSet $theme_set, $num)
+    {
+        for ($i = 1; $i <= $num; ++$i) {
+            $tpl                = new Template();
+            $tpl->name          = "tpl_{$i}";
+            $tpl->theme_set     = $theme_set;
+            $tpl->template_code = $tpl->template_compiled = "tpl_{$i}_code";
+            $this->getEntityManager()->persist($tpl);
+        }
+        $this->getEntityManager()->flush();
     }
 }

@@ -74,17 +74,37 @@ class PortalStylesCompiler
     private $custom_vars_file_name;
 
     /**
+     * @var string
+     */
+    private $custom_scss;
+
+    /**
+     * @var string
+     */
+    private $custom_scss_file_name;
+
+    /**
      * @param EntityManager $em
      * @param BrandStack    $brand_stack
      * @param string        $styles_file_path
      * @param string        $custom_vars_file_name
+     * @param string        $custom_scss
+     * @param string        $custom_scss_file_name
      */
-    public function __construct(EntityManager $em, BrandStack $brand_stack, $styles_file_path, $custom_vars_file_name)
-    {
+    public function __construct(
+        EntityManager $em,
+        BrandStack $brand_stack,
+        $styles_file_path,
+        $custom_vars_file_name,
+        $custom_scss,
+        $custom_scss_file_name
+    ) {
         $this->em                    = $em;
         $this->brand_stack           = $brand_stack;
         $this->styles_file_path      = $styles_file_path;
         $this->custom_vars_file_name = $custom_vars_file_name;
+        $this->custom_scss           = $custom_scss;
+        $this->custom_scss_file_name = $custom_scss_file_name;
 
         // try to resolve path in constructor to get early Exception if path isn't valid
         $this->getStylePath();
@@ -175,6 +195,9 @@ class PortalStylesCompiler
         }
         $project->addFileSource("$source_dir/{$this->custom_vars_file_name}", $custom_vars_scss);
 
+        // Set custom_style.scss contents
+        $project->addFileSource("$source_dir/{$this->custom_scss_file_name}", $this->custom_scss);
+
         $result = $compiler->compile($project);
 
         return $result;
@@ -194,15 +217,8 @@ class PortalStylesCompiler
         foreach ($variables as &$variable) {
             if (is_array($variable)) {
 
-                // compile font value from its' parts (size, unit, font)
-                if (array_key_exists('font', $variable)
-                    && array_key_exists('size', $variable)
-                    && array_key_exists('unit', $variable)) {
-                    $variable = $variable['size'].$variable['unit'].' '.$variable['font'];
-                }
-
                 // compile size from value and unit parts
-                elseif (array_key_exists('value', $variable) && array_key_exists('unit', $variable)) {
+                if (array_key_exists('value', $variable) && array_key_exists('unit', $variable)) {
                     $variable = $variable['value'].$variable['unit'];
                 }
             }

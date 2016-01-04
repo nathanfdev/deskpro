@@ -54,7 +54,8 @@ define [
   'Admin/Portal/Directive/Editor/ColorForm',
   'Admin/Portal/Directive/Editor/FloatForm',
   'Admin/Portal/Directive/Editor/FontForm',
-  'Admin/Portal/Directive/Editor/SizeForm'
+  'Admin/Portal/Directive/Editor/SizeForm',
+  'Admin/Portal/Directive/Editor/CodeEditor'
 ], (
   DeskPRO_Directive_DpClickHref,
   DeskPRO_Directive_DpClosestNumber,
@@ -111,7 +112,8 @@ define [
   Admin_Portal_Directive_Editor_ColorForm,
   Admin_Portal_Directive_Editor_FloatForm,
   Admin_Portal_Directive_Editor_FontForm,
-  Admin_Portal_Directive_Editor_SizeForm
+  Admin_Portal_Directive_Editor_SizeForm,
+  Admin_Portal_Directive_Editor_CodeEditor
 ) ->
   return (Module) ->
     Module.directive('dpClickHref',                    DeskPRO_Directive_DpClickHref)
@@ -170,6 +172,7 @@ define [
     Module.directive('dpPortalDesignerFloatForm',      Admin_Portal_Directive_Editor_FloatForm)
     Module.directive('dpPortalDesignerFontForm',       Admin_Portal_Directive_Editor_FontForm)
     Module.directive('dpPortalDesignerSizeForm',       Admin_Portal_Directive_Editor_SizeForm)
+    Module.directive('dpCodeEditor',                   Admin_Portal_Directive_Editor_CodeEditor)
 
     Module.directive('dpToggleShowIds', [ ->
       return {

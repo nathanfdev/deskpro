@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
+use DeskPRO\Bundle\PortalBundle\Designer\AdvancedEditsManager;
 use DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler;
 use DeskPRO\Bundle\PortalBundle\Designer\SassDocParser;
 use DeskPRO\Bundle\PortalBundle\Designer\StylesManager;
@@ -59,7 +60,7 @@ class DesignerController extends AbstractApiController
     }
 
     /**
-     * @Route("/portal/api/style/variable-values")
+     * @Route("/portal/api/style/edit-theme-set/variable-values")
      * @Method({"GET"})
      *
      * @return View
@@ -77,10 +78,37 @@ class DesignerController extends AbstractApiController
      *
      * @return View
      */
-    public function saveStyleVariablesAction(Request $request)
+    public function saveVariableValuesAction(Request $request)
     {
         $variables = json_decode($request->getContent(), true);
         $this->getPortalStylesCompiler()->recompile($variables);
+
+        return new Response(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/advanced-edits")
+     * @Method({"GET"})
+     *
+     * @return View
+     */
+    public function getAdvancedEditsAction()
+    {
+        return new JsonResponse($this->getAdvancedEditsManager()->get());
+    }
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/advanced-edits")
+     * @Method({"PUT"})
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function saveAdvancedEditsAction(Request $request)
+    {
+        $data = json_decode($request->getContent(), true);
+        $this->getAdvancedEditsManager()->save($data);
 
         return new Response(null, Response::HTTP_NO_CONTENT);
     }
@@ -132,6 +160,14 @@ class DesignerController extends AbstractApiController
     private function getStylesManager()
     {
         return $this->get('dp.portal.designer.styles_manager');
+    }
+
+    /**
+     * @return AdvancedEditsManager
+     */
+    private function getAdvancedEditsManager()
+    {
+        return $this->get('dp.portal.designer.advanced_edits_manager');
     }
 
     /**

@@ -29,9 +29,9 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\Problem;
 
-use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketsSelectCriteria;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Problem\ProblemTerm;
 use DpTest\DeskPRO\Bundle\AppBundle\TermEngine\TermIntegrationTest;
 
@@ -115,7 +115,7 @@ class ProblemTermIntegrationTest extends TermIntegrationTest
      */
     public function it_should_properly_select_first_problem_tickets_when_using_TicketSelectCriteria()
     {
-        $term = TicketsSelectCriteria::createTerm(['problem' => $this->secondProblem->getId()]);
+        $term = $this->get('dp.app.term_engine.tickets_select_criteria')->createTerm(['problem' => $this->secondProblem->getId()]);
         $this->assertTermSelectsTickets($term, $this->secondProblemTickets);
     }
 }

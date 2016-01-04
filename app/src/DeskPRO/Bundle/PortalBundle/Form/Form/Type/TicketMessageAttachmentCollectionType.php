@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -41,12 +40,17 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * Class TicketMessageAttachmentCollectionType.
+ */
 class TicketMessageAttachmentCollectionType extends AbstractType
 {
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            $form = $event->getForm();
             $collection = $event->getData();
 
             // ensure there is a collection of attachments on the message (even if empty)
@@ -57,7 +61,6 @@ class TicketMessageAttachmentCollectionType extends AbstractType
         }, 100);
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
-            $form = $event->getForm();
             $collection = $event->getData();
 
             // clean up attachments that don't have a blob (delete them from the message)
@@ -70,52 +73,49 @@ class TicketMessageAttachmentCollectionType extends AbstractType
                     $collection->removeElement($attachment);
                 }
             }
-
         });
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(
-            array(
-                'type'    => 'ticket_message_attachment',
-                'options' => function (Options $options) {
-                        return array(
-                            'ticket_message' => $options['ticket_message'],
-                            'person'         => $options['person'],
-                            'label'          => false,
-                        );
-                    },
-                'allow_add'    => true,
-                'allow_delete' => true,
-                'label'        => false,
-            )
-        );
+        $resolver->setDefaults([
+            'type'    => 'ticket_message_attachment',
+            'options' => function (Options $options) {
+                return [
+                    'ticket_message' => $options['ticket_message'],
+                    'person'         => $options['person'],
+                    'label'          => false,
+                ];
+            },
+            'allow_add'    => true,
+            'allow_delete' => true,
+            'label'        => false,
+        ]);
 
-        $resolver->setRequired(
-            array(
-                'ticket_message',
-                'person',
-            )
-        );
+        $resolver->setRequired([
+            'ticket_message',
+            'person',
+        ]);
 
-        $resolver->setAllowedTypes(
-            array(
-                'ticket_message' => 'Application\\DeskPRO\\Entity\\TicketMessage',
-                'person'         => 'Application\\DeskPRO\\Entity\\Person',
-            )
-        );
+        $resolver->setAllowedTypes([
+            'ticket_message' => 'Application\\DeskPRO\\Entity\\TicketMessage',
+            'person'         => 'Application\\DeskPRO\\Entity\\Person',
+        ]);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getParent()
     {
         return 'collection';
     }
 
     /**
-     * Returns the name of this type.
-     *
-     * @return string The name of this type
+     * {@inheritdoc}
      */
     public function getName()
     {

@@ -10,6 +10,10 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager
     arguments: [@doctrine.orm.default_entity_manager]
 
+  default_value_for_ticket_layout_field:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\DefaultValueForTicketLayoutField
+    arguments: [@doctrine.orm.default_entity_manager, @form_field_manager]
+
   ticket_layout_factory:
     class: DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory
     arguments: [@doctrine.orm.default_entity_manager, @?captcha_decider]

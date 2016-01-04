@@ -1,11 +1,8 @@
-import $ from "jquery";
 import React, { PropTypes } from 'react';
-import PortalPhrases from "DeskPRO/Bundle/PortalBundle/PortalPhrases"
-
-
-//######################################################################################################################
-//# SelectOption
-//######################################################################################################################
+import PortalPhrases from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import { ClickOut } from 'DeskPRO/Component/ClickOut';
+import classNames from 'classnames';
+import _ from 'lodash';
 
 class SelectOption extends React.Component {
 
@@ -19,53 +16,69 @@ class SelectOption extends React.Component {
     active: PropTypes.bool
   };
 
-  onClickOption = (ev) => {
-    ev.preventDefault();
+  onClickOption = (event) => {
+    event.preventDefault();
+    const { disabled, onClickOption, option } = this.props;
+
     // do not fire events for disabled options
-    if (!this.props.disabled) {
-      this.props.onClickOption(this.props.option);
+    if (!disabled) {
+      onClickOption(option);
     }
-  }
+  };
 
   render() {
-    const option = this.props.option;
-    const isFocused = this.props.isFocused;
+    const { option, isFocused, active, disabled, displayDepth, multiple } = this.props;
+
     return (
-      <li
-          ref="row"
-          className={(isFocused ? 'focused ' : '') + (this.props.disabled ? "select-option-disabled" : '')}>
-        <a
-            onClick={this.onClickOption}
-            className={(this.props.active ? 'active ' : '') + (this.props.displayDepth > 0 ? 'display-depth-'+this.props.displayDepth : '')}>
-          {this.props.multiple && !this.props.disabled ? (
-              <span className={"checkbox" + (this.props.active ? " checked" : "")}><i className="fa fa-check"></i></span>
-          ) : null}
-          <span
-              className="option-title">{option.title}</span>
+      <li ref="row"
+          className={classNames({
+            'focused': isFocused,
+            'select-option-disabled': disabled
+          })}>
+
+        <a onClick={this.onClickOption}
+           className={classNames({
+             'active': active,
+             [`display-depth-${displayDepth}`]: displayDepth > 0
+           })}>
+
+          {multiple && !disabled
+            ? <span className={classNames('checkbox', {'checked': active})}>
+                <i className="fa fa-check"></i>
+              </span>
+            : null
+          }
+          <span className="option-title">{option.title}</span>
         </a>
       </li>
     );
   }
 }
 
-
-//######################################################################################################################
-//# PortalSimpleSelectBox
-//######################################################################################################################
-
 export default class PortalSimpleSelectBox extends React.Component {
+
+  static propTypes = {
+    widgetOptions: PropTypes.object,
+    multiple: PropTypes.bool,
+    expanded: PropTypes.bool,
+    level: PropTypes.number,
+    value: PropTypes.any,
+    options: PropTypes.any,
+    onChange: PropTypes.func
+  };
+
   constructor(props) {
     super(props);
-    this.selRefCounter = 0;
     this.state = {
+      id: _.uniqueId('selectbox_'),
       options: props.options,
       visibleOptions: props.options,
-      filterText: "",
+      filterText: '',
       selectedOption: null,
       value: props.multiple ? (props.value || []) : props.value,
       expanded: props.expanded || false,
       level: props.level || 1
-    }
+    };
   }
 
   componentWillReceiveProps(nextProps) {
@@ -73,59 +86,70 @@ export default class PortalSimpleSelectBox extends React.Component {
       this.setState({
         options: nextProps.options,
         visibleOptions: nextProps.options,
-        filterText: "",
+        filterText: '',
         selectedOption: null,
         value: nextProps.multiple ? (nextProps.value || []) : nextProps.value,
         expanded: nextProps.expanded || false,
         level: nextProps.level || 1
-      })
+      });
     }
   }
 
-  getFitleredOptions(rawFilterText, options) {
-    if (rawFilterText) {
-      const filterText = rawFilterText.toLowerCase();
-       return options.filter(opt => opt.title.toLowerCase().indexOf(filterText) !== -1);
-    } else {
-      return options;
+  componentDidUpdate(prevProps, prevState) {
+    if (this.refs.filterInput) {
+      this.refs.filterInput.focus();
+    } else if (this.refs.defaultRow && this.state.expanded !== prevState.expanded) {
+      this.refs.defaultRow.focus();
     }
   }
 
-  componentDidMount() {
-    document.addEventListener("click", this.documentClickHandler.bind(this));
-  }
+  onClickHeader = () => {
+    if (!this.state.expanded) {
+      this.toggleExpanded();
+    }
+  };
 
-  componentWillUnmount() {
-    document.removeEventListener("click", this.documentClickHandler.bind(this));
-  }
+  onKeyDown = event => {
+    if (event.keyCode === 32) {
+      event.preventDefault();
+      this.toggleExpanded();
+    }
+  };
 
-  documentClickHandler() {
+  onClickOut = () => {
     if (!this.state.expanded) {
       return;
     }
     if (this.refs.filterInput) {
       this.refs.filterInput.blur();
     }
+
     this.setState({
       expanded: false
     });
-  }
+  };
 
-  dropdownClickHandler(e) {
-    e.nativeEvent.stopImmediatePropagation();
-  }
-
-  onClickOption(option, doClose = false) {
+  onClickOption = option => {
     this.changeToOption(option);
-    if (doClose && this.state.expanded) {
+    if (this.state.expanded) {
       this.toggleExpanded();
     }
+  };
+
+  getFitleredOptions(rawFilterText, options) {
+    if (rawFilterText) {
+      const filterText = rawFilterText.toLowerCase();
+      return options.filter(opt => opt.title.toLowerCase().indexOf(filterText) !== -1);
+    }
+
+    return options;
   }
 
   changeToOption(option) {
     if (!option) {
       return;
     }
+
     let val;
     if (this.props.multiple) {
       val = this.state.value;
@@ -140,6 +164,7 @@ export default class PortalSimpleSelectBox extends React.Component {
     } else {
       val = option;
     }
+
     this.setState({
       value: val,
       expanded: this.props.multiple ? true : false
@@ -147,131 +172,18 @@ export default class PortalSimpleSelectBox extends React.Component {
     this.props.onChange(val);
   }
 
-  focusedOnKeyDown = (ev) => {
-    const key = ev.keyCode;
-    switch (key) {
-      case 13: // enter
-        ev.preventDefault();
-        this.openMenu();
-        break;
+  focusedOnKeyDown = event => {
+    if (event.keyCode === 13) { // enter
+      event.preventDefault();
+      this.openMenu();
     }
-  }
-
-  renderStaticHeader() {
-    const classes = ['default'];
-    if (this.state.expanded) {
-      classes.push('expanded');
-    } else {
-      classes.push('collapsed');
-    }
-    if (this.state.value) {
-      classes.push('with-value');
-    } else {
-      classes.push('with-no-value');
-    }
-
-    const className = classes.join(' ');
-
-    if (!this.state.expanded && (this.props.multiple ? this.state.value.length > 0 : this.state.value)) {
-      return (
-        <div className={className} onClick={this.onClickHeader} onKeyDown={this.focusedOnKeyDown} tabIndex="0" role="combobox" ref="defaultRow">
-          <span>{this.props.multiple ? (
-              this.state.value.map((opt) => {
-                return opt.title || (<span>&nbsp;</span>)
-              }).join(', ')
-          ) : this.state.value.title || (<span>&nbsp;</span>)}</span>
-          <i className="fa fa-caret-down" />
-        </div>
-      );
-    } else {
-      return (
-        <div className={className} onClick={this.onClickHeader}>
-          <div className="filter-box">
-            <input type="text" placeholder={PortalPhrases.get('portal.general.select_placeholder')} ref="filterInput" onFocus={() => this.openMenu()} onKeyDown={this.filterNav} onKeyUp={this.filterChange} />
-          </div>
-        </div>
-      );
-    }
-  }
-
-  selectNullOption() {
-    if (this.props.multiple) {
-      // multiple, clear selected and close the expanded view
-      this.setState({
-        value: [],
-        expanded: false
-      });
-      this.props.onChange([]);
-    } else {
-      // singular, select the null option
-      const null_option = this.getFirstNullOption();
-      if (null_option) {
-        this.onClickOption(null_option, true);
-      }
-    }
-  }
+  };
 
   isNullOption(option) {
     return option === null || !option.id || option.title === '';
   }
 
-  getFirstNullOption() {
-    return this.state.visibleOptions.find((option) => {
-      return this.isNullOption(option);
-    });
-  }
-
-  renderDropdownList() {
-    if (!this.state.expanded) {
-      return null;
-    }
-
-    const options = this.state.visibleOptions;
-
-    const isActive = (option) => {
-      if (!this.state.value) {
-        return false;
-      }
-
-      if (this.props.multiple) {
-        return this.state.value.includes(option);
-      } else {
-        return this.state.value.id === option.id;
-      }
-    };
-
-
-    return (
-      <div className="options-wrapper">
-        <ul onClick={this.dropdownClickHandler.bind(this)}>
-          {options.map((option) => {
-            if (this.isNullOption(option)) return null;
-            return (
-              <SelectOption onClickOption={this.onClickOption.bind(this)}
-                            disabled={option.children && option.children.length > 0}
-                            displayDepth={option.depth}
-                            isFocused={option === this.state.selectedOption}
-                            key={option.id}
-                            option={option}
-                            multiple={!!this.props.multiple}
-                            active={isActive(option)}/>
-            );
-          })
-          }
-        </ul>
-      </div>
-    );
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (this.refs.filterInput) {
-      this.refs.filterInput.focus();
-    } else if (this.refs.defaultRow && this.state.expanded !== prevState.expanded) {
-      this.refs.defaultRow.focus();
-    }
-  }
-
-  filterNav= (ev) => {
+  filterNav = (ev) => {
     const key = ev.keyCode;
     switch (key) {
       case 13: // enter
@@ -300,12 +212,14 @@ export default class PortalSimpleSelectBox extends React.Component {
         ev.preventDefault();
         this.closeMenu();
         break;
+      default:
+        break;
     }
-  }
+  };
 
-  filterChange = (ev) => {
+  filterChange = () => {
     // no change
-    if (this.refs.filterInput.value == this.state.filterText) {
+    if (this.refs.filterInput.value === this.state.filterText) {
       return;
     }
 
@@ -313,12 +227,13 @@ export default class PortalSimpleSelectBox extends React.Component {
     const visibleOptions = this.getFitleredOptions(this.refs.filterInput.value, this.state.options);
     // current selection if its still visible, or the first result (or nothing if list is empty)
     const selectedOption = visibleOptions.indexOf(this.state.selectedOption) !== -1 ? this.state.selectedOption : visibleOptions[0] || null;
+
     this.setState({
       visibleOptions: visibleOptions,
       selectedOption: selectedOption,
       filterText: this.refs.filterInput.value
     });
-  }
+  };
 
   doSelectNext() {
     if (!this.state.visibleOptions.length) {
@@ -331,14 +246,17 @@ export default class PortalSimpleSelectBox extends React.Component {
       let next = null;
       for (let i = 0; i < this.state.visibleOptions.length; i++) {
         if (this.state.visibleOptions[i] === this.state.selectedOption) {
-          if (this.state.visibleOptions[i+1]) {
-            next = this.state.visibleOptions[i+1];
+          if (this.state.visibleOptions[i + 1]) {
+            next = this.state.visibleOptions[i + 1];
           } else {
-            next = this.state.visibleOptions[0]; //wrap
+            next = this.state.visibleOptions[0]; // wrap
           }
         }
       }
-      this.setState({ selectedOption: next });
+
+      this.setState({
+        selectedOption: next
+      });
     }
   }
 
@@ -354,13 +272,16 @@ export default class PortalSimpleSelectBox extends React.Component {
       for (let i = 0; i < this.state.visibleOptions.length; i++) {
         if (this.state.visibleOptions[i] === this.state.selectedOption) {
           if (i > 0) {
-            next = this.state.visibleOptions[i-1];
+            next = this.state.visibleOptions[i - 1];
           } else {
-            next = this.state.visibleOptions[this.state.visibleOptions.length - 1]; //wrap
+            next = this.state.visibleOptions[this.state.visibleOptions.length - 1]; // wrap
           }
         }
       }
-      this.setState({ selectedOption: next });
+
+      this.setState({
+        selectedOption: next
+      });
     }
   }
 
@@ -384,29 +305,111 @@ export default class PortalSimpleSelectBox extends React.Component {
     });
   }
 
-  onClickHeader = (ev) => {
-    if (!this.state.expanded) {
-      this.toggleExpanded();
+  renderStaticHeader() {
+    const { multiple } = this.props;
+    const classes = ['default'];
+    if (this.state.expanded) {
+      classes.push('expanded');
+    } else {
+      classes.push('collapsed');
     }
-    this.dropdownClickHandler(ev);
+    if (this.state.value) {
+      classes.push('with-value');
+    } else {
+      classes.push('with-no-value');
+    }
+
+    const className = classes.join(' ');
+
+    if (!this.state.expanded && (multiple ? this.state.value.length > 0 : this.state.value)) {
+      return (
+        <div className={className}
+             onClick={this.onClickHeader}
+             onKeyDown={this.focusedOnKeyDown}
+             tabIndex="0"
+             role="combobox"
+             ref="defaultRow">
+
+          <span className={`multiselect-title_${this.state.id}`}>
+            {multiple
+              ? this.state.value.map(opt => opt.title || <span>&nbsp;</span>).join(', ')
+              : this.state.value.title || <span>&nbsp;</span>
+            }
+          </span>
+          <i className="fa fa-caret-down" />
+        </div>
+      );
+    }
+
+    return (
+      <div className={className} onClick={this.onClickHeader}>
+        <div className="filter-box">
+          <input type="text"
+                 placeholder={PortalPhrases.get('portal.general.select_placeholder')}
+                 ref="filterInput"
+                 onKeyDown={this.filterNav}
+                 onKeyUp={this.filterChange} />
+        </div>
+      </div>
+    );
   }
 
-  onKeyDown = (ev) => {
-    const key = ev.keyCode;
-    switch (key) {
-      case 32:
-        ev.preventDefault();
-        this.toggleExpanded();
-        break;
+  renderDropdownList() {
+    if (!this.state.expanded) {
+      return null;
     }
+
+    const options = this.state.visibleOptions;
+    const isActive = (option) => {
+      if (!this.state.value) {
+        return false;
+      } else if (this.props.multiple) {
+        return this.state.value.includes(option);
+      }
+
+      return this.state.value.id === option.id;
+    };
+
+
+    return (
+      <div className="options-wrapper">
+        <ul>
+          {options.map((option) => {
+            if (this.isNullOption(option)) {
+              return null;
+            }
+
+            return (
+              <SelectOption
+                onClickOption={this.onClickOption}
+                disabled={option.children && option.children.length > 0}
+                displayDepth={option.depth}
+                isFocused={option === this.state.selectedOption}
+                key={option.id}
+                option={option}
+                multiple={!!this.props.multiple}
+                active={isActive(option)} />
+            );
+          })}
+        </ul>
+      </div>
+    );
   }
 
   render() {
+    const { widgetOptions = {} } = this.props;
+    const context = widgetOptions.context || document;
+
     return (
-        <div className={"multiselect level-" + this.state.level} onClick={this.dropdownClickHandler.bind(this)}>
-          {this.renderStaticHeader()}
-          {this.renderDropdownList()}
+      <ClickOut onClickOut={this.onClickOut}
+                additionalNodes={[`.multiselect-title_${this.state.id}`]}
+                context={context}>
+
+        <div className={classNames('multiselect', `level-${this.state.level}`)}>
+            {this.renderStaticHeader()}
+            {this.renderDropdownList()}
         </div>
+      </ClickOut>
     );
   }
 }

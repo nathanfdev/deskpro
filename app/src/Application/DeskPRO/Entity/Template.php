@@ -145,6 +145,14 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
         return $name;
     }
 
+    /**
+     * @return ThemeSet
+     */
+    public function getThemeSet()
+    {
+        return $this->theme_set;
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################

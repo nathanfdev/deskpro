@@ -30,6 +30,7 @@ namespace spec\DeskPRO\Bundle\AppBundle\Notification;
 
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\NewMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\EventManager;
+use DeskPRO\Bundle\AppBundle\Notification\Strategy\StrategyFactory;
 use PhpSpec\ObjectBehavior;
 
 /**
@@ -37,6 +38,12 @@ use PhpSpec\ObjectBehavior;
  */
 class EventManagerSpec extends ObjectBehavior
 {
+    public function let(
+        StrategyFactory $strategy_factory
+    ) {
+        $this->beConstructedWith($strategy_factory);
+    }
+
     public function it_is_an_event_subscriber()
     {
         $this->shouldHaveType('Symfony\Component\EventDispatcher\EventSubscriberInterface');

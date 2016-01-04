@@ -46,7 +46,10 @@ export class TicketFormContent extends React.Component {
 
   addListeners() {
     this.getForm().on('submit', this.onSubmit);
-    this.formWidget = new TicketFormWidget($(this.getCurrentNode()));
+    this.formWidget = new TicketFormWidget($(this.getCurrentNode()), null, {
+      context: [parent.document, window.widgetFrame.document]
+    });
+
     this.formWidget.renderWhenReady();
   }
 

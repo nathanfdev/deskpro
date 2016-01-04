@@ -8,9 +8,24 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @open_panels = []
       @values = {}
       @recompiling = false
+      @advanced = {header: '', footer: '', scss: '', javascript: ''}
+      @advanced_tab = 'header'
+      @is_advanced_expanded = false
       @refreshPreviewUrl()
 
     save: () =>
+      request = @$http({
+        method: 'PUT',
+        url: '/portal/api/style/edit-theme-set/advanced-edits',
+        data: @advanced
+      })
+      @recompiling = true
+      request.then(
+        @saveValues,
+        () => @serverError(); @recompiling = false
+      )
+
+    saveValues: () =>
       request = @$http({
         method: 'PUT',
         url: '/portal/api/style/edit-theme-set/variable-values',
@@ -33,13 +48,14 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       if window.confirm('Are you sure you want to discard all changes you\'ve made?')
         @recompiling = true
         @$http.get('/portal/api/style/edit-theme-set/discard').then(
-          () => @loadValues(() => @success('Changes were discarded'); @recompiling = false),
+          () => @loadAdvancedEdits(() => @loadValues(() => @success('Changes were discarded'); @recompiling = false)),
           () => @serverError(); @recompiling = false
         );
 
     initialLoad: ->
       @$http.get('/portal/api/style/variable-groups').success((data) => @groups = data)
       @loadValues()
+      @loadAdvancedEdits()
 
     togglePanel: (name) ->
       if name in @open_panels
@@ -57,12 +73,27 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @preview_url = '/admin-preview?anti-cache=' + (new Date()).getTime()
 
     loadValues: (success) ->
-      @$http.get('/portal/api/style/variable-values').success(
+      @$http.get('/portal/api/style/edit-theme-set/variable-values').success(
         (values) =>
+          angular.extend(@values, values)
           if success
             success()
-          angular.extend(@values, values)
       )
+
+    loadAdvancedEdits: (success) ->
+      @$http.get('/portal/api/style/edit-theme-set/advanced-edits').success(
+        (advanced) =>
+          angular.extend(@advanced, advanced)
+          if success
+            success()
+      )
+
+    openAdvancedTab: (tab) => @advanced_tab = tab
+    isAdvancedTab: (tab) => @advanced_tab == tab
+
+    isAdvancedExpanded: () => @is_advanced_expanded
+    collapseAdvanced: () => @is_advanced_expanded = false
+    expandAdvanced: () => @is_advanced_expanded = true
 
     error: (message) -> window.alert(message)
     success: (message) -> window.alert(message)

@@ -609,17 +609,6 @@ $transition: all 0.15s ease;
       background: #34393e;
       padding: 10px;
       border: 1px solid #4e5358;
-
-      pre {
-        @extend %whitespace;
-        line-height: 1.7em;
-        opacity: 0.5;
-      }
-
-      .line-number {
-        margin-right: 10px;
-        color: #4f4f4f;
-      }
     }
 
     .the-assets {

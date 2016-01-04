@@ -66,6 +66,7 @@ services:
       - @doctrine.orm.default_entity_manager
       - @language_manager
       - @tickets.custom_per_field_manager
+      - @default_value_for_ticket_layout_field
     tags:
       - { name: form.type, alias: ticket }
 

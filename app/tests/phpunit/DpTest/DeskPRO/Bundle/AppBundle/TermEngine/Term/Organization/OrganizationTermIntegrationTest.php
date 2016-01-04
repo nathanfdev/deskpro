@@ -29,9 +29,9 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent;
 
-use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketsSelectCriteria;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Organization\OrganizationTerm;
 use DpTest\DeskPRO\Bundle\AppBundle\TermEngine\TermIntegrationTest;
 
@@ -114,7 +114,7 @@ class OrganizationTermIntegrationTest extends TermIntegrationTest
      */
     public function it_should_properly_select_Yahoo_tickets_when_using_TicketSelectCriteria()
     {
-        $term = TicketsSelectCriteria::createTerm(['organization' => $this->yahoo->getId()]);
+        $term = $this->get('dp.app.term_engine.tickets_select_criteria')->createTerm(['organization' => $this->yahoo->getId()]);
         $this->assertTermSelectsTickets($term, $this->yahooTickets);
     }
 }

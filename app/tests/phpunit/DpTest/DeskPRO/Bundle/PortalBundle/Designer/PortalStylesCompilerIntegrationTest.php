@@ -29,14 +29,11 @@
 /**
  * DeskPRO.
  */
+namespace DpTest\DeskPRO\Bundle\PortalBundle\Designer;
 
-namespace DpTest\Bundle\AppBundle\DataService\Content;
-
-use Application\DeskPRO\Entity\Brand;
-use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler;
+use DpTest\DeskPRO\Bundle\PortalBundle\Designer\Helper\BrandStackMock;
 use DpTest\PortalTestCase;
 
 /**
@@ -44,15 +41,12 @@ use DpTest\PortalTestCase;
  */
 class PortalStylesCompilerIntegrationTest extends PortalTestCase
 {
+    use BrandStackMock;
+
     /**
      * @var PortalStylesCompiler
      */
     private $service;
-
-    /**
-     * @var Brand
-     */
-    private $brand;
 
     /**
      * @var BrandStack
@@ -64,40 +58,26 @@ class PortalStylesCompilerIntegrationTest extends PortalTestCase
      */
     protected function setUp()
     {
-        $this->brand = new Brand();
-        $this->brand->setName('Test Brand');
-        $this->brand->setThemeSet($theme_set = new ThemeSet());
-        $this->brand->setEditThemeSet($edit_theme_set = new ThemeSet());
-        $theme_set->setThemeId('theme_set_id');
-        $edit_theme_set->setThemeId('theme_set_id');
-
-        $em = $this->getEntityManager();
-        $em->persist($this->brand);
-        $em->persist($theme_set);
-        $em->persist($edit_theme_set);
-        $em->flush();
-
-        /** @var BrandContainer $brand_container */
-        $brand_container = $this->getMockBuilder(BrandContainer::class)->disableOriginalConstructor()->getMock();
-        $brand_container->method('getBrand')->willReturn($this->brand);
-
-        /** @var BrandStack $brand_stack */
-        $brand_stack = $this->getMockBuilder(BrandStack::class)->disableOriginalConstructor()->getMock();
-        $brand_stack->method('getActive')->willReturn($brand_container);
-        $this->brand_stack = $brand_stack;
-
-        $this->service = $this->createService('dummy-empty.scss');
+        $this->brand_stack = $this->mockBrandStack();
+        $this->service     = $this->createService('dummy-empty.scss');
     }
 
     /**
-     * @param string $style Style file path
+     * @param string $style       Style file path
+     * @param string $custom_scss
      *
      * @return PortalStylesCompiler
      */
-    private function createService($style)
+    private function createService($style, $custom_scss = '')
     {
         return new PortalStylesCompiler(
-            $this->getEntityManager(), $this->brand_stack, __DIR__."/scss/$style", 'custom-vars.scss');
+            $this->getEntityManager(),
+            $this->brand_stack,
+            __DIR__."/scss/$style",
+            'custom-vars.scss',
+            $custom_scss,
+            'custom-style.scss'
+        );
     }
 
     /**
@@ -107,14 +87,6 @@ class PortalStylesCompilerIntegrationTest extends PortalTestCase
     private function assertEqualCss($first, $second)
     {
         $this->assertEquals(preg_replace('/\s+/', '', $first), preg_replace('/\s+/', '', $second));
-    }
-
-    /**
-     * @test
-     */
-    public function it_should_be_a_service()
-    {
-        $this->assertInstanceOf(PortalStylesCompiler::class, $this->get('dp.portal.designer.portal_styles_compiler'));
     }
 
     /**
@@ -186,13 +158,13 @@ class PortalStylesCompilerIntegrationTest extends PortalTestCase
     /**
      * @test
      */
-    public function it_should_compile_compound_font_variables()
+    public function it_should_compile_font_variables()
     {
         $service = $this->createService('dummy-font.scss');
-        $service->recompile(['font' => ['font' => 'Arial', 'size' => 42, 'unit' => '%']]);
+        $service->recompile(['font' => 'Arial Test']);
         $this->assertEqualCss(
             $service->getEditThemeSetCssBlobStorage()->getData(),
-            '.dummy-style { font: 42% Arial; }'
+            '.dummy-style { font: Arial Test; }'
         );
     }
 
@@ -206,6 +178,25 @@ class PortalStylesCompilerIntegrationTest extends PortalTestCase
         $this->assertEqualCss(
             $service->getEditThemeSetCssBlobStorage()->getData(),
             '.dummy-style { font: custom string; }'
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_compile_custom_SCSS()
+    {
+        $service = $this->createService('dummy-custom-style.scss', '
+            .dp-test-custom-scss {
+                .dp-test-custom-inner {
+                    color: purple;
+                }
+            }
+        ');
+        $service->recompile([]);
+        $this->assertEqualCss(
+            $service->getEditThemeSetCssBlobStorage()->getData(),
+            '.dp-test-custom-scss .dp-test-custom-inner { color: purple; }'
         );
     }
 }
