@@ -57,14 +57,9 @@ class AdvancedEditsManager
     private $em;
 
     /**
-     * @var ThemeSet
+     * @var BrandStack
      */
-    private $theme_set;
-
-    /**
-     * @var ThemeSet
-     */
-    private $edit_theme_set;
+    private $brand_stack;
 
     /**
      * @param EntityManager $em
@@ -74,17 +69,8 @@ class AdvancedEditsManager
      */
     public function __construct(EntityManager $em, BrandStack $brand_stack)
     {
-        $this->em = $em;
-
-        if (!$brand_stack->getActive()
-            || !$brand_stack->getActive()->getBrand()
-            || !$brand_stack->getActive()->getBrand()->getThemeSet()
-            || !$brand_stack->getActive()->getBrand()->getEditThemeSet()) {
-            throw new \Exception('Unable to resolve theme sets');
-        }
-
-        $this->theme_set      = $brand_stack->getActive()->getBrand()->getThemeSet();
-        $this->edit_theme_set = $brand_stack->getActive()->getBrand()->getEditThemeSet();
+        $this->em          = $em;
+        $this->brand_stack = $brand_stack;
     }
 
     /**
@@ -127,7 +113,7 @@ class AdvancedEditsManager
     public function getEditThemeSetScss()
     {
         return (string) $this->findOrCreateBlobStorage(self::CUSTOM_SCSS_ASSET_NAME, self::CUSTOM_SCSS_ASSET_TAG)
-                             ->getData();
+            ->getData();
     }
 
     /**
@@ -135,8 +121,9 @@ class AdvancedEditsManager
      */
     public function getEditThemeSetJs()
     {
-        return (string) $this->findOrCreateBlobStorage(self::CUSTOM_JS_ASSET_NAME, self::CUSTOM_JS_ASSET_TAG)
-                             ->getData();
+        $storage = $this->findBlobStorage(self::CUSTOM_JS_ASSET_NAME, $this->getEditThemeSet());
+
+        return $storage ? (string) $storage->getData() : '';
     }
 
     /**
@@ -144,10 +131,9 @@ class AdvancedEditsManager
      */
     public function getJs()
     {
-        $storage = $this->findOrCreateBlobStorage(
-            self::CUSTOM_JS_ASSET_NAME, self::CUSTOM_JS_ASSET_TAG, '', $this->theme_set);
+        $storage = $this->findBlobStorage(self::CUSTOM_JS_ASSET_NAME, $this->getThemeSet());
 
-        return (string) $storage->getData();
+        return $storage ? (string) $storage->getData() : '';
     }
 
     /**
@@ -172,12 +158,12 @@ class AdvancedEditsManager
      */
     private function findOrCreateTemplate($name)
     {
-        $criteria = ['name' => $name, 'theme_set' => $this->edit_theme_set];
+        $criteria = ['name' => $name, 'theme_set' => $this->getEditThemeSet()];
         $template = $this->em->getRepository(Template::class)->findOneBy($criteria);
         if (!$template) {
             $template            = new Template();
             $template->name      = $name;
-            $template->theme_set = $this->edit_theme_set;
+            $template->theme_set = $this->getEditThemeSet();
         }
 
         return $template;
@@ -204,7 +190,7 @@ class AdvancedEditsManager
      */
     private function findOrCreateBlobStorage($name, $tag, $blob_hash = '', ThemeSet $theme_set = null)
     {
-        $theme_set or $theme_set = $this->edit_theme_set;
+        $theme_set or $theme_set = $this->getEditThemeSet();
 
         // Find existing or create a new ThemeSetAsset
 
@@ -240,5 +226,56 @@ class AdvancedEditsManager
         }
 
         return $storage;
+    }
+
+    /**
+     * @param string        $name
+     * @param ThemeSet|null $theme_set
+     *
+     * @return BlobStorage|null
+     */
+    private function findBlobStorage($name, ThemeSet $theme_set = null)
+    {
+        if ($asset = $this->em->getRepository(ThemeSetAsset::class)->findOneBy(compact('name', 'theme_set'))) {
+            if ($blob = $asset->getBlob()) {
+                return $this->em->getRepository(BlobStorage::class)->findOneBy(['blob_id' => $blob->getId()]);
+            }
+        }
+
+        return;
+    }
+
+    /**
+     * @throws \Exception
+     * @return ThemeSet
+     *
+     */
+    private function getThemeSet()
+    {
+        if (!$this->brand_stack->getActive()
+            || !$this->brand_stack->getActive()->getBrand()
+            || !$this->brand_stack->getActive()->getBrand()->getThemeSet()
+        ) {
+            throw new \Exception('Unable to resolve ThemeSets');
+        }
+
+        return $this->brand_stack->getActive()->getBrand()->getThemeSet();
+    }
+
+    /**
+     * @throws \Exception
+     * @return ThemeSet
+     *
+     */
+    private function getEditThemeSet()
+    {
+        if (!$this->brand_stack->getActive()
+            || !$this->brand_stack->getActive()->getBrand()
+            || !$this->brand_stack->getActive()->getBrand()->getEditThemeSet()
+        ) {
+            throw new \Exception('Unable to resolve edit ThemeSet');
+        }
+
+        return $this->brand_stack->getActive()->getBrand()->getEditThemeSet();
     }
 }

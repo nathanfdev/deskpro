@@ -116,4 +116,12 @@ class ThemeSet implements EntityInterface, NotifyPropertyChanged
 
         $this->setModelField('options', $options);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __toString()
+    {
+        return "#{$this->id}, theme_id: {$this->theme_id}, options: ".print_r($this->options);
+    }
 }
