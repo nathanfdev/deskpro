@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { DropZoneOverlay } from './DropZoneOverlay';
-import fileupload from 'blueimp-file-upload';
+import 'blueimp-file-upload';
 import $ from 'jquery';
 import { extension } from 'mime-types';
 import moment from 'moment';
