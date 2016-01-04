@@ -29,6 +29,7 @@
 return array(
     'portal.news.section-title'   => 'News',
     'portal.news.section-desc'    => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea',
+    'portal.news.homepage-desc'   => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ea',
     'portal.news.search-title'    => 'News Articles',
     'portal.news.recent-title'    => 'Recent News',
     'portal.news.by-line'         => 'By {{name}} on {{date}}',

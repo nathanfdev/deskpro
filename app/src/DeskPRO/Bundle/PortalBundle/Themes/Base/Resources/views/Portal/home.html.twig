@@ -2,131 +2,114 @@
 
 {% block page_content %}
 
-{% block content_header %}
-<section class="welcome-news">
+    {% block content_header %}
+    <section class="welcome-news">
 
-    {% show section nav_buttons_big %}
+        {% show section nav_buttons_big %}
 
-    <div class="wrapper">
-
-        <div class="column-full">
-
-            <div class="welcome-block-wrapper">
-                <div class="welcome-block-second-border">
-                    <div class="welcome-block">
-                        <h1>Welcome to DeskPRO</h1>
-                        <p>You can get in touch with us using our <a href="https://support.deskpro.com/new-ticket">Contact Us</a> page, email us directly on <a href="mailto:support@deskpro.com">support@deskpro.com</a> or call us on 1-888-DESKPRO or (+44) 020-3582-1980. If you're an existing DeskPRO customer and you have a feature request, please look through our Feedback section and vote for it, or submit it if it's not already there.</p>
-
-                        <p>{{ phrase('user.defaults.article_example_title') }}</p>
-
-                        <div class="welcome-block-social-media">
-                            <h3>DeskPRO on social media</h3>
-                            <ul>
-                                <li><a href="https://www.facebook.com/deskpro/"><i class="fa fa-facebook-square"></i></a></li>
-                                <li><a href="https://twitter.com/deskpro"><i class="fa fa-twitter-square"></i></a></li>
-                                <li><a href="https://plus.google.com/+Deskpro"><i class="fa fa-google-plus-square"></i></a></li>
-                            </ul>
-
+        <div class="wrapper">
+            <div class="column-full">
+                <div class="welcome-block-wrapper">
+                    <div class="welcome-block-second-border">
+                        <div class="welcome-block">
+                            <h1>Welcome to DeskPRO</h1>
+                            <p>You can get in touch with us using our <a href="https://support.deskpro.com/new-ticket">Contact Us</a> page, email us directly on <a href="mailto:support@deskpro.com">support@deskpro.com</a> or call us on 1-888-DESKPRO or (+44) 020-3582-1980. If you're an existing DeskPRO customer and you have a feature request, please look through our Feedback section and vote for it, or submit it if it's not already there.</p>
+                            <p>{{ phrase('user.defaults.article_example_title') }}</p>
+                            <div class="welcome-block-social-media">
+                                <h3>DeskPRO on social media</h3>
+                                <ul>
+                                    <li><a href="https://www.facebook.com/deskpro/"><i class="fa fa-facebook-square"></i></a></li>
+                                    <li><a href="https://twitter.com/deskpro"><i class="fa fa-twitter-square"></i></a></li>
+                                    <li><a href="https://plus.google.com/+Deskpro"><i class="fa fa-google-plus-square"></i></a></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- end .welcome-block -->
+        </div>
 
-        </div><!-- end .column-full -->
+    </section>
+    {% endblock content_header %}
 
-    </div>
+    {% if can_use_news() %}
+        <section>
+            <article class="news front-page-news">
+                <div class="large-title">
+                    <h1>
+                        <a href="{{ path('portal_news') }}">
+                            {{ phrase('portal.news.section-title') }}
+                        </a>
+                    </h1>
+                    <p>{{ phrase('portal.news.homepage-desc') }}</p>
+                </div>
+                {% show section news_list_excerpts with { count: 2, show_category_link: true } %}
+            </article>
+        </section>
+    {% endif %}
 
-
-
-</section>
-{% endblock content_header %}
-
-{% if can_use_news() %}
+    {% if can_use_articles() %}
     <section>
-
-
-
-
-        <article class="news front-page-news">
-
-          <!-- This is the old news head (only for list of news posts, not a news item on its own page) -->
-            <div class="large-title">
+        <article class="news front-page-kb">
+            <div class="large-title clearfix">
                 <h1>
-                    <a href="{{ path('portal_news') }}">
-                        {{ phrase('portal.news.section-title') }}
+                    <a href="{{ path('portal_kb') }}">
+                        {{ phrase('portal.articles.section-title') }}
                     </a>
                 </h1>
-                <p>This is a subtitle to test the subtitles on these large title items</p><!-- TODO (subtitle main style) the subtitle -->
             </div>
-            {% show section news_list_excerpts with { count: 2, show_category_link: true } %}
-
+            {% show section kb with { articles_count: 3 } %}
         </article>
     </section>
-{% endif %}
+    {% endif %}
 
-{% if can_use_articles() %}
-<section>
-    <article class="news front-page-kb">
-        <div class="large-title clearfix">
-            <h1>
-                <a href="{{ path('portal_kb') }}">
-                    {{ phrase('portal.articles.section-title') }}
-                </a>
-            </h1>
+    {% group min 2 %}
+    <section class="with-{{ group.count }}-columns">
+        {% item if has_any_news() %}
+        <div class="column">
+            <article class="panel-tiny front-page-news-tiny">
+                <div class="large-title">
+                    <h1>
+                        <a href="{{ path('portal_news') }}">
+                            {{ phrase('portal.news.recent-title') }}
+                        </a>
+                    </h1>
+                </div>
+                {% show section news_list_simple with { count: 5, show_category_link: true } %}
+            </article>
         </div>
-        {% show section kb with { articles_count: 3 } %}
-    </article>
-</section>
-{% endif %}
+        {% enditem %}
 
-{% group min 2 %}
-<section class="with-{{ group.count }}-columns">
-    {% item if has_any_news() %}
-    <div class="column">
-        <article class="panel-tiny front-page-news-tiny">
-            <div class="large-title">
-                <h1>
-                    <a href="{{ path('portal_news') }}">
-                        {{ phrase('portal.news.recent-title') }}
-                    </a>
-                </h1>
-            </div>
-            {% show section news_list_simple with { count: 5, show_category_link: true } %}
-        </article>
-    </div>
-    {% enditem %}
+        {% item if has_any_feedback() %}
+        <div class="column">
+            <article class="panel-tiny front-page-feedback">
+                <div class="large-title">
+                    <h1>
+                        <a href="{{ path('portal_feedback') }}">
+                            {{ phrase('portal.feedback.recent-feedback') }}
+                        </a>
+                    </h1>
+                </div>
+                {% show  feedback_list_simple with { count: 5, show_category_link: true } %}
+            </article>
+        </div>
+        {% enditem %}
 
-    {% item if has_any_feedback() %}
-    <div class="column">
-        <article class="panel-tiny front-page-feedback">
-            <div class="large-title">
-                <h1>
-                    <a href="{{ path('portal_feedback') }}">
-                        {{ phrase('portal.feedback.recent-feedback') }}
-                    </a>
-                </h1>
-            </div>
-            {% show  feedback_list_simple with { count: 5, show_category_link: true } %}
-        </article>
-    </div>
-    {% enditem %}
-
-    {% item if has_any_downloads() %}
-    <div class="column">
-        <article class="panel-tiny front-page-downloads">
-            <div class="large-title">
-                <h1>
-                    <a href="{{ path('portal_downloads') }}">
-                        {{ phrase('portal.downloads.recent-downloads') }}
-                    </a>
-                </h1>
-            </div>
-            {% show section download_list_simple with { count: 5, show_category_link: true } %}
-        </article>
-    </div>
-    {% enditem %}
-</section>
-{% endgroup %}
+        {% item if has_any_downloads() %}
+        <div class="column">
+            <article class="panel-tiny front-page-downloads">
+                <div class="large-title">
+                    <h1>
+                        <a href="{{ path('portal_downloads') }}">
+                            {{ phrase('portal.downloads.recent-downloads') }}
+                        </a>
+                    </h1>
+                </div>
+                {% show section download_list_simple with { count: 5, show_category_link: true } %}
+            </article>
+        </div>
+        {% enditem %}
+    </section>
+    {% endgroup %}
 
 {% endblock page_content %}
