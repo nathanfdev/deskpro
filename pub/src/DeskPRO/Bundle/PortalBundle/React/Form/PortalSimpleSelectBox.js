@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import PortalPhrases from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import classNames from 'classnames';
+import _ from 'lodash';
 
 class SelectOption extends React.Component {
 
@@ -68,6 +69,7 @@ export default class PortalSimpleSelectBox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      id: _.uniqueId('selectbox_'),
       options: props.options,
       visibleOptions: props.options,
       filterText: '',
@@ -101,7 +103,6 @@ export default class PortalSimpleSelectBox extends React.Component {
   }
 
   onClickHeader = () => {
-    console.log('onClickHeader');
     if (!this.state.expanded) {
       this.toggleExpanded();
     }
@@ -320,7 +321,7 @@ export default class PortalSimpleSelectBox extends React.Component {
              role="combobox"
              ref="defaultRow">
 
-          <span className="multiselect-title">
+          <span className={`multiselect-title_${this.state.id}`}>
             {multiple
               ? this.state.value.map(opt => opt.title || <span>&nbsp;</span>).join(', ')
               : this.state.value.title || <span>&nbsp;</span>
@@ -388,7 +389,7 @@ export default class PortalSimpleSelectBox extends React.Component {
 
   render() {
     return (
-      <ClickOut onClickOut={this.onClickOut} additionalNodes={['.multiselect-title']}>
+      <ClickOut onClickOut={this.onClickOut} additionalNodes={[`.multiselect-title_${this.state.id}`]}>
         <div className={classNames('multiselect', `level-${this.state.level}`)}>
             {this.renderStaticHeader()}
             {this.renderDropdownList()}
