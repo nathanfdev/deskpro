@@ -1,11 +1,6 @@
-import $ from "jquery";
 import React, { PropTypes } from 'react';
-import PortalPhrases from "DeskPRO/Bundle/PortalBundle/PortalPhrases"
-
-
-//######################################################################################################################
-//# SelectOption
-//######################################################################################################################
+import PortalPhrases from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import classNames from 'classnames';
 
 class SelectOption extends React.Component {
 
@@ -19,39 +14,44 @@ class SelectOption extends React.Component {
     active: PropTypes.bool
   };
 
-  onClickOption = (ev) => {
-    ev.preventDefault();
+  onClickOption = (event) => {
+    event.preventDefault();
+    const { disabled, onClickOption, option } = this.props;
+
     // do not fire events for disabled options
-    if (!this.props.disabled) {
-      this.props.onClickOption(this.props.option);
+    if (!disabled) {
+      onClickOption(option);
     }
-  }
+  };
 
   render() {
-    const option = this.props.option;
-    const isFocused = this.props.isFocused;
+    const { option, isFocused, active, disabled, displayDepth, multiple } = this.props;
+
     return (
-      <li
-          ref="row"
-          className={(isFocused ? 'focused ' : '') + (this.props.disabled ? "select-option-disabled" : '')}>
-        <a
-            onClick={this.onClickOption}
-            className={(this.props.active ? 'active ' : '') + (this.props.displayDepth > 0 ? 'display-depth-'+this.props.displayDepth : '')}>
-          {this.props.multiple && !this.props.disabled ? (
-              <span className={"checkbox" + (this.props.active ? " checked" : "")}><i className="fa fa-check"></i></span>
-          ) : null}
-          <span
-              className="option-title">{option.title}</span>
+      <li ref="row"
+          className={classNames({
+            'focused': isFocused,
+            'select-option-disabled': disabled
+          })}>
+
+        <a onClick={this.onClickOption}
+           className={classNames({
+             'active': active,
+             [`display-depth-${displayDepth}`]: displayDepth > 0
+           })}>
+
+          {multiple && !disabled
+            ? <span className={classNames('checkbox', {'checked': active})}>
+                <i className="fa fa-check"></i>
+              </span>
+            : null
+          }
+          <span className="option-title">{option.title}</span>
         </a>
       </li>
     );
   }
 }
-
-
-//######################################################################################################################
-//# PortalSimpleSelectBox
-//######################################################################################################################
 
 export default class PortalSimpleSelectBox extends React.Component {
   constructor(props) {
@@ -73,7 +73,7 @@ export default class PortalSimpleSelectBox extends React.Component {
       this.setState({
         options: nextProps.options,
         visibleOptions: nextProps.options,
-        filterText: "",
+        filterText: '',
         selectedOption: null,
         value: nextProps.multiple ? (nextProps.value || []) : nextProps.value,
         expanded: nextProps.expanded || false,
