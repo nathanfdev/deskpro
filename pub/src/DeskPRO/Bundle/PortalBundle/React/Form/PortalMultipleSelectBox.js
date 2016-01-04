@@ -86,7 +86,7 @@ export class PortalMultipleSelectBox extends React.Component {
     this.actionStore.on('formChanged', (data) => {
       this.setState({
         value: data.value,
-        valuePath: this.getValuePath(value)
+        valuePath: this.getValuePath(data.value)
       });
     });
   }
