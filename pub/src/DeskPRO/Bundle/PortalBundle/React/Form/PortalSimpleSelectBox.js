@@ -347,7 +347,6 @@ export default class PortalSimpleSelectBox extends React.Component {
           <input type="text"
                  placeholder={PortalPhrases.get('portal.general.select_placeholder')}
                  ref="filterInput"
-                 onFocus={() => this.openMenu()}
                  onKeyDown={this.filterNav}
                  onKeyUp={this.filterChange} />
         </div>
