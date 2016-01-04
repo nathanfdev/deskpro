@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import PortalPhrases from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import classNames from 'classnames';
 
 class SelectOption extends React.Component {
@@ -65,7 +66,6 @@ export default class PortalSimpleSelectBox extends React.Component {
   };
 
   constructor(props) {
-    console.log(props);
     super(props);
     this.state = {
       options: props.options,
@@ -76,10 +76,6 @@ export default class PortalSimpleSelectBox extends React.Component {
       expanded: props.expanded || false,
       level: props.level || 1
     };
-  }
-
-  componentDidMount() {
-    document.addEventListener('click', this.documentClickHandler.bind(this));
   }
 
   componentWillReceiveProps(nextProps) {
@@ -104,16 +100,11 @@ export default class PortalSimpleSelectBox extends React.Component {
     }
   }
 
-  componentWillUnmount() {
-    document.removeEventListener('click', this.documentClickHandler.bind(this));
-  }
-
-  onClickHeader = event => {
+  onClickHeader = () => {
+    console.log('onClickHeader');
     if (!this.state.expanded) {
       this.toggleExpanded();
     }
-
-    this.dropdownClickHandler(event);
   };
 
   onKeyDown = event => {
@@ -123,12 +114,26 @@ export default class PortalSimpleSelectBox extends React.Component {
     }
   };
 
-  onClickOption(option, doClose = false) {
+  onClickOut = () => {
+    console.log('onClickOut');
+    if (!this.state.expanded) {
+      return;
+    }
+    if (this.refs.filterInput) {
+      this.refs.filterInput.blur();
+    }
+
+    this.setState({
+      expanded: false
+    });
+  };
+
+  onClickOption = option => {
     this.changeToOption(option);
-    if (doClose && this.state.expanded) {
+    if (this.state.expanded) {
       this.toggleExpanded();
     }
-  }
+  };
 
   getFitleredOptions(rawFilterText, options) {
     if (rawFilterText) {
@@ -137,22 +142,6 @@ export default class PortalSimpleSelectBox extends React.Component {
     }
 
     return options;
-  }
-
-  documentClickHandler() {
-    if (!this.state.expanded) {
-      return;
-    }
-    if (this.refs.filterInput) {
-      this.refs.filterInput.blur();
-    }
-    this.setState({
-      expanded: false
-    });
-  }
-
-  dropdownClickHandler(e) {
-    e.nativeEvent.stopImmediatePropagation();
   }
 
   changeToOption(option) {
@@ -307,6 +296,7 @@ export default class PortalSimpleSelectBox extends React.Component {
   }
 
   renderStaticHeader() {
+    const { multiple } = this.props;
     const classes = ['default'];
     if (this.state.expanded) {
       classes.push('expanded');
@@ -321,14 +311,21 @@ export default class PortalSimpleSelectBox extends React.Component {
 
     const className = classes.join(' ');
 
-    if (!this.state.expanded && (this.props.multiple ? this.state.value.length > 0 : this.state.value)) {
+    if (!this.state.expanded && (multiple ? this.state.value.length > 0 : this.state.value)) {
       return (
-        <div className={className} onClick={this.onClickHeader} onKeyDown={this.focusedOnKeyDown} tabIndex="0" role="combobox" ref="defaultRow">
-          <span>{this.props.multiple ? (
-            this.state.value.map((opt) => {
-              return opt.title || (<span>&nbsp;</span>);
-            }).join(', ')
-          ) : this.state.value.title || (<span>&nbsp;</span>)}</span>
+        <div className={className}
+             onClick={this.onClickHeader}
+             onKeyDown={this.focusedOnKeyDown}
+             tabIndex="0"
+             role="combobox"
+             ref="defaultRow">
+
+          <span className="multiselect-title">
+            {multiple
+              ? this.state.value.map(opt => opt.title || <span>&nbsp;</span>).join(', ')
+              : this.state.value.title || <span>&nbsp;</span>
+            }
+          </span>
           <i className="fa fa-caret-down" />
         </div>
       );
@@ -356,9 +353,7 @@ export default class PortalSimpleSelectBox extends React.Component {
     const isActive = (option) => {
       if (!this.state.value) {
         return false;
-      }
-
-      if (this.props.multiple) {
+      } else if (this.props.multiple) {
         return this.state.value.includes(option);
       }
 
@@ -368,24 +363,24 @@ export default class PortalSimpleSelectBox extends React.Component {
 
     return (
       <div className="options-wrapper">
-        <ul onClick={this.dropdownClickHandler.bind(this)}>
+        <ul>
           {options.map((option) => {
             if (this.isNullOption(option)) {
               return null;
             }
 
             return (
-              <SelectOption onClickOption={this.onClickOption.bind(this)}
-                            disabled={option.children && option.children.length > 0}
-                            displayDepth={option.depth}
-                            isFocused={option === this.state.selectedOption}
-                            key={option.id}
-                            option={option}
-                            multiple={!!this.props.multiple}
-                            active={isActive(option)}/>
+              <SelectOption
+                onClickOption={this.onClickOption}
+                disabled={option.children && option.children.length > 0}
+                displayDepth={option.depth}
+                isFocused={option === this.state.selectedOption}
+                key={option.id}
+                option={option}
+                multiple={!!this.props.multiple}
+                active={isActive(option)} />
             );
-          })
-          }
+          })}
         </ul>
       </div>
     );
@@ -393,10 +388,12 @@ export default class PortalSimpleSelectBox extends React.Component {
 
   render() {
     return (
-        <div className={'multiselect level-' + this.state.level} onClick={this.dropdownClickHandler.bind(this)}>
-          {this.renderStaticHeader()}
-          {this.renderDropdownList()}
+      <ClickOut onClickOut={this.onClickOut} additionalNodes={['.multiselect-title']}>
+        <div className={classNames('multiselect', `level-${this.state.level}`)}>
+            {this.renderStaticHeader()}
+            {this.renderDropdownList()}
         </div>
+      </ClickOut>
     );
   }
 }

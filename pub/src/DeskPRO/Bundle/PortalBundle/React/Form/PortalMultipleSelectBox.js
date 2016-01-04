@@ -146,7 +146,7 @@ export class PortalMultipleSelectBox extends React.Component {
 
     return (
       <div>
-        <PortalSimpleSelectBox multiple="true" options={options} value={values} level="1" onChange={this.onClickOption.bind(this)} />
+        <PortalSimpleSelectBox multiple options={options} value={values} level={1} onChange={this.onClickOption.bind(this)} />
       </div>
     );
   }
