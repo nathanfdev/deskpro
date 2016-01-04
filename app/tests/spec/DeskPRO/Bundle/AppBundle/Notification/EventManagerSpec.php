@@ -29,6 +29,7 @@
 namespace spec\DeskPRO\Bundle\AppBundle\Notification;
 
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\NewMessageEvent;
+use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\EventManager;
 use DeskPRO\Bundle\AppBundle\Notification\Strategy\StrategyFactory;
 use PhpSpec\ObjectBehavior;
@@ -53,7 +54,8 @@ class EventManagerSpec extends ObjectBehavior
     {
         $this->getSubscribedEvents()->shouldBe(
             array(
-                NewMessageEvent::EVENT_NAME => 'handleEvent',
+                NewMessageEvent::EVENT_NAME    => 'handleEvent',
+                TicketUpdatedEvent::EVENT_NAME => 'handleEvent',
             )
         );
     }
