@@ -149,6 +149,7 @@ export default class PortalSimpleSelectBox extends React.Component {
     if (!option) {
       return;
     }
+
     let val;
     if (this.props.multiple) {
       val = this.state.value;
@@ -163,6 +164,7 @@ export default class PortalSimpleSelectBox extends React.Component {
     } else {
       val = option;
     }
+
     this.setState({
       value: val,
       expanded: this.props.multiple ? true : false
@@ -181,7 +183,7 @@ export default class PortalSimpleSelectBox extends React.Component {
     return option === null || !option.id || option.title === '';
   }
 
-  filterNav= (ev) => {
+  filterNav = (ev) => {
     const key = ev.keyCode;
     switch (key) {
       case 13: // enter
@@ -225,6 +227,7 @@ export default class PortalSimpleSelectBox extends React.Component {
     const visibleOptions = this.getFitleredOptions(this.refs.filterInput.value, this.state.options);
     // current selection if its still visible, or the first result (or nothing if list is empty)
     const selectedOption = visibleOptions.indexOf(this.state.selectedOption) !== -1 ? this.state.selectedOption : visibleOptions[0] || null;
+
     this.setState({
       visibleOptions: visibleOptions,
       selectedOption: selectedOption,
@@ -250,7 +253,10 @@ export default class PortalSimpleSelectBox extends React.Component {
           }
         }
       }
-      this.setState({ selectedOption: next });
+
+      this.setState({
+        selectedOption: next
+      });
     }
   }
 
@@ -272,7 +278,10 @@ export default class PortalSimpleSelectBox extends React.Component {
           }
         }
       }
-      this.setState({ selectedOption: next });
+
+      this.setState({
+        selectedOption: next
+      });
     }
   }
 
@@ -337,7 +346,8 @@ export default class PortalSimpleSelectBox extends React.Component {
         <div className="filter-box">
           <input type="text"
                  placeholder={PortalPhrases.get('portal.general.select_placeholder')}
-                 ref="filterInput" onFocus={() => this.openMenu()}
+                 ref="filterInput"
+                 onFocus={() => this.openMenu()}
                  onKeyDown={this.filterNav}
                  onKeyUp={this.filterChange} />
         </div>
