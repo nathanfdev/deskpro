@@ -91,11 +91,9 @@ export class PortalMultipleSelectBox extends React.Component {
     });
   }
 
-  onClickOption(options) {
-    this.actionStore.setValue(options ? options.map((opt) => {
-      return opt.id;
-    }) : []);
-  }
+  onClickOption = options => {
+    this.actionStore.setValue(options ? options.map((opt) => opt.id) : []);
+  };
 
   getValuePath(value) {
     let path = [];
@@ -144,11 +142,7 @@ export class PortalMultipleSelectBox extends React.Component {
       });
     });
 
-    return (
-      <div>
-        <PortalSimpleSelectBox multiple options={options} value={values} level={1} onChange={this.onClickOption.bind(this)} />
-      </div>
-    );
+    return <PortalSimpleSelectBox multiple options={options} value={values} level={1} onChange={this.onClickOption} />;
   }
 
   render() {
