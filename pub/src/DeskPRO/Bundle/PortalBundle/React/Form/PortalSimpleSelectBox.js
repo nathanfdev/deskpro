@@ -58,6 +58,7 @@ class SelectOption extends React.Component {
 export default class PortalSimpleSelectBox extends React.Component {
 
   static propTypes = {
+    widgetOptions: PropTypes.object,
     multiple: PropTypes.bool,
     expanded: PropTypes.bool,
     level: PropTypes.number,
@@ -387,8 +388,14 @@ export default class PortalSimpleSelectBox extends React.Component {
   }
 
   render() {
+    const { widgetOptions = {} } = this.props;
+    const context = widgetOptions.context || document;
+
     return (
-      <ClickOut onClickOut={this.onClickOut} additionalNodes={[`.multiselect-title_${this.state.id}`]}>
+      <ClickOut onClickOut={this.onClickOut}
+                additionalNodes={[`.multiselect-title_${this.state.id}`]}
+                context={context}>
+
         <div className={classNames('multiselect', `level-${this.state.level}`)}>
             {this.renderStaticHeader()}
             {this.renderDropdownList()}

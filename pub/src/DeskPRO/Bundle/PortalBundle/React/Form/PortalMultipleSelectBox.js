@@ -67,6 +67,7 @@ export class LevelSelectActionStore extends FormActionStore {
 export class PortalMultipleSelectBox extends React.Component {
 
   static propTypes = {
+    widgetOptions: PropTypes.object,
     actionStore: PropTypes.object
   };
 
@@ -118,6 +119,7 @@ export class PortalMultipleSelectBox extends React.Component {
   }
 
   renderSelect() {
+    const { widgetOptions } = this.props;
     const mapOption = (g) => {
       const r = {
         id: g.id,
@@ -140,7 +142,15 @@ export class PortalMultipleSelectBox extends React.Component {
       return _.find(options, (opt) => _.parseInt(opt.id) === _.parseInt(selectedId));
     });
 
-    return <PortalSimpleSelectBox multiple options={options} value={values} level={1} onChange={this.onClickOption} />;
+    return (
+      <PortalSimpleSelectBox
+        multiple
+        widgetOptions={widgetOptions}
+        options={options}
+        value={values}
+        level={1}
+        onChange={this.onClickOption} />
+    );
   }
 
   render() {
@@ -154,9 +164,10 @@ export class PortalMultipleSelectBox extends React.Component {
  * @param {jQuery/HTMLElement} select
  * @param {jQuery/HTMLElement} renderTo
  * @param {FormActionStore}    actionStore
+ * @param {Object}             widgetOptions
  * @returns {FormActionStore}
  */
-export function createComponent(select, renderTo, actionStore = null) {
+export function createComponent(select, renderTo, actionStore = null, widgetOptions = {}) {
   const $select = $(select);
   $select.find('option').each((x, opt) => {
     const $opt = $(opt);
@@ -169,7 +180,7 @@ export function createComponent(select, renderTo, actionStore = null) {
     actionStore = new LevelSelectActionStore($select);
   }
 
-  ReactDOM.render(React.createElement(PortalMultipleSelectBox, {actionStore: actionStore}), $(renderTo).get(0));
+  ReactDOM.render(React.createElement(PortalMultipleSelectBox, { actionStore, widgetOptions }), $(renderTo).get(0));
 
   return actionStore;
 }

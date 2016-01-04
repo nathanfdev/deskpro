@@ -60,6 +60,7 @@ export class LevelSelectActionStore extends FormActionStore {
 export class PortalSelectBox extends React.Component {
 
   static propTypes = {
+    widgetOptions: PropTypes.object,
     actionStore: PropTypes.object
   };
 
@@ -109,6 +110,7 @@ export class PortalSelectBox extends React.Component {
   }
 
   renderSelect(group, parentId = null, level = 1) {
+    const { widgetOptions } = this.props;
     let subGroup = null;
 
     if (this.state.valuePath.length) {
@@ -124,7 +126,13 @@ export class PortalSelectBox extends React.Component {
 
     return (
       <div>
-        <PortalSimpleSelectBox options={options} value={subGroup ? subGroup : null} level={level} onChange={this.onClickOption.bind(this)} />
+        <PortalSimpleSelectBox
+          widgetOptions={widgetOptions}
+          options={options}
+          value={subGroup ? subGroup : null}
+          level={level}
+          onChange={this.onClickOption.bind(this)} />
+
         {subGroup && subGroup.children.length ? this.renderSelect(subGroup.children, subGroup.id, level + 1) : null}
       </div>
     );
@@ -141,9 +149,10 @@ export class PortalSelectBox extends React.Component {
  * @param {jQuery/HTMLElement} select
  * @param {jQuery/HTMLElement} renderTo
  * @param {FormActionStore}    actionStore
+ * @param {Object}             widgetOptions
  * @returns {FormActionStore}
  */
-export function createComponent(select, renderTo, actionStore = null) {
+export function createComponent(select, renderTo, actionStore = null, widgetOptions = {}) {
   const $select = $(select);
 
   // We need to rewrite opt-groups into normal options or else our widget
@@ -185,7 +194,7 @@ export function createComponent(select, renderTo, actionStore = null) {
     actionStore = new LevelSelectActionStore($select);
   }
 
-  ReactDOM.render(React.createElement(PortalSelectBox, {actionStore: actionStore}), $(renderTo).get(0));
+  ReactDOM.render(React.createElement(PortalSelectBox, { actionStore, widgetOptions }), $(renderTo).get(0));
 
   return actionStore;
 }
