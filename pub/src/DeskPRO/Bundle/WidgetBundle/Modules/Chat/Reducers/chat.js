@@ -60,7 +60,12 @@ export default createReducer(initialState, {
     setValue('messages', []),
     setValue('transcript.sent', false)
   ),
-  [actions.unsetChatId]: setValue('chat.id', null),
+  [actions.unsetChatId]: setValue('chat', {
+    id: null,
+    loaded: false,
+    canReopen: true,
+    info: {}
+  }),
   [actions.setLoaded]: setValue('chat.loaded', true),
   [actions.unsetLoaded]: setValue('chat.loaded', false),
   [actions.updateChatInfo]: setFullPayload('chat.info'),

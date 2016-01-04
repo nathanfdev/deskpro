@@ -45,7 +45,7 @@ export class ChatPollingContainer extends React.Component {
       return;
     }
 
-    history.listen(location => {
+    this._unlisten = history.listen(location => {
       if (agentId && location.pathname !== '/chat/active') {
         // If agent id is defined redirect to active stage
         history.replace('/chat/active');
@@ -53,6 +53,8 @@ export class ChatPollingContainer extends React.Component {
         dispatch(unsetLoaded());
       }
     });
+
+    this._unlisten();
 
     // Send ajax next request
     const queryParams = {
