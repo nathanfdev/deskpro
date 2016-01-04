@@ -116,7 +116,6 @@ export default class PortalSimpleSelectBox extends React.Component {
   };
 
   onClickOut = () => {
-    console.log('onClickOut');
     if (!this.state.expanded) {
       return;
     }

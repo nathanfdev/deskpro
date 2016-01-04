@@ -137,9 +137,7 @@ export class PortalMultipleSelectBox extends React.Component {
     let options = this.optionData.hierarchy.map(mapOption);
     options = _.flattenDeep(options);
     const values = this.actionStore.getValue().map(selectedId => {
-      return _.find(options, (opt) => {
-        return _.parseInt(opt.id) === _.parseInt(selectedId);
-      });
+      return _.find(options, (opt) => _.parseInt(opt.id) === _.parseInt(selectedId));
     });
 
     return <PortalSimpleSelectBox multiple options={options} value={values} level={1} onChange={this.onClickOption} />;
