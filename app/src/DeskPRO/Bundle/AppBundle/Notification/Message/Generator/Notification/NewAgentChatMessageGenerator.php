@@ -75,10 +75,6 @@ class NewAgentChatMessageGenerator extends AbstractGenerator
             }
         }
 
-        if (count($targets) < 1) {
-            throw new \LogicException('No target was found!');
-        }
-
         return $targets;
     }
 
