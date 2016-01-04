@@ -48,12 +48,15 @@ import $ from 'jquery';
  * instantiated on it.
  */
 export default class PageWidget {
-  constructor(element = null, parent = null) {
+
+  constructor(element = null, parent = null, options = {}) {
     this.initState = 'pre_init';
     this.waitingRender = false;
 
     this.$element = element ? $(element) : null;
     this.parent = parent;
+    this.options = options;
+
     this.widgetDefs = [];
     this.widgetInsts = [];
 
@@ -191,13 +194,14 @@ export default class PageWidget {
    *
    * @param {Function} widgetClass
    * @param {String/Function} selector
+   * @param {Object} options
    */
-  addWidgetDef(widgetClass, selector) {
-    const desc = [widgetClass, selector];
+  addWidgetDef(widgetClass, selector, options = null) {
+    const desc = { widgetClass, selector, options: options || this.options };
     this.widgetDefs.push(desc);
 
     if (this.initState === 'done_init') {
-      this._runWidgetDef(desc);
+      this._runWidgetDef(desc, null); // todo this.$element as second arg?
     }
   }
 
@@ -233,19 +237,18 @@ export default class PageWidget {
 
   /**
    * @param {Array} widgetDef
-   * @param {HTMLElement/jQuery} $parent Optionally scope the run to this element
+   * @param {HTMLElement/jQuery} $parentElement Optionally scope the run to this element
    * @returns {Array}
    * @private
    */
-  _createWidgetInst(widgetDef, $parent) {
-    const widgetClass = widgetDef[0];
-    const selector = widgetDef[1];
+  _createWidgetInst(widgetDef, $parentElement) {
+    const { widgetClass, selector, options = {} } = widgetDef;
 
     let matches;
     let $context;
 
-    if ($parent) {
-      $context = $($parent);
+    if ($parentElement) {
+      $context = $($parentElement);
     } else if (this.$element) {
       $context = $(this.$element);
     } else {
@@ -270,7 +273,7 @@ export default class PageWidget {
 
       const elInsts = $el.data('dpWidgetInsts');
       if (!elInsts.has(widgetClass)) {
-        const i = new widgetClass($el, this);
+        const i = new widgetClass($el, this, options);
         elInsts.set(widgetClass, i);
         insts.push(i);
       }
