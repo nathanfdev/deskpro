@@ -1,7 +1,7 @@
 {% import 'Theme:Tickets:macros.html.twig' as macros %}
 {% if ticket.resolved %}
     <div class="ticket-reply-closed">
-        <h1>This ticket is now closed</h1>
+        <h1>{{ phrase('portal.tickets.view_now_closed') }}</h1>
         {% if ticket.date_resolved %}
             <p>{{ phrase('portal.tickets.view_closed', { ago: date_ago(ticket.date_resolved, null, false), day: ticket.date_resolved|date('day') }) }}</p>
         {% endif %}

@@ -9,6 +9,7 @@
         <div class="container relative-height">
             <div class="column-full">
 
+                {% block page_header %}
                 {% if ticket.isAwaitingUser() %}
                     {# AWAITING USER #}
                     <div class="ticket-view-note-for-user agent-has-replied">
@@ -36,9 +37,13 @@
                     </div>
                 {% endif %}
 
+                {% endblock page_header %}
+
                 <div class="ticket-view">
                     <div class="full-column">
-                    <!-- Sidebar with the agents in this ticket, ref etc -->
+
+
+                {% block page_sidebar %}
                     <div class="ticket-view-sidebar-wrapper">
 
                         {% if can_edit and ticket.isOpen() %}
@@ -84,7 +89,12 @@
                                                 <li>
                                                     {{ macros.person_sidebar(participant.person, path('portal_tickets_cc_remove', { ticket_ref: ticket_public_id(ticket), cc_id: participant.id })) }}
                                                 </li>
+                                            {% else %}
+                                                <li>
+                                                    {{ phrase('portal.tickets.no_participants') }}
+                                                </li>
                                             {% endfor %}
+                                            {% block page_sidebar_add_participant_form %}
                                             <li>
                                                 <a href="#" class="sidebar-person add-person clickaway-dropdown" data-clickaway-target="add-cc-user-popover">
                                                     <span class="agent-avatar agent-avatar-mid"><i class="fa fa-plus"></i></span>
@@ -118,6 +128,7 @@
                                                     </form>
                                                 </div>
                                             </li>
+                                            {% endblock page_sidebar_add_participant_form %}
                                         </ul>
                                     </li>
 
@@ -171,7 +182,8 @@
                         {% endif %}
                     {% endif %}
                     </div>
-                        </div>
+                    </div>
+                {% endblock page_sidebar %}
 
                     <!-- Ticket title -->
                     <div class="header">

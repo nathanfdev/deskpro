@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
@@ -437,12 +436,13 @@ class TicketsController extends AbstractController
         // TODO: if a user is logged in, we might want to allow SOME interaction on the ticket here...
 
         return $this->renderThemeView(
-            'Theme:Tickets:guest-view.html.twig',
+            'Theme:Tickets:guest_view.html.twig',
             array(
                 'ticket'      => $ticket,
                 'ticket_view' => $ticket_view,
                 'timeline'    => $timeline,
                 'breadcrumbs' => $breadcrumbs,
+                'can_edit'    => false,
                 'page_title'  => $this->createPageTitle()->tickets($ticket),
             )
         );
