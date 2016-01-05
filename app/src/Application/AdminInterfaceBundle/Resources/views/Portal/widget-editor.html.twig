@@ -119,6 +119,15 @@
 
             <div class="content-section">
                 <h2 class="with-divider form-header"><span>Ticket Settings</span></h2>
+
+                <input type="radio" ng-model="Ctrl.settings.button_size" /> Default Department
+                <select ng-model="Ctrl.settings.button_size">
+                    <option value="S">S</option>
+                    <option value="M">M</option>
+                    <option value="L">L</option>
+                </select>
+
+                <input type="radio" ng-model="Ctrl.settings.button_size" /> User Selects Department
             </div>
         </form>
 
