@@ -83,23 +83,20 @@ class TicketsController extends AbstractController
             ];
         $tables = $this->makeTicketListTables($type,  $ticket_categories, $person, $request);
 
-        // BREADCRUMBS
-        $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketList();
-
         $ticket_list_js = 'window.DESKPRO_TICKET_LIST_TABLES = '.$tables->compileJsObj().';';
 
         return $this->renderThemeView(
             'Theme:Tickets:index.html.twig',
             array(
-                'ticket_list_tables' => $tables,
-                'resolved_only'      => $resolved_only,
-                'open_ticket_count'  => $this->getTicketsDataService()->getTicketCount($person, 'open'),
-                'type'               => $type,
-                'person'             => $person,
-                'breadcrumbs'        => $breadcrumbs,
-                'page_title'         => $this->createPageTitle()->tickets(),
-                'ticket_list_js'     => $ticket_list_js,
-                'search_query'       => $request->query->get('q', ''),
+                'ticket_list_tables'      => $tables,
+                'resolved_only'           => $resolved_only,
+                'awaiting_response_count' => $this->getAwaitingUserCount($type, $person),
+                'type'                    => $type,
+                'person'                  => $person,
+                'breadcrumbs'             => $this->getBreadcrumbGenerator()->buildTicketList(),
+                'page_title'              => $this->createPageTitle()->tickets(),
+                'ticket_list_js'          => $ticket_list_js,
+                'search_query'            => $request->query->get('q', ''),
             )
         );
     }
@@ -765,5 +762,22 @@ class TicketsController extends AbstractController
             $ticket->feedback_rating = $feedback->getRating();
             $this->getEm()->persist($ticket);
         }
+    }
+
+    /**
+     * @param $type
+     * @param $person
+     *
+     * @return int|null
+     */
+    protected function getAwaitingUserCount($type, $person)
+    {
+        $ticket_data = $this->getTicketsDataService();
+
+        if ('organization' === $type) {
+            return $ticket_data->getOrganizationTicketCount($person, 'awaiting_user');
+        }
+
+        return $ticket_data->getTicketCount($person, 'awaiting_user');
     }
 }

@@ -35,9 +35,9 @@
                                 <div>
                                     <div class="title">
                                         {{ phrase('portal.tickets.list_status_open') }}
-                                        {% if open_ticket_count > 0 %}
+                                        {% if awaiting_response_count > 0 %}
                                             <div class="text-tag rating-tag">
-                                                {{ phrase('portal.tickets.list_status_open_count', { count: open_ticket_count  }) }}
+                                                {{ phrase('portal.tickets.list_status_open_count', { count: awaiting_response_count  }) }}
                                             </div>
                                         {% endif %}
                                     </div>
