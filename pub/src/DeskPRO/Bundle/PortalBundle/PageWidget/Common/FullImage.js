@@ -1,8 +1,16 @@
 import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
+import { openFullImage } from 'DeskPRO/Component/FullImage';
 
 export default class FullImage extends PageWidget {
 
   renderWidget() {
-    const $image = this.$element;
+    const $image = this.$element.find('img');
+    const imageNode = $image.get(0);
+
+    if (!imageNode) {
+      return;
+    }
+
+    this.$element.on('click', () => openFullImage(imageNode));
   }
 }
