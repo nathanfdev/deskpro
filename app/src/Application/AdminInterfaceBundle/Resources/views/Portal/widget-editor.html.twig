@@ -1,0 +1,121 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+<div class="content-wrapper">
+    <section class="content setup">
+
+        <h1><i class="fa fa-cog"></i> Site Widget & Chat</h1>
+
+        <form>
+            <div class="content-section">
+                <h2 class="with-divider form-header"><span>Button Settings</span></h2>
+
+                <div class="row">
+                    <div class="bucket-third">
+                        <div class="inline-input">
+                            <label>Button size:</label>
+                            <select ng-model="Ctrl.settings.button_size">
+                                <option value="S">S</option>
+                                <option value="M">M</option>
+                                <option value="L">L</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="bucket-third">
+                        <div class="inline-input">
+                            <label>Button word:</label>
+                            <input type="text" ng-model="Ctrl.settings.button_word" />
+                        </div>
+                    </div>
+
+                    <div class="bucket-two-thirds">
+                        <div class="form-text">
+                            <p><a href="#">Translate</a></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="bucket-third">
+                        <div class="inline-input">
+                            <label>Colours:</label>
+                            <input type="text" ng-model="Ctrl.settings.button_background_color" />
+                            <input type="text" ng-model="Ctrl.settings.button_text_color" />
+                            <input type="text" ng-model="Ctrl.settings.button_border_color" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="bucket-third">
+                        <div class="inline-input">
+                            <label>Position:</label>
+                            <input type="radio" ng-model="Ctrl.settings.button_position" /> Right
+                            <input type="radio" ng-model="Ctrl.settings.button_position" /> Left
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="bucket-third">
+                        <div class="inline-input">
+                            <label>Size:</label>
+                            <input type="radio" ng-model="Ctrl.settings.button_size" /> Column
+                            <input type="radio" ng-model="Ctrl.settings.button_size" /> Corner
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2 class="with-divider form-header"><span>Chat Settings</span></h2>
+
+                <article>
+                    <div class="panel panel-innertable">
+                        <div class="form-group">
+                            <button dp-toggle-switch ng-model="setup.chat_enabled" ng-change="ChatSetup.toggleChat()">
+
+                            </button>
+                            <h4><span class="title-text">Enable / Disable Chat</span></h4>
+                        </div>
+                    </div>
+                </article>
+
+                <article>
+                    <div class="panel panel-innertable">
+                        <div class="form-group">
+                            <button dp-toggle-switch ng-model="setup.chat_enabled" ng-change="ChatSetup.toggleChat()">
+
+                            </button>
+                            <h4><span class="title-text">Request Name/Email before Chat Commences</span></h4>
+                        </div>
+                    </div>
+                </article>
+
+                <article>
+                    <div class="panel panel-innertable">
+                        <div class="form-group">
+                            <button dp-toggle-switch ng-model="setup.chat_enabled" ng-change="ChatSetup.toggleChat()">
+
+                            </button>
+                            <h4><span class="title-text">Proactive Chat</span></h4>
+                        </div>
+                    </div>
+                </article>
+
+                <input type="radio" ng-model="Ctrl.settings.button_position" /> Single Agent Icon
+                <input type="radio" ng-model="Ctrl.settings.button_position" /> Triple Agent Icon
+                <input type="radio" ng-model="Ctrl.settings.button_position" /> Agent Icon + Message
+                <input type="text" ng-model="Ctrl.settings.button_background_color" />
+            </div>
+
+            <div class="content-section">
+                <h2 class="with-divider form-header"><span>Ticket Settings</span></h2>
+            </div>
+        </form>
+
+    </section>
+</div>
+{% endblock %}

@@ -1561,6 +1561,16 @@ define(function() {
     controller: 'Admin_Portal_Ctrl_PortalEditor'
   });
 
+	//###
+	//# Portal Widget Editor
+	//###
+	routes.push({
+		id: 'portal.widget_editor',
+		url: '/widget_editor',
+		templateName: 'Portal/widget-editor.html',
+		controller: 'Admin_Portal_Ctrl_WidgetEditor'
+	});
+
   //###
   //# Portal Settings
   //###

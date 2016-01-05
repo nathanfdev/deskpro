@@ -118,6 +118,7 @@ define([
   'Admin/Portal/Ctrl/Nav',
   'Admin/Portal/Ctrl/Embeds',
   'Admin/Portal/Ctrl/PortalEditor',
+  'Admin/Portal/Ctrl/WidgetEditor',
   'Admin/Portal/Ctrl/Setup',
   'Admin/Server/Ctrl/ServerReqs',
   'Admin/Server/Ctrl/ServerPhpInfo',
