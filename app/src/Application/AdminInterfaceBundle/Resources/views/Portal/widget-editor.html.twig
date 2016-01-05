@@ -41,15 +41,20 @@
                     <div class="bucket-third">
                         <div class="inline-input">
                             <label>Colors:</label>
-                            <p>
-                                <dp-portal-designer-color-form variable="Ctrl.settings.button_background_color" values="values" /> Background Color
-                            </p>
-                            <p>
-                                <dp-portal-designer-color-form variable="Ctrl.settings.button_text_color" values="values" /> Text Color
-                            </p>
-                            <p>
-                                <dp-portal-designer-color-form variable="Ctrl.settings.button_border_color" values="values" /> Border Color
-                            </p>
+                            <ul class="input-group">
+                                <li>
+                                    <dp-portal-designer-color-form variable="Ctrl.settings.button_background_color" values="values" />
+                                    <label>Background Color</label>
+                                </li>
+                                <li>
+                                    <dp-portal-designer-color-form variable="Ctrl.settings.button_text_color" values="values" />
+                                    <label>Text Color</label>
+                                </li>
+                                <li>
+                                    <dp-portal-designer-color-form variable="Ctrl.settings.button_border_color" values="values" />
+                                    <label>Border Color</label>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -58,8 +63,16 @@
                     <div class="bucket-third">
                         <div class="inline-input">
                             <label>Position:</label>
-                            <input type="radio" ng-model="Ctrl.settings.button_position" /> Right
-                            <input type="radio" ng-model="Ctrl.settings.button_position" /> Left
+                            <ul class="input-group">
+                                <li>
+                                    <input type="radio" ng-model="Ctrl.settings.button_position" />
+                                    <label>Right</label>
+                                </li>
+                                <li>
+                                    <input type="radio" ng-model="Ctrl.settings.button_position" />
+                                    <label>Left</label>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -68,8 +81,16 @@
                     <div class="bucket-third">
                         <div class="inline-input">
                             <label>Size:</label>
-                            <input type="radio" ng-model="Ctrl.settings.button_size" /> Column
-                            <input type="radio" ng-model="Ctrl.settings.button_size" /> Corner
+                            <ul class="input-group">
+                                <li>
+                                    <input type="radio" ng-model="Ctrl.settings.button_size" />
+                                    <label>Column</label>
+                                </li>
+                                <li>
+                                    <input type="radio" ng-model="Ctrl.settings.button_size" />
+                                    <label>Corner</label>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -111,23 +132,39 @@
                     </div>
                 </article>
 
-                <input type="radio" ng-model="Ctrl.settings.button_position" /> Single Agent Icon
-                <input type="radio" ng-model="Ctrl.settings.button_position" /> Triple Agent Icon
-                <input type="radio" ng-model="Ctrl.settings.button_position" /> Agent Icon + Message
-                <input type="text" ng-model="Ctrl.settings.button_background_color" />
+                <ul>
+                    <li>
+                        <input type="radio" ng-model="Ctrl.settings.button_position" /> Single Agent Icon
+                    </li>
+                    <li>
+                        <input type="radio" ng-model="Ctrl.settings.button_position" /> Triple Agent Icon
+                    </li>
+                    <li>
+                        <input type="radio" ng-model="Ctrl.settings.button_position" /> Agent Icon + Message
+                        <input type="text" ng-model="Ctrl.settings.button_background_color" />
+                    </li>
+                </ul>
             </div>
 
             <div class="content-section">
                 <h2 class="with-divider form-header"><span>Ticket Settings</span></h2>
 
-                <input type="radio" ng-model="Ctrl.settings.button_size" /> Default Department
-                <select ng-model="Ctrl.settings.button_size">
-                    <option value="S">S</option>
-                    <option value="M">M</option>
-                    <option value="L">L</option>
-                </select>
+                <ul>
+                    <li>
+                        <input type="radio" ng-model="Ctrl.settings.button_size" />
+                        <label>Default Department</label>
 
-                <input type="radio" ng-model="Ctrl.settings.button_size" /> User Selects Department
+                        <select ng-model="Ctrl.settings.button_size">
+                            <option value="S">S</option>
+                            <option value="M">M</option>
+                            <option value="L">L</option>
+                        </select>
+                    </li>
+                    <li>
+                        <input type="radio" ng-model="Ctrl.settings.button_size" />
+                        <label>User Selects Department</label>
+                    </li>
+                </ul>
             </div>
 
             <div class="form-footer">
