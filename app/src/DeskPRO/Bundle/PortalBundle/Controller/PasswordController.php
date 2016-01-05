@@ -78,18 +78,6 @@ class PasswordController extends AbstractController
                     return $this->redirectToRoute('agent_login', array('forgot' => $email));
                 }
 
-                if (!$person->password) {
-                    // TODO: this is copied from old portal, and we need to verify it works, moving on for now
-                    $associations = $this->getRepo('DeskPRO:PersonUsersourceAssoc')
-                        ->getAssociationsForPerson($person);
-
-                    foreach ($associations as $assoc) {
-                        if ($assoc->usersource->lost_password_url) {
-                            return $this->redirect($assoc->usersource->lost_password_url);
-                        }
-                    }
-                }
-
                 // set the reset code
                 $valid_seconds = $this->getBrandSetting('user.password_reset_code_time_limit', 18000);
                 $reset         = $this->getPersonDataService()->createPasswordReset($person, $valid_seconds);
