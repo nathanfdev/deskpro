@@ -62,7 +62,7 @@
                             {{ attachment.filename }} ({{ attachment.filesize_readable }})
                         </a>
                     {% else %}
-                        <a href="#">
+                        <a href="{{ attachment.download_url }}?dl=1">
                             {{ attachment.filename }} ({{ attachment.filesize_readable }})
                         </a>
                     {% endif %}
