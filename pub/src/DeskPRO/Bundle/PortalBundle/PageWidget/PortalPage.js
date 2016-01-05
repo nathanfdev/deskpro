@@ -1,23 +1,24 @@
 import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
-import TicketForm from 'DeskPRO/Bundle/PortalBundle/PageWidget/TicketForm';
-import PortalFormWidget from 'DeskPRO/Bundle/PortalBundle/PageWidget/PortalFormWidget';
-import TicketView from 'DeskPRO/Bundle/PortalBundle/PageWidget/TicketView';
-import TicketList from 'DeskPRO/Bundle/PortalBundle/PageWidget/TicketList';
-import DownloadsList from 'DeskPRO/Bundle/PortalBundle/PageWidget/DownloadsList';
-import FeedbackPage from 'DeskPRO/Bundle/PortalBundle/PageWidget/FeedbackPage';
-import ClickAwayDropdownWidget from 'DeskPRO/Bundle/PortalBundle/PageWidget/ClickAwayDropdownWidget';
-import ClickToDismissWidget from 'DeskPRO/Bundle/PortalBundle/PageWidget/ClickToDismissWidget';
-import HideAlertsWidget from 'DeskPRO/Bundle/PortalBundle/PageWidget/HideAlertsWidget';
-import LoginPage from 'DeskPRO/Bundle/PortalBundle/PageWidget/LoginPage';
-import HTmlLinkToPostWidget from 'DeskPRO/Bundle/PortalBundle/PageWidget/HtmlLinkToPostWidget';
-import OmniSearchWidget from 'DeskPRO/Bundle/PortalBundle/PageWidget/OmniSearchWidget';
-import LanguageChangerWidget from 'DeskPRO/Bundle/PortalBundle/PageWidget/LanguageChangerWidget';
-import AgentBarWidget from 'DeskPRO/Bundle/PortalBundle/PageWidget/AgentBarWidget';
-import LoginDropdownWidget from 'DeskPRO/Bundle/PortalBundle/PageWidget/LoginDropdownWidget';
-import SearchResultsPage from 'DeskPRO/Bundle/PortalBundle/PageWidget/SearchResultsPage';
-import MobileMenuWidget from 'DeskPRO/Bundle/PortalBundle/PageWidget/MobileMenuWidget';
-import ArticleHighlighter from 'DeskPRO/Bundle/PortalBundle/PageWidget/ArticleHighlighter';
-import CustomPerFieldEdit from 'DeskPRO/Bundle/PortalBundle/PageWidget/Common/Form/CustomPerFieldEdit';
+import TicketForm from './TicketForm';
+import PortalFormWidget from './PortalFormWidget';
+import TicketView from './TicketView';
+import TicketList from './TicketList';
+import DownloadsList from './DownloadsList';
+import FeedbackPage from './FeedbackPage';
+import ClickAwayDropdownWidget from './ClickAwayDropdownWidget';
+import ClickToDismissWidget from './ClickToDismissWidget';
+import HideAlertsWidget from './HideAlertsWidget';
+import LoginPage from './LoginPage';
+import HTmlLinkToPostWidget from './HtmlLinkToPostWidget';
+import OmniSearchWidget from './OmniSearchWidget';
+import LanguageChangerWidget from './LanguageChangerWidget';
+import AgentBarWidget from './AgentBarWidget';
+import LoginDropdownWidget from './LoginDropdownWidget';
+import SearchResultsPage from './SearchResultsPage';
+import MobileMenuWidget from './MobileMenuWidget';
+import ArticleHighlighter from './ArticleHighlighter';
+import CustomPerFieldEdit from './Common/Form/CustomPerFieldEdit';
+import FullImage from './Common/FullImage';
 import $ from 'jquery';
 
 export default class PortalPage extends PageWidget {
@@ -42,6 +43,8 @@ export default class PortalPage extends PageWidget {
     this.addWidgetDef(LoginPage, '#login-page');
     this.addWidgetDef(HideAlertsWidget, '#dpx-alerts');
     this.addWidgetDef(SearchResultsPage, '#search-results-page');
+    this.addWidgetDef(FullImage, '.dpx-full-image');
+
     return new Promise((resolve) => {
       $(document).ready(resolve);
       if (window.DP_LOAD_FN && window.DP_LOAD_FN.length) {
