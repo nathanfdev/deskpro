@@ -1,5 +1,20 @@
 {% extends 'Theme::layout.html.twig' %}
 
+{% block chat_attachment %}
+    <div class="dpx-attachment">
+        {% if attachment.is_image %}
+            <a href="#" class="dpx-attachment-full-image">
+                <img class="thumbnail" src="{{ attachment.download_url }}" />
+                {{ attachment.filename }} ({{ attachment.filesize_readable }})
+            </a>
+        {% else %}
+            <a href="{{ attachment.download_url }}?dl=1" class="dpx-attachment-file-icon" data-content-type="{{ attachment.content_type }}">
+                {{ attachment.filename }} ({{ attachment.filesize_readable }})
+            </a>
+        {% endif %}
+    </div>
+{% endblock %}
+
 {% block chat_message %}
     <div class="chat-message {{ message.origin == 'agent' ? 'chat-message-agent' : 'chat-message-user' }}">
           <span class="author">
@@ -16,7 +31,10 @@
             <p class="message-time">{{ date(message.date_created, 'time') }}</p>
             <p>
                 {% if message.metadata.blob is defined %}
-                    {{ message.metadata.blob.filename }}
+                    {% set attachment = message.metadata.blob %}
+                    <div class="file-list">
+                        {{ block('chat_attachment') }}
+                    </div>
                 {% elseif message.is_html %}
                     {{message.content|raw}}
                 {% else %}
@@ -93,17 +111,8 @@
         </div>
         <ul class="file-list">
             {% for attachment in chat_attachments %}
-                <li class="dpx-attachment">
-                    {% if attachment.is_image %}
-                        <a href="#" class="dpx-attachment-full-image">
-                            <img class="thumbnail" src="{{ attachment.download_url }}" />
-                            {{ attachment.filename }} ({{ attachment.filesize_readable }})
-                        </a>
-                    {% else %}
-                        <a href="{{ attachment.download_url }}?dl=1" class="dpx-attachment-file-icon" data-content-type="{{ attachment.content_type }}">
-                            {{ attachment.filename }} ({{ attachment.filesize_readable }})
-                        </a>
-                    {% endif %}
+                <li>
+                    {{ block('chat_attachment') }}
                 </li>
             {% endfor %}
             {#<li>#}
