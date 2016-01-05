@@ -29,22 +29,30 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ChatVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class ChatController.
+ */
 class ChatController extends AbstractController
 {
     /**
      * @Route("/chat-logs", name="portal_chats")
      * @Route("/chat-logs", name="user_chatlogs")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_CHAT')")
+     *
+     * @param Request $request
+     *
+     * @return Response
      */
     public function indexAction(Request $request)
     {
@@ -53,11 +61,7 @@ class ChatController extends AbstractController
         $max_per_page = $this->getBrandSetting('portal.per_page_chat', 50);
         $page         = $request->get('page', 1);
 
-        $chats = $this->getChatDataService()->getUserChatPager($person, $page, $max_per_page);
-
-        //
-        // BREADCRUMBS
-        //
+        $chats       = $this->getChatDataService()->getUserChatPager($person, $page, $max_per_page);
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildChat();
 
         return $this->renderThemeView('Theme:Chat:list.html.twig', [
@@ -67,16 +71,18 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @Route("/chat-logs/{conversation_id}", name="portal_chats_view")
-     * @Route("/chat-logs/{conversation_id}", name="user_chatlogs_view")
+     * @Route("/chat-logs/{chat}", name="portal_chats_view")
+     * @Route("/chat-logs/{chat}", name="user_chatlogs_view")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
+     *
+     * @param ChatConversation $chat
+     *
+     * @return Response
      */
-    public function viewAction(Request $request, $conversation_id)
+    public function viewAction(ChatConversation $chat)
     {
-        $chat = $this->getChatDataService()->getChat($conversation_id);
-
         // if no chat with that ID, or if it was found but is an agent chat
-        if (!$chat || $chat->isAgentChat()) {
+        if ($chat->isAgentChat()) {
             throw $this->createNotFoundException();
         }
 
@@ -85,21 +91,18 @@ class ChatController extends AbstractController
 
         // ensure the use is able to view the linked ticket
         $linked_ticket_authorized = null;
-        /** @var \Application\DeskPRO\Entity\Ticket $linked_ticket */
-        if ($linked_ticket = $this->getRepo('DeskPRO:Ticket')->getTicketLinkedToChat($chat)) {
+
+        /** @var \Application\DeskPRO\EntityRepository\Ticket $ticket_repository */
+        $ticket_repository = $this->getRepo('DeskPRO:Ticket');
+        $linked_ticket     = $ticket_repository->getTicketLinkedToChat($chat);
+
+        if ($linked_ticket) {
             if ($this->isGranted(TicketsVoter::TICKET_VIEW, $linked_ticket) && ($linked_ticket->isOpen() || $linked_ticket->isResolved())) {
                 $linked_ticket_authorized = $linked_ticket;
             }
         }
 
-        //
-        // BREADCRUMBS
-        //
-        $breadcrumbs = $this->getBreadcrumbGenerator()->buildChatConversation($chat);
-
-        //
-        // Gets the chat messages
-        //
+        $breadcrumbs   = $this->getBreadcrumbGenerator()->buildChatConversation($chat);
         $chat_messages = $this->getEm()->createQuery('
             SELECT m
             FROM DeskPRO:ChatMessage m

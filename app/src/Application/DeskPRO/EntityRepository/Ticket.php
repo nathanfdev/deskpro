@@ -795,7 +795,7 @@ class Ticket extends AbstractEntityRepository
      *
      * @param ChatConversationEntity $chat
      *
-     * @return array
+     * @return TicketEntity
      */
     public function getTicketLinkedToChat(ChatConversationEntity $chat)
     {

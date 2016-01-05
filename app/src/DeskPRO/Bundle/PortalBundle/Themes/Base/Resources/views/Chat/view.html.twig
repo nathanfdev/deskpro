@@ -42,27 +42,29 @@
         {%  if linked_ticket %}
         <hr>
         <div class="assigned-to-ticket">
-             {{ phrase('portal.chat.log_linked_ticket') }}: <a href="{{ portal_path(linked_ticket) }}">{{ linked_ticket.subject }}</a> <a href="{{ portal_path(linked_ticket) }}" class="button">{{ phrase('portal.chat.log_view_linked_ticket') }}</a>
+            {{ phrase('portal.chat.log_linked_ticket') }}:
+            <a href="{{ portal_path(linked_ticket) }}">{{ linked_ticket.subject }}</a>
+            <a href="{{ portal_path(linked_ticket) }}" class="button">{{ phrase('portal.chat.log_view_linked_ticket') }}</a>
         </div>
         {% endif %}
 
 
         {# FILES IN CHAT #}
-        {#<div class="titled-header">#}
-            {#<h1>Files &amp; Links on this Chat</h1>#}
-        {#</div>#}
-        {#<ul class="file-list">#}
-            {#<li>#}
-              {#<a href="#">#}
-                {#<span class="thumbnail" style="background-image: url(../img/sample-polar-bear.png)"></span> polar_bear_high_res.png#}
-              {#</a>#}
-            {#</li>#}
+        <div class="titled-header">
+            <h1>Files &amp; Links on this Chat</h1>
+        </div>
+        <ul class="file-list">
+            <li>
+              <a href="#">
+                <span class="thumbnail" style="background-image: url(../img/sample-polar-bear.png)"></span> polar_bear_high_res.png
+              </a>
+            </li>
             {#<li>#}
               {#<a href="#">#}
                 {#<span class="thumbnail file"><i class="fa fa-link"></i></span> Can I buy part-time or 'light' agent licenses?#}
               {#</a>#}
             {#</li>#}
-        {#</ul>#}
+        </ul>
 
   {% for message in chat_messages %}
     {% if message.is_sys %}

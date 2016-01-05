@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -45,7 +44,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * @property string $person_name
  * @property string $person_email
  *
- * @PortalLinkRoute("portal_chats_view", route_param_map={"conversation_id":"id"})
+ * @PortalLinkRoute("portal_chats_view", route_param_map={"chat":"id"})
  */
 class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 {
