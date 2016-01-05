@@ -59,11 +59,11 @@
                     {% if attachment.is_image %}
                         <a href="#">
                             <span class="thumbnail" style="background-image: url({{ attachment.download_url }})"></span>
-                            {{ attachment.filename }} {{ attachment.filesize_readable }}
+                            {{ attachment.filename }} ({{ attachment.filesize_readable }})
                         </a>
                     {% else %}
                         <a href="#">
-                            {{ attachment.filename }} {{ attachment.filesize_readable }}
+                            {{ attachment.filename }} ({{ attachment.filesize_readable }})
                         </a>
                     {% endif %}
                 </li>
