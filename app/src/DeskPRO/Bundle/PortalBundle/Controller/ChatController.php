@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ChatVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter;
@@ -110,12 +111,23 @@ class ChatController extends AbstractController
             ORDER BY m.id ASC
         ')->setParameter('conversation', $chat)->getResult();
 
+        /* @var ChatMessage[] $chat_messages */
+        $chat_attachments = [];
+        foreach ($chat_messages as $chat_message) {
+            $metadata = $chat_message->getMetadata();
+            if (!empty($metadata['blob'])) {
+                // Serialized blob entity
+                $chat_attachments[] = $metadata['blob'];
+            }
+        }
+
         return $this->renderThemeView('Theme:Chat:view.html.twig', [
-            'breadcrumbs'   => $breadcrumbs,
-            'chat'          => $chat,
-            'chat_messages' => $chat_messages,
-            'linked_ticket' => $linked_ticket_authorized,
-            'custom_data'   => $this->get('chat.view')->getCustomDataForChat($chat),
+            'breadcrumbs'      => $breadcrumbs,
+            'chat'             => $chat,
+            'chat_messages'    => $chat_messages,
+            'chat_attachments' => $chat_attachments,
+            'linked_ticket'    => $linked_ticket_authorized,
+            'custom_data'      => $this->get('chat.view')->getCustomDataForChat($chat),
         ]);
     }
 }
