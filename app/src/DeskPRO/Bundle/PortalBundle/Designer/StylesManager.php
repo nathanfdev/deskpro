@@ -29,12 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Designer;
 
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\BlobStorage;
-use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
@@ -51,9 +49,14 @@ class StylesManager
     private $em;
 
     /**
-     * @var BrandStack
+     * @var ThemeSet
      */
-    private $brand_stack;
+    private $theme_set;
+
+    /**
+     * @var ThemeSet
+     */
+    private $edit_theme_set;
 
     /**
      * @var ThemeSetCopyingService
@@ -79,8 +82,9 @@ class StylesManager
     ) {
         $this->em                        = $em;
         $this->theme_set_copying_service = $theme_set_copying_service;
-        $this->brand_stack               = $brand_stack;
         $this->sass_doc_parser           = $sass_doc_parser;
+        $this->theme_set                 = $brand_stack->getCurrentThemeSet();
+        $this->edit_theme_set            = $brand_stack->getCurrentEditThemeSet();
     }
 
     /**
@@ -110,7 +114,7 @@ class StylesManager
      */
     public function getEditThemeSetVariableValues($add_default = true)
     {
-        $values = $this->getEditThemeSet()->getOption(PortalStylesCompiler::$custom_vars_theme_set_option, []);
+        $values = $this->edit_theme_set->getOption(PortalStylesCompiler::$custom_vars_theme_set_option, []);
         if ($add_default) {
             $values = array_merge($this->sass_doc_parser->getVariableValues(), $values);
         }
@@ -123,7 +127,7 @@ class StylesManager
      */
     public function commitEditThemeSet()
     {
-        $this->theme_set_copying_service->copy($this->getEditThemeSet(), $ts = $this->getThemeSet());
+        $this->theme_set_copying_service->copy($this->edit_theme_set, $ts = $this->theme_set);
         $this->em->persist($ts);
         $this->em->flush();
     }
@@ -133,29 +137,9 @@ class StylesManager
      */
     public function discardEditThemeSet()
     {
-        $this->theme_set_copying_service->copy($this->getThemeSet(), $ts = $this->getEditThemeSet());
+        $this->theme_set_copying_service->copy($this->theme_set, $ts = $this->edit_theme_set);
         $this->em->persist($ts);
         $this->em->flush();
-    }
-
-    /**
-     * @throws \Exception
-     *
-     * @return \DeskPRO\Bundle\AppBundle\Entity\ThemeSet
-     */
-    private function getEditThemeSet()
-    {
-        if (!$themeSet = $this->getBrand()->getEditThemeSet()) {
-            $themeSet = new ThemeSet();
-            $this->theme_set_copying_service->copy($this->getThemeSet(), $themeSet);
-            $brand = $this->getBrand();
-            $brand->setEditThemeSet($themeSet);
-            $this->em->persist($themeSet);
-            $this->em->persist($brand);
-            $this->em->flush();
-        }
-
-        return $themeSet;
     }
 
     /**
@@ -166,7 +150,7 @@ class StylesManager
     private function getCssBlob()
     {
         $criteria = [
-            'theme_set' => $this->getThemeSet(),
+            'theme_set' => $this->theme_set,
             'name'      => 'portal.css',
         ];
         if ($asset = $this->em->getRepository(ThemeSetAsset::class)->findOneBy($criteria)) {
@@ -184,7 +168,7 @@ class StylesManager
     private function getEditThemeSetCssBlob()
     {
         $criteria = [
-            'theme_set' => $this->getEditThemeSet(),
+            'theme_set' => $this->edit_theme_set,
             'name'      => 'portal.css',
         ];
         if ($asset = $this->em->getRepository(ThemeSetAsset::class)->findOneBy($criteria)) {
@@ -192,33 +176,5 @@ class StylesManager
         }
 
         return;
-    }
-
-    /**
-     * @throws \Exception
-     *
-     * @return \DeskPRO\Bundle\AppBundle\Entity\ThemeSet
-     */
-    private function getThemeSet()
-    {
-        if (!$themeSet = $this->getBrand()->getThemeSet()) {
-            throw new \Exception('Unable to resolve a theme set');
-        }
-
-        return $themeSet;
-    }
-
-    /**
-     * @throws \Exception
-     *
-     * @return Brand
-     */
-    private function getBrand()
-    {
-        if (!$container = $this->brand_stack->getActive()) {
-            throw new \Exception('Unable to resolve the current brand');
-        }
-
-        return $container->getBrand();
     }
 }

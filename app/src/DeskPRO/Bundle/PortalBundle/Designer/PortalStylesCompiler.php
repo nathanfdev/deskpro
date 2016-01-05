@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Designer;
 
 use Application\DeskPRO\Entity\Blob;
@@ -59,9 +58,9 @@ class PortalStylesCompiler
     private $em;
 
     /**
-     * @var BrandStack
+     * @var ThemeSet
      */
-    private $brand_stack;
+    private $edit_theme_set;
 
     /**
      * @var string DP_ROOT relative or full path to the portal SCSS file
@@ -100,11 +99,11 @@ class PortalStylesCompiler
         $custom_scss_file_name
     ) {
         $this->em                    = $em;
-        $this->brand_stack           = $brand_stack;
         $this->styles_file_path      = $styles_file_path;
         $this->custom_vars_file_name = $custom_vars_file_name;
         $this->custom_scss           = $custom_scss;
         $this->custom_scss_file_name = $custom_scss_file_name;
+        $this->edit_theme_set        = $brand_stack->getCurrentEditThemeSet();
 
         // try to resolve path in constructor to get early Exception if path isn't valid
         $this->getStylePath();
@@ -119,7 +118,7 @@ class PortalStylesCompiler
      */
     public function recompile(array $variables)
     {
-        $themeSet = $this->getEditThemeSet();
+        $themeSet = $this->edit_theme_set;
         $themeSet->setOption(self::$custom_vars_theme_set_option, $variables);
 
         $this->em->persist($themeSet);
@@ -252,31 +251,12 @@ class PortalStylesCompiler
     /**
      * @throws \Exception
      *
-     * @return \DeskPRO\Bundle\AppBundle\Entity\ThemeSet
-     */
-    private function getEditThemeSet()
-    {
-        if (!$themeSet = $this->getBrand()->getEditThemeSet()) {
-            $themeSet = $this->cloneThemeSet($this->getThemeSet());
-            $brand    = $this->getBrand();
-            $brand->setEditThemeSet($themeSet);
-            $this->em->persist($themeSet);
-            $this->em->persist($brand);
-            $this->em->flush();
-        }
-
-        return $themeSet;
-    }
-
-    /**
-     * @throws \Exception
-     *
      * @return Blob|null
      */
     private function getEditThemeSetCssBlob()
     {
         $criteria = [
-            'theme_set' => $this->getEditThemeSet(),
+            'theme_set' => $this->edit_theme_set,
             'name'      => 'portal.css',
         ];
         if ($asset = $this->em->getRepository(ThemeSetAsset::class)->findOneBy($criteria)) {
@@ -284,20 +264,6 @@ class PortalStylesCompiler
         }
 
         return;
-    }
-
-    /**
-     * @throws \Exception
-     *
-     * @return Brand
-     */
-    private function getBrand()
-    {
-        if (!$container = $this->brand_stack->getActive()) {
-            throw new \Exception('Unable to resolve the current brand');
-        }
-
-        return $container->getBrand();
     }
 
     /**

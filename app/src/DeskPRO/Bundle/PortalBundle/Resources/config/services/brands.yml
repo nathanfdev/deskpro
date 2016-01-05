@@ -2,7 +2,11 @@ services:
 
   brand_stack:
     class: DeskPRO\Bundle\PortalBundle\Brand\BrandStack
-    arguments: [@brand_container_factory, @default_brand]
+    arguments:
+      - @brand_container_factory
+      - @default_brand
+      - @dp.portal.designer.theme_set_copying_service
+      - @doctrine.orm.default_entity_manager
     lazy: true
 
 

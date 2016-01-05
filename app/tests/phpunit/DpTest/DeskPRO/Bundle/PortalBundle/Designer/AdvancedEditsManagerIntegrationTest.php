@@ -85,7 +85,7 @@ class AdvancedEditsManagerIntegrationTest extends PortalTestCase
     {
         $this->em             = $this->getEntityManager();
         $this->brand_stack    = $this->mockBrandStack();
-        $this->edit_theme_set = $this->brand_stack->getActive()->getBrand()->getEditThemeSet();
+        $this->edit_theme_set = $this->brand_stack->getCurrentEditThemeSet();
         $this->service        = new AdvancedEditsManager($this->em, $this->brand_stack);
     }
 

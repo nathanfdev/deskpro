@@ -73,6 +73,8 @@ trait BrandStackMock
         /** @var BrandStack $brand_stack */
         $brand_stack = $this->getMockBuilder(BrandStack::class)->disableOriginalConstructor()->getMock();
         $brand_stack->method('getActive')->willReturn($brand_container);
+        $brand_stack->method('getCurrentThemeSet')->willReturn($theme_set);
+        $brand_stack->method('getCurrentEditThemeSet')->willReturn($edit_theme_set);
 
         return $brand_stack;
     }
