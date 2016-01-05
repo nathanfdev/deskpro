@@ -433,8 +433,6 @@ class TicketsController extends AbstractController
         // BREADCRUMBS
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);
 
-        // TODO: if a user is logged in, we might want to allow SOME interaction on the ticket here...
-
         return $this->renderThemeView(
             'Theme:Tickets:guest_view.html.twig',
             array(
