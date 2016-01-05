@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Hierarchy;
 
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
@@ -50,10 +49,6 @@ use DeskPRO\Component\Hierarchy\Formatter\FlatListLanguageAwareFormatter;
 use DeskPRO\Component\Hierarchy\Formatter\ParentListLanguageAwareFormatter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
-
-//
-// TODO: the methods in this class are very repetitive, meaning we have a good chance to extract a class for reuse
-//
 
 class HierarchyGenerator
 {
