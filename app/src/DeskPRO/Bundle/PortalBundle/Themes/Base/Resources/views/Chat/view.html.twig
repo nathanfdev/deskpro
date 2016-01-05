@@ -1,5 +1,43 @@
 {% extends 'Theme::layout.html.twig' %}
 
+{% block chat_message %}
+    <div class="chat-message {{ message.origin == 'agent' ? 'chat-message-agent' : 'chat-message-user' }}">
+          <span class="author">
+              {% if message.author %}
+                  <span class="avatar" style="background-image: url({{ avatar_url(message.author, 36) }});"></span>
+              {% endif %}
+              {% if message.origin == 'agent' %}
+                {{ message.author ? message.author.display_name_user : '' }}
+              {% else %}
+                {{ phrase('portal.chat.you') }}
+              {% endif %}
+          </span>
+          <span class="messages">
+            <p class="message-time">{{ date(message.date_created, 'time') }}</p>
+            <p>
+                {% if message.metadata.blob is defined %}
+                    {{ message.metadata.blob.filename }}
+                {% elseif message.is_html %}
+                    {{message.content|raw}}
+                {% else %}
+                    {{message.content}}
+                {% endif %}
+            </p>
+              {#<div class="chat-image-attached">#}
+              {#<img src="../img/sample-polar-bear.png" alt="A polar bear">#}
+              {#<span class="meta">You attached: polar_bear_license.png (226kb)</span>#}
+              {#</div>#}
+              {#<ul class="file-list">#}
+              {#<li>#}
+              {#<a href="#">#}
+              {#<span class="thumbnail file"><i class="fa fa-link"></i></span> Can I buy part-time or 'light' agent licenses?#}
+              {#</a>#}
+              {#</li>#}
+              {#</ul>#}
+          </span>
+    </div>
+{% endblock %}
+
 {% block inner_content %}
   <div class="breadcrumbs">
     {% show breadcrumbs %}
@@ -97,68 +135,8 @@
           </span>
           <hr>
         </div>
-    {% elseif message.origin == 'agent' %}
-        <div class="chat-message chat-message-agent">
-          <span class="author">
-              {% if message.author %}
-                <span class="avatar" style="background-image: url({{ avatar_url(message.author, 36) }});"></span>
-                {{ message.author.display_name_user }}
-              {% endif %}
-          </span>
-          <span class="messages">
-            <p class="message-time">{{ date(message.date_created, 'time') }}</p>
-           <p>
-            {% if message.is_html %}
-                {{message.content|raw}}
-            {% else %}
-                {{message.content}}
-            {% endif %}
-            </p>
-
-              {#<div class="chat-image-attached">#}
-              {#<img src="../img/sample-polar-bear.png" alt="A polar bear">#}
-              {#<span class="meta">You attached: polar_bear_license.png (226kb)</span>#}
-            {#</div>#}
-              {#<ul class="file-list">#}
-              {#<li>#}
-                {#<a href="#">#}
-                  {#<span class="thumbnail file"><i class="fa fa-link"></i></span> Can I buy part-time or 'light' agent licenses?#}
-                {#</a>#}
-              {#</li>#}
-            {#</ul>#}
-          </span>
-        </div>
     {% else %}
-        <div class="chat-message chat-message-user">
-          <span class="author">
-              {% if message.author %}
-              <span class="avatar"
-                      style="background-image: url({{ avatar_url(message.author, 36) }});"></span>
-              {% endif %}
-             {{ phrase('portal.chat.you') }}
-          </span>
-          <span class="messages">
-            <p class="message-time">{{ date(message.date_created, 'time') }}</p>
-            <p>
-                {% if message.is_html %}
-                    {{message.content|raw}}
-                {% else %}
-                    {{message.content}}
-                {% endif %}
-            </p>
-              {#<div class="chat-image-attached">#}
-              {#<img src="../img/sample-polar-bear.png" alt="A polar bear">#}
-              {#<span class="meta">You attached: polar_bear_license.png (226kb)</span>#}
-            {#</div>#}
-              {#<ul class="file-list">#}
-              {#<li>#}
-                {#<a href="#">#}
-                  {#<span class="thumbnail file"><i class="fa fa-link"></i></span> Can I buy part-time or 'light' agent licenses?#}
-                {#</a>#}
-              {#</li>#}
-            {#</ul>#}
-          </span>
-        </div>
+        {{ block('chat_message') }}
     {% endif %}
 {% endfor %}
 
