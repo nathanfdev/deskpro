@@ -42,13 +42,13 @@
                         <div class="inline-input">
                             <label>Colors:</label>
                             <p>
-                                <dp-portal-designer-color-form variable="Ctrl.settings.button_background_color" values="values"></dp-portal-designer-color-form> Background Color
+                                <dp-portal-designer-color-form variable="Ctrl.settings.button_background_color" values="values" /> Background Color
                             </p>
                             <p>
-                                <dp-portal-designer-color-form variable="Ctrl.settings.button_text_color" values="values"></dp-portal-designer-color-form> Text Color
+                                <dp-portal-designer-color-form variable="Ctrl.settings.button_text_color" values="values" /> Text Color
                             </p>
                             <p>
-                                <dp-portal-designer-color-form variable="Ctrl.settings.button_border_color" values="values"></dp-portal-designer-color-form> Border Color
+                                <dp-portal-designer-color-form variable="Ctrl.settings.button_border_color" values="values" /> Border Color
                             </p>
                         </div>
                     </div>
@@ -128,6 +128,16 @@
                 </select>
 
                 <input type="radio" ng-model="Ctrl.settings.button_size" /> User Selects Department
+            </div>
+
+            <div class="form-footer">
+                <hr>
+                <div dp-hide-spinning="saving">
+                    <button type="submit" ng-click="Ctrl.saveSettings()">Save Changes</button>
+                </div>
+                <div dp-show-spinning="saving">
+                    <i class="spinner-flat"></i>
+                </div>
             </div>
         </form>
 
