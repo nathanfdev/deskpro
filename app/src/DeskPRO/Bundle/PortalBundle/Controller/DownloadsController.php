@@ -32,7 +32,6 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
-use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\DownloadComment;
@@ -186,8 +185,7 @@ class DownloadsController extends AbstractController
      */
     public function viewAction(Request $request, Download $file, $visitor_id)
     {
-        // TODO: is there ever an instance that there would NOT be a blob associated with a download entity??
-        if (!$file->getBlob()) {
+        if (!$file->getBlob() && !$file->getFileurl()) {
             throw $this->createNotFoundException('could not find downloadable content for download id='.$file->getId());
         }
 
