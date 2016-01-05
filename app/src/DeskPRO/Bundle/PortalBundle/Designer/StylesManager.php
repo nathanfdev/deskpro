@@ -35,7 +35,6 @@ use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\BlobStorage;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -72,19 +71,21 @@ class StylesManager
      * @param EntityManager          $em
      * @param ThemeSetCopyingService $theme_set_copying_service
      * @param SassDocParser          $sass_doc_parser
-     * @param BrandStack             $brand_stack
+     * @param ThemeSet               $theme_set
+     * @param ThemeSet               $edit_theme_set
      */
     public function __construct(
         EntityManager $em,
         ThemeSetCopyingService $theme_set_copying_service,
         SassDocParser $sass_doc_parser,
-        BrandStack $brand_stack
+        ThemeSet $theme_set,
+        ThemeSet $edit_theme_set
     ) {
         $this->em                        = $em;
         $this->theme_set_copying_service = $theme_set_copying_service;
         $this->sass_doc_parser           = $sass_doc_parser;
-        $this->theme_set                 = $brand_stack->getCurrentThemeSet();
-        $this->edit_theme_set            = $brand_stack->getCurrentEditThemeSet();
+        $this->theme_set                 = $theme_set;
+        $this->edit_theme_set            = $edit_theme_set;
     }
 
     /**

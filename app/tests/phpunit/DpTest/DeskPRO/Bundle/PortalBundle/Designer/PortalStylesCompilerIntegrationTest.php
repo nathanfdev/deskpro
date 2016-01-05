@@ -31,9 +31,8 @@
  */
 namespace DpTest\DeskPRO\Bundle\PortalBundle\Designer;
 
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler;
-use DpTest\DeskPRO\Bundle\PortalBundle\Designer\Helper\BrandStackMock;
 use DpTest\PortalTestCase;
 
 /**
@@ -41,25 +40,27 @@ use DpTest\PortalTestCase;
  */
 class PortalStylesCompilerIntegrationTest extends PortalTestCase
 {
-    use BrandStackMock;
-
     /**
      * @var PortalStylesCompiler
      */
     private $service;
 
     /**
-     * @var BrandStack
+     * @var ThemeSet
      */
-    private $brand_stack;
+    private $edit_theme_set;
 
     /**
      * {@inheritdoc}
      */
     protected function setUp()
     {
-        $this->brand_stack = $this->mockBrandStack();
-        $this->service     = $this->createService('dummy-empty.scss');
+        $this->edit_theme_set = new ThemeSet();
+        $this->edit_theme_set->setThemeId('edit_theme_set_id');
+        $this->getEntityManager()->persist($this->edit_theme_set);
+        $this->getEntityManager()->flush();
+
+        $this->service = $this->createService('dummy-empty.scss');
     }
 
     /**
@@ -72,7 +73,7 @@ class PortalStylesCompilerIntegrationTest extends PortalTestCase
     {
         return new PortalStylesCompiler(
             $this->getEntityManager(),
-            $this->brand_stack,
+            $this->edit_theme_set,
             __DIR__."/scss/$style",
             'custom-vars.scss',
             $custom_scss,

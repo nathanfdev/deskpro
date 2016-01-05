@@ -36,7 +36,6 @@ use Application\DeskPRO\Entity\BlobStorage;
 use Application\DeskPRO\Entity\Template;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -68,15 +67,14 @@ class AdvancedEditsManager
 
     /**
      * @param EntityManager $em
-     * @param BrandStack    $brand_stack
-     *
-     * @throws \Exception
+     * @param ThemeSet      $theme_set
+     * @param ThemeSet      $edit_theme_set
      */
-    public function __construct(EntityManager $em, BrandStack $brand_stack)
+    public function __construct(EntityManager $em, ThemeSet $theme_set, ThemeSet $edit_theme_set)
     {
         $this->em             = $em;
-        $this->theme_set      = $brand_stack->getCurrentThemeSet();
-        $this->edit_theme_set = $brand_stack->getCurrentEditThemeSet();
+        $this->theme_set      = $theme_set;
+        $this->edit_theme_set = $edit_theme_set;
     }
 
     /**

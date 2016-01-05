@@ -6,22 +6,24 @@ services:
       - @doctrine.orm.default_entity_manager
       - @dp.portal.designer.theme_set_copying_service
       - @dp.portal.designer.sass_doc_parser
-      - @brand_stack
+      - @=service('brand_stack').getCurrentThemeSet()
+      - @=service('brand_stack').getCurrentEditThemeSet()
 
   dp.portal.designer.advanced_edits_manager:
     class: DeskPRO\Bundle\PortalBundle\Designer\AdvancedEditsManager
     arguments:
       - @doctrine.orm.default_entity_manager
-      - @brand_stack
+      - @=service('brand_stack').getCurrentThemeSet()
+      - @=service('brand_stack').getCurrentEditThemeSet()
 
   dp.portal.designer.portal_styles_compiler:
     class: DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler
     arguments:
       - @doctrine.orm.default_entity_manager
-      - @brand_stack
+      - @=service('brand_stack').getCurrentEditThemeSet()
       - '../pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-style.scss'
       - 'custom_vars.scss'
-      - '@=service("dp.portal.designer.advanced_edits_manager").getEditThemeSetScss()'
+      - @=service('dp.portal.designer.advanced_edits_manager').getEditThemeSetScss()
       - 'custom_style.scss'
 
   dp.portal.designer.sass_doc_parser:

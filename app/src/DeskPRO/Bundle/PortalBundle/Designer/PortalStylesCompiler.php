@@ -34,8 +34,8 @@ namespace DeskPRO\Bundle\PortalBundle\Designer;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\BlobStorage;
 use Application\DeskPRO\Entity\Brand;
+use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Component\SassCompiler\Compiler\ScssPhpCompiler;
 use DeskPRO\Component\SassCompiler\SassProject;
 use Doctrine\ORM\EntityManager;
@@ -84,7 +84,7 @@ class PortalStylesCompiler
 
     /**
      * @param EntityManager $em
-     * @param BrandStack    $brand_stack
+     * @param ThemeSet      $edit_theme_set
      * @param string        $styles_file_path
      * @param string        $custom_vars_file_name
      * @param string        $custom_scss
@@ -92,7 +92,7 @@ class PortalStylesCompiler
      */
     public function __construct(
         EntityManager $em,
-        BrandStack $brand_stack,
+        ThemeSet $edit_theme_set,
         $styles_file_path,
         $custom_vars_file_name,
         $custom_scss,
@@ -103,7 +103,7 @@ class PortalStylesCompiler
         $this->custom_vars_file_name = $custom_vars_file_name;
         $this->custom_scss           = $custom_scss;
         $this->custom_scss_file_name = $custom_scss_file_name;
-        $this->edit_theme_set        = $brand_stack->getCurrentEditThemeSet();
+        $this->edit_theme_set        = $edit_theme_set;
 
         // try to resolve path in constructor to get early Exception if path isn't valid
         $this->getStylePath();

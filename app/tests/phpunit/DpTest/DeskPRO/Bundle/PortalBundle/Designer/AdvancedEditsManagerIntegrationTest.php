@@ -35,10 +35,8 @@ use Application\DeskPRO\Entity\BlobStorage;
 use Application\DeskPRO\Entity\Template;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Designer\AdvancedEditsManager;
 use Doctrine\ORM\EntityManager;
-use DpTest\DeskPRO\Bundle\PortalBundle\Designer\Helper\BrandStackMock;
 use DpTest\PortalTestCase;
 
 /**
@@ -46,8 +44,6 @@ use DpTest\PortalTestCase;
  */
 class AdvancedEditsManagerIntegrationTest extends PortalTestCase
 {
-    use BrandStackMock;
-
     /**
      * @var AdvancedEditsManager
      */
@@ -57,11 +53,6 @@ class AdvancedEditsManagerIntegrationTest extends PortalTestCase
      * @var EntityManager
      */
     private $em;
-
-    /**
-     * @var BrandStack
-     */
-    private $brand_stack;
 
     /**
      * @var ThemeSet
@@ -83,10 +74,14 @@ class AdvancedEditsManagerIntegrationTest extends PortalTestCase
      */
     protected function setUp()
     {
-        $this->em             = $this->getEntityManager();
-        $this->brand_stack    = $this->mockBrandStack();
-        $this->edit_theme_set = $this->brand_stack->getCurrentEditThemeSet();
-        $this->service        = new AdvancedEditsManager($this->em, $this->brand_stack);
+        $this->em = $this->getEntityManager();
+
+        $this->edit_theme_set = new ThemeSet();
+        $this->edit_theme_set->setThemeId('edit_theme_set_id');
+        $this->em->persist($this->edit_theme_set);
+        $this->em->flush();
+
+        $this->service = new AdvancedEditsManager($this->em, new ThemeSet(), $this->edit_theme_set);
     }
 
     /**
