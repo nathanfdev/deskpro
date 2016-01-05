@@ -11,6 +11,9 @@ export default class FullImage extends PageWidget {
       return;
     }
 
-    this.$element.on('click', () => openFullImage(imageNode));
+    this.$element.on('click', event => {
+      event.preventDefault();
+      openFullImage(imageNode);
+    });
   }
 }
