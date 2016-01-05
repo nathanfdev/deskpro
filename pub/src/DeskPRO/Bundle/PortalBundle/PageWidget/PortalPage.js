@@ -18,7 +18,7 @@ import SearchResultsPage from './SearchResultsPage';
 import MobileMenuWidget from './MobileMenuWidget';
 import ArticleHighlighter from './ArticleHighlighter';
 import CustomPerFieldEdit from './Common/Form/CustomPerFieldEdit';
-import FullImage from './Common/FullImage';
+import Attachment from './Common/Attachment';
 import $ from 'jquery';
 
 export default class PortalPage extends PageWidget {
@@ -43,7 +43,7 @@ export default class PortalPage extends PageWidget {
     this.addWidgetDef(LoginPage, '#login-page');
     this.addWidgetDef(HideAlertsWidget, '#dpx-alerts');
     this.addWidgetDef(SearchResultsPage, '#search-results-page');
-    this.addWidgetDef(FullImage, '.dpx-full-image');
+    this.addWidgetDef(Attachment, '.dpx-attachment');
 
     return new Promise((resolve) => {
       $(document).ready(resolve);

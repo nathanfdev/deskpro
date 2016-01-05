@@ -55,14 +55,14 @@
         </div>
         <ul class="file-list">
             {% for attachment in chat_attachments %}
-                <li>
+                <li class="dpx-attachment">
                     {% if attachment.is_image %}
-                        <a href="#" class="dpx-full-image">
+                        <a href="#" class="dpx-attachment-full-image">
                             <img class="thumbnail" src="{{ attachment.download_url }}" />
                             {{ attachment.filename }} ({{ attachment.filesize_readable }})
                         </a>
                     {% else %}
-                        <a href="{{ attachment.download_url }}?dl=1">
+                        <a href="{{ attachment.download_url }}?dl=1" class="dpx-attachment-file-icon" data-content-type="{{ attachment.content_type }}">
                             {{ attachment.filename }} ({{ attachment.filesize_readable }})
                         </a>
                     {% endif %}
@@ -101,9 +101,8 @@
         <div class="chat-message chat-message-agent">
           <span class="author">
               {% if message.author %}
-              <span class="avatar"
-                      style="background-image: url({{ avatar_url(message.author, 36) }});"></span>
-              {{ message.author.display_name_user }}
+                <span class="avatar" style="background-image: url({{ avatar_url(message.author, 36) }});"></span>
+                {{ message.author.display_name_user }}
               {% endif %}
           </span>
           <span class="messages">
