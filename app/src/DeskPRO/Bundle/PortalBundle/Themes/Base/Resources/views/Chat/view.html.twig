@@ -17,7 +17,7 @@
         <table>
             <tr>
               <td>{{ phrase('portal.chat.log_department') }}</td>
-              <td>{{ chat.department.user_title }}</td>
+              <td>{{ chat.department ? chat.department.user_title : '-' }}</td>
             </tr>
             <tr>
               <td>{{ phrase('portal.chat.log_agents') }}</td>
