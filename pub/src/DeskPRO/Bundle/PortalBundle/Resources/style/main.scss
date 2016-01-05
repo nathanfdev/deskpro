@@ -10842,6 +10842,13 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
   }
 }
 
+body.portal-mode-focus-window {
+  padding-top: 10px !important;
+
+  .page-top-section, .page-bottom-section, .search-section, .welcome-news, .breadcrumbs {
+    display: none;
+  }
+}
 
 
 

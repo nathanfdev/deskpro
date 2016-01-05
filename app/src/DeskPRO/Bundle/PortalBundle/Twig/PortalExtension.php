@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\Entity;
@@ -122,8 +121,8 @@ class PortalExtension extends \Twig_Extension
             new \Twig_SimpleFunction('content_icon', array($this, 'makeContentIcon'), array('is_safe' => array('html'))),
             new \Twig_SimpleFunction('ticket_view', array($this, 'getTicketView')),
             new \Twig_SimpleFunction('phrase_form_error', array($this, 'makeFormError'), array('is_safe' => array('html'))),
-            new \Twig_SimpleFunction('insert_glossary_js', array($this, 'makeGlossaryJs'), array('is_safe' => array('html', 'javascript'))
-            ),
+            new \Twig_SimpleFunction('insert_glossary_js', array($this, 'makeGlossaryJs'), array('is_safe' => array('html', 'javascript'))),
+            new \Twig_SimpleFunction('portal_mode', array($this, 'getPortalMode'), array('is_safe' => array('html', 'javascript'))),
         );
     }
 
@@ -340,6 +339,14 @@ class PortalExtension extends \Twig_Extension
     public function getBrand($prop)
     {
         return $this->getBrandStack()->getActive()->getBrand()->get($prop);
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\PortalBundle\Mode\PortalMode
+     */
+    public function getPortalMode()
+    {
+        return $this->container->get('portal_mode_storage')->getMode();
     }
 
     /**

@@ -30,12 +30,17 @@ namespace DeskPRO\Bundle\PortalBundle\Mode;
 
 class PortalMode
 {
-    const ATTR_NAME = '_portal_mode';
-
+    const ATTR_NAME          = '_portal_mode';
     const MODE_ADMIN         = 'admin';
     const MODE_NORMAL        = 'normal';
     const MODE_BRAND         = 'brand';
     const MODE_ADMIN_PREVIEW = 'preview';
+
+    /**
+     * 'Focus' mode is when the window has a specific purpose, such as a login popup window
+     * used from chat.
+     */
+    const MODE_FOCUS_WINDOW = 'focus-window';
 
     protected $mode;
     protected $original_path;
@@ -61,6 +66,10 @@ class PortalMode
 
         if ($this->isBrand()) {
             return sprintf('%s [ID=%s]', self::MODE_BRAND, $this->getData());
+        }
+
+        if ($this->isFocusWindow()) {
+            return self::MODE_FOCUS_WINDOW;
         }
 
         return self::MODE_NORMAL;
@@ -111,6 +120,16 @@ class PortalMode
     {
         $this->mode = self::MODE_BRAND;
         $this->data = $data;
+    }
+
+    public function isFocusWindow()
+    {
+        return self::MODE_FOCUS_WINDOW === $this->mode;
+    }
+
+    public function setFocusWindow()
+    {
+        $this->mode = self::MODE_FOCUS_WINDOW;
     }
 
     public function getOriginalPath()

@@ -35,6 +35,7 @@ class PortalModeFactory
     const REGEX_ADMIN         = '#^/admin\-mode(/{1}.*|$)$#';
     const REGEX_BRAND         = '#^/brand-([0-9]+?)(/{1}.*|$)$#';
     const REGEX_ADMIN_PREVIEW = '#^/admin\-preview(/{1}.*|$)$#';
+    const REGEX_FOCUS_WIN     = '#^/focus\-win(/{1}.*|$)$#';
 
     public function createMode($path)
     {
@@ -56,6 +57,10 @@ class PortalModeFactory
             $mode->setAdmin();
             $mode->setInternalPath(strlen($matches[1]) > 0 ? $matches[1] : '/');
             $mode->setModePath('/admin-mode');
+        } elseif (preg_match(self::REGEX_FOCUS_WIN, $path, $matches)) {
+            $mode->setFocusWindow();
+            $mode->setInternalPath(strlen($matches[1]) > 0 ? $matches[1] : '/');
+            $mode->setModePath('/focus-win');
         } else {
             $mode->setInternalPath($path);
         }
