@@ -54,11 +54,20 @@
             <h1>Files &amp; Links on this Chat</h1>
         </div>
         <ul class="file-list">
-            <li>
-              <a href="#">
-                <span class="thumbnail" style="background-image: url(../img/sample-polar-bear.png)"></span> polar_bear_high_res.png
-              </a>
-            </li>
+            {% for attachment in chat_attachments %}
+                <li>
+                    {% if attachment.is_image %}
+                        <a href="#">
+                            <span class="thumbnail" style="background-image: url({{ attachment.download_url }})"></span>
+                            {{ attachment.filename }} {{ attachment.filesize_readable }}
+                        </a>
+                    {% else %}
+                        <a href="#">
+                            {{ attachment.filename }} {{ attachment.filesize_readable }}
+                        </a>
+                    {% endif %}
+                </li>
+            {% endfor %}
             {#<li>#}
               {#<a href="#">#}
                 {#<span class="thumbnail file"><i class="fa fa-link"></i></span> Can I buy part-time or 'light' agent licenses?#}
