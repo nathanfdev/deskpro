@@ -57,12 +57,10 @@ class ChatController extends AbstractController
      */
     public function indexAction(Request $request)
     {
-        $person = $this->getUser();
-
         $max_per_page = $this->getBrandSetting('portal.per_page_chat', 50);
         $page         = $request->get('page', 1);
 
-        $chats       = $this->getChatDataService()->getUserChatPager($person, $page, $max_per_page);
+        $chats       = $this->getChatDataService()->getUserChatPager($this->getUser(), $page, $max_per_page);
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildChat();
 
         return $this->renderThemeView('Theme:Chat:list.html.twig', [
@@ -82,7 +80,6 @@ class ChatController extends AbstractController
      */
     public function viewAction(ChatConversation $chat)
     {
-        // if no chat with that ID, or if it was found but is an agent chat
         if ($chat->isAgentChat()) {
             throw $this->createNotFoundException();
         }
