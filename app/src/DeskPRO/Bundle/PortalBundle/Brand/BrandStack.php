@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Brand;
 
 use Application\DeskPRO\Entity\Brand;
+use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 
 /**
  * The BrandStack is a way of managing changes in "active" Brands during runtime. It works similar to a stack to allow
@@ -138,5 +139,43 @@ class BrandStack
     public function getDefault()
     {
         return $this->default_brand;
+    }
+
+    /**
+     * Get ThemeSet of the active Brand.
+     *
+     * @throws \Exception
+     *
+     * @return ThemeSet
+     */
+    public function getCurrentThemeSet()
+    {
+        if (!$this->getActive()
+            || !$this->getActive()->getBrand()
+            || !$this->getActive()->getBrand()->getThemeSet()
+        ) {
+            throw new \Exception('Unable to resolve ThemeSets');
+        }
+
+        return $this->getActive()->getBrand()->getThemeSet();
+    }
+
+    /**
+     * Get edit ThemeSet of the active Brand.
+     *
+     * @throws \Exception
+     *
+     * @return ThemeSet
+     */
+    public function getCurrentEditThemeSet()
+    {
+        if (!$this->getActive()
+            || !$this->getActive()->getBrand()
+            || !$this->getActive()->getBrand()->getEditThemeSet()
+        ) {
+            throw new \Exception('Unable to resolve edit ThemeSet');
+        }
+
+        return $this->getActive()->getBrand()->getEditThemeSet();
     }
 }

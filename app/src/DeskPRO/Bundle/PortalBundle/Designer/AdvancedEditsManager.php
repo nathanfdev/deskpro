@@ -57,9 +57,14 @@ class AdvancedEditsManager
     private $em;
 
     /**
-     * @var BrandStack
+     * @var ThemeSet
      */
-    private $brand_stack;
+    private $theme_set;
+
+    /**
+     * @var ThemeSet
+     */
+    private $edit_theme_set;
 
     /**
      * @param EntityManager $em
@@ -69,8 +74,9 @@ class AdvancedEditsManager
      */
     public function __construct(EntityManager $em, BrandStack $brand_stack)
     {
-        $this->em          = $em;
-        $this->brand_stack = $brand_stack;
+        $this->em             = $em;
+        $this->theme_set      = $brand_stack->getCurrentThemeSet();
+        $this->edit_theme_set = $brand_stack->getCurrentEditThemeSet();
     }
 
     /**
@@ -121,7 +127,7 @@ class AdvancedEditsManager
      */
     public function getEditThemeSetJs()
     {
-        $storage = $this->findBlobStorage(self::CUSTOM_JS_ASSET_NAME, $this->getEditThemeSet());
+        $storage = $this->findBlobStorage(self::CUSTOM_JS_ASSET_NAME, $this->edit_theme_set);
 
         return $storage ? (string) $storage->getData() : '';
     }
@@ -131,7 +137,7 @@ class AdvancedEditsManager
      */
     public function getJs()
     {
-        $storage = $this->findBlobStorage(self::CUSTOM_JS_ASSET_NAME, $this->getThemeSet());
+        $storage = $this->findBlobStorage(self::CUSTOM_JS_ASSET_NAME, $this->theme_set);
 
         return $storage ? (string) $storage->getData() : '';
     }
@@ -158,12 +164,12 @@ class AdvancedEditsManager
      */
     private function findOrCreateTemplate($name)
     {
-        $criteria = ['name' => $name, 'theme_set' => $this->getEditThemeSet()];
+        $criteria = ['name' => $name, 'theme_set' => $this->edit_theme_set];
         $template = $this->em->getRepository(Template::class)->findOneBy($criteria);
         if (!$template) {
             $template            = new Template();
             $template->name      = $name;
-            $template->theme_set = $this->getEditThemeSet();
+            $template->theme_set = $this->edit_theme_set;
         }
 
         return $template;
@@ -190,7 +196,7 @@ class AdvancedEditsManager
      */
     private function findOrCreateBlobStorage($name, $tag, $blob_hash = '', ThemeSet $theme_set = null)
     {
-        $theme_set or $theme_set = $this->getEditThemeSet();
+        $theme_set or $theme_set = $this->edit_theme_set;
 
         // Find existing or create a new ThemeSetAsset
 
@@ -243,39 +249,5 @@ class AdvancedEditsManager
         }
 
         return;
-    }
-
-    /**
-     * @throws \Exception
-     * @return ThemeSet
-     *
-     */
-    private function getThemeSet()
-    {
-        if (!$this->brand_stack->getActive()
-            || !$this->brand_stack->getActive()->getBrand()
-            || !$this->brand_stack->getActive()->getBrand()->getThemeSet()
-        ) {
-            throw new \Exception('Unable to resolve ThemeSets');
-        }
-
-        return $this->brand_stack->getActive()->getBrand()->getThemeSet();
-    }
-
-    /**
-     * @throws \Exception
-     * @return ThemeSet
-     *
-     */
-    private function getEditThemeSet()
-    {
-        if (!$this->brand_stack->getActive()
-            || !$this->brand_stack->getActive()->getBrand()
-            || !$this->brand_stack->getActive()->getBrand()->getEditThemeSet()
-        ) {
-            throw new \Exception('Unable to resolve edit ThemeSet');
-        }
-
-        return $this->brand_stack->getActive()->getBrand()->getEditThemeSet();
     }
 }
