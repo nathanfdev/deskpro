@@ -40,10 +40,16 @@
                 <div class="row">
                     <div class="bucket-third">
                         <div class="inline-input">
-                            <label>Colours:</label>
-                            <input type="text" ng-model="Ctrl.settings.button_background_color" />
-                            <input type="text" ng-model="Ctrl.settings.button_text_color" />
-                            <input type="text" ng-model="Ctrl.settings.button_border_color" />
+                            <label>Colors:</label>
+                            <p>
+                                <dp-portal-designer-color-form variable="Ctrl.settings.button_background_color" values="values"></dp-portal-designer-color-form> Background Color
+                            </p>
+                            <p>
+                                <dp-portal-designer-color-form variable="Ctrl.settings.button_text_color" values="values"></dp-portal-designer-color-form> Text Color
+                            </p>
+                            <p>
+                                <dp-portal-designer-color-form variable="Ctrl.settings.button_border_color" values="values"></dp-portal-designer-color-form> Border Color
+                            </p>
                         </div>
                     </div>
                 </div>
