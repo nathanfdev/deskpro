@@ -81,8 +81,7 @@ class HelpdeskUser extends \Application\DeskPRO\Domain\DomainObject implements \
 
         /** @var Ticket $rep */
         $rep                = App::getEntityRepository('DeskPRO:Ticket');
-        $info               = $rep->getCountInfoForPerson($this->person);
-        $this->ticket_count = $info['person'] - $info['org'];
+        $this->ticket_count = $rep->countTicketsForPerson2($this->person);
 
         return $this->ticket_count;
     }

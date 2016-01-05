@@ -90,66 +90,15 @@ class TicketsController extends AbstractController
             return $this->redirect($redirect_url);
         }
 
+        $sort     = $this->in->getString('sort') ?: 'date_created';
         $page     = max($this->in->getUint('p'), 1);
         $per_page = 100;
-        $limit    = ($page - 1) * $per_page;
-
-        $dql_join = '';
-        $sort     = $this->in->getString('sort');
-        switch ($sort) {
-            case 'department':
-                $dql_join = 'LEFT JOIN ticket.department d'
-                    ."\nLEFT JOIN d.parent d_parent";
-                $sort_dql = 'd_parent.display_order, d.display_order, ticket.id DESC';
-                break;
-
-            case 'last_reply':
-                $sort_dql = 'ticket.date_last_user_reply DESC';
-                break;
-
-            case 'date_created':
-            default:
-                $sort     = 'date_created';
-                $sort_dql = 'ticket.id DESC';
-        }
+        $offset   = ($page - 1) * $per_page;
 
         /** @var Ticket $rep */
-        $rep       = $this->em->getRepository('DeskPRO:Ticket');
-        $countInfo = $rep->getCountInfoForPerson($this->person, array('awaiting_agent', 'awaiting_user', 'resolved', 'archived'));
-        $count     = $countInfo['person'] - $countInfo['org'];
-        if ($this->person->is_agent) {
-            $tickets = $this->em->createQuery("
-                SELECT ticket
-                FROM DeskPRO:Ticket ticket
-                $dql_join
-                WHERE ticket.person = :person AND ticket.status != 'hidden' AND (ticket.date_last_agent_reply IS NOT NULL OR ticket.date_last_user_reply IS NOT NULL)
-                ORDER BY $sort_dql
-            ")->setMaxResults($per_page)->setFirstResult($limit)->execute(array('person' => $this->person));
-        } else {
-            if ($this->person->organization && $this->person->organization_manager) {
-
-                // Managers can always see their org tickets, so dont show them
-                // tickets if they are of their own org because those will be on the org page
-                $tickets = $this->em->createQuery("
-                    SELECT ticket
-                    FROM DeskPRO:Ticket ticket
-                    LEFT JOIN ticket.participants part
-                    $dql_join
-                    WHERE (ticket.person = :person OR part.person = :person) AND ticket.organization != :org AND ticket.status != 'hidden' AND (ticket.date_last_agent_reply IS NOT NULL OR ticket.date_last_user_reply IS NOT NULL)
-                    ORDER BY $sort_dql
-                ")->setMaxResults($per_page)->setFirstResult($limit)->execute(array('person' => $this->person, 'org' => $this->person->organization));
-            } else {
-                $tickets = $this->em->createQuery("
-                    SELECT ticket
-                    FROM DeskPRO:Ticket ticket
-                    LEFT JOIN ticket.participants part
-                    $dql_join
-                    WHERE (ticket.person = :person OR part.person = :person) AND ticket.status != 'hidden' AND (ticket.date_last_agent_reply IS NOT NULL OR ticket.date_last_user_reply IS NOT NULL)
-                    ORDER BY $sort_dql
-                ")->setMaxResults($per_page)->setFirstResult($limit)->execute(array('person' => $this->person));
-            }
-        }
-
+        $rep      = $this->em->getRepository('DeskPRO:Ticket');
+        $count    = $rep->countTicketsForPerson2($this->person);
+        $tickets  = $rep->getTicketsForPerson($this->person, $offset, $per_page, $sort);
         $pageinfo = Numbers::getPaginationPages($count, $page, $per_page, 3);
 
         $all_tickets      = array();
