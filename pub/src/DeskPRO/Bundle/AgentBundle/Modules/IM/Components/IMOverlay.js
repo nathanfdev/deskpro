@@ -7,28 +7,32 @@ import * as ui from '../Actions/uiActions';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 
 export class IMOverlay extends React.Component {
+
   static propTypes = {
     dispatch: PropTypes.func.isRequired
   };
 
-  startChat = (id, type) => {
-    this.props.dispatch(actions.startChat(id, type));
+  onClickOut = () => {
+    this.props.dispatch(ui.toggleOverlay());
   };
 
-  handleOnClickOut = () => {
-    this.props.dispatch(ui.toggleOverlay());
+  onStartChat = event => {
+    event.preventDefault();
+    this.props.dispatch(actions.startChat('0', 'everyone'));
   };
 
   render() {
     return (
-      <ClickOut onClickOut={this.handleOnClickOut}>
+      <ClickOut onClickOut={this.onClickOut}>
         <div className="dropdown im-dropdown" id="im-dropdown">
           <header className="dropdown-header">Agent Instant Messages</header>
           <div className="wrapper">
             <AgentsList />
-            <div className="bucket right">
-              <a href="#" onClick={this.startChat.bind(null, '0', 'everyone')}className="broadcast-to-all"><i className="fa fa-bullhorn"></i> Broadcast to Everyone</a>
 
+            <div className="bucket right">
+              <a href="#" onClick={this.onStartChat} className="broadcast-to-all">
+                <i className="fa fa-bullhorn"></i> Broadcast to Everyone
+              </a>
               <div className="im-list-wrapper">
                 <h2>Teams</h2>
                 <TeamsList />
