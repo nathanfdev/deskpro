@@ -1,9 +1,9 @@
-import $ from "jquery";
+import $ from 'jquery';
 
 /**
  * English stop words courtesy of MySQL
  */
-const stop_words = [
+const stopWords = [
     "a's","able","about","above","according","accordingly","across","actually","after","afterwards","again",
     "against","ain't","all","allow","allows","almost","alone","along","already","also","although","always",
     "am","among","amongst","an","and","another","any","anybody","anyhow","anyone","anything","anyway","anyways",
@@ -53,25 +53,19 @@ const stop_words = [
 export default class WordHighlighter {
 
   highlight(node, words, excludeStopwords, onlyFirst) {
-    let i, w, text;
-    let useWords = [];
-    let addedNodes = [];
+    let i;
+    let w;
+    let text;
+
+    const useWords = [];
+    const addedNodes = [];
 
     // We need the longest words to process first or they'll be passed up in favour of shorter guys
-    words.sort(function(a, b) {
-      if (a.length > b.length) {
-        return -1;
-      } else {
-        return 1;
-      }
-    });
+    words.sort((a, b) => a.length > b.length ? -1 : 1);
 
     if (excludeStopwords) {
-      words = words.filter(function(w) {
-        return (stop_words.indexOf(w) === -1);
-      });
+      words = words.filter(word => stopWords.indexOf(word) === -1);
     }
-
     if (!words.length) {
       return [];
     }
@@ -95,14 +89,23 @@ export default class WordHighlighter {
     this._do(node, useWords, words, addedNodes, onlyFirst, {}, {});
 
     return addedNodes;
-    }
+  }
 
   _do(node, words, originalWords, addedNodes, onlyFirst, _doneWords, _regexCache) {
-    let i, findRegex, match, pos, spannode, middlebit, endbit, middleclone, children;
-    let proc_node = [node];
+    let i;
+    let findRegex;
+    let match;
+    let pos;
+    let spannode;
+    let middlebit;
+    let endbit;
+    let middleclone;
+    let children;
 
-    while (node = proc_node.pop()) {
-      if (node.nodeType == 3) {
+    const procNode = [node];
+
+    while (node = procNode.pop()) {
+      if (node.nodeType === 3) {
         for (i = 0; i < words.length; i++) {
           if (onlyFirst && _doneWords[i]) continue;
 
@@ -130,13 +133,13 @@ export default class WordHighlighter {
 
             middlebit.parentNode.replaceChild(spannode, middlebit);
 
-            proc_node.unshift(endbit);
+            procNode.unshift(endbit);
           }
         }
-      } else if (node.nodeType == 1 && node.childNodes && !/(script|style)/i.test(node.tagName)) {
+      } else if (node.nodeType === 1 && node.childNodes && !/(script|style)/i.test(node.tagName)) {
         children = $.makeArray(node.childNodes);
         for (i = 0; i < children.length; i++) {
-          proc_node.unshift(children[i]);
+          procNode.unshift(children[i]);
         }
       }
     }
