@@ -12,3 +12,23 @@ export function filenameMaxLength(filename = '', maxLength = 25) {
 
   return `${name}.${extension}`;
 }
+
+export function getFileIcon(contentType) {
+  switch (contentType) {
+    case 'application/zip':
+    case 'application/x-gzip':
+      return 'fa-file-zip-o';
+    case 'application/pdf':
+      return 'fa-file-pdf-o';
+    case 'text/plain':
+      return 'fa-file-text-o';
+    case 'text/x-php':
+      return 'fa-file-code-o';
+    case 'application/msword':
+      return 'fa-file-word-o';
+    case 'audio/mpeg':
+      return 'fa-file-audio-o';
+    default:
+      return 'fa-file-o';
+  }
+}
