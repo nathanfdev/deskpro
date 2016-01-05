@@ -29,13 +29,11 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Theme;
 
 use DeskPRO\Bundle\PortalBundle\Annotation\Tag as TagAnnotation;
 use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
 use DeskPRO\Bundle\PortalBundle\Themes\Base\BaseTheme;
-use DeskPRO\Bundle\PortalBundle\Themes\DevTest\DevTestTheme;
 use DeskPRO\Bundle\PortalBundle\Themes\Sidebar\SidebarTheme;
 use DeskPRO\Bundle\PortalBundle\Themes\Standard\StandardTheme;
 use Doctrine\Common\Annotations\FileCacheReader;
@@ -124,7 +122,6 @@ class ThemeRepository
             new BaseTheme(),
             new StandardTheme(),
             new SidebarTheme(),
-            new DevTestTheme(),
         );
 
         $this->theme_map = array();

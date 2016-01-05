@@ -54,13 +54,6 @@ user_login_agentlogin:
 ########################################################################################################################
 # END security routes
 
-# DEV
-# TODO: delete this route
-portal_dev:
-    path: /_dev
-    defaults:
-      _controller: Theme:Dev:dev
-
 _errors:
     resource: "@TwigBundle/Resources/config/routing/errors.xml"
     prefix:   /_error
