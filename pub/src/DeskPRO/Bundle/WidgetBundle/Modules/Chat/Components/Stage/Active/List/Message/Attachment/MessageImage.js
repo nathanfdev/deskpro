@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { openFullImage } from 'DeskPRO/Component/FullImage';
+import { openFullImage } from 'DeskPRO/Component/Util/FullImage';
 
 export class MessageImage extends React.Component {
 
