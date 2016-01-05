@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { openFullImage } from '../../../../../../../../../Services/image';
+import { openFullImage } from 'DeskPRO/Component/FullImage';
 
 export class AttachedImage extends React.Component {
 
