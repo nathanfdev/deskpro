@@ -170,13 +170,30 @@
             <div class="form-footer">
                 <hr>
                 <div dp-hide-spinning="saving">
-                    <button type="submit" ng-click="Ctrl.saveSettings()">Save Changes</button>
+                    <button type="submit" ng-click="Ctrl.saveSettings()">Get Code</button>
                 </div>
                 <div dp-show-spinning="saving">
                     <i class="spinner-flat"></i>
                 </div>
             </div>
         </form>
+
+        <div class="editor-row" style="width: 60%">
+            <div class="editor-wrap">
+                <div class="editor"
+                     style="height: 220px;"
+                     ng-model="code_snippets.chat"
+                     ui-ace="{
+                         mode: 'html',
+                         useWrapMode: false,
+                         showGutter: false,
+                         theme: 'textmate',
+                         onLoad: embedEditorLoaded
+                     }">
+
+                </div>
+            </div>
+        </div>
 
     </section>
 </div>
