@@ -19,6 +19,9 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
         button_background_color: '',
         button_text_color: '',
         button_border_color: '',
+        chat_enabled: true,
+        chat_request_user_info: true,
+        chat_proactive: true,
 
         offline_url: '',
         show_offline: false,
@@ -40,22 +43,21 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
 
       return @$q.all([data_promise])
 
-    toggleChat: () ->
-      if @$scope.setup.chat_enabled
-        val = '1'
-      else
-        val = '0'
-
-      @Api.sendPost('/chat_setup/toggle_chat/' + val)
-
     updateChatCode: ->
-      widget_position         = @$scope.chat_options.position || 'right'
-      widget_type             = @$scope.chat_options.widget_type || 'column'
-      button_size             = @$scope.chat_options.button_size || 'medium'
-      button_word             = @$scope.chat_options.button_word || 'Help'
-      button_background_color = @$scope.chat_options.button_background_color
-      button_text_color       = @$scope.chat_options.button_text_color
-      button_border_color     = @$scope.chat_options.button_border_color
+      options =  @$scope.chat_options;
+
+      widget_position         = options.position || 'right'
+      widget_type             = options.widget_type || 'column'
+
+      button_size             = options.button_size || 'medium'
+      button_word             = options.button_word || 'Help'
+      button_background_color = options.button_background_color
+      button_text_color       = options.button_text_color
+      button_border_color     = options.button_border_color
+
+      chat_enabled            = options.chat_enabled ? 'true' : 'false'
+      chat_request_user_info  = options.chat_request_user_info ? 'true' : 'false'
+      chat_proactive          = options.chat_proactive ? 'true' : 'false'
 
       start_phrase       = Strings.addslashes(@$scope.chat_options.start_phrase || 'Click here to chat with us')
       resume_phrase      = Strings.addslashes(@$scope.chat_options.resume_phrase || 'Open your chat')
@@ -74,23 +76,35 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
               window.__DP_APP_SRC__ = 'http://localhost:9666/pub/build/DeskPRO_WidgetBundle.js';
               window.__DP_URL__ = 'http://deskpro.com.dev/';
               window.__DP_OPTIONS__ = {
-                  hasChat: true,
-                  agentAcceptTimeout: 30,
-                  windowType: '#{widget_type}',
-                  windowPosition: '#{widget_position}',
-                  companyName: 'Acme Corp. Chat and a long name lorel ipsum dolor',
-                  companyLogo: '',
-                  helpButton: {
-                      size: '#{button_size}',
-                      name: '#{button_word}',
-                      backgroundColor: '#{button_background_color}',
-                      textColor: '#{button_text_color}',
-                      borderColor: '#{button_border_color}'
+                  widget: {
+                      type: '#{widget_type}',
+                      position: '#{widget_position}',
                   },
-                  helpPopup: 'onlineAgents',
-                  helpPopupTitle: 'DeskPRO Customer Support',
-                  helpPopupMessage: 'Given a string consisting of printable ASCII chars, produce an output consisting of its unique chars in the original order.',
-                  chatMode: 'form'
+                  company: {
+                      name: 'Acme Corp. Chat and a long name lorel ipsum dolor',
+                      logo: '',
+                  },
+                  trigger: {
+                      button: {
+                          size: '#{button_size}',
+                          name: '#{button_word}',
+                          backgroundColor: '#{button_background_color}',
+                          textColor: '#{button_text_color}',
+                          borderColor: '#{button_border_color}'
+                      },
+                      popup: {
+                          type: 'onlineAgents',
+                          title: 'DeskPRO Customer Support',
+                          message: 'Given a string consisting of printable ASCII chars, produce an output consisting of its unique chars in the original order.',
+                      }
+                  },
+                  chat: {
+                      enabled: #{chat_enabled},
+                      requestUserInfo: #{chat_request_user_info},
+                      proactive: #{chat_proactive},
+                      beginMode: 'form'
+                      waitingTimeout: 30,
+                  }
               };
           </script>
 
