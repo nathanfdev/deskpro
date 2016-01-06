@@ -12,10 +12,16 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
       }
 
       @$scope.chat_options = {
-        offline_url: '',
-        show_offline: false,
         position: 'right',
         widget_type: 'column',
+        button_size: 'medium',
+        button_word: 'Help',
+        button_background_color: '',
+        button_text_color: '',
+        button_border_color: '',
+
+        offline_url: '',
+        show_offline: false,
         start_phrase: 'Click here to chat with us',
         resume_phrase: 'Open your chat',
         offline_phrase: 'Click here to contact us',
@@ -43,12 +49,18 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
       @Api.sendPost('/chat_setup/toggle_chat/' + val)
 
     updateChatCode: ->
+      widget_position         = @$scope.chat_options.position || 'right'
+      widget_type             = @$scope.chat_options.widget_type || 'column'
+      button_size             = @$scope.chat_options.button_size || 'medium'
+      button_word             = @$scope.chat_options.button_word || 'Help'
+      button_background_color = @$scope.chat_options.button_background_color
+      button_text_color       = @$scope.chat_options.button_text_color
+      button_border_color     = @$scope.chat_options.button_border_color
+
       start_phrase       = Strings.addslashes(@$scope.chat_options.start_phrase || 'Click here to chat with us')
       resume_phrase      = Strings.addslashes(@$scope.chat_options.resume_phrase || 'Open your chat')
       offline_phrase     = Strings.addslashes(@$scope.chat_options.offline_phrase || 'Click here to contact us')
       open_window_phrase = Strings.addslashes(@$scope.chat_options.open_window_phrase || 'Open this chat in a new window')
-      widget_position    = @$scope.chat_options.position || 'right'
-      widget_type        = @$scope.chat_options.widget_type || 'column'
       lang_id            = @$scope.chat_options.lang_id || 0
 
       offline_url_code = ''
@@ -68,7 +80,13 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
                   windowPosition: '#{widget_position}',
                   companyName: 'Acme Corp. Chat and a long name lorel ipsum dolor',
                   companyLogo: '',
-                  helpButtonSize: 'large',
+                  helpButton: {
+                      size: '#{button_size}',
+                      name: '#{button_word}',
+                      backgroundColor: '#{button_background_color}',
+                      textColor: '#{button_text_color}',
+                      borderColor: '#{button_border_color}'
+                  },
                   helpPopup: 'onlineAgents',
                   helpPopupTitle: 'DeskPRO Customer Support',
                   helpPopupMessage: 'Given a string consisting of printable ASCII chars, produce an output consisting of its unique chars in the original order.',

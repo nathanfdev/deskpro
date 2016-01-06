@@ -13,10 +13,10 @@
                     <div class="bucket-third">
                         <div class="inline-input">
                             <label>Button size:</label>
-                            <select ng-model="Ctrl.settings.button_size">
-                                <option value="S">S</option>
-                                <option value="M">M</option>
-                                <option value="L">L</option>
+                            <select ng-model="chat_options.button_size">
+                                <option value="small">S</option>
+                                <option value="medium">M</option>
+                                <option value="large">L</option>
                             </select>
                         </div>
                     </div>
@@ -26,7 +26,7 @@
                     <div class="bucket-third">
                         <div class="inline-input">
                             <label>Button word:</label>
-                            <input type="text" ng-model="Ctrl.settings.button_word" />
+                            <input type="text" ng-model="chat_options.button_word" />
                         </div>
                     </div>
 
@@ -43,15 +43,36 @@
                             <label>Colors:</label>
                             <ul class="input-group">
                                 <li>
-                                    <dp-portal-designer-color-form variable="Ctrl.settings.button_background_color" values="values"></dp-portal-designer-color-form>
+                                    <spectrum-colorpicker
+                                        ng-model="chat_options.button_background_color"
+                                        format="'hex'"
+                                        on-show-options="{update: false}"
+                                        on-hide-options="{update: false}"
+                                        on-move-options="{update: false}"
+                                        ></spectrum-colorpicker>
+
                                     <label>Background Color</label>
                                 </li>
                                 <li>
-                                    <dp-portal-designer-color-form variable="Ctrl.settings.button_text_color" values="values"></dp-portal-designer-color-form>
+                                    <spectrum-colorpicker
+                                        ng-model="chat_options.button_text_color"
+                                        format="'hex'"
+                                        on-show-options="{update: false}"
+                                        on-hide-options="{update: false}"
+                                        on-move-options="{update: false}"
+                                        ></spectrum-colorpicker>
+
                                     <label>Text Color</label>
                                 </li>
                                 <li>
-                                    <dp-portal-designer-color-form variable="Ctrl.settings.button_border_color" values="values"></dp-portal-designer-color-form>
+                                    <spectrum-colorpicker
+                                        ng-model="chat_options.button_border_color"
+                                        format="'hex'"
+                                        on-show-options="{update: false}"
+                                        on-hide-options="{update: false}"
+                                        on-move-options="{update: false}"
+                                        ></spectrum-colorpicker>
+
                                     <label>Border Color</label>
                                 </li>
                             </ul>
@@ -178,7 +199,7 @@
             </div>
         </form>
 
-        <div class="editor-row" style="width: 60%">
+        <div class="editor-row" style="width: 60%" ng-if="!!code_snippets.chat">
             <div class="editor-wrap">
                 <div class="editor"
                      style="height: 220px;"
