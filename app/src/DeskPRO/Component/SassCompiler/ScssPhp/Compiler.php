@@ -46,6 +46,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class Compiler extends BaseCompiler
 {
+    // note: charset NOT being utf8 here is important
+    // utf8 with the SCSS parser *significantly* reduces performance
+    const FILE_ENCODING = 'ISO-8895-1';
+
     /**
      * @var FileLoaderInterface[]
      */
@@ -62,12 +66,14 @@ class Compiler extends BaseCompiler
     private $options;
 
     /**
-     * @param array                 $options
-     * @param FileLoaderInterface[] $file_loaders
+     * @param array $options
      */
     public function __construct(array $options = null)
     {
+        parent::__construct();
         $this->options = self::getOptionsResolver()->resolve($options ?: array());
+
+        $this->setEncoding(self::FILE_ENCODING);
 
         foreach ($this->options['file_loaders'] as $fl) {
             if (!$fl instanceof FileLoaderInterface) {
@@ -193,9 +199,7 @@ class Compiler extends BaseCompiler
         } else {
             $code = $this->loadFile($path);
 
-            // note: charset NOT being utf8 here is important
-            // utf8 with the SCSS parser *significantly* reduces performance
-            $parser = new ScssPhpParser($path, 0, 'ISO-8859-1');
+            $parser = new ScssPhpParser($path, 0, self::FILE_ENCODING);
             $tree   = $parser->parse($code);
 
             if ($realPath) {
@@ -207,7 +211,7 @@ class Compiler extends BaseCompiler
 
         $pi = pathinfo($path);
         array_unshift($this->importPaths, $pi['dirname']);
-        $this->compileChildren($tree->children, $out);
+        $this->compileChildrenNoReturn($tree->children, $out);
         array_shift($this->importPaths);
     }
 }
