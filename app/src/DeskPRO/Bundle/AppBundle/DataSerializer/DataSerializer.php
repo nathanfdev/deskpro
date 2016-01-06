@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\Exception\DataSerializerException;
@@ -100,7 +99,7 @@ class DataSerializer
          * PRE_TRANSFORM
          *
          * core listeners:
-         * EventListener\TransformerListener - find the proper transformer based on "type" and put it in the context
+         * no listeners at the moment
          */
         $this->event_dispatcher->dispatch(DataSerializerEvents::PRE_TRANSFORM, new DataSerializerEvent($context));
 
@@ -116,8 +115,7 @@ class DataSerializer
          * POST_TRANSFORM
          *
          * core listeners:
-         * EventListener\JsonApiFormatListener - decorates the main transformation array with api format, and starts
-         *                                       setting up the final $context->getSerializedArray()
+         * EventListener\JsonApiFormatListener - decorates the main transformation array with api format, and starts setting up the final $context->getSerializedArray()
          * EventListener\DeferredPropertiesListener - deal with deferred properties
          */
         $this->event_dispatcher->dispatch(DataSerializerEvents::POST_TRANSFORM, new DataSerializerEvent($context));
