@@ -27,6 +27,7 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
         chat_proactive: true,
         chat_agent_avatar: 'avatars',
         chat_agent_icon_message: '',
+        chat_waiting_timeout: 30,
 
         ticket_department: 'default',
 

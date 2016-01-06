@@ -136,16 +136,23 @@
                                     <input type="radio" ng-model="chat_options.chat_agent_avatar" value="avatar_message" />
                                     <label>Agent Avatar + Message</label>
 
-                                    <div class="sub-options" ng-if="chat_options.chat_agent_avatar === 'avatar_message'">
-                                        <label>Agent Message</label>
-                                        <input type="text" ng-model="chat_options.chat_agent_icon_message" />
-
-                                        <label>Reply Form Type</label>
-                                        <select ng-model="Ctrl.settings.button_size">
-                                            <option value="S">Accept Button</option>
-                                            <option value="M">Reply Form</option>
-                                        </select>
-                                    </div>
+                                    <ul class="sub-options" ng-if="chat_options.chat_agent_avatar === 'avatar_message'">
+                                        <li>
+                                            <label>Agent Message</label>
+                                            <input type="text" ng-model="chat_options.chat_agent_icon_message" />
+                                        </li>
+                                        <li>
+                                            <label>Reply Form Type</label>
+                                            <select ng-model="Ctrl.settings.button_size">
+                                                <option value="S">Accept Button</option>
+                                                <option value="M">Reply Form</option>
+                                            </select>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <label>Waiting timeout</label>
+                                    <input type="text" ng-model="chat_options.chat_waiting_timeout" />
                                 </li>
                             </ul>
                         </div>
