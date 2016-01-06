@@ -61,6 +61,8 @@ class StylesheetCompiler
         $source_dir  = dirname($source_file);
         $source      = file_get_contents($source_file);
         $source      = $this->hackScss($source, $source_dir, $variables);
+        $project->addIncludePath($source_dir);
+        $project->addIncludePath(DP_WEB_ROOT.'/pub/node_modules');
         $project->setSource($source);
 
         // Compile custom_vars.scss from $variables
@@ -114,9 +116,6 @@ class StylesheetCompiler
      */
     private function hackScss($source, $dir, array $variables)
     {
-        // fix imports to absolute paths
-        $source = str_replace('@import "', "@import \"$dir/", $source);
-
         // fix darken() with variable
         if (array_key_exists('page-background', $variables)) {
             $source = str_replace('darken($page-background', 'darken('.$variables['page-background'], $source);
