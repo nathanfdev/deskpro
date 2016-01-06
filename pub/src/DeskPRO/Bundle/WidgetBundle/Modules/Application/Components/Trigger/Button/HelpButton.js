@@ -8,6 +8,9 @@ export class HelpButton extends React.Component {
     onClick: PropTypes.func,
     size: PropTypes.string,
     name: PropTypes.string,
+    backgroundColor: PropTypes.string,
+    textColor: PropTypes.string,
+    borderColor: PropTypes.string,
     disabled: PropTypes.bool
   };
 
