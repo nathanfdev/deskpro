@@ -146,23 +146,26 @@
                             <h4><span class="title-text">Proactive Chat</span></h4>
                         </div>
                     </div>
-                </div>
 
-                <ul>
-                    <li>
-                        <input type="radio" ng-model="chat_options.chat_agent_avatar" value="avatars" /> Agent Avatars
-                    </li>
-                    <li>
-                        <input type="radio" ng-model="chat_options.chat_agent_avatar" value="avatar_message" /> Agent Avatar + Message
-                        <div ng-if="chat_options.chat_agent_avatar === 'avatar_message'">
-                            <input type="text" ng-model="chat_options.chat_agent_icon_message" />
-                            <select ng-model="Ctrl.settings.button_size">
-                                <option value="S">Accept Button</option>
-                                <option value="M">Reply Form</option>
-                            </select>
-                        </div>
-                    </li>
-                </ul>
+                    <ul ng-if="chat_options.chat_proactive">
+                        <li>
+                            <input type="radio" ng-model="chat_options.chat_agent_avatar" value="avatars" /> Agent Avatars
+                        </li>
+                        <li>
+                            <input type="radio" ng-model="chat_options.chat_agent_avatar" value="avatar_message" /> Agent Avatar + Message
+                            <div ng-if="chat_options.chat_agent_avatar === 'avatar_message'">
+                                <label>Agent Message</label>
+                                <input type="text" ng-model="chat_options.chat_agent_icon_message" />
+
+                                <label>Reply Form Type</label>
+                                <select ng-model="Ctrl.settings.button_size">
+                                    <option value="S">Accept Button</option>
+                                    <option value="M">Reply Form</option>
+                                </select>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
             <div class="content-section">
