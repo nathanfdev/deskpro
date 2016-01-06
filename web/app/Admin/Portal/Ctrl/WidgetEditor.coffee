@@ -15,6 +15,7 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
         offline_url: '',
         show_offline: false,
         position: 'right',
+        widget_type: 'column',
         start_phrase: 'Click here to chat with us',
         resume_phrase: 'Open your chat',
         offline_phrase: 'Click here to contact us',
@@ -46,7 +47,8 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
       resume_phrase      = Strings.addslashes(@$scope.chat_options.resume_phrase || 'Open your chat')
       offline_phrase     = Strings.addslashes(@$scope.chat_options.offline_phrase || 'Click here to contact us')
       open_window_phrase = Strings.addslashes(@$scope.chat_options.open_window_phrase || 'Open this chat in a new window')
-      btn_pos            = @$scope.chat_options.position || 'right'
+      widget_position    = @$scope.chat_options.position || 'right'
+      widget_type        = @$scope.chat_options.widget_type || 'column'
       lang_id            = @$scope.chat_options.lang_id || 0
 
       offline_url_code = ''
@@ -62,8 +64,8 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
               window.__DP_OPTIONS__ = {
                   hasChat: true,
                   agentAcceptTimeout: 30,
-                  windowType: 'default',
-                  windowPosition: '#{btn_pos}',
+                  windowType: '#{widget_type}',
+                  windowPosition: '#{widget_position}',
                   companyName: 'Acme Corp. Chat and a long name lorel ipsum dolor',
                   companyLogo: '',
                   helpButtonSize: 'large',
