@@ -1,5 +1,5 @@
 .widget-form {
-  width: 400px;
+  width: 500px;
 
   ul {
     margin: 0;
@@ -22,11 +22,11 @@
 
         .option-label {
           float: left;
-          width: 100px;
+          width: 80px;
         }
 
         .option-group {
-          margin: 0 5px 10px 100px;
+          margin: 0 5px 10px 80px;
 
           &.no-label {
             margin-left: 20px;
@@ -40,13 +40,22 @@
             li {
               padding: 5px;
 
-              .color-picker, label, input[type="radio"] {
+              .color-picker, label, input {
                 display: inline-block;
                 margin: 10px 5px 10px 0;
               }
 
               .sub-options {
                 clear: left;
+                padding-left: 20px;
+
+                label {
+                  width: 80px;
+                }
+
+                input[type="text"] {
+                  width: 40%;
+                }
               }
             }
 

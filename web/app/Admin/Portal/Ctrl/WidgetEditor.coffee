@@ -68,6 +68,7 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
       chat_proactive          = options.chat_proactive && 'true' || 'false'
       chat_agent_avatar       = options.chat_agent_icon
       chat_agent_icon_message = options.chat_agent_icon_message
+      chat_waiting_timeout    = parseInt(options.chat_waiting_timeout, 10) || 30
 
       start_phrase       = Strings.addslashes(@$scope.chat_options.start_phrase || 'Click here to chat with us')
       resume_phrase      = Strings.addslashes(@$scope.chat_options.resume_phrase || 'Open your chat')
@@ -109,7 +110,7 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
                           message: '#{chat_agent_icon_message}'
                       },
                       beginMode: '#{chat_begin_mode}',
-                      waitingTimeout: 30
+                      waitingTimeout: #{chat_waiting_timeout}
                   }
               };
           </script>

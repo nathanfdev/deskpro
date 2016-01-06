@@ -126,36 +126,47 @@
                         <button dp-toggle-switch ng-model="chat_options.chat_proactive"></button>
                         <h4><span class="title-text">Proactive Chat</span></h4>
 
-                        <div class="option-group no-label" ng-if="chat_options.chat_proactive">
-                            <ul class="option-group-row">
-                                <li>
-                                    <input type="radio" ng-model="chat_options.chat_agent_avatar" value="avatars" />
-                                    <label>Agent Avatars</label>
-                                </li>
-                                <li>
-                                    <input type="radio" ng-model="chat_options.chat_agent_avatar" value="avatar_message" />
-                                    <label>Agent Avatar + Message</label>
-
-                                    <ul class="sub-options" ng-if="chat_options.chat_agent_avatar === 'avatar_message'">
+                        <ul class="options" ng-if="chat_options.chat_proactive">
+                            <li>
+                                <label class="option-label">Popup:</label>
+                                <div class="option-group">
+                                    <ul class="option-group-row">
                                         <li>
-                                            <label>Agent Message</label>
-                                            <input type="text" ng-model="chat_options.chat_agent_icon_message" />
+                                            <input type="radio" ng-model="chat_options.chat_agent_avatar" value="avatars" />
+                                            <label>Agent Avatars</label>
                                         </li>
                                         <li>
-                                            <label>Reply Form Type</label>
-                                            <select ng-model="Ctrl.settings.button_size">
-                                                <option value="S">Accept Button</option>
-                                                <option value="M">Reply Form</option>
-                                            </select>
+                                            <input type="radio" ng-model="chat_options.chat_agent_avatar" value="avatar_message" />
+                                            <label>Agent Avatar + Message</label>
+
+                                            <ul class="sub-options" ng-if="chat_options.chat_agent_avatar === 'avatar_message'">
+                                                <li>
+                                                    <label>Agent Title:</label>
+                                                    <input type="text" ng-model="chat_options.chat_agent_title"></textarea>
+                                                </li>
+                                                <li>
+                                                    <label>Agent Message:</label>
+                                                    <textarea ng-model="chat_options.chat_agent_icon_message"></textarea>
+                                                </li>
+                                                <li>
+                                                    <label>Reply Form Type:</label>
+                                                    <select ng-model="Ctrl.settings.button_size">
+                                                        <option value="S">Accept Button</option>
+                                                        <option value="M">Reply Form</option>
+                                                    </select>
+                                                </li>
+                                            </ul>
                                         </li>
                                     </ul>
-                                </li>
-                                <li>
-                                    <label>Waiting timeout</label>
+                                </div>
+                            </li>
+                            <li>
+                                <label class="option-label">Waiting timeout:</label>
+                                <div class="option-group">
                                     <input type="text" ng-model="chat_options.chat_waiting_timeout" />
-                                </li>
-                            </ul>
-                        </div>
+                                </div>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </div>
