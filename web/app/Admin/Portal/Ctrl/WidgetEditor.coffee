@@ -1,14 +1,14 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
+define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Base) ->
   class Admin_Portal_Ctrl_WidgetEditor extends Admin_Ctrl_Base
     @CTRL_ID = 'Admin_Portal_Ctrl_WidgetEditor'
     @CTRL_AS = 'Ctrl'
 
     init: ->
-
       @setup = null
 
       @$scope.code_snippets = {
         chat: '',
+        code: ''
       }
 
       @$scope.chat_options = {
@@ -23,26 +23,17 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       }
 
     initialLoad: ->
-
       data_promise = @Api.sendDataGet({
-
         hdinfo:     '/deskpro/info',
         chat_setup: '/chat_setup'
-
       }).then((res) =>
-
         @hdinfo = res.data.hdinfo
         @$scope.setup = res.data.chat_setup.chat_setup
-
-        @$scope.$watch('chat_options', =>
-          @updateChatCode()
-        , true)
       )
 
       return @$q.all([data_promise])
 
     toggleChat: () ->
-
       if @$scope.setup.chat_enabled
         val = '1'
       else
@@ -72,6 +63,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
                   hasChat: true,
                   agentAcceptTimeout: 30,
                   windowType: 'default',
+                  windowPosition: '#{btn_pos}',
                   companyName: 'Acme Corp. Chat and a long name lorel ipsum dolor',
                   companyLogo: '',
                   helpButtonSize: 'large',

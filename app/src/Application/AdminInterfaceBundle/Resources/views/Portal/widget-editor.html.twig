@@ -65,11 +65,11 @@
                             <label>Position:</label>
                             <ul class="input-group">
                                 <li>
-                                    <input type="radio" ng-model="Ctrl.settings.button_position" />
+                                    <input type="radio" name="position" ng-model="chat_options.position" value="right" />
                                     <label>Right</label>
                                 </li>
                                 <li>
-                                    <input type="radio" ng-model="Ctrl.settings.button_position" />
+                                    <input type="radio" name="position" ng-model="chat_options.position" value="left" />
                                     <label>Left</label>
                                 </li>
                             </ul>
@@ -170,7 +170,7 @@
             <div class="form-footer">
                 <hr>
                 <div dp-hide-spinning="saving">
-                    <button type="submit" ng-click="Ctrl.saveSettings()">Get Code</button>
+                    <button type="submit" ng-click="Ctrl.updateChatCode()">Get Code</button>
                 </div>
                 <div dp-show-spinning="saving">
                     <i class="spinner-flat"></i>
