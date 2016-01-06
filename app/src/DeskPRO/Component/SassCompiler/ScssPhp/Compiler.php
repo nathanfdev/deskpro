@@ -193,7 +193,9 @@ class Compiler extends BaseCompiler
         } else {
             $code = $this->loadFile($path);
 
-            $parser = new ScssPhpParser($path, false);
+            // note: charset NOT being utf8 here is important
+            // utf8 with the SCSS parser *significantly* reduces performance
+            $parser = new ScssPhpParser($path, 0, 'ISO-8859-1');
             $tree   = $parser->parse($code);
 
             if ($realPath) {
