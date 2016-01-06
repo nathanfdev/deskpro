@@ -26,7 +26,9 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
         chat_begin_mode: 'conversation',
         chat_proactive: true,
         chat_agent_avatar: 'avatars',
-        chat_agent_icon_message: ''
+        chat_agent_icon_message: '',
+
+        ticket_department: 'default',
 
         offline_url: '',
         show_offline: false,

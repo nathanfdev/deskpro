@@ -158,13 +158,13 @@
                 <ul class="options">
                     <li>
                         <div class="option-group no-label">
-                            <ul class="inline">
+                            <ul class="inline float-left">
                                 <li>
-                                    <input type="radio" ng-model="Ctrl.settings.button_size" />
+                                    <input type="radio" ng-model="chat_options.ticket_department" value="default" />
                                     <label>Default Department</label>
 
                                     <div class="sub-options">
-                                        <select ng-model="Ctrl.settings.button_size">
+                                        <select ng-model="chat_options.ticket_department">
                                             <option value="S">S</option>
                                             <option value="M">M</option>
                                             <option value="L">L</option>
@@ -172,7 +172,7 @@
                                     </div>
                                 </li>
                                 <li>
-                                    <input type="radio" ng-model="Ctrl.settings.button_size" />
+                                    <input type="radio" ng-model="chat_options.ticket_department" value="select" />
                                     <label>User Selects Department</label>
                                 </li>
                             </ul>

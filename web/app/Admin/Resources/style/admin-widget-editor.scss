@@ -64,6 +64,12 @@
                 display: inline-block;
               }
             }
+
+            &.float-left {
+              li {
+                float: left;
+              }
+            }
           }
         }
       }
