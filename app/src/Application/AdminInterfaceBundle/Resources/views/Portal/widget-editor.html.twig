@@ -6,112 +6,107 @@
         <form class="widget-form">
             <div class="content-section">
                 <h2 class="with-divider form-header"><span>Button Settings</span></h2>
+                <ul class="options">
+                    <li>
+                        <label class="option-label">Button size:</label>
+                        <div class="option-group">
+                            <select ng-model="chat_options.button_size">
+                                <option value="small">S</option>
+                                <option value="medium">M</option>
+                                <option value="large">L</option>
+                            </select>
+                        </div>
+                    </li>
+                    <li>
+                        <label class="option-label">Button word:</label>
+                        <div class="option-group">
+                            <input type="text" ng-model="chat_options.button_word" />
+                        </div>
+                    </li>
+                    <li>
+                        <label class="option-label">Colors:</label>
+                        <div class="option-group">
+                            <ul class="option-group-row">
+                                <li>
+                                    <spectrum-colorpicker
+                                        ng-model="chat_options.button_background_color"
+                                        format="'hex'"
+                                        class="color-picker"
+                                        on-show-options="{update: false}"
+                                        on-hide-options="{update: false}"
+                                        on-move-options="{update: false}"
+                                        ></spectrum-colorpicker>
 
-                <div class="row">
-                    <label class="option-label">Button size:</label>
-                    <div class="option-group">
-                        <select ng-model="chat_options.button_size">
-                            <option value="small">S</option>
-                            <option value="medium">M</option>
-                            <option value="large">L</option>
-                        </select>
-                    </div>
-                </div>
+                                    <label>Background Color</label>
+                                </li>
+                                <li>
+                                    <spectrum-colorpicker
+                                        ng-model="chat_options.button_text_color"
+                                        format="'hex'"
+                                        class="color-picker"
+                                        on-show-options="{update: false}"
+                                        on-hide-options="{update: false}"
+                                        on-move-options="{update: false}"
+                                        ></spectrum-colorpicker>
 
-                <div class="row">
-                    <label class="option-label">Button word:</label>
-                    <div class="option-group">
-                        <input type="text" ng-model="chat_options.button_word" />
-                    </div>
-                </div>
+                                    <label>Text Color</label>
+                                </li>
+                                <li>
+                                    <spectrum-colorpicker
+                                        ng-model="chat_options.button_border_color"
+                                        format="'hex'"
+                                        class="color-picker"
+                                        on-show-options="{update: false}"
+                                        on-hide-options="{update: false}"
+                                        on-move-options="{update: false}"
+                                        ></spectrum-colorpicker>
 
-                <div class="row">
-                    <label class="option-label">Colors:</label>
-                    <div class="option-group">
-                        <ul class="option-group-row">
-                            <li>
-                                <spectrum-colorpicker
-                                    ng-model="chat_options.button_background_color"
-                                    format="'hex'"
-                                    class="color-picker"
-                                    on-show-options="{update: false}"
-                                    on-hide-options="{update: false}"
-                                    on-move-options="{update: false}"
-                                    ></spectrum-colorpicker>
-
-                                <label>Background Color</label>
-                            </li>
-                            <li>
-                                <spectrum-colorpicker
-                                    ng-model="chat_options.button_text_color"
-                                    format="'hex'"
-                                    class="color-picker"
-                                    on-show-options="{update: false}"
-                                    on-hide-options="{update: false}"
-                                    on-move-options="{update: false}"
-                                    ></spectrum-colorpicker>
-
-                                <label>Text Color</label>
-                            </li>
-                            <li>
-                                <spectrum-colorpicker
-                                    ng-model="chat_options.button_border_color"
-                                    format="'hex'"
-                                    class="color-picker"
-                                    on-show-options="{update: false}"
-                                    on-hide-options="{update: false}"
-                                    on-move-options="{update: false}"
-                                    ></spectrum-colorpicker>
-
-                                <label>Border Color</label>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <label class="option-label">Position:</label>
-                    <div class="option-group">
-                        <ul class="inline">
-                            <li>
-                                <input type="radio" ng-model="chat_options.widget_position" value="right" />
-                                <label>Right</label>
-                            </li>
-                            <li>
-                                <input type="radio" ng-model="chat_options.widget_position" value="left" />
-                                <label>Left</label>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <label class="option-label">Widget Size:</label>
-                    <div class="option-group">
-                        <ul class="inline">
-                            <li>
-                                <input type="radio" ng-model="chat_options.widget_type" value="column" />
-                                <label>Column</label>
-                            </li>
-                            <li>
-                                <input type="radio" ng-model="chat_options.widget_type" value="bubble" />
-                                <label>Corner</label>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+                                    <label>Border Color</label>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <label class="option-label">Position:</label>
+                        <div class="option-group">
+                            <ul class="inline">
+                                <li>
+                                    <input type="radio" ng-model="chat_options.widget_position" value="right" />
+                                    <label>Right</label>
+                                </li>
+                                <li>
+                                    <input type="radio" ng-model="chat_options.widget_position" value="left" />
+                                    <label>Left</label>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <label class="option-label">Widget Size:</label>
+                        <div class="option-group">
+                            <ul class="inline">
+                                <li>
+                                    <input type="radio" ng-model="chat_options.widget_type" value="column" />
+                                    <label>Column</label>
+                                </li>
+                                <li>
+                                    <input type="radio" ng-model="chat_options.widget_type" value="bubble" />
+                                    <label>Corner</label>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
             </div>
 
             <div class="content-section">
                 <h2 class="with-divider form-header"><span>Chat Settings</span></h2>
-
-                <div class="row">
-                    <button dp-toggle-switch ng-model="chat_options.chat_enabled"></button>
-                    <h4><span class="title-text">Enable / Disable Chat</span></h4>
-                </div>
-
-                <div ng-if="chat_options.chat_enabled">
-                    <div class="row">
+                <ul class="options">
+                    <li>
+                        <button dp-toggle-switch ng-model="chat_options.chat_enabled"></button>
+                        <h4><span class="title-text">Enable / Disable Chat</span></h4>
+                    </li>
+                    <li ng-if="chat_options.chat_enabled">
                         <button dp-toggle-switch ng-model="chat_options.chat_request_user_info"></button>
                         <h4><span class="title-text">Request Name/Email before Chat Commences</span></h4>
 
@@ -126,9 +121,8 @@
                                 </li>
                             </ul>
                         </div>
-                    </div>
-
-                    <div class="row">
+                    </li>
+                    <li ng-if="chat_options.chat_enabled">
                         <button dp-toggle-switch ng-model="chat_options.chat_proactive"></button>
                         <h4><span class="title-text">Proactive Chat</span></h4>
 
@@ -155,35 +149,36 @@
                                 </li>
                             </ul>
                         </div>
-                    </div>
-                </div>
+                    </li>
+                </ul>
             </div>
 
             <div class="content-section">
                 <h2 class="with-divider form-header"><span>Ticket Settings</span></h2>
+                <ul class="options">
+                    <li>
+                        <div class="option-group no-label">
+                            <ul class="inline">
+                                <li>
+                                    <input type="radio" ng-model="Ctrl.settings.button_size" />
+                                    <label>Default Department</label>
 
-                <div class="row">
-                    <div class="option-group no-label">
-                        <ul class="inline">
-                            <li>
-                                <input type="radio" ng-model="Ctrl.settings.button_size" />
-                                <label>Default Department</label>
-
-                                <div class="sub-options">
-                                    <select ng-model="Ctrl.settings.button_size">
-                                        <option value="S">S</option>
-                                        <option value="M">M</option>
-                                        <option value="L">L</option>
-                                    </select>
-                                </div>
-                            </li>
-                            <li>
-                                <input type="radio" ng-model="Ctrl.settings.button_size" />
-                                <label>User Selects Department</label>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+                                    <div class="sub-options">
+                                        <select ng-model="Ctrl.settings.button_size">
+                                            <option value="S">S</option>
+                                            <option value="M">M</option>
+                                            <option value="L">L</option>
+                                        </select>
+                                    </div>
+                                </li>
+                                <li>
+                                    <input type="radio" ng-model="Ctrl.settings.button_size" />
+                                    <label>User Selects Department</label>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
             </div>
 
             <div class="form-footer">

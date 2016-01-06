@@ -1,49 +1,69 @@
 .widget-form {
   width: 400px;
 
-  .row {
-    .option-label {
-      float: left;
-      width: 100px;
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+
+    li {
+      margin: 0;
+      padding: 0;
+      display: block;
     }
 
-    .option-group {
-      margin: 10px 5px 10px 100px;
+    &.options {
+      li {
+        padding: 10px;
 
-      &.no-label {
-        margin-left: 20px;
-      }
-
-      input[type="text"] {
-        width: 80%;
-      }
-
-      ul {
-        margin: 0;
-        padding: 0;
-        list-style-type: none;
-
-        li {
-          margin: 0;
-          display: block;
-
-          .color-picker, label, input[type="radio"] {
-            display: inline-block;
-            margin: 10px 5px 10px 0;
-          }
-
-          .sub-options {
-            clear: left;
-          }
+        h4 {
+          display: inline-block;
         }
 
-        &.option-group-row {
-          li {  }
+        .option-label {
+          float: left;
+          width: 100px;
         }
 
-        &.inline {
-          li {
-            float: left;
+        .option-group {
+          margin: 0 5px 10px 100px;
+
+          &.no-label {
+            margin-left: 20px;
+          }
+
+          input[type="text"] {
+            width: 80%;
+          }
+
+          ul {
+            li {
+              padding: 5px;
+
+              .color-picker, label, input[type="radio"] {
+                display: inline-block;
+                margin: 10px 5px 10px 0;
+              }
+
+              .sub-options {
+                clear: left;
+              }
+            }
+
+            &.option-group-row {
+              li {
+                &:first-child {
+                  padding-top: 0;
+                }
+              }
+            }
+
+            &.inline {
+              li {
+                padding-top: 0;
+                display: inline-block;
+              }
+            }
           }
         }
       }
