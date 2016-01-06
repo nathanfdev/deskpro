@@ -150,14 +150,17 @@
 
                 <ul>
                     <li>
-                        <input type="radio" ng-model="chat_options.chat_agent_icon" value="single" /> Single Agent Icon
+                        <input type="radio" ng-model="chat_options.chat_agent_avatar" value="avatars" /> Agent Avatars
                     </li>
                     <li>
-                        <input type="radio" ng-model="chat_options.chat_agent_icon" value="triple" /> Triple Agent Icon
-                    </li>
-                    <li>
-                        <input type="radio" ng-model="chat_options.chat_agent_icon" value="icon_message" /> Agent Icon + Message
-                        <input type="text" ng-model="chat_options.chat_agent_icon_message" />
+                        <input type="radio" ng-model="chat_options.chat_agent_avatar" value="avatar_message" /> Agent Avatar + Message
+                        <div ng-if="chat_options.chat_agent_avatar === 'avatar_message'">
+                            <input type="text" ng-model="chat_options.chat_agent_icon_message" />
+                            <select ng-model="Ctrl.settings.button_size">
+                                <option value="S">Accept Button</option>
+                                <option value="M">Reply Form</option>
+                            </select>
+                        </div>
                     </li>
                 </ul>
             </div>

@@ -25,7 +25,7 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
         chat_request_user_info: true,
         chat_begin_mode: 'conversation',
         chat_proactive: true,
-        chat_agent_icon: 'single',
+        chat_agent_avatar: 'avatars',
         chat_agent_icon_message: ''
 
         offline_url: '',
@@ -63,7 +63,7 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
       chat_enabled            = options.chat_enabled && 'true' || 'false'
       chat_begin_mode         = options.chat_request_user_info && options.chat_begin_mode || 'simple'
       chat_proactive          = options.chat_proactive && 'true' || 'false'
-      chat_agent_icon         = options.chat_agent_icon
+      chat_agent_avatar       = options.chat_agent_icon
       chat_agent_icon_message = options.chat_agent_icon_message
 
       start_phrase       = Strings.addslashes(@$scope.chat_options.start_phrase || 'Click here to chat with us')
@@ -91,25 +91,20 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
                       name: 'Acme Corp. Chat and a long name lorel ipsum dolor',
                       logo: ''
                   },
-                  trigger: {
-                      button: {
-                          size: '#{button_size}',
-                          name: '#{button_word}',
-                          backgroundColor: '#{button_background_color}',
-                          textColor: '#{button_text_color}',
-                          borderColor: '#{button_border_color}'
-                      },
-                      popup: {
-                          type: 'onlineAgents',
-                          title: 'DeskPRO Customer Support',
-                          message: 'Given a string consisting of printable ASCII chars, produce an output consisting of its unique chars in the original order.'
-                      }
+                  button: {
+                      size: '#{button_size}',
+                      name: '#{button_word}',
+                      backgroundColor: '#{button_background_color}',
+                      textColor: '#{button_text_color}',
+                      borderColor: '#{button_border_color}'
                   },
                   chat: {
                       enabled: #{chat_enabled},
-                      proactive: #{chat_proactive},
-                      agentIcon: '#{chat_agent_icon}',
-                      agentIconMessage: '#{chat_agent_icon_message}',
+                      popup: {
+                          type: '#{chat_agent_avatar}',
+                          title: 'DeskPRO Customer Support',
+                          message: '#{chat_agent_icon_message}'
+                      },
                       beginMode: '#{chat_begin_mode}',
                       waitingTimeout: 30
                   }
