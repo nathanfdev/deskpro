@@ -10,6 +10,10 @@
     .option-group {
       margin: 10px 5px 10px 100px;
 
+      &.no-label {
+        margin-left: 20px;
+      }
+
       input[type="text"] {
         width: 80%;
       }
@@ -34,9 +38,7 @@
         }
 
         &.option-group-row {
-          li {
-            clear: both;
-          }
+          li {  }
         }
 
         &.inline {
