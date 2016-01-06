@@ -86,11 +86,11 @@
                             <label>Position:</label>
                             <ul class="input-group">
                                 <li>
-                                    <input type="radio" ng-model="chat_options.position" value="right" />
+                                    <input type="radio" ng-model="chat_options.widget_position" value="right" />
                                     <label>Right</label>
                                 </li>
                                 <li>
-                                    <input type="radio" ng-model="chat_options.position" value="left" />
+                                    <input type="radio" ng-model="chat_options.widget_position" value="left" />
                                     <label>Left</label>
                                 </li>
                             </ul>
@@ -149,14 +149,14 @@
 
                 <ul>
                     <li>
-                        <input type="radio" ng-model="Ctrl.settings.button_position" /> Single Agent Icon
+                        <input type="radio" ng-model="chat_options.chat_agent_icon" value="single" /> Single Agent Icon
                     </li>
                     <li>
-                        <input type="radio" ng-model="Ctrl.settings.button_position" /> Triple Agent Icon
+                        <input type="radio" ng-model="chat_options.chat_agent_icon" value="triple" /> Triple Agent Icon
                     </li>
                     <li>
-                        <input type="radio" ng-model="Ctrl.settings.button_position" /> Agent Icon + Message
-                        <input type="text" ng-model="Ctrl.settings.button_background_color" />
+                        <input type="radio" ng-model="chat_options.chat_agent_icon" value="icon_message" /> Agent Icon + Message
+                        <input type="text" ng-model="chat_options.chat_agent_icon_message" />
                     </li>
                 </ul>
             </div>

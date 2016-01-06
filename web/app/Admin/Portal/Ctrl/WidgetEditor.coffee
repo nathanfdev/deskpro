@@ -12,16 +12,20 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
       }
 
       @$scope.chat_options = {
-        position: 'right',
+        widget_position: 'right',
         widget_type: 'column',
+
         button_size: 'medium',
         button_word: 'Help',
         button_background_color: '',
         button_text_color: '',
         button_border_color: '',
+
         chat_enabled: true,
         chat_request_user_info: true,
         chat_proactive: true,
+        chat_agent_icon: 'single',
+        chat_agent_icon_message: ''
 
         offline_url: '',
         show_offline: false,
@@ -46,7 +50,7 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
     updateChatCode: ->
       options =  @$scope.chat_options;
 
-      widget_position         = options.position || 'right'
+      widget_position         = options.widget_position || 'right'
       widget_type             = options.widget_type || 'column'
 
       button_size             = options.button_size || 'medium'
@@ -58,6 +62,8 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
       chat_enabled            = options.chat_enabled ? 'true' : 'false'
       chat_request_user_info  = options.chat_request_user_info ? 'true' : 'false'
       chat_proactive          = options.chat_proactive ? 'true' : 'false'
+      chat_agent_icon         = options.chat_agent_icon
+      chat_agent_icon_message = options.chat_agent_icon_message
 
       start_phrase       = Strings.addslashes(@$scope.chat_options.start_phrase || 'Click here to chat with us')
       resume_phrase      = Strings.addslashes(@$scope.chat_options.resume_phrase || 'Open your chat')
@@ -78,11 +84,11 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
               window.__DP_OPTIONS__ = {
                   widget: {
                       type: '#{widget_type}',
-                      position: '#{widget_position}',
+                      position: '#{widget_position}'
                   },
                   company: {
                       name: 'Acme Corp. Chat and a long name lorel ipsum dolor',
-                      logo: '',
+                      logo: ''
                   },
                   trigger: {
                       button: {
@@ -95,15 +101,17 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
                       popup: {
                           type: 'onlineAgents',
                           title: 'DeskPRO Customer Support',
-                          message: 'Given a string consisting of printable ASCII chars, produce an output consisting of its unique chars in the original order.',
+                          message: 'Given a string consisting of printable ASCII chars, produce an output consisting of its unique chars in the original order.'
                       }
                   },
                   chat: {
                       enabled: #{chat_enabled},
                       requestUserInfo: #{chat_request_user_info},
                       proactive: #{chat_proactive},
-                      beginMode: 'form'
-                      waitingTimeout: 30,
+                      agentIcon: '#{chat_agent_icon}',
+                      agentIconMessage: '#{chat_agent_icon_message}',
+                      beginMode: 'form',
+                      waitingTimeout: 30
                   }
               };
           </script>
