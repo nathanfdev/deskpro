@@ -135,7 +135,7 @@
                                     <input type="radio" ng-model="chat_options.chat_agent_avatar" value="avatar_message" />
                                     <label>Agent Avatar + Message</label>
 
-                                    <div ng-if="chat_options.chat_agent_avatar === 'avatar_message'">
+                                    <div class="sub-options" ng-if="chat_options.chat_agent_avatar === 'avatar_message'">
                                         <label>Agent Message</label>
                                         <input type="text" ng-model="chat_options.chat_agent_icon_message" />
 
@@ -161,12 +161,14 @@
                             <li>
                                 <input type="radio" ng-model="Ctrl.settings.button_size" />
                                 <label>Default Department</label>
-                                <br />
-                                <select ng-model="Ctrl.settings.button_size">
-                                    <option value="S">S</option>
-                                    <option value="M">M</option>
-                                    <option value="L">L</option>
-                                </select>
+
+                                <div class="sub-options">
+                                    <select ng-model="Ctrl.settings.button_size">
+                                        <option value="S">S</option>
+                                        <option value="M">M</option>
+                                        <option value="L">L</option>
+                                    </select>
+                                </div>
                             </li>
                             <li>
                                 <input type="radio" ng-model="Ctrl.settings.button_size" />
