@@ -108,44 +108,46 @@
                     <h4><span class="title-text">Enable / Disable Chat</span></h4>
                 </div>
 
-                <div class="row">
-                    <button dp-toggle-switch ng-model="chat_options.chat_request_user_info"></button>
-                    <h4><span class="title-text">Request Name/Email before Chat Commences</span></h4>
+                <div ng-if="chat_options.chat_enabled">
+                    <div class="row">
+                        <button dp-toggle-switch ng-model="chat_options.chat_request_user_info"></button>
+                        <h4><span class="title-text">Request Name/Email before Chat Commences</span></h4>
 
-                    <div class="option-group" ng-if="chat_options.chat_request_user_info">
-                        <select ng-model="chat_options.chat_begin_mode">
-                            <option value="conversation">Conversation Style</option>
-                            <option value="form">Form Style</option>
-                        </select>
+                        <div class="option-group" ng-if="chat_options.chat_request_user_info">
+                            <select ng-model="chat_options.chat_begin_mode">
+                                <option value="conversation">Conversation Style</option>
+                                <option value="form">Form Style</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
 
-                <div class="row">
-                    <button dp-toggle-switch ng-model="chat_options.chat_proactive"></button>
-                    <h4><span class="title-text">Proactive Chat</span></h4>
+                    <div class="row">
+                        <button dp-toggle-switch ng-model="chat_options.chat_proactive"></button>
+                        <h4><span class="title-text">Proactive Chat</span></h4>
 
-                    <div class="option-group" ng-if="chat_options.chat_proactive">
-                        <ul class="option-group-row">
-                            <li>
-                                <input type="radio" ng-model="chat_options.chat_agent_avatar" value="avatars" />
-                                <label>Agent Avatars</label>
-                            </li>
-                            <li>
-                                <input type="radio" ng-model="chat_options.chat_agent_avatar" value="avatar_message" />
-                                <label>Agent Avatar + Message</label>
+                        <div class="option-group" ng-if="chat_options.chat_proactive">
+                            <ul class="option-group-row">
+                                <li>
+                                    <input type="radio" ng-model="chat_options.chat_agent_avatar" value="avatars" />
+                                    <label>Agent Avatars</label>
+                                </li>
+                                <li>
+                                    <input type="radio" ng-model="chat_options.chat_agent_avatar" value="avatar_message" />
+                                    <label>Agent Avatar + Message</label>
 
-                                <div ng-if="chat_options.chat_agent_avatar === 'avatar_message'">
-                                    <label>Agent Message</label>
-                                    <input type="text" ng-model="chat_options.chat_agent_icon_message" />
+                                    <div ng-if="chat_options.chat_agent_avatar === 'avatar_message'">
+                                        <label>Agent Message</label>
+                                        <input type="text" ng-model="chat_options.chat_agent_icon_message" />
 
-                                    <label>Reply Form Type</label>
-                                    <select ng-model="Ctrl.settings.button_size">
-                                        <option value="S">Accept Button</option>
-                                        <option value="M">Reply Form</option>
-                                    </select>
-                                </div>
-                            </li>
-                        </ul>
+                                        <label>Reply Form Type</label>
+                                        <select ng-model="Ctrl.settings.button_size">
+                                            <option value="S">Accept Button</option>
+                                            <option value="M">Reply Form</option>
+                                        </select>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -159,7 +161,7 @@
                             <li>
                                 <input type="radio" ng-model="Ctrl.settings.button_size" />
                                 <label>Default Department</label>
-
+                                <br />
                                 <select ng-model="Ctrl.settings.button_size">
                                     <option value="S">S</option>
                                     <option value="M">M</option>
