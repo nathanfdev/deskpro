@@ -55,6 +55,31 @@ export const helpButtonSizeSelector = createSelector(
   options => options.get('helpButtonSize')
 );
 
+export const helpButtonNameSelector = createSelector(
+  widgetOptionsSelector,
+  options => options.get('helpButtonName')
+);
+
+export const helpButtonColorsSelector = createSelector(
+  widgetOptionsSelector,
+  options => options.get('helpButtonColors')
+);
+
+export const helpButtonBackgroundColorSelector = createSelector(
+  helpButtonColorsSelector,
+  options => options.get('background')
+);
+
+export const helpButtonTextColorSelector = createSelector(
+  helpButtonColorsSelector,
+  options => options.get('text')
+);
+
+export const helpButtonBorderColorSelector = createSelector(
+  helpButtonColorsSelector,
+  options => options.get('border')
+);
+
 export const chatModeSelector = createSelector(
   widgetOptionsSelector,
   options => options.get('chatMode')
