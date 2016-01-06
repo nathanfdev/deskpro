@@ -7,6 +7,7 @@ export class HelpButton extends React.Component {
     type: PropTypes.string,
     onClick: PropTypes.func,
     size: PropTypes.string,
+    name: PropTypes.string,
     disabled: PropTypes.bool
   };
 
@@ -16,7 +17,7 @@ export class HelpButton extends React.Component {
   };
 
   render() {
-    const { size, disabled } = this.props;
+    const { name, size, disabled } = this.props;
 
     return (
       <div className="dpdesignportal-state-buttons">
@@ -26,7 +27,7 @@ export class HelpButton extends React.Component {
           'disabled': disabled
         })}>
 
-          <span className="state-button-text">Help</span>
+          <span className="state-button-text">{name}</span>
           <span className="state-button-icon">
             <span>?</span>
           </span>

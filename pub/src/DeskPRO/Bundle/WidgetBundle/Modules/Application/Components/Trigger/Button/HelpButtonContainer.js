@@ -12,6 +12,7 @@ import { onlineAgentsCountSelector } from '../../../Selectors/agent';
 import {
   widgetOpenedSelector,
   helpButtonSizeSelector,
+  helpButtonNameSelector,
   helpPopupSelector,
   agentPollingTimeoutSelector,
   triggerPopupOpenedSelector,
@@ -23,6 +24,7 @@ import {
   triggerPopupOpened: triggerPopupOpenedSelector(state),
   widgetOpened: widgetOpenedSelector(state),
   size: helpButtonSizeSelector(state),
+  name: helpButtonNameSelector(state),
   popup: helpPopupSelector(state),
   agentsCounts: onlineAgentsCountSelector(state),
   agentPollingTimeout: agentPollingTimeoutSelector(state)

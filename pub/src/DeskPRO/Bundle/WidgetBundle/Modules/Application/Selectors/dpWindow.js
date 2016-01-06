@@ -57,7 +57,7 @@ export const helpButtonSizeSelector = createSelector(
 
 export const helpButtonNameSelector = createSelector(
   widgetOptionsSelector,
-  options => options.get('helpButtonName')
+  options => options.get('helpButtonName') || 'Help'
 );
 
 export const helpButtonColorsSelector = createSelector(
