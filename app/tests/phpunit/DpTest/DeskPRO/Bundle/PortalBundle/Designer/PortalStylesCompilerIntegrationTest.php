@@ -75,9 +75,7 @@ class PortalStylesCompilerIntegrationTest extends PortalTestCase
             $this->getEntityManager(),
             $this->edit_theme_set,
             __DIR__."/scss/$style",
-            'custom-vars.scss',
-            $custom_scss,
-            'custom-style.scss'
+            $custom_scss
         );
     }
 
