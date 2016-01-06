@@ -36,8 +36,6 @@ use Application\DeskPRO\Entity\BlobStorage;
 use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
-use DeskPRO\Component\SassCompiler\Compiler\ScssPhpCompiler;
-use DeskPRO\Component\SassCompiler\SassProject;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -70,40 +68,24 @@ class PortalStylesCompiler
     /**
      * @var string
      */
-    private $custom_vars_file_name;
-
-    /**
-     * @var string
-     */
     private $custom_scss;
-
-    /**
-     * @var string
-     */
-    private $custom_scss_file_name;
 
     /**
      * @param EntityManager $em
      * @param ThemeSet      $edit_theme_set
      * @param string        $styles_file_path
-     * @param string        $custom_vars_file_name
      * @param string        $custom_scss
-     * @param string        $custom_scss_file_name
      */
     public function __construct(
         EntityManager $em,
         ThemeSet $edit_theme_set,
         $styles_file_path,
-        $custom_vars_file_name,
-        $custom_scss,
-        $custom_scss_file_name
+        $custom_scss
     ) {
-        $this->em                    = $em;
-        $this->styles_file_path      = $styles_file_path;
-        $this->custom_vars_file_name = $custom_vars_file_name;
-        $this->custom_scss           = $custom_scss;
-        $this->custom_scss_file_name = $custom_scss_file_name;
-        $this->edit_theme_set        = $edit_theme_set;
+        $this->em               = $em;
+        $this->styles_file_path = $styles_file_path;
+        $this->custom_scss      = $custom_scss;
+        $this->edit_theme_set   = $edit_theme_set;
 
         // try to resolve path in constructor to get early Exception if path isn't valid
         $this->getStylePath();
@@ -176,76 +158,9 @@ class PortalStylesCompiler
      */
     private function compileCss(array $variables)
     {
-        $compiler = new ScssPhpCompiler();
-        $project  = new SassProject();
+        $compiler = new StylesheetCompiler();
 
-        // Can't simply set source file and need to retrieve source as string to hack it so that scssphp can compile
-        $source_file = realpath($this->getStylePath());
-        $source_dir  = dirname($source_file);
-        $source      = file_get_contents($source_file);
-        $source      = $this->hackScss($source, $source_dir, $variables);
-        $project->setSource($source);
-
-        // Compile custom_vars.scss from $variables
-        $custom_vars_scss = '';
-        $variables        = $this->precompileVariables($variables);
-        foreach ($variables as $variable => $value) {
-            $custom_vars_scss .= '$'."$variable: $value;\n";
-        }
-        $project->addFileSource("$source_dir/{$this->custom_vars_file_name}", $custom_vars_scss);
-
-        // Set custom_style.scss contents
-        $project->addFileSource("$source_dir/{$this->custom_scss_file_name}", $this->custom_scss);
-
-        $result = $compiler->compile($project);
-
-        return $result;
-    }
-
-    /**
-     * Pre-compiles variables into string values.
-     *
-     * Turns compound array values such as ['value' => 10, 'unit' => 'px'] into strings
-     *
-     * @param array $variables
-     *
-     * @return array
-     */
-    private function precompileVariables(array $variables)
-    {
-        foreach ($variables as &$variable) {
-            if (is_array($variable)) {
-
-                // compile size from value and unit parts
-                if (array_key_exists('value', $variable) && array_key_exists('unit', $variable)) {
-                    $variable = $variable['value'].$variable['unit'];
-                }
-            }
-        }
-
-        return $variables;
-    }
-
-    /**
-     * Hack scss source so that leafo/scssphp lib can compile it.
-     *
-     * @param string $source
-     * @param string $dir
-     * @param array  $variables
-     *
-     * @return string
-     */
-    private function hackScss($source, $dir, array $variables)
-    {
-        // fix imports to absolute paths
-        $source = str_replace('@import "', "@import \"$dir/", $source);
-
-        // fix darken() with variable
-        if (array_key_exists('page-background', $variables)) {
-            $source = str_replace('darken($page-background', 'darken('.$variables['page-background'], $source);
-        }
-
-        return $source;
+        return $compiler->compile($this->getStylePath(), $variables, $this->custom_scss);
     }
 
     /**

@@ -29,9 +29,7 @@ services:
       - @doctrine.orm.default_entity_manager
       - @=service('brand_stack').getCurrentEditThemeSet()
       - '../pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-style.scss'
-      - 'custom_vars.scss'
       - @=service('dp.portal.designer.advanced_edits_manager').getEditThemeSetScss()
-      - 'custom_style.scss'
 
   dp.portal.designer.sass_doc_parser:
     class: DeskPRO\Bundle\PortalBundle\Designer\SassDocParser
