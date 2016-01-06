@@ -72,4 +72,4 @@ services:
   data_serializer.transformer.theme_set_asset:
     class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\ThemeSetAssetTransformer
     arguments:
-      - @dp.portal.designer.assets_manager
+      - @router

@@ -37,7 +37,6 @@ use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Class AssetsManager.
@@ -57,20 +56,13 @@ class AssetsManager
     private $edit_theme_set;
 
     /**
-     * @var RouterInterface
+     * @param EntityManager $em
+     * @param ThemeSet      $edit_theme_set
      */
-    private $router;
-
-    /**
-     * @param EntityManager   $em
-     * @param ThemeSet        $edit_theme_set
-     * @param RouterInterface $router
-     */
-    public function __construct(EntityManager $em, ThemeSet $edit_theme_set, RouterInterface $router)
+    public function __construct(EntityManager $em, ThemeSet $edit_theme_set)
     {
         $this->em             = $em;
         $this->edit_theme_set = $edit_theme_set;
-        $this->router         = $router;
     }
 
     /**
@@ -129,16 +121,6 @@ class AssetsManager
         $this->em->flush();
 
         return $asset;
-    }
-
-    /**
-     * @param ThemeSetAsset $asset
-     *
-     * @return string
-     */
-    public function getAssetUrl(ThemeSetAsset $asset)
-    {
-        return $this->router->generate('dp_portal_custom_asset', ['name' => $asset->getName()], true);
     }
 
     /**

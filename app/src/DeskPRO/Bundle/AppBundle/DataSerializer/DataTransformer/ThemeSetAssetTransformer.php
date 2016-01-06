@@ -38,6 +38,7 @@ namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use DeskPRO\Bundle\PortalBundle\Designer\AssetsManager;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Class ThemeSetAssetTransformer.
@@ -45,16 +46,16 @@ use DeskPRO\Bundle\PortalBundle\Designer\AssetsManager;
 class ThemeSetAssetTransformer extends AbstractDataSerializerTransformer
 {
     /**
-     * @var AssetsManager
+     * @var RouterInterface
      */
-    private $assets_manager;
+    private $router;
 
     /**
-     * @param AssetsManager $assets_manager
+     * @param RouterInterface $router
      */
-    public function __construct(AssetsManager $assets_manager)
+    public function __construct(RouterInterface $router)
     {
-        $this->assets_manager = $assets_manager;
+        $this->router = $router;
     }
 
     /**
@@ -81,7 +82,7 @@ class ThemeSetAssetTransformer extends AbstractDataSerializerTransformer
 
         // Generate a URL for user custom assets uploaded in the Portal Designer
         if (in_array(AssetsManager::CUSTOM_ASSET_TAG, $entity->getTags())) {
-            $data['url'] = $this->assets_manager->getAssetUrl($entity);
+            $data['url'] = $this->router->generate('dp_portal_custom_asset', ['name' => $entity->getName()], true);
         }
 
         return $data;

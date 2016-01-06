@@ -73,7 +73,7 @@ class AssetsManagerIntegrationTest extends PortalTestCase
         $this->em->persist($this->edit_theme_set);
         $this->em->flush();
 
-        $this->service = new AssetsManager($this->em, $this->edit_theme_set, $this->get('router'));
+        $this->service = new AssetsManager($this->em, $this->edit_theme_set);
     }
 
     /**
@@ -147,16 +147,6 @@ class AssetsManagerIntegrationTest extends PortalTestCase
 
         $asset = $this->service->getEditThemeSetAssets()[0];
         $this->stringEndsWith('test_asset.txt', $asset->getName());
-    }
-
-    /**
-     * @test
-     */
-    public function it_should_generate_asset_url()
-    {
-        $asset = $this->persistDummyThemeSetAsset($this->edit_theme_set, true, 'test_asset.jpg');
-        $url   = $this->service->getAssetUrl($asset);
-        $this->assertStringEndsWith('test_asset.jpg', $url);
     }
 
     /**
