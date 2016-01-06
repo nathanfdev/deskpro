@@ -110,6 +110,11 @@ export const agentAcceptTimeoutSelector = createSelector(
   options => options.get('agentAcceptTimeout') || 120 // 2 minutes
 );
 
+export const widgetPositionSelector = createSelector(
+  widgetOptionsSelector,
+  options => `bottom.${options.get('windowPosition') || 'right'}`
+);
+
 export const widgetTypeSelector = createSelector(
   widgetOptionsSelector,
   options => options.get('windowType') || 'default'

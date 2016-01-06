@@ -1,6 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect, Provider } from 'react-redux';
-import { widgetOpenedSelector, isBubbleSelector, triggerPopupOpenedSelector } from '../../Selectors/dpWindow';
+import {
+  widgetOpenedSelector,
+  widgetPositionSelector,
+  isBubbleSelector,
+  triggerPopupOpenedSelector
+} from '../../Selectors/dpWindow';
 import { widgetLoadedSelector } from '../../Selectors/bootstrap';
 import Frame from 'Ampliflux/common/components/Frame';
 import store from '../../../../Services/store';
@@ -8,6 +13,7 @@ import store from '../../../../Services/store';
 @connect(state => ({
   widgetLoaded: widgetLoadedSelector(state),
   widgetOpened: widgetOpenedSelector(state),
+  widgetPosition: widgetPositionSelector(state),
   isBubble: isBubbleSelector(state),
 
   // Use it to re calc frame dimension
@@ -19,6 +25,7 @@ export class TriggerFrameContainer extends React.Component {
     isBubble: PropTypes.bool,
     widgetLoaded: PropTypes.bool,
     widgetOpened: PropTypes.bool,
+    widgetPosition: PropTypes.string,
     children: PropTypes.any
   };
 
@@ -35,7 +42,7 @@ export class TriggerFrameContainer extends React.Component {
   }
 
   render() {
-    const { widgetLoaded, widgetOpened, isBubble, children } = this.props;
+    const { widgetLoaded, widgetOpened, widgetPosition, isBubble, children } = this.props;
     const style = {
       margin: '14px'
     };
@@ -44,7 +51,8 @@ export class TriggerFrameContainer extends React.Component {
       <Frame ref="frame"
              name="widget_trigger_iframe"
              frameStyles={style}
-             isVisible={widgetLoaded && (!widgetOpened || isBubble)}>
+             isVisible={widgetLoaded && (!widgetOpened || isBubble)}
+             positionMode={widgetPosition}>
 
         <Provider store={store}>
           {children}

@@ -1,7 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect, Provider } from 'react-redux';
 import { widgetResize } from '../../Actions/dpWindowActions';
-import { windowDimensionsSelector, widgetOpenedSelector, isBubbleSelector } from '../../Selectors/dpWindow';
+import {
+  windowDimensionsSelector,
+  widgetOpenedSelector,
+  widgetPositionSelector,
+  isBubbleSelector
+} from '../../Selectors/dpWindow';
 import { widgetLoadedSelector } from '../../Selectors/bootstrap';
 import Frame from 'Ampliflux/common/components/Frame';
 import store from '../../../../Services/store';
@@ -10,6 +15,7 @@ import store from '../../../../Services/store';
   windowDimensions: windowDimensionsSelector(state),
   widgetOpened: widgetOpenedSelector(state),
   widgetLoaded: widgetLoadedSelector(state),
+  widgetPosition: widgetPositionSelector(state),
   isBubble: isBubbleSelector(state)
 }))
 export class WidgetFrameContainer extends React.Component {
@@ -18,6 +24,7 @@ export class WidgetFrameContainer extends React.Component {
     dispatch: PropTypes.func,
     widgetOpened: PropTypes.bool,
     widgetLoaded: PropTypes.bool,
+    widgetPosition: PropTypes.string,
     isBubble: PropTypes.bool,
     children: PropTypes.any
   };
@@ -36,7 +43,7 @@ export class WidgetFrameContainer extends React.Component {
   }
 
   render() {
-    const { widgetOpened, widgetLoaded, isBubble, children } = this.props;
+    const { widgetOpened, widgetLoaded, widgetPosition, isBubble, children } = this.props;
     const childProps = children.props;
 
     const frameStyles = {};
@@ -54,7 +61,8 @@ export class WidgetFrameContainer extends React.Component {
              name="widget_iframe"
              frameStyles={frameStyles}
              containerStyles={containerStyles}
-             isVisible={widgetLoaded && widgetOpened}>
+             isVisible={widgetLoaded && widgetOpened}
+             positionMode={widgetPosition}>
 
         <Provider store={store}>
           {React.cloneElement(children, {...childProps, isBubble})}
