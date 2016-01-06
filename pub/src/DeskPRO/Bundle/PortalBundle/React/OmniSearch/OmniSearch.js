@@ -69,7 +69,7 @@ export default class OmniSearch extends React.Component {
     }, 100); // every 100ms check if the user has not typed in a while or not
 
     // clickaway handler
-    document.keypress(function(e) {
+    $(document).on('keypress', function(e) {
         if(e.which == 13) { // Checks for the enter key
             // without this, hitting "enter" to view the search results page would count as a "click"
             // outside of the ominsearch and clear the search
