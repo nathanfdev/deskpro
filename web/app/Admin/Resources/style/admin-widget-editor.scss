@@ -1,0 +1,45 @@
+.widget-form {
+  width: 400px;
+
+  .row {
+    .option-label {
+      float: left;
+      width: 100px;
+    }
+
+    .option-group {
+      margin: 10px 5px 10px 100px;
+
+      input[type="text"] {
+        width: 80%;
+      }
+
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+
+        li {
+          margin: 0;
+
+          .color-picker, label, input[type="radio"] {
+            float: left;
+            margin: 10px 5px 10px 0;
+          }
+        }
+
+        &.option-group-row {
+          li {
+            clear: both;
+          }
+        }
+
+        &.inline {
+          li {
+            display: inline-block;
+          }
+        }
+      }
+    }
+  }
+}
