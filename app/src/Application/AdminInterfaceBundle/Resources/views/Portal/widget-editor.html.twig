@@ -114,32 +114,39 @@
             <div class="content-section">
                 <h2 class="with-divider form-header"><span>Chat Settings</span></h2>
 
-                <article>
+                <div class="row">
                     <div class="panel panel-innertable">
                         <div class="form-group">
                             <button dp-toggle-switch ng-model="chat_options.chat_enabled"></button>
                             <h4><span class="title-text">Enable / Disable Chat</span></h4>
                         </div>
                     </div>
-                </article>
+                </div>
 
-                <article>
+                <div class="row">
                     <div class="panel panel-innertable">
                         <div class="form-group">
                             <button dp-toggle-switch ng-model="chat_options.chat_request_user_info"></button>
                             <h4><span class="title-text">Request Name/Email before Chat Commences</span></h4>
                         </div>
                     </div>
-                </article>
 
-                <article>
+                    <div class="panel panel-innertable" ng-if="chat_options.chat_request_user_info">
+                        <select ng-model="chat_options.chat_begin_mode">
+                            <option value="conversation">Conversation Style</option>
+                            <option value="form">Form Style</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
                     <div class="panel panel-innertable">
                         <div class="form-group">
                             <button dp-toggle-switch ng-model="chat_options.chat_proactive"></button>
                             <h4><span class="title-text">Proactive Chat</span></h4>
                         </div>
                     </div>
-                </article>
+                </div>
 
                 <ul>
                     <li>

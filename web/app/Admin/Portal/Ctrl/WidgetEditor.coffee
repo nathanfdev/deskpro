@@ -23,6 +23,7 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
 
         chat_enabled: true,
         chat_request_user_info: true,
+        chat_begin_mode: 'conversation',
         chat_proactive: true,
         chat_agent_icon: 'single',
         chat_agent_icon_message: ''
@@ -59,9 +60,9 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
       button_text_color       = options.button_text_color
       button_border_color     = options.button_border_color
 
-      chat_enabled            = options.chat_enabled ? 'true' : 'false'
-      chat_request_user_info  = options.chat_request_user_info ? 'true' : 'false'
-      chat_proactive          = options.chat_proactive ? 'true' : 'false'
+      chat_enabled            = options.chat_enabled && 'true' || 'false'
+      chat_begin_mode         = options.chat_request_user_info && options.chat_begin_mode || 'simple'
+      chat_proactive          = options.chat_proactive && 'true' || 'false'
       chat_agent_icon         = options.chat_agent_icon
       chat_agent_icon_message = options.chat_agent_icon_message
 
@@ -106,11 +107,10 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
                   },
                   chat: {
                       enabled: #{chat_enabled},
-                      requestUserInfo: #{chat_request_user_info},
                       proactive: #{chat_proactive},
                       agentIcon: '#{chat_agent_icon}',
                       agentIconMessage: '#{chat_agent_icon_message}',
-                      beginMode: 'form',
+                      beginMode: '#{chat_begin_mode}',
                       waitingTimeout: 30
                   }
               };
