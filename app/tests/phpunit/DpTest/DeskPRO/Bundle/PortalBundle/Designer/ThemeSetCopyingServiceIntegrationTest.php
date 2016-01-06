@@ -31,12 +31,10 @@
  */
 namespace DpTest\DeskPRO\Bundle\PortalBundle\Designer;
 
-use Application\DeskPRO\Entity\Blob;
-use Application\DeskPRO\Entity\BlobStorage;
-use Application\DeskPRO\Entity\Template;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use DeskPRO\Bundle\PortalBundle\Designer\ThemeSetCopyingService;
+use DpTest\DeskPRO\Bundle\PortalBundle\Designer\Helper\PortalDesignerTestHelper;
 use DpTest\PortalTestCase;
 
 /**
@@ -44,6 +42,8 @@ use DpTest\PortalTestCase;
  */
 class ThemeSetCopyingServiceIntegrationTest extends PortalTestCase
 {
+    use PortalDesignerTestHelper;
+
     /**
      * @var ThemeSetCopyingService
      */
@@ -262,103 +262,5 @@ class ThemeSetCopyingServiceIntegrationTest extends PortalTestCase
     private function copy()
     {
         $this->service->copy($this->source, $this->destination);
-    }
-
-    /**
-     * @param ThemeSet $theme_set
-     *
-     * @return \DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset[]
-     */
-    private function findAssets(ThemeSet $theme_set)
-    {
-        return $this->getRepository(ThemeSetAsset::class)->findBy(['theme_set' => $theme_set]);
-    }
-
-    /**
-     * @param ThemeSet $theme_set
-     *
-     * @return Template[]
-     */
-    private function findTemplates(ThemeSet $theme_set)
-    {
-        return $this->getRepository(Template::class)->findBy(['theme_set' => $theme_set]);
-    }
-
-    /**
-     * @param Blob $blob
-     *
-     * @return BlobStorage
-     */
-    private function findBlobStorage(Blob $blob)
-    {
-        return $this->getRepository(BlobStorage::class)->findOneBy(['blob_id' => $blob->getId()]);
-    }
-
-    // Mocks -----------------------------------------------------------------------------------------------------------
-
-    /**
-     * @param ThemeSet    $theme_set
-     * @param bool        $blob
-     * @param null|string $name
-     *
-     * @return ThemeSetAsset
-     */
-    private function persistDummyThemeSetAsset(ThemeSet $theme_set, $blob = true, $name = null)
-    {
-        $asset = new ThemeSetAsset();
-        $asset->setThemeSet($theme_set);
-        $asset->setName($name || uniqid());
-        $asset->setTags(['test']);
-        if ($blob) {
-            $asset->setBlob($this->persistDummyBlob());
-        }
-
-        $this->getEntityManager()->persist($asset);
-        $this->getEntityManager()->flush();
-
-        return $asset;
-    }
-
-    /**
-     * @param bool $file
-     *
-     * @return Blob
-     */
-    private function persistDummyBlob($file = true)
-    {
-        $em = $this->getEntityManager();
-
-        $blob = new Blob();
-        $blob->setFilename(uniqid());
-        $blob->blob_hash    = md5('test');
-        $blob->content_type = 'text/css';
-        $em->persist($blob);
-        $em->flush();
-
-        if ($file) {
-            $storage          = new BlobStorage();
-            $storage->blob_id = $blob->getId();
-            $storage->data    = uniqid();
-            $em->persist($storage);
-            $em->flush();
-        }
-
-        return $blob;
-    }
-
-    /**
-     * @param ThemeSet $theme_set
-     * @param int      $num
-     */
-    private function persistDummyTemplates(ThemeSet $theme_set, $num)
-    {
-        for ($i = 1; $i <= $num; ++$i) {
-            $tpl                = new Template();
-            $tpl->name          = "tpl_{$i}";
-            $tpl->theme_set     = $theme_set;
-            $tpl->template_code = $tpl->template_compiled = "tpl_{$i}_code";
-            $this->getEntityManager()->persist($tpl);
-        }
-        $this->getEntityManager()->flush();
     }
 }

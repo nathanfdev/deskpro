@@ -29,15 +29,17 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
+use Application\DeskPRO\Entity\Blob;
+use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use DeskPRO\Bundle\PortalBundle\Designer\AdvancedEditsManager;
+use DeskPRO\Bundle\PortalBundle\Designer\AssetsManager;
 use DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler;
 use DeskPRO\Bundle\PortalBundle\Designer\SassDocParser;
 use DeskPRO\Bundle\PortalBundle\Designer\StylesManager;
-use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -51,8 +53,6 @@ class DesignerController extends AbstractApiController
     /**
      * @Route("/portal/api/style/variable-groups")
      * @Method({"GET"})
-     *
-     * @return View
      */
     public function getVariableGroupsAction()
     {
@@ -62,8 +62,6 @@ class DesignerController extends AbstractApiController
     /**
      * @Route("/portal/api/style/edit-theme-set/variable-values")
      * @Method({"GET"})
-     *
-     * @return View
      */
     public function getVariableValuesAction()
     {
@@ -73,10 +71,6 @@ class DesignerController extends AbstractApiController
     /**
      * @Route("/portal/api/style/edit-theme-set/variable-values")
      * @Method({"PUT"})
-     *
-     * @param Request $request
-     *
-     * @return View
      */
     public function saveVariableValuesAction(Request $request)
     {
@@ -89,8 +83,6 @@ class DesignerController extends AbstractApiController
     /**
      * @Route("/portal/api/style/edit-theme-set/advanced-edits")
      * @Method({"GET"})
-     *
-     * @return View
      */
     public function getAdvancedEditsAction()
     {
@@ -100,10 +92,6 @@ class DesignerController extends AbstractApiController
     /**
      * @Route("/portal/api/style/edit-theme-set/advanced-edits")
      * @Method({"PUT"})
-     *
-     * @param Request $request
-     *
-     * @return View
      */
     public function saveAdvancedEditsAction(Request $request)
     {
@@ -116,8 +104,6 @@ class DesignerController extends AbstractApiController
     /**
      * @Route("/portal/api/style/edit-theme-set/commit")
      * @Method({"GET"})
-     *
-     * @return View
      */
     public function commitEditThemeSetAction()
     {
@@ -127,8 +113,6 @@ class DesignerController extends AbstractApiController
     /**
      * @Route("/portal/api/style/edit-theme-set/discard")
      * @Method({"GET"})
-     *
-     * @return View
      */
     public function discardEditThemeSetAction()
     {
@@ -138,8 +122,6 @@ class DesignerController extends AbstractApiController
     /**
      * @Route("/portal/api/style/portal.css", name="dp_portal_designer_custom_css")
      * @Method({"GET"})
-     *
-     * @return View
      */
     public function getCssFileAction(Request $request)
     {
@@ -152,6 +134,50 @@ class DesignerController extends AbstractApiController
         }
 
         return new Response($blob_storage->data, 200, ['Content-Type' => 'text/css']);
+    }
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/assets")
+     * @Method({"GET"})
+     */
+    public function listEditThemeSetAssets()
+    {
+        return $this->dataSerialize($this->getAssetsManager()->getEditThemeSetAssets());
+    }
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/assets")
+     * @Method({"POST"})
+     */
+    public function uploadEditThemeSetAsset(Request $request)
+    {
+        return $this->dataSerialize($this->getAssetsManager()->uploadEditThemeSetAsset($request->files->get('file')));
+    }
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/assets/{id}", requirements={"id"="\d+"})
+     * @Method({"DELETE"})
+     * @ParamConverter("asset", class="App:ThemeSetAsset")
+     */
+    public function deleteEditThemeSetAsset(ThemeSetAsset $asset)
+    {
+        return $this->dataSerialize($this->getAssetsManager()->deleteEditThemeSetAsset($asset));
+    }
+
+    /**
+     * @Route("/portal/api/style/assets/{name}", name="dp_portal_custom_asset")
+     * @Method({"GET"})
+     */
+    public function serveAssetAction($name)
+    {
+        if (!$blob_storage = $this->getAssetsManager()->getAssetBlobStorage($name)) {
+            throw $this->createNotFoundException('Asset file not found');
+        }
+        if (!$blob = $this->getManager()->find(Blob::class, $blob_storage->getBlobId())) {
+            throw $this->createNotFoundException('Asset file info not found');
+        }
+
+        return new Response($blob_storage->data, 200, ['Content-Type' => $blob->content_type]);
     }
 
     /**
@@ -168,6 +194,14 @@ class DesignerController extends AbstractApiController
     private function getAdvancedEditsManager()
     {
         return $this->get('dp.portal.designer.advanced_edits_manager');
+    }
+
+    /**
+     * @return AssetsManager
+     */
+    private function getAssetsManager()
+    {
+        return $this->get('dp.portal.designer.assets_manager');
     }
 
     /**

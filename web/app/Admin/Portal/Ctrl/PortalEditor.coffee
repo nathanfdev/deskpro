@@ -2,7 +2,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
   class Admin_Portal_Ctrl_PortalEditor extends Admin_Ctrl_Base
     @CTRL_ID = 'Admin_Portal_Ctrl_PortalEditor'
     @CTRL_AS = 'Portal'
-    @DEPS    = ['$http', '$scope', '$timeout']
+    @DEPS    = ['$http', '$scope', '$timeout', '$upload']
 
     init: ->
       @open_panels = []
@@ -11,6 +11,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @advanced = {header: '', footer: '', scss: '', javascript: ''}
       @advanced_tab = 'header'
       @is_advanced_expanded = false
+      @asset_files = []
+      @uploading_files_count = 0
       @refreshPreviewUrl()
 
     save: () =>
@@ -56,6 +58,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @$http.get('/portal/api/style/variable-groups').success((data) => @groups = data)
       @loadValues()
       @loadAdvancedEdits()
+      @loadAssetFiles()
 
     togglePanel: (name) ->
       if name in @open_panels
@@ -87,6 +90,34 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
           if success
             success()
       )
+
+    loadAssetFiles: () ->
+      @$http.get('/portal/api/style/edit-theme-set/assets').success(
+        (response) => angular.extend(@asset_files, response.data)
+      )
+
+    upload: (files) =>
+      for file in files
+        @uploading_files_count++;
+        @$upload.upload({
+          url: '/portal/api/style/edit-theme-set/assets',
+          file: file
+        }).then(
+          (response) =>
+            @uploading_files_count--
+            @asset_files.unshift(response.data.data)
+          ,
+          () => @error('Server error occurred. Unable to upload files.')
+        );
+
+    copyUrl: (file) ->
+      window.prompt('File URL:', file.url)
+
+    delete: (file) =>
+      if window.confirm('Are you sure you want to remove ' + file.name + '?')
+        @$http.delete('/portal/api/style/edit-theme-set/assets/' + file.id).success(
+          () => @asset_files = @asset_files.filter (f) -> f isnt file
+        )
 
     openAdvancedTab: (tab) => @advanced_tab = tab
     isAdvancedTab: (tab) => @advanced_tab == tab

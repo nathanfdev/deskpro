@@ -207,38 +207,25 @@
 
                     <!-- Assets -->
                     <div class="the-assets" ng-show="Portal.isAdvancedTab('assets')">
-                        <a href="#" class="drag-and-drop-area">
-                            <span><i class="fa fa-upload"></i> Drag &amp; Drop here or just click to upload a new file</span></a>
+                        <a href="javascript:void(null)" class="drag-and-drop-area" ng-file-drop="Portal.upload($files)">
+                            <span ng-show="!Portal.uploading_files_count">
+                                <span class="hint">
+                                    <i class="fa fa-upload"></i> Drag &amp; Drop here or select files to upload:
+                                </span>
+                                <input type="file" ng-file-select="Portal.upload($files)" multiple />
+                            </span>
+                            <span ng-show="Portal.uploading_files_count">
+                                Uploading {{ '{{ Portal.uploading_files_count }}' }} file(s)...
+                            </span>
+                        </a>
                         <div class="file-list">
                             <ul>
-                                <li>
-                                    <a href="#" class="file"><span class="file-preview" style="background-image: url(./img/file-preview.png);"></span> file_name.png</a>
-                                    <a href="#" class="file-url-copy">Copy file url</a>
-                                </li>
-
-                                <li>
-                                    <a href="#" class="file"><span class="file-preview" style="background-image: url(./img/file-preview.png);"></span> uploaded_file_28474722.png</a>
-                                    <a href="#" class="file-url-copy">Copy file url</a>
-                                </li>
-
-                                <li>
-                                    <a href="#" class="file"><span class="file-preview" style="background-image: url(./img/file-preview.png);"></span> another_uploaded_file_34346643.png</a>
-                                    <a href="#" class="file-url-copy">Copy file url</a>
-                                </li>
-
-                                <li>
-                                    <a href="#" class="file"><span class="file-preview" style="background-image: url(./img/file-preview.png);"></span> file_name.png</a>
-                                    <a href="#" class="file-url-copy">Copy file url</a>
-                                </li>
-
-                                <li>
-                                    <a href="#" class="file"><span class="file-preview" style="background-image: url(./img/file-preview.png);"></span> uploaded_file_28474722.png</a>
-                                    <a href="#" class="file-url-copy">Copy file url</a>
-                                </li>
-
-                                <li>
-                                    <a href="#" class="file"><span class="file-preview" style="background-image: url(./img/file-preview.png);"></span> another_uploaded_file_34346643.png</a>
-                                    <a href="#" class="file-url-copy">Copy file url</a>
+                                <li ng-repeat="file in Portal.asset_files">
+                                    <a ng-href="{{ '{{ file.url }}' }}" target="_blank" class="file">
+                                        <i class="fa fa-file"></i> {{ '{{ file.name }}' }}
+                                    </a>
+                                    <a href ng-click="Portal.copyUrl(file)" class="file-url-copy">Copy file URL</a>
+                                    <a href ng-click="Portal.delete(file)" class="file-url-copy">Delete</a>
                                 </li>
                             </ul>
                         </div>

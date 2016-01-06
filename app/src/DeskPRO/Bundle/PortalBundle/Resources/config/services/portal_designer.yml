@@ -16,6 +16,13 @@ services:
       - @=service('brand_stack').getCurrentThemeSet()
       - @=service('brand_stack').getCurrentEditThemeSet()
 
+  dp.portal.designer.assets_manager:
+    class: DeskPRO\Bundle\PortalBundle\Designer\AssetsManager
+    arguments:
+      - @doctrine.orm.default_entity_manager
+      - @=service('brand_stack').getCurrentEditThemeSet()
+      - @router
+
   dp.portal.designer.portal_styles_compiler:
     class: DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler
     arguments:

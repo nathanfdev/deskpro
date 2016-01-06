@@ -29,11 +29,11 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Session;
+use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
 use Symfony\Component\EventDispatcher\Event;
@@ -116,5 +116,13 @@ abstract class AbstractApiController extends FOSRestController
     protected function getBrandContainer()
     {
         return $this->get('brand_stack')->getActive();
+    }
+
+    /**
+     * @return EntityManager
+     */
+    protected function getManager()
+    {
+        return $this->get('doctrine.orm.default_entity_manager');
     }
 }
