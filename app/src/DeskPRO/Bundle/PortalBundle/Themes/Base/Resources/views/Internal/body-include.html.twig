@@ -30,17 +30,37 @@
         window.__DP_APP_SRC__ = '{{ asset('DeskPRO_WidgetBundle.js', 'app_assets') }}';
         window.__DP_URL__ = '{{ root_url() }}';
         window.__DP_OPTIONS__ = {
-            hasChat: true,
-            windowType: 'bubble',
-            agentPollingTimeout: 10,
-            agentAcceptTimeout: 60,
-            companyName: 'Acme Corp. Chat and a long name lorel ipsum dolor',
-            companyLogo: '',
-            helpButtonSize: 'large',
-            helpPopup: 'replyMessageButtons',
-            helpPopupTitle: 'DeskPRO Customer Support',
-            helpPopupMessage: 'Given a string consisting of printable ASCII chars, produce an output consisting of its unique chars in the original order.',
-            chatMode: 'conversation'
+            "widget": {
+                "type": "column",
+                "position": "right",
+                "agentPollingTimeout": 10
+            },
+            "company":{
+                "name": "Acme Corp. Chat and a long name lorel ipsum dolor",
+                "logo": ""
+            },
+            "button":{
+                "size": "medium",
+                "name": "Help",
+                "colors": {
+                    "background": "",
+                    "text":" ",
+                    "border": ""
+                }
+            },
+            "chat": {
+                "enabled": true,
+                "requestUserInfo": true,
+                "proactive": true,
+                "popup": {
+                    "enabled": true,
+                    "title": "DeskPRO Customer Support",
+                    "message": "Given a string consisting of printable ASCII chars, produce an output consisting of its unique chars in the original order.",
+                    "replyType": "buttons"
+                },
+                "beginMode": "form",
+                "waitingTimeout": 30
+            }
         };
         window.DESKPRO_USERSOURCES = {{ auth_usersources_js_object() }};
         window.DESKPRO_CAN_USE_TICKETS = {{ can_use_tickets() ? 'true' : 'false' }};
