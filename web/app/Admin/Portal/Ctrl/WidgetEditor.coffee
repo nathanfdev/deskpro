@@ -12,6 +12,7 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
         widget: {
           type: 'column',
           position: 'right',
+          agentPollingTimeout: 10
         },
         company: {
           name: 'Acme Corp. Chat and a long name lorel ipsum dolor',
@@ -20,9 +21,11 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
         button: {
           size: 'medium',
           name: 'Help',
-          backgroundColor: '',
-          textColor: '',
-          borderColor: ''
+          colors: {
+            background: '',
+            text: '',
+            border: ''
+          }
         },
         chat: {
           enabled: true,
