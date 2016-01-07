@@ -155,21 +155,10 @@ class TicketsController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+            // we don't process the reply if they simply clicked the "add more attachments" button (non-JS users)
             if ($form->getClickedButton()->getConfig()->getName() !== 'more_attachments') {
-                // TODO: if this user isn't a participant on the ticket we should add them here
+                $this->addCurrentUserAsParticipantIfTheyAreNot($ticket);
 
-                $person = $this->getCurrentPerson();
-                if (!$ticket->isParticipant($person)) {
-                    // if the user is submitting a reply and are not a participant yet, we should add them
-                    // after we add them as a participant, the redirect below to the "normal" view page
-                    // will work, because they are now granted access to it.
-                    $participant = new TicketParticipant();
-                    $participant->setPerson($person);
-                    $ticket->addParticipant($participant);
-                    $this->getEm()->persist($participant);
-                }
-
-                // We don't continue here if they just clicked the "add more attachments" button
                 $this->saveNewReply($ticket, $message);
 
                 $this->addFlash('success', $this->phrase('portal.flashes.ticket_replied'));
@@ -823,6 +812,23 @@ class TicketsController extends AbstractController
             }
 
             return $ticket;
+        }
+    }
+
+    /**
+     * @param Ticket $ticket
+     */
+    protected function addCurrentUserAsParticipantIfTheyAreNot(Ticket $ticket)
+    {
+        // if the user is submitting a reply and are not a participant yet, we should add them
+        // after we add them as a participant, the redirect below to the "normal" view page
+        // will work, because they are now granted access to it.
+        $person = $this->getCurrentPerson();
+        if (!$ticket->isParticipant($person)) {
+            $participant = new TicketParticipant();
+            $participant->setPerson($person);
+            $ticket->addParticipant($participant);
+            $this->getEm()->persist($participant);
         }
     }
 }
