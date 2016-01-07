@@ -39,48 +39,46 @@
               width: 80%;
             }
 
-            ul {
+            li {
+              padding: 5px;
+
+              .color-picker, label, input {
+                display: inline-block;
+                margin: 10px 5px 10px 0;
+              }
+
+              .sub-options {
+                clear: left;
+                padding-left: 20px;
+
+                label {
+                  width: 80px;
+                }
+
+                input[type="text"] {
+                  width: 40%;
+                }
+              }
+            }
+
+            &.option-group-row {
               li {
-                padding: 5px;
-
-                .color-picker, label, input {
-                  display: inline-block;
-                  margin: 10px 5px 10px 0;
-                }
-
-                .sub-options {
-                  clear: left;
-                  padding-left: 20px;
-
-                  label {
-                    width: 80px;
-                  }
-
-                  input[type="text"] {
-                    width: 40%;
-                  }
-                }
-              }
-
-              &.option-group-row {
-                li {
-                  &:first-child {
-                    padding-top: 0;
-                  }
-                }
-              }
-
-              &.inline {
-                li {
+                &:first-child {
                   padding-top: 0;
-                  display: inline-block;
                 }
               }
+            }
 
-              &.float-left {
-                li {
-                  float: left;
-                }
+            &.option-group-inline {
+              li {
+                padding-top: 0;
+                display: inline-block;
+              }
+            }
+
+            &.float-left {
+              li {
+                float: left;
               }
             }
           }
