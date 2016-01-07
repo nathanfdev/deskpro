@@ -1,9 +1,9 @@
 {% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
 {% block fullpane_content %}
 <div class="content-wrapper">
-    <section class="content setup">
+    <section class="content setup widget-editor">
         <h1><i class="fa fa-cog"></i> Site Widget & Chat</h1>
-        <form class="widget-form">
+        <form class="widget-editor-form">
             <div class="content-section">
                 <h2 class="with-divider form-header"><span>Button Settings</span></h2>
                 <ul class="options">
@@ -209,6 +209,8 @@
                 </div>
             </div>
         </form>
+
+        <iframe id="live-demo" class="widget-editor-live-demo-container"></iframe>
 
         <div class="editor-row" ng-if="!!code_snippets.chat">
             <div class="editor-wrap">

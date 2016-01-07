@@ -1,82 +1,86 @@
-.widget-form {
-  width: 500px;
+.widget-editor {
+  position: relative;
 
-  ul {
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
+  .widget-editor-form {
+    width: 500px;
 
-    li {
+    ul {
       margin: 0;
       padding: 0;
-      display: block;
-    }
+      list-style-type: none;
 
-    &.options {
       li {
-        padding: 10px;
+        margin: 0;
+        padding: 0;
+        display: block;
+      }
 
-        h4 {
-          display: inline-block;
-        }
+      &.options {
+        li {
+          padding: 10px;
 
-        .option-label {
-          float: left;
-          width: 80px;
-        }
-
-        .option-group {
-          margin: 0 5px 10px 80px;
-
-          &.no-label {
-            margin-left: 20px;
+          h4 {
+            display: inline-block;
           }
 
-          input[type="text"] {
-            width: 80%;
+          .option-label {
+            float: left;
+            width: 80px;
           }
 
-          ul {
-            li {
-              padding: 5px;
+          .option-group {
+            margin: 0 5px 10px 80px;
 
-              .color-picker, label, input {
-                display: inline-block;
-                margin: 10px 5px 10px 0;
-              }
-
-              .sub-options {
-                clear: left;
-                padding-left: 20px;
-
-                label {
-                  width: 80px;
-                }
-
-                input[type="text"] {
-                  width: 40%;
-                }
-              }
+            &.no-label {
+              margin-left: 20px;
             }
 
-            &.option-group-row {
+            input[type="text"] {
+              width: 80%;
+            }
+
+            ul {
               li {
-                &:first-child {
+                padding: 5px;
+
+                .color-picker, label, input {
+                  display: inline-block;
+                  margin: 10px 5px 10px 0;
+                }
+
+                .sub-options {
+                  clear: left;
+                  padding-left: 20px;
+
+                  label {
+                    width: 80px;
+                  }
+
+                  input[type="text"] {
+                    width: 40%;
+                  }
+                }
+              }
+
+              &.option-group-row {
+                li {
+                  &:first-child {
+                    padding-top: 0;
+                  }
+                }
+              }
+
+              &.inline {
+                li {
                   padding-top: 0;
+                  display: inline-block;
                 }
               }
-            }
 
-            &.inline {
-              li {
-                padding-top: 0;
-                display: inline-block;
-              }
-            }
-
-            &.float-left {
-              li {
-                float: left;
+              &.float-left {
+                li {
+                  float: left;
+                }
               }
             }
           }
@@ -84,4 +88,12 @@
       }
     }
   }
+
+  .widget-editor-live-demo-container {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+    z-index: 1000;
+  }
 }
+
