@@ -40,29 +40,62 @@ export const widgetOptionsSelector = createSelector(
   state => state.get('options')
 );
 
-export const companyNameSelector = createSelector(
+// Base widget options selectors
+export const widgetTypeSelector = createSelector(
   widgetOptionsSelector,
-  options => options.get('companyName')
+  options => options.getIn(['widget', 'type']) || 'default'
+);
+
+export const widgetPositionSelector = createSelector(
+  widgetOptionsSelector,
+  options => `bottom.${options.getIn(['widget', 'position']) || 'right'}`
+);
+
+export const isBubbleSelector = createSelector(
+  widgetTypeSelector,
+  widgetType => widgetType === 'bubble'
+);
+
+export const agentPollingTimeoutSelector = createSelector(
+  widgetOptionsSelector,
+  options => options.get('agentPollingTimeout') || 'off'
+);
+
+// Company options selectors
+export const companySelector = createSelector(
+  widgetOptionsSelector,
+  options => options.get('company')
+);
+
+export const companyNameSelector = createSelector(
+  companySelector,
+  company => company.get('name')
 );
 
 export const companyLogoSelector = createSelector(
+  companySelector,
+  company => company.get('logo')
+);
+
+// Help button options selectors
+export const helpButtonSelector = createSelector(
   widgetOptionsSelector,
-  options => options.get('companyLogo')
+  options => options.get('button')
 );
 
 export const helpButtonSizeSelector = createSelector(
-  widgetOptionsSelector,
-  options => options.get('helpButtonSize')
+  helpButtonSelector,
+  options => options.get('size')
 );
 
 export const helpButtonNameSelector = createSelector(
-  widgetOptionsSelector,
-  options => options.get('helpButtonName') || 'Help'
+  helpButtonSelector,
+  options => options.get('name') || 'Help'
 );
 
 export const helpButtonColorsSelector = createSelector(
-  widgetOptionsSelector,
-  options => options.get('helpButtonColors')
+  helpButtonSelector,
+  options => options.get('colors')
 );
 
 export const helpButtonBackgroundColorSelector = createSelector(
@@ -80,52 +113,38 @@ export const helpButtonBorderColorSelector = createSelector(
   options => options.get('border')
 );
 
-export const chatModeSelector = createSelector(
+// Chat options selectors
+export const chatOptionsSelector = createSelector(
   widgetOptionsSelector,
-  options => options.get('chatMode')
-);
-
-export const helpPopupSelector = createSelector(
-  widgetOptionsSelector,
-  options => options.get('helpPopup')
-);
-
-export const helpPopupTitleSelector = createSelector(
-  widgetOptionsSelector,
-  options => options.get('helpPopupTitle')
-);
-
-export const helpPopupMessageSelector = createSelector(
-  widgetOptionsSelector,
-  options => options.get('helpPopupMessage')
-);
-
-export const agentPollingTimeoutSelector = createSelector(
-  widgetOptionsSelector,
-  options => options.get('agentPollingTimeout') || 'off'
-);
-
-export const agentAcceptTimeoutSelector = createSelector(
-  widgetOptionsSelector,
-  options => options.get('agentAcceptTimeout') || 120 // 2 minutes
-);
-
-export const widgetPositionSelector = createSelector(
-  widgetOptionsSelector,
-  options => `bottom.${options.get('windowPosition') || 'right'}`
-);
-
-export const widgetTypeSelector = createSelector(
-  widgetOptionsSelector,
-  options => options.get('windowType') || 'default'
-);
-
-export const isBubbleSelector = createSelector(
-  widgetTypeSelector,
-  widgetType => widgetType === 'bubble'
+  options => options.get('chat')
 );
 
 export const widgetHasChatSelector = createSelector(
-  widgetOptionsSelector,
-  options => options.get('hasChat') !== undefined ? options.get('hasChat') : true
+  chatOptionsSelector,
+  options => options.get('enabled') !== undefined ? options.get('enabled') : true
+);
+
+export const chatModeSelector = createSelector(
+  chatOptionsSelector,
+  options => options.get('requestUserInfo') ? options.get('beginMode') : 'simple'
+);
+
+export const helpPopupSelector = createSelector(
+  chatOptionsSelector,
+  options => options.getIn(['popup', 'enabled'])
+);
+
+export const helpPopupTitleSelector = createSelector(
+  chatOptionsSelector,
+  options => options.getIn(['popup', 'title'])
+);
+
+export const helpPopupMessageSelector = createSelector(
+  chatOptionsSelector,
+  options => options.getIn(['popup', 'message'])
+);
+
+export const agentAcceptTimeoutSelector = createSelector(
+  chatOptionsSelector,
+  options => options.get('waitingTimeout') || 120 // 2 minutes
 );
