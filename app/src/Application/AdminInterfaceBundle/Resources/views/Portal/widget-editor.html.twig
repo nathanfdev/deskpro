@@ -120,8 +120,8 @@
 
                         <ul class="options" ng-if="chat_options.chat.proactive">
                             <li>
-                                <button dp-toggle-switch ng-model="chat_options.chat.popup.enabled"></button>
-                                <h4><span class="title-text">Popup</span></h4>
+                                <input type="checkbox" ng-model="chat_options.chat.popup.enabled" />
+                                <label>Popup</label>
 
                                 <ul class="option-group option-group-row no-label" ng-if="chat_options.chat.popup.enabled">
                                     <li>
