@@ -37,16 +37,21 @@ export const initialLoad = createAction(
           payload.statuses = { active: payload.active, closed: payload.closed, hidden: payload.hidden };
           if (payload.viewFields && payload.viewFields.hasOwnProperty('value')) {
             dispatch(setDisplayFields({
-              cardVisibleFields: payload.viewFields.value.cardVisibleFields,
-              tableVisibleFields: payload.viewFields.value.tableVisibleFields,
-              viewFieldsSettingsFromDb: true
+              visibleFields: {
+                card: payload.viewFields.value.card,
+                table: payload.viewFields.value.table,
+                comments: payload.viewFields.value.comments,
+                fromDb: true
+              }
             }));
           } else {
             dispatch(setDisplayFields({
-              cardVisibleFields: defaultCardFields,
-              tableVisibleFields: defaultTableFields,
-              commentsTableVisibleFields: defaultCommentTableFields,
-              viewFieldsSettingsFromDb: false
+              visibleFields: {
+                card: defaultCardFields,
+                table: defaultTableFields,
+                comments: defaultCommentTableFields,
+                fromDb: false
+              }
             }));
           }
           dispatch(setFeedbackTypesRequest(recordStoresId, payload.rsTypes));

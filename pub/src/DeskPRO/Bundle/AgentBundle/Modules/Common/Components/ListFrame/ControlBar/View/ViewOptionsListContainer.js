@@ -1,16 +1,22 @@
 import React, { Component, PropTypes } from 'react';
+import update from 'react/lib/update';
 
 export class ViewOptionsListContainer extends Component {
 
-  /**
-   * Valid prop types
-   * @type {Object}
-   */
   static propTypes = {
     widgetClass: PropTypes.string,
+    visibleFields: PropTypes.array,
     overrideWidgetClass: PropTypes.bool,
     children: PropTypes.node
   };
+
+  constructor(props) {
+    super(props);
+    this.moveCard = this.moveCard.bind(this);
+    this.state = {
+      items: props.visibleFields.toArray()
+    };
+  }
 
   onChangeDisplayOrder = id => {
     const { value } = this.props;
@@ -18,17 +24,20 @@ export class ViewOptionsListContainer extends Component {
   };
 
   moveCard(dragIndex, hoverIndex) {
-    const { cards } = this.state;
-    const dragCard = cards[dragIndex];
+    const { items } = this.state;
+    const dragCard = items[dragIndex];
+    console.log('Items', items);
+    console.log('Drag index', dragIndex);
+    console.log('Drag card', dragCard);
 
-    this.setState(update(this.state, {
-      cards: {
+    /*this.setState(update(this.state, {
+      items: {
         $splice: [
           [dragIndex, 1],
           [hoverIndex, 0, dragCard]
         ]
       }
-    }));
+    }));*/
   }
 
   render() {

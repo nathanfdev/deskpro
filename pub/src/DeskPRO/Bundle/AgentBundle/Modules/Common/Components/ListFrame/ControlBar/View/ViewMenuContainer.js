@@ -101,7 +101,7 @@ export class ViewMenuContainer extends Component {
                     label={option.label}
                     widgetClass="dpw-navigation-dropdown-column-list-item"
                     isActive={viewMode === type}/>
-              <ViewOptionsListContainer>
+              <ViewOptionsListContainer visibleFields={option.visibleFields}>
                 {jQuery.map(option.configurableFields, (label, name) =>
                     <ViewField
                       key={type + '_' + name}
