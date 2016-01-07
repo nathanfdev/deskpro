@@ -129,11 +129,6 @@ export const chatModeSelector = createSelector(
   options => options.get('requestUserInfo') ? options.get('beginMode') : 'simple'
 );
 
-export const helpPopupSelector = createSelector(
-  chatOptionsSelector,
-  options => options.getIn(['popup', 'enabled'])
-);
-
 export const helpPopupTitleSelector = createSelector(
   chatOptionsSelector,
   options => options.getIn(['popup', 'title'])
@@ -142,6 +137,11 @@ export const helpPopupTitleSelector = createSelector(
 export const helpPopupMessageSelector = createSelector(
   chatOptionsSelector,
   options => options.getIn(['popup', 'message'])
+);
+
+export const helpPopupReplyTypeSelector = createSelector(
+  chatOptionsSelector,
+  options => options.getIn(['popup', 'replyType'])
 );
 
 export const agentAcceptTimeoutSelector = createSelector(

@@ -10,16 +10,18 @@ import { OnlineAgentsContainer } from '../Popups/OnlineAgentsContainer';
 import { openTriggerPopup, closeTriggerPopup } from '../../../Actions/dpWindowActions';
 import { onlineAgentsCountSelector } from '../../../Selectors/agent';
 import {
+  widgetHasChatSelector,
   widgetOpenedSelector,
   helpButtonSizeSelector,
   helpButtonNameSelector,
   helpButtonBackgroundColorSelector,
   helpButtonBorderColorSelector,
   helpButtonTextColorSelector,
-  helpPopupSelector,
+  helpPopupTitleSelector,
+  helpPopupMessageSelector,
+  helpPopupReplyTypeSelector,
   agentPollingTimeoutSelector,
-  triggerPopupOpenedSelector,
-  widgetHasChatSelector
+  triggerPopupOpenedSelector
 } from '../../../Selectors/dpWindow';
 
 @connect(state => ({
@@ -31,7 +33,9 @@ import {
   backgroundColor: helpButtonBackgroundColorSelector(state),
   textColor: helpButtonTextColorSelector(state),
   borderColor: helpButtonBorderColorSelector(state),
-  popup: helpPopupSelector(state),
+  helpPopupTitle: helpPopupTitleSelector(state),
+  helpPopupMessage: helpPopupMessageSelector(state),
+  helpPopupReplyType: helpPopupReplyTypeSelector(state),
   agentsCounts: onlineAgentsCountSelector(state),
   agentPollingTimeout: agentPollingTimeoutSelector(state)
 }))
@@ -43,7 +47,9 @@ export class HelpButtonContainer extends React.Component {
     widgetOpened: PropTypes.bool,
     dispatch: PropTypes.func,
     onClick: PropTypes.func,
-    popup: PropTypes.string,
+    helpPopupTitle: PropTypes.string,
+    helpPopupMessage: PropTypes.string,
+    helpPopupReplyType: PropTypes.string,
     agentsCounts: PropTypes.number,
     agentPollingTimeout: PropTypes.oneOfType([
       PropTypes.string,
@@ -96,29 +102,24 @@ export class HelpButtonContainer extends React.Component {
   }
 
   renderPopup() {
-    const { popup, onClick } = this.props;
+    const { helpPopupTitle, helpPopupMessage, helpPopupReplyType, onClick } = this.props;
     const popupProps = {
       onClick: onClick,
       onClose: this.onClosePopup
     };
 
-    switch (popup) {
-      case 'replyMessageButtons':
-        return (
-          <AgentMessagePopupContainer {...popupProps}>
-            <ReplyButtons {...popupProps} />
-          </AgentMessagePopupContainer>
-        );
-      case 'replyMessageForm':
-        return (
-          <AgentMessagePopupContainer {...popupProps}>
-            <ReplyForm {...popupProps} />
-          </AgentMessagePopupContainer>
-        );
-      case 'onlineAgents':
-      default:
-        return <OnlineAgentsPopup {...popupProps} />;
+    if (helpPopupTitle && helpPopupMessage) {
+      return (
+        <AgentMessagePopupContainer {...popupProps}>
+          {helpPopupReplyType === 'buttons'
+            ? <ReplyButtons {...popupProps} />
+            : <ReplyForm {...popupProps} />
+          }
+        </AgentMessagePopupContainer>
+      );
     }
+
+    return <OnlineAgentsPopup {...popupProps} />;
   }
 
   render() {
