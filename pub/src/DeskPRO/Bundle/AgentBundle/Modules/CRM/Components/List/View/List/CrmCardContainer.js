@@ -52,8 +52,8 @@ export class CrmCardContainer extends Component {
             <PersonCard key={index}
                         person={person}
                         usergroups={usergroups}
-                        organization={organizations.get(person.organization)}
-                        language={languages.get(person.language)}
+                        organization={organizations.get(person.get('organization'))}
+                        language={languages.get(person.get('language'))}
                         selected={selected.includes('id')}/>
           );
         })}
