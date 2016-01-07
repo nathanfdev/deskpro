@@ -137,6 +137,16 @@ class PeopleController extends CrudController
                 $qb->andWhere('teams.id IS NULL');
             }
         }
+
+        if ($org = $request->get('organization')) {
+            $qb->innerJoin("$alias.organization", 'org');
+            if (is_array($org)) {
+                $qb->andWhere('org.id IN (:org)');
+            } else {
+                $qb->andWhere('org.id = :org');
+            }
+            $qb->setParameter('org', $org);
+        }
     }
 
     /**

@@ -70,7 +70,7 @@
     "react-loader": "^2.0.0",
     "react-proxy": "1.1.1",
     "react-redux": "4.0.0",
-    "react-router": "^1.0.0-rc3",
+    "react-router": "1.0.3",
     "react-scrollbar-iframe": "^0.3.5",
     "react-select": "^0.8.1",
     "react-textarea-autosize": "^3.0.0",
