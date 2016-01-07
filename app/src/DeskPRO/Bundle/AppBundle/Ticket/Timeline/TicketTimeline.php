@@ -37,9 +37,28 @@ class TicketTimeline implements \IteratorAggregate
      */
     protected $lines;
 
-    public function __construct()
+    /**
+     * @var int|null
+     */
+    private $total_lines;
+
+    /**
+     * A tactic we use to paginate a TicketTimeline is to only use addLine for the lines we want to display on the current
+     * page. This means counting $lines will not give you the total # of lines that would be present with no pagination.
+     * You should pass $total_lines into the constructor if you are using a pager, so that the pagerfanta adapter can
+     * know the total nb of lines.
+     *
+     * @param int|null $total_lines
+     */
+    public function __construct($total_lines = null)
     {
-        $this->lines = [];
+        $this->lines       = [];
+        $this->total_lines = (int) $total_lines;
+    }
+
+    public function getTotalLinesForPager()
+    {
+        return $this->total_lines !== null ? $this->total_lines : count($this->lines);
     }
 
     /**

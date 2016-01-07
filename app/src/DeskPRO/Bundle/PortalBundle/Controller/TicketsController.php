@@ -41,11 +41,13 @@ use Carbon\Carbon;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter;
+use DeskPRO\Bundle\AppBundle\Ticket\Timeline\TicketTimelinePagerfantaAdapter;
 use DeskPRO\Bundle\PortalBundle\Model\TicketFilter;
 use DeskPRO\Bundle\PortalBundle\Routing\RedirectToUrlException;
 use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTable;
 use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTablesCollection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -166,7 +168,12 @@ class TicketsController extends AbstractController
 
         $ticket_view = $this->getTicketsViewService()->getUserTicketView($ticket);
 
-        $timeline = $this->get('data.ticket_timeline')->getUserTimeline($ticket);
+        $page     = $request->get('page', 1);
+        $per_page = 50;
+        $timeline = $this->get('data.ticket_timeline')->getUserTimeline($ticket, $page, $per_page);
+        $pager    = new Pagerfanta(new TicketTimelinePagerfantaAdapter($timeline));
+        $pager->setMaxPerPage($per_page);
+        $pager->setCurrentPage($page);
 
         // BREADCRUMBS
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);
@@ -178,6 +185,7 @@ class TicketsController extends AbstractController
             array(
                 'ticket'                     => $ticket,
                 'ticket_view'                => $ticket_view,
+                'timeline_pager'             => $pager,
                 'timeline'                   => $timeline,
                 'can_edit'                   => $this->isGranted('TICKET_EDIT', $ticket),
                 'form'                       => $form->createView(),
@@ -409,6 +417,9 @@ class TicketsController extends AbstractController
      */
     public function viewGuestAction(Ticket $ticket, Request $request)
     {
+
+        // TODO: this is being refactored due to a new trello card. the timeline below will be updated then.
+
         if (
             $this->isGranted(TicketsVoter::TICKET_VIEW, $ticket)
             && $this->isGranted('USE_TICKETS')

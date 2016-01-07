@@ -1,5 +1,5 @@
 {% import 'Theme:Tickets:macros.html.twig' as macros %}
-{% for line in timeline %}
+{% for line in timeline_pager %}
   {% if line.type == 'ticket_created' %}
     <div class="ticket-message">
       <div class="ticket-owner">
@@ -38,3 +38,8 @@
     <hr>
   {% endif %}
 {% endfor %}
+{% if timeline_pager.haveToPaginate %}
+    <div class="deskpro-pager">
+      {{ pagerfanta(timeline_pager) }}
+    </div>
+{% endif %}

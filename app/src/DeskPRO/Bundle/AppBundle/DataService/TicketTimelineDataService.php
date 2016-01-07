@@ -35,7 +35,6 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketLog;
 use DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line;
 use DeskPRO\Bundle\AppBundle\Ticket\Timeline\TicketTimeline;
-use DeskPRO\Component\Util\ListUtils;
 use DeskPRO\Component\Util\MapUtils;
 
 class TicketTimelineDataService extends AbstractDataService
@@ -43,9 +42,9 @@ class TicketTimelineDataService extends AbstractDataService
     /**
      * @param Ticket $ticket
      *
-     * @return Line\LineInterface[]
+     * @return TicketTimeline|Line\LineInterface[]
      */
-    public function getUserTimeline(Ticket $ticket)
+    public function getUserTimeline(Ticket $ticket, $page = 1, $per_page = 50)
     {
         $raw_logs = $this->getTicketLogRepo()->getLogsForTicket($ticket, array(
             'order_dir' => 'ASC',
@@ -54,14 +53,17 @@ class TicketTimelineDataService extends AbstractDataService
 
         $messages = $this->getTicketMessageRepo()->getTicketMessages($ticket, array(
             'order'      => 'ASC',
-            'with_notes' => false
+            'with_notes' => false,
         ));
 
         $messages = MapUtils::rekeyByProperty($messages, 'id');
 
-        $logs = $this->procLogLines($ticket, $raw_logs, $messages);
+        $logs_source = $this->procLogLines($ticket, $raw_logs, $messages);
 
-        $timeline = new TicketTimeline();
+        // pager. see TicketTimelinePagerfantaAdapter.
+        $page_offset = ($per_page * ($page - 1));
+        $logs        = array_slice($logs_source, $page_offset, $per_page);
+        $timeline    = new TicketTimeline(count($logs_source));
 
         foreach ($logs as $l) {
             switch ($l->action_type) {
@@ -103,13 +105,13 @@ class TicketTimelineDataService extends AbstractDataService
      * E.g., to account for bugs or processes which might not result in a log line
      * such as a mass import, we need to make sure messages are actually in the timeline!
      *
-     * @param Ticket $ticekt
-     * @param \Application\DeskPRO\Entity\TicketLog[]  $logs
-     * @param \Application\DeskPRO\Entity\TicketMessage[]  $messages
+     * @param Ticket                                      $ticekt
+     * @param \Application\DeskPRO\Entity\TicketLog[]     $logs
+     * @param \Application\DeskPRO\Entity\TicketMessage[] $messages
      */
     private function procLogLines(Ticket $ticket, array $logs, array $messages)
     {
-        $has_created = false;
+        $has_created       = false;
         $messages_with_log = [];
 
         $use_logs = [];
@@ -118,7 +120,7 @@ class TicketTimelineDataService extends AbstractDataService
             switch ($l->action_type) {
                 case 'ticket_created':
                     $has_created = true;
-                    $use_logs[] = $l;
+                    $use_logs[]  = $l;
                     break;
                 case 'message_created':
                     if (isset($messages[$l->id_after])) {
@@ -133,9 +135,9 @@ class TicketTimelineDataService extends AbstractDataService
         }
 
         if (!$has_created) {
-            $l = new TicketLog();
-            $l->person = $ticket->person;
-            $l->action_type = 'ticket_created';
+            $l               = new TicketLog();
+            $l->person       = $ticket->person;
+            $l->action_type  = 'ticket_created';
             $l->date_created = $ticket->date_created;
             array_unshift($use_logs, $l);
         }
@@ -145,19 +147,20 @@ class TicketTimelineDataService extends AbstractDataService
             foreach ($messages_without_log as $mid) {
                 $msg = $messages[$mid];
 
-                $l = new TicketLog();
-                $l->person = $msg->person;
-                $l->action_type = 'message_created';
+                $l               = new TicketLog();
+                $l->person       = $msg->person;
+                $l->action_type  = 'message_created';
                 $l->date_created = $msg->date_created;
-                $l->id_after = $msg->id;
+                $l->id_after     = $msg->id;
 
                 $use_logs[] = $l;
             }
 
-            usort($use_logs, function($a, $b) {
+            usort($use_logs, function ($a, $b) {
                 if ($a->date_created == $b->date_created) {
                     return 0;
                 }
+
                 return $a->date_created < $b->date_created ? -1 : 1;
             });
         }
