@@ -63,6 +63,7 @@ portal:
                     token_storage: @security.token_storage
                 - DpBehat\Portal\RouterContext
                 - DpBehat\Portal\TicketsContext
+                - DpBehat\Performance\PerformanceContext
                 - DpBehat\DataSetContext:
                     dataset_manager: @dataset_manager
     extensions:
