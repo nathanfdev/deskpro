@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Blob;
@@ -40,6 +39,7 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\UploadAbuseCheck;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\CsrfDoubleSubmitExtension;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
+use Orb\Auth\Adapter\SamlAdapterInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -298,6 +298,28 @@ class PortalController extends AbstractController
                 ),
             ],
         ]);
+    }
+
+    /**
+     * @Route("/saml/metadata/{usersource_id}.xml", name="portal_saml_metadata")
+     * @Route("/saml/metadata/{usersource_id}.xml", name="user_saml_metadata")
+     */
+    public function samlMetadataAction($usersource_id)
+    {
+        /** @var \Application\DeskPRO\Entity\Usersource $usersource */
+        $usersource = $this->getEm()->find('DeskPRO:Usersource', $usersource_id);
+        if (!$usersource) {
+            throw $this->createNotFoundException();
+        }
+        /** @var \Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory $factory */
+        $factory = $this->container->getSystemService('usersource_auth_adapter_factory');
+        $adapter = $factory->getAuthAdapter($usersource);
+
+        if ($adapter instanceof SamlAdapterInterface) {
+            return $adapter->getMetadataXmlResponse();
+        }
+
+        throw $this->createNotFoundException('usersource / adapter not suitable for SLS');
     }
 
     /**
