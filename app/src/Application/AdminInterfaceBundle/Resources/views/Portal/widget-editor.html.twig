@@ -128,34 +128,25 @@
 
                         <ul class="options" ng-if="chat_options.chat.proactive">
                             <li>
-                                <label class="option-label">Popup:</label>
-                                <div class="option-group">
+                                <button dp-toggle-switch ng-model="chat_options.chat.popup.enabled"></button>
+                                <h4><span class="title-text">Popup</span></h4>
+
+                                <div class="option-group no-label" ng-if="chat_options.chat.popup.enabled">
                                     <ul class="option-group-row">
                                         <li>
-                                            <input type="radio" ng-model="chat_options.chat_agent_avatar" value="avatars" />
-                                            <label>Agent Avatars</label>
+                                            <label>Agent Title:</label>
+                                            <input type="text" ng-model="chat_options.chat.popup.title"></textarea>
                                         </li>
                                         <li>
-                                            <input type="radio" ng-model="chat_options.chat_agent_avatar" value="avatar_message" />
-                                            <label>Agent Avatar + Message</label>
-
-                                            <ul class="sub-options" ng-if="chat_options.chat_agent_avatar === 'avatar_message'">
-                                                <li>
-                                                    <label>Agent Title:</label>
-                                                    <input type="text" ng-model="chat_options.chat_agent_title"></textarea>
-                                                </li>
-                                                <li>
-                                                    <label>Agent Message:</label>
-                                                    <textarea ng-model="chat_options.chat_agent_icon_message"></textarea>
-                                                </li>
-                                                <li>
-                                                    <label>Reply Form Type:</label>
-                                                    <select ng-model="Ctrl.settings.button_size">
-                                                        <option value="S">Accept Button</option>
-                                                        <option value="M">Reply Form</option>
-                                                    </select>
-                                                </li>
-                                            </ul>
+                                            <label>Agent Message:</label>
+                                            <textarea ng-model="chat_options.chat.popup.message"></textarea>
+                                        </li>
+                                        <li>
+                                            <label>Reply Form Type:</label>
+                                            <select ng-model="chat_options.chat.popup.replyType">
+                                                <option value="buttons">Accept Button</option>
+                                                <option value="reply">Reply Form</option>
+                                            </select>
                                         </li>
                                     </ul>
                                 </div>

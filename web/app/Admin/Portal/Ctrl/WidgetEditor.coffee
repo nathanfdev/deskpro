@@ -30,8 +30,8 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
           proactive: true,
           popup: {
             enabled: true,
-            agentTitle: 'DeskPRO Customer Support',
-            agentMessage: '',
+            title: 'DeskPRO Customer Support',
+            message: 'Given a string consisting of printable ASCII chars, produce an output consisting of its unique chars in the original order.',
             replyType: 'buttons'
           },
           beginMode: 'form',
