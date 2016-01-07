@@ -40,6 +40,9 @@ use DeskPRO\Bundle\PortalBundle\Model\EmailTo;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+/**
+ * A service to make sending emails from portal services/controllers easier.
+ */
 class PortalEmailSender
 {
     protected $container;

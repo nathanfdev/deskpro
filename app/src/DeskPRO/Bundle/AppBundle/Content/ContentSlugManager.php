@@ -40,6 +40,12 @@ use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * We always track a history of content slugs (for articles, news, dls, etc). We want to redirect the old
+ * slugs to the new slugs (to avoid 404s in URLs when the title of an object changes for example).
+ *
+ * Use this ContentSlugManager service to get content by slug string.
+ */
 class ContentSlugManager
 {
     /**

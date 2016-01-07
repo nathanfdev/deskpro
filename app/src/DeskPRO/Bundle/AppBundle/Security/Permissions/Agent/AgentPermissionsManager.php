@@ -29,9 +29,20 @@
 namespace DeskPRO\Bundle\AppBundle\Security\Permissions\Agent;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsBag;
 
+/**
+ * This is meant to be filled in. Do not access this service directly. Instead use the more general DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager to get this permissions bag.
+ *
+ * See the \DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager and its loaders. Create similar services or whatever you need in order to construct a proper PermissionsBag for use on the agent side.
+ */
 class AgentPermissionsManager
 {
+    /**
+     * @param Person $person
+     *
+     * @return PermissionsBag
+     */
     public function getPermissionsBagForAgent(Person $person)
     {
         // return a DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsBag

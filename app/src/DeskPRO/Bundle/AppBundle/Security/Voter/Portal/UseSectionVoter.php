@@ -29,15 +29,12 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
 use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;
 
 /**
- * An example of a "global" or "app-wide" voter. This votes on USE_{SECTION} attributes.
- *
- * Concerned only with wether or not a person can use a section / module of the desk.
+ * Concerned only with wether or not a person can use a section / module of the portal.
  */
 class UseSectionVoter extends AbstractVoter
 {

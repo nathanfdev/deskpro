@@ -34,7 +34,7 @@ namespace DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;
 
 /**
- * Can the user rate content?
+ * Can the user make comments?
  */
 class ContentCommentVoter extends AbstractVoter
 {

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -37,6 +36,9 @@ use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Component\Util\EntityUtils;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
+/**
+ * Will find the ID of any piece of data that has an ID (entities, or even arrays with an id key, etc).
+ */
 class DataTypeIdFinder
 {
     /**

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Security\Firewall;
 
 use Application\DeskPRO\App;
@@ -42,6 +41,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Firewall\AbstractAuthenticationListener;
 
+/**
+ * Handles a session transfer. If you are not logged into portal but you are logged into admin area, for ex,
+ * it will detect that (the detection actually occurs in DpAuthListener) and then it will do what it needs
+ * to do to transfer the session and authentcate you in the portal.
+ */
 class DpTransferSessionAuthListener extends AbstractAuthenticationListener implements ContainerAwareInterface
 {
     /**

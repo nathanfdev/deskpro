@@ -34,6 +34,9 @@ namespace DeskPRO\Bundle\AppBundle\Security;
 use Application\DeskPRO\Entity\Person;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
+/**
+ * Represends someone logging in via usersources (not just for form logins, this could be renamed).
+ */
 class DpFormLoginToken extends AbstractToken
 {
     protected $credentials;

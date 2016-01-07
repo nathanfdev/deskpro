@@ -33,6 +33,9 @@ namespace DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
 use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;
 
+/**
+ * Can the user view the edit profile page?
+ */
 class ProfileVoter extends AbstractVoter
 {
     const EDIT_PROFILE = 'EDIT_PROFILE';

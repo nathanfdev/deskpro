@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\EventListener;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializerEvent;
@@ -59,6 +58,13 @@ class TypeListener implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * Use the DataTypeMap to find the type of data we are dealing with. Set it to the context.
+     *
+     * @param DataSerializerEvent $event
+     *
+     * @throws \Exception
+     */
     public function preSerialize(DataSerializerEvent $event)
     {
         $context = $event->getContext();

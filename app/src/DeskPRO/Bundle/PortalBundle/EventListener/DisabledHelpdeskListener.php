@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
@@ -42,6 +41,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * If the helpdesk is disabled, we send a response back immediately from this request listener.
+ */
 class DisabledHelpdeskListener implements EventSubscriberInterface
 {
     public static $whitelisted_route_names = array(

@@ -35,6 +35,9 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
+/**
+ * Wires together the different term engines.
+ */
 class TermEnginePass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)

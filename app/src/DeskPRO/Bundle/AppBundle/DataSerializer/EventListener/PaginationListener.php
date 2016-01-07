@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\EventListener;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializerEvent;
@@ -37,6 +36,9 @@ use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializerEvents;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+/**
+ * Deals with PagerFanta instances. Sets the "meta" data for pagination.
+ */
 class PaginationListener implements EventSubscriberInterface
 {
     public static function getSubscribedEvents()
@@ -47,6 +49,11 @@ class PaginationListener implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * If the source data is a PagerFanta instace, it prepares the context with the correct Main Data.
+     *
+     * @param DataSerializerEvent $event
+     */
     public function preSerialize(DataSerializerEvent $event)
     {
         $context     = $event->getContext();
@@ -62,6 +69,11 @@ class PaginationListener implements EventSubscriberInterface
         }
     }
 
+    /**
+     * If the source data is a PagerFanta instance, add its pagger info to the "meta" part of the serializaiton.
+     *
+     * @param DataSerializerEvent $event
+     */
     public function postSerialize(DataSerializerEvent $event)
     {
         $context     = $event->getContext();

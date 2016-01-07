@@ -34,6 +34,9 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * Setup the cookie settings. If it is a HTTPS request, ensure we set secure cookies.
+ */
 class CookieSettingsListener implements EventSubscriberInterface
 {
     public function onRequest(GetResponseEvent $event)

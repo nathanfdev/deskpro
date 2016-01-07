@@ -34,6 +34,9 @@ namespace DeskPRO\Bundle\PortalBundle\CacheWarmer;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeRepository;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
+/**
+ * During cache warming, request all themes from the repo. This will establish the cache.
+ */
 class ThemeRepositoryCacheWarmer implements CacheWarmerInterface
 {
     /**

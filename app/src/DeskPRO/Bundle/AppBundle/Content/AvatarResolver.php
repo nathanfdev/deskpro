@@ -35,6 +35,9 @@ use Application\DeskPRO\Entity\Avatar\AvatarOwner;
 use Application\DeskPRO\Entity\Person;
 use Symfony\Component\Routing\RouterInterface;
 
+/**
+ * find the avatar image url for any user.
+ */
 class AvatarResolver
 {
     /**

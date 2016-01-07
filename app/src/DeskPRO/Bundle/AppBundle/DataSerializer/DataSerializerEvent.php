@@ -29,11 +29,13 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer;
 
 use Symfony\Component\EventDispatcher\Event;
 
+/**
+ * An event that is fired by the DataSerializer many times during a serialization.
+ */
 class DataSerializerEvent extends Event
 {
     /**

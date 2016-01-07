@@ -70,6 +70,10 @@ class AbstractDataService
     }
 
     /**
+     * NOTE: $params MUST be unique as it is hashed into a key. By convention pass the method name of the
+     * method that is using this method as the first parameter. Otherwise you may have conflicts between
+     * different methods using the same params that are actually caching different things.
+     *
      * Stores the result of $callable in an array in case this is fetched frequently in this request.
      *
      * @param mixed $params   the "ArbitraryHasher" input to create cache key for this callable

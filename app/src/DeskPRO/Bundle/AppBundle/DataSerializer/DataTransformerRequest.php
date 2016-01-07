@@ -29,11 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer;
 
 /**
- * DataTransformers return an instance of this class. It represents the "response" of a DataTransformer.
+ * The expected input of all DataTransformers. A wrapper that includes useful information a DataTransformer might need.
  */
 class DataTransformerRequest
 {

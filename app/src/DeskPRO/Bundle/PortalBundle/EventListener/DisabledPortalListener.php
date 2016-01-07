@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
@@ -43,6 +42,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * If the portal is disabled, we send a response back immediately from this request listener.
+ */
 class DisabledPortalListener implements EventSubscriberInterface
 {
     /**
@@ -78,7 +80,7 @@ class DisabledPortalListener implements EventSubscriberInterface
         return array(
             // make sure this priority is AFTER the BrandDetectionListener so we capture brand settings
             // AND it also must be AFTER the RouterListener so we can whitelist routes
-            KernelEvents::REQUEST => array('onRequest',0),
+            KernelEvents::REQUEST => array('onRequest', 0),
         );
     }
 

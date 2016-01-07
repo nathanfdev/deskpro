@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Security\Handler;
 
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
@@ -45,6 +44,9 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationFailureHandler;
 use Symfony\Component\Security\Http\HttpUtils;
 
+/**
+ * When a login fails, this class does logging, checks, etc, and then redirects the user.
+ */
 class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
 {
     /**

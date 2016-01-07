@@ -38,6 +38,9 @@ use Application\DeskPRO\Entity\Permission;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
 
+/**
+ * This is an adapter into the "old" permissions storage system.
+ */
 class PortalPermissionsLoader
 {
     /**

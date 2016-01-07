@@ -29,12 +29,15 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\PropertyTransformer\Doctrine;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\PropertyTransformer\DeferredPropertyInterface;
 use DeskPRO\Component\DoctrineAssociation\Deferred\DeferredIdentity;
 
+/**
+ * A deferred property. Usually we replace doctrine associations with their doctrine IDs, and then sideload
+ * the data. In that case, we would transform the property into this deferred property, and resolve it later.
+ */
 class DoctrineDeferredProperty implements DeferredPropertyInterface
 {
     /**

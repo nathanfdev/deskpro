@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\AntiAbuse\Event;
 
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
@@ -39,6 +38,9 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
  */
 class SubmitTicketAbuseCheck extends AntiAbuseEvent
 {
+    /**
+     * @return string
+     */
     public function getType()
     {
         return AntiAbuse::ACTION_SUBMIT_TICKET;

@@ -38,6 +38,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * This request listener sets up the portal mode.
+ */
 class PortalModeListener implements EventSubscriberInterface
 {
     /**

@@ -29,13 +29,15 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\PropertyTransformer\Callback;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\PropertyTransformer\DeferredPropertyInterface;
 use DeskPRO\Bundle\AppBundle\DataSerializer\PropertyTransformer\PropertyTransformationContext;
 use DeskPRO\Bundle\AppBundle\DataSerializer\PropertyTransformer\PropertyTransformerInterface;
 
+/**
+ * This executes the callbacks when the data serializer asks it to resolve a CallbackDeferredProperty.
+ */
 class CallbackPropertyTransformer implements PropertyTransformerInterface
 {
     /**

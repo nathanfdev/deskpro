@@ -35,6 +35,9 @@ use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;
 use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 
+/**
+ * Can the user access tickets? Can the user edit or view a specific ticket?
+ */
 class TicketsVoter extends AbstractVoter
 {
     const TICKET_LIST = 'TICKET_LIST';

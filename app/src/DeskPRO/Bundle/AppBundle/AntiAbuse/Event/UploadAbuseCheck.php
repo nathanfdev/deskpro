@@ -43,6 +43,9 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
  */
 class UploadAbuseCheck extends AntiAbuseEvent
 {
+    /**
+     * @return string
+     */
     public function getType()
     {
         return AntiAbuse::ACTION_UPLOAD;

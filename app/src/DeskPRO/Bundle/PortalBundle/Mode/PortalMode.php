@@ -28,6 +28,11 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Mode;
 
+/**
+ * A portal mode represents a mode that the portal is in for a given request.
+ *
+ * There is always a portal mode. The default mode is "normal".
+ */
 class PortalMode
 {
     const ATTR_NAME          = '_portal_mode';

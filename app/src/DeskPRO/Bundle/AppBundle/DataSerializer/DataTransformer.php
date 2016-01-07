@@ -29,13 +29,12 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\Exception\DataSerializerException;
 
 /**
- * Class DataTransformer.
+ * Transforms data using child data transformers. Incoming data are associated to a particular DataTypeTransfomer via the DataTypeMap, which is configurable.
  */
 class DataTransformer
 {

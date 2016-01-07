@@ -30,6 +30,9 @@ namespace DeskPRO\Bundle\PortalBundle\Mode;
 
 use Symfony\Component\Validator\Constraints\Url;
 
+/**
+ * Generates a portal mode using URL paths. The request listener uses this to determine the portal mode.
+ */
 class PortalModeFactory
 {
     const REGEX_ADMIN         = '#^/admin\-mode(/{1}.*|$)$#';

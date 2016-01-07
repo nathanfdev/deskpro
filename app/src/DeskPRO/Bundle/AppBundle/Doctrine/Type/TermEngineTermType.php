@@ -36,6 +36,9 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Util\TermToJsonConverter;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type as BaseType;
 
+/**
+ * A serializer that stores terms as JSON strings in the DB.
+ */
 class TermEngineTermType extends BaseType
 {
     const TERM_ENGINE_TERM_TYPE = 'term_engine_term';

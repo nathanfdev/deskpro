@@ -33,6 +33,10 @@ use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Agent\AgentPermissionsManager;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 
+/**
+ * This serivce should be the only entry point into accessing permissions. Use this service and get the correct
+ * "permissions bag" for either the portal or the agent side, whichever you need.
+ */
 class PermissionsManager
 {
     /**

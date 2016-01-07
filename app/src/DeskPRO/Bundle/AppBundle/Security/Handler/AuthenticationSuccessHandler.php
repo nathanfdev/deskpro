@@ -41,6 +41,9 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationSuccessHandler;
 use Symfony\Component\Security\Http\Logout\LogoutSuccessHandlerInterface;
 
+/**
+ * When a login succeeds, this class does logging, checks, etc and then redirects the user to the right url.
+ */
 class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler implements ContainerAwareInterface, LogoutSuccessHandlerInterface
 {
     /**

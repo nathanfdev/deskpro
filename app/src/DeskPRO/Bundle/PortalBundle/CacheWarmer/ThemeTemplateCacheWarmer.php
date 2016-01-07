@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\CacheWarmer;
 
 use Application\DeskPRO\Entity\Brand;
@@ -38,6 +37,9 @@ use DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
+/**
+ * During cache warming, all twig templates from the themes are loaded (twig will cache them).
+ */
 class ThemeTemplateCacheWarmer implements CacheWarmerInterface
 {
     /**

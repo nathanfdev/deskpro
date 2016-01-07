@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\EventListener;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataPropertyTransformer;
@@ -42,7 +41,8 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * Recursively finds DeferredPropertyInterface's in the serialized array and processes them.
+ * Recursively finds DeferredPropertyInterface's in the serialized array and processes them using the main
+ * DataPropertyTransformer service.
  */
 class DeferredPropertiesListener implements EventSubscriberInterface
 {

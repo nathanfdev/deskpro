@@ -37,6 +37,14 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
 
+/**
+ * Given a user (or guest) find out what usergroups they can access.
+ *
+ * This is needed because we don't store all usergroups to a person. Some of them are autoamtically determined.
+ * For example "Everyone" is applied to everyone, but we don't store that.
+ *
+ * So, use this service to get an accurage list of usergroups for a person.
+ */
 class PortalUsergroupDecider
 {
     /**

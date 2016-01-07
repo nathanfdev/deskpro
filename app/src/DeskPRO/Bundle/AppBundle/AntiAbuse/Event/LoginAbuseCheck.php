@@ -43,6 +43,9 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
  */
 class LoginAbuseCheck extends AntiAbuseEvent
 {
+    /**
+     * @return string
+     */
     public function getType()
     {
         return AntiAbuse::ACTION_LOGIN;

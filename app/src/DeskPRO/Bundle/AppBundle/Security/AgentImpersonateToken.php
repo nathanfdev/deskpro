@@ -34,6 +34,9 @@ namespace DeskPRO\Bundle\AppBundle\Security;
 use Application\DeskPRO\Entity\Person;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
+/**
+ * Represents someone logged in that is impersonating another user.
+ */
 class AgentImpersonateToken extends AbstractToken
 {
     const ATTR_AGENT_IMPERSONATE = 'impersonating_agent_id';

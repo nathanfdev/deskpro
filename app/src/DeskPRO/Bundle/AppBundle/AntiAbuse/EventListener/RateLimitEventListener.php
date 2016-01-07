@@ -42,6 +42,9 @@ use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+/**
+ * Rate limiting means CAPTCHA in DeskPRO at the moment. This listener contains the logic for our captcha related anti-abuse.
+ */
 class RateLimitEventListener implements EventSubscriberInterface
 {
     /**

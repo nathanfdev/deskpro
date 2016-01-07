@@ -91,6 +91,7 @@ class DataSerializer
          * PRE_SERIALIZE
          *
          * core listeners:
+         * EventListener\PaginationListener - gets the main data from the pagerfanta instance
          * EventListener\TypeListener - maps an api object "type" onto the context
          */
         $this->event_dispatcher->dispatch(DataSerializerEvents::PRE_SERIALIZE, new DataSerializerEvent($context));
@@ -125,6 +126,7 @@ class DataSerializer
          *
          * core listeners:
          * EventListener\SideloadListener - now that serilization of the main is done, process includes
+         * EventListener\PaginationListener - adds pagination metadata to the json "meta". is uses the pagerfanta instance from the source data.
          */
         $this->event_dispatcher->dispatch(DataSerializerEvents::POST_SERIALIZE, new DataSerializerEvent($context));
 

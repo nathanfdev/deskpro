@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataPropertyTransformer;
@@ -38,7 +37,10 @@ use DeskPRO\Bundle\AppBundle\DataSerializer\PropertyTransformer\PropertyTransfor
 use Psr\Log\LoggerInterface;
 
 /**
- * Class AbstractDataSerializerTransformer.
+ * Base class for all DataTypeTransformers. It offers abstract methods that simplify the transform() method.
+ * Most children will need to only implement the getAutomaticProperties() and getCustomProperties() methods.
+ * However, it is possible to implement DataSerializerTransformerInterface yourself if you don't need this
+ * abstraction.
  */
 abstract class AbstractDataSerializerTransformer implements DataSerializerTransformerInterface
 {

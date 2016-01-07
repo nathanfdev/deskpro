@@ -37,6 +37,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Logout\LogoutHandlerInterface;
 
+/**
+ * When a logout request is made, this class is notified so it can do some cleanup.
+ */
 class LogoutHandler implements LogoutHandlerInterface
 {
     const RECENT_LOGOUT = 'recent_logout';

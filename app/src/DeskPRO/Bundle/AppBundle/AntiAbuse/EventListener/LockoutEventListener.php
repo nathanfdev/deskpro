@@ -43,6 +43,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+/**
+ * This is meant to "lock out" logins, and can be expanded to lock out other things too.
+ */
 class LockoutEventListener implements EventSubscriberInterface
 {
     /**

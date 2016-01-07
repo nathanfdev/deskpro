@@ -29,12 +29,14 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\PropertyTransformer\Doctrine;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\PropertyTransformer\DeferredPropertyInterface;
 use DeskPRO\Component\DoctrineAssociation\Deferred\DeferredIdentity;
 
+/**
+ * A deferred sideload.
+ */
 class DoctrineDeferredInclude implements DeferredPropertyInterface
 {
     /**

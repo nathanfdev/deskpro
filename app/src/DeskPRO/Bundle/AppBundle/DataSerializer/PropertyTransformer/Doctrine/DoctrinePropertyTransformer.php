@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\PropertyTransformer\Doctrine;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -41,6 +40,9 @@ use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Component\DoctrineAssociation\DoctrineAssociationManager;
 use Doctrine\Common\Collections\Collection;
 
+/**
+ * This will take care of doctrine association serialization.
+ */
 class DoctrinePropertyTransformer implements PropertyTransformerInterface
 {
     /**

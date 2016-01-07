@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Security\Firewall;
 
 use Application\DeskPRO\Auth\LoginProcessor;
@@ -56,6 +55,14 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Http\Firewall\AbstractAuthenticationListener;
 
+/**
+ * This is where the bulk of the logic is for the security system of the portal.
+ *
+ * This listeners detects various methods of logging in (sso, forms, callbacks, saml, etc) and creates
+ * the proper token, which are all handled in the security providers.
+ *
+ * It may also reject a request right away, return a response, do some logging, etc.
+ */
 class DpAuthListener extends AbstractAuthenticationListener implements ContainerAwareInterface
 {
     const USERSOURCE_TEST = 'usersource_test';
