@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
 import {
   currentListSortSelector, currentListOrderSelector, currentListParamsSelector, currentViewModeSelector,
-  tableVisibleFieldsSelector, cardVisibleFieldsSelector, listFiltersSelector
+  visibleFieldsSelector, listFiltersSelector
 } from '../../../Selectors/list';
 import { setSort, setOrder, applyParams, toggleTableFieldVisibility, toggleCardFieldVisibility,
   storeDisplayFieldsToPersonSetting, updateDisplayFieldsToPersonSetting }
@@ -13,14 +13,12 @@ import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components
 
 @connect(state => ({
   count: state.Feedback.list.get('selected').size,
-  viewFieldsSettingsFromDb: state.Feedback.list.get('viewFieldsSettingsFromDb'),
   sort: currentListSortSelector(state),
   order: currentListOrderSelector(state),
   filterParams: currentListParamsSelector(state),
   filters: listFiltersSelector(state),
   viewMode: currentViewModeSelector(state),
-  tableVisibleFields: tableVisibleFieldsSelector(state),
-  cardVisibleFields: cardVisibleFieldsSelector(state)
+  visibleFields: visibleFieldsSelector(state)
 }))
 export class ControlBarContainer extends Component {
   static propTypes = {
@@ -30,12 +28,11 @@ export class ControlBarContainer extends Component {
     filterParams: PropTypes.object.isRequired,
     filters: PropTypes.array.isRequired,
     viewMode: PropTypes.string.isRequired,
-    tableVisibleFields: PropTypes.object,
-    cardVisibleFields: PropTypes.object,
-    viewFieldsSettingsFromDb: PropTypes.bool
+    visibleFields: PropTypes.object
   };
 
   render() {
+    console.log(this.props.visibleFields);
     const config = {
       onMenuUnmount: applyParams,
       sorting: {
@@ -67,7 +64,7 @@ export class ControlBarContainer extends Component {
               labels: 'Labels'
             },
 
-            visibleFields: this.props.cardVisibleFields,
+            visibleFields: this.props.visibleFields.get(constants.VIEW_MODE_CARD),
             toggleFieldVisibility: toggleCardFieldVisibility
           },
           [constants.VIEW_MODE_TABLE]: {
@@ -84,14 +81,14 @@ export class ControlBarContainer extends Component {
               labels: 'Labels'
             },
 
-            visibleFields: this.props.tableVisibleFields,
+            visibleFields: this.props.visibleFields.get(constants.VIEW_MODE_TABLE),
             toggleFieldVisibility: toggleTableFieldVisibility
           }
         },
 
         viewMode: this.props.viewMode,
         viewModeAction: (mode) => updateRoutingState('list', 'view', mode),
-        onViewFieldsMenuUnmount: this.props.viewFieldsSettingsFromDb ? updateDisplayFieldsToPersonSetting : storeDisplayFieldsToPersonSetting
+        onViewFieldsMenuUnmount: this.props.visibleFields.get('fromDb') ? updateDisplayFieldsToPersonSetting : storeDisplayFieldsToPersonSetting
       }
     };
     return (

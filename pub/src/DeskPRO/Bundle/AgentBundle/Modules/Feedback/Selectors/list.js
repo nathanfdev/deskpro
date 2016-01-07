@@ -21,13 +21,19 @@ export const currentListParamsSelector = createSelector(
     state => state.get('currentListParams')
 );
 
-export const currentViewFieldsParamsSelector = createSelector(
+export const visibleFieldsSelector = createSelector(
   stateSelector,
-  (state) => {
-    const cardVisibleFields = state.get('cardVisibleFields');
-    const tableVisibleFields = state.get('tableVisibleFields');
-    return { cardVisibleFields: cardVisibleFields, tableVisibleFields: tableVisibleFields };
-  }
+    state => state.get('visibleFields')
+);
+
+export const cardVisibleFieldsSelector = createSelector(
+  visibleFieldsSelector,
+    params => params.get('card')
+);
+
+export const tableVisibleFieldsSelector = createSelector(
+  visibleFieldsSelector,
+    params => params.get('table')
 );
 
 export const currentListSortSelector = createSelector(
@@ -46,17 +52,6 @@ export const isCommentsSelector = createSelector(
 );
 
 export const currentViewModeSelector = hashStateSelectorFactory(['list', 'view'], 'card');
-
-export const tableVisibleFieldsSelector = createSelector(
-  stateSelector,
-    state => state.get('tableVisibleFields')
-);
-
-export const cardVisibleFieldsSelector = createSelector(
-  stateSelector,
-    state => state.get('cardVisibleFields')
-);
-
 
 export const listFiltersSelector = createSelector(
   [navStateSelector, currentListParamsSelector, feedbackCategoriesSelector, feedbackLabelsSelector, feedbackTypesSelector],

@@ -5,7 +5,7 @@ import * as PersonSetting from 'DeskPRO/Bundle/AgentBundle/Services/Api/PersonSe
 import { loadFeedbackCommentsList } from './FeedbackCommentsActions';
 import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 import { loadFeedbackCategories } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCategoriesActions';
-import { currentListParamsSelector, currentViewFieldsParamsSelector } from '../Selectors/list';
+import { currentListParamsSelector, visibleFieldsSelector } from '../Selectors/list';
 import { setFeedbackStatusCategoriesRequest } from '../RecordStores/Actions/feedbackStatusCategoriesActions';
 import { loadFeedbackCommentsCounter } from '../RecordStores/Actions/feedbackCommentsActions';
 import { setFeedbackRequest } from '../RecordStores/Actions/feedbackActions';
@@ -105,7 +105,7 @@ export const setViewFieldsSettingStoredFlag = createAction(
 export const storeDisplayFieldsToPersonSetting = createAction(
   'FEEDBACK_STORE_DISPLAY_FIELD_TO_PERSON_SETTING',
   () => (dispatch, getState) => {
-    const displayFields = currentViewFieldsParamsSelector(getState());
+    const displayFields = visibleFieldsSelector(getState());
     PersonSetting.post('feedback_display_fields', displayFields);
     dispatch(setViewFieldsSettingStoredFlag(true));
     return displayFields;
@@ -115,7 +115,7 @@ export const storeDisplayFieldsToPersonSetting = createAction(
 export const updateDisplayFieldsToPersonSetting = createAction(
   'FEEDBACK_UPDATE_DISPLAY_FIELD_TO_PERSON_SETTING',
   () => (dispatch, getState) => {
-    const displayFields = currentViewFieldsParamsSelector(getState());
+    const displayFields = visibleFieldsSelector(getState());
     PersonSetting.put('feedback_display_fields', displayFields);
     return displayFields;
   }

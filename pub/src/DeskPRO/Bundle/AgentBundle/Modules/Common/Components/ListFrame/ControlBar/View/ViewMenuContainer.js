@@ -5,7 +5,7 @@ import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Menu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
 import { Item } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item';
-import { ItemList } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/ItemList';
+import { ViewOptionsListContainer } from './ViewOptionsListContainer';
 import { MenuFooter } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooter';
 import { ViewField } from './ViewField';
 import jQuery from 'jquery';
@@ -96,22 +96,22 @@ export class ViewMenuContainer extends Component {
           };
 
           return (
-            <Item discMarked
-                  key={type}
-                  label={option.label}
-                  widgetClass="dpw-navigation-dropdown-column-list-item"
-                  isActive={viewMode === type}>
-              <ItemList>
+            <div key={type}>
+              <Item discMarked
+                    label={option.label}
+                    widgetClass="dpw-navigation-dropdown-column-list-item"
+                    isActive={viewMode === type}/>
+              <ViewOptionsListContainer visibleFields={option.visibleFields}>
                 {jQuery.map(option.configurableFields, (label, name) =>
                     <ViewField
-                      key={name}
+                      key={type + '_' + name}
                       value={name}
                       label={label}
                       isShown={(option.visibleFields || []).indexOf(name) > -1}
                       changeState={onClick}/>
                 )}
-              </ItemList>
-            </Item>
+              </ViewOptionsListContainer>
+            </div>
           );
         })}
       </Menu>

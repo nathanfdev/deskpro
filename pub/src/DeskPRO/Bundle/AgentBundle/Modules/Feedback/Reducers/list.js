@@ -1,5 +1,6 @@
 import { createReducer } from 'Ampliflux';
-import { async, setValue, setFullPayload, togglePayloadInCollection, handleMassAction, mergeFullPayload } from 'Ampliflux/reducers/handlers';
+import { async, setValue, setFullPayload, togglePayloadInCollection, handleMassAction, mergeFullPayload }
+  from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/FeedbackListActions';
 import * as commentsActions from '../Actions/FeedbackCommentsActions';
 import * as massActions from '../Actions/FeedbackMassActions';
@@ -10,23 +11,19 @@ const initialState = {
   async: {
     done: true
   },
-  elements: [], // array of list elements (feedback or comments)
+  elements: [], // array of filtered elements IDs (feedback or comments)
   selected: [], // array of IDs
-
+  visibleFields: {
+    card: [],
+    table: []
+  },
   // currently viewed list GET parameters map
   currentListParams: {
     isComments: false,
     sort: 'date_created',
     order: constants.ORDER_DESC,
     labels_mode: 'any'
-  },
-  commentsTableViewFields: [ // temporary, must be removed later
-    { name: 'id', label: 'ID', className: 'id-col', status: constants.FIELD_SHOWN, priority: 1 },
-    { name: 'status', label: 'Status', status: constants.FIELD_SHOWN, priority: 2 },
-    { name: 'date_created', label: 'Created', status: constants.FIELD_SHOWN, priority: 10 },
-    { name: 'validating', label: 'Validating', status: constants.FIELD_SHOWN, priority: 16 },
-    { name: 'content', label: 'Content', status: constants.FIELD_SHOWN, priority: 18 }
-  ]
+  }
 };
 
 export default createReducer(initialState, {
@@ -42,17 +39,17 @@ export default createReducer(initialState, {
   [massActions.resetAllMassActionsParams]: (state) => state.set('massActions', Immutable.fromJS({})),
   [massActions.toggleSelectedAction]: togglePayloadInCollection('selected'),
 
+  [actions.setParams]: setFullPayload('currentListParams'),
   [actions.loadFeedbackList]: async({
     success: (state, payload) => state.set('elements', payload.ids).set('pagination', payload.pagination),
     start: setValue('async.done', false),
     done: setValue('async.done', true)
   }),
-  [actions.toggleTableFieldVisibility]: togglePayloadInCollection('tableVisibleFields'),
-  [actions.toggleCardFieldVisibility]: togglePayloadInCollection('cardVisibleFields'),
-  [actions.setViewFieldsSettingStoredFlag]: (state, payload) => state.set('viewFieldsSettingsFromDb', payload),
+  [actions.setDisplayFields]: mergeFullPayload(),
+  [actions.toggleTableFieldVisibility]: togglePayloadInCollection(['visibleFields', 'table']),
+  [actions.toggleCardFieldVisibility]: togglePayloadInCollection(['visibleFields', 'card']),
+  [actions.setViewFieldsSettingStoredFlag]: (state, payload) => state.setIn(['visibleFields', 'fromDb'], payload),
   [actions.getDisplayFieldsFromPersonSetting]: async({
     success: mergeFullPayload()
-  }),
-  [actions.setParams]: setFullPayload('currentListParams'),
-  [actions.setDisplayFields]: mergeFullPayload()
+  })
 });

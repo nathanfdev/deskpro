@@ -1,4 +1,5 @@
 export default {
+  DRAGGABLE_TYPE_FIELD: 'field',
   VIEW_MODE_CARD: 'card',
   VIEW_MODE_TABLE: 'table',
   VIEW_MODE_CONDENSED: 'condensed',
@@ -9,9 +10,6 @@ export default {
   ORDER_BY_DATE: 'date',
   ORDER_BY_RATING: 'rating',
   ORDER_BY_VOTES: 'votes',
-  FIELD_REQUIRED: 'required',
-  FIELD_HIDDEN: 'hidden',
-  FIELD_SHOWN: 'shown',
   STATUS_NEW: 'new',
   STATUS_VISIBLE: 'visible',
   STATUS_ACTIVE: 'active',
