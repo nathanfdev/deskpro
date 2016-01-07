@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -72,7 +71,7 @@ class DoubleSubmitJavascriptListener implements EventSubscriberInterface
         if (false !== $pos) {
             $script = <<<'JS'
 <script>
-!function(){function t(t){for(var n=t+"=",e=document.cookie.split(";"),r=0;r<e.length;r++){for(var o=e[r];" "==o.charAt(0);)o=o.substring(1,o.length);if(0==o.indexOf(n))return o.substring(n.length,o.length)}return null}var n="_dp_csrf_token",e=t(n),r=/.*\[_dp_csrf_token\]*./;e||(e=(Math.random()+1).toString(36).substring(2,17)+(Math.random()+1).toString(36).substring(2,17),document.cookie=n+"="+e+"; path=/");for(var o=document.getElementsByTagName("input"),i=1;i<o.length;i++)"hidden"==o[i].getAttribute("type")&&o[i].getAttribute("name").match(r)&&(o[i].value=e)}();
+!function(t){function n(t){for(var n=t+"=",e=document.cookie.split(";"),r=0;r<e.length;r++){for(var o=e[r];" "==o.charAt(0);)o=o.substring(1,o.length);if(0==o.indexOf(n))return o.substring(n.length,o.length)}return null}var e="_dp_csrf_token",r=n(e),o=/.*\[_dp_csrf_token\]*./;r||(r=(Math.random()+1).toString(36).substring(2,17)+(Math.random()+1).toString(36).substring(2,17),document.cookie=e+"="+r+"; path=/");for(var i=document.getElementsByTagName("input"),u=1;u<i.length;u++)"hidden"==i[u].getAttribute("type")&&i[u].getAttribute("name").match(o)&&(i[u].value=r);t.dp_get_csrf_token=function(){return r}}(window);
 </script>
 JS;
             $content = substr($content, 0, $pos).$script.substr($content, $pos);
@@ -90,7 +89,7 @@ JS;
 
 // I just minified this script online and copy+pasted above
 /*
-(function(){
+(function(win){
 function readCookie(name) {
     var nameEQ = name + "=";
     var ca = document.cookie.split(';');
@@ -122,5 +121,9 @@ for (var i = 1; i < inputs.length; i++) {
         }
     }
 }
-})();
+
+win.dp_get_csrf_token = function() {
+    return token;
+};
+})(window);
 */

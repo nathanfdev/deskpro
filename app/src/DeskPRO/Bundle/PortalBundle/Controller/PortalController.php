@@ -285,6 +285,7 @@ class PortalController extends AbstractController
             'success' => true,
             'blob'    => [
                 'id'        => $blob->getId(),
+                'filename'  => $blob->getFilename(),
                 'authcode'  => $blob->getAuthcode(),
                 'size'      => $blob->getReadableFilesize(),
                 'icon_html' => $this->get('icon_factory')->makeFileIcon($blob),
