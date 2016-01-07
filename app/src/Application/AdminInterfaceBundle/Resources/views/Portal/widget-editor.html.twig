@@ -95,59 +95,51 @@
 
             <div class="content-section">
                 <h2 class="with-divider form-header"><span>Chat Settings</span></h2>
-                <ul class="options">
+
+                <button dp-toggle-switch ng-model="chat_options.chat.enabled"></button>
+                <h4><span class="title-text">Enable / Disable Chat</span></h4>
+
+                <button dp-toggle-switch ng-model="chat_options.chat.requestUserInfo"></button>
+                <h4><span class="title-text">Request Name/Email before Chat Commences</span></h4>
+
+                <ul class="option-group option-group-row no-label" ng-if="chat_options.chat.requestUserInfo">
                     <li>
-                        <button dp-toggle-switch ng-model="chat_options.chat.enabled"></button>
-                        <h4><span class="title-text">Enable / Disable Chat</span></h4>
+                        <label>Begin chat mode:</label>
+                        <select ng-model="chat_options.chat.beginMode">
+                            <option value="conversation">Conversation Style</option>
+                            <option value="form">Form Style</option>
+                        </select>
                     </li>
-                    <li ng-if="chat_options.chat.enabled">
-                        <button dp-toggle-switch ng-model="chat_options.chat.requestUserInfo"></button>
-                        <h4><span class="title-text">Request Name/Email before Chat Commences</span></h4>
+                </ul>
 
-                        <ul class="option-group option-group-row no-label" ng-if="chat_options.chat.requestUserInfo">
-                            <li>
-                                <label>Begin chat mode:</label>
-                                <select ng-model="chat_options.chat.beginMode">
-                                    <option value="conversation">Conversation Style</option>
-                                    <option value="form">Form Style</option>
-                                </select>
-                            </li>
-                        </ul>
+                <button dp-toggle-switch ng-model="chat_options.chat.proactive"></button>
+                <h4><span class="title-text">Proactive Chat</span></h4>
+
+                <ul class="options" ng-if="chat_options.chat.proactive">
+                    <li>
+                        <label class="option-label">Agent Title:</label>
+                        <input type="text" ng-model="chat_options.chat.popup.title" />
                     </li>
-                    <li ng-if="chat_options.chat.enabled">
-                        <button dp-toggle-switch ng-model="chat_options.chat.proactive"></button>
-                        <h4><span class="title-text">Proactive Chat</span></h4>
-
-                        <ul class="options" ng-if="chat_options.chat.proactive">
-                            <li>
-                                <input type="checkbox" ng-model="chat_options.chat.popup.enabled" />
-                                <label>Popup</label>
-
-                                <ul class="option-group option-group-row no-label" ng-if="chat_options.chat.popup.enabled">
-                                    <li>
-                                        <label>Agent Title:</label>
-                                        <input type="text" ng-model="chat_options.chat.popup.title"></textarea>
-                                    </li>
-                                    <li>
-                                        <label>Agent Message:</label>
-                                        <textarea ng-model="chat_options.chat.popup.message"></textarea>
-                                    </li>
-                                    <li>
-                                        <label>Reply Form Type:</label>
-                                        <select ng-model="chat_options.chat.popup.replyType">
-                                            <option value="buttons">Accept Button</option>
-                                            <option value="reply">Reply Form</option>
-                                        </select>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li>
-                                <label class="option-label">Waiting timeout:</label>
-                                <div class="option-group">
-                                    <input type="text" ng-model="chat_options.chat.waitingTimeout" />
-                                </div>
-                            </li>
-                        </ul>
+                    <li>
+                        <label class="option-label">Agent Message:</label>
+                        <div class="option-group">
+                            <textarea ng-model="chat_options.chat.popup.message"></textarea>
+                        </div>
+                    </li>
+                    <li>
+                        <label class="option-label">Reply Form Type:</label>
+                        <div class="option-group">
+                            <select ng-model="chat_options.chat.popup.replyType">
+                                <option value="buttons">Accept Button</option>
+                                <option value="reply">Reply Form</option>
+                            </select>
+                        </div>
+                    </li>
+                    <li>
+                        <label class="option-label">Waiting timeout:</label>
+                        <div class="option-group">
+                            <input type="text" ng-model="chat_options.chat.waitingTimeout" />
+                        </div>
                     </li>
                 </ul>
             </div>

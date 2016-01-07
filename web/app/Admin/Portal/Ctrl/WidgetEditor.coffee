@@ -32,7 +32,6 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
           requestUserInfo: true,
           proactive: true,
           popup: {
-            enabled: true,
             title: 'DeskPRO Customer Support',
             message: 'Given a string consisting of printable ASCII chars, produce an output consisting of its unique chars in the original order.',
             replyType: 'buttons'
