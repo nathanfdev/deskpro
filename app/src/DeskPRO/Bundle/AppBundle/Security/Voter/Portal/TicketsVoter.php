@@ -40,13 +40,14 @@ use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
  */
 class TicketsVoter extends AbstractVoter
 {
-    const TICKET_LIST = 'TICKET_LIST';
-    const TICKET_VIEW = 'TICKET_VIEW';
-    const TICKET_EDIT = 'TICKET_EDIT';
+    const TICKET_LIST      = 'TICKET_LIST';
+    const TICKET_VIEW      = 'TICKET_VIEW';
+    const TICKET_VIEW_AUTH = 'TICKET_VIEW_AUTH';
+    const TICKET_EDIT      = 'TICKET_EDIT';
 
     protected function getSupportedAttributes()
     {
-        return array(self::TICKET_LIST, self::TICKET_VIEW, self::TICKET_EDIT);
+        return array(self::TICKET_LIST, self::TICKET_VIEW, self::TICKET_EDIT, self::TICKET_VIEW_AUTH);
     }
 
     /**
@@ -70,6 +71,11 @@ class TicketsVoter extends AbstractVoter
         $decision = false;
 
         switch ($attribute) {
+            case static::TICKET_VIEW_AUTH:
+                // view the ticket as a "guest" if you know the auth code
+                $decision = $this->isLoggedIn($user);
+                break;
+
             case static::TICKET_LIST:
                 $decision = $this->isLoggedIn($user);
                 break;

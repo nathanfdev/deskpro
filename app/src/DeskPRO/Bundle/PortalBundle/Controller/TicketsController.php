@@ -126,15 +126,14 @@ class TicketsController extends AbstractController
 
     /**
      * @Route("/tickets/{ticket_ref}", name="portal_tickets_view")
+     * @Route("/ticket-view/{auth}", name="portal_tickets_guest_view")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
      */
-    public function viewAction(Request $request, $ticket_ref, $visitor_id)
+    public function viewAction(Request $request, $ticket_ref = null, $auth = null, $visitor_id, $_route)
     {
-        if (!$ticket = $this->getTicketByRefOrId($ticket_ref)) {
-            throw new NotFoundHttpException(sprintf('no ticket with ref or id "%s" found', $ticket_ref));
-        }
+        $ticket = $this->getTicketForViewPage($ticket_ref, $auth, $_route);
 
-        if (!$this->isGranted(TicketsVoter::TICKET_VIEW, $ticket)) {
+        if ($this->cannotAccessViewPageOfTicket($ticket)) {
             throw new AccessDeniedException();
         }
 
@@ -157,6 +156,19 @@ class TicketsController extends AbstractController
 
         if ($form->isValid()) {
             if ($form->getClickedButton()->getConfig()->getName() !== 'more_attachments') {
+                // TODO: if this user isn't a participant on the ticket we should add them here
+
+                $person = $this->getCurrentPerson();
+                if (!$ticket->isParticipant($person)) {
+                    // if the user is submitting a reply and are not a participant yet, we should add them
+                    // after we add them as a participant, the redirect below to the "normal" view page
+                    // will work, because they are now granted access to it.
+                    $participant = new TicketParticipant();
+                    $participant->setPerson($person);
+                    $ticket->addParticipant($participant);
+                    $this->getEm()->persist($participant);
+                }
+
                 // We don't continue here if they just clicked the "add more attachments" button
                 $this->saveNewReply($ticket, $message);
 
@@ -168,6 +180,7 @@ class TicketsController extends AbstractController
 
         $ticket_view = $this->getTicketsViewService()->getUserTicketView($ticket);
 
+        // create timeline with pagination
         $page     = $request->get('page', 1);
         $per_page = 50;
         $timeline = $this->get('data.ticket_timeline')->getUserTimeline($ticket, $page, $per_page);
@@ -187,7 +200,7 @@ class TicketsController extends AbstractController
                 'ticket_view'                => $ticket_view,
                 'timeline_pager'             => $pager,
                 'timeline'                   => $timeline,
-                'can_edit'                   => $this->isGranted('TICKET_EDIT', $ticket),
+                'can_edit'                   => $this->isGranted(TicketsVoter::TICKET_EDIT, $ticket),
                 'form'                       => $form->createView(),
                 'breadcrumbs'                => $breadcrumbs,
                 'page_title'                 => $this->createPageTitle()->tickets($ticket),
@@ -409,52 +422,6 @@ class TicketsController extends AbstractController
     }
 
     /**
-     * This URL is accessible if you know the ticket auth code. No other security is done here.
-     *
-     * VIEW ONLY. Must login to interact with things (which will redirect you to viewAction above).
-     *
-     * @Route("/ticket-view/{auth}", name="portal_tickets_guest_view")
-     */
-    public function viewGuestAction(Ticket $ticket, Request $request)
-    {
-
-        // TODO: this is being refactored due to a new trello card. the timeline below will be updated then.
-
-        if (
-            $this->isGranted(TicketsVoter::TICKET_VIEW, $ticket)
-            && $this->isGranted('USE_TICKETS')
-            && $this->isGranted('ROLE_USER')
-        ) {
-            // the user passes all security requirements to view the normal ticket view page.
-            // Redirect them to there.
-            return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
-        }
-
-        if ($ticket->hasNotesOnly()) {
-            throw new NotFoundHttpException(sprintf('ticket with auth "%s" found but has only agent notes', $ticket->getAuth()));
-        }
-
-        $ticket_view = $this->getTicketsViewService()->getUserTicketView($ticket);
-
-        $timeline = $this->get('data.ticket_timeline')->getUserTimeline($ticket);
-
-        // BREADCRUMBS
-        $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);
-
-        return $this->renderThemeView(
-            'Theme:Tickets:guest_view.html.twig',
-            array(
-                'ticket'      => $ticket,
-                'ticket_view' => $ticket_view,
-                'timeline'    => $timeline,
-                'breadcrumbs' => $breadcrumbs,
-                'can_edit'    => false,
-                'page_title'  => $this->createPageTitle()->tickets($ticket),
-            )
-        );
-    }
-
-    /**
      * @Route("/ticket-rate/{ticket_ref}/{auth}/{message_id}", name="portal_tickets_feedback", defaults={"message_id"=null})
      * @Route("/ticket-rate/{ticket_ref}/{auth}/{message_id}", name="user_tickets_feedback", defaults={"message_id"=null})
      */
@@ -628,6 +595,31 @@ class TicketsController extends AbstractController
     }
 
     /**
+     * @param $auth
+     *
+     * @return Ticket
+     */
+    protected function getTicketByAuthIfGrantedAccess($auth)
+    {
+        $repo = $this->getRepo('DeskPRO:Ticket');
+
+        $ticket = $repo->findOneBy(array('auth' => $auth));
+
+        if (!$this->isGranted(TicketsVoter::TICKET_VIEW_AUTH, $ticket)) {
+            // the user has a valid auth code for a ticket, but isn't logged in
+            // throwing this will initiate the normal login routine, but you
+            // can set a flash message here, or do a redirect to /login with some GET param to show a specific
+            // error message instead
+            // this will simply show the login screen with no message
+            throw $this->createAccessDeniedException(
+                sprintf('user does not have access to view this ticket with the auth code "%s"', $auth)
+            );
+        }
+
+        return $ticket;
+    }
+
+    /**
      * @param $ticket_ref
      *
      * @return Ticket
@@ -790,5 +782,47 @@ class TicketsController extends AbstractController
         }
 
         return $ticket_data->getTicketCount($person, 'awaiting_user');
+    }
+
+    /**
+     * @param $ticket
+     *
+     * @return bool
+     */
+    protected function cannotAccessViewPageOfTicket($ticket)
+    {
+        return !$this->isGranted(TicketsVoter::TICKET_VIEW, $ticket)
+        && !$this->isGranted(TicketsVoter::TICKET_VIEW_AUTH, $ticket);
+    }
+
+    /**
+     * @param $ticket_ref
+     * @param $auth
+     * @param $_route
+     *
+     * @return Ticket|null
+     */
+    protected function getTicketForViewPage($ticket_ref, $auth, $_route)
+    {
+        //
+        // If a ticket is being viewed with "auth" then it uses different security. Anyone that is authenticated
+        // can view a ticket with the /ticket-view/$auth route.
+        //
+        // If it is not the auth route, the normal security applies via the /tickets/$ticket_ref route.
+        //
+        if ($_route === 'portal_tickets_guest_view') {
+            if (!$ticket = $this->getTicketByAuthIfGrantedAccess($auth)) {
+                throw new NotFoundHttpException(sprintf('no ticket with auth "%s" found', $auth));
+            }
+
+            return $ticket;
+        } else {
+            // normal route, normal security
+            if (!$ticket = $this->getTicketByRefOrId($ticket_ref)) {
+                throw new NotFoundHttpException(sprintf('no ticket with ref or id "%s" found', $ticket_ref));
+            }
+
+            return $ticket;
+        }
     }
 }
