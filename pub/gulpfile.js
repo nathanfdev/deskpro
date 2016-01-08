@@ -9,7 +9,7 @@ var gulp                  = require('gulp'),
     ExtractTextPlugin     = require("extract-text-webpack-plugin"),
     WebpackNotifierPlugin = require('webpack-notifier'),
     glob                  = require("glob"),
-    babel                 = require("babel"),
+    babel                 = require("babel-core"),
     uglify                = require("uglify-js"),
     fs                    = require("fs"),
     mkdirp                = require('mkdirp'),
@@ -82,10 +82,22 @@ gulp.task('priv:start-prod', function () {
 
 function refreshWidgetLoader() {
   console.log("Writing widget_loader");
-  var loaderCode = babel.transformFileSync(path.join(__dirname, "src/DeskPRO/Bundle/WidgetBundle") + "/widget_loader.js", {"stage": "0"}).code;
-  var loaderCodemin = uglify.minify(loaderCode, {
-    "fromString": true
-  }).code;
+  var loaderCode = babel.transformFileSync(
+    path.join(__dirname, "src/DeskPRO/Bundle/WidgetBundle") + "/widget_loader.js",
+    { "presets": ["es2015", "react", "stage-0"] }
+  ).code;
+
+  try {
+    var loaderCodemin = uglify.minify(loaderCode, {
+      "fromString": true
+    }).code;
+  } catch (e) {
+    console.log("Trying to minify:\n");
+    console.log(loaderCode);
+    console.log("\n\n");
+    console.error(e);
+    return;
+  }
 
   var buildDir = path.join(__dirname, "build");
 
@@ -100,10 +112,22 @@ function refreshWidgetLoader() {
 
 function refreshHitRecorder() {
   console.log("Writing hit_recorder");
-  var loaderCode = babel.transformFileSync(path.join(__dirname, "src/DeskPRO/Bundle/WidgetBundle") + "/hit_recorder.js", {"stage": "0"}).code;
-  var loaderCodemin = uglify.minify(loaderCode, {
-    "fromString": true
-  }).code;
+  var loaderCode = babel.transformFileSync(
+    path.join(__dirname, "src/DeskPRO/Bundle/WidgetBundle") + "/hit_recorder.js",
+    { "presets": ["es2015", "react", "stage-0"] }
+  ).code;
+
+  try {
+    var loaderCodemin = uglify.minify(loaderCode, {
+      "fromString": true
+    }).code;
+  } catch (e) {
+    console.log("Trying to minify:\n");
+    console.log(loaderCode);
+    console.log("\n\n");
+    console.error(e);
+    return;
+  }
 
   var buildDir = path.join(__dirname, "build");
 
@@ -131,9 +155,11 @@ function refreshLegacy() {
     }
 
     try {
-      var code = babel.transformFileSync(filePath, {"stage": "0"}).code;
+      var code = babel.transformFileSync(filePath, { "presets": ["es2015", "stage-0"] }).code;
       fs.writeFileSync(targetFile, code);
     } catch (e) {
+      console.log("Error refreshing legacy");
+      console.error(e);
       notifier.notify({
         title: "Error refreshing legacy",
         message: e,
@@ -282,26 +308,7 @@ function getWebpackConfig(mode, isDevServer, isProd) {
           exclude: [
             path.resolve(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Legacy')
           ],
-          loader: 'babel',
-          query: {
-            stage: 0,
-            plugins: ['react-transform'],
-            extra: {
-              'react-transform': {
-                'transforms': [
-                  {
-                    'transform': 'react-transform-hmr',
-                    'imports': ['react'],
-                    'locals': ['module']
-                  },
-                  {
-                    'transform': 'react-transform-catch-errors',
-                    'imports': ['react', 'redbox-react', './redboxOptions']
-                  }
-                ]
-              }
-            }
-          }
+          loader: 'babel'
         },
         {
           test: /\.(png|gif|jpg|jpeg|woff|woff2|ttf|eot|svg|mp3|ogg|wav)(\?|$)/,

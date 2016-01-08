@@ -1,4 +1,4 @@
-import 'babel/polyfill';
+import 'babel-polyfill';
 import jQuery from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';

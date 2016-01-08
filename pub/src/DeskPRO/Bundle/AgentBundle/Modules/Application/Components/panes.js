@@ -82,7 +82,7 @@ export class NavPane extends React.Component {
 
   onClick = () => {
     this.setState({isHover: true});
-  }
+  };
 
   render() {
     const { workspace, workspaceDims } = this.props;

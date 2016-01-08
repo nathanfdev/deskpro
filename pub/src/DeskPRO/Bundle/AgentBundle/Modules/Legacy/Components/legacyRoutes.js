@@ -13,7 +13,7 @@ export class LegacyLink extends React.Component {
   onClick = (ev) => {
     ev.preventDefault();
     this.props.dispatch(legacyActions.loadRoute(this.props.route));
-  }
+  };
 
   render() {
     return (
@@ -35,7 +35,7 @@ export class LegacyLinkBlock extends React.Component {
   onClick = (ev) => {
     ev.preventDefault();
     this.props.dispatch(legacyActions.loadRoute(this.props.route));
-  }
+  };
 
   render() {
     return (
