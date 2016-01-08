@@ -42,26 +42,27 @@ export class DpAppRouteContainer extends React.Component {
 
   componentWillUnmount() {
     clearTimeout(this.welcomePageTimer);
-    this.ns.stopPolling();
+    if (this.ns) {
+      this.ns.stopPolling();
+    }
   }
 
   setupPolling() {
     const { user, dispatch, actionAlerts} = this.props;
-    this.ns = new NotificationService(
-      {
-        user: user,
-        dispatch: dispatch,
-        clients: actionAlerts.clients
-      }
-    );
+
+    this.ns = new NotificationService({ user, dispatch, clients: actionAlerts.clients });
     this.ns.startPolling();
   }
 
   hideWelcomePage() {
     const { userStatus, dispatch, actionAlertsSetup } = this.props;
-    if (!this.welcomePageTimer && userStatus.get('isDone') && !actionAlertsSetup) {
+
+    if (!this.welcomePageTimer && userStatus.get('isDone')) {
       this.welcomePageTimer = setTimeout(() => dispatch(doneInitialLoad()), 3000);
-      this.setupPolling();
+
+      if (!actionAlertsSetup) {
+        this.setupPolling();
+      }
     }
   }
 
