@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import { applyParams } from '../../../../Actions/crmListActions';
 import { OrganizationCard } from './OrganizationCard';
 import { PersonCard } from './PersonCard';
 import { currentContentSelector, elementsSelector }
@@ -21,6 +22,7 @@ import { connect } from 'react-redux';
 
 export class CrmCardContainer extends Component {
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
     elements: PropTypes.array,
     people: PropTypes.array,
     organizations: PropTypes.array,
@@ -30,6 +32,11 @@ export class CrmCardContainer extends Component {
     selected: PropTypes.object.isRequired
   };
 
+  viewEmployees(listOptions) {
+    const { dispatch } = this.props;
+    dispatch(applyParams(listOptions));
+  }
+
   render() {
     const { people, organizations, elements, selected, content, usergroups, languages } = this.props;
     if (content === 'organizations') {
@@ -38,7 +45,8 @@ export class CrmCardContainer extends Component {
           {elements.map((id, index) =>
               <OrganizationCard key={index}
                                 organization={organizations.get(id)}
-                                selected={selected.includes(id)}/>
+                                selected={selected.includes(id)}
+                                viewEmployees={this.viewEmployees.bind(this)}/>
           )}
         </div>
       );

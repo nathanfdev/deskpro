@@ -31,9 +31,11 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -55,7 +57,7 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
     protected $definition;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $words;
 
@@ -69,7 +71,7 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
 
     public function __construct()
     {
-        $this->words = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->words = new ArrayCollection();
     }
 
     /**
@@ -145,6 +147,21 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
         return $data;
     }
 
+    /**
+     * @return ArrayCollection
+     */
+    public function getWords()
+    {
+        return $this->words;
+    }
+    /**
+     * @return array
+     */
+    public function getStringWords()
+    {
+        return array_map(function (GlossaryWord $word) { return $word->getWord(); }, $this->getWords()->toArray());
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -155,9 +172,36 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
         $metadata->setPrimaryTable(array('name' => 'glossary_word_definitions'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'definition', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'definition'));
-        $metadata->mapOneToMany(array('fieldName' => 'words', 'targetEntity' => 'Application\\DeskPRO\\Entity\\GlossaryWord', 'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'definition', 'orphanRemoval' => true));
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'id',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'id',
+                'id'         => true,
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'definition',
+                'type'       => 'text',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'definition',
+            )
+        );
+        $metadata->mapOneToMany(
+            array(
+                'fieldName'     => 'words',
+                'targetEntity'  => 'Application\\DeskPRO\\Entity\\GlossaryWord',
+                'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
+                'mappedBy'      => 'definition',
+                'orphanRemoval' => true,
+            )
+        );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }
 }

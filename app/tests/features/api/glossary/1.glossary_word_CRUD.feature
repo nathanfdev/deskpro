@@ -8,7 +8,7 @@ Feature: /glossary/word endpoint
     And my request is authenticated
 
   Scenario: I retrieve a word
-    When I send a GET request to "/api/v2/glossary/words/1"
+    When I send a GET request to "/api/v2/glossary/words/Word%201"
     And the response status code should be 200
     And the JSON node "data.word" should be equal to "Word 1"
 
@@ -62,7 +62,7 @@ Feature: /glossary/word endpoint
   "definition": 1
 }
     """
-    And I send a GET request to "/api/v2/glossary/words/1"
+    And I send a GET request to "/api/v2/glossary/words/modified"
     Then the response status code should be 200
     And the JSON node "data.word" should be equal to "Modified"
 
@@ -72,5 +72,5 @@ Feature: /glossary/word endpoint
     And the response status code should be 200
 
   Scenario: I try to get not existing word
-    When I send a GET request to "/api/v2/glossary/words/40404"
+    When I send a GET request to "/api/v2/glossary/words/non-existent"
     Then the response status code should be 404

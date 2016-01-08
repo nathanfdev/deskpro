@@ -29,10 +29,17 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Glossary;
 
+use Application\DeskPRO\Entity\GlossaryWord;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\AppBundle\Form\Type\Glossary\GlossaryWordType;
+use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Route;
+use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class GlossaryWordController.
@@ -41,6 +48,34 @@ use FOS\RestBundle\Controller\Annotations\Route;
  */
 class GlossaryWordController extends CrudController
 {
-    public static $entity = \Application\DeskPRO\Entity\GlossaryWord::class;
-    public static $type   = \DeskPRO\Bundle\AppBundle\Form\Type\Glossary\GlossaryWordType::class;
+    public static $entity = GlossaryWord::class;
+    public static $type   = GlossaryWordType::class;
+
+    /**
+     * @ApiDoc(
+     *      description="Get a definition of the word",
+     *      requirements={
+     *          {
+     *              "name"="word",
+     *              "requirement"="\w+",
+     *              "description"="The word",
+     *              "dataType"="string"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success",
+     *          403="Denied",
+     *          404="Not Found"
+     *      }
+     * )
+     * @Get("/{word}")
+     */
+    public function getByStringAction($word)
+    {
+        if (!$entity = $this->getRepository(self::$entity)->findOneBy(['word' => $word])) {
+            throw $this->createNotFoundException();
+        }
+
+        return View::create($this->dataSerialize($entity), Response::HTTP_OK);
+    }
 }

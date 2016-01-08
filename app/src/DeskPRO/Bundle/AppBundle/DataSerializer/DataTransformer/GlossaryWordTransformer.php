@@ -52,6 +52,9 @@ class GlossaryWordTransformer extends AbstractDataSerializerTransformer
      */
     public function getCustomProperties(DataTransformerRequest $request)
     {
-        return [];
+        /** @var \Application\DeskPRO\Entity\GlossaryWord $word */
+        $word = $request->getDataToBeTransformed();
+
+        return ['definition' => $word->getDefinition()->definition];
     }
 }

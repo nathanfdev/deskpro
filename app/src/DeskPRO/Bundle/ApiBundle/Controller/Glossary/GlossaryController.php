@@ -29,18 +29,21 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Glossary;
 
+use Application\DeskPRO\Entity\GlossaryWordDefinition;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\AppBundle\Form\Type\Glossary\GlossaryWordDefinitionType;
 use FOS\RestBundle\Controller\Annotations\Route;
 
 /**
- * Class GlossaryWordDefinitionController.
+ * Class GlossaryController.
  *
- * @Route("/glossary/word_definitions")
+ * @Route("/glossary")
  */
-class GlossaryWordDefinitionController extends CrudController
+class GlossaryController extends CrudController
 {
-    public static $entity = \Application\DeskPRO\Entity\GlossaryWordDefinition::class;
-    public static $type   = \DeskPRO\Bundle\AppBundle\Form\Type\Glossary\GlossaryWordDefinitionType::class;
+    public static $entity = GlossaryWordDefinition::class;
+    public static $type   = GlossaryWordDefinitionType::class;
 }

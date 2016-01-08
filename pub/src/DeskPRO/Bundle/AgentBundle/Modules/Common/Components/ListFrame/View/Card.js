@@ -118,9 +118,18 @@ export class CardContentText extends Component {
 export class CardLineItem extends Component {
 
   static propTypes = {
+    clickParams: PropTypes.object,
+    onClick: PropTypes.func,
     children: PropTypes.any,
     icon: PropTypes.string
   };
+
+  handleClick() {
+    const {clickParams, onClick} = this.props;
+    if (clickParams && onClick) {
+      onClick(clickParams);
+    }
+  }
 
   render() {
     const {icon} = this.props;
@@ -131,7 +140,7 @@ export class CardLineItem extends Component {
     }
 
     return (
-      <span className="dpwd--card-line-item">
+      <span className="dpwd--card-line-item" onClick={this.handleClick.bind(this)}>
          {icon ? <i className={classes}/> : ''} {this.props.children}
       </span>
     );
@@ -148,7 +157,7 @@ export class CardCheckbox extends Component {
 
   render() {
     const { selected, onClick } = this.props;
-    const classes = classNames('fa', {'fa-check': selected});
+    const classes = classNames('fa', { 'fa-check': selected });
 
     return (
       <div className="dpm--card-checkbox" onClick={onClick}>
@@ -177,7 +186,7 @@ export class CardStatusBar extends Component {
   render() {
     const {align, level} = this.props;
     var classes = classNames('dpw--card-status-bar', `level-${level}`,
-      {'dpw--status-bar-left': align === 'left', 'dpw--status-bar-right': align === 'right'}
+      { 'dpw--status-bar-left': align === 'left', 'dpw--status-bar-right': align === 'right' }
     );
 
     return (
@@ -270,7 +279,7 @@ export class CardComments extends Component {
     const {commentsCounter} = this.props;
 
     return (
-      <CardLineItem>{commentsCounter} <i className="fa fa-comments-o" /></CardLineItem>
+      <CardLineItem>{commentsCounter} <i className="fa fa-comments-o"/></CardLineItem>
     );
   }
 }

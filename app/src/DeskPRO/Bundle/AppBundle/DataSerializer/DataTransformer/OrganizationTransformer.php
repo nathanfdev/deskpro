@@ -60,6 +60,12 @@ class OrganizationTransformer extends AbstractDataSerializerTransformer
      */
     public function getCustomProperties(DataTransformerRequest $request)
     {
-        return [];
+        /** @var \Application\DeskPRO\Entity\Organization $organization */
+        $organization = $request->getDataToBeTransformed();
+
+        return [
+            'employees_count' => $organization->getEmployeesCount(),
+            'tickets_count'   => $organization->getTicketsCount(),
+        ];
     }
 }

@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { Card, CardLine, CardLineLeft, CardLineRight, CardLineItem, CardCheckbox, CardDisc, CardLabel }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
 
@@ -8,6 +9,7 @@ export class OrganizationCard extends Component {
 
   static propTypes = {
     intl: intlShape.isRequired,
+    viewEmployees: PropTypes.func.isRequired,
     organization: PropTypes.object.isRequired,
     selected: PropTypes.bool
   };
@@ -38,7 +40,7 @@ export class OrganizationCard extends Component {
   }
 
   render() {
-    const { organization, selected } = this.props;
+    const { organization, selected, viewEmployees } = this.props;
 
     return (
       <Card type="crm">
@@ -57,9 +59,20 @@ export class OrganizationCard extends Component {
 
         <CardLine>
           <CardLineLeft>
-            <CardLineItem><FormattedRelative value={organization.get('date_created')}/></CardLineItem>
+            <CardLineItem icon="fa-users"
+                          onClick={viewEmployees}
+                          clickParams={{content: 'people',
+                          sort: 'name',
+                          order: constants.ORDER_ASC,
+                          organization: organization.get('id')}}>
+              {organization.get('employees_count')}
+            </CardLineItem>
+            <CardLineItem><CardDisc/><FormattedRelative value={organization.get('date_created')}/></CardLineItem>
           </CardLineLeft>
-          <CardLineRight/>
+          <CardLineRight>
+            <CardLineItem icon="fa-envelope">{organization.get('tickets_count')}</CardLineItem>
+            <CardLineItem icon="fa-comment">{organization.get('chats_count')}</CardLineItem>
+          </CardLineRight>
         </CardLine>
       </Card>
     );
