@@ -45,7 +45,9 @@ export class CheckboxList extends React.Component {
       <li key={index}>
         <a className={classNames('checkbox-button', {'checked': checked})} onClick={this.onClick.bind(this, value)}>
 
-          <span className="checkbox"><i className="fa fa-check"></i></span>
+          <span className="checkbox">
+            {checked ? <i className="fa fa-check"></i> : null}
+          </span>
           <span className="name">{label}</span>
         </a>
       </li>
