@@ -222,8 +222,8 @@ export function togglePayloadInCollection(statePropKey) {
     let collection = state.getIn(path);
     verifyImmutable(collection);
     collection = collection.includes(payload)
-               ? collection.delete(collection.indexOf(payload))
-               : collection.push(payload);
+      ? collection.delete(collection.indexOf(payload))
+      : collection.push(payload);
 
     return state.setIn(path, collection);
   };
@@ -245,19 +245,13 @@ export function handleMassAction(selectFrom, selectInto, targetKeyProp = 'id') {
     const intoPath = getStatePath(selectInto);
     let selected = state.getIn(intoPath);
     verifyImmutable(selected);
-
     if (select) {
-      state.getIn(getStatePath(selectFrom)).map(el => {
-        const val = Immutable.Iterable.isIterable(el) ? el.get(targetKeyProp) : el[targetKeyProp];
-        if (!selected.includes(val)) {
-          selected = selected.push(val);
-        }
-      });
+      selected = state.getIn(getStatePath(selectFrom));
     } else {
       selected = selected.clear();
     }
 
-    return state.setIn(intoPath, selected);
+    return state.setIn(intoPath, Immutable.fromJS(selected));
   };
 }
 
@@ -456,8 +450,8 @@ export function asyncIndicator(props) {
         }
         if (useProps.errorCode && payload.response) {
           const status = payload && payload.response && payload.response.xhr
-                       ? payload.response.xhr.status
-                       : null;
+            ? payload.response.xhr.status
+            : null;
           newState = newState.setIn(useProps.errorCode, status);
         }
         break;

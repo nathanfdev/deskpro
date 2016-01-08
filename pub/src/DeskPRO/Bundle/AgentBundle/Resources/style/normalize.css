@@ -189,7 +189,6 @@ samp {
  */
 
 pre {
-    white-space: pre;
     white-space: pre-wrap;
     word-wrap: break-word;
 }
@@ -400,5 +399,6 @@ textarea {
 
 table {
     border-collapse: collapse;
+    font-size: 13px;
     border-spacing: 0;
 }
