@@ -33,6 +33,7 @@
 namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
 
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupableCriteriaInterface;
@@ -75,7 +76,7 @@ class ChatDataService
         $qb = $this->em->createQueryBuilder();
 
         $qb->select('c')
-           ->from('DeskPRO:ChatConversation', 'c');
+            ->from('DeskPRO:ChatConversation', 'c');
         $criteria->applyFilters($qb);
         $criteria->applySorting($qb);
 
@@ -119,8 +120,8 @@ class ChatDataService
      * Gets a pager of chats for a user in portal.
      *
      * @param Person $person
-     * @param $page
-     * @param $max_per_page
+     * @param        $page
+     * @param        $max_per_page
      *
      * @return Pagerfanta
      */
@@ -162,6 +163,25 @@ class ChatDataService
     }
 
     /**
+     * @param Organization $organization
+     *
+     * @return int
+     */
+    public function getChatsCountForOrganization(Organization $organization)
+    {
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->select('COUNT(DISTINCT chat.id)')
+            ->from('DeskPRO:ChatConversation', 'chat')
+            ->innerJoin('chat.participants', 'participants')
+            ->innerJoin('participants.organization', 'organization')
+            ->andWhere('organization.id = :organization')
+            ->setParameter('organization', $organization->getId());
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    /**
      * @return \Application\DeskPRO\EntityRepository\ChatConversation
      */
     private function getChatConversationRepo()
@@ -172,9 +192,10 @@ class ChatDataService
     /**
      * Make a query builder to select ChatConversation's for a user.
      *
-     * @param Person $person
+     * @param QueryBuilder $qb
+     * @param Person       $person
      *
-     * @return \Doctrine\ORM\QueryBuilder
+     * @return QueryBuilder
      */
     private function configureQbForQueryChats(QueryBuilder $qb, Person $person)
     {
@@ -193,7 +214,7 @@ class ChatDataService
         $qb = $this->em->createQueryBuilder();
 
         $qb->select('count(c)')
-           ->from('DeskPRO:ChatConversation', 'c');
+            ->from('DeskPRO:ChatConversation', 'c');
         $criteria->applyFilters($qb);
 
         try {
@@ -215,7 +236,7 @@ class ChatDataService
         $qb = $this->em->createQueryBuilder();
 
         $qb->select('count(c) as value')
-           ->from('DeskPRO:ChatConversation', 'c');
+            ->from('DeskPRO:ChatConversation', 'c');
         $criteria->applyFilters($qb);
         $criteria->applyGroupBy($qb);
 
