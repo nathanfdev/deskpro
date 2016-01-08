@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\View;
 
 use Application\DeskPRO\Entity\Article;
@@ -39,6 +38,7 @@ use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackAttachment;
 use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 
@@ -125,6 +125,8 @@ class PortalIconFactory
             return $this->makeNewsIcon($content);
         } elseif ($content instanceof Feedback) {
             return $this->makeFeedbackIcon($content);
+        } elseif ($content instanceof Ticket) {
+            return $this->makeTicketIcon($content);
         }
 
         throw new \InvalidArgumentException('PortalIconFactory::makeContentIcon requires a content entity');
@@ -196,6 +198,18 @@ class PortalIconFactory
     public function makeFeedbackIcon(Feedback $feedback)
     {
         return '<i class="fa fa-file-text-o"></i>';
+    }
+
+    /**
+     * Will return HTML representing an icon for any ticket.
+     *
+     * @param Ticket $ticket
+     *
+     * @return string
+     */
+    public function makeTicketIcon(Ticket $ticket)
+    {
+        return '<i class="fa fa-support"></i>';
     }
 
     /**

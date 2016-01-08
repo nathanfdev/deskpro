@@ -154,6 +154,14 @@ export default class OmniSearch extends React.Component {
               (this.doResultsExist() ?
               (<div>
                 <OmniSearchResultSection
+                  name="Tickets"
+                  nameApi="ticket"
+                  nameIcon="fa fa-support"
+                  initialResult={"ticket" in data ? data.ticket : []}
+                  q={this.state.search_query.q}
+                  />
+
+                <OmniSearchResultSection
                   name="Knowledge base"
                   nameApi="article"
                   nameIcon="fa fa-file-text-o"

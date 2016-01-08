@@ -351,9 +351,6 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
             $layout->add(new LayoutField('user_name_and_email'));
             $layout->add(new LayoutField('department'));
             $layout->add(new LayoutField('department'));
-            $layout->add(new LayoutField('priority'));
-            $layout->add(new LayoutField('category'));
-            $layout->add(new LayoutField('product'));
             $layout->add(new LayoutField('subject'));
 
             foreach ($fields as $f) {

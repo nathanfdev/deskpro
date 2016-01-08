@@ -27,6 +27,8 @@
  */
 
 return array(
+    'portal.tickets.search-title'                      => 'Tickets',
+    'portal.tickets.search-last-activity'              => 'Last Activity',
     'portal.tickets.list_title'                        => 'Your Tickets',
     'portal.tickets.list_desc'                         => 'This is the description of a list of your tickets',
     'portal.tickets.list_title_org'                    => 'Organization Tickets',
@@ -56,7 +58,7 @@ return array(
     'portal.tickets.new-intro'                         => 'Please complete this form and one of our agents will reply to you by email as soon as possible.',
     'portal.tickets.form-changed-notice'               => 'New relevant fields have been added to the form. Please review these new fields and then re-submit the form.',
     'portal.tickets.section-title'                     => 'Tickets',
-    'portal.tickets.switched-department-rerender'      => 'You have switched departments and the form fields have changed. Please review the form and submit again.',
+    'portal.tickets.switched-department-rerender'      => 'The structure of this form may have changed. Please review the form and submit again.',
     'portal.tickets.edit-ticket'                       => 'EDIT TICKET',
     'portal.tickets.ticket-ref'                        => 'Ticket reference',
     'portal.tickets.cancel-ticket-edit'                => 'Cancel edit, show me the ticket again',

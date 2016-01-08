@@ -1,3 +1,16 @@
+{% macro search_result(result) %}
+    {% if result['type'] == 'news' %}
+        {{ _self.news_search_result(result['object']) }}
+    {% elseif result['type'] == 'ticket' %}
+        {{ _self.ticket_search_result(result['object']) }}
+    {% elseif result['type'] == 'article' %}
+        {{ _self.article_search_result(result['object']) }}
+    {% elseif result['type'] == 'feedback' %}
+        {{ _self.feedback_search_result(result['object']) }}
+    {% elseif result['type'] == 'download' %}
+        {{ _self.dl_search_result(result['object']) }}
+    {% endif %}
+{% endmacro %}
 
 {% macro article_search_result(article) %}
     <li>
@@ -15,16 +28,16 @@
   </li>
 {% endmacro %}
 
-{% macro search_result(result) %}
-    {% if result['type'] == 'news' %}
-        {{ _self.news_search_result(result['object']) }}
-    {% elseif result['type'] == 'article' %}
-        {{ _self.article_search_result(result['object']) }}
-    {% elseif result['type'] == 'feedback' %}
-        {{ _self.feedback_search_result(result['object']) }}
-    {% elseif result['type'] == 'download' %}
-        {{ _self.dl_search_result(result['object']) }}
-    {% endif %}
+{% macro ticket_search_result(ticket) %}
+    <li>
+        {{ content_icon(ticket) }}
+        <a href="{{ portal_path(ticket) }}">
+          <span class="item-title">{{ ticket.subject }}</span>
+        </a>
+        <div class="article-meta">
+            {{ phrase('portal.tickets.search-last-activity') }} {{ ticket.getLastActivityDate()|date('full') }}
+        </div>
+  </li>
 {% endmacro %}
 
 {% macro dl_search_result(dl) %}

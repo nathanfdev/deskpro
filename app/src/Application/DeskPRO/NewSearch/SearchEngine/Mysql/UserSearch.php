@@ -93,6 +93,21 @@ class UserSearch implements UserSearchInterface
         $types          = $context_params['types'];
 
         if (!$types) {
+            // the following allows us to do a search for ONLY "ticket" types, because $types would be empty
+            // if $limit_types only contained "ticket"
+            if (in_array('ticket', $limit_types)) {
+                $query2 = Strings::decodeHtmlEntities($query);
+                $query2 = Strings::decodeUnicodeEntities($query2);
+                $query2 = Strings::utf8_accents_to_ascii($query2);
+
+                $query_words           = Arrays::removeEmptyString(explode(' ', trim($query.' '.$query2)));
+                list($total, $results) = $this->findTicketResults($context, $limit_types_array, $page, $query_words, 0, array());
+
+                $objects = $this->transformer->transform($results);
+
+                return new ResultSet($objects, $total);
+            }
+
             return new ResultSet(array());
         }
 
@@ -190,14 +205,7 @@ class UserSearch implements UserSearchInterface
             $total = count($results);
         }
 
-        if ($context->getPerson() && ($limit_types_array === null || in_array('ticket', $limit_types_array)) && $page == 1) {
-            $ticket_results = $this->getTicketResults($context, $query_words);
-
-            if ($ticket_results) {
-                $total += count($ticket_results);
-                $results = array_merge($ticket_results, $results);
-            }
-        }
+        list($total, $results) = $this->findTicketResults($context, $limit_types_array, $page, $query_words, $total, $results);
 
         $objects = $this->transformer->transform($results);
 
@@ -368,5 +376,29 @@ class UserSearch implements UserSearchInterface
             'join'  => implode("\n", $joins),
             'where' => '('.implode(' OR ', $wheres).')',
         );
+    }
+
+    /**
+     * @param SearchContextInterface $context
+     * @param $limit_types_array
+     * @param $page
+     * @param $query_words
+     * @param $total
+     * @param $results
+     *
+     * @return array
+     */
+    protected function findTicketResults(SearchContextInterface $context, $limit_types_array, $page, $query_words, $total, $results)
+    {
+        if ($context->getPerson() && ($limit_types_array === null || in_array('ticket', $limit_types_array)) && $page == 1) {
+            $ticket_results = $this->getTicketResults($context, $query_words);
+
+            if ($ticket_results) {
+                $total += count($ticket_results);
+                $results = array_merge($ticket_results, $results);
+            }
+        }
+
+        return array($total, $results);
     }
 }

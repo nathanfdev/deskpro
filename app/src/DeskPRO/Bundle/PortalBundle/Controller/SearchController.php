@@ -29,13 +29,13 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\SearchLog;
 use Application\DeskPRO\Labels\ContentLabelCloud;
 use Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet;
 use Application\DeskPRO\NewSearch\SearchEngine\SearchContextFactory;
+use Application\DeskPRO\NewSearch\SearchEngine\UserSearchInterface;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Search\StickyWordSearch;
 use DeskPRO\Bundle\AppBundle\Pagerfanta\Adapter\DeskproSearchAdapter;
@@ -322,8 +322,11 @@ class SearchController extends AbstractController
         if ($q) {
             $se = $this->get('search_engine');
 
+            /** @var UserSearchInterface $usersearch */
+            $usersearch = $se->getUserSearch();
+
             /** @var \Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet $result_set */
-            $result_set = $se->getUserSearch()->search(
+            $result_set = $usersearch->search(
                 $context,
                 $q,
                ['page' => $cur_page, 'per_page' => $per_page, 'limit_types' => array($type)]
@@ -382,7 +385,7 @@ class SearchController extends AbstractController
     {
         ////////////////////////////////////////////////////////////////////////
         // search types
-        $allowed_search_types = array('article', 'news', 'download', 'feedback');
+        $allowed_search_types = array('article', 'news', 'download', 'feedback', 'ticket');
         if (!$limit_types_array = $types) {
             $limit_types_array = $allowed_search_types;
         }
