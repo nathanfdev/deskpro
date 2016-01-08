@@ -93,7 +93,10 @@ export class PersonCard extends Component {
             <CardLineItem><FormattedRelative value={person.get('date_created')}/></CardLineItem>
             {this.renderLanguage()}
           </CardLineLeft>
-          <CardLineRight/>
+          <CardLineRight>
+            <CardLineItem icon="fa-envelope">{person.get('tickets_count')}</CardLineItem>
+            <CardLineItem icon="fa-comment">{person.get('chats_count')}</CardLineItem>
+          </CardLineRight>
         </CardLine>
 
       </Card>

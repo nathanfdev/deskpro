@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -262,7 +263,9 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     public function getLabelManager()
     {
         if ($this->_label_manager === null) {
-            $this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelChatConversation');
+            $this->_label_manager = new \Application\DeskPRO\Labels\LabelManager(
+                $this, 'DeskPRO:LabelChatConversation'
+            );
         }
 
         return $this->_label_manager;
@@ -592,7 +595,8 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         }
 
         $old_agent = $this->agent;
-        if (($agent === null && $old_agent === null) || ($agent && $old_agent && $agent->getId() == $old_agent->getId())) {
+        if (($agent === null && $old_agent === null) || ($agent && $old_agent && $agent->getId() == $old_agent->getId())
+        ) {
             return;
         }
 
@@ -708,7 +712,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
     public function getSubjectPreview()
     {
-        return trim(substr($this->subject, 0,  80)).(strlen($this->subject) > 80 ? '...' : '');
+        return trim(substr($this->subject, 0, 80)).(strlen($this->subject) > 80 ? '...' : '');
     }
 
     public function setRatingOverall($rating)
@@ -857,10 +861,14 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
                 }
                 $url .= 's='.$size.'&d=mm';
             } else {
-                $url = App::get('router')->generate('serve_default_picture', array(
-                    's'        => $size,
-                    'size-fit' => 1,
-                ), true);
+                $url = App::get('router')->generate(
+                    'serve_default_picture',
+                    array(
+                        's'        => $size,
+                        'size-fit' => 1,
+                    ),
+                    true
+                );
             }
         }
 
@@ -1063,42 +1071,369 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ChatConversation';
-        $metadata->setPrimaryTable(array(
-            'name'    => 'chat_conversations',
-            'indexes' => array(
-                'status_idx'                 => array('columns' => array('status')),
-                'should_send_transcript_idx' => array('columns' => array('should_send_transcript')),
-            ),
-        ));
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'subject', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'subject'));
-        $metadata->mapField(array('fieldName' => 'status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status'));
-        $metadata->mapField(array('fieldName' => 'person_name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'person_name'));
-        $metadata->mapField(array('fieldName' => 'person_email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'person_email'));
-        $metadata->mapField(array('fieldName' => 'rating_response_time', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'rating_response_time'));
-        $metadata->mapField(array('fieldName' => 'rating_overall', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'rating_overall'));
-        $metadata->mapField(array('fieldName' => 'rating_comment', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'rating_comment'));
-        $metadata->mapField(array('fieldName' => 'is_agent', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_agent'));
-        $metadata->mapField(array('fieldName' => 'is_window', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_window'));
-        $metadata->mapField(array('fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
-        $metadata->mapField(array('fieldName' => 'date_user_waiting', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_user_waiting'));
-        $metadata->mapField(array('fieldName' => 'date_assigned', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_assigned'));
-        $metadata->mapField(array('fieldName' => 'date_agent_typing', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_agent_typing'));
-        $metadata->mapField(array('fieldName' => 'date_first_agent_message', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_first_agent_message'));
-        $metadata->mapField(array('fieldName' => 'date_ended', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_ended'));
-        $metadata->mapField(array('fieldName' => 'should_send_transcript', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'should_send_transcript'));
-        $metadata->mapField(array('fieldName' => 'date_transcript_sent', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_transcript_sent'));
-        $metadata->mapField(array('fieldName' => 'total_to_ended', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'total_to_ended'));
-        $metadata->mapField(array('fieldName' => 'ended_by', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ended_by'));
+        $metadata->setPrimaryTable(
+            array(
+                'name'    => 'chat_conversations',
+                'indexes' => array(
+                    'status_idx'                 => array('columns' => array('status')),
+                    'should_send_transcript_idx' => array('columns' => array('should_send_transcript')),
+                ),
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'id',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'id',
+                'id'         => true,
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'subject',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'subject',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'status',
+                'type'       => 'string',
+                'length'     => 15,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'status',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'person_name',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'person_name',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'person_email',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'person_email',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'rating_response_time',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'rating_response_time',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'rating_overall',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'rating_overall',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'rating_comment',
+                'type'       => 'text',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'rating_comment',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'is_agent',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_agent',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'is_window',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_window',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'date_created',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'date_created',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'date_user_waiting',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'date_user_waiting',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'date_assigned',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'date_assigned',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'date_agent_typing',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'date_agent_typing',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'date_first_agent_message',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'date_first_agent_message',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'date_ended',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'date_ended',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'should_send_transcript',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'should_send_transcript',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'date_transcript_sent',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'date_transcript_sent',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'total_to_ended',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'total_to_ended',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'ended_by',
+                'type'       => 'string',
+                'length'     => 15,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'ended_by',
+            )
+        );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array('fieldName' => 'department', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'department_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null)), 'dpApi' => true));
-        $metadata->mapManyToOne(array('fieldName' => 'agent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'agent_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null)), 'dpApi' => true));
-        $metadata->mapManyToOne(array('fieldName' => 'agent_team', 'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'agent_team_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null)), 'dpApi' => true));
-        $metadata->mapManyToOne(array('fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null)), 'dpApi' => true));
-        $metadata->mapManyToOne(array('fieldName' => 'session', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Session', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'session_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
-        $metadata->mapManyToMany(array('fieldName' => 'participants', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'joinTable' => array('name' => 'chat_conversation_to_person', 'schema' => null, 'joinColumns' => array(0 => array('name' => 'conversation_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null)), 'inverseJoinColumns' => array(0 => array('name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))), 'indexBy' => 'id', 'dpApi' => true));
-        $metadata->mapOneToMany(array('fieldName' => 'messages', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ChatMessage', 'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'conversation'));
-        $metadata->mapOneToMany(array('fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataChat', 'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'conversation', 'orphanRemoval' => true,  'dpApi' => true));
-        $metadata->mapOneToMany(array('fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelChatConversation', 'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'chat', 'orphanRemoval' => true, 'dpApi' => true));
+        $metadata->mapManyToOne(
+            array(
+                'fieldName'    => 'department',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Department',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => array(
+                    0 => array(
+                        'name'                 => 'department_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ),
+                ),
+                'dpApi' => true,
+            )
+        );
+        $metadata->mapManyToOne(
+            array(
+                'fieldName'    => 'agent',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => array(
+                    0 => array(
+                        'name'                 => 'agent_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ),
+                ),
+                'dpApi' => true,
+            )
+        );
+        $metadata->mapManyToOne(
+            array(
+                'fieldName'    => 'agent_team',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => array(
+                    0 => array(
+                        'name'                 => 'agent_team_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ),
+                ),
+                'dpApi' => true,
+            )
+        );
+        $metadata->mapManyToOne(
+            array(
+                'fieldName'    => 'person',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => array(
+                    0 => array(
+                        'name'                 => 'person_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ),
+                ),
+                'dpApi' => true,
+            )
+        );
+        $metadata->mapManyToOne(
+            array(
+                'fieldName'    => 'session',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Session',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => array(
+                    0 => array(
+                        'name'                 => 'session_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ),
+                ),
+            )
+        );
+        $metadata->mapManyToMany(
+            array(
+                'fieldName'    => 'participants',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+                'inversedBy'   => 'chats',
+                'joinTable'    => array(
+                    'name'        => 'chat_conversation_to_person',
+                    'schema'      => null,
+                    'joinColumns' => array(
+                        0 => array(
+                            'name'                 => 'conversation_id',
+                            'referencedColumnName' => 'id',
+                            'nullable'             => true,
+                            'onDelete'             => 'cascade',
+                            'columnDefinition'     => null,
+                        ),
+                    ),
+                    'inverseJoinColumns' => array(
+                        0 => array(
+                            'name'                 => 'person_id',
+                            'referencedColumnName' => 'id',
+                            'nullable'             => true,
+                            'onDelete'             => 'cascade',
+                            'columnDefinition'     => null,
+                        ),
+                    ),
+                ),
+                'indexBy' => 'id',
+                'dpApi'   => true,
+            )
+        );
+        $metadata->mapOneToMany(
+            array(
+                'fieldName'    => 'messages',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\ChatMessage',
+                'cascade'      => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
+                'mappedBy'     => 'conversation',
+            )
+        );
+        $metadata->mapOneToMany(
+            array(
+                'fieldName'     => 'custom_data',
+                'targetEntity'  => 'Application\\DeskPRO\\Entity\\CustomDataChat',
+                'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
+                'mappedBy'      => 'conversation',
+                'orphanRemoval' => true,
+                'dpApi'         => true,
+            )
+        );
+        $metadata->mapOneToMany(
+            array(
+                'fieldName'     => 'labels',
+                'targetEntity'  => 'Application\\DeskPRO\\Entity\\LabelChatConversation',
+                'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
+                'mappedBy'      => 'chat',
+                'orphanRemoval' => true,
+                'dpApi'         => true,
+            )
+        );
     }
 }

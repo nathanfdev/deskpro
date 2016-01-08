@@ -63,58 +63,58 @@ use Symfony\Component\Validator\Constraints as Assert;
  * A "person" is a record in the database that stores information about a person.
  * Every person is capable of logging in, though it may be the case that many wont (ie they are just contact cards).
  *
- * @property int $id
- * @property Blob $picture_blob
- * @property bool $disable_picture
- * @property string $gravatar_url
- * @property bool $is_contact
- * @property bool $is_user
- * @property bool $is_agent
- * @property bool $was_agent
- * @property bool $can_agent
- * @property bool $can_admin
- * @property bool $can_billing
- * @property bool $can_reports
- * @property bool $is_vacation_mode
- * @property bool $disable_autoresponses
- * @property string $disable_autoresponses_log
- * @property bool $is_confirmed
- * @property bool $is_deleted
- * @property bool $is_disabled
- * @property int $importance
- * @property string $creation_system
- * @property string $name
- * @property string $first_name
- * @property string $last_name
- * @property string $title_prefix
- * @property string $override_display_name
- * @property string $summary
- * @property string $secret_string
- * @property Language $language
- * @property Organization $organization
- * @property string $organization_position
- * @property bool $organization_manager
- * @property string $timezone
- * @property string $password
- * @property string $password_scheme
- * @property string $salt
- * @property PersonEmail $primary_email
- * @property PersonEmail[]|ArrayCollection $emails
- * @property PhoneNumber[] $phone_numbers
- * @property ArrayCollection|LabelPerson[] $labels
- * @property ArrayCollection|CustomDataPerson[] $custom_data
+ * @property int                                 $id
+ * @property Blob                                $picture_blob
+ * @property bool                                $disable_picture
+ * @property string                              $gravatar_url
+ * @property bool                                $is_contact
+ * @property bool                                $is_user
+ * @property bool                                $is_agent
+ * @property bool                                $was_agent
+ * @property bool                                $can_agent
+ * @property bool                                $can_admin
+ * @property bool                                $can_billing
+ * @property bool                                $can_reports
+ * @property bool                                $is_vacation_mode
+ * @property bool                                $disable_autoresponses
+ * @property string                              $disable_autoresponses_log
+ * @property bool                                $is_confirmed
+ * @property bool                                $is_deleted
+ * @property bool                                $is_disabled
+ * @property int                                 $importance
+ * @property string                              $creation_system
+ * @property string                              $name
+ * @property string                              $first_name
+ * @property string                              $last_name
+ * @property string                              $title_prefix
+ * @property string                              $override_display_name
+ * @property string                              $summary
+ * @property string                              $secret_string
+ * @property Language                            $language
+ * @property Organization                        $organization
+ * @property string                              $organization_position
+ * @property bool                                $organization_manager
+ * @property string                              $timezone
+ * @property string                              $password
+ * @property string                              $password_scheme
+ * @property string                              $salt
+ * @property PersonEmail                         $primary_email
+ * @property PersonEmail[]|ArrayCollection       $emails
+ * @property PhoneNumber[]                       $phone_numbers
+ * @property ArrayCollection|LabelPerson[]       $labels
+ * @property ArrayCollection|CustomDataPerson[]  $custom_data
  * @property ArrayCollection|PersonContactData[] $contact_data
- * @property Usergroup[] $usergroups
- * @property TwitterAccount[] $twitter_accounts
- * @property TwitterUser[] $twitter_users
- * @property PersonPref[] $preferences
- * @property PersonUsersourceAssoc[] $usersource_assoc
- * @property DepartmentPermission $department_permissions
- * @property \DateTime $date_created
- * @property \DateTime $date_last_login
- * @property \DateTime $date_password_set
- * @property \DateTime $date_picture_check
- * @property string $browser
+ * @property Usergroup[]                         $usergroups
+ * @property TwitterAccount[]                    $twitter_accounts
+ * @property TwitterUser[]                       $twitter_users
+ * @property PersonPref[]                        $preferences
+ * @property PersonUsersourceAssoc[]             $usersource_assoc
+ * @property DepartmentPermission                $department_permissions
+ * @property \DateTime                           $date_created
+ * @property \DateTime                           $date_last_login
+ * @property \DateTime                           $date_password_set
+ * @property \DateTime                           $date_picture_check
+ * @property string                              $browser
  * @Serializer\ExclusionPolicy("ALL")
  */
 class Person extends DomainObject implements HighlightableModelInterface, UserInterface, \Serializable,
@@ -541,6 +541,16 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     protected $project_members;
 
     /**
+     * @var TicketParticipant[]|ArrayCollection
+     */
+    protected $tickets;
+
+    /**
+     * @var ChatConversation[]|ArrayCollection
+     */
+    protected $chats;
+
+    /**
      * A "contact person" is simply a person record. They have no login credentials, they are not
      * a full user.
      *
@@ -619,6 +629,8 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $this->notes                  = new ArrayCollection();
         $this->assigned_tasks         = new ArrayCollection();
         $this->project_members        = new ArrayCollection();
+        $this->tickets                = new ArrayCollection();
+        $this->chats                  = new ArrayCollection();
 
         $this->_initPersonLogger();
         $this->_person_logger->recordExtra('person_created', true);
@@ -2030,9 +2042,12 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         if (!$this->primary_email && count($emails)) {
             $this->setPrimaryEmail($emails[0]);
         }
-        $addresses = array_map(function (PersonEmail $email) {
-            return $email->getEmail();
-        }, $emails);
+        $addresses = array_map(
+            function (PersonEmail $email) {
+                return $email->getEmail();
+            },
+            $emails
+        );
         $this->setEmailAddresses($addresses);
     }
 
@@ -2094,8 +2109,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             $email
                 ->setPerson($this)
                 ->setEmail($email_address)
-                ->setIsValidated(true)
-            ;
+                ->setIsValidated(true);
 
             $this->addEmailAddress($email);
         }
@@ -3367,7 +3381,12 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function getLabelsArray()
     {
-        $labels = array_map(function ($label) { return $label->getLabel(); }, $this->labels->toArray());
+        $labels = array_map(
+            function ($label) {
+                return $label->getLabel();
+            },
+            $this->labels->toArray()
+        );
         sort($labels);
 
         return $labels;
@@ -3378,11 +3397,32 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function getPhoneNumbersArray()
     {
-        return array_map(function ($phone) { return [
-            'number' => $phone->number,
-            'ext'    => $phone->ext,
-            'label'  => $phone->label,
-        ]; }, $this->phone_numbers->toArray());
+        return array_map(
+            function ($phone) {
+                return [
+                    'number' => $phone->number,
+                    'ext'    => $phone->ext,
+                    'label'  => $phone->label,
+                ];
+            },
+            $this->phone_numbers->toArray()
+        );
+    }
+
+    /**
+     * @return int
+     */
+    public function getTicketsCount()
+    {
+        return $this->tickets->count();
+    }
+
+    /**
+     * @return int
+     */
+    public function getChatsCount()
+    {
+        return $this->chats->count();
     }
 
     ############################################################################
@@ -4022,6 +4062,15 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             )
         );
 
+        $metadata->mapOneToMany(
+            array(
+                'fieldName'    => 'tickets',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketParticipant',
+                'mappedBy'     => 'person',
+                'fetch'        => 'EXTRA_LAZY',
+            )
+        );
+
         $metadata->mapManyToMany(
             array(
                 'fieldName'    => 'teams',
@@ -4033,6 +4082,16 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                     'joinColumns'        => array(array('name' => 'person_id', 'onDelete' => 'CASCADE')),
                     'inverseJoinColumns' => array(array('name' => 'team_id', 'onDelete' => 'CASCADE')),
                 ),
+            )
+        );
+
+        $metadata->mapManyToMany(
+            array(
+                'fieldName'    => 'chats',
+                'mappedBy'     => 'participants',
+                'dpApi'        => true,
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\ChatConversation',
+                'fetch'        => 'EXTRA_LAZY',
             )
         );
 
