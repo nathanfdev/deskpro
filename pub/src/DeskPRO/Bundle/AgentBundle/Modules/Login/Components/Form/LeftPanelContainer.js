@@ -79,10 +79,7 @@ export class LeftPanelContainer extends React.Component {
     }
 
     if (email && password) {
-      dispatch(loginActions.login({
-        email: email,
-        password: password
-      }));
+      dispatch(loginActions.login({ email, password }));
     }
   };
 

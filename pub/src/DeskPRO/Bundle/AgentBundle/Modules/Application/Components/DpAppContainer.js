@@ -14,30 +14,23 @@ import { ExampleApp } from '../../Example/Components/ExampleApp';
 import { loadMe } from '../RecordStores/Actions/meActions';
 import { setHasAuth } from '../../Login/Actions/loginActions';
 import { hashChanged } from '../../Application/Actions/routingActions';
+import { hasAuthSelector } from '../../Login/Selectors/login';
 import Jquery from 'jquery';
 
-@connect()
+@connect(state => ({
+  hasAuth: hasAuthSelector(state)
+}))
 export class DpAppContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
+    hasAuth: PropTypes.bool.isRequired,
     history: PropTypes.object.isRequired
   };
 
   componentWillMount() {
-    const { dispatch, history } = this.props;
-
-    dispatch(loadMe());
-
-    Jquery.ajaxSetup({
-      statusCode: {
-        200: () => dispatch(setHasAuth(true)),
-        401: () => {
-          dispatch(setHasAuth(false));
-          history.pushState(null, `${DP_BASE_URL_RELATIVE}/agent/login`);
-        }
-      }
-    });
+    this.props.dispatch(loadMe());
+    this.onCheckAuth();
   }
 
   componentDidMount() {
@@ -47,6 +40,27 @@ export class DpAppContainer extends React.Component {
     window.onhashchange = () => dispatch(hashChanged(window.location.hash));
     // dispatch hashChanged() to track the initial hash value
     dispatch(hashChanged(window.location.hash));
+  }
+
+  componentDidUpdate() {
+    this.onCheckAuth();
+  }
+
+  onCheckAuth() {
+    const { hasAuth, dispatch, history } = this.props;
+
+    Jquery.ajaxSetup({
+      statusCode: {
+        200: () => {
+          if (!hasAuth) {
+            dispatch(setHasAuth(true));
+          }},
+        401: () => {
+          dispatch(setHasAuth(false));
+          history.pushState(null, `${DP_BASE_URL_RELATIVE}/agent/login`);
+        }
+      }
+    });
   }
 
   workOutBasePath() {
