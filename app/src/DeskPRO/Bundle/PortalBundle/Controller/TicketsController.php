@@ -223,16 +223,13 @@ class TicketsController extends AbstractController
             'settings'          => $this->getBrandContainer()->getSettings(),
         ));
 
-        $rerendering = false;
-        if ($form->has('rerender_form')) {
-            $rerendering = true;
-        }
-
         $form->handleRequest($request);
+
+        $rerendering = $form->has('rerender_form');
 
         if ($form->isValid()) {
             // if the form set a hidden field "rerender_form" then we want to skip actual processing for now
-            if (!$form->has('rerender_form')) {
+            if (!$rerendering) {
                 $this->saveEditedTicket($ticket, $person);
 
                 $this->addFlash('success', $this->phrase('portal.flashes.ticket_updated'));
