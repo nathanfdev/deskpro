@@ -118,6 +118,8 @@ export class CardContentText extends Component {
 export class CardLineItem extends Component {
 
   static propTypes = {
+    clickParams: PropTypes.object,
+    onClick: PropTypes.func,
     children: PropTypes.any,
     icon: PropTypes.string
   };
