@@ -3894,7 +3894,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'fieldName'    => 'organization',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization',
                 'mappedBy'     => null,
-                'inversedBy'   => null,
+                'inversedBy'   => 'employees',
                 'fetch'        => ClassMetadata::FETCH_EAGER,
                 'cascade'      => array('persist'),
                 'joinColumns'  => array(
