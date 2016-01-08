@@ -1,11 +1,4 @@
-import createAction from './actions/createAction';
-import createReducer from './reducers/createReducer';
-import combineReducerHierarchy from './reducers/combineReducerHierarchy';
-import { pureRender } from './common/components/pureRenderDecorator';
-
-export default {
-  createAction,
-  createReducer,
-  combineReducerHierarchy,
-  pureRender
-};
+export createAction from './actions/createAction';
+export createReducer from './reducers/createReducer';
+export combineReducerHierarchy from './reducers/combineReducerHierarchy';
+export { pureRender } from './common/components/pureRenderDecorator';
