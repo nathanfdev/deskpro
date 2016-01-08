@@ -62,7 +62,6 @@ export const listFiltersSelector = createSelector(
       });
       const organizationsOptions = organizations.toArray().map(org=>({ label: org.get('name'), value: org.get('id') }));
 
-      console.log('options  ', organizationsOptions);
       const compare = (a, b) => {
         if (a.label < b.label) {
           return -1;
