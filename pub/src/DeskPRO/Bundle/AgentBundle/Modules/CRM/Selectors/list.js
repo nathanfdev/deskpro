@@ -61,6 +61,18 @@ export const listFiltersSelector = createSelector(
         options: userGroupsOptions
       });
       const organizationsOptions = organizations.toArray().map(org=>({ label: org.get('name'), value: org.get('id') }));
+
+      console.log('options  ', organizationsOptions);
+      const compare = (a, b) => {
+        if (a.label < b.label) {
+          return -1;
+        } else if (a.label > b.label) {
+          return 1;
+        }
+        return 0;
+      };
+
+      organizationsOptions.sort(compare);
       filterSelector.push({
         label: 'Organization', type: 'select', param: 'organization', quickFilter: true,
         options: organizationsOptions
