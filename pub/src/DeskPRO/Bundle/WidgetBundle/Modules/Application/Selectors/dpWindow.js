@@ -56,11 +56,6 @@ export const isBubbleSelector = createSelector(
   widgetType => widgetType === 'bubble'
 );
 
-export const agentPollingTimeoutSelector = createSelector(
-  widgetOptionsSelector,
-  options => options.get('agentPollingTimeout') || 'off'
-);
-
 // Company options selectors
 export const companySelector = createSelector(
   widgetOptionsSelector,
@@ -147,4 +142,9 @@ export const helpPopupReplyTypeSelector = createSelector(
 export const agentAcceptTimeoutSelector = createSelector(
   chatOptionsSelector,
   options => options.get('waitingTimeout') || 120 // 2 minutes
+);
+
+export const agentPollingTimeoutSelector = createSelector(
+  chatOptionsSelector,
+  options => options.get('agentPollingTimeout') || 'off'
 );

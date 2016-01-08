@@ -37,7 +37,8 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
             replyType: 'buttons'
           },
           beginMode: 'form',
-          waitingTimeout: 30
+          waitingTimeout: 30,
+          agentPollingTimeout: 10
         }
       }
 
