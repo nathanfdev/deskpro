@@ -12,6 +12,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @advanced_tab = 'header'
       @is_advanced_expanded = false
       @asset_files = []
+      @custom_logo = null
       @uploading_files_count = 0
       @refreshPreviewUrl()
 
@@ -50,7 +51,10 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       if window.confirm('Are you sure you want to discard all changes you\'ve made?')
         @recompiling = true
         @$http.get('/portal/api/style/edit-theme-set/discard').then(
-          () => @loadAdvancedEdits(() => @loadValues(() => @success('Changes were discarded'); @recompiling = false)),
+          () => @loadAdvancedEdits(
+            () =>
+              @loadLogo()
+              @loadValues(() => @success('Changes were discarded'); @recompiling = false)),
           () => @serverError(); @recompiling = false
         );
 
@@ -59,6 +63,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @loadValues()
       @loadAdvancedEdits()
       @loadAssetFiles()
+      @loadLogo()
 
     togglePanel: (name) ->
       if name in @open_panels
@@ -96,6 +101,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         (response) => angular.extend(@asset_files, response.data)
       )
 
+    loadLogo: () ->
+      @$http.get('/portal/api/style/edit-theme-set/logo').success((response) => @custom_logo = response.data.url)
+
     upload: (files) =>
       for file in files
         @uploading_files_count++;
@@ -110,6 +118,14 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
           () => @error('Server error occurred. Unable to upload files.')
         );
 
+    uploadLogo: (files) =>
+      @$upload
+        .upload({url: '/portal/api/style/edit-theme-set/logo', file: files[0]})
+        .then(
+          (response) => @custom_logo = response.data.data.url,
+          () => @error('Server error occurred. Unable to upload files.')
+        );
+
     copyUrl: (file) ->
       window.prompt('File URL:', file.url)
 
@@ -118,6 +134,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         @$http.delete('/portal/api/style/edit-theme-set/assets/' + file.id).success(
           () => @asset_files = @asset_files.filter (f) -> f isnt file
         )
+
+    deleteLogo: () =>
+      @$http.delete('/portal/api/style/edit-theme-set/logo').success((response) => @custom_logo = null)
 
     openAdvancedTab: (tab) => @advanced_tab = tab
     isAdvancedTab: (tab) => @advanced_tab == tab

@@ -140,7 +140,7 @@ class DesignerController extends AbstractApiController
      * @Route("/portal/api/style/edit-theme-set/assets")
      * @Method({"GET"})
      */
-    public function listEditThemeSetAssets()
+    public function listEditThemeSetAssetsAction()
     {
         return $this->dataSerialize($this->getAssetsManager()->getEditThemeSetAssets());
     }
@@ -149,7 +149,7 @@ class DesignerController extends AbstractApiController
      * @Route("/portal/api/style/edit-theme-set/assets")
      * @Method({"POST"})
      */
-    public function uploadEditThemeSetAsset(Request $request)
+    public function uploadEditThemeSetAssetAction(Request $request)
     {
         return $this->dataSerialize($this->getAssetsManager()->uploadEditThemeSetAsset($request->files->get('file')));
     }
@@ -159,7 +159,7 @@ class DesignerController extends AbstractApiController
      * @Method({"DELETE"})
      * @ParamConverter("asset", class="App:ThemeSetAsset")
      */
-    public function deleteEditThemeSetAsset(ThemeSetAsset $asset)
+    public function deleteEditThemeSetAssetAction(ThemeSetAsset $asset)
     {
         return $this->dataSerialize($this->getAssetsManager()->deleteEditThemeSetAsset($asset));
     }
@@ -178,6 +178,35 @@ class DesignerController extends AbstractApiController
         }
 
         return new Response($blob_storage->data, 200, ['Content-Type' => $blob->content_type]);
+    }
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/logo")
+     * @Method({"POST"})
+     */
+    public function uploadLogoAction(Request $request)
+    {
+        return $this->dataSerialize($this->getAssetsManager()->uploadLogo($request->files->get('file')));
+    }
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/logo")
+     * @Method({"GET"})
+     */
+    public function getCustomLogoUrlAction()
+    {
+        return $this->dataSerialize($this->getAssetsManager()->getEditThemeSetLogoAsset());
+    }
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/logo")
+     * @Method({"DELETE"})
+     */
+    public function deleteEditThemeSetLogoAssetAction()
+    {
+        return $this->dataSerialize($this->getAssetsManager()->deleteEditThemeSetAsset(
+            $this->getAssetsManager()->getEditThemeSetLogoAsset()
+        ));
     }
 
     /**

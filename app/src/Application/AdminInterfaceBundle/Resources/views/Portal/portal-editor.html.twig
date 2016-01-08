@@ -45,55 +45,29 @@
                 <div class="panel-title">
                     <a ng-click="Portal.togglePanel('logo')">
                         Logo
-                        <i class="fa fa-caret-down" ng-show="!Portal.isOpen('logo')"></i>
+                        <i class="fa fa-caret-right" ng-show="!Portal.isOpen('logo')"></i>
                         <i class="fa fa-caret-down" ng-show="Portal.isOpen('logo')"></i>
                     </a>
                 </div>
 
                 <div class="logo-options" ng-show="Portal.isOpen('logo')">
+                    <div class="logo-box logo-size-desktop">
+                        <input type="file" ng-file-select="Portal.uploadLogo($files)" />
 
-                    <div class="logo-box logo-size-desktop"><!-- overall box -->
-
-                        <!-- The upload file link -->
-                        <a href="#" class="upload-logo"><span class="icon-box"><i class="fa fa-upload"></i></span> <span>Website Logo</span></a>
-
-                        <div class="bucket"><!-- The border around the logo box -->
-
-                            <!-- The white box -->
+                        <div class="bucket" ng-if="Portal.custom_logo">
                             <div class="logo-container">
-                                <img src="./img/sample-logo.png">
+                                <img ng-src="{{ '{{ Portal.custom_logo }}' }}">
                             </div>
 
+                            <a href ng-click="Portal.deleteLogo()">Delete logo</a>
                         </div>
                     </div>
-
-                    <div class="logo-box logo-size-mobile">
-                        <a href="#" class="upload-logo"><span class="icon-box"><i class="fa fa-upload"></i></span> <span>Mobile</span></a>
-
-                        <div class="bucket">
-                            <div class="logo-container">
-                                <img src="./img/sample-logo.png">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="logo-box logo-size-favicon">
-                        <a href="#" class="upload-logo"><span class="icon-box"><i class="fa fa-upload"></i></span> <span>Mobile</span></a>
-
-                        <div class="bucket">
-                            <div class="logo-container">
-                                <img src="./img/sample-logo.png">
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
-
 
                 <div class="panel-title">
                     <a ng-click="Portal.togglePanel('site_copy')">
                         Site Copy
-                        <i class="fa fa-caret-down" ng-show="!Portal.isOpen('site_copy')"></i>
+                        <i class="fa fa-caret-right" ng-show="!Portal.isOpen('site_copy')"></i>
                         <i class="fa fa-caret-down" ng-show="Portal.isOpen('site_copy')"></i>
                     </a>
                 </div>
