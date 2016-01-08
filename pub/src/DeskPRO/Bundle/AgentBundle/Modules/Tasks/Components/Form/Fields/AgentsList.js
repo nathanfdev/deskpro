@@ -12,7 +12,7 @@ export class AgentsList extends React.Component {
     return (
       <span>
           <span style={{position: 'relative'}}>
-            <PersonAvatar person={value} size="16" />
+            <PersonAvatar person={value} size={16} />
           </span>
           {value.get('name')}
       </span>

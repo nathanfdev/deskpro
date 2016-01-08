@@ -6,7 +6,7 @@ export class PersonAvatar extends React.Component {
 
   static propTypes = {
     person: PropTypes.object.isRequired,
-    size: PropTypes.any
+    size: PropTypes.number
   };
 
   getPersonFallbackText() {
