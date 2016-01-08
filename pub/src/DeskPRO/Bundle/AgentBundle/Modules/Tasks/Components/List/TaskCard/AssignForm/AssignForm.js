@@ -22,7 +22,8 @@ export class AssignForm extends BaseForm {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    task: PropTypes.object.isRequired
+    task: PropTypes.object.isRequired,
+    onCloseForm: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -41,7 +42,7 @@ export class AssignForm extends BaseForm {
     };
   }
 
-  onSubmit = event => {
+  onSubmit(event) {
     event.preventDefault();
 
     const { task, dispatch } = this.props;
@@ -51,7 +52,14 @@ export class AssignForm extends BaseForm {
       departments: this.state.departments
     };
 
-    dispatch(editTask(task.get('id'), submitData));
+    this.setState({
+      submit: true
+    });
+
+    dispatch(editTask(task.get('id'), submitData)).then(
+      () => this.props.onCloseForm(),
+      result => this.props.onCloseForm()
+    );
   };
 
   render() {
@@ -108,10 +116,10 @@ export class AssignForm extends BaseForm {
                 <button type="submit"
                         value="Save"
                         className={classNames('dpw--popup-button', {'hidden': this.state.submit})}
-                        onClick={this.onSubmit}>Save</button>
-                <LoadIndicator opacity={0}
-                        width={3}
-                        loaded={!this.state.submit} />
+                        onClick={this.onSubmit.bind(this)}>
+                  Save
+                </button>
+                <LoadIndicator width={3} loaded={!this.state.submit} />
               </FullField>
             </FieldGroup>
           </div>

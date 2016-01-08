@@ -92,7 +92,7 @@ export const addTask = createAction(
 
 export const editTask = createAction(
   'TASKS_LIST_EDIT_TASK',
-  (taskId, data) => (dispatch, getState) => {
+  (taskId, data) => (dispatch, getState) => new Promise(resolve => {
     const state = getState();
     const tasksMap = elementsMapSelector(state);
 
@@ -103,28 +103,24 @@ export const editTask = createAction(
     const changedProps = Object.keys(data).filter(taskProp => task.get(taskProp) !== data[taskProp]);
     let updatedTasks = tasks;
 
-    if (changedProps.length) {
-      // Re order tasks
-      updatedTasks = reOrderCollection(tasks, taskId, data.display_order);
-      if (changedProps.indexOf('display_order') !== -1) {
-        changedProps.splice(changedProps.indexOf('display_order'), 1);
-      }
-
-      // Update task props
-      let updatedTask = updatedTasks.get(taskIndex);
-      changedProps.forEach(changedProp => {
-        let newValue = data[changedProp];
-        if (Array.isArray(newValue)) {
-          newValue = Immutable.fromJS(newValue);
-        }
-
-        updatedTask = updatedTask.set(changedProp, newValue);
-      });
-
-      updatedTasks = updatedTasks.set(taskIndex, updatedTask);
-      DpApi.sendPut(`DP_API/tasks/${taskId}`, data);
+    // Re order tasks
+    updatedTasks = reOrderCollection(tasks, taskId, data.display_order);
+    if (changedProps.indexOf('display_order') !== -1) {
+      changedProps.splice(changedProps.indexOf('display_order'), 1);
     }
 
-    return updatedTasks;
-  }
+    // Update task props
+    let updatedTask = updatedTasks.get(taskIndex);
+    changedProps.forEach(changedProp => {
+      let newValue = data[changedProp];
+      if (Array.isArray(newValue)) {
+        newValue = Immutable.fromJS(newValue);
+      }
+
+      updatedTask = updatedTask.set(changedProp, newValue);
+    });
+
+    updatedTasks = updatedTasks.set(taskIndex, updatedTask);
+    return DpApi.sendPut(`DP_API/tasks/${taskId}`, data).then(() => resolve(updatedTasks));
+  })
 );

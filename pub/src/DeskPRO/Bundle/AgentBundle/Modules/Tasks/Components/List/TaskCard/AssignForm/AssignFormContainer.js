@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { AssignForm } from './AssignForm';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
@@ -13,6 +13,11 @@ import { allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent
   departments: allDepartmentsSelector(state)
 }))
 export class AssignFormContainer extends React.Component {
+
+  static propTypes = {
+    onCloseForm: PropTypes.func.isRequired
+  };
+
   render() {
     return (
       <AssignForm {...this.props} />

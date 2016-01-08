@@ -39,7 +39,9 @@ export default createReducer(initialState, {
     start: setValue('async.done', false),
     done: setValue('async.done', true)
   }),
-  [actions.editTask]: setFullPayload('elements'),
+  [actions.editTask]: async({
+    success: setFullPayload('elements')
+  }),
   [actions.addTask]: async({
     success: pushPayloadToCollection('elements')
   })

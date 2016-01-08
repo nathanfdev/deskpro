@@ -8,7 +8,7 @@ import { AssigneeAvatar } from './AssigneeAvatar';
 export class AssignButton extends React.Component {
 
   static propTypes = {
-    onSetEditing: PropTypes.func,
+    onSetEditing: PropTypes.func.isRequired,
     task: PropTypes.object
   };
 
@@ -80,7 +80,7 @@ export class AssignButton extends React.Component {
           <ClickOut onClickOut={this.onCloseForm}
                     additionalNodes={[this.refs.button, 'assign-form']}>
 
-            <AssignFormContainer {...this.props} />
+            <AssignFormContainer {...this.props} onCloseForm={this.onCloseForm.bind(this)} />
           </ClickOut>
         </Detached>
       </div>
