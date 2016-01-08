@@ -106,6 +106,8 @@ export class LeftPanelContainer extends React.Component {
                      value="Log in to DeskPRO"
                      className={classNames({'locked': this.state.submit})}
                      onClick={this.onSubmitForm} />
+
+              {this.state.submit && <div className="dpw-spinner"><i/></div>}
             </form>
           </div>
 
