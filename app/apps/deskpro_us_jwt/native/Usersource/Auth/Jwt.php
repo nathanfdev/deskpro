@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace deskpro_us_jwt\Usersource\Auth;
 
 use League\Url\Url;
@@ -195,6 +196,7 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
 
             $jwt           = $callback_data['jwt'];
             $secret        = $this->options->get('secret');
+            \JWT::$leeway  = 60 * 15; // give 15 minutes of "leeway" around the token expiration
             $payload       = \JWT::decode($jwt, $secret, array($this->options->get('algo', 'HS256')));
             $payload_array = Arrays::fromStdClass($payload);
 
