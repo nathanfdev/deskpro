@@ -48,3 +48,11 @@ services:
       - @deskpro_password_policy_validator
     tags:
       - { name: validator.constraint_validator, alias: 'dp_password' }
+
+  validator.dp_auth:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\DpAuthValidator
+    arguments:
+      - @dp_authentication_manager.agent
+      - @doctrine.orm.default_entity_manager
+    tags:
+      - { name: validator.constraint_validator, alias: 'dp_auth_validator' }

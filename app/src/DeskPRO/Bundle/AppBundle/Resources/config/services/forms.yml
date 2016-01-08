@@ -64,6 +64,11 @@ services:
     tags:
         - { name: form.type, alias: filter }
 
+  form.dp_auth:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationType
+    tags:
+        - { name: form.type, alias: dp_auth }
+
   form.task:
     class: DeskPRO\Bundle\AppBundle\Form\Type\TaskType
     tags:

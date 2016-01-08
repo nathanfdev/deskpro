@@ -10,7 +10,7 @@ export class LoginApp extends React.Component {
 
   static propTypes = {
     history: PropTypes.object.isRequired,
-    hasAuth: PropTypes.bool.isRequired
+    hasAuth: PropTypes.bool
   };
 
   componentDidMount() {

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import * as loginActions from '../../Actions/loginActions';
+import { login } from '../../Actions/loginActions';
 import { LoginFormHeader } from './LoginFormHeader';
 import { Email } from './Fields/Email';
 import { Password } from './Fields/Password';
@@ -8,13 +8,10 @@ import { Options } from './Fields/Options';
 import { WarningMajorWrapper } from './WarningMajor/WarningMajorWrapper';
 import classNames from 'classnames';
 
-@connect(state => ({
-  loginState: state.Login.login
-}))
+@connect()
 export class LeftPanelContainer extends React.Component {
 
   static propTypes = {
-    loginState: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
   };
 
@@ -24,71 +21,64 @@ export class LeftPanelContainer extends React.Component {
     this.state = {
       email: null,
       password: null,
-      rememberMe: null
+      rememberMe: null,
+      submit: false,
+      errors: null
     };
   }
 
-  onChangeEmail = (event) => {
-    this.resetErrorWarnings();
+  onChangeEmail = event => {
     this.setState({
-      email: event.target.value
+      email: event.target.value,
+      errors: null
     });
   };
 
-  onChangePassword = (event) => {
-    this.resetErrorWarnings();
+  onChangePassword = event => {
     this.setState({
-      password: event.target.value
+      password: event.target.value,
+      errors: null
     });
   };
 
   onChangeRememberMe = () => {
     this.setState({
-      rememberMe: !this.state.rememberMe
+      rememberMe: !this.state.rememberMe,
+      errors: null
     });
   };
 
-  hasError() {
-    const { loginState } = this.props;
-    return loginState.get('emailError') || loginState.get('passwordError');
-  }
-
-  resetErrorWarnings() {
-    if (!this.hasError()) {
+  onSubmitForm = (event) => {
+    event.preventDefault();
+    if (this.state.submit) {
       return;
     }
 
     const { dispatch } = this.props;
+    const promise = dispatch(login({
+      email: this.state.email,
+      password: this.state.password
+    }));
 
-    dispatch(loginActions.emailSetError(null));
-    dispatch(loginActions.passwordSetError(null));
-  }
-
-  submitForm = (event) => {
-    event.preventDefault();
-
-    const { dispatch } = this.props;
-    const email = this.state.email;
-    const password = this.state.password;
-
-    if (!email) {
-      dispatch(loginActions.emailSetError('Email is empty'));
-    }
-    if (!password) {
-      dispatch(loginActions.passwordSetError('Password is empty'));
-    }
-
-    if (email && password) {
-      dispatch(loginActions.login({ email, password }));
-    }
+    promise.then(
+      () => {
+        this.setState({
+          submit: false
+        });
+      },
+      response => {
+        this.setState({
+          submit: false,
+          errors: response.getData().errors
+        });
+      }
+    );
   };
 
   render() {
-    const { loginState } = this.props;
-
     return (
       <div className="left-panel">
-        <div className={classNames('dpw-login', {'error': this.hasError()})}>
+        <div className={classNames('dpw-login', {'error': !!this.state.errors})}>
 
           <WarningMajorWrapper />
 
@@ -104,18 +94,11 @@ export class LeftPanelContainer extends React.Component {
 
           <div className="dpw-login-form">
             <form>
-              <Email value={this.state.email}
-                     errorMessage={loginState.get('emailError')}
-                     onChange={this.onChangeEmail} />
+              <Email value={this.state.email} errors={this.state.errors} onChange={this.onChangeEmail} />
+              <Password value={this.state.password} errors={this.state.errors} onChange={this.onChangePassword} />
+              <Options checked={this.state.rememberMe} onChange={this.onChangeRememberMe} />
 
-              <Password value={this.state.password}
-                        errorMessage={loginState.get('passwordError')}
-                        onChange={this.onChangePassword} />
-
-              <Options checked={this.state.rememberMe}
-                       onChange={this.onChangeRememberMe} />
-
-              <input type="submit" value="Log in to DeskPRO" onClick={this.submitForm} />
+              <input type="submit" value="Log in to DeskPRO" onClick={this.onSubmitForm} />
             </form>
           </div>
 

@@ -1,5 +1,7 @@
 import React, { PropTypes } from 'react';
 import Simple from 'DeskPRO/Component/Positioned/Simple';
+import classNames from 'classnames';
+import { hasErrors, getError } from 'DeskPRO/Component/Form/FormErrors';
 
 export class FieldWrapper extends React.Component {
 
@@ -7,33 +9,28 @@ export class FieldWrapper extends React.Component {
     label: PropTypes.string.isRequired,
     iconClass: PropTypes.string.isRequired,
     children: PropTypes.node,
-    errorMessage: PropTypes.string
+    field: PropTypes.string,
+    errors: PropTypes.object
   };
 
   render() {
-    const { label, iconClass, children, errorMessage } = this.props;
-    const iconClasses = ['fa', iconClass];
-
-    const fieldClasses = ['dpw-login-form-container'];
-    if (errorMessage) {
-      fieldClasses.push('error');
-    }
+    const { label, iconClass, children, field, errors } = this.props;
 
     return (
-      <div className={fieldClasses.join(' ')}>
+      <div className={classNames('dpw-login-form-container', {'error': hasErrors(errors, field)})}>
         <Simple
-          isOpen={!!errorMessage}
+          isOpen={hasErrors(errors, field)}
           positionTarget={this}
           positionAt="right top"
           positionMy="left center">
 
           <div className="dpw-login-form-warning-container error-container">
-            <i className="fa fa-exclamation-triangle"></i> <span>{errorMessage}</span>
+            <i className="fa fa-exclamation-triangle"></i> <span>{getError(errors, field)}</span>
           </div>
         </Simple>
 
         <label>{label}</label>
-        <span className="dpw-login-form-input-icon"><i className={iconClasses.join(' ')}></i></span>
+        <span className="dpw-login-form-input-icon"><i className={classNames('fa', iconClass)}></i></span>
 
         {children}
       </div>

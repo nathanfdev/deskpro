@@ -5,7 +5,7 @@ import Simple from 'DeskPRO/Component/Positioned/Simple';
 export class Password extends React.Component {
 
   static propTypes = {
-    errorMessage: PropTypes.string,
+    errors: PropTypes.object,
     value: PropTypes.string,
     onChange: PropTypes.func.isRequired
   };
@@ -20,10 +20,10 @@ export class Password extends React.Component {
   }
 
   render() {
-    const { value, errorMessage, onChange } = this.props;
+    const { value, errors, onChange } = this.props;
 
     return (
-      <FieldWrapper iconClass="fa-lock" label="Password" errorMessage={errorMessage}>
+      <FieldWrapper iconClass="fa-lock" label="Password" field="password" errors={errors}>
         <Simple
           isOpen={this.isCapsLockWarningOpen()}
           positionTarget={this}
