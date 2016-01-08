@@ -121,6 +121,6 @@ export const editTask = createAction(
     });
 
     updatedTasks = updatedTasks.set(taskIndex, updatedTask);
-    return DpApi.sendPut(`DP_API/tasks/${taskId}`, data).then(() => resolve(updatedTasks));
+    DpApi.sendPut(`DP_API/tasks/${taskId}`, data).then(() => resolve(updatedTasks));
   })
 );
