@@ -60,6 +60,10 @@ export class LeftPanelContainer extends React.Component {
       password: this.state.password
     }));
 
+    this.setState({
+      submit: true
+    });
+
     promise.then(
       () => {
         this.setState({
@@ -98,7 +102,10 @@ export class LeftPanelContainer extends React.Component {
               <Password value={this.state.password} errors={this.state.errors} onChange={this.onChangePassword} />
               <Options checked={this.state.rememberMe} onChange={this.onChangeRememberMe} />
 
-              <input type="submit" value="Log in to DeskPRO" onClick={this.onSubmitForm} />
+              <input type="submit"
+                     value="Log in to DeskPRO"
+                     className={classNames({'locked': this.state.submit})}
+                     onClick={this.onSubmitForm} />
             </form>
           </div>
 
