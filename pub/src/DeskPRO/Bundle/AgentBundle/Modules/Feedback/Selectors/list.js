@@ -158,7 +158,7 @@ export const massActionsSelector = createSelector(
     });
 
     // Category options
-    const categoryOptions = navState.get('customCategories').toJS().map(cat => ({
+    const categoryOptions = categories.toArray().map(cat => ({
       label: cat.title,
       value: cat.title
     }));

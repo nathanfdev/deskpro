@@ -33,12 +33,10 @@ export class Nav extends Component {
           <TabsPaneStatefulContainer id="peopleTab">
             <Tab title="Groups">
               <LoadIndicator loaded={loaded}>
-                <ul>
-                  <NestedList items={[users.toJS()]}
-                              isAgent={0}
-                              group="people"
-                              alwaysExpanded/>
-                </ul>
+                <NestedList items={[users.toJS()]}
+                            isAgent={0}
+                            group="people"
+                            alwaysExpanded/>
               </LoadIndicator>
             </Tab>
             <Tab title="Filters">Filters tab content</Tab>
@@ -72,12 +70,10 @@ export class Nav extends Component {
           <SectionHeader>Agents</SectionHeader>
           <LoadIndicator loaded={loaded}>
             <div className="sidebar-list">
-              <ul>
-                <NestedList items={[agents.toJS()]}
-                            isAgent={1}
-                            group="agents"
-                            alwaysExpanded/>
-              </ul>
+              <NestedList items={[agents.toJS()]}
+                          isAgent={1}
+                          group="agents"
+                          alwaysExpanded/>
             </div>
           </LoadIndicator>
         </NavFrameBody>

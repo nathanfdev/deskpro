@@ -4,7 +4,6 @@ $flagsImagePath: "../../../../../../node_modules/intl-tel-input/build/img/";
 $tablet: new-breakpoint(max-width 960px 6);
 $mobile: new-breakpoint(max-width 640px 6);
 
-@import 'variables';
 @import "../../../../../../node_modules/bourbon/app/assets/stylesheets/bourbon";
 @import "../../../../../../node_modules/bourbon-neat/app/assets/stylesheets/neat";
 @import "../../../../../../node_modules/font-awesome/scss/font-awesome";
@@ -12,22 +11,23 @@ $mobile: new-breakpoint(max-width 640px 6);
 @import "../../../../../../node_modules/cropper/src/scss/cropper";
 
 @import "normalize.css";
+@import 'variables';
 
-@import "include";
-@import "loading/login";
+@import "loading/login", "loading/tip-panel";
 @import "global-widgets/table-view", "global-widgets/id-container", "global-widgets/timer", "global-widgets/pagination", "global-widgets/control-bar", "global-widgets/radio", "global-widgets/cards", "global-widgets/fonts", "global-widgets/checkbox";
-@import "global-widgets/popup", "global-widgets/avatar";
+@import "global-widgets/popup", "global-widgets/avatar", "global-widgets/major-buttons";
+@import "global-widgets/window/scrollbar";
 @import "global-widgets/window/sidebar-titles", "global-widgets/window/sidebar", "global-widgets/window/app-bar";
 @import "global-widgets/window/top-bar", "global-widgets/window/top-bar-user-options", "global-widgets/window/top-bar-agent-ims";
 @import "global-widgets/navigation-dropdown/navigation-dropdowns";
 @import "animation"; // ReactCSSTransitionGroup
-@import "raw/styles";
+//@import "raw/styles";
 
 @import "chrome/positioning";
 @import "chrome/tabpane";
 @import "cards/_index";
 
-@import "legacy-styles";
+
 
 body {
   font-family: $font-stack;
@@ -37,7 +37,48 @@ a {
   color: $link-color;
 }
 
-// So we don't have to repeat it every time we want to reposition an icon
+h1, h2, h3, h4, h5 {
+  margin: 0;
+  padding: 0;
+  font-weight: 500;
+}
+
+h1 {
+  font-size: 1.3em;
+}
+
+hr {
+  display: block;
+  width: 100%;
+  border: 0;
+  margin: 0;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.disc {
+  position: relative;
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 19px;
+  background: #999999;
+  margin-left: 4px;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+.tag {
+  display: inline-block;
+  background: #56bb70;
+  color: #fff;
+  padding: 0 3px;
+  border-radius: 2px;
+  font-size: 0.85em;
+  font-weight: 700;
+  margin-right: 2px;
+}
+
 .fa {
   position: relative;
 }

@@ -33,12 +33,23 @@
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
+use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService;
 
 /**
  * Class OrganizationTransformer.
  */
 class OrganizationTransformer extends AbstractDataSerializerTransformer
 {
+    private $chatDataService;
+
+    /**
+     * @param ChatDataService $chatDataService
+     */
+    public function __construct(ChatDataService $chatDataService)
+    {
+        $this->chatDataService = $chatDataService;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -62,10 +73,12 @@ class OrganizationTransformer extends AbstractDataSerializerTransformer
     {
         /** @var \Application\DeskPRO\Entity\Organization $organization */
         $organization = $request->getDataToBeTransformed();
+        $chatsCount   = $this->chatDataService->getChatsCountForOrganization($organization);
 
         return [
             'employees_count' => $organization->getEmployeesCount(),
             'tickets_count'   => $organization->getTicketsCount(),
+            'chats_count'     => $chatsCount,
         ];
     }
 }

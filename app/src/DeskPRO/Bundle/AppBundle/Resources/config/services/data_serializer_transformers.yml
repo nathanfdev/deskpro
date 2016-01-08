@@ -21,6 +21,11 @@ services:
       - @doctrine.orm.default_entity_manager
       - @ticket_layout_factory
 
+  data_serializer.transformer.organization:
+    class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\OrganizationTransformer
+    arguments:
+      - @data.chat
+
   data_serializer.transformer.person:
     class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\PersonTransformer
     arguments:

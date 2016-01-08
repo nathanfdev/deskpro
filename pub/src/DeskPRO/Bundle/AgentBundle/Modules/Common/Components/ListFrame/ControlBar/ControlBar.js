@@ -7,10 +7,6 @@ export class ControlBar extends Component {
 
   static propTypes = {
     onMenuUnmount: PropTypes.func,
-    checkbox: PropTypes.shape({
-      count: PropTypes.number.isRequired,
-      action: PropTypes.func.isRequired
-    }),
     sorting: PropTypes.shape({
       options: PropTypes.objectOf(PropTypes.shape({
         label: PropTypes.string.isRequired,

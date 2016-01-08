@@ -1,0 +1,60 @@
+.deskpro-app-major-buttons {
+  margin: 0 10px;
+  padding: 20px 0;
+  border-bottom: 1px solid #cecece;
+
+  ul {
+    @include clearfix();
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-align: center;
+  }
+
+  li {
+    display: block;
+    float: left;
+    text-align: center;
+    padding: 0;
+    width: 33.3%;
+
+    .icon {
+      display: inline-block;
+      width: 42px;
+      height: 42px;
+      background: #4681b2;
+      text-align: center;
+      border-radius: 2px;
+      color: #fff;
+      margin-bottom: 5px;
+
+
+      i {
+        top: 12px;
+        font-size: 1.6em;
+      }
+    }
+
+    .title {
+      display: block;
+      font-size: 0.95em;
+      color: #aabbd0;
+    }
+
+    a {
+      color: #4681b2;
+      text-decoration: none;
+      display: block;
+      width: 100%;
+    }
+
+    a:hover {
+      .icon {
+        background: darken(#4681b2, 10%);
+      }
+      .title {
+        color: #4681b2;
+      }
+    }
+  }
+}
