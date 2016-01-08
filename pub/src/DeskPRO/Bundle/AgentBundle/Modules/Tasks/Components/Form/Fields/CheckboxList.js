@@ -13,11 +13,11 @@ export class CheckboxList extends React.Component {
     onChange: PropTypes.func.isRequired
   };
 
-  onClick = value => {
+  onClick(value) {
     const { multiple, selected = [], onChange } = this.props;
+    const index = selected.indexOf(value);
 
     if (multiple) {
-      const index = selected.indexOf(value);
       if (index === -1) {
         selected.push(value);
       } else {
@@ -26,7 +26,7 @@ export class CheckboxList extends React.Component {
 
       onChange(selected);
     } else {
-      onChange([value]);
+      onChange(index > -1 ? [] : [value]);
     }
   };
 
@@ -43,8 +43,7 @@ export class CheckboxList extends React.Component {
 
     return (
       <li key={index}>
-        <a className={classNames('checkbox-button', {'checked': checked})}
-           onClick={this.onClick.bind(this, value)}>
+        <a className={classNames('checkbox-button', {'checked': checked})} onClick={this.onClick.bind(this, value)}>
 
           <span className="checkbox"><i className="fa fa-check"></i></span>
           <span className="name">{label}</span>
