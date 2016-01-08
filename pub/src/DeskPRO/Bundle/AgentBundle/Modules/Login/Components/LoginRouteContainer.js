@@ -16,14 +16,6 @@ export class LoginRouteContainer extends React.Component {
   render() {
     const { userStatus, children } = this.props;
 
-    if (userStatus.get('isLoading')) {
-      return <DpAppLoading />;
-    }
-
-    return (
-      <div>
-        {children}
-      </div>
-    );
+    return userStatus.get('isLoading') ? <DpAppLoading /> : children;
   }
 }
