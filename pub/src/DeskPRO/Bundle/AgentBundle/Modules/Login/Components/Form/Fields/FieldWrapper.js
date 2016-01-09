@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import Simple from 'DeskPRO/Component/Positioned/Simple';
 import classNames from 'classnames';
-import { hasErrors, getError } from 'DeskPRO/Component/Form/FormErrors';
+import { hasErrors, getLastError } from 'DeskPRO/Component/Form/FormErrors';
 
 export class FieldWrapper extends React.Component {
 
@@ -25,7 +25,7 @@ export class FieldWrapper extends React.Component {
           positionMy="left center">
 
           <div className="dpw-login-form-warning-container error-container">
-            <i className="fa fa-exclamation-triangle"></i> <span>{getError(errors, field)}</span>
+            <i className="fa fa-exclamation-triangle"></i> <span>{getLastError(errors, field)}</span>
           </div>
         </Simple>
 
