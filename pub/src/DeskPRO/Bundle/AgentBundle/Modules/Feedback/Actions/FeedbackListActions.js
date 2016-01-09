@@ -88,10 +88,6 @@ export const loadList = createAction(
   }
 );
 
-export const toggleViewMode = createAction(
-  'FEEDBACK_TOGGLE_VIEW_MODE'
-);
-
 export const getDisplayFieldsFromPersonSetting = createAction(
   'FEEDBACK_GET_DISPLAY_FIELD_FROM_PERSON_SETTING',
   () => PersonSetting.get('feedback_display_fields').then(value => value.getData())

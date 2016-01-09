@@ -51,6 +51,16 @@ export const isCommentsSelector = createSelector(
     params => params.get('isComments')
 );
 
+export const paginationSelector = createSelector(
+  stateSelector,
+    list => list.get('pagination')
+);
+
+export const loadedSelector = createSelector(
+  stateSelector,
+    list => list.getIn(['async', 'done'])
+);
+
 export const currentViewModeSelector = hashStateSelectorFactory(['list', 'view'], 'card');
 
 export const listFiltersSelector = createSelector(

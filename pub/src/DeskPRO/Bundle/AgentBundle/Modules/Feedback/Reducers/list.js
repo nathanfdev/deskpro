@@ -1,11 +1,11 @@
 import { createReducer } from 'Ampliflux';
+import Immutable from 'immutable';
 import { async, setValue, setFullPayload, togglePayloadInCollection, handleMassAction, mergeFullPayload }
   from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/FeedbackListActions';
 import * as commentsActions from '../Actions/FeedbackCommentsActions';
 import * as massActions from '../Actions/FeedbackMassActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import Immutable from 'immutable';
 
 const initialState = {
   async: {
