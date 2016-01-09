@@ -12,7 +12,6 @@ import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/ControlBar';
 
 @connect(state => ({
-  count: state.Feedback.list.get('selected').size,
   sort: currentListSortSelector(state),
   order: currentListOrderSelector(state),
   filterParams: currentListParamsSelector(state),
@@ -22,7 +21,6 @@ import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components
 }))
 export class ControlBarContainer extends Component {
   static propTypes = {
-    count: PropTypes.number.isRequired,
     sort: PropTypes.string.isRequired,
     order: PropTypes.string.isRequired,
     filterParams: PropTypes.object.isRequired,
@@ -32,7 +30,6 @@ export class ControlBarContainer extends Component {
   };
 
   render() {
-    console.log(this.props.visibleFields);
     const config = {
       onMenuUnmount: applyParams,
       sorting: {

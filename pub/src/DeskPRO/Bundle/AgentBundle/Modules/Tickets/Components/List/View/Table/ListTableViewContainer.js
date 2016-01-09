@@ -4,16 +4,20 @@ import { Table, Th, Td, TdId, TdTitle, TableCheckbox }
 import { connect } from 'react-redux';
 import { elementsSelector, selectedSelector, tableVisibleFieldsSelector } from '../../../../Selectors/list';
 import { toggleSelected } from '../../../../Actions/listActions';
+import { ticketsSelector }
+  from '../../../../Selectors/recordStores';
 
 @connect(state => ({
-  elements: elementsSelector(state),
+  ids: elementsSelector(state),
+  tickets: ticketsSelector(state),
   selected: selectedSelector(state),
   fields: tableVisibleFieldsSelector(state)
 }))
 export class ListTableViewContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    elements: PropTypes.object.isRequired,
+    ids: PropTypes.array.isRequired,
+    tickets: PropTypes.object.isRequired,
     selected: PropTypes.object.isRequired,
     fields: PropTypes.object.isRequired
   };
@@ -26,29 +30,17 @@ export class ListTableViewContainer extends Component {
     return this.props.fields.includes(field);
   }
 
-  render() {
-    return (
-      <Table>
-        <thead>
-          {this.renderHeader()}
-        </thead>
-        <tbody>
-          {this.props.elements.map(ticket => this.renderRow(ticket))}
-        </tbody>
-      </Table>
-    );
-  }
-
-  renderRow(ticket) {
-    const id = ticket.get('id');
-    const selected = this.props.selected.includes(id);
-    const onClick = (elementId) => () => {
-      this.props.dispatch(toggleSelected(elementId));
+  renderRow(id) {
+    const { tickets, selected, dispatch } = this.props;
+    const ticket = tickets.get(id);
+    const isSelected = selected.includes(id);
+    const onClick = () => {
+      dispatch(toggleSelected(id));
     };
 
     return (
       <tr key={id}>
-        <Td><TableCheckbox selected={selected} onClick={onClick(id)} /></Td>
+        <Td><TableCheckbox selected={isSelected} onClick={onClick}/></Td>
         <TdId visible={this.isVisible('id')}>{id}</TdId>
         <Td visible={this.isVisible('urgency')}>{ticket.get('urgency')}</Td>
         <Td visible={this.isVisible('person')}>John Doe</Td>
@@ -69,49 +61,54 @@ export class ListTableViewContainer extends Component {
         <Th sort="id" title="ID"
             visible={this.isVisible('id')}
             order={false}
-            onChange={this.sortTable.bind(this)}
-        />
+            onChange={this.sortTable.bind(this)}/>
         <Th sort="urgency" title="Urgency"
             visible={this.isVisible('urgency')}
             order={false}
-            onChange={this.sortTable.bind(this)}
-        />
+            onChange={this.sortTable.bind(this)}/>
         <Th sort="person" title="Person"
             visible={this.isVisible('person')}
             order={false}
-            onChange={this.sortTable.bind(this)}
-          />
+            onChange={this.sortTable.bind(this)}/>
         <Th sort="person_email" title="Person email"
             visible={this.isVisible('person_email')}
             order={false}
-            onChange={this.sortTable.bind(this)}
-          />
+            onChange={this.sortTable.bind(this)}/>
         <Th sort="agent" title="Agent"
             visible={this.isVisible('agent')}
             order={false}
-            onChange={this.sortTable.bind(this)}
-        />
+            onChange={this.sortTable.bind(this)}/>
         <Th sort="subject" title="Subject"
             visible={this.isVisible('subject')}
             order={false}
-            onChange={this.sortTable.bind(this)}
-        />
+            onChange={this.sortTable.bind(this)}/>
         <Th sort="status" title="Status"
             visible={this.isVisible('status')}
             order={false}
-            onChange={this.sortTable.bind(this)}
-        />
+            onChange={this.sortTable.bind(this)}/>
         <Th sort="date_created" title="Created"
             visible={this.isVisible('date_created')}
             order={false}
-            onChange={this.sortTable.bind(this)}
-        />
+            onChange={this.sortTable.bind(this)}/>
         <Th sort="labels" title="Labels"
             visible={this.isVisible('labels')}
             order={false}
-            onChange={this.sortTable.bind(this)}
-        />
+            onChange={this.sortTable.bind(this)}/>
       </tr>
     );
   }
+
+  render() {
+    return (
+      <Table>
+        <thead>
+        {this.renderHeader()}
+        </thead>
+        <tbody>
+        {this.props.ids.map(id => this.renderRow(id))}
+        </tbody>
+      </Table>
+    );
+  }
+
 }

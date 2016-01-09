@@ -16,17 +16,7 @@ export class TicketCardContainer extends Component {
     intl: intlShape.isRequired,
     fields: PropTypes.object.isRequired,
     selected: PropTypes.bool.isRequired,
-    ticket: PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      urgency: PropTypes.number.isRequired,
-      person: PropTypes.number.isRequired,
-      agent: PropTypes.number.isRequired,
-      subject: PropTypes.string.isRequired,
-      status: PropTypes.string.isRequired,
-      date_created: PropTypes.string.isRequired,
-      person_email: PropTypes.string,
-      labels: PropTypes.array
-    })
+    ticket: PropTypes.object.isRequired
   };
 
   render() {

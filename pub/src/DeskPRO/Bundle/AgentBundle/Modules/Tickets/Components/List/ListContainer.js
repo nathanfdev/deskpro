@@ -8,6 +8,7 @@ import { selectedCountSelector } from '../../Selectors/list';
 @connect(state => ({
   selectedCount: selectedCountSelector(state),
   isDone: isDoneSelector(state),
+  pagination: state.Tickets.list.get('pagination'),
   viewMode: viewModeSelector(state)
 }))
 export class ListContainer extends Component {
@@ -15,6 +16,7 @@ export class ListContainer extends Component {
     dispatch: PropTypes.func.isRequired,
     isDone: PropTypes.bool.isRequired,
     selectedCount: PropTypes.number.isRequired,
+    pagination: PropTypes.object,
     viewMode: PropTypes.string.isRequired
   };
 

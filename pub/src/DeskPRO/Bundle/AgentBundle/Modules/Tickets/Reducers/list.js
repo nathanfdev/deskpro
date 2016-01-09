@@ -15,7 +15,7 @@ const initialState = {
 
   // async indicators
   async: {
-    done: null
+    done: false
   },
 
   tableVisibleFields: ['id', 'urgency', 'person', 'agent', 'subject', 'status'],
@@ -28,7 +28,7 @@ export default createReducer(initialState, {
 
   TICKETS_LIST_SET_LIST_PARAMS: setFullPayload('listParams'),
   TICKETS_LIST_LOAD_LIST: async({
-    success: setFullPayload('elements'),
+    success: (state, payload) => state.set('elements', payload.ids).set('pagination', payload.pagination),
     start: setValue('async.done', false),
     done: setValue('async.done', true)
   }),

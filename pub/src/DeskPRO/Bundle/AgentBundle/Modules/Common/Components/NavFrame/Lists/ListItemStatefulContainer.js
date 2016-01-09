@@ -10,6 +10,7 @@ export class ListItemStatefulContainer extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
+    active: PropTypes.string,
     groupId: PropTypes.string.isRequired,
     itemId: PropTypes.string.isRequired,
     onClick: PropTypes.func.isRequired,
