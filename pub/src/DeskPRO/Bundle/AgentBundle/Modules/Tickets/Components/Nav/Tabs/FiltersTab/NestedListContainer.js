@@ -8,20 +8,19 @@ export class NestedListContainer extends BaseNestedList {
   renderListItem(item, depth, parentIsLoading) {
     this.ensureValidDepth(depth);
     const { nested, id, count, type, title, parent } = item;
-
     const props = {
       count,
       id,
       type,
       title,
-      isTopLevel: depth === 1,
-      listFilters: parent ? {filter: parent, [type]: id} : {filter: id},
+      isTopLevel: nested.length > 0 && depth === 1,
+      listFilters: parent ? { filter: parent, [type]: id } : { filter: id },
       parentIsLoading
     };
 
     const isGroupedByUrgency = nested && nested.length && item.grouped_by === 'urgency';
     const content = isGroupedByUrgency
-      ? <UrgencyList items={Immutable.fromJS(nested)} />
+      ? <UrgencyList items={Immutable.fromJS(nested)}/>
       : this.renderNested(item, depth);
 
     return (
@@ -38,7 +37,7 @@ export class NestedListContainer extends BaseNestedList {
     if (hasNested && isExpanded) {
       return (
         <ul className={'with-connectors depth-' + depth}>
-          {nested.map(nestedItem => this.renderListItem({...nestedItem, parent: id}, depth + 1))}
+          {nested.map(nestedItem => this.renderListItem({ ...nestedItem, parent: id }, depth + 1))}
         </ul>
       );
     }
