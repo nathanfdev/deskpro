@@ -70,7 +70,7 @@ export class WidgetFrameContainer extends React.Component {
              positionMode={widgetPosition}>
 
         <Provider store={store}>
-          {React.cloneElement(children, {...childProps, isBubble})}
+          {React.cloneElement(children, {...childProps, widgetPosition, isBubble})}
         </Provider>
       </Frame>
     );
