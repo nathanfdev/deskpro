@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { openWidget } from '../../Actions/dpWindowActions';
 import { onlineAgentsCountSelector } from '../../Selectors/agent';
-import { chatModeSelector, widgetHasChatSelector } from '../../Selectors/dpWindow';
+import { chatModeSelector, widgetHasChatSelector, liveDemoSelector } from '../../Selectors/dpWindow';
 import { chatIdSelector, agentIdSelector, dateEndedSelector } from '../../../Chat/Selectors/chat';
 import history from '../../../../Services/history';
 
@@ -12,7 +12,8 @@ import history from '../../../../Services/history';
   chatId: chatIdSelector(state),
   agentId: agentIdSelector(state),
   dateEnded: dateEndedSelector(state),
-  agentsCounts: onlineAgentsCountSelector(state)
+  agentsCounts: onlineAgentsCountSelector(state),
+  liveDemo: liveDemoSelector(state)
 }))
 export class WidgetOpenContainer extends React.Component {
 
@@ -24,13 +25,14 @@ export class WidgetOpenContainer extends React.Component {
     chatMode: PropTypes.string,
     agentId: PropTypes.number,
     agentsCounts: PropTypes.number,
-    dateEnded: PropTypes.string
+    dateEnded: PropTypes.string,
+    liveDemo: PropTypes.bool
   };
 
   onClick = () => {
-    const { widgetHasChat, agentsCounts, chatId, chatMode, agentId, dateEnded, dispatch } = this.props;
+    const { widgetHasChat, agentsCounts, chatId, chatMode, agentId, dateEnded, liveDemo, dispatch } = this.props;
 
-    if (widgetHasChat && agentsCounts > 0) {
+    if (widgetHasChat && (liveDemo || agentsCounts > 0)) {
       if (chatId) {
         if (agentId || dateEnded) {
           history.replace('/chat/active');
