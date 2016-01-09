@@ -4,11 +4,13 @@ import { Email } from './Fields/Email';
 import { Password } from './Fields/Password';
 import { Options } from './Fields/Options';
 import { WarningMajorWrapper } from './WarningMajor/WarningMajorWrapper';
+import { login } from '../../Actions/loginActions';
 import classNames from 'classnames';
 
 export class LoginForm extends React.Component {
 
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
     submit: PropTypes.bool,
     errors: PropTypes.object,
     onSubmitForm: PropTypes.func
@@ -20,7 +22,8 @@ export class LoginForm extends React.Component {
     this.state = {
       email: null,
       password: null,
-      rememberMe: null
+      rememberMe: null,
+      errors: null
     };
   }
 
@@ -47,18 +50,38 @@ export class LoginForm extends React.Component {
 
   onSubmitForm = event => {
     event.preventDefault();
+    if (this.state.submit) {
+      return;
+    }
 
-    this.props.onSubmitForm({
+    const { dispatch } = this.props;
+    const promise = dispatch(login({
       email: this.state.email,
       password: this.state.password
+    }));
+
+    this.setState({
+      submit: true
     });
+
+    promise.then(
+      () => {
+        this.setState({
+          submit: false
+        });
+      },
+      response => {
+        this.setState({
+          submit: false,
+          errors: response.getData().errors
+        });
+      }
+    );
   };
 
   render() {
-    const { errors, submit } = this.props;
-
     return (
-      <div className={classNames('dpw-login', {'error': !!errors})}>
+      <div className={classNames('dpw-login', {'error': !!this.state.errors})}>
 
         <WarningMajorWrapper />
 
@@ -74,16 +97,16 @@ export class LoginForm extends React.Component {
 
         <div className="dpw-login-form">
           <form>
-            <Email value={this.state.email} errors={errors} onChange={this.onChangeEmail} />
-            <Password value={this.state.password} errors={errors} onChange={this.onChangePassword} />
+            <Email value={this.state.email} errors={this.state.errors} onChange={this.onChangeEmail} />
+            <Password value={this.state.password} errors={this.state.errors} onChange={this.onChangePassword} />
             <Options checked={this.state.rememberMe} onChange={this.onChangeRememberMe} />
 
             <input type="submit"
                    value="Log in to DeskPRO"
-                   className={classNames({'locked': submit})}
+                   className={classNames({'locked': this.state.submit})}
                    onClick={this.onSubmitForm} />
 
-            {submit && <div className="dpw-spinner"><i/></div>}
+            {this.state.submit && <div className="dpw-spinner"><i/></div>}
           </form>
         </div>
 
