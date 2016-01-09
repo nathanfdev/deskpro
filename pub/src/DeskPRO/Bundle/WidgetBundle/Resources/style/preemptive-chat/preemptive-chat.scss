@@ -44,17 +44,24 @@ $secondary-preemptive-background-color: #f8f8f8;
       padding: 2px;
       min-width: 66px;
 
-      .state-button-text { margin: 0 5px 0 10px; }
+      .state-button-text { margin: 4px 30px 4px 10px; }
+      .state-button-icon {
+        top: 2px;
+        right: 2px;
+      }
     }
 
     &.button-l {// Make it large
       min-width: 100px;
 
       .state-button-text {
+        margin: 8px 40px 8px 15px;
         font-size: 17px;
         font-weight: 400;
       }
       .state-button-icon {
+        top: 6px;
+        right: 6px;
         width: 22px;
         height: 22px;
         font-size: 15px;
@@ -66,7 +73,7 @@ $secondary-preemptive-background-color: #f8f8f8;
     .state-button-text {
       display: inline-block;
       vertical-align: middle;
-      margin: 0 10px 0 20px;
+      margin: 4px 30px 4px 20px;
       font-size: 12px;
     }
 
@@ -79,6 +86,9 @@ $secondary-preemptive-background-color: #f8f8f8;
       border: 3px solid $main-preemptive-color-hover;
       border-radius: 199px;
       vertical-align: middle;
+      position: absolute;
+      top: 7px;
+      right: 7px;
 
       color: $main-preemptive-color;
       font-weight: bold;
