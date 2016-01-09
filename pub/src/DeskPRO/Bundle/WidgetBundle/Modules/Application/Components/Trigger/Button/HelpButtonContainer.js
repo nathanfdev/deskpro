@@ -74,10 +74,11 @@ export class HelpButtonContainer extends React.Component {
   };
 
   checkRenderPopup() {
-    const { triggerPopupOpened, agentsCounts, hasChat, liveDemo, dispatch } = this.props;
+    const { widgetOpened, triggerPopupOpened, agentsCounts, hasChat, liveDemo, dispatch } = this.props;
     const storageKey = 'dpWidget.dpWindow.popupShown';
+    const notClosedPopup = !(storageKey in localStorage) || localStorage[storageKey] !== 'none';
 
-    if (hasChat && liveDemo || ((!(storageKey in localStorage) || localStorage[storageKey] !== 'none') && agentsCounts > 0)) {
+    if (!widgetOpened && hasChat && (liveDemo || (notClosedPopup && agentsCounts > 0))) {
       if (!triggerPopupOpened) {
         dispatch(openTriggerPopup());
       }
