@@ -90,8 +90,10 @@
   .widget-editor-live-demo-container {
     position: absolute;
     top: 50px;
-    right: 50px;
+    right: -300px;
     z-index: 1000;
+    width: 600px;
+    height: 800px;
   }
 }
 

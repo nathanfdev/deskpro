@@ -68,4 +68,8 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
 
       @$scope.code_snippets.chat = code
 
+      demoDocument = document.getElementById('live-demo').contentDocument;
+      demoDocument.write('<body>' + code + '</body>');
+      demoDocument.close();
+
   Admin_Portal_Ctrl_WidgetEditor.EXPORT_CTRL()
