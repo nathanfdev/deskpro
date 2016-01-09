@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { LoginForm } from './LoginForm';
 
@@ -6,8 +6,6 @@ import { LoginForm } from './LoginForm';
 export class LoginFormContainer extends React.Component {
 
   render() {
-    return (
-      <LoginForm {...this.props} />
-    );
+    return <LoginForm {...this.props} />;
   }
 }
