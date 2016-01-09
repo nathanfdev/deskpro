@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -426,6 +427,10 @@ class TicketType extends AbstractType
     private function addField(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
         if ($form_context->getForm()->has($field->getId())) {
+            return;
+        }
+
+        if ($this->shouldFieldBeSkipped($field, $form_context)) {
             return;
         }
 
@@ -847,11 +852,7 @@ class TicketType extends AbstractType
      */
     private function addCategory(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
-        // we need the brand setting to be correct
-        if (!$this->getSettingsBag($form_context->getForm())->get('core.use_ticket_category', false)) {
-            return;
-        }
-        if (!$this->em->getRepository('DeskPRO:TicketCategory')->countAll() > 0) {
+        if (!$this->canCategoryBeDisplayed($form_context)) {
             return;
         }
 
@@ -875,11 +876,7 @@ class TicketType extends AbstractType
      */
     private function addPriority(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
-        // we need the brand setting to be correct
-        if (!$this->getSettingsBag($form_context->getForm())->get('core.use_ticket_priority', false)) {
-            return;
-        }
-        if (!$this->em->getRepository('DeskPRO:TicketPriority')->countAll() > 0) {
+        if (!$this->canPriorityBeDisplayed($form_context)) {
             return;
         }
 
@@ -903,11 +900,7 @@ class TicketType extends AbstractType
      */
     private function addWorkflow(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
-        // we need the brand setting to be correct
-        if (!$this->getSettingsBag($form_context->getForm())->get('core.use_ticket_workflow', false)) {
-            return;
-        }
-        if (!$this->em->getRepository('DeskPRO:TicketWorkflow')->countAll() > 0) {
+        if (!$this->canWorkflowBeDisplayed($form_context)) {
             return;
         }
 
@@ -930,11 +923,7 @@ class TicketType extends AbstractType
      */
     private function addProduct(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
-        // we need the brand setting to be correct
-        if (!$this->getSettingsBag($form_context->getForm())->get('core.use_product', false)) {
-            return;
-        }
-        if (!$this->em->getRepository('DeskPRO:Product')->countAll() > 0) {
+        if (!$this->canProductBeDisplayed($form_context)) {
             return;
         }
 
@@ -957,16 +946,12 @@ class TicketType extends AbstractType
      */
     private function addCaptcha(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
-        if (!$form_context->getForm()->getConfig()->getOption('use_captcha')) {
+        if (!$this->canCaptchaBeDisplayed($form_context)) {
             return;
         }
 
-        // ensure captcha is only present once
-        if ($form_context->doesCaptchaExistOnForm()) {
-            return;
-        }
-
-        // NOTE: you may want to view TicketLayoutFactory where we can, at times, add a CAPTCHA to the ticket
+        // NOTE: you may want to view TicketLayoutFactory.
+        // In TicketLayoutFactory we can, at times, add a CAPTCHA to the ticket
         // layout under certain circumstances (when anti-abuse is violated, for example).
 
         $options = [
@@ -1140,6 +1125,24 @@ class TicketType extends AbstractType
         ($has_field_criteria && $field->getCriteria()->isSubmittedDataMatch($extracted_data));
     }
 
+    protected function shouldFieldBeSkipped(LayoutField $field, TicketFormContext $context)
+    {
+        switch ($field->getFieldType()) {
+            case FormFields::PRIORITY:
+                return !$this->canPriorityBeDisplayed($context);
+            case FormFields::PRODUCT:
+                return !$this->canProductBeDisplayed($context);
+            case FormFields::WORKFLOW:
+                return !$this->canWorkflowBeDisplayed($context);
+            case FormFields::CATEGORY:
+                return !$this->canCategoryBeDisplayed($context);
+            case FormFields::CAPTCHA:
+                return !$this->canCaptchaBeDisplayed($context);
+            default:
+                return false;
+        }
+    }
+
     /**
      * @param Layout            $new_layout
      * @param TicketFormContext $context
@@ -1155,6 +1158,9 @@ class TicketType extends AbstractType
         // find fields that should be rendered, but weren't before, via criteria with recently submitted data
         $fields_requiring_rerender = [];
         foreach ($new_layout->all() as $field) {
+            if ($this->shouldFieldBeSkipped($field, $context)) {
+                continue;
+            }
             if ($this->fieldWasDisplayedBefore($context, $field)) {
                 // this field was displayed before. should it continue to be displayed?
                 if ($this->fieldHasCriteriaAndCriteriaDoesNOTMatch($field, $extracted_data)) {
@@ -1180,5 +1186,72 @@ class TicketType extends AbstractType
         }
 
         return array($fields_requiring_rerender, $fields_to_remove, $additional_fields);
+    }
+
+    protected function canProductBeDisplayed(TicketFormContext $form_context)
+    {
+        // we need the brand setting to be correct
+        if (!$this->getSettingsBag($form_context->getForm())->get('core.use_product', false)) {
+            return false;
+        }
+        if (!$this->em->getRepository('DeskPRO:Product')->countAll() > 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function canPriorityBeDisplayed(TicketFormContext $form_context)
+    {
+        // we need the brand setting to be correct
+        if (!$this->getSettingsBag($form_context->getForm())->get('core.use_ticket_priority', false)) {
+            return false;
+        }
+
+        if (!$this->em->getRepository('DeskPRO:TicketPriority')->countAll() > 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function canCategoryBeDisplayed(TicketFormContext $form_context)
+    {
+        // we need the brand setting to be correct
+        if (!$this->getSettingsBag($form_context->getForm())->get('core.use_ticket_category', false)) {
+            return false;
+        }
+        if (!$this->em->getRepository('DeskPRO:TicketCategory')->countAll() > 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function canWorkflowBeDisplayed(TicketFormContext $form_context)
+    {
+        // we need the brand setting to be correct
+        if (!$this->getSettingsBag($form_context->getForm())->get('core.use_ticket_workflow', false)) {
+            return false;
+        }
+        if (!$this->em->getRepository('DeskPRO:TicketWorkflow')->countAll() > 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function canCaptchaBeDisplayed(TicketFormContext $form_context)
+    {
+        if (!$form_context->getForm()->getConfig()->getOption('use_captcha')) {
+            return false;
+        }
+
+        // ensure captcha is only present once
+        if ($form_context->doesCaptchaExistOnForm()) {
+            return false;
+        }
+
+        return true;
     }
 }
