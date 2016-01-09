@@ -23,14 +23,14 @@ import Jquery from 'jquery';
 export class DpAppContainer extends React.Component {
 
   static propTypes = {
+    hasAuth: PropTypes.bool,
     dispatch: PropTypes.func.isRequired,
-    hasAuth: PropTypes.bool.isRequired,
     history: PropTypes.object.isRequired
   };
 
   componentWillMount() {
     this.props.dispatch(loadMe());
-    this.onCheckAuth();
+    this.checkAuth();
   }
 
   componentDidMount() {
@@ -43,10 +43,10 @@ export class DpAppContainer extends React.Component {
   }
 
   componentDidUpdate() {
-    this.onCheckAuth();
+    this.checkAuth();
   }
 
-  onCheckAuth() {
+  checkAuth() {
     const { hasAuth, dispatch, history } = this.props;
 
     Jquery.ajaxSetup({
