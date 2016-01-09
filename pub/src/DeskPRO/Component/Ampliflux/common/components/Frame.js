@@ -92,10 +92,7 @@ export default class Frame extends React.Component {
     }
 
     this.setState({
-      dimensions: {
-        width: width,
-        height: height
-      }
+      dimensions: { width, height }
     });
   }
 

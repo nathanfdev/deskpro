@@ -8,6 +8,7 @@ import store from './Services/store';
 import { bootstrapWidget } from './Modules/Application/Actions/bootstrapActions';
 import './Resources/style/widget-style.scss';
 import { loadOptions } from './Modules/Application/Actions/dpWindowActions';
+import { windowResize } from './Modules/Application/Actions/dpWindowActions';
 
 export default class WidgetApp {
 
@@ -55,7 +56,10 @@ export default class WidgetApp {
     );
 
     if (window.DP_OPTIONS.widget.demo) {
-      window.reloadOptions = () => store.dispatch(loadOptions(window.DP_OPTIONS));
+      window.reloadOptions = () => {
+        store.dispatch(loadOptions(window.DP_OPTIONS));
+        store.dispatch(windowResize());
+      };
     }
 
     $container.appendTo(pageDoc.body);
