@@ -20,18 +20,27 @@ export class HelpButton extends React.Component {
   };
 
   render() {
-    const { name, size, disabled } = this.props;
+    const { name, size, disabled, backgroundColor, textColor, borderColor } = this.props;
 
     return (
       <div className="dpdesignportal-state-buttons">
-        <a href="#" onClick={this.onClick} className={classNames('preemtive-button', {
-          'button-s': size === 'small',
-          'button-l': size === 'large',
-          'disabled': disabled
-        })}>
+        <a href="#"
+           onClick={this.onClick}
+           style={{
+             backgroundColor: backgroundColor,
+             color: textColor
+           }}
+           className={classNames('preemtive-button', {
+             'button-s': size === 'small',
+             'button-l': size === 'large',
+             'disabled': disabled
+           })}>
 
           <span className="state-button-text">{name}</span>
-          <span className="state-button-icon">
+          <span className="state-button-icon" style={{
+            color: borderColor,
+            borderColor: borderColor
+          }}>
             <span>?</span>
           </span>
         </a>
