@@ -1,16 +1,27 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
-import { elementsSelector, viewModeSelector } from '../../Selectors/list';
+import { paginationSelector, viewModeSelector, loadedSelector } from '../../Selectors/list';
 import { List } from './List';
+import { toggleSelectedAction } from '../../Actions/chatMassActions';
 
 @connect(state => ({
-  elements: elementsSelector(state),
+  loaded: loadedSelector(state),
+  pagination: paginationSelector(state),
   viewMode: viewModeSelector(state)
 }))
-export class ListContainer extends React.Component {
+export class ListContainer extends Component {
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    currentApp: PropTypes.string.isRequired,
+    isComments: PropTypes.bool,
+    loaded: PropTypes.bool.isRequired,
+    currentViewMode: PropTypes.string.isRequired
+  };
+
   render() {
+    const toggleSelected = (id) => () => this.props.dispatch(toggleSelectedAction(id));
     return (
-      <List {...this.props} />
+      <List {...this.props} toggleSelected={toggleSelected}/>
     );
   }
 }
