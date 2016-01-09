@@ -25,7 +25,7 @@ export class NestedListContainer extends BaseNestedList {
       : this.renderNested(item, depth);
 
     return (
-      <ListItemContainer {...props}>
+      <ListItemContainer {...props} key={id}>
         {content}
       </ListItemContainer>
     );
