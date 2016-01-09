@@ -90,5 +90,6 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
       demoWindow = document.getElementById('live-demo').contentDocument.dp_loader;
       if (demoWindow)
         demoWindow.DP_OPTIONS = @getOptions(true)
+        demoWindow.reloadOptions()
 
   Admin_Portal_Ctrl_WidgetEditor.EXPORT_CTRL()

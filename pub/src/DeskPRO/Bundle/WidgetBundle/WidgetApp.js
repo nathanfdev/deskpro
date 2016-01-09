@@ -7,6 +7,7 @@ import $ from 'jquery';
 import store from './Services/store';
 import { bootstrapWidget } from './Modules/Application/Actions/bootstrapActions';
 import './Resources/style/widget-style.scss';
+import { loadOptions } from './Modules/Application/Actions/dpWindowActions';
 
 export default class WidgetApp {
 
@@ -52,6 +53,10 @@ export default class WidgetApp {
         <AppContainer />
       </Provider>
     );
+
+    if (window.DP_OPTIONS.widget.demo) {
+      window.reloadOptions = () => store.dispatch(loadOptions(window.DP_OPTIONS));
+    }
 
     $container.appendTo(pageDoc.body);
     ReactDOM.render(content, $container.get(0));

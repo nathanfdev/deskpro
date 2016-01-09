@@ -44,9 +44,5 @@ export const bootstrapWidget = createAction(
         dispatch(loadTicketDisplayFields())
       ])
       .then(response => resolve(response));
-
-    if (window.DP_OPTIONS.widget.demo) {
-      setInterval(() => dispatch(loadOptions(window.DP_OPTIONS)), 3000);
-    }
   })
 );
