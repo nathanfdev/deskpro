@@ -21,7 +21,8 @@ import {
   helpPopupMessageSelector,
   helpPopupReplyTypeSelector,
   agentPollingTimeoutSelector,
-  triggerPopupOpenedSelector
+  triggerPopupOpenedSelector,
+  liveDemoSelector
 } from '../../../Selectors/dpWindow';
 
 @connect(state => ({
@@ -37,7 +38,8 @@ import {
   helpPopupMessage: helpPopupMessageSelector(state),
   helpPopupReplyType: helpPopupReplyTypeSelector(state),
   agentsCounts: onlineAgentsCountSelector(state),
-  agentPollingTimeout: agentPollingTimeoutSelector(state)
+  agentPollingTimeout: agentPollingTimeoutSelector(state),
+  liveDemo: liveDemoSelector(state)
 }))
 export class HelpButtonContainer extends React.Component {
 
@@ -54,7 +56,8 @@ export class HelpButtonContainer extends React.Component {
     agentPollingTimeout: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number
-    ])
+    ]),
+    liveDemo: PropTypes.bool
   };
 
   componentDidMount() {
@@ -71,10 +74,10 @@ export class HelpButtonContainer extends React.Component {
   };
 
   checkRenderPopup() {
-    const { triggerPopupOpened, agentsCounts, hasChat, dispatch } = this.props;
+    const { triggerPopupOpened, agentsCounts, hasChat, liveDemo, dispatch } = this.props;
     const storageKey = 'dpWidget.dpWindow.popupShown';
 
-    if ((!(storageKey in localStorage) || localStorage[storageKey] !== 'none') && hasChat && agentsCounts > 0) {
+    if (hasChat && liveDemo || ((!(storageKey in localStorage) || localStorage[storageKey] !== 'none') && agentsCounts > 0)) {
       if (!triggerPopupOpened) {
         dispatch(openTriggerPopup());
       }

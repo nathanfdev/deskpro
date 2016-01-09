@@ -17,6 +17,7 @@ $secondary-preemptive-background-color: #f8f8f8;
   }
 
   a.preemtive-button {
+    position: relative;
     display: inline-block;
     line-height: 1.2em;
     background: $main-preemptive-color;

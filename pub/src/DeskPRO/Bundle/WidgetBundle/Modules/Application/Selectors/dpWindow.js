@@ -61,6 +61,11 @@ export const isBubbleSelector = createSelector(
   widgetType => widgetType === 'bubble'
 );
 
+export const liveDemoSelector = createSelector(
+  widgetBaseOptionsSelector,
+  options => options.get('demo')
+);
+
 // Company options selectors
 export const companyOptionsSelector = createSelector(
   widgetOptionsSelector,
