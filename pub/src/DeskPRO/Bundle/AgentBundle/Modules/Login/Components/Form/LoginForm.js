@@ -27,6 +27,14 @@ export class LoginForm extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this.mounted = true;
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
+  }
+
   onChangeEmail = event => {
     this.setState({
       email: event.target.value,
@@ -66,15 +74,19 @@ export class LoginForm extends React.Component {
 
     promise.then(
       () => {
-        this.setState({
-          submit: false
-        });
+        if (this.mounted) {
+          this.setState({
+            submit: false
+          });
+        }
       },
       response => {
-        this.setState({
-          submit: false,
-          errors: response.getData().errors
-        });
+        if (this.mounted) {
+          this.setState({
+            submit: false,
+            errors: response.getData().errors
+          });
+        }
       }
     );
   };
