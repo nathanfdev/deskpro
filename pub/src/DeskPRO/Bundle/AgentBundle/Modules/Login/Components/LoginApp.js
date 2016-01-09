@@ -1,6 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { LoginForm } from './Form/LoginForm';
+import { DpLogo } from './DpLogo';
+import { LeftPanel } from './Form/LeftPanel';
+import { RightPanel } from './Form/RightPanel';
+import { LoginFormFooter } from './Form/LoginFormFooter';
 import { hasAuthSelector } from '../Selectors/login';
 
 @connect(state => ({
@@ -22,6 +25,17 @@ export class LoginApp extends React.Component {
   }
 
   render() {
-    return <LoginForm />;
+    return (
+      <div className="deskpro-loading">
+        <DpLogo />
+
+        <div className="dpw-login-panels">
+          <LeftPanel />
+          <RightPanel />
+        </div>
+
+        <LoginFormFooter />
+      </div>
+    );
   }
 }
