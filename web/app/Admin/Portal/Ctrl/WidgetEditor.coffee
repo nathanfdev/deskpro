@@ -51,17 +51,21 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
         @$scope.setup = res.data.chat_setup.chat_setup
       )
 
+      @initLiveDemo()
       @$scope.$watch('chat_options', =>
         @updateLiveDemo()
       , true)
 
       return @$q.all([data_promise])
 
-    getCode: (liveDemo = false) ->
+    getOptions: (liveDemo = false) ->
       options = $.extend(true, {}, @$scope.chat_options);
       if (liveDemo)
         options.widget.demo = true
 
+      options
+
+    getCode: (options) ->
       """
         <!-- DeskPRO Chat -->
           <script>
@@ -75,11 +79,16 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
       """
 
     updateChatCode: ->
-      @$scope.code_snippets.chat = @getCode()
+      @$scope.code_snippets.chat = @getCode(@getOptions())
+
+    initLiveDemo: ->
+      demoDocument = document.getElementById('live-demo').contentDocument;
+      demoDocument.write('<body>' + @getCode(@getOptions(true)) + '</body>');
+      demoDocument.close();
 
     updateLiveDemo: ->
-      demoDocument = document.getElementById('live-demo').contentDocument;
-      demoDocument.write('<body>' + @getCode(true) + '</body>');
-      demoDocument.close();
+      demoWindow = document.getElementById('live-demo').contentDocument.dp_loader;
+      if (demoWindow)
+        demoWindow.DP_OPTIONS = @getOptions(true)
 
   Admin_Portal_Ctrl_WidgetEditor.EXPORT_CTRL()
