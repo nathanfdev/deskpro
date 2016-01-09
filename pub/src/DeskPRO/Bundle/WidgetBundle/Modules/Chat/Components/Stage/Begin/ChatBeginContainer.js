@@ -2,15 +2,19 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { createChat } from '../../../Actions/chatActions';
 import { Header } from './Header';
+import { liveDemoSelector } from '../../../../Application/Selectors/dpWindow';
 import history from '../../../../../Services/history';
 
-@connect()
+@connect(state => ({
+  liveDemo: liveDemoSelector(state)
+}))
 export class ChatBeginContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     children: PropTypes.node,
-    isCreated: PropTypes.bool
+    isCreated: PropTypes.bool,
+    liveDemo: PropTypes.bool
   };
 
   constructor(props) {
@@ -67,6 +71,11 @@ export class ChatBeginContainer extends React.Component {
   onSubmit = event => {
     if (event) {
       event.preventDefault();
+    }
+
+    const { liveDemo } = this.props;
+    if (liveDemo) {
+      return;
     }
 
     this.setState({
