@@ -3,6 +3,7 @@ import { connect, Provider } from 'react-redux';
 import {
   widgetOpenedSelector,
   widgetPositionSelector,
+  widgetDimensionsSelector,
   isBubbleSelector,
   triggerPopupOpenedSelector
 } from '../../Selectors/dpWindow';
@@ -16,8 +17,9 @@ import store from '../../../../Services/store';
   widgetPosition: widgetPositionSelector(state),
   isBubble: isBubbleSelector(state),
 
-  // Use it to re calc frame dimension
-  triggerPopupOpened: triggerPopupOpenedSelector(state)
+  // Use it to re-calc frame dimension
+  triggerPopupOpened: triggerPopupOpenedSelector(state),
+  widgetDimensions: widgetDimensionsSelector(state)
 }))
 export class TriggerFrameContainer extends React.Component {
 
