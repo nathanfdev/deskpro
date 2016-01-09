@@ -1,0 +1,34 @@
+#!/bin/bash
+
+##################################
+# ESTABLISH CONTEXT
+##################################
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $SCRIPT_DIR
+cd ..
+
+##################################
+# Performance
+##################################
+
+IS_PHPUNIT_PERFORMANCE_ERROR=0
+bin/phpunit --testsuite Performance
+if [[ $? -ne 0 ]] ; then
+    IS_PHPUNIT_PERFORMANCE_ERROR=1
+fi
+
+IS_BEHAT_PERFORMANCE_ERROR=0
+bin/behat --profile=portal --tags '@performance' | grep 'Performance:'
+if [[ $? -ne 0 ]] ; then
+    IS_BEHAT_PERFORMANCE_ERROR=1
+fi
+
+IS_PERFORMANCE_ERROR=$((IS_PHPUNIT_PERFORMANCE_ERROR + IS_BEHAT_PERFORMANCE_ERROR))
+
+if [[ "$IS_PERFORMANCE_ERROR" -ne "0" ]]; then
+    echo "
+    --- PERFORMANCE FAILED --- "
+    exit 1
+fi
+
+exit 0
