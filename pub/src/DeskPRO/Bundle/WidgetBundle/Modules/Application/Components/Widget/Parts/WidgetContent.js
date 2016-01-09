@@ -18,7 +18,7 @@ export class WidgetContent extends React.Component {
         'dpdesignportal', {
           'chat-bubble': isBubble,
           'mobile': !isBubble,
-          'position-left': widgetPosition
+          'position-left': widgetPosition === 'bottom.left' && !isBubble
         })}>
 
         {children}

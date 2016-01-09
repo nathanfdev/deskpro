@@ -51,7 +51,7 @@ export class WidgetFrameContainer extends React.Component {
     if (isBubble) {
       frameStyles.marginBottom = 70;
 
-      if (widgetPosition === 'left') {
+      if (widgetPosition === 'bottom.right') {
         frameStyles.marginRight = 20;
       } else {
         frameStyles.marginLeft = 15;

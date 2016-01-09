@@ -51,10 +51,14 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
         @$scope.setup = res.data.chat_setup.chat_setup
       )
 
+      @$scope.$watch('chat_options', =>
+        @updateLiveDemo()
+      , true)
+
       return @$q.all([data_promise])
 
-    updateChatCode: ->
-      code = """
+    getCode: ->
+      """
         <!-- DeskPRO Chat -->
           <script>
               window.__DP_APP_SRC__ = 'http://localhost:9666/pub/build/DeskPRO_WidgetBundle.js';
@@ -66,10 +70,12 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
         <!-- /DeskPRO Chat -->
       """
 
-      @$scope.code_snippets.chat = code
+    updateChatCode: ->
+      @$scope.code_snippets.chat = @getCode()
 
+    updateLiveDemo: ->
       demoDocument = document.getElementById('live-demo').contentDocument;
-      demoDocument.write('<body>' + code + '</body>');
+      demoDocument.write('<body>' + @getCode() + '</body>');
       demoDocument.close();
 
   Admin_Portal_Ctrl_WidgetEditor.EXPORT_CTRL()
