@@ -12,6 +12,7 @@ import { onlineAgentsCountSelector } from '../../../Selectors/agent';
 import {
   widgetHasChatSelector,
   widgetOpenedSelector,
+  widgetPositionSelector,
   helpButtonSizeSelector,
   helpButtonNameSelector,
   helpButtonBackgroundColorSelector,
@@ -29,6 +30,7 @@ import {
   hasChat: widgetHasChatSelector(state),
   triggerPopupOpened: triggerPopupOpenedSelector(state),
   widgetOpened: widgetOpenedSelector(state),
+  widgetPosition: widgetPositionSelector(state),
   size: helpButtonSizeSelector(state),
   name: helpButtonNameSelector(state),
   backgroundColor: helpButtonBackgroundColorSelector(state),

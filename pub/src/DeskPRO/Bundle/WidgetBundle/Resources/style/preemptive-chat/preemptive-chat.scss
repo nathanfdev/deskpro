@@ -35,6 +35,10 @@ $secondary-preemptive-background-color: #f8f8f8;
       opacity: 0.5;
     }
 
+    &.position-left {
+      float: left;
+    }
+
     &:not(.disabled) {
       &:hover {
         background: $main-preemptive-color-hover;
