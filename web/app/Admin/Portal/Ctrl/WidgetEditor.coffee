@@ -57,13 +57,17 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
 
       return @$q.all([data_promise])
 
-    getCode: ->
+    getCode: (liveDemo = false) ->
+      options = $.extend(true, {}, @$scope.chat_options);
+      if (liveDemo)
+        options.widget.demo = true
+
       """
         <!-- DeskPRO Chat -->
           <script>
               window.__DP_APP_SRC__ = 'http://localhost:9666/pub/build/DeskPRO_WidgetBundle.js';
               window.__DP_URL__ = 'http://deskpro.com.dev/';
-              window.__DP_OPTIONS__ = #{JSON.stringify(@$scope.chat_options)};
+              window.__DP_OPTIONS__ = #{JSON.stringify(options)};
           </script>
 
           <script type="text/javascript" charset="UTF-8" src="http://deskpro.com.dev/pub/build/widget_loader.js?1446397152"></script>
@@ -75,7 +79,7 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
 
     updateLiveDemo: ->
       demoDocument = document.getElementById('live-demo').contentDocument;
-      demoDocument.write('<body>' + @getCode() + '</body>');
+      demoDocument.write('<body>' + @getCode(true) + '</body>');
       demoDocument.close();
 
   Admin_Portal_Ctrl_WidgetEditor.EXPORT_CTRL()
