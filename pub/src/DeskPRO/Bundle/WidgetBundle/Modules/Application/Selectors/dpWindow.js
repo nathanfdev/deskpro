@@ -63,7 +63,7 @@ export const isBubbleSelector = createSelector(
 
 export const liveDemoSelector = createSelector(
   widgetBaseOptionsSelector,
-  options => options.get('demo')
+  options => options.get('liveDemo')
 );
 
 // Company options selectors

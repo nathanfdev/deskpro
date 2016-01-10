@@ -54,7 +54,7 @@ export default class WidgetApp {
       </Provider>
     );
 
-    if (window.DP_OPTIONS.widget.demo) {
+    if (window.DP_OPTIONS.widget.liveDemo) {
       window.reloadOptions = () => store.dispatch(reloadOptions(window.DP_OPTIONS));
     }
 

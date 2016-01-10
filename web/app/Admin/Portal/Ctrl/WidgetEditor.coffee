@@ -58,7 +58,7 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
     getOptions: (liveDemo = false) ->
       options = $.extend(true, {}, @$scope.chat_options)
       if (liveDemo)
-        options.widget.demo = true
+        options.widget.liveDemo = true
 
       options
 
