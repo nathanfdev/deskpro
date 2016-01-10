@@ -266,9 +266,35 @@ class TicketTypeTest extends PortalTestCase
         // setup
         $sales_dep_id = $this->getSalesDep()->getId();
         $client       = $this->getClient();
-        $crawler      = $client->request('GET', '/new-ticket');
-        $button_node  = $crawler->selectButton('ticket_submit');
-        $form         = $button_node->form([
+
+        // the initial page load is with the default layout,
+        // this form will submit with ticket[department]=2 which changes the department, and changes the layout
+        // we would expect a re-render here
+        $crawler     = $client->request('GET', '/new-ticket');
+        $button_node = $crawler->selectButton('ticket_submit');
+        $form        = $button_node->form([
+            'ticket' => [
+                FormFields::DEPARTMENT => $sales_dep_id, // a dep with this default form
+                FormFields::SUBJECT    => 'Test Subject',
+                FormFields::MESSAGE    => [
+                    'message_text'   => 'This is my message, a test message!',
+                    'message_format' => 'text',
+                ],
+                FormFields::USER_EMAIL => [
+                    'email' => 'some@test.email',
+                ],
+                'displayed_fields' => 'department,subject,message,user_email,attach',
+            ],
+        ]);
+
+        $crawler = $client->submit($form);
+        $this->assertRegExp(
+            '#/new-ticket#',
+            $client->getHistory()->current()->getUri(),
+            'the tickt form properly re-renders after a department change with a layout that has additional fields'
+        ); // we are still on /new-ticket because we changed dep
+        $button_node = $crawler->selectButton('ticket_submit');
+        $form        = $button_node->form([
             'ticket' => [
                 FormFields::DEPARTMENT => $sales_dep_id,
                 FormFields::SUBJECT    => 'Test Subject',
@@ -279,15 +305,14 @@ class TicketTypeTest extends PortalTestCase
                 FormFields::USER_EMAIL => [
                     'email' => 'some@test.email',
                 ],
-                //'ticket_field_1'       => ['data' => null],
+                'ticket_field_1'   => ['data' => 7], // <---- this is the new field, and we couldn't have submitted this field last time
                 'displayed_fields' => 'department,subject,message,user_email,attach,ticket_field_1', // fix
             ],
         ]);
 
-        // test
+        // now we should get a thank you, because the form is now valid with the new dep:
+        // we submitted the new custom field and the displayed_fields now match the expected layout
         $client->submit($form);
-
-        // assert
         $this->assertTrue($client->getResponse()->isRedirection());
         $this->assertRegExp('#/thank-you#', $client->getResponse()->headers->get('Location'));
     }
