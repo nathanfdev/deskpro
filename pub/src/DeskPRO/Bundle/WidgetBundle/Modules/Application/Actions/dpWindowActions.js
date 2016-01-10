@@ -1,5 +1,5 @@
 import { createAction } from 'Ampliflux';
-import { widgetOpenedSelector, widgetTypeSelector, chatBeginModeSelector } from '../Selectors/dpWindow';
+import { widgetOpenedSelector, widgetTypeSelector, chatBeginModeSelector, widgetHasChatSelector } from '../Selectors/dpWindow';
 import $ from 'jquery';
 import history from '../../../Services/history';
 
@@ -53,19 +53,30 @@ export const reloadOptions = createAction(
 
     const widgetOpened = widgetOpenedSelector(state);
     const widgetType = widgetTypeSelector(state);
+    const chatEnabled = widgetHasChatSelector(state);
+    const chatBeginMode = chatBeginModeSelector(state);
 
     dispatch(loadOptions(options));
     dispatch(windowResize());
 
-    if (widgetOpened) {
-      if (widgetType !== options.widget.type) {
-        dispatch(closeWidget());
-        setTimeout(() => dispatch(openWidget()), 350);
+    if (widgetOpened && widgetType !== options.widget.type) {
+      dispatch(closeWidget());
+      setTimeout(() => dispatch(openWidget()), 350);
+    }
+
+    if (chatEnabled !== options.chat.enabled) {
+      if (options.chat.enabled) {
+        openChatBeginStage(options.chat.requestUserInfo ? options.chat.beginMode : 'simple');
+      } else {
+        history.replace('/ticket/form');
+      }
+
+      if (!widgetOpened) {
+        dispatch(openWidget());
       }
     }
 
-    const chatBeginMode = chatBeginModeSelector(state);
-    if ((chatBeginMode !== 'simple' && !options.chat.requestUserInfo) || chatBeginMode !== options.chat.beginMode) {
+    if (options.chat.enabled && ((chatBeginMode !== 'simple' && !options.chat.requestUserInfo) || chatBeginMode !== options.chat.beginMode)) {
       openChatBeginStage(options.chat.requestUserInfo ? options.chat.beginMode : 'simple');
 
       if (!widgetOpened) {
