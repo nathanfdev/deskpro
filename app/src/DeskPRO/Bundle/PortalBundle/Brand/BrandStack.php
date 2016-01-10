@@ -198,6 +198,7 @@ class BrandStack
             $edit_theme_set = new ThemeSet();
             $this->theme_set_copying_service->copy($theme_set, $edit_theme_set);
             $brand = $this->getCurrentBrand();
+            $brand = $this->em->getRepository(Brand::class)->find($brand->getId()); // ensure brand is managed
             $brand->setEditThemeSet($edit_theme_set);
             $this->em->persist($edit_theme_set);
             $this->em->persist($brand);

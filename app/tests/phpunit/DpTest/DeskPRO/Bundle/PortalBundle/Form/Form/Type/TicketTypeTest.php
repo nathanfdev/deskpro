@@ -258,7 +258,37 @@ class TicketTypeTest extends PortalTestCase
         $this->teardownEnvForTicketForm();
     }
 
-    public function testSubmitToADifferentLayoutIsValidWhenDisplayedFieldsIsSetRequest()
+    public function testSuccessfulNewTicketWithoutNeedingRerender()
+    {
+        $sales_dep = $this->getSalesDep();
+        $this->makeCustomLayoutForDep($sales_dep);
+
+        // setup
+        $client = $this->getClient();
+
+        $crawler     = $client->request('GET', '/new-ticket');
+        $res         = $client->getResponse();
+        $button_node = $crawler->selectButton('ticket_submit');
+        $form        = $button_node->form([
+            'ticket' => [
+                FormFields::DEPARTMENT => 1, // this dep has the default layout, so submitting this
+                FormFields::SUBJECT    => 'Test Subject',
+                FormFields::MESSAGE    => [
+                    'message_text'   => 'This is my message, a test message!',
+                    'message_format' => 'text',
+                ],
+                FormFields::USER_EMAIL => [
+                    'email' => 'some@test.email',
+                ],
+                'displayed_fields' => 'department,subject,message,user_email,attach',
+            ],
+        ]);
+        $client->submit($form);
+        $this->assertTrue($client->getResponse()->isRedirection());
+        $this->assertRegExp('#/thank-you#', $client->getResponse()->headers->get('Location'));
+    }
+
+    public function testEndToEndSubmitAndReRender()
     {
         $sales_dep = $this->getSalesDep();
         $this->makeCustomLayoutForDep($sales_dep);
@@ -271,6 +301,7 @@ class TicketTypeTest extends PortalTestCase
         // this form will submit with ticket[department]=2 which changes the department, and changes the layout
         // we would expect a re-render here
         $crawler     = $client->request('GET', '/new-ticket');
+        $res         = $client->getResponse();
         $button_node = $crawler->selectButton('ticket_submit');
         $form        = $button_node->form([
             'ticket' => [
@@ -291,7 +322,7 @@ class TicketTypeTest extends PortalTestCase
         $this->assertRegExp(
             '#/new-ticket#',
             $client->getHistory()->current()->getUri(),
-            'the tickt form properly re-renders after a department change with a layout that has additional fields'
+            'the ticket form properly re-renders after a department change with a layout that has additional fields'
         ); // we are still on /new-ticket because we changed dep
         $button_node = $crawler->selectButton('ticket_submit');
         $form        = $button_node->form([
