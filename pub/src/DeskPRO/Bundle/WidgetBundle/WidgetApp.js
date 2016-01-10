@@ -7,8 +7,7 @@ import $ from 'jquery';
 import store from './Services/store';
 import { bootstrapWidget } from './Modules/Application/Actions/bootstrapActions';
 import './Resources/style/widget-style.scss';
-import { loadOptions } from './Modules/Application/Actions/dpWindowActions';
-import { windowResize } from './Modules/Application/Actions/dpWindowActions';
+import { reloadOptions } from './Modules/Application/Actions/dpWindowActions';
 
 export default class WidgetApp {
 
@@ -56,10 +55,7 @@ export default class WidgetApp {
     );
 
     if (window.DP_OPTIONS.widget.demo) {
-      window.reloadOptions = () => {
-        store.dispatch(loadOptions(window.DP_OPTIONS));
-        store.dispatch(windowResize());
-      };
+      window.reloadOptions = () => store.dispatch(reloadOptions(window.DP_OPTIONS));
     }
 
     $container.appendTo(pageDoc.body);
