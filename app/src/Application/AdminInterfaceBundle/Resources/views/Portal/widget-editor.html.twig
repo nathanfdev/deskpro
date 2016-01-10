@@ -32,9 +32,6 @@
                                     format="'hex'"
                                     class="color-picker"
                                     options="{allowEmpty:true}"
-                                    on-show-options="{update: false}"
-                                    on-hide-options="{update: false}"
-                                    on-move-options="{update: false}"
                                     ></spectrum-colorpicker>
 
                                 <label>Background Color</label>
@@ -45,9 +42,6 @@
                                     format="'hex'"
                                     class="color-picker"
                                     options="{allowEmpty:true}"
-                                    on-show-options="{update: false}"
-                                    on-hide-options="{update: false}"
-                                    on-move-options="{update: false}"
                                     ></spectrum-colorpicker>
 
                                 <label>Text Color</label>
@@ -58,9 +52,6 @@
                                     format="'hex'"
                                     class="color-picker"
                                     options="{allowEmpty:true}"
-                                    on-show-options="{update: false}"
-                                    on-hide-options="{update: false}"
-                                    on-move-options="{update: false}"
                                     ></spectrum-colorpicker>
 
                                 <label>Border Color</label>
@@ -192,11 +183,11 @@
 
         <iframe id="live-demo" class="widget-editor-live-demo-container"></iframe>
 
-        <div class="editor-row" ng-if="!!code_snippets.chat">
+        <div class="editor-row" ng-if="!!code">
             <div class="editor-wrap">
                 <div
                      style="height: 220px;"
-                     ng-model="code_snippets.chat"
+                     ng-model="code"
                      ui-ace="{
                          mode: 'html',
                          useWrapMode: false,

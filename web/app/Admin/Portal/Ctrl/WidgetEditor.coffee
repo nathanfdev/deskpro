@@ -4,10 +4,7 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
     @CTRL_AS = 'Ctrl'
 
     init: ->
-      @$scope.code_snippets = {
-        code: ''
-      }
-
+      @$scope.code = ''
       @$scope.chat_options = {
         widget: {
           type: 'column',
@@ -59,7 +56,7 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
       return @$q.all([data_promise])
 
     getOptions: (liveDemo = false) ->
-      options = $.extend(true, {}, @$scope.chat_options);
+      options = $.extend(true, {}, @$scope.chat_options)
       if (liveDemo)
         options.widget.demo = true
 
@@ -79,7 +76,7 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
       """
 
     updateChatCode: ->
-      @$scope.code_snippets.chat = @getCode(@getOptions())
+      @$scope.code = @getCode(@getOptions())
 
     initLiveDemo: ->
       demoDocument = document.getElementById('live-demo').contentDocument;
