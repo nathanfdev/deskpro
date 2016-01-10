@@ -102,29 +102,39 @@
             <div class="content-section">
                 <h2 class="with-divider form-header"><span>Chat Settings</span></h2>
 
-                <button dp-toggle-switch ng-model="chat_options.chat.enabled"></button>
-                <h4><span class="title-text">Enable / Disable Chat</span></h4>
+                <div class="switcher">
+                    <button dp-toggle-switch ng-model="chat_options.chat.enabled"></button>
+                    <h4><span class="title-text">Enable / Disable Chat</span></h4>
+                </div>
 
-                <button dp-toggle-switch ng-model="chat_options.chat.requestUserInfo"></button>
-                <h4><span class="title-text">Request Name/Email before Chat Commences</span></h4>
+                <div class="switcher">
+                    <button dp-toggle-switch ng-model="chat_options.chat.requestUserInfo"></button>
+                    <h4><span class="title-text">Request Name/Email before Chat Commences</span></h4>
+                </div>
 
-                <ul class="option-group option-group-row no-label" ng-if="chat_options.chat.requestUserInfo">
+                <ul class="options" ng-if="chat_options.chat.requestUserInfo">
                     <li>
-                        <label>Begin chat mode:</label>
-                        <select ng-model="chat_options.chat.beginMode">
-                            <option value="conversation">Conversation Style</option>
-                            <option value="form">Form Style</option>
-                        </select>
+                        <label class="option-label">Begin chat mode:</label>
+                        <div class="option-group">
+                            <select ng-model="chat_options.chat.beginMode">
+                                <option value="conversation">Conversation Style</option>
+                                <option value="form">Form Style</option>
+                            </select>
+                        </div>
                     </li>
                 </ul>
 
-                <button dp-toggle-switch ng-model="chat_options.chat.proactive"></button>
-                <h4><span class="title-text">Proactive Chat</span></h4>
+                <div class="switcher">
+                    <button dp-toggle-switch ng-model="chat_options.chat.proactive"></button>
+                    <h4><span class="title-text">Proactive Chat</span></h4>
+                </div>
 
                 <ul class="options" ng-if="chat_options.chat.proactive">
                     <li>
                         <label class="option-label">Agent Title:</label>
-                        <input type="text" ng-model="chat_options.chat.popup.title" ng-disabled="!chat_options.chat.enabled" />
+                        <div class="option-group">
+                            <input type="text" ng-model="chat_options.chat.popup.title" ng-disabled="!chat_options.chat.enabled" />
+                        </div>
                     </li>
                     <li>
                         <label class="option-label">Agent Message:</label>
