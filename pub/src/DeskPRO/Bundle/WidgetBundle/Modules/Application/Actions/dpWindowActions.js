@@ -1,6 +1,22 @@
 import { createAction } from 'Ampliflux';
+import { widgetOpenedSelector, widgetTypeSelector, chatBeginModeSelector } from '../Selectors/dpWindow';
 import $ from 'jquery';
-import { widgetOpenedSelector, widgetTypeSelector } from '../Selectors/dpWindow';
+import history from '../../../Services/history';
+
+export const openChatBeginStage = chatBeginMode => {
+  switch (chatBeginMode) {
+    case 'simple':
+    default:
+      history.replace('/chat/begin/simple');
+      break;
+    case 'conversation':
+      history.replace('/chat/begin/conversation');
+      break;
+    case 'form':
+      history.replace('/chat/begin/form');
+      break;
+  }
+};
 
 export const openWidget = createAction('WIDGET_OPEN');
 export const closeWidget = createAction('WIDGET_CLOSE');
@@ -29,7 +45,7 @@ export const windowResize = createAction(
   }
 );
 
-export const loadOptions = createAction('WIDGET_OPTIONS', options => ($.extend(true, {}, options)));
+export const loadOptions = createAction('WIDGET_OPTIONS', options => $.extend(true, {}, options));
 export const reloadOptions = createAction(
   'WIDGET_RELOAD_OPTIONS',
   options => (dispatch, getState) => {
@@ -47,6 +63,15 @@ export const reloadOptions = createAction(
         setTimeout(() => dispatch(openWidget()), 350);
       }
     }
+
+    const chatBeginMode = chatBeginModeSelector(state);
+    if ((chatBeginMode !== 'simple' && !options.chat.requestUserInfo) || chatBeginMode !== options.chat.beginMode) {
+      openChatBeginStage(options.chat.requestUserInfo ? options.chat.beginMode : 'simple');
+
+      if (!widgetOpened) {
+        dispatch(openWidget());
+      }
+    }
   }
 );
 
@@ -54,4 +79,3 @@ export const openTriggerPopup = createAction('WIDGET_OPEN_TRIGGER_POPUP');
 export const closeTriggerPopup = createAction('WIDGET_CLOSE_TRIGGER_POPUP', () => {
   localStorage['dpWidget.dpWindow.popupShown'] = 'none';
 });
-

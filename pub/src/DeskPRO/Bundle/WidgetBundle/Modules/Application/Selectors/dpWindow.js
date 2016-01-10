@@ -129,7 +129,7 @@ export const widgetHasChatSelector = createSelector(
   options => options.get('enabled') !== undefined ? options.get('enabled') : true
 );
 
-export const chatModeSelector = createSelector(
+export const chatBeginModeSelector = createSelector(
   chatOptionsSelector,
   options => options.get('requestUserInfo') ? options.get('beginMode') : 'simple'
 );
