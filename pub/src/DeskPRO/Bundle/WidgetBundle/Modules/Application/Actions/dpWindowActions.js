@@ -67,14 +67,18 @@ export const reloadOptions = createAction(
     dispatch(loadOptions(options));
     dispatch(windowResize());
 
+    // Display widget type changes
     if (widgetOpened && widgetType !== options.widget.type) {
       dispatch(closeWidget());
       setTimeout(() => dispatch(openWidget()), 350);
     }
 
+    const openChat = () => openChatBeginStage(options.chat.requestUserInfo ? options.chat.beginMode : 'simple');
+
+    // Display chat toggle enabled changes
     if (chatEnabled !== options.chat.enabled) {
       if (options.chat.enabled) {
-        openChatBeginStage(options.chat.requestUserInfo ? options.chat.beginMode : 'simple');
+        openChat();
       } else {
         history.replace('/ticket/form');
       }
@@ -84,14 +88,15 @@ export const reloadOptions = createAction(
       }
     }
 
+    // Display chat begin stage changes
     if (options.chat.enabled && ((chatBeginMode !== 'simple' && !options.chat.requestUserInfo) || chatBeginMode !== options.chat.beginMode)) {
-      openChatBeginStage(options.chat.requestUserInfo ? options.chat.beginMode : 'simple');
-
+      openChat();
       if (!widgetOpened) {
         dispatch(openWidget());
       }
     }
 
+    // Display chat popup changes
     const popupTitle = helpPopupTitleSelector(state);
     const popupMessage = helpPopupMessageSelector(state);
     const popupReplyType = helpPopupReplyTypeSelector(state);
