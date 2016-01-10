@@ -55,6 +55,9 @@ export class HelpButtonContainer extends React.Component {
     helpPopupTitle: PropTypes.string,
     helpPopupMessage: PropTypes.string,
     helpPopupReplyType: PropTypes.string,
+    backgroundColor: PropTypes.string,
+    textColor: PropTypes.string,
+    borderColor: PropTypes.string,
     agentsCount: PropTypes.number,
     agentPollingTimeout: PropTypes.oneOfType([
       PropTypes.string,
@@ -110,8 +113,12 @@ export class HelpButtonContainer extends React.Component {
 
   renderPopup() {
     const { widgetPosition, helpPopupTitle, helpPopupMessage, helpPopupReplyType, onClick } = this.props;
+    const { backgroundColor, textColor, borderColor } = this.props;
     const popupProps = {
       widgetPosition,
+      backgroundColor,
+      textColor,
+      borderColor,
       onClick,
       onClose: this.onClosePopup
     };

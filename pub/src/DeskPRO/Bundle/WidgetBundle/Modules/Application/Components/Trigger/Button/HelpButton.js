@@ -40,7 +40,7 @@ export class HelpButton extends React.Component {
 
           <span className="state-button-text">{name}</span>
           <span className="state-button-icon" style={{
-            color: borderColor,
+            color: backgroundColor,
             borderColor: borderColor
           }}>
             <span>?</span>
