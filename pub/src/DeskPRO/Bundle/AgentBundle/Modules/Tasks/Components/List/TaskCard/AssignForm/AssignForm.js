@@ -46,6 +46,7 @@ export class AssignForm extends BaseForm {
     event.preventDefault();
 
     const { task, dispatch } = this.props;
+    console.log(task.get('id'));
     const submitData = {
       agents: this.state.agents,
       teams: this.state.agentTeams,
@@ -60,7 +61,7 @@ export class AssignForm extends BaseForm {
       () => this.props.onCloseForm(),
       result => this.props.onCloseForm()
     );
-  };
+  }
 
   render() {
     const { agents, agentTeams, departments } = this.props;

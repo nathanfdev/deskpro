@@ -35,7 +35,7 @@ export default createReducer(initialState, {
   [actions.toggleAll]: handleMassAction('elements', 'selected'),
   [actions.unload]: setValue('elements', []),
   [actions.loadList]: async({
-    success: setFullPayload('elements'),
+    success: (state, payload) => state.set('elements', payload.ids).set('pagination', payload.pagination),
     start: setValue('async.done', false),
     done: setValue('async.done', true)
   }),

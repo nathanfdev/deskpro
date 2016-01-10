@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { elementsMapSelector } from '../../../Selectors/list';
+import { tasksSelector } from '../../../Selectors/recordStores';
 
 @connect(state => ({
-  tasksMap: elementsMapSelector(state)
+  tasks: tasksSelector(state)
 }))
 export class TaskCardPreviewContainer extends React.Component {
 
@@ -18,13 +18,13 @@ export class TaskCardPreviewContainer extends React.Component {
 
   render() {
     const props = this.props;
-    const { tasksMap, item, children } = props;
+    const { tasks, item, children } = props;
     const childProps = children.props;
 
     return React.cloneElement(children, {
       ...childProps,
 
-      task: tasksMap.get(item.id),
+      task: tasks.get(item.id),
       width: item.width
     });
   }
