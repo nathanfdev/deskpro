@@ -19,9 +19,9 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
           size: 'medium',
           name: 'Help',
           colors: {
-            background: '',
-            text: '',
-            border: ''
+            background: '#62ad8c',
+            text: '#ffffff',
+            border: '#4e9576'
           }
         },
         chat: {

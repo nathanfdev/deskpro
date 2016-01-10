@@ -31,7 +31,11 @@
                                     ng-model="chat_options.button.colors.background"
                                     format="'hex'"
                                     class="color-picker"
-                                    options="{allowEmpty:true}"
+                                    options="{
+                                        showPalette: true,
+                                        palette: ['#62ad8c'],
+                                        showSelectionPalette: false
+                                    }"
                                     ></spectrum-colorpicker>
 
                                 <label>Background Color</label>
@@ -41,7 +45,11 @@
                                     ng-model="chat_options.button.colors.text"
                                     format="'hex'"
                                     class="color-picker"
-                                    options="{allowEmpty:true}"
+                                    options="{
+                                        showPalette: true,
+                                        palette: ['#ffffff'],
+                                        showSelectionPalette: false
+                                    }"
                                     ></spectrum-colorpicker>
 
                                 <label>Text Color</label>
@@ -51,7 +59,11 @@
                                     ng-model="chat_options.button.colors.border"
                                     format="'hex'"
                                     class="color-picker"
-                                    options="{allowEmpty:true}"
+                                    options="{
+                                        showPalette: true,
+                                        palette: ['#4e9576'],
+                                        showSelectionPalette: false
+                                    }"
                                     ></spectrum-colorpicker>
 
                                 <label>Border Color</label>
