@@ -112,18 +112,18 @@
                 <ul class="options" ng-if="chat_options.chat.proactive">
                     <li>
                         <label class="option-label">Agent Title:</label>
-                        <input type="text" ng-model="chat_options.chat.popup.title" />
+                        <input type="text" ng-model="chat_options.chat.popup.title" ng-disabled="!chat_options.chat.enabled" />
                     </li>
                     <li>
                         <label class="option-label">Agent Message:</label>
                         <div class="option-group">
-                            <textarea ng-model="chat_options.chat.popup.message"></textarea>
+                            <textarea ng-model="chat_options.chat.popup.message" ng-disabled="!chat_options.chat.enabled"></textarea>
                         </div>
                     </li>
                     <li>
                         <label class="option-label">Reply Form Type:</label>
                         <div class="option-group">
-                            <select ng-model="chat_options.chat.popup.replyType">
+                            <select ng-model="chat_options.chat.popup.replyType" ng-disabled="!chat_options.chat.enabled">
                                 <option value="buttons">Accept Button</option>
                                 <option value="reply">Reply Form</option>
                             </select>
@@ -132,13 +132,13 @@
                     <li>
                         <label class="option-label">Waiting Timeout:</label>
                         <div class="option-group">
-                            <input type="text" ng-model="chat_options.chat.waitingTimeout" />
+                            <input type="text" ng-model="chat_options.chat.waitingTimeout" ng-disabled="!chat_options.chat.enabled" />
                         </div>
                     </li>
                     <li>
                         <label class="option-label">Online agent polling timeout:</label>
                         <div class="option-group">
-                            <input type="text" ng-model="chat_options.chat.agentPollingTimeout" />
+                            <input type="text" ng-model="chat_options.chat.agentPollingTimeout" ng-disabled="!chat_options.chat.enabled" />
                         </div>
                     </li>
                 </ul>
