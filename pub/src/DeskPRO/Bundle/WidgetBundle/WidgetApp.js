@@ -7,7 +7,7 @@ import $ from 'jquery';
 import store from './Services/store';
 import { bootstrapWidget } from './Modules/Application/Actions/bootstrapActions';
 import './Resources/style/widget-style.scss';
-import { reloadOptions } from './Modules/Application/Actions/dpWindowActions';
+import emitter from './Services/emitter';
 
 export default class WidgetApp {
 
@@ -47,16 +47,13 @@ export default class WidgetApp {
     });
 
     store.dispatch(bootstrapWidget());
+    window.emitter = emitter;
 
     const content = (
       <Provider store={store}>
         <AppContainer />
       </Provider>
     );
-
-    if (window.DP_OPTIONS.widget.liveDemo) {
-      window.reloadOptions = () => store.dispatch(reloadOptions(window.DP_OPTIONS));
-    }
 
     $container.appendTo(pageDoc.body);
     ReactDOM.render(content, $container.get(0));

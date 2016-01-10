@@ -75,18 +75,20 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
         <!-- /DeskPRO Chat -->
       """
 
+    getLiveDemoDocument: ->
+      document.getElementById('live-demo').contentDocument
+
     updateChatCode: ->
       @$scope.code = @getCode(@getOptions())
 
     initLiveDemo: ->
-      demoDocument = document.getElementById('live-demo').contentDocument;
+      demoDocument = @getLiveDemoDocument();
       demoDocument.write('<body>' + @getCode(@getOptions(true)) + '</body>');
       demoDocument.close();
 
     updateLiveDemo: ->
-      demoWindow = document.getElementById('live-demo').contentDocument.dp_loader;
+      demoWindow = @getLiveDemoDocument().dp_loader;
       if (demoWindow)
-        demoWindow.DP_OPTIONS = @getOptions(true)
-        demoWindow.reloadOptions()
+        demoWindow.emitter.emit('reloadOptions', @getOptions(true))
 
   Admin_Portal_Ctrl_WidgetEditor.EXPORT_CTRL()
