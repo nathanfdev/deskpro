@@ -40,18 +40,41 @@ use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\PortalBundle\Form\FormFields;
 use DpTest\PortalTestCase;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class TicketTypeTest extends PortalTestCase
 {
     public function setUp()
     {
         $this->installDataSet('fresh', true); // always force a reload to ensure the layout doesn't change
+    }
+
+    /**
+     * This sets up brand and request stacks that some forms need. They are initialized automaitcally in
+     * in the HttpKernel requests (listeners) but if we don't use the http kerenel and test it directly, we
+     * need to set those up ourselves.
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     */
+    protected function prepareEnvForTicketForm()
+    {
         $brand       = $this->getRepository(Brand::class)->find(1);
         $brand_stack = $this->get('brand_stack');
         $brand_stack->push($brand);
 
         $sales_dep = $this->getSalesDep();
         $this->makeCustomLayoutForDep($sales_dep);
+
+        $request = Request::create('/new-ticket');
+        $this->get('request_stack')->push($request);
+    }
+
+    protected function teardownEnvForTicketForm()
+    {
+        $this->get('brand_stack')->pop();
+        $this->get('request_stack')->pop();
     }
 
     /**
@@ -61,6 +84,8 @@ class TicketTypeTest extends PortalTestCase
      */
     public function testInitialStructureOfDefaultLayout()
     {
+        $this->prepareEnvForTicketForm();
+
         $form = $this->createTicketForm(new Ticket(), $this->getNormalPerson());
 
         $this->assertFields($form, [
@@ -76,6 +101,8 @@ class TicketTypeTest extends PortalTestCase
 
         $this->assertDisplayFieldsValue($form, 'department,subject,message,user_email,attach');
         $this->assertRerenderFormDoesNotExist($form);
+
+        $this->teardownEnvForTicketForm();
     }
 
     /**
@@ -83,6 +110,8 @@ class TicketTypeTest extends PortalTestCase
      */
     public function testInitialStructureOfCustomLayout()
     {
+        $this->prepareEnvForTicketForm();
+
         $ticket = new Ticket();
         $ticket->setDepartment($this->getSalesDep());
 
@@ -101,6 +130,8 @@ class TicketTypeTest extends PortalTestCase
         ]);
         $this->assertDisplayFieldsValue($form, 'department,subject,message,user_email,attach,ticket_field_1');
         $this->assertRerenderFormDoesNotExist($form);
+
+        $this->teardownEnvForTicketForm();
     }
 
     /**
@@ -114,6 +145,8 @@ class TicketTypeTest extends PortalTestCase
      */
     public function testSubmitChangingLayoutsCorrectly()
     {
+        $this->prepareEnvForTicketForm();
+
         // setup
         $ticket = new Ticket();
         $person = $this->getNormalPerson();
@@ -162,6 +195,8 @@ class TicketTypeTest extends PortalTestCase
             'submit',
         ]);
         $this->assertEquals('My Test Subject', $ticket->getSubject());
+
+        $this->teardownEnvForTicketForm();
     }
 
     /**
@@ -176,6 +211,8 @@ class TicketTypeTest extends PortalTestCase
      */
     public function testSubmitToADifferentLayoutIsValidWhenDisplayedFieldsIsSet()
     {
+        $this->prepareEnvForTicketForm();
+
         // setup
         $ticket = new Ticket();
         $person = $this->getNormalPerson();
@@ -212,6 +249,43 @@ class TicketTypeTest extends PortalTestCase
         $this->assertTrue($form->isValid());
         $this->assertRerenderFormDoesNotExist($form);
         $this->assertEquals('Test Subject', $ticket->getSubject());
+
+        $this->teardownEnvForTicketForm();
+    }
+
+    public function testSubmitToADifferentLayoutIsValidWhenDisplayedFieldsIsSetRequest()
+    {
+        // setUp pushes to brand stack, and we want to reverse that before running this test
+        $brand_stack = $this->get('brand_stack');
+        $brand_stack->pop();
+
+        // setup
+        $sales_dep_id = $this->getSalesDep()->getId();
+        $client       = $this->getClient();
+        $crawler      = $client->request('GET', '/new-ticket');
+        $button_node  = $crawler->selectButton('ticket_submit');
+        $form         = $button_node->form([
+            'ticket' => [
+                FormFields::DEPARTMENT => $sales_dep_id,
+                FormFields::SUBJECT    => 'Test Subject',
+                FormFields::MESSAGE    => [
+                    'message_text'   => 'This is my message, a test message!',
+                    'message_format' => 'text',
+                ],
+                FormFields::USER_EMAIL => [
+                    'email' => 'some@test.email',
+                ],
+                //'ticket_field_1'       => ['data' => null],
+                'displayed_fields' => 'department,subject,message,user_email,attach,ticket_field_1', // fix
+            ],
+        ]);
+
+        // test
+        $client->submit($form);
+
+        // assert
+        $this->assertTrue($client->getResponse()->isRedirection());
+        $this->assertRegExp('#/thank-you#', $client->getResponse()->headers->get('Location'));
     }
 
     public function assertFields(FormInterface $form, $expected_fields)
