@@ -134,8 +134,7 @@ $secondary-preemptive-background-color: #f8f8f8;
     &:hover i { color: #333; }
   }
 
-  &:after {
-    content: "";
+  .pointer {
     display: block;
     position: absolute;
     bottom: -8px;
@@ -150,7 +149,7 @@ $secondary-preemptive-background-color: #f8f8f8;
     margin-right: 0;
     margin-left: 20px;
 
-    &:after {
+    .pointer {
       left: 10px;
     }
   }

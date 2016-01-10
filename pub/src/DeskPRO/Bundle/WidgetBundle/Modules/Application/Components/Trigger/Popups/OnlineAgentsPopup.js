@@ -5,6 +5,8 @@ import { ChatPopup } from './ChatPopup';
 export class OnlineAgentsPopup extends React.Component {
 
   static propTypes = {
+    backgroundColor: PropTypes.string,
+    textColor: PropTypes.string,
     onlineAgents: PropTypes.object,
     onClick: PropTypes.func,
     onClose: PropTypes.func
@@ -21,7 +23,7 @@ export class OnlineAgentsPopup extends React.Component {
   };
 
   render() {
-    const { onlineAgents } = this.props;
+    const { backgroundColor, textColor, onlineAgents } = this.props;
 
     return (
       <ChatPopup small {...this.props}>
@@ -43,7 +45,14 @@ export class OnlineAgentsPopup extends React.Component {
         <div className="preemtive-chat-content">
           <div className="preemtive-chat-footer">
             <div className="preemtive-chat-footer-button">
-              <a href="#" onClick={this.onClick} className="wide">
+              <a href="#"
+                 onClick={this.onClick}
+                 className="wide"
+                 style={{
+                   backgroundColor: backgroundColor,
+                   color: textColor
+                 }}>
+
                 Start a conversation
               </a>
             </div>
