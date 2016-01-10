@@ -1,10 +1,12 @@
 import React, { PropTypes } from 'react';
 import { AgentAvatars } from '../AgentAvatars';
 import Immutable from 'immutable';
+import classNames from 'classnames';
 
 export class AgentMessagePopup extends React.Component {
 
   static propTypes = {
+    widgetPosition: PropTypes.string,
     primaryAgent: PropTypes.object,
     onClick: PropTypes.func,
     children: PropTypes.node,
@@ -14,11 +16,11 @@ export class AgentMessagePopup extends React.Component {
 
   render() {
     const { primaryAgent = Immutable.fromJS({}), children, onClick } = this.props;
-    const { helpPopupTitle, helpPopupMessage } = this.props;
+    const { widgetPosition, helpPopupTitle, helpPopupMessage } = this.props;
 
     return (
       <div className="dpdesignportal-state-buttons dpdesignportal-agent-message">
-        <div className="preemtive-chat">
+        <div className={classNames('preemtive-chat', {'position-left': widgetPosition === 'bottom.left'})}>
           <div className="preemtive-chat-content" onClick={onClick}>
             <div className="dpdesignportal-chat-header">
               <AgentAvatars primaryAgent={primaryAgent} />

@@ -146,6 +146,15 @@ $secondary-preemptive-background-color: #f8f8f8;
     right: 10px;
   }
 
+  &.position-left {
+    margin-right: 0;
+    margin-left: 20px;
+
+    &:after {
+      left: 10px;
+    }
+  }
+
   .preemtive-chat-content {
     padding: 0 5px;
     cursor: pointer;

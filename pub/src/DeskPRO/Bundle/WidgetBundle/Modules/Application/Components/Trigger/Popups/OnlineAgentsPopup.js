@@ -1,9 +1,11 @@
 import React, { PropTypes } from 'react';
 import { AgentAvatars } from './AgentAvatars';
+import classNames from 'classnames';
 
 export class OnlineAgentsPopup extends React.Component {
 
   static propTypes = {
+    widgetPosition: PropTypes.string,
     onlineAgents: PropTypes.object,
     onClick: PropTypes.func,
     onClose: PropTypes.func
@@ -20,11 +22,11 @@ export class OnlineAgentsPopup extends React.Component {
   };
 
   render() {
-    const { onlineAgents } = this.props;
+    const { widgetPosition, onlineAgents } = this.props;
 
     return (
       <div className="dpdesignportal-state-buttons dpdesignportal-online-agents">
-        <div className="preemtive-chat small">
+        <div className={classNames('preemtive-chat', 'small', {'position-left': widgetPosition === 'bottom.left'})}>
           <span className="close-panel" onClick={this.onClose}>
             <i className="fa fa-close" />
           </span>

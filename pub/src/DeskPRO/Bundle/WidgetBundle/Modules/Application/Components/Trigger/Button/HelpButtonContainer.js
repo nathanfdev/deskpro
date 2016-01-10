@@ -49,6 +49,7 @@ export class HelpButtonContainer extends React.Component {
     hasChat: PropTypes.bool,
     triggerPopupOpened: PropTypes.bool,
     widgetOpened: PropTypes.bool,
+    widgetPosition: PropTypes.string,
     dispatch: PropTypes.func,
     onClick: PropTypes.func,
     helpPopupTitle: PropTypes.string,
@@ -108,9 +109,10 @@ export class HelpButtonContainer extends React.Component {
   }
 
   renderPopup() {
-    const { helpPopupTitle, helpPopupMessage, helpPopupReplyType, onClick } = this.props;
+    const { widgetPosition, helpPopupTitle, helpPopupMessage, helpPopupReplyType, onClick } = this.props;
     const popupProps = {
-      onClick: onClick,
+      widgetPosition,
+      onClick,
       onClose: this.onClosePopup
     };
 

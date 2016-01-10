@@ -54,7 +54,7 @@ export class WidgetFrameContainer extends React.Component {
       if (widgetPosition === 'bottom.right') {
         frameStyles.marginRight = 20;
       } else {
-        frameStyles.marginLeft = 15;
+        frameStyles.marginLeft = 20;
       }
     } else {
       frameStyles.height = '100%';
