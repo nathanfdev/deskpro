@@ -143,9 +143,6 @@ class BrandStack
     {
         $brand_id = $brand->getId();
 
-        $themeset = $brand->getThemeSet();
-        $theme    = $themeset->getThemeId();
-
         array_push($this->stack, $brand_id);
 
         if (!array_key_exists($brand_id, $this->brand_containers)) {

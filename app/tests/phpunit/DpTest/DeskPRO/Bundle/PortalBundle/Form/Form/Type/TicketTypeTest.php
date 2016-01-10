@@ -49,6 +49,11 @@ class TicketTypeTest extends PortalTestCase
         $this->installDataSet('fresh', true); // always force a reload to ensure the layout doesn't change
     }
 
+    public function tearDown()
+    {
+        $this->installDataSet('fresh', true); // clear out the changes we made to the db
+    }
+
     /**
      * This sets up brand and request stacks that some forms need. They are initialized automaitcally in
      * in the HttpKernel requests (listeners) but if we don't use the http kerenel and test it directly, we
@@ -255,9 +260,8 @@ class TicketTypeTest extends PortalTestCase
 
     public function testSubmitToADifferentLayoutIsValidWhenDisplayedFieldsIsSetRequest()
     {
-        // setUp pushes to brand stack, and we want to reverse that before running this test
-        $brand_stack = $this->get('brand_stack');
-        $brand_stack->pop();
+        $sales_dep = $this->getSalesDep();
+        $this->makeCustomLayoutForDep($sales_dep);
 
         // setup
         $sales_dep_id = $this->getSalesDep()->getId();
