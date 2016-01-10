@@ -1,5 +1,13 @@
 import { createAction } from 'Ampliflux';
-import { widgetOpenedSelector, widgetTypeSelector, chatBeginModeSelector, widgetHasChatSelector } from '../Selectors/dpWindow';
+import {
+  widgetOpenedSelector,
+  widgetTypeSelector,
+  chatBeginModeSelector,
+  widgetHasChatSelector,
+  helpPopupTitleSelector,
+  helpPopupMessageSelector,
+  helpPopupReplyTypeSelector
+} from '../Selectors/dpWindow';
 import $ from 'jquery';
 import history from '../../../Services/history';
 
@@ -82,6 +90,15 @@ export const reloadOptions = createAction(
       if (!widgetOpened) {
         dispatch(openWidget());
       }
+    }
+
+    const popupTitle = helpPopupTitleSelector(state);
+    const popupMessage = helpPopupMessageSelector(state);
+    const popupReplyType = helpPopupReplyTypeSelector(state);
+    const newPopup = options.chat.popup;
+
+    if (widgetOpened && (popupTitle !== newPopup.title || popupMessage !== newPopup.message || popupReplyType !== newPopup.replyType)) {
+      dispatch(closeWidget());
     }
   }
 );
