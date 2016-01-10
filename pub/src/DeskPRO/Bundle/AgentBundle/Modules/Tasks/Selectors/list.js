@@ -1,6 +1,6 @@
 import { hashStateSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
 import { createSelector } from 'reselect';
-import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
+import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 const stateSelector = state => state.Tasks.list;
 
@@ -8,7 +8,6 @@ export const currentNavSelector = hashStateSelectorFactory(['nav', 'active']);
 export const currentViewModeSelector = hashStateSelectorFactory(['list', 'view'], 'card');
 export const currentSortSelector = hashStateSelectorFactory(['list', 'sort'], 'date_created');
 export const currentOrderSelector = hashStateSelectorFactory(['list', 'order'], 'desc');
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export const listParamsNavSelector = createSelector(
   stateSelector,
@@ -53,11 +52,6 @@ export const selectedCountSelector = createSelector(
 export const elementsSelector = createSelector(
   stateSelector,
   state => state.get('elements')
-);
-
-export const elementsMapSelector = createSelector(
-  elementsSelector,
-  elements => mapKeyedFromArray(elements, 'id')
 );
 
 export const isDoneSelector = createSelector(

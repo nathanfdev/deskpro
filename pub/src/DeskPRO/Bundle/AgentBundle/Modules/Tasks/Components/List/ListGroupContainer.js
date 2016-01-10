@@ -1,15 +1,18 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { currentSortSelector } from '../../Selectors/list';
+import { groupCollection } from 'Util/ListGroup';
+import { currentSortSelector, elementsSelector } from '../../Selectors/list';
+import { tasksSelector } from '../../Selectors/recordStores';
 import { allProjectsSelector } from '../../RecordStores/Selectors/projectSelectors';
 import { allTaskListsSelector } from '../../RecordStores/Selectors/taskListSelectors';
 import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { agentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
 import { allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
-import { groupCollection } from 'Util/ListGroup';
 import { editTask } from '../../Actions/listActions';
 
 @connect(state => ({
+  ids: elementsSelector(state),
+  tasks: tasksSelector(state),
   sort: currentSortSelector(state),
   lists: allTaskListsSelector(state),
   projects: allProjectsSelector(state),
@@ -22,12 +25,13 @@ export class ListGroupContainer extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     sort: PropTypes.string,
+    ids: PropTypes.array,
+    tasks: PropTypes.object,
     lists: PropTypes.object.isRequired,
     projects: PropTypes.object.isRequired,
     agents: PropTypes.object.isRequired,
     agentTeams: PropTypes.object.isRequired,
     departments: PropTypes.object.isRequired,
-    tasks: PropTypes.object,
     children: PropTypes.node.isRequired
   };
 
@@ -37,7 +41,7 @@ export class ListGroupContainer extends React.Component {
 
   render() {
     const { sort, lists, projects, agents, agentTeams, departments } = this.props;
-    const { tasks, children } = this.props;
+    const { ids, tasks, children } = this.props;
     const childProps = children.props;
 
     const groupConfig = {
@@ -102,6 +106,7 @@ export class ListGroupContainer extends React.Component {
     return React.cloneElement(children, {
       ...childProps,
 
+      ids: ids,
       tasks: tasks,
       taskGroups: groupCollection(groupConfig, tasks),
       onChangeGroup: this.onChangeGroup
