@@ -22,13 +22,17 @@ export class ChatEmailValidation extends React.Component {
 
   render() {
     return (
-      <div>
-        <p>We require you to validate your email address.</p>
-        <p>We sent you an email with a validation code. Check your email then enter the code below</p>
+      <div className="dpdesignportal-chat-email-validation">
+        <span className="description">
+          <p>We require you to validate your email address.</p>
+          <br/>
+          <p>We sent you an email with a validation code.</p>
+          <p>Check your email then enter the code below</p>
+        </span>
 
         <form>
-          <input onChange={this.onChangeCode} value={this.state.code} />
-          <a href="#" onClick={this.onSubmit}>
+          <input type="text" onChange={this.onChangeCode} value={this.state.code} />
+          <a href="#" className="email-code-submit" onClick={this.onSubmit}>
             Start Chat <i className="fa fa-chevron-right"></i>
           </a>
         </form>

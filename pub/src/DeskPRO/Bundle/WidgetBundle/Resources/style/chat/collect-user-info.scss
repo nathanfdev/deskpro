@@ -136,3 +136,29 @@
     }
   }
 }
+
+.dpdesignportal-chat-email-validation {
+  .description {
+    width: 300px;
+    display: block;
+    margin: 0 auto;
+
+    p {
+      display: block;
+      padding: 0 10px;
+    }
+  }
+
+  input[type="text"] {
+    display: block;
+    width: 200px;
+    height: 30px;
+    margin: 25px auto 10px;
+  }
+
+  a.email-code-submit {
+    text-align: center;
+    display: block;
+    margin: 0 auto;
+  }
+}
