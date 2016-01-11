@@ -11,7 +11,7 @@ import {
   ChatBeginSimple,
   ChatBeginConversation,
   ChatBeginForm,
-  ChatEmailValidation,
+  ChatEmailValidationContainer,
   ChatPollingContainer,
   ChatActive,
   ChatWaiting
@@ -38,7 +38,7 @@ export class Widget extends React.Component {
                   <Route name="chat_begin_simple" path="simple" component={ChatBeginSimple} />
                   <Route name="chat_begin_conversation" path="conversation" component={ChatBeginConversation} />
                   <Route name="chat_begin_form" path="form" component={ChatBeginForm} />
-                  <Route name="chat_begin_email_validation" path="validation/email" component={ChatEmailValidation} />
+                  <Route name="chat_begin_email_validation" path="validation/email" component={ChatEmailValidationContainer} />
                 </Route>
                 <Route component={ChatPollingContainer}>
                   <Route name="chat_waiting" path="waiting" component={ChatWaiting} />

@@ -1,13 +1,25 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
+import { validateEmail } from '../../../Actions/chatActions';
+import { chatIdSelector } from '../../../Selectors/chat';
 import $ from 'jquery';
 
-export class ChatEmailValidation extends React.Component {
+@connect(state => ({
+  chatId: chatIdSelector(state)
+}))
+export class ChatEmailValidationContainer extends React.Component {
+
+  static propTypes = {
+    chatId: PropTypes.number,
+    dispatch: PropTypes.func
+  };
 
   constructor(props) {
     super(props);
     this.state = {
-      code: ''
+      code: '',
+      errors: null
     };
   }
 
@@ -24,7 +36,9 @@ export class ChatEmailValidation extends React.Component {
 
   onSubmit = event => {
     event.preventDefault();
-    console.log(this.state.code);
+    const { chatId, dispatch } = this.props;
+
+    dispatch(validateEmail(chatId, {code: this.state.code}));
   };
 
   render() {

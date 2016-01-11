@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\Blob;
@@ -81,6 +80,22 @@ class ChatController extends AbstractApiController
     }
 
     /**
+     * @Route("/portal/api/chats/{id}/validate/email", name="portal_api_chat_validate_email")
+     * @Method({"POST"})
+     *
+     * @param ChatConversation $conversation
+     * @param Request          $request
+     *
+     * @return View
+     */
+    public function validateEmailAction(ChatConversation $conversation, Request $request)
+    {
+        $this->checkUserSession($conversation, $request);
+
+        return View::create();
+    }
+
+    /**
      * @Route("/portal/api/chats/{id}/polling", name="portal_api_chat_polling")
      * @Method({"GET"})
      *
@@ -127,6 +142,7 @@ class ChatController extends AbstractApiController
     public function sendMessageAction(ChatConversation $conversation, Request $request)
     {
         $this->checkUserSession($conversation, $request);
+
         $form = $this
             ->get('form.factory')
             ->createNamedBuilder(null, 'api_chat_message')
@@ -260,6 +276,7 @@ class ChatController extends AbstractApiController
     public function userTypingAction(ChatConversation $conversation, Request $request)
     {
         $this->checkUserSession($conversation, $request);
+
         $form = $this
             ->get('form.factory')
             ->createNamedBuilder(null, 'api_chat_user_typing')
@@ -289,6 +306,7 @@ class ChatController extends AbstractApiController
     public function sendTranscriptInfoAction(ChatConversation $conversation, Request $request)
     {
         $this->checkUserSession($conversation, $request);
+
         $form = $this
             ->get('form.factory')
             ->createNamedBuilder(null, 'api_chat_transcription_info', $conversation)
@@ -374,6 +392,7 @@ class ChatController extends AbstractApiController
     public function reopenChatAction(ChatConversation $conversation, Request $request)
     {
         $this->checkUserSession($conversation, $request);
+
         $conversation
             ->setStatus(ChatConversation::STATUS_OPEN)
             ->setEndedBy(null)
@@ -403,6 +422,7 @@ class ChatController extends AbstractApiController
     public function feedbackAction(ChatConversation $conversation, Request $request)
     {
         $this->checkUserSession($conversation, $request);
+
         $form = $this
             ->get('form.factory')
             ->createNamedBuilder(null, 'api_chat_feedback', $conversation)

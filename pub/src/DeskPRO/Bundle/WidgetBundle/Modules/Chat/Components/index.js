@@ -3,7 +3,7 @@ export { ChatBeginContainer } from './Stage/Begin/ChatBeginContainer';
 export { ChatBeginSimple } from './Stage/Begin/ChatBeginSimple';
 export { ChatBeginConversation } from './Stage/Begin/Conversation/ChatBeginConversation';
 export { ChatBeginForm } from './Stage/Begin/Form/ChatBeginForm';
-export { ChatEmailValidation } from './Stage/Begin/ChatEmailValidation';
+export { ChatEmailValidationContainer } from './Stage/Begin/ChatEmailValidationContainer';
 export { ChatPollingContainer } from './Stage/ChatPollingContainer';
 export { ChatWaiting } from './Stage/Waiting/ChatWaiting';
 export { ChatActive } from './Stage/Active/ChatActive';

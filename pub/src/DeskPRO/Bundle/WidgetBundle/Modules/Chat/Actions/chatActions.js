@@ -104,6 +104,20 @@ export const createChat = createAction(
   }
 );
 
+export const validateEmail = createAction(
+  'WIDGET_CHAT_VALIDATE_EMAIL',
+  (chatId, params) => (dispatch, getState) => {
+    if (!chatId) {
+      return null;
+    }
+
+    const state = getState();
+    const queryParams = compileParams(addSessionCode(state));
+
+    return DpApi.sendPost(`DP_API/chats/${chatId}/validate/email?${queryParams}`, params, {...ajaxOptions});
+  }
+);
+
 export const ackChatMessages = createAction(
   'WIDGET_CHAT_ACK_MESSAGES',
   (chatId, params) => (dispatch, getState) => {
