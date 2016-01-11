@@ -7,9 +7,11 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     init: ->
       @$scope.code = ''
       @$scope.base_options = {
-        widget_loader_url: '',
-        widget_bundle_url: '',
-        dp_url: ''
+        url: {
+          widget_loader: '',
+          widget_bundle: '',
+          helpdesk: ''
+        }
       }
       @$scope.custom_options = {
         widget: {
@@ -18,7 +20,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
           agentPollingTimeout: 10
         },
         company: {
-          name: 'Acme Corp. Chat and a long name lorel ipsum dolor',
+          name: 'Helpdesk',
           logo: ''
         },
         button: {
@@ -48,6 +50,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     initialLoad: ->
       @$http.get('/api/v2/widget/setup').success((response) =>
         @$scope.base_options = response;
+        @$scope.custom_options.company = response.company;
         @initLiveDemo()
       );
 
@@ -66,12 +69,12 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       """
         <!-- DeskPRO Chat -->
           <script>
-              window.__DP_APP_SRC__ = '#{@$scope.base_options.widget_bundle_url}';
-              window.__DP_URL__ = '#{@$scope.base_options.dp_url}';
+              window.__DP_APP_SRC__ = '#{@$scope.base_options.url.widget_bundle}';
+              window.__DP_URL__ = '#{@$scope.base_options.url.helpdesk}';
               window.__DP_OPTIONS__ = #{JSON.stringify(options)};
           </script>
 
-          <script type="text/javascript" charset="UTF-8" src="#{@$scope.base_options.widget_loader_url}"></script>
+          <script type="text/javascript" charset="UTF-8" src="#{@$scope.base_options.url.widget_loader}"></script>
         <!-- /DeskPRO Chat -->
       """
 

@@ -52,10 +52,19 @@ class WidgetSetupController extends BaseController
         $asset_package = $this->container->get('templating.asset.package.app_assets.http');
         $base_router   = $this->container->get('router');
 
+        $settings_resolver = $this->container->get('settings_resolver');
+        $settings          = $settings_resolver->getGlobalSettings();
+
         return new View([
-            'widget_loader_url' => $asset_package->getUrl('widget_loader.js'),
-            'widget_bundle_url' => $asset_package->getUrl('DeskPRO_WidgetBundle.js'),
-            'dp_url'            => $base_router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL),
+            'url' => [
+                'widget_loader' => $asset_package->getUrl('widget_loader.js'),
+                'widget_bundle' => $asset_package->getUrl('DeskPRO_WidgetBundle.js'),
+                'helpdesk'      => $base_router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL),
+            ],
+            'company' => [
+                'name' => $settings->get('core.site_name'),
+                'logo' => '',
+            ],
         ]);
     }
 
