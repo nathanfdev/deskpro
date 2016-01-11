@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -514,7 +513,7 @@ class TicketType extends AbstractType
             'placeholder' => '',
             'constraints' => [
                 new LeafDepartment(['message' => 'portal.forms.error_ticket_department_invalid']),
-                new NotNull(['message' => 'portal.forms.error_ticket_department_required']),
+                new NotNull(['message'        => 'portal.forms.error_ticket_department_required']),
             ],
         ]);
     }
@@ -692,11 +691,8 @@ class TicketType extends AbstractType
     private function addCustomTicketField(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
         $field_def = $this->field_manager->getCustomTicketFieldById($field->getFieldId());
-        if (!$field_def) {
-            return false;
-        }
-        if (!$field_def->is_enabled) {
-            return false;
+        if (!$field_def || !$field_def->isEnabled()) {
+            return;
         }
 
         $options = [
@@ -735,7 +731,7 @@ class TicketType extends AbstractType
     private function addCustomUserField(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
         $field_def = $this->field_manager->getCustomPersonFieldById($field->getFieldId());
-        if (!$field_def->is_enabled) {
+        if (!$field_def->isEnabled()) {
             return;
         }
 
@@ -767,7 +763,7 @@ class TicketType extends AbstractType
     private function addCustomOrgField(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
         $field_def = $this->field_manager->getCustomOrganizationFieldById($field->getFieldId());
-        if (!$field_def->is_enabled) {
+        if (!$field_def->isEnabled()) {
             return;
         }
 
@@ -811,10 +807,7 @@ class TicketType extends AbstractType
         $context = new CustomFieldTicketContext($form_context->getTicket());
         $def     = $this->custom_per_field_manager->getCustomPerFieldDefinition($field->getFieldId(), $context);
 
-        if (!$def) {
-            return;
-        }
-        if (!$def->isEnabled()) {
+        if (!$def || !$def->isEnabled()) {
             return;
         }
 
@@ -1185,7 +1178,7 @@ class TicketType extends AbstractType
             }
         }
 
-        return array($fields_requiring_rerender, $fields_to_remove, $additional_fields);
+        return [$fields_requiring_rerender, $fields_to_remove, $additional_fields];
     }
 
     protected function canProductBeDisplayed(TicketFormContext $form_context)
