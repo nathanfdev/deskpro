@@ -60,6 +60,11 @@ class CsvUpload
      */
     public function upload(UploadedFile $file, array $options = array())
     {
+        // TODO proper handling of error message here
+        if (defined('DPC_IS_CLOUD') && DPC_DEMO_EXPIRE) {
+            return array('error' => 'disabled_in_demo');
+        }
+
         if (!$file instanceof UploadedFile || !$file->getSize()) {
             return array('error' => 'no_file');
         }
