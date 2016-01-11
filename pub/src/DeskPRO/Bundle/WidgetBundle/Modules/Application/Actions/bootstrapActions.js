@@ -23,6 +23,14 @@ export const getSession = createAction(
   )
 );
 
+export const getSettings = createAction(
+  'WIDGET_GET_SETTINGS',
+  () => new Promise(resolve =>
+    DpApi
+      .sendGet('DP_API/widget/settings', {...ajaxOptions})
+      .success(response => resolve(response)))
+);
+
 export const loadPortalPhraseTranslations = createAction(
   'WIDGET_LOAD_PHRASE_TRANSLATIONS',
   () => DpApi
@@ -38,6 +46,7 @@ export const bootstrapWidget = createAction(
     Promise.
       all([
         dispatch(getSession(localStorage.getItem('dpWidget.sessionCode'))),
+        dispatch(getSettings()),
         dispatch(loadOptions(window.DP_OPTIONS)),
         dispatch(loadPortalPhraseTranslations()),
         dispatch(loadChatPhraseTranslations()),
