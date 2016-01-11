@@ -1,31 +1,60 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
 import { pureRender } from 'Ampliflux';
-import { DatePeriods } from 'DeskPRO/Bundle/AgentBundle/Services/DatePeriods';
-import { ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
-import { agentNamesSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
-import { createDepartmentsRequestSelectors }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
-import { reduceMapToProperty } from 'DeskPRO/Component/Util/Map';
-
-const chatNavDepartmentsSelector = createDepartmentsRequestSelectors('chatNav');
+import { ListItem, ListItemStatefulContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { urlSanitize } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Service/routing';
+import { applyParams } from '../../Actions/chatListActions.js';
 
 @connect(state => ({
-  labels: {
-    agent: agentNamesSelector(state),
-    department: reduceMapToProperty('title', chatNavDepartmentsSelector.recordsSel(state).toJS()),
-    date_period: DatePeriods.all
-  }
+  hash: state.Application.routing.get('hash'),
 }))
 @pureRender
-export class ListItemContainer extends React.Component {
+export class ListItemContainer extends Component {
+
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    count: PropTypes.number.isRequired,
+    group: PropTypes.string.isRequired,
+    groupBy: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+    listOptions: PropTypes.object.isRequired,
+    hash: PropTypes.object,
+    onClick: PropTypes.func.isRequired
+  };
+
+
+  constructor(props) {
+    super(props);
+    this.itemId = urlSanitize(props.label);
+  }
+
+  componentDidMount() {
+    const {hash, listOptions, dispatch } = this.props;
+    const activeItemId = hash.get('nav') ? hash.get('nav').get('active') : null;
+
+    if (activeItemId === this.itemId) {
+      dispatch(applyParams(listOptions));
+    }
+  }
+
+  loadList = () => {
+    const { dispatch, listOptions } = this.props;
+    dispatch(applyParams(listOptions));
+  };
+
   render() {
-    const {count, group, groupBy, onClick} = this.props;
-    const label = this.props.labels[groupBy][group] ? this.props.labels[groupBy][group] : '...';
-    const onItemClick = () => { onClick({[groupBy]: group}); };
+    const { label, count } = this.props;
+    const props = {
+      groupId: 'nav',
+      onClick: this.loadList,
+      itemId: this.itemId,
+      label: label
+    };
 
     return (
-      <ListItem count={count} label={label} onClick={onItemClick} />
+      <ListItemStatefulContainer {...props}>
+        <ListItem count={count} label={label}/>
+      </ListItemStatefulContainer>
     );
   }
 }

@@ -1,7 +1,9 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
+import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import { NavFrame, NavFrameHeader, NavFrameBody, SectionsPane, Section, SectionHeader, ListGroupingControl }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
-import { ListItemContainer } from './ListItemContainer';
+import { MyChats } from './Sections/MyChats';
+import { AllChats } from './Sections/AllChats';
 import { pureRender } from 'Ampliflux';
 
 // @todo Remove
@@ -9,7 +11,19 @@ import { infoNotification, errorNotification, delayedActionNotification, undoabl
   from '../../../Application/Actions/notificationActions';
 
 @pureRender
-export class Nav extends React.Component {
+export class Nav extends Component {
+
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    changeGrouping: PropTypes.func.isRequired,
+    toggleGroupingVisibility: PropTypes.func.isRequired,
+    onMyClick: PropTypes.func.isRequired,
+    onAllClick: PropTypes.func.isRequired,
+    my: PropTypes.object.isRequired,
+    all: PropTypes.object.isRequired,
+    labels: PropTypes.object.isRequired,
+    dpWindow: PropTypes.object.isRequired
+  };
 
   static groupingOptions = {
     my: [
@@ -50,7 +64,7 @@ export class Nav extends React.Component {
   };
 
   render() {
-    const {lists, changeGrouping, toggleGroupingVisibility, onMyClick, onAllClick, dpWindow, dispatch} = this.props;
+    const {my, all, labels, changeGrouping, toggleGroupingVisibility, dpWindow, dispatch, loaded} = this.props;
 
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
@@ -58,14 +72,14 @@ export class Nav extends React.Component {
 
           <ListGroupingControl title="My Chats"
                                options={Nav.groupingOptions.my}
-                               visible={lists.getIn(['my', 'isGroupingControlVisible'])}
+                               visible={my.get('isGroupingControlVisible')}
                                onChange={changeGrouping('my')}
                                attachTo={this.refs.mySection}
                                close={toggleGroupingVisibility('my')}/>
 
           <ListGroupingControl title="All Chats"
                                options={Nav.groupingOptions.all}
-                               visible={lists.getIn(['all', 'isGroupingControlVisible'])}
+                               visible={all.get('isGroupingControlVisible')}
                                onChange={changeGrouping('all')}
                                attachTo={this.refs.allSection}
                                close={toggleGroupingVisibility('all')}/>
@@ -77,56 +91,15 @@ export class Nav extends React.Component {
             Chat
           </NavFrameHeader>
           <NavFrameBody>
-            <SectionsPane>
-              <Section ref="mySection">
-                <SectionHeader>
-                  My Chats
-                  <div className="list-counter-bucket">
-                    <a className="list-counter-dropdown active" href="#" onClick={toggleGroupingVisibility('my')}>
-                      <span>&nbsp;</span>
-                      <i className="fa fa-angle-down"></i>
-                    </a>
-                    <a className="list-counter active" href="#">{lists.getIn(['my', 'total'])}</a>
-                  </div>
-                </SectionHeader>
-
-                <ul>
-                  {lists.getIn(['my', 'items']).map(item =>
-                      <ListItemContainer groupBy={lists.getIn(['my', 'groupBy'])}
-                                         group={item.group}
-                                         count={item.count}
-                                         key={item.group}
-                                         onClick={onMyClick}/>
-                  )}
-                </ul>
-              </Section>
-
-              <Section ref="allSection">
-                <SectionHeader>
-                  All Chats
-                  <div className="list-counter-bucket">
-                    <a className="list-counter-dropdown active" href="#" onClick={toggleGroupingVisibility('all')}>
-                      <span>&nbsp;</span>
-                      <i className="fa fa-angle-down"></i>
-                    </a>
-                    <a className="list-counter active" href="#">{lists.getIn(['all', 'total'])}</a>
-                  </div>
-                </SectionHeader>
-
-                <ul>
-                  {lists.getIn(['all', 'items']).map(item =>
-                      <ListItemContainer groupBy={lists.getIn(['all', 'groupBy'])}
-                                         group={item.group}
-                                         count={item.count}
-                                         key={item.group}
-                                         onClick={onAllClick}/>
-                  )}
-                </ul>
-              </Section>
-            </SectionsPane>
-
-            <br /><br /><br />
-            <a href="#" onClick={this.demoNotifications}>Demo notifications</a>
+            <LoadIndicator loaded={loaded}>
+              <SectionsPane>
+                <MyChats my={my}
+                         labels={labels}/>
+                <AllChats all={all}
+                          labels={labels}/>
+              </SectionsPane>
+              <a href="#" onClick={this.demoNotifications}>Demo notifications</a>
+            </LoadIndicator>
           </NavFrameBody>
         </div>
       </NavFrame>

@@ -11,8 +11,8 @@ const initialState = {
   },
   viewMode: 'card',
   currentListParams: {
-    sort: constants.ORDER_DESC,
-    order: 'desc'
+    sort: 'date_created',
+    order: constants.ORDER_DESC
   },
   elements: []
 };
