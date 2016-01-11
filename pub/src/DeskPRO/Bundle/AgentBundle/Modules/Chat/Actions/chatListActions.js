@@ -1,6 +1,8 @@
 import { createAction } from 'Ampliflux';
 import { load as loadChats } from 'DeskPRO/Bundle/AgentBundle/Services/Api/Chat';
 import { currentListParamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Chat/Selectors/list';
+import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
+import { setDepartmentsRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/departmentsActions';
 import { setChatsRequest } from '../RecordStores/Actions/chatsActions';
 
 /**
@@ -8,6 +10,16 @@ import { setChatsRequest } from '../RecordStores/Actions/chatsActions';
  * @type {string}
  */
 const recordStoresId = 'chats';
+
+const prepareLinkedData = (linked) => {
+  const result = [];
+  for (const key in linked) {
+    if (linked.hasOwnProperty(key)) {
+      result.push(linked[key]);
+    }
+  }
+  return result;
+};
 
 export const updateCurrentListParams = createAction(
   'CHAT_LIST_UPDATE_CURRENT_LIST_PARAMS',
@@ -27,6 +39,8 @@ export const load = createAction(
       const res = promise.getData();
       const ids = res.data.map(item=>item.id);
       dispatch(setChatsRequest(recordStoresId, res.data));
+      dispatch(setPeopleRequest(recordStoresId, prepareLinkedData(res.linked.person)));
+      dispatch(setDepartmentsRequest(recordStoresId, prepareLinkedData(res.linked.department)));
 
       return { ids: ids, pagination: res.meta.pagination };
     });
@@ -45,28 +59,6 @@ export const reLoad = createAction(
     }
 );
 
-export const changeSort = createAction(
-  'CHAT_LIST_CHANGE_SORT',
-  (sort) => dispatch => {
-    dispatch(reLoad({ sort }));
-    return sort;
-  }
-);
-
-export const toggleOrder = createAction(
-  'CHAT_LIST_TOGGLE_ORDER',
-  (order) => dispatch => {
-    dispatch(reLoad({ order: order }));
-    return order;
-  }
-);
-
-export const toggleViewMode = createAction(
-  'CHAT_LIST_TOGGLE_VIEW_MODE',
-    viewMode => viewMode
-);
-
-
 export const applyParams = createAction(
   'CHAT_APPLY_LIST_PARAMS',
   (overwrite = {}) => (dispatch, getState) => {
@@ -82,4 +74,15 @@ export const applyParams = createAction(
       dispatch(load(params));
     }
   }
+);
+
+
+export const changeSort = createAction(
+  'CHAT_LIST_CHANGE_SORT',
+    sort => dispatch => dispatch(applyParams({ sort, delayReload: true }))
+);
+
+export const toggleOrder = createAction(
+  'CHAT_LIST_TOGGLE_ORDER',
+    order => dispatch => dispatch(applyParams({ order, delayReload: true }))
 );

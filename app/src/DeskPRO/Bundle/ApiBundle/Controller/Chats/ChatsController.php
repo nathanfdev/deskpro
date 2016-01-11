@@ -97,7 +97,7 @@ class ChatsController extends BaseController
         /** @var \DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService $dataService */
         $dataService = $this->get('data.chat');
 
-        $params = $request->query->all();
+        $params = $this->removeAdditionalParameters($request);
         if (array_key_exists('page', $params)) {
             unset($params['page']);
         }

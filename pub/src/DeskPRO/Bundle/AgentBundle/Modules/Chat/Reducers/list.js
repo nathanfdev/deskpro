@@ -9,7 +9,7 @@ const initialState = {
   async: {
     done: true
   },
-  viewMode: 'card',
+  viewMode: constants.VIEW_MODE_CARD,
   currentListParams: {
     sort: 'date_created',
     order: constants.ORDER_DESC
@@ -28,26 +28,5 @@ export default createReducer(initialState, {
 
   [actions.updateCurrentListParams]: setFullPayload('currentListParams'),
 
-  [actions.changeSort]: (state, payload) => {
-    let sortOptions = [];
-    state.get('sortOptions').toJS().forEach(obj=> {
-      const nextObj = { ...obj };
-      nextObj.current = obj.field === payload;
-      sortOptions.push(nextObj);
-    });
-    return state.set('sortOptions', Immutable.fromJS(sortOptions))
-  },
-
-  [actions.toggleViewMode]: (state, payload) => {
-    let viewModeOptions = [];
-    state.get('viewModeOptions').toJS().forEach(obj=> {
-      const nextObj = { ...obj };
-      nextObj.current = obj.field === payload;
-      viewModeOptions.push(nextObj);
-    });
-    return state.set('viewModeOptions', Immutable.fromJS(viewModeOptions));
-  },
-
-  [actions.toggleOrder]: setFullPayload('order'),
   [massActions.toggleMassAction]: handleMassAction('elements', 'selected')
 });

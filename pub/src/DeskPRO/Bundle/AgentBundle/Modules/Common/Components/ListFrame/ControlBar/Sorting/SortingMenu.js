@@ -79,23 +79,27 @@ export class SortingMenu extends Component {
     const { dispatch, sort, sortAction, options } = this.props;
     return (
       jQuery.map(options, (option, type) =>
-        <Item
-          key={type}
-          label={option.label}
-          isActive={sort === type}
-          checked={sort === type}
-          onClick={() => dispatch(sortAction(type))}
-          icon={option.icon}
-        />
+          <Item key={type}
+                label={option.label}
+                isActive={sort === type}
+                checked={sort === type}
+                onClick={() => dispatch(sortAction(type))}
+                icon={option.icon}/>
       )
     );
   }
 
+  changeOrder(order, e) {;
+    e.preventDefault();
+    const { dispatch, orderAction } = this.props;
+    dispatch(orderAction(order));
+  }
+
   render() {
-    const { dispatch, order, orderAction } = this.props;
+    const { order } = this.props;
     const options = [
-      { id: 'asc', onClick: () => dispatch(orderAction('asc')), label: 'Asc' },
-      { id: 'desc', onClick: () => dispatch(orderAction('desc')), label: 'Desc' }
+      { id: 'asc', onClick: this.changeOrder.bind(this, 'asc'), label: 'Asc' },
+      { id: 'desc', onClick: this.changeOrder.bind(this, 'desc'), label: 'Desc' }
     ];
 
     return (
