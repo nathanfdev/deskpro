@@ -1,4 +1,6 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
+import $ from 'jquery';
 
 export class ChatEmailValidation extends React.Component {
 
@@ -7,6 +9,11 @@ export class ChatEmailValidation extends React.Component {
     this.state = {
       code: ''
     };
+  }
+
+  componentDidMount() {
+    const inputNode = ReactDOM.findDOMNode(this.refs.input);
+    $(inputNode).focus();
   }
 
   onChangeCode = event => {
@@ -31,7 +38,7 @@ export class ChatEmailValidation extends React.Component {
         </span>
 
         <form>
-          <input type="text" onChange={this.onChangeCode} value={this.state.code} />
+          <input type="text" ref="input" onChange={this.onChangeCode} value={this.state.code} />
           <a href="#" className="email-code-submit" onClick={this.onSubmit}>
             Start Chat <i className="fa fa-chevron-right"></i>
           </a>
