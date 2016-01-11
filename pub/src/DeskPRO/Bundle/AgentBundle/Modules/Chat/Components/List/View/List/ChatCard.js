@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
-import { Card, CardLine, CardLineLeft, CardLineRight, CardLineFull, CardContentText, CardLineItem, CardCheckbox }
+import { Card, CardLine, CardLineLeft, CardLineRight, CardLineFull, CardContentText, CardLineItem, CardCheckbox, CardDisc, CardUser }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
 
 @injectIntl
@@ -8,12 +8,15 @@ export class ChatCard extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     chat: PropTypes.object.isRequired,
+    author: PropTypes.object.isRequired,
+    agent: PropTypes.object.isRequired,
+    department: PropTypes.object.isRequired,
     selected: PropTypes.object.isRequired,
     toggleSelected: PropTypes.func.isRequired
   };
 
   render() {
-    const { chat, selected, toggleSelected } = this.props;
+    const { chat, selected, toggleSelected, author, agent, department } = this.props;
 
     return (
       <Card type="chat">
@@ -44,9 +47,12 @@ export class ChatCard extends Component {
 
         <CardLine>
           <CardLineLeft>
-            <span className="text"></span>
-            <span className="chat-avatar" style={{backgroundImage: "url('./img/avatar6.png')"}}></span>
-            <span className="disc"></span>
+            <CardUser user={author}/>
+            <CardDisc/>
+            <CardUser user={agent}/>
+            <CardDisc/>
+            <CardLineItem>{department.get('title')}</CardLineItem>
+            <CardDisc/>
             <span className="text"></span> <i className="fa fa-comment"></i>
           </CardLineLeft>
 

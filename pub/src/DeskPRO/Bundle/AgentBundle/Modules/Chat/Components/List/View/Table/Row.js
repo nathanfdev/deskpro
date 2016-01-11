@@ -1,27 +1,36 @@
 import React, {Component, PropTypes} from 'react';
+import { Td, TdId, PersonInTable }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 
-export class Row extends React.Component {
+export class Row extends Component {
   static propTypes = {
-    element: PropTypes.object.isRequired
+    element: PropTypes.object.isRequired,
+    author: PropTypes.object.isRequired,
+    agent: PropTypes.object.isRequired,
+    department: PropTypes.object.isRequired
   };
 
   render() {
-    const {element} = this.props;
+    const {element, author, agent, department} = this.props;
 
     return (
       <tr>
-        <td className="id-col"><span className="dpw--item-id">#{element.get('id')}</span></td>
-        <td></td>
-        <td className="agent-col">
+        <TdId>
+          {element.get('id')}
+        </TdId>
+        <Td>
+          <PersonInTable person={author}/>
+        </Td>
+        <Td className="agent-col">
           <div className="agent">
             <span className="dpw--avatar-face" style={{backgroundImage: 'url(../img/avatars/avatar4.png)'}}></span>
-            {element.get('agent')}
+            {agent.get('name')}
           </div>
-        </td>
-        <td></td>
-        <td className="item-title">{element.get('subject')}</td>
-        <td></td>
-        <td></td>
+        </Td>
+        <Td/>
+        <Td className="item-title">{element.get('subject')}</Td>
+        <Td>{department.get('title')}</Td>
+        <Td/>
       </tr>);
   }
 }

@@ -32,7 +32,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
-use Application\DeskPRO\Entity\ChatConversation;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 
@@ -62,13 +61,15 @@ class ChatConversationTransformer extends AbstractDataSerializerTransformer
         return [
             'id',
             'subject_line',
-            'department_id',
             'date_created',
             'date_agent_typing',
             'date_ended',
             'ended_by',
             'status',
             'subject',
+            'person',
+            'agent',
+            'department',
         ];
     }
 
@@ -77,23 +78,6 @@ class ChatConversationTransformer extends AbstractDataSerializerTransformer
      */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        /** @var ChatConversation $data */
-        $data       = $transformation_request->getDataToBeTransformed();
-        $person     = $data->getPerson();
-        $agent      = $data->getAgent();
-        $department = $data->getDepartment();
-
-        return [
-            'conversation_id' => $data->getId(),
-            'author_id'       => $person ? $person->getId() : 0,
-            'author_name'     => $person ? $person->getDisplayName() : $data->getPersonName(),
-            'author_email'    => $person ? $person->getPrimaryEmailAddress() : $data->getPersonEmail(),
-            'author_avatar'   => $person ? $this->avatar_resolver->getAvatarModel($person) : null,
-            'author_type'     => $person && $person->isAgent() ? 'agent' : 'user',
-            'agent_id'        => $agent ? $agent->getId() : 0,
-            'agent_name'      => $agent ? $agent->getDisplayName() : '',
-            'agent_avatar'    => $agent ? $this->avatar_resolver->getAvatarModel($agent) : null,
-            'department_name' => $department ? $department->getFullTitle() : '',
-        ];
+        return [];
     }
 }
