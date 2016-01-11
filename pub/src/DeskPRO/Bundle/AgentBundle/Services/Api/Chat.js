@@ -7,6 +7,7 @@ import { compileParams } from '../ApiHelpers';
  * @return Promise
  */
 export function loadCounts(groupBy, agent) {
+  console.log('DP_API/user_chats/counts?group_by=' + groupBy + (agent ? '&agent=' + agent : ''));
   return DpApi.sendGet('DP_API/user_chats/counts?group_by=' + groupBy + (agent ? '&agent=' + agent : ''));
 }
 
