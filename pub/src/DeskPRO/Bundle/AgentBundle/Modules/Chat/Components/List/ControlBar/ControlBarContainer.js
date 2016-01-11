@@ -5,7 +5,7 @@ import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Applicati
 import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/ControlBar';
 import { listSortSelector, listOrderSelector, viewModeSelector }
   from '../../../Selectors/list';
-import { changeSort, toggleOrder }
+import { changeSort, toggleOrder, applyParams }
   from '../../../Actions/chatListActions';
 
 @connect(state => ({
@@ -23,6 +23,7 @@ export class ControlBarContainer extends Component {
 
   render() {
     const config = {
+      onMenuUnmount: applyParams,
       sorting: {
         options: {
           date_created: { label: 'Date', icon: 'calendar' },

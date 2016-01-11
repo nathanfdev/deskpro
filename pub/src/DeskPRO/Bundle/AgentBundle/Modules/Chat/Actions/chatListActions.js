@@ -45,28 +45,6 @@ export const reLoad = createAction(
     }
 );
 
-export const changeSort = createAction(
-  'CHAT_LIST_CHANGE_SORT',
-  (sort) => dispatch => {
-    dispatch(reLoad({ sort }));
-    return sort;
-  }
-);
-
-export const toggleOrder = createAction(
-  'CHAT_LIST_TOGGLE_ORDER',
-  (order) => dispatch => {
-    dispatch(reLoad({ order: order }));
-    return order;
-  }
-);
-
-export const toggleViewMode = createAction(
-  'CHAT_LIST_TOGGLE_VIEW_MODE',
-    viewMode => viewMode
-);
-
-
 export const applyParams = createAction(
   'CHAT_APPLY_LIST_PARAMS',
   (overwrite = {}) => (dispatch, getState) => {
@@ -82,4 +60,15 @@ export const applyParams = createAction(
       dispatch(load(params));
     }
   }
+);
+
+
+export const changeSort = createAction(
+  'CHAT_LIST_CHANGE_SORT',
+    sort => dispatch => dispatch(applyParams({ sort, delayReload: true }))
+);
+
+export const toggleOrder = createAction(
+  'CHAT_LIST_TOGGLE_ORDER',
+    order => dispatch => dispatch(applyParams({ order, delayReload: true }))
 );

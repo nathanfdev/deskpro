@@ -22,7 +22,7 @@ export class ChatsCardsContainer extends Component {
   renderCard(id) {
     const { chats, toggleSelected } = this.props;
     const element = chats.get(id);
-    console.log(element);
+
     return (
       <ChatCard key={id}
                 chat={element}

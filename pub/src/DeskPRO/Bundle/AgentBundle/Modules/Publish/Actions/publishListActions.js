@@ -100,6 +100,7 @@ export const setSort = createAction(
   'PUBLISH_LIST_SET_SORT',
     sort => dispatch => dispatch(applyParams({ sort, delayReload: true }))
 );
+
 export const setOrder = createAction(
   'PUBLISH_LIST_SET_ORDER',
     order => dispatch => dispatch(applyParams({ order, delayReload: true }))
