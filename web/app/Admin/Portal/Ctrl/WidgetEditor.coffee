@@ -1,11 +1,17 @@
-define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Base) ->
+define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
   class Admin_Portal_Ctrl_WidgetEditor extends Admin_Ctrl_Base
     @CTRL_ID = 'Admin_Portal_Ctrl_WidgetEditor'
     @CTRL_AS = 'Ctrl'
+    @DEPS    = ['$http']
 
     init: ->
       @$scope.code = ''
-      @$scope.chat_options = {
+      @$scope.base_options = {
+        widget_loader_url: '',
+        widget_bundle_url: '',
+        dp_url: ''
+      }
+      @$scope.custom_options = {
         widget: {
           type: 'column',
           position: 'right',
@@ -40,38 +46,32 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
       }
 
     initialLoad: ->
-      data_promise = @Api.sendDataGet({
-        hdinfo:     '/deskpro/info',
-        chat_setup: '/chat_setup'
-      }).then((res) =>
-        @hdinfo = res.data.hdinfo
-        @$scope.setup = res.data.chat_setup.chat_setup
-      )
+      @$http.get('/api/v2/widget/setup').success((response) =>
+        @$scope.base_options = response;
+        @initLiveDemo()
+      );
 
-      @initLiveDemo()
-      @$scope.$watch('chat_options', =>
+      @$scope.$watch('custom_options', =>
         @updateLiveDemo()
       , true)
 
-      return @$q.all([data_promise])
-
     getOptions: (liveDemo = false) ->
-      options = $.extend(true, {}, @$scope.chat_options)
+      options = $.extend(true, {}, @$scope.custom_options)
       if (liveDemo)
         options.widget.liveDemo = true
 
-      options
+      return options
 
     getCode: (options) ->
       """
         <!-- DeskPRO Chat -->
           <script>
-              window.__DP_APP_SRC__ = 'http://localhost:9666/pub/build/DeskPRO_WidgetBundle.js';
-              window.__DP_URL__ = 'http://deskpro.com.dev/';
+              window.__DP_APP_SRC__ = '#{@$scope.base_options.widget_bundle_url}';
+              window.__DP_URL__ = '#{@$scope.base_options.dp_url}';
               window.__DP_OPTIONS__ = #{JSON.stringify(options)};
           </script>
 
-          <script type="text/javascript" charset="UTF-8" src="http://deskpro.com.dev/pub/build/widget_loader.js?1446397152"></script>
+          <script type="text/javascript" charset="UTF-8" src="#{@$scope.base_options.widget_loader_url}"></script>
         <!-- /DeskPRO Chat -->
       """
 
