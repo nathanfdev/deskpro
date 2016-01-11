@@ -16,14 +16,21 @@ export const updateCurrentListParams = createAction(
 
 export const load = createAction(
   'CHAT_LIST_LOAD_DATA',
-  (params) => dispatch =>
-    loadChats(params).then(promise => {
+  (listParams) => dispatch => {
+    let params = listParams;
+    const { navItem } = params;
+    if (navItem) {
+      delete params.navItem;
+      params = { ...params, ...navItem };
+    }
+    return loadChats(params).then(promise => {
       const res = promise.getData();
       const ids = res.data.map(item=>item.id);
       dispatch(setChatsRequest(recordStoresId, res.data));
 
       return { ids: ids, pagination: res.meta.pagination };
-    })
+    });
+  }
 );
 
 export const reLoad = createAction(
