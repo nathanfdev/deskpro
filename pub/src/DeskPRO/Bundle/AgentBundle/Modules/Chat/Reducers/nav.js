@@ -1,4 +1,5 @@
 import { createReducer } from 'Ampliflux';
+import Immutable from 'immutable';
 import { async, mergeFullPayload, setValue } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/chatNavActions';
 
@@ -8,13 +9,13 @@ const initialState = {
   },
   my: {
     total: 0,
-    groupBy: 'date_period',
+    grouped_by: 'date_period',
     isGroupingControlVisible: false,
     nested: [/* {count, group} */]
   },
   all: {
     total: 0,
-    groupBy: 'agent',
+    grouped_by: 'agent',
     isGroupingControlVisible: false,
     nested: [/* {count, group} */]
   }
@@ -30,8 +31,7 @@ export default createReducer(initialState, {
 
   [actions.loadCounts]: async({
     success: (state, payload) =>
-      state.setIn(['lists', payload.list, 'total'], payload.counts.count)
-        .setIn(['lists', payload.list, 'items'], payload.counts.nested)
+      state.set(payload.list, Immutable.fromJS(payload.counts))
   }),
 
   [actions.toggleListGroupingVisibility]: (state, payload) => {
@@ -39,6 +39,6 @@ export default createReducer(initialState, {
     return state.setIn(target, !state.getIn(target));
   },
 
-  [actions.changeListGrouping]: (state, payload) => state.setIn(['lists', payload.list, 'groupBy'], payload.groupBy)
+  [actions.changeListGrouping]: (state, payload) => state.setIn([payload.list, 'grouped_by'], payload.groupBy)
 
 });

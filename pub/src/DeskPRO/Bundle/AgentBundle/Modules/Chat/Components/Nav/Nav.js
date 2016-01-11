@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
-import { NavFrame, NavFrameHeader, NavFrameBody, SectionsPane, Section, SectionHeader, ListGroupingControl }
+import { NavFrame, NavFrameHeader, NavFrameBody, SectionsPane }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { MyChats } from './Sections/MyChats';
 import { AllChats } from './Sections/AllChats';
@@ -15,26 +15,10 @@ export class Nav extends Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    changeGrouping: PropTypes.func.isRequired,
-    toggleGroupingVisibility: PropTypes.func.isRequired,
-    onMyClick: PropTypes.func.isRequired,
-    onAllClick: PropTypes.func.isRequired,
     my: PropTypes.object.isRequired,
     all: PropTypes.object.isRequired,
-    labels: PropTypes.object.isRequired,
+    loaded: PropTypes.bool.isRequired,
     dpWindow: PropTypes.object.isRequired
-  };
-
-  static groupingOptions = {
-    my: [
-      { value: 'date_period', label: 'Date Created' },
-      { value: 'department', label: 'Department' }
-    ],
-    all: [
-      { value: 'agent', label: 'Agent' },
-      { value: 'department', label: 'Department' },
-      { value: 'date_period', label: 'Date Created' }
-    ]
   };
 
   // @todo Remove
@@ -64,44 +48,22 @@ export class Nav extends Component {
   };
 
   render() {
-    const {my, all, labels, changeGrouping, toggleGroupingVisibility, dpWindow, dispatch, loaded} = this.props;
+    const {my, all, dpWindow, dispatch, loaded} = this.props;
 
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
-        <div part="outer">
-
-          <ListGroupingControl title="My Chats"
-                               options={Nav.groupingOptions.my}
-                               visible={my.get('isGroupingControlVisible')}
-                               onChange={changeGrouping('my')}
-                               attachTo={this.refs.mySection}
-                               close={toggleGroupingVisibility('my')}/>
-
-          <ListGroupingControl title="All Chats"
-                               options={Nav.groupingOptions.all}
-                               visible={all.get('isGroupingControlVisible')}
-                               onChange={changeGrouping('all')}
-                               attachTo={this.refs.allSection}
-                               close={toggleGroupingVisibility('all')}/>
-
-        </div>
-
-        <div part="inner">
-          <NavFrameHeader icon="icon-dp-streamline-bubble-conversation-4">
-            Chat
-          </NavFrameHeader>
-          <NavFrameBody>
-            <LoadIndicator loaded={loaded}>
-              <SectionsPane>
-                <MyChats my={my}
-                         labels={labels}/>
-                <AllChats all={all}
-                          labels={labels}/>
-              </SectionsPane>
-              <a href="#" onClick={this.demoNotifications}>Demo notifications</a>
-            </LoadIndicator>
-          </NavFrameBody>
-        </div>
+        <NavFrameHeader icon="icon-dp-streamline-bubble-conversation-4">
+          Chat
+        </NavFrameHeader>
+        <NavFrameBody>
+          <LoadIndicator loaded={loaded}>
+            <SectionsPane>
+              <MyChats my={my}/>
+              <AllChats all={all}/>
+            </SectionsPane>
+            <a href="#" onClick={this.demoNotifications}>Demo notifications</a>
+          </LoadIndicator>
+        </NavFrameBody>
       </NavFrame>
     );
   }
