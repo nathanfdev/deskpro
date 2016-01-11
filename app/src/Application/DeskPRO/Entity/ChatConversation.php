@@ -1058,6 +1058,14 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         return $this->session;
     }
 
+    /**
+     * @return string
+     */
+    public function getEmailValidationCode()
+    {
+        return $this->email_validation_code;
+    }
+
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
         $data = parent::toApiData($primary, $deep, $visited);

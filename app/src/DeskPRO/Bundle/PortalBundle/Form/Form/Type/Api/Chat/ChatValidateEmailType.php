@@ -33,19 +33,23 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class ChatMessageType.
+ * Class ChatValidateEmailType.
  */
-class ChatMessageType extends AbstractType
+class ChatValidateEmailType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function getName()
     {
-        return 'api_chat_message';
+        return 'api_chat_validate_email';
     }
 
     /**
@@ -53,15 +57,14 @@ class ChatMessageType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('message', 'html_textarea')
-            ->add('attachments', 'collection', [
-                'type'         => 'auth_blob',
-                'allow_add'    => true,
-                'allow_delete' => true,
-                'required'     => false,
-            ])
-        ;
+        $builder->add('code', 'text', [
+            'property_path' => 'email_validation_code',
+            'constraints'   => [
+                new Assert\NotBlank(),
+            ],
+        ]);
+
+        $builder->get('code')->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onCheckCode']);
     }
 
     /**
@@ -73,5 +76,25 @@ class ChatMessageType extends AbstractType
             'csrf_protection'               => false,
             'csrf_double_submit_protection' => false,
         ]);
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onCheckCode(FormEvent $event)
+    {
+        $data = $event->getData();
+        $form = $event->getForm();
+
+        // Reset validation code from the request if no entity code
+        if (!$form->getData()) {
+            $event->setData(null);
+
+            return;
+        }
+
+        if ($data !== $form->getData()) {
+            $form->addError(new FormError('Wrong email validation code'));
+        }
     }
 }

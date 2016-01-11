@@ -74,7 +74,11 @@ class ChatController extends AbstractApiController
         $em->persist($conversation);
         $em->flush();
 
-        $this->dispatch(UserChatEvent::STARTED, new UserChatEvent($conversation));
+        // If an email validation code was generated then user needs to validate the entered email first,
+        // so skip agent notify until the user validates it
+        if (!$conversation->getEmailValidationCode()) {
+            $this->dispatch(UserChatEvent::STARTED, new UserChatEvent($conversation));
+        }
 
         return View::create($this->dataSerialize($conversation));
     }
@@ -91,6 +95,23 @@ class ChatController extends AbstractApiController
     public function validateEmailAction(ChatConversation $conversation, Request $request)
     {
         $this->checkUserSession($conversation, $request);
+
+        $form = $this
+            ->get('form.factory')
+            ->createNamedBuilder(null, 'api_chat_validate_email', $conversation)
+            ->getForm()
+        ;
+
+        $form->submit($request->request->all());
+        if (!$form->isValid()) {
+            return $this->generateFormErrorsResponse($form);
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($conversation);
+        $em->flush();
+
+        $this->dispatch(UserChatEvent::STARTED, new UserChatEvent($conversation));
 
         return View::create();
     }

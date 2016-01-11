@@ -357,6 +357,11 @@ services:
     tags:
       - { name: form.type, alias: api_chat_create }
 
+  form.api.api_chat_validate_email:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatValidateEmailType
+    tags:
+      - { name: form.type, alias: api_chat_validate_email }
+
   form.api.chat_user_typing:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatUserTypingType
     tags:
