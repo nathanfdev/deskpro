@@ -11,6 +11,7 @@ import { ListGroupContainer } from './ListGroupContainer';
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import { toggleAll } from '../../Actions/listActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+
 export class List extends React.Component {
 
   static propTypes = {
@@ -43,16 +44,16 @@ export class List extends React.Component {
           <ControlBarContainer />
         </ListFrameMenu>
         {currentNav &&
-        <LoadIndicator loaded={loaded}
-                       opacity={0}
-                       width={3}>
+          <LoadIndicator loaded={loaded}
+                         opacity={0}
+                         width={3}>
 
-          <ListFrameContents>
-            <ListGroupContainer>
-              {this.renderView()}
-            </ListGroupContainer>
-          </ListFrameContents>
-        </LoadIndicator>
+            <ListFrameContents>
+              <ListGroupContainer>
+                {this.renderView()}
+              </ListGroupContainer>
+            </ListFrameContents>
+          </LoadIndicator>
         }
       </ListFrameContainer>
     );
