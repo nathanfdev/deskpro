@@ -26,7 +26,7 @@
         </header>
 
         <div class="article-extras">
-            <a href="{{ portal_path(file, 'save') }}">
+            <a href="{{ portal_path(file, 'save') }}" id="file-download-link">
                 {% if file.blob and file.blob.is_image %}
                     <img style="max-width: 100%;"
                          src="{{ portal_path(file, 'serve') }}"

@@ -28,6 +28,15 @@
 
 namespace DpBehat\Portal;
 
+use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\DownloadCategory;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackCategory;
+use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Usergroup;
+
 class GenericContext extends BasePortalContext
 {
     /**
@@ -60,6 +69,77 @@ class GenericContext extends BasePortalContext
     public function theAgentBarShouldHaveTheAdminDropdown()
     {
         expect($this->getAgentBarPage()->isAdminDropdownOnAgentBar())->toBe(true);
+    }
+
+    /**
+     * @Given the :arg1 category :arg2 exists with content titled :arg3
+     */
+    public function theCategoryExistsWithADownloadTitled($type, $cat_name, $content_name)
+    {
+        /** @var \Doctrine\ORM\EntityManager $em */
+        $em  = $this->get('doctrine.orm.entity_manager');
+        $cat = null;
+
+        $everyone = $em->getRepository(Usergroup::class)->findOneBy([
+            'sys_name' => 'everyone',
+        ]);
+
+        $person = $em->getRepository(Person::class)->findOneBy([
+            'id' => 1,
+        ]);
+
+        switch ($type) {
+            case 'download':
+                $cat = new DownloadCategory();
+                $cat->setTitle($cat_name);
+
+                $content = new Download();
+                $content->setTitle($content_name);
+
+                $content->setCategory($cat);
+                $content->setStatus('published');
+                $cat->addUsergroup($everyone);
+
+                $blob = new Blob();
+                $blob->setFilename('filename.txt');
+                $blob->file_url  = 'http://google.com';
+                $blob->blob_hash = 'zyxasdfasdf';
+                $content->setBlob($blob);
+                $em->persist($blob);
+                break;
+            case 'feedback':
+                $fcat = $em->getRepository(FeedbackCategory::class)->findOneBy([
+                    'id' => 1,
+                ]);
+
+                $fstatus_cat = $em->getRepository(FeedbackStatusCategory::class)->findOneBy([
+                    'id' => 1,
+                ]);
+
+                $content = new Feedback();
+                $content->setStatus(Feedback::STATUS_ACTIVE);
+                $content->setCategory($fcat);
+                $content->setStatusCategory($fstatus_cat);
+                $content->title = 'Example Feedback';
+
+                break;
+            default:
+                throw new \Exception();
+        }
+
+        $content->setPerson($person);
+
+        if ($cat) {
+            $em->persist($cat);
+        }
+        $em->persist($content);
+        $em->flush();
+
+        // refresh to update assocation refs for the tests
+        if ($cat) {
+            $em->refresh($cat);
+        }
+        $em->refresh($content);
     }
 
     /**
