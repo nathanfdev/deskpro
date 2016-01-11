@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\TextStringTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -49,13 +50,20 @@ class CreateChatType extends AbstractType
     private $set_person_listener;
 
     /**
+     * @var SettingsResolver
+     */
+    private $settings_resolver;
+
+    /**
      * Constructor.
      *
      * @param SetPersonListener $set_person_listener
+     * @param SettingsResolver  $settings_resolver
      */
-    public function __construct(SetPersonListener $set_person_listener)
+    public function __construct(SetPersonListener $set_person_listener, SettingsResolver $settings_resolver)
     {
         $this->set_person_listener = $set_person_listener;
+        $this->settings_resolver   = $settings_resolver;
     }
 
     /**
@@ -71,6 +79,12 @@ class CreateChatType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $global_settings   = $this->settings_resolver->getGlobalSettings();
+        $email_constraints = [new Assert\Email()];
+        if ($global_settings->get('portal.chat.email_validation')) {
+            $email_constraints[] = new Assert\NotBlank();
+        }
+
         $builder
             ->add('name', 'text', [
                 'property_path' => 'person_name',
@@ -79,9 +93,7 @@ class CreateChatType extends AbstractType
             ->add('email', 'email', [
                 'property_path' => 'person_email',
                 'required'      => false,
-                'constraints'   => [
-                    new Assert\Email(),
-                ],
+                'constraints'   => $email_constraints,
             ])
         ;
 
