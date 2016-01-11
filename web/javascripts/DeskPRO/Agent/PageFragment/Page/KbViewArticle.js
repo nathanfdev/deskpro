@@ -580,7 +580,8 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		dateInput.each(function() {
 			$(this).datetimepicker({
 				format: 'YYYY-MM-DD',
-				widgetParent: $(this).parent().css('position', 'relative'),
+				widgetParent: $(this).prev('div'),
+				widgetPositioning: { vertical: 'bottom' },
 				icons: {
 					up: 'fa fa-chevron-up',
 					down: 'fa fa-chevron-down',
@@ -673,7 +674,8 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		dateInput.each(function() {
 			$(this).datetimepicker({
 				format: 'D MMM, YY',
-				widgetParent: $(this).parent().css('position', 'relative'),
+				widgetParent: $(this).prev('div'),
+				widgetPositioning: { vertical: 'bottom' },
 				icons: {
 					up: 'fa fa-chevron-up',
 					down: 'fa fa-chevron-down',
