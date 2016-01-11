@@ -29,9 +29,9 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
+use Application\DeskPRO\Entity\ChatConversation;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 
@@ -78,6 +78,11 @@ class ChatConversationTransformer extends AbstractDataSerializerTransformer
      */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        return [];
+        /** @var ChatConversation $data */
+        $data = $transformation_request->getDataToBeTransformed();
+
+        return [
+            'need_validate_email' => $data->getEmailValidationCode() && !$data->getEmailValidated(),
+        ];
     }
 }

@@ -1067,6 +1067,14 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @return bool
+     */
+    public function getEmailValidated()
+    {
+        return $this->email_validated;
+    }
+
+    /**
      * @param bool $value
      *
      * @return $this

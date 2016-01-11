@@ -123,6 +123,11 @@ export const isEndedSelector = createSelector(
   dateEnded => !!dateEnded
 );
 
+export const needValidateEmailSelector = createSelector(
+  chatInfoSelector,
+  chatInfo => chatInfo.get('need_validate_email')
+);
+
 // Messages selectors
 export const messagesSelector = createSelector(
   stateSelector,
