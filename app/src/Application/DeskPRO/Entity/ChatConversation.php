@@ -227,9 +227,9 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     protected $email_validation_code = '';
 
     /**
-     * @var string
+     * @var bool
      */
-    protected $email_validated = '';
+    protected $email_validated = false;
 
     /**
      * @var array
@@ -1064,6 +1064,18 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     public function getEmailValidationCode()
     {
         return $this->email_validation_code;
+    }
+
+    /**
+     * @param bool $value
+     *
+     * @return $this
+     */
+    public function setEmailValidated($value)
+    {
+        $this->setModelField('email_validated', $value);
+
+        return $this;
     }
 
     public function toApiData($primary = true, $deep = true, array $visited = array())
