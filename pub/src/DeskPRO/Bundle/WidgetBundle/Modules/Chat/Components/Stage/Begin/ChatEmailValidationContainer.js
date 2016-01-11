@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { validateEmail } from '../../../Actions/chatActions';
 import { chatIdSelector } from '../../../Selectors/chat';
-import { FieldErrors } from 'DeskPRO/Component/Form/FormErrors';
+import { FieldErrors, hasErrors } from 'DeskPRO/Component/Form/FormErrors';
+import classNames from 'classnames';
 import $ from 'jquery';
 
 @connect(state => ({
@@ -71,8 +72,10 @@ export class ChatEmailValidationContainer extends React.Component {
   };
 
   render() {
+    const hasError = hasErrors(this.state.errors, 'code');
+
     return (
-      <div className="dpdesignportal-chat-email-validation">
+      <div className={classNames('dpdesignportal-chat-email-validation', {'error': hasError})}>
         <span className="description">
           <p>We require you to validate your email address.</p>
           <br/>
@@ -82,7 +85,7 @@ export class ChatEmailValidationContainer extends React.Component {
 
         <form onSubmit={this.onSubmit}>
           <input type="text" ref="input" onChange={this.onChangeCode} value={this.state.code} />
-          <FieldErrors errors={this.state.errors} field="code" />
+          {hasError && <FieldErrors errors={this.state.errors} name="code" />}
 
           {this.state.submit
             ? <div className="spinner"><i/></div>

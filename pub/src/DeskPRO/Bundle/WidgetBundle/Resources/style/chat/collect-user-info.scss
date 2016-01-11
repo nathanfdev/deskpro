@@ -170,4 +170,23 @@
       display: block;
     }
   }
+
+  &.error {
+    input[type="text"] {
+      border: 1px solid #ff0000;
+      color: #ff0000;
+    }
+  }
+
+  ul.error {
+    color: #ff0000;
+    width: 200px;
+    margin: 10px auto;
+    font-size: 11px;
+
+    li {
+      padding: 0 10px;
+      text-align: center;
+    }
+  }
 }
