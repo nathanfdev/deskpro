@@ -3,14 +3,19 @@ import { connect } from 'react-redux';
 import { createChat } from '../../../Actions/chatActions';
 import { Header } from './Header';
 import { liveDemoSelector } from '../../../../Application/Selectors/dpWindow';
+import { requireEmailValidationSelector, requireLoginSelector } from '../../../../Application/Selectors/bootstrap';
 import history from '../../../../../Services/history';
 
 @connect(state => ({
-  liveDemo: liveDemoSelector(state)
+  liveDemo: liveDemoSelector(state),
+  requireEmailValidation: requireEmailValidationSelector(state),
+  requireLogin: requireLoginSelector(state)
 }))
 export class ChatBeginContainer extends React.Component {
 
   static propTypes = {
+    requireEmailValidation: PropTypes.bool,
+    requireLogin: PropTypes.bool,
     dispatch: PropTypes.func.isRequired,
     children: PropTypes.node,
     isCreated: PropTypes.bool,
@@ -73,7 +78,7 @@ export class ChatBeginContainer extends React.Component {
       event.preventDefault();
     }
 
-    const { liveDemo } = this.props;
+    const { liveDemo, requireEmailValidation } = this.props;
     if (liveDemo) {
       return;
     }
@@ -89,7 +94,11 @@ export class ChatBeginContainer extends React.Component {
 
     promise.then(
       () => {
-        history.replace('/chat/waiting');
+        if (requireEmailValidation) {
+          history.replace('/chat/begin/validation/email');
+        } else {
+          history.replace('/chat/waiting');
+        }
 
         if (this.mounted) {
           this.setState({

@@ -1079,6 +1079,6 @@ return array(
     # widget.settings
     ####################################################################################################################
 
-    'portal.chat.email_validation' => false,
+    'portal.chat.email_validation' => true,
     'portal.chat.require_login'    => false,
 );

@@ -11,6 +11,7 @@ export const addSessionCode = (state, params = {}) => {
   return {...params, __sid: widgetSessionCodeSelector(state)};
 };
 
+// Api actions
 export const getSession = createAction(
   'WIDGET_GET_SESSION',
   sessionCode => new Promise(resolve =>
