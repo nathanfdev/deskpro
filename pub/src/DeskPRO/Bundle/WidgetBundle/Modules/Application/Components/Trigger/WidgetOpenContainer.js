@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { openChatBeginStage, openWidget } from '../../Actions/dpWindowActions';
 import { onlineAgentsCountSelector } from '../../Selectors/agent';
 import { chatBeginModeSelector, widgetHasChatSelector, liveDemoSelector } from '../../Selectors/dpWindow';
-import { chatIdSelector, agentIdSelector, dateEndedSelector } from '../../../Chat/Selectors/chat';
+import { chatIdSelector, agentIdSelector, dateEndedSelector, needValidateEmailSelector } from '../../../Chat/Selectors/chat';
 import history from '../../../../Services/history';
 
 @connect(state => ({
@@ -13,6 +13,7 @@ import history from '../../../../Services/history';
   agentId: agentIdSelector(state),
   dateEnded: dateEndedSelector(state),
   agentsCounts: onlineAgentsCountSelector(state),
+  needValidateEmail: needValidateEmailSelector(state),
   liveDemo: liveDemoSelector(state)
 }))
 export class WidgetOpenContainer extends React.Component {
@@ -26,16 +27,20 @@ export class WidgetOpenContainer extends React.Component {
     agentId: PropTypes.number,
     agentsCounts: PropTypes.number,
     dateEnded: PropTypes.string,
+    needValidateEmail: PropTypes.bool,
     liveDemo: PropTypes.bool
   };
 
   onClick = () => {
-    const { widgetHasChat, agentsCounts, chatId, chatBeginMode, agentId, dateEnded, liveDemo, dispatch } = this.props;
+    const { widgetHasChat, agentsCounts, liveDemo, dispatch } = this.props;
+    const { chatId, chatBeginMode, agentId, dateEnded, needValidateEmail } = this.props;
 
     if (widgetHasChat && (liveDemo || agentsCounts > 0)) {
       if (chatId && !liveDemo) {
         if (agentId || dateEnded) {
           history.replace('/chat/active');
+        } else if (needValidateEmail) {
+          history.replace('/chat/begin/validation/email');
         } else {
           history.replace('/chat/waiting');
         }

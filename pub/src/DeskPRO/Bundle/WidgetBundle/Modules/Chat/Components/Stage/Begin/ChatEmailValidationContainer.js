@@ -6,6 +6,7 @@ import { chatIdSelector } from '../../../Selectors/chat';
 import { FieldErrors, hasErrors } from 'DeskPRO/Component/Form/FormErrors';
 import classNames from 'classnames';
 import $ from 'jquery';
+import history from '../../../../../Services/history';
 
 @connect(state => ({
   chatId: chatIdSelector(state)
@@ -58,6 +59,8 @@ export class ChatEmailValidationContainer extends React.Component {
           this.setState({
             submit: false
           });
+
+          history.replace('/chat/waiting');
         }
       },
       result => {

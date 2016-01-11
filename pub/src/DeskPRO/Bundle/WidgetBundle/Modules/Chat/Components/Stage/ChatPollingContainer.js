@@ -8,7 +8,8 @@ import {
   agentIdSelector,
   lastMessageIdSelector,
   authorEmailSelector,
-  isEndedSelector
+  isEndedSelector,
+  needValidateEmailSelector
 } from '../../Selectors/chat';
 
 @connect(state => ({
@@ -16,7 +17,8 @@ import {
   agentId: agentIdSelector(state),
   lastMessageId: lastMessageIdSelector(state),
   authorEmail: authorEmailSelector(state),
-  isEnded: isEndedSelector(state)
+  isEnded: isEndedSelector(state),
+  needValidateEmail: needValidateEmailSelector(state)
 }))
 export class ChatPollingContainer extends React.Component {
 
@@ -27,7 +29,8 @@ export class ChatPollingContainer extends React.Component {
     lastMessageId: PropTypes.any,
     children: PropTypes.node,
     authorEmail: PropTypes.string,
-    isEnded: PropTypes.bool
+    isEnded: PropTypes.bool,
+    needValidateEmail: PropTypes.bool
   };
 
   componentDidMount() {
@@ -40,9 +43,13 @@ export class ChatPollingContainer extends React.Component {
   }
 
   pollingRequest = () => {
-    const { dispatch, chatId, agentId, lastMessageId } = this.props;
+    const { dispatch, chatId, agentId, lastMessageId, needValidateEmail } = this.props;
     if (!chatId || !this.mounted) {
       return;
+    }
+
+    if (needValidateEmail) {
+      history.replace('/chat/begin/validation/email');
     }
 
     this._unlisten = history.listen(location => {
