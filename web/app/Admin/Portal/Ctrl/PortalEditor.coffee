@@ -14,6 +14,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @asset_files = []
       @custom_logo = null
       @uploading_files_count = 0
+      @template_options = []
+      @selected_template = null
+      @selected_template_code = ''
       @refreshPreviewUrl()
 
     save: () =>
@@ -64,6 +67,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @loadAdvancedEdits()
       @loadAssetFiles()
       @loadLogo()
+      @loadTemplateOptions()
 
     togglePanel: (name) ->
       if name in @open_panels
@@ -87,6 +91,38 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
           if success
             success()
       )
+
+    loadTemplateOptions: () ->
+      @$http.get('/portal/api/style/edit-theme-set/templates').success(
+        (templates) =>
+          for template in templates
+            @template_options.push({
+              value: template,
+              name: @templateName(template),
+              group: @templateGroup(template)
+            })
+      )
+
+    templateName: (template) -> template.split(':')[2].replace(/\.twig/, '')
+    templateGroup: (template) ->
+      parts = template.split(':')
+      if parts[1] then parts[1] else parts[0]
+
+    editTemplate: () =>
+      @$http.get('/portal/api/style/edit-theme-set/template-sources?template=' + @selected_template).success(
+        (code) => @selected_template_code = angular.fromJson(code)
+      )
+
+    closeTemplateEditor: () =>
+      @$http({
+        method: 'PUT',
+        url: '/portal/api/style/edit-theme-set/template-sources?template=' + @selected_template,
+        data: {code: @selected_template_code}
+      })
+      .error(@serverError)
+
+      @selected_template = null
+      @selected_template_code = null
 
     loadAdvancedEdits: (success) ->
       @$http.get('/portal/api/style/edit-theme-set/advanced-edits').success(
@@ -147,6 +183,6 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     error: (message) -> window.alert(message)
     success: (message) -> window.alert(message)
-    serverError: -> @error('Server error occurred. Unable to save data.')
+    serverError: => @error('Server error occurred. Unable to save data.')
 
   Admin_Portal_Ctrl_PortalEditor.EXPORT_CTRL()

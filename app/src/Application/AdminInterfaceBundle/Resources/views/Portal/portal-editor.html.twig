@@ -217,11 +217,20 @@
                 </div>
 
                 <div class="template-picker" ng-show="Portal.isOpen('expert')">
-                    <a href="#" class="select">
-                        <span class="title-tag">View template:</span> Home Page
-                        <span class="dropdown-icon"><i class="fa fa-sort"></i></span>
-                    </a>
+                    <select ng-model="Portal.selected_template"
+                            ng-change="Portal.editTemplate()"
+                            ng-options="t.value as t.name group by t.group for t in Portal.template_options">
+                    </select>
                 </div>
+
+                <div ng-show="Portal.selected_template">Loading template...</div>
+
+                <dp-code-editor
+                    code="Portal.selected_template_code"
+                    syntax="twig"
+                    visible="Portal.selected_template && Portal.selected_template_code"
+                    close="Portal.closeTemplateEditor">
+                </dp-code-editor>
 
             </div><!-- End panel wrapper -->
 

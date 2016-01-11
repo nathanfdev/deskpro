@@ -32,12 +32,16 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\Template;
+use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use DeskPRO\Bundle\PortalBundle\Designer\AdvancedEditsManager;
 use DeskPRO\Bundle\PortalBundle\Designer\AssetsManager;
 use DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler;
 use DeskPRO\Bundle\PortalBundle\Designer\SassDocParser;
 use DeskPRO\Bundle\PortalBundle\Designer\StylesManager;
+use DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface;
+use DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -210,6 +214,52 @@ class DesignerController extends AbstractApiController
     }
 
     /**
+     * @Route("/portal/api/style/edit-theme-set/templates")
+     * @Method({"GET"})
+     */
+    public function getTemplatesListAction()
+    {
+        return new JsonResponse(array_keys($this->getBrandContainer()->getTheme()->getTemplateMap()));
+    }
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/template-sources")
+     * @Method({"GET"})
+     */
+    public function getTemplateSourceAction(Request $request)
+    {
+        $template_name = $request->get('template');
+        if ($template = $this->getEditThemeSetTemplate($template_name)) {
+            $source = $template->getTemplateCode();
+        } else {
+            $theme  = $this->getTheme();
+            $source = file_get_contents($this->getThemeResolver()->templatePath($theme, $template_name));
+        }
+
+        return new JsonResponse($source);
+    }
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/template-sources")
+     * @Method({"PUT"})
+     */
+    public function updateTemplateSourceAction(Request $request)
+    {
+        $template_name = $request->get('template');
+        if (!$template = $this->getEditThemeSetTemplate($template_name)) {
+            $template            = new Template();
+            $template->theme_set = $this->getEditThemeSet();
+            $template->name      = $template_name;
+        }
+        $template->template_code     = $request->get('code');
+        $template->template_compiled = $this->get('twig')->compileSource($template->template_code, $template_name);
+        $this->getManager()->persist($template);
+        $this->getManager()->flush();
+
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
      * @return StylesManager
      */
     private function getStylesManager()
@@ -247,5 +297,48 @@ class DesignerController extends AbstractApiController
     private function getSassDocParser()
     {
         return $this->get('dp.portal.designer.sass_doc_parser');
+    }
+
+    /**
+     * @return ThemeResolver
+     */
+    private function getThemeResolver()
+    {
+        return $this->get('theme_resolver');
+    }
+
+    /**
+     * @param string $template_name
+     *
+     * @return Template
+     */
+    private function getEditThemeSetTemplate($template_name)
+    {
+        $theme          = $this->getTheme();
+        $edit_theme_set = $this->getEditThemeSet();
+
+        if (!array_key_exists($template_name, $theme->getTemplateMap())) {
+            throw $this->createNotFoundException('Unable to find requested template');
+        }
+
+        $template = $this->getThemeResolver()->getThemeSetTemplateFromDb($edit_theme_set, $template_name);
+
+        return $template;
+    }
+
+    /**
+     * @return ThemeInterface
+     */
+    private function getTheme()
+    {
+        return $this->getBrandContainer()->getTheme();
+    }
+
+    /**
+     * @return ThemeSet
+     */
+    private function getEditThemeSet()
+    {
+        return $this->getBrandContainer()->getBrand()->getEditThemeSet();
     }
 }
