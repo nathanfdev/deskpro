@@ -29,18 +29,16 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormEvent;
 
 /**
- * Class AbstractCreateChatType.
+ * Class SetPersonListener.
  */
-abstract class AbstractCreateChatType extends AbstractType
+class SetPersonListener
 {
     /**
      * @var EmailAccountManager
