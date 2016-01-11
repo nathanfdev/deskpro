@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -221,6 +220,16 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
      * @var \DateTime
      */
     protected $date_transcript_sent = null;
+
+    /**
+     * @var string
+     */
+    protected $email_validation_code = '';
+
+    /**
+     * @var string
+     */
+    protected $email_validated = '';
 
     /**
      * @var array
@@ -1286,6 +1295,28 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
                 'columnName' => 'ended_by',
             )
         );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'email_validation_code',
+                'type'       => 'string',
+                'length'     => 15,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'email_validation_code',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'email_validated',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'email_validated',
+            )
+        );
+
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(
             array(

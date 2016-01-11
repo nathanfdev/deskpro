@@ -26,4 +26,16 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1452515438);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1452515438 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('Chat email validation');
+        $this->execMutateSql('ALTER TABLE chat_conversations
+            ADD COLUMN `email_validation_code` VARCHAR(15) NULL AFTER `ended_by`,
+            ADD COLUMN `email_validated` TINYINT(1) NULL AFTER `email_validation_code`;
+        ');
+    }
+}
