@@ -33,8 +33,10 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\TextStringTransformer;
+use Orb\Util\Strings;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -79,9 +81,8 @@ class CreateChatType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $global_settings   = $this->settings_resolver->getGlobalSettings();
         $email_constraints = [new Assert\Email()];
-        if ($global_settings->get('portal.chat.email_validation')) {
+        if ($this->getGlobalSettings()->get('portal.chat.email_validation')) {
             $email_constraints[] = new Assert\NotBlank();
         }
 
@@ -101,6 +102,7 @@ class CreateChatType extends AbstractType
         $builder->get('email')->addModelTransformer(new TextStringTransformer());
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this->set_person_listener, 'onSetPerson']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetEmailValidationCode']);
     }
 
     /**
@@ -112,5 +114,28 @@ class CreateChatType extends AbstractType
             'csrf_protection'               => false,
             'csrf_double_submit_protection' => false,
         ]);
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onSetEmailValidationCode(FormEvent $event)
+    {
+        if (!$this->getGlobalSettings()->get('portal.chat.email_validation')) {
+            return;
+        }
+
+        $event->getForm()->add('email_validation_code', 'text');
+        $event->setData(array_merge($event->getData(), [
+            'email_validation_code' => Strings::random(15, Strings::CHARS_KEY),
+        ]));
+    }
+
+    /**
+     * @return \Application\DeskPRO\NewSettings\SettingsBag
+     */
+    protected function getGlobalSettings()
+    {
+        return $this->settings_resolver->getGlobalSettings();
     }
 }

@@ -69,7 +69,6 @@ class SetPersonListener
      */
     public function onSetPerson(FormEvent $event)
     {
-        $form  = $event->getForm();
         $data  = $event->getData();
         $email = !empty($data['email']) ? $data['email'] : null;
 
@@ -77,13 +76,15 @@ class SetPersonListener
         $repository = $this->em->getRepository('DeskPRO:Person');
         $person     = $repository->findOneByEmail($email);
 
-        if (!$this->email_account_manager->findAccountForEmailAddress($email) && $person) {
-            $form->add('person', 'entity', [
-                'class' => 'DeskPRO:Person',
-            ]);
-            $event->setData(array_merge($event->getData(), [
-                'person' => $person->getId(),
-            ]));
+        if ($this->email_account_manager->findAccountForEmailAddress($email) || !$person) {
+            return;
         }
+
+        $event->getForm()->add('person', 'entity', [
+            'class' => 'DeskPRO:Person',
+        ]);
+        $event->setData(array_merge($event->getData(), [
+            'person' => $person->getId(),
+        ]));
     }
 }
