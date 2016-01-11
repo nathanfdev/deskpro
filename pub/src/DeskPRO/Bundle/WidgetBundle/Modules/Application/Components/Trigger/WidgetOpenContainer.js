@@ -33,7 +33,7 @@ export class WidgetOpenContainer extends React.Component {
     const { widgetHasChat, agentsCounts, chatId, chatBeginMode, agentId, dateEnded, liveDemo, dispatch } = this.props;
 
     if (widgetHasChat && (liveDemo || agentsCounts > 0)) {
-      if (chatId) {
+      if (chatId && !liveDemo) {
         if (agentId || dateEnded) {
           history.replace('/chat/active');
         } else {
