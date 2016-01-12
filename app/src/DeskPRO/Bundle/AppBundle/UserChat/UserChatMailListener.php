@@ -83,7 +83,8 @@ class UserChatMailListener implements EventSubscriberInterface
             'portal_chats_validate_email',
             [
                 'chat' => $conversation->getId(),
-                'code' => $conversation->getEmailValidationCode(), ],
+                'code' => $conversation->getEmailValidationCode(),
+            ],
             UrlGeneratorInterface::ABSOLUTE_URL
         );
 
