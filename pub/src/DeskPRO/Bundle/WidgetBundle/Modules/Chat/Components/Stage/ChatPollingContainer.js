@@ -63,11 +63,13 @@ export class ChatPollingContainer extends React.Component {
           history.replace('/chat/validation/email');
         }
       } else {
-        if (agentId && location.pathname !== '/chat/active') {
-          // If agent id is defined auto redirect to active stage
-          history.replace('/chat/active');
-          // Mark chat unloaded to show spinner until get messages in next polling request
-          dispatch(unsetLoaded());
+        if (agentId) {
+          if (location.pathname !== '/chat/active') {
+            // If agent id is defined auto redirect to active stage
+            history.replace('/chat/active');
+            // Mark chat unloaded to show spinner until get messages in the next polling request
+            dispatch(unsetLoaded());
+          }
         } else {
           // Auto redirect to waiting stage
           if (location.pathname !== '/chat/waiting') {
