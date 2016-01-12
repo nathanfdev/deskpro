@@ -9,6 +9,11 @@ Feature: Commenting
       | default |
     And the default brand is using the standard theme
 
+
+  #
+  # ARTICLES
+  #
+
   @reinstall
   Scenario: I submit an invalid article comment as a user
     Given I login with user credentials
@@ -41,6 +46,11 @@ Feature: Commenting
     Then I should see a "success" flash message
     And I should see "Before we can post your content you must verify your email. Please check your email, we have sent you a verification link."
 
+
+  #
+  # NEWS
+  #
+
   @reinstall
   Scenario: I submit an invalid news comment as a user
     Given I login with user credentials
@@ -72,6 +82,11 @@ Feature: Commenting
     And I press "Save Comment"
     Then I should see a "success" flash message
     And I should see "Before we can post your content you must verify your email. Please check your email, we have sent you a verification link."
+
+
+  #
+  # FEEDBACK
+  #
 
   @reinstall
   Scenario: I submit an invalid feedback comment as a user
@@ -108,6 +123,10 @@ Feature: Commenting
     And I press "Save Comment"
     Then I should see a "success" flash message
     And I should see "Before we can post your content you must verify your email. Please check your email, we have sent you a verification link."
+
+  #
+  # DOWNLOADS
+  #
 
   @reinstall
   Scenario: I submit an invalid download comment as a user
