@@ -126,7 +126,7 @@ export function openLoginWindow() {
   }
 
   loginWindowOpened = window.open(
-    window.DP_HELPDESK_URL + '/focus-win/login',
+    window.DP_HELPDESK_URL + 'focus-win/login',
     '',
     `width=${width},height=${height},left=${left},top=${top},` +
     `resizable=1,directories=0,titlebar=0,location=0,status=0,toolbar=0,menubar=0`
