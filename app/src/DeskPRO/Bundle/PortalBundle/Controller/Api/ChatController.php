@@ -61,7 +61,7 @@ class ChatController extends AbstractApiController
         $conversation = ChatConversation::newForUserSession($session);
         $form         = $this
             ->get('form.factory')
-            ->createNamedBuilder(null, 'api_chat_create', $conversation)
+            ->createNamedBuilder(null, 'api_chat_create', $conversation, ['person' => $session->getPerson()])
             ->getForm()
         ;
 

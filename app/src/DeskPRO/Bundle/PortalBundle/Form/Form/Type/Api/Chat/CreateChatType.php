@@ -101,6 +101,7 @@ class CreateChatType extends AbstractType
         $builder->get('name')->addModelTransformer(new TextStringTransformer());
         $builder->get('email')->addModelTransformer(new TextStringTransformer());
 
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetPersonEmailFromSession']);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this->set_person_listener, 'onSetPerson']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetEmailValidationCode']);
     }
@@ -113,7 +114,24 @@ class CreateChatType extends AbstractType
         $resolver->setDefaults([
             'csrf_protection'               => false,
             'csrf_double_submit_protection' => false,
+            'person'                        => null,
         ]);
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onSetPersonEmailFromSession(FormEvent $event)
+    {
+        $form   = $event->getForm();
+        $person = $form->getConfig()->getOption('person');
+
+        /** @var \Application\DeskPRO\Entity\Person $person */
+        if ($person) {
+            $event->setData(array_merge($event->getData(), [
+                'email' => $person->getPrimaryEmailAddress(),
+            ]));
+        }
     }
 
     /**
