@@ -36,6 +36,8 @@ use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ChatVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter;
+use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -125,6 +127,37 @@ class ChatController extends AbstractController
             'chat_attachments' => $chat_attachments,
             'linked_ticket'    => $linked_ticket_authorized,
             'custom_data'      => $this->get('chat.view')->getCustomDataForChat($chat),
+        ]);
+    }
+
+    /**
+     * @Route("/chats/{chat}/validate/email", name="portal_chats_validate_email")
+     * @Method({"GET"})
+     *
+     * @param ChatConversation $chat
+     * @param Request          $request
+     *
+     * @return Response
+     */
+    public function validateEmailAction(ChatConversation $chat, Request $request)
+    {
+        $form = $this
+            ->get('form.factory')
+            ->createNamedBuilder(null, 'api_chat_validate_email', $chat)
+            ->getForm()
+        ;
+
+        $form->submit($request->query->all());
+        if ($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($chat);
+            $em->flush();
+
+            $this->get('event_dispatcher')->dispatch(UserChatEvent::STARTED, new UserChatEvent($chat));
+        }
+
+        return $this->renderThemeView('Theme:Chat:validate-email.html.twig', [
+            'is_valid' => $form->isValid(),
         ]);
     }
 }

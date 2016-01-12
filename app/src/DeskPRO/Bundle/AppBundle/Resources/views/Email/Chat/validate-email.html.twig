@@ -1,7 +1,7 @@
-{% block subject %}
-    {{ phrase('user.email_subjects.chat_validate_email') }}
-{% endblock %}
-{% block text %}
-    {{ phrase('user.emails.chat_validate_email') }}
-    {{ validation_url }}
-{% endblock %}
+<dp:subject>{{ phrase('user.email_subjects.chat_validate_email') }}</dp:subject>
+
+{{ phrase('user.emails.chat_validate_email') }}
+
+<br/><br/>
+
+<a href="{{ validation_url }}">{{ validation_url }}</a>
