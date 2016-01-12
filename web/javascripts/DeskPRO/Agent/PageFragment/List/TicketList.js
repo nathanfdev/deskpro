@@ -1401,6 +1401,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			resultId: this.meta.resultTypeId,
 			refreshUrl: this.meta.refreshUrl,
 			isListView: false,
+			fields: $scope.display_fields,
 			refreshCallback: function(info) {
 				// Updates to sort order must always refresh
 				if (info.context.isSortUpdate) {
