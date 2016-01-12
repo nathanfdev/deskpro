@@ -78,8 +78,8 @@ class UserChatMailListener implements EventSubscriberInterface
             'validation_url'  => $conversation->getEmailValidationCode(),
 
         ]);
-        $message->prepare();
 
+        $message->prepare();
         $this->mailer->send($message);
     }
 }

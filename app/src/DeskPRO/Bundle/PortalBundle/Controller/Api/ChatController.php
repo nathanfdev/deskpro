@@ -70,9 +70,7 @@ class ChatController extends AbstractApiController
             return $this->generateFormErrorsResponse($form);
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($conversation);
-        $em->flush();
+        $this->saveConversation($conversation);
 
         // If an email validation code was generated then user needs to validate the entered email first,
         // so skip agent notify until the user validates it
@@ -109,10 +107,7 @@ class ChatController extends AbstractApiController
             return $this->generateFormErrorsResponse($form);
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($conversation);
-        $em->flush();
-
+        $this->saveConversation($conversation);
         $this->dispatch(UserChatEvent::STARTED, new UserChatEvent($conversation));
 
         return View::create();
@@ -239,9 +234,7 @@ class ChatController extends AbstractApiController
             $chat_messages[] = $chat_message;
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($conversation);
-        $em->flush();
+        $this->saveConversation($conversation);
 
         return View::create($this->dataSerialize($chat_messages));
     }
@@ -341,9 +334,7 @@ class ChatController extends AbstractApiController
             return $this->generateFormErrorsResponse($form);
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($conversation);
-        $em->flush();
+        $this->saveConversation($conversation);
 
         return View::create();
     }
@@ -369,10 +360,7 @@ class ChatController extends AbstractApiController
         $can_send = !$already_sent && $has_email && $has_answer;
         if ($can_send) {
             $conversation->setShouldSendTranscript(true);
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($conversation);
-            $em->flush();
+            $this->saveConversation($conversation);
         }
 
         return View::create([
@@ -394,10 +382,7 @@ class ChatController extends AbstractApiController
         $this->checkUserSession($conversation, $request);
         $conversation->setStatus(ChatConversation::STATUS_ENDED);
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($conversation);
-        $em->flush();
-
+        $this->saveConversation($conversation);
         $this->dispatch(UserChatEvent::END_BY_USER, new UserChatEvent($conversation, [], ['chat_ended']));
 
         return View::create();
@@ -424,10 +409,7 @@ class ChatController extends AbstractApiController
             ->setDateTranscriptSent(null)
         ;
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($conversation);
-        $em->flush();
-
+        $this->saveConversation($conversation);
         $this->dispatch(UserChatEvent::USER_RETURNED, new UserChatEvent($conversation));
 
         return View::create();
@@ -457,9 +439,7 @@ class ChatController extends AbstractApiController
             return $this->generateFormErrorsResponse($form);
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($conversation);
-        $em->flush();
+        $this->saveConversation($conversation);
 
         return View::create();
     }
@@ -478,5 +458,15 @@ class ChatController extends AbstractApiController
         if (!$conversation_session || $request_session->getId() !== $conversation_session->getId()) {
             throw new BadRequestHttpException('wrong_session_code');
         }
+    }
+
+    /**
+     * @param ChatConversation $conversation
+     */
+    protected function saveConversation(ChatConversation $conversation)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($conversation);
+        $em->flush();
     }
 }
