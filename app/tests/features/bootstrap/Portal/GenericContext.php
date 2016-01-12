@@ -72,6 +72,23 @@ class GenericContext extends BasePortalContext
     }
 
     /**
+     * @Then I should see a :type flash message
+     */
+    public function iShouldSeeAFlashMessage($type)
+    {
+        $this->assertSession()->elementExists('css', sprintf('.flash.flash-%s', $type));
+    }
+
+    /**
+     * @Then I should see a form error with :message
+     */
+    public function iShouldSeeAFormErrorWith($message)
+    {
+        $this->assertSession()->elementExists('css', '.error-large');
+        $this->assertSession()->elementTextContains('css', '.error-large', $message);
+    }
+
+    /**
      * @Given the :arg1 category :arg2 exists with content titled :arg3
      */
     public function theCategoryExistsWithADownloadTitled($type, $cat_name, $content_name)
