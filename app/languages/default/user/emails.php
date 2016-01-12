@@ -29,6 +29,7 @@
 return array(
     'user.emails.auto-close'                      => 'Your ticket "{{ticket.subject}}" will be closed automatically because you have not updated it lately. If you do not want your ticket to be closed, you can add a new reply so our agents can help you further.',
     'user.emails.chat_transcript'                 => 'Thank you for chatting with us. Here is your chat transcript.',
+    'user.emails.chat_validate_email'             => 'Confirm your email by entering the generated code "{{validation_code}}" in the chat window or click link below.',
     'user.emails.comment_approved'                => 'Your comment has been published.',
     'user.emails.comment_deleted'                 => 'Your comment was used to improve the page.',
     'user.emails.comment_thank-you'               => 'Thank you for your comment on {{link}}.',
