@@ -58,7 +58,7 @@ export class ChatPollingContainer extends React.Component {
       }
 
       if (needValidateEmail) {
-        // Auto redirect on validate email stage
+        // Auto redirect to validate email stage
         if (location.pathname !== '/chat/validation/email') {
           history.replace('/chat/validation/email');
         }
@@ -69,7 +69,7 @@ export class ChatPollingContainer extends React.Component {
           // Mark chat unloaded to show spinner until get messages in next polling request
           dispatch(unsetLoaded());
         } else {
-          // Auto redirect on waiting stage
+          // Auto redirect to waiting stage
           if (location.pathname !== '/chat/waiting') {
             history.replace('/chat/waiting');
           }
