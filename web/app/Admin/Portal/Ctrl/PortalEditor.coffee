@@ -2,7 +2,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
   class Admin_Portal_Ctrl_PortalEditor extends Admin_Ctrl_Base
     @CTRL_ID = 'Admin_Portal_Ctrl_PortalEditor'
     @CTRL_AS = 'Portal'
-    @DEPS    = ['$http', '$scope', '$timeout', '$upload']
+    @DEPS    = ['$http', '$scope', '$timeout', '$upload', '$modal']
 
     init: ->
       @open_panels = []
@@ -17,6 +17,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @template_options = []
       @selected_template = null
       @selected_template_code = ''
+      @preview_as_expanded = false
+      @preview_as = 'myself'
+      @preview_as_email = null
       @refreshPreviewUrl()
 
     save: () =>
@@ -82,7 +85,10 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       sys_name.replace(/[\-_]/g, ' ').replace(/^(.)|\s(.)/g, (v) -> v.toUpperCase())
 
     refreshPreviewUrl: ->
-      @preview_url = '/admin-preview?anti-cache=' + (new Date()).getTime()
+      @preview_url = '/admin-preview?anti-cache=' + (new Date()).getTime() + '&mode=' + @preview_as
+      if @preview_as is 'user' or @preview_as is 'agent'
+        @preview_url += '&email=' + @preview_as_email
+
 
     loadValues: (success) ->
       @$http.get('/portal/api/style/edit-theme-set/variable-values').success(
@@ -172,7 +178,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         )
 
     deleteLogo: () =>
-      @$http.delete('/portal/api/style/edit-theme-set/logo').success((response) => @custom_logo = null)
+      @$http.delete('/portal/api/style/edit-theme-set/logo').success(() => @custom_logo = null)
 
     openAdvancedTab: (tab) => @advanced_tab = tab
     isAdvancedTab: (tab) => @advanced_tab == tab
@@ -180,6 +186,34 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     isAdvancedExpanded: () => @is_advanced_expanded
     collapseAdvanced: () => @is_advanced_expanded = false
     expandAdvanced: () => @is_advanced_expanded = true
+
+    canPreview: () =>
+      !@recompiling and (@preview_as is 'guest' or @preview_as is 'myself' or @preview_as_email)
+
+    previewAs: (mode) =>
+      @preview_as = mode
+      if mode is 'user' or mode is 'agent' then @promptEmail()
+      @preview_as_expanded = false
+      @preview_as_email = null
+      @refreshPreviewUrl()
+
+    promptEmail: () =>
+      modalInstance = @$modal.open({
+        templateUrl: @getTemplatePath('Portal/Editor/email-modal.html'),
+        controller: ['$scope', '$modalInstance', '$http', 'preview_as', ($scope, $modalInstance, $http, preview_as) ->
+          $scope.email = '';
+          $scope.preview_as = preview_as
+          $scope.ok = () -> $modalInstance.close(@email)
+          $scope.cancel = () -> $modalInstance.dismiss('cancel')
+          $scope.loadEmails = (val) ->
+            $http.get('/portal/api/emails?term=' + val + '&target=' + preview_as)
+                 .then((response) => response.data)
+        ],
+        resolve: {
+          preview_as: () => @preview_as
+        }
+      });
+      modalInstance.result.then((email) => @preview_as_email = email; @refreshPreviewUrl())
 
     error: (message) -> window.alert(message)
     success: (message) -> window.alert(message)

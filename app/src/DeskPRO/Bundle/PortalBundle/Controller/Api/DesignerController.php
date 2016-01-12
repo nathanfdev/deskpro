@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\Template;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
@@ -48,6 +49,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class DesignerController.
@@ -257,6 +259,30 @@ class DesignerController extends AbstractApiController
         $this->getManager()->flush();
 
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @Route("/portal/api/emails")
+     * @Method({"GET"})
+     */
+    public function searchEmailsAction(Request $request)
+    {
+        $term   = $request->get('term');
+        $target = $request->get('target');
+
+        $repository = $this->getManager()->getRepository(PersonEmail::class);
+        switch ($target) {
+            case 'user':
+                $emails = $repository->searchUserEmails($term);
+                break;
+            case 'agent':
+                $emails = $repository->searchAgentEmails($term);
+                break;
+            default:
+                throw new BadRequestHttpException("Unknown email target $target");
+        }
+
+        return new JsonResponse($emails);
     }
 
     /**

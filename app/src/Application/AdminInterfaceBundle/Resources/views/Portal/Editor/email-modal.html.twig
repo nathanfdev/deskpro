@@ -1,0 +1,15 @@
+<div class="modal-header">
+    <h3 class="modal-title">Find {{ '{{ preview_as }}' }} by email</h3>
+</div>
+<div class="modal-body">
+    <pre>Selected {{ '{{ preview_as }}' }}: {{ '{{ email }}' }}</pre>
+    <input type="text"
+           ng-model="email"
+           placeholder="Start typing email"
+           typeahead="email for email in loadEmails($viewValue)"
+           class="form-control" />
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="ok()">OK</button>
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+</div>
