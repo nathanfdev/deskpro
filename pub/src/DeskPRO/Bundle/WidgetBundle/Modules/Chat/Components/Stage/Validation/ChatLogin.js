@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
+import { openLoginWindow } from '../../../../Application/Actions/dpWindowActions';
 
-@connect()
-export class ChatLoginContainer extends React.Component {
+export class ChatLogin extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func
@@ -10,7 +9,7 @@ export class ChatLoginContainer extends React.Component {
 
   onOpenLoginPopup = event => {
     event.preventDefault();
-    console.log('on open popup');
+    openLoginWindow();
   };
 
   render() {

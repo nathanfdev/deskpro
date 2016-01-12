@@ -112,3 +112,23 @@ export const openTriggerPopup = createAction('WIDGET_OPEN_TRIGGER_POPUP');
 export const closeTriggerPopup = createAction('WIDGET_CLOSE_TRIGGER_POPUP', () => {
   localStorage['dpWidget.dpWindow.popupShown'] = 'none';
 });
+
+let loginWindowOpened;
+export function openLoginWindow() {
+  const width = 575;
+  const height = 515;
+
+  const left = (screen.width / 2) - (width / 2);
+  const top = (screen.height / 2) - (height / 2);
+
+  if (loginWindowOpened) {
+    loginWindowOpened.close();
+  }
+
+  loginWindowOpened = window.open(
+    window.DP_HELPDESK_URL + '/focus-win/login',
+    '',
+    `width=${width},height=${height},left=${left},top=${top},` +
+    `resizable=1,directories=0,titlebar=0,location=0,status=0,toolbar=0,menubar=0`
+  );
+}
