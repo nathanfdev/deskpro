@@ -139,7 +139,13 @@ class CreateChatType extends AbstractType
      */
     public function onSetEmailValidationCode(FormEvent $event)
     {
+        // Option is disabled, skipping
         if (!$this->getGlobalSettings()->get('portal.chat.email_validation')) {
+            return;
+        }
+
+        // Chat require to log in, skipping
+        if ($this->getGlobalSettings()->get('portal.chat.require_login')) {
             return;
         }
 
