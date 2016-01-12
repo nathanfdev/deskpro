@@ -4,7 +4,9 @@ import { setValue, setFullPayload, async } from 'Ampliflux/reducers/handlers';
 
 const initialState = {
   sessionCode: null,
-  settings: {},
+  settings: {
+    chat: {}
+  },
   loaded: false
 };
 

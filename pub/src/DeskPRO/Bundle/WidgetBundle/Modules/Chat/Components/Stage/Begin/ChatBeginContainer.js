@@ -3,19 +3,17 @@ import { connect } from 'react-redux';
 import { createChat } from '../../../Actions/chatActions';
 import { Header } from './Header';
 import { liveDemoSelector } from '../../../../Application/Selectors/dpWindow';
-import { requireEmailValidationSelector, requireLoginSelector } from '../../../../Application/Selectors/bootstrap';
+import { requireChatEmailValidationSelector } from '../../../../Application/Selectors/bootstrap';
 import history from '../../../../../Services/history';
 
 @connect(state => ({
   liveDemo: liveDemoSelector(state),
-  requireEmailValidation: requireEmailValidationSelector(state),
-  requireLogin: requireLoginSelector(state)
+  requireEmailValidation: requireChatEmailValidationSelector(state)
 }))
 export class ChatBeginContainer extends React.Component {
 
   static propTypes = {
     requireEmailValidation: PropTypes.bool,
-    requireLogin: PropTypes.bool,
     dispatch: PropTypes.func.isRequired,
     children: PropTypes.node,
     isCreated: PropTypes.bool,

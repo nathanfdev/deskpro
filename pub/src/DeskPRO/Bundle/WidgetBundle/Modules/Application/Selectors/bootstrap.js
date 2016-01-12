@@ -23,12 +23,12 @@ export const widgetChatSettingsSelector = createSelector(
   settings => settings.get('chat')
 );
 
-export const requireEmailValidationSelector = createSelector(
+export const requireChatEmailValidationSelector = createSelector(
   widgetChatSettingsSelector,
   settings => settings.get('email_validation')
 );
 
-export const requireLoginSelector = createSelector(
+export const requireChatLoginSelector = createSelector(
   widgetChatSettingsSelector,
   settings => settings.get('require_login')
 );

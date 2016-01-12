@@ -190,3 +190,20 @@
     }
   }
 }
+
+.dpdesignportal-chat-require-login {
+  text-align: center;
+
+  button {
+    margin-top: 10px;
+    text-decoration: none;
+    display: inline-block;
+    line-height: 1.3em;
+    background: #4681b2;
+    color: #e0e5ec;
+    padding: 5px 10px;
+    border: 1px solid #4681b2;
+    border-radius: 2px;
+    transition: all 0.2s ease;
+  }
+}
