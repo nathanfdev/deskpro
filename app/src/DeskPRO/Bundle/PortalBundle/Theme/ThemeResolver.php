@@ -218,6 +218,10 @@ class ThemeResolver
      */
     public function getThemeById($theme_id)
     {
+        if ($theme_id instanceof ThemeSet) {
+            $theme_id = $theme_id->getThemeId();
+        }
+
         return $this->theme_repo->find($theme_id);
     }
 

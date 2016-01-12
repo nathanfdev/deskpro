@@ -77,7 +77,7 @@ services:
   controller_name_converter:
       class: DeskPRO\Bundle\PortalBundle\HttpKernel\ControllerNameParser
       tags: [{name: monolog.logger, channel: request}]
-      arguments: [@kernel, @brand_stack]
+      arguments: [@kernel, @brand_stack, @portal_brand_theme_loader]
 
 
   tag_options.listener:
@@ -97,13 +97,13 @@ services:
 
   param_converter.tag_request:
     class: DeskPRO\Bundle\PortalBundle\Request\TagRequestConverter
-    arguments: [@brand_stack]
+    arguments: [@brand_stack, @portal_brand_theme_loader]
     tags:
       - { name: request.param_converter, priority: 1, converter: tag_request }
 
 
   data_collector.portal:
     class: DeskPRO\Bundle\PortalBundle\DataCollector\PortalCollector
-    arguments: [@brand_stack, @language_stack, @portal_mode_storage]
+    arguments: [@brand_stack, @portal_brand_theme_loader, @language_stack, @portal_mode_storage]
     tags:
       - { name: data_collector, template: "PortalBundle:Collector:portal.html.twig", id: "portal" }

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -215,6 +214,14 @@ class AbstractController extends BaseController
     public function getBrandContainer()
     {
         return $this->get('brand_stack')->getActive();
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandTheme
+     */
+    public function getPortalBrandTheme()
+    {
+        return $this->get('portal_brand_theme_loader')->getPortalBrandTheme($this->getBrandContainer()->getBrand());
     }
 
     /**

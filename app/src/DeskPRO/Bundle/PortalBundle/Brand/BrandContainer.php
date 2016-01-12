@@ -33,14 +33,10 @@ namespace DeskPRO\Bundle\PortalBundle\Brand;
 
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\NewSettings\SettingsBag;
-use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
-use DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface;
-use DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver;
 
 /**
  * The BrandContainer is a hub that holds all of the information that might be needed in the system that relate to a
- * particular brand. It is the context of the brand in question. It encompasses settings, template resolution/rendering,
- * brand information, and anything else you might want to do with a brand. It's created by the BrandFactory.
+ * particular brand. It is the context of the brand in question. It's created by the BrandFactory.
  */
 class BrandContainer
 {
@@ -55,37 +51,18 @@ class BrandContainer
     private $settings;
 
     /**
-     * @var \DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver
-     */
-    private $theme_resolver;
-
-    /**
-     * @var \DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface
-     */
-    private $theme;
-
-    /**
      * @var BrandAssetLoader
      */
     private $asset_loader;
 
-    /**
-     * @var PortalModeStorage
-     */
-    private $mode_storage;
-
     public function __construct(
         Brand $brand,
         SettingsBag $settings,
-        ThemeResolver $theme_resolver,
-        BrandAssetLoader $asset_loader,
-        PortalModeStorage $mode_storage
+        BrandAssetLoader $asset_loader
     ) {
-        $this->brand          = $brand;
-        $this->settings       = $settings;
-        $this->theme_resolver = $theme_resolver;
-        $this->asset_loader   = $asset_loader;
-        $this->mode_storage   = $mode_storage;
+        $this->brand        = $brand;
+        $this->settings     = $settings;
+        $this->asset_loader = $asset_loader;
     }
 
     /**
@@ -108,36 +85,6 @@ class BrandContainer
     }
 
     /**
-     * @return ThemeInterface
-     */
-    public function getTheme()
-    {
-        if (!$this->theme) {
-            $this->theme = $this->theme_resolver->getThemeById($this->getActiveThemeSet()->getThemeId());
-        }
-
-        return $this->theme;
-    }
-
-    /**
-     * @return \DeskPRO\Bundle\AppBundle\Entity\ThemeSet
-     */
-    public function getActiveThemeSet()
-    {
-        // this depends on the mode we are in
-        $mode = $this->mode_storage->getMode();
-
-        if ($mode && $mode->isAdminPreview()) {
-            // if we end up in admin mode WITHOUT an edit theme set set, default to normal theme set
-            $theme_set = $this->getBrand()->getEditThemeSet() ?: $this->getBrand()->getThemeSet();
-        } else {
-            $theme_set = $this->getBrand()->getThemeSet();
-        }
-
-        return $theme_set;
-    }
-
-    /**
      * @return BrandAssetLoader
      */
     public function getAssetLoader()
@@ -151,48 +98,5 @@ class BrandContainer
     public function getSettings()
     {
         return $this->settings;
-    }
-
-    /**
-     * @param $controller
-     *
-     * @return null|string
-     */
-    public function resolveController($controller)
-    {
-        return $this->theme_resolver->controller($this->getTheme(), $controller);
-    }
-
-    /**
-     * @param $name
-     *
-     * @return string|null
-     */
-    public function resolveTemplatePath($name)
-    {
-        return $this->theme_resolver->templatePath($this->getTheme(), $name);
-    }
-
-    /**
-     * @param string $tag_name
-     * @param array  $arguments
-     *
-     * @return string
-     */
-    public function renderTag($tag_name, array $arguments)
-    {
-        return $this->theme_resolver->processTag($this->getTheme(), $tag_name, $arguments);
-    }
-
-    /**
-     * Returns the proper Template entity from storage if it exists.
-     *
-     * @param $name
-     *
-     * @return string
-     */
-    public function getBrandTemplateFromDb($name)
-    {
-        return $this->theme_resolver->getThemeSetTemplateFromDb($this->getActiveThemeSet(), $name);
     }
 }

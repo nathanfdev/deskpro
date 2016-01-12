@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Component\Util;
 
 /**
@@ -201,7 +200,7 @@ class MapUtils
      * and you MUST return an array of [key, value] to add to the resulting array.
      *
      * @param \Traversable|array $array
-     * @param callable           $fn
+     * @param callable           $fn    Your function: fn($key, $value) -> [$key, $value]
      *
      * @return array
      */
@@ -216,6 +215,26 @@ class MapUtils
             }
 
             $return[$user_return[0]] = $user_return[1];
+        }
+
+        return $return;
+    }
+
+    /**
+     * Calls your function on each element of an array. Your function will be passed the key and value,
+     * and you must return the new value. It will be saved in a new array using the original key.
+     *
+     * @param \Traversable|array $array
+     * @param callable           $fn    Your function: fn($key, $value) -> $value
+     *
+     * @return array
+     */
+    public static function mapValues($array, $fn)
+    {
+        $return = [];
+
+        foreach ($array as $k => $v) {
+            $return[$k] = call_user_func($fn, $k, $v);
         }
 
         return $return;

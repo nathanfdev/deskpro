@@ -1,0 +1,6 @@
+services:
+  url_corrector.listener:
+    class: DeskPRO\Bundle\AppBundle\EventListener\UrlCorrectorEventListener
+    arguments: [@deskpro.interface_info, @brand_stack, @logger]
+    tags:
+      - { name: kernel.event_subscriber }

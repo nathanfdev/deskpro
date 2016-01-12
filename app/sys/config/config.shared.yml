@@ -1,0 +1,18 @@
+monolog:
+  channels: # you MUST also update portal_config.yml if you change these
+    - "dp.tickets.filters.tengine.dbal.engine"
+    - "dp.tickets.filters.tengine.dbal.compiler"
+    - "dp.tickets.filters.tengine.php.engine"
+    - "dp.tickets.filters.tengine.php.compiler"
+  handlers:
+    main:
+      type:   service
+      id:     monolog.handler.deskpro_fingers_crossed
+    term_engine:
+      type: service
+      id: term_engine.log_handler
+      channels:
+        - "dp.tickets.filters.tengine.dbal.engine"
+        - "dp.tickets.filters.tengine.dbal.compiler"
+        - "dp.tickets.filters.tengine.php.engine"
+        - "dp.tickets.filters.tengine.php.compiler"

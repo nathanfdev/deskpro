@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Kernel;
 
 use Application\DeskPRO\App;
@@ -221,23 +220,6 @@ abstract class AbstractKernel extends BaseKernel
             $response->setContent(HelpdeskOfflineMessage::getOfflinePage());
 
             return $response;
-        }
-
-        // Kernels might have work to do before loading a page
-        // This is where index.php checks take place
-        $res = $this->preResponseHandled($request, $type, $catch);
-        if ($res) {
-            if (($loc = $res->headers->get('Location')) && isset($_GET['parent_url'])) {
-                if (strpos($loc, '?') === false) {
-                    $loc .= '?';
-                } else {
-                    $loc .= '&';
-                }
-                $loc .= 'parent_url='.urlencode($_GET['parent_url']);
-                $res->headers->set('Location', $loc);
-            }
-
-            return $res;
         }
 
         // Verify that we arent at the max vars limit which could be a problem

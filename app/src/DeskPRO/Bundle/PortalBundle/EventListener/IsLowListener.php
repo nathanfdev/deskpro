@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -54,7 +53,7 @@ class IsLowListener implements EventSubscriberInterface
         $request = $event->getRequest();
 
         if (!$request->attributes->has(self::ATTR_NAME)) {
-            if (preg_match('#^/dp/#', $request->getPathInfo())) {
+            if (preg_match('#^/dp/#', $request->getPathInfo()) || preg_match('#^/[a-z]{2}(?:_[A-Z]{2})?/dp/#', $request->getPathInfo())) {
                 $request->attributes->set(self::ATTR_NAME, true);
             }
         }

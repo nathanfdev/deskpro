@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Theme;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -109,13 +108,14 @@ class TagRequestFactory
             $lang = $language_stack->getDefaultLanguage();
         }
 
-        $brand_container = $this->container->get('brand_stack')->getActive();
+        $brand_container    = $this->container->get('brand_stack')->getActive();
+        $portal_brand_theme = $this->container->get('portal_brand_theme_loader')->getPortalBrandTheme($brand_container->getBrand());
 
         return array(
             'tag_options'   => $tag_options,
             'lang_url_code' => $lang->getUrlCode(),
             'brand_id'      => $brand_container->getBrand()->getId(),
-            'theme_set_id'  => $brand_container->getActiveThemeSet()->getId(),
+            'theme_set_id'  => $portal_brand_theme->getActiveTheme()->getId(),
         );
     }
 

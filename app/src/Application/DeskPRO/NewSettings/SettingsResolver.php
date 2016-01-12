@@ -111,8 +111,8 @@ class SettingsResolver
     /**
      * Gets the settings bag for the given brand ID.
      *
-     * @param bool $force
-     * @param int  $brand_id
+     * @param Brand|int $brand_id
+     * @param bool      $force
      *
      * @return SettingsBag
      */

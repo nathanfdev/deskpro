@@ -32,7 +32,9 @@ if (!defined('DP_ROOT')) {
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
+$loader->import(__DIR__.'/config.shared.yml');
 $loader->import(__DIR__.'/services.yml');
+$loader->import(__DIR__.'/event_listeners.yml');
 
 /* @var \Symfony\Component\DependencyInjection\ContainerBuilder $container */
 

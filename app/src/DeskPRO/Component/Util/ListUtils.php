@@ -85,4 +85,126 @@ class ListUtils
 
         return $new;
     }
+
+    /**
+     * Check $array to see if $value exists in it anywhere.
+     *
+     * @param \Traversable|array $array
+     * @param mixed              $value
+     * @param bool               $strict
+     *
+     * @return bool
+     */
+    public static function contains($array, $value, $strict = true)
+    {
+        if (is_array($array)) {
+            return in_array($value, $array, $strict);
+        }
+
+        if ($strict) {
+            foreach ($array as $v) {
+                if ($v === $value) {
+                    return true;
+                }
+            }
+        } else {
+            foreach ($array as $v) {
+                if ($v == $value) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check $array to see if any value of $values exists in it anywhere.
+     *
+     * @param \Traversable|array $array
+     * @param \Traversable|array $values
+     * @param bool               $strict
+     *
+     * @return bool
+     */
+    public static function containsAny($array, $values, $strict = true)
+    {
+        if (is_array($array)) {
+            foreach ($values as $value) {
+                if (in_array($value, $array, $strict)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        if ($strict) {
+            foreach ($values as $value) {
+                foreach ($array as $v) {
+                    if ($v === $value) {
+                        return true;
+                    }
+                }
+            }
+        } else {
+            foreach ($values as $value) {
+                foreach ($array as $v) {
+                    if ($v == $value) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check $array to see if all values of $values exists in it anywhere.
+     *
+     * @param \Traversable|array $array
+     * @param \Traversable|array $values
+     * @param bool               $strict
+     *
+     * @return bool
+     */
+    public static function containsAll($array, $values, $strict = true)
+    {
+        $all = false;
+
+        if ($strict) {
+            foreach ($values as $value) {
+                $has = false;
+                foreach ($array as $v) {
+                    if ($v === $value) {
+                        $has = true;
+                        break;
+                    }
+                }
+                if (!$has) {
+                    return false;
+                } else {
+                    $all = true;
+                }
+            }
+        } else {
+            foreach ($values as $value) {
+                $has = false;
+                foreach ($array as $v) {
+                    if ($v == $value) {
+                        $has = true;
+                        break;
+                    }
+                }
+                if (!$has) {
+                    return false;
+                } else {
+                    $all = true;
+                }
+            }
+        }
+
+        return $all;
+    }
 }

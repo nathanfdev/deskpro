@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\HttpKernel;
 
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
@@ -37,6 +36,7 @@ use Application\DeskPRO\Cache\ConvenientCache;
 use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
 use Symfony\Bundle\FrameworkBundle\Controller\ControllerNameParser as BaseParser;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -57,10 +57,16 @@ class ControllerNameParser extends BaseParser
      */
     private $brand_stack;
 
-    public function __construct(KernelInterface $kernel, BrandStack $brand_stack)
+    /**
+     * @var PortalBrandThemeLoader
+     */
+    private $brand_theme_loader;
+
+    public function __construct(KernelInterface $kernel, BrandStack $brand_stack, PortalBrandThemeLoader $brand_theme_loader)
     {
         parent::__construct($kernel);
-        $this->brand_stack = $brand_stack;
+        $this->brand_stack        = $brand_stack;
+        $this->brand_theme_loader = $brand_theme_loader;
     }
 
     /**
@@ -100,7 +106,10 @@ class ControllerNameParser extends BaseParser
 
     public function doParse(BrandContainer $brand_container, $controller)
     {
-        if ($theme_controller = $brand_container->resolveController($controller)) {
+        $brand       = $brand_container->getBrand();
+        $brand_theme = $this->brand_theme_loader->getPortalBrandTheme($brand);
+
+        if ($theme_controller = $brand_theme->resolveController($controller)) {
             return $theme_controller;
         }
 

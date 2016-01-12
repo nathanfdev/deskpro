@@ -32,9 +32,6 @@
 namespace DeskPRO\Bundle\PortalBundle\Brand;
 
 use Application\DeskPRO\Entity\Brand;
-use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
-use DeskPRO\Bundle\PortalBundle\Designer\ThemeSetCopyingService;
-use Doctrine\ORM\EntityManager;
 
 /**
  * The BrandStack is a way of managing changes in "active" Brands during runtime. It works similar to a stack to allow
@@ -82,33 +79,15 @@ class BrandStack
     private $default_brand;
 
     /**
-     * @var ThemeSetCopyingService
+     * @param BrandContainerFactory $factory
+     * @param Brand                 $default_brand
      */
-    private $theme_set_copying_service;
-
-    /**
-     * @var EntityManager
-     */
-    private $em;
-
-    /**
-     * @param BrandContainerFactory  $factory
-     * @param Brand                  $default_brand
-     * @param ThemeSetCopyingService $theme_set_copying_service
-     * @param EntityManager          $em
-     */
-    public function __construct(
-        BrandContainerFactory $factory,
-        Brand $default_brand,
-        ThemeSetCopyingService $theme_set_copying_service,
-        EntityManager $em
-    ) {
-        $this->factory                   = $factory;
-        $this->stack                     = [];
-        $this->brand_containers          = [];
-        $this->default_brand             = $default_brand;
-        $this->theme_set_copying_service = $theme_set_copying_service;
-        $this->em                        = $em;
+    public function __construct(BrandContainerFactory $factory, Brand $default_brand)
+    {
+        $this->factory          = $factory;
+        $this->stack            = [];
+        $this->brand_containers = [];
+        $this->default_brand    = $default_brand;
     }
 
     /**
@@ -163,61 +142,5 @@ class BrandStack
     public function getDefault()
     {
         return $this->default_brand;
-    }
-
-    /**
-     * Get ThemeSet of the active Brand.
-     *
-     * @throws \Exception
-     *
-     * @return ThemeSet
-     */
-    public function getCurrentThemeSet()
-    {
-        if (!$theme_set = $this->getCurrentBrand()->getThemeSet()) {
-            throw new \Exception('Unable to resolve ThemeSet');
-        }
-
-        return $theme_set;
-    }
-
-    /**
-     * Get edit ThemeSet of the active Brand.
-     *
-     * If the active Brand doesn't have edit ThemeSet assigned to it, then method creates a copy of the active ThemeSet
-     * and persists it as edit ThemeSet.
-     *
-     * @throws \Exception
-     *
-     * @return ThemeSet
-     */
-    public function getCurrentEditThemeSet()
-    {
-        if (!$edit_theme_set = $this->getCurrentBrand()->getEditThemeSet()) {
-            $theme_set      = $this->getCurrentThemeSet();
-            $edit_theme_set = new ThemeSet();
-            $this->theme_set_copying_service->copy($theme_set, $edit_theme_set);
-            $brand = $this->getCurrentBrand();
-            $brand->setEditThemeSet($edit_theme_set);
-            $this->em->persist($edit_theme_set);
-            $this->em->persist($brand);
-            $this->em->flush();
-        }
-
-        return $edit_theme_set;
-    }
-
-    /**
-     * @throws \Exception
-     * @return Brand
-     *
-     */
-    private function getCurrentBrand()
-    {
-        if (!$this->getActive() || !$this->getActive()->getBrand()) {
-            throw new \Exception('Unable to resolve current Brand');
-        }
-
-        return $this->getActive()->getBrand();
     }
 }

@@ -38,10 +38,7 @@ use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
-use Symfony\Component\HttpFoundation\Cookie;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class DpKernel extends AbstractKernel
 {
@@ -328,11 +325,19 @@ class DpKernel extends AbstractKernel
     {
         $bundles = array(
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
-            new \Symfony\Bundle\MonologBundle\MonologBundle(),
             new \Symfony\Bundle\TwigBundle\TwigBundle(),
-            new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
+            new \Symfony\Bundle\MonologBundle\MonologBundle(),
             new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
+            new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new \FOS\ElasticaBundle\FOSElasticaBundle(),
+            new \Symfony\Bundle\SecurityBundle\SecurityBundle(),
+            new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
+
+            new \WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle(),
+            new \FOS\RestBundle\FOSRestBundle(),
+            new \JMS\SerializerBundle\JMSSerializerBundle(),
+
+            new \Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
 
             new \Application\DeskPRO\DeskPROBundle(),
             new \Application\EmailBundle\EmailBundle(),
@@ -342,10 +347,8 @@ class DpKernel extends AbstractKernel
             new \Application\UserBundle\UserBundle(),
             new \Application\LegacyApiBundle\LegacyApiBundle(),
             new \Application\ImportBundle\ImportBundle(),
-            new \FOS\RestBundle\FOSRestBundle(),
-            new \JMS\SerializerBundle\JMSSerializerBundle(),
-            new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
-            new \Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
+
+            new \DeskPRO\Bundle\AppBundle\AppBundle(),
         );
 
         if (defined('DPC_IS_CLOUD')) {
@@ -361,143 +364,6 @@ class DpKernel extends AbstractKernel
     ####################################################################################################################
     # DeskPRO Specific
     ####################################################################################################################
-
-    /**
-     * Returns a Response if the kernel shouldnt route and pass control off to a controller.
-     * Returns null if things should progress normally.
-     *
-     * @param Request $request
-     * @param int     $type
-     * @param bool    $catch
-     *
-     * @return null|RedirectResponse
-     */
-    protected function preResponseHandled(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
-    {
-        $path = $request->getPathInfo();
-
-        if ($this->interface == 'user' && $this->container) {
-            if (
-                '/widget/' !== substr($path, 0, 8)
-                && '/chat/' !== substr($path, 0, 6)
-                && '/tickets/new-simple' !== substr($path, 0, 19)
-                && '/tickets/new/thanks-simple/' !== substr($path, 0, 27)
-                && '/accept-temp-upload' !== substr($path, 0, 19)
-                && '/logout' !== substr($path, 0, 7)
-                && '/login' !== substr($path, 0, 6)
-                && 'overlayWidget' !== $request->get(Request::PARTIAL_REQUEST_KEY)
-            ) {
-                try {
-                    if (!$this->container->getSetting('user.portal_enabled')) {
-                        $response = new \Symfony\Component\HttpFoundation\Response('<!-- Portal Offline -->');
-
-                        return $response;
-                    }
-                } catch (\Exception $e) {
-                }
-            }
-        }
-
-        // Exclude ajax requests
-        if ($request->isXmlHttpRequest()) {
-            return;
-        }
-
-        $correct_scheme    = true;
-        $correct_host      = true;
-        $deskpro_url       = App::getSetting('core.deskpro_url');
-        $enable_correction = App::getSetting('core.deskpro_url_autocorrect');
-
-        // used by dev installer to set default domain
-        if ($deskpro_url === 'http://deskpro-dev/') {
-            return;
-        }
-
-        if ($deskpro_url && '/news.rss' !== $path) {
-            if (false === $correct_scheme = $request->isCorrectScheme($deskpro_url)) {
-                $interface = false !== strpos($request->getReturnParam(), 'admin') ? 'admin' : $this->interface;
-                $request->attributes->set($interface.'.wrong_scheme', true);
-            }
-            if (false === $correct_host = $request->isCorrectHost($deskpro_url)) {
-                $interface = false !== strpos($request->getReturnParam(), 'admin') ? 'admin' : $this->interface;
-                $request->attributes->set($interface.'.wrong_host', true);
-            }
-        }
-
-        if (
-            (isset($GLOBALS['DP_CONFIG']['disable_url_corrections']) && $GLOBALS['DP_CONFIG']['disable_url_corrections'])
-            || '/admin/' === substr($path, 0, 7)
-            || '/agent/login' === substr($path, 0, 12)
-            || '/api/' === substr($path, 0, 5)
-            || ('admin' === $this->interface)
-        ) {
-            return;
-        }
-
-        $qs = $request->getQueryString();
-        if ($qs) {
-            $path .= '?'.$qs;
-        }
-
-        if (isset($GLOBALS['DP_CONFIG']['rewrite_urls']) && $GLOBALS['DP_CONFIG']['rewrite_urls']) {
-            // Force no index.php
-            if ($request->isIndexIncluded()) {
-                $r_path   = '/'.ltrim(rtrim($request->getBasePath(), '/').$path, '/');
-                $response = new RedirectResponse($r_path, 301);
-
-                return $response;
-            }
-        } else {
-            // Force index.php
-            if (!$request->isIndexIncluded()) {
-                $r_path   = '/'.ltrim(rtrim($request->getBasePath(), '/').'/index.php'.$path, '/');
-                $response = new RedirectResponse($r_path, 301);
-
-                return $response;
-            }
-        }
-
-        $is_installed = App::getSetting('core.setup_initial');
-        if (!$is_installed) {
-            return;
-        }
-
-        if (!$enable_correction) {
-            return;
-        }
-
-        if (!$this->shouldApplyUrlCorrections($request)) {
-            return;
-        }
-
-        if (null === $info = $request->getCorrectInfo($deskpro_url)) {
-            return;
-        }
-
-        $do_correction = !$correct_scheme || !$correct_host;
-
-        // Redirect back to agent login screen because we do
-        // auto-redirect stuff in JS and show warning
-        if ('agent' === $this->interface && $do_correction) {
-            $url = $request->getScheme().'://'.$request->getHttpHost().'/'.ltrim(rtrim($request->getBasePath(), '/').(@$GLOBALS['DP_CONFIG']['rewrite_urls'] ? '' : '/index.php').'/agent/login', '/');
-
-            return new RedirectResponse($url, 301);
-        }
-
-        if (!@$GLOBALS['DP_CONFIG']['rewrite_urls']) {
-            $path = '/index.php'.$path;
-        }
-
-        if ($do_correction) {
-            $url      = App::getSetting('core.deskpro_url').ltrim($path, '/');
-            $response = new RedirectResponse($url, 301);
-            $response->headers->setCookie(new Cookie('dp_autocorrect_url', '1', 0, '/'));
-
-            return $response;
-        }
-
-        return;
-    }
 
     /**
      * Executed after the requests is handled, right before it is returned to the user.
@@ -518,78 +384,9 @@ class DpKernel extends AbstractKernel
             }
         }
 
-        if (isset($DP_CONFIG['debug']['enable_log_tpl_use']) && $DP_CONFIG['debug']['enable_log_tpl_use']) {
-            $loc   = $this->container->get('templating.locator');
-            $write = array();
-
-            $write[] = sprintf("=== BEGIN REQUEST %s ===\nURL: %s", date('D, jS M Y H:i:s'), defined('DP_REQUEST_URL') ? DP_REQUEST_URL : 'unknown');
-
-            foreach ($loc->getLoadedTemplates() as $x => $info) {
-                $info['origin'] = str_replace(DP_ROOT, '', $info['origin']);
-                $write[]        = sprintf("%3d: {$info['key']} \n     -> {$info['origin']}", $x);
-            }
-
-            $write[] = '';
-            $write[] = '';
-            $write   = implode("\n", $write);
-            file_put_contents($this->getLogDir().'/template_use.log', $write, \FILE_APPEND);
-        }
-
         if ('agent' === $this->interface || 'admin' === $this->interface || 'reports' === $this->interface) {
             $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
         }
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return bool
-     */
-    protected function shouldApplyUrlCorrections(Request $request)
-    {
-        switch ($this->interface) {
-            case 'admin':
-            case 'api':
-            case 'cli':
-                return false;
-
-            case 'agent':
-                return true;
-
-            case 'user':
-                // Dont apply redirects on URLs loaded from widget
-                // (eg loading an article iframe)
-                if (isset($_GET['parent_url'])) {
-                    return false;
-                }
-                // Set when viewing through an iframe
-                if (!empty($_COOKIE['dp_o_uri']) || !empty($_GET['dp_website_url'])) {
-                    return false;
-                }
-
-                $path = $request->getPathInfo();
-
-                // Dont auto-redirect these URLs that are used
-                // in widgets and callbacks
-                if (
-                    '/widget/' === substr($path, 0, 8)
-                    || '/chat/' === substr($path, 0, 6)
-                    || '/tickets/new-simple' === substr($path, 0, 19)
-                    || '/tickets/new/thanks-simple/' === substr($path, 0, 27)
-                    || '/accept-temp-upload' === $path
-                    || '/logout' === substr($path, 0, 7)
-                    || ($request->getMethod() !== 'GET' && '/login' === substr($path, 0, 6))
-                    || $request->isPartial()
-                ) {
-                    return false;
-                }
-                break;
-
-            default:
-                return false;
-        }
-
-        return true;
     }
 
     /**

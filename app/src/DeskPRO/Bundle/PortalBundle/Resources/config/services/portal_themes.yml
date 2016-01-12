@@ -42,7 +42,7 @@ services:
 
   theme_view_factory:
     class: DeskPRO\Bundle\PortalBundle\Theme\ThemeViewFactory
-    arguments: [@brand_stack]
+    arguments: [@brand_stack, @portal_brand_theme_loader]
 
 
   theme_repository:
@@ -69,3 +69,11 @@ services:
     arguments: [@theme_repository]
     tags:
       - { name: 'kernel.cache_warmer', priority: -300 }
+
+
+  portal_brand_theme_loader:
+    class: DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader
+    arguments:
+      - @brand_container_factory
+      - @theme_resolver
+      - @portal_mode_storage

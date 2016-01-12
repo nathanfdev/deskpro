@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Request;
 
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
 use DeskPRO\Bundle\PortalBundle\HttpKernel\Exception\PermanentRedirectException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
@@ -46,9 +47,15 @@ class TagRequestConverter implements ParamConverterInterface
      */
     private $brand_stack;
 
-    public function __construct(BrandStack $brand_stack)
+    /**
+     * @var PortalBrandThemeLoader
+     */
+    private $brand_theme_loader;
+
+    public function __construct(BrandStack $brand_stack, PortalBrandThemeLoader $brand_theme_loader)
     {
-        $this->brand_stack = $brand_stack;
+        $this->brand_stack        = $brand_stack;
+        $this->brand_theme_loader = $brand_theme_loader;
     }
 
     public function apply(Request $request, ParamConverter $configuration)
@@ -64,7 +71,9 @@ class TagRequestConverter implements ParamConverterInterface
             return;
         }
 
-        $tag = $this->brand_stack->getActive()->getTheme()->resolveTag($tag_name);
+        $brand_theme = $this->brand_theme_loader->getPortalBrandTheme($this->brand_stack->getActive()->getBrand());
+        $theme       = $brand_theme->getActiveTheme();
+        $tag         = $theme->resolveTag($tag_name);
 
         $current_request = $request;
         $tag_options     = array_merge($tag->getDefaultOptions(), $current_request->query->get('tag_options', array()));

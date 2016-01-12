@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Theme;
 
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
 
 class ThemeView
 {
@@ -41,14 +42,20 @@ class ThemeView
     private $brand_stack;
 
     /**
+     * @var PortalBrandThemeLoader
+     */
+    private $brand_theme_loader;
+
+    /**
      * @var array
      */
     private $default_options;
 
-    public function __construct(BrandStack $brand_stack, array $default_options)
+    public function __construct(BrandStack $brand_stack, PortalBrandThemeLoader $brand_theme_loader, array $default_options)
     {
-        $this->default_options = $default_options;
-        $this->brand_stack     = $brand_stack;
+        $this->default_options    = $default_options;
+        $this->brand_stack        = $brand_stack;
+        $this->brand_theme_loader = $brand_theme_loader;
     }
 
     public function __call($tag_name, array $explicit_options)
@@ -64,15 +71,20 @@ class ThemeView
         $options = array_merge($default_options, $explicit_options);
 
         $brand_container = $this->brand_stack->getActive();
+        $brand_theme     = $this->brand_theme_loader->getPortalBrandTheme($brand_container->getBrand());
 
-        return $brand_container->renderTag($tag_name, $options);
+        return $brand_theme->renderTag($tag_name, $options);
     }
 
     protected function calculateDefaultOptions($tag_name)
     {
         $options = array();
 
-        if (!$tag = $this->brand_stack->getActive()->getTheme()->resolveTag($tag_name)) {
+        $brand_container = $this->brand_stack->getActive();
+        $brand_theme     = $this->brand_theme_loader->getPortalBrandTheme($brand_container->getBrand());
+        $theme           = $brand_theme->getActiveTheme();
+
+        if (!$tag = $theme->resolveTag($tag_name)) {
             throw new \InvalidArgumentException(sprintf('cannot resolve tag "%s"', $tag_name));
         }
 
