@@ -58,11 +58,14 @@ class OriginalUriListener implements EventSubscriberInterface
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             // high priority, must be called BEFORE RouterListener (which is 32)
-            KernelEvents::REQUEST => array('onKernelRequest', 33),
-        );
+            KernelEvents::REQUEST => ['onKernelRequest', 33],
+        ];
     }
 }

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -60,11 +59,14 @@ class IsLowListener implements EventSubscriberInterface
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             // high priority, called before everything
-            KernelEvents::REQUEST => array('onKernelRequest', 500),
-        );
+            KernelEvents::REQUEST => ['onKernelRequest', 500],
+        ];
     }
 }

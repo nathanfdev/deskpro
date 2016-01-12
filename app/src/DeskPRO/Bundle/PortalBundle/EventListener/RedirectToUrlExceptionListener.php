@@ -54,11 +54,14 @@ class RedirectToUrlExceptionListener implements EventSubscriberInterface
         $this->logger = $logger;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::EXCEPTION => array('onKernelException', 129), // high priority
-        );
+        return [
+            KernelEvents::EXCEPTION => ['onKernelException', 129], // high priority
+        ];
     }
 
     public function onKernelException(GetResponseForExceptionEvent $event)

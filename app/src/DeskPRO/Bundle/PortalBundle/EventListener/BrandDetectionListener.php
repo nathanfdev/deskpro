@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use Application\DeskPRO\Entity\Brand as BrandEntity;
@@ -151,11 +150,14 @@ class BrandDetectionListener implements EventSubscriberInterface
         return $this->default_brand;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             // high priority, must be called BEFORE RouterListener
-            KernelEvents::REQUEST => array('onKernelRequest', 34),
-        );
+            KernelEvents::REQUEST => ['onKernelRequest', 34],
+        ];
     }
 }

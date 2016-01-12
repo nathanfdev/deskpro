@@ -81,10 +81,13 @@ class PermanentRedirectExceptionListener implements EventSubscriberInterface
         $event->stopPropagation();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::EXCEPTION => array('onKernelException', 129), // very high priority
-        );
+        return [
+            KernelEvents::EXCEPTION => ['onKernelException', 129], // very high priority
+        ];
     }
 }

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use DeskPRO\Bundle\PortalBundle\Visitor\VisitorIdentificationProvider;
@@ -98,11 +97,14 @@ class VisitorIdentificationListener implements EventSubscriberInterface
         $this->logger->debug(sprintf('set cookie "%s" with visitor identifier "%s" - %s', VisitorIdentificationProvider::COOKIE_NAME, $identifier, $cookie));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::REQUEST  => array('onKernelRequest', 129),
-            KernelEvents::RESPONSE => array('onKernelResponse'),
-        );
+        return [
+            KernelEvents::REQUEST  => ['onKernelRequest', 129],
+            KernelEvents::RESPONSE => ['onKernelResponse'],
+        ];
     }
 }

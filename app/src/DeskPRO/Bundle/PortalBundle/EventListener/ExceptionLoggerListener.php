@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use DeskPRO\Kernel\KernelErrorHandler;
@@ -51,11 +50,14 @@ class ExceptionLoggerListener implements EventSubscriberInterface
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             // very low priority, if the exception is caught and handled we dont want to log
-            KernelEvents::EXCEPTION => array('onKernelException', -2048),
-        );
+            KernelEvents::EXCEPTION => ['onKernelException', -2048],
+        ];
     }
 }

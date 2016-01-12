@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use Application\DeskPRO\EntityRepository\Brand;
@@ -136,11 +135,14 @@ class TagOptionsListener implements EventSubscriberInterface
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::CONTROLLER => array('onKernelController', -10),
-        );
+        return [
+            KernelEvents::CONTROLLER => ['onKernelController', -10],
+        ];
     }
 
     protected function evaluate($expr, array $variables)
