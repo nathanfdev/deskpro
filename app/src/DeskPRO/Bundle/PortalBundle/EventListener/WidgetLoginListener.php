@@ -69,7 +69,11 @@ class WidgetLoginListener implements EventSubscriberInterface
      */
     public function onKernelResponse(FilterResponseEvent $event)
     {
-        $request      = $event->getRequest();
+        $request = $event->getRequest();
+        if ($request->getPathInfo() !== '/focus-win/login') {
+            return;
+        }
+
         $session_code = $request->query->get('__sid');
         if (!$session_code) {
             return;
