@@ -14,12 +14,12 @@ export const addSessionCode = (state, params = {}) => {
 // Api actions
 export const getSession = createAction(
   'WIDGET_GET_SESSION',
-  sessionCode => new Promise(resolve =>
+  () => new Promise(resolve =>
     DpApi
-      .sendPost('DP_API/auth/get_session', {session_code: sessionCode}, {...ajaxOptions})
+      .sendPost('DP_API/auth/get_session', {session_code: localStorage.getItem('dpWidget.sessionCode')}, {...ajaxOptions})
       .success(response => {
         localStorage.setItem('dpWidget.sessionCode', response.session_code);
-        resolve(response.session_code);
+        resolve(response);
       })
   )
 );
@@ -46,7 +46,7 @@ export const bootstrapWidget = createAction(
   () => dispatch => new Promise(resolve => {
     Promise.
       all([
-        dispatch(getSession(localStorage.getItem('dpWidget.sessionCode'))),
+        dispatch(getSession()),
         dispatch(getSettings()),
         dispatch(loadOptions(window.DP_OPTIONS)),
         dispatch(loadPortalPhraseTranslations()),

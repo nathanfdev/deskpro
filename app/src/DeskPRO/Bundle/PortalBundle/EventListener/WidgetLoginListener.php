@@ -75,7 +75,12 @@ class WidgetLoginListener implements EventSubscriberInterface
             return;
         }
 
-        $user = $this->token_storage->getToken()->getUser();
+        $token = $this->token_storage->getToken();
+        if (!$token) {
+            return;
+        }
+
+        $user = $token->getUser();
         if (!$user) {
             return;
         }

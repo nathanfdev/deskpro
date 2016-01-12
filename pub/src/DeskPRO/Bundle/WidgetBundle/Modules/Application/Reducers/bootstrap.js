@@ -3,7 +3,7 @@ import * as actions from '../Actions/bootstrapActions';
 import { setValue, setFullPayload, async } from 'Ampliflux/reducers/handlers';
 
 const initialState = {
-  sessionCode: null,
+  session: {},
   settings: {
     chat: {}
   },
@@ -12,7 +12,7 @@ const initialState = {
 
 export default createReducer(initialState, {
   [actions.getSession]: async({
-    success: setFullPayload('sessionCode')
+    success: setFullPayload('session')
   }),
   [actions.getSettings]: async({
     success: setFullPayload('settings')
