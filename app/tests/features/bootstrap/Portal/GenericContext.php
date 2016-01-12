@@ -28,12 +28,18 @@
 
 namespace DpBehat\Portal;
 
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\CategoryAbstract;
+use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usergroup;
 
@@ -86,6 +92,28 @@ class GenericContext extends BasePortalContext
     {
         $this->assertSession()->elementExists('css', '.error-large');
         $this->assertSession()->elementTextContains('css', '.error-large', $message);
+    }
+
+    /**
+     * @Then :user should be subscribed to the :content_type content :title
+     */
+    public function userShouldBeSubscribedToTheCategory($user, $content_type, $title)
+    {
+        $person  = $this->get('user_details')->getWho($user);
+        $content = $this->getContent($content_type, $title);
+
+        expect($this->isSubscribedContent($person, $content))->toBe(true);
+    }
+
+    /**
+     * @Then :user should be subscribed to the :content_type category :title
+     */
+    public function userShouldBeSubscribedToTheContent($user, $content_type, $title)
+    {
+        $person = $this->get('user_details')->getWho($user);
+        $cat    = $this->getCategory($content_type, $title);
+
+        expect($this->isSubscribedCat($person, $cat))->toBe(true);
     }
 
     /**
@@ -165,5 +193,57 @@ class GenericContext extends BasePortalContext
     protected function getAgentBarPage()
     {
         return $this->getPage('AgentBar');
+    }
+
+    protected function isSubscribedContent(Person $person, ContentAbstract $content)
+    {
+        return $this->get('subscriptions_helper')->isSubscribedContent($content, $person);
+    }
+
+    protected function isSubscribedCat(Person $person, CategoryAbstract $content)
+    {
+        return $this->get('subscriptions_helper')->isSubscribedCategory($content, $person);
+    }
+
+    protected function getCategory($type, $title)
+    {
+        return $this->getRepository($this->getContentCatClass($type))->findOneBy([
+            'title' => $title,
+        ]);
+    }
+
+    protected function getContent($type, $title)
+    {
+        return $this->getRepository($this->getContentClass($type))->findOneBy([
+            'title' => $title,
+        ]);
+    }
+
+    protected function getContentCatClass($type)
+    {
+        switch ($type) {
+            case 'kb':
+                return ArticleCategory::class;
+            case 'download':
+                return DownloadCategory::class;
+            case 'news':
+                return NewsCategory::class;
+            case 'feedback':
+                return FeedbackCategory::class;
+        }
+    }
+
+    protected function getContentClass($type)
+    {
+        switch ($type) {
+            case 'kb':
+                return Article::class;
+            case 'download':
+                return Download::class;
+            case 'news':
+                return News::class;
+            case 'feedback':
+                return Feedback::class;
+        }
     }
 }
