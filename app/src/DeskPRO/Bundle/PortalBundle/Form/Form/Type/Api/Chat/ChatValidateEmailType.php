@@ -95,7 +95,7 @@ class ChatValidateEmailType extends AbstractType
         }
 
         if ($data !== $form->getData()) {
-            $form->addError(new FormError('Wrong email validation code'));
+            $form->addError(new FormError('Wrong email validation code.'));
         } else {
             // Mark conversation email validated
             /** @var ChatConversation $conversation */
