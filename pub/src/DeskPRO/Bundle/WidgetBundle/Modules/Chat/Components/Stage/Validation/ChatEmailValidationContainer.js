@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { validateEmail } from '../../../Actions/chatActions';
+import { validateEmail, regenerateEmailValidationCode } from '../../../Actions/chatActions';
 import { chatIdSelector } from '../../../Selectors/chat';
 import { FieldErrors, hasErrors } from 'DeskPRO/Component/Form/FormErrors';
 import classNames from 'classnames';
@@ -45,9 +45,38 @@ export class ChatEmailValidationContainer extends React.Component {
     });
   };
 
+  onRegenerateCode = event => {
+    event.preventDefault();
+    this.setState({
+      errors: null,
+      submit: true
+    });
+
+    const { chatId, dispatch } = this.props;
+    const promise = dispatch(regenerateEmailValidationCode(chatId, {code: this.state.code}));
+    promise.then(
+      () => {
+        if (this.mounted) {
+          this.setState({
+            submit: false
+          });
+        }
+      },
+      result => {
+        if (this.mounted) {
+          this.setState({
+            submit: false,
+            errors: result.getData()
+          });
+        }
+      }
+    );
+  };
+
   onSubmit = event => {
     event.preventDefault();
     this.setState({
+      errors: null,
       submit: true
     });
 
@@ -92,9 +121,13 @@ export class ChatEmailValidationContainer extends React.Component {
 
           {this.state.submit
             ? <div className="spinner"><i/></div>
-            : <a href="#" className="email-code-submit" onClick={this.onSubmit}>
-                Start Chat <i className="fa fa-chevron-right"></i>
-              </a>
+            :
+              <span>
+                <a href="#" className="email-code-submit" onClick={this.onRegenerateCode}>Send me another email</a>
+                <a href="#" className="email-code-submit" onClick={this.onSubmit}>
+                  Start Chat <i className="fa fa-chevron-right"></i>
+                </a>
+              </span>
           }
         </form>
       </div>

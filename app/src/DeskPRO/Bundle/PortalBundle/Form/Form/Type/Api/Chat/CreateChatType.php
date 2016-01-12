@@ -31,9 +31,9 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
+use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\TextStringTransformer;
-use Orb\Util\Strings;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -102,7 +102,7 @@ class CreateChatType extends AbstractType
         $builder->get('email')->addModelTransformer(new TextStringTransformer());
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this->set_person_listener, 'onSetPerson']);
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetEmailValidationCode']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetEmailValidationCode']);
     }
 
     /**
@@ -125,10 +125,9 @@ class CreateChatType extends AbstractType
             return;
         }
 
-        $event->getForm()->add('email_validation_code', 'text');
-        $event->setData(array_merge($event->getData(), [
-            'email_validation_code' => Strings::random(15, Strings::CHARS_KEY),
-        ]));
+        /** @var ChatConversation $conversation */
+        $conversation = $event->getData();
+        $conversation->regenerateEmailValidationCode();
     }
 
     /**

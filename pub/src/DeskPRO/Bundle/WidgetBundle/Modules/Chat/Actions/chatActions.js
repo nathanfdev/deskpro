@@ -118,6 +118,20 @@ export const validateEmail = createAction(
   }
 );
 
+export const regenerateEmailValidationCode = createAction(
+  'WIDGET_CHAT_REGENERATE_EMAIL_CODE',
+  chatId => (dispatch, getState) => {
+    if (!chatId) {
+      return null;
+    }
+
+    const state = getState();
+    const queryParams = compileParams(addSessionCode(state));
+
+    return DpApi.sendPost(`DP_API/chats/${chatId}/validate/email/regenerate?${queryParams}`, null, {...ajaxOptions});
+  }
+);
+
 export const ackChatMessages = createAction(
   'WIDGET_CHAT_ACK_MESSAGES',
   (chatId, params) => (dispatch, getState) => {

@@ -37,6 +37,7 @@ use Application\DeskPRO\App;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Util\Strings;
 
 /**
  * A conversation between one or more people.
@@ -1056,6 +1057,16 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     public function getSession()
     {
         return $this->session;
+    }
+
+    /**
+     * @return $this
+     */
+    public function regenerateEmailValidationCode()
+    {
+        $this->setModelField('email_validation_code', Strings::random(15, Strings::CHARS_KEY));
+
+        return $this;
     }
 
     /**

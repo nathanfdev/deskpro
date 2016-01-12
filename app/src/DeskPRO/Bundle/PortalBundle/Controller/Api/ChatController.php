@@ -84,6 +84,27 @@ class ChatController extends AbstractApiController
     }
 
     /**
+     * @Route("/portal/api/chats/{id}/validate/email/regenerate", name="portal_api_chat_validate_email_regenerate")
+     * @Method({"POST"})
+     *
+     * @param ChatConversation $conversation
+     * @param Request          $request
+     *
+     * @return View
+     */
+    public function regenerateEmailValidationCodeAction(ChatConversation $conversation, Request $request)
+    {
+        $this->checkUserSession($conversation, $request);
+
+        $conversation->regenerateEmailValidationCode();
+
+        $this->saveConversation($conversation);
+        $this->dispatch(UserChatEvent::VALIDATE_EMAIL, new UserChatEvent($conversation));
+
+        return View::create();
+    }
+
+    /**
      * @Route("/portal/api/chats/{id}/validate/email", name="portal_api_chat_validate_email")
      * @Method({"POST"})
      *
