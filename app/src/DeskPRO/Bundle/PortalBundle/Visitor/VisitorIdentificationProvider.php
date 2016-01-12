@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Visitor;
 
 use DeskPRO\Component\Util\RandUtils;
@@ -50,6 +49,8 @@ class VisitorIdentificationProvider
      * @var LoggerInterface
      */
     private $logger;
+
+    private $_cached_id = null;
 
     /**
      * VisitorIdentificationProvider constructor.
@@ -88,6 +89,10 @@ class VisitorIdentificationProvider
      */
     public function getVisitorIdentifier()
     {
+        if ($this->_cached_id) {
+            return $this->_cached_id;
+        }
+
         if ($this->request_stack->getMasterRequest()) {
             $identifier = $this->request_stack->getMasterRequest()->cookies->get(static::COOKIE_NAME);
             if ($identifier && $this->isValidFormat($identifier)) {
@@ -99,6 +104,8 @@ class VisitorIdentificationProvider
 
         $identifier = static::generateRandomIdentifier();
         $this->logger->info(sprintf('no visitor identifier in request, created one: %s', $identifier));
+
+        $this->_cached_id = $identifier;
 
         return $identifier;
     }
