@@ -40,7 +40,7 @@ export class WidgetOpenContainer extends React.Component {
         if (agentId || dateEnded) {
           history.replace('/chat/active');
         } else if (needValidateEmail) {
-          history.replace('/chat/begin/validation/email');
+          history.replace('/chat/validation/email');
         } else {
           history.replace('/chat/waiting');
         }

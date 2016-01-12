@@ -95,7 +95,7 @@ export class ChatBeginContainer extends React.Component {
     promise.then(
       () => {
         if (requireEmailValidation) {
-          history.replace('/chat/begin/validation/email');
+          history.replace('/chat/validation/email');
         } else {
           history.replace('/chat/waiting');
         }

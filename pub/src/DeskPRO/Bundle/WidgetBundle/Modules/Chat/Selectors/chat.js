@@ -73,6 +73,11 @@ export const chatInfoSelector = createSelector(
   state => state.getIn(['chat', 'info'])
 );
 
+export const hasChatInfoSelector = createSelector(
+  chatInfoSelector,
+  chatInfo => chatInfo && chatInfo.size > 0
+);
+
 export const agentIdSelector = createSelector(
   chatInfoSelector,
   chatInfo => chatInfo.get('agent_id')

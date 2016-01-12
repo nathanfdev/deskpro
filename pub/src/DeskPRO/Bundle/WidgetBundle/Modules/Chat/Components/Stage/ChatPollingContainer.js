@@ -5,6 +5,7 @@ import moment from 'moment';
 import { pollingChat, unsetLoaded, unsetChatId } from '../../Actions/chatActions';
 import {
   chatIdSelector,
+  hasChatInfoSelector,
   agentIdSelector,
   lastMessageIdSelector,
   authorEmailSelector,
@@ -14,6 +15,7 @@ import {
 
 @connect(state => ({
   chatId: chatIdSelector(state),
+  hasChatInfo: hasChatInfoSelector(state),
   agentId: agentIdSelector(state),
   lastMessageId: lastMessageIdSelector(state),
   authorEmail: authorEmailSelector(state),
@@ -25,6 +27,7 @@ export class ChatPollingContainer extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     chatId: PropTypes.number,
+    hasChatInfo: PropTypes.bool,
     agentId: PropTypes.number,
     lastMessageId: PropTypes.any,
     children: PropTypes.node,
@@ -43,21 +46,34 @@ export class ChatPollingContainer extends React.Component {
   }
 
   pollingRequest = () => {
-    const { dispatch, chatId, agentId, lastMessageId, needValidateEmail } = this.props;
+    const { dispatch, chatId, hasChatInfo, agentId, lastMessageId, needValidateEmail } = this.props;
     if (!chatId || !this.mounted) {
       return;
     }
 
-    if (needValidateEmail) {
-      history.replace('/chat/begin/validation/email');
-    }
-
     this._unlisten = history.listen(location => {
-      if (agentId && location.pathname !== '/chat/active') {
-        // If agent id is defined redirect to active stage
-        history.replace('/chat/active');
-        // Mark chat unloaded to show spinner until get messages in next polling request
-        dispatch(unsetLoaded());
+      // Redirect if has chat info only
+      if (!hasChatInfo) {
+        return;
+      }
+
+      if (needValidateEmail) {
+        // Auto redirect on validate email stage
+        if (location.pathname !== '/chat/validation/email') {
+          history.replace('/chat/validation/email');
+        }
+      } else {
+        if (agentId && location.pathname !== '/chat/active') {
+          // If agent id is defined auto redirect to active stage
+          history.replace('/chat/active');
+          // Mark chat unloaded to show spinner until get messages in next polling request
+          dispatch(unsetLoaded());
+        } else {
+          // Auto redirect on waiting stage
+          if (location.pathname !== '/chat/waiting') {
+            history.replace('/chat/waiting');
+          }
+        }
       }
     });
 

@@ -51,7 +51,7 @@ export class ChatLoaderContainer extends React.Component {
       if (chatInfo.agent_id) {
         history.replace('/chat/active');
       } else if (chatInfo.need_validate_email) {
-        history.replace('/chat/begin/validation/email');
+        history.replace('/chat/validation/email');
       } else {
         history.replace('/chat/waiting');
       }
