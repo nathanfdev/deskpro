@@ -76,7 +76,9 @@ class ChatController extends AbstractApiController
 
         // If an email validation code was generated then user needs to validate the entered email first,
         // so skip agent notify until the user validates it
-        if (!$conversation->getEmailValidationCode()) {
+        if ($conversation->getEmailValidationCode()) {
+            $this->dispatch(UserChatEvent::VALIDATE_EMAIL, new UserChatEvent($conversation));
+        } else {
             $this->dispatch(UserChatEvent::STARTED, new UserChatEvent($conversation));
         }
 

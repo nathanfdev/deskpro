@@ -1,0 +1,9 @@
+{% block subject %}
+    {{ phrase('user.email_subjects.chat.validate_email') }}
+{% endblock %}
+{% block text %}
+    {{ phrase('user.emails.chat.validate_email') }}
+
+    {{ validation_code }}
+    {{ validation_url }}
+{% endblock %}

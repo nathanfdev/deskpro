@@ -1,15 +1,22 @@
 services:
 
-  user_chat.listener.system_event_listener:
+  user_chat.listener.system_listener:
     class: DeskPRO\Bundle\AppBundle\UserChat\UserChatSystemListener
     arguments:
       - @doctrine.orm.entity_manager
     tags:
       - { name: kernel.event_subscriber }
 
-  user_chat.listener.client_event_listener:
+  user_chat.listener.client_listener:
     class: DeskPRO\Bundle\AppBundle\UserChat\UserChatClientListener
     arguments:
       - @data_serializer
+    tags:
+      - { name: kernel.event_subscriber }
+
+  user_chat.listener.mail_listener:
+    class: DeskPRO\Bundle\AppBundle\UserChat\UserChatMailListener
+    arguments:
+      - @mailer
     tags:
       - { name: kernel.event_subscriber }
