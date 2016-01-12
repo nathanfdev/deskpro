@@ -174,9 +174,10 @@ class NewTicketController extends AbstractController
         // Custom fields
         // We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
         // So dont remove it even though it looks like it's not used! :-)
-        $custom_fields_form      = $this->get('form.factory')->createNamedBuilder('newticket_custom_ticket_fields', 'form');
-        $custom_user_fields_form = $this->get('form.factory')->createNamedBuilder('newticket_custom_user_fields', 'form');
-        $custom_org_fields_form  = $this->get('form.factory')->createNamedBuilder('newticket_custom_org_fields', 'form');
+        $ff                      = $this->get('form.factory');
+        $custom_fields_form      = $ff->createNamedBuilder('newticket_custom_ticket_fields', 'form');
+        $custom_user_fields_form = $ff->createNamedBuilder('newticket_custom_user_fields', 'form');
+        $custom_org_fields_form  = $ff->createNamedBuilder('newticket_custom_org_fields', 'form');
 
         /** @var $fm \Application\DeskPRO\CustomFields\TicketFieldManager */
         $fm = $this->container->getSystemService('TicketFieldsManager');
