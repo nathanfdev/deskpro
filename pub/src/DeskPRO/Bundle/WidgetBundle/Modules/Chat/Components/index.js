@@ -5,7 +5,7 @@ export { ChatBeginConversation } from './Stage/Begin/Conversation/ChatBeginConve
 export { ChatBeginForm } from './Stage/Begin/Form/ChatBeginForm';
 export { ChatValidation } from './Stage/Validation/ChatValidation';
 export { ChatEmailValidationContainer } from './Stage/Validation/ChatEmailValidationContainer';
-export { ChatLogin } from './Stage/Validation/ChatLogin';
+export { ChatLoginContainer } from './Stage/Validation/ChatLoginContainer';
 export { ChatPollingContainer } from './Stage/ChatPollingContainer';
 export { ChatWaiting } from './Stage/Waiting/ChatWaiting';
 export { ChatActive } from './Stage/Active/ChatActive';

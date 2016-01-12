@@ -10,6 +10,8 @@ import {
 } from '../Selectors/dpWindow';
 import $ from 'jquery';
 import history from '../../../Services/history';
+import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
+import { addSessionCode } from './bootstrapActions';
 
 export const openChatBeginStage = chatBeginMode => {
   switch (chatBeginMode) {
@@ -114,21 +116,27 @@ export const closeTriggerPopup = createAction('WIDGET_CLOSE_TRIGGER_POPUP', () =
 });
 
 let loginWindowOpened;
-export function openLoginWindow() {
-  const width = 575;
-  const height = 515;
+export const openLoginWindow = createAction(
+  'WIDGET_OPEN_LOGIN_WINDOW',
+  () => (dispatch, getState) => {
+    const state = getState();
+    const queryParams = compileParams(addSessionCode(state));
 
-  const left = (screen.width / 2) - (width / 2);
-  const top = (screen.height / 2) - (height / 2);
+    const width = 575;
+    const height = 515;
 
-  if (loginWindowOpened) {
-    loginWindowOpened.close();
+    const left = (screen.width / 2) - (width / 2);
+    const top = (screen.height / 2) - (height / 2);
+
+    if (loginWindowOpened) {
+      loginWindowOpened.close();
+    }
+
+    loginWindowOpened = window.open(
+      window.DP_HELPDESK_URL + `focus-win/login?${queryParams}`,
+      '',
+      `width=${width},height=${height},left=${left},top=${top},` +
+      `resizable=1,directories=0,titlebar=0,location=0,status=0,toolbar=0,menubar=0`
+    );
   }
-
-  loginWindowOpened = window.open(
-    window.DP_HELPDESK_URL + 'focus-win/login',
-    '',
-    `width=${width},height=${height},left=${left},top=${top},` +
-    `resizable=1,directories=0,titlebar=0,location=0,status=0,toolbar=0,menubar=0`
-  );
-}
+);
