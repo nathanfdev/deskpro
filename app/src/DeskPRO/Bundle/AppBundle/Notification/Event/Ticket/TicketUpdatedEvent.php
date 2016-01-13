@@ -46,8 +46,8 @@ class TicketUpdatedEvent extends AbstractSystemEvent
      */
     public function __construct($ticket_id, array $data)
     {
-        $this->$ticket_id = $ticket_id;
-        $this->data       = $data;
+        $this->ticket_id = $ticket_id;
+        $this->data      = $data;
     }
 
     /**
