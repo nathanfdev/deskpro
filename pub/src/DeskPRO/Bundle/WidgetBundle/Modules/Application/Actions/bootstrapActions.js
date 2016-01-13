@@ -45,7 +45,7 @@ export const loadPortalPhraseTranslations = createAction(
     })
 );
 
-export const chatResume = createAction('' +
+export const chatResume = createAction(
   'WIDGET_CHAT_RESUME',
   () => (dispatch, getState) => {
     const state = getState();
@@ -81,6 +81,7 @@ export const chatResume = createAction('' +
     return promise;
   }
 );
+
 export const bootstrapWidget = createAction(
   'WIDGET_BOOTSTRAP',
   () => dispatch => new Promise(resolve => {
