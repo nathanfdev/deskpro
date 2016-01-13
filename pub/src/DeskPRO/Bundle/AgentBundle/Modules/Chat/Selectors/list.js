@@ -23,11 +23,6 @@ export const elementsSelector = createSelector(
   list => list.get('elements')
 );
 
-export const selectedSelector = createSelector(
-  stateSelector,
-  list => list.get('selected')
-);
-
 export const paginationSelector = createSelector(
   stateSelector,
   list => list.get('pagination')

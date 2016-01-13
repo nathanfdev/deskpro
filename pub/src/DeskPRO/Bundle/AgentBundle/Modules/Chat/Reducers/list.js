@@ -1,9 +1,7 @@
 import { createReducer } from 'Ampliflux';
-import Immutable from 'immutable';
-import { async, setValue, setFullPayload, handleMassAction } from 'Ampliflux/reducers/handlers';
+import { async, setValue, setFullPayload } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/chatListActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import * as massActions from '../Actions/chatMassActions';
 
 const initialState = {
   async: {
@@ -24,9 +22,5 @@ export default createReducer(initialState, {
     start: setValue('async.done', false),
     done: setValue('async.done', true)
   }),
-  [actions.reLoad]: async({ success: setFullPayload('elements') }),
-
   [actions.updateCurrentListParams]: setFullPayload('currentListParams'),
-
-  [massActions.toggleMassAction]: handleMassAction('elements', 'selected')
 });

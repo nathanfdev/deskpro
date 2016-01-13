@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import { List } from './List';
-import { currentViewModeSelector, currentContentSelector } from '../../Selectors/list';
+import { currentViewModeSelector, currentContentSelector, loadedSelector, paginationSelector }
+  from '../../Selectors/list';
+import { selectedSelector } from '../../../Application/Selectors/massActions';
 
 import { connect } from 'react-redux';
 @connect(state => {
   return ({
-    loaded: state.CRM.list.getIn(['async', 'done']),
-    pagination: state.CRM.list.get('pagination'),
-    selected: state.CRM.list.get('selected'),
+    loaded: loadedSelector(state),
+    pagination: paginationSelector(state),
+    selected: selectedSelector(state),
     currentViewMode: currentViewModeSelector(state),
     content: currentContentSelector(state)
   });

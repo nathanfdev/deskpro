@@ -22,7 +22,7 @@ export class ContentCommentCard extends Component {
     return (
       <Card type="article">
 
-        <CardCheckbox selected={selected} onClick={toggleSelected(element.id)}/>
+        <CardCheckbox selected={selected} onClick={toggleSelected}/>
 
         <CardLine>
           <CardLineLeft>

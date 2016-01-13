@@ -1,8 +1,9 @@
 import React, {Component, PropTypes} from 'react';
 import { List } from './List';
-import { isCommentsSelector, currentViewModeSelector, selectedSelector, paginationSelector, loadedSelector }
+import { selectedSelector } from '../../../Application/Selectors/massActions';
+import { isCommentsSelector, currentViewModeSelector, paginationSelector, loadedSelector }
   from '../../Selectors/list';
-import { toggleSelectedAction } from '../../Actions/FeedbackMassActions';
+import { toggleSelectedAction } from '../../../Application/Actions/massActions';
 
 import { connect } from 'react-redux';
 @connect(state => {

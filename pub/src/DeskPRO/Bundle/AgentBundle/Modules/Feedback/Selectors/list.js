@@ -11,11 +11,6 @@ export const idsSelector = createSelector(
     state => state.get('elements')
 );
 
-export const selectedSelector = createSelector(
-  stateSelector,
-    state => state.get('selected')
-);
-
 export const currentListParamsSelector = createSelector(
   stateSelector,
     state => state.get('currentListParams')
@@ -130,6 +125,8 @@ export const listFiltersSelector = createSelector(
     return filterSelector;
   }
 );
+
+/* ==================== Mass actions ===================== */
 
 export const massActionsParamsSelector = createSelector(
   stateSelector,

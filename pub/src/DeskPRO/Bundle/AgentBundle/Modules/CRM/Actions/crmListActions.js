@@ -6,6 +6,7 @@ import { setPeopleRequest } from '../RecordStores/Actions/peopleActions';
 import { setOrganizationsRequest } from '../RecordStores/Actions/organizationsActions';
 import { setUserGroupsRequest } from '../RecordStores/Actions/userGroupsActions';
 import { setLanguagesRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/RecordStores/Actions/languagesActions';
+import { toggleMassAction } from '../../Application/Actions/massActions';
 
 const recordStoresId = 'crm';
 
@@ -53,6 +54,7 @@ export const load = createAction(
       delete params.navItem;
       params = { ...params, ...navItem };
     }
+    dispatch(toggleMassAction());
     if (params.content === 'organizations') {
       dispatch(loadOrganizations(params));
     } else {

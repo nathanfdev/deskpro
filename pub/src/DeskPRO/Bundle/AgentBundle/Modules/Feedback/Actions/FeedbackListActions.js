@@ -9,7 +9,7 @@ import { currentListParamsSelector, visibleFieldsSelector } from '../Selectors/l
 import { setFeedbackStatusCategoriesRequest } from '../RecordStores/Actions/feedbackStatusCategoriesActions';
 import { loadFeedbackCommentsCounter } from '../RecordStores/Actions/feedbackCommentsActions';
 import { setFeedbackRequest } from '../RecordStores/Actions/feedbackActions';
-import { toggleMassAction } from './FeedbackMassActions';
+import { toggleMassAction } from '../../Application/Actions/massActions';
 import { feedbackToValidateCounter } from './feedbackNavActions';
 
 /**

@@ -49,10 +49,11 @@ export class Nav extends Component {
 
   render() {
     const {my, all, dpWindow, dispatch, loaded} = this.props;
+    const currentApp = dpWindow.get('activeAppId');
 
     return (
       <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
-        <NavFrameHeader icon="icon-dp-streamline-bubble-conversation-4">
+        <NavFrameHeader icon="icon-dp-streamline-bubble-conversation-4" currentApp={currentApp}>
           Chat
         </NavFrameHeader>
         <NavFrameBody>

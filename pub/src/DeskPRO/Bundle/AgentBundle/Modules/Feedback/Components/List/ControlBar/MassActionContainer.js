@@ -1,7 +1,9 @@
 import React, {Component, PropTypes} from 'react';
 import { MassActionBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/MassActionBar/MassActionBar';
+import { selectedSelector } from '../../../../Application/Selectors/massActions';
+import { toggleMassAction } from '../../../../Application/Actions/massActions';
 import { deleteFeedback, approveFeedback } from '../../../Actions/FeedbackListActions';
-import { toggleMassAction, massAction, setMassActionsParams, resetAllMassActionsParams, resetMassActionsParam }
+import { massAction, setMassActionsParams, resetAllMassActionsParams, resetMassActionsParam }
   from '../../../Actions/FeedbackMassActions';
 import { massActionsSelector, massActionsParamsSelector, currentListParamsSelector } from '../../../Selectors/list';
 import { deleteComment, approveComment }
@@ -9,7 +11,7 @@ import { deleteComment, approveComment }
 
 import { connect } from 'react-redux';
 @connect(state => ({
-  selected: state.Feedback.list.get('selected'),
+  selected: selectedSelector(state),
   currentListParams: currentListParamsSelector(state),
   actions: massActionsSelector(state),
   currentMassActionsParams: massActionsParamsSelector(state)

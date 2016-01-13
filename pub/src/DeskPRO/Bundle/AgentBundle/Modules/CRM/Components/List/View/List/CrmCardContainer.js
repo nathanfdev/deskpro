@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import { toggleSelectedAction } from '../../../../../Application/Actions/massActions';
 import { applyParams } from '../../../../Actions/crmListActions';
 import { OrganizationCard } from './OrganizationCard';
 import { PersonCard } from './PersonCard';
@@ -6,6 +7,7 @@ import { currentContentSelector, elementsSelector }
   from '../../../../Selectors/list';
 import { peopleSelector, organizationsSelector, userGroupsSelector, languagesSelector }
   from '../../../../Selectors/recordStores';
+import { selectedSelector} from '../../../../../Application/Selectors/massActions';
 
 import { connect } from 'react-redux';
 @connect(state => {
@@ -13,7 +15,7 @@ import { connect } from 'react-redux';
     elements: elementsSelector(state),
     people: peopleSelector(state),
     organizations: organizationsSelector(state),
-    selected: state.CRM.list.get('selected'),
+    selected: selectedSelector(state),
     usergroups: userGroupsSelector(state),
     languages: languagesSelector(state),
     content: currentContentSelector(state)
@@ -37,6 +39,12 @@ export class CrmCardContainer extends Component {
     dispatch(applyParams(listOptions));
   }
 
+  toggleSelected(id, e) {
+    e.stopPropagation();
+    const { dispatch } = this.props;
+    dispatch(toggleSelectedAction(id));
+  }
+
   render() {
     const { people, organizations, elements, selected, content, usergroups, languages } = this.props;
     if (content === 'organizations') {
@@ -45,7 +53,8 @@ export class CrmCardContainer extends Component {
           {elements.map((id, index) =>
               <OrganizationCard key={index}
                                 organization={organizations.get(id)}
-                                selected={selected.includes(id)}
+                                selected={selected.indexOf(id) > -1}
+                                toggleSelected={this.toggleSelected.bind(this, id)}
                                 viewEmployees={this.viewEmployees.bind(this)}/>
           )}
         </div>
@@ -62,7 +71,8 @@ export class CrmCardContainer extends Component {
                         usergroups={usergroups}
                         organization={organizations.get(person.get('organization'))}
                         language={languages.get(person.get('language'))}
-                        selected={selected.includes('id')}/>
+                        toggleSelected={this.toggleSelected.bind(this, id)}
+                        selected={selected.indexOf(id) > -1}/>
           );
         })}
       </div>

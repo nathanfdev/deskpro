@@ -1,57 +1,20 @@
 import React, { Component, PropTypes } from 'react';
-import { Card, CardLine, CardLineLeft, CardLineRight, CardLineFull, CardContentText, CardLineItem, CardCheckbox,
-         CardDisc, CardTitle, CardUser, CardLabel, CardComments, CardStatusBar }
+import { Card, CardLine, CardLineLeft, CardLineRight, CardLineItem, CardCheckbox,
+         CardDisc, CardTitle, CardLabel, CardStatusBar }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
-import { connect } from 'react-redux';
-import { toggleSelected } from '../../../../Actions/listActions';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 
 import { LegacyLinkBlock } from 'DeskPRO/Bundle/AgentBundle/Modules/Legacy/Components/legacyRoutes';
 
 @injectIntl
-@connect()
-export class TicketCardContainer extends Component {
+export class TicketCard extends Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
+    toggleSelected: PropTypes.func.isRequired,
     intl: intlShape.isRequired,
     fields: PropTypes.object.isRequired,
     selected: PropTypes.bool.isRequired,
     ticket: PropTypes.object.isRequired
   };
-
-  render() {
-    const { dispatch, selected, ticket } = this.props;
-
-    return (
-      <LegacyLinkBlock route={"/tickets/" + ticket.get('id')}>
-        <Card type="feedback" width={450}>
-          <CardStatusBar align="left" level="5"/>
-          <CardStatusBar align="right" level="5"/>
-
-          <CardCheckbox selected={selected} onClick={() => dispatch(toggleSelected(ticket.get('id')))}/>
-
-          <CardLine>
-            <CardLineLeft>
-              <CardTitle content={ticket.get('subject')}/>
-            </CardLineLeft>
-
-            <CardLineRight>
-              <CardLineItem>{this.renderStatus(ticket)}</CardLineItem>
-            </CardLineRight>
-          </CardLine>
-
-          {this.renderPerson(ticket)}
-          <CardLine>
-            {this.renderAgent(ticket)}
-            {this.renderId(ticket)}
-            {this.renderUrgency(ticket)}
-            {this.renderDateCreated(ticket)}
-          </CardLine>
-          {this.renderLabels(ticket)}
-        </Card>
-      </LegacyLinkBlock>
-    );
-  }
 
   renderStatus(ticket) {
     let status = ticket.get('status');
@@ -65,7 +28,7 @@ export class TicketCardContainer extends Component {
     );
   }
 
-  renderAgent(ticket) {
+  renderAgent() {
     return (
       <div className="dpwd--card-line-item">
         <i className="fa fa-user"></i> Admin Admin
@@ -131,4 +94,39 @@ export class TicketCardContainer extends Component {
       }
     }
   }
+
+  render() {
+    const { selected, ticket, toggleSelected } = this.props;
+
+    return (
+      <LegacyLinkBlock route={'/tickets/' + ticket.get('id')}>
+        <Card type="feedback" width={450}>
+          <CardStatusBar align="left" level="5"/>
+          <CardStatusBar align="right" level="5"/>
+
+          <CardCheckbox selected={selected} onClick={toggleSelected}/>
+
+          <CardLine>
+            <CardLineLeft>
+              <CardTitle content={ticket.get('subject')}/>
+            </CardLineLeft>
+
+            <CardLineRight>
+              <CardLineItem>{this.renderStatus(ticket)}</CardLineItem>
+            </CardLineRight>
+          </CardLine>
+
+          {this.renderPerson(ticket)}
+          <CardLine>
+            {this.renderAgent(ticket)}
+            {this.renderId(ticket)}
+            {this.renderUrgency(ticket)}
+            {this.renderDateCreated(ticket)}
+          </CardLine>
+          {this.renderLabels(ticket)}
+        </Card>
+      </LegacyLinkBlock>
+    );
+  }
+
 }

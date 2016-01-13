@@ -2,8 +2,6 @@ import { createAction } from 'Ampliflux';
 import * as FeedbackAPI from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
 import { applyParams } from './FeedbackListActions';
 
-export const toggleMassAction = createAction('FEEDBACK_TOGGLE_MASS_ACTION');
-export const toggleSelectedAction = createAction('FEEDBACK_TOGGLE_SELECTED_ACTION');
 export const resetAllMassActionsParams = createAction('FEEDBACK_RESET_ALL_MASS_ACTIONS_PARAMS');
 
 export const setMassActionsParams = createAction(
