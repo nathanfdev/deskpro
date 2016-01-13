@@ -56,13 +56,10 @@ export class DpAppRouteContainer extends React.Component {
 
   hideWelcomePage() {
     const { userStatus, dispatch, actionAlertsSetup } = this.props;
-
-    if (!this.welcomePageTimer && userStatus.get('isDone')) {
+    // we should wait for actionAlertsSetup finished, untill hide welcomePage, otherwise polling will not start!
+    if (!this.welcomePageTimer && userStatus.get('isDone') && !actionAlertsSetup) {
       this.welcomePageTimer = setTimeout(() => dispatch(doneInitialLoad()), 3000);
-
-      if (!actionAlertsSetup) {
-        this.setupPolling();
-      }
+      this.setupPolling();
     }
   }
 
