@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\EmailBundle\EntityRepository;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -45,5 +46,19 @@ class SendmailSourceRepository extends AbstractEntityRepository
             array($refs),
             array(Connection::PARAM_STR_ARRAY)
         )->fetchAll();
+    }
+
+    /**
+     * returns the "newest" SendmailSource.
+     */
+    public function getLatest()
+    {
+        $query = $this->createQueryBuilder('ss');
+
+        $query->setMaxResults(1);
+
+        $query->orderBy('ss.date_created', 'DESC');
+
+        return $query->getQuery()->getOneOrNullResult();
     }
 }

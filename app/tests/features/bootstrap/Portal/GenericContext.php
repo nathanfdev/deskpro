@@ -28,6 +28,7 @@
 
 namespace DpBehat\Portal;
 
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Blob;
@@ -42,6 +43,8 @@ use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usergroup;
+use Application\EmailBundle\Entity\SendmailSource;
+use Application\EmailBundle\EntityRepository\SendmailSourceRepository;
 
 class GenericContext extends BasePortalContext
 {
@@ -114,6 +117,99 @@ class GenericContext extends BasePortalContext
         $cat    = $this->getCategory($content_type, $title);
 
         expect($this->isSubscribedCat($person, $cat))->toBe(true);
+    }
+
+    /**
+     * @Then I should recieve an email with the subject phrase :subject_phrase
+     */
+    public function iShouldRecieveAnEmailWithTheSubjectPhrase($subject_phrase)
+    {
+        $subject = $this->phrase($subject_phrase);
+
+        expect($this->getSubjectOfLastEmail())->toBe($subject);
+    }
+
+    /**
+     * @Then I should see a :type flash message with the phrase :phrase
+     */
+    public function iShouldSeeAFlashMessageWithThePhrase($type, $phrase)
+    {
+        $selector = sprintf('.flash.flash-%s', $type);
+        $this->assertSession()->elementExists('css', $selector);
+        $this->assertSession()->elementTextContains('css', $selector, $this->phrase($phrase));
+    }
+
+    /**
+     * @Then I should be on the set password page
+     */
+    public function iShouldBeOnTheSetPasswordPage()
+    {
+        $this->assertSession()->addressMatches('#/login/set-password/.*#');
+        $this->assertSession()->pageTextContains('Set Password');
+    }
+
+    /**
+     * @When I click the email verification link
+     */
+    public function iClickTheEmailVerificationLink()
+    {
+        $this->getSession()->visit($this->getFirstLinkInLastEmail());
+    }
+
+    protected function getFirstLinkInLastEmail()
+    {
+        $email_data = $this->getLastEmailData();
+
+        $regex = '/https?\:\/\/[^\" \s]+/i';
+        preg_match($regex, $email_data['body'], $matches);
+
+        return $matches[0];
+    }
+
+    protected function getSubjectOfLastEmail()
+    {
+        $email_data = $this->getLastEmailData();
+
+        return $email_data['subject'];
+    }
+
+    /**
+     * An array of data that comes from the last email saved to "sendmail_sources".
+     *
+     * @return array
+     */
+    protected function getLastEmailData()
+    {
+        $last_email = $this->getLastEmail();
+
+        $blob = $last_email->getBlob();
+
+        /** @var DeskproBlobStorage $blob_storage */
+        $blob_storage = $this->get('deskpro.blob_storage');
+
+        $email_body    = $blob_storage->copyBlobRecordToString($blob);
+        $email_subject = $last_email->getHeaderSubject();
+
+        return [
+            'body'    => $email_body,
+            'subject' => $email_subject,
+        ];
+    }
+
+    /**
+     * @return SendmailSource
+     */
+    protected function getLastEmail()
+    {
+        /** @var SendmailSourceRepository $ss_repo */
+        $ss_repo = $this->getRepository(SendmailSource::class);
+
+        return $ss_repo->getLatest();
+    }
+
+    protected function phrase($phrase)
+    {
+        return $this->get('language_manager')->phrase($phrase);
     }
 
     /**

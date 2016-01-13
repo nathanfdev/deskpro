@@ -33,11 +33,11 @@ Feature: Commenting
     And I am on "/kb/articles/example-article"
     When I fill in "What is your comment?" with "This is my comment! I just posted it!"
     And I press "Save Comment"
-    Then I should see a "success" flash message
+    Then I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
     And I should see "This is my comment! I just posted it!"
 
   @reinstall
-  Scenario: I comment on an article as a guest
+  Scenario: I comment on an article as a guest and I click the email verification link
     Given I am on "/kb/articles/example-article"
     When I fill in "What is your comment?" with "This is a guest comment!"
     When I fill in "Your Name" with "Chris Name"
@@ -45,6 +45,10 @@ Feature: Commenting
     And I press "Save Comment"
     Then I should see a "success" flash message
     And I should see "Before we can post your content you must verify your email. Please check your email, we have sent you a verification link."
+    And I should recieve an email with the subject phrase "portal.email_subjects.validate-email"
+    When I click the email verification link
+    Then I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
+    And I should be on the set password page
 
 
   #
@@ -70,7 +74,7 @@ Feature: Commenting
     And I am on "/news/posts/example-news-post"
     When I fill in "What is your comment?" with "This is my comment! I just posted it!!"
     And I press "Save Comment"
-    Then I should see a "success" flash message
+    Then I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
     And I should see "This is my comment! I just posted it!!"
 
   @reinstall
@@ -82,6 +86,10 @@ Feature: Commenting
     And I press "Save Comment"
     Then I should see a "success" flash message
     And I should see "Before we can post your content you must verify your email. Please check your email, we have sent you a verification link."
+    And I should recieve an email with the subject phrase "portal.email_subjects.validate-email"
+    When I click the email verification link
+    Then I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
+    And I should be on the set password page
 
 
   #
@@ -110,7 +118,7 @@ Feature: Commenting
     And I am on "/feedback/view/example-feedback"
     When I fill in "What is your comment?" with "This is my comment! I just posted it on a feedback item!"
     And I press "Save Comment"
-    Then I should see a "success" flash message
+    Then I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
     And I should see "This is my comment! I just posted it on a feedback item!"
 
   @reinstall
@@ -123,6 +131,10 @@ Feature: Commenting
     And I press "Save Comment"
     Then I should see a "success" flash message
     And I should see "Before we can post your content you must verify your email. Please check your email, we have sent you a verification link."
+    And I should recieve an email with the subject phrase "portal.email_subjects.validate-email"
+    When I click the email verification link
+    Then I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
+    And I should be on the set password page
 
   #
   # DOWNLOADS
@@ -150,7 +162,7 @@ Feature: Commenting
     And I am on "/downloads/files/example-download"
     When I fill in "What is your comment?" with "This is my comment! I just posted it on a download!"
     And I press "Save Comment"
-    Then I should see a "success" flash message
+    Then I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
     And I should see "This is my comment! I just posted it on a download!"
 
   @reinstall
@@ -163,3 +175,7 @@ Feature: Commenting
     And I press "Save Comment"
     Then I should see a "success" flash message
     And I should see "Before we can post your content you must verify your email. Please check your email, we have sent you a verification link."
+    And I should recieve an email with the subject phrase "portal.email_subjects.validate-email"
+    When I click the email verification link
+    Then I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
+    And I should be on the set password page
