@@ -318,7 +318,7 @@ export const pollingChat = createAction(
         // Load person info
         const peopleIds = [];
         filteredMessages.forEach(message => {
-          const authorId = message.author_id;
+          const authorId = message.author;
           if (authorId && peopleIds.indexOf(authorId) === -1) {
             peopleIds.push(authorId);
           }
