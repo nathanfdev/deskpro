@@ -1,4 +1,5 @@
 import { createAction } from 'Ampliflux';
+import { loadOnlineAgents } from './peopleActions';
 import { loadOptions } from './dpWindowActions';
 import { loadChatPhraseTranslations } from '../../Chat/Actions/chatActions';
 import { loadTicketDisplayFields } from '../../Ticket/Actions/ticketActions';
@@ -46,6 +47,7 @@ export const bootstrapWidget = createAction(
   () => dispatch => new Promise(resolve => {
     Promise.
       all([
+        dispatch(loadOnlineAgents()),
         dispatch(getSession()),
         dispatch(getSettings()),
         dispatch(loadOptions(window.DP_OPTIONS)),
