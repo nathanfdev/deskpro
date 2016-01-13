@@ -58,7 +58,7 @@ class WidgetPersonTransformer extends AbstractDataSerializerTransformer
      */
     public function getAutomaticProperties(DataTransformerRequest $request)
     {
-        return ['id', 'name', 'is_agent'];
+        return ['id', 'display_name', 'primary_email_address', 'is_agent'];
     }
 
     /**
@@ -71,7 +71,6 @@ class WidgetPersonTransformer extends AbstractDataSerializerTransformer
 
         return [
             'avatar' => $this->avatar_resolver->getAvatarModel($data),
-            'email'  => $data->getPrimaryEmailAddress(),
         ];
     }
 }

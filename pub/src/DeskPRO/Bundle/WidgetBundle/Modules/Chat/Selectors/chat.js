@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { peopleSelector } from '../../Application/RecordStores/Selectors/peopleSelectors';
 
 const stateSelector = state => state.Chat.chat;
 
@@ -83,14 +84,20 @@ export const agentIdSelector = createSelector(
   chatInfo => chatInfo.get('agent')
 );
 
+export const agentSelector = createSelector(
+  agentIdSelector,
+  peopleSelector,
+  (agentId, people) => people.get(agentId)
+);
+
 export const agentNameSelector = createSelector(
-  chatInfoSelector,
-  chatInfo => chatInfo.get('agent_name') || 'Agent'
+  agentSelector,
+  agent => agent && agent.get('display_name') || 'Agent'
 );
 
 export const agentAvatarSelector = createSelector(
-  chatInfoSelector,
-  chatInfo => chatInfo.get('agent_avatar')
+  agentSelector,
+  agent => agent && agent.get('avatar')
 );
 
 export const agentTypingDateSelector = createSelector(
@@ -103,19 +110,32 @@ export const departmentNameSelector = createSelector(
   chatInfo => chatInfo.get('department_name')
 );
 
+export const authorIdSelector = createSelector(
+  chatInfoSelector,
+  chatInfo => chatInfo.get('person')
+);
+
+export const authorSelector = createSelector(
+  authorIdSelector,
+  peopleSelector,
+  (authorId, people) => people.get(authorId)
+);
+
 export const authorEmailSelector = createSelector(
   chatInfoSelector,
-  chatInfo => chatInfo.get('author_email')
+  authorSelector,
+  (chatInfo, author) => author && author.get('primary_email_address') || chatInfo.get('person_email')
 );
 
 export const authorNameSelector = createSelector(
   chatInfoSelector,
-  chatInfo => chatInfo.get('author_name')
+  authorSelector,
+  (chatInfo, author) => author && author.get('display_name') || chatInfo.get('person_name')
 );
 
 export const authorAvatarSelector = createSelector(
-  chatInfoSelector,
-  chatInfo => chatInfo.get('author_avatar')
+  authorSelector,
+  author => author.get('avatar')
 );
 
 export const dateEndedSelector = createSelector(
