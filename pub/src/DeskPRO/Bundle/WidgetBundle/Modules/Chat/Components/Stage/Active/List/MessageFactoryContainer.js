@@ -8,17 +8,19 @@ import { MessageAttachment } from './Message/Attachment/MessageAttachment';
 import { MessageContent } from './Message/MessageContent';
 import { MessageFooter } from './Message/MessageFooter';
 import { AvatarResolver } from '../../../../../Application/Components/AvatarResolver';
-import { phraseTranslationsSelector } from '../../../../Selectors/chat';
+import { phraseTranslationsSelector, authorNameSelector } from '../../../../Selectors/chat';
 import { peopleSelector } from '../../../../../Application/RecordStores/Selectors/peopleSelectors';
 import Immutable from 'immutable';
 
 @connect(state => ({
+  authorName: authorNameSelector(state),
   people: peopleSelector(state),
   phraseTranslations: phraseTranslationsSelector(state)
 }))
 export class MessageFactoryContainer extends React.Component {
 
   static propTypes = {
+    authorName: PropTypes.string,
     people: PropTypes.object,
     phraseTranslations: PropTypes.object,
     message: PropTypes.object
@@ -47,6 +49,21 @@ export class MessageFactoryContainer extends React.Component {
     return authorType;
   }
 
+  getAuthorName() {
+    const { message, authorName } = this.props;
+    if (message.get('is_sys')) {
+      return '*';
+    }
+
+    const author = this.getAuthor();
+    if (author && author.get('display_name')) {
+      return author.get('display_name');
+    }
+
+    const authorType = this.getAuthorType();
+    return authorType === 'user' ? authorName : 'Agent';
+  }
+
   renderEvent() {
     const { message, phraseTranslations } = this.props;
 
@@ -70,9 +87,10 @@ export class MessageFactoryContainer extends React.Component {
     const metadata = this.getMetadata();
     const authorType = this.getAuthorType();
     const author = this.getAuthor();
+    const authorName = this.getAuthorName();
 
     const props = this.props;
-    const messageProps = { ...props, authorType, author };
+    const messageProps = { ...props, authorType, author, authorName };
 
     return (
       <Message type={authorType}>
