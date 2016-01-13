@@ -52,13 +52,16 @@ class RedisDeliveryHandlerSpec extends ObjectBehavior
         $actionAlert->getData()->willReturn([]);
         $actionAlert->getDate()->willReturn(new \DateTime());
         $actionAlert->getType()->willReturn('test.action.alert');
-        // It couldn't be tested because MagicCallPatch don't uses Interface @method annotations to apply patch
-//        $actionAlert->getTarget()->shouldBeCalled();
-//        $actionAlert->getDate()->shouldBeCalled();
-//        $actionAlert->getId()->shouldBeCalled();
-//        $actionAlert->getType()->shouldBeCalled();
-//        $actionAlert->getData()->shouldBeCalled();
-//        $client->publish(RedisDeliveryHandler::CHANNEL_ACTION_ALERT, Argument::any())->shouldBeCalled();
-//        $this->deliver($actionAlert);
+        /*
+         * @see https://github.com/phpspec/prophecy/pull/247
+         * @todo we should uncomment this when above noticed pull request will be merged
+         * $actionAlert->getTarget()->shouldBeCalled();
+         * $actionAlert->getDate()->shouldBeCalled();
+         * $actionAlert->getId()->shouldBeCalled();
+         * $actionAlert->getType()->shouldBeCalled();
+         * $actionAlert->getData()->shouldBeCalled();
+         * $client->publish(RedisDeliveryHandler::CHANNEL_ACTION_ALERT, Argument::any())->shouldBeCalled();
+         * $this->deliver($actionAlert);
+         */
     }
 }
