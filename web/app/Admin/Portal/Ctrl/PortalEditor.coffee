@@ -217,7 +217,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       modalInstance.result.then((email) => @preview_as_email = email; @refreshPreviewUrl())
 
     loadMyEmail: () =>
-      @$http.get('/portal/api/me/email').then((email) => @my_email = email; @refreshPreviewUrl())
+      @$http.get('/portal/api/me/email')
+            .success((email) => @my_email = angular.fromJson(email); @refreshPreviewUrl())
+            .error(() => error('Server error occurred. Unable to load user email.'))
 
     error: (message) -> window.alert(message)
     success: (message) -> window.alert(message)

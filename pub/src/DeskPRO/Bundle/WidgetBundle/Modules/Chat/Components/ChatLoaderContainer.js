@@ -48,7 +48,7 @@ export class ChatLoaderContainer extends React.Component {
       dispatch(setChatId(storedChatId));
       dispatch(openWidget());
 
-      if (chatInfo.agent_id) {
+      if (chatInfo.agent) {
         history.replace('/chat/active');
       } else if (chatInfo.need_validate_email) {
         history.replace('/chat/validation/email');

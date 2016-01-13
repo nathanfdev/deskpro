@@ -111,9 +111,7 @@ export const reloadOptions = createAction(
 );
 
 export const openTriggerPopup = createAction('WIDGET_OPEN_TRIGGER_POPUP');
-export const closeTriggerPopup = createAction('WIDGET_CLOSE_TRIGGER_POPUP', () => {
-  localStorage['dpWidget.dpWindow.popupShown'] = 'none';
-});
+export const closeTriggerPopup = createAction('WIDGET_CLOSE_TRIGGER_POPUP');
 
 let loginWindowOpened;
 export const openLoginWindow = createAction(
