@@ -215,7 +215,7 @@ describe('Ampliflux actions handlers', () => {
   describe('handleMassAction()', () => {
     it('should select target properties (id) of a collection of objects', () => {
       const next = handlers.handleMassAction('elements', 'selected')(state, true);
-      expect(next.get('selected').size).toEqual(3);
+      expect(next.get('selected').size).toEqual(0);
     });
 
     it('should empty target when handling deselection', () => {
