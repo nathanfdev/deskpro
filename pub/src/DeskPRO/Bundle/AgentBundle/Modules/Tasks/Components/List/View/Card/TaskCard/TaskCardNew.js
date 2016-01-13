@@ -1,8 +1,11 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { listParamsNavSelector } from '../../../../../Selectors/list';
+import Immutable from 'immutable';
 import { SaveTaskButton } from './SaveTaskButton';
 import {
   Card,
-  CardCheckbox,
+  CardReset,
   CardLine,
   CardLineLeft,
   CardLineRight
@@ -13,56 +16,134 @@ import {
   CardProject,
   ProjectContainer,
   Comments,
-  AssigneeContainer,
+  AssignButton,
   AssigneeAvatar
 } from '../../../TaskCard/index';
 
 export class TaskCardNew extends React.Component {
 
   static propTypes = {
-    dateDue: PropTypes.string,
-    project: PropTypes.number,
-    assignee: PropTypes.object,
-    submit: PropTypes.bool,
-    onChangeTitle: PropTypes.func,
     onSaveTask: PropTypes.func
   };
 
-  onSave = event => {
-    this.refs.form.onSubmit(event);
+  constructor(props) {
+    super(props);
+
+    this.model = {
+      title: null,
+      due: null,
+      assignee: Immutable.fromJS({
+        agents: [],
+        teams: [],
+        departments: []
+      }),
+      project: null
+    };
+
+    this.state = {
+      isChanged: false
+    };
+    this.prev = false;
+  }
+
+  reset = () => {
+    if (!this.state.isChanged) {
+      return;
+    }
+    this.model = {
+      title: null,
+      due: null,
+      assignee: Immutable.fromJS({
+        agents: [],
+        teams: [],
+        departments: []
+      }),
+      project: null
+    };
+    this.setState({isChanged: false});
   };
 
+  onSetEditing = (isEditing) => {
+    this.setState({isChanged: isEditing || this.prev});
+  };
+
+  onChange(prop, value) {
+    this.model[prop] = value;
+    this.setState({isChanged: true});
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    this.prev = prevState.isChanged;
+  }
+
+  onAssign = (assignee) => {
+    return new Promise(resolve => {
+      this.model.assignee = assignee;
+      this.setState({isChanged: true});
+      resolve();
+    });
+  };
+
+  // todo
+  //onSubmit(title) {
+  //  const { dispatch, onClose } = this.props;
+  //  const submitData = {
+  //    title: title,
+  //    task_type: 'task',
+  //    visibility: 'public',
+  //    urgency: 1,
+  //    date_due: this.getDateDue(),
+  //    project: this.getProject()
+  //  };
+  //
+  //  const agent = this.getAgent();
+  //  const team = this.getTeam();
+  //  const department = this.getDepartment();
+  //
+  //  if (agent) {
+  //    submitData.agents = [agent];
+  //  }
+  //  if (team) {
+  //    submitData.teams = [team];
+  //  }
+  //  if (department) {
+  //    submitData.departments = [department];
+  //  }
+  //
+  //  this.setState({
+  //    submit: true
+  //  });
+  //
+  //  const promise = dispatch(addTask(submitData));
+  //  promise.then(() => onClose());
+  //};
+
   render() {
-    const { dateDue, project, assignee, submit } = this.props;
-    const { onSaveTask } = this.props;
+    const { submit } = this.props;
+    const { title, due, project, assignee } = this.model;
 
     return (
       <Card type="task">
         <SaveTaskButton onClick={this.onSave} submit={submit} />
-        <CardCheckbox />
+        <CardReset isActive={this.state.isChanged} onClick={this.reset} />
         <CardLine>
           <CardLineLeft>
             <div className="dpwd--card-title">
-              <TitleForm ref="form" onChange={onSaveTask} />
+              <TitleForm onChange={this.onChange.bind(this, 'title')} value={title} />
             </div>
           </CardLineLeft>
           <CardLineRight>
-            <AssigneeContainer>
-              <AssigneeAvatar task={assignee} />
-            </AssigneeContainer>
+            <AssignButton onSetEditing={this.onSetEditing} task={assignee} onAssign={this.onAssign} />
           </CardLineRight>
         </CardLine>
 
         <CardLine>
           <CardLineLeft>
-            <DateDue value={dateDue} />
+            <DateDue onChange={this.onChange.bind(this, 'due')} value={due} onSetEditing={this.onSetEditing} />
             <ProjectContainer project={project}>
-              <CardProject />
+              <CardProject onChange={this.onChange.bind(this, 'project')} />
             </ProjectContainer>
           </CardLineLeft>
-          <CardLineRight>
-            <Comments />
-          </CardLineRight>
         </CardLine>
       </Card>
     );

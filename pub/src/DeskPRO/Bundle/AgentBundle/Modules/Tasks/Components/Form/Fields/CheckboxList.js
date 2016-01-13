@@ -5,6 +5,8 @@ import classNames from 'classnames';
 export class CheckboxList extends React.Component {
 
   static propTypes = {
+    values: PropTypes.object.isRequired,
+    renderLabel: PropTypes.func.isRequired,
     multiple: PropTypes.bool,
     selected: PropTypes.array,
     showOnlySelected: PropTypes.bool,
@@ -12,6 +14,10 @@ export class CheckboxList extends React.Component {
     options: PropTypes.any,
     onChange: PropTypes.func.isRequired
   };
+
+  constructor(props) {
+    super(props);
+  }
 
   onClick(value) {
     const { multiple, selected = [], onChange } = this.props;
@@ -30,9 +36,10 @@ export class CheckboxList extends React.Component {
     }
   };
 
-  renderItem({label, value, keyword}, index) {
-    const { selected = [], showOnlySelected = false, filter = '' } = this.props;
-    const checked = selected.indexOf(value) !== -1;
+  renderItem(option, index) {
+    const { selected = [], showOnlySelected = false, filter = '', renderLabel } = this.props;
+    const id = option.get('id');
+    const checked = selected.indexOf(id) !== -1;
 
     if (showOnlySelected && !checked) {
       return null;
@@ -43,12 +50,12 @@ export class CheckboxList extends React.Component {
 
     return (
       <li key={index}>
-        <a className={classNames('checkbox-button', {'checked': checked})} onClick={this.onClick.bind(this, value)}>
+        <a className={classNames('checkbox-button', {'checked': checked})} onClick={this.onClick.bind(this, id)}>
 
           <span className="checkbox">
             {checked ? <i className="fa fa-check"></i> : null}
           </span>
-          <span className="name">{label}</span>
+          {renderLabel(option)}
         </a>
       </li>
     );
@@ -58,7 +65,7 @@ export class CheckboxList extends React.Component {
     return (
       <Scrollable vertical>
         <ul>
-          {this.props.options.map((option, index) => this.renderItem(option, index))}
+          {this.props.values.map((option, index) => this.renderItem(option, index))}
         </ul>
       </Scrollable>
     );

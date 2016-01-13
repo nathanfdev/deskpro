@@ -98,18 +98,21 @@ export class HelpButtonContainer extends React.Component {
 
   pollingRequest() {
     const { widgetOpened, dispatch, agentPollingTimeout, liveDemo } = this.props;
-    if (widgetOpened) {
+    if (agentPollingTimeout === 'off' || !agentPollingTimeout || liveDemo) {
       return;
     }
 
-    const promise = dispatch(loadOnlineAgents());
+    // Save polling loop if widget opened but don't send requests
     const onResponse = () => {
-      if (agentPollingTimeout !== 'off' && agentPollingTimeout > 0 && !liveDemo) {
-        setTimeout(() => this.pollingRequest(), agentPollingTimeout * 1000);
-      }
+      setTimeout(() => this.pollingRequest(), agentPollingTimeout * 1000);
     };
 
-    promise.then(onResponse, onResponse);
+    if (widgetOpened) {
+      onResponse();
+    } else {
+      const promise = dispatch(loadOnlineAgents());
+      promise.then(onResponse, onResponse);
+    }
   }
 
   renderPopup() {

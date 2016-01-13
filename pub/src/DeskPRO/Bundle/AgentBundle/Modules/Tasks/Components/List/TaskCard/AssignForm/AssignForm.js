@@ -3,6 +3,11 @@ import { editTask } from '../../../../Actions/listActions';
 import classNames from 'classnames';
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import Immutable from 'immutable';
+import { connect } from 'react-redux';
+import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
+import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
+import { agentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
+import { allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
 import {
   BaseForm,
   Header,
@@ -18,12 +23,18 @@ import {
   DepartmentsList
 } from '../../../Form/index';
 
+@connect(state => ({
+  me: meSelector(state),
+  agents: agentsSelector(state),
+  agentTeams: agentTeamsSelector(state),
+  departments: allDepartmentsSelector(state)
+}))
+
 export class AssignForm extends BaseForm {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
     task: PropTypes.object.isRequired,
-    onCloseForm: PropTypes.func.isRequired
+    onSubmit: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -42,29 +53,30 @@ export class AssignForm extends BaseForm {
     };
   }
 
-  onSubmit(event) {
+  onSubmit = event => {
     event.preventDefault();
 
-    const { task, dispatch } = this.props;
-    console.log(task.get('id'));
-    const submitData = {
+    const submitData = Immutable.fromJS({
       agents: this.state.agents,
       teams: this.state.agentTeams,
       departments: this.state.departments
-    };
+    });
 
     this.setState({
       submit: true
     });
 
-    dispatch(editTask(task.get('id'), submitData)).then(
-      () => this.props.onCloseForm(),
-      result => this.props.onCloseForm()
-    );
+    this.props.onSubmit(submitData);
+  };
+
+  onChange(prop, value) {
+    this.setState({
+      [prop]: value
+    });
   }
 
   render() {
-    const { agents, agentTeams, departments } = this.props;
+    const { agents, agentTeams, departments, task } = this.props;
 
     return (
       <Popup additionalClassNames="assign-form">
@@ -74,8 +86,7 @@ export class AssignForm extends BaseForm {
           <div className="dpw--popup-content">
             <FieldGroup>
               <FloatField align="left">
-                <QuickFilter value={this.state.quickFilter}
-                             onChange={this.onChangeQuickFilter} />
+                <QuickFilter value={this.state.quickFilter} onChange={this.onChangeQuickFilter} />
               </FloatField>
 
               <FloatField align="right">
@@ -90,25 +101,22 @@ export class AssignForm extends BaseForm {
                 </div>
                 <AgentsList values={agents}
                             selected={this.state.agents}
-                            showOnlySelected={this.state.showOnlySelected}
                             filter={this.state.quickFilter}
-                            onChange={this.onChangeAgents} />
+                            onChange={this.onChange.bind(this, 'agents')} />
               </CollectionField>
 
               <CollectionField title="Team">
                 <AgentTeamsList values={agentTeams}
-                                selected={this.state.agentTeams}
-                                showOnlySelected={this.state.showOnlySelected}
+                                selected={this.state.teams}
                                 filter={this.state.quickFilter}
-                                onChange={this.onChangeAgentTeams} />
+                                onChange={this.onChange.bind(this, 'teams')} />
               </CollectionField>
 
               <CollectionField title="Department">
                 <DepartmentsList values={departments}
                                  selected={this.state.departments}
-                                 showOnlySelected={this.state.showOnlySelected}
                                  filter={this.state.quickFilter}
-                                 onChange={this.onChangeDepartments} />
+                                 onChange={this.onChange.bind(this, 'departments')} />
               </CollectionField>
             </FieldGroup>
 
@@ -117,8 +125,8 @@ export class AssignForm extends BaseForm {
                 <button type="submit"
                         value="Save"
                         className={classNames('dpw--popup-button', {'hidden': this.state.submit})}
-                        onClick={this.onSubmit.bind(this)}>
-                  Save
+                        onClick={this.onSubmit}>
+                  {task.get('id') ? 'Save' : 'Ok'}
                 </button>
                 <LoadIndicator width={3} loaded={!this.state.submit} />
               </FullField>

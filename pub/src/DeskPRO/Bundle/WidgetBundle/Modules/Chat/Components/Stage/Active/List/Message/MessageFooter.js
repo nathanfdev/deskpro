@@ -6,13 +6,14 @@ import { timeAgoForamtter } from '../../../../../../../Services/timeago';
 export class MessageFooter extends React.Component {
 
   static propTypes = {
+    authorType: PropTypes.string,
     message: PropTypes.object
   };
 
   render() {
-    const { message } = this.props;
+    const { message, authorType } = this.props;
 
-    const isUser = message.get('author_type') !== 'agent';
+    const isUser = authorType !== 'agent';
     const date = message.get('date_created');
     const notDelivered = message.get('not_delivered');
 

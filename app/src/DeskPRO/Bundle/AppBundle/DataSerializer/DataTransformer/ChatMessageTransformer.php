@@ -29,11 +29,9 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
 use Application\DeskPRO\Entity\ChatMessage;
-use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 
 /**
@@ -42,24 +40,11 @@ use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 class ChatMessageTransformer extends AbstractDataSerializerTransformer
 {
     /**
-     * @var AvatarResolver
-     */
-    private $avatar_resolver;
-
-    /**
-     * @param AvatarResolver $avatar_resolver
-     */
-    public function __construct(AvatarResolver $avatar_resolver)
-    {
-        $this->avatar_resolver = $avatar_resolver;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        return ['id', 'content', 'is_html', 'is_sys', 'date_created', 'date_received'];
+        return ['id', 'author', 'content', 'is_html', 'is_sys', 'date_created', 'date_received'];
     }
 
     /**
@@ -75,8 +60,6 @@ class ChatMessageTransformer extends AbstractDataSerializerTransformer
             'conversation_id' => $data->getConversation()->getId(),
             'author_id'       => $this->getAuthorId($data),
             'author_type'     => $this->getAuthorType($data),
-            'author_name'     => $this->getAuthorName($data),
-            'author_avatar'   => $this->getAuthorAvatar($data),
             'metadata'        => $data->getMetadata(),
         ];
     }
@@ -112,41 +95,5 @@ class ChatMessageTransformer extends AbstractDataSerializerTransformer
         }
 
         return $author_type;
-    }
-
-    /**
-     * @param ChatMessage $message
-     *
-     * @return string
-     */
-    private function getAuthorName(ChatMessage $message)
-    {
-        if ($message->getIsSys()) {
-            return '*';
-        }
-
-        $author = $message->getAuthor();
-        if ($author) {
-            return $author['display_name_user'];
-        }
-
-        $conversation = $message->getConversation();
-        if ($conversation['person_name']) {
-            return $conversation['person_name'];
-        }
-
-        return 'User';
-    }
-
-    /**
-     * @param ChatMessage $message
-     *
-     * @return string|null
-     */
-    private function getAuthorAvatar(ChatMessage $message)
-    {
-        $author = $message->getAuthor();
-
-        return $author ? $this->avatar_resolver->getAvatarModel($author) : null;
     }
 }

@@ -14,7 +14,7 @@ import {
   chatInfoSelector,
   chatLoadedSelector,
   isEndedSelector,
-  authorAvatarSelector,
+  authorIdSelector,
   messageIdsSelector,
   attachmentsSelector,
   canReopenSelector,
@@ -318,7 +318,7 @@ export const pollingChat = createAction(
         // Load person info
         const peopleIds = [];
         filteredMessages.forEach(message => {
-          const authorId = message.author_id;
+          const authorId = message.author;
           if (authorId && peopleIds.indexOf(authorId) === -1) {
             peopleIds.push(authorId);
           }
@@ -361,7 +361,7 @@ export const sendChatMessage = createAction(
     }
 
     const state = getState();
-    const authorAvatar = authorAvatarSelector(state);
+    const authorId = authorIdSelector(state);
     const tmpId = generate({
       length: 20,
       charset: 'alphabetic'
@@ -373,8 +373,7 @@ export const sendChatMessage = createAction(
         tmp_id: tmpId,
         content: params.message,
         is_html: true,
-        author_avatar: authorAvatar,
-        author_type: 'user',
+        author: authorId,
         date_created: moment().format()
       }));
     }
@@ -387,8 +386,7 @@ export const sendChatMessage = createAction(
         tmp_id: tmpId,
         content: null,
         is_html: true,
-        author_avatar: authorAvatar,
-        author_type: 'user',
+        author: authorId,
         date_created: moment().format(),
         metadata: {
           type: 'file',

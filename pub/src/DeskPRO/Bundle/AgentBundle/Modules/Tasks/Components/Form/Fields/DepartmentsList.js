@@ -7,16 +7,15 @@ export class DepartmentsList extends React.Component {
     values: PropTypes.object
   };
 
-  render() {
-    const { values = [] } = this.props;
-    const options = values.map(value => ({
-      label: value.get('title'),
-      value: value.get('id'),
-      keyword: value.get('title')
-    }));
-
+  renderLabel(value) {
     return (
-      <CheckboxList {...this.props} options={options} />
+      value.get('title')
+    );
+  }
+
+  render() {
+    return (
+      <CheckboxList {...this.props} renderLabel={this.renderLabel} />
     );
   }
 }

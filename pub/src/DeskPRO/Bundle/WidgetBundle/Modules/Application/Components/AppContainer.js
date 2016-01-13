@@ -6,7 +6,6 @@ import { windowResize } from '../Actions/dpWindowActions';
 import { widgetLoadedSelector } from '../Selectors/bootstrap';
 import $ from 'jquery';
 import debounce from 'lodash/function/debounce';
-import { ChatLoaderContainer } from '../../Chat/Components/ChatLoaderContainer';
 
 @connect(state => ({
   widgetLoaded: widgetLoadedSelector(state)
@@ -43,7 +42,6 @@ export class AppContainer extends React.Component {
       <div>
         <Trigger />
         <Widget />
-        <ChatLoaderContainer />
       </div>
     );
   }

@@ -4,7 +4,7 @@ import { openFullImage } from 'DeskPRO/Component/Util/FullImage';
 export class MessageImage extends React.Component {
 
   static propTypes = {
-    message: PropTypes.object,
+    authorName: PropTypes.string,
     attachment: PropTypes.object
   };
 
@@ -13,9 +13,7 @@ export class MessageImage extends React.Component {
   };
 
   render() {
-    const { message, attachment } = this.props;
-
-    const authorName = message.get('author_name');
+    const { authorName, attachment } = this.props;
     const downloadUrl = attachment.get('download_url');
 
     return (

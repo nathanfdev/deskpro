@@ -130,12 +130,7 @@ export const authorEmailSelector = createSelector(
 export const authorNameSelector = createSelector(
   chatInfoSelector,
   authorSelector,
-  (chatInfo, author) => author && author.get('display_name') || chatInfo.get('person_name')
-);
-
-export const authorAvatarSelector = createSelector(
-  authorSelector,
-  author => author.get('avatar')
+  (chatInfo, author) => author && author.get('display_name') || chatInfo.get('person_name') || 'User'
 );
 
 export const dateEndedSelector = createSelector(

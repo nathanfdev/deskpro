@@ -7,16 +7,15 @@ export class AgentTeamsList extends React.Component {
     values: PropTypes.object
   };
 
-  render() {
-    const { values = [] } = this.props;
-    const options = values.map(value => ({
-      label: value.get('name'),
-      value: value.get('id'),
-      keyword: value.get('name')
-    }));
-
+  renderLabel(value) {
     return (
-      <CheckboxList {...this.props} options={options} />
+      value.get('name')
+    );
+  }
+
+  render() {
+    return (
+      <CheckboxList {...this.props} renderLabel={this.renderLabel} />
     );
   }
 }

@@ -6,7 +6,6 @@ import {
   DateDue,
   SubTasks,
   Comments,
-  AssigneeContainer,
   AssigneeName
 } from '../../../TaskCard/index';
 import classNames from 'classnames';
@@ -53,9 +52,7 @@ export class TaskCard extends BaseTaskCard {
           <div className="card-line task-details">
             <div className="top-right-box">
                 <span className="assignment">
-                  <AssigneeContainer>
-                    <AssigneeName task={task} />
-                  </AssigneeContainer>
+                  <AssigneeName task={task} />
                 </span>
             </div>
             <div>

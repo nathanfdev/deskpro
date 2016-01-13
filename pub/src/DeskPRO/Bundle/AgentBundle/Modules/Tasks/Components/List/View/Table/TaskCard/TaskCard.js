@@ -4,7 +4,7 @@ import { getEmptyImage } from 'react-dnd-html5-backend';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { cardSourceSpec, cardSourceCollect, cardTargetSpec, targetCollect } from '../../../TaskCard/TaskCardEditContainer';
 import { Td, TdId, TdTitle } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
-import { BaseTaskCard, ProjectContainer, AssigneeContainer, AssigneeName } from '../../../TaskCard/index';
+import { BaseTaskCard, ProjectContainer, AssigneeName } from '../../../TaskCard/index';
 import { Project } from './Project';
 import { TableCheckbox } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import classNames from 'classnames';
@@ -59,9 +59,7 @@ export class TaskCard extends BaseTaskCard {
           {task.get('date_due') ? moment(task.get('date_due')).format('DD/MM/YY') : 'N/A'}
         </Td>
         <Td visible={isVisible('assignee')}>
-          <AssigneeContainer>
-            <AssigneeName task={task} />
-          </AssigneeContainer>
+          <AssigneeName task={task} />
         </Td>
       </tr>
     );

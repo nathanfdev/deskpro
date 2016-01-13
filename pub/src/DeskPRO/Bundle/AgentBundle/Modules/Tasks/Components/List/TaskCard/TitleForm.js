@@ -6,57 +6,25 @@ export class TitleForm extends React.Component {
 
   static propTypes = {
     value: PropTypes.string,
-    onChange: PropTypes.func
+    onChange: PropTypes.func.isRequired
   };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      error: false,
-      value: props.value
-    };
-  }
 
   componentDidMount() {
     jQuery(this.refs.input).focus();
   }
 
   onChange = event => {
-    this.setState({
-      value: event.target.value,
-      error: false
-    });
-  };
-
-  onSubmit = event => {
-    event.preventDefault();
-    const { value, onChange } = this.props;
-
-    // Prevent sending empty data or set default value if it exists
-    if (this.state.value) {
-      onChange(this.state.value);
-      return;
-    }
-
-    if (value) {
-      this.setState({
-        value: value
-      });
-    } else {
-      this.setState({
-        error: true
-      });
-    }
+    this.props.onChange(event.target.value);
   };
 
   render() {
+    const { value } = this.props;
     return (
-      <form className="inline-form" onSubmit={this.onSubmit}>
+      <form className="inline-form">
         <input type="text"
                ref="input"
                name="title"
-               value={this.state.value}
-               className={classNames({'error': this.state.error})}
+               value={value}
                onChange={this.onChange} />
       </form>
     );
