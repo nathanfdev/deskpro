@@ -32,7 +32,6 @@
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
 use Application\DeskPRO\Entity\ChatMessage;
-use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 
 /**
@@ -40,19 +39,6 @@ use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
  */
 class ChatMessageTransformer extends AbstractDataSerializerTransformer
 {
-    /**
-     * @var AvatarResolver
-     */
-    private $avatar_resolver;
-
-    /**
-     * @param AvatarResolver $avatar_resolver
-     */
-    public function __construct(AvatarResolver $avatar_resolver)
-    {
-        $this->avatar_resolver = $avatar_resolver;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -75,7 +61,6 @@ class ChatMessageTransformer extends AbstractDataSerializerTransformer
             'author_id'       => $this->getAuthorId($data),
             'author_type'     => $this->getAuthorType($data),
             'author_name'     => $this->getAuthorName($data),
-            'author_avatar'   => $this->getAuthorAvatar($data),
             'metadata'        => $data->getMetadata(),
         ];
     }
@@ -135,17 +120,5 @@ class ChatMessageTransformer extends AbstractDataSerializerTransformer
         }
 
         return 'User';
-    }
-
-    /**
-     * @param ChatMessage $message
-     *
-     * @return string|null
-     */
-    private function getAuthorAvatar(ChatMessage $message)
-    {
-        $author = $message->getAuthor();
-
-        return $author ? $this->avatar_resolver->getAvatarModel($author) : null;
     }
 }
