@@ -42,7 +42,24 @@ export const unsetChatId = createAction(
 
 export const setLoaded = createAction('WIDGET_CHAT_SET_LOADED');
 export const unsetLoaded = createAction('WIDGET_CHAT_UNSET_LOADED');
-export const updateChatInfo = createAction('WIDGET_CHAT_UPDATE_CHAT_INFO');
+export const updateChatInfo = createAction(
+  'WIDGET_CHAT_UPDATE_CHAT_INFO',
+  chatInfo => dispatch => {
+    const peopleIds = [];
+    if (chatInfo.person) {
+      peopleIds.push(chatInfo.person);
+    }
+    if (chatInfo.agent) {
+      peopleIds.push(chatInfo.agent);
+    }
+
+    if (peopleIds.length) {
+      dispatch(loadPeople('all', peopleIds));
+    }
+
+    return chatInfo;
+  }
+);
 export const enableChatReopen = createAction('WIDGET_CHAT_ENABLE_REOPEN');
 export const disableChatReopen = createAction('WIDGET_CHAT_DISABLE_REOPEN');
 
@@ -303,7 +320,7 @@ export const pollingChat = createAction(
           }
         });
 
-        if (peopleIds) {
+        if (peopleIds.length) {
           dispatch(loadPeople('all', peopleIds));
         }
       }
