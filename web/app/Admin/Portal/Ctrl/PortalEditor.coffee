@@ -20,7 +20,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @preview_as_expanded = false
       @preview_as = 'myself'
       @preview_as_email = null
-      @refreshPreviewUrl()
+      @loadMyEmail()
 
     save: () =>
       request = @$http({
@@ -84,11 +84,12 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     label: (sys_name) ->
       sys_name.replace(/[\-_]/g, ' ').replace(/^(.)|\s(.)/g, (v) -> v.toUpperCase())
 
-    refreshPreviewUrl: ->
-      @preview_url = '/admin-preview?anti-cache=' + (new Date()).getTime() + '&mode=' + @preview_as
-      if @preview_as is 'user' or @preview_as is 'agent'
-        @preview_url += '&email=' + @preview_as_email
-
+    refreshPreviewUrl: =>
+      preview_url = '/admin-preview?anti-cache=' + (new Date()).getTime()
+      if @preview_as is 'user' or @preview_as is 'agent' then preview_url += '&_preview_as=' + @preview_as_email
+      if @preview_as is 'myself' then preview_url += '&_preview_as=' + @my_email
+      if @preview_as is 'guest' then preview_url += '&_preview_as=_anon'
+      @preview_url = preview_url
 
     loadValues: (success) ->
       @$http.get('/portal/api/style/edit-theme-set/variable-values').success(
@@ -214,6 +215,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         }
       });
       modalInstance.result.then((email) => @preview_as_email = email; @refreshPreviewUrl())
+
+    loadMyEmail: () =>
+      @$http.get('/portal/api/me/email').then((email) => @my_email = email; @refreshPreviewUrl())
 
     error: (message) -> window.alert(message)
     success: (message) -> window.alert(message)

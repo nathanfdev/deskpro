@@ -286,6 +286,15 @@ class DesignerController extends AbstractApiController
     }
 
     /**
+     * @Route("/portal/api/me/email")
+     * @Method({"GET"})
+     */
+    public function getMyEmailAction()
+    {
+        return new JsonResponse($this->getUser()->getPrimaryEmail()->getEmail());
+    }
+
+    /**
      * @return StylesManager
      */
     private function getStylesManager()
