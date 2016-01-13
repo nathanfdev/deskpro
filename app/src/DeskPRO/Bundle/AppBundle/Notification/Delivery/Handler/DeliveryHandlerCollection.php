@@ -76,13 +76,13 @@ class DeliveryHandlerCollection extends AbstractCollection
     public function removeHandler($handler_type)
     {
         if (!$this->hasHandler($handler_type)) {
-            throw new \InvalidArgumentException(sprintf('Trying to remove handler with type [%s] that wasn\'t attached'));
+            throw new \InvalidArgumentException(sprintf('Trying to remove handler with type [%s] that wasn\'t attached', $handler_type));
         }
 
         unset($this->attached_types[$handler_type]);
-        foreach ($this->collection as &$handler) {
+        foreach ($this->collection as $key => $handler) {
             if ($handler_type === $handler->getType()) {
-                unset($handler);
+                unset($this->collection[$key]);
             }
         }
 
