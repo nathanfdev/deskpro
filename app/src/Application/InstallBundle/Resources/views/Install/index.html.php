@@ -57,7 +57,7 @@
     <?php endif ?>
 
     <div class="alert-actions submit-area">
-        <a class="btn" href="<?php echo $view['router']->generate('install_check_urls') ?>" onclick="$(this).parent().addClass('clicked');">Go to step 3: Check URL rewriting</a>
+        <a class="btn" href="<?php echo $view['router']->generate('install_check_urls') ?>" onclick="$(this).parent().addClass('clicked');">Continue &rarr;</a>
         <span class="next-loading"></span>
     </div>
 </div>

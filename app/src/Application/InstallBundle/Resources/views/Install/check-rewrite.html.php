@@ -84,24 +84,18 @@ $(document).ready(function () {
 });
 </script>
 
-<h3>Checking for clean URL support</h3>
+<h3>Checking URL Routing</h3>
 <table class="bordered-table">
     <tbody>
         <tr>
             <td>
-                DeskPRO can use clean and short URLs when your server supports it. When clean URLs are enabled, the "index.php" segment
-                of the URL is removed. For example:
-
-                <table cellpadding="1" cellspacing="1" class="layout" style="margin-top: 8px">
-                    <tr>
-                        <td width="140">With clean URLs:</td>
-                        <td><em class="faux-url"><i class="dp-url-base"></i>/kb/1-example-article</em></td>
-                    </tr>
-                    <tr>
-                        <td>Without clean URLs:</td>
-                        <td><em class="faux-url"><i class="dp-url-base"></i>/index.php/kb/1-example-article</em></td>
-                    </tr>
-                </table>
+                <p>
+                    DeskPRO requires all non-asset URL requests to be routed through the <em>index.php</em> file. This feature
+                    is sometimes referred to as "URL rewriting".
+                </p>
+                <p>
+                    This page will test to confirm that URLs are being routed as expected.
+                </p>
             </td>
         </tr>
         <tr id="url_check_loading">
@@ -112,15 +106,15 @@ $(document).ready(function () {
         <tr id="url_check_pass" style="display: none">
             <td>
                 <span class="label success" style="float:right">OK</span>
-                Your server supports URL rewriting.
+                Your server is routing URLs correctly
             </td>
         </tr>
         <tr id="url_check_off" style="display: none">
             <td>
-                <span class="label notice" style="float:right">UNSUPPORTED</span>
-                Your server is not capable of URL rewriting. You need to enable URL rewriting before you continue.
+                <span class="label important" style="float:right">ERROR</span>
+                Your server is NOT routing URLs correctly.
                 <br />
-                <a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.url_rewriting') ?>" class="kb-read-more inline" target="_blank">Learn about enabling URL rewriting on your server &rarr;</a>
+                <a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.url_rewriting') ?>" class="kb-read-more inline" target="_blank">Learn about how to correct this &rarr;</a>
             </td>
         </tr>
         <tr id="url_basepath_wrong" style="display: none">
@@ -148,7 +142,7 @@ $(document).ready(function () {
 
 <div class="alert-message block-message success" id="continue_btn" style="display: none">
     <div class="alert-actions submit-area">
-        <a class="btn" href="<?php echo $view['router']->generate('install_verify_files') ?>" onclick="$(this).parent().addClass('clicked');">Go to step 4: Verify file integrity</a>
+        <a class="btn" href="<?php echo $view['router']->generate('install_verify_files') ?>" onclick="$(this).parent().addClass('clicked');">Continue &rarr;</a>
         <span class="next-loading"></span>
     </div>
 </div>

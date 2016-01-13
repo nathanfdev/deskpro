@@ -84,24 +84,9 @@ $collection->create('install_create_tables_do', array(
     'defaults'   => array('batch' => 0),
 ));
 
-$collection->create('install_install_data', array(
-    'path'       => '/install-data',
-    'controller' => 'InstallBundle:Install:installData',
-));
-
-$collection->create('install_install_data_save', array(
-    'path'       => '/install-data/save',
-    'controller' => 'InstallBundle:Install:installDataSave',
-));
-
 $collection->create('install_install_done', array(
     'path'       => '/install-done',
     'controller' => 'InstallBundle:Install:installDone',
-));
-
-$collection->create('install_send_install_report_error', array(
-    'path'       => '/install-report-error',
-    'controller' => 'InstallBundle:Install:sendInstallReportError',
 ));
 
 return $collection;
