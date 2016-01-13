@@ -3,6 +3,7 @@ import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
 import { addSessionCode } from '../../Application/Actions/bootstrapActions';
+import { loadPeople } from '../../Application/RecordStores/Actions/peopleActions';
 import { generate } from 'randomstring';
 import striptags from 'striptags';
 import moment from 'moment';
@@ -13,7 +14,7 @@ import {
   chatInfoSelector,
   chatLoadedSelector,
   isEndedSelector,
-  authorAvatarSelector,
+  authorIdSelector,
   messageIdsSelector,
   attachmentsSelector,
   canReopenSelector,
@@ -41,7 +42,24 @@ export const unsetChatId = createAction(
 
 export const setLoaded = createAction('WIDGET_CHAT_SET_LOADED');
 export const unsetLoaded = createAction('WIDGET_CHAT_UNSET_LOADED');
-export const updateChatInfo = createAction('WIDGET_CHAT_UPDATE_CHAT_INFO');
+export const updateChatInfo = createAction(
+  'WIDGET_CHAT_UPDATE_CHAT_INFO',
+  chatInfo => dispatch => {
+    const peopleIds = [];
+    if (chatInfo.person) {
+      peopleIds.push(chatInfo.person);
+    }
+    if (chatInfo.agent) {
+      peopleIds.push(chatInfo.agent);
+    }
+
+    if (peopleIds.length) {
+      dispatch(loadPeople('all', peopleIds));
+    }
+
+    return chatInfo;
+  }
+);
 export const enableChatReopen = createAction('WIDGET_CHAT_ENABLE_REOPEN');
 export const disableChatReopen = createAction('WIDGET_CHAT_DISABLE_REOPEN');
 
@@ -101,6 +119,34 @@ export const createChat = createAction(
           dispatch(setChatId(chatId));
         }
       });
+  }
+);
+
+export const validateEmail = createAction(
+  'WIDGET_CHAT_VALIDATE_EMAIL',
+  (chatId, params) => (dispatch, getState) => {
+    if (!chatId) {
+      return null;
+    }
+
+    const state = getState();
+    const queryParams = compileParams(addSessionCode(state));
+
+    return DpApi.sendPost(`DP_API/chats/${chatId}/validate/email?${queryParams}`, params, {...ajaxOptions});
+  }
+);
+
+export const regenerateEmailValidationCode = createAction(
+  'WIDGET_CHAT_REGENERATE_EMAIL_CODE',
+  chatId => (dispatch, getState) => {
+    if (!chatId) {
+      return null;
+    }
+
+    const state = getState();
+    const queryParams = compileParams(addSessionCode(state));
+
+    return DpApi.sendPost(`DP_API/chats/${chatId}/validate/email/regenerate?${queryParams}`, null, {...ajaxOptions});
   }
 );
 
@@ -268,6 +314,19 @@ export const pollingChat = createAction(
         if (ackMessages.length) {
           dispatch(ackChatMessages(chatId, {message_ids: ackMessages.map(message => message.id)}));
         }
+
+        // Load person info
+        const peopleIds = [];
+        filteredMessages.forEach(message => {
+          const authorId = message.author_id;
+          if (authorId && peopleIds.indexOf(authorId) === -1) {
+            peopleIds.push(authorId);
+          }
+        });
+
+        if (peopleIds.length) {
+          dispatch(loadPeople('all', peopleIds));
+        }
       }
 
       // Mark chat as loaded on first polling response
@@ -302,7 +361,7 @@ export const sendChatMessage = createAction(
     }
 
     const state = getState();
-    const authorAvatar = authorAvatarSelector(state);
+    const authorId = authorIdSelector(state);
     const tmpId = generate({
       length: 20,
       charset: 'alphabetic'
@@ -314,8 +373,7 @@ export const sendChatMessage = createAction(
         tmp_id: tmpId,
         content: params.message,
         is_html: true,
-        author_avatar: authorAvatar,
-        author_type: 'user',
+        author: authorId,
         date_created: moment().format()
       }));
     }
@@ -328,8 +386,7 @@ export const sendChatMessage = createAction(
         tmp_id: tmpId,
         content: null,
         is_html: true,
-        author_avatar: authorAvatar,
-        author_type: 'user',
+        author: authorId,
         date_created: moment().format(),
         metadata: {
           type: 'file',

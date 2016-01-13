@@ -9,7 +9,7 @@ import { currentListParamsSelector, visibleFieldsSelector } from '../Selectors/l
 import { setFeedbackStatusCategoriesRequest } from '../RecordStores/Actions/feedbackStatusCategoriesActions';
 import { loadFeedbackCommentsCounter } from '../RecordStores/Actions/feedbackCommentsActions';
 import { setFeedbackRequest } from '../RecordStores/Actions/feedbackActions';
-import { toggleMassAction } from './FeedbackMassActions';
+import { toggleMassAction } from '../../Application/Actions/massActions';
 import { feedbackToValidateCounter } from './feedbackNavActions';
 
 /**
@@ -86,10 +86,6 @@ export const loadList = createAction(
     dispatch(toggleMassAction());
     return params;
   }
-);
-
-export const toggleViewMode = createAction(
-  'FEEDBACK_TOGGLE_VIEW_MODE'
 );
 
 export const getDisplayFieldsFromPersonSetting = createAction(

@@ -74,11 +74,20 @@ class BrandContainer
      */
     private $mode_storage;
 
+    /**
+     * Constructor.
+     *
+     * @param Brand             $brand
+     * @param SettingsBag       $settings
+     * @param ThemeResolver     $theme_resolver
+     * @param BrandAssetLoader  $asset_loader
+     * @param PortalModeStorage $mode_storage
+     */
     public function __construct(
-        Brand $brand,
-        SettingsBag $settings,
-        ThemeResolver $theme_resolver,
-        BrandAssetLoader $asset_loader,
+        Brand             $brand,
+        SettingsBag       $settings,
+        ThemeResolver     $theme_resolver,
+        BrandAssetLoader  $asset_loader,
         PortalModeStorage $mode_storage
     ) {
         $this->brand          = $brand;

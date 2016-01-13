@@ -1,0 +1,249 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+namespace DpBehat\Portal;
+
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\CategoryAbstract;
+use Application\DeskPRO\Entity\ContentAbstract;
+use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\DownloadCategory;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackCategory;
+use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\NewsCategory;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Usergroup;
+
+class GenericContext extends BasePortalContext
+{
+    /**
+     * @Then I should not see the agent bar
+     */
+    public function iShouldNotSeeTheAgentBar()
+    {
+        expect($this->getAgentBarPage()->isAgentBarOnPage())->toBe(false);
+    }
+
+    /**
+     * @Then I should see the agent bar
+     */
+    public function iShouldSeeTheAgentBar()
+    {
+        expect($this->getAgentBarPage()->isAgentBarOnPage())->toBe(true);
+    }
+
+    /**
+     * @Then the agent bar should not have the admin dropdown
+     */
+    public function theAgentBarShouldNotHaveTheAdminDropdown()
+    {
+        expect($this->getAgentBarPage()->isAdminDropdownOnAgentBar())->toBe(false);
+    }
+
+    /**
+     * @Then the agent bar should have the admin dropdown
+     */
+    public function theAgentBarShouldHaveTheAdminDropdown()
+    {
+        expect($this->getAgentBarPage()->isAdminDropdownOnAgentBar())->toBe(true);
+    }
+
+    /**
+     * @Then I should see a :type flash message
+     */
+    public function iShouldSeeAFlashMessage($type)
+    {
+        $this->assertSession()->elementExists('css', sprintf('.flash.flash-%s', $type));
+    }
+
+    /**
+     * @Then I should see a form error with :message
+     */
+    public function iShouldSeeAFormErrorWith($message)
+    {
+        $this->assertSession()->elementExists('css', '.error-large');
+        $this->assertSession()->elementTextContains('css', '.error-large', $message);
+    }
+
+    /**
+     * @Then :user should be subscribed to the :content_type content :title
+     */
+    public function userShouldBeSubscribedToTheCategory($user, $content_type, $title)
+    {
+        $person  = $this->get('user_details')->getWho($user);
+        $content = $this->getContent($content_type, $title);
+
+        expect($this->isSubscribedContent($person, $content))->toBe(true);
+    }
+
+    /**
+     * @Then :user should be subscribed to the :content_type category :title
+     */
+    public function userShouldBeSubscribedToTheContent($user, $content_type, $title)
+    {
+        $person = $this->get('user_details')->getWho($user);
+        $cat    = $this->getCategory($content_type, $title);
+
+        expect($this->isSubscribedCat($person, $cat))->toBe(true);
+    }
+
+    /**
+     * @Given the :arg1 category :arg2 exists with content titled :arg3
+     */
+    public function theCategoryExistsWithADownloadTitled($type, $cat_name, $content_name)
+    {
+        /** @var \Doctrine\ORM\EntityManager $em */
+        $em  = $this->get('doctrine.orm.entity_manager');
+        $cat = null;
+
+        $everyone = $em->getRepository(Usergroup::class)->findOneBy([
+            'sys_name' => 'everyone',
+        ]);
+
+        $person = $em->getRepository(Person::class)->findOneBy([
+            'id' => 1,
+        ]);
+
+        switch ($type) {
+            case 'download':
+                $cat = new DownloadCategory();
+                $cat->setTitle($cat_name);
+
+                $content = new Download();
+                $content->setTitle($content_name);
+
+                $content->setCategory($cat);
+                $content->setStatus('published');
+                $cat->addUsergroup($everyone);
+
+                $blob = new Blob();
+                $blob->setFilename('filename.txt');
+                $blob->file_url  = 'http://google.com';
+                $blob->blob_hash = 'zyxasdfasdf';
+                $content->setBlob($blob);
+                $em->persist($blob);
+                break;
+            case 'feedback':
+                $fcat = $em->getRepository(FeedbackCategory::class)->findOneBy([
+                    'id' => 1,
+                ]);
+
+                $fstatus_cat = $em->getRepository(FeedbackStatusCategory::class)->findOneBy([
+                    'id' => 1,
+                ]);
+
+                $content = new Feedback();
+                $content->setStatus(Feedback::STATUS_ACTIVE);
+                $content->setCategory($fcat);
+                $content->setStatusCategory($fstatus_cat);
+                $content->title = 'Example Feedback';
+
+                break;
+            default:
+                throw new \Exception();
+        }
+
+        $content->setPerson($person);
+
+        if ($cat) {
+            $em->persist($cat);
+        }
+        $em->persist($content);
+        $em->flush();
+
+        // refresh to update assocation refs for the tests
+        if ($cat) {
+            $em->refresh($cat);
+        }
+        $em->refresh($content);
+    }
+
+    /**
+     * @return \DpBehat\Portal\Page\AgentBar
+     */
+    protected function getAgentBarPage()
+    {
+        return $this->getPage('AgentBar');
+    }
+
+    protected function isSubscribedContent(Person $person, ContentAbstract $content)
+    {
+        return $this->get('subscriptions_helper')->isSubscribedContent($content, $person);
+    }
+
+    protected function isSubscribedCat(Person $person, CategoryAbstract $content)
+    {
+        return $this->get('subscriptions_helper')->isSubscribedCategory($content, $person);
+    }
+
+    protected function getCategory($type, $title)
+    {
+        return $this->getRepository($this->getContentCatClass($type))->findOneBy([
+            'title' => $title,
+        ]);
+    }
+
+    protected function getContent($type, $title)
+    {
+        return $this->getRepository($this->getContentClass($type))->findOneBy([
+            'title' => $title,
+        ]);
+    }
+
+    protected function getContentCatClass($type)
+    {
+        switch ($type) {
+            case 'kb':
+                return ArticleCategory::class;
+            case 'download':
+                return DownloadCategory::class;
+            case 'news':
+                return NewsCategory::class;
+            case 'feedback':
+                return FeedbackCategory::class;
+        }
+    }
+
+    protected function getContentClass($type)
+    {
+        switch ($type) {
+            case 'kb':
+                return Article::class;
+            case 'download':
+                return Download::class;
+            case 'news':
+                return News::class;
+            case 'feedback':
+                return Feedback::class;
+        }
+    }
+}

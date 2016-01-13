@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\Session;
@@ -69,6 +68,7 @@ class AuthController extends AbstractApiController
 
         return new View([
             'session_code' => $session->getSessionCode(),
+            'is_login'     => (bool) $session->getPersonId(),
         ]);
     }
 }

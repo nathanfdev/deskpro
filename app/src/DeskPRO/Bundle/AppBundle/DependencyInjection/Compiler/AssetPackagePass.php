@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -37,44 +36,50 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
+/**
+ * Class AssetPackagePass.
+ */
 class AssetPackagePass implements CompilerPassInterface
 {
+    /**
+     * {@inheritdoc}
+     */
     public function process(ContainerBuilder $container)
     {
         //templating.asset.default_package.http
         $def = new Definition('Symfony\Component\Templating\Asset\Package');
-        $def->setFactory(array(new Reference('dp.asset_package_factory'), 'createPackageForPath'));
-        $def->setArguments(array('web', false));
+        $def->setFactory([new Reference('dp.asset_package_factory'), 'createPackageForPath']);
+        $def->setArguments(['web', false]);
         $container->setDefinition('templating.asset.default_package.http', $def);
 
         //templating.asset.default_package.ssl
         $def = new Definition('Symfony\Component\Templating\Asset\Package');
-        $def->setFactory(array(new Reference('dp.asset_package_factory'), 'createPackageForPath'));
-        $def->setArguments(array('web', false));
+        $def->setFactory([new Reference('dp.asset_package_factory'), 'createPackageForPath']);
+        $def->setArguments(['web', false]);
         $container->setDefinition('templating.asset.default_package.ssl', $def);
 
         //templating.asset.package.vendor_assets.http
         $def = new Definition('Symfony\Component\Templating\Asset\Package');
-        $def->setFactory(array(new Reference('dp.asset_package_factory'), 'createPackageForPath'));
-        $def->setArguments(array('pub/node_modules', false));
+        $def->setFactory([new Reference('dp.asset_package_factory'), 'createPackageForPath']);
+        $def->setArguments(['pub/node_modules', false]);
         $container->setDefinition('templating.asset.package.vendor_assets.http', $def);
 
         //templating.asset.package.vendor_assets.ssl
         $def = new Definition('Symfony\Component\Templating\Asset\Package');
-        $def->setFactory(array(new Reference('dp.asset_package_factory'), 'createPackageForPath'));
-        $def->setArguments(array('pub/node_modules', true));
+        $def->setFactory([new Reference('dp.asset_package_factory'), 'createPackageForPath']);
+        $def->setArguments(['pub/node_modules', true]);
         $container->setDefinition('templating.asset.package.vendor_assets.ssl', $def);
 
         //templating.asset.package.app_assets.http
         $def = new Definition('Symfony\Component\Templating\Asset\Package');
-        $def->setFactory(array(new Reference('dp.asset_package_factory'), 'createPackageForPath'));
-        $def->setArguments(array('pub/build', false));
+        $def->setFactory([new Reference('dp.asset_package_factory'), 'createPackageForPath']);
+        $def->setArguments(['pub/build', false]);
         $container->setDefinition('templating.asset.package.app_assets.http', $def);
 
         //templating.asset.package.app_assets.ssl
         $def = new Definition('Symfony\Component\Templating\Asset\Package');
-        $def->setFactory(array(new Reference('dp.asset_package_factory'), 'createPackageForPath'));
-        $def->setArguments(array('pub/build', true));
+        $def->setFactory([new Reference('dp.asset_package_factory'), 'createPackageForPath']);
+        $def->setArguments(['pub/build', true]);
         $container->setDefinition('templating.asset.package.app_assets.ssl', $def);
     }
 }

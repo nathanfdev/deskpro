@@ -168,14 +168,13 @@ const getGroups = ({groupKey, defaultGroupKey, options = []}) => {
 };
 
 export const groupCollection = (groupConfig, collection) => {
-  let filtered = collection;
   const groups = getGroups(groupConfig);
 
   groups.forEach(group => {
-    filtered.forEach(item => {
+    collection.forEach(item => {
       if (group.match(item)) {
         group.elements.push(item);
-        filtered = filtered.delete(filtered.indexOf(item));
+        delete collection[item];
       }
     });
 

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\Blob;
@@ -62,7 +61,7 @@ class ChatController extends AbstractApiController
         $conversation = ChatConversation::newForUserSession($session);
         $form         = $this
             ->get('form.factory')
-            ->createNamedBuilder(null, 'api_chat_create', $conversation)
+            ->createNamedBuilder(null, 'api_chat_create', $conversation, ['person' => $session->getPerson()])
             ->getForm()
         ;
 
@@ -71,13 +70,68 @@ class ChatController extends AbstractApiController
             return $this->generateFormErrorsResponse($form);
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($conversation);
-        $em->flush();
+        $this->saveConversation($conversation);
 
-        $this->dispatch(UserChatEvent::STARTED, new UserChatEvent($conversation));
+        // If an email validation code was generated then user needs to validate the entered email first,
+        // so skip agent notify until the user validates it
+        if ($conversation->getEmailValidationCode()) {
+            $this->dispatch(UserChatEvent::VALIDATE_EMAIL, new UserChatEvent($conversation));
+        } else {
+            $this->dispatch(UserChatEvent::STARTED, new UserChatEvent($conversation));
+        }
 
         return View::create($this->dataSerialize($conversation));
+    }
+
+    /**
+     * @Route("/portal/api/chats/{id}/validate/email/regenerate", name="portal_api_chat_validate_email_regenerate")
+     * @Method({"POST"})
+     *
+     * @param ChatConversation $conversation
+     * @param Request          $request
+     *
+     * @return View
+     */
+    public function regenerateEmailValidationCodeAction(ChatConversation $conversation, Request $request)
+    {
+        $this->checkUserSession($conversation, $request);
+
+        $conversation->regenerateEmailValidationCode();
+
+        $this->saveConversation($conversation);
+        $this->dispatch(UserChatEvent::VALIDATE_EMAIL, new UserChatEvent($conversation));
+
+        return View::create();
+    }
+
+    /**
+     * @Route("/portal/api/chats/{id}/validate/email", name="portal_api_chat_validate_email")
+     * @Method({"POST"})
+     *
+     * @param ChatConversation $conversation
+     * @param Request          $request
+     *
+     * @return View
+     */
+    public function validateEmailAction(ChatConversation $conversation, Request $request)
+    {
+        $this->checkUserSession($conversation, $request);
+
+        $form = $this
+            ->get('form.factory')
+            ->createNamedBuilder(null, 'api_chat_validate_email', $conversation)
+            ->getForm()
+        ;
+
+        $form->submit($request->request->all());
+        if (!$form->isValid()) {
+            return $this->generateFormErrorsResponse($form);
+        }
+
+        $this->saveConversation($conversation);
+        $this->dispatch(UserChatEvent::STARTED, new UserChatEvent($conversation));
+
+        return View::create();
     }
 
     /**
@@ -127,6 +181,7 @@ class ChatController extends AbstractApiController
     public function sendMessageAction(ChatConversation $conversation, Request $request)
     {
         $this->checkUserSession($conversation, $request);
+
         $form = $this
             ->get('form.factory')
             ->createNamedBuilder(null, 'api_chat_message')
@@ -200,9 +255,7 @@ class ChatController extends AbstractApiController
             $chat_messages[] = $chat_message;
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($conversation);
-        $em->flush();
+        $this->saveConversation($conversation);
 
         return View::create($this->dataSerialize($chat_messages));
     }
@@ -260,6 +313,7 @@ class ChatController extends AbstractApiController
     public function userTypingAction(ChatConversation $conversation, Request $request)
     {
         $this->checkUserSession($conversation, $request);
+
         $form = $this
             ->get('form.factory')
             ->createNamedBuilder(null, 'api_chat_user_typing')
@@ -289,6 +343,7 @@ class ChatController extends AbstractApiController
     public function sendTranscriptInfoAction(ChatConversation $conversation, Request $request)
     {
         $this->checkUserSession($conversation, $request);
+
         $form = $this
             ->get('form.factory')
             ->createNamedBuilder(null, 'api_chat_transcription_info', $conversation)
@@ -300,9 +355,7 @@ class ChatController extends AbstractApiController
             return $this->generateFormErrorsResponse($form);
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($conversation);
-        $em->flush();
+        $this->saveConversation($conversation);
 
         return View::create();
     }
@@ -328,10 +381,7 @@ class ChatController extends AbstractApiController
         $can_send = !$already_sent && $has_email && $has_answer;
         if ($can_send) {
             $conversation->setShouldSendTranscript(true);
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($conversation);
-            $em->flush();
+            $this->saveConversation($conversation);
         }
 
         return View::create([
@@ -353,10 +403,7 @@ class ChatController extends AbstractApiController
         $this->checkUserSession($conversation, $request);
         $conversation->setStatus(ChatConversation::STATUS_ENDED);
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($conversation);
-        $em->flush();
-
+        $this->saveConversation($conversation);
         $this->dispatch(UserChatEvent::END_BY_USER, new UserChatEvent($conversation, [], ['chat_ended']));
 
         return View::create();
@@ -374,6 +421,7 @@ class ChatController extends AbstractApiController
     public function reopenChatAction(ChatConversation $conversation, Request $request)
     {
         $this->checkUserSession($conversation, $request);
+
         $conversation
             ->setStatus(ChatConversation::STATUS_OPEN)
             ->setEndedBy(null)
@@ -382,10 +430,7 @@ class ChatController extends AbstractApiController
             ->setDateTranscriptSent(null)
         ;
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($conversation);
-        $em->flush();
-
+        $this->saveConversation($conversation);
         $this->dispatch(UserChatEvent::USER_RETURNED, new UserChatEvent($conversation));
 
         return View::create();
@@ -403,6 +448,7 @@ class ChatController extends AbstractApiController
     public function feedbackAction(ChatConversation $conversation, Request $request)
     {
         $this->checkUserSession($conversation, $request);
+
         $form = $this
             ->get('form.factory')
             ->createNamedBuilder(null, 'api_chat_feedback', $conversation)
@@ -414,9 +460,7 @@ class ChatController extends AbstractApiController
             return $this->generateFormErrorsResponse($form);
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($conversation);
-        $em->flush();
+        $this->saveConversation($conversation);
 
         return View::create();
     }
@@ -435,5 +479,15 @@ class ChatController extends AbstractApiController
         if (!$conversation_session || $request_session->getId() !== $conversation_session->getId()) {
             throw new BadRequestHttpException('wrong_session_code');
         }
+    }
+
+    /**
+     * @param ChatConversation $conversation
+     */
+    protected function saveConversation(ChatConversation $conversation)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($conversation);
+        $em->flush();
     }
 }

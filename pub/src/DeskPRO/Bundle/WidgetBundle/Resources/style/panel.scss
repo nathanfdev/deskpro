@@ -62,6 +62,15 @@ $border-color: #e7e7e7;
     //}
   }
 
+  &.position-left {
+    margin-left: 0;
+    margin-right: 5px;
+
+    .dpdesignportal-powered-by-deskpro {
+      left: 0;
+    }
+  }
+
   .grey { color: #bdbcbc; }
   ul { margin: 0; padding: 0; list-style: none; }
   h1, h2, h3 { padding: 0; margin: 0; font-size: 14px; font-weight: 400; }

@@ -14,6 +14,7 @@ import { ExampleApp } from '../../Example/Components/ExampleApp';
 import { loadMe } from '../RecordStores/Actions/meActions';
 import { setHasAuth } from '../../Login/Actions/loginActions';
 import { hashChanged } from '../../Application/Actions/routingActions';
+import { setActiveApp } from '../../Application/Actions/appActions';
 import { hasAuthSelector } from '../../Login/Selectors/login';
 import Jquery from 'jquery';
 
@@ -35,7 +36,10 @@ export class DpAppContainer extends React.Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
-
+    const myRe = /\/agent\/(\w+)$/;
+    const myArr = myRe.exec(window.location.pathname);
+    // dispatch setActiveApp() to store activeApp in Application.dpWindow.state
+    dispatch(setActiveApp(myArr[1]));
     // dispatch hashChanged() when hash is changed to bind it to the redux state
     window.onhashchange = () => dispatch(hashChanged(window.location.hash));
     // dispatch hashChanged() to track the initial hash value

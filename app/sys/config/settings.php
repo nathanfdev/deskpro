@@ -1074,4 +1074,11 @@ return array(
 
     # Simple delivery handler with polling
     'notification.settings.polling_client.polling_interval' => 5000,
+
+    ####################################################################################################################
+    # widget.settings
+    ####################################################################################################################
+
+    'portal.chat.email_validation' => false,
+    'portal.chat.require_login'    => false,
 );

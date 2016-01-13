@@ -5,7 +5,13 @@
   <div class="brand">
     <span class="mobile-expand"><i class="fa fa-angle-double-down"></i></span>
     <a href="{{ path('portal_home') }}">
-      <h1>{{ global_settings.get('core.site_name')|default(global_settings.get('core.deskpro_name')) }}</h1>
+      {% if portal_custom_logo() %}
+        <img alt="{{ global_settings.get('core.site_name')|default(global_settings.get('core.deskpro_name')) }}"
+             src="{{ portal_custom_logo() }}"
+             class="logo" />
+      {% else %}
+        <h1>{{ global_settings.get('core.site_name')|default(global_settings.get('core.deskpro_name')) }}</h1>
+      {% endif %}
     </a>
   </div>
 

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use DeskPRO\Bundle\PortalBundle\Visitor\VisitorIdentificationProvider;
@@ -49,17 +48,27 @@ class VisitorIdentificationListener implements EventSubscriberInterface
      * @var \Psr\Log\LoggerInterface
      */
     private $logger;
+
     /**
      * @var \DeskPRO\Bundle\PortalBundle\Visitor\VisitorIdentificationProvider
      */
     private $visitor_provider;
 
+    /**
+     * Constructor.
+     *
+     * @param VisitorIdentificationProvider $visitor_provider
+     * @param LoggerInterface               $logger
+     */
     public function __construct(VisitorIdentificationProvider $visitor_provider, LoggerInterface $logger)
     {
         $this->logger           = $logger;
         $this->visitor_provider = $visitor_provider;
     }
 
+    /**
+     * @param GetResponseEvent $event
+     */
     public function onKernelRequest(GetResponseEvent $event)
     {
         if (!$event->isMasterRequest()) {
@@ -75,6 +84,9 @@ class VisitorIdentificationListener implements EventSubscriberInterface
         );
     }
 
+    /**
+     * @param FilterResponseEvent $event
+     */
     public function onKernelResponse(FilterResponseEvent $event)
     {
         if (!$event->isMasterRequest()) {
@@ -98,11 +110,14 @@ class VisitorIdentificationListener implements EventSubscriberInterface
         $this->logger->debug(sprintf('set cookie "%s" with visitor identifier "%s" - %s', VisitorIdentificationProvider::COOKIE_NAME, $identifier, $cookie));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::REQUEST  => array('onKernelRequest', 129),
-            KernelEvents::RESPONSE => array('onKernelResponse'),
-        );
+        return [
+            KernelEvents::REQUEST  => ['onKernelRequest', 129],
+            KernelEvents::RESPONSE => ['onKernelResponse'],
+        ];
     }
 }

@@ -5,9 +5,9 @@ import * as departmentsActions from '../Actions/departmentsActions';
 export default createReducer(
   createEmptyRecordStoreState(),
   buildRecordStoreHandlers({
-    releaseRecordsAction:   departmentsActions.releaseDepartments,
-    releaseRequestAction:   departmentsActions.releaseDepartmentsRequest,
+    releaseRecordsAction: departmentsActions.releaseDepartments,
+    releaseRequestAction: departmentsActions.releaseDepartmentsRequest,
     setRequestRecordAction: departmentsActions.setDepartmentsRequest,
-    requestRecordsAction:   departmentsActions.loadDepartments
+    requestRecordsAction: departmentsActions.loadDepartments
   })
 );

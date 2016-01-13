@@ -73,7 +73,7 @@ class AssetsManagerIntegrationTest extends PortalTestCase
         $this->em->persist($this->edit_theme_set);
         $this->em->flush();
 
-        $this->service = new AssetsManager($this->em, $this->edit_theme_set);
+        $this->service = new AssetsManager($this->em, new ThemeSet(), $this->edit_theme_set);
     }
 
     /**

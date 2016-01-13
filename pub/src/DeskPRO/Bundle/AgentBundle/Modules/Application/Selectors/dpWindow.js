@@ -11,3 +11,8 @@ export const coverShownSelector = createSelector(
   stateSelector,
   state => state.get('coverShown')
 );
+
+export const currentAppSelector = createSelector(
+  stateSelector,
+  state => state.get('activeAppId')
+);

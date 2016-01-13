@@ -29,10 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\TextStringTransformer;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -41,8 +41,23 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class ChatTranscriptInfoType.
  */
-class ChatTranscriptInfoType extends AbstractCreateChatType
+class ChatTranscriptInfoType extends AbstractType
 {
+    /**
+     * @var SetPersonListener
+     */
+    private $set_person_listener;
+
+    /**
+     * Constructor.
+     *
+     * @param SetPersonListener $set_person_listener
+     */
+    public function __construct(SetPersonListener $set_person_listener)
+    {
+        $this->set_person_listener = $set_person_listener;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -72,7 +87,7 @@ class ChatTranscriptInfoType extends AbstractCreateChatType
 
         $builder->get('name')->addModelTransformer(new TextStringTransformer());
         $builder->get('email')->addModelTransformer(new TextStringTransformer());
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetPerson']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this->set_person_listener, 'onSetPerson']);
     }
 
     /**

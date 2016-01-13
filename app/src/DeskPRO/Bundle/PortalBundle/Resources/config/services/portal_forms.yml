@@ -51,6 +51,9 @@ services:
     tags:
       - { name: validator.constraint_validator, alias: valid_recaptcha2 }
 
+  form.api.chat.set_person_listener:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\SetPersonListener
+    arguments: [@email.email_account_manager, @doctrine.orm.default_entity_manager]
 
   #
   # Types
@@ -350,9 +353,14 @@ services:
 
   form.api.chat_create:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\CreateChatType
-    arguments: [@email.email_account_manager, @doctrine.orm.default_entity_manager]
+    arguments: [@form.api.chat.set_person_listener, @settings_resolver]
     tags:
       - { name: form.type, alias: api_chat_create }
+
+  form.api.api_chat_validate_email:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatValidateEmailType
+    tags:
+      - { name: form.type, alias: api_chat_validate_email }
 
   form.api.chat_user_typing:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatUserTypingType
@@ -367,7 +375,7 @@ services:
 
   form.api.chat_transcription_info:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatTranscriptInfoType
-    arguments: [@email.email_account_manager, @doctrine.orm.default_entity_manager]
+    arguments: [@form.api.chat.set_person_listener]
     tags:
       - { name: form.type, alias: api_chat_transcription_info }
 

@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { AgentAvatars } from '../AgentAvatars';
 import Immutable from 'immutable';
+import { ChatPopup } from '../ChatPopup';
 
 export class AgentMessagePopup extends React.Component {
 
@@ -17,28 +18,23 @@ export class AgentMessagePopup extends React.Component {
     const { helpPopupTitle, helpPopupMessage } = this.props;
 
     return (
-      <div className="dpdesignportal-state-buttons dpdesignportal-agent-message">
-        <div className="preemtive-chat">
-          <div className="preemtive-chat-content" onClick={onClick}>
-            <div className="dpdesignportal-chat-header">
-              <AgentAvatars primaryAgent={primaryAgent} />
+      <ChatPopup {...this.props}>
+        <div className="preemtive-chat-content" onClick={onClick}>
+          <div className="dpdesignportal-chat-header">
+            <AgentAvatars primaryAgent={primaryAgent} />
 
-              <h1><span>{primaryAgent.get('name')}</span></h1>
-              <h2>{helpPopupTitle}</h2>
-
-              {helpPopupMessage &&
-                <p className="quote">{helpPopupMessage}</p>
-              }
-            </div>
-          </div>
-          <hr/>
-          <div className="preemtive-chat-content">
-            <div className="preemtive-chat-footer">
-              {children}
-            </div>
+            <h1><span>{primaryAgent.get('name')}</span></h1>
+            <h2>{helpPopupTitle}</h2>
+            {helpPopupMessage && <p className="quote">{helpPopupMessage}</p>}
           </div>
         </div>
-      </div>
+        <hr/>
+        <div className="preemtive-chat-content">
+          <div className="preemtive-chat-footer">
+            {children}
+          </div>
+        </div>
+      </ChatPopup>
     );
   }
 }

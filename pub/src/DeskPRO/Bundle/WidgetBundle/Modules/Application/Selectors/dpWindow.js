@@ -61,6 +61,16 @@ export const isBubbleSelector = createSelector(
   widgetType => widgetType === 'bubble'
 );
 
+export const liveDemoSelector = createSelector(
+  widgetBaseOptionsSelector,
+  options => options.get('liveDemo')
+);
+
+export const agentPollingTimeoutSelector = createSelector(
+  widgetBaseOptionsSelector,
+  options => options.get('agentPollingTimeout') || 'off'
+);
+
 // Company options selectors
 export const companyOptionsSelector = createSelector(
   widgetOptionsSelector,
@@ -124,7 +134,7 @@ export const widgetHasChatSelector = createSelector(
   options => options.get('enabled') !== undefined ? options.get('enabled') : true
 );
 
-export const chatModeSelector = createSelector(
+export const chatBeginModeSelector = createSelector(
   chatOptionsSelector,
   options => options.get('requestUserInfo') ? options.get('beginMode') : 'simple'
 );
@@ -154,7 +164,3 @@ export const agentAcceptTimeoutSelector = createSelector(
   options => options.get('waitingTimeout') || 120 // 2 minutes
 );
 
-export const agentPollingTimeoutSelector = createSelector(
-  chatOptionsSelector,
-  options => options.get('agentPollingTimeout') || 'off'
-);

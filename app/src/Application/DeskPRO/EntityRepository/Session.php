@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -82,7 +81,7 @@ class Session extends AbstractEntityRepository
     }
 
     /**
-     * @return Session
+     * @return SessionEntity
      */
     public function getSessionFromCode($sess_code)
     {

@@ -29,11 +29,14 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
+use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\TextStringTransformer;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -41,8 +44,30 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class CreateChatType.
  */
-class CreateChatType extends AbstractCreateChatType
+class CreateChatType extends AbstractType
 {
+    /**
+     * @var SetPersonListener
+     */
+    private $set_person_listener;
+
+    /**
+     * @var SettingsResolver
+     */
+    private $settings_resolver;
+
+    /**
+     * Constructor.
+     *
+     * @param SetPersonListener $set_person_listener
+     * @param SettingsResolver  $settings_resolver
+     */
+    public function __construct(SetPersonListener $set_person_listener, SettingsResolver $settings_resolver)
+    {
+        $this->set_person_listener = $set_person_listener;
+        $this->settings_resolver   = $settings_resolver;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -56,6 +81,11 @@ class CreateChatType extends AbstractCreateChatType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $email_constraints = [new Assert\Email()];
+        if ($this->getGlobalSettings()->get('portal.chat.email_validation')) {
+            $email_constraints[] = new Assert\NotBlank();
+        }
+
         $builder
             ->add('name', 'text', [
                 'property_path' => 'person_name',
@@ -64,15 +94,16 @@ class CreateChatType extends AbstractCreateChatType
             ->add('email', 'email', [
                 'property_path' => 'person_email',
                 'required'      => false,
-                'constraints'   => [
-                    new Assert\Email(),
-                ],
+                'constraints'   => $email_constraints,
             ])
         ;
 
         $builder->get('name')->addModelTransformer(new TextStringTransformer());
         $builder->get('email')->addModelTransformer(new TextStringTransformer());
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetPerson']);
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetPersonEmailFromSession']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this->set_person_listener, 'onSetPerson']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetEmailValidationCode']);
     }
 
     /**
@@ -83,6 +114,51 @@ class CreateChatType extends AbstractCreateChatType
         $resolver->setDefaults([
             'csrf_protection'               => false,
             'csrf_double_submit_protection' => false,
+            'person'                        => null,
         ]);
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onSetPersonEmailFromSession(FormEvent $event)
+    {
+        $form   = $event->getForm();
+        $person = $form->getConfig()->getOption('person');
+
+        /** @var \Application\DeskPRO\Entity\Person $person */
+        if ($person) {
+            $event->setData(array_merge($event->getData(), [
+                'email' => $person->getPrimaryEmailAddress(),
+            ]));
+        }
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onSetEmailValidationCode(FormEvent $event)
+    {
+        // Option is disabled, skipping
+        if (!$this->getGlobalSettings()->get('portal.chat.email_validation')) {
+            return;
+        }
+
+        // Chat require to log in, skipping
+        if ($this->getGlobalSettings()->get('portal.chat.require_login')) {
+            return;
+        }
+
+        /** @var ChatConversation $conversation */
+        $conversation = $event->getData();
+        $conversation->regenerateEmailValidationCode();
+    }
+
+    /**
+     * @return \Application\DeskPRO\NewSettings\SettingsBag
+     */
+    protected function getGlobalSettings()
+    {
+        return $this->settings_resolver->getGlobalSettings();
     }
 }

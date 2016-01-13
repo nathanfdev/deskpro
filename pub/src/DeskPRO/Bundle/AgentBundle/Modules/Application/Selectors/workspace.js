@@ -1,10 +1,10 @@
 import { createSelector } from 'reselect';
 
 const infoSel = createSelector(
-  state => state.Application.dpWindow.get('winDims'),
-  state => state.Application.dpWindow.get('columnMode'),
-  state => state.Application.dpWindow.get('columnDimensions'),
-  state => state.Application.dpWindow.get('sidebarMode'),
+    state => state.Application.dpWindow.get('winDims'),
+    state => state.Application.dpWindow.get('columnMode'),
+    state => state.Application.dpWindow.get('columnDimensions'),
+    state => state.Application.dpWindow.get('sidebarMode'),
   (winDims, columnMode, columnDimensions, sidebarMode, collapseNav) => ({
     winDims: winDims.toJS(), columnMode, columnDimensions, sidebarMode, collapseNav
   })
@@ -52,8 +52,8 @@ export const workspaceDimsSelector = createSelector(
     };
 
     // Constants
-    const appSwitcherWidth  = 55;
-    const appNavWidth       = 220;
+    const appSwitcherWidth = 55;
+    const appNavWidth = 220;
     const appNavClosedWidth = 10;
 
     // Current window size
@@ -63,20 +63,20 @@ export const workspaceDimsSelector = createSelector(
     const middleWidth = winWidth - appSwitcherWidth;
 
     if (!workspace.appPane) {
-      dims.appNavSize  = appNavClosedWidth;
+      dims.appNavSize = appNavClosedWidth;
       dims.appListSize = 0;
     } else {
       if (workspace.appNavPane && workspace.appListPane) {
-        dims.appNavSize  = appNavWidth;
+        dims.appNavSize = appNavWidth;
         dims.appListSize = Math.ceil(middleWidth * workspace.appListWidth / 100);
       } else if (workspace.appNavPane) {
-        dims.appNavSize  = appNavWidth;
+        dims.appNavSize = appNavWidth;
         dims.appListSize = 0;
       } else if (workspace.appListPane) {
-        dims.appNavSize  = appNavClosedWidth;
+        dims.appNavSize = appNavClosedWidth;
         dims.appListSize = Math.ceil(middleWidth * workspace.appListWidth / 100);
       } else {
-        dims.appNavSize  = appNavClosedWidth;
+        dims.appNavSize = appNavClosedWidth;
         dims.appListSize = 0;
       }
 

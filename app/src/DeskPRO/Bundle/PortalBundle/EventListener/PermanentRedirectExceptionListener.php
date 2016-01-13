@@ -49,17 +49,27 @@ class PermanentRedirectExceptionListener implements EventSubscriberInterface
      * @var \Symfony\Component\Routing\Generator\UrlGeneratorInterface
      */
     private $url_generator;
+
     /**
      * @var \Psr\Log\LoggerInterface
      */
     private $logger;
 
+    /**
+     * Constructor.
+     *
+     * @param UrlGeneratorInterface $url_generator
+     * @param LoggerInterface       $logger
+     */
     public function __construct(UrlGeneratorInterface $url_generator, LoggerInterface $logger)
     {
         $this->url_generator = $url_generator;
         $this->logger        = $logger;
     }
 
+    /**
+     * @param GetResponseForExceptionEvent $event
+     */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
         $e = $event->getException();
@@ -81,10 +91,13 @@ class PermanentRedirectExceptionListener implements EventSubscriberInterface
         $event->stopPropagation();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::EXCEPTION => array('onKernelException', 129), // very high priority
-        );
+        return [
+            KernelEvents::EXCEPTION => ['onKernelException', 129], // very high priority
+        ];
     }
 }

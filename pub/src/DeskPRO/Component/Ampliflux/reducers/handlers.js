@@ -232,26 +232,24 @@ export function togglePayloadInCollection(statePropKey) {
 /**
  * Mass action select/deselect handler
  *
- * @param {String|Array} selectFrom    The property to set on the state.
- * @param {String|Array} selectInto
- * @param {String}       targetKeyProp
  * @return {Function} Action handler function
  */
-export function handleMassAction(selectFrom, selectInto, targetKeyProp = 'id') {
-  return (state, select, action) => {
+export function handleMassAction() {
+  return (state, payload, action) => {
     verifyActionError(action);
     verifyImmutable(state);
+    if (payload) {
+      let selected = state.get('selected');
+      verifyImmutable(selected);
+      if (payload.select) {
+        selected = payload.elements;
+      } else {
+        selected = selected.clear();
+      }
 
-    const intoPath = getStatePath(selectInto);
-    let selected = state.getIn(intoPath);
-    verifyImmutable(selected);
-    if (select) {
-      selected = state.getIn(getStatePath(selectFrom));
-    } else {
-      selected = selected.clear();
+      return state.set('selected', Immutable.fromJS(selected));
     }
-
-    return state.setIn(intoPath, Immutable.fromJS(selected));
+    return state.set('selected', Immutable.fromJS([]));
   };
 }
 

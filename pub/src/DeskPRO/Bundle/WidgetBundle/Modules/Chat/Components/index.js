@@ -1,19 +1,11 @@
-import { ChatApp } from './ChatApp';
-import { ChatBeginContainer } from './Stage/Begin/ChatBeginContainer';
-import { ChatBeginSimple } from './Stage/Begin/ChatBeginSimple';
-import { ChatBeginConversation } from './Stage/Begin/Conversation/ChatBeginConversation';
-import { ChatBeginForm } from './Stage/Begin/Form/ChatBeginForm';
-import { ChatPollingContainer } from './Stage/ChatPollingContainer';
-import { ChatWaiting } from './Stage/Waiting/ChatWaiting';
-import { ChatActive } from './Stage/Active/ChatActive';
-
-export {
-  ChatApp,
-  ChatBeginContainer,
-  ChatBeginSimple,
-  ChatBeginConversation,
-  ChatBeginForm,
-  ChatPollingContainer,
-  ChatWaiting,
-  ChatActive
-};
+export { ChatApp } from './ChatApp';
+export { ChatBeginContainer } from './Stage/Begin/ChatBeginContainer';
+export { ChatBeginSimple } from './Stage/Begin/ChatBeginSimple';
+export { ChatBeginConversation } from './Stage/Begin/Conversation/ChatBeginConversation';
+export { ChatBeginForm } from './Stage/Begin/Form/ChatBeginForm';
+export { ChatValidation } from './Stage/Validation/ChatValidation';
+export { ChatEmailValidationContainer } from './Stage/Validation/ChatEmailValidationContainer';
+export { ChatLoginContainer } from './Stage/Validation/ChatLoginContainer';
+export { ChatPollingContainer } from './Stage/ChatPollingContainer';
+export { ChatWaiting } from './Stage/Waiting/ChatWaiting';
+export { ChatActive } from './Stage/Active/ChatActive';

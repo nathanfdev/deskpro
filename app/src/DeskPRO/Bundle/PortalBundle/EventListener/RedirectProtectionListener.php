@@ -118,11 +118,14 @@ class RedirectProtectionListener implements EventSubscriberInterface
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::RESPONSE => array('onResponse'),
-        );
+        return [
+            KernelEvents::RESPONSE => ['onResponse'],
+        ];
     }
 
     private function getBrandSetting($setting_name)

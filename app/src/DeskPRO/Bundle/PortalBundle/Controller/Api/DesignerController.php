@@ -32,18 +32,24 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\Entity\Template;
+use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use DeskPRO\Bundle\PortalBundle\Designer\AdvancedEditsManager;
 use DeskPRO\Bundle\PortalBundle\Designer\AssetsManager;
 use DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler;
 use DeskPRO\Bundle\PortalBundle\Designer\SassDocParser;
 use DeskPRO\Bundle\PortalBundle\Designer\StylesManager;
+use DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface;
+use DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class DesignerController.
@@ -140,7 +146,7 @@ class DesignerController extends AbstractApiController
      * @Route("/portal/api/style/edit-theme-set/assets")
      * @Method({"GET"})
      */
-    public function listEditThemeSetAssets()
+    public function listEditThemeSetAssetsAction()
     {
         return $this->dataSerialize($this->getAssetsManager()->getEditThemeSetAssets());
     }
@@ -149,7 +155,7 @@ class DesignerController extends AbstractApiController
      * @Route("/portal/api/style/edit-theme-set/assets")
      * @Method({"POST"})
      */
-    public function uploadEditThemeSetAsset(Request $request)
+    public function uploadEditThemeSetAssetAction(Request $request)
     {
         return $this->dataSerialize($this->getAssetsManager()->uploadEditThemeSetAsset($request->files->get('file')));
     }
@@ -159,7 +165,7 @@ class DesignerController extends AbstractApiController
      * @Method({"DELETE"})
      * @ParamConverter("asset", class="App:ThemeSetAsset")
      */
-    public function deleteEditThemeSetAsset(ThemeSetAsset $asset)
+    public function deleteEditThemeSetAssetAction(ThemeSetAsset $asset)
     {
         return $this->dataSerialize($this->getAssetsManager()->deleteEditThemeSetAsset($asset));
     }
@@ -178,6 +184,114 @@ class DesignerController extends AbstractApiController
         }
 
         return new Response($blob_storage->data, 200, ['Content-Type' => $blob->content_type]);
+    }
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/logo")
+     * @Method({"POST"})
+     */
+    public function uploadLogoAction(Request $request)
+    {
+        return $this->dataSerialize($this->getAssetsManager()->uploadLogo($request->files->get('file')));
+    }
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/logo")
+     * @Method({"GET"})
+     */
+    public function getCustomLogoUrlAction()
+    {
+        return $this->dataSerialize($this->getAssetsManager()->getEditThemeSetLogoAsset());
+    }
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/logo")
+     * @Method({"DELETE"})
+     */
+    public function deleteEditThemeSetLogoAssetAction()
+    {
+        return $this->dataSerialize($this->getAssetsManager()->deleteEditThemeSetAsset(
+            $this->getAssetsManager()->getEditThemeSetLogoAsset()
+        ));
+    }
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/templates")
+     * @Method({"GET"})
+     */
+    public function getTemplatesListAction()
+    {
+        return new JsonResponse(array_keys($this->getBrandContainer()->getTheme()->getTemplateMap()));
+    }
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/template-sources")
+     * @Method({"GET"})
+     */
+    public function getTemplateSourceAction(Request $request)
+    {
+        $template_name = $request->get('template');
+        if ($template = $this->getEditThemeSetTemplate($template_name)) {
+            $source = $template->getTemplateCode();
+        } else {
+            $theme  = $this->getTheme();
+            $source = file_get_contents($this->getThemeResolver()->templatePath($theme, $template_name));
+        }
+
+        return new JsonResponse($source);
+    }
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/template-sources")
+     * @Method({"PUT"})
+     */
+    public function updateTemplateSourceAction(Request $request)
+    {
+        $template_name = $request->get('template');
+        if (!$template = $this->getEditThemeSetTemplate($template_name)) {
+            $template            = new Template();
+            $template->theme_set = $this->getEditThemeSet();
+            $template->name      = $template_name;
+        }
+        $template->template_code     = $request->get('code');
+        $template->template_compiled = $this->get('twig')->compileSource($template->template_code, $template_name);
+        $this->getManager()->persist($template);
+        $this->getManager()->flush();
+
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @Route("/portal/api/emails")
+     * @Method({"GET"})
+     */
+    public function searchEmailsAction(Request $request)
+    {
+        $term   = $request->get('term');
+        $target = $request->get('target');
+
+        $repository = $this->getManager()->getRepository(PersonEmail::class);
+        switch ($target) {
+            case 'user':
+                $emails = $repository->searchUserEmails($term);
+                break;
+            case 'agent':
+                $emails = $repository->searchAgentEmails($term);
+                break;
+            default:
+                throw new BadRequestHttpException("Unknown email target $target");
+        }
+
+        return new JsonResponse($emails);
+    }
+
+    /**
+     * @Route("/portal/api/me/email")
+     * @Method({"GET"})
+     */
+    public function getMyEmailAction()
+    {
+        return new JsonResponse($this->getUser()->getPrimaryEmail()->getEmail());
     }
 
     /**
@@ -218,5 +332,48 @@ class DesignerController extends AbstractApiController
     private function getSassDocParser()
     {
         return $this->get('dp.portal.designer.sass_doc_parser');
+    }
+
+    /**
+     * @return ThemeResolver
+     */
+    private function getThemeResolver()
+    {
+        return $this->get('theme_resolver');
+    }
+
+    /**
+     * @param string $template_name
+     *
+     * @return Template
+     */
+    private function getEditThemeSetTemplate($template_name)
+    {
+        $theme          = $this->getTheme();
+        $edit_theme_set = $this->getEditThemeSet();
+
+        if (!array_key_exists($template_name, $theme->getTemplateMap())) {
+            throw $this->createNotFoundException('Unable to find requested template');
+        }
+
+        $template = $this->getThemeResolver()->getThemeSetTemplateFromDb($edit_theme_set, $template_name);
+
+        return $template;
+    }
+
+    /**
+     * @return ThemeInterface
+     */
+    private function getTheme()
+    {
+        return $this->getBrandContainer()->getTheme();
+    }
+
+    /**
+     * @return ThemeSet
+     */
+    private function getEditThemeSet()
+    {
+        return $this->getBrandContainer()->getBrand()->getEditThemeSet();
     }
 }

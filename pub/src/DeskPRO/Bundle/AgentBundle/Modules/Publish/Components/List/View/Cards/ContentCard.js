@@ -41,7 +41,7 @@ export class ContentCard extends Component {
 
         <ArticleCardMark numRatings={element.get('num_ratings')}/>
 
-        <CardCheckbox selected={selected} onClick={toggleSelected(element.get('id'))}/>
+        <CardCheckbox selected={selected} onClick={toggleSelected}/>
 
         <CardLine>
           <CardLineLeft>

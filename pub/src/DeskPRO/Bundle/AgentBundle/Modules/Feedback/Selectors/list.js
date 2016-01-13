@@ -11,11 +11,6 @@ export const idsSelector = createSelector(
     state => state.get('elements')
 );
 
-export const selectedSelector = createSelector(
-  stateSelector,
-    state => state.get('selected')
-);
-
 export const currentListParamsSelector = createSelector(
   stateSelector,
     state => state.get('currentListParams')
@@ -49,6 +44,16 @@ export const currentListOrderSelector = createSelector(
 export const isCommentsSelector = createSelector(
   currentListParamsSelector,
     params => params.get('isComments')
+);
+
+export const paginationSelector = createSelector(
+  stateSelector,
+    list => list.get('pagination')
+);
+
+export const loadedSelector = createSelector(
+  stateSelector,
+    list => list.getIn(['async', 'done'])
 );
 
 export const currentViewModeSelector = hashStateSelectorFactory(['list', 'view'], 'card');
@@ -120,6 +125,8 @@ export const listFiltersSelector = createSelector(
     return filterSelector;
   }
 );
+
+/* ==================== Mass actions ===================== */
 
 export const massActionsParamsSelector = createSelector(
   stateSelector,

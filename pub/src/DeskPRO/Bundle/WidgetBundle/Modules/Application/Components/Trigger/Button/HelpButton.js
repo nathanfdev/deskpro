@@ -4,6 +4,7 @@ import classNames from 'classnames';
 export class HelpButton extends React.Component {
 
   static propTypes = {
+    widgetPosition: PropTypes.string,
     type: PropTypes.string,
     onClick: PropTypes.func,
     size: PropTypes.string,
@@ -20,7 +21,7 @@ export class HelpButton extends React.Component {
   };
 
   render() {
-    const { name, size, disabled, backgroundColor, textColor, borderColor } = this.props;
+    const { widgetPosition, name, size, disabled, backgroundColor, textColor, borderColor } = this.props;
 
     return (
       <div className="dpdesignportal-state-buttons">
@@ -33,12 +34,13 @@ export class HelpButton extends React.Component {
            className={classNames('preemtive-button', {
              'button-s': size === 'small',
              'button-l': size === 'large',
-             'disabled': disabled
+             'disabled': disabled,
+             'position-left': widgetPosition === 'bottom.left'
            })}>
 
           <span className="state-button-text">{name}</span>
           <span className="state-button-icon" style={{
-            color: borderColor,
+            color: backgroundColor,
             borderColor: borderColor
           }}>
             <span>?</span>

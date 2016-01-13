@@ -22,7 +22,7 @@ export class ArticlePendingCreateCard extends Component {
     return (
       <Card type="article">
 
-        <CardCheckbox selected={selected} onClick={toggleSelected(element.get('id'))}/>
+        <CardCheckbox selected={selected} onClick={toggleSelected}/>
 
         <CardLine>
           <CardLineRight>

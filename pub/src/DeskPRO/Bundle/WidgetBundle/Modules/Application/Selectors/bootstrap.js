@@ -7,7 +7,39 @@ export const widgetLoadedSelector = createSelector(
   state => state.get('loaded')
 );
 
-export const widgetSessionCodeSelector = createSelector(
+// Widget session selectors
+export const widgetSessionSelector = createSelector(
   stateSelector,
-  state => state.get('sessionCode')
+  state => state.get('session')
+);
+
+export const widgetSessionCodeSelector = createSelector(
+  widgetSessionSelector,
+  session => session.get('session_code')
+);
+
+export const widgetSessionIsLoginSelector = createSelector(
+  widgetSessionSelector,
+  session => session.get('is_login')
+);
+
+// Widget settings selectors
+export const widgetSettingsSelector = createSelector(
+  stateSelector,
+  state => state.get('settings')
+);
+
+export const widgetChatSettingsSelector = createSelector(
+  widgetSettingsSelector,
+  settings => settings.get('chat')
+);
+
+export const requireChatEmailValidationSelector = createSelector(
+  widgetChatSettingsSelector,
+  settings => settings.get('email_validation')
+);
+
+export const requireChatLoginSelector = createSelector(
+  widgetChatSettingsSelector,
+  settings => settings.get('require_login')
 );

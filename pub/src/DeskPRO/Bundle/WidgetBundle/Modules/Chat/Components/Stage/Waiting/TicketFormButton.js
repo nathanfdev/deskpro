@@ -11,8 +11,8 @@ export class TicketFormButton extends React.Component {
   render() {
     return (
       <div>
-        It’s taking longer than expected to find an agent to take your chat.
-        Would you like to <a href="#" onClick={this.onOpenTicketForm}>submit</a> a ticket instead?
+        <p>It’s taking longer than expected to find an agent to take your chat.</p>
+        <p>Would you like to <a href="#" onClick={this.onOpenTicketForm}>submit</a> a ticket instead?</p>
       </div>
     );
   }

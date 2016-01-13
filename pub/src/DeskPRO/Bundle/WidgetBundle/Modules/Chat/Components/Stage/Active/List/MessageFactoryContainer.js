@@ -9,17 +9,43 @@ import { MessageContent } from './Message/MessageContent';
 import { MessageFooter } from './Message/MessageFooter';
 import { AvatarResolver } from '../../../../../Application/Components/AvatarResolver';
 import { phraseTranslationsSelector } from '../../../../Selectors/chat';
+import { peopleSelector } from '../../../../../Application/RecordStores/Selectors/peopleSelectors';
 import Immutable from 'immutable';
 
 @connect(state => ({
+  people: peopleSelector(state),
   phraseTranslations: phraseTranslationsSelector(state)
 }))
 export class MessageFactoryContainer extends React.Component {
 
   static propTypes = {
+    people: PropTypes.object,
     phraseTranslations: PropTypes.object,
     message: PropTypes.object
   };
+
+  getAuthor() {
+    const { message, people } = this.props;
+    const authorId = message.get('author');
+
+    return authorId && people.get(authorId) || Immutable.fromJS({});
+  }
+
+  getMetadata() {
+    return this.props.message.get('metadata') || Immutable.fromJS({});
+  }
+
+  getAuthorType() {
+    const author = this.getAuthor();
+    const metadata = this.getMetadata();
+
+    let authorType = author.get('is_agent') ? 'agent' : 'user';
+    if (metadata.get('is_user_message')) {
+      authorType = 'user';
+    }
+
+    return authorType;
+  }
 
   renderEvent() {
     const { message, phraseTranslations } = this.props;
@@ -41,26 +67,39 @@ export class MessageFactoryContainer extends React.Component {
   }
 
   renderMessage() {
-    const { message } = this.props;
-    const metadata = message.get('metadata') || Immutable.fromJS({});
+    const metadata = this.getMetadata();
+    const authorType = this.getAuthorType();
+    const author = this.getAuthor();
+
+    const props = this.props;
+    const messageProps = { ...props, authorType, author };
 
     return (
-      <Message type={message.get('author_type')}>
-        <AvatarResolver avatar={message.get('author_avatar')} size={20}>
+      <Message type={authorType}>
+        <AvatarResolver avatar={author.get('avatar')} size={20}>
           <MessageAvatar />
         </AvatarResolver>
         <MessageBody>
           {metadata.get('type') === 'file'
-            ? <MessageAttachment {...this.props} />
-            : <MessageContent {...this.props} />
+            ? <MessageAttachment {...messageProps} />
+            : <MessageContent {...messageProps} />
           }
         </MessageBody>
-        <MessageFooter {...this.props} />
+        <MessageFooter {...messageProps} />
       </Message>
     );
   }
 
   render() {
-    return this.props.message.get('is_sys') ? this.renderEvent() : this.renderMessage();
+    const { message } = this.props;
+    const author = this.getAuthor();
+
+    // Message has author but his info doesn't loaded yet
+    // Don't render message until it will be loaded
+    if (message.get('author') && !author.get('id')) {
+      return null;
+    }
+
+    return message.get('is_sys') ? this.renderEvent() : this.renderMessage();
   }
 }

@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Translate\HasPhraseName;
@@ -248,10 +249,12 @@ class   CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implem
         if (!isset($this->_structure['all_child_ids'])) {
             $all_ids = array();
             $r       = function (CategoryAbstract $cat) use (&$r, &$all_ids) {
-                foreach ($cat->getChildren() as $c) {
-                    $all_ids[] = $c->id;
-                    if ($c->getChildren()) {
-                        $r($c);
+                if ($children = $cat->getChildren()) {
+                    foreach ($cat->getChildren() as $c) {
+                        $all_ids[] = $c->id;
+                        if ($c->getChildren()) {
+                            $r($c);
+                        }
                     }
                 }
             };

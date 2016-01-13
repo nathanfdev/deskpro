@@ -28,6 +28,7 @@
 
 return array(
     'user.email_subjects.chat_transcript'                 => 'Chat Transcript',
+    'user.email_subjects.chat_validate_email'             => 'Chat email validation',
     'user.email_subjects.comment-approved'                => 'Your comment was approved',
     'user.email_subjects.comment-confirmation'            => 'Thank you for your comment',
     'user.email_subjects.comment-deleted'                 => 'Your comment was read by our agents',

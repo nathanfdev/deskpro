@@ -1,30 +1,35 @@
-define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Base) ->
+define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
   class Admin_Portal_Ctrl_WidgetEditor extends Admin_Ctrl_Base
     @CTRL_ID = 'Admin_Portal_Ctrl_WidgetEditor'
     @CTRL_AS = 'Ctrl'
+    @DEPS    = ['$http']
 
     init: ->
-      @$scope.code_snippets = {
-        code: ''
+      @$scope.code = ''
+      @$scope.base_options = {
+        url: {
+          widget_loader: '',
+          widget_bundle: '',
+          helpdesk: ''
+        }
       }
-
-      @$scope.chat_options = {
+      @$scope.custom_options = {
         widget: {
           type: 'column',
           position: 'right',
           agentPollingTimeout: 10
         },
         company: {
-          name: 'Acme Corp. Chat and a long name lorel ipsum dolor',
+          name: 'Helpdesk',
           logo: ''
         },
         button: {
           size: 'medium',
           name: 'Help',
           colors: {
-            background: '',
-            text: '',
-            border: ''
+            background: '#62ad8c',
+            text: '#ffffff',
+            border: '#4e9576'
           }
         },
         chat: {
@@ -43,29 +48,50 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
       }
 
     initialLoad: ->
-      data_promise = @Api.sendDataGet({
-        hdinfo:     '/deskpro/info',
-        chat_setup: '/chat_setup'
-      }).then((res) =>
-        @hdinfo = res.data.hdinfo
-        @$scope.setup = res.data.chat_setup.chat_setup
-      )
+      @$http.get('/api/v2/widget/setup').success((response) =>
+        @$scope.base_options = response;
+        @$scope.custom_options.company = response.company;
+        @initLiveDemo()
+      );
 
-      return @$q.all([data_promise])
+      @$scope.$watch('custom_options', =>
+        @updateLiveDemo()
+      , true)
 
-    updateChatCode: ->
-      code = """
+    getOptions: (liveDemo = false) ->
+      options = $.extend(true, {}, @$scope.custom_options)
+      if (liveDemo)
+        options.widget.liveDemo = true
+
+      return options
+
+    getCode: (options) ->
+      """
         <!-- DeskPRO Chat -->
           <script>
-              window.__DP_APP_SRC__ = 'http://localhost:9666/pub/build/DeskPRO_WidgetBundle.js';
-              window.__DP_URL__ = 'http://deskpro.com.dev/';
-              window.__DP_OPTIONS__ = #{JSON.stringify(@$scope.chat_options)};
+              window.__DP_APP_SRC__ = '#{@$scope.base_options.url.widget_bundle}';
+              window.__DP_URL__ = '#{@$scope.base_options.url.helpdesk}';
+              window.__DP_OPTIONS__ = #{JSON.stringify(options)};
           </script>
 
-          <script type="text/javascript" charset="UTF-8" src="http://deskpro.com.dev/pub/build/widget_loader.js?1446397152"></script>
+          <script type="text/javascript" charset="UTF-8" src="#{@$scope.base_options.url.widget_loader}"></script>
         <!-- /DeskPRO Chat -->
       """
 
-      @$scope.code_snippets.chat = code
+    getLiveDemoDocument: ->
+      document.getElementById('live-demo').contentDocument
+
+    updateChatCode: ->
+      @$scope.code = @getCode(@getOptions())
+
+    initLiveDemo: ->
+      demoDocument = @getLiveDemoDocument();
+      demoDocument.write('<body>' + @getCode(@getOptions(true)) + '</body>');
+      demoDocument.close();
+
+    updateLiveDemo: ->
+      demoWindow = @getLiveDemoDocument().dp_loader;
+      if (demoWindow)
+        demoWindow.emitter.emit('reloadOptions', @getOptions(true))
 
   Admin_Portal_Ctrl_WidgetEditor.EXPORT_CTRL()

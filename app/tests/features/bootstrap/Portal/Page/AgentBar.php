@@ -30,32 +30,31 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
+namespace DpBehat\Portal\Page;
 
-use FOS\RestBundle\View\View;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-
-/**
- * Class AgentsController.
- */
-class AgentsController extends AbstractApiController
+class AgentBar extends BasePage
 {
-    /**
-     * @Route("/portal/api/agents/online", name="portal_api_agents_online")
-     * @Method({"GET"})
-     *
-     * @return View
-     */
-    public function getOnlineAgentsAction()
-    {
-        /** @var \Application\DeskPRO\EntityRepository\Person $repository */
-        $repository = $this->getDoctrine()->getRepository('DeskPRO:Person');
-        $agent_ids  = $repository->getActiveAgentIdsForUserChat();
-        $agents     = $repository->findBy([
-            'id' => $agent_ids,
-        ]);
+    protected $path       = '/';
+    protected $parameters = array('base_url' => '/');
+    protected $elements   = array(
+        'Agent Bar' => array('css' => '#agent-bar'),
+    );
 
-        return new View($this->dataSerialize($agents, 'widget_person'));
+    public function isAgentBarOnPage()
+    {
+        try {
+            return $this->getElement('Agent Bar')->isValid();
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    public function isAdminDropdownOnAgentBar()
+    {
+        try {
+            return $this->getElement('Agent Bar')->find('css', '#admin-dropdown-arrow') !== null;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }

@@ -11,8 +11,6 @@ const initialState = {
     order: 'desc',
     filter: null
   },
-  selected: [],
-
   // async indicators
   async: {
     done: false
@@ -40,7 +38,6 @@ export default createReducer(initialState, {
 
   // Public (control bar) ----------------------------------------------------------------------------------------------
 
-  [toggleAll]: handleMassAction('elements', 'selected'),
   [toggleTableFieldVisibility]: togglePayloadInCollection('tableVisibleFields'),
   [toggleCardFieldVisibility]: togglePayloadInCollection('cardVisibleFields'),
   [setViewMode]: setFullPayload('viewMode')

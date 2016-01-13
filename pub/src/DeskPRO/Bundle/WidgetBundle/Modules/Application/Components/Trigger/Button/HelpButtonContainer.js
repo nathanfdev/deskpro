@@ -5,13 +5,14 @@ import { OnlineAgentsPopup } from '../Popups/OnlineAgentsPopup';
 import { AgentMessagePopupContainer } from '../Popups/AgentMessage/AgentMessagePopupContainer';
 import { ReplyButtons } from '../Popups/AgentMessage/ReplyButtons';
 import { ReplyForm } from '../Popups/AgentMessage/ReplyForm';
-import { loadOnlineAgents } from '../../../Actions/agentActions';
 import { OnlineAgentsContainer } from '../Popups/OnlineAgentsContainer';
 import { openTriggerPopup, closeTriggerPopup } from '../../../Actions/dpWindowActions';
-import { onlineAgentsCountSelector } from '../../../Selectors/agent';
+import { loadOnlineAgents } from '../../../Actions/peopleActions';
+import { onlineAgentsCountSelector } from '../../../RecordStores/Selectors/peopleSelectors';
 import {
   widgetHasChatSelector,
   widgetOpenedSelector,
+  widgetPositionSelector,
   helpButtonSizeSelector,
   helpButtonNameSelector,
   helpButtonBackgroundColorSelector,
@@ -21,13 +22,15 @@ import {
   helpPopupMessageSelector,
   helpPopupReplyTypeSelector,
   agentPollingTimeoutSelector,
-  triggerPopupOpenedSelector
+  triggerPopupOpenedSelector,
+  liveDemoSelector
 } from '../../../Selectors/dpWindow';
 
 @connect(state => ({
   hasChat: widgetHasChatSelector(state),
   triggerPopupOpened: triggerPopupOpenedSelector(state),
   widgetOpened: widgetOpenedSelector(state),
+  widgetPosition: widgetPositionSelector(state),
   size: helpButtonSizeSelector(state),
   name: helpButtonNameSelector(state),
   backgroundColor: helpButtonBackgroundColorSelector(state),
@@ -36,8 +39,9 @@ import {
   helpPopupTitle: helpPopupTitleSelector(state),
   helpPopupMessage: helpPopupMessageSelector(state),
   helpPopupReplyType: helpPopupReplyTypeSelector(state),
-  agentsCounts: onlineAgentsCountSelector(state),
-  agentPollingTimeout: agentPollingTimeoutSelector(state)
+  agentsCount: onlineAgentsCountSelector(state),
+  agentPollingTimeout: agentPollingTimeoutSelector(state),
+  liveDemo: liveDemoSelector(state)
 }))
 export class HelpButtonContainer extends React.Component {
 
@@ -45,16 +49,21 @@ export class HelpButtonContainer extends React.Component {
     hasChat: PropTypes.bool,
     triggerPopupOpened: PropTypes.bool,
     widgetOpened: PropTypes.bool,
+    widgetPosition: PropTypes.string,
     dispatch: PropTypes.func,
     onClick: PropTypes.func,
     helpPopupTitle: PropTypes.string,
     helpPopupMessage: PropTypes.string,
     helpPopupReplyType: PropTypes.string,
-    agentsCounts: PropTypes.number,
+    backgroundColor: PropTypes.string,
+    textColor: PropTypes.string,
+    borderColor: PropTypes.string,
+    agentsCount: PropTypes.number,
     agentPollingTimeout: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number
-    ])
+    ]),
+    liveDemo: PropTypes.bool
   };
 
   componentDidMount() {
@@ -68,13 +77,15 @@ export class HelpButtonContainer extends React.Component {
 
   onClosePopup = () => {
     this.props.dispatch(closeTriggerPopup());
+    localStorage['dpWidget.dpWindow.popupShown'] = 'none';
   };
 
   checkRenderPopup() {
-    const { triggerPopupOpened, agentsCounts, hasChat, dispatch } = this.props;
+    const { widgetOpened, triggerPopupOpened, agentsCount, hasChat, liveDemo, dispatch } = this.props;
     const storageKey = 'dpWidget.dpWindow.popupShown';
+    const notClosedPopup = !(storageKey in localStorage) || localStorage[storageKey] !== 'none';
 
-    if ((!(storageKey in localStorage) || localStorage[storageKey] !== 'none') && hasChat && agentsCounts > 0) {
+    if (!widgetOpened && hasChat && (liveDemo || (notClosedPopup && agentsCount > 0))) {
       if (!triggerPopupOpened) {
         dispatch(openTriggerPopup());
       }
@@ -86,25 +97,33 @@ export class HelpButtonContainer extends React.Component {
   }
 
   pollingRequest() {
-    const { widgetOpened, dispatch, agentPollingTimeout } = this.props;
-    if (widgetOpened) {
+    const { widgetOpened, dispatch, agentPollingTimeout, liveDemo } = this.props;
+    if (agentPollingTimeout === 'off' || !agentPollingTimeout || liveDemo) {
       return;
     }
 
-    const promise = dispatch(loadOnlineAgents());
+    // Save polling loop if widget opened but don't send requests
     const onResponse = () => {
-      if (agentPollingTimeout !== 'off' && agentPollingTimeout > 0) {
-        setTimeout(() => this.pollingRequest(), agentPollingTimeout * 1000);
-      }
+      setTimeout(() => this.pollingRequest(), agentPollingTimeout * 1000);
     };
 
-    promise.then(onResponse, onResponse);
+    if (widgetOpened) {
+      onResponse();
+    } else {
+      const promise = dispatch(loadOnlineAgents());
+      promise.then(onResponse, onResponse);
+    }
   }
 
   renderPopup() {
-    const { helpPopupTitle, helpPopupMessage, helpPopupReplyType, onClick } = this.props;
+    const { widgetPosition, helpPopupTitle, helpPopupMessage, helpPopupReplyType, onClick } = this.props;
+    const { backgroundColor, textColor, borderColor } = this.props;
     const popupProps = {
-      onClick: onClick,
+      widgetPosition,
+      backgroundColor,
+      textColor,
+      borderColor,
+      onClick,
       onClose: this.onClosePopup
     };
 

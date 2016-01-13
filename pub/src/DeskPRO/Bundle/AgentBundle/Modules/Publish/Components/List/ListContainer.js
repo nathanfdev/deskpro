@@ -2,14 +2,15 @@ import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
 import { List } from './List';
 import * as actions from '../../Actions/publishListActions';
-import { currentViewModeSelector } from '../../Selectors/list';
+import { currentViewModeSelector, contentSelector, loadedSelector, paginationSelector } from '../../Selectors/list';
+import { selectedSelector } from '../../../Application/Selectors/massActions';
 
 @connect(state => {
   return ({
-    content: state.Publish.list.get('currentListParams').get('content'),
-    loaded: state.Publish.list.getIn(['async', 'done']),
-    pagination: state.Publish.list.get('pagination'),
-    selected: state.Publish.list.get('selected'),
+    content: contentSelector(state),
+    loaded: loadedSelector(state),
+    pagination: paginationSelector(state),
+    selected: selectedSelector(state),
     currentViewMode: currentViewModeSelector(state)
   });
 })
@@ -37,8 +38,7 @@ export class ListContainer extends Component {
             pagination={pagination}
             currentViewMode={currentViewMode}
             content={content}
-            toggleView={this.toggleView.bind(this)}
-        />
+            toggleView={this.toggleView.bind(this)}/>
     );
   }
 }
