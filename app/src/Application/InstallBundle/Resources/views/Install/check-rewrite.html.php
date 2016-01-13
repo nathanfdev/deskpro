@@ -75,6 +75,7 @@ $(document).ready(function () {
         success: function (content) {
             if (content.indexOf('dp_check_okay') !== -1) {
                 $('#url_check_pass').show();
+                $('#continue_btn').show();
             } else {
                 $('#url_basepath_wrong').show();
             }
@@ -117,7 +118,7 @@ $(document).ready(function () {
         <tr id="url_check_off" style="display: none">
             <td>
                 <span class="label notice" style="float:right">UNSUPPORTED</span>
-                Your server is not capable of URL rewriting.
+                Your server is not capable of URL rewriting. You need to enable URL rewriting before you continue.
                 <br />
                 <a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.url_rewriting') ?>" class="kb-read-more inline" target="_blank">Learn about enabling URL rewriting on your server &rarr;</a>
             </td>
@@ -145,7 +146,7 @@ $(document).ready(function () {
     </tbody>
 </table>
 
-<div class="alert-message block-message success">
+<div class="alert-message block-message success" id="continue_btn" style="display: none">
     <div class="alert-actions submit-area">
         <a class="btn" href="<?php echo $view['router']->generate('install_verify_files') ?>" onclick="$(this).parent().addClass('clicked');">Go to step 4: Verify file integrity</a>
         <span class="next-loading"></span>
