@@ -80,7 +80,7 @@ export const hasChatInfoSelector = createSelector(
 
 export const agentIdSelector = createSelector(
   chatInfoSelector,
-  chatInfo => chatInfo.get('agent_id')
+  chatInfo => chatInfo.get('agent')
 );
 
 export const agentNameSelector = createSelector(
