@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializer;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
@@ -99,8 +100,14 @@ class NewAgentChatMessageGenerator extends AbstractGenerator
     {
         $message = $this->getChatMessage($event);
         $targets = [];
-        foreach ($message->getChat()->getPersonList() as $target) {
-            $targets[] = $target->getId();
+        if (!$message->getChat()->getType() === 'everyone') {
+            foreach ($message->getChat()->getPersonList() as $target) {
+                $targets[] = $target->getId();
+            }
+        } else {
+            foreach ($this->em->getRepository(Person::class)->findBy(['is_agent' => true]) as $agent) {
+                $targets[] = $agent->getId();
+            }
         }
 
         return $targets;
