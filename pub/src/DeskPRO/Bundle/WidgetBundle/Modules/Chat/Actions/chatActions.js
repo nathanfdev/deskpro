@@ -193,11 +193,7 @@ export const loadChatInfo = createAction(
     const state = getState();
     const queryParams = compileParams(addSessionCode(state));
 
-    return new Promise(resolve => {
-      DpApi
-        .sendGet(`DP_API/chats/${chatId}/polling?${queryParams}`, {...ajaxOptions})
-        .success(response => resolve(response.chat_info && response.chat_info.data));
-    });
+    return DpApi.sendGet(`DP_API/chats/${chatId}/polling?${queryParams}`, {...ajaxOptions});
   }
 );
 
