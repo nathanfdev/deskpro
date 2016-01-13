@@ -9,6 +9,17 @@ export const contentSelector = createSelector(
     state => state.get('currentListParams').get('content')
 );
 
+
+export const paginationSelector = createSelector(
+  stateSelector,
+    list => list.get('pagination')
+);
+
+export const loadedSelector = createSelector(
+  stateSelector,
+    list => list.getIn(['async', 'done'])
+);
+
 export const elementsSelector = createSelector(
   stateSelector,
     state => state.get('elements')

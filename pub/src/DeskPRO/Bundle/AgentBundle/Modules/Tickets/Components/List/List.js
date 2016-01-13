@@ -4,12 +4,10 @@ import { ControlBarContainer } from './ControlBarContainer';
 import { ListTableViewContainer } from './View/Table/ListTableViewContainer';
 import { ListCardViewContainer } from './View/Card/ListCardViewContainer';
 import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ListFrameMenu';
-import { toggleAll} from '../../Actions/listActions';
 import { PaginationContainer } from './PaginationContainer';
 
 export class List extends Component {
   static propTypes = {
-    selectedCount: PropTypes.number.isRequired,
     viewMode: PropTypes.string.isRequired,
     pagination: PropTypes.object,
     isDone: PropTypes.bool.isRequired
@@ -27,12 +25,11 @@ export class List extends Component {
   }
 
   render() {
-    const { selectedCount, pagination } = this.props;
-    const checkbox = { count: selectedCount, action: toggleAll };
+    const { pagination } = this.props;
 
     return (
       <ListFrameContainer>
-        <ListFrameMenu checkbox={checkbox}>
+        <ListFrameMenu>
           <ControlBarContainer />
         </ListFrameMenu>
         <ListFrameContents>

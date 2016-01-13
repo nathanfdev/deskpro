@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { ChatCard } from './ChatCard';
-import { elementsSelector, selectedSelector } from '../../../../Selectors/list';
+import { selectedSelector } from '../../../../../Application/Selectors/massActions';
+import { elementsSelector } from '../../../../Selectors/list';
 import { chatsSelector, peopleSelector, departmentsSelector } from '../../../../Selectors/recordStores';
 
 import { connect } from 'react-redux';
@@ -24,7 +25,7 @@ export class ChatsCardsContainer extends Component {
   };
 
   renderCard(id) {
-    const { chats, toggleSelected, people, departments } = this.props;
+    const { chats, toggleSelected, people, departments, selected } = this.props;
     const element = chats.get(id);
 
     return (
@@ -33,6 +34,7 @@ export class ChatsCardsContainer extends Component {
                 agent={people.get(element.get('agent'))}
                 department={departments.get(element.get('department'))}
                 chat={element}
+                selected={selected.includes(id)}
                 toggleSelected={toggleSelected}/>
     );
   }

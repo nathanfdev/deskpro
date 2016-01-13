@@ -10,13 +10,14 @@ export class OrganizationCard extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     viewEmployees: PropTypes.func.isRequired,
+    toggleSelected: PropTypes.func.isRequired,
     organization: PropTypes.object.isRequired,
     selected: PropTypes.bool
   };
 
   renderLabels() {
     const labels = this.props.organization.get('labels');
-    if (labels.length) {
+    if (labels.size) {
       return (
         <CardLineItem>
           <CardDisc/>
@@ -29,7 +30,7 @@ export class OrganizationCard extends Component {
 
   renderDomains() {
     const emailDomains = this.props.organization.get('email_domains');
-    if (emailDomains.length) {
+    if (emailDomains.size) {
       return (
         <CardLineItem>
           <CardDisc/>
@@ -40,12 +41,12 @@ export class OrganizationCard extends Component {
   }
 
   render() {
-    const { organization, selected, viewEmployees } = this.props;
+    const { organization, selected, viewEmployees, toggleSelected } = this.props;
 
     return (
       <Card type="crm">
 
-        <CardCheckbox selected={selected} onClick={()=>{}}/>
+        <CardCheckbox selected={selected} onClick={toggleSelected}/>
 
         <CardLine>
           <CardLineLeft>

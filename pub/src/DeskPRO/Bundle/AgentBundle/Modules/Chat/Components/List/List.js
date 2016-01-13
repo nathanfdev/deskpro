@@ -20,14 +20,10 @@ export class List extends React.Component {
 
   render() {
     const { loaded, pagination, viewMode, toggleSelected } = this.props;
-    const checkbox = {
-      count: 0, action: ()=> {
-      }
-    };
 
     return (
       <ListFrameContainer>
-        <ListFrameMenu checkbox={checkbox}>
+        <ListFrameMenu>
           <ControlBarContainer />
         </ListFrameMenu>
         <LoadIndicator loaded={loaded}

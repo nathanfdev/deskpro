@@ -22,14 +22,10 @@ export class List extends Component {
 
   render() {
     const { currentViewMode, selected, loaded, pagination, content } = this.props;
-    const checkbox = {
-      count: selected.size, action: ()=> {
-      }
-    };
 
     return (
       <ListFrameContainer>
-        <ListFrameMenu checkbox={checkbox}>
+        <ListFrameMenu>
           {!selected.size && <ControlBarContainer key="1"/>}
           {selected.size && <MassActionContainer key="2"/>}
         </ListFrameMenu>

@@ -12,6 +12,7 @@ export class PersonCard extends Component {
     organization: PropTypes.object,
     usergroups: PropTypes.object.isRequired,
     language: PropTypes.object.isRequired,
+    toggleSelected: PropTypes.func.isRequired,
     selected: PropTypes.bool
   };
 
@@ -60,12 +61,12 @@ export class PersonCard extends Component {
   }
 
   render() {
-    const { person, selected } = this.props;
+    const { person, selected, toggleSelected } = this.props;
 
     return (
       <Card type="crm">
 
-        <CardCheckbox selected={selected} onClick={()=>{}}/>
+        <CardCheckbox selected={selected} onClick={toggleSelected}/>
 
         <CardLine>
           <CardLineLeft>

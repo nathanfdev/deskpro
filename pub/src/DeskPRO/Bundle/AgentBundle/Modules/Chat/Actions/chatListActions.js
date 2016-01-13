@@ -4,6 +4,7 @@ import { currentListParamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Ch
 import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 import { setDepartmentsRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/departmentsActions';
 import { setChatsRequest } from '../RecordStores/Actions/chatsActions';
+import { toggleMassAction } from '../../Application/Actions/massActions';
 
 /**
  * Used to identify requests within record stores
@@ -41,22 +42,11 @@ export const load = createAction(
       dispatch(setChatsRequest(recordStoresId, res.data));
       dispatch(setPeopleRequest(recordStoresId, prepareLinkedData(res.linked.person)));
       dispatch(setDepartmentsRequest(recordStoresId, prepareLinkedData(res.linked.department)));
+      dispatch(toggleMassAction());
 
       return { ids: ids, pagination: res.meta.pagination };
     });
   }
-);
-
-export const reLoad = createAction(
-  'CHAT_LIST_RELOAD_DATA',
-  (overwriteParams = {}) =>
-    (dispatch, getState) => {
-      const currentParams = currentListParamsSelector(getState());
-      const params = { ...currentParams, ...overwriteParams };
-      dispatch(updateCurrentListParams(params));
-
-      return loadChats(params).then(promise => promise.getData().data);
-    }
 );
 
 export const applyParams = createAction(
