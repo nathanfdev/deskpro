@@ -33,7 +33,8 @@ export class DateDue extends React.Component {
     }
   };
 
-  onCloseCalendar = () => {
+  onCloseCalendar = event => {
+    event.stopPropagation();
     const { onSetEditing } = this.props;
     this.setState({
       isOpen: false

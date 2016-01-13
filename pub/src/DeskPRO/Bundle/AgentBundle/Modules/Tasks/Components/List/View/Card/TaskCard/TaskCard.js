@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { MarkDoneButton } from './MarkDoneButton';
+import { editTask } from '../../../../../Actions/listActions';
 import {
   Card,
   CardCheckbox,
@@ -30,7 +31,13 @@ export class TaskCard extends BaseTaskCard {
     onChangeDate: PropTypes.func,
     onSetEditing: PropTypes.func,
     task: PropTypes.object,
-    moving: PropTypes.bool
+    moving: PropTypes.bool,
+    dispatch: PropTypes.func.isRequired
+  };
+
+  onAssign = (assignee) => {
+    const { dispatch, task } = this.props;
+    return dispatch(editTask(task.get('id'), assignee));
   };
 
   renderDetails() {
@@ -79,7 +86,7 @@ export class TaskCard extends BaseTaskCard {
           <CardLineRight>
             {task.get('is_done')
               ? <ShowDetailsButton expanded={this.state.expanded} onToggleExpand={this.onToggleExpand}/>
-              : <AssignButton task={task} onSetEditing={onSetEditing} />
+              : <AssignButton task={task} onSetEditing={onSetEditing} onAssign={this.onAssign} />
             }
           </CardLineRight>
         </CardLine>
