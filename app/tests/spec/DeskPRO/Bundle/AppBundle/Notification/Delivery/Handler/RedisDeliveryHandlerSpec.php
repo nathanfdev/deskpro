@@ -42,8 +42,11 @@ class RedisDeliveryHandlerSpec extends ObjectBehavior
     public function let(Client $client)
     {
         $this->beConstructedWith($client);
-        $client->publish(Argument::any(), Argument::any())->willReturn(1);
-        $client->connect()->willReturn(Argument::any());
+        /*
+         * @see comment for commented code below
+         * $client->publish(Argument::any(), Argument::any())->willReturn(1);
+         * $client->connect()->willReturn(Argument::any());
+         */
     }
 
     public function it_can_deliver_message(ActionAlert $actionAlert, Client $client)
