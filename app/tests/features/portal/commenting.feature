@@ -50,6 +50,20 @@ Feature: Commenting
     Then I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
     And I should be on the set password page
 
+  @reinstall
+  Scenario: I use a registered email to comment as a guest
+    Given I am on "/kb/articles/example-article"
+    When I fill in "What is your comment?" with "This is a guest comment!"
+    When I fill in "Your Name" with "Chris Name"
+    When I fill in "Email" with "user@deskpro.dev"
+    And I press "Save Comment"
+    Then I should be on "/login"
+    When I fill in "Email" with "user@deskpro.dev"
+    And I fill in "Your password" with "12345"
+    And I press "Login"
+    Then I should be on "/kb/articles/example-article"
+    And I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
+
 
   #
   # NEWS
@@ -90,6 +104,20 @@ Feature: Commenting
     When I click the email verification link
     Then I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
     And I should be on the set password page
+
+  @reinstall
+  Scenario: I use a registered email to comment as a guest
+    Given I am on "/news/posts/example-news-post"
+    When I fill in "What is your comment?" with "This is a guest comment!"
+    When I fill in "Your Name" with "Chris Name"
+    When I fill in "Email" with "user@deskpro.dev"
+    And I press "Save Comment"
+    Then I should be on "/login"
+    When I fill in "Email" with "user@deskpro.dev"
+    And I fill in "Your password" with "12345"
+    And I press "Login"
+    Then I should be on "/news/posts/example-news-post"
+    And I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
 
 
   #
@@ -136,6 +164,21 @@ Feature: Commenting
     Then I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
     And I should be on the set password page
 
+  @reinstall
+  Scenario: I use a registered email to comment as a guest
+    Given the "feedback" category "Suggestion" exists with content titled "Example Feedback"
+    And I am on "/feedback/view/example-feedback"
+    When I fill in "What is your comment?" with "This is a guest comment!"
+    When I fill in "Your Name" with "Chris Name"
+    When I fill in "Email" with "user@deskpro.dev"
+    And I press "Save Comment"
+    Then I should be on "/login"
+    When I fill in "Email" with "user@deskpro.dev"
+    And I fill in "Your password" with "12345"
+    And I press "Login"
+    Then I should be on "/feedback/view/example-feedback"
+    And I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
+
   #
   # DOWNLOADS
   #
@@ -179,3 +222,18 @@ Feature: Commenting
     When I click the email verification link
     Then I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
     And I should be on the set password page
+
+  @reinstall
+  Scenario: I use a registered email to comment as a guest
+    Given the "download" category "General" exists with content titled "Example Download"
+    And I am on "/downloads/files/example-download"
+    When I fill in "What is your comment?" with "This is a guest comment!"
+    When I fill in "Your Name" with "Chris Name"
+    When I fill in "Email" with "user@deskpro.dev"
+    And I press "Save Comment"
+    Then I should be on "/login"
+    When I fill in "Email" with "user@deskpro.dev"
+    And I fill in "Your password" with "12345"
+    And I press "Login"
+    Then I should be on "/downloads/files/example-download"
+    And I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
