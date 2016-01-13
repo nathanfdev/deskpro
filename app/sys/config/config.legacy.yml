@@ -7,3 +7,11 @@ security:
   firewalls:
     default:
       anonymous: ~
+
+
+services:
+  legacy_session_close.listener:
+      class: DeskPRO\Bundle\AppBundle\EventListener\LegacySessionCloseListener
+      arguments: [@service_container, @deskpro.interface_info]
+      tags:
+        - { name: kernel.event_subscriber }

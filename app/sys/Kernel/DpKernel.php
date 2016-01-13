@@ -33,12 +33,10 @@ namespace DeskPRO\Kernel;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\HttpFoundation\Request;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
-use Symfony\Component\HttpFoundation\Response;
 
 class DpKernel extends AbstractKernel
 {
@@ -359,73 +357,5 @@ class DpKernel extends AbstractKernel
         }
 
         return $bundles;
-    }
-
-    ####################################################################################################################
-    # DeskPRO Specific
-    ####################################################################################################################
-
-    /**
-     * Executed after the requests is handled, right before it is returned to the user.
-     *
-     * @param Response $response
-     * @param Request  $request
-     */
-    protected function postResponseHandled(Response $response, Request $request)
-    {
-        global $DP_CONFIG;
-
-        if (!(defined('install') && 'install' === $this->interface)) {
-            if (session_id() != '') {
-                if ($this->container->isServiceInitialized('session')) {
-                    $this->container->get('session')->save();
-                }
-                session_write_close();
-            }
-        }
-
-        if ('agent' === $this->interface || 'admin' === $this->interface || 'reports' === $this->interface) {
-            $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
-        }
-    }
-
-    /**
-     * Checks settings/triggers to see if the helpdesk is offline.
-     *
-     * @return bool
-     */
-    public function isHelpdeskOffline()
-    {
-        if (isset($GLOBALS['DP_HELPDESK_DISABLED']) && $GLOBALS['DP_HELPDESK_DISABLED']) {
-            return true;
-        }
-
-        // Offline setting applies to all but admin
-        if (App::getSetting('core.helpdesk_disabled') && ('user' === $this->interface || 'agent' === $this->interface || 'cron' === $this->interface)) {
-            return true;
-        }
-
-        // Offline file is inserted on cmdline upgrade,
-        // we want to disable all access
-        if (is_file(dp_get_data_dir().'/helpdesk-offline.trigger')) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Checks settings to see if an auto-upgrade is pending.
-     *
-     * @return bool
-     */
-    public function isUpgradePending()
-    {
-        // Make sure filesystem and db builds are the same, or else the upgrader needs to run
-        if (App::getSetting('core.deskpro_build') < DP_BUILD_TIME) {
-            return true;
-        }
-
-        return false;
     }
 }

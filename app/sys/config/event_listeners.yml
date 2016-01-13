@@ -1,6 +1,52 @@
 services:
+  request_type_classifier.listener:
+    class: DeskPRO\Bundle\AppBundle\EventListener\RequestTypeClassifierListener
+    tags:
+      - { name: kernel.event_subscriber }
+
+  preflight_checks.listener:
+    class: DeskPRO\Bundle\AppBundle\EventListener\PreflightChecksListener
+    arguments: [@service_container]
+    tags:
+      - { name: kernel.event_subscriber }
+
+  license_listener.listener:
+    class: DeskPRO\Bundle\AppBundle\EventListener\LicenseListener
+    arguments: [@service_container]
+    tags:
+      - { name: kernel.event_subscriber }
+
+  license_checks.listener:
+    class: DeskPRO\Bundle\AppBundle\EventListener\LicenseCheckListener
+    arguments: [@service_container, @deskpro.interface_info]
+    tags:
+      - { name: kernel.event_subscriber }
+
+  helpdesk_offline_low.listener:
+    class: DeskPRO\Bundle\AppBundle\EventListener\HelpdeskOfflineLowListener
+    arguments: [@deskpro.interface_info, @=service('deskpro_config').getDataDir()]
+    tags:
+      - { name: kernel.event_subscriber }
+
+  helpdesk_offline_setting.listener:
+    class: DeskPRO\Bundle\AppBundle\EventListener\HelpdeskOfflineSettingListener
+    arguments: [@deskpro.interface_info, @brand_stack, @=service('deskpro_config').getDataDir()]
+    tags:
+      - { name: kernel.event_subscriber }
+
   url_corrector.listener:
     class: DeskPRO\Bundle\AppBundle\EventListener\UrlCorrectorEventListener
     arguments: [@deskpro.interface_info, @brand_stack, @logger]
+    tags:
+      - { name: kernel.event_subscriber }
+
+  meta_generato.listener:
+    class: DeskPRO\Bundle\AppBundle\EventListener\MetaGeneratorListener
+    tags:
+      - { name: kernel.event_subscriber }
+
+  legacy_controller_events.listener:
+    class: DeskPRO\Bundle\AppBundle\EventListener\LegacyControllerEventsListener
+    arguments: [@service_container]
     tags:
       - { name: kernel.event_subscriber }

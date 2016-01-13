@@ -31,12 +31,7 @@
  */
 namespace DeskPRO\Kernel;
 
-use Application\DeskPRO\App;
-use Orb\Util\Arrays;
-use Orb\Util\Env;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 require_once DP_ROOT.'/sys/DpShutdown.php';
@@ -45,345 +40,9 @@ require_once DP_ROOT.'/sys/Kernel/HelpdeskOfflineMessage.php';
 
 abstract class AbstractKernel extends BaseKernel
 {
-    /**
-     * @return RedirectResponse|null
-     */
-    public static function performSystemChecks(Request $request)
-    {
-        $path = $request->getPathInfo();
-
-        if (!deskpro_install_check_pdo_mysql()) {
-            $response = new RedirectResponse($request->getBasePath().'/index.php/install/');
-
-            return $response;
-        }
-
-        try {
-            App::getSetting('core.license');
-        } catch (\Doctrine\DBAL\DBALException $e) {
-            global $DP_CONFIG;
-            if ($e->getCode() == '42S02' || @$DP_CONFIG['db']['user'] == 'YOUR_DATABASE_USER' || @$DP_CONFIG['db']['password'] == 'YOUR_DATABASE_PASS' || @$DP_CONFIG['db']['dbname'] == 'YOUR_DATABASE_NAME') {
-                // This will show an error page if already installed, so the redirect to install wont happen
-                deskpro_handle_boot_db_exception($e);
-
-                $response = new RedirectResponse($request->getBasePath().'/index.php/install/');
-
-                return $response;
-            } else {
-                // Ignore connection related errors on installer
-                if (DP_INTERFACE != 'install') {
-                    throw $e;
-                }
-            }
-        }
-
-        if (!App::getSetting('core.install_build') && strpos($request->getRequestUri(), '/index.php/install/') === false) {
-            $response = new RedirectResponse($request->getBasePath().'/index.php/install/');
-
-            return $response;
-        }
-
-        // Make sure filesystem and db builds are the same, or else the upgrader needs to run
-        if (App::getSetting('core.deskpro_build') < DP_BUILD_TIME) {
-            // Show info to agent/admin interface
-            if (preg_match('#^/admin/?#', $path) || preg_match('#^/agent/?#', $path)) {
-                $db_build   = App::getSetting('core.deskpro_build');
-                $file_build = DP_BUILD_TIME;
-
-                echo deskpro_install_basic_error("
-                    <p>
-                        It appears as though you have recently upgraded the DeskPRO source files, but you have not performed the required database upgrades.
-                    </p>
-                    <p style='margin: 6px 0 6px 0;'>
-                        To complete the upgrade process, execute the upgrade command to bring your database up to date:
-                    </p>
-                    <div style=\"font-family: 'Monaco', 'Courier New', monaco; background: #fff; padding: 8px; border: 1px solid #999; \">
-                        /path/to/php /path/to/deskpro/upgrade.php --run-db-upgrade
-                    </div>
-                    <div style=\"padding-top: 35px; font-size: 11px; color: #777;text-align: center;\">
-                        <div style='display: inline-block; background: #ddd; padding: 5px 8px; border-radius: 3px;'>
-                            Database build: $db_build
-                            &nbsp;
-                            |
-                            &nbsp;
-                            Files build: $file_build
-                        </div>
-                    </div>
-                ", 'DeskPRO Upgrade');
-                exit;
-
-            // Standard offline mode for users
-            } else {
-                $GLOBALS['DP_HELPDESK_DISABLED'] = true;
-            }
-        }
-
-        // Make sure we arent banned ip
-        if (!preg_match('#^/admin/?#', $path)) {
-            $ip      = dp_get_user_ip_address();
-            $ip_long = sprintf('%u', ip2long($ip));
-
-            $banned = App::getDb()->fetchColumn('
-                SELECT banned_ip
-                FROM ban_ips
-                WHERE banned_ip = ? OR (ip_start <= ? AND ip_end >= ?)
-                LIMIT 1
-            ', array($ip, $ip_long, $ip_long));
-
-            if ($banned) {
-                $response = new Response();
-                $response->setContent(HelpdeskOfflineMessage::getOfflinePage('The helpdesk is currently unavailable.'));
-
-                return $response;
-            }
-        }
-
-        if (!isset($GLOBALS['DP_CONFIG']['rewrite_urls'])) {
-            $GLOBALS['DP_CONFIG']['rewrite_urls'] = App::getSetting('core.rewrite_urls');
-        }
-
-        if (License::getLicense()->isPastExpireDate()) {
-            define('DP_BILLING_ERROR', true);
-        }
-
-        // TODO: more of the license checks in the handle() method below need to be refactored into here before launch
-
-        return;
-    }
-
     final public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
     {
-        if (false === $this->booted) {
-            $this->boot();
-        }
-
-        $path = $request->getPathInfo();
-
-        if ($response = self::performSystemChecks($request)) {
-            return $response;
-        }
-
-        if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
-            $website_url = '';
-            if (!empty($_REQUEST['dp_website_url']) && is_string($_REQUEST['dp_website_url'])) {
-                $website_url = $_REQUEST['dp_website_url'];
-            } elseif (!empty($_COOKIE['dp_o_uri']) && is_string($_COOKIE['dp_o_uri'])) {
-                $website_url = @base64_decode($_COOKIE['dp_o_uri'], false);
-            }
-
-            if ($website_url == 'DP_UNSET') {
-                $website_url = '';
-            }
-
-            if ($website_url && (empty($_COOKIE['dp_o_uri']) || $_COOKIE['dp_o_uri'] != $website_url)) {
-                setcookie('dp_o_uri', base64_encode($website_url), null, '/', null, null, true);
-            } elseif (!$website_url && !empty($_COOKIE['dp_o_uri'])) {
-                setcookie('dp_o_uri', '', -3600, '/', null, null, true);
-            }
-
-            $GLOBALS['DP_WEBSITE_URL'] = $website_url;
-        }
-
-        if ((defined('DP_INTERFACE') && DP_INTERFACE == 'user') && $this->isHelpdeskOffline()) {
-            $cache_dir           = dp_get_tmp_dir().'/page-cache';
-            $base                = substr(preg_replace('#[^a-z0-9_-]#i', '_', $request->getRequestUri()), 0, 35);
-            $scheme_host         = $request->getScheme().'://'.$request->getHttpHost();
-            $cache_base_filename = $base.'-'.md5($scheme_host.$request->getRequestUri()).'.cache';
-            try {
-                $language    = App::getLanguage();
-                $language_id = $language->id;
-            } catch (\Exception $e) {
-                $language_id = 1;
-            }
-            $cache_filename = $language_id.'-'.$cache_base_filename;
-            $cache_file     = $cache_dir.'/'.$cache_filename;
-
-            if (file_exists($cache_file)) {
-                // helpdesk is offline - always serve this instead
-                $output = @unserialize(file_get_contents($cache_file));
-                if (is_array($output)) {
-                    if ($output['compressed']) {
-                        $output['content'] = gzuncompress($output['content']);
-                    }
-
-                    $message           = HelpdeskOfflineMessage::getOfflineMessage();
-                    $output['content'] = KernelBooter::prepareCachedOutputForOffline($output['content'], $message);
-
-                    return new Response($output['content'], 200, $output['headers']);
-                }
-            }
-        }
-
-        // Make sure we arent offline
-        if (!(preg_match('#^/admin/?#', $path) || preg_match('#^/agent/(login|logout)#', $path)) && $this->isHelpdeskOffline()) {
-            $response = new Response();
-            $response->setContent(HelpdeskOfflineMessage::getOfflinePage());
-
-            return $response;
-        }
-
-        // Verify that we arent at the max vars limit which could be a problem
-        if ($request->getMethod() == 'POST' && $_POST) {
-            $max = Env::getMaxPostVars();
-            if ($max) {
-                $count = Arrays::valueCount($_POST);
-                if ($count >= $max) {
-                    throw new \RuntimeException("Server max post vars set to {$max} and this form posted {$count} variables");
-                }
-            }
-        }
-
-        /** @var $response \Symfony\Component\HttpFoundation\Response */
-        $response = $this->getHttpKernel()->handle($request, $type, $catch);
-
-        #------------------------------
-        # License checks
-        #------------------------------
-
-        $is_page_load = strpos($response->headers->get('content-type'), 'text/html') !== false
-            && $type == HttpKernelInterface::MASTER_REQUEST
-            && !preg_match('#^/admin/load-view#', $path)
-            && !preg_match('#^/reports/load-view#', $path);
-
-        if ($is_page_load
-            && (!isset($GLOBALS['DP_USING_TESTING_CONFIG']) || !$GLOBALS['DP_USING_TESTING_CONFIG'])
-            && !preg_match('#^/admin/start#', $path)
-            && !preg_match('#^/admin/login#', $path)
-            && !preg_match('#^/agent/login#', $path)
-            && !preg_match('#^/old\-agent/login#', $path)
-        ) {
-            #------------------------------
-            # No license
-            #------------------------------
-
-            // If we dont have a license or not completed installs, then we are allowed to view exactly:
-            // 1) /admin/login             Logging in
-            // 1) /agent/login             Logging in
-            // 2) /admin/start             Initial config
-            $is_installed = App::getSetting('core.setup_initial');
-            if (!License::getLicense()->hasLicense() || !$is_installed) {
-                $response = new RedirectResponse($request->getBaseUrl().'/admin/start');
-
-                return $response;
-            } else {
-                #------------------------------
-                # Max agent checks
-                #------------------------------
-
-                if (License::getLicense()->getMaxAgents()) {
-                    // The main interface frame is a good place to stick this check
-                    if (DP_INTERFACE == 'agent' && preg_match('#^/agent(/|\?)?#', $path)) {
-                        $count = App::getDb()->fetchColumn('SELECT COUNT(*) FROM people WHERE is_agent = 1 AND is_deleted = 0');
-                        if ($count > License::getLicense()->getMaxAgents()) {
-                            $response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('agents', $request->getBaseUrl()));
-
-                            return $response;
-                        }
-                    }
-                }
-
-                #------------------------------
-                # Expiry checks
-                #------------------------------
-
-                if (defined('DPC_IS_CLOUD')) {
-                    // Demos have a set expiry date
-                    if (License::getLicense()->isPastExpireDate()) {
-                        if (DP_INTERFACE == 'agent' || (DP_INTERFACE == 'user' && License::getLicense()->isPastExpireDate() >= 14)) {
-                            $response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('cloud_demo_expired', $request->getBaseUrl()));
-
-                            return $response;
-                        }
-                    }
-
-                    // Bill failures are handled a bit differently...
-                    if (DPC_BILL_FAILED) {
-                        // Agent might be disbaled
-                        if (DP_INTERFACE == 'agent' && DPC_AGENT_OFF) {
-                            $response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('cloud_billfail_agent', $request->getBaseUrl()));
-
-                            return $response;
-                        }
-
-                        // User might be off too
-                        if (DP_INTERFACE == 'user' && DPC_USER_OFF) {
-                            $response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('cloud_billfail_user', $request->getBaseUrl()));
-
-                            return $response;
-                        }
-                    } else {
-                        // Standard offline messages ...
-
-                        // Admin always shows notice
-                        if (DP_INTERFACE == 'admin' && DPC_ADMIN_OFF) {
-                            $response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('cloud_off_admin', $request->getBaseUrl()));
-
-                            return $response;
-                        }
-
-                        // Agent might be disbaled
-                        if (DP_INTERFACE == 'agent' && DPC_AGENT_OFF) {
-                            $response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('cloud_off_agent', $request->getBaseUrl()));
-
-                            return $response;
-                        }
-
-                        // User might be off too
-                        if (DP_INTERFACE == 'user' && DPC_USER_OFF) {
-                            $response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('cloud_off_user', $request->getBaseUrl()));
-
-                            return $response;
-                        }
-                    }
-                } else {
-                    if (License::getLicense()->isPastExpireDate()) {
-                        // Show lic error
-                        if (DP_INTERFACE == 'agent' || (DP_INTERFACE == 'user' && License::getLicense()->isPastExpireDate() >= 14)) {
-                            $response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('expired', $request->getBaseUrl()));
-
-                            return $response;
-                        }
-                    }
-                }
-
-                if (defined('DPC_SYS_DISABLED') && DPC_SYS_DISABLED) {
-                    $response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('sys_disabled.'.DPC_SYS_DISABLED, $request->getBaseUrl()));
-
-                    return $response;
-                }
-            }
-        }
-
-        $this->postResponseHandled($response, $request);
-
-        if ($response && isset($GLOBALS['DP_CONFIG']['DP_POST_RESPONSE_HANDLED_CALLBACK'])) {
-            $response = call_user_func($GLOBALS['DP_CONFIG']['DP_POST_RESPONSE_HANDLED_CALLBACK'], $response, $request);
-        }
-
-        if ($is_page_load) {
-            $content = $response->getContent();
-            $content = str_replace('</head>', "\n\t<meta name=\"Generator\" content=\"DeskPRO ".DP_BUILD_TIME."\" />\n\t</head>", $content);
-
-            if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
-                $website_url = isset($GLOBALS['DP_WEBSITE_URL']) ? $GLOBALS['DP_WEBSITE_URL'] : '';
-                $content     = str_replace('<!-- DP_WEBSITE_URL_FIELD -->', '<input type="hidden" class="dp_website_url" name="dp_website_url" value="'.htmlspecialchars($website_url).'" />', $content);
-            }
-
-            $response->setContent($content);
-        }
-
-        if ((defined('DP_INTERFACE') && DP_INTERFACE == 'user') && $is_page_load && isset($GLOBALS['DP_RENDERED_TEMPLATES']['UserBundle::layout.html.twig'])) {
-            if (!($response instanceof RedirectResponse) && !License::getLicense()->hasUserCopyrightHtml($response->getContent())) {
-                // Dont show lic error when serving exception page in debug mode
-                if (!(strpos($response->getContent(), 'sf-exceptionreset') && $this->isDebug())) {
-                    $response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('copyright', $request->getBaseUrl()));
-
-                    return $response;
-                }
-            }
-        }
-
-        return $response;
+        return parent::handle($request, $type, $catch);
     }
 }
 
@@ -408,14 +67,14 @@ final class License
     private static $inst;
 
     /**
-     * @var string
+     * @var callable
      */
-    private $license_id;
+    private static $lic_loader;
 
     /**
      * @var string
      */
-    private $license_request_code;
+    private $license_id;
 
     /**
      * @var string
@@ -507,12 +166,15 @@ final class License
 
         $inst = new self($license_code, $install_key);
 
-        // First invocation always the singleton used for lic checks
-        if (!self::$inst) {
-            self::$inst = $inst;
-        }
-
         return $inst;
+    }
+
+    /**
+     * @return \DeskPRO\Kernel\License
+     */
+    public static function setLoaderFunction($fn)
+    {
+        self::$lic_loader = $fn;
     }
 
     /**
@@ -523,46 +185,16 @@ final class License
     public static function getLicense()
     {
         if (!self::$inst) {
-            if (defined('DP_LIC_FILE')) {
-                $license_code = file_get_contents(DP_LIC_FILE);
-            } elseif (defined('DP_LIC_STR')) {
-                $license_code = DP_LIC_STR;
+            if (self::$lic_loader) {
+                // a loader is generally set during a kernel event
+                // that loads the lic from a license file or the license setting
+                $info         = call_user_func(self::$lic_loader);
+                $license_code = $info['license_code'];
+                $install_key  = $info['install_key'];
+                self::$inst   = self::create($license_code, $install_key);
             } else {
-                $license_code = App::getSetting('core.license');
-                if (!$license_code) {
-                    $license_code = null;
-                }
-            }
-
-            if (defined('DP_INSTALL_KEY')) {
-                $install_key = DP_INSTALL_KEY;
-            } else {
-                $install_key = App::getSetting('core.install_key');
-            }
-
-            $licopt = '';
-            try {
-                $licopt = App::getSetting('core.licenseopt');
-                if ($licopt) {
-                    $license_code .= '#'.$licopt;
-                }
-            } catch (\Exception $e) {
-            }
-
-            self::create($license_code, $install_key);
-
-            if (!self::$inst->isXlic() && isset(self::$sysdata['xlic'][self::$inst->getLicenseId()])) {
-                try {
-                    if ($licopt) {
-                        $licopt .= ',';
-                    }
-                    $licopt .= self::$inst->getLicenseId().':'.'XLIC='.(time() - 3600);
-                    App::getDb()->replace('settings', array(
-                        'name'  => 'core.licenseopt',
-                        'value' => $licopt,
-                    ), array('name' => 'core.licenseopt'));
-                } catch (\Exception $e) {
-                }
+                // this will cause an invalid license, but without a loader that is desirable
+                self::$inst = self::create('', null);
             }
         }
 
@@ -893,17 +525,7 @@ final class License
             return '';
         }
 
-        $powered_by_deskpro = null;
-        if (class_exists('Application\\DeskPRO\\App')) {
-            try {
-                $powered_by_deskpro = \Application\DeskPRO\App::getTranslator()->phrase('user.general.helpdesk_by', array('deskpro' => 'DeskPRO'));
-            } catch (\Exception $e) {
-            }
-        }
-
-        if (!$powered_by_deskpro || strpos($powered_by_deskpro, 'DeskPRO') === false) {
-            $powered_by_deskpro = 'Helpdesk software by <strong>DeskPRO</strong>';
-        }
+        $powered_by_deskpro = 'Helpdesk software by <strong>DeskPRO</strong>';
 
         $html = <<<STR
 <!-- DeskPRO Copyright -->

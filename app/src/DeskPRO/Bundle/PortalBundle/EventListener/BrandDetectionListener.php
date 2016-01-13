@@ -29,14 +29,13 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use Application\DeskPRO\Entity\Brand as BrandEntity;
 use Application\DeskPRO\EntityRepository\Brand;
 use Application\DeskPRO\NewSettings\SettingsResolver;
-use DeskPRO\Bundle\AppBundle\Helper\IsLowLevelRequestHelper;
 use DeskPRO\Bundle\AppBundle\Helper\IsProxyRequestHelper;
+use DeskPRO\Bundle\AppBundle\HttpKernel\SkipLowRequestInterface;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
@@ -50,7 +49,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
  * Early in a request, this listener will determine the active brand for this request and push it onto the brand_stack
  * service.
  */
-class BrandDetectionListener implements EventSubscriberInterface
+class BrandDetectionListener implements EventSubscriberInterface, SkipLowRequestInterface
 {
     /**
      * @var \DeskPRO\Bundle\PortalBundle\Brand\BrandStack
@@ -96,11 +95,6 @@ class BrandDetectionListener implements EventSubscriberInterface
     {
         if (!$event->isMasterRequest()) {
             // only run this on the master request - we only detect once per request.
-            return;
-        }
-
-        if (IsLowLevelRequestHelper::check($event->getRequest())) {
-            // dont run on low level
             return;
         }
 

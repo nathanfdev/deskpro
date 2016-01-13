@@ -141,7 +141,7 @@ class PortalLoader implements \Twig_LoaderInterface, \Twig_ExistsLoaderInterface
     protected function getBrandContainer()
     {
         if (!$brand_container = $this->brand_stack->getActive()) {
-            $this->brand_stack->push($this->brand_stack->getDefault());
+            $this->brand_stack->push($this->brand_stack->getDefaultBrand());
         }
 
         if (!$brand_container && !$brand_container = $this->brand_stack->getActive()) {

@@ -26,19 +26,24 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\HttpKernel;
 
-namespace DeskPRO\Bundle\AppBundle\Helper;
-
-use DeskPRO\Bundle\PortalBundle\EventListener\IsLowListener;
+use DeskPRO\Bundle\AppBundle\HttpKernel\Event\GetPreResponseEvent;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\DependencyInjection\ContainerAwareHttpKernel as BaseContainerAwareHttpKernel;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class IsLowLevelRequestHelper
+class ContainerAwareHttpKernel extends BaseContainerAwareHttpKernel
 {
-    public static function check(Request $request)
+    public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
     {
-        return $request->attributes->has(IsLowListener::ATTR_NAME);
+        $event = new GetPreResponseEvent($this, $request, $type);
+        $this->dispatcher->dispatch(DpKernelEvents::PRE_REQUEST, $event);
+
+        if ($event->hasResponse()) {
+            return $event->getResponse();
+        }
+
+        return parent::handle($request, $type, $catch);
     }
 }

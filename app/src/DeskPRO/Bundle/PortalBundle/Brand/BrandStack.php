@@ -88,6 +88,8 @@ class BrandStack
         $this->stack            = [];
         $this->brand_containers = [];
         $this->default_brand    = $default_brand;
+
+        $this->push($default_brand);
     }
 
     /**
@@ -137,10 +139,10 @@ class BrandStack
     public function pop()
     {
         array_pop($this->stack);
-    }
 
-    public function getDefault()
-    {
-        return $this->default_brand;
+        // always at least the default brand
+        if (empty($this->stack)) {
+            $this->stack[] = $this->default_brand;
+        }
     }
 }

@@ -41,7 +41,6 @@ $loader->import(__DIR__.'/config.legacy.yml');
 ############################################################################
 
 $container->setParameter('kernel.include_core_classes', false);
-$container->setParameter('http_kernel.class', 'Application\\DeskPRO\\HttpKernel\\HttpKernel');
 $container->setParameter('controller_resolver.class', 'Application\\DeskPRO\\HttpKernel\\Controller\\ControllerResolver');
 $container->setParameter('debug.controller_resolver.class', 'Application\\DeskPRO\\HttpKernel\\Controller\\TraceableControllerResolver');
 $container->setParameter('session.class', 'Application\\DeskPRO\\HttpFoundation\\Session');

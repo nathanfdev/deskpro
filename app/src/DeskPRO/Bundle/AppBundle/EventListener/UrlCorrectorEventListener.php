@@ -32,9 +32,9 @@
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use DeskPRO\Bundle\AppBundle\Request\InterfaceInfo;
+use DeskPRO\Bundle\AppBundle\Request\RequestUtils;
 use DeskPRO\Bundle\AppBundle\Request\UrlCorrector;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
-use DeskPRO\Bundle\PortalBundle\EventListener\IsLowListener;
 use DeskPRO\Component\Util\DebugUtils;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -66,11 +66,6 @@ class UrlCorrectorEventListener implements EventSubscriberInterface
      */
     private $logger;
 
-    /**
-     * UrlCorrectorEventListener constructor.
-     *
-     * @param BrandStack $brandStack
-     */
     public function __construct(InterfaceInfo $interfaceInfo, BrandStack $brandStack, LoggerInterface $logger)
     {
         $this->interfaceInfo = $interfaceInfo;
@@ -163,7 +158,7 @@ class UrlCorrectorEventListener implements EventSubscriberInterface
             return true;
         }
 
-        if ($request->attributes->has(IsLowListener::ATTR_NAME)) {
+        if (RequestUtils::isLowRequest($request)) {
             $this->logger->debug('[UrlCorrector] Skip: Low-level request');
 
             return true;

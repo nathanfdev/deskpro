@@ -60,7 +60,11 @@ class InterfaceInfo
      */
     public static function create()
     {
-        return new self(DP_INTERFACE);
+        if (defined('DP_INTERFACE')) {
+            return new self(DP_INTERFACE);
+        } else {
+            return new self(self::ID_CMD);
+        }
     }
 
     /**
@@ -85,5 +89,61 @@ class InterfaceInfo
         }
 
         return ListUtils::contains($check, $this->interface_id);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUserInterface()
+    {
+        return $this->interface_id === self::ID_USER;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAgentInterface()
+    {
+        return $this->interface_id === self::ID_AGENT;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAdminInterface()
+    {
+        return $this->interface_id === self::ID_ADMIN;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isApiInterface()
+    {
+        return $this->interface_id === self::ID_API;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCronInterface()
+    {
+        return $this->interface_id === self::ID_CRON;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCommandInterface()
+    {
+        return $this->interface_id === self::ID_CMD;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCliInterface()
+    {
+        return $this->interface_id === self::ID_CMD || $this->interface_id === self::ID_CRON;
     }
 }

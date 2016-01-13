@@ -29,41 +29,48 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\PortalBundle\EventListener;
+namespace DeskPRO\Bundle\AppBundle\EventListener;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
+use DeskPRO\Bundle\AppBundle\HttpKernel\DpKernelEvents;
+use DeskPRO\Bundle\AppBundle\Request\InterfaceInfo;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 
 /**
- * Sets an attribute on the request when this is considered a "low level" request.
- * This is read from other listeners to prevent them doing unecessary work.
+ * Same as HelpdeskOfflineLowListener except this checks if the helpdesk was turned off
+ * intentionally via settings.
  */
-class IsLowListener implements EventSubscriberInterface
+class HelpdeskOfflineSettingListener extends HelpdeskOfflineLowListener
 {
-    const ATTR_NAME = '_dp_is_low';
+    /**
+     * @var BrandStack
+     */
+    private $brandStack;
 
-    public function onKernelRequest(GetResponseEvent $event)
+    public function __construct(InterfaceInfo $interfaceInfo, BrandStack $brandStack, $data_dir)
     {
-        if (!$event->isMasterRequest()) {
-            return;
-        }
-
-        $request = $event->getRequest();
-
-        if (!$request->attributes->has(self::ATTR_NAME)) {
-            if (preg_match('#^/dp/#', $request->getPathInfo()) || preg_match('#^/[a-z]{2}(?:_[A-Z]{2})?/dp/#', $request->getPathInfo())) {
-                $request->attributes->set(self::ATTR_NAME, true);
-            }
-        }
+        $this->brandStack = $brandStack;
+        parent::__construct($interfaceInfo, $data_dir);
     }
 
+    /**
+     * @return array
+     */
     public static function getSubscribedEvents()
     {
         return array(
-            // high priority, called before everything
-            KernelEvents::REQUEST => array('onKernelRequest', 500),
+            DpKernelEvents::PRE_REQUEST => array('onPreRequest', 500), // runs before everything
         );
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
+    protected function getBrandSetting($name)
+    {
+        $brand = $this->brandStack->getActive();
+
+        return $brand->getSetting($name);
     }
 }

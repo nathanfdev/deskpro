@@ -31,8 +31,8 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
-use DeskPRO\Bundle\AppBundle\Helper\IsLowLevelRequestHelper;
 use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
+use DeskPRO\Bundle\AppBundle\HttpKernel\SkipLowRequestInterface;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -43,7 +43,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 /**
  * This response listener inspects redirect responses and rejects off-site redirects unless a speical header is set.
  */
-class RedirectProtectionListener implements EventSubscriberInterface
+class RedirectProtectionListener implements EventSubscriberInterface, SkipLowRequestInterface
 {
     const ALLOW_REDIRECT_OFFSITE_HEADER = 'X-DeskPRO-Redirect-Offsite';
 
@@ -73,11 +73,6 @@ class RedirectProtectionListener implements EventSubscriberInterface
     {
         $response = $event->getResponse();
         $request  = $event->getRequest();
-
-        if (IsLowLevelRequestHelper::check($event->getRequest())) {
-            // dont run on low level
-            return;
-        }
 
         // you can bypass this check if you set the right header
         // onto the redirect response object (ie. in the controller)
