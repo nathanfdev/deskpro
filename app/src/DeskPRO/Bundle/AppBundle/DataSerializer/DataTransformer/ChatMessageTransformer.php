@@ -60,7 +60,6 @@ class ChatMessageTransformer extends AbstractDataSerializerTransformer
             'conversation_id' => $data->getConversation()->getId(),
             'author_id'       => $this->getAuthorId($data),
             'author_type'     => $this->getAuthorType($data),
-            'author_name'     => $this->getAuthorName($data),
             'metadata'        => $data->getMetadata(),
         ];
     }
@@ -96,29 +95,5 @@ class ChatMessageTransformer extends AbstractDataSerializerTransformer
         }
 
         return $author_type;
-    }
-
-    /**
-     * @param ChatMessage $message
-     *
-     * @return string
-     */
-    private function getAuthorName(ChatMessage $message)
-    {
-        if ($message->getIsSys()) {
-            return '*';
-        }
-
-        $author = $message->getAuthor();
-        if ($author) {
-            return $author['display_name_user'];
-        }
-
-        $conversation = $message->getConversation();
-        if ($conversation['person_name']) {
-            return $conversation['person_name'];
-        }
-
-        return 'User';
     }
 }
