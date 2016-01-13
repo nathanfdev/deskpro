@@ -4,7 +4,7 @@ import { loadChatInfo, setChatId, unsetChatId } from '../Actions/chatActions';
 import { openWidget } from '../../Application/Actions/dpWindowActions';
 import { widgetLoadedSelector } from '../../Application/Selectors/bootstrap';
 import { widgetHasChatSelector } from '../../Application/Selectors/dpWindow';
-import { onlineAgentsCountSelector } from '../../Application/Selectors/agent';
+import { onlineAgentsCountSelector } from '../../Application/RecordStores/Selectors/peopleSelectors';
 import history from '../../../Services/history';
 
 @connect(state => ({

@@ -29,20 +29,20 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class AgentsController.
+ * Class PeopleController.
  */
-class AgentsController extends AbstractApiController
+class PeopleController extends AbstractApiController
 {
     /**
-     * @Route("/portal/api/agents/online", name="portal_api_agents_online")
+     * @Route("/portal/api/people/online_agents", name="portal_api_people_online_agents")
      * @Method({"GET"})
      *
      * @return View
@@ -57,5 +57,21 @@ class AgentsController extends AbstractApiController
         ]);
 
         return new View($this->dataSerialize($agents, 'widget_person'));
+    }
+
+    /**
+     * @Route("/portal/api/people", name="portal_api_people")
+     * @Method({"GET"})
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function getPeopleAction(Request $request)
+    {
+        $people_repository = $this->getDoctrine()->getRepository('DeskPRO:Person');
+        $people            = $people_repository->find(['id' => $request->get('ids')]);
+
+        return new View($this->dataSerialize($people, 'widget_person'));
     }
 }

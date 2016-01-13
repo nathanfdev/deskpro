@@ -66,6 +66,11 @@ export const liveDemoSelector = createSelector(
   options => options.get('liveDemo')
 );
 
+export const agentPollingTimeoutSelector = createSelector(
+  widgetBaseOptionsSelector,
+  options => options.get('agentPollingTimeout') || 'off'
+);
+
 // Company options selectors
 export const companyOptionsSelector = createSelector(
   widgetOptionsSelector,
@@ -159,7 +164,3 @@ export const agentAcceptTimeoutSelector = createSelector(
   options => options.get('waitingTimeout') || 120 // 2 minutes
 );
 
-export const agentPollingTimeoutSelector = createSelector(
-  chatOptionsSelector,
-  options => options.get('agentPollingTimeout') || 'off'
-);

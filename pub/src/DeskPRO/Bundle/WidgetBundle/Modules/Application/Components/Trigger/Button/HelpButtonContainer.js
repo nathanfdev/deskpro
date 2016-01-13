@@ -5,10 +5,10 @@ import { OnlineAgentsPopup } from '../Popups/OnlineAgentsPopup';
 import { AgentMessagePopupContainer } from '../Popups/AgentMessage/AgentMessagePopupContainer';
 import { ReplyButtons } from '../Popups/AgentMessage/ReplyButtons';
 import { ReplyForm } from '../Popups/AgentMessage/ReplyForm';
-import { loadOnlineAgents } from '../../../Actions/agentActions';
 import { OnlineAgentsContainer } from '../Popups/OnlineAgentsContainer';
 import { openTriggerPopup, closeTriggerPopup } from '../../../Actions/dpWindowActions';
-import { onlineAgentsCountSelector } from '../../../Selectors/agent';
+import { loadOnlineAgents } from '../../../Actions/peopleActions';
+import { onlineAgentsCountSelector } from '../../../RecordStores/Selectors/peopleSelectors';
 import {
   widgetHasChatSelector,
   widgetOpenedSelector,

@@ -17,13 +17,11 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
-
   brand_detector.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\BrandDetectionListener
     arguments: [@brand_stack, @settings_resolver, @brand_repository, @default_brand, @portal_mode_storage, @logger]
     tags:
       - { name: kernel.event_subscriber }
-
 
   disabled_helpdesk.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\DisabledHelpdeskListener
@@ -31,26 +29,22 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
-
   disabled_portal.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\DisabledPortalListener
     arguments: [@brand_stack, @settings_resolver, @logger, @templating]
     tags:
       - { name: kernel.event_subscriber }
 
-
   cookie_settings.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\CookieSettingsListener
     tags:
       - { name: kernel.event_subscriber }
-
 
   portal_mode.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\PortalModeListener
     arguments: [@portal_mode_factory, @portal_mode_storage, @logger]
     tags:
       - { name: kernel.event_subscriber }
-
 
   original_uri.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\OriginalUriListener
@@ -79,7 +73,6 @@ services:
     tags: [{name: monolog.logger, channel: request}]
     arguments: [@kernel, @brand_stack]
 
-
   tag_options.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\TagOptionsListener
     arguments: [@annotation_reader, @service_container]
@@ -92,7 +85,6 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
-
 # Not kernel listeners, but tagged to be called by other listeners
   param_converter.deskpro_slug:
     class: DeskPRO\Bundle\PortalBundle\Request\DeskproSlugConverter
@@ -100,13 +92,11 @@ services:
     tags:
       - { name: request.param_converter, priority: -1, converter: deskpro_slug }
 
-
   param_converter.tag_request:
     class: DeskPRO\Bundle\PortalBundle\Request\TagRequestConverter
     arguments: [@brand_stack]
     tags:
       - { name: request.param_converter, priority: 1, converter: tag_request }
-
 
   data_collector.portal:
     class: DeskPRO\Bundle\PortalBundle\DataCollector\PortalCollector

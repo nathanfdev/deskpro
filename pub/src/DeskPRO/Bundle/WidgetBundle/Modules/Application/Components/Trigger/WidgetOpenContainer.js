@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { openChatBeginStage, openWidget } from '../../Actions/dpWindowActions';
-import { onlineAgentsCountSelector } from '../../Selectors/agent';
+import { onlineAgentsCountSelector } from '../../RecordStores/Selectors/peopleSelectors';
 import { requireChatLoginSelector } from '../../Selectors/bootstrap';
 import { chatBeginModeSelector, widgetHasChatSelector, liveDemoSelector } from '../../Selectors/dpWindow';
 import { chatIdSelector, agentIdSelector, dateEndedSelector, needValidateEmailSelector } from '../../../Chat/Selectors/chat';
