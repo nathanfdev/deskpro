@@ -76,6 +76,7 @@ security:
 
     firewalls:
         portal:
+            switch_user: { role: ROLE_ADMIN, parameter: _preview_as }
             pattern: ^/
             provider: dp_person_user_provider
             agent_impersonate:
