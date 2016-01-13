@@ -70,6 +70,7 @@ class ChatConversationTransformer extends AbstractDataSerializerTransformer
             'person',
             'agent',
             'department',
+            'person_name',
         ];
     }
 
