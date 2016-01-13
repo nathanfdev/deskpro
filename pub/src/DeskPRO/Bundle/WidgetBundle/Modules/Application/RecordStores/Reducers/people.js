@@ -8,6 +8,6 @@ export default createReducer(
     releaseRecordsAction: actions.releasePeople,
     releaseRequestAction: actions.releasePeopleRequest,
     setRequestRecordAction: actions.setPeopleRequest,
-    requestRecordsAction: actions.loadOnlineAgents
+    requestRecordsAction: actions.loadPeople
   })
 );

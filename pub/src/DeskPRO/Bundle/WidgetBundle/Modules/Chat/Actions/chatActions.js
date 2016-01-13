@@ -3,6 +3,7 @@ import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
 import { addSessionCode } from '../../Application/Actions/bootstrapActions';
+import { loadPeople } from '../../Application/RecordStores/Actions/peopleActions';
 import { generate } from 'randomstring';
 import striptags from 'striptags';
 import moment from 'moment';
@@ -295,6 +296,19 @@ export const pollingChat = createAction(
         const ackMessages = filteredMessages.filter(message => message.author_type === 'agent' && !message.date_received);
         if (ackMessages.length) {
           dispatch(ackChatMessages(chatId, {message_ids: ackMessages.map(message => message.id)}));
+        }
+
+        // Load person info
+        const peopleIds = [];
+        filteredMessages.forEach(message => {
+          const authorId = message.author_id;
+          if (authorId && peopleIds.indexOf(authorId) === -1) {
+            peopleIds.push(authorId);
+          }
+        });
+
+        if (peopleIds) {
+          dispatch(loadPeople('all', peopleIds));
         }
       }
 

@@ -14,15 +14,8 @@ export const loadOnlineAgents = createAction(
         const oldAgents = Immutable.fromJS(Object.values(onlineAgentsSelector(state).toJS()));
 
         if (!oldAgents.equals(Immutable.fromJS(response.data))) {
-          dispatch(releasePeopleRequest());
+          dispatch(releasePeopleRequest('onlineAgents'));
           dispatch(setPeopleRequest('onlineAgents', response.data));
         }
       })
-);
-
-export const loadPeople = createAction(
-  'WIDGET_LOAD_PEOPLE',
-    missingIds => DpApi.sendGet('DP_API/people?ids=' + missingIds.toArray().join(','), {...ajaxOptions})
-    .success(response => response.data)
-    .error(response => response)
 );

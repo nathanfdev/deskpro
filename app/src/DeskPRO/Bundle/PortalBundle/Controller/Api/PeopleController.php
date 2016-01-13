@@ -70,7 +70,7 @@ class PeopleController extends AbstractApiController
     public function getPeopleAction(Request $request)
     {
         $people_repository = $this->getDoctrine()->getRepository('DeskPRO:Person');
-        $people            = $people_repository->find(['id' => $request->get('ids')]);
+        $people            = $people_repository->findBy(['id' => $request->get('ids')]);
 
         return new View($this->dataSerialize($people, 'widget_person'));
     }
