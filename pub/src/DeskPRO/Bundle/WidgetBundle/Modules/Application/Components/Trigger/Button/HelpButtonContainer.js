@@ -77,6 +77,7 @@ export class HelpButtonContainer extends React.Component {
 
   onClosePopup = () => {
     this.props.dispatch(closeTriggerPopup());
+    localStorage['dpWidget.dpWindow.popupShown'] = 'none';
   };
 
   checkRenderPopup() {
