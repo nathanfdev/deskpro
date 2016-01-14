@@ -56,13 +56,13 @@ class ChatMessageTransformer extends AbstractDataSerializerTransformer
         $data = $transformation_request->getDataToBeTransformed();
 
         return [
-            'metadata' => $data->getMetadata(),
+            'metadata'    => $data->getMetadata(),
+            'author_type' => $this->getAuthorType($data),
 
             // Back compatibility to work with old agent
             'message_id'      => $data->getId(),
             'conversation_id' => $data->getConversation()->getId(),
             'author_id'       => $this->getAuthorId($data),
-            'author_type'     => $this->getAuthorType($data),
         ];
     }
 
@@ -83,19 +83,9 @@ class ChatMessageTransformer extends AbstractDataSerializerTransformer
      */
     private function getAuthorType(ChatMessage $message)
     {
-        if ($message->getIsSys()) {
-            return 'sys';
-        }
+        $metadata        = $message->getMetadata();
+        $is_user_message = isset($metadata['is_user_message']) && $metadata['is_user_message'];
 
-        $author      = $message->getAuthor();
-        $author_type = $author && $author->is_agent ? 'agent' : 'user';
-        $metadata    = $message->getMetadata();
-
-        // Handle the case where the author is an agent in the user interface
-        if ($author_type === 'agent' && isset($metadata['is_user_message'])) {
-            $author_type = 'user';
-        }
-
-        return $author_type;
+        return $message->getIsSys() ? 'sys' : ($is_user_message ? 'user' : 'agent');
     }
 }

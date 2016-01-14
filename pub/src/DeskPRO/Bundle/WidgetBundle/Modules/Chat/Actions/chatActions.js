@@ -301,7 +301,7 @@ export const pollingChat = createAction(
         const filteredMessages = newMessages
           // Skip user's messages because they are added optimistically,
           // but do load user's messages on initial polling request
-          .filter(message => !loaded || (loaded && !message.metadata.is_user_message))
+          .filter(message => !loaded || (loaded && message.author_type !== 'user'))
           // Check for unique ids
           .filter(message => existMessageIds.indexOf(message.id) === -1);
 
@@ -310,7 +310,7 @@ export const pollingChat = createAction(
         }
 
         // Filter not acked messages and send ack request
-        const ackMessages = filteredMessages.filter(message => !message.is_sys && !message.metadata.is_user_message && !message.date_received);
+        const ackMessages = filteredMessages.filter(message => !message.is_sys && message.author_type === 'agent' && !message.date_received);
         if (ackMessages.length) {
           dispatch(ackChatMessages(chatId, {message_ids: ackMessages.map(message => message.id)}));
         }

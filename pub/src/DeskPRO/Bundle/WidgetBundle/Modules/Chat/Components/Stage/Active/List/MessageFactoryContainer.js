@@ -37,14 +37,6 @@ export class MessageFactoryContainer extends React.Component {
     return this.props.message.get('metadata') || Immutable.fromJS({});
   }
 
-  getAuthorType() {
-    if (this.props.message.get('is_sys')) {
-      return 'sys';
-    }
-
-    return this.getMetadata().get('is_user_message') ? 'agent' : 'user';
-  }
-
   getAuthorName() {
     const { message, authorName } = this.props;
     if (message.get('is_sys')) {
@@ -80,8 +72,9 @@ export class MessageFactoryContainer extends React.Component {
   }
 
   renderMessage() {
+    const { message } = this.props;
     const metadata = this.getMetadata();
-    const authorType = this.getAuthorType();
+    const authorType = message.get('author_type');
     const author = this.getAuthor();
     const authorName = this.getAuthorName();
 
