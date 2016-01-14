@@ -2424,8 +2424,9 @@ class PersonController extends AbstractController implements ProtectedController
         $token  = Util::generateStaticSecurityToken($secret, 300);
 
         return $this->createApiResponse(array(
+            'person_id'        => $person_id,
             'login_token'      => $token,
-            'direct_login_url' => $this->generateUrl('user_login', array('tok' => $token), UrlGeneratorInterface::ABSOLUTE_URL),
+            'direct_login_url' => $this->generateUrl('user_login', array('tok' => $person_id.'-'.$token), UrlGeneratorInterface::ABSOLUTE_URL),
         ));
     }
 
