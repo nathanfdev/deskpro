@@ -5,12 +5,10 @@ import { MessageFactoryContainer } from './MessageFactoryContainer';
 import popMp3 from '../../../../../../Resources/sounds/pop.mp3';
 import popOgg from '../../../../../../Resources/sounds/pop.ogg';
 import popWav from '../../../../../../Resources/sounds/pop.wav';
-import Immutable from 'immutable';
 
 export class MessageList extends React.Component {
 
   static propTypes = {
-    people: PropTypes.object,
     messages: PropTypes.object,
     lastMessageId: PropTypes.number,
     mute: PropTypes.bool,
@@ -43,7 +41,7 @@ export class MessageList extends React.Component {
   }
 
   checkForNewMessages() {
-    const { messages, people, lastMessageId, mute } = this.props;
+    const { messages, lastMessageId, mute } = this.props;
     if (messages.size !== this.state.messagesCount) {
       this.setState({
         messagesCount: messages.size,
@@ -54,8 +52,7 @@ export class MessageList extends React.Component {
 
       // Checking for agent messages to play sound notification
       const newAgentMessage = messages.filter(message => {
-        const metadata = message.get('metadata') || Immutable.fromJS({});
-        return message.get('id') > this.state.lastMessageId && !metadata.get('is_user_message');
+        return message.get('id') > this.state.lastMessageId && !message.get('is_user') && !message.get('is_sys');
       });
 
       // Don't play sound on initial load
