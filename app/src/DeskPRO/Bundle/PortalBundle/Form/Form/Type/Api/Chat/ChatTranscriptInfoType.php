@@ -31,11 +31,14 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\TextStringTransformer;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\AutoSetShouldSentTranscriptTrait;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\SetPersonListener;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -53,13 +56,20 @@ class ChatTranscriptInfoType extends AbstractType
     private $set_person_listener;
 
     /**
+     * @var SettingsResolver
+     */
+    private $settings_resolver;
+
+    /**
      * Constructor.
      *
      * @param SetPersonListener $set_person_listener
+     * @param SettingsResolver  $settings_resolver
      */
-    public function __construct(SetPersonListener $set_person_listener)
+    public function __construct(SetPersonListener $set_person_listener, SettingsResolver $settings_resolver)
     {
         $this->set_person_listener = $set_person_listener;
+        $this->settings_resolver   = $settings_resolver;
     }
 
     /**
@@ -91,6 +101,7 @@ class ChatTranscriptInfoType extends AbstractType
 
         $builder->get('name')->addModelTransformer(new TextStringTransformer());
         $builder->get('email')->addModelTransformer(new TextStringTransformer());
+        $builder->get('email')->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onCheckEmailValidation']);
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this->set_person_listener, 'onSetPerson']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetShouldSentTranscript']);
@@ -105,5 +116,32 @@ class ChatTranscriptInfoType extends AbstractType
             'csrf_protection'               => false,
             'csrf_double_submit_protection' => false,
         ]);
+    }
+
+    /**
+     * Check that email was not changed if email validation is enabled.
+     *
+     * @param FormEvent $event
+     */
+    public function onCheckEmailValidation(FormEvent $event)
+    {
+        $data = $event->getData();
+        $form = $event->getForm();
+
+        if ($data !== $form->getData()) {
+            if ($this->getGlobalSettings()->get('portal.chat.require_login')) {
+                $form->addError(new FormError('Unable to change email because chat require email is enabled.'));
+            } elseif ($this->getGlobalSettings()->get('portal.chat.email_validation')) {
+                $form->addError(new FormError('Unable to change email because chat email validation is enabled.'));
+            }
+        }
+    }
+
+    /**
+     * @return \Application\DeskPRO\NewSettings\SettingsBag
+     */
+    protected function getGlobalSettings()
+    {
+        return $this->settings_resolver->getGlobalSettings();
     }
 }
