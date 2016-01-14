@@ -254,6 +254,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 	updateDisplay_view: function() {
 		var fields = this.fieldDisplay.getFields(this.ticketReader.getDepartmentId());
+		var change = false;
 		if (!fields || !fields['default']) {
 			fields['default'] = [];
 		}
@@ -262,7 +263,6 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		// Check to see if the fields are the same and in the same order
 		if (fields.length == this.currentDisplay.length) {
-			var change = false;
 			for (var i = 0; i < fields.length; i++) {
 				if (fields[i].field_type == this.currentDisplay[i].field_type) {
 					if (fields[i].field_type == 'ticket_field' && fields[i].field_id != this.currentDisplay[i].field_id) {
@@ -275,14 +275,16 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				}
 			}
 		} else {
-			var change = true;
+			change = true;
 		}
 
 		// No Changes, dont need to do any expensive dom work
 		if (!change) {
 			console.log("[TicketFields] No change");
-			return;
 		}
+
+		// still need to run through to make sure visibility on
+		// rows is set
 
 		this.currentDisplay = fields;
 

@@ -21,13 +21,13 @@ DeskPRO.Agent.PageHelper.TicketFieldDisplay = new Orb.Class({
 
 			switch (this.mode) {
 				case 'view':
-					filterFn = function(i) { return !!i.isVisibleOnView; }
+					filterFn = function(i) { return (!!i.isVisibleOnView) || (!!i.isVisibleOnViewAlways); };
 					break;
 				case 'modify':
-					filterFn = function(i) { return !!i.isVisibleOnEdit; }
+					filterFn = function(i) { return !!i.isVisibleOnEdit; };
 					break;
 				case 'create':
-					filterFn = function(i) { return !!i.isVisibleOnNew; }
+					filterFn = function(i) { return !!i.isVisibleOnNew; };
 					break;
 			}
 
