@@ -74,7 +74,8 @@ class ChatConversationTransformer extends AbstractDataSerializerTransformer
             'department_name'     => $department ? $department->getFullTitle() : '',
             'need_validate_email' => $data->getEmailValidationCode() && !$data->getEmailValidated(),
 
-            // Back compatibility to work with old agent
+            // Legacy api data
+            // Don't remove, it's not using in the new widget but needed for the old agent interface
             'conversation_id' => $data->getId(),
         ];
     }

@@ -13,14 +13,14 @@ import { peopleSelector } from '../../../../../Application/RecordStores/Selector
 import Immutable from 'immutable';
 
 @connect(state => ({
-  authorName: authorNameSelector(state),
+  chatAuthorName: authorNameSelector(state),
   people: peopleSelector(state),
   phraseTranslations: phraseTranslationsSelector(state)
 }))
 export class MessageFactoryContainer extends React.Component {
 
   static propTypes = {
-    authorName: PropTypes.string,
+    chatAuthorName: PropTypes.string,
     people: PropTypes.object,
     phraseTranslations: PropTypes.object,
     message: PropTypes.object
@@ -38,7 +38,7 @@ export class MessageFactoryContainer extends React.Component {
   }
 
   getAuthorName() {
-    const { message, authorName } = this.props;
+    const { message, chatAuthorName } = this.props;
     if (message.get('is_sys')) {
       return '*';
     }
@@ -48,8 +48,7 @@ export class MessageFactoryContainer extends React.Component {
       return author.get('display_name');
     }
 
-    const authorType = this.getAuthorType();
-    return authorType === 'user' ? authorName : 'Agent';
+    return message.get('is_user') ? chatAuthorName : 'Agent';
   }
 
   renderEvent() {
@@ -74,15 +73,14 @@ export class MessageFactoryContainer extends React.Component {
   renderMessage() {
     const { message } = this.props;
     const metadata = this.getMetadata();
-    const authorType = message.get('author_type');
     const author = this.getAuthor();
     const authorName = this.getAuthorName();
 
     const props = this.props;
-    const messageProps = { ...props, authorType, author, authorName };
+    const messageProps = { ...props, author, authorName };
 
     return (
-      <Message type={authorType}>
+      <Message isUser={message.get('is_user')}>
         <AvatarResolver avatar={author.get('avatar')} size={20}>
           <MessageAvatar />
         </AvatarResolver>
