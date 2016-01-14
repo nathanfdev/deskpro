@@ -8,9 +8,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.parent();
 		this.TYPENAME = 'newticket';
 		this.allowDupe = true;
-
-    this._initDraft();
-		this.test = 123;
 	},
 
 	_initLabels: function () {
@@ -41,6 +38,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this._initOtherSection();
 		this._initCcSelection();
 		this._initLabels();
+		this._initDraft();
 
 		this.meta.person_api_data = {};
 
@@ -1732,6 +1730,24 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 	},
 
   _initDraft: function() {
+
+	if (!window.DP_ENABLE_NEWTICKET_DRAFT) {
+		this.draft = {
+			key: function() {return null;},
+			get: function() {return null;},
+			set: function() {},
+			init: function() {},
+			load: function() {},
+			save: function() {},
+			reset: function() {},
+			isEmpty: function() {return true;},
+			resetAllDrafts: function() {},
+			addAttachment: function() {},
+			removeAttachment: function() {},
+		};
+		return;
+	}
+
     var self = this
       , d
       ;
