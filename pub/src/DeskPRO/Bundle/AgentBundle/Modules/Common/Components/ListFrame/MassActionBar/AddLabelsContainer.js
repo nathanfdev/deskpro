@@ -25,8 +25,7 @@ export class AddLabelsContainer extends Component {
                     label={option.label}
                     setActiveItem={setActiveItem}
                     stateValue={stateValue}
-                    unsetParams={unsetParams}
-        />
+                    unsetParams={unsetParams}/>
     );
   }
 }

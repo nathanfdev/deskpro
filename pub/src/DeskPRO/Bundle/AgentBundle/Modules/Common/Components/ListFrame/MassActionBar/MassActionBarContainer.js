@@ -1,24 +1,30 @@
 import React, { Component, PropTypes } from 'react';
+import { selectedSelector, paramsSelector } from '../../../../Application/Selectors/massActions';
+import { cancelMassActions, setMassActionsParams, resetParam } from '../../../../Application/Actions/massActions';
 import { ActionContainer } from './ActionContainer';
 import { SubmitButton } from './SubmitButton';
 
-export class MassActionBar extends Component {
+import { connect } from 'react-redux';
+@connect(state => ({
+  selected: selectedSelector(state),
+  currentParams: paramsSelector(state)
+}))
+export class MassActionBarContainer extends Component {
   static propTypes = {
     selected: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired,
     submitAction: PropTypes.func.isRequired,
-    cancelAction: PropTypes.func.isRequired,
-    resetSingleAction: PropTypes.func.isRequired,
-    setParams: PropTypes.func.isRequired,
     actions: PropTypes.array.isRequired,
-    currentParams: PropTypes.object,
-    checkbox: PropTypes.shape({
-      count: PropTypes.number.isRequired,
-      action: PropTypes.func.isRequired
-    })
+    currentParams: PropTypes.object
   };
 
+  cancelMassActions() {
+    const { dispatch } = this.props;
+    dispatch(cancelMassActions());
+  }
+
   render() {
-    const { actions, submitAction, setParams, currentParams, cancelAction, resetSingleAction } = this.props;
+    const { actions, submitAction, currentParams } = this.props;
     const isActive = currentParams && currentParams.size > 0;
     const renderByType = (item, index)=> {
       if (item.type === 'button') {
@@ -31,8 +37,8 @@ export class MassActionBar extends Component {
         return (
           <ActionContainer key={index} id={index}
                            item={item}
-                           setParams={setParams}
-                           resetSingleAction={resetSingleAction}
+                           setParams={setMassActionsParams}
+                           resetSingleAction={resetParam}
                            currentParams={currentParams}/>
         );
       }
@@ -49,7 +55,7 @@ export class MassActionBar extends Component {
                                    isActive={isActive}/>
         }
         {isActive && <SubmitButton label="Cancel"
-                                   onClick={cancelAction}
+                                   onClick={this.cancelMassActions.bind(this)}
                                    isActive={isActive}/>}
 
       </ul>

@@ -8,11 +8,8 @@ import { Menu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/
 import { AddLabelsContainer } from './AddLabelsContainer';
 import { RemoveLabelsContainer } from './RemoveLabelsContainer';
 
-import { connect } from 'react-redux';
-@connect()
 export class ActionContainer extends Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
     isActive: PropTypes.bool,
     setParams: PropTypes.func.isRequired,
     resetSingleAction: PropTypes.func.isRequired,

@@ -6,13 +6,14 @@ import { RadioChoiceMenuOption } from 'DeskPRO/Bundle/AgentBundle/Modules/Common
 export class SingleChoicePanel extends Component {
   static propTypes = {
     setParams: PropTypes.func.isRequired,
-    currentParam: PropTypes.string,
+    resetSingleAction: PropTypes.func.isRequired,
+    currentParams: PropTypes.object,
     item: PropTypes.object.isRequired,
     depth: PropTypes.bool
   };
 
   render() {
-    const { item, setParams, currentParam, depth } = this.props;
+    const { item, setParams, currentParams, depth, resetSingleAction } = this.props;
     const renderNested = (nested) => {
       if (!nested || !nested.length) {
         return <span />;
@@ -20,13 +21,14 @@ export class SingleChoicePanel extends Component {
 
       return (
         <ul>
-          {nested.map((option, index1) =>
-              <RadioChoiceMenuOption key={index1}
-                                     isActive={currentParam === option.value}
+          {nested.map((option, index) =>
+              <RadioChoiceMenuOption key={index}
+                                     isActive={currentParams && currentParams.get(option.param) === option.value}
+                                     resetSingleAction={resetSingleAction}
                                      value={option.value}
                                      param={option.param}
                                      label={option.label}
-                                     setParams={setParams}/>
+                                     setParams={setParams.bind(this)}/>
           )}
         </ul>
       );
@@ -48,11 +50,12 @@ export class SingleChoicePanel extends Component {
                 <ul>
                   {item.options.map((option, index) =>
                       <RadioChoiceMenuOption key={index}
-                                             isActive={currentParam === option.value}
+                                             isActive={currentParams && currentParams.get(item.param) === option.value}
+                                             resetSingleAction={resetSingleAction}
                                              value={option.value}
                                              label={option.label}
                                              param={item.param}
-                                             setParams={setParams.bind(this, option.value)}>
+                                             setParams={setParams.bind(this)}>
                         {renderNested(option.nested)}
                       </RadioChoiceMenuOption>
                   )}

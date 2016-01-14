@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
-import { MassActionBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/MassActionBar/MassActionBar';
+import { MassActionBarContainer }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/MassActionBar/MassActionBarContainer';
 import { massActionsSelector } from '../../../Selectors/list';
 
 import { connect } from 'react-redux';
@@ -20,7 +21,7 @@ export class MassActionContainer extends Component {
 
 
     return (
-      <MassActionBar {...config} />
+      <MassActionBarContainer {...config} />
     );
   }
 }
