@@ -109,13 +109,13 @@ export const authorSelector = createSelector(
 export const authorEmailSelector = createSelector(
   chatInfoSelector,
   authorSelector,
-  (chatInfo, author) => author && author.get('primary_email_address') || chatInfo.get('person_email')
+  (chatInfo, author) => chatInfo.get('person_email') || author && author.get('primary_email_address')
 );
 
 export const authorNameSelector = createSelector(
   chatInfoSelector,
   authorSelector,
-  (chatInfo, author) => author && author.get('display_name') || chatInfo.get('person_name') || 'User'
+  (chatInfo, author) => chatInfo.get('person_name') || author && author.get('display_name') || 'User'
 );
 
 export const dateEndedSelector = createSelector(
