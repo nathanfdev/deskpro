@@ -56,6 +56,8 @@ export const updateChatInfo = createAction(
     return chatInfo;
   }
 );
+
+export const optimisticToggleSendTranscript = createAction('WIDGET_CHAT_OPTIMISTIC_TOGGLE_SEND_TRANSCRIPT');
 export const enableChatReopen = createAction('WIDGET_CHAT_ENABLE_REOPEN');
 export const disableChatReopen = createAction('WIDGET_CHAT_DISABLE_REOPEN');
 
@@ -164,6 +166,7 @@ export const toggleSendTranscript = createAction(
     }
 
     dispatch(lockPollingResponse());
+    dispatch(optimisticToggleSendTranscript(value));
 
     const state = getState();
     const queryParams = compileParams(addSessionCode(state));

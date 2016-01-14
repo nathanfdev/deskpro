@@ -3,9 +3,7 @@ import * as actions from '../Actions/chatActions';
 import {
   setFullPayload,
   setValue,
-  setValueOnError,
   toggleBool,
-  async,
   pushPayloadToCollection,
   deletePayloadFromCollection,
   composeHandlers
@@ -51,8 +49,8 @@ export default createReducer(initialState, {
   [actions.setChatId]: composeHandlers(
     setFullPayload('chat.id'),
     setValue('chat.loaded', false),
-    setValue('messages', []),
-    setValue('transcript.sent', false)
+    setValue('chat.info', {}),
+    setValue('messages', [])
   ),
   [actions.unsetChatId]: setValue('chat', {
     id: null,
@@ -63,11 +61,12 @@ export default createReducer(initialState, {
   [actions.setLoaded]: setValue('chat.loaded', true),
   [actions.unsetLoaded]: setValue('chat.loaded', false),
   [actions.updateChatInfo]: setFullPayload('chat.info'),
+  [actions.optimisticToggleSendTranscript]: setFullPayload('chat.info.should_send_transcript'),
   [actions.endChat]: setValue('chat.info.date_ended', moment().format()),
   [actions.reopenChat]: composeHandlers(
     setValue('chat.canReopen', true),
     setValue('chat.info.date_ended', null),
-    setValue('transcript.sent', false),
+    setValue('chat.info.date_transcript_sent', null),
     setValue('feedbackStage', 'dialog')
   ),
   [actions.enableChatReopen]: setValue('chat.canReopen', true),

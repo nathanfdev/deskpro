@@ -12,7 +12,7 @@ import {
   authorNameSelector,
   transcriptCheckedSelector,
   transcriptSentSelector,
-  lockedPollingSelector
+  disabledPollingSelector
 } from '../../../../../../Selectors/chat';
 
 @connect(state => ({
@@ -21,7 +21,7 @@ import {
   authorEmail: authorEmailSelector(state),
   checked: transcriptCheckedSelector(state),
   sent: transcriptSentSelector(state),
-  disabled: lockedPollingSelector(state)
+  disabled: disabledPollingSelector(state)
 }))
 export class TranscriptContainer extends React.Component {
 

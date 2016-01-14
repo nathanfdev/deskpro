@@ -14,6 +14,12 @@ export const skippedPollingSelector = createSelector(
   state => state.getIn(['polling', 'skipped'])
 );
 
+export const disabledPollingSelector = createSelector(
+  lockedPollingSelector,
+  skippedPollingSelector,
+  (locked, skipped) => locked || skipped
+);
+
 // Phrase translations
 export const phraseTranslationsSelector = createSelector(
   stateSelector,
@@ -134,7 +140,7 @@ export const transcriptCheckedSelector = createSelector(
 
 export const transcriptSentSelector = createSelector(
   chatInfoSelector,
-  chatInfo => chatInfo.get('date_transcript_sent')
+  chatInfo => !!chatInfo.get('date_transcript_sent')
 );
 
 // Messages selectors
