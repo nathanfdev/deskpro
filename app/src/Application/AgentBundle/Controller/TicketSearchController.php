@@ -246,7 +246,7 @@ class TicketSearchController extends AbstractController
             $q = $this->in->getString('term');
         }
 
-        if (!$q) {
+        if (!$q && !$this->in->getUint('person_id')) {
             return $this->createJsonResponse(array());
         }
 
