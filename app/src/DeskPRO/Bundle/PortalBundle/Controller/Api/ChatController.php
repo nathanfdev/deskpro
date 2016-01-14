@@ -390,9 +390,7 @@ class ChatController extends AbstractApiController
             $this->saveConversation($conversation);
         }
 
-        return View::create([
-            'success' => $can_send,
-        ]);
+        return View::create();
     }
 
     /**
