@@ -26,4 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1452757986);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1452757986 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('Chat message `is_user` property');
+        $this->execMutateSql('ALTER TABLE `chat_messages` ADD COLUMN `is_user` TINYINT(1) NOT NULL AFTER `is_sys`;');
+    }
+}

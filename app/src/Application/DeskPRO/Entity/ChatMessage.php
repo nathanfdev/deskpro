@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -98,6 +97,13 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
      * @var bool
      */
     protected $is_sys = false;
+
+    /**
+     * Is this an user's message? (send from the widget).
+     *
+     * @var bool
+     */
+    protected $is_user = false;
 
     /**
      * Is the message hidden from the user?
@@ -274,6 +280,26 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @param bool $is_user
+     *
+     * @return $this
+     */
+    public function setIsUser($is_user)
+    {
+        $this->setModelField('is_user', $is_user);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsUser()
+    {
+        return $this->is_user;
+    }
+
+    /**
      * @param $is_user_hidden
      *
      * @return $this
@@ -435,6 +461,7 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array('fieldName' => 'person_name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'person_name'));
         $metadata->mapField(array('fieldName' => 'content', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'content'));
         $metadata->mapField(array('fieldName' => 'is_sys', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_sys'));
+        $metadata->mapField(array('fieldName' => 'is_user', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_user'));
         $metadata->mapField(array('fieldName' => 'is_user_hidden', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_user_hidden'));
         $metadata->mapField(array('fieldName' => 'is_html', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_html'));
         $metadata->mapField(array('fieldName' => 'metadata', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'metadata'));
