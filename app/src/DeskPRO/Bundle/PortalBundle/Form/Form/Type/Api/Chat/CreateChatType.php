@@ -104,6 +104,7 @@ class CreateChatType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetPersonEmailFromSession']);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this->set_person_listener, 'onSetPerson']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetEmailValidationCode']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetShouldSentTranscript']);
     }
 
     /**
@@ -119,6 +120,9 @@ class CreateChatType extends AbstractType
     }
 
     /**
+     * If session has user entity we can use assign it to the chat.
+     * Uses if chat settings require user to be logged in.
+     *
      * @param FormEvent $event
      */
     public function onSetPersonEmailFromSession(FormEvent $event)
@@ -135,6 +139,8 @@ class CreateChatType extends AbstractType
     }
 
     /**
+     * If portal chat settings require email validation we need to generate a validation code.
+     *
      * @param FormEvent $event
      */
     public function onSetEmailValidationCode(FormEvent $event)
@@ -152,6 +158,20 @@ class CreateChatType extends AbstractType
         /** @var ChatConversation $conversation */
         $conversation = $event->getData();
         $conversation->regenerateEmailValidationCode();
+    }
+
+    /**
+     * If user has entered email then we can enable should send transcript option.
+     *
+     * @param FormEvent $event
+     */
+    public function onSetShouldSentTranscript(FormEvent $event)
+    {
+        /** @var ChatConversation $conversation */
+        $conversation = $event->getData();
+        if ($conversation->getPerson() || $conversation->getPersonEmail()) {
+            $conversation->setShouldSendTranscript(true);
+        }
     }
 
     /**
