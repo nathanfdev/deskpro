@@ -81,7 +81,7 @@ services:
 
   widget_login.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\WidgetLoginListener
-    arguments: [@doctrine.orm.default_entity_manager, @security.token_storage]
+    arguments: [@doctrine.orm.default_entity_manager, @security.token_storage, @?portal_mode_storage]
     tags:
       - { name: kernel.event_subscriber }
 

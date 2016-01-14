@@ -31,9 +31,14 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Helper\IsLowLevelRequestHelper;
+use DeskPRO\Bundle\AppBundle\Helper\IsProxyRequestHelper;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -53,28 +58,69 @@ class WidgetLoginListener implements EventSubscriberInterface
     private $token_storage;
 
     /**
+     * @var PortalModeStorage
+     */
+    private $portal_mode_storage;
+
+    /**
      * Constructor.
      *
      * @param EntityManager         $em
      * @param TokenStorageInterface $token_storage
+     * @param PortalModeStorage     $portal_mode_storage
      */
-    public function __construct(EntityManager $em, TokenStorageInterface $token_storage)
+    public function __construct(EntityManager $em, TokenStorageInterface $token_storage, PortalModeStorage $portal_mode_storage)
     {
-        $this->em            = $em;
-        $this->token_storage = $token_storage;
+        $this->em                  = $em;
+        $this->token_storage       = $token_storage;
+        $this->portal_mode_storage = $portal_mode_storage;
     }
 
     /**
-     * @param FilterResponseEvent $event
+     * {@inheritdoc}
      */
-    public function onKernelResponse(FilterResponseEvent $event)
+    public static function getSubscribedEvents()
     {
-        $request = $event->getRequest();
-        if ($request->getPathInfo() !== '/focus-win/login') {
+        return [
+            KernelEvents::REQUEST => ['onKernelRequest'],
+        ];
+    }
+
+    /**
+     * @param GetResponseEvent $event
+     */
+    public function onKernelRequest(GetResponseEvent $event)
+    {
+        if (!$event->isMasterRequest() || IsProxyRequestHelper::check($event->getRequest())) {
+            // don't set a portal mode for sub requests
+            // also, don't set a portal mode for master requests that are a proxy (ESI)
+            return;
+        }
+        if (IsLowLevelRequestHelper::check($event->getRequest())) {
+            // don't run on low level
+            return;
+        }
+        if (!$this->portal_mode_storage) {
             return;
         }
 
+        $portal_mode = $this->portal_mode_storage->getMode();
+        if (!$portal_mode || !$portal_mode->isFocusWindow()) {
+            return;
+        }
+
+        $request = $event->getRequest();
+
+        // Trying to get external auth code from the request
         $session_code = $request->query->get('__sid');
+        if ($session_code) {
+            // Save auth code in the current session
+            $request->getSession()->set('widget_sid', $session_code);
+        } else {
+            // If user logged in, try to get external auth code from the current session
+            $session_code = $request->getSession()->get('widget_sid');
+        }
+
         if (!$session_code) {
             return;
         }
@@ -85,29 +131,23 @@ class WidgetLoginListener implements EventSubscriberInterface
         }
 
         $user = $token->getUser();
-        if (!$user) {
-            return;
-        }
+        if ($user instanceof Person) {
+            // Success auth, remove the external auth code
+            $request->getSession()->remove('widget_sid');
 
-        /** @var \Application\DeskPRO\EntityRepository\Session $session_repository */
-        $session_repository = $this->em->getRepository('DeskPRO:Session');
+            // Modify external session entity and set the current session's person
+            /** @var \Application\DeskPRO\EntityRepository\Session $repository */
+            $repository = $this->em->getRepository('DeskPRO:Session');
+            $session    = $repository->getSessionFromCode($session_code);
 
-        $session = $session_repository->getSessionFromCode($session_code);
-        if ($session && !$session->getPerson()) {
+            if (!$session || $session->getPerson()) {
+                return;
+            }
+
             $session->setPerson($user);
 
             $this->em->persist($session);
             $this->em->flush();
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
-    {
-        return [
-            KernelEvents::RESPONSE => ['onKernelResponse'],
-        ];
     }
 }
