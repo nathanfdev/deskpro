@@ -250,6 +250,7 @@ class TicketType extends AbstractType
         $fields_to_remove              = $this->layout_differ->findFieldsToRemove($initial_layout, $new_layout);
         $extracted_data                = $this->getTicketDataIds($submitted_data, $context);
         $pre_existing_displayed_fields = $context->getPreviouslyDisplayedFields();
+        $had_previous_layout           = count($initial_layout->all()) > 0;
 
         list($fields_requiring_rerender, $fields_to_remove, $additional_fields) = $this->useLayoutCriteriaToDetermineDynamicLayoutChanges($new_layout, $context, $extracted_data, $fields_to_remove, $additional_fields);
 
@@ -286,7 +287,7 @@ class TicketType extends AbstractType
             $added_something = true;
 
             $new_fields_to_display[] = $field->getId();
-            $field_requires_rerender = in_array($field, $fields_requiring_rerender);
+            $field_requires_rerender = in_array($field, $fields_requiring_rerender) && $had_previous_layout;
 
             // attach the default value to the submitted values of the form (to newly added fields that need a re-render)
             if (count($submitted_data) && $field_requires_rerender) {
@@ -433,7 +434,9 @@ class TicketType extends AbstractType
             return;
         }
 
-        switch ($field->getFieldType()) {
+        $field_type = $field->getFieldType();
+
+        switch ($field_type) {
             case FormFields::SUBJECT:
                 $this->addSubject($form_context, $field, $ignore_validation);
                 break;
@@ -513,7 +516,7 @@ class TicketType extends AbstractType
             'placeholder' => '',
             'constraints' => [
                 new LeafDepartment(['message' => 'portal.forms.error_ticket_department_invalid']),
-                new NotNull(['message'        => 'portal.forms.error_ticket_department_required']),
+                new NotNull(['message' => 'portal.forms.error_ticket_department_required']),
             ],
         ]);
     }
