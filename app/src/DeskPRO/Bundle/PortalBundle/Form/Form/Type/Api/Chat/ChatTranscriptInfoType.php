@@ -31,8 +31,8 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
-use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\TextStringTransformer;
+use DeskPRO\Bundle\AppBundle\UserChat\UserChatSettings;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\AutoSetShouldSentTranscriptTrait;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\SetPersonListener;
 use Symfony\Component\Form\AbstractType;
@@ -56,20 +56,20 @@ class ChatTranscriptInfoType extends AbstractType
     private $set_person_listener;
 
     /**
-     * @var SettingsResolver
+     * @var UserChatSettings
      */
-    private $settings_resolver;
+    private $user_chat_settings;
 
     /**
      * Constructor.
      *
      * @param SetPersonListener $set_person_listener
-     * @param SettingsResolver  $settings_resolver
+     * @param UserChatSettings  $user_chat_settings
      */
-    public function __construct(SetPersonListener $set_person_listener, SettingsResolver $settings_resolver)
+    public function __construct(SetPersonListener $set_person_listener, UserChatSettings $user_chat_settings)
     {
         $this->set_person_listener = $set_person_listener;
-        $this->settings_resolver   = $settings_resolver;
+        $this->user_chat_settings  = $user_chat_settings;
     }
 
     /**
@@ -129,19 +129,11 @@ class ChatTranscriptInfoType extends AbstractType
         $form = $event->getForm();
 
         if ($data !== $form->getData()) {
-            if ($this->getGlobalSettings()->get('portal.chat.require_login')) {
-                $form->addError(new FormError('Unable to change email because chat require email is enabled.'));
-            } elseif ($this->getGlobalSettings()->get('portal.chat.email_validation')) {
-                $form->addError(new FormError('Unable to change email because chat email validation is enabled.'));
+            if ($this->user_chat_settings->isPortalRequireLoginEnabled()) {
+                $form->addError(new FormError('Unable to change email, chat require email is enabled.'));
+            } elseif ($this->user_chat_settings->isPortalEmailValidationEnabled()) {
+                $form->addError(new FormError('Unable to change email, chat email validation is enabled.'));
             }
         }
-    }
-
-    /**
-     * @return \Application\DeskPRO\NewSettings\SettingsBag
-     */
-    protected function getGlobalSettings()
-    {
-        return $this->settings_resolver->getGlobalSettings();
     }
 }

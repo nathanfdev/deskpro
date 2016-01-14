@@ -32,8 +32,8 @@
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
 use Application\DeskPRO\Entity\ChatConversation;
-use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\TextStringTransformer;
+use DeskPRO\Bundle\AppBundle\UserChat\UserChatSettings;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\AutoSetShouldSentTranscriptTrait;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\SetPersonListener;
 use Symfony\Component\Form\AbstractType;
@@ -56,20 +56,20 @@ class CreateChatType extends AbstractType
     private $set_person_listener;
 
     /**
-     * @var SettingsResolver
+     * @var UserChatSettings
      */
-    private $settings_resolver;
+    private $user_chat_settings;
 
     /**
      * Constructor.
      *
      * @param SetPersonListener $set_person_listener
-     * @param SettingsResolver  $settings_resolver
+     * @param UserChatSettings  $user_chat_settings
      */
-    public function __construct(SetPersonListener $set_person_listener, SettingsResolver $settings_resolver)
+    public function __construct(SetPersonListener $set_person_listener, UserChatSettings $user_chat_settings)
     {
         $this->set_person_listener = $set_person_listener;
-        $this->settings_resolver   = $settings_resolver;
+        $this->user_chat_settings  = $user_chat_settings;
     }
 
     /**
@@ -86,7 +86,7 @@ class CreateChatType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $email_constraints = [new Assert\Email()];
-        if ($this->getGlobalSettings()->get('portal.chat.email_validation')) {
+        if ($this->user_chat_settings->isPortalEmailValidationEnabled()) {
             $email_constraints[] = new Assert\NotBlank();
         }
 
@@ -150,25 +150,17 @@ class CreateChatType extends AbstractType
     public function onSetEmailValidationCode(FormEvent $event)
     {
         // Option is disabled, skipping
-        if (!$this->getGlobalSettings()->get('portal.chat.email_validation')) {
+        if (!$this->user_chat_settings->isPortalEmailValidationEnabled()) {
             return;
         }
 
-        // Chat require to log in, skipping
-        if ($this->getGlobalSettings()->get('portal.chat.require_login')) {
+        // Chat requires user to be logged in, skipping
+        if ($this->user_chat_settings->isPortalRequireLoginEnabled()) {
             return;
         }
 
         /** @var ChatConversation $conversation */
         $conversation = $event->getData();
         $conversation->regenerateEmailValidationCode();
-    }
-
-    /**
-     * @return \Application\DeskPRO\NewSettings\SettingsBag
-     */
-    protected function getGlobalSettings()
-    {
-        return $this->settings_resolver->getGlobalSettings();
     }
 }

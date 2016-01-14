@@ -378,7 +378,7 @@ services:
 
   form.api.chat_transcription_info:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatTranscriptInfoType
-    arguments: [@form.api.chat.set_person_listener, @settings_resolver]
+    arguments: [@form.api.chat.set_person_listener, @user_chat.settings]
     tags:
       - { name: form.type, alias: api_chat_transcription_info }
 

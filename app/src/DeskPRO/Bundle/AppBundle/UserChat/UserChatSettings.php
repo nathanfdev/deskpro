@@ -29,32 +29,51 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
+namespace DeskPRO\Bundle\AppBundle\UserChat;
 
-use FOS\RestBundle\View\View;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Application\DeskPRO\NewSettings\SettingsResolver;
 
 /**
- * Class WidgetController.
+ * Class UserChatSettings.
  */
-class WidgetController extends AbstractApiController
+class UserChatSettings
 {
     /**
-     * @Route("/portal/api/widget/settings", name="portal_api_widget_settings")
-     * @Method({"GET"})
-     *
-     * @return View
+     * @var SettingsResolver
      */
-    public function getWidgetSettingsAction()
-    {
-        $user_chat_settings = $this->container->get('user_chat.settings');
+    protected $settings_resolver;
 
-        return new View([
-            'chat' => [
-                'email_validation' => $user_chat_settings->isPortalEmailValidationEnabled(),
-                'require_login'    => $user_chat_settings->isPortalRequireLoginEnabled(),
-            ],
-        ]);
+    /**
+     * Constructor.
+     *
+     * @param SettingsResolver $settings_resolver
+     */
+    public function __construct(SettingsResolver $settings_resolver)
+    {
+        $this->settings_resolver = $settings_resolver;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPortalEmailValidationEnabled()
+    {
+        return $this->getGlobalSettings()->get('portal.chat.email_validation');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPortalRequireLoginEnabled()
+    {
+        return $this->getGlobalSettings()->get('portal.chat.require_login');
+    }
+
+    /**
+     * @return \Application\DeskPRO\NewSettings\SettingsBag
+     */
+    protected function getGlobalSettings()
+    {
+        return $this->settings_resolver->getGlobalSettings();
     }
 }
