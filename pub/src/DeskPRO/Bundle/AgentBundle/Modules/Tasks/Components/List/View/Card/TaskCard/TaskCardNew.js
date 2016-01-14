@@ -123,7 +123,7 @@ export class TaskCardNew extends React.Component {
     const { title, due, project, assignee } = this.model;
 
     return (
-      <Card type="task">
+      <Card type="task" additionalClasses="dpmw--single-task-card-new">
         <SaveTaskButton onClick={this.onSave} submit={submit} />
         <CardReset isActive={this.state.isChanged} onClick={this.reset} />
         <CardLine>
