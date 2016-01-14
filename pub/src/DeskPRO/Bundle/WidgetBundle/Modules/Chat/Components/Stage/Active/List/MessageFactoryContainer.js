@@ -38,15 +38,11 @@ export class MessageFactoryContainer extends React.Component {
   }
 
   getAuthorType() {
-    const author = this.getAuthor();
-    const metadata = this.getMetadata();
-
-    let authorType = author.get('is_agent') ? 'agent' : 'user';
-    if (metadata.get('is_user_message')) {
-      authorType = 'user';
+    if (this.props.message.get('is_sys')) {
+      return 'sys';
     }
 
-    return authorType;
+    return this.getMetadata().get('is_user_message') ? 'agent' : 'user';
   }
 
   getAuthorName() {

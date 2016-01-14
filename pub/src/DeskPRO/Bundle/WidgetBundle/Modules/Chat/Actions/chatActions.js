@@ -301,7 +301,7 @@ export const pollingChat = createAction(
         const filteredMessages = newMessages
           // Skip user's messages because they are added optimistically,
           // but do load user's messages on initial polling request
-          .filter(message => !loaded || (loaded && message.author_type !== 'user'))
+          .filter(message => !loaded || (loaded && !message.metadata.is_user_message))
           // Check for unique ids
           .filter(message => existMessageIds.indexOf(message.id) === -1);
 
@@ -310,7 +310,7 @@ export const pollingChat = createAction(
         }
 
         // Filter not acked messages and send ack request
-        const ackMessages = filteredMessages.filter(message => message.author_type === 'agent' && !message.date_received);
+        const ackMessages = filteredMessages.filter(message => !message.is_sys && !message.metadata.is_user_message && !message.date_received);
         if (ackMessages.length) {
           dispatch(ackChatMessages(chatId, {message_ids: ackMessages.map(message => message.id)}));
         }
@@ -374,7 +374,10 @@ export const sendChatMessage = createAction(
         content: params.message,
         is_html: true,
         author: authorId,
-        date_created: moment().format()
+        date_created: moment().format(),
+        metadata: {
+          is_user_message: true
+        }
       }));
     }
 
@@ -391,7 +394,8 @@ export const sendChatMessage = createAction(
         metadata: {
           type: 'file',
           blob_id: attachment.get('blob_id'),
-          blob: attachment
+          blob: attachment,
+          is_user_message: true
         }
       }));
     });

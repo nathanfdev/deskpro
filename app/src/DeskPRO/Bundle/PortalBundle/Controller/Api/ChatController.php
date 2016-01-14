@@ -205,7 +205,8 @@ class ChatController extends AbstractApiController
                 ->setContent($content)
                 ->setIsHtml(true)
                 ->setMetadata([
-                    'is_html' => true,
+                    'is_html'         => true,
+                    'is_user_message' => true,
                 ])
             ;
 
@@ -242,10 +243,11 @@ class ChatController extends AbstractApiController
                 ->setContent($content)
                 ->setIsHtml(true)
                 ->setMetadata([
-                    'is_html' => true,
-                    'type'    => 'file',
-                    'blob_id' => $attachment->getId(),
-                    'blob'    => $this->dataSerialize($attachment)['data'],
+                    'is_html'         => true,
+                    'type'            => 'file',
+                    'blob_id'         => $attachment->getId(),
+                    'blob'            => $this->dataSerialize($attachment)['data'],
+                    'is_user_message' => true,
                 ])
             ;
 

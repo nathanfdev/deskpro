@@ -56,11 +56,13 @@ class ChatMessageTransformer extends AbstractDataSerializerTransformer
         $data = $transformation_request->getDataToBeTransformed();
 
         return [
+            'metadata' => $data->getMetadata(),
+
+            // Back compatibility to work with old agent
             'message_id'      => $data->getId(),
             'conversation_id' => $data->getConversation()->getId(),
             'author_id'       => $this->getAuthorId($data),
             'author_type'     => $this->getAuthorType($data),
-            'metadata'        => $data->getMetadata(),
         ];
     }
 

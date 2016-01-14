@@ -54,11 +54,8 @@ export class MessageList extends React.Component {
 
       // Checking for agent messages to play sound notification
       const newAgentMessage = messages.filter(message => {
-        const author = people.get(message.get('author'));
         const metadata = message.get('metadata') || Immutable.fromJS({});
-        const isAgentMessage = author && author.get('is_agent') && !metadata.get('is_user_message');
-
-        return message.get('id') > this.state.lastMessageId && isAgentMessage;
+        return message.get('id') > this.state.lastMessageId && !metadata.get('is_user_message');
       });
 
       // Don't play sound on initial load
