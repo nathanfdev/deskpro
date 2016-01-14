@@ -1,6 +1,7 @@
 import { createReducer } from 'Ampliflux';
 import * as actions from '../Actions/chatActions';
 import {
+  async,
   setFullPayload,
   setValue,
   toggleBool,
@@ -62,6 +63,9 @@ export default createReducer(initialState, {
   [actions.unsetLoaded]: setValue('chat.loaded', false),
   [actions.updateChatInfo]: setFullPayload('chat.info'),
   [actions.optimisticToggleSendTranscript]: setFullPayload('chat.info.should_send_transcript'),
+  [actions.sendTranscriptInfo]: async({
+    done: setValue('chat.info.should_send_transcript', true)
+  }),
   [actions.endChat]: setValue('chat.info.date_ended', moment().format()),
   [actions.reopenChat]: composeHandlers(
     setValue('chat.canReopen', true),

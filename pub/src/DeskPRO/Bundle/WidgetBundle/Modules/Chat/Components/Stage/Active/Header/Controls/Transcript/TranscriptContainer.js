@@ -79,7 +79,10 @@ export class TranscriptContainer extends React.Component {
 
     // update user info
     // return promise to get validation errors
-    return dispatch(sendTranscriptInfo(chatId, { name, email }));
+    const promise = dispatch(sendTranscriptInfo(chatId, { name, email }));
+    promise.then(() => this.onCloseForm());
+
+    return promise;
   };
 
   render() {
