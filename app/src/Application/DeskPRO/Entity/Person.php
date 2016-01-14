@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\People\PasswordPolicyValidator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -1156,11 +1157,12 @@ class Person extends DomainObject implements HighlightableModelInterface
     /**
      * Sets the hashed form of the password for this user. Used with local auth.
      *
-     * @param string $plain_password The password to set
+     * @param string $plain_password     The password to set
+     * @param bool   $expire_immediately True to make the user enter a new password next time they log in.
      *
      * @return string
      */
-    public function setPassword($plain_password)
+    public function setPassword($plain_password, $expire_immediately = false)
     {
         // If we're setting the password, we're now using the default
         // password scheme so remove the old one. eg an imported user just changed their password
@@ -1173,7 +1175,15 @@ class Person extends DomainObject implements HighlightableModelInterface
         $this->_set_plain_password = $plain_password;
 
         $this->setModelField('password', $hash);
-        $this->setModelField('date_password_set', new \DateTime());
+
+        if ($expire_immediately) {
+            $this->setModelField(
+                'date_password_set',
+                \DateTime::createFromFormat('Y-m-d H:i:s', PasswordPolicyValidator::MAGIC_PASSWORD_EXPIRED_TRIGGER_DATE)
+            );
+        } else {
+            $this->setModelField('date_password_set', new \DateTime());
+        }
 
         if ($this->id) {
             $token = App::getEntityRepository('DeskPRO:ApiToken')->getTokenForPerson($this);
