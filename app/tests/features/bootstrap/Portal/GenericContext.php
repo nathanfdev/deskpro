@@ -130,6 +130,14 @@ class GenericContext extends BasePortalContext
     }
 
     /**
+     * @Then I should recieve an email with the subject :subject
+     */
+    public function iShouldRecieveAnEmailWithTheSubject($subject)
+    {
+        expect($this->getSubjectOfLastEmail())->toBe($subject);
+    }
+
+    /**
      * @Then I should see a :type flash message with the phrase :phrase
      */
     public function iShouldSeeAFlashMessageWithThePhrase($type, $phrase)

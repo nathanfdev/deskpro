@@ -43,8 +43,7 @@ Feature: Commenting
     When I fill in "Your Name" with "Chris Name"
     When I fill in "Email" with "chris@deskpro.com"
     And I press "Save Comment"
-    Then I should see a "success" flash message
-    And I should see "Before we can post your content you must verify your email. Please check your email, we have sent you a verification link."
+    Then I should see a "success" flash message with the phrase "portal.flashes.guest_content_must_verify"
     And I should recieve an email with the subject phrase "portal.email_subjects.validate-email"
     When I click the email verification link
     Then I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
@@ -98,8 +97,7 @@ Feature: Commenting
     When I fill in "Your Name" with "Chris Name"
     When I fill in "Email" with "chris@deskpro.com"
     And I press "Save Comment"
-    Then I should see a "success" flash message
-    And I should see "Before we can post your content you must verify your email. Please check your email, we have sent you a verification link."
+    Then I should see a "success" flash message with the phrase "portal.flashes.guest_content_must_verify"
     And I should recieve an email with the subject phrase "portal.email_subjects.validate-email"
     When I click the email verification link
     Then I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
@@ -157,8 +155,7 @@ Feature: Commenting
     When I fill in "Your Name" with "Chris Name"
     When I fill in "Email" with "chris@deskpro.com"
     And I press "Save Comment"
-    Then I should see a "success" flash message
-    And I should see "Before we can post your content you must verify your email. Please check your email, we have sent you a verification link."
+    Then I should see a "success" flash message with the phrase "portal.flashes.guest_content_must_verify"
     And I should recieve an email with the subject phrase "portal.email_subjects.validate-email"
     When I click the email verification link
     Then I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
@@ -216,8 +213,7 @@ Feature: Commenting
     When I fill in "Your Name" with "Chris Name"
     When I fill in "Email" with "chris@deskpro.com"
     And I press "Save Comment"
-    Then I should see a "success" flash message
-    And I should see "Before we can post your content you must verify your email. Please check your email, we have sent you a verification link."
+    Then I should see a "success" flash message with the phrase "portal.flashes.guest_content_must_verify"
     And I should recieve an email with the subject phrase "portal.email_subjects.validate-email"
     When I click the email verification link
     Then I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
