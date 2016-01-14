@@ -310,7 +310,7 @@ export const pollingChat = createAction(
         }
 
         // Filter not acked messages and send ack request
-        const ackMessages = filteredMessages.filter(message => !message.is_sys && message.author_type === 'agent' && !message.date_received);
+        const ackMessages = filteredMessages.filter(message => message.author_type === 'agent' && !message.date_received);
         if (ackMessages.length) {
           dispatch(ackChatMessages(chatId, {message_ids: ackMessages.map(message => message.id)}));
         }
@@ -374,10 +374,8 @@ export const sendChatMessage = createAction(
         content: params.message,
         is_html: true,
         author: authorId,
-        date_created: moment().format(),
-        metadata: {
-          is_user_message: true
-        }
+        author_type: 'user',
+        date_created: moment().format()
       }));
     }
 
@@ -390,12 +388,12 @@ export const sendChatMessage = createAction(
         content: null,
         is_html: true,
         author: authorId,
+        author_type: 'user',
         date_created: moment().format(),
         metadata: {
           type: 'file',
           blob_id: attachment.get('blob_id'),
-          blob: attachment,
-          is_user_message: true
+          blob: attachment
         }
       }));
     });
