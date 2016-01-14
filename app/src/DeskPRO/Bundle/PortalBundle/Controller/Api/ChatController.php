@@ -57,6 +57,8 @@ class ChatController extends AbstractApiController
      */
     public function createNewChatAction(Request $request)
     {
+        $this->checkRequireLogin($request);
+
         $session      = $this->getApiSession($request);
         $conversation = ChatConversation::newForUserSession($session);
         $form         = $this
@@ -94,7 +96,7 @@ class ChatController extends AbstractApiController
      */
     public function regenerateEmailValidationCodeAction(ChatConversation $conversation, Request $request)
     {
-        $this->checkUserSession($conversation, $request);
+        $this->checkValidSession($conversation, $request);
 
         $conversation->regenerateEmailValidationCode();
 
@@ -115,7 +117,7 @@ class ChatController extends AbstractApiController
      */
     public function validateEmailAction(ChatConversation $conversation, Request $request)
     {
-        $this->checkUserSession($conversation, $request);
+        $this->checkValidSession($conversation, $request);
 
         $form = $this
             ->get('form.factory')
@@ -145,7 +147,7 @@ class ChatController extends AbstractApiController
      */
     public function pollingChatAction(ChatConversation $conversation, Request $request)
     {
-        $this->checkUserSession($conversation, $request);
+        $this->checkValidSession($conversation, $request);
 
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -180,7 +182,7 @@ class ChatController extends AbstractApiController
      */
     public function sendMessageAction(ChatConversation $conversation, Request $request)
     {
-        $this->checkUserSession($conversation, $request);
+        $this->checkValidSession($conversation, $request);
 
         $form = $this
             ->get('form.factory')
@@ -275,7 +277,7 @@ class ChatController extends AbstractApiController
      */
     public function ackMessagesAction(ChatConversation $conversation, Request $request)
     {
-        $this->checkUserSession($conversation, $request);
+        $this->checkValidSession($conversation, $request);
 
         $message_ids  = $request->request->get('message_ids');
         $current_date = new \DateTime();
@@ -316,7 +318,7 @@ class ChatController extends AbstractApiController
      */
     public function userTypingAction(ChatConversation $conversation, Request $request)
     {
-        $this->checkUserSession($conversation, $request);
+        $this->checkValidSession($conversation, $request);
 
         $form = $this
             ->get('form.factory')
@@ -346,7 +348,7 @@ class ChatController extends AbstractApiController
      */
     public function sendTranscriptInfoAction(ChatConversation $conversation, Request $request)
     {
-        $this->checkUserSession($conversation, $request);
+        $this->checkValidSession($conversation, $request);
 
         $form = $this
             ->get('form.factory')
@@ -375,7 +377,7 @@ class ChatController extends AbstractApiController
      */
     public function sendTranscriptDataAction(ChatConversation $conversation, Request $request)
     {
-        $this->checkUserSession($conversation, $request);
+        $this->checkValidSession($conversation, $request);
 
         $already_sent = $conversation->getShouldSendTranscript();
         $person       = $conversation->getPerson();
@@ -404,7 +406,7 @@ class ChatController extends AbstractApiController
      */
     public function endChatAction(ChatConversation $conversation, Request $request)
     {
-        $this->checkUserSession($conversation, $request);
+        $this->checkValidSession($conversation, $request);
         $conversation->setStatus(ChatConversation::STATUS_ENDED);
 
         $this->saveConversation($conversation);
@@ -424,7 +426,7 @@ class ChatController extends AbstractApiController
      */
     public function reopenChatAction(ChatConversation $conversation, Request $request)
     {
-        $this->checkUserSession($conversation, $request);
+        $this->checkValidSession($conversation, $request);
 
         $conversation
             ->setStatus(ChatConversation::STATUS_OPEN)
@@ -451,7 +453,7 @@ class ChatController extends AbstractApiController
      */
     public function feedbackAction(ChatConversation $conversation, Request $request)
     {
-        $this->checkUserSession($conversation, $request);
+        $this->checkValidSession($conversation, $request);
 
         $form = $this
             ->get('form.factory')
@@ -473,15 +475,31 @@ class ChatController extends AbstractApiController
      * @param ChatConversation $conversation
      * @param Request          $request
      *
-     * @return bool
+     * @throws BadRequestHttpException
      */
-    protected function checkUserSession(ChatConversation $conversation, Request $request)
+    protected function checkValidSession(ChatConversation $conversation, Request $request)
     {
         $request_session      = $this->getApiSession($request);
         $conversation_session = $conversation->getSession();
 
         if (!$conversation_session || $request_session->getId() !== $conversation_session->getId()) {
             throw new BadRequestHttpException('wrong_session_code');
+        }
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @throws BadRequestHttpException
+     */
+    protected function checkRequireLogin(Request $request)
+    {
+        $settings_resolver = $this->container->get('settings_resolver');
+        $global_settings   = $settings_resolver->getGlobalSettings();
+        $request_session   = $this->getApiSession($request);
+
+        if ($global_settings->get('portal.chat.require_login') && !$request_session->getPerson()) {
+            throw new BadRequestHttpException('not_authorized');
         }
     }
 
