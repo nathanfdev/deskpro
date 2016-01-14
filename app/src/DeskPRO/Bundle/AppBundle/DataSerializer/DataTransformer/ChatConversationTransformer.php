@@ -46,6 +46,7 @@ class ChatConversationTransformer extends AbstractDataSerializerTransformer
     {
         return [
             'id',
+            'department_id',
             'subject_line',
             'date_created',
             'date_agent_typing',
