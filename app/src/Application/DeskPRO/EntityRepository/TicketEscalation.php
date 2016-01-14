@@ -61,7 +61,7 @@ class TicketEscalation extends AbstractEntityRepository
                     array(
                         'type'    => 'FilterFeedbackRating',
                         'op'      => 'not',
-                        'options' => array(),
+                        'options' => array('rating' => 'set'),
                     ),
                 ),
             ),

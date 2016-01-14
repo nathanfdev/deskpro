@@ -26,4 +26,24 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1452775755);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1452775755 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('Fix Satisfaction escalation');
+
+        $terms = array(
+            array('type' => 'date_last_agent_reply', 'op' => 'gte', 'options' => array('date2' => 1, 'value' => 'date')),
+            array('type' => 'feedback_rating', 'op' => 'not', 'options' => array('rating' => 'set')),
+        );
+
+        $db = $this->container->getDb();
+        $db->update('ticket_escalations', array(
+            'terms' => json_encode($terms),
+            // need to update the date so this fix doesnt cause thousands of emails to get sent suddenly
+            'date_created' => date('Y-m-d H:i:s'),
+        ), array('sys_name' => 'satisfaction'));
+    }
+}

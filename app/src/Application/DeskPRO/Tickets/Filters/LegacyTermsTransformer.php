@@ -222,7 +222,7 @@ class LegacyTermsTransformer
                 return array(
                     'type'    => 'feedback_rating',
                     'op'      => $term->getTermOperator(),
-                    'options' => $term->getTermOptions(),
+                    'options' => array('rating' => $options['rating']),
                 );
 
             case 'FilterUrgency':
