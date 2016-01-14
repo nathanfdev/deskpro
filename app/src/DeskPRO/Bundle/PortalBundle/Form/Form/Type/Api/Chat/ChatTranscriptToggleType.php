@@ -81,7 +81,7 @@ class ChatTranscriptToggleType extends AbstractType
 
         /** @var ChatConversation $conversation */
         $conversation = $form->getParent()->getData();
-        if (!$conversation->getPersonEmail() || !$conversation->getPerson()) {
+        if (!$conversation->getPersonEmail() && !$conversation->getPerson()) {
             $form->addError(new FormError('Person email is not defined.'));
         }
     }
