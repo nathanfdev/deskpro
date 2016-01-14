@@ -1856,13 +1856,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
         }
 
         window.localStorage.removeItem(this.key());
-        $discard.hide();
 
-				redactor && self.textarea.getEditor().off('keyup.draft change.draft synced.draft');
-				d.load(true);
-				redactor && self.textarea.getEditor().on('keyup.draft change.draft synced.draft', function(){
-					d.save();
-				});
+		  // reload self
+		  DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/new', {ignoreExist:true});
+		  self.closeSelf();
       },
       isEmpty: function() {
         var item = this.get();
