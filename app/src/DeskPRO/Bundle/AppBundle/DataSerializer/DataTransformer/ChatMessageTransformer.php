@@ -44,7 +44,7 @@ class ChatMessageTransformer extends AbstractDataSerializerTransformer
      */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        return ['id', 'author', 'content', 'is_html', 'is_sys', 'date_created', 'date_received'];
+        return ['id', 'author', 'content', 'is_html', 'is_sys', 'is_user', 'date_created', 'date_received'];
     }
 
     /**
@@ -83,9 +83,6 @@ class ChatMessageTransformer extends AbstractDataSerializerTransformer
      */
     private function getAuthorType(ChatMessage $message)
     {
-        $metadata        = $message->getMetadata();
-        $is_user_message = isset($metadata['is_user_message']) && $metadata['is_user_message'];
-
-        return $message->getIsSys() ? 'sys' : ($is_user_message ? 'user' : 'agent');
+        return $message->getIsSys() ? 'sys' : ($message->getIsUser() ? 'user' : 'agent');
     }
 }
