@@ -5,19 +5,14 @@ import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { TranscriptPopup } from './TranscriptPopup';
 import { TranscriptForm } from './TranscriptForm';
 import { TranscriptSent } from './TranscriptSent';
-import {
-  disableSendTranscript,
-  enableSendTranscript,
-  sendTranscriptInfo
-} from '../../../../../../Actions/chatActions';
+import { toggleSendTranscript, sendTranscriptInfo } from '../../../../../../Actions/chatActions';
 import {
   chatIdSelector,
   authorEmailSelector,
   authorNameSelector,
   transcriptCheckedSelector,
   transcriptSentSelector,
-  transcriptSavingSelector,
-  transcriptSendingSelector
+  lockedPollingSelector
 } from '../../../../../../Selectors/chat';
 
 @connect(state => ({
@@ -26,8 +21,7 @@ import {
   authorEmail: authorEmailSelector(state),
   checked: transcriptCheckedSelector(state),
   sent: transcriptSentSelector(state),
-  saving: transcriptSavingSelector(state),
-  sending: transcriptSendingSelector(state)
+  disabled: lockedPollingSelector(state)
 }))
 export class TranscriptContainer extends React.Component {
 
@@ -37,8 +31,7 @@ export class TranscriptContainer extends React.Component {
     authorName: PropTypes.string,
     authorEmail: PropTypes.string,
     checked: PropTypes.bool,
-    saving: PropTypes.bool,
-    sending: PropTypes.bool,
+    disabled: PropTypes.bool,
     sent: PropTypes.bool,
     children: PropTypes.node
   };
@@ -52,10 +45,10 @@ export class TranscriptContainer extends React.Component {
 
   onClick = event => {
     event.preventDefault();
-    const { dispatch, authorEmail, checked, sent } = this.props;
+    const { dispatch, chatId, authorEmail, checked, sent } = this.props;
 
     if (authorEmail && checked && !sent) {
-      dispatch(disableSendTranscript());
+      dispatch(toggleSendTranscript(chatId, false));
     } else {
       this.setState({
         formOpened: true
@@ -78,29 +71,19 @@ export class TranscriptContainer extends React.Component {
       this.onCloseForm();
 
       if (email) {
-        dispatch(enableSendTranscript());
+        dispatch(toggleSendTranscript(chatId, true));
       }
 
       return null;
     }
 
     // update user info
-    const promise = dispatch(sendTranscriptInfo(chatId, { name, email }));
-    if (promise) {
-      promise.then(() => {
-        this.onCloseForm();
-
-        if (email) {
-          dispatch(enableSendTranscript());
-        }
-      });
-    }
-
-    return promise;
+    // return promise to get validation errors
+    return dispatch(sendTranscriptInfo(chatId, { name, email }));
   };
 
   render() {
-    const { authorName, authorEmail, checked, saving, sending, sent, children } = this.props;
+    const { authorName, authorEmail, checked, disabled, sent, children } = this.props;
     const childProps = children.props;
 
     return (
@@ -109,7 +92,7 @@ export class TranscriptContainer extends React.Component {
           ...childProps,
 
           ref: 'button',
-          disabled: saving || sending,
+          disabled: disabled,
           active: checked,
           onClick: this.onClick
         })}

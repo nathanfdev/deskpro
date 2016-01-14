@@ -31,43 +31,25 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
-use DeskPRO\Bundle\AppBundle\Form\DataTransformer\TextStringTransformer;
-use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\AutoSetShouldSentTranscriptTrait;
-use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\SetPersonListener;
+use Application\DeskPRO\Entity\ChatConversation;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class ChatTranscriptInfoType.
+ * Class ChatTranscriptToggleType.
  */
-class ChatTranscriptInfoType extends AbstractType
+class ChatTranscriptToggleType extends AbstractType
 {
-    use AutoSetShouldSentTranscriptTrait;
-
-    /**
-     * @var SetPersonListener
-     */
-    private $set_person_listener;
-
-    /**
-     * Constructor.
-     *
-     * @param SetPersonListener $set_person_listener
-     */
-    public function __construct(SetPersonListener $set_person_listener)
-    {
-        $this->set_person_listener = $set_person_listener;
-    }
-
     /**
      * {@inheritdoc}
      */
     public function getName()
     {
-        return 'api_chat_transcription_info';
+        return 'api_chat_transcription_toggle';
     }
 
     /**
@@ -75,25 +57,8 @@ class ChatTranscriptInfoType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('name', 'text', [
-                'property_path' => 'person_name',
-                'required'      => false,
-            ])
-            ->add('email', 'email', [
-                'property_path' => 'person_email',
-                'constraints'   => [
-                    new Assert\NotBlank(),
-                    new Assert\Email(),
-                ],
-            ])
-        ;
-
-        $builder->get('name')->addModelTransformer(new TextStringTransformer());
-        $builder->get('email')->addModelTransformer(new TextStringTransformer());
-
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this->set_person_listener, 'onSetPerson']);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetShouldSentTranscript']);
+        $builder->add('should_send_transcript', 'api_boolean');
+        $builder->get('should_send_transcript')->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onCheckPersonEmail']);
     }
 
     /**
@@ -105,5 +70,19 @@ class ChatTranscriptInfoType extends AbstractType
             'csrf_protection'               => false,
             'csrf_double_submit_protection' => false,
         ]);
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onCheckPersonEmail(FormEvent $event)
+    {
+        $form = $event->getForm();
+
+        /** @var ChatConversation $conversation */
+        $conversation = $form->getParent()->getData();
+        if (!$conversation->getPersonEmail() || !$conversation->getPerson()) {
+            $form->addError(new FormError('Person email is not defined.'));
+        }
     }
 }

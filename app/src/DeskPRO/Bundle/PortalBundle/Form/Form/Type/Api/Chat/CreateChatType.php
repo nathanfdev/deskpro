@@ -34,6 +34,8 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\TextStringTransformer;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\AutoSetShouldSentTranscriptTrait;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\SetPersonListener;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -46,6 +48,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class CreateChatType extends AbstractType
 {
+    use AutoSetShouldSentTranscriptTrait;
+
     /**
      * @var SetPersonListener
      */
@@ -158,20 +162,6 @@ class CreateChatType extends AbstractType
         /** @var ChatConversation $conversation */
         $conversation = $event->getData();
         $conversation->regenerateEmailValidationCode();
-    }
-
-    /**
-     * If user has entered email then we can enable should send transcript option.
-     *
-     * @param FormEvent $event
-     */
-    public function onSetShouldSentTranscript(FormEvent $event)
-    {
-        /** @var ChatConversation $conversation */
-        $conversation = $event->getData();
-        if ($conversation->getPerson() || $conversation->getPersonEmail()) {
-            $conversation->setShouldSendTranscript(true);
-        }
     }
 
     /**

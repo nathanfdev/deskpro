@@ -32,27 +32,6 @@ export const muteSelector = createSelector(
   state => state.get('mute')
 );
 
-// Transcript selectors
-export const transcriptCheckedSelector = createSelector(
-  stateSelector,
-  state => state.getIn(['transcript', 'checked'])
-);
-
-export const transcriptSavingSelector = createSelector(
-  stateSelector,
-  state => state.getIn(['transcript', 'saving'])
-);
-
-export const transcriptSendingSelector = createSelector(
-  stateSelector,
-  state => state.getIn(['transcript', 'sending'])
-);
-
-export const transcriptSentSelector = createSelector(
-  stateSelector,
-  state => state.getIn(['transcript', 'sent'])
-);
-
 // Chat info selectors
 export const chatIdSelector = createSelector(
   stateSelector,
@@ -146,6 +125,16 @@ export const isEndedSelector = createSelector(
 export const needValidateEmailSelector = createSelector(
   chatInfoSelector,
   chatInfo => chatInfo.get('need_validate_email')
+);
+
+export const transcriptCheckedSelector = createSelector(
+  chatInfoSelector,
+  chatInfo => chatInfo.get('should_send_transcript')
+);
+
+export const transcriptSentSelector = createSelector(
+  chatInfoSelector,
+  chatInfo => chatInfo.get('date_transcript_sent')
 );
 
 // Messages selectors

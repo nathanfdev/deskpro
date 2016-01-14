@@ -15,12 +15,6 @@ import moment from 'moment';
 const initialState = {
   phrases: {},
   mute: false,
-  transcript: {
-    checked: false,
-    saving: false,
-    sending: false,
-    sent: false
-  },
   polling: {
     locked: false,
     skipped: false
@@ -115,21 +109,6 @@ export default createReducer(initialState, {
   [actions.addAttachment]: pushPayloadToCollection('attachments'),
   [actions.removeAttachment]: deletePayloadFromCollection('attachments'),
   [actions.resetAttachments]: setValue('attachments', []),
-
-  // Transcript
-  [actions.disableSendTranscript]: setValue('transcript.checked', false),
-  [actions.enableSendTranscript]: setValue('transcript.checked', true),
-  [actions.sendTranscriptInfo]: async({
-    start: setValue('transcript.saving', true),
-    done: setValue('transcript.saving', false),
-    error: setValueOnError('transcript.saving', false)
-  }),
-  [actions.sendTranscriptData]: async({
-    success: setValue('transcript.sent', true),
-    start: setValue('transcript.sending', true),
-    done: setValue('transcript.sending', false),
-    error: setValueOnError('transcript.sending', false)
-  }),
 
   // Feedback
   [actions.showNotHelpfulForm]: setValue('feedbackStage', 'form'),

@@ -338,7 +338,7 @@ class ChatController extends AbstractApiController
     }
 
     /**
-     * @Route("/portal/api/chats/{id}/transcript_info", name="portal_api_chat_transcript_info")
+     * @Route("/portal/api/chats/{id}/transcript/info", name="portal_api_chat_transcript_info")
      * @Method({"POST"})
      *
      * @param ChatConversation $conversation
@@ -367,7 +367,7 @@ class ChatController extends AbstractApiController
     }
 
     /**
-     * @Route("/portal/api/chats/{id}/transcript_data", name="portal_api_chat_transcript_data")
+     * @Route("/portal/api/chats/{id}/transcript/toggle", name="portal_api_chat_transcript_data")
      * @Method({"POST"})
      *
      * @param ChatConversation $conversation
@@ -375,20 +375,22 @@ class ChatController extends AbstractApiController
      *
      * @return View
      */
-    public function sendTranscriptDataAction(ChatConversation $conversation, Request $request)
+    public function toggleShouldSendTranscriptAction(ChatConversation $conversation, Request $request)
     {
         $this->checkValidSession($conversation, $request);
 
-        $already_sent = $conversation->getShouldSendTranscript();
-        $person       = $conversation->getPerson();
-        $has_email    = $person ? $person->getPrimaryEmailAddress() : $conversation->getPersonEmail();
-        $has_answer   = $conversation->getDateFirstAgentMessage();
+        $form = $this
+            ->get('form.factory')
+            ->createNamedBuilder(null, 'api_chat_transcription_toggle', $conversation)
+            ->getForm()
+        ;
 
-        $can_send = !$already_sent && $has_email && $has_answer;
-        if ($can_send) {
-            $conversation->setShouldSendTranscript(true);
-            $this->saveConversation($conversation);
+        $form->submit($request->request->all());
+        if (!$form->isValid()) {
+            return $this->generateFormErrorsResponse($form);
         }
+
+        $this->saveConversation($conversation);
 
         return View::create();
     }
