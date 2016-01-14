@@ -62,28 +62,8 @@ class ChatMessageTransformer extends AbstractDataSerializerTransformer
             // Don't remove, it's not using in the new widget but needed for the old agent interface
             'message_id'      => $data->getId(),
             'conversation_id' => $data->getConversation()->getId(),
-            'author_id'       => $this->getAuthorId($data),
-            'author_type'     => $this->getAuthorType($data),
+            'author_id'       => $data->getAuthor() ? $data->getAuthor()->getId() : 0,
+            'author_type'     => $data->getIsSys() ? 'sys' : ($data->getIsUser() ? 'user' : 'agent'),
         ];
-    }
-
-    /**
-     * @param ChatMessage $message
-     *
-     * @return int
-     */
-    private function getAuthorId(ChatMessage $message)
-    {
-        return $message->getAuthor() ? $message->getAuthor()->getId() : 0;
-    }
-
-    /**
-     * @param ChatMessage $message
-     *
-     * @return string
-     */
-    private function getAuthorType(ChatMessage $message)
-    {
-        return $message->getIsSys() ? 'sys' : ($message->getIsUser() ? 'user' : 'agent');
     }
 }
