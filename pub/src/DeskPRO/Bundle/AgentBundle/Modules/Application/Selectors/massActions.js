@@ -7,3 +7,7 @@ export const selectedSelector = createSelector(
     state => state.get('selected')
 );
 
+export const paramsSelector = createSelector(
+  stateSelector,
+    state => state.get('params')
+);

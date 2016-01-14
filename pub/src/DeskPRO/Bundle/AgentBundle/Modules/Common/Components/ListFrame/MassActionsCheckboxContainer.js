@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import Immutable from 'immutable';
 import { currentAppSelector } from '../../../Application/Selectors/dpWindow';
 import { selectedSelector } from '../../../Application/Selectors/massActions';
 import { toggleMassAction } from '../../../Application/Actions/massActions';
@@ -14,7 +13,7 @@ import { toggleMassAction } from '../../../Application/Actions/massActions';
 
   return {
     elements: currentAppState.list.get('elements'),
-    selected: Immutable.fromJS([])
+    selected: selectedSelector(state)
   };
 })
 

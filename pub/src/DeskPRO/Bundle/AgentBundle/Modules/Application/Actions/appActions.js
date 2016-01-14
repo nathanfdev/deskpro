@@ -1,12 +1,13 @@
 import { createAction } from 'Ampliflux';
 import { hashChanged } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
-import { toggleMassAction } from '../../Application/Actions/massActions';
+import { toggleMassAction, cancelMassActions } from '../../Application/Actions/massActions';
 
 export const setActiveApp = createAction(
   'APP_SET_ACTIVE_APP',
   (appId) => dispatch => {
     dispatch(hashChanged());
     dispatch(toggleMassAction());
+    dispatch(cancelMassActions());
     return appId;
   }
 );

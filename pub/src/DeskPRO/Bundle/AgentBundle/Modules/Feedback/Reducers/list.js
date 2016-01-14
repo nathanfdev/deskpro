@@ -32,10 +32,6 @@ export default createReducer(initialState, {
     done: setValue('async.done', true)
   }),
 
-  [massActions.setMassActionsParams]: mergeFullPayload('massActions'),
-  [massActions.resetMassActionsParam]: (state, payload) => state.deleteIn(['massActions', payload]),
-  [massActions.resetAllMassActionsParams]: (state) => state.set('massActions', Immutable.fromJS({})),
-
   [actions.setParams]: setFullPayload('currentListParams'),
   [actions.loadFeedbackList]: async({
     success: (state, payload) => state.set('elements', payload.ids).set('pagination', payload.pagination),

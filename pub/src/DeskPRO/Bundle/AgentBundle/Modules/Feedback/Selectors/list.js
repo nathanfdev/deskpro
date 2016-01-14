@@ -128,11 +128,6 @@ export const listFiltersSelector = createSelector(
 
 /* ==================== Mass actions ===================== */
 
-export const massActionsParamsSelector = createSelector(
-  stateSelector,
-    state => state.get('massActions')
-);
-
 export const massActionsSelector = createSelector(
   [navStateSelector, feedbackCategoriesSelector, feedbackTypesSelector, feedbackLabelsSelector],
   (navState, categories, types, labels) => {
@@ -166,8 +161,8 @@ export const massActionsSelector = createSelector(
 
     // Category options
     const categoryOptions = categories.toArray().map(cat => ({
-      label: cat.title,
-      value: cat.title
+      label: cat.get('input'),
+      value: cat.get('input')
     }));
     massActions.push({
       label: 'Category', type: 'action', param: 'custom_category', quickFilter: true,
