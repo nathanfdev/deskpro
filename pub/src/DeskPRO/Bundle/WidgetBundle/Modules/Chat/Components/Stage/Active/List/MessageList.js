@@ -24,7 +24,7 @@ export class MessageList extends React.Component {
   }
 
   componentDidMount() {
-    this.playSound = false;
+    this.canPlaySound = false;
     this.checkForNewMessages();
   }
 
@@ -56,7 +56,7 @@ export class MessageList extends React.Component {
       });
 
       // Don't play sound on initial load
-      if (this.playSound && !mute && newAgentMessage.size > 0) {
+      if (this.canPlaySound && !mute && newAgentMessage.size > 0) {
         const sound = ReactDOM.findDOMNode(this.refs.sound);
         try {
           sound.play();
@@ -65,7 +65,7 @@ export class MessageList extends React.Component {
         }
       }
 
-      this.playSound = true;
+      this.canPlaySound = true;
     }
   }
 
