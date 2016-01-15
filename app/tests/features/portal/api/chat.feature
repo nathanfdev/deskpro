@@ -55,3 +55,11 @@ Feature: Widget Chat
     And the response should be in JSON
     And the JSON node "fields.email.errors[0].code" should be equal to "required"
     And the JSON node "fields.email.errors[0].message" should be equal to "This value should not be blank."
+
+  Scenario: I create a new chat as guest but require login is enabled
+    Given the setting "portal.chat.email_validation" is set to 0
+    Given the setting "portal.chat.require_login" is set to 1
+    When I send a POST request to "/portal/api/chats/create?__sid=1-BKNPKHB2A9N9SA8"
+    Then the response status code should be 400
+    And the response should be in JSON
+    And the JSON node "errors[0].message" should be equal to "Login required"
