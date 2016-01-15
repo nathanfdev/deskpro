@@ -353,7 +353,7 @@ services:
 
   form.api.chat_create:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\CreateChatType
-    arguments: [@form.api.chat.set_person_listener, @settings_resolver]
+    arguments: [@form.api.chat.set_person_listener, @user_chat.settings]
     tags:
       - { name: form.type, alias: api_chat_create }
 
