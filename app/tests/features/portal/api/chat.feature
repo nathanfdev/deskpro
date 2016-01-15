@@ -118,7 +118,7 @@ Feature: Widget Chat
     And the response should be in JSON
     And the JSON node "message" should be equal to "User session not found"
 
-  Scenario: I try to validate email but chat has no email (skip check)
+  Scenario: I try to validate email but chat conversation entity has no email (skip check)
     When I send a POST request to "/portal/api/chats/1/validate/email?__sid=1-AAAAAAAAAAAAAAA" with parameters:
       | key  | value     |
       | code | some code |
@@ -153,7 +153,7 @@ Feature: Widget Chat
     Then the response status code should be 204
     And the response should be empty
 
-  Scenario: I try to re validate email
+  Scenario: And then I try to re validate email
     When I send a POST request to "/portal/api/chats/4/validate/email?__sid=1-AAAAAAAAAAAAAAA" with parameters:
       | key  | value        |
       | code | correct code |
