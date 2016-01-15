@@ -33,6 +33,9 @@
 namespace Application\DeskPRO\JobQueue\Processor\MassActions;
 
 use Application\DeskPRO\JobQueue\Processor\AbstractJobProcessor;
+use DeskPRO\Bundle\AppBundle\Data\MassActions\MassActionsPreprocessorFactory;
+use Doctrine\DBAL\Connection;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
@@ -46,6 +49,14 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class PublishProcessor extends AbstractJobProcessor
 {
     const JOB_TYPE = 'publish_mass';
+
+    private $em;
+
+    public function __construct(Connection $connection, EntityManager $em)
+    {
+        parent::__construct($connection);
+        $this->em = $em;
+    }
 
     /**
      * {@inheritdoc}
@@ -63,7 +74,15 @@ class PublishProcessor extends AbstractJobProcessor
      */
     public function process(array $data, array $job)
     {
-        var_dump($data);
+        $preProcessor = MassActionsPreprocessorFactory::create($this->em, $data);
+        $preProcessor->prepareActions();
+        $entities = $preProcessor->selectEntities();
+        foreach ($entities as $entity) {
+            $preProcessor->prepareEntity($entity);
+            $this->em->persist($entity);
+        }
+        $this->em->flush();
+        var_dump($data['actions']);
 
         return true;
     }

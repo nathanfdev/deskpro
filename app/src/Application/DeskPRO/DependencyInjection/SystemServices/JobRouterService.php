@@ -107,7 +107,7 @@ class JobRouterService
          * publish_mass
          */
         $router->addProcessor(
-            new PublishProcessor($conn)
+            new PublishProcessor($conn, $em)
         );
 
         /*
