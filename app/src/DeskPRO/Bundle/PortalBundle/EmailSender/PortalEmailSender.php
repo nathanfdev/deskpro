@@ -206,6 +206,7 @@ class PortalEmailSender
             $message->setTo($email_to->getEmailAddress(), $email_to->getName());
         }
         $message->setTemplate($template, $vars);
+        $message->addFrom($this->getDefaultOutgoingEmailAddress());
         $message->prepare();
         $this->container->get('mailer')->send($message);
     }
