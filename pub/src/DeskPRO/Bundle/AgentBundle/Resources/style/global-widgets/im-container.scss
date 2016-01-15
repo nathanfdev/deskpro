@@ -12,156 +12,6 @@
   }
 }
 
-#im-container {
-  position: relative;
-  z-index: 10000;
-}
-
-.im-dropdown {
-  @include corner-top;
-  @include clearfix;
-  width: 500px;
-  background: #f5f6f7;
-  font-weight: 500;
-  position: relative;
-  top: 0px;
-
-  // Left & right containers (agents/teams)
-  .bucket {
-    float: left;
-    padding: 10px;
-  }
-
-  .left {
-    width: 60%;
-    padding-right: 10px;
-    border-right: 1px solid $global-border;
-  }
-  .right { width: 40%; }
-
-  h1, h2 {
-    font-size: 1.1em;
-    font-weight: 600;
-    display: inline-block;
-  }
-
-  //Checkbox
-  .show-offline-agents {
-    display: inline-block;
-    color: #b3b3b3;
-    margin-left: 10px;
-  }
-
-  .broadcast-to-all {
-    margin-bottom: 15px;
-    background: #e1e6eb;
-    display: inline-block;
-    line-height: 1em;
-    padding: 8px;
-    color: #909295;
-    font-weight: 600;
-    position: absolute;
-    bottom: 0px;
-    right: 20px;
-
-    i {
-      margin: 0px 5px;
-    }
-  }
-
-  // Overwrite the global .chat-avatar for size etc (from top-bar.scss)
-  .chat-avatar {
-    box-shadow: none;
-    width: 22px;
-    height: 22px;
-    position: relative;
-    top: -1px;
-    margin-left: 0px;
-    margin-right: 5px;
-
-    &:before {
-      border: 1px solid #f5f6f7;
-    }
-  }
-
-  // Amount of time since last message
-  .datestamp {
-    position: absolute;
-    right: 0px;
-    margin-right: 10px;
-    font-size: 0.8em;
-    opacity: 0.5;
-    margin-top: 3px;
-  }
-
-  // Search users form
-  // Will need an x for clearing when user types text (see <div class="active-chat-dropdown"> for example)
-  form {
-    margin-top: 10px;
-
-    input, .button {
-      display: inline-block;
-      vertical-align: top;
-      font-family: Lato, helvetica, sans-serif;
-      padding: 7px;
-      line-height: 1em;
-      border-radius: 2px;
-      line-height: 1.3em;
-    }
-
-    [type="text"] {
-      width: 100%;
-      background: #ffffff;
-      border: 1px solid $global-border;
-    }
-  }
-
-  // Agents list
-  .im-list-wrapper {
-    overflow: auto;
-    height: 260px;
-
-    h2 {
-      margin-top: 15px;
-      &:first-child { margin-top: 0px; }
-    }
-  }
-
-  ul.im-list {
-    @extend %flat-list;
-    margin-top: 10px;
-
-    li {
-      position: relative;
-      margin-bottom: 5px;
-      padding-bottom: 5px;
-      border-bottom: 1px solid $global-border;
-      padding-right: 45px;
-    }
-
-    a {
-      display: block;
-      text-decoration: none;
-      font-size: 1.05em;
-      color: #545454;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
-    // User offline
-    a.offline {
-      opacity: 0.5;
-    }
-  }
-  // For .im-list without a timestamp (removes the padding to have the spot where the ellispeses kick in)
-  ul.im-list.short {
-    li {
-      padding-right: 0px;
-    }
-  }
-}
-
-
 // Notifications container
 .notification-dropdown {
   @include corner-top;
@@ -1018,271 +868,7 @@ a.dismiss-notification {
 
 
 // Ongoing chats
-.active-chat-dropdown {
-  @include corner-top;
-  width: 400px;
-  background: #f5f6f7;
-  z-index: 299;
-  top: 0px;
 
-  header {
-    position: relative;
-  }
-
-  .user-status {// User status disc on popup header
-    display: inline-block;
-    width: 7px;
-    height: 7px;
-    border-radius: 99px;
-    margin-left: 5px;
-  }
-  .online { background: #56bb70; }
-  .offline { background: #cecece; }
-
-  // Load old messages link
-  .chat-controls {
-    display: block;
-    text-align: center;
-    margin: 5px;
-
-    a {
-      display: inline-block;
-      background: #e9e9ea;
-      color: #8a8b8c;
-      line-height: 1em;
-      font-size: 0.9em;
-      text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
-      border-radius: 2px;
-      padding: 3px 7px;
-      text-decoration: none;
-      position: relative;
-      z-index: 89;
-    }
-  }
-
-
-  // User clicks on "search im" on header - this form appears in the chat panel
-  .active-chat-search {
-    display: block;
-    border-bottom: 1px solid #d9d9d9;
-    background: #fff;
-    padding: 8px;
-
-    form {
-      [type="text"], [type="submit"] {
-        display: inline-block;
-        background: #e5e5e5;
-        border-radius: 4px;
-        border: 0px;
-        padding: 7px;
-        font-family: Lato,"FontAwesome"
-      }
-
-      [type="text"] {
-        @include placeholder { font-weight: 600; }
-        width: 83%;
-        margin-right: 2%;
-      }
-
-      [type="submit"] {
-        width: 12%;
-        color: #b7b7b7;
-      }
-
-      .clear-input {
-        position: absolute;
-        left: 82%;
-        margin-left: -20px;
-        margin-top: 8px;
-        opacity: 0.3;
-      }
-
-      .clear-input.invisible { display: none; }
-      .clear-input.visible { display: inline; }
-    }
-  }
-
-  // The messages
-  ul.chat-message-list {
-    @extend %flat-list;
-    margin: 5px 0 10px 10px;
-    padding-right: 10px;
-    max-height: 350px;
-    overflow-y: scroll;
-  }
-
-  .chat-divider {
-    text-align: center;
-    position: relative;
-    margin: 10px 0px;
-
-    hr {
-      position: absolute;
-      top: 50%;
-      z-index: 81;
-    }
-
-    span {
-      background: #f5f6f7;
-      text-transform: uppercase;
-      color: #cbcbcb;
-      font-shadow: 1px 1px 1px #fff;
-      font-weight: 800;
-      font-size: 8px;
-      position: relative;
-      z-index: 89;
-      padding: 0px 5px;
-      top: -2px;
-    }
-  }
-
-  .chat-message {
-    margin-left: 35px;
-    background: #fff;
-    padding: 5px 10px;
-    margin-bottom: 5px;
-    border-radius: 4px;
-    position: relative;
-
-    .chat-avatar {// User avatar
-      position: absolute;
-      left: -30px;
-      top: 0px;
-      box-shadow: none;
-      margin-right: 5px;
-    }
-
-    .message-content {
-
-      p {
-        margin: 0;
-        color: inherit;
-      }
-
-      word-wrap: break-word;
-      margin-right: 40px;
-      overflow: hidden;
-    }
-  }
-
-  .chat-message.yours {
-    background: #e1e6eb;
-    margin-left: 0px;
-    border: 1px dashed rgba(0, 0, 0, 0.1);
-    color: #878a8d;
-
-    .message-content {
-      color: inherit;
-      text-shadow: 1px 1px 1px rgba(255, 255, 255, 1);
-      margin-bottom: 0px;
-    }
-  }
-
-  // Old messages (not in the current chat)
-  .chat-message.old { opacity: 0.5; }
-
-  .time {
-    font-size: 0.8em;
-    color: #b6b6b6;
-    float: right;
-  }
-
-  p {
-    margin: 0 0 0 5px;
-    padding: 0;
-    color: #333;
-    font-size: 1.05em;
-    font-weight: 400;
-  }
-
-  .message-read-mark {
-    position: absolute;
-    bottom: 1px;
-    right: 1px;
-    color: #bbc1c4;
-    font-size: 0.8em;
-    z-index: 98;
-
-    // Add a stroke to the first check
-    i:first-child {
-      text-shadow: -2px 0 #e1e6eb, 0 2px #e1e6eb, 2px 0 #e1e6eb, 0 -2px #e1e6eb;
-      position: relative;
-      z-index: 99;
-    }
-
-    i:nth-child(2) {
-      position: relative;
-      left: -5px;
-    }
-  }
-
-  // Footer stuff
-  footer {
-    padding: 10px;
-    text-align: center;
-    background: #e1e6eb;
-  }
-
-  form {
-    position: relative;
-
-    input[type="text"], input[type="button"], input[type="submit"] button, .button { display: block; }
-
-    div.textarea {
-      float: left;
-      border: 0px;
-      background: #fff;
-      border-radius: 2px;
-      padding: 10px 45px 10px 10px;
-      width: 80%;
-      resize: none;
-      outline: none;
-      overflow: auto;
-      vertical-align: top;
-      font-family: inherit;
-      font-size: 100%;
-      margin: 0;
-      text-align: left;
-      min-height: 34px;
-
-      :focus {
-        outline: none;
-      }
-    }
-
-    input[type="button"], input[type="submit"] button, .button {
-      float: left;
-      border: 0px;
-      background: #4681b2;
-      border-radius: 2px;
-      padding: 10px;
-      color: #fff;
-      text-transform: uppercase;
-      font-weight: 700;
-      width: 18%;
-      text-align: center;
-      margin-left: 2%;
-      color: #90b3d1;
-      font-family: Lato,"FontAwesome";
-      &:hover { color: #fff; }
-    }
-
-    .insert-emoticon {
-      border-radius: 4px;
-      border: 1px solid #e5e5e5;
-      display: block;
-      width: 29px;
-      height: 29px;
-      position: absolute;
-      z-index: 299;
-      left: 80%;
-      margin-left: -40px;
-      margin-top: 3px;
-
-      .emoticon { margin-top: 4px; }
-    }
-  }
-}
 
 .emoticon-panel {
   position: absolute;
@@ -2181,9 +1767,6 @@ $secondary-surface-border: #d5d6d7;
 .dropdown {
   border-top: 4px solid darken($secondary-surface, 15%);
   border-bottom: 4px solid darken($secondary-surface, 5%);
-
-  position: absolute;
-  top: 35px;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   font-size: 0.9em;
   text-align: left;
@@ -2740,3 +2323,417 @@ ul.dropdown-tabs {
 // .minimized {
 //   z-index: 999;
 // }
+
+#im-container {
+  position: relative;
+  z-index: 10000;
+}
+
+.im-dropdown {
+  @include corner-top;
+  @include clearfix;
+  width: 500px;
+  background: #f5f6f7;
+  font-weight: 500;
+  position: relative;
+
+  // Left & right containers (agents/teams)
+  .bucket {
+    float: left;
+    padding: 10px;
+  }
+
+  .left {
+    width: 60%;
+    padding-right: 10px;
+    border-right: 1px solid $global-border;
+  }
+  .right { width: 40%; }
+
+  h1, h2 {
+    font-size: 1.1em;
+    font-weight: 600;
+    display: inline-block;
+  }
+
+  //Checkbox
+  .show-offline-agents {
+    display: inline-block;
+    color: #b3b3b3;
+    margin-left: 10px;
+  }
+
+  .broadcast-to-all {
+    margin-bottom: 15px;
+    background: #e1e6eb;
+    display: inline-block;
+    line-height: 1em;
+    padding: 8px;
+    color: #909295;
+    font-weight: 600;
+    position: absolute;
+    bottom: 0px;
+    right: 20px;
+
+    i {
+      margin: 0px 5px;
+    }
+  }
+
+  // Overwrite the global .chat-avatar for size etc (from top-bar.scss)
+  .chat-avatar {
+    box-shadow: none;
+    width: 22px;
+    height: 22px;
+    position: relative;
+    top: -1px;
+    margin-left: 0px;
+    margin-right: 5px;
+
+    &:before {
+      border: 1px solid #f5f6f7;
+    }
+  }
+
+  // Amount of time since last message
+  .datestamp {
+    position: absolute;
+    right: 0px;
+    margin-right: 10px;
+    font-size: 0.8em;
+    opacity: 0.5;
+    margin-top: 3px;
+  }
+
+  // Search users form
+  // Will need an x for clearing when user types text (see <div class="active-chat-dropdown"> for example)
+  form {
+    margin-top: 10px;
+
+    input, .button {
+      display: inline-block;
+      vertical-align: top;
+      font-family: Lato, helvetica, sans-serif;
+      padding: 7px;
+      line-height: 1em;
+      border-radius: 2px;
+      line-height: 1.3em;
+    }
+
+    [type="text"] {
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid $global-border;
+    }
+  }
+
+  // Agents list
+  .im-list-wrapper {
+    overflow: auto;
+    height: 260px;
+
+    h2 {
+      margin-top: 15px;
+      &:first-child { margin-top: 0px; }
+    }
+  }
+
+  ul.im-list {
+    @extend %flat-list;
+    margin-top: 10px;
+
+    li {
+      position: relative;
+      margin-bottom: 5px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid $global-border;
+      padding-right: 45px;
+    }
+
+    a {
+      display: block;
+      text-decoration: none;
+      font-size: 1.05em;
+      color: #545454;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    // User offline
+    a.offline {
+      opacity: 0.5;
+    }
+  }
+  // For .im-list without a timestamp (removes the padding to have the spot where the ellispeses kick in)
+  ul.im-list.short {
+    li {
+      padding-right: 0px;
+    }
+  }
+}
+
+.active-chat-dropdown {
+  @include corner-top;
+  width: 400px;
+  background: #f5f6f7;
+  z-index: 299;
+  top: 0px;
+
+  header {
+    position: relative;
+  }
+
+  .user-status {// User status disc on popup header
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 99px;
+    margin-left: 5px;
+  }
+  .online { background: #56bb70; }
+  .offline { background: #cecece; }
+
+  // Load old messages link
+  .chat-controls {
+    display: block;
+    text-align: center;
+    margin: 5px;
+
+    a {
+      display: inline-block;
+      background: #e9e9ea;
+      color: #8a8b8c;
+      line-height: 1em;
+      font-size: 0.9em;
+      text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+      border-radius: 2px;
+      padding: 3px 7px;
+      text-decoration: none;
+      position: relative;
+      z-index: 89;
+    }
+  }
+
+
+  // User clicks on "search im" on header - this form appears in the chat panel
+  .active-chat-search {
+    display: block;
+    border-bottom: 1px solid #d9d9d9;
+    background: #fff;
+    padding: 8px;
+
+    form {
+      [type="text"], [type="submit"] {
+        display: inline-block;
+        background: #e5e5e5;
+        border-radius: 4px;
+        border: 0px;
+        padding: 7px;
+        font-family: Lato,"FontAwesome"
+      }
+
+      [type="text"] {
+        @include placeholder { font-weight: 600; }
+        width: 83%;
+        margin-right: 2%;
+      }
+
+      [type="submit"] {
+        width: 12%;
+        color: #b7b7b7;
+      }
+
+      .clear-input {
+        position: absolute;
+        left: 82%;
+        margin-left: -20px;
+        margin-top: 8px;
+        opacity: 0.3;
+      }
+
+      .clear-input.invisible { display: none; }
+      .clear-input.visible { display: inline; }
+    }
+  }
+
+  // The messages
+  ul.chat-message-list {
+    @extend %flat-list;
+    margin: 5px 0 10px 10px;
+    padding-right: 10px;
+    max-height: 350px;
+    overflow-y: scroll;
+  }
+
+  .chat-divider {
+    text-align: center;
+    position: relative;
+    margin: 10px 0px;
+
+    hr {
+      position: absolute;
+      top: 50%;
+      z-index: 81;
+    }
+
+    span {
+      background: #f5f6f7;
+      text-transform: uppercase;
+      color: #cbcbcb;
+      font-shadow: 1px 1px 1px #fff;
+      font-weight: 800;
+      font-size: 8px;
+      position: relative;
+      z-index: 89;
+      padding: 0px 5px;
+      top: -2px;
+    }
+  }
+
+  .chat-message {
+    margin-left: 35px;
+    background: #fff;
+    padding: 5px 10px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    position: relative;
+
+    .chat-avatar {// User avatar
+      position: absolute;
+      left: -30px;
+      top: 0px;
+      box-shadow: none;
+      margin-right: 5px;
+    }
+
+    .message-content {
+
+      p {
+        margin: 0;
+        color: inherit;
+      }
+
+      word-wrap: break-word;
+      margin-right: 40px;
+      overflow: hidden;
+    }
+  }
+
+  .chat-message.yours {
+    background: #e1e6eb;
+    margin-left: 0px;
+    border: 1px dashed rgba(0, 0, 0, 0.1);
+    color: #878a8d;
+
+    .message-content {
+      color: inherit;
+      text-shadow: 1px 1px 1px rgba(255, 255, 255, 1);
+      margin-bottom: 0px;
+    }
+  }
+
+  // Old messages (not in the current chat)
+  .chat-message.old { opacity: 0.5; }
+
+  .time {
+    font-size: 0.8em;
+    color: #b6b6b6;
+    float: right;
+  }
+
+  p {
+    margin: 0 0 0 5px;
+    padding: 0;
+    color: #333;
+    font-size: 1.05em;
+    font-weight: 400;
+  }
+
+  .message-read-mark {
+    position: absolute;
+    bottom: 1px;
+    right: 1px;
+    color: #bbc1c4;
+    font-size: 0.8em;
+    z-index: 98;
+
+    // Add a stroke to the first check
+    i:first-child {
+      text-shadow: -2px 0 #e1e6eb, 0 2px #e1e6eb, 2px 0 #e1e6eb, 0 -2px #e1e6eb;
+      position: relative;
+      z-index: 99;
+    }
+
+    i:nth-child(2) {
+      position: relative;
+      left: -5px;
+    }
+  }
+
+  // Footer stuff
+  footer {
+    padding: 10px;
+    text-align: center;
+    background: #e1e6eb;
+  }
+
+  form {
+    position: relative;
+
+    input[type="text"], input[type="button"], input[type="submit"] button, .button { display: block; }
+
+    div.textarea {
+      float: left;
+      border: 0px;
+      background: #fff;
+      border-radius: 2px;
+      padding: 10px 45px 10px 10px;
+      width: 80%;
+      resize: none;
+      outline: none;
+      overflow: auto;
+      vertical-align: top;
+      font-family: inherit;
+      font-size: 100%;
+      margin: 0;
+      text-align: left;
+      min-height: 34px;
+
+      :focus {
+        outline: none;
+      }
+    }
+
+    input[type="button"], input[type="submit"] button, .button {
+      float: left;
+      border: 0px;
+      background: #4681b2;
+      border-radius: 2px;
+      padding: 10px;
+      color: #fff;
+      text-transform: uppercase;
+      font-weight: 700;
+      width: 18%;
+      text-align: center;
+      margin-left: 2%;
+      color: #90b3d1;
+      font-family: Lato,"FontAwesome";
+      &:hover { color: #fff; }
+    }
+
+    .insert-emoticon {
+      border-radius: 4px;
+      border: 1px solid #e5e5e5;
+      display: block;
+      width: 29px;
+      height: 29px;
+      position: absolute;
+      z-index: 299;
+      left: 80%;
+      margin-left: -40px;
+      margin-top: 3px;
+
+      .emoticon { margin-top: 4px; }
+    }
+  }
+}
