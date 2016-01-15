@@ -300,6 +300,18 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function setPersonName($name)
+    {
+        $this->setModelField('person_name', $name);
+
+        return $this;
+    }
+
+    /**
      * Setting the person copies their name and email address to the chat row for record keeping.
      *
      * @param Person $person
