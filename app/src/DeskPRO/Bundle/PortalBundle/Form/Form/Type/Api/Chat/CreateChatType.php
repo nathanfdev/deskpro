@@ -87,7 +87,7 @@ class CreateChatType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $email_constraints = [new Assert\Email()];
-        if ($this->user_chat_settings->isPortalEmailValidation()) {
+        if ($this->user_chat_settings->isPortalEmailValidation() && !$this->user_chat_settings->isPortalRequireLogin()) {
             $email_constraints[] = new Assert\NotBlank();
         }
 
