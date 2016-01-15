@@ -1076,7 +1076,17 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
      */
     public function regenerateEmailValidationCode()
     {
-        $this->setModelField('email_validation_code', Strings::random(15, Strings::CHARS_KEY));
+        return $this->setEmailValidationCode(Strings::random(15, Strings::CHARS_KEY));
+    }
+
+    /**
+     * @param string $code
+     *
+     * @return $this
+     */
+    public function setEmailValidationCode($code)
+    {
+        $this->setModelField('email_validation_code', $code);
 
         return $this;
     }

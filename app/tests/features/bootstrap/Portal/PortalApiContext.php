@@ -31,6 +31,7 @@
  */
 namespace DpBehat\Portal;
 
+use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Session;
 use DpBehat\BaseContext;
 
@@ -74,6 +75,22 @@ class PortalApiContext extends BaseContext
         $session->setPerson($person);
 
         $this->em()->persist($session);
+        $this->em()->flush();
+    }
+
+    /**
+     * @Then I set chat email validation code :code for chat :chat_id
+     *
+     * @param int    $chat_id
+     * @param string $code
+     */
+    public function iSetChatEmailValidationCode($chat_id, $code)
+    {
+        /** @var ChatConversation $conversation */
+        $conversation = $this->em()->getRepository('DeskPRO:ChatConversation')->find($chat_id);
+        $conversation->setEmailValidationCode($code);
+
+        $this->em()->persist($conversation);
         $this->em()->flush();
     }
 }

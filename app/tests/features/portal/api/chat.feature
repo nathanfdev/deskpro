@@ -118,17 +118,45 @@ Feature: Widget Chat
     And the response should be in JSON
     And the JSON node "message" should be equal to "User session not found"
 
-  Scenario: I try to validation email but chat has no email (skip check)
+  Scenario: I try to validate email but chat has no email (skip check)
     When I send a POST request to "/portal/api/chats/1/validate/email?__sid=1-AAAAAAAAAAAAAAA" with parameters:
       | key  | value     |
       | code | some code |
     Then the response status code should be 204
     And the response should be empty
 
-  Scenario: I try to validate with wrong code
+  Scenario: I try to validate email with wrong code
     When I send a POST request to "/portal/api/chats/4/validate/email?__sid=1-AAAAAAAAAAAAAAA" with parameters:
       | key  | value     |
       | code | some code |
     Then the response status code should be 400
     And the response should be in JSON
     And the JSON node "fields.code.errors[0].message" should be equal to "Wrong email validation code."
+
+  Scenario: I regenerate email validation code
+    Given I set chat email validation code "correct code" for chat "4"
+    When I send a POST request to "/portal/api/chats/4/validate/email/regenerate?__sid=1-AAAAAAAAAAAAAAA"
+    Then the response status code should be 204
+    And the response should be empty
+    When I send a POST request to "/portal/api/chats/4/validate/email?__sid=1-AAAAAAAAAAAAAAA" with parameters:
+      | key  | value        |
+      | code | correct code |
+    Then the response status code should be 400
+    And the response should be in JSON
+    And the JSON node "fields.code.errors[0].message" should be equal to "Wrong email validation code."
+
+  Scenario: I validate email successfully
+    Given I set chat email validation code "correct code" for chat "4"
+    When I send a POST request to "/portal/api/chats/4/validate/email?__sid=1-AAAAAAAAAAAAAAA" with parameters:
+      | key  | value        |
+      | code | correct code |
+    Then the response status code should be 204
+    And the response should be empty
+
+  Scenario: I try to re validate email
+    When I send a POST request to "/portal/api/chats/4/validate/email?__sid=1-AAAAAAAAAAAAAAA" with parameters:
+      | key  | value        |
+      | code | correct code |
+    Then the response status code should be 400
+    And the response should be in JSON
+    And the JSON node "fields.code.errors[0].message" should be equal to "Email is already validated."
