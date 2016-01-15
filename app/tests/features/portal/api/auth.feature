@@ -4,6 +4,7 @@ Feature: Portal Api Authorization
   Background: Fresh database
     Given I install the fresh data set
 
+  @reinstall
   Scenario: I get a new session code
     When I send a POST request to "/portal/api/auth/get_session"
     Then the response status code should be 200

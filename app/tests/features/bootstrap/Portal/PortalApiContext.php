@@ -88,6 +88,10 @@ class PortalApiContext extends BaseContext
     {
         /** @var ChatConversation $conversation */
         $conversation = $this->em()->getRepository('DeskPRO:ChatConversation')->find($chat_id);
+        if (!$conversation) {
+            throw new \RuntimeException(sprintf('Conversation with id `%s` not found', $chat_id));
+        }
+
         $conversation->setEmailValidationCode($code);
 
         $this->em()->persist($conversation);

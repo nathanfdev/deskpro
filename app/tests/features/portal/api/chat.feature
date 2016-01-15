@@ -6,6 +6,7 @@ Feature: Widget Chat
     Given I have authorized portal api session with code "BBBBBBBBBBBBBBB" for "user@deskpro.dev"
 
   # Create a new chat
+  @reinstall
   Scenario: I try to create a new chat without session code
     When I send a POST request to "/portal/api/chats/create"
     Then the response status code should be 400
