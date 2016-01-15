@@ -2,7 +2,7 @@ Feature: Widget Chat
 
   Background: Fresh database
     Given I install the fresh data set
-    Given I have guest portal api session with code "BKNPKHB2A9N9SA8"
+    Given I have guest portal api session with code "AAAAAAAAAAAAAAA"
 
   # Create a new chat
   Scenario: I try to create a new chat without session code
@@ -14,7 +14,7 @@ Feature: Widget Chat
   Scenario: I create a new chat without person info
     Given the setting "portal.chat.email_validation" is set to 0
     Given the setting "portal.chat.require_login" is set to 0
-    When I send a POST request to "/portal/api/chats/create?__sid=1-BKNPKHB2A9N9SA8"
+    When I send a POST request to "/portal/api/chats/create?__sid=1-AAAAAAAAAAAAAAA"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data.id" should be equal to "1"
@@ -26,7 +26,7 @@ Feature: Widget Chat
   Scenario: I create a new chat with an unknown email
     Given the setting "portal.chat.email_validation" is set to 0
     Given the setting "portal.chat.require_login" is set to 0
-    When I send a POST request to "/portal/api/chats/create?__sid=1-BKNPKHB2A9N9SA8" with parameters:
+    When I send a POST request to "/portal/api/chats/create?__sid=1-AAAAAAAAAAAAAAA" with parameters:
       | key   | value             |
       | email | unknown@email.com |
     Then the response status code should be 200
@@ -40,7 +40,7 @@ Feature: Widget Chat
   Scenario: I create a new chat with an existing email and different name
     Given the setting "portal.chat.email_validation" is set to 0
     Given the setting "portal.chat.require_login" is set to 0
-    When I send a POST request to "/portal/api/chats/create?__sid=1-BKNPKHB2A9N9SA8" with parameters:
+    When I send a POST request to "/portal/api/chats/create?__sid=1-AAAAAAAAAAAAAAA" with parameters:
       | key   | value            |
       | email | user@deskpro.dev |
       | name  | New Username     |
@@ -55,7 +55,7 @@ Feature: Widget Chat
   Scenario: I create a new chat without person info but email validation is enabled
     Given the setting "portal.chat.email_validation" is set to 1
     Given the setting "portal.chat.require_login" is set to 0
-    When I send a POST request to "/portal/api/chats/create?__sid=1-BKNPKHB2A9N9SA8"
+    When I send a POST request to "/portal/api/chats/create?__sid=1-AAAAAAAAAAAAAAA"
     Then the response status code should be 400
     And the response should be in JSON
     And the JSON node "fields.email.errors[0].code" should be equal to "required"
@@ -64,7 +64,7 @@ Feature: Widget Chat
   Scenario: I create a new chat with email and email validation
     Given the setting "portal.chat.email_validation" is set to 1
     Given the setting "portal.chat.require_login" is set to 0
-    When I send a POST request to "/portal/api/chats/create?__sid=1-BKNPKHB2A9N9SA8" with parameters:
+    When I send a POST request to "/portal/api/chats/create?__sid=1-AAAAAAAAAAAAAAA" with parameters:
       | key   | value            |
       | email | user@deskpro.dev |
     Then the response status code should be 200
@@ -78,7 +78,7 @@ Feature: Widget Chat
   Scenario: I create a new chat as guest but require login is enabled
     Given the setting "portal.chat.email_validation" is set to 0
     Given the setting "portal.chat.require_login" is set to 1
-    When I send a POST request to "/portal/api/chats/create?__sid=1-BKNPKHB2A9N9SA8"
+    When I send a POST request to "/portal/api/chats/create?__sid=1-AAAAAAAAAAAAAAA"
     Then the response status code should be 400
     And the response should be in JSON
     And the JSON node "errors[0].message" should be equal to "Login required"
@@ -86,7 +86,7 @@ Feature: Widget Chat
   Scenario: I create a new chat as guest and all restrictions is enabled
     Given the setting "portal.chat.email_validation" is set to 1
     Given the setting "portal.chat.require_login" is set to 1
-    When I send a POST request to "/portal/api/chats/create?__sid=1-BKNPKHB2A9N9SA8"
+    When I send a POST request to "/portal/api/chats/create?__sid=1-AAAAAAAAAAAAAAA"
     Then the response status code should be 400
     And the response should be in JSON
     And the JSON node "errors[0].message" should be equal to "Login required"
