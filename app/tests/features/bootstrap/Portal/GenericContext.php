@@ -165,6 +165,17 @@ class GenericContext extends BasePortalContext
     }
 
     /**
+     * @Given the setting :setting_name is set to :val
+     */
+    public function theSettingIsSetTo($setting_name, $val)
+    {
+        $this->em()->getConnection()->executeUpdate(
+            'REPLACE INTO settings (name, value) VALUES (:name, :value)',
+            array('name' => $setting_name, 'value' => $val)
+        );
+    }
+
+    /**
      * @When I click the email verification link
      */
     public function iClickTheEmailVerificationLink()
@@ -317,6 +328,10 @@ class GenericContext extends BasePortalContext
 
         $email_body    = $blob_storage->copyBlobRecordToString($blob);
         $email_subject = $last_email->getHeaderSubject();
+
+        $reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+        $reader->setRawSource($email_body);
+        $email_body = $reader->getBodyText()->getBodyUtf8();
 
         return [
             'body'    => $email_body,
