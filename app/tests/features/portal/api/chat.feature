@@ -110,3 +110,25 @@ Feature: Widget Chat
       | 0                | 1             |
       | 1                | 0             |
       | 1                | 1             |
+
+  # Chat email validation
+  Scenario: I try to validate email without session code
+    When I send a POST request to "/portal/api/chats/1/validate/email"
+    Then the response status code should be 400
+    And the response should be in JSON
+    And the JSON node "message" should be equal to "User session not found"
+
+  Scenario: I try to validation email but chat has no email (skip check)
+    When I send a POST request to "/portal/api/chats/1/validate/email?__sid=1-AAAAAAAAAAAAAAA" with parameters:
+      | key  | value     |
+      | code | some code |
+    Then the response status code should be 204
+    And the response should be empty
+
+  Scenario: I try to validate with wrong code
+    When I send a POST request to "/portal/api/chats/4/validate/email?__sid=1-AAAAAAAAAAAAAAA" with parameters:
+      | key  | value     |
+      | code | some code |
+    Then the response status code should be 400
+    And the response should be in JSON
+    And the JSON node "fields.code.errors[0].message" should be equal to "Wrong email validation code."
