@@ -51,3 +51,18 @@ Feature: Guests can submit new tickets
     And I press "Submit"
     Then I should be on "/thank-you"
     And I should see a success flash message with the phrase "portal.flashes.ticket_created"
+
+  @reinstall
+  Scenario: Submitting a VALID FORM but being forced to LOGIN
+    Given I go to "/new-ticket"
+    And I select "Sales" from "Department"
+    And I fill in "Subject" with "This is a subject"
+    And I fill in "Message" with "Here is my ticket message"
+    And I fill in "Email" with "user@deskpro.dev"
+    And I press "Submit"
+    Then I should be on "/login"
+    When I fill in "Email" with "user@deskpro.dev"
+    And I fill in "Your password" with "12345"
+    And I press "Login"
+    Then I should be on "/thank-you/1"
+    And I should see a success flash message with the phrase "portal.flashes.ticket_created"
