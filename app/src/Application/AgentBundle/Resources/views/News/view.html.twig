@@ -125,7 +125,6 @@ pageMeta.baseId = '{{ baseId }}';
 							</div>
 						{% endset %}
 						{{ phrase('user.knowledgebase.auto_action_on_date', {action: phrase_part1, date: phrase_part2}, true) }}
-						{{ dump(news.date_end) }} - {{ dump(news.date_end|date('U')) }}
 						<input type="text" class="end-date-input" value="{{ news.date_end|date('j M, y') }}" style="display: none; height: 10px;" />
 						(<span class="remove-auto-unpublish options-text">{{ phrase('agent.general.remove') }}</span>)
 					</span>
@@ -149,7 +148,6 @@ pageMeta.baseId = '{{ baseId }}';
 							</div>
 						{% endset %}
 						{{ phrase('user.knowledgebase.auto_action_on_date', {action: phrase_part1, date: phrase_part2}, true) }}
-						{{  dump(news.date_published) }} - {{ dump(news.date_published|date('U')) }}
 						<input type="text" class="pub-date-input" value="{{ news.date_published|date('j M, y') }}000" style="display: none; height: 10px;" />
 						(<span class="remove-auto-publish options-text">{{ phrase('agent.general.remove') }}</span>)
 					</span>
