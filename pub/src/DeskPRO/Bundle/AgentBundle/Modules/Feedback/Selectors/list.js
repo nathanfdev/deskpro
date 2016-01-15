@@ -145,7 +145,7 @@ export const massActionsSelector = createSelector(
     // Status options
     const statuses = navState.get('statuses').toJS();
     const toStatusOptions = (nested, param) => (nested || []).map(opt => ({
-      value: opt.title,
+      value: opt.id,
       label: opt.title,
       param: param
     }));
