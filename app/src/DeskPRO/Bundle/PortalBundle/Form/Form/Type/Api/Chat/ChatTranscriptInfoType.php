@@ -129,9 +129,9 @@ class ChatTranscriptInfoType extends AbstractType
         $form = $event->getForm();
 
         if ($data !== $form->getData()) {
-            if ($this->user_chat_settings->isPortalRequireLoginEnabled()) {
+            if ($this->user_chat_settings->isPortalRequireLogin()) {
                 $form->addError(new FormError('Unable to change email, chat require email is enabled.'));
-            } elseif ($this->user_chat_settings->isPortalEmailValidationEnabled()) {
+            } elseif ($this->user_chat_settings->isPortalEmailValidation()) {
                 $form->addError(new FormError('Unable to change email, chat email validation is enabled.'));
             }
         }

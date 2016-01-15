@@ -87,7 +87,7 @@ class CreateChatType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $email_constraints = [new Assert\Email()];
-        if ($this->user_chat_settings->isPortalEmailValidationEnabled()) {
+        if ($this->user_chat_settings->isPortalEmailValidation()) {
             $email_constraints[] = new Assert\NotBlank();
         }
 
@@ -152,12 +152,12 @@ class CreateChatType extends AbstractType
     public function onSetEmailValidationCode(FormEvent $event)
     {
         // Option is disabled, skipping
-        if (!$this->user_chat_settings->isPortalEmailValidationEnabled()) {
+        if (!$this->user_chat_settings->isPortalEmailValidation()) {
             return;
         }
 
         // Chat requires user to be logged in, skipping
-        if ($this->user_chat_settings->isPortalRequireLoginEnabled()) {
+        if ($this->user_chat_settings->isPortalRequireLogin()) {
             return;
         }
 
@@ -174,7 +174,7 @@ class CreateChatType extends AbstractType
         $form   = $event->getForm();
         $person = $form->getConfig()->getOption('person');
 
-        if ($this->user_chat_settings->isPortalRequireLoginEnabled() && !$person) {
+        if ($this->user_chat_settings->isPortalRequireLogin() && !$person) {
             $form->addError(new FormError('Login required'));
         }
     }
