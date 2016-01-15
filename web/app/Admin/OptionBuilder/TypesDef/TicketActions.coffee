@@ -1501,11 +1501,11 @@ define [
                 options: {
                   title: model.title
                   date_due: date if date?
-                  public: model.public
+                  public: !!model.public
                   creator: model.creator
                   assignee: model.assignee
                   offset: model.offset
-                  link: model.link
+                  link: !!model.link
                 }
               }
           }
