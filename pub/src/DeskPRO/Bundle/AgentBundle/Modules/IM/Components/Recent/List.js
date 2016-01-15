@@ -30,7 +30,6 @@ import { myDepartmentsSelector, myDepartmentsStatusSelector } from 'DeskPRO/Bund
   recentChats: recentChatsSelector(state),
   current: state.IM.chats.get('current'),
   counts: state.IM.messages.get('counts'),
-  countsLoading: state.IM.messages.get('countsLoading'),
   teamsStatus: myAgentTeamsStatusSelector(state),
   agentsStatus: agentsStatusSelector(state),
   departmentsStatus: myDepartmentsStatusSelector(state),
@@ -47,8 +46,6 @@ export class List extends React.Component {
     recentChats: PropTypes.object.isRequired,
     current: PropTypes.object.isRequired,
     counts: PropTypes.object.isRequired,
-    loadingCounts: PropTypes.object,
-    countsLoading: PropTypes.bool.isRequired,
     teamsStatus: PropTypes.object.isRequired,
     agentsStatus: PropTypes.object.isRequired,
     departmentsStatus: PropTypes.object.isRequired,
@@ -82,7 +79,7 @@ export class List extends React.Component {
       && departmentsStatus.get('isDone')
       && meStatus.get('isDone')
     );
-    const { agents, teams, departments, recentChats, me, dispatch, counts, loadingCounts } = this.props;
+    const { agents, teams, departments, recentChats, me, dispatch, counts } = this.props;
     const sortedChats = recentChats.sort((first, second) => {
       const fDate = Date.parse(first.get('date_last_message'));
       const sDate = Date.parse(second.get('date_last_message'));
@@ -97,7 +94,7 @@ export class List extends React.Component {
               <Item
                 startChat={this.startChat}
                 me={me}
-                counts={loadingCounts ? {} : counts}
+                counts={counts}
                 key={chat.get('id')}
                 chat={chat}
                 teams={teams}

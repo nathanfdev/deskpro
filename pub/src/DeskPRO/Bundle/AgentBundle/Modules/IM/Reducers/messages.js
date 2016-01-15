@@ -9,7 +9,6 @@ const initialState = {
   searchMessages: {},
   loadingMessages: true,
   counts: [],
-  countsLoading: true
 };
 
 export default createReducer(initialState, {
@@ -48,6 +47,8 @@ export default createReducer(initialState, {
         chat.messages.push(payload.data);
         newState = newState.setIn(path, {...chat});
       }
+    } else if (payload.type === 'refresh_counts') {
+      newState = newState.set('counts', payload.data);
     }
     return newState;
   }
