@@ -114,6 +114,10 @@
       color: #cecece;
     }
   }
+
+  input:disabled {
+    color: #cecece;
+  }
 }
 
 .spinner {

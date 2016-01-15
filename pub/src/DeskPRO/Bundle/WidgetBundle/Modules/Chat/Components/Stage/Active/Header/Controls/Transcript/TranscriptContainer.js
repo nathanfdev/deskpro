@@ -14,6 +14,10 @@ import {
   transcriptSentSelector,
   disabledPollingSelector
 } from '../../../../../../Selectors/chat';
+import {
+  requireChatEmailValidationSelector,
+  requireChatLoginSelector
+} from '../../../../../../../Application/Selectors/bootstrap';
 
 @connect(state => ({
   chatId: chatIdSelector(state),
@@ -21,7 +25,9 @@ import {
   authorEmail: authorEmailSelector(state),
   checked: transcriptCheckedSelector(state),
   sent: transcriptSentSelector(state),
-  disabled: disabledPollingSelector(state)
+  disabled: disabledPollingSelector(state),
+  emailValidation: requireChatEmailValidationSelector(state),
+  requireLogin: requireChatLoginSelector(state)
 }))
 export class TranscriptContainer extends React.Component {
 
@@ -33,7 +39,9 @@ export class TranscriptContainer extends React.Component {
     checked: PropTypes.bool,
     disabled: PropTypes.bool,
     sent: PropTypes.bool,
-    children: PropTypes.node
+    children: PropTypes.node,
+    emailValidation: PropTypes.bool,
+    requireLogin: PropTypes.bool
   };
 
   constructor(props) {
@@ -86,7 +94,7 @@ export class TranscriptContainer extends React.Component {
   };
 
   render() {
-    const { authorName, authorEmail, checked, disabled, sent, children } = this.props;
+    const { authorName, authorEmail, checked, disabled, sent, children, emailValidation, requireLogin } = this.props;
     const childProps = children.props;
 
     return (
@@ -115,6 +123,7 @@ export class TranscriptContainer extends React.Component {
                 ? <TranscriptSent email={authorEmail} />
                 : <TranscriptForm name={authorName}
                                   email={authorEmail}
+                                  disabledEmail={emailValidation || requireLogin}
                                   onSubmit={this.onSubmit} />
               }
             </TranscriptPopup>
