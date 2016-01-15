@@ -3,6 +3,7 @@ Feature: Widget Chat
   Background: Fresh database
     Given I install the fresh data set
     Given I have guest portal api session with code "AAAAAAAAAAAAAAA"
+    Given I have authorized portal api session with code "BBBBBBBBBBBBBBB" for "user@deskpro.dev"
 
   # Create a new chat
   Scenario: I try to create a new chat without session code
@@ -91,3 +92,21 @@ Feature: Widget Chat
     And the response should be in JSON
     And the JSON node "errors[0].message" should be equal to "Login required"
     And the JSON node "fields" should not exist
+
+  Scenario Outline: I create a new chat after login
+    Given the setting "portal.chat.email_validation" is set to <email_validation>
+    Given the setting "portal.chat.require_login" is set to <require_login>
+    When I send a POST request to "/portal/api/chats/create?__sid=2-BBBBBBBBBBBBBBB"
+    Then the response status code should be 200
+    And the response should be in JSON
+    And the JSON node "data.person" should be equal to "4"
+    And the JSON node "data.person_name" should be equal to "Ganon User"
+    And the JSON node "data.person_email" should be equal to "user@deskpro.dev"
+    And the JSON node "data.need_validate_email" should be equal to "0"
+
+    Examples:
+      | email_validation | require_login |
+      | 0                | 0             |
+      | 0                | 1             |
+      | 1                | 0             |
+      | 1                | 1             |
