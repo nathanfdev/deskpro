@@ -161,6 +161,14 @@ class CreateChatType extends AbstractType
             return;
         }
 
+        $form   = $event->getForm();
+        $person = $form->getConfig()->getOption('person');
+
+        // Session has person, already logged in, skipping
+        if ($person) {
+            return;
+        }
+
         /** @var ChatConversation $conversation */
         $conversation = $event->getData();
         $conversation->regenerateEmailValidationCode();

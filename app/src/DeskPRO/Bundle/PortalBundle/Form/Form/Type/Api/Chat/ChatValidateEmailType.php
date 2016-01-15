@@ -38,7 +38,6 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class ChatValidateEmailType.
@@ -60,9 +59,6 @@ class ChatValidateEmailType extends AbstractType
     {
         $builder->add('code', 'text', [
             'property_path' => 'email_validation_code',
-            'constraints'   => [
-                new Assert\NotBlank(),
-            ],
         ]);
 
         $builder->get('code')->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onCheckCode']);
@@ -94,12 +90,17 @@ class ChatValidateEmailType extends AbstractType
             return;
         }
 
-        if ($data !== $form->getData()) {
+        /** @var ChatConversation $conversation */
+        $conversation = $form->getParent()->getData();
+
+        if ($conversation->getEmailValidated()) {
+            $form->addError(new FormError('Email is already validated.'));
+        } elseif (!$data) {
+            $form->addError(new FormError('api.error_codes.required'));
+        } elseif ($data !== $form->getData()) {
             $form->addError(new FormError('Wrong email validation code.'));
         } else {
             // Mark conversation email validated
-            /** @var ChatConversation $conversation */
-            $conversation = $form->getParent()->getData();
             $conversation->setEmailValidated(true);
         }
     }

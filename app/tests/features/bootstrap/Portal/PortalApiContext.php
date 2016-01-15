@@ -41,11 +41,37 @@ class PortalApiContext extends BaseContext
 {
     /**
      * @Given I have guest portal api session with code :code
+     *
+     * @param string $code
      */
     public function iHaveGuestPortalApiSessionCode($code)
     {
         $session = new Session();
         $session->setAuth($code);
+
+        $this->em()->persist($session);
+        $this->em()->flush();
+    }
+
+    /**
+     * @Given I have authorized portal api session with code :code for :email
+     *
+     * @param string $code
+     * @param string $email
+     */
+    public function iHaveAuthorizedPortalApiSessionCode($code, $email)
+    {
+        /** @var \Application\DeskPRO\EntityRepository\Person $person_repository */
+        $person_repository = $this->em()->getRepository('DeskPRO:Person');
+
+        $person = $person_repository->findOneByEmail($email);
+        if (!$person) {
+            throw new \RuntimeException(sprintf('Person with email `%s` not found', $email));
+        }
+
+        $session = new Session();
+        $session->setAuth($code);
+        $session->setPerson($person);
 
         $this->em()->persist($session);
         $this->em()->flush();
