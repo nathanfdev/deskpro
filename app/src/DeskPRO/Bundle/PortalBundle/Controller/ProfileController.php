@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\PasswordHistory;
@@ -85,19 +84,21 @@ class ProfileController extends AbstractController
             // check if the person already has an account (or is a contact)
             if ($email = $person->getEmailAddress()) {
                 if ($person_check = $this->get('data.person')->getPersonForEmail($email)) {
-                    if (!$person_check->isUser()) {
+                    // uncomment this conditional if the "set password" email should only be sent to accounts
+                    // that cannot login. accounts that get here that can login are given a form error instead.
+                    //if (!$person_check->isUser()) {
                         // contact, they should now get a "set password" email and a redirection
                         // set the reset code
 
                         $valid_seconds = $this->getBrandSetting('user.password_reset_code_time_limit', 18000);
-                        $reset         = $this->getPersonDataService()->createPasswordReset($person_check, $valid_seconds);
+                    $reset             = $this->getPersonDataService()->createPasswordReset($person_check, $valid_seconds);
 
-                        $this->get('portal_email_sender')->sendPasswordSetLink($person_check, $reset);
+                    $this->get('portal_email_sender')->sendPasswordSetLink($person_check, $reset);
 
-                        return $this->redirectToRoute('portal_user_register_set_password', array(
+                    return $this->redirectToRoute('portal_user_register_set_password', array(
                             'email' => $person_check->getPrimaryEmailAddress(),
                         ));
-                    }
+                    //}
                 }
             }
         }
