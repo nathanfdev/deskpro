@@ -10,7 +10,6 @@ import { FeedbackCommentTableContainer } from './View/Table/FeedbackCommentTable
 import { ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import { PaginationContainer } from './PaginationContainer';
-import { toggleMassAction } from '../../Actions/FeedbackMassActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export class List extends Component {
@@ -69,11 +68,10 @@ export class List extends Component {
 
   render() {
     const { loaded, pagination, selected } = this.props;
-    const checkbox = { count: selected.size, action: toggleMassAction };
 
     return (
       <ListFrameContainer>
-        <ListFrameMenu checkbox={checkbox}>
+        <ListFrameMenu>
           {!selected.size && <ControlBarContainer key="1"/>}
           {selected.size && <MassActionContainer key="2"/>}
         </ListFrameMenu>
