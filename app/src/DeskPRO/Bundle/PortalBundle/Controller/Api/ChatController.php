@@ -57,8 +57,6 @@ class ChatController extends AbstractApiController
      */
     public function createNewChatAction(Request $request)
     {
-        $this->checkRequireLogin($request);
-
         $session      = $this->getApiSession($request);
         $conversation = ChatConversation::newForUserSession($session);
         $form         = $this
@@ -484,22 +482,6 @@ class ChatController extends AbstractApiController
 
         if (!$conversation_session || $request_session->getId() !== $conversation_session->getId()) {
             throw new BadRequestHttpException('wrong_session_code');
-        }
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @throws BadRequestHttpException
-     */
-    protected function checkRequireLogin(Request $request)
-    {
-        $settings_resolver = $this->container->get('settings_resolver');
-        $global_settings   = $settings_resolver->getGlobalSettings();
-        $request_session   = $this->getApiSession($request);
-
-        if ($global_settings->get('portal.chat.require_login') && !$request_session->getPerson()) {
-            throw new BadRequestHttpException('not_authorized');
         }
     }
 

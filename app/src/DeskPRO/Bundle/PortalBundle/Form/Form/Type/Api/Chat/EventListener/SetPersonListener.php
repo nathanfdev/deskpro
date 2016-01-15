@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener;
 
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
+use Application\DeskPRO\Entity\ChatConversation;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\FormEvent;
 
@@ -69,8 +70,9 @@ class SetPersonListener
      */
     public function onSetPerson(FormEvent $event)
     {
-        $data  = $event->getData();
-        $email = !empty($data['email']) ? $data['email'] : null;
+        /** @var ChatConversation $conversation */
+        $conversation = $event->getData();
+        $email        = $conversation->getPersonEmail();
 
         /** @var \Application\DeskPRO\EntityRepository\Person $repository */
         $repository = $this->em->getRepository('DeskPRO:Person');
@@ -80,11 +82,13 @@ class SetPersonListener
             return;
         }
 
-        $event->getForm()->add('person', 'entity', [
-            'class' => 'DeskPRO:Person',
-        ]);
-        $event->setData(array_merge($event->getData(), [
-            'person' => $person->getId(),
-        ]));
+        $entered_name = $conversation->getPersonName();
+        $conversation->setPerson($person);
+
+        // Person entity will overwrite custom person name entered in the form
+        // If user entered custom name then set it back
+        if ($entered_name) {
+            $conversation->setPersonName($entered_name);
+        }
     }
 }

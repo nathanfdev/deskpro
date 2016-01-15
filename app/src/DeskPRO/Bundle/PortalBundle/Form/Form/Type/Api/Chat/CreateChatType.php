@@ -38,6 +38,7 @@ use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\AutoSetSho
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\SetPersonListener;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -86,7 +87,7 @@ class CreateChatType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $email_constraints = [new Assert\Email()];
-        if ($this->user_chat_settings->isPortalEmailValidationEnabled()) {
+        if ($this->user_chat_settings->isPortalEmailValidation() && !$this->user_chat_settings->isPortalRequireLogin()) {
             $email_constraints[] = new Assert\NotBlank();
         }
 
@@ -106,7 +107,8 @@ class CreateChatType extends AbstractType
         $builder->get('email')->addModelTransformer(new TextStringTransformer());
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetPersonEmailFromSession']);
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this->set_person_listener, 'onSetPerson']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onCheckRequireLogin']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this->set_person_listener, 'onSetPerson']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetEmailValidationCode']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetShouldSentTranscript']);
     }
@@ -150,17 +152,30 @@ class CreateChatType extends AbstractType
     public function onSetEmailValidationCode(FormEvent $event)
     {
         // Option is disabled, skipping
-        if (!$this->user_chat_settings->isPortalEmailValidationEnabled()) {
+        if (!$this->user_chat_settings->isPortalEmailValidation()) {
             return;
         }
 
         // Chat requires user to be logged in, skipping
-        if ($this->user_chat_settings->isPortalRequireLoginEnabled()) {
+        if ($this->user_chat_settings->isPortalRequireLogin()) {
             return;
         }
 
         /** @var ChatConversation $conversation */
         $conversation = $event->getData();
         $conversation->regenerateEmailValidationCode();
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onCheckRequireLogin(FormEvent $event)
+    {
+        $form   = $event->getForm();
+        $person = $form->getConfig()->getOption('person');
+
+        if ($this->user_chat_settings->isPortalRequireLogin() && !$person) {
+            $form->addError(new FormError('Login required'));
+        }
     }
 }

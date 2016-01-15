@@ -52,8 +52,8 @@ class WidgetController extends AbstractApiController
 
         return new View([
             'chat' => [
-                'email_validation' => $user_chat_settings->isPortalEmailValidationEnabled(),
-                'require_login'    => $user_chat_settings->isPortalRequireLoginEnabled(),
+                'email_validation' => $user_chat_settings->isPortalEmailValidation(),
+                'require_login'    => $user_chat_settings->isPortalRequireLogin(),
             ],
         ]);
     }
