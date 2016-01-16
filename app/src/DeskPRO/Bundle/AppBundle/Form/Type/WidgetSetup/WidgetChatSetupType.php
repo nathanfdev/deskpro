@@ -97,8 +97,16 @@ class WidgetChatSetupType extends AbstractType
             return;
         }
 
-        if ($data['email_validation'] && !$data['request_user_info']) {
-            $form->get('request_user_info')->addError(new FormError('Email validation is enabled, request user info should be also enabled.'));
+        // Email validation is disabled, skipping
+        if (!$data['email_validation']) {
+            return;
+        }
+
+        if (!$data['request_user_info']) {
+            $form
+                ->get('request_user_info')
+                ->addError(new FormError('Email validation is enabled, request user info should be also enabled.'))
+            ;
         }
     }
 }
