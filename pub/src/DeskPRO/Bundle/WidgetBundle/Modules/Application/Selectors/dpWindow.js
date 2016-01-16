@@ -63,7 +63,7 @@ export const isBubbleSelector = createSelector(
 
 export const liveDemoSelector = createSelector(
   widgetBaseOptionsSelector,
-  options => options.get('liveDemo')
+  options => options.get('live_demo')
 );
 
 export const agentPollingTimeoutSelector = createSelector(

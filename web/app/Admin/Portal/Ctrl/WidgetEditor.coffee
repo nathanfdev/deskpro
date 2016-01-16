@@ -60,7 +60,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     getOptions: (liveDemo = false) ->
       options = $.extend(true, {company: @$scope.company}, @$scope.configuration)
       if (liveDemo)
-        options.widget.liveDemo = true
+        options.widget.live_demo = true
 
       return options
 
