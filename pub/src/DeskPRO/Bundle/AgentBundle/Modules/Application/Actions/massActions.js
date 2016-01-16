@@ -21,10 +21,12 @@ export const resetParam = createAction(
 
 export const submitMassActions = createAction(
   'APP_MASS_ACTIONS_SUBMIT',
-  (jobType, params) => new Promise(resolve =>
+  (jobType, params) => (dispatch) => new Promise(resolve =>
     DpApi.sendPost('DP_API/mass_action', {jobType: jobType, params: params})
       .success(response => {
         console.log(response);
+        dispatch(toggleMassAction());
+        dispatch(cancelMassActions());
         return resolve(response);
       }))
 );

@@ -33,6 +33,7 @@
 namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
 
 use Application\DeskPRO\Entity\CustomDataFeedback;
+use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\AppBundle\Data\MassActions\MassActionsPreprocessorInterface;
 use Doctrine\ORM\EntityManager;
 
@@ -43,6 +44,9 @@ class FeedbackMassActions implements MassActionsPreprocessorInterface
     private $statusCategory;
     private $category;
     private $customCategory;
+    private $addLabels;
+    private $removeLabels;
+    private $firstActiveStatusCategory;
 
     public function __construct(EntityManager $em, array $params)
     {
@@ -65,6 +69,17 @@ class FeedbackMassActions implements MassActionsPreprocessorInterface
                     $customDef            = $this->em->getRepository('DeskPRO:CustomDefFeedback')
                         ->findOneBy(['title' => 'Category']);
                     $this->customCategory->setField($customDef);
+                    break;
+                case 'addLabels':
+                    $this->addLabels = $value;
+                    break;
+                case 'removeLabels':
+                    $this->removeLabels = $value;
+                    break;
+                case 'approve':
+                    $activeStatusCategories = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')
+                        ->findBy(['status_type' => Feedback::STATUS_ACTIVE], ['display_order' => 'ASC']);
+                    $this->firstActiveStatusCategory = $activeStatusCategories[0];
                     break;
             }
         }
@@ -99,6 +114,35 @@ class FeedbackMassActions implements MassActionsPreprocessorInterface
                     break;
                 case 'custom_category':
                     $feedback->addCustomData($this->customCategory);
+                    break;
+                case 'addLabels':
+                    foreach ($this->addLabels as $string) {
+                        $feedback->addLabelByString($string);
+                    }
+                    break;
+                case 'removeLabels':
+                    foreach ($this->removeLabels as $string) {
+                        if ($label = $feedback->findLabelByString($string)) {
+                            $feedback->labels->removeElement($label);
+                        }
+                    }
+                    break;
+                case 'approve':
+                    if ($value) {
+                        if ($feedback->status === Feedback::STATUS_HIDDEN) {
+                            $feedback->setHiddenStatus();
+                            $feedback->setStatus(Feedback::STATUS_ACTIVE);
+                            $feedback->setStatusCategory($this->firstActiveStatusCategory);
+                        }
+                        $feedback->setIsReviewed($value);
+                    }
+                    break;
+                case 'delete':
+                    if ($value) {
+                        $feedback->setStatus(Feedback::STATUS_HIDDEN);
+                        $feedback->setHiddenStatus(Feedback::HIDDEN_STATUS_DELETED);
+                        $feedback->setIsReviewed($value);
+                    }
                     break;
             }
         }
