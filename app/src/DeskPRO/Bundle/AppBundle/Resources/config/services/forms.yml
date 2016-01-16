@@ -140,3 +140,8 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\PersonProfileType
     tags:
         - { name: form.type, alias: person_profile }
+
+  form.widget_setup:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\WidgetSetupType
+    tags:
+       - { name: form.type, alias: widget_setup }

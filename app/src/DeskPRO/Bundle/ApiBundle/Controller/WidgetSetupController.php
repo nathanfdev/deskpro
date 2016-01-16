@@ -31,6 +31,8 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
+use Application\DeskPRO\Entity\DataStore;
+use DeskPRO\Bundle\AppBundle\Error\Exception\InvalidFormException;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\View\View;
@@ -55,8 +57,15 @@ class WidgetSetupController extends BaseController
         $settings_resolver = $this->container->get('settings_resolver');
         $settings          = $settings_resolver->getGlobalSettings();
 
+        $configuration = [];
+        $data_store    = $this->getRepository('DeskPRO:DataStore')->findOneBy(['name' => 'core.apps_chat']);
+        if ($data_store) {
+            $configuration = $data_store->getData('configuration');
+        }
+
         return new View([
-            'url' => [
+            'configuration' => $configuration,
+            'url'           => [
                 'widget_loader' => $asset_package->getUrl('widget_loader.js'),
                 'widget_bundle' => $asset_package->getUrl('DeskPRO_WidgetBundle.js'),
                 'helpdesk'      => $base_router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL),
@@ -77,6 +86,25 @@ class WidgetSetupController extends BaseController
      */
     public function postWidgetConfigurationAction(Request $request)
     {
+        $form = $this->get('form.factory')->createNamedBuilder(null, 'widget_setup')->getForm();
+        $form->submit($request->request->all());
+
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        $data_store = $this->getRepository('DeskPRO:DataStore')->findOneBy(['name' => 'core.apps_chat']);
+        if (!$data_store) {
+            $data_store = new DataStore();
+            $data_store->setName('core.apps_chat');
+        }
+
+        $data_store->setData('configuration', $request->request->all());
+
+        $em = $this->getManager();
+        $em->persist($data_store);
+        $em->flush();
+
         return new View();
     }
 }

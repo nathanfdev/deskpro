@@ -6,22 +6,20 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     init: ->
       @$scope.code = ''
-      @$scope.base_options = {
-        url: {
-          widget_loader: '',
-          widget_bundle: '',
-          helpdesk: ''
-        }
+      @$scope.url = {
+        widget_loader: '',
+        widget_bundle: '',
+        helpdesk: ''
+      };
+      @$scope.company = {
+        name: 'Helpdesk',
+        logo: ''
       }
-      @$scope.custom_options = {
+      @$scope.configuration = {
         widget: {
           type: 'column',
           position: 'right',
           agentPollingTimeout: 10
-        },
-        company: {
-          name: 'Helpdesk',
-          logo: ''
         },
         button: {
           size: 'medium',
@@ -42,24 +40,25 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
             replyType: 'buttons'
           },
           beginMode: 'form',
-          waitingTimeout: 30,
-          agentPollingTimeout: 10
+          waitingTimeout: 30
         }
       }
 
     initialLoad: ->
       @$http.get('/api/v2/widget/setup').success((response) =>
-        @$scope.base_options = response;
-        @$scope.custom_options.company = response.company;
+        @$scope.url = response.url;
+        @$scope.company = $.extend(true, @$scope.company, response.company);
+        @$scope.configuration = $.extend(true, @$scope.configuration, response.configuration);
+
         @initLiveDemo()
       );
 
-      @$scope.$watch('custom_options', =>
+      @$scope.$watch('configuration', =>
         @updateLiveDemo()
       , true)
 
     getOptions: (liveDemo = false) ->
-      options = $.extend(true, {}, @$scope.custom_options)
+      options = $.extend(true, {company: @$scope.company}, @$scope.configuration)
       if (liveDemo)
         options.widget.liveDemo = true
 
@@ -69,12 +68,12 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       """
         <!-- DeskPRO Chat -->
           <script>
-              window.__DP_APP_SRC__ = '#{@$scope.base_options.url.widget_bundle}';
-              window.__DP_URL__ = '#{@$scope.base_options.url.helpdesk}';
+              window.__DP_APP_SRC__ = '#{@$scope.url.widget_bundle}';
+              window.__DP_URL__ = '#{@$scope.url.helpdesk}';
               window.__DP_OPTIONS__ = #{JSON.stringify(options)};
           </script>
 
-          <script type="text/javascript" charset="UTF-8" src="#{@$scope.base_options.url.widget_loader}"></script>
+          <script type="text/javascript" charset="UTF-8" src="#{@$scope.url.widget_loader}"></script>
         <!-- /DeskPRO Chat -->
       """
 
@@ -83,6 +82,11 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     updateChatCode: ->
       @$scope.code = @getCode(@getOptions())
+      @$http({
+        method: 'POST',
+        url: '/api/v2/widget/setup',
+        data: @$scope.configuration
+      })
 
     initLiveDemo: ->
       demoDocument = @getLiveDemoDocument();
