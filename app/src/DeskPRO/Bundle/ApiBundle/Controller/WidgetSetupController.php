@@ -99,7 +99,7 @@ class WidgetSetupController extends BaseController
             $data_store->setName('core.apps_chat');
         }
 
-        $data_store->setData('configuration', $request->request->all());
+        $data_store->setData('configuration', $form->getData());
 
         $em = $this->getManager();
         $em->persist($data_store);
