@@ -19,7 +19,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         widget: {
           type: 'column',
           position: 'right',
-          agentPollingTimeout: 10
+          agent_polling_timeout: 10
         },
         button: {
           size: 'medium',
@@ -32,15 +32,15 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         },
         chat: {
           enabled: true,
-          requestUserInfo: true,
+          request_user_info: true,
           proactive: true,
           popup: {
             title: 'DeskPRO Customer Support',
             message: 'Given a string consisting of printable ASCII chars, produce an output consisting of its unique chars in the original order.',
-            replyType: 'buttons'
+            reply_type: 'buttons'
           },
-          beginMode: 'form',
-          waitingTimeout: 30
+          begin_mode: 'form',
+          waiting_timeout: 30
         }
       }
 

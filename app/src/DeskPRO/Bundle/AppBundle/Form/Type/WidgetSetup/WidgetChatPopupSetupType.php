@@ -55,7 +55,7 @@ class WidgetChatPopupSetupType extends AbstractType
         $builder
             ->add('title', 'text')
             ->add('message', 'text')
-            ->add('replyType', 'choice', [
+            ->add('reply_type', 'choice', [
                 'choices' => [
                     'buttons' => 'Accept Button',
                     'reply'   => 'Reply Form',

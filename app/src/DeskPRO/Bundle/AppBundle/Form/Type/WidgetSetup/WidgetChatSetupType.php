@@ -55,15 +55,15 @@ class WidgetChatSetupType extends AbstractType
     {
         $builder
             ->add('enabled', 'api_boolean')
-            ->add('requestUserInfo', 'api_boolean')
+            ->add('request_user_info', 'api_boolean')
             ->add('proactive', 'api_boolean')
-            ->add('beginMode', 'choice', [
+            ->add('begin_mode', 'choice', [
                 'choices' => [
                     'conversation' => 'Conversation',
                     'form'         => 'Form',
                 ],
             ])
-            ->add('waitingTimeout', 'number')
+            ->add('waiting_timeout', 'number')
             ->add('popup', new WidgetChatPopupSetupType())
         ;
     }

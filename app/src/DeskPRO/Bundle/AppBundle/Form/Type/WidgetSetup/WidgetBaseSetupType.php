@@ -66,7 +66,7 @@ class WidgetBaseSetupType extends AbstractType
                     'right' => 'Right',
                 ],
             ])
-            ->add('agentPollingTimeout', 'number')
+            ->add('agent_polling_timeout', 'number')
         ;
     }
 

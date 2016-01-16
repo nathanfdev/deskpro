@@ -75,7 +75,7 @@ export const reloadOptions = createAction(
       setTimeout(() => dispatch(openWidget()), 350);
     }
 
-    const openChat = () => openChatBeginStage(options.chat.requestUserInfo ? options.chat.beginMode : 'simple');
+    const openChat = () => openChatBeginStage(options.chat.request_user_info ? options.chat.begin_mode : 'simple');
 
     // Display chat enabled changes
     if (chatEnabled !== options.chat.enabled) {
@@ -91,7 +91,7 @@ export const reloadOptions = createAction(
     }
 
     // Display chat begin stage changes
-    if (options.chat.enabled && ((chatBeginMode !== 'simple' && !options.chat.requestUserInfo) || chatBeginMode !== options.chat.beginMode)) {
+    if (options.chat.enabled && ((chatBeginMode !== 'simple' && !options.chat.request_user_info) || chatBeginMode !== options.chat.begin_mode)) {
       openChat();
       if (!widgetOpened) {
         dispatch(openWidget());
@@ -104,7 +104,7 @@ export const reloadOptions = createAction(
     const popupReplyType = helpPopupReplyTypeSelector(state);
     const newPopup = options.chat.popup;
 
-    if (widgetOpened && (popupTitle !== newPopup.title || popupMessage !== newPopup.message || popupReplyType !== newPopup.replyType)) {
+    if (widgetOpened && (popupTitle !== newPopup.title || popupMessage !== newPopup.message || popupReplyType !== newPopup.reply_type)) {
       dispatch(closeWidget());
     }
 
