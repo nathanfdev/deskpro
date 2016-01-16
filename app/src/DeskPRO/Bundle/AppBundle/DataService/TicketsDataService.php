@@ -94,8 +94,9 @@ class TicketsDataService extends AbstractDataService
                         } else {
                             // but if they are an org manager, ignore the org tickets unless created directly by them (they show in org page, filtered below)
                             $qb->leftJoin('t.participants', 'part');
-                            $qb->andWhere('t.person = :person OR (part.person = :person AND t.organization != :organization)');
+                            $qb->andWhere('t.person = :person OR (part.person = :person AND (t.organization != :organization OR t.organization IS NULL))');
                             $qb->setParameter('person', $person)->setParameter('organization', $person->organization);
+                            $sql = $qb->getQuery()->getDQL();
                         }
                     }
                 } else {
@@ -225,8 +226,21 @@ class TicketsDataService extends AbstractDataService
                 if ($person->is_agent) {
                     $qb->andWhere('t.person = :person')->setParameter('person', $person);
                 } else {
-                    $qb->leftJoin('t.participants', 'part');
-                    $qb->andWhere('t.person = :person OR part.person = :person')->setParameter('person', $person);
+                    if ($person->is_agent) {
+                        // agents only their own tickets
+                        $qb->andWhere('t.person = :person')->setParameter('person', $person);
+                    } else {
+                        if (!$person->organization || !$person->organization_manager) {
+                            //  show non-agents the tickets they participate in
+                            $qb->leftJoin('t.participants', 'part');
+                            $qb->andWhere('t.person = :person OR part.person = :person')->setParameter('person', $person);
+                        } else {
+                            // but if they are an org manager, ignore the org tickets unless created directly by them (they show in org page, filtered below)
+                            $qb->leftJoin('t.participants', 'part');
+                            $qb->andWhere('t.person = :person OR (part.person = :person AND (t.organization != :organization OR t.organization IS NULL))');
+                            $qb->setParameter('person', $person)->setParameter('organization', $person->organization);
+                        }
+                    }
                 }
 
                 $qb->distinct(true);
