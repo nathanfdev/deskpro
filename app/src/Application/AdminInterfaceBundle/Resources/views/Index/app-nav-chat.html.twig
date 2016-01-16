@@ -2,7 +2,6 @@
 {% import 'AdminInterfaceBundle:Index:app-nav-macros.html.twig' as nav %}
 {% block nav_content %}
 	{{ nav.list() }}
-		{{ nav.list_item('Setup', ng_href('chat.setup'), 'chat.setup', 'fa-cog') }}
 		{{ nav.list_item('Chat Departments', ng_href('chat.chat_deps'), 'chat.chat_deps', 'fa-briefcase') }}
 		{{ nav.list_item('Fields', ng_href('chat.fields'), 'chat.fields', 'fa-terminal') }}
 		{{ nav.list_item('Labels', ng_href('chat.labels'), 'chat.labels', 'fa-tags') }}

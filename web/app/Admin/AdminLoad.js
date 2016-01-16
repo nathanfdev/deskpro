@@ -152,7 +152,6 @@ define([
   'Admin/Usersources/Ctrl/SyncInformation',
   'Admin/Usersources/Helper/UsersourceTypeDecider',
   'Admin/ChatFields/Ctrl/List',
-  'Admin/ChatSetup/Ctrl/ChatSetup',
   'Admin/ChatDeps/Ctrl/List',
   'Admin/ChatDeps/Ctrl/Edit',
   'Admin/ApiKeys/Ctrl/List',
