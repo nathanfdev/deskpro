@@ -64,6 +64,7 @@ portal:
                 - DpBehat\Portal\RouterContext
                 - DpBehat\Portal\TicketsContext
                 - DpBehat\Portal\GenericContext
+                - DpBehat\Portal\TicketContext
                 - DpBehat\Performance\PerformanceContext
                 - DpBehat\DataSetContext:
                     dataset_manager: @dataset_manager
