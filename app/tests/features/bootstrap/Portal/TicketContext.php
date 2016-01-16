@@ -29,6 +29,7 @@
 namespace DpBehat\Portal;
 
 use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Behat\Gherkin\Node\TableNode;
@@ -44,7 +45,7 @@ class TicketContext extends BasePortalContext
         $tickets = $table->getHash();
 
         foreach ($tickets as $ticket_data) {
-            $person = $this->get('user_details')->getWho($ticket_data['who']);
+            $person = $this->getWho($ticket_data['who']);
             $ticket = new Ticket();
             $ticket->setPerson($person);
             $ticket->setSubject($ticket_data['subject']);
@@ -54,10 +55,16 @@ class TicketContext extends BasePortalContext
             $message->person  = $person;
             $message->ticket  = $ticket;
             $message->message = 'this is the message on the ticket';
-            $org              = $ticket_data['organization'];
+            $org              = isset($ticket_data['organization']) ? $ticket_data['organization'] : null;
             if (strlen(trim($org)) > 0) {
                 if ($organization = $this->getOrganization(trim($org))) {
                     $ticket->setOrganization($organization);
+                }
+            }
+            $participant = isset($ticket_data['participant']) ? $ticket_data['participant'] : null;
+            if (strlen(trim($participant)) > 0) {
+                if ($participant = $this->getWho(trim($participant))) {
+                    $ticket->addParticipantPerson($participant);
                 }
             }
             $ticket->addMessage($message);
@@ -106,6 +113,57 @@ class TicketContext extends BasePortalContext
     }
 
     /**
+     * @Given I go to the ticket veiw page for ticket ID :id
+     */
+    public function iGoToTheTicketVeiwPageForTicketId($id)
+    {
+        $ticket = $this->getTicket($id);
+
+        $this->visitPath('/ticket-view/'.$ticket->getAuth());
+    }
+
+    /**
+     * @Then I should be on the ticket view page for ticket ID :id
+     */
+    public function iShouldBeOnTheTicketViewPageForTicketId($id)
+    {
+        $ticket = $this->getTicket($id);
+
+        $this->assertSession()->addressEquals('/ticket-view/'.$ticket->getAuth());
+        $this->assertSession()->statusCodeEquals(200);
+    }
+
+    /**
+     * @Then :who should be a participant on ticket ID :id
+     */
+    public function shouldBeAParticipantOnTicketId($who, $id)
+    {
+        $ticket = $this->getTicket($id);
+        $who    = $this->getWho($who);
+
+        expect($ticket->isParticipant($who))->toBe(true);
+    }
+
+    /**
+     * @Given :who am not involved with ticket ID :id
+     */
+    public function amNotInvolvedWithTicketId($who, $id)
+    {
+        $ticket = $this->getTicket($id);
+        $who    = $this->getWho($who);
+
+        expect($ticket->isInvolved($who))->toBe(false);
+    }
+
+    /**
+     * @Then I should see the ticket reply form
+     */
+    public function iShouldNotSeeTheReplyForm()
+    {
+        $this->assertSession()->elementExists('css', '#ticket-reply-form');
+    }
+
+    /**
      * @param $org
      *
      * @return Organization|null|object
@@ -113,5 +171,25 @@ class TicketContext extends BasePortalContext
     protected function getOrganization($org)
     {
         return $this->em()->getRepository(Organization::class)->findOneBy(['name' => $org]);
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return Ticket|null|object
+     */
+    protected function getTicket($id)
+    {
+        return $this->em()->getRepository(Ticket::class)->find($id);
+    }
+
+    /**
+     * @param $who
+     *
+     * @return Person
+     */
+    protected function getWho($who)
+    {
+        return $this->get('user_details')->getWho($who);
     }
 }
