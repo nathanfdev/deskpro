@@ -77,6 +77,7 @@ class NewAgentChatMessageGeneratorSpec extends ObjectBehavior
 
     public function it_can_create_messages(NewMessageEvent $event)
     {
+        $this->shouldHaveType('DeskPRO\Bundle\AppBundle\Notification\Message\Generator\Notification\NewAgentChatMessageGenerator');
         //
         // TODO: fix test
         //
@@ -84,15 +85,15 @@ class NewAgentChatMessageGeneratorSpec extends ObjectBehavior
         //$this->createMessages($event);
     }
 
-    public function it_can_check_if_it_can_create_message(
-        NewMessageEvent $event,
-        SystemEventInterface $another_event)
-    {
+    //public function it_can_check_if_it_can_create_message(
+    //    NewMessageEvent $event,
+    //    SystemEventInterface $another_event)
+    //{
         //
         // TODO: fix test
         //
 
         //$this->canCreateMessage($event)->shouldBe(true);
         //$this->canCreateMessage($another_event)->shouldBe(false);
-    }
+    //}
 }
