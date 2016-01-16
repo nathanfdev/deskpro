@@ -32,6 +32,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         },
         chat: {
           enabled: true,
+          require_login: false,
+          email_validation: true,
           request_user_info: true,
           proactive: true,
           popup: {
