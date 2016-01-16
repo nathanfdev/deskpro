@@ -86,6 +86,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         method: 'POST',
         url: '/api/v2/widget/setup',
         data: @$scope.configuration
+        headers: {
+          'X-Agent-Request': 'true'
+        }
       })
 
     initLiveDemo: ->

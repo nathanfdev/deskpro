@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class WidgetButtonSetupType.
@@ -61,7 +62,11 @@ class WidgetButtonSetupType extends AbstractType
                     'large'  => 'L',
                 ],
             ])
-            ->add('name', 'text')
+            ->add('name', 'text', [
+                'constraints' => [
+                    new Assert\NotBlank(),
+                ],
+            ])
             ->add('colors', new WidgetButtonColorsSetupType())
         ;
     }
