@@ -81,7 +81,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       document.getElementById('live-demo').contentDocument
 
     updateChatCode: ->
-      @$scope.code = @getCode(@getOptions())
+      @$scope.code = ''
       @$http({
         method: 'POST',
         url: '/api/v2/widget/setup',
@@ -90,6 +90,11 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
           'X-Agent-Request': 'true'
         }
       })
+      .then(
+        () => @$scope.code = @getCode(@getOptions()),
+        (response) => console.log(response.data)
+      )
+
 
     initLiveDemo: ->
       demoDocument = @getLiveDemoDocument();
