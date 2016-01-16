@@ -4033,12 +4033,13 @@ class TicketController extends AbstractController
             $validator = new \Application\AgentBundle\Validator\NewTicketValidator();
             $layout    = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);
 
-            $layout                          = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $newticket->getMockTicket());
-            $newticket->ticket_fields        = $this->request->request->get('custom_fields', array());
-            $newticket->custom_person_fields = $this->request->request->get('custom_person_fields', array());
-            $newticket->custom_org_fields    = $this->request->request->get('custom_org_fields', array());
-            $newticket->billing_fields       = $this->request->request->get('billing_fields', array());
-            $newticket->status               = $set_status;
+            $layout                   = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $newticket->getMockTicket());
+            $newticket->ticket_fields = $this->request->request->get('custom_fields', array());
+            $newticket->setValuesFromTicket(null, $check_person, $check_person->organization);
+            $newticket->post_custom_person_fields = $this->request->request->get('custom_person_fields', array());
+            $newticket->post_custom_org_fields    = $this->request->request->get('custom_org_fields', array());
+            $newticket->billing_fields            = $this->request->request->get('billing_fields', array());
+            $newticket->status                    = $set_status;
             $validator->setLayout($layout);
             $newticket->setLayout($layout);
 
