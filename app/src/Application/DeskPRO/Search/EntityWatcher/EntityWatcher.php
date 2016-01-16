@@ -148,22 +148,26 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
         }
         foreach ($uow->getScheduledEntityDeletions() as $ent) {
             if (self::isWatchedEntity($ent)) {
-                $ent      = $this->replaceEntity($ent);
-                $delete[] = $ent;
+                $class = get_class($ent);
+                $class = substr($class, strrpos($class, '\\') + 1);
+                $ent   = $this->replaceEntity($ent);
+                if (0 === strpos($class, 'Label')) {
+                    $update[] = $ent;
+                } else {
+                    $delete[] = $ent;
+                }
             }
         }
 
-        if ($update || $delete) {
-            foreach ($update as $ent) {
-                $name                                  = self::getEntityClassName($ent);
-                $id                                    = $ent->getId();
-                $this->updates['updates']["$name-$id"] = array('entity' => $name, 'id' => $id, 'ent' => $ent);
-            }
-            foreach ($delete as $ent) {
-                $name                                  = self::getEntityClassName($ent);
-                $id                                    = $ent->getId();
-                $this->updates['deletes']["$name-$id"] = array('entity' => $name, 'id' => $id, 'ent' => $ent);
-            }
+        foreach ($update as $ent) {
+            $name                                  = self::getEntityClassName($ent);
+            $id                                    = $ent->getId();
+            $this->updates['updates']["$name-$id"] = array('entity' => $name, 'id' => $id, 'ent' => $ent);
+        }
+        foreach ($delete as $ent) {
+            $name                                  = self::getEntityClassName($ent);
+            $id                                    = $ent->getId();
+            $this->updates['deletes']["$name-$id"] = array('entity' => $name, 'id' => $id, 'ent' => $ent);
         }
 
         $this->is_running = false;
