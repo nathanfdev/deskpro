@@ -29,9 +29,9 @@
 /**
  * DeskPRO.
  */
-
 namespace DpBehat\Portal;
 
+use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
@@ -137,6 +137,32 @@ class AuthContext extends BasePortalContext
     }
 
     /**
+     * @Given the organization :org exists
+     */
+    public function theOrganizationExists($org)
+    {
+        $organization = new Organization();
+        $organization->setName($org);
+        $this->em()->persist($organization);
+        $this->em()->flush();
+    }
+
+    /**
+     * @Given :who is an organization manager of :org
+     */
+    public function isAnOrganizationManagerOf($who, $org)
+    {
+        $person = $this->user_details->getWho($who);
+        if (!$organization = $this->getOrganization($org)) {
+            throw new \Exception('cannot find organization "'.$org.'"');
+        }
+
+        $person->setOrganization($organization);
+        $person->organization_manager = true;
+        $this->em()->flush();
+    }
+
+    /**
      * @Given I am authenticated as :who
      */
     public function iAmAuthenticatedAsUser($who)
@@ -161,5 +187,15 @@ class AuthContext extends BasePortalContext
     {
         $this->me = $this->em()->getRepository(Person::class)->find($this->me->getId());
         expect($this->me->name)->toBe($name);
+    }
+
+    /**
+     * @param $org
+     *
+     * @return Organization|null|object
+     */
+    protected function getOrganization($org)
+    {
+        return $this->em()->getRepository(Organization::class)->findOneBy(['name' => $org]);
     }
 }
