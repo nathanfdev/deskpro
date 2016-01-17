@@ -56,7 +56,6 @@ export default createReducer(initialState, {
   },
   [refreshCounts]: async(
     {
-      start: (state) => state.set('loadingCounts', true),
       success: (state, payload) => {
         return state.set('counts', payload);
       },

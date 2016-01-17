@@ -29,9 +29,9 @@
 namespace DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat;
 
 /**
- * Class NewMessageEvent.
+ * Class MarkMessageEvent.
  */
-class NewMessageEvent extends AbstractMessageEvent
+class MarkMessageEvent extends AbstractMessageEvent
 {
-    const EVENT_NAME = 'notification.agent_chat.new_message';
+    const EVENT_NAME = 'notification.agent_chat.mark_message';
 }

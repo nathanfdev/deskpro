@@ -33,6 +33,8 @@ use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\AgentChat\Helper;
 use DeskPRO\Bundle\AppBundle\AgentChat\History;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
+use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\AbstractMessageEvent;
+use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\MarkMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\NewMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
@@ -92,7 +94,7 @@ class RefreshCountsMessageGenerator extends AbstractGenerator
      */
     public function canCreateMessage(SystemEventInterface $event)
     {
-        if ($event instanceof NewMessageEvent) {
+        if ($event instanceof NewMessageEvent || $event instanceof MarkMessageEvent) {
             return true;
         }
 
@@ -100,15 +102,15 @@ class RefreshCountsMessageGenerator extends AbstractGenerator
     }
 
     /**
-     * @param NewMessageEvent $event
+     * @param AbstractMessageEvent $event
      *
      * @return Person[]
      */
-    protected function getTargets(NewMessageEvent $event)
+    protected function getTargets(AbstractMessageEvent $event)
     {
         $message = $this->getChatMessage($event);
         $targets = [];
-        if (!$message->getChat()->getType() === 'everyone') {
+        if ($message->getChat()->getType() !== 'everyone') {
             foreach ($message->getChat()->getPersonList() as $target) {
                 $targets[] = $target;
             }
@@ -132,11 +134,11 @@ class RefreshCountsMessageGenerator extends AbstractGenerator
     }
 
     /**
-     * @param NewMessageEvent $event
+     * @param AbstractMessageEvent $event
      *
      * @return AgentChatMessage
      */
-    protected function getChatMessage(NewMessageEvent $event)
+    protected function getChatMessage(AbstractMessageEvent $event)
     {
         $messageRepo = $this->em->getRepository('App:AgentChatMessage');
         /** @var AgentChatMessage $message */
