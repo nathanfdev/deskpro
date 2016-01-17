@@ -108,9 +108,13 @@ class RefreshCountsMessageGenerator extends AbstractGenerator
     {
         $message = $this->getChatMessage($event);
         $targets = [];
-        foreach ($message->getChat()->getPersonList() as $target) {
-            if (is_object($this->getUser()) && $target->getId() !== $this->getUser()->getId()) {
+        if (!$message->getChat()->getType() === 'everyone') {
+            foreach ($message->getChat()->getPersonList() as $target) {
                 $targets[] = $target;
+            }
+        } else {
+            foreach ($this->em->getRepository(Person::class)->findBy(['is_agent' => true]) as $agent) {
+                $targets[] = $agent;
             }
         }
 
