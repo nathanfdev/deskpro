@@ -124,7 +124,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @$http({
         method: 'PUT',
         url: '/portal/api/style/edit-theme-set/template-sources?template=' + @selected_template,
-        data: {code: @selected_template_code}
+        data: angular.toJson({code: @selected_template_code})
       })
       .error(@serverError)
 

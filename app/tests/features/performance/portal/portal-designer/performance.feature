@@ -1,4 +1,3 @@
-@performance
 Feature: Portal designer performance
 
   Scenario: I recompile Portal styles
