@@ -29,24 +29,22 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\GlobalSettings;
 
-use DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings\WidgetBrandSetupType;
-use DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\GlobalSettings\WidgetGlobalSetupType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
- * Class WidgetSetupType.
+ * Class WidgetGlobalSetupType.
  */
-class WidgetSetupType extends AbstractType
+class WidgetGlobalSetupType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function getName()
     {
-        return 'widget_setup';
+        return 'widget_global_setup';
     }
 
     /**
@@ -54,9 +52,6 @@ class WidgetSetupType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('global', new WidgetGlobalSetupType())
-            ->add('brand', new WidgetBrandSetupType())
-        ;
+        $builder->add('chat', new WidgetChatSetupType());
     }
 }

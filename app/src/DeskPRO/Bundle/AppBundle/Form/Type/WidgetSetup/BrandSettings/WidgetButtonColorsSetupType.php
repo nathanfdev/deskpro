@@ -29,24 +29,22 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class WidgetButtonSetupType.
+ * Class WidgetButtonColorsSetupType.
  */
-class WidgetButtonSetupType extends AbstractType
+class WidgetButtonColorsSetupType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function getName()
     {
-        return 'widget_button_setup';
+        return 'widget_button_colors_setup';
     }
 
     /**
@@ -55,26 +53,9 @@ class WidgetButtonSetupType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('size', 'choice', [
-                'choices' => [
-                    'small'  => 'S',
-                    'medium' => 'M',
-                    'large'  => 'L',
-                ],
-            ])
-            ->add('name', 'text', [
-                'constraints' => [
-                    new Assert\NotBlank(),
-                ],
-            ])
-            ->add('colors', new WidgetButtonColorsSetupType())
+            ->add('background', 'text')
+            ->add('text', 'text')
+            ->add('border', 'text')
         ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
     }
 }

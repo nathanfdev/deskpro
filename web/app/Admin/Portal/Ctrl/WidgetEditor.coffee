@@ -15,7 +15,13 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         name: 'Helpdesk',
         logo: ''
       }
-      @$scope.configuration = {
+      @$scope.global_settings = {
+        chat: {
+          require_login: false,
+          email_validation: false
+        }
+      }
+      @$scope.brand_settings = {
         widget: {
           type: 'column',
           position: 'right',
@@ -32,8 +38,6 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         },
         chat: {
           enabled: true,
-          require_login: false,
-          email_validation: true,
           request_user_info: true,
           proactive: true,
           popup: {
@@ -48,19 +52,22 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     initialLoad: ->
       @$http.get('/api/v2/widget/setup').success((response) =>
-        @$scope.url = response.url;
-        @$scope.company = $.extend(true, @$scope.company, response.company);
-        @$scope.configuration = $.extend(true, @$scope.configuration, response.configuration);
+        data = response.data
+
+        @$scope.url = data.url;
+        @$scope.company = $.extend(true, @$scope.company, data.company);
+        @$scope.global_settings = $.extend(true, @$scope.global_settings, data.settings.global);
+        @$scope.brand_settings = $.extend(true, @$scope.brand_settings, data.settings.brand);
 
         @initLiveDemo()
       );
 
-      @$scope.$watch('configuration', =>
+      @$scope.$watch('brand_settings', =>
         @updateLiveDemo()
       , true)
 
     getOptions: (liveDemo = false) ->
-      options = $.extend(true, {company: @$scope.company}, @$scope.configuration)
+      options = $.extend(true, {company: @$scope.company}, @$scope.brand_settings)
       if (liveDemo)
         options.widget.live_demo = true
 
@@ -87,7 +94,10 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @$http({
         method: 'POST',
         url: '/api/v2/widget/setup',
-        data: @$scope.configuration
+        data: {
+          global: @$scope.global_settings,
+          brand: @$scope.brand_settings
+        }
         headers: {
           'X-Agent-Request': 'true'
         }

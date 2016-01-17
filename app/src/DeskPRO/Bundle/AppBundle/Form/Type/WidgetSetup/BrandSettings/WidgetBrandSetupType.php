@@ -29,22 +29,22 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
- * Class WidgetChatPopupSetupType.
+ * Class WidgetBrandSetupType.
  */
-class WidgetChatPopupSetupType extends AbstractType
+class WidgetBrandSetupType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function getName()
     {
-        return 'widget_chat_popup_setup';
+        return 'widget_brand_setup';
     }
 
     /**
@@ -53,14 +53,9 @@ class WidgetChatPopupSetupType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', 'text')
-            ->add('message', 'text')
-            ->add('reply_type', 'choice', [
-                'choices' => [
-                    'buttons' => 'Accept Button',
-                    'reply'   => 'Reply Form',
-                ],
-            ])
+            ->add('widget', new WidgetBaseSetupType())
+            ->add('button', new WidgetButtonSetupType())
+            ->add('chat', new WidgetChatSetupType())
         ;
     }
 }

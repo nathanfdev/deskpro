@@ -10,7 +10,7 @@
                     <li>
                         <label class="option-label">Button size:</label>
                         <div class="option-group">
-                            <select ng-model="configuration.button.size">
+                            <select ng-model="brand_settings.button.size">
                                 <option value="small">S</option>
                                 <option value="medium">M</option>
                                 <option value="large">L</option>
@@ -20,7 +20,7 @@
                     <li>
                         <label class="option-label">Button word:</label>
                         <div class="option-group">
-                            <input type="text" ng-model="configuration.button.name" />
+                            <input type="text" ng-model="brand_settings.button.name" />
                         </div>
                     </li>
                     <li>
@@ -28,7 +28,7 @@
                         <ul class="option-group option-group-row">
                             <li>
                                 <spectrum-colorpicker
-                                    ng-model="configuration.button.colors.background"
+                                    ng-model="brand_settings.button.colors.background"
                                     format="'hex'"
                                     class="color-picker"
                                     options="{
@@ -42,7 +42,7 @@
                             </li>
                             <li>
                                 <spectrum-colorpicker
-                                    ng-model="configuration.button.colors.text"
+                                    ng-model="brand_settings.button.colors.text"
                                     format="'hex'"
                                     class="color-picker"
                                     options="{
@@ -56,7 +56,7 @@
                             </li>
                             <li>
                                 <spectrum-colorpicker
-                                    ng-model="configuration.button.colors.border"
+                                    ng-model="brand_settings.button.colors.border"
                                     format="'hex'"
                                     class="color-picker"
                                     options="{
@@ -74,11 +74,11 @@
                         <label class="option-label">Position:</label>
                         <ul class="option-group option-group-inline">
                             <li>
-                                <input type="radio" ng-model="configuration.widget.position" value="right" />
+                                <input type="radio" ng-model="brand_settings.widget.position" value="right" />
                                 <label>Right</label>
                             </li>
                             <li>
-                                <input type="radio" ng-model="configuration.widget.position" value="left" />
+                                <input type="radio" ng-model="brand_settings.widget.position" value="left" />
                                 <label>Left</label>
                             </li>
                         </ul>
@@ -87,11 +87,11 @@
                         <label class="option-label">Widget Size:</label>
                         <ul class="option-group option-group-inline">
                             <li>
-                                <input type="radio" ng-model="configuration.widget.type" value="column" />
+                                <input type="radio" ng-model="brand_settings.widget.type" value="column" />
                                 <label>Column</label>
                             </li>
                             <li>
-                                <input type="radio" ng-model="configuration.widget.type" value="bubble" />
+                                <input type="radio" ng-model="brand_settings.widget.type" value="bubble" />
                                 <label>Corner</label>
                             </li>
                         </ul>
@@ -103,20 +103,30 @@
                 <h2 class="with-divider form-header"><span>Chat Settings</span></h2>
 
                 <div class="switcher">
-                    <button dp-toggle-switch ng-model="configuration.chat.enabled"></button>
+                    <button dp-toggle-switch ng-model="brand_settings.chat.enabled"></button>
                     <h4><span class="title-text">Enable / Disable Chat</span></h4>
                 </div>
 
                 <div class="switcher">
-                    <button dp-toggle-switch ng-model="configuration.chat.request_user_info"></button>
+                    <button dp-toggle-switch ng-model="global_settings.chat.require_login"></button>
+                    <h4><span class="title-text">Require login</span></h4>
+                </div>
+
+                <div class="switcher">
+                    <button dp-toggle-switch ng-model="global_settings.chat.email_validation"></button>
+                    <h4><span class="title-text">Email validation</span></h4>
+                </div>
+
+                <div class="switcher">
+                    <button dp-toggle-switch ng-model="brand_settings.chat.request_user_info"></button>
                     <h4><span class="title-text">Request Name/Email before Chat Commences</span></h4>
                 </div>
 
-                <ul class="options" ng-if="configuration.chat.request_user_info">
+                <ul class="options" ng-if="brand_settings.chat.request_user_info">
                     <li>
                         <label class="option-label">Begin chat mode:</label>
                         <div class="option-group">
-                            <select ng-model="configuration.chat.begin_mode">
+                            <select ng-model="brand_settings.chat.begin_mode">
                                 <option value="conversation">Conversation Style</option>
                                 <option value="form">Form Style</option>
                             </select>
@@ -125,27 +135,27 @@
                 </ul>
 
                 <div class="switcher">
-                    <button dp-toggle-switch ng-model="configuration.chat.proactive"></button>
+                    <button dp-toggle-switch ng-model="brand_settings.chat.proactive"></button>
                     <h4><span class="title-text">Proactive Chat</span></h4>
                 </div>
 
-                <ul class="options" ng-if="configuration.chat.proactive">
+                <ul class="options" ng-if="brand_settings.chat.proactive">
                     <li>
                         <label class="option-label">Agent Title:</label>
                         <div class="option-group">
-                            <input type="text" ng-model="configuration.chat.popup.title" ng-disabled="!configuration.chat.enabled" />
+                            <input type="text" ng-model="brand_settings.chat.popup.title" ng-disabled="!brand_settings.chat.enabled" />
                         </div>
                     </li>
                     <li>
                         <label class="option-label">Agent Message:</label>
                         <div class="option-group">
-                            <textarea ng-model="configuration.chat.popup.message" ng-disabled="!configuration.chat.enabled"></textarea>
+                            <textarea ng-model="brand_settings.chat.popup.message" ng-disabled="!brand_settings.chat.enabled"></textarea>
                         </div>
                     </li>
                     <li>
                         <label class="option-label">Reply Form Type:</label>
                         <div class="option-group">
-                            <select ng-model="configuration.chat.popup.reply_type" ng-disabled="!configuration.chat.enabled">
+                            <select ng-model="brand_settings.chat.popup.reply_type" ng-disabled="!brand_settings.chat.enabled">
                                 <option value="buttons">Accept Button</option>
                                 <option value="reply">Reply Form</option>
                             </select>
@@ -154,13 +164,13 @@
                     <li>
                         <label class="option-label">Waiting Timeout:</label>
                         <div class="option-group">
-                            <input type="text" ng-model="configuration.chat.waiting_timeout" ng-disabled="!configuration.chat.enabled" />
+                            <input type="text" ng-model="brand_settings.chat.waiting_timeout" ng-disabled="!brand_settings.chat.enabled" />
                         </div>
                     </li>
                     <li>
                         <label class="option-label">Online agent polling timeout:</label>
                         <div class="option-group">
-                            <input type="text" ng-model="configuration.chat.agent_polling_timeout" ng-disabled="!configuration.chat.enabled" />
+                            <input type="text" ng-model="brand_settings.chat.agent_polling_timeout" ng-disabled="!brand_settings.chat.enabled" />
                         </div>
                     </li>
                 </ul>
@@ -172,11 +182,11 @@
                     <li>
                         <ul class="option-group no-label option-group-inline float-left">
                             <li>
-                                <input type="radio" ng-model="configuration.ticket_department" value="default" />
+                                <input type="radio" ng-model="brand_settings.ticket_department" value="default" />
                                 <label>Default Department</label>
 
                                 <div class="sub-options">
-                                    <select ng-model="configuration.ticket_department">
+                                    <select ng-model="brand_settings.ticket_department">
                                         <option value="S">S</option>
                                         <option value="M">M</option>
                                         <option value="L">L</option>
@@ -184,7 +194,7 @@
                                 </div>
                             </li>
                             <li>
-                                <input type="radio" ng-model="configuration.ticket_department" value="select" />
+                                <input type="radio" ng-model="brand_settings.ticket_department" value="select" />
                                 <label>User Selects Department</label>
                             </li>
                         </ul>

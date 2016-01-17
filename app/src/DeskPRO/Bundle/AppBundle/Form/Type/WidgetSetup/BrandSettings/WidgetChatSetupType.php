@@ -29,14 +29,10 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormError;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Class WidgetChatSetupType.
@@ -58,8 +54,6 @@ class WidgetChatSetupType extends AbstractType
     {
         $builder
             ->add('enabled', 'api_boolean')
-            ->add('require_login', 'api_boolean')
-            ->add('email_validation', 'api_boolean')
             ->add('request_user_info', 'api_boolean')
             ->add('proactive', 'api_boolean')
             ->add('begin_mode', 'choice', [
@@ -71,42 +65,5 @@ class WidgetChatSetupType extends AbstractType
             ->add('waiting_timeout', 'number')
             ->add('popup', new WidgetChatPopupSetupType())
         ;
-
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onRequireUserInfoEnabled']);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-    }
-
-    /**
-     * If email validation is on then request user info should be enabled.
-     *
-     * @param FormEvent $event
-     */
-    public function onRequireUserInfoEnabled(FormEvent $event)
-    {
-        $form = $event->getForm();
-        $data = $event->getData();
-
-        // If require login is enabled, skipping check, always simple
-        if ($data['require_login']) {
-            return;
-        }
-
-        // Email validation is disabled, skipping
-        if (!$data['email_validation']) {
-            return;
-        }
-
-        if (!$data['request_user_info']) {
-            $form
-                ->get('request_user_info')
-                ->addError(new FormError('Email validation is enabled, request user info should be also enabled.'))
-            ;
-        }
     }
 }

@@ -29,23 +29,22 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class WidgetBaseSetupType.
+ * Class WidgetChatPopupSetupType.
  */
-class WidgetBaseSetupType extends AbstractType
+class WidgetChatPopupSetupType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function getName()
     {
-        return 'widget_base_setup';
+        return 'widget_chat_popup_setup';
     }
 
     /**
@@ -54,26 +53,14 @@ class WidgetBaseSetupType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('type', 'choice', [
+            ->add('title', 'text')
+            ->add('message', 'text')
+            ->add('reply_type', 'choice', [
                 'choices' => [
-                    'column' => 'Column',
-                    'bubble' => 'Corner',
+                    'buttons' => 'Accept Button',
+                    'reply'   => 'Reply Form',
                 ],
             ])
-            ->add('position', 'choice', [
-                'choices' => [
-                    'left'  => 'Left',
-                    'right' => 'Right',
-                ],
-            ])
-            ->add('agent_polling_timeout', 'number')
         ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
     }
 }

@@ -29,24 +29,22 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings;
 
-use DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings\WidgetBrandSetupType;
-use DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\GlobalSettings\WidgetGlobalSetupType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
- * Class WidgetSetupType.
+ * Class WidgetBaseSetupType.
  */
-class WidgetSetupType extends AbstractType
+class WidgetBaseSetupType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function getName()
     {
-        return 'widget_setup';
+        return 'widget_base_setup';
     }
 
     /**
@@ -55,8 +53,19 @@ class WidgetSetupType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('global', new WidgetGlobalSetupType())
-            ->add('brand', new WidgetBrandSetupType())
+            ->add('type', 'choice', [
+                'choices' => [
+                    'column' => 'Column',
+                    'bubble' => 'Corner',
+                ],
+            ])
+            ->add('position', 'choice', [
+                'choices' => [
+                    'left'  => 'Left',
+                    'right' => 'Right',
+                ],
+            ])
+            ->add('agent_polling_timeout', 'number')
         ;
     }
 }
