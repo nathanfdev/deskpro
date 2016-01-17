@@ -35,6 +35,9 @@ use Application\DeskPRO\Cache\CacheAdapterInterface;
 use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\Entity\Brand;
 
+/**
+ * Class SettingsResolver.
+ */
 class SettingsResolver
 {
     const CACHE_KEY_GLOBAL       = 'settings.bag.global';
@@ -63,14 +66,24 @@ class SettingsResolver
      */
     private $brandSettingsLoader;
 
+    /**
+     * Constructor.
+     *
+     * @param array                   $loaders
+     * @param CacheAdapterInterface   $cache
+     * @param SettingsLoaderInterface $brandSettingsLoader
+     */
     public function __construct(array $loaders, CacheAdapterInterface $cache, SettingsLoaderInterface $brandSettingsLoader)
     {
         $this->loaders             = $loaders;
         $this->cache               = new ConvenientCache($cache);
-        $this->virtual_settings    = array();
+        $this->virtual_settings    = [];
         $this->brandSettingsLoader = $brandSettingsLoader;
     }
 
+    /**
+     * @return SettingsLoaderInterface[]|array
+     */
     public function getLoaders()
     {
         return $this->loaders;
@@ -93,7 +106,7 @@ class SettingsResolver
         return $this->cache->get(
             static::CACHE_KEY_GLOBAL,
             function () use ($that, $force, $virtual_settings) {
-                $global_settings_array = array();
+                $global_settings_array = [];
 
                 foreach ($that->getLoaders() as $loader) {
                     $global_settings_array = array_merge($global_settings_array, $loader->load($force));
@@ -140,7 +153,7 @@ class SettingsResolver
             function () use ($brand_settings_resolver, $global_settings, $brand_id, $force) {
                 $global_settings_array = $global_settings->toArray();
 
-                $brand_settings = $brand_id ? $brand_settings_resolver->load($force, $brand_id) : array();
+                $brand_settings = $brand_id ? $brand_settings_resolver->load($force, $brand_id) : [];
                 $brand_settings_array = array_merge($global_settings_array, $brand_settings);
 
                 return new SettingsBag($brand_settings_array);
@@ -166,7 +179,7 @@ class SettingsResolver
             static::CACHE_KEY_DEFAULT,
             function () use ($that, $force, $virtual_settings) {
 
-                $default_settings = array();
+                $default_settings = [];
 
                 $loaders = $that->getLoaders();
                 if (count($loaders) > 0) {
@@ -183,6 +196,10 @@ class SettingsResolver
         );
     }
 
+    /**
+     * @param $setting
+     * @param $callable
+     */
     public function setVirtual($setting, $callable)
     {
         if (!is_callable($callable)) {
