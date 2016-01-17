@@ -1,5 +1,6 @@
 import * as actions from '../Actions/messagesActions';
 import { newActionAlerts } from '../../Application/Actions/notificationActions';
+import { refreshCounts } from '../Actions/messagesActions';
 import { createReducer } from 'Ampliflux';
 import { async } from 'Ampliflux/reducers/handlers';
 import Immutable from 'immutable';
@@ -8,7 +9,8 @@ const initialState = {
   chatMessages: {},
   searchMessages: {},
   loadingMessages: true,
-  counts: [],
+  counts: {},
+  loadingCounts: true
 };
 
 export default createReducer(initialState, {
@@ -51,5 +53,14 @@ export default createReducer(initialState, {
       newState = newState.set('counts', payload.data);
     }
     return newState;
-  }
+  },
+  [refreshCounts]: async(
+    {
+      start: (state) => state.set('loadingCounts', true),
+      success: (state, payload) => {
+        return state.set('counts', payload);
+      },
+      done: (state) => state.set('loadingCounts', false)
+    }
+  )
 });

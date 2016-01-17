@@ -8,7 +8,7 @@ import { Item } from './Item';
 // chats
 import * as actions from '../../Actions/chatsActions';
 import * as chatActions from '../../RecordStores/Actions/chatsActions';
-// import * as messagesActions from '../../Actions/messagesActions';
+import * as messagesActions from '../../Actions/messagesActions';
 import { recentChatsSelector, recentChatsStatusSelector } from '../../RecordStores/Selectors/chats';
 
 // agents
@@ -30,6 +30,7 @@ import { myDepartmentsSelector, myDepartmentsStatusSelector } from 'DeskPRO/Bund
   recentChats: recentChatsSelector(state),
   current: state.IM.chats.get('current'),
   counts: state.IM.messages.get('counts'),
+  loadingCounts: state.IM.messages.get('loadingCounts'),
   teamsStatus: myAgentTeamsStatusSelector(state),
   agentsStatus: agentsStatusSelector(state),
   departmentsStatus: myDepartmentsStatusSelector(state),
@@ -46,6 +47,7 @@ export class List extends React.Component {
     recentChats: PropTypes.object.isRequired,
     current: PropTypes.object.isRequired,
     counts: PropTypes.object.isRequired,
+    loadingCounts: PropTypes.bool.isRequired,
     teamsStatus: PropTypes.object.isRequired,
     agentsStatus: PropTypes.object.isRequired,
     departmentsStatus: PropTypes.object.isRequired,
@@ -55,15 +57,22 @@ export class List extends React.Component {
 
   constructor(props) {
     super(props);
-    // const interval = setInterval(() => this.props.dispatch(messagesActions.refreshCounts()), 1000);
     this.state = {
-      // interval: interval,
       stickers: {}
     };
   }
 
   componentWillMount() {
     this.props.dispatch(chatActions.loadRecentChats());
+    this.refreshCounts();
+  }
+
+  refreshCounts() {
+    if (this.props.recentChatsStatus.get('isDone')) {
+      this.props.dispatch(messagesActions.refreshCounts());
+    } else {
+      setTimeout(this.refreshCounts.bind(this), 2000);
+    }
   }
 
   startChat = (id, type, chatId) => {
@@ -71,7 +80,7 @@ export class List extends React.Component {
   };
 
   render() {
-    const { recentChatsStatus, agentsStatus, teamsStatus, departmentsStatus, meStatus } = this.props;
+    const { recentChatsStatus, agentsStatus, teamsStatus, departmentsStatus, meStatus, loadingCounts } = this.props;
     const loaded = (
       recentChatsStatus.get('isDone')
       && agentsStatus.get('isDone')
@@ -95,6 +104,7 @@ export class List extends React.Component {
                 startChat={this.startChat}
                 me={me}
                 counts={counts}
+                loadingCounts={loadingCounts}
                 key={chat.get('id')}
                 chat={chat}
                 teams={teams}
