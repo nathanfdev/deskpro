@@ -29,21 +29,12 @@ export const addMessage = createAction(
 
 export const refreshCounts = createAction(
   'IM_COUNT_MESSAGES',
-  () => (dispatch) => {
+  () => {
     return new Promise(
       (resolve, reject) => {
         return IM.loadMessagesCount()
           .success((response) => {
-            //const records = {};
-            //const ids = [];
-            //console.log(response.data);
-            //Object.keys(response.data).map((key) => {
-            //  const item = response.data[key];
-            //  ids.push(parseInt(item.chat_id, 10));
-            //  records[item.chat_id] = item.chat;
-            //});
-            //dispatch(releaseChats('recent', ids));
-            //dispatch(setChatsRequest('recent', records, ids));
+
 
             return resolve(response.data);
           })

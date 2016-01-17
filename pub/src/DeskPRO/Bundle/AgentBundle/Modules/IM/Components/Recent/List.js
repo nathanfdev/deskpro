@@ -67,6 +67,24 @@ export class List extends React.Component {
     this.refreshCounts();
   }
 
+  componentWillReceiveProps(props) {
+    const oldProps = this.props;
+    if (!props.loadingCounts && props.counts && props.counts !== oldProps.counts) {
+      const { dispatch } = this.props;
+      const records = {};
+      const ids = [];
+      console.log(props.counts);
+      Object.keys(props.counts).map((key) => {
+        const item = props.counts[key];
+        ids.push(parseInt(item.chat_id, 10));
+        records[item.chat_id] = item.chat;
+      });
+      dispatch(chatActions.releaseChats('recent', ids));
+      dispatch(chatActions.setChatsRequest('recent', records, ids));
+    }
+    this.props = props;
+  }
+
   refreshCounts() {
     if (this.props.recentChatsStatus.get('isDone')) {
       this.props.dispatch(messagesActions.refreshCounts());
