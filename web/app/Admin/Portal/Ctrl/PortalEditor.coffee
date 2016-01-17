@@ -17,6 +17,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @template_options = []
       @selected_template = null
       @selected_template_code = ''
+      @selected_template_code_loaded = false
       @preview_as_expanded = false
       @preview_as = 'myself'
       @preview_as_email = null
@@ -117,7 +118,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     editTemplate: () =>
       @$http.get('/portal/api/style/edit-theme-set/template-sources?template=' + @selected_template).success(
-        (code) => @selected_template_code = angular.fromJson(code)
+        (code) => @selected_template_code = angular.fromJson(code); @selected_template_code_loaded = true
       )
 
     closeTemplateEditor: () =>
@@ -130,6 +131,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
       @selected_template = null
       @selected_template_code = null
+      @selected_template_code_loaded = false
 
     loadAdvancedEdits: (success) ->
       @$http.get('/portal/api/style/edit-theme-set/advanced-edits').success(
