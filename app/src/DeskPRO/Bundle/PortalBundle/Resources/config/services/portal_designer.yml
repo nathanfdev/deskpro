@@ -34,7 +34,7 @@ services:
     class: DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler
     arguments:
       - @doctrine.orm.default_entity_manager
-      - @=service('brand_stack').getCurrentEditThemeSet()
+      - @=service('dp.portal.designer.brand_theme_manager').getCurrentEditThemeSet()
       - '../pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-style.scss'
       - @=service('dp.portal.designer.advanced_edits_manager').getEditThemeSetScss()
 
