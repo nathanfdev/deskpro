@@ -52,6 +52,11 @@ class GlobalsArrayLoader implements SettingsLoaderInterface
      */
     private $cache;
 
+    /**
+     * Constructor.
+     *
+     * @param CacheAdapterInterface $cache
+     */
     public function __construct(CacheAdapterInterface $cache)
     {
         $this->cacheKey = static::CACHE_KEY;
@@ -74,7 +79,7 @@ class GlobalsArrayLoader implements SettingsLoaderInterface
                     return $GLOBALS['DP_CONFIG']['SETTINGS'];
                 }
 
-                return array();
+                return [];
             }
         );
     }
