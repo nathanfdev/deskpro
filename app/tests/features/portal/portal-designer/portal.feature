@@ -72,5 +72,10 @@ Feature: Serving custom data on the portal
     When I send a GET request to "/en"
     Then the response should contain "var custom_js = 1 + 1;"
 
-  # ToDo: check assets are served when file upload step is done
-
+  Scenario: I retrieve a custom asset
+    Given I am authenticated as admin
+    And I send the "text.txt" file as "file" to "/portal/api/style/edit-theme-set/assets"
+    And I send a GET request to "/portal/api/style/edit-theme-set/commit"
+    When I send a GET request to just uploaded file URL
+    Then the response status code should be 200
+    And the response should contain "Test text file"
