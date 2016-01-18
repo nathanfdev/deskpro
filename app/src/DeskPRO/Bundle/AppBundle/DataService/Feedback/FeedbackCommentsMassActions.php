@@ -32,22 +32,56 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
 
+use Application\DeskPRO\Entity\FeedbackComment;
 use DeskPRO\Bundle\AppBundle\Data\MassActions\MassActionsPreprocessorInterface;
+use Doctrine\ORM\EntityManager;
 
-class FeedbackCommentMassActions implements MassActionsPreprocessorInterface
+class FeedbackCommentsMassActions implements MassActionsPreprocessorInterface
 {
+    private $em;
+    private $params;
+
+    public function __construct(EntityManager $em, array $params)
+    {
+        $this->em     = $em;
+        $this->params = $params;
+    }
+
     public function prepareActions()
     {
-        // TODO: Implement prepareActions() method.
+        return true;
     }
 
     public function selectEntities()
     {
-        // TODO: Implement selectEntities() method.
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->select('comment')
+            ->from('DeskPRO:FeedbackComment', 'comment')
+            ->where('comment.id IN (:ids)')
+            ->setParameter('ids', $this->params['ids']);
+
+        return $qb->getQuery()->getResult();
     }
 
-    public function prepareEntity($entity)
+    /**
+     * @param \Application\DeskPRO\Entity\FeedbackComment $comment
+     */
+    public function prepareEntity($comment)
     {
-        // TODO: Implement prepareEntity() method.
+        foreach ($this->params['actions'] as $key => $value) {
+            switch ($key) {
+                case 'approve':
+                    if ($value) {
+                        $comment->setStatus(FeedbackComment::STATUS_VISIBLE);
+                    }
+                    break;
+                case 'delete':
+                    if ($value) {
+                        $comment->setStatus(FeedbackComment::STATUS_DELETED);
+                    }
+                    break;
+            }
+        }
     }
 }
