@@ -48,13 +48,12 @@ class WidgetController extends AbstractApiController
      */
     public function getWidgetSettingsAction()
     {
-        $settings_resolver = $this->container->get('settings_resolver');
-        $global_settings   = $settings_resolver->getGlobalSettings();
+        $user_chat_settings = $this->container->get('user_chat.settings');
 
         return new View([
             'chat' => [
-                'email_validation' => $global_settings->get('portal.chat.email_validation'),
-                'require_login'    => $global_settings->get('portal.chat.require_login'),
+                'email_validation' => $user_chat_settings->isPortalEmailValidation(),
+                'require_login'    => $user_chat_settings->isPortalRequireLogin(),
             ],
         ]);
     }

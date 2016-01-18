@@ -6,22 +6,26 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     init: ->
       @$scope.code = ''
-      @$scope.base_options = {
-        url: {
-          widget_loader: '',
-          widget_bundle: '',
-          helpdesk: ''
+      @$scope.url = {
+        widget_loader: '',
+        widget_bundle: '',
+        helpdesk: ''
+      };
+      @$scope.company = {
+        name: 'Helpdesk',
+        logo: ''
+      }
+      @$scope.global_settings = {
+        chat: {
+          require_login: false,
+          email_validation: false
         }
       }
-      @$scope.custom_options = {
+      @$scope.brand_settings = {
         widget: {
           type: 'column',
           position: 'right',
-          agentPollingTimeout: 10
-        },
-        company: {
-          name: 'Helpdesk',
-          logo: ''
+          agent_polling_timeout: 10
         },
         button: {
           size: 'medium',
@@ -34,34 +38,38 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         },
         chat: {
           enabled: true,
-          requestUserInfo: true,
+          request_user_info: true,
           proactive: true,
           popup: {
             title: 'DeskPRO Customer Support',
             message: 'Given a string consisting of printable ASCII chars, produce an output consisting of its unique chars in the original order.',
-            replyType: 'buttons'
+            reply_type: 'buttons'
           },
-          beginMode: 'form',
-          waitingTimeout: 30,
-          agentPollingTimeout: 10
+          begin_mode: 'form',
+          waiting_timeout: 30
         }
       }
 
     initialLoad: ->
       @$http.get('/api/v2/widget/setup').success((response) =>
-        @$scope.base_options = response;
-        @$scope.custom_options.company = response.company;
+        data = response.data
+
+        @$scope.url = data.url;
+        @$scope.company = $.extend(true, @$scope.company, data.company);
+        @$scope.global_settings = $.extend(true, @$scope.global_settings, data.settings.global);
+        @$scope.brand_settings = $.extend(true, @$scope.brand_settings, data.settings.brand);
+
         @initLiveDemo()
       );
 
-      @$scope.$watch('custom_options', =>
+      @$scope.$watch('brand_settings', =>
         @updateLiveDemo()
       , true)
 
     getOptions: (liveDemo = false) ->
-      options = $.extend(true, {}, @$scope.custom_options)
+      options = $.extend(true, {company: @$scope.company}, @$scope.brand_settings)
       if (liveDemo)
-        options.widget.liveDemo = true
+        options.widget.live_demo = true
 
       return options
 
@@ -69,12 +77,12 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       """
         <!-- DeskPRO Chat -->
           <script>
-              window.__DP_APP_SRC__ = '#{@$scope.base_options.url.widget_bundle}';
-              window.__DP_URL__ = '#{@$scope.base_options.url.helpdesk}';
+              window.__DP_APP_SRC__ = '#{@$scope.url.widget_bundle}';
+              window.__DP_URL__ = '#{@$scope.url.helpdesk}';
               window.__DP_OPTIONS__ = #{JSON.stringify(options)};
           </script>
 
-          <script type="text/javascript" charset="UTF-8" src="#{@$scope.base_options.url.widget_loader}"></script>
+          <script type="text/javascript" charset="UTF-8" src="#{@$scope.url.widget_loader}"></script>
         <!-- /DeskPRO Chat -->
       """
 
@@ -82,7 +90,23 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       document.getElementById('live-demo').contentDocument
 
     updateChatCode: ->
-      @$scope.code = @getCode(@getOptions())
+      @$scope.code = ''
+      @$http({
+        method: 'POST',
+        url: '/api/v2/widget/setup',
+        data: {
+          global: @$scope.global_settings,
+          brand: @$scope.brand_settings
+        }
+        headers: {
+          'X-Agent-Request': 'true'
+        }
+      })
+      .then(
+        () => @$scope.code = @getCode(@getOptions()),
+        (response) => console.log(response.data)
+      )
+
 
     initLiveDemo: ->
       demoDocument = @getLiveDemoDocument();

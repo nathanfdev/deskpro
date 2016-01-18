@@ -9,6 +9,7 @@ export class Item extends React.Component {
     me: PropTypes.object.isRequired,
     chat: PropTypes.object.isRequired,
     counts: PropTypes.object.isRequired,
+    loadingCounts: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired,
     startChat: PropTypes.func.isRequired
   };
@@ -98,7 +99,7 @@ export class Item extends React.Component {
 
   renderCount(chat) {
     const current = this.props.counts[chat.get('id')];
-    if (current && current.cnt > 0) {
+    if (!this.props.loadingCounts && current && current.cnt > 0) {
       return (
         <span className="chat-bubble">
           {current.cnt}

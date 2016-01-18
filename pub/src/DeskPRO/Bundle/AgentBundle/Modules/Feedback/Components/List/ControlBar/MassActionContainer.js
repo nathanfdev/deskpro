@@ -1,17 +1,16 @@
 import React, {Component, PropTypes} from 'react';
 import { MassActionBarContainer }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/MassActionBar/MassActionBarContainer';
-import { toggleMassAction } from '../../../../Application/Actions/massActions';
-import { deleteFeedback, approveFeedback } from '../../../Actions/FeedbackListActions';
-import { massAction }
-  from '../../../Actions/FeedbackMassActions';
-import { massActionsSelector, currentListParamsSelector } from '../../../Selectors/list';
-import { deleteComment, approveComment }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackCommentsActions';
+import { submitMassActions } from '../../../../Application/Actions/massActions';
+import { selectedSelector } from '../../../../Application/Selectors/massActions';
+import { massActionsSelector, isCommentsSelector, navItemSelector } from '../../../Selectors/list';
+import { applyParams, loadIndicator } from '../../../Actions/FeedbackListActions';
 
 import { connect } from 'react-redux';
 @connect(state => ({
-  currentListParams: currentListParamsSelector(state),
+  navItem: navItemSelector(state),
+  isComments: isCommentsSelector(state),
+  selected: selectedSelector(state),
   actions: massActionsSelector(state)
 }))
 
@@ -19,37 +18,43 @@ export class MassActionContainer extends Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    currentListParams: PropTypes.object.isRequired,
-    actions: PropTypes.array.isRequired,
-    currentMassActionsParams: PropTypes.object
+    navItem: PropTypes.object.isRequired,
+    selected: PropTypes.object.isRequired,
+    isComments: PropTypes.bool,
+    actions: PropTypes.array.isRequired
   };
 
-  massActionsSubmit() {
-    const {dispatch, currentMassActionsParams} = this.props;
-    const ids = [];
-    const params = currentMassActionsParams.toJS();
-    dispatch(massAction({ ids: ids, actions: params }));
-  }
-
   choiceActions() {
-    const {currentListParams, actions, dispatch} = this.props;
-    if (currentListParams.get('navItem') && currentListParams.get('navItem').get('awaiting_validation')) {
-      const ids = [];
+    const { dispatch, navItem, actions, isComments, selected} = this.props;
+    const content = isComments ? 'feedback_comments' : 'feedback';
+    if (navItem && navItem.get('awaiting_validation')) {
       const deleteAction = () => {
-        if (currentListParams.get('isComments')) {
-          dispatch(deleteComment(ids));
-        } else {
-          dispatch(deleteFeedback(ids));
-        }
-        return dispatch(toggleMassAction());
+        return dispatch(submitMassActions(
+          {
+            jobType: 'publish_mass',
+            params: {
+              ids: selected,
+              content: content,
+              actions: { delete: true }
+            },
+            loadIndicatorAction: loadIndicator,
+            reloadListAction: applyParams
+          }
+        ));
       };
       const approveAction = () => {
-        if (currentListParams.get('isComments')) {
-          dispatch(approveComment(ids));
-        } else {
-          dispatch(approveFeedback(ids));
-        }
-        return dispatch(toggleMassAction());
+        return dispatch(submitMassActions(
+          {
+            jobType: 'publish_mass',
+            params: {
+              ids: selected,
+              content: content,
+              actions: { approve: true }
+            },
+            loadIndicatorAction: loadIndicator,
+            reloadListAction: applyParams
+          }
+        ));
       };
       return [
         { label: 'Approve', type: 'button', onClick: approveAction },
@@ -60,9 +65,14 @@ export class MassActionContainer extends Component {
   }
 
   render() {
+    const { isComments } = this.props;
+
     const config = {
       actions: this.choiceActions(),
-      submitAction: this.massActionsSubmit.bind(this)
+      jobType: 'publish_mass',
+      content: isComments ? 'feedback_comments' : 'feedback',
+      loadIndicatorAction: loadIndicator,
+      reloadListAction: applyParams
     };
 
 

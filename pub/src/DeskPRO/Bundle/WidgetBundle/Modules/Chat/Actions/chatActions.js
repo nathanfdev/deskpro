@@ -13,14 +13,10 @@ import {
   lockedPollingSelector,
   chatInfoSelector,
   chatLoadedSelector,
-  isEndedSelector,
   authorIdSelector,
   messageIdsSelector,
   attachmentsSelector,
   canReopenSelector,
-  transcriptCheckedSelector,
-  transcriptSendingSelector,
-  transcriptSentSelector,
 } from '../Selectors/chat';
 
 // Phrase translations
@@ -60,6 +56,8 @@ export const updateChatInfo = createAction(
     return chatInfo;
   }
 );
+
+export const optimisticToggleSendTranscript = createAction('WIDGET_CHAT_OPTIMISTIC_TOGGLE_SEND_TRANSCRIPT');
 export const enableChatReopen = createAction('WIDGET_CHAT_ENABLE_REOPEN');
 export const disableChatReopen = createAction('WIDGET_CHAT_DISABLE_REOPEN');
 
@@ -70,10 +68,6 @@ export const enablePollingResponse = createAction('WIDGET_ENABLE_POLLING_RESPONS
 
 // Audio actions
 export const toggleMute = createAction('WIDGET_CHAT_TOGGLE_MUTE');
-
-// Transcript actions
-export const disableSendTranscript = createAction('WIDGET_CHAT_DISABLE_SEND_TRANSCRIPT');
-export const enableSendTranscript = createAction('WIDGET_CHAT_ENABLE_SEND_TRANSCRIPT');
 
 // Messages actions
 export const addNewMessages = createAction('WIDGET_CHAT_ADD_NEW_MESSAGES');
@@ -164,17 +158,25 @@ export const ackChatMessages = createAction(
   }
 );
 
-export const sendTranscriptData = createAction(
-  'WIDGET_CHAT_SEND_TRANSCRIPT_DATA',
-  chatId => (dispatch, getState) => {
+export const toggleSendTranscript = createAction(
+  'WIDGET_CHAT_TOGGLE_SEND_TRANSCRIPT',
+  (chatId, value) => (dispatch, getState) => {
     if (!chatId) {
       return null;
     }
 
+    dispatch(lockPollingResponse());
+    dispatch(optimisticToggleSendTranscript(value));
+
     const state = getState();
     const queryParams = compileParams(addSessionCode(state));
+    const params = {should_send_transcript: value};
 
-    return DpApi.sendPost(`DP_API/chats/${chatId}/transcript_data?${queryParams}`, null, {...ajaxOptions});
+    const promise = DpApi.sendPost(`DP_API/chats/${chatId}/transcript/toggle?${queryParams}`, params, {...ajaxOptions});
+    promise.success(() => dispatch(unlockPollingResponse()));
+    promise.catch(() => dispatch(unlockPollingResponse()));
+
+    return promise;
   }
 );
 
@@ -185,16 +187,15 @@ export const sendTranscriptInfo = createAction(
       return null;
     }
 
+    dispatch(lockPollingResponse());
+
     const state = getState();
-    const chatEnded = isEndedSelector(state);
     const queryParams = compileParams(addSessionCode(state));
 
-    const promise = DpApi.sendPost(`DP_API/chats/${chatId}/transcript_info?${queryParams}`, params, {...ajaxOptions});
-    promise.success(() => {
-      if (chatEnded) {
-        dispatch(sendTranscriptData(chatId));
-      }
-    });
+    const promise = DpApi.sendPost(`DP_API/chats/${chatId}/transcript/info?${queryParams}`, params, {...ajaxOptions});
+
+    promise.success(() => dispatch(unlockPollingResponse()));
+    promise.catch(() => dispatch(unlockPollingResponse()));
 
     return promise;
   }
@@ -253,28 +254,6 @@ export const pollingChat = createAction(
         if (!oldChatInfo.equals(Immutable.fromJS(newChatInfo))) {
           // Update chat info
           dispatch(updateChatInfo(newChatInfo));
-
-          // Handle chat transcript
-          const transcriptChecked = transcriptCheckedSelector(state);
-          if (newChatInfo.author_email) {
-            // Auto select transcript checkbox if user has email
-            if (!transcriptChecked) {
-              dispatch(enableSendTranscript());
-            } else {
-              // If can send transcript data and chat is ended
-              const transcriptSending = transcriptSendingSelector(state);
-              const transcriptSent = transcriptSentSelector(state);
-
-              if (newChatInfo.date_ended && !transcriptSending && !transcriptSent) {
-                // send transcript data
-                dispatch(sendTranscriptData(chatId));
-              }
-            }
-          } else {
-            if (transcriptChecked) {
-              dispatch(disableSendTranscript());
-            }
-          }
         }
 
         // Toggle reopen chat

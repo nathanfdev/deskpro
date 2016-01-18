@@ -40,3 +40,15 @@ services:
       class: DeskPRO\Bundle\ApiBundle\EventListener\ApiExceptionListener
       tags:
         - { name: kernel.event_subscriber }
+
+  job.scheduler:
+      class: Application\DeskPRO\JobQueue\JobScheduler
+      arguments:
+          - @doctrine.orm.entity_manager
+
+  job.queue:
+      class: Application\DeskPRO\JobQueue\JobQueue
+      arguments:
+          - @doctrine.orm.entity_manager
+          - @job.scheduler
+

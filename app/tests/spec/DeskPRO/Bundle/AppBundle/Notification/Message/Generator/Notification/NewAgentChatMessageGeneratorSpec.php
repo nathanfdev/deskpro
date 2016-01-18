@@ -61,7 +61,7 @@ class NewAgentChatMessageGeneratorSpec extends ObjectBehavior
         $token->getUser()->willReturn($bob);
 
         $event->getMessageId()->willReturn(1);
-
+        $event->getName()->willReturn(NewMessageEvent::EVENT_NAME);
         $em->getRepository('App:AgentChatMessage')->willReturn($repo);
         $repo->findOneBy(['id' => 1])->willReturn($message);
 
@@ -77,6 +77,8 @@ class NewAgentChatMessageGeneratorSpec extends ObjectBehavior
 
     public function it_can_create_messages(NewMessageEvent $event)
     {
+        $this->shouldHaveType('DeskPRO\Bundle\AppBundle\Notification\Message\Generator\Notification\NewAgentChatMessageGenerator');
+
         $this->createMessages($event);
     }
 

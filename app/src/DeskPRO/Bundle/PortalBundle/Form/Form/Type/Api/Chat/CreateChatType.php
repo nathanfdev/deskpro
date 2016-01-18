@@ -32,10 +32,13 @@
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
 use Application\DeskPRO\Entity\ChatConversation;
-use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\TextStringTransformer;
+use DeskPRO\Bundle\AppBundle\UserChat\UserChatSettings;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\AutoSetShouldSentTranscriptTrait;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\SetPersonListener;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -46,26 +49,28 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class CreateChatType extends AbstractType
 {
+    use AutoSetShouldSentTranscriptTrait;
+
     /**
      * @var SetPersonListener
      */
     private $set_person_listener;
 
     /**
-     * @var SettingsResolver
+     * @var UserChatSettings
      */
-    private $settings_resolver;
+    private $user_chat_settings;
 
     /**
      * Constructor.
      *
      * @param SetPersonListener $set_person_listener
-     * @param SettingsResolver  $settings_resolver
+     * @param UserChatSettings  $user_chat_settings
      */
-    public function __construct(SetPersonListener $set_person_listener, SettingsResolver $settings_resolver)
+    public function __construct(SetPersonListener $set_person_listener, UserChatSettings $user_chat_settings)
     {
         $this->set_person_listener = $set_person_listener;
-        $this->settings_resolver   = $settings_resolver;
+        $this->user_chat_settings  = $user_chat_settings;
     }
 
     /**
@@ -82,7 +87,7 @@ class CreateChatType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $email_constraints = [new Assert\Email()];
-        if ($this->getGlobalSettings()->get('portal.chat.email_validation')) {
+        if ($this->user_chat_settings->isPortalEmailValidation() && !$this->user_chat_settings->isPortalRequireLogin()) {
             $email_constraints[] = new Assert\NotBlank();
         }
 
@@ -102,7 +107,8 @@ class CreateChatType extends AbstractType
         $builder->get('email')->addModelTransformer(new TextStringTransformer());
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetPersonEmailFromSession']);
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this->set_person_listener, 'onSetPerson']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onCheckRequireLogin']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this->set_person_listener, 'onSetPerson']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetEmailValidationCode']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetShouldSentTranscript']);
     }
@@ -146,12 +152,20 @@ class CreateChatType extends AbstractType
     public function onSetEmailValidationCode(FormEvent $event)
     {
         // Option is disabled, skipping
-        if (!$this->getGlobalSettings()->get('portal.chat.email_validation')) {
+        if (!$this->user_chat_settings->isPortalEmailValidation()) {
             return;
         }
 
-        // Chat require to log in, skipping
-        if ($this->getGlobalSettings()->get('portal.chat.require_login')) {
+        // Chat requires user to be logged in, skipping
+        if ($this->user_chat_settings->isPortalRequireLogin()) {
+            return;
+        }
+
+        $form   = $event->getForm();
+        $person = $form->getConfig()->getOption('person');
+
+        // Session has person, already logged in, skipping
+        if ($person) {
             return;
         }
 
@@ -161,24 +175,15 @@ class CreateChatType extends AbstractType
     }
 
     /**
-     * If user has entered email then we can enable should send transcript option.
-     *
      * @param FormEvent $event
      */
-    public function onSetShouldSentTranscript(FormEvent $event)
+    public function onCheckRequireLogin(FormEvent $event)
     {
-        /** @var ChatConversation $conversation */
-        $conversation = $event->getData();
-        if ($conversation->getPerson() || $conversation->getPersonEmail()) {
-            $conversation->setShouldSendTranscript(true);
-        }
-    }
+        $form   = $event->getForm();
+        $person = $form->getConfig()->getOption('person');
 
-    /**
-     * @return \Application\DeskPRO\NewSettings\SettingsBag
-     */
-    protected function getGlobalSettings()
-    {
-        return $this->settings_resolver->getGlobalSettings();
+        if ($this->user_chat_settings->isPortalRequireLogin() && !$person) {
+            $form->addError(new FormError('Login required'));
+        }
     }
 }

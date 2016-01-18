@@ -1,8 +1,10 @@
 import { createAction } from 'Ampliflux';
+import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 
 export const toggleMassAction = createAction('APP_TOGGLE_MASS_ACTION');
 export const toggleSelectedAction = createAction('APP_TOGGLE_SELECTED_ACTION');
 export const cancelMassActions = createAction('APP_CANCEL_MASS_ACTIONS');
+
 export const setMassActionsParams = createAction(
   'APP_SET_MASS_ACTIONS_PARAMS',
   (params) => {
@@ -14,4 +16,31 @@ export const setMassActionsParams = createAction(
 export const resetParam = createAction(
   'APP_RESET_MASS_ACTIONS_PARAM',
     param => param
+);
+
+export const getJobStatus = createAction(
+  'APP_GET_JOB_STATUS',
+  (id, reloadListAction) => (dispatch) =>
+    DpApi.sendGet('DP_API/mass_actions/' + id)
+      .success(response => {
+        if (response.data.status !== 'complete') {
+          setTimeout(() => dispatch(getJobStatus(id, reloadListAction)), 2000);
+        } else {
+          return dispatch(reloadListAction());
+        }
+      })
+);
+
+export const submitMassActions = createAction(
+  'APP_MASS_ACTIONS_SUBMIT',
+  (data) => (dispatch) => new Promise(resolve =>
+    DpApi.sendPost('DP_API/mass_actions/', { jobType: data.jobType, params: data.params })
+      .success(response => {
+        console.log('Job', response);
+        dispatch(toggleMassAction());
+        dispatch(cancelMassActions());
+        dispatch(data.loadIndicatorAction());
+        setTimeout(() => dispatch(getJobStatus(response.job, data.reloadListAction)), 350);
+        return resolve(response);
+      }))
 );

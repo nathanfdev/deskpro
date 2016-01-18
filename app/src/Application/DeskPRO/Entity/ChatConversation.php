@@ -300,6 +300,18 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function setPersonName($name)
+    {
+        $this->setModelField('person_name', $name);
+
+        return $this;
+    }
+
+    /**
      * Setting the person copies their name and email address to the chat row for record keeping.
      *
      * @param Person $person
@@ -1064,7 +1076,17 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
      */
     public function regenerateEmailValidationCode()
     {
-        $this->setModelField('email_validation_code', Strings::random(15, Strings::CHARS_KEY));
+        return $this->setEmailValidationCode(Strings::random(15, Strings::CHARS_KEY));
+    }
+
+    /**
+     * @param string $code
+     *
+     * @return $this
+     */
+    public function setEmailValidationCode($code)
+    {
+        $this->setModelField('email_validation_code', $code);
 
         return $this;
     }

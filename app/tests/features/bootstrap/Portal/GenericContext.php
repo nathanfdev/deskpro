@@ -98,6 +98,14 @@ class GenericContext extends BasePortalContext
     }
 
     /**
+     * @Then I should see a form error with the phrase :phrase
+     */
+    public function iShouldSeeAFormErrorWithPhrase($phrase)
+    {
+        $this->assertSession()->elementTextContains('css', '.error-large', $this->phrase($phrase));
+    }
+
+    /**
      * @Then :user should be subscribed to the :content_type content :title
      */
     public function userShouldBeSubscribedToTheCategory($user, $content_type, $title)
@@ -157,6 +165,17 @@ class GenericContext extends BasePortalContext
     }
 
     /**
+     * @Given the setting :setting_name is set to :val
+     */
+    public function theSettingIsSetTo($setting_name, $val)
+    {
+        $this->em()->getConnection()->executeUpdate(
+            'REPLACE INTO settings (name, value) VALUES (:name, :value)',
+            array('name' => $setting_name, 'value' => $val)
+        );
+    }
+
+    /**
      * @When I click the email verification link
      */
     public function iClickTheEmailVerificationLink()
@@ -164,64 +183,8 @@ class GenericContext extends BasePortalContext
         $this->getSession()->visit($this->getFirstLinkInLastEmail());
     }
 
-    protected function getFirstLinkInLastEmail()
-    {
-        $email_data = $this->getLastEmailData();
-
-        $regex = '/https?\:\/\/[^\" \s]+/i';
-        preg_match($regex, $email_data['body'], $matches);
-
-        return $matches[0];
-    }
-
-    protected function getSubjectOfLastEmail()
-    {
-        $email_data = $this->getLastEmailData();
-
-        return $email_data['subject'];
-    }
-
     /**
-     * An array of data that comes from the last email saved to "sendmail_sources".
-     *
-     * @return array
-     */
-    protected function getLastEmailData()
-    {
-        $last_email = $this->getLastEmail();
-
-        $blob = $last_email->getBlob();
-
-        /** @var DeskproBlobStorage $blob_storage */
-        $blob_storage = $this->get('deskpro.blob_storage');
-
-        $email_body    = $blob_storage->copyBlobRecordToString($blob);
-        $email_subject = $last_email->getHeaderSubject();
-
-        return [
-            'body'    => $email_body,
-            'subject' => $email_subject,
-        ];
-    }
-
-    /**
-     * @return SendmailSource
-     */
-    protected function getLastEmail()
-    {
-        /** @var SendmailSourceRepository $ss_repo */
-        $ss_repo = $this->getRepository(SendmailSource::class);
-
-        return $ss_repo->getLatest();
-    }
-
-    protected function phrase($phrase)
-    {
-        return $this->get('language_manager')->phrase($phrase);
-    }
-
-    /**
-     * @Given the :arg1 category :arg2 exists with content titled :arg3
+     * @Given the :type category :cat_name exists with content titled :content_name
      */
     public function theCategoryExistsWithADownloadTitled($type, $cat_name, $content_name)
     {
@@ -299,9 +262,42 @@ class GenericContext extends BasePortalContext
         return $this->getPage('AgentBar');
     }
 
+    /**
+     * @return SendmailSource
+     */
+    protected function getLastEmail()
+    {
+        /** @var SendmailSourceRepository $ss_repo */
+        $ss_repo = $this->getRepository(SendmailSource::class);
+
+        return $ss_repo->getLatest();
+    }
+
+    protected function phrase($phrase)
+    {
+        return $this->get('language_manager')->phrase($phrase);
+    }
+
     protected function isSubscribedContent(Person $person, ContentAbstract $content)
     {
         return $this->get('subscriptions_helper')->isSubscribedContent($content, $person);
+    }
+
+    protected function getFirstLinkInLastEmail()
+    {
+        $email_data = $this->getLastEmailData();
+
+        $regex = '/https?\:\/\/[^\" \s]+/i';
+        preg_match($regex, $email_data['body'], $matches);
+
+        return $matches[0];
+    }
+
+    protected function getSubjectOfLastEmail()
+    {
+        $email_data = $this->getLastEmailData();
+
+        return $email_data['subject'];
     }
 
     protected function isSubscribedCat(Person $person, CategoryAbstract $content)
@@ -314,6 +310,33 @@ class GenericContext extends BasePortalContext
         return $this->getRepository($this->getContentCatClass($type))->findOneBy([
             'title' => $title,
         ]);
+    }
+
+    /**
+     * An array of data that comes from the last email saved to "sendmail_sources".
+     *
+     * @return array
+     */
+    protected function getLastEmailData()
+    {
+        $last_email = $this->getLastEmail();
+
+        $blob = $last_email->getBlob();
+
+        /** @var DeskproBlobStorage $blob_storage */
+        $blob_storage = $this->get('deskpro.blob_storage');
+
+        $email_body    = $blob_storage->copyBlobRecordToString($blob);
+        $email_subject = $last_email->getHeaderSubject();
+
+        $reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+        $reader->setRawSource($email_body);
+        $email_body = $reader->getBodyText()->getBodyUtf8();
+
+        return [
+            'body'    => $email_body,
+            'subject' => $email_subject,
+        ];
     }
 
     protected function getContent($type, $title)

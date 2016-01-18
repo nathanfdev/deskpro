@@ -64,9 +64,11 @@ portal:
                 - DpBehat\Portal\RouterContext
                 - DpBehat\Portal\TicketsContext
                 - DpBehat\Portal\GenericContext
+                - DpBehat\Portal\TicketContext
                 - DpBehat\Performance\PerformanceContext
                 - DpBehat\DataSetContext:
                     dataset_manager: @dataset_manager
+                - DpBehat\Portal\PortalApiContext
     extensions:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:

@@ -133,7 +133,11 @@ class TicketsController extends AbstractController
     {
         $ticket = $this->getTicketForViewPage($ticket_ref, $auth, $_route);
 
-        if ($this->cannotAccessViewPageOfTicket($ticket)) {
+        if ($_route === 'portal_tickets_view' && $this->cannotAccessViewPageOfTicket($ticket)) {
+            throw new AccessDeniedException();
+        }
+
+        if ($_route === 'portal_tickets_guest_view' && $this->cannotAccessGuestViewPageOfTicket($ticket)) {
             throw new AccessDeniedException();
         }
 
@@ -777,8 +781,17 @@ class TicketsController extends AbstractController
      */
     protected function cannotAccessViewPageOfTicket($ticket)
     {
-        return !$this->isGranted(TicketsVoter::TICKET_VIEW, $ticket)
-        && !$this->isGranted(TicketsVoter::TICKET_VIEW_AUTH, $ticket);
+        return !$this->isGranted(TicketsVoter::TICKET_VIEW, $ticket);
+    }
+
+    /**
+     * @param $ticket
+     *
+     * @return bool
+     */
+    protected function cannotAccessGuestViewPageOfTicket($ticket)
+    {
+        return !$this->isGranted(TicketsVoter::TICKET_VIEW_AUTH, $ticket);
     }
 
     /**

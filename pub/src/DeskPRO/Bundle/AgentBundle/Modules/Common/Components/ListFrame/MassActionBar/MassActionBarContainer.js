@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { selectedSelector, paramsSelector } from '../../../../Application/Selectors/massActions';
-import { cancelMassActions, setMassActionsParams, resetParam } from '../../../../Application/Actions/massActions';
+import { cancelMassActions, setMassActionsParams, resetParam, submitMassActions } from '../../../../Application/Actions/massActions';
 import { ActionContainer } from './ActionContainer';
 import { SubmitButton } from './SubmitButton';
 
@@ -13,10 +13,24 @@ export class MassActionBarContainer extends Component {
   static propTypes = {
     selected: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
-    submitAction: PropTypes.func.isRequired,
+    reloadListAction: PropTypes.func.isRequired,
+    loadIndicatorAction: PropTypes.func.isRequired,
     actions: PropTypes.array.isRequired,
+    jobType: PropTypes.string.isRequired,
+    content: PropTypes.string.isRequired,
     currentParams: PropTypes.object
   };
+
+  submit(jobType) {
+    const { dispatch, selected, currentParams, content, reloadListAction, loadIndicatorAction } = this.props;
+    dispatch(submitMassActions(
+      {
+        jobType: jobType,
+        reloadListAction: reloadListAction,
+        loadIndicatorAction: loadIndicatorAction,
+        params: { ids: selected, content: content, actions: currentParams }
+      }));
+  }
 
   cancelMassActions() {
     const { dispatch } = this.props;
@@ -24,7 +38,7 @@ export class MassActionBarContainer extends Component {
   }
 
   render() {
-    const { actions, submitAction, currentParams } = this.props;
+    const { actions, currentParams, jobType } = this.props;
     const isActive = currentParams && currentParams.size > 0;
     const renderByType = (item, index)=> {
       if (item.type === 'button') {
@@ -51,7 +65,7 @@ export class MassActionBarContainer extends Component {
           <hr/>
         </li>}
         {isActive && <SubmitButton label="Go"
-                                   onClick={submitAction}
+                                   onClick={this.submit.bind(this, jobType)}
                                    isActive={isActive}/>
         }
         {isActive && <SubmitButton label="Cancel"

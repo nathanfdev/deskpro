@@ -66,18 +66,18 @@ export const reloadOptions = createAction(
     const chatEnabled = widgetHasChatSelector(state);
     const chatBeginMode = chatBeginModeSelector(state);
 
-    dispatch(loadOptions(options));
-    dispatch(windowResize());
-
     // Display widget type changes
-    if (widgetOpened && widgetType !== options.widget.type) {
-      dispatch(closeWidget());
+    if (widgetType !== options.widget.type) {
+      if (widgetOpened) {
+        dispatch(closeWidget());
+      }
+
       setTimeout(() => dispatch(openWidget()), 350);
     }
 
-    const openChat = () => openChatBeginStage(options.chat.requestUserInfo ? options.chat.beginMode : 'simple');
+    const openChat = () => openChatBeginStage(options.chat.request_user_info ? options.chat.begin_mode : 'simple');
 
-    // Display chat toggle enabled changes
+    // Display chat enabled changes
     if (chatEnabled !== options.chat.enabled) {
       if (options.chat.enabled) {
         openChat();
@@ -91,7 +91,7 @@ export const reloadOptions = createAction(
     }
 
     // Display chat begin stage changes
-    if (options.chat.enabled && ((chatBeginMode !== 'simple' && !options.chat.requestUserInfo) || chatBeginMode !== options.chat.beginMode)) {
+    if (options.chat.enabled && ((chatBeginMode !== 'simple' && !options.chat.request_user_info) || chatBeginMode !== options.chat.begin_mode)) {
       openChat();
       if (!widgetOpened) {
         dispatch(openWidget());
@@ -104,9 +104,12 @@ export const reloadOptions = createAction(
     const popupReplyType = helpPopupReplyTypeSelector(state);
     const newPopup = options.chat.popup;
 
-    if (widgetOpened && (popupTitle !== newPopup.title || popupMessage !== newPopup.message || popupReplyType !== newPopup.replyType)) {
+    if (widgetOpened && (popupTitle !== newPopup.title || popupMessage !== newPopup.message || popupReplyType !== newPopup.reply_type)) {
       dispatch(closeWidget());
     }
+
+    dispatch(loadOptions(options));
+    dispatch(windowResize());
   }
 );
 

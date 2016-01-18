@@ -14,6 +14,12 @@ export const skippedPollingSelector = createSelector(
   state => state.getIn(['polling', 'skipped'])
 );
 
+export const disabledPollingSelector = createSelector(
+  lockedPollingSelector,
+  skippedPollingSelector,
+  (locked, skipped) => locked || skipped
+);
+
 // Phrase translations
 export const phraseTranslationsSelector = createSelector(
   stateSelector,
@@ -30,27 +36,6 @@ export const feedbackStageSelector = createSelector(
 export const muteSelector = createSelector(
   stateSelector,
   state => state.get('mute')
-);
-
-// Transcript selectors
-export const transcriptCheckedSelector = createSelector(
-  stateSelector,
-  state => state.getIn(['transcript', 'checked'])
-);
-
-export const transcriptSavingSelector = createSelector(
-  stateSelector,
-  state => state.getIn(['transcript', 'saving'])
-);
-
-export const transcriptSendingSelector = createSelector(
-  stateSelector,
-  state => state.getIn(['transcript', 'sending'])
-);
-
-export const transcriptSentSelector = createSelector(
-  stateSelector,
-  state => state.getIn(['transcript', 'sent'])
 );
 
 // Chat info selectors
@@ -124,13 +109,13 @@ export const authorSelector = createSelector(
 export const authorEmailSelector = createSelector(
   chatInfoSelector,
   authorSelector,
-  (chatInfo, author) => author && author.get('primary_email_address') || chatInfo.get('person_email')
+  (chatInfo, author) => chatInfo.get('person_email') || author && author.get('primary_email_address')
 );
 
 export const authorNameSelector = createSelector(
   chatInfoSelector,
   authorSelector,
-  (chatInfo, author) => author && author.get('display_name') || chatInfo.get('person_name') || 'User'
+  (chatInfo, author) => chatInfo.get('person_name') || author && author.get('display_name') || 'User'
 );
 
 export const dateEndedSelector = createSelector(
@@ -146,6 +131,16 @@ export const isEndedSelector = createSelector(
 export const needValidateEmailSelector = createSelector(
   chatInfoSelector,
   chatInfo => chatInfo.get('need_validate_email')
+);
+
+export const transcriptCheckedSelector = createSelector(
+  chatInfoSelector,
+  chatInfo => chatInfo.get('should_send_transcript')
+);
+
+export const transcriptSentSelector = createSelector(
+  chatInfoSelector,
+  chatInfo => !!chatInfo.get('date_transcript_sent')
 );
 
 // Messages selectors

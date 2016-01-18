@@ -1,10 +1,8 @@
 import { createReducer } from 'Ampliflux';
-import Immutable from 'immutable';
 import { async, setValue, setFullPayload, togglePayloadInCollection, mergeFullPayload }
   from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/FeedbackListActions';
 import * as commentsActions from '../Actions/FeedbackCommentsActions';
-import * as massActions from '../Actions/FeedbackMassActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 const initialState = {
@@ -33,6 +31,7 @@ export default createReducer(initialState, {
   }),
 
   [actions.setParams]: setFullPayload('currentListParams'),
+  [actions.loadIndicator]: setValue('async.done', false),
   [actions.loadFeedbackList]: async({
     success: (state, payload) => state.set('elements', payload.ids).set('pagination', payload.pagination),
     start: setValue('async.done', false),

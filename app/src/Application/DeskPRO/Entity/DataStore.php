@@ -102,6 +102,26 @@ class DataStore extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @param $name
+     *
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->setModelField('name', $name);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
      * Get the type.
      *
      * @return string

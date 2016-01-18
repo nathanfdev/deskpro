@@ -5780,28 +5780,6 @@ $collection->create(
 );
 
 ########################################################################################################################
-# Chat Setup
-########################################################################################################################
-
-$collection->create(
-    'api_chat_setup',
-    array(
-        'path'       => '/chat_setup',
-        'controller' => 'LegacyApiBundle:ChatSetup:chatSetup',
-        'methods'    => array('GET'),
-    )
-);
-
-$collection->create(
-    'api_chat_setup_toggle',
-    array(
-        'path'       => '/chat_setup/toggle_chat/{is_enabled}',
-        'controller' => 'LegacyApiBundle:ChatSetup:toggleChat',
-        'methods'    => array('POST'),
-    )
-);
-
-########################################################################################################################
 # Chat Departments
 ########################################################################################################################
 

@@ -21,3 +21,8 @@ services:
       - @router
     tags:
       - { name: kernel.event_subscriber }
+
+  user_chat.settings:
+    class: DeskPRO\Bundle\AppBundle\UserChat\UserChatSettings
+    arguments:
+      - @settings_resolver

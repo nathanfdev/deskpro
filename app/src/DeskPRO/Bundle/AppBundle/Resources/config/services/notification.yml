@@ -66,6 +66,7 @@ services:
     calls:
       - [attachGenerator, [@deskpro.notification.generator.action_alert.agent_chat_new_message]]
       - [attachGenerator, [@deskpro.notification.generator.action_alert.refresh_counts]]
+      - [attachGenerator, [@deskpro.notification.generator.action_alert.agent_chat_mark_message]]
 
   deskpro.notification.notify_handler.user_notify:
       class: DeskPRO\Bundle\AppBundle\Notification\UserNotificationHandler
@@ -98,3 +99,9 @@ services:
       - @security.token_storage
       - @deskpro.agentchat.history
       - @deskpro.agentchat.helper
+
+  deskpro.notification.generator.action_alert.agent_chat_mark_message:
+    class: DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\MarkAgentChatMessageGenerator
+    arguments:
+      - @doctrine.orm.default_entity_manager
+      - @security.token_storage

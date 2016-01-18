@@ -10,7 +10,6 @@ import { setFeedbackStatusCategoriesRequest } from '../RecordStores/Actions/feed
 import { loadFeedbackCommentsCounter } from '../RecordStores/Actions/feedbackCommentsActions';
 import { setFeedbackRequest } from '../RecordStores/Actions/feedbackActions';
 import { toggleMassAction } from '../../Application/Actions/massActions';
-import { feedbackToValidateCounter } from './feedbackNavActions';
 
 /**
  * Used to identify requests within record stores
@@ -40,6 +39,7 @@ export const getCategories = createAction(
 );
 
 export const setParams = createAction('FEEDBACK_LIST_SET_CURRENT_PARAMS');
+export const loadIndicator = createAction('FEEDBACK_LIST_LOAD_INDICATOR');
 
 export const getCommentsCounter = createAction(
   'FEEDBACK_GET_COMMENTS_COUNTER',
@@ -154,26 +154,3 @@ export const setOrder = createAction(
 
 export const toggleTableFieldVisibility = createAction('FEEDBACK_LIST_TOGGLE_TABLE_FIELD_VISIBILITY');
 export const toggleCardFieldVisibility = createAction('FEEDBACK_LIST_TOGGLE_CARD_FIELD_VISIBILITY');
-
-
-export const deleteFeedback = createAction(
-  'FEEDBACK_DELETE',
-  (ids) => dispatch => {
-    Feedback.deleteFeedback(ids).then(()=> {
-      dispatch(feedbackToValidateCounter());
-      dispatch(applyParams({ isComments: false }));
-    });
-    return ids;
-  }
-);
-
-export const approveFeedback = createAction(
-  'FEEDBACK_APPROVE',
-  (ids) => dispatch => {
-    Feedback.approveFeedback(ids).then(()=> {
-      dispatch(feedbackToValidateCounter());
-      dispatch(applyParams({ isComments: false }));
-    });
-    return ids;
-  }
-);

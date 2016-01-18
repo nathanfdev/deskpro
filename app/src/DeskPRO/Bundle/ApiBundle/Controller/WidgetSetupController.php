@@ -31,6 +31,8 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
+use Application\DeskPRO\Entity\DataStore;
+use DeskPRO\Bundle\AppBundle\Error\Exception\InvalidFormException;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\View\View;
@@ -47,7 +49,7 @@ class WidgetSetupController extends BaseController
      *
      * @return View
      */
-    public function getWidgetConfigurationAction()
+    public function getWidgetSetupAction()
     {
         $asset_package = $this->container->get('templating.asset.package.app_assets.http');
         $base_router   = $this->container->get('router');
@@ -55,15 +57,33 @@ class WidgetSetupController extends BaseController
         $settings_resolver = $this->container->get('settings_resolver');
         $settings          = $settings_resolver->getGlobalSettings();
 
+        $user_settings  = $this->container->get('user_chat.settings');
+        $brand_settings = [];
+        $data_store     = $this->getRepository('DeskPRO:DataStore')->findOneBy(['name' => 'core.apps_chat']);
+        if ($data_store) {
+            $brand_settings = $data_store->getData('brand_settings');
+        }
+
         return new View([
-            'url' => [
-                'widget_loader' => $asset_package->getUrl('widget_loader.js'),
-                'widget_bundle' => $asset_package->getUrl('DeskPRO_WidgetBundle.js'),
-                'helpdesk'      => $base_router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL),
-            ],
-            'company' => [
-                'name' => $settings->get('core.site_name'),
-                'logo' => '',
+            'data' => [
+                'url' => [
+                    'widget_loader' => $asset_package->getUrl('widget_loader.js'),
+                    'widget_bundle' => $asset_package->getUrl('DeskPRO_WidgetBundle.js'),
+                    'helpdesk'      => $base_router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL),
+                ],
+                'company' => [
+                    'name' => $settings->get('core.site_name'),
+                    'logo' => '',
+                ],
+                'settings' => [
+                    'global' => [
+                        'chat' => [
+                            'require_login'    => $user_settings->isPortalRequireLogin(),
+                            'email_validation' => $user_settings->isPortalEmailValidation(),
+                        ],
+                    ],
+                    'brand' => $brand_settings,
+                ],
             ],
         ]);
     }
@@ -75,8 +95,27 @@ class WidgetSetupController extends BaseController
      *
      * @return View
      */
-    public function postWidgetConfigurationAction(Request $request)
+    public function postWidgetSetupAction(Request $request)
     {
+        $form = $this->get('form.factory')->createNamedBuilder(null, 'widget_setup')->getForm();
+        $form->submit($request->request->all());
+
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        $data_store = $this->getRepository('DeskPRO:DataStore')->findOneBy(['name' => 'core.apps_chat']);
+        if (!$data_store) {
+            $data_store = new DataStore();
+            $data_store->setName('core.apps_chat');
+        }
+
+        $data_store->setData('brand_settings', $form->getData()['brand']);
+
+        $em = $this->getManager();
+        $em->persist($data_store);
+        $em->flush();
+
         return new View();
     }
 }

@@ -1,11 +1,10 @@
 import { createReducer } from 'Ampliflux';
 import * as actions from '../Actions/chatActions';
 import {
+  async,
   setFullPayload,
   setValue,
-  setValueOnError,
   toggleBool,
-  async,
   pushPayloadToCollection,
   deletePayloadFromCollection,
   composeHandlers
@@ -15,12 +14,6 @@ import moment from 'moment';
 const initialState = {
   phrases: {},
   mute: false,
-  transcript: {
-    checked: false,
-    saving: false,
-    sending: false,
-    sent: false
-  },
   polling: {
     locked: false,
     skipped: false
@@ -57,8 +50,8 @@ export default createReducer(initialState, {
   [actions.setChatId]: composeHandlers(
     setFullPayload('chat.id'),
     setValue('chat.loaded', false),
-    setValue('messages', []),
-    setValue('transcript.sent', false)
+    setValue('chat.info', {}),
+    setValue('messages', [])
   ),
   [actions.unsetChatId]: setValue('chat', {
     id: null,
@@ -69,11 +62,15 @@ export default createReducer(initialState, {
   [actions.setLoaded]: setValue('chat.loaded', true),
   [actions.unsetLoaded]: setValue('chat.loaded', false),
   [actions.updateChatInfo]: setFullPayload('chat.info'),
+  [actions.optimisticToggleSendTranscript]: setFullPayload('chat.info.should_send_transcript'),
+  [actions.sendTranscriptInfo]: async({
+    done: setValue('chat.info.should_send_transcript', true)
+  }),
   [actions.endChat]: setValue('chat.info.date_ended', moment().format()),
   [actions.reopenChat]: composeHandlers(
     setValue('chat.canReopen', true),
     setValue('chat.info.date_ended', null),
-    setValue('transcript.sent', false),
+    setValue('chat.info.date_transcript_sent', null),
     setValue('feedbackStage', 'dialog')
   ),
   [actions.enableChatReopen]: setValue('chat.canReopen', true),
@@ -115,21 +112,6 @@ export default createReducer(initialState, {
   [actions.addAttachment]: pushPayloadToCollection('attachments'),
   [actions.removeAttachment]: deletePayloadFromCollection('attachments'),
   [actions.resetAttachments]: setValue('attachments', []),
-
-  // Transcript
-  [actions.disableSendTranscript]: setValue('transcript.checked', false),
-  [actions.enableSendTranscript]: setValue('transcript.checked', true),
-  [actions.sendTranscriptInfo]: async({
-    start: setValue('transcript.saving', true),
-    done: setValue('transcript.saving', false),
-    error: setValueOnError('transcript.saving', false)
-  }),
-  [actions.sendTranscriptData]: async({
-    success: setValue('transcript.sent', true),
-    start: setValue('transcript.sending', true),
-    done: setValue('transcript.sending', false),
-    error: setValueOnError('transcript.sending', false)
-  }),
 
   // Feedback
   [actions.showNotHelpfulForm]: setValue('feedbackStage', 'form'),

@@ -28,6 +28,7 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\Notification;
 
+use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\MarkMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\NewMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\EventManager;
@@ -55,6 +56,7 @@ class EventManagerSpec extends ObjectBehavior
         $this->getSubscribedEvents()->shouldBe(
             array(
                 NewMessageEvent::EVENT_NAME    => 'handleEvent',
+                MarkMessageEvent::EVENT_NAME   => 'handleEvent',
                 TicketUpdatedEvent::EVENT_NAME => 'handleEvent',
             )
         );
