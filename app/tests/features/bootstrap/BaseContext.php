@@ -44,6 +44,14 @@ abstract class BaseContext extends RawMinkContext implements KernelAwareContextI
      */
     private $kernel;
 
+    public function resetAllContext()
+    {
+        // after any kind of re-install, we need to reboot the
+        // kernel to reset references
+        $this->kernel->shutdown();
+        $this->kernel->boot();
+    }
+
     /**
      * Sets Kernel instance.
      *

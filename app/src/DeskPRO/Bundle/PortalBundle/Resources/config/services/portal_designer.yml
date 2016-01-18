@@ -27,6 +27,7 @@ services:
     class: DeskPRO\Bundle\PortalBundle\Designer\AssetsManager
     arguments:
       - @doctrine.orm.default_entity_manager
+      - @=service('dp.portal.designer.brand_theme_manager').getCurrentThemeSet()
       - @=service('dp.portal.designer.brand_theme_manager').getCurrentEditThemeSet()
 
   dp.portal.designer.portal_styles_compiler:
