@@ -33,18 +33,21 @@
 namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
 
 use Application\DeskPRO\Entity\FeedbackComment;
+use DeskPRO\Bundle\AppBundle\Data\MassActions\AbstractMassActionsPreprocessor;
 use DeskPRO\Bundle\AppBundle\Data\MassActions\MassActionsPreprocessorInterface;
-use Doctrine\ORM\EntityManager;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class FeedbackCommentsMassActions implements MassActionsPreprocessorInterface
+class FeedbackCommentsMassActions extends AbstractMassActionsPreprocessor implements MassActionsPreprocessorInterface
 {
-    private $em;
-    private $params;
-
-    public function __construct(EntityManager $em, array $params)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $this->em     = $em;
-        $this->params = $params;
+        $resolver->setDefined(['approve', 'delete']);
+        $resolver->setAllowedValues('approve', function ($value) {
+            return (int) $value === 1;
+        });
+        $resolver->setAllowedValues('delete', function ($value) {
+            return (int) $value === 1;
+        });
     }
 
     public function prepareActions()

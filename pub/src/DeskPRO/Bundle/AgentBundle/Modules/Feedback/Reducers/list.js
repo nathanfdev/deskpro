@@ -31,6 +31,7 @@ export default createReducer(initialState, {
   }),
 
   [actions.setParams]: setFullPayload('currentListParams'),
+  [actions.loadIndicator]: setValue('async.done', false),
   [actions.loadFeedbackList]: async({
     success: (state, payload) => state.set('elements', payload.ids).set('pagination', payload.pagination),
     start: setValue('async.done', false),

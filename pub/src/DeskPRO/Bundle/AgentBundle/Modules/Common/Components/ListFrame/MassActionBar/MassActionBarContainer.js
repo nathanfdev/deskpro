@@ -13,6 +13,8 @@ export class MassActionBarContainer extends Component {
   static propTypes = {
     selected: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
+    reloadListAction: PropTypes.func.isRequired,
+    loadIndicatorAction: PropTypes.func.isRequired,
     actions: PropTypes.array.isRequired,
     jobType: PropTypes.string.isRequired,
     content: PropTypes.string.isRequired,
@@ -20,8 +22,14 @@ export class MassActionBarContainer extends Component {
   };
 
   submit(jobType) {
-    const { dispatch, selected, currentParams, content } = this.props;
-    dispatch(submitMassActions(jobType, { ids: selected, content: content, actions: currentParams }));
+    const { dispatch, selected, currentParams, content, reloadListAction, loadIndicatorAction } = this.props;
+    dispatch(submitMassActions(
+      {
+        jobType: jobType,
+        reloadListAction: reloadListAction,
+        loadIndicatorAction: loadIndicatorAction,
+        params: { ids: selected, content: content, actions: currentParams }
+      }));
   }
 
   cancelMassActions() {

@@ -1,15 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { currentAppSelector } from '../../../Application/Selectors/dpWindow';
+import { currentAppStateSelector } from '../../../Application/Selectors/dpWindow';
 import { selectedSelector } from '../../../Application/Selectors/massActions';
 import { toggleMassAction } from '../../../Application/Actions/massActions';
 
 @connect(state => {
-  const currentApp = currentAppSelector(state);
-  const currentAppState = currentApp === 'crm' ?
-    state.CRM // @ToDo remove this temp solution
-    : state[currentApp.charAt(0).toUpperCase() + currentApp.slice(1)];
+  const currentAppState = currentAppStateSelector(state);
 
   return {
     elements: currentAppState.list.get('elements'),

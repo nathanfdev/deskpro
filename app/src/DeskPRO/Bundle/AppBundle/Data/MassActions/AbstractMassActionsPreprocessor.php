@@ -30,43 +30,23 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\JobQueue;
+namespace DeskPRO\Bundle\AppBundle\Data\MassActions;
 
-use Application\DeskPRO\Entity\Job;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Route;
-use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/**
- * Class JobController.
- *
- * @Route("/mass_actions")
- */
-class JobController extends CrudController
+abstract class AbstractMassActionsPreprocessor
 {
-    public static $entity = Job::class;
+    protected $em;
+    protected $params;
 
-    /**
-     * @Post("/", name="mass_action_create")
-     *
-     * @param Request $request
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function postAction(Request $request)
+    public function __construct(EntityManager $em, array $params)
     {
-        /** @var \Application\DeskPRO\JobQueue\JobQueue $queue */
-        $queue = $this->get('job.queue');
-        $data  = $request->request->all();
-        /** @var \Application\DeskPRO\Entity\Job $job */
-        $job = $queue->add($data['jobType'], $data['params']);
+        $this->em = $em;
+        $resolver = new OptionsResolver();
+        $this->configureOptions($resolver);
 
-        return View::create(
-            ['job' => $job->getId()],
-            Response::HTTP_CREATED
-        );
+        $this->options = $resolver->resolve($params['actions']);
+        $this->params  = $params;
     }
 }
