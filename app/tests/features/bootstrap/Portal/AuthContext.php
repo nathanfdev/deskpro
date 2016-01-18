@@ -33,8 +33,6 @@ namespace DpBehat\Portal;
 
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
-use Behat\Behat\Hook\Scope\BeforeScenarioScope;
-use DpBehat\LanguageContext;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
@@ -54,11 +52,6 @@ class AuthContext extends BasePortalContext
     private $me;
 
     /**
-     * @var LanguageContext
-     */
-    private $lang_context;
-
-    /**
      * @param UserDetailsRepo $user_details
      * @param TokenStorage    $token_storage
      */
@@ -67,17 +60,6 @@ class AuthContext extends BasePortalContext
         $this->user_details  = $user_details;
         $this->token_storage = $token_storage;
         $this->me            = null;
-    }
-
-    /**
-     * @BeforeScenario
-     *
-     * @param BeforeScenarioScope $scope
-     */
-    public function gatherContexts(BeforeScenarioScope $scope)
-    {
-        $environment        = $scope->getEnvironment();
-        $this->lang_context = $environment->getContext('DpBehat\LanguageContext');
     }
 
     /**
@@ -98,8 +80,6 @@ class AuthContext extends BasePortalContext
      */
     public function iLoginWithCredentials($who)
     {
-        $this->lang_context->setTheActiveLanguage('default');
-
         $this->getPage('Login')->login(
             $this->user_details->getEmail($who),
             $this->user_details->getPass($who)

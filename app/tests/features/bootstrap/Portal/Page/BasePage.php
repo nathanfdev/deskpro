@@ -32,6 +32,7 @@
 namespace DpBehat\Portal\Page;
 
 use Behat\Mink\Session;
+use SensioLabs\Behat\PageObjectExtension\PageObject\Exception\UnexpectedPageException;
 use SensioLabs\Behat\PageObjectExtension\PageObject\Factory;
 use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
@@ -98,7 +99,13 @@ class BasePage extends Page
             return;
         }
 
-        parent::verifyUrl($urlParameters);
+        // override to allow language prefixes in URLs
+        if (strpos($this->getSession()->getCurrentUrl(), $this->getUrl($urlParameters)) === false) {
+            throw new UnexpectedPageException(sprintf(
+                'Expected to be on "%s" but found "%s" instead',
+                $this->getUrl($urlParameters), $this->getSession()->getCurrentUrl()
+            ));
+        }
     }
 
     private function removeHostAndScheme($url)
