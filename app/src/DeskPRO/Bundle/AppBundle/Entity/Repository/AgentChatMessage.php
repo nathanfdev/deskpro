@@ -71,7 +71,7 @@ class AgentChatMessage extends EntityRepository
         $qb = $this->createQueryBuilder('acm');
         $qb->select('IDENTITY(acm.chat) as chat_id, COUNT(acm.id) as cnt')
             ->where('acm.chat IN (:chats)')
-            ->andWhere('acm.status < :status')
+            ->andWhere('acm.status = :status')
             ->andWhere('acm.person != :person')
             ->groupBy('acm.chat')
             ->setParameter('chats', $chats)

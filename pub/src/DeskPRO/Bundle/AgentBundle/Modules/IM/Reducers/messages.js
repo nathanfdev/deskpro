@@ -40,6 +40,22 @@ export default createReducer(initialState, {
       done: (state) => state.set('loadingMessages', false)
     }
   ),
+  [actions.markMessages]: async({
+    success: (state, payload) => {
+      const path = ['chatMessages', payload.chat_id];
+      const chat = state.getIn(path);
+      const msg = {};
+      payload.messages.map(message => {
+        msg[message] = true;
+      });
+      chat.messages.map((message, index) => {
+        if (msg[message.id]) {
+          chat.messages[index].status = 2;
+        }
+      });
+      return state.setIn(path, {...chat});
+    }
+  }),
   [newActionAlerts]: (state, payload) => {
     let newState = state;
     if (payload.type === 'notification.agent_chat.new_message') {
@@ -51,6 +67,15 @@ export default createReducer(initialState, {
       }
     } else if (payload.type === 'refresh_counts') {
       newState = newState.set('counts', payload.data);
+    } else if (payload.type === 'notification.agent_chat.mark_message') {
+      const path = ['chatMessages', payload.data.chat_id];
+      const chat = state.getIn(path);
+      chat.messages.map((message, index) => {
+        if (message.id === payload.data.message_id) {
+          chat.messages[index].status = 2;
+        }
+      });
+      newState = newState.setIn(path, {...chat});
     }
     return newState;
   },

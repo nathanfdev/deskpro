@@ -34,8 +34,6 @@ export const refreshCounts = createAction(
       (resolve, reject) => {
         return IM.loadMessagesCount()
           .success((response) => {
-
-
             return resolve(response.data);
           })
           .error(response => reject(response));
@@ -46,12 +44,12 @@ export const refreshCounts = createAction(
 
 export const markMessages = createAction(
   'IM_MARK_MESSAGES',
-  (ids) => {
+  (ids, chat_id) => {
     return new Promise(
       (resolve, reject) => {
         return IM.markMessages(ids)
-          .success((response) => {
-            return resolve(response.data);
+          .success(() => {
+            return resolve({chat_id: chat_id, messages: ids});
           })
           .error(response => reject(response));
       }

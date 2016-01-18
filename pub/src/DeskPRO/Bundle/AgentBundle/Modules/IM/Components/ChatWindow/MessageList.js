@@ -80,12 +80,12 @@ export class MessageList extends React.Component {
 
     const msg = messages.getIn(this.getPath()) ? messages.getIn(this.getPath()).messages : [];
     msg.map((message) => {
-      if (message.status < 1 && message.person_id !== this.props.me.get('id')) {
+      if (message.status <= 1 && message.person_id !== this.props.me.get('id')) {
         ids.push(message.id);
       }
     });
     if (ids.length > 0) {
-      this.props.dispatch(markMessages(ids));
+      this.props.dispatch(markMessages(ids, this.props.current.id));
     }
   }
 
