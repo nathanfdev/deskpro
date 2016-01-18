@@ -9,6 +9,7 @@ import { onlineAgentsCountSelector } from '../RecordStores/Selectors/peopleSelec
 import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import PortalPhrases from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import history from '../../../Services/history';
+import $ from 'jquery';
 
 export const ajaxOptions = {crossDomain: true, dataType: 'json'};
 export const addSessionCode = (state, params = {}) => {
@@ -28,8 +29,9 @@ export const getSession = createAction(
   )
 );
 
-export const getSettings = createAction(
-  'WIDGET_GET_SETTINGS',
+export const reloadSettings = createAction('WIDGET_RELOAD_SETTINGS', settings => $.extend(true, {}, settings));
+export const loadSettings = createAction(
+  'WIDGET_LOAD_SETTINGS',
   () => new Promise(resolve =>
     DpApi
       .sendGet('DP_API/widget/settings', {...ajaxOptions})
@@ -88,7 +90,7 @@ export const bootstrapWidget = createAction(
     Promise.all([
       dispatch(loadOnlineAgents()),
       dispatch(getSession()),
-      dispatch(getSettings()),
+      dispatch(loadSettings()),
       dispatch(loadOptions(window.DP_OPTIONS)),
       dispatch(loadPortalPhraseTranslations()),
       dispatch(loadChatPhraseTranslations()),

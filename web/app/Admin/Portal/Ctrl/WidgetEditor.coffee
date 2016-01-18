@@ -65,7 +65,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
       updateLiveDemoDebounce = Functions.debounce( =>
         @updateLiveDemo()
       , 350)
+
       @$scope.$watch('brand_settings', updateLiveDemoDebounce, true)
+      @$scope.$watch('global_settings', updateLiveDemoDebounce, true)
 
     getOptions: (liveDemo = false) ->
       options = $.extend(true, {company: @$scope.company}, @$scope.brand_settings)
@@ -108,7 +110,6 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
         (response) => console.log(response.data)
       )
 
-
     initLiveDemo: ->
       demoDocument = @getLiveDemoDocument();
       demoDocument.write('<body>' + @getCode(@getOptions(true)) + '</body>');
@@ -118,5 +119,6 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
       demoWindow = @getLiveDemoDocument().dp_loader;
       if (demoWindow)
         demoWindow.emitter.emit('reloadOptions', @getOptions(true))
+        demoWindow.emitter.emit('reloadSettings', @$scope.global_settings)
 
   Admin_Portal_Ctrl_WidgetEditor.EXPORT_CTRL()
