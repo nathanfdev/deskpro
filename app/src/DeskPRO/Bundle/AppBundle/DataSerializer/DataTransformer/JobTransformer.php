@@ -30,43 +30,40 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\JobQueue;
+namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
-use Application\DeskPRO\Entity\Job;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Route;
-use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 
 /**
- * Class JobController.
- *
- * @Route("/mass_actions")
+ * Class JobTransformer.
  */
-class JobController extends CrudController
+class JobTransformer extends AbstractDataSerializerTransformer
 {
-    public static $entity = Job::class;
+    /**
+     * @param DataTransformerRequest $transformation_request
+     *
+     * @return mixed
+     */
+    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
+    {
+        return [
+            'id',
+            'status',
+            'status_code',
+            'date_touch',
+            'date_created',
+            'date_next_try',
+            'date_last_try',
+        ];
+    }
 
     /**
-     * @Post("/", name="mass_action_create")
+     * @param DataTransformerRequest $transformation_request
      *
-     * @param Request $request
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return mixed
      */
-    public function postAction(Request $request)
+    public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        /** @var \Application\DeskPRO\JobQueue\JobQueue $queue */
-        $queue = $this->get('job.queue');
-        $data  = $request->request->all();
-        /** @var \Application\DeskPRO\Entity\Job $job */
-        $job = $queue->add($data['jobType'], $data['params']);
-
-        return View::create(
-            ['job' => $job->getId()],
-            Response::HTTP_OK
-        );
+        return [];
     }
 }

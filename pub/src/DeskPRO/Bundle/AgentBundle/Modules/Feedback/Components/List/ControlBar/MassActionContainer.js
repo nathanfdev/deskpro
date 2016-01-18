@@ -4,8 +4,7 @@ import { MassActionBarContainer }
 import { submitMassActions } from '../../../../Application/Actions/massActions';
 import { selectedSelector } from '../../../../Application/Selectors/massActions';
 import { massActionsSelector, isCommentsSelector, navItemSelector } from '../../../Selectors/list';
-import { deleteComment, approveComment }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackCommentsActions';
+import { applyParams, loadIndicator } from '../../../Actions/FeedbackListActions';
 
 import { connect } from 'react-redux';
 @connect(state => ({
@@ -30,18 +29,32 @@ export class MassActionContainer extends Component {
     const content = isComments ? 'feedback_comments' : 'feedback';
     if (navItem && navItem.get('awaiting_validation')) {
       const deleteAction = () => {
-        return dispatch(submitMassActions('publish_mass', {
-          ids: selected,
-          content: content,
-          actions: { delete: true }
-        }));
+        return dispatch(submitMassActions(
+          {
+            jobType: 'publish_mass',
+            params: {
+              ids: selected,
+              content: content,
+              actions: { delete: true }
+            },
+            loadIndicatorAction: loadIndicator,
+            reloadListAction: applyParams
+          }
+        ));
       };
       const approveAction = () => {
-        return dispatch(submitMassActions('publish_mass', {
-          ids: selected,
-          content: content,
-          actions: { approve: true }
-        }));
+        return dispatch(submitMassActions(
+          {
+            jobType: 'publish_mass',
+            params: {
+              ids: selected,
+              content: content,
+              actions: { approve: true }
+            },
+            loadIndicatorAction: loadIndicator,
+            reloadListAction: applyParams
+          }
+        ));
       };
       return [
         { label: 'Approve', type: 'button', onClick: approveAction },
@@ -57,7 +70,9 @@ export class MassActionContainer extends Component {
     const config = {
       actions: this.choiceActions(),
       jobType: 'publish_mass',
-      content: isComments ? 'feedback_comments' : 'feedback'
+      content: isComments ? 'feedback_comments' : 'feedback',
+      loadIndicatorAction: loadIndicator,
+      reloadListAction: applyParams
     };
 
 

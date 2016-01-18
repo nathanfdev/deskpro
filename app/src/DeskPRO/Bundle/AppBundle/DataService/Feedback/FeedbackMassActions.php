@@ -43,7 +43,8 @@ class FeedbackMassActions implements MassActionsPreprocessorInterface
     private $params;
     private $statusCategory;
     private $category;
-    private $customCategory;
+    private $customCategoryValue;
+    private $customDef;
     private $addLabels;
     private $removeLabels;
     private $firstActiveStatusCategory;
@@ -65,10 +66,10 @@ class FeedbackMassActions implements MassActionsPreprocessorInterface
                     $this->category = $this->em->getRepository('DeskPRO:FeedbackCategory')->find($value);
                     break;
                 case 'custom_category':
-                    $this->customCategory = new CustomDataFeedback();
-                    $customDef            = $this->em->getRepository('DeskPRO:CustomDefFeedback')
+                    $this->customCategoryValue = $value;
+                    $this->customDef           = $this->em
+                        ->getRepository('DeskPRO:CustomDefFeedback')
                         ->findOneBy(['title' => 'Category']);
-                    $this->customCategory->setField($customDef);
                     break;
                 case 'addLabels':
                     $this->addLabels = $value;
@@ -113,7 +114,11 @@ class FeedbackMassActions implements MassActionsPreprocessorInterface
                     $feedback->setCategory($this->category);
                     break;
                 case 'custom_category':
-                    $feedback->addCustomData($this->customCategory);
+                    $feedback->resetCustomData();
+                    $customCategory = new CustomDataFeedback();
+                    $customCategory->setInput($this->customCategoryValue);
+                    $customCategory->setField($this->customDef);
+                    $feedback->addCustomData($customCategory);
                     break;
                 case 'addLabels':
                     foreach ($this->addLabels as $string) {

@@ -18,15 +18,29 @@ export const resetParam = createAction(
     param => param
 );
 
+export const getJobStatus = createAction(
+  'APP_GET_JOB_STATUS',
+  (id, reloadListAction) => (dispatch) =>
+    DpApi.sendGet('DP_API/mass_actions/' + id)
+      .success(response => {
+        if (response.data.status !== 'complete') {
+          setTimeout(() => dispatch(getJobStatus(id, reloadListAction)), 2000);
+        } else {
+          return dispatch(reloadListAction());
+        }
+      })
+);
 
 export const submitMassActions = createAction(
   'APP_MASS_ACTIONS_SUBMIT',
-  (jobType, params) => (dispatch) => new Promise(resolve =>
-    DpApi.sendPost('DP_API/mass_action', {jobType: jobType, params: params})
+  (data) => (dispatch) => new Promise(resolve =>
+    DpApi.sendPost('DP_API/mass_actions/', { jobType: data.jobType, params: data.params })
       .success(response => {
-        console.log(response);
+        console.log('Job', response);
         dispatch(toggleMassAction());
         dispatch(cancelMassActions());
+        dispatch(data.loadIndicatorAction());
+        setTimeout(() => dispatch(getJobStatus(response.job, data.reloadListAction)), 350);
         return resolve(response);
       }))
 );
