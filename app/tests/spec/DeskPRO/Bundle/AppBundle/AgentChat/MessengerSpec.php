@@ -42,15 +42,21 @@ use DeskPRO\Bundle\AppBundle\AgentChat\Messenger;
 use DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat as AgentChatEntity;
 use PhpSpec\ObjectBehavior;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @mixin Messenger
  */
 class MessengerSpec extends ObjectBehavior
 {
-    public function let(EntityManager $em, DepartmentDataService $dataService, AbstractEntityRepository $repo, AgentChatEntity $chat)
+    public function let(
+        EntityManager $em,
+        DepartmentDataService $dataService,
+        AbstractEntityRepository $repo,
+        AgentChatEntity $chat,
+        EventDispatcherInterface $event_dispatcher)
     {
-        $this->beConstructedWith($em, $dataService);
+        $this->beConstructedWith($em, $dataService, $event_dispatcher);
         $em->getRepository('App:AgentChat')->willReturn($repo);
         $repo->find(1)->willReturn($chat);
         $chat->getId()->willReturn(1);
