@@ -1,13 +1,13 @@
 import React, { PropTypes } from 'react';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
-import { AssignForm } from './AssignForm/AssignForm';
+import { AssignForm } from './AssignForm';
 import { AssigneeAvatar } from './AssigneeAvatar';
 
 export class AssignButton extends React.Component {
 
   static propTypes = {
-    onSetEditing: PropTypes.func.isRequired,
+    onSetEditing: PropTypes.func,
     onAssign: PropTypes.func.isRequired,
     task: PropTypes.object
   };
@@ -25,14 +25,16 @@ export class AssignButton extends React.Component {
   }
 
   onOpenForm = () => {
-    this.props.onSetEditing(true);
+    const { onSetEditing } = this.props;
+    onSetEditing && onSetEditing(true);
     this.setState({
       formOpened: true
     });
   };
 
   closeForm = () => {
-    this.props.onSetEditing(false);
+    const { onSetEditing } = this.props;
+    onSetEditing && onSetEditing(false);
     if (this.isUnmounted) {
       return;
     }

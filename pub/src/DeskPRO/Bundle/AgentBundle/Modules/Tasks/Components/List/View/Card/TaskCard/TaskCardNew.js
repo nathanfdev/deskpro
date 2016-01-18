@@ -14,7 +14,6 @@ import {
   TitleForm,
   DateDue,
   CardProject,
-  ProjectContainer,
   Comments,
   AssignButton,
   AssigneeAvatar
@@ -139,10 +138,9 @@ export class TaskCardNew extends React.Component {
 
         <CardLine>
           <CardLineLeft>
-            <DateDue onChange={this.onChange.bind(this, 'due')} value={due} onSetEditing={this.onSetEditing} />
-            <ProjectContainer project={project}>
-              <CardProject onChange={this.onChange.bind(this, 'project')} />
-            </ProjectContainer>
+            <DateDue onChange={this.onChange.bind(this, 'due')} value={due} onSetEditing={this.onSetEditing}
+                     openBySingleClick={true} />
+            <CardProject project={project} onChange={this.onChange.bind(this, 'project')} openBySingleClick={true} />
           </CardLineLeft>
         </CardLine>
       </Card>

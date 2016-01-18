@@ -8,7 +8,6 @@ import { ShowDetailsButton } from './ShowDetailsButton';
 import { AssignButton } from './AssignButton';
 import { TicketLinkContainer } from './TicketLinkContainer';
 import { CardProject } from './CardProject';
-import { ProjectContainer } from './ProjectContainer';
 import { AssigneeName } from './AssigneeName';
 import { AssigneeAvatar } from './AssigneeAvatar';
 
@@ -23,7 +22,6 @@ export default {
   AssignButton,
   TicketLinkContainer,
   CardProject,
-  ProjectContainer,
   AssigneeName,
   AssigneeAvatar
 };
