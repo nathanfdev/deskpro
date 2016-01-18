@@ -24,7 +24,6 @@ export class ListGroup extends React.Component {
         <CardGroupDivider title={title} />
 
         {children}
-        <NewTaskButton {...this.props} />
       </div>
     );
   }

@@ -60,6 +60,9 @@ class WidgetButtonSetupType extends AbstractType
                     'medium' => 'M',
                     'large'  => 'L',
                 ],
+                'constraints' => [
+                    new Assert\NotBlank(),
+                ],
             ])
             ->add('name', 'text', [
                 'constraints' => [

@@ -1,14 +1,14 @@
 import { createAction } from 'Ampliflux';
 import { loadOnlineAgents } from './peopleActions';
 import { loadOptions, openWidget } from './dpWindowActions';
-import { loadChatPhraseTranslations, loadChatInfo, setChatId, unsetChatId } from '../../Chat/Actions/chatActions';
+import { loadChatPhraseTranslations, loadChatInfo, setChatId, unsetChatId, updateChatInfo } from '../../Chat/Actions/chatActions';
 import { loadTicketDisplayFields } from '../../Ticket/Actions/ticketActions';
-import { widgetSessionCodeSelector } from '../Selectors/bootstrap';
+import { widgetSessionCodeSelector, requireChatLoginSelector, requireChatEmailValidationSelector } from '../Selectors/bootstrap';
 import { widgetHasChatSelector, liveDemoSelector } from '../Selectors/dpWindow';
 import { onlineAgentsCountSelector } from '../RecordStores/Selectors/peopleSelectors';
 import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import PortalPhrases from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
-import history from '../../../Services/history';
+import $ from 'jquery';
 
 export const ajaxOptions = {crossDomain: true, dataType: 'json'};
 export const addSessionCode = (state, params = {}) => {
@@ -28,12 +28,33 @@ export const getSession = createAction(
   )
 );
 
-export const getSettings = createAction(
-  'WIDGET_GET_SETTINGS',
-  () => new Promise(resolve =>
+export const setSettings = createAction('WIDGET_SET_SETTINGS', settings => $.extend(true, {}, settings));
+export const reloadSettings = createAction(
+  'WIDGET_RELOAD_SETTINGS',
+    settings => (dispatch, getState) => {
+      const state = getState();
+      const requireChatLogin = requireChatLoginSelector(state);
+      const requireChatEmailValidation = requireChatEmailValidationSelector(state);
+
+      dispatch(setSettings(settings));
+
+      // Display require chat login changes
+      if (settings.chat.require_login !== requireChatLogin) {
+        dispatch(openWidget());
+      }
+
+      // Display require email validation changes
+      if (settings.chat.email_validation !== requireChatEmailValidation) {
+        dispatch(openWidget());
+      }
+    }
+);
+export const loadSettings = createAction(
+  'WIDGET_LOAD_SETTINGS',
+  () => dispatch =>
     DpApi
       .sendGet('DP_API/widget/settings', {...ajaxOptions})
-      .success(response => resolve(response)))
+      .success(response => dispatch(setSettings(response)))
 );
 
 export const loadPortalPhraseTranslations = createAction(
@@ -67,15 +88,8 @@ export const chatResume = createAction(
       }
 
       dispatch(setChatId(storedChatId));
+      dispatch(updateChatInfo(chatInfo));
       dispatch(openWidget());
-
-      if (chatInfo.agent) {
-        history.replace('/chat/active');
-      } else if (chatInfo.need_validate_email) {
-        history.replace('/chat/validation/email');
-      } else {
-        history.replace('/chat/waiting');
-      }
     });
 
     return promise;
@@ -88,7 +102,7 @@ export const bootstrapWidget = createAction(
     Promise.all([
       dispatch(loadOnlineAgents()),
       dispatch(getSession()),
-      dispatch(getSettings()),
+      dispatch(loadSettings()),
       dispatch(loadOptions(window.DP_OPTIONS)),
       dispatch(loadPortalPhraseTranslations()),
       dispatch(loadChatPhraseTranslations()),

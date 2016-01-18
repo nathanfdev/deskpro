@@ -34,7 +34,13 @@ export class ChatLoginContainer extends React.Component {
 
   onOpenLoginPopup = event => {
     event.preventDefault();
-    this.props.dispatch(openLoginWindow());
+
+    const { liveDemo, dispatch } = this.props;
+    if (liveDemo) {
+      return;
+    }
+
+    dispatch(openLoginWindow());
   };
 
   pollingRequest = () => {

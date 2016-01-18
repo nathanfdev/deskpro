@@ -112,68 +112,69 @@
                     <h4><span class="title-text">Require login</span></h4>
                 </div>
 
-                <div class="switcher">
-                    <button dp-toggle-switch ng-model="global_settings.chat.email_validation"></button>
-                    <h4><span class="title-text">Email validation</span></h4>
-                </div>
-
-                <div class="switcher">
+                <div class="switcher" ng-if="!global_settings.chat.require_login">
                     <button dp-toggle-switch ng-model="brand_settings.chat.request_user_info"></button>
                     <h4><span class="title-text">Request Name/Email before Chat Commences</span></h4>
-                </div>
 
-                <ul class="options" ng-if="brand_settings.chat.request_user_info">
-                    <li>
-                        <label class="option-label">Begin chat mode:</label>
-                        <div class="option-group">
-                            <select ng-model="brand_settings.chat.begin_mode">
-                                <option value="conversation">Conversation Style</option>
-                                <option value="form">Form Style</option>
-                            </select>
-                        </div>
-                    </li>
-                </ul>
+                    <ul class="options" ng-if="brand_settings.chat.request_user_info">
+                        <li>
+                            <label class="option-label">Begin chat mode:</label>
+                            <div class="option-group">
+                                <select ng-model="brand_settings.chat.begin_mode">
+                                    <option value="conversation">Conversation Style</option>
+                                    <option value="form">Form Style</option>
+                                </select>
+                            </div>
+                        </li>
+                        <li>
+                            <label class="option-label">Email validation:</label>
+                            <div class="option-group">
+                                <input type="checkbox" ng-model="global_settings.chat.email_validation" />
+                            </div>
+                        </li>
+                    </ul>
+                </div>
 
                 <div class="switcher">
                     <button dp-toggle-switch ng-model="brand_settings.chat.proactive"></button>
                     <h4><span class="title-text">Proactive Chat</span></h4>
-                </div>
 
-                <ul class="options" ng-if="brand_settings.chat.proactive">
-                    <li>
-                        <label class="option-label">Agent Title:</label>
-                        <div class="option-group">
-                            <input type="text" ng-model="brand_settings.chat.popup.title" ng-disabled="!brand_settings.chat.enabled" />
-                        </div>
-                    </li>
-                    <li>
-                        <label class="option-label">Agent Message:</label>
-                        <div class="option-group">
-                            <textarea ng-model="brand_settings.chat.popup.message" ng-disabled="!brand_settings.chat.enabled"></textarea>
-                        </div>
-                    </li>
-                    <li>
-                        <label class="option-label">Reply Form Type:</label>
-                        <div class="option-group">
-                            <select ng-model="brand_settings.chat.popup.reply_type" ng-disabled="!brand_settings.chat.enabled">
-                                <option value="buttons">Accept Button</option>
-                                <option value="reply">Reply Form</option>
-                            </select>
-                        </div>
-                    </li>
-                    <li>
-                        <label class="option-label">Waiting Timeout:</label>
-                        <div class="option-group">
-                            <input type="text" ng-model="brand_settings.chat.waiting_timeout" ng-disabled="!brand_settings.chat.enabled" />
-                        </div>
-                    </li>
-                    <li>
-                        <label class="option-label">Online agent polling timeout:</label>
-                        <div class="option-group">
-                            <input type="text" ng-model="brand_settings.widget.agent_polling_timeout" ng-disabled="!brand_settings.chat.enabled" />
-                        </div>
-                    </li>
-                </ul>
+                    <ul class="options" ng-if="brand_settings.chat.proactive">
+                        <li>
+                            <label class="option-label">Agent Title:</label>
+                            <div class="option-group">
+                                <input type="text" ng-model="brand_settings.chat.popup.title" ng-disabled="!brand_settings.chat.enabled" />
+                            </div>
+                        </li>
+                        <li>
+                            <label class="option-label">Agent Message:</label>
+                            <div class="option-group">
+                                <textarea ng-model="brand_settings.chat.popup.message" ng-disabled="!brand_settings.chat.enabled"></textarea>
+                            </div>
+                        </li>
+                        <li>
+                            <label class="option-label">Reply Form Type:</label>
+                            <div class="option-group">
+                                <select ng-model="brand_settings.chat.popup.reply_type" ng-disabled="!brand_settings.chat.enabled">
+                                    <option value="buttons">Accept Button</option>
+                                    <option value="reply">Reply Form</option>
+                                </select>
+                            </div>
+                        </li>
+                        <li>
+                            <label class="option-label">Waiting Timeout:</label>
+                            <div class="option-group">
+                                <input type="text" ng-model="brand_settings.chat.waiting_timeout" ng-disabled="!brand_settings.chat.enabled" />
+                            </div>
+                        </li>
+                        <li>
+                            <label class="option-label">Online agent polling timeout:</label>
+                            <div class="option-group">
+                                <input type="text" ng-model="brand_settings.widget.agent_polling_timeout" ng-disabled="!brand_settings.chat.enabled" />
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
             <div class="content-section">
@@ -182,19 +183,19 @@
                     <li>
                         <ul class="option-group no-label option-group-inline float-left">
                             <li>
-                                <input type="radio" ng-model="brand_settings.ticket_department" value="default" />
+                                <input type="radio" ng-model="brand_settings.ticket.select_department" value="default" />
                                 <label>Default Department</label>
 
                                 <div class="sub-options">
-                                    <select ng-model="brand_settings.ticket_department">
-                                        <option value="S">S</option>
-                                        <option value="M">M</option>
-                                        <option value="L">L</option>
+                                    <select ng-model="brand_settings.ticket.default_department">
+                                        <option ng-repeat="option in departments" ng-value="option.id" ng-selected="brand_settings.ticket.default_department == option.id">
+                                            {{ ng_var('option.title') }}
+                                        </option>
                                     </select>
                                 </div>
                             </li>
                             <li>
-                                <input type="radio" ng-model="brand_settings.ticket_department" value="select" />
+                                <input type="radio" ng-model="brand_settings.ticket.select_department" value="custom" />
                                 <label>User Selects Department</label>
                             </li>
                         </ul>

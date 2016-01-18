@@ -34,6 +34,11 @@ export class TaskCard extends BaseTaskCard {
     dispatch: PropTypes.func.isRequired
   };
 
+  onChange(prop, value) {
+    const { dispatch, task } = this.props;
+    return dispatch(editTask(task.get('id'), {[prop]: value}));
+  }
+
   onAssign = (assignee) => {
     const { dispatch, task } = this.props;
     return dispatch(editTask(task.get('id'), assignee));
@@ -49,7 +54,8 @@ export class TaskCard extends BaseTaskCard {
                    onChange={onChangeDate}
                    onSetEditing={onSetEditing} />
 
-          <CardProject projectId={task.get('project')} onSetEditing={onSetEditing} />
+          <CardProject projectId={task.get('project')} onSetEditing={onSetEditing}
+                       onChange={this.onChange.bind(this, 'project')} />
           {this.state.ticketLink && <TicketLinkContainer ticket={this.state.ticketLink} />}
         </CardLineLeft>
         <CardLineRight>

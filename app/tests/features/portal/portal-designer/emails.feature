@@ -3,6 +3,9 @@ Feature: Search users by emails
   As a DeskPRO admin
   I want to search people by their emails
 
+  Background: Fresh database
+    Given I install the fresh data set
+
   Scenario: I search for users
     Given I am authenticated as admin
     When I send a GET request to "/portal/api/emails?target=user&term=a"
@@ -13,9 +16,7 @@ Feature: Search users by emails
     When I send a GET request to "/portal/api/emails?target=agent&term=a"
     Then the response status code should be 200
 
-  # ToDo: fix portal controllers getUser() after "I am authenticated as admin"
-
-#  Scenario: I retrieve my email
-#    Given I am authenticated as admin
-#    When I send a GET request to "/portal/api/me/email"
-#    Then the response status code should be 200
+  Scenario: I retrieve my email
+    Given I am authenticated as admin
+    When I send a GET request to "/portal/api/me/email"
+    Then the response status code should be 200

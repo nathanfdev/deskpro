@@ -33,19 +33,22 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class WidgetBaseSetupType.
+ * Class WidgetTicketSetupType.
  */
-class WidgetBaseSetupType extends AbstractType
+class WidgetTicketSetupType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function getName()
     {
-        return 'widget_base_setup';
+        return 'widget_ticket_setup';
     }
 
     /**
@@ -54,25 +57,31 @@ class WidgetBaseSetupType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('type', 'choice', [
+            ->add('select_department', 'choice', [
                 'choices' => [
-                    'column' => 'Column',
-                    'bubble' => 'Corner',
+                    'default' => 'Default department',
+                    'custom'  => 'User selects department',
                 ],
                 'constraints' => [
                     new Assert\NotBlank(),
                 ],
             ])
-            ->add('position', 'choice', [
-                'choices' => [
-                    'left'  => 'Left',
-                    'right' => 'Right',
-                ],
-                'constraints' => [
-                    new Assert\NotBlank(),
-                ],
-            ])
-            ->add('agent_polling_timeout', 'number')
+            ->add('default_department', 'number')
         ;
+
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onDefaultDepartment']);
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onDefaultDepartment(FormEvent $event)
+    {
+        $form = $event->getForm();
+        $data = $event->getData();
+
+        if ($data['select_department'] === 'default' && !$data['default_department']) {
+            $form->get('default_department')->addError(new FormError('api.error_codes.required'));
+        }
     }
 }

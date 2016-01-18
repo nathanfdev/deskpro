@@ -1,5 +1,8 @@
 Feature: Serving custom data on the portal
 
+  Background: Fresh database
+    Given I install the fresh data set
+
   Scenario: I check SCSS variable custom value is applied to the portal
     Given I am authenticated as admin
     And I send a PUT request to "/portal/api/style/edit-theme-set/variable-values" with body:
@@ -67,7 +70,7 @@ Feature: Serving custom data on the portal
       }
     """
     And I send a GET request to "/portal/api/style/edit-theme-set/commit"
-    When I send a GET request to "/en"
+    When I send a GET request to "/"
     Then the response should contain "var custom_js = 1 + 1;"
 
   # ToDo: check assets are served when file upload step is done

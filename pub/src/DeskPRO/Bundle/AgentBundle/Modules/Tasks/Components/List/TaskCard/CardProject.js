@@ -67,7 +67,6 @@ export class CardProject extends React.Component {
   onChange = (value) => {
     const { onChange } = this.props;
     onChange && onChange(value[0] || null);
-    this.closeForm();
   };
 
   render() {
@@ -85,7 +84,7 @@ export class CardProject extends React.Component {
 
         <Detached isOpen={this.state.formOpened}
                   positionTarget={this}
-                  positionAt="center bottom"
+                  positionAt="left bottom"
                   zIndex={1002}>
 
           <ClickOut onClickOut={this.closeForm} ignoreNodes={[this.refs.button, '.one-column']}>

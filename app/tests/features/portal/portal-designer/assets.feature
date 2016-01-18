@@ -1,5 +1,8 @@
 Feature: Assets management
 
+  Background: Fresh database
+    Given I install the fresh data set
+
   Scenario: I get list of assets
     Given I am authenticated as admin
     When I send a GET request to "/portal/api/style/edit-theme-set/assets"

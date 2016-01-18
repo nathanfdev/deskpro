@@ -1,5 +1,8 @@
 Feature: Buffering portal changes in the edit ThemeSet
 
+  Background: Fresh database
+    Given I install the fresh data set
+
   Scenario: I discard edit ThemeSet changes
     Given I am authenticated as admin
     When I send a GET request to "/portal/api/style/edit-theme-set/discard"

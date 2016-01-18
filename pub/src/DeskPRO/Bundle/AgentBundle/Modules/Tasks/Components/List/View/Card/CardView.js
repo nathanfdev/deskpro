@@ -36,7 +36,7 @@ export class CardView extends React.Component {
           </ListGroup>
         )}
 
-        {!filtered.length && <NewTaskButton />}
+        <NewTaskButton />
 
         <CustomCardDragLayer>
           <TaskCardPreviewContainer>

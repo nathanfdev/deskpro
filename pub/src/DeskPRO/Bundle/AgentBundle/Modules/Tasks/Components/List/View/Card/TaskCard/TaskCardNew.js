@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { listParamsNavSelector } from '../../../../../Selectors/list';
+import { addTask } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Actions/listActions';
 import Immutable from 'immutable';
 import { SaveTaskButton } from './SaveTaskButton';
 import {
@@ -22,7 +23,8 @@ import {
 export class TaskCardNew extends React.Component {
 
   static propTypes = {
-    onSaveTask: PropTypes.func
+    onClose: PropTypes.func,
+    dispatch: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -69,8 +71,7 @@ export class TaskCardNew extends React.Component {
   onChange(prop, value) {
     const update = this.state.isChanged;
     this.model[prop] = value;
-    this.setState({isChanged: true});
-    update && this.forceUpdate();
+    update ? this.forceUpdate() : this.setState({isChanged: true});
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -85,39 +86,27 @@ export class TaskCardNew extends React.Component {
     });
   };
 
-  // todo
-  //onSubmit(title) {
-  //  const { dispatch, onClose } = this.props;
-  //  const submitData = {
-  //    title: title,
-  //    task_type: 'task',
-  //    visibility: 'public',
-  //    urgency: 1,
-  //    date_due: this.getDateDue(),
-  //    project: this.getProject()
-  //  };
-  //
-  //  const agent = this.getAgent();
-  //  const team = this.getTeam();
-  //  const department = this.getDepartment();
-  //
-  //  if (agent) {
-  //    submitData.agents = [agent];
-  //  }
-  //  if (team) {
-  //    submitData.teams = [team];
-  //  }
-  //  if (department) {
-  //    submitData.departments = [department];
-  //  }
-  //
-  //  this.setState({
-  //    submit: true
-  //  });
-  //
-  //  const promise = dispatch(addTask(submitData));
-  //  promise.then(() => onClose());
-  //};
+  onSave = () => {
+    const { dispatch, onClose } = this.props;
+    const submitData = {
+      title: this.model.title,
+      task_type: 'task',
+      visibility: 'public',
+      urgency: 1,
+      date_due: this.model.due,
+      project: this.model.project,
+      agents: this.model.assignee.get('agents') || [],
+      departments: this.model.assignee.get('departments') || [],
+      teams: this.model.assignee.get('teams') || []
+    };
+
+    this.setState({
+      submit: true
+    });
+
+    const promise = dispatch(addTask(submitData));
+    promise.then(() => onClose && onClose());
+  };
 
   render() {
     const { submit } = this.props;
