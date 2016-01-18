@@ -1080,5 +1080,5 @@ return array(
     ####################################################################################################################
 
     'portal.chat.email_validation' => false,
-    'portal.chat.require_login'    => true,
+    'portal.chat.require_login'    => false,
 );
