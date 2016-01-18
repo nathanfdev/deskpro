@@ -1,14 +1,13 @@
 import { createAction } from 'Ampliflux';
 import { loadOnlineAgents } from './peopleActions';
 import { loadOptions, openWidget } from './dpWindowActions';
-import { loadChatPhraseTranslations, loadChatInfo, setChatId, unsetChatId } from '../../Chat/Actions/chatActions';
+import { loadChatPhraseTranslations, loadChatInfo, setChatId, unsetChatId, updateChatInfo } from '../../Chat/Actions/chatActions';
 import { loadTicketDisplayFields } from '../../Ticket/Actions/ticketActions';
-import { widgetSessionCodeSelector } from '../Selectors/bootstrap';
+import { widgetSessionCodeSelector, requireChatLoginSelector, requireChatEmailValidationSelector } from '../Selectors/bootstrap';
 import { widgetHasChatSelector, liveDemoSelector } from '../Selectors/dpWindow';
 import { onlineAgentsCountSelector } from '../RecordStores/Selectors/peopleSelectors';
 import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import PortalPhrases from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
-import history from '../../../Services/history';
 import $ from 'jquery';
 
 export const ajaxOptions = {crossDomain: true, dataType: 'json'};
@@ -29,7 +28,26 @@ export const getSession = createAction(
   )
 );
 
-export const reloadSettings = createAction('WIDGET_RELOAD_SETTINGS', settings => $.extend(true, {}, settings));
+export const reloadSettings = createAction(
+  'WIDGET_RELOAD_SETTINGS',
+    settings => (dispatch, getState) => {
+      const state = getState();
+      const requireChatLogin = requireChatLoginSelector(state);
+      const requireChatEmailValidation = requireChatEmailValidationSelector(state);
+
+      // Display require chat login changes
+      if (settings.chat.require_login !== requireChatLogin) {
+        // todo
+      }
+
+      // Display require email validation changes
+      if (settings.chat.email_validation !== requireChatEmailValidation) {
+        // todo
+      }
+
+      return $.extend(true, {}, settings);
+    }
+);
 export const loadSettings = createAction(
   'WIDGET_LOAD_SETTINGS',
   () => new Promise(resolve =>
@@ -69,15 +87,8 @@ export const chatResume = createAction(
       }
 
       dispatch(setChatId(storedChatId));
+      dispatch(updateChatInfo(chatInfo));
       dispatch(openWidget());
-
-      if (chatInfo.agent) {
-        history.replace('/chat/active');
-      } else if (chatInfo.need_validate_email) {
-        history.replace('/chat/validation/email');
-      } else {
-        history.replace('/chat/waiting');
-      }
     });
 
     return promise;

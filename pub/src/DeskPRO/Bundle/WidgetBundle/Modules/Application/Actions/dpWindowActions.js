@@ -6,12 +6,16 @@ import {
   widgetHasChatSelector,
   helpPopupTitleSelector,
   helpPopupMessageSelector,
-  helpPopupReplyTypeSelector
+  helpPopupReplyTypeSelector,
+  liveDemoSelector
 } from '../Selectors/dpWindow';
-import $ from 'jquery';
-import history from '../../../Services/history';
+import { requireChatLoginSelector } from '../Selectors/bootstrap';
+import { onlineAgentsCountSelector } from '../RecordStores/Selectors/peopleSelectors';
+import { chatIdSelector, agentIdSelector, dateEndedSelector, needValidateEmailSelector } from '../../Chat/Selectors/chat';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 import { addSessionCode } from './bootstrapActions';
+import $ from 'jquery';
+import history from '../../../Services/history';
 
 export const openChatBeginStage = chatBeginMode => {
   switch (chatBeginMode) {
@@ -28,8 +32,43 @@ export const openChatBeginStage = chatBeginMode => {
   }
 };
 
-export const openWidget = createAction('WIDGET_OPEN');
 export const closeWidget = createAction('WIDGET_CLOSE');
+export const openWidget = createAction(
+  'WIDGET_OPEN',
+  () => (dispatch, getState) => {
+    const state = getState();
+
+    const widgetHasChat = widgetHasChatSelector(state);
+    const requireChatLogin = requireChatLoginSelector(state);
+    const agentsCounts = onlineAgentsCountSelector(state);
+    const liveDemo = liveDemoSelector(state);
+    const chatId = chatIdSelector(state);
+    const chatBeginMode = chatBeginModeSelector(state);
+    const agentId = agentIdSelector(state);
+    const dateEnded = dateEndedSelector(state);
+    const needValidateEmail = needValidateEmailSelector(state);
+
+    if (widgetHasChat && (liveDemo || agentsCounts > 0)) {
+      if (chatId && !liveDemo) {
+        if (agentId || dateEnded) {
+          history.replace('/chat/active');
+        } else if (needValidateEmail) {
+          history.replace('/chat/validation/email');
+        } else {
+          history.replace('/chat/waiting');
+        }
+      } else if (requireChatLogin) {
+        history.replace('/chat/validation/login');
+      } else {
+        openChatBeginStage(chatBeginMode);
+      }
+    } else {
+      history.replace('/ticket/form');
+    }
+
+    return null;
+  }
+);
 
 export const widgetResize = createAction(
   'WIDGET_RESIZE',
@@ -66,6 +105,8 @@ export const reloadOptions = createAction(
     const chatEnabled = widgetHasChatSelector(state);
     const chatBeginMode = chatBeginModeSelector(state);
 
+    dispatch(loadOptions(options));
+
     // Display widget type changes
     if (widgetType !== options.widget.type) {
       if (widgetOpened) {
@@ -75,27 +116,14 @@ export const reloadOptions = createAction(
       setTimeout(() => dispatch(openWidget()), 350);
     }
 
-    const openChat = () => openChatBeginStage(options.chat.request_user_info ? options.chat.begin_mode : 'simple');
-
     // Display chat enabled changes
     if (chatEnabled !== options.chat.enabled) {
-      if (options.chat.enabled) {
-        openChat();
-      } else {
-        history.replace('/ticket/form');
-      }
-
-      if (!widgetOpened) {
-        dispatch(openWidget());
-      }
+      dispatch(openWidget());
     }
 
     // Display chat begin stage changes
     if (options.chat.enabled && ((chatBeginMode !== 'simple' && !options.chat.request_user_info) || chatBeginMode !== options.chat.begin_mode)) {
-      openChat();
-      if (!widgetOpened) {
-        dispatch(openWidget());
-      }
+      dispatch(openWidget());
     }
 
     // Display chat popup changes
@@ -108,7 +136,6 @@ export const reloadOptions = createAction(
       dispatch(closeWidget());
     }
 
-    dispatch(loadOptions(options));
     dispatch(windowResize());
   }
 );
