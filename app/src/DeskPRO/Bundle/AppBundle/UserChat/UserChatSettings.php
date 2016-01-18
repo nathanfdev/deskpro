@@ -61,7 +61,7 @@ class UserChatSettings
      */
     public function isPortalEmailValidation()
     {
-        return $this->getGlobalSettings()->get(self::EMAIL_VALIDATION);
+        return (bool) $this->getGlobalSettings()->get(self::EMAIL_VALIDATION);
     }
 
     /**
@@ -69,7 +69,7 @@ class UserChatSettings
      */
     public function isPortalRequireLogin()
     {
-        return $this->getGlobalSettings()->get(self::REQUIRE_LOGIN);
+        return (bool) $this->getGlobalSettings()->get(self::REQUIRE_LOGIN);
     }
 
     /**

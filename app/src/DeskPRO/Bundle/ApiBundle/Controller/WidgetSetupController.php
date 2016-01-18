@@ -106,12 +106,12 @@ class WidgetSetupController extends BaseController
         }
 
         // Save global settings
-        $new_global_settings = $form->getData()['global'];
+        $new_global_chat_settings = $form->getData()['global']['chat'];
 
         /** @var \Application\DeskPRO\EntityRepository\Setting $setting_repo */
         $setting_repo = $this->getRepository('DeskPRO:Setting');
-        $setting_repo->updateSetting(UserChatSettings::EMAIL_VALIDATION, $new_global_settings['chat']['email_validation']);
-        $setting_repo->updateSetting(UserChatSettings::REQUIRE_LOGIN, $new_global_settings['chat']['require_login']);
+        $setting_repo->updateSetting(UserChatSettings::EMAIL_VALIDATION, $new_global_chat_settings['email_validation']);
+        $setting_repo->updateSetting(UserChatSettings::REQUIRE_LOGIN, $new_global_chat_settings['require_login']);
 
         // Save brand settings
         // Use datastore for now, should have brand id in future
