@@ -384,7 +384,9 @@ class TicketSearchController extends AbstractController
             if (!$date) {
                 try {
                     $date = \DateTime::createFromFormat('Y-m-d', $date_input, new \DateTimeZone('UTC'));
-                    $date->setTime(0, 0, 0);
+                    if ($date) {
+                        $date->setTime(0, 0, 0);
+                    }
                 } catch (\Exception $e) {
                     $date = null;
                 }
