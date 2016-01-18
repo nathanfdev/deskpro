@@ -56,6 +56,7 @@ class WidgetBrandSetupType extends AbstractType
             ->add('widget', new WidgetBaseSetupType())
             ->add('button', new WidgetButtonSetupType())
             ->add('chat', new WidgetChatSetupType())
+            ->add('ticket', new WidgetTicketSetupType())
         ;
     }
 }

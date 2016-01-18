@@ -32,22 +32,37 @@ Feature: Widget Setup
       },
       "brand": {
         "widget": {
-          "type": "bubble"
+          "type": "bubble",
+          "position": "left"
         },
         "button": {
-          "name": "Help"
+          "name": "Help",
+          "size": "medium"
         },
         "chat": {
-          "enabled": true
+          "enabled": true,
+          "begin_mode": "form",
+          "popup": {
+            "reply_type": "buttons"
+          }
+        },
+        "ticket": {
+          "select_department": "custom"
         }
       }
     }
     """
     Then the response should be in JSON
+    And print last JSON response
     And the response status code should be 204
     When I send a GET request to "/api/v2/widget/setup"
     And the JSON node "data.settings.global.chat.require_login" should be equal to "1"
     And the JSON node "data.settings.global.chat.email_validation" should be equal to "1"
     And the JSON node "data.settings.brand.widget.type" should be equal to "bubble"
+    And the JSON node "data.settings.brand.widget.position" should be equal to "left"
     And the JSON node "data.settings.brand.button.name" should be equal to "Help"
+    And the JSON node "data.settings.brand.button.size" should be equal to "medium"
     And the JSON node "data.settings.brand.chat.enabled" should be equal to "1"
+    And the JSON node "data.settings.brand.chat.begin_mode" should be equal to "form"
+    And the JSON node "data.settings.brand.chat.popup.reply_type" should be equal to "buttons"
+    And the JSON node "data.settings.brand.ticket.select_department" should be equal to "custom"

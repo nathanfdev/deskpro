@@ -183,11 +183,11 @@
                     <li>
                         <ul class="option-group no-label option-group-inline float-left">
                             <li>
-                                <input type="radio" ng-model="brand_settings.ticket_department" value="default" />
+                                <input type="radio" ng-model="brand_settings.ticket.select_department" value="default" />
                                 <label>Default Department</label>
 
                                 <div class="sub-options">
-                                    <select ng-model="brand_settings.ticket_department">
+                                    <select ng-model="brand_settings.ticket.default_department">
                                         <option value="S">S</option>
                                         <option value="M">M</option>
                                         <option value="L">L</option>
@@ -195,7 +195,7 @@
                                 </div>
                             </li>
                             <li>
-                                <input type="radio" ng-model="brand_settings.ticket_department" value="select" />
+                                <input type="radio" ng-model="brand_settings.ticket.select_department" value="custom" />
                                 <label>User Selects Department</label>
                             </li>
                         </ul>

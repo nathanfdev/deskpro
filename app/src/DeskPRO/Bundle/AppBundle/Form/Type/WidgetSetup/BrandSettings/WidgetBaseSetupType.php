@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class WidgetBaseSetupType.
@@ -58,11 +59,17 @@ class WidgetBaseSetupType extends AbstractType
                     'column' => 'Column',
                     'bubble' => 'Corner',
                 ],
+                'constraints' => [
+                    new Assert\NotBlank(),
+                ],
             ])
             ->add('position', 'choice', [
                 'choices' => [
                     'left'  => 'Left',
                     'right' => 'Right',
+                ],
+                'constraints' => [
+                    new Assert\NotBlank(),
                 ],
             ])
             ->add('agent_polling_timeout', 'number')

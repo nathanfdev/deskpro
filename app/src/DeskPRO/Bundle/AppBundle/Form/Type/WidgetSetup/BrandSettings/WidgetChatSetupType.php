@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class WidgetChatSetupType.
@@ -61,8 +62,15 @@ class WidgetChatSetupType extends AbstractType
                     'conversation' => 'Conversation',
                     'form'         => 'Form',
                 ],
+                'constraints' => [
+                    new Assert\NotBlank(),
+                ],
             ])
-            ->add('waiting_timeout', 'number')
+            ->add('waiting_timeout', 'number', [
+                'constraints' => [
+                    new Assert\GreaterThan(10),
+                ],
+            ])
             ->add('popup', new WidgetChatPopupSetupType())
         ;
     }

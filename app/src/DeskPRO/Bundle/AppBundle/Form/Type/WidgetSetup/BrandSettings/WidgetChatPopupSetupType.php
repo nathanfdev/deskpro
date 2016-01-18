@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class WidgetChatPopupSetupType.
@@ -59,6 +60,9 @@ class WidgetChatPopupSetupType extends AbstractType
                 'choices' => [
                     'buttons' => 'Accept Button',
                     'reply'   => 'Reply Form',
+                ],
+                'constraints' => [
+                    new Assert\NotBlank(),
                 ],
             ])
         ;
