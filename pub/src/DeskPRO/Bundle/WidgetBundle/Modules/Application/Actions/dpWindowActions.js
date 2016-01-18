@@ -1,21 +1,25 @@
 import { createAction } from 'Ampliflux';
-import {
-  widgetOpenedSelector,
-  widgetTypeSelector,
-  chatBeginModeSelector,
-  widgetHasChatSelector,
-  helpPopupTitleSelector,
-  helpPopupMessageSelector,
-  helpPopupReplyTypeSelector,
-  liveDemoSelector
-} from '../Selectors/dpWindow';
 import { requireChatLoginSelector } from '../Selectors/bootstrap';
 import { onlineAgentsCountSelector } from '../RecordStores/Selectors/peopleSelectors';
-import { chatIdSelector, agentIdSelector, dateEndedSelector, needValidateEmailSelector } from '../../Chat/Selectors/chat';
+import {
+  chatBeginModeSelector,
+  widgetHasChatSelector,
+  widgetRawPositionSelector,
+  helpButtonSelector,
+  helpPopupSelector,
+  liveDemoSelector
+} from '../Selectors/dpWindow';
+import {
+  chatIdSelector,
+  agentIdSelector,
+  dateEndedSelector,
+  needValidateEmailSelector
+} from '../../Chat/Selectors/chat';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 import { addSessionCode } from './bootstrapActions';
 import $ from 'jquery';
 import history from '../../../Services/history';
+import Immutable from 'immutable';
 
 export const openChatBeginStage = chatBeginMode => {
   switch (chatBeginMode) {
@@ -31,6 +35,30 @@ export const openChatBeginStage = chatBeginMode => {
       break;
   }
 };
+
+export const widgetResize = createAction(
+  'WIDGET_RESIZE',
+  () => {
+    const $window = $(window.widgetFrame);
+    return {
+      width: $window.width(),
+      height: $window.height()
+    };
+  }
+);
+
+export const windowResize = createAction(
+  'WINDOW_RESIZE',
+  () => dispatch => {
+    dispatch(widgetResize());
+    const $window = $(parent.window);
+
+    return {
+      width: $window.width(),
+      height: $window.height()
+    };
+  }
+);
 
 export const closeWidget = createAction('WIDGET_CLOSE');
 export const openWidget = createAction(
@@ -66,31 +94,9 @@ export const openWidget = createAction(
       history.replace('/ticket/form');
     }
 
+    dispatch(windowResize());
+
     return null;
-  }
-);
-
-export const widgetResize = createAction(
-  'WIDGET_RESIZE',
-  () => {
-    const $window = $(window.widgetFrame);
-    return {
-      width: $window.width(),
-      height: $window.height()
-    };
-  }
-);
-
-export const windowResize = createAction(
-  'WINDOW_RESIZE',
-  () => dispatch => {
-    dispatch(widgetResize());
-    const $window = $(parent.window);
-
-    return {
-      width: $window.width(),
-      height: $window.height()
-    };
   }
 );
 
@@ -98,45 +104,28 @@ export const loadOptions = createAction('WIDGET_OPTIONS', options => $.extend(tr
 export const reloadOptions = createAction(
   'WIDGET_RELOAD_OPTIONS',
   options => (dispatch, getState) => {
-    const state = getState();
+    if (!options) {
+      return;
+    }
 
-    const widgetOpened = widgetOpenedSelector(state);
-    const widgetType = widgetTypeSelector(state);
-    const chatEnabled = widgetHasChatSelector(state);
-    const chatBeginMode = chatBeginModeSelector(state);
+    const state = getState();
+    const newOptions = Immutable.fromJS($.extend(true, {}, options));
+
+    const buttonOptions = helpButtonSelector(state);
+    const popupOptions = helpPopupSelector(state);
+    const widgetPosition = widgetRawPositionSelector(state);
 
     dispatch(loadOptions(options));
 
-    // Display widget type changes
-    if (widgetType !== options.widget.type) {
-      if (widgetOpened) {
-        dispatch(closeWidget());
-      }
+    const buttonOptionsHaveChanged = !buttonOptions.equals(newOptions.get('button'));
+    const popupOptionsHaveChanged = !popupOptions.equals(newOptions.getIn(['chat', 'popup']));
+    const widgetPositionHasChanged = widgetPosition !== newOptions.getIn(['widget', 'position']);
 
-      setTimeout(() => dispatch(openWidget()), 350);
-    }
-
-    // Display chat enabled changes
-    if (chatEnabled !== options.chat.enabled) {
-      dispatch(openWidget());
-    }
-
-    // Display chat begin stage changes
-    if (options.chat.enabled && ((chatBeginMode !== 'simple' && !options.chat.request_user_info) || chatBeginMode !== options.chat.begin_mode)) {
-      dispatch(openWidget());
-    }
-
-    // Display chat popup changes
-    const popupTitle = helpPopupTitleSelector(state);
-    const popupMessage = helpPopupMessageSelector(state);
-    const popupReplyType = helpPopupReplyTypeSelector(state);
-    const newPopup = options.chat.popup;
-
-    if (widgetOpened && (popupTitle !== newPopup.title || popupMessage !== newPopup.message || popupReplyType !== newPopup.reply_type)) {
+    if (buttonOptionsHaveChanged || popupOptionsHaveChanged) {
       dispatch(closeWidget());
+    } else if (!widgetPositionHasChanged) {
+      setTimeout(() => dispatch(openWidget()), 500);
     }
-
-    dispatch(windowResize());
   }
 );
 
