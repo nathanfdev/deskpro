@@ -64,6 +64,7 @@ class PublishProcessor extends AbstractJobProcessor
     public function setDataOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setRequired(['ids', 'actions', 'content']);
+        $resolver->setAllowedTypes(['content' => 'string']);
     }
 
     /**
@@ -82,7 +83,6 @@ class PublishProcessor extends AbstractJobProcessor
             $this->em->persist($entity);
         }
         $this->em->flush();
-        var_dump($data['actions']);
 
         return true;
     }

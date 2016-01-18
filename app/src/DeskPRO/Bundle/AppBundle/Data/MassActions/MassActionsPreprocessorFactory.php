@@ -32,7 +32,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Data\MassActions;
 
-use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackCommentMassActions;
+use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackCommentsMassActions;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackMassActions;
 use Doctrine\ORM\EntityManager;
 
@@ -50,8 +50,8 @@ class MassActionsPreprocessorFactory
         switch ($content) {
             case 'feedback':
                 return new FeedbackMassActions($em, $params);
-            case 'feedback_comment':
-                return new FeedbackCommentMassActions($em, $params);
+            case 'feedback_comments':
+                return new FeedbackCommentsMassActions($em, $params);
         }
 
         throw new \InvalidArgumentException(
