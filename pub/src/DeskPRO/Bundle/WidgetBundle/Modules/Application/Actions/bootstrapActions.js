@@ -28,6 +28,7 @@ export const getSession = createAction(
   )
 );
 
+export const setSettings = createAction('WIDGET_SET_SETTINGS', settings => $.extend(true, {}, settings));
 export const reloadSettings = createAction(
   'WIDGET_RELOAD_SETTINGS',
     settings => (dispatch, getState) => {
@@ -35,25 +36,25 @@ export const reloadSettings = createAction(
       const requireChatLogin = requireChatLoginSelector(state);
       const requireChatEmailValidation = requireChatEmailValidationSelector(state);
 
+      dispatch(setSettings(settings));
+
       // Display require chat login changes
       if (settings.chat.require_login !== requireChatLogin) {
-        // todo
+        dispatch(openWidget());
       }
 
       // Display require email validation changes
       if (settings.chat.email_validation !== requireChatEmailValidation) {
-        // todo
+        dispatch(openWidget());
       }
-
-      return $.extend(true, {}, settings);
     }
 );
 export const loadSettings = createAction(
   'WIDGET_LOAD_SETTINGS',
-  () => new Promise(resolve =>
+  () => dispatch =>
     DpApi
       .sendGet('DP_API/widget/settings', {...ajaxOptions})
-      .success(response => resolve(response)))
+      .success(response => dispatch(setSettings(response)))
 );
 
 export const loadPortalPhraseTranslations = createAction(

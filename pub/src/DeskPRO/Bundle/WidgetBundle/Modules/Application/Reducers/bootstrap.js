@@ -14,10 +14,7 @@ export default createReducer(initialState, {
   [actions.getSession]: async({
     success: setFullPayload('session')
   }),
-  [actions.reloadSettings]: setFullPayload('settings'),
-  [actions.loadSettings]: async({
-    success: setFullPayload('settings')
-  }),
+  [actions.setSettings]: setFullPayload('settings'),
   [actions.bootstrapWidget]: async({
     done: setValue('loaded', true)
   })
