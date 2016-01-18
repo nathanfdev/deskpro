@@ -124,10 +124,19 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
       demoDocument.write('<body>' + @getCode(@getOptions(true)) + '</body>');
       demoDocument.close();
 
+      @emitter = null
+      interval = setInterval( =>
+        demoWindow = demoDocument.dp_loader;
+        if (demoWindow.emitter)
+          @emitter = demoWindow.emitter
+          @emitter.on('loaded', => alert('loaded'))
+          clearInterval(interval)
+      , 1000)
+
+
     updateLiveDemo: ->
-      demoWindow = @getLiveDemoDocument().dp_loader;
-      if (demoWindow)
-        demoWindow.emitter.emit('reloadOptions', @getOptions(true))
-        demoWindow.emitter.emit('reloadSettings', @$scope.global_settings)
+      if (@emitter)
+        @emitter.emit('reloadOptions', @getOptions(true))
+        @emitter.emit('reloadSettings', @$scope.global_settings)
 
   Admin_Portal_Ctrl_WidgetEditor.EXPORT_CTRL()

@@ -9,6 +9,7 @@ import { onlineAgentsCountSelector } from '../RecordStores/Selectors/peopleSelec
 import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import PortalPhrases from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import $ from 'jquery';
+import emitter from '../../../Services/emitter';
 
 export const ajaxOptions = {crossDomain: true, dataType: 'json'};
 export const addSessionCode = (state, params = {}) => {
@@ -110,7 +111,10 @@ export const bootstrapWidget = createAction(
     ])
     .then(response => {
       const promise = dispatch(chatResume());
-      promise.then(() => resolve(response));
+      promise.then(() => {
+        emitter.emit('loaded');
+        resolve(response);
+      });
     });
   })
 );
