@@ -43,11 +43,11 @@ class Login extends BasePage
     {
         $this->open();
 
-        $login_form = $this->getElement('Login Form');
+        $form = $this->getElement('Login Form');
 
-        $this->fillField('username', $username);
-        $this->fillField('password', $password);
-
-        return $this->pressButton('Login');
+        $form->fillField('username', $username);
+        $form->fillField('password', $password);
+        $form->checkField('remember_me');
+        $form->submit();
     }
 }

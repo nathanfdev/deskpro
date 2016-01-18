@@ -116,7 +116,7 @@ class LanguageContext extends BaseContext
     /**
      * @Given :lang is the active language
      */
-    public function defaultIsTheActiveLanguage($lang)
+    public function setTheActiveLanguage($lang)
     {
         $this->getLanguageStack()->push($this->getLanguageManager()->getLanguageBySystemName($lang));
     }
