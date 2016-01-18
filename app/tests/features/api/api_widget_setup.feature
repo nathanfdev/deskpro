@@ -53,7 +53,6 @@ Feature: Widget Setup
     }
     """
     Then the response should be in JSON
-    And print last JSON response
     And the response status code should be 204
     When I send a GET request to "/api/v2/widget/setup"
     And the JSON node "data.settings.global.chat.require_login" should be equal to "1"

@@ -66,9 +66,7 @@ class WidgetTicketSetupType extends AbstractType
                     new Assert\NotBlank(),
                 ],
             ])
-            ->add('default_department', 'entity', [
-                'class' => 'DeskPRO:Department',
-            ])
+            ->add('default_department', 'number')
         ;
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onDefaultDepartment']);

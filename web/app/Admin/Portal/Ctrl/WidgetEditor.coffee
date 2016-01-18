@@ -49,10 +49,11 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
           waiting_timeout: 30
         }
       }
+      @$scope.departments = []
 
     initialLoad: ->
-      promise = @$http.get('/api/v2/widget/setup')
-      promise.success((response) =>
+      setupPromise = @$http.get('/api/v2/widget/setup')
+      setupPromise.success((response) =>
         data = response.data
 
         @$scope.url = data.url;
@@ -63,6 +64,11 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
         @initLiveDemo()
       );
 
+      departmentsPromise = @$http.get('/api/v2/ticket_departments')
+      departmentsPromise.success((response) =>
+        @$scope.departments = response.data;
+      );
+
       updateLiveDemoDebounce = Functions.debounce( =>
         @updateLiveDemo()
       , 350)
@@ -70,7 +76,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
       @$scope.$watch('brand_settings', updateLiveDemoDebounce, true)
       @$scope.$watch('global_settings', updateLiveDemoDebounce, true)
 
-      return promise
+      return @$q.all([setupPromise, departmentsPromise])
 
     getOptions: (liveDemo = false) ->
       options = $.extend(true, {company: @$scope.company}, @$scope.brand_settings)

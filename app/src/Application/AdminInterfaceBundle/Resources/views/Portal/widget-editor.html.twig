@@ -188,9 +188,9 @@
 
                                 <div class="sub-options">
                                     <select ng-model="brand_settings.ticket.default_department">
-                                        <option value="S">S</option>
-                                        <option value="M">M</option>
-                                        <option value="L">L</option>
+                                        <option ng-repeat="option in departments" ng-value="option.id" ng-selected="brand_settings.ticket.default_department == option.id">
+                                            {{ ng_var('option.title') }}
+                                        </option>
                                     </select>
                                 </div>
                             </li>
