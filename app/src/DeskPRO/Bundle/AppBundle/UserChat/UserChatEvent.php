@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\UserChat;
 
 use Application\DeskPRO\Entity\ChatConversation;
@@ -40,6 +39,7 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class UserChatEvent extends Event
 {
+    const VALIDATE_EMAIL = 'user_chat.validate_email';
     const STARTED        = 'user_chat.message_started';
     const USER_LEFT      = 'user_chat.message_user-left';
     const USER_RETURNED  = 'user_chat.message_user-returned';
@@ -55,8 +55,8 @@ class UserChatEvent extends Event
     const END_BY         = 'user_chat.message_ended-by';
     const ENDED          = 'user_chat.message_ended';
     const SEND_MESSAGE   = 'user_chat.send_message';
-    const ACK_MESSAGES   = 'user.chat.ack_messages';
-    const USER_TYPING    = 'user.chat.user_typing';
+    const ACK_MESSAGES   = 'user_chat.ack_messages';
+    const USER_TYPING    = 'user_chat.user_typing';
 
     /**
      * @var ChatConversation

@@ -29,11 +29,9 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
 use Application\DeskPRO\Entity\ChatConversation;
-use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 
 /**
@@ -42,33 +40,27 @@ use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 class ChatConversationTransformer extends AbstractDataSerializerTransformer
 {
     /**
-     * @var AvatarResolver
-     */
-    private $avatar_resolver;
-
-    /**
-     * @param AvatarResolver $avatar_resolver
-     */
-    public function __construct(AvatarResolver $avatar_resolver)
-    {
-        $this->avatar_resolver = $avatar_resolver;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
         return [
             'id',
-            'subject_line',
             'department_id',
+            'subject_line',
+            'should_send_transcript',
             'date_created',
             'date_agent_typing',
+            'date_transcript_sent',
             'date_ended',
             'ended_by',
             'status',
             'subject',
+            'person',
+            'agent',
+            'department',
+            'person_name',
+            'person_email',
         ];
     }
 
@@ -79,21 +71,15 @@ class ChatConversationTransformer extends AbstractDataSerializerTransformer
     {
         /** @var ChatConversation $data */
         $data       = $transformation_request->getDataToBeTransformed();
-        $person     = $data->getPerson();
-        $agent      = $data->getAgent();
         $department = $data->getDepartment();
 
         return [
+            'department_name'     => $department ? $department->getFullTitle() : '',
+            'need_validate_email' => $data->getEmailValidationCode() && !$data->getEmailValidated(),
+
+            // Legacy api data
+            // Don't remove, it's not using in the new widget but needed for the old agent interface
             'conversation_id' => $data->getId(),
-            'author_id'       => $person ? $person->getId() : 0,
-            'author_name'     => $person ? $person->getDisplayName() : $data->getPersonName(),
-            'author_email'    => $person ? $person->getPrimaryEmailAddress() : $data->getPersonEmail(),
-            'author_avatar'   => $person ? $this->avatar_resolver->getAvatarModel($person) : null,
-            'author_type'     => $person && $person->isAgent() ? 'agent' : 'user',
-            'agent_id'        => $agent ? $agent->getId() : 0,
-            'agent_name'      => $agent ? $agent->getDisplayName() : '',
-            'agent_avatar'    => $agent ? $this->avatar_resolver->getAvatarModel($agent) : null,
-            'department_name' => $department ? $department->getFullTitle() : '',
         ];
     }
 }

@@ -28,10 +28,11 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\DpAuth;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class AuthenticationType.
@@ -43,7 +44,7 @@ class AuthenticationType extends AbstractType
      */
     public function getName()
     {
-        return 'login';
+        return 'dp_auth';
     }
 
     /**
@@ -53,10 +54,15 @@ class AuthenticationType extends AbstractType
     {
         $builder
             ->add('email', 'email', [
-                'constraints' => new NotNull(),
+                'constraints' => [
+                    new Assert\NotNull(),
+                    new Assert\Email(),
+                ],
             ])
             ->add('password', 'password', [
-                'constraints' => new NotNull(),
+                'constraints' => [
+                    new Assert\NotNull(),
+                ],
             ])
         ;
     }
@@ -68,6 +74,13 @@ class AuthenticationType extends AbstractType
     {
         $resolver->setDefaults([
             'csrf_protection' => false,
+            'constraints'     => [
+                new DpAuth(),
+            ],
+            'error_mapping' => [
+                'email'    => 'email',
+                'password' => 'password',
+            ],
         ]);
     }
 }

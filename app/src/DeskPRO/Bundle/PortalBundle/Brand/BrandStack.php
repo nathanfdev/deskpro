@@ -135,14 +135,18 @@ class BrandStack
 
     /**
      * Reverts pops the state, making the previous brand container active.
+     *
+     * @return BrandContainer The brand that was removed
      */
     public function pop()
     {
-        array_pop($this->stack);
+        $brand_id = array_pop($this->stack);
 
         // always at least the default brand
         if (empty($this->stack)) {
-            $this->stack[] = $this->default_brand;
+            $this->push($this->default_brand);
         }
+
+        return $this->brand_containers[$brand_id];
     }
 }

@@ -3,6 +3,7 @@ import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
 import { addSessionCode } from '../../Application/Actions/bootstrapActions';
+import { loadPeople } from '../../Application/RecordStores/Actions/peopleActions';
 import { generate } from 'randomstring';
 import striptags from 'striptags';
 import moment from 'moment';
@@ -12,14 +13,10 @@ import {
   lockedPollingSelector,
   chatInfoSelector,
   chatLoadedSelector,
-  isEndedSelector,
-  authorAvatarSelector,
+  authorIdSelector,
   messageIdsSelector,
   attachmentsSelector,
   canReopenSelector,
-  transcriptCheckedSelector,
-  transcriptSendingSelector,
-  transcriptSentSelector,
 } from '../Selectors/chat';
 
 // Phrase translations
@@ -41,7 +38,26 @@ export const unsetChatId = createAction(
 
 export const setLoaded = createAction('WIDGET_CHAT_SET_LOADED');
 export const unsetLoaded = createAction('WIDGET_CHAT_UNSET_LOADED');
-export const updateChatInfo = createAction('WIDGET_CHAT_UPDATE_CHAT_INFO');
+export const updateChatInfo = createAction(
+  'WIDGET_CHAT_UPDATE_CHAT_INFO',
+  chatInfo => dispatch => {
+    const peopleIds = [];
+    if (chatInfo.person) {
+      peopleIds.push(chatInfo.person);
+    }
+    if (chatInfo.agent) {
+      peopleIds.push(chatInfo.agent);
+    }
+
+    if (peopleIds.length) {
+      dispatch(loadPeople('all', peopleIds));
+    }
+
+    return chatInfo;
+  }
+);
+
+export const optimisticToggleSendTranscript = createAction('WIDGET_CHAT_OPTIMISTIC_TOGGLE_SEND_TRANSCRIPT');
 export const enableChatReopen = createAction('WIDGET_CHAT_ENABLE_REOPEN');
 export const disableChatReopen = createAction('WIDGET_CHAT_DISABLE_REOPEN');
 
@@ -52,10 +68,6 @@ export const enablePollingResponse = createAction('WIDGET_ENABLE_POLLING_RESPONS
 
 // Audio actions
 export const toggleMute = createAction('WIDGET_CHAT_TOGGLE_MUTE');
-
-// Transcript actions
-export const disableSendTranscript = createAction('WIDGET_CHAT_DISABLE_SEND_TRANSCRIPT');
-export const enableSendTranscript = createAction('WIDGET_CHAT_ENABLE_SEND_TRANSCRIPT');
 
 // Messages actions
 export const addNewMessages = createAction('WIDGET_CHAT_ADD_NEW_MESSAGES');
@@ -104,6 +116,34 @@ export const createChat = createAction(
   }
 );
 
+export const validateEmail = createAction(
+  'WIDGET_CHAT_VALIDATE_EMAIL',
+  (chatId, params) => (dispatch, getState) => {
+    if (!chatId) {
+      return null;
+    }
+
+    const state = getState();
+    const queryParams = compileParams(addSessionCode(state));
+
+    return DpApi.sendPost(`DP_API/chats/${chatId}/validate/email?${queryParams}`, params, {...ajaxOptions});
+  }
+);
+
+export const regenerateEmailValidationCode = createAction(
+  'WIDGET_CHAT_REGENERATE_EMAIL_CODE',
+  chatId => (dispatch, getState) => {
+    if (!chatId) {
+      return null;
+    }
+
+    const state = getState();
+    const queryParams = compileParams(addSessionCode(state));
+
+    return DpApi.sendPost(`DP_API/chats/${chatId}/validate/email/regenerate?${queryParams}`, null, {...ajaxOptions});
+  }
+);
+
 export const ackChatMessages = createAction(
   'WIDGET_CHAT_ACK_MESSAGES',
   (chatId, params) => (dispatch, getState) => {
@@ -118,17 +158,25 @@ export const ackChatMessages = createAction(
   }
 );
 
-export const sendTranscriptData = createAction(
-  'WIDGET_CHAT_SEND_TRANSCRIPT_DATA',
-  chatId => (dispatch, getState) => {
+export const toggleSendTranscript = createAction(
+  'WIDGET_CHAT_TOGGLE_SEND_TRANSCRIPT',
+  (chatId, value) => (dispatch, getState) => {
     if (!chatId) {
       return null;
     }
 
+    dispatch(lockPollingResponse());
+    dispatch(optimisticToggleSendTranscript(value));
+
     const state = getState();
     const queryParams = compileParams(addSessionCode(state));
+    const params = {should_send_transcript: value};
 
-    return DpApi.sendPost(`DP_API/chats/${chatId}/transcript_data?${queryParams}`, null, {...ajaxOptions});
+    const promise = DpApi.sendPost(`DP_API/chats/${chatId}/transcript/toggle?${queryParams}`, params, {...ajaxOptions});
+    promise.success(() => dispatch(unlockPollingResponse()));
+    promise.catch(() => dispatch(unlockPollingResponse()));
+
+    return promise;
   }
 );
 
@@ -139,16 +187,15 @@ export const sendTranscriptInfo = createAction(
       return null;
     }
 
+    dispatch(lockPollingResponse());
+
     const state = getState();
-    const chatEnded = isEndedSelector(state);
     const queryParams = compileParams(addSessionCode(state));
 
-    const promise = DpApi.sendPost(`DP_API/chats/${chatId}/transcript_info?${queryParams}`, params, {...ajaxOptions});
-    promise.success(() => {
-      if (chatEnded) {
-        dispatch(sendTranscriptData(chatId));
-      }
-    });
+    const promise = DpApi.sendPost(`DP_API/chats/${chatId}/transcript/info?${queryParams}`, params, {...ajaxOptions});
+
+    promise.success(() => dispatch(unlockPollingResponse()));
+    promise.catch(() => dispatch(unlockPollingResponse()));
 
     return promise;
   }
@@ -207,28 +254,6 @@ export const pollingChat = createAction(
         if (!oldChatInfo.equals(Immutable.fromJS(newChatInfo))) {
           // Update chat info
           dispatch(updateChatInfo(newChatInfo));
-
-          // Handle chat transcript
-          const transcriptChecked = transcriptCheckedSelector(state);
-          if (newChatInfo.author_email) {
-            // Auto select transcript checkbox if user has email
-            if (!transcriptChecked) {
-              dispatch(enableSendTranscript());
-            } else {
-              // If can send transcript data and chat is ended
-              const transcriptSending = transcriptSendingSelector(state);
-              const transcriptSent = transcriptSentSelector(state);
-
-              if (newChatInfo.date_ended && !transcriptSending && !transcriptSent) {
-                // send transcript data
-                dispatch(sendTranscriptData(chatId));
-              }
-            }
-          } else {
-            if (transcriptChecked) {
-              dispatch(disableSendTranscript());
-            }
-          }
         }
 
         // Toggle reopen chat
@@ -255,7 +280,7 @@ export const pollingChat = createAction(
         const filteredMessages = newMessages
           // Skip user's messages because they are added optimistically,
           // but do load user's messages on initial polling request
-          .filter(message => !loaded || (loaded && message.author_type !== 'user'))
+          .filter(message => !loaded || (loaded && !message.is_user))
           // Check for unique ids
           .filter(message => existMessageIds.indexOf(message.id) === -1);
 
@@ -264,9 +289,22 @@ export const pollingChat = createAction(
         }
 
         // Filter not acked messages and send ack request
-        const ackMessages = filteredMessages.filter(message => message.author_type === 'agent' && !message.date_received);
+        const ackMessages = filteredMessages.filter(message => !message.is_sys && !message.is_user && !message.date_received);
         if (ackMessages.length) {
           dispatch(ackChatMessages(chatId, {message_ids: ackMessages.map(message => message.id)}));
+        }
+
+        // Load person info
+        const peopleIds = [];
+        filteredMessages.forEach(message => {
+          const authorId = message.author;
+          if (authorId && peopleIds.indexOf(authorId) === -1) {
+            peopleIds.push(authorId);
+          }
+        });
+
+        if (peopleIds.length) {
+          dispatch(loadPeople('all', peopleIds));
         }
       }
 
@@ -302,7 +340,7 @@ export const sendChatMessage = createAction(
     }
 
     const state = getState();
-    const authorAvatar = authorAvatarSelector(state);
+    const authorId = authorIdSelector(state);
     const tmpId = generate({
       length: 20,
       charset: 'alphabetic'
@@ -314,8 +352,8 @@ export const sendChatMessage = createAction(
         tmp_id: tmpId,
         content: params.message,
         is_html: true,
-        author_avatar: authorAvatar,
-        author_type: 'user',
+        is_user: true,
+        author: authorId,
         date_created: moment().format()
       }));
     }
@@ -328,8 +366,8 @@ export const sendChatMessage = createAction(
         tmp_id: tmpId,
         content: null,
         is_html: true,
-        author_avatar: authorAvatar,
-        author_type: 'user',
+        is_user: true,
+        author: authorId,
         date_created: moment().format(),
         metadata: {
           type: 'file',

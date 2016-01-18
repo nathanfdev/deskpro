@@ -59,6 +59,7 @@ class ChatCountCriteria extends ChatSelectCriteria implements GroupableCriteriaI
             case 'date_period':
                 $datePeriodsDql = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_created");
                 $qb->addSelect("$datePeriodsDql as group_name");
+                $qb->addSelect("$datePeriodsDql as title");
 
                 // select hidden group_order to use in ORDER BY
                 $qb->addSelect(
@@ -69,8 +70,13 @@ class ChatCountCriteria extends ChatSelectCriteria implements GroupableCriteriaI
                 break;
 
             case 'agent':
+                $qb->addSelect('g.id as group_name');
+                $qb->addSelect('g.name as title');
+                $qb->leftJoin("{$alias}.{$this->getGroupBy()}", 'g');
+                break;
             case 'department':
                 $qb->addSelect('g.id as group_name');
+                $qb->addSelect('g.title as title');
                 $qb->leftJoin("{$alias}.{$this->getGroupBy()}", 'g');
                 break;
         }

@@ -10,6 +10,13 @@ export function getError(response, name) {
   return error ? error.message : null;
 }
 
+export function getLastError(response, name) {
+  const errors = getErrors(response, name);
+  const error = errors.length ? errors.slice(-1)[0] : null;
+
+  return error ? error.message : null;
+}
+
 export function hasErrors(response, name) {
   return getErrors(response, name).length > 0;
 }

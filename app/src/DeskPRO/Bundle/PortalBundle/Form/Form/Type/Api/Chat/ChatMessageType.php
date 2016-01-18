@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
 use Symfony\Component\Form\AbstractType;

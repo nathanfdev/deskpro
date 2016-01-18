@@ -1,5 +1,6 @@
 import * as actions from '../Actions/messagesActions';
 import { newActionAlerts } from '../../Application/Actions/notificationActions';
+import { refreshCounts } from '../Actions/messagesActions';
 import { createReducer } from 'Ampliflux';
 import { async } from 'Ampliflux/reducers/handlers';
 import Immutable from 'immutable';
@@ -8,8 +9,8 @@ const initialState = {
   chatMessages: {},
   searchMessages: {},
   loadingMessages: true,
-  counts: [],
-  countsLoading: true
+  counts: {},
+  loadingCounts: true
 };
 
 export default createReducer(initialState, {
@@ -39,6 +40,22 @@ export default createReducer(initialState, {
       done: (state) => state.set('loadingMessages', false)
     }
   ),
+  [actions.markMessages]: async({
+    success: (state, payload) => {
+      const path = ['chatMessages', payload.chat_id];
+      const chat = state.getIn(path);
+      const msg = {};
+      payload.messages.map(message => {
+        msg[message] = true;
+      });
+      chat.messages.map((message, index) => {
+        if (msg[message.id]) {
+          chat.messages[index].status = 2;
+        }
+      });
+      return state.setIn(path, {...chat});
+    }
+  }),
   [newActionAlerts]: (state, payload) => {
     let newState = state;
     if (payload.type === 'notification.agent_chat.new_message') {
@@ -48,7 +65,26 @@ export default createReducer(initialState, {
         chat.messages.push(payload.data);
         newState = newState.setIn(path, {...chat});
       }
+    } else if (payload.type === 'refresh_counts') {
+      newState = newState.set('counts', payload.data);
+    } else if (payload.type === 'notification.agent_chat.mark_message') {
+      const path = ['chatMessages', payload.data.chat_id];
+      const chat = state.getIn(path);
+      chat.messages.map((message, index) => {
+        if (message.id === payload.data.message_id) {
+          chat.messages[index].status = 2;
+        }
+      });
+      newState = newState.setIn(path, {...chat});
     }
     return newState;
-  }
+  },
+  [refreshCounts]: async(
+    {
+      success: (state, payload) => {
+        return state.set('counts', payload);
+      },
+      done: (state) => state.set('loadingCounts', false)
+    }
+  )
 });

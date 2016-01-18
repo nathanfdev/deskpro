@@ -8,7 +8,7 @@ import { Item } from './Item';
 // chats
 import * as actions from '../../Actions/chatsActions';
 import * as chatActions from '../../RecordStores/Actions/chatsActions';
-// import * as messagesActions from '../../Actions/messagesActions';
+import * as messagesActions from '../../Actions/messagesActions';
 import { recentChatsSelector, recentChatsStatusSelector } from '../../RecordStores/Selectors/chats';
 
 // agents
@@ -30,7 +30,7 @@ import { myDepartmentsSelector, myDepartmentsStatusSelector } from 'DeskPRO/Bund
   recentChats: recentChatsSelector(state),
   current: state.IM.chats.get('current'),
   counts: state.IM.messages.get('counts'),
-  countsLoading: state.IM.messages.get('countsLoading'),
+  loadingCounts: state.IM.messages.get('loadingCounts'),
   teamsStatus: myAgentTeamsStatusSelector(state),
   agentsStatus: agentsStatusSelector(state),
   departmentsStatus: myDepartmentsStatusSelector(state),
@@ -47,8 +47,7 @@ export class List extends React.Component {
     recentChats: PropTypes.object.isRequired,
     current: PropTypes.object.isRequired,
     counts: PropTypes.object.isRequired,
-    loadingCounts: PropTypes.object,
-    countsLoading: PropTypes.bool.isRequired,
+    loadingCounts: PropTypes.bool.isRequired,
     teamsStatus: PropTypes.object.isRequired,
     agentsStatus: PropTypes.object.isRequired,
     departmentsStatus: PropTypes.object.isRequired,
@@ -58,15 +57,40 @@ export class List extends React.Component {
 
   constructor(props) {
     super(props);
-    // const interval = setInterval(() => this.props.dispatch(messagesActions.refreshCounts()), 1000);
     this.state = {
-      // interval: interval,
       stickers: {}
     };
   }
 
   componentWillMount() {
     this.props.dispatch(chatActions.loadRecentChats());
+    this.refreshCounts();
+  }
+
+  componentWillReceiveProps(props) {
+    const oldProps = this.props;
+    if (!props.loadingCounts && props.counts && props.counts !== oldProps.counts) {
+      const { dispatch } = this.props;
+      const records = {};
+      const ids = [];
+      console.log(props.counts);
+      Object.keys(props.counts).map((key) => {
+        const item = props.counts[key];
+        ids.push(parseInt(item.chat_id, 10));
+        records[item.chat_id] = item.chat;
+      });
+      dispatch(chatActions.releaseChats('recent', ids));
+      dispatch(chatActions.setChatsRequest('recent', records, ids));
+    }
+    this.props = props;
+  }
+
+  refreshCounts() {
+    if (this.props.recentChatsStatus.get('isDone')) {
+      this.props.dispatch(messagesActions.refreshCounts());
+    } else {
+      setTimeout(this.refreshCounts.bind(this), 2000);
+    }
   }
 
   startChat = (id, type, chatId) => {
@@ -74,7 +98,7 @@ export class List extends React.Component {
   };
 
   render() {
-    const { recentChatsStatus, agentsStatus, teamsStatus, departmentsStatus, meStatus } = this.props;
+    const { recentChatsStatus, agentsStatus, teamsStatus, departmentsStatus, meStatus, loadingCounts } = this.props;
     const loaded = (
       recentChatsStatus.get('isDone')
       && agentsStatus.get('isDone')
@@ -82,7 +106,7 @@ export class List extends React.Component {
       && departmentsStatus.get('isDone')
       && meStatus.get('isDone')
     );
-    const { agents, teams, departments, recentChats, me, dispatch, counts, loadingCounts } = this.props;
+    const { agents, teams, departments, recentChats, me, dispatch, counts } = this.props;
     const sortedChats = recentChats.sort((first, second) => {
       const fDate = Date.parse(first.get('date_last_message'));
       const sDate = Date.parse(second.get('date_last_message'));
@@ -97,7 +121,8 @@ export class List extends React.Component {
               <Item
                 startChat={this.startChat}
                 me={me}
-                counts={loadingCounts ? {} : counts}
+                counts={counts}
+                loadingCounts={loadingCounts}
                 key={chat.get('id')}
                 chat={chat}
                 teams={teams}

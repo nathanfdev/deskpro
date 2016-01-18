@@ -1,18 +1,15 @@
 import { createReducer } from 'Ampliflux';
-import { async, setValue, setFullPayload, togglePayloadInCollection, handleMassAction, mergeFullPayload }
+import { async, setValue, setFullPayload, togglePayloadInCollection, mergeFullPayload }
   from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/FeedbackListActions';
 import * as commentsActions from '../Actions/FeedbackCommentsActions';
-import * as massActions from '../Actions/FeedbackMassActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import Immutable from 'immutable';
 
 const initialState = {
   async: {
     done: true
   },
   elements: [], // array of filtered elements IDs (feedback or comments)
-  selected: [], // array of IDs
   visibleFields: {
     card: [],
     table: []
@@ -33,13 +30,8 @@ export default createReducer(initialState, {
     done: setValue('async.done', true)
   }),
 
-  [massActions.toggleMassAction]: handleMassAction('elements', 'selected'),
-  [massActions.setMassActionsParams]: mergeFullPayload('massActions'),
-  [massActions.resetMassActionsParam]: (state, payload) => state.deleteIn(['massActions', payload]),
-  [massActions.resetAllMassActionsParams]: (state) => state.set('massActions', Immutable.fromJS({})),
-  [massActions.toggleSelectedAction]: togglePayloadInCollection('selected'),
-
   [actions.setParams]: setFullPayload('currentListParams'),
+  [actions.loadIndicator]: setValue('async.done', false),
   [actions.loadFeedbackList]: async({
     success: (state, payload) => state.set('elements', payload.ids).set('pagination', payload.pagination),
     start: setValue('async.done', false),

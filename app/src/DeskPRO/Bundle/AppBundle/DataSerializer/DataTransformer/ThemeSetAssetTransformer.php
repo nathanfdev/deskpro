@@ -81,7 +81,9 @@ class ThemeSetAssetTransformer extends AbstractDataSerializerTransformer
         $data = [];
 
         // Generate a URL for user custom assets uploaded in the Portal Designer
-        if (in_array(AssetsManager::CUSTOM_ASSET_TAG, $entity->getTags())) {
+        if (in_array(AssetsManager::CUSTOM_ASSET_TAG, $entity->getTags())
+            || in_array(AssetsManager::CUSTOM_LOGO_TAG, $entity->getTags())
+        ) {
             $data['url'] = $this->router->generate('dp_portal_custom_asset', ['name' => $entity->getName()], true);
         }
 

@@ -1,3 +1,1 @@
-import { KanbanCheckbox } from './KanbanCheckbox';
-
-export { KanbanCheckbox };
+export { KanbanCheckbox } from './KanbanCheckbox';

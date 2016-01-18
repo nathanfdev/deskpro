@@ -273,6 +273,13 @@ abstract class AbstractDbSet implements DataSetInterface
             $this->installDatabase();
             $this->installSet();
 
+            // This is required or else some e2e tests
+            // might fail early because it thinks the isntall failed
+            $this->getDb()->insert('settings', [
+                'name'  => 'installer.done',
+                'value' => 1,
+            ]);
+
             if ($this->cache_dir) {
                 $this->dumpToCache();
             }

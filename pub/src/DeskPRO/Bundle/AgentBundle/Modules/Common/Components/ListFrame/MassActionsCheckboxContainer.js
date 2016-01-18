@@ -1,34 +1,48 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
+import { currentAppStateSelector } from '../../../Application/Selectors/dpWindow';
+import { selectedSelector } from '../../../Application/Selectors/massActions';
+import { toggleMassAction } from '../../../Application/Actions/massActions';
 
-@connect()
+@connect(state => {
+  const currentAppState = currentAppStateSelector(state);
+
+  return {
+    elements: currentAppState.list.get('elements'),
+    selected: selectedSelector(state)
+  };
+})
+
 export class MassActionsCheckboxContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
+    elements: PropTypes.array,
     action: PropTypes.func.isRequired,
-    count: PropTypes.number
+    selected: PropTypes.array
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      enabled: props.count
+      enabled: props.selected.count()
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ enabled: nextProps.count });
+    this.setState({ enabled: nextProps.selected.count() });
     return nextProps;
   }
 
   handleClick = (e) => {
     e.preventDefault();
-    this.props.dispatch(this.props.action(!this.state.enabled));
+    const { dispatch, elements } = this.props;
+    dispatch(toggleMassAction({ select: !this.state.enabled, elements: elements }));
   };
 
   render() {
-    const { count } = this.props;
+    const { selected } = this.props;
+    const count = selected.count();
     const divClasses = classNames('dpwd-navigation-top-row-mass-action-checkbox', { 'active': this.state.enabled });
     const checkboxClasses = classNames('fa', { 'fa-check': this.state.enabled });
 

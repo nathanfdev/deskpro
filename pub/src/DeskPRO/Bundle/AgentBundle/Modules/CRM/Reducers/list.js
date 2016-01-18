@@ -1,5 +1,5 @@
 import { createReducer } from 'Ampliflux';
-import { async, setFullPayload, togglePayloadInCollection, setValue, handleMassAction }
+import { async, setFullPayload, setValue }
   from 'Ampliflux/reducers/handlers';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import * as actions from '../Actions/crmListActions';
@@ -8,7 +8,6 @@ const initialState = {
   async: {
     done: true
   },
-  selected: [],
   // view mode (table or list)
   view: constants.VIEW_MODE_CARD,
   // currently viewed list GET parameters map

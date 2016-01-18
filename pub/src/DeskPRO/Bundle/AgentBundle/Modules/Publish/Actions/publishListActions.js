@@ -9,6 +9,7 @@ import { setArticlesCommentsRequest } from '../RecordStores/Actions/articlesComm
 import { setNewsCommentsRequest } from '../RecordStores/Actions/newsCommentsActions';
 import { setDownloadsCommentsRequest } from '../RecordStores/Actions/downloadsCommentsActions';
 import { setArticlePendingCreatesRequest } from '../RecordStores/Actions/articlePendingCreatesActions.js';
+import { toggleMassAction } from '../../Application/Actions/massActions';
 
 const recordStoresId = 'publish';
 
@@ -69,6 +70,8 @@ export const load = createAction(
           default:
         }
         dispatch(setPeopleRequest(recordStoresId, prepareLinkedData(res.linked.person)));
+        dispatch(toggleMassAction());
+
         const ids = res.data.map(item=>item.id);
 
         return { ids: ids, pagination: res.meta.pagination };
@@ -100,6 +103,7 @@ export const setSort = createAction(
   'PUBLISH_LIST_SET_SORT',
     sort => dispatch => dispatch(applyParams({ sort, delayReload: true }))
 );
+
 export const setOrder = createAction(
   'PUBLISH_LIST_SET_ORDER',
     order => dispatch => dispatch(applyParams({ order, delayReload: true }))

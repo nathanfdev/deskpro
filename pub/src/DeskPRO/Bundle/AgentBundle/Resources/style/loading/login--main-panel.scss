@@ -171,6 +171,11 @@
     color: #fff;
     margin-top: 10px;
     &:hover { background: #3376b5; }
+
+    &.locked {
+      opacity: 0.5;
+      cursor: default;
+    }
   }
 
   input[type="text"], input[type="password"], input[type="email"] {
@@ -215,6 +220,21 @@
       letter-spacing: 5px;
       color: #e7e7e7;
       line-height: 0;
+    }
+  }
+
+  .dpw-spinner {
+    display: block;
+    margin: 15px auto 0;
+    width: 15px;
+
+    i {
+      display: inline-block;
+      background: url('../img/loading-small-flat.gif') center;
+      background-size: 15px 15px;
+      width: 15px;
+      height: 15px;
+      margin: 0 auto;
     }
   }
 

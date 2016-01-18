@@ -29,9 +29,9 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 
@@ -58,7 +58,7 @@ class WidgetPersonTransformer extends AbstractDataSerializerTransformer
      */
     public function getAutomaticProperties(DataTransformerRequest $request)
     {
-        return ['name'];
+        return ['id', 'display_name', 'primary_email_address', 'is_agent'];
     }
 
     /**
@@ -66,6 +66,7 @@ class WidgetPersonTransformer extends AbstractDataSerializerTransformer
      */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
+        /** @var Person $data */
         $data = $transformation_request->getDataToBeTransformed();
 
         return [

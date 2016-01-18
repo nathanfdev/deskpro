@@ -1,5 +1,4 @@
 import { createAction } from 'Ampliflux';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 
 export const infoNotification = createAction('APP_NOTIFICATION_INFO');
 export const errorNotification = createAction('APP_NOTIFICATION_ERROR');

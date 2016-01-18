@@ -1,17 +1,21 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { ListItem, ListItemLabelSpinner } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { ListItem, ListItemLabelSpinner, ListItemStatefulContainer }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { startFilterEditing } from '../../../../Actions/navActions';
 import { applyListParams } from '../../../../Actions/listActions';
 import { FilterEditPopupContainer } from '../../FilterEditPopupContainer';
 import { loadingFilterIdsSelector } from '../../../../Selectors/nav';
+import { urlSanitize } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Service/routing';
 
 @connect(state => ({
+  hash: state.Application.routing.get('hash'),
   notDoneFilters: loadingFilterIdsSelector(state)
 }))
 export class ListItemContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
+    hash: PropTypes.object,
     notDoneFilters: PropTypes.object.isRequired,
     count: PropTypes.number.isRequired,
     id: PropTypes.number.isRequired,
@@ -23,6 +27,18 @@ export class ListItemContainer extends Component {
     children: PropTypes.node
   };
 
+  constructor(props) {
+    super(props);
+    this.itemId = urlSanitize(props.title);
+  }
+
+  componentDidMount() {
+    const {hash, listFilters, dispatch} = this.props;
+    const activeItemId = hash.get('nav') ? hash.get('nav').get('active') : null;
+    if (activeItemId === this.itemId) {
+      dispatch(applyListParams(listFilters));
+    }
+  }
   /**
    * Get item label
    *
@@ -51,7 +67,11 @@ export class ListItemContainer extends Component {
     const props = {
       count,
       onClick: () => dispatch(applyListParams(listFilters)),
-      onItemControlClick: isTopLevel ? this.startFilterEditing(id) : null
+      onItemControlClick: isTopLevel ? this.startFilterEditing(id) : null,
+      groupId: 'nav',
+      itemId: this.itemId,
+      label: this.props.title,
+      children: this.props.children
     };
 
     let label = this.getItemLabel();
@@ -66,13 +86,15 @@ export class ListItemContainer extends Component {
     }
 
     return (
-      <ListItem {...props} ref="item">
-        <div part="label">{label}</div>
-        <div part="nested">
-          {children}
-          {isTopLevel && <FilterEditPopupContainer attachTo={this.refs.item} filterId={id} />}
-        </div>
-      </ListItem>
+      <ListItemStatefulContainer {...props}>
+        <ListItem {...props} ref="item">
+          <div part="label">{label}</div>
+          <div part="nested">
+            {children}
+            {isTopLevel && <FilterEditPopupContainer attachTo={this.refs.item} filterId={id}/>}
+          </div>
+        </ListItem>
+      </ListItemStatefulContainer>
     );
   }
 }

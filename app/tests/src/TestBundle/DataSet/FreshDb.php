@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\InstallBundle\Data\DefaultDataProcessor;
@@ -179,6 +178,58 @@ class FreshDb extends AbstractDbSet
                 ('portal.smaxage_user_page', '0'),
                 ('portal.smaxage_user_tag', '0');
         ");
+
+        //INSERT INTO brands (name, theme_id) VALUES ('Default Brand', 'standard')
+        $this->getDb()->exec(
+            "
+        INSERT INTO `theme_sets` (`id`, `theme_id`, `options`)
+        VALUES
+            (1, 'standard', ''),
+            (2, 'sidebar', '');
+
+
+        INSERT INTO `brands` (`id`, `logo_blob_id`, `name`, `theme_set_id`)
+        VALUES
+            (1, NULL, 'Brand With Standard Theme', 1),
+            (2, NULL, 'Brand With Sidebar Theme', 2)
+        "
+        );
+
+        $perms = [
+            [
+                'department_id' => 1,
+                'usergroup_id'  => 1, // everyone
+                'app'           => 'tickets',
+                'name'          => 'full',
+                'value'         => 1,
+            ],
+            [
+                'department_id' => 2,
+                'usergroup_id'  => 1, // everyone
+                'app'           => 'tickets',
+                'name'          => 'full',
+                'value'         => 1,
+            ],
+        ];
+
+        $this->getDb()->batchInsert('department_permissions', $perms, true);
+
+        $USERGROUP_EVERYONE = $em->getRepository('DeskPRO:Usergroup')->findOneBy(
+            array('sys_name' => 'everyone')
+        );
+        $em->flush();
+
+        if (!empty($USERGROUP_EVERYONE)) {
+            $scanner = new \Application\InstallBundle\Data\UserGroupPermScanner();
+            foreach ($scanner->getNames() as $p_name) {
+                $p            = new \Application\DeskPRO\Entity\Permission();
+                $p->usergroup = $USERGROUP_EVERYONE;
+                $p->name      = $p_name;
+                $p->value     = 1;
+                $em->persist($p);
+            }
+            $em->flush();
+        }
 
         ++$count;
 

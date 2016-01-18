@@ -25,6 +25,10 @@
   }
 }
 
+.one-column .dpw--popup-main {
+  min-width: 200px;
+}
+
 .dpw--popup-main.dpw--popup-main-pointer {// Create pointy bits when popping up
   position: relative;
 
@@ -74,7 +78,7 @@
     text-decoration: none;
   }
 
-  a.dpw--popup-button {
+  a.dpw--popup-button, button.dpw--popup-button {
     display: inline-block;
     text-transform: uppercase;
     font-size: 11px;
@@ -84,6 +88,7 @@
     padding: 10px;
     color: #fff;
     border-radius: 2px;
+    border: none;
   }
 
   .dpw--popup-content-line {
@@ -231,6 +236,12 @@
     height: 17px;
     margin-right: 2px;
   }
+}
+
+.one-column .dpw--popup-item-collection {
+  height: auto;
+  min-height: 100px;
+  max-height: 200px;
 }
 
 .dpw--flag-color {

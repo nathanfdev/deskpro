@@ -51,13 +51,13 @@ fi
 # BEHAT
 ##################################
 IS_BEHAT_API_ERROR=0
-bin/behat --config=behat.yml.cov --profile=api
+bin/behat --config=behat.yml.cov --profile=api --tags '~@performance'
 if [[ $? -ne 0 ]] ; then
     IS_BEHAT_API_ERROR=1
 fi
 
 IS_BEHAT_PORTAL_ERROR=0
-bin/behat --config=behat.yml.cov --profile=portal
+bin/behat --config=behat.yml.cov --profile=portal --tags '~@performance'
 if [[ $? -ne 0 ]] ; then
     IS_BEHAT_PORTAL_ERROR=1
 fi

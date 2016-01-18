@@ -51,7 +51,7 @@
 
       li {
         float: none;
-        height: 15px;
+        height: inherit;
       }
     }
   }
@@ -113,6 +113,10 @@
       opacity: 1;
       color: #cecece;
     }
+  }
+
+  input:disabled {
+    color: #cecece;
   }
 }
 

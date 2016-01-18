@@ -167,6 +167,25 @@ export class CardCheckbox extends Component {
   }
 }
 
+export class CardReset extends Component {
+
+  static propTypes = {
+    onClick: PropTypes.func,
+    isActive: PropTypes.bool
+  };
+
+  render() {
+    const { onClick, isActive } = this.props;
+    const classes = classNames('fa fa-trash', { 'active': isActive });
+
+    return (
+      <div className="dpm--card-reset" onClick={onClick}>
+        <i className={classes}></i>
+      </div>
+    );
+  }
+}
+
 export class CardDisc extends Component {
 
   render() {

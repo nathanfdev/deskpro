@@ -1,62 +1,70 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
+import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
+import { Card, CardLine, CardLineLeft, CardLineRight, CardLineFull, CardContentText, CardLineItem, CardCheckbox, CardDisc, CardUser }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
 
-export class ChatCard extends React.Component {
-
-  getTimeInterval(date) {
-    let created = new Date(date),
-      now = new Date(),
-      interval = now.getTime() - created.getTime(),
-      inHours = interval / (1000 * 60 * 60);
-    return Math.round(inHours);
-  }
+@injectIntl
+export class ChatCard extends Component {
+  static propTypes = {
+    intl: intlShape.isRequired,
+    chat: PropTypes.object.isRequired,
+    author: PropTypes.object.isRequired,
+    agent: PropTypes.object.isRequired,
+    department: PropTypes.object.isRequired,
+    selected: PropTypes.object.isRequired,
+    toggleSelected: PropTypes.func.isRequired
+  };
 
   render() {
-    const {chat} = this.props;
+    const { chat, selected, toggleSelected, author, agent, department } = this.props;
 
     return (
-      <div className="card chat-card">
+      <Card type="chat">
         <div className="card-status-bar status-bar-left level-8"></div>
         <div className="card-status-bar status-bar-right level-8"></div>
 
-        <div className="card-checkbox">
-          <span className="checkbox"><i className="fa fa-check"></i></span>
-        </div>
+        <CardCheckbox selected={selected} onClick={toggleSelected(chat.get('id'))}/>
 
-        <div className="card-line">
-          <span className="line-box">
-            <span className="chat-id">#{chat.id}</span>
-          </span>
+        <CardLine>
+          <CardLineLeft>
+            <CardLineItem>#{chat.get('id')}</CardLineItem>
+          </CardLineLeft>
 
-          <div className="task-extras">
-            <span className="text">
-              {this.getTimeInterval(chat.date_created)} hrs ago
-            </span>
-          </div>
-        </div>
+          <CardLineRight>
+            <CardLineItem>
+              <FormattedRelative value={chat.get('date_created')}/>
+            </CardLineItem>
+          </CardLineRight>
+        </CardLine>
 
-        <div className="card-line">
-          <div className="ticket-intro">
-            <h1>{chat.subject}</h1>
-          </div>
-        </div>
+        <CardLine>
+          <CardLineFull>
+            <CardContentText>
+              <p>{chat.get('subject')}</p>
+            </CardContentText>
+          </CardLineFull>
+        </CardLine>
 
-        <div className="card-line">
-          <div className="task-extras">
-            <span className="text"></span>
-            <span className="chat-avatar" style={{backgroundImage: "url('./img/avatar6.png')"}}></span>
-            <span className="disc"></span>
+        <CardLine>
+          <CardLineLeft>
+            <CardUser user={author}/>
+            <CardDisc/>
+            <CardUser user={agent}/>
+            <CardDisc/>
+            <CardLineItem>{department.get('title')}</CardLineItem>
+            <CardDisc/>
             <span className="text"></span> <i className="fa fa-comment"></i>
-          </div>
+          </CardLineLeft>
 
-          <div className="task-properties">
+          <CardLineRight>
             <i className="fa fa-book"></i> <span className="chat-type"></span>
             <span className="disc"></span>
             <i className="fa fa-book"></i> <span
             className="chat-custom-category"></span>
             <span className="disc"></span>
-          </div>
-        </div>
-      </div>
+          </CardLineRight>
+        </CardLine>
+      </Card>
     );
   }
 }

@@ -2,13 +2,13 @@ import React, {Component, PropTypes} from 'react';
 import { ContentCard } from './ContentCard';
 import { ContentCommentCard } from './ContentCommentCard';
 import { ArticlePendingCreateCard } from './ArticlePendingCreateCard';
+import { toggleSelectedAction } from '../../../../../Application/Actions/massActions';
+import { selectedSelector } from '../../../../../Application/Selectors/massActions';
 import { contentSelector, elementsSelector }
   from '../../../../Selectors/list';
 import { peopleSelector, articlesSelector, newsSelector, downloadsSelector,
   articlesCommentsSelector, newsCommentsSelector, downloadsCommentsSelector, articlePendingCreatesSelector }
   from '../../../../Selectors/recordStores';
-import { toggleSelectedAction } from '../../../../Actions/publishMassActions';
-
 
 import { connect } from 'react-redux';
 @connect(state => {
@@ -23,7 +23,7 @@ import { connect } from 'react-redux';
     article_comments: articlesCommentsSelector(state),
     news_comments: newsCommentsSelector(state),
     download_comments: downloadsCommentsSelector(state),
-    selected: state.Publish.list.get('selected')
+    selected: selectedSelector(state)
   });
 })
 
@@ -43,8 +43,10 @@ export class CardsContainer extends Component {
     selected: PropTypes.object.isRequired
   };
 
-  toggleSelected(id) {
-    //this.props.dispatch(toggleSelectedAction(id));
+  toggleSelected(id, e) {
+    e.stopPropagation();
+    const { dispatch } = this.props;
+    dispatch(toggleSelectedAction(id));
   }
 
   renderContentCard(id) {
@@ -54,8 +56,8 @@ export class CardsContainer extends Component {
     return (
       <ContentCard key={id}
                    element={element}
-                   toggleSelected={this.toggleSelected.bind(this)}
-                   selected={selected.includes(id)}
+                   toggleSelected={this.toggleSelected.bind(this, id)}
+                   selected={selected.indexOf(id) > -1}
                    author={people.get(element.get('person'))}
                    lastRevisionAuthor={people.get(element.get('last_author_id'))}/>
     );
@@ -80,7 +82,7 @@ export class CardsContainer extends Component {
       <ContentCommentCard key={id}
                           element={element}
                           parent={getParent()}
-                          toggleSelected={this.toggleSelected.bind(this)}
+                          toggleSelected={this.toggleSelected.bind(this, id)}
                           selected={selected.includes(element.get('id'))}
                           author={people.get(element.get('person'))}/>
     );
@@ -92,7 +94,7 @@ export class CardsContainer extends Component {
     return (
       <ArticlePendingCreateCard key={id}
                                 element={element}
-                                toggleSelected={this.toggleSelected.bind(this)}
+                                toggleSelected={this.toggleSelected.bind(this, id)}
                                 selected={selected.includes(element.get('id'))}
                                 author={people.get(element.get('person'))}
                                 assigned={people.get(element.get('assigned_person'))}/>

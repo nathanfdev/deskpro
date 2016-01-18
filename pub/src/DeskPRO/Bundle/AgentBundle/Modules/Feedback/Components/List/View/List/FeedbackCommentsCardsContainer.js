@@ -1,7 +1,8 @@
 import React, {Component, PropTypes} from 'react';
 import { FeedbackCommentCard } from './FeedbackCommentCard';
 import { feedbackCommentsSelector, peopleSelector, feedbackSelector } from '../../../../Selectors/recordStores';
-import { idsSelector, selectedSelector } from '../../../../Selectors/list';
+import { idsSelector } from '../../../../Selectors/list';
+import { selectedSelector } from '../../../../../Application/Selectors/massActions';
 
 import { connect } from 'react-redux';
 @connect(state => {

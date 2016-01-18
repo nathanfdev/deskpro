@@ -5,18 +5,20 @@ export class WidgetContent extends React.Component {
 
   static propTypes = {
     isBubble: PropTypes.bool,
+    widgetPosition: PropTypes.string,
     children: PropTypes.any
   };
 
   render() {
-    const { isBubble, children } = this.props;
+    const { isBubble, widgetPosition, children } = this.props;
 
     return (
       <div className={classNames(
         'widget-container',
         'dpdesignportal', {
           'chat-bubble': isBubble,
-          'mobile': !isBubble
+          'mobile': !isBubble,
+          'position-left': widgetPosition === 'bottom.left' && !isBubble
         })}>
 
         {children}

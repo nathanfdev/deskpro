@@ -38,11 +38,17 @@ use Symfony\Component\Form\AbstractType;
  */
 class ApiBooleanType extends AbstractType
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getParent()
     {
         return 'checkbox';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'api_boolean';

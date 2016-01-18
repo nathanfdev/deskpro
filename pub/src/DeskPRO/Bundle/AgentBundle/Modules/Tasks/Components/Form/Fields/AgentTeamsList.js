@@ -1,22 +1,13 @@
 import React, { PropTypes } from 'react';
 import { CheckboxList } from './CheckboxList';
+import { BaseList } from './BaseList';
 
-export class AgentTeamsList extends React.Component {
+export class AgentTeamsList extends BaseList {
 
-  static propTypes = {
-    values: PropTypes.object
-  };
-
-  render() {
-    const { values = [] } = this.props;
-    const options = values.map(value => ({
-      label: value.get('name'),
-      value: value.get('id'),
-      keyword: value.get('name')
-    }));
-
+  renderLabel(value) {
     return (
-      <CheckboxList {...this.props} options={options} />
+      value.get('name')
     );
   }
+
 }

@@ -147,11 +147,11 @@ class Environment extends \Twig_Environment
     }
 
     /**
-     * @return PortalLoader
+     * @return PortalLoader|null
      */
     private function getPortalLoader()
     {
-        return App::$container ? App::$container->get('portal_loader.twig') : null;
+        return App::$container && App::$container->has('portal_loader.twig') ? App::$container->get('portal_loader.twig') : null;
     }
 
     private function loadClass($cls, $name)

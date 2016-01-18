@@ -9,8 +9,7 @@ import { currentListParamsSelector, visibleFieldsSelector } from '../Selectors/l
 import { setFeedbackStatusCategoriesRequest } from '../RecordStores/Actions/feedbackStatusCategoriesActions';
 import { loadFeedbackCommentsCounter } from '../RecordStores/Actions/feedbackCommentsActions';
 import { setFeedbackRequest } from '../RecordStores/Actions/feedbackActions';
-import { toggleMassAction } from './FeedbackMassActions';
-import { feedbackToValidateCounter } from './feedbackNavActions';
+import { toggleMassAction } from '../../Application/Actions/massActions';
 
 /**
  * Used to identify requests within record stores
@@ -40,6 +39,7 @@ export const getCategories = createAction(
 );
 
 export const setParams = createAction('FEEDBACK_LIST_SET_CURRENT_PARAMS');
+export const loadIndicator = createAction('FEEDBACK_LIST_LOAD_INDICATOR');
 
 export const getCommentsCounter = createAction(
   'FEEDBACK_GET_COMMENTS_COUNTER',
@@ -86,10 +86,6 @@ export const loadList = createAction(
     dispatch(toggleMassAction());
     return params;
   }
-);
-
-export const toggleViewMode = createAction(
-  'FEEDBACK_TOGGLE_VIEW_MODE'
 );
 
 export const getDisplayFieldsFromPersonSetting = createAction(
@@ -158,26 +154,3 @@ export const setOrder = createAction(
 
 export const toggleTableFieldVisibility = createAction('FEEDBACK_LIST_TOGGLE_TABLE_FIELD_VISIBILITY');
 export const toggleCardFieldVisibility = createAction('FEEDBACK_LIST_TOGGLE_CARD_FIELD_VISIBILITY');
-
-
-export const deleteFeedback = createAction(
-  'FEEDBACK_DELETE',
-  (ids) => dispatch => {
-    Feedback.deleteFeedback(ids).then(()=> {
-      dispatch(feedbackToValidateCounter());
-      dispatch(applyParams({ isComments: false }));
-    });
-    return ids;
-  }
-);
-
-export const approveFeedback = createAction(
-  'FEEDBACK_APPROVE',
-  (ids) => dispatch => {
-    Feedback.approveFeedback(ids).then(()=> {
-      dispatch(feedbackToValidateCounter());
-      dispatch(applyParams({ isComments: false }));
-    });
-    return ids;
-  }
-);

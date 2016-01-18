@@ -4,6 +4,7 @@ import { FormItem } from './FormItem';
 export class TranscriptForm extends React.Component {
 
   static propTypes = {
+    disabledEmail: PropTypes.bool,
     name: PropTypes.string,
     email: PropTypes.string,
     onSubmit: PropTypes.func.isRequired
@@ -71,6 +72,8 @@ export class TranscriptForm extends React.Component {
   };
 
   render() {
+    const { disabledEmail } = this.props;
+
     return (
       <div>
         <h1>Need a transcript of this chat?</h1>
@@ -83,7 +86,10 @@ export class TranscriptForm extends React.Component {
             </FormItem>
 
             <FormItem label="Your email" field="email" errors={this.state.errors}>
-              <input type="text" value={this.state.email} onChange={this.onChangeEmail} />
+              <input type="text"
+                     value={this.state.email}
+                     onChange={this.onChangeEmail}
+                     disabled={disabledEmail} />
             </FormItem>
 
             <div className="label button-label">

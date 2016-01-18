@@ -29,19 +29,14 @@ export const addMessage = createAction(
 
 export const refreshCounts = createAction(
   'IM_COUNT_MESSAGES',
-  (counts) => (dispatch) => {
+  () => {
     return new Promise(
-      (resolve) => {
-        const records = {};
-        const ids = [];
-        Object.keys(counts).map((key) => {
-          const item = counts[key];
-          ids.push(parseInt(item.chat_id, 10));
-          records[item.chat_id] = item.chat;
-        });
-        dispatch(releaseChats('recent', ids));
-        dispatch(setChatsRequest('recent', records, ids));
-        return resolve(counts);
+      (resolve, reject) => {
+        return IM.loadMessagesCount()
+          .success((response) => {
+            return resolve(response.data);
+          })
+          .error(response => reject(response));
       }
     );
   }
@@ -49,12 +44,12 @@ export const refreshCounts = createAction(
 
 export const markMessages = createAction(
   'IM_MARK_MESSAGES',
-  (ids) => {
+  (ids, chat_id) => {
     return new Promise(
       (resolve, reject) => {
         return IM.markMessages(ids)
-          .success((response) => {
-            return resolve(response.data);
+          .success(() => {
+            return resolve({chat_id: chat_id, messages: ids});
           })
           .error(response => reject(response));
       }

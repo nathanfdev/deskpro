@@ -60,17 +60,27 @@ class TagOptionsListener implements EventSubscriberInterface, SkipLowRequestInte
      * @var AnnotationReader
      */
     private $reader;
+
     /**
      * @var Container
      */
     private $container;
 
+    /**
+     * Constructor.
+     *
+     * @param FileCacheReader $reader
+     * @param Container       $container
+     */
     public function __construct(FileCacheReader $reader, Container $container)
     {
         $this->reader    = $reader;
         $this->container = $container;
     }
 
+    /**
+     * @param FilterControllerEvent $event
+     */
     public function onKernelController(FilterControllerEvent $event)
     {
         if (!is_array($controller = $event->getController())) {
@@ -122,7 +132,7 @@ class TagOptionsListener implements EventSubscriberInterface, SkipLowRequestInte
 
                 // run thru any expressions, evaluate them, and set them as tag_request attributes
                 foreach ($annotation->attribute_expressions as $attribute => $expression) {
-                    $tag_request->attributes->set($attribute, $this->evaluate($expression, array('options' => $resolved_tag_options)));
+                    $tag_request->attributes->set($attribute, $this->evaluate($expression, ['options' => $resolved_tag_options]));
                 }
 
                 break; // we only care about finding one TagOptions here
@@ -130,18 +140,30 @@ class TagOptionsListener implements EventSubscriberInterface, SkipLowRequestInte
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::CONTROLLER => array('onKernelController', -10),
-        );
+        return [
+            KernelEvents::CONTROLLER => ['onKernelController', -10],
+        ];
     }
 
+    /**
+     * @param mixed $expr
+     * @param array $variables
+     *
+     * @return string
+     */
     protected function evaluate($expr, array $variables)
     {
-        return $this->getExpressionLanguage()->evaluate($expr, array_merge($variables, array('container' => $this->container)));
+        return $this->getExpressionLanguage()->evaluate($expr, array_merge($variables, ['container' => $this->container]));
     }
 
+    /**
+     * @return ExpressionLanguage
+     */
     protected function getExpressionLanguage()
     {
         if (null === $this->expressionLanguage) {

@@ -58,6 +58,12 @@ class DbGlobalSettingsTableLoader implements SettingsLoaderInterface
      */
     private $db;
 
+    /**
+     * Constructor.
+     *
+     * @param Connection            $db
+     * @param CacheAdapterInterface $cache
+     */
     public function __construct(Connection $db, CacheAdapterInterface $cache)
     {
         $this->cacheKey = static::CACHE_KEY;
@@ -88,7 +94,7 @@ class DbGlobalSettingsTableLoader implements SettingsLoaderInterface
                     );
                 } catch (\Exception $e) {
                     // during install and such, we expect this to happen when no "settings" table exists
-                    return array();
+                    return [];
                 }
             }
         );

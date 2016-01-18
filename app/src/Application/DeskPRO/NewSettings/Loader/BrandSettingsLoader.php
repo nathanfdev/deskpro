@@ -53,6 +53,12 @@ class BrandSettingsLoader implements SettingsLoaderInterface
      */
     private $db;
 
+    /**
+     * Constructor.
+     *
+     * @param Connection            $db
+     * @param CacheAdapterInterface $cache
+     */
     public function __construct(Connection $db, CacheAdapterInterface $cache)
     {
         $this->cache = new ConvenientCache($cache);
@@ -90,10 +96,10 @@ class BrandSettingsLoader implements SettingsLoaderInterface
                             FROM settings_brand
                             WHERE brand_id = :brand_id
                         ',
-                        array('brand_id' => $brand_id)
+                        ['brand_id' => $brand_id]
                     );
                 } catch (\Exception $e) {
-                    $db_brand_settings = array();
+                    $db_brand_settings = [];
                 }
 
                 // USE THE $DP_CONFIG['BRAND_X_SETTINGS']
@@ -104,7 +110,7 @@ class BrandSettingsLoader implements SettingsLoaderInterface
                 ) {
                     $global_settings = $GLOBALS['DP_CONFIG'][$global_settings_key];
                 } else {
-                    $global_settings = array();
+                    $global_settings = [];
                 }
 
                 return array_merge($db_brand_settings, $global_settings);

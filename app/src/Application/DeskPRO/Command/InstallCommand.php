@@ -165,8 +165,10 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         $em->getRepository('DeskPRO:Ticket')->fillSearchTable();
 
         // A signifier setting that says we got to the end successfully
+        // This isn't in a fixture itself because we want to make sure
+        // we've go to the very end here without error
         $this->getDb()->insert('settings', [
-            'name'  => 'cmd_installer.done',
+            'name'  => 'installer.done',
             'value' => 1,
         ]);
 

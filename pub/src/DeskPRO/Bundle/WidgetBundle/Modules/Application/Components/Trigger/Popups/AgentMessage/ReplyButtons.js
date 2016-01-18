@@ -3,6 +3,8 @@ import React, { PropTypes } from 'react';
 export class ReplyButtons extends React.Component {
 
   static propTypes = {
+    backgroundColor: PropTypes.string,
+    textColor: PropTypes.string,
     onClick: PropTypes.func,
     onClose: PropTypes.func
   };
@@ -18,10 +20,20 @@ export class ReplyButtons extends React.Component {
   };
 
   render() {
+    const { backgroundColor, textColor } = this.props;
+
     return (
       <div className="preemtive-chat-footer">
         <div className="preemtive-chat-footer-button">
-          <a href="#" onClick={this.onClick}><i className="fa fa-mail-reply-all"></i> Reply to Noelle</a>
+          <a href="#"
+             onClick={this.onClick}
+             style={{
+               backgroundColor: backgroundColor,
+               color: textColor
+             }}>
+
+            <i className="fa fa-mail-reply-all"></i> Reply to Noelle
+          </a>
           <a href="#" className="blank" onClick={this.onClose}><i className="fa fa-times"></i> Dismiss message</a>
         </div>
       </div>

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\UserChat;
 
 use Application\DeskPRO\Entity\ChatMessage;
@@ -92,10 +91,10 @@ class UserChatSystemListener implements EventSubscriberInterface
         $chat_message = new ChatMessage();
         $chat_message
             ->setIsSys(true)
-            ->setContent(json_encode($content))
-            ->setMetadata($metadata)
             ->setIsUserHidden($this->isUserHiddenMessage($event))
             ->setIsHtml($this->isHtmlMessage($event))
+            ->setContent(json_encode($content))
+            ->setMetadata($metadata)
         ;
 
         $conversation->addMessage($chat_message);

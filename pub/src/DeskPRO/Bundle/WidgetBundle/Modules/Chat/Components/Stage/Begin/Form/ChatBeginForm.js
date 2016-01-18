@@ -19,7 +19,7 @@ export class ChatBeginForm extends React.Component {
     const { onChangeName, onChangeEmail, onSubmit } = this.props;
 
     return (
-      <div className="dpdesignportal-open-new-ticket">
+      <div className="dpdesignportal-open-new-chat">
         <form className="dpdesignportal-form" onSubmit={onSubmit}>
           <FormItem label="Your Details" field="name" errors={errors}>
             <input type="text"

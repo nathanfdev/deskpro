@@ -1,61 +1,63 @@
 import React, {Component, PropTypes} from 'react';
-import { MassActionBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/MassActionBar/MassActionBar';
-import { deleteFeedback, approveFeedback } from '../../../Actions/FeedbackListActions';
-import { toggleMassAction, massAction, setMassActionsParams, resetAllMassActionsParams, resetMassActionsParam }
-  from '../../../Actions/FeedbackMassActions';
-import { massActionsSelector, massActionsParamsSelector, currentListParamsSelector } from '../../../Selectors/list';
-import { deleteComment, approveComment }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackCommentsActions';
+import { MassActionBarContainer }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/MassActionBar/MassActionBarContainer';
+import { submitMassActions } from '../../../../Application/Actions/massActions';
+import { selectedSelector } from '../../../../Application/Selectors/massActions';
+import { massActionsSelector, isCommentsSelector, navItemSelector } from '../../../Selectors/list';
+import { applyParams, loadIndicator } from '../../../Actions/FeedbackListActions';
+import { initialLoad } from '../../../Actions/feedbackNavActions';
 
 import { connect } from 'react-redux';
 @connect(state => ({
-  selected: state.Feedback.list.get('selected'),
-  currentListParams: currentListParamsSelector(state),
-  actions: massActionsSelector(state),
-  currentMassActionsParams: massActionsParamsSelector(state)
+  navItem: navItemSelector(state),
+  isComments: isCommentsSelector(state),
+  selected: selectedSelector(state),
+  actions: massActionsSelector(state)
 }))
 
 export class MassActionContainer extends Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
+    navItem: PropTypes.object.isRequired,
     selected: PropTypes.object.isRequired,
-    currentListParams: PropTypes.object.isRequired,
-    actions: PropTypes.array.isRequired,
-    currentMassActionsParams: PropTypes.object
+    isComments: PropTypes.bool,
+    actions: PropTypes.array.isRequired
   };
 
-  massActionsSubmit() {
-    const {dispatch, selected, currentMassActionsParams} = this.props;
-    const ids = selected.toArray();
-    const params = currentMassActionsParams.toJS();
-    dispatch(massAction({ ids: ids, actions: params }));
-  }
-
-  massActionsCancel() {
-    const {dispatch} = this.props;
-    dispatch(resetAllMassActionsParams());
-  }
-
   choiceActions() {
-    const {currentListParams, actions, selected, dispatch} = this.props;
-    if (currentListParams.get('navItem') && currentListParams.get('navItem').get('awaiting_validation')) {
-      const ids = selected.toArray();
+    const { dispatch, navItem, actions, isComments, selected} = this.props;
+    const content = isComments ? 'feedback_comments' : 'feedback';
+    if (navItem && navItem.get('awaiting_validation')) {
       const deleteAction = () => {
-        if (currentListParams.get('isComments')) {
-          dispatch(deleteComment(ids));
-        } else {
-          dispatch(deleteFeedback(ids));
-        }
-        return dispatch(toggleMassAction());
+        return dispatch(submitMassActions(
+          {
+            jobType: 'publish_mass',
+            params: {
+              ids: selected,
+              content: content,
+              actions: { delete: true }
+            },
+            loadIndicatorAction: loadIndicator,
+            reloadListAction: applyParams,
+            reloadNavAction: initialLoad
+          }
+        ));
       };
       const approveAction = () => {
-        if (currentListParams.get('isComments')) {
-          dispatch(approveComment(ids));
-        } else {
-          dispatch(approveFeedback(ids));
-        }
-        return dispatch(toggleMassAction());
+        return dispatch(submitMassActions(
+          {
+            jobType: 'publish_mass',
+            params: {
+              ids: selected,
+              content: content,
+              actions: { approve: true }
+            },
+            loadIndicatorAction: loadIndicator,
+            reloadListAction: applyParams,
+            reloadNavAction: initialLoad
+          }
+        ));
       };
       return [
         { label: 'Approve', type: 'button', onClick: approveAction },
@@ -66,19 +68,20 @@ export class MassActionContainer extends Component {
   }
 
   render() {
+    const { isComments } = this.props;
+
     const config = {
-      selected: this.props.selected,
       actions: this.choiceActions(),
-      setParams: setMassActionsParams,
-      submitAction: this.massActionsSubmit.bind(this),
-      cancelAction: this.massActionsCancel.bind(this),
-      resetSingleAction: resetMassActionsParam,
-      currentParams: this.props.currentMassActionsParams
+      jobType: 'publish_mass',
+      content: isComments ? 'feedback_comments' : 'feedback',
+      loadIndicatorAction: loadIndicator,
+      reloadListAction: applyParams,
+      reloadNavAction: initialLoad
     };
 
 
     return (
-      <MassActionBar {...config} />
+      <MassActionBarContainer {...config} />
     );
   }
 }

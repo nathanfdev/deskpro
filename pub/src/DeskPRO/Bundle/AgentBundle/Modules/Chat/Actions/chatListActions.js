@@ -1,55 +1,78 @@
 import { createAction } from 'Ampliflux';
 import { load as loadChats } from 'DeskPRO/Bundle/AgentBundle/Services/Api/Chat';
-import { sortingDataSelector, currentListParamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Chat/Selectors/list';
+import { currentListParamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Chat/Selectors/list';
+import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
+import { setDepartmentsRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/departmentsActions';
+import { setChatsRequest } from '../RecordStores/Actions/chatsActions';
+import { toggleMassAction } from '../../Application/Actions/massActions';
 
-export const load = createAction(
-  'CHAT_LIST_LOAD_DATA',
-  (filters = {}) =>
-    (dispatch, getState) => {
-      const sorting = sortingDataSelector(getState());
-      const params  = {...sorting, ...filters};
-      dispatch(updateCurrentListParams(params));
+/**
+ * Used to identify requests within record stores
+ * @type {string}
+ */
+const recordStoresId = 'chats';
 
-      return loadChats(params).then(promise => promise.getData().data);
+const prepareLinkedData = (linked) => {
+  const result = [];
+  for (const key in linked) {
+    if (linked.hasOwnProperty(key)) {
+      result.push(linked[key]);
     }
-);
-
-export const reLoad = createAction(
-  'CHAT_LIST_RELOAD_DATA',
-  (overwriteParams = {}) =>
-    (dispatch, getState) => {
-      const currentParams = currentListParamsSelector(getState());
-      const params        = {...currentParams, ...overwriteParams};
-      dispatch(updateCurrentListParams(params));
-
-      return loadChats(params).then(promise => promise.getData().data);
-    }
-);
+  }
+  return result;
+};
 
 export const updateCurrentListParams = createAction(
   'CHAT_LIST_UPDATE_CURRENT_LIST_PARAMS',
     params => params
 );
 
+export const load = createAction(
+  'CHAT_LIST_LOAD_DATA',
+  (listParams) => dispatch => {
+    let params = listParams;
+    const { navItem } = params;
+    if (navItem) {
+      delete params.navItem;
+      params = { ...params, ...navItem };
+    }
+    return loadChats(params).then(promise => {
+      const res = promise.getData();
+      const ids = res.data.map(item=>item.id);
+      dispatch(setChatsRequest(recordStoresId, res.data));
+      dispatch(setPeopleRequest(recordStoresId, prepareLinkedData(res.linked.person)));
+      dispatch(setDepartmentsRequest(recordStoresId, prepareLinkedData(res.linked.department)));
+      dispatch(toggleMassAction());
+
+      return { ids: ids, pagination: res.meta.pagination };
+    });
+  }
+);
+
+export const applyParams = createAction(
+  'CHAT_APPLY_LIST_PARAMS',
+  (overwrite = {}) => (dispatch, getState) => {
+    const current = currentListParamsSelector(getState()).toJS();
+    const params = { ...current, ...overwrite };
+    const { delayReload } = params;
+    if (!overwrite.hasOwnProperty('page') && current.hasOwnProperty('page')) {
+      delete params.page;
+    }
+    delete params.delayReload;
+    dispatch(updateCurrentListParams(params));
+    if (params.navItem && !delayReload) {
+      dispatch(load(params));
+    }
+  }
+);
+
+
 export const changeSort = createAction(
   'CHAT_LIST_CHANGE_SORT',
-    sort => dispatch => {
-    dispatch(reLoad({sort}));
-
-    return sort;
-  }
+    sort => dispatch => dispatch(applyParams({ sort, delayReload: true }))
 );
 
 export const toggleOrder = createAction(
   'CHAT_LIST_TOGGLE_ORDER',
-    order => dispatch => {
-      dispatch(reLoad({order: order}));
-
-      return order;
-    }
-);
-
-export const toggleViewMode = createAction(
-  'CHAT_LIST_TOGGLE_VIEW_MODE',
-    viewMode => viewMode
+    order => dispatch => dispatch(applyParams({ order, delayReload: true }))
 );

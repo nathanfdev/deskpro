@@ -13,23 +13,6 @@ export function feedbackToValidate() {
   return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
 }
 
-export function deleteFeedback(ids) {
-  const params = [];
-  ids.forEach((id) => {
-    params.push('id[]=' + id);
-  });
-  return DpApi.sendDelete('DP_API/feedback?' + params.join('&'));
-}
-
-export function approveFeedback(ids) {
-  const params = [];
-  ids.forEach((id) => {
-    params.push('id[]=' + id);
-  });
-  console.log('DP_API/feedback/approve?' + params.join('&'));
-  return DpApi.sendPatch('DP_API/feedback/approve?' + params.join('&'));
-}
-
 /*
  * Feedback labels
  * @return Promise
@@ -70,13 +53,4 @@ export function getCustomCategories() {
 export function getList(params) {
   console.log('DP_API/feedback/?include=person,feedback_status_category,custom_data_feedback&' + compileParams(params));
   return DpApi.sendGet('DP_API/feedback/?include=person,feedback_status_category,custom_data_feedback&' + compileParams(params));
-}
-
-export function massAction(params) {
-  const ids = [];
-  params.ids.forEach((id) => {
-    ids.push('id[]=' + id);
-  });
-  console.log('DP_API/feedback/mass_action?' + ids.join('&'));
-  return DpApi.sendPut('DP_API/feedback/mass_action?' + ids.join('&'), params.actions);
 }

@@ -29,11 +29,9 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
 use Application\DeskPRO\Entity\ChatMessage;
-use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 
 /**
@@ -42,24 +40,11 @@ use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 class ChatMessageTransformer extends AbstractDataSerializerTransformer
 {
     /**
-     * @var AvatarResolver
-     */
-    private $avatar_resolver;
-
-    /**
-     * @param AvatarResolver $avatar_resolver
-     */
-    public function __construct(AvatarResolver $avatar_resolver)
-    {
-        $this->avatar_resolver = $avatar_resolver;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        return ['id', 'content', 'is_html', 'is_sys', 'date_created', 'date_received'];
+        return ['id', 'author', 'content', 'is_html', 'is_sys', 'is_user', 'date_created', 'date_received'];
     }
 
     /**
@@ -71,82 +56,14 @@ class ChatMessageTransformer extends AbstractDataSerializerTransformer
         $data = $transformation_request->getDataToBeTransformed();
 
         return [
+            'metadata' => $data->getMetadata(),
+
+            // Legacy api data
+            // Don't remove, it's not using in the new widget but needed for the old agent interface
             'message_id'      => $data->getId(),
             'conversation_id' => $data->getConversation()->getId(),
-            'author_id'       => $this->getAuthorId($data),
-            'author_type'     => $this->getAuthorType($data),
-            'author_name'     => $this->getAuthorName($data),
-            'author_avatar'   => $this->getAuthorAvatar($data),
-            'metadata'        => $data->getMetadata(),
+            'author_id'       => $data->getAuthor() ? $data->getAuthor()->getId() : 0,
+            'author_type'     => $data->getIsSys() ? 'sys' : ($data->getIsUser() ? 'user' : 'agent'),
         ];
-    }
-
-    /**
-     * @param ChatMessage $message
-     *
-     * @return int
-     */
-    private function getAuthorId(ChatMessage $message)
-    {
-        return $message->getAuthor() ? $message->getAuthor()->getId() : 0;
-    }
-
-    /**
-     * @param ChatMessage $message
-     *
-     * @return string
-     */
-    private function getAuthorType(ChatMessage $message)
-    {
-        if ($message->getIsSys()) {
-            return 'sys';
-        }
-
-        $author      = $message->getAuthor();
-        $author_type = $author && $author->is_agent ? 'agent' : 'user';
-        $metadata    = $message->getMetadata();
-
-        // Handle the case where the author is an agent in the user interface
-        if ($author_type === 'agent' && isset($metadata['is_user_message'])) {
-            $author_type = 'user';
-        }
-
-        return $author_type;
-    }
-
-    /**
-     * @param ChatMessage $message
-     *
-     * @return string
-     */
-    private function getAuthorName(ChatMessage $message)
-    {
-        if ($message->getIsSys()) {
-            return '*';
-        }
-
-        $author = $message->getAuthor();
-        if ($author) {
-            return $author['display_name_user'];
-        }
-
-        $conversation = $message->getConversation();
-        if ($conversation['person_name']) {
-            return $conversation['person_name'];
-        }
-
-        return 'User';
-    }
-
-    /**
-     * @param ChatMessage $message
-     *
-     * @return string|null
-     */
-    private function getAuthorAvatar(ChatMessage $message)
-    {
-        $author = $message->getAuthor();
-
-        return $author ? $this->avatar_resolver->getAvatarModel($author) : null;
     }
 }

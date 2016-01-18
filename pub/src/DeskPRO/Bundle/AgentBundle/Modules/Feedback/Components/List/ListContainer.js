@@ -1,16 +1,17 @@
 import React, {Component, PropTypes} from 'react';
 import { List } from './List';
-import { isCommentsSelector, currentViewModeSelector } from '../../Selectors/list';
-import { toggleSelectedAction } from '../../Actions/FeedbackMassActions';
+import { selectedSelector } from '../../../Application/Selectors/massActions';
+import { isCommentsSelector, currentViewModeSelector, paginationSelector, loadedSelector }
+  from '../../Selectors/list';
+import { toggleSelectedAction } from '../../../Application/Actions/massActions';
 
 import { connect } from 'react-redux';
 @connect(state => {
   return ({
     isComments: isCommentsSelector(state),
-    content: state.Feedback.list.get('content'),
-    selected: state.Feedback.list.get('selected'),
-    pagination: state.Feedback.list.get('pagination'),
-    loaded: state.Feedback.list.getIn(['async', 'done']),
+    selected: selectedSelector(state),
+    pagination: paginationSelector(state),
+    loaded: loadedSelector(state),
     currentApp: state.Application.dpWindow.get('activeAppId'),
     currentViewMode: currentViewModeSelector(state)
   });

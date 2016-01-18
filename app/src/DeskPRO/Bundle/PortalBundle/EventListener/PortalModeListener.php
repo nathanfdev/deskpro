@@ -95,9 +95,14 @@ class PortalModeListener implements EventSubscriberInterface, SkipLowRequestInte
         $this->logger->info(sprintf('setting portal mode to "%s"', $mode));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
         // find the mode before LanguageStackInitializerListener
-        return array(KernelEvents::REQUEST => array('onKernelRequest', 513));
+        return [
+            KernelEvents::REQUEST => ['onKernelRequest', 513],
+        ];
     }
 }

@@ -199,4 +199,52 @@ class PersonEmail extends AbstractEntityRepository
             array('email' => '%'.mb_strtolower($query).'%')
         );
     }
+
+    /**
+     * @param string $term
+     * @param int    $limit
+     *
+     * @return array
+     */
+    public function searchUserEmails($term, $limit = 10)
+    {
+        $qb = $this->createQueryBuilder('pe');
+        $qb
+            ->select('pe.email')
+            ->join('pe.person', 'p')
+            ->where('pe.email LIKE :term AND p.is_user = true AND p.is_agent = false')
+            ->setParameter('term', "$term%")
+            ->setMaxResults($limit);
+
+        $result = $qb->getQuery()->getResult();
+        foreach ($result as &$record) {
+            $record = $record['email'];
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param string $term
+     * @param int    $limit
+     *
+     * @return array
+     */
+    public function searchAgentEmails($term, $limit = 10)
+    {
+        $qb = $this->createQueryBuilder('pe');
+        $qb
+            ->select('pe.email')
+            ->join('pe.person', 'p')
+            ->where('pe.email LIKE :term AND p.is_agent = true')
+            ->setParameter('term', "$term%")
+            ->setMaxResults($limit);
+
+        $result = $qb->getQuery()->getResult();
+        foreach ($result as &$record) {
+            $record = $record['email'];
+        }
+
+        return $result;
+    }
 }

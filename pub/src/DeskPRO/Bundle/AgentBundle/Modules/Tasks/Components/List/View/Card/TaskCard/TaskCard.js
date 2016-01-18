@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { MarkDoneButton } from './MarkDoneButton';
+import { editTask } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Actions/listActions';
 import {
   Card,
   CardCheckbox,
@@ -16,9 +17,8 @@ import {
   ShowDetailsButton,
   AssignButton,
   TicketLinkContainer,
-  ProjectContainer,
   CardProject
-} from '../../../TaskCard/index';
+} from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/List/TaskCard/index';
 
 export class TaskCard extends BaseTaskCard {
 
@@ -30,7 +30,13 @@ export class TaskCard extends BaseTaskCard {
     onChangeDate: PropTypes.func,
     onSetEditing: PropTypes.func,
     task: PropTypes.object,
-    moving: PropTypes.bool
+    moving: PropTypes.bool,
+    dispatch: PropTypes.func.isRequired
+  };
+
+  onAssign = (assignee) => {
+    const { dispatch, task } = this.props;
+    return dispatch(editTask(task.get('id'), assignee));
   };
 
   renderDetails() {
@@ -43,11 +49,7 @@ export class TaskCard extends BaseTaskCard {
                    onChange={onChangeDate}
                    onSetEditing={onSetEditing} />
 
-          {task.get('project') &&
-            <ProjectContainer project={task.get('project')}>
-              <CardProject />
-            </ProjectContainer>
-          }
+          <CardProject projectId={task.get('project')} onSetEditing={onSetEditing} />
           {this.state.ticketLink && <TicketLinkContainer ticket={this.state.ticketLink} />}
         </CardLineLeft>
         <CardLineRight>
@@ -79,7 +81,7 @@ export class TaskCard extends BaseTaskCard {
           <CardLineRight>
             {task.get('is_done')
               ? <ShowDetailsButton expanded={this.state.expanded} onToggleExpand={this.onToggleExpand}/>
-              : <AssignButton task={task} onSetEditing={onSetEditing} />
+              : <AssignButton task={task} onSetEditing={onSetEditing} onAssign={this.onAssign} />
             }
           </CardLineRight>
         </CardLine>

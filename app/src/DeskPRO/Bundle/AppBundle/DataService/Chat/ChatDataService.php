@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
 
 use Application\DeskPRO\Entity\ChatConversation;
@@ -49,6 +48,15 @@ use Pagerfanta\Pagerfanta;
  */
 class ChatDataService
 {
+    public static $datePeriodLabels = [
+        'today'      => 'Today',
+        'yesterday'  => 'Yesterday',
+        'this_week'  => 'This Week',
+        'this_month' => 'This Month',
+        'last_month' => 'Last Month',
+        'this_year'  => 'This Year',
+        'ever'       => 'Ever',
+    ];
     /**
      * @var EntityManager
      */
@@ -152,7 +160,7 @@ class ChatDataService
     public function getChat($chat)
     {
         if (!$chat) { // we need some input
-            return;
+            return false;
         }
 
         if ($chat instanceof ChatConversation) { // already have what you seek
@@ -240,12 +248,13 @@ class ChatDataService
         $criteria->applyFilters($qb);
         $criteria->applyGroupBy($qb);
 
-        $result = $qb->getQuery()->getArrayResult();
-
-        $count = Count::fromGroupedBy($criteria->getGroupBy());
+        $result    = $qb->getQuery()->getArrayResult();
+        $groupedBy = $criteria->getGroupBy();
+        $count     = Count::fromGroupedBy($groupedBy);
         foreach ($result as $group) {
+            $title = $groupedBy === 'date_period' ? self::$datePeriodLabels[$group['group_name']] : $group['title'];
             $count->add($group['value']);
-            $count->addNested($group['value'], $group['group_name'], $criteria->getGroupBy());
+            $count->addNested($group['value'], $group['group_name'], $groupedBy, $title);
         }
 
         return $count;

@@ -1904,16 +1904,6 @@ define(function() {
 	//##################################################################################################################
 
 	//###
-	//# Setup
-	//###
-	routes.push({
-		id: 'chat.setup',
-		url: '/setup',
-		templateName: 'ChatSetup/chat-setup.html',
-		controller: 'Admin_ChatSetup_Ctrl_ChatSetup'
-	});
-
-	//###
 	//# Departments
 	//###
 	routes.push({

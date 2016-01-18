@@ -12,7 +12,7 @@ export class MessageFooter extends React.Component {
   render() {
     const { message } = this.props;
 
-    const isUser = message.get('author_type') !== 'agent';
+    const isUser = message.get('is_user');
     const date = message.get('date_created');
     const notDelivered = message.get('not_delivered');
 

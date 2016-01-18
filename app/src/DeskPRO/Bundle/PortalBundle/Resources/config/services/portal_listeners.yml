@@ -12,13 +12,11 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
-
   brand_detector.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\BrandDetectionListener
     arguments: [@brand_stack, @settings_resolver, @brand_repository, @default_brand, @portal_mode_storage, @logger]
     tags:
       - { name: kernel.event_subscriber }
-
 
   disabled_helpdesk.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\DisabledHelpdeskListener
@@ -26,26 +24,22 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
-
   disabled_portal.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\DisabledPortalListener
     arguments: [@brand_stack, @settings_resolver, @logger, @templating]
     tags:
       - { name: kernel.event_subscriber }
 
-
   cookie_settings.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\CookieSettingsListener
     tags:
       - { name: kernel.event_subscriber }
-
 
   portal_mode.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\PortalModeListener
     arguments: [@portal_mode_factory, @portal_mode_storage, @logger]
     tags:
       - { name: kernel.event_subscriber }
-
 
   original_uri.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\OriginalUriListener
@@ -65,9 +59,9 @@ services:
       - { name: kernel.event_subscriber }
 
   exception_logger.listener:
-      class: DeskPRO\Bundle\PortalBundle\EventListener\ExceptionLoggerListener
-      tags:
-        - { name: kernel.event_subscriber }
+    class: DeskPRO\Bundle\PortalBundle\EventListener\ExceptionLoggerListener
+    tags:
+      - { name: kernel.event_subscriber }
 
   controller_name_converter:
       class: DeskPRO\Bundle\PortalBundle\HttpKernel\ControllerNameParser
@@ -76,26 +70,29 @@ services:
 
 
   tag_options.listener:
-      class: DeskPRO\Bundle\PortalBundle\EventListener\TagOptionsListener
-      arguments: [@annotation_reader, @service_container]
-      tags:
-        - { name: kernel.event_subscriber }
+    class: DeskPRO\Bundle\PortalBundle\EventListener\TagOptionsListener
+    arguments: [@annotation_reader, @service_container]
+    tags:
+      - { name: kernel.event_subscriber }
 
+  widget_login.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\WidgetLoginListener
+    arguments: [@doctrine.orm.default_entity_manager, @security.token_storage, @?portal_mode_storage]
+    tags:
+      - { name: kernel.event_subscriber }
 
 # Not kernel listeners, but tagged to be called by other listeners
   param_converter.deskpro_slug:
-      class: DeskPRO\Bundle\PortalBundle\Request\DeskproSlugConverter
-      arguments: [@doctrine.orm.default_entity_manager, @content_slug_manager]
-      tags:
-        - { name: request.param_converter, priority: -1, converter: deskpro_slug }
-
+    class: DeskPRO\Bundle\PortalBundle\Request\DeskproSlugConverter
+    arguments: [@doctrine.orm.default_entity_manager, @content_slug_manager]
+    tags:
+      - { name: request.param_converter, priority: -1, converter: deskpro_slug }
 
   param_converter.tag_request:
     class: DeskPRO\Bundle\PortalBundle\Request\TagRequestConverter
     arguments: [@brand_stack, @portal_brand_theme_loader]
     tags:
       - { name: request.param_converter, priority: 1, converter: tag_request }
-
 
   data_collector.portal:
     class: DeskPRO\Bundle\PortalBundle\DataCollector\PortalCollector

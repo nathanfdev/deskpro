@@ -58,6 +58,7 @@
                                 {% else %}
                                     <td nowrap style="white-space: nowrap;">
                                         <a class="button button-secondary button-small"
+                                           id="{{ email.email }}"
                                            href="{{ path('portal_user_profile_emails', { new_primary: email.id }) }}">
                                             {{ phrase('portal.account.email-btn-make-primary') }}
                                         </a>

@@ -57,6 +57,12 @@ class ConfigPhpFileLoader implements SettingsLoaderInterface
      */
     private $absFilePath;
 
+    /**
+     * Constructor.
+     *
+     * @param string                $absFilePath
+     * @param CacheAdapterInterface $cache
+     */
     public function __construct($absFilePath, CacheAdapterInterface $cache)
     {
         $this->cacheKey    = static::KEY_PREFIX.$absFilePath;

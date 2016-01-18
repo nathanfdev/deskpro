@@ -1,6 +1,6 @@
 import { createAction } from 'Ampliflux';
 import * as rsa from 'Ampliflux/common/record-store/actions';
-
+import { refreshCounts } from '../../Actions/messagesActions';
 import * as IM from 'DeskPRO/Bundle/AgentBundle/Services/Api/IM';
 
 
@@ -28,7 +28,9 @@ export const loadRecentChats = createAction(
     () => new Promise(
       (resolve, reject) =>
         IM.loadRecentChats()
-          .success(response => resolve(response.data))
+          .success(response => {
+            return resolve(response.data);
+          })
           .error(response => reject(response))
     )
   )

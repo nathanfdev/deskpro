@@ -2,7 +2,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
   class Admin_Portal_Ctrl_PortalEditor extends Admin_Ctrl_Base
     @CTRL_ID = 'Admin_Portal_Ctrl_PortalEditor'
     @CTRL_AS = 'Portal'
-    @DEPS    = ['$http', '$scope', '$timeout', '$upload']
+    @DEPS    = ['$http', '$scope', '$timeout', '$upload', '$modal']
 
     init: ->
       @open_panels = []
@@ -12,8 +12,16 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @advanced_tab = 'header'
       @is_advanced_expanded = false
       @asset_files = []
+      @custom_logo = null
       @uploading_files_count = 0
-      @refreshPreviewUrl()
+      @template_options = []
+      @selected_template = null
+      @selected_template_code = ''
+      @selected_template_code_loaded = false
+      @preview_as_expanded = false
+      @preview_as = 'myself'
+      @preview_as_email = null
+      @loadMyEmail()
 
     save: () =>
       request = @$http({
@@ -50,7 +58,10 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       if window.confirm('Are you sure you want to discard all changes you\'ve made?')
         @recompiling = true
         @$http.get('/portal/api/style/edit-theme-set/discard').then(
-          () => @loadAdvancedEdits(() => @loadValues(() => @success('Changes were discarded'); @recompiling = false)),
+          () => @loadAdvancedEdits(
+            () =>
+              @loadLogo()
+              @loadValues(() => @success('Changes were discarded'); @recompiling = false)),
           () => @serverError(); @recompiling = false
         );
 
@@ -59,6 +70,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @loadValues()
       @loadAdvancedEdits()
       @loadAssetFiles()
+      @loadLogo()
+      @loadTemplateOptions()
 
     togglePanel: (name) ->
       if name in @open_panels
@@ -72,8 +85,12 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     label: (sys_name) ->
       sys_name.replace(/[\-_]/g, ' ').replace(/^(.)|\s(.)/g, (v) -> v.toUpperCase())
 
-    refreshPreviewUrl: ->
-      @preview_url = '/admin-preview?anti-cache=' + (new Date()).getTime()
+    refreshPreviewUrl: =>
+      preview_url = '/admin-preview?anti-cache=' + (new Date()).getTime()
+      if @preview_as is 'user' or @preview_as is 'agent' then preview_url += '&_preview_as=' + @preview_as_email
+      if @preview_as is 'myself' then preview_url += '&_preview_as=' + @my_email
+      if @preview_as is 'guest' then preview_url += '&_preview_as=_anon'
+      @preview_url = preview_url
 
     loadValues: (success) ->
       @$http.get('/portal/api/style/edit-theme-set/variable-values').success(
@@ -82,6 +99,39 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
           if success
             success()
       )
+
+    loadTemplateOptions: () ->
+      @$http.get('/portal/api/style/edit-theme-set/templates').success(
+        (templates) =>
+          for template in templates
+            @template_options.push({
+              value: template,
+              name: @templateName(template),
+              group: @templateGroup(template)
+            })
+      )
+
+    templateName: (template) -> template.split(':')[2].replace(/\.twig/, '')
+    templateGroup: (template) ->
+      parts = template.split(':')
+      if parts[1] then parts[1] else parts[0]
+
+    editTemplate: () =>
+      @$http.get('/portal/api/style/edit-theme-set/template-sources?template=' + @selected_template).success(
+        (code) => @selected_template_code = angular.fromJson(code); @selected_template_code_loaded = true
+      )
+
+    closeTemplateEditor: () =>
+      @$http({
+        method: 'PUT',
+        url: '/portal/api/style/edit-theme-set/template-sources?template=' + @selected_template,
+        data: angular.toJson({code: @selected_template_code})
+      })
+      .error(@serverError)
+
+      @selected_template = null
+      @selected_template_code = null
+      @selected_template_code_loaded = false
 
     loadAdvancedEdits: (success) ->
       @$http.get('/portal/api/style/edit-theme-set/advanced-edits').success(
@@ -95,6 +145,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @$http.get('/portal/api/style/edit-theme-set/assets').success(
         (response) => angular.extend(@asset_files, response.data)
       )
+
+    loadLogo: () ->
+      @$http.get('/portal/api/style/edit-theme-set/logo').success((response) => @custom_logo = response.data.url)
 
     upload: (files) =>
       for file in files
@@ -110,6 +163,14 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
           () => @error('Server error occurred. Unable to upload files.')
         );
 
+    uploadLogo: (files) =>
+      @$upload
+        .upload({url: '/portal/api/style/edit-theme-set/logo', file: files[0]})
+        .then(
+          (response) => @custom_logo = response.data.data.url,
+          () => @error('Server error occurred. Unable to upload files.')
+        );
+
     copyUrl: (file) ->
       window.prompt('File URL:', file.url)
 
@@ -119,6 +180,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
           () => @asset_files = @asset_files.filter (f) -> f isnt file
         )
 
+    deleteLogo: () =>
+      @$http.delete('/portal/api/style/edit-theme-set/logo').success(() => @custom_logo = null)
+
     openAdvancedTab: (tab) => @advanced_tab = tab
     isAdvancedTab: (tab) => @advanced_tab == tab
 
@@ -126,8 +190,41 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     collapseAdvanced: () => @is_advanced_expanded = false
     expandAdvanced: () => @is_advanced_expanded = true
 
+    canPreview: () =>
+      !@recompiling and (@preview_as is 'guest' or @preview_as is 'myself' or @preview_as_email)
+
+    previewAs: (mode) =>
+      @preview_as = mode
+      if mode is 'user' or mode is 'agent' then @promptEmail()
+      @preview_as_expanded = false
+      @preview_as_email = null
+      @refreshPreviewUrl()
+
+    promptEmail: () =>
+      modalInstance = @$modal.open({
+        templateUrl: @getTemplatePath('Portal/Editor/email-modal.html'),
+        controller: ['$scope', '$modalInstance', '$http', 'preview_as', ($scope, $modalInstance, $http, preview_as) ->
+          $scope.email = '';
+          $scope.preview_as = preview_as
+          $scope.ok = () -> $modalInstance.close(@email)
+          $scope.cancel = () -> $modalInstance.dismiss('cancel')
+          $scope.loadEmails = (val) ->
+            $http.get('/portal/api/emails?term=' + val + '&target=' + preview_as)
+                 .then((response) => response.data)
+        ],
+        resolve: {
+          preview_as: () => @preview_as
+        }
+      });
+      modalInstance.result.then((email) => @preview_as_email = email; @refreshPreviewUrl())
+
+    loadMyEmail: () =>
+      @$http.get('/portal/api/me/email')
+            .success((email) => @my_email = angular.fromJson(email); @refreshPreviewUrl())
+            .error(() => error('Server error occurred. Unable to load user email.'))
+
     error: (message) -> window.alert(message)
     success: (message) -> window.alert(message)
-    serverError: -> @error('Server error occurred. Unable to save data.')
+    serverError: => @error('Server error occurred. Unable to save data.')
 
   Admin_Portal_Ctrl_PortalEditor.EXPORT_CTRL()

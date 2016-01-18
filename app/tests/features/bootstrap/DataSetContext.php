@@ -85,6 +85,7 @@ class DataSetContext extends BaseContext
         $this->dataset_manager->install($set);
         self::$last_installed_data_set = $set;
         $this->ran_install             = true;
+        $this->em()->clear();
         if (self::$reinstall) {
             print 'successfully reinstalled data set (took '.(time() - $install_start).' seconds)';
         } else {

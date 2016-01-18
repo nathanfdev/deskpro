@@ -92,27 +92,28 @@ export default class Frame extends React.Component {
     }
 
     this.setState({
-      dimensions: {
-        width: width,
-        height: height
-      }
+      dimensions: { width, height }
     });
   }
 
   renderFrameContents() {
     const doc = this.getContentDocument();
+    const { frameStyles = {}, containerStyles = {} } = this.props;
+    const containerDimensions = {};
+
+    if (frameStyles.width) {
+      containerDimensions.width = frameStyles.width;
+    }
+    if (frameStyles.height) {
+      containerDimensions.height = frameStyles.height;
+    }
+
+    const frameContainerStyles = {
+      ...containerStyles,
+      ...containerDimensions
+    };
 
     if (doc.readyState === 'complete') {
-      const { frameStyles = {}, containerStyles = {} } = this.props;
-      const containerDimensions = {};
-
-      if (frameStyles.width) {
-        containerDimensions.width = frameStyles.width;
-      }
-      if (frameStyles.height) {
-        containerDimensions.height = frameStyles.height;
-      }
-
       if (!this.containerReady) {
         const $head = $(doc.head);
         const $body = $(doc.body);
@@ -120,16 +121,20 @@ export default class Frame extends React.Component {
         const $styles = $(document).find('style').clone();
         const $container = $('<div/>', {
           id: 'react_frame_container',
-          css: {
-            ...containerStyles,
-            ...containerDimensions
-          }
+          css: frameContainerStyles
         });
 
         $head.html($styles);
         $body.html($container);
 
         this.containerReady = true;
+      } else {
+        const $container = $(doc.body.firstChild);
+        if (Object.keys(frameContainerStyles).length) {
+          $container.css(frameContainerStyles);
+        } else {
+          $container.removeAttr('style');
+        }
       }
 
       const contents = React.createElement('div', containerDimensions, this.props.children);

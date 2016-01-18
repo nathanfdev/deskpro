@@ -1,13 +1,14 @@
 import React, { Component, PropTypes } from 'react';
 import { List } from './List';
 import { connect } from 'react-redux';
-import { isDoneSelector, viewModeSelector } from '../../Selectors/list';
+import { isDoneSelector, viewModeSelector, paginationSelector } from '../../Selectors/list';
 import { unload } from '../../Actions/listActions';
-import { selectedCountSelector } from '../../Selectors/list';
+import { selectedSelector } from '../../../Application/Selectors/massActions';
 
 @connect(state => ({
-  selectedCount: selectedCountSelector(state),
+  selected: selectedSelector(state),
   isDone: isDoneSelector(state),
+  pagination: paginationSelector(state),
   viewMode: viewModeSelector(state)
 }))
 export class ListContainer extends Component {
@@ -15,6 +16,7 @@ export class ListContainer extends Component {
     dispatch: PropTypes.func.isRequired,
     isDone: PropTypes.bool.isRequired,
     selectedCount: PropTypes.number.isRequired,
+    pagination: PropTypes.object,
     viewMode: PropTypes.string.isRequired
   };
 

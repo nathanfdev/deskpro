@@ -136,3 +136,74 @@
     }
   }
 }
+
+.dpdesignportal-chat-email-validation {
+  .description {
+    width: 300px;
+    display: block;
+    margin: 0 auto;
+
+    p {
+      display: block;
+      padding: 0 10px;
+    }
+  }
+
+  input[type="text"] {
+    display: block;
+    width: 200px;
+    height: 30px;
+    margin: 25px auto 10px;
+    text-align: center;
+    outline: none;
+  }
+
+  a.email-code-submit {
+    text-align: center;
+    display: block;
+    color: #4681b2;
+    margin: 0 auto 5px;
+  }
+
+  .spinner {
+    i {
+      display: block;
+    }
+  }
+
+  &.error {
+    input[type="text"] {
+      border: 1px solid #ff0000;
+      color: #ff0000;
+    }
+  }
+
+  ul.error {
+    color: #ff0000;
+    width: 200px;
+    margin: 10px auto;
+    font-size: 11px;
+
+    li {
+      padding: 0 10px;
+      text-align: center;
+    }
+  }
+}
+
+.dpdesignportal-chat-require-login {
+  text-align: center;
+
+  button {
+    margin-top: 10px;
+    text-decoration: none;
+    display: inline-block;
+    line-height: 1.3em;
+    background: #4681b2;
+    color: #e0e5ec;
+    padding: 5px 10px;
+    border: 1px solid #4681b2;
+    border-radius: 2px;
+    transition: all 0.2s ease;
+  }
+}

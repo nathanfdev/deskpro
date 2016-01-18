@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\AgentChat;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -45,7 +44,9 @@ use DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\EveryoneChat;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChat as AgentChatRepository;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChatMessage as AgentChatMessageRepository;
+use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\MarkMessageEvent;
 use Doctrine\ORM\PersistentCollection;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class Messenger
 {
@@ -60,13 +61,18 @@ class Messenger
     protected $department_data_service;
 
     /**
-     * @param EntityManager         $em
-     * @param DepartmentDataService $department_data_service
+     * @param EntityManager            $em
+     * @param DepartmentDataService    $department_data_service
+     * @param EventDispatcherInterface $event_dispatcher
      */
-    public function __construct(EntityManager $em, DepartmentDataService $department_data_service)
-    {
+    public function __construct(
+        EntityManager $em,
+        DepartmentDataService $department_data_service,
+        EventDispatcherInterface $event_dispatcher
+    ) {
         $this->em                      = $em;
         $this->department_data_service = $department_data_service;
+        $this->event_dispatcher        = $event_dispatcher;
     }
 
     /**
@@ -318,24 +324,14 @@ class Messenger
                 if ($this->isPersonInvolvedInChat($user, $message->getChat())) {
                     $message->setStatus(AgentChatMessage::STATUS_READ);
                     $this->em->persist($message);
+                    $this->event_dispatcher->dispatch(
+                        MarkMessageEvent::EVENT_NAME,
+                        new MarkMessageEvent($message->getId())
+                    );
                 }
                 // TODO handle not-mine access violation
             }
         }
         $this->em->flush();
-    }
-
-    public function createCountResponse($count)
-    {
-        foreach ($count as $cnt) {
-            $data[$cnt['chat_id']] = $cnt;
-        }
-        $chat_ids = array_keys($data);
-
-        // this looks like very, VERY dirty hack. Smells :(
-        $chats_data = $this->dataSerialize($messenger->getChats($chat_ids));
-        foreach ($chats_data['data'] as $chat) {
-            $data[$chat['id']]['chat'] = $chat;
-        }
     }
 }

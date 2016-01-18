@@ -29,9 +29,9 @@
 /**
  * DeskPRO.
  */
-
 namespace DpBehat\Portal;
 
+use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
@@ -48,10 +48,14 @@ class AuthContext extends BasePortalContext
      */
     private $token_storage;
 
+    /** @var  \Application\DeskPRO\Entity\Person */
+    private $me;
+
     public function __construct(UserDetailsRepo $user_details, TokenStorage $token_storage)
     {
         $this->user_details  = $user_details;
         $this->token_storage = $token_storage;
+        $this->me            = null;
     }
 
     /**
@@ -63,6 +67,8 @@ class AuthContext extends BasePortalContext
             $this->user_details->getEmail($who),
             $this->user_details->getPass($who)
         );
+
+        $this->me = $this->user_details->getWho($who);
     }
 
     /**
@@ -77,6 +83,25 @@ class AuthContext extends BasePortalContext
         $page->fillField('username', $this->user_details->getEmail($who));
         $page->fillField('password', $this->user_details->getPass($who));
         $page->pressButton('Login');
+
+        $this->me = $this->user_details->getWho($who);
+    }
+
+    /**
+     * @Given I have a verified email :email_address
+     */
+    public function iHaveAVerifiedEmail($email_address)
+    {
+        $email    = new \Application\DeskPRO\Entity\PersonEmail();
+        $this->me = $this->em()->getRepository(Person::class)->find($this->me->getId());
+        $email->setPerson($this->me);
+        $email->setEmail($email_address);
+        $email->setIsValidated(true);
+
+        $this->em()->persist($email);
+        $this->em()->flush($email);
+
+        $this->em()->refresh($this->me);
     }
 
     /**
@@ -96,9 +121,45 @@ class AuthContext extends BasePortalContext
             $user = $this->getContainer()->get('doctrine.orm.default_entity_manager')->getRepository('DeskPRO:Person')->find($user);
         }
 
-        print $this->user_details->getEmail($who);
-
         expect($user->getPrimaryEmailAddress())->toBeEqualTo($this->user_details->getEmail($who));
+
+        $this->me = $this->user_details->getWho($who);
+    }
+
+    /**
+     * @Then :email_address should be my primary email address
+     */
+    public function shouldBeMyPrimaryEmailAddress($email_address)
+    {
+        $this->me = $this->em()->getRepository(Person::class)->find($this->me->getId());
+
+        expect($this->me->getPrimaryEmailAddress())->toBe($email_address);
+    }
+
+    /**
+     * @Given the organization :org exists
+     */
+    public function theOrganizationExists($org)
+    {
+        $organization = new Organization();
+        $organization->setName($org);
+        $this->em()->persist($organization);
+        $this->em()->flush();
+    }
+
+    /**
+     * @Given :who is an organization manager of :org
+     */
+    public function isAnOrganizationManagerOf($who, $org)
+    {
+        $person = $this->user_details->getWho($who);
+        if (!$organization = $this->getOrganization($org)) {
+            throw new \Exception('cannot find organization "'.$org.'"');
+        }
+
+        $person->setOrganization($organization);
+        $person->organization_manager = true;
+        $this->em()->flush();
     }
 
     /**
@@ -107,5 +168,34 @@ class AuthContext extends BasePortalContext
     public function iAmAuthenticatedAsUser($who)
     {
         $this->iLoginWithCredentials($who);
+    }
+
+    /**
+     * @Given my name is :name
+     */
+    public function myNameIs($name)
+    {
+        $this->me->setName($name);
+        $this->me = $this->em()->merge($this->me);
+        $this->em()->flush($this->me);
+    }
+
+    /**
+     * @Then my name should be :name
+     */
+    public function myNameShouldBe($name)
+    {
+        $this->me = $this->em()->getRepository(Person::class)->find($this->me->getId());
+        expect($this->me->name)->toBe($name);
+    }
+
+    /**
+     * @param $org
+     *
+     * @return Organization|null|object
+     */
+    protected function getOrganization($org)
+    {
+        return $this->em()->getRepository(Organization::class)->findOneBy(['name' => $org]);
     }
 }

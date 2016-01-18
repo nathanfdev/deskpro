@@ -8,6 +8,16 @@ const stateSelector = state => state.CRM.list;
 
 export const currentViewModeSelector = hashStateSelectorFactory(['list', 'view'], 'card');
 
+export const paginationSelector = createSelector(
+  stateSelector,
+    list => list.get('pagination')
+);
+
+export const loadedSelector = createSelector(
+  stateSelector,
+    list => list.getIn(['async', 'done'])
+);
+
 export const currentListParamsSelector = createSelector(
   stateSelector,
     state => state.get('currentListParams')
@@ -79,5 +89,12 @@ export const listFiltersSelector = createSelector(
     }
 
     return filterSelector;
+  }
+);
+
+export const massActionsSelector = createSelector(
+  [],
+  () => {
+    return [];
   }
 );

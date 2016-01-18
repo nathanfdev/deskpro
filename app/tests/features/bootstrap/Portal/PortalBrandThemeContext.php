@@ -66,8 +66,13 @@ class PortalBrandThemeContext extends BasePortalContext
      */
     public function theActiveBrandHasTheme($theme_id)
     {
-        $brand = $this->brand_stack->getDefault();
-        $brand->setThemeId($theme_id);
+        $brand_container = $this->brand_stack->getActive();
+        $brand           = $brand_container->getBrand();
+
+        $theme_set = $this->em->getRepository('App:ThemeSet')->findOneBy(['theme_id' => $theme_id]);
+
+        $brand->setThemeSet($theme_set);
+
         $this->em->persist($brand);
         $this->em->flush($brand);
     }

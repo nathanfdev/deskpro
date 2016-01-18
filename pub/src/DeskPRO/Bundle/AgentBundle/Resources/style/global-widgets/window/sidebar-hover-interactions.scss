@@ -1,0 +1,398 @@
+
+.sidebar-hover {
+  width: 520px;
+  background: white;
+  transition: all 0.25s ease-in-out;
+  overflow-x: visible;
+  overflow-y: visible;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
+  border: none;
+
+  &.assign-hover {
+    width: 528px;
+    transition: all 0s ease 0s;
+  }
+
+  &.hide {
+    max-width: 0;
+    display: none;
+  }
+  &.show {
+    max-width: 1000px;
+    display: block;
+  }
+}
+
+.sidebar-hover.one-column {
+  width: 200px;
+}
+
+.sidebar-hover:before {
+  content: "";
+  display: block;
+  border: 4px solid rgba(0, 0, 0, 0);
+  border-right: 4px solid #4681b2;
+  position: absolute;
+  left: -8px;
+  top: 16px;
+}
+
+.assign-hover:before {
+  content: "";
+  display:block;
+  border: 4px solid rgba(0,0,0,0);
+  border-bottom: 4px solid #4681b2;
+  position: absolute;
+  top: -8px;
+  left: 263px;
+}
+
+.hide-indicator:before {
+  content: none;
+  display: none;
+  border: none;
+}
+
+.sidebar-hover-button-row { @include clearfix(); }
+
+.hover-button {
+  display: block;
+  float: left;
+  background: #505962;
+  height: 45px;
+  color: #fff;
+  text-align: center;
+  padding: 8px 10px 0;
+  border-right: 1px solid #626a72;
+
+  span {
+    display: block;
+    color: #a9acaf;
+    font-size: 0.8em;
+  }
+
+  strong {
+    color: #ffffff;
+    font-weight: normal;
+  }
+}
+
+
+// Collection of checkboxes for sidebar interaction hovers
+.sidebar-hover-checkbox-collection {
+  display: block;
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+  max-height: 120px;
+  margin-top: 4px;
+  padding: 7px 10px;
+  background: #ffffff;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  position: relative;
+
+  &.inline-radio span {
+    padding-right: 10px;
+  }
+
+  ul {
+    @include clearfix();
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      display: block;
+      width: 50%;
+      padding-top: 3px;
+      padding-bottom: 3px;
+
+      span {
+        display: inline-block;
+        vertical-align: middle;
+      }
+    }
+  }
+
+  .chat-avatar {
+    width: 17px;
+    height: 17px;
+    margin: 0 3px 0 0;
+  }
+
+}
+
+.checkbox-button {
+  outline: none;
+  .checkbox {
+    margin-right: 3px;
+    background: #fff;
+    border: 1px solid #e2e5e8;
+    width: 15px;
+    height: 15px;
+
+    i {
+      opacity: 1;
+      color: #e5e6e7;
+      font-size: 9px;
+      top: 2px;
+    }
+  }
+
+  .name {
+    width: 120px;
+    padding: 1px;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &.checked {
+
+    .name {
+      border-radius: 2px;
+      background-color: #62ad8c;
+      color: #fff;
+    }
+
+    .checkbox {
+      border: 1px solid #62ad8c;
+      i {
+        color: #62ad8c;
+      }
+    }
+  }
+}
+
+aside.sidebar {
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.sidebar-hover-content {
+  background: #eef1f3;
+  color: #333;
+  padding: 0;
+  font-size: 1em;
+  min-width: 400px;
+
+  .sidebar-hover-header {
+    background: #fff;
+    color: #424242;
+    border-bottom: 1px solid #d6d8da;
+    padding: 7px 10px;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+
+    i, .title {
+      display: inline-block;
+      vertical-align: middle;
+      margin: 0;
+    }
+
+    .title span { color: #a6a6a6; }
+
+    .fa {
+      color: #d9d9d9;
+      margin-right: 5px;
+      top: 1px;
+    }
+  }
+
+  .sidebar-hover-footer {
+    background: #eef1f3;
+    text-align: right;
+    padding: 10px;
+
+    .button {
+      background: 1px;
+      font-weight: bold;
+      border: 1px solid #dfdfdf;
+      color: #b9bcbd;
+      padding: 5px 7px;
+      font-size: 0.85em;
+    }
+
+    .button:hover {
+      background: #d3d7da;
+    }
+  }
+
+  .button {
+    display: inline-block;
+    background: #62ad8c;
+    color: #fff;
+    border-radius: 2px;
+    border: 0;
+    padding: 10px 25px;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 0.9em;
+  }
+
+  .button:hover {
+    background: darken(#62ad8c, 10%);
+  }
+
+  .filter-options {
+    margin-left: 10px;
+    margin-top: 5px;
+    color: #424242;
+    font-size: 0.9em;
+
+    i {
+      margin-right: 5px;
+      color: #bcbcbc;
+    }
+
+    li {
+      display: block;
+      padding: 4px 0;
+    }
+  }
+
+  .filter-date {
+    padding-left: 5px;
+    color: #868686;
+
+    a {
+      color: #868686;
+      text-decoration: none;
+    }
+  }
+
+  .sidebar-hover-content-box {
+    padding: 0 10px;
+    margin-bottom: 10px;
+
+    span {
+      margin-right: 5px;
+    }
+  }
+
+  .sidebar-hover-content-box.full-panel {
+    background: #fff;
+    border-top: 1px solid #d6d8da;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 0;
+
+    p {
+      font-size: 0.9em;
+      color: #828282;
+      line-height: 1.7em;
+    }
+  }
+
+  .filter-options {
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+  }
+
+  h2 {
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #9a9a9a;
+    padding-left: 5px;
+  }
+
+  h3 {
+    font-size: 1em;
+    color: #333;
+    margin-bottom: 8px;
+  }
+
+  [type="text"], [type="datetime"] {
+    border-radius: 2px;
+    background: #ffffff;
+    border: 1px solid #e4e4e4;
+    display: block;
+    width: 100%;
+    padding: 7px 10px;
+    margin-top: 4px;
+
+    &.form-error {
+      border: 1px solid #ff5460;
+    }
+  }
+
+  .form-error-description {
+    color: #ff5460;
+  }
+
+  select {
+    position: relative;
+    display: block;
+    line-height: 1em;
+    border: 1px solid #e4e4e4;
+    background: #fff;
+    padding: 8px 10px 10px;
+    border-radius: 2px;
+    cursor: pointer;
+    margin-top: 4px;
+    width: 100%;
+  }
+
+  .select-dropdown {
+    display: block;
+    position: relative;
+    z-index: 299;
+
+    &:hover { background: #f9f9f9; }
+
+    .current-option {
+      display: block;
+      line-height: 1em;
+      border: 1px solid #e4e4e4;
+      background: #fff;
+      padding: 8px 10px 10px;
+      border-radius: 2px;
+      position: relative;
+      cursor: pointer;
+      margin-top: 4px;
+
+      i {
+        float: right;
+        top: 1px;
+      }
+    }
+
+    .select-options {
+      background: #fff;
+      border: 1px solid #4681b2;
+      width: 100%;
+      position: absolute;
+      top: 29px;
+      left: 0;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
+
+    ul {
+      @extend %flat-list;
+
+      a {
+        display: block;
+        text-decoration: none;
+        color: #7c7c7c;
+        padding: 7px 10px;
+        border-bottom: 1px solid #dfe1e3;
+      }
+
+      a:hover {
+        color: #4681b2;
+      }
+    }
+  }
+
+  .select-dropdown.expanded {
+    .select-options { display: block; }
+  }
+}

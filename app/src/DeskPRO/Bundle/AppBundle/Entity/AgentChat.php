@@ -193,7 +193,19 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
      */
     public function getDateLastMessage()
     {
-        return $this->date_created;
+        return $this->date_last_message;
+    }
+
+    /**
+     * @param \DateTime $date
+     *
+     * @return $this
+     */
+    public function setDateLastMessage(\DateTime $date)
+    {
+        $this->date_last_message = $date;
+
+        return $this;
     }
 
     /**

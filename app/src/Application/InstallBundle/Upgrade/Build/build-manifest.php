@@ -1821,10 +1821,18 @@ return array(
     ),
     1450199468 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/12/Build1450199468.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1450199467',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1450199468',
     ),
     1450199568 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/12/Build1450199568.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1450199467',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1450199568',
+    ),
+    1452515438 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/01/Build1452515438.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1452515438',
+    ),
+    1452757986 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/01/Build1452757986.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1452757986',
     ),
 );

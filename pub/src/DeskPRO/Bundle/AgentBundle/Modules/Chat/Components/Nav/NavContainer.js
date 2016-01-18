@@ -1,62 +1,69 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../../Actions/chatNavActions';
-import * as listActions from '../../Actions/chatListActions';
-import { Nav } from './Nav';
 import { pureRender } from 'Ampliflux';
+import * as actions from '../../Actions/chatNavActions';
+import {loadedSelector, myChatsSelector, allChatsSelector } from '../../Selectors/nav';
+import { Nav } from './Nav';
+import { createDepartmentsRequestSelectors }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
 
 @connect(state => ({
-  lists: state.Chat.nav.get('lists'),
+  loaded: loadedSelector(state),
+  my: myChatsSelector(state),
+  all: allChatsSelector(state),
   dpWindow: state.Application.dpWindow
 }))
 @pureRender
-export class NavContainer extends React.Component {
+export class NavContainer extends Component {
 
-  constructor(props) {
-    super(props);
-    this.props.dispatch(actions.loadCounts('my', this.props.lists.getIn(['my', 'groupBy'])));
-    this.props.dispatch(actions.loadCounts('all', this.props.lists.getIn(['all', 'groupBy'])));
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    currentApp: PropTypes.string.isRequired,
+    my: PropTypes.object.isRequired,
+    all: PropTypes.object.isRequired,
+    loaded: PropTypes.bool.isRequired,
+    dpWindow: PropTypes.object.isRequired
+  };
+
+  componentDidMount() {
+    this.props.dispatch(actions.initialLoad());
   }
 
-  render() {
-    const { lists, dpWindow, dispatch } = this.props;
-    const changeGrouping = (listName) => this.changeGrouping(listName).bind(this);
-    const toggleGroupingVisibility = (listName) => this.toggleGroupingVisibility(listName).bind(this);
-    const onMyClick = (filters) => this.props.dispatch(listActions.load({...filters, agent: 'me'}));
-    const onAllClick = (filters) => this.props.dispatch(listActions.load(filters));
-
-    return (
-      <Nav
-        lists={lists}
-        onMyClick={onMyClick}
-        onAllClick={onAllClick}
-        changeGrouping={changeGrouping}
-        toggleGroupingVisibility={toggleGroupingVisibility}
-        dpWindow={dpWindow}
-        dispatch={dispatch}
-      />
-    );
+  componentWillUnmount() {
+    this.props.dispatch(actions.unmount());
   }
 
   toggleGroupingVisibility(listName) {
-    return function(e) {
+    return (e) => {
       e.preventDefault();
       this.props.dispatch(actions.toggleListGroupingVisibility(listName));
     };
   }
 
   changeGrouping(listName) {
-    return function (e) {
+    return (e) => {
       const options = e.target.options;
       for (let i = 0; i < options.length; i++) {
         if (options[i].selected) {
           this.props.dispatch(actions.changeListGrouping(listName, options[i].value));
         }
       }
-    }
+    };
   }
 
-  componentWillUnmount() {
-    this.props.dispatch(actions.unmount());
+  render() {
+    const { my, all, dpWindow, dispatch, loaded } = this.props;
+    const changeGrouping = (listName) => this.changeGrouping(listName).bind(this);
+    const toggleGroupingVisibility = (listName) => this.toggleGroupingVisibility(listName).bind(this);
+
+    return (
+      <Nav my={my}
+           all={all}
+           changeGrouping={changeGrouping}
+           toggleGroupingVisibility={toggleGroupingVisibility}
+           dpWindow={dpWindow}
+           dispatch={dispatch}
+           loaded={loaded}/>
+    );
   }
 }

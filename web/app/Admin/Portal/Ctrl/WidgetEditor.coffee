@@ -1,71 +1,122 @@
-define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Base) ->
+define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Functions) ->
   class Admin_Portal_Ctrl_WidgetEditor extends Admin_Ctrl_Base
     @CTRL_ID = 'Admin_Portal_Ctrl_WidgetEditor'
     @CTRL_AS = 'Ctrl'
+    @DEPS    = ['$http']
 
     init: ->
-      @$scope.code_snippets = {
-        code: ''
+      @$scope.code = ''
+      @$scope.url = {
+        widget_loader: '',
+        widget_bundle: '',
+        helpdesk: ''
+      };
+      @$scope.company = {
+        name: 'Helpdesk',
+        logo: ''
       }
-
-      @$scope.chat_options = {
+      @$scope.global_settings = {
+        chat: {
+          require_login: false,
+          email_validation: false
+        }
+      }
+      @$scope.brand_settings = {
         widget: {
           type: 'column',
           position: 'right',
-          agentPollingTimeout: 10
-        },
-        company: {
-          name: 'Acme Corp. Chat and a long name lorel ipsum dolor',
-          logo: ''
+          agent_polling_timeout: 10
         },
         button: {
           size: 'medium',
           name: 'Help',
           colors: {
-            background: '',
-            text: '',
-            border: ''
+            background: '#62ad8c',
+            text: '#ffffff',
+            border: '#4e9576'
           }
         },
         chat: {
           enabled: true,
-          requestUserInfo: true,
+          request_user_info: true,
           proactive: true,
           popup: {
             title: 'DeskPRO Customer Support',
             message: 'Given a string consisting of printable ASCII chars, produce an output consisting of its unique chars in the original order.',
-            replyType: 'buttons'
+            reply_type: 'buttons'
           },
-          beginMode: 'form',
-          waitingTimeout: 30,
-          agentPollingTimeout: 10
+          begin_mode: 'form',
+          waiting_timeout: 30
         }
       }
 
     initialLoad: ->
-      data_promise = @Api.sendDataGet({
-        hdinfo:     '/deskpro/info',
-        chat_setup: '/chat_setup'
-      }).then((res) =>
-        @hdinfo = res.data.hdinfo
-        @$scope.setup = res.data.chat_setup.chat_setup
-      )
+      @$http.get('/api/v2/widget/setup').success((response) =>
+        data = response.data
 
-      return @$q.all([data_promise])
+        @$scope.url = data.url;
+        @$scope.company = $.extend(true, @$scope.company, data.company);
+        @$scope.global_settings = $.extend(true, @$scope.global_settings, data.settings.global);
+        @$scope.brand_settings = $.extend(true, @$scope.brand_settings, data.settings.brand);
 
-    updateChatCode: ->
-      code = """
+        @initLiveDemo()
+      );
+
+      updateLiveDemoDebounce = Functions.debounce( =>
+        @updateLiveDemo()
+      , 350)
+      @$scope.$watch('brand_settings', updateLiveDemoDebounce, true)
+
+    getOptions: (liveDemo = false) ->
+      options = $.extend(true, {company: @$scope.company}, @$scope.brand_settings)
+      if (liveDemo)
+        options.widget.live_demo = true
+
+      return options
+
+    getCode: (options) ->
+      """
         <!-- DeskPRO Chat -->
           <script>
-              window.__DP_APP_SRC__ = 'http://localhost:9666/pub/build/DeskPRO_WidgetBundle.js';
-              window.__DP_URL__ = 'http://deskpro.com.dev/';
-              window.__DP_OPTIONS__ = #{JSON.stringify(@$scope.chat_options)};
+              window.__DP_APP_SRC__ = '#{@$scope.url.widget_bundle}';
+              window.__DP_URL__ = '#{@$scope.url.helpdesk}';
+              window.__DP_OPTIONS__ = #{JSON.stringify(options)};
           </script>
 
-          <script type="text/javascript" charset="UTF-8" src="http://deskpro.com.dev/pub/build/widget_loader.js?1446397152"></script>
+          <script type="text/javascript" charset="UTF-8" src="#{@$scope.url.widget_loader}"></script>
         <!-- /DeskPRO Chat -->
       """
 
-      @$scope.code_snippets.chat = code
+    getLiveDemoDocument: ->
+      document.getElementById('live-demo').contentDocument
+
+    updateChatCode: ->
+      @$scope.code = ''
+      @$http({
+        method: 'POST',
+        url: '/api/v2/widget/setup',
+        data: {
+          global: @$scope.global_settings,
+          brand: @$scope.brand_settings
+        }
+        headers: {
+          'X-Agent-Request': 'true'
+        }
+      })
+      .then(
+        () => @$scope.code = @getCode(@getOptions()),
+        (response) => console.log(response.data)
+      )
+
+
+    initLiveDemo: ->
+      demoDocument = @getLiveDemoDocument();
+      demoDocument.write('<body>' + @getCode(@getOptions(true)) + '</body>');
+      demoDocument.close();
+
+    updateLiveDemo: ->
+      demoWindow = @getLiveDemoDocument().dp_loader;
+      if (demoWindow)
+        demoWindow.emitter.emit('reloadOptions', @getOptions(true))
 
   Admin_Portal_Ctrl_WidgetEditor.EXPORT_CTRL()

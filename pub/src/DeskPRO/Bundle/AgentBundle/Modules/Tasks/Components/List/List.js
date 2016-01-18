@@ -11,13 +11,13 @@ import { ListGroupContainer } from './ListGroupContainer';
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import { toggleAll } from '../../Actions/listActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+
 export class List extends React.Component {
 
   static propTypes = {
     currentView: PropTypes.string.isRequired,
     selectedCount: PropTypes.number.isRequired,
     currentNav: PropTypes.object,
-    tasks: PropTypes.object.isRequired,
     loaded: PropTypes.bool
   };
 
@@ -36,7 +36,7 @@ export class List extends React.Component {
   }
 
   render() {
-    const { currentNav, loaded, tasks, selectedCount } = this.props;
+    const { currentNav, loaded, selectedCount } = this.props;
     const checkbox = { count: selectedCount, action: toggleAll };
     return (
       <ListFrameContainer className="task-list-frame">
@@ -44,16 +44,16 @@ export class List extends React.Component {
           <ControlBarContainer />
         </ListFrameMenu>
         {currentNav &&
-        <LoadIndicator loaded={loaded}
-                       opacity={0}
-                       width={3}>
+          <LoadIndicator loaded={loaded}
+                         opacity={0}
+                         width={3}>
 
-          <ListFrameContents>
-            <ListGroupContainer tasks={tasks}>
-              {this.renderView()}
-            </ListGroupContainer>
-          </ListFrameContents>
-        </LoadIndicator>
+            <ListFrameContents>
+              <ListGroupContainer>
+                {this.renderView()}
+              </ListGroupContainer>
+            </ListFrameContents>
+          </LoadIndicator>
         }
       </ListFrameContainer>
     );

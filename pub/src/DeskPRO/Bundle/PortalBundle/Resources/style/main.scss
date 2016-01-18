@@ -1082,6 +1082,11 @@ button, .button, input[type="submit"] {
   color: $text-color;
   position: relative;
   text-align: right;
+
+  .logo {
+    max-height: 100px;
+  }
+
   @media screen and (max-width: 760px) {
     border: 1px solid $divider-color;
     border-radius: 2px;
@@ -7938,7 +7943,6 @@ ul.big-button-collection {
     }
   }
 }
-
 
 .big-button-collection-expand-mobile {
   float: left;

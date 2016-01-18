@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace spec\DeskPRO\Bundle\PortalBundle\HttpCache;
 
 use DeskPRO\Bundle\PortalBundle\HttpCache\PortalHttpCache;
@@ -66,12 +65,13 @@ class PortalCacheHelperSpec extends ObjectBehavior
         $this->isGuestHash('xyz-gibberish')->shouldBe(false);
     }
 
-    public function it_defaults_to_guest_request_if_master_request_does_not_have_a_context_hash(
+    public function it_will_not_be_a_guest_request_if_master_request_does_not_have_a_context_hash(
         HeaderBag $headers
     ) {
+        // this will happen if the portal cache gets turned off completely
         $headers->has(PortalHttpCache::USER_CONTEXT_HASH_HEADER)->willReturn(false);
 
-        $this->isGuestRequest()->shouldReturn(true);
+        $this->isGuestRequest()->shouldReturn(false);
     }
 
     public function it_determines_a_guest_request_if_master_request_context_hash_indicates_anonymous(

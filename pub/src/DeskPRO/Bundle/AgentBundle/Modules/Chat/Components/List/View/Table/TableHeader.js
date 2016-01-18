@@ -3,8 +3,6 @@ import React from 'react';
 export class TableHeader extends React.Component {
 
   render() {
-    const { sortTable } = this.props;
-
     return (
       <thead>
       <tr>
@@ -13,7 +11,7 @@ export class TableHeader extends React.Component {
         <th className="agent-col sortable">Agent</th>
         <th>Labels</th>
         <th>Chat</th>
-        <th></th>
+        <th>Department</th>
         <th></th>
       </tr>
       </thead>

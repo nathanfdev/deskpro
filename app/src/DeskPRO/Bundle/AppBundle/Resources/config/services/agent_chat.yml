@@ -5,6 +5,7 @@ services:
     arguments:
       - @doctrine.orm.default_entity_manager
       - @data.departments
+      - @event_dispatcher
 
   deskpro.agentchat.history:
     class: DeskPRO\Bundle\AppBundle\AgentChat\History

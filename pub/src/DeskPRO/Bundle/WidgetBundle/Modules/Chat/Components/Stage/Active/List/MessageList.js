@@ -24,7 +24,7 @@ export class MessageList extends React.Component {
   }
 
   componentDidMount() {
-    this.playSound = false;
+    this.canPlaySound = false;
     this.checkForNewMessages();
   }
 
@@ -50,13 +50,13 @@ export class MessageList extends React.Component {
 
       setTimeout(() => this.refs.scrollArea && this.refs.scrollArea.scrollBottom(), 0);
 
-      // Checking for agent messages
+      // Checking for agent messages to play sound notification
       const newAgentMessage = messages.filter(message => {
-        return message.get('id') > this.state.lastMessageId && message.get('author_type') === 'agent';
+        return message.get('id') > this.state.lastMessageId && !message.get('is_user') && !message.get('is_sys');
       });
 
       // Don't play sound on initial load
-      if (this.playSound && !mute && newAgentMessage.size > 0) {
+      if (this.canPlaySound && !mute && newAgentMessage.size > 0) {
         const sound = ReactDOM.findDOMNode(this.refs.sound);
         try {
           sound.play();
@@ -65,7 +65,7 @@ export class MessageList extends React.Component {
         }
       }
 
-      this.playSound = true;
+      this.canPlaySound = true;
     }
   }
 

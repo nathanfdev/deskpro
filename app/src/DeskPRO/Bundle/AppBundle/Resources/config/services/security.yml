@@ -1,3 +1,6 @@
+parameters:
+ security.authentication.switchuser_listener.class: DeskPRO\Bundle\AppBundle\Security\SwitchUserListener
+
 services:
 
   # Each kernel bundle will have their own specific security services dedicated to it

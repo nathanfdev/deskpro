@@ -75,13 +75,16 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
         $this->portal_twig = $portal_twig;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             // make sure this priority is AFTER the BrandDetectionListener so we capture brand settings
             // AND it also must be AFTER the RouterListener so we can whitelist routes
-            KernelEvents::REQUEST => array('onRequest', 0),
-        );
+            KernelEvents::REQUEST => ['onRequest', 0],
+        ];
     }
 
     public function onRequest(GetResponseEvent $event)

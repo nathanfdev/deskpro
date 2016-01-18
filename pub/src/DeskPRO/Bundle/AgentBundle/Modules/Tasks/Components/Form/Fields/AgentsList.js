@@ -1,16 +1,12 @@
 import React, { PropTypes } from 'react';
-import { CheckboxList } from './CheckboxList';
+import { BaseList } from './BaseList';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/index';
 
-export class AgentsList extends React.Component {
+export class AgentsList extends BaseList {
 
-  static propTypes = {
-    values: PropTypes.object
-  };
-
-  static renderLabel(value) {
+  renderLabel(value) {
     return (
-      <span>
+      <span className="name">
           <span style={{position: 'relative'}}>
             <PersonAvatar person={value} size={16} />
           </span>
@@ -19,16 +15,4 @@ export class AgentsList extends React.Component {
     );
   }
 
-  render() {
-    const { values = [] } = this.props;
-    const options = values.map(value => ({
-      label: AgentsList.renderLabel(value),
-      value: value.get('id'),
-      keyword: value.get('name')
-    }));
-
-    return (
-      <CheckboxList {...this.props} options={options} />
-    );
-  }
 }

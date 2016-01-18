@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\HttpCache;
 
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -54,6 +53,8 @@ class PortalCacheHelper
 
     /**
      * Is the master request a guest request?
+     *
+     * NOTE: if the portal http cache is disabled, this will always return false
      *
      * @return bool true if in a guest request
      */
@@ -89,7 +90,8 @@ class PortalCacheHelper
     private function determineIfGuestRequest()
     {
         if (!$user_hash = $this->getUserContextHash()) {
-            return true; // if no user context hash header: default to a guest!
+            // portal cache is disabled. In that case treat nobody as a guest.
+            return false;
         }
 
         return $this->isGuestHash($user_hash);

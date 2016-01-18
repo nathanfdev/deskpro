@@ -29,13 +29,13 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Designer;
 
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Bundle\TwigBundle\Extension\AssetsExtension;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Class PortalCustomizationsTwigExtension.
@@ -65,6 +65,7 @@ class PortalCustomizationsTwigExtension extends \Twig_Extension
         return [
             new \Twig_SimpleFunction('portal_css_url', array($this, 'getPortalCssUrl')),
             new \Twig_SimpleFunction('portal_custom_js', array($this, 'getPortalCustomJs')),
+            new \Twig_SimpleFunction('portal_custom_logo', array($this, 'getPortalCustomLogo')),
         ];
     }
 
@@ -101,6 +102,25 @@ class PortalCustomizationsTwigExtension extends \Twig_Extension
     }
 
     /**
+     * @return string|null
+     */
+    public function getPortalCustomLogo()
+    {
+        $asset = $this->isPreviewMode()
+            ? $this->getAssetsManager()->getEditThemeSetLogoAsset()
+            : $this->getAssetsManager()->getLogoAsset();
+
+        if ($asset) {
+            /** @var RouterInterface $router */
+            $router = $this->container->get('router');
+
+            return $router->generate('dp_portal_custom_asset', ['name' => $asset->getName()], true);
+        }
+
+        return;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getName()
@@ -122,6 +142,14 @@ class PortalCustomizationsTwigExtension extends \Twig_Extension
     private function getAdvancedEditsManager()
     {
         return $this->container->get('dp.portal.designer.advanced_edits_manager');
+    }
+
+    /**
+     * @return AssetsManager
+     */
+    private function getAssetsManager()
+    {
+        return $this->container->get('dp.portal.designer.assets_manager');
     }
 
     /**

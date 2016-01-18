@@ -31,13 +31,13 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Util\Strings;
 
 /**
  * A conversation between one or more people.
@@ -223,6 +223,16 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     protected $date_transcript_sent = null;
 
     /**
+     * @var string
+     */
+    protected $email_validation_code = '';
+
+    /**
+     * @var bool
+     */
+    protected $email_validated = false;
+
+    /**
      * @var array
      */
     protected $_created_messages = array();
@@ -287,6 +297,18 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         $convo->session = $session;
 
         return $convo;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function setPersonName($name)
+    {
+        $this->setModelField('person_name', $name);
+
+        return $this;
     }
 
     /**
@@ -1049,6 +1071,54 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         return $this->session;
     }
 
+    /**
+     * @return $this
+     */
+    public function regenerateEmailValidationCode()
+    {
+        return $this->setEmailValidationCode(Strings::random(15, Strings::CHARS_KEY));
+    }
+
+    /**
+     * @param string $code
+     *
+     * @return $this
+     */
+    public function setEmailValidationCode($code)
+    {
+        $this->setModelField('email_validation_code', $code);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmailValidationCode()
+    {
+        return $this->email_validation_code;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getEmailValidated()
+    {
+        return $this->email_validated;
+    }
+
+    /**
+     * @param bool $value
+     *
+     * @return $this
+     */
+    public function setEmailValidated($value)
+    {
+        $this->setModelField('email_validated', $value);
+
+        return $this;
+    }
+
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
         $data = parent::toApiData($primary, $deep, $visited);
@@ -1286,6 +1356,28 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
                 'columnName' => 'ended_by',
             )
         );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'email_validation_code',
+                'type'       => 'string',
+                'length'     => 15,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'email_validation_code',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'email_validated',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'email_validated',
+            )
+        );
+
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(
             array(

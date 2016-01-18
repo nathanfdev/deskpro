@@ -127,7 +127,11 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
     {
         // users sholud just see maintenance message
         if ($this->interfaceInfo->isUserInterface()) {
-            return $this->createOfflineResponse($request);
+            $response = $this->createOfflineResponse($request);
+            // overwrite header so we can debug this response if needed
+            $response->headers->set('X-DeskPRO-Premature-Termintation', 'upgrade_pending');
+
+            return $response;
         }
 
         $response = new Response();

@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { peopleSelector } from '../../Application/RecordStores/Selectors/peopleSelectors';
 
 const stateSelector = state => state.Chat.chat;
 
@@ -11,6 +12,12 @@ export const lockedPollingSelector = createSelector(
 export const skippedPollingSelector = createSelector(
   stateSelector,
   state => state.getIn(['polling', 'skipped'])
+);
+
+export const disabledPollingSelector = createSelector(
+  lockedPollingSelector,
+  skippedPollingSelector,
+  (locked, skipped) => locked || skipped
 );
 
 // Phrase translations
@@ -29,27 +36,6 @@ export const feedbackStageSelector = createSelector(
 export const muteSelector = createSelector(
   stateSelector,
   state => state.get('mute')
-);
-
-// Transcript selectors
-export const transcriptCheckedSelector = createSelector(
-  stateSelector,
-  state => state.getIn(['transcript', 'checked'])
-);
-
-export const transcriptSavingSelector = createSelector(
-  stateSelector,
-  state => state.getIn(['transcript', 'saving'])
-);
-
-export const transcriptSendingSelector = createSelector(
-  stateSelector,
-  state => state.getIn(['transcript', 'sending'])
-);
-
-export const transcriptSentSelector = createSelector(
-  stateSelector,
-  state => state.getIn(['transcript', 'sent'])
 );
 
 // Chat info selectors
@@ -73,19 +59,30 @@ export const chatInfoSelector = createSelector(
   state => state.getIn(['chat', 'info'])
 );
 
+export const hasChatInfoSelector = createSelector(
+  chatInfoSelector,
+  chatInfo => chatInfo && chatInfo.size > 0
+);
+
 export const agentIdSelector = createSelector(
   chatInfoSelector,
-  chatInfo => chatInfo.get('agent_id')
+  chatInfo => chatInfo.get('agent')
+);
+
+export const agentSelector = createSelector(
+  agentIdSelector,
+  peopleSelector,
+  (agentId, people) => people.get(agentId)
 );
 
 export const agentNameSelector = createSelector(
-  chatInfoSelector,
-  chatInfo => chatInfo.get('agent_name') || 'Agent'
+  agentSelector,
+  agent => agent && agent.get('display_name') || 'Agent'
 );
 
 export const agentAvatarSelector = createSelector(
-  chatInfoSelector,
-  chatInfo => chatInfo.get('agent_avatar')
+  agentSelector,
+  agent => agent && agent.get('avatar')
 );
 
 export const agentTypingDateSelector = createSelector(
@@ -98,19 +95,27 @@ export const departmentNameSelector = createSelector(
   chatInfo => chatInfo.get('department_name')
 );
 
+export const authorIdSelector = createSelector(
+  chatInfoSelector,
+  chatInfo => chatInfo.get('person')
+);
+
+export const authorSelector = createSelector(
+  authorIdSelector,
+  peopleSelector,
+  (authorId, people) => people.get(authorId)
+);
+
 export const authorEmailSelector = createSelector(
   chatInfoSelector,
-  chatInfo => chatInfo.get('author_email')
+  authorSelector,
+  (chatInfo, author) => chatInfo.get('person_email') || author && author.get('primary_email_address')
 );
 
 export const authorNameSelector = createSelector(
   chatInfoSelector,
-  chatInfo => chatInfo.get('author_name')
-);
-
-export const authorAvatarSelector = createSelector(
-  chatInfoSelector,
-  chatInfo => chatInfo.get('author_avatar')
+  authorSelector,
+  (chatInfo, author) => chatInfo.get('person_name') || author && author.get('display_name') || 'User'
 );
 
 export const dateEndedSelector = createSelector(
@@ -121,6 +126,21 @@ export const dateEndedSelector = createSelector(
 export const isEndedSelector = createSelector(
   dateEndedSelector,
   dateEnded => !!dateEnded
+);
+
+export const needValidateEmailSelector = createSelector(
+  chatInfoSelector,
+  chatInfo => chatInfo.get('need_validate_email')
+);
+
+export const transcriptCheckedSelector = createSelector(
+  chatInfoSelector,
+  chatInfo => chatInfo.get('should_send_transcript')
+);
+
+export const transcriptSentSelector = createSelector(
+  chatInfoSelector,
+  chatInfo => !!chatInfo.get('date_transcript_sent')
 );
 
 // Messages selectors

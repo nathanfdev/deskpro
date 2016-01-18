@@ -1,14 +1,14 @@
 import React, { PropTypes } from 'react';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
-import { AssignFormContainer } from './AssignForm/AssignFormContainer';
-import { AssigneeContainer } from './AssigneeContainer';
+import { AssignForm } from './AssignForm';
 import { AssigneeAvatar } from './AssigneeAvatar';
 
 export class AssignButton extends React.Component {
 
   static propTypes = {
     onSetEditing: PropTypes.func,
+    onAssign: PropTypes.func.isRequired,
     task: PropTypes.object
   };
 
@@ -25,14 +25,16 @@ export class AssignButton extends React.Component {
   }
 
   onOpenForm = () => {
-    this.props.onSetEditing(true);
+    const { onSetEditing } = this.props;
+    onSetEditing && onSetEditing(true);
     this.setState({
       formOpened: true
     });
   };
 
-  onCloseForm = () => {
-    this.props.onSetEditing(false);
+  closeForm = () => {
+    const { onSetEditing } = this.props;
+    onSetEditing && onSetEditing(false);
     if (this.isUnmounted) {
       return;
     }
@@ -42,34 +44,26 @@ export class AssignButton extends React.Component {
     });
   };
 
+  onAssign = (assignee) => {
+    this.props.onAssign(assignee).then(this.closeForm);
+  };
+
   hasAvatar() {
     const { task } = this.props;
     return task.get('agents').size || task.get('teams').size || task.get('departments').size;
   }
 
-  static renderButton() {
-    return (
-      <div className="dpw--avatar-face" style={{position: 'relative'}}>
-        <i className="fa fa-caret-down" />
-      </div>
-    );
-  }
-
-  renderAvatar() {
-    return (
-      <AssigneeContainer>
-        <AssigneeAvatar task={this.props.task} />
-      </AssigneeContainer>
-    );
-  }
-
   render() {
     return (
       <div>
-        <div className="dpwd--card-assigned"
-             onClick={this.onOpenForm} ref="button">
+        <div className="dpwd--card-assigned" onClick={this.onOpenForm} ref="button">
 
-          {this.hasAvatar() ? this.renderAvatar() : AssignButton.renderButton()}
+          {this.hasAvatar()
+            ? <AssigneeAvatar task={this.props.task} />
+            : <div className="dpw--avatar-face" style={{position: 'relative'}}>
+                <i className="fa fa-caret-down" />
+              </div>
+          }
         </div>
 
         <Detached isOpen={this.state.formOpened}
@@ -77,10 +71,8 @@ export class AssignButton extends React.Component {
                   positionAt="right+5 top-10"
                   zIndex={1002}>
 
-          <ClickOut onClickOut={this.onCloseForm}
-                    additionalNodes={[this.refs.button, 'assign-form']}>
-
-            <AssignFormContainer {...this.props} />
+          <ClickOut onClickOut={this.closeForm} additionalNodes={[this.refs.button, 'assign-form']}>
+            <AssignForm {...this.props} onSubmit={this.onAssign} />
           </ClickOut>
         </Detached>
       </div>

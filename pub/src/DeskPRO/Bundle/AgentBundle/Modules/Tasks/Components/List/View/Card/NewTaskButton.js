@@ -1,7 +1,6 @@
 import React from 'react';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { TaskCardNew } from './TaskCard/TaskCardNew';
-import { TaskCardNewContainer } from '../../TaskCard/TaskCardNewContainer';
 
 export class NewTaskButton extends React.Component {
 
@@ -21,6 +20,8 @@ export class NewTaskButton extends React.Component {
   };
 
   onCloseNewTaskForm = () => {
+    if (this.refs.card.state.isChanged) return;
+
     this.setState({
       newTaskExpanded: false
     });
@@ -37,9 +38,10 @@ export class NewTaskButton extends React.Component {
   renderNewTaskForm() {
     return (
       <ClickOut onClickOut={this.onCloseNewTaskForm}>
-        <TaskCardNewContainer {...this.props} onClose={this.onCloseNewTaskForm}>
-          <TaskCardNew />
-        </TaskCardNewContainer>
+        {this.state.newTaskExpanded
+          ? <TaskCardNew ref="card" />
+          : null
+        }
       </ClickOut>
     );
   }

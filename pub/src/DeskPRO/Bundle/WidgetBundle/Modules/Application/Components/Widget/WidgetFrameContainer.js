@@ -49,8 +49,13 @@ export class WidgetFrameContainer extends React.Component {
     const frameStyles = {};
     const containerStyles = {};
     if (isBubble) {
-      frameStyles.marginRight = 20;
       frameStyles.marginBottom = 70;
+
+      if (widgetPosition === 'bottom.right') {
+        frameStyles.marginRight = 20;
+      } else {
+        frameStyles.marginLeft = 20;
+      }
     } else {
       frameStyles.height = '100%';
       containerStyles.right = 0;
@@ -65,7 +70,7 @@ export class WidgetFrameContainer extends React.Component {
              positionMode={widgetPosition}>
 
         <Provider store={store}>
-          {React.cloneElement(children, {...childProps, isBubble})}
+          {React.cloneElement(children, {...childProps, widgetPosition, isBubble})}
         </Provider>
       </Frame>
     );

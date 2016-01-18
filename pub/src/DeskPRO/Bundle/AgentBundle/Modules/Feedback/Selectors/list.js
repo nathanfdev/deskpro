@@ -11,11 +11,6 @@ export const idsSelector = createSelector(
     state => state.get('elements')
 );
 
-export const selectedSelector = createSelector(
-  stateSelector,
-    state => state.get('selected')
-);
-
 export const currentListParamsSelector = createSelector(
   stateSelector,
     state => state.get('currentListParams')
@@ -49,6 +44,21 @@ export const currentListOrderSelector = createSelector(
 export const isCommentsSelector = createSelector(
   currentListParamsSelector,
     params => params.get('isComments')
+);
+
+export const navItemSelector = createSelector(
+  currentListParamsSelector,
+    list => list.get('navItem')
+);
+
+export const paginationSelector = createSelector(
+  stateSelector,
+    list => list.get('pagination')
+);
+
+export const loadedSelector = createSelector(
+  stateSelector,
+    list => list.getIn(['async', 'done'])
 );
 
 export const currentViewModeSelector = hashStateSelectorFactory(['list', 'view'], 'card');
@@ -121,10 +131,7 @@ export const listFiltersSelector = createSelector(
   }
 );
 
-export const massActionsParamsSelector = createSelector(
-  stateSelector,
-    state => state.get('massActions')
-);
+/* ==================== Mass actions ===================== */
 
 export const massActionsSelector = createSelector(
   [navStateSelector, feedbackCategoriesSelector, feedbackTypesSelector, feedbackLabelsSelector],
@@ -143,7 +150,7 @@ export const massActionsSelector = createSelector(
     // Status options
     const statuses = navState.get('statuses').toJS();
     const toStatusOptions = (nested, param) => (nested || []).map(opt => ({
-      value: opt.title,
+      value: opt.id,
       label: opt.title,
       param: param
     }));
@@ -159,8 +166,8 @@ export const massActionsSelector = createSelector(
 
     // Category options
     const categoryOptions = categories.toArray().map(cat => ({
-      label: cat.title,
-      value: cat.title
+      label: cat.get('input'),
+      value: cat.get('input')
     }));
     massActions.push({
       label: 'Category', type: 'action', param: 'custom_category', quickFilter: true,

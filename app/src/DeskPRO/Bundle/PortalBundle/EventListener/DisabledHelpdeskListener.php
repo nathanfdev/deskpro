@@ -46,9 +46,9 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class DisabledHelpdeskListener implements EventSubscriberInterface, SkipLowRequestInterface
 {
-    public static $whitelisted_route_names = array(
+    public static $whitelisted_route_names = [
         'user_context_hash',
-    );
+    ];
 
     /**
      * @var SettingsResolver
@@ -72,13 +72,16 @@ class DisabledHelpdeskListener implements EventSubscriberInterface, SkipLowReque
         $this->logger      = $logger;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             // make sure this priority is AFTER the BrandDetectionListener so we capture brand settings
             // AND it also must be AFTER the RouterListener so we can whitelist routes
-            KernelEvents::REQUEST => array('onRequest', 31),
-        );
+            KernelEvents::REQUEST => ['onRequest', 31],
+        ];
     }
 
     public function onRequest(GetResponseEvent $event)

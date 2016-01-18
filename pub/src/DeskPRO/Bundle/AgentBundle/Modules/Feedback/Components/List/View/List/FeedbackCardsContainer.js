@@ -3,7 +3,8 @@ import { FeedbackCard } from './FeedbackCard';
 import { connect } from 'react-redux';
 import { feedbackSelector, peopleSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackStatusCategoriesSelector }
   from '../../../../Selectors/recordStores';
-import { idsSelector, selectedSelector, cardVisibleFieldsSelector } from '../../../../Selectors/list';
+import { idsSelector, cardVisibleFieldsSelector } from '../../../../Selectors/list';
+import { selectedSelector } from '../../../../../Application/Selectors/massActions';
 
 @connect(state => {
   return ({

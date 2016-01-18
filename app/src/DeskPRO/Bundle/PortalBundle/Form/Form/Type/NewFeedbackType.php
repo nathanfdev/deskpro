@@ -41,6 +41,8 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 class NewFeedbackType extends AbstractType
 {
@@ -62,11 +64,24 @@ class NewFeedbackType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('title', 'text', array('label' => $this->phrase('portal.forms.label_title')));
-        $builder->add('content', 'textarea', array('label' => 'portal.forms.label_content'));
+        $builder->add('title', 'text', array(
+            'label'       => $this->phrase('portal.forms.label_title'),
+            'constraints' => array(
+                new NotBlank(array('message' => 'portal.forms.error_required')),
+            ),
+        ));
+        $builder->add('content', 'textarea', array(
+            'label'       => 'portal.forms.label_content',
+            'constraints' => array(
+                new NotBlank(array('message' => 'portal.forms.error_required')),
+            ),
+        ));
         $builder->add('category', 'feedback_category', array(
             'person'      => $options['person'],
             'empty_value' => $this->phrase('portal.forms.label_select'),
+            'constraints' => array(
+                new NotNull(array('message' => 'portal.forms.error_required')),
+            ),
         ));
         $builder->add('custom_data_collection', 'custom_feedback_fields');
         $builder->add('attachments', 'feedback_attachment_collection', array(

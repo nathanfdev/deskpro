@@ -1,5 +1,3 @@
-import { TicketApp } from './TicketApp';
-import { TicketForm } from './Form/TicketForm';
-import { TicketFormSubmitted } from './Form/TicketFormSubmitted';
-
-export { TicketApp, TicketForm, TicketFormSubmitted };
+export { TicketApp } from './TicketApp';
+export { TicketForm } from './Form/TicketForm';
+export { TicketFormSubmitted } from './Form/TicketFormSubmitted';

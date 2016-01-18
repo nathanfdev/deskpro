@@ -86,6 +86,6 @@ abstract class AbstractGenerator implements MessageGeneratorInterface
      */
     public function getUser()
     {
-        $this->token_storage->getToken()->getUser();
+        return $this->token_storage->getToken()->getUser();
     }
 }

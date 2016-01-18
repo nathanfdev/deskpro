@@ -476,7 +476,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
         // Now test the install
         try {
-            $is_success = $this->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'cmd_installer.done'");
+            $is_success = $this->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'installer.done'");
         } catch (\Exception $e) {
             $is_success = false;
         }

@@ -73,31 +73,6 @@ if [[ $? -ne 0 ]] ; then
 fi
 
 ##################################
-# Performance
-##################################
-
-cd ../app/tests/
-
-IS_PHPUNIT_PERFORMANCE_ERROR=0
-bin/phpunit --testsuite Performance
-if [[ $? -ne 0 ]] ; then
-    IS_PHPUNIT_PERFORMANCE_ERROR=1
-fi
-
-IS_BEHAT_PERFORMANCE_ERROR=0
-bin/behat --profile=portal --tags '@performance' | grep 'Performance:'
-if [[ $? -ne 0 ]] ; then
-    IS_BEHAT_PERFORMANCE_ERROR=1
-fi
-
-IS_PERFORMANCE_ERROR=$((IS_PHPUNIT_PERFORMANCE_ERROR + IS_BEHAT_PERFORMANCE_ERROR))
-
-if [[ "$IS_PERFORMANCE_ERROR" -ne "0" ]]; then
-    echo "
-    --- PERFORMANCE FAILED --- "
-fi
-
-##################################
 # EXIT IF ERROR
 ##################################
 IS_ERROR=$((IS_PHPSPEC_ERROR + IS_PHPUNIT_ERROR + IS_PHPUNIT_TERM_ENGINE_ERROR + IS_PHPUNIT_PORTAL_ERROR + IS_BEHAT_API_ERROR + IS_BEHAT_PORTAL_ERROR + IS_JEST_ERROR))

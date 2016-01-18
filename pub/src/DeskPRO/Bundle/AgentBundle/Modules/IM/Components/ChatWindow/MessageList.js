@@ -30,12 +30,6 @@ export class MessageList extends React.Component {
 
   componentDidMount() {
     this.refresh();
-    //const interval = setInterval(this.refresh, 15000);
-    //const countsInterval = setInterval(() => this.props.dispatch(refreshCounts()), 15000);
-    //this.state = {
-    //  interval: interval,
-    //  countsInterval: countsInterval
-    //};
     this.shouldScrollBottom = true;
     this.firstScroll = true;
   }
@@ -58,12 +52,9 @@ export class MessageList extends React.Component {
 
   componentDidUpdate = () => {
     this.scroll();
+    this.markNewMessages();
   };
 
-  componentWillUnmount() {
-    //clearInterval(this.state.interval);
-    //clearInterval(this.state.countsInterval);
-  }
 
   getPath = () => {
     let path;
@@ -89,12 +80,12 @@ export class MessageList extends React.Component {
 
     const msg = messages.getIn(this.getPath()) ? messages.getIn(this.getPath()).messages : [];
     msg.map((message) => {
-      if (message.status < 1 && message.person_id !== this.props.me.get('id')) {
+      if (message.status <= 1 && message.person_id !== this.props.me.get('id')) {
         ids.push(message.id);
       }
     });
     if (ids.length > 0) {
-      this.props.dispatch(markMessages(ids));
+      this.props.dispatch(markMessages(ids, this.props.current.id));
     }
   }
 

@@ -31,9 +31,12 @@
  */
 namespace DeskPRO\Bundle\AppBundle\AntiAbuse;
 
-use Application\DeskPRO\Settings\LoginRateLimitSettings;
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
+use Doctrine\ORM\EntityManager;
 use DpTest\PortalTestCase;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * The anti-abuse system will throw an exception to give the client a different response sometimes, so we test
@@ -43,66 +46,42 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class AntiAbuseTest extends PortalTestCase
 {
-    protected function getLoginLockoutMaxAttempts()
+    public function testCheckFiresTheEventPassed()
     {
-        return $this->get('settings_resolver')->getGlobalSettings()->get('user.'.LoginRateLimitSettings::KEY.'.attempts');
+        $event = new LoginAbuseCheck(new Person());
+
+        $em               = $this->prophesize(EntityManager::class);
+        $event_dispatcher = $this->prophesize(EventDispatcher::class);
+
+        $anti_abuse = new AntiAbuse($event_dispatcher->reveal(), $em->reveal());
+
+        $anti_abuse->check($event);
+
+        $event_dispatcher->dispatch(AntiAbuse::EVENT_NAME, $event)->shouldHaveBeenCalled();
     }
 
-    public function testLoginLockoutDoesNotTriggerLockoutResponseWhenUnderLimit()
+    /**
+     * @expectedException \DeskPRO\Bundle\AppBundle\AntiAbuse\Exception\AntiAbuseException
+     */
+    public function testAntiAbuseExceptionThrownWhenResponseRequired()
     {
-        //$this->installDataSet('fresh', true);
-        //$person = $this->get('test_factory.person')
-        //    ->createNewInvalidUser('foo@bar.com', 'Foo Bar', 'password123');
-        //
-        //$ip = '100.200.300.400';
-        //
-        //$client = $this->getClient(['REMOTE_ADDR' => $ip]);
-        //
-        //$this->get('settings_resolver')->setSetting('rate_limit.login.limit', 100); // really high so captcha not hit
-        //$lessThanMaxAttempts = $this->getLoginLockoutMaxAttempts() - 1;
-        //for ($i = 0; $i < $lessThanMaxAttempts; ++$i) {
-        //    $client->request(
-        //        'POST',
-        //        '/login/authenticate-password',
-        //        [
-        //            'username' => 'foo@bar.com',
-        //            'password' => 'wrong pw',
-        //        ]
-        //    );
-        //}
-        //
-        //// this should be the normal /login?retry=auth url
-        //$response = $client->getResponse();
-        //$this->assertRegExp('/\/login\?retry=auth$/', $response->headers->get('location'));
-        //$this->assertEquals(302, $response->getStatusCode());
-    }
+        // the anti abuse system will throw an exception when a response is required
+        // you dont have to catch this in your service/controller because
+        // an EXCEPTION listener will catch it and return the correct
+        // response
 
-    public function testLoginLockoutAbuseException()
-    {
-        //$this->installDataSet('fresh', true);
-        //$person = $this->get('test_factory.person')
-        //    ->createNewInvalidUser('foo@bar.com', 'Foo Bar', 'password123');
-        //
-        //$ip = '100.200.300.400';
-        //
-        //$client = $this->getClient(['REMOTE_ADDR' => $ip]);
-        //
-        //$this->get('settings_resolver')->setSetting('rate_limit.login.limit', 100); // really high so captcha not hit
-        //$moreThanMaxAttempts = $this->getLoginLockoutMaxAttempts() + 1;
-        //for ($i = 0; $i < $moreThanMaxAttempts; ++$i) {
-        //    $client->request(
-        //        'POST',
-        //        '/login/authenticate-password',
-        //        [
-        //            'username' => 'foo@bar.com',
-        //            'password' => 'wrong pw',
-        //        ]
-        //    );
-        //}
-        //
-        //// this is the last $response, and it should be to the /login?lockout=auth url
-        //$response = $client->getResponse();
-        //$this->assertRegExp('/\/login\?lockout=auth$/', $response->headers->get('location'));
-        //$this->assertEquals(302, $response->getStatusCode());
+        $event = new LoginAbuseCheck(new Person());
+
+        // an event listener would actually set this when necessary
+        // you dont set this (setResponse) in client code
+        $event->setResponse(new RedirectResponse('http://google.com'));
+        $event->markResponseRequired();
+
+        $em               = $this->prophesize(EntityManager::class);
+        $event_dispatcher = $this->prophesize(EventDispatcher::class);
+
+        $anti_abuse = new AntiAbuse($event_dispatcher->reveal(), $em->reveal());
+
+        $anti_abuse->check($event);
     }
 }

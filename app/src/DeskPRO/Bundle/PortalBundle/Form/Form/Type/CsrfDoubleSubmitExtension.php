@@ -72,27 +72,40 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if ('test' === $this->environment) {
-            return;
-        }
-
-        if (!$options['csrf_double_submit_protection']) {
-            return;
-        }
-
-        // don't add CSRF on the saved form requests
-        if ($options['saved_form_subrequest']) {
+        if ($this->shouldNotApply($options)) {
             return;
         }
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, array($this, 'onPreSubmit'));
     }
 
+    protected function shouldNotApply(array $options)
+    {
+        if ('test' === $this->environment) {
+            return true;
+        }
+
+        if (!$options['csrf_double_submit_protection']) {
+            return true;
+        }
+
+        // don't add CSRF on the saved form requests
+        if ($options['saved_form_subrequest']) {
+            return true;
+        }
+
+        return false;
+    }
+
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
         // if saved_form_subrequest is true, we should still add to the view, because
-        // if the users sees the view it means there is an error and we need to process CSRf after that
-        if ($options['csrf_double_submit_protection'] && !$view->parent && $options['compound']) {
+        // if the users sees the view it means there is an error and we need to process CSRF after that
+        if ($this->shouldNotApply($options) && !$options['saved_form_subrequest']) {
+            return;
+        }
+
+        if (!$view->parent && $options['compound']) {
             $factory = $form->getConfig()->getFormFactory();
 
             $csrfForm = $factory->createNamed($options['csrf_double_submit_cookie_name'], 'hidden', '', array(
