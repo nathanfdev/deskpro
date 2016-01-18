@@ -13,7 +13,7 @@ export class Popup extends React.Component {
     const { indicator, children, additionalClassNames } = this.props;
 
     return (
-      <div className={classNames(
+      <popup className={classNames(
         'sidebar-hover',
         additionalClassNames,
         {'hide-indicator': indicator === 'none'}
@@ -21,7 +21,7 @@ export class Popup extends React.Component {
         <div className="dpw--popup-main">
           {children}
         </div>
-      </div>
+      </popup>
     );
   }
 }

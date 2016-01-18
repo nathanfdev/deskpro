@@ -52,7 +52,7 @@ export class CardProject extends React.Component {
     });
   };
 
-  closeForm = () => {
+  closeForm = event => {
     const { onSetEditing } = this.props;
     onSetEditing && onSetEditing(false);
     if (this.isUnmounted) {
@@ -87,7 +87,7 @@ export class CardProject extends React.Component {
                   positionAt="left bottom"
                   zIndex={1002}>
 
-          <ClickOut onClickOut={this.closeForm} ignoreNodes={[this.refs.button, '.one-column']}>
+          <ClickOut onClickOut={this.closeForm} ignoreNodes={[this.refs.button, 'popup']}>
             <Popup additionalClassNames="one-column">
               <CollectionField title="Project">
                 <ProjectsList values={projects} onChange={this.onChange} selected={selected} />

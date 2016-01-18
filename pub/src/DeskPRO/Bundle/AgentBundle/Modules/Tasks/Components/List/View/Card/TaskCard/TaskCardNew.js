@@ -20,10 +20,13 @@ import {
   AssigneeAvatar
 } from '../../../TaskCard/index';
 
+@connect()
+
 export class TaskCardNew extends React.Component {
 
   static propTypes = {
     onClose: PropTypes.func,
+    onChange: PropTypes.func,
     dispatch: PropTypes.func.isRequired
   };
 
@@ -69,13 +72,19 @@ export class TaskCardNew extends React.Component {
   };
 
   onChange(prop, value) {
-    const update = this.state.isChanged;
+    const wasChanged = this.state.isChanged;
     this.model[prop] = value;
-    update ? this.forceUpdate() : this.setState({isChanged: true});
+    if (wasChanged) {
+      this.prev = true;
+      this.forceUpdate();
+    } else {
+      this.setState({isChanged: true});
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
     this.prev = prevState.isChanged;
+    this.props.onChange && this.props.onChange(this.state.isChanged);
   }
 
   onAssign = (assignee) => {
