@@ -33,9 +33,10 @@ namespace DpBehat\Portal;
 
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
+use Behat\Behat\Hook\Scope\BeforeScenarioScope;
+use DpBehat\LanguageContext;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class AuthContext extends BasePortalContext
 {
@@ -53,6 +54,11 @@ class AuthContext extends BasePortalContext
     private $me;
 
     /**
+     * @var LanguageContext
+     */
+    private $lang_context;
+
+    /**
      * @param UserDetailsRepo $user_details
      * @param TokenStorage    $token_storage
      */
@@ -61,6 +67,17 @@ class AuthContext extends BasePortalContext
         $this->user_details  = $user_details;
         $this->token_storage = $token_storage;
         $this->me            = null;
+    }
+
+    /**
+     * @BeforeScenario
+     *
+     * @param BeforeScenarioScope $scope
+     */
+    public function gatherContexts(BeforeScenarioScope $scope)
+    {
+        $environment        = $scope->getEnvironment();
+        $this->lang_context = $environment->getContext('DpBehat\LanguageContext');
     }
 
     /**
@@ -81,13 +98,12 @@ class AuthContext extends BasePortalContext
      */
     public function iLoginWithCredentials($who)
     {
-        $this->getSession()->visit('/login');
+        $this->lang_context->setTheActiveLanguage('default');
 
-        /** @var \Behat\Mink\Element\DocumentElement $page */
-        $page = $this->getSession()->getPage();
-        $page->fillField('username', $this->user_details->getEmail($who));
-        $page->fillField('password', $this->user_details->getPass($who));
-        $page->pressButton('Login');
+        $this->getPage('Login')->login(
+            $this->user_details->getEmail($who),
+            $this->user_details->getPass($who)
+        );
 
         $this->me = $this->user_details->getWho($who);
     }
@@ -172,10 +188,7 @@ class AuthContext extends BasePortalContext
      */
     public function iAmAuthenticatedAsUser($who)
     {
-        $user = $this->user_details->getWho($who);
-        $this->token_storage->setToken(
-            new UsernamePasswordToken($who, null, 'main', $user->getRoles())
-        );
+        $this->iLoginWithCredentials($who);
     }
 
     /**
