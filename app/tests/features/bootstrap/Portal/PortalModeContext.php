@@ -33,8 +33,9 @@ namespace DpBehat\Portal;
 
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
+use DpBehat\RebootableContextInterface;
 
-class PortalModeContext extends BasePortalContext
+class PortalModeContext extends BasePortalContext implements RebootableContextInterface
 {
     /**
      * @var PortalModeStorage
@@ -45,12 +46,15 @@ class PortalModeContext extends BasePortalContext
      */
     private $mode_factory;
 
-    public function __construct(
-        PortalModeStorage $mode_storage,
-        PortalModeFactory $mode_factory
-    ) {
-        $this->mode_storage = $mode_storage;
-        $this->mode_factory = $mode_factory;
+    public function rebootContext()
+    {
+        $this->resetPortalModeContext();
+    }
+
+    public function resetPortalModeContext()
+    {
+        $this->mode_storage = $this->getKernel()->getContainer()->get('portal_mode_storage');
+        $this->mode_factory = $this->getKernel()->getContainer()->get('portal_mode_factory');
     }
 
     /**

@@ -33,10 +33,11 @@ namespace DpBehat\Portal;
 
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
+use DpBehat\RebootableContextInterface;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
-class AuthContext extends BasePortalContext
+class AuthContext extends BasePortalContext implements RebootableContextInterface
 {
     /**
      * @var UserDetailsRepo
@@ -51,10 +52,15 @@ class AuthContext extends BasePortalContext
     /** @var  \Application\DeskPRO\Entity\Person */
     private $me;
 
-    public function __construct(UserDetailsRepo $user_details, TokenStorage $token_storage)
+    public function rebootContext()
     {
-        $this->user_details  = $user_details;
-        $this->token_storage = $token_storage;
+        $this->resetAuthContext();
+    }
+
+    public function resetAuthContext()
+    {
+        $this->user_details  = $this->getKernel()->getContainer()->get('user_details');
+        $this->token_storage = $this->getKernel()->getContainer()->get('security.token_storage');
         $this->me            = null;
     }
 

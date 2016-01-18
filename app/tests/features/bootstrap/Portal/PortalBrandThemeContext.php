@@ -34,8 +34,9 @@ namespace DpBehat\Portal;
 use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeRepository;
+use DpBehat\RebootableContextInterface;
 
-class PortalBrandThemeContext extends BasePortalContext
+class PortalBrandThemeContext extends BasePortalContext implements RebootableContextInterface
 {
     /**
      * @var BrandStack
@@ -51,14 +52,16 @@ class PortalBrandThemeContext extends BasePortalContext
      */
     private $em;
 
-    public function __construct(
-        BrandStack $brand_stack,
-        ThemeRepository $theme_repo,
-        EntityManager $em
-    ) {
-        $this->brand_stack      = $brand_stack;
-        $this->theme_repository = $theme_repo;
-        $this->em               = $em;
+    public function rebootContext()
+    {
+        $this->resetPortalBrandThemeContext();
+    }
+
+    public function resetPortalBrandThemeContext()
+    {
+        $this->brand_stack      = $this->getKernel()->getContainer()->get('brand_stack');
+        $this->theme_repository = $this->getKernel()->getContainer()->get('theme_repository');
+        $this->em               = $this->getKernel()->getContainer()->get('doctrine.orm.default_entity_manager');
     }
 
     /**

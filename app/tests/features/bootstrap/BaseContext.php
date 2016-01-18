@@ -42,7 +42,7 @@ abstract class BaseContext extends RawMinkContext implements KernelAwareContextI
     /**
      * @var KernelInterface
      */
-    private $kernel;
+    protected $kernel;
 
     public function resetAllContext()
     {
@@ -60,6 +60,9 @@ abstract class BaseContext extends RawMinkContext implements KernelAwareContextI
     public function setKernel(KernelInterface $kernel)
     {
         $this->kernel = $kernel;
+        if ($this instanceof RebootableContextInterface) {
+            $this->rebootContext();
+        }
     }
 
     public function get($service_id)

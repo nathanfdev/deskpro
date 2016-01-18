@@ -30,12 +30,13 @@ namespace DpBehat\Portal;
 
 use Behat\Behat\Context\Context;
 use Doctrine\ORM\EntityManager;
+use DpBehat\RebootableContextInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * Defines application features from the specific context.
  */
-class TestsContext extends BasePortalContext
+class TestsContext extends BasePortalContext implements RebootableContextInterface
 {
     private $called;
 
@@ -49,18 +50,16 @@ class TestsContext extends BasePortalContext
      */
     private $em;
 
-    /**
-     * Initializes context.
-     *
-     * Every scenario gets its own context instance.
-     * You can also pass arbitrary arguments to the
-     * context constructor through behat.yml.
-     */
-    public function __construct(SessionInterface $session, EntityManager $em)
+    public function rebootContext()
+    {
+        $this->resetTestsContext();
+    }
+
+    public function resetTestsContext()
     {
         $this->called  = false;
-        $this->session = $session;
-        $this->em      = $em;
+        $this->session = $this->getKernel()->getContainer()->get('session');
+        $this->em      = $this->getKernel()->getContainer()->get('doctrine.orm.default_entity_manager');
     }
 
     /**
