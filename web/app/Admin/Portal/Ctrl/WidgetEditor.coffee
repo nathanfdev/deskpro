@@ -51,7 +51,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
       }
 
     initialLoad: ->
-      @$http.get('/api/v2/widget/setup').success((response) =>
+      promise = @$http.get('/api/v2/widget/setup')
+      promise.success((response) =>
         data = response.data
 
         @$scope.url = data.url;
@@ -68,6 +69,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
 
       @$scope.$watch('brand_settings', updateLiveDemoDebounce, true)
       @$scope.$watch('global_settings', updateLiveDemoDebounce, true)
+
+      return promise
 
     getOptions: (liveDemo = false) ->
       options = $.extend(true, {company: @$scope.company}, @$scope.brand_settings)
