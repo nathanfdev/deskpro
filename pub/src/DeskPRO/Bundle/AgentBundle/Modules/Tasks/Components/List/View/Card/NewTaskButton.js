@@ -39,7 +39,7 @@ export class NewTaskButton extends React.Component {
     return (
       <ClickOut onClickOut={this.onCloseNewTaskForm}>
         {this.state.newTaskExpanded
-          ? <TaskCardNew ref="card" />
+          ? <TaskCardNew ref="card" onClose={this.onCloseNewTaskForm} />
           : null
         }
       </ClickOut>
