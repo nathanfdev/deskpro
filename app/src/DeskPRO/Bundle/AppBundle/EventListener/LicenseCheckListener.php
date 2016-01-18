@@ -1,0 +1,286 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+/**
+ * DeskPRO.
+ */
+namespace DeskPRO\Bundle\AppBundle\EventListener;
+
+use DeskPRO\Bundle\AppBundle\Request\InterfaceInfo;
+use DeskPRO\Bundle\AppBundle\Request\RequestUtils;
+use DeskPRO\Kernel\License;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
+
+/**
+ * This performs lic checks.
+ *
+ * NOTE: In the distro, this file is moved into the encrypted system.php file.
+ * This file will become an empty placeholder in the distro.
+ */
+final class LicenseCheckListener implements EventSubscriberInterface
+{
+    /**
+     * @var InterfaceInfo
+     */
+    private $interfaceInfo;
+
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
+     * @var string
+     */
+    private $assetUrl;
+
+    public function __construct(ContainerInterface $container, InterfaceInfo $interfaceInfo)
+    {
+        $this->container     = $container;
+        $this->interfaceInfo = $interfaceInfo;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getSubscribedEvents()
+    {
+        return array(
+            KernelEvents::REQUEST => array('onRequest', -100),
+        );
+    }
+
+    /**
+     * @param GetResponseEvent $event
+     */
+    public function onRequest(GetResponseEvent $event)
+    {
+        // - We run through license errors on user/agent interface (admin has warning at top)
+        // - And only when its an HTML page of course (e.g., cant render an HTML page when the client expects json)
+        // - And we dont show on login pages, because we might be mid-login to admin interface now
+        if (!(
+            $event->isMasterRequest()
+            && !RequestUtils::isLowRequest($event->getRequest())
+            && $event->getRequest()->getMethod() === 'GET'
+            && !$event->getRequest()->isXmlHttpRequest()
+            && $this->interfaceInfo->isInterfaceId([InterfaceInfo::ID_USER, InterfaceInfo::ID_AGENT])
+            && in_array('text/html', $event->getRequest()->getAcceptableContentTypes())
+            && strpos($event->getRequest()->getPathInfo(), '/login') === false
+        )) {
+            return;
+        }
+
+        $this->assetUrl = $event->getRequest()->getBasePath().'/pub';
+
+        if (defined('DPC_IS_CLOUD')) {
+            $this->doCloudChecks($event);
+        } else {
+            $this->doOnsiteChecks($event);
+        }
+    }
+
+    /**
+     * Performs checks for an on-site license.
+     *
+     * @param GetResponseEvent $event
+     */
+    private function doOnsiteChecks(GetResponseEvent $event)
+    {
+        $lic     = License::getLicense();
+        $request = $event->getRequest();
+
+        // No license at all
+        if (!$lic->hasLicense()) {
+            $settings = $this->container->get('settings_resolver');
+            if (!$settings->getGlobalSettings()->get('core.setup_initial')) {
+                $event->setResponse(new RedirectResponse($request->getBaseUrl().'/admin/start'));
+                $event->stopPropagation();
+
+                return;
+            }
+
+            $event->setResponse($this->getLicErrorPageResponse('You have not entered a license code. Go to /admin and enter your license code now.'));
+            $event->stopPropagation();
+
+            return;
+        }
+
+        // Check number of agents
+        if ($this->interfaceInfo->isAgentInterface() && $lic->getMaxAgents()) {
+            $db    = $this->container->get('database_connection');
+            $count = $db->fetchColumn('SELECT COUNT(*) FROM people WHERE is_agent = 1 AND is_deleted = 0');
+
+            if ($count > $lic->getMaxAgents()) {
+                $event->setResponse($this->getLicErrorPageResponse("
+                    Your helpdesk is using more agents than your license allows.<br/><br/>
+                    - Number of agents: {$count}<br/><br/>
+                    - Number of seats available: {$lic->getMaxAgents()}<br/><br/>
+                    Please contact an administrator to correct the problem.
+                "));
+                $event->stopPropagation();
+
+                return;
+            }
+        }
+
+        // Check expiry
+        // Agent: Lic error immediately
+        // User: Lic error after 14 days
+        if ($lic->isPastExpireDate() && (
+            $this->interfaceInfo->isAgentInterface()
+            || ($this->interfaceInfo->isUserInterface() && $lic->isPastExpireDate() >= 14)
+        )) {
+            $date = $lic->getExpireDate()->format('F jS');
+            $event->setResponse($this->getLicErrorPageResponse("
+                Your helpdesk license expired on {$date}. To continue using your helpdesk,
+                an administrator needs to renew the license.
+            "));
+            $event->stopPropagation();
+
+            return;
+        }
+    }
+
+    /**
+     * Performs checks for a cloud license.
+     *
+     * @param GetResponseEvent $event
+     */
+    private function doCloudChecks(GetResponseEvent $event)
+    {
+        $lic     = License::getLicense();
+        $request = $event->getRequest();
+
+        // Expired demos
+        if ($lic->isPastExpireDate()) {
+            $event->setResponse($this->getCloudErrorPageResponse('cloud-error.demo-expired.html'));
+            $event->stopPropagation();
+
+            return;
+        }
+
+        // Failed billing
+        if (defined('DPC_BILL_FAILED') && DPC_BILL_FAILED) {
+            if (
+                ($this->interfaceInfo->isAgentInterface() && defined('DPC_AGENT_OFF') && DPC_AGENT_OFF)
+                || ($this->interfaceInfo->isUserInterface() && defined('DPC_USER_OFF') && DPC_USER_OFF)
+            ) {
+                $event->setResponse($this->getCloudErrorPageResponse('cloud-error.bill-failed.html'));
+                $event->stopPropagation();
+
+                return;
+            }
+        }
+
+        // The site might be turned off manually
+        if (
+            ($this->interfaceInfo->isAdminInterface() && defined('DPC_ADMIN_OFF') && DPC_ADMIN_OFF)
+            || ($this->interfaceInfo->isAgentInterface() && defined('DPC_AGENT_OFF') && DPC_AGENT_OFF)
+            || ($this->interfaceInfo->isUserInterface() && defined('DPC_USER_OFF') && DPC_USER_OFF)
+        ) {
+            $event->setResponse($this->getCloudErrorPageResponse('cloud-error.offline.html', defined('DPC_OFF_REASON') ? DPC_OFF_REASON : ''));
+            $event->stopPropagation();
+
+            return;
+        }
+
+        // The whole site might be offline
+        if (defined('DPC_SYS_DISABLED') && DPC_SYS_DISABLED) {
+            $event->setResponse($this->getCloudErrorPageResponse('cloud-error.offline.html', ''));
+            $event->stopPropagation();
+
+            return;
+        }
+    }
+
+    /**
+     * @param string $message
+     *
+     * @return Response
+     */
+    private function getLicErrorPageResponse($message)
+    {
+        $response = new Response($this->getLicErrorPage($message));
+        $response->headers->set('X-DeskPRO-ErrorType', 'license');
+
+        return $response;
+    }
+
+    /**
+     * @param string $message
+     *
+     * @return string
+     */
+    private function getLicErrorPage($message)
+    {
+        $asset_url = $this->assetUrl;
+        $tpl       = 'lic-error.html';
+
+        $page_html = @file_get_contents(DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/Resources/views/kernel/'.$tpl) ?: '{{ CONTENT }}';
+        $page_html = str_replace('{{ ASSET_URL }}', $asset_url, $page_html);
+        $page_html = str_replace('{{ CONTENT }}', $message, $page_html);
+
+        return $page_html;
+    }
+
+    /**
+     * @param string $tpl
+     * @param string $message
+     *
+     * @return Response
+     */
+    private function getCloudErrorPageResponse($tpl, $message = '')
+    {
+        $response = new Response($this->getCloudErrorPage($tpl, $message));
+        $response->headers->set('X-DeskPRO-ErrorType', 'license');
+
+        return $response;
+    }
+
+    /**
+     * @param string $tpl
+     * @param string $message
+     *
+     * @return string
+     */
+    private function getCloudErrorPage($tpl, $message = '')
+    {
+        $asset_url = $this->assetUrl;
+
+        $page_html = @file_get_contents(DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/Resources/views/kernel/'.$tpl) ?: '{{ CONTENT }}';
+        $page_html = str_replace('{{ ASSET_URL }}', $asset_url, $page_html);
+        $page_html = str_replace('{{ CONTENT }}', $message, $page_html);
+
+        return $page_html;
+    }
+}

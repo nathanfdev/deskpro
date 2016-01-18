@@ -91,10 +91,6 @@
         function sendReportError(type)
         {
             type = type || '';
-
-            $.ajax({
-                url: '<?php echo $view['router']->generate('install_send_install_report_error') ?>?type=' + type
-            });
         }
 
     </script>

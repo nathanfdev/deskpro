@@ -451,7 +451,7 @@ function dp_get_php_path($test = false)
             $path = dp_get_config('php_path');
         }
         if (!$path) {
-            if (defined('PHP_BINARY')) {
+            if (defined('PHP_BINARY') && dp_test_php_bin(PHP_BINARY)) {
                 $path = PHP_BINARY;
             } else {
                 $GLOBALS['DP_PHP_PATH_GUESSED'] = true;
@@ -464,26 +464,38 @@ function dp_get_php_path($test = false)
         } else {
             $path = escapeshellarg($path);
         }
-    }
 
-    static $pass_test = null;
-    if ($path && $test && $pass_test === null) {
-        $out = null;
-        $ret = null;
-
-        // php -v: PHP 5.3.10 (cli) (built: May 18 2012 10:07:25) etc
-        exec($path.' -v 2>&1', $out, $ret);
-
-        $out = is_array($out) ? implode("\n", $out) : (string) $out;
-        if (!$ret || stripos($out, 'the php group') !== false) {
-            $pass_test = true;
-        } else {
-            $pass_test = false;
-            $path      = false;
+        if ($path && $test) {
+            if (!dp_test_php_bin($path)) {
+                $path = false;
+            }
         }
     }
 
     return $path;
+}
+
+function dp_test_php_bin($path)
+{
+    if (!$path) {
+        return false;
+    }
+
+    $out = null;
+    $ret = null;
+
+    // php -v: PHP 5.3.10 (cli) (built: May 18 2012 10:07:25) etc
+    exec($path.' -v 2>&1', $out, $ret);
+
+    $out = is_array($out) ? implode("\n", $out) : (string) $out;
+    if (!$ret || stripos($out, 'the php group') !== false) {
+        $pass_test = true;
+    } else {
+        $pass_test = false;
+        $path      = false;
+    }
+
+    return $pass_test;
 }
 
 /**

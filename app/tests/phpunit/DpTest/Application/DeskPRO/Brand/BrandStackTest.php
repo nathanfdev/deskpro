@@ -32,8 +32,6 @@
 namespace DpTest\DeskPRO\Application\Brand;
 
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
-use DeskPRO\Bundle\PortalBundle\Designer\ThemeSetCopyingService;
-use Doctrine\ORM\EntityManager;
 use DpTest\DeskProTestCase;
 
 class BrandStackTest extends DeskProTestCase
@@ -57,17 +55,12 @@ class BrandStackTest extends DeskProTestCase
         $mockFactory->shouldReceive('create')->with($mockBrand1)->andReturn($mockContainer1);
         $mockFactory->shouldReceive('create')->with($mockBrand2)->andReturn($mockContainer2);
 
-        $mockThemeSetCopyingService = \Mockery::mock(ThemeSetCopyingService::class);
-        $mockEntityManager          = \Mockery::mock(EntityManager::class);
-
         /*
          * As demonstrated below, the BrandStack lets you seamlessly move between different brand "containers" (eg. contexts)
          * through runtime. You can push(Brand entity) and pop() in an out of these container contexts.
          */
-        $stack = new BrandStack($mockFactory, $mockBrand1, $mockThemeSetCopyingService, $mockEntityManager);
-        $this->assertSame(null, $stack->getActive());
-
-        $stack->push($mockBrand1);
+        $stack = new BrandStack($mockFactory, $mockBrand1);
+        // There's always a brand, at least the default brand, even in CLI mode
         $this->assertSame($mockContainer1, $stack->getActive());
 
         $this->assertSame($mockContainer2, $stack->push($mockBrand2));
@@ -77,10 +70,11 @@ class BrandStackTest extends DeskProTestCase
 
         $this->assertSame($mockContainer2, $stack->push($mockBrand2));
 
-        $stack->pop();
+        $this->assertSame($mockContainer2, $stack->pop());
         $this->assertSame($mockContainer1, $stack->getActive());
 
-        $stack->pop();
-        $this->assertSame(null, $stack->getActive());
+        // testing that popping the last returns to default
+        $this->assertSame($mockContainer1, $stack->pop());
+        $this->assertSame($mockContainer1, $stack->getActive());
     }
 }

@@ -56,7 +56,7 @@ class PortalController extends AbstractController
     public function tempAction(Request $request)
     {
         $t_repo        = $this->getRepo('DeskPRO:Template');
-        $themeset      = $this->getBrandContainer()->getActiveThemeSet();
+        $themeset      = $this->getPortalBrandTheme()->getActiveThemeSet();
         $template_name = $request->get('template_name');
 
         if ($request->getMethod() === 'POST') {
@@ -87,8 +87,10 @@ class PortalController extends AbstractController
             $tem = $t_repo->findOneBy(['theme_set' => $themeset, 'name' => $template_name]);
         }
 
+        $theme = $this->getPortalBrandTheme()->getActiveTheme();
+
         return $this->renderThemeView('Theme:Temp:customTemplate.html.twig', [
-            'template_map' => $this->getBrandContainer()->getTheme()->getTemplateMap(),
+            'template_map' => $theme->getTemplateMap(),
             'template'     => $tem,
         ]);
     }

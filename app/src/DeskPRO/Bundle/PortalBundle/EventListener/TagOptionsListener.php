@@ -32,7 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use Application\DeskPRO\EntityRepository\Brand;
-use DeskPRO\Bundle\AppBundle\Helper\IsLowLevelRequestHelper;
+use DeskPRO\Bundle\AppBundle\HttpKernel\SkipLowRequestInterface;
 use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use Doctrine\Common\Annotations\AnnotationReader;
@@ -49,7 +49,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
  * Early in a request, this listener will determine the active brand for this request and push it onto the brand_stack
  * service.
  */
-class TagOptionsListener implements EventSubscriberInterface
+class TagOptionsListener implements EventSubscriberInterface, SkipLowRequestInterface
 {
     /**
      * @var ExpressionLanguage
@@ -83,11 +83,6 @@ class TagOptionsListener implements EventSubscriberInterface
      */
     public function onKernelController(FilterControllerEvent $event)
     {
-        if (IsLowLevelRequestHelper::check($event->getRequest())) {
-            // dont run on low level
-            return;
-        }
-
         if (!is_array($controller = $event->getController())) {
             return;
         }

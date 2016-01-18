@@ -124,7 +124,13 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
         $this->loadSeedFixtures($output);
         $this->loadFixtures($output);
-        $this->loadDevFixtures($output);
+
+        $dev_fixtures = dp_get_config('debug.dev')
+            || (is_file(DP_ROOT.'/sys/config/installer-type') && trim(file_get_contents(DP_ROOT.'/sys/config/installer-type')) === 'buildserver');
+
+        if ($dev_fixtures) {
+            $this->loadDevFixtures($output);
+        }
 
         $this->loadDefaultData($logger);
         $this->installApps();
@@ -157,6 +163,14 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         $em->getRepository('DeskPRO:Ticket')->fillSearchTable();
+
+        // A signifier setting that says we got to the end successfully
+        // This isn't in a fixture itself because we want to make sure
+        // we've go to the very end here without error
+        $this->getDb()->insert('settings', [
+            'name'  => 'installer.done',
+            'value' => 1,
+        ]);
 
         return 0;
     }

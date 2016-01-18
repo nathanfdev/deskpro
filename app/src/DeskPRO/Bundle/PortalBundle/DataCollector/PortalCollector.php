@@ -29,11 +29,11 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\DataCollector;
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -55,11 +55,17 @@ class PortalCollector extends DataCollector
      */
     private $mode_storage;
 
-    public function __construct(BrandStack $brand_stack, LanguageStack $language_stack, PortalModeStorage $mode_storage)
+    /**
+     * @var PortalBrandThemeLoader
+     */
+    private $brand_theme_loader;
+
+    public function __construct(BrandStack $brand_stack, PortalBrandThemeLoader $brand_theme_loader, LanguageStack $language_stack, PortalModeStorage $mode_storage)
     {
-        $this->brand_stack    = $brand_stack;
-        $this->language_stack = $language_stack;
-        $this->mode_storage   = $mode_storage;
+        $this->brand_stack        = $brand_stack;
+        $this->brand_theme_loader = $brand_theme_loader;
+        $this->language_stack     = $language_stack;
+        $this->mode_storage       = $mode_storage;
     }
 
     /**
@@ -79,7 +85,7 @@ class PortalCollector extends DataCollector
 
         if ($brandContainer) {
             $brand = $brandContainer->getBrand();
-            $theme = $brandContainer->getTheme();
+            $theme = $this->brand_theme_loader->getPortalBrandTheme($brand)->getActiveTheme();
         } else {
             $brand = null;
             $theme = null;

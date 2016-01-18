@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\EntityRepository\Template;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
 use Twig_Error_Loader;
 
 class PortalLoader implements \Twig_LoaderInterface, \Twig_ExistsLoaderInterface
@@ -48,15 +49,21 @@ class PortalLoader implements \Twig_LoaderInterface, \Twig_ExistsLoaderInterface
     private $template_repo;
 
     /**
+     * @var PortalBrandThemeLoader
+     */
+    private $brand_theme_loader;
+
+    /**
      * @var array a list of templates that crashed, so we can fallback on filesystem if needed
      */
     private $crashed_templates;
 
-    public function __construct(BrandStack $brand_stack, Template $template_repo)
+    public function __construct(BrandStack $brand_stack, Template $template_repo, PortalBrandThemeLoader $brand_theme_loader)
     {
-        $this->brand_stack       = $brand_stack;
-        $this->template_repo     = $template_repo;
-        $this->crashed_templates = [];
+        $this->brand_stack        = $brand_stack;
+        $this->template_repo      = $template_repo;
+        $this->brand_theme_loader = $brand_theme_loader;
+        $this->crashed_templates  = [];
     }
 
     /**
@@ -83,7 +90,7 @@ class PortalLoader implements \Twig_LoaderInterface, \Twig_ExistsLoaderInterface
      */
     public function getSource($name)
     {
-        if ($path = $this->getBrandContainer()->resolveTemplatePath((string) $name)) {
+        if ($path = $this->getBrandTheme()->resolveTemplatePath((string) $name)) {
             return file_get_contents($path);
         }
 
@@ -101,18 +108,16 @@ class PortalLoader implements \Twig_LoaderInterface, \Twig_ExistsLoaderInterface
      */
     public function getCacheKey($name)
     {
-        $brand = $this->getBrandContainer();
-
         // NOT the theme_set id. The actual filesystem theme id.
 
-        return $brand->getActiveThemeSet()->getThemeId().$name;
+        return $this->getBrandTheme()->getActiveThemeSet()->getThemeId().$name;
     }
 
     /**
      * Returns true if the template is still fresh.
      *
-     * @param string    $name The template name
-     * @param timestamp $time The last modification time of the cached template
+     * @param string $name The template name
+     * @param int    $time The last modification time of the cached template
      *
      * @throws Twig_Error_Loader When $name is not found
      *
@@ -125,7 +130,7 @@ class PortalLoader implements \Twig_LoaderInterface, \Twig_ExistsLoaderInterface
             false;
         }
 
-        return filemtime($this->getBrandContainer()->resolveTemplatePath((string) $name)) <= $time;
+        return filemtime($this->getBrandTheme()->resolveTemplatePath((string) $name)) <= $time;
     }
 
     /**
@@ -136,7 +141,7 @@ class PortalLoader implements \Twig_LoaderInterface, \Twig_ExistsLoaderInterface
     protected function getBrandContainer()
     {
         if (!$brand_container = $this->brand_stack->getActive()) {
-            $this->brand_stack->push($this->brand_stack->getDefault());
+            $this->brand_stack->push($this->brand_stack->getDefaultBrand());
         }
 
         if (!$brand_container && !$brand_container = $this->brand_stack->getActive()) {
@@ -163,9 +168,25 @@ class PortalLoader implements \Twig_LoaderInterface, \Twig_ExistsLoaderInterface
         }
 
         try {
-            return $this->getBrandContainer()->getBrandTemplateFromDb($name);
+            return $this->getBrandTheme()->getBrandTemplateFromDb((string) $name);
         } catch (\Exception $e) {
             return;
         }
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface
+     */
+    private function getTheme()
+    {
+        return $this->getBrandTheme()->getActiveTheme();
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandTheme
+     */
+    private function getBrandTheme()
+    {
+        return $this->brand_theme_loader->getPortalBrandTheme($this->getBrandContainer()->getBrand());
     }
 }

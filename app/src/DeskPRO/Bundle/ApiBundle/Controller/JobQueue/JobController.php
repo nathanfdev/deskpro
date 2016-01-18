@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\JobQueue;
 
 use Application\DeskPRO\Entity\Job;

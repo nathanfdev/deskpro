@@ -31,8 +31,11 @@
  */
 namespace spec\DeskPRO\Bundle\PortalBundle\Theme;
 
+use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandTheme;
+use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
 use DeskPRO\Bundle\PortalBundle\Theme\Tag;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface;
 use PhpSpec\ObjectBehavior;
@@ -44,26 +47,32 @@ class ThemeViewSpec extends ObjectBehavior
 {
     public function let(
         BrandStack $brand_stack,
+        Brand $brand,
         BrandContainer $brand_container,
+        PortalBrandThemeLoader $portalBrandThemeLoader,
+        PortalBrandTheme $portalBrandTheme,
         ThemeInterface $theme,
         Tag $tag
     ) {
         $brand_stack->getActive()->willReturn($brand_container);
-        $brand_container->getTheme()->willReturn($theme);
+        $brand_container->getBrand()->willReturn($brand);
+
+        $portalBrandThemeLoader->getPortalBrandTheme($brand)->willReturn($portalBrandTheme);
+        $portalBrandTheme->getActiveTheme()->willReturn($theme);
         $theme->resolveTag('tag_name')->willReturn($tag);
         $tag->getDefinedOptions()->willReturn(array('a', 'b', 'c', 'd', 'e'));
 
-        $this->beConstructedWith($brand_stack, array(
+        $this->beConstructedWith($brand_stack, $portalBrandThemeLoader, array(
             'a' => 'default',
             'd' => 'the controller sets these page defaults',
         ));
     }
 
     public function it_will_call_a_tag_using_the_constructed_default_options(
-        BrandContainer $brand_container,
+        PortalBrandTheme $portalBrandTheme,
         $default_options
     ) {
-        $brand_container->renderTag('tag_name', array(
+        $portalBrandTheme->renderTag('tag_name', array(
             'a' => 'default',
             'd' => 'the controller sets these page defaults',
         ))->shouldBeCalled();
@@ -74,10 +83,10 @@ class ThemeViewSpec extends ObjectBehavior
     }
 
     public function it_allows_tags_to_be_called_with_explicit_options_that_will_override_default_options(
-        BrandContainer $brand_container,
+        PortalBrandTheme $portalBrandTheme,
         $default_options
     ) {
-        $brand_container->renderTag('tag_name', array(
+        $portalBrandTheme->renderTag('tag_name', array(
             'a' => 'NEW VAL',
             'b' => 'something',
             'd' => 'the controller sets these page defaults',

@@ -32,8 +32,8 @@
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Helper\IsLowLevelRequestHelper;
 use DeskPRO\Bundle\AppBundle\Helper\IsProxyRequestHelper;
+use DeskPRO\Bundle\AppBundle\Request\RequestUtils;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -96,7 +96,7 @@ class WidgetLoginListener implements EventSubscriberInterface
             // also, don't set a portal mode for master requests that are a proxy (ESI)
             return;
         }
-        if (IsLowLevelRequestHelper::check($event->getRequest())) {
+        if (RequestUtils::isLowRequest($event->getRequest())) {
             // don't run on low level
             return;
         }

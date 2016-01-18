@@ -51,6 +51,20 @@ class DataSetContext extends BaseContext
      */
     private $ran_install = false;
 
+    /**
+     * @var array
+     */
+    private $reset_contexts = [];
+
+    /**
+     * @BeforeScenario
+     */
+    public function gatherContexts(BeforeScenarioScope $scope)
+    {
+        $environment          = $scope->getEnvironment();
+        $this->reset_contexts = $environment->getContexts();
+    }
+
     public function __construct(DataSetManager $dataset_manager)
     {
         $this->dataset_manager = $dataset_manager;
@@ -85,6 +99,14 @@ class DataSetContext extends BaseContext
         $this->dataset_manager->install($set);
         self::$last_installed_data_set = $set;
         $this->ran_install             = true;
+
+        $this->resetAllContext();
+        foreach ($this->reset_contexts as $ctx) {
+            if ($ctx instanceof RebootableContextInterface) {
+                $ctx->rebootContext();
+            }
+        }
+
         if (self::$reinstall) {
             print 'successfully reinstalled data set (took '.(time() - $install_start).' seconds)';
         } else {

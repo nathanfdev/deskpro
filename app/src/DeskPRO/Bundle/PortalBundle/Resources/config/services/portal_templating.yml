@@ -1,7 +1,7 @@
 services:
   portal_loader.twig:
     class: DeskPRO\Bundle\PortalBundle\Twig\PortalLoader
-    arguments: [@brand_stack, @template_repository]
+    arguments: [@brand_stack, @template_repository, @portal_brand_theme_loader]
     tags:
       - { name: twig.loader }
 

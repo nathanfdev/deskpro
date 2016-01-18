@@ -32,13 +32,11 @@
 namespace Application\InstallBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
-use Application\InstallBundle\Data\DefaultDataProcessor;
 use Doctrine\DBAL\DBALException;
-use Monolog\Logger;
-use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Process\Process;
 
 /**
  * Installation.
@@ -443,58 +441,6 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
             return $this->redirect($this->generateUrl('install'));
         }
 
-        $this->getLogger()->log('Install::createTables', 'debug');
-
-        $db    = $this->getDb();
-        $check = $db->fetchColumn("SHOW TABLES LIKE 'install_data'");
-
-        if ($check != 'install_data') {
-            try {
-                $db->exec("
-                    CREATE TABLE `install_data` (
-                      `build` varchar(30) NOT NULL,
-                      `name` varchar(75) NOT NULL DEFAULT '',
-                      `data` blob NOT NULL,
-                      PRIMARY KEY (`build`,`name`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=latin1
-                ");
-
-                $db->insert('install_data', array(
-                    'build' => 'default',
-                    'name'  => 'install_build',
-                    'data'  => DP_BUILD_TIME,
-                ));
-            } catch (\Exception $e) {
-                $this->getLogger()->log('Failed to craete install_data: '.$e->getCode().' '.$e->getMessage(), 'err');
-
-                $msg = 'There was a problem trying to create the first database table `install_data`: '.$e->getCode().' '.$e->getMessage();
-
-                if (strpos($e->getMessage(), 'access violation') !== false) {
-                    $msg .= '<hr />This probably means you need to grant privileges to your MySQL user on your database with a command similar to this: ';
-                    $msg .= '<pre>GRANT ALL PRIVILEGES ON `'.DP_DATABASE_NAME.'`.* TO \''.DP_DATABASE_USER.'\'@\'localhost\'</pre>';
-                }
-
-                $html = deskpro_install_basic_error($msg);
-                $res  = new \Symfony\Component\HttpFoundation\Response($html);
-                $res->headers->set('Content-Type', 'text/html');
-
-                return $res;
-            }
-
-            $tableinfo = $db->fetchColumn('SHOW CREATE TABLE `install_data`', array(), 1);
-            if (stripos($tableinfo, 'innodb') === false) {
-                $this->getLogger()->log('install_data is not innodb', 'err');
-
-                $html = deskpro_install_basic_error('Your database server created a new table, but it ignored the instruction to use the InnoDB engine. Please refer to our helpdesk for information on how to resolve this error.');
-                $res  = new \Symfony\Component\HttpFoundation\Response($html);
-                $res->headers->set('Content-Type', 'text/html');
-
-                return $res;
-            }
-        }
-
-        $this->ensureCorrectBuild();
-
         return $this->render('InstallBundle:Install:install-tables.html.php', array(
 
         ));
@@ -508,295 +454,46 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
         $this->ensureCorrectBuild();
 
-        $check = $this->getDb()->fetchColumn("SHOW TABLES LIKE 'install_data'");
-        if (!$check) {
-            exit;
-        }
+        set_time_limit(0);
+        $cmd = dp_get_php_command('cmd.php', 'dp:install');
 
-        $this->getLogger()->log('Install::doCreateTablesAction batch '.$batch, 'debug');
+        $out = ['Installing via command: '.$cmd."\n"];
+        $ts  = microtime(true);
 
-        $start = microtime(true);
-
-        if (!defined('DP_BUILD_TIME')) {
-            $build_file = DP_ROOT.'/sys/config/build-time.php';
-            if (is_file($build_file)) {
-                require $build_file;
-            } else {
-                define('DP_BUILD_TIME', time());
+        $proc = new Process($cmd);
+        $proc->setTimeout(9000);
+        $proc->run(function ($type, $str) use (&$out) {
+            $ds = date('Y-m-d H:i:s');
+            $line = "[$ds] ";
+            if ($type === 'err') {
+                $line .= 'ERR: ';
             }
-        }
+            $line .= $str;
+            $out[] = $line;
+        });
 
-        $schema = null;
-        if (file_exists(DP_ROOT.'/src/Application/InstallBundle/Data/schema.php')) {
-            $schema = require DP_ROOT.'/src/Application/InstallBundle/Data/schema.php';
-        } else {
-            $this->getLogger()->log('schema.php does not exist, will auto-generate', 'debug');
-        }
-        $install_schema = new \Application\InstallBundle\Install\InstallSchema($this->getDb(), $schema, DP_BUILD_TIME);
+        $out[] = sprintf("Install command done. Took %.2fs.\n", microtime(true) - $ts);
 
-        $response = new \Symfony\Component\HttpFoundation\Response();
-        $response->headers->set('Content-Type', 'text/html');
-        $response->sendHeaders();
-        flush();
-        @ob_flush();
-
-        echo $this->renderView('InstallBundle:Install:install-tables-do.html.php', array());
-        echo '<script type="text/javascript">';
-        if ($batch == 0) {
-            echo 'installStatus.setCount('.$install_schema->countQueries().');';
-        }
-        echo '</script>';
-        flush();
-
-        $limit = 10;
-        $skip  = $limit * $batch;
-
-        $logger         = new \Orb\Log\Logger();
-        $install_logger = $this->getLogger();
-
-        $logger->addWriter(new \Orb\Log\Writer\Callback(function ($log_item) use ($install_logger) {
-            $info = $log_item->toArray();
-            if (isset($info['exception'])) {
-                $install_logger->log('[InstallTables] Failed: '.$info['exception']->getCode().' '.$info['exception']->getMessage(), 'err');
-                if (isset($info['sql'])) {
-                    $install_logger->log('[InstallTables] Failed Query: '.$info['sql'], 'debug');
-                }
-                $info['error'] = $info['exception']->getMessage();
-            } else {
-                if (isset($info['sql'])) {
-                    $install_logger->log('[InstallTables] Success Query: '.$info['sql'], 'debug');
-                }
-            }
-            unset($info['message_line']);
-            unset($info['datetime']);
-            unset($info['session_name']);
-
-            echo '<script type="text/javascript">';
-            echo 'installStatus.update('.json_encode($info).');';
-            echo '</script>';
-            flush();
-        }));
-        $install_schema->setLogger($logger);
-
-        $install_schema->run(false, $limit, $skip);
-
-        echo '<script type="text/javascript">';
-        if (($skip + $limit) >= $install_schema->countQueries()) {
-            echo 'installStatus.done();';
-        } else {
-            echo 'installStatus.doneBatch('.$batch.');';
-        }
-        echo '</script>';
-        flush();
-
-        echo '</body></html>';
-
-        $this->getLogger()->log(sprintf('Install::doCreateTablesAction done in %.4f', microtime(true) - $start), 'debug');
-
-        $prev_time = $this->getDb()->fetchColumn("SELECT data FROM install_data WHERE build='default' AND name='install_time'");
-        if (!$prev_time) {
-            $prev_time = 0.0;
-        }
-        $prev_time = (float) $prev_time;
-        $prev_time += microtime(true) - $start;
-        $this->getDb()->replace('install_data', array('build' => 'default', 'name' => 'install_time', 'data' => sprintf('%.4f', $prev_time)));
-
-        return new \Symfony\Component\HttpFoundation\Response();
-    }
-
-    ###############################################################################
-    # install-data
-    ###############################################################################
-
-    public function installDataAction()
-    {
-        if (!$this->ensureNotInstalled()) {
-            return $this->redirect($this->generateUrl('install'));
-        }
-
-        $this->ensureCorrectBuild();
-
-        $this->getLogger()->log('Install::installData', 'debug');
-
-        $is_webinstall = true;
-        if ($this->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.install_via_cmd'")) {
-            $is_webinstall = false;
-        } elseif ($this->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro3importer'")) {
-            $is_webinstall = false;
-        }
-
-        // If it's not a web install, then we should do server checks here since there could be something wrong (oh noes)
-        if (!$is_webinstall) {
-            $this->getLogger()->log('Install::installDataAction (post command-install check)', 'debug');
-
-            $server_check = new \Application\InstallBundle\Install\ServerChecks();
-            $server_check->setLogger($this->getLogger());
-            $server_check->checkServer();
-            $is_fatal = $server_check->hasFatalErrors();
-
-            if ($is_fatal) {
-                $e = new \Application\InstallBundle\Install\ServerCheckException('Server requirements failed (post command-install): '.implode(', ', array_keys($server_check->getFatalErrors())));
-                $this->sendInstallReport($e);
-
-                $data_dir = dp_get_data_dir();
-                $ini_path = \Orb\Util\Env::getPhpIniPath();
-
-                return $this->render('InstallBundle:Install:install-data-serverchecks.html.php', array(
-                    'errors'        => $server_check->getErrors(),
-                    'is_fatal'      => $is_fatal,
-                    'data_dir'      => $data_dir,
-                    'ini_path'      => $ini_path,
-                    'is_webinstall' => $is_webinstall,
-                ));
-            }
-        }
-
-        return $this->render('InstallBundle:Install:install-data.html.php', array(
-            'is_webinstall' => $is_webinstall,
-        ));
-    }
-
-    public function installDataSaveAction()
-    {
-        if (!$this->ensureNotInstalled()) {
-            return $this->redirect($this->generateUrl('install'));
-        }
-
-        $this->ensureCorrectBuild();
-
-        if (
-            !$this->getIn()->getString('admin.first_name')
-            || !$this->getIn()->getString('admin.last_name')
-            || !\Orb\Validator\StringEmail::isValueValid($this->getIn()->getString('admin.email'))
-            || !$this->getIn()->getString('admin.password')
-        ) {
-            return $this->redirect($this->generateUrl('install_install_data'));
-        }
-
-        $this->getLogger()->log('Install::installDataSave', 'debug');
-
-        $start = microtime(true);
-
-        $this->getOrm()->getConnection()->beginTransaction();
-
+        // Now test the install
         try {
-            $agent             = new \Application\DeskPRO\Entity\Person();
-            $agent->first_name = $this->getIn()->getString('admin.first_name');
-            $agent->last_name  = $this->getIn()->getString('admin.last_name');
-            $agent->setEmail($this->getIn()->getString('admin.email'), true);
-            $agent->setPassword($this->getIn()->getString('admin.password'));
-            $agent->is_user      = true;
-            $agent->is_confirmed = true;
-            $agent->is_agent     = true;
-            $agent->can_agent    = true;
-            $agent->can_admin    = true;
-            $agent->can_billing  = true;
-            $agent->can_reports  = true;
-
-            $this->getOrm()->persist($agent);
-            $this->getOrm()->flush();
-
-            $this->getLogger()->log("New admin: {$agent->id} {$agent->display_name} {$agent->email_address}", 'debug');
-
-            $this->getDb()->insert('permissions', array('person_id' => $agent->id, 'name' => 'admin.use', 'value' => 1));
-
-            // Install data stuff
-            $AGENTGROUP_ALL     = null; // should be defined by the time we finish processing data.php
-            $USERGROUP_EVERYONE = null; // should be defined by the time we finish processing data.php
-            $AGENT              = $agent; // can be used in data.php
-            $WEB_INSTALL        = true;
-            $IMPORT_INSTALL     = false;
-
-            $install_data = new \Application\InstallBundle\Install\InstallDataReader(DP_ROOT.'/src/Application/InstallBundle/Data/data.php');
-            $em           = $this->getOrm();
-            $translate    = $this->container->get('deskpro.core.translate');
-            foreach ($install_data as $php) {
-                eval($php);
-            }
-
-            $this->getOrm()->flush();
-
-            $data_proc = new DefaultDataProcessor($this->container);
-            if ($this->getLogger()) {
-                $orb_logger_adapter = new OrbLoggerAdapterHandler($this->getLogger());
-                $data_proc->setLogger(new Logger('data_proc', array($orb_logger_adapter)));
-            }
-            $data_proc->runInstall();
-
-            \Application\DeskPRO\DataSync\AbstractDataSync::syncAllBaseToLive();
-
-            // For the all agent group, fetch permissions from the template
-            if ($AGENTGROUP_ALL) {
-                $ch = new \Application\DeskPRO\ORM\CollectionHelper($agent, 'usergroups');
-                $ch->setCollection(array($AGENTGROUP_ALL));
-                $this->getOrm()->persist($agent);
-                $this->getOrm()->flush();
-            }
-
-            if ($USERGROUP_EVERYONE) {
-                $scanner = new \Application\InstallBundle\Data\UserGroupPermScanner();
-                foreach ($scanner->getNames() as $p_name) {
-                    $p            = new \Application\DeskPRO\Entity\Permission();
-                    $p->usergroup = $USERGROUP_EVERYONE;
-                    $p->name      = $p_name;
-                    $p->value     = 1;
-                    $this->getOrm()->persist($p);
-                }
-                $this->getOrm()->flush();
-            }
-
-            $this->getOrm()->getConnection()->commit();
+            $is_success = $this->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'installer.done'");
         } catch (\Exception $e) {
-            $this->getLogger()->log("[InstallData] Exception {$e->getCode()} {$e->getMessage()}", 'err');
-
-            $einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
-            $this->getLogger()->log("[InstallData] Exception Trace: {$einfo['trace']}", 'debug');
-
-            $this->sendInstallReport($e);
-
-            $this->getOrm()->getConnection()->rollback();
-            throw $e;
+            $is_success = false;
         }
 
-        $app_syncer = new \Application\DeskPRO\App\Native\NativeAppsSync(
-            $this->container,
-            $this->container->getAppManager(),
-            new \Application\DeskPRO\App\Package\PackageInstaller($this->container->getEm(), $this->container->getBlobStorage(), $this->container->getImagine()),
-            null
-        );
-        $app_syncer->runSync();
+        $out[] = $is_success ? "Install completed successfull\n" : "Install reported failure. Install DID NOT complete.\n";
 
-        $this->container->resetSystemService('app_manager');
+        $out = implode('', $out);
 
-        if ($this->container->getAppManager()->hasPackage('deskpro_gravatar')) {
-            $instance_installer = new \Application\DeskPRO\App\InstanceInstaller(
-                $this->container->getAppManager(),
-                $this->container->getAppManager()->getPackage('deskpro_gravatar'),
-                $this->container->getEm()
-            );
-            $instance_installer->install('', array(), $this->container);
-        }
+        $response = new Response(json_encode([
+            'output'     => $out,
+            'is_success' => $is_success,
+        ]));
+        $response->headers->set('Content-Type', 'application/json');
 
-        $prev_time = $this->getDb()->fetchColumn("SELECT data FROM install_data WHERE build='default' AND name='install_time'");
-        if (!$prev_time) {
-            $prev_time = 0.0;
-        }
-        $prev_time = (float) $prev_time;
-        $prev_time += microtime(true) - $start;
-        $this->getDb()->replace('install_data', array('build' => 'default', 'name' => 'install_time', 'data' => sprintf('%.4f', $prev_time)));
+        $this->getLogger()->logDebug($out);
 
-        $data_init             = new \Application\InstallBundle\Data\DataInitializer($this->container);
-        $data_init->admin_user = $agent;
-        $data_init->run();
-
-        App::getDb()->replace('settings', array(
-            'name'  => 'core.done_data_initializer',
-            'value' => 1,
-        ));
-
-        $url = $this->generateUrl('install_install_done', array(), true);
-
-        return $this->redirect($url, 302);
+        return $response;
     }
 
     ###############################################################################
@@ -811,119 +508,16 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
         $this->ensureCorrectBuild();
 
-        $this->getLogger()->log('Install::installDone', 'debug');
-
-        $rewrite_urls = false;
-        if ($this->container->getSysConfig('instance_data.install_flags.rewrite_urls')) {
-            $rewrite_urls = true;
-        } else {
-            try {
-                $url         = $this->get('request')->getUriForPath('/__checkurlrewrite/path');
-                $url_noindex = str_replace('/index.php/', '/', $url);
-
-                $client = new \Zend\Http\Client(null, array('timeout' => 5));
-                $client->setMethod(\Zend\Http\Request::METHOD_GET);
-                $client->setUri($url_noindex);
-                $result = $client->send();
-                $this->getLogger()->log('core.rewrite_urls check result: '.$result->getBody(), 'debug');
-                if ($result->isSuccess() && strpos($result->getBody(), 'dp_check_ok') !== false) {
-                    $this->getLogger()->log('Enabling core.rewrite_urls', 'debug');
-                    $rewrite_urls = true;
-                }
-            } catch (\Exception $e) {
-            }
-        }
-
-        $this->getOrm()->getConnection()->beginTransaction();
-        try {
-            $db = $this->getOrm()->getConnection();
-
-            $db->replace('settings', array(
-                'name'  => 'core.install_timestamp',
-                'value' => time(),
-            ));
-            $db->replace('settings', array(
-                'name'  => 'core.install_build',
-                'value' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : time(),
-            ));
-            $db->replace('settings', array(
-                'name'  => 'core.install_key',
-                'value' => DpStrings::random(20, Strings::CHARS_KEY),
-            ));
-            $db->replace('settings', array(
-                'name'  => 'core.install_token',
-                'value' => isset($GLOBALS['dp_install_token']) ? $GLOBALS['dp_install_token'] : '',
-            ));
-            $db->replace('settings', array(
-                'name'  => 'core.deskpro_build',
-                'value' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : time(),
-            ));
-            $db->replace('settings', array(
-                'name'  => 'core.deskpro_build_num',
-                'value' => defined('DP_BUILD_NUM') ? DP_BUILD_NUM : 0,
-            ));
-            $db->replace('settings', array(
-                'name'  => 'core.deskpro_version',
-                'value' => date('YmdHis'),
-            ));
-            if (isset($_COOKIE['dp_install_stats_opt_out']) && $_COOKIE['dp_install_stats_opt_out']) {
-                $db->replace('settings', array(
-                    'name'  => 'core.enable_reduced_lic_reports',
-                    'value' => 1,
-                ));
-            }
-
-            if ($rewrite_urls) {
-                $db->replace('settings', array(
-                    'name'  => 'core.rewrite_urls',
-                    'value' => '1',
-                ));
-            }
-
-            if (!dp_get_config('debug.no_install_dat_file')) {
-                @file_put_contents(dp_get_data_dir().'/is_installed.dat', 'Do not remove this file. It tells DeskPRO that the software has been installed and turns off access to /install/.');
-            }
-
-            $this->getOrm()->getConnection()->commit();
-        } catch (\Exception $e) {
-            $this->getLogger()->log("[InstallDone] Exception {$e->getCode()} {$e->getMessage()}", 'err');
-
-            $einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
-            $this->getLogger()->log("[InstallDone] Exception Trace: {$einfo['trace']}", 'debug');
-
-            $this->getOrm()->getConnection()->rollback();
-            throw $e;
-        }
-
         $base_url = $this->get('request')->getBaseUrl();
-        try {
-            if ($this->container->get('deskpro.core.settings')->get('core.rewrite_urls')) {
-                $base_url = str_replace('/index.php', '', $base_url);
-            }
-        } catch (\Exception $e) {
-        }
-
-        $this->sendInstallReport();
+        $base_url = str_replace('/index.php', '', $base_url);
 
         @unlink($this->container->getLogDir().'/install_token.dat');
         setcookie('dp_install_token', null, strtotime('-4 weeks'));
 
-        return $this->redirect($base_url.'/admin/');
+        return $this->redirect($base_url.'/admin/start');
     }
 
     ###############################################################################
-
-    public function sendInstallReportErrorAction()
-    {
-        $type = $this->getIn()->getString('type');
-
-        $e = new \Exception("Install error: $type");
-        $this->sendInstallReport($e);
-
-        $res = new \Symfony\Component\HttpFoundation\Response('');
-
-        return $res;
-    }
 
     protected function sendInstallReport($exception = null)
     {

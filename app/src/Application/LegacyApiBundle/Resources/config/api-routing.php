@@ -3543,7 +3543,6 @@ $collection->create(
 # Usersources
 ########################################################################################################################
 
-
 $collection->create(
     'api_usersources_start_sync',
     array(
@@ -6609,7 +6608,7 @@ $collection->create(
         'path'         => '/langs/phrases/{phrase_id}',
         'controller'   => 'LegacyApiBundle:Languages:getPhrase',
         'requirements' => array('phrase_id' => '[a-zA-Z0-9\-_\.]+'),
-        'defaults'     => array('for_lang'  => '-1'),
+        'defaults'     => array('for_lang' => '-1'),
         'methods'      => array('GET'),
     )
 );
@@ -6619,7 +6618,7 @@ $collection->create(
     array(
         'path'         => '/langs/phrases/{phrase_id}/{for_lang}',
         'controller'   => 'LegacyApiBundle:Languages:getPhrase',
-        'defaults'     => array('for_lang'  => '-1'),
+        'defaults'     => array('for_lang' => '-1'),
         'requirements' => array('phrase_id' => '[a-zA-Z0-9\-_\.]+', 'for_lang' => '\d+|[a-z]+'),
         'methods'      => array('GET'),
     )

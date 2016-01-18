@@ -31,7 +31,6 @@
  *
  * @category HttpFoundation
  */
-
 namespace Application\DeskPRO\HttpFoundation;
 
 use Application\DeskPRO\App;
@@ -71,6 +70,8 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
         'admin', 'agent', 'reports', 'user', 'dp',
     );
 
+    protected $has_run_start = false;
+
     public function __construct(
         \Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface $storage = null,
         \Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface $attributes = null,
@@ -84,10 +85,15 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
      */
     public function start()
     {
-        if ($this->storage->isStarted()) {
+        if (!$this->storage->isStarted()) {
+            $this->storage->start();
+        }
+
+        if ($this->has_run_start) {
             return;
         }
-        $this->storage->start();
+
+        $this->has_run_start = true;
 
         $this->is_first_page = empty($_SESSION);
 

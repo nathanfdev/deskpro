@@ -200,7 +200,7 @@ $(document).ready(function () {
         <strong>Done!</strong> You're ready to go to the next step.
 
         <div class="alert-actions submit-area">
-            <a class="btn" href="<?php echo $view['router']->generate('install_create_tables') ?>" onclick="$(this).parent().addClass('clicked');">Go to step 5: Install database</a>
+            <a class="btn" href="<?php echo $view['router']->generate('install_create_tables') ?>" onclick="$(this).parent().addClass('clicked');">Continue &rarr;</a>
             <span class="next-loading"></span>
         </div>
     </div>

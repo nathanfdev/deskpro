@@ -1,0 +1,17 @@
+# we need security for some components, but we arent using security itself on
+# legacy controllers so we dont need the firewall
+security:
+  providers:
+    dp_person_user_provider:
+      id: dp_person_user_provider
+  firewalls:
+    default:
+      anonymous: ~
+
+
+services:
+  legacy_session_close.listener:
+      class: DeskPRO\Bundle\AppBundle\EventListener\LegacySessionCloseListener
+      arguments: [@service_container, @deskpro.interface_info]
+      tags:
+        - { name: kernel.event_subscriber }

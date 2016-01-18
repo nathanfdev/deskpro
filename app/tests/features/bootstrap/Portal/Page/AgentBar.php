@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpBehat\Portal\Page;
 
 class AgentBar extends BasePage

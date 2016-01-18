@@ -32,7 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
-use DeskPRO\Bundle\AppBundle\Helper\IsLowLevelRequestHelper;
+use DeskPRO\Bundle\AppBundle\HttpKernel\SkipLowRequestInterface;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Twig\Environment;
 use Psr\Log\LoggerInterface;
@@ -45,7 +45,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 /**
  * If the portal is disabled, we send a response back immediately from this request listener.
  */
-class DisabledPortalListener implements EventSubscriberInterface
+class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequestInterface
 {
     /**
      * @var SettingsResolver
@@ -91,11 +91,6 @@ class DisabledPortalListener implements EventSubscriberInterface
     {
         if (!$event->isMasterRequest()) {
             // we only make this decision on master requests. sub requests are never "offline".
-            return;
-        }
-
-        if (IsLowLevelRequestHelper::check($event->getRequest())) {
-            // dont run on low level
             return;
         }
 

@@ -34,11 +34,10 @@ namespace DpBehat;
 use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
 use Application\DeskPRO\Languages\LangPackInfo;
 use Behat\Gherkin\Node\TableNode;
-use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
 use Doctrine\ORM\EntityManager;
 
-class LanguageContext extends BaseContext
+class LanguageContext extends BaseContext implements RebootableContextInterface
 {
     /**
      * @var \DeskPRO\Bundle\AppBundle\Language\LanguageManager
@@ -57,16 +56,17 @@ class LanguageContext extends BaseContext
      */
     private $lang_stack;
 
-    public function __construct(
-        LanguageManager $language_manager,
-        EntityManager $em,
-        LanguageRepo $lang_repo,
-        LanguageStack $lang_stack
-    ) {
-        $this->language_manager = $language_manager;
-        $this->em               = $em;
-        $this->lang_repo        = $lang_repo;
-        $this->lang_stack       = $lang_stack;
+    public function rebootContext()
+    {
+        $this->resetLanguageContext();
+    }
+
+    public function resetLanguageContext()
+    {
+        $this->language_manager = $this->getKernel()->getContainer()->get('language_manager');
+        $this->em               = $this->getKernel()->getContainer()->get('doctrine.orm.default_entity_manager');
+        $this->lang_repo        = $this->getKernel()->getContainer()->get('language_repository');
+        $this->lang_stack       = $this->getKernel()->getContainer()->get('language_stack');
     }
 
     /**

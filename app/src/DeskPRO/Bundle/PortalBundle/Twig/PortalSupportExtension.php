@@ -597,7 +597,9 @@ class PortalSupportExtension extends \Twig_Extension
             return $context['page']->$tag_name($arguments);
         } else {
             // fallback on page-less tag
-            return $this->brand_stack->getActive()->renderTag($tag_name, $arguments);
+            $theme = $this->getActiveTheme();
+
+            return $this->container->get('theme_resolver')->processTag($theme, $tag_name, $arguments);
         }
     }
 
@@ -610,7 +612,9 @@ class PortalSupportExtension extends \Twig_Extension
      */
     public function processPortalTag($context, $tag_name, $arguments = array())
     {
-        return $this->brand_stack->getActive()->renderTag($tag_name, $arguments);
+        $theme = $this->getActiveTheme();
+
+        return $this->container->get('theme_resolver')->processTag($theme, $tag_name, $arguments);
     }
 
     /**
@@ -620,10 +624,22 @@ class PortalSupportExtension extends \Twig_Extension
      */
     public function hasTag($tag_name)
     {
-        $theme    = $this->brand_stack->getActive()->getTheme();
+        $theme    = $this->getActiveTheme();
         $resolver = $this->container->get('theme_resolver');
 
         return $resolver->hasTag($theme, $tag_name);
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface
+     */
+    private function getActiveTheme()
+    {
+        $brand_container = $this->brand_stack->getActive();
+        $brand_theme     = $this->container->get('portal_brand_theme_loader')->getPortalBrandTheme($brand_container->getBrand());
+        $theme           = $brand_theme->getActiveTheme();
+
+        return $theme;
     }
 
     /**

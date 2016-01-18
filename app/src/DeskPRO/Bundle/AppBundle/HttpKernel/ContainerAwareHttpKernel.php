@@ -26,47 +26,24 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\PortalBundle\EventListener;
+namespace DeskPRO\Bundle\AppBundle\HttpKernel;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use DeskPRO\Bundle\AppBundle\HttpKernel\Event\GetPreResponseEvent;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\HttpKernel\DependencyInjection\ContainerAwareHttpKernel as BaseContainerAwareHttpKernel;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-/**
- * Sets an attribute on the request when this is considered a "low level" request.
- * This is read from other listeners to prevent them doing unecessary work.
- */
-class IsLowListener implements EventSubscriberInterface
+class ContainerAwareHttpKernel extends BaseContainerAwareHttpKernel
 {
-    const ATTR_NAME = '_dp_is_low';
-
-    public function onKernelRequest(GetResponseEvent $event)
+    public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
     {
-        if (!$event->isMasterRequest()) {
-            return;
+        $event = new GetPreResponseEvent($this, $request, $type);
+        $this->dispatcher->dispatch(DpKernelEvents::PRE_REQUEST, $event);
+
+        if ($event->hasResponse()) {
+            return $event->getResponse();
         }
 
-        $request = $event->getRequest();
-
-        if (!$request->attributes->has(self::ATTR_NAME)) {
-            if (preg_match('#^/dp/#', $request->getPathInfo())) {
-                $request->attributes->set(self::ATTR_NAME, true);
-            }
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
-    {
-        return [
-            // high priority, called before everything
-            KernelEvents::REQUEST => ['onKernelRequest', 500],
-        ];
+        return parent::handle($request, $type, $catch);
     }
 }

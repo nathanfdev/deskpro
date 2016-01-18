@@ -1,0 +1,40 @@
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="{{ ASSET_URL }}/build/DeskPRO_PortalBundle_style.css">
+</head>
+<body>
+    <div class="world">
+        <div class="wrapper">
+            <div class="column-full">
+
+                <div class="welcome-block-wrapper">
+                    <div class="welcome-block-second-border">
+                        <div class="welcome-block disabled">
+                            <i class="fa fa-power-off"></i>
+
+                            <div>
+                                <p>
+                                    It appears as though you have recently upgraded the DeskPRO source files, but you have not performed the required database upgrades.
+                                </p>
+                                <p style='margin: 6px 0 6px 0;'>
+                                    To complete the upgrade process, execute the upgrade command to bring your database up to date:
+                                </p>
+                                <div style="font-family: 'Monaco', 'Courier New', monaco; background: #fff; padding: 8px; border: 1px solid #999;">
+                                    /path/to/php /path/to/deskpro/cmd.php dp:upgrade
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- end .welcome-block -->
+
+            </div><!-- end .column-full -->
+        </div>
+    </div>
+</body>
+</html>

@@ -32,7 +32,9 @@ if (!defined('DP_ROOT')) {
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
+$loader->import(__DIR__.'/config.shared.yml');
 $loader->import(__DIR__.'/services.yml');
+$loader->import(__DIR__.'/event_listeners.yml');
 
 /* @var \Symfony\Component\DependencyInjection\ContainerBuilder $container */
 
@@ -40,6 +42,7 @@ $container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%/../doctri
 $container->setParameter('doctrine.orm.entity_manager.class', 'Application\\DeskPRO\\ORM\\EntityManager');
 $container->setParameter('secret', 'irrelevant - compiler pass will override this');
 $container->setParameter('locale', 'en');
+$container->setParameter('http_kernel.class', 'DeskPRO\\Bundle\\AppBundle\\HttpKernel\\ContainerAwareHttpKernel');
 
 ####################################################################
 # This config is shared between kernels (DpKernel, PortalKernel and ApiKernel)

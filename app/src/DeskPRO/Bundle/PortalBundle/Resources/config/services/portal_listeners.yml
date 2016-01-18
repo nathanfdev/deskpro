@@ -1,10 +1,5 @@
 services:
 
-  is_low.listener:
-    class: DeskPRO\Bundle\PortalBundle\EventListener\IsLowListener
-    tags:
-      - { name: kernel.event_subscriber }
-
   redirect_protection_listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener
     arguments: [@brand_stack, @url_host_checker, @logger]
@@ -69,9 +64,10 @@ services:
       - { name: kernel.event_subscriber }
 
   controller_name_converter:
-    class: DeskPRO\Bundle\PortalBundle\HttpKernel\ControllerNameParser
-    tags: [{name: monolog.logger, channel: request}]
-    arguments: [@kernel, @brand_stack]
+      class: DeskPRO\Bundle\PortalBundle\HttpKernel\ControllerNameParser
+      tags: [{name: monolog.logger, channel: request}]
+      arguments: [@kernel, @brand_stack, @portal_brand_theme_loader]
+
 
   tag_options.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\TagOptionsListener
@@ -94,12 +90,12 @@ services:
 
   param_converter.tag_request:
     class: DeskPRO\Bundle\PortalBundle\Request\TagRequestConverter
-    arguments: [@brand_stack]
+    arguments: [@brand_stack, @portal_brand_theme_loader]
     tags:
       - { name: request.param_converter, priority: 1, converter: tag_request }
 
   data_collector.portal:
     class: DeskPRO\Bundle\PortalBundle\DataCollector\PortalCollector
-    arguments: [@brand_stack, @language_stack, @portal_mode_storage]
+    arguments: [@brand_stack, @portal_brand_theme_loader, @language_stack, @portal_mode_storage]
     tags:
       - { name: data_collector, template: "PortalBundle:Collector:portal.html.twig", id: "portal" }

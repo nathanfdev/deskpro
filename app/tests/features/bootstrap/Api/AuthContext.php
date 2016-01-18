@@ -35,12 +35,13 @@ use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Doctrine\ORM\EntityManager;
 use DpBehat\BaseContext;
+use DpBehat\RebootableContextInterface;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 
 /**
  * Defines application features from the specific context.
  */
-class AuthContext extends BaseContext
+class AuthContext extends BaseContext implements RebootableContextInterface
 {
     /**
      * @var EntityManager
@@ -55,10 +56,15 @@ class AuthContext extends BaseContext
      */
     private $rest_context;
 
-    public function __construct(EntityManager $em, UserDetailsRepo $user_details)
+    public function rebootContext()
     {
-        $this->em           = $em;
-        $this->user_details = $user_details;
+        $this->rebootAuthContext();
+    }
+
+    public function rebootAuthContext()
+    {
+        $this->em           = $this->getKernel()->getContainer()->get('doctrine.orm.default_entity_manager');
+        $this->user_details = $this->getKernel()->getContainer()->get('user_details');
     }
 
     /**
