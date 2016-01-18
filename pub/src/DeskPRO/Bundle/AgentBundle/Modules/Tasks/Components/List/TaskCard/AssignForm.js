@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { editTask } from '../../../../Actions/listActions';
+import { editTask } from '../../../Actions/listActions';
 import classNames from 'classnames';
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import Immutable from 'immutable';
@@ -21,7 +21,7 @@ import {
   AgentsList,
   AgentTeamsList,
   DepartmentsList
-} from '../../../Form/index';
+} from '../../Form/index';
 
 @connect(state => ({
   me: meSelector(state),

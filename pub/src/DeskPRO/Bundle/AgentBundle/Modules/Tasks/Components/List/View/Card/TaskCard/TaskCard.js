@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { MarkDoneButton } from './MarkDoneButton';
-import { editTask } from '../../../../../Actions/listActions';
+import { editTask } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Actions/listActions';
 import {
   Card,
   CardCheckbox,
@@ -17,9 +17,8 @@ import {
   ShowDetailsButton,
   AssignButton,
   TicketLinkContainer,
-  ProjectContainer,
   CardProject
-} from '../../../TaskCard/index';
+} from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/List/TaskCard/index';
 
 export class TaskCard extends BaseTaskCard {
 
@@ -50,11 +49,7 @@ export class TaskCard extends BaseTaskCard {
                    onChange={onChangeDate}
                    onSetEditing={onSetEditing} />
 
-          {task.get('project') &&
-            <ProjectContainer project={task.get('project')}>
-              <CardProject />
-            </ProjectContainer>
-          }
+          <CardProject projectId={task.get('project')} onSetEditing={onSetEditing} />
           {this.state.ticketLink && <TicketLinkContainer ticket={this.state.ticketLink} />}
         </CardLineLeft>
         <CardLineRight>

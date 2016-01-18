@@ -10,8 +10,9 @@ export class DateDue extends React.Component {
 
   static propTypes = {
     value: PropTypes.string,
-    onChange: PropTypes.func,
-    onSetEditing: PropTypes.func
+    onChange: PropTypes.func.isRequired,
+    onSetEditing: PropTypes.func,
+    openBySingleClick: PropTypes.bool
   };
 
   constructor(props) {
@@ -48,9 +49,10 @@ export class DateDue extends React.Component {
   render() {
     const { value, onChange } = this.props;
     const isOverdue = value && moment(value).isBefore();
+    const prop = {[this.props.openBySingleClick ? 'onClick' : 'onDoubleClick']: this.onOpenCalendar};
 
     return (
-      <div className="dpwd--card-line-item" onDoubleClick={this.onOpenCalendar}>
+      <div className="dpwd--card-line-item" {...prop}>
         <span className={classNames({'overdue': isOverdue})}>
           <i className="fa fa-calendar-o"/>
           <i />

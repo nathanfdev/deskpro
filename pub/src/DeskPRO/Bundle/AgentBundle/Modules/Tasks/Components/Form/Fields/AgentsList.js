@@ -1,12 +1,8 @@
 import React, { PropTypes } from 'react';
-import { CheckboxList } from './CheckboxList';
+import { BaseList } from './BaseList';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/index';
 
-export class AgentsList extends React.Component {
-
-  static propTypes = {
-    values: PropTypes.object.isRequired
-  };
+export class AgentsList extends BaseList {
 
   renderLabel(value) {
     return (
@@ -19,9 +15,4 @@ export class AgentsList extends React.Component {
     );
   }
 
-  render() {
-    return (
-      <CheckboxList {...this.props} renderLabel={this.renderLabel} />
-    );
-  }
 }

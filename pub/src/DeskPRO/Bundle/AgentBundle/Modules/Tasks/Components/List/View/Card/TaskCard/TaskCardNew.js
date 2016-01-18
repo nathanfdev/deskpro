@@ -14,7 +14,6 @@ import {
   TitleForm,
   DateDue,
   CardProject,
-  ProjectContainer,
   Comments,
   AssignButton,
   AssigneeAvatar
@@ -68,8 +67,10 @@ export class TaskCardNew extends React.Component {
   };
 
   onChange(prop, value) {
+    const update = this.state.isChanged;
     this.model[prop] = value;
     this.setState({isChanged: true});
+    update && this.forceUpdate();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -139,10 +140,11 @@ export class TaskCardNew extends React.Component {
 
         <CardLine>
           <CardLineLeft>
-            <DateDue onChange={this.onChange.bind(this, 'due')} value={due} onSetEditing={this.onSetEditing} />
-            <ProjectContainer project={project}>
-              <CardProject onChange={this.onChange.bind(this, 'project')} />
-            </ProjectContainer>
+            <DateDue onChange={this.onChange.bind(this, 'due')} value={due} onSetEditing={this.onSetEditing}
+                     openBySingleClick={true} />
+            <CardProject projectId={project} onChange={this.onChange.bind(this, 'project')}
+                         onSetEditing={this.onSetEditing}
+                         openBySingleClick={true} />
           </CardLineLeft>
         </CardLine>
       </Card>

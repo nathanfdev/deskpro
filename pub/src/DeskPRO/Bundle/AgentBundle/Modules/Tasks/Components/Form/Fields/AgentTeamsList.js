@@ -1,11 +1,8 @@
 import React, { PropTypes } from 'react';
 import { CheckboxList } from './CheckboxList';
+import { BaseList } from './BaseList';
 
-export class AgentTeamsList extends React.Component {
-
-  static propTypes = {
-    values: PropTypes.object
-  };
+export class AgentTeamsList extends BaseList {
 
   renderLabel(value) {
     return (
@@ -13,9 +10,4 @@ export class AgentTeamsList extends React.Component {
     );
   }
 
-  render() {
-    return (
-      <CheckboxList {...this.props} renderLabel={this.renderLabel} />
-    );
-  }
 }
