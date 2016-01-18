@@ -49,6 +49,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
           waiting_timeout: 30
         }
       }
+
+      @$scope.widgetLoaded = false
       @$scope.departments = []
 
     initialLoad: ->
@@ -129,7 +131,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
         demoWindow = demoDocument.dp_loader;
         if (demoWindow.emitter)
           @emitter = demoWindow.emitter
-          @emitter.on('loaded', => alert('loaded'))
+          @emitter.on('loaded', =>
+            @$scope.$apply( => @$scope.widgetLoaded = true)
+          )
           clearInterval(interval)
       , 1000)
 

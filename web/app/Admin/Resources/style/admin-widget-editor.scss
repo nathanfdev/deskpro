@@ -105,6 +105,19 @@
     z-index: 1000;
     width: 600px;
     height: 800px;
+
+    iframe {
+      width: inherit;
+      height: inherit;
+
+      &.iframe-loading {
+        display: none;
+      }
+    }
+
+    .loader {
+
+    }
   }
 }
 

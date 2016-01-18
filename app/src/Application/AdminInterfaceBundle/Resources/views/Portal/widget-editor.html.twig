@@ -214,7 +214,10 @@
             </div>
         </form>
 
-        <iframe id="live-demo" class="widget-editor-live-demo-container"></iframe>
+        <div class="widget-editor-live-demo-container">
+            <iframe id="live-demo" ng-class="{'iframe-loading': !widgetLoaded}"></iframe>
+            <div class="loader" ng-if="!widgetLoaded">Loading...</div>
+        </div>
 
         <div class="editor-row" ng-if="!!code">
             <div class="editor-wrap">
@@ -228,7 +231,6 @@
                          theme: 'textmate',
                          onLoad: embedEditorLoaded
                      }">
-
                 </div>
             </div>
         </div>
