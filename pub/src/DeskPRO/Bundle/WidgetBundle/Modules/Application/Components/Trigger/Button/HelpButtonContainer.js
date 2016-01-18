@@ -6,7 +6,7 @@ import { AgentMessagePopupContainer } from '../Popups/AgentMessage/AgentMessageP
 import { ReplyButtons } from '../Popups/AgentMessage/ReplyButtons';
 import { ReplyForm } from '../Popups/AgentMessage/ReplyForm';
 import { OnlineAgentsContainer } from '../Popups/OnlineAgentsContainer';
-import { openTriggerPopup, closeTriggerPopup } from '../../../Actions/dpWindowActions';
+import { openWidget, openTriggerPopup, closeTriggerPopup } from '../../../Actions/dpWindowActions';
 import { loadOnlineAgents } from '../../../Actions/peopleActions';
 import { onlineAgentsCountSelector } from '../../../RecordStores/Selectors/peopleSelectors';
 import {
@@ -51,7 +51,6 @@ export class HelpButtonContainer extends React.Component {
     widgetOpened: PropTypes.bool,
     widgetPosition: PropTypes.string,
     dispatch: PropTypes.func,
-    onClick: PropTypes.func,
     helpPopupTitle: PropTypes.string,
     helpPopupMessage: PropTypes.string,
     helpPopupReplyType: PropTypes.string,
@@ -74,6 +73,10 @@ export class HelpButtonContainer extends React.Component {
   componentDidUpdate() {
     this.checkRenderPopup();
   }
+
+  onClick = () => {
+    this.props.dispatch(openWidget());
+  };
 
   onClosePopup = () => {
     this.props.dispatch(closeTriggerPopup());
@@ -116,14 +119,14 @@ export class HelpButtonContainer extends React.Component {
   }
 
   renderPopup() {
-    const { widgetPosition, helpPopupTitle, helpPopupMessage, helpPopupReplyType, onClick } = this.props;
+    const { widgetPosition, helpPopupTitle, helpPopupMessage, helpPopupReplyType } = this.props;
     const { backgroundColor, textColor, borderColor } = this.props;
     const popupProps = {
       widgetPosition,
       backgroundColor,
       textColor,
       borderColor,
-      onClick,
+      onClick: this.onClick,
       onClose: this.onClosePopup
     };
 
@@ -142,7 +145,7 @@ export class HelpButtonContainer extends React.Component {
   }
 
   render() {
-    const { triggerPopupOpened, onClick } = this.props;
+    const { triggerPopupOpened } = this.props;
 
     return (
       <div>
@@ -151,7 +154,7 @@ export class HelpButtonContainer extends React.Component {
             {this.renderPopup()}
           </OnlineAgentsContainer>
         }
-        <HelpButton {...this.props} onClick={onClick} />
+        <HelpButton {...this.props} onClick={this.onClick} />
       </div>
     );
   }
