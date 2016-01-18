@@ -1,5 +1,8 @@
 Feature: Adding custom header, footer, SCSS and javascript
 
+  Background: Fresh database
+    Given I install the fresh data set
+
   Scenario: I get current advanced edit data
     Given I am authenticated as admin
     When I send a GET request to "/portal/api/style/edit-theme-set/advanced-edits"

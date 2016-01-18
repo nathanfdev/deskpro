@@ -1,5 +1,8 @@
 Feature: Editing SCSS variables
 
+  Background: Fresh database
+    Given I install the fresh data set
+
   Scenario: I get variables in groups
     Given I am authenticated as admin
     When I send a GET request to "/portal/api/style/variable-groups"
