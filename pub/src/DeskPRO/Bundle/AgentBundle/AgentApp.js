@@ -25,7 +25,7 @@ window.DP_LANG = {
 };
 // ---------------------------------------------------------------------------------------------------------------------
 
-export default class AgentApp {
+export class AgentApp {
   run() {
     jQuery(document).on('ready', () => this.start());
   }

@@ -1,9 +1,3 @@
-import { FiltersTabContainer } from './FiltersTab/FiltersTabContainer';
-import { LabelsTabContainer } from './LabelsTabContainer';
-import { StarsTabContainer } from './StarsTabContainer';
-
-export default {
-  FiltersTabContainer,
-  LabelsTabContainer,
-  StarsTabContainer
-};
+export { FiltersTabContainer } from './FiltersTab/FiltersTabContainer';
+export { LabelsTabContainer } from './LabelsTabContainer';
+export { StarsTabContainer } from './StarsTabContainer';
