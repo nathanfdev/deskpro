@@ -41,7 +41,6 @@ export class TaskCard extends BaseTaskCard {
 
   renderDetails() {
     const { task, onChangeDate, onSetEditing } = this.props;
-    console.info('>>>>>', task.get('project'));
 
     return (
       <CardLine>
@@ -50,7 +49,7 @@ export class TaskCard extends BaseTaskCard {
                    onChange={onChangeDate}
                    onSetEditing={onSetEditing} />
 
-          <CardProject projectId={task.get('project')} />
+          <CardProject projectId={task.get('project')} onSetEditing={onSetEditing} />
           {this.state.ticketLink && <TicketLinkContainer ticket={this.state.ticketLink} />}
         </CardLineLeft>
         <CardLineRight>

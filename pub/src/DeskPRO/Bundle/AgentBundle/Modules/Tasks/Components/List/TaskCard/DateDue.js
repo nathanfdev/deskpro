@@ -10,7 +10,7 @@ export class DateDue extends React.Component {
 
   static propTypes = {
     value: PropTypes.string,
-    onChange: PropTypes.func,
+    onChange: PropTypes.func.isRequired,
     onSetEditing: PropTypes.func,
     openBySingleClick: PropTypes.bool
   };

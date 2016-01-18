@@ -67,8 +67,10 @@ export class TaskCardNew extends React.Component {
   };
 
   onChange(prop, value) {
+    const update = this.state.isChanged;
     this.model[prop] = value;
     this.setState({isChanged: true});
+    update && this.forceUpdate();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -122,7 +124,7 @@ export class TaskCardNew extends React.Component {
     const { title, due, project, assignee } = this.model;
 
     return (
-      <Card type="task" additionalClasses="dpmw--single-task-card-new">
+      <Card type="task">
         <SaveTaskButton onClick={this.onSave} submit={submit} />
         <CardReset isActive={this.state.isChanged} onClick={this.reset} />
         <CardLine>
@@ -140,7 +142,9 @@ export class TaskCardNew extends React.Component {
           <CardLineLeft>
             <DateDue onChange={this.onChange.bind(this, 'due')} value={due} onSetEditing={this.onSetEditing}
                      openBySingleClick={true} />
-            <CardProject project={project} onChange={this.onChange.bind(this, 'project')} openBySingleClick={true} />
+            <CardProject projectId={project} onChange={this.onChange.bind(this, 'project')}
+                         onSetEditing={this.onSetEditing}
+                         openBySingleClick={true} />
           </CardLineLeft>
         </CardLine>
       </Card>
