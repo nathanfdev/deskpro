@@ -32,15 +32,21 @@
 
 namespace DeskPRO\Bundle\AppBundle\Data\MassActions;
 
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-interface MassActionsPreprocessorInterface
+abstract class AbstractMassActionsPreprocessor
 {
-    public function prepareActions();
+    protected $em;
+    protected $params;
 
-    public function selectEntities();
+    public function __construct(EntityManager $em, array $params)
+    {
+        $this->em = $em;
+        $resolver = new OptionsResolver();
+        $this->configureOptions($resolver);
 
-    public function prepareEntity($entity);
-
-    public function configureOptions(OptionsResolver $resolver);
+        $this->options = $resolver->resolve($params['actions']);
+        $this->params  = $params;
+    }
 }

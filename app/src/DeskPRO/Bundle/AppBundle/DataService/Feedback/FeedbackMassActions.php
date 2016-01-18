@@ -34,13 +34,12 @@ namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
 
 use Application\DeskPRO\Entity\CustomDataFeedback;
 use Application\DeskPRO\Entity\Feedback;
+use DeskPRO\Bundle\AppBundle\Data\MassActions\AbstractMassActionsPreprocessor;
 use DeskPRO\Bundle\AppBundle\Data\MassActions\MassActionsPreprocessorInterface;
-use Doctrine\ORM\EntityManager;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class FeedbackMassActions implements MassActionsPreprocessorInterface
+class FeedbackMassActions extends AbstractMassActionsPreprocessor implements MassActionsPreprocessorInterface
 {
-    private $em;
-    private $params;
     private $statusCategory;
     private $category;
     private $customCategoryValue;
@@ -49,10 +48,36 @@ class FeedbackMassActions implements MassActionsPreprocessorInterface
     private $removeLabels;
     private $firstActiveStatusCategory;
 
-    public function __construct(EntityManager $em, array $params)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $this->em     = $em;
-        $this->params = $params;
+        $resolver->setDefined(
+            ['status_category', 'category', 'custom_category', 'addLabels', 'removeLabels', 'approve', 'delete']
+        );
+        $resolver->setAllowedValues(
+            'status_category',
+            function ($value) {
+                return is_int($value) || ctype_digit($value);
+            }
+        );
+        $resolver->setAllowedValues(
+            'category',
+            function ($value) {
+                return is_int($value) || ctype_digit($value);
+            }
+        );
+        $resolver->setAllowedTypes('custom_category', 'string');
+        $resolver->setAllowedValues(
+            'approve',
+            function ($value) {
+                return (int) $value === 1;
+            }
+        );
+        $resolver->setAllowedValues(
+            'delete',
+            function ($value) {
+                return (int) $value === 1;
+            }
+        );
     }
 
     public function prepareActions()
