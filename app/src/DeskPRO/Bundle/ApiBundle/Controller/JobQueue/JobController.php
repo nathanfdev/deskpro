@@ -66,7 +66,7 @@ class JobController extends CrudController
 
         return View::create(
             ['job' => $job->getId()],
-            Response::HTTP_OK
+            Response::HTTP_CREATED
         );
     }
 }

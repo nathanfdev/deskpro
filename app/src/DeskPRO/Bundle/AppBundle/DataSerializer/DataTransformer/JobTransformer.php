@@ -48,6 +48,7 @@ class JobTransformer extends AbstractDataSerializerTransformer
     {
         return [
             'id',
+            'type',
             'status',
             'status_code',
             'date_touch',
