@@ -53,7 +53,7 @@ class TemplatesController extends AbstractApiController
      */
     public function getTemplatesListAction()
     {
-        return new JsonResponse(array_keys($this->getBrandContainer()->getTheme()->getTemplateMap()));
+        return new JsonResponse(array_keys($this->getTheme()->getTemplateMap()));
     }
 
     /**

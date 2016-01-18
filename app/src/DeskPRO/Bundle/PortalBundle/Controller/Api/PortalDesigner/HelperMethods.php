@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller\Api\PortalDesigner;
 
 use Application\DeskPRO\Entity\Template;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
+use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
 use DeskPRO\Bundle\PortalBundle\Designer\AdvancedEditsManager;
 use DeskPRO\Bundle\PortalBundle\Designer\AssetsManager;
 use DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler;
@@ -52,6 +53,11 @@ trait HelperMethods
      * @return mixed
      */
     abstract public function get($id);
+
+    /**
+     * @return \DeskPRO\Bundle\PortalBundle\Brand\BrandContainer
+     */
+    abstract protected function getBrandContainer();
 
     /**
      * @return StylesManager
@@ -125,7 +131,9 @@ trait HelperMethods
      */
     private function getTheme()
     {
-        return $this->getBrandContainer()->getTheme();
+        $brand = $this->getBrandContainer()->getBrand();
+
+        return $this->getPortalBrandThemeLoader()->getPortalBrandTheme($brand)->getTheme();
     }
 
     /**
@@ -134,5 +142,13 @@ trait HelperMethods
     private function getEditThemeSet()
     {
         return $this->getBrandContainer()->getBrand()->getEditThemeSet();
+    }
+
+    /**
+     * @return PortalBrandThemeLoader
+     */
+    private function getPortalBrandThemeLoader()
+    {
+        return $this->get('portal_brand_theme_loader');
     }
 }
