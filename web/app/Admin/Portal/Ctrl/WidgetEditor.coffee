@@ -1,4 +1,4 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
+define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Functions) ->
   class Admin_Portal_Ctrl_WidgetEditor extends Admin_Ctrl_Base
     @CTRL_ID = 'Admin_Portal_Ctrl_WidgetEditor'
     @CTRL_AS = 'Ctrl'
@@ -62,9 +62,10 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         @initLiveDemo()
       );
 
-      @$scope.$watch('brand_settings', =>
+      updateLiveDemoDebounce = Functions.debounce( =>
         @updateLiveDemo()
-      , true)
+      , 350)
+      @$scope.$watch('brand_settings', updateLiveDemoDebounce, true)
 
     getOptions: (liveDemo = false) ->
       options = $.extend(true, {company: @$scope.company}, @$scope.brand_settings)

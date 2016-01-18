@@ -64,21 +64,21 @@ class SettingsResolver
      *
      * @var SettingsLoaderInterface
      */
-    private $brandSettingsLoader;
+    private $brand_settings_loader;
 
     /**
      * Constructor.
      *
      * @param array                   $loaders
      * @param CacheAdapterInterface   $cache
-     * @param SettingsLoaderInterface $brandSettingsLoader
+     * @param SettingsLoaderInterface $brand_settings_loader
      */
-    public function __construct(array $loaders, CacheAdapterInterface $cache, SettingsLoaderInterface $brandSettingsLoader)
+    public function __construct(array $loaders, CacheAdapterInterface $cache, SettingsLoaderInterface $brand_settings_loader)
     {
-        $this->loaders             = $loaders;
-        $this->cache               = new ConvenientCache($cache);
-        $this->virtual_settings    = [];
-        $this->brandSettingsLoader = $brandSettingsLoader;
+        $this->loaders               = $loaders;
+        $this->cache                 = new ConvenientCache($cache);
+        $this->virtual_settings      = [];
+        $this->brand_settings_loader = $brand_settings_loader;
     }
 
     /**
@@ -145,7 +145,7 @@ class SettingsResolver
             $this->cache->delete($cacheKey);
         }
 
-        $brand_settings_resolver = $this->brandSettingsLoader;
+        $brand_settings_resolver = $this->brand_settings_loader;
         $global_settings         = $this->getGlobalSettings($force);
 
         return $this->cache->get(

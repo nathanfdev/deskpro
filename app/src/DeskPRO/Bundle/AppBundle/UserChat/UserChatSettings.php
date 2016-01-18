@@ -38,6 +38,9 @@ use Application\DeskPRO\NewSettings\SettingsResolver;
  */
 class UserChatSettings
 {
+    const REQUIRE_LOGIN    = 'portal.chat.require_login';
+    const EMAIL_VALIDATION = 'portal.chat.email_validation';
+
     /**
      * @var SettingsResolver
      */
@@ -58,7 +61,7 @@ class UserChatSettings
      */
     public function isPortalEmailValidation()
     {
-        return $this->getGlobalSettings()->get('portal.chat.email_validation');
+        return (bool) $this->getGlobalSettings()->get(self::EMAIL_VALIDATION);
     }
 
     /**
@@ -66,7 +69,7 @@ class UserChatSettings
      */
     public function isPortalRequireLogin()
     {
-        return $this->getGlobalSettings()->get('portal.chat.require_login');
+        return (bool) $this->getGlobalSettings()->get(self::REQUIRE_LOGIN);
     }
 
     /**
