@@ -33,34 +33,33 @@ Feature: Serving custom data on the portal
     When I send a GET request to "/portal/api/style/portal.css"
     Then the response should contain ".my-important-custom-css-class"
 
-  # ToDo: This is waiting of DB templates don't get rendered in test session
+  @mink:goutte
+  Scenario: I check custom header is applied to the portal
+    Given I am authenticated as admin
+    And I send a PUT request to "/portal/api/style/edit-theme-set/advanced-edits" with body:
+    """
+      {
+        "header": "Custom Header"
+      }
+    """
+    And I send a GET request to "/portal/api/style/edit-theme-set/commit"
+    When I send a GET request to "/en"
+    Then I should see "Custom Header"
 
-#  Scenario: I check custom header is applied to the portal
-#    Given I am authenticated as admin
-#    And I send a PUT request to "/portal/api/style/edit-theme-set/advanced-edits" with body:
-#    """
-#      {
-#        "header": "Custom Header"
-#      }
-#    """
-#    And I send a GET request to "/portal/api/style/edit-theme-set/commit"
-#    When I send a GET request to "/"
-#    Then I should see "Custom Header"
+  @mink:goutte
+  Scenario: I check custom footer is applied to the portal
+    Given I am authenticated as admin
+    And I send a PUT request to "/portal/api/style/edit-theme-set/advanced-edits" with body:
+    """
+      {
+        "footer": "Custom Footer"
+      }
+    """
+    And I send a GET request to "/portal/api/style/edit-theme-set/commit"
+    When I send a GET request to "/en"
+    Then I should see "Custom Footer"
 
-  # ToDo: This is waiting of DB templates don't get rendered in test session
-
-#  Scenario: I check custom footer is applied to the portal
-#    Given I am authenticated as admin
-#    And I send a PUT request to "/portal/api/style/edit-theme-set/advanced-edits" with body:
-#    """
-#      {
-#        "footer": "Custom Footer"
-#      }
-#    """
-#    And I send a GET request to "/portal/api/style/edit-theme-set/commit"
-#    When I send a GET request to "/"
-#    Then I should see "Custom Footer"
-
+  @mink:goutte
   Scenario: I check custom JS is applied to the portal
     Given I am authenticated as admin
     And I send a PUT request to "/portal/api/style/edit-theme-set/advanced-edits" with body:
@@ -70,7 +69,7 @@ Feature: Serving custom data on the portal
       }
     """
     And I send a GET request to "/portal/api/style/edit-theme-set/commit"
-    When I send a GET request to "/"
+    When I send a GET request to "/en"
     Then the response should contain "var custom_js = 1 + 1;"
 
   # ToDo: check assets are served when file upload step is done

@@ -77,6 +77,8 @@ portal:
             sessions:
                 default:
                     symfony2: ~
+                goutte:
+                    goutte: ~
         Behat\Symfony2Extension:
             kernel:
                 bootstrap: features/bootstrap/boot.php

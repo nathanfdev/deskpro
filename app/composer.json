@@ -79,7 +79,8 @@
     "slushie/recaptcha-secure-token": "^1.1",
     "symfony/proxy-manager-bridge": "~2.3",
     "gnugat/nomo-spaco": "~0.4",
-    "pusher/pusher-php-server": "^2.2"
+    "pusher/pusher-php-server": "^2.2",
+    "behat/mink-goutte-driver": "^1.2"
   },
   "preferred-install": "dist"
 }
