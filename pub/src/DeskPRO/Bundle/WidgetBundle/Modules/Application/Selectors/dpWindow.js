@@ -51,9 +51,14 @@ export const widgetTypeSelector = createSelector(
   options => options.get('type') || 'default'
 );
 
-export const widgetPositionSelector = createSelector(
+export const widgetRawPositionSelector = createSelector(
   widgetBaseOptionsSelector,
-  options => `bottom.${options.get('position') || 'right'}`
+  options => options.get('position')
+);
+
+export const widgetPositionSelector = createSelector(
+  widgetRawPositionSelector,
+  position => `bottom.${position || 'right'}`
 );
 
 export const isBubbleSelector = createSelector(
