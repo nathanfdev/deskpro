@@ -43,9 +43,9 @@ class TestSettingsResolver extends BaseResolver
     public function __construct(
         array $loaders,
         CacheAdapterInterface $cache,
-        SettingsLoaderInterface $brandSettingsLoader
+        SettingsLoaderInterface $brand_settings_loader
     ) {
-        parent::__construct($loaders, $cache, $brandSettingsLoader);
+        parent::__construct($loaders, $cache, $brand_settings_loader);
         $this->test_set_settings = [];
     }
 
