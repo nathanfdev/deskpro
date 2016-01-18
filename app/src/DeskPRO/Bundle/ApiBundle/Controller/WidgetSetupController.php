@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\DataStore;
 use DeskPRO\Bundle\AppBundle\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\UserChat\UserChatSettings;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\View\View;
@@ -104,6 +105,16 @@ class WidgetSetupController extends BaseController
             throw new InvalidFormException($form);
         }
 
+        // Save global settings
+        $new_global_settings = $form->getData()['global'];
+
+        /** @var \Application\DeskPRO\EntityRepository\Setting $setting_repo */
+        $setting_repo = $this->getRepository('DeskPRO:Setting');
+        $setting_repo->updateSetting(UserChatSettings::EMAIL_VALIDATION, $new_global_settings['chat']['email_validation']);
+        $setting_repo->updateSetting(UserChatSettings::REQUIRE_LOGIN, $new_global_settings['chat']['require_login']);
+
+        // Save brand settings
+        // Use datastore for now, should have brand id in future
         $data_store = $this->getRepository('DeskPRO:DataStore')->findOneBy(['name' => 'core.apps_chat']);
         if (!$data_store) {
             $data_store = new DataStore();
