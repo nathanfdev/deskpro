@@ -5,6 +5,7 @@ import { submitMassActions } from '../../../../Application/Actions/massActions';
 import { selectedSelector } from '../../../../Application/Selectors/massActions';
 import { massActionsSelector, isCommentsSelector, navItemSelector } from '../../../Selectors/list';
 import { applyParams, loadIndicator } from '../../../Actions/FeedbackListActions';
+import { initialLoad } from '../../../Actions/feedbackNavActions';
 
 import { connect } from 'react-redux';
 @connect(state => ({
@@ -38,7 +39,8 @@ export class MassActionContainer extends Component {
               actions: { delete: true }
             },
             loadIndicatorAction: loadIndicator,
-            reloadListAction: applyParams
+            reloadListAction: applyParams,
+            reloadNavAction: initialLoad
           }
         ));
       };
@@ -52,7 +54,8 @@ export class MassActionContainer extends Component {
               actions: { approve: true }
             },
             loadIndicatorAction: loadIndicator,
-            reloadListAction: applyParams
+            reloadListAction: applyParams,
+            reloadNavAction: initialLoad
           }
         ));
       };
@@ -72,7 +75,8 @@ export class MassActionContainer extends Component {
       jobType: 'publish_mass',
       content: isComments ? 'feedback_comments' : 'feedback',
       loadIndicatorAction: loadIndicator,
-      reloadListAction: applyParams
+      reloadListAction: applyParams,
+      reloadNavAction: initialLoad
     };
 
 
