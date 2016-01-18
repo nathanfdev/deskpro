@@ -113,11 +113,6 @@
                 </div>
 
                 <div class="switcher" ng-if="!global_settings.chat.require_login">
-                    <button dp-toggle-switch ng-model="global_settings.chat.email_validation"></button>
-                    <h4><span class="title-text">Email validation</span></h4>
-                </div>
-
-                <div class="switcher" ng-if="!global_settings.chat.require_login">
                     <button dp-toggle-switch ng-model="brand_settings.chat.request_user_info"></button>
                     <h4><span class="title-text">Request Name/Email before Chat Commences</span></h4>
 
@@ -129,6 +124,12 @@
                                     <option value="conversation">Conversation Style</option>
                                     <option value="form">Form Style</option>
                                 </select>
+                            </div>
+                        </li>
+                        <li>
+                            <label class="option-label">Email validation:</label>
+                            <div class="option-group">
+                                <input type="checkbox" ng-model="global_settings.chat.email_validation" />
                             </div>
                         </li>
                     </ul>
