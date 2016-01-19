@@ -402,7 +402,11 @@ class ChatController extends AbstractApiController
     public function endChatAction(ChatConversation $conversation, Request $request)
     {
         $this->checkValidSession($conversation, $request);
-        $conversation->setStatus(ChatConversation::STATUS_ENDED);
+
+        $conversation
+            ->setStatus(ChatConversation::STATUS_ENDED)
+            ->setEndedBy('user')
+        ;
 
         $this->saveConversation($conversation);
         $this->dispatch(UserChatEvent::END_BY_USER, new UserChatEvent($conversation, [], ['chat_ended']));

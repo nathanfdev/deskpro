@@ -1063,6 +1063,14 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @return \DateTime
+     */
+    public function getDateEnded()
+    {
+        return $this->date_ended;
+    }
+
+    /**
      * @return string
      */
     public function getEndedBy()
