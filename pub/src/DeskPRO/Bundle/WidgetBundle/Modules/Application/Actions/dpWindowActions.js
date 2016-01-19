@@ -7,7 +7,9 @@ import {
   widgetRawPositionSelector,
   helpButtonSelector,
   helpPopupSelector,
-  liveDemoSelector
+  liveDemoSelector,
+  agentAcceptTimeoutSelector,
+  agentPollingTimeoutSelector
 } from '../Selectors/dpWindow';
 import {
   chatIdSelector,
@@ -114,16 +116,20 @@ export const reloadOptions = createAction(
     const buttonOptions = helpButtonSelector(state);
     const popupOptions = helpPopupSelector(state);
     const widgetPosition = widgetRawPositionSelector(state);
+    const agentAcceptTimeout = agentAcceptTimeoutSelector(state);
+    const agentPollingTimeout = agentPollingTimeoutSelector(state);
 
     dispatch(loadOptions(options));
 
     const buttonOptionsHaveChanged = !buttonOptions.equals(newOptions.get('button'));
     const popupOptionsHaveChanged = !popupOptions.equals(newOptions.getIn(['chat', 'popup']));
     const widgetPositionHasChanged = widgetPosition !== newOptions.getIn(['widget', 'position']);
+    const chatWaitingTimeoutHasChanged = agentAcceptTimeout !== newOptions.getIn(['chat', 'waiting_timeout']);
+    const onlineAgentPollingTimeoutHasChanged = agentPollingTimeout !== newOptions.getIn(['widget', 'agent_polling_timeout']);
 
     if (buttonOptionsHaveChanged || popupOptionsHaveChanged) {
       dispatch(closeWidget());
-    } else if (!widgetPositionHasChanged) {
+    } else if (!widgetPositionHasChanged && !chatWaitingTimeoutHasChanged && !onlineAgentPollingTimeoutHasChanged) {
       dispatch(openWidget());
     }
   }
