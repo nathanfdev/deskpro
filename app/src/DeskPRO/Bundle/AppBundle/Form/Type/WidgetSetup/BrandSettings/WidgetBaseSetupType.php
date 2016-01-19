@@ -72,7 +72,12 @@ class WidgetBaseSetupType extends AbstractType
                     new Assert\NotBlank(),
                 ],
             ])
-            ->add('agent_polling_timeout', 'number')
+            ->add('agent_polling_timeout', 'number', [
+                'constraints' => [
+                    new Assert\NotBlank(),
+                    new Assert\GreaterThan(9),
+                ],
+            ])
         ;
     }
 }

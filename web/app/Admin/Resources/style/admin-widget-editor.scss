@@ -95,6 +95,10 @@
           }
         }
       }
+
+      &.errors {
+        color: red;
+      }
     }
   }
 

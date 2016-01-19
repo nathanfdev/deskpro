@@ -68,7 +68,8 @@ class WidgetChatSetupType extends AbstractType
             ])
             ->add('waiting_timeout', 'number', [
                 'constraints' => [
-                    new Assert\GreaterThan(10),
+                    new Assert\NotBlank(),
+                    new Assert\GreaterThan(9),
                 ],
             ])
             ->add('popup', new WidgetChatPopupSetupType())
