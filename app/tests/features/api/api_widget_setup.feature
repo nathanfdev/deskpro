@@ -33,7 +33,8 @@ Feature: Widget Setup
       "brand": {
         "widget": {
           "type": "bubble",
-          "position": "left"
+          "position": "left",
+          "agent_polling_timeout": 20
         },
         "button": {
           "name": "Help",
@@ -42,6 +43,7 @@ Feature: Widget Setup
         "chat": {
           "enabled": true,
           "begin_mode": "form",
+          "waiting_timeout": 10,
           "popup": {
             "reply_type": "buttons"
           }
