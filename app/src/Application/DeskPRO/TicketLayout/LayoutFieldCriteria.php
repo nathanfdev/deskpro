@@ -96,7 +96,7 @@ class LayoutFieldCriteria implements \Serializable, \Countable
      */
     public function setMode($mode)
     {
-        $mode       = strtoupper($mode);
+        $mode       = strtolower($mode);
         $this->mode = ($mode == self::CRIT_ALL ? self::CRIT_ALL : self::CRIT_ANY);
     }
 
