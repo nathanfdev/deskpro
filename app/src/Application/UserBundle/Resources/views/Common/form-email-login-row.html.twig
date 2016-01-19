@@ -40,7 +40,13 @@
 			</div>
 		</div>
 
+		{% set am = app.authenticationManager %}
+		{% set um = app.usersourceManager %}
+		{% set dpUsEnabled = um.getById(1).is_enabled %}
+
 		<div class="dp-control-group dp-inline-login-pass" style="display: none">
+
+			{% if dpUsEnabled %}
 			<div class="dp-login-section">
 				<div class="dp-control-label">
 					<label><strong>{{ phrase('user.profile.password') }}</strong> <a class="forgot" href="{{ path('user_login_resetpass') }}">{{ phrase('user.profile.lost_qm') }}</a></label>
@@ -77,8 +83,9 @@
 				</div>
 			</div>
 
+			{% endif %}
+
             <div style="max-width: 200px; margin-top: 10px;">
-                {% set am = app.authenticationManager %}
                 {% if am.hasLoginTextButtonUsersources %}
                     <ul class="dp-unstyled">
                         {% for usersource in am.getLoginTextButtonUsersources %}
