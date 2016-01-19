@@ -127,7 +127,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
           @$scope.saving = false
         ,
         (response) =>
-          @$scope.formErrors = response.data.errors.fields
+          @$scope.formErrors = response.data?.errors?.fields
           @$scope.saving = false
       )
 
