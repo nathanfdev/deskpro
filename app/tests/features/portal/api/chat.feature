@@ -267,6 +267,24 @@ Feature: Widget Chat
     When I send a GET request to "/portal/api/chats/1/polling?__sid=1-AAAAAAAAAAAAAAA"
     Then the response status code should be 200
     And the response should be in JSON
+    And the JSON node "chat_info.data.id" should exist
+    And the JSON node "chat_info.data.person_name" should exist
+    And the JSON node "chat_info.data.person_email" should exist
+    And the JSON node "chat_info.data.person" should exist
+    And the JSON node "chat_info.data.agent" should exist
+    And the JSON node "chat_info.data.should_send_transcript" should exist
+    And the JSON node "chat_info.data.need_validate_email" should exist
+    And the JSON node "chat_info.data.date_created" should exist
+    And the JSON node "chat_info.data.date_ended" should exist
+    And the JSON node "chat_info.data.ended_by" should exist
+    And the JSON node "new_messages.data[0].id" should exist
+    And the JSON node "new_messages.data[0].author_id" should exist
+    And the JSON node "new_messages.data[0].content" should exist
+    And the JSON node "new_messages.data[0].date_created" should exist
+    And the JSON node "new_messages.data[0].is_html" should exist
+    And the JSON node "new_messages.data[0].is_sys" should exist
+    And the JSON node "new_messages.data[0].is_user" should exist
+
 
   # Chat end/reopen
   Scenario: I end and reopen chat
