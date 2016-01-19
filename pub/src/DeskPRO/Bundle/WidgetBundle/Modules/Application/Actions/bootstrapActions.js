@@ -110,11 +110,18 @@ export const bootstrapWidget = createAction(
       dispatch(loadTicketDisplayFields())
     ])
     .then(response => {
-      const promise = dispatch(chatResume());
-      promise.then(() => {
+      const onFinish = () => {
         emitter.emit('loaded');
         resolve(response);
-      });
+      };
+
+      const onError = resumeResponse => {
+        console.log(resumeResponse);
+        onFinish();
+      };
+
+      const promise = dispatch(chatResume());
+      promise.then(onFinish, onError);
     });
   })
 );
