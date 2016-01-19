@@ -158,11 +158,25 @@
     outline: none;
   }
 
-  a.email-code-submit {
+  a {
+    &.email-code-submit, &.email-code-resend {
+      text-align: center;
+      display: block;
+      color: #4681b2;
+      margin: 0 auto 5px;
+    }
+
+    &.email-code-resend {
+      margin-top: 20px;
+      font-size: 11px;
+    }
+  }
+
+  .another-email-sent {
     text-align: center;
     display: block;
-    color: #4681b2;
-    margin: 0 auto 5px;
+    margin-top: 10px;
+    color: #cacaca;
   }
 
   .spinner {
