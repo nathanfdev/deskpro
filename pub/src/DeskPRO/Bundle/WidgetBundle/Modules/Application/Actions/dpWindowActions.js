@@ -23,7 +23,7 @@ import $ from 'jquery';
 import history from '../../../Services/history';
 import Immutable from 'immutable';
 
-export const openChatBeginStage = chatBeginMode => {
+const openChatBeginStage = chatBeginMode => {
   switch (chatBeginMode) {
     case 'simple':
     default:
