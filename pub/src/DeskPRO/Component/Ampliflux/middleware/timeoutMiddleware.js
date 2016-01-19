@@ -19,7 +19,7 @@ function getDelay(action) {
  *
  * @return {Function} middleware
  */
-export default function timeoutMiddleware() {
+export function timeoutMiddleware() {
   return next => action => {
     const delay = getDelay(action);
     if (!delay) {

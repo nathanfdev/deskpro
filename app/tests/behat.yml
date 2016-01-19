@@ -51,9 +51,11 @@ portal:
                 - DpBehat\Portal\GenericContext
                 - DpBehat\Portal\TicketContext
                 - DpBehat\Performance\PerformanceContext
+                - DpBehat\Http\HttpContext
                 - DpBehat\DataSetContext:
                     dataset_manager: @dataset_manager
                 - DpBehat\Portal\PortalApiContext
+                - DpBehat\Portal\PortalDesigner\AssetsContext
     extensions:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:

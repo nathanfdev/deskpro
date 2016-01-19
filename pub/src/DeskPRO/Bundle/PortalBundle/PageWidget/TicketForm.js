@@ -4,7 +4,7 @@ import PortalApp from 'DeskPRO/Bundle/PortalBundle/PortalApp';
 import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
 import emitter from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
 import NewTicketSuggestions from 'DeskPRO/Bundle/PortalBundle/React/NewTicketSuggestions';
-import DynamicForm from 'DeskPRO/Bundle/AppBundle/Form/DynamicForm.js';
+import { DynamicForm } from 'DeskPRO/Bundle/AppBundle/Form/DynamicForm.js';
 import _ from 'lodash';
 import $ from 'jquery';
 

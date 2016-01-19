@@ -1,14 +1,14 @@
-import { Reducer } from "Ampliflux/reducers";
+import { Reducer } from 'Ampliflux/reducers';
 
 // TODO this should be in DeskPRO/Component/Ampliflux/common/components
-
+// @ToDo seems like never used class
 export default class TranslationReducer extends Reducer {
   constructor() {
     super();
 
     this.locales = this.getLocales();
 
-    this.defaultLocale = "en-US";
+    this.defaultLocale = 'en-US';
   }
 
   getLocales() {
@@ -16,15 +16,15 @@ export default class TranslationReducer extends Reducer {
   }
 
   getTranslations(locale) {
-    let translation = this.locales.reduce(
+    const translation = this.locales.reduce(
       (prev, current) => {
         let locales = current.locales;
-        if(!typeof(current.locales) == 'Array') {
+        if (!typeof(current.locales) === 'Array') {
           locales = [current.locales];
         }
 
-        for(let k in current.locales) {
-          if(current.locales[k] == locale) {
+        for (let k in current.locales) {
+          if (current.locales[k] == locale) {
             return current;
           }
         }
@@ -32,7 +32,7 @@ export default class TranslationReducer extends Reducer {
       }
     );
 
-    if(!translation) {
+    if (!translation) {
       return this.getTranslations(this.defaultLocale);
     }
 

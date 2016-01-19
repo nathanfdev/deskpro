@@ -49,7 +49,12 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
           waiting_timeout: 30
         }
       }
+
+      @$scope.widgetLoaded = false
       @$scope.departments = []
+
+      @$scope.saving = false
+      @$scope.formErrors = {}
 
     initialLoad: ->
       setupPromise = @$http.get('/api/v2/widget/setup')
@@ -70,6 +75,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
       );
 
       updateLiveDemoDebounce = Functions.debounce( =>
+        @$scope.formErrors = {}
         @updateLiveDemo()
       , 350)
 
@@ -103,6 +109,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
 
     updateChatCode: ->
       @$scope.code = ''
+      @$scope.saving = true
       @$http({
         method: 'POST',
         url: '/api/v2/widget/setup',
@@ -115,8 +122,13 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
         }
       })
       .then(
-        () => @$scope.code = @getCode(@getOptions()),
-        (response) => console.log(response.data)
+        () =>
+          @$scope.code = @getCode(@getOptions())
+          @$scope.saving = false
+        ,
+        (response) =>
+          @$scope.formErrors = response.data.errors.fields
+          @$scope.saving = false
       )
 
     initLiveDemo: ->
@@ -129,7 +141,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
         demoWindow = demoDocument.dp_loader;
         if (demoWindow.emitter)
           @emitter = demoWindow.emitter
-          @emitter.on('loaded', => alert('loaded'))
+          @emitter.on('loaded', =>
+            @$scope.$apply( => @$scope.widgetLoaded = true)
+          )
           clearInterval(interval)
       , 1000)
 

@@ -8,7 +8,7 @@ import {
   isBubbleSelector
 } from '../../Selectors/dpWindow';
 import { widgetLoadedSelector } from '../../Selectors/bootstrap';
-import Frame from 'Ampliflux/common/components/Frame';
+import { Frame } from 'Ampliflux/common/components/Frame';
 import store from '../../../../Services/store';
 
 @connect(state => ({
@@ -70,7 +70,13 @@ export class WidgetFrameContainer extends React.Component {
              positionMode={widgetPosition}>
 
         <Provider store={store}>
-          {React.cloneElement(children, {...childProps, widgetPosition, isBubble})}
+          {React.cloneElement(children, {
+            ...childProps,
+
+            widgetPosition,
+            isBubble,
+            triggerResize: () => this.triggerResize()
+          })}
         </Provider>
       </Frame>
     );

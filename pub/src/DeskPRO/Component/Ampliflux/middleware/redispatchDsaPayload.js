@@ -6,7 +6,7 @@ import { isDSA } from '../actions/actionUtils';
  *
  * @return {Function} middelware
  */
-export default function redispatchDsaPayload({ dispatch }) {
+export function redispatchDsaPayload({ dispatch }) {
   return next => action => {
     if (isDSA(action)) {
       const payload = action && action.payload ? action.payload : null;

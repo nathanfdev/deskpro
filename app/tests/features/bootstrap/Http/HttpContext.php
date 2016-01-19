@@ -26,45 +26,46 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings;
+namespace DpBehat\Http;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints as Assert;
+use Sanpi\Behatch\Context\BaseContext;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
- * Class WidgetChatPopupSetupType.
+ * Class HttpContext.
  */
-class WidgetChatPopupSetupType extends AbstractType
+class HttpContext extends BaseContext
 {
+    private $last_file_upload_response;
+
     /**
-     * {@inheritdoc}
+     * @When I send the :arg1 file as :arg2 to :arg3
      */
-    public function getName()
+    public function iSendTheFileAsVarTo($filename, $variable, $url)
     {
-        return 'widget_chat_popup_setup';
+        /** @var \Symfony\Bundle\FrameworkBundle\Client $client */
+        $client = $this->getSession()->getDriver()->getClient();
+        $files  = [$variable => new UploadedFile($this->getPath($filename), $filename)];
+        $client->request('POST', $url, ['Content-Type => multipart/form-data'], $files, []);
+
+        $this->last_file_upload_response = json_decode($client->getResponse()->getContent(), true);
     }
 
     /**
-     * {@inheritdoc}
+     * @return mixed
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function getLastFileUploadResponse()
     {
-        $builder
-            ->add('title', 'text')
-            ->add('message', 'text')
-            ->add('reply_type', 'choice', [
-                'choices' => [
-                    'buttons' => 'Reply Button',
-                    'reply'   => 'Reply Form',
-                ],
-                'constraints' => [
-                    new Assert\NotBlank(),
-                ],
-            ])
-        ;
+        return $this->last_file_upload_response;
+    }
+
+    /**
+     * @param string $filename
+     *
+     * @return string
+     */
+    private function getPath($filename)
+    {
+        return realpath(__DIR__.'/../files/'.$filename);
     }
 }

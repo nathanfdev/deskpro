@@ -124,7 +124,7 @@ export const reloadOptions = createAction(
     if (buttonOptionsHaveChanged || popupOptionsHaveChanged) {
       dispatch(closeWidget());
     } else if (!widgetPositionHasChanged) {
-      setTimeout(() => dispatch(openWidget()), 500);
+      dispatch(openWidget());
     }
   }
 );

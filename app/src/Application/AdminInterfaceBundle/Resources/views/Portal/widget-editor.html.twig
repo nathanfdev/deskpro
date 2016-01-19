@@ -21,6 +21,11 @@
                         <label class="option-label">Button word:</label>
                         <div class="option-group">
                             <input type="text" ng-model="brand_settings.button.name" />
+                            <ul class="errors">
+                                <li ng-repeat="error in formErrors.brand.fields.button.fields.name.errors">
+                                    {{ ng_var('error.message') }}
+                                </li>
+                            </ul>
                         </div>
                     </li>
                     <li>
@@ -107,73 +112,85 @@
                     <h4><span class="title-text">Enable / Disable Chat</span></h4>
                 </div>
 
-                <div class="switcher">
-                    <button dp-toggle-switch ng-model="global_settings.chat.require_login"></button>
-                    <h4><span class="title-text">Require login</span></h4>
-                </div>
+                <div ng-if="brand_settings.chat.enabled">
+                    <div class="switcher">
+                        <button dp-toggle-switch ng-model="global_settings.chat.require_login"></button>
+                        <h4><span class="title-text">Require login</span></h4>
+                    </div>
 
-                <div class="switcher" ng-if="!global_settings.chat.require_login">
-                    <button dp-toggle-switch ng-model="brand_settings.chat.request_user_info"></button>
-                    <h4><span class="title-text">Request Name/Email before Chat Commences</span></h4>
+                    <div class="switcher" ng-if="!global_settings.chat.require_login">
+                        <button dp-toggle-switch ng-model="brand_settings.chat.request_user_info"></button>
+                        <h4><span class="title-text">Request Name/Email before Chat Commences</span></h4>
 
-                    <ul class="options" ng-if="brand_settings.chat.request_user_info">
-                        <li>
-                            <label class="option-label">Begin chat mode:</label>
-                            <div class="option-group">
-                                <select ng-model="brand_settings.chat.begin_mode">
-                                    <option value="conversation">Conversation Style</option>
-                                    <option value="form">Form Style</option>
-                                </select>
-                            </div>
-                        </li>
-                        <li>
-                            <label class="option-label">Email validation:</label>
-                            <div class="option-group">
-                                <input type="checkbox" ng-model="global_settings.chat.email_validation" />
-                            </div>
-                        </li>
-                    </ul>
-                </div>
+                        <ul class="options" ng-if="brand_settings.chat.request_user_info">
+                            <li>
+                                <label class="option-label">Begin chat mode:</label>
+                                <div class="option-group">
+                                    <select ng-model="brand_settings.chat.begin_mode">
+                                        <option value="conversation">Conversation Style</option>
+                                        <option value="form">Form Style</option>
+                                    </select>
+                                </div>
+                            </li>
+                            <li>
+                                <label class="option-label">Email validation:</label>
+                                <div class="option-group">
+                                    <input type="checkbox" ng-model="global_settings.chat.email_validation" />
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
 
-                <div class="switcher">
-                    <button dp-toggle-switch ng-model="brand_settings.chat.proactive"></button>
-                    <h4><span class="title-text">Proactive Chat</span></h4>
+                    <div class="switcher">
+                        <button dp-toggle-switch ng-model="brand_settings.chat.proactive"></button>
+                        <h4><span class="title-text">Proactive Chat</span></h4>
 
-                    <ul class="options" ng-if="brand_settings.chat.proactive">
-                        <li>
-                            <label class="option-label">Agent Title:</label>
-                            <div class="option-group">
-                                <input type="text" ng-model="brand_settings.chat.popup.title" ng-disabled="!brand_settings.chat.enabled" />
-                            </div>
-                        </li>
-                        <li>
-                            <label class="option-label">Agent Message:</label>
-                            <div class="option-group">
-                                <textarea ng-model="brand_settings.chat.popup.message" ng-disabled="!brand_settings.chat.enabled"></textarea>
-                            </div>
-                        </li>
-                        <li>
-                            <label class="option-label">Reply Form Type:</label>
-                            <div class="option-group">
-                                <select ng-model="brand_settings.chat.popup.reply_type" ng-disabled="!brand_settings.chat.enabled">
-                                    <option value="buttons">Accept Button</option>
-                                    <option value="reply">Reply Form</option>
-                                </select>
-                            </div>
-                        </li>
-                        <li>
-                            <label class="option-label">Waiting Timeout:</label>
-                            <div class="option-group">
-                                <input type="text" ng-model="brand_settings.chat.waiting_timeout" ng-disabled="!brand_settings.chat.enabled" />
-                            </div>
-                        </li>
-                        <li>
-                            <label class="option-label">Online agent polling timeout:</label>
-                            <div class="option-group">
-                                <input type="text" ng-model="brand_settings.widget.agent_polling_timeout" ng-disabled="!brand_settings.chat.enabled" />
-                            </div>
-                        </li>
-                    </ul>
+                        <ul class="options" ng-if="brand_settings.chat.proactive">
+                            <li>
+                                <label class="option-label">Agent Title:</label>
+                                <div class="option-group">
+                                    <input type="text" ng-model="brand_settings.chat.popup.title" />
+                                </div>
+                            </li>
+                            <li>
+                                <label class="option-label">Agent Message:</label>
+                                <div class="option-group">
+                                    <textarea ng-model="brand_settings.chat.popup.message"></textarea>
+                                </div>
+                            </li>
+                            <li>
+                                <label class="option-label">Reply Form Type:</label>
+                                <div class="option-group">
+                                    <select ng-model="brand_settings.chat.popup.reply_type">
+                                        <option value="buttons">Reply Button</option>
+                                        <option value="reply">Reply Form</option>
+                                    </select>
+                                </div>
+                            </li>
+                            <li>
+                                <label class="option-label">Waiting Timeout:</label>
+                                <div class="option-group">
+                                    <input type="text" ng-model="brand_settings.chat.waiting_timeout" />
+                                    <ul class="errors">
+                                        <li ng-repeat="error in formErrors.brand.fields.chat.fields.waiting_timeout.errors">
+                                            {{ ng_var('error.message') }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li>
+                                <label class="option-label">Online agent polling timeout:</label>
+                                <div class="option-group">
+                                    <input type="text" ng-model="brand_settings.widget.agent_polling_timeout" />
+                                    <ul class="errors">
+                                        <li ng-repeat="error in formErrors.brand.fields.widget.fields.agent_polling_timeout.errors">
+                                            {{ ng_var('error.message') }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
 
@@ -192,6 +209,11 @@
                                             {{ ng_var('option.title') }}
                                         </option>
                                     </select>
+                                    <ul class="errors">
+                                        <li ng-repeat="error in formErrors.brand.fields.ticket.fields.default_department.errors">
+                                            {{ ng_var('error.message') }}
+                                        </li>
+                                    </ul>
                                 </div>
                             </li>
                             <li>
@@ -206,15 +228,18 @@
             <div class="form-footer">
                 <hr>
                 <div dp-hide-spinning="saving">
-                    <button type="submit" ng-click="Ctrl.updateChatCode()">Get Code</button>
-                </div>
-                <div dp-show-spinning="saving">
-                    <i class="spinner-flat"></i>
+                    <button type="submit" ng-click="Ctrl.updateChatCode()" ng-hide="saving">Get Code</button>
+                    <div ng-show="saving">
+                        <i class="spinner-flat"></i>
+                    </div>
                 </div>
             </div>
         </form>
 
-        <iframe id="live-demo" class="widget-editor-live-demo-container"></iframe>
+        <div class="widget-editor-live-demo-container">
+            <div class="widget-editor-live-demo-loader" ng-hide="widgetLoaded"><i></i></div>
+            <iframe id="live-demo" ng-show="widgetLoaded"></iframe>
+        </div>
 
         <div class="editor-row" ng-if="!!code">
             <div class="editor-wrap">
@@ -228,7 +253,6 @@
                          theme: 'textmate',
                          onLoad: embedEditorLoaded
                      }">
-
                 </div>
             </div>
         </div>

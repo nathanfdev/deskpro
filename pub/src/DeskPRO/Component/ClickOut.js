@@ -14,12 +14,14 @@ export class ClickOut extends React.Component {
 
   componentDidMount() {
     jQuery(this.getContext()).on('click', this.onClick);
-    let events = jQuery._data(this.getContext(), 'events');
-    events.click = events.click || [];
-    events.click.sort(function(a, b){
-      return b.guid - a.guid;
-    });
-    jQuery._data(this.getContext(), 'events', events);
+
+    const events = jQuery._data(this.getContext(), 'events');
+    if (events) {
+      events.click = events.click || [];
+      events.click.sort((a, b) => b.guid - a.guid);
+
+      jQuery._data(this.getContext(), 'events', events);
+    }
   }
 
   componentWillUnmount() {

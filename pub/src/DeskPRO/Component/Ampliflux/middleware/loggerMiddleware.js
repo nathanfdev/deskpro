@@ -21,7 +21,7 @@ function jsValue(val) {
   return val;
 }
 
-export default function loggerMiddleware({ getState }) {
+export function loggerMiddleware({ getState }) {
   return next => action => {
     if (!window.DP_ENABLE_ACTION_LOGGER) {
       return next(action);

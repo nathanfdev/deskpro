@@ -17,7 +17,7 @@ import EventEmitter from 'eventemitter2';
  * @option {Boolean}            runInitUpdate    Run the update() method upon construction. Default: true
  * @option {Array}              alwaysFields     Array of fields that are always added to the form, even if they are missing from the filter.
  */
-export default class DynamicForm {
+export class DynamicForm {
   constructor(options) {
     options = _.defaults(options, {
       widgetClassName: 'deskpro-form-widget',

@@ -31,7 +31,7 @@
  */
 namespace DpBehat\Portal;
 
-use Application\DeskPRO\ORM\EntityManager;
+use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeRepository;
 use DpBehat\RebootableContextInterface;
@@ -47,8 +47,9 @@ class PortalBrandThemeContext extends BasePortalContext implements RebootableCon
      * @var ThemeRepository
      */
     private $theme_repository;
+
     /**
-     * @var EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     private $em;
 
@@ -69,14 +70,18 @@ class PortalBrandThemeContext extends BasePortalContext implements RebootableCon
      */
     public function theActiveBrandHasTheme($theme_id)
     {
-        $brand_container = $this->brand_stack->getActive();
-        $brand           = $brand_container->getBrand();
-
         $theme_set = $this->em->getRepository('App:ThemeSet')->findOneBy(['theme_id' => $theme_id]);
 
-        $brand->setThemeSet($theme_set);
+        if ($brand = $this->em->getRepository(Brand::class)->findOneBy(compact('theme_set'))) {
+            $this->brand_stack->push($brand);
+        } else {
+            $brand_container = $this->brand_stack->getActive();
+            $brand           = $brand_container->getBrand();
 
-        $this->em->persist($brand);
-        $this->em->flush($brand);
+            $brand->setThemeSet($theme_set);
+
+            $this->em->persist($brand);
+            $this->em->flush($brand);
+        }
     }
 }
