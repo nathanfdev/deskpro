@@ -40,7 +40,7 @@ function getPromise(action) {
  *
  * @return {Function} middleware
  */
-export default function promiseMiddleware({ dispatch }) {
+export function promiseMiddleware({ dispatch }) {
   return next => action => {
     if (!action) {
       return next(action);

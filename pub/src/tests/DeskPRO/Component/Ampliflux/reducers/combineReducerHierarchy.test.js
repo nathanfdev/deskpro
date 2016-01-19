@@ -6,8 +6,8 @@ import 'babel/polyfill';
 import { toImmutable } from 'Helpers/redux';
 
 describe('Ampliflux combineReducerHierarchy()', () => {
-  const combineReducerHierarchy = require('~/combineReducerHierarchy');
-  const createReducer = require('~/createReducer');
+  const { combineReducerHierarchy } = require('~/combineReducerHierarchy');
+  const { createReducer } = require('~/createReducer');
   const redux = require('redux');
 
   let handlers;

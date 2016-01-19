@@ -19,7 +19,7 @@ function getInterval(action) {
  *
  * @return {Function} middelware
  */
-export default function intervalMiddleware() {
+export function intervalMiddleware() {
   return next => action => {
     const interval = getInterval(action);
     if (!interval) {

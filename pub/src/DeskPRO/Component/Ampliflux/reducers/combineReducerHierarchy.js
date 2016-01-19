@@ -31,7 +31,7 @@ function getReducer(val, builderFn) {
  * @param {Function} builderFn    An optional function that is called on every reducer to build it. It must return the visitor or null to cancel adding it.
  * @return {Function} A final reducer
  */
-export default function combineReducerHierarchy(reducersObj, builderFn) {
+export function combineReducerHierarchy(reducersObj, builderFn) {
   const finalMap = {};
   for (const [name, val] of Object.entries(reducersObj)) {
     const r = getReducer(val, builderFn);

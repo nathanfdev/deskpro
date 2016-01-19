@@ -3,8 +3,8 @@ jest.dontMock('DeskPRO/Component/Ampliflux/actions/createAction');
 jest.dontMock('DeskPRO/Component/Ampliflux/actions/actionUtils');
 
 describe('Ampliflux Timeout Middleware', () => {
-  const timeoutMiddleware = require('DeskPRO/Component/Ampliflux/middleware/timeoutMiddleware');
-  const createAction = require('DeskPRO/Component/Ampliflux/actions/createAction');
+  const { timeoutMiddleware } = require('DeskPRO/Component/Ampliflux/middleware/timeoutMiddleware');
+  const { createAction } = require('DeskPRO/Component/Ampliflux/actions/createAction');
   const nextHandler = timeoutMiddleware();
 
   it('should return a function to handle next', () => {

@@ -11,7 +11,7 @@ function copyActionNewPayload(action, payload) {
  * Similar to redux-thunk except it also works if a function is returned as part of a payload.
  * @return {Function} middleware
  */
-export default function actionThunkMiddleware({ dispatch, getState }) {
+export function actionThunkMiddleware({ dispatch, getState }) {
   return next => action => {
     let actionFn = null;
 

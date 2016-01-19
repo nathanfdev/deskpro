@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
 
-export default class Frame extends React.Component {
+export class Frame extends React.Component {
 
   static propTypes = {
     name: PropTypes.string,

@@ -1,25 +1,26 @@
 /**
  * Reproduction of react-intl's getIntlMessage() mixin method.
- * @param object messages is the list of messsages.
+ * @param messagesList object is the list of messsages.
  * @param path is the path for which the translation is required.
  */
-export default function getIntlMessage(messages, path) {
-  if(!messages) {
+export default function getIntlMessage(messagesList, path) {
+  if (!messagesList) {
     return path;
   }
-  if(messages.messages) { // We still want this to work if we're given the whole translations object.
-    messages = messages.messages;
+  let messages;
+  if (messagesList.messages) { // We still want this to work if we're given the whole translations object.
+    messages = messagesList.messages;
   }
-  const path_parts = path.split('.');
-  
+  const pathParts = path.split('.');
+
   let message = '';
   try {
-    message = path_parts.reduce((obj, path_part) => obj[path_part], messages);
+    message = pathParts.reduce((obj, pathPart) => obj[pathPart], messages);
   } finally {
-    if(message === undefined) {
+    if (message === undefined) {
       throw new ReferenceError("Couldn't find Intl message: " + path);
     }
   }
-  
+
   return message;
 }

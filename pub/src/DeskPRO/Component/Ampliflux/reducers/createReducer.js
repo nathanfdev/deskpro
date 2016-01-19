@@ -13,7 +13,7 @@ import Immutable from 'immutable';
  * @param {Map}    handlerGroups A map of actionType => handlerFn
  * @returns {Function} Your reducer
  */
-export default function createReducer(initialState, ...handlerGroups) {
+export function createReducer(initialState, ...handlerGroups) {
   const handlers = {};
   handlerGroups.forEach(g => Object.assign(handlers, g));
 
