@@ -21,6 +21,8 @@ $mobile: new-breakpoint(max-width 640px 6);
 @import "global-widgets/window/top-bar", "global-widgets/window/top-bar-user-options", "global-widgets/window/top-bar-agent-ims";
 @import "global-widgets/navigation-dropdown/navigation-dropdowns";
 @import "global-widgets/im-container";
+@import "global-widgets/settings-popup/setting-popups";
+@import "global-widgets/workspace/dropdown-workspace";
 @import "animation"; // ReactCSSTransitionGroup
 //@import "raw/styles";
 

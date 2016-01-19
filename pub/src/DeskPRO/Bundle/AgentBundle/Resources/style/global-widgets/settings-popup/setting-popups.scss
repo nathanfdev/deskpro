@@ -1,0 +1,956 @@
+// Popups
+$item-padding: 9px 10px;
+// Dark cover for content
+.cover {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 998;
+}
+
+$popup-background: #f5f6f7;
+
+// main popup styles
+.popup {
+  @include clearfix;
+  width: 100%;// Some responsiveness (although content will break for now)
+  max-width: 950px;
+  min-width: 820px;
+  max-height: 800px;
+  min-height: 400px;
+  display: block;
+  background: $popup-background;
+  z-index: 999;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  color: $text-color;
+  border-top: 4px solid #4681b2;
+  // Place it in the middle of the screen
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  //* { line-height: 1.2em; }
+
+  // We absolute position the footer, so need some padding there to look good
+  padding-bottom: 76px;
+  // If we don't use a footer
+
+  &.no-footer { padding-bottom: 0; }
+
+  // Popup title
+  header {
+    text-transform: uppercase;
+    background: #e1e6eb;
+    padding: 10px;
+    border-bottom: 1px solid #dcddde;
+    position: relative;
+
+    h1 {
+      font-weight: 300;
+      font-size: 1.1em;
+    }
+
+    .controls {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+
+      a {
+        opacity: 0.3;
+        &:hover { opacity: 1; }
+      }
+    }
+  }
+
+  // Text ober content;
+  .popup-blurb {
+    color: #6e6e6f;
+    padding-left: 5px;
+
+    h2 {
+      font-size: 1.2em;
+      margin-bottom: 5px;
+    }
+
+    p {
+      font-size: 0.95em;
+      color: inherit;
+    }
+  }
+
+  // Full width footer content
+  footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #f5f6f7;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    .button { max-width: 300px; }
+  }
+
+  h2 {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+  }
+
+  // Buttons and stuff
+  input[type="text"], input[type="password"], .select, .button {
+    border: 1px solid #bdbdbd;
+    border-radius: 2px;
+    padding: $item-padding;
+    background: #fff;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1em;
+  }
+
+  .intl-tel-input {
+    display: block;
+
+    input {
+      padding: 10px 5px 10px 48px;
+    }
+  }
+
+  .button {
+    background: $top-bar-blue;
+    border: 1px solid $top-bar-blue;
+    text-align: center;
+    color: #fff;
+    font-weight: 400;
+  }
+
+  .button-secondary {
+    background: #e1e6eb;
+    border: 1px solid #cecece;
+    color: #757e86;
+  }
+
+  .button-dropdown {
+    display: inline-block;
+    background: #fff;
+    line-height: 1em;
+    padding: 8px 10px;
+    border-radius: 2px;
+    border: 1px solid #bdbdbd;
+    border-bottom: 2px solid #bdbdbd;
+    text-decoration: none;
+    margin-left: 5px;
+    margin-right: 5px;
+    min-width: 160px;
+    color: #aeafb0;
+
+    i {
+      float: right;
+    }
+  }
+
+  .button-short {
+    width: 49%;
+  }
+}
+
+
+
+// Sidebar width
+$popup-sidebar: 150px;
+// Right side column width
+$right-bucket: 200px;
+
+// Left sidebar
+.popup-sidebar {
+  background: #fafbfb;
+  border-right: 1px solid #dcddde;
+  width: $popup-sidebar;
+  float: left;
+}
+
+.popup-content {
+  @include clearfix;
+  padding: 10px 10px 10px $popup-sidebar + 10px;
+
+  // Remove the padding from top & right side for popup content that needs to span the whole panel
+  // See notification settings for an example (the right side sidebar needs to be stuck to the right and top - and padding was messing with that)
+  // Don't forget to add a padding-top to the immediate content container so things remain aligned
+  &.no-border {
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+  }
+
+  h1 {
+    font-weight: 300;
+    color: #333;
+    margin: 10px 0;
+  }
+
+}
+
+.popup-content.blank {
+  padding: 0 0 0 $popup-sidebar + 10px;
+}
+
+.popup {
+  // Buckets are the form columns
+  //
+  // label: left side (usually the title of the form input)
+  // bucket-column: the main column (usually input)
+  // bucket-column-last: extra info - not needed if there's no content for it
+  // bucket-column.bucket-column-full if we need to take over the width of column-last too
+  .bucket {
+    padding: 5px 0;
+    vertical-align: top;
+
+    &.bucket.short {
+      padding: 0 0 0 150px;
+
+      label {
+        margin: 0 5px 0 0;
+        display: inline-block;
+      }
+
+      input {
+        margin: 5px;
+      }
+    }
+
+    .label {
+      display: block;
+      float: left;
+      width: 150px;
+      color: #6e6e6f;
+    }
+
+    .small {
+      font-size: 0.85em;
+      opacity: 0.5;
+
+      &.field-note {
+        display: block;
+        margin-top: 5px;
+      }
+    }
+
+    .bucket-column {
+      position: relative;
+      padding-left: 150px;
+      padding-right: $right-bucket;
+
+      ul {
+        &.error {
+          margin: 5px 0 0 0;
+          padding: 0;
+          list-style-type: none;
+
+          li {
+            font-size: 0.85em;
+            opacity: 0.5;
+            color: #ff0000;
+          }
+        }
+      }
+
+      &.submit {
+        text-align: center;
+      }
+
+      .loader {
+        height: 40px;
+      }
+    }
+
+    .bucket-column.bucket-column-full {
+      padding-right: 0;
+    }
+
+    .bucket-column-last {
+      width: 200px;
+      float: right;
+      padding-left: 10px;
+      position: relative;
+      z-index: 100;
+
+      .error {
+        display: block;
+        padding: 10px 0;
+        font-size: 0.85em;
+        opacity: 0.5;
+        color: #ff0000;
+      }
+    }
+  }
+}
+
+
+
+// The form
+
+.popup-form-default {
+  font-size: 1.05em;
+  font-weight: 400;
+
+  // Left side title for each item
+  // Can be <label> or any other element
+  .label {
+    text-align: right;
+    padding: $item-padding;
+    &.single-line { padding-top: 0; }// Titles for the checkbox lines
+    font-size: 1em;
+    border: 1px solid rgba(0, 0, 0, 0);
+    margin: 0;
+
+    i.fa-bars {
+      position: relative;
+      z-index: 100;
+      cursor: move;
+    }
+  }
+
+  // Small text to the right
+  .meta {
+    display: block;
+    font-size: 0.9em;
+    position: relative;
+    z-index: 99;
+
+    a {
+      position: relative;
+      top: 10px;
+      opacity: 0.3;
+      &:hover { opacity: 1; }
+    }
+  }
+
+  // Upload avatar button
+  .user-avatar {
+    text-align: left;
+    padding-left: 40px;
+
+    .user-photo {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border-radius: 2px;
+      background-size: cover;
+      position: absolute;
+      left: 18px;
+      top: 6px;
+
+      &.gravatar {
+        position: absolute;
+        top: 0;
+        left: 2px !important;
+      }
+
+      &.text-fallback {
+        background-color: #CDD2D4 !important;
+        margin-left: 2px;
+
+        .text {
+          color: black;
+          font-size: 100%;
+          position: relative;
+          top: 50%;
+          -webkit-transform: translateY(-50%);
+          -ms-transform: translateY(-50%);
+          transform: translateY(-50%);
+        }
+      }
+    }
+  }
+
+  // Two inputs side by side (like password)
+  input[type="password"], .select, .half-width {
+    width: 49%;
+    &:first-child { margin-right: 2%; }
+  }
+
+  // Dropdown button (move the icon to the right)
+  .select {
+    i {
+      float: right;
+      margin-right: 5px;
+    }
+  }
+
+  hr {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+
+  // The bunch of checkboxes
+  .checkboxes {
+    div {
+      margin-bottom: 15px;
+      &:last-child { margin-bottom: 0; }
+    }
+
+    [type="checkbox"] {
+      margin-right: 4px;
+      margin-left: 4px;
+    }
+
+    .focus { font-weight: 600; }
+  }
+
+  .Select {
+    padding: 0;
+    border: 0;
+    width: 100%;
+  }
+}
+
+
+
+// Sidebar vertical navigation
+.popup-sidebar-content {
+  padding: 10px 0 0 10px;
+
+  ul {
+    @extend %flat-list;
+    text-align: right;
+
+    a {
+      color: #a6a6a6;
+      display: block;
+      text-decoration: none;
+      &:hover { color: #3c3e3f; }
+    }
+
+    i {
+      margin-left: 10px;
+      top: 1px;
+    }
+  }
+
+  > ul {
+    font-size: 1.05em;
+
+    > li {
+      position: relative;
+      left: 1px;
+      border: 1px solid rgba(0, 0, 0, 0);
+      border-bottom: 1px solid #dcddde;
+
+      > div {
+
+        > a {
+          padding: 10px;
+          font-weight: 400;
+        }
+      }
+    }
+
+
+    .active {
+      border: 1px solid #dcddde;
+      border-right: #f5f6f7;
+      background: #f5f6f7;
+      position: relative;
+      top: -1px;
+      a { color: #3c3e3f; }
+    }
+  }
+
+  ul.stat-types-list {
+    padding-right: 15px;
+    border-right: 1px solid #dcddde;
+    margin-right: 17px;
+    margin-bottom: 10px;
+
+    li { position: relative; }
+
+    li:after {
+      content: "";
+      display: block;
+      position: absolute;
+      right: -8px;
+      width: 8px;
+      height: 1px;
+      background: #dcddde;
+      top: 55%;
+    }
+
+    a {
+      padding: 4px 5px;
+      font-size: 0.9em;
+      color: #a6a6a6;
+      &:hover, &.selected { color: #3c3e3f; }
+    }
+  }
+}
+
+
+// Report styles
+
+.cloned-report-mark {
+  position: absolute;
+
+  // Explanation: we are placing this based on the total width of it's container
+  // wich is overlapping the third column
+  // so we absolute place it based on the width of that third container
+  right: $right-bucket + 10px;
+  top: 7px;
+  color: #b9b9b9;
+  border: 1px solid #cecece;
+  padding: 2px 5px;
+  border-radius: 2px;
+  line-height: 1em;
+}
+
+.reports-dropdown-content {
+  ul {
+    @extend %flat-list;
+  }
+
+  a {
+    text-decoration: none;
+  }
+}
+
+
+
+.popup {
+  .agent-list {
+    max-height: 360px;
+    overflow-y: scroll;
+
+    table {
+      width: 100%;
+      font-size: 1em;
+    }
+
+    thead {
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 0.8em;
+
+      td {
+        border-left: 0;
+        padding: 0 5px 5px;
+        color: #ababab;
+      }
+    }
+
+    td {
+      width: 15%;
+      text-align: center;
+      border-bottom: 1px solid #dcddde;
+      border-left: 1px solid #dcddde;
+    }
+
+    .agent-name {
+      text-align: left;
+      color: #707070;
+      width: 70%;
+      border-left: 0;
+
+      .avatar {
+        display: inline-block;
+        width: 26px;
+        height: 26px;
+        border-radius: 4px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        vertical-align: middle;
+        position: relative;
+        margin: 5px;
+
+      }
+    }
+
+    ul {
+      @extend %flat-list;
+
+      li {
+        display: block;
+        border-bottom: 1px solid #dcddde;
+      }
+    }
+  }
+}
+
+
+.popup-breadcrumbs {
+  background: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 8px 10px;
+  color: #737373;
+  text-transform: uppercase;
+  font-size: 0.8em;
+  font-weight: 600;
+
+  i {
+    margin-left: 5px;
+  }
+
+  a {
+    margin-left: 10px;
+    opacity: 0.3;
+    font-weight: 800;
+    &:hover { opacity: 1; }
+  }
+}
+
+
+// Tables for popups | Specific styles for each table on the separate scss files for each popup
+.popup {
+  table {
+    background: #fff;
+    border: 1px solid #dcddde;
+    color: #5a5a5a;
+    font-size: 0.95em;
+    width: 100%;
+
+    thead {
+      font-weight: 600;
+      color: #949494;
+    }
+
+    td {
+      padding: 8px;
+    }
+
+    tr {
+      border-bottom: 1px solid #dcddde;
+    }
+
+    tr.alt {
+      background: #f8f8f8;
+    }
+  }
+}
+
+/**
+ * React Select
+*/
+.Select {
+  position: relative;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+
+  div, input, span {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+
+  &.is-disabled > .Select-control {
+    background-color: #f6f6f6;
+  }
+
+  &.is-disabled .Select-arrow-zone {
+    cursor: default;
+    pointer-events: none;
+  }
+}
+
+.Select-control {
+  background-color: #fff;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  color: #333;
+  cursor: default;
+  display: table;
+  height: 36px;
+  outline: none;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+
+  &:hover {
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+  }
+}
+.is-searchable.is-open > .Select-control {
+  cursor: text;
+}
+.is-open > .Select-control {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  background: #fff;
+  border-color: #b3b3b3 #ccc #d9d9d9;
+}
+.is-open > .Select-control > .Select-arrow {
+  border-color: transparent transparent #999;
+  border-width: 0 5px 5px;
+}
+.is-searchable.is-focused:not(.is-open) > .Select-control {
+  cursor: text;
+}
+.is-focused:not(.is-open) > .Select-control {
+  border-color: #007eff #1a8bff #1a8bff;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 0 5px -1px rgba(0, 126, 255, 0.5);
+}
+.Select-placeholder {
+  bottom: 0;
+  color: #aaa;
+  left: 0;
+  line-height: 34px;
+  padding-left: 10px;
+  padding-right: 10px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.has-value > .Select-control > .Select-placeholder {
+  color: #333;
+}
+.Select-value {
+  color: #aaa;
+  left: 0;
+  padding: 8px 52px 8px 10px;
+  position: absolute;
+  right: -15px;
+  top: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.has-value > .Select-control > .Select-value {
+  color: #333;
+}
+.Select-input {
+  height: 34px;
+  padding-left: 10px;
+  padding-right: 10px;
+  vertical-align: middle;
+}
+.Select-input > input {
+  background: none transparent;
+  border: 0 none;
+  box-shadow: none;
+  cursor: default;
+  display: inline-block;
+  font-family: inherit;
+  font-size: inherit;
+  height: 34px;
+  margin: 0;
+  outline: none;
+  padding: 0;
+  -webkit-appearance: none;
+}
+.is-focused .Select-input > input {
+  cursor: text;
+}
+.Select-control:not(.is-searchable) > .Select-input {
+  outline: none;
+}
+.Select-loading-zone {
+  cursor: pointer;
+  display: table-cell;
+  position: relative;
+  text-align: center;
+  vertical-align: middle;
+  width: 16px;
+}
+.Select-loading {
+  -webkit-animation: Select-animation-spin 400ms infinite linear;
+  -o-animation: Select-animation-spin 400ms infinite linear;
+  animation: Select-animation-spin 400ms infinite linear;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  border-right-color: #333;
+  display: inline-block;
+  position: relative;
+  vertical-align: middle;
+}
+.Select-clear-zone {
+  -webkit-animation: Select-animation-fadeIn 200ms;
+  -o-animation: Select-animation-fadeIn 200ms;
+  animation: Select-animation-fadeIn 200ms;
+  color: #999;
+  cursor: pointer;
+  display: table-cell;
+  position: relative;
+  text-align: center;
+  vertical-align: middle;
+  width: 17px;
+}
+.Select-clear-zone:hover {
+  color: #D0021B;
+}
+.Select-clear {
+  display: inline-block;
+  font-size: 18px;
+  line-height: 1;
+}
+.Select--multi .Select-clear-zone {
+  width: 17px;
+}
+.Select-arrow-zone {
+  cursor: pointer;
+  display: table-cell;
+  position: relative;
+  text-align: center;
+  vertical-align: middle;
+  width: 25px;
+  padding-right: 5px;
+}
+.Select-arrow {
+  border-color: #999 transparent transparent;
+  border-style: solid;
+  border-width: 5px 5px 2.5px;
+  display: inline-block;
+  height: 0;
+  width: 0;
+}
+.is-open .Select-arrow,
+.Select-arrow-zone:hover > .Select-arrow {
+  border-top-color: #666;
+}
+@-webkit-keyframes Select-animation-fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes Select-animation-fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.Select-menu-outer {
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-top-color: #e6e6e6;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+  box-sizing: border-box;
+  margin-top: -1px;
+  max-height: 200px;
+  position: absolute;
+  top: 100%;
+  width: 100%;
+  z-index: 1000;
+  -webkit-overflow-scrolling: touch;
+}
+.Select-menu {
+  max-height: 198px;
+  overflow-y: auto;
+}
+.Select-option {
+  box-sizing: border-box;
+  color: #666666;
+  cursor: pointer;
+  display: block;
+  padding: 8px 10px;
+}
+.Select-option:last-child {
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+.Select-option.is-focused {
+  background-color: rgba(0, 126, 255, 0.08);
+  color: #333;
+}
+.Select-option.is-disabled {
+  color: #cccccc;
+  cursor: not-allowed;
+}
+.Select-noresults,
+.Select-search-prompt,
+.Select-searching {
+  box-sizing: border-box;
+  color: #999999;
+  cursor: default;
+  display: block;
+  padding: 8px 10px;
+}
+.Select--multi .Select-input {
+  vertical-align: middle;
+  margin-left: 10px;
+  padding: 0;
+}
+.Select--multi.has-value .Select-input {
+  margin-left: 5px;
+}
+.Select-item {
+  background-color: rgba(0, 126, 255, 0.08);
+  border-radius: 2px;
+  border: 1px solid rgba(0, 126, 255, 0.24);
+  color: #007eff;
+  display: inline-block;
+  font-size: 0.9em;
+  margin-left: 5px;
+  margin-top: 5px;
+  vertical-align: top;
+}
+.Select-item-icon,
+.Select-item-label {
+  display: inline-block;
+  vertical-align: middle;
+}
+.Select-item-label {
+  border-bottom-right-radius: 2px;
+  border-top-right-radius: 2px;
+  cursor: default;
+  padding: 2px 5px;
+}
+.Select-item-label .Select-item-label__a {
+  color: #007eff;
+  cursor: pointer;
+}
+.Select-item-icon {
+  cursor: pointer;
+  border-bottom-left-radius: 2px;
+  border-top-left-radius: 2px;
+  border-right: 1px solid rgba(0, 126, 255, 0.24);
+  padding: 1px 5px 3px;
+}
+.Select-item-icon:hover,
+.Select-item-icon:focus {
+  background-color: rgba(0, 113, 230, 0.08);
+  color: #0071e6;
+}
+.Select-item-icon:active {
+  background-color: rgba(0, 126, 255, 0.24);
+}
+.Select--multi.is-disabled .Select-item {
+  background-color: #f2f2f2;
+  border: 1px solid #d9d9d9;
+  color: #888;
+}
+.Select--multi.is-disabled .Select-item-icon {
+  cursor: not-allowed;
+  border-right: 1px solid #d9d9d9;
+}
+.Select--multi.is-disabled .Select-item-icon:hover,
+.Select--multi.is-disabled .Select-item-icon:focus,
+.Select--multi.is-disabled .Select-item-icon:active {
+  background-color: #f2f2f2;
+}
+@keyframes Select-animation-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+@-webkit-keyframes Select-animation-spin {
+  to {
+    -webkit-transform: rotate(1turn);
+  }
+}
+
