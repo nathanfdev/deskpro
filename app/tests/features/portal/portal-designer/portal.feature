@@ -33,7 +33,7 @@ Feature: Serving custom data on the portal
     When I send a GET request to "/portal/api/style/portal.css"
     Then the response should contain ".my-important-custom-css-class"
 
-  @mink:goutte @basic
+  @mink:goutte
   Scenario: I check custom header is applied to the portal
     Given I am authenticated as admin
     And I send a PUT request to "/portal/api/style/edit-theme-set/advanced-edits" with body:
@@ -46,7 +46,7 @@ Feature: Serving custom data on the portal
     When I send a GET request to "/en"
     Then I should see "Custom Header"
 
-  @mink:goutte @basic
+  @mink:goutte
   Scenario: I check custom footer is applied to the portal
     Given I am authenticated as admin
     And I send a PUT request to "/portal/api/style/edit-theme-set/advanced-edits" with body:
@@ -59,7 +59,7 @@ Feature: Serving custom data on the portal
     When I send a GET request to "/en"
     Then I should see "Custom Footer"
 
-  @mink:goutte @basic
+  @mink:goutte
   Scenario: I check custom JS is applied to the portal
     Given I am authenticated as admin
     And I send a PUT request to "/portal/api/style/edit-theme-set/advanced-edits" with body:
