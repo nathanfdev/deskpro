@@ -126,6 +126,12 @@ Feature: Widget Chat
     Then the response status code should be 204
     And the response should be empty
 
+  Scenario: I send empty validation code
+    When I send a POST request to "/portal/api/chats/4/validate/email?__sid=1-AAAAAAAAAAAAAAA"
+    Then the response status code should be 400
+    And the response should be in JSON
+    And the JSON node "fields.code.errors[0].message" should be equal to "This value should not be blank."
+
   Scenario: I try to validate email with wrong code
     When I send a POST request to "/portal/api/chats/4/validate/email?__sid=1-AAAAAAAAAAAAAAA" with parameters:
       | key  | value     |
@@ -255,5 +261,3 @@ Feature: Widget Chat
     | email             |
     | user@deskpro.dev  |
     | unknown@email.com |
-
-

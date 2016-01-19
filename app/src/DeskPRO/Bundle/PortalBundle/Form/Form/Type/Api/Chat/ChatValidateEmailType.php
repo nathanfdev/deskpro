@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
 use Application\DeskPRO\Entity\ChatConversation;
+use DeskPRO\Bundle\AppBundle\Error\ApiErrors;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
@@ -96,7 +97,7 @@ class ChatValidateEmailType extends AbstractType
         if ($conversation->getEmailValidated()) {
             $form->addError(new FormError('Email is already validated.'));
         } elseif (!$data) {
-            $form->addError(new FormError('api.error_codes.required'));
+            $form->addError(new FormError(ApiErrors::NOT_BLANK));
         } elseif ($data !== $form->getData()) {
             $form->addError(new FormError('Wrong email validation code.'));
         } else {
