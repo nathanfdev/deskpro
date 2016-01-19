@@ -59,7 +59,7 @@ export const loadList = createAction(
 
         dispatch(setTaskListsRequest(recordStoresId, res.data));
 
-        return { ids: ids, pagination: res.meta.pagination };
+        return { ids: Immutable.fromJS(ids), pagination: Immutable.fromJS(res.meta.pagination) };
       }
     );
   }
