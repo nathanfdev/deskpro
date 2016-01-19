@@ -215,8 +215,8 @@
         </form>
 
         <div class="widget-editor-live-demo-container">
-            <iframe id="live-demo" ng-class="{'iframe-loading': !widgetLoaded}"></iframe>
-            <div class="loader" ng-if="!widgetLoaded">Loading...</div>
+            <div class="widget-editor-live-demo-loader" ng-if="!widgetLoaded"><i></i></div>
+            <iframe id="live-demo" ng-class="{'hidden': !widgetLoaded}"></iframe>
         </div>
 
         <div class="editor-row" ng-if="!!code">

@@ -105,18 +105,31 @@
     z-index: 1000;
     width: 600px;
     height: 800px;
+    background-color: #ffffff;
+    border: 1px solid #000000;
 
-    iframe {
-      width: inherit;
-      height: inherit;
+    .widget-editor-live-demo-loader {
+      width: 600px;
+      height: 800px;
+      position: absolute;
+      top: 0;
+      left: 0;
 
-      &.iframe-loading {
-        display: none;
+      i {
+        display: block;
+        background: url('../../../../images/spinners/loading-big-circle.gif') no-repeat 50% 50%;
+        width: inherit;
+        height: inherit;
       }
     }
 
-    .loader {
-
+    iframe {
+      width: 600px;
+      height: 800px;
+      border: 0;
+      position: absolute;
+      top: 0;
+      left: 0;
     }
   }
 }
