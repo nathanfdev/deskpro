@@ -28,7 +28,7 @@ export class TriggerFrameContainer extends React.Component {
     widgetLoaded: PropTypes.bool,
     widgetOpened: PropTypes.bool,
     widgetPosition: PropTypes.string,
-    children: PropTypes.any
+    children: PropTypes.node
   };
 
   componentDidMount() {
@@ -45,6 +45,7 @@ export class TriggerFrameContainer extends React.Component {
 
   render() {
     const { widgetLoaded, widgetOpened, widgetPosition, isBubble, children } = this.props;
+    const childProps = children.props;
     const style = {
       margin: '14px'
     };
@@ -57,7 +58,10 @@ export class TriggerFrameContainer extends React.Component {
              positionMode={widgetPosition}>
 
         <Provider store={store}>
-          {children}
+          {React.cloneElement(children, {
+            ...childProps,
+            triggerResize: () => this.triggerResize()
+          })}
         </Provider>
       </Frame>
     );

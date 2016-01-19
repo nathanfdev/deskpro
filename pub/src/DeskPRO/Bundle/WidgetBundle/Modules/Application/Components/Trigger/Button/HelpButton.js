@@ -12,8 +12,13 @@ export class HelpButton extends React.Component {
     backgroundColor: PropTypes.string,
     textColor: PropTypes.string,
     borderColor: PropTypes.string,
-    disabled: PropTypes.bool
+    disabled: PropTypes.bool,
+    triggerResize: PropTypes.func
   };
+
+  componentDidUpdate() {
+    this.props.triggerResize();
+  }
 
   onClick = event => {
     event.preventDefault();
