@@ -1,5 +1,1 @@
-import createAction from './createAction';
-
-export default {
-  createAction
-};
+export { createAction } from './createAction';

@@ -2,8 +2,8 @@ jest.dontMock('DeskPRO/Component/Ampliflux/middleware/actionThunkMiddleware');
 jest.dontMock('DeskPRO/Component/Ampliflux/actions/createAction');
 
 describe('Ampliflux Thunk Middleware', () => {
-  const actionThunkMiddleware = require('DeskPRO/Component/Ampliflux/middleware/actionThunkMiddleware');
-  const createAction = require('DeskPRO/Component/Ampliflux/actions/createAction');
+  const { actionThunkMiddleware } = require('DeskPRO/Component/Ampliflux/middleware/actionThunkMiddleware');
+  const { createAction } = require('DeskPRO/Component/Ampliflux/actions/createAction');
   const args = {dispatch: () => {}, getState: () => {}};
   const nextHandler = actionThunkMiddleware(args);
 

@@ -1,5 +1,1 @@
-import createReducer from './createReducer';
-
-export default {
-  createReducer
-};
+export { createReducer } from './createReducer';

@@ -10,7 +10,7 @@ describe('API Chat service', () => {
   it('should load chats', () => {
     spyOn(DpApi, 'sendGet');
     Chat.load();
-    expect(DpApi.sendGet.argsForCall[0][0]).toEqual('DP_API/user_chats');
+    expect(DpApi.sendGet.argsForCall[0][0]).toEqual('DP_API/user_chats?include=person,agent,department');
   });
 
   it('should load chats counts', () => {

@@ -3,8 +3,8 @@ jest.dontMock('DeskPRO/Component/Ampliflux/actions/createAction');
 jest.dontMock('DeskPRO/Component/Ampliflux/actions/actionUtils');
 
 describe('Ampliflux Redispatch DSA Payload Middleware', () => {
-  const redispatchDsaPayload = require('DeskPRO/Component/Ampliflux/middleware/redispatchDsaPayload');
-  const createAction = require('DeskPRO/Component/Ampliflux/actions/createAction');
+  const { redispatchDsaPayload } = require('DeskPRO/Component/Ampliflux/middleware/redispatchDsaPayload');
+  const { createAction } = require('DeskPRO/Component/Ampliflux/actions/createAction');
   const args = {dispatch: jasmine.createSpy('dispatch'), getState: () => {}};
   const nextHandler = redispatchDsaPayload(args);
 

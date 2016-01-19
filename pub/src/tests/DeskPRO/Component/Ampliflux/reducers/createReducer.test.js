@@ -4,7 +4,7 @@ jest.dontMock('DeskPRO/Component/Ampliflux/reducers/createReducer');
 import { toImmutable } from 'Helpers/redux';
 
 describe('Ampliflux createReducer()', () => {
-  const createReducer = require('DeskPRO/Component/Ampliflux/reducers/createReducer');
+  const { createReducer } = require('DeskPRO/Component/Ampliflux/reducers/createReducer');
 
   it('should return reducer function', () => {
     expect(createReducer({})).toEqual(jasmine.any(Function));

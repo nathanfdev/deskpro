@@ -2,8 +2,8 @@ jest.dontMock('DeskPRO/Component/Ampliflux/actions/createAction');
 jest.dontMock('DeskPRO/Component/Ampliflux/actions/actionUtils');
 
 describe('Ampliflux createAction()', () => {
-  const createAction = require('DeskPRO/Component/Ampliflux/actions/createAction');
-  const isDSA = require('DeskPRO/Component/Ampliflux/actions/actionUtils').isDSA;
+  const { createAction } = require('DeskPRO/Component/Ampliflux/actions/createAction');
+  const { isDSA } = require('DeskPRO/Component/Ampliflux/actions/actionUtils');
 
   it('should produce DeskPRO Standard Actions (DSA)', () => {
     const actionFn = createAction('ID', () => 'payload', () => 'meta');

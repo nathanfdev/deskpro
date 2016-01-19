@@ -37,7 +37,7 @@ function createActionFn(actionFn) {
  *                                  followed by all other args passed to the action.
  * @return {Function} Returns your wrapped action
  */
-export default function createAction(actionType, actionFn, metaFn) {
+export function createAction(actionType, actionFn, metaFn) {
   const type         = getActionType(actionType);
   const userActionFn = createActionFn(actionFn);
   const userMetaFn   = typeof metaFn === 'function' ? metaFn : null;

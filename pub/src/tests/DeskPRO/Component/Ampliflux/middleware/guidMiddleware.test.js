@@ -3,8 +3,8 @@ jest.dontMock('DeskPRO/Component/Ampliflux/actions/createAction');
 jest.dontMock('DeskPRO/Component/Ampliflux/actions/actionUtils');
 
 describe('Ampliflux GUID Middleware', () => {
-  const guidMiddleware = require('DeskPRO/Component/Ampliflux/middleware/guidMiddleware');
-  const createAction = require('DeskPRO/Component/Ampliflux/actions/createAction');
+  const { guidMiddleware } = require('DeskPRO/Component/Ampliflux/middleware/guidMiddleware');
+  const { createAction } = require('DeskPRO/Component/Ampliflux/actions/createAction');
   const nextHandler = guidMiddleware();
 
   it('should return a function to handle next', () => {
