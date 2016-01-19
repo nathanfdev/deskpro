@@ -185,9 +185,18 @@ $definition->setArguments(array(new Reference('service_container')));
 $container->setDefinition('content_slug_manager', $definition);
 
 $definition = new Definition();
-$definition->setClass('DeskPRO\Bundle\AppBundle\Templating\Asset\PackageFactory');
-$definition->setArguments(array(new Reference('settings_resolver'), new Reference('deskpro_config'), new Reference('request_stack')));
-$container->setDefinition('dp.asset_package_factory', $definition);
+$definition->setClass('DeskPRO\\Bundle\\AppBundle\\Assets\\PackagesFactory');
+$definition->setArguments([
+    new Reference('settings_resolver'),
+    new Reference('deskpro_config'),
+    new Reference('request_stack'),
+]);
+$container->setDefinition('assets.packages.factory', $definition);
+
+$definition = new Definition();
+$definition->setClass('Symfony\\Component\\Asset\\Packages');
+$definition->setFactory([new Reference('assets.packages.factory'), 'createPackages']);
+$container->setDefinition('assets.packages', $definition);
 
 // doctrine.orm.default_query_cache
 $definition = new Definition();

@@ -930,7 +930,7 @@ class TemplatingExtension extends \Twig_Extension
             $var_type = get_class($var);
 
             // Passes Some\MyClass as well as just MyClass, but not SomeOther\MyClass against Some\MyClass
-            return (strpos($var_type, $type) !== false and Util::getBaseClassname($var_type) == Util::getBaseClassname($type));
+            return strpos($var_type, $type) !== false and Util::getBaseClassname($var_type) == Util::getBaseClassname($type);
         }
     }
 
@@ -1882,8 +1882,8 @@ class TemplatingExtension extends \Twig_Extension
 
         $version = defined('DP_BUILD_TIME') ? DP_BUILD_TIME : '0';
 
-        /** @var \Application\DeskPRO\Templating\Asset\UrlPackage $helper */
-        $helper = $this->getContainer()->get('templating.helper.assets');
+        /** @var \Symfony\Component\Asset\Packages $helper */
+        $helper = $this->getContainer()->get('assets.packages');
 
         $src = $helper->getUrl('vendor/trackjs/tracker.js');
 

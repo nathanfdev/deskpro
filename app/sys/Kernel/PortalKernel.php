@@ -156,16 +156,17 @@ class PortalKernel extends BaseKernel
     private function prepareCachePaths()
     {
         // Make sure the cache dirs exist
-        $env_dir = realpath($this->getCacheDir().'/../..');
-
         if (!is_dir($this->getCacheDir())) {
             mkdir($this->getCacheDir(), 0777, true);
         }
+
+        $env_dir = realpath($this->getCacheDir().'/../..');
+
         if (!file_exists($env_dir.'/doctrine-proxies')) {
             mkdir($env_dir.'/doctrine-proxies', 0777, true);
         }
         if (!file_exists($env_dir.'/twig-compiled')) {
-            @mkdir($env_dir.'/twig-compiled', 0777, true);
+            mkdir($env_dir.'/twig-compiled', 0777, true);
         }
 
         @chmod($this->getCacheDir(), 0777);

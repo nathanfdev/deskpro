@@ -29,12 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle;
 
 use DeskPRO\Bundle\AppBundle\DependencyInjection\AppExtension;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\AppSecretPass;
-use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\AssetPackagePass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\RegisterDataSerializerEventsPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\TermEnginePass;
 use DeskPRO\Bundle\AppBundle\Security\Factory\AgentImpersonateFactory;
@@ -58,7 +56,6 @@ class AppBundle extends Bundle
 
         $container->addCompilerPass(new AppSecretPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION);
         $container->addCompilerPass(new TermEnginePass());
-        $container->addCompilerPass(new AssetPackagePass());
         $container->addCompilerPass(new RegisterDataSerializerEventsPass());
 
         /** @var \Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension $security */
