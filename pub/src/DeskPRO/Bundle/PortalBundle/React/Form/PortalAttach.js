@@ -14,6 +14,11 @@ export default class PortalAttach extends React.Component {
   }
 
   componentDidMount() {
+    const params = {};
+    if (window.dp_get_csrf_token) {
+      params['file[_dp_csrf_token]'] = window.dp_get_csrf_token();
+    }
+
     const uploaderOpts = {
       multiple: true,
       button: this.refs.btn,
@@ -23,7 +28,7 @@ export default class PortalAttach extends React.Component {
         endpoint: window.DP_BASE_URL + '/dpblob',
         method: 'POST',
         inputName: 'file[blob]',
-        params: {'file[_dp_csrf_token]': window.dp_get_csrf_token()}
+        params: params
       },
       callbacks: {
         onUpload: this.beginUpload,
@@ -57,7 +62,6 @@ export default class PortalAttach extends React.Component {
   };
 
   doneUpload = (id, name, res) => {
-
     if (res && res.success && res.success === true) {
       const blob = res.blob;
       const newFiles = [];
@@ -78,7 +82,7 @@ export default class PortalAttach extends React.Component {
     } else {
       this.setState({
         files: this.state.files.filter(f => f.id !== id),
-        lastError: res.error || { message: "Could not upload file", code: 0, detail: null }
+        lastError: res.error || { message: 'Could not upload file', code: 0, detail: null }
       });
     }
   };
@@ -129,17 +133,16 @@ class PortalAttachList extends React.Component {
     if (!files.length) {
       return null;
     }
+
     return (
       <ul>
         {files.map(f => {
-          if (f.status === 'done') {
-            return <PortalAttachListItem file={f} key={f.id} onDelete={this.handleDelete} />;
-          } else {
-            return <PortalAttachListItemUploading file={f} key={f.id} />;
-          }
+          return f.status === 'done'
+            ? <PortalAttachListItem file={f} key={f.id} onDelete={this.handleDelete} />
+            : <PortalAttachListItemUploading file={f} key={f.id} />;
         })}
       </ul>
-    )
+    );
   }
 }
 
@@ -157,7 +160,7 @@ class PortalAttachListItemUploading extends React.Component {
           {f.filename}
         </a>
       </li>
-    )
+    );
   }
 }
 
@@ -194,6 +197,6 @@ class PortalAttachListItem extends React.Component {
           <i className="fa fa-times" />{PortalPhrases.get('portal.general.delete')}
         </a>
       </li>
-    )
+    );
   }
 }
