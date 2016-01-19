@@ -269,7 +269,7 @@ Feature: Widget Chat
     And the response should be in JSON
 
   # Chat end/reopen
-  Scenario: I end chat
+  Scenario: I end and reopen chat
     When I send a POST request to "/portal/api/chats/1/end?__sid=1-AAAAAAAAAAAAAAA"
     Then the response status code should be 204
     And the response should be empty

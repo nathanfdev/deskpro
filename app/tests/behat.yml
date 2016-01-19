@@ -54,7 +54,8 @@ portal:
                 - DpBehat\Http\HttpContext
                 - DpBehat\DataSetContext:
                     dataset_manager: @dataset_manager
-                - DpBehat\Portal\PortalApiContext
+                - DpBehat\Portal\Api\AuthContext
+                - DpBehat\Portal\Api\ChatContext
                 - DpBehat\Portal\PortalDesigner\AssetsContext
     extensions:
         Sanpi\Behatch\Extension: ~

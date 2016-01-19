@@ -29,16 +29,15 @@
 /**
  * DeskPRO.
  */
-namespace DpBehat\Portal;
+namespace DpBehat\Portal\Api;
 
-use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Session;
 use DpBehat\BaseContext;
 
 /**
- * Class PortalApiContext.
+ * Class AuthContext.
  */
-class PortalApiContext extends BaseContext
+class AuthContext extends BaseContext
 {
     /**
      * @Given I have guest portal api session with code :code
@@ -71,90 +70,11 @@ class PortalApiContext extends BaseContext
     }
 
     /**
-     * @Given I set chat email validation code :code for chat :chat_id
-     *
-     * @param int    $chat_id
-     * @param string $code
-     */
-    public function iSetChatEmailValidationCode($chat_id, $code)
-    {
-        $conversation = $this->findConversation($chat_id);
-        $conversation->setEmailValidationCode($code);
-
-        $this->em()->persist($conversation);
-        $this->em()->flush();
-    }
-
-    /**
-     * @Given I reset chat user info for chat :chat_id
-     *
-     * @param int $chat_id
-     */
-    public function iResetChatUserInfo($chat_id)
-    {
-        $conversation = $this->findConversation($chat_id);
-        $conversation->setPerson(null);
-
-        $this->em()->persist($conversation);
-        $this->em()->flush();
-    }
-
-    /**
-     * @Given I set chat user :email for chat :chat_id
-     *
-     * @param int    $chat_id
-     * @param string $email
-     */
-    public function iSetChatUser($chat_id, $email)
-    {
-        $conversation = $this->findConversation($chat_id);
-
-        try {
-            $conversation->setPerson($this->findPerson($email));
-        } catch (\RuntimeException $e) {
-            $conversation->setPersonEmail($email);
-        }
-
-        $this->em()->persist($conversation);
-        $this->em()->flush();
-    }
-
-    /**
-     * @Given I reset chat should send transcript for chat :chat_id
-     *
-     * @param int $chat_id
-     */
-    public function iResetChatShouldSendTranscript($chat_id)
-    {
-        $conversation = $this->findConversation($chat_id);
-        $conversation->setShouldSendTranscript(false);
-
-        $this->em()->persist($conversation);
-        $this->em()->flush();
-    }
-
-    /**
-     * @param int $chat_id
-     *
-     * @return ChatConversation
-     */
-    protected function findConversation($chat_id)
-    {
-        /** @var ChatConversation $conversation */
-        $conversation = $this->em()->getRepository('DeskPRO:ChatConversation')->find($chat_id);
-        if (!$conversation) {
-            throw new \RuntimeException(sprintf('Conversation with id `%s` not found', $chat_id));
-        }
-
-        return $conversation;
-    }
-
-    /**
      * @param string $email
      *
      * @return \Application\DeskPRO\Entity\Person
      */
-    protected function findPerson($email)
+    public function findPerson($email)
     {
         /** @var \Application\DeskPRO\EntityRepository\Person $repository */
         $repository = $this->em()->getRepository('DeskPRO:Person');
