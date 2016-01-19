@@ -64,6 +64,8 @@ return array(
     'api.error_codes.banned_email'                => 'Email "{{ email }}" is banned.',
     'api.error_codes.dupe_email'                  => 'Email "{{ email }}" is already in use by other user.',
     'api.error_codes.system_email'                => 'Email "{{ email }}" is already being used as email account.',
+    'api.error_codes.email_already_validated'     => 'Email is already validated.',
+    'api.error_codes.email_wrong_validation_code' => 'Wrong email validation code.',
     # Term Engine Specific
     'api.error_codes.op_not_supported'         => 'Op "{{ op }}" not supported. Supported ops are: {{ ops }}',
     'api.error_codes.term_type_does_not_exist' => 'You tried to create a term with the type code "{{ type }}", but it does not exist. Please check your term types.',

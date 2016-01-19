@@ -95,11 +95,11 @@ class ChatValidateEmailType extends AbstractType
         $conversation = $form->getParent()->getData();
 
         if ($conversation->getEmailValidated()) {
-            $form->addError(new FormError('Email is already validated.'));
+            $form->addError(new FormError(ApiErrors::EMAIL_ALREADY_VALIDATED));
         } elseif (!$data) {
             $form->addError(new FormError(ApiErrors::NOT_BLANK));
         } elseif ($data !== $form->getData()) {
-            $form->addError(new FormError('Wrong email validation code.'));
+            $form->addError(new FormError(ApiErrors::EMAIL_WRONG_VALIDATION_CODE));
         } else {
             // Mark conversation email validated
             $conversation->setEmailValidated(true);
