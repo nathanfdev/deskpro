@@ -46,8 +46,12 @@
               margin-left: 20px;
             }
 
-            input[type="text"] {
+            input[type="text"], textarea {
               width: 80%;
+            }
+
+            textarea {
+              height: 60px;
             }
 
             li {
