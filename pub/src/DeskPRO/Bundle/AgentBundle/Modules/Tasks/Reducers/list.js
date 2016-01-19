@@ -35,7 +35,11 @@ export default createReducer(initialState, {
   [actions.toggleAll]: handleMassAction('elements', 'selected'),
   [actions.unload]: setValue('elements', []),
   [actions.loadList]: async({
-    success: (state, payload) => state.set('elements', payload.ids).set('pagination', payload.pagination),
+    success: (state, payload) => {
+      return state
+        .set('elements', Immutable.fromJS(payload.get('ids')))
+        .set('pagination', Immutable.fromJS(payload.get('pagination')));
+    },
     start: setValue('async.done', false),
     done: setValue('async.done', true)
   }),
