@@ -128,6 +128,11 @@ class ChatTranscriptInfoType extends AbstractType
         $data = $event->getData();
         $form = $event->getForm();
 
+        // Skip check to show just one not blank validation error because it's required field
+        if (!$data) {
+            return;
+        }
+
         if ($data !== $form->getData()) {
             if ($this->user_chat_settings->isPortalRequireLogin()) {
                 $form->addError(new FormError('Unable to change email, chat require email is enabled.'));

@@ -135,7 +135,7 @@ Feature: Widget Chat
     And the JSON node "fields.code.errors[0].message" should be equal to "Wrong email validation code."
 
   Scenario: I regenerate email validation code
-    Given I set chat email validation code "correct code" for chat "4"
+    Given I set chat email validation code "correct code" for chat 4
     When I send a POST request to "/portal/api/chats/4/validate/email/regenerate?__sid=1-AAAAAAAAAAAAAAA"
     Then the response status code should be 204
     And the response should be empty
@@ -147,17 +147,113 @@ Feature: Widget Chat
     And the JSON node "fields.code.errors[0].message" should be equal to "Wrong email validation code."
 
   Scenario: I validate email successfully
-    Given I set chat email validation code "correct code" for chat "4"
+    Given I set chat email validation code "correct code" for chat 4
     When I send a POST request to "/portal/api/chats/4/validate/email?__sid=1-AAAAAAAAAAAAAAA" with parameters:
       | key  | value        |
       | code | correct code |
     Then the response status code should be 204
     And the response should be empty
-
-  Scenario: And then I try to re validate email
     When I send a POST request to "/portal/api/chats/4/validate/email?__sid=1-AAAAAAAAAAAAAAA" with parameters:
       | key  | value        |
       | code | correct code |
     Then the response status code should be 400
     And the response should be in JSON
     And the JSON node "fields.code.errors[0].message" should be equal to "Email is already validated."
+
+  # Chat transcript
+  Scenario Outline: I send transcript empty info as guest
+    Given the setting "portal.chat.email_validation" is set to <email_validation>
+    Given the setting "portal.chat.require_login" is set to <require_login>
+    When I send a POST request to "/portal/api/chats/1/transcript/info?__sid=1-AAAAAAAAAAAAAAA"
+    Then the response status code should be 400
+    And the response should be in JSON
+    And the JSON node "fields.email.errors[0].message" should be equal to "This value should not be blank."
+    And the JSON node "fields.email.errors[1].message" should not exist
+    And the JSON node "fields.name.errors[0].message" should not exist
+
+    Examples:
+      | email_validation | require_login |
+      | 0                | 0             |
+      | 0                | 1             |
+      | 1                | 0             |
+      | 1                | 1             |
+
+  Scenario: I change transcript info as guest (no chat restrictions)
+    Given the setting "portal.chat.email_validation" is set to 0
+    Given the setting "portal.chat.require_login" is set to 0
+    When I send a POST request to "/portal/api/chats/1/transcript/info?__sid=1-AAAAAAAAAAAAAAA" with parameters:
+      | key   | value            |
+      | email | user@deskpro.dev |
+    Then the response status code should be 204
+    And the response should be empty
+
+  Scenario: I try to change transcript info (email validation is enabled)
+    Given the setting "portal.chat.email_validation" is set to 1
+    Given the setting "portal.chat.require_login" is set to 0
+    When I send a POST request to "/portal/api/chats/1/transcript/info?__sid=1-AAAAAAAAAAAAAAA" with parameters:
+      | key   | value                    |
+      | email | another-user@deskpro.dev |
+    Then the response status code should be 400
+    And the response should be in JSON
+    And the JSON node "fields.email.errors[0].message" should be equal to "Unable to change email, chat email validation is enabled."
+    And the JSON node "fields.email.errors[1].message" should not exist
+    And the JSON node "fields.name.errors[0].message" should not exist
+
+  Scenario: I try to change transcript info (require login is enabled)
+    Given the setting "portal.chat.email_validation" is set to 1
+    Given the setting "portal.chat.require_login" is set to 1
+    When I send a POST request to "/portal/api/chats/1/transcript/info?__sid=1-AAAAAAAAAAAAAAA" with parameters:
+      | key   | value                    |
+      | email | another-user@deskpro.dev |
+    Then the response status code should be 400
+    And the response should be in JSON
+    And the JSON node "fields.email.errors[0].message" should be equal to "Unable to change email, chat require email is enabled."
+    And the JSON node "fields.email.errors[1].message" should not exist
+    And the JSON node "fields.name.errors[0].message" should not exist
+
+  Scenario Outline: I try to toggle send transcript without email
+    Given I reset chat user info for chat 1
+    Given the setting "portal.chat.email_validation" is set to <email_validation>
+    Given the setting "portal.chat.require_login" is set to <require_login>
+    When I send a POST request to "/portal/api/chats/1/transcript/toggle?__sid=1-AAAAAAAAAAAAAAA"
+    Then the response status code should be 400
+    And the response should be in JSON
+    And the JSON node "fields.should_send_transcript.errors[0].message" should be equal to "Person email is not defined."
+
+    Examples:
+      | email_validation | require_login |
+      | 0                | 0             |
+      | 0                | 1             |
+      | 1                | 0             |
+      | 1                | 1             |
+
+  Scenario Outline: I toggle send transcript
+    Given I reset chat should send transcript for chat 1
+    Given I set chat user "<email>" for chat 1
+    When I send a GET request to "/portal/api/chats/1/polling?__sid=1-AAAAAAAAAAAAAAA"
+    Then the response status code should be 200
+    And the response should be in JSON
+    And the JSON node "chat_info.data.should_send_transcript" should be equal to 0
+    When I send a POST request to "/portal/api/chats/1/transcript/toggle?__sid=1-AAAAAAAAAAAAAAA" with parameters:
+      | key                    | value |
+      | should_send_transcript | 1     |
+    Then the response status code should be 204
+    And the response should be empty
+    When I send a GET request to "/portal/api/chats/1/polling?__sid=1-AAAAAAAAAAAAAAA"
+    Then the response status code should be 200
+    And the response should be in JSON
+    And the JSON node "chat_info.data.should_send_transcript" should be equal to 1
+    When I send a POST request to "/portal/api/chats/1/transcript/toggle?__sid=1-AAAAAAAAAAAAAAA"
+    Then the response status code should be 204
+    And the response should be empty
+    When I send a GET request to "/portal/api/chats/1/polling?__sid=1-AAAAAAAAAAAAAAA"
+    Then the response status code should be 200
+    And the response should be in JSON
+    And the JSON node "chat_info.data.should_send_transcript" should be equal to 0
+
+    Examples:
+    | email             |
+    | user@deskpro.dev  |
+    | unknown@email.com |
+
+

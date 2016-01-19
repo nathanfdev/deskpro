@@ -62,29 +62,83 @@ class PortalApiContext extends BaseContext
      */
     public function iHaveAuthorizedPortalApiSessionCode($code, $email)
     {
-        /** @var \Application\DeskPRO\EntityRepository\Person $person_repository */
-        $person_repository = $this->em()->getRepository('DeskPRO:Person');
-
-        $person = $person_repository->findOneByEmail($email);
-        if (!$person) {
-            throw new \RuntimeException(sprintf('Person with email `%s` not found', $email));
-        }
-
         $session = new Session();
         $session->setAuth($code);
-        $session->setPerson($person);
+        $session->setPerson($this->findPerson($email));
 
         $this->em()->persist($session);
         $this->em()->flush();
     }
 
     /**
-     * @Then I set chat email validation code :code for chat :chat_id
+     * @Given I set chat email validation code :code for chat :chat_id
      *
      * @param int    $chat_id
      * @param string $code
      */
     public function iSetChatEmailValidationCode($chat_id, $code)
+    {
+        $conversation = $this->findConversation($chat_id);
+        $conversation->setEmailValidationCode($code);
+
+        $this->em()->persist($conversation);
+        $this->em()->flush();
+    }
+
+    /**
+     * @Given I reset chat user info for chat :chat_id
+     *
+     * @param int $chat_id
+     */
+    public function iResetChatUserInfo($chat_id)
+    {
+        $conversation = $this->findConversation($chat_id);
+        $conversation->setPerson(null);
+
+        $this->em()->persist($conversation);
+        $this->em()->flush();
+    }
+
+    /**
+     * @Given I set chat user :email for chat :chat_id
+     *
+     * @param int    $chat_id
+     * @param string $email
+     */
+    public function iSetChatUser($chat_id, $email)
+    {
+        $conversation = $this->findConversation($chat_id);
+
+        try {
+            $conversation->setPerson($this->findPerson($email));
+        } catch (\RuntimeException $e) {
+            $conversation->setPersonEmail($email);
+        }
+
+        $this->em()->persist($conversation);
+        $this->em()->flush();
+    }
+
+    /**
+     * @Given I reset chat should send transcript for chat :chat_id
+     *
+     * @param int $chat_id
+     */
+    public function iResetChatShouldSendTranscript($chat_id)
+    {
+        $conversation = $this->findConversation($chat_id);
+        $conversation->setShouldSendTranscript(false);
+
+        $this->em()->persist($conversation);
+        $this->em()->flush();
+    }
+
+    /**
+     * @param int $chat_id
+     *
+     * @return ChatConversation
+     */
+    protected function findConversation($chat_id)
     {
         /** @var ChatConversation $conversation */
         $conversation = $this->em()->getRepository('DeskPRO:ChatConversation')->find($chat_id);
@@ -92,9 +146,24 @@ class PortalApiContext extends BaseContext
             throw new \RuntimeException(sprintf('Conversation with id `%s` not found', $chat_id));
         }
 
-        $conversation->setEmailValidationCode($code);
+        return $conversation;
+    }
 
-        $this->em()->persist($conversation);
-        $this->em()->flush();
+    /**
+     * @param string $email
+     *
+     * @return \Application\DeskPRO\Entity\Person
+     */
+    protected function findPerson($email)
+    {
+        /** @var \Application\DeskPRO\EntityRepository\Person $repository */
+        $repository = $this->em()->getRepository('DeskPRO:Person');
+        $person     = $repository->findOneByEmail($email);
+
+        if (!$person) {
+            throw new \RuntimeException(sprintf('Person with email `%s` not found', $email));
+        }
+
+        return $person;
     }
 }

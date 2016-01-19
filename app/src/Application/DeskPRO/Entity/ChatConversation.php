@@ -312,17 +312,36 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @param string $email
+     *
+     * @return $this
+     */
+    public function setPersonEmail($email)
+    {
+        $this->setModelField('person_email', $email);
+
+        return $this;
+    }
+
+    /**
      * Setting the person copies their name and email address to the chat row for record keeping.
      *
      * @param Person $person
+     *
+     * @return $this
      */
-    public function setPerson(Person $person)
+    public function setPerson(Person $person = null)
     {
         $this->setModelField('person', $person);
-        $this->setModelField('person_name', $person->getDisplayName(false));
-        if ($person->getPrimaryEmailAddress()) {
+        $this->setModelField('person_name', $person ? $person->getDisplayName(false) : '');
+
+        if ($person && $person->getPrimaryEmailAddress()) {
             $this->setModelField('person_email', $person->getPrimaryEmailAddress());
+        } else {
+            $this->setModelField('person_email', '');
         }
+
+        return $this;
     }
 
     /**
