@@ -115,8 +115,12 @@ export const bootstrapWidget = createAction(
         resolve(response);
       };
 
-      const onError = resumeResponse => {
-        console.log(resumeResponse);
+      const onError = data => {
+        // Remove from local storage broken chat id
+        if (data && data.code === 400 && data.message === 'wrong_session_code') {
+          dispatch(unsetChatId());
+        }
+
         onFinish();
       };
 
