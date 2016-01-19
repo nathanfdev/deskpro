@@ -13,7 +13,7 @@ Feature: Buffering portal changes in the edit ThemeSet
     When I send a GET request to "/portal/api/style/edit-theme-set/commit"
     Then the response status code should be 200
 
-  @mink:goutte
+  @mink:goutte @basic
   Scenario: I preview a custom header
     Given I am authenticated as admin
     And I send a PUT request to "/portal/api/style/edit-theme-set/advanced-edits" with body:
@@ -25,6 +25,7 @@ Feature: Buffering portal changes in the edit ThemeSet
     When I send a GET request to "/admin-preview/en"
     Then I should see "Custom Header"
 
+  @mink:goutte @basic
   Scenario: I check portal doesn't contain a not yet committed custom header
     Given I am authenticated as admin
     And I send a PUT request to "/portal/api/style/edit-theme-set/advanced-edits" with body:
@@ -33,9 +34,10 @@ Feature: Buffering portal changes in the edit ThemeSet
         "header": "Custom Header"
       }
     """
-    When I send a GET request to "/"
+    When I send a GET request to "/en"
     Then I should not see "Custom Header"
 
+  @mink:goutte @basic
   Scenario: I discard a custom header
     Given I am authenticated as admin
     And I send a PUT request to "/portal/api/style/edit-theme-set/advanced-edits" with body:
@@ -45,7 +47,7 @@ Feature: Buffering portal changes in the edit ThemeSet
       }
     """
     And I send a GET request to "/portal/api/style/edit-theme-set/discard"
-    When I send a GET request to "/admin-preview/"
+    When I send a GET request to "/admin-preview/en"
     Then I should not see "Custom Header"
 
 
