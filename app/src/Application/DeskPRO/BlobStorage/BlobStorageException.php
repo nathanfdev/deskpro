@@ -31,6 +31,9 @@
  */
 namespace Application\DeskPRO\BlobStorage;
 
+use Exception;
+use Orb\Util\Util;
+
 class BlobStorageException extends \Exception
 {
     /** Failed to fetch a blob with a given ID */
@@ -47,4 +50,20 @@ class BlobStorageException extends \Exception
     const FAILED_RESOURCE_WRITE  = 1100;
     const FAILED_RESOURCE_DELETE = 1200;
     /**#@-*/
+
+    /**
+     * BlobStorageException constructor.
+     *
+     * @param string    $message
+     * @param int       $code
+     * @param Exception $previous
+     */
+    public function __construct($message, $code, Exception $previous)
+    {
+        if ($previous) {
+            $message .= ' -- '.$previous->getMessage().' ['.implode('.', Util::getClassnameParts($previous)).':'.$previous->getCode().']';
+        }
+
+        parent::__construct($message, $code, $previous);
+    }
 }
