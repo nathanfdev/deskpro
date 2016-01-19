@@ -38,7 +38,7 @@ use Orb\Util\Dates;
 class TicketSatisfaction
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 

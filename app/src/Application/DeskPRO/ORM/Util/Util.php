@@ -34,7 +34,7 @@
 namespace Application\DeskPRO\ORM\Util;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\ORM\EntityManager;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\Tools\SchemaTool;
 
@@ -65,7 +65,7 @@ class Util
     }
 
     /**
-     * @param \Application\DeskPRO\ORM\EntityManager $em
+     * @param \Doctrine\ORM\EntityManager $em
      *
      * @return array
      */

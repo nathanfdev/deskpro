@@ -34,12 +34,12 @@ namespace Application\DeskPRO\AgentAlert;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\AgentAlert;
 use Application\DeskPRO\Entity\ClientMessage;
-use Application\DeskPRO\ORM\EntityManager;
+use Doctrine\ORM\EntityManager;
 
 class AlertSender
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 

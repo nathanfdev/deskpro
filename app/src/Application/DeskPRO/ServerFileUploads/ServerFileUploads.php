@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\ServerFileUploads;
 
 use Application\DeskPRO\App;
@@ -41,7 +40,7 @@ use Orb\Util\OptionsArray;
 class ServerFileUploads
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 

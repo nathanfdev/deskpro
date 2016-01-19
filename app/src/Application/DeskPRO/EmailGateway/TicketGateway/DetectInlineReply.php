@@ -39,7 +39,7 @@ use Orb\Log\Logger;
 class DetectInlineReply implements Loggable
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 

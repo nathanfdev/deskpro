@@ -44,7 +44,7 @@ class AgentActivity extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var \Application\DeskPRO\Entity\Person
      */
-    protected $person = null;
+    protected $agent = null;
 
     /**
      * @var \DateTime
@@ -59,6 +59,26 @@ class AgentActivity extends \Application\DeskPRO\Domain\DomainObject
         $date_active->setTime($hour, $minute, 0);
 
         $this->setModelField('date_active', $date_active);
+    }
+
+    /**
+     * @deprecated It's supposed to be $agent
+     *
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->agent;
+    }
+
+    /**
+     * @deprecated It's supposed to be $agent
+     *
+     * @param Person $x
+     */
+    public function setPerson($x)
+    {
+        $this->agent = $x;
     }
 
     ############################################################################

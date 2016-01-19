@@ -115,8 +115,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             'chat_snippet_category', 'chat_snippet',
             'chat_department',
             'feedback_status', 'feedback_type', 'feedback',
-            'article_field', 'article_category','article',
-            'news_category','news',
+            'article_field', 'article_category', 'article',
+            'news_category', 'news',
             'download_category', 'download',
             'glossary',
             'task',
@@ -310,7 +310,6 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
         $orm->commit();
         $orm->clear();
-        $orm->clearRepositoryCache();
         $this->_data_cache             = array();
         $this->_batch_insert           = array();
         $this->_batch_insert_ignore    = array();

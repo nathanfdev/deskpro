@@ -31,9 +31,9 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\DataTransformer;
 
-use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\Entity\LabelTask;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\DataTransformerInterface;
 
 class LabelTaskTransformer implements DataTransformerInterface

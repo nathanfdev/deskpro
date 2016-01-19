@@ -32,7 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\ORM\EntityManager;
+use Doctrine\ORM\EntityManager;
 
 class AgentDataService extends AbstractDataService
 {

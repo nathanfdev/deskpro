@@ -34,9 +34,9 @@
 namespace Application\DeskPRO\Entity;
 
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
+use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 
 /**
  * Templates used in the system.

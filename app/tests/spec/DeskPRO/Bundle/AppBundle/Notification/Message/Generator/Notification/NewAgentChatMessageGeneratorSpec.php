@@ -29,12 +29,12 @@
 namespace spec\DeskPRO\Bundle\AppBundle\Notification\Message\Generator\Notification;
 
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\NewMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\Notification\NewAgentChatMessageGenerator;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;

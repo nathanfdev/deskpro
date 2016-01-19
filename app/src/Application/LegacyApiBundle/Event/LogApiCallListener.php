@@ -29,8 +29,8 @@
 namespace Application\LegacyApiBundle\Event;
 
 use Application\DeskPRO\HttpKernel\Event\PrePostEvent;
-use Application\DeskPRO\ORM\EntityManager;
 use Application\LegacyApiBundle\Request\RequestAuth;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 

@@ -31,9 +31,9 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Request;
 
-use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\Content\ContentSlugManager;
 use DeskPRO\Bundle\PortalBundle\HttpKernel\Exception\PermanentRedirectException;
+use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,7 +45,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class DeskproSlugConverter implements ParamConverterInterface
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     private $em;
 

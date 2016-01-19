@@ -30,7 +30,7 @@ namespace Orb\Jira;
 
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
-use Application\DeskPRO\ORM\EntityManager;
+use Doctrine\ORM\EntityManager;
 use Guzzle\Http\Client;
 use Guzzle\Http\Exception\BadResponseException;
 
@@ -104,7 +104,7 @@ class Service
     /**
      * Gets the base URL.
      *
-     * @return String The base URL
+     * @return string The base URL
      */
     public function getBaseUrl()
     {
@@ -126,7 +126,7 @@ class Service
      * Based on the debug mode it either throws the exception<br/>
      * or stores the error in the $this->_errors array.
      *
-     * @param String $error The Error Message
+     * @param string $error The Error Message
      *
      * @throws \Exception if the debug mode is off
      *
@@ -192,7 +192,7 @@ class Service
     /**
      * Performs an HTTP GET request.
      *
-     * @param String $uri    the URI to GET
+     * @param string $uri    the URI to GET
      * @param array  $params request parameters
      *
      * @return array|string|int|bool|float
@@ -216,8 +216,8 @@ class Service
      *
      * @param type   $uri         the URI to POST to
      * @param array  $headers     additional headers to pass
-     * @param String $body        request body
-     * @param String $contentType content-type to encode the body
+     * @param string $body        request body
+     * @param string $contentType content-type to encode the body
      *
      * @return array|string|int|bool|float
      */
@@ -237,10 +237,10 @@ class Service
     /**
      * Performs an HTTP PUT request.
      *
-     * @param String $uri         the URI to PUT to
+     * @param string $uri         the URI to PUT to
      * @param array  $headers     additional headers to pass
-     * @param String $body        request body
-     * @param String $contentType content-type to encode the body
+     * @param string $body        request body
+     * @param string $contentType content-type to encode the body
      *
      * @return array|string|int|bool|float
      */
@@ -260,8 +260,8 @@ class Service
     /**
      * Performs a POST with content-type: JSON.
      *
-     * @param String       $uri  the URI to POST to
-     * @param String|array $body pre encoded request body
+     * @param string       $uri  the URI to POST to
+     * @param string|array $body pre encoded request body
      *
      * @return array|string|int|bool|float
      */
@@ -285,8 +285,8 @@ class Service
     /**
      * Performs a PUT with content-type: JSON.
      *
-     * @param String       $uri  the URI to PUT to
-     * @param String|array $body The request body
+     * @param string       $uri  the URI to PUT to
+     * @param string|array $body The request body
      *
      * @return array|string|int|bool|float
      */
@@ -310,7 +310,7 @@ class Service
     /**
      * Performs an HTTP DELETE request.
      *
-     * @param String $uri the URI to DELETE
+     * @param string $uri the URI to DELETE
      *
      * @return array|string|int|bool|float
      */
@@ -324,7 +324,7 @@ class Service
     /**
      * Finds an Entity.
      *
-     * @param String $entity Entity class name
+     * @param string $entity Entity class name
      * @param int    $id     id of the entity to find
      *
      * @return bool|\JIRA\Entity\Entity The object if found and "FALSE" otherwise
@@ -346,7 +346,7 @@ class Service
      * The magical __call method<br/>
      * Maps the "findBy__EntityName" calls.
      *
-     * @param String $name      the name of the function called
+     * @param string $name      the name of the function called
      * @param mixed  $arguments additional arguments passed
      *
      * @return bool|\JIRA\Entity\Entity The object if found and "FALSE" otherwise
@@ -365,7 +365,7 @@ class Service
     /**
      * Gets the repository class of an entity.
      *
-     * @param String|\JIRA\Entity\Entity $entity An Entity object or class name
+     * @param string|\JIRA\Entity\Entity $entity An Entity object or class name
      *
      * @return string|bool The repository class name if found and "FALSE" otherwise
      */
@@ -397,7 +397,7 @@ class Service
     /**
      * Gets the Entity Repository.
      *
-     * @param String|\JIRA\Entity\Entity $entity An Entity object or class name
+     * @param string|\JIRA\Entity\Entity $entity An Entity object or class name
      *
      * @return \JIRA\Entity\Repository\Repository | bool if found and "FALSE" otherwise
      */
@@ -480,7 +480,7 @@ class Service
             }
         }
 
-        return ($response[$response['expand']][0]['issuetypes']);
+        return $response[$response['expand']][0]['issuetypes'];
     }
 
     public function lookupPriorities($projectKey)

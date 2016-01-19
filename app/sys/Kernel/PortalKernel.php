@@ -29,16 +29,13 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Kernel;
 
 use Application\DeskPRO\App;
-use Doctrine\DBAL\DBALException;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class PortalKernel extends BaseKernel
 {
@@ -94,27 +91,6 @@ class PortalKernel extends BaseKernel
         }
 
         return $bundles;
-    }
-
-    public function handle(
-        \Symfony\Component\HttpFoundation\Request $request,
-        $type = HttpKernelInterface::MASTER_REQUEST,
-        $catch = true
-    ) {
-        try {
-            // TODO this was causing an exception
-            //if ($response = AbstractKernel::performSystemChecks($request)) {
-            //    return $response;
-            //}
-
-            return parent::handle($request, $type, $catch);
-        } catch (\Exception $e) {
-            // we catch the DBALExceptions in KernelBooter, so don't handle that here.
-            if (!$e instanceof DBALException) {
-                // the http kernel will handle exception inside in most cases. this is a "just in case" catch.
-                KernelErrorHandler::handleException($e);
-            }
-        }
     }
 
     /**
@@ -177,28 +153,32 @@ class PortalKernel extends BaseKernel
         return $cache_dir;
     }
 
+    private function prepareCachePaths()
+    {
+        // Make sure the cache dirs exist
+        $env_dir = realpath($this->getCacheDir().'/../..');
+
+        if (!is_dir($this->getCacheDir())) {
+            mkdir($this->getCacheDir(), 0777, true);
+        }
+        if (!file_exists($env_dir.'/doctrine-proxies')) {
+            mkdir($env_dir.'/doctrine-proxies', 0777, true);
+        }
+        if (!file_exists($env_dir.'/twig-compiled')) {
+            @mkdir($env_dir.'/twig-compiled', 0777, true);
+        }
+
+        @chmod($this->getCacheDir(), 0777);
+        @chmod($env_dir.'/doctrine-proxies', 0777);
+        @chmod($env_dir.'/twig-compiled', 0777);
+    }
+
     /**
      * {@inheritdoc}
      */
     protected function initializeContainer()
     {
-        //if ($this->environment == 'dev') {
-        //    $routing_cache_cleaner = new \Application\DeskPRO\Routing\CacheCleaner();
-        //    if (!$routing_cache_cleaner->isFresh()) {
-        //        $routing_cache_cleaner->clearCache();
-        //    }
-        //}
-
-        //if ($this->environment == 'prod' && !defined('DP_BUILDING') && !defined('DPC_IS_CLOUD')) {
-        //	// If the container doesnt exist and we're in prod, then means we're installing an update.
-        //	// Halt now. This prevents the system from trying to generate the cache itself,
-        //	// even though the new files will be installed in a second.
-        //	$cache_file = $this->getCacheDir() . '/' . $this->getContainerClass() . '.php';
-        //	if (!is_file($cache_file)) {
-        //		echo HelpdeskOfflineMessage::getOfflinePage('Currently installing updates' . $cache_file);
-        //		exit;
-        //	}
-        //}
+        $this->prepareCachePaths();
 
         // entity loader required to construct symfony container
         // so enable it temporarily while the container builds
@@ -218,22 +198,7 @@ class PortalKernel extends BaseKernel
      */
     protected function dumpContainer(ConfigCache $cache, ContainerBuilder $container, $class, $baseClass)
     {
-        // Make sure the cache dirs exist
-        $env_dir = realpath($this->getCacheDir().'/../..');
-
-        if (!is_dir($this->getCacheDir())) {
-            mkdir($this->getCacheDir(), 0777, true);
-        }
-        if (!file_exists($env_dir.'/doctrine-proxies')) {
-            mkdir($env_dir.'/doctrine-proxies', 0777, true);
-        }
-        if (!file_exists($env_dir.'/twig-compiled')) {
-            @mkdir($env_dir.'/twig-compiled', 0777, true);
-        }
-
-        @chmod($this->getCacheDir(), 0777);
-        @chmod($env_dir.'/doctrine-proxies', 0777);
-        @chmod($env_dir.'/twig-compiled', 0777);
+        $this->prepareCachePaths();
 
         // Clear the dql cache when the container is regenerated as well
         $dql_cache = dp_get_tmp_dir().DIRECTORY_SEPARATOR.'dql.cache';

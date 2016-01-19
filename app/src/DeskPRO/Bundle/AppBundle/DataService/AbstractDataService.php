@@ -33,8 +33,8 @@ namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
 use Application\DeskPRO\Cache\ConvenientCache;
-use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Provides a simple interface to cache various data requests so that data requests through the DataServices' apis are

@@ -39,7 +39,6 @@ $loader->import(__DIR__.'/event_listeners.yml');
 /* @var \Symfony\Component\DependencyInjection\ContainerBuilder $container */
 
 $container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%/../doctrine-proxies');
-$container->setParameter('doctrine.orm.entity_manager.class', 'Application\\DeskPRO\\ORM\\EntityManager');
 $container->setParameter('secret', 'irrelevant - compiler pass will override this');
 $container->setParameter('locale', 'en');
 $container->setParameter('http_kernel.class', 'DeskPRO\\Bundle\\AppBundle\\HttpKernel\\ContainerAwareHttpKernel');
@@ -248,7 +247,6 @@ $container->loadFromExtension(
                             'prefix'    => 'DeskPRO\Bundle\AppBundle\Entity',
                         ),
                     ),
-                    'class_metadata_factory_name' => 'Orb\\Doctrine\\ORM\\Mapping\\StaticClassMetadataFactory',
                 ),
             ),
         ),

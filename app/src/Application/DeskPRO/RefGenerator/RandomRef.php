@@ -38,7 +38,7 @@ use Orb\Util\Strings;
 class RandomRef implements RefGeneratorInterface
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 

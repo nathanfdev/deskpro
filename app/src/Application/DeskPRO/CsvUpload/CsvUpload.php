@@ -41,7 +41,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class CsvUpload
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 

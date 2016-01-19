@@ -28,12 +28,12 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler;
 
-use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\Entity\ActionAlert as ActionAlertEntity;
 use DeskPRO\Bundle\AppBundle\Entity\Notification as NotificationEntity;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Notification;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Class DbDeliveryHandler.

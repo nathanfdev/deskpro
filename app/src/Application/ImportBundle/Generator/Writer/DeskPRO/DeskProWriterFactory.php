@@ -30,12 +30,12 @@ namespace Application\ImportBundle\Generator\Writer\DeskPRO;
 
 use Application\DeskPRO\Entity\ImportMap;
 use Application\DeskPRO\EntityRepository;
-use Application\DeskPRO\ORM\EntityManager;
 use Application\DeskPRO\Search\EntityWatcher\EntityWatcher;
 use Application\ImportBundle\Generator\Writer\AbstractWriterFactory;
 use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\BlobAdapter;
 use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper\OidMapper;
 use Doctrine\Common\Persistence\ObjectRepository;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Generator DeskPRO writer factory.

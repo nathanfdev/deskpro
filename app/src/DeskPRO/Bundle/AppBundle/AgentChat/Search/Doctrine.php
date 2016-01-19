@@ -31,10 +31,10 @@
  */
 namespace DeskPRO\Bundle\AppBundle\AgentChat\Search;
 
-use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\HistorySearcher;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChatMessage;
+use Doctrine\ORM\EntityManager;
 
 class Doctrine implements HistorySearcher
 {

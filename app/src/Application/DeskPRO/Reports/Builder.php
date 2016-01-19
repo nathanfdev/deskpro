@@ -41,7 +41,7 @@ use Doctrine\ORM\EntityManager;
 class Builder
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 

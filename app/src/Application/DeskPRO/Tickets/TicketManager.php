@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -55,7 +54,7 @@ use Symfony\Component\DependencyInjection\Exception\InactiveScopeException;
 class TicketManager
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     private $em;
 

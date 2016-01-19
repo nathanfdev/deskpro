@@ -171,46 +171,16 @@ class CategoryHierarchy
         if (is_array($reset)) {
             $cats = $reset;
         } else {
-            if ($this->em->getUnitOfWork()->isAddedPreloadedEntity($this->entity_name)) {
-                $this->em->getUnitOfWork()->preloadEntitySet($this->entity_name);
-                $cats        = array();
-                $select_keys = array('id', 'parent_id', 'title', 'display_order');
-                if ($this->table_name == 'departments') {
-                    $select_keys = array('id', 'parent_id', 'title', 'user_title', 'display_order');
-                }
-                foreach ($this->repos->getIdentityHelper()->findAll() as $c) {
-                    $id        = $c->getId();
-                    $cats[$id] = array();
-                    foreach ($select_keys as $k) {
-                        if ($k == 'id') {
-                            $cats[$id]['id'] = $id;
-                        } elseif ($k == 'parent_id') {
-                            $cats[$id][$k] = $c->parent ? $c->parent->getId() : 0;
-                        } else {
-                            $cats[$id][$k] = $c[$k];
-                        }
-                    }
-                }
-
-                uasort($cats, function ($a, $b) {
-                    if ($a['display_order'] == $b['display_order']) {
-                        return 0;
-                    }
-
-                    return $a['display_order'] < $b['display_order'] ? -1 : 1;
-                });
-            } else {
-                $select = 'id, parent_id, title';
-                if ($this->table_name == 'departments') {
-                    $select = 'id, parent_id, title, user_title';
-                }
-
-                $cats = $this->em->getConnection()->fetchAllKeyed("
-                    SELECT $select
-                    FROM {$this->table_name}
-                    ORDER BY display_order ASC, id ASC
-                ", array(), 'id');
+            $select = 'id, parent_id, title';
+            if ($this->table_name == 'departments') {
+                $select = 'id, parent_id, title, user_title';
             }
+
+            $cats = $this->em->getConnection()->fetchAllKeyed("
+                SELECT $select
+                FROM {$this->table_name}
+                ORDER BY display_order ASC, id ASC
+            ", array(), 'id');
         }
 
         $this->_cat_ids = array();

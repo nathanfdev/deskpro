@@ -30,7 +30,7 @@ namespace Application\DeskPRO\JobQueue\Processor\Reset;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\JobQueue\Processor\AbstractJobProcessor;
-use Application\DeskPRO\ORM\EntityManager;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 abstract class Base extends AbstractJobProcessor

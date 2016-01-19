@@ -38,7 +38,7 @@ use Doctrine\ORM\EntityManager;
 class LoginLogs
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     private $em;
 
