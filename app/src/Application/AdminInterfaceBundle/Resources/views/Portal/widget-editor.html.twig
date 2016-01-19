@@ -208,17 +208,17 @@
             <div class="form-footer">
                 <hr>
                 <div dp-hide-spinning="saving">
-                    <button type="submit" ng-click="Ctrl.updateChatCode()">Get Code</button>
-                </div>
-                <div dp-show-spinning="saving">
-                    <i class="spinner-flat"></i>
+                    <button type="submit" ng-click="Ctrl.updateChatCode()" ng-hide="saving">Get Code</button>
+                    <div ng-show="saving">
+                        <i class="spinner-flat"></i>
+                    </div>
                 </div>
             </div>
         </form>
 
         <div class="widget-editor-live-demo-container">
-            <div class="widget-editor-live-demo-loader" ng-if="!widgetLoaded"><i></i></div>
-            <iframe id="live-demo" ng-class="{'hidden': !widgetLoaded}"></iframe>
+            <div class="widget-editor-live-demo-loader" ng-hide="widgetLoaded"><i></i></div>
+            <iframe id="live-demo" ng-show="widgetLoaded"></iframe>
         </div>
 
         <div class="editor-row" ng-if="!!code">

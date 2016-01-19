@@ -53,6 +53,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
       @$scope.widgetLoaded = false
       @$scope.departments = []
 
+      @$scope.saving = false
+      @$scope.formErrors = {}
+
     initialLoad: ->
       setupPromise = @$http.get('/api/v2/widget/setup')
       setupPromise.success((response) =>
@@ -72,6 +75,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
       );
 
       updateLiveDemoDebounce = Functions.debounce( =>
+        @$scope.formErrors = {}
         @updateLiveDemo()
       , 350)
 
@@ -105,6 +109,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
 
     updateChatCode: ->
       @$scope.code = ''
+      @$scope.saving = true
       @$http({
         method: 'POST',
         url: '/api/v2/widget/setup',
@@ -117,8 +122,13 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
         }
       })
       .then(
-        () => @$scope.code = @getCode(@getOptions()),
-        (response) => console.log(response.data)
+        () =>
+          @$scope.code = @getCode(@getOptions())
+          @$scope.saving = false
+        ,
+        (response) =>
+          @$scope.formErrors = response.data
+          @$scope.saving = false
       )
 
     initLiveDemo: ->
