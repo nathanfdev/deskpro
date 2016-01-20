@@ -21,6 +21,11 @@ services:
       - @doctrine.orm.default_entity_manager
       - @ticket_layout_factory
 
+  data_serializer.transformer.agent_alert:
+    class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\AgentAlertTransformer
+    arguments:
+      - @doctrine.orm.default_entity_manager
+
   data_serializer.transformer.organization:
     class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\OrganizationTransformer
     arguments:
