@@ -102,11 +102,11 @@ export default class PortalAttach extends React.Component {
   render() {
     return (
        <div className="new-ticket-attachements" ref="main">
-          <a href="#" className="attach-file">
+          <span className="attach-file" ref="btn">
             <i className="fa fa-upload" />
             <span className="text">Drag a file in here or</span>
-            <span className="fake-button" ref="btn">Choose a file</span>
-          </a>
+            <span className="fake-button">Choose a file</span>
+          </span>
          <PortalAttachList files={this.state.files} handleDelete={this.handleDelete} />
       </div>
     );
