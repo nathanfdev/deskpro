@@ -263,7 +263,7 @@ Feature: Widget Chat
     | user@deskpro.dev  |
     | unknown@email.com |
 
-  # Chat polling
+  # Chat polling/send message
   Scenario: I'm checking for chat changes
     When I send a GET request to "/portal/api/chats/1/polling?__sid=1-AAAAAAAAAAAAAAA"
     Then the response status code should be 200
@@ -292,6 +292,34 @@ Feature: Widget Chat
     And the response should be in JSON
     And the JSON node "chat_info.data.id" should exist
     And the JSON node "new_messages.data[0].id" should not exist
+
+  Scenario: I send empty message
+    When I send a POST request to "/portal/api/chats/1/messages?__sid=1-AAAAAAAAAAAAAAA"
+    Then the response status code should be 200
+    And the response should be in JSON
+    And the JSON node "data[0].id" should not exist
+    When I send a GET request to "/portal/api/chats/1/polling?last_message_id=1&__sid=1-AAAAAAAAAAAAAAA"
+    Then the response status code should be 200
+    And the response should be in JSON
+    And the JSON node "chat_info.data.id" should exist
+    And the JSON node "new_messages.data[0].id" should not exist
+
+  Scenario: I send text message
+    When I send a POST request to "/portal/api/chats/1/messages?__sid=1-AAAAAAAAAAAAAAA" with parameters:
+      | key     | value           |
+      | message | my message text |
+    Then the response status code should be 200
+    And the response should be in JSON
+    And the JSON node "data[0].id" should be equal to 9
+    And the JSON node "data[0].content" should contain "my message text"
+    When I send a GET request to "/portal/api/chats/1/polling?last_message_id=1&__sid=1-AAAAAAAAAAAAAAA"
+    Then the response status code should be 200
+    And the response should be in JSON
+    And the JSON node "chat_info.data.id" should exist
+    And the JSON node "new_messages.data[0].id" should be equal to 9
+    And the JSON node "new_messages.data[0].content" should contain "my message text"
+    And the JSON node "new_messages.data[0].is_sys" should be equal to 0
+    And the JSON node "new_messages.data[0].is_user" should be equal to 1
 
   # Chat end/reopen
   Scenario: I end and reopen chat
