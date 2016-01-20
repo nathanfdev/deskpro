@@ -6,19 +6,20 @@ import _ from 'lodash';
 import $ from 'jquery';
 import moment from 'moment';
 
-class SearchType extends React.Component {
-
-  toggle() {
-    this.props.toggleType(this.props.type);
-  }
-  render() {
-    return (
-      <li><a className="omnisearch-type" onClick={this.toggle.bind(this)}>
-        {this.props.active ? <i className="fa fa-check"></i> : null} {this.props.name}</a>
-      </li>
-    );
-  }
-}
+// Remove?
+// class SearchType extends React.Component {
+//
+//  toggle() {
+//    this.props.toggleType(this.props.type);
+//  }
+//  render() {
+//    return (
+//      <li><a className="omnisearch-type" onClick={this.toggle.bind(this)}>
+//        {this.props.active ? <i className="fa fa-check"></i> : null} {this.props.name}</a>
+//      </li>
+//    );
+//  }
+// }
 
 export default class OmniSearch extends React.Component {
 
