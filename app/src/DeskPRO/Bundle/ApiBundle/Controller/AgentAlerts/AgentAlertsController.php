@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\AgentAlerts;
 
 use Application\DeskPRO\Entity\AgentAlert;
@@ -82,6 +81,7 @@ class AgentAlertsController extends CrudController
             $alerts = $qb->getQuery()->getResult();
             foreach ($alerts as $alert) {
                 $alert->is_dismissed = true;
+                $em->persist($alert);
             }
             $em->flush();
         }

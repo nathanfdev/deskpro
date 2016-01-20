@@ -29,11 +29,11 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 use Doctrine\ORM\EntityManager;
+use Orb\Util\Strings;
 
 class AgentAlertTransformer extends AbstractDataSerializerTransformer
 {
@@ -54,10 +54,7 @@ class AgentAlertTransformer extends AbstractDataSerializerTransformer
      */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        return [
-            'date_created',
-            'is_dismissed',
-        ];
+        return [];
     }
 
     /**
@@ -68,46 +65,62 @@ class AgentAlertTransformer extends AbstractDataSerializerTransformer
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
         /* @var \Application\DeskPRO\Entity\AgentAlert $data */
-        $alert   = $transformation_request->getDataToBeTransformed();
-        $data    = $alert->getData();
-        $newData = [
-            'notificationTitle'   => '',
-            'notificationSummary' => '',
+        $alert     = $transformation_request->getDataToBeTransformed();
+        $data      = $alert->getData();
+        $alertData = [];
+        $notifData = [
+            'title'   => '',
+            'summary' => '',
         ];
-        $typeName = $alert->getTypename();
-        switch ($typeName) {
+        $type = 'notifications.'.$alert->getTypename();
+
+        switch ($alert->getTypename()) {
             case 'tickets':
-                $ticket = $this->em->getRepository('DeskPRO:Ticket')->find($data['ticket']);
-                if (null !== $ticket) {
-                    $newData['notificationSummary'] = $ticket->getSubject();
-                    if ($data['is_new_ticket']) {
-                        $typeName .= '.new_ticket';
-                        $newData['notificationTitle'] = 'New ticket by ';
-                    } elseif ($data['is_new_agent_reply']) {
-                        $typeName .= '.new_message.agent_reply';
-                        $newData['notificationTitle'] = 'Agent reply by ';
-                    } elseif ($data['is_new_agent_note']) {
-                        $typeName .= '.new_message.agent_note';
-                        $newData['notificationTitle'] = 'Agent note by ';
-                    } elseif ($data['is_new_user_reply']) {
-                        $typeName .= '.new_message.user_reply';
-                        $newData['notificationTitle'] = 'Reply by ';
-                    } else {
-                        $typeName .= '.updated';
-                        $newData['notificationTitle'] = 'Updated by ';
-                    }
-                    $person  = $this->em->getRepository('DeskPRO:Person')->find($data['performer']);
-                    $contact = null === $person ? '' : $person->getName().' ('.$person->getPrimaryEmail()->getEmail().')';
-                    $newData['notificationTitle'] .= $contact;
+                $alertData['ticket'] = $data['ticket'];
+                if ($data['is_new_ticket']) {
+                    $type .= '.new_ticket';
+                } elseif ($data['is_new_agent_reply']) {
+                    $type .= '.new_message.agent_reply';
+                } elseif ($data['is_new_agent_note']) {
+                    $type .= '.new_message.agent_note';
+                } elseif ($data['is_new_user_reply']) {
+                    $type .= '.new_message.user_reply';
+                } else {
+                    $type .= '.updated';
                 }
                 break;
         }
 
+        $title = Strings::extractRegexMatch('#<big>(.*?)</big>#s', $data['browser_rendered']);
+        $title = preg_replace('#<span[^>]*>.*?</span>#s', '', $title);
+        $title = $this->cleanString($title);
+
+        $summary = Strings::extractRegexMatch('#<small>(.*?)</small>#s', $data['browser_rendered']);
+        $summary = $this->cleanString($summary);
+
+        $notifData['title']   = $title;
+        $notifData['summary'] = $summary;
+
+        $alertData['notification'] = $notifData;
+
         return [
-            'uuid'     => $alert->getId(),
-            'data'     => $newData,
-            'target'   => $alert->getPerson()->getId(),
-            'typename' => $typeName,
+            'uuid'         => (string) $alert->getId(),
+            'type'         => $type,
+            'data'         => $alertData,
+            'date_created' => $alert->date_created,
+            'is_dismissed' => (bool) $alert->is_dismissed,
         ];
+    }
+
+    private function cleanString($str)
+    {
+        $str = Strings::decodeHtmlEntities($str);
+        $str = Strings::removeInvisibleCharacters($str);
+        $str = Strings::removeLineBreaks($str);
+        $str = str_replace("\t", ' ', $str);
+        $str = preg_replace('#\s{,2}#', ' ', $str);
+        $str = trim($str);
+
+        return $str;
     }
 }
