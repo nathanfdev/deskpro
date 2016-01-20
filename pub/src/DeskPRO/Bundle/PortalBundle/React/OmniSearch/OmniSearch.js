@@ -1,24 +1,27 @@
-import React from "react";
-import _ from "lodash";
-import $ from "jquery";
-import moment from "moment";
-import PortalHttp from "DeskPRO/Bundle/PortalBundle/Http/PortalHttp";
-import PortalUrlGenerator from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator";
-import OmniSearchResultSection from "DeskPRO/Bundle/PortalBundle/React/OmniSearch/OmniSearchResultSection";
-import Pagination from "DeskPRO/Bundle/PortalBundle/React/Pagination";
+import React from 'react';
+import PortalHttp from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
+import PortalUrlGenerator from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
+import OmniSearchResultSection from 'DeskPRO/Bundle/PortalBundle/React/OmniSearch/OmniSearchResultSection';
+import _ from 'lodash';
+import $ from 'jquery';
+import moment from 'moment';
 
 class SearchType extends React.Component {
+
   toggle() {
     this.props.toggleType(this.props.type);
   }
   render() {
     return (
-      <li><a className="omnisearch-type" onClick={this.toggle.bind(this)}>{this.props.active ? <i className="fa fa-check"></i> : null} {this.props.name}</a></li>
+      <li><a className="omnisearch-type" onClick={this.toggle.bind(this)}>
+        {this.props.active ? <i className="fa fa-check"></i> : null} {this.props.name}</a>
+      </li>
     );
   }
 }
 
 export default class OmniSearch extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -38,16 +41,18 @@ export default class OmniSearch extends React.Component {
       }
     };
   }
+
   componentDidMount() {
     // typing listener
-    let last_val = null;
-    let throttleChanges = _.throttle((e) => {
+    let lastVal = null;
+    const throttleChanges = _.throttle((e) => {
       // ensure we don't trigger a search if the actual search val hasn't changed
-      if (last_val !== e.target.value) {
-        last_val = e.target.value;
+      if (lastVal !== e.target.value) {
+        lastVal = e.target.value;
         this.doSearch({q: e.target.value});
       }
     }, 250);
+
     this.state.$input.on('keyup change', throttleChanges);
 
     // close search button
@@ -61,7 +66,7 @@ export default class OmniSearch extends React.Component {
     this.interval = setInterval(() => {
       // update the "userTyping" state when necessary - check every 100ms
       const newUserTyping = moment().diff(this.state.lastSearch, 'milliseconds') < 1000;
-      if (this.state.userTyping != newUserTyping) {
+      if (this.state.userTyping !== newUserTyping) {
         this.setState({
           userTyping: newUserTyping
         });
@@ -69,19 +74,22 @@ export default class OmniSearch extends React.Component {
     }, 100); // every 100ms check if the user has not typed in a while or not
 
     // clickaway handler
-    $(document).on('keypress', function(e) {
-        if(e.which == 13) { // Checks for the enter key
-            // without this, hitting "enter" to view the search results page would count as a "click"
-            // outside of the ominsearch and clear the search
-            e.preventDefault();
-        }
+    $(document).on('keypress', function(event) {
+      if (event.which === 13) { // Checks for the enter key
+        // without this, hitting "enter" to view the search results page would count as a "click"
+        // outside of the ominsearch and clear the search
+        event.preventDefault();
+      }
     });
-    document.addEventListener("click", this.documentClickHandler.bind(this));
+
+    document.addEventListener('click', this.documentClickHandler.bind(this));
   }
+
   componentWillUnmount() {
     window.clearInterval(this.interval);
-    document.removeEventListener("click", this.documentClickHandler.bind(this));
+    document.removeEventListener('click', this.documentClickHandler.bind(this));
   }
+
   documentClickHandler(e) {
     const $target = $(e.target);
     // if we are clicking inside the search results its ok. but otherwise, we want to clear/close the search.
@@ -94,9 +102,10 @@ export default class OmniSearch extends React.Component {
       this.doSearch({ q: '' }); // reset/close search
     }
   }
-  doSearch(query_modifications) {
-    const last_query = this.state.search_query || {};
-    const search_query = {...last_query, ...query_modifications};
+
+  doSearch(queryModifications) {
+    const lastQuery = this.state.search_query || {};
+    const search_query = {...lastQuery, ...queryModifications};
     this.setState({
       lastSearch: moment(),
       search_query
@@ -122,18 +131,20 @@ export default class OmniSearch extends React.Component {
       }
     });
   }
+
   doResultsExist() {
     let grandTotal = 0;
-    _.forOwn(this.state.data, (type_results, type) => {
-      if ("results" in type_results) {
-        grandTotal += _.keys(type_results.results).length;
+    _.forOwn(this.state.data, (typeResults) => {
+      if ('results' in typeResults) {
+        grandTotal += _.keys(typeResults.results).length;
       }
     });
 
     return grandTotal > 0;
   }
+
   render() {
-    let data = this.state.data;
+    const data = this.state.data;
 
     if (this.state.search_query.q.length < 3) {
       return null;
@@ -144,7 +155,7 @@ export default class OmniSearch extends React.Component {
             ref="searchDropdown"
             className="expanded-search-results"
             style={{
-              display: this.state.search_query.q.length > 0 ? "block" : "none",
+              display: this.state.search_query.q.length > 0 ? 'block' : 'none',
               width: this.state.$input.closest('.search-form').width()
             }}>
           {
@@ -157,7 +168,7 @@ export default class OmniSearch extends React.Component {
                   name="Tickets"
                   nameApi="ticket"
                   nameIcon="fa fa-support"
-                  initialResult={"ticket" in data ? data.ticket : []}
+                  initialResult={'ticket' in data ? data.ticket : []}
                   q={this.state.search_query.q}
                   />
 
@@ -165,7 +176,7 @@ export default class OmniSearch extends React.Component {
                   name="Knowledge base"
                   nameApi="article"
                   nameIcon="fa fa-file-text-o"
-                  initialResult={"article" in data ? data.article : []}
+                  initialResult={'article' in data ? data.article : []}
                   q={this.state.search_query.q}
                   />
 
@@ -173,7 +184,7 @@ export default class OmniSearch extends React.Component {
                   name="Downloads"
                   nameApi="download"
                   nameIcon="fa fa-download"
-                  initialResult={"download" in data ? data.download : []}
+                  initialResult={'download' in data ? data.download : []}
                   q={this.state.search_query.q}
                   />
 
@@ -181,7 +192,7 @@ export default class OmniSearch extends React.Component {
                   name="News"
                   nameApi="news"
                   nameIcon="fa fa-file-text-o"
-                  initialResult={"news" in data ? data.news : []}
+                  initialResult={'news' in data ? data.news : []}
                   q={this.state.search_query.q}
                   />
 
@@ -189,7 +200,7 @@ export default class OmniSearch extends React.Component {
                   name="Feedback"
                   nameApi="feedback"
                   nameIcon="fa fa-comments"
-                  initialResult={"feedback" in data ? data.feedback : []}
+                  initialResult={'feedback' in data ? data.feedback : []}
                   q={this.state.search_query.q}
                   />
               </div>) :
@@ -213,7 +224,7 @@ export default class OmniSearch extends React.Component {
             </a>
           </div>
         </div>
-      );
-    }
+    );
+  }
 }
 

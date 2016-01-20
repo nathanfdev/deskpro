@@ -1,13 +1,15 @@
-import React from "react";
-import _ from "lodash";
-import moment from "moment";
-import PortalHttp from "DeskPRO/Bundle/PortalBundle/Http/PortalHttp";
+import React, { PropTypes } from 'react';
+import PortalHttp from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
+import _ from 'lodash';
+import moment from 'moment';
 
 class SearchResultCollection {
+
   constructor() {
     this.items = {};
     this.ordered_items = [];
   }
+
   addItem(item) {
     // only add unique
     const same = _.filter(this.items, (a) => a.id === item.id);
@@ -18,32 +20,50 @@ class SearchResultCollection {
     this.items[item.id] = item;
     this.ordered_items.push(item);
   }
+
   getNum(num) {
     return this.ordered_items.slice(0, num);
   }
+
   isEmpty() {
     return this.getTotal() === 0;
   }
+
   getTotal() {
     return this.ordered_items.length;
   }
 }
 
 class ListLink extends React.Component {
+
+  static propTypes = {
+    url: PropTypes.string,
+    text: PropTypes.string
+  };
+
   render() {
-    return (
-      <li><a href={this.props.url}>{this.props.text}</a></li>
-    );
+    const { url, text } = this.props;
+
+    return <li><a href={url}>{text}</a></li>;
   }
 }
 
 export default class OmniSearchResultSection extends React.Component {
+
+  static propTypes = {
+    name: PropTypes.string,
+    nameApi: PropTypes.string,
+    nameIcon: PropTypes.string,
+    initialResult: PropTypes.object
+  };
+
   constructor(props) {
     super(props);
+
     this.state = {
-      name: this.props.name,
-      nameApi: this.props.nameApi,
-      nameIcon: this.props.nameIcon,
+      name: props.name,
+      nameApi: props.nameApi,
+      nameIcon: props.nameIcon,
       display_amount: 10,
       currently_displaying: 10,
       page: 1,
@@ -51,15 +71,10 @@ export default class OmniSearchResultSection extends React.Component {
       q: props.q,
       doSpin: false
     };
+
     this.state.items = this.createsItemsFromProps(props);
   }
-  createsItemsFromProps(props) {
-    const theItems = new SearchResultCollection();
-    _.forEach(props.initialResult.results, (item) => {
-      theItems.addItem(item.object);
-    });
-    return theItems;
-  }
+
   componentWillReceiveProps(newProps) {
     this.setState({
       name: this.props.name,
@@ -74,49 +89,52 @@ export default class OmniSearchResultSection extends React.Component {
       items: this.createsItemsFromProps(newProps)
     });
   }
-  addItems(items) {
-    const theItems = this.state.items;
-    _.forEach(items, (val) => {
-      theItems.addItem(val.object);
-    });
-    this.setState({
-      items: theItems
-    });
-  }
-  grabFromApi() {
 
+  getShowMoreNum() {
+    const diff = _.parseInt(this.state.total_results) - _.parseInt(this.state.currently_displaying);
+    if (diff > 10) {
+      return 10;
+    } else if (diff > 0) {
+      return diff;
+    }
+
+    return null;
+  }
+
+  grabFromApi() {
     console.info('calling API...');
 
     this.setState({
       doSpin: true
     });
 
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       const newpage = this.state.page + 1;
       PortalHttp.sendGet('DP_URL/search/omni', {
         data: {
           q: this.state.q,
           page: newpage,
-          "types[]": this.state.nameApi
+          'types[]': this.state.nameApi
         }
       }).then((r) => {
         if (!r.isError()) {
-          const result_data = r.data.data[this.state.nameApi];
+          const resultData = r.data.data[this.state.nameApi];
           this.setState({
             doSpin: false,
             page: newpage,
-            total_results: _.parseInt(result_data.pageinfo.total_results)
+            total_results: _.parseInt(resultData.pageinfo.total_results)
           });
-          resolve(result_data);
+          resolve(resultData);
         }
       });
     });
   }
+
   showMore() {
-    const pending_total_display = this.state.currently_displaying + this.state.display_amount;
-    if (pending_total_display > this.state.items.getTotal()) {
+    const pendingTotalDisplay = this.state.currently_displaying + this.state.display_amount;
+    if (pendingTotalDisplay > this.state.items.getTotal()) {
       this.grabFromApi().then((items) => {
-        if ("results" in items) {
+        if ('results' in items) {
           this.addItems(items.results);
         }
       });
@@ -126,16 +144,25 @@ export default class OmniSearchResultSection extends React.Component {
       currently_displaying: this.state.currently_displaying + this.state.display_amount
     });
   }
-  getShowMoreNum() {
-    const diff = _.parseInt(this.state.total_results) - _.parseInt(this.state.currently_displaying);
-    if (diff > 10) {
-      return 10;
-    } else if (diff > 0) {
-      return diff;
-    } else {
-      return null;
-    }
+
+  addItems(items) {
+    const theItems = this.state.items;
+    _.forEach(items, (val) => {
+      theItems.addItem(val.object);
+    });
+    this.setState({
+      items: theItems
+    });
   }
+
+  createsItemsFromProps(props) {
+    const theItems = new SearchResultCollection();
+    _.forEach(props.initialResult.results, (item) => {
+      theItems.addItem(item.object);
+    });
+    return theItems;
+  }
+
   render() {
     if (this.state.items.isEmpty()) {
       return null;
@@ -149,7 +176,7 @@ export default class OmniSearchResultSection extends React.Component {
             if (this.state.nameApi === 'news') {
               t = (<span><span className="date-mark"><i className="fa fa-calendar-o"></i> {moment(item.date).fromNow()}</span><span className="item-name">{item.name}</span></span>);
             } else if (this.state.nameApi === 'feedback') {
-              let sign = item.rating < 0 ? '-' : '+';
+              const sign = item.rating < 0 ? '-' : '+';
               t = (<span><span className="feedback-mark"><i className="fa fa-thumbs-up"></i>{sign + item.rating}</span><span className="item-name">{item.name}</span></span>);
             } else if (this.state.nameApi === 'download') {
               t = (<span><span dangerouslySetInnerHTML={{__html: item.icon_html}}></span><span className="item-name">{item.name}</span></span>);
