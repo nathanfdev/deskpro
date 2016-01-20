@@ -294,6 +294,7 @@ Feature: Widget Chat
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "chat_info.data.ended_by" should be equal to "user"
+    And chat property "date_ended" should not be null for chat 1
     When I send a POST request to "/portal/api/chats/1/reopen?__sid=1-AAAAAAAAAAAAAAA"
     Then the response status code should be 204
     And the response should be empty

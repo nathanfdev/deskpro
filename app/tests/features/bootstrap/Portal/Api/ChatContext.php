@@ -47,6 +47,8 @@ class ChatContext extends BaseContext
 
     /**
      * @BeforeScenario
+     *
+     * @param BeforeScenarioScope $scope
      */
     public function gatherContexts(BeforeScenarioScope $scope)
     {
@@ -140,6 +142,18 @@ class ChatContext extends BaseContext
     {
         $conversation = $this->findConversation($chat_id);
         expect($conversation->$property)->toBeNull();
+    }
+
+    /**
+     * @Then chat property :property should not be null for chat :chat_id
+     *
+     * @param string $property
+     * @param int    $chat_id
+     */
+    public function chatPropertyShouldNotBeNull($property, $chat_id)
+    {
+        $conversation = $this->findConversation($chat_id);
+        expect($conversation->$property)->toNotBeNull();
     }
 
     /**
