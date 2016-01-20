@@ -4,14 +4,14 @@ import PortalUrlGenerator from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenera
 import OmniSearchResultSection from 'DeskPRO/Bundle/PortalBundle/React/OmniSearch/OmniSearchResultSection';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import _ from 'lodash';
-import $ from 'jquery';
 import moment from 'moment';
 
 export default class OmniSearch extends React.Component {
 
   static propTypes = {
-    input: PropTypes.object,
-    close: PropTypes.object
+    $input: PropTypes.object,
+    $close: PropTypes.object,
+    $button: PropTypes.object
   };
 
   constructor(props) {
@@ -20,8 +20,6 @@ export default class OmniSearch extends React.Component {
       doSpin: false, // a search is in progress
       lastSearch: moment(), // the last time a user executed a search (typed something in)
       userTyping: false,
-      $input: $(props.input),
-      $close: $(props.close),
       data: {
         pageinfo: {
           total_results: 0,
@@ -35,6 +33,8 @@ export default class OmniSearch extends React.Component {
   }
 
   componentDidMount() {
+    const { $input, $close } = this.props;
+
     // typing listener
     let lastVal = null;
     const throttleChanges = _.throttle((e) => {
@@ -45,14 +45,8 @@ export default class OmniSearch extends React.Component {
       }
     }, 250);
 
-    this.state.$input.on('keyup change', throttleChanges);
-
-    // close search button
-    this.state.$close.click((e) => {
-      e.preventDefault();
-      this.state.$input.val('');
-      this.doSearch({ q: '' }); // reset/close search
-    });
+    $input.on('keyup change', throttleChanges);
+    $close.click(this.onClickOut);
 
     // 1000ms pause before showing "no results"
     this.interval = setInterval(() => {
@@ -64,23 +58,16 @@ export default class OmniSearch extends React.Component {
         });
       }
     }, 100); // every 100ms check if the user has not typed in a while or not
-
-    // clickaway handler
-    $(document).on('keypress', event => {
-      if (event.which === 13) { // Checks for the enter key
-        // without this, hitting "enter" to view the search results page would count as a "click"
-        // outside of the ominsearch and clear the search
-        event.preventDefault();
-      }
-    });
   }
 
   componentWillUnmount() {
     window.clearInterval(this.interval);
   }
 
-  onClickOut = () => {
-    this.state.$input.val('');
+  onClickOut = event => {
+    event.preventDefault();
+
+    this.props.$input.val('');
     this.doSearch({q: ''}); // reset/close search
   };
 
@@ -183,20 +170,20 @@ export default class OmniSearch extends React.Component {
   }
 
   render() {
-    const { input } = this.props;
+    const { $input, $button } = this.props;
 
     if (this.state.searchQuery.q.length < 3) {
       return null;
     }
 
     return (
-      <ClickOut onClickOut={this.onClickOut} additionalNodes={[input]}>
+      <ClickOut onClickOut={this.onClickOut} additionalNodes={[$input, $button]}>
         <div
           ref="searchDropdown"
           className="expanded-search-results"
           style={{
             display: this.state.searchQuery.q.length > 0 ? 'block' : 'none',
-            width: this.state.$input.closest('.search-form').width()
+            width: $input.closest('.search-form').width()
           }}>
 
           {this.state.doSpin || (!this.doResultsExist() && this.state.userTyping)
