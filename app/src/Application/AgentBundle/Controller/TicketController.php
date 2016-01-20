@@ -4035,7 +4035,11 @@ class TicketController extends AbstractController
 
             $layout                   = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $newticket->getMockTicket());
             $newticket->ticket_fields = $this->request->request->get('custom_fields', array());
-            $newticket->setValuesFromTicket(null, $check_person, $check_person->organization);
+
+            if (isset($check_person) && $check_person) {
+                $newticket->setValuesFromTicket(null, $check_person, $check_person->organization);
+            }
+
             $newticket->post_custom_person_fields = $this->request->request->get('custom_person_fields', array());
             $newticket->post_custom_org_fields    = $this->request->request->get('custom_org_fields', array());
             $newticket->billing_fields            = $this->request->request->get('billing_fields', array());
