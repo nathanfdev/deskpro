@@ -79,16 +79,9 @@ export default class OmniSearch extends React.Component {
     window.clearInterval(this.interval);
   }
 
-  onClickOut = (e) => {
-    const $target = $(e.target);
-    // if we are clicking inside the search results its ok. but otherwise, we want to clear/close the search.
-    if (!$target.closest('.expanded-search-results').length
-        && !$target.closest('input.omnisearch').length
-        && !$target.hasClass('dpx-omnisearch-link') // allow clicking of omnisearch links without closing it
-    ) {
-      this.state.$input.val('');
-      this.doSearch({ q: '' }); // reset/close search
-    }
+  onClickOut = () => {
+    this.state.$input.val('');
+    this.doSearch({q: ''}); // reset/close search
   };
 
   doSearch(queryModifications) {
@@ -190,12 +183,14 @@ export default class OmniSearch extends React.Component {
   }
 
   render() {
+    const { input } = this.props;
+
     if (this.state.searchQuery.q.length < 3) {
       return null;
     }
 
     return (
-      <ClickOut onClickOut={this.onClickOut}>
+      <ClickOut onClickOut={this.onClickOut} additionalNodes={[input]}>
         <div
           ref="searchDropdown"
           className="expanded-search-results"

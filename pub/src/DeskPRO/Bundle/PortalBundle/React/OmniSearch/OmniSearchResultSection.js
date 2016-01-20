@@ -91,30 +91,32 @@ export default class OmniSearchResultSection extends React.Component {
   }
 
   grabFromApi() {
-    console.info('calling API...');
-
     this.setState({
       doSpin: true
     });
 
     return new Promise(resolve => {
       const newpage = this.state.page + 1;
+
       PortalHttp.sendGet('DP_URL/search/omni', {
         data: {
           q: this.state.q,
           page: newpage,
           'types[]': this.state.nameApi
         }
-      }).then((r) => {
-        if (!r.isError()) {
-          const resultData = r.data.data[this.state.nameApi];
-          this.setState({
-            doSpin: false,
-            page: newpage,
-            total_results: _.parseInt(resultData.pageinfo.total_results)
-          });
-          resolve(resultData);
+      }).then(response => {
+        if (response.isError()) {
+          return;
         }
+
+        const resultData = response.data.data[this.state.nameApi];
+        this.setState({
+          doSpin: false,
+          page: newpage,
+          total_results: _.parseInt(resultData.pageinfo.total_results)
+        });
+
+        resolve(resultData);
       });
     });
   }
@@ -149,6 +151,7 @@ export default class OmniSearchResultSection extends React.Component {
     _.forEach(props.initialResult.results, (item) => {
       theItems.addItem(item.object);
     });
+
     return theItems;
   }
 
