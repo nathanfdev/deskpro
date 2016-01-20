@@ -37,8 +37,8 @@ export default createReducer(initialState, {
   [actions.loadList]: async({
     success: (state, payload) => {
       return state
-        .set('elements', Immutable.fromJS(payload.get('ids')))
-        .set('pagination', Immutable.fromJS(payload.get('pagination')));
+        .set('elements', Immutable.fromJS(payload.ids))
+        .set('pagination', Immutable.fromJS(payload.pagination));
     },
     start: setValue('async.done', false),
     done: setValue('async.done', true)
