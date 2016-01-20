@@ -26,11 +26,18 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
-    'install' => array(
-        'handler' => 'deskpro_us_google\\InstallerHandler',
-    ),
-    'api' => array(
-        'package_request_handler' => 'deskpro_us_google\\RequestHandler\\PackageRequestHandler',
-    ),
-);
+/**
+ * DeskPRO.
+ */
+namespace Application\EmailBundle\SourceMapper\EmailRateLimit;
+
+class NullEmailRateLimit implements EmailRateLimitInterface
+{
+    /**
+     * {@@inheritdoc}.
+     */
+    public function isLimited(array $message)
+    {
+        return false;
+    }
+}

@@ -28,7 +28,7 @@ define [
 
     updateCriteriaOptionTypes: ->
       types = []
-      setActionOptions = @actionsTypeDef.getOptionsForTypes(types)
+      setActionOptions = @actionsTypeDef.getOptionsForTypes(types, {dynamicOptions: @customActions})
       @$scope.actionOptionTypes.length = 0
       for opt in setActionOptions
         @$scope.actionOptionTypes.push(opt)
@@ -59,6 +59,8 @@ define [
 
       proms.push @actionsTypeDef.loadDataOptions()
       proms.push @criteraTypeDef.loadDataOptions()
+      proms.push @Api.sendDataGet({customActions: '/ticket_triggers/get-custom-actions'}).then (result) =>
+        @customActions = result.data.customActions.action_defs
 
       @$q.all(proms).then =>
         @updateCriteriaOptionTypes()

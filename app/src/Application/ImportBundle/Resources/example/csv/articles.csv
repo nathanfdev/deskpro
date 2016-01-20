@@ -1,3 +1,3 @@
 id;person;title;content;slug;language;status;category;label;date_created
-1;some@email.tld;Article 1;Content 1;slug-article-1;english;published;Category 1;Label 1;2015-01-15
-2;another@email.tld;Article 2;Content 2;;english;published;Category 1;Label 1;
+10001;testing@deskpro.com;Article 1;Content 1;slug-article-1;english;published;Category 1;Label 1;2015-01-15
+10002;testing@deskpro.com;Article 2;Content 2;;english;published;Category 1;Label 1;

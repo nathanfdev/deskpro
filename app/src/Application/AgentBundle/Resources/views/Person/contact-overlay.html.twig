@@ -7,7 +7,7 @@
 				{% for email in person.emails %}
 					<li data-remove-name="remove_emails[]" data-remove-value="{{ email.id }}" data-confirm="{{ phrase('agent.people.confirm_remove_email') }}">
 						<div class="controls">
-							{% if perms.manage_emails %}
+							{% if perms.manage_emails and person.emails|length > 1 %}
 								<span class="remove">x</span>
 							{% endif %}
 						</div>

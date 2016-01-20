@@ -31,7 +31,6 @@
  *
  * @category Tickets
  */
-
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Person;
@@ -56,19 +55,26 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
     {
         $options = new CheckedOptionsArray();
         $options->addRequiredNames('title', 'creator');
-        $options->addValidNames('date_due', 'public', 'assignee', 'offset');
+        $options->addValidNames('date_due', 'public', 'assignee', 'offset', 'link');
 
         return $options;
     }
 
-    protected function getCreator(Person $person)
+    protected function getCreator(ExecutorContextInterface $context)
     {
-        $id = (int) $this->getActionOption('creator');
-        if (-1 !== $id) {
-            $person = $this->getContainer()->getEm()->find('DeskPRO:Person', $id);
-            if (!($person && $person['is_agent'] && !$person['is_deleted'])) {
-                return;
+        $id     = (int) $this->getActionOption('creator');
+        $person = null;
+
+        if ($id === -1) {
+            if ($context->getPersonContext()) {
+                $person = $context->getPersonContext();
             }
+        } else {
+            $person = $this->getContainer()->getEm()->find('DeskPRO:Person', $id);
+        }
+
+        if (!($person && $person['is_agent'] && !$person['is_deleted'])) {
+            $person = null;
         }
 
         return $person;
@@ -82,7 +88,7 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
         $task = new Task();
         $form = $this->getContainer()->getFormFactory()->create(new TaskType(), $task, array('timezone' => 'UTC'));
 
-        if (!$person = $this->getCreator($ticket->person)) {
+        if (!$person = $this->getCreator($context)) {
             $context->getLogger()->debug('[CreateTask] Wrong creator');
         }
 
@@ -128,10 +134,14 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
             'date_due'            => $due_date,
             'visibility'          => (int) $this->getActionOption('public'),
             'person'              => $person['id'],
-            'ticket'              => $ticket['id'],
+            'ticket'              => null,
             'assigned_agent'      => $assigned_agent,
             'assigned_agent_team' => $assigned_agent_team,
         );
+
+        if ((int) $this->getActionOption('link')) {
+            $formData['ticket'] = $ticket->id;
+        }
 
         $form->submit($formData);
         if (!$form->isValid()) {
@@ -164,7 +174,7 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
      */
     public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
     {
-        if (!$person = $this->getCreator($person)) {
+        if (!$person = $this->getCreator($context)) {
             return array('agent');
         }
 

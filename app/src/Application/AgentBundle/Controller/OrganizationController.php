@@ -41,6 +41,9 @@ use Application\DeskPRO\Entity\OrganizationNote;
 use Application\DeskPRO\Searcher\TicketSearch;
 use Orb\Util\Arrays;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -823,5 +826,100 @@ class OrganizationController extends AbstractController
         }
 
         return $org;
+    }
+
+    /**
+     * @param $id
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function addChildAction($id)
+    {
+        try {
+            $cid = $this->in->getInt('child_id');
+            if (!$org = $this->em->find('DeskPRO:Organization', $id)) {
+                throw new NotFoundHttpException();
+            }
+
+            if ($cid) {
+                $root = $org;
+                while ($root->parent) {
+                    $root = $root->parent;
+                }
+                $child = $this->em->find('DeskPRO:Organization', $cid);
+                if (!$child || $child->parent || $org === $child || $root === $child) {
+                    throw new BadRequestHttpException('That organization cannot be added as a child of the current organization.');
+                }
+            } else {
+                if (!$title = $this->in->getString('title')) {
+                    throw new BadRequestHttpException('Please, enter a title.');
+                }
+
+                if (!$this->person->hasPerm('agent_org.create')) {
+                    throw new AccessDeniedHttpException('You don\t have permission to create an organization.');
+                }
+
+                if ($this->em->getRepository('DeskPRO:Organization')->findOneBy(array('name' => $title))) {
+                    throw new BadRequestHttpException(sprintf('Organization with the name "%s" already exists.', $title));
+                }
+
+                $child       = new Entity\Organization();
+                $child->name = $title;
+                $this->em->persist($child);
+            }
+
+            $org->children->add($child);
+            $child->parent = $org;
+            $this->em->flush();
+
+            return $this->createJsonResponse(array(
+                'id'   => $child->id,
+                'name' => $child->name,
+            ));
+        } catch (HttpException $e) {
+            return $this->createJsonResponse($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * @param $id
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function removeChildAction($id)
+    {
+        try {
+            $cid = (int) $this->in->getInt('child_id');
+            if (!$org = $this->em->find('DeskPRO:Organization', $id)) {
+                throw new NotFoundHttpException('There is no such organization');
+            }
+
+            if (!$child = $this->em->find('DeskPRO:Organization', $cid)) {
+                throw new NotFoundHttpException('There is no such child organization');
+            }
+
+            if ($child->parent === $org) {
+                $org->children->removeElement($child);
+                $child->parent = null;
+
+                $this->em->persist($child);
+                $this->em->flush();
+            }
+
+            return $this->createJsonResponse(array(
+                'id'   => $child->id,
+                'name' => $child->name,
+            ));
+        } catch (HttpException $e) {
+            return $this->createJsonResponse($e->getMessge(), 400);
+        }
     }
 }

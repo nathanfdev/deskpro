@@ -38,6 +38,7 @@ use Orb\Input\Cleaner\Cleaner;
 use Orb\Log\Loggable;
 use Orb\Log\Logger;
 use Orb\Util\Arrays;
+use Orb\Util\Numbers;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
 
@@ -249,13 +250,13 @@ class AgentReplyCodes implements Loggable
                 switch ($param) {
                     case 'agent':
                     case 'awaitingagent':
-                    $this->getLogger()->logDebug('[AgentReplyCodes] Set status to awaiting_agent');
+                        $this->getLogger()->logDebug('[AgentReplyCodes] Set status to awaiting_agent');
                         $this->props['status'] = 'awaiting_agent';
                         break;
 
                     case 'user':
                     case 'awaitinguser':
-                    $this->getLogger()->logDebug('[AgentReplyCodes] Set status to awaiting_user');
+                        $this->getLogger()->logDebug('[AgentReplyCodes] Set status to awaiting_user');
                         $this->props['status'] = 'awaiting_user';
                         break;
 
@@ -276,6 +277,16 @@ class AgentReplyCodes implements Loggable
                 }
                 break;
 
+            case 'urgency':
+                $urg = (int) Strings::extractRegexMatch('#(\d+)#', $param);
+                if ($urg && Numbers::inRange($urg, 1, 10)) {
+                    $this->getLogger()->logDebug('[AgentReplyCodes] Set urgency to '.$urg);
+                    $this->props['urgency'] = $urg;
+                } else {
+                    $this->getLogger()->logDebug('[AgentReplyCodes] Invalid urgency option: '.$param);
+                }
+                break;
+
             case 'note':
             case 'isnote':
             $this->getLogger()->logDebug('[AgentReplyCodes] Message is a note');
@@ -290,41 +301,44 @@ class AgentReplyCodes implements Loggable
 
             case 'assign':
             case 'agent':
-                if (StringEmail::isValueValid($param)) {
-                    $agent = App::getDataService('Agent')->getByEmail($param);
-                    if ($agent) {
-                        $this->getLogger()->logDebug('[AgentReplyCodes] Assign agent '.$agent->id);
-                        $this->props['assign_agent'] = $agent;
-                    } else {
-                        $this->getLogger()->logDebug('[AgentReplyCodes] Could not find agent: '.$param);
-                    }
+                $this->getLogger()->logDebug('[AgentReplyCodes] Assign agent -- finding param: '.$param);
+                $agent = $this->_findAgentFromString($param);
+                if ($agent) {
+                    $this->getLogger()->logDebug('[AgentReplyCodes] Assign agent '.$agent->id);
+                    $this->props['assign_agent'] = $agent;
                 } else {
-                    $test_param = preg_replace('#\s#', '', $param);
-                    $test_param = strtolower($test_param);
+                    $this->getLogger()->logDebug('[AgentReplyCodes] Could not find agent: '.$param);
+                }
+                break;
 
-                    $use_agent = null;
-                    foreach (App::getDataService('Agent')->getAgents() as $agent) {
-                        $test_name = $agent['name'];
-
-                        if (!$test_name) {
-                            continue;
-                        }
-
-                        $test_name = preg_replace('#\s#', '', $test_name);
-                        $test_name = strtolower($test_name);
-
-                        if ($test_name == $test_param) {
-                            $use_agent = $agent;
-                            break;
-                        }
+            case 'follow':
+            case 'follower':
+            case 'addfollower':
+                $this->getLogger()->logDebug('[AgentReplyCodes] Add follower -- finding param: '.$param);
+                $agent = $this->_findAgentFromString($param);
+                if ($agent) {
+                    $this->getLogger()->logDebug('[AgentReplyCodes] Add follower: '.$agent->id);
+                    if (empty($this->props['add_followers'])) {
+                        $this->props['add_followers'] = array();
                     }
+                    $this->props['add_followers'][] = $agent;
+                } else {
+                    $this->getLogger()->logDebug('[AgentReplyCodes] Could not find agent: '.$param);
+                }
+                break;
 
-                    if ($use_agent) {
-                        $this->getLogger()->logDebug('[AgentReplyCodes] Assign agent '.$agent->id.' (found via name match)');
-                        $this->props['assign_agent'] = $agent;
-                    } else {
-                        $this->getLogger()->logDebug('[AgentReplyCodes] Could not find agent: '.$param);
+            case 'unfollow':
+            case 'removefollower':
+                $this->getLogger()->logDebug('[AgentReplyCodes] Remove follower -- finding param: '.$param);
+                $agent = $this->_findAgentFromString($param);
+                if ($agent) {
+                    $this->getLogger()->logDebug('[AgentReplyCodes] Remove follower: '.$agent->id);
+                    if (empty($this->props['remove_followers'])) {
+                        $this->props['remove_followers'] = array();
                     }
+                    $this->props['remove_followers'][] = $agent;
+                } else {
+                    $this->getLogger()->logDebug('[AgentReplyCodes] Could not find agent: '.$param);
                 }
                 break;
 
@@ -533,6 +547,49 @@ class AgentReplyCodes implements Loggable
         }
 
         return true;
+    }
+
+    /**
+     * @param string $param
+     *
+     * @return \Application\DeskPRO\Entity\Person|null
+     */
+    protected function _findAgentFromString($param)
+    {
+        if (StringEmail::isValueValid($param)) {
+            $agent = App::getDataService('Agent')->getByEmail($param);
+            if ($agent) {
+                return $agent;
+            } else {
+                return;
+            }
+        } else {
+            $test_param = preg_replace('#\s#', '', $param);
+            $test_param = strtolower($test_param);
+
+            $use_agent = null;
+            foreach (App::getDataService('Agent')->getAgents() as $agent) {
+                $test_name = $agent['name'];
+
+                if (!$test_name) {
+                    continue;
+                }
+
+                $test_name = preg_replace('#\s#', '', $test_name);
+                $test_name = strtolower($test_name);
+
+                if ($test_name == $test_param) {
+                    $use_agent = $agent;
+                    break;
+                }
+            }
+
+            if ($use_agent) {
+                return $use_agent;
+            } else {
+                return;
+            }
+        }
     }
 
     protected function _findObjFromCollection($collection, $name_field, $param)

@@ -20,6 +20,9 @@ pageMeta.perms = {
 
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
+pageMeta.url_child_search = '{{ path('agent_org_child_search', {id: org.id}) }}';
+pageMeta.url_child_add = '{{ path('agent_org_child_add', {id: org.id}) }}';
+pageMeta.url_child_remove = '{{ path('agent_org_child_remove', {id: org.id}) }}';
 </script>
 {# Page Containers #}
 <div class="profile org-profile profile layout-content {% if not app.user.hasPerm('agent_org.edit') %}perm-no-edit{% endif %}">

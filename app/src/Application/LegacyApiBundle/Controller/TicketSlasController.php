@@ -121,9 +121,18 @@ class TicketSlasController extends AbstractController implements ProtectedContro
         }
         $sla->apply_terms = $apply_terms;
 
+        $action_defs  = $this->container->getTicketActionDefManager();
         $warn_actions = new TriggerActions();
         foreach ($this->in->getArrayValue('warn_actions') as $act) {
             if ($act) {
+                $type = $act['type'];
+
+                if ($action_defs->hasNamedDef($type)) {
+                    $act['type_class'] = $action_defs->getNamedDef($type)->getDef()->getTriggerActionClass();
+                    if (!$act['type_class']) {
+                        continue;
+                    }
+                }
                 $warn_actions->addActionFromArray($act);
             }
         }
@@ -132,6 +141,14 @@ class TicketSlasController extends AbstractController implements ProtectedContro
         $fail_actions = new TriggerActions();
         foreach ($this->in->getArrayValue('fail_actions') as $act) {
             if ($act) {
+                $type = $act['type'];
+
+                if ($action_defs->hasNamedDef($type)) {
+                    $act['type_class'] = $action_defs->getNamedDef($type)->getDef()->getTriggerActionClass();
+                    if (!$act['type_class']) {
+                        continue;
+                    }
+                }
                 $fail_actions->addActionFromArray($act);
             }
         }

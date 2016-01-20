@@ -98,12 +98,34 @@ class ReplyActionsApplicator implements Loggable
                 }
                 break;
 
+            case 'urgency':
+                if ($param) {
+                    $ticket->setUrgency($param);
+                }
+                break;
+
             case 'assign_agent':
                 $ticket->agent = $param ?: null;
                 break;
 
             case 'user':
                 $ticket->person = $param;
+                break;
+
+            case 'add_followers':
+                if ($param && is_array($param) && !empty($param)) {
+                    foreach ($param as $a) {
+                        $ticket->addParticipantPerson($a);
+                    }
+                }
+                break;
+
+            case 'remove_followers':
+                if ($param && is_array($param) && !empty($param)) {
+                    foreach ($param as $a) {
+                        $ticket->removeParticipantPerson($a);
+                    }
+                }
                 break;
 
             case 'assign_agent_team':

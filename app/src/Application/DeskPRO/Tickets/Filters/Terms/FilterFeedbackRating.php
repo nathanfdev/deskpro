@@ -51,6 +51,8 @@ class FilterFeedbackRating extends AbstractFilterTerm
     {
         $options = new CheckedOptionsArray();
 
+        $options->addValidNames('rating');
+
         return $options;
     }
 

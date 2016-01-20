@@ -1865,6 +1865,10 @@ class TemplatingExtension extends \Twig_Extension
             }
         }
 
+        if (defined('DPC_IS_CLOUD')) {
+            return '';
+        }
+
         $sid = '';
         if ($this->getContainer()->isDebug()) {
             $sid .= 'DEV-';

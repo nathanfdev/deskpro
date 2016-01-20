@@ -247,6 +247,11 @@ class UserSearch implements UserSearchInterface
         $search_params = array();
 
         foreach ($query_words as $w) {
+            $search_places[] = 'tickets.id = '.(int) $w;
+
+            $search_places[] = 'tickets.ref = ?';
+            $search_params[] = $w;
+
             if (strlen($w) <= 2) {
                 continue;
             }
@@ -269,20 +274,19 @@ class UserSearch implements UserSearchInterface
             $params = array(
                 $context->getPerson()->getId(),
                 $context->getPerson()->getId(),
+                $context->getPerson()->getId(),
                 $context->getPerson()->organization->getId(),
             );
 
             $params = array_merge($params, $search_params);
 
             $ticket_ids = $this->db->fetchAllCol("
-                SELECT tickets.id
+                SELECT DISTINCT(tickets.id)
                 FROM tickets
                 LEFT JOIN tickets_participants ON (tickets_participants.ticket_id = tickets.id)
                 LEFT JOIN tickets_messages ON (tickets_messages.ticket_id = tickets.id AND tickets_messages.is_agent_note = 0)
                 WHERE
-                    (tickets.person_id = ?
-                    OR tickets_participants.person_id = ?
-                    OR tickets.organization_id = ?)
+                    (tickets.person_id = ? OR tickets_participants.person_id = ? OR tickets.agent_id = ? OR tickets.organization_id = ?)
                     AND (tickets.date_last_agent_reply IS NOT NULL OR tickets.date_last_user_reply IS NOT NULL)
                     AND ($search_places)
                 ORDER BY tickets.date_status DESC, tickets.date_created DESC
@@ -292,18 +296,18 @@ class UserSearch implements UserSearchInterface
             $params = array(
                 $context->getPerson()->getId(),
                 $context->getPerson()->getId(),
+                $context->getPerson()->getId(),
             );
 
             $params = array_merge($params, $search_params);
 
             $ticket_ids = $this->db->fetchAllCol("
-                SELECT tickets.id
+                SELECT DISTINCT(tickets.id)
                 FROM tickets
                 LEFT JOIN tickets_participants ON (tickets_participants.ticket_id = tickets.id)
                 LEFT JOIN tickets_messages ON (tickets_messages.ticket_id = tickets.id AND tickets_messages.is_agent_note = 0)
                 WHERE
-                    (tickets.person_id = ?
-                    OR tickets_participants.person_id = ?)
+                    (tickets.person_id = ? OR tickets_participants.person_id = ? OR tickets.agent_id = ?)
                     AND (tickets.date_last_agent_reply IS NOT NULL OR tickets.date_last_user_reply IS NOT NULL)
                     AND ($search_places)
                 ORDER BY tickets.date_status DESC, tickets.date_created DESC

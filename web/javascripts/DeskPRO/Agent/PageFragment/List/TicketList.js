@@ -44,6 +44,59 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			);
 		}
 
+		this.listNav = (function(){
+			var $list = self.wrapper.find('section.list-listing:first');
+			return {
+				scrollTo: function($current) {
+					var $children = $list.children('.ng-scope')
+						, totalHeight = 0
+						;
+
+					$children.each(function(){
+						totalHeight += $(this).height();
+					});
+					if ($list.height() > totalHeight) return;
+
+					if ($current.position().top > 0 && $current.position().top < $list.height() - $current.height()) return;
+
+					var scrollTo = $current.position().top < 0
+						? $list.scrollTop() + $current.position().top
+						: $list.scrollTop() + $current.position().top - $list.height() + $current.height();
+					$list.scrollTop(scrollTo);
+				},
+				up: function() {
+					var $current = $list.children('.ng-scope.selection-on:first')
+						, $next = $current.length ? $current.prev('.ng-scope') : $list.children('.ng-scope').first()
+						;
+
+					if ($current.length) $current.removeClass('selection-on');
+					if (!$next.length) $next = $current;
+					$next.addClass('selection-on');
+					this.scrollTo($next);
+				},
+				down: function() {
+					var $current = $list.children('.ng-scope.selection-on:first')
+						, $next = $current.length ? $current.next('.ng-scope') : $list.children('.ng-scope').first()
+						;
+
+					if ($current.length) $current.removeClass('selection-on');
+					if (!$next.length) $next = $current;
+					$next.addClass('selection-on');
+					this.scrollTo($next);
+				},
+				check: function() {
+					var $current = $list.children('.ng-scope.selection-on:first')
+						, $check = $current.find('.dp-tpl article input[type="checkbox"]:first')
+						;
+
+					$check.length && $check.prop('checked', !$check.prop('checked'));
+				},
+				enter: function () {
+					var $current = $list.children('.ng-scope.selection-on:first');
+					$current.length && DeskPRO_Window.runPageRouteFromElement($current.find('article.row-item:first'));
+				}
+			};
+		})();
 		this.addEvent('activate', this.fillListItems, this);
 	},
 
@@ -1348,6 +1401,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			resultId: this.meta.resultTypeId,
 			refreshUrl: this.meta.refreshUrl,
 			isListView: false,
+			fields: $scope.display_fields,
 			refreshCallback: function(info) {
 				// Updates to sort order must always refresh
 				if (info.context.isSortUpdate) {

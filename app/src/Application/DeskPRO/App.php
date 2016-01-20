@@ -33,6 +33,7 @@ namespace Application\DeskPRO;
 
 use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\People\PersonGuest;
+use Application\DeskPRO\Search\Adapter\MysqlAdapter;
 use Orb\Log\Filter\CallbackFormatter;
 use Orb\Log\LogItem;
 use Orb\Util\Arrays;
@@ -161,7 +162,7 @@ class App
     }
 
     /**
-     * @return object
+     * @return MysqlAdapter
      */
     public static function getSearchAdapter()
     {

@@ -66,11 +66,15 @@ class SetFlag extends AbstractContainerAwareAction implements ActionInterface, M
      */
     private function saveFlag(Connection $db, $ticket, $person, $color)
     {
-        $db->replace('tickets_flagged', array(
-            'person_id' => $person->id,
-            'ticket_id' => $ticket->id,
-            'color'     => $color,
-        ));
+        $color ? $db->replace('tickets_flagged', array(
+                    'person_id' => $person->id,
+                    'ticket_id' => $ticket->id,
+                    'color'     => $color,
+                ))
+                : $db->delete('tickets_flagged', array(
+                    'person_id' => $person->id,
+                    'ticket_id' => $ticket->id,
+                ));
     }
 
     /**

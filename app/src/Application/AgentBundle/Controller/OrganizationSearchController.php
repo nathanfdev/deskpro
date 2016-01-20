@@ -39,6 +39,7 @@ use Application\DeskPRO\Organizations\OrgResultsDisplay;
 use Application\DeskPRO\Searcher\OrganizationSearch;
 use Application\DeskPRO\UI\RuleBuilder;
 use Orb\Util\Arrays;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Handles searching for orgs.
@@ -352,5 +353,51 @@ class OrganizationSearchController extends AbstractController
         } else {
             return $this->createJsonResponse(array('invalid' => true));
         }
+    }
+
+    public function searchChildAction($id)
+    {
+        if (!$org = $this->em->find('DeskPRO:Organization', $id)) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$limit = $this->in->getUint('limit')) {
+            $limit = 20;
+        }
+
+        $q = $this->in->getString('q');
+
+        $ids = array($org->id);
+        // find root
+        $root = $org;
+        while ($root->parent) {
+            $root = $root->parent;
+        }
+
+        if ($q) {
+            $orgs_list = $this->em->getConnection()->executeQuery(sprintf('
+                SELECT o.id, o.name, op.id as parent_id, op.name as parent_name
+                FROM organizations o
+                LEFT JOIN organizations op ON o.parent_id = op.id
+                WHERE o.name LIKE :name
+                AND o.id != :id
+                ORDER BY o.name ASC
+                LIMIT %d
+            ', $limit), array('name' => "%$q%", 'id' => $id))->fetchAll();
+        } else {
+            $orgs_list = $this->em->getConnection()->executeQuery(sprintf('
+                SELECT o.id, o.name, op.id as parent_id, op.name as parent_name
+                FROM organizations o
+                LEFT JOIN organizations op ON o.parent_id = op.id
+                WHERE o.id != :id
+                ORDER BY o.name ASC
+                LIMIT %d
+            ', $limit), array('id' => $id))->fetchAll();
+        }
+
+        return $this->createJsonResponse(array(
+            'results' => $orgs_list,
+            'root_id' => $root->id,
+        ));
     }
 }

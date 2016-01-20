@@ -757,7 +757,7 @@ class PublishController extends AbstractController
 
             $results = $this->em->getRepository($entity)->getByIds($ids);
             foreach ($results as $r) {
-                if ($r['status_code'] != 'hidden.draft' or $r->person['id'] != $this->person['id']) {
+                if ($r['status_code'] != 'hidden.draft' || $r->person['id'] != $this->person['id'] && !$this->person['can_admin']) {
                     continue;
                 }
                 if ($action == 'delete') {

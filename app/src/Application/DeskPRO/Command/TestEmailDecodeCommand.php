@@ -177,14 +177,23 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
             $email_info['subject'] = $r->getSubject()->subject;
             if ($email_info['body'] = $r->getBodyText()->getBodyUtf8()) {
                 $email_info['body_is_html'] = false;
+                $from_html                  = false;
             } else {
                 $email_info['body']         = $this->reader->getBodyHtml()->getBodyUtf8();
                 $email_info['body_is_html'] = false;
                 $email_info['body']         = \Orb\Util\Strings::html2Text($email_info['body']);
+                $from_html                  = true;
             }
 
             $cutter     = \Application\DeskPRO\EmailGateway\Cutter\CutterDefFactory::getDef($r);
             $fwd_cutter = new \Application\DeskPRO\EmailGateway\Cutter\ForwardCutter($email_info['body'], $email_info['body_is_html'], $cutter);
+
+            if (!$fwd_cutter->isValid() && !$from_html) {
+                $email_info['body']         = $this->reader->getBodyHtml()->getBodyUtf8();
+                $email_info['body_is_html'] = false;
+                $email_info['body']         = \Orb\Util\Strings::html2Text($email_info['body']);
+                $fwd_cutter                 = new \Application\DeskPRO\EmailGateway\Cutter\ForwardCutter($email_info['body'], $email_info['body_is_html'], $cutter);
+            }
 
             echo 'IS VALID FORWARD: '.($fwd_cutter->isValid() ? 'TRUE' : 'FALSE');
             echo "\n\n\n\n\n";

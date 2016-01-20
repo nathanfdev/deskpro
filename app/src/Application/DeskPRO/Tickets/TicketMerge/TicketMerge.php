@@ -169,7 +169,6 @@ class TicketMerge implements PersonContextInterface
         $this->em->flush();
 
         $this->mergeMessages();
-        $this->mergeAttachments();
         $this->mergeParticipants();
         $this->mergeLogs();
         $this->mergeMisc();
@@ -330,8 +329,10 @@ class TicketMerge implements PersonContextInterface
     private function mergeMessages()
     {
         foreach ($this->other_ticket->messages as $message) {
-            $this->other_ticket->messages->removeElement($message);
             $this->ticket->addMessage($message);
+            foreach ($message->attachments as $attachment) {
+                $this->ticket->addAttachment($attachment);
+            }
         }
     }
 
@@ -345,17 +346,6 @@ class TicketMerge implements PersonContextInterface
             SET ticket_id = ?
             WHERE ticket_id = ?
         ', array($this->ticket['id'], $this->other_ticket['id']));
-    }
-
-    /**
-     * Merges attachments.
-     */
-    private function mergeAttachments()
-    {
-        foreach ($this->other_ticket->attachments as $attach) {
-            $this->other_ticket->attachments->removeElement($attach);
-            $this->ticket->addAttachment($attach);
-        }
     }
 
     /**

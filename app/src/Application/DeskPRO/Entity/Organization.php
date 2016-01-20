@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -142,6 +141,16 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
     protected $employees;
 
     /**
+     * @var Organization|null
+     */
+    protected $parent;
+
+    /**
+     * @var ArrayCollection
+     */
+    protected $children;
+
+    /**
      * @var null|\Application\DeskPRO\Labels\LabelManager
      */
     protected $_label_manager = null;
@@ -176,7 +185,8 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
         $this->setModelField('twitter_users', new ArrayCollection());
         $this->setModelField('date_created', new \DateTime());
 
-        $this->slas = new ArrayCollection();
+        $this->slas     = new ArrayCollection();
+        $this->children = new ArrayCollection();
     }
 
     /**
@@ -874,6 +884,29 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
                 'fieldName'    => 'twitter_users',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationTwitterUser',
                 'mappedBy'     => 'organization',
+            )
+        );
+        $metadata->mapManyToOne(
+            array(
+                'fieldName'    => 'parent',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization',
+                'inversedBy'   => 'children',
+                'joinColumns'  => array(
+                    array(
+                        'name'                 => 'parent_id',
+                        'referencedColumnName' => 'id',
+                        'onDelete'             => 'set null',
+                    ),
+                ),
+                'dpApi' => true,
+            )
+        );
+        $metadata->mapOneToMany(
+            array(
+                'fieldName'    => 'children',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization',
+                'mappedBy'     => 'parent',
+                'dpApi'        => true,
             )
         );
         $metadata->mapOneToMany(

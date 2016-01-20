@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -50,6 +49,7 @@ use Orb\Auth\Adapter\SamlAdapterInterface;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
 use Orb\Auth\Result;
 use Orb\Log\Loggable;
+use Orb\Log\Logger;
 use Orb\Log\Writer\ArrayWriter;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
@@ -822,10 +822,7 @@ HTML;
 
         $adapter = $this->_initUserSourceAdapter($usersource);
 
-        $arr_writer = new ArrayWriter();
-        if ($usersource_test && $adapter instanceof Loggable && $adapter->getLogger()) {
-            $adapter->getLogger()->addWriter($arr_writer);
-        }
+        $this->attachTestLoggerIfNecessary($usersource_test, $adapter);
 
         // It must be a callback type to be here, so if not redirect back to login
         if (!($adapter instanceof \Orb\Auth\Adapter\CallbackInterface)) {
@@ -847,10 +844,12 @@ HTML;
                 //--------------------------------------
                 // test result
                 //--------------------------------------
+                $log = $this->getAdapterLog($adapter);
+
                 return $this->render(
                     'DeskPRO:Auth:_sso_test_verified.html.twig', array(
                         'person' => $person,
-                        'log'    => $arr_writer->getMessagesAsString(),
+                        'log'    => $log,
                     )
                 );
             }
@@ -870,9 +869,14 @@ HTML;
             // Error, go back to login
         } else {
             if ($usersource_test) {
+                //--------------------------------------
+                // test result
+                //--------------------------------------
+                $log = $this->getAdapterLog($adapter);
+
                 return $this->render(
                     'DeskPRO:Auth:_sso_test_failed.html.twig', array(
-                        'log' => implode("\n", $arr_writer->getMessages()),
+                        'log' => $log,
                     )
                 );
             }
@@ -1347,14 +1351,12 @@ HTML;
             return new NotFoundHttpException();
         }
 
-        $arr_writer      = new ArrayWriter();
         $usersource_test = $this->session->getFlash(self::USERSOURCE_TEST, array());
         if (!$usersource_test) {
             $usersource_test = $this->in->getBool(self::USERSOURCE_TEST);
         }
-        if ($usersource_test && $adapter instanceof Loggable && $adapter->getLogger()) {
-            $adapter->getLogger()->addWriter($arr_writer);
-        }
+
+        $this->attachTestLoggerIfNecessary($usersource_test, $adapter);
 
         $result = $adapter->getSsoLoginActionResult($this);
 
@@ -1366,9 +1368,11 @@ HTML;
                 //--------------------------------------
                 // test result
                 //--------------------------------------
+                $log = $this->getAdapterLog($adapter);
+
                 return $this->render('DeskPRO:Auth:_sso_test_verified.html.twig', array(
                         'person' => $person,
-                        'log'    => $arr_writer->getMessagesAsString(),
+                        'log'    => $log,
                     )
                 );
             }
@@ -1386,8 +1390,10 @@ HTML;
             // test result
             //--------------------------------------
             if ($usersource_test) {
+                $log = $this->getAdapterLog($adapter);
+
                 return $this->render('DeskPRO:Auth:_sso_test_failed.html.twig', array(
-                        'log'            => implode("\n", $arr_writer->getMessages()),
+                        'log'            => $log,
                         'display_errors' => $result->getMessages('display_errors'),
                     )
                 );
@@ -1465,5 +1471,64 @@ HTML;
         $lockTime    = $this->settings->get($context.'.'.LoginRateLimitSettings::KEY.'.'.'lock_time');
 
         return $rep->getLoginLockoutTime($person, $maxAttempts, $checkTime, $lockTime);
+    }
+
+    /**
+     * @param $usersource_test
+     * @param $adapter
+     *
+     * @return ArrayWriter|null
+     */
+    private function attachTestLoggerIfNecessary($usersource_test, $adapter)
+    {
+        if ($usersource_test && $adapter instanceof Loggable) {
+            $arr_writer = new ArrayWriter();
+            $logger     = new Logger();
+            $arr_wr     = new ArrayWriter();
+            $logger->addWriter($arr_wr);
+
+            $logger->logDebug('Adapter: '.get_class($adapter));
+            $logger->logDebug('--- Begin ---');
+
+            if (!$adapter->getLogger()) {
+                $adapter->setLogger($logger);
+
+                return $arr_writer;
+            } else {
+                $adapter->getLogger()->addWriter($arr_writer);
+
+                return $arr_writer;
+            }
+        }
+
+        return;
+    }
+
+    /**
+     * @param $adapter
+     *
+     * @return string
+     */
+    private function getAdapterLog($adapter)
+    {
+        if ($adapter instanceof Loggable) {
+            if (!$logger = $adapter->getLogger()) {
+                return '';
+            }
+            if (!$writer_chain = $logger->getWriterChain()) {
+                return '';
+            }
+            $writers = $writer_chain->getWriters();
+            $log     = '';
+            foreach ($writers as $writer) {
+                if ($writer instanceof ArrayWriter) {
+                    $log .= $writer->getMessagesAsString();
+                }
+            }
+
+            return $log;
+        }
+
+        return '';
     }
 }

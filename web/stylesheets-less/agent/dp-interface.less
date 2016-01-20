@@ -3413,8 +3413,8 @@ z-index: 2;
 	white-space: nowrap;
 }
 
-.person-search-box ul li:hover a,
-.person-search-box ul li.on a {
+.person-search-box ul li:hover:not(.disabled) a,
+.person-search-box ul li.on:not(.disabled) a {
 	background-color: #2F7FD0;
 	color: #fff;
 	text-decoration: none;
@@ -3424,8 +3424,14 @@ z-index: 2;
 	}
 }
 
-.person-search-box ul li:hover a span,
-.person-search-box ul li.on a span {
+.person-search-box ul li.disabled a,
+.person-search-box ul li.disabled:hover a,
+.person-search-box ul li.on.disabled a {
+	color: #A4A5A5;
+}
+
+.person-search-box ul li:hover:not(.disabled) a span,
+.person-search-box ul li.on:not(.disabled) a span {
 	color: #fff;
 }
 

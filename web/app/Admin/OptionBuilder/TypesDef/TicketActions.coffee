@@ -816,6 +816,7 @@ define [
         getData: ->
           return {
             options: [
+              {title: 'none', value: ''},
               {title: 'Red', value: 'red'},
               {title: 'Blue', value: 'blue'},
               {title: 'Green', value: 'green'},
@@ -829,13 +830,13 @@ define [
           return {
             getViewValue: (value = {}, data) ->
               return {
-                value: value.options?.color || 'red'
+                value: value.options?.color || ''
               }
             getValue: (model = {}, data) ->
               value = {}
               value.type = 'SetFlag'
               value.options = {}
-              value.options.color = model.value || 'red'
+              value.options.color = model.value || ''
               return value
           }
       }
@@ -1480,6 +1481,7 @@ define [
                 assignee: options.assignee
                 timezones: timezones
                 offset: options.offset
+                link: options.link
               }
 
             getValue: (model = {}, data) ->
@@ -1489,10 +1491,11 @@ define [
                 options: {
                   title: model.title
                   date_due: date if date?
-                  public: model.public
+                  public: !!model.public
                   creator: model.creator
                   assignee: model.assignee
                   offset: model.offset
+                  link: !!model.link
                 }
               }
           }

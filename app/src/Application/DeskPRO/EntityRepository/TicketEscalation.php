@@ -47,7 +47,7 @@ class TicketEscalation extends AbstractEntityRepository
                 'title'            => 'Satisfaction request',
                 'sys_name'         => 'satisfaction',
                 'event'            => \Application\DeskPRO\Entity\TicketEscalation::EVENT_TYPE_TIME_RESOLVED,
-                'default_time'     => 259200,// 60 * 60 * 24 * 3
+                'default_time'     => 259200, // 60 * 60 * 24 * 3
                 'default_template' => 'DeskPRO:emails_user:ticket-rate.html.twig',
                 'terms'            => array(
                     array(
@@ -61,7 +61,7 @@ class TicketEscalation extends AbstractEntityRepository
                     array(
                         'type'    => 'FilterFeedbackRating',
                         'op'      => 'not',
-                        'options' => array(),
+                        'options' => array('rating' => 'set'),
                     ),
                 ),
             ),
@@ -71,21 +71,21 @@ class TicketEscalation extends AbstractEntityRepository
                 'title'            => 'Send warning when awaiting user',
                 'sys_name'         => 'statuses_awaiting_user_warning',
                 'event'            => \Application\DeskPRO\Entity\TicketEscalation::EVENT_TYPE_TIME_AGENT_WAITING,
-                'default_time'     => 604800,// 60 * 60 * 24 * 7
+                'default_time'     => 604800, // 60 * 60 * 24 * 7
                 'default_template' => 'DeskPRO:emails_user:ticket-awaiting-warn.html.twig',
             ),
             2 => array(
                 'title'            => 'Send final warning when awaiting user',
                 'sys_name'         => 'statuses_awaiting_user_final',
                 'event'            => \Application\DeskPRO\Entity\TicketEscalation::EVENT_TYPE_TIME_AGENT_WAITING,
-                'default_time'     => 1209600,// 60 * 60 * 24 * 14
+                'default_time'     => 1209600, // 60 * 60 * 24 * 14
                 'default_template' => 'DeskPRO:emails_user:ticket-awaiting-warn-final.html.twig',
             ),
             3 => array(
                 'title'          => 'Set status to resolved when awaiting user',
                 'sys_name'       => 'statuses_awaiting_user_set_resolved',
                 'event'          => \Application\DeskPRO\Entity\TicketEscalation::EVENT_TYPE_TIME_AGENT_WAITING,
-                'default_time'   => 1814400,// 60 * 60 * 24 * 21
+                'default_time'   => 1814400, // 60 * 60 * 24 * 21
                 'default_status' => 'resolved',
             ),
         ),

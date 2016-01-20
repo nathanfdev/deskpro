@@ -23,8 +23,10 @@
 					{{ phrase('adm.general.perm_use') }}
 					<span class="help-icon" tooltip-placement="left"
 						  tooltip="{{ phrase('adm.departments.usergroup_perm_toggle') }}">
-
 					</span>
+					<div class="toggle-all-button-2">
+						<em ng-click="EditCtrl.all_perms.user_full = !EditCtrl.all_perms.user_full; EditCtrl.changeAllPerms('user');">Toggle All</em>
+					</div>
 				</th>
 			</tr>
 		</thead>
@@ -70,8 +72,10 @@
 					{{ phrase('adm.general.perm_full_access') }}
 					<span class="help-icon" tooltip-placement="left"
 						  tooltip="{{ phrase('adm.departments.perm_full_tip') }}">
-
 					</span>
+					<div class="toggle-all-button-2">
+						<em ng-click="EditCtrl.all_perms.agent_full = !EditCtrl.all_perms.agent_full; EditCtrl.changeAllPerms('agent');">Toggle All</em>
+					</div>
 				</th>
 			</tr>
 		</thead>
