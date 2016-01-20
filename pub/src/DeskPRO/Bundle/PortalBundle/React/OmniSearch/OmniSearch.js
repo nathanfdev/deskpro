@@ -99,8 +99,7 @@ export default class OmniSearch extends React.Component {
   documentClickHandler(e) {
     const $target = $(e.target);
     // if we are clicking inside the search results its ok. but otherwise, we want to clear/close the search.
-    if (
-        !$target.closest('.expanded-search-results').length
+    if (!$target.closest('.expanded-search-results').length
         && !$target.closest('input.omnisearch').length
         && !$target.hasClass('dpx-omnisearch-link') // allow clicking of omnisearch links without closing it
     ) {
@@ -127,14 +126,16 @@ export default class OmniSearch extends React.Component {
       doSpin: true
     });
 
-    PortalHttp.sendGet('DP_URL/search/omni', { data: searchQuery }).then((r) => {
-      if (!r.isError()) {
-        this.setState({
-          data: r.data.data,
-          searchQuery,
-          doSpin: false
-        });
+    PortalHttp.sendGet('DP_URL/search/omni', { data: searchQuery }).then(response => {
+      if (response.isError()) {
+        return;
       }
+
+      this.setState({
+        data: response.data.data,
+        searchQuery,
+        doSpin: false
+      });
     });
   }
 
