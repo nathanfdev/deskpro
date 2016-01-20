@@ -93,7 +93,7 @@ class ChatFeedbackType extends AbstractType
         /** @var ChatConversation $conversation */
         $conversation = $event->getData();
         if (!$conversation->getDateEnded()) {
-            $event->getForm()->addError(new FormError('Unable to send feedback, chat is not ended yet.'));
+            $event->getForm()->get('helpful')->addError(new FormError('Unable to send feedback, chat is not ended yet.'));
         }
     }
 }

@@ -118,6 +118,31 @@ class ChatContext extends BaseContext
     }
 
     /**
+     * @Then chat property :param should be equal to :expected for chat :chat_id
+     *
+     * @param string $param
+     * @param int    $expected
+     * @param int    $chat_id
+     */
+    public function chatRatingOverallShouldBeEqual($param, $expected, $chat_id)
+    {
+        $conversation = $this->findConversation($chat_id);
+        expect($conversation->$param)->toBe($expected);
+    }
+
+    /**
+     * @Then chat property :param should be null for chat :chat_id
+     *
+     * @param string $param
+     * @param int    $chat_id
+     */
+    public function chatRatingOverallShouldBeNull($param, $chat_id)
+    {
+        $conversation = $this->findConversation($chat_id);
+        expect($conversation->$param)->toBeNull();
+    }
+
+    /**
      * @param int $chat_id
      *
      * @return ChatConversation

@@ -756,12 +756,29 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         return trim(substr($this->subject, 0, 80)).(strlen($this->subject) > 80 ? '...' : '');
     }
 
+    /**
+     * @param int $rating
+     *
+     * @return $this
+     */
     public function setRatingOverall($rating)
     {
+        $rating = (int) $rating;
         if ($rating < 1 || $rating > 10) {
             $rating = 0;
         }
+
         $this->setModelField('rating_overall', $rating);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRatingOverall()
+    {
+        return $this->rating_overall;
     }
 
     public function setRatingResponseTime($rating)
