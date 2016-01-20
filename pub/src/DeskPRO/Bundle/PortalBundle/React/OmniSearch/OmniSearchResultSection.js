@@ -13,6 +13,7 @@ class SearchResultCollection {
   addItem(item) {
     // only add unique
     const same = _.filter(this.items, (a) => a.id === item.id);
+
     if (same.length > 0) {
       // exit if we have it in the collection already
       return null;
@@ -151,40 +152,68 @@ export default class OmniSearchResultSection extends React.Component {
     return theItems;
   }
 
+  renderItem(item) {
+    let t;
+
+    if (this.state.nameApi === 'news') {
+      t = (
+        <span>
+          <span className="date-mark">
+            <i className="fa fa-calendar-o" /> {moment(item.date).fromNow()}
+          </span>
+          <span className="item-name">{item.name}</span>
+        </span>
+      );
+    } else if (this.state.nameApi === 'feedback') {
+      const sign = item.rating < 0 ? '-' : '+';
+
+      t = (
+        <span>
+          <span className="feedback-mark">
+            <i className="fa fa-thumbs-up" /> {sign + item.rating}
+          </span>
+          <span className="item-name">{item.name}</span>
+        </span>
+      );
+    } else if (this.state.nameApi === 'download') {
+      t = (
+        <span>
+          <span dangerouslySetInnerHTML={{__html: item.icon_html}}></span>
+          <span className="item-name">{item.name}</span>
+        </span>
+      );
+    } else {
+      t = <span className="item-name">{item.name}</span>;
+    }
+
+    return (
+      <li key={item.id}>
+        <a href={item.url}>{t}</a>
+      </li>
+    );
+  }
+
   render() {
+    const { nameIcon, name } = this.props;
+
     if (this.state.items.isEmpty()) {
       return null;
     }
 
     return (
       <div className="search-result-collection">
-        <h1><i className={this.props.nameIcon}></i> {this.props.name}</h1>
+        <h1><i className={nameIcon}></i> {name}</h1>
         <ul>
-          {_.map(this.state.items.getNum(this.state.currently_displaying), (item) => {
-            let t = (<span className="item-name">{item.name}</span>);
-            if (this.state.nameApi === 'news') {
-              t = (<span><span className="date-mark"><i className="fa fa-calendar-o"></i> {moment(item.date).fromNow()}</span><span className="item-name">{item.name}</span></span>);
-            } else if (this.state.nameApi === 'feedback') {
-              const sign = item.rating < 0 ? '-' : '+';
-              t = (<span><span className="feedback-mark"><i className="fa fa-thumbs-up"></i>{sign + item.rating}</span><span className="item-name">{item.name}</span></span>);
-            } else if (this.state.nameApi === 'download') {
-              t = (<span><span dangerouslySetInnerHTML={{__html: item.icon_html}}></span><span className="item-name">{item.name}</span></span>);
-            }
-
-            return (
-              <li key={item.id}>
-                <a href={item.url}>{t}</a>
-              </li>
-            );
-          })}
+          {_.map(this.state.items.getNum(this.state.currently_displaying), item => this.renderItem(item))}
         </ul>
 
-        { this.getShowMoreNum() !== null && !this.state.doSpin ? (
-          <a onClick={this.showMore.bind(this)} className="search-results-show-more">{this.getShowMoreNum()} More <i
-            className="fa fa-angle-double-down"></i></a>
-        ) : null}
+        {this.getShowMoreNum() !== null && !this.state.doSpin &&
+          <a onClick={this.showMore.bind(this)} className="search-results-show-more">
+            {this.getShowMoreNum()} More <i className="fa fa-angle-double-down" />
+          </a>
+        }
 
-        {this.state.doSpin && <div className="search-result-collection-loading inline-loading"></div>}
+        {this.state.doSpin && <div className="search-result-collection-loading inline-loading" />}
       </div>
     );
   }
