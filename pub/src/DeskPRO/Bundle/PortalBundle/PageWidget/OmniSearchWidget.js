@@ -17,10 +17,11 @@ export default class OmniSearchWidget extends PageWidget {
     const $input = this.$element.find('input.omnisearch');
     const $x = this.$element.find('.search-clear');
 
-    $('.dpx-omnisearch-link').each(function() {
-      $(this).click(function(e) {
-        e.preventDefault();
-        const term = $(this).text();
+    $('.dpx-omnisearch-link').each((i, link) => {
+      $(link).click(event => {
+        event.preventDefault();
+        const term = $(link).text();
+
         $input.val('').change(); // clear exiting results, if any
         $input.val(term);
         $input.change().focus();
