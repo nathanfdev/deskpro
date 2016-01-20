@@ -376,6 +376,11 @@ class PortalController extends AbstractController
      */
     private function checkRateLimitAndCsrf(Request $request)
     {
+        // Skip check for portal api
+        if (strpos($request->getPathInfo(), '/portal/api') === 0) {
+            return;
+        }
+
         // rate limit first
         $check = new UploadAbuseCheck($this->getUser(), $request->getClientIp());
         $this->getAntiAbuseService()->check($check);
