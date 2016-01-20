@@ -2,6 +2,7 @@ import { createReducer } from 'Ampliflux';
 import { setFullPayload, setValue, async, togglePayloadInCollection, handleMassAction, pushPayloadToCollection } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/listActions';
 import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import invariant from 'invariant';
 
 const initialState = {
   listParams: {
@@ -36,6 +37,16 @@ export default createReducer(initialState, {
   [actions.unload]: setValue('elements', []),
   [actions.loadList]: async({
     success: (state, payload) => {
+      invariant(
+        Array.isArray(payload.ids),
+        "Reducer actions.loadList expects payload.ids to be an Array. Got %s",
+        payload.ids
+      );
+      invariant(
+        'object' === typeof payload.pagination,
+        "Reducer actions.loadList expects payload.pagination to be an Object. Got %s",
+        payload.pagination
+      );
       return state
         .set('elements', Immutable.fromJS(payload.ids))
         .set('pagination', Immutable.fromJS(payload.pagination));
