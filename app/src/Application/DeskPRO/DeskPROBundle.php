@@ -32,6 +32,7 @@
 namespace Application\DeskPRO;
 
 use Application\DeskPRO\DependencyInjection\AppSecretPass;
+use Application\DeskPRO\DependencyInjection\Compiler\AppVariablePass;
 use Application\DeskPRO\DependencyInjection\CoreExtension;
 use Application\DeskPRO\DependencyInjection\DoctrineEntityListenerPass;
 use Application\DeskPRO\DependencyInjection\ElasticaClientPass;
@@ -53,6 +54,7 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 
         $container->registerExtension(new CoreExtension());
         $container->registerExtension(new SearchExtension());
+        $container->addCompilerPass(new AppVariablePass());
         $container->addCompilerPass(new AppSecretPass());
         $container->addCompilerPass(new ElasticaClientPass());
         $container->addCompilerPass(new DoctrineEntityListenerPass());

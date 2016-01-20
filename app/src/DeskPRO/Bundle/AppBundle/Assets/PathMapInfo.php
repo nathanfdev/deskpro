@@ -118,7 +118,7 @@ class PathMapInfo
     public function setDeskproPath($path = '/')
     {
         $this->type = self::DESKPRO_PATH;
-        $this->path = '/'.trim($path);
+        $this->path = '/'.trim($path, '/');
 
         return $this;
     }
@@ -131,7 +131,7 @@ class PathMapInfo
     public function setRootPath($path = '/')
     {
         $this->type = self::ROOT_PATH;
-        $this->path = '/'.trim($path);
+        $this->path = '/'.trim($path, '/');
 
         return $this;
     }
@@ -145,7 +145,7 @@ class PathMapInfo
      */
     public function addUri($url)
     {
-        $url = rtrim($url);
+        $url = rtrim($url, '/');
 
         $this->type = self::URL;
 

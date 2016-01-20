@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Templating;
 
 use Application\DeskPRO\App;
@@ -37,7 +36,7 @@ use Application\DeskPRO\Service\JIRA;
 use DeskPRO\Kernel\License;
 use Symfony\Bundle\FrameworkBundle\Templating\GlobalVariables as BaseGlobalVariables;
 
-class GlobalVariables extends BaseGlobalVariables
+class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInterface
 {
     /** @var array */
     protected $variables = array();

@@ -171,7 +171,7 @@ class PackagesFactory
 
                     return $pack;
                 } else {
-                    $pack = new PathPackage($req->getBasePath().$p->getPath(), $version);
+                    $pack = new PathPackage(rtrim($req->getBasePath(), '/').$p->getPath(), $version);
 
                     return $pack;
                 }
