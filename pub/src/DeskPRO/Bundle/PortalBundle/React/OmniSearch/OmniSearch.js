@@ -2,24 +2,10 @@ import React, { PropTypes } from 'react';
 import PortalHttp from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 import PortalUrlGenerator from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
 import OmniSearchResultSection from 'DeskPRO/Bundle/PortalBundle/React/OmniSearch/OmniSearchResultSection';
+import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import _ from 'lodash';
 import $ from 'jquery';
 import moment from 'moment';
-
-// Remove?
-// class SearchType extends React.Component {
-//
-//  toggle() {
-//    this.props.toggleType(this.props.type);
-//  }
-//  render() {
-//    return (
-//      <li><a className="omnisearch-type" onClick={this.toggle.bind(this)}>
-//        {this.props.active ? <i className="fa fa-check"></i> : null} {this.props.name}</a>
-//      </li>
-//    );
-//  }
-// }
 
 export default class OmniSearch extends React.Component {
 
@@ -87,16 +73,13 @@ export default class OmniSearch extends React.Component {
         event.preventDefault();
       }
     });
-
-    document.addEventListener('click', this.documentClickHandler.bind(this));
   }
 
   componentWillUnmount() {
     window.clearInterval(this.interval);
-    document.removeEventListener('click', this.documentClickHandler.bind(this));
   }
 
-  documentClickHandler(e) {
+  onClickOut = (e) => {
     const $target = $(e.target);
     // if we are clicking inside the search results its ok. but otherwise, we want to clear/close the search.
     if (!$target.closest('.expanded-search-results').length
@@ -106,7 +89,7 @@ export default class OmniSearch extends React.Component {
       this.state.$input.val('');
       this.doSearch({ q: '' }); // reset/close search
     }
-  }
+  };
 
   doSearch(queryModifications) {
     const lastQuery = this.state.searchQuery || {};
@@ -212,34 +195,36 @@ export default class OmniSearch extends React.Component {
     }
 
     return (
-      <div
-        ref="searchDropdown"
-        className="expanded-search-results"
-        style={{
-          display: this.state.searchQuery.q.length > 0 ? 'block' : 'none',
-          width: this.state.$input.closest('.search-form').width()
-        }}>
+      <ClickOut onClickOut={this.onClickOut}>
+        <div
+          ref="searchDropdown"
+          className="expanded-search-results"
+          style={{
+            display: this.state.searchQuery.q.length > 0 ? 'block' : 'none',
+            width: this.state.$input.closest('.search-form').width()
+          }}>
 
-        {this.state.doSpin || (!this.doResultsExist() && this.state.userTyping)
-          ? <div className="search-result-collection-loading"></div>
-          : this.renderResults()
-        }
+          {this.state.doSpin || (!this.doResultsExist() && this.state.userTyping)
+            ? <div className="search-result-collection-loading"></div>
+            : this.renderResults()
+          }
 
-        <div className="search-results-footer">
-          <a href={PortalUrlGenerator.path('/new-ticket')}>
-            <i className="fa fa-comment"></i>
-            <span>Contact Us</span>
-          </a>
-          <a href={PortalUrlGenerator.path('/feedback')}>
-            <i className="fa fa-list"></i>
-            <span>Submit Feedback</span>
-          </a>
-          <a href="#">
-            <i className="fa fa-comments"></i>
-            <span>Start Chat Session</span>
-          </a>
+          <div className="search-results-footer">
+            <a href={PortalUrlGenerator.path('/new-ticket')}>
+              <i className="fa fa-comment"></i>
+              <span>Contact Us</span>
+            </a>
+            <a href={PortalUrlGenerator.path('/feedback')}>
+              <i className="fa fa-list"></i>
+              <span>Submit Feedback</span>
+            </a>
+            <a href="#">
+              <i className="fa fa-comments"></i>
+              <span>Start Chat Session</span>
+            </a>
+          </div>
         </div>
-      </div>
+      </ClickOut>
     );
   }
 }
