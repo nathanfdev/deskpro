@@ -1,24 +1,50 @@
 import { createAction } from 'Ampliflux';
 import * as IM from 'DeskPRO/Bundle/AgentBundle/Services/Api/IM';
-import { openChat } from './uiActions';
 import { releaseChats, setChatsRequest } from '../RecordStores/Actions/chatsActions';
+
+export const toggleOverlay = createAction('IM_TOGGLE_OVERLAY');
+
+export const openChat = createAction('IM_OPEN_CHAT');
+
+
+export const markChatAsManuallyClosed = createAction(
+  'MARK_CHAT_AS_CLOSED',
+  (chatId) => chatId
+);
+
+export const closeChat = createAction(
+  'IM_CLOSE_CHAT',
+  (chatId) => (dispatch) => {
+    dispatch(markChatAsManuallyClosed(chatId));
+    return chatId;
+  }
+);
 
 export const startChat = createAction(
   'IM_START_CHAT',
-  (targetId, targetType = 'agent', chatId = null) => (dispatch, getState) => {
-    dispatch(openChat(targetId, targetType));
+  (targetId, targetType = 'agent', chatId = null, forced = false) => (dispatch, getState) => {
+    if (!(forced && getState().IM.chats.getIn(['manuallyClosed', chatId]))) {
+      dispatch(openChat());
+    }
     return new Promise(
       (resolve, reject) => {
         const store = getState().RecordStores.IM.chats;
-        if (chatId && store.get('records').has(chatId)) {
-          return resolve(store.get('records').get(chatId).toJS());
+        if (chatId && store.get('records').toJS()[chatId]) {
+          return resolve(store.get('records').toJS()[chatId]);
         }
-        return IM.startChat(targetId, targetType)
+        let method;
+        if (chatId) {
+          method = IM.loadChat.bind(null, chatId);
+        } else {
+          method = IM.startChat.bind(null, targetId, targetType);
+        }
+        return method.call()
           .success((response) => {
             const records = {};
             dispatch(releaseChats('recent', [response.data.id]));
             records[response.data.id] = response.data;
-            dispatch(setChatsRequest('recent', records, [response.data.id]));
+            dispatch(setChatsRequest('recent', records, [parseInt(response.data.id, 10)]));
+            dispatch(markChatAsManuallyClosed(response.data.id));
             return resolve(response.data);
           })
           .error(response => reject(response));
@@ -26,4 +52,5 @@ export const startChat = createAction(
     );
   }
 );
+
 

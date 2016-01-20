@@ -8,6 +8,10 @@ export function loadChats(missingIds) {
   return DpApi.sendGet('DP_API/agent_chats/?ids=' + missingIds.toArray().join(','));
 }
 
+export function loadChat(id) {
+  return DpApi.sendGet('DP_API/agent_chats/' + parseInt(id, 10));
+}
+
 export function loadMessages(chatId, searchQuery = '', page = null) {
   const params = {
     search: searchQuery

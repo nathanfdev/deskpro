@@ -2,8 +2,7 @@ import React, { PropTypes } from 'react';
 import { AgentsList } from './Agents/AgentsList';
 import { TeamsList } from './Teams/TeamsList';
 import { DepartmentsList } from './Departments/DepartmentsList';
-import * as actions from '../Actions/chatsActions';
-import * as ui from '../Actions/uiActions';
+import * as chatsActions from '../Actions/chatsActions';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 
 export class IMOverlay extends React.Component {
@@ -13,12 +12,12 @@ export class IMOverlay extends React.Component {
   };
 
   onClickOut = () => {
-    this.props.dispatch(ui.toggleOverlay());
+    this.props.dispatch(chatsActions.toggleOverlay());
   };
 
   onStartChat = event => {
     event.preventDefault();
-    this.props.dispatch(actions.startChat('0', 'everyone'));
+    this.props.dispatch(chatsActions.startChat('0', 'everyone'));
   };
 
   render() {

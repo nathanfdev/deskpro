@@ -2,8 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 import { List as RecentList } from './Recent/List';
-// ui
-import * as uiActions from '../Actions/uiActions';
+import * as chatsActions from '../Actions/chatsActions';
 
 @connect()
 export class HeaderWidget extends React.Component {
@@ -12,7 +11,7 @@ export class HeaderWidget extends React.Component {
   };
 
   onClick = () => {
-    this.props.dispatch(uiActions.toggleOverlay());
+    this.props.dispatch(chatsActions.toggleOverlay());
   };
 
   render() {

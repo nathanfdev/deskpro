@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import Loader from 'react-loader';
 import { connect } from 'react-redux';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
-import * as ui from '../../Actions/uiActions';
+import * as chatsActions from '../../Actions/chatsActions';
 
 // components
 import { Footer } from './Footer';
@@ -75,7 +75,7 @@ export class Chat extends React.Component {
   };
 
   handleOnClose = () => {
-    this.props.dispatch(ui.closeChat());
+    this.props.dispatch(chatsActions.closeChat(this.props.current.id));
   };
 
   handleSearch = (event) => {

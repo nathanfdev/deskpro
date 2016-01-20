@@ -1,7 +1,6 @@
 import EventEmitter2 from 'eventemitter2';
 import PusherClient from 'DeskPRO/Component/Notification/Client/PusherClient';
 import PollingClient from 'DeskPRO/Component/Notification/Client/PollingClient';
-import { newActionAlerts } from '../Modules/Application/Actions/notificationActions.js';
 
 export class NotificationService {
 
@@ -44,7 +43,7 @@ export class NotificationService {
   }
 
   startPolling() {
-    this.eventEmitter.on('action_alert', (data) => this.options.dispatch(newActionAlerts(data)));
+    this.eventEmitter.on('action_alert', (data) => this.options.actionAlertsHandler.handle(data));
     this.clients.map(client => client.bind('private-channel-' + this.options.user.get('id'), 'action_alert'));
   }
 

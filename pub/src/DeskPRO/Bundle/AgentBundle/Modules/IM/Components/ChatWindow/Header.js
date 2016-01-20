@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import Loader from 'react-loader';
 import { connect } from 'react-redux';
-import * as ui from '../../Actions/uiActions';
 // agents
 import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
