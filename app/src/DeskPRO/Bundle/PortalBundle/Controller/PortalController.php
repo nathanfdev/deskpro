@@ -248,12 +248,12 @@ class PortalController extends AbstractController
      */
     public function uploadBlobAction(Request $request)
     {
-        if ($response = $this->checkRateLimitAndCsrf($request)) {
+        $response = $this->checkRateLimitAndCsrf($request);
+        if ($response) {
             return $response;
         }
 
         $file = $request->files->get('file[blob]', null, true);
-
         if (!$file instanceof UploadedFile) {
             return new JsonResponse([
                 'success' => false,
@@ -263,12 +263,16 @@ class PortalController extends AbstractController
             ]);
         }
 
-        if ($error = $this->get('attachment_accepter')->getError($file, 'user')) {
+        $error = $this->get('attachment_accepter')->getError($file, 'user');
+        if ($error) {
             $error_code = $error['error_code'];
             $params     = [];
-            if ($error_detail = $error['error_detail']) {
+
+            $error_detail = $error['error_detail'];
+            if ($error_detail) {
                 $params = ['detail' => $error_detail];
             }
+
             $phrase = sprintf('portal.forms.error_accept_%s', $error_code);
 
             return new JsonResponse([
