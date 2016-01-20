@@ -1782,7 +1782,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				});
 
 				$discard.on('click', function(){
-					d.reset();
+					d.reset(true);
 				});
 
 				redactor && self.textarea.getEditor().on('keyup.draft change.draft synced.draft', function(){
@@ -1856,7 +1856,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
         this.set(item, backup);
         !backup && $discard.show();
       },
-      reset: function () {
+      reset: function (reloadForm) {
         var item = this.get()
           , $form = self.getEl('newticket')
           , $discard = $('#discard-draft-btn', $form)
@@ -1874,8 +1874,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
         window.localStorage.removeItem(this.key());
 
 		  // reload self
-		  DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/new', {ignoreExist:true});
-		  self.closeSelf();
+		  if (reloadForm) {
+			  DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/new', {ignoreExist: true});
+			  self.closeSelf();
+		  }
       },
       isEmpty: function() {
         var item = this.get();
