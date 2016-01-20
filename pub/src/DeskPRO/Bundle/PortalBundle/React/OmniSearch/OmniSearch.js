@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import PortalHttp from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 import PortalUrlGenerator from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
 import OmniSearchResultSection from 'DeskPRO/Bundle/PortalBundle/React/OmniSearch/OmniSearchResultSection';
@@ -22,6 +22,11 @@ import moment from 'moment';
 // }
 
 export default class OmniSearch extends React.Component {
+
+  static propTypes = {
+    input: PropTypes.object,
+    close: PropTypes.object
+  };
 
   constructor(props) {
     super(props);
@@ -75,7 +80,7 @@ export default class OmniSearch extends React.Component {
     }, 100); // every 100ms check if the user has not typed in a while or not
 
     // clickaway handler
-    $(document).on('keypress', function(event) {
+    $(document).on('keypress', event => {
       if (event.which === 13) { // Checks for the enter key
         // without this, hitting "enter" to view the search results page would count as a "click"
         // outside of the ominsearch and clear the search
@@ -144,87 +149,96 @@ export default class OmniSearch extends React.Component {
     return grandTotal > 0;
   }
 
-  render() {
+  renderResults() {
     const data = this.state.data;
 
+    if (this.doResultsExist()) {
+      return (
+        <div>
+          <OmniSearchResultSection
+            name="Tickets"
+            nameApi="ticket"
+            nameIcon="fa fa-support"
+            initialResult={'ticket' in data ? data.ticket : []}
+            q={this.state.search_query.q}
+            />
+
+          <OmniSearchResultSection
+            name="Knowledge base"
+            nameApi="article"
+            nameIcon="fa fa-file-text-o"
+            initialResult={'article' in data ? data.article : []}
+            q={this.state.search_query.q}
+            />
+
+          <OmniSearchResultSection
+            name="Downloads"
+            nameApi="download"
+            nameIcon="fa fa-download"
+            initialResult={'download' in data ? data.download : []}
+            q={this.state.search_query.q}
+            />
+
+          <OmniSearchResultSection
+            name="News"
+            nameApi="news"
+            nameIcon="fa fa-file-text-o"
+            initialResult={'news' in data ? data.news : []}
+            q={this.state.search_query.q}
+            />
+
+          <OmniSearchResultSection
+            name="Feedback"
+            nameApi="feedback"
+            nameIcon="fa fa-comments"
+            initialResult={'feedback' in data ? data.feedback : []}
+            q={this.state.search_query.q}
+            />
+        </div>
+      );
+    }
+
+    return (
+      <div className="search-result-collection-empty">
+        <div>No Results found :(</div>
+      </div>
+    );
+  }
+
+  render() {
     if (this.state.search_query.q.length < 3) {
       return null;
     }
 
     return (
-        <div
-            ref="searchDropdown"
-            className="expanded-search-results"
-            style={{
-              display: this.state.search_query.q.length > 0 ? 'block' : 'none',
-              width: this.state.$input.closest('.search-form').width()
-            }}>
-          {
-            this.state.doSpin || (!this.doResultsExist() && this.state.userTyping) ? (
-              <div className="search-result-collection-loading"></div>
-            ) :
-              (this.doResultsExist() ?
-              (<div>
-                <OmniSearchResultSection
-                  name="Tickets"
-                  nameApi="ticket"
-                  nameIcon="fa fa-support"
-                  initialResult={'ticket' in data ? data.ticket : []}
-                  q={this.state.search_query.q}
-                  />
+      <div
+        ref="searchDropdown"
+        className="expanded-search-results"
+        style={{
+          display: this.state.search_query.q.length > 0 ? 'block' : 'none',
+          width: this.state.$input.closest('.search-form').width()
+        }}>
 
-                <OmniSearchResultSection
-                  name="Knowledge base"
-                  nameApi="article"
-                  nameIcon="fa fa-file-text-o"
-                  initialResult={'article' in data ? data.article : []}
-                  q={this.state.search_query.q}
-                  />
+        {this.state.doSpin || (!this.doResultsExist() && this.state.userTyping)
+          ? <div className="search-result-collection-loading"></div>
+          : this.renderResults()
+        }
 
-                <OmniSearchResultSection
-                  name="Downloads"
-                  nameApi="download"
-                  nameIcon="fa fa-download"
-                  initialResult={'download' in data ? data.download : []}
-                  q={this.state.search_query.q}
-                  />
-
-                <OmniSearchResultSection
-                  name="News"
-                  nameApi="news"
-                  nameIcon="fa fa-file-text-o"
-                  initialResult={'news' in data ? data.news : []}
-                  q={this.state.search_query.q}
-                  />
-
-                <OmniSearchResultSection
-                  name="Feedback"
-                  nameApi="feedback"
-                  nameIcon="fa fa-comments"
-                  initialResult={'feedback' in data ? data.feedback : []}
-                  q={this.state.search_query.q}
-                  />
-              </div>) :
-              (<div className="search-result-collection-empty">
-                <div>No Results found :(</div>
-              </div>))
-          }
-
-          <div className="search-results-footer">
-            <a href={PortalUrlGenerator.path('/new-ticket')}>
-              <i className="fa fa-comment"></i>
-              <span>Contact Us</span>
-            </a>
-            <a href={PortalUrlGenerator.path('/feedback')}>
-              <i className="fa fa-list"></i>
-              <span>Submit Feedback</span>
-            </a>
-            <a href="#">
-              <i className="fa fa-comments"></i>
-              <span>Start Chat Session</span>
-            </a>
-          </div>
+        <div className="search-results-footer">
+          <a href={PortalUrlGenerator.path('/new-ticket')}>
+            <i className="fa fa-comment"></i>
+            <span>Contact Us</span>
+          </a>
+          <a href={PortalUrlGenerator.path('/feedback')}>
+            <i className="fa fa-list"></i>
+            <span>Submit Feedback</span>
+          </a>
+          <a href="#">
+            <i className="fa fa-comments"></i>
+            <span>Start Chat Session</span>
+          </a>
         </div>
+      </div>
     );
   }
 }
