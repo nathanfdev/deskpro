@@ -84,9 +84,9 @@ class ChatValidateEmailType extends AbstractType
         $data = $event->getData();
         $form = $event->getForm();
 
-        // Reset validation code from the request if no entity code
+        // No validation code in chat entity, no need to validate
         if (!$form->getData()) {
-            $event->setData(null);
+            $form->addError(new FormError('Email should not be validated.'));
 
             return;
         }

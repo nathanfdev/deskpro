@@ -123,8 +123,9 @@ Feature: Widget Chat
     When I send a POST request to "/portal/api/chats/1/validate/email?__sid=1-AAAAAAAAAAAAAAA" with parameters:
       | key  | value     |
       | code | some code |
-    Then the response status code should be 204
-    And the response should be empty
+    Then the response status code should be 400
+    And the response should be in JSON
+    And the JSON node "fields.code.errors[0].message" should be equal to "Email should not be validated."
 
   Scenario: I send empty validation code
     When I send a POST request to "/portal/api/chats/4/validate/email?__sid=1-AAAAAAAAAAAAAAA"
@@ -277,13 +278,20 @@ Feature: Widget Chat
     And the JSON node "chat_info.data.date_created" should exist
     And the JSON node "chat_info.data.date_ended" should exist
     And the JSON node "chat_info.data.ended_by" should exist
-    And the JSON node "new_messages.data[0].id" should exist
-    And the JSON node "new_messages.data[0].author_id" should exist
-    And the JSON node "new_messages.data[0].content" should exist
+    And the JSON node "new_messages.data[0].id" should be equal to 1
+    And the JSON node "new_messages.data[0].author_id" should be equal to 0
+    And the JSON node "new_messages.data[0].content" should contain "phrase_id"
+    And the JSON node "new_messages.data[0].content" should contain "message_started"
     And the JSON node "new_messages.data[0].date_created" should exist
-    And the JSON node "new_messages.data[0].is_html" should exist
-    And the JSON node "new_messages.data[0].is_sys" should exist
-    And the JSON node "new_messages.data[0].is_user" should exist
+    And the JSON node "new_messages.data[0].is_html" should be equal to 0
+    And the JSON node "new_messages.data[0].is_sys" should be equal to 1
+    And the JSON node "new_messages.data[0].is_user" should be equal to 0
+    And the JSON node "new_messages.data[1].id" should not exist
+    When I send a GET request to "/portal/api/chats/1/polling?last_message_id=1&__sid=1-AAAAAAAAAAAAAAA"
+    Then the response status code should be 200
+    And the response should be in JSON
+    And the JSON node "chat_info.data.id" should exist
+    And the JSON node "new_messages.data[0].id" should not exist
 
   # Chat end/reopen
   Scenario: I end and reopen chat
