@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import PortalPhrases from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 const qq = require('exports?qq!fine-uploader/fine-uploader/fine-uploader.js');
@@ -117,8 +117,8 @@ export default class PortalAttach extends React.Component {
 class PortalAttachList extends React.Component {
 
   static propTypes = {
-    handleDelete: React.PropTypes.func,
-    files: React.PropTypes.array.isRequired
+    handleDelete: PropTypes.func,
+    files: PropTypes.array.isRequired
   };
 
   handleDelete = (ev, file) => {
@@ -136,11 +136,10 @@ class PortalAttachList extends React.Component {
 
     return (
       <ul>
-        {files.map(f => {
-          return f.status === 'done'
-            ? <PortalAttachListItem file={f} key={f.id} onDelete={this.handleDelete} />
-            : <PortalAttachListItemUploading file={f} key={f.id} />;
-        })}
+        {files.map(f => f.status === 'done'
+          ? <PortalAttachListItem file={f} key={f.id} onDelete={this.handleDelete} />
+          : <PortalAttachListItemUploading file={f} key={f.id} />
+        )}
       </ul>
     );
   }
@@ -149,7 +148,7 @@ class PortalAttachList extends React.Component {
 class PortalAttachListItemUploading extends React.Component {
 
   static propTypes = {
-    file: React.PropTypes.object.isRequired
+    file: PropTypes.object.isRequired
   };
 
   render() {
@@ -167,8 +166,8 @@ class PortalAttachListItemUploading extends React.Component {
 class PortalAttachListItem extends React.Component {
 
   static propTypes = {
-    file: React.PropTypes.object.isRequired,
-    onDelete: React.PropTypes.func
+    file: PropTypes.object.isRequired,
+    onDelete: PropTypes.func
   };
 
   onDelete = (ev) => {
