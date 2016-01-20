@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import PortalPhrases from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
-import PortalUrlGenerator from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator";
+import PortalUrlGenerator from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
 
 const qq = require('exports?qq!fine-uploader/fine-uploader/fine-uploader.js');
 
