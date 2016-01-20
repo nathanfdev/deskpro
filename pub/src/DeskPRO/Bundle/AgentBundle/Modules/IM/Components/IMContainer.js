@@ -5,7 +5,7 @@ import { IMOverlay } from './IMOverlay';
 import { Chat } from './ChatWindow/Chat';
 
 @connect(state => ({
-  current: state.IM.ui.get('current'),
+  current: state.IM.chats.get('current'),
   chating: state.IM.ui.get('chating'),
   overlayShown: state.IM.ui.get('overlayShown')
 }))
@@ -33,9 +33,9 @@ export class IMContainer extends React.Component {
   };
 
   renderChat = () => {
-    let id = 'chat-with-' + this.props.current.get('chat_type');
-    if (this.props.current.get('chat_type') !== 'everyone') {
-      id += '-' + this.props.current.get('id');
+    let id = 'chat-with-' + this.props.current.chat_type;
+    if (this.props.current.chat_type !== 'everyone') {
+      id += '-' + this.props.current.id;
     }
     let node = document.getElementById(id);
     if (!node) {
