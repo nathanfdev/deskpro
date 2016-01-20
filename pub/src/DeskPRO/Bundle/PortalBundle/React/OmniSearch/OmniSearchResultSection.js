@@ -17,6 +17,7 @@ class SearchResultCollection {
       // exit if we have it in the collection already
       return null;
     }
+
     this.items[item.id] = item;
     this.ordered_items.push(item);
   }
@@ -34,27 +35,14 @@ class SearchResultCollection {
   }
 }
 
-class ListLink extends React.Component {
-
-  static propTypes = {
-    url: PropTypes.string,
-    text: PropTypes.string
-  };
-
-  render() {
-    const { url, text } = this.props;
-
-    return <li><a href={url}>{text}</a></li>;
-  }
-}
-
 export default class OmniSearchResultSection extends React.Component {
 
   static propTypes = {
     name: PropTypes.string,
     nameApi: PropTypes.string,
     nameIcon: PropTypes.string,
-    initialResult: PropTypes.object
+    initialResult: PropTypes.object,
+    q: PropTypes.string
   };
 
   constructor(props) {
@@ -167,6 +155,7 @@ export default class OmniSearchResultSection extends React.Component {
     if (this.state.items.isEmpty()) {
       return null;
     }
+
     return (
       <div className="search-result-collection">
         <h1><i className={this.props.nameIcon}></i> {this.props.name}</h1>
@@ -181,7 +170,12 @@ export default class OmniSearchResultSection extends React.Component {
             } else if (this.state.nameApi === 'download') {
               t = (<span><span dangerouslySetInnerHTML={{__html: item.icon_html}}></span><span className="item-name">{item.name}</span></span>);
             }
-            return (<ListLink key={item.id} url={item.url} text={t}/>);
+
+            return (
+              <li key={item.id}>
+                <a href={item.url}>{t}</a>
+              </li>
+            );
           })}
         </ul>
 
@@ -190,10 +184,7 @@ export default class OmniSearchResultSection extends React.Component {
             className="fa fa-angle-double-down"></i></a>
         ) : null}
 
-        { this.state.doSpin ? (
-          <div className="search-result-collection-loading inline-loading"></div>
-        ) : null }
-
+        {this.state.doSpin && <div className="search-result-collection-loading inline-loading"></div>}
       </div>
     );
   }
