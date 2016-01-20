@@ -51,17 +51,11 @@ class PortalSupportExtension extends \Twig_Extension
     private $container;
 
     /**
-     * @var \DeskPRO\Bundle\PortalBundle\Brand\BrandStack
+     * @param ContainerInterface $container
      */
-    private $brand_stack;
-
-    /**
-     * @param ContainerInterface $continer
-     */
-    public function __construct(ContainerInterface $continer)
+    public function __construct(ContainerInterface $container)
     {
-        $this->container   = $continer;
-        $this->brand_stack = $continer->get('brand_stack');
+        $this->container = $container;
     }
 
     public function getTokenParsers()
@@ -189,7 +183,7 @@ class PortalSupportExtension extends \Twig_Extension
     {
         $n = strtolower($name);
 
-        return (bool) $this->brand_stack->getActive()->getSetting(sprintf('user.portal_tab_%s', $n));
+        return (bool) $this->container->get('brand_stack')->getActive()->getSetting(sprintf('user.portal_tab_%s', $n));
     }
 
     /**
@@ -197,7 +191,7 @@ class PortalSupportExtension extends \Twig_Extension
      */
     public function getOrderedTabs()
     {
-        return explode(',', $this->brand_stack->getActive()->getSetting('user.portal_tabs_order'));
+        return explode(',', $this->container->get('brand_stack')->getActive()->getSetting('user.portal_tabs_order'));
     }
 
     /**
@@ -475,13 +469,13 @@ class PortalSupportExtension extends \Twig_Extension
         $date2 = $this->ensureDateTime($date2);
 
         if (!$date1 instanceof \DateTime) {
-            $date_str = (string) $date;
+            $date_str = (string) $date1;
 
             return "invalid_date($date_str)";
         }
 
         if (!$date2 instanceof \DateTime) {
-            $date_str = (string) $date;
+            $date_str = (string) $date1;
 
             return "invalid_date($date_str)";
         }
@@ -635,7 +629,7 @@ class PortalSupportExtension extends \Twig_Extension
      */
     private function getActiveTheme()
     {
-        $brand_container = $this->brand_stack->getActive();
+        $brand_container = $this->container->get('brand_stack')->getActive();
         $brand_theme     = $this->container->get('portal_brand_theme_loader')->getPortalBrandTheme($brand_container->getBrand());
         $theme           = $brand_theme->getActiveTheme();
 

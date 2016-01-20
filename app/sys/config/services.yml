@@ -1,8 +1,22 @@
 services:
+
+  ######################################################################################################################
+  # Misc
+  ######################################################################################################################
+
   deskpro.interface_info:
     class: DeskPRO\Bundle\AppBundle\Request\InterfaceInfo
     factory_class: DeskPRO\Bundle\AppBundle\Request\InterfaceInfo
     factory_method: create
+
+  # This is a copy of the normal doctrine cache warmer, except we've set a high
+  # priority so its done first. See also LazyWamersPass
+  doctrine.orm.proxy_cache_warmer:
+    class: %doctrine.orm.proxy_cache_warmer.class%
+    arguments: [@doctrine]
+    public: false
+    tags:
+      - { name: kernel.cache_warmer, priority: 100 }
 
   ######################################################################################################################
   # Brands

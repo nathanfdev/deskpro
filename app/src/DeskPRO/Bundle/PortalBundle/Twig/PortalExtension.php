@@ -45,11 +45,11 @@ class PortalExtension extends \Twig_Extension
     private $container;
 
     /**
-     * @param ContainerInterface $continer
+     * @param ContainerInterface $container
      */
-    public function __construct(ContainerInterface $continer)
+    public function __construct(ContainerInterface $container)
     {
-        $this->container = $continer;
+        $this->container = $container;
     }
 
     public function getBrandStack()
