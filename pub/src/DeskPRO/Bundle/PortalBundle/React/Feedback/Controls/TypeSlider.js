@@ -1,24 +1,39 @@
-import React from "react"
-import _ from "lodash"
+import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 
 export default class TypeSlider extends React.Component {
-  click(e) {
-    e.preventDefault();
-    this.props.toggleType(this.props.id);
-  }
+
+  static propTypes = {
+    id: PropTypes.number,
+    label: PropTypes.string,
+    active: PropTypes.bool,
+    toggleType: PropTypes.func
+  };
+
+  onClick = event => {
+    event.preventDefault();
+
+    const { toggleType, id } = this.props;
+    toggleType(id);
+  };
 
   render() {
+    const { id, active, label } = this.props;
+
     return (
       <li>
         <div className="slider-panel">
-          <a href={'/feedback/browse/type-' + this.props.id}
-             className={this.props.active ? "slider" : "slider off"}
-             onClick={this.click.bind(this)}>
-            <span className="slider-status">{this.props.active ? "on" : "off"}</span>
-            <span className="slider-icon"><i className="fa fa-check"></i></span>
+          <a href={'/feedback/browse/type-' + id}
+             className={classNames('slider', {'off': !active})}
+             onClick={this.onClick}>
+
+            <span className="slider-status">{active ? 'on' : 'off'}</span>
+            <span className="slider-icon">
+              <i className={classNames('fa', active ? 'fa-check' : 'fa-times')} />
+            </span>
           </a>
-          <span className="slider-label" onClick={this.click.bind(this)}>
-            {this.props.label}
+          <span className="slider-label" onClick={this.onClick}>
+            {label}
           </span>
         </div>
       </li>
