@@ -10,7 +10,7 @@ import AppReducers from './AgentApp_Reducers.js';
 import { DpAppContainer } from './Modules/Application/Components/DpAppContainer';
 import { preloadData } from './Modules/Application/Actions/bootstrapActions';
 import { IntlProvider } from 'react-intl';
-import createBrowserHistory from 'history/lib/createBrowserHistory';
+import history from './Services/history';
 import Immutable from 'immutable';
 window.Immutable = Immutable;
 
@@ -64,7 +64,7 @@ export class AgentApp {
       <div>
         <Provider store={store}>
           <IntlProvider locale={window.DP_LOCALE} messages={window.DP_LANG}>
-            <DpAppContainer history={createBrowserHistory()} />
+            <DpAppContainer /** BC todo remove history prop */ history={history} />
           </IntlProvider>
         </Provider>
       </div>,

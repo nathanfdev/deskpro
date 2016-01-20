@@ -9,6 +9,8 @@ import { IMContainer } from '../../IM/Components/IMContainer';
 import { PreferencesContainer } from './Preferences/PreferencesContainer';
 import { NotificationServiceContainer } from './Notifications/NotificationServiceContainer.js';
 import { showWelcomePageSelector, coverShownSelector } from '../Selectors/dpWindow';
+import { loadMe } from '../RecordStores/Actions/meActions';
+import { releasePeopleRequest } from '../../CRM/RecordStores/Actions/peopleActions';
 
 @connect(state => ({
   welcomePageShown: showWelcomePageSelector(state),
@@ -28,7 +30,10 @@ export class DpAppRouteContainer extends React.Component {
   };
 
   componentDidMount() {
+    this.props.dispatch(releasePeopleRequest('me'));
+    this.props.dispatch(loadMe());
     this.props.dispatch(showWelcomePage());
+
     this.hideWelcomePage();
   }
 
