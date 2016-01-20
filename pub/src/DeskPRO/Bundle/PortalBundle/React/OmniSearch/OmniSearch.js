@@ -42,7 +42,7 @@ export default class OmniSearch extends React.Component {
           curpage: 1
         }
       },
-      search_query: {
+      searchQuery: {
         q: ''
       }
     };
@@ -110,14 +110,14 @@ export default class OmniSearch extends React.Component {
   }
 
   doSearch(queryModifications) {
-    const lastQuery = this.state.search_query || {};
-    const search_query = {...lastQuery, ...queryModifications};
+    const lastQuery = this.state.searchQuery || {};
+    const searchQuery = {...lastQuery, ...queryModifications};
     this.setState({
       lastSearch: moment(),
-      search_query
+      searchQuery
     });
 
-    if (!search_query.q || search_query.q.length < 3) {
+    if (!searchQuery.q || searchQuery.q.length < 3) {
       // we need a query with a length of at least 3 for the server to do any real searching
       // so don't do a HTTP request if we don't at least have that
       return;
@@ -127,11 +127,11 @@ export default class OmniSearch extends React.Component {
       doSpin: true
     });
 
-    PortalHttp.sendGet('DP_URL/search/omni', { data: search_query }).then((r) => {
+    PortalHttp.sendGet('DP_URL/search/omni', { data: searchQuery }).then((r) => {
       if (!r.isError()) {
         this.setState({
           data: r.data.data,
-          search_query,
+          searchQuery,
           doSpin: false
         });
       }
@@ -160,7 +160,7 @@ export default class OmniSearch extends React.Component {
             nameApi="ticket"
             nameIcon="fa fa-support"
             initialResult={'ticket' in data ? data.ticket : []}
-            q={this.state.search_query.q}
+            q={this.state.searchQuery.q}
             />
 
           <OmniSearchResultSection
@@ -168,7 +168,7 @@ export default class OmniSearch extends React.Component {
             nameApi="article"
             nameIcon="fa fa-file-text-o"
             initialResult={'article' in data ? data.article : []}
-            q={this.state.search_query.q}
+            q={this.state.searchQuery.q}
             />
 
           <OmniSearchResultSection
@@ -176,7 +176,7 @@ export default class OmniSearch extends React.Component {
             nameApi="download"
             nameIcon="fa fa-download"
             initialResult={'download' in data ? data.download : []}
-            q={this.state.search_query.q}
+            q={this.state.searchQuery.q}
             />
 
           <OmniSearchResultSection
@@ -184,7 +184,7 @@ export default class OmniSearch extends React.Component {
             nameApi="news"
             nameIcon="fa fa-file-text-o"
             initialResult={'news' in data ? data.news : []}
-            q={this.state.search_query.q}
+            q={this.state.searchQuery.q}
             />
 
           <OmniSearchResultSection
@@ -192,7 +192,7 @@ export default class OmniSearch extends React.Component {
             nameApi="feedback"
             nameIcon="fa fa-comments"
             initialResult={'feedback' in data ? data.feedback : []}
-            q={this.state.search_query.q}
+            q={this.state.searchQuery.q}
             />
         </div>
       );
@@ -206,7 +206,7 @@ export default class OmniSearch extends React.Component {
   }
 
   render() {
-    if (this.state.search_query.q.length < 3) {
+    if (this.state.searchQuery.q.length < 3) {
       return null;
     }
 
@@ -215,7 +215,7 @@ export default class OmniSearch extends React.Component {
         ref="searchDropdown"
         className="expanded-search-results"
         style={{
-          display: this.state.search_query.q.length > 0 ? 'block' : 'none',
+          display: this.state.searchQuery.q.length > 0 ? 'block' : 'none',
           width: this.state.$input.closest('.search-form').width()
         }}>
 
