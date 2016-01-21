@@ -60,7 +60,10 @@ export default class PortalAttach extends React.Component {
     const files = this.state.files.slice();
     files.push(f);
 
-    this.setState({ files: files, lastError: null });
+    this.setState({
+      files: files,
+      lastError: null
+    });
   };
 
   onComplete = (id, name, res) => {
@@ -72,15 +75,17 @@ export default class PortalAttach extends React.Component {
         if (f.id !== id) {
           newFiles.push(f);
         } else {
-          const newF = Object.assign({}, f, {
+          newFiles.push({
+            ...f,
             status: 'done',
             blob: blob
           });
-          newFiles.push(newF);
         }
       });
 
-      this.setState({ files: newFiles });
+      this.setState({
+        files: newFiles
+      });
     } else {
       this.setState({
         files: this.state.files.filter(f => f.id !== id),
@@ -110,7 +115,9 @@ export default class PortalAttach extends React.Component {
             <span className="text">Drag a file in here or</span>
             <span className="fake-button">Choose a file</span>
           </span>
+
          <PortalAttachList files={this.state.files} onDelete={this.onDelete} />
+         {this.state.lastError && this.state.lastError.message}
       </div>
     );
   }
