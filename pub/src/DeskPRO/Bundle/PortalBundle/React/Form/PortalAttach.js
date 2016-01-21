@@ -32,8 +32,8 @@ export default class PortalAttach extends React.Component {
         params: params
       },
       callbacks: {
-        onUpload: this.beginUpload,
-        onComplete: this.doneUpload
+        onUpload: this.onUpload,
+        onComplete: this.onComplete
       }
     };
 
@@ -48,7 +48,7 @@ export default class PortalAttach extends React.Component {
     }
   }
 
-  beginUpload = (id, name) => {
+  onUpload = (id, name) => {
     const f = {
       id: id,
       filename: name,
@@ -62,7 +62,7 @@ export default class PortalAttach extends React.Component {
     this.setState({ files: files, lastError: null });
   };
 
-  doneUpload = (id, name, res) => {
+  onComplete = (id, name, res) => {
     if (res && res.success && res.success === true) {
       const blob = res.blob;
       const newFiles = [];
@@ -88,16 +88,17 @@ export default class PortalAttach extends React.Component {
     }
   };
 
-  handleDelete = (file) => {
+  onDelete = file => {
     const newFiles = [];
-
     this.state.files.forEach(f => {
       if (f.id !== file.id) {
         newFiles.push(f);
       }
     });
 
-    this.setState({ files: newFiles });
+    this.setState({
+      files: newFiles
+    });
   };
 
   render() {
@@ -108,7 +109,7 @@ export default class PortalAttach extends React.Component {
             <span className="text">Drag a file in here or</span>
             <span className="fake-button">Choose a file</span>
           </span>
-         <PortalAttachList files={this.state.files} handleDelete={this.handleDelete} />
+         <PortalAttachList files={this.state.files} onDelete={this.onDelete} />
       </div>
     );
   }
@@ -118,28 +119,21 @@ export default class PortalAttach extends React.Component {
 class PortalAttachList extends React.Component {
 
   static propTypes = {
-    handleDelete: PropTypes.func,
+    onDelete: PropTypes.func,
     files: PropTypes.array.isRequired
   };
 
-  handleDelete = (ev, file) => {
-    ev.preventDefault();
-    if (this.props.handleDelete) {
-      this.props.handleDelete(file);
-    }
-  };
-
   render() {
-    const files = this.props.files;
+    const { files, onDelete } = this.props;
     if (!files.length) {
       return null;
     }
 
     return (
       <ul>
-        {files.map(f => f.status === 'done'
-          ? <PortalAttachListItem file={f} key={f.id} onDelete={this.handleDelete} />
-          : <PortalAttachListItemUploading file={f} key={f.id} />
+        {files.map(file => file.status === 'done'
+          ? <PortalAttachListItem file={file} key={file.id} onDelete={onDelete} />
+          : <PortalAttachListItemUploading file={file} key={file.id} />
         )}
       </ul>
     );
@@ -153,11 +147,12 @@ class PortalAttachListItemUploading extends React.Component {
   };
 
   render() {
-    const f = this.props.file;
+    const { file } = this.props;
+
     return (
       <li>
-        <a href={f.url}>
-          {f.filename}
+        <a href={file.url}>
+          {file.filename}
         </a>
       </li>
     );
@@ -168,29 +163,30 @@ class PortalAttachListItem extends React.Component {
 
   static propTypes = {
     file: PropTypes.object.isRequired,
-    onDelete: PropTypes.func
+    onDelete: PropTypes.func.isRequired
   };
 
-  onDelete = (ev) => {
-    ev.preventDefault();
-    if (this.props.onDelete) {
-      this.props.onDelete(ev, this.props.file);
-    }
+  onDelete = event => {
+    event.preventDefault();
+
+    const { onDelete, file } = this.props;
+    onDelete(file);
   };
 
-  viewFile = (ev) => {
-    ev.preventDefault();
+  onViewFile = event => {
+    event.preventDefault();
     window.open(this.props.file.blob.url);
   };
 
   render() {
-    const f = this.props.file;
-    const blob = f.blob;
+    const { file } = this.props;
+    const blob = file.blob;
     const formName = `ticket[attachments][${blob.id}][blob_auth]`;
+
     return (
       <li>
         <span dangerouslySetInnerHTML={{__html: blob.icon_html }} />
-        <a href={blob.url} target="_blank" onClick={this.viewFile}>{f.filename}</a>
+        <a href={blob.url} target="_blank" onClick={this.onViewFile}>{file.filename}</a>
         <input type="hidden" name={formName} value={blob.authcode} />
         <span className="file-size">({blob.size})</span>
         <a href="#" className="remove-attachement" onClick={this.onDelete}>
