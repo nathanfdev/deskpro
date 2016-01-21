@@ -1,7 +1,7 @@
 import { newActionAlerts } from '../Modules/Application/Actions/notificationActions.js';
 import { startChat } from '../Modules/IM/Actions/chatsActions';
 import { markMessages } from '../Modules/IM/Actions/messagesActions';
-import ChatHelper from '../Modules/IM/ChatHelper';
+import { ChatHelper } from '../Modules/IM/ChatHelper';
 
 export class ActionAlertsHandler
 {

@@ -10,7 +10,7 @@ import { FeedbackCommentTableContainer } from './View/Table/FeedbackCommentTable
 import { ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import { PaginationContainer } from './PaginationContainer';
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export class List extends Component {
 

@@ -82,26 +82,26 @@ export class PeopleTable extends Component {
         {people && people.map((element, index) =>
             <tr key={index}>
               <TdId visible>
-                {element.id}
+                {element.get('id')}
               </TdId>
               <Td visible>
-                {element.timezone}
+                {element.get('timezone')}
               </Td>
-              {this.renderOrganisation(organizations, element.organization)}
+              {this.renderOrganisation(organizations, element.get('organization'))}
               <Td visible>
-                {element.first_name}
-              </Td>
-              <Td visible>
-                {element.last_name}
+                {element.get('first_name')}
               </Td>
               <Td visible>
-                {element.primary_email}
+                {element.get('last_name')}
               </Td>
               <Td visible>
-                <div className="dpw--timer"><FormattedRelative value={element.date_created}/></div>
+                {element.get('primary_email')}
               </Td>
               <Td visible>
-                <div className="dpw--timer"><FormattedRelative value={element.date_last_login}/></div>
+                <div className="dpw--timer"><FormattedRelative value={element.get('date_created')}/></div>
+              </Td>
+              <Td visible>
+                <div className="dpw--timer"><FormattedRelative value={element.get('date_last_login')}/></div>
               </Td>
             </tr>
         )}

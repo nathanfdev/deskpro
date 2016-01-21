@@ -1,7 +1,7 @@
 import * as actions from '../Actions/appActions';
 import * as bootstrapActions from '../Actions/bootstrapActions';
 import { createReducer } from 'Ampliflux';
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { setFullPayload, setValue } from 'Ampliflux/reducers/handlers';
 import { async } from 'Ampliflux/reducers/handlers';
 import jQuery from 'jquery';

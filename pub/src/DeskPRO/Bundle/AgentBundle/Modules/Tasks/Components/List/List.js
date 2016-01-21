@@ -10,7 +10,7 @@ import { CalendarView } from './View/Calendar/CalendarView';
 import { ListGroupContainer } from './ListGroupContainer';
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import { toggleAll } from '../../Actions/listActions';
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export class List extends React.Component {
 

@@ -1,4 +1,4 @@
-export default class ChatHelper {
+export class ChatHelper {
   getChatNode(chat, me) {
     let id = 'chat-with-' + chat.chat_type;
 

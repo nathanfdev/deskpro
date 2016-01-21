@@ -1,9 +1,10 @@
 import React, {Component, PropTypes} from 'react';
 import { OrganizationsTable } from './OrganizationsTable';
 import { PeopleTable } from './PeopleTable';
-import { peopleSelector, organizationsSelector, currentContentSelector, currentListSortSelector, currentListOrderSelector }
+import { currentContentSelector, currentListSortSelector, currentListOrderSelector }
   from '../../../../Selectors/list';
-import { organizationsRecordsSelector } from '../../../../Selectors/recordStores';
+import { peopleSelector, organizationsSelector }
+  from '../../../../Selectors/recordStores';
 import { applyParams} from '../../../../Actions/crmListActions';
 
 import { connect } from 'react-redux';
@@ -11,7 +12,6 @@ import { connect } from 'react-redux';
   return ({
     content: currentContentSelector(state),
     people: peopleSelector(state),
-    linkedOrganizations: organizationsRecordsSelector(state),
     organizations: organizationsSelector(state),
     currentOrder: currentListOrderSelector(state),
     currentSort: currentListSortSelector(state)
@@ -33,7 +33,7 @@ export class CrmTableContainer extends Component {
   }
 
   render() {
-    const {content, organizations, people, linkedOrganizations, currentSort, currentOrder } = this.props;
+    const {content, organizations, people, currentSort, currentOrder } = this.props;
     if (content === 'organizations') {
       return (
         <OrganizationsTable organizations={organizations}
@@ -44,7 +44,7 @@ export class CrmTableContainer extends Component {
     }
     return (
       <PeopleTable people={people}
-                   organizations={linkedOrganizations}
+                   organizations={organizations}
                    currentSort={currentSort}
                    currentOrder={currentOrder}
                    sortTable={this.sortTable.bind(this)}/>
