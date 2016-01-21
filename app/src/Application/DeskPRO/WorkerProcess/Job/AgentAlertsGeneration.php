@@ -48,9 +48,11 @@ class AgentAlertsGeneration extends AbstractJob
      */
     public function run()
     {
-        if (!$GLOBALS['DP_CONFIG']['debug']['dev']) {
+        /* @ToDo return  check for dev mode  it later
+         * if (!$GLOBALS['DP_CONFIG']['debug']['dev']) {
             return;
         }
+        */
         $this->em         = $this->getContainer()->getEm();
         $dismissedCounter = $this->getDismissedCounter();
         if ($dismissedCounter > 100) {
@@ -154,8 +156,8 @@ class AgentAlertsGeneration extends AbstractJob
      *
      * @throws \Exception
      * @throws null
-     * @return array
      *
+     * @return array
      */
     private function prepareAlertData($vars, Ticket $ticket)
     {
@@ -184,8 +186,8 @@ class AgentAlertsGeneration extends AbstractJob
      *
      * @throws \Exception
      * @throws null
-     * @return mixed
      *
+     * @return mixed
      */
     private function getTplLine($vars)
     {
