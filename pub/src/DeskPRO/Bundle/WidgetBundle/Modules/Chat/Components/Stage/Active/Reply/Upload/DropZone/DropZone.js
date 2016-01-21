@@ -31,7 +31,7 @@ export class DropZone extends React.Component {
     this.initializeFileUpload();
     this.getContext().forEach(context => {
       $(context).on('dragover', this.onDragStarted);
-      $(context).on('dragover', this.onDefaultDrop);
+      $(context).on('drop dragover', this.onDefaultDrop);
       $(context).on('paste', this.onPaste);
     });
   }
@@ -46,7 +46,7 @@ export class DropZone extends React.Component {
     $(this.getInput()).fileupload('destroy');
     this.getContext().forEach(context => {
       $(context).off('dragover', this.onDragStarted);
-      $(context).off('dragover', this.onDefaultDrop);
+      $(context).off('drop dragover', this.onDefaultDrop);
       $(context).off('paste', this.onPaste);
     });
   }
