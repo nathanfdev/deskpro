@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import Loader from 'react-loader';
 import { connect } from 'react-redux';
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 @connect(state => {
   return ({

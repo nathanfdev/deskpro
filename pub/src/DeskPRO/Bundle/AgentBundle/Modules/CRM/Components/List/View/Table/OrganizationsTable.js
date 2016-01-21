@@ -56,19 +56,19 @@ export class OrganizationsTable extends Component {
         {organizations && organizations.map((element, index) =>
             <tr key={index}>
               <TdId visible>
-                {element.id}
+                {element.get('id')}
               </TdId>
               <Td visible>
-                <div className="dpw--timer"><FormattedRelative value={element.date_created}/></div>
+                <div className="dpw--timer"><FormattedRelative value={element.get('date_created')}/></div>
               </Td>
               <Td visible>
-                {element.importance}
+                {element.get('importance')}
               </Td>
               <Td className="item-title">
-                <a href="#"><SlicedString string={element.name}/></a>
+                <a href="#"><SlicedString string={element.get('name')}/></a>
               </Td>
               <Td className="item-title">
-                <a href="#"><SlicedString string={element.summary}/></a>
+                <a href="#"><SlicedString string={element.get('summary')}/></a>
               </Td>
             </tr>
         )}

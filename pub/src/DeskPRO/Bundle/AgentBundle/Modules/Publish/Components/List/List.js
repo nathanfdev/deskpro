@@ -8,7 +8,7 @@ import { MassActionContainer } from './ControlBar/MassActionContainer';
 import { TableContainer } from './View/Table/TableContainer';
 import { CardsContainer } from './View/Cards/CardsContainer';
 import { PaginationContainer } from './PaginationContainer';
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export class List extends Component {
   static propTypes = {

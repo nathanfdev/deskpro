@@ -1,7 +1,7 @@
 import { createReducer } from 'Ampliflux';
 import { setFullPayload, setValue, async, togglePayloadInCollection, handleMassAction, pushPayloadToCollection } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/listActions';
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import invariant from 'invariant';
 
 const initialState = {

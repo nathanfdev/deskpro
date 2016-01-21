@@ -49,7 +49,7 @@ class BatchRequest extends Http {
   }
 }
 */
-export default class DpApi extends Http {
+export class DpApi extends Http {
   init() {
     this.activeBatchRequest = null;
   }

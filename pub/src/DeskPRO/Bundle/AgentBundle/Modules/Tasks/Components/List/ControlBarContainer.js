@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/ControlBar';
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { applySort, applyOrder, applyFilters } from '../../Actions/listActions';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import { allTaskLabelsSelector } from '../../RecordStores/Selectors/taskLabelSelectors';

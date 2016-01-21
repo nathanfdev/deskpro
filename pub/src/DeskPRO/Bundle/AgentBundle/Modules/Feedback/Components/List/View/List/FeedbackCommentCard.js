@@ -3,7 +3,7 @@ import { Card, CardLine, CardLineLeft, CardLineFull, CardLineItem, CardCheckbox,
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
 import jQuery from 'jquery';
 import { deleteComment, editComment } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Actions/FeedbackCommentsActions';
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import Immutable from 'immutable';
 
 export class FeedbackCommentCard extends Component {

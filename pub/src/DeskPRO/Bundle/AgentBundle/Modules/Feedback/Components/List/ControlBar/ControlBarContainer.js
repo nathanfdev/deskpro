@@ -8,7 +8,7 @@ import { setSort, setOrder, applyParams, toggleTableFieldVisibility, toggleCardF
   storeDisplayFieldsToPersonSetting, updateDisplayFieldsToPersonSetting }
   from '../../../Actions/FeedbackListActions';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/ControlBar';
 
 @connect(state => ({

@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import classNames from 'classnames';
 
 export class Table extends Component {
