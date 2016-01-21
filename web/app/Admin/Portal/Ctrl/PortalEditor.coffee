@@ -2,7 +2,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
   class Admin_Portal_Ctrl_PortalEditor extends Admin_Ctrl_Base
     @CTRL_ID = 'Admin_Portal_Ctrl_PortalEditor'
     @CTRL_AS = 'Portal'
-    @DEPS    = ['$http', '$scope', '$timeout', '$upload', '$modal']
+    @DEPS    = ['$http', '$scope', '$timeout', '$upload', '$modal', 'Growl']
 
     init: ->
       @open_panels = []
@@ -172,7 +172,12 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         );
 
     copyUrl: (file) ->
-      window.prompt('File URL:', file.url)
+      window.prompt('Copy this:', file.url)
+      return
+
+    notifyUrlCopied: () ->
+      @Growl.success('File URL was copied to your clipboard');
+      return
 
     delete: (file) =>
       if window.confirm('Are you sure you want to remove ' + file.name + '?')
