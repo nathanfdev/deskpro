@@ -33,8 +33,9 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Error\Exception\InvalidFormException;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class SessionController.
@@ -82,6 +83,9 @@ class SessionController extends BaseController
         $em->persist($session);
         $em->flush();
 
-        return View::create(null, Response::HTTP_OK);
+        $response = new JsonResponse();
+        $response->headers->setCookie(new Cookie('dpsid-agent', $session->getSessionCode()));
+
+        return $response;
     }
 }
