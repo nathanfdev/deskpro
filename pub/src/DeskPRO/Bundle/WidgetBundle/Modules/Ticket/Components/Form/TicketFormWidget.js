@@ -1,7 +1,7 @@
 import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
 import TicketForm from 'DeskPRO/Bundle/PortalBundle/PageWidget/TicketForm';
 import PortalFormWidget from 'DeskPRO/Bundle/PortalBundle/PageWidget/PortalFormWidget';
-import emitter from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
+import { pageWidgetEmitter } from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
 
 export class TicketFormWidget extends PageWidget {
 
@@ -9,6 +9,6 @@ export class TicketFormWidget extends PageWidget {
     this.addWidgetDef(TicketForm, '#new_ticket_page');
     this.addWidgetDef(PortalFormWidget, '.dpx-form');
 
-    emitter.on('refresh', () => this.refresh(this.$element));
+    pageWidgetEmitter.on('refresh', () => this.refresh(this.$element));
   }
 }
