@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\AgentChat;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -312,9 +313,10 @@ class Messenger
 
     /**
      * @param array  $ids
+     * @param int    $status
      * @param Person $user
      */
-    public function markAsRead(array $ids, Person $user)
+    public function markMessages(array $ids, $status, Person $user)
     {
         /** @var AgentChatMessageRepository $repo */
         $repo = $this->em->getRepository('App:AgentChatMessage');
@@ -322,11 +324,11 @@ class Messenger
             foreach ($messages as $message) {
                 /** @var AgentChatMessage $message */
                 if ($this->isPersonInvolvedInChat($user, $message->getChat())) {
-                    $message->setStatus(AgentChatMessage::STATUS_READ);
+                    $message->setStatus($status);
                     $this->em->persist($message);
                     $this->event_dispatcher->dispatch(
                         MarkMessageEvent::EVENT_NAME,
-                        new MarkMessageEvent($message->getId())
+                        new MarkMessageEvent($message->getId(), $status)
                     );
                 }
                 // TODO handle not-mine access violation

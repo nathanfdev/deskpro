@@ -1,5 +1,6 @@
 import { newActionAlerts } from '../Modules/Application/Actions/notificationActions.js';
 import { startChat } from '../Modules/IM/Actions/chatsActions';
+import { markMessages } from '../Modules/IM/Actions/messagesActions';
 import ChatHelper from '../Modules/IM/ChatHelper';
 
 export class ActionAlertsHandler
@@ -14,7 +15,8 @@ export class ActionAlertsHandler
     this.options.dispatch(newActionAlerts(data));
     switch (data.type) {
       case 'notification.agent_chat.new_message':
-        this.options.dispatch(startChat(this.chatHelper.getChatTarget(data.data, this.options.me), data.data.chat_type, data.data.agent_chat_id, true));
+        this.options.dispatch(markMessages([data.data.id], data.data.agent_chat_id, 1));
+        this.options.dispatch(startChat(null, null, data.data.agent_chat_id, true));
         break;
       default:
         break;

@@ -152,15 +152,16 @@ class MessagesController extends AbstractController
      * @param Request $request
      *
      * @return View
-     * @Annotations\Patch("/agent_chats/messages/mark", name="agent_chats_messages_mark")
+     * @Annotations\Put("/agent_chats/messages/mark", name="agent_chats_messages_mark")
      */
     public function markAction(Request $request)
     {
-        $status = Response::HTTP_ACCEPTED;
-        $ids    = $request->request->get('ids');
+        $status          = Response::HTTP_ACCEPTED;
+        $ids             = $request->request->get('ids');
+        $messages_status = $request->request->get('status');
         /** @var Messenger $messenger */
         $messenger = $this->get('deskpro.agentchat.messenger');
-        $messenger->markAsRead($ids, $this->getUser());
+        $messenger->markMessages($ids, $messages_status, $this->getUser());
 
         return View::create(
             $this->createRepresentation([]),

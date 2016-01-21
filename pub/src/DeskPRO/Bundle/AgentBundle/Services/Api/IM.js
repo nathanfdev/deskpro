@@ -35,8 +35,8 @@ export function loadMessagesCount() {
   return DpApi.sendGet('DP_API/agent_chats/messages/count');
 }
 
-export function markMessages(ids) {
-  return DpApi.sendPatch('DP_API/agent_chats/messages/mark', {ids: ids});
+export function markMessages(ids, status) {
+  return DpApi.sendPut('DP_API/agent_chats/messages/mark', {ids: ids, status: status});
 }
 
 /**

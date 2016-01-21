@@ -1,6 +1,5 @@
 import { createAction } from 'Ampliflux';
 import * as IM from 'DeskPRO/Bundle/AgentBundle/Services/Api/IM';
-import { releaseChats, setChatsRequest } from '../RecordStores/Actions/chatsActions';
 
 export const loadMessages = createAction(
   'IM_LOAD_MESSAGES',
@@ -44,12 +43,12 @@ export const refreshCounts = createAction(
 
 export const markMessages = createAction(
   'IM_MARK_MESSAGES',
-  (ids, chat_id) => {
+  (ids, chatId, status = 2) => {
     return new Promise(
       (resolve, reject) => {
-        return IM.markMessages(ids)
+        return IM.markMessages(ids, status)
           .success(() => {
-            return resolve({chat_id: chat_id, messages: ids});
+            return resolve({chatId: chatId, messages: ids, status: status});
           })
           .error(response => reject(response));
       }
