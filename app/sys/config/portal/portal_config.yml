@@ -120,6 +120,8 @@ security:
                 domain:   ~ # the current domain from $_SERVER
                 remember_me_parameter: remember_me
 
+    access_control:
+        - { path: ^/admin-preview/, roles: [ROLE_ADMIN, ROLE_PREVIOUS_ADMIN] }
 
 # Twig Configuration
 twig:
