@@ -8,8 +8,8 @@ import { DynamicForm } from 'DeskPRO/Bundle/AppBundle/Form/DynamicForm.js';
 import _ from 'lodash';
 import $ from 'jquery';
 
-// Ticket value reader
 class TicketValueReader {
+
   constructor($formEl) {
     this.$formEl = $formEl;
   }
@@ -43,7 +43,6 @@ class TicketValueReader {
   }
 }
 
-// Page widget
 export default class TicketForm extends PageWidget {
 
   renderWidget() {
@@ -87,7 +86,7 @@ export default class TicketForm extends PageWidget {
       $df.val(displayedFields);
     };
 
-    this.dynForm = new DynamicForm({
+    this.dynamicForm = new DynamicForm({
       formEl: $formEl,
       tplEl: $tplEl,
       alwaysFields: ['department', 'user_name_and_email', 'user_email', 'subject', 'message', 'submit', 'last_department_id', 'displayed_fields'],
@@ -134,7 +133,7 @@ export default class TicketForm extends PageWidget {
       }
     });
 
-    updateHitter = _.throttle(()=> this.dynForm.update(), 250);
+    updateHitter = _.throttle(()=> this.dynamicForm.update(), 250);
     allFormFields.on('change', updateHitter);
   }
 }
