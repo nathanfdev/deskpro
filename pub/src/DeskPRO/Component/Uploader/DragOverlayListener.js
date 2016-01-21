@@ -4,7 +4,10 @@ import $ from 'jquery';
 export class DragOverlayListener extends React.Component {
 
   static propTypes = {
-    context: PropTypes.any,
+    context: PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.arrayOf(PropTypes.object)
+    ]),
     children: PropTypes.any
   };
 
@@ -18,14 +21,14 @@ export class DragOverlayListener extends React.Component {
   componentDidMount() {
     this.getContext().forEach(context => {
       $(context).on('dragover', this.onDragStarted);
-      $(context).on('drop dragover', this.onDefaultDrop);
+      $(context).on('dragover drop', this.onDefaultDrop);
     });
   }
 
   componentWillUnmount() {
     this.getContext().forEach(context => {
       $(context).off('dragover', this.onDragStarted);
-      $(context).off('drop dragover', this.onDefaultDrop);
+      $(context).off('dragover drop', this.onDefaultDrop);
     });
   }
 
@@ -54,7 +57,7 @@ export class DragOverlayListener extends React.Component {
 
   getContext() {
     const { context = document } = this.props;
-    return Array.isArray(context) ? context : [...context];
+    return Array.isArray(context) ? context : [context];
   }
 
   render() {

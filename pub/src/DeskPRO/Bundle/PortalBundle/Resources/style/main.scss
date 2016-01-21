@@ -9372,6 +9372,21 @@ input[type="text"], input[type="email"], input[type="password"], textarea, .dp-m
       color: #777;
     }
   }
+
+  .dp-medium-rte-wrapper-overlay {
+    background-color: rgba(175, 192, 213, 0.7);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 3000;
+    text-align: center;
+
+    h1 {
+      margin-top: 55px;
+    }
+  }
 }
 
 .email-present {
