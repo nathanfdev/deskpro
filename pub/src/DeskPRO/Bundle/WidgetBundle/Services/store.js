@@ -14,4 +14,4 @@ const middleware = applyMiddleware(
 );
 
 const makeStore = compose(middleware)(createStore);
-export default makeStore(reducer);
+export const store = makeStore(reducer);

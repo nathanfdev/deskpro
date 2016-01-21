@@ -19,8 +19,8 @@ import {
 } from '../../Chat/Selectors/chat';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 import { addSessionCode } from './bootstrapActions';
+import { history } from '../../../Services/history';
 import $ from 'jquery';
-import history from '../../../Services/history';
 import Immutable from 'immutable';
 
 const openChatBeginStage = chatBeginMode => {

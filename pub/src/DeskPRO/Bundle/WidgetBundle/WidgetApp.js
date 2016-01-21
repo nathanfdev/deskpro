@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom';
 import { AppContainer } from './Modules/Application/Components/AppContainer';
 import $ from 'jquery';
-import store from './Services/store';
+import { store } from './Services/store';
 import { bootstrapWidget } from './Modules/Application/Actions/bootstrapActions';
 import './Resources/style/widget-style.scss';
 import emitter from './Services/emitter';

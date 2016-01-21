@@ -6,7 +6,7 @@ import { chatIdSelector } from '../../../Selectors/chat';
 import { FieldErrors, hasErrors } from 'DeskPRO/Component/Form/FormErrors';
 import classNames from 'classnames';
 import $ from 'jquery';
-import history from '../../../../../Services/history';
+import { history } from '../../../../../Services/history';
 
 @connect(state => ({
   chatId: chatIdSelector(state)

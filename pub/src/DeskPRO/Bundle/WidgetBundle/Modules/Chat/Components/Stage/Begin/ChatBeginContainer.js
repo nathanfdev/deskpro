@@ -4,7 +4,7 @@ import { createChat } from '../../../Actions/chatActions';
 import { Header } from './Header';
 import { liveDemoSelector } from '../../../../Application/Selectors/dpWindow';
 import { requireChatEmailValidationSelector, requireChatLoginSelector } from '../../../../Application/Selectors/bootstrap';
-import history from '../../../../../Services/history';
+import { history } from '../../../../../Services/history';
 
 @connect(state => ({
   liveDemo: liveDemoSelector(state),

@@ -4,7 +4,7 @@ import { openLoginWindow } from '../../../../Application/Actions/dpWindowActions
 import { getSession } from '../../../../Application/Actions/bootstrapActions';
 import { liveDemoSelector } from '../../../../Application/Selectors/dpWindow';
 import { widgetSessionIsLoginSelector } from '../../../../Application/Selectors/bootstrap';
-import history from '../../../../../Services/history';
+import { history } from '../../../../../Services/history';
 
 @connect(state => ({
   isLogin: widgetSessionIsLoginSelector(state),

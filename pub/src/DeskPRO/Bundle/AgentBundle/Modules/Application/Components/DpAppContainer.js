@@ -13,8 +13,8 @@ import { LoginApp } from '../../Login/Components/LoginApp';
 import { ExampleApp } from '../../Example/Components/ExampleApp';
 import { hashChanged } from '../../Application/Actions/routingActions';
 import { setActiveApp } from '../../Application/Actions/appActions';
-import Jquery from 'jquery';
-import history from '../../../Services/history';
+import { history } from '../../../Services/history';
+import $ from 'jquery';
 
 @connect()
 export class DpAppContainer extends React.Component {
@@ -24,7 +24,7 @@ export class DpAppContainer extends React.Component {
   };
 
   componentWillMount() {
-    Jquery.ajaxSetup({
+    $.ajaxSetup({
       statusCode: {
         401: () => history.replace(`${DP_BASE_URL_RELATIVE}/agent/login`)
       }

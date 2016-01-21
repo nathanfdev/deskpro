@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import history from '../../../../Services/history';
+import { history } from '../../../../Services/history';
 import moment from 'moment';
 import { pollingChat, unsetLoaded, unsetChatId } from '../../Actions/chatActions';
 import {

@@ -1,5 +1,5 @@
 import EventEmitter from 'eventemitter2';
-import store from './store';
+import { store } from './store';
 import { reloadOptions } from '../Modules/Application/Actions/dpWindowActions';
 import { reloadSettings } from '../Modules/Application/Actions/bootstrapActions';
 
