@@ -21,13 +21,6 @@ export class DropZone extends React.Component {
     onFail: PropTypes.func
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      overlay: false
-    };
-  }
-
   componentDidMount() {
     this.initializeFileUpload();
     this.getContext().forEach(context => $(context).on('paste', this.onPaste));
