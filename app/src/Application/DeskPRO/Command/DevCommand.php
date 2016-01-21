@@ -31,13 +31,13 @@
  *
  * @category Commands
  */
-
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\Pop3Config;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\SmtpConfig;
 use Application\InstallBundle\Util\GenBuildManifest;
 use Orb\Types\JsonObjectSerializer;
+use Orb\Util\Strings;
 use Swagger\Swagger;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -50,6 +50,7 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
     {
         $this->setName('dpdev');
         $this->addOption('regen-build-manifest', null, InputOption::VALUE_NONE, 'Regenerate build-manifest.php file');
+        $this->addOption('sync-buildfile-manifest', null, InputOption::VALUE_NONE, 'Like regen-build-manifest, but also goes through PHP build files to make sure the classname matches the filename. Useful if you have mass-moved or renamed files manually.');
         $this->addOption('touch-build-time', null, InputOption::VALUE_NONE, 'Sets build-time.php file to now');
         $this->addOption('testdb-safe', null, InputOption::VALUE_NONE, 'Removes or rewrites some common settings to make the database safe to use');
         $this->addOption('testdb-rewrite-emails', null, InputOption::VALUE_REQUIRED, 'Rewrites all email addresses to be at the domain provided. someone@example.com becomes someone-at-example-com@domain.com');
@@ -76,6 +77,8 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
     {
         if ($input->getOption('regen-build-manifest')) {
             return $this->regenBuildManifestAction($input, $output);
+        } elseif ($input->getOption('sync-buildfile-manifest')) {
+            return $this->syncBuildFileClassname($input, $output);
         } elseif ($input->getOption('touch-build-time')) {
             return $this->touchBuildTimeAction($input, $output);
         } elseif ($input->getOption('testdb-safe')) {
@@ -229,6 +232,52 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
                 echo "Failed to write manifest file: $manifest_path\n";
 
                 return 1;
+            }
+        }
+    }
+
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return int
+     */
+    private function syncBuildFileClassname(InputInterface $input, OutputInterface $output)
+    {
+        $manifest_path = DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/build-manifest.php';
+        $builds_path   = DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build';
+
+        // regen first
+        $gen  = new GenBuildManifest($builds_path);
+        $file = $gen->getContents();
+        file_put_contents($manifest_path, $file);
+
+        $manifest = require $manifest_path;
+
+        foreach ($manifest as $build_id => $info) {
+            $build_file  = file_get_contents(DP_ROOT.$info['file']);
+            $orig        = $build_file;
+            $class_parts = explode('\\', $info['classname']);
+            $name        = array_pop($class_parts);
+
+            if (preg_match('#class\s*(.*?)\s*extends\s*AbstractBuild#', $build_file, $m)) {
+                if ($m[1] !== $name) {
+                    $build_file = str_replace($m[0], "class {$name} extends AbstractBuild", $build_file);
+                }
+
+                // Add a comment about the real build ID if the filename isnt it
+                if (!Strings::endsWith('Build'.$build_id.'.php', $info['file'])) {
+                    $build_file = preg_replace('#//\[\[build:\d+\]\]#', '', $build_file);
+                    $build_file = trim($build_file);
+                    $build_file .= "\n\n//[[build:$build_id]]\n";
+                }
+
+                if ($orig !== $build_file) {
+                    file_put_contents(DP_ROOT.$info['file'], $build_file);
+                }
+            } else {
+                echo "{$info['file']} contains an invlaid build definition.";
+                die(1);
             }
         }
     }
