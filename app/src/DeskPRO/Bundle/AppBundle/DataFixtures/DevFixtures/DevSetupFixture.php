@@ -31,17 +31,14 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
-use Application\DeskPRO\DBAL\Connection;
-use Application\DeskPRO\Entity\LabelDef;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * This inserts some default settings so you dont have to waste time going through the welcome wizard
+ * This inserts some default settings so you dont have to waste time going through the welcome wizard.
  */
 class DevSetupFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
 {
@@ -105,11 +102,11 @@ class DevSetupFixture extends AbstractFixture implements ContainerAwareInterface
         $db->batchInsert('settings', $ins);
 
         $db->insert('email_accounts', [
-            'account_type'       => 'outgoing',
-            'incoming_account'   => null,
+            'account_type'       => 'tickets',
+            'incoming_account'   => json_encode(['@CLASS' => 'Application\\DeskPRO\\Email\\EmailAccount\\IncomingAccount\\Pop3Config', '@DATA' => ['host' => 'pop.example.com', 'port' => '110', 'user' => 'dev@deskprodev.com', 'password' => 'bogus']]),
             'outgoing_account'   => json_encode(['@CLASS' => 'Application\\DeskPRO\\Email\\EmailAccount\\OutgoingAccount\\PhpMailConfig', '@DATA' => ['PhpMail' => true]]),
             'is_enabled'         => 1,
-            'address'            => 'deskpro@example.com',
+            'address'            => 'dev@deskprodev.com',
             'other_addresses'    => null,
             'options'            => null,
             'date_created'       => date('Y-m-d H:i:s'),
