@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import PortalPhrases from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import PortalUrlGenerator from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
+import { openFullImage } from 'DeskPRO/Component/Util/FullImage';
 
 const qq = require('exports?qq!fine-uploader/fine-uploader/fine-uploader.js');
 
@@ -175,7 +176,15 @@ class PortalAttachListItem extends React.Component {
 
   onViewFile = event => {
     event.preventDefault();
-    window.open(this.props.file.blob.url);
+
+    const { file } = this.props;
+    const blob = file.blob;
+
+    if (blob.is_image) {
+      openFullImage(this.refs.image);
+    } else {
+      window.open(blob.url);
+    }
   };
 
   render() {
@@ -192,6 +201,8 @@ class PortalAttachListItem extends React.Component {
         <a href="#" className="remove-attachement" onClick={this.onDelete}>
           <i className="fa fa-times" />{PortalPhrases.get('portal.general.delete')}
         </a>
+
+        {blob.is_image && <img src={blob.url} ref="image" style={{display: 'none'}} />}
       </li>
     );
   }

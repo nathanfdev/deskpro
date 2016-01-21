@@ -229,6 +229,11 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
+    /**
+     * @param string $filename
+     *
+     * @return $this
+     */
     public function setFilename($filename)
     {
         if ($filename[0] == '.') {
@@ -246,6 +251,16 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
                 $this['content_type'] = $ct;
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFilename()
+    {
+        return $this->filename;
     }
 
     /**
