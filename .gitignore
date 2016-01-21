@@ -19,6 +19,7 @@
 .php_cs.cache
 
 /dev/scratch
+/dev/dev_config
 
 # vendors and build files
 /app/vendor

@@ -81,13 +81,19 @@ class DevSetupFixture extends AbstractFixture implements ContainerAwareInterface
 
         $db->deleteIn('settings', ['core.done_data_initializer', 'core.deskpro_url', 'core.deskpro_name', 'core.default_timezone', 'core.license', 'core.setup_initial', 'admin_has_loaded'], 'name');
 
+        if (file_exists(DP_WEB_ROOT.'/config/LOCALHOST_URL.txt')) {
+            $url = rtrim(trim(file_get_contents(DP_WEB_ROOT.'/config/LOCALHOST_URL.txt')), '/').'/';
+        } else {
+            $url = 'http://deskpro-dev/';
+        }
+
         $ins = [
             ['name' => 'core.done_data_initializer', 'value' => 1],
             ['name' => 'core.setup_initial',         'value' => 1],
             ['name' => 'admin_has_loaded',           'value' => 1],
             ['name' => 'core.default_timezone',      'value' => 'UTC'],
             ['name' => 'core.deskpro_name',          'value' => 'Helpesk'],
-            ['name' => 'core.deskpro_url',           'value' => 'http://deskpro-dev/'],
+            ['name' => 'core.deskpro_url',           'value' => $url],
             ['name' => 'core.license',               'value' => file_get_contents(DP_WEB_ROOT.'/dev/dev-lic-key.txt')],
         ];
 
