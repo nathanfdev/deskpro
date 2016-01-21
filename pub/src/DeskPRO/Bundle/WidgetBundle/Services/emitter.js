@@ -7,4 +7,4 @@ const emitter = new EventEmitter();
 emitter.on('reloadOptions', options => store.dispatch(reloadOptions(options)));
 emitter.on('reloadSettings', settings => store.dispatch(reloadSettings(settings)));
 
-export default emitter;
+export const widgetEmitter = emitter;

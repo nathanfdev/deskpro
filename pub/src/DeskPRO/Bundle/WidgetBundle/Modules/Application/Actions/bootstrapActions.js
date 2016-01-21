@@ -8,8 +8,8 @@ import { widgetHasChatSelector, liveDemoSelector } from '../Selectors/dpWindow';
 import { onlineAgentsCountSelector } from '../RecordStores/Selectors/peopleSelectors';
 import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import PortalPhrases from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import { widgetEmitter } from '../../../Services/emitter';
 import $ from 'jquery';
-import emitter from '../../../Services/emitter';
 
 export const ajaxOptions = {crossDomain: true, dataType: 'json'};
 export const addSessionCode = (state, params = {}) => {
@@ -111,7 +111,7 @@ export const bootstrapWidget = createAction(
     ])
     .then(response => {
       const onFinish = () => {
-        emitter.emit('loaded');
+        widgetEmitter.emit('loaded');
         resolve(response);
       };
 
