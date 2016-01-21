@@ -15,8 +15,3 @@ Feature: Search users by emails
     Given I am authenticated as admin
     When I send a GET request to "/portal/api/emails?target=agent&term=a"
     Then the response status code should be 200
-
-  Scenario: I retrieve my email
-    Given I am authenticated as admin
-    When I send a GET request to "/portal/api/me/email"
-    Then the response status code should be 200

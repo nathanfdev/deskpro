@@ -21,7 +21,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @preview_as_expanded = false
       @preview_as = 'myself'
       @preview_as_email = null
-      @loadMyEmail()
+      @refreshPreviewUrl()
 
     save: () =>
       request = @$http({
@@ -88,7 +88,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     refreshPreviewUrl: =>
       preview_url = '/admin-preview?anti-cache=' + (new Date()).getTime()
       if @preview_as is 'user' or @preview_as is 'agent' then preview_url += '&_preview_as=' + @preview_as_email
-      if @preview_as is 'myself' then preview_url += '&_preview_as=' + @my_email
+      if @preview_as is 'myself' then preview_url += '&_preview_as=_exit'
       if @preview_as is 'guest' then preview_url += '&_preview_as=_anon'
       @preview_url = preview_url
 
@@ -222,11 +222,6 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         }
       });
       modalInstance.result.then((email) => @preview_as_email = email; @refreshPreviewUrl())
-
-    loadMyEmail: () =>
-      @$http.get('/portal/api/me/email')
-            .success((email) => @my_email = angular.fromJson(email); @refreshPreviewUrl())
-            .error(() => error('Server error occurred. Unable to load user email.'))
 
     error: (message) -> window.alert(message)
     success: (message) -> window.alert(message)
