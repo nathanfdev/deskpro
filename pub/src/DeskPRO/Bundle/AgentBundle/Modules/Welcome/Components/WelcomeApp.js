@@ -9,15 +9,14 @@ import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Recor
 export class WelcomeApp extends React.Component {
 
   static propTypes = {
-    user: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired
+    user: PropTypes.object.isRequired
   };
 
   render() {
-    const { user, history } = this.props;
+    const { user } = this.props;
 
     return (
-      <WelcomeBack user={user} history={history} />
+      <WelcomeBack user={user} />
     );
   }
 }

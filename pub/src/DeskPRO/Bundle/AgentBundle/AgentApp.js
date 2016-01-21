@@ -9,7 +9,6 @@ import * as ampMiddleware from 'Ampliflux/middleware';
 import AppReducers from './AgentApp_Reducers.js';
 import { DpAppContainer } from './Modules/Application/Components/DpAppContainer';
 import { IntlProvider } from 'react-intl';
-import history from './Services/history';
 import Immutable from 'immutable';
 window.Immutable = Immutable;
 
@@ -62,7 +61,7 @@ export class AgentApp {
       <div>
         <Provider store={store}>
           <IntlProvider locale={window.DP_LOCALE} messages={window.DP_LANG}>
-            <DpAppContainer /** BC todo remove history prop */ history={history} />
+            <DpAppContainer />
           </IntlProvider>
         </Provider>
       </div>,
