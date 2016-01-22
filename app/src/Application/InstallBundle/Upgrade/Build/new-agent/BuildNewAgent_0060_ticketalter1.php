@@ -26,24 +26,30 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\InstallBundle\Upgrade\Build;
 
-class BuildNewAgent_0380 extends AbstractBuild
+class BuildNewAgent_0060_ticketalter1 extends AbstractBuild
 {
     public function run()
     {
-        $this->out('add feedback subscriptions worker job');
+        $sh           = $this->getSchemaHelper();
+        $instructions = [];
 
-        $this->execMutateSql(
-            "
-            INSERT INTO `worker_jobs` (`id`, `worker_group`, `title`, `description`, `job_class`, `data`, `run_interval`, `last_run_date`, `last_start_date`)
-            VALUES ('feedback_subscriptions', 'feedback_subscriptions', 'Feedback Subscriptions', 'Sends notifications to users who are subscribed to feedback items', 'Application\\\\DeskPRO\\\\WorkerProcess\\\\Job\\\\FeedbackSubscriptions', X'613A303A7B7D', '7200', NULL, NULL)
-        "
-        );
+        if ($fk = $sh->findForeignKey('tickets', 'person_email_validating_id', 'people_emails_validating', 'id')) {
+            $instructions[] = 'DROP FOREIGN KEY '.$fk->getName();
+        }
+        if ($idx = $sh->findIndex('tickets', 'person_email_validating_id')) {
+            $instructions[] = 'DROP INDEX '.$idx->getName();
+        }
 
-        // NOTE TO FUTURE: we had added news/downloads worker jobs in the past (they are in Build1421095053)
+        $instructions[] = 'DROP person_email_validating_id, DROP validating';
+
+        $this->execSlowAlterTable('tickets', implode(', ', $instructions));
     }
 }
 
-//[[build:1456790438]]
+//[[build:1456790408]]
 

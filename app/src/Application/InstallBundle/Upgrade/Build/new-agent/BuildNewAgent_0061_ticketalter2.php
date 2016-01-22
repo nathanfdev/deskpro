@@ -26,16 +26,30 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\InstallBundle\Upgrade\Build;
 
-class BuildNewAgent_0350 extends AbstractBuild
+class BuildNewAgent_0061_ticketalter2 extends AbstractBuild
 {
     public function run()
     {
-        $this->out('feedback dates');
-        $this->execMutateSql('ALTER TABLE feedback ADD date_updated DATETIME NOT NULL, ADD date_last_comment DATETIME DEFAULT NULL');
+        $sh           = $this->getSchemaHelper();
+        $instructions = [];
+
+        if ($fk = $sh->findForeignKey('tickets_messages', 'visitor_id', 'visitors', 'id')) {
+            $instructions[] = 'DROP FOREIGN KEY '.$fk->getName();
+        }
+        if ($idx = $sh->findIndex('tickets_messages', 'visitor_id')) {
+            $instructions[] = 'DROP INDEX '.$idx->getName();
+        }
+
+        $instructions[] = 'DROP visitor_id, ADD visitor_id VARCHAR(120) NULL DEFAULT NULL';
+
+        $this->execSlowAlterTable('tickets_messages', implode(', ', $instructions));
     }
 }
 
-//[[build:1456790435]]
+//[[build:1456790409]]
 

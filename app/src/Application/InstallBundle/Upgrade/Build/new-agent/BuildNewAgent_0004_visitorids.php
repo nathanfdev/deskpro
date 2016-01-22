@@ -26,16 +26,45 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\InstallBundle\Upgrade\Build;
 
-class BuildNewAgent_0530 extends AbstractBuild
+class BuildNewAgent_0004_visitorids extends AbstractBuild
 {
     public function run()
     {
-        $this->out('Remove tickets.validating');
-        $this->execSlowAlterTable('tickets', 'DROP validating');
+        $this->out('Modifying visitor_id columns');
+
+        $sh = $this->getSchemaHelper();
+
+        $tables = [
+            'article_comments',
+            'chat_blocks',
+            'download_comments',
+            'feedback_comments',
+            'news_comments',
+            'ratings',
+            'searchlog',
+            'sessions',
+        ];
+
+        foreach ($tables as $t) {
+            $instructions = [];
+            if ($fk = $sh->findForeignKey($t, 'visitor_id', 'visitors', 'id')) {
+                $instructions[] = 'DROP FOREIGN KEY '.$fk->getName();
+            }
+            if ($idx = $sh->findIndex($t, 'visitor_id')) {
+                $instructions[] = 'DROP INDEX '.$idx->getName();
+            }
+
+            $instructions[] = 'DROP visitor_id, ADD visitor_id VARCHAR(120) NULL DEFAULT NULL';
+
+            $this->execSlowAlterTable($t, implode(', ', $instructions));
+        }
     }
 }
 
-//[[build:1456790453]]
+//[[build:1456790404]]
 

@@ -26,18 +26,18 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\InstallBundle\Upgrade\Build;
 
-class BuildNewAgent_0500 extends AbstractBuild
+class BuildNewAgent_0050_peoplealter1 extends AbstractBuild
 {
     public function run()
     {
-        $this->out('Remove people_emails_validating');
-        $this->execMutateSql('SET FOREIGN_KEY_CHECKS = 0');
-        $this->execMutateSql('DROP TABLE people_emails_validating');
-        $this->execMutateSql('SET FOREIGN_KEY_CHECKS = 1');
+        $this->execSlowAlterTable('people', 'DROP is_agent_confirmed');
     }
 }
 
-//[[build:1456790450]]
+//[[build:1456790406]]
 

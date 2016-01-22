@@ -2,21 +2,26 @@
 <?php
 
 $t_start = microtime(true);
-$opt = getopt('s:t:h', ['source:', 'target:', 'help']);
+$opt = getopt('s:t:hn', ['source:', 'target:', 'noset', 'help']);
 $source_db = @$opt['s'] ?: @$opt['source'];
 
-if (@$opt['h'] || @$opt['help'] || $source_db) {
+if ((@$opt['h'] || @$opt['help']) || !$source_db) {
     echo "Use this command to copy an existing database to a new database, and\n";
     echo "then switch the current database in config to the new one.\n\n";
 
-    echo "Usage: echo dev/bin/copy-db -s SOURCE_DB -t NEW_DB\n\n";
+    echo "Example usage:\n";
+    echo "$ dev/bin/copy-db -s dev_test_01 -t dev_test_02\n\n";
 
-    echo "\t-h, --help           Show this help message\n";
-    echo "\t-s DBNAME,           The name of the source database to copy\n";
-    echo "\t--source DBNAME\n";
-    echo "\t-t DBNAME,           (optional) The name of the new target db to create\n";
-    echo "\t--target DBNAME\n    If not specified, a name will be generated based on the source name.";
-    echo "\n";
+    echo "  -h, --help           Show this help message\n\n";
+
+    echo "  -s DBNAME,           The name of the source database to copy\n";
+    echo "  --source DBNAME\n\n";
+
+    echo "  -t DBNAME,           (optional) The name of the new target db to create\n";
+    echo "  --target DBNAME      If not specified, a name will be generated based on the source name.\n";
+    echo "                       Use the sequence RAND to be replaced with a random string.\n\n";
+
+    echo "  -n, --noset          Do NOT set the database in your config\n\n";
     exit;
 }
 
@@ -24,14 +29,20 @@ $target_db = @$opt['t'] ?: @$opt['target'];
 if (!$target_db) {
     $target_db = $source_db;
     $target_db = preg_replace('#\d+$#', '', $target_db);
-    $target_db .= date('Ymd') . '_' . date('Hms');
+    $target_db = rtrim($target_db, '_') . '_RAND';
 }
 
-require('../../config.php');
+if (strpos($target_db, 'RAND') !== false) {
+    require_once(__DIR__.'/../../app/src/Orb/Util/Util.php');
+    $s = (intval(date('G'))*60*60) + (intval(trim(date('i'), '0'))*60) + (intval(trim(date('s'), '0')));
+    $target_db = str_replace('RAND', date('md') . '_' . date('B') . '_' . strtoupper(\Orb\Util\Util::baseEncode($s, \Orb\Util\Util::BASE36_ALPHABET)), $target_db);
+}
+
+require(__DIR__.'/../../config.php');
 
 $make_db_cmd = sprintf(
     "%s -u%s -p%s -e %s",
-    escapeshellarg($DP_CONFIG['mysql_path'] ?: 'mysql'),
+    $DP_CONFIG['mysql_path'] ?: 'mysql',
     escapeshellarg(DP_DATABASE_USER),
     escapeshellarg(DP_DATABASE_PASSWORD),
     escapeshellarg('CREATE DATABASE `'.$target_db.'`')
@@ -39,11 +50,11 @@ $make_db_cmd = sprintf(
 
 $copy_cmd = sprintf(
     "%s -u%s -p%s %s | %s -u%s -p%s %s",
-    escapeshellarg($DP_CONFIG['mysql_path'] ?: 'mysql'),
+    $DP_CONFIG['mysqldump_path'] ?: 'mysqldump',
     escapeshellarg(DP_DATABASE_USER),
     escapeshellarg(DP_DATABASE_PASSWORD),
     escapeshellarg($source_db),
-    escapeshellarg($DP_CONFIG['mysqldump_path'] ?: 'mysqldump'),
+    $DP_CONFIG['mysql_path'] ?: 'mysql',
     escapeshellarg(DP_DATABASE_USER),
     escapeshellarg(DP_DATABASE_PASSWORD),
     escapeshellarg($target_db)
@@ -52,10 +63,11 @@ $copy_cmd = sprintf(
 echo "Creating new database ...\n";
 echo "$ $make_db_cmd\n\n";
 
-$ret = null;
-passthru($make_db_cmd, $ret);
+$ret = $out = null;
+exec($make_db_cmd, $out, $ret);
 
 if ($ret) {
+    echo implode("\n", $out);
     echo "Command exited with error status\n";
     die($ret);
 }
@@ -63,37 +75,40 @@ if ($ret) {
 echo "Copying database ...\n";
 echo "$ $copy_cmd\n\n";
 
-$ret = null;
-passthru($copy_cmd, $ret);
+$ret = $out = null;
+exec($copy_cmd, $out, $ret);
 
 if ($ret) {
+    echo implode("\n", $out);
     echo "Command exited with error status\n";
     die($ret);
 }
 
-echo "Installing new dbname into DB_NAME.txt ...\n";
+if (!(@$opt['n'] || @$opt['noset'])) {
+    echo "Installing new dbname into DB_NAME.txt ...\n";
 
-// Enable it
-$f = __DIR__.'/../dev_config/DB_NAME.txt';
-if (is_file($f)) {
-    $exist = trim(file_get_contents($f));
-    $exist = explode("\n", $exist);
-    // comments out previous values
-    $exist = array_map(function($l) {
-        if (!($l[0] === '#' || $l[0] === ';' || trim($l[0]) === '')) {
-            return '#' . $l;
-        } else {
-            return $l;
-        }
-    }, $exist);
+    // Enable it
+    $f = __DIR__ . '/../dev_config/DB_NAME.txt';
+    if (is_file($f)) {
+        $exist = trim(file_get_contents($f));
+        $exist = explode("\n", $exist);
+        // comments out previous values
+        $exist = array_map(function ($l) {
+            if (!($l[0] === '#' || $l[0] === ';' || trim($l[0]) === '')) {
+                return '#' . $l;
+            } else {
+                return $l;
+            }
+        }, $exist);
 
-    $exist[] = $target_db;
-    $exist[] = '';
-    $exist = implode("\n", $exist);
+        $exist[] = $target_db;
+        $exist[] = '';
+        $exist = implode("\n", $exist);
 
-    file_put_contents($f, $exist);
-} else {
-    echo "You are not using the dev_config/ scripts. You will need to manually edit your config.php file.\n\n";
+        file_put_contents($f, $exist);
+    } else {
+        echo "You are not using the dev_config/ scripts. You will need to manually edit your config.php file.\n\n";
+    }
 }
 
 echo "Done\n\n";

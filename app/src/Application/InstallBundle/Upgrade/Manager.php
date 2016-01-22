@@ -294,7 +294,8 @@ class Manager
         if (!class_exists($class, false)) {
             $manifest = require DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/build-manifest.php';
             if (isset($manifest[$build_id])) {
-                $file = $manifest[$build_id]['file'];
+                $file  = DP_ROOT.$manifest[$build_id]['file'];
+                $class = $manifest[$build_id]['classname'];
             } else {
                 throw new \Exception("Unknown build. $build_id is not in the manifest.");
             }

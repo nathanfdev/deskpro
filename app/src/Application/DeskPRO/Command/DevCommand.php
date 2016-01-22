@@ -56,6 +56,7 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
         $this->addOption('testdb-rewrite-emails', null, InputOption::VALUE_REQUIRED, 'Rewrites all email addresses to be at the domain provided. someone@example.com becomes someone-at-example-com@domain.com');
         $this->addOption('move-build-scripts', null, InputOption::VALUE_REQUIRED, 'Comma-separated list of build scripts to re-timestamp from now. This is useful when merging an old branch and you want to move buildscripts "up".');
         $this->addOption('build-api-docs', null, InputOption::VALUE_NONE, 'Builds Swagger resource files');
+        $this->addOption('gen-upgradecode-for-tables', null, InputOption::VALUE_REQUIRED, 'Generates CREATE TABLE upgrade code for a list of tables');
         $this->addOption('preview', null, InputOption::VALUE_NONE, 'Preview');
     }
 
@@ -89,6 +90,8 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
             return $this->buildApiDocsAction($input, $output);
         } elseif ($input->getOption('move-build-scripts')) {
             return $this->moveBuildScriptsAction($input, $output);
+        } elseif ($input->getOption('gen-upgradecode-for-tables')) {
+            return $this->genUpgradeCodeForTablesAction($input, $output);
         } else {
             $output->write('<error>Unknown command</error>');
 
@@ -295,6 +298,54 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
         file_put_contents($build_file, '<?php define("DP_BUILD_TIME", '.$time.'); ');
 
         echo "Updated: $build_file\n";
+
+        return 0;
+    }
+
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return int
+     */
+    private function genUpgradeCodeForTablesAction(InputInterface $input, OutputInterface $output)
+    {
+        echo "!! Make sure the schema file is up to date: php app/bin/build/build-schema-file.php\n\n";
+
+        $f = DP_ROOT.'/src/Application/InstallBundle/Data/schema.php';
+        if (!$f) {
+            echo "Run the above command first.\n";
+
+            return 1;
+        }
+
+        echo "\n\n\n";
+
+        $schema = require $f;
+
+        $tables = array_map('trim', explode(',', $input->getOption('gen-upgradecode-for-tables')));
+
+        foreach ($schema['create'] as $sql) {
+            foreach ($tables as $t) {
+                if (strpos($sql, 'CREATE TABLE '.$t.' ') !== false) {
+                    echo '$this->execMutateSql("';
+                    echo str_replace('"', '\\"', $sql);
+                    echo '");';
+                    echo "\n";
+                }
+            }
+        }
+        echo "\n\n";
+        foreach ($schema['alter'] as $sql) {
+            foreach ($tables as $t) {
+                if (strpos($sql, 'ALTER TABLE '.$t.' ') !== false) {
+                    echo '$this->execMutateSql("';
+                    echo str_replace('"', '\\"', $sql);
+                    echo '");';
+                    echo "\n";
+                }
+            }
+        }
 
         return 0;
     }

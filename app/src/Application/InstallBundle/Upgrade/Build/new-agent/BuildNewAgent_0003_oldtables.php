@@ -26,16 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\InstallBundle\Upgrade\Build;
 
-class BuildNewAgent_0600 extends AbstractBuild
+class BuildNewAgent_0003_oldtables extends AbstractBuild
 {
     public function run()
     {
-        $this->out('saved forms date_last_reminded defaults to null');
-        $this->execMutateSql('ALTER TABLE saved_forms CHANGE date_last_reminded date_last_reminded DATETIME DEFAULT NULL');
+        $this->out('Drop old tables');
+        $this->execMutateSql('DROP TABLE pretickets_content');
     }
 }
 
-//[[build:1456790460]]
+//[[build:1456790403]]
 

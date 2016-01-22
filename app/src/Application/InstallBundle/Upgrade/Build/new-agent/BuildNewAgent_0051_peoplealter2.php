@@ -26,19 +26,18 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\InstallBundle\Upgrade\Build;
 
-class BuildNewAgent_0650 extends AbstractBuild
+class BuildNewAgent_0051_peoplealter2 extends AbstractBuild
 {
     public function run()
     {
-        $this->out('Chat email validation');
-        $this->execMutateSql('ALTER TABLE chat_conversations
-            ADD COLUMN `email_validation_code` VARCHAR(15) NULL AFTER `ended_by`,
-            ADD COLUMN `email_validated` TINYINT(1) NULL AFTER `email_validation_code`;
-        ');
+        $this->execSlowAlterTable('people_emails', 'DROP is_own_validated');
     }
 }
 
-//[[build:1456790465]]
+//[[build:1456790407]]
 

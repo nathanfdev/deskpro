@@ -58,7 +58,7 @@ class GenBuildManifest
     {
         $builds_path = $this->builds_path;
 
-        $finder    = Finder::create()->in($builds_path)->files()->name('/^Build.*?(\\d+)\.php$/');
+        $finder    = Finder::create()->in($builds_path)->files()->name('/^Build.*?(\\d+)(.*?)\.php$/');
         $start_ids = [];
 
         $builds = array();
@@ -66,7 +66,7 @@ class GenBuildManifest
         foreach ($finder as $file) {
             /* @var $file \SplFileInfo */
 
-            $build_id = Strings::extractRegexMatch('/^Build.*?(\\d+)\.php$/', $file->getFilename());
+            $build_id = Strings::extractRegexMatch('/^Build.*?(\\d+)(.*?)\.php$/', $file->getFilename());
             if (!$build_id) {
                 continue;
             }

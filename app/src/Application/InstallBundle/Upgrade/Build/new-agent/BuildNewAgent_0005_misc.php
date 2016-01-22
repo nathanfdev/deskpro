@@ -31,15 +31,30 @@
  */
 namespace Application\InstallBundle\Upgrade\Build;
 
-class BuildNewAgent_0250 extends AbstractBuild
+class BuildNewAgent_0005_misc extends AbstractBuild
 {
     public function run()
     {
-        $this->out('Added date_updated column to the news table');
-        $this->execMutateSql('ALTER TABLE news ADD date_updated DATETIME DEFAULT NULL');
-        $this->execMutateSql('CREATE INDEX date_updated_idx ON news (date_updated)');
+        $sh = $this->getSchemaHelper();
+
+        $this->out('Modifying settings table');
+        $this->execMutateSql('ALTER TABLE settings DROP PRIMARY KEY, ADD id INT AUTO_INCREMENT NOT NULL, ADD UNIQUE INDEX unique_setting_name (name), ADD PRIMARY KEY (id)');
+
+        $this->out('Modifying templates table');
+        $instructions = [];
+        if ($fk = $sh->findForeignKey('templates', 'style_id', 'styles', 'id')) {
+            $instructions[] = 'DROP FOREIGN KEY '.$fk->getName();
+        }
+        if ($idx = $sh->findIndex('templates', 'style_id')) {
+            $instructions[] = 'DROP INDEX '.$idx->getName();
+        }
+        $instructions[] = 'DROP style_id';
+        $instructions[] = 'ADD theme_set_id INT NULL DEFAULT NULL';
+        $instructions[] = 'ADD CONSTRAINT FK_6F287D8EC0C33964 FOREIGN KEY (theme_set_id) REFERENCES theme_sets (id)';
+        $instructions[] = 'ADD INDEX IDX_6F287D8EC0C33964 (theme_set_id)';
+        $this->execMutateSql('ALTER TABLE templates '.implode(', ', $instructions));
     }
 }
 
-//[[build:1456790425]]
+//[[build:1456790405]]
 
