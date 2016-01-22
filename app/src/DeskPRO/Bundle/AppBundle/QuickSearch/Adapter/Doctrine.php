@@ -59,6 +59,7 @@ class Doctrine implements AdapterInterface
      */
     public function searchArticles(QuickSearchRequest $request)
     {
+        return [];
     }
 
     /**
@@ -66,6 +67,7 @@ class Doctrine implements AdapterInterface
      */
     public function searchDownloads(QuickSearchRequest $request)
     {
+        return [];
     }
 
     /**
@@ -73,6 +75,7 @@ class Doctrine implements AdapterInterface
      */
     public function searchFeedback(QuickSearchRequest $request)
     {
+        return [];
     }
 
     /**
@@ -80,6 +83,7 @@ class Doctrine implements AdapterInterface
      */
     public function searchNews(QuickSearchRequest $request)
     {
+        return [];
     }
 
     /**
@@ -87,6 +91,7 @@ class Doctrine implements AdapterInterface
      */
     public function searchTickets(QuickSearchRequest $request)
     {
+        return [];
     }
 
     /**
@@ -94,6 +99,7 @@ class Doctrine implements AdapterInterface
      */
     public function searchPeople(QuickSearchRequest $request)
     {
+        return [];
     }
 
     /**
@@ -101,6 +107,7 @@ class Doctrine implements AdapterInterface
      */
     public function searchOrganizations(QuickSearchRequest $request)
     {
+        return [];
     }
 
     /**
@@ -108,5 +115,6 @@ class Doctrine implements AdapterInterface
      */
     public function searchChatConversations(QuickSearchRequest $request)
     {
+        return [];
     }
 }

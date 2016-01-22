@@ -6,6 +6,7 @@ services:
       - @quick_search.adapter.db
       - @quick_search.adapter.elastic_search
       - @settings_resolver
+      - @doctrine.orm.default_entity_manager
 
   quick_search.adapter.db:
     class: DeskPRO\Bundle\AppBundle\QuickSearch\Adapter\Doctrine

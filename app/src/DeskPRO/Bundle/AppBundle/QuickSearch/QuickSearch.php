@@ -36,6 +36,7 @@ use DeskPRO\Bundle\AppBundle\QuickSearch\Adapter\AdapterInterface;
 use DeskPRO\Bundle\AppBundle\QuickSearch\Adapter\Doctrine;
 use DeskPRO\Bundle\AppBundle\QuickSearch\Adapter\ElasticSearch;
 use DeskPRO\Kernel\KernelErrorHandler;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Class QuickSearch.
@@ -58,17 +59,28 @@ class QuickSearch
     private $settings_resolver;
 
     /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
      * Constructor.
      *
      * @param Doctrine         $doctrine_adapter
      * @param ElasticSearch    $elastic_search_adapter
      * @param SettingsResolver $settings_resolver
+     * @param EntityManager    $em
      */
-    public function __construct(Doctrine $doctrine_adapter, ElasticSearch $elastic_search_adapter, SettingsResolver $settings_resolver)
-    {
+    public function __construct(
+        Doctrine         $doctrine_adapter,
+        ElasticSearch    $elastic_search_adapter,
+        SettingsResolver $settings_resolver,
+        EntityManager    $em
+    ) {
         $this->doctrine_adapter       = $doctrine_adapter;
         $this->elastic_search_adapter = $elastic_search_adapter;
         $this->settings_resolver      = $settings_resolver;
+        $this->em                     = $em;
     }
 
     /**
@@ -105,36 +117,22 @@ class QuickSearch
     protected function doSearch(QuickSearchRequest $request, AdapterInterface $adapter)
     {
         $results = [];
+        $mapping = [
+            QuickSearchRequest::TYPE_ARTICLE           => ['searchArticles', 'DeskPRO:Article'],
+            QuickSearchRequest::TYPE_DOWNLOAD          => ['searchDownloads', 'DeskPRO:Download'],
+            QuickSearchRequest::TYPE_FEEDBACK          => ['searchFeedback', 'DeskPRO:Feedback'],
+            QuickSearchRequest::TYPE_NEWS              => ['searchNews', 'DeskPRO:News'],
+            QuickSearchRequest::TYPE_TICKET            => ['searchTickets', 'DeskPRO:Ticket'],
+            QuickSearchRequest::TYPE_PERSON            => ['searchPeople', 'DeskPRO:Person'],
+            QuickSearchRequest::TYPE_ORGANIZATION      => ['searchOrganizations', 'DeskPRO:Organization'],
+            QuickSearchRequest::TYPE_CHAT_CONVERSATION => ['searchChatConversations', 'DeskPRO:ChatConversation'],
+        ];
 
         foreach ($request->getTypes() as $type) {
-            switch ($type) {
-                case QuickSearchRequest::TYPE_ARTICLE;
-                    $results[$type] = $adapter->searchArticles($request);
-                    break;
-                case QuickSearchRequest::TYPE_DOWNLOAD:
-                    $results[$type] = $adapter->searchDownloads($request);
-                    break;
-                case QuickSearchRequest::TYPE_FEEDBACK:
-                    $results[$type] = $adapter->searchFeedback($request);
-                    break;
-                case QuickSearchRequest::TYPE_NEWS:
-                    $results[$type] = $adapter->searchNews($request);
-                    break;
-                case QuickSearchRequest::TYPE_TICKET:
-                    $results[$type] = $adapter->searchTickets($request);
-                    break;
-                case QuickSearchRequest::TYPE_PERSON:
-                    $results[$type] = $adapter->searchPeople($request);
-                    break;
-                case QuickSearchRequest::TYPE_ORGANIZATION:
-                    $results[$type] = $adapter->searchOrganizations($request);
-                    break;
-                case QuickSearchRequest::TYPE_CHAT_CONVERSATION:
-                    $results[$type] = $adapter->searchChatConversations($request);
-                    break;
-                default:
-                    break;
-            }
+            list($search_method, $entity_name) = $mapping[$type];
+
+            $ids            = $adapter->$search_method($request);
+            $results[$type] = empty($ids) ? [] : $this->em->getRepository($entity_name)->findBy(['id' => $ids]);
         }
 
         return $results;

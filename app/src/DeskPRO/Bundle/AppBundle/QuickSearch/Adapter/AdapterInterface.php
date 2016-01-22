@@ -41,56 +41,56 @@ interface AdapterInterface
     /**
      * @param QuickSearchRequest $request
      *
-     * @return array
+     * @return int[]
      */
     public function searchArticles(QuickSearchRequest $request);
 
     /**
      * @param QuickSearchRequest $request
      *
-     * @return array
+     * @return int[]
      */
     public function searchDownloads(QuickSearchRequest $request);
 
     /**
      * @param QuickSearchRequest $request
      *
-     * @return array
+     * @return int[]
      */
     public function searchFeedback(QuickSearchRequest $request);
 
     /**
      * @param QuickSearchRequest $request
      *
-     * @return array
+     * @return int[]
      */
     public function searchNews(QuickSearchRequest $request);
 
     /**
      * @param QuickSearchRequest $request
      *
-     * @return array
+     * @return int[]
      */
     public function searchTickets(QuickSearchRequest $request);
 
     /**
      * @param QuickSearchRequest $request
      *
-     * @return array
+     * @return int[]
      */
     public function searchPeople(QuickSearchRequest $request);
 
     /**
      * @param QuickSearchRequest $request
      *
-     * @return array
+     * @return int[]
      */
     public function searchOrganizations(QuickSearchRequest $request);
 
     /**
      * @param QuickSearchRequest $request
      *
-     * @return array
+     * @return int[]
      */
     public function searchChatConversations(QuickSearchRequest $request);
 }
