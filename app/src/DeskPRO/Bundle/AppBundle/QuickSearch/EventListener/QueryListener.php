@@ -31,14 +31,16 @@
  */
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
 
+use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchContext;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvent;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * Class QueryIdListener.
+ * Class QueryListener.
  */
-class QueryIdListener implements EventSubscriberInterface
+class QueryListener implements EventSubscriberInterface
 {
     /**
      * {@inheritdoc}
@@ -46,20 +48,41 @@ class QueryIdListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            QuickSearchEvents::SEARCH => 'onSearch',
+            QuickSearchEvents::SEARCH => [
+                ['onParseId', 1],
+                ['onParseAccessCode', 2],
+            ],
         ];
     }
 
     /**
      * @param QuickSearchEvent $event
      */
-    public function onSearch(QuickSearchEvent $event)
+    public function onParseId(QuickSearchEvent $event)
     {
         $context = $event->getContext();
         $request = $context->getRequest();
 
         if ($request->isId()) {
             $context->ids->add((int) $request->getQuery());
+        }
+    }
+
+    /**
+     * @param QuickSearchEvent $event
+     */
+    public function onParseAccessCode(QuickSearchEvent $event)
+    {
+        $context = $event->getContext();
+        $request = $context->getRequest();
+
+        if ($context->getType() !== QuickSearchContext::TYPE_TICKET) {
+            return;
+        }
+
+        $info = Ticket::decodeAccessCode($request->getQuery());
+        if (!empty($info['ticket_id'])) {
+            $context->ids->add((int) $info['ticket_id']);
         }
     }
 }

@@ -9,7 +9,7 @@ services:
     class: Symfony\Component\EventDispatcher\EventDispatcher
 
   quick_search.listener.query_id:
-    class: DeskPRO\Bundle\AppBundle\QuickSearch\EventListener\QueryIdListener
+    class: DeskPRO\Bundle\AppBundle\QuickSearch\EventListener\QueryListener
     tags:
       - { name: quick_search.event_subscriber }
 
