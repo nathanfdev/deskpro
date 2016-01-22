@@ -8,7 +8,8 @@ export class DragOverlayListener extends React.Component {
       PropTypes.object,
       PropTypes.arrayOf(PropTypes.object)
     ]),
-    children: PropTypes.any
+    children: PropTypes.any,
+    dropNode: PropTypes.string
   };
 
   constructor(props) {
@@ -33,6 +34,15 @@ export class DragOverlayListener extends React.Component {
   }
 
   onDefaultDrop = event => {
+    const { dropNode } = this.props;
+
+    if (dropNode) {
+      const $dropZone = $(dropNode);
+      if ($dropZone.is(event.target) || $dropZone.has(event.target).length > 0) {
+        return;
+      }
+    }
+
     event.preventDefault();
   };
 

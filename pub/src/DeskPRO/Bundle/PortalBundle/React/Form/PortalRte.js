@@ -43,7 +43,7 @@ export class PortalRte extends React.Component {
             buttonLabels: 'fontawesome'
           }}/>
 
-        <DragOverlayListener context={context}>
+        <DragOverlayListener context={context} dropNode={'.attach-file'}>
           <div className="dp-medium-rte-wrapper-overlay">
             <h1>Drag your file here.</h1>
           </div>
