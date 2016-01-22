@@ -43,14 +43,14 @@ interface AdapterInterface
      *
      * @return int[]
      */
-    public function searchArticles(QuickSearchRequest $request);
+    public function searchArticle(QuickSearchRequest $request);
 
     /**
      * @param QuickSearchRequest $request
      *
      * @return int[]
      */
-    public function searchDownloads(QuickSearchRequest $request);
+    public function searchDownload(QuickSearchRequest $request);
 
     /**
      * @param QuickSearchRequest $request
@@ -71,26 +71,26 @@ interface AdapterInterface
      *
      * @return int[]
      */
-    public function searchTickets(QuickSearchRequest $request);
+    public function searchTicket(QuickSearchRequest $request);
 
     /**
      * @param QuickSearchRequest $request
      *
      * @return int[]
      */
-    public function searchPeople(QuickSearchRequest $request);
+    public function searchPerson(QuickSearchRequest $request);
 
     /**
      * @param QuickSearchRequest $request
      *
      * @return int[]
      */
-    public function searchOrganizations(QuickSearchRequest $request);
+    public function searchOrganization(QuickSearchRequest $request);
 
     /**
      * @param QuickSearchRequest $request
      *
      * @return int[]
      */
-    public function searchChatConversations(QuickSearchRequest $request);
+    public function searchChatConversation(QuickSearchRequest $request);
 }

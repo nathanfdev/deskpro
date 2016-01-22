@@ -57,7 +57,7 @@ class Doctrine implements AdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function searchArticles(QuickSearchRequest $request)
+    public function searchArticle(QuickSearchRequest $request)
     {
         return [];
     }
@@ -65,7 +65,7 @@ class Doctrine implements AdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function searchDownloads(QuickSearchRequest $request)
+    public function searchDownload(QuickSearchRequest $request)
     {
         return [];
     }
@@ -89,7 +89,7 @@ class Doctrine implements AdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function searchTickets(QuickSearchRequest $request)
+    public function searchTicket(QuickSearchRequest $request)
     {
         return [];
     }
@@ -97,7 +97,7 @@ class Doctrine implements AdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function searchPeople(QuickSearchRequest $request)
+    public function searchPerson(QuickSearchRequest $request)
     {
         return [];
     }
@@ -105,7 +105,7 @@ class Doctrine implements AdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function searchOrganizations(QuickSearchRequest $request)
+    public function searchOrganization(QuickSearchRequest $request)
     {
         return [];
     }
@@ -113,7 +113,7 @@ class Doctrine implements AdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function searchChatConversations(QuickSearchRequest $request)
+    public function searchChatConversation(QuickSearchRequest $request)
     {
         return [];
     }

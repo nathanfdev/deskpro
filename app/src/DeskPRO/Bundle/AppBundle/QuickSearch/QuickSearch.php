@@ -37,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\QuickSearch\Adapter\Doctrine;
 use DeskPRO\Bundle\AppBundle\QuickSearch\Adapter\ElasticSearch;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\ORM\EntityManager;
+use Orb\Util\Strings;
 
 /**
  * Class QuickSearch.
@@ -66,21 +67,24 @@ class QuickSearch
     /**
      * Constructor.
      *
-     * @param Doctrine         $doctrine_adapter
-     * @param ElasticSearch    $elastic_search_adapter
-     * @param SettingsResolver $settings_resolver
-     * @param EntityManager    $em
+     * @param Doctrine          $doctrine_adapter
+     * @param ElasticSearch     $elastic_search_adapter
+     * @param SettingsResolver  $settings_resolver
+     * @param EntityManager     $em
+     * @param PermissionChecker $permission_checker
      */
     public function __construct(
-        Doctrine         $doctrine_adapter,
-        ElasticSearch    $elastic_search_adapter,
-        SettingsResolver $settings_resolver,
-        EntityManager    $em
+        Doctrine          $doctrine_adapter,
+        ElasticSearch     $elastic_search_adapter,
+        SettingsResolver  $settings_resolver,
+        EntityManager     $em,
+        PermissionChecker $permission_checker
     ) {
         $this->doctrine_adapter       = $doctrine_adapter;
         $this->elastic_search_adapter = $elastic_search_adapter;
         $this->settings_resolver      = $settings_resolver;
         $this->em                     = $em;
+        $this->permission_checker     = $permission_checker;
     }
 
     /**
@@ -118,21 +122,41 @@ class QuickSearch
     {
         $results = [];
         $mapping = [
-            QuickSearchRequest::TYPE_ARTICLE           => ['searchArticles', 'DeskPRO:Article'],
-            QuickSearchRequest::TYPE_DOWNLOAD          => ['searchDownloads', 'DeskPRO:Download'],
-            QuickSearchRequest::TYPE_FEEDBACK          => ['searchFeedback', 'DeskPRO:Feedback'],
-            QuickSearchRequest::TYPE_NEWS              => ['searchNews', 'DeskPRO:News'],
-            QuickSearchRequest::TYPE_TICKET            => ['searchTickets', 'DeskPRO:Ticket'],
-            QuickSearchRequest::TYPE_PERSON            => ['searchPeople', 'DeskPRO:Person'],
-            QuickSearchRequest::TYPE_ORGANIZATION      => ['searchOrganizations', 'DeskPRO:Organization'],
-            QuickSearchRequest::TYPE_CHAT_CONVERSATION => ['searchChatConversations', 'DeskPRO:ChatConversation'],
+            QuickSearchRequest::TYPE_ARTICLE           => 'DeskPRO:Article',
+            QuickSearchRequest::TYPE_DOWNLOAD          => 'DeskPRO:Download',
+            QuickSearchRequest::TYPE_FEEDBACK          => 'DeskPRO:Feedback',
+            QuickSearchRequest::TYPE_NEWS              => 'DeskPRO:News',
+            QuickSearchRequest::TYPE_TICKET            => 'DeskPRO:Ticket',
+            QuickSearchRequest::TYPE_PERSON            => 'DeskPRO:Person',
+            QuickSearchRequest::TYPE_ORGANIZATION      => 'DeskPRO:Organization',
+            QuickSearchRequest::TYPE_CHAT_CONVERSATION => 'DeskPRO:ChatConversation',
         ];
 
         foreach ($request->getTypes() as $type) {
-            list($search_method, $entity_name) = $mapping[$type];
+            $search_method = 'search'.ucfirst(Strings::underscoreToCamelCase($type));
+            $check_method  = 'check'.ucfirst(Strings::underscoreToCamelCase($type));
 
-            $ids            = $adapter->$search_method($request);
-            $results[$type] = empty($ids) ? [] : $this->em->getRepository($entity_name)->findBy(['id' => $ids]);
+            $ids = $adapter->$search_method($request);
+            if ($request->isId()) {
+                $ids[] = (int) $request->getQuery();
+            }
+
+            $results[$type] = [];
+            $entities       = [];
+
+            if (!empty($ids)) {
+                $entities = $this->em->getRepository($mapping[$type])->findBy(['id' => $ids]);
+            }
+
+            foreach ($entities as $entity) {
+                if (method_exists($this->permission_checker, $check_method)) {
+                    if (!$this->permission_checker->$check_method($request, $entity)) {
+                        continue;
+                    }
+                }
+
+                $results[$type][] = $entity;
+            }
         }
 
         return $results;

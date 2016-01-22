@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\AppBundle\QuickSearch;
 
 use Application\DeskPRO\Entity\Person;
 use Orb\Util\Numbers;
+use Orb\Validator\StringEmail;
 
 /**
  * Class QuickSearchRequest.
@@ -99,6 +100,14 @@ class QuickSearchRequest
     public function isId()
     {
         return Numbers::isInteger($this->query);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEmail()
+    {
+        return StringEmail::isValueValid($this->query);
     }
 
     /**

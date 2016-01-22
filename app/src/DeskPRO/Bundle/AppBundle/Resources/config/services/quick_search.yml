@@ -7,6 +7,7 @@ services:
       - @quick_search.adapter.elastic_search
       - @settings_resolver
       - @doctrine.orm.default_entity_manager
+      - @quick_search.permission_checker
 
   quick_search.adapter.db:
     class: DeskPRO\Bundle\AppBundle\QuickSearch\Adapter\Doctrine
@@ -18,3 +19,6 @@ services:
     arguments:
      - @fos_elastica.manager
      - @doctrine.orm.default_entity_manager
+
+  quick_search.permission_checker:
+    class: DeskPRO\Bundle\AppBundle\QuickSearch\PermissionChecker

@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\Adapter;
 
+use Application\DeskPRO\Usersource\UsersourceManager;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchRequest;
 use Doctrine\ORM\EntityManager;
 use FOS\ElasticaBundle\Doctrine\RepositoryManager;
@@ -52,6 +53,11 @@ class ElasticSearch implements AdapterInterface
     private $em;
 
     /**
+     * @var UsersourceManager
+     */
+    private $usersourceManager;
+
+    /**
      * Constructor.
      *
      * @param RepositoryManager $elastica_manager
@@ -66,7 +72,7 @@ class ElasticSearch implements AdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function searchArticles(QuickSearchRequest $request)
+    public function searchArticle(QuickSearchRequest $request)
     {
         return $this->doElasticaRequest($request, 'DeskPRO:Article');
     }
@@ -74,7 +80,7 @@ class ElasticSearch implements AdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function searchDownloads(QuickSearchRequest $request)
+    public function searchDownload(QuickSearchRequest $request)
     {
         return $this->doElasticaRequest($request, 'DeskPRO:Download');
     }
@@ -98,7 +104,7 @@ class ElasticSearch implements AdapterInterface
     /**
      * {@inheritdoc}§
      */
-    public function searchTickets(QuickSearchRequest $request)
+    public function searchTicket(QuickSearchRequest $request)
     {
         $ids = [];
 
@@ -110,14 +116,6 @@ class ElasticSearch implements AdapterInterface
             if ($ticket) {
                 $ids[] = $ticket->getId();
             }
-        } elseif ($request->isId()) {
-            $ticket = $em_repository->findTicketId((int) $request->getQuery());
-            if ($ticket) {
-                $request->getPerson()->loadHelper('PermissionsManager');
-                if ($request->getPerson()->PermissionsManager->TicketChecker->canView($ticket)) {
-                    $ids[] = $ticket->getId();
-                }
-            }
         }
 
         return array_merge($ids, $this->doElasticaRequest($request, 'DeskPRO:Ticket'));
@@ -126,7 +124,7 @@ class ElasticSearch implements AdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function searchPeople(QuickSearchRequest $request)
+    public function searchPerson(QuickSearchRequest $request)
     {
         return $this->doElasticaRequest($request, 'DeskPRO:Person');
     }
@@ -134,7 +132,7 @@ class ElasticSearch implements AdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function searchOrganizations(QuickSearchRequest $request)
+    public function searchOrganization(QuickSearchRequest $request)
     {
         return $this->doElasticaRequest($request, 'DeskPRO:Organization');
     }
@@ -142,7 +140,7 @@ class ElasticSearch implements AdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function searchChatConversations(QuickSearchRequest $request)
+    public function searchChatConversation(QuickSearchRequest $request)
     {
         return $this->doElasticaRequest($request, 'DeskPRO:ChatConversation');
     }
