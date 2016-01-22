@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\QuickSearch;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\QuickSearch\Adapter\AdapterInterface;
 use DeskPRO\Bundle\AppBundle\QuickSearch\Adapter\Doctrine;
 use DeskPRO\Bundle\AppBundle\QuickSearch\Adapter\ElasticSearch;
 use DeskPRO\Kernel\KernelErrorHandler;
@@ -83,15 +84,59 @@ class QuickSearch
 
         if ($this->settings_resolver->getGlobalSettings()->get('elastica.enabled')) {
             try {
-                return $this->elastic_search_adapter->search($request);
+                return $this->doSearch($request, $this->elastic_search_adapter);
             } catch (\Exception $e) {
                 KernelErrorHandler::logException($e);
 
                 // fallback on DB search
-                return $this->doctrine_adapter->search($request);
+                return $this->doSearch($request, $this->doctrine_adapter);
             }
         } else {
-            return $this->doctrine_adapter->search($request);
+            return $this->doSearch($request, $this->doctrine_adapter);
         }
+    }
+
+    /**
+     * @param QuickSearchRequest $request
+     * @param AdapterInterface   $adapter
+     *
+     * @return array
+     */
+    protected function doSearch(QuickSearchRequest $request, AdapterInterface $adapter)
+    {
+        $results = [];
+
+        foreach ($request->getTypes() as $type) {
+            switch ($type) {
+                case QuickSearchRequest::TYPE_ARTICLE;
+                    $results[$type] = $adapter->searchArticles($request);
+                    break;
+                case QuickSearchRequest::TYPE_DOWNLOAD:
+                    $results[$type] = $adapter->searchDownloads($request);
+                    break;
+                case QuickSearchRequest::TYPE_FEEDBACK:
+                    $results[$type] = $adapter->searchFeedback($request);
+                    break;
+                case QuickSearchRequest::TYPE_NEWS:
+                    $results[$type] = $adapter->searchNews($request);
+                    break;
+                case QuickSearchRequest::TYPE_TICKET:
+                    $results[$type] = $adapter->searchTickets($request);
+                    break;
+                case QuickSearchRequest::TYPE_PERSON:
+                    $results[$type] = $adapter->searchPeople($request);
+                    break;
+                case QuickSearchRequest::TYPE_ORGANIZATION:
+                    $results[$type] = $adapter->searchOrganizations($request);
+                    break;
+                case QuickSearchRequest::TYPE_CHAT_CONVERSATION:
+                    $results[$type] = $adapter->searchChatConversations($request);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return $results;
     }
 }

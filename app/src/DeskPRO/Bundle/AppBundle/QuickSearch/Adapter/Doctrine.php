@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\Adapter;
 
+use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchRequest;
 
 /**
@@ -39,17 +40,73 @@ use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchRequest;
 class Doctrine implements AdapterInterface
 {
     /**
-     * Constructor.
+     * @var EntityManager
      */
-    public function __construct()
+    private $em;
+
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function searchArticles(QuickSearchRequest $request)
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function search(QuickSearchRequest $request)
+    public function searchDownloads(QuickSearchRequest $request)
     {
-        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function searchFeedback(QuickSearchRequest $request)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function searchNews(QuickSearchRequest $request)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function searchTickets(QuickSearchRequest $request)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function searchPeople(QuickSearchRequest $request)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function searchOrganizations(QuickSearchRequest $request)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function searchChatConversations(QuickSearchRequest $request)
+    {
     }
 }

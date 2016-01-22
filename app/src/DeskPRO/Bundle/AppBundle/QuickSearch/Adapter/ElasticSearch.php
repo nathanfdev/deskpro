@@ -32,6 +32,8 @@
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\Adapter;
 
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchRequest;
+use Doctrine\ORM\EntityManager;
+use FOS\ElasticaBundle\Doctrine\RepositoryManager;
 
 /**
  * Class ElasticSearch.
@@ -39,17 +41,80 @@ use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchRequest;
 class ElasticSearch implements AdapterInterface
 {
     /**
-     * Constructor.
+     * @var RepositoryManager
      */
-    public function __construct()
+    private $elastica_manager;
+
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * Constructor.
+     *
+     * @param RepositoryManager $elastica_manager
+     * @param EntityManager     $em
+     */
+    public function __construct(RepositoryManager $elastica_manager, EntityManager $em)
+    {
+        $this->elastica_manager = $elastica_manager;
+        $this->em               = $em;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function searchArticles(QuickSearchRequest $request)
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function search(QuickSearchRequest $request)
+    public function searchDownloads(QuickSearchRequest $request)
     {
-        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function searchFeedback(QuickSearchRequest $request)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function searchNews(QuickSearchRequest $request)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function searchTickets(QuickSearchRequest $request)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function searchPeople(QuickSearchRequest $request)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function searchOrganizations(QuickSearchRequest $request)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function searchChatConversations(QuickSearchRequest $request)
+    {
     }
 }

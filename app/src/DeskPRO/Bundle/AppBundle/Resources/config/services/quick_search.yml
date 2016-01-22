@@ -9,6 +9,11 @@ services:
 
   quick_search.adapter.db:
     class: DeskPRO\Bundle\AppBundle\QuickSearch\Adapter\Doctrine
+    arguments:
+      - @doctrine.orm.default_entity_manager
 
   quick_search.adapter.elastic_search:
     class: DeskPRO\Bundle\AppBundle\QuickSearch\Adapter\ElasticSearch
+    arguments:
+     - @fos_elastica.manager
+     - @doctrine.orm.default_entity_manager
