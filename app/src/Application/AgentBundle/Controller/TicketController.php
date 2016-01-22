@@ -3845,9 +3845,16 @@ class TicketController extends AbstractController
         $field_manager = $this->container->getTicketFieldManager();
         $custom_fields = $field_manager->getDisplayArrayForObject($ticket);
 
-        $billing_field_manager = $this->container->getBillingFieldManager();
-        $group                 = $this->container->get('form.factory')->createNamedBuilder('billing_fields');
-        $billing_fields        = $billing_field_manager->getDisplayArrayForObject(new Entity\TicketCharge(), $group);
+        $billing_field_manager     = $this->container->getBillingFieldManager();
+        $group                     = $this->container->get('form.factory')->createNamedBuilder('billing_fields');
+        $billing_fields            = $billing_field_manager->getDisplayArrayForObject(new Entity\TicketCharge(), $group);
+        $person                    = new Person();
+        $custom_person_fields_form = $this->get('form.factory')->createNamedBuilder('custom_person_fields', 'form');
+        $custom_org_fields_form    = $this->get('form.factory')->createNamedBuilder('custom_org_fields', 'form');
+        $custom_person_fields      = $this->container->getPersonFieldManager()->getDisplayArrayForObject($person, $custom_person_fields_form);
+        $custom_org_fields         = $person->organization
+            ? $this->container->getOrgFieldManager()->getDisplayArrayForObject($person->organization, $custom_org_fields_form)
+            : array();
 
         $layouts = $this->container->getTicketLayoutManager()->getAgentLayouts();
         $page    = $layouts->getLayout($ticket->department ? $ticket->department['id'] : 0);
@@ -3887,6 +3894,8 @@ class TicketController extends AbstractController
             'new_custom_fields'    => $new_custom_fields->createView(),
             'billing_fields'       => $billing_fields,
             'open_problems'        => $open_problems,
+            'custom_person_fields' => $custom_person_fields,
+            'custom_org_fields'    => $custom_org_fields,
         ));
     }
 
