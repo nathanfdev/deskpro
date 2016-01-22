@@ -6,5 +6,4 @@ Feature: Portal
 
   Scenario: I view the portal
     Given I am on "/"
-    Then I wait 5 seconds
-    Then I should see "Helpdesk" in the ".brand h1" element
+    Then I should see "Welcome to DeskPRO"
