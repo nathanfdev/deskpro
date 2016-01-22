@@ -584,17 +584,11 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
     public function getCustomFieldInput($input_name = 'field')
     {
-        $custom_fields = $this->request->request->get($input_name, array());
-        if (!is_array($custom_fields) || empty($custom_fields)) {
-            $custom_fields = $this->request->query->get($input_name, array());
-            if (!is_array($custom_fields) || empty($custom_fields)) {
-                return array();
-            }
-        }
+        $custom_fields = $this->in->getArrayValue($input_name) ?: array();
 
         $output = array();
         foreach ($custom_fields as $key => $value) {
-            if (is_int($key)) {
+            if (is_numeric($key)) {
                 $output['field_'.$key] = $value;
             } elseif (preg_match('/^field_\d+/', $key)) {
                 $output[$key] = $value;
