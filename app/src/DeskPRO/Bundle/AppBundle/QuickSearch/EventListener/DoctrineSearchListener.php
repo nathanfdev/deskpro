@@ -31,9 +31,11 @@
  */
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
 
+use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchContext;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvent;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvents;
 use Doctrine\ORM\EntityManager;
+use Orb\Util\Strings;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -70,6 +72,66 @@ class DoctrineSearchListener implements EventSubscriberInterface
      * @param QuickSearchEvent $event
      */
     public function onSearch(QuickSearchEvent $event)
+    {
+        $context = $event->getContext();
+
+        $search_method = 'search'.ucfirst(Strings::underscoreToCamelCase($context->getType()));
+        $this->$search_method($context);
+    }
+
+    /**
+     * @param QuickSearchContext $context
+     */
+    private function searchArticle(QuickSearchContext $context)
+    {
+    }
+
+    /**
+     * @param QuickSearchContext $context
+     */
+    private function searchDownload(QuickSearchContext $context)
+    {
+    }
+
+    /**
+     * @param QuickSearchContext $context
+     */
+    private function searchFeedback(QuickSearchContext $context)
+    {
+    }
+
+    /**
+     * @param QuickSearchContext $context
+     */
+    private function searchNews(QuickSearchContext $context)
+    {
+    }
+
+    /**
+     * @param QuickSearchContext $context
+     */
+    private function searchTicket(QuickSearchContext $context)
+    {
+    }
+
+    /**
+     * @param QuickSearchContext $context
+     */
+    private function searchPerson(QuickSearchContext $context)
+    {
+    }
+
+    /**
+     * @param QuickSearchContext $context
+     */
+    private function searchOrganization(QuickSearchContext $context)
+    {
+    }
+
+    /**
+     * @param QuickSearchContext $context
+     */
+    private function searchChatConversation(QuickSearchContext $context)
     {
     }
 }

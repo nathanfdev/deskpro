@@ -32,7 +32,9 @@
 namespace DeskPRO\Bundle\AppBundle\QuickSearch;
 
 use Application\DeskPRO\Entity\Person;
+use Orb\Util\Arrays;
 use Orb\Util\Numbers;
+use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
 
 /**
@@ -54,6 +56,11 @@ class QuickSearchRequest
      * @var Person
      */
     private $person;
+
+    /**
+     * @var string[]
+     */
+    private $words;
 
     /**
      * Constructor.
@@ -119,6 +126,28 @@ class QuickSearchRequest
     public function isLabel()
     {
         return (bool) $this->getLabel();
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getWords()
+    {
+        if (!is_array($this->words)) {
+            $words = Strings::utf8_strtolower($this->query);
+            $words = explode(' ', $words);
+            $words = Arrays::removeFalsey($words);
+            $words = array_unique($words);
+            $words = array_filter($words, function ($s) {
+                if (strlen($s) >= 3) {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        }
+
+        return $this->words;
     }
 
     /**
