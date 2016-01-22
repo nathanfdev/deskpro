@@ -106,6 +106,7 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
             'Application\\DeskPRO\\Command\\SyncDataCommand',
             'Application\\DeskPRO\\Command\\TestCommand',
             'Application\\DeskPRO\\Command\\TestEmailDecodeCommand',
+            'Application\\DeskPRO\\Command\\TestFilterCommand',
             'Application\\DeskPRO\\Command\\UpgradeCommand',
             'Application\\DeskPRO\\Command\\VerifyBlobsCommand',
             'Application\\DeskPRO\\Command\\VerifySearchTablesCommand',
