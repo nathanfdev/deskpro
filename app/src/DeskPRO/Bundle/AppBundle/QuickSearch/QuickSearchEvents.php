@@ -49,5 +49,5 @@ final class QuickSearchEvents
     /**
      *
      */
-    const POST_SEARCH = 'quick_search.validate';
+    const POST_SEARCH = 'quick_search.post_search';
 }

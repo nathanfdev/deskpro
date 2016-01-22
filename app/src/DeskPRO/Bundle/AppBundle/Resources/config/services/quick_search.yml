@@ -47,7 +47,7 @@ services:
     arguments:
       - @doctrine.orm.default_entity_manager
     tags:
-      - { name: quick_search.event_subscriberr }
+      - { name: quick_search.event_subscriber }
 
   quick_search.listener.permission_listener:
     class: DeskPRO\Bundle\AppBundle\QuickSearch\EventListener\PermissionListener

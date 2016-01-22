@@ -56,6 +56,11 @@ class SearchController extends BaseController
             (string) $request->query->get('sort')
         ));
 
-        return new View($results);
+        $response = [];
+        foreach ($results as $type => $entities) {
+            $response[$type] = $this->dataSerialize($entities->toArray());
+        }
+
+        return new View($response);
     }
 }

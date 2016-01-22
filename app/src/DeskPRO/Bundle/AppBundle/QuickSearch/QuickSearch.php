@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\QuickSearch;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -56,7 +57,7 @@ class QuickSearch
     /**
      * @param QuickSearchRequest $request
      *
-     * @return array
+     * @return ArrayCollection[]
      */
     public function search(QuickSearchRequest $request)
     {
