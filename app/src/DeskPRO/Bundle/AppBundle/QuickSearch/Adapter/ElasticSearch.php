@@ -31,10 +31,10 @@
  */
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\Adapter;
 
-use Application\DeskPRO\NewSearch\Repository;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchRequest;
 use Doctrine\ORM\EntityManager;
 use FOS\ElasticaBundle\Doctrine\RepositoryManager;
+use FOS\ElasticaBundle\Repository as ElasticaRepository;
 
 /**
  * Class ElasticSearch.
@@ -68,10 +68,7 @@ class ElasticSearch implements AdapterInterface
      */
     public function searchArticles(QuickSearchRequest $request)
     {
-        /** @var Repository\ArticleRepository $repository */
-        $repository = $this->elastica_manager->getRepository('DeskPRO:Article');
-
-        return [];
+        return $this->doElasticaRequest($request, 'DeskPRO:Article');
     }
 
     /**
@@ -79,10 +76,7 @@ class ElasticSearch implements AdapterInterface
      */
     public function searchDownloads(QuickSearchRequest $request)
     {
-        /** @var Repository\DownloadRepository $repository */
-        $repository = $this->elastica_manager->getRepository('DeskPRO:Download');
-
-        return [];
+        return $this->doElasticaRequest($request, 'DeskPRO:Download');
     }
 
     /**
@@ -90,10 +84,7 @@ class ElasticSearch implements AdapterInterface
      */
     public function searchFeedback(QuickSearchRequest $request)
     {
-        /** @var Repository\FeedbackRepository $repository */
-        $repository = $this->elastica_manager->getRepository('DeskPRO:Feedback');
-
-        return [];
+        return $this->doElasticaRequest($request, 'DeskPRO:Feedback');
     }
 
     /**
@@ -101,22 +92,35 @@ class ElasticSearch implements AdapterInterface
      */
     public function searchNews(QuickSearchRequest $request)
     {
-        /** @var Repository\NewsRepository $repository */
-        $repository = $this->elastica_manager->getRepository('DeskPRO:News');
-
-        return [];
+        return $this->doElasticaRequest($request, 'DeskPRO:News');
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritdoc}§
      */
     public function searchTickets(QuickSearchRequest $request)
     {
-        /** @var Repository\TicketRepository $repository */
-        $repository = $this->elastica_manager->getRepository('DeskPRO:Ticket');
-        $repository->setPersonContext($request->getPerson());
+        $ids = [];
 
-        return [];
+        /** @var \Application\DeskPRO\EntityRepository\Ticket $em_repository */
+        $em_repository = $this->em->getRepository('DeskPRO:Ticket');
+
+        if ($request->isTicketRef()) {
+            $ticket = $em_repository->findTicketRef($request->getQuery());
+            if ($ticket) {
+                $ids[] = $ticket->getId();
+            }
+        } elseif ($request->isId()) {
+            $ticket = $em_repository->findTicketId((int) $request->getQuery());
+            if ($ticket) {
+                $request->getPerson()->loadHelper('PermissionsManager');
+                if ($request->getPerson()->PermissionsManager->TicketChecker->canView($ticket)) {
+                    $ids[] = $ticket->getId();
+                }
+            }
+        }
+
+        return array_merge($ids, $this->doElasticaRequest($request, 'DeskPRO:Ticket'));
     }
 
     /**
@@ -124,10 +128,7 @@ class ElasticSearch implements AdapterInterface
      */
     public function searchPeople(QuickSearchRequest $request)
     {
-        /** @var Repository\PersonRepository $repository */
-        $repository = $this->elastica_manager->getRepository('DeskPRO:Person');
-
-        return [];
+        return $this->doElasticaRequest($request, 'DeskPRO:Person');
     }
 
     /**
@@ -135,10 +136,7 @@ class ElasticSearch implements AdapterInterface
      */
     public function searchOrganizations(QuickSearchRequest $request)
     {
-        /** @var Repository\OrganizationRepository $repository */
-        $repository = $this->elastica_manager->getRepository('DeskPRO:Organization');
-
-        return [];
+        return $this->doElasticaRequest($request, 'DeskPRO:Organization');
     }
 
     /**
@@ -146,9 +144,27 @@ class ElasticSearch implements AdapterInterface
      */
     public function searchChatConversations(QuickSearchRequest $request)
     {
-        /** @var Repository\ChatConversationRepository $repository */
-        $repository = $this->elastica_manager->getRepository('DeskPRO:ChatConversation');
+        return $this->doElasticaRequest($request, 'DeskPRO:ChatConversation');
+    }
 
-        return [];
+    /**
+     * @param QuickSearchRequest $request
+     * @param string             $repository_name
+     *
+     * @return int[]
+     */
+    protected function doElasticaRequest(QuickSearchRequest $request, $repository_name)
+    {
+        /** @var ElasticaRepository $repository */
+        $repository = $this->elastica_manager->getRepository($repository_name);
+        if (method_exists($repository, 'setPersonContext')) {
+            $repository->setPersonContext($request->getPerson());
+        }
+
+        $result = $repository->find($request->getQuery(), null, [
+            'sort_type' => $request->getSort(),
+        ]);
+
+        return $result;
     }
 }

@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\QuickSearch;
 
 use Application\DeskPRO\Entity\Person;
+use Orb\Util\Numbers;
 
 /**
  * Class QuickSearchRequest.
@@ -82,6 +83,22 @@ class QuickSearchRequest
     public function getQuery()
     {
         return $this->query;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTicketRef()
+    {
+        return (bool) preg_match('#^[0-9A-Z\-_\.]+$#', $this->query);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isId()
+    {
+        return Numbers::isInteger($this->query);
     }
 
     /**

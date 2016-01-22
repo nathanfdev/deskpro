@@ -142,7 +142,7 @@ class Ticket extends AbstractEntityRepository
      *
      * @param $ticket_id
      *
-     * @return Ticket
+     * @return TicketEntity
      */
     public function findTicketId($ticket_id)
     {
@@ -169,7 +169,7 @@ class Ticket extends AbstractEntityRepository
      *
      * @param $ticket_ref
      *
-     * @return Ticket
+     * @return TicketEntity
      */
     public function findTicketRef($ticket_ref)
     {
