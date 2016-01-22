@@ -102,6 +102,26 @@ class QuickSearchRequest
     }
 
     /**
+     * @return bool
+     */
+    public function getLabel()
+    {
+        if (preg_match('#^\[(.*?)\]$#', $this->query, $matches)) {
+            return $matches[1];
+        }
+
+        return;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLabel()
+    {
+        return (bool) $this->getLabel();
+    }
+
+    /**
      * @return string|null
      */
     public function getSort()
