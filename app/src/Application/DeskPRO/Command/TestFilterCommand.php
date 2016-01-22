@@ -101,8 +101,8 @@ class TestFilterCommand extends ContainerAwareCommand
         $searcher->setPerson($agent);
 
         if ($input->getOption('group')) {
-            list ($set_group_term, $set_group_option) = explode(':', $input->getOption('group'));
-            $term = \Application\DeskPRO\Tickets\GroupingCounter::getSearchTerm($set_group_term, $set_group_option);
+            list($set_group_term, $set_group_option) = explode(':', $input->getOption('group'));
+            $term                                    = \Application\DeskPRO\Tickets\GroupingCounter::getSearchTerm($set_group_term, $set_group_option);
             if ($term) {
                 $type   = $term['type'];
                 $op     = $term['op'];
