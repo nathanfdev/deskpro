@@ -34,10 +34,17 @@ namespace DeskPRO\Bundle\AppBundle\QuickSearch\Adapter;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchRequest;
 
 /**
- * Class DbAdapter.
+ * Class Doctrine.
  */
-class DbAdapter implements AdapterInterface
+class Doctrine implements AdapterInterface
 {
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+    }
+
     /**
      * {@inheritdoc}
      */

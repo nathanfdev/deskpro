@@ -32,8 +32,8 @@
 namespace DeskPRO\Bundle\AppBundle\QuickSearch;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
-use DeskPRO\Bundle\AppBundle\QuickSearch\Adapter\DbAdapter;
-use DeskPRO\Bundle\AppBundle\QuickSearch\Adapter\ElasticSearchAdapter;
+use DeskPRO\Bundle\AppBundle\QuickSearch\Adapter\Doctrine;
+use DeskPRO\Bundle\AppBundle\QuickSearch\Adapter\ElasticSearch;
 use DeskPRO\Kernel\KernelErrorHandler;
 
 /**
@@ -42,12 +42,12 @@ use DeskPRO\Kernel\KernelErrorHandler;
 class QuickSearch
 {
     /**
-     * @var DbAdapter
+     * @var Doctrine
      */
-    private $db_adapter;
+    private $doctrine_adapter;
 
     /**
-     * @var ElasticSearchAdapter
+     * @var ElasticSearch
      */
     private $elastic_search_adapter;
 
@@ -59,13 +59,13 @@ class QuickSearch
     /**
      * Constructor.
      *
-     * @param DbAdapter            $dp_adapter
-     * @param ElasticSearchAdapter $elastic_search_adapter
-     * @param SettingsResolver     $settings_resolver
+     * @param Doctrine         $doctrine_adapter
+     * @param ElasticSearch    $elastic_search_adapter
+     * @param SettingsResolver $settings_resolver
      */
-    public function __construct(DbAdapter $dp_adapter, ElasticSearchAdapter $elastic_search_adapter, SettingsResolver $settings_resolver)
+    public function __construct(Doctrine $doctrine_adapter, ElasticSearch $elastic_search_adapter, SettingsResolver $settings_resolver)
     {
-        $this->db_adapter             = $dp_adapter;
+        $this->doctrine_adapter       = $doctrine_adapter;
         $this->elastic_search_adapter = $elastic_search_adapter;
         $this->settings_resolver      = $settings_resolver;
     }
@@ -88,10 +88,10 @@ class QuickSearch
                 KernelErrorHandler::logException($e);
 
                 // fallback on DB search
-                return $this->db_adapter->search($request);
+                return $this->doctrine_adapter->search($request);
             }
         } else {
-            return $this->db_adapter->search($request);
+            return $this->doctrine_adapter->search($request);
         }
     }
 }

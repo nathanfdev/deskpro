@@ -8,9 +8,7 @@ services:
       - @settings_resolver
 
   quick_search.adapter.db:
-    class: DeskPRO\Bundle\AppBundle\QuickSearch\Adapter\DbAdapter
+    class: DeskPRO\Bundle\AppBundle\QuickSearch\Adapter\Doctrine
 
   quick_search.adapter.elastic_search:
-    class: DeskPRO\Bundle\AppBundle\QuickSearch\Adapter\ElasticSearchAdapter
-    arguments:
-      - @deskpro.search_manager.elasticsearch
+    class: DeskPRO\Bundle\AppBundle\QuickSearch\Adapter\ElasticSearch

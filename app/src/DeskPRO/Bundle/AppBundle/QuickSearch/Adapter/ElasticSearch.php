@@ -31,27 +31,18 @@
  */
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\Adapter;
 
-use Application\DeskPRO\NewSearch\Manager\Elasticsearch;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchRequest;
 
 /**
- * Class ElasticSearchAdapter.
+ * Class ElasticSearch.
  */
-class ElasticSearchAdapter implements AdapterInterface
+class ElasticSearch implements AdapterInterface
 {
     /**
-     * @var Elasticsearch
-     */
-    private $elastic_search;
-
-    /**
      * Constructor.
-     *
-     * @param Elasticsearch $elastic_search
      */
-    public function __construct(Elasticsearch $elastic_search)
+    public function __construct()
     {
-        $this->elastic_search = $elastic_search;
     }
 
     /**
@@ -59,9 +50,6 @@ class ElasticSearchAdapter implements AdapterInterface
      */
     public function search(QuickSearchRequest $request)
     {
-        $this->elastic_search->setPersonContext($request->getPerson());
-        list($results) = $this->elastic_search->quickSearch($request->getQuery(), $request->getSort());
-
-        return $results;
+        return [];
     }
 }
