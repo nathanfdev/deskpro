@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\AgentAlert;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -63,14 +64,7 @@ class AlertSender
     {
         $tpl_line = null;
 
-        $alert           = new AgentAlert();
-        $alert->person   = $agent;
-        $alert->typename = $type;
-        $alert->data     = $data;
-
-        if (isset($data['browser_rendered'])) {
-            $alert->addTargetMap(AgentAlert::TARGET_BROWSER, array('browser_rendered'));
-        }
+        $alert = $this->createAlert($agent, $type, $data);
         $this->em->persist($alert);
         $this->em->flush($alert);
 
@@ -78,16 +72,18 @@ class AlertSender
             $tpl_line = $data['browser_rendered'];
 
             $cm = new ClientMessage();
-            $cm->fromArray(array(
-                'channel' => 'agent-notify.tickets',
-                'data'    => array(
-                    'type'     => $type,
-                    'alert_id' => $alert->getId(),
-                    'row'      => $tpl_line,
-                ),
-                'for_person'        => $agent,
-                'created_by_client' => 'sys',
-            ));
+            $cm->fromArray(
+                array(
+                    'channel' => 'agent-notify.tickets',
+                    'data'    => array(
+                        'type'     => $type,
+                        'alert_id' => $alert->getId(),
+                        'row'      => $tpl_line,
+                    ),
+                    'for_person'        => $agent,
+                    'created_by_client' => 'sys',
+                )
+            );
             $this->em->persist($cm);
             $this->em->flush($cm);
         }
@@ -96,8 +92,8 @@ class AlertSender
     }
 
     /**
-     * @param $agent
-     * @param $type
+     * @param       $agent
+     * @param       $type
      * @param array $data
      *
      * @return AgentAlert
@@ -117,8 +113,8 @@ class AlertSender
     }
 
     /**
-     * @param $agent
-     * @param $type
+     * @param            $agent
+     * @param            $type
      * @param array      $data
      * @param AgentAlert $alert
      */
@@ -131,16 +127,18 @@ class AlertSender
         $tpl_line = $data['browser_rendered'];
 
         $cm = new ClientMessage();
-        $cm->fromArray(array(
-            'channel' => 'agent-notify.tickets',
-            'data'    => array(
-                'type'     => $type,
-                'alert_id' => $alert ? $alert->id : null,
-                'row'      => $tpl_line,
-            ),
-            'for_person'        => $agent,
-            'created_by_client' => 'sys',
-        ));
+        $cm->fromArray(
+            array(
+                'channel' => 'agent-notify.tickets',
+                'data'    => array(
+                    'type'     => $type,
+                    'alert_id' => $alert ? $alert->id : null,
+                    'row'      => $tpl_line,
+                ),
+                'for_person'        => $agent,
+                'created_by_client' => 'sys',
+            )
+        );
         $this->em->persist($cm);
         $this->em->flush($cm);
     }

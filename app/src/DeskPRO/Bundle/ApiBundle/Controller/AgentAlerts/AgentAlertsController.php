@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\AgentAlerts;
 
 use Application\DeskPRO\Entity\AgentAlert;
@@ -54,7 +55,7 @@ class AgentAlertsController extends CrudController
 
     /**
      * @ApiDoc(
-     *      description="Create a new resource",
+     *      description="Dismiss set of alerts",
      *      statusCodes={
      *          200="Success",
      *          400="Bad Request",
@@ -81,10 +82,42 @@ class AgentAlertsController extends CrudController
             $alerts = $qb->getQuery()->getResult();
             foreach ($alerts as $alert) {
                 $alert->is_dismissed = true;
-                $em->persist($alert);
             }
             $em->flush();
         }
+
+        return View::create([], Response::HTTP_OK);
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="Dismiss all alerts of the current user",
+     *      statusCodes={
+     *          200="Success",
+     *          400="Bad Request",
+     *          403="Denied"
+     *      }
+     * )
+     * @Post("/dismiss/all")
+     *
+     * @return View
+     */
+    public function dismissAllAction()
+    {
+        $em = $this->getManager();
+        $qb = $em->createQueryBuilder();
+        $qb
+            ->select('alert')
+            ->from('DeskPRO:AgentAlert', 'alert')
+            ->where('alert.is_dismissed = :false')
+            ->setParameter('false', false)
+            ->andWhere('alert.person = :user')
+            ->setParameter('user', $this->getUser());
+        $alerts = $qb->getQuery()->getResult();
+        foreach ($alerts as $alert) {
+            $alert->is_dismissed = true;
+        }
+        $em->flush();
 
         return View::create([], Response::HTTP_OK);
     }
