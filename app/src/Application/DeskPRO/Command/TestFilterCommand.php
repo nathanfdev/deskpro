@@ -47,6 +47,7 @@ class TestFilterCommand extends ContainerAwareCommand
     {
         $this->setName('dp:test-filter');
         $this->addOption('ticketlist', null, InputOption::VALUE_NONE, 'Render ticket results as text');
+        $this->addOption('group', null, InputOption::VALUE_REQUIRED, 'Group results: group:value');
         $this->addArgument('agent', InputArgument::REQUIRED, 'Email/ID for an agent to run the filter as');
         $this->addArgument('filterId', InputArgument::REQUIRED, 'Filter ID to run');
     }
@@ -98,6 +99,21 @@ class TestFilterCommand extends ContainerAwareCommand
         $searcher = $filter->getSearcher();
         $searcher->setOrderBy('ticket.date_created', 'DESC');
         $searcher->setPerson($agent);
+
+        if ($input->getOption('group')) {
+            list ($set_group_term, $set_group_option) = explode(':', $input->getOption('group'));
+            $term = \Application\DeskPRO\Tickets\GroupingCounter::getSearchTerm($set_group_term, $set_group_option);
+            if ($term) {
+                $type   = $term['type'];
+                $op     = $term['op'];
+                $choice = $term;
+                unset($choice['type'], $choice['op']);
+
+                $output->writeln("<info>Grouping by {$term['type']} = {$set_group_option}</info>");
+
+                $searcher->addTerm($type, $op, $choice);
+            }
+        }
 
         echo "SQL:\n";
         echo str_repeat('-', 72)."\n";
