@@ -205,7 +205,7 @@ class LayoutFieldCriteria implements \Serializable, \Countable
         $this->setMode($data['mode']);
 
         foreach ($data['terms'] as $t) {
-            $classname = "Application\\DeskPRO\\TicketLayout\\Terms\\{$t['type']}";
+            $classname = 'Application\\DeskPRO\\TicketLayout\\Terms\\'.$t['type'];
             $obj       = new $classname($t['op'], $t['options']);
             $this->addTerm($obj);
         }
