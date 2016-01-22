@@ -1,0 +1,16 @@
+services:
+
+  quick_search:
+    class: DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearch
+    arguments:
+      - @quick_search.adapter.db
+      - @quick_search.adapter.elastic_search
+      - @settings_resolver
+
+  quick_search.adapter.db:
+    class: DeskPRO\Bundle\AppBundle\QuickSearch\Adapter\DbAdapter
+
+  quick_search.adapter.elastic_search:
+    class: DeskPRO\Bundle\AppBundle\QuickSearch\Adapter\ElasticSearchAdapter
+    arguments:
+      - @deskpro.search_manager.elasticsearch
