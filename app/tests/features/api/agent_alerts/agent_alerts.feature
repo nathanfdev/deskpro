@@ -7,7 +7,7 @@ Feature: /me/notifications endpoint
     Given I install the api data set
     And my request is authenticated
 
-  Scenario: I create first job
+  Scenario: I dismiss set of alerts
     When I send a POST request to "/api/v2/me/notifications/dismiss" with body:
     """
 {

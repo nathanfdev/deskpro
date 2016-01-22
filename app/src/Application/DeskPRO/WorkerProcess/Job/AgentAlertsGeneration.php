@@ -48,8 +48,8 @@ class AgentAlertsGeneration extends AbstractJob
      */
     public function run()
     {
-        /* @ToDo return  check for dev mode  it later
-         * if (!$GLOBALS['DP_CONFIG']['debug']['dev']) {
+        /* @ToDo return check for dev mode later
+         * if (!$GLOBALS['DP_CONFIG']['debug]['dev']) {
             return;
         }
         */
