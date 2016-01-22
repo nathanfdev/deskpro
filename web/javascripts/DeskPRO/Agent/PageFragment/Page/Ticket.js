@@ -2808,14 +2808,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			context: this,
 			success: function(result) {
 				this.alertTab();
-
-        if (this.initPromise) {
-          this.initPromise.then(function(){
-            self.handleTicketUpdate(result);
-          });
-        } else {
-          this.handleTicketUpdate(result);
-        }
+				// this needs to happen instantly now, dont put this in any other promise
+				// or else it makes the ui feel slow
+				self.handleTicketUpdate(result);
 			}
 		});
 	},
