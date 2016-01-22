@@ -31,46 +31,23 @@
  */
 namespace DeskPRO\Bundle\AppBundle\QuickSearch;
 
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-
 /**
- * Class QuickSearch.
+ * Class QuickSearchEvents.
  */
-class QuickSearch
+final class QuickSearchEvents
 {
     /**
-     * @var EventDispatcherInterface
+     *
      */
-    private $dispatcher;
+    const SEARCH = 'quick_search.search';
 
     /**
-     * Constructor.
      *
-     * @param EventDispatcherInterface $dispatcher
      */
-    public function __construct(EventDispatcherInterface $dispatcher)
-    {
-        $this->dispatcher = $dispatcher;
-    }
+    const SEARCH_FALLBACK = 'quick_search.search_fallback';
 
     /**
-     * @param QuickSearchRequest $request
      *
-     * @return array
      */
-    public function search(QuickSearchRequest $request)
-    {
-        $results = [];
-
-        foreach ($request->getTypes() as $type) {
-            $context = new QuickSearchContext($type, $request);
-
-            $this->dispatcher->dispatch(QuickSearchEvents::SEARCH, new QuickSearchEvent($context));
-            $this->dispatcher->dispatch(QuickSearchEvents::POST_SEARCH, new QuickSearchEvent($context));
-
-            $results[$type] = $context->entities;
-        }
-
-        return $results;
-    }
+    const POST_SEARCH = 'quick_search.validate';
 }

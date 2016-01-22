@@ -29,15 +29,17 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\QuickSearch\Adapter;
+namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
 
-use Application\DeskPRO\ORM\EntityManager;
-use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchRequest;
+use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvent;
+use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvents;
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * Class Doctrine.
+ * Class DoctrineSearchListener.
  */
-class Doctrine implements AdapterInterface
+class DoctrineSearchListener implements EventSubscriberInterface
 {
     /**
      * @var EntityManager
@@ -57,64 +59,17 @@ class Doctrine implements AdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function searchArticle(QuickSearchRequest $request)
+    public static function getSubscribedEvents()
     {
-        return [];
+        return [
+            QuickSearchEvents::SEARCH_FALLBACK => 'onSearch',
+        ];
     }
 
     /**
-     * {@inheritdoc}
+     * @param QuickSearchEvent $event
      */
-    public function searchDownload(QuickSearchRequest $request)
+    public function onSearch(QuickSearchEvent $event)
     {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function searchFeedback(QuickSearchRequest $request)
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function searchNews(QuickSearchRequest $request)
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function searchTicket(QuickSearchRequest $request)
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function searchPerson(QuickSearchRequest $request)
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function searchOrganization(QuickSearchRequest $request)
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function searchChatConversation(QuickSearchRequest $request)
-    {
-        return [];
     }
 }

@@ -40,15 +40,6 @@ use Orb\Validator\StringEmail;
  */
 class QuickSearchRequest
 {
-    const TYPE_ARTICLE           = 'article';
-    const TYPE_DOWNLOAD          = 'download';
-    const TYPE_FEEDBACK          = 'feedback';
-    const TYPE_NEWS              = 'news';
-    const TYPE_TICKET            = 'ticket';
-    const TYPE_PERSON            = 'person';
-    const TYPE_ORGANIZATION      = 'organization';
-    const TYPE_CHAT_CONVERSATION = 'chat_conversation';
-
     /**
      * @var string
      */
@@ -131,19 +122,10 @@ class QuickSearchRequest
      */
     public function getTypes()
     {
-        $types = [
-            self::TYPE_ARTICLE,
-            self::TYPE_DOWNLOAD,
-            self::TYPE_FEEDBACK,
-            self::TYPE_NEWS,
-            self::TYPE_TICKET,
-            self::TYPE_PERSON,
-            self::TYPE_ORGANIZATION,
-            self::TYPE_CHAT_CONVERSATION,
-        ];
+        $types = array_keys(QuickSearchContext::getDoctrineMapping());
 
         if (!$this->person->hasPerm('agent_people.use')) {
-            $types = array_diff($types, [self::TYPE_PERSON, self::TYPE_ORGANIZATION]);
+            $types = array_diff($types, [QuickSearchContext::TYPE_PERSON, QuickSearchContext::TYPE_ORGANIZATION]);
         }
 
         return $types;

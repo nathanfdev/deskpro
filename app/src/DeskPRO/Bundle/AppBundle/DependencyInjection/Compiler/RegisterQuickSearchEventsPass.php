@@ -29,48 +29,26 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\QuickSearch;
+namespace DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler;
 
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 
 /**
- * Class QuickSearch.
+ * Class RegisterQuickSearchEventsPass.
  */
-class QuickSearch
+class RegisterQuickSearchEventsPass implements CompilerPassInterface
 {
     /**
-     * @var EventDispatcherInterface
+     * {@inheritdoc}
      */
-    private $dispatcher;
-
-    /**
-     * Constructor.
-     *
-     * @param EventDispatcherInterface $dispatcher
-     */
-    public function __construct(EventDispatcherInterface $dispatcher)
+    public function process(ContainerBuilder $container)
     {
-        $this->dispatcher = $dispatcher;
-    }
+        $dispatcher_definition = $container->getDefinition('quick_search.event_dispatcher');
 
-    /**
-     * @param QuickSearchRequest $request
-     *
-     * @return array
-     */
-    public function search(QuickSearchRequest $request)
-    {
-        $results = [];
-
-        foreach ($request->getTypes() as $type) {
-            $context = new QuickSearchContext($type, $request);
-
-            $this->dispatcher->dispatch(QuickSearchEvents::SEARCH, new QuickSearchEvent($context));
-            $this->dispatcher->dispatch(QuickSearchEvents::POST_SEARCH, new QuickSearchEvent($context));
-
-            $results[$type] = $context->entities;
+        foreach ($container->findTaggedServiceIds('quick_search.event_subscriber') as $id => $tags) {
+            $dispatcher_definition->addMethodCall('addSubscriber', [new Reference($id)]);
         }
-
-        return $results;
     }
 }

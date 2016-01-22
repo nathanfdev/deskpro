@@ -29,23 +29,37 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\QuickSearch;
+namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
 
-use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvent;
+use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvents;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * Class PermissionChecker.
+ * Class QueryIdListener.
  */
-class PermissionChecker
+class QueryIdListener implements EventSubscriberInterface
 {
     /**
-     * @param QuickSearchRequest $request
-     * @param Ticket             $ticket
-     *
-     * @return array
+     * {@inheritdoc}
      */
-    public function checkTicket(QuickSearchRequest $request, Ticket $ticket)
+    public static function getSubscribedEvents()
     {
-        return $request->getPerson()->PermissionsManager->TicketChecker->canView($ticket);
+        return [
+            QuickSearchEvents::SEARCH => 'onSearch',
+        ];
+    }
+
+    /**
+     * @param QuickSearchEvent $event
+     */
+    public function onSearch(QuickSearchEvent $event)
+    {
+        $context = $event->getContext();
+        $request = $context->getRequest();
+
+        if ($request->isId()) {
+            $context->ids->add((int) $request->getQuery());
+        }
     }
 }
