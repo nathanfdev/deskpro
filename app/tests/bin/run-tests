@@ -41,7 +41,7 @@ fi
 ##################################
 IS_PHPSPEC_ERROR=0
 
-bin/phpspec run --format=dot --config=phpspec.yml.cov
+bin/phpspec run --format=dot
 
 if [[ $? -ne 0 ]] ; then
     IS_PHPSPEC_ERROR=1
@@ -51,13 +51,13 @@ fi
 # BEHAT
 ##################################
 IS_BEHAT_API_ERROR=0
-bin/behat --config=behat.yml.cov --profile=api --tags '~@mink:goutte'
+bin/behat --config=behat.yml --profile=api --tags '~@mink:goutte'
 if [[ $? -ne 0 ]] ; then
     IS_BEHAT_API_ERROR=1
 fi
 
 IS_BEHAT_PORTAL_ERROR=0
-bin/behat --config=behat.yml.cov --profile=portal --tags '~@mink:goutte'
+bin/behat --config=behat.yml --profile=portal --tags '~@mink:goutte'
 if [[ $? -ne 0 ]] ; then
     IS_BEHAT_PORTAL_ERROR=1
 fi
@@ -113,7 +113,7 @@ fi
 ##################################
 # Coverage
 ##################################
-bin/phpcov merge --clover coverage/combined-clover.xml coverage/cov
+# bin/phpcov merge --clover coverage/combined-clover.xml coverage/cov
 
 
 echo "All OK"
