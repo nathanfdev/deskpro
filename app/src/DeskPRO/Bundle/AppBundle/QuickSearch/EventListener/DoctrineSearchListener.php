@@ -242,6 +242,42 @@ class DoctrineSearchListener implements EventSubscriberInterface
         if ($context->getType() !== QuickSearchContext::TYPE_ORGANIZATION) {
             return;
         }
+
+        $request = $event->getRequest();
+
+        /** @var \Application\DeskPRO\EntityRepository\Organization $repository */
+        $repository    = $this->em->getRepository('DeskPRO:Organization');
+        $organizations = $repository->search($request->getQuery(), 25);
+
+        $ids = [];
+
+        foreach ($organizations as $organization) {
+            $context->ids->add($organization->getId());
+            $context->entities->add($organization);
+
+            $ids[] = $organization->getId();
+        }
+
+        // Fetch users of these organizations too
+        if ($ids) {
+            $qb = $this->em->createQueryBuilder();
+            $qb
+                ->select('p')
+                ->from('DeskPRO:Person', 'p')
+                ->where('p.organization IN(:ids)')
+                ->orderBy('p.date_last_login', 'desc')
+                ->setMaxResults(100)
+                ->setParameter('ids', $ids)
+            ;
+
+            /** @var \Application\DeskPRO\Entity\Person[] $people */
+            $people = $qb->getQuery()->getResult();
+            foreach ($people as $person) {
+                $person_context = $context->getResponse()->getContext(QuickSearchContext::TYPE_PERSON);
+                $person_context->ids->add($person->getId());
+                $person_context->entities->add($person);
+            }
+        }
     }
 
     /**
