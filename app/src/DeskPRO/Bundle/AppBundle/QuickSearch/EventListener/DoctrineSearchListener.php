@@ -195,37 +195,63 @@ class DoctrineSearchListener implements EventSubscriberInterface
         }
 
         $query = $request->getQuery();
-        $email = $query;
-
-        $is_domain = strpos($query, '@') === 0;
-        if ($is_domain) {
-            $email = substr($email, 1);
-        }
-
-        $qb = $this->em->createQueryBuilder();
+        $qb    = $this->em->createQueryBuilder();
         $qb
             ->select('p')
             ->from('DeskPRO:Person', 'p')
             ->join('p.emails', 'pe')
             ->setMaxResults(15)
             ->orderBy('p.id', 'desc')
-            ->setParameter('email', str_replace(['%', '_'], ['\\\\%', '\\\\_'], $email).'%')
         ;
 
-        if ($is_domain) {
-            $qb->andWhere('pe.email_domain LIKE :email');
-        } else {
-            $qb->andWhere('pe.email LIKE :email');
-        }
-
         $people_count = $this->settings_resolver->getGlobalSettings()->get('core_tablecounts.people');
-        if ($people_count > 150000) {
+
+        if (strpos($query, '@') !== false) {
+            $email     = $query;
+            $is_domain = strpos($query, '@') === 0;
+            if ($is_domain) {
+                $email = substr($email, 1);
+            }
+
+            $qb->setParameter('email', str_replace(['%', '_'], ['\\\\%', '\\\\_'], $email).'%');
+            if ($is_domain) {
+                $qb->andWhere('pe.email_domain LIKE :email');
+            } else {
+                $qb->andWhere('pe.email LIKE :email');
+            }
+
+            if ($people_count > 150000) {
+                $qb
+                    ->join('p.tickets', 'tp')
+                    ->join('tp.ticket', 't')
+                    ->andWhere('t.id > :after_id')
+                    ->setParameter('after_id', $this->getMinTicketId())
+                    ->orderBy('t.id', 'desc')
+                ;
+            }
+        } else {
             $qb
-                ->join('DeskPRO:Ticket', 't')
-                ->andWhere('t.id > :after_id')
-                ->setParameter('after_id', $this->getMinTicketId())
-                ->orderBy('t.id', 'desc')
-            ;
+                ->andWhere($qb->expr()->orX(
+                    'p.name LIKE :query',
+                    'p.first_name LIKE :query',
+                    'p.last_name LIKE :query',
+                    'pe.email LIKE :query',
+                    "CONCAT(CONCAT(p.first_name, ' '), p.last_name) LIKE :query"
+                ))
+                ->setParameter('query', '%'.str_replace(['%', '_'], ['\\\\%', '\\\\_'], preg_replace('#\s+#', ' ', $query)).'%');
+
+            if ($people_count < 150000) {
+                $qb
+                    ->join('p.tickets', 'tp')
+                    ->join('tp.ticket', 't')
+                    ->andWhere($qb->expr()->orX(
+                        't.id > :after_id',
+                        'tp.ticket > :after_id'
+                    ))
+                    ->setParameter('after_id', $this->getMinTicketId())
+                    ->orderBy('t.id', 'desc')
+                ;
+            }
         }
 
         /** @var \Application\DeskPRO\Entity\Person[] $people */
