@@ -204,8 +204,6 @@ class DoctrineSearchListener implements EventSubscriberInterface
             ->orderBy('p.id', 'desc')
         ;
 
-        $people_count = $this->settings_resolver->getGlobalSettings()->get('core_tablecounts.people');
-
         if (strpos($query, '@') !== false) {
             $email     = $query;
             $is_domain = strpos($query, '@') === 0;
@@ -219,16 +217,6 @@ class DoctrineSearchListener implements EventSubscriberInterface
             } else {
                 $qb->andWhere('pe.email LIKE :email');
             }
-
-            if ($people_count > 150000) {
-                $qb
-                    ->join('p.tickets', 'tp')
-                    ->join('tp.ticket', 't')
-                    ->andWhere('t.id > :after_id')
-                    ->setParameter('after_id', $this->getMinTicketId())
-                    ->orderBy('t.id', 'desc')
-                ;
-            }
         } else {
             $qb
                 ->andWhere($qb->expr()->orX(
@@ -238,20 +226,22 @@ class DoctrineSearchListener implements EventSubscriberInterface
                     'pe.email LIKE :query',
                     "CONCAT(CONCAT(p.first_name, ' '), p.last_name) LIKE :query"
                 ))
-                ->setParameter('query', '%'.str_replace(['%', '_'], ['\\\\%', '\\\\_'], preg_replace('#\s+#', ' ', $query)).'%');
+                ->setParameter('query', '%'.str_replace(['%', '_'], ['\\\\%', '\\\\_'], preg_replace('#\s+#', ' ', $query)).'%')
+            ;
+        }
 
-            if ($people_count < 150000) {
-                $qb
-                    ->join('p.tickets', 'tp')
-                    ->join('tp.ticket', 't')
-                    ->andWhere($qb->expr()->orX(
-                        't.id > :after_id',
-                        'tp.ticket > :after_id'
-                    ))
-                    ->setParameter('after_id', $this->getMinTicketId())
-                    ->orderBy('t.id', 'desc')
-                ;
-            }
+        $people_count = $this->settings_resolver->getGlobalSettings()->get('core_tablecounts.people');
+        if ($people_count > 150000) {
+            $qb
+                ->join('p.tickets', 'tp')
+                ->join('tp.ticket', 't')
+                ->andWhere($qb->expr()->orX(
+                    't.id > :after_id',
+                    'tp.ticket > :after_id'
+                ))
+                ->setParameter('after_id', $this->getMinTicketId())
+                ->orderBy('t.id', 'desc')
+            ;
         }
 
         /** @var \Application\DeskPRO\Entity\Person[] $people */
