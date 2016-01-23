@@ -91,18 +91,18 @@ class ElasticaSearchListener implements EventSubscriberInterface
         $request = $event->getRequest();
 
         try {
-            $mapping = $context::getDoctrineMapping();
-
             /** @var Repository $repository */
-            $repository = $this->elastica_manager->getRepository($mapping[$context->getType()]);
+            $repository = $this->elastica_manager->getRepository($context::getDoctrineMapping()[$context->getType()]);
             if (method_exists($repository, 'setPersonContext')) {
                 $repository->setPersonContext($request->getPerson());
             }
 
-            $result = $repository->find($request->getQuery(), null, [
-                'sort_type' => $request->getSort(),
-            ]);
+            $sort = 'score';
+            if (in_array($request->getSort(), ['score', 'date_active', 'date_created'])) {
+                $sort = $request->getSort();
+            }
 
+            $result = $repository->find($request->getQuery(), null, ['sort_type' => $sort]);
             foreach ($result as $entity) {
                 $context->ids->add($entity->getId());
                 $context->entities->add($entity);
