@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
 
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchContext;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvent;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvents;
@@ -48,13 +49,20 @@ class DoctrineSearchListener implements EventSubscriberInterface
     private $em;
 
     /**
+     * @var SettingsResolver
+     */
+    private $settings_resolver;
+
+    /**
      * Constructor.
      *
-     * @param EntityManager $em
+     * @param EntityManager    $em
+     * @param SettingsResolver $settings_resolver
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, SettingsResolver $settings_resolver)
     {
-        $this->em = $em;
+        $this->em                = $em;
+        $this->settings_resolver = $settings_resolver;
     }
 
     /**
@@ -66,8 +74,8 @@ class DoctrineSearchListener implements EventSubscriberInterface
             QuickSearchEvents::SEARCH_FALLBACK => [
                 ['onSearchTicketSubjects', 1],
                 ['onSearchTitles', 1],
-                ['onSearchPeopleAndOrganizationsByName', 1],
-                ['onSearchPeopleAndOrganizationsByEmailDomain', 1],
+                ['onSearchPeople', 1],
+                ['onSearchOrganizations', 1],
             ],
         ];
     }
@@ -163,21 +171,68 @@ class DoctrineSearchListener implements EventSubscriberInterface
     /**
      * @param QuickSearchEvent $event
      */
-    public function onSearchPeopleAndOrganizationsByName(QuickSearchEvent $event)
+    public function onSearchPeople(QuickSearchEvent $event)
     {
         $context = $event->getContext();
         if ($context->getType() !== QuickSearchContext::TYPE_PERSON) {
             return;
+        }
+
+        $request = $event->getRequest();
+        if ($request->isEmail()) {
+            // Use usersource listener for valid emails
+            return;
+        }
+
+        $query = $request->getQuery();
+        $email = $query;
+
+        $is_domain = strpos($query, '@') === 0;
+        if ($is_domain) {
+            $email = substr($email, 1);
+        }
+
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->select('p')
+            ->from('DeskPRO:Person', 'p')
+            ->join('p.emails', 'pe')
+            ->setMaxResults(15)
+            ->orderBy('p.id', 'desc')
+            ->setParameter('email', str_replace(['%', '_'], ['\\\\%', '\\\\_'], $email).'%')
+        ;
+
+        if ($is_domain) {
+            $qb->andWhere('pe.email_domain LIKE :email');
+        } else {
+            $qb->andWhere('pe.email LIKE :email');
+        }
+
+        $people_count = $this->settings_resolver->getGlobalSettings()->get('core_tablecounts.people');
+        if ($people_count > 150000) {
+            $qb
+                ->join('DeskPRO:Ticket', 't')
+                ->andWhere('t.id > :after_id')
+                ->setParameter('after_id', $this->getMinTicketId())
+                ->orderBy('t.id', 'desc')
+            ;
+        }
+
+        /** @var \Application\DeskPRO\Entity\Person $people */
+        $people = $qb->getQuery()->getResult();
+        foreach ($people as $person) {
+            $context->ids->add($person->getId());
+            $context->entities->add($person);
         }
     }
 
     /**
      * @param QuickSearchEvent $event
      */
-    public function onSearchPeopleAndOrganizationsByEmailDomain(QuickSearchEvent $event)
+    public function onSearchOrganizations(QuickSearchEvent $event)
     {
         $context = $event->getContext();
-        if ($context->getType() !== QuickSearchContext::TYPE_PERSON) {
+        if ($context->getType() !== QuickSearchContext::TYPE_ORGANIZATION) {
             return;
         }
     }

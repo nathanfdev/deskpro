@@ -39,6 +39,7 @@ services:
     class: DeskPRO\Bundle\AppBundle\QuickSearch\EventListener\DoctrineSearchListener
     arguments:
       - @doctrine.orm.default_entity_manager
+      - @settings_resolver
     tags:
       - { name: quick_search.event_subscriber }
 
