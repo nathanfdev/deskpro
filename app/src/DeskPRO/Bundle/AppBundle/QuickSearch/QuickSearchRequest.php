@@ -145,6 +145,8 @@ class QuickSearchRequest
                     return false;
                 }
             });
+
+            $this->words = $words;
         }
 
         return $this->words;

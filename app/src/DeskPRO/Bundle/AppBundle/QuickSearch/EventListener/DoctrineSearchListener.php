@@ -92,20 +92,23 @@ class DoctrineSearchListener implements EventSubscriberInterface
             ->select('t.id')
             ->from('DeskPRO:Ticket', 't')
             ->setMaxResults(100)
-            ->orderBy('id', 'desc')
-            ->where('id > :after_id')
-            ->setParameter('id', $this->getMinTicketId())
+            ->orderBy('t.id', 'desc')
+            ->where('t.id > :after_id')
+            ->setParameter('after_id', $this->getMinTicketId())
         ;
 
-        foreach ($words as $word) {
+        foreach ($words as $num => $word) {
+            $param_id = 'subject_'.$num;
             $qb
-                ->andWhere('subject LIKE :subject')
-                ->setParameter('subject', '%'.str_replace(['%', '_'], ['\\%', '\\_'], $word).'%')
+                ->andWhere('t.subject LIKE :'.$param_id)
+                ->setParameter($param_id, '%'.str_replace(['%', '_'], ['\\%', '\\_'], $word).'%')
             ;
         }
 
-        $ids = $qb->getQuery()->getScalarResult();
-        $context->mergeIds($ids);
+        $results = $qb->getQuery()->getScalarResult();
+        foreach ($results as $result) {
+            $context->ids->add((int) $result['id']);
+        }
     }
 
     /**
@@ -136,20 +139,23 @@ class DoctrineSearchListener implements EventSubscriberInterface
         $qb
             ->select('t.id')
             ->from(QuickSearchContext::getDoctrineMapping()[$context->getType()], 't')
-            ->orderBy('id', 'desc')
+            ->orderBy('t.id', 'desc')
             ->setMaxResults(25)
-            ->andWhere('t.status != "hidden"')
+            ->andWhere("t.status != 'hidden'")
         ;
 
-        foreach ($words as $word) {
+        foreach ($words as $num => $word) {
+            $param_id = 'title_'.$num;
             $qb
-                ->andWhere('title LIKE :title')
-                ->setParameter('title', '%'.str_replace(['%', '_'], ['\\%', '\\_'], $word).'%')
+                ->andWhere('t.title LIKE :'.$param_id)
+                ->setParameter($param_id, '%'.str_replace(['%', '_'], ['\\%', '\\_'], $word).'%')
             ;
         }
 
-        $ids = $qb->getQuery()->getScalarResult();
-        $context->mergeIds($ids);
+        $results = $qb->getQuery()->getScalarResult();
+        foreach ($results as $result) {
+            $context->ids->add($result['id']);
+        }
     }
 
     /**
@@ -166,6 +172,8 @@ class DoctrineSearchListener implements EventSubscriberInterface
             ->setFirstResult(10000)
         ;
 
-        return $qb->getQuery()->getSingleScalarResult();
+        $result = $qb->getQuery()->getOneOrNullResult();
+
+        return !empty($result) ? array_shift($result) : 1;
     }
 }
