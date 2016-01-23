@@ -52,18 +52,32 @@ Feature: Quick Search
     And the response status code should be 200
     And the JSON node "grouped_results[0].type" should be equal to "article"
     And the JSON node "grouped_results[0].results" should have 1 elements
+    And the JSON node "grouped_results[0].results[0].id" should be equal to 1
+    And the JSON node "grouped_results[0].results[0].title" should be equal to "A test article"
     And the JSON node "grouped_results[1].type" should be equal to "download"
     And the JSON node "grouped_results[1].results" should have 1 elements
+    And the JSON node "grouped_results[1].results[0].id" should be equal to 1
+    And the JSON node "grouped_results[1].results[0].title" should be equal to "Test Download #1"
     And the JSON node "grouped_results[2].type" should be equal to "feedback"
     And the JSON node "grouped_results[2].results" should have 1 elements
+    And the JSON node "grouped_results[2].results[0].id" should be equal to 1
+    And the JSON node "grouped_results[2].results[0].title" should be equal to "Test feedback 1"
     And the JSON node "grouped_results[3].type" should be equal to "news"
     And the JSON node "grouped_results[3].results" should have 1 elements
+    And the JSON node "grouped_results[3].results[0].id" should be equal to 1
+    And the JSON node "grouped_results[3].results[0].title" should be equal to "Test News #1"
     And the JSON node "grouped_results[4].type" should be equal to "ticket"
     And the JSON node "grouped_results[4].results" should have 1 elements
+    And the JSON node "grouped_results[4].results[0].id" should be equal to 1
+    And the JSON node "grouped_results[4].results[0].subject" should be equal to "Test"
     And the JSON node "grouped_results[5].type" should be equal to "person"
     And the JSON node "grouped_results[5].results" should have 1 elements
+    And the JSON node "grouped_results[5].results[0].id" should be equal to 1
+    And the JSON node "grouped_results[5].results[0].name" should be equal to "Link Admin"
     And the JSON node "grouped_results[6].type" should be equal to "organization"
     And the JSON node "grouped_results[6].results" should have 1 elements
+    And the JSON node "grouped_results[6].results[0].id" should be equal to 1
+    And the JSON node "grouped_results[6].results[0].name" should be equal to "Organization 1"
 
   Scenario Outline: I search ticket by id with view restriction
     Given I set permission "agent_people.use" = <ticket_use> for "registered" usergroup
