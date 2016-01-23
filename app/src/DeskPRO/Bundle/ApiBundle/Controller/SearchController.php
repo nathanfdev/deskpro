@@ -56,9 +56,12 @@ class SearchController extends BaseController
             (string) $request->query->get('sort')
         ));
 
-        $response = [];
+        $response = ['grouped_results' => []];
         foreach ($results->getContexts() as $context) {
-            $response[$context->getType()] = $this->dataSerialize($context->entities->toArray());
+            $response['grouped_results'][] = [
+                'type'    => $context->getType(),
+                'results' => $this->dataSerialize($context->entities->toArray())['data'],
+            ];
         }
 
         return new View($response);
