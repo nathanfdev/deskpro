@@ -76,6 +76,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
                 ['onSearchTitles', 1],
                 ['onSearchPeople', 1],
                 ['onSearchOrganizations', 1],
+                ['onSearchLabels', 1],
             ],
         ];
     }
@@ -94,6 +95,9 @@ class DoctrineSearchListener implements EventSubscriberInterface
         $words   = $request->getWords();
 
         if (empty($words)) {
+            return;
+        }
+        if ($request->isLabel()) {
             return;
         }
 
@@ -144,6 +148,9 @@ class DoctrineSearchListener implements EventSubscriberInterface
         if (empty($words)) {
             return;
         }
+        if ($request->isLabel()) {
+            return;
+        }
 
         $qb = $this->em->createQueryBuilder();
         $qb
@@ -181,6 +188,9 @@ class DoctrineSearchListener implements EventSubscriberInterface
         $request = $event->getRequest();
         if ($request->isEmail()) {
             // Use usersource listener for valid emails
+            return;
+        }
+        if ($request->isLabel()) {
             return;
         }
 
@@ -244,6 +254,9 @@ class DoctrineSearchListener implements EventSubscriberInterface
         }
 
         $request = $event->getRequest();
+        if ($request->isLabel()) {
+            return;
+        }
 
         /** @var \Application\DeskPRO\EntityRepository\Organization $repository */
         $repository    = $this->em->getRepository('DeskPRO:Organization');
@@ -277,6 +290,63 @@ class DoctrineSearchListener implements EventSubscriberInterface
                 $person_context->ids->add($person->getId());
                 $person_context->entities->add($person);
             }
+        }
+    }
+
+    /**
+     * @param QuickSearchEvent $event
+     */
+    public function onSearchLabels(QuickSearchEvent $event)
+    {
+        $types = [
+            QuickSearchContext::TYPE_ARTICLE,
+            QuickSearchContext::TYPE_DOWNLOAD,
+            QuickSearchContext::TYPE_FEEDBACK,
+            QuickSearchContext::TYPE_NEWS,
+            QuickSearchContext::TYPE_ORGANIZATION,
+            QuickSearchContext::TYPE_PERSON,
+            QuickSearchContext::TYPE_TICKET,
+        ];
+
+        $context = $event->getContext();
+        if (!in_array($context->getType(), $types)) {
+            return;
+        }
+
+        $request = $event->getRequest();
+        if (!$request->isLabel()) {
+            return;
+        }
+
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->select('t.id')
+            ->from(QuickSearchContext::getDoctrineMapping()[$context->getType()], 't')
+            ->join('t.labels', 'l')
+            ->where('l.label = :label')
+            ->setParameter('label', $request->getLabel())
+        ;
+
+        switch ($context->getType()) {
+            case QuickSearchContext::TYPE_TICKET:
+                $qb->andWhere("t.status IN('awaiting_agent', 'awaiting_user', 'archived', 'resolved')");
+                break;
+            case QuickSearchContext::TYPE_ARTICLE:
+            case QuickSearchContext::TYPE_DOWNLOAD:
+            case QuickSearchContext::TYPE_FEEDBACK:
+            case QuickSearchContext::TYPE_NEWS:
+                $qb->andWhere($qb->expr()->orX(
+                    "t.hidden_status NOT IN('spam', 'deleted')",
+                    't.hidden_status is null'
+                ));
+                break;
+            default:
+                break;
+        }
+
+        $results = $qb->getQuery()->getScalarResult();
+        foreach ($results as $result) {
+            $context->ids->add($result['id']);
         }
     }
 
