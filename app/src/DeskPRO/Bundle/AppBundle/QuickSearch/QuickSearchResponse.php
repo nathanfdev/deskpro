@@ -54,14 +54,14 @@ class QuickSearchResponse
     /**
      * @param string $type
      *
-     * @return QuickSearchContext
+     * @return $this
      */
     public function createContext($type)
     {
         $context = new QuickSearchContext($type, $this);
         $this->contexts->offsetSet($context->getType(), $context);
 
-        return $context;
+        return $this;
     }
 
     /**

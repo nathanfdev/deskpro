@@ -62,8 +62,10 @@ class QuickSearch
     {
         $response = new QuickSearchResponse();
         foreach ($request->getTypes() as $type) {
-            $context = $response->createContext($type);
+            $response->createContext($type);
+        }
 
+        foreach ($response->getContexts() as $context) {
             $this->dispatcher->dispatch(QuickSearchEvents::SEARCH, new QuickSearchEvent($context, $request));
             $this->dispatcher->dispatch(QuickSearchEvents::POST_SEARCH, new QuickSearchEvent($context, $request));
         }

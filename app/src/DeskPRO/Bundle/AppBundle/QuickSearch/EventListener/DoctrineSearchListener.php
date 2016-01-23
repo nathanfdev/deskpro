@@ -218,11 +218,18 @@ class DoctrineSearchListener implements EventSubscriberInterface
             ;
         }
 
-        /** @var \Application\DeskPRO\Entity\Person $people */
+        /** @var \Application\DeskPRO\Entity\Person[] $people */
         $people = $qb->getQuery()->getResult();
         foreach ($people as $person) {
             $context->ids->add($person->getId());
             $context->entities->add($person);
+
+            $organization = $person->getOrganization();
+            if ($organization) {
+                $organization_context = $context->getResponse()->getContext(QuickSearchContext::TYPE_ORGANIZATION);
+                $organization_context->ids->add($organization->getId());
+                $organization_context->entities->add($organization);
+            }
         }
     }
 
