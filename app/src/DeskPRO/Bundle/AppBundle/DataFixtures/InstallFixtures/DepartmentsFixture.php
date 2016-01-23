@@ -69,11 +69,11 @@ class DepartmentsFixture extends AbstractFixture implements ContainerAwareInterf
         /** @var \Application\DeskPRO\Translate\Translate $tr */
         $tr = $this->container->get('deskpro.core.translate');
 
-        foreach (array(true, false) as $is_ticket) {
-            foreach (array(
+        foreach ([true, false] as $is_ticket) {
+            foreach ([
                      'support' => 'user.defaults.department_support',
                      'sales' => 'user.defaults.department_sales',
-                 ) as $id => $phraseId) {
+                     ] as $id => $phraseId) {
                 $dep                     = new Department();
                 $dep->title              = $tr->phrase($phraseId);
                 $dep->is_tickets_enabled = $is_ticket;

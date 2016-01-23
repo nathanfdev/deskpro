@@ -131,7 +131,7 @@ class PublishFixture extends AbstractFixture implements ContainerAwareInterface,
         # Feedback
         #------------------------------
 
-        foreach (array('Suggestion', 'Feature Request', 'Bug Report') as $title) {
+        foreach (['Suggestion', 'Feature Request', 'Bug Report'] as $title) {
             $cat        = new FeedbackCategory();
             $cat->title = $title;
             $manager->persist($cat);
@@ -144,10 +144,10 @@ class PublishFixture extends AbstractFixture implements ContainerAwareInterface,
         $cat_field->handler_class = 'Application\DeskPRO\CustomFields\Handler\Text';
         $manager->persist($cat_field);
 
-        foreach (array(
-            'active' => array('Gathering Feedback', 'Planning', 'Started', 'Under Review'),
-            'closed' => array('Completed', 'Duplicate', 'Declined'),
-        ) as $status => $titles) {
+        foreach ([
+            'active' => ['Gathering Feedback', 'Planning', 'Started', 'Under Review'],
+            'closed' => ['Completed', 'Duplicate', 'Declined'],
+                 ] as $status => $titles) {
             foreach ($titles as $title) {
                 $cat              = new FeedbackStatusCategory();
                 $cat->status_type = $status;

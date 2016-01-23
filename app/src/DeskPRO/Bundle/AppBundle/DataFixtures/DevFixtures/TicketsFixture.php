@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -213,7 +212,7 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
             $l = $this->faker->unique()->company;
             if ($l) {
                 $l       = strtolower($l);
-                $batch[] = array('label_type' => $label_type, 'label' => $l, 'color' => $this->faker->hexColor, 'total' => 0);
+                $batch[] = ['label_type' => $label_type, 'label' => $l, 'color' => $this->faker->hexColor, 'total' => 0];
             }
         }
 
@@ -230,7 +229,7 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
             if ($this->faker->boolean(60)) {
                 $status = 'awaiting_agent';
             } else {
-                $status = $this->faker->randomElement(array('awaiting_user', 'resolved'));
+                $status = $this->faker->randomElement(['awaiting_user', 'resolved']);
             }
 
             $ticket_rating = null;
@@ -245,7 +244,7 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
             }
 
             $subj    = $this->faker->realText($this->faker->numberBetween(10, 20));
-            $batch[] = array(
+            $batch[] = [
                 'department_id'           => $this->faker->randomElement($this->department_ids),
                 'agent_id'                => $this->faker->boolean(90) ? $this->faker->randomElement($this->agent_ids) : null,
                 'person_id'               => $this->faker->randomElement($this->people_ids),
@@ -267,7 +266,7 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
                 'date_agent_waiting'      => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
                 'date_user_waiting'       => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
                 'date_status'             => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-            );
+            ];
         }
 
         $this->db->batchInsert('tickets', $batch);
@@ -283,11 +282,11 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
             if ($this->faker->boolean(33)) {
                 $status = 'awaiting_agent';
             } else {
-                $status = $this->faker->randomElement(array('awaiting_user', 'resolved'));
+                $status = $this->faker->randomElement(['awaiting_user', 'resolved']);
             }
 
             $subj    = $this->faker->realText($this->faker->numberBetween(40, 60));
-            $batch[] = array(
+            $batch[] = [
                 'department_id'           => $this->faker->randomElement($this->department_ids),
                 'agent_id'                => $this->faker->boolean(90) ? $this->faker->randomElement($this->agent_ids) : null,
                 'person_id'               => $this->joe_id,
@@ -309,7 +308,7 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
                 'date_user_waiting'       => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
                 'date_status'             => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
                 'organization_id'         => $this->joe_manager_org_id,
-            );
+            ];
         }
 
         $this->db->batchInsert('tickets', $batch);
@@ -325,11 +324,11 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
             if ($this->faker->boolean(50)) {
                 $status = 'awaiting_agent';
             } else {
-                $status = $this->faker->randomElement(array('awaiting_user', 'resolved'));
+                $status = $this->faker->randomElement(['awaiting_user', 'resolved']);
             }
 
             $subj    = $this->faker->realText($this->faker->numberBetween(40, 60));
-            $batch[] = array(
+            $batch[] = [
                 'department_id'           => $this->faker->randomElement($this->department_ids),
                 'agent_id'                => $this->faker->boolean(90) ? $this->faker->randomElement($this->agent_ids) : null,
                 'person_id'               => $this->joe_manager_id,
@@ -350,7 +349,7 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
                 'date_agent_waiting'      => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
                 'date_user_waiting'       => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
                 'date_status'             => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-            );
+            ];
         }
 
         $this->db->batchInsert('tickets', $batch);
@@ -385,7 +384,7 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
 
                 $text = implode('<br/><br/>', $text);
 
-                $batch[] = array(
+                $batch[] = [
                     'ticket_id'       => $ticket_id,
                     'person_id'       => $as_agent ? $this->faker->randomElement($this->agent_ids) : $this->faker->randomElement($this->people_ids),
                     'date_created'    => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
@@ -396,7 +395,7 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
                     'geo_country'     => $this->faker->countryCode,
                     'message_hash'    => sha1(uniqid('', true)),
                     'message'         => $text,
-                );
+                ];
             }
         }
 
@@ -412,22 +411,22 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
 
         foreach ($this->ticket_ids as $ticket_id) {
             foreach ($this->faker->randomElements($this->labels, $this->faker->numberBetween(1, 5)) as $l) {
-                $labels_batch[] = array('ticket_id' => $ticket_id, 'label' => $l);
+                $labels_batch[] = ['ticket_id' => $ticket_id, 'label' => $l];
             }
-            $probs_batch[] = array('ticket_id' => $ticket_id, 'problem_id' => $this->faker->randomElement($this->problem_ids));
+            $probs_batch[] = ['ticket_id' => $ticket_id, 'problem_id' => $this->faker->randomElement($this->problem_ids)];
             $people_ids    = $this->faker->randomElements($this->people_ids, $this->faker->numberBetween(1, 4));
             foreach ($people_ids as $pid) {
-                $parts_batch[] = array(
+                $parts_batch[] = [
                     'ticket_id' => $ticket_id,
                     'person_id' => $pid,
-                );
+                ];
             }
             $people_ids = $this->faker->randomElements($this->agent_ids, $this->faker->numberBetween(1, 2));
             foreach ($people_ids as $pid) {
-                $parts_batch[] = array(
+                $parts_batch[] = [
                     'ticket_id' => $ticket_id,
                     'person_id' => $pid,
-                );
+                ];
             }
 
             #------------------------------
