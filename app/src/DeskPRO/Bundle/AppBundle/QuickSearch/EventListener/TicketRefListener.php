@@ -77,7 +77,7 @@ class TicketRefListener implements EventSubscriberInterface
             return;
         }
 
-        $request = $context->getRequest();
+        $request = $event->getRequest();
         if (!$request->isTicketRef()) {
             return;
         }

@@ -65,7 +65,9 @@ class DoctrineSearchListener implements EventSubscriberInterface
         return [
             QuickSearchEvents::SEARCH_FALLBACK => [
                 ['onSearchTicketSubjects', 1],
-                ['onSearchTitles', 2],
+                ['onSearchTitles', 1],
+                ['onSearchPeopleAndOrganizationsByName', 1],
+                ['onSearchPeopleAndOrganizationsByEmailDomain', 1],
             ],
         ];
     }
@@ -80,7 +82,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
             return;
         }
 
-        $request = $context->getRequest();
+        $request = $event->getRequest();
         $words   = $request->getWords();
 
         if (empty($words)) {
@@ -128,7 +130,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
             return;
         }
 
-        $request = $context->getRequest();
+        $request = $event->getRequest();
         $words   = $request->getWords();
 
         if (empty($words)) {
@@ -155,6 +157,28 @@ class DoctrineSearchListener implements EventSubscriberInterface
         $results = $qb->getQuery()->getScalarResult();
         foreach ($results as $result) {
             $context->ids->add($result['id']);
+        }
+    }
+
+    /**
+     * @param QuickSearchEvent $event
+     */
+    public function onSearchPeopleAndOrganizationsByName(QuickSearchEvent $event)
+    {
+        $context = $event->getContext();
+        if ($context->getType() !== QuickSearchContext::TYPE_PERSON) {
+            return;
+        }
+    }
+
+    /**
+     * @param QuickSearchEvent $event
+     */
+    public function onSearchPeopleAndOrganizationsByEmailDomain(QuickSearchEvent $event)
+    {
+        $context = $event->getContext();
+        if ($context->getType() !== QuickSearchContext::TYPE_PERSON) {
+            return;
         }
     }
 

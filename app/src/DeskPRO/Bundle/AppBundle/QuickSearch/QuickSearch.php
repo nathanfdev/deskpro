@@ -31,7 +31,6 @@
  */
 namespace DeskPRO\Bundle\AppBundle\QuickSearch;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -57,21 +56,18 @@ class QuickSearch
     /**
      * @param QuickSearchRequest $request
      *
-     * @return ArrayCollection[]
+     * @return QuickSearchResponse
      */
     public function search(QuickSearchRequest $request)
     {
-        $results = [];
-
+        $response = new QuickSearchResponse();
         foreach ($request->getTypes() as $type) {
-            $context = new QuickSearchContext($type, $request);
+            $context = $response->createContext($type);
 
-            $this->dispatcher->dispatch(QuickSearchEvents::SEARCH, new QuickSearchEvent($context));
-            $this->dispatcher->dispatch(QuickSearchEvents::POST_SEARCH, new QuickSearchEvent($context));
-
-            $results[$type] = $context->entities;
+            $this->dispatcher->dispatch(QuickSearchEvents::SEARCH, new QuickSearchEvent($context, $request));
+            $this->dispatcher->dispatch(QuickSearchEvents::POST_SEARCH, new QuickSearchEvent($context, $request));
         }
 
-        return $results;
+        return $response;
     }
 }

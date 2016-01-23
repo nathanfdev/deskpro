@@ -61,7 +61,7 @@ class QueryListener implements EventSubscriberInterface
     public function onParseId(QuickSearchEvent $event)
     {
         $context = $event->getContext();
-        $request = $context->getRequest();
+        $request = $event->getRequest();
 
         if ($request->isId()) {
             $context->ids->add((int) $request->getQuery());
@@ -74,7 +74,7 @@ class QueryListener implements EventSubscriberInterface
     public function onParseAccessCode(QuickSearchEvent $event)
     {
         $context = $event->getContext();
-        $request = $context->getRequest();
+        $request = $event->getRequest();
 
         if ($context->getType() !== QuickSearchContext::TYPE_TICKET) {
             return;

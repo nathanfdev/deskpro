@@ -77,7 +77,7 @@ class UsersourceListener implements EventSubscriberInterface
             return;
         }
 
-        $request = $context->getRequest();
+        $request = $event->getRequest();
         if (!$request->isEmail()) {
             return;
         }

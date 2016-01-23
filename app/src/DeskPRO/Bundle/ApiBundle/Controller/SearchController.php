@@ -57,8 +57,8 @@ class SearchController extends BaseController
         ));
 
         $response = [];
-        foreach ($results as $type => $entities) {
-            $response[$type] = $this->dataSerialize($entities->toArray());
+        foreach ($results->getContexts() as $context) {
+            $response[$context->getType()] = $this->dataSerialize($context->entities->toArray());
         }
 
         return new View($response);

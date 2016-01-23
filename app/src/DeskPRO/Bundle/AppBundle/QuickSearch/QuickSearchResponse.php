@@ -31,48 +31,54 @@
  */
 namespace DeskPRO\Bundle\AppBundle\QuickSearch;
 
-use Symfony\Component\EventDispatcher\Event;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * Class QuickSearchEvent.
+ * Class QuickSearchResponse.
  */
-class QuickSearchEvent extends Event
+class QuickSearchResponse
 {
     /**
-     * @var QuickSearchContext
+     * @var ArrayCollection
      */
-    private $context;
+    private $contexts;
 
     /**
-     * @var QuickSearchRequest
+     * Consctructor.
      */
-    private $request;
-
-    /**
-     * Constructor.
-     *
-     * @param QuickSearchContext $context
-     * @param QuickSearchRequest $request
-     */
-    public function __construct(QuickSearchContext $context, QuickSearchRequest $request)
+    public function __construct()
     {
-        $this->context = $context;
-        $this->request = $request;
+        $this->contexts = new ArrayCollection();
     }
 
     /**
+     * @param string $type
+     *
      * @return QuickSearchContext
      */
-    public function getContext()
+    public function createContext($type)
     {
-        return $this->context;
+        $context = new QuickSearchContext($type, $this);
+        $this->contexts->offsetSet($context->getType(), $context);
+
+        return $context;
     }
 
     /**
-     * @return QuickSearchRequest
+     * @param string $type
+     *
+     * @return QuickSearchContext
      */
-    public function getRequest()
+    public function getContext($type)
     {
-        return $this->request;
+        return $this->contexts->get($type);
+    }
+
+    /**
+     * @return QuickSearchContext[]
+     */
+    public function getContexts()
+    {
+        return $this->contexts;
     }
 }

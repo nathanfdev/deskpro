@@ -57,7 +57,7 @@ class PermissionListener implements EventSubscriberInterface
     public function onCheckTickets(QuickSearchEvent $event)
     {
         $context = $event->getContext();
-        $request = $context->getRequest();
+        $request = $event->getRequest();
 
         if ($context->getType() !== QuickSearchContext::TYPE_TICKET) {
             return;

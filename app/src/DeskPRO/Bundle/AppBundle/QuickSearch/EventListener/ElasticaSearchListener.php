@@ -88,7 +88,7 @@ class ElasticaSearchListener implements EventSubscriberInterface
         }
 
         $context = $event->getContext();
-        $request = $context->getRequest();
+        $request = $event->getRequest();
 
         try {
             $mapping = $context::getDoctrineMapping();

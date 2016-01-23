@@ -53,9 +53,9 @@ class QuickSearchContext
     private $type;
 
     /**
-     * @var QuickSearchRequest
+     * @var QuickSearchResponse
      */
-    private $request;
+    private $response;
 
     /**
      * @var ArrayCollection
@@ -70,15 +70,15 @@ class QuickSearchContext
     /**
      * Constructor.
      *
-     * @param string             $type
-     * @param QuickSearchRequest $request
+     * @param string              $type
+     * @param QuickSearchResponse $response
      */
-    public function __construct($type, QuickSearchRequest $request)
+    public function __construct($type, QuickSearchResponse $response)
     {
         $this->type     = $type;
-        $this->request  = $request;
         $this->ids      = new ArrayCollection();
         $this->entities = new ArrayCollection();
+        $this->response = $response;
     }
 
     /**
@@ -90,11 +90,11 @@ class QuickSearchContext
     }
 
     /**
-     * @return QuickSearchRequest
+     * @return QuickSearchResponse
      */
-    public function getRequest()
+    public function getResponse()
     {
-        return $this->request;
+        return $this->response;
     }
 
     /**
