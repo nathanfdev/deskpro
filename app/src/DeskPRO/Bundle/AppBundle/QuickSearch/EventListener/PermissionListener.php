@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
 
+use Application\DeskPRO\People\PermissionChecker\TicketChecker;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchContext;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvent;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvents;
@@ -63,8 +64,11 @@ class PermissionListener implements EventSubscriberInterface
             return;
         }
 
+        /** @var TicketChecker $ticket_checker */
+        $ticket_checker = $request->getPerson()->PermissionsManager->TicketChecker;
+
         foreach ($context->entities as $entity) {
-            if (!$request->getPerson()->PermissionsManager->TicketChecker->canView($entity)) {
+            if (!$ticket_checker->canView($entity)) {
                 $context->entities->removeElement($entity);
             }
         }
