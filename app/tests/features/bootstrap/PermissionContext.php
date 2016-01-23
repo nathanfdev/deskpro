@@ -29,49 +29,36 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\QuickSearch;
-
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+namespace DpBehat;
 
 /**
- * Class QuickSearch.
+ * Class PermissionContext.
  */
-class QuickSearch
+class PermissionContext extends BaseContext
 {
     /**
-     * @var EventDispatcherInterface
-     */
-    private $dispatcher;
-
-    /**
-     * Constructor.
+     * @Given I set permission :permission_name = :value for :sys_name usergroup
      *
-     * @param EventDispatcherInterface $dispatcher
+     * @param string $permission_name
+     * @param string $value
+     * @param string $sys_name
      */
-    public function __construct(EventDispatcherInterface $dispatcher)
+    public function iSetUserGroupPermission($permission_name, $value, $sys_name)
     {
-        $this->dispatcher = $dispatcher;
-    }
+        $connection = $this->em()->getConnection();
+        $group_ids  = $connection->fetchAllCol('SELECT id FROM usergroups WHERE sys_name = ?', [$sys_name]);
 
-    /**
-     * @param QuickSearchRequest $request
-     *
-     * @return QuickSearchResponse
-     */
-    public function search(QuickSearchRequest $request)
-    {
-        $response = new QuickSearchResponse();
-        foreach ($request->getTypes() as $type) {
-            $response->createContext($type);
+        foreach ($group_ids as $gid) {
+            $connection->executeUpdate(
+                'DELETE FROM permissions WHERE usergroup_id = ? AND name = ?',
+                [$gid, $permission_name]
+            );
+            $connection->executeUpdate(
+                'INSERT INTO permissions SET usergroup_id = ?, name = ?, value = ?',
+                [$gid, $permission_name, $value]
+            );
         }
 
-        if ($request->getQuery()) {
-            foreach ($response->getContexts() as $context) {
-                $this->dispatcher->dispatch(QuickSearchEvents::SEARCH, new QuickSearchEvent($context, $request));
-                $this->dispatcher->dispatch(QuickSearchEvents::POST_SEARCH, new QuickSearchEvent($context, $request));
-            }
-        }
-
-        return $response;
+        $connection->executeUpdate('DELETE FROM permissions_cache');
     }
 }
