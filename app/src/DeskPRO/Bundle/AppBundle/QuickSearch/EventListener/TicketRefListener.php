@@ -85,9 +85,17 @@ class TicketRefListener implements EventSubscriberInterface
         /** @var \Application\DeskPRO\EntityRepository\Ticket $repository */
         $repository = $this->em->getRepository('DeskPRO:Ticket');
         $ticket     = $repository->findTicketRef($request->getQuery());
+
         if ($ticket) {
             $context->ids->add((int) $ticket->getId());
             $context->entities->add($ticket);
+        } elseif (strlen($request->getQuery()) >= 3) {
+            $tickets = $repository->searchTicketRef($request->getQuery());
+
+            foreach ($tickets as $ticket) {
+                $context->ids->add((int) $ticket->getId());
+                $context->entities->add($ticket);
+            }
         }
     }
 }

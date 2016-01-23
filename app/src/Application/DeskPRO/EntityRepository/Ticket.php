@@ -167,7 +167,7 @@ class Ticket extends AbstractEntityRepository
     /**
      * Find a ticket ref and if it cant be found, try to find it through deleted records.
      *
-     * @param $ticket_ref
+     * @param string $ticket_ref
      *
      * @return TicketEntity
      */
@@ -191,6 +191,11 @@ class Ticket extends AbstractEntityRepository
         return $this->resolveDeletedTicket($del_ticket);
     }
 
+    /**
+     * @param string $ref
+     *
+     * @return TicketEntity[]
+     */
     public function searchTicketRef($ref)
     {
         $ref     = str_replace(array('%', '_'), array('\\%', '\\_'), $ref);

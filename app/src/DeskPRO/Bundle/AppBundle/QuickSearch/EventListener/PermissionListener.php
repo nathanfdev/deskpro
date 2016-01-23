@@ -31,11 +31,9 @@
  */
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
 
-use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchContext;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvent;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvents;
-use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchRequest;
-use Orb\Util\Strings;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -49,37 +47,26 @@ class PermissionListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            QuickSearchEvents::POST_SEARCH => 'onCheckPermissions',
+            QuickSearchEvents::POST_SEARCH => 'onCheckTickets',
         ];
     }
 
     /**
      * @param QuickSearchEvent $event
      */
-    public function onCheckPermissions(QuickSearchEvent $event)
+    public function onCheckTickets(QuickSearchEvent $event)
     {
         $context = $event->getContext();
         $request = $context->getRequest();
 
-        $check_method = 'check'.ucfirst(Strings::underscoreToCamelCase($context->getType()));
+        if ($context->getType() !== QuickSearchContext::TYPE_TICKET) {
+            return;
+        }
+
         foreach ($context->entities as $entity) {
-            if (!method_exists($this, $check_method)) {
-                continue;
-            }
-            if (!$this->$check_method($request, $entity)) {
+            if (!$request->getPerson()->PermissionsManager->TicketChecker->canView($entity)) {
                 $context->entities->removeElement($entity);
             }
         }
-    }
-
-    /**
-     * @param QuickSearchRequest $request
-     * @param Ticket             $ticket
-     *
-     * @return array
-     */
-    protected function checkTicket(QuickSearchRequest $request, Ticket $ticket)
-    {
-        return $request->getPerson()->PermissionsManager->TicketChecker->canView($ticket);
     }
 }

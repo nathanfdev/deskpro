@@ -35,7 +35,6 @@ use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchContext;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvent;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvents;
 use Doctrine\ORM\EntityManager;
-use Orb\Util\Strings;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -64,74 +63,109 @@ class DoctrineSearchListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            QuickSearchEvents::SEARCH_FALLBACK => 'onSearch',
+            QuickSearchEvents::SEARCH_FALLBACK => [
+                ['onSearchTicketSubjects', 1],
+                ['onSearchTitles', 2],
+            ],
         ];
     }
 
     /**
      * @param QuickSearchEvent $event
      */
-    public function onSearch(QuickSearchEvent $event)
+    public function onSearchTicketSubjects(QuickSearchEvent $event)
     {
         $context = $event->getContext();
+        if ($context->getType() !== QuickSearchContext::TYPE_TICKET) {
+            return;
+        }
 
-        $search_method = 'search'.ucfirst(Strings::underscoreToCamelCase($context->getType()));
-        $this->$search_method($context);
+        $request = $context->getRequest();
+        $words   = $request->getWords();
+
+        if (empty($words)) {
+            return;
+        }
+
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->select('t.id')
+            ->from('DeskPRO:Ticket', 't')
+            ->setMaxResults(100)
+            ->orderBy('id', 'desc')
+            ->where('id > :after_id')
+            ->setParameter('id', $this->getMinTicketId())
+        ;
+
+        foreach ($words as $word) {
+            $qb
+                ->andWhere('subject LIKE :subject')
+                ->setParameter('subject', '%'.str_replace(['%', '_'], ['\\%', '\\_'], $word).'%')
+            ;
+        }
+
+        $ids = $qb->getQuery()->getScalarResult();
+        $context->mergeIds($ids);
     }
 
     /**
-     * @param QuickSearchContext $context
+     * @param QuickSearchEvent $event
      */
-    private function searchArticle(QuickSearchContext $context)
+    public function onSearchTitles(QuickSearchEvent $event)
     {
+        $types = [
+            QuickSearchContext::TYPE_ARTICLE,
+            QuickSearchContext::TYPE_DOWNLOAD,
+            QuickSearchContext::TYPE_FEEDBACK,
+            QuickSearchContext::TYPE_NEWS,
+        ];
+
+        $context = $event->getContext();
+        if (!in_array($context->getType(), $types)) {
+            return;
+        }
+
+        $request = $context->getRequest();
+        $words   = $request->getWords();
+
+        if (empty($words)) {
+            return;
+        }
+
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->select('t.id')
+            ->from(QuickSearchContext::getDoctrineMapping()[$context->getType()], 't')
+            ->orderBy('id', 'desc')
+            ->setMaxResults(25)
+            ->andWhere('t.status != "hidden"')
+        ;
+
+        foreach ($words as $word) {
+            $qb
+                ->andWhere('title LIKE :title')
+                ->setParameter('title', '%'.str_replace(['%', '_'], ['\\%', '\\_'], $word).'%')
+            ;
+        }
+
+        $ids = $qb->getQuery()->getScalarResult();
+        $context->mergeIds($ids);
     }
 
     /**
-     * @param QuickSearchContext $context
+     * @return int
      */
-    private function searchDownload(QuickSearchContext $context)
+    private function getMinTicketId()
     {
-    }
+        // Get min id
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->select('t.id')
+            ->from('DeskPRO:Ticket', 't')
+            ->setMaxResults(1)
+            ->setFirstResult(10000)
+        ;
 
-    /**
-     * @param QuickSearchContext $context
-     */
-    private function searchFeedback(QuickSearchContext $context)
-    {
-    }
-
-    /**
-     * @param QuickSearchContext $context
-     */
-    private function searchNews(QuickSearchContext $context)
-    {
-    }
-
-    /**
-     * @param QuickSearchContext $context
-     */
-    private function searchTicket(QuickSearchContext $context)
-    {
-    }
-
-    /**
-     * @param QuickSearchContext $context
-     */
-    private function searchPerson(QuickSearchContext $context)
-    {
-    }
-
-    /**
-     * @param QuickSearchContext $context
-     */
-    private function searchOrganization(QuickSearchContext $context)
-    {
-    }
-
-    /**
-     * @param QuickSearchContext $context
-     */
-    private function searchChatConversation(QuickSearchContext $context)
-    {
+        return $qb->getQuery()->getSingleScalarResult();
     }
 }

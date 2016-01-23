@@ -98,6 +98,19 @@ class QuickSearchContext
     }
 
     /**
+     * @param array $ids
+     *
+     * @return $this
+     */
+    public function mergeIds(array $ids)
+    {
+        $exist_ids = $this->ids->toArray();
+        $this->ids = new ArrayCollection(array_unique(array_merge($exist_ids, $ids)));
+
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public static function getDoctrineMapping()
