@@ -163,7 +163,6 @@ class DoctrineSearchListener implements EventSubscriberInterface
      */
     private function getMinTicketId()
     {
-        // Get min id
         $qb = $this->em->createQueryBuilder();
         $qb
             ->select('t.id')

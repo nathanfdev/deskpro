@@ -62,7 +62,7 @@ class LoadListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            QuickSearchEvents::POST_SEARCH => ['onLoadEntities', -1], // Load entities before permission check
+            QuickSearchEvents::POST_SEARCH => ['onLoadEntities', 1000], // Load entities before permission check
         ];
     }
 
