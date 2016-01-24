@@ -26,7 +26,7 @@ Feature: Ticket List
       | agent   | An agent ticket 8   |   resolved  | walmart |
       | agent   | An agent ticket 9   |   resolved  | |
 
-  @reinstall @basic
+  @reinstall
   Scenario: Viewing the ticket list when unautneticated sends you to the login page
     Given I go to "/tickets"
     Then I should be on "/login"

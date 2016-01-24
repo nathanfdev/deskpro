@@ -9,7 +9,6 @@ Feature: Login
       | default |
     And the default brand is using the sidebar theme
 
-  @basic
   Scenario: I login as user
     When I login with user credentials
     Then I should be authenticated as user

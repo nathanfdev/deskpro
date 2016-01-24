@@ -26,7 +26,7 @@ Feature: Ticket View
       | agent   | An agent ticket 8   |   resolved  | walmart |
       | agent   | An agent ticket 9   |   resolved  | |
 
-  @reinstall @basic
+  @reinstall
   Scenario: Trying to view a ticket when not logged in should make me log in
     Given I go to "/tickets/1"
     Then I should be on "/login"
@@ -35,46 +35,46 @@ Feature: Ticket View
     Then I should be on "/login"
     And the response status code should be 200
 
-  @reinstall @basic
+  @reinstall
   Scenario: Viewing my own ticket
     Given I login with user credentials
     When I go to "/tickets/1"
     Then the response status code should be 200
     And I should see "My Ticket"
 
-  @reinstall @basic
+  @reinstall
   Scenario: Trying to view my own ticket as an agent
     Given I login with agent credentials
     When I go to "/tickets/9"
     Then the response status code should be 200
     And I should see "An agent ticket 3"
 
-  @reinstall @basic
+  @reinstall
   Scenario: Trying to view someone else's ticket as an agent should give me a 403 if I am logged in
     Given I login with agent credentials
     When I go to "/tickets/1"
     Then the response status code should be 403
 
-  @reinstall @basic
+  @reinstall
   Scenario: Trying to view someone else's ticket should give me a 403 if I am logged in
     Given I login with user credentials
     When I go to "/tickets/9"
     Then the response status code should be 403
 
-  @reinstall @basic
+  @reinstall
   Scenario: Trying to view someone else's ticket as the organization manager of that ticket's org
     Given I login with user credentials
     When I go to "/tickets/7"
     Then the response status code should be 200
     And I should see "An agent ticket 1"
 
-  @reinstall @basic
+  @reinstall
   Scenario: If you are not logged in, you cannot view the "guest view" of a ticket. You must login first.
     When I go to the ticket veiw page for ticket ID "1"
     Then I should be on "/login"
     And the response status code should be 200
 
-  @reinstall @basic
+  @reinstall
   Scenario: Access a ticket view as a logged in user for a ticket you are not a part of, and replying to it makes you a participant
     Given I login with user credentials
     And "user" am not involved with ticket ID "9"

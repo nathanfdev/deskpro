@@ -17,7 +17,7 @@ Feature: Ticket Participants
       | agent   | An agent ticket 3   |   awaiting_agent  | user |  |
       | agent   | An agent ticket 4   |   awaiting_agent  | user | walmart |
 
-  @reinstall @basic
+  @reinstall
   Scenario: An agent deos not see the participant tickets in the lists
     Given I login with agent credentials
     When I go to "/tickets"
@@ -25,7 +25,7 @@ Feature: Ticket Participants
     And I should see "2" tickets "awaiting_agent"
     And I should see a header ticket count of "4"
 
-  @reinstall @basic
+  @reinstall
   Scenario: An organization manager sees the participant tickets in the lists, but only the ones that are not a part of the organization
     Given user is an organization manager of "walmart"
     And I login with user credentials
@@ -35,7 +35,7 @@ Feature: Ticket Participants
     And I should see a header ticket count of "4"
     And I should see a header organization ticket count of "4"
 
-  @reinstall @basic
+  @reinstall
   Scenario: A user that is not an organization manager sees all participating tickets (unlike the org manager above)
     Given I login with user credentials
     When I go to "/tickets"
@@ -43,14 +43,14 @@ Feature: Ticket Participants
     And I should see "3" tickets "awaiting_agent"
     And I should see a header ticket count of "6"
 
-  @reinstall @basic
+  @reinstall
   Scenario: An agent can still view a ticket they participate in
     Given I login with agent credentials
     When I go to "/tickets/1"
     Then the response status code should be 200
     And I should see "My Ticket"
 
-  @reinstall @basic
+  @reinstall
   Scenario: A user can view a ticket they participate in
     Given I login with user credentials
     When I go to "/tickets/3"
