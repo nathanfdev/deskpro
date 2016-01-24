@@ -5,7 +5,7 @@ jest.dontMock('DeskPRO/Bundle/AgentBundle/Services/DpApi.js');
 describe('API Comments service', () => {
 
   const DpApi = require('DeskPRO/Bundle/AgentBundle/Services/DpApi.js');
-  const { Comments } = require('DeskPRO/Bundle/AgentBundle/Services/Api/Content/Comments.js');
+  const Comments = require('DeskPRO/Bundle/AgentBundle/Services/Api/Content/Comments.js');
 
   describe('load()', () => {
     it('should load article comments', () => {

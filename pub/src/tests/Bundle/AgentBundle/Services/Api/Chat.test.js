@@ -5,7 +5,7 @@ jest.dontMock('DeskPRO/Bundle/AgentBundle/Services/DpApi.js');
 describe('API Chat service', () => {
 
   const DpApi = require('DeskPRO/Bundle/AgentBundle/Services/DpApi.js');
-  const { Chat } = require('DeskPRO/Bundle/AgentBundle/Services/Api/Chat.js');
+  const Chat = require('DeskPRO/Bundle/AgentBundle/Services/Api/Chat.js');
 
   it('should load chats', () => {
     spyOn(DpApi, 'sendGet');
