@@ -6,11 +6,6 @@
   "private": true,
   "dependencies": {
     "anytime": "^1.2.0",
-    "babel": "6.3.26",
-    "babel-core": "6.4.0",
-    "babel-loader": "6.2.1",
-    "babel-plugin-react-transform": "2.0.0",
-    "babel-polyfill": "^6.3.14",
     "blueimp-file-upload": "^9.11.2",
     "bourbon": "4.2.6",
     "bourbon-neat": "1.7.2",
@@ -78,7 +73,6 @@
     "react-textarea-autosize": "^3.0.0",
     "react-timeago": "^2.2.1",
     "react-transform-catch-errors": "1.0.1",
-    "react-transform-hmr": "1.0.1",
     "redbox-react": "1.1.1",
     "redux": "3.0.5",
     "redux-actions": "0.8.0",
@@ -96,6 +90,11 @@
     "webpack-hot-middleware": "2.6.0"
   },
   "devDependencies": {
+    "babel": "6.3.26",
+    "babel-core": "6.4.0",
+    "babel-loader": "6.2.1",
+    "babel-plugin-react-transform": "2.0.0",
+    "babel-polyfill": "^6.3.14",
     "babel-eslint": "4.1.5",
     "babel-jest": "6.0.1",
     "babel-plugin-add-module-exports": "^0.1.2",
@@ -113,11 +112,12 @@
     "mkdirp": "^0.5.1",
     "node-notifier": "^4.3.1",
     "react-addons-test-utils": "0.14.6",
+    "react-transform-hmr": "^1.0.1",
     "uglify-js": "^2.6.1",
     "webpack-notifier": "^1.2.1"
   },
   "scripts": {
-    "test": "jest",
+    "test": "NODE_ENV=production jest",
     "eslint": "eslint src || true",
     "gulp": "gulp",
     "gulp-prod": "gulp prod"
