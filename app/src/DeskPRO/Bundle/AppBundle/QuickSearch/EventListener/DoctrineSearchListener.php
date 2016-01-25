@@ -174,8 +174,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
             return;
         }
 
-        $query = $request->getQuery();
-        $qb    = $this->em->createQueryBuilder();
+        $qb = $this->em->createQueryBuilder();
         $qb
             ->select('p')
             ->from('DeskPRO:Person', 'p')
@@ -184,18 +183,17 @@ class DoctrineSearchListener implements EventSubscriberInterface
             ->orderBy('p.id', 'desc')
         ;
 
-        if (strpos($query, '@') !== false) {
-            $email     = $query;
-            $is_domain = strpos($query, '@') === 0;
-            if ($is_domain) {
-                $email = substr($email, 1);
-            }
-
-            $qb->setParameter('email', $this->escapeLike($email).'%');
-            if ($is_domain) {
-                $qb->andWhere('pe.email_domain LIKE :email');
+        if ($request->isEmailPart()) {
+            if ($request->isEmailDomain()) {
+                $qb
+                    ->andWhere('pe.email_domain LIKE :email_domain')
+                    ->setParameter('email_domain', $this->escapeLike($request->getEmailDomain()).'%')
+                ;
             } else {
-                $qb->andWhere('pe.email LIKE :email');
+                $qb
+                    ->andWhere('pe.email LIKE :email')
+                    ->setParameter('email', $this->escapeLike($request->getQuery()).'%')
+                ;
             }
         } else {
             $qb
@@ -206,7 +204,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
                     'pe.email LIKE :query',
                     "CONCAT(CONCAT(p.first_name, ' '), p.last_name) LIKE :query"
                 ))
-                ->setParameter('query', '%'.$this->escapeLike(preg_replace('#\s+#', ' ', $query)).'%')
+                ->setParameter('query', '%'.$this->escapeLike(preg_replace('#\s+#', ' ', $request->getQuery())).'%')
             ;
         }
 

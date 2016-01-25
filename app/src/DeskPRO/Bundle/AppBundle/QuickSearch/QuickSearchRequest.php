@@ -111,13 +111,37 @@ class QuickSearchRequest
     /**
      * @return bool
      */
+    public function isEmailPart()
+    {
+        return strpos($this->query, '@') !== false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEmailDomain()
+    {
+        return strpos($this->query, '@') === 0;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getEmailDomain()
+    {
+        return substr($this->query, strpos($this->query, '@') + 1);
+    }
+
+    /**
+     * @return string
+     */
     public function getLabel()
     {
         if (preg_match('#^\[(.*?)\]$#', $this->query, $matches)) {
             return $matches[1];
         }
 
-        return;
+        return '';
     }
 
     /**
@@ -139,11 +163,7 @@ class QuickSearchRequest
             $words = Arrays::removeFalsey($words);
             $words = array_unique($words);
             $words = array_filter($words, function ($s) {
-                if (strlen($s) >= 3) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return strlen($s) >= 3;
             });
 
             $this->words = $words;
