@@ -99,7 +99,7 @@ class LoadListener implements EventSubscriberInterface
             return;
         }
 
-        /** @var \Application\DeskPRO\Entity\Person $people */
+        /** @var \Application\DeskPRO\Entity\Person[] $people */
         $people = $context->getEntities();
         foreach ($people as $person) {
             $organization = $person->getOrganization();

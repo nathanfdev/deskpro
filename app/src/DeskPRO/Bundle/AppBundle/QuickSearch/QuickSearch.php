@@ -72,6 +72,10 @@ class QuickSearch
             }
         }
 
+        foreach ($response->getContexts() as $context) {
+            $this->dispatcher->dispatch(QuickSearchEvents::FINISH, new QuickSearchEvent($context, $request));
+        }
+
         return $response;
     }
 }

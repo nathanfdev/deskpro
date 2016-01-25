@@ -54,3 +54,8 @@ services:
     class: DeskPRO\Bundle\AppBundle\QuickSearch\EventListener\PermissionListener
     tags:
       - { name: quick_search.event_subscriber }
+
+  quick_search.listener.sort_listener:
+    class: DeskPRO\Bundle\AppBundle\QuickSearch\EventListener\SortListener
+    tags:
+      - { name: quick_search.event_subscriber }

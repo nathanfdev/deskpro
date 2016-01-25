@@ -156,6 +156,26 @@ class QuickSearchContext
     }
 
     /**
+     * @return array
+     */
+    public function getIds()
+    {
+        return $this->ids->toArray();
+    }
+
+    /**
+     * @param array $ids
+     *
+     * @return $this
+     */
+    public function setIds(array $ids)
+    {
+        $this->ids = new ArrayCollection($ids);
+
+        return $this;
+    }
+
+    /**
      * @param mixed $entity
      *
      * @return $this
@@ -191,6 +211,18 @@ class QuickSearchContext
     public function getEntities()
     {
         return $this->entities->toArray();
+    }
+
+    /**
+     * @param array $entities
+     *
+     * @return $this
+     */
+    public function setEntities(array $entities)
+    {
+        $this->entities = new ArrayCollection($entities);
+
+        return $this;
     }
 
     /**

@@ -29,30 +29,40 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\QuickSearch;
+namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
+
+use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvent;
+use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvents;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * Class QuickSearchEvents.
+ * Class SortListener.
  */
-final class QuickSearchEvents
+class SortListener implements EventSubscriberInterface
 {
     /**
-     * Collects entities or entity ids from request query string or external sources (db, elastic search).
+     * {@inheritdoc}
      */
-    const SEARCH = 'quick_search.search';
+    public static function getSubscribedEvents()
+    {
+        return [
+            QuickSearchEvents::FINISH => ['onSortResults', 1000], // Call this first
+        ];
+    }
 
     /**
-     * Elastic search is a primary service to search data but if it's disabled or some error happened then we can fetch from database.
+     * @param QuickSearchEvent $event
      */
-    const SEARCH_FALLBACK = 'quick_search.search_fallback';
+    public function onSortResults(QuickSearchEvent $event)
+    {
+        $context  = $event->getContext();
+        $entities = $context->getEntities();
+        $ids      = $context->getIds();
 
-    /**
-     * Loads data for deferred ids, related entities and validates view permissions.
-     */
-    const POST_SEARCH = 'quick_search.post_search';
+        usort($entities, function ($a, $b) { return $a->getId() - $b->getId(); });
+        usort($ids, function ($a, $b) { return $a - $b; });
 
-    /**
-     * Called before returning a response, using to sort data.
-     */
-    const FINISH = 'quick_search.finish';
+        $context->setEntities($entities);
+        $context->setIds($ids);
+    }
 }
