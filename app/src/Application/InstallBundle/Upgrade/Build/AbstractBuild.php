@@ -34,6 +34,8 @@ namespace Application\InstallBundle\Upgrade\Build;
 use Application\DeskPRO\DBAL\SchemaHelper;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Monolog\NullLogger;
+use DeskPRO\Component\Util\MapUtils;
+use Doctrine\DBAL\Connection;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Process\Process;
 
@@ -412,5 +414,58 @@ abstract class AbstractBuild
         $this->schema_helper = new SchemaHelper($this->container->getDb());
 
         return $this->schema_helper;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
+    public function readSetting($name)
+    {
+        $db = $this->container->getDb();
+
+        return $db->fetchColumn('SELECT value FROM settings WHERE name = ?', [$name]);
+    }
+
+    /**
+     * @param string[] $names
+     *
+     * @return array
+     */
+    public function readMultiSetting(array $names)
+    {
+        $db = $this->container->getDb();
+
+        return $db->fetchAllKeyValue('
+            SELECT name, value
+            FROM settings
+            WHERE name IN (?)
+        ', [$names], [Connection::PARAM_STR_ARRAY]);
+    }
+
+    /**
+     * @param string $name
+     * @param mixed  $value
+     */
+    public function saveSetting($name, $value)
+    {
+        $this->saveMultiSettings([$name => $value]);
+    }
+
+    /**
+     * @param array $settings
+     */
+    public function saveMultiSettings(array $settings)
+    {
+        $names = array_keys($settings);
+
+        $settings_batch = MapUtils::mapToList($settings, function ($name, $val) {
+            return ['name' => $name, 'value' => $val];
+        });
+
+        $db = $this->container->getDb();
+        $db->deleteIn('settings', $names, 'name');
+        $db->batchInsert('settings', $settings_batch);
     }
 }

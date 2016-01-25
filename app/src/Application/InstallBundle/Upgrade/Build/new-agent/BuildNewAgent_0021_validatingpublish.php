@@ -31,30 +31,36 @@
  */
 namespace Application\InstallBundle\Upgrade\Build;
 
-class BuildNewAgent_0005_misc extends AbstractBuild
+class BuildNewAgent_0021_validatingpublish extends AbstractBuild
 {
     public function run()
     {
-        $sh = $this->getSchemaHelper();
+        $db = $this->container->getDb();
 
-        $this->out('Modifying settings table');
-        $this->execMutateSql('ALTER TABLE settings DROP PRIMARY KEY, ADD id INT AUTO_INCREMENT NOT NULL, ADD UNIQUE INDEX unique_setting_name (name), ADD PRIMARY KEY (id)');
+        $this->out('Resetting status on validating feedback');
 
-        $this->out('Modifying templates table');
-        $instructions = [];
-        if ($fk = $sh->findForeignKey('templates', 'style_id', 'styles', 'id')) {
-            $instructions[] = 'DROP FOREIGN KEY '.$fk->getName();
+        $db->update('feedback', [
+            'status'        => 'hidden',
+            'hidden_status' => 'deleted',
+        ], ['validating' => '1']);
+
+        foreach (['validating', 'user_validating', 'temp'] as $s) {
+            $db->update('feedback', [
+                'status'        => 'hidden',
+                'hidden_status' => 'deleted',
+            ], ['status' => 'hidden', 'hidden_status' => $s]);
         }
-        if ($idx = $sh->findIndex('templates', 'style_id')) {
-            $instructions[] = 'DROP INDEX '.$idx->getName();
+
+        $this->out('Resetting status on validating comments');
+
+        foreach (['article_comments', 'download_comments', 'feedback_comments', 'news_comments'] as $t) {
+            $db->update($t, ['status' => 'deleted'], ['validating' => '1']);
+            $db->update($t, ['status' => 'deleted'], ['status' => 'user_validating']);
+            $db->update($t, ['status' => 'deleted'], ['status' => 'validating']);
+            $db->update($t, ['status' => 'deleted'], ['status' => 'tmp']);
         }
-        $instructions[] = 'DROP style_id';
-        $instructions[] = 'ADD theme_set_id INT NULL DEFAULT NULL';
-        $instructions[] = 'ADD CONSTRAINT FK_6F287D8EC0C33964 FOREIGN KEY (theme_set_id) REFERENCES theme_sets (id)';
-        $instructions[] = 'ADD INDEX IDX_6F287D8EC0C33964 (theme_set_id)';
-        $this->execMutateSql('ALTER TABLE templates '.implode(', ', $instructions));
     }
 }
 
-//[[build:1456790405]]
+//[[build:1456790407]]
 

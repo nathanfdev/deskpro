@@ -31,25 +31,30 @@
  */
 namespace Application\InstallBundle\Upgrade\Build;
 
-class BuildNewAgent_0060_ticketalter1 extends AbstractBuild
+class BuildNewAgent_0020_misc extends AbstractBuild
 {
     public function run()
     {
-        $sh           = $this->getSchemaHelper();
-        $instructions = [];
+        $sh = $this->getSchemaHelper();
 
-        if ($fk = $sh->findForeignKey('tickets', 'person_email_validating_id', 'people_emails_validating', 'id')) {
+        $this->out('Modifying settings table');
+        $this->execMutateSql('ALTER TABLE settings DROP PRIMARY KEY, ADD id INT AUTO_INCREMENT NOT NULL, ADD UNIQUE INDEX unique_setting_name (name), ADD PRIMARY KEY (id)');
+
+        $this->out('Modifying templates table');
+        $instructions = [];
+        if ($fk = $sh->findForeignKey('templates', 'style_id', 'styles', 'id')) {
             $instructions[] = 'DROP FOREIGN KEY '.$fk->getName();
         }
-        if ($idx = $sh->findIndex('tickets', 'person_email_validating_id')) {
+        if ($idx = $sh->findIndex('templates', 'style_id')) {
             $instructions[] = 'DROP INDEX '.$idx->getName();
         }
-
-        $instructions[] = 'DROP person_email_validating_id, DROP validating';
-
-        $this->execSlowAlterTable('tickets', implode(', ', $instructions));
+        $instructions[] = 'DROP style_id';
+        $instructions[] = 'ADD theme_set_id INT NULL DEFAULT NULL';
+        $instructions[] = 'ADD CONSTRAINT FK_6F287D8EC0C33964 FOREIGN KEY (theme_set_id) REFERENCES theme_sets (id)';
+        $instructions[] = 'ADD INDEX IDX_6F287D8EC0C33964 (theme_set_id)';
+        $this->execMutateSql('ALTER TABLE templates '.implode(', ', $instructions));
     }
 }
 
-//[[build:1456790414]]
+//[[build:1456790406]]
 

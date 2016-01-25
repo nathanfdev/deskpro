@@ -222,6 +222,26 @@ class MapUtils
 
     /**
      * Calls your function on each element of an array. Your function will be passed the key and value,
+     * and return a new value to add the resulting list.
+     *
+     * @param \Traversable|array $array
+     * @param callable           $fn    Your function: fn($key, $value) -> mixed
+     *
+     * @return array
+     */
+    public static function mapToList($array, $fn)
+    {
+        $return = [];
+
+        foreach ($array as $k => $v) {
+            $return[] = call_user_func($fn, $k, $v);
+        }
+
+        return $return;
+    }
+
+    /**
+     * Calls your function on each element of an array. Your function will be passed the key and value,
      * and you must return the new value. It will be saved in a new array using the original key.
      *
      * @param \Traversable|array $array

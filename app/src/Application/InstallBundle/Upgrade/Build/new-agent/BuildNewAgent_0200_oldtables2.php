@@ -31,25 +31,22 @@
  */
 namespace Application\InstallBundle\Upgrade\Build;
 
-class BuildNewAgent_0060_ticketalter1 extends AbstractBuild
+class BuildNewAgent_0200_oldtables2 extends AbstractBuild
 {
     public function run()
     {
-        $sh           = $this->getSchemaHelper();
-        $instructions = [];
+        $this->out('Drop old tables (part 2)');
+        $this->execMutateSql('DROP TABLE IF EXISTS styles');
 
-        if ($fk = $sh->findForeignKey('tickets', 'person_email_validating_id', 'people_emails_validating', 'id')) {
-            $instructions[] = 'DROP FOREIGN KEY '.$fk->getName();
-        }
-        if ($idx = $sh->findIndex('tickets', 'person_email_validating_id')) {
-            $instructions[] = 'DROP INDEX '.$idx->getName();
-        }
+        // Turn off so this is a fast op
+        $this->execMutateSql('SET FOREIGN_KEY_CHECKS = 0');
+        $this->execMutateSql('DROP TABLE IF EXISTS visitors');
+        $this->execMutateSql('DROP TABLE IF EXISTS visitor_tracks');
+        $this->execMutateSql('SET FOREIGN_KEY_CHECKS = 1');
 
-        $instructions[] = 'DROP person_email_validating_id, DROP validating';
-
-        $this->execSlowAlterTable('tickets', implode(', ', $instructions));
+        $this->execMutateSql('DROP TABLE IF EXISTS people_emails_validating');
     }
 }
 
-//[[build:1456790414]]
+//[[build:1456790416]]
 

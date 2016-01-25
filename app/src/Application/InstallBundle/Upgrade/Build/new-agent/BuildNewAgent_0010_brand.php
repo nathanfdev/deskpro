@@ -31,25 +31,50 @@
  */
 namespace Application\InstallBundle\Upgrade\Build;
 
-class BuildNewAgent_0060_ticketalter1 extends AbstractBuild
+class BuildNewAgent_0010_brand extends AbstractBuild
 {
     public function run()
     {
-        $sh           = $this->getSchemaHelper();
-        $instructions = [];
+        $db = $this->container->getDb();
 
-        if ($fk = $sh->findForeignKey('tickets', 'person_email_validating_id', 'people_emails_validating', 'id')) {
-            $instructions[] = 'DROP FOREIGN KEY '.$fk->getName();
+        #------------------------------
+        # Available themes
+        #------------------------------
+
+        $this->execMutateSql("
+            INSERT INTO `theme_sets` (`id`, `theme_id`, `options`)
+            VALUES (1, 'standard', '{}'), (2, 'sidebar', '{}')
+        ");
+
+        #------------------------------
+        # Create our brand
+        #------------------------------
+
+        $logo_blob_id = $this->readSetting('core.deskpro_logo_blob');
+        if ($logo_blob_id) {
+            $logo_blob_id = $db->fetchColumn('SELECT id FORM blobs WHERE id = ?', [$logo_blob_id]);
         }
-        if ($idx = $sh->findIndex('tickets', 'person_email_validating_id')) {
-            $instructions[] = 'DROP INDEX '.$idx->getName();
+        if (!$logo_blob_id) {
+            $logo_blob_id = null;
         }
 
-        $instructions[] = 'DROP person_email_validating_id, DROP validating';
+        //TODO store logo
 
-        $this->execSlowAlterTable('tickets', implode(', ', $instructions));
+        $site_name = $this->readSetting('core.deskpro_name');
+
+        $brand = [
+            'id'           => 1,
+            'name'         => $site_name,
+            'theme_set_id' => 1,
+        ];
+
+        $db->insert('brands', $brand);
+
+        // Make sure it's set to the default brand ID
+        $brand_id = $db->lastInsertId();
+        $this->saveSetting('portal.default_brand', $brand_id);
     }
 }
 
-//[[build:1456790414]]
+//[[build:1456790405]]
 

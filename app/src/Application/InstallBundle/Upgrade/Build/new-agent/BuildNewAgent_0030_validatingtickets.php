@@ -31,25 +31,46 @@
  */
 namespace Application\InstallBundle\Upgrade\Build;
 
-class BuildNewAgent_0060_ticketalter1 extends AbstractBuild
+class BuildNewAgent_0030_validatingtickets extends AbstractBuild
 {
     public function run()
     {
-        $sh           = $this->getSchemaHelper();
-        $instructions = [];
+        $this->out('Resetting status on validating tickets');
+        $db = $this->container->getDb();
 
-        if ($fk = $sh->findForeignKey('tickets', 'person_email_validating_id', 'people_emails_validating', 'id')) {
-            $instructions[] = 'DROP FOREIGN KEY '.$fk->getName();
+        $label    = 'dp-was-validating';
+        $set_data = [
+            'hidden_status' => 'deleted',
+            'date_status'   => date('Y-m-d H:i:s'),
+        ];
+
+        while ($ticket_ids = $this->loadNext()) {
+            $label_batch = [];
+            foreach ($ticket_ids as $tid) {
+                $label_batch[] = ['ticket_id' => $tid, 'label' => $label];
+            }
+
+            $db->batchInsert('labels_tickets', $label_batch, true);
+            $db->updateIn('tickets', $set_data, $ticket_ids);
         }
-        if ($idx = $sh->findIndex('tickets', 'person_email_validating_id')) {
-            $instructions[] = 'DROP INDEX '.$idx->getName();
-        }
+    }
 
-        $instructions[] = 'DROP person_email_validating_id, DROP validating';
+    /**
+     * @return int[]
+     */
+    private function loadNext()
+    {
+        $db         = $this->container->getDb();
+        $ticket_ids = $db->fetchAllCol("
+          SELECT id
+          FROM tickets
+          WHERE status = 'hidden' AND hidden_status = 'validating'
+          LIMIT 250
+        ");
 
-        $this->execSlowAlterTable('tickets', implode(', ', $instructions));
+        return $ticket_ids;
     }
 }
 
-//[[build:1456790414]]
+//[[build:1456790409]]
 

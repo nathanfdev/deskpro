@@ -31,7 +31,7 @@
  */
 namespace Application\InstallBundle\Upgrade\Build;
 
-class BuildNewAgent_0006_publishmisc extends AbstractBuild
+class BuildNewAgent_0022_publish extends AbstractBuild
 {
     public function run()
     {
@@ -67,5 +67,5 @@ class BuildNewAgent_0006_publishmisc extends AbstractBuild
     }
 }
 
-//[[build:1456790406]]
+//[[build:1456790408]]
 
