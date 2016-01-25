@@ -32,7 +32,6 @@
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
-use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDataTicket;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
@@ -47,17 +46,21 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomData\TicketCustomDataTe
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 
+/**
+ * Class TermEngineDb.
+ */
 class TermEngineDb extends AbstractDbSet
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getId()
     {
         return 'term engine';
     }
 
     /**
-     * Install default/empty data.
-     *
-     * @return int
+     * {@inheritdoc}
      */
     protected function installSet()
     {

@@ -38,6 +38,9 @@ use Orb\Util\Util;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * Class AbstractDbSet.
+ */
 abstract class AbstractDbSet implements DataSetInterface
 {
     /**
@@ -70,6 +73,16 @@ abstract class AbstractDbSet implements DataSetInterface
      */
     private $mysqldump_bin_path;
 
+    /**
+     * Constructor.
+     *
+     * @param ContainerInterface $container
+     * @param EntityManager      $em
+     * @param Connection         $db
+     * @param string             $cache_dir
+     * @param string             $mysql_bin_path
+     * @param string             $mysqldump_bin_path
+     */
     public function __construct(ContainerInterface $container, EntityManager $em, Connection $db, $cache_dir, $mysql_bin_path = 'mysql', $mysqldump_bin_path = 'mysqldump')
     {
         $this->container          = $container;
@@ -119,6 +132,17 @@ abstract class AbstractDbSet implements DataSetInterface
         return 1;
     }
 
+    /**
+     * @param string $fname
+     * @param string $lname
+     * @param string $email
+     * @param string $pass
+     * @param bool   $agent
+     * @param bool   $admin
+     * @param bool   $is_deleted
+     *
+     * @return \Application\DeskPRO\Entity\Person
+     */
     protected function addUser($fname, $lname, $email, $pass, $agent = false, $admin = false, $is_deleted = false)
     {
         $new_user             = new \Application\DeskPRO\Entity\Person();

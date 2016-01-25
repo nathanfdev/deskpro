@@ -29,14 +29,12 @@
 /**
  * DeskPRO.
  */
-
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\LabelDef;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Usersource;
@@ -44,17 +42,21 @@ use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 
+/**
+ * Class ApiDb.
+ */
 class ApiDb extends AbstractDbSet
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getId()
     {
         return 'api';
     }
 
     /**
-     * Install default/empty data.
-     *
-     * @return int
+     * {@inheritdoc}
      */
     protected function installSet()
     {

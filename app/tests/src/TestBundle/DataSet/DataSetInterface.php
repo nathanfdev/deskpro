@@ -31,6 +31,9 @@
  */
 namespace DpTestSrc\TestBundle\DataSet;
 
+/**
+ * Interface DataSetInterface.
+ */
 interface DataSetInterface
 {
     /**
