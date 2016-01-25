@@ -30,39 +30,37 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\Data\MassActions;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection;
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Application\DeskPRO\Entity\Feedback;
+use DeskPRO\Bundle\AppBundle\ActionEngine\ActionInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 
-abstract class AbstractMassActionsPreprocessor
+class ApproveAction extends AbstractAction implements ActionInterface
 {
-    protected $em;
-    protected static $entity;
-    protected $params;
-    protected $actions;
+    private $defaultStatusCategory;
 
-    public function __construct(EntityManager $em, array $params)
+    /**
+     * Fetch default status category.
+     */
+    public function init()
     {
-        $this->em = $em;
-        $resolver = new OptionsResolver();
-        $this->configureOptions($resolver);
-
-        $this->options = $resolver->resolve($params['actions']);
-        $this->params  = $params;
-        $this->actions = new ActionCollection();
+        $activeStatusCategories = $this->em
+            ->getRepository('DeskPRO:FeedbackStatusCategory')
+            ->findBy(['status_type' => Feedback::STATUS_ACTIVE], ['display_order' => 'ASC']);
+        $this->defaultStatusCategory = $activeStatusCategories[0];
     }
 
-    public function selectEntities()
+    /**
+     * @param Feedback $feedback
+     */
+    public function run($feedback)
     {
-        $qb = $this->em->createQueryBuilder();
-        $qb
-            ->select('entity')
-            ->from(static::$entity, 'entity')
-            ->where('entity.id IN (:ids)')
-            ->setParameter('ids', $this->params['ids']);
-
-        return $qb->getQuery()->getResult();
+        if ($feedback->status === Feedback::STATUS_HIDDEN) {
+            $feedback->setHiddenStatus();
+            $feedback->setStatus(Feedback::STATUS_ACTIVE);
+            $feedback->setStatusCategory($this->defaultStatusCategory);
+        }
+        $feedback->setIsReviewed(true);
     }
 }

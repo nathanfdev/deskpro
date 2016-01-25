@@ -30,39 +30,33 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\Data\MassActions;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection;
-use Doctrine\ORM\EntityManager;
+use Application\DeskPRO\Entity\Feedback;
+use DeskPRO\Bundle\AppBundle\ActionEngine\ActionInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\ActionWithOptionsInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-abstract class AbstractMassActionsPreprocessor
+class AddLabelsAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
 {
-    protected $em;
-    protected static $entity;
-    protected $params;
-    protected $actions;
-
-    public function __construct(EntityManager $em, array $params)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $this->em = $em;
-        $resolver = new OptionsResolver();
-        $this->configureOptions($resolver);
-
-        $this->options = $resolver->resolve($params['actions']);
-        $this->params  = $params;
-        $this->actions = new ActionCollection();
+        $resolver->setRequired('labels');
     }
 
-    public function selectEntities()
+    public function init()
     {
-        $qb = $this->em->createQueryBuilder();
-        $qb
-            ->select('entity')
-            ->from(static::$entity, 'entity')
-            ->where('entity.id IN (:ids)')
-            ->setParameter('ids', $this->params['ids']);
+        return true;
+    }
 
-        return $qb->getQuery()->getResult();
+    /**
+     * @param Feedback $feedback
+     */
+    public function run($feedback)
+    {
+        foreach ($this->options['labels'] as $string) {
+            $feedback->addLabelByString($string);
+        }
     }
 }

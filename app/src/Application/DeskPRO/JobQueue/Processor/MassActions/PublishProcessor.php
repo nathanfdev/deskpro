@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\JobQueue\Processor\MassActions;
 
 use Application\DeskPRO\JobQueue\Processor\AbstractJobProcessor;
@@ -74,12 +75,17 @@ class PublishProcessor extends AbstractJobProcessor
      */
     public function process(array $data, array $job)
     {
-        $preProcessor = MassActionsPreprocessorFactory::create($this->em, $data);
-        $preProcessor->prepareActions();
-        $entities = $preProcessor->selectEntities();
+        $preProcessor      = MassActionsPreprocessorFactory::create($this->em, $data);
+        $entities          = $preProcessor->selectEntities();
+        $actionsCollection = $preProcessor->prepareActions();
+        $actions           = $actionsCollection->getActions();
+
         foreach ($entities as $entity) {
-            $preProcessor->prepareEntity($entity);
-            $this->em->persist($entity);
+            /** @var \DeskPRO\Bundle\AppBundle\ActionEngine\ActionInterface $action */
+            foreach ($actions as $action) {
+                $action->run($entity);
+                $this->em->persist($entity);
+            }
         }
         $this->em->flush();
 

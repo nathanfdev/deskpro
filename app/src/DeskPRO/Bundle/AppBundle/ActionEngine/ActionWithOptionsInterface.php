@@ -30,39 +30,11 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\Data\MassActions;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-abstract class AbstractMassActionsPreprocessor
+interface ActionWithOptionsInterface
 {
-    protected $em;
-    protected static $entity;
-    protected $params;
-    protected $actions;
-
-    public function __construct(EntityManager $em, array $params)
-    {
-        $this->em = $em;
-        $resolver = new OptionsResolver();
-        $this->configureOptions($resolver);
-
-        $this->options = $resolver->resolve($params['actions']);
-        $this->params  = $params;
-        $this->actions = new ActionCollection();
-    }
-
-    public function selectEntities()
-    {
-        $qb = $this->em->createQueryBuilder();
-        $qb
-            ->select('entity')
-            ->from(static::$entity, 'entity')
-            ->where('entity.id IN (:ids)')
-            ->setParameter('ids', $this->params['ids']);
-
-        return $qb->getQuery()->getResult();
-    }
+    public function configureOptions(OptionsResolver $resolver);
 }

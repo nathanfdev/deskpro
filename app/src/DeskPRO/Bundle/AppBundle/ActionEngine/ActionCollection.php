@@ -30,39 +30,29 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\Data\MassActions;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection;
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Doctrine\Common\Collections\ArrayCollection;
 
-abstract class AbstractMassActionsPreprocessor
+class ActionCollection
 {
-    protected $em;
-    protected static $entity;
-    protected $params;
-    protected $actions;
+    /** @var ArrayCollection */
+    private $actions;
 
-    public function __construct(EntityManager $em, array $params)
+    public function __construct()
     {
-        $this->em = $em;
-        $resolver = new OptionsResolver();
-        $this->configureOptions($resolver);
-
-        $this->options = $resolver->resolve($params['actions']);
-        $this->params  = $params;
-        $this->actions = new ActionCollection();
+        $this->actions = new ArrayCollection();
     }
 
-    public function selectEntities()
+    public function addAction(ActionInterface $action)
     {
-        $qb = $this->em->createQueryBuilder();
-        $qb
-            ->select('entity')
-            ->from(static::$entity, 'entity')
-            ->where('entity.id IN (:ids)')
-            ->setParameter('ids', $this->params['ids']);
+        $this->actions->add($action);
 
-        return $qb->getQuery()->getResult();
+        return $this;
+    }
+
+    public function getActions()
+    {
+        return $this->actions;
     }
 }

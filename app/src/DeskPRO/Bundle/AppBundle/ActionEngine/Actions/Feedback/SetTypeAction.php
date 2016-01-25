@@ -30,39 +30,46 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\Data\MassActions;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection;
-use Doctrine\ORM\EntityManager;
+use Application\DeskPRO\Entity\Feedback;
+use DeskPRO\Bundle\AppBundle\ActionEngine\ActionInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\ActionWithOptionsInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-abstract class AbstractMassActionsPreprocessor
+class SetTypeAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
 {
-    protected $em;
-    protected static $entity;
-    protected $params;
-    protected $actions;
+    /** @var  \Application\DeskPRO\Entity\FeedbackCategory */
+    private $type;
 
-    public function __construct(EntityManager $em, array $params)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $this->em = $em;
-        $resolver = new OptionsResolver();
-        $this->configureOptions($resolver);
-
-        $this->options = $resolver->resolve($params['actions']);
-        $this->params  = $params;
-        $this->actions = new ActionCollection();
+        $resolver->setRequired('id');
+        $resolver->setAllowedValues(
+            'id',
+            function ($value) {
+                return is_int($value) || ctype_digit($value);
+            }
+        );
     }
 
-    public function selectEntities()
+    /**
+     * Fetch type (FeedbackCategory) for setting to items.
+     */
+    public function init()
     {
-        $qb = $this->em->createQueryBuilder();
-        $qb
-            ->select('entity')
-            ->from(static::$entity, 'entity')
-            ->where('entity.id IN (:ids)')
-            ->setParameter('ids', $this->params['ids']);
+        $value      = $this->options['id'];
+        $this->type = $this->em->getRepository('DeskPRO:FeedbackCategory')->find($value);
+    }
 
-        return $qb->getQuery()->getResult();
+    /**
+     * @param Feedback $feedback
+     *
+     * @return Feedback
+     */
+    public function run($feedback)
+    {
+        $feedback->setCategory($this->type);
     }
 }

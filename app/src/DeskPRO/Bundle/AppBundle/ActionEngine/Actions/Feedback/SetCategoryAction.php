@@ -30,37 +30,49 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
 
-use Application\DeskPRO\Entity\FeedbackComment;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\FeedbackComment\ApproveAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\FeedbackComment\DeleteAction;
-use DeskPRO\Bundle\AppBundle\Data\MassActions\AbstractMassActionsPreprocessor;
-use DeskPRO\Bundle\AppBundle\Data\MassActions\MassActionsPreprocessorInterface;
+use Application\DeskPRO\Entity\CustomDataFeedback;
+use Application\DeskPRO\Entity\Feedback;
+use DeskPRO\Bundle\AppBundle\ActionEngine\ActionInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\ActionWithOptionsInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class FeedbackCommentsMassActions extends AbstractMassActionsPreprocessor implements MassActionsPreprocessorInterface
+class SetCategoryAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
 {
-    protected static $entity = FeedbackComment::class;
+    private $customDef;
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefined(['approve', 'delete']);
+        $resolver->setRequired('input');
+        $resolver->setAllowedValues(
+            'input',
+            function ($value) {
+                return is_string($value);
+            }
+        );
     }
 
-    public function prepareActions()
+    /**
+     * Fetch CustomDef.
+     */
+    public function init()
     {
-        foreach ($this->params['actions'] as $name => $options) {
-            switch ($name) {
-                case 'approve':
-                    $this->actions->addAction(new ApproveAction());
-                    break;
-                case 'delete':
-                    $this->actions->addAction(new DeleteAction());
-                    break;
-            }
-        }
+        $this->customDef = $this->em
+            ->getRepository('DeskPRO:CustomDefFeedback')
+            ->findOneBy(['title' => 'Category']);
+    }
 
-        return $this->actions;
+    /**
+     * @param Feedback $feedback
+     */
+    public function run($feedback)
+    {
+        $feedback->resetCustomData();
+        $customCategory = new CustomDataFeedback();
+        $customCategory->setInput($this->options['input']);
+        $customCategory->setField($this->customDef);
+        $feedback->addCustomData($customCategory);
     }
 }

@@ -14,7 +14,7 @@ export class SingleChoicePanel extends Component {
 
   render() {
     const { item, setParams, currentParams, depth, resetSingleAction } = this.props;
-    const renderNested = (nested) => {
+    const renderNested = (nested, field) => {
       if (!nested || !nested.length) {
         return <span />;
       }
@@ -28,6 +28,7 @@ export class SingleChoicePanel extends Component {
                                      value={option.value}
                                      param={option.param}
                                      label={option.label}
+                                     field={field}
                                      setParams={setParams.bind(this)}/>
           )}
         </ul>
@@ -54,9 +55,10 @@ export class SingleChoicePanel extends Component {
                                              resetSingleAction={resetSingleAction}
                                              value={option.value}
                                              label={option.label}
+                                             field={item.field}
                                              param={item.param}
                                              setParams={setParams.bind(this)}>
-                        {renderNested(option.nested)}
+                        {renderNested(option.nested, item.field)}
                       </RadioChoiceMenuOption>
                   )}
                 </ul>

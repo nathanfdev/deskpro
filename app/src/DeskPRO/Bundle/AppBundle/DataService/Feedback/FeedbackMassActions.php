@@ -29,151 +29,63 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
 
-use Application\DeskPRO\Entity\CustomDataFeedback;
 use Application\DeskPRO\Entity\Feedback;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\AddLabelsAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\ApproveAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\DeleteAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\RemoveLabelsAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetCategoryAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetStatusCategoryAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetTypeAction;
 use DeskPRO\Bundle\AppBundle\Data\MassActions\AbstractMassActionsPreprocessor;
 use DeskPRO\Bundle\AppBundle\Data\MassActions\MassActionsPreprocessorInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FeedbackMassActions extends AbstractMassActionsPreprocessor implements MassActionsPreprocessorInterface
 {
-    private $statusCategory;
-    private $category;
-    private $customCategoryValue;
-    private $customDef;
-    private $addLabels;
-    private $removeLabels;
-    private $firstActiveStatusCategory;
+    protected static $entity = Feedback::class;
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefined(
-            ['status_category', 'category', 'custom_category', 'addLabels', 'removeLabels', 'approve', 'delete']
+            ['status_category', 'type', 'category', 'addLabels', 'removeLabels', 'approve', 'delete']
         );
-        $resolver->setAllowedValues(
-            'status_category',
-            function ($value) {
-                return is_int($value) || ctype_digit($value);
-            }
-        );
-        $resolver->setAllowedValues(
-            'category',
-            function ($value) {
-                return is_int($value) || ctype_digit($value);
-            }
-        );
-        $resolver->setAllowedTypes('custom_category', 'string');
-        $resolver->setAllowedValues(
-            'approve',
-            function ($value) {
-                return (int) $value === 1;
-            }
-        );
-        $resolver->setAllowedValues(
-            'delete',
-            function ($value) {
-                return (int) $value === 1;
-            }
-        );
-    }
-
-    public function prepareActions()
-    {
-        foreach ($this->params['actions'] as $key => $value) {
-            switch ($key) {
-                case 'status_category':
-                    $this->statusCategory = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->find($value);
-                    break;
-                case 'category':
-                    $this->category = $this->em->getRepository('DeskPRO:FeedbackCategory')->find($value);
-                    break;
-                case 'custom_category':
-                    $this->customCategoryValue = $value;
-                    $this->customDef           = $this->em
-                        ->getRepository('DeskPRO:CustomDefFeedback')
-                        ->findOneBy(['title' => 'Category']);
-                    break;
-                case 'addLabels':
-                    $this->addLabels = $value;
-                    break;
-                case 'removeLabels':
-                    $this->removeLabels = $value;
-                    break;
-                case 'approve':
-                    $activeStatusCategories = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')
-                        ->findBy(['status_type' => Feedback::STATUS_ACTIVE], ['display_order' => 'ASC']);
-                    $this->firstActiveStatusCategory = $activeStatusCategories[0];
-                    break;
-            }
-        }
-    }
-
-    public function selectEntities()
-    {
-        $qb = $this->em->createQueryBuilder();
-        $qb
-            ->select('feedback')
-            ->from('DeskPRO:Feedback', 'feedback')
-            ->where('feedback.id IN (:ids)')
-            ->setParameter('ids', $this->params['ids']);
-
-        return $qb->getQuery()->getResult();
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\Feedback $feedback
-     *
-     * @return \Application\DeskPRO\Entity\Feedback
+     * @return \DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection
      */
-    public function prepareEntity($feedback)
+    public function prepareActions()
     {
-        foreach ($this->params['actions'] as $key => $value) {
-            switch ($key) {
+        foreach ($this->params['actions'] as $name => $options) {
+            switch ($name) {
                 case 'status_category':
-                    $feedback->setStatusCategory($this->statusCategory);
+                    $this->actions->addAction(new SetStatusCategoryAction($this->em, $options));
+                    break;
+                case 'type':
+                    $this->actions->addAction(new SetTypeAction($this->em, $options));
                     break;
                 case 'category':
-                    $feedback->setCategory($this->category);
-                    break;
-                case 'custom_category':
-                    $feedback->resetCustomData();
-                    $customCategory = new CustomDataFeedback();
-                    $customCategory->setInput($this->customCategoryValue);
-                    $customCategory->setField($this->customDef);
-                    $feedback->addCustomData($customCategory);
+                    $this->actions->addAction(new SetCategoryAction($this->em, $options));
                     break;
                 case 'addLabels':
-                    foreach ($this->addLabels as $string) {
-                        $feedback->addLabelByString($string);
-                    }
+                    $this->actions->addAction(new AddLabelsAction($this->em, $options));
                     break;
                 case 'removeLabels':
-                    foreach ($this->removeLabels as $string) {
-                        if ($label = $feedback->findLabelByString($string)) {
-                            $feedback->labels->removeElement($label);
-                        }
-                    }
+                    $this->actions->addAction(new RemoveLabelsAction($this->em, $options));
                     break;
                 case 'approve':
-                    if ($value) {
-                        if ($feedback->status === Feedback::STATUS_HIDDEN) {
-                            $feedback->setHiddenStatus();
-                            $feedback->setStatus(Feedback::STATUS_ACTIVE);
-                            $feedback->setStatusCategory($this->firstActiveStatusCategory);
-                        }
-                        $feedback->setIsReviewed($value);
-                    }
+                    $this->actions->addAction(new ApproveAction($this->em));
                     break;
                 case 'delete':
-                    if ($value) {
-                        $feedback->setStatus(Feedback::STATUS_HIDDEN);
-                        $feedback->setHiddenStatus(Feedback::HIDDEN_STATUS_DELETED);
-                        $feedback->setIsReviewed($value);
-                    }
+                    $this->actions->addAction(new DeleteAction());
                     break;
             }
         }
+
+        return $this->actions;
     }
 }
