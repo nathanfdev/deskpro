@@ -303,7 +303,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
         $context = $event->getContext();
         $request = $event->getRequest();
 
-        if (!in_array($context->getType(), $types) || !$request->isLabel()) {
+        if (!in_array($context->getType(), $types)) {
             return;
         }
 
@@ -313,7 +313,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
             ->from($context->getEntityName(), 't')
             ->join('t.labels', 'l')
             ->where('l.label = :label')
-            ->setParameter('label', $request->getLabel())
+            ->setParameter('label', $request->getLabel() ?: $request->getQuery())
         ;
 
         switch ($context->getType()) {
