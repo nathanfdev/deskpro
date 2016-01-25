@@ -115,7 +115,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
             $param_id = 'subject_'.$num;
             $qb
                 ->andWhere('t.subject LIKE :'.$param_id)
-                ->setParameter($param_id, '%'.str_replace(['%', '_'], ['\\%', '\\_'], $word).'%')
+                ->setParameter($param_id, '%'.$this->escapeLike($word).'%')
             ;
         }
 
@@ -165,7 +165,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
             $param_id = 'title_'.$num;
             $qb
                 ->andWhere('t.title LIKE :'.$param_id)
-                ->setParameter($param_id, '%'.str_replace(['%', '_'], ['\\%', '\\_'], $word).'%')
+                ->setParameter($param_id, '%'.$this->escapeLike($word).'%')
             ;
         }
 
@@ -211,7 +211,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
                 $email = substr($email, 1);
             }
 
-            $qb->setParameter('email', str_replace(['%', '_'], ['\\\\%', '\\\\_'], $email).'%');
+            $qb->setParameter('email', $this->escapeLike($email).'%');
             if ($is_domain) {
                 $qb->andWhere('pe.email_domain LIKE :email');
             } else {
@@ -226,7 +226,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
                     'pe.email LIKE :query',
                     "CONCAT(CONCAT(p.first_name, ' '), p.last_name) LIKE :query"
                 ))
-                ->setParameter('query', '%'.str_replace(['%', '_'], ['\\\\%', '\\\\_'], preg_replace('#\s+#', ' ', $query)).'%')
+                ->setParameter('query', '%'.$this->escapeLike(preg_replace('#\s+#', ' ', $query)).'%')
             ;
         }
 
@@ -382,5 +382,15 @@ class DoctrineSearchListener implements EventSubscriberInterface
         $result = $qb->getQuery()->getOneOrNullResult();
 
         return !empty($result) ? array_shift($result) : 1;
+    }
+
+    /**
+     * @param string $query
+     *
+     * @return string
+     */
+    private function escapeLike($query)
+    {
+        return str_replace(['%', '_'], ['\\%', '\\_'], $query);
     }
 }
