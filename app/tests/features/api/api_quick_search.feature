@@ -334,7 +334,7 @@ Feature: Quick Search
     And the JSON node "grouped_results[3].type" should be equal to "news"
     And the JSON node "grouped_results[3].results" should have 6 elements
     And the JSON node "grouped_results[4].type" should be equal to "ticket"
-    And the JSON node "grouped_results[4].results" should have 0 elements
+    And the JSON node "grouped_results[4].results" should have 1 elements
     And the JSON node "grouped_results[5].type" should be equal to "person"
     And the JSON node "grouped_results[5].results" should have 0 elements
     And the JSON node "grouped_results[6].type" should be equal to "organization"

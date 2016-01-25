@@ -107,7 +107,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
             ->from('DeskPRO:Ticket', 't')
             ->setMaxResults(100)
             ->orderBy('t.id', 'desc')
-            ->where('t.id > :after_id')
+            ->where('t.id >= :after_id')
             ->setParameter('after_id', $this->getMinTicketId())
         ;
 
@@ -236,8 +236,8 @@ class DoctrineSearchListener implements EventSubscriberInterface
                 ->join('p.tickets', 'tp')
                 ->join('tp.ticket', 't')
                 ->andWhere($qb->expr()->orX(
-                    't.id > :after_id',
-                    'tp.ticket > :after_id'
+                    't.id >= :after_id',
+                    'tp.ticket >= :after_id'
                 ))
                 ->setParameter('after_id', $this->getMinTicketId())
                 ->orderBy('t.id', 'desc')
@@ -279,7 +279,6 @@ class DoctrineSearchListener implements EventSubscriberInterface
         $organizations = $repository->search($request->getQuery(), 25);
 
         $ids = [];
-
         foreach ($organizations as $organization) {
             $context->ids->add($organization->getId());
             $context->entities->add($organization);
@@ -288,7 +287,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
         }
 
         // Fetch users of these organizations too
-        if ($ids) {
+        if (!empty($ids)) {
             $qb = $this->em->createQueryBuilder();
             $qb
                 ->select('p')
