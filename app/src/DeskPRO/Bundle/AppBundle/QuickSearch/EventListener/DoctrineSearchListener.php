@@ -155,7 +155,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
         $qb = $this->em->createQueryBuilder();
         $qb
             ->select('t.id')
-            ->from(QuickSearchContext::getDoctrineMapping()[$context->getType()], 't')
+            ->from($context->getEntityName(), 't')
             ->orderBy('t.id', 'desc')
             ->setMaxResults(25)
             ->andWhere("t.status != 'hidden'")
@@ -337,7 +337,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
         $qb = $this->em->createQueryBuilder();
         $qb
             ->select('t.id')
-            ->from(QuickSearchContext::getDoctrineMapping()[$context->getType()], 't')
+            ->from($context->getEntityName(), 't')
             ->join('t.labels', 'l')
             ->where('l.label = :label')
             ->setParameter('label', $request->getLabel())

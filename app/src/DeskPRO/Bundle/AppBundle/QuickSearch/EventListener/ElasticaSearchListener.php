@@ -92,7 +92,7 @@ class ElasticaSearchListener implements EventSubscriberInterface
 
         try {
             /** @var Repository $repository */
-            $repository = $this->elastica_manager->getRepository($context::getDoctrineMapping()[$context->getType()]);
+            $repository = $this->elastica_manager->getRepository($context->getEntityName());
             if (method_exists($repository, 'setPersonContext')) {
                 $repository->setPersonContext($request->getPerson());
             }

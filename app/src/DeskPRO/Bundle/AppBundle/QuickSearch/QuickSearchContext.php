@@ -90,6 +90,14 @@ class QuickSearchContext
     }
 
     /**
+     * @return string
+     */
+    public function getEntityName()
+    {
+        return self::getDoctrineMapping()[$this->getType()];
+    }
+
+    /**
      * @return QuickSearchResponse
      */
     public function getResponse()

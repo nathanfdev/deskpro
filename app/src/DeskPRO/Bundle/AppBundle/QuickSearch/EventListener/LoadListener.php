@@ -81,9 +81,7 @@ class LoadListener implements EventSubscriberInterface
             return;
         }
 
-        $mapping  = $context::getDoctrineMapping();
-        $entities = $this->em->getRepository($mapping[$context->getType()])->findBy(['id' => $require_ids]);
-
+        $entities = $this->em->getRepository($context->getEntityName())->findBy(['id' => $require_ids]);
         foreach ($entities as $entity) {
             $context->entities->add($entity);
         }
