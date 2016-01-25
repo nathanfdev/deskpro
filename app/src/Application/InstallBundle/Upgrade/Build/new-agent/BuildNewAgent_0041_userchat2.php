@@ -31,13 +31,13 @@
  */
 namespace Application\InstallBundle\Upgrade\Build;
 
-class BuildNewAgent_0051_peoplealter2 extends AbstractBuild
+class BuildNewAgent_0041_userchat2 extends AbstractBuild
 {
     public function run()
     {
-        $this->execSlowAlterTable('people_emails', 'DROP is_own_validated');
+        $this->execSlowAlterTable('chat_messages', 'ADD is_user TINYINT(1) NOT NULL');
     }
 }
 
-//[[build:1456790410]]
+//[[build:1456790408]]
 

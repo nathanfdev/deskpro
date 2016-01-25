@@ -42,6 +42,7 @@ class BuildNewAgent_0004_visitorids extends AbstractBuild
         $tables = [
             'article_comments',
             'chat_blocks',
+            'chat_conversations',
             'download_comments',
             'feedback_comments',
             'news_comments',

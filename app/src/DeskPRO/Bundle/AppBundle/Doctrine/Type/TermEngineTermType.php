@@ -68,6 +68,11 @@ class TermEngineTermType extends BaseType
         return $converter->toTerm($value);
     }
 
+    public function requiresSQLCommentHint(AbstractPlatform $platform)
+    {
+        return true;
+    }
+
     public function getName()
     {
         return self::TERM_ENGINE_TERM_TYPE;
