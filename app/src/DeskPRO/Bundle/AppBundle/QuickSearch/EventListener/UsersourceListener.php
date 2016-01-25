@@ -80,8 +80,7 @@ class UsersourceListener implements EventSubscriberInterface
 
         $person = $this->usersource_manager->findPersonByEmail($request->getQuery());
         if ($person) {
-            $context->ids->add($person->getId());
-            $context->entities->add($person);
+            $context->addEntity($person);
         }
     }
 }

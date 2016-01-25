@@ -149,9 +149,9 @@ class ApiDb extends AbstractDbSet
         $em->persist($article);
         $em->flush();
 
-        $this->getDb()->insert('permissions', array('person_id' => $admin->id, 'name' => 'admin.use', 'value' => 1));
+        $this->getDb()->insert('permissions', ['person_id' => $admin->id, 'name' => 'admin.use', 'value' => 1]);
 
-        $types = array('user', 'agent');
+        $types = ['user', 'agent'];
         foreach ($types as $type) {
             $deskProUsers                = new Usersource();
             $deskProUsers->type          = $type;
@@ -159,7 +159,7 @@ class ApiDb extends AbstractDbSet
             $deskProUsers->is_enabled    = true;
             $deskProUsers->display_order = -10; // ensure #1 order (initially!)
             $deskProUsers->title         = 'DeskPRO';
-            $deskProUsers->options       = array();
+            $deskProUsers->options       = [];
             $this->getEm()->persist($deskProUsers);
         }
 
@@ -270,6 +270,7 @@ class ApiDb extends AbstractDbSet
         $ticket1->agent = $agent1;
         $ticket1->setDepartmentId(1);
         $ticket1->setSubject('Ticket #1');
+        $ticket1->setRef('DIDXGBLWRL-201622485');
         $em->persist($ticket1);
         $ticket2 = new Ticket();
         $ticket2->disableAutoTicketProcess();
@@ -535,6 +536,9 @@ class ApiDb extends AbstractDbSet
             VALUES
                 (NULL, 'Organization 1', 'test organization', 1, '2015-08-03 00:00:00'),
                 (NULL, 'Organization 2', 'test organization', 2, '2015-08-07 00:00:00');
+
+            UPDATE `people` SET organization_id = 1 WHERE id IN (1, 3);
+            UPDATE `people` SET organization_id = 2 WHERE id IN (2, 4);
         "
         );
         // end of "/organizations"
@@ -559,7 +563,7 @@ class ApiDb extends AbstractDbSet
             ;
         "
         );
-        // end of "/organizations"
+        // end of "/agent_teams"
 
         // Default language --------------------------------------------------------------------------------------------
         $this->getDb()->exec(

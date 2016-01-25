@@ -114,7 +114,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
 
         $results = $qb->getQuery()->getScalarResult();
         foreach ($results as $result) {
-            $context->ids->add((int) $result['id']);
+            $context->addId($result['id']);
         }
     }
 
@@ -157,7 +157,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
 
         $results = $qb->getQuery()->getScalarResult();
         foreach ($results as $result) {
-            $context->ids->add($result['id']);
+            $context->addId($result['id']);
         }
     }
 
@@ -225,15 +225,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
         /** @var \Application\DeskPRO\Entity\Person[] $people */
         $people = $qb->getQuery()->getResult();
         foreach ($people as $person) {
-            $context->ids->add($person->getId());
-            $context->entities->add($person);
-
-            $organization = $person->getOrganization();
-            if ($organization) {
-                $organization_context = $context->getResponse()->getContext(QuickSearchContext::TYPE_ORGANIZATION);
-                $organization_context->ids->add($organization->getId());
-                $organization_context->entities->add($organization);
-            }
+            $context->addEntity($person);
         }
     }
 
@@ -253,33 +245,8 @@ class DoctrineSearchListener implements EventSubscriberInterface
         $repository    = $this->em->getRepository('DeskPRO:Organization');
         $organizations = $repository->search($request->getQuery(), 25);
 
-        $ids = [];
         foreach ($organizations as $organization) {
-            $context->ids->add($organization->getId());
-            $context->entities->add($organization);
-
-            $ids[] = $organization->getId();
-        }
-
-        // Fetch users of these organizations too
-        if (!empty($ids)) {
-            $qb = $this->em->createQueryBuilder();
-            $qb
-                ->select('p')
-                ->from('DeskPRO:Person', 'p')
-                ->where('p.organization IN(:ids)')
-                ->orderBy('p.date_last_login', 'desc')
-                ->setMaxResults(100)
-                ->setParameter('ids', $ids)
-            ;
-
-            /** @var \Application\DeskPRO\Entity\Person[] $people */
-            $people = $qb->getQuery()->getResult();
-            foreach ($people as $person) {
-                $person_context = $context->getResponse()->getContext(QuickSearchContext::TYPE_PERSON);
-                $person_context->ids->add($person->getId());
-                $person_context->entities->add($person);
-            }
+            $context->addEntity($organization);
         }
     }
 
@@ -333,7 +300,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
 
         $results = $qb->getQuery()->getScalarResult();
         foreach ($results as $result) {
-            $context->ids->add($result['id']);
+            $context->addId($result['id']);
         }
     }
 

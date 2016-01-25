@@ -104,8 +104,7 @@ class ElasticaSearchListener implements EventSubscriberInterface
 
             $result = $repository->find($request->getQuery(), null, ['sort_type' => $sort]);
             foreach ($result as $entity) {
-                $context->ids->add($entity->getId());
-                $context->entities->add($entity);
+                $context->addEntity($entity);
             }
         } catch (\Exception $e) {
             KernelErrorHandler::logException($e);

@@ -85,14 +85,12 @@ class TicketRefListener implements EventSubscriberInterface
         $ticket     = $repository->findTicketRef($query);
 
         if ($ticket) {
-            $context->ids->add((int) $ticket->getId());
-            $context->entities->add($ticket);
+            $context->addEntity($ticket);
         } elseif (strlen($query) >= 3) {
             $tickets = $repository->searchTicketRef($query);
 
             foreach ($tickets as $ticket) {
-                $context->ids->add((int) $ticket->getId());
-                $context->entities->add($ticket);
+                $context->addEntity($ticket);
             }
         }
     }

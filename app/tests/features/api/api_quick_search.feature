@@ -71,9 +71,10 @@ Feature: Quick Search
     And the JSON node "grouped_results[4].results[0].id" should be equal to 1
     And the JSON node "grouped_results[4].results[0].subject" should be equal to "Test"
     And the JSON node "grouped_results[5].type" should be equal to "person"
-    And the JSON node "grouped_results[5].results" should have 1 element
+    And the JSON node "grouped_results[5].results" should have 2 elements
     And the JSON node "grouped_results[5].results[0].id" should be equal to 1
     And the JSON node "grouped_results[5].results[0].name" should be equal to "Link Admin"
+    And the JSON node "grouped_results[5].results[1].id" should be equal to 3
     And the JSON node "grouped_results[6].type" should be equal to "organization"
     And the JSON node "grouped_results[6].results" should have 1 element
     And the JSON node "grouped_results[6].results[0].id" should be equal to 1
@@ -112,11 +113,14 @@ Feature: Quick Search
     And the JSON node "grouped_results[4].type" should be equal to "ticket"
     And the JSON node "grouped_results[4].results" should have 0 elements
     And the JSON node "grouped_results[5].type" should be equal to "person"
-    And the JSON node "grouped_results[5].results" should have 1 element
+    And the JSON node "grouped_results[5].results" should have 2 elements
     And the JSON node "grouped_results[5].results[0].id" should be equal to 1
     And the JSON node "grouped_results[5].results[0].name" should be equal to "Link Admin"
+    And the JSON node "grouped_results[5].results[1].id" should be equal to 3
     And the JSON node "grouped_results[6].type" should be equal to "organization"
-    And the JSON node "grouped_results[6].results" should have 0 elements
+    And the JSON node "grouped_results[6].results" should have 1 elements
+    And the JSON node "grouped_results[6].results[0].id" should be equal to 1
+    And the JSON node "grouped_results[6].results[0].name" should be equal to "Organization 1"
     And the JSON node "grouped_results[7].type" should be equal to "chat_conversation"
     And the JSON node "grouped_results[7].results" should have 0 elements
 
@@ -134,11 +138,13 @@ Feature: Quick Search
     And the JSON node "grouped_results[4].type" should be equal to "ticket"
     And the JSON node "grouped_results[4].results" should have 0 elements
     And the JSON node "grouped_results[5].type" should be equal to "person"
-    And the JSON node "grouped_results[5].results" should have 1 element
+    And the JSON node "grouped_results[5].results" should have 2 element
     And the JSON node "grouped_results[5].results[0].id" should be equal to 3
     And the JSON node "grouped_results[5].results[0].name" should be equal to "Ganon User"
+    And the JSON node "grouped_results[5].results[1].id" should be equal to 1
     And the JSON node "grouped_results[6].type" should be equal to "organization"
-    And the JSON node "grouped_results[6].results" should have 0 elements
+    And the JSON node "grouped_results[6].results" should have 1 elements
+    And the JSON node "grouped_results[6].results[0].name" should be equal to "Organization 1"
     And the JSON node "grouped_results[7].type" should be equal to "chat_conversation"
     And the JSON node "grouped_results[7].results" should have 0 elements
 
@@ -166,7 +172,9 @@ Feature: Quick Search
     And the JSON node "grouped_results[5].results[1].emails[0]" should be equal to "user@deskpro.dev"
     And the JSON node "grouped_results[5].results[0].emails[0]" should be equal to "deleted-agent@deskpro.dev"
     And the JSON node "grouped_results[6].type" should be equal to "organization"
-    And the JSON node "grouped_results[6].results" should have 0 elements
+    And the JSON node "grouped_results[6].results" should have 2 elements
+    And the JSON node "grouped_results[6].results[0].name" should be equal to "Organization 2"
+    And the JSON node "grouped_results[6].results[1].name" should be equal to "Organization 1"
     And the JSON node "grouped_results[7].type" should be equal to "chat_conversation"
     And the JSON node "grouped_results[7].results" should have 0 elements
 
@@ -192,10 +200,12 @@ Feature: Quick Search
     And the JSON node "grouped_results[4].type" should be equal to "ticket"
     And the JSON node "grouped_results[4].results" should have 0 elements
     And the JSON node "grouped_results[5].type" should be equal to "person"
-    And the JSON node "grouped_results[5].results" should have 1 element
+    And the JSON node "grouped_results[5].results" should have 2 element
     And the JSON node "grouped_results[5].results[0].emails[0]" should be equal to "agent@deskpro.dev"
+    And the JSON node "grouped_results[5].results[1].emails[0]" should be equal to "deleted-agent@deskpro.dev"
     And the JSON node "grouped_results[6].type" should be equal to "organization"
-    And the JSON node "grouped_results[6].results" should have 0 elements
+    And the JSON node "grouped_results[6].results" should have 1 element
+    And the JSON node "grouped_results[6].results[0].name" should be equal to "Organization 2"
     And the JSON node "grouped_results[7].type" should be equal to "chat_conversation"
     And the JSON node "grouped_results[7].results" should have 0 elements
 
@@ -362,7 +372,9 @@ Feature: Quick Search
     And the JSON node "grouped_results[4].type" should be equal to "ticket"
     And the JSON node "grouped_results[4].results" should have 0 elements
     And the JSON node "grouped_results[5].type" should be equal to "person"
-    And the JSON node "grouped_results[5].results" should have 0 elements
+    And the JSON node "grouped_results[5].results" should have 2 elements
+    And the JSON node "grouped_results[5].results[0].id" should be equal to 1
+    And the JSON node "grouped_results[5].results[1].id" should be equal to 3
     And the JSON node "grouped_results[6].type" should be equal to "organization"
     And the JSON node "grouped_results[6].results" should have 1 elements
     And the JSON node "grouped_results[6].results[0].name" should be equal to "Organization 1"

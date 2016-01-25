@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
 
+use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchContext;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvent;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvents;
 use Doctrine\ORM\EntityManager;
@@ -62,7 +63,11 @@ class LoadListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            QuickSearchEvents::POST_SEARCH => ['onLoadEntities', 1000], // Load entities before permission check
+            QuickSearchEvents::POST_SEARCH => [
+                ['onLoadEntities', 1000], // Load entities before permission check
+                ['onLoadPeopleOrganizations', 999],
+                ['onLoadOrganizationsPeople', 998],
+            ],
         ];
     }
 
@@ -72,18 +77,76 @@ class LoadListener implements EventSubscriberInterface
     public function onLoadEntities(QuickSearchEvent $event)
     {
         $context = $event->getContext();
+        $ids     = $context->getDeferredIds();
 
-        $all_ids    = $context->ids->toArray();
-        $loaded_ids = $context->entities->map(function ($entity) { return $entity->getId(); })->toArray();
-        $require_ids = array_diff($all_ids, $loaded_ids);
-
-        if (empty($require_ids)) {
+        if (empty($ids)) {
             return;
         }
 
-        $entities = $this->em->getRepository($context->getEntityName())->findBy(['id' => $require_ids]);
+        $entities = $this->em->getRepository($context->getEntityName())->findBy(['id' => $ids]);
         foreach ($entities as $entity) {
-            $context->entities->add($entity);
+            $context->addEntity($entity);
+        }
+    }
+
+    /**
+     * @param QuickSearchEvent $event
+     */
+    public function onLoadPeopleOrganizations(QuickSearchEvent $event)
+    {
+        $context = $event->getContext();
+        if (!$context->isPerson()) {
+            return;
+        }
+
+        /** @var \Application\DeskPRO\Entity\Person $people */
+        $people = $context->getEntities();
+        foreach ($people as $person) {
+            $organization = $person->getOrganization();
+            if ($organization) {
+                $organization_context = $context->getResponse()->getContext(QuickSearchContext::TYPE_ORGANIZATION);
+                $organization_context->addEntity($organization);
+            }
+        }
+    }
+
+    /**
+     * @param QuickSearchEvent $event
+     */
+    public function onLoadOrganizationsPeople(QuickSearchEvent $event)
+    {
+        $context = $event->getContext();
+        if (!$context->isOrganization()) {
+            return;
+        }
+
+        /** @var \Application\DeskPRO\Entity\Organization $organizations */
+        $organizations = $context->getEntities();
+
+        $ids = [];
+        foreach ($organizations as $organization) {
+            $context->addEntity($organization);
+            $ids[] = $organization->getId();
+        }
+
+        // Fetch users of these organizations too
+        if (!empty($ids)) {
+            $qb = $this->em->createQueryBuilder();
+            $qb
+                ->select('p')
+                ->from('DeskPRO:Person', 'p')
+                ->where('p.organization IN(:ids)')
+                ->orderBy('p.date_last_login', 'desc')
+                ->setMaxResults(100)
+                ->setParameter('ids', $ids)
+            ;
+
+            /** @var \Application\DeskPRO\Entity\Person[] $people */
+            $people = $qb->getQuery()->getResult();
+            foreach ($people as $person) {
+                $person_context = $context->getResponse()->getContext(QuickSearchContext::TYPE_PERSON);
+                $person_context->addEntity($person);
+            }
         }
     }
 }

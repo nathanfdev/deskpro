@@ -63,7 +63,7 @@ class QueryListener implements EventSubscriberInterface
         $request = $event->getRequest();
 
         if ($request->isId()) {
-            $context->ids->add((int) $request->getQuery());
+            $context->addId($request->getQuery());
         }
     }
 
@@ -81,7 +81,7 @@ class QueryListener implements EventSubscriberInterface
 
         $info = Ticket::decodeAccessCode($request->getQuery());
         if (!empty($info['ticket_id'])) {
-            $context->ids->add((int) $info['ticket_id']);
+            $context->addId($info['ticket_id']);
         }
     }
 }

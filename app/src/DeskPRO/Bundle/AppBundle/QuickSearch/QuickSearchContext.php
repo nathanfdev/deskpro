@@ -60,12 +60,12 @@ class QuickSearchContext
     /**
      * @var ArrayCollection
      */
-    public $ids;
+    private $ids;
 
     /**
      * @var array
      */
-    public $entities;
+    private $entities;
 
     /**
      * Constructor.
@@ -127,6 +127,70 @@ class QuickSearchContext
     public function isOrganization()
     {
         return $this->getType() === self::TYPE_ORGANIZATION;
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return $this
+     */
+    public function addId($id)
+    {
+        $id = (int) $id;
+        if ($id && !$this->ids->contains($id)) {
+            $this->ids->add($id);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDeferredIds()
+    {
+        $all_ids    = $this->ids->toArray();
+        $loaded_ids = $this->entities->map(function ($entity) { return $entity->getId(); })->toArray();
+
+        return array_diff($all_ids, $loaded_ids);
+    }
+
+    /**
+     * @param mixed $entity
+     *
+     * @return $this
+     */
+    public function addEntity($entity)
+    {
+        if (!$this->entities->contains($entity)) {
+            $this->entities->add($entity);
+            $this->addId($entity->getId());
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param mixed $entity
+     *
+     * @return $this
+     */
+    public function removeEntity($entity)
+    {
+        if ($this->entities->contains($entity)) {
+            $this->entities->removeElement($entity);
+            $this->entities = new ArrayCollection($this->entities->getValues());
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getEntities()
+    {
+        return $this->entities->toArray();
     }
 
     /**
