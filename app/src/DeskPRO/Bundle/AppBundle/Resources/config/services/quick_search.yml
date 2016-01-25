@@ -28,7 +28,7 @@ services:
       - { name: quick_search.event_subscriber }
 
   quick_search.listener.elastica_search:
-    class: DeskPRO\Bundle\AppBundle\QuickSearch\EventListener\ElasticaSearchListener
+    class: DeskPRO\Bundle\AppBundle\QuickSearch\EventListener\ElasticSearchListener
     arguments:
       - @fos_elastica.manager
       - @settings_resolver

@@ -42,12 +42,12 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 /**
  * Class ElasticaSearchListener.
  */
-class ElasticaSearchListener implements EventSubscriberInterface
+class ElasticSearchListener implements EventSubscriberInterface
 {
     /**
      * @var RepositoryManager
      */
-    private $elastica_manager;
+    private $elastic_manager;
 
     /**
      * @var SettingsResolver
@@ -57,12 +57,12 @@ class ElasticaSearchListener implements EventSubscriberInterface
     /**
      * Constructor.
      *
-     * @param RepositoryManager $elastica_manager
+     * @param RepositoryManager $elastic_manager
      * @param SettingsResolver  $settings_resolver
      */
-    public function __construct(RepositoryManager $elastica_manager, SettingsResolver $settings_resolver)
+    public function __construct(RepositoryManager $elastic_manager, SettingsResolver $settings_resolver)
     {
-        $this->elastica_manager  = $elastica_manager;
+        $this->elastic_manager   = $elastic_manager;
         $this->settings_resolver = $settings_resolver;
     }
 
@@ -92,7 +92,7 @@ class ElasticaSearchListener implements EventSubscriberInterface
 
         try {
             /** @var Repository $repository */
-            $repository = $this->elastica_manager->getRepository($context->getEntityName());
+            $repository = $this->elastic_manager->getRepository($context->getEntityName());
             if (method_exists($repository, 'setPersonContext')) {
                 $repository->setPersonContext($request->getPerson());
             }

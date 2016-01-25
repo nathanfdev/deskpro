@@ -37,12 +37,12 @@ namespace DeskPRO\Bundle\AppBundle\QuickSearch;
 final class QuickSearchEvents
 {
     /**
-     * Collects entities and entity ids from request query string or external sources (db, elastica search).
+     * Collects entities and entity ids from request query string or external sources (db, elastic search).
      */
     const SEARCH = 'quick_search.search';
 
     /**
-     * Fallback event if elastica search is disabled or some error was happened.
+     * Fallback event if elastic search is disabled or some error was happened.
      */
     const SEARCH_FALLBACK = 'quick_search.search_fallback';
 
