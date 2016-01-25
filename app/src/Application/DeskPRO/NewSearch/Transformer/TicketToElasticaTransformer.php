@@ -80,8 +80,6 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
             $document->set('labels', $labels);
         }
 
-        $document->set('labels', $labels);
-
         $messages = array();
         foreach ($object->getMessages() as $message) {
             $messages[] = $message->getMessage();
