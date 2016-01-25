@@ -455,14 +455,14 @@ class PersonController extends AbstractController implements ProtectedController
         $person = new Person();
         $errors = array();
 
-        if ($name = $this->in->getString('name')) {
-            $person->name = $name;
+        if ($this->in->checkIsset('name')) {
+            $person->name = $this->in->getString('name');
         }
-        if ($fname = $this->in->getString('first_name')) {
-            $person->first_name = $fname;
+        if ($this->in->checkIsset('first_name')) {
+            $person->first_name = $this->in->getString('first_name');
         }
-        if ($lname = $this->in->getString('last_name')) {
-            $person->last_name = $lname;
+        if ($this->in->checkIsset('last_name')) {
+            $person->last_name = $this->in->getString('last_name');
         }
 
         $updates = $this->_setBasicPersonDetailsFromInput($person);
