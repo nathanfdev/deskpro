@@ -151,7 +151,7 @@ class LayoutFieldCriteria implements \Serializable, \Countable
         if ($this->mode == self::CRIT_ANY) {
             $js .= 'if (checkFn[i](ticket)) return true;';
         } else {
-            $js .= 'if (!checkFn[i](ticket)) return true;';
+            $js .= 'if (!checkFn[i](ticket)) return false;';
         }
         $js .= " }\n";
 
