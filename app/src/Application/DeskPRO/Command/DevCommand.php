@@ -276,7 +276,7 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
                 }
 
                 if ($orig !== $build_file) {
-                    file_put_contents(DP_ROOT.$info['file'], $build_file);
+                    file_put_contents(DP_ROOT.$info['file'], $build_file."\n");
                 }
             } else {
                 echo "{$info['file']} contains an invlaid build definition.";
