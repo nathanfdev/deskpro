@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Data\MassActions;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -38,8 +39,6 @@ interface MassActionsPreprocessorInterface
     public function prepareActions();
 
     public function selectEntities();
-
-    public function prepareEntity($entity);
 
     public function configureOptions(OptionsResolver $resolver);
 }

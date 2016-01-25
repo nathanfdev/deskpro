@@ -30,39 +30,24 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\Data\MassActions;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\FeedbackComment;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection;
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Application\DeskPRO\Entity\FeedbackComment;
+use DeskPRO\Bundle\AppBundle\ActionEngine\ActionInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 
-abstract class AbstractMassActionsPreprocessor
+class DeleteAction extends AbstractAction implements ActionInterface
 {
-    protected $em;
-    protected static $entity;
-    protected $params;
-    protected $actions;
-
-    public function __construct(EntityManager $em, array $params)
+    public function init()
     {
-        $this->em = $em;
-        $resolver = new OptionsResolver();
-        $this->configureOptions($resolver);
-
-        $this->options = $resolver->resolve($params['actions']);
-        $this->params  = $params;
-        $this->actions = new ActionCollection();
+        return true;
     }
 
-    public function selectEntities()
+    /**
+     * @param FeedbackComment $comment
+     */
+    public function run($comment)
     {
-        $qb = $this->em->createQueryBuilder();
-        $qb
-            ->select('entity')
-            ->from(static::$entity, 'entity')
-            ->where('entity.id IN (:ids)')
-            ->setParameter('ids', $this->params['ids']);
-
-        return $qb->getQuery()->getResult();
+        $comment->setStatus(FeedbackComment::STATUS_DELETED);
     }
 }

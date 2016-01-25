@@ -36,7 +36,7 @@ export class MassActionContainer extends Component {
             params: {
               ids: selected,
               content: content,
-              actions: { delete: true }
+              actions: { delete: [] }
             },
             loadIndicatorAction: loadIndicator,
             reloadListAction: applyParams,
@@ -51,7 +51,7 @@ export class MassActionContainer extends Component {
             params: {
               ids: selected,
               content: content,
-              actions: { approve: true }
+              actions: { approve: [] }
             },
             loadIndicatorAction: loadIndicator,
             reloadListAction: applyParams,

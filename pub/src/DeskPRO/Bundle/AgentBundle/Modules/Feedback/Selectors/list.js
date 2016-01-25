@@ -142,7 +142,8 @@ export const massActionsSelector = createSelector(
     massActions.push({
       label: 'Type',
       type: 'action',
-      param: 'category',
+      param: 'type',
+      field: 'id',
       quickFilter: true,
       options: typeOptions
     });
@@ -160,7 +161,7 @@ export const massActionsSelector = createSelector(
       { label: 'Hidden', value: 'hidden', nested: toStatusOptions(statuses.hidden.nested, 'hidden_status') }
     ];
     massActions.push({
-      label: 'Status', type: 'action', param: 'status', quickFilter: true,
+      label: 'Status', type: 'action', field: 'id', param: 'status', quickFilter: true,
       options: statusOptions
     });
 
@@ -170,7 +171,7 @@ export const massActionsSelector = createSelector(
       value: cat.get('input')
     }));
     massActions.push({
-      label: 'Category', type: 'action', param: 'custom_category', quickFilter: true,
+      label: 'Category', type: 'action', param: 'category', field: 'input', quickFilter: true,
       options: categoryOptions
     });
 
