@@ -31,7 +31,6 @@
  */
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
 
-use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchContext;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvent;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvents;
 use Doctrine\ORM\EntityManager;
@@ -73,12 +72,9 @@ class TicketRefListener implements EventSubscriberInterface
     public function onSearch(QuickSearchEvent $event)
     {
         $context = $event->getContext();
-        if ($context->getType() !== QuickSearchContext::TYPE_TICKET) {
-            return;
-        }
-
         $request = $event->getRequest();
-        if (!$request->isTicketRef()) {
+
+        if (!$context->isTicket() || !$request->isTicketRef()) {
             return;
         }
 

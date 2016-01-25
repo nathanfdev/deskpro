@@ -32,7 +32,6 @@
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
 
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchContext;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvent;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -76,7 +75,7 @@ class QueryListener implements EventSubscriberInterface
         $context = $event->getContext();
         $request = $event->getRequest();
 
-        if ($context->getType() !== QuickSearchContext::TYPE_TICKET) {
+        if (!$context->isTicket()) {
             return;
         }
 

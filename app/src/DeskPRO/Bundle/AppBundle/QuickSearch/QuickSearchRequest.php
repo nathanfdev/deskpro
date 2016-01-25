@@ -103,7 +103,7 @@ class QuickSearchRequest
     /**
      * @return bool
      */
-    public function isEmail()
+    public function isValidEmail()
     {
         return StringEmail::isValueValid($this->query);
     }

@@ -87,17 +87,10 @@ class DoctrineSearchListener implements EventSubscriberInterface
     public function onSearchTicketSubjects(QuickSearchEvent $event)
     {
         $context = $event->getContext();
-        if ($context->getType() !== QuickSearchContext::TYPE_TICKET) {
-            return;
-        }
-
         $request = $event->getRequest();
         $words   = $request->getWords();
 
-        if (empty($words)) {
-            return;
-        }
-        if ($request->isLabel()) {
+        if (!$context->isTicket() || empty($words) || $request->isLabel()) {
             return;
         }
 
@@ -138,17 +131,10 @@ class DoctrineSearchListener implements EventSubscriberInterface
         ];
 
         $context = $event->getContext();
-        if (!in_array($context->getType(), $types)) {
-            return;
-        }
-
         $request = $event->getRequest();
         $words   = $request->getWords();
 
-        if (empty($words)) {
-            return;
-        }
-        if ($request->isLabel()) {
+        if (!in_array($context->getType(), $types) || empty($words) || $request->isLabel()) {
             return;
         }
 
@@ -181,16 +167,10 @@ class DoctrineSearchListener implements EventSubscriberInterface
     public function onSearchPeople(QuickSearchEvent $event)
     {
         $context = $event->getContext();
-        if ($context->getType() !== QuickSearchContext::TYPE_PERSON) {
-            return;
-        }
-
         $request = $event->getRequest();
-        if ($request->isEmail()) {
-            // Use usersource listener for valid emails
-            return;
-        }
-        if ($request->isLabel()) {
+
+        // Use usersource listener for valid emails
+        if (!$context->isPerson() || $request->isValidEmail() || $request->isLabel()) {
             return;
         }
 
@@ -265,12 +245,9 @@ class DoctrineSearchListener implements EventSubscriberInterface
     public function onSearchOrganizations(QuickSearchEvent $event)
     {
         $context = $event->getContext();
-        if ($context->getType() !== QuickSearchContext::TYPE_ORGANIZATION) {
-            return;
-        }
-
         $request = $event->getRequest();
-        if ($request->isLabel()) {
+
+        if (!$context->isOrganization() || $request->isLabel()) {
             return;
         }
 
@@ -324,12 +301,9 @@ class DoctrineSearchListener implements EventSubscriberInterface
         ];
 
         $context = $event->getContext();
-        if (!in_array($context->getType(), $types)) {
-            return;
-        }
-
         $request = $event->getRequest();
-        if (!$request->isLabel()) {
+
+        if (!in_array($context->getType(), $types) || !$request->isLabel()) {
             return;
         }
 

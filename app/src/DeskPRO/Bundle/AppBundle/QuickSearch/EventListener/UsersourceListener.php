@@ -32,7 +32,6 @@
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
 
 use Application\DeskPRO\Usersource\UsersourceManager;
-use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchContext;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvent;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -73,12 +72,9 @@ class UsersourceListener implements EventSubscriberInterface
     public function onSearch(QuickSearchEvent $event)
     {
         $context = $event->getContext();
-        if ($context->getType() !== QuickSearchContext::TYPE_PERSON) {
-            return;
-        }
-
         $request = $event->getRequest();
-        if (!$request->isEmail()) {
+
+        if (!$context->isPerson() || !$request->isValidEmail()) {
             return;
         }
 

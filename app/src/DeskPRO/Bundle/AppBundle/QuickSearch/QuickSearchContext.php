@@ -106,6 +106,30 @@ class QuickSearchContext
     }
 
     /**
+     * @return bool
+     */
+    public function isTicket()
+    {
+        return $this->getType() === self::TYPE_TICKET;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPerson()
+    {
+        return $this->getType() === self::TYPE_PERSON;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOrganization()
+    {
+        return $this->getType() === self::TYPE_ORGANIZATION;
+    }
+
+    /**
      * @return array
      */
     public static function getDoctrineMapping()

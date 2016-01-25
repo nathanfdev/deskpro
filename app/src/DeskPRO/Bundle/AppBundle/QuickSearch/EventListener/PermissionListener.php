@@ -32,7 +32,6 @@
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
 
 use Application\DeskPRO\People\PermissionChecker\TicketChecker;
-use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchContext;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvent;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvents;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -61,7 +60,7 @@ class PermissionListener implements EventSubscriberInterface
         $context = $event->getContext();
         $request = $event->getRequest();
 
-        if ($context->getType() !== QuickSearchContext::TYPE_TICKET) {
+        if (!$context->isTicket()) {
             return;
         }
 
