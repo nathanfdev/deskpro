@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "16a6bc08cb678471246b670cf6648afa",
-    "content-hash": "8be1c977c789a0b865d3a8fc696cbe93",
+    "hash": "89409177dfd211eae20777022e1a10e3",
+    "content-hash": "e21f0ca57af971c2fab9789ac74610ad",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -2063,22 +2063,22 @@
         },
         {
             "name": "friendsofsymfony/elastica-bundle",
-            "version": "3.0.x-dev",
+            "version": "3.1.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfSymfony/FOSElasticaBundle.git",
-                "reference": "30f38ba57a5e9f2019a626426ab009ba3ba19797"
+                "reference": "19ca605228c3baabd4e57f120528e3571c9d7647"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSElasticaBundle/zipball/30f38ba57a5e9f2019a626426ab009ba3ba19797",
-                "reference": "30f38ba57a5e9f2019a626426ab009ba3ba19797",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSElasticaBundle/zipball/19ca605228c3baabd4e57f120528e3571c9d7647",
+                "reference": "19ca605228c3baabd4e57f120528e3571c9d7647",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.2",
                 "psr/log": "~1.0",
-                "ruflin/elastica": "~2.1,<2.3",
+                "ruflin/elastica": "~2.1",
                 "symfony/console": "~2.1",
                 "symfony/form": "~2.1",
                 "symfony/framework-bundle": "~2.3",
@@ -2086,29 +2086,21 @@
             },
             "require-dev": {
                 "doctrine/doctrine-bundle": "~1.2",
-                "doctrine/orm": "~2.2",
+                "doctrine/orm": "~2.4",
                 "jms/serializer-bundle": "@stable",
                 "knplabs/knp-components": "~1.2",
                 "knplabs/knp-paginator-bundle": "~2.4",
-                "pagerfanta/pagerfanta": "1.0.*",
+                "pagerfanta/pagerfanta": "~1.0",
                 "phpunit/phpunit": "~4.1",
                 "propel/propel1": "1.6.*",
                 "symfony/browser-kit": "~2.3",
                 "symfony/expression-language": "~2.4",
                 "symfony/twig-bundle": "~2.3"
             },
-            "suggest": {
-                "doctrine/mongodb-odm": "1.0.*",
-                "doctrine/orm": "~2.2",
-                "knplabs/knp-components": "~1.2",
-                "pagerfanta/pagerfanta": "1.0.*",
-                "propel/propel1": "1.6.*",
-                "symfony/expression-language": "~2.4"
-            },
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.0.x-dev"
+                    "dev-master": "3.1.x-dev"
                 }
             },
             "autoload": {
@@ -2148,7 +2140,7 @@
                 "propel",
                 "search"
             ],
-            "time": "2015-09-17 09:09:43"
+            "time": "2016-01-07 04:54:39"
         },
         {
             "name": "friendsofsymfony/http-cache",
@@ -4193,7 +4185,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/5a9e0b2a16d8ed4f8e81eb19cad7b18e2455e26e",
+                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/f6d28fb8601d0733fa4da7a29c82d075b9ab4dfe",
                 "reference": "d670d64a389666cc8bf108bc51aef8c467db19a5",
                 "shasum": ""
             },
@@ -5676,7 +5668,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/satooshi/php-coveralls/zipball/f2fe833caef2c65620c11f5fabe60040df39339f",
+                "url": "https://api.github.com/repos/satooshi/php-coveralls/zipball/2fbf803803d179ab1082807308a67bbd5a760c70",
                 "reference": "2fbf803803d179ab1082807308a67bbd5a760c70",
                 "shasum": ""
             },
@@ -6216,7 +6208,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/BehatPageObjectExtension/zipball/8bd989e9ba334bdc7a5c8c7f5614c2aa1a1d84e6",
+                "url": "https://api.github.com/repos/sensiolabs/BehatPageObjectExtension/zipball/faf0a08d55cb8179fb66317fc8f66a9896be0332",
                 "reference": "e4e615fd016d595b6f34fbe3fb03c54c577b89e0",
                 "shasum": ""
             },
@@ -7589,7 +7581,6 @@
         "satooshi/php-coveralls": 20,
         "deskpro/deskpro-api-php": 20,
         "zircote/swagger-php": 20,
-        "friendsofsymfony/elastica-bundle": 20,
         "onelogin/php-saml": 20,
         "google/apiclient": 20,
         "zendesk/zendesk_api_client_php": 20,
