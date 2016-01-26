@@ -41,6 +41,7 @@ use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use Orb\Util\Strings;
 
 class PortalIconFactory
 {
@@ -143,14 +144,14 @@ class PortalIconFactory
     {
         // allow download entities to be passed directly
         if ($blob instanceof Download) {
-            $blob = $blob->getBlob();
-        }
+            $extension = Strings::getExtension($blob->getFileName());
+        } else {
+            if (!$blob instanceof Blob) {
+                throw new \InvalidArgumentException('can only make a file icon for a blob');
+            }
 
-        if (!$blob instanceof Blob) {
-            throw new \InvalidArgumentException('can only make a file icon for a blob');
+            $extension = $blob->getExtension();
         }
-
-        $extension = $blob->getExtension();
 
         if ($fa = $this->getFontAwesomeCssClassForFileExtension($extension)) {
             $style_bit = '';
