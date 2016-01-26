@@ -9,6 +9,8 @@ export class DragOverlayListener extends React.Component {
       PropTypes.arrayOf(PropTypes.object)
     ]),
     children: PropTypes.any,
+
+    // todo temp to make fine-uploader works
     dropNode: PropTypes.string
   };
 

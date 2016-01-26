@@ -18,7 +18,10 @@ export class DropZone extends React.Component {
     onSend: PropTypes.func,
     onSuccess: PropTypes.func,
     onFail: PropTypes.func,
-    children: PropTypes.node
+    children: PropTypes.node,
+
+    // todo temp to make fine-uploader works
+    dropNode: PropTypes.string
   };
 
   componentDidMount() {
@@ -118,11 +121,11 @@ export class DropZone extends React.Component {
   }
 
   render() {
-    const { context, children } = this.props;
+    const { context, children, dropNode } = this.props;
 
     return (
       <div>
-        <DragOverlayListener context={context}>
+        <DragOverlayListener context={context} dropNode={dropNode}>
           {children}
         </DragOverlayListener>
         <PasteCatcher ref="pasteCatcher" />
