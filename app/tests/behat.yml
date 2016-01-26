@@ -17,6 +17,7 @@ api:
                 - DpBehat\Api\PeopleContext
                 - DpBehat\PermissionContext
                 - DpBehat\Portal\GenericContext
+                - DpBehat\ElasticContext
     extensions:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:
