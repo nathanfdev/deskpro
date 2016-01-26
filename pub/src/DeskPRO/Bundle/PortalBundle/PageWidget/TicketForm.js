@@ -79,6 +79,7 @@ export default class TicketForm extends PageWidget {
       if (_.includes(theFields, 'attachments')) {
         theFields.push('attach');
       }
+
       const displayedFields = theFields.filter(field => !_.includes(['displayed_fields', 'attachments', 'more_attachments'], field)).join(',');
       const $df = $formEl.find("[data-field='displayed_fields']").find('input[type="hidden"]');
 

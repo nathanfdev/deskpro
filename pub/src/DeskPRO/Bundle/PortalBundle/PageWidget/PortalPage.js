@@ -22,7 +22,9 @@ import Attachment from './Common/Attachment';
 import $ from 'jquery';
 
 export default class PortalPage extends PageWidget {
+
   init() {
+    this.addWidgetDef(PortalFormWidget, '.dpx-form');
     this.addWidgetDef(OmniSearchWidget, '#omnisearch');
     this.addWidgetDef(LoginDropdownWidget, '#top-login-btn');
     this.addWidgetDef(LanguageChangerWidget, '#language-changer');
@@ -37,7 +39,6 @@ export default class PortalPage extends PageWidget {
     this.addWidgetDef(ClickAwayDropdownWidget, '.clickaway-dropdown');
     this.addWidgetDef(ClickToDismissWidget, '.click-to-dismiss');
     this.addWidgetDef(AgentBarWidget, '#agent-bar');
-    this.addWidgetDef(PortalFormWidget, '.dpx-form');
     this.addWidgetDef(ArticleHighlighter, '.dpx-kb-article-content');
     this.addWidgetDef(MobileMenuWidget, '.dpx-toggle-big-buttons');
     this.addWidgetDef(LoginPage, '#login-page');
