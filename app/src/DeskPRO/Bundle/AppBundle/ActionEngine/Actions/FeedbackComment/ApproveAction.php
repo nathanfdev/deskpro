@@ -50,4 +50,10 @@ class ApproveAction extends AbstractAction implements ActionInterface
     {
         $comment->setStatus(FeedbackComment::STATUS_VISIBLE);
     }
+
+    /** @return array */
+    public function getSerialized()
+    {
+        return [self::APPROVE_ACTION => []];
+    }
 }

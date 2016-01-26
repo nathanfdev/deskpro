@@ -54,6 +54,8 @@ abstract class AbstractMassActionsPreprocessor
         $this->actions = new ActionCollection();
     }
 
+    abstract public function configureOptions(OptionsResolver $resolver);
+
     public function selectEntities()
     {
         $qb = $this->em->createQueryBuilder();

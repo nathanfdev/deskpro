@@ -75,4 +75,10 @@ class SetCategoryAction extends AbstractAction implements ActionInterface, Actio
         $customCategory->setField($this->customDef);
         $feedback->addCustomData($customCategory);
     }
+
+    /** @return array */
+    public function getSerialized()
+    {
+        return [self::SET_CATEGORY_ACTION => ['input' => $this->options['input']]];
+    }
 }

@@ -35,8 +35,16 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class AbstractAction
+abstract class AbstractAction
 {
+    const APPROVE_ACTION             = 'approve';
+    const DELETE_ACTION              = 'delete';
+    const SET_STATUS_CATEGORY_ACTION = 'status_category';
+    const SET_TYPE_ACTION            = 'type';
+    const SET_CATEGORY_ACTION        = 'category';
+    const ADD_LABELS_ACTION          = 'add_labels';
+    const REMOVE_LABELS_ACTION       = 'remove_labels';
+
     protected $em;
     protected $options;
 
@@ -51,4 +59,6 @@ class AbstractAction
         }
         $this->init();
     }
+
+    abstract public function init();
 }

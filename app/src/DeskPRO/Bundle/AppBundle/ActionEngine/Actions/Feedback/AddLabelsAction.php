@@ -59,4 +59,10 @@ class AddLabelsAction extends AbstractAction implements ActionInterface, ActionW
             $feedback->addLabelByString($string);
         }
     }
+
+    /** @return array */
+    public function getSerialized()
+    {
+        return [self::ADD_LABELS_ACTION => ['labels' => $this->options['labels']]];
+    }
 }

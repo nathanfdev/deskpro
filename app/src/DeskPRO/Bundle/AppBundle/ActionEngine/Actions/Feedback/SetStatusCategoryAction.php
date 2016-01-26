@@ -58,8 +58,8 @@ class SetStatusCategoryAction extends AbstractAction implements ActionInterface,
      */
     public function init()
     {
-        $value                = $this->options['id'];
-        $this->statusCategory = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->find($value);
+        $id                   = $this->options['id'];
+        $this->statusCategory = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->find($id);
     }
 
     /**
@@ -67,7 +67,12 @@ class SetStatusCategoryAction extends AbstractAction implements ActionInterface,
      */
     public function run($feedback)
     {
-        echo $this->statusCategory->getTitle();
         $feedback->setStatusCategory($this->statusCategory);
+    }
+
+    /** @return array */
+    public function getSerialized()
+    {
+        return [self::SET_STATUS_CATEGORY_ACTION => ['id' => $this->options['id']]];
     }
 }
