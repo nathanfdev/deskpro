@@ -28,7 +28,6 @@
 
 namespace Application\DeskPRO\Twig;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Templating\GlobalVariablesInterface;
 use Symfony\Bridge\Twig\AppVariable as BaseAppVariable;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -62,11 +61,6 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
     public function __isset($name)
     {
         return call_user_func_array(array($this->container->get('templating.globals'), '__isset'), [$name]);
-    }
-
-    public function getUser()
-    {
-        return App::getCurrentPerson();
     }
 
     public function setVariable($name, $value)

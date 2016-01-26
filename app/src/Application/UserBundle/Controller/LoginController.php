@@ -44,6 +44,7 @@ use Application\DeskPRO\Service\CheckWhitelistedIP;
 use Application\DeskPRO\Service\RateLimit;
 use Application\DeskPRO\Settings\LoginRateLimitSettings;
 use Application\DeskPRO\Translate\SystemLanguage;
+use Application\DeskPRO\Twig\AppVariable;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Orb\Auth\Adapter\SamlAdapterInterface;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
@@ -94,6 +95,22 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
         $this->usersource_manager = $this->container->getSystemService('usersource_manager');
 
         $GLOBALS['DP_SET_SKIP_CACHE'] = true;
+    }
+
+    /**
+     * @return AppVariable
+     */
+    protected function getTplGlobals()
+    {
+        /** @var \DeskPRO\Bundle\PortalBundle\Twig\Environment $twig */
+        $twig = $this->get('twig');
+        foreach ($twig->getGlobals() as $k => $v) {
+            if ($v instanceof AppVariable) {
+                return $v;
+            }
+        }
+
+        throw new \RuntimeException('No AppVariable in twig.');
     }
 
     protected function loginViaToken()
@@ -194,7 +211,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
         }
 
         $register    = new \Application\UserBundle\Form\Model\Register();
-        $tpl_globals = $this->container->get('templating.globals');
+        $tpl_globals = $this->getTplGlobals();
         if ($tpl_globals->getVariable('login_with_email')) {
             $register->email = $tpl_globals->getVariable('login_with_email');
         }
@@ -895,7 +912,7 @@ HTML;
 
         $register = new \Application\UserBundle\Form\Model\Register();
 
-        $tpl_globals = $this->container->get('templating.globals');
+        $tpl_globals = $this->getTplGlobals();
         if ($tpl_globals->getVariable('login_with_email')) {
             $register->email = $tpl_globals->getVariable('login_with_email');
         }

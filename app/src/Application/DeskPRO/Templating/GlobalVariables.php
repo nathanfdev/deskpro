@@ -59,14 +59,17 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
         return isset($this->variables[$name]) ? $this->variables[$name] : null;
     }
 
-    public function getUser()
-    {
-        return App::getCurrentPerson();
-    }
-
     public function getSetting($name)
     {
-        return App::getSetting($name);
+        // be caerful, not all kernels have a brand stack (only portal)
+        if ($this->container->has('brand_stack')) {
+            if ($brand = $this->container->get('brand_stack')->getActive()) {
+                return $brand->getSetting($name, $default);
+            }
+        }
+
+        // default to globals for others
+        return $this->container->get('settings_resolver')->getGlobalSettings()->get($name, $default);
     }
 
     public function getSettingDefaultGroup($id)
@@ -91,45 +94,12 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
 
     public function getSettingGroup($group)
     {
-        $group_vars = App::get('deskpro.core.settings')->getGroup($group);
-
-        if ($group == 'user_style') {
-            if (defined('DPC_IS_CLOUD')) {
-                // Always use https cloud.deskpro.com for css,
-                // it'll always work regardless of how you mess with URLs and ssl certs
-                $group_vars['static_path'] = 'https://cloud.deskpro.com/web'.DPC_SITE_BUILD_NUM;
-            } else {
-                // External blob storage means we need ot use a full URL for assets
-                if (!App::getConfig('static_path') && App::getContainer()->getBlobStorage()->getPreferredAdapterId() == 's3') {
-                    $url = App::getSetting('core.deskpro_url');
-                    $url = str_replace('index.php', '', $url);
-                    $url = trim($url, '/');
-
-                    $group_vars['static_path'] = $url.'/web';
-                } else {
-                    // A custom defined static URL
-                    if (App::getConfig('static_path')) {
-                        $group_vars['static_path'] = rtrim(App::getConfig('static_path'), '/');
-
-                    // Default static path relative to current
-                    } else {
-                        $group_vars['static_path'] = rtrim('../..'.(App::getConfig('static_path') ?: '/web/'), '/');
-                    }
-                }
-            }
-        }
-
-        return $group_vars;
+        return [];
     }
 
     public function getConfig($name, $default = null)
     {
         return App::getConfig($name, $default);
-    }
-
-    public function getSession()
-    {
-        return App::getSession();
     }
 
     public function getLanguage()
@@ -139,7 +109,7 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
 
     public function isDebug()
     {
-        return $this->container->isDebug();
+        return $this->getDebug();
     }
 
     public function isTesting()
@@ -162,7 +132,7 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
 
     public function getLogoBlob()
     {
-        return App::getSystemService('logo_blob');
+        return;
     }
 
     public function getUsersourceManager()
@@ -367,7 +337,7 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
 
     public function isAppAllowed($name)
     {
-        $person = App::getSession()->getPerson();
+        $person = $this->getUser();
         $k      = sha1($name.'|'.$person['id']);
 
         if (isset($this->app_allowed_checks[$k])) {

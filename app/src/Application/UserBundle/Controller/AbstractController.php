@@ -53,7 +53,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     {
         parent::init();
 
-        $tpl_globals = $this->container->get('templating.globals');
+        $tpl_globals = $this->getTplGlobals();
         if (!$tpl_globals->getVariable('usersources')) {
             $tpl_globals->setVariable('usersources', $this->em->getRepository('DeskPRO:Usersource')->getAllUsersources());
         }
@@ -165,7 +165,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             }
         }
 
-        $tpl_globals = $this->container->get('templating.globals');
+        $tpl_globals = $this->getTplGlobals();
         if ($this->in->getBool('admin_portal_controls') && $this->person->can_admin) {
             $tpl_globals->setVariable('admin_portal_controls', true);
             $tpl_globals->setVariable('custom_templates', $this->db->fetchAllKeyValue('SELECT name,id FROM templates'));
