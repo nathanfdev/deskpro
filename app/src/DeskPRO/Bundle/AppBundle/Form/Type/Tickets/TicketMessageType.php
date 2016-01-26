@@ -76,11 +76,8 @@ class TicketMessageType extends ApiType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'ticket'        => null,
-            'person'        => null,
-            'error_mapping' => [
-                'message' => 'message',
-            ],
+            'ticket' => null,
+            'person' => null,
         ]);
     }
 
