@@ -1,4 +1,4 @@
-import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 
 class FeedbackValueReader {
   constructor($formEl) {

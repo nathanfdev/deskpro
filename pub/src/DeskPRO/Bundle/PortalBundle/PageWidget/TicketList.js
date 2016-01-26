@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
-import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import ColumnControl from 'DeskPRO/Bundle/PortalBundle/React/ColumnControl';
 
 class ColumnControlWidget extends PageWidget {
@@ -98,7 +98,7 @@ class ColumnControlWidget extends PageWidget {
   }
 }
 
-export default class TicketList extends PageWidget {
+export class TicketList extends PageWidget {
   init() {
     this.addWidgetDef(ColumnControlWidget, '.column-control');
   }

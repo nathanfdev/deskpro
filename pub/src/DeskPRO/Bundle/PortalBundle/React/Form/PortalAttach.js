@@ -5,7 +5,7 @@ import { openFullImage } from 'DeskPRO/Component/Util/FullImage';
 
 const qq = require('exports?qq!fine-uploader/fine-uploader/fine-uploader.js');
 
-export default class PortalAttach extends React.Component {
+export class PortalAttach extends React.Component {
 
   constructor(props) {
     super(props);

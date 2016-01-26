@@ -1,4 +1,4 @@
-import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import $ from 'jquery';
 
 export default class HtmlLinkToPostWidget extends PageWidget {

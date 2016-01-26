@@ -1,4 +1,4 @@
-import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import { openFullImage } from 'DeskPRO/Component/Util/FullImage';
 
 export default class FullImage extends PageWidget {

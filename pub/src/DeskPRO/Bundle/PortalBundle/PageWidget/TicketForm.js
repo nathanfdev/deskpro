@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PortalApp from 'DeskPRO/Bundle/PortalBundle/PortalApp';
-import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import { pageWidgetEmitter } from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
 import NewTicketSuggestions from 'DeskPRO/Bundle/PortalBundle/React/NewTicketSuggestions';
 import { DynamicForm } from 'DeskPRO/Bundle/AppBundle/Form/DynamicForm.js';
@@ -43,7 +43,7 @@ class TicketValueReader {
   }
 }
 
-export default class TicketForm extends PageWidget {
+export class TicketForm extends PageWidget {
 
   renderWidget() {
     const $formEl = this.$element.find('.dp_ticket_form');

@@ -1,4 +1,4 @@
-import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 
 export default class ClickToDismissWidget extends PageWidget {
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import LanguageChanger from 'DeskPRO/Bundle/PortalBundle/React/LanguageChanger';
 import PortalWindow from 'DeskPRO/Bundle/PortalBundle/PortalWindow';
 import { portalUrlGenerator } from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';

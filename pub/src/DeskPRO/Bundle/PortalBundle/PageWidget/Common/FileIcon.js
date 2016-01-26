@@ -1,4 +1,4 @@
-import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import { getFileIcon } from 'DeskPRO/Component/Util/Filename';
 
 export default class FileIcon extends PageWidget {

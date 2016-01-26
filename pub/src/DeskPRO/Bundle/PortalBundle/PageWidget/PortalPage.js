@@ -1,8 +1,8 @@
-import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
-import TicketForm from './TicketForm';
-import PortalFormWidget from './PortalFormWidget';
-import TicketView from './TicketView';
-import TicketList from './TicketList';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
+import { TicketForm } from './TicketForm';
+import { PortalFormWidget } from './PortalFormWidget';
+import { TicketView } from './TicketView';
+import { TicketList } from './TicketList';
 import DownloadsList from './DownloadsList';
 import FeedbackPage from './FeedbackPage';
 import ClickAwayDropdownWidget from './ClickAwayDropdownWidget';
@@ -17,7 +17,7 @@ import LoginDropdownWidget from './LoginDropdownWidget';
 import SearchResultsPage from './SearchResultsPage';
 import MobileMenuWidget from './MobileMenuWidget';
 import ArticleHighlighter from './ArticleHighlighter';
-import CustomPerFieldEdit from './Common/Form/CustomPerFieldEdit';
+import { CustomPerFieldEdit } from './Common/Form/CustomPerFieldEdit';
 import Attachment from './Common/Attachment';
 import $ from 'jquery';
 

@@ -1,10 +1,11 @@
 import $ from 'jquery';
-import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import PortalHttp from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 
 let id_incrementer = 1;
 
-export default class CustomPerFieldEdit extends PageWidget {
+export class CustomPerFieldEdit extends PageWidget {
+
   renderWidget() {
     const $per_field = this.$element;
     const allow_edit = $per_field.data('allow-edit');
