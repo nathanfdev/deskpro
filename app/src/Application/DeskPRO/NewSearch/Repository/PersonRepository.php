@@ -36,9 +36,6 @@ use Elastica\Util as ElasticaUtil;
  */
 class PersonRepository extends AbstractRepository implements WithLabelsInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     protected $highlightFields = [
         'name'   => ['fragment_size' => 100],
         'emails' => ['fragment_size' => 100, 'number_of_fragments' => 1],
@@ -58,7 +55,7 @@ class PersonRepository extends AbstractRepository implements WithLabelsInterface
     protected function getQueryString($q)
     {
         $multi_match = new Query\MultiMatch();
-        $multi_match->setQuery(ElasticaUtil::escapeTerm($q).'*');
+        $multi_match->setQuery(ElasticaUtil::escapeTerm($q));
         $multi_match->setFields($this->getQueryFields());
         $multi_match->setAnalyzer('standard');
         $multi_match->setOperator('AND');

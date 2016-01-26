@@ -42,9 +42,6 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
      */
     protected $person;
 
-    /**
-     * {@inheritdoc}
-     */
     protected $highlightFields = [
         'subject'  => ['fragment_size' => 100],
         'messages' => ['fragment_size' => 100, 'number_of_fragments' => 1],

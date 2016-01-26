@@ -33,9 +33,6 @@ namespace Application\DeskPRO\NewSearch\Repository;
  */
 class FeedbackRepository extends AbstractRepository
 {
-    /**
-     * {@inheritdoc}
-     */
     protected $highlightFields = [
         'title' => ['fragment_size' => 100],
     ];

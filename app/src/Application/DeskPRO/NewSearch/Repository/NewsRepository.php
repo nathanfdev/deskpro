@@ -33,9 +33,6 @@ namespace Application\DeskPRO\NewSearch\Repository;
  */
 class NewsRepository extends AbstractRepository
 {
-    /**
-     * {@inheritdoc}
-     */
     protected $highlightFields = [
         'title' => ['fragment_size' => 100],
     ];

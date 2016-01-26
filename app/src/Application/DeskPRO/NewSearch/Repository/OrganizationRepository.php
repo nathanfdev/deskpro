@@ -36,9 +36,6 @@ use Elastica\Util as ElasticaUtil;
  */
 class OrganizationRepository extends AbstractRepository implements WithLabelsInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     protected $highlightFields = [
         'name' => ['fragment_size' => 100],
     ];
