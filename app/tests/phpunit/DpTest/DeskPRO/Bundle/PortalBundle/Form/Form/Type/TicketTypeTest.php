@@ -250,6 +250,10 @@ class TicketTypeTest extends PortalTestCase
         ];
         $form->submit($submit_data);
 
+        foreach ($form->getErrors() as $e) {
+            error_log($e->getMessage());
+        }
+
         // assert
         $this->assertTrue($form->isValid());
         $this->assertRerenderFormDoesNotExist($form);
@@ -266,8 +270,9 @@ class TicketTypeTest extends PortalTestCase
         // setup
         $client = $this->getClient();
 
-        $crawler     = $client->request('GET', '/new-ticket');
-        $res         = $client->getResponse();
+        $crawler = $client->request('GET', '/new-ticket');
+        $res     = $client->getResponse();
+
         $button_node = $crawler->selectButton('ticket_submit');
         $form        = $button_node->form([
             'ticket' => [
@@ -411,9 +416,10 @@ class TicketTypeTest extends PortalTestCase
         $ticket->addMessage($message);
 
         $form = $this->getContainer()->get('form.factory')->create('ticket', $ticket, [
-            'person'         => $person,
-            'ticket_message' => $message,
-            'settings'       => $this->getBrandSettings(),
+            'person'          => $person,
+            'ticket_message'  => $message,
+            'settings'        => $this->getBrandSettings(),
+            'csrf_protection' => false,
         ]);
 
         return $form;

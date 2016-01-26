@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpTest;
 
 use Application\DeskPRO\Entity\Template;
@@ -49,6 +48,11 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
      * @var PortalKernel|null
      */
     protected static $portal_kernel;
+
+    /**
+     * @var bool
+     */
+    protected static $reboot_kernel = false;
 
     protected static $last_installed_data_set;
 
@@ -89,17 +93,23 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
      */
     protected function getApiKernel($force_reboot = false)
     {
+        if (self::$reboot_kernel) {
+            $force_reboot        = true;
+            self::$reboot_kernel = false;
+        }
+
         if (self::$api_kernel && !$force_reboot) {
             return self::$api_kernel;
         }
 
         if (self::$api_kernel) {
             self::$api_kernel->shutdown();
-            self::$api_kernel = null;
+            $kernel = self::$portal_kernel;
+        } else {
+            require_once DP_ROOT.'/sys/Kernel/ApiKernel.php';
+            $kernel = new ApiKernel('test', true);
         }
 
-        require_once DP_ROOT.'/sys/Kernel/ApiKernel.php';
-        $kernel = new ApiKernel('test', true);
         $kernel->boot();
 
         self::$api_kernel = $kernel;
@@ -114,17 +124,23 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
      */
     protected function getPortalKernel($force_reboot = false)
     {
+        if (self::$reboot_kernel) {
+            $force_reboot        = true;
+            self::$reboot_kernel = false;
+        }
+
         if (self::$portal_kernel && !$force_reboot) {
             return self::$portal_kernel;
         }
 
         if (self::$portal_kernel) {
             self::$portal_kernel->shutdown();
-            self::$portal_kernel = null;
+            $kernel = self::$portal_kernel;
+        } else {
+            require_once DP_ROOT.'/sys/Kernel/PortalKernel.php';
+            $kernel = new PortalKernel('test', true);
         }
 
-        require_once DP_ROOT.'/sys/Kernel/PortalKernel.php';
-        $kernel = new PortalKernel('test', true);
         $kernel->boot();
 
         self::$portal_kernel = $kernel;
@@ -155,12 +171,14 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
 
         // remember that we installed this
         self::$last_installed_data_set = $data_set_id;
+
+        self::$reboot_kernel = true;
     }
 
     /**
      * @param $entity
      *
-     * @return \Doctrine\ORM\EntityManager
+     * @return \Doctrine\ORM\EntityRepository
      */
     protected function getRepo($entity)
     {
@@ -170,7 +188,7 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
     /**
      * @param $entity
      *
-     * @return \Doctrine\ORM\EntityManager
+     * @return \Doctrine\ORM\EntityRepository
      */
     protected function getRepository($entity)
     {

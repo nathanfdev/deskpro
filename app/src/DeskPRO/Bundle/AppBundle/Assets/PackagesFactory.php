@@ -183,7 +183,15 @@ class PackagesFactory
                     $url = preg_replace('#^(https?://)([^/]+)(/.*)$#', '$1$2', $url);
                 }
 
-                $url  = rtrim($url, '/');
+                $url = rtrim($url, '/');
+
+                // The URL can be empty if we have no settings
+                // or the container is being built for the first time
+                // so this is a fallback
+                if (!$url) {
+                    return new PathPackage($p->getPath(), $version);
+                }
+
                 $pack = new UrlPackage($url.$p->getPath(), $version);
 
                 return $pack;
