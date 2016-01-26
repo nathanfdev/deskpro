@@ -702,36 +702,36 @@ $collection->create('api_people_person_email_delete', array(
     'methods'      => array('DELETE'),
 ));
 
-$collection->create('api_people_person_emails', array(
+$collection->create('api_people_person_phone_numbers', array(
     'path'         => '/people/{person_id}/phone_numbers',
     'controller'   => 'ApiBundle:Person:getPersonPhoneNumbers',
     'requirements' => array('person_id' => '\\d+'),
     'methods'      => array('GET'),
 ));
 
-$collection->create('api_people_person_emails_post', array(
+$collection->create('api_people_person_phone_numbers_post', array(
     'path'         => '/people/{person_id}/phone_numbers',
     'controller'   => 'ApiBundle:Person:postPersonPhoneNumbers',
     'requirements' => array('person_id' => '\\d+'),
     'methods'      => array('POST'),
 ));
 
-$collection->create('api_people_person_email', array(
+$collection->create('api_people_person_phone_numbers', array(
     'path'         => '/people/{person_id}/phone_numbers/{number_id}',
     'controller'   => 'ApiBundle:Person:getPersonPhoneNumber',
     'requirements' => array('person_id' => '\\d+', 'number_id' => '\\d+'),
     'methods'      => array('GET'),
 ));
 
-$collection->create('api_people_person_email_post', array(
+$collection->create('api_people_person_phone_numbers_post', array(
     'path'         => '/people/{person_id}/phone_numbers/{number_id}',
     'controller'   => 'ApiBundle:Person:postPersonPhoneNumber',
     'requirements' => array('person_id' => '\\d+', 'number_id' => '\\d+'),
     'methods'      => array('POST'),
 ));
 
-$collection->create('api_people_person_email_delete', array(
-    'path'         => '/people/{person_id}/phone_numbers/{nubmer_id}',
+$collection->create('api_people_person_phone_numbers_delete', array(
+    'path'         => '/people/{person_id}/phone_numbers/{number_id}',
     'controller'   => 'ApiBundle:Person:deletePersonPhoneNumber',
     'requirements' => array('person_id' => '\\d+', 'number_id' => '\\d+'),
     'methods'      => array('DELETE'),
