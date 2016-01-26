@@ -507,7 +507,8 @@ class NewTicket
 
         $manager                   = App::$container->getPersonFieldManager();
         $post_custom_person_fields = array();
-        foreach ($this->custom_person_fields as $k => $v) {
+        $custom_person_fields      = $person->isNewPerson() ? $this->post_custom_person_fields : $this->custom_person_fields;
+        foreach ($custom_person_fields as $k => $v) {
             $id = Strings::extractRegexMatch('#(\d+)$#', $k);
             if (!$this->layout || $this->layout->hasActiveField('user_field_'.$id, $ticket)) {
                 $post_custom_person_fields[$k] = @$post_custom_person_fields[$k] ?: $v;
@@ -519,7 +520,7 @@ class NewTicket
             $manager->saveFormToObject($post_custom_person_fields, $ticket->person);
         }
 
-        if ($ticket->person->organization) {
+        if ($person->organization) {
             $manager                = App::$container->getOrgFieldManager();
             $post_custom_org_fields = array();
             foreach ($this->custom_org_fields as $k => $v) {
