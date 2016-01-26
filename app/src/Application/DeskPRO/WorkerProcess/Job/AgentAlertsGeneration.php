@@ -33,7 +33,7 @@ namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\Entity\Ticket;
 
-class DevJob extends AbstractJob
+class AgentAlertsGeneration extends AbstractJob
 {
     const DEFAULT_INTERVAL = 600;
 
