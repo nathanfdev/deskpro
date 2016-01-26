@@ -13,7 +13,7 @@ export class NestedListContainer extends BaseNestedList {
       id,
       type,
       title,
-      isTopLevel: nested.length > 0 && depth === 1,
+      isTopLevel: depth === 1,
       listFilters: parent ? { filter: parent, [type]: id } : { filter: id },
       parentIsLoading
     };
