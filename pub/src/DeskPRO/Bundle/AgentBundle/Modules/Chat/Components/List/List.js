@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { VIEW_MODE_CARD } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
 import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ListFrameMenu';
 import { ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
@@ -30,7 +30,7 @@ export class List extends React.Component {
                        opacity={0}
                        width={3}>
           <ListFrameContents>
-            {viewMode === VIEW_MODE_CARD ? <ChatsCardsContainer toggleSelected={toggleSelected}/> :
+            {viewMode === constants.VIEW_MODE_CARD ? <ChatsCardsContainer toggleSelected={toggleSelected}/> :
               <ChatsTableContainer/>}
             {pagination && pagination.total_pages > 1 && <PaginationContainer/>}
           </ListFrameContents>

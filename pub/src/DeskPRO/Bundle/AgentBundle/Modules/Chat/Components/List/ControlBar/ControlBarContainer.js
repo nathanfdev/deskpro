@@ -71,6 +71,7 @@ export class ControlBarContainer extends Component {
         viewModeAction: (mode) => updateRoutingState('list', 'view', mode)
       }
     };
+
     return (
       <ControlBar {...config} />
     );
