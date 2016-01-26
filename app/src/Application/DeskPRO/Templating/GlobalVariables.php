@@ -59,7 +59,7 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
         return isset($this->variables[$name]) ? $this->variables[$name] : null;
     }
 
-    public function getSetting($name)
+    public function getSetting($name, $default = null)
     {
         // be caerful, not all kernels have a brand stack (only portal)
         if ($this->container->has('brand_stack')) {
@@ -70,6 +70,26 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
 
         // default to globals for others
         return $this->container->get('settings_resolver')->getGlobalSettings()->get($name, $default);
+    }
+
+    public function getUser()
+    {
+        $u = parent::getUser();
+        if (!$u) {
+            $u = App::getCurrentPerson();
+        }
+
+        return $u;
+    }
+
+    public function getSession()
+    {
+        $s = parent::getSession();
+        if (!$s) {
+            $s = App::getSession();
+        }
+
+        return $s;
     }
 
     public function getSettingDefaultGroup($id)

@@ -274,6 +274,13 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
             $this->set('dp_interface', DP_INTERFACE);
         }
 
+        $person = $this->getPerson();
+        if ($person) {
+            App::setCurrentPerson($person);
+        } else {
+            App::setCurrentPerson(null);
+        }
+
         $me = $this;
         \DpShutdown::add(function () use ($me) {
             $me->save();
