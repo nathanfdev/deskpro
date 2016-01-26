@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\ObjectTranslatable;
@@ -337,12 +336,6 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         $attach['article'] = $this;
     }
 
-    public function _invalidatePageCache()
-    {
-        $cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
-        $cache->invalidateRegex('/_kb(-|_articles_'.intval($this->getId()).'-|_\d+)/');
-    }
-
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
         $data = parent::toApiData($primary, $deep, $visited);
@@ -428,7 +421,6 @@ class Article extends ContentAbstract implements HighlightableModelInterface
                 ),
             )
         );
-        $metadata->addLifecycleCallback('_invalidatePageCache', 'preFlush');
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             array(

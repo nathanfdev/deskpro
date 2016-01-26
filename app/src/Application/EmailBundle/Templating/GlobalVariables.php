@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\EmailBundle\Templating;
 
 use Application\DeskPRO\App;
@@ -277,11 +276,6 @@ class GlobalVariables extends BaseGlobalVariables
         }
 
         return;
-    }
-
-    public function getBrowserSniffer()
-    {
-        return App::get('browser_sniffer');
     }
 
     public function get($name)

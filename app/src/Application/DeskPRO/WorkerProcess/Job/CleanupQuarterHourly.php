@@ -46,13 +46,6 @@ class CleanupQuarterHourly extends AbstractJob
     private function doRun()
     {
         #------------------------------
-        # Page cache
-        #------------------------------
-
-        $cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
-        $cache->cleanup();
-
-        #------------------------------
         # Old API logs
         #------------------------------
 

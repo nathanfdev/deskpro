@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\InstallBundle\Install;
 
 use Application\DeskPRO\App;
@@ -541,26 +540,6 @@ class ServerChecks
                     'level'   => 'recommended',
                     'opcache' => version_compare(phpversion(), '5.5.0', '>='),
                 );
-            }
-        }
-
-        #------------------------------
-        # magic_quotes_check
-        #------------------------------
-
-        if (function_exists('get_magic_quotes_gpc')) {
-            if ($type == 'magic_quotes_gpc_check' || $type == 'all') {
-                $this->getLogger()->log('[CHECK] Checking if magic_quotes_gpc is enabled', Logger::DEBUG);
-                if (!get_magic_quotes_gpc()) {
-                    $this->getLogger()->log('[OK] magic_quotes_gpc is disabled', Logger::DEBUG);
-                } else {
-                    $msg = 'We recommend disabling the `magic_quotes_gpc` setting in your php.ini file.';
-                    $this->getLogger()->log("$msg", Logger::INFO);
-                    $this->server_errors['magic_quotes_gpc_check'] = array(
-                        'message' => $msg,
-                        'level'   => 'recommended',
-                    );
-                }
             }
         }
 

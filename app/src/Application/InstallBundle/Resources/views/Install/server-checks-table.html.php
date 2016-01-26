@@ -470,25 +470,6 @@
     </td>
 </tr>
 
-<tr>
-    <td>
-        <?php $failed = false ?>
-        <?php if (!isset($errors['magic_quotes_gpc_check'])): ?>
-        <span class="label success" style="float:right">OK</span>
-        <?php else: $failed = true; ?>
-        <span class="label notice" style="float:right">RECOMMENDED</span>
-        <?php endif ?>
-        Checking if <a href="http://www.php.net/manual/en/security.magicquotes.disabling.php">magic_quotes_gpc</a> is disabled
-        <?php if ($failed): ?>
-        <div class="alert-message block-message info">
-            <a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_magic_quotes') ?>" class="kb-read-more" target="_blank">Read more about this</a>
-            We recommend disabling <code>magic_quotes_gpc</code> in your php.ini for a small performance improvement.
-            (<?php if ($ini_path): ?>Your php.ini file is located at <code><?php echo $ini_path ?></code><?php endif ?>)
-        </div>
-        <?php endif ?>
-    </td>
-</tr>
-
 <?php if ($run_context == 'install'): ?>
     <?php if (isset($errors['dp3_files'])): ?>
     <?php $failed = true ?>

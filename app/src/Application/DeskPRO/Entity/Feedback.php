@@ -487,12 +487,6 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $attach->feedback = $this;
     }
 
-    public function _invalidatePageCache()
-    {
-        $cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
-        $cache->invalidateRegex('/_feedback(-|_)/');
-    }
-
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
         $data = parent::toApiData($primary, $deep, $visited);
@@ -640,7 +634,6 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
                 ),
             )
         );
-        $metadata->addLifecycleCallback('_invalidatePageCache', 'preFlush');
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             array(

@@ -81,28 +81,6 @@ class KernelBooter
             @ini_set('display_errors', '0');
         }
 
-        if (isset($DP_CONFIG['debug']['enable_debug_trace']) && $DP_CONFIG['debug']['enable_debug_trace']) {
-            if (!function_exists('xdebug_start_trace')) {
-                exit('To use the `debug.enable_debug_trace` setting, the xdebug extension must be installed');
-            }
-
-            $debug_dir = dp_get_debug_dir();
-
-            if (!is_dir($debug_dir) || !is_writable($debug_dir)) {
-                exit('The debug output directory at '.$debug_dir.' does not exist or is not writable.');
-            }
-
-            $file = $debug_dir.DIRECTORY_SEPARATOR.date('YmdHis').'-'.mt_rand(10000, 99999);
-
-            ini_set('xdebug.collect_params', 3);
-            if (isset($DP_CONFIG['debug']['enable_debug_trace_format'])) {
-                ini_set('xdebug.trace_format', $DP_CONFIG['debug']['enable_debug_trace_format']);
-            }
-
-            xdebug_start_trace($file);
-            define('DP_DEBUG_TRACE_FILE', $file.'.xt');
-        }
-
         #------------------------------
         # Set global blacklist/whitelist for file op
         #------------------------------
@@ -149,13 +127,6 @@ class KernelBooter
 
         require DP_ROOT.'/sys/Kernel/compat.php';
         require DP_ROOT.'/sys/system.php';
-
-        if (array_key_exists('HTTP_X_CODECEPTION_CODECOVERAGE', $_SERVER) && isset($GLOBALS['DP_USING_TESTING_CONFIG']) && $GLOBALS['DP_USING_TESTING_CONFIG']) {
-            define('C3_CODECOVERAGE_MEDIATE_STORAGE', DP_ROOT.'/testing/logs/c3tmp');
-            define('C3_CODECEPTION_CONFIG_PATH', DP_ROOT.'/testing/codeception.yml');
-            define('C3_CODECOVERAGE_PROJECT_ROOT', DP_ROOT);
-            require DP_ROOT.'/testing/src/c3.php';
-        }
     }
 
     /**
@@ -173,26 +144,6 @@ class KernelBooter
         libxml_disable_entity_loader(true);
 
         \Orb\Util\Strings::setPhpUtf8Dir(DP_ROOT.'/vendor-src/php-utf8');
-
-        #------------------------------
-        # Undo magic quotes
-        #------------------------------
-
-        // Check exists since its gone in PHP 5.4
-        if (function_exists('get_magic_quotes_gpc')) {
-            ini_set('magic_quotes_runtime', 0);
-
-            if (get_magic_quotes_gpc()) {
-                $clean_fn = function (&$v) {
-                    $v = stripslashes($v);
-                };
-
-                array_walk_recursive($_GET,     $clean_fn);
-                array_walk_recursive($_POST,    $clean_fn);
-                array_walk_recursive($_COOKIE,  $clean_fn);
-                array_walk_recursive($_REQUEST, $clean_fn);
-            }
-        }
     }
 
     /**
@@ -1383,27 +1334,5 @@ HTML;
         $called = true;
 
         \DpShutdown::run();
-
-        if (!defined('DP_DEBUG_TRACE_FILE')) {
-            return;
-        }
-
-        self::DeskPRO_Done_MarkerCheck();
-        xdebug_stop_trace();
-
-        if (isset($GLOBALS['DP_CONFIG']['debug']['enable_debug_trace_keep']) and $GLOBALS['DP_CONFIG']['debug']['enable_debug_trace_keep']) {
-            return;
-        }
-
-        $fp = @fopen(DP_DEBUG_TRACE_FILE, 'r');
-        if ($fp) {
-            @fseek($fp, -150000, \SEEK_END);
-            $chunk = @fread($fp, 150000);
-            @fclose($fp);
-
-            if (strpos($chunk, 'DeskPRO_Done_MarkerCheck') !== false) {
-                @unlink(DP_DEBUG_TRACE_FILE);
-            }
-        }
     }
 }

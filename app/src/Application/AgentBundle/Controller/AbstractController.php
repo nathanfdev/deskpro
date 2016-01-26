@@ -31,7 +31,6 @@
  */
 namespace Application\AgentBundle\Controller;
 
-use Application\DeskPRO\HttpFoundation\UserAgentRequirementCheck;
 use Application\DeskPRO\Service\CheckWhitelistedIP;
 
 abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
@@ -68,10 +67,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
      */
     public function preAction($action, $arguments = null)
     {
-        if (!$this->request->isXmlHttpRequest() && !UserAgentRequirementCheck::passAgentInterface($this->container->get('browser_sniffer'))) {
-            return $this->redirectRoute('agent_browser_requirements');
-        }
-
         if (!$this->person['id']) {
             if ($this->request->isXmlHttpRequest()) {
                 $data = array(

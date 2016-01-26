@@ -100,26 +100,6 @@ abstract class serve_abstract
         });
 
         #------------------------------
-        # Undo magic quotes
-        #------------------------------
-
-        // Check exists since its gone in PHP 5.4
-        if (function_exists('get_magic_quotes_gpc')) {
-            ini_set('magic_quotes_runtime', 0);
-
-            if (get_magic_quotes_gpc()) {
-                $clean_fn = function (&$v) {
-                    $v = stripslashes($v);
-                };
-
-                array_walk_recursive($_GET,     $clean_fn);
-                array_walk_recursive($_POST,    $clean_fn);
-                array_walk_recursive($_COOKIE,  $clean_fn);
-                array_walk_recursive($_REQUEST, $clean_fn);
-            }
-        }
-
-        #------------------------------
         # Load config
         #------------------------------
 
@@ -504,11 +484,11 @@ abstract class serve_abstract
      */
     public function isSecure()
     {
-        return (
+        return
             (strtolower((isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : null)) == 'on' || (isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : null) == 1)
             ||
             ((isset($_SERVER['SSL_HTTPS']) ? $_SERVER['SSL_HTTPS'] : null) == 1)
-        );
+        ;
     }
 
     /**
@@ -531,7 +511,7 @@ abstract class serve_abstract
      */
     public function getPort()
     {
-        return (isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : null);
+        return isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : null;
     }
 
     /**

@@ -154,15 +154,6 @@ class WorkerJobsData extends AbstractDefaultData
         );
 
         $jobs[] = array(
-            'id'           => 'search_index_update',
-            'worker_group' => 'search',
-            'title'        => 'Search Index Update',
-            'description'  => 'Updates the search index with updated objects',
-            'job_class'    => 'Application\\DeskPRO\\WorkerProcess\\Job\\SearchIndexUpdate',
-            'run_interval' => Job\SearchIndexUpdate::DEFAULT_INTERVAL,
-        );
-
-        $jobs[] = array(
             'id'           => 'sendmail_queue',
             'worker_group' => 'sendmail_queue',
             'title'        => 'Sendmail Queue',

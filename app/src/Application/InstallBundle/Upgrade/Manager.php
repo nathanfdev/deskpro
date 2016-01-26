@@ -198,14 +198,10 @@ class Manager
         if ($this->logger) {
             $this->logger->debug('invalidate lang cache');
         }
-        $cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
-        $cache->invalidateLanguageCache();
 
         if ($this->logger) {
             $this->logger->debug('invalidate lang js cache');
         }
-        $cache = new \Application\DeskPRO\CacheInvalidator\LanguageJsCache();
-        $cache->invalidateAll();
 
         // need to restart the Twitter daemon (pid of 0 means to not run)
         if (file_exists(dp_get_data_dir().'/twitter.pid')) {

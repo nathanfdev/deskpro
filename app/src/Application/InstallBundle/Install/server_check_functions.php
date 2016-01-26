@@ -83,10 +83,6 @@ function deskpro_install_check_reqs()
         $errors['apc_check'] = 'recommended';
     }
 
-    if (!function_exists('get_magic_quotes_gpc')) {
-        $errors['magic_quotes_gpc_check'] = 'recommended';
-    }
-
     if (!function_exists('iconv') && !function_exists('mb_convert_encoding')) {
         $errors['iconv_ext'] = 'fatal';
     }

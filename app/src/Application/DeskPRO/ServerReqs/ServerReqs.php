@@ -237,12 +237,6 @@ class ServerReqs
                 'readMore'       => App::get('deskpro.service_urls')->get('dp.kb.install.error_openssl'),
                 'recommendation' => true,
             ),
-            'magic_quotes_gpc_check' => array(
-                'description'    => 'Checking if <a href="http://www.php.net/manual/en/security.magicquotes.disabling.php">magic_quotes_gpc</a> is disabled',
-                'error'          => 'We recommend disabling <code>magic_quotes_gpc</code> in your php.ini for a small performance improvement. (Your php.ini file is located at <code>'.$ini_path.'</code>)',
-                'readMore'       => App::get('deskpro.service_urls')->get('dp.kb.install.error_magic_quotes'),
-                'recommendation' => true,
-            ),
 
             'imap_check' => array(
                 'description'    => 'Checking for the <a href="http://php.net/manual/en/book.imap.php">IMAP</a> extension',

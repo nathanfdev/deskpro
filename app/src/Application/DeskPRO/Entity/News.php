@@ -211,12 +211,6 @@ class News extends ContentAbstract implements HighlightableModelInterface
         return $this->labels;
     }
 
-    public function _invalidatePageCache()
-    {
-        $cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
-        $cache->invalidateRegex('/_news(-|_view_'.intval($this->getId()).'-|_\d+)/');
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -305,7 +299,6 @@ class News extends ContentAbstract implements HighlightableModelInterface
                 ),
             )
         );
-        $metadata->addLifecycleCallback('_invalidatePageCache', 'preFlush');
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             array(

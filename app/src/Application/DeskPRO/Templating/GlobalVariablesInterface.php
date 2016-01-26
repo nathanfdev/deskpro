@@ -108,8 +108,6 @@ interface GlobalVariablesInterface
 
     public function getCustomFieldManager($type);
 
-    public function getBrowserSniffer();
-
     public function get($name);
 
     public function getLastException();

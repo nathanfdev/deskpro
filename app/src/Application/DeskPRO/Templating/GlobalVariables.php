@@ -267,11 +267,6 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
         return;
     }
 
-    public function getBrowserSniffer()
-    {
-        return App::get('browser_sniffer');
-    }
-
     public function get($name)
     {
         return $this->__get($name);

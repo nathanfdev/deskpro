@@ -252,11 +252,6 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
         return $this->container->get('templating.globals')->getCustomFieldManager($type);
     }
 
-    public function getBrowserSniffer()
-    {
-        return $this->container->get('templating.globals')->getBrowserSniffer();
-    }
-
     public function get($name)
     {
         return $this->container->get('templating.globals')->get($name);

@@ -192,12 +192,6 @@ class MiscController extends AbstractController
             $js[] = 'window.DESKPRO_CHAT_SNIPPET_SHORTCODES = {};';
         }
 
-        // Chat display elements
-        $chat_display = new \Application\DeskPRO\PageDisplay\Page\ChatPageZoneCollection('create');
-        $chat_display->addPagesFromDb();
-        $js[] = 'window.DESKPRO_CHAT_DISPLAY = {}';
-        $js[] = 'window.DESKPRO_CHAT_DISPLAY.create = '.$chat_display->compileJs().';';
-
         $js[] = 'window.DESKPRO_TICKET_PRI_MAP = '.json_encode($this->container->getDataService('TicketPriority')->getIdToPriorityMap()).';';
 
         $fragment_router = new FragmentRouter($this->get('router')->getGenerator());

@@ -31,7 +31,6 @@
  */
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\DeskPRO\CacheInvalidator\UserPageCache;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\ResourceScanner\AdvancedSettings;
@@ -279,9 +278,6 @@ class SettingsController extends AbstractController implements ProtectedControll
             $this->settings->setSetting('core.favicon_blob_id', null);
             $this->settings->setSetting('core.favicon_blob_url', null);
         }
-
-        $cache = new UserPageCache();
-        $cache->invalidateAll();
 
         return $this->createSuccessResponse();
     }

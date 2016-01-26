@@ -147,7 +147,7 @@ class KernelErrorHandler
      *
      * @param \Exception $exception
      */
-    public static function handleException(\Exception $exception, $exit = true)
+    public static function handleException(/*Throwable*/ $exception, $exit = true)
     {
         if (self::$is_handling_exception) {
             return;
@@ -556,7 +556,7 @@ class KernelErrorHandler
      *
      * @return array
      */
-    public static function getExceptionInfo(\Exception $exception)
+    public static function getExceptionInfo(/*Throwable*/ $exception)
     {
         $errno   = $exception->getCode();
         $errstr  = self::stripPathPrefix($exception->getMessage());
@@ -672,7 +672,7 @@ class KernelErrorHandler
      *
      * @return bool
      */
-    public static function isNoReportException(\Exception $exception)
+    public static function isNoReportException(/*Throwable*/ $exception)
     {
         static $ignore = array(
             'Swift_TransportException',
@@ -1390,7 +1390,7 @@ class KernelErrorHandler
         return true;
     }
 
-    public static function logExceptionIfUniqueBacktrace(\Exception $e, $send = false)
+    public static function logExceptionIfUniqueBacktrace(/*Throwable*/ $e, $send = false)
     {
         $hashable_trace      = '';
         $formatted_backtrace = debug_backtrace();

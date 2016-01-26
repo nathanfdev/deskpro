@@ -337,12 +337,6 @@ class Download extends ContentAbstract implements HighlightableModelInterface
         return $content;
     }
 
-    public function _invalidatePageCache()
-    {
-        $cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
-        $cache->invalidateRegex('/_downloads(-|_files_'.intval($this->getId()).'-|_\d+)/');
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -446,7 +440,6 @@ class Download extends ContentAbstract implements HighlightableModelInterface
                 ),
             )
         );
-        $metadata->addLifecycleCallback('_invalidatePageCache', 'preFlush');
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             array(

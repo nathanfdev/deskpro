@@ -121,11 +121,6 @@ $definition->setArguments(array(
 ));
 $container->setDefinition('dp.doctrine.entity_listener_resolver', $definition);
 
-// browser_sniffer
-$definition = new Definition();
-$definition->setClass('Browser');
-$container->setDefinition('browser_sniffer', $definition);
-
 // deskpro.logging.null_handler
 $definition = new Definition();
 $definition->setClass('Orb\\Logger\\Handler\\NullHandler');

@@ -194,15 +194,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 
     public function browserRequirementsAction()
     {
-        if (UserAgentRequirementCheck::passAgentInterface($this->container->get('browser_sniffer'))) {
-            return $this->redirectRoute('agent');
-        }
-
-        $browser = $this->container->get('browser_sniffer');
-
-        return $this->render('AgentBundle:Login:browser-requirements.html.twig', array(
-            'is_ie' => $browser->isBrowser(\Browser::BROWSER_IE),
-        ));
+        return $this->render('AgentBundle:Login:browser-requirements.html.twig');
     }
 
     public function authAdminLoginAction($code)
