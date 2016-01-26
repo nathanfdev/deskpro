@@ -113,10 +113,10 @@ export class SelectedLabels extends Component {
           <div className="dpw-label-pile">
             <ul className="dpw-label-list">
               {selectedLabels.map((item, index) =>
-                  <li key={index}>
-                    <a href="#" className="dpw-item-label" onClick={deselectLabel.bind(this, item)}>
+                  <li key={index} onClick={deselectLabel.bind(this, item)}>
+                    <span className="dpw-item-label">
                       <i className="fa fa-times"></i> {item}
-                    </a>
+                    </span>
                   </li>
               )}
             </ul>
@@ -146,10 +146,10 @@ export class LabelsCollection extends Component {
         <ul className="dpw-label-list">
           {allLabels.map(
             (item, index) =>
-              <li key={index}>
-                <a href="#" className="dpw-item-label" onClick={selectLabel.bind(this, item)}>
+              <li key={index} onClick={selectLabel.bind(this, item)}>
+                <span className="dpw-item-label">
                   {item}
-                </a>
+                </span>
               </li>
           )}
         </ul>

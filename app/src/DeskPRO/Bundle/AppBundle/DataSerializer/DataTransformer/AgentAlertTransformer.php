@@ -103,6 +103,7 @@ class AgentAlertTransformer extends AbstractDataSerializerTransformer
         $notifData['summary'] = $summary;
 
         $alertData['notification'] = $notifData;
+        $alertData['performer']    = $data['performer'];
 
         return [
             'uuid'         => (string) $alert->getId(),
