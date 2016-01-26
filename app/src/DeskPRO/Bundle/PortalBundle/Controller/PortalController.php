@@ -403,7 +403,7 @@ class PortalController extends AbstractController
                 'error'   => [
                     'code' => 'csrf',
                 ],
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 }
