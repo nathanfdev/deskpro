@@ -43,14 +43,12 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
     protected $person;
 
     /**
-     * Fields to be highlighted.
-     *
-     * @var array
+     * {@inheritdoc}
      */
-    protected $highlightFields = array(
-        'subject'  => array('fragment_size' => 100),
-        'messages' => array('fragment_size' => 100, 'number_of_fragments' => 1),
-    );
+    protected $highlightFields = [
+        'subject'  => ['fragment_size' => 100],
+        'messages' => ['fragment_size' => 100, 'number_of_fragments' => 1],
+    ];
 
     /**
      * Sets the person context.
@@ -63,9 +61,7 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
     }
 
     /**
-     * Constructs the filters array to handle agent permission.
-     *
-     * @return array
+     * {@inheritdoc}
      */
     protected function getFilters()
     {
@@ -75,7 +71,7 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
         $main_filter = new Filter\BoolOr();
 
         $assigned_filter = new Filter\BoolOr();
-        $assigned_filter->addFilter(new Filter\Term(array('agent' => $this->person->getId())));
+        $assigned_filter->addFilter(new Filter\Term(['agent' => $this->person->getId()]));
         $team_ids = $this->person->getHelper('Agent')->getTeamIds();
         if ($team_ids) {
             $assigned_filter->addFilter(new Filter\Terms('agent_team', $team_ids));
@@ -97,22 +93,22 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
 
             if (!$this->person->hasPerm('agent_tickets.view_unassigned')) {
                 $not_assigned = new Filter\BoolOr();
-                $not_assigned->addFilter(new Filter\BoolNot(new Filter\Term(array('agent' => 0))));
-                $not_assigned->addFilter(new Filter\BoolNot(new Filter\Term(array('agent_team' => 0))));
+                $not_assigned->addFilter(new Filter\BoolNot(new Filter\Term(['agent' => 0])));
+                $not_assigned->addFilter(new Filter\BoolNot(new Filter\Term(['agent_team' => 0])));
                 $sub_filter->addFilter($not_assigned);
                 $any = true;
             }
 
             if (!$this->person->hasPerm('agent_tickets.view_others')) {
-                $sub_filter->addFilter(new Filter\BoolNot(new Filter\Term(array('agent' => 0))));
-                $sub_filter->addFilter(new Filter\BoolNot(new Filter\Term(array('agent_team' => 0))));
+                $sub_filter->addFilter(new Filter\BoolNot(new Filter\Term(['agent' => 0])));
+                $sub_filter->addFilter(new Filter\BoolNot(new Filter\Term(['agent_team' => 0])));
                 $any = true;
             }
 
             // If user has all perms, then no filters are applied
             // and the BoolAnd filter will be empty
             if (!$any) {
-                return array();
+                return [];
             }
 
             $main_filter->addFilter($sub_filter);

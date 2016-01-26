@@ -34,11 +34,9 @@ namespace Application\DeskPRO\NewSearch\Repository;
 class NewsRepository extends AbstractRepository
 {
     /**
-     * Fields to be highlighted.
-     *
-     * @var array
+     * {@inheritdoc}
      */
-    protected $highlightFields = array(
-        'title' => array('fragment_size' => 100),
-    );
+    protected $highlightFields = [
+        'title' => ['fragment_size' => 100],
+    ];
 }

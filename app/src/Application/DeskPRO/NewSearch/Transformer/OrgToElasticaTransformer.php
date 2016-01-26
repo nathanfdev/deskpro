@@ -39,12 +39,9 @@ use Orb\Util\Arrays;
 class OrgToElasticaTransformer implements ModelToElasticaTransformerInterface
 {
     /**
-     * Transform.
+     * {@inheritdoc}
      *
      * @param Organization $object
-     * @param array        $fields
-     *
-     * @return Document
      */
     public function transform($object, array $fields)
     {
@@ -54,7 +51,7 @@ class OrgToElasticaTransformer implements ModelToElasticaTransformerInterface
 
         $document->set('name', $object->name);
 
-        $email_domains = array();
+        $email_domains = [];
         foreach ($object->email_domains as $d) {
             $email_domains[] = $d->domain;
         }
