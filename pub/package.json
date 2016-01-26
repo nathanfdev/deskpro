@@ -134,7 +134,8 @@
       "/Selectors/",
       "/Constants/",
       "Scrollable",
-      "/Common/Components/ListFrame/View"
+      "/Common/Components/ListFrame/View",
+      ".test-helper.js"
     ],
     "testFileExtensions": [
       "es6",

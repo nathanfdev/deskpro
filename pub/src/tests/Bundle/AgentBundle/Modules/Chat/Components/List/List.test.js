@@ -13,7 +13,7 @@ jest.dontMock('DeskPRO/Component/LoadIndicator');
 
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';
-import { renderInRedux, fakeState, fakeRecordStoreState, toImmutable } from 'Helpers/redux';
+import { renderChatsInRedux } from '../../chats.test-helper';
 
 describe('List', () => {
   const ListFrameContainer  = require('~ListFrame/frame').ListFrameContainer;
@@ -23,16 +23,8 @@ describe('List', () => {
   const ChatsTableContainer = require('~List/View/Table/ChatsTableContainer').ChatsTableContainer;
 
   const renderList = (viewMode = 'card') => {
-    renderInRedux(
-      fakeState({
-        Chat: {
-          list: toImmutable({elements: [], currentListParams: {}})
-        },
-        RecordStores: {Chat: {chats: fakeRecordStoreState()}}
-      }),
-      <List elements={[]} viewMode={viewMode} loaded={true}/>
-    );
-  }
+    renderChatsInRedux(0, <List elements={[]} viewMode={viewMode} loaded={true} />);
+  };
 
   it('should render ListFrameContainer', () => {
     spyOn(ListFrameContainer.prototype, 'render').andCallThrough();
