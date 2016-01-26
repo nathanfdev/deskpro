@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import MediumEditor from 'medium-editor';
 
-export default class RteInput extends React.Component {
+export class RteInput extends React.Component {
 
   static propTypes = {
     tag: PropTypes.string,

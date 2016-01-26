@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import RteInput from 'DeskPRO/Component/Rte/RteInput';
+import { RteInput } from 'DeskPRO/Component/Rte/RteInput';
 import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
 import { portalUrlGenerator } from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
 
