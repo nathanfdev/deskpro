@@ -34,16 +34,17 @@ namespace Application\DeskPRO\NewSearch\Repository;
 class ArticleRepository extends AbstractRepository
 {
     /**
-     * Fields to be highlighted.
-     *
-     * @var array
+     * {@inheritdoc}
      */
-    protected $highlightFields = array(
-        'title' => array('fragment_size' => 100),
-    );
+    protected $highlightFields = [
+        'title' => ['fragment_size' => 100],
+    ];
 
+    /**
+     * {@inheritdoc}
+     */
     protected function getQueryFields()
     {
-        return array('title', 'labels', 'content');
+        return ['title', 'labels', 'content'];
     }
 }

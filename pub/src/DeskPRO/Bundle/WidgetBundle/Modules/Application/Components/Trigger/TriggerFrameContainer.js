@@ -9,7 +9,7 @@ import {
 } from '../../Selectors/dpWindow';
 import { widgetLoadedSelector } from '../../Selectors/bootstrap';
 import { Frame } from 'Ampliflux/common/components/Frame';
-import store from '../../../../Services/store';
+import { store } from '../../../../Services/store';
 
 @connect(state => ({
   widgetLoaded: widgetLoadedSelector(state),

@@ -29,6 +29,7 @@ import { myDepartmentsSelector, myDepartmentsStatusSelector } from 'DeskPRO/Bund
   departments: myDepartmentsSelector(state),
   recentChats: recentChatsSelector(state),
   current: state.IM.chats.get('current'),
+  chating: state.IM.chats.get('chating'),
   counts: state.IM.messages.get('counts'),
   loadingCounts: state.IM.messages.get('loadingCounts'),
   teamsStatus: myAgentTeamsStatusSelector(state),
@@ -98,7 +99,7 @@ export class List extends React.Component {
   };
 
   render() {
-    const { recentChatsStatus, agentsStatus, teamsStatus, departmentsStatus, meStatus, loadingCounts } = this.props;
+    const { recentChatsStatus, agentsStatus, teamsStatus, departmentsStatus, meStatus, loadingCounts, chating } = this.props;
     const loaded = (
       recentChatsStatus.get('isDone')
       && agentsStatus.get('isDone')
@@ -106,7 +107,7 @@ export class List extends React.Component {
       && departmentsStatus.get('isDone')
       && meStatus.get('isDone')
     );
-    const { agents, teams, departments, recentChats, me, dispatch, counts } = this.props;
+    const { agents, teams, departments, recentChats, me, dispatch, counts, current } = this.props;
     const sortedChats = recentChats.sort((first, second) => {
       const fDate = Date.parse(first.get('date_last_message'));
       const sDate = Date.parse(second.get('date_last_message'));
@@ -119,6 +120,8 @@ export class List extends React.Component {
           sortedChats.toList().map((chat) => {
             return (
               <Item
+                current={current}
+                chating={chating}
                 startChat={this.startChat}
                 me={me}
                 counts={counts}

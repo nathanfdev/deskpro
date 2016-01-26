@@ -8,9 +8,7 @@ import { combineReducerHierarchy } from 'Ampliflux';
 import * as ampMiddleware from 'Ampliflux/middleware';
 import AppReducers from './AgentApp_Reducers.js';
 import { DpAppContainer } from './Modules/Application/Components/DpAppContainer';
-import { preloadData } from './Modules/Application/Actions/bootstrapActions';
 import { IntlProvider } from 'react-intl';
-import createBrowserHistory from 'history/lib/createBrowserHistory';
 import Immutable from 'immutable';
 window.Immutable = Immutable;
 
@@ -58,13 +56,12 @@ export class AgentApp {
     );
     const makeStore = compose(middleware)(createStore);
     const store = makeStore(reducer);
-    store.dispatch(preloadData());
 
     ReactDOM.render(
       <div>
         <Provider store={store}>
           <IntlProvider locale={window.DP_LOCALE} messages={window.DP_LANG}>
-            <DpAppContainer history={createBrowserHistory()} />
+            <DpAppContainer />
           </IntlProvider>
         </Provider>
       </div>,

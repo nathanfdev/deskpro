@@ -33,12 +33,15 @@ namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\Brand;
 
+/**
+ * Nothing. The Fresh DB doesn't add any additional data.
+ *
+ * Class EmptyDb.
+ */
 class EmptyDb extends AbstractDbSet
 {
     /**
-     * Nothing. The Fresh DB doesn't add any additional data.
-     *
-     * @return int
+     * {@inheritdoc}
      */
     protected function installSet()
     {
@@ -50,6 +53,9 @@ class EmptyDb extends AbstractDbSet
         $em->flush();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getId()
     {
         return 'empty';

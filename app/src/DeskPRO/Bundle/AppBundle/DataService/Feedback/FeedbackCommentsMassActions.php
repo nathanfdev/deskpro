@@ -32,58 +32,34 @@
 namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
 
 use Application\DeskPRO\Entity\FeedbackComment;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\FeedbackComment\ApproveAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\FeedbackComment\DeleteAction;
 use DeskPRO\Bundle\AppBundle\Data\MassActions\AbstractMassActionsPreprocessor;
 use DeskPRO\Bundle\AppBundle\Data\MassActions\MassActionsPreprocessorInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FeedbackCommentsMassActions extends AbstractMassActionsPreprocessor implements MassActionsPreprocessorInterface
 {
+    protected static $entity = FeedbackComment::class;
+
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefined(['approve', 'delete']);
-        $resolver->setAllowedValues('approve', function ($value) {
-            return (int) $value === 1;
-        });
-        $resolver->setAllowedValues('delete', function ($value) {
-            return (int) $value === 1;
-        });
     }
 
     public function prepareActions()
     {
-        return true;
-    }
-
-    public function selectEntities()
-    {
-        $qb = $this->em->createQueryBuilder();
-        $qb
-            ->select('comment')
-            ->from('DeskPRO:FeedbackComment', 'comment')
-            ->where('comment.id IN (:ids)')
-            ->setParameter('ids', $this->params['ids']);
-
-        return $qb->getQuery()->getResult();
-    }
-
-    /**
-     * @param \Application\DeskPRO\Entity\FeedbackComment $comment
-     */
-    public function prepareEntity($comment)
-    {
-        foreach ($this->params['actions'] as $key => $value) {
-            switch ($key) {
+        foreach ($this->params['actions'] as $name => $options) {
+            switch ($name) {
                 case 'approve':
-                    if ($value) {
-                        $comment->setStatus(FeedbackComment::STATUS_VISIBLE);
-                    }
+                    $this->actions->addAction(new ApproveAction());
                     break;
                 case 'delete':
-                    if ($value) {
-                        $comment->setStatus(FeedbackComment::STATUS_DELETED);
-                    }
+                    $this->actions->addAction(new DeleteAction());
                     break;
             }
         }
+
+        return $this->actions;
     }
 }

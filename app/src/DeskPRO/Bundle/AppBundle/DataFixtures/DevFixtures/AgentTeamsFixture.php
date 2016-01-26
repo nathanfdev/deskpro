@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -76,7 +75,7 @@ class AgentTeamsFixture extends AbstractFixture implements ContainerAwareInterfa
 
         $bs = $this->container->get('deskpro.blob_storage');
 
-        foreach (array('Support', 'Level 1', 'Level 2') as $k => $title) {
+        foreach (['Support', 'Level 1', 'Level 2'] as $k => $title) {
             $team       = new AgentTeam();
             $team->name = $title;
             $this->addReference('team.'.$k, $team);

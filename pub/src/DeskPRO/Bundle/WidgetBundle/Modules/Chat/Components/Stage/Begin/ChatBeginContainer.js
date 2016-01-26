@@ -3,17 +3,19 @@ import { connect } from 'react-redux';
 import { createChat } from '../../../Actions/chatActions';
 import { Header } from './Header';
 import { liveDemoSelector } from '../../../../Application/Selectors/dpWindow';
-import { requireChatEmailValidationSelector } from '../../../../Application/Selectors/bootstrap';
-import history from '../../../../../Services/history';
+import { requireChatEmailValidationSelector, requireChatLoginSelector } from '../../../../Application/Selectors/bootstrap';
+import { history } from '../../../../../Services/history';
 
 @connect(state => ({
   liveDemo: liveDemoSelector(state),
-  requireEmailValidation: requireChatEmailValidationSelector(state)
+  requireEmailValidation: requireChatEmailValidationSelector(state),
+  requireLogin: requireChatLoginSelector(state)
 }))
 export class ChatBeginContainer extends React.Component {
 
   static propTypes = {
     requireEmailValidation: PropTypes.bool,
+    requireLogin: PropTypes.bool,
     dispatch: PropTypes.func.isRequired,
     children: PropTypes.node,
     isCreated: PropTypes.bool,
@@ -76,7 +78,9 @@ export class ChatBeginContainer extends React.Component {
       event.preventDefault();
     }
 
-    const { liveDemo, requireEmailValidation } = this.props;
+    const { liveDemo, requireEmailValidation, requireLogin } = this.props;
+
+    // Disabled in live demo mode
     if (liveDemo) {
       return;
     }
@@ -92,7 +96,7 @@ export class ChatBeginContainer extends React.Component {
 
     promise.then(
       () => {
-        if (requireEmailValidation) {
+        if (requireEmailValidation && !requireLogin) {
           history.replace('/chat/validation/email');
         } else {
           history.replace('/chat/waiting');

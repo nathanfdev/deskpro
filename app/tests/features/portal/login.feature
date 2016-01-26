@@ -9,17 +9,14 @@ Feature: Login
       | default |
     And the default brand is using the sidebar theme
 
-  @basic
   Scenario: I login as user
     When I login with user credentials
     Then I should be authenticated as user
 
-  @basic
   Scenario: I login as agent
     When I login with agent credentials
     Then I should be authenticated as agent
 
-  @basic
   Scenario: I login as admin
     When I login with admin credentials
     Then I should be authenticated as admin

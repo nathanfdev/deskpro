@@ -18,7 +18,7 @@ export class TeamsListItem extends React.Component {
         <a href="#"
            onClick={this.startChat.bind(null, this.props.team.get('id'), 'team')}
           >
-          <AgentTeamAvatar agentTeam={this.props.team} size="22" />
+          <AgentTeamAvatar agentTeam={this.props.team} size={22} />
           <span className="agent">{this.props.team.get('name')}</span>
         </a>
       </li>

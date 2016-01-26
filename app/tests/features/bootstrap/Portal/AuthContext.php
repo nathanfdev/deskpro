@@ -36,7 +36,6 @@ use Application\DeskPRO\Entity\Person;
 use DpBehat\RebootableContextInterface;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class AuthContext extends BasePortalContext implements RebootableContextInterface
 {
@@ -171,10 +170,7 @@ class AuthContext extends BasePortalContext implements RebootableContextInterfac
      */
     public function iAmAuthenticatedAsUser($who)
     {
-        $user = $this->user_details->getWho($who);
-        $this->token_storage->setToken(
-            new UsernamePasswordToken($who, null, 'main', $user->getRoles())
-        );
+        $this->iLoginWithCredentials($who);
     }
 
     /**

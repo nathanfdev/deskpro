@@ -9,12 +9,15 @@ import { IMContainer } from '../../IM/Components/IMContainer';
 import { PreferencesContainer } from './Preferences/PreferencesContainer';
 import { NotificationServiceContainer } from './Notifications/NotificationServiceContainer.js';
 import { showWelcomePageSelector, coverShownSelector } from '../Selectors/dpWindow';
+import { loadMe } from '../RecordStores/Actions/meActions';
+import { releasePeopleRequest } from '../../CRM/RecordStores/Actions/peopleActions';
 
 @connect(state => ({
   welcomePageShown: showWelcomePageSelector(state),
   coverShown: coverShownSelector(state),
   userStatus: meStateSelector.statusSel(state),
-  user: meSelector(state)
+  user: meSelector(state),
+  isPreloading: state.Application.dpWindow.get('isPreloading')
 }))
 export class DpAppRouteContainer extends React.Component {
 
@@ -22,12 +25,15 @@ export class DpAppRouteContainer extends React.Component {
     children: PropTypes.node.isRequired,
     welcomePageShown: PropTypes.bool.isRequired,
     coverShown: PropTypes.bool.isRequired,
+    isPreloading: PropTypes.bool.isRequired,
     userStatus: PropTypes.object.isRequired,
     user: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
   };
 
   componentDidMount() {
+    this.props.dispatch(releasePeopleRequest('me'));
+    this.props.dispatch(loadMe());
     this.props.dispatch(showWelcomePage());
     this.hideWelcomePage();
   }
@@ -41,20 +47,20 @@ export class DpAppRouteContainer extends React.Component {
   }
 
   hideWelcomePage() {
-    const { userStatus, dispatch } = this.props;
-    if (!this.welcomePageTimer && userStatus.get('isDone')) {
+    const { userStatus, dispatch, isPreloading } = this.props;
+    if (!this.welcomePageTimer && userStatus.get('isDone') && !isPreloading) {
       this.welcomePageTimer = setTimeout(() => dispatch(doneInitialLoad()), 3000);
     }
   }
 
   render() {
-    const { userStatus, user, welcomePageShown, coverShown, children } = this.props;
+    const { userStatus, welcomePageShown, coverShown, children } = this.props;
 
     if (userStatus.get('isLoading') || userStatus.get('isError')) {
       return <DpAppLoading />;
     }
     if (welcomePageShown) {
-      return <WelcomeBack user={user} />;
+      return <WelcomeBack/>;
     }
 
     return (

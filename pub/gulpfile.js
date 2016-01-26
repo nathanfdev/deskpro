@@ -1,173 +1,175 @@
-var gulp                  = require('gulp'),
-    gutil                 = require('gulp-util'),
-    webpack               = require("webpack"),
-    express               = require('express'),
-    cors                  = require('cors'),
-    del                   = require('del'),
-    runSeq                = require('run-sequence'),
-    path                  = require("path"),
-    ExtractTextPlugin     = require("extract-text-webpack-plugin"),
-    WebpackNotifierPlugin = require('webpack-notifier'),
-    glob                  = require("glob"),
-    babel                 = require("babel-core"),
-    uglify                = require("uglify-js"),
-    fs                    = require("fs"),
-    mkdirp                = require('mkdirp'),
-    watch                 = require('gulp-watch'),
-    notifier              = require('node-notifier'),
-    reducerRefresh        = require("./build-tools/app-reducer-gen/loader").refreshBundle;
+var gulp = require('gulp');
+var gutil = require('gulp-util');
+var webpack = require('webpack');
+var express = require('express');
+var cors = require('cors');
+var del = require('del');
+var runSeq = require('run-sequence');
+var path = require('path');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var WebpackNotifierPlugin = require('webpack-notifier');
+var glob = require('glob');
+var babel = require('babel-core');
+var uglify = require('uglify-js');
+var fs = require('fs');
+var mkdirp = require('mkdirp');
+var watch = require('gulp-watch');
+var notifier = require('node-notifier');
+var reducerRefresh = require('./build-tools/app-reducer-gen/loader').refreshBundle;
 
-//######################################################################################################################
-//# Util
-//######################################################################################################################
+// ######################################################################################################################
+// # Util
+// ######################################################################################################################
 
 var deskpro = {
-  isProd:  false
+  isProd: false
 };
 
-//######################################################################################################################
-//# Task Runners
-//######################################################################################################################
+// ######################################################################################################################
+// # Task Runners
+// ######################################################################################################################
 
-gulp.task('clean', function (cb) {
-  del(['./build']).then(function() { cb(); });
+gulp.task('clean', cb => {
+  del(['./build']).then(()=> {
+    cb();
+  });
 });
 
-gulp.task('default', ['clean'], function (cb) {
+gulp.task('default', ['clean'], cb => {
   runSeq(['bundle'], cb);
 });
 
-gulp.task('prod', ['clean', 'priv:start-prod'], function (cb) {
+gulp.task('prod', ['clean', 'priv:start-prod'], cb => {
   runSeq(['bundle'], cb);
 });
 
-gulp.task('dev', function (cb) {
+gulp.task('dev', cb => {
   // prefer to use one at a time, build speed is faster
   // and you can still just open up two terminal winodws if you need both
-  console.log("Use:");
-  console.log("\tdev:agent    -  For the agent interface");
-  console.log("\tdev:portal   -  For the portal");
-  console.log("\tdev:widget   -  For the widget");
-  console.log("\tdev:all      -  For both");
+  console.log('Use:');
+  console.log('\tdev:agent    -  For the agent interface');
+  console.log('\tdev:portal   -  For the portal');
+  console.log('\tdev:widget   -  For the widget');
+  console.log('\tdev:all      -  For both');
   cb();
 });
 
-gulp.task('dev:agent', function (cb) {
+gulp.task('dev:agent', cb => {
   runSeq(['bundle:dev-server:agent'], cb);
 });
 
-gulp.task('dev:portal', function (cb) {
+gulp.task('dev:portal', cb => {
   runSeq(['bundle:dev-server:portal'], cb);
 });
 
-gulp.task('dev:widget', function (cb) {
+gulp.task('dev:widget', cb => {
   runSeq(['bundle:dev-server:widget'], cb);
 });
 
-gulp.task('dev:all', function (cb) {
+gulp.task('dev:all', cb => {
   runSeq(['bundle:dev-server'], cb);
 });
 
-//######################################################################################################################
-//# Helpers
-//######################################################################################################################
+// ######################################################################################################################
+// # Helpers
+// ######################################################################################################################
 
-gulp.task('priv:start-prod', function () {
+gulp.task('priv:start-prod', () => {
   deskpro.isProd = true;
 });
 
-//######################################################################################################################
-//# Bundler
-//######################################################################################################################
+// ######################################################################################################################
+// # Bundler
+// ######################################################################################################################
 
 function refreshWidgetLoader() {
-  console.log("Writing widget_loader");
+  console.log('Writing widget_loader');
   var loaderCode = babel.transformFileSync(
-    path.join(__dirname, "src/DeskPRO/Bundle/WidgetBundle") + "/widget_loader.js",
-    { "presets": ["es2015", "react", "stage-0"] }
+    path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle') + '/widget_loader.js',
+    { 'presets': ['es2015', 'react', 'stage-0'] }
   ).code;
 
   try {
     var loaderCodemin = uglify.minify(loaderCode, {
-      "fromString": true
+      'fromString': true
     }).code;
   } catch (e) {
-    console.log("Trying to minify:\n");
+    console.log('Trying to minify:\n');
     console.log(loaderCode);
-    console.log("\n\n");
+    console.log('\n\n');
     console.error(e);
     return;
   }
 
-  var buildDir = path.join(__dirname, "build");
+  var buildDir = path.join(__dirname, 'build');
 
-  if (!fs.existsSync(buildDir)){
+  if (!fs.existsSync(buildDir)) {
     fs.mkdirSync(buildDir);
   }
 
-  fs.writeFileSync(buildDir + "/widget_loader.js", loaderCode);
-  fs.writeFileSync(path.join(__dirname, "build") + "/widget_loader.min.js", loaderCodemin);
-  console.log(".. done writing widget_loader");
+  fs.writeFileSync(buildDir + '/widget_loader.js', loaderCode);
+  fs.writeFileSync(path.join(__dirname, 'build') + '/widget_loader.min.js', loaderCodemin);
+  console.log('.. done writing widget_loader');
 }
 
 function refreshHitRecorder() {
-  console.log("Writing hit_recorder");
+  console.log('Writing hit_recorder');
   var loaderCode = babel.transformFileSync(
-    path.join(__dirname, "src/DeskPRO/Bundle/WidgetBundle") + "/hit_recorder.js",
-    { "presets": ["es2015", "react", "stage-0"] }
+    path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle') + '/hit_recorder.js',
+    { 'presets': ['es2015', 'react', 'stage-0'] }
   ).code;
 
   try {
     var loaderCodemin = uglify.minify(loaderCode, {
-      "fromString": true
+      'fromString': true
     }).code;
   } catch (e) {
-    console.log("Trying to minify:\n");
+    console.log('Trying to minify:\n');
     console.log(loaderCode);
-    console.log("\n\n");
+    console.log('\n\n');
     console.error(e);
     return;
   }
 
-  var buildDir = path.join(__dirname, "build");
+  var buildDir = path.join(__dirname, 'build');
 
-  if (!fs.existsSync(buildDir)){
+  if (!fs.existsSync(buildDir)) {
     fs.mkdirSync(buildDir);
   }
 
-  fs.writeFileSync(buildDir + "/hit_recorder.js", loaderCode);
-  fs.writeFileSync(path.join(__dirname, "build") + "/hit_recorder.min.js", loaderCodemin);
-  console.log(".. done writing hit_recorder");
+  fs.writeFileSync(buildDir + '/hit_recorder.js', loaderCode);
+  fs.writeFileSync(path.join(__dirname, 'build') + '/hit_recorder.min.js', loaderCodemin);
+  console.log('.. done writing hit_recorder');
 }
 
 function refreshLegacy() {
-  var legacyPath = path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle/Legacy");
-  var targetPath = path.join(__dirname, "build/DeskPRO/Bundle/AgentBundle/Legacy");
+  var legacyPath = path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Legacy');
+  var targetPath = path.join(__dirname, 'build/DeskPRO/Bundle/AgentBundle/Legacy');
 
-  console.log("Refreshing legacy... ");
-  glob.sync('**/*.js', { cwd: legacyPath, root: legacyPath }).forEach(function(f) {
-    var filePath    = legacyPath + '/' + f;
-    var targetFile  = targetPath + '/' + f;
-    var targetDir   = path.dirname(targetFile);
+  console.log('Refreshing legacy... ');
+  glob.sync('**/*.js', { cwd: legacyPath, root: legacyPath }).forEach(f => {
+    var filePath = legacyPath + '/' + f;
+    var targetFile = targetPath + '/' + f;
+    var targetDir = path.dirname(targetFile);
 
-    if (!fs.existsSync(targetDir)){
+    if (!fs.existsSync(targetDir)) {
       mkdirp.sync(targetDir);
     }
 
     try {
-      var code = babel.transformFileSync(filePath, { "presets": ["es2015", "stage-0"] }).code;
+      var code = babel.transformFileSync(filePath, { presets: ['es2015', 'stage-0'] }).code;
       fs.writeFileSync(targetFile, code);
     } catch (e) {
-      console.log("Error refreshing legacy");
+      console.log('Error refreshing legacy');
       console.error(e);
       notifier.notify({
-        title: "Error refreshing legacy",
+        title: 'Error refreshing legacy',
         message: e,
         sound: true
       });
     }
 
-    console.log("- " + filePath);
+    console.log('- ' + filePath);
   });
 }
 
@@ -177,7 +179,7 @@ function refreshPortalDesignerVariables() {
   var child = spawn('gulp', ['sassdoc']);
 
   // Print output from Gulpfile
-  child.stdout.on('data', function(data) {
+  child.stdout.on('data', data => {
     if (data) {
       console.log(data.toString());
     }
@@ -186,9 +188,9 @@ function refreshPortalDesignerVariables() {
   process.chdir('../pub');
 }
 
-gulp.task('bundle', function (callback) {
-  reducerRefresh("Agent", path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle"));
-  reducerRefresh("Widget", path.join(__dirname, "src/DeskPRO/Bundle/WidgetBundle"));
+gulp.task('bundle', callback => {
+  reducerRefresh('Agent', path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle'));
+  reducerRefresh('Widget', path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle'));
   refreshWidgetLoader();
   refreshHitRecorder();
   refreshLegacy();
@@ -196,59 +198,59 @@ gulp.task('bundle', function (callback) {
   runWebpackBundle(getWebpackConfig('all', deskpro.isProd), callback);
 });
 
-gulp.task('bundle:agent', function (callback) {
-  reducerRefresh("Agent", path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle"));
+gulp.task('bundle:agent', callback => {
+  reducerRefresh('Agent', path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle'));
   refreshLegacy();
   refreshPortalDesignerVariables();
   runWebpackBundle(getWebpackConfig('agent', deskpro.isProd), callback);
 });
 
-gulp.task('bundle:portal', function (callback) {
+gulp.task('bundle:portal', callback => {
   runWebpackBundle(getWebpackConfig('portal', deskpro.isProd), callback);
 });
 
-gulp.task('bundle:widget', function(callback) {
-  reducerRefresh("Widget", path.join(__dirname, "src/DeskPRO/Bundle/WidgetBundle"));
+gulp.task('bundle:widget', callback => {
+  reducerRefresh('Widget', path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle'));
   refreshWidgetLoader();
   refreshHitRecorder();
   runWebpackBundle(getWebpackConfig('widget', deskpro.isProd), callback);
 });
 
-gulp.task('bundle:dev-server', function(callback) {
+gulp.task('bundle:dev-server', () => {
   refreshLegacy();
-  watch(path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle/Legacy/**/*.js"), function() {
+  watch(path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Legacy/**/*.js'), () => {
     refreshLegacy();
   });
   refreshPortalDesignerVariables();
   refreshWidgetLoader();
   refreshHitRecorder();
-  reducerRefresh("Agent", path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle"));
-  reducerRefresh("Widget", path.join(__dirname, "src/DeskPRO/Bundle/WidgetBundle"));
+  reducerRefresh('Agent', path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle'));
+  reducerRefresh('Widget', path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle'));
   startWebpackServer(getWebpackConfig('all', true, false));
 });
 
-gulp.task('bundle:dev-server:agent', function(callback) {
+gulp.task('bundle:dev-server:agent', () => {
   refreshLegacy();
-  reducerRefresh("Agent", path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle"));
-  watch(path.join(__dirname, "src/DeskPRO/Bundle/AgentBundle/Legacy/**/*.js"), function() {
+  reducerRefresh('Agent', path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle'));
+  watch(path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Legacy/**/*.js'), () => {
     refreshLegacy();
   });
   refreshPortalDesignerVariables();
   startWebpackServer(getWebpackConfig('agent', true, false));
 });
 
-gulp.task('bundle:dev-server:portal', function(callback) {
+gulp.task('bundle:dev-server:portal', () => {
   startWebpackServer(getWebpackConfig('portal', true, false));
 });
 
-gulp.task('bundle:dev-server:widget', function(callback) {
-  reducerRefresh("Widget", path.join(__dirname, "src/DeskPRO/Bundle/WidgetBundle"));
+gulp.task('bundle:dev-server:widget', () => {
+  reducerRefresh('Widget', path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle'));
   startWebpackServer(getWebpackConfig('widget', true, false));
 });
 
-//######################################################################################################################
-//# Helpers
-//######################################################################################################################
+// ######################################################################################################################
+// # Helpers
+// ######################################################################################################################
 
 /**
  * @param {String}  mode          all, agent, portal
@@ -355,20 +357,20 @@ function getWebpackConfig(mode, isDevServer, isProd) {
     },
     plugins: [
       new WebpackNotifierPlugin(),
-      new ExtractTextPlugin("[name].css"),
+      new ExtractTextPlugin('[name].css'),
       new webpack.DefinePlugin({
-        'process.env.NODE_ENV': (isProd ? "\"production\"" : "\"development\"")
+        'process.env.NODE_ENV': (isProd ? '\"production\"' : '\"development\"')
       }),
       new webpack.ProvidePlugin({
-        $: "jquery",
-        jQuery: "jquery"
+        $: 'jquery',
+        jQuery: 'jquery'
       })
     ]
   };
 
   if (mode === 'all' || mode === 'portal') {
-    config.entry['widget_loader']              = ['./src/DeskPRO/Bundle/WidgetBundle/widget_loader.js'];
-    config.entry['DeskPRO_PortalBundle']       = ['./src/DeskPRO/Bundle/PortalBundle/DeskPRO_PortalBundle'];
+    config.entry['widget_loader'] = ['./src/DeskPRO/Bundle/WidgetBundle/widget_loader.js'];
+    config.entry['DeskPRO_PortalBundle'] = ['./src/DeskPRO/Bundle/PortalBundle/DeskPRO_PortalBundle'];
     config.entry['DeskPRO_PortalBundle_style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-style.scss'];
 
     config.entry['DeskPRO_PortalBundle_iestyle'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/ie-overrides.scss'];
@@ -376,12 +378,12 @@ function getWebpackConfig(mode, isDevServer, isProd) {
     config.entry['DeskPRO_PortalBundle_ie9style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/ie9-overrides.scss'];
   }
   if (mode === 'all' || mode === 'widget') {
-    config.entry['DeskPRO_WidgetBundle']       = ['./src/DeskPRO/Bundle/WidgetBundle/DeskPRO_WidgetBundle'];
+    config.entry['DeskPRO_WidgetBundle'] = ['./src/DeskPRO/Bundle/WidgetBundle/DeskPRO_WidgetBundle'];
     config.entry['DeskPRO_WidgetBundle_style'] = ['./src/DeskPRO/Bundle/WidgetBundle/Resources/style/widget-style.scss'];
   }
   if (mode === 'all' || mode === 'agent') {
-    config.entry['phonenumber_utils']         = ['./node_modules/intl-tel-input/lib/libphonenumber/build/utils'];
-    config.entry['DeskPRO_AgentBundle']       = ['./src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentBundle'];
+    config.entry['phonenumber_utils'] = ['./node_modules/intl-tel-input/lib/libphonenumber/build/utils'];
+    config.entry['DeskPRO_AgentBundle'] = ['./src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentBundle'];
     config.entry['DeskPRO_AgentBundle_style'] = ['./src/DeskPRO/Bundle/AgentBundle/Resources/style/agent-style.scss'];
   }
 
@@ -392,7 +394,7 @@ function getWebpackConfig(mode, isDevServer, isProd) {
   if (isProd) {
     config.plugins.push(new webpack.optimize.UglifyJsPlugin({
       exclude: [/(node_modules|bower_components)/]
-    }))
+    }));
   }
 
   //---
@@ -402,7 +404,7 @@ function getWebpackConfig(mode, isDevServer, isProd) {
   if (isDevServer) {
     config.debug = true;
 
-    config.output.publicPath = "http://localhost:9666/pub/build/";
+    config.output.publicPath = 'http://localhost:9666/pub/build/';
 
     config.plugins.push(new webpack.HotModuleReplacementPlugin());
     config.plugins.push(new webpack.NoErrorsPlugin());
@@ -425,11 +427,10 @@ function getWebpackConfig(mode, isDevServer, isProd) {
  * @param {Object} config
  * @param {Function} callback
  */
-function runWebpackBundle(config, callback)
-{
-  webpack(config, function(err, stats) {
-    if(err) throw new gutil.PluginError("bundle", err);
-    gutil.log("[bundle]", stats.toString({
+function runWebpackBundle(config, callback) {
+  webpack(config, (err, stats) => {
+    if (err) throw new gutil.PluginError('bundle', err);
+    gutil.log('[bundle]', stats.toString({
       colors: true
     }));
     callback();
@@ -440,8 +441,7 @@ function runWebpackBundle(config, callback)
  * @param {Object} config
  * @return {express}
  */
-function startWebpackServer(config)
-{
+function startWebpackServer(config) {
   var app = express();
   var compiler = webpack(config);
 
@@ -466,12 +466,12 @@ function startWebpackServer(config)
 
   app.use(cors());
 
-  app.listen(9666, '0.0.0.0', function (err) {
-    if(err) throw new gutil.PluginError("webpack-dev-server", err);
+  app.listen(9666, '0.0.0.0', (err) => {
+    if (err) throw new gutil.PluginError('webpack-dev-server', err);
 
-    gutil.log("[webpack-dev-server]", "http://localhost:9666/");
-    gutil.log("[webpack-dev-server]", "In your config.php, add this line: ");
-    gutil.log("[webpack-dev-server]", "$DP_CONFIG['pub_asset_urls'] = array('pub/build' => 'http://localhost:9666/pub/build/');");
+    gutil.log('[webpack-dev-server]', 'http://localhost:9666/');
+    gutil.log('[webpack-dev-server]', 'In your config.php, add this line: ');
+    gutil.log('[webpack-dev-server]', "$DP_CONFIG['pub_asset_urls'] = array('pub/build' => 'http://localhost:9666/pub/build/');");
   });
 
   return app;

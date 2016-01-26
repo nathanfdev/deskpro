@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import { DropZoneOverlay } from './DropZoneOverlay';
+import { DragOverlayListener } from 'DeskPRO/Component/Uploader/DragOverlayListener';
+import { PasteCatcher } from 'DeskPRO/Component/Uploader/PasteCatcher';
 import 'blueimp-file-upload';
 import $ from 'jquery';
 import { extension } from 'mime-types';
 import moment from 'moment';
 import { getImageDataUrl, dataUrlToBlob } from 'DeskPRO/Component/Util/Blob';
-import { PasteCatcher } from './PasteCatcher';
 
 export class DropZone extends React.Component {
 
@@ -17,23 +17,13 @@ export class DropZone extends React.Component {
     repeatFiles: PropTypes.object,
     onSend: PropTypes.func,
     onSuccess: PropTypes.func,
-    onFail: PropTypes.func
+    onFail: PropTypes.func,
+    children: PropTypes.node
   };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      overlay: false
-    };
-  }
 
   componentDidMount() {
     this.initializeFileUpload();
-    this.getContext().forEach(context => {
-      $(context).on('dragover', this.onDragStarted);
-      $(context).on('dragover', this.onDefaultDrop);
-      $(context).on('paste', this.onPaste);
-    });
+    this.getContext().forEach(context => $(context).on('paste', this.onPaste));
   }
 
   componentWillReceiveProps(newProps) {
@@ -44,35 +34,8 @@ export class DropZone extends React.Component {
 
   componentWillUnmount() {
     $(this.getInput()).fileupload('destroy');
-    this.getContext().forEach(context => {
-      $(context).off('dragover', this.onDragStarted);
-      $(context).off('dragover', this.onDefaultDrop);
-      $(context).off('paste', this.onPaste);
-    });
+    this.getContext().forEach(context => $(context).off('paste', this.onPaste));
   }
-
-  onDefaultDrop = event => {
-    event.preventDefault();
-  };
-
-  onDragStarted = () => {
-    if (!this.timeout) {
-      this.setState({
-        overlay: true
-      });
-    } else {
-      clearTimeout(this.timeout);
-    }
-
-    this.timeout = setTimeout(this.onDragEnd, 100);
-  };
-
-  onDragEnd = () => {
-    this.timeout = null;
-    this.setState({
-      overlay: false
-    });
-  };
 
   onGetBlobFromPasteChecker = () => {
     const $pasteCatcher = $(this.getPasteCatcher());
@@ -155,9 +118,13 @@ export class DropZone extends React.Component {
   }
 
   render() {
+    const { context, children } = this.props;
+
     return (
       <div>
-        <DropZoneOverlay opened={this.state.overlay} />
+        <DragOverlayListener context={context}>
+          {children}
+        </DragOverlayListener>
         <PasteCatcher ref="pasteCatcher" />
       </div>
     );

@@ -33,7 +33,8 @@ Feature: Widget Setup
       "brand": {
         "widget": {
           "type": "bubble",
-          "position": "left"
+          "position": "left",
+          "agent_polling_timeout": 20
         },
         "button": {
           "name": "Help",
@@ -42,6 +43,7 @@ Feature: Widget Setup
         "chat": {
           "enabled": true,
           "begin_mode": "form",
+          "waiting_timeout": 10,
           "popup": {
             "reply_type": "buttons"
           }
@@ -55,6 +57,8 @@ Feature: Widget Setup
     Then the response should be in JSON
     And the response status code should be 204
     When I send a GET request to "/api/v2/widget/setup"
+    Then the response should be in JSON
+    And the response status code should be 200
     And the JSON node "data.settings.global.chat.require_login" should be equal to "1"
     And the JSON node "data.settings.global.chat.email_validation" should be equal to "1"
     And the JSON node "data.settings.brand.widget.type" should be equal to "bubble"

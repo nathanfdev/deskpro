@@ -29,16 +29,15 @@
 /**
  * DeskPRO.
  */
-namespace DpBehat\Portal;
+namespace DpBehat\Portal\Api;
 
-use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Session;
 use DpBehat\BaseContext;
 
 /**
- * Class PortalApiContext.
+ * Class AuthContext.
  */
-class PortalApiContext extends BaseContext
+class AuthContext extends BaseContext
 {
     /**
      * @Given I have guest portal api session with code :code
@@ -62,39 +61,29 @@ class PortalApiContext extends BaseContext
      */
     public function iHaveAuthorizedPortalApiSessionCode($code, $email)
     {
-        /** @var \Application\DeskPRO\EntityRepository\Person $person_repository */
-        $person_repository = $this->em()->getRepository('DeskPRO:Person');
-
-        $person = $person_repository->findOneByEmail($email);
-        if (!$person) {
-            throw new \RuntimeException(sprintf('Person with email `%s` not found', $email));
-        }
-
         $session = new Session();
         $session->setAuth($code);
-        $session->setPerson($person);
+        $session->setPerson($this->findPerson($email));
 
         $this->em()->persist($session);
         $this->em()->flush();
     }
 
     /**
-     * @Then I set chat email validation code :code for chat :chat_id
+     * @param string $email
      *
-     * @param int    $chat_id
-     * @param string $code
+     * @return \Application\DeskPRO\Entity\Person
      */
-    public function iSetChatEmailValidationCode($chat_id, $code)
+    public function findPerson($email)
     {
-        /** @var ChatConversation $conversation */
-        $conversation = $this->em()->getRepository('DeskPRO:ChatConversation')->find($chat_id);
-        if (!$conversation) {
-            throw new \RuntimeException(sprintf('Conversation with id `%s` not found', $chat_id));
+        /** @var \Application\DeskPRO\EntityRepository\Person $repository */
+        $repository = $this->em()->getRepository('DeskPRO:Person');
+        $person     = $repository->findOneByEmail($email);
+
+        if (!$person) {
+            throw new \RuntimeException(sprintf('Person with email `%s` not found', $email));
         }
 
-        $conversation->setEmailValidationCode($code);
-
-        $this->em()->persist($conversation);
-        $this->em()->flush();
+        return $person;
     }
 }

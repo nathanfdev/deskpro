@@ -49,7 +49,7 @@
                     <div class="column-half">
                         <div class="bucket">
                             <label class="title{% if login_error %} error{% endif %}">{{ phrase('portal.account.login-email') }}</label>
-                            <input type="text" placeholder="Email" name="username" value="{{ last_username }}">
+                            <input type="text" placeholder="Email" name="username" id="login_username" value="{{ last_username }}">
                         </div>
                     </div>
 
@@ -60,7 +60,7 @@
                                 <div class="form-meta form-meta-grey"><a href="{{ path('portal_reset_password') }}">{{ phrase('portal.account.login-password-reminder') }}</a></div>
                             {% endif %}
                             <label class="title{% if login_error %} error{% endif %}">{{ phrase('portal.account.login-password') }}</label>
-                            <input type="password" placeholder="Your password" name="password">
+                            <input type="password" placeholder="Your password" name="password" id="login_password">
                         </div>
                     </div>
 

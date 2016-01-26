@@ -34,20 +34,10 @@ namespace Application\DeskPRO\NewSearch\Repository;
 class ChatConversationRepository extends AbstractRepository implements WithLabelsInterface
 {
     /**
-     * @return array
-     */
-    protected function getQueryFields()
-    {
-        return array('_all');
-    }
-
-    /**
-     * Constructs the filters array to handle agent permission.
-     *
-     * @return array
+     * {@inheritdoc}
      */
     protected function getFilters()
     {
-        return array('term' => array('is_agent' => false));
+        return ['term' => ['is_agent' => false]];
     }
 }

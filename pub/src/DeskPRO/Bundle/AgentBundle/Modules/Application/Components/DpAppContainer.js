@@ -11,27 +11,24 @@ import { ChatApp } from '../../Chat/Components/ChatApp';
 import { PublishApp } from '../../Publish/Components/PublishApp';
 import { LoginApp } from '../../Login/Components/LoginApp';
 import { ExampleApp } from '../../Example/Components/ExampleApp';
-import { loadMe } from '../RecordStores/Actions/meActions';
-import { setHasAuth } from '../../Login/Actions/loginActions';
 import { hashChanged } from '../../Application/Actions/routingActions';
 import { setActiveApp } from '../../Application/Actions/appActions';
-import { hasAuthSelector } from '../../Login/Selectors/login';
-import Jquery from 'jquery';
+import { history } from '../../../Services/history';
+import $ from 'jquery';
 
-@connect(state => ({
-  hasAuth: hasAuthSelector(state)
-}))
+@connect()
 export class DpAppContainer extends React.Component {
 
   static propTypes = {
-    hasAuth: PropTypes.bool,
-    dispatch: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired
+    dispatch: PropTypes.func.isRequired
   };
 
   componentWillMount() {
-    this.props.dispatch(loadMe());
-    this.checkAuth();
+    $.ajaxSetup({
+      statusCode: {
+        401: () => history.replace(`${DP_BASE_URL_RELATIVE}/agent/login`)
+      }
+    });
   }
 
   componentDidMount() {
@@ -46,27 +43,6 @@ export class DpAppContainer extends React.Component {
     dispatch(hashChanged(window.location.hash));
   }
 
-  componentDidUpdate() {
-    this.checkAuth();
-  }
-
-  checkAuth() {
-    const { hasAuth, dispatch, history } = this.props;
-
-    Jquery.ajaxSetup({
-      statusCode: {
-        200: () => {
-          if (!hasAuth) {
-            dispatch(setHasAuth(true));
-          }},
-        401: () => {
-          dispatch(setHasAuth(false));
-          history.pushState(null, `${DP_BASE_URL_RELATIVE}/agent/login`);
-        }
-      }
-    });
-  }
-
   workOutBasePath() {
     const baseEnd = DP_BASE_URL.indexOf('/', DP_BASE_URL.indexOf('://') + 3);
 
@@ -74,7 +50,6 @@ export class DpAppContainer extends React.Component {
   }
 
   render() {
-    const { history } = this.props;
     const basePath = this.workOutBasePath();
     const defaultPath = `${basePath}/tasks`;
 

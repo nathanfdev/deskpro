@@ -59,7 +59,7 @@ abstract class AbstractRepository extends Repository
      *
      * @var array
      */
-    protected $highlightFields = array();
+    protected $highlightFields = [];
 
     /**
      * Find.
@@ -73,7 +73,7 @@ abstract class AbstractRepository extends Repository
      *
      * @return array
      */
-    public function find($query, $limit = null, $options = array())
+    public function find($query, $limit = null, $options = [])
     {
         $queryObj = $this->getQuery($query);
         $queryObj->setSize(50);
@@ -81,16 +81,16 @@ abstract class AbstractRepository extends Repository
         if (isset($options['sort_type'])) {
             switch ($options['sort_type']) {
                 case 'date_active':
-                    $queryObj->setSort(array(
-                        array('date_active' => array('order' => 'desc')),
+                    $queryObj->setSort([
+                        ['date_active' => ['order' => 'desc']],
                         '_score',
-                    ));
+                    ]);
                     break;
                 case 'date_created':
-                    $queryObj->setSort(array(
-                        array('date_created' => array('order' => 'desc')),
+                    $queryObj->setSort([
+                        ['date_created' => ['order' => 'desc']],
                         '_score',
-                    ));
+                    ]);
                     break;
             }
 
@@ -118,29 +118,25 @@ abstract class AbstractRepository extends Repository
         $l = Strings::extractRegexMatch('#^\[(.*?)\]$#', $q);
         if ($l && $this instanceof WithLabelsInterface) {
             $queryString = new Query\QueryString(ElasticaUtil::escapeTerm($l));
-            $queryString->setFields(array('labels'));
+            $queryString->setFields(['labels']);
             $queryString->setDefaultOperator('AND');
-            $query = new Query(
-                array(
-                    'query' => array(
-                        'filtered' => array(
-                            'query'  => $queryString->toArray(),
-                            'filter' => $this->getFilters(),
-                        ),
-                    ),
-                )
-            );
+            $query = new Query([
+                'query' => [
+                    'filtered' => [
+                        'query'  => $queryString->toArray(),
+                        'filter' => $this->getFilters(),
+                    ],
+                ],
+            ]);
         } else {
-            $query = new Query(
-                array(
-                    'query' => array(
-                        'filtered' => array(
-                            'query'  => $this->getQueryString($q)->toArray(),
-                            'filter' => $this->getFilters(),
-                        ),
-                    ),
-                )
-            );
+            $query = new Query([
+                'query' => [
+                    'filtered' => [
+                        'query'  => $this->getQueryString($q)->toArray(),
+                        'filter' => $this->getFilters(),
+                    ],
+                ],
+            ]);
         }
 
         return $query;
@@ -156,7 +152,7 @@ abstract class AbstractRepository extends Repository
     protected function escapeQueryStringTerm($q)
     {
         $q = ElasticaUtil::escapeTerm($q);
-        $q = str_replace(array('AND', 'OR', 'NOT'), array('and', 'or', 'not'), $q);
+        $q = str_replace(['AND', 'OR', 'NOT'], ['and', 'or', 'not'], $q);
 
         return $q;
     }
@@ -195,7 +191,7 @@ abstract class AbstractRepository extends Repository
      */
     protected function getQueryFields()
     {
-        return array('_all');
+        return ['_all'];
     }
 
     /**
@@ -205,7 +201,7 @@ abstract class AbstractRepository extends Repository
      */
     protected function getFilters()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -215,10 +211,10 @@ abstract class AbstractRepository extends Repository
      */
     protected function setHighlight(Query $query)
     {
-        $query->setHighlight(array(
+        $query->setHighlight([
             'fields'    => $this->highlightFields,
-            'pre_tags'  => array($this->highlightPreTag),
-            'post_tags' => array($this->highlightPostTag),
-        ));
+            'pre_tags'  => [$this->highlightPreTag],
+            'post_tags' => [$this->highlightPostTag],
+        ]);
     }
 }

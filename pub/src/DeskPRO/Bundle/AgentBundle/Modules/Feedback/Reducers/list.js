@@ -3,7 +3,7 @@ import { async, setValue, setFullPayload, togglePayloadInCollection, mergeFullPa
   from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/FeedbackListActions';
 import * as commentsActions from '../Actions/FeedbackCommentsActions';
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 const initialState = {
   async: {

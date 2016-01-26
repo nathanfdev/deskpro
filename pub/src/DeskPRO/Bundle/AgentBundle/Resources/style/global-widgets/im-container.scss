@@ -2699,6 +2699,11 @@ ul.dropdown-tabs {
       text-align: left;
       min-height: 34px;
 
+      p {
+        margin: 0;
+        font-size: 1em;
+      }
+
       :focus {
         outline: none;
       }

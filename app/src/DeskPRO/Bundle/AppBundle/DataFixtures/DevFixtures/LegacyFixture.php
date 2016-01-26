@@ -68,7 +68,7 @@ class LegacyFixture extends AbstractFixture implements ContainerAwareInterface, 
         $em        = $this->container->get('doctrine.orm.default_entity_manager');
         $translate = $this->container->get('deskpro.core.translate');
 
-        $USERGROUP_EVERYONE = $em->getRepository('DeskPRO:Usergroup')->findOneBy(array('sys_name' => 'everyone'));
+        $USERGROUP_EVERYONE = $em->getRepository('DeskPRO:Usergroup')->findOneBy(['sys_name' => 'everyone']);
 
         require DP_ROOT.'/src/Application/InstallBundle/Data/data.php';
         $em->flush();

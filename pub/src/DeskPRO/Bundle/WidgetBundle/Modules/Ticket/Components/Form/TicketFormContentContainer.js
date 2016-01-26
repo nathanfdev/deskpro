@@ -4,7 +4,7 @@ import { TicketFormContent } from './TicketFormContent';
 import { TicketFormSpinner } from './TicketFormSpinner';
 import { loadNewTicketForm, saveNewTicketForm } from '../../Actions/ticketActions';
 import { contentSelector, contentLoadingSelector, contentSavingSelector } from '../../Selectors/ticket';
-import history from '../../../../Services/history';
+import { history } from '../../../../Services/history';
 
 @connect(state => ({
   content: contentSelector(state),

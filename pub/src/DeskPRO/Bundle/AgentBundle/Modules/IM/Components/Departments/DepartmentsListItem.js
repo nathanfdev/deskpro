@@ -18,7 +18,7 @@ export class DepartmentsListItem extends React.Component {
         <a href="#"
            onClick={this.startChat.bind(null, this.props.department.get('id'), 'department')}
           >
-          <DepartmentAvatar department={this.props.department} size="22" />
+          <DepartmentAvatar department={this.props.department} size={22} />
           <span className="agent">{this.props.department.get('title')}</span>
         </a>
       </li>

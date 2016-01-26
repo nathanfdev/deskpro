@@ -317,17 +317,36 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @param string $email
+     *
+     * @return $this
+     */
+    public function setPersonEmail($email)
+    {
+        $this->setModelField('person_email', $email);
+
+        return $this;
+    }
+
+    /**
      * Setting the person copies their name and email address to the chat row for record keeping.
      *
      * @param Person $person
+     *
+     * @return $this
      */
-    public function setPerson(Person $person)
+    public function setPerson(Person $person = null)
     {
         $this->setModelField('person', $person);
-        $this->setModelField('person_name', $person->getDisplayName(false));
-        if ($person->getPrimaryEmailAddress()) {
+        $this->setModelField('person_name', $person ? $person->getDisplayName(false) : '');
+
+        if ($person && $person->getPrimaryEmailAddress()) {
             $this->setModelField('person_email', $person->getPrimaryEmailAddress());
+        } else {
+            $this->setModelField('person_email', '');
         }
+
+        return $this;
     }
 
     /**
@@ -742,12 +761,29 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         return trim(substr($this->subject, 0, 80)).(strlen($this->subject) > 80 ? '...' : '');
     }
 
+    /**
+     * @param int $rating
+     *
+     * @return $this
+     */
     public function setRatingOverall($rating)
     {
+        $rating = (int) $rating;
         if ($rating < 1 || $rating > 10) {
             $rating = 0;
         }
+
         $this->setModelField('rating_overall', $rating);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRatingOverall()
+    {
+        return $this->rating_overall;
     }
 
     public function setRatingResponseTime($rating)
@@ -1046,6 +1082,14 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('date_transcript_sent', $date);
 
         return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateEnded()
+    {
+        return $this->date_ended;
     }
 
     /**

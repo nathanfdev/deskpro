@@ -228,7 +228,7 @@ class Organization extends AbstractEntityRepository
      * @param $q
      * @param null $limit
      *
-     * @return mixed
+     * @return \Application\DeskPRO\Entity\Organization
      */
     public function search($q, $limit = null, $hydrate = true)
     {

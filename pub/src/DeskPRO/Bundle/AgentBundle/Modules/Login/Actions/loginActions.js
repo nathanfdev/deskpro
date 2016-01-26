@@ -1,16 +1,12 @@
 import { createAction } from 'Ampliflux';
-import { loadMe } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Actions/meActions';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { history } from '../../../Services/history';
 
-export const setHasAuth = createAction('LOGIN_SET_HAS_AUTH');
 export const login = createAction(
   'LOGIN_SUBMIT_FORM',
-  params => dispatch => {
+  params => {
     const promise = DpApi.sendPost('DP_API/get_session', params);
-    promise.success(() => {
-      dispatch(loadMe());
-      dispatch(setHasAuth(true));
-    });
+    promise.success(() => history.replace(`${DP_BASE_URL_RELATIVE}/agent/`));
 
     return promise;
   }

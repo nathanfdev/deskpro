@@ -1,6 +1,5 @@
 import { createAction } from 'Ampliflux';
 import * as rsa from 'Ampliflux/common/record-store/actions';
-import { refreshCounts } from '../../Actions/messagesActions';
 import * as IM from 'DeskPRO/Bundle/AgentBundle/Services/Api/IM';
 
 

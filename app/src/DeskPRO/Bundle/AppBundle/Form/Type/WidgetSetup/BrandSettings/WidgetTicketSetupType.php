@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings;
 
+use DeskPRO\Bundle\AppBundle\Error\ApiErrors;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
@@ -81,7 +82,7 @@ class WidgetTicketSetupType extends AbstractType
         $data = $event->getData();
 
         if ($data['select_department'] === 'default' && !$data['default_department']) {
-            $form->get('default_department')->addError(new FormError('api.error_codes.required'));
+            $form->get('default_department')->addError(new FormError(ApiErrors::NOT_BLANK));
         }
     }
 }

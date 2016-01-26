@@ -8,8 +8,8 @@ import { widgetHasChatSelector, liveDemoSelector } from '../Selectors/dpWindow';
 import { onlineAgentsCountSelector } from '../RecordStores/Selectors/peopleSelectors';
 import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import PortalPhrases from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import { widgetEmitter } from '../../../Services/emitter';
 import $ from 'jquery';
-import emitter from '../../../Services/emitter';
 
 export const ajaxOptions = {crossDomain: true, dataType: 'json'};
 export const addSessionCode = (state, params = {}) => {
@@ -110,11 +110,22 @@ export const bootstrapWidget = createAction(
       dispatch(loadTicketDisplayFields())
     ])
     .then(response => {
-      const promise = dispatch(chatResume());
-      promise.then(() => {
-        emitter.emit('loaded');
+      const onFinish = () => {
+        widgetEmitter.emit('loaded');
         resolve(response);
-      });
+      };
+
+      const onError = data => {
+        // Remove from local storage broken chat id
+        if (data && data.code === 400 && data.message === 'wrong_session_code') {
+          dispatch(unsetChatId());
+        }
+
+        onFinish();
+      };
+
+      const promise = dispatch(chatResume());
+      promise.then(onFinish, onError);
     });
   })
 );

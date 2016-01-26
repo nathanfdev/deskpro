@@ -31,9 +31,14 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
+use Application\DeskPRO\Entity\ChatConversation;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class ChatFeedbackType.
@@ -56,12 +61,17 @@ class ChatFeedbackType extends AbstractType
         $builder
             ->add('helpful', 'number', [
                 'property_path' => 'rating_overall',
+                'constraints'   => [
+                    new Assert\NotBlank(),
+                ],
             ])
             ->add('comment', 'text', [
                 'property_path' => 'rating_comment',
                 'required'      => false,
             ])
         ;
+
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onCheckEnded']);
     }
 
     /**
@@ -73,5 +83,17 @@ class ChatFeedbackType extends AbstractType
             'csrf_protection'               => false,
             'csrf_double_submit_protection' => false,
         ]);
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onCheckEnded(FormEvent $event)
+    {
+        /** @var ChatConversation $conversation */
+        $conversation = $event->getData();
+        if (!$conversation->getDateEnded()) {
+            $event->getForm()->get('helpful')->addError(new FormError('Unable to send feedback, chat is not ended yet.'));
+        }
     }
 }

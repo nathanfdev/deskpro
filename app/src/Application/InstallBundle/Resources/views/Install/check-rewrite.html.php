@@ -140,7 +140,7 @@ $(document).ready(function () {
     </tbody>
 </table>
 
-<div class="alert-message block-message success" id="continue_btn" style="display: none">
+<div class="alert-message block-message success" id="continue_btn">
     <div class="alert-actions submit-area">
         <a class="btn" href="<?php echo $view['router']->generate('install_verify_files') ?>" onclick="$(this).parent().addClass('clicked');">Continue &rarr;</a>
         <span class="next-loading"></span>

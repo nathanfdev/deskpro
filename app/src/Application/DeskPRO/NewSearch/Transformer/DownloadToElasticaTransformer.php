@@ -34,15 +34,15 @@ use Elastica\Document;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 use Orb\Util\Arrays;
 
+/**
+ * Class DownloadToElasticaTransformer.
+ */
 class DownloadToElasticaTransformer implements ModelToElasticaTransformerInterface
 {
     /**
-     * Transform.
+     * {@inheritdoc}
      *
      * @param Download $object
-     * @param array    $fields
-     *
-     * @return Document
      */
     public function transform($object, array $fields)
     {

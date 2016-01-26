@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
 use Application\DeskPRO\Entity\ChatConversation;
+use DeskPRO\Bundle\AppBundle\Error\ApiErrors;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
@@ -83,9 +84,9 @@ class ChatValidateEmailType extends AbstractType
         $data = $event->getData();
         $form = $event->getForm();
 
-        // Reset validation code from the request if no entity code
+        // No validation code in chat entity, no need to validate
         if (!$form->getData()) {
-            $event->setData(null);
+            $form->addError(new FormError('Email should not be validated.'));
 
             return;
         }
@@ -94,11 +95,11 @@ class ChatValidateEmailType extends AbstractType
         $conversation = $form->getParent()->getData();
 
         if ($conversation->getEmailValidated()) {
-            $form->addError(new FormError('Email is already validated.'));
+            $form->addError(new FormError(ApiErrors::EMAIL_ALREADY_VALIDATED));
         } elseif (!$data) {
-            $form->addError(new FormError('api.error_codes.required'));
+            $form->addError(new FormError(ApiErrors::NOT_BLANK));
         } elseif ($data !== $form->getData()) {
-            $form->addError(new FormError('Wrong email validation code.'));
+            $form->addError(new FormError(ApiErrors::EMAIL_WRONG_VALIDATION_CODE));
         } else {
             // Mark conversation email validated
             $conversation->setEmailValidated(true);

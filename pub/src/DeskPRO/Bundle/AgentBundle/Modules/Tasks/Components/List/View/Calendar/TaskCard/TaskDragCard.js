@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { DragSource } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { cardSourceSpec, cardSourceCollect } from '../../../TaskCard/TaskCardEditContainer';
 
 @DragSource(constants.TYPE_TASK, cardSourceSpec, cardSourceCollect)

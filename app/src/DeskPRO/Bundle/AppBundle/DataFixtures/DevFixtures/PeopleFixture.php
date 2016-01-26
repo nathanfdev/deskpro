@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -159,13 +158,13 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
             $l = $this->faker->unique()->company;
             if ($l) {
                 $l       = strtolower($l);
-                $batch[] = array('label_type' => $label_type, 'label' => $l, 'color' => $this->faker->hexColor, 'total' => 0);
+                $batch[] = ['label_type' => $label_type, 'label' => $l, 'color' => $this->faker->hexColor, 'total' => 0];
             }
         }
 
         $this->db->batchInsert('label_defs', $batch, true);
 
-        $this->labels = $this->db->fetchAllCol('SELECT label FROM label_defs WHERE label_type = ?', array($label_type));
+        $this->labels = $this->db->fetchAllCol('SELECT label FROM label_defs WHERE label_type = ?', [$label_type]);
     }
 
     private function loadPeople($num, $is_agent)
@@ -219,7 +218,7 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
 
         $this->db->batchInsert('people', $batch);
 
-        $people_ids = $this->db->fetchAllCol('SELECT id FROM people WHERE creation_system = ?', array($creation_string));
+        $people_ids = $this->db->fetchAllCol('SELECT id FROM people WHERE creation_system = ?', [$creation_string]);
 
         $batch = [];
         foreach ($people_ids as $pid) {
@@ -291,7 +290,7 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
 
         foreach ($this->people_ids as $people_id) {
             foreach ($this->faker->randomElements($this->labels, $this->faker->numberBetween(1, 5)) as $l) {
-                $labels_batch[] = array('person_id' => $people_id, 'label' => $l);
+                $labels_batch[] = ['person_id' => $people_id, 'label' => $l];
             }
 
             $num = $this->faker->numberBetween(1, $this->max_notes);

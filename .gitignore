@@ -126,3 +126,4 @@ demodata/
 npm-debug.log
 
 pub/.jest-cache
+app/tests/phantomjsdriver.log

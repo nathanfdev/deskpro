@@ -41,15 +41,16 @@ use Symfony\Component\Console\Input\ArrayInput;
  */
 class FreshDb extends AbstractDbSet
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getId()
     {
         return 'fresh';
     }
 
     /**
-     * Install default/empty data.
-     *
-     * @return int
+     * {@inheritdoc}
      */
     protected function installSet()
     {

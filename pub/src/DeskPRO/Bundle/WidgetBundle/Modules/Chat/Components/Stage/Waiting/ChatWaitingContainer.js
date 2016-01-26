@@ -4,7 +4,7 @@ import { WaitingPreview } from './WaitingPreview';
 import { endChat, unsetChatId } from '../../../Actions/chatActions';
 import { chatIdSelector } from '../../../Selectors/chat';
 import { agentAcceptTimeoutSelector } from '../../../../Application/Selectors/dpWindow';
-import history from '../../../../../Services/history';
+import { history } from '../../../../../Services/history';
 
 @connect(state => ({
   chatId: chatIdSelector(state),

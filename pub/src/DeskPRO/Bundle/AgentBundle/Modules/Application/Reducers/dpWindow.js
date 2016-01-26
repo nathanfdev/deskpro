@@ -1,7 +1,9 @@
 import * as actions from '../Actions/appActions';
+import * as bootstrapActions from '../Actions/bootstrapActions';
 import { createReducer } from 'Ampliflux';
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { setFullPayload, setValue } from 'Ampliflux/reducers/handlers';
+import { async } from 'Ampliflux/reducers/handlers';
 import jQuery from 'jquery';
 
 const initialState = {
@@ -17,7 +19,8 @@ const initialState = {
   isPreferencesOpen: false,
   preferenceTab: 'profile',
   coverShown: false,
-  isDoneInitialLoad: false
+  isDoneInitialLoad: false,
+  isPreloading: false
 };
 
 /**
@@ -87,5 +90,9 @@ export default createReducer(initialState, {
       coverShown: false
     });
   },
-  [actions.changePreferenceTab]: setFullPayload('preferenceTab')
+  [actions.changePreferenceTab]: setFullPayload('preferenceTab'),
+  [bootstrapActions.preloadData]: async({
+    start: state => state.set('isPreloading', true),
+    done: state => state.set('isPreloading', false)
+  })
 });

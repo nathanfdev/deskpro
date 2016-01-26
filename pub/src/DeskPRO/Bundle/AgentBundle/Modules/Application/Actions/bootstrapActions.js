@@ -9,10 +9,12 @@ import { setUserGroupsRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/Rec
 import { setAgentSettings } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
 import { setupActionAlerts } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/notificationActions';
 
+export const bootstrapDone = createAction('BOOTSTRAP_PRELOAD_DATA_DONE');
+
 export const preloadData = createAction(
   'BOOTSTRAP_PRELOAD_DATA',
   () => dispatch => new Promise(
-    () => {
+    (resolve) => {
       const batch = 'DP_API/batch?get='
         + 'DP_API/ticket_departments'
         + ',DP_API/ticket_departments%3Fmy%3Dtrue'
@@ -36,6 +38,7 @@ export const preloadData = createAction(
         dispatch(setAgentSettings(data[7]));
         dispatch(setupActionAlerts(data[8]));
       });
+      return resolve();
     }
   )
 );

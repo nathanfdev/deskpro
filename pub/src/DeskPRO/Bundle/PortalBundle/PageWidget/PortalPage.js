@@ -9,7 +9,7 @@ import ClickAwayDropdownWidget from './ClickAwayDropdownWidget';
 import ClickToDismissWidget from './ClickToDismissWidget';
 import HideAlertsWidget from './HideAlertsWidget';
 import LoginPage from './LoginPage';
-import HTmlLinkToPostWidget from './HtmlLinkToPostWidget';
+import HtmlLinkToPostWidget from './HtmlLinkToPostWidget';
 import OmniSearchWidget from './OmniSearchWidget';
 import LanguageChangerWidget from './LanguageChangerWidget';
 import AgentBarWidget from './AgentBarWidget';
@@ -32,7 +32,7 @@ export default class PortalPage extends PageWidget {
     this.addWidgetDef(TicketList, '#ticket_list_page');
     this.addWidgetDef(DownloadsList, '.download-list');
     this.addWidgetDef(FeedbackPage, '#feedback_page');
-    this.addWidgetDef(HTmlLinkToPostWidget, 'body');
+    this.addWidgetDef(HtmlLinkToPostWidget, 'body');
     this.addWidgetDef(CustomPerFieldEdit, '.form-custom-per-field');
     this.addWidgetDef(ClickAwayDropdownWidget, '.clickaway-dropdown');
     this.addWidgetDef(ClickToDismissWidget, '.click-to-dismiss');

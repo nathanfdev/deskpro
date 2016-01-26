@@ -11,7 +11,9 @@ export class Item extends React.Component {
     counts: PropTypes.object.isRequired,
     loadingCounts: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired,
-    startChat: PropTypes.func.isRequired
+    startChat: PropTypes.func.isRequired,
+    current: PropTypes.object.isRequired,
+    chating: PropTypes.bool.isRequired
   };
 
   getEntity = () => {
@@ -74,15 +76,15 @@ export class Item extends React.Component {
   };
 
   renderPersonAvatar(person) {
-    return <PersonAvatar person={person} size="22"/>;
+    return <PersonAvatar person={person} size={22}/>;
   }
 
   renderTeamAvatar(team) {
-    return <AgentTeamAvatar agentTeam={team} size="22"/>;
+    return <AgentTeamAvatar agentTeam={team} size={22}/>;
   }
 
   renderDepartmentAvatar(department) {
-    return <DepartmentAvatar department={department} size="22"/>;
+    return <DepartmentAvatar department={department} size={22}/>;
   }
 
   renderEveryoneAvatar() {
@@ -99,11 +101,18 @@ export class Item extends React.Component {
 
   renderCount(chat) {
     const current = this.props.counts[chat.get('id')];
-    if (!this.props.loadingCounts && current && current.cnt > 0) {
+    // we gonna render count balloon counts are loaded, we have information about unread messages in current rendering
+    // chat (chat entity), and current (entity current) chat is not opened (chating bool)
+    if (
+      !this.props.loadingCounts
+      && current
+      && current.cnt > 0
+      && !(this.props.current.id === chat.get('id') && this.props.chating)
+    ) {
       return (
         <span className="chat-bubble">
-          {current.cnt}
-        </span>
+        {current.cnt}
+      </span>
       );
     }
   }

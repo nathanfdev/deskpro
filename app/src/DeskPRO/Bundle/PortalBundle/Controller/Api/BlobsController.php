@@ -35,6 +35,7 @@ use Application\DeskPRO\Attachments\AcceptAttachment;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -61,5 +62,16 @@ class BlobsController extends AbstractApiController
         };
 
         return new View($this->dataSerialize($blobs));
+    }
+
+    /**
+     * @Route("/portal/api/dpblob", name="portal_api_blob_upload")
+     * @Method("POST")
+     *
+     * @return JsonResponse
+     */
+    public function uploadBlobAction()
+    {
+        return $this->forward('PortalBundle:Portal:uploadBlob');
     }
 }

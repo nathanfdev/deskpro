@@ -1,27 +1,12 @@
-import { BaseTaskCard } from './BaseTaskCard';
-import { Title } from './Title';
-import { TitleForm } from './TitleForm';
-import { Comments } from './Comments';
-import { DateDue } from './DateDue';
-import { SubTasks } from './SubTasks';
-import { ShowDetailsButton } from './ShowDetailsButton';
-import { AssignButton } from './AssignButton';
-import { TicketLinkContainer } from './TicketLinkContainer';
-import { CardProject } from './CardProject';
-import { AssigneeName } from './AssigneeName';
-import { AssigneeAvatar } from './AssigneeAvatar';
-
-export default {
-  BaseTaskCard,
-  Title,
-  TitleForm,
-  Comments,
-  DateDue,
-  SubTasks,
-  ShowDetailsButton,
-  AssignButton,
-  TicketLinkContainer,
-  CardProject,
-  AssigneeName,
-  AssigneeAvatar
-};
+export { BaseTaskCard } from './BaseTaskCard';
+export { Title } from './Title';
+export { TitleForm } from './TitleForm';
+export { Comments } from './Comments';
+export { DateDue } from './DateDue';
+export { SubTasks } from './SubTasks';
+export { ShowDetailsButton } from './ShowDetailsButton';
+export { AssignButton } from './AssignButton';
+export { TicketLinkContainer } from './TicketLinkContainer';
+export { CardProject } from './CardProject';
+export { AssigneeName } from './AssigneeName';
+export { AssigneeAvatar } from './AssigneeAvatar';

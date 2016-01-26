@@ -8,6 +8,10 @@ export function loadChats(missingIds) {
   return DpApi.sendGet('DP_API/agent_chats/?ids=' + missingIds.toArray().join(','));
 }
 
+export function loadChat(id) {
+  return DpApi.sendGet('DP_API/agent_chats/' + parseInt(id, 10));
+}
+
 export function loadMessages(chatId, searchQuery = '', page = null) {
   const params = {
     search: searchQuery
@@ -31,8 +35,8 @@ export function loadMessagesCount() {
   return DpApi.sendGet('DP_API/agent_chats/messages/count');
 }
 
-export function markMessages(ids) {
-  return DpApi.sendPatch('DP_API/agent_chats/messages/mark', {ids: ids});
+export function markMessages(ids, status) {
+  return DpApi.sendPut('DP_API/agent_chats/messages/mark', {ids: ids, status: status});
 }
 
 /**

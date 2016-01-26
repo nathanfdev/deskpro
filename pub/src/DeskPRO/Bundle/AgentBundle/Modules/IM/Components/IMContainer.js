@@ -3,11 +3,14 @@ import { connect } from 'react-redux';
 import SimplePositioned from 'DeskPRO/Component/Positioned/Simple';
 import { IMOverlay } from './IMOverlay';
 import { Chat } from './ChatWindow/Chat';
+import { ChatHelper } from '../ChatHelper';
+import { meSelector } from '../../Application/RecordStores/Selectors/meSelectors';
 
 @connect(state => ({
-  current: state.IM.ui.get('current'),
-  chating: state.IM.ui.get('chating'),
-  overlayShown: state.IM.ui.get('overlayShown')
+  current: state.IM.chats.get('current'),
+  chating: state.IM.chats.get('chating'),
+  overlayShown: state.IM.chats.get('overlayShown'),
+  user: meSelector(state)
 }))
 export class IMContainer extends React.Component {
 
@@ -15,8 +18,15 @@ export class IMContainer extends React.Component {
     current: PropTypes.object.isRequired,
     chating: PropTypes.bool.isRequired,
     overlayShown: PropTypes.bool.isRequired,
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
+    user: PropTypes.object.isRequired
   };
+
+  constructor(props) {
+    super(props);
+    this.helper = new ChatHelper();
+
+  }
 
   renderOverlay = () => {
     return (
@@ -33,14 +43,7 @@ export class IMContainer extends React.Component {
   };
 
   renderChat = () => {
-    let id = 'chat-with-' + this.props.current.get('chat_type');
-    if (this.props.current.get('chat_type') !== 'everyone') {
-      id += '-' + this.props.current.get('id');
-    }
-    let node = document.getElementById(id);
-    if (!node) {
-      node = document.getElementById('im-button');
-    }
+    const node = this.helper.getChatNode(this.props.current, this.props.user.get('id'));
     return (
       <SimplePositioned
         positionMy="left-25 top+1"

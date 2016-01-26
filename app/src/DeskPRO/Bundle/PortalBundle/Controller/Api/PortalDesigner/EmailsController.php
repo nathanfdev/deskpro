@@ -69,13 +69,4 @@ class EmailsController extends AbstractApiController
 
         return new JsonResponse($emails);
     }
-
-    /**
-     * @Route("/portal/api/me/email")
-     * @Method({"GET"})
-     */
-    public function getMyEmailAction()
-    {
-        return new JsonResponse($this->getUser()->getPrimaryEmail()->getEmail());
-    }
 }

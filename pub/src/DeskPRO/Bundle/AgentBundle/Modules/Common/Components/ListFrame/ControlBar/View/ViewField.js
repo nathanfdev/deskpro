@@ -3,7 +3,7 @@ import jQuery from 'jquery';
 import { findDOMNode } from 'react-dom';
 import classNames from 'classnames';
 import { DragSource, DropTarget } from 'react-dnd';
-import * as constants from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 
 export const cardSource = {

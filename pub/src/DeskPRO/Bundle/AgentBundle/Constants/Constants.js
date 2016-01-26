@@ -1,4 +1,4 @@
-export default {
+export const constants = {
   DRAGGABLE_TYPE_FIELD: 'field',
   VIEW_MODE_CARD: 'card',
   VIEW_MODE_TABLE: 'table',

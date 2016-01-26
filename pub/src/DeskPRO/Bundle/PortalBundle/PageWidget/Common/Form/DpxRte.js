@@ -1,5 +1,8 @@
-import MediumEditor from 'medium-editor';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
+import { PortalRte } from '../../../React/Form/PortalRte';
+import $ from 'jquery';
 
 /**
  * A DpxRte takes three fields:
@@ -12,36 +15,22 @@ import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
  *  show the html field, and set the format to html
  */
 export default class DpxRte extends PageWidget {
+
   renderWidget() {
     const $textTextarea = this.$element.find('textarea[data-rte-field="text"]');
-    const $htmlTextarea = this.$element.find('textarea[data-rte-field="html"]');
     const $format = this.$element.find('input[data-rte-field="format"]');
+    const $rElement = $('<div class="dp-medium-rte-wrapper as-dpui"></div>').appendTo(this.$element);
 
-    const ownerDocument = this.$element.context.ownerDocument;
-    const contentWindow = ownerDocument.defaultView;
-
-    $htmlTextarea.wrap('<div class="dp-medium-rte-wrapper as-dpui" />');
-    const $wrap = $htmlTextarea.parent();
-
-    $htmlTextarea.addClass('dp-medium-rte');
-    $htmlTextarea.show();
     $textTextarea.hide();
+    $format.val('html');
 
-    const editor = new MediumEditor($htmlTextarea.get(0), {
-      contentWindow: contentWindow,
-      ownerDocument: ownerDocument,
-      toolbar: {
-        buttons: ['bold', 'italic', 'underline', 'anchor', 'unorderedlist', 'orderedlist', 'quote', 'pre', 'removeFormat'],
-        static: true,
-        sticky: true,
-        updateOnEmptySelection: true,
-        align: 'left',
-        relativeContainer: $wrap.get(0)
-      },
-      targetBlank: true,
-      buttonLabels: 'fontawesome'
+    const component = React.createElement(PortalRte, {
+      className: 'dp-medium-rte medium-editor-placeholder',
+      $textTextarea,
+      widgetOptions: this.options,
+      $toolbarContainer: $rElement
     });
 
-    $format.val('html');
+    ReactDOM.render(component, $rElement.get(0));
   }
 }

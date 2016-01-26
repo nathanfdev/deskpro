@@ -8,9 +8,10 @@ import Immutable from 'immutable';
 const initialState = {
   chatMessages: {},
   searchMessages: {},
-  loadingMessages: true,
   counts: {},
-  loadingCounts: true
+  loadingMessages: true,
+  loadingCounts: true,
+  updatingMessages: false
 };
 
 export default createReducer(initialState, {
@@ -41,8 +42,9 @@ export default createReducer(initialState, {
     }
   ),
   [actions.markMessages]: async({
+    start: state => state.set('updatingMessages', true),
     success: (state, payload) => {
-      const path = ['chatMessages', payload.chat_id];
+      const path = ['chatMessages', payload.chatId];
       const chat = state.getIn(path);
       const msg = {};
       payload.messages.map(message => {
@@ -50,11 +52,12 @@ export default createReducer(initialState, {
       });
       chat.messages.map((message, index) => {
         if (msg[message.id]) {
-          chat.messages[index].status = 2;
+          chat.messages[index].status = payload.status;
         }
       });
       return state.setIn(path, {...chat});
-    }
+    },
+    done: state => state.set('updatingMessages', false)
   }),
   [newActionAlerts]: (state, payload) => {
     let newState = state;
@@ -72,7 +75,7 @@ export default createReducer(initialState, {
       const chat = state.getIn(path);
       chat.messages.map((message, index) => {
         if (message.id === payload.data.message_id) {
-          chat.messages[index].status = 2;
+          chat.messages[index].status = payload.data.status;
         }
       });
       newState = newState.setIn(path, {...chat});

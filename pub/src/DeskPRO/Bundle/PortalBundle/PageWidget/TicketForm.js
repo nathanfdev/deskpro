@@ -2,14 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PortalApp from 'DeskPRO/Bundle/PortalBundle/PortalApp';
 import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
-import emitter from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
+import { pageWidgetEmitter } from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
 import NewTicketSuggestions from 'DeskPRO/Bundle/PortalBundle/React/NewTicketSuggestions';
 import { DynamicForm } from 'DeskPRO/Bundle/AppBundle/Form/DynamicForm.js';
 import _ from 'lodash';
 import $ from 'jquery';
 
-// Ticket value reader
 class TicketValueReader {
+
   constructor($formEl) {
     this.$formEl = $formEl;
   }
@@ -43,7 +43,6 @@ class TicketValueReader {
   }
 }
 
-// Page widget
 export default class TicketForm extends PageWidget {
 
   renderWidget() {
@@ -76,18 +75,18 @@ export default class TicketForm extends PageWidget {
       // handle special field "attachments"
       // if "attachments" exists, we need to call it "attach" because the backend uses "attach".
       // we also remove the unnecessary "attachments" and "more_attachments" from the string
-      let theFields = event.inst.currentFields;
+      const theFields = event.inst.currentFields;
       if (_.includes(theFields, 'attachments')) {
         theFields.push('attach');
       }
-      const displayedFields = theFields.filter(field => !_.includes(['displayed_fields','attachments','more_attachments'], field)).join(',');
+      const displayedFields = theFields.filter(field => !_.includes(['displayed_fields', 'attachments', 'more_attachments'], field)).join(',');
       const $df = $formEl.find("[data-field='displayed_fields']").find('input[type="hidden"]');
 
       console.log('[TicketForm] [setDisplayedFields] setting displayed_fields to: ', displayedFields);
       $df.val(displayedFields);
     };
 
-    this.dynForm = new DynamicForm({
+    this.dynamicForm = new DynamicForm({
       formEl: $formEl,
       tplEl: $tplEl,
       alwaysFields: ['department', 'user_name_and_email', 'user_email', 'subject', 'message', 'submit', 'last_department_id', 'displayed_fields'],
@@ -129,12 +128,12 @@ export default class TicketForm extends PageWidget {
         if (portalPage) {
           portalPage.refresh($formEl);
         } else {
-          emitter.emit('refresh', this);
+          pageWidgetEmitter.emit('refresh', this);
         }
       }
     });
 
-    updateHitter = _.throttle(()=> this.dynForm.update(), 250);
+    updateHitter = _.throttle(()=> this.dynamicForm.update(), 250);
     allFormFields.on('change', updateHitter);
   }
 }

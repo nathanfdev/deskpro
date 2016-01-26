@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { DropZone } from './DropZone';
+import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
+import { DropZoneOverlay } from './DropZoneOverlay';
 import { uploadingFilesRepeatSelector } from '../../../../../../Selectors/chat';
 import {
   addAttachment,
@@ -41,7 +42,10 @@ export class DropZoneContainer extends React.Component {
                 context={[window.widgetFrame.document, parent.window.document]}
                 onSend={this.onUploadStarted}
                 onSuccess={this.onUploadSuccess}
-                onFail={this.onUploadFail} {...this.props} />
+                onFail={this.onUploadFail} {...this.props}>
+
+        <DropZoneOverlay />
+      </DropZone>
     );
   }
 }

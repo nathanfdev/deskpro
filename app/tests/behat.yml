@@ -15,6 +15,9 @@ api:
                 - DpBehat\Api\AuthContext
                 - DpBehat\TermEngine\TermEngineBehatContext
                 - DpBehat\Api\PeopleContext
+                - DpBehat\PermissionContext
+                - DpBehat\Portal\GenericContext
+                - DpBehat\ElasticContext
     extensions:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:
@@ -50,11 +53,11 @@ portal:
                 - DpBehat\Portal\TicketsContext
                 - DpBehat\Portal\GenericContext
                 - DpBehat\Portal\TicketContext
-                - DpBehat\Performance\PerformanceContext
                 - DpBehat\Http\HttpContext
                 - DpBehat\DataSetContext:
                     dataset_manager: @dataset_manager
-                - DpBehat\Portal\PortalApiContext
+                - DpBehat\Portal\Api\AuthContext
+                - DpBehat\Portal\Api\ChatContext
                 - DpBehat\Portal\PortalDesigner\AssetsContext
     extensions:
         Sanpi\Behatch\Extension: ~
@@ -66,6 +69,7 @@ portal:
                     symfony2: ~
                 goutte:
                     goutte: ~
+
         Behat\Symfony2Extension:
             kernel:
                 bootstrap: features/bootstrap/boot.php
@@ -79,8 +83,7 @@ portal:
                 element: DpBehat\Portal\Page\Element
             factory:
                 page_parameters:
-                          base_url: /
-
+                    base_url: /
 
 e2e:
     suites:
@@ -88,10 +91,16 @@ e2e:
             mink_session: selenium2
             mink_javascript_session: selenium2
             paths:
-                - %paths.base%/e2e/general
+                - %paths.base%/e2e/features
             contexts:
                 - Behat\MinkExtension\Context\MinkContext
-                - DpBehat\E2E\SeleniumContext:
+                - behatch:json
+                - behatch:rest
+                - DpBehat\DataSetContext:
+                    dataset_manager: @dataset_manager
+                - DpBehat\E2E\AuthContext:
+                    user_details: @user_details
+                - DpBehat\E2E\SeleniumContext
                 - behatch:browser
                 - behatch:debug:
                     screenshotDir: %paths.base%/e2e/logs/screenshots
@@ -100,8 +109,11 @@ e2e:
     extensions:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:
-            # Set in boot.php via BEHAT_PARAMS env
-            base_url: 'http://localhost:8888/'
+
+            # THE base_url OPTION NEEDS TO BE SET VIA BEHAT_PARAMS ENV VARIABLE
+            # e.g.:
+            # export BEHAT_PARAMS='{"extensions":{"Behat\\MinkExtension":{"base_url":"http://localhost/"}}}'
+
             browser_name: "phantomjs"
             selenium2:
               browser: phantomjs

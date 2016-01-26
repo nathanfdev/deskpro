@@ -8,7 +8,6 @@ describe('API Comments service', () => {
   const Comments = require('DeskPRO/Bundle/AgentBundle/Services/Api/Content/Comments.js');
 
   describe('load()', () => {
-
     it('should load article comments', () => {
       spyOn(DpApi, 'sendGet');
       Comments.load('articles');
@@ -30,7 +29,6 @@ describe('API Comments service', () => {
     it('should throw an error when the first argument is none of the following: articles, news, downloads', () => {
       expect(() => Comments.load('weird')).toThrow();
     });
-
   });
 
   describe('loadCommentsToValidateCounts()', () => {
@@ -55,7 +53,7 @@ describe('API Comments service', () => {
       }).not.toThrow();
 
       expect(() => Comments.loadCommentsToValidateCounts('weird')).toThrow();
-    })
+    });
   });
 
   describe('loadCommentsToReviewCount()', () => {
@@ -74,7 +72,8 @@ describe('API Comments service', () => {
       }).not.toThrow();
 
       expect(() => Comments.loadCommentsToReviewCount('weird')).toThrow();
-    })
+    });
   });
 
 });
+

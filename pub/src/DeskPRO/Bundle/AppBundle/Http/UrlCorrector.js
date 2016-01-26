@@ -1,4 +1,4 @@
-export default class UrlCorrector {
+export class UrlCorrector {
   constructor(baseUrl, regex = null) {
     this.baseUrl = baseUrl;
     this.regex = regex || /^\/?DP_URL\//;

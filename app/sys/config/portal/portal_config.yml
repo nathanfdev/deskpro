@@ -120,6 +120,8 @@ security:
                 domain:   ~ # the current domain from $_SERVER
                 remember_me_parameter: remember_me
 
+    access_control:
+        - { path: ^/admin-preview/, roles: [ROLE_ADMIN, ROLE_PREVIOUS_ADMIN] }
 
 # Twig Configuration
 twig:
@@ -194,6 +196,6 @@ nelmio_cors:
     paths:
         '^/portal/api/':
             allow_origin: ['*']
-            allow_headers: ['X-Agent-Request', 'Content-Type']
+            allow_headers: ['X-Agent-Request', 'Content-Type', 'Cache-Control', 'X-Requested-With']
             allow_methods: ['POST', 'PUT', 'GET', 'DELETE']
             max_age: 3600

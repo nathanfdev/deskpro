@@ -34,15 +34,15 @@ use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
+/**
+ * Class ChatToElasticaTransformer.
+ */
 class ChatToElasticaTransformer implements ModelToElasticaTransformerInterface
 {
     /**
-     * Transform.
+     * {@inheritdoc}
      *
      * @param ChatConversation $object
-     * @param array            $fields
-     *
-     * @return Document
      */
     public function transform($object, array $fields)
     {
@@ -59,7 +59,7 @@ class ChatToElasticaTransformer implements ModelToElasticaTransformerInterface
             $document->set('labels', $labels);
         }
 
-        $messages = array();
+        $messages = [];
         foreach ($object->messages as $message) {
             if (!$message->is_sys) {
                 $content = $message->content;

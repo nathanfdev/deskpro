@@ -34,15 +34,15 @@ use Elastica\Document;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 use Orb\Util\Arrays;
 
+/**
+ * Class FeedbackToElasticaTransformer.
+ */
 class FeedbackToElasticaTransformer implements ModelToElasticaTransformerInterface
 {
     /**
-     * Transform.
+     * {@inheritdoc}
      *
      * @param Feedback $object
-     * @param array    $fields
-     *
-     * @return Document
      */
     public function transform($object, array $fields)
     {

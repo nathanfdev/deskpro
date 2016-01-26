@@ -896,7 +896,7 @@ class KernelBooter
         }
         $kernel = new \DeskPRO\Kernel\DpKernel($env, $debug, DP_INTERFACE);
         $kernel->boot($mode);
-
+/*
         try {
             if ($mode == 'cron' && $kernel->isUpgradePending()) {
                 if (in_array('--verbose', $_SERVER['argv'])) {
@@ -927,7 +927,7 @@ class KernelBooter
 
             // Otherwise unknown error we'll throw up
             throw $e;
-        }
+        }*/
 
         if ($mode == 'cron') {
             $app = new CronApplication($kernel);

@@ -32,7 +32,7 @@ export class AgentsListItem extends React.Component {
         <a href="#"
            onClick={this.startChat.bind(null, this.props.agent.get('id'), 'agent')}
           >
-          <PersonAvatar person={this.props.agent} size="22" />
+          <PersonAvatar person={this.props.agent} size={22} />
           <span className="agent"><span dangerouslySetInnerHTML={{__html: name}}/><span
             className="datestamp">{this.props.agent.get('last_seen') ? <TimeAgo date={this.props.agent.get('last_seen')} /> : 'never'}</span></span>
         </a>

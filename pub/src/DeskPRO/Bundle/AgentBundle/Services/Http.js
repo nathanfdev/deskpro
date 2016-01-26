@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import Http from 'DeskPRO/Component/Http/Http';
-import UrlCorrector from 'DeskPRO/Bundle/AppBundle/Http/UrlCorrector';
+import { UrlCorrector } from 'DeskPRO/Bundle/AppBundle/Http/UrlCorrector';
 
 const http = new Http($.ajax);
 http.enableJsonPayloads();
