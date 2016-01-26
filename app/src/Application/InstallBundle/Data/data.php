@@ -694,22 +694,6 @@ for ($i = 0; $i < 30; ++$i) {
 
 $em->flush();
 
-//////////////////////////////////////////////////////////////
-// widgets
-//////////////////////////////////////////////////////////////
-
-foreach (array('default', 'foo', 'bar', 'baz') as $type) {
-    for ($i = 1; $i <= 10; ++$i) {
-        $a = new \DeskPRO\Bundle\AppBundle\Entity\SandboxWidget();
-        $a->setType($type);
-        $a->setName(ucfirst($type).' '.$i);
-        $a->setInventory(5);
-        $em->persist($a);
-    }
-}
-
-$em->flush();
-
 ################################################################################
 # Add some brands to test different themes
 ################################################################################

@@ -21,11 +21,6 @@ services:
   ticket_layout_differ:
     class: DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutDiffer
 
-  form.sandbox:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\SandboxWidgetType
-    tags:
-      - { name: form.type, alias: sandbox_widget }
-
   form.api_date:
     class: DeskPRO\Bundle\AppBundle\Form\Type\ApiDateType
     tags:

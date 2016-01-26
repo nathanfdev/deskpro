@@ -10,8 +10,6 @@ api:
                 - Behat\MinkExtension\Context\MinkContext
                 - behatch:json
                 - DpBehat\Api\RestContext
-                - DpBehat\Api\SandboxWidgetsContext:
-                    em: @doctrine.orm.default_entity_manager
                 - DpBehat\Api\AuthContext
                 - DpBehat\TermEngine\TermEngineBehatContext
                 - DpBehat\Api\PeopleContext
