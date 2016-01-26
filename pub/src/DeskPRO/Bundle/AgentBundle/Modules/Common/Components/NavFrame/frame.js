@@ -48,14 +48,11 @@ export class NavFrameHeaderContainer extends React.Component {
   };
 
   render() {
-    console.log('NavFrameHeaderContainer', this.props);
-    return (
-      <NavFrameHeader {...this.props} />
-    );
+    return <NavFrameHeader {...this.props} />;
   }
 }
 
-export class NavFrameHeader extends React.Component {
+class NavFrameHeader extends React.Component {
 
   static propTypes = {
     children: PropTypes.any.isRequired,

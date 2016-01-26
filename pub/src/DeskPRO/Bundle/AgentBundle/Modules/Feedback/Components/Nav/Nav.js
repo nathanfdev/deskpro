@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { NavFrame, NavFrameHeader, NavFrameBody, TabsPaneStatefulContainer, Tab, LabelsDictionary }
+import { NavFrame, NavFrameHeaderContainer, NavFrameBody, TabsPaneStatefulContainer, Tab, LabelsDictionary }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import { Pending } from './Pending';
@@ -15,30 +15,26 @@ export class Nav extends Component {
   static propTypes = {
     loaded: PropTypes.bool.isRequired,
     intl: intlShape.isRequired,
-    dispatch: PropTypes.func.isRequired,
     statuses: PropTypes.object.isRequired,
     labels: PropTypes.object.isRequired,
     types: PropTypes.object,
     categories: PropTypes.object,
     toValidateCount: PropTypes.object.isRequired,
-    commentsToReviewCount: PropTypes.object.isRequired,
-    dpWindow: PropTypes.object.isRequired
+    commentsToReviewCount: PropTypes.object.isRequired
   };
 
   onLabelClick = (params) => {
-    const { dispatch } = this.props;
-    dispatch(applyParams({ navItem: { [params.name]: params.value } }));
+    this.props.dispatch(applyParams({ navItem: { [params.name]: params.value } }));
   };
 
   render() {
-    const { labels, loaded, types, toValidateCount, commentsToReviewCount, statuses, categories, dispatch, dpWindow } = this.props;
-    const currentApp = dpWindow.get('activeAppId');
+    const { labels, loaded, types, toValidateCount, commentsToReviewCount, statuses, categories } = this.props;
 
     return (
-      <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
-        <NavFrameHeader icon="icon-dp-streamline-hand-like-2" currentApp={currentApp}>
+      <NavFrame>
+        <NavFrameHeaderContainer icon="icon-dp-streamline-hand-like-2">
           <FormattedMessage id="feedback.nav.title"/>
-        </NavFrameHeader>
+        </NavFrameHeaderContainer>
         <NavFrameBody>
           <Pending loaded={loaded}
                    toValidateCount={toValidateCount}

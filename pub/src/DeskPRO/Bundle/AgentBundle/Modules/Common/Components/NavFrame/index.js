@@ -1,4 +1,4 @@
-export { NavFrame, NavFrameHeader, NavFrameHeaderContainer, NavFrameBody } from './frame';
+export { NavFrame, NavFrameHeaderContainer, NavFrameBody } from './frame';
 export { SectionsPane, Section, SectionHeader, SectionGroupedHeader } from './section';
 export { TabsPane, TabsPaneStatefulContainer, Tab } from './tabs';
 export { ListSection } from './Lists/ListSection';

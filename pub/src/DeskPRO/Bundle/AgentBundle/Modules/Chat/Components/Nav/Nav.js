@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
-import { NavFrame, NavFrameHeader, NavFrameBody, SectionsPane }
+import { NavFrame, NavFrameHeaderContainer, NavFrameBody, SectionsPane }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { MyChats } from './Sections/MyChats';
 import { AllChats } from './Sections/AllChats';
@@ -17,8 +17,7 @@ export class Nav extends Component {
     dispatch: PropTypes.func.isRequired,
     my: PropTypes.object.isRequired,
     all: PropTypes.object.isRequired,
-    loaded: PropTypes.bool.isRequired,
-    dpWindow: PropTypes.object.isRequired
+    loaded: PropTypes.bool.isRequired
   };
 
   // @todo Remove
@@ -48,14 +47,11 @@ export class Nav extends Component {
   };
 
   render() {
-    const {my, all, dpWindow, dispatch, loaded} = this.props;
-    const currentApp = dpWindow.get('activeAppId');
+    const {my, all, loaded} = this.props;
 
     return (
-      <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
-        <NavFrameHeader icon="icon-dp-streamline-bubble-conversation-4" currentApp={currentApp}>
-          Chat
-        </NavFrameHeader>
+      <NavFrame>
+        <NavFrameHeaderContainer icon="icon-dp-streamline-bubble-conversation-4">Chat</NavFrameHeaderContainer>
         <NavFrameBody>
           <LoadIndicator loaded={loaded}>
             <SectionsPane>

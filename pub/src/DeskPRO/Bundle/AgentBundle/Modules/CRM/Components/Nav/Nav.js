@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import { NavFrame, NavFrameHeader, NavFrameBody, SectionHeader, TabsPaneStatefulContainer, Tab, ListItem, LabelsDictionary }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { NavFrame, NavFrameHeaderContainer, NavFrameBody, SectionHeader, TabsPaneStatefulContainer, Tab, ListItem,
+  LabelsDictionary } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import { NestedList } from './NestedList';
 import { ListItemContainer } from './ListItemContainer';
@@ -9,9 +9,7 @@ import { ListItemContainer } from './ListItemContainer';
 export class Nav extends Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
     loaded: PropTypes.bool.isRequired,
-    dpWindow: PropTypes.object.isRequired,
     users: PropTypes.object.isRequired,
     organizations: PropTypes.object.isRequired,
     agents: PropTypes.object.isRequired,
@@ -19,16 +17,12 @@ export class Nav extends Component {
   };
 
   render() {
-    const { labels, users, organizations, agents, dispatch, dpWindow, loaded } = this.props;
-    const currentApp = dpWindow.get('activeAppId');
+    const { labels, users, organizations, agents, loaded } = this.props;
 
     return (
-      <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
-        <NavFrameHeader icon="icon-dp-streamline-connection-2" currentApp={currentApp}>
-          CRM
-        </NavFrameHeader>
+      <NavFrame>
+        <NavFrameHeaderContainer icon="icon-dp-streamline-connection-2">CRM</NavFrameHeaderContainer>
         <NavFrameBody>
-
           <SectionHeader>People</SectionHeader>
           <TabsPaneStatefulContainer id="peopleTab">
             <Tab title="Groups">
