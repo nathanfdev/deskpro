@@ -2,7 +2,7 @@ import React from "react"
 import ReactDOM from "react-dom"
 import _ from "lodash"
 import $ from "jquery"
-import PortalUrlGenerator from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator"
+import { portalUrlGenerator } from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator"
 
 export default class ResultsPartial extends React.Component {
   render() {
@@ -12,7 +12,7 @@ export default class ResultsPartial extends React.Component {
         <div className="paged-results centered" ref="results">
           <img
             style={{display: this.props.doSpin ? "table" : "none", margin: "0 auto", height: "70px", width: "70px"}}
-            src={ PortalUrlGenerator.getSpinnerPath() } />
+            src={ portalUrlGenerator.getSpinnerPath() } />
         </div>
       );
     }

@@ -1,5 +1,5 @@
 import PageWidget from "DeskPRO/Component/PageWidget/PageWidget"
-import PortalUrlGenerator from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator";
+import { portalUrlGenerator } from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator";
 import $ from "jquery"
 import _ from "lodash"
 
@@ -31,7 +31,7 @@ class DynamicSearchResults {
   }
 
   loadNextPage() {
-    const url = PortalUrlGenerator.path(`/search?q=${this.query}&page=${this.next_page}&type=${this.type}`);
+    const url = portalUrlGenerator.path(`/search?q=${this.query}&page=${this.next_page}&type=${this.type}`);
 
     $.ajax(url, {
         success: (data) => {

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import RteInput from 'DeskPRO/Component/Rte/RteInput';
 import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
-import PortalUrlGenerator from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
+import { portalUrlGenerator } from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
 
 export class PortalRte extends React.Component {
 
@@ -46,7 +46,7 @@ export class PortalRte extends React.Component {
 
         <input type="submit" ref="fileUpload" style={{display: 'none'}} />
         <DropZone getExternalInput={() => this.refs.fileUpload}
-                  uploadUrl={PortalUrlGenerator.path('/') + 'dpblob'}
+                  uploadUrl={portalUrlGenerator.path('/') + 'dpblob'}
                   context={context}
                   onSend={this.onUploadStarted}
                   onSuccess={this.onUploadSuccess}

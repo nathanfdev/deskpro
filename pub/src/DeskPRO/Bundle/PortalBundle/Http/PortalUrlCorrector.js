@@ -1,6 +1,6 @@
 import { UrlCorrector } from 'DeskPRO/Bundle/AppBundle/Http/UrlCorrector';
-import PortalUrlGenerator from './PortalUrlGenerator';
+import { portalUrlGenerator } from './PortalUrlGenerator';
 
-const urlCorrector = new UrlCorrector(PortalUrlGenerator.path('/'));
+const urlCorrector = new UrlCorrector(portalUrlGenerator.path('/'));
 
 export default urlCorrector;

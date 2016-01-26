@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import PortalHttp from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
-import PortalUrlGenerator from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
+import { portalUrlGenerator } from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
 import OmniSearchResultSection from 'DeskPRO/Bundle/PortalBundle/React/OmniSearch/OmniSearchResultSection';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import _ from 'lodash';
@@ -192,11 +192,11 @@ export default class OmniSearch extends React.Component {
           }
 
           <div className="search-results-footer">
-            <a href={PortalUrlGenerator.path('/new-ticket')}>
+            <a href={portalUrlGenerator.path('/new-ticket')}>
               <i className="fa fa-comment"></i>
               <span>Contact Us</span>
             </a>
-            <a href={PortalUrlGenerator.path('/feedback')}>
+            <a href={portalUrlGenerator.path('/feedback')}>
               <i className="fa fa-list"></i>
               <span>Submit Feedback</span>
             </a>

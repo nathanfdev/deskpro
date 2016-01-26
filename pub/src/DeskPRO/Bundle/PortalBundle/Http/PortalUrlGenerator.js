@@ -44,6 +44,4 @@ class PortalUrlGenerator {
   }
 }
 
-const urlGenerator = new PortalUrlGenerator(PortalWindow);
-
-export default urlGenerator;
+export const portalUrlGenerator = new PortalUrlGenerator(PortalWindow);
