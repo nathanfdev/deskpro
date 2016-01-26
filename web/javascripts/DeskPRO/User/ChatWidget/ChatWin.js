@@ -251,15 +251,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			loginForm.on('submit', function(ev) {
 				ev.preventDefault();
 
-				var postData = [];
-				postData.push({
-					name: 'email',
-					value: loginForm.find('input[name="email"]').val()
-				});
-				postData.push({
-					name: 'password',
-					value: loginForm.find('input[name="password"]').val()
-				});
+				var postData = loginForm.find('input, select, textarea').serializeArray();
 
 				loginForm.find('.login-loading').show();
 				loginForm.find('.submit-btn').hide();
@@ -646,7 +638,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 
 		var a_p = "am";
 		var curr_hour = d.getHours();
-		if (d.getHours() > 12) {
+		if (d.getHours() >= 12) {
 			a_p = "pm";
 		}
 		if (curr_hour == 0) {

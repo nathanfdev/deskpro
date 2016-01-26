@@ -58,16 +58,34 @@ class GenBuildManifest
     {
         $builds_path = $this->builds_path;
 
-        $finder = Finder::create()->in($builds_path)->files()->name('/^Build(\\d+)\.php$/');
+        $finder    = Finder::create()->in($builds_path)->files()->name('/^Build.*?(\\d+)(.*?)\.php$/');
+        $start_ids = [];
 
         $builds = array();
 
         foreach ($finder as $file) {
             /* @var $file \SplFileInfo */
 
-            $build_id = Strings::extractRegexMatch('/^Build(\\d+)\.php$/', $file->getFilename());
+            $build_id = Strings::extractRegexMatch('/^Build.*?(\\d+)(.*?)\.php$/', $file->getFilename());
             if (!$build_id) {
                 continue;
+            }
+
+            // if this dir is a build-pack, we read files sequentually but get the 'id'
+            // of the build based off of a start build ID.
+            // it allows the whole directory to be moved/renamed up/down the timeline easily (e.g, for big merges)
+            $d = dirname($file->getRealPath());
+            if (!isset($start_ids[$d])) {
+                if (file_exists($d.'/build-pack.txt')) {
+                    $packinfo = Strings::parseEqualsLines(file_get_contents($d.'/build-pack.txt'));
+                    if ($packinfo['start_build_id']) {
+                        $start_ids[$d] = $packinfo['start_build_id'];
+                    }
+                }
+            }
+
+            if (isset($start_ids[$d])) {
+                $build_id = $start_ids[$d]++;
             }
 
             $trim_path = str_replace(DP_ROOT, '', $file->getRealPath());

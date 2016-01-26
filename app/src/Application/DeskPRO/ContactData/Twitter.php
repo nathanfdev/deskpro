@@ -90,9 +90,7 @@ class Twitter extends AbstractContactData
                         if ($user) {
                             $contact_data->field_3 = $user->id;
 
-                            App::getOrm()->delayedUpdate(function ($em) use ($user, $last_id) {
-                                $em->persist($user);
-                            });
+                            $em->persist($user);
                         } else {
                             $contact_data->field_3 = '0';
                         }

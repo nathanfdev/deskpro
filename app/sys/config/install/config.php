@@ -48,11 +48,8 @@ $container->setParameter(
     'Application\\DeskPRO\\CacheWarmer\\TemplatePathsCacheWarmer'
 );
 $container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%/../doctrine-proxies');
-$container->setParameter('doctrine.orm.entity_manager.class', 'Application\\DeskPRO\\ORM\\EntityManager');
 $container->setParameter('templating.globals.class', 'Application\\DeskPRO\\Templating\\GlobalVariables');
 $container->setParameter('templating.name_parser.class', 'Application\\DeskPRO\\Templating\\TemplateNameParser');
-$container->setParameter('templating.asset.url_package.class', 'Application\\DeskPRO\\Templating\\Asset\\UrlPackage');
-$container->setParameter('templating.asset.path_package.class', 'Application\\DeskPRO\\Templating\\Asset\\PathPackage');
 $container->setParameter(
     'templating.cache_warmer.template_paths.class',
     'Application\\DeskPRO\\CacheWarmer\\TemplatePathsCacheWarmer'
@@ -74,7 +71,6 @@ $container->setParameter('templating.engine.twig.class', 'Application\\DeskPRO\\
 ############################################################################
 # Services
 ############################################################################
-
 
 // app secret
 $definition = new Definition();
@@ -167,7 +163,7 @@ $container->loadFromExtension(
         'secret'     => 'mube224etsmhxky1gvwixc4b',
         'templating' => array(
             'engines'          => array('php'),
-            'assets_base_urls' => 'CONFIG_HTTP',
+            'assets_base_urls' => 'http://bogus/CONFIG_HTTP',
         ),
         'validation' => array('enabled' => true),
         'form'       => array('enabled' => true),
@@ -223,7 +219,6 @@ $container->loadFromExtension(
                             'prefix'    => 'DeskPRO\Bundle\AppBundle\Entity',
                         ),
                     ),
-                    'class_metadata_factory_name' => 'Orb\\Doctrine\\ORM\\Mapping\\StaticClassMetadataFactory',
                 ),
             ),
         ),

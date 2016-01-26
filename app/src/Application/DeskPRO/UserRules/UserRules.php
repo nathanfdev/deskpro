@@ -38,7 +38,7 @@ use Doctrine\ORM\EntityManager;
 class UserRules
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var EntityManager
      */
     protected $em;
 

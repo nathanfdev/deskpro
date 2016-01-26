@@ -128,7 +128,7 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
         }
     }
 
-    protected function findTemplate($template)
+    protected function findTemplate($template, $thow = true)
     {
         $this->_initTemplates();
 
@@ -163,6 +163,6 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
             }
         }
 
-        return parent::findTemplate($template);
+        return parent::findTemplate($template, $thow);
     }
 }

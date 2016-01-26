@@ -39,7 +39,7 @@ use Orb\Util\Util;
 class ServerPhpInfo
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 

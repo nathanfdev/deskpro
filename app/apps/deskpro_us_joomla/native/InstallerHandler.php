@@ -36,7 +36,7 @@ namespace deskpro_us_joomla;
 use Application\DeskPRO\App\Native\InstallerHandler\AbstractUsersourceInstallerHandler;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\Usersource;
-use Application\DeskPRO\ORM\EntityManager;
+use Doctrine\ORM\EntityManager;
 
 class InstallerHandler extends AbstractUsersourceInstallerHandler
 {
@@ -47,8 +47,8 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
     {
         $us->title   = $app->title;
         $us->options = array(
-            'joomla_url'    => $app->getSetting('joomla_url'),
-            'joomla_secret' => $app->getSetting('joomla_secret'),
+            'joomla_url'      => $app->getSetting('joomla_url'),
+            'joomla_secret'   => $app->getSetting('joomla_secret'),
             'raw_info_filter' => $app->getSetting('raw_info_filter') ?: null,
         );
         $us->lost_password_url = $app->getSetting('lost_pwd_url') ?: '';

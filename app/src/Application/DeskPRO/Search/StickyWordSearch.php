@@ -31,7 +31,6 @@
  *
  * @category Search
  */
-
 namespace Application\DeskPRO\Search;
 
 use Application\DeskPRO\Entity\Person;
@@ -151,6 +150,8 @@ class StickyWordSearch implements PersonContextInterface
         if (!$words) {
             return array();
         }
+
+        array_unshift($words, $query);
 
         if (count($words) > 15) {
             $words = array_slice($words, 0, 15);

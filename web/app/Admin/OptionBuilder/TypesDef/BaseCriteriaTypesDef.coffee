@@ -61,6 +61,7 @@ define [
     getStandardForFieldDef: (field, options = {}) ->
       options.type_name = field.type_name
       if not options.propName then options.propName = 'value'
+      options.operators = ['is', 'not', 'isset', 'not_isset', 'touched', 'nottouched']
 
       if field.type_name == 'choice'
         options.options = field.choices.map( (o) -> {title: o.title, value: o.id})

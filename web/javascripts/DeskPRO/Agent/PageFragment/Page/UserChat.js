@@ -241,10 +241,13 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 					combo = combo.replace(/%/g, '');
 					if (window.DESKPRO_CHAT_SNIPPET_SHORTCODES && window.DESKPRO_CHAT_SNIPPET_SHORTCODES[combo]) {
 						ev.preventDefault();
+						var arr = window.DESKPRO_CHAT_SNIPPET_SHORTCODES[combo];
+						if ('[object Array]' !== Object.prototype.toString.call(arr)) {
+							arr = [arr];
+						}
+						for (var i = 0; i < arr.length; i++) {
 
-						for (var i = 0; i < window.DESKPRO_CHAT_SNIPPET_SHORTCODES[combo].length; i++) {
-
-							var snippetId = window.DESKPRO_CHAT_SNIPPET_SHORTCODES[combo][i];
+							var snippetId = arr[i];
 
 							var focus = api.getFocus(),
 								focusNode = $(focus[0]),
@@ -828,7 +831,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 		var a_p = "am";
 		var curr_hour = d.getHours();
-		if (d.getHours() > 12) {
+		if (d.getHours() >= 12) {
 			a_p = "pm";
 		}
 		if (curr_hour == 0) {

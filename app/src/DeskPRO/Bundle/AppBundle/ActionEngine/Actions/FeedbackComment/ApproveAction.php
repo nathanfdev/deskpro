@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\FeedbackComment;
 
 use Application\DeskPRO\Entity\FeedbackComment;

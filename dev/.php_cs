@@ -35,9 +35,6 @@ $finder = Symfony\CS\Finder\DefaultFinder::create()
     ->exclude('vendor')
     ->exclude('vendor-src')
     ->notName('StaticReflectionProperty_Real.php')
-    ->notName('UnprivateProxyFactory.php')
-    ->notName('UnprivateEntityManager.php')
-    ->notName('UnprivateUnitOfWork.php')
     ->in(PHP_CS_SRC_DIR)
 ;
 

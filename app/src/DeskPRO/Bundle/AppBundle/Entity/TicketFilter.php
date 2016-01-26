@@ -92,6 +92,7 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
     /**
      * @var TicketFilterSet
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet", inversedBy="filters")
+     * @ORM\JoinColumn(name="filter_set_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $filter_set;
 

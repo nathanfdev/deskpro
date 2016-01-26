@@ -36,7 +36,7 @@ use Doctrine\ORM\EntityManager;
 class ServerTaskQueue
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 

@@ -49,6 +49,9 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 			return function(ev) {
 				var listNav = getActiveListNav();
 				if (listNav) {
+					if (!listNav[action]) {
+						return console.error('No action "%s" is defined for the listNav', action);
+					}
 					listNav[action]();
 				}
 			};

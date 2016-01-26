@@ -36,11 +36,11 @@ use DeskPRO\Bundle\AppBundle\HttpKernel\SkipLowRequestInterface;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Twig\Environment;
 use Psr\Log\LoggerInterface;
-use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Templating\EngineInterface;
 
 /**
  * If the portal is disabled, we send a response back immediately from this request listener.
@@ -65,14 +65,14 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
     /**
      * @var Environment
      */
-    private $portal_twig;
+    private $portal_tpl;
 
-    public function __construct(BrandStack $brand_stack, SettingsResolver $resolver, LoggerInterface $logger, TwigEngine $portal_twig)
+    public function __construct(BrandStack $brand_stack, SettingsResolver $resolver, LoggerInterface $logger, EngineInterface $portal_tpl)
     {
         $this->resolver    = $resolver;
         $this->brand_stack = $brand_stack;
         $this->logger      = $logger;
-        $this->portal_twig = $portal_twig;
+        $this->portal_tpl  = $portal_tpl;
     }
 
     /**
@@ -103,7 +103,7 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
 
         if (!$brand_portal_enabled) {
             // we can always use brand settings here, because they inherit global in case brand specific is not set
-            $event->setResponse($this->portal_twig->renderResponse('Theme:Portal:disabled.html.twig'));
+            $event->setResponse($this->portal_tpl->renderResponse('Theme:Portal:disabled.html.twig'));
         }
     }
 

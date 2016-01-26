@@ -31,6 +31,7 @@ namespace DpUnitTests\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\Actions\SetAgentTeam;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Doctrine\Common\Collections\ArrayCollection;
 use DpTest\DeskProTestCase;
 use DpTestSrc\TestBundle\Mock\ContainerMock;
 use Mockery as m;
@@ -94,14 +95,9 @@ class SetAgentTeamTest extends DeskProTestCase
         $agent           = m::mock('Application\\DeskPRO\\Entity\\Person')->makePartial();
         $agent->id       = 500;
         $agent->is_agent = true;
-
-        $agent_helper = m::mock();
-        $agent_helper->shouldReceive('getTeams')->andReturn(
-            array(
-                $this->getMockContainer()->getAgentData()->getTeam(5),
-            )
-        );
-        $agent->shouldReceive('getHelper')->andReturn($agent_helper);
+        $agent->teams    = new ArrayCollection([
+            $this->getMockContainer()->getAgentData()->getTeam(5),
+        ]);
 
         $exec->setPersonContext($agent);
 

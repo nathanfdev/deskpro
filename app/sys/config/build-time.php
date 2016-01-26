@@ -1,5 +1,4 @@
-<?php
-
+<?php 
 /*
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
@@ -26,4 +25,4 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1453344055);
+define('DP_BUILD_TIME', 1453307965);

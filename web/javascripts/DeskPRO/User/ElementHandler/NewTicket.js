@@ -147,11 +147,12 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 			// Turn on criteria-less fields now
 			if (!item.checkFn) {
 				itemEl.removeClass('with-criteria');
-				itemEl.show();
+				item.isVisibleOnNew && itemEl.show();
 			} else {
 				itemEl.addClass('with-criteria');
 				this.depItemsWithChecked = true;
 			}
+			itemEl.data('item', item);
 		}, this);
 
 		this.runChecksRecursionCount = 0;
@@ -170,7 +171,7 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 		var changed = false;
 		$('.with-criteria').each(function() {
 			var el = $(this);
-			var item = self.findItemForEl(el);
+			var item = el.data('item');
 			if (!item) return;
 
 			if (item.checkFn(ticketReader)) {

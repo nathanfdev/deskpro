@@ -25,9 +25,6 @@ $exclude_dirs = array(
 
 $exclude_file_names = array(
     'StaticReflectionProperty_Real.php',
-    'UnprivateProxyFactory.php',
-    'UnprivateEntityManager.php',
-    'UnprivateUnitOfWork.php',
 );
 
 $changed_files = array_map(function($filename) {

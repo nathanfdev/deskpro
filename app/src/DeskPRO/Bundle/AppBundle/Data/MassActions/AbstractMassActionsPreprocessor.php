@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Data\MassActions;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection;

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\ServerReqs;
 
 use Application\DeskPRO\App;
@@ -40,7 +39,7 @@ use Orb\Util\Env;
 class ServerReqs
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 

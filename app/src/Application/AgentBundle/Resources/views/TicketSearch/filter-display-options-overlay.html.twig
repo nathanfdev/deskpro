@@ -44,7 +44,7 @@
 	{% if app.getSetting('core_tickets.use_ref') %}<li data-field="ref"><label><input type="checkbox" name="ref" {% if 'ref' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.ref') }}</label></li>{% endif %}
 	<li data-field="status"><label><input type="checkbox" name="status" {% if 'status' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.status') }}</label></li>
 	<li data-field="subject" {% if not show_all %}style="display: none"{% endif %}><label><input type="checkbox" name="subject" {% if not show_all or 'subject' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.subject') }}</label></li>
-	<li data-field="user" {% if not show_all %}style="display: none"{% endif %}><label><input type="checkbox" name="user" {% if not show_all or 'user' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.user') }}</label></li>
+	<li data-field="user"><label><input type="checkbox" name="user" {% if 'user' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.user') }}</label></li>
 	<li data-field="department"><label><input type="checkbox" name="department" {% if 'department' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.department') }}</label></li>
 	<li data-field="agent"><label><input type="checkbox" name="agent" {% if 'agent' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.agent') }}</label></li>
 	{% if app.getSetting('core.use_agent_team') %}<li data-field="agent_team"><label><input type="checkbox" name="agent_team" {% if 'agent_team' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.agent_team') }}</label></li>{% endif %}
@@ -63,10 +63,7 @@
 	<li data-field="date_last_user_reply"><label><input type="checkbox" name="date_last_user_reply" {% if 'date_last_user_reply' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.date_of_last_user_reply') }}</label></li>
 	<li data-field="date_last_agent_reply"><label><input type="checkbox" name="date_last_agent_reply" {% if 'date_last_agent_reply' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.date_of_last_agent_reply') }}</label></li>
 	<li data-field="date_resolved"><label><input type="checkbox" name="date_resolved" {% if 'date_resolved' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.date_resolved') }}</label></li>
-    <li data-field="problems"><label><input type="checkbox" name="problems"
-                                            {% if 'problems' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.problems.problem') }}
-        </label></li>
-
+    <li data-field="problems"><label><input type="checkbox" name="problems" {% if 'problems' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.problems.problem') }}</label></li>
 
     {% for t in types %}
 		<li data-field="{{ t }}"><label><input type="checkbox" name="{{ t }}" {% if t in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.tickets.type_' ~ t) }}</label></li>

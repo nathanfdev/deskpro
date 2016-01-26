@@ -471,7 +471,7 @@ class Ticket extends AbstractEntityRepository
     public function getCountInfoForPerson(Entity\Person $person, $status = null)
     {
         $counts = array(
-            'person' => $this->countTicketsForPerson($person, $status),
+            'person' => $this->countTicketsForPerson2($person),
             'org'    => 0,
         );
 
@@ -953,5 +953,62 @@ class Ticket extends AbstractEntityRepository
         }
 
         return count($ticket_ids);
+    }
+
+    public function getTicketsForPerson(PersonEntity $person, $offset, $limit, $sort)
+    {
+        return $this->getQueryForPerson($person, false, $sort)->setFirstResult($offset)->setMaxResults($limit)->getResult();
+    }
+
+    public function countTicketsForPerson2(Entity\Person $person)
+    {
+        return $this->getQueryForPerson($person, true)->getSingleScalarResult();
+    }
+
+    /**
+     * @param PersonEntity $person
+     * @param bool         $isCount
+     * @param null         $sort
+     *
+     * @return \Doctrine\ORM\Query
+     */
+    protected function getQueryForPerson(Entity\Person $person, $isCount = false, $sort = null)
+    {
+        $qb = $this->createQueryBuilder('t');
+        $qb->select($isCount ? $qb->expr()->countDistinct('t.id') : 't');
+        $qb->leftJoin('t.participants', 'p');
+        $qb->where('t.status != \'hidden\' AND (t.date_last_agent_reply IS NOT NULL OR t.date_last_user_reply IS NOT NULL)');
+        $qb->setParameter('person', $person);
+
+        if ($person->is_agent) {
+            $qb->andWhere('t.person = :person');
+        } elseif ($person->organization && $person->organization_manager) {
+            // Managers can always see their org tickets, so dont show them
+            // tickets if they are of their own org because those will be on the org page
+            $qb->andWhere('t.person = :person OR (p.person = :person AND t.organization != :org)');
+            $qb->setParameter('org', $person->organization);
+        } else {
+            $qb->andWhere('(t.person = :person OR p.person = :person)');
+        }
+
+        if (!$isCount) {
+            switch ($sort) {
+                case 'department':
+                    $qb->leftJoin('t.department', 'd');
+                    $qb->leftJoin('d.parent', 'd_parent');
+                    $qb->addOrderBy('d_parent.display_order, d.display_order, t.id', 'DESC');
+                    break;
+
+                case 'last_reply':
+                    $qb->addOrderBy('t.date_last_user_reply', 'DESC');
+                    break;
+
+                case 'date_created':
+                default:
+                    $qb->addOrderBy('t.id', 'DESC');
+            }
+        }
+
+        return $qb->getQuery();
     }
 }

@@ -1371,10 +1371,6 @@ return array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/01/Build1420543837.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1420543837',
     ),
-    1421095053 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/01/Build1421095053.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1421095053',
-    ),
     1421925247 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/01/Build1421925247.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1421925247',
@@ -1419,97 +1415,17 @@ return array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/02/Build1424444388.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1424444388',
     ),
-    1425409174 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/03/Build1425409174.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1425409174',
-    ),
     1425653819 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/03/Build1425653819.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1425653819',
-    ),
-    1426292783 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/03/Build1426292783.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1426292783',
     ),
     1426703171 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/03/Build1426703171.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1426703171',
     ),
-    1426870868 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/03/Build1426870868.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1426870868',
-    ),
-    1427312154 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/03/Build1427312154.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1427312154',
-    ),
     1428399555 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/04/Build1428399555.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1428399555',
-    ),
-    1428584017 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/04/Build1428584017.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1428584017',
-    ),
-    1428584018 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/04/Build1428584018.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1428584018',
-    ),
-    1428584019 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/04/Build1428584019.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1428584019',
-    ),
-    1428584020 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/04/Build1428584020.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1428584020',
-    ),
-    1428584021 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/04/Build1428584021.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1428584021',
-    ),
-    1428584022 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/04/Build1428584022.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1428584022',
-    ),
-    1428584023 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/04/Build1428584023.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1428584023',
-    ),
-    1428584024 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/04/Build1428584024.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1428584024',
-    ),
-    1428584025 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/04/Build1428584025.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1428584025',
-    ),
-    1428584026 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/04/Build1428584026.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1428584026',
-    ),
-    1428584027 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/04/Build1428584027.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1428584027',
-    ),
-    1428584028 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/04/Build1428584028.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1428584028',
-    ),
-    1428584029 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/04/Build1428584029.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1428584029',
-    ),
-    1428584030 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/04/Build1428584030.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1428584030',
-    ),
-    1428584031 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/04/Build1428584031.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1428584031',
-    ),
-    1428584032 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/04/Build1428584032.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1428584032',
     ),
     1429288428 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/04/Build1429288428.php',
@@ -1542,18 +1458,6 @@ return array(
     1430576963 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/05/Build1430576963.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1430576963',
-    ),
-    1432745383 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/05/Build1432745383.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1432745383',
-    ),
-    1433180212 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/06/Build1433180212.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1433180212',
-    ),
-    1433515837 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/06/Build1433515837.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1433515837',
     ),
     1433777718 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/06/Build1433777718.php',
@@ -1595,10 +1499,6 @@ return array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/07/Build1437732745.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1437732745',
     ),
-    1438108403 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/07/Build1438108403.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1438108403',
-    ),
     1438180208 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/07/Build1438180208.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1438180208',
@@ -1607,18 +1507,6 @@ return array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/08/Build1438779524.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1438779524',
     ),
-    1439990483 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/08/Build1439990483.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1439990483',
-    ),
-    1439992701 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/08/Build1439992701.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1439992701',
-    ),
-    1440766882 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/08/Build1440766882.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1440766882',
-    ),
     1441278948 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/09/Build1441278948.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1441278948',
@@ -1626,26 +1514,6 @@ return array(
     1441367828 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/09/Build1441367828.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1441367828',
-    ),
-    1441964828 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/09/Build1441964828.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1441964828',
-    ),
-    1442234717 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/09/Build1442234717.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1442234717',
-    ),
-    1442586021 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/09/Build1442586021.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1442586021',
-    ),
-    1442586727 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/09/Build1442586727.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1442586727',
-    ),
-    1442589119 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/09/Build1442589119.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1442589119',
     ),
     1442938090 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/09/Build1442938090.php',
@@ -1659,61 +1527,21 @@ return array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/09/Build1443084898.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1443084898',
     ),
-    1443515017 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/09/Build1443515017.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1443515017',
-    ),
     1443607597 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/09/Build1443607597.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1443607597',
-    ),
-    1444079151 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/10/Build1444079151.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1444079151',
-    ),
-    1444080214 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/10/Build1444080214.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1444080214',
-    ),
-    1444080586 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/10/Build1444080586.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1444080586',
     ),
     1444134083 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/10/Build1444134083.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1444134083',
     ),
-    1444146056 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/10/Build1444146056.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1444146056',
-    ),
-    1444168608 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/10/Build1444168608.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1444168608',
-    ),
     1444325594 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/10/Build1444325594.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1444325594',
     ),
-    1444335702 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/10/Build1444335702.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1444335702',
-    ),
     1444822921 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/10/Build1444822921.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1444822921',
-    ),
-    1444915520 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/10/Build1444915520.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1444915520',
-    ),
-    1444941131 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/10/Build1444941131.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1444941131',
-    ),
-    1445902167 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/10/Build1445902167.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1445902167',
     ),
     1446031649 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/10/Build1446031649.php',
@@ -1722,10 +1550,6 @@ return array(
     1446239236 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/10/Build1446239236.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1446239236',
-    ),
-    1446397151 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/11/Build1446397151.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1446397151',
     ),
     1446558649 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/11/Build1446558649.php',
@@ -1743,100 +1567,88 @@ return array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/11/Build1447780997.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1447780997',
     ),
-    1448479966 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/11/Build1448479966.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1448479966',
+    1449202371 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/12/Build1449202371.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1449202371',
     ),
-    1448480390 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/11/Build1448480390.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1448480390',
+    1450071912 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/12/Build1450071912.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1450071912',
     ),
-    1448489688 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/11/Build1448489688.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1448489688',
+    1451313483 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/12/Build1451313483.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1451313483',
     ),
-    1448623130 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/11/Build1448623130.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1448623130',
+    1452775755 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/01/Build1452775755.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1452775755',
     ),
-    1448624811 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/11/Build1448624811.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1448624811',
+    1456790400 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0000_newtables.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0000_newtables',
     ),
-    1448626377 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/11/Build1448626377.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1448626377',
+    1456790401 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0001_newalters.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0001_newalters',
     ),
-    1448626419 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/11/Build1448626419.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1448626419',
+    1456790402 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0002_publishslugs.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0002_publishslugs',
     ),
-    1448627929 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/11/Build1448627929.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1448627929',
+    1456790403 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0003_oldtables.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0003_oldtables',
     ),
-    1448630261 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/11/Build1448630261.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1448630261',
+    1456790404 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0004_visitorids.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0004_visitorids',
     ),
-    1448644222 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/11/Build1448644222.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1448644222',
+    1456790405 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0010_brand.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0010_brand',
     ),
-    1448875746 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/11/Build1448875746.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1448875746',
+    1456790406 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0020_misc.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0020_misc',
     ),
-    1448902805 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/11/Build1448902805.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1448902805',
+    1456790407 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0021_validatingpublish.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0021_validatingpublish',
     ),
-    1449231528 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/12/Build1449231528.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1449231528',
+    1456790408 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0022_publish.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0022_publish',
     ),
-    1449631025 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/12/Build1449631025.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1449631025',
+    1456790409 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0030_validatingtickets.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0030_validatingtickets',
     ),
-    1449845526 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/12/Build1449845526.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1449845526',
+    1456790410 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0040_userchat1.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0040_userchat1',
     ),
-    1450037032 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/12/Build1450037032.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1450037032',
+    1456790411 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0041_userchat2.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0041_userchat2',
     ),
-    1450041151 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/12/Build1450041151.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1450041151',
+    1456790412 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0050_peoplealter1.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0050_peoplealter1',
     ),
-    1450197835 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/12/Build1450197835.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1450197835',
+    1456790413 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0051_peoplealter2.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0051_peoplealter2',
     ),
-    1450199467 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/12/Build1450199467.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1450199467',
+    1456790414 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0060_ticketalter1.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0060_ticketalter1',
     ),
-    1450199468 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/12/Build1450199468.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1450199468',
+    1456790415 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0061_ticketalter2.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0061_ticketalter2',
     ),
-    1450199568 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/12/Build1450199568.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1450199568',
-    ),
-    1452515438 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/01/Build1452515438.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1452515438',
-    ),
-    1452757986 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/01/Build1452757986.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1452757986',
-    ),
-    1453344055 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/01/Build1453344055.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1453344055',
+    1456790416 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0200_oldtables2.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0200_oldtables2',
     ),
 );

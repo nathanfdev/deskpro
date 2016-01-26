@@ -50,7 +50,7 @@ class PersonSetting implements EntityInterface, NotifyPropertyChanged
      * @var Person
      * @ORM\Id()
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\Valid()
      */
     protected $person;

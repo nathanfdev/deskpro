@@ -127,4 +127,88 @@
 {% endif %}
 {# /Usergroup Box #}
 
+<div class="profile-box-container summary" id="{{baseId}}_hierarchy_box">
+	<header>
+		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+			<ul>
+				<li>{{ phrase('agent.general.hierarchy') }}</li>
+			</ul>
+		</nav>
+	</header>
+	<section>
+
+		<ul>
+			<li style="padding: 6px 10px;">
+				Parent:
+				{% if org.parent %}
+					<a href="#" data-route="page:{{ path('agent_org_view', {'organization_id': org.parent.id}) }}">
+						{{ org.parent.name }}
+					</a>
+				{% else %}
+					none
+				{% endif %}
+			</li>
+			<li style="padding: 6px 10px; border-top: 1px solid #CAD0D7" ng-show="children && children.length">
+				Children:
+				<ul id="{{ baseId }}_children-list" style="margin-left:10px;">
+					<li ng-repeat="child in children">
+						<i class="fa fa-caret-right" style="font-size: 90%;"></i>
+						<a href="#" data-route="page:{{ path('agent_org_view', {'organization_id': '0000'})|replace({'0000': ng_var('child.id')}) }}">
+							{{ ng_var('child.name') }}
+						</a>
+						<a class="remove-child" ng-click="removeChild(child)" style="color:#999; font-size: 80%" title="Remove association"><i class="fa fa-times"></i></a>
+					</li>
+				</ul>
+			</li>
+			<li style="padding: 6px 10px; border-top: 1px solid #CAD0D7">
+				Add child:
+
+				<div style="position: relative; height: 25px; display: inline-block;">
+
+					<input type="text" ng-model="searchChildTitle" placeholder="Find{% if app.user.hasPerm('agent_org.create') %}/add{% endif %} an organization" />
+
+					<div class="person-search-box org" style="position: absolute; top: 25px; min-width: 155px;" ng-show="searchChildrenResults.length || searchChildTitle">
+						<section>
+							<ul class="results-list">
+								<li ng-repeat="result in searchChildrenResults">
+									<a ng-click="addChild(result)" ng-if="!result.parent_id && result.id != root_id">
+										<span class="org-name">
+											{{ ng_var('result.name') }}
+										</span>
+									</a>
+									<a>
+										<span class="org-name" style="color: gray;" ng-if="result.parent_id || result.id == root_id">
+											{{ ng_var('result.name') }}
+										</span>
+										<div dp-sticky-tip offset-top="24">
+											<article ng-if="root_id == result.id">
+												This organization is a grandparent of {{ org.name }}
+											</article>
+											<article ng-if="result.parent_id">
+												This organization is already a child of {{ ng_var('result.parent_name') }}
+											</article>
+										</div>
+									</a>
+								</li>
+							</ul>
+							{% if app.user.hasPerm('agent_org.create') %}
+								<footer ng-show="showCreateChild" ng-click="addChild()">
+									<span class="create-org">
+										{{ phrase('agent.general.create') }}:
+										<em>
+											{{ ng_var('searchChildTitle') }}
+										</em>
+									</span>
+								</footer>
+							{% endif %}
+						</section>
+					</div>
+				</div>
+			</li>
+		</ul>
+
+	</section>
+	{{ dp_app_loc(baseId, 'usergroups.tab') }}
+</div>
+
 {{ dp_app_loc(baseId, 'right_col.bottom') }}

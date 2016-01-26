@@ -42,9 +42,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			var $a = $(this)
 				, href = $a.attr('href')
 				;
+			$a.attr('target', '_blank');
 			if (!href || href.length < 5 || href.substr(0, 4) === 'http' || href.substr(0, 1) === '/') return;
 			$a.attr('href', 'http://' + href);
-      $a.attr('target', '_blank');
 		});
 	},
 
@@ -1117,8 +1117,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				return;
 			}
 
-			self.handleTicketUpdate(result);
-
 			// Reload the message row in results
 			//addTicket
 			if (DeskPRO_Window.sections.tickets_section && DeskPRO_Window.sections.tickets_section.listPage) {
@@ -1320,6 +1318,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		if (data.replybox_html) {
 			// Only refresh the box if we've not begun writing a message
 			if (!this.getEl('replybox_wrap').find('textarea.touched')[0]) {
+				var chargeCheckboxState = $('input[name="charge_time"]', this.wrapper).prop('checked');
 				var textarea = this.getReplyTextArea();
 				if (textarea.data('redactor')) {
 					textarea.destroyEditor();
@@ -1327,6 +1326,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				this.getEl('replybox_wrap').empty().append(data.replybox_html);
 				DeskPRO_Window.initInterfaceServices(this.getEl('replybox_wrap'));
 				$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySave.bind(this));
+				$('input[name="charge_time"]', this.wrapper).prop('checked', chargeCheckboxState);
 			}
 		}
 

@@ -37,6 +37,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\Labels\Label;
 use Application\DeskPRO\Entity\Labels\LabelsOwner;
+use Application\DeskPRO\People\PasswordPolicyValidator;
 use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
@@ -769,7 +770,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function isUserValid()
     {
-        return ($this->isEmailValidated());
+        return $this->isEmailValidated();
     }
 
     /**
@@ -1293,11 +1294,12 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     /**
      * Sets the hashed form of the password for this user. Used with local auth.
      *
-     * @param string $plain_password The password to set
+     * @param string $plain_password     The password to set
+     * @param bool   $expire_immediately True to make the user enter a new password next time they log in.
      *
      * @return string
      */
-    public function setPassword($plain_password)
+    public function setPassword($plain_password, $expire_immediately = false)
     {
         // If we're setting the password, we're now using the default
         // password scheme so remove the old one. eg an imported user just changed their password
@@ -1310,7 +1312,15 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $this->_set_plain_password = $plain_password;
 
         $this->setModelField('password', $hash);
-        $this->setModelField('date_password_set', new \DateTime());
+
+        if ($expire_immediately) {
+            $this->setModelField(
+                'date_password_set',
+                \DateTime::createFromFormat('Y-m-d H:i:s', PasswordPolicyValidator::MAGIC_PASSWORD_EXPIRED_TRIGGER_DATE)
+            );
+        } else {
+            $this->setModelField('date_password_set', new \DateTime());
+        }
 
         if ($this->id) {
             $token = App::getEntityRepository('DeskPRO:ApiToken')->getTokenForPerson($this);
@@ -1793,13 +1803,23 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function addCustomData(CustomDataPerson $data)
     {
-        if ($this->custom_data === null) {
-            $this->custom_data = new ArrayCollection();
+        $this->custom_data->add($data);
+        $data->setPerson($this);
+
+        $field     = $data->field;
+        $parent_id = null;
+        $field_id  = $field['id'];
+        if ($field->parent) {
+            $parent_id = $field->parent['id'];
         }
 
-        $this->custom_data->add($data);
-        $data->person = $this;
-        $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
+        if ($parent_id) {
+            $this->getStateChangeRecorder()->record("custom_data.$parent_id", null, $data, true);
+        } else {
+            $this->getStateChangeRecorder()->record("custom_data.$field_id", null, $data, true);
+        }
+
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
     }
 
     /**
@@ -3932,7 +3952,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             array(
                 'fieldName'     => 'emails',
                 'targetEntity'  => 'Application\\DeskPRO\\Entity\\PersonEmail',
-                'cascade'       => array('remove', 'persist', 'detach'),
+                'cascade'       => array('persist', 'detach'),
                 'mappedBy'      => 'person',
                 'dpApi'         => true,
                 'orphanRemoval' => true,

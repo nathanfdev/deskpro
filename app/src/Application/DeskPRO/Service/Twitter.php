@@ -48,7 +48,7 @@ class Twitter
     protected $_tweet_cache = array();
 
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 

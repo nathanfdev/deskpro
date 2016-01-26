@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Kernel;
 
 require_once DP_ROOT.'/sys/DpShutdown.php';
@@ -44,7 +43,6 @@ use Doctrine\DBAL\DBALException;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Debug\Debug;
-use Symfony\Component\Debug\Exception\ContextErrorException;
 use Symfony\Component\HttpFoundation\Request;
 
 class KernelBooter
@@ -371,15 +369,8 @@ class KernelBooter
                     exit;
                 }
                 KernelErrorHandler::logException($e);
-            } catch (ContextErrorException $e) {
-                // this exception is thrown by the HttpCache if the DBALException is thrown.
-                // It is possible that the DBALException catch above will never be called, but I am keeping it there just in case.
-                // TODO: What other exceptions might this catch that should NOT result in an install screen?
-                deskpro_handle_boot_db_exception($e);
-
-                header('Location: '.$request->getBasePath().'/index.php/install/');
-                exit;
             } catch (\Exception $e) {
+                echo deskpro_install_basic_error('There was an error while trying to serve your request.<br/><br/>If you are an administrator, you should check <var>data/logs/error.log</var>', 'Error');
                 KernelErrorHandler::logException($e);
             }
 
@@ -1330,11 +1321,11 @@ HTML;
      */
     public static function isSecure()
     {
-        return (
+        return
             (strtolower((isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : null)) == 'on' || (isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : null) == 1)
             ||
             ((isset($_SERVER['SSL_HTTPS']) ? $_SERVER['SSL_HTTPS'] : null) == 1)
-        );
+        ;
     }
 
     /**
@@ -1357,7 +1348,7 @@ HTML;
      */
     public static function getPort()
     {
-        return (isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : null);
+        return isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : null;
     }
 
     /**

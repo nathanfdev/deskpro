@@ -107,7 +107,7 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
     /**
      * @var Person
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person", cascade={"remove"})
-     * @ORM\JoinColumn(name="person_id")
+     * @ORM\JoinColumn(name="person_id", onDelete="CASCADE")
      */
     protected $private_agent;
 
@@ -117,10 +117,10 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      * @ORM\JoinTable(
      *      name="filter_set_agents",
      *      joinColumns={
-     *          @ORM\JoinColumn(name="filter_set_id", referencedColumnName="id")
+     *          @ORM\JoinColumn(name="filter_set_id", referencedColumnName="id", onDelete="CASCADE")
      *      },
      *      inverseJoinColumns={
-     *          @ORM\JoinColumn(name="person_id", referencedColumnName="id")
+     *          @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="CASCADE")
      *      }
      * )
      */

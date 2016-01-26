@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\JsonRenderer\TicketListRenderer;
@@ -117,7 +116,7 @@ class TicketSearchController extends AbstractController
         # Misc
         #------------------------------
 
-        $flags       = array('blue','green','orange','pink','purple','red','yellow');
+        $flags       = array('blue', 'green', 'orange', 'pink', 'purple', 'red', 'yellow');
         $flag_counts = $this->em->getRepository('DeskPRO:TicketFlagged')->getCountsForPerson($this->person);
 
         $label_lister = new \Application\DeskPRO\Labels\LabelLister('tickets');
@@ -225,7 +224,7 @@ class TicketSearchController extends AbstractController
 
     public function getFlaggedSectionAction()
     {
-        $flags       = array('blue','green','orange','pink','purple','red','yellow');
+        $flags       = array('blue', 'green', 'orange', 'pink', 'purple', 'red', 'yellow');
         $flag_counts = $this->em->getRepository('DeskPRO:TicketFlagged')->getCountsForPerson($this->person);
 
         return $this->render('AgentBundle:TicketSearch:window-flagged.html.twig', array(
@@ -247,7 +246,7 @@ class TicketSearchController extends AbstractController
             $q = $this->in->getString('term');
         }
 
-        if (!$q) {
+        if (!$q && !$this->in->getUint('person_id')) {
             return $this->createJsonResponse(array());
         }
 

@@ -31,10 +31,8 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -127,22 +125,6 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
             return $this->id;
         }
 
-        public function _invalidateLanguageCache()
-        {
-            $orm = App::getOrm();
-
-            if (method_exists($orm, 'delayedUpdate')) {
-                $orm->delayedUpdate(
-                    function ($em) {
-                        // defer this until after the flush to avoid a race condition and make sure it's updated after insert
-                        $cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
-                        $cache->invalidateLanguageCache();
-                    }
-                )
-                ;
-            }
-        }
-
         public function getUrlCode()
         {
             // special handling for 'default' to be just 'en'
@@ -193,7 +175,6 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
             $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
             $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Language';
             $metadata->setPrimaryTable(array('name' => 'languages'));
-            $metadata->addLifecycleCallback('_invalidateLanguageCache', 'preFlush');
             $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
             $metadata->mapField(
                 array(

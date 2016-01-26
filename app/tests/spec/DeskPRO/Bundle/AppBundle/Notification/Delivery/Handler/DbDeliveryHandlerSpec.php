@@ -28,9 +28,9 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler;
 
-use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\DbDeliveryHandler;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
+use Doctrine\ORM\EntityManager;
 use PhpSpec\ObjectBehavior;
 
 /**

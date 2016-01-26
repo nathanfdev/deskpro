@@ -35,7 +35,7 @@ namespace Application\DeskPRO\App\Native\InstallerHandler;
 
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\Usersource;
-use Application\DeskPRO\ORM\EntityManager;
+use Doctrine\ORM\EntityManager;
 
 abstract class AbstractUsersourceInstallerHandler extends AbstractInstallerHandler
 {

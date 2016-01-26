@@ -33,7 +33,7 @@ namespace DeskPRO\Bundle\AppBundle;
 
 use DeskPRO\Bundle\AppBundle\DependencyInjection\AppExtension;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\AppSecretPass;
-use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\AssetPackagePass;
+use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\LazyWarmersPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\RegisterDataSerializerEventsPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\RegisterQuickSearchEventsPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\TermEnginePass;
@@ -56,9 +56,9 @@ class AppBundle extends Bundle
     {
         parent::build($container);
 
+        $container->addCompilerPass(new LazyWarmersPass());
         $container->addCompilerPass(new AppSecretPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION);
         $container->addCompilerPass(new TermEnginePass());
-        $container->addCompilerPass(new AssetPackagePass());
         $container->addCompilerPass(new RegisterDataSerializerEventsPass());
         $container->addCompilerPass(new RegisterQuickSearchEventsPass());
 

@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -55,7 +54,7 @@ use Symfony\Component\DependencyInjection\Exception\InactiveScopeException;
 class TicketManager
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     private $em;
 
@@ -114,6 +113,7 @@ class TicketManager
             $container->getSetting('core_email.antiflood_newreplies_time')
         );
 
+        $this->post_save_actions[] = new TicketSaveActions\SaveContextualFields($container->getCustomFieldManager());
         $this->post_save_actions[] = new TicketSaveActions\ExecTriggers($container->getEm()->getRepository('DeskPRO:TicketTrigger'), new ActionApplicator($container));
         $this->post_save_actions[] = new TicketSaveActions\VerifyDepartment($container->getTicketDepartments());
         $this->post_save_actions[] = new TicketSaveActions\SetActionTimes();

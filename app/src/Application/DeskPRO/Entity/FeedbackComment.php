@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -72,7 +71,7 @@ class FeedbackComment extends CommentAbstract
                 'length'     => 120,
                 'precision'  => 0,
                 'scale'      => 0,
-                'nullable'   => false,
+                'nullable'   => true,
                 'columnName' => 'visitor_id',
             )
         )

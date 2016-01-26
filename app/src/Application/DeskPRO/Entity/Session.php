@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -82,6 +81,11 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
      * @var string
      */
     protected $user_agent = null;
+
+    /**
+     * @var string
+     */
+    protected $visitor_id = null;
 
     /**
      * The users IP address.
@@ -204,7 +208,7 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
      */
     public function checkSessionCode($session_code)
     {
-        return ($this->getSessionCode() === $session_code);
+        return $this->getSessionCode() === $session_code;
     }
 
     public function setPerson(Person $person = null)
@@ -314,6 +318,17 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array('fieldName' => 'interface', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'interface'));
         $metadata->mapField(array('fieldName' => 'user_agent', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'user_agent'));
         $metadata->mapField(array('fieldName' => 'ip_address', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'ip_address'));
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'visitor_id',
+                'type'       => 'string',
+                'length'     => 120,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'visitor_id',
+            )
+        );
         $metadata->mapField(array('fieldName' => 'data', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data'));
         $metadata->mapField(array('fieldName' => 'is_person', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_person'));
         $metadata->mapField(array('fieldName' => 'is_bot', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_bot'));

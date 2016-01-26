@@ -216,7 +216,7 @@
                             </div>
 
                             <!-- Table -->
-                            <table class="user-ticket-list" data-status="{{ ticket_table.ticketFilter.getCategory() }}">
+                            <table class="user-ticket-list">
                                 <thead>
                                 <tr>
                                     <td class="table-header ticket-ref">
@@ -241,7 +241,7 @@
                                 {% endif %}
                                 {% for ticket in ticket_table.pager %}
                                     {% set ticket_view = ticket_view(ticket) %}
-                                    <tr class="item-row dpx-ticket-list-row" data-status="{{ ticket_table.ticketFilter.getCategory() }}">
+                                    <tr class="item-row dpx-ticket-list-row" data-status="{{ ticket.status }}">
                                         <td class="first-in-line ticket-ref">
                                             <span>{{ ticket_public_id(ticket) }}</span>
                                         </td>

@@ -51,7 +51,7 @@ class CustomRef implements RefGeneratorInterface
     );
 
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 

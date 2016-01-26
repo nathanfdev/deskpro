@@ -1368,10 +1368,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.ngModule.dpInjector = window.AppPlatform.getNgInjector();
 
 		// injector required at init stage, as AppPlatform initiated after all $scope vars filled
-		window.AppPlatform.getNgInjector().invoke(['$rootScope', '$q', '$timeout', function($rootScope, $q, $timeout) {
+		window.AppPlatform.getNgInjector().invoke(['$rootScope', '$q', '$timeout', '$http', function($rootScope, $q, $timeout, $http) {
 			self.$scope = $rootScope;
 			self.$q = $q;
 			self.$timeout = $timeout;
+			self.$http = $http;
 
 			self.$scope.$safeApply = function(fn) {
 				var phase = this.$root.$$phase;
@@ -3067,15 +3068,16 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	_initRoutes: function() {
 		// Set ourselves up as the first route listener
-		this.addPageRouteLoader('listpane', (function(routeData) {
+		var cb = function(routeData) {
 			this.loadRoute(routeData);
-		}).bind(this));
-		this.addPageRouteLoader('page', this.loadRoute.bind(this));
-		this.addPageRouteLoader('article', this.loadRoute.bind(this));
-		this.addPageRouteLoader('download', this.loadRoute.bind(this));
-		this.addPageRouteLoader('news', this.loadRoute.bind(this));
-		this.addPageRouteLoader('feedback', this.loadRoute.bind(this));
-		this.addPageRouteLoader('org', this.loadRoute.bind(this));
+		};
+		this.addPageRouteLoader('listpane', cb.bind(this));
+		this.addPageRouteLoader('page', cb.bind(this));
+		this.addPageRouteLoader('article', cb.bind(this));
+		this.addPageRouteLoader('download', cb.bind(this));
+		this.addPageRouteLoader('news', cb.bind(this));
+		this.addPageRouteLoader('feedback', cb.bind(this));
+		this.addPageRouteLoader('org', cb.bind(this));
 
     var loaded = {};
 		this.addPageRouteLoader('ticket', (function(routeData) {

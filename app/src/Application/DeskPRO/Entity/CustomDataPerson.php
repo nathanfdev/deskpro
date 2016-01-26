@@ -119,7 +119,6 @@ class CustomDataPerson extends CustomDataAbstract
             array(
                 'name'    => 'custom_data_person',
                 'indexes' => array(
-                    'obj_id_idx'   => array('columns' => array(0 => 'person_id')),
                     'field_id_idx' => array('columns' => array(0 => 'field_id', 1 => 'person_id')),
                 ),
             )

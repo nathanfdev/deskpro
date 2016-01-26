@@ -50,7 +50,7 @@ class ServerReportFile
     private $max_file_size = 250000;
 
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 

@@ -39,6 +39,11 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 class OrganizationTwitterUser extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
+     * @var int
+     */
+    protected $id;
+
+    /**
      * @var \Application\DeskPRO\Entity\Organization
      */
     protected $organization;

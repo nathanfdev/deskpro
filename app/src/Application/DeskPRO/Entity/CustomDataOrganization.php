@@ -101,7 +101,6 @@ class CustomDataOrganization extends CustomDataAbstract
             array(
                 'name'    => 'custom_data_organizations',
                 'indexes' => array(
-                    'obj_id_idx'   => array('columns' => array(0 => 'organization_id')),
                     'field_id_idx' => array('columns' => array(0 => 'field_id', 1 => 'organization_id')),
                 ),
             )

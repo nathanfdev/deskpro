@@ -1484,9 +1484,9 @@ class TicketSearch extends SearcherAbstract
 
                         if ($choice == 'set') {
                             if ($op == self::OP_IS) {
-                                $wheres[] = "$tickets_table.feedback_rating IS NULL";
-                            } else {
                                 $wheres[] = "$tickets_table.feedback_rating IS NOT NULL";
+                            } else {
+                                $wheres[] = "$tickets_table.feedback_rating IS NULL";
                             }
                         } else {
                             $op = $op == self::OP_IS ? '=' : '!=';

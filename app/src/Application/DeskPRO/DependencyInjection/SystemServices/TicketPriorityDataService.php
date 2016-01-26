@@ -139,7 +139,6 @@ class TicketPriorityDataService extends BaseRepositoryService
             FROM DeskPRO:TicketPriority p INDEX BY p.id
             ORDER BY p.priority ASC
         ')->execute();
-        $this->em->getUnitOfWork()->markAsPreloaded('DeskPRO:TicketPriority');
 
         $this->pri_ids = array();
         $this->pri_map = array();

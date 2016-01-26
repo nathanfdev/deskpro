@@ -33,7 +33,7 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\Usersource;
-use Application\DeskPRO\ORM\EntityManager;
+use Doctrine\ORM\EntityManager;
 
 class Build1413803749 extends AbstractBuild
 {

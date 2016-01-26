@@ -29,11 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace DpTest\Bundle\AppBundle\DataService\AgentTeams;
 
-use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\DataService\AgentTeams\AgentTeamsDataService;
+use Doctrine\ORM\EntityManager;
 use DpTest\DeskProTestCase;
 
 /**

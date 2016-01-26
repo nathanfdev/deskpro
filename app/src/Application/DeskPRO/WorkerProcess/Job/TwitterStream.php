@@ -48,7 +48,7 @@ class TwitterStream extends AbstractJob
     const EVENT_LIMIT = 50;
 
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 
@@ -199,7 +199,7 @@ class TwitterStream extends AbstractJob
      * @param \Application\DeskPRO\Entity\TwitterAccount $account
      * @param object                                     $data
      *
-     * @return Boolean
+     * @return bool
      */
     protected function processStatus(TwitterAccount $account, $data)
     {
