@@ -14,10 +14,6 @@ export const setActiveApp = createAction(
 export const toggleView = createAction('APP_TOGGLE_VIEW');
 export const windowResize = createAction('APP_WIN_RESIZE', (width, height) => ({ width, height }));
 
-// Welcome page actions
-export const showWelcomePage = createAction('APP_SHOW_WELCOME_PAGE');
-export const doneInitialLoad = createAction('APP_DONE_INITIAL_LOAD');
-
 // Workspace actions
 export const toggleWorkspace = createAction('APP_TOGGLE_WORKSPACE');
 export const closeWorkspace = createAction('APP_CLOSE_WORKSPACE');

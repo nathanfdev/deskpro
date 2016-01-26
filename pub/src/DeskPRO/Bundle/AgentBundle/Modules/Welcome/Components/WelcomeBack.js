@@ -4,11 +4,12 @@ import { DpLogo } from '../../Login/Components/DpLogo';
 import { Tip } from './Tip';
 import { preloadData } from '../../Application/Actions/bootstrapActions';
 import { meSelector, meStatusSelector } from '../../Application/RecordStores/Selectors/meSelectors';
+import { isPreloadingSelector } from '../../Application/Selectors/bootstrap';
 
 @connect(state => ({
   user: meSelector(state),
   userStatus: meStatusSelector(state),
-  isPreloading: state.Application.dpWindow.get('isPreloading')
+  isPreloading: isPreloadingSelector(state)
 }))
 export class WelcomeBack extends React.Component {
 
