@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Scrollable';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
@@ -34,6 +35,22 @@ export class NavFrame extends React.Component {
           </div>
         </section>
       </div>
+    );
+  }
+}
+
+@connect(state => ({
+  currentApp: state.Application.dpWindow.get('activeAppId')
+}))
+export class NavFrameHeaderContainer extends React.Component {
+  static propTypes = {
+    currentApp: PropTypes.string.isRequired
+  };
+
+  render() {
+    console.log('NavFrameHeaderContainer', this.props);
+    return (
+      <NavFrameHeader {...this.props} />
     );
   }
 }
