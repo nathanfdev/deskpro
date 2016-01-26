@@ -1,16 +1,17 @@
-import PageWidget from "DeskPRO/Component/PageWidget/PageWidget"
-import LanguageChanger from "DeskPRO/Bundle/PortalBundle/React/LanguageChanger"
-import PortalWindow from "DeskPRO/Bundle/PortalBundle/PortalWindow"
-import { portalUrlGenerator } from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator"
-import $ from "jquery"
-import React from "react"
-import ReactDOM from "react-dom"
+import React from 'react';
+import ReactDOM from 'react-dom';
+import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
+import LanguageChanger from 'DeskPRO/Bundle/PortalBundle/React/LanguageChanger';
+import PortalWindow from 'DeskPRO/Bundle/PortalBundle/PortalWindow';
+import { portalUrlGenerator } from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
+import $ from 'jquery';
 
 export default class LanguageChangerWidget extends PageWidget {
 
-  clickLanguage(lang_code) {
-    let action = portalUrlGenerator.path('/change-language');
-    let $form = $(`<form><input type="hidden" name="lang_code" value="${lang_code}" /></form>`);
+  clickLanguage(langCode) {
+    const action = portalUrlGenerator.path('/change-language');
+    const $form = $(`<form><input type="hidden" name="lang_code" value="${langCode}" /></form>`);
+
     $form.attr('action', action);
     $form.attr('method', 'POST');
     $('body').append($form);
