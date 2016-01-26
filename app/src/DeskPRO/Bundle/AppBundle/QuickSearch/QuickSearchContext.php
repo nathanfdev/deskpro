@@ -63,7 +63,7 @@ class QuickSearchContext
     private $ids;
 
     /**
-     * @var array
+     * @var ArrayCollection
      */
     private $entities;
 

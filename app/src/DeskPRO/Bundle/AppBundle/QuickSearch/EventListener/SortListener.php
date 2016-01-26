@@ -46,21 +46,27 @@ class SortListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            QuickSearchEvents::FINISH => ['onSortResults', 1000], // Call this first
+            QuickSearchEvents::FINISH => ['onDefaultSort', 1000], // Call this first
         ];
     }
 
     /**
      * @param QuickSearchEvent $event
      */
-    public function onSortResults(QuickSearchEvent $event)
+    public function onDefaultSort(QuickSearchEvent $event)
     {
-        $context  = $event->getContext();
+        $context = $event->getContext();
+        $request = $event->getRequest();
+
+        if ($request->getSort()) {
+            return;
+        }
+
         $entities = $context->getEntities();
         $ids      = $context->getIds();
 
-        usort($entities, function ($a, $b) { return $a->getId() - $b->getId(); });
-        usort($ids, function ($a, $b) { return $a - $b; });
+        usort($ids, function ($a, $b) {return $a - $b; });
+        usort($entities, function ($a, $b) { return $a->id - $b->id; });
 
         $context->setEntities($entities);
         $context->setIds($ids);
