@@ -70,6 +70,8 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
         $multi = new MultiPermissions();
         $multi->addPermissionStrategy(new AdminManagePermission());
         $multi->addPermissionStrategy(new PassPermission(), 'listAction');
+        $multi->addPermissionStrategy(new PassPermission(), 'getCommonFieldsAction');
+        $multi->addPermissionStrategy(new PassPermission(), 'setCommonFieldsAction');
 
         return $multi;
     }

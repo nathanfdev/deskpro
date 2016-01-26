@@ -4343,8 +4343,14 @@ $collection->create(
     array(
         'path'         => '/custom_fields/{objectType}/{objectId}',
         'controller'   => 'ApiBundle:CustomFields:setCommonField',
-        'requirements' => array('objectType' => '\\w+', 'objectId' => '\\d+'),
-        'methods'      => array('POST'),
+        'requirements' => array(
+            'objectType' => implode(
+                '|',
+                array_keys(\Application\ApiBundle\Controller\CustomFieldsController::$allowed_common)
+            ),
+            'id' => '\\d+',
+        ),
+        'methods' => array('POST'),
     )
 );
 
