@@ -36,6 +36,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 interface MassActionsPreprocessorInterface
 {
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection
+     */
     public function prepareActions();
 
     public function selectEntities();

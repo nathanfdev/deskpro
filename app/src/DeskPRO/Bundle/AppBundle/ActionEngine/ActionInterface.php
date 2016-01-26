@@ -43,4 +43,7 @@ interface ActionInterface
      * @param mixed $entity
      */
     public function run($entity);
+
+    /** @return array */
+    public function getSerialized();
 }

@@ -61,4 +61,10 @@ class RemoveLabelsAction extends AbstractAction implements ActionWithOptionsInte
             }
         }
     }
+
+    /** @return array */
+    public function getSerialized()
+    {
+        return [self::REMOVE_LABELS_ACTION => ['labels' => $this->options['labels']]];
+    }
 }

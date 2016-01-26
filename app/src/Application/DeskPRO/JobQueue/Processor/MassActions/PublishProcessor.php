@@ -84,7 +84,6 @@ class PublishProcessor extends AbstractJobProcessor
             /** @var \DeskPRO\Bundle\AppBundle\ActionEngine\ActionInterface $action */
             foreach ($actions as $action) {
                 $action->run($entity);
-                $this->em->persist($entity);
             }
         }
         $this->em->flush();

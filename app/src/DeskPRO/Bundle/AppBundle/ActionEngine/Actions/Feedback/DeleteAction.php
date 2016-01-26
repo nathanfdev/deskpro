@@ -55,4 +55,10 @@ class DeleteAction extends AbstractAction implements ActionInterface
         $feedback->setHiddenStatus(Feedback::HIDDEN_STATUS_DELETED);
         $feedback->setIsReviewed(true);
     }
+
+    /** @return array */
+    public function getSerialized()
+    {
+        return [self::DELETE_ACTION => []];
+    }
 }

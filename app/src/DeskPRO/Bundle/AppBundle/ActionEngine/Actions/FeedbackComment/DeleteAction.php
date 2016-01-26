@@ -50,4 +50,10 @@ class DeleteAction extends AbstractAction implements ActionInterface
     {
         $comment->setStatus(FeedbackComment::STATUS_DELETED);
     }
+
+    /** @return array */
+    public function getSerialized()
+    {
+        return [self::DELETE_ACTION => []];
+    }
 }

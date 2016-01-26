@@ -63,4 +63,10 @@ class ApproveAction extends AbstractAction implements ActionInterface
         }
         $feedback->setIsReviewed(true);
     }
+
+    /** @return array */
+    public function getSerialized()
+    {
+        return [self::APPROVE_ACTION => []];
+    }
 }

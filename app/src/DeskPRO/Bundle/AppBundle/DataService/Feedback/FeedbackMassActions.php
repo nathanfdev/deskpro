@@ -33,6 +33,7 @@
 namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\AddLabelsAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\ApproveAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\DeleteAction;
@@ -62,25 +63,25 @@ class FeedbackMassActions extends AbstractMassActionsPreprocessor implements Mas
     {
         foreach ($this->params['actions'] as $name => $options) {
             switch ($name) {
-                case 'status_category':
+                case AbstractAction::SET_STATUS_CATEGORY_ACTION:
                     $this->actions->addAction(new SetStatusCategoryAction($this->em, $options));
                     break;
-                case 'type':
+                case AbstractAction::SET_TYPE_ACTION:
                     $this->actions->addAction(new SetTypeAction($this->em, $options));
                     break;
-                case 'category':
+                case AbstractAction::SET_CATEGORY_ACTION:
                     $this->actions->addAction(new SetCategoryAction($this->em, $options));
                     break;
-                case 'addLabels':
+                case AbstractAction::ADD_LABELS_ACTION:
                     $this->actions->addAction(new AddLabelsAction($this->em, $options));
                     break;
-                case 'removeLabels':
+                case AbstractAction::REMOVE_LABELS_ACTION:
                     $this->actions->addAction(new RemoveLabelsAction($this->em, $options));
                     break;
-                case 'approve':
+                case AbstractAction::APPROVE_ACTION:
                     $this->actions->addAction(new ApproveAction($this->em));
                     break;
-                case 'delete':
+                case AbstractAction::DELETE_ACTION:
                     $this->actions->addAction(new DeleteAction());
                     break;
             }

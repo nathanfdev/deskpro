@@ -59,8 +59,8 @@ class SetTypeAction extends AbstractAction implements ActionInterface, ActionWit
      */
     public function init()
     {
-        $value      = $this->options['id'];
-        $this->type = $this->em->getRepository('DeskPRO:FeedbackCategory')->find($value);
+        $id         = $this->options['id'];
+        $this->type = $this->em->getRepository('DeskPRO:FeedbackCategory')->find($id);
     }
 
     /**
@@ -71,5 +71,10 @@ class SetTypeAction extends AbstractAction implements ActionInterface, ActionWit
     public function run($feedback)
     {
         $feedback->setCategory($this->type);
+    }
+
+    public function getSerialized()
+    {
+        return [self::SET_TYPE_ACTION => ['id' => $this->options['id']]];
     }
 }
