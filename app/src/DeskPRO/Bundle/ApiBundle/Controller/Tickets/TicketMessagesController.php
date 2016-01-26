@@ -31,64 +31,54 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations\Get;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Application\DeskPRO\Tickets\TicketManager;
+use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageType;
+use FOS\RestBundle\Controller\Annotations;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class TicketMessageController.
+ *
+ * @Annotations\Route("/tickets/{parentId}/messages")
  */
-class TicketMessagesController extends CrudController
+class TicketMessagesController extends CrudSubController
 {
-    public static $exposeOnly  = ['list', 'get'];
-    public static $entity      = TicketMessage::class;
-    public static $sortOptions = ['date' => 'date_created'];
-    public static $listSort    = 'id';
-    public static $listOrder   = 'asc';
+    public static $exposeOnly     = ['list', 'get', 'post'];
+    public static $entity         = TicketMessage::class;
+    public static $type           = TicketMessageType::class;
+    public static $parentProperty = 'ticket';
+    public static $sortOptions    = ['date' => 'date_created'];
+    public static $listSort       = 'id';
+    public static $listOrder      = 'asc';
 
     /**
-     * @ApiDoc(
-     *      description="Get a ticket message",
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     *
-     * @Get("/ticket_messages/{id}", requirements={"id"="\d+"})
+     * {@inheritdoc}
      */
-    public function getAction($id)
+    protected function handleForm($model, Request $request, array $options = [])
     {
-        return parent::getAction($id);
+        $options = array_merge($options, [
+            'ticket' => $this->findParentOr404(),
+            'person' => $this->getUser(),
+        ]);
+
+        return parent::handleForm($model, $request, $options);
     }
 
     /**
-     * @ApiDoc(
-     *      description="Get list of ticket's messages",
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     *
-     * @Get("/tickets/{id}/messages")
+     * {@inheritdoc}
      */
-    public function listAction(Request $request)
+    protected function persistModel($entity)
     {
-        return parent::listAction($request);
-    }
+        /* @var TicketMessage $entity */
+        $ticket = $entity->getTicket();
 
-    /**
-     * @param QueryBuilder $qb
-     * @param string       $alias
-     * @param Request      $request
-     */
-    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
-    {
-        $ticket = $this->findOr404(Ticket::class, $request->get('id'));
-        $qb->andWhere("{$alias}.ticket = :ticket");
-        $qb->setParameter('ticket', $ticket->getId());
+        /** @var TicketManager $manager */
+        $manager = $this->getContainer()->getTicketManager();
+        $context = $manager->createAgentExecutorContext($this->getUser(), 'update', 'api');
+        $manager->saveTicket($ticket, $context);
+
+        return $entity;
     }
 }

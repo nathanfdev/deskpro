@@ -29,9 +29,9 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use DeskPRO\Bundle\ApiBundle\View\Representation\StandardRepresentation;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\Form\FormInterface;
@@ -181,5 +181,13 @@ class BaseController extends FOSRestController
         unset($params['count']);
 
         return $params;
+    }
+
+    /**
+     * @return DeskproContainer|\Symfony\Component\DependencyInjection\ContainerInterface
+     */
+    protected function getContainer()
+    {
+        return $this->container;
     }
 }

@@ -344,19 +344,21 @@ abstract class CrudController extends BaseController
     /**
      * @param object  $model
      * @param Request $request
+     * @param array   $options
      *
      * @throws InvalidFormException
      *
      * @return View
      */
-    private function handleForm($model, Request $request)
+    protected function handleForm($model, Request $request, array $options = [])
     {
         $status = $model->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
         /** @var \Symfony\Component\Form\Form $form */
         $form = $this->createForm(
             class_exists(static::$type) ? new static::$type() : static::$type,
-            $model
+            $model,
+            $options
         );
 
         $decoded = json_decode(

@@ -39,6 +39,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Html\Html2Text;
 use Orb\Util\Strings;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Ticket messages.
@@ -158,6 +159,8 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
      * The message, will be in HTML!
      *
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $message;
 
@@ -260,6 +263,17 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('ticket', App::getEntityRepository('DeskPRO:Ticket')->find($id));
     }
 
+    /**
+     * @return Ticket
+     */
+    public function getTicket()
+    {
+        return $this->ticket;
+    }
+
+    /**
+     * @return int|mixed
+     */
     public function getTicketId()
     {
         return $this->ticket['id'];

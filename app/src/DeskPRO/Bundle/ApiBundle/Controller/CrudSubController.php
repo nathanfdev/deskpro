@@ -90,7 +90,7 @@ abstract class CrudSubController extends CrudController
     /**
      * @return object
      */
-    private function findParentOr404()
+    protected function findParentOr404()
     {
         $request     = $this->container->get('request_stack')->getCurrentRequest();
         $parentId    = $request->get('parentId');
