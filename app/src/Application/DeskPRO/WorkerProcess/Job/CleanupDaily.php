@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -344,8 +345,6 @@ BODY;
         $tables = array(
             'agent_alerts',
             'client_messages',
-            'visitors',
-            'visitor_tracks',
         );
 
         $threshold = 2145000000;
