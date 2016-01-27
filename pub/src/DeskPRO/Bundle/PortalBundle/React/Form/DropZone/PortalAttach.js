@@ -60,15 +60,8 @@ export class PortalAttach extends React.Component {
   };
 
   onDelete = file => {
-    const newFiles = [];
-    this.state.files.forEach(f => {
-      if (f.id !== file.id) {
-        newFiles.push(f);
-      }
-    });
-
     this.setState({
-      files: newFiles
+      files: this.state.files.filter(f => f !== file)
     });
   };
 

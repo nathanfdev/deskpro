@@ -55,7 +55,7 @@ export class PortalRte extends React.Component {
             buttonLabels: 'fontawesome'
           }}/>
 
-        <input type="submit" ref="fileUpload" name="files" style={{display: 'none'}} />
+        <input type="submit" ref="fileUpload" name="file[blob]" style={{display: 'none'}} />
         <DropZone getExternalInput={() => this.refs.fileUpload}
                   uploadUrl={portalUrlGenerator.path('/') + 'dpblob'}
                   uploadParams={params}
