@@ -6710,28 +6710,6 @@ $collection->create(
 );
 
 ########################################################################################################################
-# Widget Selections
-########################################################################################################################
-
-$collection->create(
-    'api_widget_selections',
-    array(
-        'path'       => '/widget/selections',
-        'controller' => 'LegacyApiBundle:WidgetSelections:get',
-        'methods'    => array('GET'),
-    )
-);
-
-$collection->create(
-    'api_widget_selections_save',
-    array(
-        'path'       => '/widget/selections',
-        'controller' => 'LegacyApiBundle:WidgetSelections:save',
-        'methods'    => array('POST'),
-    )
-);
-
-########################################################################################################################
 # Reports Overview
 ########################################################################################################################
 

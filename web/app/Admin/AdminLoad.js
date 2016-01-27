@@ -116,7 +116,6 @@ define([
   'Admin/TwitterAccounts/Ctrl/List',
   'Admin/TwitterAccounts/Ctrl/Edit',
   'Admin/Portal/Ctrl/Nav',
-  'Admin/Portal/Ctrl/Embeds',
   'Admin/Portal/Ctrl/PortalEditor',
   'Admin/Portal/Ctrl/WidgetEditor',
   'Admin/Portal/Ctrl/Setup',
