@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Security\Authentication\Provider;
 
 use Application\DeskPRO\Auth\AuthenticationManager as DpAuthManager;

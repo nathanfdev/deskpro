@@ -1,7 +1,7 @@
-import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import $ from 'jquery';
 
-export default class DownloadsList extends PageWidget {
+export class DownloadsList extends PageWidget {
 
   renderWidget() {
     const me = this;

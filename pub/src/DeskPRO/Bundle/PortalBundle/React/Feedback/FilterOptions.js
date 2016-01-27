@@ -1,6 +1,7 @@
-import _ from "lodash"
+import _ from 'lodash';
 
-export default class FilterOptions {
+export class FilterOptions {
+
   constructor(available) {
     this._available = available;
     this.status = available.status;

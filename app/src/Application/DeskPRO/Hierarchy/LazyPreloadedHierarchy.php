@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Hierarchy;
 
 use Doctrine\ORM\EntityManager;

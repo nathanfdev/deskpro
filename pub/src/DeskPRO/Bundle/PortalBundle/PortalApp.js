@@ -1,6 +1,6 @@
 import 'babel-polyfill';
-import PortalPage from 'DeskPRO/Bundle/PortalBundle/PageWidget/PortalPage';
-import PortalPhrases from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import { PortalPage } from './PageWidget/PortalPage';
+import { portalPhrases } from './PortalPhrases';
 import $ from 'jquery';
 
 class PortalApp {
@@ -8,7 +8,7 @@ class PortalApp {
     window.$ = $;
     window.PortalApp = this;
 
-    this.phrases = PortalPhrases;
+    this.phrases = portalPhrases;
     if (window.DESKPRO_PHRASES) {
       this.phrases.setPhrases(window.DESKPRO_PHRASES);
     }
@@ -25,6 +25,4 @@ class PortalApp {
   }
 }
 
-const app = new PortalApp();
-
-export default app;
+export const portalApp = new PortalApp();

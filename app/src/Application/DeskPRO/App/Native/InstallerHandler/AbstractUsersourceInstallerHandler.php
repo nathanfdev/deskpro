@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\App\Native\InstallerHandler;
 
 use Application\DeskPRO\Entity\AppInstance;

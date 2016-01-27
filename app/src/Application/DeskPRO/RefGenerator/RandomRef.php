@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\RefGenerator;
 
 use Application\DeskPRO\App;

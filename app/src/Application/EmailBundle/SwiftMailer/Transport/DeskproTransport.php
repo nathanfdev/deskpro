@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\SwiftMailer\Transport;
 
 use Application\DeskPRO\App;

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Request;
 
 use DeskPRO\Bundle\AppBundle\Content\ContentSlugManager;

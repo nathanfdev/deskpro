@@ -1,7 +1,8 @@
-import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import $ from 'jquery';
 
-export default class MobileMenuWidget extends PageWidget {
+export class MobileMenuWidget extends PageWidget {
+
   renderWidget() {
     const $toggle = this.$element;
     const $w = $(window);

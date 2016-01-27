@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer;
 
 use Application\DeskPRO\Domain\DomainObject;

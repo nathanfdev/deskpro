@@ -1,7 +1,4 @@
-import _ from "lodash";
-import $ from "jquery";
-
-import PageWidget from "./PageWidget";
+import { PageWidget } from './PageWidget';
 
 /**
  * A PageWidgetGroup is exactly like a PageWidget except error handling is done a bit differently.
@@ -15,11 +12,12 @@ import PageWidget from "./PageWidget";
  * And hopefully you've added a nice fallback for non-JS users that 'just works'.
  */
 export default class PageWidgetGroup extends PageWidget {
+
   /**
    * Called to a request to render itself.
    */
   render() {
-    let pre = this.preRender();
+    const pre = this.preRender();
 
     if (pre && pre.then) {
       pre.then(() => {

@@ -1,13 +1,14 @@
-import React from "react"
-import LoginForm from "./LoginForm.js"
-import LoginUsersources from "./LoginUsersources.js"
+import React from 'react';
+import { LoginForm } from './LoginForm';
+import { LoginUsersources } from './LoginUsersources';
 
-export default class LoginPanel extends React.Component {
+export class LoginPanel extends React.Component {
+
   render() {
     return (
       <div>
         <LoginForm />
-        <LoginUsersources usersources={this.props.usersources} />
+        <LoginUsersources {...this.props} />
       </div>
     );
   }

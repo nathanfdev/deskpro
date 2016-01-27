@@ -1,6 +1,7 @@
-import _ from "lodash"
+import _ from 'lodash';
 
-export default class FilterModel {
+export class FilterModel {
+
   constructor(data, available) {
     this.available = available;
     this.sort = data.sort;

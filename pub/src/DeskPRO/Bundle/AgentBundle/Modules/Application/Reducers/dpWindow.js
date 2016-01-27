@@ -1,5 +1,4 @@
 import * as actions from '../Actions/appActions';
-import * as bootstrapActions from '../Actions/bootstrapActions';
 import { createReducer } from 'Ampliflux';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { setFullPayload, setValue } from 'Ampliflux/reducers/handlers';
@@ -14,13 +13,10 @@ const initialState = {
   columnDimensions: parseInt(localStorage.getItem('dpWindow.columnDimensions'), 10) || 40,
   sidebarMode: localStorage.getItem('dpWindow.sidebarMode') || 'static',
   winDims: { width: 800, height: 600 },
-  showWelcomePage: true,
   isWorkspaceOpen: false,
   isPreferencesOpen: false,
   preferenceTab: 'profile',
-  coverShown: false,
-  isDoneInitialLoad: false,
-  isPreloading: false
+  coverShown: false
 };
 
 /**
@@ -73,8 +69,6 @@ export default createReducer(initialState, {
     localStorage.setItem('dpWindow.sidebarMode', payload);
     return state.set('sidebarMode', payload);
   },
-  [actions.showWelcomePage]: setValue('showWelcomePage', true),
-  [actions.doneInitialLoad]: state => state.merge({ showWelcomePage: false, isDoneInitialLoad: true }),
   [actions.togglePreferences]: state => {
     const isOpen = !state.get('isPreferencesOpen');
 
@@ -90,9 +84,5 @@ export default createReducer(initialState, {
       coverShown: false
     });
   },
-  [actions.changePreferenceTab]: setFullPayload('preferenceTab'),
-  [bootstrapActions.preloadData]: async({
-    start: state => state.set('isPreloading', true),
-    done: state => state.set('isPreloading', false)
-  })
+  [actions.changePreferenceTab]: setFullPayload('preferenceTab')
 });

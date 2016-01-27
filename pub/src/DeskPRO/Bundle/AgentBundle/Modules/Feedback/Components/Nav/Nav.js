@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
-import { NavFrame, NavFrameHeader, NavFrameBody, TabsPaneStatefulContainer, Tab, LabelsDictionary }
+import { NavFrame, NavFrameHeaderContainer, NavFrameBody, TabsPaneStatefulContainer, Tab, LabelsDictionary }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
-import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import { Pending } from './Pending';
 import { StatusTab } from './StatusTab';
 import { TypeTab } from './TypeTab';
@@ -13,52 +12,46 @@ import { applyParams } from '../../Actions/FeedbackListActions';
 export class Nav extends Component {
 
   static propTypes = {
-    loaded: PropTypes.bool.isRequired,
+    isLoaded: PropTypes.bool.isRequired,
     intl: intlShape.isRequired,
-    dispatch: PropTypes.func.isRequired,
     statuses: PropTypes.object.isRequired,
     labels: PropTypes.object.isRequired,
     types: PropTypes.object,
     categories: PropTypes.object,
     toValidateCount: PropTypes.object.isRequired,
-    commentsToReviewCount: PropTypes.object.isRequired,
-    dpWindow: PropTypes.object.isRequired
+    commentsToReviewCount: PropTypes.object.isRequired
   };
 
+  // @todo move this callback to the NavContainer
   onLabelClick = (params) => {
-    const { dispatch } = this.props;
-    dispatch(applyParams({ navItem: { [params.name]: params.value } }));
+    this.props.dispatch(applyParams({ navItem: { [params.name]: params.value } }));
   };
 
   render() {
-    const { labels, loaded, types, toValidateCount, commentsToReviewCount, statuses, categories, dispatch, dpWindow } = this.props;
-    const currentApp = dpWindow.get('activeAppId');
+    const { labels, isLoaded, types, toValidateCount, commentsToReviewCount, statuses, categories } = this.props;
 
     return (
-      <NavFrame dispatch={dispatch.bind(this)} dpWindow={dpWindow}>
-        <NavFrameHeader icon="icon-dp-streamline-hand-like-2" currentApp={currentApp}>
+      <NavFrame>
+        <NavFrameHeaderContainer icon="icon-dp-streamline-hand-like-2">
           <FormattedMessage id="feedback.nav.title"/>
-        </NavFrameHeader>
-        <NavFrameBody>
-          <Pending loaded={loaded}
-                   toValidateCount={toValidateCount}
+        </NavFrameHeaderContainer>
+        <NavFrameBody isLoaded={isLoaded}>
+          <Pending toValidateCount={toValidateCount}
                    commentsToReviewCount={commentsToReviewCount}/>
 
           <TabsPaneStatefulContainer id="tab">
             <Tab title={this.props.intl.formatMessage({id: 'feedback.nav.tabs.status'})}>
-              <StatusTab statuses={statuses} loaded={loaded}/>
+              <StatusTab statuses={statuses} />
             </Tab>
 
             <Tab title="Labels">
-              <LoadIndicator loaded={loaded}>
-                <LabelsDictionary labels={labels} onClick={this.onLabelClick}/>
-              </LoadIndicator>
+              <LabelsDictionary labels={labels} onClick={this.onLabelClick}/>
             </Tab>
             <Tab title="Type">
-              <TypeTab types={types} loaded={loaded}/>
+              <TypeTab types={types} />
             </Tab>
             <Tab title="Category">
-              <CategoryTab categories={categories} loaded={loaded}/>
+              <CategoryTab categories={categories} />
             </Tab>
           </TabsPaneStatefulContainer>
         </NavFrameBody>

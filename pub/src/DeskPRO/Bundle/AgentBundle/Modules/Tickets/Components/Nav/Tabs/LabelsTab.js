@@ -7,8 +7,6 @@ export class LabelsTab extends Component {
   };
 
   render() {
-    return this.props.labels
-      ? <LabelsDictionary labels={this.props.labels} />
-      : <div />;
+    return <LabelsDictionary labels={this.props.labels} />;
   }
 }

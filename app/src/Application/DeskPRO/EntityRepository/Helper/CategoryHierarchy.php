@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository\Helper;
 
 use Application\DeskPRO\App;

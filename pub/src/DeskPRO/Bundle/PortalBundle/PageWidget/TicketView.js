@@ -1,7 +1,7 @@
-import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import $ from 'jquery';
 
-export default class NewTicketForm extends PageWidget {
+export class TicketView extends PageWidget {
 
   renderWidget() {
     $('.button-reply').on('click', (ev) => {

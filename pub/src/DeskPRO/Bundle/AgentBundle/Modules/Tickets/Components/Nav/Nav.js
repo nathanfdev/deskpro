@@ -1,20 +1,18 @@
 import React, { Component, PropTypes } from 'react';
-import { NavFrame, NavFrameHeader, NavFrameBody, TabsPaneStatefulContainer, Tab }
+import { NavFrame, NavFrameHeaderContainer, NavFrameBody, TabsPaneStatefulContainer, Tab }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { FiltersTabContainer, LabelsTabContainer, StarsTabContainer } from './Tabs/index';
 
 export class Nav extends Component {
   static propTypes = {
-    currentApp: PropTypes.string.isRequired
+    isLoaded: PropTypes.bool.isRequired
   };
 
   render() {
-    const { currentApp } = this.props;
-
     return (
       <NavFrame>
-        <NavFrameHeader icon="icon icon-dp-streamline-mail-2" currentApp={currentApp}>Tickets</NavFrameHeader>
-        <NavFrameBody>
+        <NavFrameHeaderContainer icon="icon icon-dp-streamline-mail-2">Tickets</NavFrameHeaderContainer>
+        <NavFrameBody isLoaded={this.props.isLoaded}>
           <TabsPaneStatefulContainer id="tab">
             <Tab title="Filters">
               <FiltersTabContainer />

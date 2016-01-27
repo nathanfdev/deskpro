@@ -1,10 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
+import { ColumnControl } from 'DeskPRO/Bundle/PortalBundle/React/ColumnControl';
 import $ from 'jquery';
-import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
-import ColumnControl from 'DeskPRO/Bundle/PortalBundle/React/ColumnControl';
 
 class ColumnControlWidget extends PageWidget {
+
   renderWidget() {
     const tablesData = window.DESKPRO_TICKET_LIST_TABLES;
     const $table = this.$element.closest('.ticket-table');
@@ -98,7 +99,7 @@ class ColumnControlWidget extends PageWidget {
   }
 }
 
-export default class TicketList extends PageWidget {
+export class TicketList extends PageWidget {
   init() {
     this.addWidgetDef(ColumnControlWidget, '.column-control');
   }

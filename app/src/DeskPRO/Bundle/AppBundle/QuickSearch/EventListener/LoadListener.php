@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
 
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchContext;

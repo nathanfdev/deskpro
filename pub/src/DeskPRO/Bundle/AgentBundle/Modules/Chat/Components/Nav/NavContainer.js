@@ -2,27 +2,21 @@ import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
 import { pureRender } from 'Ampliflux';
 import * as actions from '../../Actions/chatNavActions';
-import {loadedSelector, myChatsSelector, allChatsSelector } from '../../Selectors/nav';
+import { isLoadedSelector, myChatsSelector, allChatsSelector } from '../../Selectors/nav';
 import { Nav } from './Nav';
 import { createDepartmentsRequestSelectors }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
 
 @connect(state => ({
-  loaded: loadedSelector(state),
+  isLoaded: isLoadedSelector(state),
   my: myChatsSelector(state),
-  all: allChatsSelector(state),
-  dpWindow: state.Application.dpWindow
+  all: allChatsSelector(state)
 }))
 @pureRender
 export class NavContainer extends Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    currentApp: PropTypes.string.isRequired,
-    my: PropTypes.object.isRequired,
-    all: PropTypes.object.isRequired,
-    loaded: PropTypes.bool.isRequired,
-    dpWindow: PropTypes.object.isRequired
+    dispatch: PropTypes.func.isRequired
   };
 
   componentDidMount() {
@@ -52,18 +46,13 @@ export class NavContainer extends Component {
   }
 
   render() {
-    const { my, all, dpWindow, dispatch, loaded } = this.props;
     const changeGrouping = (listName) => this.changeGrouping(listName).bind(this);
     const toggleGroupingVisibility = (listName) => this.toggleGroupingVisibility(listName).bind(this);
 
     return (
-      <Nav my={my}
-           all={all}
+      <Nav {...this.props}
            changeGrouping={changeGrouping}
-           toggleGroupingVisibility={toggleGroupingVisibility}
-           dpWindow={dpWindow}
-           dispatch={dispatch}
-           loaded={loaded}/>
+           toggleGroupingVisibility={toggleGroupingVisibility}/>
     );
   }
 }

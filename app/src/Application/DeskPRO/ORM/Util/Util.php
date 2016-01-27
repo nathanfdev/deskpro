@@ -31,6 +31,7 @@
  *
  * @category ORM
  */
+
 namespace Application\DeskPRO\ORM\Util;
 
 use Application\DeskPRO\App;

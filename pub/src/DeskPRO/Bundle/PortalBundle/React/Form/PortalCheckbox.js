@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import $ from 'jquery';
 
-export default class PortalCheckbox extends React.Component {
+export class PortalCheckbox extends React.Component {
 
   static propTypes = {
     $checkbox: PropTypes.object,

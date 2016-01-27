@@ -1,4 +1,4 @@
-import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import { portalUrlGenerator } from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
 import $ from 'jquery';
 
@@ -64,7 +64,7 @@ class DynamicSearchResults {
   }
 }
 
-export default class SearchResultsPage extends PageWidget {
+export class SearchResultsPage extends PageWidget {
 
   renderWidget() {
     const $searchResultsPage = this.$element;

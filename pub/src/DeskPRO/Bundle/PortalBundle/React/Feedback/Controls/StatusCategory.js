@@ -1,7 +1,7 @@
-import React from "react"
-import _ from "lodash"
+import React from 'react';
 
-export default class StatusCategory extends React.Component {
+export class StatusCategory extends React.Component {
+
   clicked(e) {
     e.preventDefault();
     this.props.setStatusCategory(this.props.cat.id);

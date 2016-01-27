@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;

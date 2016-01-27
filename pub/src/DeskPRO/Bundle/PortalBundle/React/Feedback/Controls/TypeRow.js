@@ -1,9 +1,10 @@
-import React from "react"
-import _ from "lodash"
-import TypeSlider from "./TypeSlider"
-import { portalUrlGenerator } from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator"
+import React from 'react';
+import { TypeSlider } from './TypeSlider';
+import { portalUrlGenerator } from '../../../Http/PortalUrlGenerator';
+import _ from 'lodash';
 
-export default class TypeRow extends React.Component {
+export class TypeRow extends React.Component {
+
   render() {
     return (
       <div className="types">

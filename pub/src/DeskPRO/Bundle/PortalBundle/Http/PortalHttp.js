@@ -1,8 +1,6 @@
 import $ from 'jquery';
 import Http from 'DeskPRO/Component/Http/Http';
-import PortalUrlCorrector from './PortalUrlCorrector';
+import { portalUrlCorrector } from './PortalUrlCorrector';
 
-const portalHttp = new Http($.ajax);
-portalHttp.addInterceptor(PortalUrlCorrector);
-
-export default portalHttp;
+export const portalHttp = new Http($.ajax);
+portalHttp.addInterceptor(portalUrlCorrector);

@@ -1,15 +1,11 @@
 import React, {Component, PropTypes} from 'react';
-import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import { SectionsPane, Section, SectionGroupedHeader, ButtonsPane, Button }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { NestedList } from '../NestedList';
 import { NavGroupingPopupContainer } from '../NavGroupingPopupContainer';
 
-
 export class KBTab extends Component {
-
   static propTypes = {
-    loaded: PropTypes.bool.isRequired,
     articles: PropTypes.object.isRequired,
     toggleGroupingVisibility: PropTypes.func.isRequired,
     closeGroupingVisibility: PropTypes.func.isRequired
@@ -21,10 +17,10 @@ export class KBTab extends Component {
   }
 
   render() {
-    const { loaded, articles, toggleGroupingVisibility, closeGroupingVisibility } = this.props;
+    const { articles, toggleGroupingVisibility, closeGroupingVisibility } = this.props;
 
     return (
-      <LoadIndicator loaded={loaded}>
+      <div>
         <SectionsPane>
           <Section>
             <SectionGroupedHeader label="Knowledgebase"
@@ -46,7 +42,7 @@ export class KBTab extends Component {
           <Button title="Search" icon="fa-search"/>
           <Button title="Comments" icon="fa-comments-o"/>
         </ButtonsPane>
-      </LoadIndicator>
+      </div>
     );
   }
 }

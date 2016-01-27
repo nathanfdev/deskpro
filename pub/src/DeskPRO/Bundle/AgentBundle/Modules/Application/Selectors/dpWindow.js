@@ -4,11 +4,6 @@ import Immutable from 'immutable';
 const stateSelector = state => state.Application.dpWindow;
 const globalStateSelector = state => state;
 
-export const showWelcomePageSelector = createSelector(
-  stateSelector,
-    state => state.get('showWelcomePage')
-);
-
 export const coverShownSelector = createSelector(
   stateSelector,
     state => state.get('coverShown')

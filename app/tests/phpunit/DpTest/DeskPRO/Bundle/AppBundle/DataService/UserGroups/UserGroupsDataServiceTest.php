@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\Bundle\AppBundle\DataService\UserGroups;
 
 use DeskPRO\Bundle\AppBundle\DataService\UserGroups\UserGroupsDataService;

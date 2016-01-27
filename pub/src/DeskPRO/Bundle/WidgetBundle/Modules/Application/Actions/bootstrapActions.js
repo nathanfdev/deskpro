@@ -6,8 +6,8 @@ import { loadTicketDisplayFields } from '../../Ticket/Actions/ticketActions';
 import { widgetSessionCodeSelector, requireChatLoginSelector, requireChatEmailValidationSelector } from '../Selectors/bootstrap';
 import { widgetHasChatSelector, liveDemoSelector } from '../Selectors/dpWindow';
 import { onlineAgentsCountSelector } from '../RecordStores/Selectors/peopleSelectors';
-import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
-import PortalPhrases from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { widgetEmitter } from '../../../Services/emitter';
 import $ from 'jquery';
 
@@ -20,7 +20,7 @@ export const addSessionCode = (state, params = {}) => {
 export const getSession = createAction(
   'WIDGET_GET_SESSION',
   () => new Promise(resolve =>
-    DpApi
+    widgetApi
       .sendPost('DP_API/auth/get_session', {session_code: localStorage.getItem('dpWidget.sessionCode')}, {...ajaxOptions})
       .success(response => {
         localStorage.setItem('dpWidget.sessionCode', response.session_code);
@@ -53,17 +53,17 @@ export const reloadSettings = createAction(
 export const loadSettings = createAction(
   'WIDGET_LOAD_SETTINGS',
   () => dispatch =>
-    DpApi
+    widgetApi
       .sendGet('DP_API/widget/settings', {...ajaxOptions})
       .success(response => dispatch(setSettings(response)))
 );
 
 export const loadPortalPhraseTranslations = createAction(
   'WIDGET_LOAD_PHRASE_TRANSLATIONS',
-  () => DpApi
+  () => widgetApi
     .sendGet('DP_API/lang/widget-phrases.json', {...ajaxOptions})
     .success(response => {
-      PortalPhrases.setPhrases(response);
+      portalPhrases.setPhrases(response);
     })
 );
 

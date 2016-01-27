@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\EmailBundle\EntityRepository;
 
 use Application\DeskPRO\DBAL\Connection;

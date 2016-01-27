@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Data\MassActions;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;

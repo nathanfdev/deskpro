@@ -5,11 +5,11 @@ import { loadAllTaskLabels } from '../../RecordStores/Actions/taskLabelActions';
 import { loadAllTaskLists } from '../../RecordStores/Actions/taskListActions';
 import { Nav } from './Nav';
 import { initialLoad } from '../../Actions/navActions';
-import { isDoneSelector } from '../../Selectors/nav';
+import { isLoadedSelector } from '../../Selectors/nav';
 
 @connect(state => ({
   dpWindow: state.Application.dpWindow,
-  isDone: isDoneSelector(state)
+  isLoaded: isLoadedSelector(state)
 }))
 export class NavContainer extends React.Component {
 

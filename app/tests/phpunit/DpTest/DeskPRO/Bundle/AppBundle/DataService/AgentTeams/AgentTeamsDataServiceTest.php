@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\Bundle\AppBundle\DataService\AgentTeams;
 
 use DeskPRO\Bundle\AppBundle\DataService\AgentTeams\AgentTeamsDataService;

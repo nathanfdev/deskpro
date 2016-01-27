@@ -9,7 +9,9 @@ import { setUserGroupsRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/Rec
 import { setAgentSettings } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
 import { setupActionAlerts } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/notificationActions';
 
-export const bootstrapDone = createAction('BOOTSTRAP_PRELOAD_DATA_DONE');
+export const showWelcomePage = createAction('APP_SHOW_WELCOME_PAGE');
+
+export const doneInitialLoad = createAction('APP_DONE_INITIAL_LOAD');
 
 export const preloadData = createAction(
   'BOOTSTRAP_PRELOAD_DATA',

@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace deskpro_us_phpbb;
 
 use Application\DeskPRO\App\Native\InstallerHandler\AbstractUsersourceInstallerHandler;

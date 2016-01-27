@@ -31,6 +31,7 @@
  *
  * @category HttpFoundation
  */
+
 namespace Application\DeskPRO\HttpFoundation;
 
 use Application\DeskPRO\App;

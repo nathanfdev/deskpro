@@ -1,6 +1,7 @@
-import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 
 class FeedbackValueReader {
+
   constructor($formEl) {
     this.$formEl = $formEl;
   }
@@ -14,7 +15,7 @@ class FeedbackValueReader {
   }
 }
 
-export default class FeedbackForm extends PageWidget {
+export class FeedbackForm extends PageWidget {
 
   renderWidget() {
     const $expandedForm = this.$element.find('.feedback-form-expanded');

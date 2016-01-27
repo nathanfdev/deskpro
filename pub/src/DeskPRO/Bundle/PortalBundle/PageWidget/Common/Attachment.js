@@ -1,8 +1,8 @@
-import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
-import FileIcon from './FileIcon';
-import FullImage from './FullImage';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
+import { FileIcon } from './FileIcon';
+import { FullImage } from './FullImage';
 
-export default class Attachment extends PageWidget {
+export class Attachment extends PageWidget {
 
   init() {
     this.addWidgetDef(FileIcon, '.dpx-attachment-file-icon');

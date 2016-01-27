@@ -1,10 +1,11 @@
 import _ from 'lodash';
 import $ from 'jquery';
-import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import 'jquery-datetimepicker';
 import moment from 'moment';
 
-export default class DpxDateWidget extends PageWidget {
+export class DpxDateWidget extends PageWidget {
+
   renderWidget() {
     // this widget can work with a DATE form type or a DATETIME
     // it works by following "id" naming conventions from symfony's form component ("choice" widgets for the date)

@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
-import FeedbackForm from 'DeskPRO/Bundle/PortalBundle/PageWidget/FeedbackForm';
-import FeedbackFilter from 'DeskPRO/Bundle/PortalBundle/React/Feedback/FeedbackFilter';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
+import { FeedbackForm } from './FeedbackForm';
+import { FeedbackFilter } from '../React/Feedback/FeedbackFilter';
 import $ from 'jquery';
 
-export default class FeedbackPage extends PageWidget {
+export class FeedbackPage extends PageWidget {
 
   init() {
     this.addWidgetDef(FeedbackForm, '.feedback-form-interactive');

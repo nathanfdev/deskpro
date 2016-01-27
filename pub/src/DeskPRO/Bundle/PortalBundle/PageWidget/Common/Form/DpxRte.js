@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import { PortalRte } from '../../../React/Form/PortalRte';
 import $ from 'jquery';
 
@@ -14,7 +14,7 @@ import $ from 'jquery';
  *  If this browser is able to use the RTE, then we hide the txt field,
  *  show the html field, and set the format to html
  */
-export default class DpxRte extends PageWidget {
+export class DpxRte extends PageWidget {
 
   renderWidget() {
     const $textTextarea = this.$element.find('textarea[data-rte-field="text"]');

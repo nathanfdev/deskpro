@@ -1,8 +1,8 @@
 import React from 'react';
 import _ from 'lodash';
 import $ from 'jquery';
-import PortalHttp from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
-import PortalPhrases from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 class SuggestionRow extends React.Component {
   constructor(props) {
@@ -40,7 +40,7 @@ class SuggestionMore extends React.Component {
           onClick={this.props.showAll}
           className="show-more-content"
           >
-          {PortalPhrases.get('portal.general.show_x_more', {num: this.props.count})}
+          {portalPhrases.get('portal.general.show_x_more', {num: this.props.count})}
         </a>
       </li>
     );
@@ -96,7 +96,7 @@ class Suggestions extends React.Component {
   }
 }
 
-export default class NewTicketSuggestions extends React.Component {
+export class NewTicketSuggestions extends React.Component {
 
   constructor(props) {
     super(props);
@@ -137,7 +137,7 @@ export default class NewTicketSuggestions extends React.Component {
       doSpin: true
     });
 
-    PortalHttp.sendGet('DP_URL/search/similar', { data: search_query }).then((r) => {
+    portalHttp.sendGet('DP_URL/search/similar', { data: search_query }).then((r) => {
       if (!r.isError()) {
         this.setState({
           data: r.data.data,
@@ -156,8 +156,8 @@ export default class NewTicketSuggestions extends React.Component {
       <div style={{display: (this.state.search_query.content.length >= 3 && results.length > 0 ? ' block' : 'none')}}>
         <div className="ticket-related-articles">
           <header>
-            <h1>{PortalPhrases.get('portal.tickets.related_articles_title')}</h1>
-            <h2>{PortalPhrases.get('portal.tickets.related_articles_desc')}</h2>
+            <h1>{portalPhrases.get('portal.tickets.related_articles_title')}</h1>
+            <h2>{portalPhrases.get('portal.tickets.related_articles_desc')}</h2>
           </header>
           <Suggestions results={results} />
         </div>

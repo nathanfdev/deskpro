@@ -31,6 +31,7 @@
  *
  * @category Commands
  */
+
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\Pop3Config;

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\FeedbackCategories;
 
 use Application\DeskPRO\Entity\CustomDefFeedback;

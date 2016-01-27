@@ -1,23 +1,37 @@
-import React from "react"
-import _ from "lodash"
+import React, { PropTypes } from 'react';
+import _ from 'lodash';
 
 class PaginationLink extends React.Component {
+
+  static propTypes = {
+    onClick: PropTypes.func,
+    page: PropTypes.number,
+    text: PropTypes.string
+  };
+
   onClick() {
-    this.props.onClick(this.props.page);
+    const { onClick, page } = this.props;
+    onClick(page);
   }
 
   render() {
-    return (<li><a onClick={this.onClick.bind(this)}>{this.props.text}</a></li>);
+    const { text } = this.props;
+    return (
+      <li>
+        <a onClick={this.onClick}>{text}</a>
+      </li>
+    );
   }
 }
 
-export default class Pagination extends React.Component {
+export class Pagination extends React.Component {
+
   render() {
     const current = _.parseInt(this.props.currentPage) || 1;
     const total = _.parseInt(this.props.totalResults) || 0;
-    const per_page = _.parseInt(this.props.perPageResults) || 0;
-    const onClick = this.props.pageClick;
-    const pages = Math.ceil(total / per_page);
+    const perPage = _.parseInt(this.props.perPageResults) || 0;
+    const pages = Math.ceil(total / perPage);
+
     if (_.isNaN(pages) || pages < 2) {
       // don't show there's nothing to page
       return null;

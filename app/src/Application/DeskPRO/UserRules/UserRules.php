@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\UserRules;
 
 use Application\DeskPRO\App;

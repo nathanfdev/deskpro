@@ -1,8 +1,8 @@
 import $ from 'jquery';
-import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
-import * as PortalMultipleSelectBox from 'DeskPRO/Bundle/PortalBundle/React/Form/PortalMultipleSelectBox';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
+import * as PortalMultipleSelectBox from '../../../React/Form/PortalMultipleSelectBox';
 
-export default class DpxMultipleSelectBox extends PageWidget {
+export class DpxMultipleSelectBox extends PageWidget {
 
   renderWidget() {
     this.$element.hide();

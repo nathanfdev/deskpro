@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
-import PortalPhrases from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { portalUrlGenerator } from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
 import { openFullImage } from 'DeskPRO/Component/Util/FullImage';
 
 const qq = require('exports?qq!fine-uploader/fine-uploader/fine-uploader.js');
 
-export default class PortalAttach extends React.Component {
+export class PortalAttach extends React.Component {
 
   constructor(props) {
     super(props);
@@ -206,7 +206,7 @@ class PortalAttachListItem extends React.Component {
         <input type="hidden" name={formName} value={blob.authcode} />
         <span className="file-size">({blob.size})</span>
         <a href="#" className="remove-attachement" onClick={this.onDelete}>
-          <i className="fa fa-times" />{PortalPhrases.get('portal.general.delete')}
+          <i className="fa fa-times" />{portalPhrases.get('portal.general.delete')}
         </a>
 
         {blob.is_image && <img src={blob.url} ref="image" style={{display: 'none'}} />}

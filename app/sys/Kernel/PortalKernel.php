@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Kernel;
 
 use Application\DeskPRO\App;

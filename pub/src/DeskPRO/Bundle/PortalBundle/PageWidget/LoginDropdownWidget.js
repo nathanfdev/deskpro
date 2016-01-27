@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
-import LoginDropdown from 'DeskPRO/Bundle/PortalBundle/React/Login/LoginDropdown';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
+import { LoginDropdown } from '../React/Login/LoginDropdown';
 import $ from 'jquery';
 
-export default class LoginDropdownWidget extends PageWidget {
+export class LoginDropdownWidget extends PageWidget {
 
   renderWidget() {
     this.$rElement = $('<div class="dp-react-widget"></div>').insertAfter(this.$element);

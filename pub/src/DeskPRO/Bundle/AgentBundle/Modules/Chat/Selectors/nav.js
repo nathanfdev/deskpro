@@ -1,8 +1,7 @@
 import { createSelector } from 'reselect';
 const stateSelector = state => state.Chat.nav;
 
-
-export const loadedSelector = createSelector(
+export const isLoadedSelector = createSelector(
   stateSelector,
     list => list.getIn(['async', 'done'])
 );

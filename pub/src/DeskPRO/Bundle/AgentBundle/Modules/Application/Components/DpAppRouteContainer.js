@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { showWelcomePage, doneInitialLoad } from '../../Application/Actions/appActions';
+import { showWelcomePage, doneInitialLoad } from '../../Application/Actions/bootstrapActions';
 import { DpApp } from './DpApp';
 import { DpAppLoading } from './DpAppLoading';
 import { WelcomeBack } from '../../Welcome/Components/WelcomeBack';
@@ -8,7 +8,9 @@ import { meSelector, meStateSelector } from '../RecordStores/Selectors/meSelecto
 import { IMContainer } from '../../IM/Components/IMContainer';
 import { PreferencesContainer } from './Preferences/PreferencesContainer';
 import { NotificationServiceContainer } from './Notifications/NotificationServiceContainer.js';
-import { showWelcomePageSelector, coverShownSelector } from '../Selectors/dpWindow';
+import { coverShownSelector } from '../Selectors/dpWindow';
+import { isPreloadingSelector } from '../Selectors/bootstrap';
+import { showWelcomePageSelector } from '../Selectors/bootstrap';
 import { loadMe } from '../RecordStores/Actions/meActions';
 import { releasePeopleRequest } from '../../CRM/RecordStores/Actions/peopleActions';
 
@@ -17,7 +19,7 @@ import { releasePeopleRequest } from '../../CRM/RecordStores/Actions/peopleActio
   coverShown: coverShownSelector(state),
   userStatus: meStateSelector.statusSel(state),
   user: meSelector(state),
-  isPreloading: state.Application.dpWindow.get('isPreloading')
+  isPreloading: isPreloadingSelector(state)
 }))
 export class DpAppRouteContainer extends React.Component {
 

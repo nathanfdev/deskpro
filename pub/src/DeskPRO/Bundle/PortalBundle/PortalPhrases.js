@@ -28,6 +28,4 @@ class PortalPhrases {
   }
 }
 
-const phrases = new PortalPhrases;
-
-export default phrases;
+export const portalPhrases = new PortalPhrases;

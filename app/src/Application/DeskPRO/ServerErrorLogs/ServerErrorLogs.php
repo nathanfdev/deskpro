@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\ServerErrorLogs;
 
 use Application\DeskPRO\App;

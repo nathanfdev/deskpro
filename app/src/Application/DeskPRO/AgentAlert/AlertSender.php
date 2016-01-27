@@ -29,17 +29,19 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\AgentAlert;
 
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\AgentAlert;
 use Application\DeskPRO\Entity\ClientMessage;
-use Doctrine\ORM\EntityManager;
+use Application\DeskPRO\ORM\EntityManager;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AlertSender
 {
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var \Application\DeskPRO\ORM\EntityManager
      */
     protected $em;
 
@@ -48,22 +50,29 @@ class AlertSender
      */
     protected $db;
 
+    protected $resolver;
+
     public function __construct(EntityManager $em)
     {
-        $this->em = $em;
-        $this->db = $em->getConnection();
+        $this->em       = $em;
+        $this->db       = $em->getConnection();
+        $this->resolver = new OptionsResolver();
+        $this->configureOptions();
     }
 
     /**
      * @param \Application\DeskPRO\Entity\Person $agent
      * @param string                             $type
      * @param array                              $data
+     *
+     * @return AgentAlert
      */
     public function send($agent, $type, array $data)
     {
-        $tpl_line = null;
+        $data = $this->resolver->resolve($data);
 
-        $alert = $this->createAlert($agent, $type, $data);
+        $tpl_line = null;
+        $alert    = $this->createAlert($agent, $type, $data);
         $this->em->persist($alert);
         $this->em->flush($alert);
 
@@ -181,5 +190,21 @@ class AlertSender
         }
 
         return $data;
+    }
+
+    private function configureOptions()
+    {
+        $this->resolver->setDefined(
+            [
+                '@fetch_types',
+                'browser_rendered',
+                'is_new_agent_note',
+                'is_new_agent_reply',
+                'is_new_ticket',
+                'is_new_user_reply',
+                'ticket',
+            ]
+        );
+        $this->resolver->setRequired('performer');
     }
 }

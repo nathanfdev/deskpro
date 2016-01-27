@@ -1,7 +1,7 @@
-import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import $ from 'jquery';
 
-export default class ClickAwayDropdownWidget extends PageWidget {
+export class ClickAwayDropdownWidget extends PageWidget {
   renderWidget() {
     const $trigger = this.$element;
     const targetId = $trigger.data('clickaway-target');

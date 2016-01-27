@@ -1,17 +1,18 @@
-import React from "react"
-import ReactDOM from "react-dom"
-import _ from "lodash"
-import $ from "jquery"
-import { portalUrlGenerator } from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator"
+import React from 'react';
+import ReactDOM from 'react-dom';
+import _ from 'lodash';
+import $ from 'jquery';
+import { portalUrlGenerator } from '../../Http/PortalUrlGenerator';
 
-export default class ResultsPartial extends React.Component {
+export class ResultsPartial extends React.Component {
+
   render() {
     let html = this.props.partial;
     if (html.length === 0) {
       return (
         <div className="paged-results centered" ref="results">
           <img
-            style={{display: this.props.doSpin ? "table" : "none", margin: "0 auto", height: "70px", width: "70px"}}
+            style={{display: this.props.doSpin ? 'table' : 'none', margin: '0 auto', height: '70px', width: '70px'}}
             src={ portalUrlGenerator.getSpinnerPath() } />
         </div>
       );
