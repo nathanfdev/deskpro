@@ -29,11 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\HttpFoundation\UserAgentRequirementCheck;
 use Application\DeskPRO\Service\RateLimit;
 
 class LoginController extends \Application\UserBundle\Controller\LoginController
@@ -74,7 +74,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
                 return $this->redirect($return);
             }
 
-            $url = App::getSetting('core.deskpro_url').($this->request->isIndexIncluded() ? 'index.php/' : '').'agent/';
+            $url = App::getSetting('core.deskpro_url').'agent/';
 
             return $this->redirect($url);
         }
@@ -164,8 +164,6 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             $logo_blob = $this->em->find('DeskPRO:Blob', $logo_blob_id);
         }
 
-        $browser_warnings = UserAgentRequirementCheck::getInterfaceWarnings();
-
         $captcha = null;
         /** @var RateLimit $rateLimit */
         $rateLimit = $this->get(RateLimit::KEY);
@@ -180,7 +178,6 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             'has_logged_out'    => $has_logged_out,
             'has_done_reset'    => $has_done_reset,
             'failed_login_name' => $failed_login_name,
-            'browser_warnings'  => $browser_warnings,
             'timeout'           => $this->in->getBool('timeout'),
             'captcha'           => $captcha,
             'render_forgot_pw'  => $this->in->getString('forgot') ?: false,

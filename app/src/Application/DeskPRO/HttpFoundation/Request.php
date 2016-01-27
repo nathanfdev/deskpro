@@ -29,20 +29,17 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\HttpFoundation;
 
 use Orb\Util\Strings;
 
+/**
+ * @deprecated Legacy code. Prefer using default Symfony request.
+ */
 class Request extends \Symfony\Component\HttpFoundation\Request
 {
     const PARTIAL_REQUEST_KEY = '_partial';
-
-    /** @var null */
-    protected $url_locale = null;
-
-    protected $index_included;
-
-    protected $info;
 
     /**
      * When a client sends _partial in POST/GET data, they're requesting a partial result.
@@ -92,197 +89,6 @@ class Request extends \Symfony\Component\HttpFoundation\Request
     public function isGet()
     {
         return $this->getMethod() == 'GET';
-    }
-
-    /**
-     * Detect the locale in the URL. This is the first /en/ or /en_US/ part of the URL.
-     *
-     * @return string
-     */
-    public function getUrlLocale()
-    {
-        if ($this->url_locale !== null) {
-            return $this->url_locale;
-        }
-
-        $this->url_locale = false;
-
-        #------------------------------
-        # We check for locale prefix in user section
-        #------------------------------
-
-        $nocheck_sections = array(
-            '/agent',
-            '/admin',
-            '/dev',
-            '/api',
-        );
-
-        $check_for_locale = true;
-        foreach ($nocheck_sections as $s) {
-            if (strpos($this->getPathInfo(), $s) === 0) {
-                $check_for_locale = false;
-            }
-        }
-
-        if ($check_for_locale) {
-            $locale = Strings::extractRegexMatch('#^/([a-z]{2})/#', $pathinfo, 1);
-            if ($locale) {
-                $locale = Strings::extractRegexMatch('#^/([a-z]{2}_[A-Z]{2}/#', $pathinfo, 1);
-            }
-
-            if ($locale) {
-                $this->url_locale = $locale;
-            }
-        }
-
-        $this->attributes->set('_locale', $this->url_locale);
-
-        return $this->url_locale;
-    }
-
-    /**
-     * Same as parent, except directory matching is case-insensitive for Windows.
-     *
-     * @return mixed|null|string
-     */
-    protected function prepareBaseUrl()
-    {
-        // Allow config to hard-code this. Sometimes symfony doesnt
-        // find the base path properly (particularly when DeskPRO in subdir on nginx).
-        // Many bugs filed about similar situations never seems to fix this, so easiest
-        // for us to just add a config var.
-        if (function_exists('dp_get_config') && $base_path = dp_get_config('url_base_path')) {
-            return $base_path;
-        }
-
-        // Not Windows (which is case insensitive), then do the normal
-        if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
-            return parent::prepareBaseUrl();
-        }
-
-        // Below is the same except for a few cases where
-        // strpos is replaced with stripos and some strtolowers
-        $filename = strtolower(basename($this->server->get('SCRIPT_FILENAME')));
-
-        if (strtolower(basename($this->server->get('SCRIPT_NAME'))) === $filename) {
-            $baseUrl = $this->server->get('SCRIPT_NAME');
-        } elseif (strtolower(basename($this->server->get('PHP_SELF'))) === $filename) {
-            $baseUrl = $this->server->get('PHP_SELF');
-        } elseif (strtolower(basename($this->server->get('ORIG_SCRIPT_NAME'))) === $filename) {
-            $baseUrl = $this->server->get('ORIG_SCRIPT_NAME'); // 1and1 shared hosting compatibility
-        } else {
-            // Backtrack up the script_filename to find the portion matching
-            // php_self
-            $path    = $this->server->get('PHP_SELF', '');
-            $file    = $this->server->get('SCRIPT_FILENAME', '');
-            $segs    = explode('/', trim($file, '/'));
-            $segs    = array_reverse($segs);
-            $index   = 0;
-            $last    = count($segs);
-            $baseUrl = '';
-            do {
-                $seg     = $segs[$index];
-                $baseUrl = '/'.$seg.$baseUrl;
-                ++$index;
-            } while (($last > $index) && (false !== ($pos = stripos($path, $baseUrl))) && (0 != $pos));
-        }
-
-        // Does the baseUrl have anything in common with the request_uri?
-        $requestUri = $this->getRequestUri();
-
-        if ($baseUrl && 0 === strpos($requestUri, $baseUrl)) {
-            // full $baseUrl matches
-            return $baseUrl;
-        }
-
-        if ($baseUrl && 0 === stripos($requestUri, dirname($baseUrl))) {
-            // directory portion of $baseUrl matches
-            return rtrim(dirname($baseUrl), '/');
-        }
-
-        $truncatedRequestUri = $requestUri;
-        if (($pos = strpos($requestUri, '?')) !== false) {
-            $truncatedRequestUri = substr($requestUri, 0, $pos);
-        }
-
-        $basename = basename($baseUrl);
-        if (empty($basename) || !strpos($truncatedRequestUri, $basename)) {
-            // no match whatsoever; set it blank
-            return '';
-        }
-
-        // If using mod_rewrite or ISAPI_Rewrite strip the script filename
-        // out of baseUrl. $pos !== 0 makes sure it is not matching a value
-        // from PATH_INFO or QUERY_STRING
-        if ((strlen($requestUri) >= strlen($baseUrl)) && ((false !== ($pos = strpos($requestUri, $baseUrl))) && ($pos !== 0))) {
-            $baseUrl = substr($requestUri, 0, $pos + strlen($baseUrl));
-        }
-
-        return rtrim($baseUrl, '/');
-    }
-
-    public function isIndexIncluded()
-    {
-        return null === $this->index_included
-            ? $this->index_included = false !== strpos($this->getRequestUri(), '/index.php')
-            : $this->index_included;
-    }
-
-    /**
-     * @param null $correctHost
-     *
-     * @return bool|null
-     */
-    public function isCorrectHost($correctHost = null)
-    {
-        if (!$info = $this->getCorrectInfo($correctHost)) {
-            return false;
-        }
-
-        $host = $info['port']
-            ? $info['host'].':'.$info['port']
-            : $info['host'];
-
-        return $this->getHttpHost() === $host;
-    }
-
-    /**
-     * @param null $correctHost
-     *
-     * @return bool|null
-     */
-    public function isCorrectScheme($correctHost = null)
-    {
-        if (!$info = $this->getCorrectInfo($correctHost)) {
-            return false;
-        }
-
-        return 'https' === $this->getScheme() || 'https' !== $info['scheme'];
-    }
-
-    /**
-     * @param null $correctHost
-     *
-     * @return bool|mixed
-     */
-    public function getCorrectInfo($correctHost = null)
-    {
-        if ($this->info) {
-            return $this->info;
-        }
-
-        if ($correctHost) {
-            if (!$info = parse_url($correctHost)) {
-                return array();
-            }
-            $info['scheme'] = strtolower(@$info['scheme']);
-            $info['host']   = strtolower(@$info['host']);
-            $info['port']   = @$info['port'];
-            $this->info     = $info;
-        }
-
-        return $this->info;
     }
 
     public function getReturnParam()
