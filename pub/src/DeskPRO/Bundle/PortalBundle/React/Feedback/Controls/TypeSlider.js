@@ -4,7 +4,7 @@ import classNames from 'classnames';
 export default class TypeSlider extends React.Component {
 
   static propTypes = {
-    id: PropTypes.number,
+    id: PropTypes.string,
     label: PropTypes.string,
     active: PropTypes.bool,
     toggleType: PropTypes.func

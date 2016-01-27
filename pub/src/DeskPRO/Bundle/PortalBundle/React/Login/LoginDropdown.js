@@ -1,5 +1,5 @@
 import React from 'react';
-import LoginPanel from './LoginPanel';
+import { LoginPanel } from './LoginPanel';
 
 export class LoginDropdown extends React.Component {
 
@@ -7,7 +7,7 @@ export class LoginDropdown extends React.Component {
     return (
       <div className="active-button-dropdown language-dropdown" id="top-login-dropdown" style={{minWidth: '300px'}}>
         <div className="small-form">
-          <LoginPanel usersources={this.props.usersources} />
+          <LoginPanel {...this.props} />
         </div>
       </div>
     );

@@ -1,8 +1,9 @@
-import React from "react"
-import _ from "lodash"
-import { portalUrlGenerator } from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator"
+import React from 'react';
+import { portalUrlGenerator } from '../Http/PortalUrlGenerator';
+import _ from 'lodash';
 
 class LanguageChoice extends React.Component {
+
   onClick(e) {
     e.preventDefault();
     this.props.clickLanguage(this.props.langCode);
@@ -23,20 +24,27 @@ class LanguageChoice extends React.Component {
   }
 }
 
-export default class LanguageChanger extends React.Component {
+export class LanguageChanger extends React.Component {
+
   constructor(props) {
     super(props);
-    this.state = {showing_dropdown: false}
+    this.state = {
+      showing_dropdown: false
+    };
   }
+
   getLangTitle(lang_code) {
     return _.first(_.filter(this.props.enabled_langs, (lang) => lang.code == lang_code)).title;
   }
+
   getLangFlag(lang_code) {
     return _.first(_.filter(this.props.enabled_langs, (lang) => lang.code == lang_code)).flag;
   }
+
   clickLanguage(lang_code) {
     this.props.clickLanguage(lang_code);
   }
+
   render() {
     const active_lang_code = this.props.active_lang_code;
     const enabled_langs = this.props.enabled_langs;
@@ -57,6 +65,7 @@ export default class LanguageChanger extends React.Component {
       </div>
     );
   }
+
   renderDropdown() {
     return _.map(_.filter(this.props.enabled_langs, (lang) => lang.code != this.props.active_lang_code), (lang) => {
         return (
