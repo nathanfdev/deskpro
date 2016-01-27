@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Scrollable';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 
 export class NavFrame extends React.Component {
 
@@ -81,16 +82,23 @@ class NavFrameHeader extends React.Component {
 
 export class NavFrameBody extends React.Component {
   static propTypes = {
-    children: PropTypes.any.isRequired
+    children: PropTypes.any.isRequired,
+    isLoaded: PropTypes.bool.isRequired
   };
 
   render() {
+    const isLoaded = this.props.isLoaded === !!this.props.isLoaded
+                   ? this.props.isLoaded
+                   : true;
+
     return (
-      <div className="dp-nav-frame-body">
-        <Scrollable vertical>
-          {this.props.children}
-        </Scrollable>
-      </div>
+      <LoadIndicator loaded={isLoaded} top="20%">
+        <div className="dp-nav-frame-body">
+          <Scrollable vertical>
+            {this.props.children}
+          </Scrollable>
+        </div>
+      </LoadIndicator>
     );
   }
 }

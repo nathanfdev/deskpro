@@ -1,11 +1,11 @@
 import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
-import { paginationSelector, viewModeSelector, loadedSelector } from '../../Selectors/list';
+import { paginationSelector, viewModeSelector, isLoadedSelector } from '../../Selectors/list';
 import { List } from './List';
 import { toggleSelectedAction } from '../../../Application/Actions/massActions';
 
 @connect(state => ({
-  loaded: loadedSelector(state),
+  loaded: isLoadedSelector(state),
   pagination: paginationSelector(state),
   viewMode: viewModeSelector(state)
 }))

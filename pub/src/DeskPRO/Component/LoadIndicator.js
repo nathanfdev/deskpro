@@ -10,17 +10,21 @@ import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 })
 export class LoadIndicator extends Component {
   static propTypes = {
-    activeAppId: PropTypes.string
+    activeAppId: PropTypes.string,
+    top: PropTypes.number,
+    left: PropTypes.number
   };
 
   render() {
-    const {activeAppId} = this.props;
+    const { activeAppId } = this.props;
+    const top  = this.props.top  || '50%';
+    const left = this.props.left || '50%';
 
     return (
       <Loader color={constants.APP_COLOURS[activeAppId]}
               width={3}
-              left="50%"
-              top="50%"
+              left={left}
+              top={top}
         {...this.props} />
     );
   }

@@ -1,20 +1,17 @@
 import React, { Component, PropTypes } from 'react';
 import { ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { ListItemContainer } from './ListItemContainer';
-import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 
 export class CategoryTab extends Component {
 
   static propTypes = {
-    loaded: PropTypes.bool.isRequired,
     categories: PropTypes.object.isRequired
   };
 
   render() {
-    const { categories, loaded } = this.props;
+    const { categories } = this.props;
 
     return (
-      <LoadIndicator loaded={loaded}>
       <ul>
         {categories && categories.get('nested').map((item, index) =>
             <ListItemContainer key={index}
@@ -26,7 +23,6 @@ export class CategoryTab extends Component {
             </ListItemContainer>
         )}
       </ul>
-      </LoadIndicator>
     );
   }
 }

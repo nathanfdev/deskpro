@@ -5,7 +5,7 @@ import { Nav } from './Nav';
 
 @connect(state => {
   return {
-    loaded: state.CRM.nav.getIn(['async', 'done']),
+    isLoaded: state.CRM.nav.getIn(['async', 'done']),
     users: state.CRM.nav.get('users'),
     organizations: state.CRM.nav.get('organizations'),
     agents: state.CRM.nav.get('agents'),
@@ -13,14 +13,8 @@ import { Nav } from './Nav';
   };
 })
 export class NavContainer extends Component {
-
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    loaded: PropTypes.bool.isRequired,
-    users: PropTypes.object.isRequired,
-    organizations: PropTypes.object.isRequired,
-    agents: PropTypes.object.isRequired,
-    labels: PropTypes.object.isRequired
+    dispatch: PropTypes.func.isRequired
   };
 
   componentDidMount() {

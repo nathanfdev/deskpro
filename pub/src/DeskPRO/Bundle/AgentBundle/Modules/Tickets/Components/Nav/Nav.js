@@ -4,11 +4,15 @@ import { NavFrame, NavFrameHeaderContainer, NavFrameBody, TabsPaneStatefulContai
 import { FiltersTabContainer, LabelsTabContainer, StarsTabContainer } from './Tabs/index';
 
 export class Nav extends Component {
+  static propTypes = {
+    isLoaded: PropTypes.bool.isRequired
+  };
+
   render() {
     return (
       <NavFrame>
         <NavFrameHeaderContainer icon="icon icon-dp-streamline-mail-2">Tickets</NavFrameHeaderContainer>
-        <NavFrameBody>
+        <NavFrameBody isLoaded={this.props.isLoaded}>
           <TabsPaneStatefulContainer id="tab">
             <Tab title="Filters">
               <FiltersTabContainer />

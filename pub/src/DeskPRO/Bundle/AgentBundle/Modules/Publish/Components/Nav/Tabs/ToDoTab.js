@@ -1,6 +1,5 @@
 import React, {Component, PropTypes} from 'react';
 import classNames from 'classnames';
-import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import { SectionsPane, Section, SectionHeader, ListItem }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
 import { ListItemContainer } from '../ListItemContainer';
@@ -8,13 +7,12 @@ import { ListItemContainer } from '../ListItemContainer';
 export class ToDoTab extends Component {
 
   static propTypes = {
-    loaded: PropTypes.bool.isRequired,
     todo: PropTypes.object.isRequired,
     setMine: PropTypes.func.isRequired
   };
 
   render() {
-    const { loaded, todo, setMine} = this.props;
+    const { todo, setMine} = this.props;
     const mine = todo.get('articles').get('mine');
     const slaButtonAllClasses = classNames('sla-button', { 'selected': !mine });
     const slaButtonMineClasses = classNames('sla-button', { 'selected': mine });
@@ -42,46 +40,44 @@ export class ToDoTab extends Component {
     ];
 
     return (
-      <LoadIndicator loaded={loaded}>
-        <SectionsPane>
-          <Section ref="todos">
-            <SectionHeader>
-              Articles
-              <div className="sla" style={{display: 'inline-block', float: 'right'}}>
-                <span className={slaButtonMineClasses}
-                      onClick={setMine.bind(this, true)}>
-                  Mine
-                </span>
-                <span className={slaButtonAllClasses}
-                      onClick={setMine.bind(this, false)}>
-                  All
-                </span>
-              </div>
-            </SectionHeader>
+      <SectionsPane>
+        <Section ref="todos">
+          <SectionHeader>
+            Articles
+            <div className="sla" style={{display: 'inline-block', float: 'right'}}>
+              <span className={slaButtonMineClasses}
+                    onClick={setMine.bind(this, true)}>
+                Mine
+              </span>
+              <span className={slaButtonAllClasses}
+                    onClick={setMine.bind(this, false)}>
+                All
+              </span>
+            </div>
+          </SectionHeader>
 
-            <ul>
-              <ListItemContainer label="DraftArticles"
-                                 group="aticles"
-                                 listOptions={{content: 'articles', navItem: {hidden_status: 'draft'}, sort: 'date_created', order: 'desc'}}>
-                <ListItem label="Draft Articles"
-                          count={todo.get('articles').get('draft')}/>
-              </ListItemContainer>
-              <ListItemContainer label="PendingArticles"
-                                 group="article_pending_creates"
-                                 listOptions={{content: 'article_pending_creates', navItem: {assigned_person: mine ? 'me' : ''}}}>
-                <ListItem label="Pending Articles"
-                          count={todo.get('articles').get('pending')}/>
-              </ListItemContainer>
-            </ul>
-          </Section>
-          <CommentsToValidateSection config={commentsConfig}/>
-          <CommentsToReviewSection config={commentsConfig}/>
-          <Section>
-            <SectionHeader>Translations</SectionHeader>
-            &nbsp;
-          </Section>
-        </SectionsPane>
-      </LoadIndicator>
+          <ul>
+            <ListItemContainer label="DraftArticles"
+                               group="aticles"
+                               listOptions={{content: 'articles', navItem: {hidden_status: 'draft'}, sort: 'date_created', order: 'desc'}}>
+              <ListItem label="Draft Articles"
+                        count={todo.get('articles').get('draft')}/>
+            </ListItemContainer>
+            <ListItemContainer label="PendingArticles"
+                               group="article_pending_creates"
+                               listOptions={{content: 'article_pending_creates', navItem: {assigned_person: mine ? 'me' : ''}}}>
+              <ListItem label="Pending Articles"
+                        count={todo.get('articles').get('pending')}/>
+            </ListItemContainer>
+          </ul>
+        </Section>
+        <CommentsToValidateSection config={commentsConfig}/>
+        <CommentsToReviewSection config={commentsConfig}/>
+        <Section>
+          <SectionHeader>Translations</SectionHeader>
+          &nbsp;
+        </Section>
+      </SectionsPane>
     );
   }
 }

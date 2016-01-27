@@ -9,7 +9,7 @@ import { ToDoTab } from './Tabs/ToDoTab';
 export class Nav extends Component {
 
   static propTypes = {
-    loaded: PropTypes.bool.isRequired,
+    isLoaded: PropTypes.bool.isRequired,
     articles: PropTypes.object.isRequired,
     news: PropTypes.object.isRequired,
     downloads: PropTypes.object.isRequired,
@@ -29,34 +29,30 @@ export class Nav extends Component {
   }
 
   render() {
-    const { articles, news, downloads, todo, setMine, loaded } = this.props;
+    const { articles, news, downloads, todo, setMine, isLoaded } = this.props;
 
     return (
       <NavFrame>
         <NavFrameHeaderContainer icon="icon-dp-streamline-edit-1">Publish</NavFrameHeaderContainer>
-        <NavFrameBody>
+        <NavFrameBody isLoaded={isLoaded}>
           <TabsPaneStatefulContainer id="tab">
             <Tab title="KB">
               <KBTab articles={articles}
-                     loaded={loaded}
                      toggleGroupingVisibility={this.toggle}
                      closeGroupingVisibility={this.close}/>
             </Tab>
             <Tab title="News">
               <NewsTab news={news}
-                       loaded={loaded}
                        toggleGroupingVisibility={this.toggle}
                        closeGroupingVisibility={this.close}/>
             </Tab>
             <Tab icon="fa-download">
               <DownloadsTab downloads={downloads}
-                            loaded={loaded}
                             toggleGroupingVisibility={this.toggle}
                             closeGroupingVisibility={this.close}/>
             </Tab>
             <Tab title="Todo">
               <ToDoTab todo={todo}
-                       loaded={loaded}
                        setMine={setMine}/>
             </Tab>
           </TabsPaneStatefulContainer>

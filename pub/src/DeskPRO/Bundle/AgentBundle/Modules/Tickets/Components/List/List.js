@@ -10,11 +10,11 @@ export class List extends Component {
   static propTypes = {
     viewMode: PropTypes.string.isRequired,
     pagination: PropTypes.object,
-    isDone: PropTypes.bool.isRequired
+    isLoaded: PropTypes.bool.isRequired
   };
 
   renderList() {
-    switch (this.props.isDone) {
+    switch (this.props.isLoaded) {
       case false:
         return <div>Loading...</div>;
       case true:

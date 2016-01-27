@@ -5,26 +5,23 @@ import { GroupsContainer } from './Groups/GroupsContainer';
 import { ProjectsContainer } from './Projects/ProjectsContainer';
 import { AgentsContainer } from './Agents/AgentsContainer';
 import { LabelsContainer } from './Labels/LabelsContainer';
-import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 
 export class Nav extends React.Component {
 
   static propTypes = {
-    isDone: PropTypes.bool.isRequired
+    isLoaded: PropTypes.bool.isRequired
   };
 
   render() {
     return (
       <NavFrame>
         <NavFrameHeaderContainer icon="icon-dp-streamline-check-circle-2">Tasks</NavFrameHeaderContainer>
-        <NavFrameBody>
+        <NavFrameBody isLoaded={this.props.isLoaded}>
           <div className="sidebar-list sidebar-list-filters">
-            <LoadIndicator loaded={this.props.isDone}>
-              <GroupsContainer />
-              <ProjectsContainer />
-              <AgentsContainer />
-              <LabelsContainer />
-            </LoadIndicator>
+            <GroupsContainer />
+            <ProjectsContainer />
+            <AgentsContainer />
+            <LabelsContainer />
           </div>
         </NavFrameBody>
       </NavFrame>

@@ -42,7 +42,7 @@ export const paginationSelector = createSelector(
     state => state.get('pagination')
 );
 
-export const isDoneSelector = createSelector(
+export const isLoadedSelector = createSelector(
   stateSelector,
     state => state.getIn(['async', 'done'])
 );
