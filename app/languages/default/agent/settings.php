@@ -64,7 +64,7 @@ return array(
     'agent.settings.no_slas'                          => 'Your administrator has not defined any SLAs.',
     'agent.settings.no_slas_admin'                    => 'You have no created any SLAs yet. You can define new SLAs from Admin Interface > Tickets > SLAs.',
     'agent.settings.notif_all_actions'                => 'All Actions',
-    'agent.settings.notif_chat_message'               => 'Someone sends me a chat message while I am offline',
+    'agent.settings.notif_chat_message'               => 'An agent sends me an IM message while I am offline',
     'agent.settings.notif_contact_admin'              => 'Please contact the administrator to update your email notification preferences.',
     'agent.settings.notif_forwards'                   => 'Forwards',
     'agent.settings.notif_group_all'                  => 'All Tickets',

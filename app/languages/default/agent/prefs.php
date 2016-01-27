@@ -196,7 +196,7 @@ return array(
     'agent.prefs.apps_email_title' => 'Email',
     'agent.prefs.apps_alert_title' => 'Alert',
 
-    'agent.prefs.apps_chat_message'          => 'Someone sends me a chat message while I am offline',
+    'agent.prefs.apps_chat_message'          => 'An agent sends me an IM message while I am offline',
     'agent.prefs.apps_task_assign_self'      => 'A task is assigned to me',
     'agent.prefs.apps_task_assign_team'      => 'A task is assigned to my team',
     'agent.prefs.apps_task_complete'         => 'A task I delegated is completed',
