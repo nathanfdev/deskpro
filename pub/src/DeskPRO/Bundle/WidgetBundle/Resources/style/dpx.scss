@@ -414,6 +414,7 @@ $grey: #e6e6e6;
 }
 
 .attach-file {
+  position: relative;
   background: #ebf2f5;
   border: 1px solid #dce4e7;
   padding: 5px;
@@ -464,6 +465,17 @@ $grey: #e6e6e6;
       display: block;
 
     }
+  }
+
+  input[type="file"] {
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    cursor: pointer;
   }
 
   div.frame {
