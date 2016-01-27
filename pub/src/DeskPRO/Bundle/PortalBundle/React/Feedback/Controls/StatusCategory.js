@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default class StatusCategory extends React.Component {
+export class StatusCategory extends React.Component {
 
   clicked(e) {
     e.preventDefault();

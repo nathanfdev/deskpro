@@ -1,4 +1,4 @@
-import PortalWindow from 'DeskPRO/Bundle/PortalBundle/PortalWindow';
+import { portalWindow } from '../PortalWindow';
 
 class PortalUrlGenerator {
 
@@ -44,4 +44,4 @@ class PortalUrlGenerator {
   }
 }
 
-export const portalUrlGenerator = new PortalUrlGenerator(PortalWindow);
+export const portalUrlGenerator = new PortalUrlGenerator(portalWindow);

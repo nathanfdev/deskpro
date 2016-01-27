@@ -1,4 +1,4 @@
-const portalWindow = {
+export const portalWindow = {
   base_url: window.DESKPRO_BASE_URL,
   root_url: window.DESKPRO_ROOT_URL,
   web_url: window.DESKPRO_WEB_URL,
@@ -9,7 +9,3 @@ const portalWindow = {
   can_use_feedback: window.DESKPRO_CAN_USE_FEEDBACK,
   can_use_chat: window.DESKPRO_CAN_USE_CHAT
 };
-
-console.log('PortalWindow: %o', portalWindow);
-
-export default portalWindow;

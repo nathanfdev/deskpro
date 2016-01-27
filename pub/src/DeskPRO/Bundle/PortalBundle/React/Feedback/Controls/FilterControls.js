@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
-import TabRow from './TabRow';
-import TypeRow from './TypeRow';
+import { TabRow } from './TabRow';
+import { TypeRow } from './TypeRow';
 
 export class FilterControls extends React.Component {
 

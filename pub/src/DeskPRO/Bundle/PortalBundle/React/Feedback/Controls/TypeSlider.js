@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 
-export default class TypeSlider extends React.Component {
+export class TypeSlider extends React.Component {
 
   static propTypes = {
     id: PropTypes.string,

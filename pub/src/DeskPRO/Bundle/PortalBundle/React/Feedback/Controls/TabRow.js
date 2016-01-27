@@ -1,9 +1,9 @@
 import React from 'react';
+import { Tab } from './Tab';
+import { SortWidget } from './SortWidget';
 import _ from 'lodash';
-import Tab from './Tab';
-import SortWidget from './SortWidget';
 
-export default class TabRow extends React.Component {
+export class TabRow extends React.Component {
 
   render() {
     return (

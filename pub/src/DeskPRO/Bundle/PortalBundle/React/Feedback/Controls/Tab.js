@@ -1,8 +1,8 @@
 import React from 'react';
+import { StatusCategory } from './StatusCategory';
 import _ from 'lodash';
-import StatusCategory from './StatusCategory';
 
-export default class Tab extends React.Component {
+export class Tab extends React.Component {
 
   clickTab(e) {
     e.preventDefault();
