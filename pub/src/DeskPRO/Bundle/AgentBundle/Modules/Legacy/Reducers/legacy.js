@@ -1,10 +1,10 @@
 import { createReducer } from 'Ampliflux';
 import * as legacyActions from '../Actions/legacyActions';
-import { doneInitialLoad } from '../../Application/Actions/appActions';
+import { donePreloading } from '../../Application/Actions/bootstrapActions';
 const initialState = {};
 
 export default createReducer(initialState, {
-  [doneInitialLoad]: (state) => {
+  [donePreloading]: (state) => {
     // side effects!
     window.setupLegacy();
     return state;

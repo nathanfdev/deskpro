@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { Router, Route, Redirect } from 'react-router';
 import { connect } from 'react-redux';
+import { preloadData } from '../../Application/Actions/bootstrapActions';
 import { DpAppRouteContainer } from './DpAppRouteContainer';
-import { LoginRouteContainer } from '../../Login/Components/LoginRouteContainer';
 import { TicketsApp } from '../../Tickets/Components/TicketsApp';
 import { TasksApp } from '../../Tasks/Components/TasksApp';
 import { FeedbackApp } from '../../Feedback/Components/FeedbackApp';
@@ -33,6 +33,7 @@ export class DpAppContainer extends React.Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
+    dispatch(preloadData());
     const myRe = /\/agent\/(\w+)$/;
     const myArr = myRe.exec(window.location.pathname);
     // dispatch setActiveApp() to store activeApp in Application.dpWindow.state
@@ -65,7 +66,7 @@ export class DpAppContainer extends React.Component {
           <Route name="feedback" path="feedback" component={FeedbackApp}/>
           <Route name="example" path="example" component={ExampleApp}/>
         </Route>
-        <Route path={basePath} component={LoginRouteContainer}>
+        <Route path={basePath}>
           <Route name="login" path="login" component={LoginApp}/>
         </Route>
       </Router>

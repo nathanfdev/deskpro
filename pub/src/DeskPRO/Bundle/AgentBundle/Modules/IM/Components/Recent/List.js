@@ -13,7 +13,7 @@ import { recentChatsSelector, recentChatsStatusSelector } from '../../RecordStor
 
 // agents
 import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
-import { meSelector, meStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
+import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
 
 // teams
 import { myAgentTeamsSelector, myAgentTeamsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
@@ -23,7 +23,6 @@ import { myDepartmentsSelector, myDepartmentsStatusSelector } from 'DeskPRO/Bund
 
 @connect(state => ({
   me: meSelector(state),
-  meStatus: meStatusSelector(state),
   agents: agentsSelector(state),
   teams: myAgentTeamsSelector(state),
   departments: myDepartmentsSelector(state),
@@ -41,7 +40,6 @@ export class List extends React.Component {
 
   static propTypes = {
     me: PropTypes.object.isRequired,
-    meStatus: PropTypes.object.isRequired,
     agents: PropTypes.object.isRequired,
     teams: PropTypes.object.isRequired,
     departments: PropTypes.object.isRequired,
@@ -99,13 +97,12 @@ export class List extends React.Component {
   };
 
   render() {
-    const { recentChatsStatus, agentsStatus, teamsStatus, departmentsStatus, meStatus, loadingCounts, chating } = this.props;
+    const { recentChatsStatus, agentsStatus, teamsStatus, departmentsStatus, loadingCounts, chating } = this.props;
     const loaded = (
       recentChatsStatus.get('isDone')
       && agentsStatus.get('isDone')
       && teamsStatus.get('isDone')
       && departmentsStatus.get('isDone')
-      && meStatus.get('isDone')
     );
     const { agents, teams, departments, recentChats, me, dispatch, counts, current } = this.props;
     const sortedChats = recentChats.sort((first, second) => {

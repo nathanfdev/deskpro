@@ -9,14 +9,12 @@ import { setUserGroupsRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/Rec
 import { setAgentSettings } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
 import { setupActionAlerts } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/notificationActions';
 
-export const showWelcomePage = createAction('APP_SHOW_WELCOME_PAGE');
-
-export const doneInitialLoad = createAction('APP_DONE_INITIAL_LOAD');
+export const donePreloading  = createAction('APP_BOOTSTRAP_DONE_PRELOADING');
 
 export const preloadData = createAction(
   'BOOTSTRAP_PRELOAD_DATA',
   () => dispatch => new Promise(
-    (resolve) => {
+    (resolve, reject) => {
       const batch = 'DP_API/batch?get='
         + 'DP_API/ticket_departments'
         + ',DP_API/ticket_departments%3Fmy%3Dtrue'
@@ -27,19 +25,26 @@ export const preloadData = createAction(
         + ',DP_API/user_groups'
         + ',DP_API/helpdesk/agent-client/settings'
         + ',DP_API/notify/setup/action-alerts'
+        + ',DP_API/me'
       ;
-      DpApi.sendGet(batch).success(({responses}) => {
-        const data = flattenBatchResponses(responses);
-        dispatch(setDepartmentsRequest('all', data[0]));
-        dispatch(setDepartmentsRequest('my', data[1]));
-        dispatch(setPeopleRequest('agents', data[2]));
-        dispatch(setAgentTeamsRequest('all', data[3]));
-        dispatch(setAgentTeamsRequest('my', data[4]));
-        dispatch(setLanguagesRequest('all', data[5]));
-        dispatch(setUserGroupsRequest('all', data[6]));
-        dispatch(setAgentSettings(data[7]));
-        dispatch(setupActionAlerts(data[8]));
-      });
+      DpApi.sendGet(batch)
+        .success(({responses}) => {
+          const data = flattenBatchResponses(responses);
+          dispatch(setDepartmentsRequest('all', data[0]));
+          dispatch(setDepartmentsRequest('my', data[1]));
+          dispatch(setPeopleRequest('agents', data[2]));
+          dispatch(setAgentTeamsRequest('all', data[3]));
+          dispatch(setAgentTeamsRequest('my', data[4]));
+          dispatch(setLanguagesRequest('all', data[5]));
+          dispatch(setUserGroupsRequest('all', data[6]));
+          dispatch(setAgentSettings(data[7]));
+          dispatch(setupActionAlerts(data[8]));
+          dispatch(setPeopleRequest('me', [data[9]['person']]));
+
+          dispatch(donePreloading())
+        })
+      ;
+
       return resolve();
     }
   )
