@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
-import { PortalAttach } from '../../../React/Form/PortalAttach';
+import { PortalAttach } from '../../../React/Form/DropZone/PortalAttach';
 import $ from 'jquery';
 
 export class DpxAttach extends PageWidget {
