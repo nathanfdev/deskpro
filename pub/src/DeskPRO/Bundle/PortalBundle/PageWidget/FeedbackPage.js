@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
-import { FeedbackForm } from 'DeskPRO/Bundle/PortalBundle/PageWidget/FeedbackForm';
-import FeedbackFilter from 'DeskPRO/Bundle/PortalBundle/React/Feedback/FeedbackFilter';
+import { FeedbackForm } from './FeedbackForm';
+import { FeedbackFilter } from '../React/Feedback/FeedbackFilter';
 import $ from 'jquery';
 
 export class FeedbackPage extends PageWidget {

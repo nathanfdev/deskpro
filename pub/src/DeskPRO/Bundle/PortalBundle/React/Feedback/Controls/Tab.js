@@ -1,8 +1,9 @@
-import React from "react"
-import _ from "lodash"
-import StatusCategory from "./StatusCategory"
+import React from 'react';
+import _ from 'lodash';
+import StatusCategory from './StatusCategory';
 
 export default class Tab extends React.Component {
+
   clickTab(e) {
     e.preventDefault();
     this.props.setStatus(this.props.id);

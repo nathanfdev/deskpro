@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
-import _ from 'lodash';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import _ from 'lodash';
 
 export default class SortWidget extends React.Component {
 

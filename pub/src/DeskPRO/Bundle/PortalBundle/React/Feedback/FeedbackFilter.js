@@ -1,13 +1,13 @@
 import React, { PropTypes } from 'react';
-import FilterControls from './Controls/FilterControls';
+import { FilterControls } from './Controls/FilterControls';
 import { portalHttp } from '../../Http/PortalHttp';
 import { portalUrlCorrector } from '../../Http/PortalUrlCorrector';
-import FilterModel from './FilterModel';
-import FilterOptions from './FilterOptions';
-import ResultsPartial from './ResultsPartial';
+import { FilterModel } from './FilterModel';
+import { FilterOptions } from './FilterOptions';
+import { ResultsPartial } from './ResultsPartial';
 import history from 'html5-history-api';
 
-export default class FeedbackFilter extends React.Component {
+export class FeedbackFilter extends React.Component {
 
   static propTypes = {
     filter_data: PropTypes.object

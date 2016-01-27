@@ -1,9 +1,10 @@
-import React from "react"
-import _ from "lodash"
-import Tab from "./Tab"
-import SortWidget from "./SortWidget"
+import React from 'react';
+import _ from 'lodash';
+import Tab from './Tab';
+import SortWidget from './SortWidget';
 
 export default class TabRow extends React.Component {
+
   render() {
     return (
       <ul className="flat-tabs">
