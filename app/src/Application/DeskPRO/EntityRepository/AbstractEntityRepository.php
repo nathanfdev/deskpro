@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Orb\Util\Arrays;
@@ -72,25 +73,17 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
 
         $ids = array_values($ids);
 
-        if ($this->getEntityManager()->getUnitOfWork()->isAddedPreloadedEntity($this->getName())) {
-            $this->getEntityManager()->getUnitOfWork()->preloadEntitySet($this->getName());
-            $recs = $this->getIdentityHelper()->findByIds($ids, $keep_order);
-            $recs = Arrays::keyFromData($recs, 'id');
-
-            return $recs;
-        } else {
-            $q_res = $this->getEntityManager()->createQuery("
+        $q_res = $this->getEntityManager()->createQuery("
                 SELECT o
                 FROM {$class} o INDEX BY o.id
                 WHERE o.id IN(?0)
             ")->execute(array($ids));
 
-            if ($keep_order) {
-                $q_res = Arrays::orderIdArray($ids, $q_res);
-            }
-
-            return $q_res;
+        if ($keep_order) {
+            $q_res = Arrays::orderIdArray($ids, $q_res);
         }
+
+        return $q_res;
     }
 
     /**

@@ -172,9 +172,9 @@ $container->loadFromExtension('framework', array(
     'secret'     => 'irrelevant - compiler pass will override this',
     'templating' => array(
         'engines'          => array('twig', 'php', 'jsonphp'),
-        'assets_base_urls' => 'SET_IN_ASSET_PACKAGE_PASS',
+        'assets_base_urls' => 'http://bogus/SET_IN_ASSET_PACKAGE_PASS',
         'packages'         => array(
-            'app_assets' => array('base_url' => 'SET_IN_ASSET_PACKAGE_PASS'),
+            'app_assets' => array('base_url' => 'http://bogus/SET_IN_ASSET_PACKAGE_PASS'),
         ),
     ),
     'validation' => array('enabled' => true, 'static_method' => array('loadValidatorMetadata'), 'api' => '2.4'),

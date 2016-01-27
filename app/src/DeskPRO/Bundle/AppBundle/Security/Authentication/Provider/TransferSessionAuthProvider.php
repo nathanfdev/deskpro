@@ -29,14 +29,15 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Security\Authentication\Provider;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\AuthenticationManager as DpAuthManager;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\Security\DpPersonUserProvider;
 use DeskPRO\Bundle\AppBundle\Security\DpTransferSessionAuthToken;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;

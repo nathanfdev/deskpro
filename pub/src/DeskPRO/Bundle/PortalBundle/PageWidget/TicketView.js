@@ -1,12 +1,8 @@
-import _ from "lodash";
-import $ from "jquery";
-import PageWidget from "DeskPRO/Component/PageWidget/PageWidget";
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
+import $ from 'jquery';
 
-//######################################################################################################################
-//# Page widget
-//######################################################################################################################
+export class TicketView extends PageWidget {
 
-export default class NewTicketForm extends PageWidget {
   renderWidget() {
     $('.button-reply').on('click', (ev) => {
       ev.preventDefault();

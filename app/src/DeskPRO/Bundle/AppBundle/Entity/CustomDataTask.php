@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Doctrine\Common\NotifyPropertyChanged;
@@ -58,21 +59,21 @@ class CustomDataTask implements EntityInterface, NotifyPropertyChanged
     /**
      * @var Task
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
-     * @ORM\JoinColumn(name="task_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="task_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $task;
 
     /**
      * @var CustomDefTask
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\CustomDefTask")
-     * @ORM\JoinColumn(name="field_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="field_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $field;
 
     /**
      * @var CustomDefTask
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\CustomDefTask")
-     * @ORM\JoinColumn(name="root_field_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="root_field_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $root_field;
 

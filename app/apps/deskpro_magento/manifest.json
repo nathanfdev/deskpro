@@ -80,6 +80,13 @@
 				"options_variable": "permission_groups",
 				"is_required": true
 			}
+		},
+		{
+		  "name": "raw_info_filter",
+		  "type": "text",
+		  "label": "Filter",
+		  "description": "You can filter based on info provided by the usersource. <a href='https://support.deskpro.com/kb/articles/477' target='_blank'>Learn about this feature</a>",
+		  "is_required": false
 		}
 	]
 }

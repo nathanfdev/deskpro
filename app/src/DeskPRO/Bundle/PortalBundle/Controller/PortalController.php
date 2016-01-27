@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Blob;
@@ -403,7 +404,7 @@ class PortalController extends AbstractController
                 'error'   => [
                     'code' => 'csrf',
                 ],
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 }

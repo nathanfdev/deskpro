@@ -1,9 +1,4 @@
-import PageWidget from "DeskPRO/Component/PageWidget/PageWidget"
-import $ from "jquery"
-
-//######################################################################################################################
-//# Feedback value reader
-//######################################################################################################################
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 
 class FeedbackValueReader {
   constructor($formEl) {
@@ -11,7 +6,7 @@ class FeedbackValueReader {
   }
 
   _parseIntSelect(f) {
-    return parseInt(f.val() || 0) || 0;
+    return parseInt(f.val() || 0, 10) || 0;
   }
 
   getCategoryId() {
@@ -19,18 +14,14 @@ class FeedbackValueReader {
   }
 }
 
-//######################################################################################################################
-//# Feedback form widget
-//######################################################################################################################
-
 export default class FeedbackForm extends PageWidget {
+
   renderWidget() {
-    let $formEl = this.$element.find('.feedback-form-interactive');
-    let $expandedForm = this.$element.find('.feedback-form-expanded');
-    let $startBtn = this.$element.find('.feedback-selected-start');
-    let $catSelect = this.$element.find('#new_feedback_category');
-    let $feedbackAttachments = this.$element.find('#new_feedback_more_attachments');
-    let feedbackReader = new FeedbackValueReader(this.$element);
+    const $expandedForm = this.$element.find('.feedback-form-expanded');
+    const $startBtn = this.$element.find('.feedback-selected-start');
+    const $catSelect = this.$element.find('#new_feedback_category');
+    const $feedbackAttachments = this.$element.find('#new_feedback_more_attachments');
+    const feedbackReader = new FeedbackValueReader(this.$element);
 
     // deatch the "Add More Attachments" button from the DOM (unnecessary if JS enabled)
     $feedbackAttachments.remove();
@@ -50,10 +41,9 @@ export default class FeedbackForm extends PageWidget {
     };
 
     $catSelect.change(this.processChangedCategory);
-
     $startBtn.on('click', (e) => {
       e.preventDefault();
       this.processChangedCategory();
-    })
+    });
   }
 }

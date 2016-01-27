@@ -29,8 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer;
 
+use Symfony\Component\Form\ChoiceList\LegacyChoiceListAdapter;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceListInterface;
@@ -47,7 +49,7 @@ class CustomDefHierarchyNodeTransformer implements DataTransformerInterface
      */
     private $multiple;
 
-    public function __construct(ChoiceListInterface $choice_list, $multiple = false)
+    public function __construct(LegacyChoiceListAdapter $choice_list, $multiple = false)
     {
         $this->choice_list = $choice_list;
         $this->multiple    = $multiple;

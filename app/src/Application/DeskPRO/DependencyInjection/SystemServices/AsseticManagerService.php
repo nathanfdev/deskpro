@@ -31,6 +31,7 @@
  *
  * @category DependencyInjection
  */
+
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\App;
@@ -47,7 +48,7 @@ class AsseticManagerService
         );
 
         if ($container->isScopeActive('request')) {
-            $manager->setAssetHelper($container->get('templating.helper.assets'));
+            $manager->setAssetHelper($container->get('assets.packages'));
         }
 
         return $manager;

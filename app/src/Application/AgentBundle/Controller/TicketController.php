@@ -2085,9 +2085,7 @@ class TicketController extends AbstractController
                             ));
                         }
                         $new_custom_fields->handleRequest($this->request);
-                        if ($new_custom_fields->isValid()) {
-                            $new_field_manager->flush($new_custom_fields);
-                        }
+
                         $this->em->flush();
                     }
 
@@ -3242,7 +3240,8 @@ class TicketController extends AbstractController
             }
         }
 
-        $ticket->person = $new_person;
+        $ticket->person       = $new_person;
+        $ticket->organization = $new_person->organization;
 
         $this->db->beginTransaction();
         try {
@@ -4009,12 +4008,13 @@ class TicketController extends AbstractController
             $validator = new \Application\AgentBundle\Validator\NewTicketValidator();
             $layout    = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);
 
-            $layout                          = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $newticket->getMockTicket());
-            $newticket->ticket_fields        = $this->request->request->get('custom_fields', array());
-            $newticket->custom_person_fields = $this->request->request->get('custom_person_fields', array());
-            $newticket->custom_org_fields    = $this->request->request->get('custom_org_fields', array());
-            $newticket->billing_fields       = $this->request->request->get('billing_fields', array());
-            $newticket->status               = $set_status;
+            $layout                   = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $newticket->getMockTicket());
+            $newticket->ticket_fields = $this->request->request->get('custom_fields', array());
+            $newticket->setValuesFromTicket(null, $check_person, $check_person->organization);
+            $newticket->post_custom_person_fields = $this->request->request->get('custom_person_fields', array());
+            $newticket->post_custom_org_fields    = $this->request->request->get('custom_org_fields', array());
+            $newticket->billing_fields            = $this->request->request->get('billing_fields', array());
+            $newticket->status                    = $set_status;
             $validator->setLayout($layout);
             $newticket->setLayout($layout);
 
@@ -4097,26 +4097,11 @@ class TicketController extends AbstractController
                 }
 
                 #------------------------------
-                # per-person and per-org fields
-                #------------------------------
-                $new_field_manager = $this->container->getCustomFieldManager();
-                $new_custom_fields = $new_field_manager->createFormForOwner($ticket, $ticket->person, $layout, array('allow_edit' => true));
-                if ($org = $ticket->person->organization) {
-                    $new_field_manager->merge($new_custom_fields, $new_field_manager->createFormForOwner(
-                        $ticket, $org, $layout, array('allow_edit' => true)
-                    ));
-                }
-                $new_custom_fields->handleRequest($this->request);
-                if ($new_custom_fields->isValid()) {
-                    $new_field_manager->flush($new_custom_fields);
-                }
-
-                #------------------------------
                 # Labels
                 #------------------------------
 
                 $labels = $this->in->getCleanValue('labels');
-                $ticket->getLabelManager()->setLabelsArray($labels);
+                $ticket->getLabelManager()->addLabels(explode(',', $labels));
                 $this->em->flush();
 
                 #------------------------------
@@ -4331,7 +4316,11 @@ class TicketController extends AbstractController
                 ));
             } catch (\Exception $e) {
                 $this->db->rollback();
-                throw $e;
+
+                return $this->createJsonResponse(array(
+                    'error'   => true,
+                    'message' => $e->getMessage(),
+                ), 400);
             }
 
             return $this->createJsonResponse(array(

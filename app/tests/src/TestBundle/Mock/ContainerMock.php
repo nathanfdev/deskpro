@@ -68,7 +68,7 @@ class ContainerMock
 
     public function withNullEm()
     {
-        $em = m::mock('Application\\DeskPRO\\ORM\\EntityManager');
+        $em = m::mock('Doctrine\\ORM\\EntityManager');
         $em->shouldIgnoreMissing();
         $this->mock->shouldReceive('getEm')->andReturn($em);
         $this->mock->shouldReceive('getOrm')->andReturn($em);
@@ -101,7 +101,7 @@ class ContainerMock
             $repos = m::mock();
             $repos->shouldReceive('getCategories')->andReturn($cats);
 
-            $em = m::mock('Application\\DeskPRO\\ORM\\EntityManager');
+            $em = m::mock('Doctrine\\ORM\\EntityManager');
             $em->shouldIgnoreMissing();
             $em->shouldReceive('getRepository')->andReturn($repos);
 
@@ -128,7 +128,7 @@ class ContainerMock
             $repos = m::mock();
             $repos->shouldReceive('getTicketDepartments')->andReturn($cats);
 
-            $em = m::mock('Application\\DeskPRO\\ORM\\EntityManager');
+            $em = m::mock('Doctrine\\ORM\\EntityManager');
             $em->shouldIgnoreMissing();
             $em->shouldReceive('getRepository')->andReturn($repos);
 
@@ -155,7 +155,7 @@ class ContainerMock
             $repos->shouldReceive('findAll')->andReturn($cats);
             $repos->shouldReceive('getAll')->andReturn($cats);
 
-            $em = m::mock('Application\\DeskPRO\\ORM\\EntityManager');
+            $em = m::mock('Doctrine\\ORM\\EntityManager');
             $em->shouldIgnoreMissing();
             $em->shouldReceive('getRepository')->andReturn($repos);
 
@@ -182,7 +182,7 @@ class ContainerMock
             $repos->shouldReceive('findAll')->andReturn($cats);
             $repos->shouldReceive('getAll')->andReturn($cats);
 
-            $em = m::mock('Application\\DeskPRO\\ORM\\EntityManager');
+            $em = m::mock('Doctrine\\ORM\\EntityManager');
             $em->shouldIgnoreMissing();
             $em->shouldReceive('getRepository')->andReturn($repos);
 
@@ -209,7 +209,7 @@ class ContainerMock
             $repos->shouldReceive('findAll')->andReturn($cats);
             $repos->shouldReceive('getAll')->andReturn($cats);
 
-            $em = m::mock('Application\\DeskPRO\\ORM\\EntityManager');
+            $em = m::mock('Doctrine\\ORM\\EntityManager');
             $em->shouldIgnoreMissing();
             $em->shouldReceive('getRepository')->andReturn($repos);
 

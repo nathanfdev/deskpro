@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\EmailBundle\EntityRepository;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -59,5 +60,53 @@ class SendmailSourceRepository extends AbstractEntityRepository
         $query->orderBy('ss.date_created', 'DESC');
 
         return $query->getQuery()->getOneOrNullResult();
+    }
+
+    /**
+     * @param \DateTime      $start
+     * @param \DateTime|null $end
+     *
+     * @return int
+     */
+    public function countSendingBetween(\DateTime $start, \DateTime $end = null, array $in_accounts = null)
+    {
+        if (!$end) {
+            $end = new \DateTime();
+        }
+
+        if ($in_accounts) {
+            return $this->getEntityManager()->getConnection()->fetchColumn("
+                SELECT COUNT(*)
+                FROM sendmail_sources
+                WHERE
+                  status IN ('complete', 'pending', 'processing', 'retry')
+                  AND date_created > ?
+                  AND date_status BETWEEN ? AND ?
+            ", array(
+                $start->format('Y-m-d H:i:s'),
+                $start->format('Y-m-d H:i:s'),
+                $end->format('Y-m-d H:i:s'),
+            ));
+        } else {
+            $in_accounts = array_map('intval', $in_accounts);
+            if (!$in_accounts) {
+                $in_accounts = array(0);
+            }
+            $in_accounts = implode(',', $in_accounts);
+
+            return $this->getEntityManager()->getConnection()->fetchColumn("
+                SELECT COUNT(*)
+                FROM sendmail_sources
+                WHERE
+                  status IN ('complete', 'pending', 'processing', 'retry')
+                  AND date_created > ?
+                  AND date_status BETWEEN ? AND ?
+                  AND account_id IN ($in_accounts)
+            ", array(
+                $start->format('Y-m-d H:i:s'),
+                $start->format('Y-m-d H:i:s'),
+                $end->format('Y-m-d H:i:s'),
+            ));
+        }
     }
 }

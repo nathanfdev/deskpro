@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Banning;
 
 use Application\DeskPRO\Entity\BanEmail;
@@ -37,7 +38,7 @@ use Doctrine\ORM\EntityManager;
 class EmailBans
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 

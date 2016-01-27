@@ -31,6 +31,7 @@
  *
  * @category HttpFoundation
  */
+
 namespace Application\DeskPRO\HttpFoundation;
 
 use Application\DeskPRO\App;
@@ -272,6 +273,13 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 
         if (defined('DP_INTERFACE')) {
             $this->set('dp_interface', DP_INTERFACE);
+        }
+
+        $person = $this->getPerson();
+        if ($person) {
+            App::setCurrentPerson($person);
+        } else {
+            App::setCurrentPerson(null);
         }
 
         $me = $this;

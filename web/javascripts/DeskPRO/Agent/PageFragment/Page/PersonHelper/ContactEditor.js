@@ -138,6 +138,10 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 				$('.with-some', rowTypeEl).hide();
 				$('.with-none', rowTypeEl).show();
 			}
+
+			if (rowTypeEl.hasClass('email') && $('li', rowTypeEl).length === 1) {
+				$('.remove', rowTypeEl).hide();
+			}
 		};
 
 		function doRemove(row, rowTypeEl) {

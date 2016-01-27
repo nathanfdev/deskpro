@@ -2,7 +2,7 @@
 	"package_name": "deskpro_us_google_plus",
 	"is_native": true,
 	"title": "Google+ Sign-In",
-	"description": "Allows users/agents to log in using Google accounts. This is the recommended Google authentication app.",
+	"description": "Allows users/agents to log in using Google accounts.",
 	"tags": ["usersources"],
 	"api_version": 1,
 	"version": 1,

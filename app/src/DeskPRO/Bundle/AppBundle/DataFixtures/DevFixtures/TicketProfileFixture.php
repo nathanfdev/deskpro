@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -88,7 +89,7 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
     private $db;
 
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     private $em;
 

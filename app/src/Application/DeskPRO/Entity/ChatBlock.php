@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -42,6 +43,11 @@ class ChatBlock extends \Application\DeskPRO\Domain\DomainObject
      * @var int
      */
     protected $id = null;
+
+    /**
+     * @var string|null
+     */
+    protected $visitor_id = null;
 
     /**
      * @var string
@@ -79,6 +85,17 @@ class ChatBlock extends \Application\DeskPRO\Domain\DomainObject
         ));
 
         $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'visitor_id',
+                'type'       => 'string',
+                'length'     => 120,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'visitor_id',
+            )
+        );
         $metadata->mapField(array('fieldName' => 'ip_address', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ip_address'));
         $metadata->mapField(array('fieldName' => 'reason', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'reason'));
         $metadata->mapField(array('fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));

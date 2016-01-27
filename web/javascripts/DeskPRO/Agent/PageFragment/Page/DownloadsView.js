@@ -183,6 +183,12 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		}
 	},
 
+	replaceLinks: function() {
+		$('.download-content-wrap a', this.wrapper).each(function(){
+			$(this).attr('target', '_blank');
+		});
+	},
+
 	handleUnloadRevisions: function(revision_id) {
 		if (!revision_id) {
 			return;
@@ -560,6 +566,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		this.getEl('save_btn').hide();
 		this.getEl('cancel_btn').hide();
 		this.updateUi();
+		this.replaceLinks();
 	},
 
 	//#################################################################

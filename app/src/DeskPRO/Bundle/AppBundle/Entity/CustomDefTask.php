@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AppInstance;
@@ -59,7 +60,7 @@ class CustomDefTask implements EntityInterface, NotifyPropertyChanged
     /**
      * @var AppInstance
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\AppInstance")
-     * @ORM\JoinColumn(name="app_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="app_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $app;
 

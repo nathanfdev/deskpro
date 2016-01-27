@@ -15,9 +15,9 @@ require_once __DIR__.'/../sys/KernelBooter.php';
 require_once __DIR__.'/../sys/Kernel/PortalKernel.php';
 
 
-		KernelBooter::bootstrapConfig();
-		KernelBooter::bootstrapLib(true);
-		KernelBooter::bootstrapEnv();
+KernelBooter::bootstrapConfig();
+KernelBooter::bootstrapLib(true);
+KernelBooter::bootstrapEnv();
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;

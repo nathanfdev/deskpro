@@ -31,6 +31,7 @@
  *
  * @category EmailGateway
  */
+
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\App;
@@ -107,14 +108,23 @@ class ProcessAgentFwd extends ProcessAbstract
         $email_info['subject'] = $this->reader->getSubject()->subject;
         if ($email_info['body'] = $this->ticket_email->email_body_text) {
             $email_info['body_is_html'] = false;
+            $from_html                  = false;
         } else {
             $email_info['body']         = $this->ticket_email->email_body_html;
             $email_info['body_is_html'] = false;
             $email_info['body']         = Strings::html2Text($email_info['body']);
+            $from_html                  = true;
         }
 
         $cutter     = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
         $fwd_cutter = new ForwardCutter($email_info['body'], $email_info['body_is_html'], $cutter);
+
+        // Cutter failed on text part,
+        // try again on HTML we manually convert to text (sometimes works!)
+        if (!$fwd_cutter->isValid() && !$from_html) {
+            $email_info['body'] = \Orb\Util\Strings::html2Text($this->ticket_email->email_body_html);
+            $fwd_cutter         = new \Application\DeskPRO\EmailGateway\Cutter\ForwardCutter($email_info['body'], $email_info['body_is_html'], $cutter);
+        }
 
         if (!$fwd_cutter->isValid()) {
             $this->logMessage('[TicketGatewayProcessor] Invalid forward');

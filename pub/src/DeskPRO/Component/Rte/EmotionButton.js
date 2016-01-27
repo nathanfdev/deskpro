@@ -4,7 +4,7 @@ import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import Simple from 'DeskPRO/Component/Positioned/Simple';
 import * as Emotions from './Emotions';
 
-export default class EmotionButton extends React.Component {
+export class EmotionButton extends React.Component {
 
   static propTypes = {
     getEditor: PropTypes.func,

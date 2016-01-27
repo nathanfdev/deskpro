@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -105,7 +106,6 @@ class UsergroupDataService extends BaseRepositoryService
             FROM DeskPRO:Usergroup ug INDEX BY ug.id
             ORDER BY ug.id ASC
         ')->execute();
-        $this->em->getUnitOfWork()->markAsPreloaded('DeskPRO:Usergroup');
 
         foreach ($this->ugs as $ug) {
             $this->ug_ids[] = $ug->getId();

@@ -139,7 +139,6 @@ class Brand extends DomainObject
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
-        /** @var \Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder $builder */
         $builder = new ClassMetadataBuilder($metadata);
         $builder->setCustomRepositoryClass('Application\DeskPRO\EntityRepository\Brand');
         $builder->setChangeTrackingPolicyNotify();
@@ -149,6 +148,6 @@ class Brand extends DomainObject
         $builder->mapString('name');
         $builder->createOneToOne('theme_set', 'DeskPRO\Bundle\AppBundle\Entity\ThemeSet')->cascadePersist()->build();
         $builder->createOneToOne('edit_theme_set', 'DeskPRO\Bundle\AppBundle\Entity\ThemeSet')->build();
-        $builder->addOwningOneToOne('logo_blob', 'Application\DeskPRO\Entity\Blob');
+        $builder->createOneToOne('logo_blob', 'Application\DeskPRO\Entity\Blob')->addJoinColumn('logo_blob_id', 'id', true, false, 'cascade');
     }
 }

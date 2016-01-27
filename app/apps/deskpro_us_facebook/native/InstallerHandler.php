@@ -31,12 +31,13 @@
  *
  * @category Entities
  */
+
 namespace deskpro_us_facebook;
 
 use Application\DeskPRO\App\Native\InstallerHandler\AbstractUsersourceInstallerHandler;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\Usersource;
-use Application\DeskPRO\ORM\EntityManager;
+use Doctrine\ORM\EntityManager;
 
 class InstallerHandler extends AbstractUsersourceInstallerHandler
 {
@@ -46,8 +47,8 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
     protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
     {
         $us->options = array(
-            'app_key'    => $app->getSetting('app_key'),
-            'app_secret' => $app->getSetting('app_secret'),
+            'app_key'         => $app->getSetting('app_key'),
+            'app_secret'      => $app->getSetting('app_secret'),
             'raw_info_filter' => $app->getSetting('raw_info_filter') ?: null,
         );
         $us->lost_password_url = $app->getSetting('lost_pwd_url') ?: '';

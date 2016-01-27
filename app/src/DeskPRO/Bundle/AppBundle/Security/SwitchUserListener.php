@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Security;
 
 use Psr\Log\LoggerInterface;
@@ -36,6 +37,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
@@ -63,7 +65,7 @@ class SwitchUserListener implements ListenerInterface
     /**
      * @var SecurityContextInterface
      */
-    private $security_context;
+    private $token_storage;
 
     /**
      * @var UserProviderInterface
@@ -111,9 +113,9 @@ class SwitchUserListener implements ListenerInterface
     private $use_override_uri = false;
 
     /**
-     * @param SecurityContextInterface $security_context
-     * @param UserProviderInterface    $provider
-     * @param UserCheckerInterface     $user_checker
+     * @param TokenStorageInterface $token_storage
+     * @param UserProviderInterface $provider
+     * @param UserCheckerInterface  $user_checker
      * @param $provider_key
      * @param AccessDecisionManagerInterface $access_decision_manager
      * @param LoggerInterface|null           $logger
@@ -122,7 +124,7 @@ class SwitchUserListener implements ListenerInterface
      * @param EventDispatcherInterface|null  $dispatcher
      */
     public function __construct(
-        SecurityContextInterface $security_context,
+        TokenStorageInterface $token_storage,
         UserProviderInterface $provider,
         UserCheckerInterface $user_checker,
         $provider_key,
@@ -136,7 +138,7 @@ class SwitchUserListener implements ListenerInterface
             throw new \InvalidArgumentException('$provider_key must not be empty.');
         }
 
-        $this->security_context        = $security_context;
+        $this->token_storage           = $token_storage;
         $this->provider                = $provider;
         $this->user_checker            = $user_checker;
         $this->provider_key            = $provider_key;
@@ -164,11 +166,11 @@ class SwitchUserListener implements ListenerInterface
 
         if ('_exit' === $request->get($this->username_parameter)) {
             if ($original_token = $this->attemptExitUser($request)) {
-                $this->security_context->setToken($original_token);
+                $this->token_storage->setToken($original_token);
             }
         } else {
             try {
-                $this->security_context->setToken($this->attemptSwitchUser($request));
+                $this->token_storage->setToken($this->attemptSwitchUser($request));
             } catch (AuthenticationException $e) {
                 throw new \LogicException(sprintf('Switch User failed: "%s"', $e->getMessage()));
             }
@@ -206,7 +208,7 @@ class SwitchUserListener implements ListenerInterface
      */
     private function attemptSwitchUser(Request $request)
     {
-        $token          = $this->security_context->getToken();
+        $token          = $this->token_storage->getToken();
         $original_token = $this->getOriginalToken($token);
 
         if (false !== $original_token) {
@@ -234,7 +236,7 @@ class SwitchUserListener implements ListenerInterface
         $user = $this->provider->loadUserByUsername($username);
 
         if (!$user) {
-            $back_token = $original_token ?: $this->security_context->getToken();
+            $back_token = $original_token ?: $this->token_storage->getToken();
 
             return new UsernamePasswordToken(
                 'anon', 'anon', $this->provider_key, [new SwitchUserRole('ROLE_PREVIOUS_ADMIN', $back_token)]);
@@ -248,7 +250,7 @@ class SwitchUserListener implements ListenerInterface
         if ($original_token) {
             $roles[] = new SwitchUserRole('ROLE_PREVIOUS_ADMIN', $original_token);
         } else {
-            $roles[] = new SwitchUserRole('ROLE_PREVIOUS_ADMIN', $this->security_context->getToken());
+            $roles[] = new SwitchUserRole('ROLE_PREVIOUS_ADMIN', $this->token_storage->getToken());
         }
 
         $token = new UsernamePasswordToken($user, $user->getPassword(), $this->provider_key, $roles);
@@ -270,7 +272,7 @@ class SwitchUserListener implements ListenerInterface
      */
     private function attemptExitUser(Request $request)
     {
-        $original = $this->getOriginalToken($this->security_context->getToken());
+        $original = $this->getOriginalToken($this->token_storage->getToken());
 
         if (null !== $this->dispatcher && $original) {
             $switchEvent = new SwitchUserEvent($request, $original->getUser());

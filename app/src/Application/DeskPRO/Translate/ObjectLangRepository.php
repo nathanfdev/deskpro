@@ -29,16 +29,17 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Translate;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ObjectLang;
-use Application\DeskPRO\ORM\EntityManager;
+use Doctrine\ORM\EntityManager;
 
 class ObjectLangRepository
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 

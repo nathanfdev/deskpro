@@ -40,6 +40,15 @@ use Orb\Util\Strings;
 class PasswordPolicyValidator
 {
     /**
+     * Magic value used when we want to mark the password as expired
+     * right away (e.g., an admin-set password).
+     *
+     * This will cause a expired to trigger even if the policy
+     * doesnt have a password expiry.
+     */
+    const MAGIC_PASSWORD_EXPIRED_TRIGGER_DATE = '1995-01-23 12:34:55';
+
+    /**
      * @var \Application\DeskPRO\Settings\PasswordPolicy
      */
     private $user_policy;
@@ -143,6 +152,11 @@ class PasswordPolicyValidator
     {
         if (!$person->date_password_set) {
             return false;
+        }
+
+        // Matches special expired date
+        if ($person->date_password_set->format('Y-m-d H:i:s') === self::MAGIC_PASSWORD_EXPIRED_TRIGGER_DATE) {
+            return true;
         }
 
         if ($person->is_agent) {

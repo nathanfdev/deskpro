@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -326,6 +327,38 @@ BODY;
         if ($num) {
             App::getOrm()->flush();
             $this->logStatus("Cleaned up $num old exports");
+        }
+
+        #------------------------------
+        # Truncate tables approaching max INT size
+        #------------------------------
+
+        // - These tables are continuously filled + cleaned up
+        // but the IDs arent recycled.
+        // - On very big helpdesks they might overflow INT,
+        // so we're just clearing them.
+        // - Ideally we just use bigint but we might be using PHP
+        // treating these as ints, so that'd screw up with bigints on 32b (i.e. $bigint + 1 wouldnt work)
+
+        $db = App::getDb();
+
+        $tables = array(
+            'agent_alerts',
+            'client_messages',
+            'visitors',
+            'visitor_tracks',
+        );
+
+        $threshold = 2145000000;
+        foreach ($tables as $t) {
+            $table_max_id = $db->fetchColumn("SELECT id FROM $t ORDER BY id DESC LIMIT 1");
+            if ($table_max_id && $table_max_id >= $threshold) {
+                $this->logStatus("Truncating big table $t which has $table_max_id records");
+                $db->executeUpdate("DELETE FROM `$t`");
+                $db->executeUpdate('SET FOREIGN_KEY_CHECKS = 0');
+                $db->executeUpdate("TRUNCATE TABLE `$t`");
+                $db->executeUpdate('SET FOREIGN_KEY_CHECKS = 1');
+            }
         }
     }
 }

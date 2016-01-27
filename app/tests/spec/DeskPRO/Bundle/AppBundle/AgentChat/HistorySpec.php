@@ -29,10 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\AgentChat;
 
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\AgentChat\History;
 use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
 use DeskPRO\Bundle\AppBundle\AgentChat\Search\Doctrine as DoctrineSearcher;
@@ -41,6 +41,7 @@ use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChat as AgentChatRepo;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChatParticipant as AgentChatParticipantRepo;
+use Doctrine\ORM\EntityManager;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 

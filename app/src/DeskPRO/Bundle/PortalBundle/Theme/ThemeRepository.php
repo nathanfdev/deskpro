@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Theme;
 
 use DeskPRO\Bundle\PortalBundle\Annotation\Tag as TagAnnotation;
@@ -36,7 +37,7 @@ use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
 use DeskPRO\Bundle\PortalBundle\Themes\Base\BaseTheme;
 use DeskPRO\Bundle\PortalBundle\Themes\Sidebar\SidebarTheme;
 use DeskPRO\Bundle\PortalBundle\Themes\Standard\StandardTheme;
-use Doctrine\Common\Annotations\FileCacheReader;
+use Doctrine\Common\Annotations\Reader;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -63,11 +64,11 @@ class ThemeRepository
     private $logger;
 
     /**
-     * @var FileCacheReader
+     * @var Reader
      */
     private $reader;
 
-    public function __construct(ConfigCache $config_cache, FileCacheReader $reader, LoggerInterface $logger)
+    public function __construct(ConfigCache $config_cache, Reader $reader, LoggerInterface $logger)
     {
         $this->config_cache = $config_cache;
         $this->logger       = $logger;

@@ -33,6 +33,7 @@
  *
  * @copyright Copyright (c) 2011 DeskPRO (http://www.deskpro.com/)
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -139,8 +140,9 @@ class ArticleSlugHistory extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
         $metadata->mapField(array('fieldName' => 'slug', 'type' => 'string', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'slug', 'unique' => true));
         $metadata->mapManyToOne(array(
-            'fieldName' => 'article', 'targetEntity' => 'Application\DeskPRO\Entity\Article',
-            'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'inversedBy' => 'slug_history',
+            'fieldName'   => 'article', 'targetEntity' => 'Application\DeskPRO\Entity\Article',
+            'cascade'     => array('remove', 'persist', 'merge'), 'inversedBy' => 'slug_history',
+            'joinColumns' => array(array('name' => 'article_id', 'referencedColumnName' => 'id', 'onDelete' => 'cascade', 'nullable' => false)),
         ));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }

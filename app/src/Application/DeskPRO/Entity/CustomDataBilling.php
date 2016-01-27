@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -104,7 +105,6 @@ class CustomDataBilling extends CustomDataAbstract
             array(
                 'name'    => 'custom_data_billing',
                 'indexes' => array(
-                    'obj_id_idx'   => array('columns' => array('ticket_charge_id')),
                     'field_id_idx' => array('columns' => array('field_id', 'ticket_charge_id')),
                 ),
             )

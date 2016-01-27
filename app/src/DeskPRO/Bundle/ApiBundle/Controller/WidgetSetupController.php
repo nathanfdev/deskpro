@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\DataStore;
@@ -52,7 +53,8 @@ class WidgetSetupController extends BaseController
      */
     public function getWidgetSetupAction()
     {
-        $asset_package = $this->container->get('templating.asset.package.app_assets.http');
+        /** @var \Symfony\Component\Asset\Packages $asset_package */
+        $asset_package = $this->container->get('assets.packages');
         $base_router   = $this->container->get('router');
 
         $settings_resolver = $this->container->get('settings_resolver');
@@ -68,8 +70,8 @@ class WidgetSetupController extends BaseController
         return new View([
             'data' => [
                 'url' => [
-                    'widget_loader' => $asset_package->getUrl('widget_loader.js'),
-                    'widget_bundle' => $asset_package->getUrl('DeskPRO_WidgetBundle.js'),
+                    'widget_loader' => $asset_package->getUrl('widget_loader.js', 'app_assets'),
+                    'widget_bundle' => $asset_package->getUrl('DeskPRO_WidgetBundle.js', 'app_assets'),
                     'helpdesk'      => $base_router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL),
                 ],
                 'company' => [

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -114,7 +115,7 @@ class ArticlePublishState extends AbstractJob
             if ($article['end_action'] == Article::END_ACTION_ARCHIVE) {
                 $article['status_code'] = Article::STATUS_ARCHIVED;
             } else {
-                $article['status_code'] = Article::STATUS_HIDDEN.'.'.Article::HIDDEN_STATUS_DELETED;
+                $article['status_code'] = Article::STATUS_HIDDEN.'.'.Article::HIDDEN_STATUS_UNPUBLISHED;
             }
 
             App::getOrm()->persist($article);

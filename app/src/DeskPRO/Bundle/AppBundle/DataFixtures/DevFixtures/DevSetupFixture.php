@@ -29,19 +29,17 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
-use Application\DeskPRO\DBAL\Connection;
-use Application\DeskPRO\Entity\LabelDef;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * This inserts some default settings so you dont have to waste time going through the welcome wizard
+ * This inserts some default settings so you dont have to waste time going through the welcome wizard.
  */
 class DevSetupFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
 {
@@ -84,13 +82,19 @@ class DevSetupFixture extends AbstractFixture implements ContainerAwareInterface
 
         $db->deleteIn('settings', ['core.done_data_initializer', 'core.deskpro_url', 'core.deskpro_name', 'core.default_timezone', 'core.license', 'core.setup_initial', 'admin_has_loaded'], 'name');
 
+        if (file_exists(DP_WEB_ROOT.'/config/LOCALHOST_URL.txt')) {
+            $url = rtrim(trim(file_get_contents(DP_WEB_ROOT.'/config/LOCALHOST_URL.txt')), '/').'/';
+        } else {
+            $url = 'http://deskpro-dev/';
+        }
+
         $ins = [
             ['name' => 'core.done_data_initializer', 'value' => 1],
             ['name' => 'core.setup_initial',         'value' => 1],
             ['name' => 'admin_has_loaded',           'value' => 1],
             ['name' => 'core.default_timezone',      'value' => 'UTC'],
             ['name' => 'core.deskpro_name',          'value' => 'Helpesk'],
-            ['name' => 'core.deskpro_url',           'value' => 'http://deskpro-dev/'],
+            ['name' => 'core.deskpro_url',           'value' => $url],
             ['name' => 'core.license',               'value' => file_get_contents(DP_WEB_ROOT.'/dev/dev-lic-key.txt')],
         ];
 
@@ -105,11 +109,11 @@ class DevSetupFixture extends AbstractFixture implements ContainerAwareInterface
         $db->batchInsert('settings', $ins);
 
         $db->insert('email_accounts', [
-            'account_type'       => 'outgoing',
-            'incoming_account'   => null,
+            'account_type'       => 'tickets',
+            'incoming_account'   => json_encode(['@CLASS' => 'Application\\DeskPRO\\Email\\EmailAccount\\IncomingAccount\\Pop3Config', '@DATA' => ['host' => 'pop.example.com', 'port' => '110', 'user' => 'dev@deskprodev.com', 'password' => 'bogus']]),
             'outgoing_account'   => json_encode(['@CLASS' => 'Application\\DeskPRO\\Email\\EmailAccount\\OutgoingAccount\\PhpMailConfig', '@DATA' => ['PhpMail' => true]]),
             'is_enabled'         => 1,
-            'address'            => 'deskpro@example.com',
+            'address'            => 'dev@deskprodev.com',
             'other_addresses'    => null,
             'options'            => null,
             'date_created'       => date('Y-m-d H:i:s'),

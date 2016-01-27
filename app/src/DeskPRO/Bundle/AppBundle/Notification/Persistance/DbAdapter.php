@@ -28,9 +28,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification\Persistance;
 
-use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\Entity\Event;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
+use Doctrine\ORM\EntityManager;
 
 class DbAdapter implements PersistanceAdapterInterface
 {

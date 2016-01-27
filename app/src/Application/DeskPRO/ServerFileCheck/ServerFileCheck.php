@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\ServerFileCheck;
 
 use Application\DeskPRO\Distribution\VerifyChecksums;
@@ -37,7 +38,7 @@ use Doctrine\ORM\EntityManager;
 class ServerFileCheck
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 

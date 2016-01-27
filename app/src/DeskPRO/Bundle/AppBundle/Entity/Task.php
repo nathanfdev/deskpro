@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -127,9 +128,7 @@ class Task implements EntityInterface, NotifyPropertyChanged
     /**
      * @var Person
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
-     * @ORM\JoinColumn(name="creator_person_id", referencedColumnName="id")
-     * @Assert\NotNull()
-     * @Assert\Valid()
+     * @ORM\JoinColumn(name="creator_person_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $creator;
 

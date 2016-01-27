@@ -29,13 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Security\Permissions\Portal;
 
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
 use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Given a user (or guest) find out what usergroups they can access.
@@ -63,7 +64,7 @@ class PortalUsergroupDecider
     private $conn;
 
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     private $em;
 

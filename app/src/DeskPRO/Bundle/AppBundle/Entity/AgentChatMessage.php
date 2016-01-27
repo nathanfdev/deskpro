@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
@@ -72,7 +73,7 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
     /**
      * @var Person
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $person;
 

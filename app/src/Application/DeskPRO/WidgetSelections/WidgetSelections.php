@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WidgetSelections;
 
 use Application\DeskPRO\App;
@@ -38,7 +39,7 @@ use Doctrine\ORM\EntityManager;
 class WidgetSelections
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 

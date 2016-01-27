@@ -1,6 +1,6 @@
 import React from "react"
 import _ from "lodash"
-import PortalUrlGenerator from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator";
+import { portalUrlGenerator } from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator";
 
 export default class LoginUsersources extends React.Component {
   render() {
@@ -16,7 +16,7 @@ export default class LoginUsersources extends React.Component {
           return (
             <div key={us.id}>
                 <a
-                  href={PortalUrlGenerator.path('/login/authenticate/' + us.id)}
+                  href={portalUrlGenerator.path('/login/authenticate/' + us.id)}
                   className={us.classes.join(' ')}>
                   { us.icon ? (<i className={us.icon}></i>) : null }
                   <span> {us.text}</span>

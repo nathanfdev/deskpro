@@ -787,7 +787,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
                 'type'       => 'datetime',
                 'precision'  => 0,
                 'scale'      => 0,
-                'nullable'   => false,
+                'nullable'   => true,
                 'columnName' => 'date_updated',
             )
         );

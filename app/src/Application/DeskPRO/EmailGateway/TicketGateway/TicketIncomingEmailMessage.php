@@ -31,6 +31,7 @@
  *
  * @category EmailGateway
  */
+
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\App;
@@ -111,6 +112,11 @@ class TicketIncomingEmailMessage
      * @var bool
      */
     public $agent_reply_as_note = true;
+
+    /**
+     * @var bool
+     */
+    public $agent_reply_mode_foundflag = false;
 
     /**
      * @param                     $mode
@@ -271,13 +277,13 @@ class TicketIncomingEmailMessage
                 $this->charset_error = $reader->getBodyText()->getOriginalCharset();
             }
 
+            $body_raw = @htmlspecialchars($txt, \ENT_QUOTES, 'UTF-8');
+
             if (strlen($txt) > 25000) {
                 $this->logMessage('[TicketIncomingEmailMessage] Message too long, trimming');
                 $did_html_trim = true;
                 $txt           = substr($txt, 0, 25000);
             }
-
-            $body_raw = @htmlspecialchars($txt, \ENT_QUOTES, 'UTF-8');
 
             $has_text_cut      = true;
             $this->body_raw    = $txt;
@@ -485,26 +491,54 @@ class TicketIncomingEmailMessage
             $this->body_full = Strings::text2html($ticket_email->email_body_text, 'plaintext-email');
         }
 
-        $pos_as_note  = strpos($this->body_raw, 'DP_NEWMSG_AS_NOTE');
-        $pos_as_reply = strpos($this->body_raw, 'DP_NEWMSG_AS_REPLY');
+        $pos_as_note  = false;
+        $pos_as_reply = false;
+
+        foreach (array($ticket_email->email_body_html, $ticket_email->email_body_text, $body_raw) as $haystack) {
+            $pos_as_note  = strpos($haystack, 'DP_NEWMSG_AS_NOTE');
+            $pos_as_reply = strpos($haystack, 'DP_NEWMSG_AS_REPLY');
+
+            if ($pos_as_note !== false || $pos_as_reply !== false) {
+                break;
+            }
+        }
 
         if ($pos_as_note) {
             $this->logMessage("Found DP_NEWMSG_AS_NOTE flag at $pos_as_note");
         } else {
-            $pos_as_note = 9999999;
+            $this->logMessage('Did NOT find DP_NEWMSG_AS_NOTE flag');
+            $pos_as_note = 0;
         }
         if ($pos_as_reply) {
-            $this->logMessage("Found DP_NEWMSG_AS_REPLY flag at $pos_as_note");
+            $this->logMessage("Found DP_NEWMSG_AS_REPLY flag at $pos_as_reply");
         } else {
-            $pos_as_reply = 9999999;
+            $this->logMessage('Did NOT find DP_NEWMSG_AS_REPLY flag');
+            $pos_as_reply = 0;
         }
 
-        if ($pos_as_reply < $pos_as_note) {
-            $this->logMessage('agent_reply_as_note = false -- acting as reply');
-            $this->agent_reply_as_note = false;
+        if ($pos_as_note === 0 && $pos_as_reply === 0) {
+            $this->logMessage('Did not find either note nor reply flag.');
+            // Setting note mode here, but later in process this is overriden and
+            // the actual value used is based the admin setting
+            $this->agent_reply_as_note        = true;
+            $this->agent_reply_mode_foundflag = false;
         } else {
-            $this->logMessage('agent_reply_as_note = true -- acting as note');
-            $this->agent_reply_as_note = true;
+            if (!$pos_as_note) {
+                $pos_as_note = 999999999;
+            }
+            if (!$pos_as_reply) {
+                $pos_as_reply = 999999999;
+            }
+
+            if ($pos_as_reply < $pos_as_note) {
+                $this->logMessage('agent_reply_as_note = false -- acting as reply');
+                $this->agent_reply_as_note        = false;
+                $this->agent_reply_mode_foundflag = true;
+            } else {
+                $this->logMessage('agent_reply_as_note = true -- acting as note');
+                $this->agent_reply_as_note        = true;
+                $this->agent_reply_mode_foundflag = true;
+            }
         }
     }
 

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use DeskPRO\Bundle\AppBundle\HttpKernel\DpKernelEvents;
@@ -68,7 +69,9 @@ class PreflightChecksListener implements EventSubscriberInterface
 
         // Missing PDO
         if (!deskpro_install_check_pdo_mysql()) {
-            $event->setResponse(new RedirectResponse($request->getBasePath().'/index.php/install/'));
+            $r = new RedirectResponse($request->getBasePath().'/index.php/install/');
+            $r->headers->set('X-DeskPRO-InstallRedirectReason', 'Missing PDO ext');
+            $event->setResponse($r);
             $event->stopPropagation();
 
             return;
@@ -83,7 +86,9 @@ class PreflightChecksListener implements EventSubscriberInterface
                 // This will show an error page if already installed, so the redirect to install wont happen
                 deskpro_handle_boot_db_exception($e);
 
-                $event->setResponse(new RedirectResponse($request->getBasePath().'/index.php/install/'));
+                $r = new RedirectResponse($request->getBasePath().'/index.php/install/');
+                $r->headers->set('X-DeskPRO-InstallRedirectReason', 'Database error: '.$e->getMessage().' -- '.$e->getCode());
+                $event->setResponse($r);
                 $event->stopPropagation();
 
                 return;
@@ -94,7 +99,9 @@ class PreflightChecksListener implements EventSubscriberInterface
 
         // Not installed yet
         if (!$settings->get('core.install_build')) {
-            $event->setResponse(new RedirectResponse($request->getBasePath().'/index.php/install/'));
+            $r = new RedirectResponse($request->getBasePath().'/index.php/install/');
+            $r->headers->set('X-DeskPRO-InstallRedirectReason', 'Missing build number');
+            $event->setResponse($r);
             $event->stopPropagation();
 
             return;

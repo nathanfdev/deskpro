@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\UserRules;
 
 use Application\DeskPRO\App;
@@ -38,7 +39,7 @@ use Doctrine\ORM\EntityManager;
 class UserRules
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var EntityManager
      */
     protected $em;
 

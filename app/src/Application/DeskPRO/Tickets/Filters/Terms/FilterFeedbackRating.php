@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Filters\Terms;
 
 use Application\DeskPRO\Exception\NotImplementedException;
@@ -50,6 +51,8 @@ class FilterFeedbackRating extends AbstractFilterTerm
     protected function getOptionsDef()
     {
         $options = new CheckedOptionsArray();
+
+        $options->addValidNames('rating');
 
         return $options;
     }

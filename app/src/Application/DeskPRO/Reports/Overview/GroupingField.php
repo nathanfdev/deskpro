@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Reports\Overview;
 
 use Application\DeskPRO\App;
@@ -77,7 +78,40 @@ class GroupingField
             list($field, $field_id) = explode('.', $field);
             $this->field            = $field;
             $this->field_id         = $field_id;
+
+            // grouping field is a custom field
+            // we need to check that it exists.
+            // ideally we'd throw here, but as backwards compat
+            // we will just fallback
+            switch ($this->field) {
+                case self::TICKET_FIELD:
+                    $fm = App::getSystemService('ticket_fields_manager');
+                    break;
+                case self::USER_FIELD:
+                    $fm = App::getSystemService('person_fields_manager');
+                    break;
+                default:
+                    $fm = null;
+            }
+
+            if ($fm) {
+                $f = $fm->getFieldFromId($this->field_id);
+                if (!$f) {
+                    $this->field    = $this->getDefaultField();
+                    $this->field_id = null;
+                }
+            }
         }
+    }
+
+    /**
+     * Used as the default if the specified field is invalid.
+     *
+     * @return string
+     */
+    protected function getDefaultField()
+    {
+        return self::DEPARTMENT;
     }
 
     public function getFieldInfo()

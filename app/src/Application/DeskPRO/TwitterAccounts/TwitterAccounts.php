@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\TwitterAccounts;
 
 use Application\DeskPRO\Entity\TwitterAccount;
@@ -37,7 +38,7 @@ use Doctrine\ORM\EntityManager;
 class TwitterAccounts
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 

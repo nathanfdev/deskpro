@@ -29,10 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\AgentChat;
 
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\HistorySearcher;
 use DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
@@ -40,6 +40,7 @@ use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChat as AgentChatRepository;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChatMessage as AgentChatMessageRepository;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChatParticipant as AgentChatParticipantRepository;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Class History.

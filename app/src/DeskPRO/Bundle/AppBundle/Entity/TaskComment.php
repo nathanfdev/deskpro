@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
@@ -64,7 +65,7 @@ class TaskComment implements EntityInterface, NotifyPropertyChanged
     /**
      * @var Person
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotNull
      * @Assert\Valid()
      */
@@ -87,7 +88,7 @@ class TaskComment implements EntityInterface, NotifyPropertyChanged
     /**
      * @var Task
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
-     * @ORM\JoinColumn(name="task_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="task_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotNull
      * @Assert\Valid()
      */

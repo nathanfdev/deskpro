@@ -33,7 +33,6 @@
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\ORM\EntityManager;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
@@ -43,6 +42,7 @@ use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use DeskPRO\Bundle\PortalBundle\Form\FormFields;
 use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTable;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class TicketTableDataService extends AbstractDataService

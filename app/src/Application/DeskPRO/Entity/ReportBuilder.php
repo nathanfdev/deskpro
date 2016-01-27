@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -270,7 +271,7 @@ class ReportBuilder extends DomainObject
      */
     public function isEditable()
     {
-        return ($this->is_custom || App::getConfig('debug.dev'));
+        return $this->is_custom || App::getConfig('debug.dev');
     }
 
     /**
@@ -294,7 +295,7 @@ class ReportBuilder extends DomainObject
         $query     = preg_replace('/\s/', '', $query);
         $thisQuery = preg_replace('/\s/', '', $this->query);
 
-        return ($query != $thisQuery);
+        return $query != $thisQuery;
     }
 
     /**
@@ -326,10 +327,7 @@ class ReportBuilder extends DomainObject
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ReportBuilder';
         $metadata->setPrimaryTable(
             array(
-                 'name'    => 'report_builder',
-                 'indexes' => array(
-                     'parent_id_idx' => array('columns' => array('parent_id')),
-                 ),
+                 'name'              => 'report_builder',
                  'uniqueConstraints' => array(
                      'unique_key_idx' => array('columns' => array('unique_key')),
                  ),

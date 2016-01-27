@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\QuickSearch;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -63,7 +64,7 @@ class QuickSearchContext
     private $ids;
 
     /**
-     * @var array
+     * @var ArrayCollection
      */
     private $entities;
 

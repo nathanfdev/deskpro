@@ -50,6 +50,6 @@ return array(
     'adm.ticket_triggers.emailacc_trigger_title'            => 'Email Account Trigger',
     'adm.ticket_triggers.emailacc_trigger_description'      => 'This is a email account trigger. It will apply when a new ticket is created by emailing this email address.',
     'adm.ticket_triggers.satisfaction_trigger_title'        => 'Satisfaction Trigger',
-    'adm.ticket_triggers.satisfaction_trigger_description'  => 'Satisfaction Trigger.',
+    'adm.ticket_triggers.satisfaction_trigger_description'  => 'This is a satisfaction trigger. It runs when the user submits the corresponding satisfaction rating.',
 
 );

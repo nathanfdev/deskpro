@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\Filters;
 
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
@@ -222,7 +223,7 @@ class LegacyTermsTransformer
                 return array(
                     'type'    => 'feedback_rating',
                     'op'      => $term->getTermOperator(),
-                    'options' => $term->getTermOptions(),
+                    'options' => array('rating' => $options['rating']),
                 );
 
             case 'FilterUrgency':
@@ -423,13 +424,13 @@ class LegacyTermsTransformer
                 );
 
             case 'FilterTicketField':
-                return $this->filterFieldToLegacyOptions($term);
+                return $this->filterFieldToLegacyOptions($term, 'ticket');
 
             case 'FilterUserField':
-                return $this->filterFieldToLegacyOptions($term);
+                return $this->filterFieldToLegacyOptions($term, 'person');
 
             case 'FilterOrgField':
-                return $this->filterFieldToLegacyOptions($term);
+                return $this->filterFieldToLegacyOptions($term, 'org');
         }
 
         return $legacy_terms;
@@ -825,7 +826,7 @@ class LegacyTermsTransformer
         return $new_opts;
     }
 
-    protected function filterFieldToLegacyOptions($term)
+    protected function filterFieldToLegacyOptions($term, $type)
     {
         /** @var OptionsArray $options */
         $options = $term->getTermOptions();
@@ -833,13 +834,13 @@ class LegacyTermsTransformer
 
         if ($options->has('date1') || $options->has('date2') || $options->has('date1_relative') || $options->has('date2_relative')) {
             return array(
-                'type'    => "ticket_field[{$fid}]",
+                'type'    => "{$type}_field[{$fid}]",
                 'op'      => $term->getTermOperator(),
                 'options' => $options->all(),
             );
         } else {
             return array(
-                'type'    => "ticket_field[{$fid}]",
+                'type'    => "{$type}_field[{$fid}]",
                 'op'      => $term->getTermOperator(),
                 'options' => array(
                     'custom_fields' => array(

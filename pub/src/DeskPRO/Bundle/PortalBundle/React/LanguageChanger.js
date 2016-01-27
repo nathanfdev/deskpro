@@ -1,6 +1,6 @@
 import React from "react"
 import _ from "lodash"
-import PortalUrlGenerator from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator"
+import { portalUrlGenerator } from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator"
 
 class LanguageChoice extends React.Component {
   onClick(e) {
@@ -11,7 +11,7 @@ class LanguageChoice extends React.Component {
     return (
       <li>
         <a onClick={this.onClick.bind(this)}>
-          <img src={PortalUrlGenerator.getFlagPath(this.props.getLangFlag(this.props.langCode))}
+          <img src={portalUrlGenerator.getFlagPath(this.props.getLangFlag(this.props.langCode))}
                alt={this.props.getLangTitle(this.props.langCode)}
             />
           <span className="text">
@@ -44,7 +44,7 @@ export default class LanguageChanger extends React.Component {
     return (
       <div className="language-changer-widget">
         <a href="#" className="button-small button-language">
-          <img src={PortalUrlGenerator.getFlagPath(this.getLangFlag(active_lang_code))} alt=""/>
+          <img src={portalUrlGenerator.getFlagPath(this.getLangFlag(active_lang_code))} alt=""/>
           <span className="text">{this.getLangTitle(active_lang_code)}</span>
           <span className="extra"><i className="fa fa-caret-down"></i></span>
         </a>

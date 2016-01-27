@@ -98,10 +98,11 @@ class TicketSettings
     public $email_require_validation = false;
 
     public $agent_defaults = array(
-        'newticket_status'      => 'awaiting_user',
-        'newticket_agent'       => 'assign',
-        'newticket_team'        => null,
-        'newticket_user_notify' => true,
+        'newticket_status'        => 'awaiting_user',
+        'newticket_agent'         => 'assign',
+        'newticket_team'          => null,
+        'newticket_user_notify'   => true,
+        'newticket_enable_drafts' => true,
 
         'reply_status'                      => 'awaiting_agent',
         'reply_agent_unassigned'            => 'assign',
@@ -160,6 +161,7 @@ class TicketSettings
         $this->agent_defaults['newticket_agent']                   = $this->settings->get('core_tickets.new_assign') ?: null;
         $this->agent_defaults['newticket_team']                    = $this->settings->get('core_tickets.new_assignteam') ?: null;
         $this->agent_defaults['newticket_user_notify']             = (bool) $this->settings->get('core_tickets.new_default_send_user_notify');
+        $this->agent_defaults['newticket_enable_drafts']           = (bool) $this->settings->get('core_tickets.newticket_enable_drafts');
         $this->agent_defaults['reply_status']                      = $this->settings->get('core_tickets.reply_status');
         $this->agent_defaults['reply_agent_unassigned']            = $this->settings->get('core_tickets.reply_assign_unassigned') ?: null;
         $this->agent_defaults['reply_agent_assigned']              = $this->settings->get('core_tickets.reply_assign_assigned') ?: null;
@@ -319,6 +321,7 @@ class TicketSettings
         $this->settings->setSetting('core_tickets.new_assign',                    $this->agent_defaults['newticket_agent']);
         $this->settings->setSetting('core_tickets.new_assignteam',                $this->agent_defaults['newticket_team']);
         $this->settings->setSetting('core_tickets.new_default_send_user_notify',  $this->agent_defaults['newticket_user_notify'] ? 1 : 0);
+        $this->settings->setSetting('core_tickets.newticket_enable_drafts',       $this->agent_defaults['newticket_enable_drafts'] ? 1 : 0);
         $this->settings->setSetting('core_tickets.reply_status',                  $this->agent_defaults['reply_status']);
         $this->settings->setSetting('core_tickets.reply_assign_unassigned',       $this->agent_defaults['reply_agent_unassigned']);
         $this->settings->setSetting('core_tickets.reply_assign_assigned',         $this->agent_defaults['reply_agent_assigned']);

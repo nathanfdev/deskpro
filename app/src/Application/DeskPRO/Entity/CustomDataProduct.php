@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -73,7 +74,6 @@ class CustomDataProduct extends CustomDataAbstract
             array(
                 'name'    => 'custom_data_product',
                 'indexes' => array(
-                    'obj_id_idx'   => array('columns' => array(0 => 'product_id')),
                     'field_id_idx' => array('columns' => array(0 => 'field_id', 1 => 'product_id')),
                 ),
             )

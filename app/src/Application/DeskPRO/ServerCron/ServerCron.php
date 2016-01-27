@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\ServerCron;
 
 use Application\DeskPRO\App;
@@ -39,7 +40,7 @@ use Orb\Util\Dates;
 class ServerCron
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 

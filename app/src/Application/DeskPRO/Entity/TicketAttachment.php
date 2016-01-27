@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -258,15 +259,13 @@ class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
             array(
                 'fieldName'    => 'message',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessage',
-                'mappedBy'     => null,
-                'inversedBy'   => null,
+                'inversedBy'   => 'attachments',
                 'joinColumns'  => array(
-                    0 => array(
+                    array(
                         'name'                 => 'message_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'cascade',
-                        'columnDefinition'     => null,
                     ),
                 ),
             )

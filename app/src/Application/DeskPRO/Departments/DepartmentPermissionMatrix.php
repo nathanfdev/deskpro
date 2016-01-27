@@ -29,12 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Departments;
 
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\DepartmentPermission;
-use Application\DeskPRO\ORM\EntityManager;
 use Application\DeskPRO\People\PermissionMatrix;
+use Doctrine\ORM\EntityManager;
 
 class DepartmentPermissionMatrix extends PermissionMatrix
 {

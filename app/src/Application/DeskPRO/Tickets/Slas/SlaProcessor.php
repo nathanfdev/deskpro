@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets\Slas;
 
 use Application\DeskPRO\Entity\Sla;
@@ -44,7 +45,7 @@ use Doctrine\ORM\EntityManager;
 class SlaProcessor
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     private $em;
 

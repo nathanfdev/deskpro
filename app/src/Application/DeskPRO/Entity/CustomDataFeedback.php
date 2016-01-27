@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -101,7 +102,6 @@ class CustomDataFeedback extends CustomDataAbstract
             array(
                  'name'    => 'custom_data_feedback',
                  'indexes' => array(
-                     'obj_id_idx'   => array('columns' => array(0 => 'feedback_id')),
                      'field_id_idx' => array('columns' => array(0 => 'field_id', 1 => 'feedback_id')),
                  ),
             )

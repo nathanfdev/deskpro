@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\ServerErrorLogs;
 
 use Application\DeskPRO\App;
@@ -39,7 +40,7 @@ use Orb\Util\Util;
 class ServerErrorLogs
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 

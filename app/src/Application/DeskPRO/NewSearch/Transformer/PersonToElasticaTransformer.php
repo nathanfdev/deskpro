@@ -39,12 +39,9 @@ use Orb\Util\Arrays;
 class PersonToElasticaTransformer implements ModelToElasticaTransformerInterface
 {
     /**
-     * Transform.
+     * {@inheritdoc}
      *
      * @param Person $object
-     * @param array  $fields
-     *
-     * @return Document
      */
     public function transform($object, array $fields)
     {
@@ -56,14 +53,14 @@ class PersonToElasticaTransformer implements ModelToElasticaTransformerInterface
         $document->set('first_name', $object->first_name);
         $document->set('last_name', $object->last_name);
 
-        $emails = array();
+        $emails = [];
         foreach ($object->emails as $e) {
             $emails[] = $e->email;
         }
 
         $document->set('emails', $emails);
 
-        $phones = array();
+        $phones = [];
         foreach ($object->phone_numbers as $p) {
             $pn = $p->getPhoneNumber();
             if ($pn) {

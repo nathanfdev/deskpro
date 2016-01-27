@@ -42,7 +42,7 @@ define [
       for opt in set
         @$scope.criteriaOptionTypes.push(opt)
 
-      set = @actionsTypeDef.getOptionsForTypes()
+      set = @actionsTypeDef.getOptionsForTypes([], {dynamicOptions: @customActions})
       @$scope.actionOptionTypes.length = 0
       for opt in set
         @$scope.actionOptionTypes.push(opt)
@@ -56,8 +56,9 @@ define [
 
       promise2 = @criteriaTypeDef.loadDataOptions()
       promise3 = @actionsTypeDef.loadDataOptions()
-
-      promises = [promise, promise2, promise3]
+      promise4 = @Api.sendDataGet({customActions: '/ticket_triggers/get-custom-actions'}).then (result) =>
+        @customActions = result.data.customActions.action_defs
+      promises = [promise, promise2, promise3, promise4]
 
       @$q.all(promises).then =>
         @$timeout(=>

@@ -35,6 +35,7 @@ namespace Application\AgentBundle\Controller;
 use Application\AgentBundle\Controller\Helper\NewsResults;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
 use Doctrine\DBAL\Connection;
@@ -98,6 +99,7 @@ class NewsController extends AbstractController
 
     public function ajaxSaveLabelsAction($news_id)
     {
+        /** @var News $news */
         $news = $this->em->find('DeskPRO:News', $news_id);
 
         if (!$news) {

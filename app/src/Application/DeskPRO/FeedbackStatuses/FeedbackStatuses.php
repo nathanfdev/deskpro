@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\FeedbackStatuses;
 
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
@@ -37,7 +38,7 @@ use Doctrine\ORM\EntityManager;
 class FeedbackStatuses
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 

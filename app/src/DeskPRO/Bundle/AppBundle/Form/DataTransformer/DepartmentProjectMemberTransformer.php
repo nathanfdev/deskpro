@@ -29,13 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\DataTransformer;
 
 use Application\DeskPRO\Entity\Department;
-use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\Entity\LabelTask;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\DataTransformerInterface;
 
 class DepartmentProjectMemberTransformer implements DataTransformerInterface

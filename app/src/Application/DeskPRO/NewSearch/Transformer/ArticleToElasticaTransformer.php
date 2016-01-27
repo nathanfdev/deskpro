@@ -34,15 +34,15 @@ use Elastica\Document;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 use Orb\Util\Arrays;
 
+/**
+ * Class ArticleToElasticaTransformer.
+ */
 class ArticleToElasticaTransformer implements ModelToElasticaTransformerInterface
 {
     /**
-     * Transform.
+     * {@inheritdoc}
      *
      * @param Article $object
-     * @param array   $fields
-     *
-     * @return Document
      */
     public function transform($object, array $fields)
     {
@@ -53,7 +53,7 @@ class ArticleToElasticaTransformer implements ModelToElasticaTransformerInterfac
         $document->set('content', $object->getContentPlain());
         $document->set('status', $object->status);
 
-        $cat_ids = array();
+        $cat_ids = [];
         foreach ($object->categories as $c) {
             $cat_ids[] = $c->id;
         }

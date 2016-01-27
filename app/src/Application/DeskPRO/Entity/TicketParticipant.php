@@ -213,6 +213,7 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
                         'name'                 => 'person_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => false,
+                        'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
                     ),
                 ),

@@ -12,7 +12,6 @@ import { toggleSelectedAction } from '../../../Application/Actions/massActions';
 export class ListContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    currentApp: PropTypes.string.isRequired,
     isComments: PropTypes.bool,
     loaded: PropTypes.bool.isRequired,
     currentViewMode: PropTypes.string.isRequired

@@ -1,8 +1,8 @@
-import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
-import TicketForm from './TicketForm';
-import PortalFormWidget from './PortalFormWidget';
-import TicketView from './TicketView';
-import TicketList from './TicketList';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
+import { TicketForm } from './TicketForm';
+import { PortalFormWidget } from './PortalFormWidget';
+import { TicketView } from './TicketView';
+import { TicketList } from './TicketList';
 import DownloadsList from './DownloadsList';
 import FeedbackPage from './FeedbackPage';
 import ClickAwayDropdownWidget from './ClickAwayDropdownWidget';
@@ -17,12 +17,14 @@ import LoginDropdownWidget from './LoginDropdownWidget';
 import SearchResultsPage from './SearchResultsPage';
 import MobileMenuWidget from './MobileMenuWidget';
 import ArticleHighlighter from './ArticleHighlighter';
-import CustomPerFieldEdit from './Common/Form/CustomPerFieldEdit';
+import { CustomPerFieldEdit } from './Common/Form/CustomPerFieldEdit';
 import Attachment from './Common/Attachment';
 import $ from 'jquery';
 
 export default class PortalPage extends PageWidget {
+
   init() {
+    this.addWidgetDef(PortalFormWidget, '.dpx-form');
     this.addWidgetDef(OmniSearchWidget, '#omnisearch');
     this.addWidgetDef(LoginDropdownWidget, '#top-login-btn');
     this.addWidgetDef(LanguageChangerWidget, '#language-changer');
@@ -37,7 +39,6 @@ export default class PortalPage extends PageWidget {
     this.addWidgetDef(ClickAwayDropdownWidget, '.clickaway-dropdown');
     this.addWidgetDef(ClickToDismissWidget, '.click-to-dismiss');
     this.addWidgetDef(AgentBarWidget, '#agent-bar');
-    this.addWidgetDef(PortalFormWidget, '.dpx-form');
     this.addWidgetDef(ArticleHighlighter, '.dpx-kb-article-content');
     this.addWidgetDef(MobileMenuWidget, '.dpx-toggle-big-buttons');
     this.addWidgetDef(LoginPage, '#login-page');

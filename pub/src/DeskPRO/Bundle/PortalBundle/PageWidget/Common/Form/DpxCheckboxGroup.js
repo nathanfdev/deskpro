@@ -1,10 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
-import PortalCheckbox from 'DeskPRO/Bundle/PortalBundle/React/Form/PortalCheckbox';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
+import PortalCheckbox from '../../../React/Form/PortalCheckbox';
 import $ from 'jquery';
 
-export default class DpxCheckboxGroup extends PageWidget {
+export class DpxCheckboxGroup extends PageWidget {
+
   renderWidget() {
     this.$element.find('input[type="checkbox"]').each((i, node) => {
       const $checkbox = $(node);

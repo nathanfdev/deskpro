@@ -30,8 +30,8 @@ namespace spec\DeskPRO\Bundle\AppBundle\Notification;
 
 use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\NewSettings\SettingsResolver;
-use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\Notification\NotificationService;
+use Doctrine\ORM\EntityManager;
 use PhpSpec\ObjectBehavior;
 
 /**

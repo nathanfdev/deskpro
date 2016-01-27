@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -114,13 +115,13 @@ class DepartmentPermission extends AbstractEntityRepository
                 } else {
                     $ug_found = !empty($this->cache_by_group[$ug_id]['ANY']) ? $this->cache_by_group[$ug_id]['ANY'] : array();
                 }
-            }
 
-            if ($ug_found) {
-                if ($found) {
-                    $found = array_merge($found, $ug_found);
-                } else {
-                    $found = $ug_found;
+                if ($ug_found) {
+                    if ($found) {
+                        $found = array_merge($found, $ug_found);
+                    } else {
+                        $found = $ug_found;
+                    }
                 }
             }
         }

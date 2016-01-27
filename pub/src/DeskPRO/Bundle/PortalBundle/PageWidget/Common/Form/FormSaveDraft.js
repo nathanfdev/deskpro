@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 
 class FormFieldSaveDraft extends PageWidget {
 
@@ -13,11 +13,11 @@ class FormFieldSaveDraft extends PageWidget {
     this.restoreValue();
 
     if ($el.is('input[type="checkbox"], input[type="radio"]')) {
-      $el.on('click change blur', ev => this.updateDraft());
+      $el.on('click change blur', () => this.updateDraft());
     } else if ($el.is('input, textarea')) {
-      $el.on('change blur keyup', ev => this.updateDraft());
+      $el.on('change blur keyup', () => this.updateDraft());
     } else if ($el.is('select')) {
-      $el.on('change blur', ev => this.updateDraft());
+      $el.on('change blur', () => this.updateDraft());
     }
   }
 
@@ -97,7 +97,8 @@ class FormFieldSaveDraft extends PageWidget {
   }
 }
 
-export default class FormSaveDraft extends PageWidget {
+export class FormSaveDraft extends PageWidget {
+
   init() {
     this.addWidgetDef(FormFieldSaveDraft, function(widgetClass, $context, parent) {
       const $matches = $context.find('input[type="text"], input[type="email"], input[type="checkbox"], input[type="radio"], textarea, select');

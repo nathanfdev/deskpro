@@ -1,6 +1,7 @@
-import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 
-export default class DpxRadio extends PageWidget {
+export class DpxRadio extends PageWidget {
+
   renderWidget() {
     const $el = this.$element;
     const $radio = $el.find('input');

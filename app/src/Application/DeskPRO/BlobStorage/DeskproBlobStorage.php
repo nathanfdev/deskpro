@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\BlobStorage;
 
 use Application\DeskPRO\BlobStorage\StorageAdapter\AbstractStorageAdapter;
@@ -411,8 +412,8 @@ class DeskproBlobStorage implements Loggable
      */
     public function createBlobRecordFromFile($source_path, $filename, $content_type, array $props = null)
     {
-        $blob = $this->createBlobRowFromFile($source_path, $filename, $content_type, $props);
-        $blob = $this->em->find('DeskPRO:Blob', $blob['id']);
+        $blob_info = $this->createBlobRowFromFile($source_path, $filename, $content_type, $props);
+        $blob      = $this->em->find('DeskPRO:Blob', $blob_info['id']);
 
         return $blob;
     }
@@ -557,8 +558,8 @@ class DeskproBlobStorage implements Loggable
      */
     public function createBlobRecordFromString($source_data, $filename, $content_type, array $props = null)
     {
-        $blob_id = $this->createBlobRowFromString($source_data, $filename, $content_type, $props);
-        $blob    = $this->em->find('DeskPRO:Blob', $blob_id);
+        $blob_info = $this->createBlobRowFromString($source_data, $filename, $content_type, $props);
+        $blob      = $this->em->find('DeskPRO:Blob', $blob_info['id']);
 
         return $blob;
     }

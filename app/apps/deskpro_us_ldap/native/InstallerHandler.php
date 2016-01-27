@@ -31,13 +31,14 @@
  *
  * @category Entities
  */
+
 namespace deskpro_us_ldap;
 
 use Application\DeskPRO\App\Native\InstallerHandler\AbstractUsersourceInstallerHandler;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\Usersource;
-use Application\DeskPRO\ORM\EntityManager;
 use deskpro_us_ldap\Usersource\AppOptionsMapper;
+use Doctrine\ORM\EntityManager;
 
 class InstallerHandler extends AbstractUsersourceInstallerHandler
 {

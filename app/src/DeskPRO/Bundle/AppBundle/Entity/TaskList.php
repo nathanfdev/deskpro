@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject as Project;
@@ -65,7 +66,7 @@ class TaskList implements EntityInterface, NotifyPropertyChanged
     /**
      * @var TaskProject
      * @ORM\ManyToOne(targetEntity="TaskProject")
-     * @ORM\JoinColumn(name="project_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="project_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotNull()
      * @Assert\Valid()
      */

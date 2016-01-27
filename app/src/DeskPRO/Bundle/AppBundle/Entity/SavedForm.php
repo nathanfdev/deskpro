@@ -85,6 +85,7 @@ class SavedForm implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
+     * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="CASCADE")
      *
      * @var Person
      */

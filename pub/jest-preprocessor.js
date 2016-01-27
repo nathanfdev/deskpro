@@ -36,10 +36,18 @@ module.exports = {
 
       // DeskPRO/... paths ---------------------------------------------------------------------------------------------
 
+      // single line imports
       result = result.replace(
         /^import(.*)[\"\']DeskPRO(.*)[\"\'](.*)$/gm,
         "import$1'" + margin + "DeskPRO$2'$3"
       );
+
+      // multi line imports
+      result = result.replace(
+        /import([^;]+?)from([^;]+?)[\"\']DeskPRO(.*?)[\"\'](.*?);/gm,
+        "import$1 from $2'" + margin + "DeskPRO$3'$4"
+      );
+
       result = result.replace(
         /^jest\.dontMock\([\"\']DeskPRO(.*)[\"\']\)(.*)$/gm,
         "jest.dontMock('" + margin + "DeskPRO$1')$2"

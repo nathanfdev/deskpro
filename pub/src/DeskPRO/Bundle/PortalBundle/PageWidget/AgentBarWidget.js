@@ -1,17 +1,18 @@
-import PageWidget from "DeskPRO/Component/PageWidget/PageWidget"
-import $ from "jquery"
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
+import $ from 'jquery';
 
 export default class AgentBarWidget extends PageWidget {
+
   renderWidget() {
-    const agent_arrow = $('#agent-dropdown-arrow');
-    const agent_drop = $('#agent-bar-agent-dropdown');
-    const admin_arrow = $('#admin-dropdown-arrow');
-    const admin_drop = $('#agent-bar-admin-dropdown');
+    const agentArrow = $('#agent-dropdown-arrow');
+    const agentDrop = $('#agent-bar-agent-dropdown');
+    const adminArrow = $('#admin-dropdown-arrow');
+    const adminDrop = $('#agent-bar-admin-dropdown');
 
-    agent_drop.css('top', agent_arrow.offset().top + agent_arrow.height());
-    agent_drop.css('right', $(document).width() - agent_arrow.offset().left - agent_arrow.width() - 25);
+    agentDrop.css('top', agentArrow.offset().top + agentArrow.height());
+    agentDrop.css('right', $(document).width() - agentArrow.offset().left - agentArrow.width() - 25);
 
-    admin_drop.css('top', admin_arrow.offset().top + admin_arrow.height());
-    admin_drop.css('right', $(document).width() - admin_arrow.offset().left - admin_arrow.width() - 25);
+    adminDrop.css('top', adminArrow.offset().top + adminArrow.height());
+    adminDrop.css('right', $(document).width() - adminArrow.offset().left - adminArrow.width() - 25);
   }
 }

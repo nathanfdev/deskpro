@@ -29,9 +29,9 @@
 namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator;
 
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**

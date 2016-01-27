@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Escalations;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -112,6 +113,9 @@ class EscalationTicketMatcher
     {
         $searcher = new TicketSearch();
         $searcher->addTerm('escalation_eliminator', 'is', array('escalation' => $esc));
+
+        // set this efficient order to make sure th default (status/urgency) isnt used
+        $searcher->setOrderBy('ticket.date_created');
 
         $user_searcher = new PersonSearch();
         $org_searcher  = new OrganizationSearch();

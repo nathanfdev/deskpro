@@ -4,7 +4,7 @@
 	window.DP_BASE_URL       = '/{{ path('user')|ltrim('/') }}';
 	window.DP_BASE_API_URL   = '/{{ path('user')|ltrim('/') }}api';
 	window.DP_BASE_ADMIN_URL = '/{{ path('admin')|trim('/') }}';
-	window.DP_SESSION_ID     = '{{ session.session_code }}';
+	window.DP_SESSION_ID     = '{{ app.session.getEntity().getSessionCode() }}';
 	window.DP_PERSON_ID      = {{ app.user.id }};
 	window.DP_PERSON_EMAIL   = '{{ app.user.getPrimaryEmailAddress() }}';
 	window.DP_PERSON_LANG_ID = {{ app.user.language.id }};

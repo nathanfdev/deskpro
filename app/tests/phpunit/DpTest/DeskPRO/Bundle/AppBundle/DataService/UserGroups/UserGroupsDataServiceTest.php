@@ -32,8 +32,8 @@
 
 namespace DpTest\Bundle\AppBundle\DataService\UserGroups;
 
-use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\DataService\UserGroups\UserGroupsDataService;
+use Doctrine\ORM\EntityManager;
 use DpTest\DeskProTestCase;
 
 /**

@@ -1,0 +1,60 @@
+// #define ~ListFrame DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame
+// #define ~List DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List
+
+jest.dontMock('~ListFrame/frame');
+jest.dontMock('~ListFrame/index');
+jest.dontMock('~ListFrame/ListFrameMenu');
+jest.dontMock('~List/List');
+jest.dontMock('~List/View/List/ChatsCardsContainer');
+jest.dontMock('~List/View/Table/ChatsTableContainer');
+jest.dontMock('~List/ControlBar/ControlBarContainer');
+jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents');
+jest.dontMock('DeskPRO/Component/LoadIndicator');
+
+import React from 'react';
+import TestUtils from 'react-addons-test-utils';
+import { renderChatsInRedux } from '../../chats.test-helper';
+
+describe('List', () => {
+  const ListFrameContainer  = require('~ListFrame/frame').ListFrameContainer;
+  const List                = require('~List/List').List;
+  const ControlBarContainer = require('~List/ControlBar/ControlBarContainer').ControlBarContainer;
+  const ChatsCardsContainer = require('~List/View/List/ChatsCardsContainer').ChatsCardsContainer;
+  const ChatsTableContainer = require('~List/View/Table/ChatsTableContainer').ChatsTableContainer;
+
+  const renderList = (viewMode = 'card') => {
+    renderChatsInRedux(0, <List elements={[]} viewMode={viewMode} loaded={true} />);
+  };
+
+  it('should render ListFrameContainer', () => {
+    spyOn(ListFrameContainer.prototype, 'render').andCallThrough();
+    renderList();
+    expect(ListFrameContainer.prototype.render).toHaveBeenCalled();
+  });
+
+  it('should render its control bar', () => {
+    spyOn(ControlBarContainer.prototype, 'render').andCallThrough();
+    renderList();
+    expect(ControlBarContainer.prototype.render).toHaveBeenCalled();
+  });
+
+  it('should render ChatsCardsContainer when the passed viewMode is "card"', () => {
+    spyOn(ChatsCardsContainer.prototype, 'render').andCallThrough();
+    spyOn(ChatsTableContainer.prototype, 'render').andCallThrough();
+
+    renderList('card');
+
+    expect(ChatsCardsContainer.prototype.render).toHaveBeenCalled();
+    expect(ChatsTableContainer.prototype.render).not.toHaveBeenCalled();
+  });
+
+  it('should render ChatsTableContainer when the passed viewMode is "table"', () => {
+    spyOn(ChatsCardsContainer.prototype, 'render').andCallThrough();
+    spyOn(ChatsTableContainer.prototype, 'render').andCallThrough();
+
+    renderList('table');
+
+    expect(ChatsTableContainer.prototype.render).toHaveBeenCalled();
+    expect(ChatsCardsContainer.prototype.render).not.toHaveBeenCalled();
+  });
+});

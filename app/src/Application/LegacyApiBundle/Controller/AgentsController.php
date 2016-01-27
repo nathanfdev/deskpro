@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\PasswordHistory;
@@ -627,7 +628,7 @@ class AgentsController extends AbstractController implements ProtectedController
 
         // If the record isnt a user yet, then we need to set an initial password
         if (!$agent->is_user) {
-            $agent->setPassword(Strings::randomPronounceable(20, 4));
+            $agent->setPassword(Strings::randomPronounceable(20, 4), true);
         }
 
         $edit_agent = new EditAgent($agent);
@@ -995,7 +996,7 @@ class AgentsController extends AbstractController implements ProtectedController
             $this->em->persist($history);
         }
 
-        $agent->setPassword($password);
+        $agent->setPassword($password, true);
         $this->em->persist($agent);
         $this->em->flush();
 

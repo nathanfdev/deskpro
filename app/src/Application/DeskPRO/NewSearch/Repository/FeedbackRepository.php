@@ -33,12 +33,7 @@ namespace Application\DeskPRO\NewSearch\Repository;
  */
 class FeedbackRepository extends AbstractRepository
 {
-    /**
-     * Fields to be highlighted.
-     *
-     * @var array
-     */
-    protected $highlightFields = array(
-        'title' => array('fragment_size' => 100),
-    );
+    protected $highlightFields = [
+        'title' => ['fragment_size' => 100],
+    ];
 }

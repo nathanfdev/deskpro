@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -110,6 +111,11 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
      * @var \Application\DeskPRO\Entity\Session
      */
     protected $session = null;
+
+    /**
+     * @var string|null
+     */
+    protected $visitor_id = null;
 
     /**
      * User chat: The users name, if they arent a person.
@@ -1419,6 +1425,17 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'email_validated',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'visitor_id',
+                'type'       => 'string',
+                'length'     => 120,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'visitor_id',
             )
         );
 

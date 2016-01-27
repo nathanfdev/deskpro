@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Collection;
 
 use Doctrine\ORM\EntityManager;
@@ -36,7 +37,7 @@ use Doctrine\ORM\EntityManager;
 abstract class LazyCollection
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 

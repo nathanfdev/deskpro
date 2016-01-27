@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Reports;
 
 use Application\DeskPRO\Entity\Person;
@@ -52,7 +53,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class Overview
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 

@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -52,7 +53,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * @property int $agent_team_id
  * @property int $organization_id
  * @property string $sent_to_address
- * @property $email_account_id
  * @property string $creation_system
  * @property string $creation_system_option
  * @property string $status
@@ -140,6 +140,11 @@ class TicketSearchActive extends DomainObject
      * @var int
      */
     protected $organization_id = null;
+
+    /**
+     * @var string
+     */
+    protected $sent_to_address;
 
     /**
      * @var string

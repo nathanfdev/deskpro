@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Security\Permissions\Portal;
 
 use Application\DeskPRO\Cache\CacheAdapterInterface;
@@ -37,9 +38,9 @@ use Application\DeskPRO\Entity\Permission;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\NewSettings\SettingsResolver;
-use Application\DeskPRO\ORM\EntityManager;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsBag;
+use Doctrine\ORM\EntityManager;
 
 /**
  * The PortalPermissionsManager is the gatekeeper between you (developing on the portal) and the permissions system.

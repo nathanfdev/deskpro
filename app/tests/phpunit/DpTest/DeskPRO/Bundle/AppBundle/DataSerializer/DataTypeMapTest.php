@@ -34,7 +34,7 @@ namespace DpTest\DeskPRO\Bundle\AppBundle\DataSerializer;
 
 use Application\DeskPRO\Entity\TicketAttachment;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTypeMap;
-use DeskPRO\Bundle\AppBundle\Entity\SandboxWidget;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DpTest\DeskProTestCase;
 
 class DataTypeMapTest extends DeskProTestCase
@@ -43,9 +43,9 @@ class DataTypeMapTest extends DeskProTestCase
     {
         $map = $this->makeMap();
 
-        $widget = new SandboxWidget();
+        $obj = new TicketFilter();
 
-        $this->assertSame('sandbox_widget', $map->findType($widget), 'works for class type');
+        $this->assertSame('ticket_filter', $map->findType($obj), 'works for class type');
     }
 
     public function testMapDefaultsToUnderscoreClassNameTypeByDefault()
@@ -65,9 +65,9 @@ class DataTypeMapTest extends DeskProTestCase
     {
         return new DataTypeMap(
             [
-                'sandbox_widget' => [
+                'ticket_filter' => [
                     'classes' => [
-                        'DeskPRO\Bundle\AppBundle\Entity\SandboxWidget',
+                        'DeskPRO\Bundle\AppBundle\Entity\TicketFilter',
                     ],
                 ],
             ]

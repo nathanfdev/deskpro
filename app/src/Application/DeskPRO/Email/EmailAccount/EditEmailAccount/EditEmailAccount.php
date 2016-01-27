@@ -29,15 +29,16 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Email\EmailAccount\EditEmailAccount;
 
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\NoopConfig;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\PhpMailConfig;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\TicketTrigger;
-use Application\DeskPRO\ORM\EntityManager;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
+use Doctrine\ORM\EntityManager;
 use Orb\Validator\StringEmail;
 
 class EditEmailAccount

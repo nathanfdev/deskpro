@@ -29,12 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\SourceMapper;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\EmailBundle\Log\LogCollectorInterface;
+use Application\EmailBundle\SourceMapper\EmailRateLimit\EmailRateLimitInterface;
 use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Numbers;
@@ -63,6 +65,11 @@ class DatabaseSourceMapper implements SourceMapperInterface
     private $email_accounts;
 
     /**
+     * @var EmailRateLimitInterface
+     */
+    private $rate_limit;
+
+    /**
      * @param Connection            $db
      * @param DeskproBlobStorage    $bs
      * @param EmailAccountManager   $email_accounts
@@ -74,6 +81,14 @@ class DatabaseSourceMapper implements SourceMapperInterface
         $this->bs             = $bs;
         $this->log_collector  = $log_collector;
         $this->email_accounts = $email_accounts;
+    }
+
+    /**
+     * @param EmailRateLimitInterface $rate_limit
+     */
+    public function setRateLimit(EmailRateLimitInterface $rate_limit)
+    {
+        $this->rate_limit = $rate_limit;
     }
 
     /**
@@ -217,12 +232,6 @@ class DatabaseSourceMapper implements SourceMapperInterface
 
         $blob = $this->bs->createBlobRowFromString($message->toString(), 'out_email.eml', 'message/rfc822');
 
-        if ($status == 'processing') {
-            $exec_count = 1;
-        } else {
-            $exec_count = 0;
-        }
-
         $record = array(
             'blob_id'          => $blob['id'],
             'ref'              => $ref,
@@ -238,13 +247,23 @@ class DatabaseSourceMapper implements SourceMapperInterface
             'status'           => $status,
             'date_status'      => $date,
             'date_created'     => $date,
-            'exec_count'       => $exec_count,
+            'exec_count'       => 0,
             'num_targets'      => count($tos) + count($ccs) + count($bccs),
             'num_pending'      => count($tos) + count($ccs) + count($bccs),
         );
 
         if ($message instanceof MessageOptionsInterface && ($opts = $message->getMessageOptions()->all())) {
             $record['options'] = json_encode($opts);
+        }
+
+        if ($this->rate_limit && $this->rate_limit->isLimited($record)) {
+            $status               = 'error';
+            $record['status']     = 'error';
+            $record['error_code'] = 'rate_limit';
+        }
+
+        if ($status == 'processing') {
+            $record['exec_count'] = 1;
         }
 
         if ($status == 'pending') {
@@ -324,6 +343,13 @@ class DatabaseSourceMapper implements SourceMapperInterface
         $new_source['date_next_attempt'] = $next_date->format('Y-m-d H:i:s');
         $new_source['date_status']       = date('Y-m-d H:i:s');
 
+        if ($this->rate_limit && $this->rate_limit->isLimited($source)) {
+            $new_source['status']            = 'error';
+            $new_source['error_code']        = 'rate_limit';
+            $new_source['date_next_attempt'] = null;
+            $log_text                        = ($log_text ?: '')."\n\nERROR: Rate limit";
+        }
+
         $this->appendLogText($new_source, $log_text);
         $this->updateSourceRow($source, $new_source);
 
@@ -368,6 +394,12 @@ class DatabaseSourceMapper implements SourceMapperInterface
 
         $new_source['date_next_attempt'] = $next_date->format('Y-m-d H:i:s');
         $new_source['date_status']       = date('Y-m-d H:i:s');
+
+        if ($this->rate_limit && $this->rate_limit->isLimited($source)) {
+            $new_source['status']            = 'error';
+            $new_source['error_code']        = 'rate_limit';
+            $new_source['date_next_attempt'] = null;
+        }
 
         $this->updateSourceRow($source, $new_source);
 

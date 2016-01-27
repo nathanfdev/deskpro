@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Domain;
 
 use Application\DeskPRO\App;
@@ -125,7 +126,7 @@ class ObjectTranslatable
     }
 
     /**
-     * @return \Application\DeskPRO\ORM\EntityManager
+     * @return \Doctrine\ORM\EntityManager
      */
     public function getEm()
     {
@@ -268,7 +269,7 @@ class ObjectTranslatable
         if ($this->unsaved) {
             foreach ($this->unsaved as $group) {
                 foreach ($group as $rec) {
-                    $this->getEm()->delayedInsert($rec);
+                    $this->getEm()->persist($rec);
                 }
             }
             $this->unsaved = array();

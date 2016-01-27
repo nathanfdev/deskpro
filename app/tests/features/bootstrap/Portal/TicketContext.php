@@ -91,7 +91,7 @@ class TicketContext extends BasePortalContext
             ++$status_counts[$tr_status];
         }
 
-        expect($status_counts[$status])->toBe($num);
+        expect(@$status_counts[$status] ?: 0)->toBe($num);
     }
 
     /**

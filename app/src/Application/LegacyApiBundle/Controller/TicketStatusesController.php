@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -165,8 +166,11 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
 
         if (!$enabled) {
             $this->em->getConnection()->executeQuery('
-                update tickets set status = :newstatus where status = :oldstatus
-            ', Ticket::STATUS_RESOLVED, Ticket::STATUS_ARCHIVED);
+                UPDATE tickets
+                SET status = ?
+                WHERE status = ?
+            ', array(Ticket::STATUS_RESOLVED, Ticket::STATUS_ARCHIVED));
+            $this->em->getRepository('DeskPRO:Ticket')->fillSearchTable();
         }
 
         return $this->createSuccessResponse();

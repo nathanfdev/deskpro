@@ -1,6 +1,6 @@
 import React from "react"
 import PortalHttp from "DeskPRO/Bundle/PortalBundle/Http/PortalHttp"
-import PortalUrlGenerator from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator"
+import { portalUrlGenerator } from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator"
 import PortalPhrases from "DeskPRO/Bundle/PortalBundle/PortalPhrases"
 
 export default class LoginForm extends React.Component {
@@ -17,7 +17,7 @@ export default class LoginForm extends React.Component {
     const $username = $(this.refs.username);
     const $password = $(this.refs.password);
     const $remember_me = $(this.refs.remember_me);
-    const login_url = PortalUrlGenerator.path('/login/authenticate-password');
+    const login_url = portalUrlGenerator.path('/login/authenticate-password');
 
     this.setState({
       failed: false
@@ -45,11 +45,11 @@ export default class LoginForm extends React.Component {
     });
   }
   addCaptchaIfNecessary() {
-    PortalHttp.sendGet(PortalUrlGenerator.path('/captcha-html?action=login')).then((r) => {
+    PortalHttp.sendGet(portalUrlGenerator.path('/captcha-html?action=login')).then((r) => {
       console.log('CAPTCHA RESPONSE ', r);
         if (r.data.captcha_required) {
           // for now we are not displaying the captcha, and instead are just redirecting the user to login page
-          window.location.href = PortalUrlGenerator.path('/login');
+          window.location.href = portalUrlGenerator.path('/login');
           //this.setState({
           //  captcha: true
           //});
@@ -61,7 +61,7 @@ export default class LoginForm extends React.Component {
     });
   }
   render() {
-    const failure_path = PortalUrlGenerator.path('/login?retry=auth');
+    const failure_path = portalUrlGenerator.path('/login?retry=auth');
 
     //if (this.state.captcha) {
     //  window.RecaptchaOptions = { theme: 'clean' };
@@ -119,7 +119,7 @@ export default class LoginForm extends React.Component {
         <button type="submit" tabIndex="2">Login</button>
 
         <div className="secondary-action">
-          <a href={PortalUrlGenerator.path('/login/reset-password')}>{PortalPhrases.get('portal.account.login-password-reminder')}</a>
+          <a href={portalUrlGenerator.path('/login/reset-password')}>{PortalPhrases.get('portal.account.login-password-reminder')}</a>
         </div>
       </form>
     );

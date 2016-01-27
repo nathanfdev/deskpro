@@ -31,6 +31,7 @@
  *
  * @category EmailGateway
  */
+
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\App;
@@ -215,6 +216,18 @@ class ProcessReply extends ProcessAbstract
         }
 
         if ($this->person->is_agent && $context === 'agent') {
+            $default_as_note = App::getSetting('core_tickets.email_reply_as_note');
+
+            if (!$email_info->agent_reply_mode_foundflag) {
+                if ($default_as_note) {
+                    $this->logMessage('[TicketGatewayProcessor] No reply mode flag found, defaulting to setting: reply as note');
+                    $email_info->agent_reply_as_note = true;
+                } else {
+                    $this->logMessage('[TicketGatewayProcessor] No reply mode flag found, defaulting to setting: reply as reply');
+                    $email_info->agent_reply_as_note = false;
+                }
+            }
+
             if (!$email_info->agent_reply_as_note || isset($this->ticket_email->reply_actions['is_reply'])) {
                 $this->logMessage('Reply mode: reply');
                 $message['is_agent_note']          = false;

@@ -29,8 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\SourceMapper;
 
+use Application\EmailBundle\SourceMapper\EmailRateLimit\EmailRateLimitFactory;
 use Application\EmailBundle\SourceMapper\PendingQueuer\RedisPendingQueuer;
 use Predis;
 use Symfony\Component\DependencyInjection\Container;
@@ -45,6 +47,9 @@ class DeskproSourceMapperFactory
             $container->get('email.email_account_manager'),
             $container->get('email.log_collector')
         );
+
+        $rate_limit = EmailRateLimitFactory::create($container);
+        $source_mapper->setRateLimit($rate_limit);
 
         if (dp_get_config('sendmail_redis_queue')) {
             // see https://github.com/nrk/predis/wiki/Connection-Parameters

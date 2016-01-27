@@ -70,21 +70,21 @@ class AgentChatParticipant implements EntityInterface, NotifyPropertyChanged
     /**
      * @var Person|null
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $person;
 
     /**
      * @var AgentTeam|null
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\AgentTeam")
-     * @ORM\JoinColumn(name="agent_team_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="agent_team_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $team;
 
     /**
      * @var Department
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Department")
-     * @ORM\JoinColumn(name="department_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="department_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $department;
 

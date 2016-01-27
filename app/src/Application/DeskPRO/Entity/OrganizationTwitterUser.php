@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -38,6 +39,11 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 class OrganizationTwitterUser extends \Application\DeskPRO\Domain\DomainObject
 {
+    /**
+     * @var int
+     */
+    protected $id;
+
     /**
      * @var \Application\DeskPRO\Entity\Organization
      */

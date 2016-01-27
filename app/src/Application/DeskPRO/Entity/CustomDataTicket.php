@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -113,7 +114,6 @@ class CustomDataTicket extends CustomDataAbstract
             array(
                 'name'    => 'custom_data_ticket',
                 'indexes' => array(
-                    'obj_id_idx'   => array('columns' => array(0 => 'ticket_id')),
                     'field_id_idx' => array('columns' => array(0 => 'field_id', 1 => 'ticket_id')),
                 ),
             )

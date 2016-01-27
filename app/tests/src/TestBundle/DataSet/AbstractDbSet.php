@@ -29,11 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\ORM\EntityManager;
 use Doctrine\DBAL\Connection;
+use Doctrine\ORM\EntityManager;
 use Orb\Util\Util;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -102,7 +103,7 @@ abstract class AbstractDbSet implements DataSetInterface
     }
 
     /**
-     * @return \Application\DeskPRO\ORM\EntityManager
+     * @return \Doctrine\ORM\EntityManager
      */
     public function getEm()
     {

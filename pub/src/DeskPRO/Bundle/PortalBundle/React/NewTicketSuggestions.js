@@ -2,7 +2,6 @@ import React from 'react';
 import _ from 'lodash';
 import $ from 'jquery';
 import PortalHttp from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
-import PortalUrlGenerator from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
 import PortalPhrases from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 class SuggestionRow extends React.Component {

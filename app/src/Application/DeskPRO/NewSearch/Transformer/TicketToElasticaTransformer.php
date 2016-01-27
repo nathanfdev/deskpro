@@ -43,12 +43,9 @@ use Orb\Util\Arrays;
 class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
 {
     /**
-     * Transform.
+     * {@inheritdoc}
      *
      * @param Ticket $object
-     * @param array  $fields
-     *
-     * @return Document
      */
     public function transform($object, array $fields)
     {
@@ -80,16 +77,15 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
             $document->set('labels', $labels);
         }
 
-        $messages = array();
+        $messages = [];
         foreach ($object->getMessages() as $message) {
             $messages[] = $message->getMessage();
         }
 
         $document->set('messages', $messages);
-
         $document->set('date_created', $object->date_created->format('Y-m-d H:i:s'));
 
-        $dates = array($object->date_created, $object->date_status, $object->date_last_agent_reply, $object->date_last_user_reply);
+        $dates = [$object->date_created, $object->date_status, $object->date_last_agent_reply, $object->date_last_user_reply];
         $dates = Arrays::removeFalsey($dates);
         $d     = max($dates);
         $document->set('date_active', $d->format('Y-m-d H:i:s'));

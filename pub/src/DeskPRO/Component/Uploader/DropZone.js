@@ -13,12 +13,16 @@ export class DropZone extends React.Component {
   static propTypes = {
     getExternalInput: PropTypes.func.isRequired,
     uploadUrl: PropTypes.string.isRequired,
+    uploadParams: PropTypes.object,
     context: PropTypes.any,
     repeatFiles: PropTypes.object,
     onSend: PropTypes.func,
     onSuccess: PropTypes.func,
     onFail: PropTypes.func,
-    children: PropTypes.node
+    children: PropTypes.node,
+
+    // todo temp to make fine-uploader works
+    dropNode: PropTypes.string
   };
 
   componentDidMount() {
@@ -88,13 +92,14 @@ export class DropZone extends React.Component {
   }
 
   initializeFileUpload() {
-    const { uploadUrl, onSend, onSuccess, onFail } = this.props;
+    const { uploadUrl, uploadParams, onSend, onSuccess, onFail } = this.props;
     const overlayNode = ReactDOM.findDOMNode(this);
 
     const $input = $(this.getInput());
     $input.fileupload({
       fileInput: $input,
       url: uploadUrl,
+      formData: uploadParams,
       dropZone: $(overlayNode),
       send: onSend,
       done: onSuccess,
@@ -118,11 +123,11 @@ export class DropZone extends React.Component {
   }
 
   render() {
-    const { context, children } = this.props;
+    const { context, children, dropNode } = this.props;
 
     return (
       <div>
-        <DragOverlayListener context={context}>
+        <DragOverlayListener context={context} dropNode={dropNode}>
           {children}
         </DragOverlayListener>
         <PasteCatcher ref="pasteCatcher" />

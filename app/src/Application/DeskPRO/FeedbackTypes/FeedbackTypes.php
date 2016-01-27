@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\FeedbackTypes;
 
 use Application\DeskPRO\Entity\FeedbackCategory;
@@ -37,7 +38,7 @@ use Doctrine\ORM\EntityManager;
 class FeedbackTypes
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 

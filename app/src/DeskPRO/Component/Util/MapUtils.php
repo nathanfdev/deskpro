@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Component\Util;
 
 /**
@@ -215,6 +216,26 @@ class MapUtils
             }
 
             $return[$user_return[0]] = $user_return[1];
+        }
+
+        return $return;
+    }
+
+    /**
+     * Calls your function on each element of an array. Your function will be passed the key and value,
+     * and return a new value to add the resulting list.
+     *
+     * @param \Traversable|array $array
+     * @param callable           $fn    Your function: fn($key, $value) -> mixed
+     *
+     * @return array
+     */
+    public static function mapToList($array, $fn)
+    {
+        $return = [];
+
+        foreach ($array as $k => $v) {
+            $return[] = call_user_func($fn, $k, $v);
         }
 
         return $return;

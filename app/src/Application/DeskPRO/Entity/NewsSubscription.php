@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -99,7 +100,7 @@ class NewsSubscription extends \Application\DeskPRO\Domain\DomainObject
 
         $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
         $metadata->mapManyToOne(array('fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null)), 'dpApi' => true));
-        $metadata->mapManyToOne(array('fieldName' => 'article', 'targetEntity' => 'Application\\DeskPRO\\Entity\\News', 'mappedBy' => null, 'inversedBy' => 'comment', 'joinColumns' => array(0 => array('name' => 'news_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
+        $metadata->mapManyToOne(array('fieldName' => 'news', 'targetEntity' => 'Application\\DeskPRO\\Entity\\News', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'news_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
         $metadata->mapManyToOne(array('fieldName' => 'category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\NewsCategory', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null)), 'dpApi' => true));
     }
 }

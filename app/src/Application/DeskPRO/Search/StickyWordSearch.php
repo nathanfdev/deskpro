@@ -152,6 +152,8 @@ class StickyWordSearch implements PersonContextInterface
             return array();
         }
 
+        array_unshift($words, $query);
+
         if (count($words) > 15) {
             $words = array_slice($words, 0, 15);
         }

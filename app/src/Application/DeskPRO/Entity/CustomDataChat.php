@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -75,7 +76,6 @@ class CustomDataChat extends CustomDataAbstract
             array(
                 'name'    => 'custom_data_chat',
                 'indexes' => array(
-                    'obj_id_idx'   => array('columns' => array(0 => 'conversation_id')),
                     'field_id_idx' => array('columns' => array(0 => 'field_id', 1 => 'conversation_id')),
                 ),
             )

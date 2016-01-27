@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\TicketEscalation;
@@ -290,9 +291,18 @@ class TicketEscalationsController extends AbstractController implements Protecte
         $trans          = new LegacyTermsTransformer();
         $esc->terms_any = $trans->toLegacyTerms($crit);
 
-        $actions = new TriggerActions();
+        $action_defs = $this->container->getTicketActionDefManager();
+        $actions     = new TriggerActions();
         foreach ($this->in->getArrayValue('actions') as $act) {
             if ($act) {
+                $type = $act['type'];
+
+                if ($action_defs->hasNamedDef($type)) {
+                    $act['type_class'] = $action_defs->getNamedDef($type)->getDef()->getTriggerActionClass();
+                    if (!$act['type_class']) {
+                        continue;
+                    }
+                }
                 $actions->addActionFromArray($act);
             }
         }
@@ -366,7 +376,9 @@ class TicketEscalationsController extends AbstractController implements Protecte
             throw new NotFoundHttpException();
         }
 
-        $trigger->is_enabled = $is_enabled;
+        if ($trigger->is_enabled = $is_enabled) {
+            $trigger->date_created = new \DateTime();
+        }
         $this->em->persist($trigger);
         $this->em->flush();
 

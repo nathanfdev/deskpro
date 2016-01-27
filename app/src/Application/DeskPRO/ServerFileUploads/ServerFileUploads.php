@@ -41,7 +41,7 @@ use Orb\Util\OptionsArray;
 class ServerFileUploads
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 

@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Person;
@@ -65,7 +66,7 @@ class SetAgentTeam extends AbstractContainerAwareAction implements ActionInterfa
      *
      * @return \Application\DeskPRO\Entity\AgentTeam|null
      */
-    private function resolveTeam($set_team_id, ExecutorContextInterface $context)
+    private function resolveTeam(Ticket $ticket, $set_team_id, ExecutorContextInterface $context)
     {
         if ($set_team_id == -1) {
             if (!$context->getPersonContext() || !$context->getPersonContext()->is_agent) {
@@ -73,13 +74,12 @@ class SetAgentTeam extends AbstractContainerAwareAction implements ActionInterfa
             }
             $agent = $context->getPersonContext();
             $agent->loadHelper('Agent');
-            $teams = array_values($agent->getHelper('Agent')->getTeams());
-
-            if (!count($teams)) {
-                return;
+            $team = $agent->getPrimaryTeam();
+        } elseif ($set_team_id == -2) {
+            if (!$ticket->agent) {
+                throw new \RuntimeException();
             }
-
-            $team = $teams[0];
+            $team = $ticket->agent->getPrimaryTeam();
         } elseif ($set_team_id == 0) {
             $team = null;
         } else {
@@ -98,7 +98,7 @@ class SetAgentTeam extends AbstractContainerAwareAction implements ActionInterfa
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
         try {
-            $team = $this->resolveTeam($this->getActionOption('agent_team_id'), $context);
+            $team = $this->resolveTeam($ticket, $this->getActionOption('agent_team_id'), $context);
         } catch (\RuntimeException $e) {
             return;
         } catch (\InvalidArgumentException $e) {
@@ -114,7 +114,7 @@ class SetAgentTeam extends AbstractContainerAwareAction implements ActionInterfa
     public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
     {
         try {
-            $team = $this->resolveTeam($this->getActionOption('agent_team_id'), $context);
+            $team = $this->resolveTeam($ticket, $this->getActionOption('agent_team_id'), $context);
         } catch (\RuntimeException $e) {
             return true;
         } catch (\InvalidArgumentException $e) {

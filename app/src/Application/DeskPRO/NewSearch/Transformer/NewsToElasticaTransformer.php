@@ -34,15 +34,15 @@ use Elastica\Document;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 use Orb\Util\Arrays;
 
+/**
+ * Class NewsToElasticaTransformer.
+ */
 class NewsToElasticaTransformer implements ModelToElasticaTransformerInterface
 {
     /**
-     * Transform.
+     * {@inheritdoc}
      *
-     * @param News  $object
-     * @param array $fields
-     *
-     * @return Document
+     * @param News $object
      */
     public function transform($object, array $fields)
     {

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\SwiftMailer\Transport;
 
 use Application\DeskPRO\App;
@@ -167,7 +168,11 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
             $r = $this->source_mapper->setLogText($r);
         } else {
             $r = $this->source_mapper->createSourceForMessage($message, 'pending', $send_date);
-            $this->logger->info(sprintf('Message %d queued as pending', $r['id']), array('sendmail_source_id' => $r['id']));
+            if ($r['status'] === 'pending') {
+                $this->logger->info(sprintf('Message %d queued as pending', $r['id']), array('sendmail_source_id' => $r['id']));
+            } else {
+                $this->logger->info(sprintf('Message %d queued as %s %s', $r['id'], $r['status'], @$r['error_code']), array('sendmail_source_id' => $r['id']));
+            }
             $r = $this->source_mapper->setLogText($r);
         }
 

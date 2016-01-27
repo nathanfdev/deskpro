@@ -1,10 +1,5 @@
-import _ from "lodash";
-import $ from "jquery";
-import PageWidget from "DeskPRO/Component/PageWidget/PageWidget";
-
-//######################################################################################################################
-//# Page widget
-//######################################################################################################################
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
+import $ from 'jquery';
 
 export default class MobileMenuWidget extends PageWidget {
   renderWidget() {

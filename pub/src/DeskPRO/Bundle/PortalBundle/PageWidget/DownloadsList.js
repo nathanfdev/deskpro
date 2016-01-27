@@ -1,13 +1,14 @@
-import PageWidget from "DeskPRO/Component/PageWidget/PageWidget"
-import $ from "jquery"
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
+import $ from 'jquery';
 
 export default class DownloadsList extends PageWidget {
+
   renderWidget() {
     const me = this;
     this.$element.find('.as-vote-btn').on('click', function(ev) {
       const $voteBtn = $(this);
-      const $widget  = $voteBtn.closest('.as-vote-widget');
-      const $count   = $widget.find('.as-vote-count');
+      const $widget = $voteBtn.closest('.as-vote-widget');
+      const $count = $widget.find('.as-vote-count');
 
       ev.preventDefault();
       ev.stopPropagation();
@@ -24,11 +25,11 @@ export default class DownloadsList extends PageWidget {
   }
 
   handleVote($widget, $voteBtn, $count) {
-    const votes = parseInt($count.data('votes')) || 0;
-    $count.text(votes+1);
+    const votes = parseInt($count.data('votes'), 10) || 0;
+    $count.text(votes + 1);
     $widget.addClass('with-voted');
 
-    let action = $voteBtn.attr('href');
+    const action = $voteBtn.attr('href');
     $.post(action);
   }
 }

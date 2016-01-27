@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
 
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchContext;
@@ -120,7 +121,7 @@ class LoadListener implements EventSubscriberInterface
             return;
         }
 
-        /** @var \Application\DeskPRO\Entity\Organization $organizations */
+        /** @var \Application\DeskPRO\Entity\Organization[] $organizations */
         $organizations = $context->getEntities();
 
         $ids = [];

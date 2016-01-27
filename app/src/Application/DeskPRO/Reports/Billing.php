@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Reports;
 
 use Application\DeskPRO\App;
@@ -40,7 +41,7 @@ use Doctrine\ORM\EntityManager;
 class Billing
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 

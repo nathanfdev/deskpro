@@ -694,41 +694,6 @@ for ($i = 0; $i < 30; ++$i) {
 
 $em->flush();
 
-//////////////////////////////////////////////////////////////
-// widgets
-//////////////////////////////////////////////////////////////
-
-foreach (array('default', 'foo', 'bar', 'baz') as $type) {
-    for ($i = 1; $i <= 10; ++$i) {
-        $a = new \DeskPRO\Bundle\AppBundle\Entity\SandboxWidget();
-        $a->setType($type);
-        $a->setName(ucfirst($type).' '.$i);
-        $a->setInventory(5);
-        $em->persist($a);
-    }
-}
-
-$em->flush();
-
-################################################################################
-# Add some brands to test different themes
-################################################################################
-//INSERT INTO brands (name, theme_id) VALUES ('Default Brand', 'standard')
-$em->getConnection()->executeUpdate(
-    "
-INSERT INTO `theme_sets` (`id`, `theme_id`, `options`)
-VALUES
-	(1, 'standard', ''),
-	(2, 'sidebar', '');
-
-
-INSERT INTO `brands` (`id`, `logo_blob_id`, `name`, `theme_set_id`)
-VALUES
-	(1, NULL, 'Brand With Standard Theme', 1),
-	(2, NULL, 'Brand With Sidebar Theme', 2)
-"
-);
-
 $em->getConnection()->executeUpdate(
     "
 INSERT INTO `products` (`id`, `parent_id`, `title`, `display_order`, `depth`, `root`)

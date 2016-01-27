@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
@@ -81,14 +82,18 @@ class ElasticSearchListener implements EventSubscriberInterface
      */
     public function onSearch(QuickSearchEvent $event)
     {
+        $context = $event->getContext();
+        $request = $event->getRequest();
+
+        $query = implode(' ', $request->getWords());
+        if (!$query) {
+            return;
+        }
         if (!$this->settings_resolver->getGlobalSettings()->get('elastica.enabled')) {
             $this->dispatchFallback($event);
 
             return;
         }
-
-        $context = $event->getContext();
-        $request = $event->getRequest();
 
         try {
             /** @var Repository $repository */
@@ -102,7 +107,7 @@ class ElasticSearchListener implements EventSubscriberInterface
                 $sort = $request->getSort();
             }
 
-            $result = $repository->find($request->getQuery(), null, ['sort_type' => $sort]);
+            $result = $repository->find($query, null, ['sort_type' => $sort]);
             foreach ($result as $entity) {
                 $context->addEntity($entity);
             }

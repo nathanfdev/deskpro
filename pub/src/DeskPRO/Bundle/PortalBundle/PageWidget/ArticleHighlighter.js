@@ -1,8 +1,9 @@
 import $ from 'jquery';
-import PageWidget from 'DeskPRO/Component/PageWidget/PageWidget';
-import WordHighlighter from 'DeskPRO/Bundle/PortalBundle/PageWidget/Common/WordHighlighter';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
+import { WordHighlighter } from 'DeskPRO/Bundle/PortalBundle/PageWidget/Common/WordHighlighter';
 
 export default class ArticleHighlighter extends PageWidget {
+
   renderWidget() {
     const $article = this.$element;
     const highlighter = new WordHighlighter;

@@ -31,6 +31,7 @@
  *
  * @category Search
  */
+
 namespace Application\DeskPRO\Search;
 
 use Application\DeskPRO\App;
@@ -126,26 +127,26 @@ class SearchIndexer
         #------------------------------
         # Default
         #------------------------------
-        } else {
-            foreach ($updates as $object) {
-                switch (true) {
-                    case $object instanceof Article:
-                    case $object instanceof News:
-                    case $object instanceof Download:
-                    case $object instanceof Feedback:
-                        App::getContainer()->getSearchAdapter()->updateObjectsInIndex(array($object));
-                        break;
-                }
+        }
+
+        foreach ($updates as $object) {
+            switch (true) {
+                case $object instanceof Article:
+                case $object instanceof News:
+                case $object instanceof Download:
+                case $object instanceof Feedback:
+                    App::getContainer()->getSearchAdapter()->updateObjectsInIndex(array($object));
+                    break;
             }
-            foreach ($deletes as $object) {
-                switch (true) {
-                    case $object instanceof Article:
-                    case $object instanceof News:
-                    case $object instanceof Download:
-                    case $object instanceof Feedback:
-                        App::getContainer()->getSearchAdapter()->deleteObjectsFromIndex(array($object));
-                        break;
-                }
+        }
+        foreach ($deletes as $object) {
+            switch (true) {
+                case $object instanceof Article:
+                case $object instanceof News:
+                case $object instanceof Download:
+                case $object instanceof Feedback:
+                    App::getContainer()->getSearchAdapter()->deleteObjectsFromIndex(array($object));
+                    break;
             }
         }
     }

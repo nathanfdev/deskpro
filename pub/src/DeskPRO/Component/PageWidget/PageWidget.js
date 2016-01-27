@@ -47,7 +47,7 @@ import $ from 'jquery';
  * Whenever there's an element with class "my-widget-block", a new instance of myWidgetClass will be
  * instantiated on it.
  */
-export default class PageWidget {
+export class PageWidget {
 
   constructor(element = null, parent = null, options = {}) {
     this.initState = 'pre_init';

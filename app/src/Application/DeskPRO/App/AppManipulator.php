@@ -29,12 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\App;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\AppPackage;
-use Application\DeskPRO\ORM\EntityManager;
+use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 
 /**
@@ -53,7 +54,7 @@ class AppManipulator
      */
     private $container;
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     private $em;
 

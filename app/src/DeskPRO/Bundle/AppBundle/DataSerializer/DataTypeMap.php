@@ -47,25 +47,23 @@ class DataTypeMap
     /**
      * Constructor.
      *
+     * $map is like:
+     * <code>
+     * $map = [
+     *     'foo_bar' => [
+     *         'classes' => [
+     *             'DeskPRO\Bundle\AppBundle\Entity\FooBar',
+     *             '\Proxies\__CG__\DeskPRO\Bundle\AppBundle\Entity\FooBar',
+     *         ],
+     *     ],
+     * ];
+     * </code>
+     *
      * @param array|null $map
      */
-    public function __construct(array $map = null)
+    public function __construct(array $map)
     {
-        if ($map) {
-            $this->map = $map;
-        } else {
-            // in dev/prod, we construct this with a $map array so the followg is just for testing purposes
-            // this config process will get simpler (probably a yml config file)
-            // you can see how this map checks can be expanded beyond just object type lookups
-            $this->map = [
-                'sandbox_widget' => [
-                    'classes' => [
-                        'DeskPRO\Bundle\AppBundle\Entity\SandboxWidget',
-                        '\Proxies\__CG__\DeskPRO\Bundle\AppBundle\Entity\SandboxWidget',
-                    ],
-                ],
-            ];
-        }
+        $this->map = $map;
     }
 
     /**
@@ -140,7 +138,7 @@ class DataTypeMap
 
         // we did not find an explicit type from the map, so we can imply a type:
         // take the non-qualified class name and go from camel -> underscore
-        // e.g. DeskPRO\Bundle\AppBundle\Entity\SandboxWidget => sandbox_widget
+        // e.g. DeskPRO\Bundle\AppBundle\Entity\FooBar => foo_bar
         $class_name_parts = explode('\\', $object_class);
         if (count($class_name_parts)) {
             $class_name = end($class_name_parts);

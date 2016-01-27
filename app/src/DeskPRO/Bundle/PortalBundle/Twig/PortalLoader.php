@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\EntityRepository\Template;
@@ -76,6 +77,7 @@ class PortalLoader implements \Twig_LoaderInterface, \Twig_ExistsLoaderInterface
     public function exists($name)
     {
         // we only support Theme: type template names in this loader. All others will be loaded by the normal Twig process.
+        // see also TemplateNameParser
         return strpos($name, 'Theme:') === 0 || strpos($name, 'ThemeParent:') === 0 || strpos($name, 'ThemeTagTemplate:') === 0;
     }
 

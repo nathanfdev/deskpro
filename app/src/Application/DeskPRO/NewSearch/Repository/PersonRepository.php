@@ -36,28 +36,21 @@ use Elastica\Util as ElasticaUtil;
  */
 class PersonRepository extends AbstractRepository implements WithLabelsInterface
 {
-    /**
-     * Fields to be highlighted.
-     *
-     * @var array
-     */
-    protected $highlightFields = array(
-        'name'   => array('fragment_size' => 100),
-        'emails' => array('fragment_size' => 100, 'number_of_fragments' => 1),
-    );
+    protected $highlightFields = [
+        'name'   => ['fragment_size' => 100],
+        'emails' => ['fragment_size' => 100, 'number_of_fragments' => 1],
+    ];
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     protected function getQueryFields()
     {
-        return array('name', 'first_name', 'last_name', 'emails', 'phone_numbers');
+        return ['name', 'first_name', 'last_name', 'emails', 'phone_numbers'];
     }
 
     /**
-     * @param $q
-     *
-     * @return Query\MultiMatch
+     * {@inheritdoc}
      */
     protected function getQueryString($q)
     {

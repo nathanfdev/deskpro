@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam as Team;
@@ -68,21 +69,21 @@ class TaskAssignment implements EntityInterface, NotifyPropertyChanged
     /**
      * @var Person
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $person;
 
     /**
      * @var Team
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\AgentTeam")
-     * @ORM\JoinColumn(name="team_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="team_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $team;
 
     /**
      * @var Department
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Department")
-     * @ORM\JoinColumn(name="department_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="department_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $department;
 

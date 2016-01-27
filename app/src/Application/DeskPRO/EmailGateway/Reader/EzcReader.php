@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway\Reader;
 
 use Orb\Data\ContentTypes;
@@ -338,11 +339,19 @@ class EzcReader extends AbstractReader
                 } else {
                     $attach->tmp_file = $part->fileName;
 
-                    if (isset($part->contentDisposition) && isset($part->contentDisposition->displayFileName)) {
-                        try {
-                            $attach->file_name = basename($part->contentDisposition->displayFileName);
-                            $attach->mime_type = \Orb\Data\ContentTypes::getContentTypeFromFilename($part->contentDisposition->displayFileName);
-                        } catch (\Exception $e) {
+                    if (isset($part->contentDisposition)) {
+                        foreach (array('displayFileName', 'fileName') as $field) {
+                            if (!empty($part->contentDisposition->$field)) {
+                                try {
+                                    $attach->file_name = basename($part->contentDisposition->$field);
+                                    $attach->mime_type = \Orb\Data\ContentTypes::getContentTypeFromFilename($part->contentDisposition->displayFileName);
+                                } catch (\Exception $e) {
+                                }
+                            }
+
+                            if ($attach->file_name && $attach->file_name !== 'filename') {
+                                break;
+                            }
                         }
                     } elseif (!empty($part->fileName)) {
                         try {

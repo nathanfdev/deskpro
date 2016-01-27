@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
@@ -57,7 +58,7 @@ class TaskLog implements EntityInterface, NotifyPropertyChanged
     /**
      * @var Person
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="SET NULL")
      * @Assert\NotNull()
      * @Assert\Valid()
      */
@@ -101,14 +102,14 @@ class TaskLog implements EntityInterface, NotifyPropertyChanged
     /**
      * @var TaskLog
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskLog")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $parent;
 
     /**
      * @var Task
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
-     * @ORM\JoinColumn(name="task_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="task_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotNull()
      * @Assert\Valid()
      */

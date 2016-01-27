@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Doctrine\Type;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
@@ -66,6 +67,11 @@ class TermEngineTermType extends BaseType
         $converter = new TermToJsonConverter();
 
         return $converter->toTerm($value);
+    }
+
+    public function requiresSQLCommentHint(AbstractPlatform $platform)
+    {
+        return true;
     }
 
     public function getName()

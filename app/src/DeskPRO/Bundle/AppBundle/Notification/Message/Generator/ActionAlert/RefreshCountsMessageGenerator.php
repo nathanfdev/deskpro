@@ -29,7 +29,6 @@
 namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert;
 
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\AgentChat\Helper;
 use DeskPRO\Bundle\AppBundle\AgentChat\History;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
@@ -40,6 +39,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\AbstractGenerator;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**

@@ -40,7 +40,7 @@ use Orb\Util\Env;
 class ServerReqs
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 

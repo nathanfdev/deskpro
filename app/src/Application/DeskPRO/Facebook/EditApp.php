@@ -29,10 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Facebook;
 
 use Application\DeskPRO\Entity\FacebookApp;
-use Application\DeskPRO\ORM\EntityManager;
+use Doctrine\ORM\EntityManager;
 
 class EditApp
 {

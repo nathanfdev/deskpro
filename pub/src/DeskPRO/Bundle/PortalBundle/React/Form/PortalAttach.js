@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
 import PortalPhrases from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
-import PortalUrlGenerator from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
+import { portalUrlGenerator } from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
 import { openFullImage } from 'DeskPRO/Component/Util/FullImage';
 
 const qq = require('exports?qq!fine-uploader/fine-uploader/fine-uploader.js');
 
-export default class PortalAttach extends React.Component {
+export class PortalAttach extends React.Component {
 
   constructor(props) {
     super(props);
@@ -27,7 +27,7 @@ export default class PortalAttach extends React.Component {
       dropZoneElements: this.refs.btn,
       debug: true,
       request: {
-        endpoint: PortalUrlGenerator.path('/') + 'dpblob',
+        endpoint: portalUrlGenerator.path('/') + 'dpblob',
         method: 'POST',
         inputName: 'file[blob]',
         params: params

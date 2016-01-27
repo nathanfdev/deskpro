@@ -29,19 +29,17 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
-use Application\DeskPRO\EntityRepository\Brand;
 use DeskPRO\Bundle\AppBundle\HttpKernel\SkipLowRequestInterface;
 use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\FileCacheReader;
+use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Util\ClassUtils;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ExpressionLanguage;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -57,7 +55,7 @@ class TagOptionsListener implements EventSubscriberInterface, SkipLowRequestInte
     protected $expressionLanguage;
 
     /**
-     * @var AnnotationReader
+     * @var Reader
      */
     private $reader;
 
@@ -69,10 +67,10 @@ class TagOptionsListener implements EventSubscriberInterface, SkipLowRequestInte
     /**
      * Constructor.
      *
-     * @param FileCacheReader $reader
-     * @param Container       $container
+     * @param Reader    $reader
+     * @param Container $container
      */
-    public function __construct(FileCacheReader $reader, Container $container)
+    public function __construct(Reader $reader, Container $container)
     {
         $this->reader    = $reader;
         $this->container = $container;

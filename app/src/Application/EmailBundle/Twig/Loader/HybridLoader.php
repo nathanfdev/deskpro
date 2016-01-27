@@ -31,6 +31,7 @@
  *
  * @category Twig
  */
+
 namespace Application\EmailBundle\Twig\Loader;
 
 use Application\DeskPRO\App;
@@ -124,7 +125,7 @@ class HybridLoader extends FilesystemLoader
         }
     }
 
-    protected function findTemplate($template)
+    protected function findTemplate($template, $throw = true)
     {
         $this->_initTemplates();
 
@@ -159,6 +160,6 @@ class HybridLoader extends FilesystemLoader
             }
         }
 
-        return parent::findTemplate($template);
+        return parent::findTemplate($template, $throw);
     }
 }
