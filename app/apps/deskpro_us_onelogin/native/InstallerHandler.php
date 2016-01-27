@@ -31,6 +31,7 @@
  *
  * @category Apps
  */
+
 namespace deskpro_us_onelogin;
 
 use Application\DeskPRO\App\Native\InstallerHandler\AbstractUsersourceInstallerHandler;

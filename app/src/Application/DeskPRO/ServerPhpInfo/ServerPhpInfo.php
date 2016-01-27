@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\ServerPhpInfo;
 
 use Application\DeskPRO\App;

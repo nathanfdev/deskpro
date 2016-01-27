@@ -31,6 +31,7 @@
  *
  * @category Templating
  */
+
 namespace Application\EmailBundle\Twig\Extension;
 
 use Application\DeskPRO\App;

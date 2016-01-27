@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Doctrine\Type;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;

@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\TicketMerge;
 
 use Application\DeskPRO\App;

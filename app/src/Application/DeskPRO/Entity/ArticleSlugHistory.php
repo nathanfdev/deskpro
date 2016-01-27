@@ -33,6 +33,7 @@
  *
  * @copyright Copyright (c) 2011 DeskPRO (http://www.deskpro.com/)
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;

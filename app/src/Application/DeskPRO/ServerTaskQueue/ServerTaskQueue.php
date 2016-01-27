@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\ServerTaskQueue;
 
 use Doctrine\ORM\EntityManager;

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\ServerFileCheck;
 
 use Application\DeskPRO\Distribution\VerifyChecksums;

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway\Reader;
 
 use Orb\Data\ContentTypes;

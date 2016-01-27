@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Escalations;
 
 use Application\DeskPRO\DBAL\Connection;

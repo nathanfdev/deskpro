@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader as AbstractEmailReader;

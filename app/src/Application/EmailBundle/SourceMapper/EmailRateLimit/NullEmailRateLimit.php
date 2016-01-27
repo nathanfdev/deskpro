@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\SourceMapper\EmailRateLimit;
 
 class NullEmailRateLimit implements EmailRateLimitInterface

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Departments;
 
 use Application\DeskPRO\Entity\Department;

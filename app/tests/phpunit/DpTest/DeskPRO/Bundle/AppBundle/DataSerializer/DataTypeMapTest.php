@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\DataSerializer;
 
 use Application\DeskPRO\Entity\TicketAttachment;

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace deskpro_us_jwt\Usersource\Auth;
 
 use League\Url\Url;

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\ServerMysqlStatus;
 
 use Application\DeskPRO\App;

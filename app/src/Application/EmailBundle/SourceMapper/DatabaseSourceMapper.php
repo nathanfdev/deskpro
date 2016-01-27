@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\SourceMapper;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;

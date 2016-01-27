@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\JobQueue\Processor\MassActions;
 
 use Application\DeskPRO\JobQueue\Processor\AbstractJobProcessor;

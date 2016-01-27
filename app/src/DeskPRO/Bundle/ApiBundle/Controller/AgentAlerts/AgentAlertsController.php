@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\AgentAlerts;
 
 use Application\DeskPRO\Entity\AgentAlert;

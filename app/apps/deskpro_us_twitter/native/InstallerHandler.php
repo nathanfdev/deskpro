@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace deskpro_us_twitter;
 
 use Application\DeskPRO\App\Native\InstallerHandler\AbstractUsersourceInstallerHandler;

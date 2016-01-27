@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade;
 
 use Application\DeskPRO\App\Native\NativeAppsSync;

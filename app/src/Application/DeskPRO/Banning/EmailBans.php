@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Banning;
 
 use Application\DeskPRO\Entity\BanEmail;

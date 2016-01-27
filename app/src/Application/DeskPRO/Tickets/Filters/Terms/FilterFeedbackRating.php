@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Filters\Terms;
 
 use Application\DeskPRO\Exception\NotImplementedException;

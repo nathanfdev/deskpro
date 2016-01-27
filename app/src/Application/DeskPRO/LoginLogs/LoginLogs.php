@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\LoginLogs;
 
 use Application\DeskPRO\DependencyInjection\SystemServices\AgentDataService;

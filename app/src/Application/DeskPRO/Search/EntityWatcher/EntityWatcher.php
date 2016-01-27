@@ -31,6 +31,7 @@
  *
  * @category Search
  */
+
 namespace Application\DeskPRO\Search\EntityWatcher;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;

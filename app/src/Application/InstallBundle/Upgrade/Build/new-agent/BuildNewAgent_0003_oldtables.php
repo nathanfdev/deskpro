@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class BuildNewAgent_0003_oldtables extends AbstractBuild

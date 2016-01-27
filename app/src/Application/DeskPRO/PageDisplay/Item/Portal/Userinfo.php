@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\PageDisplay\Item\Portal;
 
 use Application\DeskPRO\App;

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpBehat;
 
 use Application\DeskPRO\Command\IndexElasticsearchCommand;

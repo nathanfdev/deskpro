@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace deskpro_magento;
 
 use Application\DeskPRO\App\Native\InstallerHandler\AbstractUsersourceInstallerHandler;

@@ -31,6 +31,7 @@
  *
  * @category Apps
  */
+
 namespace deskpro_us_okta;
 
 use Application\DeskPRO\App\Native\InstallerHandler\AbstractUsersourceInstallerHandler;
