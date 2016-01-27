@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Templating;
 
 use Application\DeskPRO\App;
@@ -407,10 +408,6 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
         } else {
             $helpdesk_url = trim(str_replace('/index.php', '', $this->container->getSetting('core.deskpro_url')), '/').'/';
             $deskpro_url  = $helpdesk_url;
-
-            if (!$this->container->getSetting('core.rewrite_urls')) {
-                $deskpro_url .= 'index.php/';
-            }
 
             $widget_url = $deskpro_url;
             $widget_url = preg_replace('#^https?://#', '//', $widget_url);

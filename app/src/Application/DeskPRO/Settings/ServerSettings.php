@@ -29,9 +29,8 @@
 /**
  * DeskPRO.
  */
-namespace Application\DeskPRO\Settings;
 
-use Orb\Util\Util;
+namespace Application\DeskPRO\Settings;
 
 class ServerSettings
 {
@@ -40,8 +39,6 @@ class ServerSettings
      */
     private $settings;
 
-    /** @var bool */
-    public $rewrite_urls = false;
     /** @var string */
     public $cookie_path = '/';
     /** @var string */
@@ -61,8 +58,6 @@ class ServerSettings
      */
     public function resetSettings()
     {
-        $this->rewrite_urls = (bool) $this->settings->get('core.rewrite_urls');
-
         $this->cookie_path = $this->settings->get('core.cookie_path');
         if ($this->cookie_path === null) {
             $this->cookie_path = '/';
@@ -80,7 +75,6 @@ class ServerSettings
     public function toArray()
     {
         $export_settings = array(
-            'rewrite_urls'  => $this->rewrite_urls,
             'cookie_path'   => $this->cookie_path,
             'cookie_domain' => $this->cookie_domain,
         );
@@ -105,7 +99,6 @@ class ServerSettings
      */
     public function saveSettings()
     {
-        $this->settings->setSetting('core.rewrite_urls', Util::boolInt($this->rewrite_urls));
         $this->settings->setSetting('core.cookie_path', $this->cookie_path);
         $this->settings->setSetting('core.cookie_domain', $this->cookie_domain);
     }

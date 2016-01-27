@@ -31,6 +31,7 @@
  *
  * @category Controller
  */
+
 namespace Application\DeskPRO\ResourceScanner;
 
 /**
@@ -66,7 +67,6 @@ class AdvancedSettings extends SettingFiles
             'core_email.antiflood_newtickets_warn',
             'core_email.antiflood_newreplies',
             'core_email.antiflood_newreplies_warn',
-            'core_misc.cleanup_visitors',
             'core_misc.cleanup_login_logs',
             'core_misc.cleanup_gateway_sources',
             'core_misc.cleanup_gateway_sources_onlyclosed',

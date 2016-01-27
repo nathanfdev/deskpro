@@ -69,8 +69,6 @@ $DP_CONFIG['debug']['dev']              = true;
 $DP_CONFIG['debug']['raw_assets']       = array('all');
 $DP_CONFIG['debug']['no_report_errors'] = true;
 
-$DP_CONFIG['rewrite_urls'] = true;
-
 $DP_CONFIG['SETTINGS']                           = array();
 $DP_CONFIG['SETTINGS']['core.use_mail_queue']    = 'never';
 $DP_CONFIG['SETTINGS']['core.show_share_widget'] = false;

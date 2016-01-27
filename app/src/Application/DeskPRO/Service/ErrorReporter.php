@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Service;
 
 use Application\DeskPRO\App;
@@ -406,7 +407,6 @@ class ErrorReporter
             $database_stats = new \Application\DeskPRO\DBAL\DatabaseStats(App::getDb());
             $data           = array_merge($data, $database_stats->getStats());
 
-            $data['setting_core_rewrite_urls']       = App::getSetting('core.rewrite_urls');
             $data['setting_core_site_url']           = App::getSetting('core.site_url');
             $data['setting_core_install_time']       = App::getSetting('core.install_time');
             $data['setting_core_filestorage_method'] = App::getSetting('core.filestorage_method');

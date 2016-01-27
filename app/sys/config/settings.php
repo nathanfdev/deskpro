@@ -33,19 +33,9 @@ return array(
     ####################################################################################################################
 
     /*
-     * When there's a problem where we cant get user input any other way, this address will be displayed.
-     */
-    'core.emergency_contact' => 'emergency-contact@example.com',
-
-    /*
      * Is registration enbaled?
      */
     'core.reg_enabled' => true,
-
-    /*
-     * Enable URL rewriting (removes index.php/ from URLs)
-     */
-    'core.rewrite_urls' => false,
 
     /*
      * Is multi-language features enabeld?
@@ -638,11 +628,6 @@ return array(
     ####################################################################################################################
     # core_misc
     ####################################################################################################################
-
-    /*
-     * How often to clean up Visitor records
-     */
-    'core_misc.cleanup_visitors' => 864000, // 10 days
 
     /*
      * How often to clean up login logs

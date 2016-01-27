@@ -79,7 +79,6 @@ return array(
     'admin.settings.revert_all_settings'                    => 'Revert ALL Settings',
     'admin.settings.revert_settings'                        => 'Revert Settings',
     'admin.settings.revert_settings_to_default'             => 'Revert setting back to default',
-    'admin.settings.rewrite_urls_desc'                      => 'Enable clean URLs. When this is disabled, URLs will contain a /index.php/ segment. You can only enable this option if your server supports URL rewriting.',
     'admin.settings.saved_success'                          => 'Settings were saved successfully',
     'admin.settings.select_timezone'                        => 'Please select a timezone',
     'admin.settings.set_value'                              => 'Set Value',

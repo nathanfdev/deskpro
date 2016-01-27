@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Routing\Generator;
 
 use Application\DeskPRO\App;
@@ -47,12 +48,6 @@ class UrlGenerator extends BaseUrlGenerator
     {
         if (defined('DP_INTERFACE') && DP_INTERFACE == 'cli') {
             $deskpro_url = rtrim(App::getSetting('core.deskpro_url'), '/');
-            if (!isset($GLOBALS['DP_CONFIG']['rewrite_urls'])) {
-                $GLOBALS['DP_CONFIG']['rewrite_urls'] = App::getSetting('core.rewrite_urls');
-            }
-            if (!$GLOBALS['DP_CONFIG']['rewrite_urls'] && !preg_match('#index\.php$#', $deskpro_url)) {
-                $deskpro_url .= '/index.php';
-            }
 
             $info = parse_url($deskpro_url);
             $context->setScheme($info['scheme']);
@@ -97,9 +92,6 @@ class UrlGenerator extends BaseUrlGenerator
 
         // Make sure index.php is in links
         $deskpro_url = rtrim(App::getSetting('core.deskpro_url'), '/');
-        if (!App::getSetting('core.rewrite_urls') && !@$GLOBALS['DP_CONFIG']['rewrite_urls'] && !preg_match('#index\.php$#', $deskpro_url)) {
-            $deskpro_url .= '/index.php';
-        }
 
         return $deskpro_url.$url;
     }

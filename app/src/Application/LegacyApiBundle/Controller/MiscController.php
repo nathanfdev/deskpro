@@ -97,10 +97,6 @@ class MiscController extends AbstractController
             }
             $data['asset_url'] = preg_replace('#^https?://#', '//', $data['asset_url']);
 
-            if (!$this->container->getSetting('core.rewrite_urls')) {
-                $data['deskpro_url'] .= 'index.php/';
-            }
-
             $data['widget_url'] = $data['deskpro_url'];
             $data['widget_url'] = preg_replace('#^https?://#', '//', $data['widget_url']);
         }
@@ -296,10 +292,6 @@ class MiscController extends AbstractController
 
         if ($this->in->getBool('return_info')) {
             $api_url = App::getSetting('core.deskpro_url');
-
-            if (!dp_get_config('rewrite_urls') && strpos($api_url, 'index.php') === false) {
-                $api_url .= 'index.php/';
-            }
 
             $data['api_url']       = $api_url;
             $data['helpdesk_info'] = array(

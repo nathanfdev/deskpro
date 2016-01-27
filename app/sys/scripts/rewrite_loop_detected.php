@@ -16,19 +16,10 @@
         DeskPRO has detected a problem with URL routing that is resulting in a redirection loop.
     </p>
     <p>
-        This usually means you have enabled "clean URLs" (also known as "URL rewriting"), but your server does not support it.
+        This usually means you have enabled "clean URLs" (also known as "URL rewriting"), but your server is not handling it properly.
     </p>
 
     <br/>
-
-    <h3>Disable Clean URLs</h3>
-    <p>
-        The quickest fix is to disable URL rewriting in DeskPRO so you can start using your helpdesk again.
-    </p>
-    <p>
-        Edit your config.php file and add the following line to the bottom:
-    </p>
-    <code>$DP_CONFIG['rewrite_urls'] = false;</code>
 
     <br/><br/>
 

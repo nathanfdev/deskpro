@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\ServerPhpInfo;
 
 use Application\DeskPRO\App;
@@ -202,8 +203,6 @@ class ServerPhpInfo
                 $debug_settings['SETTINGS.'.$k] = $v;
             }
         }
-
-        $debug_settings['rewrite_urls'] = print_r(dp_get_config('rewrite_urls', false), true);
 
         $memtest_link = App::getSetting('core.deskpro_url').'?_sys=memtest';
         $memtest_link .= '&_='.Util::generateStaticSecurityToken($this->config_hash.'memtest', 86400);
