@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { RteInput } from 'DeskPRO/Component/Rte/RteInput';
 import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
-import { portalUrlGenerator } from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
+import { portalUrlGenerator } from '../../Http/PortalUrlGenerator';
 
 export class PortalRte extends React.Component {
 
@@ -65,7 +65,7 @@ export class PortalRte extends React.Component {
                   dropNode={'.attach-file'}>
 
           <div className="dp-medium-rte-wrapper-overlay">
-            <h1>Drag your file here.</h1>
+            <h1>Drag your file in here.</h1>
           </div>
         </DropZone>
       </div>

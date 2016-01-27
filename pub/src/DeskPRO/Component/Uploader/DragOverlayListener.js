@@ -36,14 +36,26 @@ export class DragOverlayListener extends React.Component {
   }
 
   onDefaultDrop = event => {
+    // todo
+    // temp code to make fine-uploader works
+    // remove after refactor of the portal attach component
+
     const { dropNode } = this.props;
+    let skip = false;
 
     if (dropNode) {
-      const $dropZone = $(dropNode);
-      if ($dropZone.is(event.target) || $dropZone.has(event.target).length > 0) {
-        return;
-      }
+      this.getContext().forEach(context => {
+        const $dropNone = $(dropNode, context);
+        if ($dropNone.is(event.target) || $dropNone.has(event.target).length > 0) {
+          skip = true;
+        }
+      });
     }
+
+    if (skip) {
+      return;
+    }
+    // end of tmp code
 
     event.preventDefault();
   };
