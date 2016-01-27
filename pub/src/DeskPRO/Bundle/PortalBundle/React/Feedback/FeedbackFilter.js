@@ -1,13 +1,11 @@
-import React from "react"
-import FilterControls from "./Controls/FilterControls"
-import PortalHttp from "DeskPRO/Bundle/PortalBundle/Http/PortalHttp"
-import PortalUrlCorrector from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlCorrector";
-import FilterModel from "./FilterModel"
-import FilterOptions from "./FilterOptions"
-import ResultsPartial from "./ResultsPartial"
-import history from "html5-history-api"
-import _ from "lodash"
-import $ from "jquery"
+import React from 'react';
+import FilterControls from './Controls/FilterControls';
+import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
+import PortalUrlCorrector from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlCorrector';
+import FilterModel from './FilterModel';
+import FilterOptions from './FilterOptions';
+import ResultsPartial from './ResultsPartial';
+import history from 'html5-history-api';
 
 let location = window.history.location || window.location;
 
@@ -27,7 +25,7 @@ export default class FeedbackFilter extends React.Component {
     history.replaceState(this.state, null, window.history.location || window.location);
     this.updateFilter(this.state.filter, true);
     window.addEventListener('popstate', (e) => {
-      if (e.state == null) {
+      if (e.state === null) {
         return;
       }
       if (e.state.partial.length === 0) {
@@ -54,7 +52,7 @@ export default class FeedbackFilter extends React.Component {
       PortalUrlCorrector.request(config);
       url = config.url;
 
-      PortalHttp.sendGet(url).then(r => {
+      portalHttp.sendGet(url).then(r => {
         let state = {
           filter: filter_model,
           partial: r.getData(),

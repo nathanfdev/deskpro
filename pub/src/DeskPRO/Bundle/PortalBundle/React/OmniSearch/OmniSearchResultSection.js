@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import PortalHttp from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
+import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -98,7 +98,7 @@ export class OmniSearchResultSection extends React.Component {
     return new Promise(resolve => {
       const newpage = this.state.page + 1;
 
-      PortalHttp.sendGet('DP_URL/search/omni', {
+      portalHttp.sendGet('DP_URL/search/omni', {
         data: {
           q: this.state.q,
           page: newpage,

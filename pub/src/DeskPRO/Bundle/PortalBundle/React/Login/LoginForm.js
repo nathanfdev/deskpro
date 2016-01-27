@@ -1,9 +1,10 @@
 import React from 'react';
-import PortalHttp from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
+import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 import { portalUrlGenerator } from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export default class LoginForm extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -12,6 +13,7 @@ export default class LoginForm extends React.Component {
       captcha_public_key: '6LcWL8YSAAAAAJu1CrtS9RdOJyKd_NbArNgUFWV9'
     };
   }
+
   submitLogin(e) {
     e.preventDefault();
     const $username = $(this.refs.username);
@@ -23,14 +25,14 @@ export default class LoginForm extends React.Component {
       failed: false
     });
 
-    PortalHttp.sendPost(login_url, {
+    portalHttp.sendPost(login_url, {
       username: $username.val(),
       password: $password.val(),
       remember_me: $remember_me.val()
     }, {jsonPayload: false}).then((r) => {
       console.log('RESPONSE %o', r);
       if (r.data.success) {
-        if ("redirect" in r.data) {
+        if ('redirect' in r.data) {
           window.location.href = r.data.redirect;
         } else {
           window.location.reload();
@@ -44,8 +46,9 @@ export default class LoginForm extends React.Component {
       }
     });
   }
+
   addCaptchaIfNecessary() {
-    PortalHttp.sendGet(portalUrlGenerator.path('/captcha-html?action=login')).then((r) => {
+    portalHttp.sendGet(portalUrlGenerator.path('/captcha-html?action=login')).then((r) => {
       console.log('CAPTCHA RESPONSE ', r);
         if (r.data.captcha_required) {
           // for now we are not displaying the captcha, and instead are just redirecting the user to login page
@@ -60,6 +63,7 @@ export default class LoginForm extends React.Component {
         }
     });
   }
+
   render() {
     const failure_path = portalUrlGenerator.path('/login?retry=auth');
 

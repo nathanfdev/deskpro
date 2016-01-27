@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import PortalHttp from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
+import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 import { portalUrlGenerator } from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
 import { OmniSearchResultSection } from 'DeskPRO/Bundle/PortalBundle/React/OmniSearch/OmniSearchResultSection';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
@@ -89,7 +89,7 @@ export class OmniSearch extends React.Component {
       doSpin: true
     });
 
-    PortalHttp.sendGet('DP_URL/search/omni', { data: searchQuery }).then(response => {
+    portalHttp.sendGet('DP_URL/search/omni', { data: searchQuery }).then(response => {
       if (response.isError()) {
         return;
       }

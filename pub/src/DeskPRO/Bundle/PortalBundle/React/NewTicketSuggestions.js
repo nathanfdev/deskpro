@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import $ from 'jquery';
-import PortalHttp from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
+import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 class SuggestionRow extends React.Component {
@@ -137,7 +137,7 @@ export default class NewTicketSuggestions extends React.Component {
       doSpin: true
     });
 
-    PortalHttp.sendGet('DP_URL/search/similar', { data: search_query }).then((r) => {
+    portalHttp.sendGet('DP_URL/search/similar', { data: search_query }).then((r) => {
       if (!r.isError()) {
         this.setState({
           data: r.data.data,

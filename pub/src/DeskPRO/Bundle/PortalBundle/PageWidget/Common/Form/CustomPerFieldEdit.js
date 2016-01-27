@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
-import PortalHttp from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
+import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 
 let id_incrementer = 1;
 
@@ -44,7 +44,7 @@ export class CustomPerFieldEdit extends PageWidget {
     $addSubmit.click((e) => {
       e.preventDefault();
       $addSubmit.hide();
-      PortalHttp.sendPost(`/portal-data/custom-per/${type}/${id}`, { new_field: $addInput.val() }).
+      portalHttp.sendPost(`/portal-data/custom-per/${type}/${id}`, { new_field: $addInput.val() }).
         then((r) => {
           if (r.isError()) {
             markError();
