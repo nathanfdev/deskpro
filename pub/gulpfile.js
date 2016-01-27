@@ -142,37 +142,6 @@ function refreshHitRecorder() {
   console.log('.. done writing hit_recorder');
 }
 
-function refreshLegacy() {
-  var legacyPath = path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Legacy');
-  var targetPath = path.join(__dirname, 'build/DeskPRO/Bundle/AgentBundle/Legacy');
-
-  console.log('Refreshing legacy... ');
-  glob.sync('**/*.js', { cwd: legacyPath, root: legacyPath }).forEach(f => {
-    var filePath = legacyPath + '/' + f;
-    var targetFile = targetPath + '/' + f;
-    var targetDir = path.dirname(targetFile);
-
-    if (!fs.existsSync(targetDir)) {
-      mkdirp.sync(targetDir);
-    }
-
-    try {
-      var code = babel.transformFileSync(filePath, { presets: ['es2015', 'stage-0'] }).code;
-      fs.writeFileSync(targetFile, code);
-    } catch (e) {
-      console.log('Error refreshing legacy');
-      console.error(e);
-      notifier.notify({
-        title: 'Error refreshing legacy',
-        message: e,
-        sound: true
-      });
-    }
-
-    console.log('- ' + filePath);
-  });
-}
-
 function refreshPortalDesignerVariables() {
   var spawn = require('child_process').spawn;
   process.chdir('../web');
@@ -193,14 +162,12 @@ gulp.task('bundle', callback => {
   reducerRefresh('Widget', path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle'));
   refreshWidgetLoader();
   refreshHitRecorder();
-  refreshLegacy();
   refreshPortalDesignerVariables();
   runWebpackBundle(getWebpackConfig('all', deskpro.isProd), callback);
 });
 
 gulp.task('bundle:agent', callback => {
   reducerRefresh('Agent', path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle'));
-  refreshLegacy();
   refreshPortalDesignerVariables();
   runWebpackBundle(getWebpackConfig('agent', deskpro.isProd), callback);
 });
@@ -217,10 +184,6 @@ gulp.task('bundle:widget', callback => {
 });
 
 gulp.task('bundle:dev-server', () => {
-  refreshLegacy();
-  watch(path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Legacy/**/*.js'), () => {
-    refreshLegacy();
-  });
   refreshPortalDesignerVariables();
   refreshWidgetLoader();
   refreshHitRecorder();
@@ -230,11 +193,7 @@ gulp.task('bundle:dev-server', () => {
 });
 
 gulp.task('bundle:dev-server:agent', () => {
-  refreshLegacy();
   reducerRefresh('Agent', path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle'));
-  watch(path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Legacy/**/*.js'), () => {
-    refreshLegacy();
-  });
   refreshPortalDesignerVariables();
   startWebpackServer(getWebpackConfig('agent', true, false));
 });

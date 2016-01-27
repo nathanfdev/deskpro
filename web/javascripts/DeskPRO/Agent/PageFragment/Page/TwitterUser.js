@@ -62,7 +62,7 @@ DeskPRO.Agent.PageFragment.Page.TwitterUser = new Orb.Class({
 
 			var overlay = new DeskPRO.UI.Overlay({
 				contentMethod: 'ajax',
-				contentAjax: { url: BASE_URL + 'old-agent/twitter/user/' + self.getMetaData('userId') + '/message-overlay' },
+				contentAjax: { url: BASE_URL + 'agent/twitter/user/' + self.getMetaData('userId') + '/message-overlay' },
 				zIndex: 40000, // Above floating people windows
 				onAjaxDone: function() {
 					var wrapper = overlay.getWrapper();

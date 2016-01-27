@@ -55,7 +55,7 @@ DeskPRO.Agent.PageHelper.Comments = new Orb.Class({
 
 					case 'create-ticket':
 						$.ajax({
-							url: BASE_URL + 'old-agent/publish/comments/new-ticket-info/' + commentEl.data('content-type') + '/' + commentEl.data('comment-id') + '.json',
+							url: BASE_URL + 'agent/publish/comments/new-ticket-info/' + commentEl.data('content-type') + '/' + commentEl.data('comment-id') + '.json',
 							type: 'GET',
 							dataType: 'json',
 							success: function(data) {
@@ -106,7 +106,7 @@ DeskPRO.Agent.PageHelper.Comments = new Orb.Class({
 
 		var self = this;
 		$.ajax({
-			url: BASE_URL + 'old-agent/publish/comments/info/'+typename+'/'+commentId,
+			url: BASE_URL + 'agent/publish/comments/info/'+typename+'/'+commentId,
 			type: 'GET',
 			dataType: 'json',
 			context: this,
@@ -141,7 +141,7 @@ DeskPRO.Agent.PageHelper.Comments = new Orb.Class({
 		commentEl.addClass('gear-loading');
 
 		$.ajax({
-			url: BASE_URL + 'old-agent/publish/comments/save-comment/'+typename+'/'+commentId,
+			url: BASE_URL + 'agent/publish/comments/save-comment/'+typename+'/'+commentId,
 			type: 'POST',
 			data: {
 				comment: $('textarea.comment', editEl).val()
@@ -173,7 +173,7 @@ DeskPRO.Agent.PageHelper.Comments = new Orb.Class({
 	deleteComment: function(commentEl, typename, commentId) {
 		commentEl.fadeOut();
 		$.ajax({
-			url: BASE_URL + 'old-agent/publish/comments/delete/'+typename+'/'+commentId,
+			url: BASE_URL + 'agent/publish/comments/delete/'+typename+'/'+commentId,
 			type: 'POST',
 			context: this,
 			dataType: 'json',
@@ -194,7 +194,7 @@ DeskPRO.Agent.PageHelper.Comments = new Orb.Class({
 		commentEl.removeClass('validating').addClass('gear-loading');
 
 		$.ajax({
-			url: BASE_URL + 'old-agent/publish/comments/approve/'+typename+'/'+commentId,
+			url: BASE_URL + 'agent/publish/comments/approve/'+typename+'/'+commentId,
 			type: 'POST',
 			context: this,
 			dataType: 'json',

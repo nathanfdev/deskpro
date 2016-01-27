@@ -153,7 +153,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbList = new Orb.Class({
 		var ticketPage = ticketTab.page;
 
 		$.ajax({
-			url: BASE_URL + 'old-agent/kb/article/'+article_id+'/info',
+			url: BASE_URL + 'agent/kb/article/'+article_id+'/info',
 			type: 'GET',
 			dataType: 'json',
 			success: function(data) {
@@ -224,7 +224,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbList = new Orb.Class({
 					}
 
 					DeskPRO_Window.sections.publish_section.reload();
-					DeskPRO_Window.runPageRoute('listpane:' + BASE_URL + 'old-agent/kb/list/0');
+					DeskPRO_Window.runPageRoute('listpane:' + BASE_URL + 'agent/kb/list/0');
 				}
 			});
 		});

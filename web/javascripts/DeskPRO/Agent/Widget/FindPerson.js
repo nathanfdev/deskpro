@@ -18,7 +18,7 @@ DeskPRO.Agent.Widget.FindPerson = new Orb.Class({
 		this.overlay = new DeskPRO.UI.Overlay({
 			contentMethod: 'ajax',
 			contentAjax: {
-				url: BASE_URL + 'old-agent/people-search/quick-find'
+				url: BASE_URL + 'agent/people-search/quick-find'
 			}
 		});
 
@@ -137,7 +137,7 @@ DeskPRO.Agent.Widget.FindPerson = new Orb.Class({
 		this.switchDisplayElement('loading');
 
 		$.ajax({
-			url: BASE_URL + 'old-agent/people-search/quick-find-search.json',
+			url: BASE_URL + 'agent/people-search/quick-find-search.json',
 			data: formData,
 			dataType: 'json',
 			type: 'POST',

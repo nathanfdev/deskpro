@@ -93,7 +93,7 @@ DeskPRO.Agent.PageFragment.ListPane.DownloadList = new Orb.Class({
 		var ticketPage = ticketTab.page;
 
 		$.ajax({
-			url: BASE_URL + 'old-agent/downloads/file/'+download_id+'/info',
+			url: BASE_URL + 'agent/downloads/file/'+download_id+'/info',
 			type: 'GET',
 			dataType: 'json',
 			success: function(data) {
@@ -164,7 +164,7 @@ DeskPRO.Agent.PageFragment.ListPane.DownloadList = new Orb.Class({
 					}
 
 					DeskPRO_Window.sections.publish_section.reload();
-					DeskPRO_Window.runPageRoute('listpane:' + BASE_URL + 'old-agent/downloads/list/0');
+					DeskPRO_Window.runPageRoute('listpane:' + BASE_URL + 'agent/downloads/list/0');
 				}
 			});
 		});

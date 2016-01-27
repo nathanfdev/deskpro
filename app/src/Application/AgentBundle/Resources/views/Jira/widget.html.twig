@@ -10,7 +10,7 @@ $("*[data-action='export-jira']").on("click", function(){
 	var overlay = new DeskPRO.UI.Overlay({
 		destroyOnClose: true,
 		contentMethod: 'ajax',
-		contentAjax: { url: BASE_URL + 'old-agent/jira/export/' + pageMeta.ticket_id },
+		contentAjax: { url: BASE_URL + 'agent/jira/export/' + pageMeta.ticket_id },
 		onOverlayOpened: function() {
 			selectProject("{{ app.getSetting('core.apps_jira.defaultProject') }}");
 		}
@@ -21,7 +21,7 @@ $("*[data-action='export-jira']").on("click", function(){
 
 $("#" + pageMeta.baseId + "_jira_wrap_tab").click(function() {
 	//$("#" + pageMeta.baseId + "_jira_wrap").html("<h1 style='text-align: center;'>Loading . . .Please wait</h1>");
-	$("#" + pageMeta.baseId + "_jira_wrap").load(BASE_URL + 'old-agent/jira/issues/1', function(){
+	$("#" + pageMeta.baseId + "_jira_wrap").load(BASE_URL + 'agent/jira/issues/1', function(){
 		$("#" + pageMeta.baseId + "_jira_wrap_tab").children('span').text($("#" + pageMeta.baseId + "_jira_wrap #issue-count").text());
 	});
 

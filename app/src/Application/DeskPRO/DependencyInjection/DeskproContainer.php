@@ -31,6 +31,7 @@
  *
  * @category DependencyInjection
  */
+
 namespace Application\DeskPRO\DependencyInjection;
 
 use Application\DeskPRO\App;
@@ -91,7 +92,7 @@ class DeskproContainer extends Container
     public function isDebug()
     {
         //return $this->kernel ? $this->kernel->getEnvironment() == 'dev' : true;
-        // TODO: after we remove old-agent interface, use the commented line instead
+        // TODO: after we remove agent interface, use the commented line instead
         return $this->kernel ? in_array($this->kernel->getEnvironment(), ['dev_old_agent', 'dev']) : true;
     }
 

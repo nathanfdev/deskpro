@@ -15,7 +15,7 @@ DeskPRO.Agent.PageFragment.Page.DpNews = new Orb.Class({
 		this.getEl('dismiss').on('click', function() {
 			$(this).hide();
 			$.ajax({
-				url: BASE_URL + 'old-agent/misc/view-dp-news/'+self.meta.dpNewsId+'/dismiss',
+				url: BASE_URL + 'agent/misc/view-dp-news/'+self.meta.dpNewsId+'/dismiss',
 				dataType: 'json',
 				type: 'POST'
 			});
@@ -23,7 +23,7 @@ DeskPRO.Agent.PageFragment.Page.DpNews = new Orb.Class({
 
 		this.addEvent('destroy', function() {
 			$.ajax({
-				url: BASE_URL + 'old-agent/misc/view-dp-news/'+self.meta.dpNewsId+'/dismiss',
+				url: BASE_URL + 'agent/misc/view-dp-news/'+self.meta.dpNewsId+'/dismiss',
 				dataType: 'json',
 				type: 'POST'
 			});

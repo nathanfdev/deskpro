@@ -37,7 +37,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishDraftsList = new Orb.Class({
 				var action = $(info.itemEl).data('action');
 
 				$.ajax({
-					url: BASE_URL + 'old-agent/publish/drafts/mass-actions/' + action,
+					url: BASE_URL + 'agent/publish/drafts/mass-actions/' + action,
 					data: data,
 					type: 'POST',
 					dataType: 'json',

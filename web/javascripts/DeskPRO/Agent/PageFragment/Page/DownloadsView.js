@@ -13,7 +13,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 			'download',
 			this.meta.download_id,
 			this.meta.title,
-			BASE_URL + 'old-agent/downloads/file/' + this.meta.download_id
+			BASE_URL + 'agent/downloads/file/' + this.meta.download_id
 		);
 	},
 
@@ -59,7 +59,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 			disabled: !this.meta.canEdit,
 			onContentLinked: function(typename, content_id) {
 				$.ajax({
-					url: BASE_URL + 'old-agent/downloads/file/' + self.meta.download_id + '/ajax-save',
+					url: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
 					type: 'POST',
 					data: { content_type: typename, content_id: content_id, action: 'add-related' },
 					context: this,
@@ -68,7 +68,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 			},
 			onContentUnlinked: function(typename, content_id) {
 				$.ajax({
-					url: BASE_URL + 'old-agent/downloads/file/' + self.meta.download_id + '/ajax-save',
+					url: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
 					type: 'POST',
 					data: { content_type: typename, content_id: content_id, action: 'remove-related' },
 					context: this,
@@ -79,7 +79,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		this.ownObject(this.relatedContent);
 
 		this.miscContent = new DeskPRO.Agent.PageHelper.MiscContent(this, {
-			revisionCompareUrl: BASE_URL + 'old-agent/downloads/compare-revs/{OLD}/{NEW}'
+			revisionCompareUrl: BASE_URL + 'agent/downloads/compare-revs/{OLD}/{NEW}'
 		});
 		this.ownObject(this.miscContent);
 
@@ -87,7 +87,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 			triggerElement: '.who-voted-trigger',
 			contentMethod: 'ajax',
 			contentAjax: {
-				url: BASE_URL + 'old-agent/publish/rating-who-voted/download/' + this.meta.download_id
+				url: BASE_URL + 'agent/publish/rating-who-voted/download/' + this.meta.download_id
 			}
 		});
 		this.ownObject(this.whoVotedOverlay);
@@ -96,7 +96,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 			triggerElement: '.open-who-viewed',
 			contentMethod: 'ajax',
 			contentAjax: {
-				url: BASE_URL + 'old-agent/publish/who-viewed/2/' + this.meta.download_id
+				url: BASE_URL + 'agent/publish/who-viewed/2/' + this.meta.download_id
 			}
 		});
 		this.ownObject(this.whoViewedOverlay);
@@ -105,7 +105,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 			triggerElement: '.open-who-downloaded',
 			contentMethod: 'ajax',
 			contentAjax: {
-				url: BASE_URL + 'old-agent/publish/who-viewed/2/' + this.meta.download_id + '/2'
+				url: BASE_URL + 'agent/publish/who-viewed/2/' + this.meta.download_id + '/2'
 			}
 		});
 		this.ownObject(this.whoViewedOverlay);
@@ -144,7 +144,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 
 			loadingBtn.show();
 			$.ajax({
-				url: BASE_URL + 'old-agent/downloads/file/' + self.meta.download_id + '/ajax-save',
+				url: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
 				data: formData,
 				error: function() {
 					loadingBtn.hide();
@@ -220,7 +220,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 
 		var editTitle = new DeskPRO.Agent.PageFragment.Page.EditTitle(
 			this,
-			BASE_URL + 'old-agent/downloads/file/' + self.meta.download_id + '/ajax-save'
+			BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save'
 		);
 
 		// Tabs
@@ -243,7 +243,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 				}
 				if ($(info.tabContent).is('.revisions-tab') && !$(info.tabContent).is('.loaded')) {
 					$.ajax({
-						url: BASE_URL + 'old-agent/downloads/file/' + this.meta.download_id + '/view-revisions',
+						url: BASE_URL + 'agent/downloads/file/' + this.meta.download_id + '/view-revisions',
 						type: 'GET',
 						dataType: 'html',
 						context: self,
@@ -283,7 +283,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 			}
 
 			$.ajax({
-				url: BASE_URL + 'old-agent/downloads/file/' + self.meta.download_id + '/ajax-save',
+				url: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
 				type: 'POST',
 				data: {action: 'status', status: status},
 				context: self,
@@ -296,7 +296,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		});
 
 		this.deleteHelper = new DeskPRO.Agent.PageFragment.Page.Content.DeleteControl(this, {
-			ajaxSaveUrl: BASE_URL + 'old-agent/downloads/file/' + self.meta.download_id + '/ajax-save',
+			ajaxSaveUrl: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
 			statusMenu: this.statusMenu
 		});
 		this.ownObject(this.deleteHelper);
@@ -306,7 +306,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 
 		catSel.on('change', function() {
 			$.ajax({
-				url: BASE_URL + 'old-agent/downloads/file/' + self.meta.download_id + '/ajax-save',
+				url: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
 				type: 'POST',
 				data: { action: 'category', category_id: $(this).val() },
 				dataType: 'json',
@@ -432,7 +432,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		});
 
 		$.ajax({
-			url: BASE_URL + 'old-agent/downloads/file/' + this.getMetaData('download_id') + '/ajax-save-comment',
+			url: BASE_URL + 'agent/downloads/file/' + this.getMetaData('download_id') + '/ajax-save-comment',
 			type: 'POST',
 			context: this,
 			data: data,
@@ -495,7 +495,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 			};
 
 			$.ajax({
-				url: BASE_URL + 'old-agent/downloads/file/' + this.meta.download_id + '/ajax-save',
+				url: BASE_URL + 'agent/downloads/file/' + this.meta.download_id + '/ajax-save',
 				type: 'POST',
 				context: this,
 				data: data,
@@ -583,7 +583,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 				newSlug = newSlug.toLowerCase().replace(/[^0-9a-zA-Z_\-]/g, '-').replace(/\-{2,}/g, '-').replace(/^\-/, '').replace(/\-$/, '');
 				slugEl.text(newSlug);
 				$.ajax({
-					url: BASE_URL + 'old-agent/downloads/file/' + id + '/ajax-save',
+					url: BASE_URL + 'agent/downloads/file/' + id + '/ajax-save',
 					type: 'POST',
 					data: { slug: newSlug, action: 'slug' },
 					context: this,

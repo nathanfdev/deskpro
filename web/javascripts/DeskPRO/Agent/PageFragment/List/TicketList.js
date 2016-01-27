@@ -2376,7 +2376,7 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 		var statusUpdate = this.wrapper.find('input[name="actions[status]"]:checked').val();
 
 		DeskPRO_Window.util.ajaxWithClientMessages({
-			url: BASE_URL + 'old-agent/ticket-search/ajax-save-actions',
+			url: BASE_URL + 'agent/ticket-search/ajax-save-actions',
 			type: 'POST',
 			data: formData,
 			dataType: 'json',
@@ -2528,7 +2528,7 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 		var macroBtnEl = $('div.macro-load', this.wrapper).addClass('loading');
 
 		$.ajax({
-			url: BASE_URL + 'old-agent/ticket-search/ajax-get-macro-actions',
+			url: BASE_URL + 'agent/ticket-search/ajax-get-macro-actions',
 			data: { macro_id: macro_id },
 			type: 'GET',
 			dataType: 'json',

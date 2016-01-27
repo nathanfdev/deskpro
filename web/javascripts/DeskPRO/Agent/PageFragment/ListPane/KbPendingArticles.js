@@ -29,7 +29,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Orb.Class({
 				var action = $(info.itemEl).data('action');
 
 				$.ajax({
-					url: BASE_URL + 'old-agent/kb/pending-articles/mass-actions/' + action,
+					url: BASE_URL + 'agent/kb/pending-articles/mass-actions/' + action,
 					data: formData,
 					type: 'POST',
 					dataType: 'json',
@@ -92,7 +92,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Orb.Class({
 			var id = $('input.item-select', row).val();
 
 			$.ajax({
-				url: BASE_URL + 'old-agent/kb/pending-articles/' + id + '/remove',
+				url: BASE_URL + 'agent/kb/pending-articles/' + id + '/remove',
 				type: 'POST',
 				dataType: 'json',
 				error: function() {
@@ -118,7 +118,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Orb.Class({
 			var ticketRoute = $('input.item-select', row).data('ticket-route');
 
 			$.ajax({
-				url: BASE_URL + 'old-agent/kb/pending-articles/' + id + '/info',
+				url: BASE_URL + 'agent/kb/pending-articles/' + id + '/info',
 				type: 'POST',
 				dataType: 'json',
 				success: function(data) {
@@ -163,7 +163,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Orb.Class({
 		});
 
 		$.ajax({
-			url: BASE_URL + 'old-agent/kb/pending-articles/new',
+			url: BASE_URL + 'agent/kb/pending-articles/new',
 			type: 'POST',
 			data: data,
 			context: this,

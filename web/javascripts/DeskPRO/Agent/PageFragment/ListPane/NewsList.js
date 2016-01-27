@@ -97,7 +97,7 @@ DeskPRO.Agent.PageFragment.ListPane.NewsList = new Orb.Class({
 					}
 
 					DeskPRO_Window.sections.publish_section.reload();
-					DeskPRO_Window.runPageRoute('listpane:' + BASE_URL + 'old-agent/kb/list/0');
+					DeskPRO_Window.runPageRoute('listpane:' + BASE_URL + 'agent/kb/list/0');
 				}
 			});
 		});

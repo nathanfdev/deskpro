@@ -50,7 +50,7 @@ DeskPRO.Agent.PageFragment.ListPane.RecycleBin = new Orb.Class({
 		var nextPage = parseInt(lastTbody.data('page')) + 1;
 
 		$.ajax({
-			url: BASE_URL + 'old-agent/recycle-bin/' + loadName + '/' + nextPage,
+			url: BASE_URL + 'agent/recycle-bin/' + loadName + '/' + nextPage,
 			dataType: 'json',
 			success: function(data) {
 				if (data.no_more_results) {

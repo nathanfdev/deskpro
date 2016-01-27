@@ -202,7 +202,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 		});
 
 		$.ajax({
-			url: BASE_URL + 'old-agent/agent-chat/get-last-convo',
+			url: BASE_URL + 'agent/agent-chat/get-last-convo',
 			data: data,
 			contentType: 'json',
 			context: this,
@@ -321,7 +321,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 		this.fireEvent('sendMessage', [this, info]);
 
 		$.ajax({
-			url: BASE_URL + 'old-agent/agent-chat/send-agent-message/' + this.convoId,
+			url: BASE_URL + 'agent/agent-chat/send-agent-message/' + this.convoId,
 			data: data,
 			contentType: 'json',
 			context: this,
@@ -396,13 +396,13 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 	formatMessage: function(message, preventEscaping) {
 		var message = preventEscaping ? message : Orb.escapeHtml(message);
 		var idMap = {
-			't': {title: 'Ticket', url: BASE_URL + 'old-agent/tickets/'},
-			'p': {title: 'Person', url: BASE_URL + 'old-agent/people/'},
-			'o': {title: 'Organization', url: BASE_URL + 'old-agent/organizations/'},
-			'a': {title: 'Article', url: BASE_URL + 'old-agent/kb/article/'},
-			'n': {title: 'News', url: BASE_URL + 'old-agent/news/post/'},
-			'd': {title: 'Download', url: BASE_URL + 'old-agent/downloads/file/'},
-			'i': {title: 'Feedback', url: BASE_URL + 'old-agent/feedback/view/'}
+			't': {title: 'Ticket', url: BASE_URL + 'agent/tickets/'},
+			'p': {title: 'Person', url: BASE_URL + 'agent/people/'},
+			'o': {title: 'Organization', url: BASE_URL + 'agent/organizations/'},
+			'a': {title: 'Article', url: BASE_URL + 'agent/kb/article/'},
+			'n': {title: 'News', url: BASE_URL + 'agent/news/post/'},
+			'd': {title: 'Download', url: BASE_URL + 'agent/downloads/file/'},
+			'i': {title: 'Feedback', url: BASE_URL + 'agent/feedback/view/'}
 		};
 		Object.each(idMap, function(info, prefix) {
 			var re = new RegExp('\\{\\{\\s*' + prefix + '\\-([0-9]+)\\s*\\}\\}', 'g');
@@ -410,7 +410,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 		});
 
 		var re = new RegExp('\\{\\{\\s*tw\\-([0-9]+)\\s*\\}\\}', 'g');
-		message = message.replace(re, '<a data-route="poppage:' + BASE_URL + 'old-agent/twitter/status/tweet-overlay?account_status_id=$1">Tweet #$1</a>');
+		message = message.replace(re, '<a data-route="poppage:' + BASE_URL + 'agent/twitter/status/tweet-overlay?account_status_id=$1">Tweet #$1</a>');
 
 		message = message.replace(/(https?:\/\/[^\s]+)/gi, '<a href="$1" target="_blank">$1</a>');
 

@@ -52,7 +52,7 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 
 		var sendUpdate = function(rowEl, prop, val, callback) {
 			var taskId = rowEl.data('task-id');
-			var url = BASE_URL + 'old-agent/tasks/'+taskId+'/ajax-save';
+			var url = BASE_URL + 'agent/tasks/'+taskId+'/ajax-save';
 
 			var postData = [];
 			postData.push({
@@ -315,7 +315,7 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 
 			var taskId = row.data('task-id');
 			$.ajax({
-				url: BASE_URL + 'old-agent/tasks/'+taskId+'/ajax-save-comment',
+				url: BASE_URL + 'agent/tasks/'+taskId+'/ajax-save-comment',
 				type: 'POST',
 				dataType: 'json',
 				data: postData,
@@ -350,7 +350,7 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 				row.slideUp();
 				updateCount('-', row);
 				$.ajax({
-					url: BASE_URL + 'old-agent/tasks/' + taskId + '/delete',
+					url: BASE_URL + 'agent/tasks/' + taskId + '/delete',
 					error: function() {
 						row.show();
 					},

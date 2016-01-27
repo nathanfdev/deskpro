@@ -78,7 +78,7 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 
 	reloadRecentTabs: function() {
 		$.ajax({
-			url: BASE_URL + 'old-agent/ui/load-recent-tabs.json',
+			url: BASE_URL + 'agent/ui/load-recent-tabs.json',
 			type: 'GET',
 			dataType: 'JSON',
 			context: this,

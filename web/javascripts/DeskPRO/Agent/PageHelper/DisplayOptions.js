@@ -238,7 +238,7 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 			$.ajax({
 				timeout: 20000,
 				type: 'POST',
-				url: BASE_URL + 'old-agent/misc/ajax-save-prefs',
+				url: BASE_URL + 'agent/misc/ajax-save-prefs',
 				data: data,
 				context: this,
 				complete: function() {
@@ -261,7 +261,7 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 			$.ajax({
 				timeout: 20000,
 				type: 'POST',
-				url: BASE_URL + 'old-agent/misc/ajax-save-prefs',
+				url: BASE_URL + 'agent/misc/ajax-save-prefs',
 				data: data,
 				context: this,
 				complete: function() {

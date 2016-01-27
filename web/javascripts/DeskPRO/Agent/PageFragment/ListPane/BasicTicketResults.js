@@ -587,7 +587,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		m.data('flag', flag);
 
 		$.ajax({
-			url: BASE_URL + 'old-agent/tickets/' + ticketId + '/ajax-save-flagged',
+			url: BASE_URL + 'agent/tickets/' + ticketId + '/ajax-save-flagged',
 			type: 'POST',
 			context: this,
 			data: { color: flag },

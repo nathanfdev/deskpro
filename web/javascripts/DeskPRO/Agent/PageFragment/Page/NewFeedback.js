@@ -89,7 +89,7 @@ DeskPRO.Agent.PageFragment.Page.NewFeedback = new Orb.Class({
 		this.wrapper.addClass('loading');
 
 		$.ajax({
-			url: BASE_URL + 'old-agent/feedback/new/save',
+			url: BASE_URL + 'agent/feedback/new/save',
 			type: 'POST',
 			data: formData,
 			dataType: 'json',
@@ -107,7 +107,7 @@ DeskPRO.Agent.PageFragment.Page.NewFeedback = new Orb.Class({
 				}
 
 				if (data.success) {
-					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'old-agent/feedback/view/' + data.feedback_id);
+					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/feedback/view/' + data.feedback_id);
 					this.markForReload();
 					this.closeSelf();
 				} else {

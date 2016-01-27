@@ -519,7 +519,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 				editCatEl.addClass('dp-loading-on');
 				$.ajax({
-					url: BASE_URL + 'old-agent/text-snippets/'+self.snippet_typename+'/categories/'+catId+'/save.json',
+					url: BASE_URL + 'agent/text-snippets/'+self.snippet_typename+'/categories/'+catId+'/save.json',
 					data: postData,
 					dataType: 'json',
 					type: 'POST',
@@ -574,7 +574,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 					var catId = editCatEl.find('.input_id').val();
 					editCatEl.addClass('dp-loading-on');
 					$.ajax({
-						url: BASE_URL + 'old-agent/text-snippets/'+self.snippet_typename+'/categories/'+catId+'/delete.json',
+						url: BASE_URL + 'agent/text-snippets/'+self.snippet_typename+'/categories/'+catId+'/delete.json',
 						dataType: 'json',
 						type: 'POST',
 						complete: function() {

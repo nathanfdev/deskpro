@@ -696,7 +696,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
             self.page.pauseSend = true;
 
             $.ajax({
-              url: BASE_URL + 'old-agent/text-snippets/tickets/' + snippetId + '.json',
+              url: BASE_URL + 'agent/text-snippets/tickets/' + snippetId + '.json',
               dataType: 'json',
               complete: function () {
                 if (self.page) self.page.pauseSend = false;
@@ -988,7 +988,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 				var li = $('<li><div class="on-icon"><i class="icon-okay"></i></div><span class="macro-title"></span></li>');
 				if (self.page) {
-					li.data('get-macro-url', BASE_URL + 'old-agent/tickets/' + self.page.meta.ticket_id + '/ajax-get-macro?macro_id=' + info.id + '&macro_reply_context=1');
+					li.data('get-macro-url', BASE_URL + 'agent/tickets/' + self.page.meta.ticket_id + '/ajax-get-macro?macro_id=' + info.id + '&macro_reply_context=1');
 				}
 				li.data('label', 'Send Reply and ' + info.title);
 				li.data('type', 'macro:'+info.id);

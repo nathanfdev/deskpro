@@ -33,7 +33,7 @@ DeskPRO.Agent.PageFragment.Page.Content.StickyWords = new Orb.Class({
 		this.setOptions(options);
 
 		if (!this.options.saveUrl) {
-			this.options.saveUrl = BASE_URL + 'old-agent/publish/save-sticky-search-words/' + this.options.contentType + '/' + this.options.contentId;
+			this.options.saveUrl = BASE_URL + 'agent/publish/save-sticky-search-words/' + this.options.contentType + '/' + this.options.contentId;
 		}
 
 		this.options.element.attr('allow-new', '1').data('allow-new', 1);

@@ -353,7 +353,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 				if (data.data && data.data.reload) {
 					this.page.closeSelf();
-					DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'old-agent/tickets/' + this.page.meta.ticket_id);
+					DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + this.page.meta.ticket_id);
 				}
 			}).bind(this),
 			(function(xhr, code, message) {

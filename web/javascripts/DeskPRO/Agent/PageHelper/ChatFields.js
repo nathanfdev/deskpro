@@ -260,7 +260,7 @@ DeskPRO.Agent.PageHelper.ChatFields = new Orb.Class({
 		var data = this.page.getEl('field_holders').find('input, select, textarea').serializeArray();
 
 		$.ajax({
-			url: BASE_URL + 'old-agent/chat/' + this.page.meta.conversation_id + '/save-fields',
+			url: BASE_URL + 'agent/chat/' + this.page.meta.conversation_id + '/save-fields',
 			type: 'POST',
 			dataType: 'html',
 			data: data,

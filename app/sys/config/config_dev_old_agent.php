@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-//// TEMPORARY FILE (only needed until we get rid of the old-agent interface)
+//// TEMPORARY FILE (only needed until we get rid of the agent interface)
 
 if (!defined('DP_ROOT')) {
     exit('No access');

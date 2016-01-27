@@ -296,7 +296,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		editDlg.openOverlay();
 
 		$.ajax({
-			url: BASE_URL + 'old-agent/glossary/' + id + '.json',
+			url: BASE_URL + 'agent/glossary/' + id + '.json',
 			type: 'GET',
 			context: this,
 			dataType: 'json',
@@ -397,7 +397,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		});
 
 		$.ajax({
-			url: BASE_URL + 'old-agent/glossary/new-word.json',
+			url: BASE_URL + 'agent/glossary/new-word.json',
 			type: 'POST',
 			data: data,
 			context: this,
@@ -433,7 +433,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		});
 
 		$.ajax({
-			url: BASE_URL + 'old-agent/glossary/' + word_id + '/edit.json',
+			url: BASE_URL + 'agent/glossary/' + word_id + '/edit.json',
 			type: 'POST',
 			data: data,
 			context: this,
@@ -450,7 +450,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		var word_id = $('input.word_id', this.editDlg.elements.wrapperOuter).val().trim();
 
 		$.ajax({
-			url: BASE_URL + 'old-agent/glossary/' + word_id + '/delete.json',
+			url: BASE_URL + 'agent/glossary/' + word_id + '/delete.json',
 			type: 'POST',
 			context: this,
 			dataType: 'json',

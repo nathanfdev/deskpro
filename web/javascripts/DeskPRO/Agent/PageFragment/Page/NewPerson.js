@@ -85,7 +85,7 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
                 }).html("Loading . . .");
 
                 $.ajax({
-                    url: BASE_URL + 'old-agent/misc/parse-vcard/' + self.blobId,
+                    url: BASE_URL + 'agent/misc/parse-vcard/' + self.blobId,
                     type: 'GET',
                     dataType: 'json',
                     data: {
@@ -166,7 +166,7 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
             //return true;
             if (self.isVCard) {
                 $.ajax({
-			url: BASE_URL + 'old-agent/people/new/save',
+			url: BASE_URL + 'agent/people/new/save',
 			type: 'POST',
 			data: {isVCard: true, 'blobId': self.blobId},
 			dataType: 'json',
@@ -187,7 +187,7 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 	            });
 
 		$.ajax({
-			url: BASE_URL + 'old-agent/people/new/save',
+			url: BASE_URL + 'agent/people/new/save',
 			type: 'POST',
 			data: formData,
 			dataType: 'json',
@@ -207,7 +207,7 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
                                 person_id: data.person_id
                         });
                 } else {
-                        DeskPRO_Window.runPageRoute('person:' + BASE_URL + 'old-agent/people/' + data.person_id);
+                        DeskPRO_Window.runPageRoute('person:' + BASE_URL + 'agent/people/' + data.person_id);
                 }
 
                 DeskPRO_Window.getMessageBroker().sendMessage('agent.person.added', { person_id: data.person_id });

@@ -149,7 +149,7 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 				}
 
 				$.ajax({
-					url: BASE_URL + 'old-agent/feedback/filter/mass-actions/' + action,
+					url: BASE_URL + 'agent/feedback/filter/mass-actions/' + action,
 					data: postData,
 					type: 'POST',
 					dataType: 'json',
@@ -181,7 +181,7 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 			ev.preventDefault();
 			var el = $(this);
 			DeskPRO_Window.util.ajaxWithClientMessages({
-				url: BASE_URL + 'old-agent/people/validate/approve',
+				url: BASE_URL + 'agent/people/validate/approve',
 				data: { 'people_ids[]': el.data('person-id') },
 				success: function() {
 					DeskPRO_Window.getMessageBroker().sendMessage('agent.person.confirmed', { person_id: el.data('person-id') });
@@ -194,7 +194,7 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 			ev.preventDefault();
 			var el = $(this);
 			DeskPRO_Window.util.ajaxWithClientMessages({
-				url: BASE_URL + 'old-agent/people/validate/delete',
+				url: BASE_URL + 'agent/people/validate/delete',
 				data: { 'people_ids[]': el.data('person-id') },
 				success: function() {
 					DeskPRO_Window.getMessageBroker().sendMessage('agent.person.removed', { person_id: el.data('person-id') });

@@ -133,7 +133,7 @@ DeskPRO.Agent.PageFragment.ListPane.FeedbackFilter = new Orb.Class({
 				}
 
 				$.ajax({
-					url: BASE_URL + 'old-agent/feedback/filter/mass-actions/' + action,
+					url: BASE_URL + 'agent/feedback/filter/mass-actions/' + action,
 					data: postData,
 					type: 'POST',
 					dataType: 'json',

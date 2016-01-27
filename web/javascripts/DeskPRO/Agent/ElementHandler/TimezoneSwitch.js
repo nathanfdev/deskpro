@@ -52,7 +52,7 @@ DeskPRO.Agent.ElementHandler.TimezoneSwitch = new Orb.Class({
 
 		this.el.find('button.dismiss-trigger').on('click', function() {
 			$.ajax({
-				url:  BASE_URL + 'old-agent/misc/ajax-save-prefs',
+				url:  BASE_URL + 'agent/misc/ajax-save-prefs',
 				type: 'POST',
 				dataType: 'json',
 				data: [{ name: 'prefs[agent.ui.tz_detect_dismiss]', value: DESKPRO_TIME_OUT_OF_SYNC }]
@@ -71,7 +71,7 @@ DeskPRO.Agent.ElementHandler.TimezoneSwitch = new Orb.Class({
 			}
 
 			$.ajax({
-				url: BASE_URL + 'old-agent/settings/profile/update-timezone.json',
+				url: BASE_URL + 'agent/settings/profile/update-timezone.json',
 				type: 'POST',
 				dataType: 'json',
 				data: { timezone: tz },

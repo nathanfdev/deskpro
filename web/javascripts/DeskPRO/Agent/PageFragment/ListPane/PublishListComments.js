@@ -37,7 +37,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishListComments = new Orb.Class({
 				var action = $(info.itemEl).data('action');
 
 				$.ajax({
-					url: BASE_URL + 'old-agent/publish/comments/validating-mass-actions/' + action,
+					url: BASE_URL + 'agent/publish/comments/validating-mass-actions/' + action,
 					data: data,
 					type: 'POST',
 					dataType: 'json',
@@ -47,7 +47,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishListComments = new Orb.Class({
 					},
 					success: function() {
 						// Reload self
-						DeskPRO_Window.runPageRoute('listpane:' + BASE_URL + 'old-agent/publish/comments/list/' + self.meta.viewType)
+						DeskPRO_Window.runPageRoute('listpane:' + BASE_URL + 'agent/publish/comments/list/' + self.meta.viewType)
 
 						if (DeskPRO_Window.sections.publish_section) {
 							DeskPRO_Window.sections.publish_section.reload();
@@ -134,7 +134,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishListComments = new Orb.Class({
 			}
 
 			$.ajax({
-				url: BASE_URL + 'old-agent/publish/comments/save-comment/'+info.contentType+'/'+info.commentId,
+				url: BASE_URL + 'agent/publish/comments/save-comment/'+info.contentType+'/'+info.commentId,
 				type: 'POST',
 				data: {
 					comment: commentText
@@ -161,7 +161,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishListComments = new Orb.Class({
 		this.wrapper.on('click', '.validate-create-ticket', function(ev) {
 			var info = findRowInfo(this);
 			$.ajax({
-				url: BASE_URL + 'old-agent/publish/comments/new-ticket-info/' + info.contentType + '/' + info.commentId + '.json',
+				url: BASE_URL + 'agent/publish/comments/new-ticket-info/' + info.contentType + '/' + info.commentId + '.json',
 				type: 'GET',
 				dataType: 'json',
 				success: function(data) {
@@ -186,7 +186,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishListComments = new Orb.Class({
 		this.updateCount('sub');
 
 		$.ajax({
-			url: BASE_URL + 'old-agent/publish/comments/delete/'+typename+'/'+commentId,
+			url: BASE_URL + 'agent/publish/comments/delete/'+typename+'/'+commentId,
 			type: 'POST',
 			context: this,
 			dataType: 'json',
@@ -214,7 +214,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishListComments = new Orb.Class({
 		this.updateCount('sub');
 
 		$.ajax({
-			url: BASE_URL + 'old-agent/publish/comments/approve/'+typename+'/'+commentId,
+			url: BASE_URL + 'agent/publish/comments/approve/'+typename+'/'+commentId,
 			type: 'POST',
 			context: this,
 			dataType: 'json',

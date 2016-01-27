@@ -27,7 +27,7 @@ DeskPRO.Agent.RteEditor = {
 			cleanup: false,
 			convertDivs: false,
 			linebreaks: true,
-			imageUpload: BASE_URL + 'old-agent/misc/accept-redactor-image-upload',
+			imageUpload: BASE_URL + 'agent/misc/accept-redactor-image-upload',
 			uploadFields: {
 				_rt: window.DP_REQUEST_TOKEN
 			},
@@ -62,7 +62,7 @@ DeskPRO.Agent.RteEditor = {
 		};
 
 		if (options.autosaveContent && options.autosaveContentId) {
-			defaultOptions.autosave = BASE_URL + 'old-agent/misc/redactor-autosave/' + options.autosaveContent + '/' + options.autosaveContentId;
+			defaultOptions.autosave = BASE_URL + 'agent/misc/redactor-autosave/' + options.autosaveContent + '/' + options.autosaveContentId;
 			defaultOptions.interval = 5;
 		}
 
@@ -328,7 +328,7 @@ DeskPRO.Agent.RteEditor = {
 			}
 
 			$.ajax({
-				url: BASE_URL + 'old-agent/misc/accept-redactor-image-upload',
+				url: BASE_URL + 'agent/misc/accept-redactor-image-upload',
 				type: 'POST',
 				dataType: 'json',
 				data: form,

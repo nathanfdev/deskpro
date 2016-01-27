@@ -4,8 +4,6 @@ import { Card, CardLine, CardLineLeft, CardLineRight, CardLineItem, CardCheckbox
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 
-import { LegacyLinkBlock } from 'DeskPRO/Bundle/AgentBundle/Modules/Legacy/Components/legacyRoutes';
-
 @injectIntl
 export class TicketCard extends Component {
   static propTypes = {
@@ -99,33 +97,31 @@ export class TicketCard extends Component {
     const { selected, ticket, toggleSelected } = this.props;
 
     return (
-      <LegacyLinkBlock route={'/tickets/' + ticket.get('id')}>
-        <Card type="feedback" width={450}>
-          <CardStatusBar align="left" level="5"/>
-          <CardStatusBar align="right" level="5"/>
+      <Card type="feedback" width={450}>
+        <CardStatusBar align="left" level="5"/>
+        <CardStatusBar align="right" level="5"/>
 
-          <CardCheckbox selected={selected} onClick={toggleSelected}/>
+        <CardCheckbox selected={selected} onClick={toggleSelected}/>
 
-          <CardLine>
-            <CardLineLeft>
-              <CardTitle content={ticket.get('subject')}/>
-            </CardLineLeft>
+        <CardLine>
+          <CardLineLeft>
+            <CardTitle content={ticket.get('subject')}/>
+          </CardLineLeft>
 
-            <CardLineRight>
-              <CardLineItem>{this.renderStatus(ticket)}</CardLineItem>
-            </CardLineRight>
-          </CardLine>
+          <CardLineRight>
+            <CardLineItem>{this.renderStatus(ticket)}</CardLineItem>
+          </CardLineRight>
+        </CardLine>
 
-          {this.renderPerson(ticket)}
-          <CardLine>
-            {this.renderAgent(ticket)}
-            {this.renderId(ticket)}
-            {this.renderUrgency(ticket)}
-            {this.renderDateCreated(ticket)}
-          </CardLine>
-          {this.renderLabels(ticket)}
-        </Card>
-      </LegacyLinkBlock>
+        {this.renderPerson(ticket)}
+        <CardLine>
+          {this.renderAgent(ticket)}
+          {this.renderId(ticket)}
+          {this.renderUrgency(ticket)}
+          {this.renderDateCreated(ticket)}
+        </CardLine>
+        {this.renderLabels(ticket)}
+      </Card>
     );
   }
 

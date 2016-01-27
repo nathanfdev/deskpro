@@ -72,7 +72,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadVcard = new Orb.Class({
                             }).html("Loading . . .");
 
                             $.ajax({
-                                url: BASE_URL + 'old-agent/misc/parse-vcard/' + self.blobId,
+                                url: BASE_URL + 'agent/misc/parse-vcard/' + self.blobId,
                                 type: 'GET',
                                 dataType: 'json',
                                 data: {
@@ -140,7 +140,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadVcard = new Orb.Class({
                         success: function() {
                             //return true;
                             DeskPRO_Window.removePage(self.page);
-                            DeskPRO_Window.loadPage(BASE_URL + 'old-agent/people/' + self.page.meta.person_id, {ignoreExist:true});
+                            DeskPRO_Window.loadPage(BASE_URL + 'agent/people/' + self.page.meta.person_id, {ignoreExist:true});
                         }
 		});
 

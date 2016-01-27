@@ -43,7 +43,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingContent = new Orb.Class({
 
 				var sendFn = function() {
 					$.ajax({
-						url: BASE_URL + 'old-agent/publish/content/validating-mass-actions/' + action,
+						url: BASE_URL + 'agent/publish/content/validating-mass-actions/' + action,
 						data: data,
 						type: 'POST',
 						dataType: 'json',

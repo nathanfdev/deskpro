@@ -24,7 +24,7 @@ define ->
       if _persons.length
         d.resolve _persons
       else
-        @$http.get(BASE_URL + 'old-agent/person', {params: {is_agent: true}})
+        @$http.get(BASE_URL + 'agent/person', {params: {is_agent: true}})
         .success (data, status, headers, config) =>
 
           data = data || []

@@ -25,7 +25,7 @@ DeskPRO.Agent.Widget.TicketChangeUser = new Orb.Class({
 		this.overlay = new DeskPRO.UI.Overlay({
 			contentMethod: 'ajax',
 			contentAjax: {
-				url: BASE_URL + 'old-agent/tickets/' + this.ticketId + '/change-user-overlay',
+				url: BASE_URL + 'agent/tickets/' + this.ticketId + '/change-user-overlay',
 				data: data
 			},
 			onAjaxDone: function() {
@@ -56,7 +56,7 @@ DeskPRO.Agent.Widget.TicketChangeUser = new Orb.Class({
 					console.log(data);
 
 					$.ajax({
-						url: BASE_URL + 'old-agent/tickets/' + self.ticketId + '/change-user',
+						url: BASE_URL + 'agent/tickets/' + self.ticketId + '/change-user',
 						type: 'POST',
 						data: data,
 						dataType: 'json',
@@ -76,7 +76,7 @@ DeskPRO.Agent.Widget.TicketChangeUser = new Orb.Class({
 					sb.close();
 
 					$.ajax({
-						url: BASE_URL + 'old-agent/tickets/' + self.ticketId + '/change-user-overlay/preview/' + personId,
+						url: BASE_URL + 'agent/tickets/' + self.ticketId + '/change-user-overlay/preview/' + personId,
 						type: 'get',
 						dataType: 'html',
 						success: function(html) {

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Kernel;
 
 require_once DP_ROOT.'/sys/DpShutdown.php';
@@ -192,11 +193,11 @@ class KernelBooter
 
         $agent_env    = null;
         $kernel_class = 'DeskPRO\\Kernel\\DpKernel';
-        if (preg_match('#^/old-agent(/|\?|$)#', $path)) {
+        if (preg_match('#^/agent(/|\?|$)#', $path)) {
             define('DP_INTERFACE', 'agent');
             define('OLD_AGENT', true);
             $agent_env = 'dev_old_agent';
-        } elseif (preg_match('#^/agent(/|\?|$)#', $path)) {
+        } elseif (preg_match('#^/new-agent(/|\?|$)#', $path)) {
             define('DP_INTERFACE', 'agent');
         } elseif (preg_match('#^/adm(in)?(/|\?|$)#', $path)) {
             define('DP_INTERFACE', 'admin');

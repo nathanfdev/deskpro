@@ -44,7 +44,7 @@ export class AppSwitcher extends React.Component {
 
     return (
       <li>
-        <Link className={linkClass} activeClassName="active" to={`${DP_BASE_URL_RELATIVE}/agent/${appId}`}
+        <Link className={linkClass} activeClassName="active" to={`${DP_BASE_URL_RELATIVE}/${DP_AGENT_INTERFACE_PATH_NAMESPACE}/${appId}`}
               onClick={clickHandler}>
           {notificationCount > 0 ? (<span className="dpw-app-bar-notification">{notificationCount}</span>) : null}
           <div className="dpw-app-bar-icon">

@@ -47,16 +47,16 @@ $col = $loader->import(
 $col->addPrefix('/reports');
 $collection->addCollection($col);
 
-// FUTURE SELF: agent-routing.php is the old info, safe to delete. new-agent-routing is the new stuff.
+// TODO: FUTURE SELF: agent-routing.php is the old info, safe to delete. new-agent-routing is the new stuff.
 $col = $loader->import(DP_ROOT.'/src/Application/AgentBundle/Resources/config/agent-routing.php');
-$col->addPrefix('/old-agent');
+$col->addPrefix('/agent');
 $collection->addCollection($col);
 
 if (!defined('OLD_AGENT')) { // dont import the new agent routes if its an old agent request - new-agent overrides / via KernelBooter
     // the way this works is that KernelBooter uses a different symfony env for old vs new agent (dev is new agent, dev_old_agent is old agent env)
     // so when it constructs the container, this file is only inc. if it is NOT an old_agent request.
     $col = $loader->import(DP_ROOT.'/src/Application/AgentBundle/Resources/config/new-agent-routing.php');
-    $col->addPrefix('/agent');
+    $col->addPrefix('/new-agent');
     $collection->addCollection($col);
 }
 //
@@ -110,7 +110,7 @@ $collection->create('serve_blob_app_asset', array(
 $collection->create('serve_person_picture', array(
     'path'         => '/file.php/avatar/{person_id}',
     'controller'   => '(see: serve_file.php)',
-    'defaults'     => array('size'      => 0),
+    'defaults'     => array('size' => 0),
     'requirements' => array('person_id' => '\\d+'),
 ));
 

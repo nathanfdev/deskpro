@@ -53,7 +53,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbValidatingArticles = new Orb.Class({
 
 	approveEdit: function(article_id) {
 		$.ajax({
-			url: BASE_URL + 'old-agent/kb/validating-articles/validate/'+article_id+'.json',
+			url: BASE_URL + 'agent/kb/validating-articles/validate/'+article_id+'.json',
 			type: 'POST',
 			context: this,
 			dataType: 'json',
@@ -68,7 +68,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbValidatingArticles = new Orb.Class({
 
 	disapproveEdit: function(article_id) {
 		$.ajax({
-			url: BASE_URL + 'old-agent/kb/validating-articles/disapprove/'+article_id+'.json',
+			url: BASE_URL + 'agent/kb/validating-articles/disapprove/'+article_id+'.json',
 			type: 'POST',
 			context: this,
 			dataType: 'json',

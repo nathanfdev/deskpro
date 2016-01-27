@@ -143,7 +143,7 @@ DeskPRO.Agent.PageHelper.StateSaver = new Orb.Class({
 		}
 
 		$.ajax({
-			url: BASE_URL + 'old-agent/misc/ajax-save-prefs',
+			url: BASE_URL + 'agent/misc/ajax-save-prefs',
 			type: 'POST',
 			data: data,
 			context: this,
@@ -170,7 +170,7 @@ DeskPRO.Agent.PageHelper.StateSaver = new Orb.Class({
 
 		window.setTimeout(function() {
 			$.ajax({
-				url: BASE_URL + 'old-agent/misc/ajax-save-prefs',
+				url: BASE_URL + 'agent/misc/ajax-save-prefs',
 				type: 'POST',
 				data: data,
 				context: this

@@ -114,7 +114,7 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 		this.wrapper.addClass('loading');
 
 		$.ajax({
-			url: BASE_URL + 'old-agent/downloads/new/save',
+			url: BASE_URL + 'agent/downloads/new/save',
 			type: 'POST',
 			data: formData,
 			dataType: 'json',
@@ -133,7 +133,7 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 				}
 
 				if (data.success) {
-					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'old-agent/downloads/file/' + data.download_id);
+					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/downloads/file/' + data.download_id);
 					this.markForReload();
 					this.closeSelf();
 				} else {

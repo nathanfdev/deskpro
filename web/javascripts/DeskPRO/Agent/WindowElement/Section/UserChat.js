@@ -307,7 +307,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		this.onlineUsersWrap.addClass('refreshing');
 
 		this.onlineUsersRefreshAjax = $.ajax({
-			url: BASE_URL + 'old-agent/user-track/win-header-table.html',
+			url: BASE_URL + 'agent/user-track/win-header-table.html',
 			type: 'GET',
 			dataType: 'html',
 			context: this,
@@ -421,7 +421,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 		if (status == 'available') {
 			$.ajax({
-				url: BASE_URL + 'old-agent/misc/set-agent-status/available',
+				url: BASE_URL + 'agent/misc/set-agent-status/available',
 				type: 'POST',
 				data: postData,
 				complete: function() {
@@ -437,7 +437,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			});
 		} else if (status == 'away') {
 			$.ajax({
-				url: BASE_URL + 'old-agent/misc/set-agent-status/away',
+				url: BASE_URL + 'agent/misc/set-agent-status/away',
 				type: 'POST',
 				complete: function() {
 					if (callback) {
@@ -462,7 +462,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		var fn = function() {
 			self.refreshCountsTimeout = null;
 			$.ajax({
-				url: BASE_URL + 'old-agent/chat/open-counts.json',
+				url: BASE_URL + 'agent/chat/open-counts.json',
 				dataType: 'json',
 				success: function(data) {
 
@@ -516,7 +516,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		$.ajax(
 			{
 				type: 'POST',
-				url: BASE_URL + 'old-agent/chat/group-count.json',
+				url: BASE_URL + 'agent/chat/group-count.json',
 				data: { filters: this.groups },
 				dataType: 'json',
 				success: function(data) {
@@ -719,7 +719,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 		if (data && data.participant_ids && data.participant_ids.contains(DESKPRO_PERSON_ID)) {
 			if (!this.isChatOpen(data.conversation_id)) {
-				DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'old-agent/chat/view/' + data.conversation_id, {noToggle:true});
+				DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id, {noToggle:true});
 			}
 		}
 	},
@@ -736,7 +736,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		var openTab = this.isChatOpen(data.conversation_id);
 		if (openTab && data.restarted) {
 			openTab.page.closeSelf();
-			DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'old-agent/chat/view/' + data.conversation_id, {noToggle:true});
+			DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id, {noToggle:true});
 			return;
 		}
 
@@ -757,7 +757,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 				// So we timeout so we can add some logic to see if the chat was closed before running this,
 				// this is just a easy way to process CM messages before running the open (since they're executed in sequence)
 				this.openingChatTimeout[data.conversation_id] = window.setTimeout(function() {
-					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'old-agent/chat/view/' + data.conversation_id, {noToggle:true});
+					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id, {noToggle:true});
 					delete self.openingChatTimeout[data.conversation_id];
 					DeskPRO_Window.faviconBadge.disableCrazyMode();
 				}, 1000);
@@ -836,7 +836,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 				audio.pause();
 			}
 			alertEl.remove();
-		}).data('route', 'page:' + BASE_URL + 'old-agent/chat/view/' + conversation_id);
+		}).data('route', 'page:' + BASE_URL + 'agent/chat/view/' + conversation_id);
 	},
 
 	handleReassignedChat: function(data) {
@@ -891,7 +891,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		// See handleNewChat comment about this
 		if (data.agent_id == DESKPRO_PERSON_ID && !this.isChatOpen(data.conversation_id)) {
 			this.openingChatTimeout[data.conversation_id] = window.setTimeout(function() {
-				DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'old-agent/chat/view/' + data.conversation_id, {noToggle:true});
+				DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id, {noToggle:true});
 				delete self.openingChatTimeout[data.conversation_id];
 				DeskPRO_Window.faviconBadge.disableCrazyMode();
 			}, 1000);
@@ -926,7 +926,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		});
 
 		if (found) {
-			DeskPRO_Window.loadPage(BASE_URL + 'old-agent/chat/view/' + conversation_id, {ignoreExist:true});
+			DeskPRO_Window.loadPage(BASE_URL + 'agent/chat/view/' + conversation_id, {ignoreExist:true});
 			found.closeSelf();
 			return;
 		}
@@ -960,7 +960,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		};
 		var waitTimer = window.setInterval(up, 1000);
 
-		DeskPRO_Window.notifications.addMessage('chat', 'New chat by ' + alertEl.find('.label-by-name').text(), 'page:' + BASE_URL + 'old-agent/chat/view/' + conversation_id, 'chat-' + conversation_id)
+		DeskPRO_Window.notifications.addMessage('chat', 'New chat by ' + alertEl.find('.label-by-name').text(), 'page:' + BASE_URL + 'agent/chat/view/' + conversation_id, 'chat-' + conversation_id)
 
 		$('.dismiss-trigger', alertEl).on('click', function() {
 			if (audio && audio.pause) {
@@ -988,7 +988,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 //			if (!DeskPRO_Window.paneVis.tabs) {
 //				DeskPRO_Window.setPaneVis('tabs', true);
 //			}
-		}).data('route', 'page:' + BASE_URL + 'old-agent/chat/view/' + conversation_id);
+		}).data('route', 'page:' + BASE_URL + 'agent/chat/view/' + conversation_id);
 	},
 
 	getNewChatTitles: function() {

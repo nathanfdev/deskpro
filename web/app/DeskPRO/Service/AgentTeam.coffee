@@ -20,7 +20,7 @@ define ->
       if _teams.length
         d.resolve _teams
       else
-        @$http.get(BASE_URL + 'old-agent/agent_team', {params: {}})
+        @$http.get(BASE_URL + 'agent/agent_team', {params: {}})
         .success (data, status, headers, config) =>
 
           data = data || []

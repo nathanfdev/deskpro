@@ -69,7 +69,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			'person',
 			this.meta.person_id,
 			this.meta.title,
-			BASE_URL + 'old-agent/people/' + this.meta.person_id
+			BASE_URL + 'agent/people/' + this.meta.person_id
 		);
 	},
 
@@ -149,7 +149,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 		if (this.meta.perms.edit) {
 			this.contactEditor = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor(this, {
-				saveUrl: BASE_URL + 'old-agent/people/' + this.meta.person_id + '/save-contact-data.json',
+				saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/save-contact-data.json',
 				displayEl: this.getEl('contact_display'),
 				outsideEl: this.getEl('contact_outside'),
 				onReplaceEditor: function() {
@@ -177,7 +177,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				var val = $(this).val();
 				$('.timezone-info', this.wrapper).empty();
 				$.ajax({
-					url: BASE_URL + 'old-agent/people/' + self.meta.person_id + '/ajax-save',
+					url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
 					type: 'POST',
 					dataType: 'json',
 					data: {
@@ -194,7 +194,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			this.getEl('disable_autoresponses').on('change', function(){
 				var val = $(this).val();
 				$.ajax({
-					url: BASE_URL + 'old-agent/people/' + self.meta.person_id + '/ajax-save',
+					url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
 					type: 'POST',
 					dataType: 'json',
 					data: {
@@ -320,7 +320,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				});
 
 				$.ajax({
-					url: BASE_URL + 'old-agent/people/' + self.meta.person_id + '/ajax-save',
+					url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
 					type: 'POST',
 					data: postData
 				});
@@ -349,7 +349,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 				var val = $(this).val();
 				$.ajax({
-					url: BASE_URL + 'old-agent/people/' + self.meta.person_id + '/ajax-save',
+					url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
 					type: 'POST',
 					dataType: 'json',
 					data: {
@@ -377,17 +377,17 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 			this.changePic = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic(this, {
 				loadUrl: BASE_URL + "agent/people/" + this.meta.person_id + "/change-picture-overlay",
-				saveUrl: BASE_URL + 'old-agent/people/' + this.meta.person_id + '/ajax-save'
+				saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save'
 			});
 			this.uploadVcard = new DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadVcard(this, {
 				loadUrl: BASE_URL + "agent/people/" + this.meta.person_id + "/upload-vcard-overlay",
-				saveUrl: BASE_URL + 'old-agent/people/' + this.meta.person_id + '/ajax-save',
+				saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save',
                                 person_id: this.meta.person_id
 			});
 
 			this.uploadFile = new DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadFile(this,{
 				el: self.getEl('files_box'),
-				deleteUrl: BASE_URL + 'old-agent/people/' + this.meta.person_id + '/ajax-save',
+				deleteUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save',
                                 person_id: this.meta.person_id
 			});
 
@@ -418,7 +418,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				var itemEl = $(info.itemEl), sort_by = itemEl.data('sort-by');
 
 				$.ajax({
-					url: BASE_URL + 'old-agent/person/' + person_id + '/tickets',
+					url: BASE_URL + 'agent/person/' + person_id + '/tickets',
 					data: {sort_by: sort_by},
 					type: 'get',
 					dataType: 'html',
@@ -459,7 +459,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 							});
 
 							$.ajax({
-								url: BASE_URL + 'old-agent/people/' + self.meta.person_id + '/ajax-save',
+								url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
 								type: 'POST',
 								dataType: 'json',
 								data: postData
@@ -472,7 +472,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 							self.getEl('reset_password_confirm'),
 							function() {
 								$.ajax({
-									url: BASE_URL + 'old-agent/login/send-lost.json',
+									url: BASE_URL + 'agent/login/send-lost.json',
 									type: 'POST',
 									data: { email: self.meta.person.email },
 									dataType: 'json'
@@ -538,7 +538,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 					);
 				} else if (action == 'enable-user') {
 					$.ajax({
-						url: BASE_URL + 'old-agent/people/' + self.meta.person_id + '/ajax-save',
+						url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
 						type: 'POST',
 						dataType: 'json',
 						data: {
@@ -554,7 +554,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 					self.getEl('change_user_picture').find('.person-disabled').remove();
 				} else if (action == 'disable-user') {
 					$.ajax({
-						url: BASE_URL + 'old-agent/people/' + self.meta.person_id + '/ajax-save',
+						url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
 						type: 'POST',
 						dataType: 'json',
 						data: {
@@ -580,9 +580,9 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				tabType: 'person',
 				metaId: self.meta.person_id,
 				metaIdName: 'person_id',
-				overlayUrl: BASE_URL + 'old-agent/people/{id}/merge-overlay/{other}',
-				mergeUrl: BASE_URL + 'old-agent/people/{id}/merge/{other}',
-				loadRoute: 'person:' + BASE_URL + 'old-agent/people/{id}',
+				overlayUrl: BASE_URL + 'agent/people/{id}/merge-overlay/{other}',
+				mergeUrl: BASE_URL + 'agent/people/{id}/merge/{other}',
+				loadRoute: 'person:' + BASE_URL + 'agent/people/{id}',
 				overlayLoaded: function(overlay, merge) {
 					overlay.getWrapper().find('.person-finder').bind('personsearchboxclick', function(ev, personId, name, email, sb) {
 						sb.close();
@@ -629,7 +629,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
           $notes.off('click', notesClickHandler);
 
           $.ajax({
-            url: BASE_URL + 'old-agent/people/notes/' + $el.data('note-id'),
+            url: BASE_URL + 'agent/people/notes/' + $el.data('note-id'),
             type: 'DELETE',
             dataType: 'json',
             success: function(data) {
@@ -728,7 +728,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			fieldsForm.find('.error-row').hide();
 			fieldsForm.find('.error-reason').hide();
 			$.ajax({
-				url: BASE_URL + 'old-agent/person/' + self.meta.person_id + '/ajax-save-custom-fields',
+				url: BASE_URL + 'agent/person/' + self.meta.person_id + '/ajax-save-custom-fields',
 				type: 'POST',
 				data: formData,
 				dataType: 'json',
@@ -783,11 +783,11 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			this.getEl('approve_user').on('click', function(ev) {
 				ev.preventDefault();
 				DeskPRO_Window.util.ajaxWithClientMessages({
-					url: BASE_URL + 'old-agent/people/validate/approve',
+					url: BASE_URL + 'agent/people/validate/approve',
 					data: { 'people_ids[]': self.meta.person_id },
 					success: function() {
 						DeskPRO_Window.removePage(self);
-						DeskPRO_Window.runPageRoute('page:'+ BASE_URL + 'old-agent/people/' + self.meta.person_id);
+						DeskPRO_Window.runPageRoute('page:'+ BASE_URL + 'agent/people/' + self.meta.person_id);
 
 						DeskPRO_Window.getMessageBroker().sendMessage('agent.person.confirmed', { person_id: self.meta.person_id });
 					}
@@ -796,7 +796,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			this.getEl('delete_user').on('click', function(ev) {
 				ev.preventDefault();
 				DeskPRO_Window.util.ajaxWithClientMessages({
-					url: BASE_URL + 'old-agent/people/validate/delete',
+					url: BASE_URL + 'agent/people/validate/delete',
 					data: { 'people_ids[]': self.meta.person_id },
 					success: function() {
 						DeskPRO_Window.getMessageBroker().sendMessage('agent.person.removed', { person_id: self.meta.person_id });
@@ -930,7 +930,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			});
 
 			$.ajax({
-				url: BASE_URL + 'old-agent/people/' + self.meta.person_id + '/ajax-save',
+				url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
 				type: 'POST',
 				data: postData,
 				dataType: 'json',
@@ -1073,7 +1073,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 						showSaving();
 						$.ajax({
-							url: BASE_URL + 'old-agent/people/' + self.meta.person_id + '/ajax-save',
+							url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
 							type: 'POST',
 							dataType: 'json',
 							data: formData,
@@ -1174,7 +1174,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 			showSaving();
 			$.ajax({
-				url: BASE_URL + 'old-agent/people/' + self.meta.person_id + '/ajax-save',
+				url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
 				type: 'POST',
 				dataType: 'json',
 				data: formData,

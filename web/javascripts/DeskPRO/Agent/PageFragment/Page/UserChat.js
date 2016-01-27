@@ -13,7 +13,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			'userchat',
 			this.meta.conversation_id,
 			this.meta.title,
-			BASE_URL + 'old-agent/chat/view/' + this.meta.conversation_id
+			BASE_URL + 'agent/chat/view/' + this.meta.conversation_id
 		);
 	},
 
@@ -274,7 +274,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 							api.insertHtml('<span class="editor-inserting-var snippet-' + snippetId + '" ' + editable + ' data-snippet-id="' + snippetId + '">Inserting snippet...</span>');
 
 							$.ajax({
-								url: BASE_URL + 'old-agent/text-snippets/chat/' + snippetId + '.json',
+								url: BASE_URL + 'agent/text-snippets/chat/' + snippetId + '.json',
 								dataType: 'json',
 								success: function (data) {
 
@@ -694,7 +694,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			var depId = parseInt($(this).val());
 
 			DeskPRO_Window.util.ajaxWithClientMessages({
-				url: BASE_URL + 'old-agent/chat/change-props/' + self.meta.conversation_id,
+				url: BASE_URL + 'agent/chat/change-props/' + self.meta.conversation_id,
 				data: [{ name: 'props[department_id]', value: depId }],
 				type: 'POST'
 			});
@@ -703,7 +703,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 	endChat: function() {
 		DeskPRO_Window.util.ajaxWithClientMessages({
-			url: BASE_URL + 'old-agent/chat/end-chat/' + this.meta.conversation_id
+			url: BASE_URL + 'agent/chat/end-chat/' + this.meta.conversation_id
 		});
 	},
 
@@ -712,7 +712,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			return;
 		}
 		$.ajax({
-			url: BASE_URL + 'old-agent/chat/assign/' + this.meta.conversation_id + '/0',
+			url: BASE_URL + 'agent/chat/assign/' + this.meta.conversation_id + '/0',
 			data: { 'leaving': true },
 			context: this,
 			contentType: 'json'
@@ -725,7 +725,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 	addPart: function(agent_id) {
 		$.ajax({
-			url: BASE_URL + 'old-agent/chat/add-part/' + this.meta.conversation_id + '/' + agent_id,
+			url: BASE_URL + 'agent/chat/add-part/' + this.meta.conversation_id + '/' + agent_id,
 			context: this,
 			contentType: 'json'
 		});
@@ -737,7 +737,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			postData.push({ name: 'agent_ids[]', value: id });
 		});
 		$.ajax({
-			url: BASE_URL + 'old-agent/chat/sync-parts/' + this.meta.conversation_id,
+			url: BASE_URL + 'agent/chat/sync-parts/' + this.meta.conversation_id,
 			data: postData,
 			type: 'POST',
 			context: this,
@@ -747,7 +747,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 	reassignConvo: function(agent_id) {
 		DeskPRO_Window.util.ajaxWithClientMessages({
-			url: BASE_URL + 'old-agent/chat/assign/' + this.meta.conversation_id + '/' + agent_id
+			url: BASE_URL + 'agent/chat/assign/' + this.meta.conversation_id + '/' + agent_id
 		});
 	},
 
@@ -765,7 +765,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		}
 
 		DeskPRO_Window.util.ajaxWithClientMessages({
-			url: BASE_URL + 'old-agent/chat/leave/' + this.meta.conversation_id,
+			url: BASE_URL + 'agent/chat/leave/' + this.meta.conversation_id,
 			data: {
 				action: action
 			}
@@ -932,7 +932,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 		if (!self.typingTimeout) {
 			DeskPRO_Window.util.ajaxWithClientMessages({
-				url: BASE_URL + 'old-agent/chat/typing/' + this.meta.conversation_id
+				url: BASE_URL + 'agent/chat/typing/' + this.meta.conversation_id
 			});
 
 			self.typingTimeout = setTimeout(function() {
@@ -945,7 +945,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			if (self.typingTimeout && msg === '<p><br></p>') {
 				self.typingTimeout = null;
 				DeskPRO_Window.util.ajaxWithClientMessages({
-					url: BASE_URL + 'old-agent/chat/typing/' + this.meta.conversation_id,
+					url: BASE_URL + 'agent/chat/typing/' + this.meta.conversation_id,
 					data: {
 						erase: true
 					}
@@ -964,7 +964,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
           promises.length = 0;
           DeskPRO_Window.util.ajaxWithClientMessages({
             type: 'POST',
-            url: BASE_URL + 'old-agent/chat/send-message/' + self.meta.conversation_id,
+            url: BASE_URL + 'agent/chat/send-message/' + self.meta.conversation_id,
             data: {
               content: msg,
               is_html: DeskPRO_Window.canUseAgentReplyRte()
@@ -1001,7 +1001,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 	sendInvite: function(agent_id) {
 		DeskPRO_Window.util.ajaxWithClientMessages({
-			url: BASE_URL + 'old-agent/chat/invite/' + this.meta.conversation_id + '/' + agent_id
+			url: BASE_URL + 'agent/chat/invite/' + this.meta.conversation_id + '/' + agent_id
 		});
 	},
 
@@ -1129,7 +1129,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				var items = data.result, x;
 				for (x = 0; x < items.length; x++) {
 					DeskPRO_Window.util.ajaxWithClientMessages({
-						url: BASE_URL + 'old-agent/chat/send-file-message/' + self.meta.conversation_id,
+						url: BASE_URL + 'agent/chat/send-file-message/' + self.meta.conversation_id,
 						data: {send_blob_id: items[0].blob_id }
 					});
 				}
@@ -1161,13 +1161,13 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			};
 
 			$.ajax({
-				url: BASE_URL + 'old-agent/chat/block-user/' + self.meta.conversation_id,
+				url: BASE_URL + 'agent/chat/block-user/' + self.meta.conversation_id,
 				type: 'POST',
 				data: postData,
 				dataType: 'json',
 				complete: function() {
 					self.closeSelf();
-					DeskPRO_Window.loadPage(BASE_URL + 'old-agent/chat/view/' + self.meta.conversation_id, {ignoreExist:true});
+					DeskPRO_Window.loadPage(BASE_URL + 'agent/chat/view/' + self.meta.conversation_id, {ignoreExist:true});
 				}
 			})
 		});
@@ -1176,12 +1176,12 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			$(this).prop('disabled', true).html('<em>Loading</em>');
 			ev.preventDefault();
 			$.ajax({
-				url: BASE_URL + 'old-agent/chat/unblock-user/' + self.meta.conversation_id,
+				url: BASE_URL + 'agent/chat/unblock-user/' + self.meta.conversation_id,
 				type: 'POST',
 				dataType: 'json',
 				complete: function() {
 					self.closeSelf();
-					DeskPRO_Window.loadPage(BASE_URL + 'old-agent/chat/view/' + self.meta.conversation_id, {ignoreExist:true});
+					DeskPRO_Window.loadPage(BASE_URL + 'agent/chat/view/' + self.meta.conversation_id, {ignoreExist:true});
 				}
 			})
 		});
@@ -1215,7 +1215,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		var data = this._labelsData;
 
 		$.ajax({
-			url: BASE_URL + 'old-agent/chat/' + this.meta.conversation_id + '/ajax-save-labels',
+			url: BASE_URL + 'agent/chat/' + this.meta.conversation_id + '/ajax-save-labels',
 			type: 'POST',
 			context: this,
 			data: data,

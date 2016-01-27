@@ -346,7 +346,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 
 		DP.console.log('Applying macro %d', this.macroId);
 
-		var url = BASE_URL + 'old-agent/tickets/'+this.ticketId+'/'+this.macroId+'/apply-macro.json',
+		var url = BASE_URL + 'agent/tickets/'+this.ticketId+'/'+this.macroId+'/apply-macro.json',
       self = this;
 
 		$.ajax({
@@ -386,7 +386,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 				this.page.closeSelf();
 
 				if (!data.close_tab) {
-					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'old-agent/tickets/' + this.ticketId);
+					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/tickets/' + this.ticketId);
 				}
 			}
 		});

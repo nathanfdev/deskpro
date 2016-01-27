@@ -372,7 +372,7 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 			el.data('initial-grouping', group_by);
 
 			$.ajax({
-				url: BASE_URL + 'old-agent/twitter/update-grouping.json',
+				url: BASE_URL + 'agent/twitter/update-grouping.json',
 				data: {account_id: accountId, type: el.data('type'), group: group_by },
 				dataType: 'json',
 				success: function(json) {
@@ -446,7 +446,7 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 		templateHtml = templateHtml.replace(/__placeholder-url__/g, encodeURIComponent(searchTerm)).replace(/__placeholder__/g, searchTerm);
 		templateLi.after($(templateHtml).show());
 
-		DeskPRO_Window.runPageRoute('listpane:' + BASE_URL + 'old-agent/twitter/' + accountId + '/search/new?search_term=' + encodeURIComponent(searchTerm));
+		DeskPRO_Window.runPageRoute('listpane:' + BASE_URL + 'agent/twitter/' + accountId + '/search/new?search_term=' + encodeURIComponent(searchTerm));
 	},
 
 	doFindPerson: function(name, accountId) {
@@ -455,7 +455,7 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 			return;
 		}
 
-		DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'old-agent/twitter/user/find?tab=1&name='
+		DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/twitter/user/find?tab=1&name='
 			+ encodeURIComponent(name) + '&account_id=' + accountId
 		);
 	},

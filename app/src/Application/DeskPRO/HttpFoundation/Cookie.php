@@ -45,7 +45,7 @@ class Cookie extends BaseCookie
 
     public static function makeDeleteCookie($name)
     {
-        return new self($name, '', 'delete');
+        return self::makeCookie($name, '', 'delete', 0);
     }
 
     public static function makeCookie($name, $value, $expire, $httpOnly = false, $secure = false)

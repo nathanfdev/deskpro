@@ -44,7 +44,7 @@ DeskPRO.Agent.WindowElement.Section.People = new Orb.Class({
 
 	reloadCounts: function() {
 		$.ajax({
-			url: BASE_URL + 'old-agent/people/get-section-data/reload-counts.json',
+			url: BASE_URL + 'agent/people/get-section-data/reload-counts.json',
 			dataType: 'json',
 			context: this,
 			success: function(countData) {
@@ -74,7 +74,7 @@ DeskPRO.Agent.WindowElement.Section.People = new Orb.Class({
 
 	reloadLabels: function() {
 		$.ajax({
-			url: BASE_URL + 'old-agent/people/get-section-data/labels.json',
+			url: BASE_URL + 'agent/people/get-section-data/labels.json',
 			context: this,
 			success: function(data) {
 				$('#people_outline_tagcloud').empty().html(data.people_label_cloud);

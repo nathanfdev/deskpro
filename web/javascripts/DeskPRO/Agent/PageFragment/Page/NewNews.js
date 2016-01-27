@@ -100,7 +100,7 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Orb.Class({
 		this.wrapper.addClass('loading');
 
 		$.ajax({
-			url: BASE_URL + 'old-agent/news/new/save',
+			url: BASE_URL + 'agent/news/new/save',
 			type: 'POST',
 			data: formData,
 			dataType: 'json',
@@ -118,7 +118,7 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Orb.Class({
 				}
 
 				if (data.news_id) {
-					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'old-agent/news/post/' + data.news_id);
+					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/news/post/' + data.news_id);
 				}
 
 				this.markForReload();

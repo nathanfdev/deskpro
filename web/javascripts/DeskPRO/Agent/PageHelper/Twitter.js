@@ -26,7 +26,7 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 		});
 		this.content.on('click', '.mention', function(e) {
 			e.preventDefault();
-			var route = 'page:' + BASE_URL + 'old-agent/twitter/user/' + $(this).data('user-id');
+			var route = 'page:' + BASE_URL + 'agent/twitter/user/' + $(this).data('user-id');
 			DeskPRO_Window.runPageRoute(route);
 			return false;
 		});
@@ -280,7 +280,7 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 				var overlay = new DeskPRO.UI.Overlay({
 					contentMethod: 'ajax',
 					contentAjax: {
-						url: BASE_URL + 'old-agent/twitter/status/ajax-edit',
+						url: BASE_URL + 'agent/twitter/status/ajax-edit',
 						data: { account_status_id: id }
 					},
 					zIndex: 40000, // Above floating people windows
@@ -294,7 +294,7 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 							wrapper.addClass('loading');
 
 							$.ajax({
-								url: BASE_URL + 'old-agent/twitter/status/ajax-edit',
+								url: BASE_URL + 'agent/twitter/status/ajax-edit',
 								type: 'POST',
 								data: { account_status_id: id, text: textarea.val(), process: 1},
 								dataType: 'json',

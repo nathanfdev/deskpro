@@ -32,7 +32,7 @@ DeskPRO.Agent.PageHelper.ValidatingEdit = new Orb.Class({
 
 	approveEdit: function() {
 		$.ajax({
-			url: BASE_URL + 'old-agent/publish/content/approve/' + this.options.typename + '/' + this.options.contentId + '.json?specific_type=' + this.options.singleType,
+			url: BASE_URL + 'agent/publish/content/approve/' + this.options.typename + '/' + this.options.contentId + '.json?specific_type=' + this.options.singleType,
 			type: 'POST',
 			context: this,
 			dataType: 'json',
@@ -60,7 +60,7 @@ DeskPRO.Agent.PageHelper.ValidatingEdit = new Orb.Class({
 		var reason = $('.validating-bar .disapprove-reason', this.page.wrapper).val().trim();
 
 		$.ajax({
-			url: BASE_URL + 'old-agent/publish/content/disapprove/' + this.options.typename + '/' + this.options.contentId + '.json?specific_type=' + this.options.singleType,
+			url: BASE_URL + 'agent/publish/content/disapprove/' + this.options.typename + '/' + this.options.contentId + '.json?specific_type=' + this.options.singleType,
 			type: 'POST',
 			context: this,
 			data: {reason: reason},
@@ -86,7 +86,7 @@ DeskPRO.Agent.PageHelper.ValidatingEdit = new Orb.Class({
 
 	skipValidateEdit: function() {
 		$.ajax({
-			url: BASE_URL + 'old-agent/publish/content/get-next-validating/' + this.options.typename + '/' + this.options.contentId + '.json?specific_type=' + this.options.singleType,
+			url: BASE_URL + 'agent/publish/content/get-next-validating/' + this.options.typename + '/' + this.options.contentId + '.json?specific_type=' + this.options.singleType,
 			type: 'POST',
 			context: this,
 			dataType: 'json',

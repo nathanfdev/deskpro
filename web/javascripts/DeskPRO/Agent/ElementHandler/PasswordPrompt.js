@@ -42,7 +42,7 @@ DeskPRO.Agent.ElementHandler.PasswordPrompt = new Orb.Class({
 			}
 
 			$.ajax({
-				url: BASE_URL + 'old-agent/password-confirm-code.json',
+				url: BASE_URL + 'agent/password-confirm-code.json',
 				type: 'POST',
 				dataType: 'json',
 				data: { password: password },

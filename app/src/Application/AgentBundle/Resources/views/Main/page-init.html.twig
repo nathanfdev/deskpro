@@ -80,7 +80,7 @@
 				console.log("Detected Timezone: %o", detected.name());
 				if (detected.name()) {
 					$.ajax({
-						url: BASE_URL + 'old-agent/settings/profile/update-timezone.json',
+						url: BASE_URL + 'agent/settings/profile/update-timezone.json',
 						type: 'POST',
 						dataType: 'json',
 						data: { timezone: detected.name() },

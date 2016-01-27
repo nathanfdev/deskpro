@@ -26,14 +26,14 @@ export class DpAppContainer extends React.Component {
   componentWillMount() {
     $.ajaxSetup({
       statusCode: {
-        401: () => history.replace(`${DP_BASE_URL_RELATIVE}/agent/login`)
+        401: () => history.replace(`${DP_BASE_URL_RELATIVE}/${DP_AGENT_INTERFACE_PATH_NAMESPACE}/login`)
       }
     });
   }
 
   componentDidMount() {
     const { dispatch } = this.props;
-    const myRe = /\/agent\/(\w+)$/;
+    const myRe = new RegExp('\/'+DP_AGENT_INTERFACE_PATH_NAMESPACE+'\/(\w+)$');
     const myArr = myRe.exec(window.location.pathname);
     // dispatch setActiveApp() to store activeApp in Application.dpWindow.state
     dispatch(setActiveApp(myArr[1]));
@@ -46,7 +46,7 @@ export class DpAppContainer extends React.Component {
   workOutBasePath() {
     const baseEnd = DP_BASE_URL.indexOf('/', DP_BASE_URL.indexOf('://') + 3);
 
-    return (baseEnd !== -1 ? DP_BASE_URL.substr(baseEnd) : '') + '/agent';
+    return (baseEnd !== -1 ? DP_BASE_URL.substr(baseEnd) : '') + '/' + DP_AGENT_INTERFACE_PATH_NAMESPACE;
   }
 
   render() {

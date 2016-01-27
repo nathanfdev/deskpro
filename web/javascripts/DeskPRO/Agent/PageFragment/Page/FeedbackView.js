@@ -49,7 +49,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 			disabled: !this.meta.canEdit,
 			onContentLinked: function(typename, content_id) {
 				$.ajax({
-					url: BASE_URL + 'old-agent/feedback/view/' + self.feedback_id + '/ajax-save',
+					url: BASE_URL + 'agent/feedback/view/' + self.feedback_id + '/ajax-save',
 					type: 'POST',
 					data: { content_type: typename, content_id: content_id, action: 'add-related' },
 					context: this,
@@ -58,7 +58,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 			},
 			onContentUnlinked: function(typename, content_id) {
 				$.ajax({
-					url: BASE_URL + 'old-agent/feedback/view/' + self.feedback_id + '/ajax-save',
+					url: BASE_URL + 'agent/feedback/view/' + self.feedback_id + '/ajax-save',
 					type: 'POST',
 					data: { content_type: typename, content_id: content_id, action: 'remove-related' },
 					context: this,
@@ -73,7 +73,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 		});
 
 		this.miscContent = new DeskPRO.Agent.PageHelper.MiscContent(this, {
-			revisionCompareUrl: BASE_URL + 'old-agent/feedback/compare-revs/{OLD}/{NEW}'
+			revisionCompareUrl: BASE_URL + 'agent/feedback/compare-revs/{OLD}/{NEW}'
 		});
 		this.ownObject(this.miscContent);
 
@@ -81,7 +81,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 			triggerElement: '.who-voted-trigger',
 			contentMethod: 'ajax',
 			contentAjax: {
-				url: BASE_URL + 'old-agent/publish/rating-who-voted/feedback/' + this.feedback_id
+				url: BASE_URL + 'agent/publish/rating-who-voted/feedback/' + this.feedback_id
 			}
 		});
 		this.ownObject(this.whoVotedOverlay);
@@ -117,7 +117,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 			var formData = $('input[type="text"], input[type="password"], input:checked, select, textarea', fieldsForm);
 
 			$.ajax({
-				url: BASE_URL + 'old-agent/feedback/view/' + self.meta.feedback_id + '/ajax-save-custom-fields',
+				url: BASE_URL + 'agent/feedback/view/' + self.meta.feedback_id + '/ajax-save-custom-fields',
 				type: 'POST',
 				data: formData,
 				dataType: 'html',
@@ -165,7 +165,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 			});
 
 			$.ajax({
-				url: BASE_URL + 'old-agent/feedback/view/' + self.feedback_id + '/ajax-save',
+				url: BASE_URL + 'agent/feedback/view/' + self.feedback_id + '/ajax-save',
 				type: 'POST',
 				data: postData,
 				success: function(data) {
@@ -188,7 +188,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 			this.getEl('status').on('change', function() {
 				var catId = $(this).val();
 				$.ajax({
-					url: BASE_URL + 'old-agent/feedback/view/' + self.feedback_id + '/ajax-save',
+					url: BASE_URL + 'agent/feedback/view/' + self.feedback_id + '/ajax-save',
 					type: 'POST',
 					data: {action: 'status', status: catId},
 					context: self,
@@ -208,7 +208,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 		DP.select(this.getEl('status'));
 
 		this.deleteHelper = new DeskPRO.Agent.PageFragment.Page.Content.DeleteControl(this, {
-			ajaxSaveUrl: BASE_URL + 'old-agent/feedback/view/' + self.feedback_id + '/ajax-save'
+			ajaxSaveUrl: BASE_URL + 'agent/feedback/view/' + self.feedback_id + '/ajax-save'
 		});
 		this.deleteHelper.undeleteBtn.on('click', function() {
 			self.getEl('status').find('option').first().prop('selected', true).trigger('change');
@@ -266,7 +266,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 				}
 				if ($(info.tabContent).is('.feedback-revs') && !$(info.tabContent).is('.loaded')) {
 					$.ajax({
-						url: BASE_URL + 'old-agent/feedback/view/' + this.feedback_id + '/view-revisions',
+						url: BASE_URL + 'agent/feedback/view/' + this.feedback_id + '/view-revisions',
 						type: 'GET',
 						dataType: 'html',
 						context: self,
@@ -295,7 +295,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 		}
 
 		$.ajax({
-			url: BASE_URL + 'old-agent/feedback/view/' + this.feedback_id + '/ajax-save',
+			url: BASE_URL + 'agent/feedback/view/' + this.feedback_id + '/ajax-save',
 			type: 'POST',
 			data: {action: action},
 			context: this,
@@ -325,7 +325,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 					self.getEl('cat_label').text(title);
 
 					$.ajax({
-						url: BASE_URL + 'old-agent/feedback/view/' + self.feedback_id + '/ajax-save',
+						url: BASE_URL + 'agent/feedback/view/' + self.feedback_id + '/ajax-save',
 						type: 'POST',
 						data: { action: 'category', category_id: catId },
 						dataType: 'json'
@@ -362,9 +362,9 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 			metaIdName: 'feedback_id',
 			menu: this.getEl('merge_menu'),
 			trigger: $('.merge', this.getEl('action_buttons')),
-			overlayUrl: BASE_URL + 'old-agent/feedback/merge-overlay/{id}/{other}',
-			mergeUrl: BASE_URL + 'old-agent/feedback/merge/{id}/{other}',
-			loadRoute: 'feedback:' + BASE_URL + 'old-agent/feedback/view/{id}'
+			overlayUrl: BASE_URL + 'agent/feedback/merge-overlay/{id}/{other}',
+			mergeUrl: BASE_URL + 'agent/feedback/merge/{id}/{other}',
+			loadRoute: 'feedback:' + BASE_URL + 'agent/feedback/view/{id}'
 		});
 		this.ownObject(this.merge);
 	},
@@ -461,7 +461,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 		}
 
 		$.ajax({
-			url: BASE_URL + 'old-agent/feedback/view/' + this.getMetaData('feedback_id') + '/ajax-save-comment',
+			url: BASE_URL + 'agent/feedback/view/' + this.getMetaData('feedback_id') + '/ajax-save-comment',
 			type: 'POST',
 			context: this,
 			data: data,
@@ -521,7 +521,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 			};
 
 			$.ajax({
-				url: BASE_URL + 'old-agent/feedback/view/' + this.feedback_id + '/ajax-save',
+				url: BASE_URL + 'agent/feedback/view/' + this.feedback_id + '/ajax-save',
 				type: 'POST',
 				context: this,
 				data: data,
@@ -580,7 +580,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 			var list = $('.file-list', this.wrapper);
 
 			DeskPRO_Window.util.fileupload(this.wrapper, {
-				url: BASE_URL + 'old-agent/misc/accept-upload?attach_to_object=feedback&object_id=' + this.meta.feedback_id,
+				url: BASE_URL + 'agent/misc/accept-upload?attach_to_object=feedback&object_id=' + this.meta.feedback_id,
 				page: this
 			});
 
@@ -590,7 +590,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 
 				var blob_id = $(this).data('blob-id');
 				$.ajax({
-					url: BASE_URL + 'old-agent/feedback/view/' + self.meta.feedback_id + '/ajax-save',
+					url: BASE_URL + 'agent/feedback/view/' + self.meta.feedback_id + '/ajax-save',
 					type: 'POST',
 					data: {action: 'remove-blob', blob_id: blob_id},
 					context: self,
@@ -659,7 +659,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 			triggerElement: $('button.compare-trigger', this.wrapper),
 			contentMethod: 'ajax',
 			contentAjax: {
-				url: BASE_URL + 'old-agent/feedback/compare-revs/' + old_id + '/' + new_id
+				url: BASE_URL + 'agent/feedback/compare-revs/' + old_id + '/' + new_id
 			},
 			destroyOnClose: true
 		});
@@ -681,7 +681,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 				newSlug = newSlug.toLowerCase().replace(/[^0-9a-zA-Z_\-]/g, '-').replace(/\-{2,}/g, '-').replace(/^\-/, '').replace(/\-$/, '');
 				slugEl.text(newSlug);
 				$.ajax({
-					url: BASE_URL + 'old-agent/feedback/view/' + id + '/ajax-save',
+					url: BASE_URL + 'agent/feedback/view/' + id + '/ajax-save',
 					type: 'POST',
 					data: { slug: newSlug, action: 'slug' },
 					context: this,

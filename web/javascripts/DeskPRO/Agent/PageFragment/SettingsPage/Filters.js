@@ -44,7 +44,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.Filters = new Orb.Class({
 
 			runningAjax = $.ajax({
 				type: 'POST',
-				url: BASE_URL + 'old-agent/misc/ajax-save-prefs',
+				url: BASE_URL + 'agent/misc/ajax-save-prefs',
 				data: postData
 			});
 		}
