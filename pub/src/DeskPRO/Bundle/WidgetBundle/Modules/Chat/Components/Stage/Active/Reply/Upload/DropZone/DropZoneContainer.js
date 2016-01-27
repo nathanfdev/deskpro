@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
 import { DragOverlayListener } from 'DeskPRO/Component/Uploader/DragOverlayListener';
 import { DropZoneOverlay } from './DropZoneOverlay';
+import { PasteCatcher } from 'DeskPRO/Component/Uploader/PasteCatcher';
 import { uploadingFilesRepeatSelector } from '../../../../../../Selectors/chat';
 import {
   addAttachment,
@@ -10,6 +11,8 @@ import {
   removeUploadingFile,
   markUploadingFileFailed
 } from '../../../../../../Actions/chatActions';
+import { extension } from 'mime-types';
+import moment from 'moment';
 
 @connect(state => ({
   repeatFiles: uploadingFilesRepeatSelector(state)
@@ -37,17 +40,24 @@ export class DropZoneContainer extends React.Component {
     data.files.forEach(file => this.props.dispatch(markUploadingFileFailed(file)));
   };
 
+  onPasteImage = (blob, imgSrc, contentType) => {
+    const file = new File([blob], `clipboard_${moment().format()}.${extension(contentType)}`);
+    this.refs.dropZone.pushFileToQueue(file);
+  };
+
   render() {
     return (
-      <DropZone uploadUrl={window.DP_HELPDESK_URL + 'portal/api/blobs/temp'}
+      <DropZone ref="dropZone"
+                uploadUrl={window.DP_HELPDESK_URL + 'portal/api/blobs/temp'}
                 context={[window.widgetFrame.document, parent.window.document]}
                 onSend={this.onUploadStarted}
                 onSuccess={this.onUploadSuccess}
                 onFail={this.onUploadFail} {...this.props}>
 
-        <DragOverlayListener context={context}>
+        <DragOverlayListener context={[parent.document, window.widgetFrame.document]}>
           <DropZoneOverlay />
         </DragOverlayListener>
+        <PasteCatcher context={window.widgetFrame.document} onPasteImage={this.onPasteImage} />
       </DropZone>
     );
   }

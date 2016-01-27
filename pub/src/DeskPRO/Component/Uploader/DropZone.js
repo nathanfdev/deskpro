@@ -1,11 +1,7 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import { PasteCatcher } from 'DeskPRO/Component/Uploader/PasteCatcher';
 import 'blueimp-file-upload';
 import $ from 'jquery';
-import { extension } from 'mime-types';
-import moment from 'moment';
-import { getImageDataUrl, dataUrlToBlob } from 'DeskPRO/Component/Util/Blob';
 
 export class DropZone extends React.Component {
 
@@ -23,7 +19,6 @@ export class DropZone extends React.Component {
 
   componentDidMount() {
     this.initializeFileUpload();
-    this.getContext().forEach(context => $(context).on('paste', this.onPaste));
   }
 
   componentWillReceiveProps(newProps) {
@@ -34,57 +29,10 @@ export class DropZone extends React.Component {
 
   componentWillUnmount() {
     $(this.getInput()).fileupload('destroy');
-    this.getContext().forEach(context => $(context).off('paste', this.onPaste));
-  }
-
-  onGetBlobFromPasteChecker = () => {
-    const $pasteCatcher = $(this.getPasteCatcher());
-    const child = $pasteCatcher.children().last().get(0);
-
-    if (child) {
-      if (child.tagName === 'IMG') {
-        const imgSrc = child.src;
-        getImageDataUrl(imgSrc, dataUrl => {
-          const blob = dataUrlToBlob(dataUrl);
-          this.pushBlobToQueue(blob, 'image/png');
-        });
-      }
-    }
-  };
-
-  onPaste = event => {
-    const originalEvent = event.originalEvent;
-    if (originalEvent.clipboardData) {
-      const items = originalEvent.clipboardData.items;
-      if (items) {
-        for (var i = 0; i < items.length; i++) {
-          const item = items[i];
-
-          if (item.kind === 'file' && item.type.indexOf('image') !== -1) {
-            const blob = item.getAsFile();
-            this.pushBlobToQueue(blob, item.type);
-          }
-        }
-      } else {
-        const $pasteCatcher = $(this.getPasteCatcher());
-        $pasteCatcher.focus();
-
-        setTimeout(this.onGetBlobFromPasteChecker, 100);
-      }
-    }
-  };
-
-  getContext() {
-    const { context = document } = this.props;
-    return Array.isArray(context) ? context : [...context];
   }
 
   getInput() {
     return ReactDOM.findDOMNode(this.props.getExternalInput());
-  }
-
-  getPasteCatcher() {
-    return ReactDOM.findDOMNode(this.refs.pasteCatcher);
   }
 
   initializeFileUpload() {
@@ -113,19 +61,7 @@ export class DropZone extends React.Component {
     });
   }
 
-  pushBlobToQueue(blob, contentType) {
-    const file = new File([blob], `clipboard_${moment().format()}.${extension(contentType)}`);
-    this.pushFileToQueue(file);
-  }
-
   render() {
-    const { children } = this.props;
-
-    return (
-      <div>
-        {children}
-        <PasteCatcher ref="pasteCatcher" />
-      </div>
-    );
+    return <div>{this.props.children}</div>;
   }
 }
