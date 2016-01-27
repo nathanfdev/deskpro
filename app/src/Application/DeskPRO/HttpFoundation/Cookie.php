@@ -29,11 +29,15 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\HttpFoundation;
 
-use Application\DeskPRO\App;
 use Symfony\Component\HttpFoundation\Cookie as BaseCookie;
 
+/**
+ * @deprecated Use the usual symfony cookies and the method to send them
+ *             This still exists just for some legacy controller code.
+ */
 class Cookie extends BaseCookie
 {
     const EXPIRE_NEVER  = 'never';
@@ -47,113 +51,6 @@ class Cookie extends BaseCookie
     public static function makeCookie($name, $value, $expire, $httpOnly = false, $secure = false)
     {
         return new self($name, $value, $expire, null, null, $secure, $httpOnly);
-    }
-
-    public function __construct($name, $value = null, $expire = 0, $path = null, $domain = null, $secure = false, $httpOnly = false)
-    {
-        if ($path === null) {
-            $path = App::getSetting('core.cookie_path');
-            if (!$path) {
-                $path = '/';
-            }
-        }
-
-        if ($domain === null) {
-            $domain = App::getSetting('core.cookie_domain');
-            if (!$domain) {
-                $domain = null;
-            }
-        }
-
-        if ($expire === self::EXPIRE_NEVER) {
-            $expire = '+5 years';
-        } elseif ($expire === self::EXPIRE_DELETE) {
-            $expire = '-1 week';
-        }
-
-        parent::__construct($name, $value, $expire, $path, $domain, $secure, $httpOnly);
-    }
-
-    public function __toString()
-    {
-        $str = urlencode($this->getName()).'=';
-
-        if ('' === (string) $this->getValue()) {
-            $str .= 'deleted; expires='.gmdate('D, d-M-Y H:i:s T', time() - 31536001);
-        } else {
-            $str .= urlencode($this->getValue());
-
-            if ($this->getExpiresTime() !== 0) {
-                $str .= '; expires='.gmdate('D, d-M-Y H:i:s T', $this->getExpiresTime());
-            }
-        }
-
-        if (null !== $this->path) {
-            $str .= '; path='.$this->path;
-        }
-
-        if (null !== $this->getDomain()) {
-            $str .= '; domain='.$this->getDomain();
-        }
-
-        if (true === $this->isSecure()) {
-            $str .= '; secure';
-        }
-
-        if (true === $this->isHttpOnly()) {
-            $str .= '; httponly';
-        }
-
-        return $str;
-    }
-
-    public function setDomain($domain)
-    {
-        $this->domain = $domain;
-
-        return $this;
-    }
-
-    public function setExpire($expire)
-    {
-        $this->expire = $expire;
-
-        return $this;
-    }
-
-    public function setHttpOnly($httpOnly)
-    {
-        $this->httpOnly = $httpOnly;
-
-        return $this;
-    }
-
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function setPath($path)
-    {
-        $this->path = $path;
-
-        return $this;
-    }
-
-    public function setSecure($secure)
-    {
-        $this->secure = $secure;
-
-        return $this;
-    }
-
-    public function setValue($value)
-    {
-        $this->value = $value;
-
-        return $this;
     }
 
     public function send()
