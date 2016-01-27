@@ -1,7 +1,7 @@
-import React from "react"
-import PortalHttp from "DeskPRO/Bundle/PortalBundle/Http/PortalHttp"
-import { portalUrlGenerator } from "DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator"
-import PortalPhrases from "DeskPRO/Bundle/PortalBundle/PortalPhrases"
+import React from 'react';
+import PortalHttp from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
+import { portalUrlGenerator } from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export default class LoginForm extends React.Component {
   constructor(props) {
@@ -86,13 +86,13 @@ export default class LoginForm extends React.Component {
         </label>
 
         <label className={this.state.failed ? "error" : null}>
-          {this.state.failed ? (<div className="message">{PortalPhrases.get('portal.account.login-invalid')}</div>) : null}
+          {this.state.failed ? (<div className="message">{portalPhrases.get('portal.account.login-invalid')}</div>) : null}
           <span>Your password</span>
           <input
             ref="password"
             type="password"
             tabIndex="2"
-            placeholder={PortalPhrases.get('portal.account.login-password')}
+            placeholder={portalPhrases.get('portal.account.login-password')}
             name="password"
             />
         </label>
@@ -119,7 +119,7 @@ export default class LoginForm extends React.Component {
         <button type="submit" tabIndex="2">Login</button>
 
         <div className="secondary-action">
-          <a href={portalUrlGenerator.path('/login/reset-password')}>{PortalPhrases.get('portal.account.login-password-reminder')}</a>
+          <a href={portalUrlGenerator.path('/login/reset-password')}>{portalPhrases.get('portal.account.login-password-reminder')}</a>
         </div>
       </form>
     );

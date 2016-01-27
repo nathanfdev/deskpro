@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import PortalPhrases from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import classNames from 'classnames';
 import _ from 'lodash';
@@ -345,7 +345,7 @@ export class PortalSimpleSelectBox extends React.Component {
       <div className={className} onClick={this.onClickHeader}>
         <div className="filter-box">
           <input type="text"
-                 placeholder={PortalPhrases.get('portal.general.select_placeholder')}
+                 placeholder={portalPhrases.get('portal.general.select_placeholder')}
                  ref="filterInput"
                  onKeyDown={this.filterNav}
                  onKeyUp={this.filterChange} />

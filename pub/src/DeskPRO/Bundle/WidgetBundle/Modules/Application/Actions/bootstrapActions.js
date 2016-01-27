@@ -7,7 +7,7 @@ import { widgetSessionCodeSelector, requireChatLoginSelector, requireChatEmailVa
 import { widgetHasChatSelector, liveDemoSelector } from '../Selectors/dpWindow';
 import { onlineAgentsCountSelector } from '../RecordStores/Selectors/peopleSelectors';
 import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
-import PortalPhrases from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { widgetEmitter } from '../../../Services/emitter';
 import $ from 'jquery';
 
@@ -63,7 +63,7 @@ export const loadPortalPhraseTranslations = createAction(
   () => widgetApi
     .sendGet('DP_API/lang/widget-phrases.json', {...ajaxOptions})
     .success(response => {
-      PortalPhrases.setPhrases(response);
+      portalPhrases.setPhrases(response);
     })
 );
 
