@@ -25,6 +25,4 @@ class PortalApp {
   }
 }
 
-const app = new PortalApp();
-
-export default app;
+export const portalApp = new PortalApp();

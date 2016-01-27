@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import PortalApp from 'DeskPRO/Bundle/PortalBundle/PortalApp';
+import { portalApp } from '../PortalApp';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import { pageWidgetEmitter } from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
 import { NewTicketSuggestions } from '../React/NewTicketSuggestions';
-import { DynamicForm } from 'DeskPRO/Bundle/AppBundle/Form/DynamicForm.js';
+import { DynamicForm } from '../../AppBundle/Form/DynamicForm';
 import _ from 'lodash';
 import $ from 'jquery';
 
@@ -125,7 +125,7 @@ export class TicketForm extends PageWidget {
         setDisplayedFields(fields);
       },
       onPostUpdate: () => {
-        const portalPage = PortalApp.getPortalPage();
+        const portalPage = portalApp.getPortalPage();
         if (portalPage) {
           portalPage.refresh($formEl);
         } else {

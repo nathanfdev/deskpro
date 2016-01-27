@@ -1,2 +1,3 @@
-import PortalApp from "DeskPRO/Bundle/PortalBundle/PortalApp";
-PortalApp.run();
+import { portalApp } from './PortalApp';
+
+portalApp.run();
