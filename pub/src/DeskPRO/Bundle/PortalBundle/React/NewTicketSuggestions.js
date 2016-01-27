@@ -96,7 +96,7 @@ class Suggestions extends React.Component {
   }
 }
 
-export default class NewTicketSuggestions extends React.Component {
+export class NewTicketSuggestions extends React.Component {
 
   constructor(props) {
     super(props);

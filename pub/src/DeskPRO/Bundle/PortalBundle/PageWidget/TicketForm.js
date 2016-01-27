@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import PortalApp from 'DeskPRO/Bundle/PortalBundle/PortalApp';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import { pageWidgetEmitter } from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
-import NewTicketSuggestions from 'DeskPRO/Bundle/PortalBundle/React/NewTicketSuggestions';
+import { NewTicketSuggestions } from '../React/NewTicketSuggestions';
 import { DynamicForm } from 'DeskPRO/Bundle/AppBundle/Form/DynamicForm.js';
 import _ from 'lodash';
 import $ from 'jquery';

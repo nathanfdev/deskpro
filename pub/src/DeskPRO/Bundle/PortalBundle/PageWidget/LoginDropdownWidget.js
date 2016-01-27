@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
-import LoginDropdown from 'DeskPRO/Bundle/PortalBundle/React/Login/LoginDropdown';
+import { LoginDropdown } from '../React/Login/LoginDropdown';
 import $ from 'jquery';
 
 export class LoginDropdownWidget extends PageWidget {
