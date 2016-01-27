@@ -1,6 +1,6 @@
 import { createAction } from 'Ampliflux';
 import * as rsa from 'Ampliflux/common/record-store/actions';
-import DpApi from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
+import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { ajaxOptions } from '../../Actions/bootstrapActions';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 
@@ -13,7 +13,7 @@ export const loadPeople = createAction(
   rsa.requestRecords(
     ['RecordStores', 'Application', 'people'],
     missingIds => new Promise((resolve, reject) =>
-      DpApi.sendGet('DP_API/people?' + compileParams({ids: missingIds.toArray()}), {...ajaxOptions})
+      widgetApi.sendGet('DP_API/people?' + compileParams({ids: missingIds.toArray()}), {...ajaxOptions})
         .success(response => resolve(response.data))
         .error(response => reject(response))
     )

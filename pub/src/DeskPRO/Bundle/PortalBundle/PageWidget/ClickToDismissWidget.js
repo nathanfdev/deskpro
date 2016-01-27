@@ -1,6 +1,6 @@
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 
-export default class ClickToDismissWidget extends PageWidget {
+export class ClickToDismissWidget extends PageWidget {
 
   renderWidget() {
     const link = this.$element.data('click-to-dismiss');

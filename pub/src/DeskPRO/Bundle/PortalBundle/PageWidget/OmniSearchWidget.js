@@ -4,7 +4,7 @@ import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import OmniSearch from 'DeskPRO/Bundle/PortalBundle/React/OmniSearch/OmniSearch';
 import $ from 'jquery';
 
-export default class OmniSearchWidget extends PageWidget {
+export class OmniSearchWidget extends PageWidget {
 
   renderWidget() {
     this.$rElement = $('<div class="dp-react-widget"></div>').appendTo(this.$element);

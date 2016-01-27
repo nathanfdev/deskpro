@@ -64,7 +64,7 @@ class DynamicSearchResults {
   }
 }
 
-export default class SearchResultsPage extends PageWidget {
+export class SearchResultsPage extends PageWidget {
 
   renderWidget() {
     const $searchResultsPage = this.$element;

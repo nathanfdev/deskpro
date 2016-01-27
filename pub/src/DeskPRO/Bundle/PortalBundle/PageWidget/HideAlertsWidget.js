@@ -1,7 +1,7 @@
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import $ from 'jquery';
 
-export default class HideAlertsWidget extends PageWidget {
+export class HideAlertsWidget extends PageWidget {
 
   renderWidget() {
     const $alerts = this.$element.find('.alert');

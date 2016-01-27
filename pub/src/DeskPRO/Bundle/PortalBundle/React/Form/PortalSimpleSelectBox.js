@@ -55,7 +55,7 @@ class SelectOption extends React.Component {
   }
 }
 
-export default class PortalSimpleSelectBox extends React.Component {
+export class PortalSimpleSelectBox extends React.Component {
 
   static propTypes = {
     widgetOptions: PropTypes.object,

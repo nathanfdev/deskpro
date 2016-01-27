@@ -1,5 +1,5 @@
 import 'babel-polyfill';
-import PortalPage from 'DeskPRO/Bundle/PortalBundle/PageWidget/PortalPage';
+import { PortalPage } from './PageWidget/PortalPage';
 import PortalPhrases from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import $ from 'jquery';
 

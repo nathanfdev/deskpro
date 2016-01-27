@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
-import PortalCheckbox from '../../../React/Form/PortalCheckbox';
+import { PortalCheckbox } from '../../../React/Form/PortalCheckbox';
 import $ from 'jquery';
 
 export class DpxCheckboxGroup extends PageWidget {

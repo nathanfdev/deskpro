@@ -1,7 +1,7 @@
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import $ from 'jquery';
 
-export default class AgentBarWidget extends PageWidget {
+export class AgentBarWidget extends PageWidget {
 
   renderWidget() {
     const agentArrow = $('#agent-dropdown-arrow');

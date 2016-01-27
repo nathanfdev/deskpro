@@ -1,6 +1,6 @@
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 
-export default class LoginPage extends PageWidget {
+export class LoginPage extends PageWidget {
 
   renderWidget() {
     const $loginPage = this.$element;

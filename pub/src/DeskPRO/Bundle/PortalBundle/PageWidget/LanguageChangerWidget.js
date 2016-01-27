@@ -6,7 +6,7 @@ import PortalWindow from 'DeskPRO/Bundle/PortalBundle/PortalWindow';
 import { portalUrlGenerator } from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
 import $ from 'jquery';
 
-export default class LanguageChangerWidget extends PageWidget {
+export class LanguageChangerWidget extends PageWidget {
 
   clickLanguage(langCode) {
     const action = portalUrlGenerator.path('/change-language');
