@@ -8646,6 +8646,7 @@ body.with-agent-bar {
 }
 
 .attach-file {
+  position: relative;
   background: #ebf2f5;
   border: 1px solid #dce4e7;
   color: #818587;
@@ -8700,6 +8701,17 @@ body.with-agent-bar {
     }
   }
 
+  input[type="file"] {
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    cursor: pointer;
+  }
+
   div.frame {
     display: inline-block;
     padding: 5px;
@@ -8721,8 +8733,7 @@ body.with-agent-bar {
       clear: both;
     }
     img {
-      margin: auto;
-      margin-bottom: 10px;
+      margin: auto auto 10px;
       text-align: center;
       display: block;
       clear: both;

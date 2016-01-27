@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Blob;
@@ -261,7 +260,7 @@ class PortalController extends AbstractController
                 'error'   => [
                     'code' => 'no_file_in_request',
                 ],
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         $error = $this->get('attachment_accepter')->getError($file, 'user');
@@ -283,7 +282,7 @@ class PortalController extends AbstractController
                     'code'    => $error_code,
                     'detail'  => $error_detail,
                 ],
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         $blob = $this->get('attachment_accepter')->accept($file, true);

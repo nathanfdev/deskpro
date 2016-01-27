@@ -8,12 +8,9 @@ export class UploadingFile extends React.Component {
 
   render() {
     const { file } = this.props;
-
     return (
       <li>
-        <a href={file.url}>
-          {file.filename}
-        </a>
+        {file.file.name} (uploading...)
       </li>
     );
   }

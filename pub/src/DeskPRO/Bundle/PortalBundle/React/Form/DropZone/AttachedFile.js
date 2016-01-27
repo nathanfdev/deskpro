@@ -20,7 +20,7 @@ export class AttachedFile extends React.Component {
     event.preventDefault();
 
     const { file } = this.props;
-    const blob = file.blob;
+    const blob = file.info;
 
     if (blob.is_image) {
       openFullImage(this.refs.image);
@@ -31,13 +31,13 @@ export class AttachedFile extends React.Component {
 
   render() {
     const { file } = this.props;
-    const blob = file.blob;
+    const blob = file.info;
     const formName = `ticket[attachments][${blob.id}][blob_auth]`;
 
     return (
       <li>
         <span dangerouslySetInnerHTML={{__html: blob.icon_html }} />
-        <a href={blob.url} target="_blank" onClick={this.onViewFile}>{file.filename}</a>
+        <a href={blob.url} target="_blank" onClick={this.onViewFile}>{file.file.name}</a>
         <input type="hidden" name={formName} value={blob.authcode} />
         <span className="file-size">({blob.size})</span>
         <a href="#" className="remove-attachement" onClick={this.onDelete}>

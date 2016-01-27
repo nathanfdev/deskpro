@@ -8,10 +8,7 @@ export class DragOverlayListener extends React.Component {
       PropTypes.object,
       PropTypes.arrayOf(PropTypes.object)
     ]),
-    children: PropTypes.any,
-
-    // todo temp to make fine-uploader works
-    dropNode: PropTypes.string
+    children: PropTypes.any
   };
 
   constructor(props) {
@@ -36,27 +33,6 @@ export class DragOverlayListener extends React.Component {
   }
 
   onDefaultDrop = event => {
-    // todo
-    // temp code to make fine-uploader works
-    // remove after refactor of the portal attach component
-
-    const { dropNode } = this.props;
-    let skip = false;
-
-    if (dropNode) {
-      this.getContext().forEach(context => {
-        const $dropNone = $(dropNode, context);
-        if ($dropNone.is(event.target) || $dropNone.has(event.target).length > 0) {
-          skip = true;
-        }
-      });
-    }
-
-    if (skip) {
-      return;
-    }
-    // end of tmp code
-
     event.preventDefault();
   };
 

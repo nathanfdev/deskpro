@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
+import { DragOverlayListener } from 'DeskPRO/Component/Uploader/DragOverlayListener';
 import { DropZoneOverlay } from './DropZoneOverlay';
 import { uploadingFilesRepeatSelector } from '../../../../../../Selectors/chat';
 import {
@@ -44,7 +45,9 @@ export class DropZoneContainer extends React.Component {
                 onSuccess={this.onUploadSuccess}
                 onFail={this.onUploadFail} {...this.props}>
 
-        <DropZoneOverlay />
+        <DragOverlayListener context={context}>
+          <DropZoneOverlay />
+        </DragOverlayListener>
       </DropZone>
     );
   }

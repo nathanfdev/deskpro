@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { portalUrlGenerator } from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
+import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
 import { AttachedList } from './AttachedList';
 
-const qq = require('exports?qq!fine-uploader/fine-uploader/fine-uploader.js');
-
 export class PortalAttach extends React.Component {
+
+  static propTypes = {
+    widgetOptions: PropTypes.object
+  };
 
   constructor(props) {
     super(props);
@@ -14,50 +17,12 @@ export class PortalAttach extends React.Component {
     };
   }
 
-  componentDidMount() {
-    const params = {};
-    if (window.dp_get_csrf_token) {
-      params['file[_dp_csrf_token]'] = window.dp_get_csrf_token();
-    }
-
-    const uploaderOpts = {
-      multiple: true,
-      button: this.refs.btn,
-      dropZoneElements: this.refs.btn,
-      debug: true,
-      request: {
-        endpoint: portalUrlGenerator.path('/') + 'dpblob',
-        method: 'POST',
-        inputName: 'file[blob]',
-        params: params
-      },
-      callbacks: {
-        onUpload: this.onUpload,
-        onComplete: this.onComplete
-      }
-    };
-
-    this.uploader = new qq.FineUploaderBasic(uploaderOpts);
-  }
-
-  componentWillUnmount() {
-    if (this.uploader) {
-      this.uploader.cancelAll();
-      this.uploader.reset();
-      this.uploader = null;
-    }
-  }
-
-  onUpload = (id, name) => {
-    const f = {
-      id: id,
-      filename: name,
-      blob: null,
-      status: 'uploading'
-    };
-
+  onUploadStarted = (event, data) => {
     const files = this.state.files.slice();
-    files.push(f);
+    files.push({
+      file: data.files[0],
+      info: null
+    });
 
     this.setState({
       files: files,
@@ -65,32 +30,33 @@ export class PortalAttach extends React.Component {
     });
   };
 
-  onComplete = (id, name, res) => {
-    if (res && res.success && res.success === true) {
-      const blob = res.blob;
-      const newFiles = [];
+  onUploadSuccess = (event, data) => {
+    const file = data.files[0];
+    const info = data.result && data.result.blob || {};
+    const newFiles = [];
 
-      this.state.files.forEach(f => {
-        if (f.id !== id) {
-          newFiles.push(f);
-        } else {
-          newFiles.push({
-            ...f,
-            status: 'done',
-            blob: blob
-          });
-        }
-      });
+    this.state.files.forEach(f => {
+      if (f.file !== file) {
+        newFiles.push(f);
+      } else {
+        newFiles.push({...f, info});
+      }
+    });
 
-      this.setState({
-        files: newFiles
-      });
-    } else {
-      this.setState({
-        files: this.state.files.filter(f => f.id !== id),
-        lastError: res.error || { message: 'Could not upload file', code: 0, detail: null }
-      });
-    }
+    this.setState({
+      files: newFiles
+    });
+  };
+
+  onUploadFail = (event, data) => {
+    const file = data.files[0];
+    const response = data.jqXHR.responseJSON;
+    const error = response && response.error;
+
+    this.setState({
+      files: this.state.files.filter(f => f.file !== file),
+      lastError: error && error.message || 'Could not upload file'
+    });
   };
 
   onDelete = file => {
@@ -107,16 +73,34 @@ export class PortalAttach extends React.Component {
   };
 
   render() {
+    const { widgetOptions } = this.props;
+    const context = widgetOptions.context || document;
+
+    const params = {};
+    if (window.dp_get_csrf_token) {
+      params['file[_dp_csrf_token]'] = window.dp_get_csrf_token();
+    }
+
     return (
-       <div className="new-ticket-attachements" ref="main">
-          <span className="attach-file" ref="btn">
-            <i className="fa fa-upload" />
-            <span className="text">Drag a file in here or</span>
-            <span className="fake-button">Choose a file</span>
+       <div className="new-ticket-attachements">
+         <DropZone getExternalInput={() => this.refs.fileUpload}
+                   uploadUrl={portalUrlGenerator.path('/') + 'dpblob'}
+                   uploadParams={params}
+                   context={context}
+                   onSend={this.onUploadStarted}
+                   onSuccess={this.onUploadSuccess}
+                   onFail={this.onUploadFail}>
+
+           <span className="attach-file">
+              <i className="fa fa-upload" />
+              <span className="text">Drag a file in here or</span>
+              <span className="fake-button">Choose a file</span>
+              <input type="file" ref="fileUpload" name="file[blob]" />
           </span>
+         </DropZone>
 
          <AttachedList files={this.state.files} onDelete={this.onDelete} />
-         {this.state.lastError && this.state.lastError.message}
+         {this.state.lastError}
       </div>
     );
   }

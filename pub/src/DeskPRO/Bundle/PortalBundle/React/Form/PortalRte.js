@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { RteInput } from 'DeskPRO/Component/Rte/RteInput';
 import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
+import { DragOverlayListener } from 'DeskPRO/Component/Uploader/DragOverlayListener';
 import { portalUrlGenerator } from '../../Http/PortalUrlGenerator';
 
 export class PortalRte extends React.Component {
@@ -54,19 +55,20 @@ export class PortalRte extends React.Component {
             buttonLabels: 'fontawesome'
           }}/>
 
-        <input type="submit" ref="fileUpload" name="file[blob]" style={{display: 'none'}} />
+        <input type="submit" ref="fileUpload" name="files" style={{display: 'none'}} />
         <DropZone getExternalInput={() => this.refs.fileUpload}
                   uploadUrl={portalUrlGenerator.path('/') + 'dpblob'}
                   uploadParams={params}
                   context={context}
                   onSend={this.onUploadStarted}
                   onSuccess={this.onUploadSuccess}
-                  onFail={this.onUploadFail}
-                  dropNode={'.attach-file'}>
+                  onFail={this.onUploadFail}>
 
-          <div className="dp-medium-rte-wrapper-overlay">
-            <h1>Drag your file in here.</h1>
-          </div>
+          <DragOverlayListener context={context}>
+            <div className="dp-medium-rte-wrapper-overlay">
+              <h1>Drag your file in here.</h1>
+            </div>
+          </DragOverlayListener>
         </DropZone>
       </div>
     );

@@ -17,9 +17,9 @@ export class AttachedList extends React.Component {
 
     return (
       <ul>
-        {files.map(file => file.status === 'done'
-            ? <AttachedFile file={file} key={file.id} onDelete={onDelete} />
-            : <UploadingFile file={file} key={file.id} />
+        {files.map((file, key) => file.info
+            ? <AttachedFile file={file} key={key} onDelete={onDelete} />
+            : <UploadingFile file={file} key={key} />
         )}
       </ul>
     );

@@ -9,6 +9,11 @@ export class DpxAttach extends PageWidget {
   renderWidget() {
     this.$element.hide();
     this.$rElement = $('<div class="dp-react-widget as-dpui"></div>').insertAfter(this.$element);
-    ReactDOM.render(React.createElement(PortalAttach), this.$rElement.get(0));
+
+    const component = React.createElement(PortalAttach, {
+      widgetOptions: this.options
+    });
+
+    ReactDOM.render(component, this.$rElement.get(0));
   }
 }

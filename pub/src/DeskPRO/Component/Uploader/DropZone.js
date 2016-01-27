@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import { DragOverlayListener } from 'DeskPRO/Component/Uploader/DragOverlayListener';
 import { PasteCatcher } from 'DeskPRO/Component/Uploader/PasteCatcher';
 import 'blueimp-file-upload';
 import $ from 'jquery';
@@ -19,10 +18,7 @@ export class DropZone extends React.Component {
     onSend: PropTypes.func,
     onSuccess: PropTypes.func,
     onFail: PropTypes.func,
-    children: PropTypes.node,
-
-    // todo temp to make fine-uploader works
-    dropNode: PropTypes.string
+    children: PropTypes.node
   };
 
   componentDidMount() {
@@ -31,7 +27,7 @@ export class DropZone extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
-    if (newProps.repeatFiles.size) {
+    if (newProps.repeatFiles && newProps.repeatFiles.size) {
       newProps.repeatFiles.forEach(file => this.pushFileToQueue(file));
     }
   }
@@ -123,13 +119,11 @@ export class DropZone extends React.Component {
   }
 
   render() {
-    const { context, children, dropNode } = this.props;
+    const { children } = this.props;
 
     return (
       <div>
-        <DragOverlayListener context={context} dropNode={dropNode}>
-          {children}
-        </DragOverlayListener>
+        {children}
         <PasteCatcher ref="pasteCatcher" />
       </div>
     );
