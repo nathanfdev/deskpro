@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
 import PortalHttp from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 import { portalUrlGenerator } from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
-import OmniSearchResultSection from 'DeskPRO/Bundle/PortalBundle/React/OmniSearch/OmniSearchResultSection';
+import { OmniSearchResultSection } from 'DeskPRO/Bundle/PortalBundle/React/OmniSearch/OmniSearchResultSection';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import _ from 'lodash';
 import moment from 'moment';
 
-export default class OmniSearch extends React.Component {
+export class OmniSearch extends React.Component {
 
   static propTypes = {
     $input: PropTypes.object,

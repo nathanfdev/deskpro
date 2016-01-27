@@ -36,7 +36,7 @@ class SearchResultCollection {
   }
 }
 
-export default class OmniSearchResultSection extends React.Component {
+export class OmniSearchResultSection extends React.Component {
 
   static propTypes = {
     name: PropTypes.string,

@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
-import OmniSearch from 'DeskPRO/Bundle/PortalBundle/React/OmniSearch/OmniSearch';
+import { OmniSearch } from '../React/OmniSearch/OmniSearch';
 import $ from 'jquery';
 
 export class OmniSearchWidget extends PageWidget {
