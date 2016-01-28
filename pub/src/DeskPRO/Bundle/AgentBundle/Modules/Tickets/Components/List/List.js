@@ -13,27 +13,16 @@ export class List extends Component {
     isLoaded: PropTypes.bool.isRequired
   };
 
-  renderList() {
-    switch (this.props.isLoaded) {
-      case false:
-        return <div>Loading...</div>;
-      case true:
-        return this.props.viewMode === 'table' ? <ListTableViewContainer /> : <ListCardViewContainer />;
-      default:
-        return <div />;
-    }
-  }
-
   render() {
-    const { pagination } = this.props;
+    const { isLoaded, pagination } = this.props;
 
     return (
       <ListFrameContainer>
         <ListFrameMenu>
           <ControlBarContainer />
         </ListFrameMenu>
-        <ListFrameContents>
-          {this.renderList()}
+        <ListFrameContents isLoaded={isLoaded}>
+          {this.props.viewMode === 'table' ? <ListTableViewContainer /> : <ListCardViewContainer />}
           {pagination && pagination.total_pages > 1 && <PaginationContainer/>}
         </ListFrameContents>
       </ListFrameContainer>

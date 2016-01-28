@@ -56,7 +56,7 @@ export const paginationSelector = createSelector(
     list => list.get('pagination')
 );
 
-export const loadedSelector = createSelector(
+export const isLoadedSelector = createSelector(
   stateSelector,
     list => list.getIn(['async', 'done'])
 );

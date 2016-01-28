@@ -5,7 +5,7 @@ import { List } from './List';
 import { toggleSelectedAction } from '../../../Application/Actions/massActions';
 
 @connect(state => ({
-  loaded: isLoadedSelector(state),
+  isLoaded: isLoadedSelector(state),
   pagination: paginationSelector(state),
   viewMode: viewModeSelector(state)
 }))
@@ -13,7 +13,7 @@ export class ListContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     isComments: PropTypes.bool,
-    loaded: PropTypes.bool.isRequired,
+    isLoaded: PropTypes.bool.isRequired,
     currentViewMode: PropTypes.string.isRequired
   };
 

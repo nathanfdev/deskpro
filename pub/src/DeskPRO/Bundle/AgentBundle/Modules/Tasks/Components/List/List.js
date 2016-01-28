@@ -8,17 +8,15 @@ import { KanbanView } from './View/Kanban/KanbanView';
 import { TableView } from './View/Table/TableView';
 import { CalendarView } from './View/Calendar/CalendarView';
 import { ListGroupContainer } from './ListGroupContainer';
-import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import { toggleAll } from '../../Actions/listActions';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export class List extends React.Component {
-
   static propTypes = {
     currentView: PropTypes.string.isRequired,
     selectedCount: PropTypes.number.isRequired,
     currentNav: PropTypes.object,
-    loaded: PropTypes.bool
+    isLoaded: PropTypes.bool
   };
 
   renderView() {
@@ -36,7 +34,7 @@ export class List extends React.Component {
   }
 
   render() {
-    const { currentNav, loaded, selectedCount } = this.props;
+    const { currentNav, isLoaded, selectedCount } = this.props;
     const checkbox = { count: selectedCount, action: toggleAll };
     return (
       <ListFrameContainer className="task-list-frame">
@@ -44,16 +42,11 @@ export class List extends React.Component {
           <ControlBarContainer />
         </ListFrameMenu>
         {currentNav &&
-          <LoadIndicator loaded={loaded}
-                         opacity={0}
-                         width={3}>
-
-            <ListFrameContents>
-              <ListGroupContainer>
-                {this.renderView()}
-              </ListGroupContainer>
-            </ListFrameContents>
-          </LoadIndicator>
+          <ListFrameContents isLoaded={isLoaded}>
+            <ListGroupContainer>
+              {this.renderView()}
+            </ListGroupContainer>
+          </ListFrameContents>
         }
       </ListFrameContainer>
     );

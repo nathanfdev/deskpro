@@ -11,9 +11,10 @@ const initialState = {
     order: 'desc',
     filter: null
   },
+
   // async indicators
   async: {
-    done: false
+    done: true
   },
 
   tableVisibleFields: ['id', 'urgency', 'person', 'agent', 'subject', 'status'],

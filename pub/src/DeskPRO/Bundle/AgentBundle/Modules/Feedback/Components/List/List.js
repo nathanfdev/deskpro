@@ -8,14 +8,12 @@ import { FeedbackCommentsCardsContainer } from './View/List/FeedbackCommentsCard
 import { FeedbackTableContainer } from './View/Table/FeedbackTableContainer';
 import { FeedbackCommentTableContainer } from './View/Table/FeedbackCommentTableContainer';
 import { ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
-import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import { PaginationContainer } from './PaginationContainer';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export class List extends Component {
-
   static propTypes = {
-    loaded: PropTypes.bool.isRequired,
+    isLoaded: PropTypes.bool.isRequired,
     currentApp: PropTypes.string.isRequired,
     isComments: PropTypes.bool,
     selected: PropTypes.object.isRequired,
@@ -67,7 +65,7 @@ export class List extends Component {
   }
 
   render() {
-    const { loaded, pagination, selected } = this.props;
+    const { isLoaded, pagination, selected } = this.props;
 
     return (
       <ListFrameContainer>
@@ -75,14 +73,10 @@ export class List extends Component {
           {!selected.size && <ControlBarContainer key="1"/>}
           {selected.size && <MassActionContainer key="2"/>}
         </ListFrameMenu>
-        <LoadIndicator loaded={loaded}
-                       opacity={0}
-                       width={3}>
-          <ListFrameContents>
-            {this.contentChoice()}
-            {pagination && pagination.total_pages > 1 && <PaginationContainer/>}
-          </ListFrameContents>
-        </LoadIndicator>
+        <ListFrameContents isLoaded={isLoaded}>
+          {this.contentChoice()}
+          {pagination && pagination.total_pages > 1 && <PaginationContainer/>}
+        </ListFrameContents>
       </ListFrameContainer>
     );
   }
