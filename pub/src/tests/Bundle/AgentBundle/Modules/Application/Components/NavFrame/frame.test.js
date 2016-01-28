@@ -1,5 +1,3 @@
-jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/frame.js');
-
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';
 import { renderToStaticMarkup } from 'react-dom/server';

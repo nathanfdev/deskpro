@@ -130,11 +130,10 @@
       "react",
       "/node_modules/",
       "/tests/Helpers/",
-      "Ampliflux",
       "/Selectors/",
       "/Constants/",
-      "Scrollable",
-      "/Common/Components/ListFrame/View",
+      "/Common/Components/",
+      "/DeskPRO/Component/",
       ".test-helper.js"
     ],
     "testFileExtensions": [
