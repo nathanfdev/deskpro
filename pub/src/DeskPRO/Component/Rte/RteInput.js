@@ -11,7 +11,8 @@ export class RteInput extends React.Component {
     inline: PropTypes.bool,
     options: PropTypes.object,
     onChange: PropTypes.func,
-    onSubmit: PropTypes.func
+    onSubmit: PropTypes.func,
+    getPasteCatcher: PropTypes.func
   };
 
   componentDidMount() {
@@ -74,6 +75,12 @@ export class RteInput extends React.Component {
     const pastedHTML = originalEvent.clipboardData.getData('text/html');
 
     paste.cleanPaste(pastedHTML);
+
+    const { getPasteCatcher } = this.props;
+    if (getPasteCatcher) {
+      const pasteCatcher = getPasteCatcher();
+      pasteCatcher.onPaste(event);
+    }
   };
 
   getMediumEditor() {

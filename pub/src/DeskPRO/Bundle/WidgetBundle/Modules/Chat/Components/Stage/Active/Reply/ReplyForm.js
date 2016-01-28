@@ -9,6 +9,7 @@ import { AttachmentContainer } from './Upload/Attachment/AttachmentContainer';
 import { AttachedFiles } from './Upload/Attachment/File/AttachedFiles';
 import { AttachedImages } from './Upload/Attachment/Image/AttachedImages';
 import { DropZoneContainer } from './Upload/DropZone/DropZoneContainer';
+import { PasteCatcher } from 'DeskPRO/Component/Uploader/PasteCatcher';
 import { ReopenOverlay } from './ReopenOverlay';
 import ScrollArea from 'react-scrollbar-iframe';
 
@@ -72,6 +73,7 @@ export class ReplyForm extends React.Component {
           onChange={this.onChangeMessage}
           onSubmit={this.onSubmit}
           className="textarea"
+          getPasteCatcher={() => this.refs.pasteCatcher}
           options={{
             contentWindow: window.widgetFrame.window,
             ownerDocument: window.widgetFrame.document,
@@ -157,7 +159,9 @@ export class ReplyForm extends React.Component {
           </EndChatContainer>
         </div>
 
-        <DropZoneContainer getExternalInput={() => this.refs.fileUpload} />
+        <DropZoneContainer getExternalInput={() => this.refs.fileUpload}>
+          <PasteCatcher ref="pasteCatcher" context={window.widgetFrame.document} />
+        </DropZoneContainer>
       </div>
     );
   }

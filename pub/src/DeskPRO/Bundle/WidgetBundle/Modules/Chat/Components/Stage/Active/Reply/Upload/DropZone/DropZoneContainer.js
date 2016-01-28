@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
 import { DragOverlayListener } from 'DeskPRO/Component/Uploader/DragOverlayListener';
-import { PasteCatcher } from 'DeskPRO/Component/Uploader/PasteCatcher';
 import { DropZoneOverlay } from './DropZoneOverlay';
 import { uploadingFilesRepeatSelector } from '../../../../../../Selectors/chat';
 import {
@@ -20,7 +19,8 @@ import moment from 'moment';
 export class DropZoneContainer extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func
+    dispatch: PropTypes.func,
+    children: PropTypes.node
   };
 
   onUploadStarted = (event, data) => {
@@ -46,6 +46,9 @@ export class DropZoneContainer extends React.Component {
   };
 
   render() {
+    const { children } = this.props;
+    const childProps = children.props;
+
     return (
       <DropZone ref="dropZone"
                 uploadUrl={window.DP_HELPDESK_URL + 'portal/api/blobs/temp'}
@@ -57,7 +60,11 @@ export class DropZoneContainer extends React.Component {
         <DragOverlayListener context={[parent.document, window.widgetFrame.document]}>
           <DropZoneOverlay />
         </DragOverlayListener>
-        <PasteCatcher context={window.widgetFrame.document} onPasteImage={this.onPasteImage} />
+
+        {React.cloneElement(children, {
+          ...childProps,
+          onPasteImage: this.onPasteImage
+        })}
       </DropZone>
     );
   }

@@ -50,6 +50,7 @@ export class PortalRte extends React.Component {
           className={className}
           value={$textTextarea.val()}
           onChange={this.onChangeMessage}
+          getPasteCatcher={() => this.refs.pasteCatcher}
           options={{
             contentWindow: contentWindow,
             ownerDocument: ownerDocument,
@@ -79,7 +80,7 @@ export class PortalRte extends React.Component {
               <h1>Drag your file in here.</h1>
             </div>
           </DragOverlayListener>
-          <PasteCatcher context={window} onPasteImage={this.onPasteImage} />
+          <PasteCatcher ref="pasteCatcher" context={window} onPasteImage={this.onPasteImage} />
         </DropZone>
       </div>
     );
