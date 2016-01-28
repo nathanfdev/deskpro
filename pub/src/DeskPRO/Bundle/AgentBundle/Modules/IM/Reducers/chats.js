@@ -5,7 +5,6 @@ const initialState = {
   current: {},
   overlayShown: false,
   chating: false,
-  currentUI: {},
   manuallyClosed: {}
 };
 
