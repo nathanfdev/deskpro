@@ -27,8 +27,8 @@ export function startChat(entityId, type) {
   return DpApi.sendPost('DP_API/agent_chats/start?follow_redirect', {type: type, id: entityId});
 }
 
-export function addMessage(chatId, message) {
-  return DpApi.sendPost('DP_API/agent_chats/' + chatId + '/messages', {message: message});
+export function addMessage(chatId, message, uuid) {
+  return DpApi.sendPost('DP_API/agent_chats/' + chatId + '/messages', {message: message, uuid: uuid});
 }
 
 export function loadMessagesCount() {

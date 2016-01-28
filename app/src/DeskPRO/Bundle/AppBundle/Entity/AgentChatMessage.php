@@ -147,6 +147,7 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
     public function setUuid($uuid)
     {
         $this->uuid = $uuid;
+
         return $this;
     }
 

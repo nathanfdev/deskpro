@@ -104,10 +104,10 @@ class MarkAgentChatMessageGenerator extends AbstractGenerator
     protected function getData(MarkMessageEvent $event)
     {
         return [
-            'message_id' => $event->getMessageId(),
+            'message_id'   => $event->getMessageId(),
             'message_uuid' => $this->getChatMessage($event)->getUuid(),
-            'status'     => $event->getStatus(),
-            'chat_id'    => $this->getChatMessage($event)->getChat()->getId(),
+            'status'       => $event->getStatus(),
+            'chat_id'      => $this->getChatMessage($event)->getChat()->getId(),
         ];
     }
 

@@ -3,6 +3,7 @@ import Loader from 'react-loader';
 import { connect } from 'react-redux';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import * as chatsActions from '../../Actions/chatsActions';
+import uuid from 'node-uuid';
 
 // components
 import { Footer } from './Footer';
@@ -15,7 +16,7 @@ import { SearchForm } from './SearchForm';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
 import { addMessage } from '../../Actions/messagesActions';
 
-import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
+import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 
 @connect(state => ({
   me: meSelector(state),
@@ -98,7 +99,7 @@ export class Chat extends React.Component {
 
   handleAddMessage = message => {
     const { dispatch, current, me } = this.props;
-    dispatch(addMessage(current.id, message, me));
+    dispatch(addMessage(current.id, message, uuid(), me));
   };
 
   searchForm() {

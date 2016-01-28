@@ -81,6 +81,7 @@ class Messenger
      * @param Person    $person
      * @param string    $message
      * @param string    $uuid
+     *
      * @return AgentChatMessage
      */
     public function addMessage(AgentChat $chat, Person $person, $message, $uuid)

@@ -63,7 +63,7 @@ class AgentChatMessageTransformer extends AbstractDataSerializerTransformer
         $entity = $transformation_request->getDataToBeTransformed();
 
         return [
-            'old' => $entity->getDateCreated() < new \DateTime('-12 hour'),
+            'old'       => $entity->getDateCreated() < new \DateTime('-12 hour'),
             'timestamp' => $entity->getDateCreated()->getTimestamp(),
         ];
     }

@@ -22,16 +22,16 @@ export class Message extends React.Component {
   };
 
   dateSep() {
-    const date = moment(this.props.message.date_created);
+    const date = moment.unix(this.props.message.timestamp);
 
-    const previousDate = moment(this.props.previousMessage.date_created);
+    const previousDate = moment.unix(this.props.previousMessage.timestamp);
     if (this.props.previousMessage && previousDate.dayOfYear() !== date.dayOfYear()) {
-      return this.renderSeparator(this.props.previousMessage.date_created);
+      return this.renderSeparator(this.props.previousMessage.timestamp);
     }
   }
 
-  renderSeparator(dateString) {
-    const date = moment(dateString);
+  renderSeparator(timestamp) {
+    const date = moment.unix(timestamp);
     let fromNow;
     if (date.fromNow(true) === 'a day') {
       fromNow = 'yesterday';

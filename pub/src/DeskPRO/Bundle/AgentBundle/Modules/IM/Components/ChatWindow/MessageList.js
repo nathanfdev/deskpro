@@ -79,17 +79,19 @@ export class MessageList extends React.Component {
   markNewMessages() {
     if (!this.props.updatingMessages) {
       const ids = [];
+      const uuids = [];
       const { messages } = this.props;
 
       const msg = messages.getIn(this.getPath()) ? messages.getIn(this.getPath()).messages : [];
       msg.map((message) => {
-        if (message.status <= 1 && message.person_id !== this.props.me.get('id')) {
+        if (message.id && message.status <= 1 && message.person_id !== this.props.me.get('id')) {
           message.status = 2;
           ids.push(message.id);
+          uuids.push(message.uuid);
         }
       });
       if (ids.length > 0) {
-        this.props.dispatch(markMessages(ids, this.props.current.id));
+        this.props.dispatch(markMessages(ids, uuids, this.props.current.id));
       }
     }
   }
@@ -128,7 +130,7 @@ export class MessageList extends React.Component {
               <Message
               key={index}
               message={message}
-              size={msg.length}
+              size={msg.size}
               current={index}
               previousMessage={previous}
               agents={this.props.agents}
@@ -153,14 +155,14 @@ export class MessageList extends React.Component {
 
   render() {
     const { messages } = this.props;
-    const msg = messages.getIn(this.getPath()) ? messages.getIn(this.getPath()).messages : [];
-    msg.sort((first, second) => {
-      return first.id - second.id;
+    let msg = messages.getIn(this.getPath()) ? messages.getIn(this.getPath()).messages : [];
+    msg = msg.sort((first, second) => {
+      return first.timestamp - second.timestamp;
     });
     const loaded = !this.props.loadingMessages || msg.length > 0;
     return (
        <Loader loaded={loaded}>
-         { msg.length > 0 ? this.renderList(msg) : this.renderEmpty()}
+         { msg.size > 0 ? this.renderList(msg) : this.renderEmpty()}
       </Loader>
     );
   }

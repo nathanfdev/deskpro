@@ -26,15 +26,16 @@ export default createReducer(initialState, {
           path = ['chatMessages', payload.chat_id];
         }
         if (!state.getIn(path) || (payload.searchQuery && state.getIn(path).searchQuery !== payload.searchQuery)) {
+          const messages = {};
+          payload.messages.map((message) => {
+            messages[message.uuid] = message;
+          });
+          payload.messages = Immutable.Map(messages);
           return state.setIn(path, payload);
         }
 
         const chat = state.getIn(path);
-        let union = {};
-        chat.messages.map((message) => union[message.id] = message);
-        payload.messages.map((message) => union[message.id] = message);
-        union = Immutable.Map(union);
-        chat.messages = union.toArray();
+        payload.messages.map((message) => chat.messages = chat.messages.set(message.uuid, message));
         chat.page = Math.max(chat.page, payload.page);
         return state.setIn(path, {...chat});
       },
@@ -46,26 +47,32 @@ export default createReducer(initialState, {
     success: (state, payload) => {
       const path = ['chatMessages', payload.chatId];
       const chat = state.getIn(path);
-      const msg = {};
       payload.messages.map(message => {
-        msg[message] = true;
-      });
-      chat.messages.map((message, index) => {
-        if (msg[message.id]) {
-          chat.messages[index].status = payload.status;
+        if (chat.messages.has(message)) {
+          chat.messages.get(message).status = payload.status;
         }
       });
       return state.setIn(path, {...chat});
     },
     done: state => state.set('updatingMessages', false)
   }),
+  [actions.addMessageOptimistic]: (state, payload) => {
+    let newState = state;
+    const path = ['chatMessages', payload.data.agent_chat_id];
+    const chat = newState.getIn(path);
+    if (chat) {
+      chat.messages = chat.messages.set(payload.data.uuid, payload.data);
+      newState = newState.setIn(path, {...chat});
+    }
+    return newState;
+  },
   [newActionAlerts]: (state, payload) => {
     let newState = state;
     if (payload.type === 'notification.agent_chat.new_message') {
       const path = ['chatMessages', payload.data.agent_chat_id];
       const chat = newState.getIn(path);
       if (chat) {
-        chat.messages.push(payload.data);
+        chat.messages = chat.messages.set(payload.data.uuid, payload.data);
         newState = newState.setIn(path, {...chat});
       }
     } else if (payload.type === 'refresh_counts') {
@@ -73,11 +80,9 @@ export default createReducer(initialState, {
     } else if (payload.type === 'notification.agent_chat.mark_message') {
       const path = ['chatMessages', payload.data.chat_id];
       const chat = state.getIn(path);
-      chat.messages.map((message, index) => {
-        if (message.id === payload.data.message_id) {
-          chat.messages[index].status = payload.data.status;
-        }
-      });
+      if (chat.messages.has(payload.data.message_uuid)) {
+        chat.messages = chat.messages.setIn([payload.data.message_uuid, 'status'], payload.data.status);
+      }
       newState = newState.setIn(path, {...chat});
     }
     return newState;

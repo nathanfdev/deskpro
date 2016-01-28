@@ -14,10 +14,32 @@ export const loadMessages = createAction(
   }
 );
 
+export const addMessageOptimistic = createAction(
+  'IM_CHAT_ADD_MESSAGE_OPTIMISTIC',
+  (chatId, message, uuid, me) => {
+    return {
+      data: {
+        agent_chat_id: chatId,
+        date_created: null,
+        timestamp: new Date().getTime() / 1000,
+        id: null,
+        uuid: uuid,
+        message: message,
+        status: 0,
+        metadata: null,
+        person_id: me.get('id'),
+        person_name: me.get('name'),
+        old: false
+      }
+    };
+  }
+);
+
 export const addMessage = createAction(
   'IM_CHAT_ADD_MESSAGE',
-  (chatId, message) => {
-    IM.addMessage(chatId, message).then(response => {
+  (chatId, message, uuid, me) => (dispatch) => {
+    dispatch(addMessageOptimistic(chatId, message, uuid, me));
+    IM.addMessage(chatId, message, uuid).then(response => {
       const responseMessage = response.data.data;
       return new Promise((resolve) => {
         resolve(responseMessage);
@@ -43,12 +65,12 @@ export const refreshCounts = createAction(
 
 export const markMessages = createAction(
   'IM_MARK_MESSAGES',
-  (ids, chatId, status = 2) => {
+  (ids, uuids, chatId, status = 2) => {
     return new Promise(
       (resolve, reject) => {
         return IM.markMessages(ids, status)
           .success(() => {
-            return resolve({chatId: chatId, messages: ids, status: status});
+            return resolve({chatId: chatId, messages: uuids, status: status});
           })
           .error(response => reject(response));
       }
