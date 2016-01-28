@@ -26,4 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1453972853);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1453972853 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('Upgrade Messages');
+        $this->execMutateSql('ALTER TABLE agent_chat_message ADD uuid VARCHAR(36) NOT NULL');
+        $this->execMutateSql('CREATE UNIQUE INDEX uuid_unique ON agent_chat_message (uuid)');
+    }
+}

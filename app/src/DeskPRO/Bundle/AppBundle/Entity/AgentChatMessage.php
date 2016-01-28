@@ -43,7 +43,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class AgentChatMessage.
  *
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChatMessage")
- * @ORM\Table(name="agent_chat_message")
+ * @ORM\Table(name="agent_chat_message", uniqueConstraints={@ORM\UniqueConstraint(name="uuid_unique",columns={"uuid"})})
  * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
  * @ORM\InheritanceType("NONE")
  */
@@ -62,6 +62,12 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     protected $id;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=36)
+     */
+    protected $uuid;
 
     /**
      * @var AgentChat
