@@ -2,6 +2,8 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { getImageDataUrl, dataUrlToBlob } from 'DeskPRO/Component/Util/Blob';
 import $ from 'jquery';
+import { extension } from 'mime-types';
+import moment from 'moment';
 
 export class PasteCatcher extends React.Component {
 
@@ -35,7 +37,7 @@ export class PasteCatcher extends React.Component {
             const urlObj = window.URL || window.webkitURL;
             const imgUrl = urlObj.createObjectURL(blob);
 
-            onPasteImage(blob, imgUrl, item.type);
+            onPasteImage(PasteCatcher.createFile(blob, item.type), imgUrl, item.type);
           }
         }
       } else {
@@ -61,7 +63,7 @@ export class PasteCatcher extends React.Component {
           const urlObj = window.URL || window.webkitURL;
           const imgUrl = urlObj.createObjectURL(blob);
 
-          onPasteImage(blob, imgUrl, 'image/png');
+          onPasteImage(PasteCatcher.createFile(blob, 'image/png'), imgUrl, 'image/png');
         });
       }
     }
@@ -69,6 +71,10 @@ export class PasteCatcher extends React.Component {
 
   getPasteCatcher() {
     return ReactDOM.findDOMNode(this.refs.pasteCatcher);
+  }
+
+  static createFile(blob, contentType) {
+    return new File([blob], `clipboard_${moment().format()}.${extension(contentType)}`);
   }
 
   render() {

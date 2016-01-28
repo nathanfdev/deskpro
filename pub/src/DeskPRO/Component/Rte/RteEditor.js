@@ -24,6 +24,7 @@ export class RteEditor extends React.Component {
       onChange(node.innerHTML);
     };
 
+    // Override default paste listener to upload images
     $(node).on('paste', this.onPaste);
     const overrideOptions = {paste: {cleanPastedHTML: true}};
 

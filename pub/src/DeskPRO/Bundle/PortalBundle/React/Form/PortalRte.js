@@ -24,11 +24,13 @@ export class PortalRte extends React.Component {
     console.log(attachment);
   };
 
-  onPasteImage = (blob, src) => {
+  onPasteImage = (file, src) => {
     const editor = this.refs.input;
 
     editor.focus();
     editor.pasteHtml(`<img src="${src}">`);
+
+    this.refs.dropZone.pushFileToQueue(file);
   };
 
   getNode() {
@@ -71,13 +73,15 @@ export class PortalRte extends React.Component {
           }}/>
 
         <input type="submit" ref="fileUpload" name="file[blob]" style={{display: 'none'}} />
-        <DropZone getExternalInput={() => this.refs.fileUpload}
-                  uploadUrl={portalUrlGenerator.path('/') + 'dpblob'}
-                  uploadParams={params}
-                  context={context}
-                  onSend={this.onUploadStarted}
-                  onSuccess={this.onUploadSuccess}
-                  onFail={this.onUploadFail}>
+        <DropZone
+          ref="dropZone"
+          getExternalInput={() => this.refs.fileUpload}
+          uploadUrl={portalUrlGenerator.path('/') + 'dpblob'}
+          uploadParams={params}
+          context={context}
+          onSend={this.onUploadStarted}
+          onSuccess={this.onUploadSuccess}
+          onFail={this.onUploadFail}>
 
           <DragOverlayListener context={context}>
             <div className="dp-medium-rte-wrapper-overlay">

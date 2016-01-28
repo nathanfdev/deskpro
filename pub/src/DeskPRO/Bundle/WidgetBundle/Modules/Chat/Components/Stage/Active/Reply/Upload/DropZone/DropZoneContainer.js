@@ -10,8 +10,6 @@ import {
   removeUploadingFile,
   markUploadingFileFailed
 } from '../../../../../../Actions/chatActions';
-import { extension } from 'mime-types';
-import moment from 'moment';
 
 @connect(state => ({
   repeatFiles: uploadingFilesRepeatSelector(state)
@@ -40,8 +38,7 @@ export class DropZoneContainer extends React.Component {
     data.files.forEach(file => this.props.dispatch(markUploadingFileFailed(file)));
   };
 
-  onPasteImage = (blob, imgSrc, contentType) => {
-    const file = new File([blob], `clipboard_${moment().format()}.${extension(contentType)}`);
+  onPasteImage = file => {
     this.refs.dropZone.pushFileToQueue(file);
   };
 
