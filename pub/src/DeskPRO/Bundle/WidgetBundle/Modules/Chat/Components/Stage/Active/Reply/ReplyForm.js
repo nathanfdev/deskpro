@@ -83,10 +83,6 @@ export class ReplyForm extends React.Component {
             toolbar: {
               buttons: ['bold', 'italic', 'underline'],
               updateOnEmptySelection: true
-            },
-            paste: {
-              forcePlainText: true,
-              cleanPastedHTML: true
             }
           }}
           />
