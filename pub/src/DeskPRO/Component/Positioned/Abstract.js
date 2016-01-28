@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import jQuery from 'jquery';
-import position from 'jquery-ui/position';
+import 'jquery-ui/position';
 
 export class Abstract extends React.Component {
 
