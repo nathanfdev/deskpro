@@ -85,9 +85,8 @@ export class ReplyForm extends React.Component {
               updateOnEmptySelection: true
             },
             paste: {
-              forcePlainText: false,
-              cleanPastedHTML: false,
-              cleanAttrs: ['style', 'dir']
+              forcePlainText: true,
+              cleanPastedHTML: true
             }
           }}
           />

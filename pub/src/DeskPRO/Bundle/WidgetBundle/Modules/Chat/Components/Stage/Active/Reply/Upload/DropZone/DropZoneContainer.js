@@ -2,8 +2,8 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
 import { DragOverlayListener } from 'DeskPRO/Component/Uploader/DragOverlayListener';
-import { DropZoneOverlay } from './DropZoneOverlay';
 import { PasteCatcher } from 'DeskPRO/Component/Uploader/PasteCatcher';
+import { DropZoneOverlay } from './DropZoneOverlay';
 import { uploadingFilesRepeatSelector } from '../../../../../../Selectors/chat';
 import {
   addAttachment,

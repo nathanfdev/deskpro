@@ -20,22 +20,6 @@ export class PasteCatcher extends React.Component {
     $(context).off('paste', this.onPaste);
   }
 
-  onGetBlobFromPasteChecker = () => {
-    const { onPasteImage } = this.props;
-    const $pasteCatcher = $(this.getPasteCatcher());
-    const child = $pasteCatcher.children().last().get(0);
-
-    if (child) {
-      if (child.tagName === 'IMG') {
-        const imgSrc = child.src;
-        getImageDataUrl(imgSrc, dataUrl => {
-          const blob = dataUrlToBlob(dataUrl);
-          onPasteImage(blob, 'image/png');
-        });
-      }
-    }
-  };
-
   onPaste = event => {
     const { onPasteImage } = this.props;
     const originalEvent = event.originalEvent;
@@ -58,7 +42,23 @@ export class PasteCatcher extends React.Component {
         const $pasteCatcher = $(this.getPasteCatcher());
         $pasteCatcher.focus();
 
-        setTimeout(this.onGetBlobFromPasteChecker, 100);
+        setTimeout(() => this.getBlobFromPasteChecker(), 100);
+      }
+    }
+  };
+
+  getBlobFromPasteChecker = () => {
+    const { onPasteImage } = this.props;
+    const $pasteCatcher = $(this.getPasteCatcher());
+    const child = $pasteCatcher.children().last().get(0);
+
+    if (child) {
+      if (child.tagName === 'IMG') {
+        const imgSrc = child.src;
+        getImageDataUrl(imgSrc, dataUrl => {
+          const blob = dataUrlToBlob(dataUrl);
+          onPasteImage(blob, imgSrc, 'image/png');
+        });
       }
     }
   };
