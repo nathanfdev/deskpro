@@ -5,7 +5,6 @@ jest.dontMock('~nav/Nav');
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import TestUtils from 'react-addons-test-utils';
 import { renderInTicketsApp } from '../../tickets.test-helper';
 import { getState } from 'Helpers/redux';
 
@@ -19,7 +18,7 @@ describe('Ticket: Nav component', () => {
 
   let component, node;
   function render(isLoaded = true) {
-    component = renderInTicketsApp(<Nav isLoaded={isLoaded} />);
+    component = renderInTicketsApp({}, <Nav isLoaded={isLoaded} />);
     node = ReactDOM.findDOMNode(component);
   }
 

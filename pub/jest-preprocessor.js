@@ -52,6 +52,11 @@ module.exports = {
         /^jest\.dontMock\([\"\']DeskPRO(.*)[\"\']\)(.*)$/gm,
         "jest.dontMock('" + margin + "DeskPRO$1')$2"
       );
+
+      result = result.replace(
+        /^jest\.mock\([\"\']DeskPRO(.*)[\"\']\)(.*)$/gm,
+        "jest.mock('" + margin + "DeskPRO$1')$2"
+      );
       result = result.replace(
         /^(.+)([\s=])require\([\"\']DeskPRO(.*)[\"\']\)(.*)$/gm,
         "$1$2require('" + margin + "DeskPRO$3')$4"

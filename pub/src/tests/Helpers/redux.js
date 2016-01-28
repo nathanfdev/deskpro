@@ -27,6 +27,9 @@ export function fakeState(additional = {}) {
   const frs = fakeRecordStoreState;
 
   const base = {
+    Agent: {
+      settings: toImmutable({tickets: {filter_groupings: {}}})
+    },
     Application: {
       routing: toImmutable({hash: {}}),
       dpWindow: toImmutable({

@@ -13,7 +13,7 @@ describe('Ticket: NavContainer component', () => {
   const dispatch     = jasmine.createSpy('dispatch');
 
   function render() {
-    return renderInTicketsApp(<NavContainer />, dispatch);
+    return renderInTicketsApp({}, <NavContainer />, dispatch);
   }
 
   it('should render Nav', () => {
