@@ -328,14 +328,16 @@ class Messenger
                 if ($this->isPersonInvolvedInChat($user, $message->getChat())) {
                     $message->setStatus($status);
                     $this->em->persist($message);
-                    $this->event_dispatcher->dispatch(
-                        MarkMessageEvent::EVENT_NAME,
-                        new MarkMessageEvent($message->getId(), $status)
-                    );
                 }
                 // TODO handle not-mine access violation
             }
+            $this->em->flush();
+            foreach ($messages as $message) {
+                $this->event_dispatcher->dispatch(
+                    MarkMessageEvent::EVENT_NAME,
+                    new MarkMessageEvent($message->getId(), $status)
+                );
+            }
         }
-        $this->em->flush();
     }
 }
