@@ -13,7 +13,8 @@ const initialState = {
   counts: {},
   loadingMessages: true,
   loadingCounts: true,
-  updatingMessages: false
+  updatingMessages: false,
+  searching: false
 };
 
 export default createReducer(initialState, {
@@ -21,39 +22,33 @@ export default createReducer(initialState, {
     {
       start: (state) => state.set('loadingMessages', true),
       success: (state, payload) => {
-        let path;
+        let newState = state;
         if (payload.searchQuery) {
-          path = ['searchMessages', payload.chat_id];
+          newState = newState.set('searching', true);
         } else {
-          path = ['chatMessages', payload.chat_id];
+          newState = newState.set('searching', false);
         }
-        if (!state.getIn(path) || (payload.searchQuery && state.getIn(path).searchQuery !== payload.searchQuery)) {
+
+        const transformed = {chatId: payload.chat_id};
+        const chat = messagesHelper.getChat(newState, transformed);
+
+        if (!chat || (payload.searchQuery && chat.searchQuery !== payload.searchQuery)) {
           const messages = {};
           payload.messages.map((message) => {
             messages[message.uuid] = message;
           });
           payload.messages = Immutable.Map(messages);
-          return state.setIn(path, payload);
+          return newState.setIn(messagesHelper.getPath(newState, transformed), payload);
         }
 
-        const chat = state.getIn(path);
         payload.messages.map((message) => chat.messages = chat.messages.set(message.uuid, message));
         chat.page = Math.max(chat.page, payload.page);
-        return state.setIn(path, {...chat});
+        return newState.setIn(messagesHelper.getPath(newState, transformed), {...chat});
       },
       done: (state) => state.set('loadingMessages', false)
     }
   ),
-  [actions.addMessageOptimistic]: (state, payload) => {
-    let newState = state;
-    const path = ['chatMessages', payload.data.agent_chat_id];
-    const chat = newState.getIn(path);
-    if (chat) {
-      chat.messages = chat.messages.set(payload.data.uuid, payload.data);
-      newState = newState.setIn(path, {...chat});
-    }
-    return newState;
-  },
+  [actions.addMessageOptimistic]: messagesHelper.addMessageOptimistic.bind(messagesHelper),
   [actions.markMessagesOptimistic]: messagesHelper.markMessagesOptimistic.bind(messagesHelper),
   [actions.markMessages]: async({
     success: messagesHelper.markMessages.bind(messagesHelper),

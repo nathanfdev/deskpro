@@ -11,7 +11,7 @@ export class MessagesHelper {
         }
       });
       if (changed) {
-        return state.setIn(this.getPath(payload), {...chat});
+        return state.setIn(this.getPath(state, payload), {...chat});
       }
     }
     return state;
@@ -21,11 +21,25 @@ export class MessagesHelper {
     return this.markMessages(state.set('updatingMessages', true), payload);
   }
 
-  getChat(state, payload) {
-    return state.getIn(this.getPath(payload));
+  addMessageOptimistic(state, payload) {
+    const transformed = {chatId: payload.data.agent_chat_id};
+    const chat = this.getChat(state, transformed);
+    if (chat) {
+      chat.messages = chat.messages.set(payload.data.uuid, payload.data);
+      return state.setIn(this.getPath(state, transformed), {...chat});
+    }
+    return state;
   }
 
-  getPath(payload) {
-    return ['chatMessages', payload.chatId];
+  getChat(state, payload) {
+    return state.getIn(this.getPath(state, payload));
+  }
+
+  getPath(state, payload) {
+    let firstKey = 'chatMessages';
+    if (state.get('searching')) {
+      firstKey = 'searchMessages';
+    }
+    return [firstKey, payload.chatId];
   }
 }
