@@ -22,27 +22,20 @@ export default createReducer(initialState, {
     {
       start: (state) => state.set('loadingMessages', true),
       success: (state, payload) => {
-        let newState = state;
-        if (payload.searchQuery) {
-          newState = newState.set('searching', true);
-        } else {
-          newState = newState.set('searching', false);
-        }
-
+        const newState = state.set('searching', Boolean(payload.searchQuery));
         const transformed = {chatId: payload.chat_id};
         const chat = messagesHelper.getChat(newState, transformed);
 
         if (!chat || (payload.searchQuery && chat.searchQuery !== payload.searchQuery)) {
           const messages = {};
-          payload.messages.map((message) => {
-            messages[message.uuid] = message;
-          });
+          payload.messages.map((message) => {messages[message.uuid] = message;});
           payload.messages = Immutable.Map(messages);
           return newState.setIn(messagesHelper.getPath(newState, transformed), payload);
         }
 
         payload.messages.map((message) => chat.messages = chat.messages.set(message.uuid, message));
         chat.page = Math.max(chat.page, payload.page);
+
         return newState.setIn(messagesHelper.getPath(newState, transformed), {...chat});
       },
       done: (state) => state.set('loadingMessages', false)
