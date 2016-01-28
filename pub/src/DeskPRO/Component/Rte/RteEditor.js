@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import MediumEditor from 'medium-editor';
 import $ from 'jquery';
 
-export class RteInput extends React.Component {
+export class RteEditor extends React.Component {
 
   static propTypes = {
     tag: PropTypes.string,

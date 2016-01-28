@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { RteInput } from 'DeskPRO/Component/Rte/RteInput';
+import { RteEditor } from 'DeskPRO/Component/Rte/RteEditor';
 import { EmotionButton } from 'DeskPRO/Component/Rte/EmotionButton';
 import { replaceSmileCodes } from 'DeskPRO/Component/Rte/Emotions';
 
@@ -35,7 +35,7 @@ export class Footer extends React.Component {
     return (
       <footer>
         <form onSubmit={this.handleSubmit}>
-          <RteInput
+          <RteEditor
             inline
             ref="editor"
             value={this.state.message}

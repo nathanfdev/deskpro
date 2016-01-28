@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import { RteInput } from 'DeskPRO/Component/Rte/RteInput';
+import { RteEditor } from 'DeskPRO/Component/Rte/RteEditor';
 import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
 import { DragOverlayListener } from 'DeskPRO/Component/Uploader/DragOverlayListener';
 import { PasteCatcher } from 'DeskPRO/Component/Uploader/PasteCatcher';
@@ -49,7 +49,7 @@ export class PortalRte extends React.Component {
 
     return (
       <div>
-        <RteInput
+        <RteEditor
           ref="input"
           className={className}
           value={$textTextarea.val()}
