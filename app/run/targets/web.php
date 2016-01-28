@@ -26,16 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Kernel;
-
-require_once DP_ROOT.'/sys/DpShutdown.php';
-require_once DP_ROOT.'/sys/Kernel/KernelErrorHandler.php';
-require_once DP_ROOT.'/sys/Kernel/HelpdeskOfflineMessage.php';
-
-require_once DP_ROOT.'/sys/Kernel/DpKernel.php';
-require_once DP_ROOT.'/sys/Kernel/InstallKernel.php';
-require_once DP_ROOT.'/sys/Kernel/PortalKernel.php';
-require_once DP_ROOT.'/sys/License.php';
+require __DIR__.'/../init_env.php';
+require DP_APP_DIR.'/sys/Boot/Boot.php';
+\DpSys\Boot\Boot::bootWeb();

@@ -31,22 +31,11 @@
  */
 namespace DeskPRO\Kernel;
 
-use Application\DeskPRO\App;
-use Doctrine\DBAL\DBALException;
-use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class ApiKernel extends BaseKernel
 {
-    public function getName()
-    {
-        return 'api';
-    }
-
     /**
      * Returns an array of bundles to register.
      *
@@ -93,27 +82,6 @@ class ApiKernel extends BaseKernel
         return $bundles;
     }
 
-    public function handle(\Symfony\Component\HttpFoundation\Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
-    {
-        try {
-            return parent::handle($request, $type, $catch);
-        } catch (\Exception $e) {
-            // we catch the DBALExceptions in KernelBooter, so don't handle that here.
-            if (!$e instanceof DBALException) {
-                // the http kernel will handle exception inside in most cases. this is a "just in case" catch.
-                KernelErrorHandler::handleException($e);
-            }
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getContainerBaseClass()
-    {
-        return '\\Application\\DeskPRO\\DependencyInjection\\DeskproContainer';
-    }
-
     /**
      * Loads the container configuration.
      *
@@ -124,126 +92,5 @@ class ApiKernel extends BaseKernel
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         $loader->load(DP_ROOT.'/sys/config/api/api_config_'.$this->getEnvironment().'.yml');
-    }
-
-    /**
-     * @return string
-     */
-    public function getRootDir()
-    {
-        return DP_ROOT.'/sys';
-    }
-
-    /**
-     * @return string
-     */
-    public function getCacheDir()
-    {
-        static $cache_dir = null;
-
-        if ($cache_dir === null) {
-            if (defined('DPC_IS_CLOUD')) {
-                $cache_dir = dp_get_cache_dir().'/api/'.$this->environment.'-cloud';
-            } else {
-                $cache_dir = dp_get_cache_dir().'/api/'.$this->environment.'';
-            }
-        }
-
-        return $cache_dir;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function initializeContainer()
-    {
-        //if ($this->environment == 'dev') {
-        //    $routing_cache_cleaner = new \Application\DeskPRO\Routing\CacheCleaner();
-        //    if (!$routing_cache_cleaner->isFresh()) {
-        //        $routing_cache_cleaner->clearCache();
-        //    }
-        //}
-
-        //if ($this->environment == 'prod' && !defined('DP_BUILDING') && !defined('DPC_IS_CLOUD')) {
-        //	// If the container doesnt exist and we're in prod, then means we're installing an update.
-        //	// Halt now. This prevents the system from trying to generate the cache itself,
-        //	// even though the new files will be installed in a second.
-        //	$cache_file = $this->getCacheDir() . '/' . $this->getContainerClass() . '.php';
-        //	if (!is_file($cache_file)) {
-        //		echo HelpdeskOfflineMessage::getOfflinePage('Currently installing updates' . $cache_file);
-        //		exit;
-        //	}
-        //}
-
-        // entity loader required to construct symfony container
-        // so enable it temporarily while the container builds
-        $v = libxml_disable_entity_loader(false);
-
-        parent::initializeContainer();
-
-        // TODO: this is the major pain point for us where the App:: globals enter the kernel space
-        // I didn't need this until Auth, because the Person entity itself gets objects that are necessary
-        App::$container = $this->getContainer();
-
-        libxml_disable_entity_loader($v);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function dumpContainer(ConfigCache $cache, ContainerBuilder $container, $class, $baseClass)
-    {
-        // Make sure the cache dirs exist
-        $env_dir = realpath($this->getCacheDir().'/../..');
-
-        if (!is_dir($this->getCacheDir())) {
-            mkdir($this->getCacheDir(), 0777, true);
-        }
-        if (!file_exists($env_dir.'/doctrine-proxies')) {
-            mkdir($env_dir.'/doctrine-proxies', 0777, true);
-        }
-        if (!file_exists($env_dir.'/twig-compiled')) {
-            @mkdir($env_dir.'/twig-compiled', 0777, true);
-        }
-
-        @chmod($this->getCacheDir(), 0777);
-        @chmod($env_dir.'/doctrine-proxies', 0777);
-        @chmod($env_dir.'/twig-compiled', 0777);
-
-        // Clear the dql cache when the container is regenerated as well
-        $dql_cache = dp_get_tmp_dir().DIRECTORY_SEPARATOR.'dql.cache';
-        if (file_exists($dql_cache)) {
-            @unlink($dql_cache);
-        }
-
-        // cache the container
-        $dumper  = new PhpDumper($container);
-        $content = $dumper->dump(array('class' => $class, 'base_class' => $baseClass));
-        if (!$this->debug) {
-            $content = self::stripComments($content);
-        }
-
-        // Re-write absolute paths to use DP_ROOT instead
-        $content = str_replace("'".DP_ROOT, 'DP_ROOT.\'', $content);
-        // Correct double slash paths
-        $content = str_replace('prod//', 'prod/', $content);
-        // Empty logs dir that isn't used (we get it from conf)
-        $content = preg_replace("#'kernel\\.logs_dir' => '(.*?)'#", "'kernel.logs_dir' => ''", $content);
-
-        $cache->write($content, $container->getResources());
-    }
-
-    /**
-     * @deprecated Use dp_get_log_dir()
-     *
-     * @return string
-     */
-    public function getLogDir()
-    {
-        if (!function_exists('dp_get_log_dir')) {
-            require_once DP_ROOT.'/sys/load_config.php';
-        }
-
-        return dp_get_log_dir();
     }
 }

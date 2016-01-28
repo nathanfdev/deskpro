@@ -32,14 +32,61 @@
 namespace DeskPRO\Kernel;
 
 use Application\AgentBundle\AgentBundle;
+use Application\DeskPRO\App;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use DeskPRO\Bundle\ApiBundle\ApiBundle;
 use DeskPRO\Bundle\AppBundle\AppBundle;
 use DeskPRO\Bundle\PortalBundle\PortalBundle;
+use Symfony\Component\Config\ConfigCache;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\HttpKernel\Kernel;
 
 abstract class BaseKernel extends Kernel
 {
+    /**
+     * @var \DpEnv
+     */
+    private $dpEnv;
+
     private $instantied_but_not_used_bundles = array();
+
+    /**
+     * BaseKernel constructor.
+     *
+     * @param \DpEnv $env
+     */
+    public function __construct(\DpEnv $env)
+    {
+        $this->dpEnv = $env;
+        parent::__construct($env->getEnvId(), $env->isDebug());
+    }
+
+    /**
+     * @return \DpEnv
+     */
+    public function getDpEnv()
+    {
+        return $this->dpEnv;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function boot()
+    {
+        parent::boot();
+
+        if ($this->container instanceof DeskproContainer) {
+            $this->container->kernel = $this;
+        }
+
+        // Legacy
+        App::$container = $this->container;
+        if ($this->container->has('deskpro.sys_events_loader')) {
+            $this->container->get('deskpro.sys_events_loader');
+        }
+    }
 
     /**
      * We extend the base functionality of getBundle to allow kernels that don't use a bundle to
@@ -138,5 +185,80 @@ abstract class BaseKernel extends Kernel
         }
 
         throw new \Exception('oops, that bundle cannot be auto-instantiated by DeskPRO\Kernel\BaseKernel');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function initializeContainer()
+    {
+        // entity loader required to construct symfony container
+        // so enable it temporarily while the container builds
+        $v = libxml_disable_entity_loader(false);
+
+        $GLOBALS['DP_CONTAINER_IS_BUILDING'] = true;
+        parent::initializeContainer();
+        unset($GLOBALS['DP_CONTAINER_IS_BUILDING']);
+
+        libxml_disable_entity_loader($v);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function dumpContainer(ConfigCache $cache, ContainerBuilder $container, $class, $baseClass)
+    {
+        // Clear the dql cache when the container is regenerated as well
+        $dql_cache = $this->getCacheDir().DIRECTORY_SEPARATOR.'dql.cache';
+        if (file_exists($dql_cache)) {
+            @unlink($dql_cache);
+        }
+
+        // cache the container
+        $dumper  = new PhpDumper($container);
+        $content = $dumper->dump(array('class' => $class, 'base_class' => $baseClass));
+        if (!$this->debug) {
+            $content = self::stripComments($content);
+        }
+
+        // Re-write absolute paths to use DP_ROOT instead
+        $content = str_replace("'".DP_APP_DIR, 'DP_APP_DIR.\'', $content);
+        // Correct double slash paths
+        // Empty logs dir that isn't used (we get it from conf)
+        $content = preg_replace("#'kernel\\.logs_dir' => '(.*?)'#", "'kernel.logs_dir' => '".$this->getLogDir()."'", $content);
+
+        $cache->write($content, $container->getResources());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getContainerBaseClass()
+    {
+        return '\\Application\\DeskPRO\\DependencyInjection\\DeskproContainer';
+    }
+
+    /**
+     * @return string
+     */
+    public function getRootDir()
+    {
+        return DP_APP_DIR.'/sys';
+    }
+
+    /**
+     * @return string
+     */
+    public function getCacheDir()
+    {
+        return $this->dpEnv->getAppCacheDir();
+    }
+
+    /**
+     * @return string
+     */
+    public function getLogDir()
+    {
+        return $this->dpEnv->getLogDir();
     }
 }

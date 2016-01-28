@@ -26,7 +26,33 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-if (!defined('DP_ROOT')) {
-    exit('No access');
+namespace DpSys\Boot\BootTask;
+
+/**
+ * This just makes sure directories exist that need to exist.
+ */
+class PreparePathsBootTask implements BootTaskInterface
+{
+    public function run(\DpEnv $env, array $resources)
+    {
+        $expect = [
+            '/var/appcache',
+            '/var/appcache/common',
+            '/var/appcache/common/doctrine-proxies',
+            '/var/appcache/common/twig-compiled',
+            '/var/appcache/'.$env->getActiveBuild(),
+            '/var/appcache/'.$env->getActiveBuild().'/'.$env->getEnvId(),
+            '/var/cache',
+            '/var/debug',
+            '/var/tests',
+            '/var/tmp',
+        ];
+
+        foreach ($expect as $dir) {
+            $realpath = $env->getDpRoot().$dir;
+            if (!is_dir($realpath)) {
+                @mkdir($realpath, 0777, true);
+            }
+        }
+    }
 }
-require DP_ROOT.'/bin/upgrade-util.php';

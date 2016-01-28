@@ -26,10 +26,30 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-if (!defined('DP_ROOT')) {
-    exit('No access');
+namespace DpSys\Boot\BootTask;
+
+use DeskPRO\Component\Filesystem\SafeFile;
+use Symfony\Component\Debug\Debug;
+
+/**
+ * This makes sure the require lib files are included.
+ */
+class LibBootTask implements BootTaskInterface
+{
+    public function run(\DpEnv $env, array $resources)
+    {
+        require DP_APP_DIR.'/sys/bootstrap-dev.php';
+        require DP_APP_DIR.'/sys/system.php';
+
+        if ($env->isDebug()) {
+            Debug::enable(true, true);
+        }
+
+        \Orb\Util\Strings::setPhpUtf8Dir(DP_APP_DIR.'/vendor-src/php-utf8');
+
+        require DP_APP_DIR.'/src/DeskPRO/Component/Filesystem/SafeFile.php';
+        SafeFile::setEmitWarningsOption(true);
+        SafeFile::addBlacklistDir($env->getConfigDir());
+        SafeFile::addBlacklistDir($env->getDataDir());
+    }
 }
-require_once DP_ROOT.'/sys/KernelBooter.php';
-$return = \DeskPRO\Kernel\KernelBooter::bootCron('prod', false);
-\DeskPRO\Kernel\KernelBooter::DeskPRO_Done();
-exit($return);

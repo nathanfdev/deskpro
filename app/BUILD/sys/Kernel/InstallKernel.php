@@ -31,23 +31,13 @@
  */
 namespace DeskPRO\Kernel;
 
-use Application\DeskPRO\App;
-use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class InstallKernel extends BaseKernel
 {
-    /**
-     * @param string $environment
-     * @param bool   $debug
-     */
-    public function __construct($environment, $debug)
+    public function __construct(\DpEnv $env)
     {
-        parent::__construct($environment, $debug);
+        parent::__construct($env);
 
         $name       = explode('\\', get_class($this));
         $name       = array_pop($name);
@@ -60,34 +50,6 @@ class InstallKernel extends BaseKernel
                 define('DP_DEBUG', false);
             }
         }
-
-        set_error_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleError', E_ALL | E_STRICT);
-        set_exception_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleException');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function boot()
-    {
-        parent::boot();
-
-        $this->container->kernel = $this;
-        App::$container          = $this->container;
-    }
-
-    public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
-    {
-        $response = parent::handle($request, $type, $catch);
-
-        $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
-
-        return $response;
-    }
-
-    public function getName()
-    {
-        return 'install';
     }
 
     /**
@@ -107,149 +69,6 @@ class InstallKernel extends BaseKernel
         );
 
         return $bundles;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function dumpContainer(ConfigCache $cache, ContainerBuilder $container, $class, $baseClass)
-    {
-        // Make sure the cache dirs exist
-        $env_dir = realpath($this->getCacheDir().'/../');
-        if (!is_dir($this->getCacheDir())) {
-            mkdir($this->getCacheDir(), 0777, true);
-        }
-        if (!file_exists($env_dir.'/doctrine-proxies')) {
-            mkdir($env_dir.'/doctrine-proxies', 0777, true);
-        }
-        if (!file_exists($env_dir.'/twig-compiled')) {
-            @mkdir($env_dir.'/twig-compiled', 0777, true);
-        }
-
-        @chmod($this->getCacheDir(), 0777);
-        @chmod($env_dir.'/doctrine-proxies', 0777);
-        @chmod($env_dir.'/twig-compiled', 0777);
-
-        // Clear the dql cache when the container is regenerated as well
-        $dql_cache = dp_get_tmp_dir().DIRECTORY_SEPARATOR.'dql.cache';
-        if (file_exists($dql_cache)) {
-            @unlink($dql_cache);
-        }
-
-        // cache the container
-        $dumper  = new PhpDumper($container);
-        $content = $dumper->dump(array('class' => $class, 'base_class' => $baseClass));
-        if (!$this->debug) {
-            $content = self::stripComments($content);
-        }
-
-        // Re-write absolute paths to use DP_ROOT instead
-        $content = str_replace("'".DP_ROOT, 'DP_ROOT.\'', $content);
-        // Correct double slash paths
-        $content = str_replace('prod//', 'prod/', $content);
-        // Empty logs dir that isn't used (we get it from conf)
-        $content = preg_replace("#'kernel\\.logs_dir' => '(.*?)'#", "'kernel.logs_dir' => ''", $content);
-
-        $cache->write($content, $container->getResources());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function initializeContainer()
-    {
-        $v = libxml_disable_entity_loader(false);
-
-        $GLOBALS['DP_CONTAINER_IS_BUILDING'] = true;
-        parent::initializeContainer();
-        unset($GLOBALS['DP_CONTAINER_IS_BUILDING']);
-
-        libxml_disable_entity_loader($v);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getRootDir()
-    {
-        return DP_ROOT.'/sys';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getCacheDir()
-    {
-        static $cache_dir = null;
-
-        if ($cache_dir === null) {
-            if (defined('DPC_IS_CLOUD')) {
-                $cache_dir = dp_get_cache_dir().'/'.$this->environment.'-cloud';
-            } else {
-                $cache_dir = dp_get_cache_dir().'/'.$this->environment;
-            }
-        }
-
-        return $cache_dir;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getLogDir()
-    {
-        if (!function_exists('dp_get_log_dir')) {
-            require_once DP_ROOT.'/sys/load_config.php';
-        }
-
-        return dp_get_log_dir();
-    }
-
-    /**
-     * @return array
-     */
-    protected function getKernelParameters()
-    {
-        $params            = parent::getKernelParameters();
-        $params['DP_ROOT'] = DP_ROOT;
-
-        return $params;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getContainerBaseClass()
-    {
-        return '\\Application\\DeskPRO\\DependencyInjection\\DeskproContainer';
-    }
-
-    /**
-     * @return array
-     */
-    public function registerBundleDirs()
-    {
-        return array(
-            'Application' => DP_ROOT.'/src/Application',
-            'Bundle'      => DP_ROOT.'/src/Bundle',
-        );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function loadClassCache($name = 'classes', $extension = '.php')
-    {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setClassCache(array $classes)
-    {
-        if (defined('DP_BUILDING')) {
-            parent::setClassCache($classes);
-        }
     }
 
     public function registerContainerConfiguration(LoaderInterface $loader)

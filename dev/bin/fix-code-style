@@ -1,6 +1,6 @@
 #!/usr/bin/env php
 <?php
-define('PHP_CS_FIXER', realpath(__DIR__ . '/../../app/vendor/bin/php-cs-fixer'));
+define('PHP_CS_FIXER', realpath(__DIR__ . '/../../app/BUILD/vendor/bin/php-cs-fixer'));
 define('PHP_CS_CONFIG_GIT', realpath(__DIR__ . '/../.php_cs_git'));
 define('PHP_CS_CONFIG_FULL', realpath(__DIR__ . '/../.php_cs'));
 

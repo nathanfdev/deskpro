@@ -26,9 +26,21 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-if (!defined('DP_ROOT')) {
-    exit('No access');
+namespace DpSys\Boot\BootTask;
+
+use Symfony\Component\HttpFoundation\Request;
+
+/**
+ * This creates the proper Request object.
+ */
+class RequestBootTask implements BootTaskInterface
+{
+    public function run(\DpEnv $env, array $resources)
+    {
+        $request = Request::createFromGlobals();
+
+        return [
+            'request' => $request,
+        ];
+    }
 }
-require DP_ROOT.'/sys/KernelBooter.php';
-\DeskPRO\Kernel\KernelBooter::bootImport('prod', false);
-\DeskPRO\Kernel\KernelBooter::DeskPRO_Done();

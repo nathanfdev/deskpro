@@ -53,14 +53,10 @@ phantomjsdriver.log
 !/logs/.gitkeep
 
 # data
-/data/*
-!/data/.gitkeep
-/data/backups/*
-!/data/backups/.gitkeep
-/data/files/*
-!/data/files/.gitkeep
-/data/hddata/*
-!/data/hddata/.gitkeep
+/attachments/*
+!/attachments/.gitkeep
+/backups/*
+!/backups/.gitkeep
 
 # builds
 /app/BUILD/sys/bootstrap.php

@@ -29,22 +29,13 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Kernel;
 
-use Application\DeskPRO\App;
-use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 
 class PortalKernel extends BaseKernel
 {
-    public function getName()
-    {
-        return 'portal';
-    }
-
     /**
      * Returns an array of bundles to register.
      *
@@ -95,14 +86,6 @@ class PortalKernel extends BaseKernel
     }
 
     /**
-     * {@inheritdoc}
-     */
-    protected function getContainerBaseClass()
-    {
-        return '\\Application\\DeskPRO\\DependencyInjection\\DeskproContainer';
-    }
-
-    /**
      * Loads the container configuration.
      *
      * @param LoaderInterface $loader A LoaderInterface instance
@@ -112,114 +95,5 @@ class PortalKernel extends BaseKernel
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         $loader->load(DP_ROOT.'/sys/config/portal/portal_config_'.$this->getEnvironment().'.yml');
-    }
-
-    /**
-     * @deprecated Use dp_get_log_dir()
-     *
-     * @return string
-     */
-    public function getLogDir()
-    {
-        if (!function_exists('dp_get_log_dir')) {
-            require_once DP_ROOT.'/sys/load_config.php';
-        }
-
-        return dp_get_log_dir();
-    }
-
-    /**
-     * @return string
-     */
-    public function getRootDir()
-    {
-        return DP_ROOT.'/sys';
-    }
-
-    /**
-     * @return string
-     */
-    public function getCacheDir()
-    {
-        static $cache_dir = null;
-
-        if ($cache_dir === null) {
-            if (defined('DPC_IS_CLOUD')) {
-                $cache_dir = dp_get_cache_dir().'/portal/'.$this->environment.'-cloud';
-            } else {
-                $cache_dir = dp_get_cache_dir().'/portal/'.$this->environment.'';
-            }
-        }
-
-        return $cache_dir;
-    }
-
-    private function prepareCachePaths()
-    {
-        // Make sure the cache dirs exist
-        if (!is_dir($this->getCacheDir())) {
-            mkdir($this->getCacheDir(), 0777, true);
-        }
-
-        $env_dir = realpath($this->getCacheDir().'/../..');
-
-        if (!file_exists($env_dir.'/doctrine-proxies')) {
-            mkdir($env_dir.'/doctrine-proxies', 0777, true);
-        }
-        if (!file_exists($env_dir.'/twig-compiled')) {
-            mkdir($env_dir.'/twig-compiled', 0777, true);
-        }
-
-        @chmod($this->getCacheDir(), 0777);
-        @chmod($env_dir.'/doctrine-proxies', 0777);
-        @chmod($env_dir.'/twig-compiled', 0777);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function initializeContainer()
-    {
-        $this->prepareCachePaths();
-
-        // entity loader required to construct symfony container
-        // so enable it temporarily while the container builds
-        $v = libxml_disable_entity_loader(false);
-
-        parent::initializeContainer();
-
-        // TODO: this is the major pain point for us where the App:: globals enter the kernel space
-        // I didn't need this until Auth, because the Person entity itself gets objects that are necessary
-        App::$container = $this->getContainer();
-
-        libxml_disable_entity_loader($v);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function dumpContainer(ConfigCache $cache, ContainerBuilder $container, $class, $baseClass)
-    {
-        $this->prepareCachePaths();
-
-        // Clear the dql cache when the container is regenerated as well
-        $dql_cache = dp_get_tmp_dir().DIRECTORY_SEPARATOR.'dql.cache';
-        if (file_exists($dql_cache)) {
-            @unlink($dql_cache);
-        }
-
-        parent::dumpContainer($cache, $container, $class, $baseClass);
-
-        $cacheFile = (string) $cache;
-        $content   = file_get_contents($cacheFile);
-
-        // Re-write absolute paths to use DP_ROOT instead
-        $content = str_replace("'".DP_ROOT, 'DP_ROOT.\'', $content);
-        // Correct double slash paths
-        $content = str_replace('prod//', 'prod/', $content);
-        // Empty logs dir that isn't used (we get it from conf)
-        $content = preg_replace("#'kernel\\.logs_dir' => '(.*?)'#", "'kernel.logs_dir' => ''", $content);
-
-        $cache->write($content, $container->getResources());
     }
 }

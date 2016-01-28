@@ -26,16 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Kernel;
+namespace DpSys\Boot\BootTask;
 
-require_once DP_ROOT.'/sys/DpShutdown.php';
-require_once DP_ROOT.'/sys/Kernel/KernelErrorHandler.php';
-require_once DP_ROOT.'/sys/Kernel/HelpdeskOfflineMessage.php';
-
-require_once DP_ROOT.'/sys/Kernel/DpKernel.php';
-require_once DP_ROOT.'/sys/Kernel/InstallKernel.php';
-require_once DP_ROOT.'/sys/Kernel/PortalKernel.php';
-require_once DP_ROOT.'/sys/License.php';
+interface BootTaskInterface
+{
+    /**
+     * @param \DpEnv $env
+     * @param array  $resources
+     *
+     * @return mixed
+     */
+    public function run(\DpEnv $env, array $resources);
+}

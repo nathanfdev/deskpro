@@ -26,8 +26,22 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-if (!defined('DP_ROOT')) {
-    exit('No access');
-}
-require DP_ROOT.'/sys/KernelBooter.php';
-\DeskPRO\Kernel\KernelBooter::bootTests();
+$ENV_CONFIG = [];
+
+######################################################
+# DeskPRO runtime environment                        #
+######################################################
+# This can be: prod, dev or test                     #
+######################################################
+
+$ENV_CONFIG['environment'] = 'prod';
+
+######################################################
+# Enable DEBUG mode                                  #
+######################################################
+# This enables various debug options at              #
+# the cost of performance. If the environemnt is dev #
+# then this is always enabled.                       #
+######################################################
+
+$ENV_CONFIG['debug_mode'] = false;

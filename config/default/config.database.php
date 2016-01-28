@@ -26,9 +26,21 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-if (!defined('DP_ROOT')) {
-    exit('No access');
-}
-require DP_ROOT.'/sys/KernelBooter.php';
-\DeskPRO\Kernel\KernelBooter::bootWeb();
-\DeskPRO\Kernel\KernelBooter::DeskPRO_Done();
+$DB_CONFIG = [];
+
+// The database server. Three formats are accepted:
+// - Host/IP: localhost, db.myhost.com, 192.168.1.1
+// - Host/IP with port: db.myhost.com:10086
+// - Socket: unix_socket:/var/run/mysqld/mysqld.sock
+//
+// Note: If you are using Windows and your MySQL
+// server is on the same machine, it it important
+// to specify 127.0.0.1 (not localhost) for performance.
+$DB_CONFIG['host'] = 'localhost';
+
+// The database username and password
+$DB_CONFIG['user']     = 'root';
+$DB_CONFIG['password'] = 'root';
+
+// The database name
+$DB_CONFIG['dbname'] = 'deskpro';
