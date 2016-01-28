@@ -15,6 +15,8 @@ export class TabsPane extends React.Component {
     this.state = {
       active: TabsPane.defaultTab
     };
+    this.titles = [];
+    this.tabs = this.tabsFromChildren();
   }
 
   static defaultTab = 0;
@@ -33,6 +35,8 @@ export class TabsPane extends React.Component {
       if (children[i].type.name !== 'Tab') {
         throw new Error('TabsPane can only contain Tab components as first level children');
       }
+
+      this.titles.push(children[i].props.title);
 
       tabs.push({
         index: i,
@@ -56,16 +60,15 @@ export class TabsPane extends React.Component {
   }
 
   render() {
-    const tabs = this.tabsFromChildren();
-    const className = 'tabs sidebar-tabs tabs-' + tabs.length;
+    const className = 'tabs sidebar-tabs tabs-' + this.tabs.length;
 
     return (
       <div>
         <ul className={className}>
-          {tabs.map(tab => this.renderTabHeader(tab))}
+          {this.tabs.map(tab => this.renderTabHeader(tab))}
         </ul>
 
-        {tabs.map(tab => {
+        {this.tabs.map(tab => {
           const classes = classNames('sidebar-list', { 'hidden': tab.index !== this.state.active });
 
           return (<div key={tab.index} className={classes}>{tab.content}</div>);
@@ -85,8 +88,10 @@ export class TabsPaneStatefulContainer extends TabsPane {
 
   constructor(props) {
     super(props);
+
+    const activeTabId = this.titles.indexOf(this.props.state.getIn([this.props.id, 'active'], null));
     this.state = {
-      active: this.props.state.getIn([this.props.id, 'active'], TabsPane.defaultTab)
+      active: activeTabId > -1 ? activeTabId : TabsPane.defaultTab
     };
   }
 
@@ -94,7 +99,7 @@ export class TabsPaneStatefulContainer extends TabsPane {
     const parentHandler = super.activate(index);
 
     return event => {
-      this.props.dispatch(updateRoutingState(this.props.id, 'active', index));
+      this.props.dispatch(updateRoutingState(this.props.id, 'active', this.titles[index]));
       parentHandler(event);
     };
   }
