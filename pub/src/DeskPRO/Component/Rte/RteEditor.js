@@ -71,17 +71,24 @@ export class RteEditor extends React.Component {
     event.preventDefault();
     event.stopPropagation();
 
-    this.medium.saveSelection();
-
-    const originalEvent = event.originalEvent;
-    const pastedText = originalEvent.clipboardData.getData('text/plain');
+    const clipboardData = event.originalEvent.clipboardData;
+    const pastedText = clipboardData.getData('text/plain');
+    const pastedHtml = clipboardData.getData('text/html');
 
     this.getPasteExtension().cleanPaste(pastedText);
 
     const { getPasteCatcher } = this.props;
     if (getPasteCatcher) {
       const pasteCatcher = getPasteCatcher();
-      pasteCatcher.onPaste(event);
+
+      if (pastedHtml) {
+        const el = document.createElement('div');
+        el.innerHTML = pastedHtml;
+
+        pasteCatcher.getBlobsFromNode(el);
+      } else if (clipboardData.items) {
+        pasteCatcher.getBlobsFromItems(clipboardData.items);
+      }
     }
   };
 

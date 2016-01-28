@@ -23,50 +23,58 @@ export class PasteCatcher extends React.Component {
   }
 
   onPaste = event => {
-    const { onPasteImage } = this.props;
     const originalEvent = event.originalEvent;
 
     if (originalEvent.clipboardData) {
       const items = originalEvent.clipboardData.items;
       if (items) {
-        for (var i = 0; i < items.length; i++) {
-          const item = items[i];
-
-          if (item.kind === 'file' && item.type.indexOf('image') !== -1) {
-            const blob = item.getAsFile();
-            const urlObj = window.URL || window.webkitURL;
-            const imgUrl = urlObj.createObjectURL(blob);
-
-            onPasteImage(PasteCatcher.createFile(blob, item.type), imgUrl, item.type);
-          }
-        }
-      } else {
-        const $pasteCatcher = $(this.getPasteCatcher());
-        $pasteCatcher.focus();
-
-        setTimeout(() => this.getBlobFromPasteChecker(), 100);
+        this.getBlobsFromItems(items);
       }
+    } else {
+      const $pasteCatcher = $(this.getPasteCatcher());
+      $pasteCatcher.children().remove();
+      $pasteCatcher.focus();
+
+      setTimeout(() => this.getBlobFromPasteChecker(), 1);
     }
   };
 
   getBlobFromPasteChecker = () => {
+    this.getBlobsFromNode(this.getPasteCatcher());
+  };
+
+  getBlobsFromItems = items => {
     const { onPasteImage } = this.props;
-    const $pasteCatcher = $(this.getPasteCatcher());
-    const child = $pasteCatcher.children().last().get(0);
+    if (!items) {
+      return;
+    }
 
-    if (child) {
-      if (child.tagName === 'IMG') {
-        const imgSrc = child.src;
+    for (var i = 0; i < items.length; i++) {
+      const item = items[i];
 
-        getImageDataUrl(imgSrc, dataUrl => {
-          const blob = dataUrlToBlob(dataUrl);
-          const urlObj = window.URL || window.webkitURL;
-          const imgUrl = urlObj.createObjectURL(blob);
+      if (item.kind === 'file' && item.type.indexOf('image') !== -1) {
+        const blob = item.getAsFile();
+        const urlObj = window.URL || window.webkitURL;
+        const imgUrl = urlObj.createObjectURL(blob);
 
-          onPasteImage(PasteCatcher.createFile(blob, 'image/png'), imgUrl, 'image/png');
-        });
+        onPasteImage(PasteCatcher.createFile(blob, item.type), imgUrl, item.type);
       }
     }
+  };
+
+  getBlobsFromNode = node => {
+    const { onPasteImage } = this.props;
+
+    $('img', node).each((i, child) => {
+      const imgSrc = child.src;
+      getImageDataUrl(imgSrc, dataUrl => {
+        const blob = dataUrlToBlob(dataUrl);
+        const urlObj = window.URL || window.webkitURL;
+        const imgUrl = urlObj.createObjectURL(blob);
+
+        onPasteImage(PasteCatcher.createFile(blob, 'image/png'), imgUrl, 'image/png');
+      });
+    });
   };
 
   getPasteCatcher() {
