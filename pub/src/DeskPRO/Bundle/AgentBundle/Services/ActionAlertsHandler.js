@@ -1,13 +1,11 @@
 import { newActionAlerts } from '../Modules/Application/Actions/notificationActions.js';
 import { startChat } from '../Modules/IM/Actions/chatsActions';
 import { markMessages } from '../Modules/IM/Actions/messagesActions';
-import { ChatHelper } from './Helpers/ChatHelper';
 
 export class ActionAlertsHandler
 {
   constructor(props) {
     this.options = {};
-    this.chatHelper = new ChatHelper();
     Object.assign(this.options, props);
   }
 
