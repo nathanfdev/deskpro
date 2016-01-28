@@ -131,7 +131,11 @@
       "/node_modules/",
       "/tests/Helpers/",
       "/Selectors/",
+      "/Actions/",
+      "/Reducers/",
       "/Constants/",
+      "index.js",
+      "/Application/Components/",
       "/Common/Components/",
       "/DeskPRO/Component/",
       ".test-helper.js"

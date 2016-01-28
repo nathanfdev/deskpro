@@ -3,14 +3,18 @@ import React from 'react';
 import TestUtils from 'react-addons-test-utils';
 import { merge } from 'lodash'
 
-export function renderInRedux(state, element) {
+export function renderInRedux(state, jsx, dispatch = null) {
   const { Provider } = require('react-redux');
   const createStore = require('redux').createStore;
   const store = createStore(() => state, state);
 
+  if (dispatch) {
+    store.dispatch = dispatch;
+  }
+
   return TestUtils.renderIntoDocument(
     <Provider store={store}>
-      {element}
+      {jsx}
     </Provider>
   );
 }
@@ -25,7 +29,10 @@ export function fakeState(additional = {}) {
   const base = {
     Application: {
       routing: toImmutable({hash: {}}),
-      dpWindow: toImmutable({activeAppId: 'whatever'}),
+      dpWindow: toImmutable({
+        activeAppId: 'whatever',
+        winDims: {}
+      }),
       massActions: toImmutable({selected: []})
     },
     RecordStores: {
@@ -43,4 +50,8 @@ export function fakeRecordStoreState(records = {}, requests = {}) {
     requests,
     status: ''
   });
+}
+
+export function getState() {
+  return reduxStore.getState();
 }

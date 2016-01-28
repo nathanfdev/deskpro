@@ -15,8 +15,6 @@ export function fakeChatsState(num = 0) {
     ids.push(id);
   }
 
-  console.log('fakeState', fakeState);
-
   return fakeState({
     Chat: {list: toImmutable({elements: ids, currentListParams: {}})},
     RecordStores: {Chat: {chats: fakeRecordStoreState(records, {chats: ids})}}
