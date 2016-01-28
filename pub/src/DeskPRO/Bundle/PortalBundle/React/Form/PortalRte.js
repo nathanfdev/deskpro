@@ -5,6 +5,7 @@ import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
 import { DragOverlayListener } from 'DeskPRO/Component/Uploader/DragOverlayListener';
 import { PasteCatcher } from 'DeskPRO/Component/Uploader/PasteCatcher';
 import { portalUrlGenerator } from '../../Http/PortalUrlGenerator';
+import $ from 'jquery';
 
 export class PortalRte extends React.Component {
 
@@ -14,6 +15,11 @@ export class PortalRte extends React.Component {
     $toolbarContainer: PropTypes.object,
     $textTextarea: PropTypes.object
   };
+
+  constructor(props) {
+    super(props);
+    this.fileCounter = 0;
+  }
 
   onChangeMessage = value => {
     this.props.$textTextarea.val(value);
@@ -27,13 +33,24 @@ export class PortalRte extends React.Component {
       const urlObj = window.URL || window.webkitURL;
       const imgUrl = urlObj.createObjectURL(file);
 
-      editor.pasteHtml(`<img src="${imgUrl}">`);
+      file.id = ++this.fileCounter;
+      editor.pasteHtml(`<img src="${imgUrl}" data-paste-id="${file.id}">`);
     });
   };
 
   onUploadSuccess = (event, response) => {
-    const attachment = response.result && response.result.blob || {};
-    console.log(attachment);
+    const pasteId = response.files[0].id;
+    const blob = response.result && response.result.blob;
+    const $image = $('img[data-paste-id=' + pasteId + ']', this.getNode());
+
+    $image.removeAttr('data-paste-id').attr('src', blob.url);
+  };
+
+  onUploadFail = (event, response) => {
+    const pasteId = response.files[0].id;
+    const $image = $('img[data-paste-id=' + pasteId + ']', this.getNode());
+
+    $image.remove();
   };
 
   onPasteImage = file => {
