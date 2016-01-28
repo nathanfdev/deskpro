@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import MediumEditor from 'medium-editor';
+import $ from 'jquery';
 
 export class RteInput extends React.Component {
 
@@ -22,7 +23,10 @@ export class RteInput extends React.Component {
       onChange(node.innerHTML);
     };
 
-    this.medium = new MediumEditor(node, options);
+    $(node).on('paste', this.onPaste);
+    const overrideOptions = {paste: {cleanPastedHTML: true}};
+
+    this.medium = new MediumEditor(node, {...options, ...overrideOptions});
     this.medium.setContent(value);
     this.medium.subscribe('editableInput', onChangeContent);
     this.medium.subscribe('onChange', onChangeContent);
@@ -55,8 +59,22 @@ export class RteInput extends React.Component {
   }
 
   componentWillUnmount() {
+    const node = ReactDOM.findDOMNode(this);
+    $(node).off('paste', this.onPaste);
+
     this.medium.destroy();
   }
+
+  onPaste = event => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const originalEvent = event.originalEvent;
+    const paste = this.medium.getExtensionByName('paste');
+    const pastedHTML = originalEvent.clipboardData.getData('text/html');
+
+    paste.cleanPaste(pastedHTML);
+  };
 
   getMediumEditor() {
     return this.medium;
