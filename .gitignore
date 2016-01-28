@@ -1,129 +1,87 @@
-# IDE project files
+# misc files
 .DS_Store
-/.idea
-/web/app/.idea/
-/web/.idea/
-/pub/.idea/
-/nbproject/
-/catalog.xml
-/.settings/
-/.buildpath
-/.project
-/.tags
+.idea
+nbproject
+catalog.xml
+.settings
+.buildpath
+.project
+.tags
 *.komodoproject
 *.sublime*
-/running_tests.trigger
+running_tests.trigger
 *.swp
-.DS_Store
 .tm_properties
 .php_cs.cache
+npm-debug.log
+.jest-cache
+phantomjsdriver.log
 
 /dev/scratch
 /dev/dev_config
 
 # vendors and build files
-/app/vendor
-/web/node_modules
-/web/bower_components
-/web/app/node_modules
-/web/app/bower_components
-/web/app-build
-/web/loader-build
-/pub/node_modules
-/pub/src-build
-/pub/build
-/pub/npm-debug.log
-/pub/src/DeskPRO/Bundle/AgentBundle/AgentApp_Reducers.js
-/pub/src/DeskPRO/Bundle/WidgetBundle/WidgetApp_Reducers.js
+/app/BUILD/vendor
+/www/assets/BUILD/web/node_modules
+/www/assets/BUILD/web/bower_components
+/www/assets/BUILD/web/app/node_modules
+/www/assets/BUILD/web/app/bower_components
+/www/assets/BUILD/web/app-build
+/www/assets/BUILD/web/loader-build
+/www/assets/BUILD/pub/node_modules
+/www/assets/BUILD/pub/src-build
+/www/assets/BUILD/pub/build
+/www/assets/BUILD/pub/src/DeskPRO/Bundle/AgentBundle/AgentApp_Reducers.js
+/www/assets/BUILD/pub/src/DeskPRO/Bundle/WidgetBundle/WidgetApp_Reducers.js
 
-/app/tests/tools/node_modules
-/app/tests/tools/npm-debug.log
-/app/tests/tools/logs/*
-!/app/tests/tools/logs/.gitkeep
-/app/tests/e2e/logs/*
-!/app/tests/e2e/logs/screenshots
-/app/tests/e2e/logs/screenshots/*
-!/app/tests/e2e/logs/screenshots/.gitkeep
+/app/BUILD/tests/tools/node_modules
 
-# cache and log files
-/app/sys/cache/*
-!/app/sys/cache/index.html
-app/sys/logs/*
-/app/sys/bootstrap.php
-/app/sys/compiled.php
-/app/sys/config/build-time.php
-/app/sys/config/build-num.php
-/app/sys/config/template-map.php
-/app/sys/Resources/distro-checksums.php
-/app/sys/Resources/cloudflare-ips.php
-app/sys/Resources/agent-perm-names.php
-/app/src/Application/InstallBundle/Data/schema.php
-/auto-update-status.php
-/auto-update-is-running.trigger
-/app/src/Application/DeskPRO/Dpql/Parser.out
-/app/src/Cloud/bin/twitter-cloud.log
-/app/src/Cloud/bin/twitter-cloud-control.txt
-/app/src/Cloud/bin/twitter-cloud.pid
-/app/tests/coverage
-!/app/tests/coverage/.gitkeep
+# cache dirs
+/var/appcache/*
+!/var/appcache/.gitkeep
+/var/cache/*
+!/var/cache/.gitkeep
+/var/debug/*
+!/var/debug/.gitkeep
+/var/tests/*
+!/var/tests/.gitkeep
+/var/tmp/*
+!/var/tmp/.gitkeep
 
-/data/last-email_error.dat
-/data/is_installed.dat
-/data/chat_is_available.trigger
-/data/cli-server-reqs-check.dat
-/data/cli-phpinfo.html
-/data/helpdesk-offline-message.txt
-/data/dql.cache.php
-/data/log-analytics.sqlite
-/data/languages.cache
-/data/twitter.pid
-data/can-disable-encryption.txt
-data/encryption-key.bin
-data/encryption-key.bin.*
-/data/logs/*
-/data/logs/emails/*
-/data/debug/*
-/data/tmp/*
-!/data/tmp/page-cache
-/data/tmp/page-cache/*
-!/data/tmp/page-cache/index.html
-!/data/tmp/swiftmailer-cache
-/data/tmp/swiftmailer-cache/*
-!/data/tmp/swiftmailer-cache/index.html
+# logs
+/logs/*
+!/logs/.gitkeep
+
+# data
+/data/*
+!/data/.gitkeep
 /data/backups/*
+!/data/backups/.gitkeep
 /data/files/*
-/data/manuals
-/data/emailstore
-/data/import/csv/export/*
-/data/http_cache/
-/data/importer.pid
+!/data/files/.gitkeep
+/data/hddata/*
+!/data/hddata/.gitkeep
 
-web/sassdoc/vars.json
-/web/build
-/web/app/build/*/build.js
-/web/stylesheets/agent
-/web/stylesheets/admin
-/web/stylesheets/report
-/app/sys/config/changed-files.php
-/app/sys/logs/dev.log
-/log
+# builds
+/app/BUILD/sys/bootstrap.php
+/app/BUILD/sys/compiled.php
+/app/BUILD/sys/config/build-time.php
+/app/BUILD/sys/config/build-num.php
+/app/BUILD/sys/config/template-map.php
+/app/BUILD/sys/config/changed-files.php
+/app/BUILD/sys/Resources/distro-checksums.php
+/app/BUILD/sys/Resources/cloudflare-ips.php
+/app/BUILD/sys/Resources/agent-perm-names.php
+/app/BUILD/src/Application/InstallBundle/Data/schema.php
+/app/BUILD/src/Application/DeskPRO/Dpql/Parser.out
 
-# Place devs can use as scratch space
-/_dev
+# Dev
+/www/assets/BUILD/web/sassdoc/vars.json
+/www/assets/BUILD/web/build
+/www/assets/BUILD/web/app/build/*/build.js
+/www/assets/BUILD/web/stylesheets/agent
+/www/assets/BUILD/web/stylesheets/admin
+/www/assets/BUILD/web/stylesheets/report
 
-# Per-site files
-/config.php
-/config.testing.php
-/config.build.php
-/app/src/Cloud/Resources/cloud_serve/_sys/config.php
-/app/src/Cloud/Resources/cloud_serve/_sys/dp-config.php
-/app/testing/logs/*
-!/app/testing/logs/.gitkeep
-/app/testing/data/dbset-cache
-/app/tests/config.test.php
-!/app/tests/coverage/cov/.gitkeep
-demodata/
-npm-debug.log
-
-pub/.jest-cache
-app/tests/phantomjsdriver.log
+# Config
+/config/dev/*
