@@ -79,15 +79,16 @@ class Messenger
     /**
      * @param AgentChat $chat
      * @param Person    $person
-     * @param           $message
-     *
+     * @param string    $message
+     * @param string    $uuid
      * @return AgentChatMessage
      */
-    public function addMessage(AgentChat $chat, Person $person, $message)
+    public function addMessage(AgentChat $chat, Person $person, $message, $uuid)
     {
         $agentMessage = new AgentChatMessage();
         $agentMessage->setPerson($person)
             ->setMessage($message)
+            ->setUuid($uuid)
             ->setMetadata(array());
         $chat->addMessage($agentMessage);
         $this->em->persist($chat);

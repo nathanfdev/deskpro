@@ -33,7 +33,7 @@ class Build1453972853 extends AbstractBuild
     public function run()
     {
         $this->out('Upgrade Messages');
-        $this->execMutateSql('ALTER TABLE agent_chat_message ADD uuid VARCHAR(36) NOT NULL');
+        $this->execMutateSql('ALTER TABLE agent_chat_message ADD uuid VARCHAR(36) NOT NULL AFTER `id`');
         $this->execMutateSql('CREATE UNIQUE INDEX uuid_unique ON agent_chat_message (uuid)');
     }
 }

@@ -26,14 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * deskpro.
- *
- * @author Denis Ranneft (aka Immortal) <denis@ranneft.ru>
- * Date: 11.09.15
- * Time: 20:58
- */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
@@ -58,6 +50,7 @@ class AgentChatMessageTransformer extends AbstractDataSerializerTransformer
             'agent_chat_id',
             'person_id',
             'date_created',
+            'uuid',
         ];
     }
 
@@ -71,6 +64,7 @@ class AgentChatMessageTransformer extends AbstractDataSerializerTransformer
 
         return [
             'old' => $entity->getDateCreated() < new \DateTime('-12 hour'),
+            'timestamp' => $entity->getDateCreated()->getTimestamp(),
         ];
     }
 }

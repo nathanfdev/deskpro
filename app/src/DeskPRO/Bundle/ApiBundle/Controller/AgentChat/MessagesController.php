@@ -98,8 +98,9 @@ class MessagesController extends AbstractController
      */
     public function postMessagesAction($id, Request $request)
     {
-        $form = $this->createFormBuilder(array('message' => null))
+        $form = $this->createFormBuilder(['message' => null, 'uuid' => null])
             ->add('message', 'text')
+            ->add('uuid', 'text')
             ->getForm();
         $form->submit($request->request->all());
         if (!$form->isValid()) {
@@ -115,7 +116,7 @@ class MessagesController extends AbstractController
         }
 
         $data    = $form->getData();
-        $message = $messenger->addMessage($chat, $user, $data['message']);
+        $message = $messenger->addMessage($chat, $user, $data['message'], $data['uuid']);
 
         $this->container->get('event_dispatcher')->dispatch(
             NewMessageEvent::EVENT_NAME,
