@@ -40,10 +40,14 @@ export class PortalRte extends React.Component {
 
   onUploadSuccess = (event, response) => {
     const pasteId = response.files[0].id;
-    const blob = response.result && response.result.blob;
     const $image = $('img[data-paste-id=' + pasteId + ']', this.getNode());
 
-    $image.removeAttr('data-paste-id').attr('src', blob.url);
+    const blob = response.result && response.result.blob;
+    if (blob) {
+      $image.removeAttr('data-paste-id').attr('src', blob.url);
+    } else {
+      $image.remove();
+    }
   };
 
   onUploadFail = (event, response) => {
