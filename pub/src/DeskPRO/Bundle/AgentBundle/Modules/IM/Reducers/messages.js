@@ -3,6 +3,9 @@ import { newActionAlerts } from '../../Application/Actions/notificationActions';
 import { createReducer } from 'Ampliflux';
 import { async } from 'Ampliflux/reducers/handlers';
 import Immutable from 'immutable';
+import { MessagesHelper } from '../../../Services/Helpers/MessagesHelper';
+
+const messagesHelper = new MessagesHelper();
 
 const initialState = {
   chatMessages: {},
@@ -51,36 +54,9 @@ export default createReducer(initialState, {
     }
     return newState;
   },
-  [actions.markMessagesOptimistic]: (state, payload) => {
-    const path = ['chatMessages', payload.chatId];
-    const chat = state.getIn(path);
-    if (chat) {
-      const newState = state.set('updatingMessages', true);
-      payload.uuids.map(uuid => {
-        if (chat.messages.has(uuid)) {
-          chat.messages.get(uuid).status = payload.status;
-        }
-      });
-      return newState.setIn(path, {...chat});
-    }
-
-    return state;
-  },
+  [actions.markMessagesOptimistic]: messagesHelper.markMessagesOptimistic.bind(messagesHelper),
   [actions.markMessages]: async({
-
-    success: (state, payload) => {
-      const path = ['chatMessages', payload.chatId];
-      const chat = state.getIn(path);
-      if (chat) {
-        payload.messages.map(message => {
-          if (chat.messages.has(message)) {
-            chat.messages.get(message).status = payload.status;
-          }
-        });
-      }
-
-      return state.setIn(path, {...chat});
-    },
+    success: messagesHelper.markMessages.bind(messagesHelper),
     done: state => state.set('updatingMessages', false)
   }),
   [actions.refreshCounts]: async(
@@ -91,14 +67,6 @@ export default createReducer(initialState, {
       done: (state) => state.set('loadingCounts', false)
     }
   ),
-  [actions.reduceCounts]: (state, payload) => {
-    const counts = state.get('counts');
-    if (counts[payload] && counts[payload].cnt > 0) {
-      counts[payload].cnt--;
-      return state.set(counts, {...counts});
-    }
-    return state;
-  },
   [newActionAlerts]: (state, payload) => {
     let newState = state;
     if (payload.type === 'notification.agent_chat.new_message') {
@@ -111,12 +79,12 @@ export default createReducer(initialState, {
     } else if (payload.type === 'refresh_counts') {
       newState = newState.set('counts', payload.data);
     } else if (payload.type === 'notification.agent_chat.mark_message') {
-      const path = ['chatMessages', payload.data.chat_id];
-      const chat = state.getIn(path);
-      if (chat && chat.messages.has(payload.data.message_uuid)) {
-        chat.messages.get(payload.data.message_uuid).status = payload.data.status;
-      }
-      newState = newState.setIn(path, {...chat});
+      const transformed = {
+        chatId: payload.data.chat_id,
+        uuids: [payload.data.message_uuid],
+        status: payload.data.status
+      };
+      newState = messagesHelper.markMessages(state, transformed);
     }
     return newState;
   }

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import SimplePositioned from 'DeskPRO/Component/Positioned/Simple';
 import { IMOverlay } from './IMOverlay';
 import { Chat } from './ChatWindow/Chat';
-import { ChatHelper } from '../ChatHelper';
+import { ChatHelper } from '../../../Services/Helpers/ChatHelper';
 import { meSelector } from '../../Application/RecordStores/Selectors/meSelectors';
 
 @connect(state => ({
@@ -25,7 +25,6 @@ export class IMContainer extends React.Component {
   constructor(props) {
     super(props);
     this.helper = new ChatHelper();
-
   }
 
   renderOverlay = () => {
