@@ -19,17 +19,24 @@ export class PortalRte extends React.Component {
     this.props.$textTextarea.val(value);
   };
 
+  onUploadStarted = (event, data) => {
+    const editor = this.refs.input;
+
+    editor.focus();
+    data.files.forEach(file => {
+      const urlObj = window.URL || window.webkitURL;
+      const imgUrl = urlObj.createObjectURL(file);
+
+      editor.pasteHtml(`<img src="${imgUrl}">`);
+    });
+  };
+
   onUploadSuccess = (event, response) => {
     const attachment = response.result && response.result.blob || {};
     console.log(attachment);
   };
 
-  onPasteImage = (file, src) => {
-    const editor = this.refs.input;
-
-    editor.focus();
-    editor.pasteHtml(`<img src="${src}">`);
-
+  onPasteImage = file => {
     this.refs.dropZone.pushFileToQueue(file);
   };
 
