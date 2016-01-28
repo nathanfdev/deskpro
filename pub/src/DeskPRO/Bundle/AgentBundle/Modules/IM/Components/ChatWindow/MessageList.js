@@ -82,7 +82,7 @@ export class MessageList extends React.Component {
       const uuids = [];
       const { messages } = this.props;
 
-      const msg = messages.getIn(this.getPath()) ? messages.getIn(this.getPath()).messages : [];
+      const msg = messages.hasIn(this.getPath()) ? messages.getIn(this.getPath()).messages : [];
       msg.map((message) => {
         if (message.id && message.status <= 1 && message.person_id !== this.props.me.get('id')) {
           message.status = 2;
@@ -98,14 +98,14 @@ export class MessageList extends React.Component {
 
   loadOld = () => {
     const { messages } = this.props;
-    const page = messages.getIn(this.getPath()) ? messages.getIn(this.getPath()).page : 1;
+    const page = messages.hasIn(this.getPath()) ? messages.getIn(this.getPath()).page : 1;
     this.props.dispatch(loadMessages(this.props.current.id, this.props.searchQuery, page + 1));
   };
 
   controls = () => {
     const { messages } = this.props;
-    const page = messages.getIn(this.getPath()) ? messages.getIn(this.getPath()).page : 1;
-    const pages = messages.getIn(this.getPath()) ? messages.getIn(this.getPath()).pages : 1;
+    const page = messages.hasIn(this.getPath()) ? messages.getIn(this.getPath()).page : 1;
+    const pages = messages.hasIn(this.getPath()) ? messages.getIn(this.getPath()).pages : 1;
     return (
       <li className="chat-controls">
         {page < pages ? <a href="#" onClick={this.loadOld}>Load old messages</a> : null}
@@ -155,11 +155,11 @@ export class MessageList extends React.Component {
 
   render() {
     const { messages } = this.props;
-    let msg = messages.getIn(this.getPath()) ? messages.getIn(this.getPath()).messages : [];
+    let msg = messages.hasIn(this.getPath()) ? messages.getIn(this.getPath()).messages : [];
     msg = msg.sort((first, second) => {
       return first.timestamp - second.timestamp;
     });
-    const loaded = !this.props.loadingMessages || msg.length > 0;
+    const loaded = !this.props.loadingMessages || msg.size > 0;
     return (
        <Loader loaded={loaded}>
          { msg.size > 0 ? this.renderList(msg) : this.renderEmpty()}

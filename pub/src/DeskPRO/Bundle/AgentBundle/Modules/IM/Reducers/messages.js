@@ -47,11 +47,14 @@ export default createReducer(initialState, {
     success: (state, payload) => {
       const path = ['chatMessages', payload.chatId];
       const chat = state.getIn(path);
-      payload.messages.map(message => {
-        if (chat.messages.has(message)) {
-          chat.messages.get(message).status = payload.status;
-        }
-      });
+      if (chat) {
+        payload.messages.map(message => {
+          if (chat.messages.has(message)) {
+            chat.messages.get(message).status = payload.status;
+          }
+        });
+      }
+
       return state.setIn(path, {...chat});
     },
     done: state => state.set('updatingMessages', false)
@@ -80,8 +83,8 @@ export default createReducer(initialState, {
     } else if (payload.type === 'notification.agent_chat.mark_message') {
       const path = ['chatMessages', payload.data.chat_id];
       const chat = state.getIn(path);
-      if (chat.messages.has(payload.data.message_uuid)) {
-        chat.messages = chat.messages.setIn([payload.data.message_uuid, 'status'], payload.data.status);
+      if (chat && chat.messages.has(payload.data.message_uuid)) {
+        chat.messages.get(payload.data.message_uuid).status = payload.data.status;
       }
       newState = newState.setIn(path, {...chat});
     }
