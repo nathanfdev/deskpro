@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { Message } from './Message';
-import { loadMessages, markMessages } from '../../Actions/messagesActions';
+import { loadMessages, markMessages, markMessagesOptimistic, reduceCounts } from '../../Actions/messagesActions';
 import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
 import Loader from 'react-loader';
@@ -13,7 +13,7 @@ import Loader from 'react-loader';
   agentsStatus: agentsStatusSelector(state),
   messages: state.IM.messages,
   loadingMessages: state.IM.messages.get('loadingMessages'),
-  updatingMessages: state.IM.messages.get('updatingMessasges')
+  updatingMessages: state.IM.messages.get('updatingMessages')
 }))
 export class MessageList extends React.Component {
 
@@ -80,18 +80,17 @@ export class MessageList extends React.Component {
     if (!this.props.updatingMessages) {
       const ids = [];
       const uuids = [];
-      const { messages } = this.props;
+      const { messages, dispatch } = this.props;
 
       const msg = messages.hasIn(this.getPath()) ? messages.getIn(this.getPath()).messages : [];
       msg.map((message) => {
-        if (message.id && message.status <= 1 && message.person_id !== this.props.me.get('id')) {
-          message.status = 2;
+        if (message.id && message.status === 1 && message.person_id !== this.props.me.get('id')) {
           ids.push(message.id);
           uuids.push(message.uuid);
         }
       });
       if (ids.length > 0) {
-        this.props.dispatch(markMessages(ids, uuids, this.props.current.id));
+        dispatch(markMessages(ids, uuids, this.props.current.id));
       }
     }
   }

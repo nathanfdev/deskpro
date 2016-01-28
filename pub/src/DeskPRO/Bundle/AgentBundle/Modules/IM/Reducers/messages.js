@@ -1,6 +1,5 @@
 import * as actions from '../Actions/messagesActions';
 import { newActionAlerts } from '../../Application/Actions/notificationActions';
-import { refreshCounts } from '../Actions/messagesActions';
 import { createReducer } from 'Ampliflux';
 import { async } from 'Ampliflux/reducers/handlers';
 import Immutable from 'immutable';
@@ -42,8 +41,33 @@ export default createReducer(initialState, {
       done: (state) => state.set('loadingMessages', false)
     }
   ),
+  [actions.addMessageOptimistic]: (state, payload) => {
+    let newState = state;
+    const path = ['chatMessages', payload.data.agent_chat_id];
+    const chat = newState.getIn(path);
+    if (chat) {
+      chat.messages = chat.messages.set(payload.data.uuid, payload.data);
+      newState = newState.setIn(path, {...chat});
+    }
+    return newState;
+  },
+  [actions.markMessagesOptimistic]: (state, payload) => {
+    const path = ['chatMessages', payload.chatId];
+    const chat = state.getIn(path);
+    if (chat) {
+      const newState = state.set('updatingMessages', true);
+      payload.uuids.map(uuid => {
+        if (chat.messages.has(uuid)) {
+          chat.messages.get(uuid).status = payload.status;
+        }
+      });
+      return newState.setIn(path, {...chat});
+    }
+
+    return state;
+  },
   [actions.markMessages]: async({
-    start: state => state.set('updatingMessages', true),
+
     success: (state, payload) => {
       const path = ['chatMessages', payload.chatId];
       const chat = state.getIn(path);
@@ -59,15 +83,21 @@ export default createReducer(initialState, {
     },
     done: state => state.set('updatingMessages', false)
   }),
-  [actions.addMessageOptimistic]: (state, payload) => {
-    let newState = state;
-    const path = ['chatMessages', payload.data.agent_chat_id];
-    const chat = newState.getIn(path);
-    if (chat) {
-      chat.messages = chat.messages.set(payload.data.uuid, payload.data);
-      newState = newState.setIn(path, {...chat});
+  [actions.refreshCounts]: async(
+    {
+      success: (state, payload) => {
+        return state.set('counts', payload);
+      },
+      done: (state) => state.set('loadingCounts', false)
     }
-    return newState;
+  ),
+  [actions.reduceCounts]: (state, payload) => {
+    const counts = state.get('counts');
+    if (counts[payload] && counts[payload].cnt > 0) {
+      counts[payload].cnt--;
+      return state.set(counts, {...counts});
+    }
+    return state;
   },
   [newActionAlerts]: (state, payload) => {
     let newState = state;
@@ -89,13 +119,6 @@ export default createReducer(initialState, {
       newState = newState.setIn(path, {...chat});
     }
     return newState;
-  },
-  [refreshCounts]: async(
-    {
-      success: (state, payload) => {
-        return state.set('counts', payload);
-      },
-      done: (state) => state.set('loadingCounts', false)
-    }
-  )
+  }
+
 });

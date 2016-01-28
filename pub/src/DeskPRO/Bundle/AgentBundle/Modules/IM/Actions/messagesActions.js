@@ -63,9 +63,21 @@ export const refreshCounts = createAction(
   }
 );
 
+export const reduceCounts = createAction(
+  'IM_DECREASE_COUNTS',
+  (chatId) => chatId
+);
+
+
+export const markMessagesOptimistic = createAction(
+  'IM_MARK_MESSAGES_OPTIMISTIC',
+  (uuids, chatId, status) => { return {uuids: uuids, chatId: chatId, status: status}; }
+);
+
 export const markMessages = createAction(
   'IM_MARK_MESSAGES',
-  (ids, uuids, chatId, status = 2) => {
+  (ids, uuids, chatId, status = 2) => (dispatch) => {
+    dispatch(markMessagesOptimistic(uuids, chatId, status));
     return new Promise(
       (resolve, reject) => {
         return IM.markMessages(ids, status)
@@ -77,3 +89,4 @@ export const markMessages = createAction(
     );
   }
 );
+
