@@ -148,7 +148,7 @@ export class ReplyForm extends React.Component {
             <EmotionButton
               buttonClassName="img"
               context={[parent.document, window.widgetFrame.document]}
-              getEditor={() => this.refs.editor.getMediumEditor()}
+              getEditor={() => this.refs.editor}
               popupPositionAt="center top-15"
               popupPositionMy="center bottom"
             />

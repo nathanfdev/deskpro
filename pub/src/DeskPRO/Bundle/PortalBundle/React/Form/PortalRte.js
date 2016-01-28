@@ -25,7 +25,10 @@ export class PortalRte extends React.Component {
   };
 
   onPasteImage = (blob, src) => {
-    console.log('pasted image', src);
+    const editor = this.refs.input;
+
+    editor.focus();
+    editor.pasteHtml(`<img src="${src}">`);
   };
 
   getNode() {
@@ -47,6 +50,7 @@ export class PortalRte extends React.Component {
     return (
       <div>
         <RteInput
+          ref="input"
           className={className}
           value={$textTextarea.val()}
           onChange={this.onChangeMessage}

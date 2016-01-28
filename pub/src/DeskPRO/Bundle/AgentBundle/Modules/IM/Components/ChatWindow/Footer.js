@@ -63,7 +63,7 @@ export class Footer extends React.Component {
           <EmotionButton
             buttonClassName="emoticon sprite sprite-emoticon-1"
             className="insert-emoticon"
-            getEditor={() => this.refs.editor.getMediumEditor()}
+            getEditor={() => this.refs.editor}
             popupPositionAt="left-8 bottom+12"
             popupPositionMy="left top"
           />

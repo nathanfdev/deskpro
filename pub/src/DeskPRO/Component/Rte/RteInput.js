@@ -70,11 +70,12 @@ export class RteInput extends React.Component {
     event.preventDefault();
     event.stopPropagation();
 
+    this.medium.saveSelection();
+
     const originalEvent = event.originalEvent;
-    const paste = this.medium.getExtensionByName('paste');
     const pastedText = originalEvent.clipboardData.getData('text/plain');
 
-    paste.cleanPaste(pastedText);
+    this.getPasteExtension().cleanPaste(pastedText);
 
     const { getPasteCatcher } = this.props;
     if (getPasteCatcher) {
@@ -85,6 +86,27 @@ export class RteInput extends React.Component {
 
   getMediumEditor() {
     return this.medium;
+  }
+
+  getPasteExtension() {
+    return this.medium.getExtensionByName('paste');
+  }
+
+  pasteHtml(html) {
+    this.getPasteExtension().pasteHTML(html);
+  }
+
+  focus() {
+    this.medium.restoreSelection();
+
+    if (!this.medium.checkSelection().selectionState) {
+      this.medium.trigger('initialFocus');
+
+      const contentWindow = this.medium.options.contentWindow;
+      if (contentWindow.getSelection) {
+        contentWindow.getSelection().collapseToEnd();
+      }
+    }
   }
 
   render() {

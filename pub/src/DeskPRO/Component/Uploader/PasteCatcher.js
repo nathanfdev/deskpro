@@ -33,9 +33,9 @@ export class PasteCatcher extends React.Component {
           if (item.kind === 'file' && item.type.indexOf('image') !== -1) {
             const blob = item.getAsFile();
             const urlObj = window.URL || window.webkitURL;
-            const imgSrc = urlObj.createObjectURL(blob);
+            const imgUrl = urlObj.createObjectURL(blob);
 
-            onPasteImage(blob, imgSrc, item.type);
+            onPasteImage(blob, imgUrl, item.type);
           }
         }
       } else {
@@ -55,9 +55,13 @@ export class PasteCatcher extends React.Component {
     if (child) {
       if (child.tagName === 'IMG') {
         const imgSrc = child.src;
+
         getImageDataUrl(imgSrc, dataUrl => {
           const blob = dataUrlToBlob(dataUrl);
-          onPasteImage(blob, imgSrc, 'image/png');
+          const urlObj = window.URL || window.webkitURL;
+          const imgUrl = urlObj.createObjectURL(blob);
+
+          onPasteImage(blob, imgUrl, 'image/png');
         });
       }
     }

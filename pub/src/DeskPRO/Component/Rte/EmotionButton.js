@@ -26,7 +26,7 @@ export class EmotionButton extends React.Component {
   onSelectEmoticon = event => {
     event.preventDefault();
 
-    const medium = this.props.getEditor();
+    const medium = this.props.getEditor().getMediumEditor();
     medium.saveSelection();
 
     this.setState({
@@ -35,7 +35,7 @@ export class EmotionButton extends React.Component {
   };
 
   onCloseEmotionsPopup = () => {
-    const medium = this.props.getEditor();
+    const medium = this.props.getEditor().getMediumEditor();
     medium.restoreSelection();
 
     this.setState({
@@ -44,22 +44,16 @@ export class EmotionButton extends React.Component {
   };
 
   onSelectEmotion = code => {
-    const medium = this.props.getEditor();
-    medium.restoreSelection();
+    const editor = this.props.getEditor();
+    const medium = editor.getMediumEditor();
+
+    editor.focus();
 
     const contentWindow = medium.options.contentWindow;
     const ownerDocument = medium.options.ownerDocument;
 
     // Clears default empty content to avoid new lines
     medium.trigger('clearEmptyContent');
-
-    if (!medium.checkSelection().selectionState) {
-      medium.trigger('initialFocus');
-
-      if (contentWindow.getSelection) {
-        contentWindow.getSelection().collapseToEnd();
-      }
-    }
 
     const html = ` ${Emotions.createEmotionImage(code)} `;
 
