@@ -65,11 +65,13 @@ export default createReducer(initialState, {
   [newActionAlerts]: (state, payload) => {
     let newState = state;
     if (payload.type === 'notification.agent_chat.new_message') {
-      const path = ['chatMessages', payload.data.agent_chat_id];
-      const chat = newState.getIn(path);
+      const transformed = {
+        chatId: payload.data.agent_chat_id
+      };
+      const chat = messagesHelper.getChat(newState, transformed);
       if (chat) {
         chat.messages = chat.messages.set(payload.data.uuid, payload.data);
-        newState = newState.setIn(path, {...chat});
+        newState = newState.setIn(messagesHelper.getPath(newState, transformed), {...chat});
       }
     } else if (payload.type === 'refresh_counts') {
       newState = newState.set('counts', payload.data);
