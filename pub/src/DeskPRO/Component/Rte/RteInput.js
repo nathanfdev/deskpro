@@ -72,9 +72,9 @@ export class RteInput extends React.Component {
 
     const originalEvent = event.originalEvent;
     const paste = this.medium.getExtensionByName('paste');
-    const pastedHTML = originalEvent.clipboardData.getData('text/html');
+    const pastedText = originalEvent.clipboardData.getData('text/plain');
 
-    paste.cleanPaste(pastedHTML);
+    paste.cleanPaste(pastedText);
 
     const { getPasteCatcher } = this.props;
     if (getPasteCatcher) {
