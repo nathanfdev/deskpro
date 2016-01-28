@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import jQuery from 'jquery';
-import slider from 'jquery-ui/slider';
+import 'jquery-ui/slider';
 
 export class ColumnSlider extends React.Component {
 
@@ -32,7 +32,7 @@ export class ColumnSlider extends React.Component {
 
     return (
       <div className="dpw-workspace-state dpw-workspace-slider-container">
-        <div className="">
+        <div>
           <h2>Column Dimensions <a href="#" onClick={onChangeDimensions.bind(this, 0)}>Reset</a></h2>
           <div className="dpw-workspace-slider">
             <div className="dpw-workspace-slider-count-container">
@@ -40,11 +40,11 @@ export class ColumnSlider extends React.Component {
             </div>
 
             <div className="dpw-workspace-slider-slide-container">
-                  <span className="dpw-workspace-slider-slide" id="workspace-column-slider">
-                    <span className="slider-blocked-left"></span>
-                    <span className="slider-blocked-right"></span>
-                    <span className="slider-button ui-slider-handle"></span>
-                  </span>
+              <span className="dpw-workspace-slider-slide" id="workspace-column-slider">
+                <span className="slider-blocked-left"></span>
+                <span className="slider-blocked-right"></span>
+                <span className="slider-button ui-slider-handle"></span>
+              </span>
             </div>
           </div>
         </div>
