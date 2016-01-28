@@ -5,14 +5,14 @@ export class SearchForm extends React.Component {
   static propTypes = {
     handleType: PropTypes.func.isRequired,
     handleSearch: PropTypes.func.isRequired,
+    handleClear: PropTypes.func.isRequired,
     searching: PropTypes.any.isRequired
   };
 
   handleClear = (event) => {
     event.preventDefault();
     this.refs.searchBox.value = '';
-    event.target = this.refs.searchBox;
-    this.props.handleType(event);
+    this.props.handleClear();
   };
 
   render() {

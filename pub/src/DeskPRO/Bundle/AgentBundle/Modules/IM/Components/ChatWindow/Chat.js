@@ -69,11 +69,22 @@ export class Chat extends React.Component {
     );
   };
 
-  handleType = event => {
+  handleType = (event) => {
+    event.preventDefault();
     this.setState({
       searchTyped: event.target.value
     });
+    if (event.target.value === '') {
+      this.handleSearch(event);
+    }
   };
+
+  handleClear() {
+    this.setState({
+      searchTyped: '',
+      searchQuery: ''
+    });
+  }
 
   handleOnClose = () => {
     this.props.dispatch(chatsActions.closeChat(this.props.current.id));
@@ -106,7 +117,7 @@ export class Chat extends React.Component {
     return (this.state.searchShown)
       ?
       <SearchForm
-        handleClear={this.handleClear}
+        handleClear={this.handleClear.bind(this)}
         handleType={this.handleType}
         handleSearch={this.handleSearch}
         searching={this.state.searchTyped}/>
