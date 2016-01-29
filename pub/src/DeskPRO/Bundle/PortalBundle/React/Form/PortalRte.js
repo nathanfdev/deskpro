@@ -40,6 +40,7 @@ export class PortalRte extends React.Component {
 
     file.id = ++this.fileCounter;
     editor.pasteHtml(`<img src="${imgUrl}" data-paste-id="${file.id}">`);
+    this.onChangeMessage(editor.getContent());
   };
 
   onUploadSuccess = (event, response) => {
@@ -47,7 +48,8 @@ export class PortalRte extends React.Component {
     const file = response.files[0];
     const pasteId = response.files[0].id;
     const $image = $('img[data-paste-id=' + pasteId + ']', this.getNode());
-    const $editor = $(ReactDOM.findDOMNode(this.refs.input));
+    const editor = this.refs.input;
+    const $editor = $(ReactDOM.findDOMNode(editor));
 
     if (file.type.indexOf('image') === -1) {
       return;
@@ -63,6 +65,8 @@ export class PortalRte extends React.Component {
     } else {
       $image.remove();
     }
+
+    this.onChangeMessage(editor.getContent());
   };
 
   onUploadFail = (event, response) => {
@@ -70,6 +74,9 @@ export class PortalRte extends React.Component {
     const $image = $('img[data-paste-id=' + pasteId + ']', this.getNode());
 
     $image.remove();
+
+    const editor = this.refs.input;
+    this.onChangeMessage(editor.getContent());
   };
 
   onPasteImage = file => {

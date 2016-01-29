@@ -76,7 +76,7 @@ export class RteEditor extends React.Component {
     const pastedText = clipboardData.getData('text/plain');
     const pastedHtml = clipboardData.getData('text/html');
 
-    this.getPasteExtension().cleanPaste(pastedText);
+    this.medium.cleanPaste(pastedText);
 
     const { onPasteImage } = this.props;
     if (onPasteImage) {
@@ -92,12 +92,12 @@ export class RteEditor extends React.Component {
     return this.medium;
   }
 
-  getPasteExtension() {
-    return this.medium.getExtensionByName('paste');
+  getContent() {
+    return ReactDOM.findDOMNode(this).innerHTML;
   }
 
   pasteHtml(html) {
-    this.getPasteExtension().pasteHTML(html);
+    this.medium.pasteHTML(html);
   }
 
   focus() {
