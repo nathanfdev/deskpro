@@ -100,7 +100,7 @@ class FormFieldSaveDraft extends PageWidget {
 export class FormSaveDraft extends PageWidget {
 
   init() {
-    this.addWidgetDef(FormFieldSaveDraft, function(widgetClass, $context, parent) {
+    this.addWidgetDef(FormFieldSaveDraft, (widgetClass, $context, parent) => {
       const $matches = $context.find('input[type="text"], input[type="email"], input[type="checkbox"], input[type="radio"], textarea, select');
       //todo possibly filter?
 
@@ -113,5 +113,8 @@ export class FormSaveDraft extends PageWidget {
       // clear the draft on submit
       delete window.localStorage.form_drafts;
     });
+
+    const $formSubmit = this.$element.find('input[type="submit"]:visible, button[type="submit"]:visible');
+    $('<button type="reset">Reset</button>').insertAfter($formSubmit);
   }
 }

@@ -507,6 +507,10 @@ button, .button, input[type="submit"] {
   &.button-resolved {
     @include generate-background-and-border($button-color-secondary);
   }
+
+  &[type="reset"] {
+    margin-left: 10px;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
