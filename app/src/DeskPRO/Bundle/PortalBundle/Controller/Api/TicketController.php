@@ -80,7 +80,6 @@ class TicketController extends AbstractApiController
             'ticket_message'                => $ticket_message,
             'settings'                      => $this->getBrandContainer()->getSettings(),
             'action'                        => $this->generateUrl('portal_api_ticket_new'),
-            'attr'                          => ['data-save-draft' => 'new_ticket'],
             'csrf_protection'               => false,
             'csrf_double_submit_protection' => false,
             'allow_extra_fields'            => true,

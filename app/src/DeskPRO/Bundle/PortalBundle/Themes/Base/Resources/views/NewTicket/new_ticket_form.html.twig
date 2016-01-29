@@ -5,7 +5,7 @@
     <div class="dp_ticket_form dpx-form{% if show_ticket_suggestions %} dpx-with-ticket-deflection{% endif %}">
 
         {# avoid putting an absolute action the GET query is significant for defaults #}
-        <form method="POST" class="form-ticket" novalidate name="ticket" enctype="multipart/form-data">
+        <form method="POST" class="form-ticket" novalidate data-save-draft="new_ticket" name="ticket" enctype="multipart/form-data">
 
         {% if form_errors|length > 0 %}
             <div class="column-full">
