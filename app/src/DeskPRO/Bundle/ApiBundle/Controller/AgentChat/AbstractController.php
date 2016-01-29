@@ -36,9 +36,13 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\AgentChat\Messenger;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * Class AbstractController.
+ */
 abstract class AbstractController extends BaseController
 {
     /**
@@ -72,11 +76,33 @@ abstract class AbstractController extends BaseController
         return $this->getDoctrine()->getManager();
     }
 
+    /**
+     * @param FormInterface $form
+     *
+     * @return array
+     */
     protected function createFormErrorsData(FormInterface $form)
     {
         $generator = $this->get('api_error.form_errors_generator');
         $errors    = $generator->generateFormErrors($form);
 
         return $errors;
+    }
+
+    /**
+     * @param $form_name
+     * @param Request $request
+     *
+     * @return \Symfony\Component\Form\Form
+     */
+    protected function submitForm($form_name, Request $request)
+    {
+        $form = $this
+            ->get('form.factory')
+            ->createNamedBuilder(null, $form_name)
+            ->getForm();
+        $form->submit($request->request->all());
+
+        return $form;
     }
 }

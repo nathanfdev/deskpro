@@ -98,15 +98,11 @@ class MessagesController extends AbstractController
      */
     public function postMessagesAction($id, Request $request)
     {
-        $form = $this
-            ->get('form.factory')
-            ->createNamedBuilder(null, 'api_agent_chat_message')
-            ->getForm();
-        $form->submit($request->request->all());
+        $form = $this->submitForm('api_agent_chat_message', $request);
         if (!$form->isValid()) {
             $errors = $this->createFormErrorsData($form);
 
-            return $this->createErrorRepresentation(Response::HTTP_BAD_REQUEST, Response::HTTP_BAD_REQUEST, "Couldn't create messages", $errors);
+            return $this->createErrorRepresentation(Response::HTTP_BAD_REQUEST, Response::HTTP_BAD_REQUEST, "Couldn't create message", $errors);
         }
 
         /** @var Messenger $messenger */
@@ -159,7 +155,23 @@ class MessagesController extends AbstractController
      */
     public function markAction(Request $request)
     {
-        $status          = Response::HTTP_ACCEPTED;
+        $status = Response::HTTP_ACCEPTED;
+        $form   = $this->submitForm('api_agent_chat_mark_message', $request);
+        if (!$form->isValid()) {
+            $status = Response::HTTP_BAD_REQUEST;
+            $errors = $this->createFormErrorsData($form);
+
+            return View::create(
+                $this->createErrorRepresentation(
+                    $status,
+                    'form_error',
+                    "Couldn't mark messages",
+                    $errors
+                ),
+                $status
+            );
+        }
+
         $ids             = $request->request->get('ids');
         $messages_status = $request->request->get('status');
         /** @var Messenger $messenger */

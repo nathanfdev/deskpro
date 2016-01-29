@@ -32,19 +32,20 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\AgentChat;
 
+use Proxies\__CG__\DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class AgentChatMessageType extends AbstractType
+class AgentChatMarkMessageType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function getName()
     {
-        return 'api_agent_chat_message';
+        return 'api_agent_chat_mark_message';
     }
 
     /**
@@ -53,16 +54,27 @@ class AgentChatMessageType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('message', 'html_textarea', [
-                'constraints' => [
-                    new Assert\NotBlank(),
-                ],
-            ])
-            ->add('uuid', 'text', [
-                'constraints' => [
-                    new Assert\Uuid(),
-                ],
-                'required' => true,
+            ->add(
+                'ids',
+                'collection',
+                [
+                    'entry_type'    => 'integer',
+                    'entry_options' => [
+                        'constraints' => [
+                            new Assert\GreaterThan(['value' => 110]),
+                        ],
+                    ],
+                    'allow_add' => true,
+                ]
+            )
+            ->add('status', 'choice', [
+                'choices' => [
+                        'New'       => AgentChatMessage::STATUS_NEW,
+                        'Delivered' => AgentChatMessage::STATUS_DELIVERED,
+                        'Read'      => AgentChatMessage::STATUS_READ,
+                    ],
+                'choices_as_values' => true,
+                'required'          => true,
             ])
         ;
     }

@@ -49,6 +49,9 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * Class Messenger.
+ */
 class Messenger
 {
     /**
@@ -178,6 +181,9 @@ class Messenger
         return $this->createChat([$department], Chatable::PARTICIPANT_TYPE_DEPARTMENT);
     }
 
+    /**
+     * @return AgentChat
+     */
     public function createEveryoneChat()
     {
         return $this->createChat([], Chatable::PARTICIPANT_TYPE_EVERYONE);
@@ -187,7 +193,7 @@ class Messenger
      * @param            $id
      * @param bool|false $forceReload
      *
-     * @return null|object
+     * @return null|AgentChat
      */
     public function getChat($id, $forceReload = false)
     {
@@ -197,6 +203,11 @@ class Messenger
         return !$forceReload ? $agentChatRepository->find($id) : $agentChatRepository->findOneBy(['id' => $id]);
     }
 
+    /**
+     * @param array $ids
+     *
+     * @return array
+     */
     public function getChats(array $ids)
     {
         /** @var AgentChatRepository $agentChatRepository */
