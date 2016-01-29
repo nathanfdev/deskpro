@@ -1,0 +1,57 @@
+import $ from 'jquery';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
+import { DpxFormTextDraft } from './DpxFormTextDraft';
+import { DpxFormCheckboxDraft } from './DpxFormCheckboxDraft';
+import { DpxFormSelectDraft } from './DpxFormSelectDraft';
+
+function updateDrafts(obj) {
+  window.localStorage.form_drafts = JSON.stringify(obj);
+}
+
+function getDrafts() {
+  if (window.localStorage.form_drafts) {
+    return $.parseJSON(window.localStorage.form_drafts);
+  }
+
+  return {};
+}
+
+export class DpxFormDraft extends PageWidget {
+
+  init() {
+    this.addWidgetDef(DpxFormTextDraft, 'input[type="text"], input[type="email"], textarea');
+    this.addWidgetDef(DpxFormCheckboxDraft, 'input[type="checkbox"], input[type="radio"]');
+    this.addWidgetDef(DpxFormSelectDraft, 'select');
+  }
+
+  getFormName() {
+    if (!this.formName) {
+      this.formName = this.$element.data('save-draft');
+    }
+
+    return this.formName;
+  }
+
+  getFormDrafts() {
+    return getDrafts()[this.getFormName()] || {};
+  }
+
+  updateFormDrafts(newDrafts) {
+    const drafts = getDrafts();
+    drafts[this.getFormName()] = newDrafts;
+
+    updateDrafts(drafts);
+  }
+
+  renderWidget() {
+    const clearDraft = () => {
+      delete window.localStorage.form_drafts;
+    };
+
+    this.$element.on('submit', clearDraft);
+    this.$element.on('reset', clearDraft);
+
+    const $formSubmit = this.$element.find('input[type="submit"]:visible, button[type="submit"]:visible');
+    $('<button type="reset">Reset</button>').insertAfter($formSubmit);
+  }
+}

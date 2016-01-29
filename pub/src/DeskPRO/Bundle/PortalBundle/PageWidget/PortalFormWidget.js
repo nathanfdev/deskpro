@@ -6,7 +6,7 @@ import { DpxDateWidget } from './Common/Form/DpxDateWidget';
 import { DpxAttach } from './Common/Form/DpxAttach';
 import { DpxRte } from './Common/Form/DpxRte';
 import { DpxRadio } from './Common/Form/DpxRadio';
-import { DpxFormDraft } from './Common/Form/DpxFormDraft';
+import { DpxFormDraft } from './Common/Form/Draft/DpxFormDraft';
 
 export class PortalFormWidget extends PageWidget {
 
