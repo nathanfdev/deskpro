@@ -3,9 +3,11 @@
 $config = require_once __DIR__ . "/.php_cs";
 
 if (!defined('PHP_CS_SRC_DIR')) {
-    define('PHP_CS_SRC_DIR', realpath(__DIR__ . '/../app'));
+    define('PHP_CS_SRC_DIR', realpath(__DIR__ . '/../app/BUILD'));
 }
 define('GIT_BASE_DIR', realpath(__DIR__.'/..'));
+
+define('PHP_CS_SRC_DIR_NORMAL', str_replace('\\', '/', PHP_CS_SRC_DIR);
 
 $outputs = array();
 $return = 0;
@@ -17,8 +19,6 @@ exec("git diff-index --cached --name-only {$against}", $outputs);
 $filename_pattern = '/\.php$/';
 
 $exclude_dirs = array(
-    PHP_CS_SRC_DIR.'/docs',
-    PHP_CS_SRC_DIR.'/sys/cache',
     PHP_CS_SRC_DIR.'/vendor',
     PHP_CS_SRC_DIR.'/vendor-src'
 );
@@ -57,6 +57,10 @@ $changed_files = array_filter($outputs, function($filename) use ($filename_patte
 $changed_files = array_map(function($filename) {
     return new \SplFileInfo($filename);
 }, $changed_files);
+$changed_files = array_filter($changed_files, function($f) {
+    $normal = str_replace('\\', '/', $f->getRealPath());
+    return strpos($normal, PHP_CS_SRC_DIR_NORMAL) === 0;
+});
 print "Scanning changeset for code style fixes. Files include:".PHP_EOL;
 foreach ($changed_files as $file) {
     print $file.PHP_EOL;

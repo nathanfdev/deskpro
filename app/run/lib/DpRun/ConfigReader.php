@@ -31,6 +31,29 @@ namespace DpRun;
 class ConfigReader
 {
     /**
+     * In our well-known config files we name
+     * the variable something semantic, this is the map
+     * of which varname we use in each file. Just a small usability thing.
+     * @var array
+     */
+    private static $id_to_varnames = [
+        'database' => 'DB_CONFIG',
+        'logs'     => 'LOGS_CONFIG',
+        'paths'    => 'PATHS_CONFIG',
+        'settings' => 'SETTINGS_CONFIG',
+    ];
+
+    /**
+     * We put some default files under 'advanced'.
+     * @var array
+     */
+    private static $id_to_path = [
+        'env'      => 'advanced',
+        'logs'     => 'advanced',
+        'settings' => 'advanced',
+    ];
+
+    /**
      * @var array
      */
     private $config_values = [];
@@ -41,18 +64,18 @@ class ConfigReader
     private $config_values_short = [];
 
     /**
-     * @var string
+     * @var array
      */
-    private $config_dir;
+    private $config_dirs;
 
     /**
      * ConfigReader constructor.
      *
-     * @param string $config_dir
+     * @param string[] $config_dirs
      */
-    public function __construct($config_dir)
+    public function __construct(array $config_dirs)
     {
-        $this->config_dir = $config_dir;
+        $this->config_dirs = $config_dirs;
     }
 
     /**
@@ -69,36 +92,34 @@ class ConfigReader
             return $this->config_values_short[$id];
         }
 
-        // In our well-known config files we name
-        // the variable something semantic, this is the map
-        // of which varname we use in each file
-        static $id_to_varname = [
-            'database' => 'DB_CONFIG',
-            'logs'     => 'LOGS_CONFIG',
-            'paths'    => 'PATHS_CONFIG',
-            'settings' => 'SETTINGS_CONFIG',
-        ];
-
         $parts   = explode('.', $id);
         $file_id = array_shift($parts);
 
-        if (isset($this->config_values[$file_id])) {
-            $array = $this->config_values[$file_id];
-        } else {
-            $config_file_path = $this->config_dir.DIRECTORY_SEPARATOR.$file_id.'.php';
-            if (file_exists($config_file_path)) {
-                $array = $this->_loadConfigFile(
-                    $config_file_path,
-                    isset($id_to_varname[$file_id]) ? $id_to_varname[$file_id] : 'CONFIG'
-                );
-            } else {
-                $array = [];
-            }
+        if (!isset($this->config_values[$file_id])) {
+            foreach ($this->config_dirs as $config_dir) {
+                $config_file_path = $config_dir
+                    . DIRECTORY_SEPARATOR
+                    . (isset(self::$id_to_path[$file_id]) ? self::$id_to_path[$file_id] . DIRECTORY_SEPARATOR : '')
+                    . $file_id . '.php';
 
-            $this->config_values[$file_id] = $array;
+                if (file_exists($config_file_path)) {
+                    $array = $this->_loadConfigFile(
+                        $config_file_path,
+                        isset(self::$id_to_varnames[$file_id]) ? self::$id_to_varnames[$file_id] : 'CONFIG'
+                    );
+                } else {
+                    $array = [];
+                }
+
+                if (!isset($this->config_values[$file_id])) {
+                    $this->config_values[$file_id] = $array;
+                } else if ($array) {
+                    $this->config_values[$file_id] = array_merge($this->config_values[$file_id], $array);
+                }
+            }
         }
 
-        $val = $this->_fetchFromArray($array, $parts, $default);
+        $val = $this->_fetchFromArray($this->config_values[$file_id], $parts, $default);
 
         // Save the value to config_values_short just to avoid
         // lookups on the same key again in future

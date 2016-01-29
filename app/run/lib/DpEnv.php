@@ -97,7 +97,7 @@ class DpEnv
         $this->var_dir     = $this->resolveCustomPath($this->dp_root.DIRECTORY_SEPARATOR.'var');
         $this->www_dir     = $this->resolveCustomPath($this->dp_root.DIRECTORY_SEPARATOR.'www');
 
-        $this->config_reader = new \DpRun\ConfigReader($this->config_dir);
+        $this->config_reader = new \DpRun\ConfigReader([$this->config_dir]);
 
         $this->active_build = $this->resolveActiveBuild(
             $this->baseapp_dir,
