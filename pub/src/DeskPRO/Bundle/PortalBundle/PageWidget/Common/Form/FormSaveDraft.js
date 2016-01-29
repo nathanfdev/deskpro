@@ -1,6 +1,18 @@
 import $ from 'jquery';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 
+function updateDrafts(obj) {
+  window.localStorage.form_drafts = JSON.stringify(obj);
+}
+
+function getDrafts() {
+  if (window.localStorage.form_drafts) {
+    return $.parseJSON(window.localStorage.form_drafts);
+  }
+
+  return {};
+}
+
 class FormFieldSaveDraft extends PageWidget {
 
   renderWidget() {
@@ -22,28 +34,20 @@ class FormFieldSaveDraft extends PageWidget {
   }
 
   restoreValue() {
-    const formDrafts = this._getFormDraftsObj();
-    if (formDrafts[this.getFormName()][this.getElName()]) {
-      this.setValue(formDrafts[this.getFormName()][this.getElName()]);
+    const formDrafts = this.parent.getFormDrafts();
+    if (formDrafts[this.getName()]) {
+      this.setValue(formDrafts[this.getName()]);
     }
   }
 
   updateDraft() {
-    const formDrafts = this._getFormDraftsObj();
-    formDrafts[this.getFormName()][this.getElName()] = this.getValue();
-    this._updateFormDraftsObj(formDrafts);
+    const formDrafts = this.parent.getFormDrafts();
+    formDrafts[this.getName()] = this.getValue();
+
+    this.parent.updateFormDrafts(formDrafts);
   }
 
-  getFormName() {
-    if (this.formName) {
-      return this.formName;
-    }
-
-    this.formName = this.$element.closest('form').data('save-draft');
-    return this.formName;
-  }
-
-  getElName() {
+  getName() {
     return this.$element.attr('name');
   }
 
@@ -70,49 +74,40 @@ class FormFieldSaveDraft extends PageWidget {
       $el.val(val).trigger('change');
     }
   }
-
-  _updateFormDraftsObj(obj) {
-    window.localStorage.form_drafts = JSON.stringify(obj);
-  }
-
-  _getFormDraftsObj() {
-    let o;
-
-    if (window.localStorage.form_drafts) {
-      try {
-        o = $.parseJSON(window.localStorage.form_drafts);
-      } catch (e) {
-        o = {};
-      }
-    } else {
-      o = {};
-    }
-
-    const formName = this.getFormName();
-    if (!o[formName]) {
-      o[formName] = {};
-    }
-
-    return o;
-  }
 }
 
 export class FormSaveDraft extends PageWidget {
 
   init() {
-    this.addWidgetDef(FormFieldSaveDraft, (widgetClass, $context, parent) => {
-      const $matches = $context.find('input[type="text"], input[type="email"], input[type="checkbox"], input[type="radio"], textarea, select');
-      //todo possibly filter?
+    this.addWidgetDef(FormFieldSaveDraft, 'input[type="text"], input[type="email"], input[type="checkbox"], input[type="radio"], textarea, select');
+  }
 
-      return $matches;
-    });
+  getFormName() {
+    if (!this.formName) {
+      this.formName = this.$element.data('save-draft');
+    }
+
+    return this.formName;
+  }
+
+  getFormDrafts() {
+    return getDrafts()[this.getFormName()] || {};
+  }
+
+  updateFormDrafts(newDrafts) {
+    const drafts = getDrafts();
+    drafts[this.getFormName()] = newDrafts;
+
+    updateDrafts(drafts);
   }
 
   renderWidget() {
-    this.$element.on('submit', (ev) => {
-      // clear the draft on submit
+    const clearDraft = () => {
       delete window.localStorage.form_drafts;
-    });
+    };
+
+    this.$element.on('submit', clearDraft);
+    this.$element.on('reset', clearDraft);
 
     const $formSubmit = this.$element.find('input[type="submit"]:visible, button[type="submit"]:visible');
     $('<button type="reset">Reset</button>').insertAfter($formSubmit);
