@@ -27,6 +27,13 @@ function getDrafts() {
 
 export class DpxFormDraft extends PageWidget {
 
+  onClearDraft = () => {
+    const drafts = getDrafts();
+    drafts[this.getFormName()] = {};
+
+    updateDrafts(drafts);
+  };
+
   init() {
     this.addWidgetDef(DpxFormTextDraft, 'input[type="text"], input[type="email"], textarea');
     this.addWidgetDef(DpxFormCheckboxDraft, 'input[type="checkbox"], input[type="radio"]');
@@ -53,12 +60,8 @@ export class DpxFormDraft extends PageWidget {
   }
 
   renderWidget() {
-    const clearDraft = () => {
-      delete window.localStorage.form_drafts;
-    };
-
-    this.$element.on('submit', clearDraft);
-    this.$element.on('reset', clearDraft);
+    this.$element.on('submit', this.onClearDraft);
+    this.$element.on('reset', this.onClearDraft);
 
     const $formSubmit = this.$element.find('input[type="submit"]:visible, button[type="submit"]:visible');
     $('<button type="reset">Reset</button>').insertAfter($formSubmit);
