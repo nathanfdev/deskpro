@@ -61,7 +61,7 @@ class AgentChatMarkMessageType extends AbstractType
                     'entry_type'    => 'integer',
                     'entry_options' => [
                         'constraints' => [
-                            new Assert\GreaterThan(['value' => 110]),
+                            new Assert\GreaterThan(['value' => 0]),
                         ],
                     ],
                     'allow_add' => true,
