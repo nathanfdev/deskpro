@@ -9,11 +9,20 @@ function updateDrafts(obj) {
 }
 
 function getDrafts() {
+  let object;
+
   if (window.localStorage.form_drafts) {
-    return $.parseJSON(window.localStorage.form_drafts);
+    try {
+      object = $.parseJSON(window.localStorage.form_drafts);
+    } catch (e) {
+      object = {};
+    }
+  }
+  if (typeof object !== 'object') {
+    object = {};
   }
 
-  return {};
+  return object;
 }
 
 export class DpxFormDraft extends PageWidget {
