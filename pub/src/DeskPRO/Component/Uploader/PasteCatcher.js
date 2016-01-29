@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
 import { getImageDataUrl, dataUrlToBlob } from 'DeskPRO/Component/Util/Blob';
 import $ from 'jquery';
 import { extension } from 'mime-types';
@@ -23,24 +22,17 @@ export class PasteCatcher extends React.Component {
   }
 
   onPaste = event => {
-    const originalEvent = event.originalEvent;
-
-    if (originalEvent.clipboardData) {
-      const items = originalEvent.clipboardData.items;
-      if (items) {
-        this.getBlobsFromItems(items);
-      }
-    } else {
-      const $pasteCatcher = $(this.getPasteCatcher());
-      $pasteCatcher.children().remove();
-      $pasteCatcher.focus();
-
-      setTimeout(() => this.getBlobFromPasteChecker(), 1);
+    const clipboardData = event.originalEvent.clipboardData;
+    if (!clipboardData) {
+      return;
     }
-  };
 
-  getBlobFromPasteChecker = () => {
-    this.getBlobsFromNode(this.getPasteCatcher());
+    const items = clipboardData.items;
+    if (items) {
+      this.getBlobsFromItems(items);
+    } else {
+      this.getBlobsFromHtml(clipboardData.getData('text/html'));
+    }
   };
 
   getBlobsFromItems = items => {
@@ -62,42 +54,25 @@ export class PasteCatcher extends React.Component {
     }
   };
 
-  getBlobsFromNode = node => {
+  getBlobsFromHtml = html => {
     const { onPasteImage } = this.props;
+    const regex = /<img.*?src=['"](.*?)['"].*?>/;
+    const callback = dataUrl => {
+      const blob = dataUrlToBlob(dataUrl);
+      onPasteImage(PasteCatcher.createFile(blob, 'image/png'), dataUrl, 'image/png');
+    };
 
-    $('img', node).each((i, child) => {
-      const imgSrc = child.src;
-      getImageDataUrl(imgSrc, dataUrl => {
-        const blob = dataUrlToBlob(dataUrl);
-        const urlObj = window.URL || window.webkitURL;
-        const imgUrl = urlObj.createObjectURL(blob);
-
-        onPasteImage(PasteCatcher.createFile(blob, 'image/png'), imgUrl, 'image/png');
-      });
-    });
+    const match = regex.exec(html);
+    if (match) {
+      getImageDataUrl(match[1], callback);
+    }
   };
-
-  getPasteCatcher() {
-    return ReactDOM.findDOMNode(this.refs.pasteCatcher);
-  }
 
   static createFile(blob, contentType) {
     return new File([blob], `clipboard_${moment().format()}.${extension(contentType)}`);
   }
 
   render() {
-    return (
-      <div className="paste-catcher"
-           ref="pasteCatcher"
-           contentEditable="true"
-           style={{
-             position: 'absolute',
-             left: -999,
-             width: 0,
-             height: 0,
-             overflow: 'hidden',
-             outline: 0
-           }} />
-    );
+    return null;
   }
 }

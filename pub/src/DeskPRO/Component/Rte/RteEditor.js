@@ -84,10 +84,7 @@ export class RteEditor extends React.Component {
       if (clipboardData.items) {
         pasteCatcher.getBlobsFromItems(clipboardData.items);
       } else if (pastedHtml) {
-        const el = document.createElement('div');
-        el.innerHTML = pastedHtml;
-
-        pasteCatcher.getBlobsFromNode(el);
+        pasteCatcher.getBlobsFromHtml(pastedHtml);
       }
     }
   };
