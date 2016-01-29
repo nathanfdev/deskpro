@@ -26,24 +26,34 @@ export class PortalRte extends React.Component {
 
   onUploadStarted = (event, data) => {
     const editor = this.refs.input;
-
     editor.focus();
-    data.files.forEach(file => {
-      const urlObj = window.URL || window.webkitURL;
-      const imgUrl = urlObj.createObjectURL(file);
 
-      file.id = ++this.fileCounter;
-      editor.pasteHtml(`<img src="${imgUrl}" data-paste-id="${file.id}">`);
-    });
+    const file = data.files[0];
+    if (file.type.indexOf('image') === -1) {
+      return;
+    }
+
+    const urlObj = window.URL || window.webkitURL;
+    const imgUrl = urlObj.createObjectURL(file);
+
+    file.id = ++this.fileCounter;
+    editor.pasteHtml(`<img src="${imgUrl}" data-paste-id="${file.id}">`);
   };
 
   onUploadSuccess = (event, response) => {
+    const file = response.files[0];
     const pasteId = response.files[0].id;
     const $image = $('img[data-paste-id=' + pasteId + ']', this.getNode());
+    const $editor = $(ReactDOM.findDOMNode(this.refs.input));
+
+    if (file.type.indexOf('image') === -1) {
+      return;
+    }
 
     const blob = response.result && response.result.blob;
     if (blob) {
       $image.removeAttr('data-paste-id').attr('src', blob.url);
+      $('<input type="hidden" name="blob_inline_ids[]" />').val(blob.authcode).insertAfter($editor);
     } else {
       $image.remove();
     }
