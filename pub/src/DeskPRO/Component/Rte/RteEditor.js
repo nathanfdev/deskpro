@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import MediumEditor from 'medium-editor';
 import $ from 'jquery';
+import { getBlobsFromItems, getBlobsFromHtml } from 'DeskPRO/Component/Uploader/PasteCatcher';
 
 export class RteEditor extends React.Component {
 
@@ -12,7 +13,7 @@ export class RteEditor extends React.Component {
     options: PropTypes.object,
     onChange: PropTypes.func,
     onSubmit: PropTypes.func,
-    getPasteCatcher: PropTypes.func
+    onPasteImage: PropTypes.func
   };
 
   componentDidMount() {
@@ -77,14 +78,12 @@ export class RteEditor extends React.Component {
 
     this.getPasteExtension().cleanPaste(pastedText);
 
-    const { getPasteCatcher } = this.props;
-    if (getPasteCatcher) {
-      const pasteCatcher = getPasteCatcher();
-
+    const { onPasteImage } = this.props;
+    if (onPasteImage) {
       if (clipboardData.items) {
-        pasteCatcher.getBlobsFromItems(clipboardData.items);
+        getBlobsFromItems(clipboardData.items, onPasteImage);
       } else if (pastedHtml) {
-        pasteCatcher.getBlobsFromHtml(pastedHtml);
+        getBlobsFromHtml(pastedHtml, onPasteImage);
       }
     }
   };

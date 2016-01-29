@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import { RteEditor } from 'DeskPRO/Component/Rte/RteEditor';
 import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
 import { DragOverlayListener } from 'DeskPRO/Component/Uploader/DragOverlayListener';
-import { PasteCatcher } from 'DeskPRO/Component/Uploader/PasteCatcher';
 import { portalUrlGenerator } from '../../Http/PortalUrlGenerator';
 import $ from 'jquery';
 
@@ -84,7 +83,7 @@ export class PortalRte extends React.Component {
           className={className}
           value={$textTextarea.val()}
           onChange={this.onChangeMessage}
-          getPasteCatcher={() => this.refs.pasteCatcher}
+          onPasteImage={this.onPasteImage}
           options={{
             contentWindow: contentWindow,
             ownerDocument: ownerDocument,
@@ -116,7 +115,6 @@ export class PortalRte extends React.Component {
               <h1>Drag your file in here.</h1>
             </div>
           </DragOverlayListener>
-          <PasteCatcher ref="pasteCatcher" context={window} onPasteImage={this.onPasteImage} />
         </DropZone>
       </div>
     );
