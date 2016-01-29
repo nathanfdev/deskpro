@@ -1,8 +1,5 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
-import { DragOverlayListener } from 'DeskPRO/Component/Uploader/DragOverlayListener';
-import { DropZoneOverlay } from './DropZoneOverlay';
 import { uploadingFilesRepeatSelector } from '../../../../../../Selectors/chat';
 import {
   addAttachment,
@@ -38,31 +35,16 @@ export class DropZoneContainer extends React.Component {
     data.files.forEach(file => this.props.dispatch(markUploadingFileFailed(file)));
   };
 
-  onPasteImage = file => {
-    this.refs.dropZone.pushFileToQueue(file);
-  };
-
   render() {
     const { children } = this.props;
     const childProps = children.props;
 
-    return (
-      <DropZone ref="dropZone"
-                uploadUrl={window.DP_HELPDESK_URL + 'portal/api/blobs/temp'}
-                context={[window.widgetFrame.document, parent.window.document]}
-                onSend={this.onUploadStarted}
-                onSuccess={this.onUploadSuccess}
-                onFail={this.onUploadFail} {...this.props}>
+    return React.cloneElement(children, {
+      ...childProps,
 
-        <DragOverlayListener context={[parent.document, window.widgetFrame.document]}>
-          <DropZoneOverlay />
-        </DragOverlayListener>
-
-        {React.cloneElement(children, {
-          ...childProps,
-          onPasteImage: this.onPasteImage
-        })}
-      </DropZone>
-    );
+      onSend: this.onUploadStarted,
+      onSuccess: this.onUploadSuccess,
+      onFail: this.onUploadFail
+    });
   }
 }

@@ -10,6 +10,9 @@ import { AttachedFiles } from './Upload/Attachment/File/AttachedFiles';
 import { AttachedImages } from './Upload/Attachment/Image/AttachedImages';
 import { DropZoneContainer } from './Upload/DropZone/DropZoneContainer';
 import { PasteCatcher } from 'DeskPRO/Component/Uploader/PasteCatcher';
+import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
+import { DragOverlayListener } from 'DeskPRO/Component/Uploader/DragOverlayListener';
+import { DropZoneOverlay } from './Upload/DropZone/DropZoneOverlay';
 import { ReopenOverlay } from './ReopenOverlay';
 import ScrollArea from 'react-scrollbar-iframe';
 
@@ -49,6 +52,10 @@ export class ReplyForm extends React.Component {
     }
   };
 
+  onPasteImage = file => {
+    this.refs.dropZone.pushFileToQueue(file);
+  };
+
   onScreenShare = event => {
     event.preventDefault();
     console.log('onScreenShare');
@@ -73,7 +80,7 @@ export class ReplyForm extends React.Component {
           onChange={this.onChangeMessage}
           onSubmit={this.onSubmit}
           className="textarea"
-          getPasteCatcher={() => this.refs.pasteCatcher}
+          onPasteImage={this.onPasteImage}
           options={{
             contentWindow: window.widgetFrame.window,
             ownerDocument: window.widgetFrame.document,
@@ -159,9 +166,18 @@ export class ReplyForm extends React.Component {
           </EndChatContainer>
         </div>
 
-        <DropZoneContainer getExternalInput={() => this.refs.fileUpload}>
-          <PasteCatcher ref="pasteCatcher" context={window.widgetFrame.document} />
+        <DropZoneContainer>
+          <DropZone ref="dropZone"
+                    getExternalInput={() => this.refs.fileUpload}
+                    uploadUrl={window.DP_HELPDESK_URL + 'portal/api/blobs/temp'}>
+
+            <DragOverlayListener context={[parent.document, window.widgetFrame.document]}>
+              <DropZoneOverlay />
+            </DragOverlayListener>
+          </DropZone>
         </DropZoneContainer>
+
+        <PasteCatcher context={window.widgetFrame.document} onPasteImage={this.onPasteImage} />
       </div>
     );
   }

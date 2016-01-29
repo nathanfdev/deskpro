@@ -9,7 +9,6 @@ export class DropZone extends React.Component {
     getExternalInput: PropTypes.func.isRequired,
     uploadUrl: PropTypes.string.isRequired,
     uploadParams: PropTypes.object,
-    context: PropTypes.any,
     repeatFiles: PropTypes.object,
     onSend: PropTypes.func,
     onSuccess: PropTypes.func,
