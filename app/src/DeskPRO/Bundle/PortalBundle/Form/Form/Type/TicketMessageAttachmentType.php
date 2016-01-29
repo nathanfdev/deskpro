@@ -44,6 +44,9 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * Class TicketMessageAttachmentType.
+ */
 class TicketMessageAttachmentType extends AbstractType
 {
     /**
@@ -61,6 +64,13 @@ class TicketMessageAttachmentType extends AbstractType
      */
     private $attachment_accepter;
 
+    /**
+     * Constructor.
+     *
+     * @param DeskproBlobStorage $blob_storage
+     * @param BlobRepo           $blob_repo
+     * @param AcceptAttachment   $attachment_accepter
+     */
     public function __construct(DeskproBlobStorage $blob_storage, BlobRepo $blob_repo, AcceptAttachment $attachment_accepter)
     {
         $this->blob_storage        = $blob_storage;
@@ -68,6 +78,9 @@ class TicketMessageAttachmentType extends AbstractType
         $this->attachment_accepter = $attachment_accepter;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
@@ -78,15 +91,18 @@ class TicketMessageAttachmentType extends AbstractType
             if (!$attachment->getBlob()) {
                 $this->addUpload($form);
             } else {
-                $form->add('blob_auth', 'hidden', array('property_path' => 'blob.authcode'));
-                $form->add('delete', 'checkbox', array('mapped' => false, 'required' => false));
+                $form->add('blob_auth', 'hidden', ['property_path' => 'blob.authcode']);
+                $form->add('delete', 'checkbox', ['mapped' => false, 'required' => false]);
             }
         });
 
-        $builder->addEventListener(FormEvents::SUBMIT, array($this, 'postSubmit'), 600);
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, array($this, 'preSubmit'));
+        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'postSubmit'], 600);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'preSubmit']);
     }
 
+    /**
+     * @param FormInterface $form
+     */
     public function addUpload(FormInterface $form)
     {
         $form->add(
@@ -112,6 +128,9 @@ class TicketMessageAttachmentType extends AbstractType
         );
     }
 
+    /**
+     * @param FormEvent $event
+     */
     public function preSubmit(FormEvent $event)
     {
         $form          = $event->getForm();
@@ -127,9 +146,12 @@ class TicketMessageAttachmentType extends AbstractType
             if (array_key_exists('delete', $submittedData)) {
                 if ($submittedData['delete'] != 0) {
                     $attachment = $form->getData();
-                    if ($blob = $attachment->getBlob()) {
+                    $blob       = $attachment->getBlob();
+
+                    if ($blob) {
                         $this->blob_storage->deleteBlobRecord($blob);
                     }
+
                     $form->setData(null);
                     $form->remove('blob_auth');
                     $form->remove('delete');
@@ -140,12 +162,15 @@ class TicketMessageAttachmentType extends AbstractType
                     $form->remove('upload');
                 }
                 if (!$form->has('blob_auth')) {
-                    $form->add('blob_auth', 'hidden', array('property_path' => 'blob.authcode'));
+                    $form->add('blob_auth', 'hidden', ['property_path' => 'blob.authcode']);
                 }
             }
         }
     }
 
+    /**
+     * @param FormEvent $event
+     */
     public function postSubmit(FormEvent $event)
     {
         /** @var \Application\DeskPRO\Entity\TicketAttachment $attachment */
@@ -183,14 +208,14 @@ class TicketMessageAttachmentType extends AbstractType
                 $ticket_message->addAttachment($attachment);
 
                 $form->remove('upload');
-                $form->add('delete', 'checkbox', array('mapped' => false, 'required' => false));
-                $form->add('blob_auth', 'hidden', array('property_path' => 'blob.authcode'));
+                $form->add('delete', 'checkbox', ['mapped' => false, 'required' => false]);
+                $form->add('blob_auth', 'hidden', ['property_path' => 'blob.authcode']);
             } else {
                 $ticket_message->attachments->removeElement($attachment);
             }
         } else {
             if (!$form->has('blob_auth')) {
-                $form->add('blob_auth', 'hidden', array('property_path' => 'blob.authcode'));
+                $form->add('blob_auth', 'hidden', ['property_path' => 'blob.authcode']);
                 $ticket_message->addAttachment($attachment);
             }
         }
@@ -202,31 +227,31 @@ class TicketMessageAttachmentType extends AbstractType
         $form->setData($attachment);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'ticket_message_attachment';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(
-            array(
-                'data_class' => 'Application\\DeskPRO\\Entity\\TicketAttachment',
-            )
-        );
+        $resolver->setDefaults([
+            'data_class' => 'Application\\DeskPRO\\Entity\\TicketAttachment',
+        ]);
 
-        $resolver->setRequired(
-            array(
-                'ticket_message',
-                'person',
-            )
-        );
+        $resolver->setRequired([
+            'ticket_message',
+            'person',
+        ]);
 
-        $resolver->setAllowedTypes(
-            array(
-                'ticket_message' => 'Application\\DeskPRO\\Entity\\TicketMessage',
-                'person'         => 'Application\\DeskPRO\\Entity\\Person',
-            )
-        );
+        $resolver->setAllowedTypes([
+            'ticket_message' => 'Application\\DeskPRO\\Entity\\TicketMessage',
+            'person'         => 'Application\\DeskPRO\\Entity\\Person',
+        ]);
     }
 }
