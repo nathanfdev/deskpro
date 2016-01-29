@@ -52,25 +52,36 @@ class FeedbackLinkGenerator implements LinkGeneratorInterface
      */
     private $url_generator;
 
+    /**
+     * Constructor.
+     *
+     * @param UrlGeneratorInterface $url_generator
+     */
     public function __construct(UrlGeneratorInterface $url_generator)
     {
         $this->url_generator = $url_generator;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function supports($object, $type, $context)
     {
         return $object instanceof FeedbackCategory || $object instanceof FeedbackStatusCategory;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function generate($object, $type, $context, $extra_params, $reference_type)
     {
         $filter = new FeedbackFilter();
 
         if ($object instanceof FeedbackCategory) {
-            $filter->setTypes(array($object->getId()));
+            $filter->setTypes([$object->getId()]);
         } elseif ($object instanceof FeedbackStatusCategory) {
             $filter->setStatus($object->getStatusType());
-            $filter->setStatusCategories(array($object->getId()));
+            $filter->setStatusCategories([$object->getId()]);
         }
 
         $uri_helper = new FeedbackFilterUriHelper();
@@ -78,9 +89,9 @@ class FeedbackLinkGenerator implements LinkGeneratorInterface
 
         return $this->url_generator->generate(
             'portal_feedback_browse',
-            array_merge(array(
+            array_merge([
                 'filter_uri' => $filter_uri,
-            ), $extra_params),
+            ], $extra_params),
             $reference_type
         );
     }

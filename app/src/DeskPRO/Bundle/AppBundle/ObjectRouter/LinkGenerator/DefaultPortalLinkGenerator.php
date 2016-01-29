@@ -37,6 +37,9 @@ use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+/**
+ * Class DefaultPortalLinkGenerator.
+ */
 class DefaultPortalLinkGenerator implements LinkGeneratorInterface
 {
     /**
@@ -54,10 +57,17 @@ class DefaultPortalLinkGenerator implements LinkGeneratorInterface
      */
     private $property_accessor;
 
+    /**
+     * Constructor.
+     *
+     * @param LinkConfigRepoInterface $config_repo
+     * @param UrlGeneratorInterface   $url_generator
+     * @param PropertyAccessor        $property_accessor
+     */
     public function __construct(
         LinkConfigRepoInterface $config_repo,
-        UrlGeneratorInterface $url_generator,
-        PropertyAccessor $property_accessor
+        UrlGeneratorInterface   $url_generator,
+        PropertyAccessor        $property_accessor
     ) {
         $this->config_repo       = $config_repo;
         $this->url_generator     = $url_generator;
@@ -67,11 +77,7 @@ class DefaultPortalLinkGenerator implements LinkGeneratorInterface
     /**
      * Supports PORTAL context if the config is NOT for a CUSTOM link.
      *
-     * @param $object
-     * @param $type
-     * @param $context
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function supports($object, $type, $context)
     {
@@ -84,13 +90,16 @@ class DefaultPortalLinkGenerator implements LinkGeneratorInterface
         return $config !== ObjectRouter::CONFIG_CUSTOM;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function generate($object, $type, $context, $extra_params, $reference_type)
     {
         $config = $this->config_repo->getRouteInfo($object, ObjectRouter::CONTEXT_PORTAL, $type);
 
         $route_name = $config['route'];
 
-        $route_params = array();
+        $route_params = [];
         foreach ($config['route_param_map'] as $param_name => $property_path) {
             $route_params[$param_name] = $this->property_accessor->getValue(
                 $object, $property_path
