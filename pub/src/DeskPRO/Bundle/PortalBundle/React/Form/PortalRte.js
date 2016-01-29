@@ -4,6 +4,7 @@ import { RteEditor } from 'DeskPRO/Component/Rte/RteEditor';
 import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
 import { DragOverlayListener } from 'DeskPRO/Component/Uploader/DragOverlayListener';
 import { portalUrlGenerator } from '../../Http/PortalUrlGenerator';
+import { pageWidgetEmitter } from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
 import $ from 'jquery';
 
 export class PortalRte extends React.Component {
@@ -25,11 +26,13 @@ export class PortalRte extends React.Component {
   };
 
   onUploadStarted = (event, data) => {
+    const { $textTextarea } = this.props;
     const editor = this.refs.input;
     editor.focus();
 
     const file = data.files[0];
     if (file.type.indexOf('image') === -1) {
+      pageWidgetEmitter.emit('rteFileUpload', file, $textTextarea);
       return;
     }
 

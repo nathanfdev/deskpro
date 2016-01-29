@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { portalUrlGenerator } from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
 import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
 import { AttachedList } from './AttachedList';
+import { pageWidgetEmitter } from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
 
 export class PortalAttach extends React.Component {
 
@@ -17,6 +18,14 @@ export class PortalAttach extends React.Component {
       files: []
     };
   }
+
+  componentDidMount() {
+    pageWidgetEmitter.on('rteFileUpload', this.onRteFileUpload);
+  }
+
+  onRteFileUpload = (file) => {
+    this.refs.dropZone.pushFileToQueue(file);
+  };
 
   onUploadStarted = (event, data) => {
     const files = this.state.files.slice();
@@ -77,13 +86,15 @@ export class PortalAttach extends React.Component {
 
     return (
        <div className="new-ticket-attachements">
-         <DropZone getExternalInput={() => this.refs.fileUpload}
-                   uploadUrl={portalUrlGenerator.path('/') + 'dpblob'}
-                   uploadParams={params}
-                   context={context}
-                   onSend={this.onUploadStarted}
-                   onSuccess={this.onUploadSuccess}
-                   onFail={this.onUploadFail}>
+         <DropZone
+           ref="dropZone"
+           getExternalInput={() => this.refs.fileUpload}
+           uploadUrl={portalUrlGenerator.path('/') + 'dpblob'}
+           uploadParams={params}
+           context={context}
+           onSend={this.onUploadStarted}
+           onSuccess={this.onUploadSuccess}
+           onFail={this.onUploadFail}>
 
            <span className="attach-file">
               <i className="fa fa-upload" />
