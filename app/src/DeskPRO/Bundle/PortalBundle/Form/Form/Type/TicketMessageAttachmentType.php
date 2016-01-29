@@ -91,8 +91,11 @@ class TicketMessageAttachmentType extends AbstractType
             if (!$attachment->getBlob()) {
                 $this->addUpload($form);
             } else {
-                $form->add('blob_auth', 'hidden', ['property_path' => 'blob.authcode']);
-                $form->add('delete', 'checkbox', ['mapped' => false, 'required' => false]);
+                $form
+                    ->add('blob_auth', 'hidden', ['property_path' => 'blob.authcode'])
+                    ->add('is_inline', 'checkbox', ['required' => false])
+                    ->add('delete', 'checkbox', ['mapped' => false, 'required' => false])
+                ;
             }
         });
 
@@ -154,6 +157,7 @@ class TicketMessageAttachmentType extends AbstractType
 
                     $form->setData(null);
                     $form->remove('blob_auth');
+                    $form->remove('is_inline');
                     $form->remove('delete');
                     $this->addUpload($form);
                 }
@@ -162,7 +166,10 @@ class TicketMessageAttachmentType extends AbstractType
                     $form->remove('upload');
                 }
                 if (!$form->has('blob_auth')) {
-                    $form->add('blob_auth', 'hidden', ['property_path' => 'blob.authcode']);
+                    $form
+                        ->add('blob_auth', 'hidden', ['property_path' => 'blob.authcode'])
+                        ->add('is_inline', 'checkbox', ['required' => false])
+                    ;
                 }
             }
         }
@@ -210,12 +217,16 @@ class TicketMessageAttachmentType extends AbstractType
                 $form->remove('upload');
                 $form->add('delete', 'checkbox', ['mapped' => false, 'required' => false]);
                 $form->add('blob_auth', 'hidden', ['property_path' => 'blob.authcode']);
+                $form->add('is_inline', 'checkbox', ['required' => false]);
             } else {
                 $ticket_message->attachments->removeElement($attachment);
             }
         } else {
             if (!$form->has('blob_auth')) {
-                $form->add('blob_auth', 'hidden', ['property_path' => 'blob.authcode']);
+                $form
+                    ->add('blob_auth', 'hidden', ['property_path' => 'blob.authcode'])
+                    ->add('is_inline', 'checkbox', ['required' => false])
+                ;
                 $ticket_message->addAttachment($attachment);
             }
         }
@@ -240,18 +251,18 @@ class TicketMessageAttachmentType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => 'Application\\DeskPRO\\Entity\\TicketAttachment',
-        ]);
-
-        $resolver->setRequired([
-            'ticket_message',
-            'person',
-        ]);
-
-        $resolver->setAllowedTypes([
-            'ticket_message' => 'Application\\DeskPRO\\Entity\\TicketMessage',
-            'person'         => 'Application\\DeskPRO\\Entity\\Person',
-        ]);
+        $resolver
+            ->setDefaults([
+                'data_class' => 'Application\\DeskPRO\\Entity\\TicketAttachment',
+            ])
+            ->setRequired([
+                'ticket_message',
+                'person',
+            ])
+            ->setAllowedTypes([
+                'ticket_message' => 'Application\\DeskPRO\\Entity\\TicketMessage',
+                'person'         => 'Application\\DeskPRO\\Entity\\Person',
+            ])
+        ;
     }
 }
