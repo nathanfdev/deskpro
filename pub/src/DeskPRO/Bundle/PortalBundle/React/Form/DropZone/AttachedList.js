@@ -6,11 +6,12 @@ export class AttachedList extends React.Component {
 
   static propTypes = {
     onDelete: PropTypes.func,
+    inputName: PropTypes.string,
     files: PropTypes.array.isRequired
   };
 
   render() {
-    const { files, onDelete } = this.props;
+    const { files, inputName, onDelete } = this.props;
     if (!files.length) {
       return null;
     }
@@ -18,7 +19,7 @@ export class AttachedList extends React.Component {
     return (
       <ul>
         {files.map((file, key) => file.info
-            ? <AttachedFile file={file} key={key} onDelete={onDelete} />
+            ? <AttachedFile file={file} key={key} inputName={inputName} onDelete={onDelete} />
             : <UploadingFile file={file} key={key} />
         )}
       </ul>

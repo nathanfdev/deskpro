@@ -5,6 +5,7 @@ import { openFullImage } from 'DeskPRO/Component/Util/FullImage';
 export class AttachedFile extends React.Component {
 
   static propTypes = {
+    inputName: PropTypes.string,
     file: PropTypes.object.isRequired,
     onDelete: PropTypes.func.isRequired
   };
@@ -30,9 +31,9 @@ export class AttachedFile extends React.Component {
   };
 
   render() {
-    const { file } = this.props;
+    const { file, inputName } = this.props;
     const blob = file.info;
-    const formName = `ticket[attachments][${blob.id}][blob_auth]`;
+    const formName = `${inputName}[${blob.id}][blob_auth]`;
 
     return (
       <li>

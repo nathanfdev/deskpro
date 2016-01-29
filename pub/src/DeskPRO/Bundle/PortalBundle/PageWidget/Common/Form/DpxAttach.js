@@ -10,9 +10,8 @@ export class DpxAttach extends PageWidget {
     this.$element.hide();
     this.$rElement = $('<div class="dp-react-widget as-dpui"></div>').insertAfter(this.$element);
 
-    const component = React.createElement(PortalAttach, {
-      widgetOptions: this.options
-    });
+    const inputName = this.$element.find('input[type=file]').attr('name').replace('[0][upload]', '');
+    const component = React.createElement(PortalAttach, { widgetOptions: this.options, inputName });
 
     ReactDOM.render(component, this.$rElement.get(0));
   }

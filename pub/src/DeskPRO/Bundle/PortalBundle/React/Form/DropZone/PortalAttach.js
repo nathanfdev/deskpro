@@ -6,7 +6,8 @@ import { AttachedList } from './AttachedList';
 export class PortalAttach extends React.Component {
 
   static propTypes = {
-    widgetOptions: PropTypes.object
+    widgetOptions: PropTypes.object,
+    inputName: PropTypes.string
   };
 
   constructor(props) {
@@ -66,7 +67,7 @@ export class PortalAttach extends React.Component {
   };
 
   render() {
-    const { widgetOptions } = this.props;
+    const { widgetOptions, inputName } = this.props;
     const context = widgetOptions.context || document;
 
     const params = {};
@@ -92,7 +93,7 @@ export class PortalAttach extends React.Component {
           </span>
          </DropZone>
 
-         <AttachedList files={this.state.files} onDelete={this.onDelete} />
+         <AttachedList files={this.state.files} inputName={inputName} onDelete={this.onDelete} />
          {this.state.lastError}
       </div>
     );
