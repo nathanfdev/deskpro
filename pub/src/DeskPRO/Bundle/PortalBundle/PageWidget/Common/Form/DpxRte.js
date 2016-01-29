@@ -18,6 +18,7 @@ export class DpxRte extends PageWidget {
 
   renderWidget() {
     const $textTextarea = this.$element.find('textarea[data-rte-field="text"]');
+    const $htmlTextarea = this.$element.find('textarea[data-rte-field="html"]');
     const $format = this.$element.find('input[data-rte-field="format"]');
     const $rElement = $('<div class="dp-medium-rte-wrapper as-dpui"></div>').appendTo(this.$element);
 
@@ -26,7 +27,7 @@ export class DpxRte extends PageWidget {
 
     const component = React.createElement(PortalRte, {
       className: 'dp-medium-rte medium-editor-placeholder',
-      $textTextarea,
+      $textarea: $htmlTextarea,
       widgetOptions: this.options,
       $toolbarContainer: $rElement
     });

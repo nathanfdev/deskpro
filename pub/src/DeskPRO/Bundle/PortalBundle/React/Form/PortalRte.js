@@ -13,7 +13,7 @@ export class PortalRte extends React.Component {
     className: PropTypes.string,
     widgetOptions: PropTypes.object,
     $toolbarContainer: PropTypes.object,
-    $textTextarea: PropTypes.object
+    $textarea: PropTypes.object
   };
 
   constructor(props) {
@@ -22,17 +22,17 @@ export class PortalRte extends React.Component {
   }
 
   onChangeMessage = value => {
-    this.props.$textTextarea.val(value);
+    this.props.$textarea.val(value);
   };
 
   onUploadStarted = (event, data) => {
-    const { $textTextarea } = this.props;
+    const { $textarea } = this.props;
     const editor = this.refs.input;
     editor.focus();
 
     const file = data.files[0];
     if (file.type.indexOf('image') === -1) {
-      pageWidgetEmitter.emit('rteFileUpload', file, $textTextarea);
+      pageWidgetEmitter.emit('rteFileUpload', file);
       return;
     }
 
@@ -78,10 +78,10 @@ export class PortalRte extends React.Component {
   }
 
   render() {
-    const { widgetOptions, $textTextarea, $toolbarContainer, className } = this.props;
+    const { widgetOptions, $textarea, $toolbarContainer, className } = this.props;
     const context = widgetOptions.context || document;
 
-    const ownerDocument = $textTextarea.context.ownerDocument;
+    const ownerDocument = $textarea.context.ownerDocument;
     const contentWindow = ownerDocument.defaultView;
 
     const params = {};
@@ -94,7 +94,7 @@ export class PortalRte extends React.Component {
         <RteEditor
           ref="input"
           className={className}
-          value={$textTextarea.val()}
+          value={$textarea.val()}
           onChange={this.onChangeMessage}
           onPasteImage={this.onPasteImage}
           options={{
