@@ -76,7 +76,7 @@ class FormFieldSaveDraft extends PageWidget {
   }
 }
 
-export class FormSaveDraft extends PageWidget {
+export class DpxFormDraft extends PageWidget {
 
   init() {
     this.addWidgetDef(FormFieldSaveDraft, 'input[type="text"], input[type="email"], input[type="checkbox"], input[type="radio"], textarea, select');
