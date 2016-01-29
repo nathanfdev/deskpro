@@ -317,8 +317,8 @@ class ActionsCollection
                     $ticket_tracker->setApplyingSla(null, null);
                 }
             } catch (\Exception $e) {
-                $einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
-                \DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
+                $einfo = \DpSys\LowError\SystemErrorHandler::getExceptionInfo($e);
+                \DpSys\LowError\SystemErrorHandler::logErrorInfo($einfo);
 
                 if ($logger) {
                     $name = \Orb\Util\Util::getBaseClassname($action);

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\DBAL\SchemaHelper;
@@ -244,14 +243,17 @@ abstract class AbstractBuild
             }
         }
 
-        if ($do_smart && dp_get_config('online_schema_upgrade')) {
+        $env                = $this->container->get('dp.env');
+        $use_online_upgrade = $env->getConfig('upgrader.online_schema_upgrade');
+
+        if ($do_smart && $use_online_upgrade) {
             $logger = $this->logger;
             $logger->info('Using online_schema_update');
 
-            if (dp_get_config('online_schema_upgrade') === true) {
+            if ($use_online_upgrade === true) {
                 $tool = 'pt-online-schema-change';
-            } elseif (is_string(dp_get_config('online_schema_upgrade')) && is_executable(dp_get_config('online_schema_upgrade'))) {
-                $tool = dp_get_config('online_schema_upgrade');
+            } elseif (is_string($use_online_upgrade) && is_executable($use_online_upgrade)) {
+                $tool = $use_online_upgrade;
             } else {
                 throw new \RuntimeException('Unknown path to pt-online-schema-change');
             }

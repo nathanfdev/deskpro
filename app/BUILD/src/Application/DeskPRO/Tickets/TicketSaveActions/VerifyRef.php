@@ -36,7 +36,7 @@ namespace Application\DeskPRO\Tickets\TicketSaveActions;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\RefGenerator\RefGeneratorInterface;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 
@@ -70,7 +70,7 @@ class VerifyRef implements TicketSaveActionInterface
             try {
                 $ticket->ref = $this->ref_generator->generateReference('DeskPRO:Ticket');
             } catch (\Exception $e) {
-                KernelErrorHandler::logException($e);
+                SystemErrorHandler::logException($e);
 
                 $ref         = DpStrings::random(4, Strings::CHARS_ALPHA_IU).'-'.DpStrings::random(4, Strings::CHARS_NUM).'-'.DpStrings::random(4, Strings::CHARS_ALPHA_IU).'-'.date('ymd');
                 $ticket->ref = $ref;

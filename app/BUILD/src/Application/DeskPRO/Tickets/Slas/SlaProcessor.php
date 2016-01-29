@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Tickets\Slas;
 
 use Application\DeskPRO\Entity\Sla;
@@ -39,8 +38,8 @@ use Application\DeskPRO\ORM\StateChange\ChangeSimple;
 use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\TicketManager;
-use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\ORM\EntityManager;
+use DpSys\LowError\SystemErrorHandler;
 
 class SlaProcessor
 {
@@ -313,7 +312,7 @@ class SlaProcessor
             $this->action_applicator->apply($actions, $ticket, $context);
         } catch (\Exception $e) {
             $context->getLogger()->error(sprintf('[SlaProcessor] Exception: [%s] %s', $e->getCode(), $e->getMessage()), array('exception' => $e));
-            KernelErrorHandler::logException($e);
+            SystemErrorHandler::logException($e);
         }
 
         $context->getLogger()->info(sprintf("[SlaProcessor] ----- FINISH SLA.$status #%s :: %.4fs -----", $sla->id, microtime(true) - $ts));

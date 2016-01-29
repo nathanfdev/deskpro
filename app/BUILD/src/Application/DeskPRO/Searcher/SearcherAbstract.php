@@ -120,8 +120,8 @@ abstract class SearcherAbstract implements PersonContextInterface
             $this->logger = new Logger();
 
             $search_name = strtolower(\Orb\Util\Util::getBaseClassname($this));
-            if (dp_get_config('debug.enable_'.$search_name.'_log')) {
-                $wr = new \Orb\Log\Writer\Stream(dp_get_log_dir().'/'.$search_name.'.log');
+            if ($this->get('dp.env')->getConfig('logs.enable_'.$search_name.'_log')) {
+                $wr = new \Orb\Log\Writer\Stream($this->get('dp.env')->getLogsDir().'/'.$search_name.'.log');
                 $this->logger->addWriter($wr);
             }
         }
@@ -1254,15 +1254,15 @@ abstract class SearcherAbstract implements PersonContextInterface
         }
 
         if ($op == self::OP_BETWEEN) {
-            return ($value >= $date1 and $value <= $date2);
+            return $value >= $date1 and $value <= $date2;
         } elseif ($op == self::OP_GTE) {
             $date = $date1 ? $date1 : $date2;
 
-            return ($value >= $date);
+            return $value >= $date;
         } else {
             $date = $date1 ? $date1 : $date2;
 
-            return ($value <= $date);
+            return $value <= $date;
         }
     }
 
@@ -1286,7 +1286,7 @@ abstract class SearcherAbstract implements PersonContextInterface
             if ($op == self::OP_IS) {
                 return $found;
             } else {
-                return (!$found);
+                return !$found;
             }
         } else {
             $choices_in = (array) $choice;
@@ -1309,7 +1309,7 @@ abstract class SearcherAbstract implements PersonContextInterface
             if ($op == self::OP_CONTAINS) {
                 return $found;
             } else {
-                return (!$found);
+                return !$found;
             }
         }
     }
@@ -1344,15 +1344,15 @@ abstract class SearcherAbstract implements PersonContextInterface
         }
 
         if ($op == self::OP_BETWEEN) {
-            return ($value >= $range1 and $value <= $range2);
+            return $value >= $range1 and $value <= $range2;
         } elseif ($op == self::OP_GTE) {
             $range1 = Util::coalesce($range1, $range2);
 
-            return ($value >= $range1);
+            return $value >= $range1;
         } else {
             $range1 = Util::coalesce($range1, $range2);
 
-            return ($value <= $range1);
+            return $value <= $range1;
         }
     }
 

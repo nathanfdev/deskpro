@@ -33,7 +33,7 @@ namespace Cloud\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\TmpData;
 use Application\LegacyApiBundle\Controller\LicenseController as BaseLicenseController;
-use DeskPRO\Kernel\License;
+use DpSys\License;
 use Orb\Util\Dates;
 
 class LicenseController extends BaseLicenseController

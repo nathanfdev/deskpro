@@ -214,7 +214,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
             }
         }
 
-        $data_dir = dp_get_data_dir();
+        $data_dir = App::$container->getParameter('kernel.dp_config_dir');
 
         if (isset($_POST['stats_opt_out']) && $_POST['stats_opt_out']) {
             setcookie('dp_install_stats_opt_out', 1, null, '/', null, false, true);
@@ -260,7 +260,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
         #------------------------------
 
         $do_data_dir_check = null;
-        $dir_data_check    = str_replace('\\', '/', dp_get_data_dir());
+        $dir_data_check    = str_replace('\\', '/', App::$container->getParameter('kernel.dp_config_dir'));
         $dir_web_check     = str_replace('\\', '/', DP_WEB_ROOT);
 
         if (strpos($dir_data_check, $dir_web_check) === 0) {
@@ -522,7 +522,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
     protected function sendInstallReport($exception = null)
     {
         if ($exception) {
-            $errinfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($exception);
+            $errinfo = \DpSys\LowError\SystemErrorHandler::getExceptionInfo($exception);
             unset($errinfo['exception']);
         } else {
             $errinfo = 0;

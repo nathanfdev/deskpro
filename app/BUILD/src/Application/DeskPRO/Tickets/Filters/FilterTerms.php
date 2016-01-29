@@ -37,7 +37,7 @@ use Application\DeskPRO\Criteria\CriteriaTermInterface;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Filters\Terms\FilterTermComposite;
 use Application\DeskPRO\Tickets\Filters\Terms\FilterTermInterface;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 
 /**
  * This is a wrapper around a FilterTermComposite that is able to serialize.
@@ -213,7 +213,7 @@ class FilterTerms implements \Serializable, FilterTermInterface
                 $this->addTermFromArray($term_info);
             } catch (\Exception $e) {
                 if (!empty($term_info['type'])) {
-                    KernelErrorHandler::logException($e, false, md5('filter_'.$term_info['type']));
+                    SystemErrorHandler::logException($e, false, md5('filter_'.$term_info['type']));
                 }
             }
         }

@@ -32,7 +32,7 @@
 namespace Application\DeskPRO\Email\EmailAccount\IncomingAccount;
 
 use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Log\Logger;
 use Orb\Log\Writer\ArrayWriter;
 
@@ -162,7 +162,7 @@ class IncomingAccountTester
         } catch (\Exception $e) {
             $this->logger->logError(sprintf('Error: %s', $e->getMessage()));
             $this->logger->logError(sprintf('(Code: %s:%s)', get_class($e), $e->getCode()));
-            $this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
+            $this->logger->logError(SystemErrorHandler::formatBacktrace($e->getTrace()));
             $this->is_success = false;
         }
     }
@@ -203,7 +203,7 @@ class IncomingAccountTester
         } catch (\Exception $e) {
             $this->logger->logError(sprintf('Error: %s', $e->getMessage()));
             $this->logger->logError(sprintf('(Code: %s:%s)', get_class($e), $e->getCode()));
-            $this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
+            $this->logger->logError(SystemErrorHandler::formatBacktrace($e->getTrace()));
             $this->is_success = false;
         }
     }
@@ -267,7 +267,7 @@ class IncomingAccountTester
             $this->logger->logError(str_repeat('-', 35));
             $this->logger->logError(sprintf('Error: %s', $e->getMessage()));
             $this->logger->logError(sprintf('(Code: %s:%s)', get_class($e), $e->getCode()));
-            $this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
+            $this->logger->logError(SystemErrorHandler::formatBacktrace($e->getTrace()));
             $this->is_success = false;
         } catch (\Exception $e) {
             switch ($e->getCode()) {
@@ -283,7 +283,7 @@ class IncomingAccountTester
             $this->logger->logError(str_repeat('-', 35));
             $this->logger->logError(sprintf('Error: %s', $e->getMessage()));
             $this->logger->logError(sprintf('(Code: %s:%s)', get_class($e), $e->getCode()));
-            $this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
+            $this->logger->logError(SystemErrorHandler::formatBacktrace($e->getTrace()));
             $this->is_success = false;
         }
     }
@@ -316,7 +316,7 @@ class IncomingAccountTester
             $this->exception = $e;
             $this->logger->logError(sprintf('Error: %s', $e->getMessage()));
             $this->logger->logError(sprintf('(Code: %s:%s)', get_class($e), $e->getCode()));
-            $this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
+            $this->logger->logError(SystemErrorHandler::formatBacktrace($e->getTrace()));
             $this->is_success = false;
         }
     }
@@ -349,7 +349,7 @@ class IncomingAccountTester
             $this->exception = $e;
             $this->logger->logError(sprintf('Error: %s', $e->getMessage()));
             $this->logger->logError(sprintf('(Code: %s:%s)', get_class($e), $e->getCode()));
-            $this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
+            $this->logger->logError(SystemErrorHandler::formatBacktrace($e->getTrace()));
             $this->is_success = false;
         }
     }

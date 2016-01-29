@@ -100,7 +100,10 @@ class DeskPROReaderFactory implements ReaderFactoryInterface
      */
     public static function getDefaultConfig()
     {
-        $config = dp_get_config('deskpro_import');
+        /* @var \DpEnv $DP_ENV */
+        global $DP_ENV;
+        $config = $DP_ENV->getConfig('import.deskpro_import');
+
         if (empty($config)) {
             throw new \Exception('DeskPRO import config is not defined');
         }

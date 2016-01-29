@@ -34,9 +34,8 @@ namespace Application\DeskPRO\Mail;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Html\Html2Text;
-use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
@@ -134,7 +133,7 @@ class Message extends \Orb\Mail\Message
                         $e = new \InvalidArgumentException(
                             "Agent email being sent to a non-agent. Template: {$this->template}, Person: {$this->template_vars['to_contact']}"
                         );
-                        KernelErrorHandler::logException($e, true);
+                        SystemErrorHandler::logException($e, true);
 
                         $this->template        = null;
                         $this->template_vars   = null;
@@ -194,30 +193,6 @@ class Message extends \Orb\Mail\Message
                 $this->setSubject($subject);
             }
 
-            if (isset($this->template_vars['tracking_object']) && dp_get_config('enable_smtp_tracking')) {
-                $obj = $this->template_vars['tracking_object'];
-                $tos = array();
-
-                if ($this->getTo()) {
-                    foreach ($this->getTo() as $addr => $x) {
-                        $tos[] = $addr;
-                    }
-                }
-                if ($this->getCc()) {
-                    foreach ($this->getCc() as $addr => $x) {
-                        $tos[] = $addr;
-                    }
-                }
-                if ($this->getBcc()) {
-                    foreach ($this->getBcc() as $addr => $x) {
-                        $tos[] = $addr;
-                    }
-                }
-
-                $from = $this->getFrom();
-                $from = Arrays::getFirstKey($from);
-            }
-
             $body = $this->replaceEmbeds($body);
             $this->setBody($body, 'text/html');
 
@@ -244,8 +219,8 @@ class Message extends \Orb\Mail\Message
             if (strlen($body) < 512000) {
                 try {
                     try {
-                            $h2t = new Html2Text();
-                            $h2t->addElementProcessor('a', function ($node) {
+                        $h2t = new Html2Text();
+                        $h2t->addElementProcessor('a', function ($node) {
                                 $classname = $node->getAttribute('class');
                                 if (strpos($classname, 'dp-reply-help-link') === false) {
                                     return;
@@ -253,7 +228,7 @@ class Message extends \Orb\Mail\Message
 
                                 return 'https://deskpro.com/go/reply';
                             });
-                            $plaintext = $h2t->convert($plaintext);
+                        $plaintext = $h2t->convert($plaintext);
                     } catch (\Exception $e) {
                         $plaintext = null;
                     }
@@ -265,32 +240,32 @@ class Message extends \Orb\Mail\Message
 
             // fallback on just simple strip tags
             } else {
-                    $plaintext = str_replace("\n", '', $plaintext);
+                $plaintext = str_replace("\n", '', $plaintext);
                 $plaintext = str_replace(array('<br/>', '<br />', '<p>', '</p>', '<div>'), "\n", $plaintext);
-                    $plaintext = preg_replace(
+                $plaintext = preg_replace(
                         '#<a[^>]+dp-reply-help-link[^>]+>[^<]+</a>#',
                         'deskpro.com/go/reply',
                         $plaintext
                     );
-                    $plaintext = Strings::stripTags($plaintext);
+                $plaintext = Strings::stripTags($plaintext);
                 if ($plaintext) {
                     $this->addPart($plaintext, 'text/plain');
                 }
             }
-        } else {
-            if ($this->getContentType() == 'text/html') {
-                $body = $this->getBody();
-                $body = $this->replaceEmbeds($body);
-                $this->setBody($body, 'text/html');
+            } else {
+                if ($this->getContentType() == 'text/html') {
+                    $body = $this->getBody();
+                    $body = $this->replaceEmbeds($body);
+                    $this->setBody($body, 'text/html');
+                }
             }
-        }
 
         // These need to be unset so the message can be properly serialized
         // if it needs to be inserted as a queued message
-        $this->template        = null;
-        $this->template_vars   = null;
-        $this->template_engine = null;
-        $this->set_to_person   = null;
+        $this->template            = null;
+            $this->template_vars   = null;
+            $this->template_engine = null;
+            $this->set_to_person   = null;
 
         // Attach blobs
         foreach ($this->attach_blobs as $src => $blob) {
@@ -307,7 +282,7 @@ class Message extends \Orb\Mail\Message
                 $type = 'application/octet-stream';
             }
 
-                $this->attach(
+            $this->attach(
                     \Swift_Attachment::newInstance(
                 App::getContainer()->getBlobStorage()->copyBlobRecordToString($blob),
                 $blob->filename,
@@ -316,11 +291,11 @@ class Message extends \Orb\Mail\Message
                 )
                 ;
         }
-        $this->attach_blobs = null;
-        $this->embed_only   = true;
+            $this->attach_blobs = null;
+            $this->embed_only   = true;
 
-        $this->getHeaders()->addTextHeader('X-DeskPRO-Build', defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 1);
-    }
+            $this->getHeaders()->addTextHeader('X-DeskPRO-Build', defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 1);
+        }
     }
 
     /**
@@ -479,7 +454,7 @@ class Message extends \Orb\Mail\Message
         try {
             return parent::__toString();
         } catch (\Exception $e) {
-            KernelErrorHandler::logException($e);
+            SystemErrorHandler::logException($e);
 
             // It's a fatal error either way :(
             throw $e;

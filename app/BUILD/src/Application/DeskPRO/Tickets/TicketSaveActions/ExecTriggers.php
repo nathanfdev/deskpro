@@ -38,7 +38,7 @@ use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\EntityRepository\TicketTrigger as TicketTriggerRepository;
 use Application\DeskPRO\Tickets\Actions\ActionApplicatorInterface;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 
 class ExecTriggers implements TicketSaveActionInterface, ErrorCheckedInterface
 {
@@ -199,7 +199,7 @@ class ExecTriggers implements TicketSaveActionInterface, ErrorCheckedInterface
                 $this->action_applicator->apply($trigger->actions, $ticket, $context);
             } catch (\Exception $e) {
                 $context->getLogger()->error(sprintf('[ExecTriggers] Exception in trigger #%d: [%s] %s', $trigger->id, $e->getCode(), $e->getMessage()), array('exception' => $e));
-                KernelErrorHandler::logException($e);
+                SystemErrorHandler::logException($e);
             }
 
             $context->getLogger()->info(sprintf('[ExecTriggers] Applied trigger #%s ', $trigger->id));

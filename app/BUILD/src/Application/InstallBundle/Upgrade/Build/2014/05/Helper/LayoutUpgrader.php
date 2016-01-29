@@ -34,7 +34,7 @@ namespace Application\InstallBundle\Upgrade\Build\Helper201405;
 use Application\DeskPRO\CustomFields\TicketFieldManager;
 use Application\DeskPRO\Entity\TicketLayout as TicketLayoutEntity;
 use Application\DeskPRO\TicketLayout;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 
 class LayoutUpgrader
 {
@@ -247,7 +247,7 @@ class LayoutUpgrader
                 $field->setCriteria($crit);
             }
         } catch (\Exception $e) {
-            KernelErrorHandler::logException($e);
+            SystemErrorHandler::logException($e);
 
             return;
         }

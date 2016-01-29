@@ -40,14 +40,10 @@ class ZipperService
 {
     public static function create(DeskproContainer $container)
     {
-        $type = dp_get_config('force_zip_adapter');
-
-        if (!$type) {
-            if (extension_loaded('Zip')) {
-                $type = 'zip';
-            } elseif (extension_loaded('zlib')) {
-                $type = 'pcl_zip';
-            }
+        if (extension_loaded('Zip')) {
+            $type = 'zip';
+        } elseif (extension_loaded('zlib')) {
+            $type = 'pcl_zip';
         }
 
         switch ($type) {

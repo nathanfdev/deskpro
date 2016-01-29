@@ -36,16 +36,13 @@ class PreparePathsBootTask implements BootTaskInterface
     public function run(\DpEnv $env, array $resources)
     {
         $expect = [
-            '/var/appcache',
-            '/var/appcache/common',
-            '/var/appcache/common/doctrine-proxies',
-            '/var/appcache/common/twig-compiled',
-            '/var/appcache/'.$env->getActiveBuild(),
-            '/var/appcache/'.$env->getActiveBuild().'/'.$env->getEnvId(),
-            '/var/cache',
-            '/var/debug',
-            '/var/tests',
-            '/var/tmp',
+            $env->getAppBaseKernelCacheDir(),
+            $env->getUserFilesDir(),
+            $env->getUserBackupsDir(),
+            $env->getUserDebugDir(),
+            $env->getUserLogsDir(),
+            $env->getUserCacheDir(),
+            $env->getUserTmpDir(),
         ];
 
         foreach ($expect as $dir) {

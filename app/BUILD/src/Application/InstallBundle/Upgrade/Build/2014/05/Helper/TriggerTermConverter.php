@@ -32,7 +32,7 @@
 namespace Application\InstallBundle\Upgrade\Build\Helper201405;
 
 use Application\DeskPRO\Tickets\Triggers\Terms;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\OptionsArray;
 use Orb\Util\Strings;
@@ -58,7 +58,7 @@ class TriggerTermConverter
 
         if (!method_exists($this, $func)) {
             $e = new \Exception('Unknown trigger term: '.$info['type']);
-            KernelErrorHandler::logException($e);
+            SystemErrorHandler::logException($e);
 
             return;
         }

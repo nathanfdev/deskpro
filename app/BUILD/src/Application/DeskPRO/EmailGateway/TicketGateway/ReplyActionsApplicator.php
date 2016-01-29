@@ -29,11 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Log\Loggable;
 use Orb\Log\Logger;
 
@@ -173,7 +172,7 @@ class ReplyActionsApplicator implements Loggable
 
             default:
                 $e = new \InvalidArgumentException("Unknown reply action {$id}");
-                KernelErrorHandler::logException($e, true, 'reply_action_'.$id);
+                SystemErrorHandler::logException($e, true, 'reply_action_'.$id);
         }
     }
 

@@ -29,14 +29,13 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
 use DeskPRO\Bundle\PortalBundle\Model\EmailTo;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -80,7 +79,7 @@ class TicketReminders extends AbstractJob
             $saved_form->incrementSentReminders();
             App::$container->getEm()->flush($saved_form);
         } catch (\Exception $e) {
-            KernelErrorHandler::handleException($e, false);
+            SystemErrorHandler::handleException($e, false);
         }
     }
 

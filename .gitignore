@@ -37,10 +37,10 @@ phantomjsdriver.log
 /app/BUILD/tests/tools/node_modules
 
 # cache dirs
-/var/appcache/*
-!/var/appcache/.gitkeep
 /var/cache/*
 !/var/cache/.gitkeep
+/var/kernel_cache/*
+!/var/kernel_cache/.gitkeep
 /var/debug/*
 !/var/debug/.gitkeep
 /var/tests/*

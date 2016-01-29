@@ -31,7 +31,7 @@
  */
 namespace Application\InstallBundle\Upgrade\Build;
 
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 
 class Build1408444531 extends AbstractBuild
 {
@@ -43,7 +43,7 @@ class Build1408444531 extends AbstractBuild
             $this->execMutateSql('ALTER TABLE feedback_category2usergroup ADD CONSTRAINT FK_B304B93C12469DE2 FOREIGN KEY (category_id) REFERENCES feedback_categories (id)');
             $this->execMutateSql('ALTER TABLE feedback_category2usergroup ADD CONSTRAINT FK_B304B93CD2112630 FOREIGN KEY (usergroup_id) REFERENCES usergroups (id)');
         } catch (\Exception $e) {
-            KernelErrorHandler::logException($e);
+            SystemErrorHandler::logException($e);
         }
     }
 }

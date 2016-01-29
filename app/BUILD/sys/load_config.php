@@ -26,479 +26,61 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-if (!defined('DP_ROOT')) {
-    exit('No access');
-}
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
-
 /**
- * Loads config. After this call, $DP_CONFIG is available.
- */
-function dp_load_config()
-{
-    global $DP_CONFIG;
-    static $has_loaded = false;
-
-    if ($has_loaded) {
-        return;
-    }
-
-    if (!is_array($DP_CONFIG)) {
-        $config_file = DP_CONFIG_FILE;
-        if (
-            (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'testing')
-            ||
-            (file_exists(DP_CONFIG_FILE) && file_exists(dirname(DP_CONFIG_FILE).DIRECTORY_SEPARATOR.'running_tests.trigger'))
-        ) {
-            $config_file = str_replace('.php', '.testing.php', $config_file);
-            if (!file_exists($config_file)) {
-                echo "!!!!!!!!!!!!!!!!!!!!!!\n";
-                echo "Running tests requires a separate config.testing.php file.\n\n";
-                echo "Copy your config.php to config.testing.php and try again.\n";
-                echo "Make sure config.testing.php includes database details for a test database you don't mind losing.\n";
-                echo "!!!!!!!!!!!!!!!!!!!!!!\n\n";
-                exit(1);
-            }
-            $GLOBALS['DP_USING_TESTING_CONFIG'] = true;
-        }
-
-        if (file_exists($config_file)) {
-            require_once $config_file;
-
-            if (!isset($DP_CONFIG) || !is_array($DP_CONFIG)) {
-                $DP_CONFIG = array();
-            }
-
-            if (!isset($DP_CONFIG['db'])) {
-                $DP_CONFIG['db'] = array();
-            }
-            if (!isset($DP_CONFIG['db']['host'])) {
-                $DP_CONFIG['db']['host'] = defined('DP_DATABASE_HOST')     ? DP_DATABASE_HOST     : 'localhost';
-            }
-            if (!isset($DP_CONFIG['db']['user'])) {
-                $DP_CONFIG['db']['user'] = defined('DP_DATABASE_USER')     ? DP_DATABASE_USER     : 'YOUR_DATABASE_USER';
-            }
-            if (!isset($DP_CONFIG['db']['password'])) {
-                $DP_CONFIG['db']['password'] = defined('DP_DATABASE_PASSWORD') ? DP_DATABASE_PASSWORD : 'YOUR_DATABASE_PASS';
-            }
-            if (!isset($DP_CONFIG['db']['dbname'])) {
-                $DP_CONFIG['db']['dbname'] = defined('DP_DATABASE_NAME')     ? DP_DATABASE_NAME     : 'YOUR_DATABASE_NAME';
-            }
-            if (!isset($DP_CONFIG['technical_email'])) {
-                $DP_CONFIG['technical_email'] = defined('DP_TECHNICAL_EMAIL')   ? DP_TECHNICAL_EMAIL   : '';
-            }
-        } else {
-            if (!isset($DP_CONFIG) || !is_array($DP_CONFIG)) {
-                $DP_CONFIG                    = array();
-                $DP_CONFIG['NO_CONFIG']       = true;
-                $DP_CONFIG['db']              = array();
-                $DP_CONFIG['db']['host']      = 'localhost';
-                $DP_CONFIG['db']['user']      = 'YOUR_DATABASE_USER';
-                $DP_CONFIG['db']['password']  = 'YOUR_DATABASE_PASS';
-                $DP_CONFIG['db']['dbname']    = 'YOUR_DATABASE_NAME';
-                $DP_CONFIG['technical_email'] = '';
-            }
-        }
-    }
-
-    if (!defined('DP_BUILD_TIME')) {
-        if (file_exists(DP_ROOT.'/sys/config/build-time.php')) {
-            require DP_ROOT.'/sys/config/build-time.php';
-        } else {
-            define('DP_BUILD_TIME', 1323444089); // would be used by someone who hasnt built yet
-        }
-    }
-    if (!defined('DP_BUILD_NUM')) {
-        if (file_exists(DP_ROOT.'/sys/config/build-num.php')) {
-            require DP_ROOT.'/sys/config/build-num.php';
-        } else {
-            define('DP_BUILD_NUM', 0); // would be used by someone who isnt using default distro
-        }
-    }
-}
-
-/**
- * Loads a PHP array file into config.
+ * @deprecated
  *
- * @param string $file
- * @param string $key
- */
-function dp_load_file_into_config($file, $key)
-{
-    global $DP_CONFIG;
-    if (isset($DP_CONFIG[$key])) {
-        return;
-    }
-
-    if (is_file($file)) {
-        $data = include $file;
-        if (is_array($data)) {
-            $DP_CONFIG[$key] = $data;
-        } else {
-            $DP_CONFIG[$key] = array();
-        }
-    } else {
-        $DP_CONFIG[$key] = array();
-    }
-}
-
-$GLOBALS['DP_PAGELOG_INFO'] = array();
-function dp_pagelog_reset()
-{
-    $GLOBALS['DP_PAGELOG_INFO'] = array();
-}
-function dp_pagelog_set($name, $value)
-{
-    $GLOBALS['DP_PAGELOG_INFO'][$name] = $value;
-}
-function dp_pagelog_get($name)
-{
-    return isset($GLOBALS['DP_PAGELOG_INFO'][$name]) ? $GLOBALS['DP_PAGELOG_INFO'][$name] : null;
-}
-
-/**
- * Get a value from config using dot notation.
- *
- * @param string $key
- * @param null   $default
- *
- * @return mixed
- */
-function dp_get_config($path, $default = null)
-{
-    global $DP_CONFIG;
-
-    dp_load_config();
-    $array = $DP_CONFIG;
-
-    // Special value handling
-    if ($path == 'is_installed_flag') {
-        return file_exists(dp_get_data_dir().'/is_installed.dat');
-    }
-
-    // If its not a path at all, we can do a simple lookup
-    if (strpos($path, '.') === false) {
-        return isset($array[$path]) ? $array[$path] : $default;
-    }
-
-    $parts = explode('.', $path);
-
-    if (!$parts) {
-        return $default;
-    }
-
-    $depth = 0;
-    while ($key = array_shift($parts)) {
-        if (!isset($array[$key])) {
-            if ($depth == 0 && $key == 'instance_data') {
-                dp_load_file_into_config(DP_ROOT.'/sys/config/instance-data.php', 'instance_data');
-                $array = $DP_CONFIG;
-            } else {
-                return $default;
-            }
-        }
-
-        $array = $array[$key];
-        ++$depth;
-    }
-
-    return $array;
-}
-
-/**
- * @return string
- */
-function dp_get_os()
-{
-    static $os = null;
-
-    if ($os === null) {
-        if (strpos(strtoupper(PHP_OS), 'WIN') === 0) {
-            $os = 'win';
-        } elseif (strpos(strtoupper(PHP_OS), 'DARWIN') === 0) {
-            $os = 'mac';
-        } elseif (strpos(strtoupper(PHP_OS), 'FREEBSD') === 0) {
-            $os = 'freebsd';
-        } elseif (strpos(strtoupper(PHP_OS), 'LINUX') === 0) {
-            $os = 'linux';
-        } else {
-            $os = PHP_OS;
-        }
-    }
-
-    return $os;
-}
-
-/**
- * @return string
- */
-function dp_get_data_dir()
-{
-    dp_load_config();
-
-    global $DP_CONFIG;
-    if (isset($DP_CONFIG['dir_data']) && $DP_CONFIG['dir_data']) {
-        $dir_data = $DP_CONFIG['dir_data'];
-    } else {
-        $dir_data = DP_WEB_ROOT.DIRECTORY_SEPARATOR.'data';
-    }
-
-    if (!is_dir($dir_data)) {
-        @mkdir($dir_data, 0777, true);
-        @chmod($dir_data, 0777);
-    }
-
-    return $dir_data;
-}
-
-/**
- * @return string
- */
-function dp_get_debug_dir()
-{
-    $dir = dp_get_data_dir().DIRECTORY_SEPARATOR.'debug';
-
-    if (!is_dir($dir)) {
-        @mkdir($dir, 0777, true);
-        @chmod($dir, 0777);
-    }
-
-    return $dir;
-}
-
-/**
  * @return string
  */
 function dp_get_log_dir()
 {
-    $dir = dp_get_data_dir().DIRECTORY_SEPARATOR.'logs';
+    /* @var \DpEnv $DP_ENV */
+    global $DP_ENV;
 
-    if (!is_dir($dir)) {
-        @mkdir($dir, 0777, true);
-        @chmod($dir, 0777);
-    }
-
-    return $dir;
+    return $DP_ENV->getUserLogsDir();
 }
 
 /**
+ * @deprecated
+ *
  * @return string
  */
 function dp_get_backup_dir()
 {
-    $dir = dp_get_data_dir().DIRECTORY_SEPARATOR.'backups';
+    /* @var \DpEnv $DP_ENV */
+    global $DP_ENV;
 
-    if (!is_dir($dir)) {
-        @mkdir($dir, 0777, true);
-        @chmod($dir, 0777);
-    }
-
-    return $dir;
+    return $DP_ENV->getUserBackupsDir();
 }
 
 /**
- * @return string
- */
-function dp_get_blob_dir()
-{
-    $dir = dp_get_data_dir().DIRECTORY_SEPARATOR.'files';
-
-    if (!is_dir($dir)) {
-        @mkdir($dir, 0777, true);
-        @chmod($dir, 0777);
-    }
-
-    return $dir;
-}
-
-/**
+ * @deprecated
+ *
  * @return string
  */
 function dp_get_tmp_dir()
 {
-    $dir = dp_get_data_dir().DIRECTORY_SEPARATOR.'tmp';
+    /* @var \DpEnv $DP_ENV */
+    global $DP_ENV;
 
-    if (!is_dir($dir)) {
-        @mkdir($dir, 0777, true);
-        @chmod($dir, 0777);
-    }
-
-    return $dir;
+    return $DP_ENV->getUserTmpDir();
 }
 
 /**
- * @return string
- */
-function dp_get_cache_dir()
-{
-    if (defined('DP_CACHE_DIR')) {
-        return DP_CACHE_DIR;
-    }
-
-    return DP_ROOT.'/sys/cache';
-}
-
-/**
- * Check to see if some action should be throttled based on a filesystem
- * marker.
- *
- * @param string $id
- * @param int    $min_time
- *
- * @return bool
- */
-function dp_should_throttle_action($id, $min_time)
-{
-    $file = dp_get_data_dir().'/last-'.$id.'.dat';
-    if (!file_exists($file)) {
-        @file_put_contents($file, time());
-
-        return false;
-    }
-
-    $last = (int) file_get_contents($file);
-    if ($last > time() - $min_time) {
-        return true;
-    }
-
-    @file_put_contents($file, time());
-
-    return false;
-}
-
-/**
- * Try to locate a binary in the current path.
- *
- * Based on Symfony\Component\Process\ExecutableFinder
- *
- * @param $name
- * @param array|null $use_suffixes
- *
- * @return mixed|null|string
- */
-function dp_find_binary($name, array $use_suffixes = null)
-{
-    if (!$use_suffixes) {
-        $use_suffixes = array('', '.exe', '.bat', '.cmd', '.com');
-    }
-
-    $is_windows = (0 === stripos(PHP_OS, 'win'));
-
-    if (ini_get('open_basedir')) {
-        $searchPath = explode(PATH_SEPARATOR, getenv('open_basedir'));
-        $dirs       = array();
-        foreach ($searchPath as $path) {
-            if (is_dir($path)) {
-                $dirs[] = $path;
-            } else {
-                $file = str_replace(dirname($path), '', $path);
-                if ($file == $name && is_executable($path)) {
-                    return $path;
-                }
-            }
-        }
-    } else {
-        $dirs = explode(PATH_SEPARATOR, getenv('PATH') ? getenv('PATH') : getenv('Path'));
-    }
-
-    $suffixes = DIRECTORY_SEPARATOR == '\\' ? (getenv('PATHEXT') ? explode(PATH_SEPARATOR, getenv('PATHEXT')) : $use_suffixes) : array('');
-    foreach ($suffixes as $suffix) {
-        foreach ($dirs as $dir) {
-            if (is_file($file = $dir.DIRECTORY_SEPARATOR.$name.$suffix) && ($is_windows || is_executable($file))) {
-                return $file;
-            }
-        }
-    }
-
-    return;
-}
-
-/**
- * Get the path to the PHP CLI binary. Returns null if we can't locate it and php_path isn't configured.
+ * @deprecated
  *
  * @return string
  */
-function dp_get_php_path($test = false)
+function dp_get_php_path()
 {
-    static $path = null;
+    /* @var \DpEnv $DP_ENV */
+    global $DP_ENV;
 
-    if ($path === null) {
-        if (dp_get_config('php_path')) {
-            $path = dp_get_config('php_path');
-        }
-        if (!$path) {
-            if (defined('PHP_BINARY') && dp_test_php_bin(PHP_BINARY)) {
-                $path = PHP_BINARY;
-            } else {
-                $GLOBALS['DP_PHP_PATH_GUESSED'] = true;
-                $path                           = dp_find_binary('php');
-            }
-        }
-
-        if (!$path) {
-            $path = false;
-        } else {
-            $path = escapeshellarg($path);
-        }
-
-        if ($path && $test) {
-            if (!dp_test_php_bin($path)) {
-                $path = false;
-            }
-        }
-    }
-
-    return $path;
-}
-
-function dp_test_php_bin($path)
-{
-    if (!$path) {
-        return false;
-    }
-
-    $out = null;
-    $ret = null;
-
-    // php -v: PHP 5.3.10 (cli) (built: May 18 2012 10:07:25) etc
-    exec($path.' -v 2>&1', $out, $ret);
-
-    $out = is_array($out) ? implode("\n", $out) : (string) $out;
-    if (!$ret || stripos($out, 'the php group') !== false) {
-        $pass_test = true;
-    } else {
-        $pass_test = false;
-        $path      = false;
-    }
-
-    return $pass_test;
+    return $DP_ENV->getConfig('paths.php_path');
 }
 
 /**
+ * @deprecated
+ *
  * @param string $script
  * @param string $params
  *
@@ -515,154 +97,37 @@ function dp_get_php_command($script, $params = '')
 }
 
 /**
- * Was the path to the PHP CLI guessed?
+ * @deprecated
  *
  * @return bool
  */
 function dp_is_php_path_guessed()
 {
-    dp_get_php_path(false);
-    if (isset($GLOBALS['DP_PHP_PATH_GUESSED']) && $GLOBALS['DP_PHP_PATH_GUESSED']) {
-        return true;
-    }
-
     return false;
 }
 
 /**
- * Get the path to the mysqldump binary. Returns null if we can't locate it and mysqldump_path isn't configured.
+ * @deprecated
  *
  * @return string
  */
-function dp_get_mysqldump_path($test = false)
+function dp_get_mysqldump_path()
 {
-    static $path = null;
+    /* @var \DpEnv $DP_ENV */
+    global $DP_ENV;
 
-    if ($path === null) {
-        if (dp_get_config('mysqldump_path')) {
-            $path = dp_get_config('mysqldump_path');
-        }
-        if (!$path) {
-            $path = dp_find_binary('mysqldump');
-        }
-
-        if (!$path) {
-            $path = false;
-        } else {
-            $path = escapeshellarg($path);
-        }
-    }
-
-    static $pass_test = null;
-    if ($path && $test && $pass_test === null) {
-        $out = null;
-        $ret = null;
-
-        // mysqldump (no args): Usage: mysqldump [OPTIONS] database [tables]  etc
-        exec($path.' 2>&1', $out, $ret);
-
-        $out = is_array($out) ? implode("\n", $out) : (string) $out;
-        if (!$ret || stripos($out, 'usage:') !== false) {
-            $pass_test = true;
-        } else {
-            $pass_test = false;
-            $path      = false;
-        }
-    }
-
-    return $path;
+    return $DP_ENV->getConfig('paths.mysqldump_path');
 }
 
 /**
- * Get the path to the mysql binary. Returns null if we can't locate it and mysql_path isn't configured.
+ * @deprecated
  *
  * @return string
  */
-function dp_get_mysql_path($test = false)
+function dp_get_mysql_path()
 {
-    static $path = null;
+    /* @var \DpEnv $DP_ENV */
+    global $DP_ENV;
 
-    if ($path === null) {
-        if (dp_get_config('mysql_path')) {
-            $path = dp_get_config('mysql_path');
-        }
-        if (!$path) {
-            $path = dp_find_binary('mysql');
-        }
-
-        if (!$path) {
-            $path = false;
-        } else {
-            $path = escapeshellarg($path);
-        }
-    }
-
-    static $pass_test = null;
-    if ($path && $test && $pass_test === null) {
-        $out = null;
-        $ret = null;
-
-        // mysql --help: Lots of stuff but we can find mysql
-        exec($path.' --help 2>&1', $out, $ret);
-
-        $out = is_array($out) ? implode("\n", $out) : (string) $out;
-        if (!$ret || stripos($out, 'usage:') !== false) {
-            $pass_test = true;
-        } else {
-            $pass_test = false;
-            $path      = false;
-        }
-    }
-
-    return $path;
-}
-
-/**
- * Gets the users IP address.
- *
- * This is a low-level wrapper around getting the IP. You should only
- * use this directly if the normal Request object is not available.
- *
- * This will use the Request object if available, but fall-back on just
- * reading the $_SERVER array. It does not do the same proxy detection stuff,
- * so it's really only useful for low-level.
- *
- * @return string|false
- */
-function dp_get_user_ip_address()
-{
-    /* @var $DP_MAIN_REQUEST \Symfony\Component\HttpFoundation\Request */
-    global $DP_MAIN_REQUEST;
-
-    if ($DP_MAIN_REQUEST) {
-        return $DP_MAIN_REQUEST->getClientIp();
-    } else {
-        if (!empty($_SERVER['REMOTE_ADDR'])) {
-            return $_SERVER['REMOTE_ADDR'];
-        } elseif (!empty($_ENV['REMOVE_ADDR'])) {
-            return $_ENV['REMOTE_ADDR'];
-        } else {
-            try {
-                // last ditch effort to try using the request_stack
-                return dp_get_request_stack_ip_address();
-            } catch (\Exception $e) {
-                return '127.0.0.1';
-            }
-        }
-    }
-}
-
-/**
- * This is a variation of the "dp_get_user_ip_address" function, except instead of a global variable that is expected to
- * hold the request object, we call on the request_stack directly to get the master request.
- */
-function dp_get_request_stack_ip_address()
-{
-    $request_stack = \Application\DeskPRO\App::get('request_stack');
-
-    if (!$request_stack instanceof \Symfony\Component\HttpFoundation\RequestStack) {
-        return '127.0.0.1';
-    }
-
-    return $request_stack->getMasterRequest()->getClientIp();
+    return $DP_ENV->getConfig('paths.mysql_path');
 }

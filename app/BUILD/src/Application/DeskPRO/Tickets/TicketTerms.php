@@ -36,7 +36,7 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\Searcher\OrganizationSearch;
 use Application\DeskPRO\Searcher\PersonSearch;
 use Application\DeskPRO\Searcher\TicketSearch;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
@@ -1226,14 +1226,14 @@ class TicketTerms
 
             case 'gateway_account':
                 $e = new \RuntimeException('not supported');
-                KernelErrorHandler::logException($e, true, 'TicketTerms::gateway_account');
+                SystemErrorHandler::logException($e, true, 'TicketTerms::gateway_account');
 
                 return false;
                 break;
 
             case 'gateway_address':
                 $e = new \RuntimeException('not supported');
-                KernelErrorHandler::logException($e, true, 'TicketTerms::gateway_address');
+                SystemErrorHandler::logException($e, true, 'TicketTerms::gateway_address');
 
                 return false;
                 break;
@@ -1409,7 +1409,7 @@ class TicketTerms
 
             default:
                 $e = new \InvalidArgumentException('(Non-critical notice) Unknown trigger criteria: '.$term);
-                \DeskPRO\Kernel\KernelErrorHandler::logException($e, true, 'failed_term_'.$term);
+                \DpSys\LowError\SystemErrorHandler::logException($e, true, 'failed_term_'.$term);
 
                 return false;
         }
@@ -1577,7 +1577,7 @@ class TicketTerms
             if ($op == self::OP_IS_REGEX) {
                 return $found;
             } else {
-                return (!$found);
+                return !$found;
             }
         } elseif (!$force_like and ($op == self::OP_IS or $op == self::OP_NOT)) {
             $choices_in = (array) $choice;
@@ -1593,7 +1593,7 @@ class TicketTerms
             if ($op == self::OP_IS) {
                 return $found;
             } else {
-                return (!$found);
+                return !$found;
             }
         } else {
             $choices_in = (array) $choice;
@@ -1616,7 +1616,7 @@ class TicketTerms
             if ($op == self::OP_CONTAINS) {
                 return $found;
             } else {
-                return (!$found);
+                return !$found;
             }
         }
     }
@@ -1709,15 +1709,15 @@ class TicketTerms
                 date('Y', $date2)
             );
 
-            return ($value >= $date1 and $value <= $date2);
+            return $value >= $date1 and $value <= $date2;
         } elseif ($op == self::OP_GTE) {
             $date = $date1 ? $date1 : $date2;
 
-            return ($value >= $date);
+            return $value >= $date;
         } else {
             $date = $date1 ? $date1 : $date2;
 
-            return ($value <= $date);
+            return $value <= $date;
         }
     }
 

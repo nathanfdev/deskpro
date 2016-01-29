@@ -31,8 +31,6 @@
  */
 namespace Application\DeskPRO\EmailGateway\Fetcher;
 
-use Application\DeskPRO\App;
-
 /**
  * Reads all files in a directory as mail.
  *
@@ -70,7 +68,6 @@ class PlainMailDir extends AbstractFetcher
     protected function _initConnection()
     {
         $this->maildir = $this->account['connection_options']['dir'];
-        $this->maildir = str_replace('%DP_DATA_DIR%', dp_get_data_dir(), $this->maildir);
 
         $this->logger->logDebug("Reading from: {$this->maildir}");
 
@@ -161,29 +158,6 @@ class PlainMailDir extends AbstractFetcher
             $this->logger->logError("Skipping mailfile $mailfile because it is not writable so we cant delete it after");
 
             return $this->_readNext();
-        }
-
-        if (dp_get_config('plainmaildir_track_read')) {
-            $check_name = md5('plainmaildir::'.$mailfile);
-            $check      = App::getDb()->fetchColumn('
-                SELECT data
-                FROM install_data
-                WHERE build = ? AND name = ?
-                LIMIT 1
-            ', array(DP_BUILD_TIME, $check_name));
-
-            if ($check) {
-                $this->logger->logError("Skipping mailfile $mailfile because it has been marked as read");
-                error_log("Skipping mailfile $mailfile because it has been marked as read");
-
-                return $this->_readNext();
-            }
-
-            App::getDb()->insert('install_data', array(
-                'build' => DP_BUILD_TIME,
-                'name'  => $check_name,
-                'data'  => 1,
-            ));
         }
 
         $message_size = filesize($mailfile);

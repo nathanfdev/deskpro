@@ -29,11 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 
 /**
  * Goes through each gateway and processes email.
@@ -79,7 +78,7 @@ class ProcessEmailGateways extends AbstractJob
 
         if ($num) {
             $e = new \Exception("$num email source(s) marked as timeout and will not be retried because they are over the retry threshold");
-            KernelErrorHandler::logException($e);
+            SystemErrorHandler::logException($e);
             $this->getLogger()->log("$num sources marked as timeout and will not be retried", 'ERR');
         }
 
@@ -92,23 +91,9 @@ class ProcessEmailGateways extends AbstractJob
         $runner = new \Application\DeskPRO\EmailGateway\Runner();
         $runner->setLogger($logger);
 
-        if (isset($GLOBALS['DP_PREF_MAX_EXEC_TIME'])) {
-            $runner->setPhpTimeLimit($GLOBALS['DP_PREF_MAX_EXEC_TIME']);
-        } else {
-            $runner->setPhpTimeLimit(900);
-        }
-
-        if (dp_get_config('gateway_soft_time_limit')) {
-            $runner->setSoftTimeLimit(dp_get_config('gateway_soft_time_limit'));
-        } else {
-            $runner->setSoftTimeLimit(480);
-        }
-
-        if (dp_get_config('gateway_message_limit')) {
-            $runner->setMessageLimit(dp_get_config('gateway_message_limit'));
-        } else {
-            $runner->setMessageLimit(40);
-        }
+        $runner->setPhpTimeLimit(900);
+        $runner->setSoftTimeLimit(480);
+        $runner->setMessageLimit(40);
 
         if ($this->options->get('run_source_id')) {
             $sid    = $this->options->get('run_source_id');

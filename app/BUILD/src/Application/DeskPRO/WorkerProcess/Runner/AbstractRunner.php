@@ -165,7 +165,7 @@ abstract class AbstractRunner
 
         if ($run_e) {
             $logger->log(sprintf('Exception: %s[%d]: %s', get_class($run_e), $run_e->getCode(), $run_e->getMessage()), Logger::ERR);
-            \DeskPRO\Kernel\KernelErrorHandler::handleException($run_e);
+            \DpSys\LowError\SystemErrorHandler::handleException($run_e);
         } else {
             $worker_job['last_run_date'] = new \DateTime();
             App::getDb()->update('worker_jobs', array('last_run_date' => date('Y-m-d H:i:s')), array('id' => $worker_job->getId()));

@@ -34,8 +34,8 @@
 namespace Application\DeskPRO\Attachments;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
-use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\ORM\EntityManager;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Data\ContentTypes;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -200,7 +200,7 @@ class AcceptAttachment
             ), "{KEY}: {VAL}\n");
 
             $e = new \Exception($info, 0);
-            KernelErrorHandler::logException($e, false);
+            SystemErrorHandler::logException($e, false);
         }
 
         return $error;

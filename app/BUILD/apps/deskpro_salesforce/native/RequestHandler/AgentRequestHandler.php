@@ -36,7 +36,7 @@ namespace deskpro_salesforce\RequestHandler;
 use Application\DeskPRO\App\Native\RequestHandler\AgentRequestContext;
 use Application\DeskPRO\App\Native\RequestHandler\AgentRequestHandlerInterface;
 use Application\DeskPRO\Entity\DataStore;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 
 class AgentRequestHandler implements AgentRequestHandlerInterface
 {
@@ -139,7 +139,7 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
             ");
         } catch (\Exception $e) {
             $response = null;
-            KernelErrorHandler::logException($e, false, 'salesforce_'.$e->getMessage());
+            SystemErrorHandler::logException($e, false, 'salesforce_'.$e->getMessage());
         }
 
         if ($response) {

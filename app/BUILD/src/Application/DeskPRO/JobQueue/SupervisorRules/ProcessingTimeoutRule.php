@@ -33,7 +33,7 @@ namespace Application\DeskPRO\JobQueue\SupervisorRules;
 
 use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\JobQueue\JobSupervisorException;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 
 /**
  * A job should not be in the "processing" state for more than 20 minutes, signal an error as there is unfinished work!
@@ -118,7 +118,7 @@ class ProcessingTimeoutRule extends AbstractSupervisorRule
         )
         ;
 
-        KernelErrorHandler::logException(new \Exception(
+        SystemErrorHandler::logException(new \Exception(
             'ABORTED the following jobs due to timeout:'
             .json_encode($result)
         ), false);

@@ -38,7 +38,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermComposite;
 use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermInterface;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Types\JsonObjectSerializable;
 
 /**
@@ -224,7 +224,7 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
                 $obj->addTermFromArray($term_info);
             } catch (\Exception $e) {
                 if (!empty($term_info['type'])) {
-                    KernelErrorHandler::logException($e, false, md5('triggerterm_'.$term_info['type']));
+                    SystemErrorHandler::logException($e, false, md5('triggerterm_'.$term_info['type']));
                 }
             }
         }
@@ -245,7 +245,7 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
                 $this->addTermFromArray($term_info);
             } catch (\Exception $e) {
                 if (!empty($term_info['type'])) {
-                    KernelErrorHandler::logException($e, false, md5('triggerterm_'.$term_info['type']));
+                    SystemErrorHandler::logException($e, false, md5('triggerterm_'.$term_info['type']));
                 }
             }
         }

@@ -29,12 +29,12 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Kernel;
+namespace DpSys\LowError;
 
 use Application\DeskPRO\App;
 use Doctrine\DBAL\DBALException;
 
-class KernelErrorHandler
+class SystemErrorHandler
 {
     public static $is_logging            = false;
     public static $is_handling_exception = false;
@@ -464,7 +464,7 @@ class KernelErrorHandler
             && DP_TECHNICAL_EMAIL
             && !isset($GLOBALS['DP_CONFIG']['debug']['no_report_errors'])
             && function_exists('dp_should_throttle_action')
-            && !dp_should_throttle_action($throttle_id, 300)
+            && self::shouldThrottle($throttle_id, 300)
         ) {
             if (isset($errinfo['exception']) && ($errinfo['exception'] instanceof \PDOException || $errinfo['exception'] instanceof DBALException)) {
                 $line = 'There has been a MySQL error: '.$errinfo['exception']->getMessage();
@@ -547,6 +547,25 @@ class KernelErrorHandler
                 @mail(DP_TECHNICAL_EMAIL, $line, $str);
             }
         }
+    }
+
+    public function shouldThrottle($id, $timeout)
+    {
+        $file = dp_get_data_dir().'/last-'.$id.'.dat';
+        if (!file_exists($file)) {
+            @file_put_contents($file, time());
+
+            return false;
+        }
+
+        $last = (int) file_get_contents($file);
+        if ($last > time() - $min_time) {
+            return true;
+        }
+
+        @file_put_contents($file, time());
+
+        return false;
     }
 
     /**
@@ -1176,12 +1195,12 @@ class KernelErrorHandler
         $x = 0;
         foreach ($backtrace as $k => $v) {
             if (!empty($v['object'])) {
-                if (strpos(get_class($v['object']), 'KernelErrorHandler')) {
+                if (strpos(get_class($v['object']), 'SystemErrorHandler')) {
                     continue;
                 }
             }
             if (!empty($v['class'])) {
-                if (strpos($v['class'], 'KernelErrorHandler')) {
+                if (strpos($v['class'], 'SystemErrorHandler')) {
                     continue;
                 }
             }

@@ -33,7 +33,7 @@
  */
 namespace Orb\Auth\Adapter;
 
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
 use Orb\Log\Logger;
@@ -330,7 +330,7 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
             $raw_info['exception_type']    = get_class($e);
             $raw_info['exception_message'] = $e->getMessage();
             $raw_info['exception_code']    = $e->getCode();
-            $raw_info['exception_trace']   = KernelErrorHandler::formatBacktrace($e->getTrace());
+            $raw_info['exception_trace']   = SystemErrorHandler::formatBacktrace($e->getTrace());
         }
 
         $identity = new Identity($raw_info['identity'], $raw_info);

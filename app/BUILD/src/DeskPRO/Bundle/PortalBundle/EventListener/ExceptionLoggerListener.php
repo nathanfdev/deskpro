@@ -31,7 +31,7 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -46,7 +46,7 @@ class ExceptionLoggerListener implements EventSubscriberInterface
         // only log if there is no response attached by previous listeners
         if (!$event->hasResponse()) {
             $e = $event->getException();
-            KernelErrorHandler::logException($e);
+            SystemErrorHandler::logException($e);
         }
     }
 

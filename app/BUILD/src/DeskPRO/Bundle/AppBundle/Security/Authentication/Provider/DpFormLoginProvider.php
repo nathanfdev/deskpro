@@ -37,7 +37,7 @@ use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Entity\Usersource;
 use DeskPRO\Bundle\AppBundle\Security\DpFormLoginToken;
 use DeskPRO\Bundle\AppBundle\Security\DpPersonUserProvider;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Auth\Adapter\FormLoginInterface;
 use Orb\Auth\Result;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -152,7 +152,7 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
                 try {
                     $authResult = $adapter->authenticate();
                 } catch (\Exception $e) {
-                    KernelErrorHandler::logException($e, false);
+                    SystemErrorHandler::logException($e, false);
                     $GLOBALS['DP_AUTH_EXCEPTION_ADAPTER'] = $adapter;
                     $GLOBALS['DP_AUTH_EXCEPTION']         = $e;
                     continue;

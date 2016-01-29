@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Kernel;
+namespace DpSys;
 
 ###############################################################################
 # License
@@ -40,7 +40,7 @@ final class License
     private $raw_code;
 
     /**
-     * @var \DeskPRO\Kernel\License
+     * @var \DpSys\License
      */
     private static $inst;
 
@@ -135,7 +135,7 @@ final class License
      *
      * @param $license_code
      *
-     * @return \DeskPRO\Kernel\License
+     * @return \DpSys\License
      */
     public static function create($license_code, $install_key = '')
     {
@@ -148,7 +148,7 @@ final class License
     }
 
     /**
-     * @return \DeskPRO\Kernel\License
+     * @return \DpSys\License
      */
     public static function setLoaderFunction($fn)
     {
@@ -158,7 +158,7 @@ final class License
     /**
      * @static
      *
-     * @return \DeskPRO\Kernel\License
+     * @return \DpSys\License
      */
     public static function getLicense()
     {

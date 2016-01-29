@@ -29,13 +29,12 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\BlobStorage;
 
 use Application\DeskPRO\BlobStorage\StorageAdapter\AbstractStorageAdapter;
 use Application\DeskPRO\Entity\Blob as BlobEntity;
-use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\ORM\EntityManager;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Data\ContentTypes;
 use Orb\Log\Loggable;
 use Orb\Log\Logger;
@@ -354,7 +353,7 @@ class DeskproBlobStorage implements Loggable
             } catch (\Exception $e) {
                 $this->logger->logWarn("[DeskproBlobStorage] (saveBlobRecordFromFile) $adapter_id failed: {$e->getCode()} {$e->getMessage()}");
                 if (isset($GLOBALS['DP_IS_MOVE_BLOBS_COMMAND'])) {
-                    KernelErrorHandler::logException($e);
+                    SystemErrorHandler::logException($e);
                 }
                 $prev_e = $e;
             }
@@ -502,7 +501,7 @@ class DeskproBlobStorage implements Loggable
             } catch (\Exception $e) {
                 $this->logger->logWarn("[DeskproBlobStorage] (saveBlobRecordFromString) $adapter_id failed: {$e->getCode()} {$e->getMessage()}");
                 if (isset($GLOBALS['DP_IS_MOVE_BLOBS_COMMAND'])) {
-                    KernelErrorHandler::logException($e);
+                    SystemErrorHandler::logException($e);
                 }
                 $prev_e = $e;
             }

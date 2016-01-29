@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Form\Model\NewTicket;
@@ -63,8 +62,8 @@ use Application\DeskPRO\Tickets\TicketActions\StatusAction;
 use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
 use Application\DeskPRO\Tickets\TicketSplit;
 use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
-use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\Common\Collections\ArrayCollection;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Dates;
 use Orb\Util\DpStrings;
@@ -1194,7 +1193,7 @@ class TicketController extends AbstractController
         $message                    = new Entity\TicketMessage();
         $message['ticket']          = $ticket;
         $message['person']          = $this->person;
-        $message['ip_address']      = dp_get_user_ip_address();
+        $message['ip_address']      = $this->getRequest()->getClientIp();
         $message['creation_system'] = Entity\TicketMessage::CREATED_WEB_AGENT_PORTAL;
 
         if ($this->in->getBool('is_html_reply')) {
@@ -3599,7 +3598,7 @@ class TicketController extends AbstractController
         try {
             $email->setFrom($from_email, $from_name);
         } catch (\Swift_RfcComplianceException $e) {
-            KernelErrorHandler::logException($e, false);
+            SystemErrorHandler::logException($e, false);
             throw $this->createNotFoundException();
         }
 

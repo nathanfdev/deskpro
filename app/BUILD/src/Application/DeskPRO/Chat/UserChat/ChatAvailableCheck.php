@@ -58,8 +58,8 @@ class ChatAvailableCheck
         }
 
         $online_time = 0;
-        if (file_exists(dp_get_data_dir().'/chat_is_available.trigger')) {
-            $online_time = file_get_contents(dp_get_data_dir().'/chat_is_available.trigger');
+        if (file_exists(App::$container->getParameter('kernel.dp_cache_dir').'/chat_is_available.trigger')) {
+            $online_time = file_get_contents(App::$container->getParameter('kernel.dp_cache_dir').'/chat_is_available.trigger');
         }
 
         self::$available_time = (int) $online_time;
@@ -73,8 +73,8 @@ class ChatAvailableCheck
     private static function getAvailableTimeCloud()
     {
         // Cached files
-        $trigger_file      = dp_get_data_dir().'/chat_is_available.cloud.trigger';
-        $trigger_file_time = dp_get_data_dir().'/chat_is_available.cloud.time';
+        $trigger_file      = App::$container->getParameter('kernel.dp_cache_dir').'/chat_is_available.cloud.trigger';
+        $trigger_file_time = App::$container->getParameter('kernel.dp_cache_dir').'/chat_is_available.cloud.time';
 
         if (file_exists($trigger_file) && file_exists($trigger_file_time)) {
             $time = intval(@file_get_contents($trigger_file_time));

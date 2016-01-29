@@ -37,8 +37,8 @@ use Application\DeskPRO\JobQueue\JobQueue;
 use Application\DeskPRO\Usersource\Sync\SyncCursor;
 use Application\DeskPRO\Usersource\Sync\SyncManager;
 use Application\DeskPRO\Usersource\UsersourceManager;
-use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\DBAL\Connection;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Log\Logger;
 use Orb\Util\Env;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -242,7 +242,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
             } catch (\Exception $e) {
                 $this->sync_manager->getSyncHelper()->log(Logger::ERR, 'SYNC ERROR, marking sync as error ('.get_class($e).' '.$e->getMessage().')');
                 // log the errors but continue on to the next usersource
-                KernelErrorHandler::handleException($e, false);
+                SystemErrorHandler::handleException($e, false);
                 $log->markErrorStatus();
             }
 
@@ -320,7 +320,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
                     $this->sync_manager->getSyncHelper()->log(Logger::ERR, 'an exception was thrown when refresh "'.$identity.'" from remote usersource, usersource='.$usersource->getId());
                         // log the error, but continue processing
                         ++$this_usersource_errors;
-                    KernelErrorHandler::handleException($e, false);
+                    SystemErrorHandler::handleException($e, false);
                     if ($this_usersource_errors > 10) {
                         $log->markErrorStatus();
                         $this->sync_manager->saveLog($log);

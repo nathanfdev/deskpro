@@ -53,17 +53,18 @@ class Boot
             }
 
             $classname = $classname.'BootTask';
+            $full_classname = 'DpSys\\Boot\\BootTask\\'.$classname;
 
-            if (!class_exists($classname, false)) {
+            if (!class_exists($full_classname, false)) {
                 require __DIR__.'/BootTask/'.$classname.'.php';
             }
 
-            return new $classname($options);
+            return new $full_classname($options);
         }, $tasks);
 
         /** @var BootTask\BootTaskInterface $t */
         foreach ($tasks as $t) {
-            $res = $t->run($env, $res);
+            $res = $t->run($env, $resources);
             if ($res && is_array($res)) {
                 $resources = array_merge($resources, $res);
             }
@@ -78,6 +79,7 @@ class Boot
     public static function bootWeb()
     {
         $tasks = [
+            'Loader',
             'Lib',
             'PreparePaths',
             'Request',

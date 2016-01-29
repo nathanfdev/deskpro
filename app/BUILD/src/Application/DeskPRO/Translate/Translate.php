@@ -31,7 +31,6 @@
  *
  * @category Translate
  */
-
 namespace Application\DeskPRO\Translate;
 
 use Application\DeskPRO\App;
@@ -42,7 +41,6 @@ use Application\DeskPRO\EventDispatcher\DataEvent;
 use Application\DeskPRO\HttpFoundation\Session;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Translate\Loader\LoaderInterface;
-use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
@@ -520,16 +518,6 @@ class Translate implements PersonContextInterface
 
             if ($null_on_notfound) {
                 return;
-            } else {
-                if (strpos($phrase_name, 'obj') === false && strpos($phrase_name, 'custom') === false && preg_match('#^(user|agent|admin)\.#', $phrase_name)) {
-                    $e = new \InvalidArgumentException("Missing phrase: $phrase_name");
-
-                    if (dp_get_config('debug.dev')) {
-                        KernelErrorHandler::logException($e, false);
-                    } else {
-                        KernelErrorHandler::logException($e, true, 'missing_phrase_'.$phrase_name);
-                    }
-                }
             }
 
             return $this->_noPhrase($phrase_name, $language);

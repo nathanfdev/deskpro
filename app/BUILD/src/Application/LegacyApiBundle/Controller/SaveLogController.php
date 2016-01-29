@@ -31,7 +31,7 @@
  */
 namespace Application\LegacyApiBundle\Controller;
 
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 
 class SaveLogController extends AbstractController
 {
@@ -68,7 +68,7 @@ class SaveLogController extends AbstractController
             'process_log'       => '',
         );
 
-        @KernelErrorHandler::logErrorInfo($einfo);
+        @SystemErrorHandler::logErrorInfo($einfo);
 
         return $this->createSuccessResponse();
     }

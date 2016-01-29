@@ -31,6 +31,7 @@
  */
 namespace Application\DeskPRO\Settings;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Service\RateLimit;
 use Orb\Util\Arrays;
 
@@ -256,7 +257,7 @@ class GeneralSettings
             $this->settings->setSetting('core.helpdesk_disabled', (bool) $this->helpdesk_disabled);
             $this->settings->setSetting('core.helpdesk_disabled_message', $this->helpdesk_disabled_message);
 
-            @file_put_contents(dp_get_data_dir().'/helpdesk-offline-message.txt', $this->helpdesk_disabled_message);
+            @file_put_contents(App::$container->getParameter('kernel.dp_config_dir').'/helpdesk-offline-message.txt', $this->helpdesk_disabled_message);
         }
 
         $this->settings->setSetting('core.deskpro_name', $this->deskpro_name);

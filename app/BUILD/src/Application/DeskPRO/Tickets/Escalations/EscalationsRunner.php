@@ -34,7 +34,7 @@
 namespace Application\DeskPRO\Tickets\Escalations;
 
 use Application\DeskPRO\Monolog\NullLogger;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Monolog\Logger;
 
 class EscalationsRunner implements \Countable, \IteratorAggregate
@@ -113,8 +113,8 @@ class EscalationsRunner implements \Countable, \IteratorAggregate
                 $tickets = $this->matcher->getMatches($esc, $this->batch_size);
             } catch (\Exception $e) {
                 $this->logger->error('[EscalationsRunner] Error with escalation query: '.$e->getMessage());
-                $this->logger->debug(KernelErrorHandler::formatBacktrace($e->getTrace()));
-                KernelErrorHandler::logException($e, true, 'escalation_query_'.$esc->id);
+                $this->logger->debug(SystemErrorHandler::formatBacktrace($e->getTrace()));
+                SystemErrorHandler::logException($e, true, 'escalation_query_'.$esc->id);
                 $tickets = array();
             }
             foreach ($tickets as $t) {
@@ -122,8 +122,8 @@ class EscalationsRunner implements \Countable, \IteratorAggregate
                     $this->executor->applyEscalation($esc, $t);
                 } catch (\Exception $e) {
                     $this->logger->error('[EscalationsRunner] Error applying escalation to ticket: '.$e->getMessage());
-                    $this->logger->debug(KernelErrorHandler::formatBacktrace($e->getTrace()));
-                    KernelErrorHandler::logException($e, true, 'escalation_apply_'.$esc->id);
+                    $this->logger->debug(SystemErrorHandler::formatBacktrace($e->getTrace()));
+                    SystemErrorHandler::logException($e, true, 'escalation_apply_'.$esc->id);
                 }
             }
         }

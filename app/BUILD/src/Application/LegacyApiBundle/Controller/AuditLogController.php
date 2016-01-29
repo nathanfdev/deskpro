@@ -32,7 +32,7 @@
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
@@ -138,7 +138,7 @@ class AuditLogController extends AbstractController implements ProtectedControll
 
         $data = $log->toApiData();
         unset($data['data']);
-        $data['raw_data'] = KernelErrorHandler::varToString($log->data);
+        $data['raw_data'] = SystemErrorHandler::varToString($log->data);
 
         return $this->createApiResponse(array('log' => $data));
     }

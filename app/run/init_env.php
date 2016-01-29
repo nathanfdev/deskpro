@@ -44,7 +44,7 @@ require __DIR__.'/lib/DpEnv.php';
 $DP_ENV = new DpEnv();
 
 define('DP_APP_DIR', $DP_ENV->getAppDir());
-define('DP_ACTIVE_BUILD', $DP_ENV->getActiveBuild());
+define('DP_ACTIVE_BUILD', $DP_ENV->getAppName());
 define('DP_ENV_ID', $DP_ENV->getEnvId());
 
 #------------------------------
@@ -69,12 +69,12 @@ define('DP_WEB_ROOT', $DP_ENV->getWwwDir());
 
 // Attempt to set a log file if its not set
 if (!@ini_get('error_log')) {
-    @ini_set('error_log', $DP_PATHS->getLogDir().'/server-php.log');
+    @ini_set('error_log', $DP_ENV->getUserLogsDir().'/server-php.log');
 }
 
 // If DeskPRO is not installed yet, always enable display_errors
 // so problems during an install process are not missed
-if (!file_exists($DP_PATHS->getHdDataDir().DIRECTORY_SEPARATOR.'is_installed.dat') && !defined('DPC_IS_CLOUD')) {
+if (!file_exists($DP_ENV->getUserCacheDir().DIRECTORY_SEPARATOR.'is_installed.dat') && !defined('DPC_IS_CLOUD')) {
     @ini_set('display_errors', '1');
 
 // also show errors on the CLI all the time too

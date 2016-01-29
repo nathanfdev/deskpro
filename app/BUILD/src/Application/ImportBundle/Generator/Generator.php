@@ -34,8 +34,8 @@ use Application\ImportBundle\Generator\Validator\ExceptionCollection;
 use Application\ImportBundle\Generator\Validator\ValidatorExceptionInterface;
 use Application\ImportBundle\Generator\Writer\AbstractWriter;
 use Application\ImportBundle\Importer\Importer;
-use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\DBAL\DBALException;
+use DpSys\LowError\SystemErrorHandler;
 use Exception;
 
 /**
@@ -155,7 +155,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
 
                                 $raw_data = $exception->getEntity()->getRawData();
                                 if ($raw_data) {
-                                    foreach (explode("\n", KernelErrorHandler::varToString($raw_data, 2)) as $line) {
+                                    foreach (explode("\n", SystemErrorHandler::varToString($raw_data, 2)) as $line) {
                                         $this->logInfo($line);
                                     }
                                 }

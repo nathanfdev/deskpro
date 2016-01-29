@@ -31,7 +31,6 @@
  */
 namespace Application\DeskPRO\Controller;
 
-use DeskPRO\Component\Filesystem\SafeFile;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
@@ -301,92 +300,7 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function manualsAction()
     {
-        $data_dir = dp_get_data_dir().'/manuals';
-        if (!is_dir($data_dir)) {
-            return $this->redirectRoute('user', array(), 301);
-        }
-
-        if (!isset($_GET['m']) && !isset($_GET['p']) && is_file($data_dir.'/index.html')) {
-            $html = file_get_contents($data_dir.'/index.html');
-
-            return $this->createResponse($html);
-        }
-
-        $manual_dir = null;
-        $manual_id  = 0;
-        $index_data = array();
-
-        if (isset($_GET['m'])) {
-            $manual_dir = $data_dir.'/manual'.(int) $_GET['m'];
-            if (is_file($manual_dir.'/index-data.php')) {
-                $index_data = include $manual_dir.'/index-data.php';
-                $manual_id  = $_GET['m'];
-            } else {
-                $manual_dir = null;
-            }
-        } elseif (isset($_GET['p'])) {
-            $dir = dir($data_dir);
-
-            while (($f = $dir->read()) !== false) {
-                if ($f == '.' || $f == '..') {
-                    continue;
-                }
-
-                $path = $data_dir.'/'.$f;
-                if (is_dir($path) && is_file($path.'/index-data.php')) {
-                    $index_data = include $path.'/index-data.php';
-                    if (isset($index_data[$_GET['p']])) {
-                        $manual_dir = $path;
-                        $manual_id  = str_replace('manual', '', $f);
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (!$manual_dir) {
-            return $this->redirectRoute('user', array(), 301);
-        }
-
-        if (isset($_GET['img'])) {
-            $file_path = realpath($manual_dir.'/images/'.$_GET['img']);
-            if (strpos($file_path, $manual_dir) !== 0 || !is_file($file_path)) {
-                return $this->redirectRoute('user', array(), 301);
-            }
-
-            $file     = SafeFile::fileGetContents($file_path, $manual_dir);
-            $mimetype = \Orb\Data\ContentTypes::getContentTypeFromFilename($_GET['img']);
-
-            $res = new \Symfony\Component\HttpFoundation\Response($file, 200, array(
-                'Content-Type'        => $mimetype,
-                'Content-Disposition' => 'inline; filename='.$_GET['img'],
-            ));
-
-            return $res;
-        }
-
-        if (!isset($_GET['p'])) {
-            $html = file_get_contents($manual_dir.'/index.html');
-        } else {
-            if (!isset($index_data[$_GET['p']])) {
-                return $this->redirectRoute('dp3_redirect_manual_php', array('m' => $manual_id));
-            }
-            $page_file = $manual_dir.'/pages/'.$index_data[$_GET['p']];
-            $html      = SafeFile::fileGetContents($page_file, $manual_dir);
-        }
-
-        foreach ($index_data as $pid => $page) {
-            $html = str_replace('pages/'.$page, 'manual.php?m='.$manual_id.'&p='.$pid, $html);
-        }
-
-        $html = preg_replace('#../images/(.*?)\b#', 'manual.php?m='.$manual_id.'&img=$1', $html);
-
-        if (dp_get_config('legacy_manual_custom_header')) {
-            $header_markup = file_get_contents(dp_get_config('legacy_manual_custom_header'));
-            $html          = str_replace('<body>', $header_markup, $html);
-        }
-
-        return $this->createResponse($html);
+        return $this->redirectRoute('user', array(), 301);
     }
 
     /**

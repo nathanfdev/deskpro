@@ -29,14 +29,13 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\TicketTerms;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Orb\Util\Util;
@@ -619,7 +618,7 @@ class TicketSearch extends SearcherAbstract
             $ticket_ids = $db->fetchAllCol($sql);
         } catch (\PDOException $e) {
             $ticket_ids = array();
-            KernelErrorHandler::logException($e, true);
+            SystemErrorHandler::logException($e, true);
 
             if (defined('DP_DEBUG') && DP_DEBUG) {
                 throw $e;
@@ -833,7 +832,7 @@ class TicketSearch extends SearcherAbstract
             $result = $db->fetchColumn($count_sql);
         } catch (\Doctrine\DBAL\DBALException $e) {
             $result = 0;
-            KernelErrorHandler::logException($e, true);
+            SystemErrorHandler::logException($e, true);
 
             if (defined('DP_DEBUG') && DP_DEBUG) {
                 throw $e;
@@ -1301,9 +1300,9 @@ class TicketSearch extends SearcherAbstract
                 }
 
                 if ($term_id) {
-                    $this->getLogger()->logDebug(sprintf('Term: %s[%s] %s %s', $term, $term_id, $op, \DeskPRO\Kernel\KernelErrorHandler::varToString($choice)));
+                    $this->getLogger()->logDebug(sprintf('Term: %s[%s] %s %s', $term, $term_id, $op, \DpSys\LowError\SystemErrorHandler::varToString($choice)));
                 } else {
-                    $this->getLogger()->logDebug(sprintf('Term: %s %s %s', $term, $op, \DeskPRO\Kernel\KernelErrorHandler::varToString($choice)));
+                    $this->getLogger()->logDebug(sprintf('Term: %s %s %s', $term, $op, \DpSys\LowError\SystemErrorHandler::varToString($choice)));
                 }
 
                 if (!$term) {
@@ -2339,7 +2338,7 @@ class TicketSearch extends SearcherAbstract
 
                     default:
                         $e = new \InvalidArgumentException("Unknown term: $term");
-                        \DeskPRO\Kernel\KernelErrorHandler::logErrorInfo(\DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e));
+                        \DpSys\LowError\SystemErrorHandler::logErrorInfo(\DpSys\LowError\SystemErrorHandler::getExceptionInfo($e));
                         break;
                 }
             }

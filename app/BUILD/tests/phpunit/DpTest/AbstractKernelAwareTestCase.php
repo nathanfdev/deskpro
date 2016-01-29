@@ -29,14 +29,13 @@
 /**
  * DeskPRO.
  */
-
 namespace DpTest;
 
 use Application\DeskPRO\Entity\Template;
 use Application\EmailBundle\Entity\SendmailSource;
 use Application\EmailBundle\Templating\Templates\TemplateCustom;
-use DeskPRO\Kernel\ApiKernel;
-use DeskPRO\Kernel\PortalKernel;
+use DpSys\Kernel\ApiKernel;
+use DpSys\Kernel\PortalKernel;
 
 abstract class AbstractKernelAwareTestCase extends DeskProTestCase
 {

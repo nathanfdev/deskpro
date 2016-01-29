@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Kernel;
+namespace DpSys\Kernel;
 
 use Symfony\Component\Config\Loader\LoaderInterface;
 

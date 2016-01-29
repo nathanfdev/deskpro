@@ -28,6 +28,7 @@
 
 namespace Application\ImportBundle\Importer;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\EntityRepository;
@@ -304,7 +305,7 @@ class Importer
         $this->setCurrentName($id);
 
         // trigger cron to start console command
-        file_put_contents(dp_get_data_dir().'/importer_cron.pid', 0);
+        file_put_contents(App::$container->getParameter('kernel.dp_config_dir').'/importer_cron.pid', 0);
 
         return $importer;
     }

@@ -40,7 +40,7 @@ use Application\DeskPRO\Tickets\SnippetFormatter;
 use Application\DeskPRO\Tickets\TicketDisplay;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\SuperKeyPermission;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -459,7 +459,7 @@ class TicketController extends AbstractController implements ProtectedController
 
         if (App::getDb()->isTransactionActive()) {
             $e = new \RuntimeException('WARNING: Unclosed transaction');
-            KernelErrorHandler::logException($e, false, 'unclosed_trans_api');
+            SystemErrorHandler::logException($e, false, 'unclosed_trans_api');
             while (App::getDb()->isTransactionActive()) {
                 App::getDb()->commit();
             }
@@ -1216,7 +1216,7 @@ class TicketController extends AbstractController implements ProtectedController
             $message['person'] = ($this->in->getBool('message_as_agent') ? $this->person : $ticket->person);
         }
 
-        $message['ip_address']      = dp_get_user_ip_address();
+        $message['ip_address']      = $this->getRequest()->getClientIp();
         $message['creation_system'] = \Application\DeskPRO\Entity\TicketMessage::CREATED_WEB_API;
 
         if ($this->in->getBool('dp_is_mobile')) {

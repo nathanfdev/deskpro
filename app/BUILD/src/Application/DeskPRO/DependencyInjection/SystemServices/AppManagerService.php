@@ -107,8 +107,9 @@ class AppManagerService
             'default' => DP_ROOT.'/apps',
         );
 
-        if (dp_get_config('app_paths')) {
-            foreach (dp_get_config('app_paths') as $prefix => $path) {
+        $env = $container->get('dp.env');
+        if ($env->getConfig('settings.app_paths')) {
+            foreach ($env->getConfig('settings.app_paths') as $prefix => $path) {
                 $app_paths[$prefix] = $path;
             }
         }

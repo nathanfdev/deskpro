@@ -67,12 +67,6 @@ $container->setParameter('twig.extension.trans.class', 'Application\\DeskPRO\\Tw
 # Services
 ############################################################################
 
-// dp.cache_clearer.cachedir
-$definition = new Definition();
-$definition->setClass('Application\\DeskPRO\\CacheClearer\\CacheDirClearer');
-$definition->addTag('kernel.cache_clearer');
-$container->setDefinition('dp.cache_clearer.cachedir', $definition);
-
 // session.storage
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\HttpFoundation\\SessionStorage\\SessionEntityStorage');

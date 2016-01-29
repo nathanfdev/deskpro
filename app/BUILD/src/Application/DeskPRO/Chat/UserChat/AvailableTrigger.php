@@ -32,7 +32,6 @@
 namespace Application\DeskPRO\Chat\UserChat;
 
 use Application\DeskPRO\App;
-use DeskPRO\Kernel\KernelErrorHandler;
 
 class AvailableTrigger
 {
@@ -104,35 +103,12 @@ class AvailableTrigger
             }
         }
 
-        $trigger_File = dp_get_data_dir().'/chat_is_available.trigger';
+        $trigger_File = App::$container->getParameter('kernel.dp_cache_dir').'/chat_is_available.trigger';
         if ($is_chat_available) {
             file_put_contents($trigger_File, time());
             @chmod($trigger_File, 0777);
         } elseif (is_file($trigger_File)) {
             unlink($trigger_File);
-        }
-
-        if ($update_urls = dp_get_config('chat_status_update_urls')) {
-            $val = $is_chat_available ? '1' : '0';
-
-            foreach ($update_urls as $url) {
-                $url = str_replace('%CHAT_STATUS%', $val, $url);
-
-                $context = stream_context_create(array(
-                    'http' => array(
-                        'timeout' => 5,
-                    ),
-                ));
-                $res = file_get_contents($url, false, $context);
-
-                if ($is_chat_available && strpos($res, 'DP_CHATSTATUS_WROTE_AVAILABLE') === false) {
-                    $e = new \RuntimeException("Failed to send chat status (1) to $url. Got response: $res");
-                    KernelErrorHandler::logException($e, false);
-                } elseif (!$is_chat_available && strpos($res, 'DP_CHATSTATUS_WROTE_UNAVAILABLE') === false) {
-                    $e = new \RuntimeException("Failed to send chat status (0) to $url. Got response: $res");
-                    KernelErrorHandler::logException($e, false);
-                }
-            }
         }
     }
 }

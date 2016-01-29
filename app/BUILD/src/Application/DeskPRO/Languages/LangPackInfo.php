@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Languages;
 
 class LangPackInfo
@@ -49,10 +48,6 @@ class LangPackInfo
         $this->langs_dir = DP_ROOT.'/languages';
 
         $this->manifest = include $this->langs_dir.'/manifest.php';
-
-        if (dp_get_config('debug.lang_manifest')) {
-            $this->manifest = array_merge($this->manifest, dp_get_config('debug.lang_manifest'));
-        }
     }
 
     /**

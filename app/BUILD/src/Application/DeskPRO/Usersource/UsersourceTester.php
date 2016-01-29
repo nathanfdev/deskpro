@@ -34,7 +34,7 @@
 namespace Application\DeskPRO\Usersource;
 
 use Application\DeskPRO\Entity\Usersource;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Auth\Adapter\AdapterInterface;
 use Orb\Log\Logger;
 use Orb\Log\Writer\ArrayWriter;
@@ -122,7 +122,7 @@ class UsersourceTester
             $log .= "\n\n";
             $log .= $e->getMessage();
             $log .= "\n\n";
-            $log .= KernelErrorHandler::formatBacktrace($e->getTrace(), true);
+            $log .= SystemErrorHandler::formatBacktrace($e->getTrace(), true);
             $this->log      = $log;
             $this->is_valid = false;
 

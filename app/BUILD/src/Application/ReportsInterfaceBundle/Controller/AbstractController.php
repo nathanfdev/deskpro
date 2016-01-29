@@ -65,10 +65,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
      */
     public function preAction($action, $arguments = null)
     {
-        if (dp_get_config('disabled_reports_message')) {
-            return $this->createResponse(dp_get_config('disabled_reports_message'));
-        }
-
         if (!$this->_userHasPermissions()) {
             if ($this->request->isXmlHttpRequest()) {
                 $data = array('error' => 'session_expired');
@@ -92,9 +88,9 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             }
         }
 
-        if (!CheckWhitelistedIP::checkIP($this->container, $this->person)) {
+        if (!CheckWhitelistedIP::checkIP($this->getRequest(), $this->container, $this->person)) {
             return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
-                'ip' => dp_get_user_ip_address(),
+                'ip' => $this->getRequest()->getClientIp(),
             ));
         }
 

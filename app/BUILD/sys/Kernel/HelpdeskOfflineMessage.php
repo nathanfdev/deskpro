@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Kernel;
+namespace DpSys\Kernel;
 
 class HelpdeskOfflineMessage
 {
@@ -168,8 +168,9 @@ return '';
     public static function getOfflineMessage()
     {
         $offline_message = null;
-        if (file_exists(dp_get_data_dir().'/helpdesk-offline-message.txt')) {
-            $offline_message = file_get_contents(dp_get_data_dir().'/helpdesk-offline-message.txt');
+        // TODO use path
+        if (file_exists('/helpdesk-offline-message.txt')) {
+            $offline_message = file_get_contents('/helpdesk-offline-message.txt');
         } elseif (class_exists('Application\DeskPRO\App', false)) {
             try {
                 $offline_message = \Application\DeskPRO\App::getSetting('core.helpdesk_disabled_message');

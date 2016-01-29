@@ -32,7 +32,7 @@
 namespace Application\DeskPRO\JobQueue;
 
 use Application\DeskPRO\DBAL\Connection;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 
 /**
  * The JobSupervisor maintains a list of rules that contain business logic to determine if they are violated.
@@ -86,20 +86,20 @@ class JobSupervisor
             } catch (\Exception $e) {
                 // something terribly wrong happened because we shouldn't be here, we should probably do something now
                 // because this is a problem with the job supervising system! Probably DB query issues.
-                KernelErrorHandler::logException($e);
+                SystemErrorHandler::logException($e);
             }
         }
     }
 
     public function reportUnresolvedViolation(JobSupervisorException $e)
     {
-        KernelErrorHandler::logException($e);
+        SystemErrorHandler::logException($e);
     }
 
     public function reportFixedViolation(JobSupervisorException $e)
     {
         if ($e->canReport()) {
-            KernelErrorHandler::logException($e);
+            SystemErrorHandler::logException($e);
         }
     }
 

@@ -32,7 +32,7 @@
 namespace Application\EmailBundle\Twig;
 
 use Application\EmailBundle\Twig\PostRenderFilter\EmailPostRenderFilter;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 
 class TwigEngine extends \Symfony\Bundle\TwigBundle\TwigEngine
 {
@@ -76,9 +76,9 @@ class TwigEngine extends \Symfony\Bundle\TwigBundle\TwigEngine
                 throw $e;
             }
 
-            $errinfo                  = KernelErrorHandler::getExceptionInfo($exception);
+            $errinfo                  = SystemErrorHandler::getExceptionInfo($exception);
             $errinfo['no_send_error'] = true;
-            KernelErrorHandler::logErrorInfo($errinfo);
+            SystemErrorHandler::logErrorInfo($errinfo);
 
             try {
                 return $this->render($name, $parameters);

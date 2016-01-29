@@ -31,7 +31,6 @@
  *
  * @category DependencyInjection
  */
-
 namespace Application\DeskPRO\DependencyInjection;
 
 use Application\DeskPRO\App;
@@ -51,7 +50,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 class DeskproContainer extends Container
 {
     /**
-     * @var \DeskPRO\Kernel\AbstractKernel
+     * @var \DpSys\Kernel\AbstractKernel
      */
     public $kernel;
 
@@ -71,7 +70,7 @@ class DeskproContainer extends Container
     protected $agent_app_perms;
 
     /**
-     * @return \DeskPRO\Kernel\AbstractKernel
+     * @return \DpSys\Kernel\AbstractKernel
      */
     public function getKernel()
     {
@@ -102,22 +101,6 @@ class DeskproContainer extends Container
     public function getEnvironment()
     {
         return $this->kernel ? $this->kernel->getEnvironment() : 'dev';
-    }
-
-    /**
-     * Checks if a service has been initialized.
-     *
-     * has() checks if a service has been initialized OR if it has a definition to create it.
-     * This just checks if a service has been initialized. You use this when you want to see
-     * if a certain service has been created already, and you'd use has() to see if a service can be used.
-     *
-     * @param $id
-     *
-     * @return bool
-     */
-    public function isServiceInitialized($id)
-    {
-        return isset($this->services[$id]);
     }
 
     /**
@@ -293,6 +276,10 @@ class DeskproContainer extends Container
      */
     public function getDbRead($type = 'default', array $context = null)
     {
+        return $this->getDb();
+
+        //TODO
+        /*
         $type_key_fn = dp_get_config('db_read_mapper');
         if ($type_key_fn) {
             $new_type = call_user_func($type_key_fn, $type, $context);
@@ -357,6 +344,7 @@ class DeskproContainer extends Container
         $this->db_read_conns[$type] = $this->getDb();
 
         return $this->db_read_conns[$type];
+        */
     }
 
     /**
@@ -763,33 +751,6 @@ class DeskproContainer extends Container
     }
 
     /**
-     * @return \Application\DeskPRO\Monolog\LoggerManager
-     */
-    public function getLoggerManager()
-    {
-        return $this->getSystemService('logger_manager');
-    }
-
-    /**
-     * Get a value from the main system configuration.
-     *
-     * @param string $name
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function getSysConfig($name, $default = null)
-    {
-        if ($name == '*') {
-            return $GLOBALS['DP_CONFIG'];
-        }
-
-        $value = dp_get_config($name, $default);
-
-        return $value;
-    }
-
-    /**
      * @return \Application\DeskPRO\DependencyInjection\SystemServices\AgentDataService
      */
     public function getAgentData()
@@ -814,6 +775,8 @@ class DeskproContainer extends Container
     }
 
     /**
+     * @deprecated
+     *
      * @return \Orb\GeoIp\AbstractGeoIp
      */
     public function getGeoIp()
@@ -822,58 +785,28 @@ class DeskproContainer extends Container
     }
 
     /**
-     * Get the path to PHP executable used on the CLI.
+     * @deprecated
      *
-     * Returns false if the path could not be found and if 'php_path' in config is not set.
-     *
-     * @return string
-     */
-    public function getPhpBinaryPath()
-    {
-        return dp_get_php_path();
-    }
-
-    /**
-     * Get the path to mysqldump executable used on the CLI.
-     *
-     * Returns false if the path could not be found and if 'mysqldump_path' in config is not set.
-     *
-     * @return string
-     */
-    public function getMysqldumpBinaryPath()
-    {
-        return dp_get_mysqldump_path();
-    }
-
-    /**
-     * Gets the path to the 'mysql' binary.
-     *
-     * * Returns false if the path could not be found and if 'mysql_path' in config is not set.
-     *
-     * @return string
-     */
-    public function getMysqlBinaryPath()
-    {
-        return dp_get_mysql_path();
-    }
-
-    /**
      * @return string
      */
     public function getLogDir()
     {
-        return dp_get_log_dir();
+        $this->get('dp.env')->getUserLogsDir();
     }
 
     /**
+     * @deprecated
+     *
      * @return string
      */
     public function getBlobDir()
     {
-        return dp_get_blob_dir();
+        $this->get('dp.env')->getUserFilesDir();
     }
 
     /**
+     * * @deprecated
+     *
      * @return string
      */
     public function getBackupDir()
@@ -925,10 +858,6 @@ class DeskproContainer extends Container
         }
 
         return $this->agent_app_perms;
-    }
-
-    public function getAppManagerFiltered()
-    {
     }
 
     /**

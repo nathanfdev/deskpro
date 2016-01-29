@@ -33,7 +33,7 @@ namespace Application\AdminInterfaceBundle\Controller;
 
 use Application\DeskPRO\App\Assets\RequireJsConfigGenerator as AppsRequireJsConfigGenerator;
 use Application\DeskPRO\Entity\ApiToken;
-use DeskPRO\Kernel\License;
+use DpSys\License;
 
 class IndexController extends AbstractController
 {

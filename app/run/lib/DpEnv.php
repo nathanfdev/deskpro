@@ -27,10 +27,94 @@
  */
 
 require_once __DIR__.'/DpRun/ConfigReader.php';
+require_once __DIR__.'/DpRun/BuildFinder.php';
 
 /**
  * This loader file is the first thing run on any DeskPRO app file.
- * It determines app paths:.
+ * It determines app paths and the runtime environment.
+ *
+ * === Important: app vs user dirs ===
+ *
+ * It's very important that you never store instance-specific data in app dirs (e.g., app cache).
+ * Read below, but its critical that per-instance data is always written to a path with 'user' in it's name.
+ * E.g., getAppCacheDir() cannot contain user data, but getUserCacheDir() can.
+ *
+ * Read more below, but briefly: This is important to support cloud where all sites use 1 instance of files.
+ *
+ * === Structure ===
+ *
+ * <code>
+ * /deskpro                  (SG) The main DeskPRO instance
+ *     |- /app               (SG) base app dir
+ *         |- /BUILD              these are app dirs, specific versions of deskpro
+ *         |- /512
+ *         |- /513
+ *     |- /attachments       (DU) default location to store blobs [id:files]
+ *     |- /backups           (DU) default location for backups [id:files]
+ *     |- /bin               (..) This just contains shortcuts to a real builds /bin dir
+ *     |- /config            (SG) Where config is read from. Its considered 'global' because typically
+ *                                config values are loaded differnly with other scenarios like cloud.
+ *     |- /var               (D.) Non-critical data (cache/logs). [id:var]
+ *         |- /cache         (DU) Where cache files are written to [id:cache]
+ *             |- /build_cache    Per-build caches
+ *         |- /debug         (DU) Where debug info can be written to (e.g., output of tests) [id:debug]
+ *         |- /kernel_cache  (DG) Where Symfony cache files are written to [id:kernel_cache]
+ *             |- /BUILD
+ *             |- /512
+ *             |- /513
+ *         |- /logs          (DU) Where log files are written to [id:logs]
+ *         |- /tmp           (DU) Where tmp files are written to [id:tmp]
+ *     |- /www               (DG) Where web files exist (server doc root) [id:www]
+ *         |- /assets        (SG) Asset files like CSS, JS or images etc
+ *             |- /BUILD          these are app dirs, specific versions of deskpro
+ *             |- /512
+ *             |- /513
+ * </code>
+ *
+ * Above you see directories marked as S or D and G or U:
+ *
+ * - (S)tatic directories are always the same. The paths are 'hard-coded' and don't move
+ *   relative to the root of DeskPRO itself. E.g., /deskpro/app will always be the path to PHP files.
+ *
+ * - (D)ynamic directories are paths that can be overriden by configuration. These paths are always
+ *   discovered at runtime by this DpEnv class.
+ *
+ * - (U)ser directories contain data that are specific to a certain instance of DeskPRO. This is an important
+ *   distinction because on cloud, we have 1 set of app files for every account.
+ *
+ *   Note that generally, the user cache directory is probably very uncommon because we always need another way to store
+ *   cache data for multi-server setups. E.g., code would need to use memcache or whatever.
+ *
+ * - (G)lobal directories are dirs that are expected to be used by the app. E.g., the app kernel cache used by symfony
+ *   is considered nearly 'static' after build time and contains no user-specific data.
+ *
+ * === Overriding Paths ===
+ *
+ * You can override specific paths in config.paths.php by specifying a dp_paths array keyed by the IDs
+ * displayed in the above tree. For example:
+ *
+ * <code>
+ * $PATHS_CONFIG['dp_paths'] = ['kernel_cache' => '/mnt/ramdisk'];
+ * </code>
+ *
+ * If you want to move all of 'var', then use the key 'var'. All sub-dirs will be moved as well unless
+ * the sub-dir itself has a config override.
+ *
+ * The other common use-case (e.g. cloud) is to move all user directories under a new root.
+ * We make that easy by using the special key 'user_dir':
+ *
+ * <code>
+ * $PATHS_CONFIG['dp_paths'] = ['user_dir' => '/data/user_981'];
+ * // New we have:
+ * // /data/user_981
+ * //     |- /attachments
+ * //     |- /backups
+ * //     |- /var
+ * //         |- /cache
+ * //         |- /debug
+ * //         |- /logs
+ * //         |- /tmp
+ * </code>
  */
 class DpEnv
 {
@@ -42,22 +126,7 @@ class DpEnv
     /**
      * @var string
      */
-    private $config_dir;
-
-    /**
-     * @var string
-     */
-    private $var_dir;
-
-    /**
-     * @var string
-     */
     private $www_dir;
-
-    /**
-     * @var string
-     */
-    private $baseapp_dir;
 
     /**
      * @var string
@@ -72,12 +141,37 @@ class DpEnv
     /**
      * @var string
      */
-    private $appcache_dir;
+    private $base_kernel_cache_dir;
 
     /**
      * @var string
      */
-    private $appcache_shared_dir;
+    private $user_cache_dir;
+
+    /**
+     * @var string
+     */
+    private $user_debug_dir;
+
+    /**
+     * @var string
+     */
+    private $user_logs_dir;
+
+    /**
+     * @var string
+     */
+    private $user_tmp_dir;
+
+    /**
+     * @var string
+     */
+    private $user_files_dir;
+
+    /**
+     * @var string
+     */
+    private $user_backups_dir;
 
     /**
      * @var string prod, dev or test
@@ -89,93 +183,96 @@ class DpEnv
      */
     private $config_reader;
 
-    public function __construct()
+    /**
+     * DpEnv constructor.
+     *
+     * @param \DpRun\ConfigReader|null $config_reader
+     */
+    public function __construct(\DpRun\ConfigReader $config_reader = null)
     {
-        $this->dp_root     = realpath(__DIR__.'/../');
-        $this->baseapp_dir = $this->dp_root.DIRECTORY_SEPARATOR.'app';
-        $this->config_dir  = $this->resolveCustomPath($this->dp_root.DIRECTORY_SEPARATOR.'config');
-        $this->var_dir     = $this->resolveCustomPath($this->dp_root.DIRECTORY_SEPARATOR.'var');
-        $this->www_dir     = $this->resolveCustomPath($this->dp_root.DIRECTORY_SEPARATOR.'www');
+        #------------------------------
+        # Static paths
+        #------------------------------
 
-        $this->config_reader = new \DpRun\ConfigReader([$this->config_dir]);
+        $this->dp_root = realpath(__DIR__.'/../../../');
+        $baseapp_dir = $this->dp_root.DIRECTORY_SEPARATOR.'app';
 
-        $this->active_build = $this->resolveActiveBuild(
-            $this->baseapp_dir,
-            $this->var_dir.DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR.'active_build.txt'
+        #------------------------------
+        # Prepare config reader
+        #------------------------------
+
+        if ($config_reader) {
+            $this->config_reader = $config_reader;
+        } else {
+            $config_dir  = $this->dp_root.DIRECTORY_SEPARATOR.'config';
+            $this->config_reader = new \DpRun\ConfigReader([$config_dir]);
+        }
+
+        #------------------------------
+        # Dynamic paths
+        #------------------------------
+
+        $sys_var_dir = $this->resolveCustomPath('var', $this->dp_root.DIRECTORY_SEPARATOR.'var');
+
+        $user_dir = $this->config_reader->getConfig('paths.dp_paths.user_dir');
+        if ($user_dir) {
+            $user_dir = realpath($user_dir) ?: rtrim($user_dir, '/\\');
+            $user_var_dir = $user_dir . DIRECTORY_SEPARATOR . 'var';
+        } else {
+            $user_dir = $this->dp_root;
+            $user_var_dir = $sys_var_dir;
+        }
+
+        $kernel_cache_dir          = $this->resolveCustomPath('kernel_cache', $sys_var_dir.DIRECTORY_SEPARATOR.'kernel_cache');
+        $this->www_dir             = $this->resolveCustomPath('www', $this->dp_root.DIRECTORY_SEPARATOR.'www');
+
+        $this->user_files_dir      = $this->resolveCustomPath($user_dir.DIRECTORY_SEPARATOR.'attachments', 'attachments');
+        $this->user_backups_dir    = $this->resolveCustomPath($user_dir.DIRECTORY_SEPARATOR.'backups', 'backups');
+        $this->user_cache_dir      = $this->resolveCustomPath($user_var_dir.DIRECTORY_SEPARATOR.'cache', 'cache');
+        $this->user_debug_dir      = $this->resolveCustomPath($user_var_dir.DIRECTORY_SEPARATOR.'debug', 'debug');
+        $this->user_logs_dir       = $this->resolveCustomPath($user_var_dir.DIRECTORY_SEPARATOR.'logs', 'logs');
+        $this->user_tmp_dir        = $this->resolveCustomPath($user_var_dir.DIRECTORY_SEPARATOR.'tmp', 'tmp');
+
+        #------------------------------
+        # Current build
+        #------------------------------
+
+        $build_finder = new \DpRun\BuildFinder(
+            $this->config_reader,
+            $baseapp_dir
+        );
+        $this->active_build = $build_finder->getActiveBuildDir(
+            $this->user_cache_dir.'active_build'
         );
 
         $this->env_id = $this->config_reader->getConfig('env.environment', 'prod') ?: 'prod';
 
-        $this->app_dir             = $this->baseapp_dir.DIRECTORY_SEPARATOR.$this->active_build;
-        $this->appcache_dir        = $this->var_dir.DIRECTORY_SEPARATOR.'appcache'.DIRECTORY_SEPARATOR.$this->active_build.DIRECTORY_SEPARATOR.$this->env_id;
-        $this->appcache_shared_dir = $this->var_dir.DIRECTORY_SEPARATOR.'appcache'.DIRECTORY_SEPARATOR.$this->active_build.DIRECTORY_SEPARATOR.'shared';
+        $this->app_dir                   = $baseapp_dir.DIRECTORY_SEPARATOR.$this->active_build;
+        $this->app_base_kernel_cache_dir = $kernel_cache_dir.DIRECTORY_SEPARATOR.$this->active_build;
     }
 
     /**
      * If the user places a custom_path.txt file inside of a sys dir,
      * they can override it's default location.
      *
-     * @param string $path
-     *
+     * @param string $id             The config key to use
+     * @param string $path           The default path to use
      * @return string
      */
-    private function resolveCustomPath($path)
+    private function resolveCustomPath($id, $path)
     {
-        $path_name = basename($path);
-
-        if ($custom_path = $this->config_reader->getConfig('paths.dp_paths.'.$path_name)) {
-            return $custom_path;
+        if ($custom_path = $this->config_reader->getConfig('paths.dp_paths.'.$id)) {
+            return realpath($custom_path) ?: rtrim($custom_path, '/\\');
         }
 
-        return realpath($path);
+        return realpath($path) ?: $path;
     }
 
     /**
-     * @param string $baseapp_dir
-     * @param string $active_build_file
+     * Gets the root DeskPRO directory. This is typically the parent of all other dirs.
      *
-     * @return string
-     */
-    private function resolveActiveBuild($baseapp_dir, $active_build_file)
-    {
-        if ($this->config_reader->getConfig('env.environment') === 'dev') {
-            return 'BUILD';
-        }
-
-        if (file_exists($active_build_file)) {
-            $exist_build = trim(file_get_contents($active_build_file));
-        } else {
-            $exist_build = 0;
-        }
-
-        // - When an updating is being installed, we write a trigger file
-        // that represents that the build ID will be changing imminently
-        // - This causes this loader to always check the db for the
-        // version info (ie doesnt trust the cache).
-        // - Then when the version is finally switched, we go back
-        // to using the cache file like normal
-        // - This helps with multi-server setups where it's a two-step
-        // process: install new build files, then run upgrade script
-        $is_updating = file_exists($active_build_file.'.updating');
-
-        if ($exist_build && !$is_updating) {
-            return $exist_build;
-        }
-
-        require_once __DIR__.'/DpRun/ActiveBuildFinder.php';
-        $finder = new \DpRun\ActiveBuildFinder($this->config_reader, $baseapp_dir);
-
-        $build = $finder->findActiveBuild();
-
-        if ($build != $exist_build) {
-            @file_put_contents($active_build_file, $build);
-            @unlink($active_build_file.'.updating');
-        }
-
-        return $build;
-    }
-
-    /**
+     * Example: /path/to/deskpro
+     *
      * @return string
      */
     public function getDpRoot()
@@ -184,22 +281,10 @@ class DpEnv
     }
 
     /**
-     * @return string
-     */
-    public function getConfigDir()
-    {
-        return $this->config_dir;
-    }
-
-    /**
-     * @return string
-     */
-    public function getVarDir()
-    {
-        return $this->var_dir;
-    }
-
-    /**
+     * Gets the www directory.
+     *
+     * Example: /path/to/deskpro/www
+     *
      * @return string
      */
     public function getWwwDir()
@@ -208,22 +293,27 @@ class DpEnv
     }
 
     /**
+     * Gets the 'name' of the currently active build. The 'name' in this case
+     * just means the directory name of the active build.
+     *
+     * This will depend on the current environment/instance.
+     *
+     * Example: 502
+     *
      * @return string
      */
-    public function getBaseAppDir()
-    {
-        return $this->baseapp_dir;
-    }
-
-    /**
-     * @return string
-     */
-    public function getActiveBuild()
+    public function getAppName()
     {
         return $this->active_build;
     }
 
     /**
+     * Gets the path to the current builds app dir.
+     *
+     * This will depend on the current environment/instance.
+     *
+     * Example: /path/to/deskpro/app/502
+     *
      * @return string
      */
     public function getAppDir()
@@ -232,51 +322,92 @@ class DpEnv
     }
 
     /**
+     * Gets the path to the current builds kernel cache dir.
+     *
+     * The kernels decide what the inner structure looks like. Typically
+     * each environment and kernel has it's own dir.
+     *
+     * Example: /path/to/deskpro/var/appcache/502
+     *
      * @return string
      */
-    public function getAppCacheDir()
+    public function getAppBaseKernelCacheDir()
     {
-        return $this->appcache_dir;
+        return $this->app_base_kernel_cache_dir;
     }
 
     /**
+     * Gets the the path to tmp directory.
+     * Note that this tmp directory is shared by all builds.
+     *
+     * Example: /path/to/deskpro/var/tmp
+     *
      * @return string
      */
-    public function getAppCacheSharedDir()
+    public function getUserTmpDir()
     {
-        return $this->appcache_shared_dir;
+        return $this->user_tmp_dir;
     }
 
     /**
+     * Gets the path to the cache directory.
+     * Note that this directory is shared by all builds.
+     *
+     * Example: /path/to/deskpro/var/cache
+     *
      * @return string
      */
-    public function getTmpDir()
+    public function getUserCacheDir()
     {
-        return $this->var_dir.DIRECTORY_SEPARATOR.'tmp';
+        return $this->user_cache_dir;
     }
 
     /**
+     * Gets the path to the logs directory.
+     *
+     * Example: /path/to/deskpro/var/logs
+     *
      * @return string
      */
-    public function getCacheDir()
+    public function getUserLogsDir()
     {
-        return $this->var_dir.DIRECTORY_SEPARATOR.'cache';
+        return $this->user_logs_dir;
     }
 
     /**
+     * Gets the path to the debug directory.
+     *
+     * Example: /path/to/deskpro/var/debug
+     *
      * @return string
      */
-    public function getLogsDir()
+    public function getUserDebugDir()
     {
-        return $this->var_dir.DIRECTORY_SEPARATOR.'logs';
+        return $this->user_debug_dir;
     }
 
     /**
+     * Gets the path to the backups dir.
+     *
+     * Example: /path/to/deskpro/backups
+     *
      * @return string
      */
-    public function getDebugDir()
+    public function getUserBackupsDir()
     {
-        return $this->var_dir.DIRECTORY_SEPARATOR.'debug';
+        return $this->user_backups_dir;
+    }
+
+    /**
+     * Gets the path to the files dir.
+     *
+     * Example: /path/to/deskpro/attachments
+     *
+     * @return string
+     */
+    public function getUserFilesDir()
+    {
+        return $this->user_files_dir;
     }
 
     /**
@@ -294,6 +425,16 @@ class DpEnv
      */
     public function isDebug()
     {
-        return $this->getEnvId() === 'dev' || $this->getEnvId() === 'test';
+        return $this->getEnvId() === 'dev' || $this->getEnvId() === 'test' || $this->getConfig('env.debug_mode');
+    }
+
+    /**
+     * @param string  $id        The config value you want
+     * @param mixed   $default   If the value is unset, the default value
+     * @return mixed
+     */
+    public function getConfig($id, $default = null)
+    {
+        return $this->config_reader->getConfig($id, $default);
     }
 }

@@ -44,7 +44,7 @@ use Application\DeskPRO\Settings\TicketFwdSettings;
 use Application\DeskPRO\Settings\TicketSettings;
 use Application\LegacyApiBundle\Form\CustomField\Type\PersonStartType;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
-use DeskPRO\Kernel\License;
+use DpSys\License;
 use Orb\Util\Env;
 use Orb\Util\Strings;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;

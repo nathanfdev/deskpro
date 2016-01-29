@@ -49,13 +49,15 @@ class BlobStorageService
         # Create a logger
         #------------------------------
 
+        $env = $container->get('dp.env');
+
         $logger = new Logger();
 
-        if (!dp_get_config('enable_blobstorage_log')) {
+        if (!$env->getConfig('logs.enable_blobstorage_log')) {
             $logger->addFilter(new \Orb\Log\Filter\PriorityFilter(Logger::WARN));
         }
 
-        $wr = new \Orb\Log\Writer\Stream($container->getLogDir().DIRECTORY_SEPARATOR.'blob_storage.log');
+        $wr = new \Orb\Log\Writer\Stream($env->getLogsDir().DIRECTORY_SEPARATOR.'blob_storage.log');
         $logger->addWriter($wr);
 
         #------------------------------

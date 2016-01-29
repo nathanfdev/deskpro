@@ -98,7 +98,7 @@ class InstallQueryLogFormatter extends \Orb\Filter\AbstractFilter
             $query_tag,
             $log_item['queryinfo']['time_taken'],
             $sql,
-            \DeskPRO\Kernel\KernelErrorHandler::varToString($params)
+            \DpSys\LowError\SystemErrorHandler::varToString($params)
         );
 
         $log_item[\Orb\Log\LogItem::PRIORITY]      = \Orb\Log\Logger::DEBUG;

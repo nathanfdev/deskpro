@@ -31,7 +31,6 @@
  *
  * @category Templating
  */
-
 namespace Application\EmailBundle\Twig\Extension;
 
 use Application\DeskPRO\App;
@@ -1225,9 +1224,6 @@ class TemplatingExtension extends \Twig_Extension
     public function getPhraseText($phrase_name)
     {
         $p = $this->container->get('deskpro.core.translate')->getPhraseText($phrase_name);
-        if ($p && dp_get_config('debug.language_test_mode')) {
-            $p = "^$p^";
-        }
 
         return $p;
     }
@@ -1266,12 +1262,9 @@ class TemplatingExtension extends \Twig_Extension
 
     public function assetFull($location)
     {
-        $url = dp_get_config('assets_full_url');
-        if (!$url) {
-            $url = App::getSetting('core.deskpro_url');
-            $url = trim(str_replace('/index.php', '', $url), '/');
-            $url .= (App::getConfig('static_path') ?: '/web').'/';
-        }
+        $url = App::getSetting('core.deskpro_url');
+        $url = trim(str_replace('/index.php', '', $url), '/');
+        $url .= '/web/';
 
         /** @var Request $r */
         $r = $this->container->get('request', ContainerInterface::NULL_ON_INVALID_REFERENCE);
@@ -1339,13 +1332,13 @@ class TemplatingExtension extends \Twig_Extension
 
     public function includeFile($path)
     {
-        if (!dp_get_config('enable_include_file')) {
+        if (!$this->container->get('dp.env')->getConfig('sys.tpl.enable_include_file')) {
             return '';
         }
 
         if (!file_exists($path)) {
             $e = new \Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException('File does not exist: '.$path);
-            \DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($e);
+            \DpSys\LowError\SystemErrorHandler::logErrorInfo($e);
 
             return '';
         }
@@ -1355,7 +1348,7 @@ class TemplatingExtension extends \Twig_Extension
 
     public function includePhpFile($path, array $with = null)
     {
-        if (!dp_get_config('enable_include_file')) {
+        if (!$this->container->get('dp.env')->getConfig('sys.tpl.enable_include_file')) {
             return '';
         }
 
@@ -1365,7 +1358,7 @@ class TemplatingExtension extends \Twig_Extension
 
         if (!file_exists($path)) {
             $e = new \Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException('File does not exist: '.$path);
-            \DeskPRO\Kernel\KernelErrorHandler::logException($e, false, 'tpl_include_php_file');
+            \DpSys\LowError\SystemErrorHandler::logException($e, false, 'tpl_include_php_file');
 
             return '';
         }
@@ -1379,7 +1372,7 @@ class TemplatingExtension extends \Twig_Extension
 
     public function dumpVar($var)
     {
-        return \DeskPRO\Kernel\KernelErrorHandler::varToString($var);
+        return \DpSys\LowError\SystemErrorHandler::varToString($var);
     }
 
     public function urlTrimScheme($url, $trim_adv = false)

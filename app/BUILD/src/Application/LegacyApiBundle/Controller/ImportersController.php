@@ -202,6 +202,6 @@ class ImportersController extends AbstractController implements ProtectedControl
             return '//'.DPC_SITE_DOMAIN.'/web/images/admin/icons/icon-'.$importer->getData('id').'.png';
         }
 
-        return (dp_get_config('static_path') ?: '/web').'/images/admin/icons/icon-'.$importer->getData('id').'.png';
+        return '/web/images/admin/icons/icon-'.$importer->getData('id').'.png';
     }
 }

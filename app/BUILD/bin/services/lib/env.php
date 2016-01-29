@@ -56,9 +56,6 @@ if (!defined('DP_CONFIG_FILE')) {
 @ini_set('memory_limit', -1);
 @set_time_limit(0);
 
-require DP_ROOT.'/sys/load_config.php';
-dp_load_config();
-
 #------------------------------
 # Attempt to set error log file if unset
 #------------------------------

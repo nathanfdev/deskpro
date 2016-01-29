@@ -426,8 +426,8 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
                 App::getDb()->replace('permissions_cache', $insert_cache);
             }
         } catch (\Exception $e) {
-            $info = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
-            \DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($info);
+            $info = \DpSys\LowError\SystemErrorHandler::getExceptionInfo($e);
+            \DpSys\LowError\SystemErrorHandler::logErrorInfo($info);
         }
 
         $this->dirty_caches = array();

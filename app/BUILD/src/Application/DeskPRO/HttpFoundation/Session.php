@@ -31,7 +31,6 @@
  *
  * @category HttpFoundation
  */
-
 namespace Application\DeskPRO\HttpFoundation;
 
 use Application\DeskPRO\App;
@@ -154,8 +153,8 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                             'person_id'    => $person_id,
                             'area'         => DP_INTERFACE,
                             'is_success'   => 1,
-                            'ip_address'   => dp_get_user_ip_address(),
-                            'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
+                            'ip_address'   => '',
+                            'hostname'     => '',
                             'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
                             'date_created' => date('Y-m-d H:i:s'),
                             'via_cookie'   => 1,
@@ -240,7 +239,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
             }
         }
 
-        $user_ip = dp_get_user_ip_address();
+        $user_ip = '';
 
         $path = '';
         if (App::getContainer()->isScopeActive('request')) {

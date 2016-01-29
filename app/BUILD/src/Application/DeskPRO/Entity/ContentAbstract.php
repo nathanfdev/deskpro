@@ -32,12 +32,11 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use DateTime;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
@@ -256,7 +255,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getPath()
     {
-        KernelErrorHandler::logExceptionIfUniqueBacktrace(
+        SystemErrorHandler::logExceptionIfUniqueBacktrace(
             new \Exception('DEPRECATED METHOD CALL: '.get_called_class().'::getPath()')
         );
 
@@ -270,7 +269,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getLink()
     {
-        KernelErrorHandler::logExceptionIfUniqueBacktrace(
+        SystemErrorHandler::logExceptionIfUniqueBacktrace(
             new \Exception('DEPRECATED METHOD CALL: '.get_called_class().'::getLink()')
         );
 
@@ -284,7 +283,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getPermalink($absolute = true)
     {
-        KernelErrorHandler::logExceptionIfUniqueBacktrace(
+        SystemErrorHandler::logExceptionIfUniqueBacktrace(
             new \Exception('DEPRECATED METHOD CALL: '.get_called_class().'::getPermalink()')
         );
 

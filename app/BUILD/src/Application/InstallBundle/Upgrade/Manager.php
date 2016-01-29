@@ -29,14 +29,13 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\InstallBundle\Upgrade;
 
 use Application\DeskPRO\App\Native\NativeAppsSync;
 use Application\DeskPRO\App\Package\PackageInstaller;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\InstallBundle\Data\DefaultDataProcessor;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Monolog\Logger;
 use Orb\Util\Arrays;
 
@@ -121,7 +120,7 @@ class Manager
         } catch (\Exception $e) {
             if ($this->logger) {
                 $this->logger->error(sprintf('EXCEPTION: %s [%s] %s', get_class($e), $e->getCode(), $e->getMessage()));
-                $trace = KernelErrorHandler::formatBacktrace($e->getTrace());
+                $trace = SystemErrorHandler::formatBacktrace($e->getTrace());
                 $this->logger->debug($trace);
             }
 
@@ -204,20 +203,6 @@ class Manager
             $this->logger->debug('invalidate lang js cache');
         }
 
-        // need to restart the Twitter daemon (pid of 0 means to not run)
-        if (file_exists(dp_get_data_dir().'/twitter.pid')) {
-            $twitter_pid = intval(file_get_contents(dp_get_data_dir().'/twitter.pid'));
-        } else {
-            $twitter_pid = null;
-        }
-
-        if ($twitter_pid !== 0) {
-            if ($this->logger) {
-                $this->logger->debug("restart twitter pid $twitter_pid");
-            }
-            @unlink(dp_get_data_dir().'/twitter.pid');
-        }
-
         #------------------------------
         # Data
         #------------------------------
@@ -241,7 +226,7 @@ class Manager
 
         // Dont fail the upgrade at this point
         // but log the error so we can know something went wrong with an app
-        $app_syncer->setExceptionHandler(function ($e) { KernelErrorHandler::logException($e); });
+        $app_syncer->setExceptionHandler(function ($e) { SystemErrorHandler::logException($e); });
 
         $app_syncer->runUpdates();
         $app_syncer->runSync();

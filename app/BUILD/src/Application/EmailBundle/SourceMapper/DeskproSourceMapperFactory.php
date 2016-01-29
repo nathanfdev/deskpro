@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\EmailBundle\SourceMapper;
 
 use Application\EmailBundle\SourceMapper\EmailRateLimit\EmailRateLimitFactory;
@@ -51,9 +50,11 @@ class DeskproSourceMapperFactory
         $rate_limit = EmailRateLimitFactory::create($container);
         $source_mapper->setRateLimit($rate_limit);
 
-        if (dp_get_config('sendmail_redis_queue')) {
+        $env = $container->get('dp.env');
+
+        if ($info = $env->getConfig('sys.sendmail_redis_queue')) {
             // see https://github.com/nrk/predis/wiki/Connection-Parameters
-            $client       = new Predis\Client(dp_get_config('sendmail_redis_queue'));
+            $client       = new Predis\Client($info);
             $redis_queuer = new RedisPendingQueuer($client, 'sendmail_queue');
 
             $external = new ExternalPendingQueue($source_mapper, $redis_queuer);

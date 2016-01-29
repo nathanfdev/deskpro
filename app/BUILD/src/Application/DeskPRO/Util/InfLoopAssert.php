@@ -28,7 +28,7 @@
 
 namespace Application\DeskPRO\Util;
 
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 
 /**
  * Simple util that counts iterations in a loop and will log an exception
@@ -98,7 +98,7 @@ class InfLoopAssert
                 throw $e;
             }
 
-            KernelErrorHandler::logException($e, true, "inf_loop_$id");
+            SystemErrorHandler::logException($e, true, "inf_loop_$id");
 
             return false;
         }

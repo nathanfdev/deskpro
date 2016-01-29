@@ -692,26 +692,6 @@ class ServerChecks
         }
 
         #------------------------------
-        # data_write
-        #------------------------------
-
-        if ($type == 'data_write' || $type == 'all') {
-            $this->getLogger()->log('[CHECK] Checking if data directories are writable', Logger::DEBUG);
-            $dir = dp_get_data_dir();
-            if (deskpro_install_check_data_writable(dp_get_data_dir())) {
-                $this->getLogger()->log('[OK] Data dirs are writable', Logger::DEBUG);
-            } else {
-                $this->has_fatal_server_errors = true;
-                $msg                           = "The data directory and all sub-directories must exist and be writable (path: $dir).";
-                $this->getLogger()->log("[FATAL] $msg", Logger::INFO);
-                $this->server_errors['data_write'] = array(
-                    'message' => $msg,
-                    'level'   => 'fatal',
-                );
-            }
-        }
-
-        #------------------------------
         # dp3_files
         #------------------------------
 

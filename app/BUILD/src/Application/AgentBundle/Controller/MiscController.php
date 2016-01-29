@@ -961,14 +961,6 @@ JS;
         ));
     }
 
-    public function saveDomAction()
-    {
-        $dom = $this->in->getRaw('html');
-        file_put_contents(dp_get_data_dir().'/dom.html', $dom);
-
-        return $this->createJsonResponse(array('okay' => true));
-    }
-
     public function getRequirejsLoaderAction()
     {
         $app_perms = App\AgentAppPermissions::newFromDb($this->container->getDb(), $this->container->getAppManager()->getAllApps());

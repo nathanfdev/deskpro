@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
@@ -38,7 +37,7 @@ use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Log\DelegateLogger;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Log\Filter\CallbackFormatter;
 use Orb\Log\LogItem;
 use Orb\Util\Arrays;
@@ -369,7 +368,7 @@ class Runner
             try {
                 $db->update('email_sources', $set, array('id' => $id));
             } catch (\Exception $e) {
-                KernelErrorHandler::logException($e);
+                SystemErrorHandler::logException($e);
             }
         });
     }
@@ -468,7 +467,7 @@ class Runner
             if (!$is_in_trans && App::getDb()->isTransactionActive()) {
                 $source_logger->log('WARNING: Unclosed transaction!', 'info');
                 $e = new \RuntimeException('WARNING: Unclosed transaction');
-                KernelErrorHandler::logException($e, false, 'unclosed_trans_gateway');
+                SystemErrorHandler::logException($e, false, 'unclosed_trans_gateway');
                 while (App::getDb()->isTransactionActive()) {
                     App::getDb()->commit();
                 }
@@ -483,18 +482,18 @@ class Runner
                     'exception' => get_class($e),
                     'message'   => $message,
                     'code'      => $e->getCode(),
-                    'trace'     => KernelErrorHandler::formatBacktrace($e->getTrace()),
+                    'trace'     => SystemErrorHandler::formatBacktrace($e->getTrace()),
                 ),
             );
 
             if ($allow_retry) {
                 $do_retry = true;
                 if (strpos(strtolower($e->getMessage()), 'deadlock') !== false) {
-                    KernelErrorHandler::logException($e, true);
+                    SystemErrorHandler::logException($e, true);
                 }
             } else {
                 $source_logger->logWarn('Not trying again (allow_retry is false)');
-                KernelErrorHandler::logException($e, true);
+                SystemErrorHandler::logException($e, true);
             }
 
             if (App::getDb()->isTransactionActive()) {
@@ -708,7 +707,7 @@ class Runner
             if (App::getDb()->isTransactionActive()) {
                 $this->logger->log('WARNING: Unclosed transaction!', 'info');
                 $e = new \RuntimeException('WARNING: Unclosed transaction. Sources processed: '.implode(', ', $processed_source_ids));
-                KernelErrorHandler::logException($e);
+                SystemErrorHandler::logException($e);
                 while (App::getDb()->isTransactionActive()) {
                     App::getDb()->commit();
                 }
@@ -746,7 +745,7 @@ class Runner
                     }
                 } catch (\Exception $e) {
                     $this->logger->log(sprintf('readNext exception: %s', $e->getMessage()), 'info');
-                    KernelErrorHandler::logException($e, false);
+                    SystemErrorHandler::logException($e, false);
                     break;
                 }
             }

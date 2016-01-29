@@ -34,7 +34,6 @@
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\Languages\Build\OneSkyBuild;
-use Application\DeskPRO\Languages\Build\TransifexBuild;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -45,28 +44,15 @@ class DevExportLangCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
     {
         $this->setName('dpdev:export-lang');
         $this->addOption('po', null, InputOption::VALUE_NONE, 'Export PO files');
-        $this->addOption('transifex', null, InputOption::VALUE_NONE, 'Export to transifex');
         $this->addOption('onesky', null, InputOption::VALUE_NONE, 'Export to onesky');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($input->getOption('transifex')) {
-            if (
-                !dp_get_config('transifex.url')
-                || !dp_get_config('transifex.username')
-                || !dp_get_config('transifex.password')
-            ) {
-                $output->writeln('Missing transifex configuration');
-
-                return 1;
-            }
-        }
-
         if ($input->getOption('onesky')) {
             if (
-                !dp_get_config('onesky.api_key')
-                || !dp_get_config('onesky.secret_key')
+                !$env->getConfig('onesky.api_key')
+                || !$env->getConfig('onesky.secret_key')
             ) {
                 $output->writeln('Missing onesky configuration');
 
@@ -169,25 +155,10 @@ class DevExportLangCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
         return 0;
     }
 
-    protected function exportTransifex(InputInterface $input, OutputInterface $output)
-    {
-        $build = new TransifexBuild(
-            dp_get_config('transifex.url'),
-            dp_get_config('transifex.username'),
-            dp_get_config('transifex.password')
-        );
-
-        $wr = new \Orb\Log\Writer\ConsoleOutputWriter($output);
-        $build->getLogger()->addWriter($wr);
-
-        $build->updateAllSources();
-
-        return 0;
-    }
-
     public function exportOneSky(InputInterface $input, OutputInterface $output)
     {
-        $build = new OneSkyBuild(dp_get_config('onesky.api_key'), dp_get_config('onesky.secret_key'));
+        $env   = $this->getContainer()->get('dp.env');
+        $build = new OneSkyBuild($env->getConfig('onesky.api_key'), $env->getConfig('onesky.secret_key'));
 
         $wr = new \Orb\Log\Writer\ConsoleOutputWriter($output);
         $build->getLogger()->addWriter($wr);

@@ -32,7 +32,7 @@
 namespace Application\DeskPRO\Log\Writer;
 
 use Application\DeskPRO\App;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 
 class LogItemEntity extends \Orb\Log\Writer\AbstractWriter
 {
@@ -86,7 +86,7 @@ class LogItemEntity extends \Orb\Log\Writer\AbstractWriter
                 $this->flush();
             }
         } catch (\Exception $e) {
-            KernelErrorHandler::logException($e, false);
+            SystemErrorHandler::logException($e, false);
         }
     }
 
@@ -117,7 +117,7 @@ class LogItemEntity extends \Orb\Log\Writer\AbstractWriter
                 }
             }
         } catch (\Exception $e) {
-            KernelErrorHandler::logException($e, false);
+            SystemErrorHandler::logException($e, false);
         }
     }
 }

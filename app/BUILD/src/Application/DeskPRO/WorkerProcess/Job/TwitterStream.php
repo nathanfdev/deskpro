@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -111,7 +110,7 @@ class TwitterStream extends AbstractJob
                     } catch (\Exception $e) {
                         $this->logStatus('exception caught: '.$e->getMessage().' '.$e->getFile().':'.$e->getLine());
                         $success = false;
-                        \DeskPRO\Kernel\KernelErrorHandler::logException($e);
+                        \DpSys\LowError\SystemErrorHandler::logException($e);
                     }
                 } else {
                     // couldn't unserialize the data, so just get rid of this

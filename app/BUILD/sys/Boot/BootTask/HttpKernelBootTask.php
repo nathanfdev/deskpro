@@ -29,7 +29,7 @@
 namespace DpSys\Boot\BootTask;
 
 use DeskPRO\Bundle\PortalBundle\HttpCache\PortalHttpCache;
-use DeskPRO\Kernel;
+use DpSys\Kernel;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -84,7 +84,7 @@ class HttpKernelBootTask implements BootTaskInterface
                 if (!$env->getConfig('settings.disable_portal_http_cache')) {
                     require_once DP_APP_DIR.'/src/DeskPRO/Bundle/PortalBundle/HttpCache/PortalHttpCache.php';
 
-                    return new PortalHttpCache($kernel, $env->getAppCacheDir().DIRECTORY_SEPARATOR.'http_cache');
+                    return new PortalHttpCache($kernel, $env->getUserCacheDir().DIRECTORY_SEPARATOR.'http_cache');
                 }
 
                 return $kernel;

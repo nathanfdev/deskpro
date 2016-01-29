@@ -34,7 +34,7 @@ namespace Application\DeskPRO\AuditLog;
 use Application\DeskPRO\AuditLog\AuditWriter\AuditWriterInterface;
 use Application\DeskPRO\Entity\AuditLog;
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\CompositeCaller;
 
 class AuditManager
@@ -199,7 +199,7 @@ class AuditManager
 
         foreach ($ret as $r) {
             if ($r['exception']) {
-                KernelErrorHandler::logException($r['exception'], false);
+                SystemErrorHandler::logException($r['exception'], false);
             }
         }
     }

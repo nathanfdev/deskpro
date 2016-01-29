@@ -28,6 +28,7 @@
 
 namespace Application\ImportBundle\Logger;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\DataStore;
 use Doctrine\ORM\EntityManager;
 use Monolog\Handler\AbstractProcessingHandler;
@@ -91,7 +92,7 @@ class ImporterProcessingHandler extends AbstractProcessingHandler
         $str = (string) $record['formatted'];
 
         $str = str_replace(DP_WEB_ROOT, '', $str);
-        $str = str_replace(dp_get_data_dir(), '/DP_DATA', $str);
+        $str = str_replace(App::$container->getParameter('kernel.dp_config_dir'), '/DP_DATA', $str);
 
         $log = $this->importer->getData('log').$str;
         if (isset($log[300000])) {

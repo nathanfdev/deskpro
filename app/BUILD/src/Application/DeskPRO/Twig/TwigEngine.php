@@ -73,9 +73,9 @@ class TwigEngine extends \Symfony\Bundle\TwigBundle\TwigEngine
                 throw $e;
             }
 
-            $errinfo                  = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($exception);
+            $errinfo                  = \DpSys\LowError\SystemErrorHandler::getExceptionInfo($exception);
             $errinfo['no_send_error'] = true;
-            \DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($errinfo);
+            \DpSys\LowError\SystemErrorHandler::logErrorInfo($errinfo);
 
             $this->environment->markCustomTemplateAsCrashed((string) $name);
 

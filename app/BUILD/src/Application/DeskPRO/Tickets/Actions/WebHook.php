@@ -36,7 +36,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Guzzle\Http\Client as HttpClient;
 use Orb\Util\CheckedOptionsArray;
 use Orb\Util\Strings;
@@ -126,7 +126,7 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
             );
             $ticket->getStateChangeRecorder()->recordData('webhook', $data);
         } catch (\Exception $e) {
-            KernelErrorHandler::logException($e, false, 'webhook_'.md5($this->getActionOption('url')));
+            SystemErrorHandler::logException($e, false, 'webhook_'.md5($this->getActionOption('url')));
             $data = array(
                 'url'     => $url,
                 'reason'  => $e->getMessage(),

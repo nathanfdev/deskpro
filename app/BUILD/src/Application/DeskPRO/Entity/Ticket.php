@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -43,10 +42,10 @@ use Application\DeskPRO\Tickets\TicketChangeTracker;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\PortalBundle\Form\Collection\CustomDataCollection;
-use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use DpSys\LowError\SystemErrorHandler;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Orb\Util\Arrays;
 use Orb\Util\DpStrings;
@@ -1497,7 +1496,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
         $now = new \DateTime();
         if ($message->person['is_agent'] && !(defined('DP_INTERFACE') && DP_INTERFACE == 'user')) {
-            if (!!$this->_is_new) {
+            if ((bool) $this->_is_new) {
                 if (!$this->date_last_agent_reply || $this->date_last_agent_reply < $now) {
                     $this['date_last_agent_reply'] = $now;
                 }
@@ -3579,7 +3578,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function getPath()
     {
-        KernelErrorHandler::logExceptionIfUniqueBacktrace(
+        SystemErrorHandler::logExceptionIfUniqueBacktrace(
             new \Exception('DEPRECATED METHOD CALL: '.get_called_class().'::getPath()')
         );
 
@@ -3591,7 +3590,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function getLink()
     {
-        KernelErrorHandler::logExceptionIfUniqueBacktrace(
+        SystemErrorHandler::logExceptionIfUniqueBacktrace(
             new \Exception('DEPRECATED METHOD CALL: '.get_called_class().'::getLink()')
         );
 
@@ -3646,7 +3645,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function getProperty($key, $default = null)
     {
-        return ($this->properties !== null && isset($this->properties[$key]) ? $this->properties[$key] : $default);
+        return $this->properties !== null && isset($this->properties[$key]) ? $this->properties[$key] : $default;
     }
 
     /**

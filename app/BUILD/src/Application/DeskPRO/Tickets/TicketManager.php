@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -44,7 +43,7 @@ use Application\DeskPRO\Tickets\Actions\SendAgentAlert;
 use Application\DeskPRO\Tickets\Slas\SlaClientMessageSender;
 use Application\LegacyApiBundle\Request\RequestAuth;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Orb\Util\DpStrings;
@@ -192,7 +191,7 @@ class TicketManager
         try {
             $ticket->ref = $ref_gen->generateReference('DeskPRO:Ticket');
         } catch (\Exception $e) {
-            KernelErrorHandler::logException($e);
+            SystemErrorHandler::logException($e);
             $ref         = DpStrings::random(4, Strings::CHARS_ALPHA_IU).'-'.DpStrings::random(4, Strings::CHARS_NUM).'-'.DpStrings::random(4, Strings::CHARS_ALPHA_IU).'-'.date('ymd');
             $ticket->ref = $ref;
         }
@@ -322,7 +321,7 @@ class TicketManager
                 try {
                     $action->processTicket($ticket, $context);
                 } catch (\Exception $e) {
-                    KernelErrorHandler::logException($e);
+                    SystemErrorHandler::logException($e);
                     $context->getLogger()->error(sprintf('[%s] Exception: %s', OrbUtil::getBaseClassname($action), $e->getMessage()));
                 }
             } else {
@@ -344,7 +343,7 @@ class TicketManager
                 try {
                     $action->processTicket($ticket, $context);
                 } catch (\Exception $e) {
-                    KernelErrorHandler::logException($e);
+                    SystemErrorHandler::logException($e);
                     $context->getLogger()->error(sprintf('[%s] Exception: %s', OrbUtil::getBaseClassname($action), $e->getMessage()));
                 }
             } else {
@@ -407,7 +406,7 @@ class TicketManager
                     try {
                         $search_updater->update();
                     } catch (\Exception $e) {
-                        KernelErrorHandler::logException($e);
+                        SystemErrorHandler::logException($e);
                     }
                 }, null, 'db_done_trans_commit'
             );
@@ -433,7 +432,7 @@ class TicketManager
                     );
                 } catch (\Exception $e) {
                     $blob = null;
-                    KernelErrorHandler::logException($e);
+                    SystemErrorHandler::logException($e);
                 }
 
                 if ($blob) {
@@ -444,7 +443,7 @@ class TicketManager
                             'date_created' => date('Y-m-d H:i:s'),
                         ));
                     } catch (\Exception $e) {
-                        KernelErrorHandler::logException($e);
+                        SystemErrorHandler::logException($e);
                     }
                 }
             }
@@ -571,9 +570,11 @@ class TicketManager
         $logger = new DpLogger('tickets');
         $logger->enableSavedMessages();
 
-        if ($logfile = dp_get_config('debug.enable_ticket_log')) {
+        $env = $this->container->get('dp.env');
+
+        if ($logfile = $env->getConfig('logs.enable_ticket_log')) {
             if ($logfile === true || $logfile === 1 || $logfile === '1' || $logfile === 'true') {
-                $logfile = dp_get_log_dir().'/ticket.log';
+                $logfile = $env->getLogsDir().'/ticket.log';
             }
             $stream = new StreamHandler($logfile);
             $logger->pushHandler($stream);

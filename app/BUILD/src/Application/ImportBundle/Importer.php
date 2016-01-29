@@ -54,7 +54,7 @@ use Application\ImportBundle\ValueImporter\KbValueImporter;
 use Application\ImportBundle\ValueImporter\NewsValueImporter;
 use Application\ImportBundle\ValueImporter\PersonValueImporter;
 use Application\ImportBundle\ValueImporter\TicketValueImporter;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Orb\Util\Util;
@@ -332,7 +332,7 @@ class Importer
             } catch (\Exception $ex) {
                 $this->getLogger()->critical(sprintf(
                     "Unhandled exception while processing (@%s) -- %s\n%s",
-                    $file->getRealPath(), $ex->getMessage(), KernelErrorHandler::formatBacktrace($ex->getTrace())
+                    $file->getRealPath(), $ex->getMessage(), SystemErrorHandler::formatBacktrace($ex->getTrace())
                 ));
 
                 throw $ex;

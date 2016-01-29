@@ -36,7 +36,7 @@ use Application\AgentBundle\Controller\JsonRenderer\PeopleListRenderer;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\People\PeopleResultsDisplay;
 use Application\DeskPRO\UI\RuleBuilder;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
@@ -767,7 +767,7 @@ class PeopleSearchController extends AbstractController
 
                 $people_list = $output;
             } catch (\Exception $e) {
-                KernelErrorHandler::logException($e);
+                SystemErrorHandler::logException($e);
                 /** @var \Application\DeskPRO\EntityRepository\Person $rep */
                 $rep         = $this->em->getRepository('DeskPRO:Person');
                 $people_list = $rep->quickSearch($q, $this->in->getBool('start_with'), $with_agents, $exclude_org, $limit);

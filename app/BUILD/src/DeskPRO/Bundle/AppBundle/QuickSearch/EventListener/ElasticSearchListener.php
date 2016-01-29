@@ -29,13 +29,12 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvent;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvents;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use FOS\ElasticaBundle\Manager\RepositoryManager;
 use FOS\ElasticaBundle\Repository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -112,7 +111,7 @@ class ElasticSearchListener implements EventSubscriberInterface
                 $context->addEntity($entity);
             }
         } catch (\Exception $e) {
-            KernelErrorHandler::logException($e);
+            SystemErrorHandler::logException($e);
             $this->dispatchFallback($event);
         }
     }

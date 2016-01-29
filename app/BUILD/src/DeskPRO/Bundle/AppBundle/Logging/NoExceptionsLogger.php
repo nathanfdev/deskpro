@@ -31,7 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Logging;
 
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Monolog\Logger;
 
 /**
@@ -47,7 +47,7 @@ class NoExceptionsLogger extends Logger
         } catch (\Exception $e) {
             // this is disabled for now because it clogs the normal error.log file with an exception trace
             // dozens of times per request. ignore log exceptions silently.
-            //KernelErrorHandler::handleException($e, false);
+            //SystemErrorHandler::handleException($e, false);
         }
     }
 }

@@ -33,7 +33,7 @@ namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Tickets\Actions\NullAction;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
@@ -183,7 +183,7 @@ class ActionsFactory
 
             case 'set_gateway_address':
                 $e = new \RuntimeException('not supported');
-                KernelErrorHandler::logException($e, true, 'ActionsFactory::set_gateway_address');
+                SystemErrorHandler::logException($e, true, 'ActionsFactory::set_gateway_address');
                 break;
 
             case 'set_from_address':

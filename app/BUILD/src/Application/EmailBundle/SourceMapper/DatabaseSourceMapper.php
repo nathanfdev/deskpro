@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\EmailBundle\SourceMapper;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
@@ -38,7 +37,7 @@ use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\EmailBundle\Log\LogCollectorInterface;
 use Application\EmailBundle\SourceMapper\EmailRateLimit\EmailRateLimitInterface;
 use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
 
@@ -479,7 +478,7 @@ class DatabaseSourceMapper implements SourceMapperInterface
         try {
             $new_log_blob = $this->bs->createBlobRowFromString($log_text, 'log.txt', 'text/plain', array('tag' => 'logs.sendmail_source_log'));
         } catch (\Exception $e) {
-            KernelErrorHandler::handleException($e);
+            SystemErrorHandler::handleException($e);
 
             return false;
         }

@@ -40,7 +40,7 @@ use Application\DeskPRO\Tickets\Actions\ActionComposite;
 use Application\DeskPRO\Tickets\Actions\ActionDefinitionInterface;
 use Application\DeskPRO\Tickets\Actions\ActionInterface;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Types\JsonObjectSerializable;
 
 /**
@@ -229,7 +229,7 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
                 $obj->addActionFromArray($action_info);
             } catch (\Exception $e) {
                 if (!empty($action_info['type'])) {
-                    KernelErrorHandler::logException($e, false, md5('action_'.$action_info['type']));
+                    SystemErrorHandler::logException($e, false, md5('action_'.$action_info['type']));
                 }
             }
         }
@@ -259,7 +259,7 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
                 $this->addActionFromArray($action_info);
             } catch (\Exception $e) {
                 if (!empty($action_info['type'])) {
-                    KernelErrorHandler::logException($e, false, md5('action_'.$action_info['type']));
+                    SystemErrorHandler::logException($e, false, md5('action_'.$action_info['type']));
                 }
             }
         }

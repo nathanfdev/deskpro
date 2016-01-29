@@ -28,7 +28,7 @@
 
 namespace Application\ImportBundle\Generator;
 
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 
@@ -188,7 +188,7 @@ abstract class AbstractGenerator
                 $this->logger->debug($message);
             }
             if ($info) {
-                foreach (explode("\n", KernelErrorHandler::varToString($info, 3)) as $l) {
+                foreach (explode("\n", SystemErrorHandler::varToString($info, 3)) as $l) {
                     $this->logger->debug('  [info] '.$l);
                 }
             }
@@ -209,14 +209,14 @@ abstract class AbstractGenerator
                 $this->logger->debug($message);
             }
 
-            $einfo = KernelErrorHandler::getExceptionInfo($e);
+            $einfo = SystemErrorHandler::getExceptionInfo($e);
             $this->logger->debug($einfo['summary']);
             foreach (explode("\n", $einfo['trace']) as $l) {
                 $this->logger->debug('  -> '.$l);
             }
 
             if ($info) {
-                foreach (explode("\n", KernelErrorHandler::varToString($info, 3)) as $l) {
+                foreach (explode("\n", SystemErrorHandler::varToString($info, 3)) as $l) {
                     $this->logger->debug('  [info] '.$l);
                 }
             }

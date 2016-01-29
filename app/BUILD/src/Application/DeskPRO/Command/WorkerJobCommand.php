@@ -205,13 +205,13 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                     $output->writeln($text);
 
                     $e                           = new Exception\CronRunningException($title);
-                    $e_info                      = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
+                    $e_info                      = \DpSys\LowError\SystemErrorHandler::getExceptionInfo($e);
                     $e_info['email']             = true;
                     $e_info['email_subject']     = $title;
                     $e_info['email_body']        = $text;
                     $e_info['email_throttle_id'] = 'email_error_cron_timeout';
                     $e_info['attach_logs']       = true;
-                    \DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($e_info);
+                    \DpSys\LowError\SystemErrorHandler::logErrorInfo($e_info);
                 }
             }
         }
@@ -235,10 +235,10 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
                 if ($last_error) {
                     $e = new \Exception('Cron did not shut down cleanly. Last error: '.implode("\n", $last_error));
-                    \DeskPRO\Kernel\KernelErrorHandler::logException($e, false);
+                    \DpSys\LowError\SystemErrorHandler::logException($e, false);
                 } else {
                     $e = new \Exception('Cron did not shut down cleanly');
-                    \DeskPRO\Kernel\KernelErrorHandler::logException($e, false);
+                    \DpSys\LowError\SystemErrorHandler::logException($e, false);
                 }
 
                 App::getDb()->delete('settings', array('name' => 'core.croncheck.'.$GLOBALS['DP_CRON_ID']));

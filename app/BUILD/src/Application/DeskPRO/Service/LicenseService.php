@@ -110,7 +110,7 @@ class LicenseService
         $news = array();
 
         try {
-            $client = new HttpClient(\DeskPRO\Kernel\License::getSupportUrl(), array(
+            $client = new HttpClient(\DpSys\License::getSupportUrl(), array(
                 'ssl.certificate_authority' => false,
             ));
             $request  = $client->get('/news/2-product.rss');
@@ -148,15 +148,15 @@ class LicenseService
      */
     public static function fetchServiceResult($endpoint, array $post_data = array())
     {
-        $url = \DeskPRO\Kernel\License::getSecureLicServer().'/api/'.ltrim($endpoint, '/');
+        $url = \DpSys\License::getSecureLicServer().'/api/'.ltrim($endpoint, '/');
 
         try {
-            $client = new HttpClient(\DeskPRO\Kernel\License::getSecureLicServer(), array(
+            $client = new HttpClient(\DpSys\License::getSecureLicServer(), array(
                 'ssl.certificate_authority' => false,
                 'redirect.strict'           => true,
             ));
             $r = $client->post(
-                \DeskPRO\Kernel\License::getSecureLicServer().'/api/'.ltrim($endpoint, '/'),
+                \DpSys\License::getSecureLicServer().'/api/'.ltrim($endpoint, '/'),
                 null,
                 $post_data
             );

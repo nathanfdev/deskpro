@@ -32,7 +32,7 @@
 namespace Cloud\LegacyApiBundle\Controller;
 
 use Application\LegacyApiBundle\Controller\AgentsController as BaseAgentsController;
-use DeskPRO\Kernel\License;
+use DpSys\License;
 
 class AgentsController extends BaseAgentsController
 {

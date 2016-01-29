@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\JsonRenderer\TicketListRenderer;
@@ -41,7 +40,7 @@ use Application\DeskPRO\Searcher\TicketSearch;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
 use Application\DeskPRO\UI\RuleBuilder;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
@@ -277,7 +276,7 @@ class TicketSearchController extends AbstractController
                     );
                 }
             } catch (\Exception $e) {
-                KernelErrorHandler::logException($e);
+                SystemErrorHandler::logException($e);
                 $searcher = new \Application\DeskPRO\Searcher\TicketSearch();
                 $searcher->setPerson($this->person);
                 $searcher->setOrderBy('ticket.date_created');

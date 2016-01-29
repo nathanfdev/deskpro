@@ -33,8 +33,8 @@ namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Kernel\License;
 use Doctrine\ORM\EntityManager;
+use DpSys\License;
 
 class AgentCheckerService
 {

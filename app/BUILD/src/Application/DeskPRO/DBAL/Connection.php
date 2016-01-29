@@ -591,7 +591,7 @@ class Connection extends \Doctrine\DBAL\Connection
                 } elseif ($v === null) {
                     $params[] = 'NULL';
                 } elseif (is_array($v)) {
-                    $params[] = substr(\DeskPRO\Kernel\KernelErrorHandler::varToString($v), 0, 200);
+                    $params[] = substr(\DpSys\LowError\SystemErrorHandler::varToString($v), 0, 200);
                 } elseif (is_object($v)) {
                     $params[] = get_class($v);
                 } else {
@@ -734,7 +734,7 @@ class Connection extends \Doctrine\DBAL\Connection
         parent::beginTransaction();
         if ($this->transaction_logger) {
             $e                 = new \Exception();
-            $backtrace         = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace($e->getTrace());
+            $backtrace         = \DpSys\LowError\SystemErrorHandler::formatBacktrace($e->getTrace());
             $level             = $this->getTransactionNestingLevel();
             $trans_id          = \Orb\Util\Util::baseEncode($this->trans_count++, \Orb\Util\Strings::CHARS_ALPHA_IU);
             $this->trans_ids[] = $trans_id;
@@ -781,7 +781,7 @@ class Connection extends \Doctrine\DBAL\Connection
         if ($this->transaction_logger) {
             $e         = new \Exception();
             $trans_id  = array_pop($this->trans_ids);
-            $backtrace = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace($e->getTrace());
+            $backtrace = \DpSys\LowError\SystemErrorHandler::formatBacktrace($e->getTrace());
             $backtrace = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t\t", $level)."\t\t");
             $this->transaction_logger->logDebug("<== Level $level :: <$trans_id>\n".str_repeat("\t\t", $level)."TRANSACTION COMMITTED\n$backtrace");
         }
@@ -807,8 +807,8 @@ class Connection extends \Doctrine\DBAL\Connection
         try {
             parent::rollback();
         } catch (\Exception $e) {
-            $einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
-            \DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
+            $einfo = \DpSys\LowError\SystemErrorHandler::getExceptionInfo($e);
+            \DpSys\LowError\SystemErrorHandler::logErrorInfo($einfo);
 
             return;
         }
@@ -828,7 +828,7 @@ class Connection extends \Doctrine\DBAL\Connection
 
             if ($this->transaction_logger) {
                 $e         = new \Exception();
-                $backtrace = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace($e->getTrace());
+                $backtrace = \DpSys\LowError\SystemErrorHandler::formatBacktrace($e->getTrace());
                 $backtrace = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t", $level)."\t");
                 $this->transaction_logger->logDebug(str_repeat("\t", $level)."TRANSACTION ROLLED BACK\n$backtrace");
             }

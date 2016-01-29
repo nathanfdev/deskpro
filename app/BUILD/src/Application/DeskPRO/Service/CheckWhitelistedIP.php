@@ -32,6 +32,7 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\EntityRepository\WhiteListedIp;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -43,12 +44,13 @@ class CheckWhitelistedIP
      * TODO should be moved to security layer
      * check if IP of agent/admin is whitelisted.
      *
+     * @param Request          $request
      * @param DeskproContainer $container
      * @param Person           $person
      *
      * @return bool
      */
-    public static function checkIP(DeskproContainer $container, Person $person = null)
+    public static function checkIP(Request $request, DeskproContainer $container, Person $person = null)
     {
         if (!$container->getSetting('agent.ip_security.enabled')) {
             return true;
@@ -65,16 +67,18 @@ class CheckWhitelistedIP
             return true;
         }
 
+        $ip = $request->getClientIp();
+
         /** @var WhiteListedIp $rep */
         $rep = $container->getEm()->getRepository('DeskPRO:WhiteListedIp');
-        if (in_array(dp_get_user_ip_address(), $rep->getIpsForPerson($person))) {
+        if (in_array($ip, $rep->getIpsForPerson($person))) {
             return true;
         }
 
         $code_data = TmpData::create(
             'whitelist-ip', array('person_id' => $person['id'], 'interface' => DP_INTERFACE), '+40 minutes'
         );
-        $code_data->setData('ip', dp_get_user_ip_address());
+        $code_data->setData('ip', $ip);
         $container->getEm()->persist($code_data);
         $container->getEm()->flush();
 
@@ -82,7 +86,7 @@ class CheckWhitelistedIP
             'agent_whitelist_ip', array('code' => $code_data->getCode()), UrlGeneratorInterface::ABSOLUTE_URL
         );
         $vars = array(
-            'ip'        => dp_get_user_ip_address(),
+            'ip'        => $ip,
             'code'      => $code_data->getCode(),
             'person'    => $person,
             'interface' => DP_INTERFACE,

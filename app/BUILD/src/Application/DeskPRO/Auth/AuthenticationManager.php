@@ -37,7 +37,7 @@ use Application\DeskPRO\Settings\Settings;
 use Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Application\DeskPRO\Usersource\UsersourceManager;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Auth\Adapter\FormLoginInterface;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
@@ -209,7 +209,7 @@ class AuthenticationManager
                 try {
                     $result = $adapter->authenticate();
                 } catch (\Exception $e) {
-                    KernelErrorHandler::logException($e, false);
+                    SystemErrorHandler::logException($e, false);
                     $GLOBALS['DP_AUTH_EXCEPTION_ADAPTER'] = $adapter;
                     $GLOBALS['DP_AUTH_EXCEPTION']         = $e;
                     continue;

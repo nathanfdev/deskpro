@@ -29,14 +29,13 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\ServerReportFile;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\ORM\Util\Util;
 use Application\DeskPRO\Service\ErrorReporter;
-use DeskPRO\Kernel\License;
 use Doctrine\ORM\EntityManager;
+use DpSys\License;
 use Orb\Util\Files;
 use Orb\Util\Strings;
 use Symfony\Component\Console\Output\OutputInterface;

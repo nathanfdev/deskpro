@@ -33,7 +33,7 @@ namespace Application\EmailBundle\Twig;
 
 use Application\EmailBundle\Twig\Extension\TemplatingExtension;
 use Application\EmailBundle\Twig\Loader\HybridLoader;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 
 class Environment extends \Twig_Environment
 {
@@ -111,9 +111,9 @@ class Environment extends \Twig_Environment
             try {
                 return $this->doLoadTemplate($name, $index);
             } catch (\Exception $e) {
-                $errinfo                  = KernelErrorHandler::getExceptionInfo($e);
+                $errinfo                  = SystemErrorHandler::getExceptionInfo($e);
                 $errinfo['no_send_error'] = true;
-                KernelErrorHandler::logErrorInfo($errinfo);
+                SystemErrorHandler::logErrorInfo($errinfo);
 
                 $this->markCustomTemplateAsCrashed($name_str);
 
@@ -166,7 +166,7 @@ class Environment extends \Twig_Environment
                                 if (preg_match('#^(UserBundle|AgentBundle|DeskPRO|InstallBundle|ReportInterfaceBundle|EmailBundle|CloudAdminBundle):#', $name_str)) {
                                     if (defined('DP_BUILD_NUM') && !defined('DP_BUILDING')) {
                                         $e = new \Exception("IMPORTANT: Could not write twig template file for template $name. You should re-download the DeskPRO source files. Contact support@deskpro.com for assistance.", 0, $prev);
-                                        KernelErrorHandler::logException($e, false, 'twig_write_failed');
+                                        SystemErrorHandler::logException($e, false, 'twig_write_failed');
                                     }
                                 }
                             }

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -89,12 +88,9 @@ class MiscController extends AbstractController
         } else {
             $data['api_url'] = $data['helpdesk_url'].'index.php/api/';
 
-            $data['asset_url'] = dp_get_config('assets_full_url');
-            if (!$data['asset_url']) {
-                $data['asset_url'] = $this->container->getSetting('core.deskpro_url');
-                $data['asset_url'] = trim(str_replace('/index.php', '', $data['asset_url']), '/');
-                $data['asset_url'] .= (dp_get_config('static_path') ?: '/web').'/';
-            }
+            $data['asset_url'] = $this->container->getSetting('core.deskpro_url');
+            $data['asset_url'] = trim(str_replace('/index.php', '', $data['asset_url']), '/');
+            $data['asset_url'] .= '/web/';
             $data['asset_url'] = preg_replace('#^https?://#', '//', $data['asset_url']);
 
             $data['widget_url'] = $data['deskpro_url'];
@@ -192,8 +188,8 @@ class MiscController extends AbstractController
                     'person_id'    => $attempt_person->getId(),
                     'area'         => 'api',
                     'is_success'   => 0,
-                    'ip_address'   => dp_get_user_ip_address(),
-                    'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
+                    'ip_address'   => $this->getRequest()->getClientIp(),
+                    'hostname'     => @gethostbyaddr($this->getRequest()->getClientIp()) ?: '',
                     'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
                     'date_created' => date('Y-m-d H:i:s'),
                 ));
@@ -224,8 +220,8 @@ class MiscController extends AbstractController
             'person_id'    => $person->getId(),
             'area'         => 'api',
             'is_success'   => 1,
-            'ip_address'   => dp_get_user_ip_address(),
-            'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
+            'ip_address'   => $this->getRequest()->getClientIp(),
+            'hostname'     => @gethostbyaddr($this->getRequest()->getClientIp()) ?: '',
             'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
             'date_created' => date('Y-m-d H:i:s'),
         ));

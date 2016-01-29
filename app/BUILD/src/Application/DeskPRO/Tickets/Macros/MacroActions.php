@@ -178,7 +178,7 @@ class MacroActions implements \Serializable, MacroActionInterface
                 $this->addActionFromArray($action_info);
             } catch (\Exception $e) {
                 if (!empty($action_info['type'])) {
-                    KernelErrorHandler::logException($e, false, md5('macro_'.$action_info['type']));
+                    SystemErrorHandler::logException($e, false, md5('macro_'.$action_info['type']));
                 }
             }
         }

@@ -91,14 +91,6 @@ function deskpro_install_check_reqs()
         $errors['memory_limit'] = 'fatal';
     }
 
-    // Only do data dir ceck if we've got an environment loaded,
-    // the simple check file doesnt load up anything besides this
-    if (function_exists('dp_get_data_dir')) {
-        if (!deskpro_install_check_data_writable(dp_get_data_dir())) {
-            $errors['data_write'] = 'fatal';
-        }
-    }
-
     if (!function_exists('curl_init')) {
         $errors['curl_check'] = 'recommended';
     }
@@ -383,48 +375,6 @@ function deskpro_install_simple_data_submit($log)
 
 function deskpro_install_check_data_writable($data_dir = null)
 {
-    $failed = false;
-
-    // data directory
-    $data_dir = dp_get_data_dir();
-    if (!is_dir($data_dir) || (!is_writable($data_dir))) {
-        $failed = true;
-    }
-
-    // debug directory
-    $debug_dir = dp_get_debug_dir();
-    if (!is_dir($debug_dir) || (!is_writable($debug_dir))) {
-        $failed = true;
-    }
-
-    // log directory
-    $log_dir = dp_get_data_dir();
-    if (!is_dir($log_dir) || (!is_writable($log_dir))) {
-        $failed = true;
-    }
-
-    // backup directory
-    $backup_dir = dp_get_data_dir();
-    if (!is_dir($backup_dir) || (!is_writable($backup_dir))) {
-        $failed = true;
-    }
-
-    // blob directory
-    $blob_dir = dp_get_blob_dir();
-    if (!is_dir($blob_dir) || (!is_writable($blob_dir))) {
-        $failed = true;
-    }
-
-    // tmp directory
-    $tmp_dir = dp_get_tmp_dir();
-    if (!is_dir($tmp_dir) || (!is_writable($tmp_dir))) {
-        $failed = true;
-    }
-
-    if ($failed) {
-        return false;
-    }
-
     return true;
 }
 

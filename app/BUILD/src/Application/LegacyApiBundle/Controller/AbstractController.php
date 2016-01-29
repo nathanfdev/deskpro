@@ -34,7 +34,7 @@ namespace Application\LegacyApiBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Validator\ViolationApiRenderer;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -672,7 +672,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
                 'error_message' => $e->getMessage() ?: 'Access Denied',
             ), 403);
         } else {
-            KernelErrorHandler::logException($e);
+            SystemErrorHandler::logException($e);
 
             return $this->createApiResponse(array(
                 'error_code'     => 500,

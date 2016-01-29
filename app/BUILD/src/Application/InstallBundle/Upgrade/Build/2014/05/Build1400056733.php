@@ -43,7 +43,7 @@ use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Application\InstallBundle\Data\DefaultData\TriggerData;
 use Application\InstallBundle\Upgrade\Build\Helper201405\TriggerActionConverter;
 use Application\InstallBundle\Upgrade\Build\Helper201405\TriggerTermConverter;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
 
 class Build1400056733 extends AbstractBuild
@@ -227,7 +227,7 @@ class Build1400056733 extends AbstractBuild
                 $new_trigger = $this->processTrigger($trigger);
             } catch (\Exception $e) {
                 // log for error reporting
-                KernelErrorHandler::logException($e);
+                SystemErrorHandler::logException($e);
                 continue;
             }
             if ($new_trigger) {

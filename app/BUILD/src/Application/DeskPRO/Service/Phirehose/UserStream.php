@@ -201,7 +201,7 @@ class UserStream extends \UserstreamPhirehose
                 throw new \Exception("No connection or write callback - can't process");
             }
         } catch (\Exception $e) {
-            \DeskPRO\Kernel\KernelErrorHandler::handleException($e, false);
+            \DpSys\LowError\SystemErrorHandler::handleException($e, false);
         }
     }
 }

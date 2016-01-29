@@ -38,8 +38,8 @@ use Application\DeskPRO\Entity\TicketDeleted;
 use Application\DeskPRO\EntityRepository\Ticket as TicketRepository;
 use Application\DeskPRO\People\PrefNoticeSet;
 use DeskPRO\Component\Filesystem\SafeFile;
-use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\DBAL\Connection;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -343,7 +343,7 @@ class MainController extends AbstractController
             try {
                 return $this->searchInElasticsearch($q, $sort);
             } catch (\Exception $e) {
-                KernelErrorHandler::logException($e);
+                SystemErrorHandler::logException($e);
 
                 // fallback on DB search
                 return $this->searchInDB($q);

@@ -40,14 +40,6 @@ use Monolog\Logger;
 class DeskproConfigService
 {
     /**
-     * The deskpro data dir (absolute path).
-     */
-    public function getDataDir()
-    {
-        return dp_get_data_dir();
-    }
-
-    /**
      * The dir we store all of our logs in (absolute path).
      *
      * @return string
@@ -95,16 +87,5 @@ class DeskproConfigService
     public function getBuildNumber()
     {
         return defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0;
-    }
-
-    /**
-     * @param string $k
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function getConfigValue($k, $default = null)
-    {
-        return dp_get_config($k, $default);
     }
 }

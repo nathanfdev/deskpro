@@ -33,7 +33,7 @@ namespace Cloud\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\TmpData;
 use Application\LegacyApiBundle\Controller\AbstractController;
-use DeskPRO\Kernel\License;
+use DpSys\License;
 
 class CloudCallController extends AbstractController
 {

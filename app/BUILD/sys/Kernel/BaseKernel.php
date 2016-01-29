@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Kernel;
+namespace DpSys\Kernel;
 
 use Application\AgentBundle\AgentBundle;
 use Application\DeskPRO\App;
@@ -184,7 +184,7 @@ abstract class BaseKernel extends Kernel
                 return new AgentBundle();
         }
 
-        throw new \Exception('oops, that bundle cannot be auto-instantiated by DeskPRO\Kernel\BaseKernel');
+        throw new \Exception('oops, that bundle cannot be auto-instantiated by DpSys\Kernel\BaseKernel');
     }
 
     /**
@@ -201,6 +201,8 @@ abstract class BaseKernel extends Kernel
         unset($GLOBALS['DP_CONTAINER_IS_BUILDING']);
 
         libxml_disable_entity_loader($v);
+
+        $this->container->set('dp.env', $this->getDpEnv());
     }
 
     /**
@@ -239,6 +241,24 @@ abstract class BaseKernel extends Kernel
     }
 
     /**
+     * {@inheritdoc}
+     */
+    protected function getKernelParameters()
+    {
+        $params            = parent::getKernelParameters();
+        $params['DP_ROOT'] = DP_ROOT;
+
+        $params['dp.app_dir']          = $this->dpEnv->getAppDir();
+        $params['dp.user.tmp_dir']     = $this->dpEnv->getUserTmpDir();
+        $params['dp.user.cache_dir']   = $this->dpEnv->getUserCacheDir();
+        $params['dp.user.debug_dir']   = $this->dpEnv->getUserDebugDir();
+        $params['dp.user.backups_dir'] = $this->dpEnv->getUserBackupsDir();
+        $params['dp.user.files_dir']   = $this->dpEnv->getUserFilesDir();
+
+        return $params;
+    }
+
+    /**
      * @return string
      */
     public function getRootDir()
@@ -251,7 +271,7 @@ abstract class BaseKernel extends Kernel
      */
     public function getCacheDir()
     {
-        return $this->dpEnv->getAppCacheDir();
+        return $this->dpEnv->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.$this->getEnvironment();
     }
 
     /**
@@ -259,6 +279,6 @@ abstract class BaseKernel extends Kernel
      */
     public function getLogDir()
     {
-        return $this->dpEnv->getLogDir();
+        return $this->dpEnv->getUserLogsDir();
     }
 }

@@ -95,7 +95,7 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
         }
 
         // Save login log
-        $ip = dp_get_request_stack_ip_address();
+        $ip = $request->getClientIp();
         if ($attempt_person) {
             $this->db->insert('login_log', array(
                 'person_id'    => $attempt_person->getId(),

@@ -33,7 +33,7 @@ namespace Application\DeskPRO\JobQueue;
 
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Job;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 
 /**
  * The worker is the heart of the JobQueue system, and sets the stage for the JobRouter to route the job
@@ -210,7 +210,7 @@ class JobWorker
                 // router is supposed to handle all situations and catch all errors and never throw
                 // this is here to attempt to keep the queue moving in case of what should be next-to-impossible situations
                 // this will eventually do something other than return true
-                KernelErrorHandler::handleException($e, false);
+                SystemErrorHandler::handleException($e, false);
 
                 return true;
             }

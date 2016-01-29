@@ -31,7 +31,7 @@
  */
 namespace Application\DeskPRO\Command;
 
-use DeskPRO\Kernel\License;
+use DpSys\License;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 

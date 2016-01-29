@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Kernel;
+namespace DpSys\Kernel;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -59,17 +59,6 @@ class DpKernel extends BaseKernel
                 define('DP_DEBUG', false);
             }
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getKernelParameters()
-    {
-        $params            = parent::getKernelParameters();
-        $params['DP_ROOT'] = DP_ROOT;
-
-        return $params;
     }
 
     /**

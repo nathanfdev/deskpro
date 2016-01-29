@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Reports;
 
 use Application\DeskPRO\Entity\Person;
@@ -46,7 +45,6 @@ use Application\DeskPRO\Reports\Overview\TicketsResponseTime;
 use Application\DeskPRO\Reports\Overview\TicketsStatus;
 use Application\DeskPRO\Reports\Overview\TicketsUserWaitingTime;
 use Doctrine\ORM\EntityManager;
-use Orb\Log\Writer\Stream;
 use Orb\Util\OptionsArray;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -76,15 +74,8 @@ class Overview
 
     public function __construct(EntityManager $em)
     {
-        $this->em = $em;
-        $logger   = new Logger();
-
-        if (dp_get_config('debug.enable_reports_overview_log') && !$this->no_data_mode) {
-            $wr = new Stream(dp_get_log_dir().'/reports-overview.log');
-            $wr->enableNewStreamPerWrite();
-            $logger->addWriter($wr);
-        }
-
+        $this->em     = $em;
+        $logger       = new Logger();
         $this->logger = $logger;
     }
 

@@ -32,7 +32,7 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 
 /**
  * Runs queued tasks if there are any.
@@ -67,7 +67,7 @@ class RunQueuedTasks extends AbstractJob
             } catch (\Exception $e) {
                 $result = false;
                 $logger->logWarn("Task #$task->id ($task->runner_class) errored: ".$e->getMessage());
-                KernelErrorHandler::logException($e);
+                SystemErrorHandler::logException($e);
             }
 
             $em->flush();

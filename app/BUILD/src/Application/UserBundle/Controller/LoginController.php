@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -486,8 +485,8 @@ HTML;
                     'person_id'    => $attempt_person->getId(),
                     'area'         => defined('DP_INTERFACE') ? DP_INTERFACE : 'unknown',
                     'is_success'   => 0,
-                    'ip_address'   => dp_get_user_ip_address(),
-                    'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
+                    'ip_address'   => $this->getRequest()->getClientIp(),
+                    'hostname'     => @gethostbyaddr($this->getRequest()->getClientIp()) ?: '',
                     'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
                     'date_created' => date('Y-m-d H:i:s'),
                 ));
@@ -575,8 +574,8 @@ HTML;
                     'person_id'    => $person->getId(),
                     'area'         => defined('DP_INTERFACE') ? DP_INTERFACE : 'unknown',
                     'is_success'   => 1,
-                    'ip_address'   => dp_get_user_ip_address(),
-                    'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
+                    'ip_address'   => $this->getRequest()->getClientIp(),
+                    'hostname'     => @gethostbyaddr($this->getRequest()->getClientIp()) ?: '',
                     'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
                     'date_created' => date('Y-m-d H:i:s'),
                 ));
@@ -637,9 +636,9 @@ HTML;
 
     protected function handleIpSecurityCheck(\Application\DeskPRO\Entity\Person $person)
     {
-        if (!CheckWhitelistedIP::checkIP($this->container, $person)) {
+        if (!CheckWhitelistedIP::checkIP($this->getRequest(), $this->container, $person)) {
             return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
-                'ip' => dp_get_user_ip_address(),
+                'ip' => $this->getRequest()->getClientIp(),
             ));
         }
     }
@@ -1292,8 +1291,8 @@ HTML;
             'person_id'    => $person->getId(),
             'area'         => 'user',
             'is_success'   => 1,
-            'ip_address'   => dp_get_user_ip_address(),
-            'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
+            'ip_address'   => $this->getRequest()->getClientIp(),
+            'hostname'     => @gethostbyaddr($this->getRequest()->getClientIp()) ?: '',
             'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
             'note'         => "Agent login by Admin #{$agent->id} {$agent->display_name} <{$agent->email_address}>",
             'date_created' => date('Y-m-d H:i:s'),

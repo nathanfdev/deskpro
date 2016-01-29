@@ -32,7 +32,7 @@
 namespace Application\InstallBundle\Upgrade\Build\Helper201405;
 
 use Application\DeskPRO\Tickets\Actions;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\OptionsArray;
 use Orb\Util\Strings;
@@ -58,7 +58,7 @@ class TriggerActionConverter
 
         if (!method_exists($this, $func)) {
             $e = new \Exception('Unknown trigger action: '.$info['type']);
-            KernelErrorHandler::logException($e);
+            SystemErrorHandler::logException($e);
 
             return;
         }
@@ -67,7 +67,7 @@ class TriggerActionConverter
             return $this->$func($info['type'], new OptionsArray($info['options']));
         } catch (\Exception $e) {
             $e = new \Exception('Invalid trigger option: '.$e->getMessage());
-            KernelErrorHandler::logException($e);
+            SystemErrorHandler::logException($e);
 
             return;
         }

@@ -33,7 +33,7 @@ namespace Application\DeskPRO\EmailGateway\Fetcher;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountUtil;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 
 /**
  * Fetches mail from a pop3 server.
@@ -213,9 +213,9 @@ class Pop3 extends AbstractFetcher
                 $this->logger->log("Email account does not support unique but keep_read is enabled. Capabilities: $capas", 'debug');
 
                 $e                      = new \InvalidArgumentException('Email account does not support uniqueid');
-                $einfo                  = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
+                $einfo                  = \DpSys\LowError\SystemErrorHandler::getExceptionInfo($e);
                 $einfo['no_send_error'] = true;
-                \DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
+                \DpSys\LowError\SystemErrorHandler::logErrorInfo($einfo);
 
                 $this->message_list = array();
 
@@ -231,9 +231,9 @@ class Pop3 extends AbstractFetcher
                 $this->message_list = array();
 
                 $e                      = new \InvalidArgumentException("POP3 server has >= 2500 messages and 'keep read' setting is enbaled. Clean out old messages and try again.");
-                $einfo                  = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
+                $einfo                  = \DpSys\LowError\SystemErrorHandler::getExceptionInfo($e);
                 $einfo['no_send_error'] = true;
-                \DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
+                \DpSys\LowError\SystemErrorHandler::logErrorInfo($einfo);
 
                 return;
             }
@@ -345,7 +345,7 @@ class Pop3 extends AbstractFetcher
                 } else {
                     $memory_protection = false;
                     $e                 = new \RuntimeException("Could not save email backup file to {$raw_message->content_file}");
-                    KernelErrorHandler::logException($e, false);
+                    SystemErrorHandler::logException($e, false);
                 }
 
                 $this->logger->logInfo('Message source saved to: '.$content_file);

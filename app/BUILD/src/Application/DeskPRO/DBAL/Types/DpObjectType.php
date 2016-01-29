@@ -59,8 +59,8 @@ class DpObjectType extends ObjectType
 
             return $val;
         } catch (ConversionException $e) {
-            $errinfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
-            \DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($errinfo);
+            $errinfo = \DpSys\LowError\SystemErrorHandler::getExceptionInfo($e);
+            \DpSys\LowError\SystemErrorHandler::logErrorInfo($errinfo);
 
             return array();
         }

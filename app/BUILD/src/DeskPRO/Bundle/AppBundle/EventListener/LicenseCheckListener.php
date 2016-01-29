@@ -33,7 +33,7 @@ namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use DeskPRO\Bundle\AppBundle\Request\InterfaceInfo;
 use DeskPRO\Bundle\AppBundle\Request\RequestUtils;
-use DeskPRO\Kernel\License;
+use DpSys\License;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;

@@ -33,18 +33,12 @@ namespace Application\DeskPRO\AuditLog;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\AuditLog\AuditWriter\AuditDbWriter;
-use Application\DeskPRO\AuditLog\AuditWriter\AuditFileWriter;
 
 class AuditManagerFactory
 {
     public static function getAuditManager()
     {
         $audit_manager = new AuditManager();
-
-        if (dp_get_config('debug.write_audit_log_file')) {
-            $audit_writer = new AuditFileWriter(dp_get_log_dir().'/audit.log');
-            $audit_manager->addWriter($audit_writer);
-        }
 
         if (class_exists('DpShutdown', false)) {
             \DpShutdown::add(function () use ($audit_manager) {

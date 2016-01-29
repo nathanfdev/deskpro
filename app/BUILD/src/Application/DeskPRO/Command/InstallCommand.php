@@ -125,7 +125,7 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         $this->loadSeedFixtures($output);
         $this->loadFixtures($output);
 
-        $dev_fixtures = dp_get_config('debug.dev')
+        $dev_fixtures = $this->getContainer()->getParameter('kernel.environment') === 'dev'
             || (is_file(DP_ROOT.'/sys/config/installer-type') && trim(file_get_contents(DP_ROOT.'/sys/config/installer-type')) === 'buildserver');
 
         if ($dev_fixtures) {

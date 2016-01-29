@@ -28,7 +28,7 @@ api:
             kernel:
                 bootstrap: features/bootstrap/boot.php
                 path: ../sys/Kernel/ApiKernel.php
-                class: DeskPRO\Kernel\ApiKernel
+                class: DpSys\Kernel\ApiKernel
                 env: test
                 debug: true
 
@@ -72,7 +72,7 @@ portal:
             kernel:
                 bootstrap: features/bootstrap/boot.php
                 path: ../sys/Kernel/PortalKernel.php
-                class: DeskPRO\Kernel\PortalKernel
+                class: DpSys\Kernel\PortalKernel
                 env: test
                 debug: true
         SensioLabs\Behat\PageObjectExtension:
@@ -124,6 +124,6 @@ e2e:
             kernel:
                 bootstrap: e2e/bootstrap/boot.php
                 path: ../sys/Kernel/ApiKernel.php
-                class: DeskPRO\Kernel\ApiKernel
+                class: DpSys\Kernel\ApiKernel
                 env: test
                 debug: true

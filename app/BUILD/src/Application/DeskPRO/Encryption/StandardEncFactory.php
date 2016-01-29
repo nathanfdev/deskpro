@@ -38,7 +38,7 @@ class StandardEncFactory
     public static function create(DeskproContainer $container)
     {
         $is_enabled = $container->getSetting('core.use_encryption');
-        $key_file   = dp_get_data_dir().DIRECTORY_SEPARATOR.'encryption-key.bin';
+        $key_file   = $container->getParameter('kernel.dp_config_dir').'/encryption-key.bin';
 
         return new DpEnc($is_enabled, $key_file);
     }

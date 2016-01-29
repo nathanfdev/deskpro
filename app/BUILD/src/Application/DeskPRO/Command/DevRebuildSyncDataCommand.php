@@ -48,12 +48,6 @@ class DevRebuildSyncDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (!dp_get_config('debug.dev')) {
-            $output->write('Dev mode is not enabled');
-
-            return 1;
-        }
-
         if ($input->getOption('rebuild-all')) {
             $output->writeln('Rebuilding all sync data...');
             $start = microtime(true);

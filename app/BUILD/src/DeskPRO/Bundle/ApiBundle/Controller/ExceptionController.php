@@ -33,7 +33,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Error\Exception\InvalidFormException;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -63,7 +63,7 @@ class ExceptionController extends BaseController
         }
 
         if (!$exception instanceof InvalidFormException && !$exception instanceof HttpException) {
-            KernelErrorHandler::handleException($exception);
+            SystemErrorHandler::handleException($exception);
         }
 
         $request = Request::createFromGlobals();

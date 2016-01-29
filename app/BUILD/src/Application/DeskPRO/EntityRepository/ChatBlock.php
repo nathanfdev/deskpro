@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\EntityRepository;
 
 class ChatBlock extends AbstractEntityRepository
@@ -40,32 +39,6 @@ class ChatBlock extends AbstractEntityRepository
      * How long a block stays in place.
      */
     const BLOCK_TIMEOUT = 86400;
-
-    /**
-     * @param string $visitor_id
-     *
-     * @return \Application\DeskPRO\Entity\ChatBlock
-     */
-    public function getBlockForVisitor($visitor_id)
-    {
-        $datecut = new \DateTime('-'.self::BLOCK_TIMEOUT.' seconds');
-
-        if ($visitor) {
-            $block = $this->_em->createQuery('
-                SELECT b
-                FROM DeskPRO:ChatBlock b
-                WHERE (b.ip_address = ?0 OR b.visitor_id = ?1) AND b.date_created > ?2
-            ')->setParameters(array($visitor->ip_address, $visitor_id, $datecut))->setMaxResults(1)->getOneOrNullResult();
-        } else {
-            $block = $this->_em->createQuery('
-                SELECT b
-                FROM DeskPRO:ChatBlock b
-                WHERE (b.ip_address = ?0) AND b.date_created > ?2
-            ')->setParameters(array(dp_get_user_ip_address(), $datecut))->setMaxResults(1)->getOneOrNullResult();
-        }
-
-        return $block;
-    }
 
     /**
      * @param string $ip_address

@@ -38,7 +38,7 @@ use Application\DeskPRO\Entity\AppPackage;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Monolog\Logger;
 use Application\DeskPRO\Service\JIRA;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Imagine\Image\Box as ImageBox;
 use Orb\Util\Arrays;
 use Orb\Util\DpStrings;
@@ -834,7 +834,7 @@ class AppsController extends AbstractController
         try {
             $def = $installer->installPackage($app_package, $def);
         } catch (\Exception $e) {
-            KernelErrorHandler::logException($e);
+            SystemErrorHandler::logException($e);
 
             return $this->createApiErrorResponse('install_error', 'There was a problem installing the package: '.$e->getMessage());
         }

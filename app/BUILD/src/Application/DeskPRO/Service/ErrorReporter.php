@@ -29,12 +29,11 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Service;
 
 use Application\DeskPRO\App;
-use DeskPRO\Kernel\License;
 use Doctrine\DBAL\DBALException;
+use DpSys\License;
 
 class ErrorReporter
 {
@@ -130,17 +129,12 @@ class ErrorReporter
 
         if ((defined('DP_INTERFACE') && DP_INTERFACE != 'install') || (!isset($GLOBALS['DP_IS_INSTALL']) || !$GLOBALS['DP_IS_INSTALL'])) {
             try {
-                $info['license_id'] = \DeskPRO\Kernel\License::getLicense()->getLicenseId();
-                $info['is_demo']    = \DeskPRO\Kernel\License::getLicense()->isDemo();
+                $info['license_id'] = \DpSys\License::getLicense()->getLicenseId();
+                $info['is_demo']    = \DpSys\License::getLicense()->isDemo();
             } catch (\Exception $e) {
                 $info['license_id'] = '';
                 $info['is_demo']    = false;
             }
-        }
-
-        $instance_data = dp_get_config('instance_data.report');
-        if ($instance_data) {
-            $info = array_merge($instance_data, $info);
         }
 
         return $info;
@@ -184,8 +178,8 @@ class ErrorReporter
     }
 
     /**
-     * Submits a PHP error. $errinfo is a standard error info array, see KernelErrorHandler::getExceptionInfo
-     * and KernelErrorHandler::getErrorInfo.
+     * Submits a PHP error. $errinfo is a standard error info array, see SystemErrorHandler::getExceptionInfo
+     * and SystemErrorHandler::getErrorInfo.
      *
      * @static
      *
@@ -380,7 +374,7 @@ class ErrorReporter
             $client = new \Zend\Http\Client(null, array('timeout' => $timeout, 'strictredirects' => true, 'sslverifypeer' => false));
             $client->setMethod(\Zend\Http\Request::METHOD_POST);
 
-            $url = \DeskPRO\Kernel\License::getSecureLicServer().'/api/data-submit/'.$service.'.json';
+            $url = \DpSys\License::getSecureLicServer().'/api/data-submit/'.$service.'.json';
             $client->setUri($url);
             $client->getRequest()->getPost()->fromArray($data);
             $r = $client->send();
@@ -420,7 +414,7 @@ class ErrorReporter
         try {
             $client = new \Zend\Http\Client(null, array('timeout' => 20, 'strictredirects' => true, 'sslverifypeer' => false));
             $client->setMethod(\Zend\Http\Request::METHOD_POST);
-            $client->setUri(\DeskPRO\Kernel\License::getSecureLicServer().'/api/heartbeat.json');
+            $client->setUri(\DpSys\License::getSecureLicServer().'/api/heartbeat.json');
             $client->getRequest()->getPost()->fromArray($data);
             $r = $client->send();
 
@@ -447,7 +441,7 @@ class ErrorReporter
         try {
             $client = new \Zend\Http\Client(null, array('timeout' => 5, 'strictredirects' => true, 'sslverifypeer' => false));
             $client->setMethod(\Zend\Http\Request::METHOD_POST);
-            $client->setUri(\DeskPRO\Kernel\License::getSecureLicServer().'/api/data-submit/ping-install.json');
+            $client->setUri(\DpSys\License::getSecureLicServer().'/api/data-submit/ping-install.json');
             $client->getRequest()->getPost()->fromArray($data);
             $client->send();
         } catch (\Exception $e) {
@@ -478,7 +472,7 @@ class ErrorReporter
         try {
             $client = new \Zend\Http\Client(null, array('timeout' => 5, 'strictredirects' => true));
             $client->setMethod(\Zend\Http\Request::METHOD_POST);
-            $client->setUri(\DeskPRO\Kernel\License::getSecureLicServer().'/api/data-submit/submit-feedback.json');
+            $client->setUri(\DpSys\License::getSecureLicServer().'/api/data-submit/submit-feedback.json');
             $client->getRequest()->getPost()->fromArray($data);
             $client->setEncType('application/x-www-form-urlencoded; charset=UTF-8');
             $r = $client->send();
@@ -509,14 +503,14 @@ class ErrorReporter
         try {
             $client = new \Zend\Http\Client(null, array('timeout' => 5, 'strictredirects' => true, 'sslverifypeer' => false));
             $client->setMethod(\Zend\Http\Request::METHOD_POST);
-            $client->setUri(\DeskPRO\Kernel\License::getSecureLicServer().'/api/data-submit/submit-feedback.json');
+            $client->setUri(\DpSys\License::getSecureLicServer().'/api/data-submit/submit-feedback.json');
             $client->getRequest()->getPost()->fromArray($data);
             $client->setEncType('application/x-www-form-urlencoded; charset=UTF-8');
             $r = $client->send();
 
             return true;
         } catch (\Exception $e) {
-            \DeskPRO\Kernel\KernelErrorHandler::logException($e, true, 'failed_send_support_message');
+            \DpSys\LowError\SystemErrorHandler::logException($e, true, 'failed_send_support_message');
 
             return false;
         }

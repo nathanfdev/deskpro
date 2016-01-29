@@ -29,7 +29,7 @@
 namespace Application\DeskPRO\NewSearch\SearchEngine;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 
 class UserSearchProxy implements UserSearchInterface
 {
@@ -60,7 +60,7 @@ class UserSearchProxy implements UserSearchInterface
             try {
                 return $this->es()->search($context, $query, $options);
             } catch (\Exception $e) {
-                KernelErrorHandler::logException($e);
+                SystemErrorHandler::logException($e);
 
                 // fallback on DB search
                 return $this->dbs()->search($context, $query, $options);
@@ -83,7 +83,7 @@ class UserSearchProxy implements UserSearchInterface
             try {
                 return $this->es()->similarTo($context, $content, $options);
             } catch (\Exception $e) {
-                KernelErrorHandler::logException($e);
+                SystemErrorHandler::logException($e);
 
                 // fallback on DB search
                 return $this->dbs()->similarTo($context, $content, $options);

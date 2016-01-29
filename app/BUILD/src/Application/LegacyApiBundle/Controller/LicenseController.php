@@ -34,7 +34,7 @@ namespace Application\LegacyApiBundle\Controller;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\Service\LicenseService;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
-use DeskPRO\Kernel\License;
+use DpSys\License;
 use Orb\Util\Dates;
 use Orb\Validator\StringEmail;
 
@@ -118,11 +118,11 @@ class LicenseController extends AbstractController implements ProtectedControlle
         }
 
         return $this->createApiResponse(array(
-            'license'          => $lic_info,
-            'limits'           => $limits,
-            'lic_set_callback' => License::getSecureLicServer().'/api/license/set-license.json',
-            'ma_token'         => $ma_token->toApiData(),
-            'ma_login_url'     => $ma_login_url,
+            'license'              => $lic_info,
+            'limits'               => $limits,
+            'lic_set_callback'     => License::getSecureLicServer().'/api/license/set-license.json',
+            'ma_token'             => $ma_token->toApiData(),
+            'ma_login_url'         => $ma_login_url,
             'custom_billing_frame' => $custom_billing_frame,
         ));
     }

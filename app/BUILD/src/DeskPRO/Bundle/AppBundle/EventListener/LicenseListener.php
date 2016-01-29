@@ -33,7 +33,7 @@ namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use DeskPRO\Bundle\AppBundle\HttpKernel\DpKernelEvents;
 use DeskPRO\Bundle\AppBundle\HttpKernel\Event\GetPreResponseEvent;
-use DeskPRO\Kernel\License;
+use DpSys\License;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 

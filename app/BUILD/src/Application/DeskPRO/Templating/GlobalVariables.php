@@ -29,12 +29,11 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Templating;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Service\JIRA;
-use DeskPRO\Kernel\License;
+use DpSys\License;
 use Symfony\Bundle\FrameworkBundle\Templating\GlobalVariables as BaseGlobalVariables;
 
 class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInterface
@@ -52,7 +51,7 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
 
     public function getLicense()
     {
-        return \DeskPRO\Kernel\License::getLicense();
+        return \DpSys\License::getLicense();
     }
 
     public function getVariable($name)
@@ -389,12 +388,9 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
         if (defined('DPC_SITE_DOMAIN')) {
             return '//'.DPC_SITE_DOMAIN.'/web/';
         } else {
-            $asset_url = dp_get_config('assets_full_url');
-            if (!$asset_url) {
-                $asset_url = $this->container->getSetting('core.deskpro_url');
-                $asset_url = trim(str_replace('/index.php', '', $asset_url), '/');
-                $asset_url .= (dp_get_config('static_path') ?: '/web').'/';
-            }
+            $asset_url = $this->container->getSetting('core.deskpro_url');
+            $asset_url = trim(str_replace('/index.php', '', $asset_url), '/');
+            $asset_url .= '/web/';
             $asset_url = preg_replace('#^https?://#', '//', $asset_url);
 
             return $asset_url;

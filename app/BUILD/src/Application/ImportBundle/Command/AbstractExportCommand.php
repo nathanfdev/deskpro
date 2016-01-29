@@ -41,7 +41,7 @@ use Application\ImportBundle\Reader\DeskPRO\DeskPROReaderFactory;
 use Application\ImportBundle\Reader\Json\JsonConfig;
 use Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactory;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -170,7 +170,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $em->getConnection()->getConfiguration()->setSQLLogger(null);
 
         if ($input->getOption('batch')) {
-            $pid = dp_get_data_dir().'/importer.pid';
+            $pid = App::$container->getParameter('kernel.dp_config_dir').'/importer.pid';
             $fh  = @fopen($pid, 'a');
 
             if (!$fh) {
@@ -303,7 +303,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
 
             return 0;
         } catch (\Exception $e) {
-            KernelErrorHandler::logException($e, true);
+            SystemErrorHandler::logException($e, true);
             $output->writeln($e->getMessage());
 
             if (isset($logger)) {
@@ -372,7 +372,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      */
     protected function setParamsByDeskProConfig(GeneratorConfig $config)
     {
-        $import_config = new OptionsArray(dp_get_config('import', array()));
+        $import_config = new OptionsArray($this->getContainer()->get('dp.env')->getConfig('import', array()));
         $config
             ->setOutputPath($import_config->get('output_path'))
             ->setLogPath($import_config->get('log_path', dp_get_log_dir().'/export.log'))

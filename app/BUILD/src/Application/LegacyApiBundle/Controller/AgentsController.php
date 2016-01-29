@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\PasswordHistory;
@@ -48,7 +47,7 @@ use Application\DeskPRO\People\Agents\EditAgent;
 use Application\DeskPRO\People\Agents\Type\EditAgentType;
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
-use DeskPRO\Kernel\License;
+use DpSys\License;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\PhoneNumbers;
