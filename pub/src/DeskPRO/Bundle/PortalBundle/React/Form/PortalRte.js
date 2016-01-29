@@ -26,7 +26,6 @@ export class PortalRte extends React.Component {
   };
 
   onUploadStarted = (event, data) => {
-    const { $textarea } = this.props;
     const editor = this.refs.input;
     editor.focus();
 
@@ -44,6 +43,7 @@ export class PortalRte extends React.Component {
   };
 
   onUploadSuccess = (event, response) => {
+    const { $textarea } = this.props;
     const file = response.files[0];
     const pasteId = response.files[0].id;
     const $image = $('img[data-paste-id=' + pasteId + ']', this.getNode());
@@ -56,7 +56,9 @@ export class PortalRte extends React.Component {
     const blob = response.result && response.result.blob;
     if (blob) {
       $image.removeAttr('data-paste-id').attr('src', blob.url);
-      $('<input type="hidden" name="blob_inline_ids[]" />').val(blob.authcode).insertAfter($editor);
+
+      const blobPath = $textarea.data('blob-path');
+      $(`<input type="hidden" name="${blobPath}[${blob.id}][blob_auth]" />`).val(blob.authcode).insertAfter($editor);
     } else {
       $image.remove();
     }

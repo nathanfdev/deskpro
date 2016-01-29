@@ -71,6 +71,8 @@ export class TicketForm extends PageWidget {
       }
     };
 
+    $('#ticket_message_message_html', this.$formEl).attr('data-blob-path', 'ticket[attachments]');
+
     setDisplayedFields = event => {
       // handle special field "attachments"
       // if "attachments" exists, we need to call it "attach" because the backend uses "attach".
