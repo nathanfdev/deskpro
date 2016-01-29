@@ -7,7 +7,7 @@ if (!defined('PHP_CS_SRC_DIR')) {
 }
 define('GIT_BASE_DIR', realpath(__DIR__.'/..'));
 
-define('PHP_CS_SRC_DIR_NORMAL', str_replace('\\', '/', PHP_CS_SRC_DIR);
+define('PHP_CS_SRC_DIR_NORMAL', str_replace('\\', '/', PHP_CS_SRC_DIR));
 
 $outputs = array();
 $return = 0;
