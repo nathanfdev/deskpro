@@ -23,3 +23,9 @@ services:
   deskpro.agentchat.searcher:
     class: DeskPRO\Bundle\AppBundle\AgentChat\Search\Doctrine
     arguments: [@doctrine.orm.default_entity_manager]
+
+  form.api.agent_chat.message:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\AgentChat\AgentChatMessageType
+    tags:
+      - { name: form.type, alias: api_agent_chat_message }
+

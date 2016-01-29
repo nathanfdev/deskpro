@@ -98,14 +98,17 @@ class MessagesController extends AbstractController
      */
     public function postMessagesAction($id, Request $request)
     {
-        $form = $this->createFormBuilder(['message' => null, 'uuid' => null])
-            ->add('message', 'text')
-            ->add('uuid', 'text')
+        $form = $this
+            ->get('form.factory')
+            ->createNamedBuilder(null, 'api_agent_chat_message')
             ->getForm();
         $form->submit($request->request->all());
         if (!$form->isValid()) {
-            throw new InvalidFormException($form);
+            $errors = $this->createFormErrorsData($form);
+
+            return $this->createErrorRepresentation(Response::HTTP_BAD_REQUEST, Response::HTTP_BAD_REQUEST, "Couldn't create messages", $errors);
         }
+
         /** @var Messenger $messenger */
         $messenger = $this->get('deskpro.agentchat.messenger');
         $user      = $this->getUser();
@@ -115,8 +118,7 @@ class MessagesController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
-        $data    = $form->getData();
-        $message = $messenger->addMessage($chat, $user, $data['message'], $data['uuid']);
+        $message = $messenger->addMessage($chat, $user, $form->get('message')->getData(), $form->get('uuid')->getData());
 
         $this->container->get('event_dispatcher')->dispatch(
             NewMessageEvent::EVENT_NAME,

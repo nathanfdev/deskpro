@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\AgentChat;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\AgentChat\Messenger;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -69,5 +70,13 @@ abstract class AbstractController extends BaseController
     protected function em()
     {
         return $this->getDoctrine()->getManager();
+    }
+
+    protected function createFormErrorsData(FormInterface $form)
+    {
+        $generator = $this->get('api_error.form_errors_generator');
+        $errors    = $generator->generateFormErrors($form);
+
+        return $errors;
     }
 }
