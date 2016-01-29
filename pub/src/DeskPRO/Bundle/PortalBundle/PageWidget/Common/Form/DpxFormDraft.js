@@ -13,24 +13,15 @@ function getDrafts() {
   return {};
 }
 
-class FormFieldSaveDraft extends PageWidget {
+class DpxFormFieldDraft extends PageWidget {
 
   renderWidget() {
-    const $el = this.$element;
-
-    if (!$el.attr('name')) {
+    if (!this.getName()) {
       return;
     }
 
     this.restoreValue();
-
-    if ($el.is('input[type="checkbox"], input[type="radio"]')) {
-      $el.on('click change blur', () => this.updateDraft());
-    } else if ($el.is('input, textarea')) {
-      $el.on('change blur keyup', () => this.updateDraft());
-    } else if ($el.is('select')) {
-      $el.on('change blur', () => this.updateDraft());
-    }
+    this.addListeners();
   }
 
   restoreValue() {
@@ -40,46 +31,69 @@ class FormFieldSaveDraft extends PageWidget {
     }
   }
 
-  updateDraft() {
+  getName() {
+    return this.$element.attr('name');
+  }
+
+  update() {
     const formDrafts = this.parent.getFormDrafts();
     formDrafts[this.getName()] = this.getValue();
 
     this.parent.updateFormDrafts(formDrafts);
   }
+}
 
-  getName() {
-    return this.$element.attr('name');
+class DpxFormTextDraft extends DpxFormFieldDraft {
+
+  addListeners() {
+    this.$element.on('change blur keyup', () => this.update());
   }
 
   getValue() {
-    const $el = this.$element;
-
-    if ($el.is('input[type="checkbox"], input[type="radio"]')) {
-      return $el.is(':checked');
-    } else if ($el.is('input, textarea')) {
-      return $el.val();
-    } else if ($el.is('select')) {
-      return $el.val();
-    }
+    return this.$element.val();
   }
 
   setValue(val) {
-    const $el = this.$element;
+    this.$element.val(val).trigger('change');
+  }
+}
 
-    if ($el.is('input[type="checkbox"], input[type="radio"]')) {
-      $el.prop('checked', !!val).trigger('change');
-    } else if ($el.is('input, textarea')) {
-      $el.val(val).trigger('change');
-    } else if ($el.is('select')) {
-      $el.val(val).trigger('change');
-    }
+class DpxFormCheckboxDraft extends DpxFormFieldDraft {
+
+  addListeners() {
+    this.$element.on('change blur', () => this.update());
+  }
+
+  getValue() {
+    return this.$element.is(':checked');
+  }
+
+  setValue(val) {
+    this.$element.prop('checked', !!val).trigger('change');
+  }
+}
+
+class DpxFormSelectDraft extends DpxFormFieldDraft {
+
+  addListeners() {
+    this.$element.on('click change blur', () => this.update());
+  }
+
+  getValue() {
+    return this.$element.val();
+  }
+
+  setValue(val) {
+    this.$element.val(val).trigger('change');
   }
 }
 
 export class DpxFormDraft extends PageWidget {
 
   init() {
-    this.addWidgetDef(FormFieldSaveDraft, 'input[type="text"], input[type="email"], input[type="checkbox"], input[type="radio"], textarea, select');
+    this.addWidgetDef(DpxFormTextDraft, 'input[type="text"], input[type="email"], textarea');
+    this.addWidgetDef(DpxFormCheckboxDraft, 'input[type="checkbox"], input[type="radio"]');
+    this.addWidgetDef(DpxFormSelectDraft, 'select');
   }
 
   getFormName() {
