@@ -25,16 +25,21 @@ export class PortalRte extends React.Component {
     this.props.$textarea.val(value);
   };
 
+  onUploadSubmit = (event, data) => {
+    const file = data.files[0];
+    if (file.type.indexOf('image') === -1) {
+      pageWidgetEmitter.emit('rteFileUpload', file);
+      return false;
+    }
+
+    return true;
+  };
+
   onUploadStarted = (event, data) => {
     const editor = this.refs.input;
     editor.focus();
 
     const file = data.files[0];
-    if (file.type.indexOf('image') === -1) {
-      pageWidgetEmitter.emit('rteFileUpload', file);
-      return;
-    }
-
     const urlObj = window.URL || window.webkitURL;
     const imgUrl = urlObj.createObjectURL(file);
 
@@ -45,15 +50,10 @@ export class PortalRte extends React.Component {
 
   onUploadSuccess = (event, response) => {
     const { $textarea } = this.props;
-    const file = response.files[0];
     const pasteId = response.files[0].id;
     const $image = $('img[data-paste-id=' + pasteId + ']', this.getNode());
     const editor = this.refs.input;
     const $editor = $(ReactDOM.findDOMNode(editor));
-
-    if (file.type.indexOf('image') === -1) {
-      return;
-    }
 
     const blob = response.result && response.result.blob;
     if (blob) {
@@ -129,6 +129,7 @@ export class PortalRte extends React.Component {
           uploadUrl={portalUrlGenerator.path('/') + 'dpblob'}
           uploadParams={params}
           context={context}
+          onSubmit={this.onUploadSubmit}
           onSend={this.onUploadStarted}
           onSuccess={this.onUploadSuccess}
           onFail={this.onUploadFail}>
