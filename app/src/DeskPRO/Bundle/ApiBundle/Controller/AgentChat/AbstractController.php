@@ -36,7 +36,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\AgentChat\Messenger;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -91,17 +91,17 @@ abstract class AbstractController extends BaseController
 
     /**
      * @param $form_name
-     * @param Request $request
+     * @param ParameterBag $data
      *
      * @return \Symfony\Component\Form\Form
      */
-    protected function submitForm($form_name, Request $request)
+    protected function submitForm($form_name, ParameterBag $data)
     {
         $form = $this
             ->get('form.factory')
             ->createNamedBuilder(null, $form_name)
             ->getForm();
-        $form->submit($request->request->all());
+        $form->submit($data->all());
 
         return $form;
     }

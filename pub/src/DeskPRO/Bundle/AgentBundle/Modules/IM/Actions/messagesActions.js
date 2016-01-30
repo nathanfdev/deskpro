@@ -3,7 +3,7 @@ import * as IM from 'DeskPRO/Bundle/AgentBundle/Services/Api/IM';
 
 export const loadMessages = createAction(
   'IM_LOAD_MESSAGES',
-  (chatId, searchQuery = '', page = null) => {
+  (chatId, searchQuery = '', page = 1) => {
     return IM.loadMessages(chatId, searchQuery, page).then(response => {
       const messages = response.data.data;
       const meta = response.data.meta.pagination;

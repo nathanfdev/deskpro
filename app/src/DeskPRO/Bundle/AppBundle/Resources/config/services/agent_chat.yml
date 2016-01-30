@@ -39,3 +39,8 @@ services:
     tags:
       - { name: form.type, alias: api_agent_chat_start_chat }
 
+  form.api.agent_chat.search_message:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\AgentChat\SearchMessagesType
+    tags:
+      - { name: form.type, alias: api_agent_chat_search_messages }
+

@@ -1,5 +1,20 @@
 import DpApi from '../DpApi';
 
+/**
+ * Compile parameters into a URL string
+ * @param {Object} params - parameters to be compiled
+ * @returns {string} - compiled string
+ */
+function compileParams(params) {
+  const compiled = [];
+
+  for (const key of Object.keys(params)) {
+    compiled.push(key + '=' + String(params[key]));
+  }
+
+  return compiled.join('&');
+}
+
 export function loadRecentChats() {
   return DpApi.sendGet('DP_API/agent_chats/recent');
 }
@@ -12,13 +27,12 @@ export function loadChat(id) {
   return DpApi.sendGet('DP_API/agent_chats/' + parseInt(id, 10));
 }
 
-export function loadMessages(chatId, searchQuery = '', page = null) {
+export function loadMessages(chatId, searchQuery = '', page = 1, order = 'date_created') {
   const params = {
-    search: searchQuery
+    search: searchQuery,
+    page: page,
+    order: order
   };
-  if(page) {
-    params.page = page;
-  }
   const compiled = compileParams(params);
   return DpApi.sendGet('DP_API/agent_chats/' + chatId + '/messages?' + compiled);
 }
@@ -39,17 +53,3 @@ export function markMessages(ids, status) {
   return DpApi.sendPut('DP_API/agent_chats/messages/mark', {ids: ids, status: status});
 }
 
-/**
- * Compile parameters into a URL string
- * @param {Object} params - parameters to be compiled
- * @returns {string} - compiled string
- */
-function compileParams(params) {
-  const compiled = [];
-
-  for (const key of Object.keys(params)) {
-    compiled.push(key + '=' + String(params[key]));
-  }
-
-  return compiled.join('&');
-}

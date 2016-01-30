@@ -68,16 +68,29 @@ class MessagesController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
-        $search_string = $request->query->get('search', '');
-        $orderBy       = $request->query->get('order', 'date_created');
-        $page          = $request->query->getInt('page', 1);
+        $form = $this->submitForm('api_agent_chat_search_messages', $request->query);
+        if (!$form->isValid()) {
+            $errors = $this->createFormErrorsData($form);
+            $status = Response::HTTP_BAD_REQUEST;
+
+            return View::create(
+                $this->createErrorRepresentation(
+                    $status,
+                    'request_error',
+                    "Couldn't process your request",
+                    $errors
+                ),
+                $status
+            );
+        }
+
         /** @var History $search_service */
         $search_service = $this->get('deskpro.agentchat.history');
-        $messages       = $search_service->searchInChat($chat, $search_string, $orderBy);
+        $messages       = $search_service->searchInChat($chat, $form->get('search')->getData(), $form->get('order')->getData());
 
         $pager = new Pagerfanta(new ArrayAdapter($messages));
         $pager->setMaxPerPage(9);
-        $pager->setCurrentPage($page);
+        $pager->setCurrentPage($form->get('page')->getData());
 
         return View::create(
             $this->dataSerialize($pager),
@@ -98,11 +111,22 @@ class MessagesController extends AbstractController
      */
     public function postMessagesAction($id, Request $request)
     {
-        $form = $this->submitForm('api_agent_chat_message', $request);
+        $status = Response::HTTP_CREATED;
+
+        $form = $this->submitForm('api_agent_chat_message', $request->request);
         if (!$form->isValid()) {
             $errors = $this->createFormErrorsData($form);
+            $status = Response::HTTP_BAD_REQUEST;
 
-            return $this->createErrorRepresentation(Response::HTTP_BAD_REQUEST, Response::HTTP_BAD_REQUEST, "Couldn't create message", $errors);
+            return View::create(
+                $this->createErrorRepresentation(
+                    $status,
+                    'request_error',
+                    "Couldn't create message",
+                    $errors
+                ),
+                $status
+            );
         }
 
         /** @var Messenger $messenger */
@@ -114,7 +138,12 @@ class MessagesController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
-        $message = $messenger->addMessage($chat, $user, $form->get('message')->getData(), $form->get('uuid')->getData());
+        $message = $messenger->addMessage(
+            $chat,
+            $user,
+            $form->get('message')->getData(),
+            $form->get('uuid')->getData()
+        );
 
         $this->container->get('event_dispatcher')->dispatch(
             NewMessageEvent::EVENT_NAME,
@@ -123,7 +152,7 @@ class MessagesController extends AbstractController
 
         return View::create(
             $this->dataSerialize($message),
-            Response::HTTP_CREATED
+            $status
         );
     }
 
@@ -156,7 +185,7 @@ class MessagesController extends AbstractController
     public function markAction(Request $request)
     {
         $status = Response::HTTP_ACCEPTED;
-        $form   = $this->submitForm('api_agent_chat_mark_message', $request);
+        $form   = $this->submitForm('api_agent_chat_mark_message', $request->request);
         if (!$form->isValid()) {
             $status = Response::HTTP_BAD_REQUEST;
             $errors = $this->createFormErrorsData($form);
@@ -172,11 +201,13 @@ class MessagesController extends AbstractController
             );
         }
 
-        $ids             = $request->request->get('ids');
-        $messages_status = $request->request->get('status');
         /** @var Messenger $messenger */
         $messenger = $this->get('deskpro.agentchat.messenger');
-        $messenger->markMessages($ids, $messages_status, $this->getUser());
+        $messenger->markMessages(
+            $form->get('ids')->getData(),
+            $form->get('status')->getData(),
+            $this->getUser()
+        );
 
         return View::create(
             $this->createRepresentation([]),

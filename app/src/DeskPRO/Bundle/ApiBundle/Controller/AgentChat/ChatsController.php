@@ -265,11 +265,11 @@ class ChatsController extends AbstractController
     {
         $status = Response::HTTP_CREATED;
 
-        $form = $this->submitForm('api_agent_chat_start_chat', $request);
+        $form = $this->submitForm('api_agent_chat_start_chat', $request->request);
         if (!$form->isValid()) {
             $errors = $this->createFormErrorsData($form);
 
-            return $this->createErrorRepresentation(Response::HTTP_BAD_REQUEST, Response::HTTP_BAD_REQUEST, "Couldn't create message", $errors);
+            return $this->createErrorRepresentation(Response::HTTP_BAD_REQUEST, Response::HTTP_BAD_REQUEST, "Couldn't start chat", $errors);
         }
 
         /** @var Messenger $messenger */
