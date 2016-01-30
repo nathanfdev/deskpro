@@ -66,10 +66,9 @@ export class PortalSelectBox extends React.Component {
 
   constructor(props) {
     super(props);
-    this.actionStore = props.actionStore;
     this.updateOptions();
 
-    const value = this.actionStore.getValue();
+    const value = props.actionStore.getValue();
     const valuePath = this.getValuePath(value);
     this.state = {
       value: value,
@@ -77,7 +76,7 @@ export class PortalSelectBox extends React.Component {
       expanded: false
     };
 
-    this.actionStore.on('formChanged', (data) => {
+    props.actionStore.on('formChanged', (data) => {
       this.setState({
         value: data.value,
         valuePath: this.getValuePath(data.value)
@@ -85,9 +84,9 @@ export class PortalSelectBox extends React.Component {
     });
   }
 
-  onClickOption(option) {
-    this.actionStore.setValue(option.id);
-  }
+  onClickOption = option => {
+    this.props.actionStore.setValue(option.id);
+  };
 
   getValuePath(value) {
     let path = [];
@@ -106,7 +105,7 @@ export class PortalSelectBox extends React.Component {
   }
 
   updateOptions() {
-    this.optionData = this.actionStore.getOptionData();
+    this.optionData = this.props.actionStore.getOptionData();
   }
 
   renderSelect(group, parentId = null, level = 1) {
@@ -129,9 +128,9 @@ export class PortalSelectBox extends React.Component {
         <PortalSimpleSelectBox
           widgetOptions={widgetOptions}
           options={options}
-          value={subGroup ? subGroup : null}
+          value={subGroup}
           level={level}
-          onChange={this.onClickOption.bind(this)} />
+          onChange={this.onClickOption} />
 
         {subGroup && subGroup.children.length ? this.renderSelect(subGroup.children, subGroup.id, level + 1) : null}
       </div>
