@@ -73,27 +73,35 @@ export class PortalMultipleSelectBox extends React.Component {
 
   constructor(props) {
     super(props);
-    this.actionStore = props.actionStore;
     this.updateOptions();
 
-    const value = this.actionStore.getValue();
+    const value = props.actionStore.getValue();
     const valuePath = this.getValuePath(value);
     this.state = {
       value: value,
       valuePath: valuePath,
       expanded: false
     };
+  }
 
-    this.actionStore.on('formChanged', (data) => {
+  componentDidMount() {
+    const { actionStore } = this.props;
+    const $el = actionStore.el;
+
+    actionStore.on('formChanged', (data) => {
       this.setState({
         value: data.value,
         valuePath: this.getValuePath(data.value)
       });
     });
+
+    $el.closest('form').on('reset', () => {
+      actionStore.emit('formChanged', {value: null});
+    });
   }
 
   onClickOption = options => {
-    this.actionStore.setValue(options ? options.map((opt) => opt.id) : []);
+    this.props.actionStore.setValue(options ? options.map((opt) => opt.id) : []);
   };
 
   getValuePath(value) {
@@ -115,7 +123,7 @@ export class PortalMultipleSelectBox extends React.Component {
   }
 
   updateOptions() {
-    this.optionData = this.actionStore.getOptionData();
+    this.optionData = this.props.actionStore.getOptionData();
   }
 
   renderSelect() {
@@ -138,7 +146,7 @@ export class PortalMultipleSelectBox extends React.Component {
 
     let options = this.optionData.hierarchy.map(mapOption);
     options = _.flattenDeep(options);
-    const values = this.actionStore.getValue().map(selectedId => {
+    const values = this.props.actionStore.getValue().map(selectedId => {
       return _.find(options, (opt) => _.parseInt(opt.id) === _.parseInt(selectedId));
     });
 

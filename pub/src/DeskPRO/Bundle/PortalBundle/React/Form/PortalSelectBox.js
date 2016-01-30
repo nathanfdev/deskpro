@@ -70,17 +70,27 @@ export class PortalSelectBox extends React.Component {
 
     const value = props.actionStore.getValue();
     const valuePath = this.getValuePath(value);
+
     this.state = {
       value: value,
       valuePath: valuePath,
       expanded: false
     };
+  }
 
-    props.actionStore.on('formChanged', (data) => {
+  componentDidMount() {
+    const { actionStore } = this.props;
+    const $el = actionStore.el;
+
+    actionStore.on('formChanged', (data) => {
       this.setState({
         value: data.value,
         valuePath: this.getValuePath(data.value)
       });
+    });
+
+    $el.closest('form').on('reset', () => {
+      actionStore.emit('formChanged', {value: null});
     });
   }
 
@@ -90,7 +100,9 @@ export class PortalSelectBox extends React.Component {
 
   getValuePath(value) {
     let path = [];
-    if (!value) return path;
+    if (!value) {
+      return path;
+    }
 
     const opt = _.find(this.optionData.options, o => o.id === value);
     if (opt) {
