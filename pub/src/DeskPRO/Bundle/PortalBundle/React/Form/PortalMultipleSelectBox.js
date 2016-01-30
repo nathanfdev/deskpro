@@ -127,7 +127,7 @@ export class PortalMultipleSelectBox extends React.Component {
   }
 
   renderSelect() {
-    const { widgetOptions } = this.props;
+    const { widgetOptions, actionStore } = this.props;
     const mapOption = (g) => {
       const r = {
         id: g.id,
@@ -146,7 +146,8 @@ export class PortalMultipleSelectBox extends React.Component {
 
     let options = this.optionData.hierarchy.map(mapOption);
     options = _.flattenDeep(options);
-    const values = this.props.actionStore.getValue().map(selectedId => {
+
+    const values = actionStore.getValue().map(selectedId => {
       return _.find(options, (opt) => _.parseInt(opt.id) === _.parseInt(selectedId));
     });
 
@@ -171,11 +172,10 @@ export class PortalMultipleSelectBox extends React.Component {
  *
  * @param {jQuery/HTMLElement} select
  * @param {jQuery/HTMLElement} renderTo
- * @param {FormActionStore}    actionStore
  * @param {Object}             widgetOptions
- * @returns {FormActionStore}
+ * @returns {LevelSelectActionStore}
  */
-export function createComponent(select, renderTo, actionStore = null, widgetOptions = {}) {
+export function createComponent(select, renderTo, widgetOptions = {}) {
   const $select = $(select);
   $select.find('option').each((x, opt) => {
     const $opt = $(opt);
@@ -184,10 +184,7 @@ export function createComponent(select, renderTo, actionStore = null, widgetOpti
     }
   });
 
-  if (!actionStore) {
-    actionStore = new LevelSelectActionStore($select);
-  }
-
+  const actionStore = new LevelSelectActionStore($select);
   ReactDOM.render(React.createElement(PortalMultipleSelectBox, { actionStore, widgetOptions }), $(renderTo).get(0));
 
   return actionStore;
