@@ -32,7 +32,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @Api.sendGet('/elastic-search/settings').then (res) =>
         return if @hasInit
         @$scope.settings       = res.data.elastic_settings
-        @$scope.was_on         = @$scope.enabled
+        @$scope.was_on         = @$scope.settings.enabled
         @hasInit = true
 
     saveSettings: ->
