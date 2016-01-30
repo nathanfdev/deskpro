@@ -148,11 +148,10 @@ export class PortalSelectBox extends React.Component {
  *
  * @param {jQuery/HTMLElement} select
  * @param {jQuery/HTMLElement} renderTo
- * @param {FormActionStore}    actionStore
  * @param {Object}             widgetOptions
- * @returns {FormActionStore}
+ * @returns {LevelSelectActionStore}
  */
-export function createComponent(select, renderTo, actionStore = null, widgetOptions = {}) {
+export function createComponent(select, renderTo, widgetOptions = {}) {
   const $select = $(select);
 
   // We need to rewrite opt-groups into normal options or else our widget
@@ -190,11 +189,10 @@ export function createComponent(select, renderTo, actionStore = null, widgetOpti
     }
   });
 
-  if (!actionStore) {
-    actionStore = new LevelSelectActionStore($select);
-  }
+  const actionStore = new LevelSelectActionStore($select);
+  const component = React.createElement(PortalSelectBox, { actionStore, widgetOptions });
 
-  ReactDOM.render(React.createElement(PortalSelectBox, { actionStore, widgetOptions }), $(renderTo).get(0));
+  ReactDOM.render(component, $(renderTo).get(0));
 
   return actionStore;
 }
