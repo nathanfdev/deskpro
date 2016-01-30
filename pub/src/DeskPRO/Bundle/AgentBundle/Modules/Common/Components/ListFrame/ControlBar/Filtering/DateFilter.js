@@ -3,6 +3,7 @@ import Moment from 'moment';
 import { Menu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
 import { FilterItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/FilterItem';
 import { DateTimePicker } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/DateTime/DateTimePicker';
+import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 
 export class DateFilter extends Component {
   static propTypes = {
@@ -26,20 +27,17 @@ export class DateFilter extends Component {
   };
 
   render() {
-    const { dispatch, setParamsAction, stateValue, filter, unsetParams, setActiveItem, activeItem } = this.props;
+    const { dispatch, setParamsAction, stateValue, filter, unsetParams, activeItem } = this.props;
     const {fromParam, toParam, icon, label} = filter;
     const from = stateValue(fromParam);
     const to = stateValue(toParam);
     const isActive = Boolean(from || to);
-
     return (
       <FilterItem activeItem={activeItem}
                   icon={icon || 'calendar-o'}
                   label={label}
                   isActive={isActive}
-                  setActiveItem={setActiveItem}
                   resetFilter={unsetParams.bind(this, [fromParam, toParam])}>
-
         {this.renderDateCreatedItemContent(from, to)}
         <Menu>
           <div

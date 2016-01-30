@@ -115,7 +115,6 @@ export class Abstract extends React.Component {
     this.setState({
       isOpen: isOpen
     });
-
     return isOpen === this.state.isOpen;
   }
 
