@@ -76,12 +76,13 @@ export class DpxDateWidget extends PageWidget {
       onChangeDateTime: (dp, $input) => {
         const m = moment($input.val(), isTimeIncluded ? 'M/D/YYYY hh:mma' : 'M/D/YYYY');
 
-        $sMonth.val(m.month() + 1);
-        $sDay.val(m.date());
-        $sYear.val(m.year());
+        $sMonth.val(m.month() + 1).trigger('change');
+        $sDay.val(m.date()).trigger('change');
+        $sYear.val(m.year()).trigger('change');
+
         if (isTimeIncluded) {
-          $sHour.val(m.hour());
-          $sMinute.val(m.minute());
+          $sHour.val(m.hour()).trigger('change');
+          $sMinute.val(m.minute()).trigger('change');
         }
       }
     };
@@ -96,6 +97,7 @@ export class DpxDateWidget extends PageWidget {
           const d = _.parseInt(weekDay);
           return d === 6 ? 0 : d + 1;
         });
+
         _.forEach([0, 1, 2, 3, 4, 5, 6], weekDay => {
           if (!_.includes(allowedWeekdays, weekDay)) {
             $(that).find('.xdsoft_day_of_week' + weekDay).addClass('xdsoft_disabled');
