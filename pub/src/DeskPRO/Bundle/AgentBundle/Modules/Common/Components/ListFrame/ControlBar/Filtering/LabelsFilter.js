@@ -45,13 +45,15 @@ export class LabelsFilter extends Component {
                   setActiveItem={setActiveItem}
                   selected={selected}
                   resetFilter={unsetParams.bind(this, param)}>
-        <LabelsForm matchMode={matchMode}
-                    params={{'get': () => mode}}
-                    changeMode={newMode => dispatch(setParamsAction({[modeParam]: newMode, delayReload: true}))}
-                    allLabels={labels}
-                    selectedLabels={selected}
-                    selectLabel={selectLabel}
-                    deselectLabel={deselectLabel}/>
+        <Menu>
+          <LabelsForm matchMode={matchMode}
+                      params={{'get': () => mode}}
+                      changeMode={newMode => dispatch(setParamsAction({[modeParam]: newMode, delayReload: true}))}
+                      allLabels={labels}
+                      selectedLabels={selected}
+                      selectLabel={selectLabel}
+                      deselectLabel={deselectLabel}/>
+        </Menu>
       </FilterItem>
     );
   }

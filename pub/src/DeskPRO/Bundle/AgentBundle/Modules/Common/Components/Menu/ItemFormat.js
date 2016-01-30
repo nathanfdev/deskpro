@@ -61,7 +61,7 @@ export class ItemFormat extends React.Component {
   renderChildren() {
     if (this.props.children) {
       return React.Children.map(this.props.children, (child) => {
-        if (child && child.type && child.type.displayName !== 'ItemList' && child.type.displayName !== 'Menu') {
+        if (child && child.type && child.type.name !== 'ItemList' && child.type.name !== 'Menu') {
           return child;
         }
       });

@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { Menu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
 import { ItemFormat } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/ItemFormat';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
+import { ClickOut } from 'DeskPRO/Component/ClickOut';
 
 export class BaseItem extends Component {
 
@@ -23,6 +24,7 @@ export class BaseItem extends Component {
     format: PropTypes.string,
     keepOpen: PropTypes.bool,
     hasMenu: PropTypes.bool,
+    hasItemList: PropTypes.bool,
     activeItem: PropTypes.object,
     setActiveItem: PropTypes.func,
     closeMenu: PropTypes.func,
@@ -57,9 +59,6 @@ export class BaseItem extends Component {
    * @return {void}
    */
   openMenu = () => {
-    if (this.props.setActiveItem) {
-      this.props.setActiveItem(this);
-    }
     this.setState({
       openMenu: true
     });
@@ -70,25 +69,19 @@ export class BaseItem extends Component {
    * @return {void}
    */
   closeMenu = () => {
-    if (this.props.setActiveItem) {
-      this.props.setActiveItem({});
-    }
     this.setState({
       openMenu: false
     });
   };
 
   /**
-   * @TODO
    * Toggle the menu open/closed
    * @return {void}
    */
   toggleMenu = () => {
-    if (!this.state.openMenu) {
-      this.openMenu();
-    } else {
-      this.closeMenu();
-    }
+    this.setState({
+      openMenu: !this.state.openMenu
+    });
   };
 
   /**
@@ -127,32 +120,6 @@ export class BaseItem extends Component {
     return output;
   }
 
-  checkIfMenuExists() {
-    let {hasMenu} = this.props;
-    if (!hasMenu && this.props.children) {
-      React.Children.map(this.props.children,
-        (child) => {
-          if (child && child.type && child.type.displayName === 'Menu') {
-            hasMenu = true;
-          }
-        });
-    }
-    return hasMenu;
-  }
-
-  checkIfItemListExists() {
-    let hasItemList = false;
-    if (this.props.children) {
-      React.Children.map(this.props.children,
-        (child) => {
-          if (child && child.type && child.type.displayName === 'ItemList') {
-            hasItemList = true;
-          }
-        });
-    }
-    return hasItemList;
-  }
-
   renderLabel(hasMenu, hasItemList) {
     const {label} = this.props;
     if (label) {
@@ -177,14 +144,14 @@ export class BaseItem extends Component {
     }
   }
 
-  renderMenu(hasMenu) {
-    if (hasMenu) {
+  renderMenu() {
+    if (this.props.hasMenu) {
       return React.Children.map(this.props.children, (child) => {
-        if (child && child.type && child.type.displayName === 'Menu') {
+        const isOpen = this.state.openMenu;
+        if (child && child.type && child.type.name === 'Menu') {
           const parentLevel = this.props.parentMenuLevel ? this.props.parentMenuLevel : 1;
           const childProps = child.props;
           const menuLevel = parentLevel + 1;
-
           return (
             <Detached isOpen
                       positionMy="left top"
@@ -192,9 +159,11 @@ export class BaseItem extends Component {
                       collision="none"
                       positionTarget={this}
                       key={child}>
-              <Menu {...childProps} menuLevel={menuLevel}
-                                    isOpen={this.props.activeItem === this}
-                                    closeMenu={this.closeMenu}/>
+              <ClickOut onClickOut={this.closeMenu}
+                        ignoreNodes={[this.refs.item]}>
+                <Menu {...childProps} menuLevel={menuLevel}
+                                      isOpen={isOpen}/>
+              </ClickOut>
             </Detached>
           );
         }
@@ -202,10 +171,10 @@ export class BaseItem extends Component {
     }
   }
 
-  renderItemList(hasItemList, expanded) {
-    if (hasItemList) {
+  renderItemList(expanded) {
+    if (this.props.hasItemList) {
       return React.Children.map(this.props.children, (child) => {
-        if (child && child.type && child.type.displayName === 'ItemList' && expanded) {
+        if (child && child.type && child.type.name === 'ItemList' && expanded) {
           return child;
         }
       });
@@ -213,13 +182,12 @@ export class BaseItem extends Component {
   }
 
   render() {
-    const hasItemList = this.checkIfItemListExists();
-    const hasMenu = this.checkIfMenuExists();
+    const {hasMenu, hasItemList} = this.props;
     const childrenOutput = {};
-    childrenOutput.menu = this.renderMenu(hasMenu);
-    childrenOutput.itemList = this.renderItemList(hasItemList, this.state.openInnerList);
+    childrenOutput.menu = this.renderMenu();
+    childrenOutput.itemList = this.renderItemList(this.state.openInnerList);
     return (
-      <li onMouseOver={this.props.subMenuMode ? ()=>{} : this.openMenu}
+      <li ref="item" onMouseOver={this.props.subMenuMode ? ()=>{} : this.openMenu}
           onClick={this.props.subMenuMode && this.props.subMenuMode === 'click' ? this.toggleMenu : ()=>{}}>
         {this.renderLabel(hasMenu, hasItemList)}
         {createFragment(childrenOutput)}
