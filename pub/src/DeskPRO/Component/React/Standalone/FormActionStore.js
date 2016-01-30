@@ -23,8 +23,9 @@ export class FormActionStore {
   initSync() {
     // Used to notify component
     this.el.on('change', (event) => {
-      let oldValue = this.value;
-      let value = this.readValueFromForm();
+      const oldValue = this.value;
+      const value = this.readValueFromForm();
+
       this.emit('formChanged', { event: event, value: value, oldValue: oldValue });
     });
 
@@ -54,7 +55,6 @@ export class FormActionStore {
     }
 
     data.actionType = actionType;
-
     this.listeners[actionType].forEach(cb => cb(data));
   }
 
@@ -93,7 +93,7 @@ export class FormActionStore {
    * @param value
    */
   setValue(value) {
-    let oldValue = this.value;
+    const oldValue = this.value;
     this.value = value;
     this.emit('valueChanged', { value: value, oldValue: oldValue });
   }
