@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { Message } from './Message';
-import { loadMessages, markMessages, markMessagesOptimistic, reduceCounts } from '../../Actions/messagesActions';
+import { loadMessages, markMessages } from '../../Actions/messagesActions';
 import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
 import Loader from 'react-loader';
