@@ -37,7 +37,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class AgentChatMessageType extends AbstractType
+class MessageType extends AbstractType
 {
     /**
      * {@inheritdoc}
