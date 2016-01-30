@@ -137,6 +137,6 @@ export class TicketForm extends PageWidget {
     });
 
     updateHitter = _.throttle(()=> this.dynamicForm.update(), 250);
-    allFormFields.on('change', updateHitter);
+    allFormFields.on('change', () => setTimeout(() => updateHitter(), 0));
   }
 }

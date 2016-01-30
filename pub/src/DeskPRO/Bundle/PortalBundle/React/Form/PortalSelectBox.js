@@ -90,7 +90,7 @@ export class PortalSelectBox extends React.Component {
     });
 
     $el.closest('form').on('reset', () => {
-      actionStore.emit('formChanged', {value: null});
+      actionStore.setValue(null);
     });
   }
 
