@@ -21,8 +21,22 @@ export class PortalRte extends React.Component {
     this.fileCounter = 0;
   }
 
+  componentDidMount() {
+    const editor = this.refs.input;
+    const { $textarea } = this.props;
+
+    $textarea.closest('form').on('reset', () => {
+      editor.setContent('');
+    });
+    $textarea.on('change', () => {
+      if (editor.getContent() !== $textarea.val()) {
+        editor.setContent($textarea.val());
+      }
+    });
+  }
+
   onChangeMessage = value => {
-    this.props.$textarea.val(value);
+    this.props.$textarea.val(value).trigger('change');
   };
 
   onUploadSubmit = (event, data) => {

@@ -96,6 +96,10 @@ export class RteEditor extends React.Component {
     return ReactDOM.findDOMNode(this).innerHTML;
   }
 
+  setContent(html) {
+    this.medium.setContent(html);
+  }
+
   pasteHtml(html) {
     this.medium.pasteHTML(html);
   }
