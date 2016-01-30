@@ -12,14 +12,18 @@ export class DpxFormFieldDraft extends PageWidget {
   }
 
   restoreValue() {
-    const formDrafts = this.parent.getFormDrafts();
-    if (formDrafts[this.getName()]) {
-      this.setValue(formDrafts[this.getName()]);
+    const storedValue = this.getStoredValue();
+    if (storedValue) {
+      this.setValue(storedValue);
     }
   }
 
   getName() {
     return this.$element.attr('name');
+  }
+
+  getStoredValue() {
+    return this.parent.getFormDrafts()[this.getName()];
   }
 
   update() {

@@ -10,8 +10,8 @@ export class DpxFormRadioDraft extends DpxFormFieldDraft {
     return this.$element.val();
   }
 
-  setValue(val) {
-    if (val === this.$element.val()) {
+  setValue(storedValue) {
+    if (storedValue === this.$element.val()) {
       this.$element.prop('checked', true).trigger('change');
     }
   }

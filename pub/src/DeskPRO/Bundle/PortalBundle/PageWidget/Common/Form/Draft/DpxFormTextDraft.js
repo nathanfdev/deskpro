@@ -10,7 +10,7 @@ export class DpxFormTextDraft extends DpxFormFieldDraft {
     return this.$element.val();
   }
 
-  setValue(val) {
-    this.$element.val(val).trigger('change');
+  setValue(storedValue) {
+    this.$element.val(storedValue).trigger('change');
   }
 }

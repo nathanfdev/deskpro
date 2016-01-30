@@ -47,16 +47,8 @@ export class PortalCheckbox extends React.Component {
     }
   };
 
-  getLabel() {
-    return this.state.label;
-  }
-
-  isChecked() {
-    return this.state.checked;
-  }
-
   toggleState(otherState = {}) {
-    this.state.$checkbox.prop('checked', !this.isChecked());
+    this.state.$checkbox.prop('checked', !this.state.checked).trigger('change');
     this.setState({
       checked: this.state.$checkbox.prop('checked'),
       ...otherState
@@ -73,11 +65,11 @@ export class PortalCheckbox extends React.Component {
            onKeyDown={this.onKeyDown}
            onBlur={this.onBlur}>
 
-        <span className={classNames('checkbox', {'checked': this.isChecked()})}>
+        <span className={classNames('checkbox', {'checked': this.state.checked})}>
           <i className="fa fa-check"></i>
         </span>
 
-        { this.getLabel() }
+        {this.state.label}
       </div>
     );
   }
