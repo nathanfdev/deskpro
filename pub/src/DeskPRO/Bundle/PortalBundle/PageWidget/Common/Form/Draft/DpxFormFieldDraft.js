@@ -28,7 +28,16 @@ export class DpxFormFieldDraft extends PageWidget {
 
   update() {
     const formDrafts = this.parent.getFormDrafts();
-    formDrafts[this.getName()] = this.getValue();
+    const name = this.getName();
+    const value = this.getValue();
+
+    if (value) {
+      formDrafts[name] = value;
+    } else {
+      if (formDrafts.hasOwnProperty(name)) {
+        delete formDrafts[name];
+      }
+    }
 
     this.parent.updateFormDrafts(formDrafts);
   }
