@@ -1,4 +1,4 @@
-import $ from "jquery";
+import $ from 'jquery';
 
 /**
  * A FormActionStore facilitates communication between
@@ -8,7 +8,7 @@ import $ from "jquery";
  * For example, replacing a select box with a rich select box. The value from the
  * component is synced with a real form element.
  */
-export default class FormActionStore {
+export class FormActionStore {
   constructor(el) {
     this.el = $(el);
     this.listeners = {};

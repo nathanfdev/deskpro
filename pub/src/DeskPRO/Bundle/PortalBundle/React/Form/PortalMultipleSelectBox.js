@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import FormActionStore from 'DeskPRO/Component/React/Standalone/FormActionStore';
+import { FormActionStore } from 'DeskPRO/Component/React/Standalone/FormActionStore';
 import { PortalSimpleSelectBox } from './PortalSimpleSelectBox';
 import _ from 'lodash';
 import $ from 'jquery';

@@ -1,12 +1,8 @@
-import _ from "lodash";
-import $ from "jquery";
-import FormActionStore from "DeskPRO/Component/React/Standalone/FormActionStore";
-import React from "react";
+import React from 'react';
 import ReactDOM from 'react-dom';
-
-//######################################################################################################################
-//# Action Store
-//######################################################################################################################
+import _ from 'lodash';
+import $ from 'jquery';
+import { FormActionStore } from 'DeskPRO/Component/React/Standalone/FormActionStore';
 
 export class LevelSelectActionStore extends FormActionStore {
   onValueChanged(data) {
@@ -63,10 +59,6 @@ export class LevelSelectActionStore extends FormActionStore {
     }
   }
 }
-
-//######################################################################################################################
-//# React Component
-//######################################################################################################################
 
 export class LevelSelect extends React.Component {
   constructor(props) {
@@ -158,10 +150,6 @@ export class LevelSelect extends React.Component {
     );
   }
 }
-
-//######################################################################################################################
-//# Factory
-//######################################################################################################################
 
 /**
  * Configures and renders a multi-level select box bound to `select` into `renderTo`.
