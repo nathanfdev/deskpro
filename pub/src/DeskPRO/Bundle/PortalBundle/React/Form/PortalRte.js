@@ -74,8 +74,10 @@ export class PortalRte extends React.Component {
       $image.removeAttr('data-paste-id').attr('src', blob.url);
 
       const blobPath = $textarea.data('blob-path');
-      $(`<input type="hidden" name="${blobPath}[${blob.id}][blob_auth]" />`).val(blob.authcode).insertAfter($editor);
-      $(`<input type="hidden" name="${blobPath}[${blob.id}][is_inline]" />`).val(1).insertAfter($editor);
+      if (blobPath) {
+        $(`<input type="hidden" name="${blobPath}[${blob.id}][blob_auth]" />`).val(blob.authcode).insertAfter($editor);
+        $(`<input type="hidden" name="${blobPath}[${blob.id}][is_inline]" />`).val(1).insertAfter($editor);
+      }
     } else {
       $image.remove();
     }
