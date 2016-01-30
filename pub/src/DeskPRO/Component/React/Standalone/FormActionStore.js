@@ -22,7 +22,8 @@ export class FormActionStore {
 
   initSync() {
     // Used to notify component
-    this.el.on('change', (event) => {
+    this.el.closest('form').on('reset', () => this.emit('valueChanged'));
+    this.el.on('change', event => {
       const oldValue = this.value;
       const value = this.readValueFromForm();
 
