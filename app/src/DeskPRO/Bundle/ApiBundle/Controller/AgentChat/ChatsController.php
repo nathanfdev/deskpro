@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\AgentChat;
 
 use DeskPRO\Bundle\AppBundle\AgentChat\History;
@@ -264,15 +265,17 @@ class ChatsController extends AbstractController
     {
         $status = Response::HTTP_CREATED;
 
-        $submitted = $request->request->all();
-        if (!isset($submitted['type']) || !isset($submitted['id'])) {
-            throw new BadRequestHttpException();
+        $form = $this->submitForm('api_agent_chat_start_chat', $request);
+        if (!$form->isValid()) {
+            $errors = $this->createFormErrorsData($form);
+
+            return $this->createErrorRepresentation(Response::HTTP_BAD_REQUEST, Response::HTTP_BAD_REQUEST, "Couldn't create message", $errors);
         }
 
         /** @var Messenger $messenger */
         $messenger = $this->get('deskpro.agentchat.messenger');
 
-        if (!$entity = $messenger->findParticipant($submitted['type'], $submitted['id'])) {
+        if (!$entity = $messenger->findParticipant($form->get('type')->getData(), $form->get('id')->getData())) {
             throw new BadRequestHttpException();
         }
 

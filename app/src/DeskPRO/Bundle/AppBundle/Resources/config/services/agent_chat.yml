@@ -28,8 +28,14 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\AgentChat\AgentChatMessageType
     tags:
       - { name: form.type, alias: api_agent_chat_message }
+
   form.api.agent_chat.mark_messages:
     class: DeskPRO\Bundle\AppBundle\Form\Type\AgentChat\AgentChatMarkMessageType
     tags:
       - { name: form.type, alias: api_agent_chat_mark_message }
+
+  form.api.agent_chat.start_chat:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\AgentChat\AgentChatStartChatType
+    tags:
+      - { name: form.type, alias: api_agent_chat_start_chat }
 
