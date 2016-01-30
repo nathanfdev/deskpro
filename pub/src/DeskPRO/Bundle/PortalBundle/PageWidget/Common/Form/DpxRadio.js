@@ -12,14 +12,14 @@ export class DpxRadio extends PageWidget {
     // but leaves it there if you focus it via kbd
     $el.on('mousedown', () => {
       $el.addClass('no-focus-border');
-      $radio.prop('checked', true);
+      $radio.prop('checked', true).trigger('change');
     });
 
     $el.on('blur', () => $el.removeClass('no-focus-border'));
     $el.on('keydown', (ev) => {
       if (ev.which === 32) {
         ev.preventDefault();
-        $radio.prop('checked', true);
+        $radio.prop('checked', true).trigger('change');
       }
     });
   }

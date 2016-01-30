@@ -2,6 +2,7 @@ import $ from 'jquery';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import { DpxFormTextDraft } from './DpxFormTextDraft';
 import { DpxFormCheckboxDraft } from './DpxFormCheckboxDraft';
+import { DpxFormRadioDraft } from './DpxFormRadioDraft';
 import { DpxFormSelectDraft } from './DpxFormSelectDraft';
 
 function updateDrafts(obj) {
@@ -36,7 +37,8 @@ export class DpxFormDraft extends PageWidget {
 
   init() {
     this.addWidgetDef(DpxFormTextDraft, 'input[type="text"], input[type="email"], textarea');
-    this.addWidgetDef(DpxFormCheckboxDraft, 'input[type="checkbox"], input[type="radio"]');
+    this.addWidgetDef(DpxFormCheckboxDraft, 'input[type="checkbox"]');
+    this.addWidgetDef(DpxFormRadioDraft, 'input[type="radio"]');
     this.addWidgetDef(DpxFormSelectDraft, 'select');
   }
 
