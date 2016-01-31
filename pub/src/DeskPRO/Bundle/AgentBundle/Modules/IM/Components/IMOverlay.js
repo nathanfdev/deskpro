@@ -12,10 +12,6 @@ export class IMOverlay extends React.Component {
     dispatch: PropTypes.func.isRequired
   };
 
-  componentDidMount() {
-    this.props.dispatch(peopleActions.updateOnline([1, 2, 3, 4]));
-  }
-
   onClickOut = () => {
     this.props.dispatch(chatsActions.toggleOverlay());
   };

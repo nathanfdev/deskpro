@@ -26,4 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1454263358);
+/**
+ * DeskPRO.
+ */
+
+namespace Application\DeskPRO\WorkerProcess\Job;
+
+use DeskPRO\Bundle\AppBundle\Notification\Event\People\UpdateOnlineEvent;
+
+/**
+ * Updates agents online through dispatching event for action alerts.
+ */
+class UpdateAgentsOnline extends AbstractJob
+{
+    const DEFAULT_INTERVAL = 120; // 2 minutes
+
+    public function run()
+    {
+        $data_service     = $this->getContainer()->get('data.agent');
+        $agent_ids        = $data_service->getAgentsOnlineStatus();
+        $event_dispatcher = $this->getContainer()->get('event_dispatcher');
+        $event_dispatcher->dispatch(UpdateOnlineEvent::EVENT_NAME, new UpdateOnlineEvent($agent_ids));
+    }
+}

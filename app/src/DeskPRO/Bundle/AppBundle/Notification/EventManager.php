@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Notification;
 
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\MarkMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\NewMessageEvent;
+use DeskPRO\Bundle\AppBundle\Notification\Event\People\UpdateOnlineEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Strategy\NotificationStrategyInterface;
@@ -47,6 +48,7 @@ class EventManager implements EventSubscriberInterface
             NewMessageEvent::EVENT_NAME    => 'handleEvent',
             MarkMessageEvent::EVENT_NAME   => 'handleEvent',
             TicketUpdatedEvent::EVENT_NAME => 'handleEvent',
+            UpdateOnlineEvent::EVENT_NAME  => 'handleEvent',
         ];
     }
 

@@ -15,8 +15,9 @@ export default createReducer(
   {
     [newActionAlerts]: (state, payload) => {
       let newState = state;
-      if (payload.type === 'notifications.agents.update_online') {
-        payload.data.map((id) => newState = newState.mergeIn(['records', id], {online: true}));
+      if (payload.type === 'notification.agents.update_online') {
+        payload.data.online.map((id) => newState = newState.mergeIn(['records', id], {online: true}));
+        payload.data.offline.map((id) => newState = newState.mergeIn(['records', id], {online: false}));
       }
 
       return newState;

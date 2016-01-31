@@ -26,4 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1454263358);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1454263358 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('Create job to update who is online');
+        $this->execMutateSql("INSERT INTO `worker_jobs` (`id`, `worker_group`, `title`, `description`, `job_class`, `data`, `run_interval`, `last_run_date`) VALUES ('update_agents_online', 'update_agents_online', 'Update who\'s online', 'Gathers info about who is online from agents and emits action alert', 'Application\\\\DeskPRO\\\\WorkerProcess\\\\Job\\\\UpdateAgentsOnline', '0x613A303A7B7D', 120, '2016-01-31 20:01:48');");
+    }
+}
