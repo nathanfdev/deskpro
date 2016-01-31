@@ -30,6 +30,7 @@ namespace spec\DeskPRO\Bundle\AppBundle\Notification;
 
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\MarkMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\NewMessageEvent;
+use DeskPRO\Bundle\AppBundle\Notification\Event\People\UpdateOnlineEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\EventManager;
 use DeskPRO\Bundle\AppBundle\Notification\Strategy\StrategyFactory;
@@ -58,6 +59,7 @@ class EventManagerSpec extends ObjectBehavior
                 NewMessageEvent::EVENT_NAME    => 'handleEvent',
                 MarkMessageEvent::EVENT_NAME   => 'handleEvent',
                 TicketUpdatedEvent::EVENT_NAME => 'handleEvent',
+                UpdateOnlineEvent::EVENT_NAME  => 'handleEvent',
             )
         );
     }
