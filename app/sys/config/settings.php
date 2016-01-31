@@ -1050,13 +1050,13 @@ return array(
                 'pusher',
             ],
         ],
-        'notification.yet.another.system.event' => [
-            'strategy' => 'deferred',
-            'delivery' => [
-                'db',
-            ],
-            'persistance' => 'db',
-        ],
+//        'notification.yet.another.system.event' => [
+//            'strategy' => 'deferred',
+//            'delivery' => [
+//                'db',
+//            ],
+//            'persistance' => 'db',
+//        ],
     ],
     # Also you MUST provide default strategy. It will be used to handle events that was not described.
     'notification.settings.default_strategy' => [
