@@ -55,7 +55,7 @@ export class NotificationService {
   }
 
   startHeartbeat() {
-    this.heartbeat_interval = setInterval(this.heartbeat.bind(this), 5000);
+    this.heartbeat_interval = setInterval(this.heartbeat.bind(this), 60000);
   }
 
   startPolling() {

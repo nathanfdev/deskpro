@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
 use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Notification\Event\People\UpdateOnlineEvent;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -82,6 +83,9 @@ class SessionController extends BaseController
         $em = $this->getDoctrine()->getManager();
         $em->persist($session);
         $em->flush();
+
+        $online_data = $this->get('data.agent')->getAgentsOnlineStatus();
+        $this->get('event_dispatcher')->dispatch(UpdateOnlineEvent::EVENT_NAME, new UpdateOnlineEvent($online_data));
 
         $response = new JsonResponse();
         $response->headers->setCookie(new Cookie('dpsid-agent', $session->getSessionCode()));
