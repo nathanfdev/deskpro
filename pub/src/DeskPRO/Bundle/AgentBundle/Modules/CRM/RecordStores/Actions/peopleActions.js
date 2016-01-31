@@ -17,3 +17,8 @@ export const loadPeople = createAction(
     )
   )
 );
+
+export const updateOnline = createAction(
+  'UPDATE_AGENTS_ONLINE',
+  ids => ids
+);

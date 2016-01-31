@@ -3,6 +3,7 @@ import { AgentsList } from './Agents/AgentsList';
 import { TeamsList } from './Teams/TeamsList';
 import { DepartmentsList } from './Departments/DepartmentsList';
 import * as chatsActions from '../Actions/chatsActions';
+import * as peopleActions from '../../CRM/RecordStores/Actions/peopleActions';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 
 export class IMOverlay extends React.Component {
@@ -10,6 +11,10 @@ export class IMOverlay extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired
   };
+
+  componentDidMount() {
+    this.props.dispatch(peopleActions.updateOnline([1, 2, 3, 4]));
+  }
 
   onClickOut = () => {
     this.props.dispatch(chatsActions.toggleOverlay());

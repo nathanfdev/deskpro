@@ -1,4 +1,4 @@
-import { newActionAlerts } from '../Modules/Application/Actions/notificationActions.js';
+import { newActionAlerts } from '../Modules/Application/Actions/notificationActions';
 import { startChat } from '../Modules/IM/Actions/chatsActions';
 import { markMessages } from '../Modules/IM/Actions/messagesActions';
 
