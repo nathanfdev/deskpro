@@ -45,7 +45,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class NotificationController extends BaseController
 {
     /**
-     * @param string $last
+     * @param string  $last
+     * @param Request $request
      *
      * @throws NotFoundHttpException
      * @throws AccessDeniedHttpException
@@ -53,9 +54,10 @@ class NotificationController extends BaseController
      * @return View
      * @Annotations\Get("/notify/action-alerts/{last}", name="action_alerts_last")
      */
-    public function getLastActionAlerts($last)
+    public function getLastActionAlerts($last, Request $request)
     {
         $service = $this->get('deskpro.notification.service');
+        $this->doHeartbeat($request);
 
         $alerts = $service->getLastActionAlerts($last, $this->getUser());
 
@@ -80,6 +82,36 @@ class NotificationController extends BaseController
             $this->createRepresentation($response),
             Response::HTTP_OK
         );
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return View
+     * @Annotations\Get("/notify/heartbeat", name="online_heartbeat")
+     */
+    public function heartbeat(Request $request)
+    {
+        $this->doHeartbeat($request);
+
+        return View::create(
+            $this->createRepresentation([]),
+            Response::HTTP_OK
+        );
+    }
+
+    protected function doHeartbeat(Request $request)
+    {
+        $session_code = $request->cookies->get('dpsid-agent');
+        /** @var \Application\DeskPRO\EntityRepository\Session $session_repository */
+        $session_repository = $this->getDoctrine()->getRepository('DeskPRO:Session');
+        $session            = $session_repository->getSessionFromCode($session_code);
+        if ($session) {
+            $session->updateLastTime();
+            $em = $this->get('doctrine.orm.default_entity_manager');
+            $em->persist($session);
+            $em->flush();
+        }
     }
 
     /**
