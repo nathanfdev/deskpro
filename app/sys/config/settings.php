@@ -1062,7 +1062,7 @@ return array(
     'notification.settings.default_strategy' => [
         'strategy' => 'immediate',
         'delivery' => [
-            'db',
+            'pusher',
         ],
     ],
     # You MUST provide pusher application settings if you plan to use it.
