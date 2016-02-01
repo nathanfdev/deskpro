@@ -1,22 +1,8 @@
-import { DpxFormFieldDraft } from './DpxFormFieldDraft';
+import { DpxFormAttachDraft } from './DpxFormAttachDraft';
 
-export class DpxFormRteBlobsDraft extends DpxFormFieldDraft {
-
-  addListeners() {
-    this.$element.on('blobs', this.onUpdate);
-  }
+export class DpxFormRteBlobsDraft extends DpxFormAttachDraft {
 
   getName() {
     return super.getName() + '[blobs]';
-  }
-
-  getValue(event, blobs) {
-    return blobs;
-  }
-
-  restoreValue(storedValue) {
-    if (storedValue) {
-      this.$element.trigger('setBlobs', [storedValue]);
-    }
   }
 }
