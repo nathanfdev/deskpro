@@ -4,6 +4,7 @@ import { DpxFormTextDraft } from './DpxFormTextDraft';
 import { DpxFormCheckboxDraft } from './DpxFormCheckboxDraft';
 import { DpxFormRadioDraft } from './DpxFormRadioDraft';
 import { DpxFormSelectDraft } from './DpxFormSelectDraft';
+import { DpxFormHidden } from './DpxFormHidden';
 
 function updateDrafts(obj) {
   window.localStorage.form_drafts = JSON.stringify(obj);
@@ -40,6 +41,7 @@ export class DpxFormDraft extends PageWidget {
     this.addWidgetDef(DpxFormCheckboxDraft, 'input[type="checkbox"]');
     this.addWidgetDef(DpxFormRadioDraft, 'input[type="radio"]');
     this.addWidgetDef(DpxFormSelectDraft, 'select');
+    this.addWidgetDef(DpxFormHidden, 'input[type="hidden"]');
   }
 
   getFormName() {

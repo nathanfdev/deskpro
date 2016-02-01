@@ -41,7 +41,7 @@ export class DpxFormCheckboxDraft extends DpxFormFieldDraft {
     return isChecked;
   }
 
-  setValue(storedValue) {
+  restoreValue(storedValue) {
     const $el = this.$element;
     const value = $el.val();
 

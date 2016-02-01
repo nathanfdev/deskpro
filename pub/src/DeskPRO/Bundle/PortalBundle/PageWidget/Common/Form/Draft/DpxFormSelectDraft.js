@@ -10,7 +10,7 @@ export class DpxFormSelectDraft extends DpxFormFieldDraft {
     return this.$element.val();
   }
 
-  setValue(storedValue) {
+  restoreValue(storedValue) {
     this.$element.val(storedValue).trigger('change');
   }
 }

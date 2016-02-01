@@ -7,15 +7,12 @@ export class DpxFormFieldDraft extends PageWidget {
       return;
     }
 
-    this.restoreValue();
-    this.addListeners();
-  }
-
-  restoreValue() {
     const storedValue = this.getStoredValue();
     if (storedValue) {
-      this.setValue(storedValue);
+      this.restoreValue(storedValue);
     }
+
+    this.addListeners();
   }
 
   getName() {

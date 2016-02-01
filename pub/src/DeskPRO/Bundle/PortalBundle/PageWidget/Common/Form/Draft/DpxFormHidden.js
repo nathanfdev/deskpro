@@ -1,9 +1,9 @@
 import { DpxFormFieldDraft } from './DpxFormFieldDraft';
 
-export class DpxFormTextDraft extends DpxFormFieldDraft {
+export class DpxFormHidden extends DpxFormFieldDraft {
 
   addListeners() {
-    this.$element.on('change blur keyup', () => this.update());
+    this.$element.on('change', () => this.update());
   }
 
   getValue() {
