@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Download;
@@ -45,6 +44,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class DownloadsController.
+ */
 class DownloadsController extends AbstractController
 {
     /**
@@ -69,15 +71,15 @@ class DownloadsController extends AbstractController
                 $person
             );
 
-            return $this->render('PortalBundle:Downloads:feed.rss.twig', array(
+            return $this->render('PortalBundle:Downloads:feed.rss.twig', [
                 'pager'      => $pager,
                 'category'   => null,
                 'page_title' => $this->createPageTitle()->downloads(),
-            ));
+            ]);
         }
         $rss_link = $this->generateUrl(
             'portal_downloads',
-            array('_format' => 'rss')
+            ['_format' => 'rss']
         );
 
         //
@@ -90,14 +92,14 @@ class DownloadsController extends AbstractController
         //
         return $this->renderThemeView(
             'Theme:Downloads:index.html.twig',
-            array(
+            [
                 'page'               => $page,
                 'count'              => $this->getBrandSetting('portal.per_page_content'),
                 'breadcrumbs'        => $breadcrumbs,
                 'show_category_link' => true,
                 'page_title'         => $this->createPageTitle()->downloads(),
                 'rss_link'           => $rss_link,
-            )
+            ]
         );
     }
 
@@ -124,13 +126,13 @@ class DownloadsController extends AbstractController
                 $person
             );
 
-            return $this->render('PortalBundle:Downloads:feed.rss.twig', array(
+            return $this->render('PortalBundle:Downloads:feed.rss.twig', [
                 'pager'      => $pager,
                 'category'   => $category,
                 'page_title' => $this->createPageTitle()->downloads($category),
-            ));
+            ]);
         }
-        $rss_link = $this->generateUrl('portal_downloads_browse', array('slug' => $category->getSlug(), '_format' => 'rss'));
+        $rss_link = $this->generateUrl('portal_downloads_browse', ['slug' => $category->getSlug(), '_format' => 'rss']);
 
         //
         // BREADCRUMBS
@@ -163,7 +165,7 @@ class DownloadsController extends AbstractController
         //
         return $this->renderThemeView(
             'Theme:Downloads:browse.html.twig',
-            array(
+            [
                 'category'      => $category,
                 'breadcrumbs'   => $breadcrumbs,
                 'count'         => $count,
@@ -172,7 +174,7 @@ class DownloadsController extends AbstractController
                 'is_subscribed' => $is_subscribed,
                 'page_title'    => $this->createPageTitle()->downloads($category),
                 'rss_link'      => $rss_link,
-            )
+            ]
         );
     }
 
@@ -236,7 +238,7 @@ class DownloadsController extends AbstractController
         //
         return $this->renderThemeView(
             'Theme:Downloads:view.html.twig',
-            array(
+            [
                 'file'               => $file,
                 'content_type'       => Download::CONTENT_TYPE,
                 'content_id'         => $file->getId(),
@@ -247,7 +249,7 @@ class DownloadsController extends AbstractController
                 'page_title'         => $this->createPageTitle()->downloads($file),
                 'show_rating_counts' => $show_rating_counts,
                 'rating_counts'      => $rating_counts,
-            )
+            ]
         );
     }
 
@@ -265,11 +267,11 @@ class DownloadsController extends AbstractController
             return $this->redirect($file->getFileurl());
         }
 
-        return $this->redirectToRoute('serve_blob', array(
+        return $this->redirectToRoute('serve_blob', [
             'blob_auth_id' => $file->getBlob()->getAuthId(),
             'filename'     => $file->getFilenameSafe(),
             'dl'           => 1,
-        ));
+        ]);
     }
 
     /**
@@ -291,7 +293,7 @@ class DownloadsController extends AbstractController
 
         $this->addFlash('success', $this->phrase('portal.flashes.rating_thanks'));
 
-        return $this->redirectToRoute('portal_downloads_view', array('slug' => $file->getSlug()));
+        return $this->redirectToRoute('portal_downloads_view', ['slug' => $file->getSlug()]);
     }
 
     /**
@@ -313,7 +315,7 @@ class DownloadsController extends AbstractController
             $this->addFlash('success', $this->phrase('portal.flashes.download_subscribe'));
         }
 
-        return $this->redirectToRoute('portal_downloads_view', array('slug' => $file->getSlug()));
+        return $this->redirectToRoute('portal_downloads_view', ['slug' => $file->getSlug()]);
     }
 
     /**
@@ -335,7 +337,7 @@ class DownloadsController extends AbstractController
             $this->addFlash('success', $this->phrase('portal.flashes.download_cat_subscribe'));
         }
 
-        return $this->redirectToRoute('portal_downloads_browse', array('slug' => $category->getSlug()));
+        return $this->redirectToRoute('portal_downloads_browse', ['slug' => $category->getSlug()]);
     }
 
     /**
