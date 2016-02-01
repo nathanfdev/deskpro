@@ -36,7 +36,6 @@ namespace Application\DeskPRO\DependencyInjection;
 use Application\DeskPRO\Service\JIRA;
 use Application\DeskPRO\Service\RateLimit;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -55,26 +54,8 @@ class CoreExtension extends Extension
         $definition = new Definition('Symfony\\Component\\HttpFoundation\\Response');
         $container->setDefinition('response', $definition);
 
-        $definition = new Definition('Application\\DeskPRO\\DBAL\\Logging\\SysQueryLogger');
-        $container->setDefinition('deskpro.dbal.logger.query_logger', $definition);
-
-        $definition = new Definition('Symfony\\Bridge\\Doctrine\\Logger\\DbalLogger', array(new Reference('logger', ContainerInterface::NULL_ON_INVALID_REFERENCE)));
-        $container->setDefinition('doctrine.query_logger', $definition);
-
         $definition = new Definition('Application\\DeskPRO\\CacheInvalidator\\QueryListener');
         $container->setDefinition('deskpro.cache.query_listener', $definition);
-
-        $definition = new Definition('Application\\DeskPRO\\DBAL\\Logging\\CacheExec', array(new Reference('deskpro.cache.query_listener')));
-        $container->setDefinition('deskpro.dbal.logger.cache_query_listener', $definition);
-
-        $definition = new Definition('Application\\DeskPRO\\DBAL\\Logging\\DelegateLogger');
-        $definition->addMethodCall('addLogger', array(new Reference('deskpro.dbal.logger.cache_query_listener'), 'cache_query_listener'));
-        $definition->addMethodCall('addLogger', array(new Reference('deskpro.dbal.logger.query_logger'), 'query_logger'));
-        $container->setDefinition('doctrine.dbal.logger', $definition);
-
-        $definition = new Definition('Application\\DeskPRO\\Entity\\Person');
-        $definition->setFactoryService('session')->setFactoryMethod('getPerson');
-        $container->setDefinition('deskpro.session_person', $definition);
 
         $definition = new Definition('Application\\DeskPRO\\People\\ActivityLogger\\ActivityLogger', array(
             new Reference('doctrine.orm.entity_manager'),

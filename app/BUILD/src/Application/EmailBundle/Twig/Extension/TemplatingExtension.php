@@ -112,10 +112,6 @@ class TemplatingExtension extends \Twig_Extension
             'rand'                         => new \Twig_Function_Method($this, 'rand', array('is_safe' => array('html'))),
             'is_partial_request'           => new \Twig_Function_Method($this, 'isPartialRequest'),
             'str_repeat'                   => new \Twig_Function_Method($this, 'strRepeat'),
-            'is_user_guest'                => new \Twig_Function_Method($this, 'isUserGuest'),
-            'is_user_loggedin'             => new \Twig_Function_Method($this, 'isUserUser'),
-            'is_user_agent'                => new \Twig_Function_Method($this, 'isUserAgent'),
-            'is_user_admin'                => new \Twig_Function_Method($this, 'isUserAdmin'),
             'flash_message'                => new \Twig_Function_Method($this, 'flashMessage'),
             'compare_type'                 => new \Twig_Function_Method($this, 'compareType'),
             'object_path'                  => new \Twig_Function_Method($this, 'getObjectPath'),
@@ -957,58 +953,6 @@ class TemplatingExtension extends \Twig_Extension
     public function rand($min = 1, $max = 10)
     {
         return mt_rand((int) $min, (int) $max);
-    }
-
-    public function isUserGuest($person = null)
-    {
-        if (!$person) {
-            $person = $this->container->get('deskpro.session_person');
-        }
-
-        if (!$person['id']) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function isUserUser($person = null)
-    {
-        if (!$person) {
-            $person = $this->container->get('deskpro.session_person');
-        }
-
-        if ($person['id']) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function isUserAgent($person)
-    {
-        if (!$person) {
-            $person = $this->container->get('deskpro.session_person');
-        }
-
-        if ($person['is_agent']) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function isUserAdmin($person)
-    {
-        if (!$person) {
-            $person = $this->container->get('deskpro.session_person');
-        }
-
-        if ($person['is_admin']) {
-            return true;
-        }
-
-        return false;
     }
 
     /**

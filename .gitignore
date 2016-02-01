@@ -49,8 +49,8 @@ phantomjsdriver.log
 !/var/tmp/.gitkeep
 
 # logs
-/logs/*
-!/logs/.gitkeep
+/var/logs/*
+!/var/logs/.gitkeep
 
 # data
 /attachments/*
