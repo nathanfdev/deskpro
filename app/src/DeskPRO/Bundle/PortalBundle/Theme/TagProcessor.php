@@ -77,11 +77,11 @@ class TagProcessor
 
         $response = $handler->handle($tag, $tag_request);
 
-        if (!$response || !$response->isSuccessful()) {
-            if (!$response->isSuccessful()) {
-                $e = new \RuntimeException('Unable to render theme content: '.$response->getContent());
-                KernelErrorHandler::logException($e);
-            }
+        if (!$response) {
+            return ''; // be passive and default to blank
+        } elseif (!$response->isSuccessful()) {
+            $e = new \RuntimeException('Unable to render theme content: '.$response->getContent());
+            KernelErrorHandler::logException($e);
 
             return ''; // be passive and default to blank
         }
