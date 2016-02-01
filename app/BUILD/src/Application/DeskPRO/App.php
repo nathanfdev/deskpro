@@ -29,15 +29,14 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO;
 
-use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Search\Adapter\MysqlAdapter;
 use Orb\Log\Filter\CallbackFormatter;
 use Orb\Log\LogItem;
 use Orb\Util\Arrays;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * A global singleton that facilitates fetching well known objects and values.

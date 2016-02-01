@@ -167,4 +167,12 @@ class AppEnv implements AppEnvInterface
     {
         return $this->dpEnv->getConfig($id, $default);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findConfigFile($f)
+    {
+        return $this->dpEnv->findConfigFile($f);
+    }
 }

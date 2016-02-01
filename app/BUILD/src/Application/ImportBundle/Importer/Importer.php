@@ -305,7 +305,7 @@ class Importer
         $this->setCurrentName($id);
 
         // trigger cron to start console command
-        file_put_contents(App::$container->getParameter('kernel.dp_config_dir').'/importer_cron.pid', 0);
+        file_put_contents(App::$container->getParameter('dp.user.tmp_dir').'/importer_cron.pid', 0);
 
         return $importer;
     }

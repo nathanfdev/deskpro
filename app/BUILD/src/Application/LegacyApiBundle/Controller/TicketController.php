@@ -35,12 +35,12 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\Entity\CustomDataBilling;
 use Application\DeskPRO\Entity\Ticket as Ticket;
-use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\Tickets\SnippetFormatter;
 use Application\DeskPRO\Tickets\TicketDisplay;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\SuperKeyPermission;
 use DpSys\LowError\SystemErrorHandler;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 

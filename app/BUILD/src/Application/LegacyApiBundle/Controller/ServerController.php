@@ -553,7 +553,7 @@ class ServerController extends AbstractController implements ProtectedController
         $this->container->getSettingsHandler()->setSetting('core.upgrade_started', null);
 
         $this->container->getSettingsHandler()->setSetting('core.helpdesk_disabled_message', $this->in->getString('user_message'));
-        @file_put_contents($this->container->getParameter('kernel.dp_config_dir').'/helpdesk-offline-message.txt', $this->in->getString('user_message'));
+        @file_put_contents($this->container->getParameter('dp.user.cache_dir').'/helpdesk-offline-message.txt', $this->in->getString('user_message'));
 
         if ($mins) {
             $agent_chat = new \Application\DeskPRO\Chat\AgentChat($this->person, $this->session->getEntity());
@@ -616,10 +616,10 @@ class ServerController extends AbstractController implements ProtectedController
      */
     private function getEncStatus()
     {
-        $key_file         = $this->container->getParameter('kernel.dp_config_dir').'encryption-key.bin';
+        $key_file         = $this->container->get('deskpro.app_env')->findConfigFile('encryption-key.bin');
         $has_key_file     = file_exists($key_file) && is_readable($key_file);
         $is_enabled       = $this->container->getSetting('core.use_encryption');
-        $can_disable_file = $this->container->getParameter('kernel.dp_config_dir').'can-disable-encryption.txt';
+        $can_disable_file = $this->container->get('deskpro.app_env')->findConfigFile('can-disable-encryption.txt');
         $can_disable      = is_file($can_disable_file);
 
         if (!extension_loaded('openssl')) {

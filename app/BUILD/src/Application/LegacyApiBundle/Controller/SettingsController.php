@@ -32,7 +32,6 @@
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Blob;
-use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\ResourceScanner\AdvancedSettings;
 use Application\DeskPRO\Settings\GeneralPortalSettings;
 use Application\DeskPRO\Settings\GeneralSettings;
@@ -47,6 +46,7 @@ use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DpSys\License;
 use Orb\Util\Env;
 use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class SettingsController extends AbstractController implements ProtectedControllerInterface

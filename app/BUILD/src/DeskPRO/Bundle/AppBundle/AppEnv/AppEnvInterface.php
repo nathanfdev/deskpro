@@ -158,4 +158,13 @@ interface AppEnvInterface
      * @return mixed
      */
     public function getConfig($id, $default = null);
+
+    /**
+     * Find a config file or null if the file doesnt exist.
+     *
+     * @param string $f
+     *
+     * @return null|string
+     */
+    public function findConfigFile($f);
 }

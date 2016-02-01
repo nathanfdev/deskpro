@@ -445,4 +445,15 @@ class DpEnv
     {
         return $this->config_reader->getConfig($id, $default);
     }
+
+    /**
+     * Find a config file or null if the file doesnt exist.
+     *
+     * @param string $f
+     * @return null|string
+     */
+    public function findConfigFile($f)
+    {
+        return $this->config_reader->findConfigFile($f);
+    }
 }

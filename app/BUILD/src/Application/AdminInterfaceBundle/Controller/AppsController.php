@@ -31,8 +31,8 @@
  */
 namespace Application\AdminInterfaceBundle\Controller;
 
-use Application\DeskPRO\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\PostResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 

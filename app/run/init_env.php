@@ -110,3 +110,23 @@ if (!file_exists($DP_ENV->getUserCacheDir().DIRECTORY_SEPARATOR.'is_installed.da
 
 // Increase error reporting
 error_reporting(E_ALL);
+
+#------------------------------
+# Custom init part
+#------------------------------
+
+if ($init_scripts = $DP_ENV->getConfig('env.init_scripts')) {
+    if (is_array($init_scripts)) {
+        array_map(function ($f) {
+            $f = str_replace(
+                [ 'DP_DIR', 'DP_APP_DIR', 'DP_ACTIVE_BUILD', 'DP_ENV_ID' ],
+                [ DP_DIR, DP_APP_DIR, DP_ACTIVE_BUILD, DP_ENV_ID ],
+                $f
+            );
+            if (is_file($f)) {
+                global $DP_ENV;
+                require($f);
+            }
+        }, $init_scripts);
+    }
+}

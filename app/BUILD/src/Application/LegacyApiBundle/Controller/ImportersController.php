@@ -33,10 +33,10 @@ namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
-use Application\DeskPRO\HttpFoundation\Request;
 use Application\ImportBundle\Generator;
 use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;

@@ -176,4 +176,22 @@ class ConfigReader
 
         return $current;
     }
+
+    /**
+     * Given the name of a particular file, try to find it within the config directory.
+     *
+     * @param string $f
+     * @return null|string
+     */
+    public function findConfigFile($f)
+    {
+        foreach ($this->config_dirs as $dir) {
+            $path  = $dir . DIRECTORY_SEPARATOR . $f;
+            if (is_file($path)) {
+                return $path;
+            }
+        }
+
+        return null;
+    }
 }

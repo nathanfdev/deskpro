@@ -32,9 +32,9 @@
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Job;
-use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\JobQueue\Processor\Reset\UsersImportProcessor;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CsvUploadController extends AbstractController implements ProtectedControllerInterface

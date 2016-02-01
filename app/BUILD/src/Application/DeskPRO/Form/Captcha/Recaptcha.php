@@ -72,7 +72,7 @@ class Recaptcha extends CaptchaAbstract
     {
         $challenge = $this->getRequest()->request->get('recaptcha_challenge_field');
         $response  = $this->getRequest()->request->get('recaptcha_response_field');
-        $remote_ip = dp_get_user_ip_address();
+        $remote_ip = @$_SERVER['HTTP_CLIENT_IP'];
 
         if (!$challenge || !$response || !$remote_ip) {
             return false;
@@ -99,6 +99,6 @@ class Recaptcha extends CaptchaAbstract
 
         $line = trim(Strings::getFirstLine($r_body));
 
-        return ($line == 'true');
+        return $line == 'true';
     }
 }

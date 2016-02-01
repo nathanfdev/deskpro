@@ -170,7 +170,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $em->getConnection()->getConfiguration()->setSQLLogger(null);
 
         if ($input->getOption('batch')) {
-            $pid = App::$container->getParameter('kernel.dp_config_dir').'/importer.pid';
+            $pid = App::$container->getParameter('dp.user.tmp_dir').'/importer.pid';
             $fh  = @fopen($pid, 'a');
 
             if (!$fh) {

@@ -29,17 +29,30 @@
 /**
  * DeskPRO.
  */
-namespace Application\DeskPRO\Encryption;
+namespace DeskPRO\Bundle\DevBundle\Command;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
-class StandardEncFactory
+class TestCommand extends ContainerAwareCommand
 {
-    public static function create(DeskproContainer $container)
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
     {
-        $is_enabled = $container->getSetting('core.use_encryption');
-        $key_file   = $container->get('deskpro.app_env')->findConfigFile('encryption-key.bin') ?: false;
+        $this->setName('dpdev:test');
+    }
 
-        return new DpEnc($is_enabled, $key_file);
+    /**
+     * {@inheritdoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        echo __FILE__;
+        echo "\n";
+
+        return 0;
     }
 }

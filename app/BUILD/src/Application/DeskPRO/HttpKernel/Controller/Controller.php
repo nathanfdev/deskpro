@@ -33,10 +33,10 @@
  */
 namespace Application\DeskPRO\HttpKernel\Controller;
 
-use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\Util;
 use Orb\Util\Arrays;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
@@ -53,7 +53,7 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
     /**
      * The request.
      *
-     * @var \Application\DeskPRO\HttpFoundation\Request
+     * @var \Symfony\Component\HttpFoundation\Request
      */
     public $request;
 

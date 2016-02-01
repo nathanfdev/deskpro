@@ -31,8 +31,8 @@ namespace Application\DeskPRO\Service;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\RateLimitLog;
-use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\People\PersonGuest;
+use Symfony\Component\HttpFoundation\Request;
 
 class RateLimit
 {
