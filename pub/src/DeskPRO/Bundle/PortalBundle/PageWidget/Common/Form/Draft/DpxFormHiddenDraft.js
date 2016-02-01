@@ -1,16 +1,8 @@
-import { DpxFormFieldDraft } from './DpxFormFieldDraft';
+import { DpxFormBaseTextDraft } from './DpxFormBaseTextDraft';
 
-export class DpxFormHiddenDraft extends DpxFormFieldDraft {
+export class DpxFormHiddenDraft extends DpxFormBaseTextDraft {
 
   addListeners() {
     this.$element.on('change', this.onUpdate);
-  }
-
-  getValue() {
-    return this.$element.val();
-  }
-
-  restoreValue(storedValue) {
-    this.$element.val(storedValue).trigger('change');
   }
 }

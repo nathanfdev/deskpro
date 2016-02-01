@@ -1,16 +1,8 @@
-import { DpxFormFieldDraft } from './DpxFormFieldDraft';
+import { DpxFormBaseTextDraft } from './DpxFormBaseTextDraft';
 
-export class DpxFormSelectDraft extends DpxFormFieldDraft {
+export class DpxFormSelectDraft extends DpxFormBaseTextDraft {
 
   addListeners() {
     this.$element.on('click change blur', this.onUpdate);
-  }
-
-  getValue() {
-    return this.$element.val();
-  }
-
-  restoreValue(storedValue) {
-    this.$element.val(storedValue).trigger('change');
   }
 }
