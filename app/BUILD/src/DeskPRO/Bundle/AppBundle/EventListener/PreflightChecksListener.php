@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use DeskPRO\Bundle\AppBundle\HttpKernel\DpKernelEvents;
@@ -68,7 +67,7 @@ class PreflightChecksListener implements EventSubscriberInterface
         $request = $event->getRequest();
 
         // Missing PDO
-        if (!deskpro_install_check_pdo_mysql()) {
+        if (!extension_loaded('pdo')) {
             $r = new RedirectResponse($request->getBasePath().'/index.php/install/');
             $r->headers->set('X-DeskPRO-InstallRedirectReason', 'Missing PDO ext');
             $event->setResponse($r);

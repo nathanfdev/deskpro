@@ -31,17 +31,17 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Logging;
 
-use DeskPRO\Bundle\AppBundle\Config\DeskproConfigService;
 use Monolog\Handler\StreamHandler;
 
 class DeskproFilesystemHandler extends StreamHandler
 {
     public function __construct(
-        DeskproConfigService $dp_config,
+        $log_dir,
+        $log_level,
         $kernel_name,
         $kernel_environment
     ) {
-        $filename = $dp_config->getLogDir()
+        $filename = $log_dir
             .DIRECTORY_SEPARATOR
             .$kernel_name
             .'-'
@@ -51,7 +51,7 @@ class DeskproFilesystemHandler extends StreamHandler
 
         parent::__construct(
             $filename,
-            $dp_config->getLogLevel()
+            $log_level
         );
     }
 }

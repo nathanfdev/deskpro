@@ -48,7 +48,7 @@ class InterfaceInfo
     /**
      * InterfaceInfo constructor.
      *
-     * @param string $interface_id
+     * @param string $interface
      */
     public function __construct($interface)
     {

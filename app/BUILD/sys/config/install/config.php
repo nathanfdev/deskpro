@@ -56,15 +56,6 @@ $container->setParameter(
 );
 $container->setParameter('twig.loader.filesystem.class', 'Application\\DeskPRO\\Twig\\Loader\\HybridLoader');
 $container->setParameter('twig.class', 'Application\\DeskPRO\\Twig\\Environment');
-$container->setParameter(
-    'twig.options',
-    array(
-        'cache'       => '%kernel.cache_dir%/../twig-compiled',
-        'charset'     => 'UTF-8',
-        'debug'       => '%kernel.debug%',
-        'auto_reload' => '%kernel.debug%',
-    )
-);
 $container->setParameter('templating.locator.class', 'Application\\DeskPRO\\Templating\\Loader\\TemplateLocator');
 $container->setParameter('templating.engine.twig.class', 'Application\\DeskPRO\\Twig\\TwigEngine');
 

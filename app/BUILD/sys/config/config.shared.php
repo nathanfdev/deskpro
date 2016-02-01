@@ -31,6 +31,7 @@ if (!defined('DP_ROOT')) {
 }
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\ExpressionLanguage\Expression;
 
 $loader->import(__DIR__.'/config.shared.yml');
 $loader->import(__DIR__.'/services.yml');
@@ -178,8 +179,8 @@ $definition->setClass('DeskPRO\\Bundle\\AppBundle\\Assets\\PackagesFactory');
 $definition->setArguments([
     new Reference('settings_resolver'),
     new Reference('request_stack'),
-    new \Symfony\Component\ExpressionLanguage\Expression("service('deskpro.app_env').getConfig('paths.asset_paths')"),
-    new \Symfony\Component\ExpressionLanguage\Expression("{DP_ACTIVE_BUILD: service('deskpro.app_env').getAppName(), DP_ENV_ID: service('deskpro.app_env').getEnvId()}"),
+    new Expression("service('deskpro.app_env').getConfig('paths.asset_paths')"),
+    new Expression("{DP_ACTIVE_BUILD: service('deskpro.app_env').getAppName(), DP_ENV_ID: service('deskpro.app_env').getEnvId()}"),
 ]);
 $container->setDefinition('assets.packages.factory', $definition);
 
@@ -342,18 +343,17 @@ $container->setDefinition('deskpro.logger.changelog', $definition);
 ############################################################################
 # Global config and Monolog handler
 ############################################################################
-$definition = new Definition('DeskPRO\Bundle\AppBundle\Config\DeskproConfigService');
-$container->setDefinition('deskpro_config', $definition);
 
 $definition = new Definition('DeskPRO\Bundle\AppBundle\Logging\DeskproFilesystemHandler');
-$definition->addArgument(new Reference('deskpro_config'));
+$definition->addArgument(new Expression("service('deskpro.app_env').getUserLogsDir()"));
+$definition->addArgument(new Expression("service('deskpro.app_env').getConfig('logs.general_log_level')"));
 $definition->addArgument('%kernel.name%');
 $definition->addArgument('%kernel.environment%');
 $container->setDefinition('monolog.handler.deskpro_filesystem', $definition);
 
-$definition = new Definition('DeskPRO\Bundle\AppBundle\Logging\DeskproFingersCrossedHandler');
+$definition = new Definition('Monolog\Handler\FingersCrossedHandler');
 $definition->addArgument(new Reference('monolog.handler.deskpro_filesystem'));
-$definition->addArgument(new Reference('deskpro_config'));
+$definition->addArgument(new Expression("service('deskpro.app_env').getConfig('logs.general_log_level_threshold')"));
 $container->setDefinition('monolog.handler.deskpro_fingers_crossed', $definition);
 
 $definition = new Definition(

@@ -29,7 +29,6 @@
 namespace DeskPRO\Bundle\AppBundle\Assets;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
-use DeskPRO\Bundle\AppBundle\Config\DeskproConfigService;
 use DeskPRO\Component\Util\MapUtils;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\Asset\PathPackage;
@@ -44,11 +43,6 @@ class PackagesFactory
      * @var SettingsResolver
      */
     private $settings;
-
-    /**
-     * @var DeskproConfigService
-     */
-    private $config;
 
     /**
      * @var RequestStack
@@ -78,7 +72,6 @@ class PackagesFactory
     public function __construct(SettingsResolver $settings, RequestStack $request_stack, $asset_paths = [], $asset_path_vars = [])
     {
         $this->settings      = $settings;
-        $this->config        = $config;
         $this->request_stack = $request_stack;
 
         // This should always be set during a normal request
