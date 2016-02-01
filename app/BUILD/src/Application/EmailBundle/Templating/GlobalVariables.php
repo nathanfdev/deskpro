@@ -32,6 +32,7 @@
 namespace Application\EmailBundle\Templating;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\HttpFoundation\LegacyRequestUtils;
 use Application\DeskPRO\Service\JIRA;
 use DpSys\License;
 use Orb\Util\Strings;
@@ -317,17 +318,6 @@ class GlobalVariables extends BaseGlobalVariables
         return isset($this->variables[$name]);
     }
 
-    public function getLastException()
-    {
-        if (!App::has('deskpro.exception_logger')) {
-            return;
-        }
-
-        $logger = App::get('deskpro.exception_logger');
-
-        return $logger->getLastException();
-    }
-
     public function getTimezoneList()
     {
         static $tz = null;
@@ -343,7 +333,7 @@ class GlobalVariables extends BaseGlobalVariables
     {
         $request = App::getRequest();
 
-        return $request->getReturnParam() ?: $request->getRequestUri();
+        return LegacyRequestUtils::readReturnParam($request) ?: $request->getRequestUri();
     }
 
     public function isCloud()

@@ -110,7 +110,6 @@ class TemplatingExtension extends \Twig_Extension
             'render_custom_field_form'     => new \Twig_Function_Method($this, 'renderCustomFieldForm', array('is_safe' => array('html'))),
             'el_uid'                       => new \Twig_Function_Method($this, 'elUid', array('is_safe' => array('html'))),
             'rand'                         => new \Twig_Function_Method($this, 'rand', array('is_safe' => array('html'))),
-            'is_partial_request'           => new \Twig_Function_Method($this, 'isPartialRequest'),
             'str_repeat'                   => new \Twig_Function_Method($this, 'strRepeat'),
             'flash_message'                => new \Twig_Function_Method($this, 'flashMessage'),
             'compare_type'                 => new \Twig_Function_Method($this, 'compareType'),
@@ -953,16 +952,6 @@ class TemplatingExtension extends \Twig_Extension
     public function rand($min = 1, $max = 10)
     {
         return mt_rand((int) $min, (int) $max);
-    }
-
-    /**
-     * Checks the special _partial flag in incoming requests to see if the user wants a partial.
-     *
-     * @return bool
-     */
-    public function isPartialRequest()
-    {
-        return $this->container->get('request')->isPartialRequest();
     }
 
     public function strRepeat($str, $count = 1)

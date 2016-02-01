@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\ArticleResults;
@@ -854,7 +853,7 @@ class KbController extends AbstractController
         }
 
         $tpl = 'AgentBundle:Kb:filter.html.twig';
-        if ($this->request->isPartialRequest()) {
+        if (@$_REQUEST['_partial']) {
             $tpl = 'AgentBundle:Kb:filter-page.html.twig';
         }
 

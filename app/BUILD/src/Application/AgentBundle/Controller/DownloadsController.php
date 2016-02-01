@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\DownloadResults;
@@ -396,7 +395,7 @@ class DownloadsController extends AbstractController
         }
 
         $tpl = 'AgentBundle:Downloads:filter.html.twig';
-        if ($this->request->isPartialRequest()) {
+        if (@$_REQUEST['_partial']) {
             $tpl = 'AgentBundle:Downloads:filter-page.html.twig';
         }
 

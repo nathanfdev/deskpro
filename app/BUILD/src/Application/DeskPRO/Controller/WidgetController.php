@@ -60,7 +60,7 @@ class WidgetController extends AbstractController
         }
 
         $ch = curl_init($url);
-        if ($this->isPostRequest()) {
+        if ($this->getRequest()->getMethod() === 'POST') {
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents('php://input'));
         }

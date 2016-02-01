@@ -76,7 +76,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
                 return $this->createJsonResponse($data, 403);
             } else {
-                if ($this->isPostRequest()) {
+                if ($this->getRequest()->getMethod() === 'POST') {
                     $return = $this->get('router')->generate('agent');
                 } else {
                     $return = $this->request->getRequestUri();

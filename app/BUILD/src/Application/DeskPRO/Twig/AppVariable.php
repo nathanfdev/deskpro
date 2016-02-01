@@ -257,11 +257,6 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
         return $this->container->get('templating.globals')->get($name);
     }
 
-    public function getLastException()
-    {
-        return $this->container->get('templating.globals')->getLastException();
-    }
-
     public function getTimezoneList()
     {
         return $this->container->get('templating.globals')->getTimezoneList();

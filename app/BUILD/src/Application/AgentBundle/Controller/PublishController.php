@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -185,7 +184,7 @@ class PublishController extends AbstractController
 
         $pageinfo = null;
         $total    = null;
-        if (!$this->request->isPartialRequest()) {
+        if (!@$_REQUEST['_partial']) {
             $total    = $this->publish_helper->getValidatingCommentsCount();
             $pageinfo = Numbers::getPaginationPages($total, $curpage, $per_page);
         }
@@ -193,7 +192,7 @@ class PublishController extends AbstractController
         $validating_comments = $this->publish_helper->getValidatingComments($limit);
 
         $tpl = 'AgentBundle:Publish:validating-comments.html.twig';
-        if ($this->request->isPartialRequest()) {
+        if (@$_REQUEST['_partial']) {
             $tpl = 'AgentBundle:Publish:validating-comments-page.html.twig';
         }
 
@@ -425,7 +424,7 @@ class PublishController extends AbstractController
 
         $pageinfo = null;
         $total    = null;
-        if (!$this->request->isPartialRequest()) {
+        if (!@$_REQUEST['_partial']) {
             $counts = $this->publish_helper->getCommentsCountInfo();
             $total  = $counts[$type];
 
@@ -435,7 +434,7 @@ class PublishController extends AbstractController
         $comments = $this->publish_helper->getComments($limit);
 
         $tpl = 'AgentBundle:Publish:list-comments.html.twig';
-        if ($this->request->isPartialRequest()) {
+        if (@$_REQUEST['_partial']) {
             $tpl = 'AgentBundle:Publish:list-comments-page.html.twig';
         }
 
@@ -467,7 +466,7 @@ class PublishController extends AbstractController
 
         $pageinfo = null;
         $total    = null;
-        if (!$this->request->isPartialRequest()) {
+        if (!@$_REQUEST['_partial']) {
             $total    = $this->publish_helper->getValidatingContentCount();
             $pageinfo = Numbers::getPaginationPages($total, $curpage, $per_page);
         }
@@ -475,7 +474,7 @@ class PublishController extends AbstractController
         $content_validating = $this->publish_helper->getValidatingContent($limit);
 
         $tpl = 'AgentBundle:Publish:validating-content.html.twig';
-        if ($this->request->isPartialRequest()) {
+        if (@$_REQUEST['_partial']) {
             $tpl = 'AgentBundle:Publish:validating-content-page.html.twig';
         }
 
@@ -722,7 +721,7 @@ class PublishController extends AbstractController
 
         $pageinfo = null;
         $total    = null;
-        if (!$this->request->isPartialRequest()) {
+        if (!@$_REQUEST['_partial']) {
             $total    = $this->publish_helper->getDraftsCount();
             $pageinfo = Numbers::getPaginationPages($total, $curpage, $per_page);
         }
@@ -730,7 +729,7 @@ class PublishController extends AbstractController
         $drafts = $this->publish_helper->getDraftContent(null, 'ASC', $get_all);
 
         $tpl = 'AgentBundle:Publish:drafts.html.twig';
-        if ($this->request->isPartialRequest()) {
+        if (@$_REQUEST['_partial']) {
             $tpl = 'AgentBundle:Publish:drafts-page.html.twig';
         }
 

@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Controller\Helper;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Controller\AbstractController;
+use Application\DeskPRO\HttpFoundation\LegacyRequestUtils;
 
 class LoginHelper
 {
@@ -74,7 +75,7 @@ class LoginHelper
             WHERE us.is_enabled = ?1
         ')->setParameter(1, true)->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 
-        $return = $this->controller->request->getReturnParam();
+        $return = LegacyRequestUtils::readReturnParam($this->controller->request);
         if ($return and $return[0] != '/') {
             // Always be a path on the current domain,
             // or else it might be a trick to go to some other domain etc
@@ -235,7 +236,7 @@ class LoginHelper
 
     protected function _redirectLoginSuccess()
     {
-        $return = $this->controller->request->getReturnParam();
+        $return = LegacyRequestUtils::readReturnParam($this->controller->request);
         if ($return) {
             return $this->controller->redirect($return);
         } else {
@@ -245,7 +246,7 @@ class LoginHelper
 
     protected function _redirectLoginFailed()
     {
-        $return = $this->controller->request->getReturnParam();
+        $return = LegacyRequestUtils::readReturnParam($this->controller->request);
 
         return $this->controller->redirectRoute($this->route_prefix.'_login', array('return' => $return));
     }

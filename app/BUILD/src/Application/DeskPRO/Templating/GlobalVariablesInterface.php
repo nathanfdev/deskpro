@@ -110,8 +110,6 @@ interface GlobalVariablesInterface
 
     public function get($name);
 
-    public function getLastException();
-
     public function getTimezoneList();
 
     public function getReturnUrl();

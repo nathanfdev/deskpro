@@ -88,12 +88,6 @@ $definition->setArguments(array(
 $definition->addTag('twig.extension', array());
 $container->setDefinition('twig.helpers.deskpro_templating', $definition);
 
-// deskpro.exception_logger
-$definition = new Definition();
-$definition->setClass('Application\DeskPRO\HttpKernel\ExceptionListener');
-$definition->addTag('kernel.event_listener', array('event' => 'kernel.exception', 'method' => 'onKernelException', 'priority' => -128));
-$container->setDefinition('deskpro.exception_logger', $definition);
-
 // deskpro.interface_value
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\InterfaceValue');

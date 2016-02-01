@@ -35,6 +35,7 @@ namespace Application\DeskPRO\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\AuthInterfaceSettings;
+use Application\DeskPRO\HttpFoundation\LegacyRequestUtils;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -81,7 +82,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
      */
     public function isPostRequest()
     {
-        return ($this->get('request')->getMethod() == 'POST');
+        return $this->get('request')->getMethod() == 'POST';
     }
 
     /**
@@ -311,7 +312,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 
         if ($sso_result = $this->handleAutomaticSso($authInterfaceSettings)) {
             if ($sso_result->isRedirectRequired()) {
-                if (!$return = $this->request->getReturnParam()) {
+                if (!$return = LegacyRequestUtils::readReturnParam($this->request)) {
                     try {
                         $return = $this->generateUrl(
                             $this->request->attributes->get('_route'),

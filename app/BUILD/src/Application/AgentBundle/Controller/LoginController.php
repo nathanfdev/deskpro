@@ -33,6 +33,7 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\HttpFoundation\LegacyRequestUtils;
 use Application\DeskPRO\Service\RateLimit;
 
 class LoginController extends \Application\UserBundle\Controller\LoginController
@@ -48,7 +49,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
      */
     public function indexAction()
     {
-        $return = $this->request->getReturnParam();
+        $return = LegacyRequestUtils::readReturnParam($this->request);
 
         if ($this->loginViaToken()) {
             if ($return) {

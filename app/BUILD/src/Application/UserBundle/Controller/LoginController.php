@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\EntityRepository\LoginLog;
+use Application\DeskPRO\HttpFoundation\LegacyRequestUtils;
 use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Service\CheckWhitelistedIP;
@@ -191,7 +192,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
      */
     public function indexAction()
     {
-        $return = $this->request->getReturnParam();
+        $return = LegacyRequestUtils::readReturnParam($this->request);
 
         if ($this->loginViaToken() || $this->session->getPerson()->getId()) {
             if ($return) {
@@ -419,7 +420,7 @@ HTML;
             return $this->redirectRoute($this->route_prefix.'_login');
         }
 
-        $return = $this->request->getReturnParam();
+        $return = LegacyRequestUtils::readReturnParam($this->request);
 
         if ($lockTime = $this->getLoginLockoutTime($this->in->getString('email'))) {
             $this->session->setFlash('failed_login_rate', $lockTime);
@@ -694,7 +695,7 @@ HTML;
 
     public function authenticateAction($usersource_id)
     {
-        $return = $this->request->getReturnParam();
+        $return = LegacyRequestUtils::readReturnParam($this->request);
 
         if ($usersource_test = $this->in->getBool(self::USERSOURCE_TEST)) {
             $this->session->setFlash(self::USERSOURCE_TEST, 1);
@@ -763,7 +764,7 @@ HTML;
 
                 // We expect a redirect to be rquired
             } elseif ($result->isRedirectRequired()) {
-                if (!$return = $this->request->getReturnParam()) {
+                if (!$return = LegacyRequestUtils::readReturnParam($this->request)) {
                     if ($return = $this->request->server->get('HTTP_REFERER')) {
                         if (false !== stripos($return, '/login')) {
                             $return = null;
@@ -807,7 +808,7 @@ HTML;
 
                 $this->_setupUsersourceSession($usersource, $person, $result);
 
-                $return = $this->request->getReturnParam();
+                $return = LegacyRequestUtils::readReturnParam($this->request);
                 if ($return) {
                     return $this->redirect($return);
                 } else {
@@ -825,7 +826,7 @@ HTML;
 
     public function authenticateCallbackAction($usersource_id)
     {
-        $return     = $this->request->getReturnParam();
+        $return     = LegacyRequestUtils::readReturnParam($this->request);
         $usersource = $this->em->find('DeskPRO:Usersource', $usersource_id);
 
         if (!$usersource) {
@@ -974,7 +975,7 @@ HTML;
                 } else {
                     $this->session->setFlash('captcha_reset_error', true);
 
-                    return $this->redirectRoute($this->route_prefix.'_login_resetpass', array('return' => $request->getReturnParam()));
+                    return $this->redirectRoute($this->route_prefix.'_login_resetpass', array('return' => LegacyRequestUtils::readReturnParam($request)));
                 }
             }
         }
@@ -1417,7 +1418,7 @@ HTML;
             }
         }
 
-        $return = $this->request->getReturnParam();
+        $return = LegacyRequestUtils::readReturnParam($this->request);
         if ($return) {
             return $this->redirect($return);
         } else {

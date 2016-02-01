@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\NewsResults;
@@ -335,7 +334,7 @@ class NewsController extends AbstractController
         }
 
         $tpl = 'AgentBundle:News:filter.html.twig';
-        if ($this->request->isPartialRequest()) {
+        if (@$_REQUEST['_partial']) {
             $tpl = 'AgentBundle:News:filter-page.html.twig';
         }
 

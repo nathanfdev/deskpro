@@ -32,6 +32,7 @@
 namespace Application\DeskPRO\Templating;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\HttpFoundation\LegacyRequestUtils;
 use Application\DeskPRO\Service\JIRA;
 use DpSys\License;
 use Symfony\Bundle\FrameworkBundle\Templating\GlobalVariables as BaseGlobalVariables;
@@ -306,17 +307,6 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
         return isset($this->variables[$name]);
     }
 
-    public function getLastException()
-    {
-        if (!App::has('deskpro.exception_logger')) {
-            return;
-        }
-
-        $logger = App::get('deskpro.exception_logger');
-
-        return $logger->getLastException();
-    }
-
     public function getTimezoneList()
     {
         static $tz = null;
@@ -332,7 +322,7 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
     {
         $request = App::getRequest();
 
-        return $request->getReturnParam() ?: $request->getRequestUri();
+        return LegacyRequestUtils::readReturnParam($request) ?: $request->getRequestUri();
     }
 
     public function isCloud()
