@@ -7,7 +7,7 @@ export class DpxFormRteBlobs extends DpxFormFieldDraft {
   }
 
   getName() {
-    return super.getName() + '_blobs';
+    return super.getName() + '[blobs]';
   }
 
   getValue(event, blob) {
