@@ -3,7 +3,7 @@ import { DpxFormFieldDraft } from './DpxFormFieldDraft';
 export class DpxFormHidden extends DpxFormFieldDraft {
 
   addListeners() {
-    this.$element.on('change', () => this.update());
+    this.$element.on('change', this.onUpdate);
   }
 
   getValue() {

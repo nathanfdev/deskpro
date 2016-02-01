@@ -37,6 +37,11 @@ export class PortalRte extends React.Component {
         editor.setContent($textarea.val());
       }
     });
+    $textarea.on('setBlobs', (event, blobs) => {
+      this.setState({
+        blobs: blobs
+      });
+    });
   }
 
   onChangeMessage = value => {
@@ -44,9 +49,10 @@ export class PortalRte extends React.Component {
   };
 
   onUploadSubmit = (event, data) => {
+    const { $textarea } = this.props;
     const file = data.files[0];
     if (file.type.indexOf('image') === -1) {
-      pageWidgetEmitter.emit('rteFileUpload', file);
+      pageWidgetEmitter.emit('rteFileUpload', file, $textarea);
       return false;
     }
 
@@ -67,6 +73,7 @@ export class PortalRte extends React.Component {
   };
 
   onUploadSuccess = (event, response) => {
+    const { $textarea } = this.props;
     const pasteId = response.files[0].id;
     const $image = $('img[data-paste-id=' + pasteId + ']', this.getNode());
     const editor = this.refs.input;
@@ -74,6 +81,7 @@ export class PortalRte extends React.Component {
     const blob = response.result && response.result.blob;
     if (blob) {
       $image.removeAttr('data-paste-id').attr('src', blob.url);
+      $textarea.trigger('blob', blob);
 
       const newBlobs = this.state.blobs.slice();
       newBlobs.push(blob);

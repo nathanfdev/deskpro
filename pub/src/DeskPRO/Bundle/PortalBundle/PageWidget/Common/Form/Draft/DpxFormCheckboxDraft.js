@@ -3,7 +3,7 @@ import { DpxFormFieldDraft } from './DpxFormFieldDraft';
 export class DpxFormCheckboxDraft extends DpxFormFieldDraft {
 
   addListeners() {
-    this.$element.on('change blur', () => this.update());
+    this.$element.on('change blur', this.onUpdate);
   }
 
   getValue() {

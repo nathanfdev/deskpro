@@ -3,7 +3,7 @@ import { DpxFormFieldDraft } from './DpxFormFieldDraft';
 export class DpxFormTextDraft extends DpxFormFieldDraft {
 
   addListeners() {
-    this.$element.on('change blur keyup', () => this.update());
+    this.$element.on('change blur keyup', this.onUpdate);
   }
 
   getValue() {
