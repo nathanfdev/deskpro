@@ -3,7 +3,7 @@ import { setFullPayload, setValue, async, togglePayloadInCollection, handleMassA
 import { toggleAll, toggleSelected, toggleTableFieldVisibility, toggleCardFieldVisibility, setViewMode, unload }
   from '../Actions/listActions';
 
-const initialState = {
+export const ticketsListInitialState = {
   viewMode: 'card',
   elements: [],
   listParams: {
@@ -21,7 +21,7 @@ const initialState = {
   cardVisibleFields: ['id', 'urgency', 'person', 'agent', 'subject', 'status', 'date_created', 'labels']
 };
 
-export default createReducer(initialState, {
+export default createReducer(ticketsListInitialState, {
 
   // Private -----------------------------------------------------------------------------------------------------------
 

@@ -111,6 +111,7 @@
     "mkdirp": "0.5.1",
     "node-notifier": "4.3.1",
     "react-addons-test-utils": "0.14.6",
+    "react-testutils-additions": "0.16.0",
     "react-transform-hmr": "1.0.1",
     "uglify-js": "2.6.1",
     "webpack-notifier": "1.2.1"

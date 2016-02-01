@@ -6,7 +6,7 @@ jest.dontMock('~nav/NavContainer');
 import React from 'react';
 import { renderInTicketsApp } from '../../tickets.test-helper';
 
-describe('Ticket: NavContainer component', () => {
+describe('Tickets Navigation: NavContainer component', () => {
   const NavContainer = require('~nav/NavContainer').NavContainer;
   const Nav          = require('~nav/Nav').Nav;
   const actions      = require('~root/Actions/navActions');

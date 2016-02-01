@@ -8,7 +8,7 @@ import ReactDOM from 'react-dom';
 import { renderInTicketsApp } from '../../tickets.test-helper';
 import { getState } from 'Helpers/redux';
 
-describe('Ticket: Nav component', () => {
+describe('Tickets Navigation: Nav component', () => {
   const Nav                 = require('~nav/Nav').Nav;
   const FiltersTabContainer = require('~nav/Tabs/FiltersTab/FiltersTabContainer').FiltersTabContainer;
   const LabelsTabContainer  = require('~nav/Tabs/LabelsTabContainer').LabelsTabContainer;

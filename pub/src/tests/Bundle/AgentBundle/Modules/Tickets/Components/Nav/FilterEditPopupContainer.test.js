@@ -9,7 +9,7 @@ import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
 import { renderInTicketsApp } from '../../tickets.test-helper';
 
-describe('Ticket: FilterEditPopupContainer component', () => {
+describe('Tickets Navigation: FilterEditPopupContainer component', () => {
   const FilterEditPopupContainer = require('~nav/FilterEditPopupContainer').FilterEditPopupContainer;
   const actions                  = require('~root/Actions/navActions');
   const dispatch                 = jasmine.createSpy('dispatch');
