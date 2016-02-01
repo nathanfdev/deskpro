@@ -307,7 +307,6 @@ class TicketTypeTest extends PortalTestCase
         // we would expect a re-render here
         $crawler = $client->request('GET', '/new-ticket');
         $res     = $client->getResponse();
-        echo $res->getContent();
 
         $button_node = $crawler->selectButton('ticket_submit');
         $form        = $button_node->form([
