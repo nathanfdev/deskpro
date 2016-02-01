@@ -54,6 +54,11 @@ class DownloadsController extends AbstractController
      * @Route("/downloads", name="user_downloads_home")
      * @Security("is_granted('USE_DOWNLOADS')")
      * @PageHttpCache()
+     *
+     * @param Request $request
+     * @param string  $_format
+     *
+     * @return Response
      */
     public function indexAction(Request $request, $_format)
     {
@@ -109,6 +114,12 @@ class DownloadsController extends AbstractController
      * @ParamConverter(name="category", converter="deskpro_slug")
      * @Security("is_granted('USE_DOWNLOADS') and is_granted('VIEW_DOWNLOAD_CATEGORY', category)")
      * @PageHttpCache()
+     *
+     * @param Request          $request
+     * @param DownloadCategory $category
+     * @param string           $_format
+     *
+     * @return Response
      */
     public function browseAction(Request $request, DownloadCategory $category, $_format)
     {
@@ -184,6 +195,12 @@ class DownloadsController extends AbstractController
      * @ParamConverter(name="file", converter="deskpro_slug")
      * @Security("is_granted('USE_DOWNLOADS') and is_granted('VIEW_DOWNLOAD', file)")
      * @PageHttpCache(content="file")
+     *
+     * @param Request  $request
+     * @param Download $file
+     * @param string   $visitor_id
+     *
+     * @return Response
      */
     public function viewAction(Request $request, Download $file, $visitor_id)
     {
@@ -257,8 +274,12 @@ class DownloadsController extends AbstractController
      * @Route("/downloads/files/{slug}/download", name="portal_downloads_download")
      * @ParamConverter("file", options={"slug" = "slug"})
      * @Security("is_granted('USE_DOWNLOADS') and is_granted('DOWNLOAD_DOWNLOAD', file)")
+     *
+     * @param Download $file
+     *
+     * @return Response
      */
-    public function downloadAction(Request $request, Download $file)
+    public function downloadAction(Download $file)
     {
         $file->incrementDownloadCount();
         $this->getEm()->flush($file);
@@ -280,6 +301,12 @@ class DownloadsController extends AbstractController
      * @ParamConverter(name="file", converter="deskpro_slug")
      * @Security("is_granted('USE_DOWNLOADS') and is_granted('RATE_DOWNLOAD', file)")
      * @AutoPostOnGetRequest()
+     *
+     * @param Download $file
+     * @param string   $visitor_id
+     * @param string   $up_or_down
+     *
+     * @return Response
      */
     public function downloadRateAction(Download $file, $visitor_id, $up_or_down)
     {
@@ -301,6 +328,10 @@ class DownloadsController extends AbstractController
      * @ParamConverter(name="file", converter="deskpro_slug")
      * @Security("is_granted('USE_DOWNLOADS') and is_granted('SUBSCRIBE_DOWNLOAD', file)")
      * @AutoPostOnGetRequest()
+     *
+     * @param Download $file
+     *
+     * @return Response
      */
     public function downloadsSubscriptionAction(Download $file)
     {
@@ -323,6 +354,10 @@ class DownloadsController extends AbstractController
      * @ParamConverter(name="category", converter="deskpro_slug")
      * @Security("is_granted('USE_DOWNLOADS') and is_granted('SUBSCRIBE_DOWNLOAD_CATEGORY', category)")
      * @AutoPostOnGetRequest()
+     *
+     * @param DownloadCategory $category
+     *
+     * @return Response
      */
     public function downloadsCategorySubscriptionAction(DownloadCategory $category)
     {
