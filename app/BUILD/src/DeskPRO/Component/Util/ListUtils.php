@@ -43,9 +43,30 @@ class ListUtils
     }
 
     /**
+     * Similar to array_filter except keys are NOT preserved. You get a plain array (list) back.
+     *
+     * @param \Traversable|array $array
+     * @param callable           $fn    Your function is passed: $fn($value, $index)
+     *
+     * @return array
+     */
+    public static function filter($array, $fn)
+    {
+        $new = array();
+
+        foreach ($array as $k => $v) {
+            if ($fn($v, $k)) {
+                $new[] = $v;
+            }
+        }
+
+        return $new;
+    }
+
+    /**
      * Remove all falsey values from an array.
      *
-     * @param array $array The array to work on
+     * @param \Traversable|array $array
      *
      * @return array
      */
@@ -63,9 +84,9 @@ class ListUtils
     }
 
     /**
-     * @param array       $array
-     * @param array|mixed $values Values to remove
-     * @param bool        $strict Strict checking on $values
+     * @param \Traversable|array $array
+     * @param array|mixed        $values Values to remove
+     * @param bool               $strict Strict checking on $values
      *
      * @return array
      */

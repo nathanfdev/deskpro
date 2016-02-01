@@ -31,10 +31,19 @@
  */
 namespace DeskPRO\Bundle\DevBundle;
 
+use DeskPRO\Bundle\DevBundle\Command\DevTestCommand;
+use DeskPRO\Bundle\DevBundle\Command\Lang\CheckUsesCommand;
+use Symfony\Component\Console\Application;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class DevBundle extends Bundle
 {
+    public function registerCommands(Application $application)
+    {
+        $application->add(new CheckUsesCommand());
+        $application->add(new DevTestCommand());
+    }
+
     public function getNamespace()
     {
         return __NAMESPACE__;

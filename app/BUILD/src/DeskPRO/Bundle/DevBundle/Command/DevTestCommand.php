@@ -35,7 +35,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class TestCommand extends ContainerAwareCommand
+class DevTestCommand extends ContainerAwareCommand
 {
     /**
      * {@inheritdoc}
