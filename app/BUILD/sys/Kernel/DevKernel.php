@@ -37,7 +37,7 @@ class DevKernel extends BaseKernel
 {
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load(DP_ROOT.'/sys/config/DevKernel/config.yml');
+        $loader->load(DP_ROOT.'/sys/config/config_'.$this->getEnvironment().'.php');
     }
 
     ####################################################################################################################

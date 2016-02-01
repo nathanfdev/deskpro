@@ -194,9 +194,10 @@ class DpEnv
      * DpEnv constructor.
      *
      * @param string $dp_root
+     * @param array  $config  Config values that will take precedence over ones read from config files.
      * @param \DpRun\ConfigReader|null $config_reader
      */
-    public function __construct($dp_root, \DpRun\ConfigReader $config_reader = null)
+    public function __construct($dp_root, array $config = null, \DpRun\ConfigReader $config_reader = null)
     {
         #------------------------------
         # Static paths
@@ -214,6 +215,12 @@ class DpEnv
         } else {
             $config_dir  = $this->dp_root.DIRECTORY_SEPARATOR.'config';
             $this->config_reader = new \DpRun\ConfigReader([$config_dir]);
+        }
+
+        if ($config) {
+            $this->config_reader->addConfigDir(function($id) use ($config) {
+                return isset($config[$id]) ? $config[$id] : [];
+            });
         }
 
         #------------------------------

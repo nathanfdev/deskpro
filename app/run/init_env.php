@@ -41,7 +41,23 @@ libxml_disable_entity_loader(true);
 #------------------------------
 
 require __DIR__ . '/lib/DpRun/DpEnv.php';
-$DP_ENV = new \DpRun\DpEnv(__DIR__.'/../../');
+if (php_sapi_name() === 'cli') {
+    $config = ['env' => []];
+
+    $opts = getopt('e', ['env:', 'no-debug']);
+    if (array_key_exists('--no-debug', $opts)) {
+        $config['env']['debug'] = false;
+    }
+
+    $env = @$opts['env'] ?: @$opts['e'];
+    if ($env) {
+        $config['env']['environment'] = $env;
+    }
+
+    $DP_ENV = new \DpRun\DpEnv(__DIR__.'/../../', $config);
+} else {
+    $DP_ENV = new \DpRun\DpEnv(__DIR__.'/../../');
+}
 
 /**
  * The root path to DeskPRO.

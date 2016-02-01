@@ -74,11 +74,19 @@ class ConfigReader
     /**
      * ConfigReader constructor.
      *
-     * @param string[] $config_dirs
+     * @param string[]|callable[] $config_dirs Paths or functions that can load config.
      */
     public function __construct(array $config_dirs)
     {
         $this->config_dirs = $config_dirs;
+    }
+
+    /**
+     * @param string|callable $config_dir
+     */
+    public function addConfigDir($config_dir)
+    {
+        $this->config_dirs[] = $config_dir;
     }
 
     /**
@@ -100,18 +108,23 @@ class ConfigReader
 
         if (!isset($this->config_values[$file_id])) {
             foreach ($this->config_dirs as $config_dir) {
-                $config_file_path = $config_dir
-                    . DIRECTORY_SEPARATOR
-                    . (isset(self::$id_to_path[$file_id]) ? self::$id_to_path[$file_id] . DIRECTORY_SEPARATOR : '')
-                    . 'config.' . $file_id . '.php';
 
-                if (file_exists($config_file_path)) {
-                    $array = $this->_loadConfigFile(
-                        $config_file_path,
-                        isset(self::$id_to_varnames[$file_id]) ? self::$id_to_varnames[$file_id] : 'CONFIG'
-                    );
+                if (!is_string($config_dir) && is_callable($config_dir)) {
+                    $array = call_user_func($config_dir, $file_id) ?: [];
                 } else {
-                    $array = [];
+                    $config_file_path = $config_dir
+                        . DIRECTORY_SEPARATOR
+                        . (isset(self::$id_to_path[$file_id]) ? self::$id_to_path[$file_id] . DIRECTORY_SEPARATOR : '')
+                        . 'config.' . $file_id . '.php';
+
+                    if (file_exists($config_file_path)) {
+                        $array = $this->_loadConfigFile(
+                            $config_file_path,
+                            isset(self::$id_to_varnames[$file_id]) ? self::$id_to_varnames[$file_id] : 'CONFIG'
+                        );
+                    } else {
+                        $array = [ ];
+                    }
                 }
 
                 if (!isset($this->config_values[$file_id])) {

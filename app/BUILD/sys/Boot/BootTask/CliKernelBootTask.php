@@ -28,29 +28,55 @@
 
 namespace DpSys\Boot\BootTask;
 
+use DpSys\Kernel;
+use Symfony\Component\Console\Input\ArgvInput;
+
 /**
- * This just makes sure directories exist that need to exist.
+ * This creates a HttpKernel based on the currrent CLI command.
  */
-class PreparePathsBootTask implements BootTaskInterface
+class CliKernelBootTask implements BootTaskInterface
 {
     public function run(\DpRun\DpEnv $env, array $resources)
     {
-        @umask((int) $env->getConfig('env.set_umask', 0000));
+        $argv = $_SERVER['argv'];
 
-        $expect = [
-            $env->getAppBaseKernelCacheDir(),
-            $env->getUserFilesDir(),
-            $env->getUserBackupsDir(),
-            $env->getUserDebugDir(),
-            $env->getUserLogsDir(),
-            $env->getUserCacheDir(),
-            $env->getUserTmpDir(),
-        ];
-
-        foreach ($expect as $dir) {
-            if (!is_dir($dir)) {
-                @mkdir($dir, 0777, true);
-            }
+        if (count($argv) < 2 || empty($argv[1]) || !($cmd_ns = $this->getNamespace($argv[1]))) {
+            echo "Usage: console NAMESPACE:CMD [options...]\n";
+            exit(1);
         }
+
+        $argv[0] = 'console';
+
+        define('DP_INTERFACE', 'cli');
+
+        switch ($cmd_ns) {
+            case 'dpdev':
+                $kernel = new Kernel\DevKernel($env);
+                break;
+
+            default:
+                $kernel = new Kernel\DpKernel($env);
+                break;
+        }
+
+        return [
+            'cli_input'  => new ArgvInput($argv),
+            'cli_kernel' => $kernel,
+        ];
+    }
+
+    /**
+     * @param string $cmd e.g. "foo:bar"
+     *
+     * @return string e.g. "foo"
+     */
+    private function getNamespace($cmd)
+    {
+        $parts = explode(':', $cmd, 2);
+        if (count($parts) !== 2) {
+            return;
+        }
+
+        return $parts[0];
     }
 }

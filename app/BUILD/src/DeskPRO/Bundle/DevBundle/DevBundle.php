@@ -31,15 +31,10 @@
  */
 namespace DeskPRO\Bundle\DevBundle;
 
-use Symfony\Component\Console\Application;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class DevBundle extends Bundle
 {
-    public function registerCommands(Application $application)
-    {
-    }
-
     public function getNamespace()
     {
         return __NAMESPACE__;
