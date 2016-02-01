@@ -38,7 +38,7 @@ export class AttachedFile extends React.Component {
     return (
       <li>
         <span dangerouslySetInnerHTML={{__html: blob.icon_html }} />
-        <a href={blob.url} target="_blank" onClick={this.onViewFile}>{file.file.name}</a>
+        <a href={blob.url} target="_blank" onClick={this.onViewFile}>{blob.filename}</a>
         <input type="hidden" name={formName} value={blob.authcode} />
         <span className="file-size">({blob.size})</span>
         <a href="#" className="remove-attachement" onClick={this.onDelete}>

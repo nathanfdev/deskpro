@@ -8,6 +8,7 @@ export class PortalAttach extends React.Component {
 
   static propTypes = {
     widgetOptions: PropTypes.object,
+    $input: PropTypes.object,
     inputName: PropTypes.string
   };
 
@@ -20,7 +21,14 @@ export class PortalAttach extends React.Component {
   }
 
   componentDidMount() {
+    const { $input } = this.props;
+
     pageWidgetEmitter.on('rteFileUpload', this.onRteFileUpload);
+    $input.on('setBlobs', (event, blobs) => {
+      this.setState({
+        files: blobs
+      });
+    });
   }
 
   onRteFileUpload = (file) => {
@@ -41,6 +49,7 @@ export class PortalAttach extends React.Component {
   };
 
   onUploadSuccess = (event, data) => {
+    const { $input } = this.props;
     const file = data.files[0];
     const info = data.result && data.result.blob || {};
     const newFiles = [];
@@ -53,6 +62,7 @@ export class PortalAttach extends React.Component {
       }
     });
 
+    $input.trigger('blobs', [newFiles]);
     this.setState({
       files: newFiles
     });
@@ -70,8 +80,12 @@ export class PortalAttach extends React.Component {
   };
 
   onDelete = file => {
+    const { $input } = this.props;
+    const newFiles = this.state.files.filter(f => f.info !== file.info);
+
+    $input.trigger('blobs', newFiles);
     this.setState({
-      files: this.state.files.filter(f => f !== file)
+      files: newFiles
     });
   };
 

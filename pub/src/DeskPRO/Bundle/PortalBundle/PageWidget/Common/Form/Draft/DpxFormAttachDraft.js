@@ -1,13 +1,9 @@
 import { DpxFormFieldDraft } from './DpxFormFieldDraft';
 
-export class DpxFormRteBlobsDraft extends DpxFormFieldDraft {
+export class DpxFormAttachDraft extends DpxFormFieldDraft {
 
   addListeners() {
     this.$element.on('blobs', this.onUpdate);
-  }
-
-  getName() {
-    return super.getName() + '[blobs]';
   }
 
   getValue(event, blobs) {

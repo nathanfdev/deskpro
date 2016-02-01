@@ -6,6 +6,7 @@ import { DpxFormRadioDraft } from './DpxFormRadioDraft';
 import { DpxFormSelectDraft } from './DpxFormSelectDraft';
 import { DpxFormHiddenDraft } from './DpxFormHiddenDraft';
 import { DpxFormRteBlobsDraft } from './DpxFormRteBlobsDraft';
+import { DpxFormAttachDraft } from './DpxFormAttachDraft';
 
 function updateDrafts(obj) {
   window.localStorage.form_drafts = JSON.stringify(obj);
@@ -44,6 +45,7 @@ export class DpxFormDraft extends PageWidget {
     this.addWidgetDef(DpxFormSelectDraft, 'select');
     this.addWidgetDef(DpxFormHiddenDraft, 'input[type="hidden"]');
     this.addWidgetDef(DpxFormRteBlobsDraft, 'textarea[data-rte-field="html"]');
+    this.addWidgetDef(DpxFormAttachDraft, '.dpx-attach input[type="file"]');
   }
 
   getFormName() {

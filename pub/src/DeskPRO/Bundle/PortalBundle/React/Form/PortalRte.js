@@ -80,13 +80,13 @@ export class PortalRte extends React.Component {
     const blob = response.result && response.result.blob;
 
     if (blob) {
-      $image.removeAttr('data-paste-id').attr('src', blob.url);
-      $textarea.trigger('blob', blob);
-      this.onChangeMessage(editor.getContent());
-
       const newBlobs = this.state.blobs.slice();
       newBlobs.push(blob);
 
+      $image.removeAttr('data-paste-id').attr('src', blob.url);
+      $textarea.trigger('blobs', [newBlobs]);
+
+      this.onChangeMessage(editor.getContent());
       this.setState({
         blobs: newBlobs
       });
