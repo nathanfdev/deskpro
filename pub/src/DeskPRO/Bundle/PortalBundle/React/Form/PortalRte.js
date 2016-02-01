@@ -18,7 +18,11 @@ export class PortalRte extends React.Component {
 
   constructor(props) {
     super(props);
+
     this.fileCounter = 0;
+    this.state = {
+      blobs: []
+    };
   }
 
   componentDidMount() {
@@ -63,21 +67,20 @@ export class PortalRte extends React.Component {
   };
 
   onUploadSuccess = (event, response) => {
-    const { $textarea } = this.props;
     const pasteId = response.files[0].id;
     const $image = $('img[data-paste-id=' + pasteId + ']', this.getNode());
     const editor = this.refs.input;
-    const $editor = $(ReactDOM.findDOMNode(editor));
 
     const blob = response.result && response.result.blob;
     if (blob) {
       $image.removeAttr('data-paste-id').attr('src', blob.url);
 
-      const blobPath = $textarea.data('blob-path');
-      if (blobPath) {
-        $(`<input type="hidden" name="${blobPath}[${blob.id}][blob_auth]" />`).val(blob.authcode).insertAfter($editor);
-        $(`<input type="hidden" name="${blobPath}[${blob.id}][is_inline]" />`).val(1).insertAfter($editor);
-      }
+      const newBlobs = this.state.blobs.slice();
+      newBlobs.push(blob);
+
+      this.setState({
+        blobs: newBlobs
+      });
     } else {
       $image.remove();
     }
@@ -109,6 +112,7 @@ export class PortalRte extends React.Component {
 
     const ownerDocument = $textarea.context.ownerDocument;
     const contentWindow = ownerDocument.defaultView;
+    const blobPath = $textarea.data('blob-path');
 
     const params = {};
     if (window.dp_get_csrf_token) {
@@ -137,6 +141,13 @@ export class PortalRte extends React.Component {
             targetBlank: true,
             buttonLabels: 'fontawesome'
           }}/>
+
+        {blobPath && this.state.blobs.map((blob, key) =>
+          <div key={key}>
+            <input type="hidden" name={`${blobPath}[${blob.id}][blob_auth]`} value={blob.authcode} />
+            <input type="hidden" name={`${blobPath}[${blob.id}][is_inline]`} value="1" />
+          </div>
+        )}
 
         <input type="submit" ref="fileUpload" name="file[blob]" style={{display: 'none'}} />
         <DropZone
