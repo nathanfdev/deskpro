@@ -33,7 +33,7 @@ namespace DpSys\Boot\BootTask;
  */
 class PreparePathsBootTask implements BootTaskInterface
 {
-    public function run(\DpEnv $env, array $resources)
+    public function run(\DpRun\DpEnv $env, array $resources)
     {
         $expect = [
             $env->getAppBaseKernelCacheDir(),
@@ -46,9 +46,8 @@ class PreparePathsBootTask implements BootTaskInterface
         ];
 
         foreach ($expect as $dir) {
-            $realpath = $env->getDpRoot().$dir;
-            if (!is_dir($realpath)) {
-                @mkdir($realpath, 0777, true);
+            if (!is_dir($dir)) {
+                @mkdir($dir, 0777, true);
             }
         }
     }

@@ -50,7 +50,7 @@ class DevBuildLangCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
         $build_onesky = $input->getOption('onesky');
         $done_any     = false;
 
-        $env = $this->getContainer()->get('dp.env');
+        $env = $this->getContainer()->get('deskpro.app_env');
 
         if ($build_onesky) {
             $done_any = true;

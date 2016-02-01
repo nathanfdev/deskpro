@@ -570,11 +570,11 @@ class TicketManager
         $logger = new DpLogger('tickets');
         $logger->enableSavedMessages();
 
-        $env = $this->container->get('dp.env');
+        $env = $this->container->get('deskpro.app_env');
 
         if ($logfile = $env->getConfig('logs.enable_ticket_log')) {
             if ($logfile === true || $logfile === 1 || $logfile === '1' || $logfile === 'true') {
-                $logfile = $env->getLogsDir().'/ticket.log';
+                $logfile = $env->getUserLogsDir().'/ticket.log';
             }
             $stream = new StreamHandler($logfile);
             $logger->pushHandler($stream);

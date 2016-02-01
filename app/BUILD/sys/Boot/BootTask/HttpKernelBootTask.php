@@ -37,7 +37,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class HttpKernelBootTask implements BootTaskInterface
 {
-    public function run(\DpEnv $env, array $resources)
+    public function run(\DpRun\DpEnv $env, array $resources)
     {
         /** @var Request $request */
         $request = $resources['request'];
@@ -68,12 +68,12 @@ class HttpKernelBootTask implements BootTaskInterface
     }
 
     /**
-     * @param        $interface_id
-     * @param \DpEnv $env
+     * @param              $interface_id
+     * @param \DpRun\DpEnv $env
      *
      * @return PortalHttpCache|Kernel\ApiKernel|Kernel\DpKernel|Kernel\InstallKernel|Kernel\PortalKernel
      */
-    private function getKernelClass($interface_id, \DpEnv $env)
+    private function getKernelClass($interface_id, \DpRun\DpEnv $env)
     {
         switch ($interface_id) {
             case 'apiv2':

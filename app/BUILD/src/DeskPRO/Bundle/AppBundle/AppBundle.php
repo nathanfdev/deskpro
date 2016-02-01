@@ -29,11 +29,11 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle;
 
 use DeskPRO\Bundle\AppBundle\DependencyInjection\AppExtension;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\AppSecretPass;
+use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\DbalConnectionPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\LazyWarmersPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\RegisterDataSerializerEventsPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\RegisterQuickSearchEventsPass;
@@ -62,6 +62,7 @@ class AppBundle extends Bundle
         $container->addCompilerPass(new TermEnginePass());
         $container->addCompilerPass(new RegisterDataSerializerEventsPass());
         $container->addCompilerPass(new RegisterQuickSearchEventsPass());
+        $container->addCompilerPass(new DbalConnectionPass());
 
         /** @var \Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension $security */
         $security = $container->getExtension('security');

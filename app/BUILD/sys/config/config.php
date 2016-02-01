@@ -53,7 +53,7 @@ $container->setParameter('router.options.generator_class', 'Application\\DeskPRO
 $container->setParameter('router.options.generator_base_class', 'Application\\DeskPRO\\Routing\\Generator\\UrlGenerator');
 $container->setParameter('form.type_extension.csrf.enabled', false);
 $container->setParameter('file_locator.class', 'DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator');
-$container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%/../doctrine-proxies');
+$container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%/doctrine-proxies');
 
 // standard-symfony changesn to templating
 $container->setParameter('templating.engine.delegating.class', 'Application\\DeskPRO\\Templating\\Engine');

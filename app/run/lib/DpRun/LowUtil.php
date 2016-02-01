@@ -41,23 +41,40 @@ class LowUtil
      */
     public static function getMysqlInfoFromConfigArray(array $config)
     {
+        $config = array_merge([
+            'user'     => null,
+            'password' => null,
+            'host'     => null,
+            'dbname'   => null
+        ], $config);
+
         $info = [
-            'unix_socket' => null,
-            'host'        => null,
-            'port'        => 3306,
-            'user'        => $config['user'],
-            'password'    => $config['password'],
-            'dbname'      => $config['dbname'],
-            'dsn'         => null,
+            'unix_socket'  => null,
+            'host'         => null,
+            'port'         => 3306,
+            'user'         => $config['user'],
+            'password'     => $config['password'],
+            'dbname'       => $config['dbname'],
+            'dsn'          => null,
+            'doctrine'     => [
+                'driver'     => 'pdo_mysql',
+                'user'       => $config['user'],
+                'password'   => $config['password'],
+                'dbname'     => $config['dbname'] ?: null,
+                'charset'    => 'utf8'
+            ],
         ];
 
         if (substr($config['host'], 0, 12) === 'unix_socket:') {
-            $info['unix_socket'] = substr($config['host'], 13);
-            $info['dsn']         = "mysql:unix_socket={$info['unix_socket']}";
+            $info['unix_socket']  = substr($config['host'], 13);
+            $info['dsn']          = "mysql:unix_socket={$info['unix_socket']}";
+            $info['doctrine']['unix_socket'] = $info['unix_socket'];
         } elseif (preg_match('#^(.*?):([0-9]+)$#', $config['host'], $m)) {
-            $info['host'] = $m[1];
-            $info['port'] = $m[2];
-            $info['dsn']  = "mysql:host={$info['host']};port={$info['port']}";
+            $info['host']         = $m[1];
+            $info['port']         = $m[2];
+            $info['dsn']          = "mysql:host={$info['host']};port={$info['port']}";
+            $info['doctrine']['host'] = $info['host'];
+            $info['doctrine']['port'] = $info['port'];
         }
 
         $info['dsn'] .= ';charset=utf8';

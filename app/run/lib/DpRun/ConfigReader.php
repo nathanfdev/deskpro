@@ -37,10 +37,12 @@ class ConfigReader
      * @var array
      */
     private static $id_to_varnames = [
-        'database' => 'DB_CONFIG',
-        'logs'     => 'LOGS_CONFIG',
-        'paths'    => 'PATHS_CONFIG',
-        'settings' => 'SETTINGS_CONFIG',
+        'database'          => 'DB_CONFIG',
+        'logs'              => 'LOGS_CONFIG',
+        'paths'             => 'PATHS_CONFIG',
+        'settings'          => 'SETTINGS_CONFIG',
+        'database_advanced' => 'DB_CONFIG',
+        'env'               => 'ENV_CONFIG',
     ];
 
     /**
@@ -48,9 +50,10 @@ class ConfigReader
      * @var array
      */
     private static $id_to_path = [
-        'env'      => 'advanced',
-        'logs'     => 'advanced',
-        'settings' => 'advanced',
+        'env'               => 'advanced',
+        'logs'              => 'advanced',
+        'settings'          => 'advanced',
+        'database_advanced' => 'advanced',
     ];
 
     /**
@@ -100,7 +103,7 @@ class ConfigReader
                 $config_file_path = $config_dir
                     . DIRECTORY_SEPARATOR
                     . (isset(self::$id_to_path[$file_id]) ? self::$id_to_path[$file_id] . DIRECTORY_SEPARATOR : '')
-                    . $file_id . '.php';
+                    . 'config.' . $file_id . '.php';
 
                 if (file_exists($config_file_path)) {
                     $array = $this->_loadConfigFile(

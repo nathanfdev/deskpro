@@ -33,7 +33,7 @@ namespace DpSys\Boot\BootTask;
  */
 class LoaderBootTask implements BootTaskInterface
 {
-    public function run(\DpEnv $env, array $resources)
+    public function run(\DpRun\DpEnv $env, array $resources)
     {
         require DP_APP_DIR.'/sys/autoload.new.php';
     }

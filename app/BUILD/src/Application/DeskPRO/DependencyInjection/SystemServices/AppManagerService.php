@@ -107,7 +107,7 @@ class AppManagerService
             'default' => DP_ROOT.'/apps',
         );
 
-        $env = $container->get('dp.env');
+        $env = $container->get('deskpro.app_env');
         if ($env->getConfig('settings.app_paths')) {
             foreach ($env->getConfig('settings.app_paths') as $prefix => $path) {
                 $app_paths[$prefix] = $path;

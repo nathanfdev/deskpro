@@ -26,45 +26,24 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Types
- */
-namespace Application\DeskPRO\DBAL\Types;
+namespace DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler;
 
-use Doctrine\DBAL\Types\ConversionException;
-use Doctrine\DBAL\Types\ObjectType;
-use Doctrine\DBAL\Types\Type;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\ExpressionLanguage\Expression;
 
-class DpObjectType extends ObjectType
+class DbalConnectionPass implements CompilerPassInterface
 {
-    public function getSQLDeclaration(array $fieldDeclaration, \Doctrine\DBAL\Platforms\AbstractPlatform $platform)
+    public function process(ContainerBuilder $container)
     {
-        return 'LONGBLOB';
-    }
+        $connections = $container->getParameter('doctrine.connections');
 
-    public function convertToPHPValue($value, \Doctrine\DBAL\Platforms\AbstractPlatform $platform)
-    {
-        try {
-            if ($value === null) {
-                return;
-            }
+        foreach ($connections as $id => $service_id) {
+            $def     = $container->getDefinition($service_id);
+            $args    = $def->getArguments();
+            $args[0] = new Expression("service('deskpro.db_config_reader').getParams('$id')");
 
-            $value = (is_resource($value)) ? stream_get_contents($value) : $value;
-            $val   = @unserialize($value);
-            if ($val === false && $value !== 'b:0;') {
-                throw ConversionException::conversionFailed($value, $this->getName());
-            }
-
-            return $val;
-        } catch (ConversionException $e) {
-            return array();
+            $def->setArguments($args);
         }
-    }
-
-    public function getName()
-    {
-        return Type::OBJECT;
     }
 }

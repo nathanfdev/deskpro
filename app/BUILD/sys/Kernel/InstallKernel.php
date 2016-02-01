@@ -35,7 +35,7 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 
 class InstallKernel extends BaseKernel
 {
-    public function __construct(\DpEnv $env)
+    public function __construct(\DpRun\DpEnv $env)
     {
         parent::__construct($env);
 

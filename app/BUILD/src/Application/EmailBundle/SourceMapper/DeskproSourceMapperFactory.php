@@ -50,7 +50,7 @@ class DeskproSourceMapperFactory
         $rate_limit = EmailRateLimitFactory::create($container);
         $source_mapper->setRateLimit($rate_limit);
 
-        $env = $container->get('dp.env');
+        $env = $container->get('deskpro.app_env');
 
         if ($info = $env->getConfig('sys.sendmail_redis_queue')) {
             // see https://github.com/nrk/predis/wiki/Connection-Parameters

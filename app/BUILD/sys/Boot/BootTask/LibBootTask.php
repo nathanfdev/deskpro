@@ -36,7 +36,7 @@ use Symfony\Component\Debug\Debug;
  */
 class LibBootTask implements BootTaskInterface
 {
-    public function run(\DpEnv $env, array $resources)
+    public function run(\DpRun\DpEnv $env, array $resources)
     {
         if ($env->isDebug()) {
             Debug::enable(true, true);

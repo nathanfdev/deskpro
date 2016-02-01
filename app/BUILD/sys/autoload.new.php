@@ -118,7 +118,8 @@ $loader->addClassMap([
 foreach ([
     'DpBehat\\' => DP_APP_DIR.'/tests/features/bootstrap/',
     'DpTestSrc\\' => DP_APP_DIR.'/tests/src/',
-    'DpSys\\' => DP_APP_DIR.'/sys',
+    'DpSys\\' => DP_APP_DIR.'/sys/',
+    'DpRun\\' => DP_DIR.'/app/run/lib/DpRun',
 ] as $prefix => $path) {
     $loader->addPsr4($prefix, $path);
 }

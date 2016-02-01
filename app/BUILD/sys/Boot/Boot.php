@@ -40,7 +40,7 @@ class Boot
      */
     protected static function runBootTasks(array $tasks, array $resources = [])
     {
-        /** @var \DpEnv $env */
+        /** @var \DpRun\DpEnv $env */
         $env = $GLOBALS['DP_ENV'];
 
         $tasks = array_map(function ($t) {

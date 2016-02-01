@@ -38,7 +38,7 @@ $loader->import(__DIR__.'/event_listeners.yml');
 
 /* @var \Symfony\Component\DependencyInjection\ContainerBuilder $container */
 
-$container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%/../doctrine-proxies');
+$container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%/doctrine-proxies');
 $container->setParameter('secret', 'irrelevant - compiler pass will override this');
 $container->setParameter('locale', 'en');
 $container->setParameter('http_kernel.class', 'DeskPRO\\Bundle\\AppBundle\\HttpKernel\\ContainerAwareHttpKernel');
@@ -150,17 +150,6 @@ $container->setDefinition('deskpro.core.input_reader', $definition);
 # Doctrine services
 ############################################################################
 
-// doctrine.dbal.connection_factory
-$definition = new Definition();
-$definition->setClass('Application\\DeskPRO\\DBAL\\ConnectionFactory');
-$definition->setArguments(
-    array(
-        '%doctrine.dbal.connection_factory.types%',
-    )
-);
-$definition->addMethodCall('setContainer', array(new Reference('service_container')));
-$container->setDefinition('doctrine.dbal.connection_factory', $definition);
-
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\ORM\\ContainerAwareEntityListenerResolver');
 $definition->setArguments(
@@ -262,11 +251,18 @@ $container->loadFromExtension(
         'dbal' => array(
             'default_connection' => 'default',
             'connections'        => array(
-                'default' => array('host' => 'from_user_config.db', 'logging' => true),
-                'read'    => array('host' => 'from_user_config.db_read', 'logging' => true),
+                'default'      => ['host' => 'see DbalConnectionPass'],
+                'read'         => ['host' => 'see DbalConnectionPass'],
+                'read_reports' => ['host' => 'see DbalConnectionPass'],
+                'read_search'  => ['host' => 'see DbalConnectionPass'],
             ),
             'types' => array(
                 'term_engine_term' => 'DeskPRO\Bundle\AppBundle\Doctrine\Type\TermEngineTermType',
+                'dpblob'           => 'Application\\DeskPRO\\DBAL\\Types\\DpBlobType',
+                'dpblob_file'      => 'Application\\DeskPRO\\DBAL\\Types\\DpBlobFileType',
+                'dp_json_obj'      => 'Application\\DeskPRO\\DBAL\\Types\\DpJsonObject',
+                'array'            => 'Application\\DeskPRO\\DBAL\\Types\\DpArrayType',
+                'object'           => 'Application\\DeskPRO\\DBAL\\Types\\DpObjectType',
             ),
         ),
     )

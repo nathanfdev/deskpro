@@ -45,7 +45,7 @@ use Symfony\Component\HttpKernel\Kernel;
 abstract class BaseKernel extends Kernel
 {
     /**
-     * @var \DpEnv
+     * @var \DpRun\DpEnv
      */
     private $dpEnv;
 
@@ -54,16 +54,16 @@ abstract class BaseKernel extends Kernel
     /**
      * BaseKernel constructor.
      *
-     * @param \DpEnv $env
+     * @param \DpRun\DpEnv $env
      */
-    public function __construct(\DpEnv $env)
+    public function __construct(\DpRun\DpEnv $env)
     {
         $this->dpEnv = $env;
         parent::__construct($env->getEnvId(), $env->isDebug());
     }
 
     /**
-     * @return \DpEnv
+     * @return \DpRun\DpEnv
      */
     public function getDpEnv()
     {
@@ -201,8 +201,6 @@ abstract class BaseKernel extends Kernel
         unset($GLOBALS['DP_CONTAINER_IS_BUILDING']);
 
         libxml_disable_entity_loader($v);
-
-        $this->container->set('dp.env', $this->getDpEnv());
     }
 
     /**
@@ -246,7 +244,7 @@ abstract class BaseKernel extends Kernel
     protected function getKernelParameters()
     {
         $params            = parent::getKernelParameters();
-        $params['DP_ROOT'] = DP_ROOT;
+        $params['DP_ROOT'] = DP_ROOT; //legacy
 
         $params['dp.app_dir']          = $this->dpEnv->getAppDir();
         $params['dp.user.tmp_dir']     = $this->dpEnv->getUserTmpDir();

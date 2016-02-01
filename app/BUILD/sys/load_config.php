@@ -33,7 +33,7 @@
  */
 function dp_get_log_dir()
 {
-    /* @var \DpEnv $DP_ENV */
+    /* @var \DpRun\DpEnv $DP_ENV */
     global $DP_ENV;
 
     return $DP_ENV->getUserLogsDir();
@@ -46,7 +46,7 @@ function dp_get_log_dir()
  */
 function dp_get_backup_dir()
 {
-    /* @var \DpEnv $DP_ENV */
+    /* @var \DpRun\DpEnv $DP_ENV */
     global $DP_ENV;
 
     return $DP_ENV->getUserBackupsDir();
@@ -59,7 +59,7 @@ function dp_get_backup_dir()
  */
 function dp_get_tmp_dir()
 {
-    /* @var \DpEnv $DP_ENV */
+    /* @var \DpRun\DpEnv $DP_ENV */
     global $DP_ENV;
 
     return $DP_ENV->getUserTmpDir();
@@ -72,7 +72,7 @@ function dp_get_tmp_dir()
  */
 function dp_get_php_path()
 {
-    /* @var \DpEnv $DP_ENV */
+    /* @var \DpRun\DpEnv $DP_ENV */
     global $DP_ENV;
 
     return $DP_ENV->getConfig('paths.php_path');
@@ -113,7 +113,7 @@ function dp_is_php_path_guessed()
  */
 function dp_get_mysqldump_path()
 {
-    /* @var \DpEnv $DP_ENV */
+    /* @var \DpRun\DpEnv $DP_ENV */
     global $DP_ENV;
 
     return $DP_ENV->getConfig('paths.mysqldump_path');
@@ -126,7 +126,7 @@ function dp_get_mysqldump_path()
  */
 function dp_get_mysql_path()
 {
-    /* @var \DpEnv $DP_ENV */
+    /* @var \DpRun\DpEnv $DP_ENV */
     global $DP_ENV;
 
     return $DP_ENV->getConfig('paths.mysql_path');

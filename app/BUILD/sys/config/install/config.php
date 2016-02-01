@@ -47,7 +47,7 @@ $container->setParameter(
     'templating.cache_warmer.template_paths.class',
     'Application\\DeskPRO\\CacheWarmer\\TemplatePathsCacheWarmer'
 );
-$container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%/../doctrine-proxies');
+$container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%/doctrine-proxies');
 $container->setParameter('templating.globals.class', 'Application\\DeskPRO\\Templating\\GlobalVariables');
 $container->setParameter('templating.name_parser.class', 'Application\\DeskPRO\\Templating\\TemplateNameParser');
 $container->setParameter(
@@ -87,17 +87,6 @@ $definition->setArguments(
 );
 $definition->addTag('twig.extension', array());
 $container->setDefinition('twig.helpers.deskpro_templating', $definition);
-
-// doctrine.dbal.connection_factory
-$definition = new Definition();
-$definition->setClass('Application\\DeskPRO\\DBAL\\ConnectionFactory');
-$definition->setArguments(
-    array(
-        '%doctrine.dbal.connection_factory.types%',
-    )
-);
-$definition->addMethodCall('setContainer', array(new Reference('service_container')));
-$container->setDefinition('doctrine.dbal.connection_factory', $definition);
 
 // deskpro.interface_value
 $definition = new Definition();

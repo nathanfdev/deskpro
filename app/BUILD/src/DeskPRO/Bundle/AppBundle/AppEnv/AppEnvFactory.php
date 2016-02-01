@@ -26,45 +26,18 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Types
- */
-namespace Application\DeskPRO\DBAL\Types;
+namespace DeskPRO\Bundle\AppBundle\AppEnv;
 
-use Doctrine\DBAL\Types\ConversionException;
-use Doctrine\DBAL\Types\ObjectType;
-use Doctrine\DBAL\Types\Type;
-
-class DpObjectType extends ObjectType
+class AppEnvFactory
 {
-    public function getSQLDeclaration(array $fieldDeclaration, \Doctrine\DBAL\Platforms\AbstractPlatform $platform)
+    /**
+     * @return AppEnvInterface
+     */
+    public static function create()
     {
-        return 'LONGBLOB';
-    }
+        /* @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
 
-    public function convertToPHPValue($value, \Doctrine\DBAL\Platforms\AbstractPlatform $platform)
-    {
-        try {
-            if ($value === null) {
-                return;
-            }
-
-            $value = (is_resource($value)) ? stream_get_contents($value) : $value;
-            $val   = @unserialize($value);
-            if ($val === false && $value !== 'b:0;') {
-                throw ConversionException::conversionFailed($value, $this->getName());
-            }
-
-            return $val;
-        } catch (ConversionException $e) {
-            return array();
-        }
-    }
-
-    public function getName()
-    {
-        return Type::OBJECT;
+        return new AppEnv($DP_ENV);
     }
 }

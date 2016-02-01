@@ -3,10 +3,10 @@
 DIR_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../.."
 
 echo ">> Cleaning node_modules"
-rm -rf $DIR_ROOT/pub/node_modules
+rm -rf $DIR_ROOT/www/BUILD/pub/node_modules
 echo ".. done"
 
 echo ">> Installing dependencies"
-cd $DIR_ROOT/pub
+cd $DIR_ROOT/www/BUILD/pub
 npm install
 echo ".. done"

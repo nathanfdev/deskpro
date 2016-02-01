@@ -1323,7 +1323,7 @@ class TemplatingExtension extends \Twig_Extension
 
     public function includeFile($path)
     {
-        if (!$this->container->get('dp.env')->getConfig('sys.tpl.enable_include_file')) {
+        if (!$this->container->get('deskpro.app_env')->getConfig('sys.tpl.enable_include_file')) {
             return '';
         }
 
@@ -1339,7 +1339,7 @@ class TemplatingExtension extends \Twig_Extension
 
     public function includePhpFile($path, array $with = null)
     {
-        if (!$this->container->get('dp.env')->getConfig('sys.tpl.enable_include_file')) {
+        if (!$this->container->get('deskpro.app_env')->getConfig('sys.tpl.enable_include_file')) {
             return '';
         }
 

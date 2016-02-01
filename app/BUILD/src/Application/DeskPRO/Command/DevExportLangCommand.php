@@ -157,7 +157,7 @@ class DevExportLangCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
 
     public function exportOneSky(InputInterface $input, OutputInterface $output)
     {
-        $env   = $this->getContainer()->get('dp.env');
+        $env   = $this->getContainer()->get('deskpro.app_env');
         $build = new OneSkyBuild($env->getConfig('onesky.api_key'), $env->getConfig('onesky.secret_key'));
 
         $wr = new \Orb\Log\Writer\ConsoleOutputWriter($output);

@@ -791,7 +791,7 @@ class DeskproContainer extends Container
      */
     public function getLogDir()
     {
-        $this->get('dp.env')->getUserLogsDir();
+        $this->get('deskpro.app_env')->getUserLogsDir();
     }
 
     /**
@@ -801,7 +801,7 @@ class DeskproContainer extends Container
      */
     public function getBlobDir()
     {
-        $this->get('dp.env')->getUserFilesDir();
+        $this->get('deskpro.app_env')->getUserFilesDir();
     }
 
     /**

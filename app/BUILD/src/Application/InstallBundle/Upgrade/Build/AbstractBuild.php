@@ -243,7 +243,7 @@ abstract class AbstractBuild
             }
         }
 
-        $env                = $this->container->get('dp.env');
+        $env                = $this->container->get('deskpro.app_env');
         $use_online_upgrade = $env->getConfig('upgrader.online_schema_upgrade');
 
         if ($do_smart && $use_online_upgrade) {

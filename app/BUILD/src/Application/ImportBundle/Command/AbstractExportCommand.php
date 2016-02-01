@@ -372,7 +372,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      */
     protected function setParamsByDeskProConfig(GeneratorConfig $config)
     {
-        $import_config = new OptionsArray($this->getContainer()->get('dp.env')->getConfig('import', array()));
+        $import_config = new OptionsArray($this->getContainer()->get('deskpro.app_env')->getConfig('import', array()));
         $config
             ->setOutputPath($import_config->get('output_path'))
             ->setLogPath($import_config->get('log_path', dp_get_log_dir().'/export.log'))

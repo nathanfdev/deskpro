@@ -34,7 +34,6 @@
 namespace Application\DeskPRO\DBAL;
 
 use Doctrine\DBAL\DBALException;
-use Orb\Log\Logger;
 use PDO;
 
 /**
@@ -94,57 +93,6 @@ class Connection extends \Doctrine\DBAL\Connection
      * @var bool
      */
     protected $do_reset_isolation = false;
-
-    public function __construct(array $params, \Doctrine\DBAL\Driver $driver, \Doctrine\DBAL\Configuration $config = null, \Doctrine\Common\EventManager $eventManager = null)
-    {
-        if (!isset($params['driverOptions'])) {
-            $params['driverOptions'] = array();
-        }
-
-        $params['driverOptions'][PDO::ATTR_ERRMODE]          = PDO::ERRMODE_EXCEPTION;
-        $params['driverOptions'][PDO::ATTR_EMULATE_PREPARES] = true;
-
-        if (!isset($params['platform'])) {
-            $params['platform'] = new \Application\DeskPRO\DBAL\Platforms\MySqlPlatform();
-        }
-
-        $m = null;
-        if (isset($params['host']) && preg_match('#^unix_socket:(.*?)$#', $params['host'], $m)) {
-            unset($params['host']);
-            unset($params['port']);
-            $params['unix_socket'] = trim($m[1]);
-        }
-
-        $m = null;
-        if (empty($params['unix_socket']) && isset($params['host']) && preg_match('#^(.*?):([0-9]+)$#', $params['host'], $m)) {
-            $params['host'] = $m[1];
-            $params['port'] = $m[2];
-        }
-
-        if (isset($params['names_charset'])) {
-            $this->names_charset = $params['names_charset'];
-            unset($params['names_charset']);
-        }
-
-        parent::__construct($params, $driver, $config, $eventManager);
-
-        if (isset($GLOBALS['DP_CONFIG']['debug']['enable_transaction_log']) && $GLOBALS['DP_CONFIG']['debug']['enable_transaction_log']) {
-            $this->transaction_logger = new Logger();
-            if ($GLOBALS['DP_CONFIG']['debug']['enable_transaction_log'] == 'separate_files') {
-                $fn = 'db-transactions.'.uniqid('').'.log';
-            } else {
-                $fn = 'db-transactions.log';
-            }
-            $this->transaction_logger->addWriter(new \Orb\Log\Writer\Stream(dp_get_log_dir().'/'.$fn));
-            $this->transaction_logger->logDebug('--- BEGIN PAGE ---');
-
-            if (php_sapi_name() == 'cli' && !empty($_SERVER['argv'])) {
-                $this->transaction_logger->logDebug('Command: '.implode(' ', $_SERVER['argv']));
-            } else {
-                $this->transaction_logger->logDebug('URL: '.$_SERVER['PHP_SELF']);
-            }
-        }
-    }
 
     public function connect()
     {

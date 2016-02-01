@@ -59,9 +59,6 @@ class DpArrayType extends ArrayType
 
             return $val;
         } catch (ConversionException $e) {
-            $errinfo = \DpSys\LowError\SystemErrorHandler::getExceptionInfo($e);
-            \DpSys\LowError\SystemErrorHandler::logErrorInfo($errinfo);
-
             return array();
         }
     }

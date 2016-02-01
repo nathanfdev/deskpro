@@ -154,7 +154,7 @@ class ZenDeskReaderFactory implements ReaderFactoryInterface
      */
     public static function getZenDeskConfig()
     {
-        /* @var \DpEnv $DP_ENV */
+        /* @var \DpRun\DpEnv $DP_ENV */
         global $DP_ENV;
         $dp_config = $DP_ENV->getConfig('import.zendesk_import');
 

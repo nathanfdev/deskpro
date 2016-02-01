@@ -1,5 +1,14 @@
 services:
 
+  deskpro.app_env:
+    class: DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface
+    factory_class: DeskPRO\Bundle\AppBundle\AppEnv\AppEnvFactory
+    factory_method: create
+
+  deskpro.db_config_reader:
+    class: DeskPRO\Bundle\AppBundle\DBAL\DbConfigReader
+    arguments: [@deskpro.app_env]
+
   ######################################################################################################################
   # Misc
   ######################################################################################################################

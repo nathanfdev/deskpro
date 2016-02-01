@@ -49,7 +49,7 @@ class BlobStorageService
         # Create a logger
         #------------------------------
 
-        $env = $container->get('dp.env');
+        $env = $container->get('deskpro.app_env');
 
         $logger = new Logger();
 
@@ -57,7 +57,7 @@ class BlobStorageService
             $logger->addFilter(new \Orb\Log\Filter\PriorityFilter(Logger::WARN));
         }
 
-        $wr = new \Orb\Log\Writer\Stream($env->getLogsDir().DIRECTORY_SEPARATOR.'blob_storage.log');
+        $wr = new \Orb\Log\Writer\Stream($env->getUserLogsDir().DIRECTORY_SEPARATOR.'blob_storage.log');
         $logger->addWriter($wr);
 
         #------------------------------

@@ -35,7 +35,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class RequestBootTask implements BootTaskInterface
 {
-    public function run(\DpEnv $env, array $resources)
+    public function run(\DpRun\DpEnv $env, array $resources)
     {
         $request = Request::createFromGlobals();
 

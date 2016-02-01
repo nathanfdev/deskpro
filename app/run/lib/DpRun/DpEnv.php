@@ -26,8 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-require_once __DIR__.'/DpRun/ConfigReader.php';
-require_once __DIR__.'/DpRun/BuildFinder.php';
+namespace DpRun;
+
+require_once __DIR__ . '/ConfigReader.php';
+require_once __DIR__ . '/BuildFinder.php';
 
 /**
  * This loader file is the first thing run on any DeskPRO app file.
@@ -115,6 +117,11 @@ require_once __DIR__.'/DpRun/BuildFinder.php';
  * //         |- /logs
  * //         |- /tmp
  * </code>
+ *
+ * === !!! Warning: Dont use this directly !!! ===
+ *
+ * Note: Try NOT to use this class directly. Once DeskPRO has booted and the container is available,
+ * use the deskpro.app_env service which is a light wrapper around this.
  */
 class DpEnv
 {
@@ -141,7 +148,7 @@ class DpEnv
     /**
      * @var string
      */
-    private $base_kernel_cache_dir;
+    private $app_base_kernel_cache_dir;
 
     /**
      * @var string
@@ -186,15 +193,16 @@ class DpEnv
     /**
      * DpEnv constructor.
      *
+     * @param string $dp_root
      * @param \DpRun\ConfigReader|null $config_reader
      */
-    public function __construct(\DpRun\ConfigReader $config_reader = null)
+    public function __construct($dp_root, \DpRun\ConfigReader $config_reader = null)
     {
         #------------------------------
         # Static paths
         #------------------------------
 
-        $this->dp_root = realpath(__DIR__.'/../../../');
+        $this->dp_root = realpath($dp_root);
         $baseapp_dir = $this->dp_root.DIRECTORY_SEPARATOR.'app';
 
         #------------------------------
@@ -226,12 +234,12 @@ class DpEnv
         $kernel_cache_dir          = $this->resolveCustomPath('kernel_cache', $sys_var_dir.DIRECTORY_SEPARATOR.'kernel_cache');
         $this->www_dir             = $this->resolveCustomPath('www', $this->dp_root.DIRECTORY_SEPARATOR.'www');
 
-        $this->user_files_dir      = $this->resolveCustomPath($user_dir.DIRECTORY_SEPARATOR.'attachments', 'attachments');
-        $this->user_backups_dir    = $this->resolveCustomPath($user_dir.DIRECTORY_SEPARATOR.'backups', 'backups');
-        $this->user_cache_dir      = $this->resolveCustomPath($user_var_dir.DIRECTORY_SEPARATOR.'cache', 'cache');
-        $this->user_debug_dir      = $this->resolveCustomPath($user_var_dir.DIRECTORY_SEPARATOR.'debug', 'debug');
-        $this->user_logs_dir       = $this->resolveCustomPath($user_var_dir.DIRECTORY_SEPARATOR.'logs', 'logs');
-        $this->user_tmp_dir        = $this->resolveCustomPath($user_var_dir.DIRECTORY_SEPARATOR.'tmp', 'tmp');
+        $this->user_files_dir      = $this->resolveCustomPath('attachments', $user_dir.DIRECTORY_SEPARATOR.'attachments');
+        $this->user_backups_dir    = $this->resolveCustomPath('backups', $user_dir.DIRECTORY_SEPARATOR.'backups');
+        $this->user_cache_dir      = $this->resolveCustomPath('cache', $user_var_dir.DIRECTORY_SEPARATOR.'cache');
+        $this->user_debug_dir      = $this->resolveCustomPath('debug', $user_var_dir.DIRECTORY_SEPARATOR.'debug');
+        $this->user_logs_dir       = $this->resolveCustomPath('logs', $user_var_dir.DIRECTORY_SEPARATOR.'logs');
+        $this->user_tmp_dir        = $this->resolveCustomPath('tmp', $user_var_dir.DIRECTORY_SEPARATOR.'tmp');
 
         #------------------------------
         # Current build

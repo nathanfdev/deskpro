@@ -77,7 +77,11 @@ class DpJsonObject extends Type
 
         $value = (is_resource($value)) ? stream_get_contents($value) : $value;
 
-        return JsonObjectSerializer::unserialize($value);
+        try {
+            return JsonObjectSerializer::unserialize($value);
+        } catch (\Exception $e) {
+            return;
+        }
     }
 
     /**

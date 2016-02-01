@@ -40,11 +40,27 @@ libxml_disable_entity_loader(true);
 # Paths
 #------------------------------
 
-require __DIR__.'/lib/DpEnv.php';
-$DP_ENV = new DpEnv();
+require __DIR__ . '/lib/DpRun/DpEnv.php';
+$DP_ENV = new \DpRun\DpEnv(__DIR__.'/../../');
 
+/**
+ * The root path to DeskPRO.
+ */
+define('DP_DIR', $DP_ENV->getDpRoot());
+
+/**
+ * The path to the currently active build.
+ */
 define('DP_APP_DIR', $DP_ENV->getAppDir());
+
+/**
+ * The name of the currently active build.
+ */
 define('DP_ACTIVE_BUILD', $DP_ENV->getAppName());
+
+/**
+ * The name of the currently active env (prod, dev, test)
+ */
 define('DP_ENV_ID', $DP_ENV->getEnvId());
 
 #------------------------------
@@ -52,11 +68,17 @@ define('DP_ENV_ID', $DP_ENV->getEnvId());
 #------------------------------
 
 /*
+ * This is the path to the currently active build.
+ * Use DP_APP_DIR instead.
+ *
  * @deprecated
  */
 define('DP_ROOT', $DP_ENV->getAppDir());
 
 /*
+ * This is the path to the currently active build within the www dir.
+ * This should NOT be necessary.
+ *
  * @deprecated
  */
 define('DP_WEB_ROOT', $DP_ENV->getWwwDir());

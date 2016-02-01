@@ -59,7 +59,7 @@ class OsTicketReaderFactory implements ReaderFactoryInterface
      */
     public static function getDefaultConfig()
     {
-        /* @var \DpEnv $DP_ENV */
+        /* @var \DpRun\DpEnv $DP_ENV */
         global $DP_ENV;
         $config = $DP_ENV->getConfig('import.osticket_import');
 

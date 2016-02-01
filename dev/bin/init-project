@@ -8,17 +8,13 @@ echo ".. done"
 echo
 
 echo ">> Installing vendors with composer"
-cd $DIR_ROOT/app
+cd $DIR_ROOT/app/BUILD
 composer install --ignore-platform-reqs -o
 echo ".. done"
 echo
 
-echo ">> Hacking vendors"
-$DIR_ROOT/app/bin/hack-vendors.sh
-echo ".. done"
-
 echo ">> Installing web dependencies"
-cd $DIR_ROOT/web
+cd $DIR_ROOT/www/web
 npm install
 
 npm run-script bower-install
@@ -30,7 +26,7 @@ echo ".. done"
 echo
 
 echo ">> Installing new web dependencies (dev)"
-cd $DIR_ROOT/pub
+cd $DIR_ROOT/www/pub
 npm install
 echo ".. done"
 
