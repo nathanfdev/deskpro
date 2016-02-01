@@ -31,6 +31,9 @@ export class PortalRte extends React.Component {
 
     $textarea.closest('form').on('reset', () => {
       editor.setContent('');
+      this.setState({
+        blobs: []
+      });
     });
     $textarea.on('change', () => {
       if (editor.getContent() !== $textarea.val()) {

@@ -24,9 +24,15 @@ export class PortalAttach extends React.Component {
     const { $input } = this.props;
 
     pageWidgetEmitter.on('rteFileUpload', this.onRteFileUpload);
+
     $input.on('setBlobs', (event, blobs) => {
       this.setState({
         files: blobs
+      });
+    });
+    $input.closest('form').on('reset', () => {
+      this.setState({
+        files: []
       });
     });
   }
