@@ -40,21 +40,25 @@ use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
+/**
+ * Class DownloadsDataService.
+ */
 class DownloadsDataService extends AbstractDataService
 {
-    /**
-     * @var \Doctrine\ORM\EntityManager
-     */
-    protected $em;
-
     /**
      * @var PermissionsManager
      */
     protected $permissions_manager;
 
+    /**
+     * Constructor.
+     *
+     * @param EntityManager      $em
+     * @param PermissionsManager $permissions_manager
+     */
     public function __construct(EntityManager $em, PermissionsManager $permissions_manager)
     {
-        $this->em                  = $em;
+        parent::__construct($em);
         $this->permissions_manager = $permissions_manager;
     }
 
@@ -65,15 +69,16 @@ class DownloadsDataService extends AbstractDataService
     {
         $em = $this->em;
 
-        return $this->generateAndCache(array('hasAny'), function () use ($em) {
+        return $this->generateAndCache(['hasAny'], function () use ($em) {
             return $em->getConnection()->fetchColumn('SELECT COUNT(*) FROM downloads LIMIT 1') ? true : false;
         });
     }
 
     /**
      * @param DownloadCategory $category
-     * @param $page
-     * @param $max_per_page
+     * @param int              $page
+     * @param int              $max_per_page
+     * @param Person           $person
      *
      * @return Pagerfanta
      */
@@ -83,26 +88,26 @@ class DownloadsDataService extends AbstractDataService
         $permissions_manager = $this->permissions_manager;
 
         return $this->generateAndCache(
-            array(
+            [
                 'getDownloadsPager',
                 $category,
                 $page,
                 $max_per_page,
                 $person,
-            ),
+            ],
             function () use ($em, $permissions_manager, $category, $max_per_page, $page, $person) {
                 $qb = $em->createQueryBuilder();
-
                 $qb->select('d')
                     ->from('DeskPRO:Download', 'd')
                     ->where('d.status = :status')->setParameter('status', Download::STATUS_PUBLISHED)
-                    ->orderBy('d.id', 'DESC');
+                    ->orderBy('d.id', 'DESC')
+                ;
 
                 $allowed_ids = $permissions_manager->getPortalPermissionsBag($person)->getAllowedDownloadCategories();
                 if ($category) {
                     // find allowed ids
                     $cat_ids = $category->getTreeIds(true);
-                    $using_ids = array();
+                    $using_ids = [];
                     foreach ($cat_ids as $cat_id) {
                         if (in_array($cat_id, $allowed_ids)) {
                             $using_ids[] = $cat_id;
@@ -114,10 +119,12 @@ class DownloadsDataService extends AbstractDataService
 
                 if (empty($using_ids)) {
                     // nocategories are allowed, so no articles are either, returning a blank array pager
-                    $pager = new Pagerfanta(new ArrayAdapter(array()));
+                    $pager = new Pagerfanta(new ArrayAdapter([]));
                 } else {
-                    $qb->leftJoin('d.category', 'c')
-                    ->andWhere('c.id IN (:cat)')->setParameter('cat', $using_ids);
+                    $qb
+                        ->leftJoin('d.category', 'c')
+                        ->andWhere('c.id IN (:cat)')->setParameter('cat', $using_ids)
+                    ;
 
                     $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
                 }
@@ -133,11 +140,12 @@ class DownloadsDataService extends AbstractDataService
     /**
      * Takes null, a category ID, or a DownloadCategory and returns an iterable collection of DownloadCategories.
      *
-     * Null means ruturn the roots.
+     * Null means return the roots.
      *
      * TODO: this is using the doctrine proxy as a method of finding children of the category. Might be able to improve that.
      *
      * @param int|null|DownloadCategory $category
+     * @param Person                    $person
      *
      * @throws \InvalidArgumentException
      *
@@ -148,18 +156,18 @@ class DownloadsDataService extends AbstractDataService
         $that = $this;
 
         return $this->generateAndCache(
-            array(
+            [
                 'getCategoryChildren',
                 $category,
                 $person,
-            ),
+            ],
             function () use ($that, $category, $person) {
                 $allowed_ids = $that->permissions_manager->getPortalPermissionsBag(
                     $person
                 )->getAllowedDownloadCategories();
 
                 if (!$category) { // get root categories
-                    return $that->getDownloadCategoriesRepo()->findBy(array('parent' => null, 'id' => $allowed_ids));
+                    return $that->getDownloadCategoriesRepo()->findBy(['parent' => null, 'id' => $allowed_ids]);
                 }
 
                 if (!$category instanceof DownloadCategory) { // if not already category, try to make it one
@@ -169,7 +177,7 @@ class DownloadsDataService extends AbstractDataService
                 }
                 $children = $category->children;
 
-                $result = array();
+                $result = [];
                 foreach ($children as $child) {
                     if (in_array($child->getId(), $allowed_ids)) {
                         $result[] = $child;
@@ -191,10 +199,10 @@ class DownloadsDataService extends AbstractDataService
         $that = $this;
 
         return $this->generateAndCache(
-            array(
+            [
                 'getDownload',
                 $download,
-            ),
+            ],
             function () use ($that, $download) {
                 if (!$download) { // we need some input
                     return;
@@ -223,10 +231,10 @@ class DownloadsDataService extends AbstractDataService
         $that = $this;
 
         return $this->generateAndCache(
-            array(
+            [
                 'getCategory',
                 $category,
-            ),
+            ],
             function () use ($that, $category) {
                 if (!$category) { // we need some input
                     return;
@@ -241,16 +249,22 @@ class DownloadsDataService extends AbstractDataService
         );
     }
 
+    /**
+     * @param mixed       $file
+     * @param Person|null $person
+     *
+     * @return mixed
+     */
     public function getDownloadComments($file, Person $person = null)
     {
         $that = $this;
 
         return $this->generateAndCache(
-            array(
+            [
                 'getDownloadComments',
                 $file,
                 $person,
-            ),
+            ],
             function () use ($that, $file, $person) {
                 $file = $that->getDownload($file);
 
