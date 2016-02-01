@@ -23,6 +23,7 @@ $mobile: new-breakpoint(max-width 640px 6);
 @import "global-widgets/im-container";
 @import "global-widgets/settings-popup/setting-popups";
 @import "global-widgets/workspace/dropdown-workspace";
+@import "global-widgets/datepicker";
 @import "animation"; // ReactCSSTransitionGroup
 //@import "raw/styles";
 
