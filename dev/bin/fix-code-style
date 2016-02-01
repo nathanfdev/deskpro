@@ -1,5 +1,34 @@
 #!/usr/bin/env php
 <?php
+
+/**
+ * we should run php-cs without xdebug so probably the best way is to run it with custom config
+ * gonna gather all extensions and just skip xdebug
+ */
+$extensions = array_merge(get_loaded_extensions(), get_loaded_extensions(true));
+$extensions = array_filter($extensions, function($extension) {
+    switch(true) {
+        case (stripos($extension, 'xdebug') !== false):
+            return false;
+        // should exclude mysql extensions, cause they need to be sorted. Since we just trying to check code - it's not
+        // necessary to load it
+        case (stripos($extension, 'mysql') !== false):
+            return false;
+        default:
+            return true;
+    }
+}
+);
+$options_string = [];
+$extdir = ini_get('extension_dir');
+foreach($extensions as $extension) {
+    $extension_full_name = $extension.'.so';
+    if(file_exists($extdir.DIRECTORY_SEPARATOR.$extension_full_name)) {
+        $options_string[] = '-d extension='.$extension_full_name;
+    }
+}
+$options_string = implode(' ', $options_string);
+
 define('PHP_CS_FIXER', realpath(__DIR__ . '/../../app/vendor/bin/php-cs-fixer'));
 define('PHP_CS_CONFIG_GIT', realpath(__DIR__ . '/../.php_cs_git'));
 define('PHP_CS_CONFIG_FULL', realpath(__DIR__ . '/../.php_cs'));
@@ -22,7 +51,7 @@ $outputs = null;
 $return_status = null;
 $config_file = ($full_run ? PHP_CS_CONFIG_FULL : PHP_CS_CONFIG_GIT);
 
-$cmd = PHP_CS_FIXER . ' --verbose --config-file="' . $config_file . '" fix';
+$cmd = sprintf('/usr/bin/env php --no-php-ini %s %s --verbose --config-file="%s" fix ', $options_string, PHP_CS_FIXER, $config_file);
 
 // are we running in verbose mode?
 if ($dry_run) {
