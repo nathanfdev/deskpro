@@ -1,3 +1,9 @@
+
+parameters:
+  # we override default symfony so warmer services are lazy-loaded
+  # see LazyWarmersPass
+  cache_warmer.class: DeskPRO\Bundle\AppBundle\HttpKernel\CacheWarmer\CacheWarmerServiceAggregate
+
 monolog:
   channels: # you MUST also update portal_config.yml if you change these
     - "dp.tickets.filters.tengine.dbal.engine"

@@ -177,8 +177,9 @@ $definition = new Definition();
 $definition->setClass('DeskPRO\\Bundle\\AppBundle\\Assets\\PackagesFactory');
 $definition->setArguments([
     new Reference('settings_resolver'),
-    new Reference('deskpro_config'),
     new Reference('request_stack'),
+    new \Symfony\Component\ExpressionLanguage\Expression("service('deskpro.app_env').getConfig('paths.asset_paths')"),
+    new \Symfony\Component\ExpressionLanguage\Expression("{DP_ACTIVE_BUILD: service('deskpro.app_env').getAppName(), DP_ENV_ID: service('deskpro.app_env').getEnvId()}"),
 ]);
 $container->setDefinition('assets.packages.factory', $definition);
 

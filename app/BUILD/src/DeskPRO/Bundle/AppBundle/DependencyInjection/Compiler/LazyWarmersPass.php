@@ -29,11 +29,11 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Make all of them lazy so their requirements get loaded in order.
@@ -44,10 +44,32 @@ class LazyWarmersPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        foreach ($container->getDefinitions() as $service_id => $def) {
-            if ($def->hasTag('kernel.cache_warmer')) {
-                $def->setLazy(true);
+        #------------------------------
+        # Init our warmer
+        #------------------------------
+
+        $def = $container->getDefinition('cache_warmer');
+
+        $args     = $def->getArguments();
+        $new_refs = [];
+
+        foreach ($args[0] as $warmerRef) {
+            if (!$warmerRef instanceof Reference) {
+                throw new \InvalidArgumentException('Only warmer services can be registered, got: '.get_class($warmerRef));
             }
+
+            // we take a string ref, so the service is only created when the warmer gets to it (in order)
+            $new_refs[] = (string) $warmerRef;
+
+            // we need to mark the warmer as public or else
+            // symfony will optimise it out
+            $warmerDef = $container->getDefinition((string) $warmerRef);
+            $warmerDef->setPublic(true);
         }
+
+        $def->setArguments([
+            new Reference('service_container'),
+            $new_refs,
+        ]);
     }
 }

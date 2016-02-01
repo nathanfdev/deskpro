@@ -63,30 +63,33 @@ class PackagesFactory
     private $asset_paths;
 
     /**
-     * @param SettingsResolver     $settings
-     * @param DeskproConfigService $config
-     * @param RequestStack         $request_stack
+     * Array of varname=>value for replacements to put in the URL, if any.
+     *
+     * @var array
      */
-    public function __construct(SettingsResolver $settings, DeskproConfigService $config, RequestStack $request_stack)
+    private $asset_path_replacements;
+
+    /**
+     * @param SettingsResolver $settings
+     * @param RequestStack     $request_stack
+     * @param array            $asset_paths
+     * @param array            $asset_path_vars
+     */
+    public function __construct(SettingsResolver $settings, RequestStack $request_stack, $asset_paths = [], $asset_path_vars = [])
     {
         $this->settings      = $settings;
         $this->config        = $config;
         $this->request_stack = $request_stack;
 
-        $asset_paths = $this->config->getConfigValue('asset_paths') ?: [];
+        // This should always be set during a normal request
+        if (empty($asset_path_vars)) {
+            $asset_path_vars['DP_ACTIVE_BUILD'] = defined('DP_ACTIVE_BUILD') ? DP_ACTIVE_BUILD : 'BUILD';
+        }
 
-        // shortcut used by devs -- its what gulp tells you to use
-        $config_urls_map = $this->config->getConfigValue('pub_asset_urls') ?: array();
-        if (!empty($config_urls_map)) {
-            foreach ($config_urls_map as $path => $url) {
-                if ($path === 'pub/build') {
-                    $asset_paths['app_assets'] = [
-                        'type'    => 'url',
-                        'value'   => $url,
-                        'version' => 'build',
-                    ];
-                }
-            }
+        $this->asset_path_replacements = ['find' => [], 'replace' => []];
+        foreach ($asset_path_vars as $k => $v) {
+            $this->asset_path_replacements['find'][]    = '%'.$k.'%';
+            $this->asset_path_replacements['replace'][] = $v;
         }
 
         if ($asset_paths) {
@@ -99,18 +102,18 @@ class PackagesFactory
         }
 
         if (empty($this->asset_paths['legacy_web'])) {
-            $this->asset_paths['legacy_web'] = PathMapInfo::create()->setDeskproPath('/web');
+            $this->asset_paths['legacy_web'] = PathMapInfo::create()->setDeskproPath('/assets/%DP_ACTIVE_BUILD%/web');
         }
 
         if (empty($this->asset_paths['vendor_assets'])) {
             $this->asset_paths['vendor_assets'] = PathMapInfo::create()
-                ->setDeskproPath('/pub/node_modules')
+                ->setDeskproPath('/assets/%DP_ACTIVE_BUILD%/pub/node_modules')
                 ->setVersion('build');
         }
 
         if (empty($this->asset_paths['app_assets'])) {
             $this->asset_paths['app_assets'] = PathMapInfo::create()
-                ->setDeskproPath('/pub/build')
+                ->setDeskproPath('/assets/%DP_ACTIVE_BUILD%/pub/build')
                 ->setVersion('build');
         }
     }
@@ -125,9 +128,23 @@ class PackagesFactory
             $asset_packs[$id] = $this->getAssetPackage($p);
         }
 
-        $default = $this->getAssetPackage(PathMapInfo::create()->setDeskproPath('/web'));
+        $default = $this->getAssetPackage(PathMapInfo::create()->setDeskproPath('/assets/%DP_ACTIVE_BUILD%/web'));
 
         return new Packages($default, $asset_packs);
+    }
+
+    /**
+     * @param string $str
+     *
+     * @return string
+     */
+    private function replaceVars($str)
+    {
+        return str_replace(
+            $this->asset_path_replacements['find'],
+            $this->asset_path_replacements['replace'],
+            $str
+        );
     }
 
     /**
@@ -167,11 +184,11 @@ class PackagesFactory
         if ($p->isDeskproPath() || $p->isRootPath()) {
             if ($req) {
                 if ($p->isRootPath()) {
-                    $pack = new PathPackage($p->getPath(), $version);
+                    $pack = new PathPackage($this->replaceVars($p->getPath()), $version);
 
                     return $pack;
                 } else {
-                    $pack = new PathPackage(rtrim($req->getBasePath(), '/').$p->getPath(), $version);
+                    $pack = new PathPackage($this->replaceVars(rtrim($req->getBasePath(), '/').$p->getPath()), $version);
 
                     return $pack;
                 }
@@ -189,10 +206,10 @@ class PackagesFactory
                 // or the container is being built for the first time
                 // so this is a fallback
                 if (!$url) {
-                    return new PathPackage($p->getPath(), $version);
+                    return new PathPackage($this->replaceVars($p->getPath()), $version);
                 }
 
-                $pack = new UrlPackage($url.$p->getPath(), $version);
+                $pack = new UrlPackage($this->replaceVars($url.$p->getPath()), $version);
 
                 return $pack;
             }

@@ -63,6 +63,21 @@ abstract class BaseKernel extends Kernel
     }
 
     /**
+     * @return mixed|string
+     */
+    public function getName()
+    {
+        if (null === $this->name) {
+            $parts      = explode('\\', get_class($this));
+            $name       = array_pop($parts);
+            $name       = str_replace('Kernel', '', $name);
+            $this->name = $name;
+        }
+
+        return $this->name;
+    }
+
+    /**
      * @return \DpRun\DpEnv
      */
     public function getDpEnv()
