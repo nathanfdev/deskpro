@@ -1,7 +1,8 @@
 export const portalWindow = {
   base_url: window.DESKPRO_BASE_URL,
   root_url: window.DESKPRO_ROOT_URL,
-  web_url: window.DESKPRO_WEB_URL,
+  legacy_web_url: window.DESKPRO_LEGACY_WEB_URL,
+  app_assets_url: window.DESKPRO_APP_ASSETS_URL,
   lang: window.DESKPRO_LANG,
   is_multi_lang: window.DESKPRO_MULTI_LANG,
   enabled_langs: window.DESKPRO_ENABLED_LANGS,

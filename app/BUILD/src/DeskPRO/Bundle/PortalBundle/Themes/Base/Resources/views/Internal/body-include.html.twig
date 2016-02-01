@@ -21,7 +21,8 @@
 
         window.DESKPRO_BASE_URL = '{{ base_url() }}';
         window.DESKPRO_ROOT_URL = '{{ root_url() }}';
-        window.DESKPRO_WEB_URL = '{{ root_url() }}web';
+        window.DESKPRO_LEGACY_WEB_URL = '{{ asset('', 'legacy_web') }}';
+        window.DESKPRO_APP_ASSETS_URL = '{{ asset('', 'app_assets') }}';
         window.DESKPRO_MULTI_LANG = {{ is_multi_lang() ? 'true' : 'false' }};
         window.DESKPRO_LANG = '{{ lang_code() }}';
         window.DESKPRO_ENABLED_LANGS = [{% for language in enabled_languages() %}{{ '{' }}code: '{{ language.urlCode }}', title:'{{ language.title|capitalize }}',flag:'{{ language.flag_image }}'{{ '}' }}{% if not loop.last %},{% endif %}{% endfor %}];

@@ -10,7 +10,8 @@ class PortalUrlGenerator {
     this.is_multi_lang = portalWindow.is_multi_lang;
     this.base_url = String(portalWindow.base_url).replace(/\/$/, ''); // remove trailing slash
     this.root_url = String(portalWindow.root_url).replace(/\/$/, ''); // remove trailing slash
-    this.web_url = String(portalWindow.web_url).replace(/\/$/, ''); // remove trailing slash
+    this.legacy_web_url = String(portalWindow.legacy_web_url).replace(/\/$/, ''); // remove trailing slash
+    this.app_assets_url = String(portalWindow.app_assets_url).replace(/\/$/, ''); // remove trailing slash
   }
 
   path(path) {
@@ -21,8 +22,12 @@ class PortalUrlGenerator {
     return this._makeUrl(this.root_url, path);
   }
 
-  webPath(path) {
-    return this._makeUrl(this.web_url, path);
+  legacyWebPath(path) {
+    return this._makeUrl(this.legacy_web_url, path);
+  }
+
+  appAssetsPath(path) {
+    return this._makeUrl(this.app_assets_url, path);
   }
 
   _makeUrl(base, path) {
@@ -36,11 +41,11 @@ class PortalUrlGenerator {
   }
 
   getSpinnerPath() {
-    return this.webPath('/spinner.gif');
+    return this.legacyWebPath('/spinner.gif');
   }
 
   getFlagPath(flagImgName) {
-    return this.webPath(`/images/flags/${flagImgName}`);
+    return this.legacyWebPath(`/images/flags/${flagImgName}`);
   }
 }
 

@@ -432,8 +432,7 @@ function startWebpackServer(config) {
     gutil.log('[webpack-dev-server]', 'In your config.paths.php, ensure these lines exists: ');
     gutil.log('[webpack-dev-server]', "$PATHS_CONFIG['asset_paths']['app_assets'] = [");
     gutil.log('[webpack-dev-server]', "    'type'    => 'url',");
-    gutil.log('[webpack-dev-server]', "    'value'   => 'http://localhost:9666/pub/build/',");
-    gutil.log('[webpack-dev-server]', "    'version' => 'build'");
+    gutil.log('[webpack-dev-server]', "    'value'   => 'http://localhost:9666/pub/build/'");
     gutil.log('[webpack-dev-server]', "];");
   });
 

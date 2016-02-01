@@ -10,6 +10,5 @@ $PATHS_CONFIG['asset_paths'] = [];
 // Uncomment to enable build server
 //$PATHS_CONFIG['asset_paths']['app_assets'] = [
 //    'type'    => 'url',
-//    'value'   => 'http://localhost:9666/pub/build/',
-//    'version' => 'build'
+//    'value'   => 'http://localhost:9666/pub/build/'
 //];
