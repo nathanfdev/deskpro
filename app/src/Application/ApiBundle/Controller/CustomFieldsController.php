@@ -428,11 +428,15 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
      */
     public function setCommonFieldAction($objectType, $objectId, Request $request)
     {
+        if (!$data = json_decode($request->getContent(), 1)) {
+            throw new BadRequestHttpException();
+        }
+
         if (!isset(self::$allowed_common[$objectType])) {
             throw new BadRequestHttpException(sprintf('Invalid object type "%s"', $objectType));
         }
 
-        if (!$id = $this->in->getInt('id')) {
+        if (!$id = @$data['id']) {
             throw new BadRequestHttpException('No field id provided');
         }
 
@@ -442,11 +446,11 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
 
         /** @var FieldManager $manager */
         $manager = $this->container->getSystemService($objectType.'_fields_manager');
-        $data    = array(
-            'field_'.$id => $this->in->getString('value'),
+        $submit  = array(
+            'field_'.$id => @$data['value'],
         );
 
-        $manager->saveFormToObject($data, $object);
+        $manager->saveFormToObject($submit, $object);
 
         return $this->createSuccessResponse();
     }
