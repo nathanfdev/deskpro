@@ -1,6 +1,6 @@
 import { DpxFormFieldDraft } from './DpxFormFieldDraft';
 
-export class DpxFormHidden extends DpxFormFieldDraft {
+export class DpxFormHiddenDraft extends DpxFormFieldDraft {
 
   addListeners() {
     this.$element.on('change', this.onUpdate);

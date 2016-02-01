@@ -4,8 +4,8 @@ import { DpxFormTextDraft } from './DpxFormTextDraft';
 import { DpxFormCheckboxDraft } from './DpxFormCheckboxDraft';
 import { DpxFormRadioDraft } from './DpxFormRadioDraft';
 import { DpxFormSelectDraft } from './DpxFormSelectDraft';
-import { DpxFormHidden } from './DpxFormHidden';
-import { DpxFormRteBlobs } from './DpxFormRteBlobs';
+import { DpxFormHiddenDraft } from './DpxFormHiddenDraft';
+import { DpxFormRteBlobsDraft } from './DpxFormRteBlobsDraft';
 
 function updateDrafts(obj) {
   window.localStorage.form_drafts = JSON.stringify(obj);
@@ -42,8 +42,8 @@ export class DpxFormDraft extends PageWidget {
     this.addWidgetDef(DpxFormCheckboxDraft, 'input[type="checkbox"]');
     this.addWidgetDef(DpxFormRadioDraft, 'input[type="radio"]');
     this.addWidgetDef(DpxFormSelectDraft, 'select');
-    this.addWidgetDef(DpxFormHidden, 'input[type="hidden"]');
-    this.addWidgetDef(DpxFormRteBlobs, 'textarea[data-rte-field="html"]');
+    this.addWidgetDef(DpxFormHiddenDraft, 'input[type="hidden"]');
+    this.addWidgetDef(DpxFormRteBlobsDraft, 'textarea[data-rte-field="html"]');
   }
 
   getFormName() {

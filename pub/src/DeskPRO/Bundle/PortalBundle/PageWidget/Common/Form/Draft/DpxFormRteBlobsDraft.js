@@ -1,6 +1,6 @@
 import { DpxFormFieldDraft } from './DpxFormFieldDraft';
 
-export class DpxFormRteBlobs extends DpxFormFieldDraft {
+export class DpxFormRteBlobsDraft extends DpxFormFieldDraft {
 
   addListeners() {
     this.$element.on('blob', this.onUpdate);
