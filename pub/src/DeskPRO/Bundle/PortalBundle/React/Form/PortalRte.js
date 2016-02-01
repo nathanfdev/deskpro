@@ -77,11 +77,12 @@ export class PortalRte extends React.Component {
     const pasteId = response.files[0].id;
     const $image = $('img[data-paste-id=' + pasteId + ']', this.getNode());
     const editor = this.refs.input;
-
     const blob = response.result && response.result.blob;
+
     if (blob) {
       $image.removeAttr('data-paste-id').attr('src', blob.url);
       $textarea.trigger('blob', blob);
+      this.onChangeMessage(editor.getContent());
 
       const newBlobs = this.state.blobs.slice();
       newBlobs.push(blob);
@@ -91,9 +92,8 @@ export class PortalRte extends React.Component {
       });
     } else {
       $image.remove();
+      this.onChangeMessage(editor.getContent());
     }
-
-    this.onChangeMessage(editor.getContent());
   };
 
   onUploadFail = (event, response) => {
