@@ -48,13 +48,19 @@ class AutoPostOnGetRequest implements ConfigurationInterface
     const ALIAS                 = 'auto_post_on_get_request';
     const ALIAS_WITH_UNDERSCORE = '_auto_post_on_get_request';
 
+    /**
+     * {@inheritdoc}
+     */
     public function getAliasName()
     {
         return self::ALIAS;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function allowArray()
     {
-        false;
+        return false;
     }
 }
