@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -378,9 +377,17 @@ abstract class AbstractDbSet implements DataSetInterface
     /**
      * @return string
      */
-    private function getDatabaseName()
+    protected function getDatabaseName()
     {
         return DP_DATABASE_NAME;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getLicenseKey()
+    {
+        return file_get_contents(DP_WEB_ROOT.'/dev/dev-lic-key.txt');
     }
 
     /**

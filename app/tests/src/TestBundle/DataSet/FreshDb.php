@@ -138,8 +138,6 @@ class FreshDb extends AbstractDbSet
         $data_init->admin_user = $admin;
         $data_init->run();
 
-        $license_key = file_get_contents(DP_WEB_ROOT.'/dev/dev-lic-key.txt');
-
 // initial settings so we are "installed"
         $this->getDb()->exec("
             REPLACE INTO `settings` (`name`, `value`)
@@ -161,7 +159,7 @@ class FreshDb extends AbstractDbSet
                 ('core.install_token', 'PUGYIA9E82Z8JCPKO0NKGC957HITHNZRFHY4CQ3V1380214398'),
                 ('core.last_cron_run', '".time()."'),
                 ('core.last_cron_start', '".time()."'),
-                ('core.license', '".$license_key."'),
+                ('core.license', '".$this->getLicenseKey()."'),
                 ('core.rewrite_urls', '1'),
                 ('core.setup_initial', '1'),
                 ('core.task_completed_add_ticketfield', '".time()."'),
