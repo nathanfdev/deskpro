@@ -35,6 +35,8 @@ class PreparePathsBootTask implements BootTaskInterface
 {
     public function run(\DpRun\DpEnv $env, array $resources)
     {
+        @umask((int)$env->getConfig('env.set_umask', 0000));
+
         $expect = [
             $env->getAppBaseKernelCacheDir(),
             $env->getUserFilesDir(),

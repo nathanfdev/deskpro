@@ -2,6 +2,7 @@
 
 $ENV_CONFIG = [];
 
+$ENV_CONFIG['set_umask'] = 0000;
 $ENV_CONFIG['environment'] = 'dev';
 $ENV_CONFIG['debug_mode'] = true;
 
