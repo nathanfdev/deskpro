@@ -1,5 +1,5 @@
 import uuid from 'node-uuid';
-import Http from 'DeskPRO/Component/Http/Http';
+import { Http } from 'DeskPRO/Component/Http/Http';
 
 /*
 class BatchRequest extends Http {

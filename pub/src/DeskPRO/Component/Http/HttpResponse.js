@@ -1,4 +1,5 @@
-export default class HttpResponse {
+export class HttpResponse {
+
   /**
    * @param {jqXHR}  xhr
    * @param {String} status
@@ -6,10 +7,10 @@ export default class HttpResponse {
    * @param {*}      data
    */
   constructor(xhr, status, config, data = null) {
-    this.xhr    = xhr;
+    this.xhr = xhr;
     this.status = status;
     this.config = config;
-    this.data   = data;
+    this.data = data;
   }
 
   /**
