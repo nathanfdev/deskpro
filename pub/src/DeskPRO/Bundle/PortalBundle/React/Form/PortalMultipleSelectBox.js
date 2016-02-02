@@ -73,14 +73,10 @@ export class PortalMultipleSelectBox extends React.Component {
 
   constructor(props) {
     super(props);
-    this.updateOptions();
 
-    const value = props.actionStore.getValue();
-    const valuePath = this.getValuePath(value);
+    this.optionData = this.props.actionStore.getOptionData();
     this.state = {
-      value: value,
-      valuePath: valuePath,
-      expanded: false
+      value: props.actionStore.getValue()
     };
   }
 
@@ -88,10 +84,9 @@ export class PortalMultipleSelectBox extends React.Component {
     const { actionStore } = this.props;
     const $el = actionStore.el;
 
-    actionStore.on('formChanged', (data) => {
+    actionStore.on('formChanged', data => {
       this.setState({
-        value: data.value,
-        valuePath: this.getValuePath(data.value)
+        value: data.value
       });
     });
 
@@ -101,33 +96,12 @@ export class PortalMultipleSelectBox extends React.Component {
   }
 
   onClickOption = options => {
-    this.props.actionStore.setValue(options ? options.map((opt) => opt.id) : []);
+    const { actionStore } = this.props;
+    actionStore.setValue(options ? options.map((opt) => opt.id) : []);
   };
 
-  getValuePath(value) {
-    let path = [];
-    if (!value) {
-      return path;
-    }
-
-    const opt = _.find(this.optionData.options, o => o.id === value);
-    if (opt) {
-      path = _.clone(opt.path);
-    } else {
-      path = [];
-    }
-
-    path.push(value);
-
-    return path;
-  }
-
-  updateOptions() {
-    this.optionData = this.props.actionStore.getOptionData();
-  }
-
   renderSelect() {
-    const { widgetOptions, actionStore } = this.props;
+    const { widgetOptions } = this.props;
     const mapOption = (g) => {
       const r = {
         id: g.id,
@@ -147,7 +121,7 @@ export class PortalMultipleSelectBox extends React.Component {
     let options = this.optionData.hierarchy.map(mapOption);
     options = _.flattenDeep(options);
 
-    const values = actionStore.getValue().map(selectedId => {
+    const values = this.state.value.map(selectedId => {
       return _.find(options, (opt) => _.parseInt(opt.id) === _.parseInt(selectedId));
     });
 
