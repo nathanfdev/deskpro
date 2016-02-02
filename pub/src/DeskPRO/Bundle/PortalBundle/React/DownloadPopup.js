@@ -8,6 +8,8 @@ export class DownloadPopup extends React.Component {
     filesize: PropTypes.string,
     dateUploaded: PropTypes.string,
     downloadUrl: PropTypes.string,
+    voteUrl: PropTypes.string,
+    voteCount: PropTypes.number,
     $button: PropTypes.object
   };
 
@@ -19,25 +21,36 @@ export class DownloadPopup extends React.Component {
   }
 
   componentDidMount() {
-    this.props.$button.on('click', this.onClick);
+    this.props.$button.on('click', this.onOpen);
   }
 
-  onClick = event => {
+  onOpen = event => {
     event.preventDefault();
     this.setState({
       opened: true
     });
   };
 
-  onClickOut = event => {
+  onClose = event => {
     event.preventDefault();
     this.setState({
       opened: false
     });
   };
 
+  onVote = event => {
+    event.preventDefault();
+
+    const { voteUrl } = this.props;
+    if (!voteUrl) {
+      return;
+    }
+
+    console.log('on vote');
+  };
+
   render() {
-    const { $button, filename, filesize, downloadUrl, dateUploaded } = this.props;
+    const { $button, filename, filesize, downloadUrl, dateUploaded, voteCount = 0 } = this.props;
 
     if (!this.state.opened) {
       return null;
@@ -45,9 +58,9 @@ export class DownloadPopup extends React.Component {
 
     return (
       <div>
-        <ClickOut onClickOut={this.onClickOut} additionalNodes={[$button]}>
+        <ClickOut onClickOut={this.onClose} additionalNodes={[$button]}>
           <div className="popup popup-file-download">
-            <a href="#" className="cancel" onClick={this.onClickOut}>
+            <a href="#" className="cancel" onClick={this.onClose}>
               Cancel download <i className="fa fa-times"/>
             </a>
 
@@ -56,8 +69,8 @@ export class DownloadPopup extends React.Component {
               <hr/>
 
               <div className="cudos-wrapper">
-                <a href="#" className="cudos">
-                  <i className="fa fa-thumbs-up"/> 4
+                <a className="cudos" onClick={this.onVote}>
+                  <i className="fa fa-thumbs-up"/> {voteCount}
                 </a>
               </div>
             </div>
