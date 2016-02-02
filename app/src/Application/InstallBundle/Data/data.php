@@ -554,7 +554,7 @@ for ($i = 0; $i < 15; ++$i) {
 //////////////////////////////////////////////////////////////
 
 if (!function_exists('make_blob')) {
-    function make_blob(\Symfony\Component\DependencyInjection\ContainerInterface $container)
+    function make_blob(\Symfony\Component\DependencyInjection\ContainerInterface $container = null)
     {
         if (!$container) {
             return;
