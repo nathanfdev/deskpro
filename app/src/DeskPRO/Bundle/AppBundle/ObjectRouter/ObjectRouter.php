@@ -71,12 +71,24 @@ class ObjectRouter
      */
     private $link_generators;
 
+    /**
+     * Constructor.
+     *
+     * @param array $link_generators
+     */
     public function __construct(array $link_generators)
     {
         $this->link_generators = $link_generators;
     }
 
-    public function getPortalPath($object, $type = null, array $extra_params = array())
+    /**
+     * @param mixed  $object
+     * @param string $type
+     * @param array  $extra_params
+     *
+     * @return string
+     */
+    public function getPortalPath($object, $type = null, array $extra_params = [])
     {
         return $this->processLink(
             $object,
@@ -87,7 +99,14 @@ class ObjectRouter
         );
     }
 
-    public function getPortalUrl($object, $type = null, array $extra_params = array())
+    /**
+     * @param mixed  $object
+     * @param string $type
+     * @param array  $extra_params
+     *
+     * @return string
+     */
+    public function getPortalUrl($object, $type = null, array $extra_params = [])
     {
         return $this->processLink(
             $object,
@@ -98,7 +117,14 @@ class ObjectRouter
         );
     }
 
-    public function getAgentPath($object, $type = null, array $extra_params = array())
+    /**
+     * @param mixed  $object
+     * @param string $type
+     * @param array  $extra_params
+     *
+     * @return string
+     */
+    public function getAgentPath($object, $type = null, array $extra_params = [])
     {
         return $this->processLink(
             $object,
@@ -109,7 +135,14 @@ class ObjectRouter
         );
     }
 
-    public function getAgentUrl($object, $type = null, array $extra_params = array())
+    /**
+     * @param mixed  $object
+     * @param string $type
+     * @param array  $extra_params
+     *
+     * @return string
+     */
+    public function getAgentUrl($object, $type = null, array $extra_params = [])
     {
         return $this->processLink(
             $object,
@@ -120,7 +153,16 @@ class ObjectRouter
         );
     }
 
-    protected function processLink($object, $type, $context, $reference_type, array $extra_params = array())
+    /**
+     * @param mixed  $object
+     * @param string $type
+     * @param string $context
+     * @param string $reference_type
+     * @param array  $extra_params
+     *
+     * @return string
+     */
+    protected function processLink($object, $type, $context, $reference_type, array $extra_params = [])
     {
         foreach ($this->link_generators as $link_generator) {
             if ($link_generator->supports($object, $type, $context)) {

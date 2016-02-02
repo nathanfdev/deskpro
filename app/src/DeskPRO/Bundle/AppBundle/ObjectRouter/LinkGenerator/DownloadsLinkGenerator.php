@@ -74,10 +74,10 @@ class DownloadsLinkGenerator implements LinkGeneratorInterface
     /**
      * {@inheritdoc}
      */
-    public function generate($download_or_article_attachment, $type, $context, $extra_params, $reference_type)
+    public function generate($object, $type, $context, $extra_params, $reference_type)
     {
-        /* @var \Application\DeskPRO\Entity\ArticleAttachment|\Application\DeskPRO\Entity\Download $download_or_article_attachment */
-        $blob = $download_or_article_attachment->getBlob();
+        /* @var \Application\DeskPRO\Entity\ArticleAttachment|\Application\DeskPRO\Entity\Download $object */
+        $blob = $object->getBlob();
 
         return $this->url_generator->generate(
             'serve_blob',
