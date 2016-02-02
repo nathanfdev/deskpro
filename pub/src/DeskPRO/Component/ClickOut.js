@@ -6,7 +6,7 @@ export class ClickOut extends React.Component {
   static propTypes = {
     context: PropTypes.any,
     ignoreNodes: PropTypes.array,
-    additionalNodes: PropTypes.array,
+    additionalNodes: PropTypes.any,
     children: PropTypes.node,
     onClickOut: PropTypes.func.isRequired,
     onClick: PropTypes.func
