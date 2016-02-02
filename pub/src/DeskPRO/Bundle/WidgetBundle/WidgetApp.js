@@ -6,10 +6,10 @@ import { AppContainer } from './Modules/Application/Components/AppContainer';
 import $ from 'jquery';
 import { store } from './Services/store';
 import { bootstrapWidget } from './Modules/Application/Actions/bootstrapActions';
-import './Resources/style/widget-style.scss';
 import { widgetEmitter } from './Services/emitter';
+import './Resources/style/widget-style.scss';
 
-export default class WidgetApp {
+export class WidgetApp {
 
   run() {
     $(document).on('ready', this.start);
