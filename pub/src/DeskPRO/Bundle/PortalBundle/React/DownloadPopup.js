@@ -1,5 +1,7 @@
 import React, { PropTypes } from 'react';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
+import $ from 'jquery';
+import classNames from 'classnames';
 
 export class DownloadPopup extends React.Component {
 
@@ -10,18 +12,24 @@ export class DownloadPopup extends React.Component {
     downloadUrl: PropTypes.string,
     voteUrl: PropTypes.string,
     voteCount: PropTypes.number,
-    $button: PropTypes.object
+    $button: PropTypes.object,
+    $voteWidget: PropTypes.object
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      opened: false
+      opened: false,
+      voted: false,
+      voteCount: props.voteCount || 0
     };
   }
 
   componentDidMount() {
-    this.props.$button.on('click', this.onOpen);
+    const { $button, $voteWidget } = this.props;
+
+    $button.on('click', this.onOpen);
+    $voteWidget.on('vote', this.onVote);
   }
 
   onOpen = event => {
@@ -41,16 +49,22 @@ export class DownloadPopup extends React.Component {
   onVote = event => {
     event.preventDefault();
 
-    const { voteUrl } = this.props;
-    if (!voteUrl) {
+    const { voteUrl, $voteWidget } = this.props;
+    if (this.state.voted || $voteWidget.hasClass('with-voted')) {
       return;
     }
 
-    console.log('on vote');
+    this.setState({
+      voted: true,
+      voteCount: this.state.voteCount + 1
+    });
+
+    $.post(voteUrl);
+    setTimeout(() => $voteWidget.trigger('vote'), 0);
   };
 
   render() {
-    const { $button, filename, filesize, downloadUrl, dateUploaded, voteCount = 0 } = this.props;
+    const { $button, filename, filesize, downloadUrl, dateUploaded } = this.props;
 
     if (!this.state.opened) {
       return null;
@@ -69,8 +83,8 @@ export class DownloadPopup extends React.Component {
               <hr/>
 
               <div className="cudos-wrapper">
-                <a className="cudos" onClick={this.onVote}>
-                  <i className="fa fa-thumbs-up"/> {voteCount}
+                <a className={classNames('cudos', {'with-voted': this.state.voted})} onClick={this.onVote}>
+                  <i className="fa fa-thumbs-up"/> {this.state.voteCount}
                 </a>
               </div>
             </div>
