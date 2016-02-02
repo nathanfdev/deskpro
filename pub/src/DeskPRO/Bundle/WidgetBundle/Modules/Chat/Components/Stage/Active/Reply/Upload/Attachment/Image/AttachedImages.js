@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import { AttachedImage } from './AttachedImage';
 import { AttachedImagesList } from './AttachedImagesList';
-import Immutable from 'immutable';
-import Simple from 'DeskPRO/Component/Positioned/Simple';
+import { Simple } from 'DeskPRO/Component/Positioned/Simple';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
+import Immutable from 'immutable';
 
 export class AttachedImages extends React.Component {
 

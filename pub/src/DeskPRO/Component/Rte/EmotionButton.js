@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { EmotionsPopup } from './EmotionsPopup';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
-import Simple from 'DeskPRO/Component/Positioned/Simple';
+import { Simple } from 'DeskPRO/Component/Positioned/Simple';
 import * as Emotions from './Emotions';
 
 export class EmotionButton extends React.Component {

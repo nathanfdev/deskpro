@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Preferences } from './Preferences';
-import Simple from 'DeskPRO/Component/Positioned/Simple';
+import { Simple } from 'DeskPRO/Component/Positioned/Simple';
 
 @connect(state => ({
   dpWindow: state.Application.dpWindow
