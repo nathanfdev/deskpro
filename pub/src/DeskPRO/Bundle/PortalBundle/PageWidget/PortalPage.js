@@ -4,6 +4,7 @@ import { PortalFormWidget } from './PortalFormWidget';
 import { TicketView } from './TicketView';
 import { TicketList } from './TicketList';
 import { DownloadsList } from './DownloadsList';
+import { DownloadPopupWidget } from './DownloadPopupWidget';
 import { FeedbackPage } from './FeedbackPage';
 import { ClickAwayDropdownWidget } from './ClickAwayDropdownWidget';
 import { ClickToDismissWidget } from './ClickToDismissWidget';
@@ -32,6 +33,7 @@ export class PortalPage extends PageWidget {
     this.addWidgetDef(TicketForm, '#edit_ticket_form');
     this.addWidgetDef(TicketView, '#ticket_view_page');
     this.addWidgetDef(TicketList, '#ticket_list_page');
+    this.addWidgetDef(DownloadPopupWidget, '.dpx-download-popup');
     this.addWidgetDef(DownloadsList, '.download-list');
     this.addWidgetDef(FeedbackPage, '#feedback_page');
     this.addWidgetDef(HtmlLinkToPostWidget, 'body');
