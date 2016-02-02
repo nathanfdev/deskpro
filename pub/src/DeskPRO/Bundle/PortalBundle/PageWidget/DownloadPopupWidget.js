@@ -7,7 +7,7 @@ import $ from 'jquery';
 export class DownloadPopupWidget extends PageWidget {
 
   renderWidget() {
-    this.$rElement = $('<div class="dp-react-widget as-dpui"></div>').insertAfter(this.$element);
+    this.$rElement = $('<div class="dp-react-widget as-dpui"></div>').appendTo(this.$element.closest('body'));
     const component = React.createElement(DownloadPopup, {
       filename: 'Admin Quick Launch Guide.pdf',
       filesize: '125kb',
