@@ -45,32 +45,11 @@ export class DpxDateWidget extends PageWidget {
     }
 
     const $textBox = $('<input type="text">');
-    const day = $sDay.val();
-    const month = $sMonth.val();
-    const year = $sYear.val();
-
-    // find the initial value and set it on the text box
-    let initialValue = false;
-    if (day || month || year) {
-      if (isTimeIncluded) {
-        const minute = $sMinute.val();
-        const hour = $sHour.val();
-
-        if (minute || hour) {
-          initialValue = new Date(year, month - 1, day, hour, minute);
-          $textBox.val(moment(initialValue).format('MM/DD/YYYY hh:mma'));
-        }
-      } else {
-        initialValue = new Date(year, month - 1, day);
-        $textBox.val(moment(initialValue).format('MM/DD/YYYY'));
-      }
-    }
 
     const options = {
       parentID: $el.parent(),
       timepicker: isTimeIncluded,
       format: isTimeIncluded ? 'm/d/Y h:ia' : 'm/d/Y',
-      startDate: initialValue,
       closeOnDateSelect: true,
       scrollInput: false,
       onChangeDateTime: (dp, $input) => {
@@ -113,6 +92,37 @@ export class DpxDateWidget extends PageWidget {
     }
 
     $textBox.datetimepicker(options);
+
+    const onSetDate = () => {
+      const day = $sDay.val();
+      const month = $sMonth.val();
+      const year = $sYear.val();
+
+      let initialValue = false;
+      if (day || month || year) {
+        if (isTimeIncluded) {
+          const minute = $sMinute.val();
+          const hour = $sHour.val();
+
+          if (minute || hour) {
+            initialValue = new Date(year, month - 1, day, hour, minute);
+            $textBox.val(moment(initialValue).format('MM/DD/YYYY hh:mma'));
+          }
+        } else {
+          initialValue = new Date(year, month - 1, day);
+          $textBox.val(moment(initialValue).format('MM/DD/YYYY'));
+        }
+
+        $textBox.datetimepicker('setDate', initialValue);
+      }
+    };
+
+    // find the initial value and set it on the text box
+    onSetDate();
+
+    $sDay.on('change', onSetDate);
+    $sMonth.on('change', onSetDate);
+    $sYear.on('change', onSetDate);
 
     $textBox.addClass('dpx-date-input');
     $textBox.on('keyup', () => {
