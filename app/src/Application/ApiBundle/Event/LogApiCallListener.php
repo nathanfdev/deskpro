@@ -64,7 +64,7 @@ class LogApiCallListener
         $em = $dispatcher->getContainer()->get('doctrine.orm.entity_manager');
 
         // Dont log rate limit
-        if ($response->getStatusCode() == 429) {
+        if ($response->getStatusCode() == 429 || !$response->getStatusCode()) {
             $em->remove($log);
             $em->flush($log);
 
