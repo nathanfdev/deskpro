@@ -1,6 +1,6 @@
 import { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import jQuery from 'jquery';
+import $ from 'jquery';
 import { Abstract } from './Abstract';
 
 export class Detached extends Abstract {
@@ -15,8 +15,9 @@ export class Detached extends Abstract {
    */
   componentDidMount() {
     this.node = ReactDOM.findDOMNode(this);
-    jQuery(this.node).detach();
-    jQuery(this.props.context || 'body').prepend(this.node);
+
+    $(this.node).detach();
+    $(this.props.context || 'body').prepend(this.node);
 
     // Manipulate the DOM here
     this.renderContent();

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import jQuery from 'jquery';
+import $ from 'jquery';
 import 'jquery-ui/position';
 
 export class Abstract extends React.Component {
@@ -55,7 +55,7 @@ export class Abstract extends React.Component {
   componentWillUnmount() {
     // Clean up the DOM when the component is umounted
     ReactDOM.unmountComponentAtNode(this.node);
-    jQuery(this.node).remove();
+    $(this.node).remove();
   }
 
   /**
@@ -64,7 +64,7 @@ export class Abstract extends React.Component {
    */
   updatePosition() {
     const { positionCalc, positionTarget, positionMy, positionAt, collision, zIndex } = this.props;
-    const $node = jQuery(this.node);
+    const $node = $(this.node);
     $node.css('position', 'absolute');
 
     if (positionCalc) {
@@ -87,7 +87,7 @@ export class Abstract extends React.Component {
 
       if (positionTarget) {
         placement.of = positionTarget;
-        if (!(positionTarget instanceof jQuery) && ReactDOM.findDOMNode(positionTarget) !== null) {
+        if (!(positionTarget instanceof $) && ReactDOM.findDOMNode(positionTarget) !== null) {
           placement.of = ReactDOM.findDOMNode(positionTarget);
         }
 
