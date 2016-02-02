@@ -17,7 +17,12 @@
                                 {{ phrase('portal.downloads.download') }}
                                 <i class="fa fa-download"></i>
                             </a>
-                        </li><li class="the-cudos as-vote-widget"><a href="{{ portal_path(dl, 'vote_up') }}" class="post-link as-vote-btn"><i class="fa fa-thumbs-up as-vote-animate"></i> <span class="as-vote-count" data-votes="{{ dl.total_rating }}">{{ dl.total_rating }}</span></a></li>
+                        </li>
+                        <li class="the-cudos as-vote-widget">
+                            <a href="{{ portal_path(dl, 'vote_up') }}" class="post-link as-vote-btn">
+                                <i class="fa fa-thumbs-up as-vote-animate"></i> <span class="as-vote-count" data-votes="{{ dl.total_rating }}">{{ dl.total_rating }}</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
 
