@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import jQuery from 'jquery';
+import $ from 'jquery';
 
 export class ClickOut extends React.Component {
 
@@ -13,19 +13,19 @@ export class ClickOut extends React.Component {
   };
 
   componentDidMount() {
-    jQuery(this.getContext()).on('click', this.onClick);
+    $(this.getContext()).on('click', this.onClick);
 
-    const events = jQuery._data(this.getContext(), 'events');
+    const events = $._data(this.getContext(), 'events');
     if (events) {
       events.click = events.click || [];
       events.click.sort((a, b) => b.guid - a.guid);
 
-      jQuery._data(this.getContext(), 'events', events);
+      $._data(this.getContext(), 'events', events);
     }
   }
 
   componentWillUnmount() {
-    jQuery(this.getContext()).off('click', this.onClick);
+    $(this.getContext()).off('click', this.onClick);
   }
 
   onClick = event => {
@@ -37,7 +37,7 @@ export class ClickOut extends React.Component {
       ignoreNodes.forEach(ignored => {
         let nodes;
         if (typeof ignored === 'string') {
-          nodes = jQuery.find(ignored);
+          nodes = $.find(ignored);
         } else {
           nodes = [ignored];
         }
@@ -51,7 +51,7 @@ export class ClickOut extends React.Component {
             }
 
             // skip when clicking on a child of the ignored node
-            if (jQuery.contains(domNode, event.target)) {
+            if ($.contains(domNode, event.target)) {
               skip = true;
             }
           }
@@ -67,14 +67,14 @@ export class ClickOut extends React.Component {
     nodes.push(this.refs.container);
     let outside = true;
     nodes.forEach(node => {
-      const $container = jQuery(node);
+      const $container = $(node);
       if ($container.is(event.target) || $container.has(event.target).length > 0) {
         outside = false;
       }
 
       // If event target element was removed before this handler was called we can check by its class name
       if (typeof node === 'string' && node.length > 0) {
-        const $target = jQuery(event.target);
+        const $target = $(event.target);
         if (node[0] === '.' && $target.hasClass(node.substr(1))) {
           outside = false;
         }
