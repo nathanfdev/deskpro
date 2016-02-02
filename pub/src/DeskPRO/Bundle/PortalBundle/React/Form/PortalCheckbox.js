@@ -20,7 +20,13 @@ export class PortalCheckbox extends React.Component {
 
   componentDidMount() {
     const { $checkbox } = this.props;
+
     $checkbox.closest('form').on('reset', this.onReset);
+    $checkbox.on('change', () => {
+      this.setState({
+        checked: $checkbox.prop('checked')
+      });
+    });
   }
 
   onReset = () => {
