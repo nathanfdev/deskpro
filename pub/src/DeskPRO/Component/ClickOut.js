@@ -63,7 +63,7 @@ export class ClickOut extends React.Component {
       }
     }
 
-    const nodes = [...additionalNodes];
+    const nodes = Array.isArray(additionalNodes) ? [...additionalNodes] : [additionalNodes];
     nodes.push(this.refs.container);
     let outside = true;
     nodes.forEach(node => {

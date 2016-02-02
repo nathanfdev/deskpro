@@ -72,7 +72,7 @@ export class DownloadPopup extends React.Component {
 
     return (
       <div>
-        <ClickOut onClickOut={this.onClose} additionalNodes={[$button]}>
+        <ClickOut onClickOut={this.onClose} additionalNodes={$button}>
           <div className="popup popup-file-download">
             <a href="#" className="cancel" onClick={this.onClose}>
               Cancel download <i className="fa fa-times"/>
