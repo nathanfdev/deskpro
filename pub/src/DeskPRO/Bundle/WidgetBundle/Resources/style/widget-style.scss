@@ -53,7 +53,7 @@ html, body {
   position: absolute;
 }
 
-.dpdesignportal-button, .dpdesignportal a.dpdesignportal-button, .dpdesignportal .dpdesignportal-button, .dpdesignportal-open-new-ticket button[type=submit] {// Base buttons
+.dpdesignportal-button, .dpdesignportal a.dpdesignportal-button, .dpdesignportal .dpdesignportal-button, .dpdesignportal-open-new-ticket button {// Base buttons
   text-decoration: none;
   display: inline-block;
   line-height: 1.3em;
@@ -63,6 +63,7 @@ html, body {
   border: 1px solid #4681b2;
   border-radius: 2px;
   transition: all 0.2s ease;
+  margin-top: 10px;
 
   &:hover {
     background: #3b75a4;
@@ -89,6 +90,10 @@ html, body {
       background: #e0dddd;
       border: 1px solid #e0dddd;
     }
+  }
+
+  &[type="reset"] {
+    margin-left: 5px;
   }
 }
 
