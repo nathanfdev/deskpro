@@ -1,6 +1,6 @@
 import { createAction } from 'Ampliflux';
 import { requestRecords, setRequestRecords } from 'Ampliflux/common/record-store/actions';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { api } from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 
 export const setFeedbackRequest = createAction('SET_FEEDBACK_REQUEST', setRequestRecords());
 
@@ -10,7 +10,7 @@ export const loadFeedback = createAction(
     ['RecordStores', 'Feedback', 'feedback', 'feedback'],
       missingIds => new Promise(
       (resolve, reject) =>
-        DpApi.sendGet('DP_API/feedback?ids=' + missingIds.toArray().join(','))
+        api.sendGet('DP_API/feedback?ids=' + missingIds.toArray().join(','))
           .success(response => resolve(response.data))
           .error(response => reject(response))
     )

@@ -1,6 +1,6 @@
 import { createAction } from 'Ampliflux';
 import * as rsa from 'Ampliflux/common/record-store/actions';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { api } from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 
 export const releaseOrganizations = createAction('RELEASE_ORGANIZATIONS', rsa.releaseRecords());
 export const releaseOrganizationsRequest = createAction('RELEASE_ORGANIZATIONS_REQUEST', rsa.releaseRequest());
@@ -11,7 +11,7 @@ export const loadOrganizations = createAction(
     ['RecordStores', 'CRM', 'organizations'],
     missingIds => new Promise(
       (resolve, reject) =>
-        DpApi.sendGet('DP_API/organizations?ids=' + missingIds.toArray().join(','))
+        api.sendGet('DP_API/organizations?ids=' + missingIds.toArray().join(','))
              .success(response => resolve(response.data))
              .error(response => reject(response))
     )

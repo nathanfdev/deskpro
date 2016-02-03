@@ -1,4 +1,4 @@
-import DpApi from '../DpApi';
+import { api } from '../DpApi';
 import { compileParams } from '../ApiHelpers';
 
 /*
@@ -10,7 +10,7 @@ export function feedbackToValidate() {
     awaiting_validation: 1
   };
 
-  return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
+  return api.sendGet('DP_API/feedback/counts?' + compileParams(query));
 }
 
 /*
@@ -18,7 +18,7 @@ export function feedbackToValidate() {
  * @return Promise
  */
 export function getLabels() {
-  return DpApi.sendGet('DP_API/feedback_labels');
+  return api.sendGet('DP_API/feedback_labels');
 }
 
 /*
@@ -30,7 +30,7 @@ export function getTypes() {
     group_by: 'category'
   };
 
-  return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
+  return api.sendGet('DP_API/feedback/counts?' + compileParams(query));
 }
 
 /*
@@ -42,7 +42,7 @@ export function getCustomCategories() {
     group_by: 'custom_category'
   };
 
-  return DpApi.sendGet('DP_API/feedback/counts?' + compileParams(query));
+  return api.sendGet('DP_API/feedback/counts?' + compileParams(query));
 }
 
 /*
@@ -52,5 +52,5 @@ export function getCustomCategories() {
  */
 export function getList(params) {
   console.log('DP_API/feedback/?include=person,feedback_status_category,custom_data_feedback&' + compileParams(params));
-  return DpApi.sendGet('DP_API/feedback/?include=person,feedback_status_category,custom_data_feedback&' + compileParams(params));
+  return api.sendGet('DP_API/feedback/?include=person,feedback_status_category,custom_data_feedback&' + compileParams(params));
 }

@@ -1,6 +1,6 @@
 import { createAction } from 'Ampliflux';
 import { listParamsSelector } from '../Selectors/list';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { api } from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
 import { setTicketsRequest } from '../RecordStores/Actions/ticketsActions';
 
@@ -19,7 +19,8 @@ const loadList = createAction(
     let url = `DP_API/ticket_filters/${params.filter}/tickets`;
     delete params.filter;
     url += '?' + compileParams(params);
-    return DpApi.sendGet(url).then(promise=> {
+
+    return api.sendGet(url).then(promise=> {
       const res = promise.getData();
       const ids = res.data.map(item=>item.id);
       dispatch(setTicketsRequest(recordStoresId, res.data));

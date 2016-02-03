@@ -1,9 +1,9 @@
-import DpApi from "../DpApi";
+import { api } from '../DpApi';
 
 export function loadLabels() {
-    return DpApi.sendGet('DP_API/ticket_labels');
+    return api.sendGet('DP_API/ticket_labels');
 }
 
 export function loadLabelTickets(label_name) {
-    return DpApi.sendGet('DP_API/ticket_labels/' + label_name + '/tickets');
+    return api.sendGet('DP_API/ticket_labels/' + label_name + '/tickets');
 }

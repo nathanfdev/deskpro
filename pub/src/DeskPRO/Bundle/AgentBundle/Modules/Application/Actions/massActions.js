@@ -1,5 +1,5 @@
 import { createAction } from 'Ampliflux';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { api } from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 
 export const toggleMassAction = createAction('APP_TOGGLE_MASS_ACTION');
 export const toggleSelectedAction = createAction('APP_TOGGLE_SELECTED_ACTION');
@@ -21,7 +21,7 @@ export const resetParam = createAction(
 export const getJobStatus = createAction(
   'APP_GET_JOB_STATUS',
   (id, reloadListAction, reloadNavAction) => (dispatch) =>
-    DpApi.sendGet('DP_API/mass_actions/' + id)
+    api.sendGet('DP_API/mass_actions/' + id)
       .success(response => {
         if (response.data.status !== 'complete') {
           setTimeout(() => dispatch(getJobStatus(id, reloadListAction, reloadNavAction)), 2000);
@@ -35,7 +35,7 @@ export const getJobStatus = createAction(
 export const submitMassActions = createAction(
   'APP_MASS_ACTIONS_SUBMIT',
   (data) => (dispatch) => new Promise(resolve =>
-    DpApi.sendPost('DP_API/mass_actions/', { jobType: data.jobType, params: data.params })
+    api.sendPost('DP_API/mass_actions/', { jobType: data.jobType, params: data.params })
       .success(response => {
         console.log('Job', response);
         dispatch(toggleMassAction());

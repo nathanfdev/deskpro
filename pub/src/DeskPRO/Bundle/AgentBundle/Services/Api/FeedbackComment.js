@@ -1,4 +1,4 @@
-import DpApi from '../DpApi';
+import { api } from '../DpApi';
 import { compileParams } from '../ApiHelpers';
 
 /*
@@ -10,7 +10,7 @@ export function commentsToReview() {
     awaiting_validation: 1
   };
 
-  return DpApi.sendGet('DP_API/feedback_comments/counts?' + compileParams(query));
+  return api.sendGet('DP_API/feedback_comments/counts?' + compileParams(query));
 }
 
 /*
@@ -21,7 +21,7 @@ export function deleteFeedbackComment(ids) {
   ids.forEach((id) => {
     params.push('id[]=' + id);
   });
-  return DpApi.sendDelete('DP_API/feedback_comments?' + params.join('&'));
+  return api.sendDelete('DP_API/feedback_comments?' + params.join('&'));
 }
 
 export function approveFeedbackComment(ids) {
@@ -29,7 +29,7 @@ export function approveFeedbackComment(ids) {
   ids.forEach((id) => {
     params.push('id[]=' + id);
   });
-  return DpApi.sendPatch('DP_API/feedback_comments/approve?' + params.join('&'));
+  return api.sendPatch('DP_API/feedback_comments/approve?' + params.join('&'));
 }
 
 /*
@@ -39,7 +39,7 @@ export function approveFeedbackComment(ids) {
  * @return Promise
  */
 export function editFeedbackComment(commentId, data) {
-  return DpApi.sendPut('DP_API/feedback_comments/' + commentId, data);
+  return api.sendPut('DP_API/feedback_comments/' + commentId, data);
 }
 
 /*
@@ -48,5 +48,5 @@ export function editFeedbackComment(commentId, data) {
  */
 export function commentsToReviewList(params) {
   console.log('DP_API/feedback_comments_list?include=person,feedback&' + compileParams(params));
-  return DpApi.sendGet('DP_API/feedback_comments_list?include=person,feedback&' + compileParams(params));
+  return api.sendGet('DP_API/feedback_comments_list?include=person,feedback&' + compileParams(params));
 }

@@ -1,4 +1,4 @@
-import DpApi from "../DpApi";
+import { api } from '../DpApi';
 
 /**
  * Loads all filters in a filter set.
@@ -6,7 +6,7 @@ import DpApi from "../DpApi";
  * @return Promise.
  */
 export function loadFiltersInSet(filter_set_id) {
-  return DpApi.sendGet('DP_API/ticket_filter_sets/' + filter_set_id + '/filters');
+  return api.sendGet('DP_API/ticket_filter_sets/' + filter_set_id + '/filters');
 }
 
 /**
@@ -20,7 +20,7 @@ export function ticketCountsForFilter(filter_id, ...groupings) {
   if(groupings) {
     group_url_bit = '?group_by=' + groupings.join(',');
   }
-  return DpApi.sendGet('DP_API/ticket_filters/' + filter_id + '/count' + group_url_bit);
+  return api.sendGet('DP_API/ticket_filters/' + filter_id + '/count' + group_url_bit);
 }
 
 /**
@@ -29,5 +29,5 @@ export function ticketCountsForFilter(filter_id, ...groupings) {
  * @return Promise.
  */
 export function loadTickets(filter_id) {
-  return DpApi.sendGet('DP_API/ticket_filters/' + filter_id + '/tickets');
+  return api.sendGet('DP_API/ticket_filters/' + filter_id + '/tickets');
 }

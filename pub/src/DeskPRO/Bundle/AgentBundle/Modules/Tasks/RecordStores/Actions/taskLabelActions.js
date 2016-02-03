@@ -1,6 +1,6 @@
 import { createAction } from 'Ampliflux';
 import * as rsa from 'Ampliflux/common/record-store/actions';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { api } from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 
 export const releaseTaskLabels = createAction('RELEASE_TASK_LABELS', rsa.releaseRecords());
 export const releaseTaskLabelRequest = createAction('RELEASE_TASK_LABEL_REQUEST', rsa.releaseRequest());
@@ -13,7 +13,7 @@ export const loadAllTaskLabels = createAction(
     'all',
     () => {
       return new Promise((resolve, reject) => {
-        DpApi.sendGet('DP_API/task_labels')
+        api.sendGet('DP_API/task_labels')
           .success(response => resolve(response.data))
           .error(response => reject(response));
       });

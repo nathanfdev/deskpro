@@ -1,5 +1,5 @@
 import { createAction } from 'Ampliflux';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { api } from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import * as Content from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/Content';
 import * as ArticlePendingCreates from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/ArticlePendingCreates';
@@ -24,7 +24,7 @@ export const initialLoad = createAction(
           + '&get[downloadsCommentsToReviewCount]=DP_API/download_comments/counts?is_reviewed%3D0'
         ;
 
-      DpApi.sendGet(batch).success(({responses}) => {
+      api.sendGet(batch).success(({responses}) => {
         const payload = flattenBatchResponses(responses);
         payload.todo = { articles: {}, comments: { validate: {}, review: {} } };
         payload.todo.articles.draft = payload.articlesDraftsCount.count;

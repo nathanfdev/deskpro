@@ -1,4 +1,4 @@
-import DpApi from '../DpApi';
+import { api } from '../DpApi';
 
 /**
  * Load all departments.
@@ -6,7 +6,7 @@ import DpApi from '../DpApi';
  * @return {object} - promise
  */
 export function loadAgentTeams(options = {}) {
-  return DpApi.sendGet('DP_API/agent_teams?' + compileParams(options));
+  return api.sendGet('DP_API/agent_teams?' + compileParams(options));
 }
 
 export function loadAll() {
@@ -14,11 +14,11 @@ export function loadAll() {
 }
 
 export function loadAgentTeam(teamId) {
-  return DpApi.sendGet(`DP_API/agent_teams/${teamId}`);
+  return api.sendGet(`DP_API/agent_teams/${teamId}`);
 }
 
 export function loadAgentTeamAgents(teamId) {
-  return DpApi.sendGet(`DP_API/agent_teams/${teamId}/agents`);
+  return api.sendGet(`DP_API/agent_teams/${teamId}/agents`);
 }
 
 /**

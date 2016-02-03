@@ -1,11 +1,11 @@
-import DpApi from "../DpApi";
+import { api } from '../DpApi';
 
 /**
  * Load all filter sets.
  * @return Promise.
  */
 export function loadAll() {
-  return DpApi.sendGet('DP_API/agent_groups');
+  return api.sendGet('DP_API/agent_groups');
 }
 
 /**
@@ -13,5 +13,5 @@ export function loadAll() {
  * @return Promise.
  */
 export function loadUserGroup(agent_group_id = 'all') {
-  return DpApi.sendGet('DP_API/agent_groups/' + agent_group_id);
+  return api.sendGet('DP_API/agent_groups/' + agent_group_id);
 }

@@ -1,5 +1,5 @@
 import { createAction } from 'Ampliflux';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { api } from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import * as Feedback from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
 import { setFeedbackTypesRequest } from '../RecordStores/Actions/feedbackTypesActions';
@@ -31,7 +31,7 @@ export const initialLoad = createAction(
           + '&get[rsTypes]=DP_API/feedback_types'
           + '&get[rsCategories]=DP_API/feedback_categories'
         ;
-      DpApi.sendGet(batch)
+      api.sendGet(batch)
         .success(({responses}) => {
           const payload = flattenBatchResponses(responses);
           payload.statuses = { active: payload.active, closed: payload.closed, hidden: payload.hidden };

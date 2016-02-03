@@ -1,4 +1,4 @@
-import DpApi from '../DpApi';
+import { api } from '../DpApi';
 import { compileParams } from '../ApiHelpers';
 
 /**
@@ -8,7 +8,7 @@ import { compileParams } from '../ApiHelpers';
  */
 export function loadCounts(groupBy, agent) {
   console.log('DP_API/user_chats/counts?include=person,agent,department&group_by=' + groupBy + (agent ? '&agent=' + agent : ''));
-  return DpApi.sendGet('DP_API/user_chats/counts?group_by=' + groupBy + (agent ? '&agent=' + agent : ''));
+  return api.sendGet('DP_API/user_chats/counts?group_by=' + groupBy + (agent ? '&agent=' + agent : ''));
 }
 
 /**
@@ -17,5 +17,5 @@ export function loadCounts(groupBy, agent) {
  */
 export function load(filters) {
   console.log('DP_API/user_chats?include=person,agent,department' + (filters ? '&' + compileParams(filters) : ''));
-  return DpApi.sendGet('DP_API/user_chats?include=person,agent,department' + (filters ? '&' + compileParams(filters) : ''));
+  return api.sendGet('DP_API/user_chats?include=person,agent,department' + (filters ? '&' + compileParams(filters) : ''));
 }

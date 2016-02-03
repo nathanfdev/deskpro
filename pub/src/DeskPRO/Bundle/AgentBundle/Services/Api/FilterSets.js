@@ -1,11 +1,11 @@
-import DpApi from "../DpApi";
+import { api } from '../DpApi';
 
 /**
  * Load all filter sets.
  * @return Promise.
  */
 export function loadAll() {
-  return DpApi.sendGet('DP_API/ticket_filter_sets');
+  return api.sendGet('DP_API/ticket_filter_sets');
 }
 
 /**
@@ -13,5 +13,5 @@ export function loadAll() {
  * @return Promise.
  */
 export function count(filter_set_id = 'all') {
-  return DpApi.sendGet('DP_API/ticket_filter_sets/' + filter_set_id + '/counts');
+  return api.sendGet('DP_API/ticket_filter_sets/' + filter_set_id + '/counts');
 }

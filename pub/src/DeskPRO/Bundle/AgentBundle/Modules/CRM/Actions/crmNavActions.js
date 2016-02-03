@@ -1,6 +1,6 @@
 import { createAction } from 'Ampliflux';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { api } from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import { pluck } from 'lodash';
 
 export const initialLoad = createAction(
@@ -15,7 +15,7 @@ export const initialLoad = createAction(
           + '&get[organizationLabels]=DP_API/organization_labels'
         ;
 
-      DpApi.sendGet(batch).success(({responses}) => {
+      api.sendGet(batch).success(({responses}) => {
         const payload = flattenBatchResponses(responses);
         payload.labels = {
           person: pluck(payload.personLabels, 'label'),

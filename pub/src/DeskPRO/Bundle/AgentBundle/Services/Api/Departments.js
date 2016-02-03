@@ -1,4 +1,4 @@
-import DpApi from '../DpApi';
+import { api } from '../DpApi';
 
 /**
  * Load all departments.
@@ -6,15 +6,15 @@ import DpApi from '../DpApi';
  * @return {object} promise
  */
 export function loadDepartments(options = {}) {
-  return DpApi.sendGet('DP_API/ticket_departments?' + compileParams(options));
+  return api.sendGet('DP_API/ticket_departments?' + compileParams(options));
 }
 
 export function loadDepartment(id) {
-  return DpApi.sendGet(`DP_API/ticket_departments/${id}`);
+  return api.sendGet(`DP_API/ticket_departments/${id}`);
 }
 
 export function load(ids) {
-  return DpApi.sendGet('DP_API/ticket_departments?ids=' + ids.join(','));
+  return api.sendGet('DP_API/ticket_departments?ids=' + ids.join(','));
 }
 
 /**

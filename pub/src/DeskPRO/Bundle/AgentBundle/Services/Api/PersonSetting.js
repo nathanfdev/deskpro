@@ -1,4 +1,4 @@
-import DpApi from '../DpApi';
+import { api } from '../DpApi';
 
 /**
  * Store display fields to person setting
@@ -7,7 +7,7 @@ import DpApi from '../DpApi';
  * @return {object} Promise
  */
 export function post(settingName, value) {
-  return DpApi.sendPost('DP_API/person_setting', {name: settingName, value: value});
+  return api.sendPost('DP_API/person_setting', {name: settingName, value: value});
 }
 
 /**
@@ -17,7 +17,7 @@ export function post(settingName, value) {
  * @return {object} Promise
  */
 export function put(settingName, value) {
-  return DpApi.sendPut('DP_API/person_setting', {name: settingName, value: value});
+  return api.sendPut('DP_API/person_setting', {name: settingName, value: value});
 }
 
 /**
@@ -26,5 +26,5 @@ export function put(settingName, value) {
  * @return {object} Promise
  */
 export function get(settingName) {
-  return DpApi.sendGet('DP_API/person_setting/' + settingName);
+  return api.sendGet('DP_API/person_setting/' + settingName);
 }

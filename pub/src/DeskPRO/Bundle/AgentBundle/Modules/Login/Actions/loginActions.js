@@ -1,10 +1,10 @@
 import { createAction } from 'Ampliflux';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { api } from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 
 export const login = createAction(
   'LOGIN_SUBMIT_FORM',
   params => {
-    const promise = DpApi.sendPost('DP_API/get_session', params);
+    const promise = api.sendPost('DP_API/get_session', params);
     promise.success(() => {
       location.pathname = `${DP_BASE_URL_RELATIVE}/agent/tasks`;
     });

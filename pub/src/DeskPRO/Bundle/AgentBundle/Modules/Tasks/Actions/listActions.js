@@ -1,5 +1,5 @@
 import { createAction } from 'Ampliflux';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { api } from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import Immutable from 'immutable';
 import { listParamsNavSelector, listParamsFiltersSelector, currentSortSelector, currentOrderSelector, elementsSelector }
   from '../Selectors/list';
@@ -51,7 +51,7 @@ export const loadList = createAction(
       order: currentOrderSelector(state)
     };
 
-    return DpApi
+    return api
       .sendGet('DP_API/tasks?' + compileParams(params))
       .then(promise => {
         const res = promise.getData();
@@ -92,7 +92,7 @@ export const applyFilters = createAction(
 export const addTask = createAction(
   'TASKS_LIST_ADD_TASK',
   (data) => new Promise(resolve => {
-    return DpApi
+    return api
       .sendPost(`DP_API/tasks`, data)
       .success(response => resolve(response.data));
   })
@@ -128,6 +128,6 @@ export const editTask = createAction(
     });
 
     updatedTasks = updatedTasks.set(taskIndex, updatedTask);
-    DpApi.sendPut(`DP_API/tasks/${taskId}`, data).then(() => resolve(updatedTasks));
+    api.sendPut(`DP_API/tasks/${taskId}`, data).then(() => resolve(updatedTasks));
   })
 );

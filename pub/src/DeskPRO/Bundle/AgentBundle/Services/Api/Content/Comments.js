@@ -1,4 +1,4 @@
-import DpApi from '../../DpApi';
+import { api } from '../../DpApi';
 import { compileParams } from '../../ApiHelpers';
 import { validateTarget } from './Content';
 
@@ -8,7 +8,7 @@ import { validateTarget } from './Content';
  * @return Promise
  */
 export function load(target, filters) {
-  return DpApi.sendGet(
+  return api.sendGet(
     getEndpoint(validateTarget(target)) + '?' + compileParams(filters)
   );
 }
@@ -18,7 +18,7 @@ export function load(target, filters) {
  * @return Promise
  */
 export function loadCommentsToValidateCounts(target) {
-  return DpApi.sendGet(
+  return api.sendGet(
     getCountsEndpoint(validateTarget(target)) + '?group_by=period_created&status=validating'
   );
 }
@@ -28,7 +28,7 @@ export function loadCommentsToValidateCounts(target) {
  * @return Promise
  */
 export function loadCommentsToReviewCount(target) {
-  return DpApi.sendGet(
+  return api.sendGet(
     getCountsEndpoint(validateTarget(target)) + '?is_reviewed=1'
   );
 }

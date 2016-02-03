@@ -1,4 +1,4 @@
-import DpApi from '../DpApi';
+import { api } from '../DpApi';
 import { compileParams } from '../ApiHelpers';
 
 export function loadPeople(options) {
@@ -11,9 +11,9 @@ export function loadPeople(options) {
 
   const request = Object.keys(options).length > 0 ? ('&' + compileParams(options)) : '';
   console.log(`DP_API/people?include=organization,usergroup,language${request}`);
-  return DpApi.sendGet(`DP_API/people?include=organization,usergroup,language${request}`);
+  return api.sendGet(`DP_API/people?include=organization,usergroup,language${request}`);
 }
 
 export function loadPerson(id) {
-  return DpApi.sendGet(`DP_API/people/${id}`);
+  return api.sendGet(`DP_API/people/${id}`);
 }

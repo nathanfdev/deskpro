@@ -1,5 +1,5 @@
 import { createAction } from 'Ampliflux';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { api } from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import * as Feedback from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
 import * as PersonSetting from 'DeskPRO/Bundle/AgentBundle/Services/Api/PersonSetting';
 import { loadFeedbackCommentsList } from './FeedbackCommentsActions';
@@ -30,7 +30,7 @@ const prepareLinkedData = (linked) => {
 export const loadLabels = createAction(
   'FEEDBACK_LOAD_LABELS',
   () => new Promise(resolve =>
-    DpApi.sendGet('DP_API/feedback_labels').success(response => resolve(response.data.map(def => def.label))))
+    api.sendGet('DP_API/feedback_labels').success(response => resolve(response.data.map(def => def.label))))
 );
 
 export const getCategories = createAction(

@@ -1,6 +1,6 @@
 import { createAction } from 'Ampliflux';
 import * as rsa from 'Ampliflux/common/record-store/actions';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { api } from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 
 export const releaseProjects = createAction('RELEASE_PROJECTS', rsa.releaseRecords());
 export const releaseProjectRequest = createAction('RELEASE_PROJECTS_REQUEST', rsa.releaseRequest());
@@ -13,7 +13,7 @@ export const loadAllProjects = createAction(
     'all',
     () => {
       return new Promise((resolve, reject) => {
-        DpApi.sendGet('DP_API/projects')
+        api.sendGet('DP_API/projects')
           .success(response => resolve(response.data))
           .error(response => reject(response));
       });

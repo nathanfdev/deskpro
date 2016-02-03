@@ -1,4 +1,4 @@
-import DpApi from '../../DpApi';
+import api from '../../DpApi';
 import { compileParams } from '../../ApiHelpers';
 
 /**
@@ -32,7 +32,7 @@ export function load(params) {
     }
   };
   console.log('DP_API/' + validateTarget(content) + '?include=person,' + include() + '&' + compileParams(newParams));
-  return DpApi.sendGet('DP_API/' + validateTarget(content) + '?include=person,' + include() + '&' + compileParams(newParams));
+  return api.sendGet('DP_API/' + validateTarget(content) + '?include=person,' + include() + '&' + compileParams(newParams));
 }
 
 /**
@@ -42,14 +42,14 @@ export function load(params) {
  */
 export function loadCounts(target, groupBy) {
   console.log('DP_API/' + validateTarget(target) + '/counts?group_by=' + groupBy);
-  return DpApi.sendGet('DP_API/' + validateTarget(target) + '/counts?group_by=' + groupBy);
+  return api.sendGet('DP_API/' + validateTarget(target) + '/counts?group_by=' + groupBy);
 }
 
 /**
  * @return Promise
  */
 export function loadCategories() {
-  return DpApi.sendGet('DP_API/content_categories');
+  return api.sendGet('DP_API/content_categories');
 }
 
 /**
@@ -58,7 +58,7 @@ export function loadCategories() {
  * @return Promise
  */
 export function loadDraftsCount(target, author) {
-  return DpApi.sendGet(
+  return api.sendGet(
     'DP_API/' + validateTarget(target) + '/counts?status=hidden&hidden_status=draft'
     + (author ? '&author=' + author : '')
   );

@@ -3,7 +3,7 @@
  * @param messagesList object is the list of messsages.
  * @param path is the path for which the translation is required.
  */
-export default function getIntlMessage(messagesList, path) {
+export function getIntlMessage(messagesList, path) {
   if (!messagesList) {
     return path;
   }

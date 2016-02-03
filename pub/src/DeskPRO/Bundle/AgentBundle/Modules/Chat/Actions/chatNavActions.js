@@ -1,5 +1,5 @@
 import { createAction } from 'Ampliflux';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { api } from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import { loadCounts as loadChatCounts } from 'DeskPRO/Bundle/AgentBundle/Services/Api/Chat';
 import { loadDepartments, releaseDepartmentsRequest }
@@ -19,7 +19,7 @@ export const initialLoad = createAction(
           + '?get[my]=DP_API/user_chats/counts?group_by%3Ddate_period'
           + '&get[all]=DP_API/user_chats/counts?group_by%3Dagent'
         ;
-      DpApi.sendGet(batch).success(({responses}) => {
+      api.sendGet(batch).success(({responses}) => {
         const payload = flattenBatchResponses(responses);
         resolve(payload);
       });

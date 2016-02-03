@@ -1,5 +1,5 @@
 import { createAction } from 'Ampliflux';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { api } from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import { setDepartmentsRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/departmentsActions';
 import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
@@ -9,12 +9,11 @@ import { setUserGroupsRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/Rec
 import { setAgentSettings } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
 import { setupActionAlerts } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/notificationActions';
 
-export const donePreloading  = createAction('APP_BOOTSTRAP_DONE_PRELOADING');
-
+export const donePreloading = createAction('APP_BOOTSTRAP_DONE_PRELOADING');
 export const preloadData = createAction(
   'BOOTSTRAP_PRELOAD_DATA',
   () => dispatch => new Promise(
-    (resolve, reject) => {
+    (resolve) => {
       const batch = 'DP_API/batch?get='
         + 'DP_API/ticket_departments'
         + ',DP_API/ticket_departments%3Fmy%3Dtrue'
@@ -27,7 +26,7 @@ export const preloadData = createAction(
         + ',DP_API/notify/setup/action-alerts'
         + ',DP_API/me'
       ;
-      DpApi.sendGet(batch)
+      api.sendGet(batch)
         .success(({responses}) => {
           const data = flattenBatchResponses(responses);
           dispatch(setDepartmentsRequest('all', data[0]));
@@ -39,9 +38,9 @@ export const preloadData = createAction(
           dispatch(setUserGroupsRequest('all', data[6]));
           dispatch(setAgentSettings(data[7]));
           dispatch(setupActionAlerts(data[8]));
-          dispatch(setPeopleRequest('me', [data[9]['person']]));
+          dispatch(setPeopleRequest('me', [data[9].person]));
 
-          dispatch(donePreloading())
+          dispatch(donePreloading());
         })
       ;
 

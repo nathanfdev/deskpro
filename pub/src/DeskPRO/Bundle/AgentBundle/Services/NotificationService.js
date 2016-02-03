@@ -1,7 +1,7 @@
 import EventEmitter2 from 'eventemitter2';
 import { PusherClient } from 'DeskPRO/Component/Notification/Client/PusherClient';
 import { PollingClient } from 'DeskPRO/Component/Notification/Client/PollingClient';
-import DpApi from './DpApi';
+import { api } from './DpApi';
 
 export class NotificationService {
 
@@ -51,7 +51,7 @@ export class NotificationService {
   }
 
   heartbeat() {
-    DpApi.sendGet('DP_API/notify/heartbeat');
+    api.sendGet('DP_API/notify/heartbeat');
   }
 
   startHeartbeat() {
