@@ -95,11 +95,3 @@ services:
       - @api_authorisation.action_permissions.metadata_factory
     tags:
       - { name: 'kernel.cache_warmer' }
-
-  api_authorisation.action_permissions.event_listener:
-    class: DeskPRO\Bundle\AppBundle\EventListener\ApiEndpointListener
-    arguments:
-      - @api_authorisation.action_permissions.driver
-      - %kernel.cache_dir%
-    tags:
-      - {name: kernel.event_listener, event: kernel.controller, method: onKernelController}

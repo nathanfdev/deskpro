@@ -9,3 +9,11 @@ services:
     class: DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiUserProvider
     arguments:
       - @doctrine.orm.default_entity_manager
+
+  api_authorisation.action_permissions.event_listener:
+    class: DeskPRO\Bundle\ApiBundle\EventListener\ApiEndpointListener
+    arguments:
+      - @api_authorisation.action_permissions.driver
+      - %kernel.cache_dir%
+    tags:
+      - {name: kernel.event_listener, event: kernel.controller, method: onKernelController}
