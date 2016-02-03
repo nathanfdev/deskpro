@@ -31,8 +31,8 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
+use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomPerFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
-use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomPerFieldManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -143,8 +143,8 @@ class CustomPerFieldType extends AbstractType
         $resolver->setAllowedTypes(array(
             'custom_per_field_definition' => 'Application\DeskPRO\Entity\CustomFieldDefinition',
             'custom_per_field_context'    => array(
-                'DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomFieldContext',
-                'DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomFieldTicketContext',
+                'DeskPRO\Bundle\AppBundle\CustomField\Context\CustomFieldContext',
+                'DeskPRO\Bundle\AppBundle\CustomField\Context\CustomFieldTicketContext',
             ),
         ));
     }

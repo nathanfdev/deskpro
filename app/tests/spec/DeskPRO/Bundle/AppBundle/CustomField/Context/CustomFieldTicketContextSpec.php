@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace spec\DeskPRO\Bundle\PortalBundle\CustomField\Context;
+namespace spec\DeskPRO\Bundle\AppBundle\CustomField\Context;
 
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
@@ -37,7 +37,7 @@ use Application\DeskPRO\Entity\Ticket;
 use PhpSpec\ObjectBehavior;
 
 /**
- * @mixin \DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomFieldTicketContext
+ * @mixin \DeskPRO\Bundle\AppBundle\CustomField\Context\CustomFieldTicketContext
  */
 class CustomFieldTicketContextSpec extends ObjectBehavior
 {
@@ -51,7 +51,7 @@ class CustomFieldTicketContextSpec extends ObjectBehavior
 
     public function it_extends_the_base_context_calss()
     {
-        $this->shouldHaveType('DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomFieldContext');
+        $this->shouldHaveType('DeskPRO\Bundle\AppBundle\CustomField\Context\CustomFieldContext');
     }
 
     public function it_always_uses_the_ticket_as_the_owner(

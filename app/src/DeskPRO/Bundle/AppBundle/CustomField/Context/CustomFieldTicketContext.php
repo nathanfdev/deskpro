@@ -29,22 +29,51 @@
 /**
  * DeskPRO.
  */
-namespace spec\DeskPRO\Bundle\PortalBundle\CustomField\Context;
+namespace DeskPRO\Bundle\AppBundle\CustomField\Context;
 
-use PhpSpec\ObjectBehavior;
+use Application\DeskPRO\Entity\Ticket;
 
-/**
- * @mixin \DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomFieldContext
- */
-class CustomFieldContextSpec extends ObjectBehavior
+class CustomFieldTicketContext extends CustomFieldContext
 {
-    public function it_takes_an_owner_and_a_context()
+    /**
+     * @var Ticket
+     */
+    private $ticket;
+
+    public function __construct(Ticket $ticket)
     {
-        // you wont need to use this class (its very vague), but it exists in case the more specific
-        // sub classes don't work for you. see the CustomFieldTicketContext.
-        $this->beConstructedWith('arbitrary_owner', 'arbitrary_conext');
-        $this->getOwner('Application\DeskPRO\Entity\Ticket')->shouldReturn('arbitrary_owner');
-        $this->getContext('Application\DeskPRO\Entity\Person')->shouldReturn('arbitrary_conext');
-        $this->getContext('Application\DeskPRO\Entity\Organization')->shouldReturn('arbitrary_conext');
+        parent::__construct($ticket, null);
+        $this->ticket = $ticket;
+    }
+
+    /**
+     * @param $owner_class
+     *
+     * @return Ticket
+     */
+    public function getOwner($owner_class)
+    {
+        return $this->ticket;
+    }
+
+    /**
+     * @param $context_class
+     *
+     * @return \Application\DeskPRO\Entity\Organization|\Application\DeskPRO\Entity\Person|null
+     */
+    public function getContext($context_class)
+    {
+        switch ($context_class) {
+            case 'Application\DeskPRO\Entity\Person':
+                return $this->ticket->getPerson();
+            case 'Application\DeskPRO\Entity\Organization':
+                if ($org = $this->ticket->getOrganization()) {
+                    return $org;
+                }
+
+                return;
+        }
+
+        return;
     }
 }

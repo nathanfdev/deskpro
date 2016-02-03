@@ -17,5 +17,5 @@ services:
     arguments: [@doctrine.orm.default_entity_manager, @data.tickets, @language_manager, @data.departments, @ticket_layout_factory, @form_field_manager, @brand_aware_settings_resolver]
 
   tickets.custom_per_field_manager:
-    class: DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomPerFieldManager
+    class: DeskPRO\Bundle\AppBundle\CustomField\Context\CustomPerFieldManager
     arguments: [@doctrine.orm.default_entity_manager]

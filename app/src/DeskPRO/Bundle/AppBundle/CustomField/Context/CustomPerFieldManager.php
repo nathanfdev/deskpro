@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\PortalBundle\CustomField\Context;
+namespace DeskPRO\Bundle\AppBundle\CustomField\Context;
 
 use Application\DeskPRO\Entity\CustomFieldData;
 use Application\DeskPRO\Entity\CustomFieldDefinition;

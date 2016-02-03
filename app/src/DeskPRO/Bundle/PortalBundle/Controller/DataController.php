@@ -31,7 +31,7 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
-use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomFieldContext;
+use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomFieldContext;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
