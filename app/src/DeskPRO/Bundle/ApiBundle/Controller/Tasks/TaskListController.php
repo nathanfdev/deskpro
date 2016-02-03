@@ -29,9 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
@@ -40,6 +43,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class TaskListController.
+ *
+ * @ApiModes("all")
+ * @ApiTags("agent.tasks.tasks_list")
  */
 class TaskListController extends BaseController implements ClassResourceInterface
 {

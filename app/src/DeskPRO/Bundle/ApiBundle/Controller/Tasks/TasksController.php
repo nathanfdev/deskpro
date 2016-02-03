@@ -34,6 +34,8 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DeskPRO\Bundle\AppBundle\DataService\Tasks\TasksSelectCriteria;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Error\Exception\InvalidFormException;
@@ -55,6 +57,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * Class TasksController.
  *
+ * @ApiModes("all")
+ * @ApiTags("agent.tasks.tasks")
  * @Route("/tasks")
  */
 class TasksController extends CrudController

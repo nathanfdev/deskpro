@@ -34,6 +34,8 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Glossary;
 
 use Application\DeskPRO\Entity\GlossaryWord;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DeskPRO\Bundle\AppBundle\Form\Type\Glossary\GlossaryWordType;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Route;
@@ -44,6 +46,8 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Class GlossaryWordController.
  *
+ * @ApiModes("all")
+ * @ApiTags("agent.glossary.glossary_word")
  * @Route("/glossary/words")
  */
 class GlossaryWordController extends CrudController

@@ -34,6 +34,8 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Pusher;
@@ -42,6 +44,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * Class NotificationController.
+ *
+ * @ApiModes("all")
+ * @ApiTags("agent.notification")
+ */
 class NotificationController extends BaseController
 {
     /**

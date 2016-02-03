@@ -34,6 +34,8 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\AgentChat;
 
 use DeskPRO\Bundle\AppBundle\AgentChat\History;
 use DeskPRO\Bundle\AppBundle\AgentChat\Messenger;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DeskPRO\Bundle\AppBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\NewMessageEvent;
 use FOS\RestBundle\Controller\Annotations;
@@ -45,6 +47,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * Class MessagesController.
+ *
+ * @ApiModes("all")
+ * @ApiTags("agent.agent_chat.messages")
+ */
 class MessagesController extends AbstractController
 {
     /**
@@ -56,6 +64,8 @@ class MessagesController extends AbstractController
      *
      * @return View
      * @Annotations\Get("/agent_chats/{id}/messages", name="agent_chats_get_messages")
+     * @ApiModes("standard")
+     * @ApiTags("agent.agent_chat.messages.get_messages")
      */
     public function getMessagesAction($id, Request $request)
     {

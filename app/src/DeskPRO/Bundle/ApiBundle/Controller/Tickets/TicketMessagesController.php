@@ -35,6 +35,8 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageType;
 use FOS\RestBundle\Controller\Annotations;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,6 +44,8 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class TicketMessageController.
  *
+ * @ApiModes("all")
+ * @ApiTags("agent.tickets.ticket_messages")
  * @Annotations\Route("/tickets/{parentId}/messages")
  */
 class TicketMessagesController extends CrudSubController

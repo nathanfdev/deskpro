@@ -34,6 +34,8 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Problem;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\ProblemType;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -44,6 +46,8 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class TicketProblemController.
  *
+ * @ApiModes("all")
+ * @ApiTags("agent.tickets.ticket_problems")
  * @Route("/ticket_problems")
  */
 class TicketProblemsController extends CrudController

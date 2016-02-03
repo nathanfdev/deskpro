@@ -36,6 +36,8 @@ use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\DownloadComment;
 use Application\DeskPRO\Entity\NewsComment;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsCountCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsSelectCriteria;
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -49,6 +51,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class CommentsController.
+ *
+ * @ApiModes("all")
+ * @ApiTags("agent.content.comments")
  */
 class CommentsController extends BaseController
 {

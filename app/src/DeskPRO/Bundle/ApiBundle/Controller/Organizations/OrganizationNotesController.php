@@ -29,11 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
 
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\OrganizationNote;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DeskPRO\Bundle\AppBundle\Form\Type\OrganizationNoteType;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Delete;
@@ -44,6 +47,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class OrganizationNotesController.
+ *
+ * @ApiModes("all")
+ * @ApiTags("agent.organizations.organization_notes")
  */
 class OrganizationNotesController extends CrudController
 {

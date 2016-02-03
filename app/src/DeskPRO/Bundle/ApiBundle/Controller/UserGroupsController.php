@@ -32,6 +32,8 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -39,6 +41,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class UserGroupsController.
+ *
+ * @ApiModes("all")
+ * @ApiTags("agent.user_groups")
  */
 class UserGroupsController extends BaseController
 {

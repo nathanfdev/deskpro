@@ -29,11 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonNote;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonNoteType;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Delete;
@@ -44,6 +47,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class PersonNotesController.
+ *
+ * @ApiModes("all")
+ * @ApiTags("agent.people.person_notes")
  */
 class PersonNotesController extends CrudController
 {

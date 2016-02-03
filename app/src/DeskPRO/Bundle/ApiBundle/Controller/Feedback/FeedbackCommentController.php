@@ -29,11 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
 use Application\DeskPRO\Entity\FeedbackComment;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DeskPRO\Bundle\AppBundle\Error\Exception\InvalidFormException;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -48,6 +51,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * API access to feedback comments.
+ *
+ * @ApiModes("all")
+ * @ApiTags("agent.feedback.feedback_comment")
  */
 class FeedbackCommentController extends BaseController
 {
@@ -75,15 +81,15 @@ class FeedbackCommentController extends BaseController
             ->from('DeskPRO:FeedbackComment', 'c')
             ->innerJoin('c.feedback', 'feedback');
         $awaitingValidation = $request->get('awaiting_validation');
-        $sort = $request->get('sort');
-        $order = $request->get('order');
-        $category = $request->get('category');
-        $custom_category = $request->get('custom_category');
-        $status = $request->get('status');
-        $status_category = $request->get('status_category');
-        $labels = $request->get('labels');
-        $created_from = $request->get('created_from');
-        $created_to = $request->get('created_to');
+        $sort               = $request->get('sort');
+        $order              = $request->get('order');
+        $category           = $request->get('category');
+        $custom_category    = $request->get('custom_category');
+        $status             = $request->get('status');
+        $status_category    = $request->get('status_category');
+        $labels             = $request->get('labels');
+        $created_from       = $request->get('created_from');
+        $created_to         = $request->get('created_to');
         if ($awaitingValidation) {
             $qb
                 ->orWhere('c.is_reviewed = 0');
@@ -272,9 +278,9 @@ class FeedbackCommentController extends BaseController
      */
     public function deleteAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em  = $this->getDoctrine()->getManager();
         $ids = $request->get('id');
-        $qb = $em->createQueryBuilder();
+        $qb  = $em->createQueryBuilder();
         $qb
             ->select('c')
             ->from('DeskPRO:FeedbackComment', 'c')
@@ -305,9 +311,9 @@ class FeedbackCommentController extends BaseController
      */
     public function massApproveAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em  = $this->getDoctrine()->getManager();
         $ids = $request->get('id');
-        $qb = $em->createQueryBuilder();
+        $qb  = $em->createQueryBuilder();
         $qb
             ->select('c')
             ->from('DeskPRO:FeedbackComment', 'c')
@@ -362,7 +368,7 @@ class FeedbackCommentController extends BaseController
     /**
      * Will be abstracted for use by other controllers.
      *
-     * @param Request $request
+     * @param Request         $request
      * @param FeedbackComment $comment
      *
      * @throws AlreadySubmittedException

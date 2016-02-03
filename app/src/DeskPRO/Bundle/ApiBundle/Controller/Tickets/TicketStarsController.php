@@ -29,10 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\Entity\PersonSetting;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStar;
@@ -47,6 +50,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Provides API access to the ticket flags.
+ *
+ * @ApiModes("all")
+ * @ApiTags("agent.tickets.ticket_stars")
  */
 class TicketStarsController extends BaseController
 {

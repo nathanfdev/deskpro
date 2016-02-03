@@ -29,15 +29,20 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\TicketWorkflow;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use FOS\RestBundle\Controller\Annotations\Route;
 
 /**
  * Class TicketWorkflowController.
  *
+ * @ApiModes("all")
+ * @ApiTags("agent.tickets.ticket_workflows")
  * @Route("/ticket_workflows")
  */
 class TicketWorkflowsController extends CrudController
