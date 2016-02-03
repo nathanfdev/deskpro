@@ -8,14 +8,14 @@ describe('API Chat service', () => {
   const Chat = require('DeskPRO/Bundle/AgentBundle/Services/Api/Chat.js');
 
   it('should load chats', () => {
-    spyOn(DpApi, 'sendGet');
+    spyOn(DpApi.api, 'sendGet');
     Chat.load();
-    expect(DpApi.sendGet.argsForCall[0][0]).toEqual('DP_API/user_chats?include=person,agent,department');
+    expect(DpApi.api.sendGet.argsForCall[0][0]).toEqual('DP_API/user_chats?include=person,agent,department');
   });
 
   it('should load chats counts', () => {
-    spyOn(DpApi, 'sendGet');
+    spyOn(DpApi.api, 'sendGet');
     Chat.loadCounts('department', 'me');
-    expect(DpApi.sendGet.argsForCall[0][0]).toEqual('DP_API/user_chats/counts?group_by=department&agent=me');
+    expect(DpApi.api.sendGet.argsForCall[0][0]).toEqual('DP_API/user_chats/counts?group_by=department&agent=me');
   });
 });

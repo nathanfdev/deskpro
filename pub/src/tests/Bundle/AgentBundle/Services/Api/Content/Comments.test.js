@@ -9,21 +9,21 @@ describe('API Comments service', () => {
 
   describe('load()', () => {
     it('should load article comments', () => {
-      spyOn(DpApi, 'sendGet');
+      spyOn(DpApi.api, 'sendGet');
       Comments.load('articles');
-      expect(DpApi.sendGet.argsForCall[0][0]).toMatch(/DP_API\/article_comments*/);
+      expect(DpApi.api.sendGet.argsForCall[0][0]).toMatch(/DP_API\/article_comments*/);
     });
 
     it('should load news comments', () => {
-      spyOn(DpApi, 'sendGet');
+      spyOn(DpApi.api, 'sendGet');
       Comments.load('news');
-      expect(DpApi.sendGet.argsForCall[0][0]).toMatch(/DP_API\/news_comments*/);
+      expect(DpApi.api.sendGet.argsForCall[0][0]).toMatch(/DP_API\/news_comments*/);
     });
 
     it('should load downloads comments', () => {
-      spyOn(DpApi, 'sendGet');
+      spyOn(DpApi.api, 'sendGet');
       Comments.load('downloads');
-      expect(DpApi.sendGet.argsForCall[0][0]).toMatch(/DP_API\/download_comments*/);
+      expect(DpApi.api.sendGet.argsForCall[0][0]).toMatch(/DP_API\/download_comments*/);
     });
 
     it('should throw an error when the first argument is none of the following: articles, news, downloads', () => {
@@ -34,15 +34,15 @@ describe('API Comments service', () => {
   describe('loadCommentsToValidateCounts()', () => {
 
     it('should load counts of comments to validate', () => {
-      spyOn(DpApi, 'sendGet');
+      spyOn(DpApi.api, 'sendGet');
       Comments.loadCommentsToValidateCounts('articles');
-      expect(DpApi.sendGet.argsForCall[0][0]).toMatch(/DP_API\/article_comments\/counts*/);
+      expect(DpApi.api.sendGet.argsForCall[0][0]).toMatch(/DP_API\/article_comments\/counts*/);
     });
 
     it('should group counts by period_created', () => {
-      spyOn(DpApi, 'sendGet');
+      spyOn(DpApi.api, 'sendGet');
       Comments.loadCommentsToValidateCounts('articles');
-      expect(DpApi.sendGet.argsForCall[0][0]).toContain('group_by=period_created');
+      expect(DpApi.api.sendGet.argsForCall[0][0]).toContain('group_by=period_created');
     });
 
     it('should throw an error when the first argument is none of the following: articles, news, downloads', () => {
@@ -59,9 +59,9 @@ describe('API Comments service', () => {
   describe('loadCommentsToReviewCount()', () => {
 
     it('should load count of comments to review', () => {
-      spyOn(DpApi, 'sendGet');
+      spyOn(DpApi.api, 'sendGet');
       Comments.loadCommentsToReviewCount('articles');
-      expect(DpApi.sendGet.argsForCall[0][0]).toEqual('DP_API/article_comments/counts?is_reviewed=1');
+      expect(DpApi.api.sendGet.argsForCall[0][0]).toEqual('DP_API/article_comments/counts?is_reviewed=1');
     });
 
     it('should throw an error when the first argument is none of the following: articles, news, downloads', () => {
