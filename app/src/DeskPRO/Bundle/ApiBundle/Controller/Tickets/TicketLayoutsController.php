@@ -38,6 +38,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class TicketLayoutsController.
@@ -101,15 +102,15 @@ class TicketLayoutsController extends BaseController
     {
         $department = null;
         if ($department_id !== 'default') {
-            $department = $this->getRepository('DeskPRO:Department')->find($department_id);
+            $department = $this->getRepository('DeskPRO:Department')->find((int) $department_id);
             if (!$department) {
-                return $this->createNotFoundException();
+                throw new NotFoundHttpException();
             }
         }
 
         $ticket_layout = $this->getRepository('DeskPRO:TicketLayout')->findOneBy(['department' => $department]);
         if (!$ticket_layout) {
-            $ticket_layout = new TicketLayout();
+            $ticket_layout = new TicketLayout($department);
         }
 
         return View::create($this->getContextLayoutResponse($ticket_layout, $context));
