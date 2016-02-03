@@ -53,6 +53,8 @@ class CheckUsesCommand extends ContainerAwareCommand
             ->addOption('zone', 'z', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Specify the zone as comma-sep list: adm, admin, agent, api, portal, user', ['all'])
             ->addOption('ignore-zone', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Specify the zones to IGNORE as comma-sep list: adm, admin, agent, api, portal, user', [])
             ->addOption('format', 'o', InputOption::VALUE_REQUIRED, 'Output format: table, json, csv', 'table')
+            ->addOption('filetype', 't', InputOption::VALUE_REQUIRED, 'Scan which files? php or twig or both', 'both')
+            ->addOption('include-dynamic', null, InputOption::VALUE_NONE, 'Attempt to find phrases that we know are used dynamically and have no explicit usage')
             ->addArgument('report', InputArgument::OPTIONAL, 'Report mode: "context" to show all found uses, or "missing" to only report phrases where we could not find a use.', 'missing');
     }
 
@@ -136,7 +138,35 @@ class CheckUsesCommand extends ContainerAwareCommand
             $limit = 0;
         }
 
-        $pfinder  = new PhrasesFinder($env->getAppDir(), $phrase_ids, $limit);
+        $types = [];
+        switch ($input->getOption('filetype')) {
+            case 'php':
+                $types[] = 'php';
+                break;
+            case 'twig':
+                $types[] = 'twig';
+                break;
+            case 'both':
+                $types[] = 'twig';
+                $types[] = 'php';
+                break;
+            default:
+                $output->writeln("<error>Invalid --filetype param. Must be either 'php' or 'twig' or 'both'.</error>");
+
+                return 1;
+        }
+
+        if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+            $output->writeln(sprintf('Finding uses in files: %s', implode(', ', $types)));
+        }
+
+        $pfinder = new PhrasesFinder($env->getAppDir(), $phrase_ids, $limit, $types);
+
+        if ($input->getOption('include-dynamic')) {
+            $output->writeln('Including known dynamic phrases');
+            $pfinder->includeKnownDynamic();
+        }
+
         $use_info = $pfinder->getUseInfo();
 
         #------------------------------

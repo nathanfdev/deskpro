@@ -48,9 +48,14 @@ class PhrasesFinder
     private $limit;
 
     /**
-     * @var array
+     * @var string
      */
-    private $file_cache = [];
+    private $types;
+
+    /**
+     * @var bool
+     */
+    private $exclude_dynamic = true;
 
     /**
      * PhrasesFinder constructor.
@@ -59,12 +64,22 @@ class PhrasesFinder
      * @param string[] $phrase_ids Phrase IDs to find
      * @param int      $limit      How many uses to find per phrase (e.g., 1 will be faster if you just want to
      *                             check if a phrase is used anywhere). Set 0 to have no limit.
+     * @param string[] $types      Which filetypes to scan for
      */
-    public function __construct($app_root, array $phrase_ids, $limit = 1)
+    public function __construct($app_root, array $phrase_ids, $limit = 1, array $types = null)
     {
         $this->app_root   = $app_root;
         $this->phrase_ids = $phrase_ids;
         $this->limit      = $limit;
+        $this->types      = $types;
+    }
+
+    /**
+     * Include phrases we know are only used dynamic, so will not have explicit uses (i.e. always show as 'missing').
+     */
+    public function includeKnownDynamic()
+    {
+        $this->exclude_dynamic = false;
     }
 
     /**
@@ -72,18 +87,32 @@ class PhrasesFinder
      */
     private function getTplList()
     {
-        return Finder::create()
-            ->files()
-            ->name('*.twig')
-            ->in($this->app_root.'/src/Application/AdminInterfaceBundle/Resources/views')
-            ->in($this->app_root.'/src/Application/AgentBundle/Resources/views')
-            ->in($this->app_root.'/src/Application/DeskPRO/Resources/views')
-            ->in($this->app_root.'/src/Application/EmailBundle/Resources/views')
-            ->in($this->app_root.'/src/Application/ReportsInterfaceBundle/Resources/views')
-            ->in($this->app_root.'/src/DeskPRO/Bundle/AppBundle/Resources/views')
-            ->in($this->app_root.'/src/DeskPRO/Bundle/PortalBundle/Resources/views')
-            ->in($this->app_root.'/src/DeskPRO/Bundle/PortalBundle/Themes')
-            ->getIterator();
+        $iter = new \AppendIterator();
+
+        if (in_array('twig', $this->types)) {
+            $iter->append(Finder::create()
+                ->name('*.twig')
+                ->in($this->app_root.'/src/Application/AdminInterfaceBundle/Resources/views')
+                ->in($this->app_root.'/src/Application/AgentBundle/Resources/views')
+                ->in($this->app_root.'/src/Application/DeskPRO/Resources/views')
+                ->in($this->app_root.'/src/Application/EmailBundle/Resources/views')
+                ->in($this->app_root.'/src/Application/ReportsInterfaceBundle/Resources/views')
+                ->in($this->app_root.'/src/DeskPRO/Bundle/AppBundle/Resources/views')
+                ->in($this->app_root.'/src/DeskPRO/Bundle/PortalBundle/Resources/views')
+                ->in($this->app_root.'/src/DeskPRO/Bundle/PortalBundle/Themes')
+                ->getIterator());
+        }
+
+        if (in_array('php', $this->types)) {
+            $iter->append(Finder::create()
+                ->name('*.php')
+                ->in($this->app_root.'/src/Application')
+                ->in($this->app_root.'/src/Cloud')
+                ->in($this->app_root.'/src/DeskPRO/Bundle')
+                ->getIterator());
+        }
+
+        return $iter;
     }
 
     /**
@@ -95,12 +124,21 @@ class PhrasesFinder
 
         $phrase_use_counts = [];
         $uses              = [];
+        $skip_pids         = [];
 
         foreach ($files as $f) {
             $content = file_get_contents($f->getRealPath());
 
             foreach ($this->phrase_ids as $id) {
+                if (isset($skip_pids[$id])) {
+                    continue;
+                }
+                if ($this->exclude_dynamic && $this->isDynamicPhrase($id)) {
+                    $skip_pids[$id] = true;
+                    continue;
+                }
                 if ($this->limit && isset($phrase_use_counts[$id]) && $phrase_use_counts[$id] >= $this->limit) {
+                    $skip_pids[$id] = true;
                     continue;
                 }
                 if (!isset($phrase_use_counts[$id])) {
@@ -120,5 +158,35 @@ class PhrasesFinder
             'phrase_uses'   => $uses,
             'phrase_counts' => $phrase_use_counts,
         ];
+    }
+
+    /**
+     * @param string $pid
+     *
+     * @return bool
+     */
+    private function isDynamicPhrase($pid)
+    {
+        static $prefix_re;
+
+        if ($prefix_re === null) {
+            $prefix_re = '/^('.implode('|', array_map('preg_quote', [
+                'adm.agents.perm_',
+                'adm.email_templates.',
+                'adm.settings.reset_demo_',
+                'dmin.emailtpl_desc.',
+                'admin.languages.phrasegroup_',
+                'admin.portal.color_',
+                'agent.prefs.',
+                'agent.time.',
+                'api.error_codes.',
+            ])).')/';
+        }
+
+        if (preg_match($prefix_re, $pid)) {
+            return true;
+        }
+
+        return false;
     }
 }
