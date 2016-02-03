@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Form;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\TicketLayout\LayoutField;
-use DeskPRO\Bundle\PortalBundle\Form\FormFields;
+use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use Doctrine\ORM\EntityManager;
 
 class DefaultValueForTicketLayoutField

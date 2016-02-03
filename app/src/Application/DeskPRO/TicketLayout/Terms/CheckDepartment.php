@@ -34,7 +34,7 @@
 namespace Application\DeskPRO\TicketLayout\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\PortalBundle\Form\FormFields;
+use DeskPRO\Bundle\AppBundle\Form\FormFields;
 
 class CheckDepartment extends AbstractTicketLayoutTerm
 {

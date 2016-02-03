@@ -37,7 +37,7 @@ use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
-use DeskPRO\Bundle\PortalBundle\Form\FormFields;
+use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DpTest\PortalTestCase;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;

@@ -36,8 +36,8 @@ use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutCollection;
 use Application\DeskPRO\TicketLayout\LayoutField;
+use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
-use DeskPRO\Bundle\PortalBundle\Form\FormFields;
 use Doctrine\ORM\EntityManager;
 
 class TicketLayoutFactory

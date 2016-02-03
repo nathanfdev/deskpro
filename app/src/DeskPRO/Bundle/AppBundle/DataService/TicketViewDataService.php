@@ -41,10 +41,10 @@ use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomFieldTicketContext;
 use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomPerFieldManager;
 use DeskPRO\Bundle\AppBundle\CustomField\CustomFieldUtil;
 use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
-use DeskPRO\Bundle\PortalBundle\Form\FormFields;
 use Doctrine\ORM\EntityManager;
 
 class TicketViewDataService extends AbstractDataService

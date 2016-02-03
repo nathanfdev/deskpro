@@ -36,7 +36,7 @@ namespace Application\InstallBundle\Data\DefaultData;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
-use DeskPRO\Bundle\PortalBundle\Form\FormFields;
+use DeskPRO\Bundle\AppBundle\Form\FormFields;
 
 class TicketLayoutData extends AbstractDefaultData
 {
