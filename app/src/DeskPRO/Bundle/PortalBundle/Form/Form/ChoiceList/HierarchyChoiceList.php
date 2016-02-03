@@ -31,7 +31,7 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\ChoiceList;
 
-use DeskPRO\Bundle\PortalBundle\Form\Hierarchy\HierarchyNode;
+use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode;
 use Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceList;
 
 class HierarchyChoiceList extends ChoiceList
@@ -44,7 +44,7 @@ class HierarchyChoiceList extends ChoiceList
     protected function createIndex($choice)
     {
         if (!$choice instanceof HierarchyNode) {
-            throw new \InvalidArgumentException('DeskPRO\Bundle\PortalBundle\Form\Form\ChoiceList\HierarchyChoiceList only works with DeskPRO\Bundle\PortalBundle\Form\Hierarchy\HierarchyNode');
+            throw new \InvalidArgumentException('DeskPRO\Bundle\PortalBundle\Form\Form\ChoiceList\HierarchyChoiceList only works with '.HierarchyNode::class);
         }
 
         $id = $choice->getHierarchy()->getNodeId($choice);

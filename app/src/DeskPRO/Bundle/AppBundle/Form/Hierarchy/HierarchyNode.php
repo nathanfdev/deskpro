@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\PortalBundle\Form\Hierarchy;
+namespace DeskPRO\Bundle\AppBundle\Form\Hierarchy;
 
 use DeskPRO\Component\Hierarchy\HierarchyNode as BaseNode;
 

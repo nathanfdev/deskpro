@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer;
 
 use Symfony\Component\Form\ChoiceList\LegacyChoiceListAdapter;
@@ -103,11 +102,11 @@ class CustomDefHierarchyNodeTransformer implements DataTransformerInterface
     /**
      * @param $value
      *
-     * @return \DeskPRO\Bundle\PortalBundle\Form\Hierarchy\HierarchyNode
+     * @return \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode
      */
     protected function findChoiceForValue($value)
     {
-        /** @var \DeskPRO\Bundle\PortalBundle\Form\Hierarchy\HierarchyNode $choice */
+        /** @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode $choice */
         foreach ($this->choice_list->getChoices() as $choice) {
             if ($value == $choice->getData()->getId()) {
                 return $choice;

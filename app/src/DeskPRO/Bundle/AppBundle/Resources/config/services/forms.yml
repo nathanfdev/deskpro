@@ -1,5 +1,9 @@
 services:
 
+  form_hierarchy_generator:
+    class: DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator
+    arguments: [@doctrine.orm.default_entity_manager, @data.departments, @data.feedback, @language_manager]
+
   form.html_textarea:
     class: DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType
     arguments: [@deskpro.core.input_cleaner]
@@ -146,7 +150,6 @@ services:
     arguments: [@blob.storage, @blob_repository, @attachment_accepter]
     tags:
       - { name: form.type, alias: ticket_message_attachment }
-
 
   form.ticket_message_attachment_collection:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageAttachmentCollectionType

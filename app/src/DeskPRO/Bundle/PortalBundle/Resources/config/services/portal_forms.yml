@@ -41,10 +41,6 @@ services:
     class: DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider
     arguments: [@brand_stack, @security.authorization_checker, @security.token_storage, @request_stack, @anti_abuse]
 
-  form_hierarchy_generator:
-    class: DeskPRO\Bundle\PortalBundle\Form\Hierarchy\HierarchyGenerator
-    arguments: [@doctrine.orm.default_entity_manager, @data.departments, @data.feedback, @language_manager]
-
   deskpro.validator.valid_recaptcha:
     class: DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints\ValidRecaptcha2Validator
     arguments: [@brand_stack, @request_stack]

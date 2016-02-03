@@ -51,7 +51,7 @@ class ProductType extends AbstractType
     {
         $resolver->setDefaults(array(
             'choice_list' => function (Options $options) {
-                /** @var \DeskPRO\Bundle\PortalBundle\Form\Hierarchy\HierarchyGenerator $hierarchy_generator */
+                /** @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator $hierarchy_generator */
                 $hierarchy_generator = $options['hierarchy_generator'];
 
                 return $hierarchy_generator->generateTicketProductsHierarchy()->getChoiceList();
