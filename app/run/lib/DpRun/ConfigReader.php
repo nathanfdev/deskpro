@@ -28,7 +28,7 @@
 
 namespace DpRun;
 
-class ConfigReader
+class ConfigReader implements ConfigReaderInterface
 {
     /**
      * In our well-known config files we name
@@ -82,11 +82,14 @@ class ConfigReader
     }
 
     /**
-     * @param string|callable $config_dir
+     * In this reader, you can specify a directory string and a loader will be generated
+     * for you.
+     *
+     * @param string|callable $loader
      */
-    public function addConfigDir($config_dir)
+    public function addConfigLoader($loader)
     {
-        $this->config_dirs[] = $config_dir;
+        $this->config_dirs[] = $loader;
     }
 
     /**

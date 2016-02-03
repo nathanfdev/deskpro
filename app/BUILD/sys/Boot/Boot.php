@@ -75,11 +75,64 @@ class Boot
         return $resources;
     }
 
+    public static function bootServerInfoChecks()
+    {
+        /** @var \DpRun\DpEnv $env */
+        $env = $GLOBALS['DP_ENV'];
+
+        // If installed, we require auth
+        if ($env->getConfig('database.host') || $env->getConfig('database.0.host')) {
+            $server_info_auth = $env->getDatManager()->readDatFile('server_info_auth', null);
+            if (!$server_info_auth || empty($_GET['auth'])) {
+                echo "Use the dp:web-server-info command to generate links to view server info.\n";
+                exit;
+            }
+            if ($_GET['auth'] !== $server_info_auth['auth']) {
+                echo "The auth code in the URL you are trying to view is invalid. Please run the dp:web-server-info command to generate new links.\n";
+                exit;
+            }
+        }
+
+        switch ($_GET['__serverinfo']) {
+            case 'phpinfo':
+                phpinfo();
+                break;
+
+            case 'check_requirements':
+                $checker = require __DIR__.'/../SoftwareRequirements/load_checker.php';
+
+                if (isset($_GET['encode-output'])) {
+                    header('Content-Type: text/plain');
+                    echo str_repeat('-', 25).'BEGIN'.str_repeat('-', 25).PHP_EOL;
+                    echo base64_encode(serialize($checker));
+                    echo PHP_EOL;
+                    echo str_repeat('-', 25).'END'.str_repeat('-', 25).PHP_EOL;
+                    exit;
+                }
+
+                $majorProblems = $checker->getFailedRequirements();
+                $minorProblems = $checker->getFailedRecommendations();
+                require __DIR__.'/../Resources/views/requirements.php';
+                break;
+
+            default:
+                echo 'Unknown serverinfo request.';
+        }
+
+        exit;
+    }
+
     /**
      * Boot a web request.
      */
     public static function bootWeb()
     {
+        if (isset($_GET['__serverinfo'])) {
+            self::bootServerInfoChecks();
+
+            return;
+        }
+
         $tasks = [
             'Loader',
             'Lib',

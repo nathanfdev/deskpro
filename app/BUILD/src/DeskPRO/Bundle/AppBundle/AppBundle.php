@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle;
 
+use DeskPRO\Bundle\AppBundle\Command\ServerInfo\WebServerInfoCommand;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\AppExtension;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\AppSecretPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\DbalConnectionPass;
@@ -73,6 +74,7 @@ class AppBundle extends Bundle
 
     public function registerCommands(Application $application)
     {
+        $application->add(new WebServerInfoCommand());
     }
 
     public function getNamespace()

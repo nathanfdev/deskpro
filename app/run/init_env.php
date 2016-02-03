@@ -26,6 +26,16 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+// This is a very low-level check to make sure at least the fundamentals
+// like namespaces will work (which even our requirements checker needs).
+if (version_compare(phpversion(), '5.3.0', '<')) {
+    echo "You are using a very old version of PHP that is incompatible with this software.\n\n";
+    echo "Please refer to the server requirements here: https://www.deskpro.com/requirements.\n";
+    echo "(ERR_CODE:MPHPVFT)";
+    exit(1);
+}
+
+#------------------------------
 # Normalize env
 #------------------------------
 

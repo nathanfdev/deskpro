@@ -28,7 +28,12 @@
 
 namespace DpRun;
 
+require_once __DIR__ . '/ConfigReaderInterface.php';
 require_once __DIR__ . '/ConfigReader.php';
+
+require_once __DIR__ . '/DatManagerInterface.php';
+require_once __DIR__ . '/DatManager.php';
+
 require_once __DIR__ . '/BuildFinder.php';
 
 /**
@@ -186,18 +191,29 @@ class DpEnv
     private $env_id;
 
     /**
-     * @var \DpRun\ConfigReader
+     * @var \DpRun\ConfigReaderInterface
      */
     private $config_reader;
+
+    /**
+     * @var \DpRun\DatManagerInterface
+     */
+    private $dat_manager;
 
     /**
      * DpEnv constructor.
      *
      * @param string $dp_root
      * @param array  $config  Config values that will take precedence over ones read from config files.
-     * @param \DpRun\ConfigReader|null $config_reader
+     * @param \DpRun\ConfigReaderInterface|null $config_reader
+     * @param \DpRun\DatManagerInterface|null $dat_manager
      */
-    public function __construct($dp_root, array $config = null, \DpRun\ConfigReader $config_reader = null)
+    public function __construct(
+        $dp_root,
+        array $config = null,
+        \DpRun\ConfigReaderInterface $config_reader = null,
+        \DpRun\DatManagerInterface $dat_manager = null
+    )
     {
         #------------------------------
         # Static paths
@@ -218,7 +234,7 @@ class DpEnv
         }
 
         if ($config) {
-            $this->config_reader->addConfigDir(function($id) use ($config) {
+            $this->config_reader->addConfigLoader(function($id) use ($config) {
                 return isset($config[$id]) ? $config[$id] : [];
             });
         }
@@ -257,13 +273,23 @@ class DpEnv
             $baseapp_dir
         );
         $this->active_build = $build_finder->getActiveBuildDir(
-            $this->user_cache_dir.'active_build'
+            $this->user_cache_dir.'/active_build.txt'
         );
 
         $this->env_id = $this->config_reader->getConfig('env.environment', 'prod') ?: 'prod';
 
         $this->app_dir                   = $baseapp_dir.DIRECTORY_SEPARATOR.$this->active_build;
         $this->app_base_kernel_cache_dir = $kernel_cache_dir.DIRECTORY_SEPARATOR.$this->active_build;
+
+        #------------------------------
+        # Prepare dat manager
+        #------------------------------
+
+        if (!$dat_manager) {
+            $dat_manager = new \DpRun\DatManager($this->user_cache_dir);
+        }
+
+        $this->dat_manager = $dat_manager;
     }
 
     /**
@@ -462,5 +488,13 @@ class DpEnv
     public function findConfigFile($f)
     {
         return $this->config_reader->findConfigFile($f);
+    }
+
+    /**
+     * @return \DpRun\DatManagerInterface
+     */
+    public function getDatManager()
+    {
+        return $this->dat_manager;
     }
 }

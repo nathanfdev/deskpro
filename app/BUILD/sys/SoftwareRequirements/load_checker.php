@@ -26,11 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace Application\InstallBundle\Install;
+require_once __DIR__.'/lib.php';
 
-class ServerCheckException extends \Exception
-{
-}
+return new \DpSys\SoftwareRequirements\DeskproRequirements();
