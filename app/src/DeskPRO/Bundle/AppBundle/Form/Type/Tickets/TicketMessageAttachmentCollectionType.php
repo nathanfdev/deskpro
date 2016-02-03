@@ -82,29 +82,29 @@ class TicketMessageAttachmentCollectionType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults([
-            'type'    => 'ticket_message_attachment',
-            'options' => function (Options $options) {
-                return [
-                    'ticket_message' => $options['ticket_message'],
-                    'person'         => $options['person'],
-                    'label'          => false,
-                ];
-            },
-            'allow_add'    => true,
-            'allow_delete' => true,
-            'label'        => false,
-        ]);
-
-        $resolver->setRequired([
-            'ticket_message',
-            'person',
-        ]);
-
-        $resolver->setAllowedTypes([
-            'ticket_message' => 'Application\\DeskPRO\\Entity\\TicketMessage',
-            'person'         => 'Application\\DeskPRO\\Entity\\Person',
-        ]);
+        $resolver
+            ->setDefaults([
+                'type'    => 'ticket_message_attachment',
+                'options' => function (Options $options) {
+                    return [
+                        'ticket_message' => $options['ticket_message'],
+                        'person'         => $options['person'],
+                        'label'          => false,
+                    ];
+                },
+                'allow_add'    => true,
+                'allow_delete' => true,
+                'label'        => false,
+            ])
+            ->setRequired([
+                'ticket_message',
+                'person',
+            ])
+            ->setAllowedTypes([
+                'ticket_message' => 'Application\\DeskPRO\\Entity\\TicketMessage',
+                'person'         => 'Application\\DeskPRO\\Entity\\Person',
+            ])
+        ;
     }
 
     /**
