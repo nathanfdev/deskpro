@@ -4,7 +4,8 @@
 import { AbstractClient } from './AbstractClient';
 import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
 
-export default class PollingClient extends AbstractClient {
+export class PollingClient extends AbstractClient {
+
   getDefaultOptions() {
     return {
       polling_interval: 25000,
