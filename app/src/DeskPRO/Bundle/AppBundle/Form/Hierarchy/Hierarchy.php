@@ -31,7 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Hierarchy;
 
-use DeskPRO\Bundle\PortalBundle\Form\Form\ChoiceList\HierarchyChoiceList;
+use DeskPRO\Bundle\AppBundle\Form\ChoiceList\HierarchyChoiceList;
 use DeskPRO\Component\Hierarchy\Hierarchy as BaseHierarchy;
 use DeskPRO\Component\Hierarchy\HierarchyFormatterInterface;
 use DeskPRO\Component\Hierarchy\HierarchyNode as BaseNode;
