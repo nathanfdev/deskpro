@@ -26,36 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DpSys\Kernel;
+namespace Application\InstallBundle\InstallSession\Model;
 
-use Symfony\Component\Config\Loader\LoaderInterface;
-
-class InstallKernel extends BaseKernel
+class User
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function registerBundles()
-    {
-        $bundles = array(
-            new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
-            new \Symfony\Bundle\MonologBundle\MonologBundle(),
-            new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
-            new \DeskPRO\Bundle\InstallBundle\InstallBundle(),
-        );
-
-        if ('dev' === $this->getEnvironment()) {
-            $bundles[] = new \Symfony\Bundle\DebugBundle\DebugBundle();
-        }
-
-        return $bundles;
-    }
-
-    public function registerContainerConfiguration(LoaderInterface $loader)
-    {
-        $loader->load(DP_ROOT.'/sys/config/install/config.yml');
-    }
+    public $name;
+    public $email;
 }

@@ -54,6 +54,11 @@ class CliKernelBootTask implements BootTaskInterface
                 $kernel = new Kernel\DevKernel($env);
                 break;
 
+            case 'install':
+            case 'update':
+                $kernel = new Kernel\InstallKernel($env);
+                break;
+
             default:
                 $kernel = new Kernel\DpKernel($env);
                 break;

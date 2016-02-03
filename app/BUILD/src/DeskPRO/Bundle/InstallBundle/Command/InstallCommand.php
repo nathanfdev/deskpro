@@ -26,16 +26,30 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-if (!defined('DP_ROOT')) {
-    exit('No access');
+/**
+ * DeskPRO.
+ */
+namespace DeskPRO\Bundle\InstallBundle\Command;
+
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
+class InstallCommand extends ContainerAwareCommand
+{
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
+    {
+        $this->setName('install:run');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        return 0;
+    }
 }
-
-use Symfony\Component\Routing\RouteCollection;
-
-$collection = new RouteCollection();
-
-$col = $loader->import(DP_ROOT.'/src/Application/InstallBundle/Resources/config/install-routing.php');
-$col->addPrefix('/install');
-$collection->addCollection($col);
-
-return $collection;

@@ -1,0 +1,31 @@
+parameters:
+  locale: en
+
+framework:
+  secret: deskpro_installer
+  default_locale: en
+
+services:
+  deskpro.app_env:
+    class: DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface
+    factory_class: DeskPRO\Bundle\AppBundle\AppEnv\AppEnvFactory
+    factory_method: create
+
+doctrine:
+  dbal:
+    types:
+      term_engine_term: DeskPRO\Bundle\AppBundle\Doctrine\Type\TermEngineTermType
+      dpblob:           Application\\DeskPRO\\DBAL\\Types\\DpBlobType
+      dpblob_file:      Application\\DeskPRO\\DBAL\\Types\\DpBlobFileType
+      dp_json_obj:      Application\\DeskPRO\\DBAL\\Types\\DpJsonObject
+      array:            Application\\DeskPRO\\DBAL\\Types\\DpArrayType
+      object:           Application\\DeskPRO\\DBAL\\Types\\DpObjectType
+
+monolog:
+  handlers:
+    main:
+      type: stream
+      path: "%kernel.logs_dir%/installer.log"
+      level: debug
+    console:
+      type: console

@@ -29,20 +29,16 @@
 /**
  * DeskPRO.
  */
-namespace Application\InstallBundle;
+namespace DeskPRO\Bundle\InstallBundle;
 
 use Symfony\Component\Console\Application;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class InstallBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
+class InstallBundle extends Bundle
 {
     public function registerCommands(Application $application)
     {
-    }
-
-    public function build(ContainerBuilder $container)
-    {
-        $container->registerExtension(new \Application\InstallBundle\DependencyInjection\InstallExtension());
+        $application->add(new Command\InstallCommand());
     }
 
     public function getNamespace()

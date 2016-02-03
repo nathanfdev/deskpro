@@ -362,6 +362,26 @@ class DeskproRequirements extends RequirementCollection
                 'Edit php.ini and remove the disabled_functions directive'
             );
         }
+
+        /* @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
+        if ($DP_ENV) {
+            $this->addRequirement(
+                is_writable($DP_ENV->getUserCacheDir()),
+                'var/cache directory must be writable',
+                'You need to make your cache directory writable: <strong>'.$DP_ENV->getUserCacheDir().'</strong>'
+            );
+            $this->addRequirement(
+                is_writable($DP_ENV->getUserLogsDir()),
+                'var/logs directory must be writable',
+                'You need to make your logs directory writable: <strong>'.$DP_ENV->getUserLogsDir().'</strong>'
+            );
+            $this->addRequirement(
+                is_writable($DP_ENV->getUserTmpDir()),
+                'var/tmp directory must be writable',
+                'You need to make your tmp directory writable: <strong>'.$DP_ENV->getUserTmpDir().'</strong>'
+            );
+        }
     }
 
     /**

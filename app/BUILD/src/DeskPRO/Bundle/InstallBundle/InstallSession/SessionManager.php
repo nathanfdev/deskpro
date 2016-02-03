@@ -26,36 +26,51 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DpSys\Kernel;
+namespace Application\InstallBundle\InstallSession;
 
-use Symfony\Component\Config\Loader\LoaderInterface;
+use Orb\Util\Strings;
 
-class InstallKernel extends BaseKernel
+class SessionManager
 {
     /**
-     * {@inheritdoc}
+     * @var string
      */
-    public function registerBundles()
+    private $tmp_path;
+
+    /**
+     * SessionManager constructor.
+     *
+     * @param string $tmp_path
+     */
+    public function __construct($tmp_path)
     {
-        $bundles = array(
-            new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
-            new \Symfony\Bundle\MonologBundle\MonologBundle(),
-            new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
-            new \DeskPRO\Bundle\InstallBundle\InstallBundle(),
-        );
-
-        if ('dev' === $this->getEnvironment()) {
-            $bundles[] = new \Symfony\Bundle\DebugBundle\DebugBundle();
-        }
-
-        return $bundles;
+        $this->tmp_path = $tmp_path;
     }
 
-    public function registerContainerConfiguration(LoaderInterface $loader)
+    /**
+     * Get the last install session.
+     *
+     * @return InstallSession
+     */
+    public function getLastInstallSession()
     {
-        $loader->load(DP_ROOT.'/sys/config/install/config.yml');
+        if (file_exists($this->tmp_path.'/install.sess')) {
+            return unserialize(file_get_contents($this->tmp_path.'/install.sess'));
+        }
+
+        $session = new InstallSession(date('YmdHis').'-'.Strings::random(30));
+
+        return $session;
+    }
+
+    /**
+     * Persist the install session.
+     *
+     * @param InstallSession $session
+     */
+    public function saveInstallSession(InstallSession $session)
+    {
+        $session->touch();
+        file_put_contents($this->tmp_path.'/install.sess', serialize($session));
     }
 }

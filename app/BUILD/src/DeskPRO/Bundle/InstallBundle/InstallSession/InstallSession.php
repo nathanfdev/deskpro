@@ -26,36 +26,68 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DpSys\Kernel;
+namespace Application\InstallBundle\InstallSession;
 
-use Symfony\Component\Config\Loader\LoaderInterface;
+use Application\InstallBundle\InstallSession\Model\User;
 
-class InstallKernel extends BaseKernel
+class InstallSession
 {
     /**
-     * {@inheritdoc}
+     * @var string
      */
-    public function registerBundles()
+    private $session_id;
+
+    /**
+     * @var \DateTime
+     */
+    private $start_date;
+
+    /**
+     * @var \DateTime
+     */
+    private $update_date;
+
+    /**
+     * @var User
+     */
+    private $user;
+
+    public function __construct($session_id)
     {
-        $bundles = array(
-            new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
-            new \Symfony\Bundle\MonologBundle\MonologBundle(),
-            new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
-            new \DeskPRO\Bundle\InstallBundle\InstallBundle(),
-        );
-
-        if ('dev' === $this->getEnvironment()) {
-            $bundles[] = new \Symfony\Bundle\DebugBundle\DebugBundle();
-        }
-
-        return $bundles;
+        $this->session_id  = $session_id;
+        $this->start_date  = new \DateTime();
+        $this->update_date = new \DateTime();
     }
 
-    public function registerContainerConfiguration(LoaderInterface $loader)
+    /**
+     * @return string
+     */
+    public function getSessionId()
     {
-        $loader->load(DP_ROOT.'/sys/config/install/config.yml');
+        return $this->session_id;
+    }
+
+    /**
+     * @return User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param User $user
+     */
+    public function setUser(User $user = null)
+    {
+        $this->user = $user;
+    }
+
+    /**
+     * Touches the last update date.
+     */
+    public function touch()
+    {
+        $this->update_date = new \DateTime();
     }
 }
