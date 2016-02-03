@@ -1,11 +1,11 @@
 services:
 
-    api_authenticator:
-        class: DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiAuthenticator
-        arguments:
-            - @doctrine.orm.default_entity_manager
+  api_authenticator:
+    class: DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiAuthenticator
+    arguments:
+      - @doctrine.orm.default_entity_manager
 
-    api_user_provider:
-        class: DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiUserProvider
-        arguments:
-            - @doctrine.orm.default_entity_manager
+  api_user_provider:
+    class: DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiUserProvider
+    arguments:
+      - @doctrine.orm.default_entity_manager
