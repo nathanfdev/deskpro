@@ -26,11 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\PortalBundle\Form\Form;
+namespace DeskPRO\Bundle\AppBundle\Form\Form;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\TicketLayout\LayoutField;
-use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
 use DeskPRO\Bundle\PortalBundle\Form\FormFields;
 use Doctrine\ORM\EntityManager;
 
