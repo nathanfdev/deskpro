@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
 use Application\DeskPRO\Attachments\AcceptAttachment;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;

@@ -35,3 +35,9 @@ services:
   dp.app.settings_manager:
     class: DeskPRO\Bundle\AppBundle\Settings\SettingsManager
     arguments: [@doctrine.orm.entity_manager, @security.token_storage]
+
+  attachment_accepter:
+    class: Application\DeskPRO\Attachments\AcceptAttachment
+    factory_class: Application\DeskPRO\DependencyInjection\SystemServices\AttachmentAccepterService
+    factory_method: create
+    arguments: [@service_container]

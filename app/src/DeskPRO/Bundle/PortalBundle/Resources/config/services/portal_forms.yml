@@ -202,19 +202,6 @@ services:
       - { name: form.type, alias: ticket_message }
 
 
-  form.ticket_message_attachment:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\TicketMessageAttachmentType
-    arguments: [@blob.storage, @blob_repository, @attachment_accepter]
-    tags:
-      - { name: form.type, alias: ticket_message_attachment }
-
-
-  form.ticket_message_attachment_collection:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\TicketMessageAttachmentCollectionType
-    tags:
-      - { name: form.type, alias: ticket_message_attachment_collection }
-
-
   form.custom_field_choice:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CustomFieldChoiceType
     arguments: [@form_hierarchy_generator]

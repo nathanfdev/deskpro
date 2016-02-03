@@ -140,3 +140,15 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\WidgetSetupType
     tags:
        - { name: form.type, alias: widget_setup }
+
+  form.ticket_message_attachment:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageAttachmentType
+    arguments: [@blob.storage, @blob_repository, @attachment_accepter]
+    tags:
+      - { name: form.type, alias: ticket_message_attachment }
+
+
+  form.ticket_message_attachment_collection:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageAttachmentCollectionType
+    tags:
+      - { name: form.type, alias: ticket_message_attachment_collection }
