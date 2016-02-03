@@ -29,10 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\BlobStorage;
 
 use Application\DeskPRO\BlobStorage\StorageAdapter\AbstractStorageAdapter;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Blob as BlobEntity;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\ORM\EntityManager;
@@ -549,12 +549,12 @@ class DeskproBlobStorage implements Loggable
     }
 
     /**
-     * @param       $source_data
-     * @param       $filename
-     * @param       $content_type
-     * @param array $props
+     * @param string $source_data
+     * @param string $filename
+     * @param string $content_type
+     * @param array  $props
      *
-     * @return null|object
+     * @return Blob
      */
     public function createBlobRecordFromString($source_data, $filename, $content_type, array $props = null)
     {
