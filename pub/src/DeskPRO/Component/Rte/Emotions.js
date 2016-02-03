@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 
-const smiles = {
+export const smiles = {
   ICON_ANGEL: 'O:)',
   ICON_EVIL_GREEN: ']:)',
   ICON_LAUGHING: ':))',
@@ -23,7 +23,7 @@ const smiles = {
   ICON_DISAPPOINTED: ':|'
 };
 
-const SPRITE_MAP = {
+export const spriteMap = {
   [smiles.ICON_SMILE]: 1,
   [smiles.ICON_BLUSHING]: 2,
   [smiles.ICON_WINKING]: 3,
@@ -46,16 +46,16 @@ const SPRITE_MAP = {
   [smiles.ICON_DISAPPOINTED]: 20
 };
 
-function createEmotionImage(code) {
-  const className = classNames('emoticon', 'sprite', `sprite-emoticon-${SPRITE_MAP[code]}`);
+export function createEmotionImage(code) {
+  const className = classNames('emoticon', 'sprite', `sprite-emoticon-${spriteMap[code]}`);
   return `<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="${className}">`;
 }
 
-function createCodeHtml(code) {
+export function createCodeHtml(code) {
   return `<span class="smile">${code}</span>`;
 }
 
-function replaceSmileCodes(content, inverse = false) {
+export function replaceSmileCodes(content, inverse = false) {
   let text = String(content);
   let num;
 
@@ -75,11 +75,3 @@ function replaceSmileCodes(content, inverse = false) {
 
   return text;
 }
-
-export default {
-  ...smiles,
-  SPRITE_MAP,
-
-  createEmotionImage,
-  replaceSmileCodes
-};

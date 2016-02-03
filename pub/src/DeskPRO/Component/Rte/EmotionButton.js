@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { EmotionsPopup } from './EmotionsPopup';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Simple } from 'DeskPRO/Component/Positioned/Simple';
-import * as Emotions from './Emotions';
+import { createEmotionImage } from './Emotions';
 
 export class EmotionButton extends React.Component {
 
@@ -55,7 +55,7 @@ export class EmotionButton extends React.Component {
     // Clears default empty content to avoid new lines
     medium.trigger('clearEmptyContent');
 
-    const html = ` ${Emotions.createEmotionImage(code)} `;
+    const html = ` ${createEmotionImage(code)} `;
 
     if (contentWindow.getSelection) {
       // IE9 and non-IE
