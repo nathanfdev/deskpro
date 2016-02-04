@@ -37,7 +37,10 @@ use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\LabelDef;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\TicketLayout\Layout;
+use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
 use DpTestSrc\TestBundle\UserDetailsRepo;
@@ -116,6 +119,27 @@ class ApiDb extends AbstractDbSet
         $ticket_def        = new CustomDefTicket();
         $ticket_def->title = 'def';
 
+        // Create ticket layouts
+        $layout = new Layout();
+        $layout->add(new LayoutField('department'));
+        $layout->add(new LayoutField('message'));
+
+        $ticket_layout1               = new TicketLayout();
+        $ticket_layout1->is_enabled   = true;
+        $ticket_layout1->agent_layout = $layout;
+        $ticket_layout1->user_layout  = $layout;
+
+        $layout = new Layout();
+        $layout->add(new LayoutField('user_name_and_email'));
+        $layout->add(new LayoutField('department'));
+        $layout->add(new LayoutField('message'));
+        $layout->add(new LayoutField('attach'));
+
+        $ticket_layout2               = new TicketLayout($dep2);
+        $ticket_layout2->is_enabled   = true;
+        $ticket_layout2->agent_layout = $layout;
+        $ticket_layout2->user_layout  = $layout;
+
         // Create a basic task
         $task = new Task($admin);
         $task->setTitle('A demo task');
@@ -143,6 +167,8 @@ class ApiDb extends AbstractDbSet
         $em->persist($team);
         $em->persist($dep1);
         $em->persist($dep2);
+        $em->persist($ticket_layout1);
+        $em->persist($ticket_layout2);
         $em->persist($task);
         $em->persist($taskAssignment);
         $em->persist($unassignedTask);

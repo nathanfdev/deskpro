@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
+use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutFieldFilter;
@@ -68,7 +69,7 @@ class TicketLayoutsController extends BaseController
      */
     public function cgetAction($context)
     {
-        $ticket_layouts = $this->getRepository('DeskPRO:TicketLayout')->findAll();
+        $ticket_layouts = $this->getTicketLayoutRepository()->findAll();
         if (empty($ticket_layout)) {
             $ticket_layouts[] = new TicketLayout();
         }
@@ -108,24 +109,28 @@ class TicketLayoutsController extends BaseController
             }
         }
 
-        $ticket_layout = $this->getRepository('DeskPRO:TicketLayout')->findOneBy(['department' => $department]);
+        $ticket_layout = $this->getTicketLayoutRepository()->findOneBy(['department' => $department]);
         if (!$ticket_layout) {
-            $ticket_layout = new TicketLayout($department);
+            $ticket_layout = $this->getTicketLayoutRepository()->findOneBy(['department' => null]);
+        }
+        if (!$ticket_layout) {
+            $ticket_layout = new TicketLayout();
         }
 
-        return View::create($this->getContextLayoutResponse($ticket_layout, $context));
+        return View::create($this->getContextLayoutResponse($ticket_layout, $context, $department));
     }
 
     /**
      * @param TicketLayout $ticket_layout
      * @param string       $context
+     * @param Department   $department
      *
      * @return Layout
      */
-    protected function getContextLayoutResponse(TicketLayout $ticket_layout, $context)
+    protected function getContextLayoutResponse(TicketLayout $ticket_layout, $context, Department $department = null)
     {
         $context_layout = $context === 'agent' ? $ticket_layout->agent_layout : $ticket_layout->user_layout;
-        $department     = $ticket_layout->department;
+        $department     = $department ?: $ticket_layout->department;
 
         $this->getLayoutFieldFilter()->filterInvalid($context_layout);
 
@@ -154,5 +159,13 @@ class TicketLayoutsController extends BaseController
         }
 
         return $this->filter;
+    }
+
+    /**
+     * @return \Doctrine\ORM\EntityRepository
+     */
+    protected function getTicketLayoutRepository()
+    {
+        return $this->getRepository('DeskPRO:TicketLayout');
     }
 }

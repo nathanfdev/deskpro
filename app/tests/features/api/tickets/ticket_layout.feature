@@ -21,7 +21,21 @@ Feature: /ticket_layouts endpoint
     And the response should be in JSON
     And the JSON node "[0].department" should be equal to 0
     And the JSON node "[0].context" should be equal to <context>
-    And the JSON node "[0].fields" should exist
+    And the JSON node "[0].fields" should have 2 elements
+    And the JSON node "[0].fields[0].field_type" should be equal to "department"
+    And the JSON node "[0].fields[0].options.on_newticket" should be equal to 1
+    And the JSON node "[0].fields[0].options.on_viewticket" should be equal to 1
+    And the JSON node "[0].fields[0].options.on_viewticket_mode" should be equal to "always"
+    And the JSON node "[0].fields[0].options.on_editticket" should be equal to 1
+    And the JSON node "[0].fields[1].field_type" should be equal to "message"
+
+    And the JSON node "[1].department" should be equal to 2
+    And the JSON node "[1].context" should be equal to <context>
+    And the JSON node "[1].fields" should have 4 elements
+    And the JSON node "[1].fields[0].field_type" should be equal to "user_name_and_email"
+    And the JSON node "[1].fields[1].field_type" should be equal to "department"
+    And the JSON node "[1].fields[2].field_type" should be equal to "message"
+    And the JSON node "[1].fields[3].field_type" should be equal to "attach"
 
     Examples:
       | context |
@@ -46,13 +60,13 @@ Feature: /ticket_layouts endpoint
     And the response should be in JSON
     And the JSON node "department" should be equal to <expected_department_id>
     And the JSON node "context" should be equal to <context>
-    And the JSON node "fields" should exist
+    And the JSON node "fields" should have <expected_fields_count> elements
 
     Examples:
-      | context | department_id | expected_department_id |
-      | agent   |  1            | 1                      |
-      | agent   |  2            | 2                      |
-      | agent   |  default      | 0                      |
-      | user    |  1            | 1                      |
-      | user    |  2            | 2                      |
-      | user    |  default      | 0                      |
+      | context | department_id | expected_department_id | expected_fields_count |
+      | agent   |  1            | 1                      | 2                     |
+      | agent   |  2            | 2                      | 4                     |
+      | agent   |  default      | 0                      | 2                     |
+      | user    |  1            | 1                      | 2                     |
+      | user    |  2            | 2                      | 4                     |
+      | user    |  default      | 0                      | 2                     |
