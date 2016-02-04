@@ -1126,6 +1126,12 @@ class TicketType extends AbstractType
         ($has_field_criteria && $field->getCriteria()->isSubmittedDataMatch($extracted_data));
     }
 
+    /**
+     * @param LayoutField       $field
+     * @param TicketFormContext $context
+     *
+     * @return bool
+     */
     protected function shouldFieldBeSkipped(LayoutField $field, TicketFormContext $context)
     {
         switch ($field->getFieldType()) {
@@ -1147,9 +1153,9 @@ class TicketType extends AbstractType
     /**
      * @param Layout            $new_layout
      * @param TicketFormContext $context
-     * @param $extracted_data
-     * @param $fields_to_remove
-     * @param $additional_fields
+     * @param array             $extracted_data
+     * @param array             $fields_to_remove
+     * @param array             $additional_fields
      *
      * @return array
      */
@@ -1189,6 +1195,11 @@ class TicketType extends AbstractType
         return [$fields_requiring_rerender, $fields_to_remove, $additional_fields];
     }
 
+    /**
+     * @param TicketFormContext $form_context
+     *
+     * @return bool
+     */
     protected function canProductBeDisplayed(TicketFormContext $form_context)
     {
         // we need the brand setting to be correct
@@ -1202,6 +1213,11 @@ class TicketType extends AbstractType
         return true;
     }
 
+    /**
+     * @param TicketFormContext $form_context
+     *
+     * @return bool
+     */
     protected function canPriorityBeDisplayed(TicketFormContext $form_context)
     {
         // we need the brand setting to be correct
@@ -1216,6 +1232,11 @@ class TicketType extends AbstractType
         return true;
     }
 
+    /**
+     * @param TicketFormContext $form_context
+     *
+     * @return bool
+     */
     protected function canCategoryBeDisplayed(TicketFormContext $form_context)
     {
         // we need the brand setting to be correct
@@ -1229,6 +1250,11 @@ class TicketType extends AbstractType
         return true;
     }
 
+    /**
+     * @param TicketFormContext $form_context
+     *
+     * @return bool
+     */
     protected function canWorkflowBeDisplayed(TicketFormContext $form_context)
     {
         // we need the brand setting to be correct
@@ -1242,6 +1268,11 @@ class TicketType extends AbstractType
         return true;
     }
 
+    /**
+     * @param TicketFormContext $form_context
+     *
+     * @return bool
+     */
     protected function canCaptchaBeDisplayed(TicketFormContext $form_context)
     {
         if (!$form_context->getForm()->getConfig()->getOption('use_captcha')) {
