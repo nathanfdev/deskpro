@@ -64,7 +64,7 @@ class MessagesController extends AbstractController
      *
      * @return View
      * @Annotations\Get("/agent_chats/{id}/messages", name="agent_chats_get_messages")
-     * @ApiModes("standard")
+     * @ApiModes("all")
      * @ApiTags("agent.agent_chat.messages.get_messages")
      */
     public function getMessagesAction($id, Request $request)
@@ -77,8 +77,6 @@ class MessagesController extends AbstractController
         if (!$user || !$messenger->isPersonInvolvedInChat($user, $chat)) {
             throw new AccessDeniedHttpException();
         }
-
-        $this->denyAccessUnlessGranted();
 
         $form = $this->submitForm('api_agent_chat_search_messages', $request->query);
         if (!$form->isValid()) {

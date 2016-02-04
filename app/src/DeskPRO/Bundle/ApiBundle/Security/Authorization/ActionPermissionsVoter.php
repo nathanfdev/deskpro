@@ -41,6 +41,12 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  */
 class ActionPermissionsVoter extends Voter
 {
+    protected $mode_map = [
+        'agent_session' => 'session',
+        'api_key'       => 'key',
+        'api_token'     => 'token',
+    ];
+
     /**
      * @var ActionPermissionsDriver
      */
@@ -77,8 +83,8 @@ class ActionPermissionsVoter extends Voter
      * @param $controller
      *
      * @throws \DeskPRO\Bundle\AppBundle\Annotation\Exception\AbstractClassException
-     * @return MethodMetadata
      *
+     * @return MethodMetadata
      */
     protected function fetchMetadata($method, $controller)
     {
@@ -100,15 +106,30 @@ class ActionPermissionsVoter extends Voter
      * @param TokenInterface $token
      *
      * @throws \DeskPRO\Bundle\AppBundle\Annotation\Exception\AbstractClassException
-     * @return bool
      *
+     * @return bool
      */
     protected function voteOnAttribute($method, $controller, TokenInterface $token)
     {
         $methodMetadata = $this->fetchMetadata($method, $controller);
-        $mode           = $token->getName();
+        $mode           = $this->getMode($token->getName());
 
+        return $this->checkMode($mode, $methodMetadata) && ($mode !== 'key' || $this->checkTags($methodMetadata));
+    }
+
+    protected function checkMode($mode, MethodMetadata $methodMetadata)
+    {
+        return in_array($mode, $methodMetadata->getModes());
+    }
+
+    protected function checkTags(MethodMetadata $methodMetadata)
+    {
         return true;
+    }
+
+    protected function getMode($token_name)
+    {
+        return $this->mode_map[$token_name];
     }
 
     /**
