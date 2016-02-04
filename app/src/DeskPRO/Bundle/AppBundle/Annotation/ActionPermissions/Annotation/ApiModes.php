@@ -55,6 +55,10 @@ class ApiModes
      */
     public function __construct(array $modes)
     {
+        if (isset($modes['value']) && is_array($modes['value'])) {
+            $modes = $modes['value'];
+        }
+
         foreach ($modes as $mode) {
             if (!isset($this->mode_alias[$mode])) {
                 throw new \InvalidArgumentException();

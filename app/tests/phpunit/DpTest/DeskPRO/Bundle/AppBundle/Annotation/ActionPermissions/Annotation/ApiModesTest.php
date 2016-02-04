@@ -59,7 +59,7 @@ class ApiModesTest extends DeskProTestCase
             [['key', 'standard'], ['session', 'token', 'key']],
             [['token', 'session'], ['token', 'session']],
             [['key', 'session'], ['key', 'session']],
-            [['key', 'token'], ['key', 'token']],
+            [['value' => ['key', 'token']], ['key', 'token']],
         ];
     }
 

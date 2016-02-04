@@ -26,36 +26,42 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation;
+namespace DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Mock;
+
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 
 /**
- * Class ApiTags.
+ * Class AbstractActionPermissionsClass.
  *
- * @Annotation
+ * @ApiModes("standard")
+ * @ApiTags("class.mock")
  */
-class ApiTags
+class ActionPermissionsClass
 {
-    /**
-     * @var array
-     */
-    protected $tags = [];
-
-    /**
-     * @param $tags
-     */
-    public function __construct($tags)
+    public function inherit()
     {
-        if (isset($tags['value']) && is_array($tags['value'])) {
-            $tags = $tags['value'];
-        }
-        $this->tags = array_values($tags);
     }
 
     /**
-     * @return mixed
+     * @ApiModes("all")
      */
-    public function getTags()
+    public function overrideModes()
     {
-        return $this->tags;
+    }
+
+    /**
+     * @ApiTags("class.overridden")
+     */
+    public function overrideTags()
+    {
+    }
+
+    /**
+     * @ApiModes({"token", "key"})
+     * @ApiTags({"class.overridden", "class.overridden2"})
+     */
+    public function overrideBoth()
+    {
     }
 }

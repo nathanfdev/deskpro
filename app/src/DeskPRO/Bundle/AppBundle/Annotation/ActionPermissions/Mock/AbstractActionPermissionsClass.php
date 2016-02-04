@@ -26,36 +26,17 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation;
+namespace DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Mock;
+
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 
 /**
- * Class ApiTags.
+ * Class AbstractActionPermissionsClass.
  *
- * @Annotation
+ * @ApiModes("standard")
+ * @ApiTags("abstract.mock")
  */
-class ApiTags
+abstract class AbstractActionPermissionsClass
 {
-    /**
-     * @var array
-     */
-    protected $tags = [];
-
-    /**
-     * @param $tags
-     */
-    public function __construct($tags)
-    {
-        if (isset($tags['value']) && is_array($tags['value'])) {
-            $tags = $tags['value'];
-        }
-        $this->tags = array_values($tags);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTags()
-    {
-        return $this->tags;
-    }
 }
