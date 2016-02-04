@@ -36,42 +36,42 @@ class PermissionMatrix
     /**
      * @var \Application\DeskPRO\Entity\Person[]
      */
-    protected $agents;
+    protected $agents = [];
 
     /**
      * @var \Application\DeskPRO\Entity\Usergroup[]
      */
-    protected $agent_groups;
+    protected $agent_groups = [];
 
     /**
      * @var \Application\DeskPRO\Entity\Usergroup[]
      */
-    protected $user_groups;
+    protected $user_groups = [];
 
     /**
      * @var array
      */
-    private $agent_to_groups;
+    private $agent_to_groups = [];
 
     /**
      * @var array
      */
-    private $agentgroup_to_agents;
+    private $agentgroup_to_agents = [];
 
     /**
      * @var array
      */
-    private $agent_perms;
+    private $agent_perms = [];
 
     /**
      * @var array
      */
-    private $agentgroup_perms;
+    private $agentgroup_perms = [];
 
     /**
      * @var array
      */
-    private $usergroup_perms;
+    private $usergroup_perms = [];
 
     /**
      * @param \Application\DeskPRO\Entity\Person[]    $agents
