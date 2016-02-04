@@ -46,7 +46,7 @@ interface AppEnvInterface
      *
      * @return string
      */
-    public function getWwwDir();
+    public function getWwwRoot();
 
     /**
      * Gets the 'name' of the currently active build. The 'name' in this case

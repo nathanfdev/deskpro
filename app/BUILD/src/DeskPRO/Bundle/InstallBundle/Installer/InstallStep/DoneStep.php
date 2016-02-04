@@ -32,14 +32,8 @@ class DoneStep extends AbstractStep
 {
     public function run()
     {
-        $f = $this->getFormatterHelper();
-        $this->write($f->formatBlock(
-            str_repeat(' ', 33)
-            .'Done'.
-            str_repeat(' ', 33), 'bg=cyan;fg=black;options=bold', true));
-
+        $this->writeBigTitle('Done');
         $this->writeln('');
-
         $this->writeln('DeskPRO has been installed successfully.');
         $this->writeln('');
     }

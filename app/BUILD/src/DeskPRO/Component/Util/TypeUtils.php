@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Component\Util;
 
 use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
@@ -69,6 +68,8 @@ class TypeUtils
         }
 
         $parts = explode('\\', get_class($var));
+
+        return $parts;
     }
 
     /**

@@ -35,6 +35,8 @@ use DeskPRO\Bundle\InstallBundle\Installer\InstallerContext;
 use DeskPRO\Bundle\InstallBundle\Installer\InstallStep;
 use DeskPRO\Component\Exception\Filesystem\FileWriteException;
 use DeskPRO\Component\Util\EnvUtils;
+use DeskPRO\Component\Util\TypeUtils;
+use Orb\Util\Strings;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -48,6 +50,8 @@ class InstallCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this->setName('install:run')
+            ->addOption('skip', 'x', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Skip one or more steps (by name)')
+            ->addOption('list-steps', null, InputOption::VALUE_NONE, 'List all steps instead of running them')
             ->addOption('restart', null, InputOption::VALUE_NONE, 'Restart an installation (instead of resume)');
     }
 
@@ -59,6 +63,15 @@ class InstallCommand extends ContainerAwareCommand
         $app_env = $this->getContainer()->get('deskpro.app_env');
         $sm      = $this->getContainer()->get('install.session_manager');
         $session = $sm->getLastInstallSession($input->getOption('restart'));
+
+        $list_mode = $input->getOption('list-steps');
+        $skip_list = array_map(function ($step_id) {
+            $step_id = preg_replace('/Step$/', '', $step_id);
+            $step_id = Strings::camelCaseToUnderscore($step_id);
+            $step_id = strtolower($step_id);
+
+            return $step_id;
+        }, $input->getOption('skip'));
 
         #------------------------------
         # Make sure we can save the session ifo
@@ -98,19 +111,41 @@ class InstallCommand extends ContainerAwareCommand
 
         $steps = [
             new InstallStep\WelcomeStep($context),
+            new InstallStep\FileIntegrityStep($context),
             new InstallStep\OwnRequirementsStep($context),
             new InstallStep\DoneStep($context),
         ];
 
-        while ($steps) {
-            /** @var InstallStep\AbstractStep $step */
-            $step = array_shift($steps);
+        /** @var InstallStep\AbstractStep $step */
+        foreach ($steps as $num => $step) {
+            $step_num = $num + 1;
+
+            $step_id = TypeUtils::getBaseTypeName($step);
+            $step_id = preg_replace('/Step$/', '', $step_id);
+            $step_id = Strings::camelCaseToUnderscore($step_id);
+            $step_id = strtolower($step_id);
+
+            if ($skip_list && in_array($step_id, $skip_list)) {
+                if ($list_mode) {
+                    $output->writeln(sprintf('Step %02d: %-28s <comment>(skipped)</comment>', $step_num, $step_id));
+                }
+                continue;
+            }
 
             if ($step->isComplete()) {
+                if ($list_mode) {
+                    $output->writeln(sprintf('Step %02d: %-28s <info>(done)</info>', $step_num, $step_id));
+                }
+                continue;
+            }
+
+            if ($list_mode) {
+                $output->writeln(sprintf('Step %02d: %s', $step_num, $step_id));
                 continue;
             }
 
             $step->run();
+            $output->writeln('');
             $sm->saveInstallSession($session);
 
             if ($step->isFailed()) {

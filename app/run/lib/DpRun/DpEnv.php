@@ -135,10 +135,6 @@ class DpEnv
      */
     private $dp_root;
 
-    /**
-     * @var string
-     */
-    private $www_dir;
 
     /**
      * @var string
@@ -189,6 +185,16 @@ class DpEnv
      * @var string prod, dev or test
      */
     private $env_id;
+
+    /**
+     * @var string
+     */
+    private $www_root_dir;
+
+    /**
+     * @var string
+     */
+    private $app_www_dir;
 
     /**
      * @var \DpRun\ConfigReaderInterface
@@ -255,7 +261,6 @@ class DpEnv
         }
 
         $kernel_cache_dir          = $this->resolveCustomPath('kernel_cache', $sys_var_dir.DIRECTORY_SEPARATOR.'kernel_cache');
-        $this->www_dir             = $this->resolveCustomPath('www', $this->dp_root.DIRECTORY_SEPARATOR.'www');
 
         $this->user_files_dir      = $this->resolveCustomPath('attachments', $user_dir.DIRECTORY_SEPARATOR.'attachments');
         $this->user_backups_dir    = $this->resolveCustomPath('backups', $user_dir.DIRECTORY_SEPARATOR.'backups');
@@ -322,15 +327,42 @@ class DpEnv
     }
 
     /**
-     * Gets the www directory.
+     * Get the path to the root www dir.
      *
      * Example: /path/to/deskpro/www
      *
      * @return string
      */
-    public function getWwwDir()
+    public function getWwwRoot()
     {
-        return $this->www_dir;
+        if ($this->www_root_dir !== null) {
+            return $this->www_root_dir;
+        }
+
+        $dir = $this->getDatManager()->readTxtFile('www_dir', null);
+        if (!$dir) {
+            $dir = $this->getDpRoot() . DIRECTORY_SEPARATOR . 'www';
+        }
+
+        $dir = realpath($dir) ?: $dir;
+
+        return $this->www_root_dir = $dir;
+    }
+
+    /**
+     * Get the path to the current asset dir for the active app.
+     *
+     * Exampel: /path/to/deskpro/www/assets/BUILD
+     *
+     * @return string
+     */
+    public function getAppWwwAssetDir()
+    {
+        if ($this->app_www_dir !== null) {
+            return $this->app_www_dir;
+        }
+
+        return $this->app_www_dir = $this->getWwwRoot() . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . $this->getAppName();
     }
 
     /**

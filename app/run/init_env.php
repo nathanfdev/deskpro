@@ -107,7 +107,7 @@ define('DP_ROOT', $DP_ENV->getAppDir());
  *
  * @deprecated
  */
-define('DP_WEB_ROOT', $DP_ENV->getWwwDir());
+define('DP_WEB_ROOT', $DP_ENV->getWwwRoot());
 
 #------------------------------
 # Erorr handling

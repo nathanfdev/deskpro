@@ -67,9 +67,9 @@ class AppEnv implements AppEnvInterface
     /**
      * {@inheritdoc}
      */
-    public function getWwwDir()
+    public function getWwwRoot()
     {
-        return $this->dpEnv->getWwwDir();
+        return $this->dpEnv->getWwwRoot();
     }
 
     /**

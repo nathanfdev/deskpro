@@ -228,4 +228,25 @@ class ListUtils
 
         return $all;
     }
+
+    /**
+     * Given an array containing other arrays, append them to eachother to create a big final array.
+     *
+     * @param \Traversable|array $array
+     *
+     * @return array
+     */
+    public static function appendListOfLists($array)
+    {
+        $all = [];
+
+        foreach ($array as $sub_array) {
+            if (!is_array($sub_array) && !$sub_array instanceof \Traversable) {
+                throw new \InvalidArgumentException('Items of list must be other lists');
+            }
+            $all = array_merge($all, $sub_array);
+        }
+
+        return $all;
+    }
 }

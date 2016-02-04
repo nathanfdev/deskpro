@@ -153,7 +153,7 @@ abstract class AbstractStep
     /**
      * @param int $max
      *
-     * @return ProgressBar
+     * @return Helper\ProgressBar
      */
     public function createProgressBar($max = 0)
     {
@@ -177,14 +177,14 @@ abstract class AbstractStep
      */
     public function writeBigTitle($title)
     {
-        $line_len  = 72;
+        $line_len  = 70;
         $title_len = strlen($title);
         $half      = floor(($line_len - $title_len) / 2);
 
         $left  = $half;
         $right = $half;
 
-        if ($half * 2 !== $line_len) {
+        if ($left + $right + $title_len < $line_len) {
             ++$right;
         }
 

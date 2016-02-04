@@ -26,29 +26,47 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\InstallBundle;
+namespace DeskPRO\Bundle\InstallBundle\FileIntegrity\Generator;
 
-use Symfony\Component\Console\Application;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use DeskPRO\Bundle\InstallBundle\FileIntegrity\FileHasher;
+use DeskPRO\Bundle\InstallBundle\FileIntegrity\ProjectFileSet;
 
-class InstallBundle extends Bundle
+class IntegrityMapGenerator
 {
-    public function registerCommands(Application $application)
+    /**
+     * @var ProjectFileSet
+     */
+    private $proj;
+
+    /**
+     * @var FileHasher
+     */
+    private $hasher;
+
+    /**
+     * FileIntegritySetGenerator constructor.
+     *
+     * @param ProjectFileSet $projectFileSet
+     * @param FileHasher     $hasher
+     */
+    public function __construct(ProjectFileSet $projectFileSet, FileHasher $hasher)
     {
-        $application->add(new Command\InstallCommand());
-        $application->add(new Command\Gen\GenIntegrityMapCommand());
+        $this->proj   = $projectFileSet;
+        $this->hasher = $hasher;
     }
 
-    public function getNamespace()
+    /**
+     * @return array
+     */
+    public function generateMap()
     {
-        return __NAMESPACE__;
-    }
+        $map = [];
 
-    public function getPath()
-    {
-        return __DIR__;
+        foreach ($this->proj->buildFileSet() as $path) {
+            $realPath   = $this->proj->getRealPath($path);
+            $map[$path] = $this->hasher->hash($realPath);
+        }
+
+        return $map;
     }
 }

@@ -26,29 +26,21 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\InstallBundle;
+namespace DeskPRO\Bundle\InstallBundle\FileIntegrity;
 
-use Symfony\Component\Console\Application;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-
-class InstallBundle extends Bundle
+class FileHasher
 {
-    public function registerCommands(Application $application)
+    /**
+     * @param string $path
+     *
+     * @return string
+     */
+    public function hash($path)
     {
-        $application->add(new Command\InstallCommand());
-        $application->add(new Command\Gen\GenIntegrityMapCommand());
-    }
+        $path = file_get_contents($path);
+        $path = str_replace(["\r", "\r\n"], "\n", $path);
+        $path = preg_replace('/\s+/', ' ', $path);
 
-    public function getNamespace()
-    {
-        return __NAMESPACE__;
-    }
-
-    public function getPath()
-    {
-        return __DIR__;
+        return sha1($path);
     }
 }
