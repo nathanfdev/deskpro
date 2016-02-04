@@ -716,14 +716,14 @@ $collection->create('api_people_person_phone_numbers_post', array(
     'methods'      => array('POST'),
 ));
 
-$collection->create('api_people_person_phone_numbers', array(
+$collection->create('api_people_person_phone_numbers_get', array(
     'path'         => '/people/{person_id}/phone_numbers/{number_id}',
     'controller'   => 'ApiBundle:Person:getPersonPhoneNumber',
     'requirements' => array('person_id' => '\\d+', 'number_id' => '\\d+'),
     'methods'      => array('GET'),
 ));
 
-$collection->create('api_people_person_phone_numbers_post', array(
+$collection->create('api_people_person_phone_numbers_delete', array(
     'path'         => '/people/{person_id}/phone_numbers/{number_id}',
     'controller'   => 'ApiBundle:Person:postPersonPhoneNumber',
     'requirements' => array('person_id' => '\\d+', 'number_id' => '\\d+'),
