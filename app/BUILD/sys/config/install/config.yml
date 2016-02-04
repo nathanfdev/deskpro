@@ -10,6 +10,10 @@ services:
     class: DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface
     factory_class: DeskPRO\Bundle\AppBundle\AppEnv\AppEnvFactory
     factory_method: create
+  install.session_manager:
+    class: DeskPRO\Bundle\InstallBundle\InstallSession\SessionManager
+    arguments:
+      - "@=service('deskpro.app_env').getUserTmpDir()"
 
 doctrine:
   dbal:

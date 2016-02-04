@@ -26,68 +26,33 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\InstallBundle\InstallSession;
+namespace DeskPRO\Component\Exception\Filesystem;
 
-use DeskPRO\Bundle\InstallBundle\InstallSession\Model\User;
+use Exception;
 
-class InstallSession
+class FilesystemException extends \RuntimeException
 {
     /**
-     * @var string
+     * @var string|null
      */
-    private $session_id;
+    private $operationErrorMessage;
 
     /**
-     * @var \DateTime
+     * {@inheritdoc}
+     *
+     * @param string|null $operationErrorMessage The specific filesystem error message (e.g. 'no permission to write to xyz')
      */
-    private $start_date;
-
-    /**
-     * @var \DateTime
-     */
-    private $update_date;
-
-    /**
-     * @var User
-     */
-    private $user;
-
-    public function __construct($session_id)
+    public function __construct($message, $code = 0, Exception $previous = null, $operationErrorMessage = null)
     {
-        $this->session_id  = $session_id;
-        $this->start_date  = new \DateTime();
-        $this->update_date = new \DateTime();
+        parent::__construct($message, $code, $previous);
+        $this->operationErrorMessage = $operationErrorMessage;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getSessionId()
+    public function getOperationErrorMessage()
     {
-        return $this->session_id;
-    }
-
-    /**
-     * @return User
-     */
-    public function getUser()
-    {
-        return $this->user;
-    }
-
-    /**
-     * @param User $user
-     */
-    public function setUser(User $user = null)
-    {
-        $this->user = $user;
-    }
-
-    /**
-     * Touches the last update date.
-     */
-    public function touch()
-    {
-        $this->update_date = new \DateTime();
+        return $this->operationErrorMessage;
     }
 }

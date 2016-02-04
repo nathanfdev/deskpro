@@ -26,78 +26,89 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\InstallBundle\Installer\InstallStep;
+namespace DeskPRO\Bundle\InstallBundle\Installer\InstallStep;
 
-use Application\InstallBundle\InstallSession\InstallSession;
+use DeskPRO\Bundle\InstallBundle\Installer\InstallerContext;
 use Symfony\Component\Console\Helper;
-use Symfony\Component\Console\Helper\HelperSet;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class AbstractStep
 {
     /**
-     * @var OutputInterface
+     * @var InstallerContext
      */
-    private $output;
-
-    /**
-     * @var InputInterface
-     */
-    private $input;
-
-    /**
-     * @var HelperSet
-     */
-    private $helperSet;
-
-    /**
-     * @var InstallSession
-     */
-    private $session;
+    private $context;
 
     /**
      * AbstractStep constructor.
      *
-     * @param InstallSession  $session
-     * @param OutputInterface $output
-     * @param InputInterface  $input
-     * @param HelperSet       $helperSet
+     * @param InstallerContext $context
      */
-    public function __construct(InstallSession $session, OutputInterface $output, InputInterface $input, HelperSet $helperSet)
+    public function __construct(InstallerContext $context)
     {
-        $this->session   = $session;
-        $this->output    = $output;
-        $this->input     = $input;
-        $this->helperSet = $helperSet;
+        $this->context = $context;
     }
 
     /**
+     * Run the step.
      */
     abstract public function run();
 
     /**
-     * @return InstallSession
+     * Should check the current session to determine if the step has been complete already.
+     *
+     * @return bool
+     */
+    abstract public function isComplete();
+
+    /**
+     * @return InstallerContext
+     */
+    public function getContext()
+    {
+        return $this->context;
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\InstallBundle\InstallSession\InstallSession
      */
     public function getSession()
     {
-        return $this->session;
+        return $this->context->getSession();
     }
 
     /**
-     * @return OutputInterface
+     * @return \Symfony\Component\Console\Output\OutputInterface
      */
     public function getOutput()
     {
-        return $this->output;
+        return $this->context->getOutput();
     }
 
     /**
-     * @return InputInterface
+     * @param string|string[] $messages
+     * @param int             $options
+     */
+    public function writeln($messages, $options = 0)
+    {
+        $this->context->getOutput()->writeln($messages, $options = 0);
+    }
+
+    /**
+     * @param string|string[] $messages
+     * @param bool            $newline
+     * @param int             $options
+     */
+    public function write($messages, $newline = false, $options = 0)
+    {
+        $this->context->getOutput()->write($messages, $newline = false, $options = 0);
+    }
+
+    /**
+     * @return \Symfony\Component\Console\Input\InputInterface
      */
     public function getInput()
     {
-        return $this->input;
+        return $this->context->getInput();
     }
 
     /**
@@ -105,7 +116,7 @@ abstract class AbstractStep
      */
     public function getFormatterHelper()
     {
-        return $this->helperSet->get('formatter');
+        return $this->context->getHelperSet()->get('formatter');
     }
 
     /**
@@ -113,7 +124,7 @@ abstract class AbstractStep
      */
     public function getQuestionHelper()
     {
-        return $this->helperSet->get('question');
+        return $this->context->getHelperSet()->get('question');
     }
 
     /**

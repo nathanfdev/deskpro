@@ -26,68 +26,21 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\InstallBundle\InstallSession;
+namespace DeskPRO\Component\Util;
 
-use DeskPRO\Bundle\InstallBundle\InstallSession\Model\User;
-
-class InstallSession
+class EnvUtils
 {
-    /**
-     * @var string
-     */
-    private $session_id;
-
-    /**
-     * @var \DateTime
-     */
-    private $start_date;
-
-    /**
-     * @var \DateTime
-     */
-    private $update_date;
-
-    /**
-     * @var User
-     */
-    private $user;
-
-    public function __construct($session_id)
+    private function __construct()
     {
-        $this->session_id  = $session_id;
-        $this->start_date  = new \DateTime();
-        $this->update_date = new \DateTime();
     }
 
     /**
-     * @return string
+     * True if the current OS is Windows.
+     *
+     * @return bool
      */
-    public function getSessionId()
+    public static function isWindows()
     {
-        return $this->session_id;
-    }
-
-    /**
-     * @return User
-     */
-    public function getUser()
-    {
-        return $this->user;
-    }
-
-    /**
-     * @param User $user
-     */
-    public function setUser(User $user = null)
-    {
-        $this->user = $user;
-    }
-
-    /**
-     * Touches the last update date.
-     */
-    public function touch()
-    {
-        $this->update_date = new \DateTime();
+        return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
     }
 }

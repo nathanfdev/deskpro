@@ -26,68 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\InstallBundle\InstallSession;
+namespace DeskPRO\Bundle\InstallBundle\Installer\InstallStep;
 
-use DeskPRO\Bundle\InstallBundle\InstallSession\Model\User;
-
-class InstallSession
+class DoneStep extends AbstractStep
 {
-    /**
-     * @var string
-     */
-    private $session_id;
-
-    /**
-     * @var \DateTime
-     */
-    private $start_date;
-
-    /**
-     * @var \DateTime
-     */
-    private $update_date;
-
-    /**
-     * @var User
-     */
-    private $user;
-
-    public function __construct($session_id)
+    public function run()
     {
-        $this->session_id  = $session_id;
-        $this->start_date  = new \DateTime();
-        $this->update_date = new \DateTime();
+        $f = $this->getFormatterHelper();
+        $this->write($f->formatBlock(
+            str_repeat(' ', 33)
+            .'Done'.
+            str_repeat(' ', 33), 'bg=cyan;fg=black;options=bold', true));
+
+        $this->writeln('');
+
+        $this->writeln('DeskPRO has been installed successfully.');
+        $this->writeln('');
     }
 
-    /**
-     * @return string
-     */
-    public function getSessionId()
+    public function isComplete()
     {
-        return $this->session_id;
-    }
-
-    /**
-     * @return User
-     */
-    public function getUser()
-    {
-        return $this->user;
-    }
-
-    /**
-     * @param User $user
-     */
-    public function setUser(User $user = null)
-    {
-        $this->user = $user;
-    }
-
-    /**
-     * Touches the last update date.
-     */
-    public function touch()
-    {
-        $this->update_date = new \DateTime();
+        return false;
     }
 }

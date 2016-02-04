@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\InstallBundle\InstallSession\Model;
+namespace DeskPRO\Bundle\InstallBundle\InstallSession\Model;
 
 class User
 {

@@ -26,9 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\InstallBundle\Installer\InstallStep;
+namespace DeskPRO\Bundle\InstallBundle\Installer\InstallStep;
 
-use Application\InstallBundle\InstallSession\Model\User;
+use DeskPRO\Bundle\InstallBundle\InstallSession\Model\User;
 use Orb\Validator\StringEmail;
 use Symfony\Component\Console\Question\Question;
 
@@ -59,6 +59,11 @@ class WelcomeStep extends AbstractStep
         $user->email = $this->getUserEmail();
 
         $this->getSession()->setUser($user);
+    }
+
+    public function isComplete()
+    {
+        return $this->getSession()->getUser() !== null;
     }
 
     /**

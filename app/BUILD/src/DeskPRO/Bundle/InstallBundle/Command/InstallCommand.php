@@ -31,8 +31,13 @@
  */
 namespace DeskPRO\Bundle\InstallBundle\Command;
 
+use DeskPRO\Bundle\InstallBundle\Installer\InstallerContext;
+use DeskPRO\Bundle\InstallBundle\Installer\InstallStep;
+use DeskPRO\Component\Exception\Filesystem\FileWriteException;
+use DeskPRO\Component\Util\EnvUtils;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class InstallCommand extends ContainerAwareCommand
@@ -42,7 +47,8 @@ class InstallCommand extends ContainerAwareCommand
      */
     protected function configure()
     {
-        $this->setName('install:run');
+        $this->setName('install:run')
+            ->addOption('restart', null, InputOption::VALUE_NONE, 'Restart an installation (instead of resume)');
     }
 
     /**
@@ -50,6 +56,63 @@ class InstallCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $app_env = $this->getContainer()->get('deskpro.app_env');
+        $sm      = $this->getContainer()->get('install.session_manager');
+        $session = $sm->getLastInstallSession($input->getOption('restart'));
+
+        #------------------------------
+        # Make sure we can save the session ifo
+        #------------------------------
+
+        try {
+            $sm->saveInstallSession($session);
+        } catch (FileWriteException $e) {
+            $var_dir = realpath($app_env->getUserTmpDir().'/../');
+
+            $output->writeln('<error>Please ensure that the DeskPRO var/ directory exists and is writable, and all sub-directories are writable.</error>');
+            $output->writeln(sprintf('<info>Path to var: %s</info>', $var_dir));
+            $output->writeln('');
+
+            if (!EnvUtils::isWindows()) {
+                $output->writeln('On Linux, you can recursively chmod the directory with this command:');
+                $output->writeln(sprintf('<comment>chmod -R 0777 %s</comment>', $var_dir));
+                $output->writeln('');
+            }
+
+            $output->writeln('Fix file permissions and then run this tool again.');
+            $output->writeln('');
+
+            return 1;
+        }
+
+        #------------------------------
+        # Create the steps
+        #------------------------------
+
+        $context = new InstallerContext(
+            $session,
+            $output,
+            $input,
+            $this->getHelperSet()
+        );
+
+        $steps = [
+            new InstallStep\WelcomeStep($context),
+            new InstallStep\DoneStep($context),
+        ];
+
+        while ($steps) {
+            /** @var InstallStep\AbstractStep $step */
+            $step = array_shift($steps);
+
+            if ($step->isComplete()) {
+                continue;
+            }
+
+            $step->run();
+            $sm->saveInstallSession($session);
+        }
+
         return 0;
     }
 }

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Component\Util;
 
 /**
@@ -66,6 +65,8 @@ class RandUtils
      *
      * @param int    $len
      * @param string $chars
+     *
+     * @return string
      */
     public static function randomString($len = 8, $chars = null)
     {
@@ -130,7 +131,6 @@ class RandUtils
      * You can specify a number before the letter for length: %4n -- 4 numbers
      *
      * @param string $format
-     * @param array  $custom_formatters
      *
      * @return string
      */
