@@ -14,8 +14,8 @@ services:
     class: DeskPRO\Bundle\ApiBundle\EventListener\ApiEndpointListener
     arguments:
       - @security.authorization_checker
-    tags:
-      - {name: kernel.event_listener, event: kernel.controller, method: onKernelController}
+#    tags:
+#      - {name: kernel.event_listener, event: kernel.controller, method: onKernelController}
 
   api_authorization.action_permissions_voter:
     class: DeskPRO\Bundle\ApiBundle\Security\Authorization\ActionPermissionsVoter
