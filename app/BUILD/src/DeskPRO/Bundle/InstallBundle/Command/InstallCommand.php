@@ -98,6 +98,7 @@ class InstallCommand extends ContainerAwareCommand
 
         $steps = [
             new InstallStep\WelcomeStep($context),
+            new InstallStep\OwnRequirementsStep($context),
             new InstallStep\DoneStep($context),
         ];
 
@@ -111,6 +112,10 @@ class InstallCommand extends ContainerAwareCommand
 
             $step->run();
             $sm->saveInstallSession($session);
+
+            if ($step->isFailed()) {
+                return 1;
+            }
         }
 
         return 0;

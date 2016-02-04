@@ -36,23 +36,14 @@ class WelcomeStep extends AbstractStep
 {
     public function run()
     {
-        $output = $this->getOutput();
+        $this->writeBigTitle('DeskPRO Installer');
+        $this->writeln('');
 
-        $str = str_repeat(' ', 72)
-            .PHP_EOL
-            .str_repeat(' ', 27).'DeskPRO Installer'.str_repeat(' ', 28)
-            .PHP_EOL
-            .str_repeat(' ', 72)
-            .PHP_EOL;
+        $this->writeln('Welcome to the DeskPRO installer. This tool will interactively guide you through the install procedure.');
+        $this->writeln('');
 
-        $output->writeln("<bg=cyan;fg=black;options=bold>$str</>");
-        $output->writeln('');
-
-        $output->writeln('Welcome to the DeskPRO installer. This tool will interactively guide you through the install procedure.');
-        $output->writeln('');
-
-        $output->writeln('Before we continue, please enter your name and email address. This will be used for your initial admin account that we will set up in a minute.');
-        $output->writeln('');
+        $this->writeln('Before we continue, please enter your name and email address. This will be used for your initial admin account that we will set up in a minute.');
+        $this->writeln('');
 
         $user        = new User();
         $user->name  = $this->getUserName();

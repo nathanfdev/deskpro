@@ -1,0 +1,119 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+namespace DeskPRO\Bundle\InstallBundle\Installer\InstallStep;
+
+use Symfony\Component\Console\Question\Question;
+
+class OwnRequirementsStep extends AbstractStep
+{
+    public function run()
+    {
+        $f = $this->getFormatterHelper();
+        $this->writeBigTitle('Server Requirements');
+
+        /** @var \DpSys\SoftwareRequirements\DeskproRequirements $checker */
+        $checker = require DP_APP_DIR.'/sys/SoftwareRequirements/load_checker.php';
+
+        $error_count = 0;
+        $warn_count  = 0;
+
+        /** @var \DpSys\SoftwareRequirements\Requirement $req */
+        foreach ($checker->getRequirements() as $req) {
+            if ($req->isFulfilled()) {
+                continue;
+            }
+
+            $this->writeln($f->formatSection('Error', $req->getTestMessage(), 'error'));
+            $this->writeln($req->getHelpText());
+            $this->writeln('');
+            ++$error_count;
+        }
+
+        /** @var \DpSys\SoftwareRequirements\Requirement $req */
+        foreach ($checker->getRecommendations() as $req) {
+            if ($req->isFulfilled()) {
+                continue;
+            }
+
+            $this->writeln($f->formatSection('Recommendation', $req->getTestMessage(), 'info'));
+            $this->writeln($req->getHelpText());
+            $this->writeln('');
+            ++$warn_count;
+        }
+
+        $ini_path = $checker->getPhpIniConfigPath();
+        if (!$ini_path) {
+            $msg =
+                'WARNING: PHP is not configured to use a php.ini file. This usually means that '
+                .'PHP is not configured at all, and may be missing may features or extensions.';
+            $this->writeln($f->formatSection('Recommendation', 'No php.ini file', 'info'));
+            $this->writeln($msg);
+            $this->writeln('');
+            ++$warn_count;
+        }
+
+        if ($warn_count) {
+            $this->writeln(sprintf('<info>There are %d recommendations that you may wish to implement.</info>', $warn_count));
+            $this->writeln('These recommendations are optional but are encouraged to ensure the best operation of your helpdesk.');
+            $this->writeln('');
+        }
+
+        if ($error_count) {
+            $this->writeln(sprintf('<error>There are %d failed requirements that require your attention.</error>', $error_count));
+            $this->writeln('DeskPRO CANNOT be installed until you fix these errors.');
+            $this->writeln('');
+            $this->markAsFailed();
+        }
+
+        if ($ini_path && ($warn_count || $error_count)) {
+            $this->writeln('If you need to make changes to PHP configuration, here is the path to your php.ini file:');
+            $this->writeln("<comment>$ini_path</comment>");
+            $this->writeln('');
+        }
+
+        if (!$error_count && $warn_count) {
+            $this->writeln('Do you want to skip these recommendations and continue with the install?');
+            $q   = new Question('[Y/n]> ', 'Y');
+            $res = $this->getQuestionHelper()->ask($this->getInput(), $this->getOutput(), $q);
+
+            if (strtoupper($res) !== 'Y') {
+                $this->markAsFailed();
+            }
+        }
+
+        if (!$this->isFailed()) {
+            $this->getSession()->enableFlag('own_requirements_check');
+        }
+    }
+
+    public function isComplete()
+    {
+        return $this->getSession()->hasFlag('own_requirements_check');
+    }
+}

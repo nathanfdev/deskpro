@@ -52,6 +52,11 @@ class InstallSession
      */
     private $user;
 
+    /**
+     * @var array
+     */
+    private $flags = [];
+
     public function __construct($session_id)
     {
         $this->session_id  = $session_id;
@@ -81,6 +86,24 @@ class InstallSession
     public function setUser(User $user = null)
     {
         $this->user = $user;
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return bool
+     */
+    public function hasFlag($id)
+    {
+        return isset($this->flags[$id]);
+    }
+
+    /**
+     * @param string $id
+     */
+    public function enableFlag($id)
+    {
+        $this->flags[$id] = true;
     }
 
     /**

@@ -73,37 +73,37 @@ class DeskproRequirements extends RequirementCollection
 
         $this->addRequirement(
             function_exists('iconv'),
-            'iconv() must be available',
+            'iconv must be installed',
             'Install and enable the <strong>iconv</strong> extension.'
         );
 
         $this->addRequirement(
             function_exists('json_encode'),
-            'json_encode() must be available',
+            'JSON must be installed',
             'Install and enable the <strong>JSON</strong> extension.'
         );
 
         $this->addRequirement(
             function_exists('session_start'),
-            'session_start() must be available',
+            'session must be installed',
             'Install and enable the <strong>session</strong> extension.'
         );
 
         $this->addRequirement(
             function_exists('ctype_alpha'),
-            'ctype_alpha() must be available',
+            'ctype must be installed',
             'Install and enable the <strong>ctype</strong> extension.'
         );
 
         $this->addRequirement(
             function_exists('token_get_all'),
-            'token_get_all() must be available',
+            'Tokenizer must be installed',
             'Install and enable the <strong>Tokenizer</strong> extension.'
         );
 
         $this->addRequirement(
             function_exists('simplexml_import_dom'),
-            'simplexml_import_dom() must be available',
+            'SimpleXML must be installed',
             'Install and enable the <strong>SimpleXML</strong> extension.'
         );
 
@@ -133,7 +133,7 @@ class DeskproRequirements extends RequirementCollection
                 create_function('$cfgValue', 'return $cfgValue > 100;'),
                 true,
                 'xdebug.max_nesting_level should be above 100 in php.ini',
-                'Set "<strong>xdebug.max_nesting_level</strong>" to e.g. "<strong>250</strong>" in php.ini<a href="#phpini">*</a> to stop Xdebug\'s infinite recursion protection erroneously throwing a fatal error in your project.'
+                'Set "<strong>xdebug.max_nesting_level</strong>" to e.g. "<strong>250</strong>" in php.ini<a href="#phpini">*</a>'
             );
         }
 
@@ -141,13 +141,13 @@ class DeskproRequirements extends RequirementCollection
 
         $this->addRequirement(
             null !== $pcreVersion,
-            'PCRE extension must be available',
+            'PCRE must be installed',
             'Install the <strong>PCRE</strong> extension (version 8.0+).'
         );
 
         $this->addRequirement(
             function_exists('curl_init'),
-            'curl_init() should be available.',
+            'cURL must be installed.',
             'Install and enable the <strong>cURL</strong> extension.'
         );
 
@@ -163,7 +163,7 @@ class DeskproRequirements extends RequirementCollection
 
         $this->addRequirement(
             function_exists('gzopen'),
-            'gzopen() should be available',
+            'zlib must be installed',
             'Install and enable the <strong>zlib</strong> extension.'
         );
 
@@ -171,43 +171,43 @@ class DeskproRequirements extends RequirementCollection
             $this->addRecommendation(
                 $pcreVersion >= 8.0,
                 sprintf('PCRE extension should be at least version 8.0 (%s installed)', $pcreVersion),
-                '<strong>PCRE 8.0+</strong> is preconfigured in PHP since 5.3.2 but you are using an outdated version of it. DeskPRO probably works anyway but it is recommended to upgrade your PCRE extension.'
+                '<strong>PCRE 8.0+</strong> is preconfigured in PHP but you are using an outdated version of it. DeskPRO probably works anyway but it is recommended to upgrade your PCRE extension.'
             );
         }
 
         $this->addRequirement(
             class_exists('DomDocument'),
-            'PHP-DOM and PHP-XML modules should be installed',
+            'PHP-DOM and PHP-XML modules must be installed',
             'Install and enable the <strong>PHP-DOM</strong> and the <strong>PHP-XML</strong> modules.'
         );
 
-        $this->addRecommendation(
+        $this->addRequirement(
             function_exists('mb_strlen'),
-            'mb_strlen() should be available',
+            'mbstring must be installed',
             'Install and enable the <strong>mbstring</strong> extension.'
         );
 
-        $this->addRecommendation(
+        $this->addRequirement(
             function_exists('iconv'),
-            'iconv() should be available',
+            'iconv must be installed',
             'Install and enable the <strong>iconv</strong> extension.'
         );
 
-        $this->addRecommendation(
+        $this->addRequirement(
             function_exists('utf8_decode'),
-            'utf8_decode() should be available',
+            'XML must be installed',
             'Install and enable the <strong>XML</strong> extension.'
         );
 
-        $this->addRecommendation(
+        $this->addRequirement(
             function_exists('filter_var'),
-            'filter_var() should be available',
+            'filter must be installed',
             'Install and enable the <strong>filter</strong> extension.'
         );
 
         $this->addRecommendation(
             function_exists('ldap_connect'),
-            'ldap_connect() should be available',
+            'LDAP should be be installed',
             'Install and enable the <strong>LDAP</strong> extension if you want to use LDAP or Active Directory integrations.'
         );
 
@@ -229,19 +229,19 @@ class DeskproRequirements extends RequirementCollection
 
         $this->addRecommendation(
             function_exists('imap_open'),
-            'imap_open() should be available.',
+            'IMAP should be installed',
             'Install and enable the <strong>IMAP</strong> extension. This is required if you want to read email from IMAP email servers.'
         );
 
         $this->addRecommendation(
             extension_loaded('soap'),
-            'SoapClient should be available.',
+            'SoapClient should be installed.',
             'Install and enable the <strong>SOAP</strong> extension. This is required if you want to use any Microsoft Exchange services.'
         );
 
         $this->addRecommendation(
             function_exists('openssl_encrypt'),
-            'openssl_encrypt() should be available',
+            'OpenSSL should be installed ',
             'Install and enable the <strong>OpenSSL</strong> extension. This is required for secure networking (e.g., https, secure incoming and outgoing email, etc.).'
         );
 
@@ -255,7 +255,7 @@ class DeskproRequirements extends RequirementCollection
 
         $this->addRecommendation(
             extension_loaded('intl'),
-            'intl extension should be available',
+            'intl should be installed',
             'Install and enable the <strong>intl</strong> extension (used for validators).'
         );
 

@@ -39,6 +39,11 @@ abstract class AbstractStep
     private $context;
 
     /**
+     * @var bool
+     */
+    private $is_failed;
+
+    /**
      * AbstractStep constructor.
      *
      * @param InstallerContext $context
@@ -59,6 +64,24 @@ abstract class AbstractStep
      * @return bool
      */
     abstract public function isComplete();
+
+    /**
+     * Mark this step as failed.
+     */
+    public function markAsFailed()
+    {
+        $this->is_failed = true;
+    }
+
+    /**
+     * Check if the step has failed.
+     *
+     * @return bool
+     */
+    public function isFailed()
+    {
+        return $this->is_failed;
+    }
 
     /**
      * @return InstallerContext
@@ -147,5 +170,31 @@ abstract class AbstractStep
         $table = new Helper\Table($this->getOutput());
 
         return $table;
+    }
+
+    /**
+     * @param string $title
+     */
+    public function writeBigTitle($title)
+    {
+        $line_len  = 72;
+        $title_len = strlen($title);
+        $half      = floor(($line_len - $title_len) / 2);
+
+        $left  = $half;
+        $right = $half;
+
+        if ($half * 2 !== $line_len) {
+            ++$right;
+        }
+
+        $str = str_repeat(' ', $line_len)
+            .PHP_EOL
+            .str_repeat(' ', $left).$title.str_repeat(' ', $right)
+            .PHP_EOL
+            .str_repeat(' ', $line_len)
+            .PHP_EOL;
+
+        $this->writeln("<bg=cyan;fg=black;options=bold>$str</>");
     }
 }
