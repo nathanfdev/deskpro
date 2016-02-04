@@ -289,7 +289,7 @@ class TicketsController extends CrudController
     {
         /** @var Ticket $entity */
         $entity = $this->findEntity($id);
-        $entity->setHiddenStatus('deleted');
+        $entity->setHiddenStatus(Ticket::HIDDEN_STATUS_DELETED);
 
         $this->persistModel($entity);
 
