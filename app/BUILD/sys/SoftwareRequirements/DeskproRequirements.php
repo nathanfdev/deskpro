@@ -381,6 +381,16 @@ class DeskproRequirements extends RequirementCollection
                 'var/tmp directory must be writable',
                 'You need to make your tmp directory writable: <strong>'.$DP_ENV->getUserTmpDir().'</strong>'
             );
+            $this->addRequirement(
+                is_writable($DP_ENV->getUserDebugDir()),
+                'var/tmp directory must be writable',
+                'You need to make your tmp directory writable: <strong>'.$DP_ENV->getUserDebugDir().'</strong>'
+            );
+            $this->addRequirement(
+                is_writable($DP_ENV->getUserFilesDir()),
+                'attachments directory must be writable',
+                'You need to make your cache directory writable: <strong>'.$DP_ENV->getUserFilesDir().'</strong>'
+            );
         }
     }
 
