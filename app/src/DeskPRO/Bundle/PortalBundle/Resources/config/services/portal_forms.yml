@@ -55,21 +55,6 @@ services:
   # Types
   #
 
-  form.ticket:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\TicketType
-    arguments:
-      - @form_field_manager
-      - @ticket_layout_factory
-      - @ticket_layout_differ
-      - @form_hierarchy_generator
-      - @doctrine.orm.default_entity_manager
-      - @language_manager
-      - @tickets.custom_per_field_manager
-      - @default_value_for_ticket_layout_field
-    tags:
-      - { name: form.type, alias: ticket }
-
-
   form.csrf_double_submit_extension:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CsrfDoubleSubmitExtension
     arguments: [@request_stack, @language_manager, %kernel.environment%]
