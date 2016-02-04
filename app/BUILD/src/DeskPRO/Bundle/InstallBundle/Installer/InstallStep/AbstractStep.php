@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\InstallBundle\Installer\InstallStep;
 
 use DeskPRO\Bundle\InstallBundle\Installer\InstallerContext;
 use Symfony\Component\Console\Helper;
+use Symfony\Component\Console\Question\Question;
 
 abstract class AbstractStep
 {
@@ -148,6 +149,50 @@ abstract class AbstractStep
     public function getQuestionHelper()
     {
         return $this->context->getHelperSet()->get('question');
+    }
+
+    /**
+     * @param Question $q
+     *
+     * @return string
+     */
+    public function askQuestion(Question $q)
+    {
+        return $this->getQuestionHelper()->ask($this->getInput(), $this->getOutput(), $q);
+    }
+
+    /**
+     * @param bool|null $default
+     *
+     * @return bool
+     */
+    public function askConfirm($default = null)
+    {
+        if ($default === true) {
+            $q = new Question('[Y/n]> ', 'Y');
+        } elseif ($default === false) {
+            $q = new Question('[y/N]> ', 'n');
+        } else {
+            $q = new Question('[y/n]> ');
+        }
+
+        $q->setValidator(function ($v) {
+            $v = strtolower($v);
+            if ($v === 'no' || $v === 'false' || $v === 'f') {
+                $v = 'n';
+            }
+            if ($v === 'yes' || $v === 'true' || $v === 't') {
+                $v = 't';
+            }
+
+            if ($v != 'n' && $v !== 'y') {
+                throw new \Exception("Please enter 'Y' for Yes or 'N' for No.");
+            }
+
+            return $v;
+        });
+
+        return $this->askQuestion($q) === 'y';
     }
 
     /**

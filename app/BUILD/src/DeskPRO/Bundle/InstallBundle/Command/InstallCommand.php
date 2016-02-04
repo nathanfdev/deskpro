@@ -98,6 +98,10 @@ class InstallCommand extends ContainerAwareCommand
             return 1;
         }
 
+        register_shutdown_function(function () use ($sm, $session) {
+            $sm->saveInstallSession($session);
+        });
+
         #------------------------------
         # Create the steps
         #------------------------------
@@ -118,6 +122,7 @@ class InstallCommand extends ContainerAwareCommand
             new InstallStep\FileIntegrityStep($context),
             new InstallStep\OwnRequirementsStep($context),
             new InstallStep\CheckExistingStep($context),
+            new InstallStep\AcceptPathsStep($context),
             new InstallStep\DoneStep($context),
         ];
 
