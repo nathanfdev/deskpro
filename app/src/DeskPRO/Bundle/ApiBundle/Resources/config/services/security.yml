@@ -10,10 +10,17 @@ services:
     arguments:
       - @doctrine.orm.default_entity_manager
 
-  api_authorisation.action_permissions.event_listener:
+  api_authorization.action_permissions.event_listener:
     class: DeskPRO\Bundle\ApiBundle\EventListener\ApiEndpointListener
     arguments:
-      - @api_authorisation.action_permissions.driver
-      - %kernel.cache_dir%
+      - @security.authorization_checker
     tags:
       - {name: kernel.event_listener, event: kernel.controller, method: onKernelController}
+
+  api_authorization.action_permissions_voter:
+    class: DeskPRO\Bundle\ApiBundle\Security\Authorization\ActionPermissionsVoter
+    arguments:
+      - @api_authorization.action_permissions.driver
+      - %kernel.cache_dir%
+    tags:
+      - { name: security.voter }

@@ -78,6 +78,8 @@ class MessagesController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
+        $this->denyAccessUnlessGranted();
+
         $form = $this->submitForm('api_agent_chat_search_messages', $request->query);
         if (!$form->isValid()) {
             $errors = $this->createFormErrorsData($form);

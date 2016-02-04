@@ -28,60 +28,30 @@
 
 namespace DeskPRO\Bundle\ApiBundle\EventListener;
 
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\ActionPermissionsDriver;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata\MethodMetadata;
-use Metadata\Cache\FileCache;
-use Metadata\ClassMetadata;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
 class ApiEndpointListener
 {
     /**
-     * @var ActionPermissionsDriver
+     * @var AuthorizationChecker
      */
-    protected $driver;
+    protected $checker;
 
-    /** @var string */
-    protected $cache_dir;
-
-    public function __construct(ActionPermissionsDriver $driver, $cache_dir)
+    public function __construct(AuthorizationChecker $checker)
     {
-        $this->driver    = $driver;
-        $this->cache_dir = $this->getCacheDir($cache_dir);
+        $this->checker = $checker;
     }
 
     public function onKernelController(FilterControllerEvent $event)
     {
-        $cache = new FileCache($this->cache_dir);
         if (!is_array($controller = $event->getController())) {
             return;
         }
 
-        $reflection = new \ReflectionClass($controller[0]);
-
-        /** @var ClassMetadata $classMetadata */
-        if (!$classMetadata = $cache->loadClassMetadataFromCache($reflection)) {
-            $classMetadata = $this->driver->loadMetadataForClass($reflection);
-            $cache->putClassMetadataInCache($classMetadata);
+        if (!$this->checker->isGranted($controller[1], $controller[0])) {
+            throw new AccessDeniedHttpException();
         }
-        /** @var MethodMetadata $methodMetadata */
-        $methodMetadata = $classMetadata->methodMetadata[$controller[1]];
-
-        if ($methodMetadata && $methodMetadata instanceof MethodMetadata) {
-            $modes = $methodMetadata->getModes();
-            $tags  = $methodMetadata->getTags();
-        }
-    }
-
-    protected function getCacheDir($cache_dir)
-    {
-        $cache_dir = str_replace('/api', '', $cache_dir).DIRECTORY_SEPARATOR.'api_permissions';
-        if (!file_exists($cache_dir)) {
-            if (!$rs = @mkdir($cache_dir, 0777, true)) {
-                throw new \RuntimeException(sprintf('Could not create cache directory "%s".', $cache_dir));
-            }
-        }
-
-        return $cache_dir;
     }
 }
