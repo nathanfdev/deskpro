@@ -42,7 +42,7 @@ class LayoutCollection implements \Countable, \IteratorAggregate
      *
      * @var Layout[]
      */
-    private $layouts;
+    private $layouts = [];
 
     /**
      * Adds a layout to the collection.
