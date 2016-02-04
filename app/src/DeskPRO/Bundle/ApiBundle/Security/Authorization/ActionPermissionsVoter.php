@@ -45,7 +45,6 @@ class ActionPermissionsVoter extends Voter
         'agent_session' => 'session',
         'api_key'       => 'key',
         'api_token'     => 'token',
-        'anon'          => 'anon',
     ];
 
     /**
@@ -123,22 +122,5 @@ class ActionPermissionsVoter extends Voter
     protected function getMode($token_name)
     {
         return $this->mode_map[$token_name];
-    }
-
-    /**
-     * @param $cache_dir
-     *
-     * @return string
-     */
-    protected function getCacheDir($cache_dir)
-    {
-        $cache_dir = str_replace('/api', '', $cache_dir).DIRECTORY_SEPARATOR.'api_permissions';
-        if (!file_exists($cache_dir)) {
-            if (!$rs = @mkdir($cache_dir, 0777, true)) {
-                throw new \RuntimeException(sprintf('Could not create cache directory "%s".', $cache_dir));
-            }
-        }
-
-        return $cache_dir;
     }
 }
