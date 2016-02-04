@@ -30,6 +30,14 @@ namespace DeskPRO\Bundle\InstallBundle\Installer\InstallStep;
 
 use Symfony\Component\Console\Question\Question;
 
+/**
+ * Checks server requirements.
+ *
+ * Note that this only checks our current environemnt. We will
+ * need to check TWICE more in later steps:
+ *  a) Check the web env
+ *  b) Check the cli env when spawned from ourselves
+ */
 class OwnRequirementsStep extends AbstractStep
 {
     public function run()

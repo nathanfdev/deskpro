@@ -33,6 +33,9 @@ use DeskPRO\Bundle\InstallBundle\FileIntegrity\Checker\IntegrityCheckResult;
 use DeskPRO\Bundle\InstallBundle\FileIntegrity\FileHasher;
 use DeskPRO\Bundle\InstallBundle\FileIntegrity\ProjectFileSet;
 
+/**
+ * Checks filesystem for integrity errors.
+ */
 class FileIntegrityStep extends AbstractStep
 {
     public function run()
