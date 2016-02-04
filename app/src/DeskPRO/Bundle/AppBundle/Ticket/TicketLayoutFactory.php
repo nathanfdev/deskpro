@@ -40,6 +40,9 @@ use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use Doctrine\ORM\EntityManager;
 
+/**
+ * Class TicketLayoutFactory.
+ */
 class TicketLayoutFactory
 {
     /**
@@ -52,6 +55,12 @@ class TicketLayoutFactory
      */
     private $catpcha_decider;
 
+    /**
+     * Constructor.
+     *
+     * @param EntityManager  $entity_manager
+     * @param CaptchaDecider $catpcha_decider
+     */
     public function __construct(EntityManager $entity_manager, CaptchaDecider $catpcha_decider = null)
     {
         $this->entity_manager  = $entity_manager;
@@ -70,6 +79,11 @@ class TicketLayoutFactory
         ;
     }
 
+    /**
+     * @param mixed $department
+     *
+     * @return TicketLayout|null
+     */
     public function getLayout($department = null)
     {
         $layout = null;
@@ -94,6 +108,11 @@ class TicketLayoutFactory
         return $layout;
     }
 
+    /**
+     * @param mixed $department
+     *
+     * @return TicketLayout|null
+     */
     public function getLayoutForView($department = null)
     {
         return $this->getLayout($department);
@@ -152,6 +171,9 @@ class TicketLayoutFactory
         return $layout;
     }
 
+    /**
+     * @param Layout $layout
+     */
     protected function verifyRequiredFields(Layout $layout)
     {
         $required_fields = [
