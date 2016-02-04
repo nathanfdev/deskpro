@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\InstallBundle\InstallSession;
 
+use DeskPRO\Bundle\InstallBundle\InstallSession\Model\DbInfo;
 use DeskPRO\Bundle\InstallBundle\InstallSession\Model\Paths;
 use DeskPRO\Bundle\InstallBundle\InstallSession\Model\User;
 
@@ -57,6 +58,11 @@ class InstallSession
      * @var Paths
      */
     private $paths;
+
+    /**
+     * @var DbInfo
+     */
+    private $dbinfo;
 
     /**
      * @var array
@@ -108,6 +114,22 @@ class InstallSession
     public function setPaths(Paths $paths = null)
     {
         $this->paths = $paths;
+    }
+
+    /**
+     * @return DbInfo
+     */
+    public function getDbInfo()
+    {
+        return $this->dbinfo;
+    }
+
+    /**
+     * @param DbInfo $dbinfo
+     */
+    public function setDbInfo(DbInfo $dbinfo = null)
+    {
+        $this->dbinfo = $dbinfo;
     }
 
     /**

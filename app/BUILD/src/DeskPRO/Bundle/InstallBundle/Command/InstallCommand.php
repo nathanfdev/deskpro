@@ -52,7 +52,8 @@ class InstallCommand extends ContainerAwareCommand
         $this->setName('install:run')
             ->addOption('skip', 'x', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Skip one or more steps (by name)')
             ->addOption('list-steps', null, InputOption::VALUE_NONE, 'List all steps instead of running them')
-            ->addOption('restart', null, InputOption::VALUE_NONE, 'Restart an installation (instead of resume)');
+            ->addOption('restart', null, InputOption::VALUE_NONE, 'Restart an installation (instead of resume)')
+            ->addOption('redo-step', 'r', InputOption::VALUE_REQUIRED, 'Redo a specific step even if it is marked as complete');
     }
 
     /**
@@ -63,6 +64,8 @@ class InstallCommand extends ContainerAwareCommand
         $app_env = $this->getContainer()->get('deskpro.app_env');
         $sm      = $this->getContainer()->get('install.session_manager');
         $session = $sm->getLastInstallSession($input->getOption('restart'));
+
+        $restart_step = $input->getOption('redo-step');
 
         $list_mode = $input->getOption('list-steps');
         $skip_list = array_map(function ($step_id) {
@@ -123,6 +126,7 @@ class InstallCommand extends ContainerAwareCommand
             new InstallStep\OwnRequirementsStep($context),
             new InstallStep\CheckExistingStep($context),
             new InstallStep\AcceptPathsStep($context),
+            new InstallStep\AcceptDatabaseStep($context),
             new InstallStep\DoneStep($context),
         ];
 
@@ -142,7 +146,7 @@ class InstallCommand extends ContainerAwareCommand
                 continue;
             }
 
-            if ($step->isComplete()) {
+            if (!($restart_step && $restart_step === $step_id) && $step->isComplete()) {
                 if ($list_mode) {
                     $output->writeln(sprintf('Step %02d: %-28s <info>(done)</info>', $step_num, $step_id));
                 }

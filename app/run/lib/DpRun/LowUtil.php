@@ -75,6 +75,12 @@ class LowUtil
             $info['dsn']          = "mysql:host={$info['host']};port={$info['port']}";
             $info['doctrine']['host'] = $info['host'];
             $info['doctrine']['port'] = $info['port'];
+        } else {
+            $info['host']         = $config['host'];
+            $info['port']         = 3306;
+            $info['dsn']          = "mysql:host={$info['host']};port={$info['port']}";
+            $info['doctrine']['host'] = $info['host'];
+            $info['doctrine']['port'] = $info['port'];
         }
 
         $info['dsn'] .= ';charset=utf8';
