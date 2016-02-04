@@ -336,6 +336,7 @@ class DpKernel extends AbstractKernel
             new \JMS\SerializerBundle\JMSSerializerBundle(),
 
             new \Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
+            new \RMS\PushNotificationsBundle\RMSPushNotificationsBundle(),
 
             new \Application\DeskPRO\DeskPROBundle(),
             new \Application\EmailBundle\EmailBundle(),

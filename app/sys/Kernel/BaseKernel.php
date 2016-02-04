@@ -39,7 +39,7 @@ use Symfony\Component\HttpKernel\Kernel;
 
 abstract class BaseKernel extends Kernel
 {
-    private $instantied_but_not_used_bundles = array();
+    private $instantied_but_not_used_bundles = [];
 
     /**
      * We extend the base functionality of getBundle to allow kernels that don't use a bundle to
@@ -49,6 +49,8 @@ abstract class BaseKernel extends Kernel
      * being used in the kernel anyway, usually only for generating the container.
      * If a bundle ver does get called here outside of that, consider registering the
      * bundle into the kernel anyway.
+     *
+     * {@inheritdoc}
      */
     public function getBundle($name, $first = true)
     {
@@ -77,18 +79,18 @@ abstract class BaseKernel extends Kernel
                 case 'PortalBundle':
                     // ApiKernel does not have PortalBundle
                     // DpKernel does not have PortalBundle
-                    return array($this->getUnusedBundle('PortalBundle'));
+                    return [$this->getUnusedBundle('PortalBundle')];
                 case 'ApiBundle':
                     // PortalKernel does not have ApiBundle
                     // DpKernel does not have ApiBundle
-                    return array($this->getUnusedBundle('ApiBundle'));
+                    return [$this->getUnusedBundle('ApiBundle')];
                 case 'AppBundle':
                     // DpKernel does not have AppBundle
-                    return array($this->getUnusedBundle('AppBundle'));
+                    return [$this->getUnusedBundle('AppBundle')];
                 case 'AgentBundle':
                     // PortalKernel does not have AgentBundle
                     // ApiKernel does not have AgentBundle
-                    return array($this->getUnusedBundle('AgentBundle'));
+                    return [$this->getUnusedBundle('AgentBundle')];
                 default:
                     break;
             }

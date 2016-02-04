@@ -37,22 +37,20 @@ use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
-use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class ApiKernel extends BaseKernel
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'api';
     }
 
     /**
-     * Returns an array of bundles to register.
-     *
-     * @return BundleInterface[] An array of bundle instances.
-     *
-     * @api
+     * {@inheritdoc}
      */
     public function registerBundles()
     {
@@ -115,11 +113,7 @@ class ApiKernel extends BaseKernel
     }
 
     /**
-     * Loads the container configuration.
-     *
-     * @param LoaderInterface $loader A LoaderInterface instance
-     *
-     * @api
+     * {@inheritdoc}
      */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {

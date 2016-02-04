@@ -16,3 +16,10 @@ monolog:
         - "dp.tickets.filters.tengine.dbal.compiler"
         - "dp.tickets.filters.tengine.php.engine"
         - "dp.tickets.filters.tengine.php.compiler"
+
+rms_push_notifications:
+  ios:
+      timeout: 60 # Seconds to wait for connection timeout, default is 60
+      sandbox: true
+      pem: <path_apns_certificate> # can be absolute or relative path (from app directory)
+      passphrase: <string_apns_certificate_passphrase>
