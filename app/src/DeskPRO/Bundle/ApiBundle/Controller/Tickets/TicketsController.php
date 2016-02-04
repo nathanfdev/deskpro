@@ -40,6 +40,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalTermEngine;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
+use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Route;
 use FOS\RestBundle\View\View;
@@ -277,6 +278,22 @@ class TicketsController extends CrudController
         });
 
         return $tickets;
+    }
+
+    /**
+     * @Delete("/{id}", requirements={"id"="\d+"})
+     *
+     * {@inheritdoc}
+     */
+    public function deleteAction($id, Request $request)
+    {
+        /** @var Ticket $entity */
+        $entity = $this->findEntity($id);
+        $entity->setHiddenStatus('deleted');
+
+        $this->persistModel($entity);
+
+        return View::create([], Response::HTTP_OK);
     }
 
     // Override CRUD callbacks to use TicketManager --------------------------------------------------------------------
