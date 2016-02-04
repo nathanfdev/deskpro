@@ -33,8 +33,6 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DeskPRO\Bundle\AppBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Kernel\KernelErrorHandler;
 use FOS\RestBundle\View\View;
@@ -44,9 +42,6 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * Class ExceptionController.
- *
- * @ApiModes("all")
- * @ApiTags("agent.exception")
  */
 class ExceptionController extends BaseController
 {

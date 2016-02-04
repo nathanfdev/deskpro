@@ -28,27 +28,48 @@
 
 namespace DeskPRO\Bundle\ApiBundle\EventListener;
 
+use DeskPRO\Bundle\ApiBundle\Controller\ExceptionController;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
-class ApiEndpointListener
+/**
+ * Class ApiEndpointListener.
+ */
+class ApiEndpointListener implements EventSubscriberInterface
 {
     /**
-     * @var AuthorizationChecker
+     * @param AuthorizationChecker $checker
      */
-    protected $checker;
-
     public function __construct(AuthorizationChecker $checker)
     {
         $this->checker = $checker;
     }
 
-    public function onKernelController(FilterControllerEvent $event)
+    /**
+     * @return array
+     */
+    public static function getSubscribedEvents()
     {
-        // todo fix (throws AuthenticationCredentialsNotFoundException on each request)
-        return;
-        if (!is_array($controller = $event->getController())) {
+        return array(
+            KernelEvents::CONTROLLER => array('onController', -1),
+        );
+    }
+
+    /**
+     * @var AuthorizationChecker
+     */
+    protected $checker;
+
+    /**
+     * @param FilterControllerEvent $event
+     */
+    public function onController(FilterControllerEvent $event)
+    {
+        if (!is_array($controller = $event->getController())
+            || $controller[0] instanceof ExceptionController) {
             return;
         }
 

@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata;
 
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\ActionPermissionsDriver;
+use Metadata\Cache\CacheInterface;
 use Metadata\ClassMetadata;
 use Metadata\MetadataFactoryInterface;
 
@@ -43,20 +44,56 @@ class ActionPermissionsMetadataFactory implements MetadataFactoryInterface
     protected $driver;
 
     /**
+     * @var CacheInterface
+     */
+    protected $cache;
+
+    /**
+     * @var bool
+     */
+    protected $debug;
+
+    /**
+     * @var array
+     */
+    protected $loaded_metadata = [];
+
+    /**
      * @param ActionPermissionsDriver $driver
      */
-    public function __construct(ActionPermissionsDriver $driver)
+    public function __construct(ActionPermissionsDriver $driver, CacheInterface $cache, $debug = false)
     {
+        $this->debug  = $debug;
         $this->driver = $driver;
+        $this->cache  = $cache;
     }
 
     /**
-     * @param string $className
+     * @param string $class_name
+     * @param bool   $force_rewrite
      *
      * @return ClassMetadata
      */
-    public function getMetadataForClass($className)
+    public function getMetadataForClass($class_name, $force_rewrite = false)
     {
-        return $this->driver->loadMetadataForClass(new \ReflectionClass($className));
+        $reflection = new \ReflectionClass($class_name);
+        if (null !== $classMetadata = $this->cache->loadClassMetadataFromCache($reflection)) {
+            if ($this->debug || $force_rewrite) {
+                $this->cache->evictClassMetadataFromCache($reflection);
+            } else {
+                $this->loaded_metadata[$class_name] = $classMetadata;
+
+                return $this->loaded_metadata[$class_name];
+            }
+        }
+
+        if (null !== $classMetadata = $this->driver->loadMetadataForClass($reflection)) {
+            $this->loaded_metadata[$class_name] = $classMetadata;
+            $this->cache->putClassMetadataInCache($classMetadata);
+
+            return $this->loaded_metadata[$class_name];
+        }
+
+        return;
     }
 }

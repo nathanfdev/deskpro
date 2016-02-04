@@ -29,10 +29,10 @@
 namespace DeskPRO\Bundle\ApiBundle\Security\Authorization;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\ActionPermissionsDriver;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata\ActionPermissionsMetadataFactory;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata\MethodMetadata;
-use Metadata\Cache\FileCache;
 use Metadata\ClassMetadata;
+use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -45,26 +45,20 @@ class ActionPermissionsVoter extends Voter
         'agent_session' => 'session',
         'api_key'       => 'key',
         'api_token'     => 'token',
+        'anon'          => 'anon',
     ];
 
     /**
-     * @var ActionPermissionsDriver
+     * @var ActionPermissionsMetadataFactory
      */
-    protected $driver;
+    protected $factory;
 
     /**
-     * @var FileCache
+     * @param ActionPermissionsMetadataFactory $factory
      */
-    protected $cache;
-
-    /**
-     * @param ActionPermissionsDriver $driver
-     * @param $cache_dir
-     */
-    public function __construct(ActionPermissionsDriver $driver, $cache_dir)
+    public function __construct(ActionPermissionsMetadataFactory $factory)
     {
-        $this->driver = $driver;
-        $this->cache  = new FileCache($this->getCacheDir($cache_dir));
+        $this->factory = $factory;
     }
 
     /**
@@ -88,13 +82,8 @@ class ActionPermissionsVoter extends Voter
      */
     protected function fetchMetadata($method, $controller)
     {
-        $reflection = new \ReflectionClass($controller);
         /** @var ClassMetadata $classMetadata */
-        if (!$classMetadata = $this->cache->loadClassMetadataFromCache($reflection)) {
-            $classMetadata = $this->driver->loadMetadataForClass($reflection);
-            $this->cache->putClassMetadataInCache($classMetadata);
-        }
-        /** @var MethodMetadata $methodMetadata */
+        $classMetadata  = $this->factory->getMetadataForClass(get_class($controller));
         $methodMetadata = $classMetadata->methodMetadata[$method];
 
         return $methodMetadata;
@@ -111,6 +100,10 @@ class ActionPermissionsVoter extends Voter
      */
     protected function voteOnAttribute($method, $controller, TokenInterface $token)
     {
+        if ($token instanceof AnonymousToken) {
+            return true;
+        }
+
         $methodMetadata = $this->fetchMetadata($method, $controller);
         $mode           = $this->getMode($token->getName());
 

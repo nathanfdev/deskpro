@@ -111,6 +111,10 @@ security:
             pattern: ^/api/v2/api_tokens$
             stateless: true
             anonymous: ~
+        api_session_request:
+            pattern: ^/api/v2/get_session$
+            stateless: true
+            anonymous: ~
         api:
             pattern: ^/api/v2(?!/api_tokens|/doc|/helpdesk/discover|/get_session$)
             stateless: true

@@ -28,12 +28,11 @@
 
 namespace DeskPRO\Bundle\AppBundle\CacheWarmer;
 
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata\ActionPermissionsMetadataFactory;
 use DeskPRO\Bundle\AppBundle\Annotation\Exception\AbstractClassException;
 use Gnugat\NomoSpaco\File\FileRepository;
 use Gnugat\NomoSpaco\FqcnRepository;
 use Gnugat\NomoSpaco\Token\ParserFactory;
-use Metadata\Cache\FileCache;
-use Metadata\MetadataFactoryInterface;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
 /**
@@ -42,14 +41,14 @@ use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 class ActionPermissionsCacheWarmer implements CacheWarmerInterface
 {
     /**
-     * @var MetadataFactoryInterface
+     * @var ActionPermissionsMetadataFactory
      */
     protected $metadata_factory;
 
     /**
-     * @param MetadataFactoryInterface $metadata_factory
+     * @param ActionPermissionsMetadataFactory $metadata_factory
      */
-    public function __construct(MetadataFactoryInterface $metadata_factory)
+    public function __construct(ActionPermissionsMetadataFactory $metadata_factory)
     {
         $this->metadata_factory = $metadata_factory;
     }
@@ -59,9 +58,14 @@ class ActionPermissionsCacheWarmer implements CacheWarmerInterface
      */
     public function warmUp($cacheDir)
     {
-        $cache = new FileCache($this->getCacheDir($cacheDir));
-        foreach ($this->collectMetadata() as $classMetadata) {
-            $cache->putClassMetadataInCache($classMetadata);
+        foreach ($this->getClasses() as $class) {
+            try {
+                $metadata[] = $this->metadata_factory->getMetadataForClass($class, true);
+            } catch (AbstractClassException $e) {
+                // There is nothing to do. Or just output it
+            } catch (\ReflectionException $e) {
+                // TODO: we should dive into FQCN to know why it return directories as FQCN.
+            }
         }
     }
 
@@ -83,25 +87,6 @@ class ActionPermissionsCacheWarmer implements CacheWarmerInterface
         }
 
         return $cacheDir;
-    }
-
-    /**
-     * @return array
-     */
-    protected function collectMetadata()
-    {
-        $metadata = [];
-        foreach ($this->getClasses() as $class) {
-            try {
-                $metadata[] = $this->metadata_factory->getMetadataForClass($class);
-            } catch (AbstractClassException $e) {
-                // There is nothing to do. Or just output it
-            } catch (\ReflectionException $e) {
-                // TODO: we should dive into FQCN to know why it return directories as FQCN.
-            }
-        }
-
-        return $metadata;
     }
 
     protected function getClasses()
