@@ -63,8 +63,11 @@ class TicketLayoutFactory
      */
     public function getInitialLayout()
     {
-        return $this->entity_manager->createQuery('SELECT l FROM DeskPRO:TicketLayout l WHERE l.department IS NULL')
-                                    ->getOneOrNullResult();
+        return $this
+            ->entity_manager
+            ->createQuery('SELECT l FROM DeskPRO:TicketLayout l WHERE l.department IS NULL')
+            ->getOneOrNullResult()
+        ;
     }
 
     public function getLayout($department = null)
@@ -73,16 +76,20 @@ class TicketLayoutFactory
         // Note: I removed the following condition, we still definitley want to do this is $dep is a Dep entity.
         //if ($department && !($department instanceof Department)) {
         if ($department) {
-            $layout = $this->entity_manager->createQuery('SELECT l FROM DeskPRO:TicketLayout l WHERE l.department = :department')
+            $layout = $this
+                ->entity_manager
+                ->createQuery('SELECT l FROM DeskPRO:TicketLayout l WHERE l.department = :department')
                 ->setParameter('department', $department)
-                ->getOneOrNullResult();
+                ->getOneOrNullResult()
+            ;
         }
 
         if (!$layout) {
             $layout = $this->getInitialLayout();
         }
-
-        $layout = clone $layout;
+        if ($layout) {
+            $layout = clone $layout;
+        }
 
         return $layout;
     }
@@ -101,7 +108,7 @@ class TicketLayoutFactory
      */
     public function getLayoutForTicketForm($department = null)
     {
-        // TODO: add a quick cahing layer here so that we only ever calc this once per department in a request
+        // TODO: add a quick caching layer here so that we only ever calc this once per department in a request
         // TODO: do what we do in the DataService's with the in memory hash map.
         $layout = $this->getLayout($department);
 
