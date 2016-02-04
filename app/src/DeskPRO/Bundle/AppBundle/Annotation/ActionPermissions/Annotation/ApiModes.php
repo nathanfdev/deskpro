@@ -30,11 +30,18 @@ namespace DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation;
 
 /**
  * @Annotation
+ * Class ApiModes
  */
 class ApiModes
 {
+    /**
+     * @var array
+     */
     protected $modes = [];
 
+    /**
+     * @var array
+     */
     protected $mode_alias = [
         'key'      => ['key'],
         'session'  => ['session'],
@@ -43,6 +50,9 @@ class ApiModes
         'all'      => ['session', 'token', 'key'],
     ];
 
+    /**
+     * @param array $modes
+     */
     public function __construct(array $modes)
     {
         foreach ($modes as $mode) {
@@ -54,6 +64,9 @@ class ApiModes
         }
     }
 
+    /**
+     * @return array
+     */
     public function getModes()
     {
         return $this->modes;

@@ -29,17 +29,28 @@
 namespace DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation;
 
 /**
+ * Class ApiTags.
+ *
  * @Annotation
  */
 class ApiTags
 {
-    protected $tags;
+    /**
+     * @var array
+     */
+    protected $tags = [];
 
+    /**
+     * @param $tags
+     */
     public function __construct($tags)
     {
         $this->tags = $tags;
     }
 
+    /**
+     * @return mixed
+     */
     public function getTags()
     {
         return $this->tags;

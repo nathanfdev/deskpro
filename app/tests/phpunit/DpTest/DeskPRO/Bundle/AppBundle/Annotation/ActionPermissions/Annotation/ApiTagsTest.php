@@ -30,6 +30,9 @@ namespace DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation;
 
 use DpTest\DeskProTestCase;
 
+/**
+ * Class ApiTagsTest.
+ */
 class ApiTagsTest extends DeskProTestCase
 {
     /**
@@ -44,6 +47,9 @@ class ApiTagsTest extends DeskProTestCase
         $this->assertEquals(sort($expected), sort($api_tags->getTags()));
     }
 
+    /**
+     * @return array
+     */
     public function getConstructionParams()
     {
         return [

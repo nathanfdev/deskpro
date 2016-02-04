@@ -77,6 +77,11 @@ class ActionPermissionsCacheWarmer implements CacheWarmerInterface
         return true;
     }
 
+    /**
+     * @param $cacheDir
+     *
+     * @return string
+     */
     protected function getCacheDir($cacheDir)
     {
         $cacheDir = $cacheDir.DIRECTORY_SEPARATOR.'api_permissions';
@@ -89,6 +94,9 @@ class ActionPermissionsCacheWarmer implements CacheWarmerInterface
         return $cacheDir;
     }
 
+    /**
+     * @return array
+     */
     protected function getClasses()
     {
         $fqcn_repo = new FqcnRepository(new FileRepository(), new ParserFactory());

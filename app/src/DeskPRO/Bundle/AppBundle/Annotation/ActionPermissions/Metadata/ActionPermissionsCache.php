@@ -66,6 +66,11 @@ class ActionPermissionsCache extends FileCache
         return $cache_dir;
     }
 
+    /**
+     * @param $data_name
+     *
+     * @return string
+     */
     protected function getFilePath($data_name)
     {
         return $this->dir.'/'.strtr($data_name, '\\', '-').'.cache.php';

@@ -30,12 +30,26 @@ namespace DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata;
 
 use Metadata\MethodMetadata as BaseMethodMetadata;
 
+/**
+ * Class MethodMetadata.
+ */
 class MethodMetadata extends BaseMethodMetadata
 {
+    /**
+     * @var
+     */
     protected $modes;
 
+    /**
+     * @var
+     */
     protected $tags;
 
+    /**
+     * @param $modes
+     *
+     * @return $this
+     */
     public function setModes($modes)
     {
         $this->modes = $modes;
@@ -43,6 +57,11 @@ class MethodMetadata extends BaseMethodMetadata
         return $this;
     }
 
+    /**
+     * @param $tags
+     *
+     * @return $this
+     */
     public function setTags($tags)
     {
         $this->tags = $tags;
@@ -50,16 +69,25 @@ class MethodMetadata extends BaseMethodMetadata
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
     public function getModes()
     {
         return $this->modes;
     }
 
+    /**
+     * @return mixed
+     */
     public function getTags()
     {
         return $this->tags;
     }
 
+    /**
+     * @return string
+     */
     public function serialize()
     {
         return serialize(array(
@@ -70,6 +98,9 @@ class MethodMetadata extends BaseMethodMetadata
         ));
     }
 
+    /**
+     * @param string $str
+     */
     public function unserialize($str)
     {
         list($this->class, $this->name, $this->modes, $this->tags) = unserialize($str);

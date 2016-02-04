@@ -41,6 +41,9 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  */
 class ActionPermissionsVoter extends Voter
 {
+    /**
+     * @var array
+     */
     protected $mode_map = [
         'agent_session' => 'session',
         'api_key'       => 'key',
@@ -109,16 +112,32 @@ class ActionPermissionsVoter extends Voter
         return $this->checkMode($mode, $methodMetadata) && ($mode !== 'key' || $this->checkTags($methodMetadata));
     }
 
+    /**
+     * @param $mode
+     * @param MethodMetadata $methodMetadata
+     *
+     * @return bool
+     */
     protected function checkMode($mode, MethodMetadata $methodMetadata)
     {
         return in_array($mode, $methodMetadata->getModes());
     }
 
+    /**
+     * @param MethodMetadata $methodMetadata
+     *
+     * @return bool
+     */
     protected function checkTags(MethodMetadata $methodMetadata)
     {
         return true;
     }
 
+    /**
+     * @param $token_name
+     *
+     * @return mixed
+     */
     protected function getMode($token_name)
     {
         return $this->mode_map[$token_name];

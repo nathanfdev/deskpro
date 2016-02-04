@@ -81,16 +81,31 @@ class ActionPermissionsDriver implements DriverInterface
         return $classMetadata;
     }
 
+    /**
+     * @param \ReflectionClass $class
+     *
+     * @return null|object
+     */
     protected function getClassModes(\ReflectionClass $class)
     {
         return $this->reader->getClassAnnotation($class, ApiModes::class);
     }
 
+    /**
+     * @param \ReflectionClass $class
+     *
+     * @return null|object
+     */
     protected function getClassTags(\ReflectionClass $class)
     {
         return $this->reader->getClassAnnotation($class, ApiTags::class);
     }
 
+    /**
+     * @param MethodMetadata    $metadata
+     * @param \ReflectionMethod $method
+     * @param $classModes
+     */
     protected function addMethodModes(MethodMetadata $metadata, \ReflectionMethod $method, $classModes)
     {
         $modes = $this->reader->getMethodAnnotation($method, ApiModes::class);
@@ -103,6 +118,11 @@ class ActionPermissionsDriver implements DriverInterface
         }
     }
 
+    /**
+     * @param MethodMetadata    $metadata
+     * @param \ReflectionMethod $method
+     * @param $classTags
+     */
     protected function addMethodTags(MethodMetadata $metadata, \ReflectionMethod $method, $classTags)
     {
         $tags = $this->reader->getMethodAnnotation($method, ApiTags::class);

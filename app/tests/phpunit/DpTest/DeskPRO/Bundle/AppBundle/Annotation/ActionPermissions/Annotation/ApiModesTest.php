@@ -30,6 +30,9 @@ namespace DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation;
 
 use DpTest\DeskProTestCase;
 
+/**
+ * Class ApiModesTest.
+ */
 class ApiModesTest extends DeskProTestCase
 {
     /**
@@ -44,6 +47,9 @@ class ApiModesTest extends DeskProTestCase
         $this->assertEquals(sort($expected), sort($api_modes->getModes()));
     }
 
+    /**
+     * @return array
+     */
     public function getConstructionParams()
     {
         return [
