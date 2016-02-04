@@ -359,7 +359,7 @@ class TicketsController extends CrudController
      */
     private function getTicketManager()
     {
-        return $this->container->getTicketManager();
+        return $this->getContainer()->getTicketManager();
     }
 
     // End of CRUD callbacks -------------------------------------------------------------------------------------------
