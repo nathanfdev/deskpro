@@ -40,35 +40,58 @@ Feature: /tickets endpoint
   "subject": "Sample Ticket",
   "department": 1,
   "message": {
-    "message_html": "<p>my message</p>",
+    "message_html": "<p>my html message</p>",
     "message_format": "html"
   }
 }
     """
     Then the response status code should be 201
+    And the JSON node "data.id" should be equal to 5
     And the JSON node "data.subject" should be equal to "Sample Ticket"
+    And the JSON node "data.department" should be equal to 1
+
+    When I send a GET request to "/api/v2/tickets/5/messages"
+    Then the response status code should be 200
+    And the JSON node "data" should have 1 element
+    And the JSON node "data[0].id" should be equal to 1
+    And the JSON node "data[0].message" should contain "<p>my html message"
 
   @basic
   Scenario: I modify and retrieve a ticket
-    When I send a PUT request to "/api/v2/tickets/1" with body:
+    When I send a PUT request to "/api/v2/tickets/5" with body:
     """
 {
-  "subject": "Modified subject"
+  "subject": "Modified subject",
+  "department": 2,
+  "message": {
+    "message_text": "my text message",
+    "message_format": "text"
+  }
 }
     """
-    And I send a GET request to "/api/v2/tickets/1"
+    And I send a GET request to "/api/v2/tickets/5"
     Then the response status code should be 200
+    And the JSON node "data.id" should be equal to 5
     And the JSON node "data.subject" should be equal to "Modified subject"
+
+    # todo changing department fix
+#    And the JSON node "data.department" should be equal to 2
+
+    When I send a GET request to "/api/v2/tickets/5/messages"
+    Then the response status code should be 200
+    And the JSON node "data" should have 1 element
+    And the JSON node "data[0].id" should be equal to 1
+    And the JSON node "data[0].message" should be equal to "my text message"
 
   @basic
   Scenario: I delete a ticket
-    When I send a DELETE request to "/api/v2/tickets/1"
+    When I send a DELETE request to "/api/v2/tickets/5"
     Then the response should be in JSON
     And the response status code should be 200
 
   @basic
   Scenario: I try to get deleted ticket
-    When I send a GET request to "/api/v2/tickets/1"
+    When I send a GET request to "/api/v2/tickets/5"
     Then the response status code should be 200
     And the JSON node "data.status" should be equal to "hidden"
     And the JSON node "data.hidden_status" should be equal to "deleted"

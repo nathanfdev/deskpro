@@ -566,6 +566,20 @@ class TicketType extends AbstractType
             return;
         }
 
+        $ticket = $form_context->getTicket();
+        if (!$ticket->messages->count()) {
+            $ticket_message = new TicketMessage();
+            $ticket_message
+                ->setPerson($form_context->getPerson())
+                ->setMessage('')
+            ;
+
+            $ticket->addMessage($ticket_message);
+            $form_context->setMessage($ticket_message);
+        } elseif (!$form_context->getMessage()) {
+            $form_context->setMessage($ticket->messages->first());
+        }
+
         $form_context->getForm()->add($field->getId(), 'ticket_description', [
             'mapped' => false,
             'label'  => false,

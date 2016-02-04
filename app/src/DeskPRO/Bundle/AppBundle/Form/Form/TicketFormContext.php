@@ -232,6 +232,18 @@ class TicketFormContext
     }
 
     /**
+     * @param TicketMessage $ticket_message
+     *
+     * @return $this
+     */
+    public function setMessage(TicketMessage $ticket_message)
+    {
+        $this->ticket_message = $ticket_message;
+
+        return $this;
+    }
+
+    /**
      * @return TicketMessage
      */
     public function getMessage()
