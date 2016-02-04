@@ -102,7 +102,11 @@ class InstallCommand extends ContainerAwareCommand
         # Create the steps
         #------------------------------
 
+        /* @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
+
         $context = new InstallerContext(
+            $DP_ENV,
             $session,
             $output,
             $input,
@@ -113,6 +117,7 @@ class InstallCommand extends ContainerAwareCommand
             new InstallStep\WelcomeStep($context),
             new InstallStep\FileIntegrityStep($context),
             new InstallStep\OwnRequirementsStep($context),
+            new InstallStep\CheckExistingStep($context),
             new InstallStep\DoneStep($context),
         ];
 

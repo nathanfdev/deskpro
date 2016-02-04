@@ -46,10 +46,9 @@ class FileIntegrityStep extends AbstractStep
         );
         $this->writeln('');
 
-        /* @var \DpRun\DpEnv $DP_ENV */
-        global $DP_ENV;
+        $dpEnv = $this->getContext()->getDpEnv();
 
-        $map_path = $DP_ENV->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.'integrity_file_map.dat';
+        $map_path = $dpEnv->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.'integrity_file_map.dat';
         if (!file_exists($map_path)) {
             $this->writeln('<error>The file integrity database could not be found.</error>');
             $this->writeln("The file was expected here: $map_path");
@@ -71,7 +70,7 @@ class FileIntegrityStep extends AbstractStep
             return;
         }
 
-        $set     = new ProjectFileSet($DP_ENV);
+        $set     = new ProjectFileSet($dpEnv);
         $hasher  = new FileHasher();
         $checker = new IntegrityChecker($set, $hasher);
 

@@ -36,6 +36,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 class InstallerContext
 {
     /**
+     * @var \DpRun\DpEnv
+     */
+    private $dpEnv;
+
+    /**
      * @var OutputInterface
      */
     private $output;
@@ -56,19 +61,29 @@ class InstallerContext
     private $session;
 
     /**
-     * AbstractStep constructor.
+     * InstallerContext constructor.
      *
+     * @param \DpRun\DpEnv    $dpEnv
      * @param InstallSession  $session
      * @param OutputInterface $output
      * @param InputInterface  $input
      * @param HelperSet       $helperSet
      */
-    public function __construct(InstallSession $session, OutputInterface $output, InputInterface $input, HelperSet $helperSet)
+    public function __construct(\DpRun\DpEnv $dpEnv, InstallSession $session, OutputInterface $output, InputInterface $input, HelperSet $helperSet)
     {
+        $this->dpEnv     = $dpEnv;
         $this->session   = $session;
         $this->output    = $output;
         $this->input     = $input;
         $this->helperSet = $helperSet;
+    }
+
+    /**
+     * @return \DpRun\DpEnv
+     */
+    public function getDpEnv()
+    {
+        return $this->dpEnv;
     }
 
     /**
