@@ -46,6 +46,8 @@ class ApiEndpointListener
 
     public function onKernelController(FilterControllerEvent $event)
     {
+        // todo fix (throws AuthenticationCredentialsNotFoundException on each request)
+        return;
         if (!is_array($controller = $event->getController())) {
             return;
         }
