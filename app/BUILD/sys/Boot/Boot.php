@@ -80,6 +80,16 @@ class Boot
         /** @var \DpRun\DpEnv $env */
         $env = $GLOBALS['DP_ENV'];
 
+        if ($_GET['__serverinfo'] === 'ping') {
+            header('Content-Type: text/plain');
+            echo 'pong';
+            if ($msg = $env->getDatManager()->readTxtFile('pong_message')) {
+                echo "\n";
+                echo $msg;
+            }
+            exit;
+        }
+
         // If installed, we require auth
         if ($env->getConfig('database.host') || $env->getConfig('database.0.host')) {
             $server_info_auth = $env->getDatManager()->readDatFile('server_info_auth', null);

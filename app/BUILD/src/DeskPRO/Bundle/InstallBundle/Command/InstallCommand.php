@@ -126,6 +126,7 @@ class InstallCommand extends ContainerAwareCommand
             new InstallStep\OwnRequirementsStep($context),
             new InstallStep\CheckExistingStep($context),
             new InstallStep\AcceptPathsStep($context),
+            new InstallStep\AcceptWebUrlStep($context),
             new InstallStep\AcceptDatabaseStep($context),
             new InstallStep\DoneStep($context),
         ];

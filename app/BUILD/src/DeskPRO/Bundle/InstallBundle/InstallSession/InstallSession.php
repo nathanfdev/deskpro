@@ -65,6 +65,11 @@ class InstallSession
     private $dbinfo;
 
     /**
+     * @var string
+     */
+    private $web_url;
+
+    /**
      * @var array
      */
     private $flags = [];
@@ -130,6 +135,22 @@ class InstallSession
     public function setDbInfo(DbInfo $dbinfo = null)
     {
         $this->dbinfo = $dbinfo;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWebUrl()
+    {
+        return $this->web_url;
+    }
+
+    /**
+     * @param string $web_url
+     */
+    public function setWebUrl($web_url)
+    {
+        $this->web_url = $web_url;
     }
 
     /**
