@@ -29,16 +29,15 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Labels\LabelsHelper;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalTermEngine;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -63,7 +62,7 @@ class TicketsController extends CrudController
     use LabelsHelper;
 
     public static $entity = Ticket::class;
-    public static $type   = TicketType::class;
+    public static $type   = 'ticket';
 
     /**
      * @param HttpKernelInterface $kernel
@@ -281,6 +280,19 @@ class TicketsController extends CrudController
     }
 
     // Override CRUD callbacks to use TicketManager --------------------------------------------------------------------
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleForm($model, Request $request, array $options = [])
+    {
+        $options = array_merge($options, [
+            'person'   => $this->getUser(),
+            'settings' => new SettingsBag(),
+        ]);
+
+        return parent::handleForm($model, $request, $options);
+    }
 
     /**
      * {@inheritdoc}

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
@@ -39,7 +38,6 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DeskPRO\Bundle\AppBundle\DataService\Tasks\TasksSelectCriteria;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\AppBundle\Form\Type\TaskType;
 use Doctrine\ORM\Query;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Put;
@@ -64,7 +62,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class TasksController extends CrudController
 {
     public static $entity = Task::class;
-    public static $type   = TaskType::class;
+    public static $type   = 'task';
 
     /**
      * @ApiDoc(

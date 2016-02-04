@@ -4,12 +4,6 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator
     arguments: [@doctrine.orm.default_entity_manager, @data.departments, @data.feedback, @language_manager]
 
-  form.html_textarea:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType
-    arguments: [@deskpro.core.input_cleaner]
-    tags:
-      - { name: form.type, alias: html_textarea }
-
   form_field_manager:
     class: DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager
     arguments: [@doctrine.orm.default_entity_manager]
@@ -24,6 +18,24 @@ services:
 
   ticket_layout_differ:
     class: DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutDiffer
+
+  form.html_textarea:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType
+    arguments: [@deskpro.core.input_cleaner]
+    tags:
+      - { name: form.type, alias: html_textarea }
+
+  form.combined:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\CombinedType
+    tags:
+      - { name: form.type, alias: deskpro_combined_type }
+
+  form.person_email_choice:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailChoiceType
+    arguments:
+      - @doctrine.orm.default_entity_manager
+    tags:
+      - { name: form.type, alias: deskpro_person_email_choice }
 
   form.api_date:
     class: DeskPRO\Bundle\AppBundle\Form\Type\ApiDateType
@@ -155,3 +167,23 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageAttachmentCollectionType
     tags:
       - { name: form.type, alias: ticket_message_attachment_collection }
+
+  form.ticket:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType
+    arguments:
+      - @form_field_manager
+      - @ticket_layout_factory
+      - @ticket_layout_differ
+      - @form_hierarchy_generator
+      - @doctrine.orm.default_entity_manager
+      - @language_manager
+      - @tickets.custom_per_field_manager
+      - @default_value_for_ticket_layout_field
+    tags:
+      - { name: form.type, alias: ticket }
+
+  form.ticket_description:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType
+    arguments: [@language_manager]
+    tags:
+      - { name: form.type, alias: ticket_description }

@@ -101,8 +101,11 @@ class TicketLayoutFactory
         if (!$layout) {
             $layout = $this->getInitialLayout();
         }
+
         if ($layout) {
             $layout = clone $layout;
+        } else {
+            $layout = new TicketLayout();
         }
 
         return $layout;
